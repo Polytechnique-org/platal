@@ -12,7 +12,7 @@ if(logged()) {
         ),
         'Services' => Array (
             'Envoyer un mail' => '###url###' ,
-            'Forums & PA' => '###url###' ,
+            'Forums &amp; PA' => '###url###' ,
             'Listes de diffusion' => '###url###' ,
             'Micropaiements' => '###url###' ,
             'Patte cassée' => 'pattecassee.php' ,

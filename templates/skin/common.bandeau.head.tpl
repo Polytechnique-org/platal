@@ -1,4 +1,4 @@
-{* $Id: common.bandeau.head.tpl,v 1.3 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+{* $Id: common.bandeau.head.tpl,v 1.4 2004-02-11 21:02:42 x2000habouzit Exp $ *}
 
 {literal}
     <!-- BANDEAU DEBUT -->
@@ -16,7 +16,7 @@
       a.xdx:hover   { text-decoration: underline; }
       a.xdx:active  { color: #CCCCCC ; background: #505050 ; }
     </style>
-    <meta name="MSSmartTagsPreventParsing" content="true">
+    <meta name="MSSmartTagsPreventParsing" content="true" />
     <!-- BANDEAU FIN -->
 {/literal}
 

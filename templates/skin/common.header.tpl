@@ -1,4 +1,4 @@
-{* $Id: common.header.tpl,v 1.5 2004-02-11 13:15:35 x2000habouzit Exp $ *}
+{* $Id: common.header.tpl,v 1.6 2004-02-11 21:02:42 x2000habouzit Exp $ *}
 
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta name="description" content="Le Portail des Polytechniciens" />
@@ -9,12 +9,12 @@
     <link rel="author" href="########" />
     <link rel="search" href="########" />
     <link rel="help" href="##########" />
-    <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique">
-    <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site">
-    <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX">
-    <link rel="bookmark" href="http://www.polytechniciens.com/"     title="| AX">
-    <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org">
-    <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves">
+    <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
+    <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
+    <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />
+    <link rel="bookmark" href="http://www.polytechniciens.com/"     title="| AX" />
+    <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
+    <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     <title>
       Anciens eleves Polytechnique, annuaire email, Alumni
