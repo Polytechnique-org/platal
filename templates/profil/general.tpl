@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.9 2004-08-31 11:25:42 x2000habouzit Exp $
+        $Id: general.tpl,v 1.10 2004-08-31 14:48:57 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -168,15 +168,13 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="mobile_public" value="V"
-              {if $mobile_public}checked="checked"{/if} />
+              <input type="checkbox" name="mobile_public" {if $mobile_public}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="checkbox" name="mobile_ax" value="O"
-              {if $mobile_ax}checked="checked"{/if} />
+              <input type="checkbox" name="mobile_ax" {if $mobile_ax}checked="checked"{/if} />
             </td>
             <td class="texte">
               transmis à l'AX
@@ -202,8 +200,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="web_public" value="V"
-              {if $web_public}checked="checked"{/if} />
+              <input type="checkbox" name="web_public" {if $web_public}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
@@ -229,8 +226,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="libre_public" value="1"
-              {if $libre_public}checked="checked"{/if} />
+              <input type="checkbox" name="libre_public" {if $libre_public}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public

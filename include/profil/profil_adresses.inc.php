@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_adresses.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
+        $Id: profil_adresses.inc.php,v 1.4 2004-08-31 14:48:57 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -66,7 +66,7 @@ while(list($adrids[$i]) = mysql_fetch_row($res)){
   $i++;
 }
 
-$page->assign_by_ref('adresses', $adresses);
+$page->assign('adresses', $adresses);
 
 //recuperation des donnees de la bd
 $res = $globals->db->query(

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_general.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
+        $Id: profil_general.inc.php,v 1.4 2004-08-31 14:48:57 x2000habouzit Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
@@ -47,34 +47,37 @@ if(mysql_errno($conn) !=0) echo mysql_errno($conn).": ".mysql_error($conn);
 
 mysql_free_result($result);
 
-$page->assign_by_ref('nom', $nom);
-$page->assign_by_ref('prenom', $prenom);
-$page->assign_by_ref('promo', $promo);
-$page->assign_by_ref('epouse', $epouse);
-$page->assign_by_ref('femme', $femme);
-$page->assign_by_ref('alias', $alias);
+$page->assign('mobile_public',$mobile_public);
+$page->assign('mobile_ax',$mobile_ax);
+$page->assign('libre_public',$libre_public);
+$page->assign('web_public',$web_public);
 
-
+$page->assign('nom', $nom);
+$page->assign('prenom', $prenom);
+$page->assign('promo', $promo);
+$page->assign('epouse', $epouse);
+$page->assign('femme', $femme);
+$page->assign('alias', $alias);
 
 replace_ifset($nationalite,'nationalite');
-$page->assign_by_ref('nationalite',$nationalite);
+$page->assign('nationalite',$nationalite);
 
 replace_ifset($mobile,'mobile');
-$page->assign_by_ref('mobile',$mobile);
+$page->assign('mobile',$mobile);
 
 replace_ifset($web,"web");
-$page->assign_by_ref('web',$web);
+$page->assign('web',$web);
 
 replace_ifset($libre,"libre");
-$page->assign_by_ref('libre',$libre);
+$page->assign('libre',$libre);
 
 replace_ifset($appli_id1,"appli_id1");
 replace_ifset($appli_id2,"appli_id2");
-$page->assign_by_ref('appli_id1',$appli_id1);
-$page->assign_by_ref('appli_id2',$appli_id2);
+$page->assign('appli_id1',$appli_id1);
+$page->assign('appli_id2',$appli_id2);
 replace_ifset($appli_type1,"appli_type1");
 replace_ifset($appli_type2,"appli_type2");
-$page->assign_by_ref('appli_type1',$appli_type1);
-$page->assign_by_ref('appli_type2',$appli_type2);
+$page->assign('appli_type1',$appli_type1);
+$page->assign('appli_type2',$appli_type2);
 
 ?>

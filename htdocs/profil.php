@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.5 2004-08-31 13:59:42 x2000habouzit Exp $
+        $Id: profil.php,v 1.6 2004-08-31 14:48:56 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -30,22 +30,9 @@ require_once('profil.inc.php');
 //on met a jour $opened_tab et $new_tab qui sont le tab du POST et le tab demande
 // Tout d'abord, quel est le tab actuel ?
 // si on vient d'un POST, old_tab etait le tab courant
-if(isset($_REQUEST['old_tab']))
-    if(isset($tabname_array[$_REQUEST['old_tab']])) // on verifie que la valeur postee existe bien
-	$opened_tab = $_REQUEST['old_tab'];
-
-$new_tab = $opened_tab;
-
-if(isset($_REQUEST['new_tab'])){
-    if(isset($tabname_array[$_REQUEST['new_tab']]))
-	$new_tab = $_REQUEST['new_tab'];
-    else
-	$new_tab = $opened_tab;
-} else
-    $new_tab = $opened_tab;
-
-//echo "opening profil_{$opened_tab}.inc.php<br>";
-require_once("profil/profil_{$opened_tab}.inc.php");
+if(isset($_REQUEST['old_tab']) && isset($tabname_array[$_REQUEST['old_tab']])) // on verifie que la valeur postee existe bien
+    $opened_tab = $_REQUEST['old_tab'];
+$new_tab = isset($_REQUEST['suivant']) ? get_next_tab($opened_tab) : $opened_tab;
 
 // pour tous les tabs, on recupere les bits car on a besoin de tous les bits pour en mettre a jour un, la date d naissance pour verifier
 // quelle est bien rentree et la date.
@@ -54,26 +41,11 @@ $sql = "SELECT  FIND_IN_SET('mobile_public', bits), FIND_IN_SET('mobile_ax', bit
 		naissance, DATE_FORMAT(date,'%d.%m.%Y')
 	  FROM  auth_user_md5
          WHERE  user_id=".$_SESSION['uid'];
-
 $result = $globals->db->query($sql);
-list($mobile_public, $mobile_ax,
-$web_public, $libre_public,
-$naissance, $date_modif_profil) = mysql_fetch_row($result);
-
-if(mysql_errno($conn) !=0) echo mysql_errno($conn).": ".mysql_error($conn);
-
-//en cas de modifications
-if(isset($_REQUEST['modifier']) && ($opened_tab == 'general')){
-    $mobile_public = (isset($_REQUEST['mobile_public']));
-    $mobile_ax = (isset($_REQUEST['mobile_ax']));
-    $libre_public = (isset($_REQUEST['libre_public']));
-    $web_public = (isset($_REQUEST['web_public']));
-}
-
+list($mobile_public, $mobile_ax,$web_public, $libre_public, $naissance, $date_modif_profil) = mysql_fetch_row($result);
 
 // lorsqu'on n'a pas la date de naissance en base de données
 if (!$naissance)  {
-
     // la date de naissance n'existait pas et vient d'être soumise dans la variable
     // $_REQUEST['birth']
     if (isset($_REQUEST['birth'])) {
@@ -93,27 +65,18 @@ if (!$naissance)  {
     $page->run();//on affiche le formulaire pour naissance
 }
 
-// inclure tous les tests sur les champs du formulaire
-require_once("profil/verif_{$opened_tab}.inc.php");
-    
-if(isset($_REQUEST['suivant']))
-    $new_tab = get_next_tab($opened_tab);
-
 //doit-on faire un update ?
 if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
+    require_once("profil/profil_{$opened_tab}.inc.php");
+    require_once("profil/verif_{$opened_tab}.inc.php");
 
     $date=date("Y-m-j");//nouvelle date de mise a jour
-
 
     //On sauvegarde l'uid pour l'AX
     /* on sauvegarde les changements dans user_changes :
     * on a juste besoin d'insérer le user_id de la personne dans la table
     */
-    $sql="insert into user_changes ('{$_SESSION['uid']}')";
-    /* l'insertion ne se fait que s'il n'existe pas un enregistrement avec le même
-    * user_id car user_id est la clé primaire.
-    */
-    $globals->db->query($sql);
+    $globals->db->query("replace into user_changes  set user_id='{$_SESSION['uid']}'");
 
     //Mise a jour des bits
     // bits : set('mobile_public','mobile_ax','web_public','libre_public')
@@ -135,7 +98,6 @@ if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     // mise a jour des champs relatifs au tab ouvert
     require_once("profil/update_{$opened_tab}.inc.php");
 
-    //Warning : ca ne marche que si update_<tab>.inc.php contient bien une requete mysql qui mettra errno a 0
     $_SESSION['log']->log("profil");
     $page->assign('etat_update','ok');
 }
@@ -144,7 +106,7 @@ require_once("profil/profil_{$new_tab}.inc.php");
 require_once("profil/verif_{$new_tab}.inc.php");
 
 $page->assign('onglet',$new_tab);
-$page->assign('onglet_last', get_last_tab());
+$page->assign('onglet_last',get_last_tab());
 $page->assign('onglet_tpl',"profil/$new_tab.tpl");
 $page->run();
 

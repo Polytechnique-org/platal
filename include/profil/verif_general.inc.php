@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: verif_general.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: verif_general.inc.php,v 1.3 2004-08-31 14:48:57 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -43,5 +43,10 @@ if (strlen(strtok($libre,"<>")) < strlen($libre))
 {
   $str_error = $str_error."Le champ 'Complément libre' contient un caractère interdit.<BR />";
 }
+
+$mobile_public = (isset($_REQUEST['mobile_public']));
+$mobile_ax = (isset($_REQUEST['mobile_ax']));
+$libre_public = (isset($_REQUEST['libre_public']));
+$web_public = (isset($_REQUEST['web_public']));
 
 ?>
