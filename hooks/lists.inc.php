@@ -30,7 +30,7 @@ class ListsConfig
     var $spool       = '/var/spool/platal/archives/';
 
     var $admin_owner = '';
-    var $vhost_sep   = '-';
+    var $vhost_sep   = '_';
 }
 
 // }}}

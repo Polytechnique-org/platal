@@ -70,7 +70,7 @@ PLATAL_DOMAIN  = get_config('Mail', 'domain')
 PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
 
 ML_OWNER       = get_config('Lists', 'admin_owner')
-VHOST_SEP      = get_config('Lists', 'vhost_sep', '-')
+VHOST_SEP      = get_config('Lists', 'vhost_sep', '_')
 
 ################################################################################
 #
@@ -696,8 +696,8 @@ check_opts = {
     'filter_content'                : False,
     'first_strip_reply_to'          : False,
     'forward_auto_discards'         : True,
-    'header_filter_rules'           : [],
     'hold_these_nonmembers'         : [],
+    'host_name'                     : 'listes.polytechnique.org',
     'include_list_post_header'      : False,
     'include_rfc2369_headers'       : False,
     'max_num_recipients'            : 0,
@@ -733,9 +733,6 @@ def check_options(userdesc,perms,vhost,listname,correct=False):
         if mlist.real_name.lower() != listname:
             options['real_name'] = listname, mlist.real_name
             if correct: mlist.real_name = listname
-        if mlist.host_name != vhost:
-            options['real_name'] = vhost, mlist.host_name
-            if correct: mlist.host_name = vhost
         if correct:
             mlist.Save()
             mlist.Unlock()
@@ -786,7 +783,7 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
             os.umask(oldmask)
 
         mlist.real_name = listname
-        mlist.host_name = vhost
+        mlist.host_name = 'listes.polytechnique.org'
         mlist.description = desc
 
         mlist.advertised = int(advertise) is 0
@@ -801,8 +798,7 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
         mlist.max_message_size = 0
 
         mlist.msg_footer = "_______________________________________________\n" \
-                         + "Liste de diffusion %(real_name)s\n" \
-                         + BASEURL+"/listes/"
+                         + "Liste de diffusion %(real_name)s\n"
         
         mlist.header_filter_rules = []
         mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
