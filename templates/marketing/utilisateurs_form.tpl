@@ -1,4 +1,4 @@
-{* $Id: utilisateurs_form.tpl,v 1.1 2004-07-19 22:38:08 x2000habouzit Exp $ *}
+{* $Id: utilisateurs_form.tpl,v 1.2 2004-08-26 09:22:22 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -62,9 +62,9 @@ calcul&eacute; &agrave; partir de ces données.
     </tr>
     <tr>
       <td colspan="2" class="bouton">
-        <input type=hidden name="xmat" value="{$smarty.request.xmat}" />
-        <input type=hidden name="sender" value="{$smarty.request.sender|default:$smarty.session.uid}" />
-        <input type="submit" name=submit value="Envoyer le mail" />
+        <input type="hidden" name="xmat" value="{$smarty.request.xmat}" />
+        <input type="hidden" name="sender" value="{$smarty.request.sender|default:$smarty.session.uid}" />
+        <input type="submit" name="submit" value="Envoyer le mail" />
       </td>
     </tr>
   </table>

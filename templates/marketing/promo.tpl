@@ -1,4 +1,4 @@
-{* $Id: promo.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: promo.tpl,v 1.3 2004-08-26 09:22:22 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,32 +6,42 @@
   <tr>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        <input type="hidden" name="promo" value="{$promob10}" />
-        <input type="submit" value="<<" />
+        <div>
+          <input type="hidden" name="promo" value="{$promob10}" />
+          <input type="submit" value="&lt;&lt;" />
+        </div>
       </form>
     </td>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        <input type="hidden" name="promo" value="{$promob1}" />
-        <input type="submit" value="<" />
+        <div>
+          <input type="hidden" name="promo" value="{$promob1}" />
+          <input type="submit" value="&lt;" />
+        </div>
       </form>
     </td>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        Promotion : <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
-        <input type="submit" value="GO" />
-      </form>
-    </td>
-    <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post" />
-        <input type="hidden" name="promo" value="{$promoa1}" />
-        <input type="submit" value=">" />
+        <div>
+          Promotion : <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
+          <input type="submit" value="GO" />
+        </div>
       </form>
     </td>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        <input type="hidden" name="promo" value="{$promoa10}">
-        <input type="submit" value=">>">
+        <div>
+          <input type="hidden" name="promo" value="{$promoa1}" />
+          <input type="submit" value="&gt;" />
+        </div>
+      </form>
+    </td>
+    <td>
+      <form action="{$smarty.server.PHP_SELF}" method="post">
+        <div>
+          <input type="hidden" name="promo" value="{$promoa10}" />
+          <input type="submit" value="&gt;&gt;" />
+        </div>
       </form> 
     </td>
   </tr>

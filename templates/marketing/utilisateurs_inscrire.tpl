@@ -58,7 +58,7 @@
       </tr>
       <tr>
         <td colspan="2">
-	      <input type=hidden name="xmat" value="{$smarty.request.xmat}">
+	      <input type="hidden" name="xmat" value="{$smarty.request.xmat}">
 	      <input type="submit" name="submit" value="Creer le login">
 	    </td>
       </tr>

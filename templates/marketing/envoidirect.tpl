@@ -1,4 +1,4 @@
-{* $Id: envoidirect.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: envoidirect.tpl,v 1.3 2004-08-26 09:22:22 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Liste des sollicités inscrits récemment
@@ -18,7 +18,7 @@
   <tr class="{cycle values="pair,impair"}">
     <td class="center">{$it.date_envoi|date_format:"%e %b %Y"} (par {$it.sender|truncate:4:""})</td>
     <td class="center">
-      <a href="marketing_promo.php?promo={$it.promo}">{$it.promo}</a>
+      <a href="promo.php?promo={$it.promo}">{$it.promo}</a>
     </td>
     <td>{$it.nom} {$it.prenom}</td>
     <td>
@@ -47,7 +47,7 @@
   <tr class="{cycle values="pair,impair"}">
     <td class="center">{$it.date_envoi|date_format:"%e %b %Y"} (par {$it.sender|truncate:4:""})</td>
     <td class="center">
-      <a href="marketing_promo.php?promo={$it.promo}">{$it.promo}</a>
+      <a href="promo.php?promo={$it.promo}">{$it.promo}</a>
     </td>
     <td>{$it.nom} {$it.prenom}</td>
     <td>

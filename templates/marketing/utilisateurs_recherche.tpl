@@ -1,4 +1,4 @@
-{* $Id: utilisateurs_recherche.tpl,v 1.1 2004-07-19 22:38:08 x2000habouzit Exp $ *}
+{* $Id: utilisateurs_recherche.tpl,v 1.2 2004-08-26 09:22:22 x2000habouzit Exp $ *}
 
 {dynamic}
 <div class="rubrique">
@@ -30,7 +30,7 @@ Si un champ est <strong>inconnu ou incertain</strong>, le remplir quand m&ecirc;
         Prénom :
       </td>
       <td>
-        <input type=text size=40 maxlength=60 value="{$smarty.request.prenomR}" name="prenomR" />
+        <input type="text" size="40" maxlength="60" value="{$smarty.request.prenomR}" name="prenomR" />
       </td>
     </tr>
     <tr>
@@ -38,7 +38,7 @@ Si un champ est <strong>inconnu ou incertain</strong>, le remplir quand m&ecirc;
         Nom :
       </td>
       <td>
-        <input type=text size=40 maxlength=60 value="{$smarty.request.nomR}" name="nomR" />
+        <input type="text" size="40" maxlength="60" value="{$smarty.request.nomR}" name="nomR" />
       </td>
     </tr>
     <tr>
