@@ -11,6 +11,7 @@ New :
 		- Try to avoid the unreadable {"..."|url} modifier, use {rel}/.		-MC
 		- Use a real .conf file, and no more .php's for configuration.		-MC
 		- Adds include/conf.d and the glob modifier.						-MC
+		- Make raw access to POST/GET/... disappear.						-MC
 	
 	* Distribution :
 		- Do not modify PHP include path from auto.prepend.inc.php.			-SHK
@@ -29,6 +30,9 @@ New :
 		- New skin : openweb.												-MC
 		- No more annoying submit button, onclick is used to submit.		-MC
 		- This is the first autonom module of the site !					-MC
+
+	* Stats :
+		- Better y-range for graphs.										-MC
 	
 	* WebRedirect (was: Carva) : now standalone.							-MC
 

@@ -28,16 +28,22 @@ function serv_to_str($params) {
                   'smtp' => 'serveur sécurisé d\'envoi de mails',
                   'nntp' => 'serveur des forums de discussion');
     $ret = Array();
-    foreach($flags as $flag)
+    foreach ($flags as $flag) {
         $ret[] = $trad[$flag];
+    }
     return implode(', ',$ret);
 }
-if (isset($_REQUEST['cp_id'])) 
-    $res=$globals->db->query("select UNIX_TIMESTAMP(debut) AS debut, TIME_FORMAT(duree,'%kh%i') AS duree, resume, description, services from coupures where id='{$_REQUEST['cp_id']}'");
-else
-    $res="";
 
-if(($res)&&($cp = mysql_fetch_assoc($res))) {
+if (Env::has('cp_id')) {
+    $res = $globals->db->query("SELECT  UNIX_TIMESTAMP(debut) AS debut,
+                                        TIME_FORMAT(duree,'%kh%i') AS duree,
+                                        resume, description, services
+                                  FROM  coupures
+                                 WHERE  id = ".Env::getInt('cp_id'));
+    $cp = @mysql_fetch_assoc($res);
+}
+
+if($cp) {
     $cp['lg_services'] = serv_to_str($cp['services']);
     $page->assign_by_ref('cp',$cp);
 } else {

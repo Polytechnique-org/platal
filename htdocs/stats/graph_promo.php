@@ -20,12 +20,9 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('index.tpl',AUTH_COOKIE);
 
-
-// genere le graph de l'evolution du nombre d'inscrits dans une promotion 
-
-$promo = (isset($_REQUEST['promo']) ? intval($_REQUEST["promo"]) : $_SESSION["promo"]);
+new_skinned_page('index.tpl', AUTH_COOKIE);
+$promo = Env::getInt('promo', Session::getInt('promo'));
 
 //nombre de jours sur le graph
 $JOURS=364;
@@ -62,12 +59,26 @@ for ($i=-$JOURS;$i<=0;$i++) {
 //Genere le graphique à la volée avec GNUPLOT
 header( "Content-type: image/png");
 
-$gnuplot="gnuplot <<EOF\n";
-$param1="set term png small color\nset size 640/480\nset xdata time\nset timefmt \"%d/%m/%y\"\n";
-$param2="set format x \"%m/%y\"\nset yr [".round($init_nb*0.90,0).":]\n";
-$title="set title \"Nombre d'inscrits de la promotion ".$promo."\"\n";
-$plot="plot \"-\" using 1:2 title 'inscrits' with lines;\n".$inscrits."e\nEOF\n";
-$plot_command=$gnuplot.$param1.$param2.$title.$plot;
+$ymin = round($init_nb*0.95,0);
+$ymax = round($total  *1.05,0);
 
-passthru($plot_command);
+$gnuplot = <<<EOF2
+gnuplot <<EOF
+
+set term png small color
+set size 640/480
+set xdata time
+set timefmt "%d/%m/%y"
+
+set format x "%m/%y"
+set yr [$ymin:$ymax]
+
+set title "Nombre d'inscrits de la promotion $promo."
+
+plot "-" using 1:2 title 'inscrits' with lines;
+{$inscrits}e
+EOF
+EOF2;
+
+passthru($gnuplot);
 ?>

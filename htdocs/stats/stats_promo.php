@@ -22,7 +22,8 @@
 require_once("xorg.inc.php");
 new_skinned_page("stats/stats_promo.tpl", AUTH_COOKIE);
 
-$promo = isset($_REQUEST["promo"]) ? intval($_REQUEST["promo"]) : $_SESSION["promo"];
+$promo = Env::getInt('promo', Session::getInt('promo'));
 $page->assign('promo',$promo);
 $page->run();
+
 ?>
