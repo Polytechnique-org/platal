@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_nl.php,v 1.3 2004-11-02 06:34:27 x2000habouzit Exp $
+        $Id: send_nl.php,v 1.4 2004-11-02 11:32:01 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
@@ -53,7 +53,7 @@ while(true) {
 		    INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND a.type='a_vie')
 		         WHERE  ni.last<$id
 			 LIMIT  60");
-    if(!mysql_num_rows($res)) exit(0);
+    if(!mysql_num_rows($sql)) exit(0);
     $sent = Array();
     while(list($uid,$fmt,$forlife,$prenom,$nom,$sexe) = mysql_fetch_row($sql)) {
 	$sent[] = "user_id='$uid'";
