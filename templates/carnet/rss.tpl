@@ -34,7 +34,7 @@
     {foreach from=$promo item=x}
     <item>
       <title>
-        [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format}
+        [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format|utf8_encode}
       </title>
       <link>{#globals.baseurl#}/fiche.php?user={$x.bestalias}</link>
       <description><![CDATA[
