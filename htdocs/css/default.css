@@ -113,11 +113,6 @@ p.question, div.question {
     font-weight: bold;
     padding: 0.25em;
 }
-p.warn, div.warn {
-    font-style : italic;
-    padding-top: 1em;
-    padding-bottom: 1em;
-}
 
 li.spaced {
     padding-top: 0.5em;
@@ -595,4 +590,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.61 2004-11-17 14:58:55 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.62 2004-11-17 15:01:56 x2000habouzit Exp $ */
