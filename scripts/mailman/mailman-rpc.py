@@ -18,10 +18,10 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.63 2004-10-16 11:39:38 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.64 2004-10-24 08:53:31 x2000habouzit Exp $
 #***************************************************************************
 
-import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
+import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -763,14 +763,14 @@ if not os.getuid():
     os.setregid(gid,gid)
     os.setreuid(uid,uid)
 
+signal.signal(signal.SIGHUP, signal.SIG_IGN)
+
 if ( os.getuid() is not uid ) or ( os.getgid() is not gid):
     sys.exit(0)
 
 opts, args = getopt.getopt(sys.argv[1:], 'f')
 for o, a in opts:
-#--------------------------------------------------
-#     if o == '-f' and os.fork():
-#-------------------------------------------------- 
+    if o == '-f' and os.fork():
         sys.exit(0)
 
 mysql = connectDB()
