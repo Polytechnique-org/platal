@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.inc.php,v 1.2 2004-11-22 20:05:10 x2000habouzit Exp $
+    $Id: xorg.inc.php,v 1.3 2004-11-22 21:40:47 x2000habouzit Exp $
  ***************************************************************************/
 
 function microtime_float() 
@@ -53,7 +53,6 @@ require_once("xorg/menu.inc.php");
 require_once("xorg/session.inc.php");
 
 $globals = new XorgGlobals;
-require_once("xorg.config.inc.php");
 
 // }}}
 // {{{ Build Menu, TODO: move that into appropriates hooks
@@ -103,18 +102,6 @@ $globals->menu->addPublicEntry(XOM_INFOS, 10, 'Nous contacter',         'docs/co
 $globals->menu->addPublicEntry(XOM_INFOS, 20, 'FAQ',                    'docs/faq.php');
 
 // }}}
-// {{{ start session + database connection
-
-session_start();
-
-// connect to database
-$globals->dbconnect();
-if ($globals->debug) {
-    $globals->db->trace_on();
-}
-
-//}}}
-
 // {{{ function _new_page()
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)

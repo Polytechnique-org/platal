@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.globals.inc.php.in,v 1.3 2004-11-22 10:42:52 x2000habouzit Exp $
+    $Id: xorg.globals.inc.php.in,v 1.4 2004-11-22 21:40:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.globals.inc.php");
@@ -59,6 +59,35 @@ class XorgGlobals extends DiogenesCoreGlobals
     /** recherche */
     var $public_max_search_results = 25;
     var $search_results_per_page   = 20;
+
+    function XorgGlobals() {
+        $ini = dirname(dirname(__FILE__)).'/configs/platal.conf';
+        $array = parse_ini_file($ini, true);
+        if (!is_array($array)) {
+            return;
+        }
+
+        foreach ($array as $cat=>$conf) {
+            $c = strtolower($cat);
+            foreach ($conf as $key=>$val) {
+                if ($c == 'global') {
+                    global $$key;
+                    $$key = $val;
+                } elseif ($c == 'core') {
+                    $this->$key=$val;
+                } else {
+                    $this->$c->$key = $val;
+                }
+            }
+        }
+
+        session_start();
+
+        $this->dbconnect();
+        if ($this->debug) {
+            $this->db->trace_on();
+        }
+    }
 }
 
 // }}}
