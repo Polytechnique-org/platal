@@ -54,9 +54,15 @@ function get_X_mat($ourmat)
 
     $year = intval(substr($ourmat, 0, 4));
     $rang = intval(substr($ourmat, 5, 3));
-    $year = intval(substr(1900 - $year, 1, 3));
-
-    return sprintf('%03u%03u', $year, $rang);
+    if ($year < 1996) {
+        return;
+    } elseif ($year < 2000) {
+        $year = intval(substr(1900 - $year, 1, 3));
+        return sprintf('%02u0%03u', $year, $rang);
+    } else {
+        $year = intval(substr(1900 - $year, 1, 3));
+        return sprintf('%03u%03u', $year, $rang);
+    }
 }
     
 // }}}

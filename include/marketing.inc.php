@@ -62,7 +62,7 @@ function mark_send_mail($uid, $email, $envoyeur, $email_envoyeur)
     $mailer->setFrom($envoyeur." <".$email_envoyeur.">");
     $mailer->addTo("\"{$u['prenom']} {$u['nom']}\" <{$email}>");
     $mailer->setSubject($titre);
-    $mailer->setTxtBody($text);
+    $mailer->setTxtBody(wordwrap($text, 80));
     $mailer->send();
 }
 
