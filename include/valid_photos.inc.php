@@ -54,26 +54,24 @@ class PhotoReq extends Validate {
     }
 
     function echo_formu() {
-        require_once("popwin.inc.php");
-?>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-        <input type="hidden" name="uid" value="<?php echo $this->uid ?>">
-        <input type="hidden" name="type" value="<?php echo $this->type ?>">
-        <input type="hidden" name="stamp" value="<?php echo $this->stamp ?>">
+        $url_app = isset($_COOKIE[session_name()]) ?  "" : "&amp;".SID;
+        return <<<________EOF
+        <form action="{$_SERVER['PHP_SELF']}" method="POST">
+        <input type="hidden" name="uid" value="{$this->uid}">
+        <input type="hidden" name="type" value="{$this->type}">
+        <input type="hidden" name="stamp" value="{$this->stamp}">
         <table class="bicol" align="center" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:</td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x=<?php echo $this->username; ?>')">
-                <?php echo $this->prenom." ".$this->nom;?>
+            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
+                {$this->prenom} {$this->nom}
                 </a>
             </td>
         </tr>
         <tr>
             <td align="center" valign="middle" colspan="2">
-                <img src="<?php echo "../getphoto.php?x=".$this->uid.
-                    (isset($_COOKIE[session_name()]) ?  "" : "&amp;".SID);?>" width=110 alt=" [ PHOTO ] " />
-                <img src="<?php echo "../getphoto.php?x=".$this->uid."&amp;req=true".
-                    (isset($_COOKIE[session_name()]) ?  "" : "&amp;".SID);?>" width=110 alt=" [ PHOTO ] " />
+                <img src="../getphoto.php?x={$this->uid}$url_app" width=110 alt=" [ PHOTO ] " />
+                <img src="../getphoto.php?x={$this->uid}&amp;req=true$url_app" width=110 alt=" [ PHOTO ] " />
             </td>
         </tr>
         <tr>
@@ -89,7 +87,7 @@ class PhotoReq extends Validate {
         </tr>
         </table>
         </form>
-<?php
+________EOF;
     }
     
     function handle_formu () {
@@ -125,16 +123,16 @@ class PhotoReq extends Validate {
             "L'équipe X.org";
 
         $message = wordwrap($message,78);  
-        require_once("mailer.inc.php");
-        $mymail = new mailer('Equipe Polytechnique.org <validation+trombino@polytechnique.org>',
+        require_once("diogenes.mailer.inc.php");
+        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+trombino@polytechnique.org>',
                 $this->username."@polytechnique.org",
                 "[Polytechnique.org/PHOTO] Changement de photo de ".$this->username,
                 false, "validation+trombino@m4x.org");
         $mymail->setBody($message);
         $mymail->send();
 
-        echo "<br />Mail envoyé";
         $this->clean();
+        return "Mail envoyé";
     }
     
     function commit () {

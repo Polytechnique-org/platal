@@ -25,30 +25,30 @@ class AliasReq extends Validate {
         return parent::get_unique_request($uid,'alias');
     }
 
-    function echo_formu() {
-        require_once("popwin.inc.php");
-?>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-        <input type="hidden" name="uid" value="<?php echo $this->uid ?>">
-        <input type="hidden" name="type" value="<?php echo $this->type ?>">
-        <input type="hidden" name="stamp" value="<?php echo $this->stamp ?>">
+    function formu() {
+        $old = $this->old ? "({$this->old})" : "";
+        $raison = nl2br(stripslashes(htmlentities($this->raison)));
+        return <<<________EOF
+        <form action="{$_SERVER['PHP_SELF']}" method="POST">
+        <input type="hidden" name="uid" value="{$this->uid}">
+        <input type="hidden" name="type" value="{$this->type}">
+        <input type="hidden" name="stamp" value="{$this->stamp}">
         <table class="bicol" align="center" cellpadding="4" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:
             </td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x=<?php echo $this->username; ?>')"><?php
-                    echo $this->prenom." ".$this->nom;?></a>
-                <?php if(isset($this->old)) echo "({$this->old})";?>
+            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}">
+                {$this->prenom} {$this->nom}</a> $old
             </td>
         </tr>
         <tr>
             <td>Nouvel&nbsp;alias&nbsp;:</td>
-            <td><?php echo $this->alias;?>@melix.net</td>
+            <td>{$this->alias}@melix.net</td>
         </tr>
         <tr>
             <td>Motif :</td>
             <td style="border: 1px dotted inherit">
-                <?php echo nl2br($this->raison);?>
+                $raison
             </td>
         </tr>
         <tr>
@@ -64,7 +64,7 @@ class AliasReq extends Validate {
         </tr>
         </table>
         </form>
-<?php
+________EOF;
     }
 
     function handle_formu () {
@@ -75,11 +75,11 @@ class AliasReq extends Validate {
                 || ($_REQUEST['submit']!="Accepter"    && $_REQUEST['submit']!="Refuser"))
             return false;
 
-        require_once("mailer.inc.php");
+        require_once("diogenes.mailer.inc.php");
         $mxnet = $this->alias."@melix.net";
         $mxorg = $this->alias."@melix.org";
 
-        $mymail = new mailer('Equipe Polytechnique.org <validation+melix@polytechnique.org>', 
+        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+melix@polytechnique.org>', 
                 $this->username."@polytechnique.org",
                 "[Polytechnique.org/MELIX] Demande de l'alias $mxnet par ".$this->username,
                 false, "validation+melix@m4x.org");
@@ -108,9 +108,9 @@ class AliasReq extends Validate {
         $message = wordwrap($message,78);  
         $mymail->setBody($message);
         $mymail->send();
-        echo "<br />Mail envoyé";
         //Suppression de la demande
         $this->clean();
+        return "Mail envoyé";
     }
 
     function commit () {

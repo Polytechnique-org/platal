@@ -38,45 +38,43 @@ class EpouseReq extends Validate {
         return parent::get_unique_request($uid,'epouse');
     }
 
-    function echo_formu() {
-        require_once("popwin.inc.php");
-?>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-        <input type="hidden" name="uid" value="<?php echo $this->uid ?>">
-        <input type="hidden" name="type" value="<?php echo $this->type ?>">
-        <input type="hidden" name="stamp" value="<?php echo $this->stamp ?>">
+    function formu() {
+        $old_line = $this->oldepouse ? "({$this->oldepouse} - {$this->oldalias})" : "";
+        $homonyme = "";
+        
+        if (!empty($this->homonyme)) $homonyme = <<<________EOF
+        <tr>
+            <td colspan="2">
+                <span class="erreur">Probleme d'homonymie !
+                <a href="javascript:x()"  onclick="popWin('/x.php?x={$this->homonyme}"> {$this->homonyme}</a>
+                </span>
+            </td>
+        </tr>
+________EOF;
+                
+        return <<<________EOF
+        <form action="{$_SERVER['PHP_SELF']}" method="POST">
+        <input type="hidden" name="uid" value="{$this->uid}">
+        <input type="hidden" name="type" value="{$this->type}">
+        <input type="hidden" name="stamp" value="{$this->stamp}">
         <table class="bicol" align="center" cellpadding="4" summary="Demande d'alias d'épouse">
         <tr>
             <td>Demandeur&nbsp;:</td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x=<?php echo $this->username; ?>')">
-                <?php echo $this->prenom." ".$this->nom;?>
+            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
+                {$this->prenom} {$this->nom}
                 </a>
-                <?php if($this->oldepouse) echo "({$this->oldepouse} - {$this->oldalias})";?>
+                $oldline
             </td>
         </tr>
         <tr>
             <td>&Eacute;pouse&nbsp;:</td>
-            <td><?php echo $this->epouse;?></td>
+            <td>{$this->epouse}</td>
         </tr>
         <tr>
             <td>Nouvel&nbsp;alias&nbsp;:</td>
-            <td><?php echo $this->alias;?></td>
+            <td>{$this->alias}</td>
         </tr>
-<?php
-        if (!empty($this->homonyme)) {
-?>
-        <tr>
-            <td colspan="2">
-                <span class="erreur">Probleme d'homonymie !
-                <a href="javascript:x()"  onclick="popWin('/x.php?x=<?php echo $this->homonyme; ?>')">
-                    <?php echo $this->homonyme;?>
-                </a>
-                </span>
-            </td>
-        </tr>
-<?php
-        }
-?>
+        $homonyme
         <tr>
             <td align="center" valign="middle">
                 <input type="submit" name="submit" value="Accepter">
@@ -90,7 +88,7 @@ class EpouseReq extends Validate {
         </tr>
         </table>
         </form>
-<?php
+________EOF;
     }
 
     function handle_formu () {
@@ -133,16 +131,16 @@ class EpouseReq extends Validate {
             "L'équipe X.org";
 
         $message = wordwrap($message,78);  
-        require_once("mailer.inc.php");
-        $mymail = new mailer('Equipe Polytechnique.org <validation+epouse@polytechnique.org>',
+        require_once("diogenes.mailer.inc.php");
+        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+epouse@polytechnique.org>',
                 $this->username."@polytechnique.org",
                 "[Polytechnique.org/EPOUSE] Changement de nom de mariage de ".$this->username,
                 false, "validation+epouse@m4x.org");
         $mymail->setBody($message);
         $mymail->send();
 
-        echo "<br />Mail envoyé";
         $this->clean();
+        return "Mail envoyé";
     }
 
     function commit () {

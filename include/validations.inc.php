@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.1 2004-01-26 22:29:02 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.2 2004-01-27 09:08:56 x2000habouzit Exp $
  *
  */
 
@@ -139,11 +139,11 @@ class Validate {
                 .($this->unique ? "" : " AND stamp='".$this->stamp."'"));
     }
     
-    /** doit afficher le fomulaire de validation de la donnée
+    /** doit retourner le fomulaire de validation de la donnée
      * XXX la fonction est "virtuelle" XXX
      * XXX doit définir les variables $uid et $stamp en hidden XXX
      */
-    function echo_formu() { }
+    function formu() { }
     /** fonction à réaliser en cas de valistion du formulaire
      * XXX la fonction est "virtuelle" XXX
      */

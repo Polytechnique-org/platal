@@ -37,24 +37,46 @@ class MListReq extends Validate {
         return false; // ben oui, c pas un objet unique !!!
     }
 
-    function echo_formu() {
-        require_once("popwin.inc.php");
-?>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-        <input type="hidden" name="uid" value="<?php echo $this->uid ?>">
-        <input type="hidden" name="type" value="<?php echo $this->type ?>">
-        <input type="hidden" name="stamp" value="<?php echo $this->stamp ?>">
+    function formu() {
+        $comment = nl2br($this->comment);
+
+        $pub = $this->publique ? "checked=\"checked\" " : "";
+        $lib = $this->libre    ? "checked=\"checked\" " : "";
+        $fre = $this->freeins  ? "checked=\"checked\" " : "";
+        $arc = $this->archive  ? "checked=\"checked\" " : "";
+        
+        $sql = mysql_query("SELECT username FROM auth_user_md5"
+            ." WHERE user_id IN ({$this->moderos})"
+            ." ORDER BY nom, prenom");
+        $tab = array();
+        while(list($username) = mysql_fetch_row($sql)) $tab[] = $username;
+        $modero = implode(', ', $tab);
+        mysql_free_result($sql);
+
+        $sql = mysql_query("SELECT username FROM auth_user_md5"
+            ." WHERE user_id IN ({$this->membres})"
+            ." ORDER BY nom, prenom");
+        $tab = array();
+        while(list($username) = mysql_fetch_row($sql)) $tab[] = $username;
+        $membres = implode(', ', $tab);
+        mysql_free_result($sql);
+
+        return <<<________EOF
+        <form action="{$_SERVER['PHP_SELF']}" method="POST">
+        <input type="hidden" name="uid" value="{$this->uid}">
+        <input type="hidden" name="type" value="{$this->type}">
+        <input type="hidden" name="stamp" value="{$this->stamp}">
         <table class="bicol" align="center">
         <tr>
             <td>Demandeur&nbsp;:</td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x=<?php echo $this->username; ?>')">
-                <?php echo $this->prenom." ".$this->nom;?>
+            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
+                {$this->prenom} {$this->nom}
                 </a>
             </td>
         </tr>
         <tr>
             <td>Motif :</td>
-            <td><?php echo nl2br($this->comment);?>
+            <td>{$comment}
             </td>
         </tr>
         <tr>
@@ -62,61 +84,30 @@ class MListReq extends Validate {
                 Alias :
             </td>
             <td style="border-top:1px dotted inherit">
-                <input type="text" name="alias" value="<?php echo $this->alias ?>" />@polytechnique.org
+                <input type="text" name="alias" value="{$this->alias}" />@polytechnique.org
             </td>
         </tr>
         <tr>
             <td>Topic :</td>
-            <td><input type="text" name="topic" size="60" value="<?php echo $this->topic ?>" />
+            <td><input type="text" name="topic" size="60" value="{$this->topic}" />
             </td>
         </tr>
         <tr>
             <td>Propriétés :</td>
             <td>
-                <input type="checkbox" name="publique" <?php
-                    echo($this->publique?"checked=\"checked\"":"")
-                ?>/>Publique
-                <input type="checkbox" name="libre" <?php
-                    echo($this->libre?"checked=\"checked\"":"")
-                ?>/>Libre
-                <input type="checkbox" name="freeins" <?php
-                    echo($this->freeins?"checked=\"checked\"":"")
-                ?>/>Freeins
-                <input type="checkbox" name="archive" <?php
-                    echo($this->archive?"checked=\"checked\"":"")
-                ?>/>Archive
+                <input type="checkbox" name="publique" $pub/>Publique
+                <input type="checkbox" name="libre" $lib/>Libre
+                <input type="checkbox" name="freeins" $fre/>Freeins
+                <input type="checkbox" name="archive" $arc/>Archive
             </td>
         </tr>
         <tr>
-            <td style="border-top:1px dotted inherit">
-                Modéros :
-            </td>
-            <td style="border-top:1px dotted inherit">
-<?php
-                $sql = mysql_query("SELECT username FROM auth_user_md5"
-                    ." WHERE user_id IN ({$this->moderos})"
-                    ." ORDER BY nom, prenom");
-                $tab = array();
-                while(list($username) = mysql_fetch_row($sql))
-                    $tab[] = $username;
-                echo implode(', ', $tab);
-                mysql_free_result($sql);
-?>
-            </td>
+            <td style="border-top:1px dotted inherit">Modéros :</td>
+            <td style="border-top:1px dotted inherit">$moderos</td>
         </tr>
         <tr>
             <td>Membres :</td>
-            <td><?php
-                $sql = mysql_query("SELECT username FROM auth_user_md5"
-                    ." WHERE user_id IN ({$this->membres})"
-                    ." ORDER BY nom, prenom");
-                $tab = array();
-                while(list($username) = mysql_fetch_row($sql))
-                    $tab[] = $username;
-                echo implode(', ', $tab);
-                mysql_free_result($sql);
-                ?>
-            </td>
+            <td>$membres</td>
         </tr>
         <tr>
             <td align="center" valign="middle" style="border-top:1px dotted inherit">
@@ -131,7 +122,7 @@ class MListReq extends Validate {
         </tr>
         </table>
         </form>
-<?php
+________EOF;
     }
     
     function handle_formu () {
@@ -152,9 +143,9 @@ class MListReq extends Validate {
         $this->clean();
         $this->submit();
 
-        require_once("mailer.inc.php");
+        require_once("diogenes.mailer.inc.php");
         
-        $mymail = new mailer('Equipe Polytechnique.org <validation+listes@polytechnique.org>', 
+        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+listes@polytechnique.org>', 
                 $this->username."@polytechnique.org",
                 "[Polytechnique.org/LISTES] Demande de la liste {$this->alias} par ".$this->username,
                 false, "validation+listes@m4x.org");
@@ -192,8 +183,7 @@ class MListReq extends Validate {
         $message = wordwrap($message,78);  
         $mymail->setBody($message);
         $mymail->send();
-        echo "<p class=\"normal\">Mail envoyé</p>";
-        return true;
+        return "Mail envoyé";
     }
 
     function commit () {

@@ -28,38 +28,35 @@ class SondageReq extends Validate {
         return parent::get_request($uid,'sondage',$stamp);
     }
 
-    function echo_formu() {
-        require_once("popwin.inc.php");
-?>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-        <input type="hidden" name="uid" value="<?php echo $this->uid ?>">
-        <input type="hidden" name="type" value="<?php echo $this->type ?>">
-        <input type="hidden" name="stamp" value="<?php echo $this->stamp ?>">
+    function formu() {
+        global $baseurl; 
+        $url = "$baseurl/sondage/questionnaire.php?SID=".$this->sid;
+        return <<<________EOF
+        <form action="{$_SERVER['PHP_SELF']}" method="POST">
+        <input type="hidden" name="uid" value="{$this->uid}">
+        <input type="hidden" name="type" value="{$this->type}">
+        <input type="hidden" name="stamp" value="{$this->stamp}">
         <table class="bicol" align="center" cellpadding="4" summary="Sondage">
         <tr>
             <td>Demandeur&nbsp;:
             </td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x=<?php echo $this->username; ?>')"><?php
-                    echo $this->prenom." ".$this->nom;?></a>
+            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
+                {$this->prenom} {$this->nom}</a>
                 <?php if(isset($this->old)) echo "({$this->old})";?>
             </td>
         </tr>
 	    <tr>
             <td>Titre du sondage&nbsp;:</td>
-            <td><?php echo $this->titre;?></td>
+            <td>{$this->titre}</td>
         </tr>
         <tr>
             <td>Prévisualisation du sondage&nbsp;:</td>
-            <td><a href = <?php 
-                global $baseurl; 
-                echo "\"$baseurl/sondage/questionnaire.php?SID=".$this->sid.'"';
-                echo ' target = "_blank">'.$this->titre;
-                ?>
-                </a></td>
+            <td><a href="$url" target="_blank">{$this->titre}</a>
+            </td>
         </tr>
         <tr>
             <td>Alias du sondage&nbsp;:</td>
-            <td><input type="text" name="alias" value="<?php echo $this->alias;?>">&nbsp;(ne doit
+            <td><input type="text" name="alias" value="{$this->alias}">&nbsp;(ne doit
             pas contenir le caractère ')</td>
         </tr>
         <tr>
@@ -75,7 +72,7 @@ class SondageReq extends Validate {
         </tr>
         </table>
         </form>
-<?php
+________EOF;
     }
 
     function handle_formu () {
@@ -113,12 +110,12 @@ class SondageReq extends Validate {
             $this->alias=$alias;
         }
 
-        require_once("mailer.inc.php");
+        require_once("diogenes.mailer.inc.php");
     
         $lien = "$baseurl/sondage/questionnaire.php?alias=".urlencode($this->alias);
 	    $titre = '"'.str_replace('&#039;',"'",$this->titre).'"';
 
-        $mymail = new mailer('Equipe Polytechnique.org <validation+sondage@polytechnique.org>', 
+        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+sondage@polytechnique.org>', 
                 $this->username."@polytechnique.org",
                 "[Polytechnique.org/SONDAGE] Demande de validation du sondage $titre par ".$this->username,
                 false, "validation+sondage@m4x.org");
@@ -148,9 +145,9 @@ class SondageReq extends Validate {
         $message = wordwrap($message,78);  
         $mymail->setBody($message);
         $mymail->send();
-        echo "<br />Mail envoyé";
         //Suppression de la demande
         $this->clean();
+        return "Mail envoyé";
     }
 
     function commit () {

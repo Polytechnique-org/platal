@@ -2,7 +2,7 @@
 ini_set('include_path', ".:..:/home/x2000habouzit/dev/public/include:/home/x2000habouzit/dev/diogenes/lib/:/home/x2000habouzit/dev/smarty/");
 require("xorg.common.inc.php");
 
-function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
+function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=false) {
     global $page,$globals;
     require("xorg.page.inc.php");
     if(!empty($admin)) {
@@ -25,21 +25,23 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
 
     $page->assign('xorg_head', $tpl_head);
     $page->assign('xorg_tpl', $tpl_name);
+    if($popup)
+        $page->assign('popup_enable', true);
 
     $page->compile_check=true;
     $page->caching=true;
 }
 
-function new_skinned_page($tpl_name, $min_auth, $tpl_head="") {
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
+function new_skinned_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
+    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
 }
 
-function new_popup_page($tpl_name, $min_auth, $tpl_head="") {
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
+function new_popup_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
+    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
 }
 
-function new_admin_page($tpl_name, $tpl_head="") {
-    _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, true);
+function new_admin_page($tpl_name, $popup=false, $tpl_head="") {
+    _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, $popup, true);
 }
 
 ?>

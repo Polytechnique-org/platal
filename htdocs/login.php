@@ -1,6 +1,6 @@
 <?php
 require("auto.prepend.inc.php");
-new_skinned_page('login.tpl', AUTH_COOKIE, 'login.head.tpl');
+new_skinned_page('login.tpl', AUTH_COOKIE, true, 'login.head.tpl');
 
 $param=mysql_query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");
 list($date,$naissance) = mysql_fetch_row($param);
