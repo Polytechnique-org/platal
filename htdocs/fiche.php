@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.23 2004-11-17 18:16:23 x2000habouzit Exp $
+        $Id: fiche.php,v 1.24 2004-11-18 15:28:16 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -44,8 +44,9 @@ else
     $where_clause = " WHERE u.matricule = '{$_REQUEST['mat']}'";
 
 $reqsql = "SELECT  u.prenom, u.nom, u.epouse, IF(gp.nat='',gp.pays,gp.nat) AS text, gp.a2,
-		   u.user_id, a.alias, a2.alias, u.matricule, u.deces != 0 as dcd,
-		   u.deces, u.date, u.cv, sections.text, u.mobile, u.web,
+		   u.user_id, a.alias, a2.alias, u.matricule, u.perms IN ('admin','user'),
+		   FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 as dcd, u.deces,
+		   u.date, u.cv, sections.text, u.mobile, u.web,
 		   u.libre, u.promo, c.uid IS NOT NULL, p.x, p.y
 	     FROM  auth_user_md5  AS u
        INNER JOIN  aliases        AS a  ON (u.user_id=a.id AND a.type='a_vie')
@@ -61,8 +62,8 @@ if (mysql_num_rows($result)!=1)
         exit;
 
 if (list($prenom, $nom, $epouse, $nationalite, $iso3166,
-        $user_id, $forlife, $bestalias, $matricule, $dcd, $deces, 
-        $date,
+        $user_id, $forlife, $bestalias, $matricule, $inscrit,
+	$sexe, $dcd, $deces, $date,
         $cv, $section, 
         $mobile, $web, $libre, $promo,
         $is_contact, $size_x, $size_y) = mysql_fetch_row($result)) {
@@ -79,6 +80,8 @@ $page->assign('nationalite', $nationalite);
 $page->assign('iso3166', $iso3166);
 $page->assign('user_id', $user_id);
 $page->assign('matricule', $matricule);
+$page->assign('inscrit', $inscrit);
+$page->assign('sexe', $sexe);
 $page->assign('dcd', $dcd);
 $page->assign('deces', $deces);
 $page->assign('date', $date);

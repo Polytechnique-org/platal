@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.29 2004-11-17 21:09:47 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.30 2004-11-18 15:28:16 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -33,6 +33,7 @@ function chgMainWinLoc( strPage ) {
   <tr>
     <td id="fiche_identite">
       <div class="civilite">
+        {if $sexe}&bull;{/if}
         {$prenom} {if $epouse eq ""}{$nom}{else}{$epouse} ({$nom}){/if}&nbsp;
         <a href="vcard.php/{$forlife}.vcf?x={$user_id}">
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
@@ -58,9 +59,15 @@ function chgMainWinLoc( strPage ) {
       </div>
       <div class="contact">
         <div class='email'>
+          {if $dcd}
+          Décédé{if $sexe}e{/if} le {$deces|date_format:"%d %B %Y"}
+          {elseif !$inscrit}
+          Le compte de cette personne n'est pas actif (personne non inscrite ou exclue).
+          {else}
           <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
           {if $bestalias neq $forlife}<br />
           <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
+          {/if}
           {/if}
         </div>
         <div class="mob">
