@@ -28,4 +28,6 @@ session_start();
 // connect to database
 $globals->dbconnect();
 $conn = $globals->db->connect_id;
+if($site_dev)
+    $globals->db->trace_on();
 ?>

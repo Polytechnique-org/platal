@@ -52,9 +52,6 @@ $sql = "SELECT contact AS id,
         LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
         WHERE c.uid = {$_SESSION['uid']}
         ORDER BY a.nom, a.prenom";
-$globals->db->query($sql);
-echo mysql_error();
-
 $page->mysql_assign($sql,'contacts','nb_contacts');
 
 $page->run();
