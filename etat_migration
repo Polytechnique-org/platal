@@ -38,7 +38,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
-;	  | domaine.php								  | 
 ;	  | evenements.php							  | 
 ;	  | fiche_referent.php						  | 
 ;	  | index.coupure.php						  | 
@@ -48,16 +47,17 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | trombipromo.php							  | 
 ;	  | x.php									  | 
 ------+-[ listes ]--------------------------------+----------------
-;	  | listes/creation.php						  | \
-;	  | listes/gere_listes.php					  |  |
-;	  | listes/gere_msg.php						  |  |
-;	  | listes/index.php						  |   > lll ?
-;	  | listes/liste.php						  |  |
-;	  | listes/mailtoins.inc.php				  |  |
-;	  | listes/trombiliste.php					  | /
+ ;	  | listes/creation.php						  | \
+ ;	  | listes/gere_listes.php					  |  |
+ ;	  | listes/gere_msg.php						  |  |
+ ;	  | listes/index.php						  |   > lll ?
+ ;	  | listes/liste.php						  |  |
+ ;	  | listes/mailtoins.inc.php				  |  |
+ ;	  | listes/trombiliste.php					  | /
 ------+-[ bordel postponed ]----------------------+----------------
 ;!	  | admin/comptesPOP.php					  | ???
 ;!	  | admin/pg.php							  | 
+;!	  | domaine.php								  | 
 ;!	  | pg.confirm.php							  | 
 ;!	  | pg.php									  | 
 ------+-[ stats ]---------------------------------+----------------
