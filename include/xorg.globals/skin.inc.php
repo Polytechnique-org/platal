@@ -18,25 +18,21 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: core.inc.php,v 1.1 2004-11-23 11:32:35 x2000habouzit Exp $
+    $Id: skin.inc.php,v 1.1 2004-11-23 11:38:45 x2000habouzit Exp $
  ***************************************************************************/
 
-// {{{ class XorgGlobals
+// {{{ class SkinConfig
 
-class CoreConfig
+class SkinConfig
 {
-    // {{{ skin
-
-    var $skin_enable  = 1;
-    var $skin_id      = 1;
-    var $skin_tpl     = 'default.tpl';
-
-    // }}}
+    var $enable  = 1;
+    var $def_id  = 1;
+    var $def_tpl = 'default.tpl';
 }
 
 // }}}
 
-$this->core = new CoreConfig;
+$this->skin = new SkinConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
