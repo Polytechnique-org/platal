@@ -60,11 +60,11 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | emploi.php								  | 
 ;	  | emploi_public.php						  | 
 ;	  | evenements.php							  | 
+;	  | fiche_referent.php						  | 
 ;	  | index.coupure.php						  | 
 ;	  | mescontacts_pdf.php						  | 
 ;	  | pg.confirm.php							  | 
 ;	  | pg.php									  | 
-;	  | profil.php								  | 
 ;	  | recherche.php							  | 
 ;	  | trombino.php							  | 
 ;	  | trombipromo.php							  | 
@@ -177,8 +177,10 @@ xx	  | newsletter.php							  | -
 xx	  | newsletter_req.php						  | -
 xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
+xx	  | profil.php								  | TODO : reste 2-3 trucs comme popWin() a changer
 xx!	  | redirect/error.php						  | -
 xx!	  | redirect/redirect.php					  | -
+xx	  | referent.php							  | TODO : utilise la css de recherche qui n'est pas encore migré
 xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | sendmail.php							  | -
