@@ -4,8 +4,6 @@ htdocs/admin/logger_actions.php
 htdocs/admin/logger.php
 htdocs/admin/valider.php
 htdocs/clear_all_cache.php
-htdocs/cookie_off.php
-htdocs/cookie_on.php
 htdocs/css/default.css
 htdocs/deconnexion.php
 htdocs/exit.php

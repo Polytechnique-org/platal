@@ -14,6 +14,5 @@ templates/emails/redirect.tpl
 templates/emails/send.tpl
 templates/emails.tpl
 templates/include/form.valid.aliases.tpl
-templates/mails/valid.alias.tpl
 templates/preferences.tpl.d/10.mails.tpl
 templates/preferences.tpl.d/20.alias.tpl

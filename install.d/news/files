@@ -6,5 +6,4 @@ templates/admin/evenements.tpl
 templates/evenements.tpl
 templates/include/form.evenement.tpl
 templates/include/form.valid.evts.tpl
-templates/mails/valid.evts.tpl
 templates/rss.tpl

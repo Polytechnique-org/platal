@@ -28,7 +28,6 @@ include/lists.inc.php
 include/validations/listes.inc.php
 templates/admin/lists.tpl
 templates/include/form.valid.listes.tpl
-templates/include/form.valid.ml.tpl
 templates/listes/admin.tpl
 templates/listes/archives.head.tpl
 templates/listes/archives.tpl
@@ -46,4 +45,3 @@ templates/listes/options.tpl
 templates/listes/soptions.tpl
 templates/listes/trombi.tpl
 templates/mails/listes.promo.tpl
-templates/mails/valid.liste.tpl
