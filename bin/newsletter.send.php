@@ -56,7 +56,7 @@ while(true) {
 	$sent[] = "user_id='$uid'";
 	$nl->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html');
     }
-    $globals->dbx->execute('UPDATE newsletter_ins SET last={?} WHERE '.implode(' OR ', $sent), $id);
+    $globals->xdb->execute('UPDATE newsletter_ins SET last={?} WHERE '.implode(' OR ', $sent), $id);
     sleep(60);
 }
 
