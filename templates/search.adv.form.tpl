@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.adv.form.tpl,v 1.5 2004-11-27 16:44:36 x2000bedo Exp $
+        $Id: search.adv.form.tpl,v 1.6 2004-11-27 17:44:00 x2000bedo Exp $
  ***************************************************************************}
 
 <h1>Recherche avancée</h1>
@@ -73,25 +73,55 @@
     <tr>
       <td>Sexe</td>
       <td>
-        <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />Homme ou femme&nbsp;
-        <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} />Homme&nbsp;
-        <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} />Femme
+        <table>
+          <tr>
+            <td style="width:100px">
+              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />Indifférent
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} />Homme
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} />Femme
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
     <tr>
       <td>Sur polytechnique.org</td>
       <td>
-        <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} />Inscrit ou non&nbsp;
-        <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} />Inscrit&nbsp;
-        <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} />Non inscrit
+        <table>
+          <tr>
+            <td style="width:100px">
+              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} />Indifférent
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} />Inscrit
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} />Non inscrit
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
     <tr>
-      <td>Décès</td>
+      <td>En vie</td>
       <td>
-        <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} />Vivant ou décédé&nbsp;
-        <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} />Vivant&nbsp;
-        <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} />Décédé
+        <table>
+          <tr>
+            <td style="width:100px">
+              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} />Indifférent
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} />Vivant
+            </td>
+            <td style="width:100px">
+              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} />Décédé
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
     <tr>
@@ -135,12 +165,6 @@
       <th colspan="2">Activité</th>
     </tr>
     <tr>
-      <td colspan="2">
-        <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} />
-        chercher uniquement parmi les camarades se proposant comme référent
-      </td>
-    </tr>
-    <tr>
       <td>Entreprise</td>
       <td><input type="text" name="entreprise" size="32" value="{$smarty.request.entreprise}" /></td>
     </tr>
@@ -173,6 +197,12 @@
     <tr>
       <td>CV contient</td>
       <td><input type="text" name="cv" size="32" value="{$smarty.request.cv}" /></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} />
+        chercher uniquement parmi les camarades se proposant comme référents
+      </td>
     </tr>
     <tr>
       <th colspan="2">Divers</th>
