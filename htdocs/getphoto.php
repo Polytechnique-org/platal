@@ -25,7 +25,7 @@ new_skinned_page('login.tpl', AUTH_PUBLIC);
 
 if (Env::has('x')) {
 
-    $res = $globals->xdb->query("SELECT id, pub FROM aliases INNER JOIN photo ON(id=uid) WHERE alias = {?}", Env::get('x'));
+    $res = $globals->xdb->query("SELECT id, pub FROM aliases LEFT JOIN photo ON(id=uid) WHERE alias = {?}", Env::get('x'));
     list($uid, $photo_pub) = $res->fetchOneRow();
     
     if (Env::get('req') == "true" && logged()) {
