@@ -745,7 +745,7 @@ class SFieldGroup
         }
         foreach ($others as $key=>$val) {
             if (!empty($val)) {
-                $url[$key] = $val;
+                $url[] = "$key=$val";
             }
         }
         return count($url)>0 ? implode('&amp;', $url) : false;
