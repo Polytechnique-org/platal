@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.53 2004-10-10 13:51:20 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.54 2004-10-10 21:16:32 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -688,13 +688,20 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
 
-        mlist._UpdateRecords()
-
         mlist.Save()
+
         mlist.Unlock()
+        
         check_options((userdesc,perms),vhost,listname,True)
         mass_subscribe((userdesc,perms),vhost,listname,members)
+
+        # avoid the "-1 mail to moderate" bug
+        mlist = MailList.MailList(name)
+        mlist._UpdateRecords()
+        mlist.Save()
+        mlist.Unlock()
     except:
+        raise
         return 0
     return 1
     
