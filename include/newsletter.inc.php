@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.31 2004-11-04 07:19:37 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.32 2004-11-16 19:45:59 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -84,9 +84,8 @@ class NewsLetter {
 			      WHERE  id='{$this->_id}'");
     }
 
-    function title($mail_enc=false) {
-	$title = stripslashes($this->_title);
-	return $mail_enc ? "=?ISO-8859-1?Q?".quoted_printable_encode(str_replace(' ','_',$title),200)."?=" : $title;;
+    function title() {
+	return stripslashes($this->_title);
     }
     function head() { return stripslashes($this->_head); }
 
@@ -256,21 +255,17 @@ EOF;
     }
     
     function sendTo($prenom,$nom,$forlife,$sex,$html) {
-	require_once('diogenes.mailer.inc.php');
-	$fullname = "=?ISO-8859-1?Q?".quoted_printable_encode(str_replace(' ','_',"$prenom $nom"),200)."?=";
-	$mailer = new DiogenesMailer("Lettre Mensuelle Polytechnique.org <info_newsletter@polytechnique.org>",
-				     "$fullname <$forlife@polytechnique.org>",
-				     $this->title(true),
-				     $html);
-	$mailer->addHeader("Reply-To: info+nlp@polytechnique.org");
+	require_once('diogenes.hermes.inc.php');
+	$mailer = new HermesMailer();
+	$mailer->setFrom("\"Lettre Mensuelle Polytechnique.org\" <info_newsletter@polytechnique.org>");
+	$mailer->setSubject($this->title());
+	$mailer->addTo("$prenom $nom <$forlife@polytechnique.org>");
+	$mailer->addHeader('Reply-To','info+nlp@polytechnique.org');
+	$mailer->setTxtBody($this->toText($prenom,$nom,$sex));
 	if($html) {
-	    $mailer->addPart('text/plain; charset=iso-8859-1', 'iso-8859-1', $this->toText($prenom,$nom,$sex));
-	    $mailer->addPart('text/html; charset=iso-8859-1', 'iso-8859-1', $this->toHtml($prenom,$nom,$sex,true));
-	} else {
-	    $mailer->setBody($this->toText($prenom,$nom,$sex));
+	    $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
 	}
 	$mailer->send();
-				     
     }
 }
 
