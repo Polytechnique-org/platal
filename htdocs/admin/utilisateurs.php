@@ -18,25 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.14 2004-09-02 09:47:07 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.15 2004-09-02 17:43:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_admin_page('admin/utilisateurs.tpl', true, 'admin/utilisateurs.head.tpl');
+new_admin_page('admin/utilisateurs.tpl', true);
 require("xorg.misc.inc.php");
-
-$assignates = Array(
-	'add_email', 'email', 'fwd', 'hashpass', 'homonyme', 'login',
-	'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num', 'oldlogin', 'olduid',
-	'passw', 'password1', 'perms', 'permsN', 'prenomN', 'promoN', 'remove_email',
-	'select', 'suid_button', 'user_id', 'u_edit', 'u_kill', 'u_kill_conf'
-);
-foreach($assignates as $ass) $$ass=isset($_REQUEST[$ass]) ? $_REQUEST[$ass] : '';
-
-$errors = Array();
-$succes = Array();
-function my_error($msg) { global $erreur; $erreur[] = "<p class='erreur'>Erreur: $msg</p>"; }
-function my_msg($msg)   { global $succes; $succes[] = "<p class='succes'>O.K.: $msg</p>"; }
 
 /*
  * LOGS de l'utilisateur
@@ -76,67 +63,65 @@ if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login'])
     header("Location: ../");
 }
 
+
+/*
+ * LE RESTE
+ */
+
+$errors = Array();
+
 if(isset($_REQUEST['password']))  $pass_clair = $_REQUEST['password'];
 
 // Check if there was a submission
 foreach($_POST as $key => $val) {
     switch ($key) {
-    // ajout d'email
-        case "add_email":
+        case "add_fwd":
+	    $email = $_REQUEST['email'];
             if (!isvalid_email_redirection($email)) {
-                my_error("invalid email");
+                $errors[] = "invalid email $email";
                 break;
             }
-            $globals->db->query("INSERT INTO emails (uid,num,email,flags) VALUES ($user_id,$num,'$email','active')");
-            my_msg("Ajout de $email effectué"); 
+            $globals->db->query("INSERT INTO emails (uid,num,email,flags) 
+				 VALUES ({$_REQUEST['user_id']},{$_REQUEST['num']},'$email','active')");
+            $errors[] = "Ajout de $email effectué";
             break;
 
-    // supprime un email
+	case "del_fwd":
+	    if(empty($val)) break;
+	    $globals->db->query("DELETE FROM emails WHERE uid='{$_REQUEST['user_id']}' AND email='$val'");
+	    break;
 
-        case "remove_email":
-            $globals->db->query("delete from emails where uid=$user_id and email = '$email'");
-            my_msg("Suppression de $email effectué"); 
-            break;
+	case "del_alias":
+	    if(empty($val)) break;
+	    $globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val' AND type!='a_vie'");
+	    $errors[] = $val." a été supprimé";
+	    break;
 
-    // Faire un suid (une partie du code se trouve tout là-haut pour affecter l'affichage du menu)
-        case "suid_button":
-            if(isset($_SESSION['suid'])) {
-                my_msg("SUID effectué, clique sur exit pour quitter."); 
-            } else {
-                my_error("login inconnu, suid non effectué.");
-            }
-            break;
+	case "add_alias":
+	    $globals->db->query("INSERT INTO aliases (id,alias,type)
+				 VALUES ('{$_REQUEST['user_id']}','{$_REQUEST['email']}','alias')");
+	    break;
 
-
-        // Editer un profil
+	// Editer un profil
         case "u_edit":
-            if ($newpass_clair != "********")  {
-                $pass_md5B=md5($newpass_clair);
-            } else {
-                $pass_md5B=$passw;
-            }
+	    $pass_md5B = $_REQUEST['newpass_clair'] != "********" ? md5($_REQUEST['newpass_clair']) : $_REQUEST['passw'];
 
             $query = "UPDATE auth_user_md5 SET
-                        username='$login',
-                        naissance=$naissanceN,
+                        naissance='{$_REQUEST['naissanceN']}',
                         password='$pass_md5B',
-                        perms='$permsN',
-                        prenom='$prenomN',
-                        nom='$nomN',
-                        promo=$promoN
-                      WHERE user_id=$olduid";
-
+                        perms='{$_REQUEST['permsN']}',
+                        prenom='{$_REQUEST['prenomN']}',
+                        nom='{$_REQUEST['nomN']}',
+                        promo='{$_REQUEST['promoN']}'
+                      WHERE user_id='{$_REQUEST['user_id']}'";
             $globals->db->query($query);
-            if (mysql_errno($conn) != 0) {
-                my_error("<b>Failed:</b> $query");
-                break;
-            }
-            
+
+	    // FIXME: recherche
             $f = fopen("/tmp/flag_recherche","w");
             fputs($f,"1");
             fclose($f);
 
-            my_msg("\"$login\" updaté correctement.");
+            $errors[] = "updaté correctement.";
             // envoi du mail au webmaster
             $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
             $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['username']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
@@ -146,81 +131,91 @@ foreach($_POST as $key => $val) {
     // DELETE FROM auth_user_md5
         case "u_kill":
 
-            $result=$globals->db->query("select user_id from auth_user_md5 where username='$login'");
-            if(list($user_id) = mysql_fetch_row($result)) {
-                $query = "DELETE FROM auth_user_md5 WHERE username='$login'";
-                $globals->db->query($query);
-                $globals->db->query("delete from emails where uid=$user_id");
-                $globals->db->query("delete from binets_ins where user_id=$user_id");
-                $globals->db->query("delete from groupesx_ins where guid=$user_id");
-                $globals->db->query("delete from photo where uid=$user_id");
-                $globals->db->query("delete from perte_pass where uid=$user_id");
-                $globals->db->query("delete from user_changes where user_id=$user_id");
-                $globals->db->query("delete from aliases where id=$user_id and type in ('login','epouse','alias')");
-                $globals->db->query("delete from listes_ins where idu=$user_id");
-                $globals->db->query("delete from listes_mod where idu=$user_id");
-                $globals->db->query("delete from forums_abo where uid=$user_id");
-                $globals->db->query("delete from applis_ins where uid=$user_id");
-                $globals->db->query("delete from contacts where uid=$user_id");
-                $globals->db->query("delete from contacts where contact=$user_id");
-                // on purge les entrees dans logger
-                $res=$globals->db->query("select id from logger.sessions where uid=$user_id");
-                while (list($session_id)=mysql_fetch_row($res)) 
-                    $globals->db->query("delete from logger.events where session=$session_id");
-                $globals->db->query("delete from logger.sessions where uid=$user_id");	
+	    $user_id = $_REQUEST['user_id'];
 
-                my_msg(" \"$login\" a été supprimé !<BR>");
-                $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
-                $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['username']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
-                mail("web@polytechnique.org","INTERVENTION ADMIN",$MESSAGE,$HEADER);
-            } else {
-                my_error("pas de login $login");
-            }
+	    $query = "DELETE FROM auth_user_md5 WHERE user_id='$user_id'";
+	    $globals->db->query($query);
+	    $globals->db->query("delete from emails where uid=$user_id");
+	    $globals->db->query("delete from binets_ins where user_id=$user_id");
+	    $globals->db->query("delete from groupesx_ins where guid=$user_id");
+	    $globals->db->query("delete from photo where uid=$user_id");
+	    $globals->db->query("delete from perte_pass where uid=$user_id");
+	    $globals->db->query("delete from user_changes where user_id=$user_id");
+	    $globals->db->query("delete from aliases where id=$user_id and type in ('login','epouse','alias')");
+	    $globals->db->query("delete from listes_ins where idu=$user_id");
+	    $globals->db->query("delete from listes_mod where idu=$user_id");
+	    $globals->db->query("delete from applis_ins where uid=$user_id");
+	    $globals->db->query("delete from contacts where uid=$user_id");
+	    $globals->db->query("delete from contacts where contact=$user_id");
+	    // on purge les entrees dans logger
+	    $res=$globals->db->query("select id from logger.sessions where uid=$user_id");
+	    while (list($session_id)=mysql_fetch_row($res))
+		$globals->db->query("delete from logger.events where session=$session_id");
+	    $globals->db->query("delete from logger.sessions where uid=$user_id");	
+
+	    $errors[] = "'$user_id' a été supprimé !";
+	    $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
+	    $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['username']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
+	    mail("web@polytechnique.org","INTERVENTION ADMIN",$MESSAGE,$HEADER);
             break;
     }
 }
 
 
-$page->assign('login', $login);
-
-if (!empty($_REQUEST['select'])) {
-    $numeric_login = false;
-    $looking_field = 'username';
-    if (preg_match("/^\d*$/",$login)) {
-        $numeric_login = true;
-        $looking_field = 'user_id';
-    }
-    $r=$globals->db->query("select * from auth_user_md5 where $looking_field='$login' order by username");
-    if ($mr=mysql_fetch_assoc($r)){
-        if ($numeric_login) $login = $mr['username'];
-        $param=$globals->db->query("SELECT UNIX_TIMESTAMP(MAX(start)) FROM logger.sessions WHERE uid={$mr['user_id']} AND suid=0 GROUP BY uid");
-        list($lastlogin) = mysql_fetch_row($param);
-        mysql_free_result($param);
-
-        $page->assign_by_ref('mr',$mr);
-
-        $str=false;
-        
-        $sql = "SELECT email, num, flags, panne
-                FROM emails
-                WHERE num != 0 AND uid = {$mr['user_id']} order by num";
-        $result=$globals->db->query($sql);
-        $xorgmails = Array();
-        $email_panne = Array();
-        while($l = mysql_fetch_assoc($result)) {
-            $xorgmails[] = $l;
-            if($l['panne']!="0000-00-00")
-                $email_panne[] = "Adresse {$l['email']} signalée comme HS le {$l['panne']}";
-            $next_num = $l['num']+1;
-        }
-        mysql_free_result($result);
-       
-	$page->mysql_assign("SELECT alias, type='login' AS for_life FROM aliases WHERE id = {$mr["user_id"]} ORDER BY type!= 'login'", 'aliases');
-        $page->assign_by_ref('xorgmails', $xorgmails);
-        $page->assign_by_ref('email_panne', $email_panne);
-        $page->assign('next_num', $next_num);
-    } // if(mysql_fetch_row)
+if (!empty($_REQUEST['login'])) {
+    $login = $_REQUEST['login'];
+    $r=$globals->db->query("SELECT  *
+			      FROM  auth_user_md5 AS u
+			INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' )");
+    if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
+    mysql_free_result($r);
 }
 
+if (!empty($_REQUEST['user_id'])) {
+    $r=$globals->db->query("SELECT  *
+			      FROM  auth_user_md5
+ 			     WHERE  user_id='{$_REQUEST['user_id']}'");
+    if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
+    mysql_free_result($r);
+}
+    
+if(isset($mr)) {
+    $page->assign('mr',$mr);
+
+    $result=$globals->db->query("SELECT  UNIX_TIMESTAMP(s.start), s.host
+				   FROM  auth_user_md5   AS u
+			      LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
+				  WHERE  user_id={$mr['user_id']}
+			       ORDER BY  s.start DESC
+				  LIMIT  1");
+    list($lastlogin,$host) = mysql_fetch_row($result);
+    mysql_free_result($result);
+    $page->assign('lastlogin', $lastlogin);
+    $page->assign('host', $host);
+
+    $sql = "SELECT email, num, flags, panne
+	    FROM emails
+	    WHERE num != 0 AND uid = {$mr['user_id']} order by num";
+    $result=$globals->db->query($sql);
+    $xorgmails = Array();
+    $email_panne = Array();
+    while($l = mysql_fetch_assoc($result)) {
+	$xorgmails[] = $l;
+	if($l['panne']!="0000-00-00")
+	    $email_panne[] = "Adresse {$l['email']} signalée comme HS le {$l['panne']}";
+	$next_num = $l['num']+1;
+    }
+    mysql_free_result($result);
+
+    $page->mysql_assign("SELECT  alias, type='a_vie' AS for_life
+			   FROM  aliases
+			  WHERE  id = {$mr["user_id"]}
+		       ORDER BY  type!= 'a_vie'", 'aliases');
+    $page->assign_by_ref('xorgmails', $xorgmails);
+    $page->assign_by_ref('email_panne', $email_panne);
+    $page->assign('next_num', $next_num);
+}
+
+$page->assign('errors',$errors);
 $page->run();
 ?>

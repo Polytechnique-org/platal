@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.11 2004-09-02 09:47:07 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.12 2004-09-02 17:43:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -33,20 +33,22 @@ Attention, déjà en SUID !!!
 
 {dynamic}
 
+{foreach from=$errors item=e}
+<p class="erreur">{$e}</p>
+{/foreach}
+
 {if $smarty.post.u_kill_conf}
-<div class="center">
-  <form id="yes" method="post" action="{$smarty.server.PHP_SELF}">
-    <input type="hidden" name="login" value="{$smarty.request.login}" />
-    Confirmer la suppression de {$smarty.request.login}&nbsp;&nbsp;
+<form method="post" action="{$smarty.server.PHP_SELF}">
+  <div class="center">
+    <input type="hidden" name="user_id" value="{$smarty.request.user_id}" />
+    Confirmer la suppression de {$smarty.request.user_id}&nbsp;&nbsp;
     <input type="submit" name="u_kill" value="continuer" />
-  </form>
-</div>
-{/if}
+  </div>
+</form>
+{else}
 
-{/dynamic}
-
-<form id="add" method="post" action="{$smarty.server.PHP_SELF}">
-  <table class="tinybicol" cellspacing="0" cellpadding="3">
+<form method="post" action="{$smarty.server.PHP_SELF}">
+  <table class="tinybicol" cellspacing="0" cellpadding="2">
     <tr>
       <th>
         Administrer
@@ -54,12 +56,12 @@ Attention, déjà en SUID !!!
     </tr>
     <tr>
       <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$login|default:$smarty.request.login}" />
+        <input type="text" name="login" size="40" maxlength="255" value="" />
       </td>
     </tr>
     <tr>
       <td class="center">
-        <input type="hidden" name="hashpass" value="" /> 
+        <input type="hidden" name="hashpass" value="" />
         <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
         <input type="submit" name="suid_button" value=" su " />  &nbsp;&nbsp;
         <input type="submit" name="logs_button" value=" logs " />
@@ -68,166 +70,198 @@ Attention, déjà en SUID !!!
   </table>
 </form>
 
-{dynamic on="0`$smarty.request.select`"}
+{if $mr}
+
 <p class="smaller">
 Derniére connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
-depuis <strong>{$mr.host}</strong>
+depuis <strong>{$host}</strong>
 </p>
-<form id="edit" method="post" action="{$smarty.server.PHP_SELF}">
-  <table cellspacing="0" cellpadding="0" class="admin">
-    <tr> 
-      <th class="login">
-        Login
+
+{literal}
+<script type="text/javascript">
+//<![CDATA[
+function doEditUser() {
+  document.forms.auth.hashpass.value = MD5(document.forms.edit.password.value);
+  document.forms.auth.password.value = "";
+  document.forms.auth.submit();
+}
+
+function del_alias(alias) {
+  document.forms.alias.del_alias.value = alias;
+  document.forms.alias.submit();
+}
+
+function del_fwd(fwd) {
+  document.forms.fwds.del_fwd.value = fwd;
+  document.forms.fwds.submit();
+}
+// ]]>
+</script>
+{/literal}
+
+<form id="auth" method="post" action="{$smarty.server.PHP_SELF}">
+  <table cellspacing="0" cellpadding="2" class="tinybicol">
+    <tr>
+      <th>
+        UID et Matricule
       </th>
-      <th class="password"> 
-        Password
-      </th>
-      <th class="perms"> 
-        Perms
+      <th>
+        {$mr.user_id} / {$mr.matricule}
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
       </th>
     </tr>
-    <tr> 
-      <td class="login"> 
-        <input type="hidden" name="hashpass" value="" />
-        <input type="text" name="login" size="20" maxlength="50" value="{$mr.username}" />
+    <tr class="pair">
+      <td class="titre">
+        Mot de passe
       </td>
-      <td class="password"> 
+      <td>
         <input type="text" name="newpass_clair" size="10" maxlength="10" value="********" />
         <input type="hidden" name="passw" size="32" maxlength="32" value="{$mr.password}" />
+        <input type="hidden" name="hashpass" value="" />
       </td>
-      <td class="perms"> 
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Nom
+      </td>
+      <td>
+        <input type="text" name="nomN" size="20" maxlength="255" value="{$mr.nom}" />
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Prénom
+      </td>
+      <td>
+        <input type="text" name="prenomN" size="20" maxlength="30" value="{$mr.prenom}" />
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
+        Droits
+      </td>
+      <td>
         <select name="permsN">
           <option value="user" {if $mr.perms eq "user"}selected="selected"{/if}>user</option>
           <option value="admin" {if $mr.perms eq "admin"}selected="selected"{/if}>admin</option>
         </select>
       </td>
     </tr>
-    <tr> 
-      <th>UID</th>
-      <td>
-        {$mr.user_id}
-        <input type="hidden" name="olduid" size="6" maxlength="6" value="{$mr.user_id}" />
-        <input type="hidden" name="oldlogin" size="100" maxlength="100" value="{$mr.username}" />
+    <tr class="pair">
+      <td class="titre">
+        Date de naissance
       </td>
-      <td class="action">
-        <input type="submit" name="u_kill_conf" value="DELETE" />
+      <td>
+        <input type="text" name="naissanceN" size="10" maxlength="10" value="{$mr.naissance}" />
       </td>
     </tr>
-    <tr> 
-      <th class="detail">
-        Matricule
-      </th>
-      <td class="detail"> 
-        {$mr.matricule}
+    <tr class="pair">
+      <td class="titre">
+        Promo
       </td>
-      <td class="action"> 
+      <td>
+        <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
+      </td>
+    </tr>
+    <tr class="center">
+      <td>
+        <a href="javascript:x()" onclick="popWin('{"fiche.php?id=`$mr.user_id`"|url}')">[Voir fiche]</a>
+      </td>
+      <td>
         <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
       </td>
     </tr>
-    <tr> 
-      <th class="detail">
-        Date de naissance
-      </th>
-      <td class="detail"> 
-        <input type="text" name="naissanceN" size="10" maxlength="10" value="{$mr.naissance}" />
-      </td>
-      <td class="action">
-        &nbsp;
-      </td>
-    </tr>
-    <tr> 
-      <th class="detail">
-        Promo
-      </th>
-      <td class="detail"> 
-        <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
-      </td>
-      <td class="action">
-        &nbsp;
-      </td>
-    </tr>
-    <tr> 
-      <th class="detail">
-        Nom
-      </th>
-      <td class="detail">
-        <input type="text" name="nomN" size="20" maxlength="255" value="{$mr.nom}" />
-      </td>
-      <td class="action">
-        <a href="javascript:x()" onclick="popWin('{"x.php?x=`$mr.username`"|url}')">[Voir fiche]</a>
-      </td>
-    </tr>
-    <tr> 
-      <th class="detail">
-        Prénom
-      </th>
-      <td class="detail">
-        <input type="text" name="prenomN" size="20" maxlength="30" value="{$mr.prenom}" />
-      </td>
-      <td class="action">
+    <tr class="center">
+      <td>
         <a href="admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
       </td>
-    </tr>
-    <tr>
-      <th class="alias" colspan="2">
-        Alias e-mail
-      </th>
-      <td class="action">&nbsp;</td>
-    </tr>
-    {foreach from=$aliases item=a}
-    <tr>
-      <th class="detail">{if $a.for_life}garantie à vie*{/if}</th>
-      <td class="detail">{if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}</td>
-      <td class="action">&nbsp;</td>
-    </tr>
-    {/foreach}
-    <tr>
-      <th class="alias" colspan="2">
-        Redirections
-      </th>
-      <td class="action">&nbsp;</td>
-    </tr>
-    {foreach item=mail from=$xorgmails}
-    <tr> 
-      <th class="detail"> 
-        e-mail forward {$mail.num} ({$mail.flags})
-      </th>
-      <td class="detail"> 
-        <input type="text" name="fwd" size="29" maxlength="255" value="{$mail.email}" />
-      </td>
-      <td class="action"> 
-        <input type="hidden" name="user_id" value="{$mr.user_id}" />
-        <input type="hidden" name="login" value="{$mr.username}" />
-        <input type="hidden" name="email" value="{$mail.email}" />
-        <input type="hidden" name="select" value="edit" />
-        <input type="submit" name="remove_email" value="Supprimer" />
-      </td>
-    </tr>
-    {/foreach}
-    <tr> 
-      <th class="detail">
-        Ajouter un email
-      </th>
-      <td class="detail"> 
-        <input type="text" name="email" size="29" maxlength="60" value="" />
-      </td>
-      <td class="action">
-        <input type="hidden" name="user_id" value="{$mr.user_id}" />
-        <input type="hidden" name="login" value="{$mr.username}" />
-        <input type="hidden" name="select" value="edit" />
-        <input type="hidden" name="num" value="{$next_num}" />
-        <input type="submit" name="add_email" value="Ajouter" />
+      <td>
+        <input type="submit" name="u_kill_conf" value="DELETE" />
       </td>
     </tr>
   </table>
 </form>
+
+<form id="alias" method="post" action="{$smarty.server.PHP_SELF}">
+  <table class="tinybicol" cellpadding="2" cellspacing="0">
+    <tr>
+      <th class="alias" colspan="2">
+        Alias e-mail
+      </th>
+    </tr>
+    {foreach from=$aliases item=a}
+    <tr class="{cycle values="impair,pair"}">
+      <td>{if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}</td>
+      {if $a.for_life}
+      <td>garanti à vie*</td>
+      {else}
+      <td class="action">
+        <a href="javascript:del_alias('{$a.alias}')">delete</a>
+      </td>
+      {/if}
+    </tr>
+    {/foreach}
+    <tr class="{cycle values="impair,pair"}">
+      <td class="detail">
+        <input type="text" name="email" size="29" maxlength="60" value="" />
+      </td>
+      <td class="action">
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="del_alias" value="" />
+        <input type="submit" name="add_alias" value="Ajouter" />
+      </td>
+    </tr>
+  </table>
+</form>
+
 <p>
 <strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
 </p>
+
+<form id="fwds" method="post" action="{$smarty.server.PHP_SELF}">
+  <table class="bicol" cellpadding="2" cellspacing="0">
+    <tr>
+      <th colspan="3">
+        Redirections
+      </th>
+    </tr>
+    {foreach item=mail from=$xorgmails}
+    <tr>
+      <td class="titre">
+        n°{$mail.num} ({$mail.flags})
+      </td>
+      <td>
+        {$mail.email}
+      </td>
+      <td class="action">
+        <a href="javascript:del_fwd('{$mail.email}')">delete</a>
+      </td>
+    </tr>
+    {/foreach}
+    <tr>
+      <td class="titre">
+        Ajouter un email
+      </td>
+      <td>
+        <input type="text" name="email" size="29" maxlength="60" value="" />
+      </td>
+      <td class="action">
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="del_fwd" value="" />
+        <input type="hidden" name="num" value="{$next_num}" />
+        <input type="submit" name="add_fwd" value="Ajouter" />
+      </td>
+    </tr>
+  </table>
+</form>
+
 <p class="erreur">
 {foreach from=$email_panne item=e}
 {$p}<br />
 {/foreach}
 </p>
+{/if}
+{/if}
+
 {/dynamic}
 {* vim:set et sw=2 sts=2 sws=2: *}
