@@ -21,7 +21,7 @@ Bug/Wish :
 		- #156 : exit Netscape4 (no more supported), Mozilla enters.		-MC
 
 	* Carnet :
-		- #29 : possible to watch subscribings, deaths, `fiche` modifs.		-MC
+		- #29,147 : possible to watch subscribings, deaths, `fiche` modifs.	-MC
 	
 	* Core :
 		- #135 : First instance of the plugin class : class Trombi.			-MC
