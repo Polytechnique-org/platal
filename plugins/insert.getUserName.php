@@ -22,15 +22,14 @@
 function smarty_insert_getUsername()
 {
     global $globals;
-    if (isset($_COOKIE['ORGuid'])) {
-        $id = $_COOKIE['ORGuid'];
-    }
-    if (isset($_SESSION['uid'])) {
-        $id = $_SESSION['uid'];
-    }
-    if (empty($id)) {
+
+    $id = Cookie::getInt('ORGuid', -1);
+    $id = Session::getInt($_SESSION['uid'], $id);
+    
+    if ($id<0) {
         return "";
     }
+
     $res = $globals->db->query("SELECT  alias
                                   FROM  aliases
 				 WHERE  id='$id' AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))");

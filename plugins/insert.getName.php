@@ -22,10 +22,11 @@
 function smarty_insert_getName()
 {
     global $globals;
-    if (empty($_COOKIE['ORGuid'])) {
+    $uid = Cookie::get('ORGuid', -1);
+    if ($uid < 0) {
         return "";
     }
-    $res = $globals->db->query("SELECT prenom FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}'");
+    $res = $globals->db->query("SELECT prenom FROM auth_user_md5 WHERE user_id=$uid");
     if (list($prenom) = mysql_fetch_row($res)) {
 	mysql_free_result($res);
 	return $prenom;
