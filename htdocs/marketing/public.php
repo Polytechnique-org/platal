@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once('xorg.inc.php');
-new_skinned_page('marketing/public.tpl', AUTH_MDP);
+new_skinned_page('marketing/public.tpl', AUTH_COOKIE);
 
 if (! Env::has('num')) { exit; }
 
