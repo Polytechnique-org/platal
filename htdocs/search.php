@@ -16,12 +16,14 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
 
     if ($with_soundex) {
-        $nameField = new StringWithSoundexSField('name',array('s.nom_soundex','s.epouse_soundex','i.nom_soundex'),'');
-        $firstnameField = new StringWithSoundexSField('firstname',array('s.prenom_soundex','i.prenom_soundex'),'');
+        $nameField = new
+        StringWithSoundexSField('name',array('s.nom_soundex','s.epouse_soundex','i.nom_soundex'),'r.nom1');
+        $firstnameField = new
+        StringWithSoundexSField('firstname',array('s.prenom_soundex','i.prenom_soundex'),'r.prenom1');
     }
     else {
-        $nameField = new StringSField('name',array('r.nom1','r.nom2','r.nom3'),'');
-        $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'');
+        $nameField = new StringSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
+        $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'r.prenom1');
         $with_soundex = ($nameField->length()==0 && $firstnameField->length()==0)?(-1):0;
     }
     $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');

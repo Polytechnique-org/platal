@@ -125,12 +125,12 @@ class StringSField extends SField {
         //Nouvelle version plus rapide
         $regexp = str_replace('-',' ',$this->value);
         $regexp = str_replace('*','%',$regexp);
-        return $field." LIKE LCASE($regexp%)";
+        return $field." LIKE LCASE('$regexp%')";
     }
 
     /** clause ORDER BY correspondant à ce champ de formulaire */
     function get_order_statement() {
-        if ($this->value!='')
+        if ($this->value!='' && $this->fieldResultName!='')
             return $this->fieldResultName.'!="'.$this->value.'"';
         else
             return false;
