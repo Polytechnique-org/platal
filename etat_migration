@@ -18,7 +18,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
 ------+-[ docs ]----------------------------------+----------------
-;	  | docs/FROM.php							  | docs/from.php
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
@@ -136,6 +135,7 @@ xx	  | docs/doc_oe.php							  | -
 xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
+xx	  | docs/FROM.php							  | docs/from.php
 xx	  | docs/index.php							  | -
 xx	  | domaineperso.php						  | -
 xx	  | dons.php								  | -
