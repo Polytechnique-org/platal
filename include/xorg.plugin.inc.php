@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: xorg.plugin.inc.php,v 1.2 2004-10-29 01:51:32 x2000habouzit Exp $
+ $Id: xorg.plugin.inc.php,v 1.3 2004-10-29 02:16:42 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -51,7 +51,7 @@ class XOrgPlugin {
      */
     function make_url($params) {
 	$get = Array();
-	$args = empty($params) ? Array() : $params;
+	$args = isset($params) ? $params : Array();
 
 	if(!is_array($args)) {
 	    if(count($this->_get_vars)!=1) {

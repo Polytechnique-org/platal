@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.2 2004-10-29 02:04:24 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.3 2004-10-29 02:16:43 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -29,7 +29,9 @@
   <tr>
   {/if}
     <td class="center">
-      <img src="{"getphoto.php"|url}?x={$p.forlife}" width="110" alt=" [ PHOTO ] " />
+      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$p.forlife}')">
+        <img src="{"getphoto.php"|url}?x={$p.forlife}" width="110" alt=" [ PHOTO ] " />
+      </a>
       {if $trombi_admin && $smarty.session.perms eq 'admin'}
       <a href="{"admin/admin_trombino.php"|url}?uid={$p.user_id}">
         <img src="{"images/admin.png"}" alt="[admin]" title="[admin]" />
