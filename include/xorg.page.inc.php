@@ -44,6 +44,7 @@ class XorgPage extends DiogenesCorePage {
         $this->plugins_dir[]= $globals->spoolroot."/plugins/";
         $this->config_dir   = $globals->spoolroot."/configs/";
         $this->cache_dir    = $globals->spoolroot."/cache/";
+	$this->use_sub_dirs = false;
         
         $this->register_modifier('escape_html', 'escape_html');
 	$this->default_modifiers = Array('escape_html');
@@ -64,9 +65,6 @@ class XorgPage extends DiogenesCorePage {
             $_SESSION['session'] = new XorgSession;
 
         $this->assign('site_dev',$site_dev);
-
-        // si necessaire, c'est *ici* que se fait l'authentification
-        $_no_legacy = true;
         $this->doAuth();
     }
 
@@ -131,10 +129,10 @@ class XorgPage extends DiogenesCorePage {
 
         $ret = $this->_tpl;
         if($append_to_id)
-            $ret.="|$append_to_id";
+            $ret.="-$append_to_id";
 
         $auth_trans = Array(AUTH_PUBLIC => 'public', AUTH_COOKIE => 'cookie', AUTH_MDP => 'passwd');
-        $ret .= '|A_'.$auth_trans[empty($_SESSION['auth']) ? AUTH_PUBLIC : $_SESSION['auth']];
+        $ret .= '-'.$auth_trans[empty($_SESSION['auth']) ? AUTH_PUBLIC : $_SESSION['auth']];
 
         $ret .= '-'.(empty($_SESSION['perms']) ? PERMS_EXT : $_SESSION['perms']);
 
