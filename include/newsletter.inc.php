@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.16 2004-10-18 12:57:47 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.17 2004-10-20 12:59:32 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -153,7 +153,7 @@ class NewsLetter {
 	}
 
 	foreach($this->_arts as $cid=>$arts) {
-	    $res .= "<h1><a id='cat$cid'></a>".$this->_cats[$cid].'</h1>';
+	    $res .= "<h1><a id='cat$cid'>".$this->_cats[$cid].'</a></h1>';
 	    foreach($arts as $art) {
 		$res .= $art->toHtml();
 	    }
@@ -165,13 +165,19 @@ class NewsLetter {
   <head>
     <style type="text/css">
       div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
-      div.title { margin: 2ex 0ex 4ex 0ex; padding: 1ex; width: 100%; border: 1px black solid; font-size: 125%; text-align: center; }
-      div.art   { padding-left: 2ex; margin: 0ex 0ex 4ex 0ex; width: 58ex; }
-      div.app   { padding-left: 4ex; margin: 2ex 0ex 2ex 0ex; width: 54ex; text-align: left; }
+      div.title { margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; border: 1px black solid;
+		  font-size: 140%; text-align: center; color: black; background: #ffffb0; border: 1px #ff4040 solid; }
       div.lnk   { margin: 2ex 0ex 2ex 0ex; }
       div.lnk a { display: block; }
-      h1 { margin: 3ex 0ex 2ex 0ex; padding: 2px 1ex 2px 1ex; width: 100%; border: 1px black dotted; font-size: 125%; }
-      h2 { margin: 0ex 0ex 2ex 0ex; padding: 1px; width: 100%; border-bottom: 1px #aaaaaa solid; font-weight:bold; font-style: italic; font-size: 125% }
+      
+      a  { text-decoration: none; }
+      h1 { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%; border-bottom: 1px #ff4040 solid; }
+      h2 { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
+      h1 a, h1 a:hover { color: black; background: #ffffb0; text-decoration: none; font-size: 140%; padding: 2px 1ex 2px 1ex; border: 1px #ff4040 solid; }
+      h2 a, h2 a:hover { color: blue; background: #eeeeee; text-decoration: none; padding: 2px 4px 2px 4px; border: 1px #cccccc solid; }
+      
+      div.art { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 1px #cccccc solid; }
+      div.app { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
     </style>
   </head>
   <body>
@@ -231,7 +237,7 @@ class NLArticle {
     }
 
     function toHtml() {
-	$title = "<h2><a id='art{$this->_aid}'></a>".htmlentities($this->title()).'</h2>';
+	$title = "<h2><a id='art{$this->_aid}'>".htmlentities($this->title()).'</a></h2>';
 	$body  = enriched_to_text($this->_body,true);
 	$app   = enriched_to_text($this->_append,true);
 	

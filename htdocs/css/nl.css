@@ -24,15 +24,21 @@ div.nl {
     font-family: "Georgia","times new roman",serif;
     width: 60ex;
     text-align: justify;
+    font-size: 10pt;
 }
+
+div.nl a { text-decoration: none; }
 
 div.nl div.title {
     margin: 2ex 0ex 2ex 0ex;
     padding: 1ex;
     width: 100%;
     border: 1px black solid;
-    font-size: 125%;
+    font-size: 140%;
     text-align: center;
+    color: black;
+    background: #ffffb0;
+    border: 1px #ff4040 solid;
 }
 
 div.nl div.lnk { margin: 2ex 0ex 2ex 0ex; }
@@ -40,31 +46,51 @@ div.nl div.lnk { margin: 2ex 0ex 2ex 0ex; }
 div.nl div.lnk a { display: block; }
 
 div.nl h1 {
-    margin: 3ex 0ex 2ex 0ex;
+    margin: 6ex 0ex 4ex 0ex;
+    padding: 2px 4ex 2px 0ex;
+    width: 60ex;
+    font-size: 100%;
+    border-bottom: 1px #ff4040 solid;
+}
+
+div.nl h1 a, div.nl h1 a:hover {
+    color: black;
+    background: #ffffb0;
+    text-decoration: none;
+    font-size: 140%;
     padding: 2px 1ex 2px 1ex;
-    width: 100%;
-    border: 1px black dotted;
-    font-size: 125%;
+    border: 1px #ff4040 solid;
 }
 
 div.nl h2 {
-    margin: 0ex 0ex 2ex 0ex;
     width: 100%;
-    border-bottom: 1px #aaaaaa solid;
-    font-weight:bold;
+    margin: 0ex 1ex 0ex 1ex;
+    padding: 2px 0px 2px 0px;
+    font-weight: bold;
     font-style: italic;
-    font-size: 125%
+    font-size: 95%;
+}
+
+div.nl h2 a, div.nl h2 a:hover {
+    color: blue;
+    background: #eeeeee;
+    text-decoration: none;
+    padding: 2px 4px 2px 4px;
+    border: 1px #cccccc solid;
 }
 
 div.nl div.art {
-    padding-left: 2ex;
-    margin: 0ex 0ex 4ex 0ex;
+    padding: 2ex;
+    margin: 0ex 1ex 2ex 1ex;
     width: 58ex;
+    border-top: 1px #cccccc solid;
 }
 
 div.nl div.app {
-    padding-left: 4ex;
-    width: 54ex;
-    margin: 2ex 0ex 2ex 0ex;
+    padding: 2ex 3ex 0ex 3ex;
+    width: 100%;
+    margin: 0ex;
     text-align: left;
+    font-size: 95%;
 }
+
