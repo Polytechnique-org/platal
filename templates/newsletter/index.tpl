@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.2 2004-10-16 17:49:39 x2000habouzit Exp $
+        $Id: index.tpl,v 1.3 2004-10-16 22:44:40 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -41,7 +41,7 @@ utilise <a href='submit.php'>le formulaire dédié !</a>.
   </tr>
   {foreach item=nl from=$nl_list}
   <tr class="{cycle values="impair,pair"}">
-    <td>{$nl.date|date_format:"%Y-%m-%d"}</td>
+    <td>{$nl.date|date_format:"%d %b %Y"}</td>
     <td>
       <a href="{"newsletter/show.php"|url}?nid={$nl.id}">{$nl.titre}</a>
     </td>
