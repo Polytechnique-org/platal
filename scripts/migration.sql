@@ -33,7 +33,6 @@ INSERT INTO logger.actions SET text="connexion_auth_ext",description="connection
 -- drop des anciens alias --> aliases
 --*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN loginbis;
 --*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN alias;
---*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse;
 
 --------------------------------------------------------------------------------
 

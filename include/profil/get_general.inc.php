@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_general.inc.php,v 1.2 2004-09-01 21:55:32 x2000habouzit Exp $
+        $Id: get_general.inc.php,v 1.3 2004-09-01 22:15:54 x2000habouzit Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
@@ -27,11 +27,10 @@ $sql = "SELECT u.nom, u.prenom".
 	", mobile".
 	", web".
         ", libre".
-	", u.alias".
+	", alias".
 	", a1.aid, a1.type".
 	", a2.aid, a2.type".
 	" FROM auth_user_md5 AS u".
-	" LEFT  JOIN aliases    AS a ON(u.user_id = a.id AND a.type='epouse')" .
 	" LEFT  JOIN applis_ins AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)".
 	" LEFT  JOIN applis_ins AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)".
 	" LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
