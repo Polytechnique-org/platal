@@ -5,6 +5,8 @@ New :
 
 Bug/Wish :
 
+	- #270: private/public flags are now used for search.					-Car
+
 Fixes (from 0.9.4 branch) :
 
 ================================================================================
