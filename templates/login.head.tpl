@@ -1,4 +1,4 @@
-{* $Id: login.head.tpl,v 1.1 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+{* $Id: login.head.tpl,v 1.2 2004-01-26 12:45:07 x2000habouzit Exp $ *}
 
 {literal}
     <style type="text/css" media="screen">
@@ -10,5 +10,6 @@
       -->
     </style>
 {/literal}
+    <script language="javascript" src="{"javascript/popwin.js.php"|url}" type="text/javascript"></script>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
