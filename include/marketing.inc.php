@@ -19,13 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("diogenes/diogenes.hermes.inc.php");
 require_once("xorg.misc.inc.php");
 
 // {{{ function mark_send_mail
 
 function mark_send_mail($uid, $email, $envoyeur, $email_envoyeur)
 {
+    require_once("diogenes/diogenes.hermes.inc.php");
     global $globals;
     
     $hash = rand_url_id(12);
