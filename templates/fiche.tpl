@@ -77,7 +77,7 @@ function chgMainWinLoc( strPage ) {
         {if $iso3166}
         <img src='{"images/"|url}flags/{$iso3166}.gif' alt='{$nationalite}' height='14' title='{$nationalite}' />&nbsp;
         {/if}
-        X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}
+        X {$promo}{if $applis}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}{/if}
         {if $is_referent}
         [<a href="fiche_referent.php?user={$forlife}" class='popup'>Ma fiche référent</a>]
         {/if}

@@ -17,46 +17,38 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: search.php,v 1.52 2004/11/22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
 require_once("search.classes.inc.php");
 
 new_skinned_page('search.tpl', AUTH_PUBLIC);
-if(logged()) {
+if (logged()) {
     new_skinned_page('search.tpl', AUTH_COOKIE);
 }
 
-$page->assign('advanced',0);
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
-if (array_key_exists('quick', $_REQUEST)) {
-    $page->assign('formulaire',0);
+if (isset($_REQUEST['quick'])) {
+    $page->assign('formulaire', 0);
 
     $qSearch = new QuickSearch('quick');
-    $fields = new SFieldGroup(true,array($qSearch));
+    $fields  = new SFieldGroup(true, array($qSearch));
+    $offset  = new NumericSField('offset');
     
-    if ($qSearch->isempty())
-    {
+    if ($qSearch->isempty()) {
 	new ThrowError('Recherche trop générale.');
     }
-    
-    $offset = new NumericSField('offset');
    
-    $sql = 'SELECT SQL_CALC_FOUND_ROWS 
-                       DISTINCT '.$qSearch->get_mark_statement().',r.matricule,u.matricule_ax,u.user_id,
+    $sql = 'SELECT SQL_CALC_FOUND_ROWS  DISTINCT 
                        UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
                        IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
-                       u.promo AS promo,
-                       a.alias AS forlife,
                        '.$globals->search->result_fields.'
                        c.uid AS contact,
-		       w.ni_id AS watch
-                 FROM  auth_user_md5  AS r
-            LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
+		       w.ni_id AS watch,
+                       '.$qSearch->get_mark_statement().'
+                 FROM  auth_user_md5  AS u
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
@@ -64,36 +56,32 @@ if (array_key_exists('quick', $_REQUEST)) {
                 WHERE  '.$fields->get_where_statement().'
                HAVING  mark>0
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
-		        .implode(',',array_filter(array($fields->get_order_statement(),'u.promo DESC,NomSortKey,prenom'))).'
+		        .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search->per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
-    echo mysql_error();
-    
-    $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search->per_page;
-    $page->assign('offsets',range(0,$nbpages));
-    $page->assign('url_args',$fields->get_url());
-    $page->assign('mod_date_sort',!empty($_REQUEST['mod_date_sort']));
-    $page->assign('offset',$offset->value);
-    $page->assign('perpage',$globals->search->per_page);
-    $page->assign('is_admin',has_perms());
-    
-    if (!logged() &&
-	$page->get_template_vars('nb_resultats_total')>$globals->search->public_max)
-    {
-	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
-    }
-    
-    if($page->get_template_vars('nb_resultats_total')>800) {
-        new ThrowError('Recherche trop générale');
-    }
+    $nb_total = $page->get_template_vars('nb_resultats_total');
+    $nbpages  = ($nb_total-1)/$globals->search->per_page;
 
-    if(!$page->get_template_vars('nb_resultats_total')) {
+    $url_ext = Array(
+        'mod_date_sort' => !empty($_REQUEST['mod_date_sort'])
+    );
+    $page->assign('offset',   $offset->value);
+    $page->assign('offsets',  range(0, $nbpages));
+    $page->assign('url_args', $fields->get_url($url_ext));
+    $page->assign('perpage',  $globals->search->per_page);
+    
+    if (!logged() && $nb_total > $globals->search->public_max) {
+	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
+    } elseif ($nb_total > $globals->search->private_max) {
+        new ThrowError('Recherche trop générale');
+    } elseif (empty($nb_total)) {
         new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
     }
-}
-else
+
+} else {
     $page->assign('formulaire',1);
+}
 
 $page->register_modifier('display_lines', 'display_lines');
 $page->run();

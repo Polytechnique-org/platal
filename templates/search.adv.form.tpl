@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: search.adv.form.tpl,v 1.6 2004/11/27 17:44:00 x2000bedo Exp $
  ***************************************************************************}
 
 <h1>Recherche avancée</h1>
@@ -35,7 +33,7 @@
       <td>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
         {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
-        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
+        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">
           étendre par proximité sonore
         </a>
         {/if}
@@ -46,7 +44,7 @@
       <td>
         <input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
         {if $smarty.request.firstname && !$with_soundex && $smarty.request.recherche}
-        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
+        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">
           étendre par proximité sonore
         </a>
         {/if}

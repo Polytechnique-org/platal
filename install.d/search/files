@@ -1,6 +1,8 @@
 htdocs/advanced_search.php
 htdocs/search.php
 include/search.classes.inc.php
+include/conf.d/search.globals.inc.php
+include/conf.d/search.menu.inc.php
 bin/cron/recherche.php
 bin/cron/recherche.pl
 bin/cron/recherche.sql

@@ -13,7 +13,6 @@ $this->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
 $this->addPrivateEntry(XOM_SERVICES, 30, 'Envoyer un mail',       'sendmail.php');
 $this->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',          'pattecassee.php');
        
-$this->addPrivateEntry(XOM_GROUPS,   00, 'Annuaire',              'search.php');
 $this->addPrivateEntry(XOM_GROUPS,   10, 'Trombi promo',          'trombipromo.php');
 $this->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',          'referent.php');
 $this->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',             'http://www.polytechnique.net/plan.php');
@@ -32,7 +31,6 @@ $this->addPublicEntry(XOM_US,    00, 'Me connecter !',         'login.php');
 $this->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'inscription/');
 $this->addPublicEntry(XOM_US,    20, 'Pourquoi m\'inscrire ?', 'docs/services.php');
 
-$this->addPublicEntry(XOM_EXT,   00, 'Annuaire de l\'X',       'search.php');
 $this->addPublicEntry(XOM_EXT,   10, 'Associations X',         'http://www.polytechnique.net/');
 $this->addPublicEntry(XOM_EXT,   20, 'Recrutement',            'http://www.manageurs.com/');
 

@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: search.adv.links.tpl,v 1.1 2004/11/04 13:50:45 x2000habouzit Exp $
  ***************************************************************************}
 
  {if $do_title}<h1>Recherche avancée</h1>{/if}
@@ -29,12 +27,12 @@
 <ul>
   {if !$with_soundex && ($smarty.request.firstname || $smarty.request.name)}
   <li>Étendre ta recherche par <strong>
-    <a  href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">proximité sonore</a>
+    <a  href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">proximité sonore</a>
   </strong>
   </li>
   {/if}
 
-  <li><strong><a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;mod_date_sort={$mod_date_sort}">Modifier</a>
+  <li><strong><a href="{$smarty.server.PHP_SELF}?{$url_args}">Modifier</a>
   </strong> ta recherche
   </li>
 

@@ -17,16 +17,16 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-    $Id: banana.globals.inc.php,v 1.2 2004/12/01 14:25:44 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class SearchConfig
 
 class SearchConfig
 {
-    var $public_max = 25;
-    var $per_page   = 20;
+    var $public_max  =  25;
+    var $private_max = 800;
+
+    var $per_page    =  20;
 }
 
 // }}}

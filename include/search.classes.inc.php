@@ -17,22 +17,21 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: search.classes.inc.php,v 1.37 2004/11/22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
 
-/*
- * Variables globales pour l'affichage des résultats de la recherche
- */
+// {{{ Global variables used for the search Queries
+
 $globals->search->result_fields = '
+                u.user_id, u.promo, u.matricule, u.matricule_ax,
 		if(u.epouse=\'\', u.nom, u.epouse) AS NomSortKey,
                 u.epouse,u.date,u.web,u.mobile,
                 u.deces!=0 AS dcd,u.deces,
 		u.perms IN (\'admin\',\'user\') AS inscrit,
 		u.perms != \'pending\' AS wasinscrit,
 		FIND_IN_SET(\'femme\', u.flags) AS sexe,
+                a.alias AS forlife,
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                 e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
@@ -51,34 +50,56 @@ $globals->search->result_where_statement = '
                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
                 LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)';
 
-function display_lines($text) {
+// }}}
+// {{{ function display_lines()
+
+/**
+ * This function is a heuristic that approximatively tells
+ * how many lines of output the contact list will use.
+ */
+function display_lines($text)
+{
     $n = 0;
-    $i=-1;
-    while(($i=strpos($text,'<tr>',$i+1))!==false) $n++;
-    $i=-1;
-    while(($i=strpos($text,'<div class="nom">',$i+1))!==false) $n++;
+    $tokens = Array('<tr>', '<div class="nom">');
+    foreach ($tokens as $t) {
+        $i = -1;
+        while ( ($i = strpos($text,$t,$i+1))!==false) { $n++; }
+    }
     return $n;
 }
 
-/** classe qui gère les erreurs dans les requêtes des utilisateurs finaux
- * passe le message d'erreur au template de page et exécute le template
+// }}}
+// {{{ class ThrowError
+
+/** handle errors for end-users queries
+ * assign the error message and runs the templates
+ *
+ * @author Jean-Sebastien Bedo
  */
-class ThrowError {
-    /** constucteur
-     * @param explain message explicatif de l'erreur de l'utilisateur
+class ThrowError
+{
+    /** constuctor
+     * @param  $explain string  the error (in natural language)
      */
-    function ThrowError($explain) {
+    function ThrowError($explain)
+    {
         global $page;
         $page->assign('error','Erreur : '.$explain);
         $page->run();
     }
 }
 
+// }}}
+// {{{ class SField                                     [Base class]
+
 /** classe de base représentant un champ de recherche
  * (correspond à un champ du formulaire mais peut être à plusieurs champs de la bdd)
  * interface étendue pour chaque type de champ particulier
  */
-class SField {
+class SField
+{
+    // {{{ properties
+    
     /** le nom du champ dans le formulaire HTML */
     var $fieldFormName;
     /** champs de la bdd correspondant à ce champ sous forme d'un tableau */
@@ -89,70 +110,118 @@ class SField {
     /** valeur du champ instanciée par l'utilisateur */
     var $value;
 
+    // }}}
+    // {{{ constructor
+
     /** constructeur
      * (récupère la requête de l'utilisateur pour ce champ) */
-    function SField($_fieldFormName,$_fieldDbName='',$_fieldResultName='') {
-        $this->fieldFormName = $_fieldFormName;
-        $this->fieldDbName = $_fieldDbName;
+    function SField($_fieldFormName, $_fieldDbName='', $_fieldResultName='')
+    {
+        $this->fieldFormName   = $_fieldFormName;
+        $this->fieldDbName     = $_fieldDbName;
         $this->fieldResultName = $_fieldResultName;
         $this->get_request();
     }
 
+    // }}}
+    // {{{ function get_request()
+
     /** récupérer la requête de l'utilisateur 
      * on met une chaîne vide si le champ n'a pas été complété */
-    function get_request() {
-        $this->value =
-        (isset($_REQUEST[$this->fieldFormName]))?trim($_REQUEST[$this->fieldFormName]):'';
+    function get_request()
+    {
+        $this->value = (isset($_REQUEST[$this->fieldFormName])) ? trim($_REQUEST[$this->fieldFormName]) : '';
     }
 
+    // }}}
+    // {{{ function get_where_statement()
+    
     /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
      * on parcourt l'ensemble des champs de la bdd de $fieldDbName et on associe 
      * à chacun d'entre eux une clause spécifique
      * la clause totale et la disjonction de ces clauses spécifiques */
-    function get_where_statement() {
-        if ($this->value=='')
+    function get_where_statement()
+    {
+        if ($this->value=='') {
             return false;
-        $res = implode(' OR ',array_filter(array_map(array($this,'get_single_where_statement'),$this->fieldDbName)));
-        return ($res!='')?('('.$res.')'):'';
+        }
+        $res = implode(' OR ', array_filter(array_map(array($this, 'get_single_where_statement'), $this->fieldDbName)));
+        return empty($res) ? '' : "($res)";
     }
 
+    // }}}
+    // {{{ function get_order_statement()
+    
     /** récupérer la clause correspondant au champ dans la clause ORDER BY de la requête
      * utilisé par exemple pour placer d'abord le nom égal à la requête avant les approximations */
-    function get_order_statement() {
+    function get_order_statement()
+    {
         return false;
     }
 
-    function get_select_statement() {
+    // }}}
+    // {{{ function get_select_statement()
+
+    function get_select_statement()
+    {
         return false;
     }
+
+    // }}}
+    // {{{ function get_url()
 
     /** récupérer le bout d'URL correspondant aux paramètres permettant d'imiter une requête d'un
      * utilisateur assignant la valeur $this->value à ce champ */
-    function get_url() {
-        if ($this->value=='')
+    function get_url()
+    {
+        if (empty($this->value)) {
             return false;
-        else
+        } else {
             return $this->fieldFormName.'='.urlencode($this->value);
+        }
     }
+
+    // }}}
 }
 
-class QuickSearch extends SField {
+// }}}
+// {{{ class QuickSearch                                [Google Like]
+
+class QuickSearch extends SField
+{
+    // {{{ properties
+    
+    /** stores tokens */
     var $strings;
+    /** stores numerical ranges */
     var $ranges;
 
-    function QuickSearch($_fieldFormName) {
+    // }}}
+    // {{{ constructor
+    
+    function QuickSearch($_fieldFormName)
+    {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
-        if (preg_match(":[\]\[{}~/§_`|%$^=+]|\*\*:", $this->value))
+        if (preg_match(":[\]\[{}~/§_`|%$^=+]|\*\*:", $this->value)) {
             new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
+        }
     }
 
-    function isempty() {
+    // }}}
+    // {{{ function isempty()
+
+    function isempty()
+    {
 	return empty($this->strings) && empty($this->ranges);
     }
+
+    // }}}
+    // {{{ function get_request()
     
-    function get_request() {
-	SField::get_request();
+    function get_request()
+    {
+	parent::get_request();
 	$s = replace_accent(trim($this->value));
 	$s = preg_replace('!\d+!', ' ', $s);
 	$s = preg_replace('! - !', '', $s);
@@ -166,318 +235,521 @@ class QuickSearch extends SField {
 	$s = preg_replace('![<>\-] !', '', $s);
 	$ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
 	$this->ranges=Array();
-	foreach($ranges as $r) {
-	    if(preg_match('!^([<>]\d{4}|\d{4}(-\d{4})?)$!', $r)) $this->ranges[] = $r;
+	foreach ($ranges as $r) {
+	    if (preg_match('!^([<>]\d{4}|\d{4}(-\d{4})?)$!', $r)) $this->ranges[] = $r;
 	}
     }
 
-    function get_where_statement() {
+    // }}}
+    // {{{ function get_where_statement()
+    
+    function get_where_statement()
+    {
 	$where = Array();
-	foreach($this->strings as $s) {
+	foreach ($this->strings as $s) {
 	    $t = '%'.str_replace('*', '%', $s).'%';
 	    $t = str_replace('%%', '%', $t);
-	    $where[] = "(r.nom LIKE '$t' OR r.epouse LIKE '$t' OR r.prenom LIKE '$t')";
+	    $where[] = "(u.nom LIKE '$t' OR u.epouse LIKE '$t' OR u.prenom LIKE '$t')";
 	}
 	
 	$wherep = Array();
-	foreach($this->ranges as $r) {
-	    if(preg_match('!^\d{4}$!', $r)) {
-		$wherep[] = "r.promo=$r";
-	    } elseif(preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
+	foreach ($this->ranges as $r) {
+	    if (preg_match('!^\d{4}$!', $r)) {
+		$wherep[] = "u.promo=$r";
+	    } elseif (preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
 		$p1=min(intval($matches[1]), intval($matches[2]));
 		$p2=max(intval($matches[1]), intval($matches[2]));
-		$wherep[] = "(r.promo>=$p1 AND r.promo<=$p2)";
-	    } elseif(preg_match('!^<(\d{4})!', $r, $matches)) {
-		$wherep[] = "r.promo<={$matches[1]}";
-	    } elseif(preg_match('!^>(\d{4})!', $r, $matches)) {
-		$wherep[] = "r.promo>={$matches[1]}";
+		$wherep[] = "(u.promo>=$p1 AND u.promo<=$p2)";
+	    } elseif (preg_match('!^<(\d{4})!', $r, $matches)) {
+		$wherep[] = "u.promo<={$matches[1]}";
+	    } elseif (preg_match('!^>(\d{4})!', $r, $matches)) {
+		$wherep[] = "u.promo>={$matches[1]}";
 	    }
 	}
-	if(!empty($wherep)) $where[] = '('.join(' OR ',$wherep).')';
+	if (!empty($wherep)) {
+            $where[] = '('.join(' OR ',$wherep).')';
+        }
 	return join(" AND ", $where);
     }
+
+    // }}}
+    // {{{ function get_mark_statement()
     
-    function get_mark_statement() {
-	if(empty($this->strings)) return "1 AS mark";
-	$order = Array();
-	foreach($this->strings as $s) {
-	    $order[] = "(r.nom='$s' OR r.epouse='$s')*100 + "
-                    .  "(r.prenom='$s') * 10 + "
-                    .  "(r.nom LIKE '$s%' OR r.epouse LIKE '$s%')";
+    function get_mark_statement()
+    {
+	if (empty($this->strings)) {
+            return "1 AS mark";
+        }
+	$order = "0";
+	foreach ($this->strings as $s) {
+	    $order .= " + (u.nom='$s' OR u.epouse='$s')*100 + (u.prenom='$s')*10 + (u.nom LIKE '$s%' OR u.epouse LIKE '$s%')";
 	}
-	$res = join(' + ', $order);
-	if($res) return "$res AS mark";
+        return $order.' AS mark';
     }
-    function get_order_statement() {
-	if(empty($this->strings)) return false;
-        return "mark DESC";
+
+    // }}}
+    // {{{ function get_order_statement()
+    
+    function get_order_statement()
+    {
+        return 'mark DESC';
     }
+
+    // }}}
 }
-		
+
+// }}}
+// {{{ class NumericSField                              [Integer fields]
 
 /** classe de champ numérique entier (offset par exemple)
  */
-class NumericSField extends SField {
+class NumericSField extends SField
+{
+    // {{{ constructor
+    
     /** constructeur
      * (récupère la requête de l'utilisateur pour ce champ) */
-    function NumericSField($_fieldFormName) {
+    function NumericSField($_fieldFormName)
+    {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
     }
+
+    // }}}
+    // {{{ function get_request()
     
     /** récupère la requête de l'utilisateur et échoue s'il ne s'agit pas d'un entier */
-    function get_request() {
+    function get_request()
+    {
         parent::get_request();
-        if ($this->value=='')
+        if (empty($this->value)) {
             $this->value = 0;
-        if (!preg_match("/^[0-9]+$/", $this->value))
+        }
+        if (!preg_match("/^[0-9]+$/", $this->value)) {
             new ThrowError('Un champ numérique contient des caractères alphanumériques.');
+        }
     }
+    
+    // }}}
 }
 
-class RefSField extends SField {
+// }}}
+// {{{ class RefSField                                  [ ??? ]
+
+class RefSField extends SField
+{
+    // {{{ properties
+    
     var $refTable;
     var $refAlias;
     var $refCondition;
-    var $exact=true;
+    var $exact = true;
 
-    function RefSField($_fieldFormName,$_fieldDbName='',$_refTable,$_refAlias,$_refCondition,$_exact=true) {
+    // }}}
+    // {{{ constructor
+
+    function RefSField($_fieldFormName, $_fieldDbName='', $_refTable, $_refAlias, $_refCondition, $_exact=true)
+    {
         $this->fieldFormName = $_fieldFormName;
-        $this->fieldDbName = $_fieldDbName;
-        $this->refTable = $_refTable;
-        $this->refAlias = $_refAlias;
-        $this->refCondition = $_refCondition;
-        $this->exact = $_exact;
+        $this->fieldDbName   = $_fieldDbName;
+        $this->refTable      = $_refTable;
+        $this->refAlias      = $_refAlias;
+        $this->refCondition  = $_refCondition;
+        $this->exact         = $_exact;
         $this->get_request();
     }
+
+    // }}}
+    // {{{ function get_request()
     
     function get_request() {
         parent::get_request();
-        if ($this->value=='00' || $this->value=='0')
+        if ($this->value=='00' || $this->value=='0') {
             $this->value='';
+        }
     }
 
-    function too_large() {
+    // }}}
+    // {{{ function too_large()
+
+    function too_large()
+    {
         return ($this->value=='');
     }
 
-    function compare() {
-        if ($this->exact)
-            return "='".$this->value."'";
-        else
-            return " LIKE '%".$this->value."%'";
+    // }}}
+    // {{{ function compare()
+
+    function compare()
+    {
+        return $this->exact ? "='{$this->value}'" : " LIKE '%{$this->value}%'";
     }
 
-    function get_single_match_statement($field) {
+    // }}}
+    // {{{ function get_single_match_statement()
+
+    function get_single_match_statement($field)
+    {
         return $field.$this->compare();
     }
 
-    function get_single_where_statement($field) {
-        if ($this->refTable=='')
-            return $this->get_single_match_statement($field);
-        return false;
+    // }}}
+    // {{{ function get_single_where_statement()
+
+    function get_single_where_statement($field)
+    {
+        return $this->refTable=='' ? $this->get_single_match_statement($field) : false;
     }
 
-    function get_select_statement() {
-        if ($this->value=='' || $this->refTable=='')
+    // }}}
+    // {{{ function get_select_statement()
+
+    function get_select_statement()
+    {
+        if ($this->value=='' || $this->refTable=='') {
             return false;
-        $res = implode(' OR ',array_filter(array_map(array($this,'get_single_match_statement'),$this->fieldDbName)));
-        return 'INNER JOIN '.$this->refTable.' AS '.$this->refAlias.
-        ' ON('.$this->refCondition.' AND '.'('.$res.')'.")";
+        }
+        $res = implode(' OR ', array_filter(array_map(array($this, 'get_single_match_statement'), $this->fieldDbName)));
+        return "INNER JOIN {$this->refTable} AS {$this->refAlias} ON ({$this->refCondition} AND ($res) )";
     }
+
+    // }}}
 }
 
-class RefWithSoundexSField extends RefSField {
-    function compare() {
+// }}}
+// {{{ class RefWithSoundexSField                       [ ??? ]
+
+class RefWithSoundexSField extends RefSField
+{
+    // {{{ function compare()
+    
+    function compare()
+    {
 	return "='".soundex_fr($this->value)."'";
     }
+
+    // }}}
 }
+
+// }}}
+// {{{ class StringSField                               [String fields]
 
 /** classe de champ texte (nom par exemple)
  */
-class StringSField extends SField {
+class StringSField extends SField
+{
+    // {{{ function get_request()
+    
     /** récupère la requête de l'utilisateur et échoue si la chaîne contient des caractères
      * interdits */
-    function get_request() {
+    function get_request()
+    {
         parent::get_request();
-        if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:", $this->value))
+        if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:", $this->value)) {
             new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
+        }
     }
+
+    // }}}
+    // {{{ function length()
 
     /** donne la longueur de la requête de l'utilisateur
      * (au sens strict i.e. pas d'* ni d'espace ou de trait d'union -> les contraintes réellement
      * imposées par l'utilisateur) */
-    function length() {
+    function length()
+    {
         global $lc_accent,$uc_accent;
-        return
-        strlen($this->value)-strlen(ereg_replace('[a-z'.$lc_accent.$uc_accent.']','',strtolower($this->value)));
+        return strlen($this->value) - strlen(ereg_replace('[a-z'.$lc_accent.$uc_accent.']', '', strtolower($this->value)));
     }
 
-    function too_large() {
+    // }}}
+    // {{{ function too_large()
+
+    function too_large()
+    {
         return ($this->length()<2);
     }
 
+    // }}}
+    // {{{ function get_single_where_statement()
+
     /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
      * @param field nom de champ de la bdd concerné par la clause */
-    function get_single_where_statement($field) {
-        //on rend les traits d'union et les espaces équivalents
-        //$regexp = preg_replace('/[ -]/','[ \-]',$this->value);
-        //on remplace le pseudo language des * par une regexp
-        //$regexp = str_replace('*','.+',$regexp);
-        //return $field." RLIKE '^(.*[ -])?".replace_accent_regexp($regexp).".*'";
-
-        //Nouvelle version plus rapide
-        $regexp = str_replace('-','_',$this->value);
-        $regexp = str_replace('*','%',$regexp);
+    function get_single_where_statement($field)
+    {
+        $regexp = strtr($this->value, '-*', '_%');
         return "$field LIKE '$regexp%'";
     }
 
+    // }}}
+    // {{{ function get_order_statement()
+
     /** clause ORDER BY correspondant à ce champ de formulaire */
-    function get_order_statement() {
-        if ($this->value!='' && $this->fieldResultName!='')
-            return $this->fieldResultName.'!="'.$this->value.'"';
-        else
+    function get_order_statement()
+    {
+        if ($this->value!='' && $this->fieldResultName!='') {
+            return "{$this->fieldResultName}!='{$this->value}'";
+        } else {
             return false;
+        }
     }
+
+    // }}}
 }
+
+// }}}
+// {{{ class NameSField                                 [Names : serach 'n%' + '% b']
 
 /** classe pour les noms : on cherche en plus du like 'foo%' le like '% foo' (particules)
 +*/
-class NameSField extends StringSField {
-    function get_single_where_statement($field) {
-        $regexp = str_replace('-','_',$this->value);
-        $regexp = str_replace('*','%',$regexp);
+class NameSField extends StringSField
+{
+    // {{{ function get_single_where_statement()
+    
+    function get_single_where_statement($field)
+    {
+        $regexp = strtr($this->value, '-*', '_%');
         return "$field LIKE '$regexp%' OR $field LIKE '% $regexp%' OR $field LIKE '%-$regexp%'";
     }
+
+    // }}}
+    // {{{ function get_order_statement()
     
-    function get_order_statement() {
-        if ($this->value!='' && $this->fieldResultName!='')
-            return $this->fieldResultName.' NOT LIKE "'.$this->value.'"';
-        else
+    function get_order_statement()
+    {
+        if ($this->value!='' && $this->fieldResultName!='') {
+            return "{$this->fieldResultName} NOT LIKE '{$this->value}'";
+        } else {
             return false;
+        }
     }
+
+    // }}}
 }
+
+// }}}
+// {{{ class StringWithSoundexSField                    [Strings + soundex]
 
 /** classe de champ texte avec soundex (nom par exemple)
  */
-class StringWithSoundexSField extends StringSField {
+class StringWithSoundexSField extends StringSField
+{
+    // {{{ function get_single_where_statement()
+
     /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
      * @param field nom de champ de la bdd concerné par la clause */
     function get_single_where_statement($field) {
         return $field.'="'.soundex_fr($this->value).'"';
     }
+
+    // }}}
 }
 
+// }}}
+// {{{ class PromoSField                                [Prom field]
+
 /** classe de champ de promotion */
-class PromoSField extends SField {
+class PromoSField extends SField
+{
+    // {{{ properties
+    
     /** opérateur de comparaison (<,>,=) de la promo utilisé pour ce champ de formulaire */
     var $compareField;
+
+    // }}}
+    // {{{ constructor
 
     /** constructeur 
      * compareField est un champ de formulaire très simple qui ne sert qu'à la construction de la
      * clause WHERE de la promo */
-    function PromoSField($_fieldFormName,$_compareFieldFormName,$_fieldDbName,$_fieldResultName) {
-        parent::SField($_fieldFormName,$_fieldDbName,$_fieldResultName);
+    function PromoSField($_fieldFormName, $_compareFieldFormName, $_fieldDbName, $_fieldResultName)
+    {
+        parent::SField($_fieldFormName, $_fieldDbName, $_fieldResultName);
         $this->compareField = new SField($_compareFieldFormName);
     }
 
+    // }}}
+    // {{{ function get_request()
+
     /** récupère la requête utilisateur et échoue si le champ du formulaire ne représente pas une
      * promotion (nombre à 4 chiffres) */
-    function get_request() {
+    function get_request()
+    {
         parent::get_request();
-        if (!(empty($this->value) or preg_match("/^[0-9]{4}$/", $this->value)))
+        if (!(empty($this->value) or preg_match('/^[0-9]{4}$/', $this->value))) {
             new ThrowError('La promotion est une année à quatre chiffres.');
+        }
     }
+
+    // }}}
+    // {{{ function is_a_single_promo()
 
     /** teste si la requête est de la forme =promotion -> contrainte forte imposée -> elle suffit
      * pour autoriser un affichage des résultats alors que <promotion est insuffisant */
-    function is_a_single_promo() {
+    function is_a_single_promo()
+    {
         return ($this->compareField->value=='=' && $this->value!='');
     }
 
-    function too_large() {
-        return (!$this->is_a_single_promo());
+    // }}}
+    // {{{ function too_large()
+
+    function too_large()
+    {
+        return !$this->is_a_single_promo();
     }
 
+    // }}}
+    // {{{ function get_single_where_statement()
+
     /** clause WHERE correspondant à ce champ */
-    function get_single_where_statement($field) {
+    function get_single_where_statement($field)
+    {
         return $field.$this->compareField->value.$this->value;
     }
+
+    // }}}
+    // {{{ function get_url()
 
     /** récupérer le bout d'URL correspondant aux paramètres permettant d'imiter une requête
      * d'un utilisateur assignant la valeur $this->value à ce champ et assignant l'opérateur de
      * comparaison adéquat */
-    function get_url() {
-        if (!($u=parent::get_url()))
+    function get_url()
+    {
+        if (!($u=parent::get_url())) {
             return false;
-        return $u.'&'.$this->compareField->get_url();
+        }
+        return $u.'&amp;'.$this->compareField->get_url();
     }
+
+    // }}}
 }
 
+// }}}
+// {{{ class SFieldGroup                                [Group fields]
+
 /** classe groupant des champs de formulaire de recherche */
-class SFieldGroup {
+class SFieldGroup
+{
+    // {{{ properties
+    
     /** tableau des classes correspondant aux champs groupés */
     var $fields;
     /** type de groupe : ET ou OU */
     var $and;
 
+    // }}}
+    // {{{ constuctor
+
     /** constructeur */
-    function SFieldGroup($_and,$_fields) {
+    function SFieldGroup($_and, $_fields)
+    {
         $this->fields = $_fields;
-        $this->and = $_and;
+        $this->and    = $_and;
     }
 
-    function too_large() {
+    // }}}
+    // {{{ function too_large()
+
+    function too_large()
+    {
         $b = true;
-        for ($i=0;$i<count($this->fields);$i++)
-            $b = $b && $this->fields[$i]->too_large();
+        for ($i=0; $b && $i<count($this->fields); $i++) {
+            $b &= $this->fields[$i]->too_large();
+        }
         return $b;
     }
 
-    function field_get_select($f) {
+    // }}}
+    // {{{ function field_get_select()
+
+    function field_get_select($f)
+    {
         return $f->get_select_statement();
     }
 
+    // }}}
+    // {{{ function field_get_where()
+
     /** récupérer la clause WHERE d'un objet champ de recherche */
-    function field_get_where($f) {
+    function field_get_where($f)
+    {
         return $f->get_where_statement();
     }
 
+    // }}}
+    // {{{ function field_get_order()
+
     /** récupérer la clause ORDER BY d'un objet champ de recherche */
-    function field_get_order($f) {
+    function field_get_order($f)
+    {
         return $f->get_order_statement();
     }
 
+    // }}}
+    // {{{ function field_get_url()
+
     /** récupérer le bout d'URL correspondant à un objet champ de recherche */
-    function field_get_url($f) {
+    function field_get_url($f)
+    {
         return $f->get_url();
     }
+    
+    // }}}
+    // {{{ function get_select_statement()
 
-    function get_select_statement() {
-        return implode(' ',array_filter(array_map(array($this,'field_get_select'),$this->fields)));
+    function get_select_statement()
+    {
+        return implode(' ', array_filter(array_map(array($this, 'field_get_select'), $this->fields)));
     }
+
+    // }}}
+    // {{{ function get_where_statement()
 
     /** récupérer la clause WHERE du groupe de champs = conjonction (ET) ou disjonction (OU) de
      * clauses des champs élémentaires */
-    function get_where_statement() {
-        $joinText=($this->and)?' AND ':' OR ';
-        $res = implode($joinText,array_filter(array_map(array($this,'field_get_where'),$this->fields)));
-        return ($res!='')?('('.$res.')'):'';
+    function get_where_statement()
+    {
+        $joinText = $this->and ? ' AND ' : ' OR ';
+        $res = implode($joinText, array_filter(array_map(array($this, 'field_get_where'), $this->fields)));
+        return $res == '' ? '' : "($res)";
     }
+
+    // }}}
+    // {{{ function get_order_statement()
 
     /** récupérer la clause ORDER BY du groupe de champs = conjonction (ET) ou disjonction (OU) de
      * clauses des champs élémentaires */
-    function get_order_statement() {
-        $order = array_filter(array_map(array($this,'field_get_order'),$this->fields));
-        return (count($order)>0)?implode(',',$order):false;
+    function get_order_statement()
+    {
+        $order = array_filter(array_map(array($this, 'field_get_order'), $this->fields));
+        return count($order)>0 ? implode(',', $order) : false;
     }
+
+    // }}}
+    // {{{ function get_url()
 
     /** récupérer le bout d'URL correspondant à ce groupe de champs = concaténation des bouts d'URL
      * des champs élémentaires */
-    function get_url() {
-        $url = array_filter(array_map(array($this,'field_get_url'),$this->fields));
-        return (count($url)>0)?implode('&',$url):false;
+    function get_url($others=Array())
+    {
+        $url = array_filter(array_map(array($this, 'field_get_url'), $this->fields));
+        foreach ($url as $key=>$val) {
+            if (empty($val)) {
+                unset($url[$key]);
+            }
+        }
+        foreach ($others as $key=>$val) {
+            if (!empty($val)) {
+                $url[$key] = $val;
+            }
+        }
+        return count($url)>0 ? implode('&amp;', $url) : false;
     }
+
+    // }}}
 }
+
+// }}}
 
 ?>
