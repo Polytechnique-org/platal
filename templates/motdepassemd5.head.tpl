@@ -1,12 +1,12 @@
-{* $Id: motdepassemd5.head.tpl,v 1.2 2004-08-24 22:57:20 x2000habouzit Exp $ *}
+{* $Id: motdepassemd5.head.tpl,v 1.3 2004-08-25 09:52:08 x2000habouzit Exp $ *}
 
-<script language="javascript" type="text/javascript" src="{"javascript/md5.js"|url}"></script>
+<script type="text/javascript" src="{"javascript/md5.js"|url}"></script>
 {literal}
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
 //<![CDATA[
   function EnCryptedResponse() {
-    pw1 = document.changepass.nouveau.value;
-    pw2 = document.changepass.nouveau2.value;
+    pw1 = document.forms.changepass.nouveau.value;
+    pw2 = document.forms.changepass.nouveau2.value;
     if (pw1 != pw2) {
       alert ("\nErreur : les deux champs ne sont pas identiques !")
       return false;
@@ -17,10 +17,10 @@
       return false;
       exit;
     }
-    str = MD5(document.changepass.nouveau.value);
-    document.changepass2.response2.value = str;
+    str = MD5(document.forms.changepass.nouveau.value);
+    document.forms.changepass2.response2.value = str;
     alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
-    document.changepass2.submit();
+    document.forms.changepass2.submit();
     return true;
   }
 //]]>
