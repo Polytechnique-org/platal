@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: public.tpl,v 1.5 2004-10-09 14:30:01 x2000habouzit Exp $
+        $Id: public.tpl,v 1.6 2004-10-09 14:31:42 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,13 +26,13 @@
 
 {if $smarty.request.valide}
 
-<p class=\"normal\">
+<p>
   Merci de nous avoir communiqué cette information !  Un administrateur de Polytechnique.org va
   envoyer un email de proposition d'inscription à Polytechnique.org à {$prenom} {$nom} dans les
   toutes prochaines heures (ceci est fait à la main pour vérifier qu'aucun utilisateur malveillant
   ne fasse mauvais usage de cette fonctionnalité...).
 </p>
-<p class=\"normal\">
+<p>
   <strong>Merci de ton aide à la reconnaissance de notre site !</strong> Tu seras informé par email de
   l'inscription de {$prenom} {$nom} si notre camarade accepte de rejoindre la communauté des X sur
   le web !
@@ -41,7 +41,7 @@
 {else}
 
 {if $prenom}
-<div class="rubriqu">
+<div class="rubrique">
   Et si nous proposions à {$prenom} {$nom} de s'inscrire à Polytechnique.org ?
 </div>
 
