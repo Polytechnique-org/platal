@@ -42,6 +42,9 @@ Tu n'es pas administrateur de la liste, mais du site.
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
 [<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
 [options]
+{perms level=admin}
+[<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
+{/perms}
 </p>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>

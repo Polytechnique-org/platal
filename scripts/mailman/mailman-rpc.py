@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.34 2004-09-24 15:34:42 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.35 2004-09-24 16:28:06 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -186,6 +186,7 @@ def set_options((userdesc,perms),vhost,listname,opts,vals):
         return 1
     except:
         mlist.Unlock()
+        raise
         return 0
 
 #-------------------------------------------------------------------------------
@@ -514,8 +515,7 @@ def del_from_wl((userdesc,perms),vhost,listname,addr):
 #
 
 admin_opts = [ 'advertised', 'archive', 'default_member_moderation', \
-        'generic_nonmember_action', 'max_message_size', 'max_num_recipients', \
-        'member_moderation_action', 'msg_footer', 'msg_header', 'new_member_options' ]
+        'generic_nonmember_action', 'max_message_size', 'msg_footer', 'msg_header']
 
 def get_admin_options((userdesc,perms),vhost,listname):
     if perms != 'admin':
@@ -588,6 +588,7 @@ server.register_function(add_to_wl)
 server.register_function(del_from_wl)
 #
 server.register_function(get_admin_options)
+server.register_function(set_admin_options)
 
 server.serve_forever()
 
