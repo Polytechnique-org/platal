@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.34 2004-11-13 12:48:44 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.35 2004-11-13 13:19:38 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -141,7 +141,7 @@ class QuickSearch extends SField {
     function QuickSearch($_fieldFormName) {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
-        if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
+        if (preg_match(":[\]\[{}~/§_`|%$^=+]|\*\*:", $this->value))
             new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
     }
 
@@ -297,7 +297,7 @@ class StringSField extends SField {
      * interdits */
     function get_request() {
         parent::get_request();
-        if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
+        if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:", $this->value))
             new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
     }
 
