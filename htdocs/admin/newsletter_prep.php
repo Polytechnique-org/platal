@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_prep.php,v 1.3 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: newsletter_prep.php,v 1.4 2004-09-02 23:33:56 x2000bedo Exp $
  ***************************************************************************/
 
 require('auto.prepend.inc.php');
@@ -44,7 +44,7 @@ $nb = fscanf($lock, "%d %s",$date, $id_lock);
 $is_lock = ($nb != 0);
 $own_lock = false;
 if($is_lock) {
-	$own_lock = ($id_lock == $_SESSION['username']);
+	$own_lock = ($id_lock == $_SESSION['forlife']);
 }
 
 // action si on recoit un formulaire
@@ -56,7 +56,7 @@ if (isset($_REQUEST['submit'])) {
         if($is_lock) {
             $page->assign('action_msg', 'Verrou déjà pris');
         } else {
-            fputs($lock,time()." ".$_SESSION['username']);
+            fputs($lock,time()." ".$_SESSION['forlife']);
             $is_lock = $own_lock = true;
         } // pas de lock
     } elseif ($_REQUEST['submit'] == "Relacher quand meme" 

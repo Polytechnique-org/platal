@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: postfix_blacklist.php,v 1.5 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: postfix_blacklist.php,v 1.6 2004-09-02 23:33:56 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,7 +28,7 @@ if(isset($_REQUEST['nomligne'])) {
     $nomligne = $_REQUEST['nomligne'];
 
     if (!empty($_REQUEST['del'])) {
-        exec("/home/web/spam/effacerBlacklist $nomligne {$_SESSION['username']}");
+        exec("/home/web/spam/effacerBlacklist $nomligne {$_SESSION['forlife']}");
         $page->assign('erreur', "Action: DEL($nomligne)");
     } else if (!empty($_REQUEST['add'])) {
         exec("/home/web/spam/ajouterBlacklist ".$nomligne);

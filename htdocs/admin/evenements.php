@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.php,v 1.3 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: evenements.php,v 1.4 2004-09-02 23:33:56 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -111,9 +111,10 @@ if ($action != "Editer") {
                     e.promo_min, e.promo_max, e.validation_message, e.validation_user_id,
                     FIND_IN_SET('valide', e.flags) AS fvalide,
                     FIND_IN_SET('archive', e.flags) AS farch,
-                    a.promo, a.nom, a.prenom, a.username
+                    u.promo, u.nom, u.prenom, a.alias AS forlife
               FROM  evenements    AS e
-        INNER JOIN  auth_user_md5 AS a ON(e.user_id = a.user_id)
+        INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
+        INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
              WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
           ORDER BY  FIND_IN_SET('valide',e.flags), peremption";
     $page->mysql_assign($sql, 'evs');

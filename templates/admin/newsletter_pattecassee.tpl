@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_pattecassee.tpl,v 1.3 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: newsletter_pattecassee.tpl,v 1.4 2004-09-02 23:34:00 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,7 @@
   </p>
 {elseif $nb_emails}
   <p class="erreur">
-  <a href="{"x.php?x=$username"|url}">{"$prenom $nom (X$promo)"}</a>
+  <a href="{"fiche.php?user=$forlife"|url}">{"$prenom $nom (X$promo)"}</a>
   a à l'heure actuelle {$nb_emails} adresse(s) email(s) de redirection active(s)
   en dehors de celle que tu as indiquée.
   Cela ne veut pas forcément dire qu'il les avait déjà activées
@@ -50,7 +50,7 @@
   </p>
 {else}
   <p class="erreur">
-  Désolé, mais <a href="{"x.php?x=$username"|url}">{"$prenom $nom (X$promo)"}</a>,
+  Désolé, mais <a href="{"fiche.php?user=$forlife"|url}">{"$prenom $nom (X$promo)"}</a>,
   n'a actuellement aucune adresse email de redirection active
   autre que celle que tu viens de rentrer.
   L'idéal serait de contacter son kessier de promo pour l'en avertir

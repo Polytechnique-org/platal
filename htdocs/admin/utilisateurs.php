@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.17 2004-09-02 23:06:11 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.18 2004-09-02 23:33:56 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -107,7 +107,7 @@ foreach($_POST as $key => $val) {
             $errors[] = "updaté correctement.";
             // envoi du mail au webmaster
             $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
-            $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['username']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
+            $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
             mail("web@polytechnique.org","INTERVENTION ADMIN",$MESSAGE,$HEADER);
             break;
 
@@ -138,7 +138,7 @@ foreach($_POST as $key => $val) {
 
 	    $errors[] = "'$user_id' a été supprimé !";
 	    $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
-	    $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['username']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
+	    $MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
 	    mail("web@polytechnique.org","INTERVENTION ADMIN",$MESSAGE,$HEADER);
             break;
     }
