@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.header.tpl,v 1.16 2004-11-13 15:56:47 x2000habouzit Exp $
+        $Id: common.header.tpl,v 1.17 2004-11-13 16:01:42 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -46,7 +46,6 @@
       Anciens eleves Polytechnique, annuaire email, Alumni
       {/if}
     </title>
-    <script type="text/javascript" src="{"javascript/misc.js"|url}"></script>
-    <script type="text/javascript" src="{"javascript/popups.js"|url}"></script>
+    <script type="text/javascript" src="{"javascript/xorg.js"|url}"></script>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
