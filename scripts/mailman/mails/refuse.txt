@@ -1,14 +1,13 @@
-Votre demande à la liste de diffusion %(listname)s
+Vous avez envoyé un message à la liste de diffusion %(listname)s :
 
     %(request)s 
 
-n'a pas été transmis par le modérateur à la liste.
-Le modérateur a donné la justification suivante comme
-raison de son refus :
+Votre message n'a pas été transmis à la liste.  Le modérateur a donné
+la justification suivante :
 
     "%(reason)s" 
 
-Toute question ou commentaire doit être adressé
-à l'administrateur de la liste à l'adresse:
+Toute question ou commentaire doit être adressé aux modérateurs de la
+liste :
 
     %(adminaddr)s
