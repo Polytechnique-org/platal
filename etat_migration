@@ -17,13 +17,8 @@
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
-------+-[ emails ... ]----------------------------+----------------
-x	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
-x	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
-------+-[ bordel ]--------------------------------+----------------
-x	  | recherche.php							  | 
 ------+-[ listes ]--------------------------------+----------------
  ;	  | listes/creation.php						  | \
  ;	  | listes/gere_listes.php					  |  |
@@ -71,6 +66,8 @@ x	  | recherche.php							  |
 x	  | admin/utilisateurs.php					  | - y'a encore du boulot pour que ca valide !
 x	  | epouse.php								  | - non testé (flemme de faire des su ...)
 x	  | parselog.php							  | stats/... (non testé, pas de logs sous la main)
+x	  | recherche.php							  | 
+x	  | step4.php								  | 
 xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
@@ -170,6 +167,7 @@ xx	  | recovery.php							  |
 xx!	  | redirect/error.php						  | -
 xx!	  | redirect/redirect.php					  | -
 xx	  | referent.php							  | TODO : utilise la css de recherche qui n'est pas encore migré
+xx	  | routage-mail.php						  | 
 xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | sendmail.php							  | -
