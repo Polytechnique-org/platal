@@ -7,7 +7,7 @@ CREATE TABLE `emails` (
   `email` char(60) NOT NULL default '',
   `rewrite` char(128) NOT NULL default '',
   `panne` date NOT NULL default '0000-00-00',
-  `flags` set('active','filter','mtic') NOT NULL default '',
+  `flags` enum('active','filter') NOT NULL default '',
   PRIMARY KEY  (`uid`,`email`),
   KEY `emails` (`email`(20)),
   KEY `uid` (`uid`)

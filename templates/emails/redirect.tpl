@@ -36,12 +36,6 @@
   ni son équivalent en {#globals.mail.domain2#}.
   </p>
 {/if}
-{if $mtic == 1}
-  <p>
-  Ton adresse de redirection {$smarty.request.email} fait partie d'un domaine refusant
-  que les messages internes passent par l'extérieur, ces messages seront donc retransmis en pièces jointes.
-  </p>
-{/if}
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <h1>
     Tes adresses de redirection

@@ -246,7 +246,6 @@ Pour ceci changer ses permissions en 'disabled'.
     <tr>
       <td class="titre">
         {if $mail->active}active{/if}
-        {if $mail->mtic}(mtic){/if}
       </td>
       <td>
         {$mail->email}

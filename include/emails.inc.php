@@ -28,28 +28,6 @@ define("ERROR_INACTIVE_REDIRECTION", 2);
 define("ERROR_INVALID_EMAIL", 3);
 define("ERROR_LOOP_EMAIL", 4);
 
-define("MTIC_DOMAINS", "/etc/postfix/forward-domaines.conf");
-
-// }}}
-// {{{ function check_mtic()
-
-function check_mtic($email)
-{
-    list($local,$domain) = explode("@",$email);
-    // lecture du fichier de configuration
-    $tab = file(MTIC_DOMAINS);
-    foreach ($tab as $ligne) {
-	if ($ligne{0} == '#') continue;           // on saute les commentaires
-	// pour chaque ligne, on regarde si la première partie qui correspond au domaine du destinataire
-	// matche le domaine de l'email donnée
-	list($regexp) = explode(':',$ligne);
-	if (eregi($regexp,$domain)) {
-            return true;  // c'est le cas, on revoie true
-        }
-    }
-    return false;
-}
-
 // }}}
 // {{{ function fix_bestalias()
 
@@ -99,7 +77,7 @@ class Bogo
     function Bogo($uid)
     {
 	global $globals;
-	$res = $globals->xdb->query('SELECT email FROM emails WHERE uid={?} AND find_in_set("filter", flags)', $uid);
+	$res = $globals->xdb->query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
 	if ($res->numRows()) {
             $this->state = $res->fetchOneCell();
 	} else {
@@ -116,7 +94,7 @@ class Bogo
     {
 	global $globals;
 	$this->state = is_int($state) ? $this->_states[$state] : $state;
-	$globals->xdb->execute('UPDATE emails SET email={?} WHERE uid={?} AND find_in_set("filter", flags)', $this->state, $uid);
+	$globals->xdb->execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"', $this->state, $uid);
     }
 
     // }}}
@@ -138,7 +116,6 @@ class Email
     var $email;
     var $active;
     var $rewrite;
-    var $mtic;
     var $panne;
 
     // }}}
@@ -146,8 +123,7 @@ class Email
 
     function Email($row)
     {
-        list($this->email,$this->active,$this->rewrite,$this->mtic,$this->panne)
-        = $row;
+        list($this->email, $this->active, $this->rewrite, $this->panne) = $row;
     }
 
     // }}}
@@ -157,7 +133,7 @@ class Email
     {
         global $globals;
         if (!$this->active) {
-            $globals->xdb->execute("UPDATE  emails SET flags = CONCAT_WS(',',flags,'active')
+            $globals->xdb->execute("UPDATE  emails SET flags = 'active'
                                      WHERE  uid={?} AND email={?}", $uid, $this->email);
 	    $_SESSION['log']->log("email_on", $this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
@@ -171,8 +147,7 @@ class Email
     {
         global $globals;
         if ($this->active) {
-	    $flags = $this->mtic ? 'mtic' : '';
-            $globals->xdb->execute("UPDATE  emails SET flags ='$flags'
+            $globals->xdb->execute("UPDATE  emails SET flags =''
 				     WHERE  uid={?} AND email={?}", $uid, $this->email);
 	    $_SESSION['log']->log("email_off",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
@@ -216,8 +191,8 @@ class Redirect
         global $globals;
 	$this->uid=$_uid;
         $res = $globals->xdb->iterRow("
-	    SELECT email, FIND_IN_SET('active',flags), rewrite, FIND_IN_SET('mtic',flags),panne
-	      FROM emails WHERE uid = {?} AND NOT FIND_IN_SET('filter',flags)", $_uid);
+	    SELECT email, flags='active', rewrite, panne
+	      FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
 	$this->emails=Array();
         while ($row = $res->next()) {
 	    $this->emails[] = new Email($row);
@@ -270,18 +245,7 @@ class Redirect
         if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
         }
-        //construction des flags
-        $flags = 'active';
-        // on verifie si le domaine de email ou email est un domaine interdisant
-        // les adresses internes depuis l'exterieur
-        $mtic = 0;
-        if (check_mtic($email_stripped)) {
-            $flags .= ',mtic';
-            global $page;
-            $page->assign('mtic',1);
-            $mtic = 1;
-        }
-        $globals->xdb->execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},{?})', $this->uid, $email, $flags);
+        $globals->xdb->execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
 	if ($logger = Session::getMixed('log', null)) { // may be absent --> step4.php
 	    $logger->log('email_add',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
         }
@@ -290,7 +254,7 @@ class Redirect
                 return SUCCESS;
             }
 	}
-        $this->emails[] = new Email(array($email,1,'',$mtic,'0000-00-00'));
+        $this->emails[] = new Email(array($email,1,'','0000-00-00'));
         return SUCCESS;
     }
 
