@@ -235,6 +235,16 @@ function &get_user_details($login, $from_uid = '')
     }
     $user['applis_join'] = join(', ', $user['applis_fmt']);
 
+    $res = $globals->xdb->iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
+                                      FROM  profile_medals_sub    AS s
+                                INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
+                                LEFT  JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )
+                                     WHERE  s.uid = {?}", $uid);
+    $user['medals'] = Array();
+    while ($tmp = $res->next()) {
+        $user['medals'][] = $tmp;
+    }
+
     return $user;
 }
 

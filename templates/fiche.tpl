@@ -101,13 +101,12 @@ function chgMainWinLoc( strPage ) {
       <h2>Contact : </h2>
       {foreach from=$x.adr item="address" key="i"}
         {if $address.active}
-          {assign var="address_titre" value="Mon adresse actuelle :"}
+        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Mon adresse actuelle :"}
         {elseif $address.secondaire}
-          {assign var="address_titre" value="Adresse secondaire :"}
+        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse secondaire :"}
         {else}
-          {assign var="address_titre" value="Adresse principale :"}
+        {include file="geoloc/address.tpl" address=$address titre_div=true titre="Adresse principale :"}
         {/if}
-        {include file="geoloc/address.tpl" address=$address titre_div=true titre=$address_titre}
       {/foreach}
       <div class="spacer">&nbsp;</div>
     </td>
@@ -146,6 +145,27 @@ function chgMainWinLoc( strPage ) {
       {include file="geoloc/address.tpl" address=$address titre="Adresse : "}
       <div class="spacer">&nbsp;</div>
       {/foreach}
+    </td>
+  </tr>
+  {/if}
+  {if $x.medals}
+  <tr>
+    <td>
+      <h2>Distinctions : </h2>
+      {foreach from=$x.medals item=m}
+      <table style="float: left; width: 33%;">
+        <tr>
+          <td>
+            <img src="{rel}/images/medals/{$m.img}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
+          </td>
+          <td>
+            <strong>{$m.medal}</strong>
+            <br />{$m.grade}
+          </td>
+        </tr>
+      </table>
+      {/foreach}
+      <div class="spacer">&nbsp;</div>
     </td>
   </tr>
   {/if}

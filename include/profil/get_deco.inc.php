@@ -28,11 +28,11 @@ if (Env::has('medal_op')) {
         $globals->xdb->execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", Session::getInt('uid', -1), Env::getInt('medal_id'));
     }
 }
-
-foreach (Post::getMixed('grade') as $mid=>$gid) {
-    $globals->xdb->execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, Session::getInt('uid'), $mid);
-}
- 
+if (Post::has('grade')) {
+    foreach (Post::getMixed('grade') as $mid=>$gid) {
+        $globals->xdb->execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, Session::getInt('uid'), $mid);
+    }
+} 
 
 $res    = $globals->xdb->query(
 	"SELECT  m.id, m.text AS medal, m.type, m.img, s.gid
