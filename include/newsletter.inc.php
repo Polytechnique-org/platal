@@ -18,20 +18,54 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.5 2004-10-15 22:31:13 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.6 2004-10-16 17:49:38 x2000habouzit Exp $
  ***************************************************************************/
 
 
 define('FEMME', 1);
 define('HOMME', 0);
 
+function enriched_to_text($input,$html=false) {
+    $text = stripslashes(trim($input));
+    if($html) {
+	$text = htmlspecialchars($text);
+	$text = str_replace('[b]','<strong>', $text);
+	$text = str_replace('[/b]','</strong>', $text);
+	$text = str_replace('[i]','<em>', $text);
+	$text = str_replace('[/i]','</em>', $text);
+	$text = str_replace('[u]','<span style="text-decoration: underline">', $text);
+	$text = str_replace('[/u]','</span>', $text);
+	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','<a href="\1">\1</a>', $text);
+	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','<a href="mailto:\1">\1</a>', $text);
+	return nl2br($text);
+    } else {
+	$text = preg_replace('!\[\/?b\]!','*',$text);
+	$text = preg_replace('!\[\/?u\]!','_',$text);
+	$text = preg_replace('!\[\/?i\]!','/',$text);
+	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','[\1]', $text);
+	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','[mailto:\1]', $text);
+	return wordwrap($text, 68);
+    }
+}
+
+
 class NewsLetter {
+    var $_id;
     var $_cats;
     
-    function NewsLetter() {
+    function NewsLetter($id=null) {
 	global $globals;
 
-	$res = $globals->db->query("SELECT cid,title FROM newsletter_cat ORDER BY pos");
+	if(isset($id)) {
+	    $res = $globals->db->query("SELECT * FROM newsletter WHERE id='$id'");
+	} else {
+	    $res = $globals->db->query("SELECT * FROM newsletter WHERE bits='new'");
+	}
+	$nl = mysql_fetch_assoc($res);
+	$this->_id = $nl['id'];
+	mysql_free_result($res);
+
+	$res = $globals->db->query("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
 	$this->_cats = Array();
 	while(list($cid,$title) = mysql_fetch_row($res)) {
 	    $this->_cats[$cid] = $title;
@@ -39,10 +73,69 @@ class NewsLetter {
 	mysql_free_result($res);
     
     }
+
+
+    function saveArticle(&$a) {
+	global $globals;
+	if($a->_aid) {
+	    $globals->db->query("REPLACE INTO newsletter_art (id,aid,cid,pos,title,body.append)
+				VALUES({$this->_id},{$a->_aid},{$a->_cid},{$a->_pos},
+				       '{$a->_title}','{$a->_body}','{$a->_append}')");
+	} else {
+	    $globals->db->query(
+		"INSERT INTO  newsletter_art
+		      SELECT  {$this->_id},MAX(aid)+1,0,100,'{$a->_title}','{$a->_body}','{$a->_append}'
+			FROM  newsletter_art AS a
+		       WHERE  a.id={$this->_id}");
+	}
+    }
 }
 
 class NLArticle {
-    function NLArticle() { }
+    var $_aid;
+    var $_cid;
+    var $_pos;
+    var $_title;
+    var $_body;
+    var $_append;
+    
+    function NLArticle($title,$body,$append,$aid=null,$cid=0,$pos=100) {
+	$this->_body   = $body;
+	$this->_title  = $title;
+	$this->_append = $append;
+	$this->_aid = $aid;
+	$this->_cid = $aid;
+	$this->_pos = $aid;
+    }
+
+    function body() { return stripslashes(trim($this->_body)); }
+    function append() { return stripslashes(trim($this->_append)); }
+
+    function toText() {
+	$title = '*'.stripslashes($this->_title).'*';
+	$body  = enriched_to_text($this->_body);
+	$app   = enriched_to_text($this->_append);
+	return trim("$title\n\n$body\n\n$app")."\n";
+    }
+
+    function toHtml() {
+	$title = '<strong>'.stripslashes($this->_title).'</strong>';
+	$body  = enriched_to_text($this->_body,true);
+	$app   = enriched_to_text($this->_append,true);
+	
+	$art = "$title<br /><br />$body<br />";
+	if ($app) $art .= "<br />$app<br />";
+	
+	return $art;
+    }
+
+    function check() {
+	$text = enriched_to_text($this->_body);
+	$arr = explode("\n",wordwrap($text,68));
+	$c = 0;
+	foreach($arr as $line) if(trim($line)) $c++;
+	return $c<9;
+    }
 }
 
 class NLConstraint {

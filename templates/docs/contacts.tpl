@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: contacts.tpl,v 1.9 2004-08-31 20:19:30 x2000habouzit Exp $
+        $Id: contacts.tpl,v 1.10 2004-10-16 17:49:39 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -169,13 +169,17 @@ la newsletter : le texte du message doit faire au plus <strong>8 lignes de 68 ca
 sus).
 </p>
 <p>
-Une fois que ton article est prêt et qu'il ne dépasse pas la taille indiquée, il te suffit
-de nous le soumettre par email (éviter les pièces jointes) à cette adresse :
+Un formulaire en ligne te permet de nous soumettre un article, et se chargera de vérifier
+ces contraintes pour toi : <a href='{"newsletter/submit.php"|url}'>soumission d'article</a>.
+</p>
+<p>
+Sinon, une fois que ton article est prêt et qu'il ne dépasse pas la taille indiquée,
+tu peux aussi nous le soumettre par email (éviter les pièces jointes) à cette adresse :
 <strong>{mailto address='info_nlp@polytechnique.org' encode='hex'}</strong>.
 </p>
 <p>
 Les anciennes newsletters de <strong>Polytechnique.org</strong> sont
-<strong><a href="../newsletter.php">archivées</a></strong> si tu veux t'en inspirer.
+<strong><a href="{"newsletter/"|url}">archivées</a></strong> si tu veux t'en inspirer.
 </p>
 
 {elseif $smarty.request.topic eq 6}

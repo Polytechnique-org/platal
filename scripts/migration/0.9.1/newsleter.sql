@@ -1,7 +1,6 @@
 -- -----------------------------------------------------------------------------
 -- update old table
 --
-alter table newsletter change id id int not null;
 alter table newsletter change `date` `date` date not null;
 alter table newsletter add column bits enum('old','sent','new') default 'new' not null;
 update newsletter set bits='old';
@@ -32,19 +31,10 @@ create table newsletter_art (
     aid smallint unsigned not null,
     cid smallint unsigned not null,
     pos tinyint unsigned not null,
-    texte mediumtext not null,
+    title mediumtext not null,
+    body mediumtext not null,
+    append mediumtext not null,
     PRIMARY KEY (id,aid)
 );
 --
--- -----------------------------------------------------------------------------
--- newsletter appends
---
-create table newsletter_contact (
-    id int unsigned not null,
-    aid smallint unsigned not null,
-    titre varchar(128) not null,
-    content varchar(128) not null,
-    type enum('url','mail','text','none'),
-    PRIMARY KEY (id,aid)
-);
 -- -----------------------------------------------------------------------------

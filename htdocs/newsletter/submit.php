@@ -1,4 +1,5 @@
-{***************************************************************************
+<?php
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,38 +18,31 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.2 2004-10-16 17:49:39 x2000habouzit Exp $
- ***************************************************************************}
+        $Id: submit.php,v 1.1 2004-10-16 17:49:37 x2000habouzit Exp $
+ ***************************************************************************/
 
+require("auto.prepend.inc.php");
+new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE);
+require("newsletter.inc.php");
 
-<div class="rubrique">
-  Lettre de Polytechnique.org
-</div>
-<p>
-Tu trouveras ici les archives de la lettre d'information de Polytechnique.org.  Pour t'abonner à
-cette lettre, il te suffit de te <a href="{"listes/"|url}">rendre sur la page des listes</a>.
-</p>
-<p>
-<strong>Pour demander l'ajout d'une annonce dans la prochaine lettre mensuelle</strong>,
-utilise <a href='submit.php'>le formulaire dédié !</a>.
-</p>
+if(isset($_POST['see'])) {
+    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
+    $page->assign('art', $art);
+} elseif($_POST['valid']) {
+    $nl = new Newsletter();
+    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
+    $nl->saveArticle($art);
 
-{dynamic}
-<table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
-  <tr>
-    <th>date</th>
-    <th>titre</th>
-  </tr>
-  {foreach item=nl from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
-    <td>{$nl.date|date_format:"%Y-%m-%d"}</td>
-    <td>
-      <a href="{"newsletter/show.php"|url}?nid={$nl.id}">{$nl.titre}</a>
-    </td>
-  </tr>
-  {/foreach}
-</table>
+    require("diogenes.mailer.inc.php");
+    $to = 'Equipe Newsletter Polytechnique.org <info+nlp@polytechnique.org>';
+    $from = "{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']}) <{$_SESSION['forlife']}@polytechnique.org>";
+    $mailer = new DiogenesMailer($from,$to,"proposition d'article dans la NL",false,$from);
+    $text = "l'article suivant a été proposé par:\n\n    $from\n\n\n".$art->toText();
+    $mailer->setBody($text);
+    $mailer->send();
+    
+    $page->assign('submited', true);
+}
 
-{/dynamic}
-
-{* vim:set et sw=2 sts=2 sws=2: *}
+$page->run();
+?>
