@@ -18,21 +18,28 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.3 2004-09-22 12:51:07 x2000habouzit Exp $
+        $Id: index.php,v 1.4 2004-09-23 15:40:45 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('listes/index.tpl', AUTH_MDP);
 include('xml-rpc-client.inc.php');
+
 $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
 list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-if(isset($_GET['del'])) { $client->unsubscribe($_GET['del']); header('Location: index.php'); }
-if(isset($_GET['add'])) { $client->subscribe($_GET['add']); }
+if(isset($_GET['del'])) {
+    $client->unsubscribe('polytechnique.org',$_GET['del']);
+    header('Location: index.php');
+}
+if(isset($_GET['add'])) {
+    $client->subscribe('polytechnique.org',$_GET['add']);
+    header('Location: index.php');
+}
 
-$listes = $client->get_lists();
+$listes = $client->get_lists('polytechnique.org');
 $page->assign_by_ref('listes',$listes);
 $page->run();
 ?>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.3 2004-09-22 08:42:25 x2000habouzit Exp $
+        $Id: trombi.php,v 1.4 2004-09-23 15:40:45 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -34,7 +34,7 @@ list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-$members = $client->get_members_limit($liste,$npage,30);
+$members = $client->get_members_limit('polytechnique.org',$liste,$npage,30);
 
 if(is_array($members)) {
     $membres = Array();

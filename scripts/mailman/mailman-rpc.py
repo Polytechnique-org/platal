@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.29 2004-09-23 11:03:20 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.30 2004-09-23 15:40:46 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -109,43 +109,95 @@ def connectDB():
     db.ping()
     return db.cursor()
 
+def is_owner(userdesc,perms,mlist):
+    return ( perms == 'admin' and mm_cfg.ADMIN_ML_OWNER in mlist.owner ) or ( userdesc.address in mlist.owner )
+
 def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
 
 #-------------------------------------------------------------------------------
-# users procedures
+# users procedures for [ index.php ]
 #
 
-def get_lists((userdesc,perms)):
+def get_lists((userdesc,perms),vhost):
+    prefix = vhost.lower()+'-'
     names = Utils.list_names()
     names.sort()
     result = []
     for name in names:
+        if not name.startswith(prefix):
+            continue
         try:
-            mlist = MailList.MailList(name, lock=0)
+            mlist = MailList.MailList(name)
         except:
             continue
-        is_member = userdesc.address in mlist.getRegularMemberKeys()
-        is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
-        is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
+        is_member  = userdesc.address in mlist.getRegularMemberKeys()
+        is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
+        is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
+        is_pending = False
+        for id in mlist.GetSubscriptionIds():
+            if userdesc.address == mlist.GetRecord(id)[1]:
+                is_pending = True
+                break
         if mlist.advertised or is_member or is_owner:
             result.append( {
-                    'list' : name,
+                    'list' : str('-').join(name.split('-')[1:]),
                     'desc' : mlist.description,
                     'diff' : mlist.generic_nonmember_action,
-                    'ins'  : mlist.subscribe_policy > 0,
+                    'ins'  : mlist.subscribe_policy > 1,
                     'priv' : (1-mlist.advertised)+2*is_admin,
                     'welc' : mlist.welcome_msg,
-                    'you'  : is_member + 2*is_owner
+                    'sub'  : is_pending + 2*is_member,
+                    'own'  : is_owner
                     } )
+        mlist.Unlock()
     return result
 
-def get_members((userdesc,perms),listname):
+def subscribe((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(listname, lock=0)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
-    members = mlist.getRegularMemberKeys()
+    try:
+        if ( mlist.subscribe_policy in (0,1) ) or is_owner(userdesc,perms,mlist):
+            result = 2
+            mlist.ApprovedAddMember(userdesc)
+        else:
+            result = 1
+            try:
+                mlist.AddMember(userdesc)
+            except Errors.MMNeedApproval:
+                pass
+        mlist.Save()
+    except:
+        result = 0
+    mlist.Unlock()
+    return result
+
+def unsubscribe((userdesc,perms),vhost,listname):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname)
+    except:
+        return 0
+    try:
+        mlist.ApprovedDeleteMember(userdesc.address)
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
+#-------------------------------------------------------------------------------
+# users procedures for [ index.php ]
+#
+
+def get_members((userdesc,perms),vhost,listname):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname, lock=0)
+    except:
+        return 0
+    members   = mlist.getRegularMemberKeys()
     is_member = userdesc.address in members
     is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
     is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
@@ -163,48 +215,13 @@ def get_members((userdesc,perms),listname):
         return (details,members,mlist.owner)
     return 0
 
-def get_members_limit((userdesc,perms),listname,page,nb_per_page):
+def get_members_limit((userdesc,perms),vhost,listname,page,nb_per_page):
     try:
-        details,members,owners = get_members((userdesc,perms),listname)
+        details,members,owners = get_members((userdesc,perms),vhost,listname)
     except:
         return 0
     i = (int(page)-1) * int(nb_per_page)
     return (details,members[i:i+int(nb_per_page)],owners,(len(members)-1)/int(nb_per_page)+1)
-
-def subscribe((userdesc,perms),listname):
-    try:
-        mlist = MailList.MailList(listname)
-    except:
-        return 0
-    try:
-        if ( mlist.subscribe_policy in (0,1) ) or ( userdesc.address in mlist.owner ) or ( mm_cfg.ADMIN_ML_OWNER in mlist.owner ):
-            result = 2
-            mlist.ApprovedAddMember(userdesc)
-        else:
-            result = 1
-            try:
-                mlist.AddMember(userdesc)
-            except Errors.MMNeedApproval:
-                pass
-        mlist.Save()
-    except:
-        result = 0
-    mlist.Unlock()
-    return result
-
-def unsubscribe((userdesc,perms),listname):
-    try:
-        mlist = MailList.MailList(listname)
-    except:
-        return 0
-    try:
-        mlist.ApprovedDeleteMember(userdesc.address)
-        mlist.Save()
-        mlist.Unlock()
-        return 1
-    except:
-        mlist.Unlock()
-        return 0
 
 #-------------------------------------------------------------------------------
 # owners procedures

@@ -17,14 +17,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.5 2004-09-22 12:51:08 x2000habouzit Exp $
+        $Id: index.tpl,v 1.6 2004-09-23 15:40:46 x2000habouzit Exp $
  ***************************************************************************}
-
-{if $smarty.request.add}
-<p class='erreur'>
-Ta demande d'inscription sur {$smarty.request.add} a été prise en compte.
-</p>
-{/if}
 
 <div class="rubrique">
   Listes de diffusion de Polytechnique.org

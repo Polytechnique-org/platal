@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.4 2004-09-22 12:51:08 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.5 2004-09-23 15:40:46 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
@@ -32,24 +32,23 @@
   {if $liste.priv >= $min && $liste.priv <= $max|default:$min}
   <tr class='{cycle values="impair,pair"}'>
     <td>
-      {if $liste.you>1}
-      <a href='admin.php?liste={$liste.list}'>{$liste.list}</a>
+      <a href='members.php?liste={$liste.list}'>{$liste.list}</a>
+      {if $liste.own}
       [<a href='moderate.php?liste={$liste.list}'>mod</a>]
       {elseif $smarty.session.perms eq admin}
-      <a href='admin.php?liste={$liste.list}'>{$liste.list}</a>
-      <span class='erreur'>[<a href='moderate.php?liste={$liste.list}'>mod</a>]</span>
-      {else}
-      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
+      [<span class='erreur'><a href='moderate.php?liste={$liste.list}'>mod</a></span>]
       {/if}
     </td>
     <td>{$liste.desc}</td>
     <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
     <td class='center'>{if $liste.ins}modérée{else}libre{/if}</td>
     <td class='right'>
-      {if $liste.you is odd}
+      {if $liste.sub eq 2}
       <a href='{$smarty.server.PHP_SELF}?del={$liste.list}'>me désinscrire</a>
+      {elseif $liste.sub eq 1}
+      <span class='erreur'>en cours</span>
       {elseif $liste.ins}
-      <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>demander une inscription</a>
+      <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>demander son inscription</a>
       {else}
       <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>m'inscrire</a>
       {/if}

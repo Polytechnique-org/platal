@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.3 2004-09-22 08:42:26 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.4 2004-09-23 15:40:46 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -55,11 +55,7 @@
   </tr>
   <tr>
     <td colspan='2' class='center'>
-      {if $details.you > 1 || $smarty.session.perms eq admin}
-      <a href='admin.php?liste={$smarty.request.liste}'>Page de la liste</a>
-      {else}
-      <a href='liste.php?liste={$smarty.request.liste}'>Page de la liste</a>
-      {/if}
+      <a href='members.php?liste={$smarty.request.liste}'>Page de la liste</a>
     </td>
   </tr>    
 </table>
