@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.19 2004-10-30 09:09:04 x2000bedo Exp $
+        $Id: fiche.tpl,v 1.20 2004-11-02 07:13:08 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -51,7 +51,7 @@ function chgMainWinLoc( strPage ) {
     <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a><br />
     <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
   </div>
-  <div><em>{$nationalite}</em> - X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
+  <div>{if $nationalite}<em>{$nationalite}</em> - {/if}X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
   {if $mobile}<div><em class="intitule">Mobile : </em>{$mobile}</div>{/if}
   {if $is_referent}
     <div><a href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$forlife}')">Ma fiche référent</a></div>

@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_pdf.php,v 1.3 2004-10-09 13:52:01 x2000habouzit Exp $
+        $Id: mescontacts_pdf.php,v 1.4 2004-11-02 07:13:08 x2000habouzit Exp $
  ***************************************************************************/
 
 #
-# $Id: mescontacts_pdf.php,v 1.3 2004-10-09 13:52:01 x2000habouzit Exp $
+# $Id: mescontacts_pdf.php,v 1.4 2004-11-02 07:13:08 x2000habouzit Exp $
 #
 
 require("auto.prepend.inc.php");
@@ -103,16 +103,14 @@ while ($myrow = mysql_fetch_array($req)) {
 
     /* affichage des infos professionnelles (poste, adresse, tel) */
     $res_pro = $globals->db->query(
-       "SELECT entreprise, s.label, ss.label, f.fonction_fr, poste,
-               adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax
-	FROM entreprises AS e
-	LEFT JOIN emploi_secteur AS s ON e.secteur = s.id
-	LEFT JOIN emploi_ss_secteur AS ss
-	  ON (e.secteur = ss.secteur AND e.ss_secteur = ss.id)
-	LEFT JOIN fonctions_def AS f ON f.id = e.fonction
-	INNER JOIN geoloc_pays AS gp on gp.a2 = e.pays
-	INNER JOIN geoloc_region AS gr
-	  ON (gr.a2 = e.pays AND gr.region = e.region)
+       "SELECT  entreprise, s.label, ss.label, f.fonction_fr, poste,
+                adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax
+	  FROM  entreprises       AS e
+     LEFT JOIN  emploi_secteur    AS s  ON e.secteur = s.id
+     LEFT JOIN  emploi_ss_secteur AS ss ON (e.secteur = ss.secteur AND e.ss_secteur = ss.id)
+     LEFT JOIN  fonctions_def     AS f  ON f.id = e.fonction
+     LEFT JOIN  geoloc_pays       AS gp ON gp.a2 = e.pays
+    INNER JOIN  geoloc_region     AS gr ON (gr.a2 = e.pays AND gr.region = e.region)
 	WHERE e.uid = ".$myrow["user_id"]
     );
     while (list($entreprise, $secteur, $ss_secteur, $fonction, $poste, $adr1, $adr2, $adr3, $cp, $ville, $pays, $region, $tel, $fax) = mysql_fetch_row($res_pro)) {

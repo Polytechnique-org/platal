@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.18 2004-10-31 16:02:44 x2000chevalier Exp $
+        $Id: fiche.php,v 1.19 2004-11-02 07:13:08 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -51,8 +51,8 @@ $reqsql = "SELECT  u.prenom, u.nom, u.epouse, IF(gp.nat='',gp.pays,gp.nat) AS te
        INNER JOIN  aliases        AS a  ON (u.user_id=a.id AND a.type='a_vie')
        INNER JOIN  aliases        AS a2 ON (u.user_id=a2.id AND (a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
         LEFT JOIN  contacts       AS c  ON (c.uid = {$_SESSION['uid']} and c.contact = u.user_id)
-       INNER JOIN  geoloc_pays    AS gp ON (gp.a2 = u.nationalite)
-       INNER JOIN  sections            ON(sections.id = u.section)
+        LEFT JOIN  geoloc_pays    AS gp ON (gp.a2 = u.nationalite)
+       INNER JOIN  sections             ON(sections.id = u.section)
         LEFT JOIN  photo as p ON(p.uid = u.user_id)".$where_clause."
 	 ORDER BY  a2.type != 'epouse', LENGTH(a2.alias) LIMIT 1";
 
