@@ -50,7 +50,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.a}'><img src='{"images/retirer.gif"|url}' alt='retirer modérateur' title='retirer modérateur' /></a>
+        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.l}'><img src='{"images/retirer.gif"|url}' alt='retirer modérateur' title='retirer modérateur' /></a>
         <br />
         {/foreach}
       </td>
@@ -84,7 +84,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.a}'><img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' /></a>
+        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.l}'><img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' /></a>
         <br />
         {/foreach}
       </td>
