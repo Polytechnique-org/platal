@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.22 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.23 2004-09-25 21:48:32 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -42,8 +42,12 @@ if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SE
     $_SESSION['log']->log("suid_start",$log_data);
     $_SESSION['slog'] = $_SESSION['log'];
     $_SESSION['suid'] = $_SESSION['uid'];
-    start_connexion($_SESSION['uid'],true);
-    header("Location: ../");
+    $r=$globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['login']}'");
+    if(list($uid) = mysql_fetch_row($r)) {
+	start_connexion($uid,true);
+	header("Location: ../");
+    }
+    mysql_free_result($r);
 }
 
 
