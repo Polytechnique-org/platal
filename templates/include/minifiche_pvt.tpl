@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.16 2004-11-18 15:17:42 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.17 2004-11-26 22:10:23 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,33 +25,33 @@
   {if !$c.dcd}
   <div class='bits'>
     {if $show_action eq ajouter}
-    <a href="{"carnet/notifs.php"|url}?add_nonins={$c.user_id}">{*
-      *}<img src="{"images"|url}/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
+    <a href="{rel}/carnet/notifs.php?add_nonins={$c.user_id}">{*
+      *}<img src="{rel}/images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
     {else}
-    <a href="{"carnet/notifs.php"|url}?del_nonins={$c.user_id}">{*
-      *}<img src="{"images"|url}/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
+    <a href="{rel}/carnet/notifs.php?del_nonins={$c.user_id}">{*
+      *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
     {/if}
     {perms level='admin'}
     <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-      *}<img src="{"images/ax.png"|url}" alt='AX' title="fiche AX" /></a>
+      *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}
   </div>
   {/if}
   <div class="long"></div>
 {else}
   <div class="bits">
-    <a href="{"fiche.php"|url}?user={$c.forlife}" class="popup2">{*
-      *}<img src="{"images/loupe.gif"|url}" alt="Afficher la fiche" title="Afficher la fiche" /></a>
-    <a href="vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
-      *}<img src="{"images/vcard.png"|url}" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
-    <a href="{"carnet/mescontacts.php"|url}?action={$show_action}&amp;user={$c.forlife}">{*
-      *}<img src="{"images"|url}/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
+    <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
+      *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+    <a href="{rel}/vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
+      *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
+    <a href="{rel}/carnet/mescontacts.php?action={$show_action}&amp;user={$c.forlife}">{*
+      *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
         title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
     {perms level='admin'}
-    <a href="{"admin/utilisateurs.php"|url}?login={$c.forlife}">{*
-      *}<img src="{"images/admin.png"|url}" alt='admin' title="administrer user" /></a>
+    <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*
+      *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
     <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-      *}<img src="{"images/ax.png"|url}" alt='AX' title="fiche AX" /></a>
+      *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}
   </div>
   <div class="long">
