@@ -18,12 +18,42 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.18 2004-10-28 12:20:59 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.19 2004-10-28 20:28:41 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page("mescontacts.tpl",AUTH_COOKIE,true);
 require("applis.func.inc.php");
+
+
+if(isset($_GET['trombi'])) {
+    require_once('trombi.inc.php');
+    function getList($offset,$limit) {
+	global $globals;
+	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = {$_SESSION['uid']}");
+	list($total) = mysql_fetch_row($res);
+	mysql_free_result($res);
+
+	$res = $globals->db->query("
+	    	SELECT  u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, u.promo
+		  FROM  contacts       AS c
+	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
+	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
+		 WHERE  c.uid = {$_SESSION['uid']}
+	      ORDER BY  nom
+		 LIMIT  ".$offset*$limit.",$limit");
+	$list = Array();
+	while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
+	mysql_free_result($res);
+
+	return Array($total, $list);
+    }
+    
+    $trombi = new Trombi('getList');
+    $trombi->setNbRows(4);
+    $page->assign_by_ref('trombi',$trombi);
+    $page->run();
+}
 
 // si l'utilisateur demande le retrait de qqun de sa liste
 if (isset($_REQUEST['action'])) {

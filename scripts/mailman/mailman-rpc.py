@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.66 2004-10-27 09:54:29 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.67 2004-10-28 20:28:42 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -295,11 +295,18 @@ def get_members((userdesc,perms),vhost,listname):
 
 def get_members_limit((userdesc,perms),vhost,listname,page,nb_per_page):
     try:
+        members = get_members((userdesc,perms),vhost,listname)[1]
+    except:
+        return 0
+    i = int(page) * int(nb_per_page)
+    return (len(members), members[i:i+int(nb_per_page)])
+
+def get_owners((userdesc,perms),vhost,listname):
+    try:
         details,members,owners = get_members((userdesc,perms),vhost,listname)
     except:
         return 0
-    i = (int(page)-1) * int(nb_per_page)
-    return (details,members[i:i+int(nb_per_page)],owners,(len(members)-1)/int(nb_per_page)+1)
+    return (details,owners)
 
 #-------------------------------------------------------------------------------
 # owners procedures [ admin.php ]
@@ -793,6 +800,7 @@ server.register_function(unsubscribe)
 server.register_function(get_members)
 # trombi.php
 server.register_function(get_members_limit)
+server.register_function(get_owners)
 # admin.php
 server.register_function(mass_subscribe)
 server.register_function(mass_unsubscribe)

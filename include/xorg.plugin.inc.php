@@ -18,53 +18,45 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.php,v 1.7 2004-10-28 20:28:41 x2000habouzit Exp $
+ $Id: xorg.plugin.inc.php,v 1.1 2004-10-28 20:28:42 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
-new_skinned_page('trombipromo.tpl', AUTH_COOKIE, true);
-require("trombi.inc.php");
+class XOrgPlugin {
+    var $_get_vars = Array();
+    var $_callback;
+    
+    function XOrgPlugin($funcname) {
+	$this->_callback = $funcname;
+    }
 
-function getList($offset,$limit) {
-    global $globals;
+    function make_url($params) {
+	$get = Array();
+	$args = empty($params) ? Array() : $params;
 
-    $xpromo = intval($_REQUEST['xpromo']);
-    $where = ( $xpromo>0 ? "WHERE promo='$xpromo'" : "" );
+	if(!is_array($args)) {
+	    if(count($this->_get_vars)!=1) {
+		return "<p class='erreur'>params should be an array</p>";
+	    } else {
+		$args = Array($this->_get_vars[0]=>$params);
+	    }
+	}
 
-    $res = $globals->db->query("SELECT  COUNT(*)
-				  FROM  auth_user_md5 AS u
-			    RIGHT JOIN  photo         AS p ON u.user_id=p.uid
-			    $where");
-    list($pnb) = mysql_fetch_row($res);
-    mysql_free_result($res);
+	foreach($_GET as $key=>$val) {
+	    if(in_array($key,$this->_get_vars) && array_key_exists($key,$args)) continue;
+	    $get[] = urlencode($key) . '=' . urlencode($val);
+	}
 
-    $sql = "SELECT  promo,user_id,a.alias AS forlife,nom,prenom
-	      FROM  photo         AS p
-	INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
-	INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
-	    $where
-	  ORDER BY  promo,nom,prenom LIMIT ".($offset*$limit).",$limit";
+	foreach($this->_get_vars as $key) {
+	    if(array_key_exists($key,$args)) {
+		if($args[$key]) $get[] = urlencode($key) . '=' . urlencode($args[$key]);
+	    } elseif(isset($_GET['key'])) {
+		$get[] = urlencode($key) . '=' . urlencode($_GET[$key]);
+		
+	    }
+	}
 
-    $res = $globals->db->query($sql);
-    $list = Array();
-    while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
-    mysql_free_result($res);
-
-    return Array($pnb, $list);
-}
-
-if(isset($_REQUEST['xpromo'])) {
-    $xpromo = intval($_REQUEST['xpromo']);
-
-    if ( $xpromo<1900 || $xpromo>date('Y') || ($xpromo == -1 && $_SESSION['perms']!="admin") ) {
-	$page->assign('erreur', "Promotion incorrecte (saisir au format YYYY). Recommence.");
-    } else {
-	$trombi = new Trombi('getList');
-	$trombi->setAdmin();
-	$page->assign_by_ref('trombi',$trombi);
+	return $_SERVER['PHP_SELF'] . '?' . join('&amp;',$get);
     }
 }
-
-$page->run();
 
 ?>

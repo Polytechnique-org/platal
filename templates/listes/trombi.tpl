@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.9 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.10 2004-10-28 20:28:43 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -107,36 +107,7 @@
   membres de la liste
 </h1>
 
-<table cellpadding="8" cellspacing="2" style="width:100%;">
-  {foreach from=$members item=xs key=promo}
-    {foreach from=$xs item=x}
-      {if $promo}
-      {cycle values="1,2,3" assign="loop"}
-      {if $loop eq "1"}<tr>{/if}
-        <td class='center'>
-          <img src="{"getphoto.php"|url}?x={$x.l}" width="110" alt=" [ PHOTO ] " />
-          <br />
-          <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">
-            {$x.n} ({$promo})
-          </a>
-        </td>
-      {if $loop eq "3"}</tr>{/if}
-      {/if}
-    {/foreach}
-  {/foreach}
-  {if $loop eq "1"}<td></td><td></td></tr>{elseif $loop eq "2"}<td></td></tr>{/if}
-  <tr>
-    <td colspan='3' class='center'>
-      {foreach from=$links item=l}
-      {if $l.i eq $npage}
-      <span class='erreur'>{$l.text}</span>
-      {else}
-      <a href='?liste={$smarty.request.liste}&amp;npage={$l.i}'>{$l.text}</a>
-      {/if}
-      {/foreach}
-    </td>
-  </tr>
-</table>
+{$trombi->show()|smarty:nodefaults}
 
 {/if}
 

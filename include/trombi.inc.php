@@ -18,53 +18,42 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.php,v 1.7 2004-10-28 20:28:41 x2000habouzit Exp $
+ $Id: trombi.inc.php,v 1.1 2004-10-28 20:28:41 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
-new_skinned_page('trombipromo.tpl', AUTH_COOKIE, true);
-require("trombi.inc.php");
+require_once('xorg.plugin.inc.php');
+ 
+class Trombi extends XOrgPlugin {
+    var $_get_vars = Array('offset');
+    var $limit = 24;
+    var $admin = false;
 
-function getList($offset,$limit) {
-    global $globals;
+    function setNbRows($row) { $this->limit = $row*3; }
+    function setAdmin() { $this->admin = true; }
+    
+    function show() {
+	global $page;
 
-    $xpromo = intval($_REQUEST['xpromo']);
-    $where = ( $xpromo>0 ? "WHERE promo='$xpromo'" : "" );
+	$offset = empty($_GET['offset']) ? 0 : intval($_GET['offset']);
+	list($total, $list) = call_user_func($this->_callback, $offset, $this->limit);
+	$page_max = intval(($total-1)/$this->limit);
 
-    $res = $globals->db->query("SELECT  COUNT(*)
-				  FROM  auth_user_md5 AS u
-			    RIGHT JOIN  photo         AS p ON u.user_id=p.uid
-			    $where");
-    list($pnb) = mysql_fetch_row($res);
-    mysql_free_result($res);
+	$links = Array();
+	if($offset) {
+	    $links[] = Array('u'=> $this->make_url($offset-1), 'i' => $offset-1,  'text' => 'précédent');
+	}
+	for($i = 0; $i <= $page_max ; $i++)
+	    $links[] = Array('u'=>$this->make_url($i), 'i' => $i, 'text' => $i+1);
 
-    $sql = "SELECT  promo,user_id,a.alias AS forlife,nom,prenom
-	      FROM  photo         AS p
-	INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
-	INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
-	    $where
-	  ORDER BY  promo,nom,prenom LIMIT ".($offset*$limit).",$limit";
+	if($offset < $page_max) {
+	    $links[] = Array ('u' => $this->make_url($offset+1), 'i' => $offset+1, 'text' => 'suivant');
+	}
 
-    $res = $globals->db->query($sql);
-    $list = Array();
-    while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
-    mysql_free_result($res);
-
-    return Array($pnb, $list);
-}
-
-if(isset($_REQUEST['xpromo'])) {
-    $xpromo = intval($_REQUEST['xpromo']);
-
-    if ( $xpromo<1900 || $xpromo>date('Y') || ($xpromo == -1 && $_SESSION['perms']!="admin") ) {
-	$page->assign('erreur', "Promotion incorrecte (saisir au format YYYY). Recommence.");
-    } else {
-	$trombi = new Trombi('getList');
-	$trombi->setAdmin();
-	$page->assign_by_ref('trombi',$trombi);
+	$page->assign_by_ref('trombi_list', $list);
+	$page->assign_by_ref('trombi_links', $links);
+	$page->assign('trombi_admin', $this->admin);
+	return $page->fetch('include/trombi.tpl');
     }
 }
-
-$page->run();
 
 ?>

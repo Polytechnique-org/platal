@@ -17,69 +17,49 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.11 2004-10-28 20:28:42 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.1 2004-10-28 20:28:43 x2000habouzit Exp $
  ***************************************************************************}
 
-
 {dynamic}
-<p class="erreur">{$erreur}</p>
+ 
+<table cellpadding="8" cellspacing="2" style="width:100%;">
+  {foreach from=$trombi_list item=p}
+  {cycle values="1,2,3" assign="loop"}
+  {if $loop eq "1"}
+  <tr>
+  {/if}
+    <td class="center">
+      <img src="{"getphoto.php"|url}?x={$p.forlife}" width="110" alt=" [ PHOTO ] " />
+      <br />
+      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$p.forlife}')">
+        {$p.prenom} {$p.nom} ({$p.promo})
+      </a>
+      {if $trombi_admin && $smarty.session.perms eq 'admin'}<br />
+      <a href="{"admin/admin_trombino.php"|url}?uid={$p.user_id}">[admin]</a>
+      {/if}
+    </td>
+  {if $loop eq "3"}
+  </tr>
+  {/if}
+  {/foreach}
+  {if $loop eq "1"}
+  <td></td><td></td></tr>
+  {elseif $loop eq "2"}
+  <td></td></tr>
+  {/if}
+  <tr>
+    <td colspan='3' class='center'>
+      {foreach from=$trombi_links item=l}
+      {if $l.i eq $smarty.request.offset}
+      <span class="erreur">{$l.text}</span>
+      {else}
+      <a href="{$l.u}">{$l.text}</a>
+      {/if}
+      {/foreach}
+    </td>
+  </tr>
+</table>
 
-{if $trombi}
-
-<h1>
-  Mon trombino de contacts
-</h1>
-
-<p>
-[<a href="{$smarty.server.PHP_SELF}">vue classique</a>]
-</p>
-
-{$trombi->show()|smarty:nodefaults}
-
-{else}
-
-<h1>
-  Ma liste personnelle de contacts
-</h1>
-
-<form action="{$smarty.server.PHP_SELF}" method="post">
-<p>
-  Ajouter la personne suivante à ma liste de contacts (prenom.nom) :
-  <input type="hidden" name="action" value="ajouter" />
-  <input type="text" name="user" size="20" maxlength="70" />&nbsp;
-  <input type="submit" value="Ajouter" />
-</p>
-</form>
-<p>
-  Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
-  il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
-</p>  
-
-{if $nb_contacts}
-<p>
-  Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" onclick="return popup(this)"><strong>Triée par promo</strong></a>]
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf" onclick="return popup(this)"><strong>Triée par noms</strong></a>]
-</p>
-
-<p>
-Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous forme de trombi</strong></a>]
-</p>
-
-<br />
-
-<div class="contact-list">
-{foreach item=contact from=$contacts}
-{include file=include/minifiche.tpl c=$contact show_action="retirer" inscrit=1}
-{/foreach}
-</div>
-
-{else}
-<p>Actuellement ta liste de contacts est vide...</p>
-{/if}
-
-
-{/if}
 {/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

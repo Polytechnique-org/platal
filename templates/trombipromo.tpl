@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: trombipromo.tpl,v 1.8 2004-10-28 20:28:42 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -69,54 +69,7 @@ chaque page affiche au plus {$limit} photos.
   {/if}
 </h1>
 
-{if $pnb}
-<p>
-{$pnb} polytechnicien{if $pnb gt 1}s de la promotion {$smarty.request.xpromo} ont
-{else} de la promotion {$smarty.request.xpromo} a {/if} une photo dans l'album photo :
-</p>
-
-<table cellpadding="8" cellspacing="2" style="width:100%;">
-  {foreach from=$photos item=p}
-  {cycle values="1,2,3" assign="loop"}
-  {if $loop eq "1"}
-  <tr>
-  {/if}
-    <td class="center">
-      <a href="javascript:x()" onclick="popWin('fiche.php?user={$p.forlife}')">
-        <img src="getphoto.php?x={$p.user_id}" width="110" alt=" [ PHOTO ] " />
-      </a>
-      {mailto address="`$p.forlife`@polytechnique.org" text="`$p.prenom`&nbsp;`$p.nom`"}
-      {if $smarty.request.xpromo eq 'all'}{$p.promo}{/if}
-      {if $smarty.session.perms eq 'admin'}<br /><a href="admin/admin_trombino.php?uid={$p.user_id}">[admin]</a>{/if}
-    </td>
-  {if $loop eq "3"}
-  </tr>
-  {/if}
-  {/foreach}
-  {if $loop eq "1"}
-  <td></td><td></td></tr>
-  {elseif $loop eq "2"}
-  <td></td></tr>
-  {/if}
-</table>
-
-{foreach from=$links item=l}
-{if $l[0] eq $smarty.request.offset}
-<span class="erreur">
-  <a href="{$smarty.server.PHP_SELF}?xpromo={$smarty.request.xpromo}&amp;offset={$l[0]}">{$l[1]}</a>
-</span>
-{else}
-<a href="{$smarty.server.PHP_SELF}?xpromo={$smarty.request.xpromo}&amp;offset={$l[0]}">{$l[1]}</a>
-{/if}
-{/foreach}
-
-{else}
-
-<div>
-  Il n'y a aucune photo de camarade de cette promotion sur nos serveurs.
-</div>
-
-{/if}
+{$trombi->show()|smarty:nodefaults}
 
 {/if}
 
