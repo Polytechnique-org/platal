@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.27 2004-10-14 11:58:26 x2000habouzit Exp $
+        $Id: search.php,v 1.28 2004-10-14 12:01:21 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -94,7 +94,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
     $page->assign('with_soundex',$with_soundex);
-    $page->assign('mod_date_sort',$mod_date_sort);
+    $page->assign('mod_date_sort',$_REQUEST['mod_date_sort']);
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
