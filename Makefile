@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2004-11-22 11:26:09 x2000habouzit Exp $
+# $Id: Makefile,v 1.3 2004-11-23 10:25:23 x2000habouzit Exp $
 ################################################################################
 # definitions
 
@@ -39,9 +39,6 @@ devel: build cache templates_c
 ################################################################################
 # diogenes package targets
 
-config:
-	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
-	
 pkg-build: include/xorg.globals.inc.php
 #	make -C po
 
