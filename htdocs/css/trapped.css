@@ -1,0 +1,163 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+a:link, a:visited, a:active {
+    color: #000000;
+    background: inherit;
+}
+
+a:hover { color: #47220a; }
+
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
+
+body {
+    background-color: #ffffff;
+    background-image: url('../images/sk_trapped_monstre.jpg');
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    font-family: "Arial", sans-serif;
+    color: #000000;
+}
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+div.rubrique {
+    color: #ffffff;
+    background-image: url("../images/sk_trapped_titre.gif");
+    background-repeat: no-repeat;
+    background-color: #200a00;
+/*    text-indent: 0.2em;
+    text-align: left;
+    font-family: "helvetica", sans-serif;
+    font-weight: bolder;
+    font-size: 120%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-left: 0.5em;*/
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
+
+table.tinybicol, table.bicol {
+    background-color: #f2e9e2;
+    border: 1px solid #200a00;
+    border-collapse: collapse;
+}
+
+table.tinybicol tr, table.bicol tr { }
+table.tinybicol tr.pair, table.bicol tr.pair { background-color: #e2d9c2; }
+table.tinybicol th, table.bicol th {
+    background-color: #291602;  
+}
+
+table.tenybicol td, table.bicol td { color: #000000; }
+table
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
+div.contact-list div.contact {
+    border-top: 1px solid #000000;
+    background: #f2e9e2;
+    color: inherit;
+}
+
+div.contact div.long {
+    background: #e2d9c2;
+    color: inherit;
+}
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+
+#onglet li {
+    background: #e2d9c2;
+}
+
+/*******************************************************************************
+    7   fiche.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+#body-logo {
+    border-top: none;
+    border-bottom: none;
+    border-right: 1px solid #777777;
+    border-left: none;
+}
+
+#body-top {
+    border-bottom: 2px solid #777777;
+}
+
+#body-bottom {
+    border-top: 1px solid #777777;
+    font-family: "helvetica", sans-serif;
+    font-size: x-small;
+}
+
+#body-menu {
+    font-family: "helvetica", sans-serif;
+    font-weight: bold;
+    font-size: smaller;
+    border-right: 1px solid #777777;
+}
+
+#body-menu .menu_title {
+    color : #7a614f;
+    background-color: #F2e9e2;
+    background-image: url("../images/sk_trapped_menu.jpg");
+    border-top: 1px solid #ab8b7d;
+    border-bottom: 1px solid #ab8b7d;
+    font-size: smaller;
+}
+
+#body-menu .menu_item {
+    border-right: none;
+    font-size: smaller;
+/*    padding-left: 0px;
+    text-align: left;*/
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */
+/* $Id: trapped.css,v 1.1 2004-10-03 17:07:50 x2003bruneau Exp $ */
