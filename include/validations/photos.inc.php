@@ -96,29 +96,23 @@ class PhotoReq extends Validate
     { return 'include/form.valid.photos.tpl'; }
 
     // }}}
-    // {{{ function handle_formu()
-    
-    function handle_formu ()
+    // {{{ function _mail_subj
+
+    function _mail_subj()
     {
-        if (Post::get('submit') != "Accepter" && Post::get('submit') != "Refuser") {
-            return false;
-        }
-        
-        require_once("xorg.mailer.inc.php");
-        $mymail = new XOrgMailer('valid.photos.tpl');
-        $mymail->assign('bestalias', $this->bestalias);
+        return "[Polytechnique.org/PHOTO] Changement de photo";
+    }
 
-        if (Post::get('submit') == "Accepter") {
-            $mymail->assign('answer','yes');
-            $this->commit();
+    // }}}
+    // {{{ function _mail_body
+    
+    function _mail_body($isok)
+    {
+        if ($isok) {
+            return "  La demande de changement de photo que tu as demandée vient d'être effectuée.";
         } else {
-            $mymail->assign('answer','no');
+            return "  La demande de changement de photo que tu avais faite a été refusée.";
         }
-        
-        $mymail->send();
-
-        $this->clean();
-        return "Mail envoyé";
     }
 
     // }}}
@@ -133,6 +127,7 @@ class PhotoReq extends Validate
                                       $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
 	require_once('notifs.inc.php');
 	register_watch_op($this->uid,WATCH_FICHE);
+        return true;
     }
 
     // }}}

@@ -67,33 +67,23 @@ class ListeReq extends Validate
     { return 'include/form.valid.listes.tpl'; }
 
     // }}}
-    // {{{ function handle_formu()
+    // {{{ function _mail_subj
 
-    function handle_formu()
+    function _mail_subj()
     {
-        if (Env::get('submit') != "Accepter" && Env::get('submit') != "Refuser") {
-            return false;
-        }
+        return "[Polytechnique.org/LISTES] Demande de la liste {$this->liste}";
+    }
 
-        require_once("xorg.mailer.inc.php");
-        $mymail = new XOrgMailer('valid.liste.tpl');
-        $mymail->assign('alias', $this->liste);
-        $mymail->assign('bestalias', $this->bestalias);
-        $mymail->assign('motif', stripslashes(Env::get('motif')));
+    // }}}
+    // {{{ function _mail_body
 
-        if (Env::get('submit') == "Accepter") {
-            $mymail->assign('answer', 'yes');
-            if (!$this->commit()) {
-                return 'problème';
-            }
+    function _mail_body($isok)
+    {
+        if ($isok) {
+            return "  La mailing list {$this->liste} que tu avais demandée vient d'être créée.";
         } else {
-            $mymail->assign('answer', 'no');
+            return "  La demande que tu avais faite pour la mailing list {$this->liste} a été refusée.";
         }
-        $mymail->send();
-
-        //Suppression de la demande
-        $this->clean();
-        return "Mail envoyé";
     }
 
     // }}}
