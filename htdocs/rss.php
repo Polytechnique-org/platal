@@ -22,7 +22,7 @@
 require_once('xorg.inc.php');
 new_nonhtml_page('rss.tpl', AUTH_PUBLIC);
 
-$requete='SELECT e.id,e.titre,e.texte FROM evenements AS e WHERE FIND_IN_SET(flags, 'valide') AND peremption >= NOW()';
+$requete = 'SELECT e.id,e.titre,e.texte FROM evenements AS e WHERE FIND_IN_SET(flags, "valide") AND peremption >= NOW()';
 
 if (Env::has('promo')) {
     $promo    = Env::getInt('promo');
