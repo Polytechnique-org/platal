@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.4 2004-09-24 16:43:53 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.5 2004-10-10 22:05:25 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -60,7 +60,7 @@
   {foreach from=$mail.parts item=part key=i}
   <tr><th>Partie n°{$i}</th></tr>
   <tr class='{cycle values="impair,pair"}'>
-    <td><pre>{$part|qpd|regex_replace:"!\\n-- *\\n(.*?)$!sm":"</pre><hr style='width:98%;margin:1%'/><pre>\\1"}</pre></td>
+    <td><tt>{$part|qpd|nl2br}</tt></td>
   </tr>
   {/foreach}
 </table>
