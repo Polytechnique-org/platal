@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.10 2004-09-05 20:27:57 x2000coic Exp $
+        $Id: fiche.php,v 1.11 2004-09-19 10:41:05 x2000coic Exp $
  ***************************************************************************/
 
 
@@ -86,6 +86,7 @@ $page->assign('libre', $libre);
 
 $page->assign('xorg_title', "$prenom $nom");
 
+
 // reformatage is_contact
 $is_contact = (bool) $is_contact;
 $page->assign('is_contact', $is_contact);
@@ -110,6 +111,14 @@ $page->assign('size_y', $size_y);
 
 
 mysql_free_result($result);
+
+//check si le gars est un referent :
+$reqsql = "SELECT 1 FROM mentor WHERE uid = '$user_id' AND expertise <> ''";
+$result = $globals->db->query($reqsql);
+if (list($is_referent) = mysql_fetch_row($result)){
+  mysql_free_result($result);
+}
+$page->assign('is_referent', $is_referent);
 
 //recuperation des infos professionnelles
 $reqsql = 

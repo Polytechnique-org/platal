@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.php,v 1.8 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: fiche_referent.php,v 1.9 2004-09-19 10:41:05 x2000coic Exp $
  ***************************************************************************/
 
 
@@ -47,6 +47,7 @@ $page->assign('nom', $nom);
 $page->assign('promo', $promo);
 $page->assign('cv', $cv);
 $page->assign('forlife', $forlife);
+
 
 //recuperation des infos professionnelles
 $reqsql = 

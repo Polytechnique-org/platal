@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.11 2004-09-10 23:54:14 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.12 2004-09-19 10:41:08 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -36,6 +36,9 @@
     <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a><br />
   </div>
   <div><em>{$nationalite}</em> - X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
+  {if $is_referent}
+    <div><a href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$forlife}')">Ma fiche référent</a></div>
+  {/if}
 </div>
 
 <div id="fiche_divers">
