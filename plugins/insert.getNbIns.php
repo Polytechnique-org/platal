@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.getNbIns.php,v 1.3 2004-08-31 11:19:51 x2000habouzit Exp $
+        $Id: insert.getNbIns.php,v 1.4 2004-10-08 20:35:24 x2000chevalier Exp $
  ***************************************************************************/
 
 /*
@@ -37,6 +37,6 @@ function smarty_insert_getNbIns($params, &$smarty)
             ON a.matricule=i.matricule where i.deces = 0",$conn);
     list($stats_count)=mysql_fetch_row($result);
     mysql_free_result($result);
-    return "$stats_count";
+    return number_format($stats_count, 0, ",", ".");
 }
 ?>
