@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-require_once("search.classes.inc.php");
+require_once("search.inc.php");
 
 new_skinned_page('search.tpl', AUTH_PUBLIC);
 if (logged()) {
@@ -31,7 +31,6 @@ require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
 if (Env::has('quick')) {
-    require_once("xorg.search.inc.php");
     $page->assign('formulaire', 0);
 
     function get_list($offset, $limit, $order, $order_inv) {
@@ -39,8 +38,6 @@ if (Env::has('quick')) {
         $qSearch = new QuickSearch('quick');
         $fields  = new SFieldGroup(true, array($qSearch));
 
-        $offset  = new NumericSField('offset');
-        
         if ($qSearch->isempty()) {
             new ThrowError('Recherche trop générale.');
         }
@@ -63,8 +60,8 @@ if (Env::has('quick')) {
                    HAVING  mark>0
                  ORDER BY '.($order?($order.($order_inv?" DESC":"").', '):'')
                             .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
-                    LIMIT  '.$offset->value.','.$globals->search->per_page;
-        $list = $globals->xdb->iterator($sql);
+                    LIMIT  '.$offset * $globals->search->per_page.','.$globals->search->per_page;
+        $list    = $globals->xdb->iterator($sql);
         $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
         $nb_tot  = $res->fetchOneCell();
         return array($list, $nb_tot);

@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once('xorg.plugin.inc.php');
+require_once("search/classes.inc.php");
 
 // {{{ class XOrgSearch
 
@@ -45,22 +46,28 @@ class XOrgSearch extends XOrgPlugin
     // }}}
     // {{{ function setAuth()
 
-    function setAuth() {
-        foreach ($this->orders as $key=>$o)
-            if ($o[3] == AUTH_COOKIE)
+    function setAuth()
+    {
+        foreach ($this->orders as $key=>$o) {
+            if ($o[3] == AUTH_COOKIE) {
                 $this->orders[$key][3] = logged();
-            elseif ($o[3] == AUTH_PUBLIC)
+            } elseif ($o[3] == AUTH_PUBLIC) {
                 $this->orders[$key][3] = true;
-            else
+            } else {
                 $this->orders[$key][3] = identified();
+            }
+        }
     }
 
     // }}}
     // {{{ function addOrder()
 
-    function addOrder($name, $field, $inv_order, $text, $auth, $defaut=false) {
+    function addOrder($name, $field, $inv_order, $text, $auth, $defaut=false)
+    {
         $this->orders[$name] = array($field, $inv_order, $text, $auth);
-        if ($defaut) $this->order_defaut = $name;
+        if ($defaut) {
+            $this->order_defaut = $name;
+        }
     }
 
     // }}}
@@ -72,9 +79,11 @@ class XOrgSearch extends XOrgPlugin
 	global $page;
 
         $offset = intval($this->get_value('offset'));
-        $tab = $this->orders[$this->get_value('order')];
-        if (!$tab || !$tab[3]) $tab = $this->orders[$this->order_defaut];
-        $order = $tab[0];
+        $tab    = $this->orders[$this->get_value('order')];
+        if (!$tab || !$tab[3]) {
+            $tab = $this->orders[$this->order_defaut];
+        }
+        $order     = $tab[0];
         $order_inv = ($this->get_value('order_inv') != '') == $tab[1];
 	
         list($list, $total) = call_user_func($this->_callback, $offset, $this->limit, $order, $order_inv);
@@ -104,7 +113,8 @@ class XOrgSearch extends XOrgPlugin
                 "text"=>$o[2],
                 "url" =>$this->make_url(Array('order'    =>$key,'order_inv'=>($o[0] == $order) && ($order_inv != $o[1]))),
                 "asc" =>($o[0] == $order) && $order_inv,
-                "desc"=>($o[0] == $order) && !$order_inv);
+                "desc"=>($o[0] == $order) && !$order_inv
+            );
         }
         $page->assign('search_order_link', $order_links);
   

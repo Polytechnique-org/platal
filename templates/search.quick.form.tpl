@@ -26,7 +26,7 @@
       <td style="width: 78%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 100%" /><br />
         {min_auth level='cookie'}
-        <input type='checkbox' name='mod_date_sort' {if $smarty.request.mod_date_sort}checked='checked'{/if} />
+        <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
         mettre les fiches modifiées récemment en premier
         {if $smarty.request.nonins}
         <br /><input type='checkbox' name='nonins' readonly="readonly" checked='checked' value='1' /> Chercher uniquement des non inscrits

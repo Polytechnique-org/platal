@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-require_once("search.classes.inc.php");
+require_once('search.inc.php');
 new_skinned_page('search.tpl', AUTH_COOKIE);
 
 $page->assign('advanced',1);
@@ -63,7 +63,6 @@ function form_prepare()
 if (!Env::has('rechercher')) {
     form_prepare();
 } else {
-    require_once('xorg.search.inc.php');
     // {{{ function get_list()
 
     function get_list($offset, $limit, $order, $order_inv) {
@@ -101,12 +100,12 @@ if (!Env::has('rechercher')) {
         $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
       
         $fields          = new SFieldGroup(true, array( 
-            $nameField, $firstnameField, $nicknameField, $promo1Field,
-            $promo2Field, $womanField, $subscriberField, $aliveField,
-            $townField, $countryField, $regionField, $entrepriseField,
-            $posteField, $secteurField, $cvField, $natField, $binetField,
-            $groupexField, $sectionField, $schoolField, $diplomaField,
-            $freeField)
+                    $nameField, $firstnameField, $nicknameField, $promo1Field,
+                    $promo2Field, $womanField, $subscriberField, $aliveField,
+                    $townField, $countryField, $regionField, $entrepriseField,
+                    $posteField, $secteurField, $cvField, $natField, $binetField,
+                    $groupexField, $sectionField, $schoolField, $diplomaField,
+                    $freeField)
                 );
 
     
@@ -142,7 +141,9 @@ if (!Env::has('rechercher')) {
         return Array($liste, $nb_tot);
     }
 
-    $search = new XOrgSearch(get_list);
+    // }}}
+
+    $search = new XOrgSearch('get_list');
     $search->setNbLines($globals->search->per_page);
             
     $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
