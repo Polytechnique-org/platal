@@ -31,6 +31,9 @@ class AliasReq extends Validate
 
     var $old='';
     var $public='private';
+    
+    var $rules = "Interdire ce qui peut nous servir (virus@, postmaster@, ...),
+                  les alias vulgaires, et les prenom.nom (sauf si c'est pour l'utilisateur prenom.nom)";
 
     // }}}
     // {{{ constructor

@@ -28,6 +28,7 @@ class NLReq extends Validate
     // {{{ properties
 
     var $art;
+    var $rules = "Laisser valider par le NL-MASTER";
     
     // }}}
     // {{{ constructor

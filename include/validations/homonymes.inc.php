@@ -32,7 +32,7 @@ class HomonymeReq extends Validate
 
     var $homonymes_forlife;
 
-    var $rules = "Ces requêtes sont générées par un cron, la validation permet d'éviter de spammer les gens si le cron s'emballe ou de créer un robot pour une personne qui ne devrait pas en avoir.";
+    var $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus ... manuellement";
 
     // }}}
     // {{{ constructor

@@ -32,7 +32,8 @@ class MarkReq extends Validate
     var $m_nom;
     var $m_prenom;
     var $m_promo;
-    
+
+    var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance)";
     // }}}
     // {{{ constructor
 
