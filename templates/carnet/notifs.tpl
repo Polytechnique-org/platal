@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.7 2004-11-05 14:34:05 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.8 2004-11-05 15:22:12 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -40,7 +40,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   <fieldset>
     <legend>Contacts</legend>
     <input type='checkbox' name='contacts' {if $notifs->flags->hasflag('contacts')}checked="checked"{/if} /> Surveiller mes contacts<br />
-    <input type='checkbox' name='deaths' {if $notifs->flags->hasflag('deaths')}checked="checked"{/if}/> Supprimer les camarades décédés de mes contacts
+    <input type='checkbox' name='deaths' {if $notifs->flags->hasflag('deaths')}checked="checked"{/if}/> Retirer les camarades décédés de mes contacts
   </fieldset>
   <div class='center'>
     <input type='submit' name='flags' value='valider' />
