@@ -17,36 +17,30 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.18 2004-10-12 19:54:36 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.19 2004-10-22 11:18:04 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
-  <table style="width: 100%">
-    <tr>
-      <td>
-        {if $advanced eq "1"}
-        Recherche avancée
-        {else}
-        Recherche simple
-        {/if}
-      </td>
-      <td class="right">
-        {if $advanced}
-        [<a href="search.php">Recherche simple</a>]
-        {else}
-        {min_auth level="cookie"}
-        [<a href="advanced_search.php">Recherche avancée</a>]
-        {/min_auth}
-        {/if}
-      </td>
-    </tr>
-  </table>
+    {if $advanced eq "1"}
+    Recherche avancée
+    {else}
+    Recherche simple
+    {/if}
 </div>
 {if $error}
   <p class="error">
     {$error}
   </p>
+  {/if}
+  
+{if $advanced}
+<p>[<a href="search.php">Recherche simple</a>]</p>
+{else}
+{min_auth level="cookie"}
+<p>[<a href="advanced_search.php">Recherche avancée</a>]</p>
+{/min_auth}
 {/if}
+
 <form id="recherche" action="{$smarty.server.PHP_SELF}" method="post">
   <table class="{if !$advanced}tiny{/if}bicol" cellpadding="3" summary="Recherche">
     <tr>
