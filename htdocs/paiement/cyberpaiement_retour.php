@@ -18,12 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.6 2004-10-09 10:42:30 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.7 2004-10-09 10:44:03 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
-new_skinned_page('paiment/index.tpl', AUTH_PUBLIC);
-
+require("config.xorg.inc.php") ;
+require_once("xorg.common.inc.php");
 require("diogenes.mailer.inc.php");
 
 /* en attendant PHP 4.2, on definit var_export */
