@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ins_confirmees.php,v 1.3 2004-09-02 23:57:48 x2000bedo Exp $
+        $Id: ins_confirmees.php,v 1.4 2004-10-12 16:11:49 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -30,7 +30,7 @@ $sql = "SELECT a.alias AS forlife,u.date_ins,u.promo,u.nom,u.prenom
         FROM       ins_confirmees AS i
         INNER JOIN auth_user_md5  AS u ON i.id=u.user_id
         INNER JOIN aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
-        ORDER BY a.{$_GET['sort']} DESC";
+        ORDER BY u.{$_GET['sort']} DESC";
 $page->mysql_assign($sql, 'ins', 'nb_ins');
 
 $page->run();
