@@ -48,9 +48,15 @@
       </td>
     </tr>
     <tr>
+      <td></td>
+      <td>
+        <input type="checkbox" name="remember" checked="checked" /> Se souvenir de moi
+      </td>
+    </tr>
+    <tr>
       <td>
         <img src="{"images/pi.png"|url}" alt=" [ ? ] " />
-        <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
+        <a href="{rel}/recovery.php">Mote passe perdu ?</a>
       </td>
       <td class="right">
         <input  type="submit" name="submitbtn" value="Envoyer" />
@@ -70,6 +76,7 @@
   <div>
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
     <input type="hidden" name="username"  value="{$smarty.cookies.ORGuid}" />
+    <input type="hidden" name="remember"  value="" />
     <input type="hidden" name="response"  value="" />
   </div>
 </form>

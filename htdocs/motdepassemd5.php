@@ -21,13 +21,19 @@
 
 require_once('xorg.inc.php');
 
-if (Env::has('response2'))  {             // la variable $response existe-t-elle ?
-    // OUI, alors changeons le mot de passe
-    $password = Post::get('response2');
-    $sql      = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".Session::getInt('uid');
-    $log      =& Session::getMixed('log');
+if (Env::has('response2'))  {
+    $_SESSION['password'] = $password = Post::get('response2');
+    
+    $sql = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".Session::getInt('uid');
     $globals->db->query($sql);
+    
+    $log =& Session::getMixed('log');
     $log->log('passwd', '');
+
+    if (Cookie::get('ORGaccess')) {
+        setcookie('ORGaccess', md5($password), (time()+25920000), '/', '' ,0);
+    }
+
     new_skinned_page('motdepassemd5.success.tpl', AUTH_MDP);
     $page->run();
 }

@@ -22,8 +22,22 @@
 require_once("xorg.inc.php");
 new_skinned_page('preferences.tpl', AUTH_COOKIE);
 
-$has_cookie = (Cookie::has('ORGaccess') ? 'cookie' : '');
-$page->assign('has_cookie', $has_cookie);
+if (Env::has('remember')) {
+    setcookie('ORGaccess', md5(Session::get('password')),  (time()+25920000), '/', '' ,0);
+    $_SESSION['log']->log('cookie_on');
+    header('Location: preferences.php');
+}
+
+if (Env::has('forget')) {
+    setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+    $_SESSION['log']->log("cookie_off");
+    if (!identified()) {
+        session_destroy();
+        $_SESSION = array();
+        header('Location: index.php');
+    }
+    header('Location: preferences.php');
+}
 
 $page->run($has_cookie);
 ?>

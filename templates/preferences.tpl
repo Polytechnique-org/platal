@@ -70,20 +70,17 @@
   </tr>
   <tr class="impair">
     <td>
-      {if $has_cookie}
-      <h3><a href="cookie_off.php">Supprimer l'accès permanent</a></h3>
+      {if $smarty.cookies.ORGaccess}
+      <h3><a href="?forget=1">M'oublier</a></h3>
       <div class='explication'>
         Clique sur le lien ci-dessus pour retirer l'accès sans mot de passe au site. Après avoir
-        cliqué, tu devras à nouveau entrer ton mot de passe pour accéder aux différentes pages
-        comme initialement.
+        cliqué, tu devras entrer ton mot de passe pour accéder aux différentes pages.
       </div>
       {else}
-      <h3><a href="cookie_on.php">Attribuer un cookie d'authentification permanente</a></h3>
+      <h3><a href="?remember=1">Se souvenir de moi</a></h3>
       <div class='explication'>
-        Cette option te permet de ne plus avoir à entrer ton mot de passe pour la majorité des pages
-        du site. Ce dernier reste cependant nécessaire pour le profil ou le changement de mot de
-        passe. Il s'agit d'une option destinée aux utilisateurs fréquents du site, plutôt à l'aise
-        avec l'informatique, et pour un ordinateur non partagé.
+        Cette option te permet de ne plus avoir à entrer ton mot de passe pour la majorité des pages du site.
+        Il s'agit d'une option destinée aux utilisateurs fréquents du site, et pour un ordinateur non partagé.
       </div>
       {/if}
     </td>

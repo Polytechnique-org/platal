@@ -35,7 +35,7 @@
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
 Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi sur
-<a href="{"inscription/"|url}">la page d'inscription</a>.
+<a href="{rel}/inscription/">la page d'inscription</a>.
 </p>
 {/min_auth}
 
@@ -52,7 +52,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
     nous</strong> pour obtenir un accès. Polytechnique.org c'est l'e-mail des X,
   l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
-  rapidement possible. <strong> <a href="{"inscription/"|url}">Clique ici pour nous demander tes
+  rapidement possible. <strong> <a href="{rel}inscription/">Clique ici pour nous demander tes
       paramètres personnels.</a></strong>
   </li>
 </ul>
@@ -83,9 +83,15 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       </td>
     </tr>
     <tr>
+      <td></td>
       <td>
-        <img src="{"images/pi.png"|url}" alt=" [ ? ] " />
-        <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
+        <input type="checkbox" name="remember" /> Se souvenir de moi
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="{rel}/images/pi.png" alt=" [ ? ] " />
+        <a href="{rel}/recovery.php">mot de passe perdu ?</a>
       </td>
       <td class="right">
         <input type="submit" name="submitbtn" value="Envoyer" />
@@ -94,7 +100,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   </table>
 </form>
 <p>
-Problème de connexion ? <a href="{"docs/faq.php#connect"|url}">La réponse est là.</a>
+Problème de connexion ? <a href="{rel}/docs/faq.php#connect">La réponse est là.</a>
 <br />
 (Activer obligatoirement le <strong>javascript</strong>)
 </p>
@@ -112,6 +118,7 @@ Problème de connexion ? <a href="{"docs/faq.php#connect"|url}">La réponse est là
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
     <input type="hidden" name="response"  value="" />
     <input type="hidden" name="username"  value="" />
+    <input type="hidden" name="remember"  value="" />
   </div>
 </form>
 

@@ -17,9 +17,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
-
-
-    <script src="{"javascript/md5.js"|url}" type="text/javascript"></script>
-    <script src="{"javascript/do_challenge_response.js"|url}" type="text/javascript"></script>
+ 
+<script src="{rel}/javascript/md5.js" type="text/javascript"></script>
+<script src="{rel}/javascript/do_challenge_response.js" type="text/javascript"></script>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

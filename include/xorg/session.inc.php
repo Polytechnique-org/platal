@@ -96,6 +96,13 @@ class XorgSession extends DiogenesCoreSession
 			$logger->log('auth_ok');
                     }
 		    start_connexion($uid, true);
+                    if (Env::has('remember')) {
+                        $cookie = md5(Session::get('password'));
+                        setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
+                        if ($logger) {
+                            $logger->log("cookie_on");
+                        }
+                    }
 		    return true;
 		} elseif ($logger) {
                     $logger->log('auth_fail','bad password');
@@ -302,7 +309,7 @@ function start_connexion ($uid, $identified)
     } else {
         $logger = Session::getMixed('log', new DiogenesCoreLogger($uid));
         $logger->log("connexion", $_SERVER['PHP_SELF']);
-	setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
+        setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
 
     $_SESSION         = $sess;
