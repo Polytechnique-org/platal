@@ -429,7 +429,7 @@ div.spacer { clear: both; }
 
 #fiche_referent em{color: purple;}
 #fiche_referent ul { margin: 0px; padding: 0px 1em; }
-#fiche_referent li { font-weight: bold; margin: 0px; padding: 0px; }
+#fiche_referent li { font-weight: bold; margin: 0px; padding: 0px; text-align: left; }
 
 /*******************************************************************************
     A   SKIN
@@ -539,4 +539,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.65 2004-11-17 21:37:06 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.66 2004-11-17 21:58:06 x2000habouzit Exp $ */
