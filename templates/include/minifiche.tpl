@@ -17,13 +17,23 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.2 2004-10-24 15:52:48 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.3 2004-10-25 11:55:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <div class="contact" {min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}"{/min_auth}>
   <div class="nom">
-    {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
+    {min_auth level="cookie"}
+    {if !$c.dcd && $inscrit}
+    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
+    {/if}
+    {/min_auth}
+      {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
+    {min_auth level="cookie"}
+    {if !$c.dcd && $inscrit}
+    </a>
+    {/if}
+    {/min_auth}
   </div>
   <div class="appli">
     {strip}

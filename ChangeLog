@@ -16,13 +16,11 @@ Changes :
 		- Brand New NewsLetter module.										-MC
 		- Convert old archive to new model.									-FAL
 
-	* Search :
-		- dead members and non subsribed people are grayed.					-MC
-		- dead members now have the date of death printed.					-MC
-		- better things done for married women.								-MC
-		- Mobile is know printed too.										-MC
-	
 	* Search+Contacts :
+		- better things done for married women.								-MC
+		- deceased members and non-subscribers special treatments.			-MC
+		- Mobile is now printed too.										-MC
+		- People names are clickable.										-MC
 		- Unified template.													-JS
 
 	* Skins:

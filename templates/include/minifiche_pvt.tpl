@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.3 2004-10-24 15:52:48 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.4 2004-10-25 11:55:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -30,7 +30,8 @@
       <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" />
     </a>
     <a href="mescontacts.php?action={$show_action}&amp;user={$c.forlife}">
-      <img src="images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" />
+      <img src="images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
+        title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" />
     </a>
     {if $c.dcd neq 1}
     {perms level='admin'}
