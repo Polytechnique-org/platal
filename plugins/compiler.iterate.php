@@ -46,7 +46,8 @@ function smarty_compiler_iterate($tag_attrs, &$compiler)
     $_from = $compiler->_dequote($_params['from']);
     $_item = $compiler->_dequote($_params['item']);
 
-    return "while ((\$this->_tpl_vars['$_item'] =& \$this->_tpl_vars['$_from']->next()) !== null):";
+    return "\$_iterate_$_item = $_from;\n"
+        .  "while ((\$this->_tpl_vars['$_item'] = \$_iterate_{$_item}->next()) !== null):";
 }
 
 /* vim: set expandtab: */

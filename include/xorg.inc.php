@@ -50,6 +50,24 @@ XorgGlobals::init();
 XorgSession::init();
 
 // }}}
+// {{{ fix magic quotes
+
+function fix_gpc_magic(&$item, $key) {
+    if (is_array($item)) {
+        array_walk($item, 'fix_gpc_magic');
+    } else {
+        $item = stripslashes($item);
+    }
+}
+
+if (ini_get("magic_quotes_gpc")) {
+    array_walk($_GET, 'fix_gpc_magic');
+    array_walk($_POST, 'fix_gpc_magic');
+    array_walk($_COOKIE, 'fix_gpc_magic');
+    array_walk($_REQUEST, 'fix_gpc_magic');
+}
+
+// }}}
 // {{{ function _new_page()
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)

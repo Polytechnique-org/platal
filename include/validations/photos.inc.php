@@ -30,10 +30,6 @@ class PhotoReq extends Validate
     var $x;
     var $y;
 
-    var $bestalias;
-    var $prenom;
-    var $nom;
-
     // }}}
     // {{{ constructor
    
@@ -42,12 +38,6 @@ class PhotoReq extends Validate
         global $erreur, $globals;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
-        $res = $globals->xdb->query("
-	    SELECT  a.alias, prenom, nom
-	      FROM  auth_user_md5 AS u
-        INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND FIND_IN_SET('bestalias',a.flags) )
-	     WHERE  user_id={?}", $this->uid);
-        list($this->bestalias,$this->prenom,$this->nom) = $res->fetchOneRow();
         
         if (!file_exists($_file)) {
             $erreur = "Fichier inexistant";

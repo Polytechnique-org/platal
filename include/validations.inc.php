@@ -59,23 +59,22 @@ class ValidateIterator extends XOrgDBIterator
 // {{{ class Validate
 
 /** classe "virtuelle" à dériver pour chaque nouvelle implémentation
- * XXX attention, dans l'implémentation de la classe, il ne faut jamais faire confiance au timestamp
- * de l'objet qui sort du BLOB de la BD, on met donc systématiquement le champt $this->stamp depuis
- * le TIMESTAMP de la BD
- * Par contre, à la sortie de toute fonction il faut que le stamp soit valide !!! XXX
  */
 class Validate
 {
     // {{{ properties
     
-    /** l'uid de la personne faisant la requête */
     var $uid;
-    /** le time stamp de la requête */
+    var $prenom;
+    var $nom;
+    var $promo;
+    var $bestalias;
+    var $forlife;
+
     var $stamp;
-    /** indique si la donnée est unique pour un utilisateur donné */
     var $unique;
-    /** donne le type de l'objet (certes redonant, mais plus pratique) */
     var $type;
+    var $comments = Array();
 
     // }}}
     // {{{ constructor
@@ -84,17 +83,148 @@ class Validate
      * @param       $_uid       user id
      * @param       $_unique    requête pouvant être multiple ou non
      * @param       $_type      type de la donnée comme dans le champ type de x4dat.requests
-     * @param       $_stamp     stamp de création, 0 si c'estun nouvel objet
      */
-    function Validate($_uid, $_unique, $_type, $_stamp=0)
+    function Validate($_uid, $_unique, $_type)
     {
-        $this->uid = $_uid;
-        $this->stamp = $_stamp;
+        global $globals;
+        $this->uid    = $_uid;
+        $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
-        $this->type = $_type;
+        $this->type   = $_type;
+        $res = $globals->xdb->query(
+                "SELECT  u.prenom, u.nom, u.promo, a.alias, b.alias
+                   FROM  auth_user_md5 AS u
+             INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
+             INNER JOIN  aliases       AS b ON ( u.user_id=b.id AND b.type!='homonyme' AND FIND_IN_SET('bestalias', b.flags) )
+                  WHERE  u.user_id={?}", $_uid);
+        list($this->prenom, $this->nom, $this->promo, $this->forlife, $this->bestalias) = $res->fetchOneRow();
     }
     
     // }}}
+    // {{{ function submit()
+
+    /** fonction à utiliser pour envoyer les données à la modération
+     * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
+     */
+    function submit ()
+    {
+        global $globals;
+        if ($this->unique) {
+            $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
+        }
+       
+        $this->stamp = date('YmdHis');
+        $globals->xdb->execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
+                $this->uid, $this->type, $this, $this->stamp);
+
+        return true;
+    }
+
+    // }}}
+    // {{{ function update()
+
+    function update ()
+    {
+        global $globals;
+        $globals->xdb->execute('UPDATE requests SET data={?}, stamp=stamp
+                                 WHERE user_id={?} AND type={?} AND stamp={?}',
+                                 $this, $this->uid, $this->type, $this->stamp);
+
+        return true;
+    }
+
+    // }}}
+    // {{{ function clean()
+    
+    /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
+     * attention, tout est supprimé si c'est un unique
+     */
+    function clean ()
+    {
+        global $globals;
+        if ($this->unique) {
+            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
+                    $this->uid, $this->type);
+        } else {
+            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
+                    $this->uid, $this->type, $this->stamp);
+        }
+    }
+
+    // }}}
+    // {{{ function handle_formu()
+    
+    /** fonction à réaliser en cas de valistion du formulaire
+     */
+    function handle_formu()
+    {
+        if (Env::has('delete')) {
+            $this->clean();
+            $this->trig('requete supprimée');
+            return true;
+        }
+
+        if (Env::has('hold') && Env::has('comm')) {
+            $this->comments[] = Array(Session::get('bestalias'), Env::get('comm'));
+            $this->update();
+            $this->trig('commentaire ajouté');
+            return true;
+        }
+
+        if (Env::has('accept')) {
+            if ($this->commit()) {
+                $this->sendmail(true);
+                $this->clean();
+                $this->trig('mail envoyé');
+                return true;
+            } else {
+                $this->trig('erreur lors de la validation');
+                return false;
+            }
+        }
+
+        if (Env::has('refuse')) {
+            $this->sendmail(false);
+            $this->clean();
+            $this->trig('mail envoyé');
+            return true;
+        }
+
+        return false;
+    }
+
+    // }}}
+    // {{{ function sendmail
+
+    function sendmail($isok)
+    {
+        global $globals;
+        require_once('diogenes.hermes.inc.php');
+        $mailer = new HermesMailer;
+        $mailer->setSubject($this->_mail_subj());
+        $mailer->setFrom("validations+{$this->type}@{$globals->mail->domain}");
+        $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");
+        $mailer->addCc("validations+{$this->type}@{$globals->mail->domain}");
+
+        $body = "Cher(e) camarade,\n\n"
+              . $this->_mail_body($isok)
+              . (Env::has('comm') ? "\n\n".Env::get('comm') : '')
+              . "\n\nCordialement,\nL'équipe Polytechnique.org\n";
+
+        $mailer->setTxtBody(wordwrap($body));
+        $mailer->send();
+    }
+
+    // }}}
+    // {{{ function trig()
+    
+    function trig($msg) {
+        global $page;
+        $page->trig($msg);
+    }
+    
+    // }}}
+    // --- VIRTUAL FUNCTIONS ---
     // {{{ function get_unique_request
     
     /** fonction statique qui renvoie la requête dans le cas d'un objet unique de l'utilisateur d'id $uid
@@ -105,14 +235,12 @@ class Validate
      * XXX à dériver XXX
      * à utiliser uniquement pour récupérer un objet <strong>unique</strong>
      */
-    function get_unique_request($uid,$type)
+    function get_unique_request($uid, $type)
     {
         global $globals;
-        $res = $globals->xdb->query('SELECT data,stamp FROM requests WHERE user_id={?} and type={?}', $uid, $type);
-        if (list($result, $stamp) = $res->fetchOneRow()) {
+        $res = $globals->xdb->query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        if ($result = $res->fetchOneCell()) {
             $result = unserialize($result);
-            // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
-            $result->stamp = $stamp;
             if (!$result->unique) { // on vérifie que c'est tout de même bien un objet unique
                 $result = false;
             }
@@ -139,73 +267,28 @@ class Validate
         global $globals;
         $res = $globals->xdb->query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}",
                 $uid, $type, $stamp);
-        if (list($result, $stamp) = $res->fetchOneRow()) {
+        if ($result = $res->fetchOneCell()) {
             $result = unserialize($result);
-            // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
-            $result->stamp = $stamp;
         } else {
             $result = false;
         }
-
         return($result);
     }
 
     // }}}
-    // {{{ function submit()
+    // {{{ function _mail_body
 
-    /** fonction à utiliser pour envoyer les données à la modération
-     * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
-     */
-    function submit ()
+    function _mail_body($isok)
     {
-        global $globals;
-        if ($this->unique) {
-            $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
-        }
-       
-        $globals->xdb->execute('INSERT INTO requests (user_id, type, data) VALUES ({?}, {?}, {?})',
-                $this->uid, $this->type, $this);
-
-        // au cas où l'objet est réutilisé après un commit, il faut mettre son stamp à jour
-        $res = $globals->xdb->query('SELECT MAX(stamp) FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
-        $this->stamp = $res->fetchOneCell();
-        return true;
     }
-
-    // }}}
-    // {{{ function clean()
     
-    /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
-     * attention, tout est supprimé si c'est un unique
-     */
-    function clean ()
+    // }}}
+    // {{{ function _mail_subj
+
+    function _mail_subj()
     {
-        global $globals;
-        if ($this->unique) {
-            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
-                    $this->uid, $this->type);
-        } else {
-            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
-                    $this->uid, $this->type, $this->stamp);
-        }
     }
-
-    // }}}
-    // {{{ function formu()
     
-    /** nom du template qui contient le formulaire */
-    function formu()
-    { return null; }
-
-    // }}}
-    // {{{ function handle_formu()
-    
-    /** fonction à réaliser en cas de valistion du formulaire
-     * XXX la fonction est "virtuelle" XXX
-     */
-    function handle_formu()
-    { }
-
     // }}}
     // {{{ function commit()
     
@@ -216,16 +299,21 @@ class Validate
     { }
 
     // }}}
+    // {{{ function formu()
+    
+    /** nom du template qui contient le formulaire */
+    function formu()
+    { return null; }
+
+    // }}}
 }
 
 // }}}
 // {{{ IMPLEMENTATIONS
 
-require_once("validations/aliases.inc.php");
-require_once("validations/epouses.inc.php");
-require_once("validations/photos.inc.php");
-require_once("validations/evts.inc.php");
-require_once("validations/listes.inc.php");
+foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {
+    require_once($file);
+}
 
 // }}}
 

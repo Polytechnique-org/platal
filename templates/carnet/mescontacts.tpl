@@ -70,7 +70,7 @@ Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous 
 <br />
 
 <div class="contact-list">
-{iterate from=citer item=contact}
+{iterate from=$citer item=contact}
 {include file=include/minifiche.tpl c=$contact show_action="retirer"}
 {/iterate}
 </div>

@@ -19,41 +19,17 @@
  ***************************************************************************}
 
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol" cellpadding="4" summary="Demande d'alias">
-    <tr>
-      <td>Demandeur&nbsp;:
-      </td>
-      <td>
-        <a href="{"fiche.php"|url}?user={$valid->bestalias}" class='popup2'>
-          {$valid->prenom} {$valid->nom}</a> {$valid->old}
-      </td>
-    </tr>
-    <tr>
-      <td>Nouvel&nbsp;alias&nbsp;:</td>
-      <td>{$valid->alias}@{#globals.mail.alias_dom#}</td>
-    </tr>
-    <tr>
-      <td>Motif :</td>
-      <td style="border: 1px dotted inherit">
-        {$valid->raison|nl2br}
-      </td>
-    </tr>
-    <tr>
-      <td class="middle">
-        <input type="hidden" name="uid" value="{$valid->uid}" />
-        <input type="hidden" name="type" value="{$valid->type}" />
-        <input type="hidden" name="stamp" value="{$valid->stamp}" />
-        <input type="submit" name="submit" value="Accepter" />
-        <br /><br />
-        <input type="submit" name="submit" value="Refuser" />
-      </td>
-      <td>
-        <p>Raison du refus:</p>
-        <textarea rows="5" cols="50" name="motif"></textarea>
-      </td>
-    </tr>
-  </table>
-</form>
+<tr class="pair">
+  <td class="titre">Ancien alias</td>
+  <td>{$valid->old|default:"-none-"}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Nouvel&nbsp;alias&nbsp;:</td>
+  <td>{$valid->alias}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Motif :</td>
+  <td>{$valid->raison|nl2br}</td>
+</tr>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

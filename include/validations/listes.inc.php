@@ -25,7 +25,6 @@ class ListeReq extends Validate
 {
     // {{{ properties
     
-    var $bestalias;
     var $liste;
     var $desc;
 
@@ -51,13 +50,6 @@ class ListeReq extends Validate
         $this->inslevel  = $_inslevel;
         $this->owners    = $_owners;
         $this->members   = $_members;
-        
-        $res = $globals->xdb->query("
-                SELECT  l.alias
-                  FROM  auth_user_md5   AS u
-            INNER JOIN  aliases         AS l ON (u.user_id=l.id AND FIND_IN_SET('bestalias',l.flags))
-                 WHERE  user_id={?}", $this->uid);
-        $this->bestalias = $res->fetchOneCell();
     }
 
     // }}}

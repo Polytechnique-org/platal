@@ -18,13 +18,63 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-
+<h1>Validation</h1>
+ 
 {dynamic}
-{$mail}
-{foreach item=valid from=$valids}
+
+{if $vit->total()}
+
+{iterate item=valid from=$vit|smarty:nodefaults}
 <br />
-{include file=$valid->formu() valid=$valid}
-{/foreach}
+<form action="{$smarty.server.PHP_SELF}" method="post">
+  <table class="bicol">
+    <tr>
+      <th colspan="2">{$valid->type}</th>
+    </tr>
+    <tr>
+      <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
+      <td>
+        <a href="{rel}/fiche.php?user={$valid->bestalias}" class="popup2">
+          {$valid->prenom} {$valid->nom} (X{$valid->promo})
+        </a>
+      </td>
+    </tr>
+    {include file=$valid->formu()}
+    {if $valid->comments}
+    <tr><th colspan='2'>Commentaires</th></tr>
+    {/if}
+    {foreach from=$valid->comments item=c}
+    <tr class="{cycle values="impair,pair"}">
+      <td class="titre">
+        <a href="{rel}/fiche.php?user={$c[0]}" class="popup2">{$c[0]}</a>
+      </td>
+      <td>{$c[1]}</td>
+    </tr>
+    {/foreach}
+    <tr>
+      <td colspan='2' class='center'>
+        Commentaire:<br />
+        <textarea rows="5" cols="50" name="comm"></textarea><br />
+
+        <input type="hidden" name="uid"    value="{$valid->uid}" />
+        <input type="hidden" name="type"   value="{$valid->type}" />
+        <input type="hidden" name="stamp"  value="{$valid->stamp}" />
+        <input type="submit" name="accept" value="Accepter" />
+        <input type="submit" name="hold"   value="Commenter" />
+        <input type="submit" name="refuse" value="Refuser" />
+        <input type="submit" name="delete" value="Supprimer" />
+      </td>
+    </tr>
+  </table>
+</form>
+{/iterate}
+
+{else}
+
+<p>Rien à valider</p>
+
+{/if}
+
 {/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

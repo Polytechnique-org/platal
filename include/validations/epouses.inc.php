@@ -27,12 +27,9 @@ class EpouseReq extends Validate
 
     var $epouse;
     var $alias = '';
-    var $forlife;
 
     var $oldepouse;
     var $oldalias;
-    var $prenom;
-    var $nom;
 
     var $homonyme;
 
@@ -46,15 +43,15 @@ class EpouseReq extends Validate
         $this->epouse  = $_epouse;
         $this->forlife = $_forlife;
         list($prenom)  = explode('.',$_forlife);
-        $this->alias   = make_username($prenom,$this->epouse);
+        $this->alias   = make_username($prenom, $this->epouse);
 
         $sql = $globals->xdb->query("
-                SELECT  e.alias, u.epouse, u.prenom, u.nom, a.id
+                SELECT  e.alias, u.epouse, a.id
                   FROM  auth_user_md5 as u
              LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('epouse',e.flags) AND e.id = u.user_id)
              LEFT JOIN  aliases       as a ON(a.alias = {?} AND a.id != u.user_id)
                  WHERE  u.user_id = {?}", $this->alias, $this->uid);
-        list($this->oldalias, $this->oldepouse, $this->prenom, $this->nom, $this->homonyme) = $res->fetchOneRow();
+        list($this->oldalias, $this->oldepouse, $this->homonyme) = $res->fetchOneRow();
     }
 
     // }}}

@@ -25,18 +25,9 @@ new_admin_page('admin/valider.tpl');
 
 if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
     $req = Validate::get_request(Env::get('uid'), Env::get('type'), Env::get('stamp'));
-    if($req) {
-        $page->assign('mail', $req->handle_formu());
-    }
+    if($req) { $req->handle_formu(); }
 }
 
-$it = new ValidateIterator ();
-
-$valids = Array();
-while($valids[] = $it->next());
-array_pop($valids);
-
-$page->assign_by_ref('valids', $valids);
-
+$page->assign_by_ref('vit', new ValidateIterator ());
 $page->run();
 ?>

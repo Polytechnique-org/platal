@@ -90,11 +90,7 @@ class XOrgDB
                 return $var;
 
             case 'string':
-                if (get_magic_quotes_gpc()) {
-                    return "'".addslashes(stripslashes($var))."'";
-                } else {
-                    return "'".addslashes($var)."'";
-                }
+                return "'".addslashes($var)."'";
 
             case 'NULL':
                 return 'NULL';

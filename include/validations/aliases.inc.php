@@ -28,10 +28,6 @@ class AliasReq extends Validate
     var $alias;
     var $raison;
 
-    var $forlife;
-    var $bestalias;
-    var $prenom;
-    var $nom;
     var $old='';
 
     // }}}
@@ -41,16 +37,8 @@ class AliasReq extends Validate
     {
         global $globals;
         $this->Validate($_uid, true, 'alias', $_stamp);
-        $this->alias = $_alias;
+        $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
         $this->raison = $_raison;
-
-        $res = $globals->xdb->query("
-                SELECT  l.alias,m.alias,prenom,nom
-                  FROM  auth_user_md5    AS u
-            INNER JOIN  aliases          AS l  ON (u.user_id=l.id AND l.type='a_vie')
-            INNER JOIN  aliases          AS m  ON (u.user_id=m.id AND FIND_IN_SET('bestalias',m.flags))
-                 WHERE  user_id={?}", $this->uid);
-        list($this->forlife,$this->bestalias,$this->prenom,$this->nom) = $res->fetchOneRow();
 
         $res = $globals->xdb->query("
                 SELECT  v.alias
@@ -77,30 +65,23 @@ class AliasReq extends Validate
     { return 'include/form.valid.aliases.tpl'; }
 
     // }}}
-    // {{{ function handle_formu()
+    // {{{ function _mail_subj
 
-    function handle_formu()
+    function _mail_subj()
     {
-        if (Env::get('submit') != "Accepter" && Env::get('submit') != "Refuser") {
-            return false;
-        }
+        return "[Polytechnique.org/MELIX] Demande de l'alias {$this->alias}";
+    }
 
-        require_once("xorg.mailer.inc.php");
-        $mymail = new XOrgMailer('valid.alias.tpl');
-        $mymail->assign('alias', $this->alias);
-        $mymail->assign('bestalias', $this->bestalias);
+    // }}}
+    // {{{ function _mail_body
 
-        if (Env::get('submit') == "Accepter") {
-            $mymail->assign('answer', 'yes');
-            $this->commit() ; 
+    function _mail_body($isok)
+    {
+        if ($isok) {
+            return "  L'adresse mail {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.";
         } else {
-            $mymail->assign('answer', 'no');
-            $mymail->assign('motif', stripslashes(Env::get('motif')));
+            return "  La demande que tu avais faite pour l'alias {$this->alias} a été refusée.";
         }
-        $mymail->send();
-        //Suppression de la demande
-        $this->clean();
-        return "Mail envoyé";
     }
 
     // }}}
@@ -111,15 +92,12 @@ class AliasReq extends Validate
         global $globals;
 
         if ($this->old) {
-            $globals->xdb->execute('UPDATE virtual SET alias={?} WHERE alias={?}',
-                   $this->alias.'@'.$globals->mail->alias_dom, $this->old);
+            return $globals->xdb->execute('UPDATE virtual SET alias={?} WHERE alias={?}', $this->alias, $this->old);
         } else {
-            $globals->xdb->execute('INSERT INTO virtual SET alias={?},type="user"',
-                    $this->alias.'@'.$globals->mail->alias_dom);
+            $globals->xdb->execute('INSERT INTO virtual SET alias={?},type="user"', $this->alias);
             $vid = mysql_insert_id();
-            require_once('emails.inc.php');
             $dom = $globals->mail->shorter_domain();
-            $globals->xdb->query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})', $vid, $this->forlife.'@'.$dom);
+            return $globals->xdb->query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})', $vid, $this->forlife.'@'.$dom);
         }
     }
 

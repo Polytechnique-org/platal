@@ -33,11 +33,6 @@ class EvtReq extends Validate
     var $peremption;    
     var $comment;
     
-    var $bestalias;
-    var $promo;
-    var $nom;
-    var $prenom;
-
     // }}}
     // {{{ constructor
 
@@ -52,12 +47,6 @@ class EvtReq extends Validate
         $this->pmax       = $_pmax;
         $this->peremption = $_peremption;
         $this->comment    = $_comment;
-        $res = $globals->xdb->query("
-                SELECT  a.alias,promo,nom,prenom
-                  FROM  auth_user_md5 AS u
-            INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-                 WHERE  user_id={?}", $_uid);
-        list($this->bestalias,$this->promo,$this->nom,$this->prenom) = $res->fetchOneRow();
     }
 
     // }}}
