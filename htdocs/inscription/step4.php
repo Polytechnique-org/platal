@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.5 2004-10-17 07:30:19 x2000habouzit Exp $
+        $Id: step4.php,v 1.6 2004-10-31 18:03:00 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -56,19 +56,23 @@ if (!empty($_REQUEST['ref'])) {
     
     $nom = stripslashes($nom);
     $prenom = stripslashes($prenom);
-    $sql = "INSERT INTO auth_user_md5 SET matricule='$matricule',promo=$promo, password='$password',
-	    nom='".addslashes($nom)."',prenom='".addslashes($prenom)."',nationalite=$nationalite,
-            date='$date',naissance=$naissance, date_ins = NULL";
+    $sql = "UPDATE auth_user_md5 SET password='$password', nationalite=$nationalite, perms='user',
+            date='$date', naissance=$naissance, date_ins = NULL WHERE matricule='$matricule'";
     $globals->db->query($sql);
     
-    // on vérifie qu'il n'y a pas eu d'
+    // on vérifie qu'il n'y a pas eu d'erreur
     if ($globals->db->err()) {
         $page->assign('error',ERROR_DB);
         $page->assign('error_db',$globals->db->error());
         $page->run();
     }
-    // ok, pas d'erreur, on 
-    $uid=$globals->db->insert_id();
+    // ok, pas d'erreur, on continue
+    $resbis=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule='$matricule'");
+    if ((list($uid) = mysql_fetch_row($resbis)) === false) {
+        $page->assign('error',ERROR_DB);
+        $page->assign('error_db',$globals->db->error());
+        $page->run();
+    }
 
     $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$forlife','a_vie')");
     if($alias) {
