@@ -40,7 +40,7 @@ function popupWin(theURL,theSize) {
     }
 }
 function popWin(theURL) {
-    popupWin(theURL,'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=700,height=600');
+    popupWin(theURL,'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=900,height=700');
 }
 function popWin2(theURL) {
     popupWin(theURL,'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=200,height=100');
