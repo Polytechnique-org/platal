@@ -151,7 +151,7 @@ $mymail->send();
 $globals->db->query("update envoidirect set date_succes=NOW() where matricule = $matricule");
 
 require_once("xorg.hook.inc.php");
-$hook = new XOrgHook('core');
+$hook = new XOrgHook();
 $hook->subscribe($forlife, $uid, $promo, $password, true);
 
 start_connexion($uid,false);

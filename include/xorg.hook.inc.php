@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  **************************************************************************/
 
-require_once("PEAR.php");
-
 // {{{ class XOrgHook
 
 /**
@@ -45,17 +43,9 @@ require_once("PEAR.php");
  * @link     http://doc.polytechnique.org/XOrgModule/#hook
  * @since    Classe available since 0.9.3
  */
-class XOrgHook extends PEAR
+class XOrgHook
 {
     // {{{ properties
-    
-    /**
-     * holds the name of the hook we want to run.
-     *
-     * @var    string
-     m @access private
-     */
-    var $_name;
     
     /**
      * list of all the modules names that have implemented some reactions to our triggers
@@ -73,15 +63,11 @@ class XOrgHook extends PEAR
      *
      * @param string $name  the name of the hook
      */
-    function XOrgHook($name)
+    function XOrgHook()
     {
         global $globals;
-        $this->PEAR();
 
-        if (!file_exists($globals->root."/hooks/$name/API")) {
-            $this->raiseError("The hook « $name » do not exists, or is undocumented",1,PEAR_ERROR_DIE);
-        }
-        foreach (glob($globals->root."/hooks/$name/*.inc.php") as $file) {
+        foreach (glob($globals->root."/hooks/*.inc.php") as $file) {
             require_once("$file");
             $this->_mods[] = basename($file, '.inc.php');
         }
@@ -103,7 +89,7 @@ class XOrgHook extends PEAR
     function __call($function, $arguments, &$return)
     {
         if ( ($i = count($arguments) - 1) < 0) {
-            $this->raiseError("In the Hook « {$this->_name} » the function « $function » expects at least 1 argument");
+            $this->raiseError("The hook « $function » expects at least 1 argument");
         }
         foreach ($this->_mods as $mod) {
             if (!function_exists($mod.'_'.$function)) continue;
