@@ -1,5 +1,5 @@
 include/notifs.inc.php
-scripts/cron/send_notifs.php
+bin/cron/send_notifs.php
 htdocs/carnet/index.php
 htdocs/carnet/mescontacts_pdf.php
 htdocs/carnet/mescontacts.php

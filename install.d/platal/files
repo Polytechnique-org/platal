@@ -285,9 +285,9 @@ plugins/insert.getUserName.php
 plugins/insert.mkStats.php
 plugins/modifier.glob.php
 plugins/modifier.url.php
-scripts/cron/clean.php
-scripts/cron/connect.db.inc.php
-scripts/cron/cron_validations.php
+bin/cron/clean.php
+bin/cron/connect.db.inc.php
+bin/cron/cron_validations.php
 templates/acces_smtp.tpl
 templates/admin/index.tpl
 templates/admin/valider.tpl

@@ -1,12 +1,12 @@
 include/conf.d/README
 
-scripts/devel/foobar.php
-scripts/devel/foobar.pl
-scripts/devel/foobar.tpl
-scripts/devel/modules_status
-scripts/devel/tplgettext.php
+bin/devel/foobar.php
+bin/devel/foobar.pl
+bin/devel/foobar.tpl
+bin/devel/modules_status
+bin/devel/tplgettext.php
 
-scripts/xhtml/get_classes.pl
-scripts/xhtml/validate.pl
+bin/xhtml/get_classes.pl
+bin/xhtml/validate.pl
 
 templates/database-debug.tpl

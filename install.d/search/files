@@ -1,9 +1,9 @@
 htdocs/advanced_search.php
 htdocs/search.php
 include/search.classes.inc.php
-scripts/cron/recherche.php
-scripts/cron/recherche.pl
-scripts/cron/recherche.sql
+bin/cron/recherche.php
+bin/cron/recherche.pl
+bin/cron/recherche.sql
 templates/search.adv.form.tpl
 templates/search.adv.links.tpl
 templates/search.quick.form.tpl

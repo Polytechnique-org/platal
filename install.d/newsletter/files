@@ -6,7 +6,7 @@ htdocs/newsletter/index.php
 htdocs/newsletter/show.php
 htdocs/newsletter/submit.php
 include/newsletter.inc.php
-scripts/cron/send_nl.php
+bin/cron/send_nl.php
 templates/admin/newsletter_edit.tpl
 templates/admin/newsletter.tpl
 templates/newsletter/head.tpl
