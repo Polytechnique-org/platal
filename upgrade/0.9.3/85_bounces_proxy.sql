@@ -10,3 +10,11 @@ create table emails_bounces_re (
 );
 
 insert into admin_a values(1,'Regexps Bounces', 'admin/emails_bounces_re.php', 30);
+
+alter table emails add column last date not null after panne;
+
+create table emails_broken (
+    uid int not null,
+    email varchar(255) not null,
+    primary key (uid,email)
+);

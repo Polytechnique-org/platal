@@ -1,10 +1,11 @@
 #! /usr/bin/python
+# set:encoding=iso-8859-1:
 
 import asyncore
 import email
-import email.Message
 import os, re, sys
 
+from email import Message, MIMEText, MIMEMultipart
 from email.Iterators import typed_subpart_iterator, _structure
 from smtpd import PureProxy
 
@@ -56,7 +57,7 @@ def msg_of_str(data): return email.message_from_string(data, _class=BounceMessag
 #
 #-------------------------------------------------------------------------------
 
-class BounceMessage(email.Message.Message):
+class BounceMessage(Message.Message):
     def body(self):
         """this method returns the part that is commonely designed as the 'body'
 
@@ -88,7 +89,7 @@ class BounceMessage(email.Message.Message):
         it seems to be designed like this :
 
         =============================================
-        [...QMAIL crap...]
+        [...QMAIL crap...
         --- Below this line is a copy of the message.
 
         Return-Path: <...>
@@ -141,13 +142,12 @@ class BounceMessage(email.Message.Message):
         nb = int(mysql.rowcount)
         for x in range(0,nb):
             row = mysql.fetchone()
-            rxp = re.compile(str(row[1]))
-            if rxp.match(body):
+            if re.compile(str(row[1]), re.I | re.M).search(body):
                 return (int(row[0]), str(row[2]))
        
         return (NOTICE, '')
 
-    def forge_error(self, txt):
+    def forge_error(self, alias, dest, txt):
         """we have to do our little treatments for the broken mail,
         and then we create an informative message for the original SENDER to :
         - explain to him what happened (the detailed error)
@@ -155,13 +155,59 @@ class BounceMessage(email.Message.Message):
         - if no other leg, give an information to the SENDER on how he can give to us a real good leg
         and attach any sensible information about the original mail (@see attached_mail)
         """
-        raise NotImplementedError
+
+        mysql.execute("SELECT id FROM aliases WHERE alias='%s' AND type IN ('alias', 'a_vie') LIMIT 1" % (alias))
+        if int(mysql.rowcount) is not 1:
+            return None
+        uid = mysql.fetchone()[0]
+        mysql.execute("UPDATE emails SET panne = NOW() WHERE uid='%s' AND email='%s'""" % (uid, dest))
+        mysql.execute("REPLACE INTO emails_broken (uid,email) VALUES(%s, '%s')" % (uid, dest))
+        mysql.execute("""SELECT  COUNT(*),
+                                 IFNULL(SUM(panne=0  OR  (last!=0 AND ( TO_DAYS(NOW())-TO_DAYS(last) )>7 AND panne<last)), 0),
+                                 IFNULL(SUM(panne!=0 AND last!=0  AND ( TO_DAYS(NOW())-TO_DAYS(last) )<7 AND panne<last) , 0),
+                                 IFNULL(SUM(panne!=0 AND (last=0  OR  ( TO_DAYS(NOW())-TO_DAYS(last) )<1)) , 0)
+                           FROM  emails
+                          WHERE  FIND_IN_SET('active', flags) AND uid=%s AND email!='%s'""" % (uid, dest))
+
+        nb_act, nb_ok, nb_may, nb_bad = map(lambda x: int(x), mysql.fetchone())
+
+        txt = "Une des adresses de redirection de %s\n" % (alias) \
+            + "a généré une erreur (qui peut être temporaire) :\n" \
+            + "------------------------------------------------------------\n" \
+            + "%s\n" % (txt) \
+            + "------------------------------------------------------------\n\n"
+
+        if nb_ok + nb_may is 0:
+            txt += "Toutes les adresses de redirections de ce correspondant\n" \
+                +  "sont cassées à l'heure actuelle.\n\n" \
+                +  "Prière de prévenir votre correspondant par d'autres moyens\n" \
+                +  "pour lui signaler ce problème pour qu'il puisse le corriger !!!"
+        elif nb_ok is 0:
+            txt += "Ce correspondant possède néanmoins %i autre(s) adresse(s) active(s)\n" % (nb_may) \
+                +  "ayant recu des mails dans les 7 derniers jours,\n" \
+                +  "sans -- pour le moment -- avoir créé la moindre erreur.\n\n"
+        else:
+            txt += "Ce correspondant a en ce moment %i autre(s) adresse(s) valide(s).\n" % (nb_ok) \
+                +  "Rien ne prouve qu'elles étaient actives au moment de l'envoi\n" \
+                +  "qui a échoué."
+
+        msg = MIMEMultipart.MIMEMultipart()
+        msg['Subject'] = self['Subject']
+
+        attach = self.attached_mail()
+        if attach is not None:
+            txt += "\nCi-joint le mail dont la livraison a échoué\n"
+            msg.attach(MIMEText.MIMEText(txt))
+            msg.attach(attach)
+        else:
+            msg.attach(MIMEText.MIMEText(txt))
+
+        return msg
 
     def to_bounce(self, alias, dest):
         """this function returns a new Message, the one we really want to send.
 
         alias holds one valide plat/al alias of the user
-        
 
         Case 0: the error is IGNORE : return None
         Case 1: the error is NOTICE : we just return self
@@ -171,7 +217,7 @@ class BounceMessage(email.Message.Message):
 
         if   lvl is IGNORE: return None
         elif lvl is NOTICE: return self
-        elif lvl is ERROR : return self.forge_error(txt)
+        elif lvl is ERROR : return self.forge_error(alias, dest, txt)
         else:               raise
 
 
@@ -194,6 +240,8 @@ class BounceProxy(PureProxy):
             alias, sender, dest = self.process_rcpt(rcpttos)
             bounce = msg_of_str(data).to_bounce(alias, dest)
             if bounce is not None:
+                bounce['From'] = """"Serveur de courier Polytechnique.org" <MAILER-DAEMON@bounces.m4x.org>"""
+                bounce['To']   = sender
                 self._deliver("MAILER-DAEMON@bounces.m4x.org", [sender], bounce.as_string())
         except:
             pass
