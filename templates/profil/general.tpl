@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.14 2004-10-09 05:57:48 x2000habouzit Exp $
+        $Id: general.tpl,v 1.15 2004-10-29 01:24:22 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -70,7 +70,7 @@
       </td>
       <td class="cold">
         <select name="nationalite">
-          {select_db_table table="nationalites" valeur=$nationalite}
+          {select_nat valeur=$nationalite}
         </select>
       </td>
     </tr>

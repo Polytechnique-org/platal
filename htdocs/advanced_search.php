@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.20 2004-10-24 14:21:30 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.21 2004-10-29 01:24:20 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,7 +32,7 @@ require_once("geoloc.inc.php");
 function form_prepare() {
     global $page,$globals;
     $page->assign('formulaire',1);
-    $sql = 'SELECT id,text FROM nationalites ORDER BY text';
+    $sql = 'SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text FROM geoloc_pays ORDER BY text';
     $page->mysql_assign($sql,'choix_nationalites');
     $sql = 'SELECT id,text FROM binets_def ORDER BY text';
     $page->mysql_assign($sql,'choix_binets');

@@ -22,6 +22,8 @@ replace INTO `nationalites` VALUES (18,'Canadien','CA');
 replace INTO `nationalites` VALUES (19,'Chilien','CL');
 replace INTO `nationalites` VALUES (20,'Chinois','CN');
 replace INTO `nationalites` VALUES (21,'Colombien','CO');
+replace INTO `nationalites` VALUES (22,'Coréen','KR');
+replace INTO `nationalites` VALUES (86,'Costaricien','CR');
 replace INTO `nationalites` VALUES (80,'Croate','HR');
 replace INTO `nationalites` VALUES (23,'Cubain','CU');
 replace INTO `nationalites` VALUES (24,'Danois','DK');
@@ -83,3 +85,13 @@ replace INTO `nationalites` VALUES (77,'Vénézuélien','VE');
 replace INTO `nationalites` VALUES (78,'Vietnamien','VN');
 replace INTO `nationalites` VALUES (79,'Yougoslave','CS');
 
+alter table geoloc_pays add column nat varchar(100) not null;
+update geoloc_pays inner join nationalites ON iso3166=a2 set nat=text;
+update auth_user_md5 set nationalite='' where nationalite='0' or nationalite='36';
+alter table auth_user_md5 change column nationalite nationalite varchar(2) not null;
+update auth_user_md5        AS u
+    inner join nationalites AS n ON u.nationalite=n.id
+    inner join geoloc_pays  AS g ON iso3166=a2
+    set u.nationalite = a2;
+
+drop table nationalites;
