@@ -11,7 +11,6 @@ New :
 		- Trombino of the contacts is available.							-MC
 
 	* Search+Contacts :
-		- Married women are now well sorted (by their spouse name).			-MC
 		- Nicer icons.														-MC
 
 Bug/Wish :
@@ -28,8 +27,9 @@ Bug/Wish :
 		- #112,113,126,133,167: google like search + some rewrite.			-MC
 
 	* Search+Contacts :
-		- #124 : Homeland is now a flag.									-MC
 		- #122 : Women now have a &bull; (no more dirty gender icons).		-MC
+		- #124 : Homeland is now a flag.									-MC
+		- #164 : Married women are now well sorted (by their spouse name).	-MC
 
 Fixes (from 0.9.1 branch) :
 
