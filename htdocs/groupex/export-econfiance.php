@@ -57,9 +57,9 @@ if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md
 
     while (list ($prenom1,$nom1,$email1) = $all->next()) {
             $res .= "<membre>\n";
-            $res .= "\t<nom>".utf8_encode($nom1)."</nom>\n";
-            $res .= "\t<prenom>".utf8_encode($prenom1)."</prenom>\n";
-            $res .= "\t<email>".utf8_encode($email1)."</email>\n";
+            $res .= "\t<nom>$nom1</nom>\n";
+            $res .= "\t<prenom>$prenom1</prenom>\n";
+            $res .= "\t<email>$email1</email>\n";
             $res .= "</membre>\n\n";
     }
 
