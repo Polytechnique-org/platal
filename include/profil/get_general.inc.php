@@ -60,36 +60,14 @@ if(Env::has('modifier') || Env::has('suivant')) {
     $photo_pub = Env::has('photo_pub')?'public':'private';
 }
 
-    $accents_minuscules = "àáâãäåæçèéêëìíîïñòóôõöøùúûýÿ";
-    $minuscules         = "aaaaaaaceeeeiiiinoooooouuuyy";
-    $accents_majuscules = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ";
-    $majuscules         = "AAAAAAACEEEEIIIINOOOOOOUUUYY";
-    
-    function strtoupper_accents($s) {
-        global $accents_minuscules, $accents_majuscules;
-        return strtr(strtoupper($s), $accents_minuscules, $accents_majuscules);
-    }
-    function strtolower_accents($s) {
-        global $accents_minuscules, $accents_majuscules;
-        return strtr(strtolower($s), $accents_majuscules, $accents_minuscules);
-    }
-    function no_accents($s) {
-        global $accents_minuscules, $accents_majuscules, $minuscules, $majuscules;
-        return strtr($s, $accents_minuscules.$accents_majuscules, $minuscules.$majuscules);
-    }
+require_once("xorg.misc.inc.php");
+    $nom = strtoupper($nom);
+    $nom_comp = replace_accent($nom);
+    $nom_anc_comp = replace_accent($nom_anc);
 
-    $nom = strtoupper_accents($nom);
-    $nom_comp = no_accents($nom);
-    $nom_anc_comp = no_accents($nom_anc);
-
-    $prenom = strtolower_accents($prenom);
-    $prenom_comp = no_accents($prenom);
-    $prenom_anc_comp = strtolower(no_accents($prenom_anc));
-    $prenom_ini = strtolower($prenom_ini);
-    for ($i=-1;$i !== false;$i = strpos($prenom,'-',$i+1))
-        $prenom{$i+1} = strtoupper_accents($prenom{$i+1});
-    for ($i=0;($i = strpos($prenom,' ',$i))!==false;$i++)
-        $prenom{$i+1} = strtoupper_accents($prenom{$i+1});
+    $prenom = make_firstname_case($prenom);
+    $prenom_comp = replace_accent($prenom);
+    $prenom_anc_comp = replace_accent($prenom_anc);
 
 // Y a-t-il une photo en attente de confirmation ?
 $sql = $globals->xdb->query("SELECT COUNT(*) FROM requests WHERE type='photo' AND user_id = {?}", Session::getInt('uid', -1));

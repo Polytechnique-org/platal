@@ -51,6 +51,7 @@ XorgSession::init();
 
 setlocale(LC_MESSAGES, $globals->core->locale);
 setlocale(LC_TIME,     $globals->core->locale);
+setlocale(LC_CTYPE,    $globals->core->locale);
 
 // }}}
 // {{{ fix magic quotes
