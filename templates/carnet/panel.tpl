@@ -37,7 +37,17 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
 
 
 {foreach from=$notifs->_data item=c key=cid}
-<h2>{$notifs->_cats[$cid].mail} :</h2>
+<h2>{if ($c|@count) > 1}
+{$notifs->_cats[$cid].mail} :
+{else}
+  {foreach from=$c item=promo}
+    {if ($promo|@count) > 1}
+      {$notifs->_cats[$cid].mail} :
+    {else}
+      {$notifs->_cats[$cid].mail_sg} :
+    {/if}
+  {/foreach}
+{/if}</h2>
 
 <br />
 

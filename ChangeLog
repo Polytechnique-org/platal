@@ -65,6 +65,7 @@ Bug/Wish :
 
 	* Notifications :
 		- #63: Birthdays are now in the notifications !						-MC
+		- #215: The notifications use singular or plural.                   -Car
 		- #232: Add a link to the fiche.								-MC/Car
 	
 	* Profile :
