@@ -43,7 +43,7 @@ if (Env::get('submit') == 'Envoyer')
 	$mymail->setSubject($subj);
 	if (!empty($to))  { $mymail->addTo($to); }
 	if (!empty($cc))  { $mymail->addCc($cc); }
-	if (!empty($bcc)) { $mymail->addCc($bcc); }
+	if (!empty($bcc)) { $mymail->addBcc($bcc); }
 	if (!empty($to2)) { $mymail->addTo($to2); }
         $mymail->setTxtBody(wordwrap($txt,72,"\n"));
         if ($mymail->send()) {
