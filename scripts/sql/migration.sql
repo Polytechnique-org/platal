@@ -50,20 +50,10 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN username_sasl;
 
 
 --------------------------------------------------------------------------------
--- SKINS v2
+-- DROP des LISTES
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS skins;
-CREATE TABLE skins (
-  id tinyint(1) unsigned NOT NULL default '0',
-  name varchar(32) NOT NULL default '',
-  date varchar(10) NOT NULL default '',
-  comment varchar(255) NOT NULL default '',
-  auteur varchar(30) NOT NULL default '',
-  skin_tpl varchar(32) NOT NULL default '',
-  ext char(3) NOT NULL default '',
-  PRIMARY KEY  (id)
-) TYPE=MyISAM PACK_KEYS=1 COMMENT='liste des skins';
-
-INSERT INTO skins VALUES (1,'Defaut','2000-03-07','Skin par défaut','Equipe X.org','default.tpl','png');
+drop table x4dat.listes_def;
+drop table x4dat.listes_ins;
+drop table x4dat.listes_mod;
 --------------------------------------------------------------------------------
 
