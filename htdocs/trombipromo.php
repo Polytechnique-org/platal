@@ -6,12 +6,19 @@ $limit = 30;
 
 $page->assign('limit', $limit);
 
+if(!isset($_REQUEST['xpromo'])) $page->run();
 
-if (!ereg("(19|20)[0-9]{2}",$_REQUEST['xpromo']) && ($_REQUEST['xpromo']!="all" && $_SESSION['perms']!="admin")) {
-    $page->assign('erreur', "La promotion doit être saisie au format YYYY. Recommence.");
+if (ereg("[0-9]{2}",$_REQUEST['xpromo'])) {
+    if ($_REQUEST['xpromo'] > 20) {
+        $_REQUEST['xpromo'] += 1900;
+    } else {
+        $_REQUEST['xpromo'] += 2000;
+    }
 }
 
-if(!isset($_REQUEST['xpromo'])) $page->run();
+if (!ereg("(19|20)[0-9]{2}",$_REQUEST['xpromo']) && ($_REQUEST['xpromo']!="all" || $_SESSION['perms']!="admin")) {
+    $page->assign('erreur', "La promotion doit être saisie au format YYYY. Recommence.");
+}
 
 $offset = (empty($_REQUEST['offset']) ? 0 : $_REQUEST['offset']);
 
