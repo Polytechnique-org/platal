@@ -17,11 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.public.tpl,v 1.7 2004-10-12 20:55:47 x2000bedo Exp $
+        $Id: search.result.public.tpl,v 1.8 2004-10-22 12:00:31 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="nom">
-  {if $result.epouse}{$result.epouse} {$result.prenom} <br />({$result.nom} {$result.prenom}){else}{$result.nom} {$result.prenom}{/if}
+  {if $result.epouse}{$result.epouse} {$result.prenom} <br />(née {$result.nom}){else}{$result.nom} {$result.prenom}{/if}
   {if $result.decede == 1}(décédé){/if}
 </div>
 <div class="appli">

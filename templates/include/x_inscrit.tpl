@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.15 2004-10-21 12:24:21 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.16 2004-10-22 12:00:31 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <div class="contact" title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}">
   <div class="nom">
-    {if $c.epouse}{$c.epouse} {$c.prenom}<br />({$c.nom} {$c.prenom}){else}{$c.nom} {$c.prenom}{/if}
+    {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
     {if $c.dcd}(décédé){/if}
   </div>
   <div class="appli">
