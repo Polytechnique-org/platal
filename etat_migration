@@ -29,7 +29,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | admin/relance.php						  | marketing/ 
 ;	  | admin/utilisateurs_identification.php	  | marketing/
 ;	  | admin/utilisateurs_marketing.php		  | marketing/
-;	  | marketing.php							  | marketing/index
 ------+-[ docs ]----------------------------------+----------------
 ;	  | docs/FROM.php							  | docs/from.php
 ;	  | en-cours.php							  | docs/en-cours.php
@@ -163,6 +162,7 @@ xx!	  | groupex/export-econfiance.php			  | -
 xx	  | groupex.php								  | groupex/index.php 
 xx	  | index.php								  | -
 xx	  | login.php								  | -
+xx	  | marketing.php							  | marketing/public.php
 xx	  | mescontacts.php							  | -
 xx	  | motdepassemd5.php						  | -
 xx	  | nbpromo2.php							  | stats/nb_by_promo.php
