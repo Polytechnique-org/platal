@@ -1,4 +1,5 @@
 alter table auth_user_md5 add column watch set('contacts', 'deaths') default 'contacts' not null;
+alter table aliases add index (type);
 
 create table watch (
     user_id smallint not null,
