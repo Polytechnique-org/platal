@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.13 2004-11-09 21:17:46 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.14 2004-11-13 14:59:00 x2000coic Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -200,7 +200,7 @@ if ( $homonyme ) {
 				     'Support Polytechnique.org <support@polytechnique.org>');
 	$msg =
 	    "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$mailorg'.\n\n".
-	    "Tu gardes tout de même l'usage de cet alias pour 1 mois encore à compter de ce jour.\n\n"
+	    "Tu gardes tout de même l'usage de cet alias pour 1 mois encore à compter de ce jour.\n\n".
 	    "Lorsque cet alias sera désactivé, l'adresse :\n".
 	    "    $mailorg@polytechnique.org\n".
 	    "renverra vers un robot qui indique qu'il y a plusieurs personnes portant le même nom ; cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
