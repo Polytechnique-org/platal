@@ -30,13 +30,8 @@ function smarty_insert_getUsername()
         return "";
     }
 
-    $res = $globals->db->query("SELECT  alias
-                                  FROM  aliases
-				 WHERE  id='$id' AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))");
-    if (list($uname) = mysql_fetch_row($res)) {
-	mysql_free_result($res);
-	return $uname;
-    }
-    return "";
+    $res = $globals->xdb->query("SELECT  alias FROM aliases
+                                  WHERE  id={?} AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))", $id);
+    return $res->fetchOneCell();
 }
 ?>
