@@ -1,4 +1,5 @@
 htdocs/admin/ax-xorg.php
+htdocs/admin/gerer_auth-groupex.php
 htdocs/admin/postfix_blacklist.php
 htdocs/admin/postfix_delayed.php
 htdocs/admin/postfix_whitelist.php
@@ -68,6 +69,7 @@ htdocs/images/SceauCertplus_petit.png
 htdocs/images/verisign.png
 htdocs/images/x.png
 htdocs/index.coupure.php
+htdocs/webservices/manageurs.php
 templates/admin/ax-xorg.tpl
 templates/admin/postfix_delayed.tpl
 templates/docs/apropos.tpl

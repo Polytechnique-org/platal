@@ -1,3 +1,4 @@
+htdocs/acces_smtp.php
 htdocs/admin/index.php
 htdocs/admin/logger_actions.php
 htdocs/admin/logger.php
@@ -287,6 +288,7 @@ plugins/modifier.url.php
 scripts/cron/clean.php
 scripts/cron/connect.db.inc.php
 scripts/cron/cron_validations.php
+templates/acces_smtp.tpl
 templates/admin/index.tpl
 templates/admin/valider.tpl
 templates/cookie_off.tpl

@@ -7,6 +7,7 @@ htdocs/inscription/step1.php
 htdocs/inscription/step2.php
 htdocs/inscription/step3.php
 htdocs/inscription/step4.php
+scripts/cron/rapports_inscription.php
 templates/inscription/error.tpl
 templates/inscription/index.tpl
 templates/inscription/maj.tpl

@@ -9,3 +9,4 @@ templates/carnet/index.tpl
 templates/carnet/mescontacts.tpl
 templates/carnet/notifs.tpl
 templates/carnet/panel.tpl
+include/texify.inc.php

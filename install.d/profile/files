@@ -1,6 +1,7 @@
 htdocs/admin/admin_trombino.php
 htdocs/admin/gerer_applis.php
 htdocs/admin/gerer_binets.php
+htdocs/admin/gerer_groupesx.php
 htdocs/epouse.php
 htdocs/fiche.php
 htdocs/getphoto.php
