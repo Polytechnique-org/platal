@@ -65,7 +65,7 @@ p.error, span.error, p.erreur, span.erreur {
 
 div.rubrique {
     color: #555555;
-    background: url('../images/sk_default_titre.gif');
+    background: url('/images/sk_default_titre.gif');
     background-repeat: no-repeat;
 
     text-indent: 0.2em;
@@ -579,4 +579,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.44 2004-10-03 11:57:08 x2003bruneau Exp $ */
+/* $Id: default.css,v 1.45 2004-10-03 17:32:32 x2003bruneau Exp $ */
