@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: texify.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: texify.inc.php,v 1.3 2004-09-02 23:55:57 x2000habouzit Exp $
  ***************************************************************************/
 
 /*
  * Fonctions de générations de tex pour les pages de .org
  * Auteur original : Pierre HABOUZIT
  *
- * $Id: texify.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+ * $Id: texify.inc.php,v 1.3 2004-09-02 23:55:57 x2000habouzit Exp $
  */
 
 /** Fonction qui gère les pdflatexisations :)
@@ -36,7 +36,7 @@ function tex_to_pdf($texte) {
     global $pdf_tmp_dir;
     set_time_limit(300); // timeout de 5 minutes au cas où le texte serait gros
                          // et pdflatex lent
-    $pdf_tmp_dir=('/tmp/mescontacts_'.$_SESSION['username']);
+    $pdf_tmp_dir=('/tmp/mescontacts_'.$_SESSION['forlife']);
     // fonction pour effacer le rep temporaire
     function clean_tmp_dir() {
         global $pdf_tmp_dir;

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_prep.tpl,v 1.7 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: newsletter_prep.tpl,v 1.8 2004-09-02 23:59:26 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -82,7 +82,7 @@
     envoyer la newsletter tel qu'elle.
   </div>
   <div class="center">
-    <input type="text" name="test_to" size="40" value="{$smarty.session.username}@m4x.org" />
+    <input type="text" name="test_to" size="40" value="{$smarty.session.forlife}@m4x.org" />
     <input type="submit" name="submit" value="Envoi Test" />
     <br />
     <input type="submit" name="submit" value="Envoi Definitif" style="color:red;" />

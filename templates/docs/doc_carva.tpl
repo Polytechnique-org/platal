@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_carva.tpl,v 1.6 2004-09-02 22:33:58 x2000bedo Exp $
+        $Id: doc_carva.tpl,v 1.7 2004-09-02 23:55:58 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -33,9 +33,9 @@
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>, 
   il est possible de faire pointer 
 {if $smarty.session.alias}
-  l'adresse <strong>http://www.carva.org/{dyn s=$smarty.session.username}</strong>
+  l'adresse <strong>http://www.carva.org/{dyn s=$smarty.session.forlife}</strong>
 {else}
-  les adresses <strong>http://www.carva.org/{dyn s=$smarty.session.username}</strong>
+  les adresses <strong>http://www.carva.org/{dyn s=$smarty.session.forlife}</strong>
   et <strong>http://www.carva.org/{$smarty.session.alias}</strong> ";
 {/if}
   vers la page WEB de ton choix.

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: acces_wap.tpl,v 1.5 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: acces_wap.tpl,v 1.6 2004-09-02 23:55:57 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -97,10 +97,10 @@
       <td>
       	<select name="fromaddr">
           <option value="m4x" {if $wap.fromaddr eq "m4x"}selected="selected"{/if}>
-          {$smarty.session.username}@m4x.org
+          {$smarty.session.forlife}@m4x.org
           </option>
           <option value="polytechnique" {if $wap.fromaddr eq "polytechnique"}selected="selected"{/if}>
-          {$smarty.session.username}@polytechnique.org
+          {$smarty.session.forlife}@polytechnique.org
           </option>
           <option value="autre" {if $wap.fromaddr eq "autre"}selected="selected"{/if}>
           Autre...

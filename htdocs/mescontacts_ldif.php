@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.php,v 1.8 2004-08-31 19:48:46 x2000habouzit Exp $
+        $Id: mescontacts_ldif.php,v 1.9 2004-09-02 23:55:56 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -47,11 +47,12 @@ $page->register_modifier('utf8', 'utf8_encode');
  * On construit la liste des contacts, et de l'entreprise à laquelle ils appartiennent
  */
 $contacts = Array();
-$req = $globals->db->query("SELECT contact AS id, date, prenom, nom, epouse, username, mobile, web, libre, promo, alias,
+$req = $globals->db->query("SELECT contact AS id, date, prenom, nom, epouse, l.alias AS forlife, mobile, web, libre, promo,
                            entreprise, adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax,
                            poste, f.label AS fonction
                     FROM      contacts      AS c 
                     LEFT JOIN auth_user_md5 AS a  ON(a.user_id = c.contact)
+                   INNER JOIN aliases       AS l  ON(a.user_id = l.id AND type='a_vie')
                     LEFT JOIN entreprises   AS e  ON(a.user_id = e.uid)
                     LEFT JOIN emploi_naf    AS f  ON(e.fonction = f.id)
                     LEFT JOIN geoloc_pays   AS gp ON(e.pays = gp.a2)
@@ -60,9 +61,18 @@ $req = $globals->db->query("SELECT contact AS id, date, prenom, nom, epouse, use
                     ORDER BY contact");
 while($line = mysql_fetch_assoc($req)) {
     $contacts[$line['id']] = ensure_adr($line);
+    $contacts[$line['id']]['aliases'] = Array();
 }
 mysql_free_result($req);
 
+$req = $globals->db->query("SELECT  a.id,a.alias
+                              FROM  aliases  AS a
+			INNER JOIN  contacts AS c ON a.id=c.contact
+			     WHERE  c.uid='{$_SESSION['uid']}' AND a.type!='a_vie'");
+while(list($id,$alias) = mysql_fetch_row($req)) {
+    $contacts[$id]['aliases'][] = $alias;
+}
+mysql_free_result($req);
 /*
  * On y ajoute les infos d'adresses
  */

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: recovery.php,v 1.3 2004-09-02 23:55:56 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -37,7 +37,10 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
     // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
     // avec celle fournie ici en espérant que c'est la bonne
 
-    $sql="SELECT user_id, naissance FROM auth_user_md5 WHERE username='$mailorg'";
+    $sql="SELECT  user_id, naissance
+	    FROM  auth_user_md5 AS u
+      INNER JOIN  aliases       AS a ON u.user_id=a.id
+	    WHERE a.alias='$mailorg'";
     $result=$globals->db->query($sql);
     if (list($uid,$naissance)=mysql_fetch_array($result)) {
         if((strlen($naissance))<5) {

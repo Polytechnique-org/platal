@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: redirect.php,v 1.3 2004-08-31 10:03:31 x2000habouzit Exp $
+        $Id: redirect.php,v 1.4 2004-09-02 23:55:57 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -32,9 +32,13 @@ echo "</pre>";*/
 // le premier non vide et éventuellement le second
 // la config d'apache impose la forme suivante pour REQUEST_URI :
 // REQUEST_URI = /prenom.nom(/path/fichier.hmtl)?
-list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
+list($user, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
 
-$result = $globals->db->query("select redirecturl from auth_user_md5 where username= '$username' or alias = '$username'");
+$result = $globals->db->query("
+    SELECT  redirecturl
+      FROM  auth_user_md5 AS u
+INNER JOIN  aliases       AS a ON u.user_id=a.id
+     WHERE  a.alias='$user'");
 if ($result and list($url) = mysql_fetch_row($result) and $url != '') {
 	// on envoie un redirect (PHP met automatiquement le code de retour 302
 	if (!empty($path)) {

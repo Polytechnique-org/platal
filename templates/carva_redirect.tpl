@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.tpl,v 1.6 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: carva_redirect.tpl,v 1.7 2004-09-02 23:56:54 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -40,10 +40,10 @@
   il est possible de faire pointer
 {dynamic}
 {if $alias}
-  les adresses <strong>http://www.carva.org/{$smarty.session.username}</strong>
+  les adresses <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
   et <strong>http://www.carva.org/{$alias}</strong>
 {else}
-  l'adresse <strong>http://www.carva.org/{$smarty.session.username}</strong>
+  l'adresse <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
 {/if}
 {/dynamic}
   vers la page WEB de ton choix. Pour de plus amples détails, consulte
@@ -66,7 +66,7 @@
 <p>
 {dynamic}
 {if $carva}
-  Actuellement, l'adresse <a href="http://www.carva.org/{$smarty.session.username}">http://www.carva.org/{$smarty.session.username}</a>
+  Actuellement, l'adresse <a href="http://www.carva.org/{$smarty.session.forlife}">http://www.carva.org/{$smarty.session.forlife}</a>
   {if $alias}
   ainsi que l'adresse <a href="http://www.carva.org/{$alias}">http://www.carva.org/{$alias}</a>
   sont redirigées

@@ -17,27 +17,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.tpl,v 1.3 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: mescontacts_ldif.tpl,v 1.4 2004-09-02 23:55:57 x2000habouzit Exp $
  ***************************************************************************}
 
 {foreach item=c from=$contacts}
 {******************************************************************************}
 {******************************************************************************}
 {if $c.epouse}
-dn: cn={"`$c.prenom` `c.epouse` (`$c.nom`)"|utf8},mail={$c.username}@polytechnique.org
+dn: cn={"`$c.prenom` `c.epouse` (`$c.nom`)"|utf8},mail={$c.forlife}@polytechnique.org
 cn: {"`$c.prenom` `c.epouse`"|utf8}
 {else}
-dn: cn={"`$c.prenom` `$c.nom`"|utf8},mail={$c.username}@polytechnique.org
+dn: cn={"`$c.prenom` `$c.nom`"|utf8},mail={$c.forlife}@polytechnique.org
 cn: {"`$c.prenom` `$c.nom`"|utf8}
 {/if}
 sn: {$c.nom}
 givenname: {$c.prenom|utf8}
-uid: {$c.username}
-mail: {$c.username}@polytechnique.org
-{if $c.alias}
-mailalternateaddress: {$c.alias}@polytechnique.org
-mozillasecondemail: {$c.alias}@polytechnique.org
-{/if}
+uid: {$c.forlife}
+mail: {$c.forlife}@polytechnique.org
+{foreach from=$c.aliases item=alias}
+mailalternateaddress: {$alias}@polytechnique.org
+mozillasecondemail: {$alias}@polytechnique.org
+{/foreach}
 {if $c.mobile}
 mobile: {$c.mobile|utf8}
 cellphone: {$c.mobile|utf8}
