@@ -173,8 +173,7 @@ class NewsLetter
 	    .  '<div class="foot">'
 	    .  "[<a href=\"$url/newsletter/\">archives</a>&nbsp;|&nbsp;"
 	    .  "<a href=\"$url/newsletter/submit.php\">écrire dans la NL</a>&nbsp;|&nbsp;"
-	    .  "<a href=\"$url/newsletter/?out=1\">ne plus recevoir</a>&nbsp;|&nbsp;"
-	    .  "<a href=\"$url/newsletter/?in=text\">recevoir en texte brut</a>]"
+	    .  "<a href=\"$url/newsletter/?out=1\">ne plus recevoir</a>]"
 	    .  '</div>';
 	} else {
 	    return "\n\n--------------------------------------------------------------------\n"
@@ -183,8 +182,7 @@ class NewsLetter
 		 . "\n"
 		 . "archives : [$url/newsletter/]\n"
 		 . "écrire   : [$url/newsletter/submit.php]\n"
-		 . "ne plus recevoir: [$url/newsletter/?out=1]\n"
-		 . "recevoir en HTML: [$url/newsletter/?in=html]\n";
+		 . "ne plus recevoir: [$url/newsletter/?out=1]\n";
 	}
     }
 
