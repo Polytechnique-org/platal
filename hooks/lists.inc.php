@@ -19,7 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function lists_subscribe()
+// {{{ menu HOOK
+
+function &lists_menu(&$result)
+{
+    global $globals;
+    $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
+}
+
+// }}}
+// {{{ subscribe HOOK
 
 function &lists_subscribe($forlife, $uid, $promo, $password, &$result)
 {

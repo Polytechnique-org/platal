@@ -21,24 +21,14 @@
 
 // {{{ menu HOOK
 
-function &newsletter_menu(&$result)
+function money_menu(&$result)
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
+    if ($globals->money->mpay_enable) {
+        $globals->menu->addPrivateEntry(XOM_SERVICES, 30, 'Micropaiments', 'paiement/');
+    }
 }
 
 // }}}
-// {{{ subscribe HOOK
 
-function &newsletter_subscribe($forlife, $uid, $promo, $password, &$result)
-{
-    require_once('newsletter.inc.php');
-    subscribe_nl(true,$uid);
-    
-    return ($result = true);
-}
-
-// }}}
- 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

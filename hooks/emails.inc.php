@@ -21,24 +21,19 @@
 
 // {{{ menu HOOK
 
-function &newsletter_menu(&$result)
+function emails_menu(&$return)
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
-}
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',          'emails.php');
 
-// }}}
-// {{{ subscribe HOOK
+    if ($globals->mail->send_form) {
+        $globals->menu->addPrivateEntry(XOM_SERVICES, 00, 'Envoyer un mail', 'emails/send.php');
+    }
 
-function &newsletter_subscribe($forlife, $uid, $promo, $password, &$result)
-{
-    require_once('newsletter.inc.php');
-    subscribe_nl(true,$uid);
+    $globals->menu->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',        'emails/broken.php');
     
-    return ($result = true);
 }
 
 // }}}
- 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+
 ?>

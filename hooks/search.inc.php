@@ -21,24 +21,13 @@
 
 // {{{ menu HOOK
 
-function &newsletter_menu(&$result)
+function search_menu(&$result)
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
+    $globals->menu->addPrivateEntry(XOM_GROUPS, 00, 'Annuaire',         'search.php');
+    $globals->menu->addPublicEntry(XOM_EXT,     00, 'Annuaire de l\'X', 'search.php');
 }
 
 // }}}
-// {{{ subscribe HOOK
 
-function &newsletter_subscribe($forlife, $uid, $promo, $password, &$result)
-{
-    require_once('newsletter.inc.php');
-    subscribe_nl(true,$uid);
-    
-    return ($result = true);
-}
-
-// }}}
- 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

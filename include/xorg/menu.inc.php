@@ -54,7 +54,7 @@ class XOrgMenu
     // }}}
     // {{{ constructor
 
-    function XOrgMenu($path)
+    function XOrgMenu()
     {
         global $globals;
         
@@ -68,10 +68,6 @@ class XOrgMenu
         $this->_ext[XOM_US]       = Array();
         $this->_ext[XOM_EXT]      = Array();
         $this->_ext[XOM_INFOS]    = Array();
-        
-        foreach (glob($path.'*.menu.inc.php') as $inc) {
-            require_once($inc);
-        }
     }
 
     // }}}

@@ -86,7 +86,7 @@ class XorgGlobals extends DiogenesCoreGlobals
         }
         
         $globals->hook = new XOrgHook();
-        $globals->menu = new XOrgMenu($globals->root.'/include/conf.d/');
+        $globals->menu = new XOrgMenu();
         $globals->hook->menu(null);
 
         $globals->dbconnect();
