@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: create.php,v 1.2 2004-10-12 16:14:20 x2000habouzit Exp $
+        $Id: create.php,v 1.3 2004-10-13 11:20:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -60,7 +60,7 @@ if(isset($_POST['submit'])) {
     $err = Array();
 
     if(empty($_POST['liste'])) $err[] = 'champs «addresse souhaitée» vide';
-    if(!preg_match("/^[a-zA-Z0-9\-]$/" $_POST['liste']))
+    if(!preg_match("/^[a-zA-Z0-9\-]$/", $_POST['liste']))
 	$err = 'le nom de la liste ne doit contenir que des lettres, chiffres et tirets';
 
     $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE alias='{$_POST['liste']}'");
