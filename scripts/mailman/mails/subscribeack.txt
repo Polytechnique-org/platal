@@ -1,0 +1,18 @@
+Bienvenue sur la liste %(real_name)s@%(host_name)s!
+
+%(welcome)s
+
+Pour écrire à la liste, envoyez votre message à:
+
+  %(emailaddr)s
+
+Les informations générales concernant cette liste sont à l'adresse :
+
+  http://dev.m4x.org/listes/liste.php?liste=%(real_name)s
+
+Si vous souhaitez vous désabonner ou modifier vos options (par
+exemple activer/désactiver l'envoi groupé, changer votre mot de
+passe, etc.), consultez votre page d'abonnement à l'adresse :
+
+  http://dev.m4x.org/listes/
+

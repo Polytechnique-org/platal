@@ -1,0 +1,8 @@
+Votre message intitulé
+
+    %(subject)s
+
+est bien parvenu à la liste de diffusion %(listname)s.
+
+Page Info de la liste :
+    http://dev.m4x.org/listes/liste.php?liste=%(listname)s

@@ -1,0 +1,13 @@
+La liste de diffusion `%(listname)s' vient d'être créée pour vous.
+Vous trouverez ci-dessous quelques informations indispensables sur
+cette liste. 
+
+Vous pouvez configurer votre liste de diffusion à l'adresse suivante: 
+
+    http://dev.m4x.org/listes/admin.php?liste=%(listname)s
+
+La page web pour les utilisateurs de votre liste est: 
+
+    http://dev.m4x.org/listes/liste.php?liste=%(listname)s
+
+Pour toute question adressez-vous à %(siteowner)s.

@@ -1,0 +1,10 @@
+Votre autorisation est requise pour une demande d'abonnement :
+
+    Pour:       %(username)s
+    Liste:      %(listname)s@%(hostname)s 
+
+Quand vous le pourrez, consultezla page web :
+
+    http://dev.m4x.org/listes/moderate.php?liste=%(listname)s
+
+pour traiter la requête.
