@@ -23,6 +23,7 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=
     $page->template_dir = $globals->spoolroot . "/templates/";
     $page->compile_dir  = $globals->spoolroot . "/templates_c/";
     $page->plugins_dir[]= $globals->spoolroot . "/plugins/";
+    $page->config_dir   = $globals->spoolroot . "/configs/";
     $page->cache_dir    = $globals->spoolroot . "/cache/";
 
     $page->assign('xorg_head', $tpl_head);

@@ -134,15 +134,15 @@ Etat  | Ancien nom								  | Nouveau nom
 !!!	  | news/thread.php							  | /
 !!!	  | confbanana.php							  | -> dépend de banana, à passer plus tard ...
 ------+-[ trackers ]------------------------------+----------------
- x	  | trackers/tracker_show.php				  | -
- x	  | trackers/tracker_show_rq.php			  | -
+	  | trackers/tracker_show.php				  | -
+	  | trackers/tracker_show_rq.php			  | -
+	  | trackers/index.php						  | -
+	  | trackers/tracker_admin.php				  | -
 ------+-------------------------------------------+----------------
 @@@	  | groupex/donne-chall.php					  | -
 @@@	  | groupex/export-econfiance.php			  | -
 x	  | epouse.php								  | -
 x	  | parselog.php							  | stats/...
-x	  | trackers/index.php						  | -
-x	  | trackers/tracker_admin.php				  | -
 xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php

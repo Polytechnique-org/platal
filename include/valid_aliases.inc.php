@@ -27,7 +27,7 @@ class AliasReq extends Validate {
     function formu() {
         $old = $this->old ? "({$this->old})" : "";
         $raison = nl2br(stripslashes(htmlentities($this->raison)));
-        $newAlias = addr_alias( $this->alias ) ; 
+        $newAlias = $this->alias.'@melix.net';
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
         <input type="hidden" name="uid" value="{$this->uid}" />
@@ -75,22 +75,18 @@ ________EOF;
                 || ($_REQUEST['submit']!="Accepter"    && $_REQUEST['submit']!="Refuser"))
             return false;
 
-        require_once("diogenes.mailer.inc.php");
-        $mymail = new DiogenesMailer(
-                from_mail_valid_alias(),
-                to_mail_valid_alias( $this->username ),
-                subject_mail_valid_alias( $this->username , $this->alias ),
-                false,
-                cc_mail_valid_alias());
+        require_once("tpl.mailer.inc.php");
+        $mymail = new TplMailer('valid.alias.tpl');
+        $mymail->assign('alias', $this->alias);
+        $mymail->assign('username', $this->username);
 
         if($_REQUEST['submit']=="Accepter") {
+            $mymail->assign('answer', 'yes');
             $this->commit() ; 
-            $message = msg_valid_alias_OK( $this->alias ) ;
-        } else
-            $message = msg_valid_alias_NON( $this->alias , stripslashes($_REQUEST["motif"]) ) ;
-
-        $message = wordwrap($message,78);  
-        $mymail->setBody($message);
+        } else {
+            $mymail->assign('answer', 'no');
+            $mymail->assign('motif', stripslashes($_REQUEST['motif']));
+        }
         $mymail->send();
         //Suppression de la demande
         $this->clean();
@@ -101,7 +97,7 @@ ________EOF;
         global $no_update_bd;
         if($no_update_bd) return false;
 
-        $domain=addr_alias( $this->alias ) ;
+        $domain=$this->alias.'@melix.net';
         mysql_query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->username}'");
         mysql_query("INSERT INTO groupex.aliases SET email='{$this->username}',domain='$domain',id=12");         
     }
