@@ -39,7 +39,7 @@ function newsletter_config() {
 // }}}
 // {{{ menu HOOK
 
-function &newsletter_menu()
+function newsletter_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
@@ -48,7 +48,7 @@ function &newsletter_menu()
 // }}}
 // {{{ subscribe HOOK
 
-function &newsletter_subscribe($forlife, $uid, $promo, $password)
+function newsletter_subscribe($forlife, $uid, $promo, $password)
 {
     require_once('newsletter.inc.php');
     subscribe_nl(true,$uid);

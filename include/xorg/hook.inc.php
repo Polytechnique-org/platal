@@ -96,7 +96,7 @@ class XOrgHook
     {
         foreach ($this->_mods as $mod) {
             if (!function_exists($mod.'_subscribe')) continue;
-            call_user_func($mod.'_subscribe', $forlife, $uid, $promo, $pass));
+            call_user_func($mod.'_subscribe', $forlife, $uid, $promo, $pass);
         }
     }
 

@@ -44,7 +44,7 @@ function lists_config()
 // }}}
 // {{{ menu HOOK
 
-function &lists_menu()
+function lists_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
@@ -53,12 +53,9 @@ function &lists_menu()
 // }}}
 // {{{ subscribe HOOK
 
-function &lists_subscribe($forlife, $uid, $promo, $password)
+function lists_subscribe($forlife, $uid, $promo, $password)
 {
     require_once('lists.inc.php');
-    
-    global $globals;
-    // récupération de l'id de la liste promo
     $client =& lists_xmlrpc($uid, $pass);
     $client->subscribe("promo$promo");
 }

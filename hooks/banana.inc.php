@@ -45,7 +45,7 @@ function banana_config()
 // }}}
 // {{{ menu HOOK
 
-function &banana_menu()
+function banana_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_SERVICES, 10, 'Forums & PA', 'banana/');
@@ -54,7 +54,7 @@ function &banana_menu()
 // }}}
 // {{{ subscribe HOOK
 
-function &banana_subscribe($forlife, $uid, $promo, $password)
+function banana_subscribe($forlife, $uid, $promo, $password)
 {
     global $globals;
     
@@ -77,7 +77,9 @@ function &banana_subscribe($forlife, $uid, $promo, $password)
 	}
     }
     mysql_free_result($res);
-    
+
+    echo "$promo, $uid, ";
+    var_export($cible);
     while (list ($key, $val) = each ($cible)) {
         $globals->db->query("INSERT INTO  forums.abos (fid,uid)
                                   SELECT  fid,'$uid'

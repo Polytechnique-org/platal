@@ -35,7 +35,7 @@ class SearchConfig
 
 function search_config()
 {
-    global $glabals;
+    global $globals;
     $globals->search = new SearchConfig;
 }
 
