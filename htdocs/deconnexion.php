@@ -18,10 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deconnexion.php,v 1.5 2004-09-02 18:23:01 x2000habouzit Exp $
+        $Id: deconnexion.php,v 1.6 2004-10-14 18:36:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
+
+if (isset($_SESSION['suid'])) { require('./exit.php'); }
 
 if (isset($_SESSION['log'])) {
     if (isset($_SERVER['HTTP_REFERER']))

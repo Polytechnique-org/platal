@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: exit.php,v 1.6 2004-09-02 19:39:19 x2000habouzit Exp $
+        $Id: exit.php,v 1.7 2004-10-14 18:36:46 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require_once("auto.prepend.inc.php");
 new_skinned_page('index.tpl',AUTH_MDP);
 
 if (isset($_SESSION['suid'])) {
