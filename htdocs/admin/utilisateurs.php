@@ -107,7 +107,7 @@ if ($login) {
                 $perms = Env::get('permsN');
                 $prenm = Env::get('prenomN');
                 $nom   = Env::get('nomN');
-                $promo = Env::getInt('promo');
+                $promo = Env::getInt('promoN');
                 $nom   = Env::get('nomN');
                 $comm  = Env::get('commentN');
 
