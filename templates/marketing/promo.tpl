@@ -1,4 +1,4 @@
-{* $Id: promo.tpl,v 1.1 2004-07-17 10:14:56 x2000habouzit Exp $ *}
+{* $Id: promo.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,22 +6,28 @@
   <tr>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        <input type="hidden" name="promo" value="{$promob10}"><input type="submit" value="<<">
+        <input type="hidden" name="promo" value="{$promob10}" />
+        <input type="submit" value="<<" />
       </form>
     </td>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        <input type="hidden" name="promo" value="{$promob1}"><input type="submit" value="<">
+        <input type="hidden" name="promo" value="{$promob1}" />
+        <input type="submit" value="<" />
       </form>
     </td>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
-        Promotion : <input type="text" name="promo" value="{$promo}" size=4 maxlength=4><input type="submit" value="GO">
+        Promotion : <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
+        <input type="submit" value="GO" />
       </form>
     </td>
     <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post"><input type="hidden"
-        name="promo" value="{$promoa1}"><input type="submit" value=">"></form> </td>
+      <form action="{$smarty.server.PHP_SELF}" method="post" />
+        <input type="hidden" name="promo" value="{$promoa1}" />
+        <input type="submit" value=">" />
+      </form>
+    </td>
     <td>
       <form action="{$smarty.server.PHP_SELF}" method="post">
         <input type="hidden" name="promo" value="{$promoa10}">
@@ -33,7 +39,7 @@
 
 <br />
 
-<div align="center">
+<div class="center">
   <a href="javascript:void(window.open('{"stats/stats_promo.php"|url}?promo={$promo}','','width=800,height=600,toolbar=no'))">
     Voir l'évolution des inscriptions de la promotion
   </a>

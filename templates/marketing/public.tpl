@@ -1,4 +1,4 @@
-{* $Id: public.tpl,v 1.1 2004-07-09 14:35:37 x2000habouzit Exp $ *}
+{* $Id: public.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
 
 {dynamic}
 {if $smarty.request.num}
@@ -12,7 +12,7 @@
   ne fasse mauvais usage de cette fonctionnalité...).
 </p>
 <p class=\"normal\">
-  <b>Merci de ton aide à la reconnaissance de notre site !</b> Tu seras informé par email de
+  <strong>Merci de ton aide à la reconnaissance de notre site !</strong> Tu seras informé par email de
   l'inscription de {$prenom} {$nom} si notre camarade accepte de rejoindre la communauté des X sur
   le web !
 </p>
@@ -43,7 +43,7 @@
 </p>
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="num" value="{$smarty.request.num}">
+  <input type="hidden" name="num" value="{$smarty.request.num}" />
   <table class="bicol" summary="Fiche camarade">
     <tr class="impair"><td>Nom :</td><td>{$nom}</td></tr>
     <tr class="pair"><td>Prénom :</td><td>{$prenom}</td></tr>
@@ -51,18 +51,18 @@
     <tr class="pair">
       <td>Adresse email :</td>
       <td>
-        <input type="text" name="mail" size="30" maxlength="50">
+        <input type="text" name="mail" size="30" maxlength="50" />
       </td>
     </tr>
     <tr class="impair">
       <td>Nous lui écrirons :</td>
       <td>
-        <input type="radio" name="origine" value="perso" checked="checked"> en ton nom<br />
+        <input type="radio" name="origine" value="perso" checked="checked" /> en ton nom<br />
         <input type="radio" name="origine" value="equipe" /> au nom de l'équipe Polytechnique.org
       </td>
     </tr>
   </table>
-  <br>
+  <br />
   <input type="submit" name="valide" value="Valider" />
 </form>
 {/if}

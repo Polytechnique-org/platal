@@ -1,4 +1,4 @@
-{* $Id: envoidirect.tpl,v 1.1 2004-07-16 23:45:03 x2000habouzit Exp $ *}
+{* $Id: envoidirect.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Liste des sollicités inscrits récemment
@@ -24,7 +24,7 @@
     <td>
       <a href="mailto:{$it.email}">{$it.email}</a>
     </td>
-    <td align="center">{$it.date_ins|date_format:"%e %b %Y"}</td>
+    <td class="center">{$it.date_ins|date_format:"%e %b %Y"}</td>
   </tr>
   {/foreach}
 </table>

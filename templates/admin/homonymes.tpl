@@ -1,4 +1,4 @@
-{* $Id: homonymes.tpl,v 1.1 2004-07-08 14:37:13 x2000habouzit Exp $ *}
+{* $Id: homonymes.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Gestion des homonymes
@@ -57,8 +57,8 @@
 {elseif $op eq 'mail-conf'}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="target" value="{$target}">
-  <input type="hidden" name="op" value="mail">
+  <input type="hidden" name="target" value="{$target}" />
+  <input type="hidden" name="op" value="mail" />
   <table class="bicol">
     <tr>
       <th>Envoyer un mail pour prévenir l'utilisateur</th>
@@ -85,7 +85,7 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
-        <input type="submit" value="Envoyer">
+        <input type="submit" value="Envoyer" />
       </td>
     </tr>
   </table>
@@ -94,8 +94,8 @@ L'équipe Polytechnique.org
 {elseif $op eq 'correct-conf'}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="target" value="{$target}">
-  <input type="hidden" name="op" value="correct">
+  <input type="hidden" name="target" value="{$target}" />
+  <input type="hidden" name="op" value="correct" />
   <table class="bicol">
     <tr>
       <th>Mettre en place le robot {$loginbis}@polytechnique.org</th>
@@ -122,7 +122,7 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
-        <input type="submit" value="Envoyer et corriger">
+        <input type="submit" value="Envoyer et corriger" />
       </td>
     </tr>
   </table>

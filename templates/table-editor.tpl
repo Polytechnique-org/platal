@@ -1,4 +1,4 @@
-{* $Id: table-editor.tpl,v 1.4 2004-04-26 13:40:12 x2000habouzit Exp $ *}
+{* $Id: table-editor.tpl,v 1.5 2004-07-17 11:23:09 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -81,56 +81,56 @@
 {else}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-<input type="hidden" name="action" value="update">
-{if $id!=''}
-<input type="hidden" name="{$prefix}id" value="{$id}">
-{/if}
-<table class="bicol">
-<tr class="impair">
-  <th colspan="2">
-  {if $id!=''}modification de l'entrée {$id}
-  {else}nouvelle entrée{/if}
-  </th>
-</tr>
-{foreach from=$vars key=mykey item=myval}
-{if $mykey != $idfield}
-<tr class="{cycle values="pair,impair"}">
-  <td>
-    <strong>{$myval.desc}</strong>
-    {if $myval.type=="password"}<br /><em>(blank=no change)</em>{/if}
-  </td>
-  <td>
-{if $myval.type=="textarea"}
-    <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value|escape}</textarea>
-{elseif $myval.type=="set"}
-    {if $myval.trans}
-    {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.trans[$myval.value] trans=$myval.trans}
-    {else}
-    {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.value}
+  <input type="hidden" name="action" value="update" />
+  {if $id!=''}
+  <input type="hidden" name="{$prefix}id" value="{$id}"/>
+  {/if}
+  <table class="bicol">
+    <tr class="impair">
+      <th colspan="2">
+        {if $id!=''}modification de l'entrée {$id}
+        {else}nouvelle entrée{/if}
+      </th>
+    </tr>
+    {foreach from=$vars key=mykey item=myval}
+    {if $mykey != $idfield}
+    <tr class="{cycle values="pair,impair"}">
+      <td>
+        <strong>{$myval.desc}</strong>
+        {if $myval.type=="password"}<br /><em>(blank=no change)</em>{/if}
+      </td>
+      <td>
+        {if $myval.type=="textarea"}
+        <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value|escape}</textarea>
+        {elseif $myval.type=="set"}
+        {if $myval.trans}
+        {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.trans[$myval.value] trans=$myval.trans}
+        {else}
+        {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.value}
+        {/if}
+        {elseif $myval.type=="ext"}
+        {extval table=$table field=$mykey name="$prefix$mykey" vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield selected=$myval.value}
+        {elseif $myval.type=="timestamp"}
+        <input type="text" name="{$prefix}{$mykey}" value="{$myval.value|date_format:"%Y-%m-%d %H:%M:%S"}" />
+        {elseif $myval.type=="password"}
+        <input type="password" name="{$prefix}{$mykey}" size="40" />
+        {else}
+        <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value|escape}" />
+        {/if}
+      </td>
+    </tr>
     {/if}
-{elseif $myval.type=="ext"}
-    {extval table=$table field=$mykey name="$prefix$mykey" vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield selected=$myval.value}
-{elseif $myval.type=="timestamp"}
-    <input type="text" name="{$prefix}{$mykey}" value="{$myval.value|date_format:"%Y-%m-%d %H:%M:%S"}" />
-{elseif $myval.type=="password"}
-    <input type="password" name="{$prefix}{$mykey}" size="40" />
-{else}
-    <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value|escape}" />
-{/if}
-  </td>
-</tr>
-{/if}
-{/foreach}
-</table>
+    {/foreach}
+  </table>
 
-<p class="center">
+  <p class="center">
   <input type="submit" value="enregistrer" />
-</p>
+  </p>
 
 </form>
 
 <p>
-  <a href="{$smarty.server.PHP_SELF}">back</a>
+<a href="{$smarty.server.PHP_SELF}">back</a>
 </p>
 
 {/if}

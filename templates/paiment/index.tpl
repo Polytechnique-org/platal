@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.1 2004-07-08 12:03:08 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.2 2004-07-17 11:23:10 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Micropaiments
@@ -17,7 +17,9 @@
   télépaiement, tu peux virer directement la somme de ton choix sur notre compte
   30004 00314 00010016782 60. Nous veillerons à ce que ton paiement parvienne à
   son destinataire.  Pense toutefois à le préciser dans le motif du
-  versement.<br><br></p>
+  versement.
+  <br /><br />
+  </p>
   <table class="bicol" width="98%">
     <tr>
       <th colspan="2">Effectuer un télépaiement</th>

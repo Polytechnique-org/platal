@@ -1,4 +1,4 @@
-{* $Id: newsletter.tpl,v 1.3 2004-03-09 06:54:41 x2000chevalier Exp $ *}
+{* $Id: newsletter.tpl,v 1.4 2004-07-17 11:23:09 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -31,9 +31,10 @@
   Lettre de Polytechnique.org
 </div>
 <p class="normal">
-Tu trouveras ici les archives de la lettre d'information de Polytechnique.org.
-Pour t'abonner à cette lettre, il te suffit de te
-<a href="listes/">rendre sur la page des listes</a> et de cocher la case "newsletter". Enfin, <b>pour demander l'ajout d'une annonce dans la prochaine lettre mensuelle</b>, <a href="mailto:info_newsletter@polytechnique.org">écris-nous !</a>
+Tu trouveras ici les archives de la lettre d'information de Polytechnique.org.  Pour t'abonner à
+cette lettre, il te suffit de te <a href="listes/">rendre sur la page des listes</a> et de cocher la
+case "newsletter". Enfin, <strong>pour demander l'ajout d'une annonce dans la prochaine lettre
+  mensuelle</strong>, <a href="mailto:info_newsletter@polytechnique.org">écris-nous !</a>
 </p>
 
 {include file=include/newsletter.list.tpl nl_list=$nl_list}
