@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_pattecassee.php,v 1.5 2004-09-02 23:33:56 x2000bedo Exp $
+        $Id: newsletter_pattecassee.php,v 1.6 2004-11-22 07:40:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,7 +36,7 @@ function valide_email($str) {
 
 }
 
-require("tpl.mailer.inc.php");
+require("xorg.mailer.inc.php");
 
 if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
     $email = valide_email($_GET['email']);
@@ -48,7 +48,7 @@ if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
        INNER JOIN aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
        WHERE e.email='$email'");
        
-    $mailer = new TplMailer('templates/mails/pattecasser.nl.tpl');
+    $mailer = new XOrgMailer('templates/mails/pattecasser.nl.tpl');
     $mailer->assign('email', $email);
     
     if (list($dest) = mysql_fetch_row($sel)) {

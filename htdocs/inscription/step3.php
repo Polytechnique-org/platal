@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.4 2004-11-21 23:35:31 x2000habouzit Exp $
+        $Id: step3.php,v 1.5 2004-11-22 07:40:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -73,8 +73,8 @@ $globals->db->query("UPDATE auth_user_md5 SET last_known_email='{$_REQUEST['emai
 if(isset($_REQUEST['envoidirect']))
     $globals->db->query("UPDATE envoidirect SET date_succes=NOW() WHERE uid='{$_REQUEST['envoidirect']}'");
 
-require("tpl.mailer.inc.php");
-$mymail = new TplMailer('inscrire.mail.tpl');
+require("xorg.mailer.inc.php");
+$mymail = new XOrgMailer('inscrire.mail.tpl');
 $mymail->assign('forlife',$forlife);
 $mymail->assign('lemail',$_REQUEST['email']);
 $mymail->assign('pass_clair',$pass_clair);

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.11 2004-11-21 23:35:32 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.12 2004-11-22 07:40:17 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -100,8 +100,8 @@ switch ($_REQUEST["submit"]) {
 	// pas d'erreur pour l'insert
 
 	// envoi du mail à l'utilisateur
-	require('tpl.mailer.inc.php');
-	$mymail = new TplMailer('marketing.utilisateur.tpl');
+	require('xorg.mailer.inc.php');
+	$mymail = new XOrgMailer('marketing.utilisateur.tpl');
 
 	$mymail->assign('from', $_REQUEST["from"]);
 	$mymail->assign('to', stripslashes($_REQUEST["mail"]));

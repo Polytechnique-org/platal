@@ -18,15 +18,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: tpl.mailer.inc.php,v 1.5 2004-11-16 20:59:06 x2000habouzit Exp $
+    $Id: xorg.mailer.inc.php,v 1.1 2004-11-22 07:40:17 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.hermes.inc.php");
 require_once("Smarty.class.php");
 
+// {{{ class XOrgMailer
+
 /** Classe de mail avec corps en templates.
  */
-class TplMailer extends Smarty {
+class XOrgMailer extends Smarty
+{
+    // {{{ properties
+    
     /** Directory used to store mails_templates.
      * Smarty::template_dir subdir used to sotre the mails templates.
      * The body of the message is taken from a tsmarty template
@@ -45,8 +50,12 @@ class TplMailer extends Smarty {
     var $_bcc = Array();
     /** stores the subject of the mail */
     var $_subject;
+
+    // }}}
+    // {{{ constructor
     
-    function TplMailer($tpl) {
+    function TplMailer($tpl)
+    {
         global $globals;
         $this->_tpl = $tpl;
         $this->caching=false;
@@ -64,7 +73,11 @@ class TplMailer extends Smarty {
         $this->register_function('subject', 'set_subject');
     }
 
-    function send() {
+    // }}}
+    // {{{ function send()
+
+    function send()
+    {
         // do not try to optimize, in the templates, some function can modify our object, then we
         // have to fetch in the first time, and only then send the mail.
         $body = $this->fetch($this->mail_dir."/".$this->_tpl);
@@ -72,51 +85,94 @@ class TplMailer extends Smarty {
 	$mailer->setFrom($this->_from);
 	$mailer->addTo(implode(',',$this->_to));
 	$mailer->setSubject($this->_subject);
-	if (!empty($this->_cc)) $mailer->addCc(implode(',',$this->_cc));
-	if (!empty($this->_bcc)) $mailer->addBcc(implode(',',$this->_bcc));
+	if (!empty($this->_cc)) {
+            $mailer->addCc(implode(',',$this->_cc));
+        }
+	if (!empty($this->_bcc)) {
+            $mailer->addBcc(implode(',',$this->_bcc));
+        }
         $mailer->setTxtBody($body);
         $mailer->send();
     }
+
+    // }}}
 }
 
+// }}}
+// {{{ function mail_format()
+
 /** used to remove the empty lines due to {from ...}, {to ...} ... functions */
-function mail_format($output, &$smarty) {
+function mail_format($output, &$smarty)
+{
     return wordwrap("\n".trim($output)."\n",75);
 }
 
-function format_addr(&$params) {
-    if(isset($params['full']))
+// }}}
+// {{{ function format_addr()
+
+function format_addr(&$params)
+{
+    if (isset($params['full'])) {
         return $params['full'];
-    if(empty($params['text']))
+    } elseif (empty($params['text'])) {
         return $params['addr'];
-    else
+    } else {
         return $params['text'].' <'.$params['addr'].'>';
+    }
 }
+
+// }}}
+// {{{ function set_from()
 
 /** template function : from.
  * {from full=...} for an already formatted address
  * {from addr=... [text=...]} else
  */
-function set_from($params, &$smarty) { $smarty->_from  = format_addr($params); }
+function set_from($params, &$smarty)
+{ $smarty->_from = format_addr($params); }
+
+// }}}
+// {{{ function set_to()
+
 /** template function : to.
  * {to full=...} for an already formatted address
  * {to addr=... [text=...]} else
  */
-function set_to($params, &$smarty)   { $smarty->_to[]  = format_addr($params); }
+function set_to($params, &$smarty)
+{ $smarty->_to[] = format_addr($params); }
+
+// }}}
+// {{{ function set_cc()
+
 /** template function : cc.
  * {cc full=...} for an already formatted address
  * {cc addr=... [text=...]} else
  */
-function set_cc($params, &$smarty)   { $smarty->_cc[]  = format_addr($params); }
+function set_cc($params, &$smarty)
+{ $smarty->_cc[] = format_addr($params); }
+
+// }}}
+// {{{ function set_bcc()
+
 /** template function : bcc.
  * {bcc full=...} for an already formatted address
  * {bcc addr=... [text=...]} else
  */
-function set_bcc($params, &$smarty)  { $smarty->_bcc[] = format_addr($params); }
+function set_bcc($params, &$smarty)
+{ $smarty->_bcc[] = format_addr($params); }
+
+// }}}
+// {{{ function set_subject()
+
 /** template function : subject.
  * {subject text=...} 
  */
-function set_subject($params, &$smarty) {
+function set_subject($params, &$smarty)
+{
     $smarty->_subject = $params['text'];
 }
+
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: evts.inc.php,v 1.1 2004-11-22 07:24:56 x2000habouzit Exp $
+    $Id: evts.inc.php,v 1.2 2004-11-22 07:40:18 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class EvtReq
@@ -85,8 +85,8 @@ class EvtReq extends Validate
     {
         global $globals;
         if (isset($_POST['action'])) {
-            require("tpl.mailer.inc.php");
-            $mymail = new TplMailer('valid.evts.tpl');
+            require("xorg.mailer.inc.php");
+            $mymail = new XOrgMailer('valid.evts.tpl');
             $mymail->assign('bestalias',$this->bestalias);
             $mymail->assign('titre',$this->titre);
 

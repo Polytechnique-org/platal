@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.16 2004-11-21 23:35:31 x2000habouzit Exp $
+        $Id: step4.php,v 1.17 2004-11-22 07:40:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('inscription/step4.tpl', AUTH_PUBLIC);
 
 require("user.func.inc.php");
-require('tpl.mailer.inc.php');
+require('xorg.mailer.inc.php');
 
 define("ERROR_REF", 1);
 define("ERROR_ALREADY_SUBSCRIBED", 2);
@@ -106,7 +106,7 @@ if (!empty($_REQUEST['ref'])) {
 			    INNER JOIN  aliases     AS a ON ( a.id = e.sender AND a.type='a_vie' )
                                  WHERE  e.matricule = '$matricule'");
     while (list($sender_usern, $sender_date) = mysql_fetch_row($res)) {
-        $mymail = new TplMailer('marketing.thanks.tpl');
+        $mymail = new XOrgMailer('marketing.thanks.tpl');
         $mymail->assign('to', $sender_usern);
         $mymail->assign('prenom', $prenom);
         $mymail->assign('nom',$nom);
@@ -134,7 +134,7 @@ if (!empty($_REQUEST['ref'])) {
     $globals->db->query("insert into user_changes ($uid)");
 
     // envoi du mail à l'inscrit
-    $mymail = new TplMailer('inscription.reussie.tpl');
+    $mymail = new XOrgMailer('inscription.reussie.tpl');
     $mymail->assign('forlife', $forlife);
     $mymail->assign('prenom', $prenom);
     $mymail->send();

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: listes.inc.php,v 1.1 2004-11-22 07:24:56 x2000habouzit Exp $
+    $Id: listes.inc.php,v 1.2 2004-11-22 07:40:18 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class ListeReq
@@ -89,8 +89,8 @@ class ListeReq extends Validate
             return false;
         }
 
-        require_once("tpl.mailer.inc.php");
-        $mymail = new TplMailer('valid.liste.tpl');
+        require_once("xorg.mailer.inc.php");
+        $mymail = new XOrgMailer('valid.liste.tpl');
         $mymail->assign('alias', $this->liste);
         $mymail->assign('bestalias', $this->bestalias);
         $mymail->assign('motif', stripslashes($_REQUEST['motif']));

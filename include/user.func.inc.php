@@ -18,15 +18,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: user.func.inc.php,v 1.4 2004-11-18 17:39:10 x2000habouzit Exp $
+    $Id: user.func.inc.php,v 1.5 2004-11-22 07:40:17 x2000habouzit Exp $
  ***************************************************************************/
 
-
+// {{{ function user_clear_all_subs()
 /** kills the inscription of a user.
  * we still keep his birthdate, adresses, and personnal stuff
  * kills the entreprises, mentor, emails and lists subscription stuff
  */
-function user_clear_all_subs($user_id, $really_del=true) {
+function user_clear_all_subs($user_id, $really_del=true)
+{
     // keep datas in : aliases, adresses, applis_ins, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
     // delete in     : auth_user_md5, auth_user_quick, competences_ins, emails, entreprises, langues_ins, mentor,
     //                 mentor_pays, mentor_secteurs, newsletter_ins, perte_pass, requests, user_changes, virtual_redirect, watch_sub
@@ -38,7 +39,7 @@ function user_clear_all_subs($user_id, $really_del=true) {
     list($alias) = mysql_fetch_row($res);
     mysql_free_result($res);
 
-    if($really_del) {
+    if ($really_del) {
 	$globals->db->query("delete from emails where uid=$uid");
 	$globals->db->query("delete from newsletter_ins where user_id=$uid");
     }
@@ -64,14 +65,18 @@ function user_clear_all_subs($user_id, $really_del=true) {
     $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
     $client->kill($alias, $really_del);
 }
- 
+
+// }}}
+// {{{ function inscription_forum_promo()
+
 /** inscrit l'uid donnée au forum promo 
  * @param $uid UID
  * @param $promo promo
  * @return la reponse MySQL
  * @see step4.php
  */
-function inscription_forum_promo($uid,$promo) {
+function inscription_forum_promo($uid,$promo)
+{
     global $globals;
     // récupération de l'id du forum promo
     $result=$globals->db->query("SELECT fid FROM forums.list WHERE nom='xorg.promo.x$promo'");
@@ -81,8 +86,8 @@ function inscription_forum_promo($uid,$promo) {
 	$req_id=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo'");
 	list($effid) = mysql_fetch_row($req_id);
 	if (5*$effau>$effid) { // + de 20% d'inscrits
-	    require_once("tpl.mailer.inc.php");
-	    $mymail = new TplMailer('forums.promo.tpl');
+	    require_once("xorg.mailer.inc.php");
+	    $mymail = new XOrgMailer('forums.promo.tpl');
 	    $mymail->assign('promo', $promo);
 	    $mymail->send();
 	}
@@ -96,12 +101,16 @@ function inscription_forum_promo($uid,$promo) {
     return $res;
 } 
 
+// }}}
+// {{{ function inscription_forums()
+
 /** inscrit UID aux forums par défaut
  * @param $uid UID
  * @return la reponse MySQL globale
  * @see step4.php
  */
-function inscription_forums($uid) {
+function inscription_forums($uid)
+{
     global $globals;
     $res = true;
     $cible = array('xorg.general','xorg.pa.emploi','xorg.pa.divers','xorg.pa.logements');
@@ -114,6 +123,8 @@ function inscription_forums($uid) {
     return $res;
 }
 
+// }}}
+// {{{ function inscription_listes_base()
 
 /** inscrit l'uid donnée à la promo
  * @param $uid UID
@@ -122,7 +133,8 @@ function inscription_forums($uid) {
  * @see admin/RegisterNewUser.php
  * @see step4.php
  */
-function inscription_listes_base($uid,$pass,$promo) {
+function inscription_listes_base($uid,$pass,$promo)
+{
     require_once('xml-rpc-client.inc.php');
     require_once('newsletter.inc.php');
     global $globals;
@@ -132,4 +144,7 @@ function inscription_listes_base($uid,$pass,$promo) {
     subscribe_nl();
 }
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: epouses.inc.php,v 1.1 2004-11-22 07:24:56 x2000habouzit Exp $
+    $Id: epouses.inc.php,v 1.2 2004-11-22 07:40:18 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class EpouseReq
@@ -86,8 +86,8 @@ class EpouseReq extends Validate
             return false;
         }
 
-        require_once("tpl.mailer.inc.php");
-        $mymail = new TplMailer('valid.epouses.tpl');
+        require_once("xorg.mailer.inc.php");
+        $mymail = new XOrgMailer('valid.epouses.tpl');
         $mymail->assign('forlife', $this->forlife);
 
         if ($_REQUEST['submit']=="Accepter") {

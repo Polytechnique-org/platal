@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: relance.php,v 1.5 2004-11-21 23:35:32 x2000habouzit Exp $
+        $Id: relance.php,v 1.6 2004-11-22 07:40:17 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -27,7 +27,7 @@ new_admin_page('marketing/relance.tpl');
 
 /* une relance a été demandée - on envoit les mails correspondants */
 if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
-    require("tpl.mailer.inc.php");
+    require("xorg.mailer.inc.php");
     
     
     $res=$globals->db->query("SELECT COUNT(*) FROM auth_user_md5");
@@ -47,7 +47,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
             $lpass = md5($nveau_pass);
             $fdate = substr($ldate, 8, 2)."/".substr($ldate, 5, 2)."/".substr($ldate, 0, 4);
             
-            $mymail = new TplMailer('marketing.relance.tpl');
+            $mymail = new XOrgMailer('marketing.relance.tpl');
             $mymail->assign('nbdix',$nbdix);
             $mymail->assign('fdate',$fdate);
             $mymail->assign('lusername',$lusername);
