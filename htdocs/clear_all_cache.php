@@ -18,14 +18,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: clear_all_cache.php,v 1.3 2004-10-08 12:45:49 x2000habouzit Exp $
+        $Id: clear_all_cache.php,v 1.4 2004-10-09 10:51:49 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_admin_page('index.tpl');
 $page->clear_all_cache();
 $page->clear_compiled_tpl();
-if(isset($_SERVER['HTTP_REFERER'])) {
+
+$ref = $_SERVER['HTTP_REFERER'];
+if(isset($ref && strpos($ref,'clear_all_cache.php')===false) {
     header("Location: {$_SERVER['HTTP_REFERER']}");
 } else {
     header("Location: index.php");
