@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: manageurs.php,v 1.2 2004-11-09 21:42:34 x2000chevalier Exp $
+        $Id: manageurs.php,v 1.3 2004-11-11 11:06:28 x2000coic Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,7 +36,7 @@ function get_annuaire_infos($method, $params) {
 	    $iv = mcrypt_create_iv (mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
 	    mcrypt_generic_init($td, $cipher_key.$params[0], $iv);
 	    foreach ( $array as $key => $value ) { 
-	        $reply[base64_encode(mcrypt_generic($td, $key)] = base64_encode(mcrypt_generic($td, $value));
+	        $reply[base64_encode(mcrypt_generic($td, $key))] = base64_encode(mcrypt_generic($td, $value));
 	    } 
 	    mcrypt_generic_deinit($td);
 	    mcrypt_module_close($td);
