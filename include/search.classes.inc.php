@@ -285,7 +285,7 @@ class QuickSearch extends SField
 	    $order .= " + ( (u.nom='$s' OR u.epouse='$s') + (CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '$sep{$s}$sep') )*1000
                         + ( CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '$sep{$s}' )*100
                         + ( (u.prenom = '$s') + (CONCAT(' ',u.prenom,' ') RLIKE '$sep{$s}$sep') )*10
-                        + ( u.prenom RLIKE '$sep{$s}' )";
+                        + ( u.prenom RLIKE '(^|$sep){$s}' )";
 	}
         return $order.' AS mark';
     }
