@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_general.inc.php,v 1.4 2004-09-01 22:17:52 x2000habouzit Exp $
+        $Id: get_general.inc.php,v 1.5 2004-09-02 23:25:30 x2000habouzit Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
@@ -27,7 +27,6 @@ $sql = "SELECT u.nom, u.prenom".
 	", mobile".
 	", web".
         ", libre".
-	", alias".
 	", a1.aid, a1.type".
 	", a2.aid, a2.type".
 	" FROM auth_user_md5 AS u".
@@ -39,8 +38,7 @@ $sql = "SELECT u.nom, u.prenom".
 $result = $globals->db->query($sql);
 list($nom, $prenom,
      $promo, $epouse, $femme, $nationalite,
-     $mobile, $web,
-     $libre, $alias,
+     $mobile, $web, $libre,
      $appli_id1,$appli_type1,
      $appli_id2,$appli_type2) = mysql_fetch_row($result);
 

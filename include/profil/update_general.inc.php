@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: update_general.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
+        $Id: update_general.inc.php,v 1.4 2004-09-02 23:25:30 x2000habouzit Exp $
  ***************************************************************************/
 
 if ($appli_id1>0)
@@ -31,12 +31,8 @@ if ($appli_id2>0)
 else
      $globals->db->query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=1");
 
-$sql = "UPDATE auth_user_md5 SET ".
-// champs calculés ou vérifés
-"alias='$alias',nationalite=$nationalite,web='$web',".
-"mobile='$mobile',".
-// champs libres, on ajoute les slashes
-"libre='".put_in_db($libre)."' WHERE user_id={$_SESSION['uid']}";
+$sql = "UPDATE auth_user_md5
+	   SET nationalite=$nationalite,web='$web',mobile='$mobile',libre='".put_in_db($libre)."' WHERE user_id={$_SESSION['uid']}";
 
 
 $globals->db->query($sql);

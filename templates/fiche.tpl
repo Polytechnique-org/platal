@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.6 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.7 2004-09-02 23:25:31 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,16 +28,17 @@
     <span>X {$promo}&nbsp;-&nbsp;{$applis|smarty:nodefaults}</span><br />
     <span style="font-size: small;">(Fiche mise à jour le {$date|date_format:"%d/%m/%Y"})</span><br />
     <span>
-      <a href="vcard.php/{$username}.vcf?x={$username}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
+      <a href="vcard.php/{$forlife}.vcf?x={$user_id}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
       {if !$is_contact}
-      <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$username}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
+      <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
       {/if}
-      <a href="sendmail.php?contenu=Tu%20trouveras%20ci-apres%20la%20fiche%20de%20{$prenom}%20{$nom}%20https://www.polytechnique.org/fiche.php?x={$username}"  onclick="return popup(this)">
+      <a
+        href="sendmail.php?contenu=Tu%20trouveras%20ci-apres%20la%20fiche%20de%20{$prenom}%20{$nom}%20https://www.polytechnique.org/fiche.php?user={$forlife}"  onclick="return popup(this)">
         <img src="images/mail.png" alt="Envoyer l'URL" />
       </a>
     </span>
     <br />
-    <a href="mailto:{$username}@polytechnique.org">{$username}@polytechnique.org</a><br />
+    <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a><br />
     <span><em>Section</em> : {$section}</span><br />
     <span><em>Binet(s)</em> : {$binets}</span><br />
     <span><em>Groupe(s) X</em> : {$groupes}</span><br />
@@ -46,7 +47,7 @@
     {if $libre}<br /><span><em>Commentaires</em> :</span><br /><span>{$libre|nl2br}</span>{/if}
   </div>
   <div class="item">
-    <img alt="Photo de {$username}" src="{$photo_url}" width="{$size_x}" height="{$size_y}" />
+    <img alt="Photo de {$forlife}" src="{$photo_url}" width="{$size_x}" height="{$size_y}" />
   </div>
   <div class="spacer">&nbsp;</div>
 </div>

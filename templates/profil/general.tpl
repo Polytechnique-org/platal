@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.11 2004-09-02 21:09:33 x2000habouzit Exp $
+        $Id: general.tpl,v 1.12 2004-09-02 23:25:31 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -146,7 +146,7 @@
               Voilà la photo qui apparaîtra sur la fiche de ton profil (si tu viens
               de changer ta photo, la photo affichée peut correspondre à ton ancien
               profil : c'est le cas si elle n'a pas encore été validée par un administrateur du site !
-              <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
+              <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.forlife}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
             </td>
             <td class="dcolg">
               <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] " />
