@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: carva_redirect.php,v 1.7 2004-11-22 22:37:48 x2000habouzit Exp $
+    $Id: carva_redirect.php,v 1.8 2004-11-24 16:29:43 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -46,6 +46,7 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
         $page->assign('message',"<p class='erreur'>Erreur de suppression</p>\n");
     }
 }
+
 
 $result = $globals->db->query("select redirecturl from auth_user_md5 where user_id={$_SESSION['uid']}");
 list($carva) = mysql_fetch_row($result);
