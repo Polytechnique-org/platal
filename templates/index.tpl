@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.4 2004-08-23 14:19:37 x2000chevalier Exp $ *}
 
 <div class="rubrique">
   Bienvenue sur le portail des élèves et anciens élèves de l'X !
@@ -10,15 +10,19 @@
   polytechniciens.
 </p>
 <br />
-<strong>Si vous êtes un recruteur ou une entreprise,</strong>
+<strong>Si vous êtes un recruteur ou une entreprise, / if you are a recruiter or a company,</strong>
   <ul>
-   <li class="spaced">vous avez la possibilité de <strong><a href="news/offreemploi.php">proposer une offre d'emploi</a></strong> accessible à tous les X directement en ligne, depuis la partie privée du site.</li>
+   <li class="spaced">vous avez la possibilité <strong><a href="http://www.manageurs.com/?langue=fr">d'utiliser le site Manageurs.com</a></strong> pour rentrer en contact avec les Polytechniciens, mettre en ligne des offres d'emploi, consulter l'annuaire inter-écoles et, dès septembre, consulter la base de données de CV.</li>
+   <li class="spaced">you can <strong><a href="http://www.manageurs.com/?langue=en">access Manageurs.com</a></strong> to get in touch with alumni and students of Ecole Polytechnique, submit job offers, use the directory and, soon, browse the resume database.</li>
   </ul>
   <strong>Si vous êtes polytechnicien,</strong>
   <ul>
    <li class="spaced">vous pouvez <strong><a href="inscrire.php">vous inscrire à Polytechnique.org</a></strong> si ce n'est pas encore fait,</li>
    <li class="spaced">ou <strong><a href="login.php">vous connecter</a></strong> si vous êtes inscrit !</li>
   </ul>
+   Vous pouvez <strong><a href="services.php">consulter la liste de ce que vous apporte Polytechnique.org</a></strong> si vous hésitez à vous inscrire !
+   <br />
+   <br />
   <strong>Dans tous les cas,</strong> vous pouvez :
   <ul>
    <li class="spaced"><strong><a href="recherche.php?annuaire_public=1">rechercher un ancien élève ou un élève</a></strong> dans l'annuaire en ligne,</li>
