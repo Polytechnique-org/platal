@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: panel.tpl,v 1.5 2004-11-13 15:56:36 x2000habouzit Exp $
+        $Id: panel.tpl,v 1.6 2004-11-17 11:20:14 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Bilan des Notifications</h1>
@@ -51,11 +51,11 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
     <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
     <td>
       {if $promo[row].inscrit}
-      <a href="{"fiche.php"|url}?user={$promo[row].forlife}" class="popup2">
+      <a href="{"fiche.php"|url}?user={$promo[row].bestalias}" class="popup2">
         {$promo[row].prenom} {$promo[row].nom}
       </a>
       {if !$promo[row].contact}
-      <a href="{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$promo[row].forlife}">{*
+      <a href="{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$promo[row].bestalias}">{*
         *}<img src="{"images/ajouter.gif"|url}" alt="ajouter à mes contacts" />{*
       *}</a>
       {/if}
