@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.7 2004-10-14 18:18:06 x2000habouzit Exp $
+        $Id: moderate.php,v 1.8 2004-10-16 14:03:03 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -49,13 +49,30 @@ if(isset($_POST['sdel'])) {
 }
 
 if(isset($_POST['mid'])) {
+    include_once('diogenes.mailer.inc.php');
     $mid = $_POST['mid'];
-    if(isset($_POST['mok']))
-	$client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
-    elseif(isset($_POST['mno']))
-	$client->handle_request('polytechnique.org', $liste,$mid,2,stripslashes($_POST['reason'])); /** 2 = REJECT **/
-    elseif(isset($_POST['mdel']))
-	$client->handle_request('polytechnique.org', $liste,$mid,3,''); /** 3 = DISCARD **/
+    if(isset($_POST['mok'])) {
+	if $client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
+    } elseif(isset($_POST['mno'])) {
+	$reason = stripslashes($_POST['reason']);
+	if($client->handle_request('polytechnique.org', $liste,$mid,2,$reason)) { /** 2 = REJECT **/
+	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
+		"$liste-owner@polytechnique.org", "Message refusé");
+	    $texte = "le message a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
+		    ."« $reason »";
+	    $mailer->setBody(wordwrap($texte,72));
+	    $mailer->send();
+	}
+    } elseif(isset($_POST['mdel'])) {
+	if($client->handle_request('polytechnique.org', $liste,$mid,3,'')) { /** 3 = DISCARD **/
+	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
+		"$liste-owner@polytechnique.org", "Message supprimé");
+	    $texte = "le message a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
+		    ."Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
+	    $mailer->setBody(wordwrap($texte,72));
+	    $mailer->send();
+	}
+    }
 }
 
 if(isset($_REQUEST['sid'])) {
