@@ -6,8 +6,14 @@ New :
 	* Core :
 		- Improve login/exit wrt cookie.									 -MC
 
+	* Docs :
+		- use of secure SMTP on a pocket PC									-Car
+		
 	* Fiche :
 		- A public fiche is now available for visiters.						-Car
+		
+	* Money :
+		- lighter code and support for a PayPal account.					-Car
 		
 	* Profile :
 		- One can choose precisely which fields appear on his public fiche.	-Car
