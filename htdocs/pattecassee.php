@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: pattecassee.php,v 1.9 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: pattecassee.php,v 1.10 2004-11-16 20:36:10 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -67,9 +67,12 @@ consulter la page <https://www.polytechnique.org/pattecassee.php>.
 A bientôt sur Polytechnique.org !
 L'équipe d'administration <support@polytechnique.org>";
 
-    require_once("diogenes.mailer.inc.php");
-	$mail = new DiogenesMailer('Polytechnique.org <support@polytechnique.org>', $dest, "Une de tes adresse de redirection Polytechnique.org ne marche plus !!", false);
-	$mail->setBody($message);
+	require_once("diogenes.hermes.inc.php");
+	$mail = new HermesMailer();
+	$mail->setFrom('Polytechnique.org <support@polytechnique.org>');
+	$mail->addTo("<$dest@polytechnique.org>");
+	$mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
+	$mail->setTxtBody($message);
 	$mail->send();
         $page->assign('erreur', "Mail envoyé ! :o)");
     }

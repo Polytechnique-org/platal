@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.19 2004-11-13 14:16:18 x2000habouzit Exp $
+        $Id: moderate.php,v 1.20 2004-11-16 20:36:11 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -47,50 +47,50 @@ if(isset($_POST['sdel'])) {
 
 if(isset($_REQUEST['mid'])) {
     $mid = $_REQUEST['mid'];
+    include_once('diogenes.hernes.inc.php');
+    $mailer = new HermesMailer();
+    $mailer->addTo("$liste-owner@polytechnique.org");
+    $mailer->setFrom("$liste-bounces@polytechnique.org");
+    $mailer->addHeader('Reply-To', "$liste-owner@polytechnique.org");
+
     if(isset($_REQUEST['mok'])) {
 	unset($_GET['mid']);
 	if($client->handle_request($liste,$mid,1,'')) { /** 1 = APPROVE **/
-	    include_once('diogenes.mailer.inc.php');
-	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
-		"$liste-owner@polytechnique.org", "Message accepté");
+	    $mailer->setSubject("Message accepté");
 	    $texte = "le message suivant :\n\n"
 		    ."    Auteur: {$mail['sender']}\n"
 		    ."    Sujet : « {$mail['subj']} »\n"
 		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
 		    ."a été accepté par {$_SESSION['prenom']} {$_SESSION['nom']}.\n";
-	    $mailer->setBody(wordwrap($texte,72));
+	    $mailer->setTxtBody(wordwrap($texte,72));
 	    $mailer->send();
 	}
     } elseif(isset($_POST['mno'])) {
 	$reason = stripslashes($_POST['reason']);
 	$mail = $client->get_pending_mail($liste, $mid);
 	if($client->handle_request($liste,$mid,2,$reason)) { /** 2 = REJECT **/
-	    include_once('diogenes.mailer.inc.php');
-	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
-		"$liste-owner@polytechnique.org", "Message refusé");
+	    $mailer->setSubject("Message refusé");
 	    $texte = "le message suivant :\n\n"
 		    ."    Auteur: {$mail['sender']}\n"
 		    ."    Sujet : « {$mail['subj']} »\n"
 		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
 		    ."a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
 		    ."« $reason »";
-	    $mailer->setBody(wordwrap($texte,72));
+	    $mailer->setTxtBody(wordwrap($texte,72));
 	    $mailer->send();
 	}
     } elseif(isset($_REQUEST['mdel'])) {
 	unset($_GET['mid']);
 	$mail = $client->get_pending_mail($liste, $mid);
 	if($client->handle_request($liste,$mid,3,'')) { /** 3 = DISCARD **/
-	    include_once('diogenes.mailer.inc.php');
-	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
-		"$liste-owner@polytechnique.org", "Message supprimé");
+	    $mailer->setSubject("Message supprimé");
 	    $texte = "le message suivant :\n\n"
 		    ."    Auteur: {$mail['sender']}\n"
 		    ."    Sujet : « {$mail['subj']} »\n"
 		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S",(int)$mail['stamp'])."\n\n"
 	            ."a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
 		    ."Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
-	    $mailer->setBody(wordwrap($texte,72));
+	    $mailer->setTxtBody(wordwrap($texte,72));
 	    $mailer->send();
 	}
     }

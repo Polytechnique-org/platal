@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.5 2004-09-22 18:11:00 x2000coic Exp $
+        $Id: recovery.php,v 1.6 2004-11-16 20:36:10 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -70,11 +70,12 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         mysql_free_result($result);
         $emails = implode(',', $emails);
         
-	require("diogenes.mailer.inc.php");
-        $mymail = new DiogenesMailer('Gestion des mots de passe <support+password@polytechnique.org>',
-		$emails, 'Ton certificat d\'authentification', false);
-
-        $mymail->setBody("Visite la page suivante qui expire dans six heures :
+	require("diogenes.hermes.inc.php");
+	$mymail = new HermesMailer();
+	$mymail->setFrom('\"Gestion des mots de passe\" <support+password@polytechnique.org>');
+	$mymail->addTo($emails);
+	$mymail->setSubject('Ton certificat d\'authentification');
+        $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 $baseurl/tmpPWD.php?certificat=$url
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.

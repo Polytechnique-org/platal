@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.php,v 1.7 2004-11-13 14:16:16 x2000habouzit Exp $
+        $Id: sendmail.php,v 1.8 2004-11-16 20:36:10 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -41,17 +41,20 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
 	$_REQUEST['bcc'] = stripslashes($_REQUEST['bcc']);
 	$autre_to = stripslashes($autre_to);
     }
-
+    
     if ($_REQUEST['to'] == '' and $_REQUEST['cc'] == '' and $autre_to == '') {
         $page->assign('error',"Indique au moins un destinataire.");
     } else {
-        require("diogenes.mailer.inc.php");
-        $FROM = "From: {$_REQUEST['from']}";
+        require("diogenes.hermes.inc.php");
         //$_REQUEST['contenu'] = chunk_split($_REQUEST['contenu'], 76, "\n"); // pas bon, ne tient pas compte des mots
-            $dest = $_REQUEST['to'].', '.$autre_to;
-        $mymail = new DiogenesMailer($_SESSION['forlife'], $dest, $_REQUEST['sujet'], false, $_REQUEST['cc'], $_REQUEST['bcc']);
-        $mymail->addHeader($FROM);
-        $mymail->setBody(wordwrap($_REQUEST['contenu'],72,"\n"));
+	$dest = $_REQUEST['to'].', '.$autre_to;
+        $mymail = new HermesMailer();
+	$mymail->setFrom($_REQUEST['from']);
+	$mymail->addTo($dest);
+	$mymail->setSubject($_REQUEST['sujet']);
+	if (!empty($_REQUEST['cc'])) $mymail->addCc($_REQUEST['cc']);
+	if (!empty($_REQUEST['bcc'])) $mymail->addBcc($_REQUEST['bcc']);
+        $mymail->setTxtBody(wordwrap($_REQUEST['contenu'],72,"\n"));
         if ($mymail->send()) {
             $page->assign('error',"Ton mail a bien été envoyé.");
             $_REQUEST = array();

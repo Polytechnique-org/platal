@@ -18,26 +18,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.6 2004-11-13 14:16:16 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.7 2004-11-16 20:36:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_admin_page('admin/homonymes.tpl');
-require("diogenes.mailer.inc.php");
+require("diogenes.hermes.inc.php");
 
 $op =  isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list';
 
 
 $target = isset($_REQUEST['target']) ? $_REQUEST['target'] : 0;
 if ($target) {
-    $res = $globals->db->query("SELECT  prenom,a.alias AS forlife,h.alias AS loginbis
+    $res = $globals->db->query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
                                   FROM  auth_user_md5 AS u
 			    INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
 			    INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
 			         WHERE  user_id='$target'");
-    if (! list($prenom,$forlife,$loginbis) = mysql_fetch_row($res)) {
+    if (! list($prenom,$nom,$forlife,$loginbis) = mysql_fetch_row($res)) {
         $target=0;
     } else {
+        $page->assign('nom',$nom);
         $page->assign('prenom',$prenom);
         $page->assign('forlife',$forlife);
 	$page->assign('loginbis',$loginbis);
@@ -50,29 +51,35 @@ $page->assign('baseurl',$baseurl);
 
 // on a un $target valide, on prepare les mails
 if ($target) {
-  // from
-  $cc = "support+homonyme@polytechnique.org";
-  $FROM = "From: Support Polytechnique.org <$cc>";
-  
-  // on examine l'op a effectuer
-  switch ($op) {
-      case 'mail':
-          $mymail = new DiogenesMailer($cc,$forlife,"Dans 2 semaines, suppression de $loginbis@polytechnique.org",false,$cc);
-          $mymail->addHeader($FROM);
-          $mymail->setBody(stripslashes($_REQUEST['mailbody']));
-          $mymail->send();
-          $op = 'list';
-          break;
-      case 'correct':
-          $globals->db->query("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias='$loginbis'");
-          $globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES('$target','$target')");
-          $mymail = new DiogenesMailer($cc,$forlife,"Mise en place du robot $loginbis@polytechnique.org",false,$cc);
-          $mymail->addHeader($FROM);
-          $mymail->setBody(stripslashes($_REQUEST['mailbody']));
-          $mymail->send(); 
-          $op = 'list';
-          break;
-  }
+    // from
+    $cc = "support+homonyme@polytechnique.org";
+    $FROM = "Support Polytechnique.org <$cc>";
+    
+    // on examine l'op a effectuer
+    switch ($op) {
+        case 'mail':
+            $mymail = new HermesMailer();
+  	    $mymail->setFrom($FROM);
+  	    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
+  	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
+  	    $mymail->addCc($cc);
+            $mymail->setTxtBody(stripslashes($_REQUEST['mailbody']));
+            $mymail->send();
+            $op = 'list';
+            break;
+        case 'correct':
+            $globals->db->query("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias='$loginbis'");
+            $globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES('$target','$target')");
+            $mymail = new HermesMailer();
+  	    $mymail->setFrom($FROM);
+  	    $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
+  	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
+  	    $mymail->addCc($cc);
+            $mymail->setTxtBody(stripslashes($_REQUEST['mailbody']));
+            $mymail->send();
+	    $op = 'list';
+	    break;
+    }
 }
 
 if ($op == 'list') {

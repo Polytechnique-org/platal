@@ -19,18 +19,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cron_validations.php,v 1.3 2004-10-09 15:16:27 x2000habouzit Exp $
+        $Id: cron_validations.php,v 1.4 2004-11-16 20:39:08 x2000habouzit Exp $
  ***************************************************************************/
 /* vim: set sw=4 ts=4 sts=4 tw=100:
  * vérifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
  * 
- * $Id: cron_validations.php,v 1.3 2004-10-09 15:16:27 x2000habouzit Exp $
+ * $Id: cron_validations.php,v 1.4 2004-11-16 20:39:08 x2000habouzit Exp $
 */ 
 
 $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
 $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 
-require("/usr/share/php/diogenes/diogenes.mailer.inc.php");
+require("/usr/share/php/diogenes/diogenes.hermes.inc.php");
 require('./connect.db.inc.php');
 
 $sql = mysql_query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
@@ -40,10 +40,10 @@ mysql_free_result($sql);
 if(empty($nb))
 	exit;
 
-$mymail = new DiogenesMailer('validation@polytechnique.org', 
-		"validation@polytechnique.org",
-		(empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuées",
-		false, "");
+$mymail = new HermesMailer();
+$mymail->setFrom('validation@polytechnique.org');
+$mymail->addTo("validation@polytechnique.org");
+$mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuées");
 
 $message =
 	"il y a $nb validation à effectuer \n"
@@ -53,6 +53,6 @@ $message =
 	."https://www.polytechnique.org/admin/valider.php\n";
 
 $message = wordwrap($message,78);  
-$mymail->setBody($message);
+$mymail->setTxtBody($message);
 $mymail->send();
 ?>

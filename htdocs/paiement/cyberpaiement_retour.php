@@ -18,58 +18,51 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.8 2004-10-31 16:39:08 x2000chevalier Exp $
+        $Id: cyberpaiement_retour.php,v 1.9 2004-11-16 20:36:12 x2000habouzit Exp $
  ***************************************************************************/
 
 require("config.xorg.inc.php") ;
 require_once("xorg.common.inc.php");
-require("diogenes.mailer.inc.php");
-
-/* en attendant PHP 4.2, on definit var_export */
-function var_exp(&$var) {
-  ob_start();
-  var_dump($var);
-  $ret = ob_get_contents();
-  ob_end_clean();
-  return $ret;
-}
+require("diogenes.hermes.inc.php");
 
 /* sort en affichant une erreur */
 function erreur($text) {
-  $text .= "\n\n".var_exp($_REQUEST);
-  $mymail = new DiogenesMailer("webmaster","web","erreur lors d'un télépaiement",false);
-  $mymail->setBody($text);
-  $mymail->send();
-  exit;
+    $mymail = new HermesMailer();
+    $mymail->addTo("webmaster@polytechnique.org");
+    $mymail->setFrom("webmaster@polytechnique.org");
+    $mymail->setSubject("erreur lors d'un télépaiement");
+    $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
+    $mymail->send();
+    exit;
 }
 
 /* calcule la clé de Luhn d'un nombre */
 function luhn($nombre) {
-  $sum = 0;
-  for ($i = 0; $i < strlen($nombre); $i++) {
-    $digit = substr($nombre,$i,1);
-    if ($i % 2) {
-      if ($digit*2>9) 
-	$sum += 2*$digit - 9;
-      else
-        $sum += 2*$digit;
-    } else {
-      $sum += $digit;
+    $sum = 0;
+    for ($i = 0; $i < strlen($nombre); $i++) {
+	$digit = substr($nombre,$i,1);
+	if ($i % 2) {
+	    if ($digit*2>9) 
+		$sum += 2*$digit - 9;
+	    else
+		$sum += 2*$digit;
+	} else {
+	    $sum += $digit;
+	}
     }
-  }
-  return $sum % 10;
+    return $sum % 10;
 }
 
 /* calcule la clé d'acceptation a partir de 5 champs */
 function cle_accept($d1,$d2,$d3,$d4,$d5)
 {
-  $m1 = luhn(strrev($d1.$d5));
-  $m2 = luhn(strrev($d2.$d5));
-  $m3 = luhn(strrev($d3.$d5));
-  $m4 = luhn(strrev($d4.$d5));
-  $n = $m1 + $m2 + $m3 + $m4;
-  $alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return substr($alpha,$n-1,1).$m1.$m2.$m3.$m4;
+    $m1 = luhn(strrev($d1.$d5));
+    $m2 = luhn(strrev($d2.$d5));
+    $m3 = luhn(strrev($d3.$d5));
+    $m4 = luhn(strrev($d4.$d5));
+    $n = $m1 + $m2 + $m3 + $m4;
+    $alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    return substr($alpha,$n-1,1).$m1.$m2.$m3.$m4;
 }
 
 /* user id */
@@ -96,29 +89,37 @@ $res = $globals->db->query("
       FROM  auth_user_md5 AS a
 INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
      WHERE  a.user_id='$uid'");
-if (!list($prenom,$nom,$promo,$forlife,$femme) = mysql_fetch_row($res))
-  erreur("uid invalide");
+if (!list($prenom,$nom,$promo,$forlife,$femme) = mysql_fetch_row($res)) {
+    erreur("uid invalide");
+}
+
 
 /* on extrait la reference de la commande */
-if (!ereg('-xorg-([0-9]+)$',$champ200,$matches))
-  erreur("référence de commande invalide");
-$ref = $matches[1];
-echo $ref;
+if (!ereg('-xorg-([0-9]+)$',$champ200,$matches)) {
+    erreur("référence de commande invalide");
+}
+
+echo ($ref = $matches[1]);
 $res = $globals->db->query("select mail,text,confirmation from paiement.paiements where id='$ref'");
-if (!list($conf_mail,$conf_title,$conf_text) = mysql_fetch_row($res))
-  erreur("référence de commande inconnue");
+if (!list($conf_mail,$conf_title,$conf_text) = mysql_fetch_row($res)) {
+    erreur("référence de commande inconnue");
+}
 
 /* on extrait le code de retour */
 if ($champ906 != "0000") {
-  $res = $globals->db->query("select rcb.text,c.id,c.text from paiement.codeRCB as rcb left join paiement.codeC as c on rcb.codeC=c.id where rcb.id='$champ906'");
-  if (list($rcb_text,$c_id,$c_text) = mysql_fetch_row($res)) 
-    erreur("erreur lors du paiement : $c_text ($c_id)");
-  else
-    erreur("erreur inconnue lors du paiement");
+    $res = $globals->db->query("SELECT  rcb.text,c.id,c.text
+                                  FROM  paiement.codeRCB AS rcb
+			     LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
+			         WHERE  rcb.id='$champ906'");
+    if (list($rcb_text,$c_id,$c_text) = mysql_fetch_row($res)) 
+	erreur("erreur lors du paiement : $c_text ($c_id)");
+    else
+	erreur("erreur inconnue lors du paiement");
 }
 
 /* on fait l'insertion en base de donnees */
-$globals->db->query("insert into paiement.transactions set id='$champ901',uid='$uid',ref='$ref',fullref='$champ200',montant='$montant',cle='$champ905'");
+$globals->db->query("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
+                          VALUES  ('$champ901','$uid','$ref','$champ200','$montant','$champ905')");
 
 /* on genere le mail de confirmation */
 $conf_text = str_replace("<prenom>",$prenom,$conf_text);
@@ -127,20 +128,27 @@ $conf_text = str_replace("<promo>",$promo,$conf_text);
 $conf_text = str_replace("<montant>",$montant,$conf_text);
 $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
 
-$mymail = new DiogenesMailer($conf_mail,$forlife,$conf_title,false,$conf_mail);
-$mymail->setBody($conf_text);
+$mymail = new HermesMailer();
+$mymail->setFrom($conf_mail);
+$mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
+$mymail->addCc($conf_mail);
+$mymail->setSubject($conf_title);
+$mymail->setTxtBody($conf_text);
 $mymail->send();
 
 /* on envoie les details de la transaction à telepaiement@ */
-$mymail = new DiogenesMailer("webmaster","telepaiement",$conf_title,false);
+$mymail = new HermesMailer();
+$mymail->setFrom("webmaster@polytechnique.org");
+$mymail->addTo("telepaiement@polytechnique.org");
+$mymail->setSubject($conf_title);
 $msg = "utilisateur : $prenom $nom ($uid)\n".
        "mail : $forlife@polytechnique.org\n\n".
        "paiement : $conf_title ($conf_mail)\n".
        "reference : $champ200\n".
        "montant : $montant\n\n".
        "dump de REQUEST:\n".
-       var_exp($_REQUEST);
-$mymail->setBody($msg);
+       var_export($_REQUEST,true);
+$mymail->setTxtBody($msg);
 $mymail->send();
 
 ?>

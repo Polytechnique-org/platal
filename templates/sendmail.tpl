@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.tpl,v 1.13 2004-11-13 15:56:35 x2000habouzit Exp $
+        $Id: sendmail.tpl,v 1.14 2004-11-16 20:36:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,10 +31,7 @@
 
 <ul>
   <li>
-    Les destinataires sont simplement séparés par des espaces ou des virgules
-  </li>
-  <li>
-    Pour les destinataires en polytechnique.org, le domaine n'est pas nécessaire
+    Les destinataires sont simplement séparés par des virgules
   </li>
   <li>
     Pense à te mettre en copie cachée du mail sinon tu n'auras aucun moyen de retrouver 
@@ -85,7 +82,7 @@
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.bestalias}" />
+        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.bestalias}@polytechnique.org" />
       </td>
     </tr>
     <tr> 

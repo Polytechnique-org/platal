@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_notifs.php,v 1.1 2004-11-07 14:30:32 x2000habouzit Exp $
+        $Id: send_notifs.php,v 1.2 2004-11-16 20:39:08 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
 require("../../include/notifs.inc.php");
-require("diogenes.mailer.inc.php");
+require("diogenes.hermes.inc.php");
 require("diogenes.misc.inc.php");
 
 $all = new AllNotifs();
@@ -52,10 +52,11 @@ foreach($all->_data as $u) {
 	   . "-- \n"
 	   . "L'équipe de Polytechnique.org";
     
-    $mailer = new DiogenesMailer("Carnet Polytechnicien <support_carnet@polytechnique.org>",
-				 replace_accent("{$u['prenom']} {$u['nom']} <{$u['forlife']}@polytechnique.org>"),
-				 "Notifications de la semaine ".date("W - Y"));
-    $mailer->setBody($text);
+    $mailer = new HermesMailer();
+    $mailer->setFrom("Carnet Polytechnicien <support_carnet@polytechnique.org>");
+    $mailer->addTo("{$u['prenom']} {$u['nom']} <{$u['forlife']}@polytechnique.org>");
+    $mailer->setSubject("Notifications de la semaine ".date("W - Y"));
+    $mailer->setTxtBody($text);
     $mailer->send();
 }
 

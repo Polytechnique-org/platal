@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.php,v 1.4 2004-11-13 14:16:24 x2000habouzit Exp $
+        $Id: submit.php,v 1.5 2004-11-16 20:36:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -33,12 +33,15 @@ if(isset($_POST['see'])) {
     $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
     $nl->saveArticle($art);
 
-    require("diogenes.mailer.inc.php");
-    $to = 'Equipe Newsletter Polytechnique.org <info+nlp@polytechnique.org>';
+    require("diogenes.hermes.inc.php");
     $from = "{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']}) <{$_SESSION['forlife']}@polytechnique.org>";
-    $mailer = new DiogenesMailer($from,$to,"proposition d'article dans la NL",false,$from);
+    $mailer = new HermesMailer();
+    $mailer->setSubject("proposition d'article dans la NL");
+    $mailer->setTo('Equipe Newsletter Polytechnique.org <info+nlp@polytechnique.org>');
+    $mailer->setFrom($from);
+    $mailer->setCc($from);
     $text = "l'article suivant a été proposé par:\n\n    $from\n\n\n".$art->toText();
-    $mailer->setBody($text);
+    $mailer->setTxtBody($text);
     $mailer->send();
     
     $page->assign('submited', true);
