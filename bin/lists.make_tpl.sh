@@ -9,9 +9,10 @@ FQDN=${1%%_*}
 
 ALIST="${MBOX}-owner@${FQDN}"
 LIST="${MBOX}@${FQDN}"
-ADMIN="$URL/admin/$LIST"
-MEMBERS="$URL/members/$LIST"
-MODERATE="$URL/moderate/$LIST"
+UIST="${MBOX}_${FQDN}"
+ADMIN="$URL/admin/$UIST"
+MEMBERS="$URL/members/$UIST"
+MODERATE="$URL/moderate/$UIST"
 
 mkdir -p "$TARGET"
 
@@ -19,6 +20,6 @@ for tpl in $TEMPLATES/*txt
 do
     cat $tpl \
     | sed -e "s,{{{ALIST}}},$ALIST,g ; s,{{{LIST}}},$LIST,g ; s,{{{ADMIN}}},$ADMIN,g ; s,{{{MEMBERS}}},$MEMBERS,g ; s,{{{MODERATE}}},$MODERATE,g" \
-    > "$TARGET/${tpl#$TEMPLATES/}
+    > "$TARGET/${tpl#$TEMPLATES/}"
 done
 
