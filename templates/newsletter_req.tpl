@@ -1,4 +1,4 @@
-{* $Id: newsletter_req.tpl,v 1.3 2004-02-11 13:15:33 x2000habouzit Exp $ *}
+{* $Id: newsletter_req.tpl,v 1.4 2004-02-11 13:30:36 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposer un article pour la newsletter
@@ -54,7 +54,7 @@
     <p class="erreur">
       Ton annonce a été envoyée à l'équipe de rédaction. Merci de ta contribution !
     </p>
-    {elseif $nb_lines<9}
+    {elseif $nb_lines < 9}{* > *}
     <p class="normal">
     Félicitations, ton article respecte les règles de pagination de la 
     newsletter !!! Il pourra cependant être revu en fonction des 
@@ -74,7 +74,7 @@
     <p class="normal">
     Si tu n'es pas satisfait de ton annonce, tu peux la retravailler :
     </p>
-    {elseif $nb_lines>9}
+    {elseif $nb_lines > 9}
     <p class="erreur">
       Ton annonce est trop longue, il faut que tu la modifie pour qu'elle fasse moins de huit lignes
     </p>
@@ -125,7 +125,7 @@
         </td>
       </tr>
       <tr class="impair">
-        <td class="bouton">
+        <td class="center">
           <input type="submit" name="action" value="Tester" />
         </td>
       </tr>

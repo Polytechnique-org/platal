@@ -1,4 +1,4 @@
-{* $Id: newsletter_prep.tpl,v 1.2 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: newsletter_prep.tpl,v 1.3 2004-02-11 13:30:36 x2000habouzit Exp $ *}
 
 {if $erreur}
 
@@ -17,11 +17,9 @@
 </div>
 
 <form action="{$smarty.server.REQUEST_URI}" method="POST">
-  <p class="conseil">
+  <p class="normal">
     Conseil : enregistre souvent tes modifs pour éviter de les perdre si 
-    le navigateur plante et pour éviter d'oublier
-  </p>
-  <p class="conseil">
+    le navigateur plante et pour éviter d'oublier<br />
     Vérifie bien que les lignes ne dépassent pas la largueur du cadre, 
     certains navigateurs sautent à la ligne automatiquement
   </p>
@@ -39,6 +37,7 @@
     <br />
     <input type="submit" name="submit" value="Ne pas sauver et relacher le verrou" />
   </div>
+  <br />
 {elseif $is_lock}
   <p class="normal">
     <span class="erreur">{$id_lock} est en train d'éditer la newsletter depuis le
@@ -54,15 +53,18 @@
   </div>
   <br />
 {else}
-  <p class="normal">
+  <div class="ssrubrique">
     Pas de lock sur le fichier, tu peux en prendre un.
-  </p>
+  </div>
+  <br />
   <div class="center">
     <input type="submit" name="submit" value="Prendre un verrou" />
   </div>
-  <p class="normal">
-    ou bien envoyer la newsletter tel qu'elle.
-  </p>
+  <br />
+  <div class="ssrubrique">
+    envoyer la newsletter tel qu'elle.
+  </div>
+  <br />
   <div class="center">
     <input type="text" name="test_to" size="40" value="{$smarty.session.username}@m4x.org" />
     <input type="submit" name="submit" value="Envoi Test" />
@@ -99,7 +101,7 @@
     </tr>
 {if $own_lock}
     <tr>
-      <td class="bouton">
+      <td class="center">
         <input type="submit" name="submit" value="Sauver" />
       </td>
     </tr>

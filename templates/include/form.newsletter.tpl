@@ -1,4 +1,4 @@
-{* $Id: form.newsletter.tpl,v 1.2 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: form.newsletter.tpl,v 1.3 2004-02-11 13:30:37 x2000habouzit Exp $ *}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
   <input type="hidden" name="nl_id" value="{$nl_id}" />
@@ -31,7 +31,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2" class="bouton">
+      <td colspan="2" class="center">
         <input type="submit" value="Envoyer" />
       </td>
     </tr>
