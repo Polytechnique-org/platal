@@ -18,12 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.globals.inc.php.in,v 1.2 2004-11-21 23:35:32 x2000habouzit Exp $
+    $Id: xorg.globals.inc.php.in,v 1.3 2004-11-22 10:42:52 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.globals.inc.php");
 require_once("diogenes.database.inc.php");
-require_once("xorg/session.inc.php");
 
 // {{{ class XorgGlobals
 
@@ -31,6 +30,7 @@ class XorgGlobals extends DiogenesCoreGlobals
 {
     var $page    = 'XorgPage';
     var $session = 'XorgSession';
+    var $menu;
 
     /** The x.org version */
     var $version = "@VERSION@";

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: humlinux.tpl,v 1.5 2004-11-17 22:16:31 x2000habouzit Exp $
+        $Id: humlinux.tpl,v 1.6 2004-11-22 10:42:53 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -84,15 +84,15 @@
       </tr>
       <tr>
         <td id="body-menu">
-          {include_php file=menu.conf.php}
           {foreach key=menu_title item=menu_list from=$menu}
           {if $menu_title}
           <div class="menu_title">{$menu_title}</div>
           {/if}
-          {foreach key=menu_item item=menu_url from=$menu_list}
-          <div class="menu_item"><a href="{$menu_url|url}">{$menu_item}</a></div>
+          {foreach item=mi from=$menu_list}
+          <div class='menu_item'><a href="{$mi.url|url}">{$mi.text}</a></div>
           {/foreach}
           {/foreach}
+          {include_php file=menu.conf.php}
           {perms level=admin}
           <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
             <tr><th>Valid</th></tr>

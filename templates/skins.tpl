@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: skins.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: skins.tpl,v 1.10 2004-11-22 10:42:52 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -42,17 +42,12 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 </p>
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
-  <div class="center">
-    <input type="submit" value="Enregistrer" name="submit" />
-    <br />
-    <br />
-  </div>
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
 {dynamic}
 {foreach item=skin from=$skins}    
     <tr>
       <td class="skigauche">
-        <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if} />
+        <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if} onclick="this.form.submit();" />
       </td>
       <td class="skimilieu">
         <strong>{$skin.name}</strong>
@@ -70,11 +65,6 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 {/foreach}
 {/dynamic}
   </table>
-  <div class="center">
-    <br />
-    <input type="submit" value="Enregistrer" name="submit" />
-  </div>
-
 </form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

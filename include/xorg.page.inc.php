@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.page.inc.php,v 1.51 2004-11-21 23:35:32 x2000habouzit Exp $
+    $Id: xorg.page.inc.php,v 1.52 2004-11-22 10:42:52 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.page.inc.php");
@@ -31,7 +31,7 @@ require_once("diogenes.core.page.inc.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Jeremy Lainé <jeremy.laine@polytechnique.org>
- * @version  $Id: xorg.page.inc.php,v 1.51 2004-11-21 23:35:32 x2000habouzit Exp $
+ * @version  $Id: xorg.page.inc.php,v 1.52 2004-11-22 10:42:52 x2000habouzit Exp $
  * @access   public
  * @see      DiogenesCorePage
  */
@@ -128,6 +128,7 @@ class XorgPage extends DiogenesCorePage
             if (isset($_SESSION['suid'])) {
                 $this->caching=false;
             }
+            $this->assign_by_ref('menu', $globals->menu->menu());
             $id = $this->make_id($append_to_id);
             if ($globals->debug) {
                 $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));

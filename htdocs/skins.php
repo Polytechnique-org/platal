@@ -18,13 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: skins.php,v 1.8 2004-11-06 13:53:51 x2000habouzit Exp $
+        $Id: skins.php,v 1.9 2004-11-22 10:42:51 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('skins.tpl', AUTH_COOKIE);
 
-if (isset($_REQUEST['submit']))  {  // formulaire soumis, traitons les données envoyées
+if (isset($_REQUEST['newskin']))  {  // formulaire soumis, traitons les données envoyées
     $globals->db->query("UPDATE auth_user_quick
                 SET skin={$_REQUEST['newskin']}
                 WHERE user_id={$_SESSION['uid']}");
@@ -37,7 +37,6 @@ $sql = "SELECT s.*,auteur,count(*) AS nb
          WHERE skin_tpl != '' AND ext != ''
       GROUP BY id ORDER BY s.date DESC";
 $page->mysql_assign($sql, 'skins');
-$page->assign('stochaskin',SKIN_STOCHASKIN_ID);
 
 $page->run();
 ?>
