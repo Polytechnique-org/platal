@@ -67,7 +67,7 @@ calcul&eacute; &agrave; partir de ces données.
       </td>
       <td>
         <input type="text" size="40" maxlength="60" name="from"
-        value="{$smarty.request.from|default:"`$smarty.session.forlife`@polytechnique.org"}" />
+        value="{$smarty.request.from|default:"`$smarty.session.bestalias`@polytechnique.org"}" />
       </td>
     </tr>
     <tr>

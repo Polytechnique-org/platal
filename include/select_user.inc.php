@@ -36,14 +36,14 @@ if (!Env::has("xmat") || !Env::has("submit")) {
 	$chaine2 = strtok(" -'");
         $chaine  = ( strlen($chaine2) > strlen($chaine1) ) ? $chaine2 : $chaine1;
 
-        $rq = strlen(Env::get("promoR")==4 ? "AND promo=".Env::getInt("promoR") : "";
+        $rq = strlen(Env::get("promoR")==4 ? "AND promo=".Env::getInt("promoR") : "");
 
 	$where = "prenom LIKE '%$prenom%' AND nom LIKE '%$chaine%' $rq ORDER BY promo,nom";
     }
 
     $sql = "SELECT  matricule,matricule_ax,promo,nom,prenom,comment,appli,flags,last_known_email,deces,user_id
               FROM  auth_user_md5
-             WHERE  perms IN ('admin','user') AND deces=0 AND $where";
+             WHERE  perms NOT IN ('admin','user') AND deces=0 AND $where";
 
     new_admin_page('marketing/utilisateurs_select.tpl');
     $page->mysql_assign($sql, 'nonins');
