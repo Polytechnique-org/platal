@@ -18,7 +18,7 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
 ------+-[ emails ... ]----------------------------+----------------
-;	  | routage-mail.php						  | 
+x	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
