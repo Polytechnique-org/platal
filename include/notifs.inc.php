@@ -37,7 +37,9 @@ function inscription_notifs_base($uid)
 function register_watch_op($uid, $cid, $date='', $info='')
 {
     global $globals;
-    $date = empty($date) ? 'NOW()' : "'$date'";
+    if (empty($date)) {
+        $date = date('Y-m-d');
+    };
     $globals->xdb->execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
             $uid, $cid, $date, $info);
     if($cid == WATCH_FICHE) {
@@ -52,14 +54,10 @@ function register_watch_op($uid, $cid, $date='', $info='')
 }
 
 // }}}
-// {{{ function select_notifs_base
+// {{{ function _select_notifs_base
 
-/** function that create the sql query used for notifications
- * @param   $base_watch string      the table we want to look at
- */
-function select_notifs_base($base_watch, $full, $recent, $where_clause)
+function _select_notifs_base($table, $mail, $where)
 {
-    // recent : evenement recent
     $cases = Array(
             'contacts'     => Array('wfield' => 'contact', 'ufield' => 'user_id', 'need_contact' => false,
                 'freq_sql' => '',
@@ -75,28 +73,25 @@ function select_notifs_base($base_watch, $full, $recent, $where_clause)
             )
     );
 
-    $our   = $cases[$base_watch];
-	
-        // traduction de la clause recent
-    if ($recent) { $recent = " AND wo.known > q.watch_last"; }
-
+    $our   = $cases[$table];
     $sql = "
-        ( SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom,
+        (
+          SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom,
                   a.alias AS bestalias,
                   wo.*,
                   {$our['contact_sql']} AS contact,
                   (u.perms IN('admin','user')) AS inscrit";
-    if ($full) {
+    if ($mail) {
         $sql.=",
                   w.uid AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
                   b.alias AS abestalias, (v.flags='femme') AS sexe"; 
     }
 
     $sql .= "
-            FROM  $base_watch     AS w
+            FROM  $table          AS w
       INNER JOIN  auth_user_md5   AS u  ON(u.{$our['ufield']} = w.{$our['wfield']})
       INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)";
-    if ($full) {
+    if ($mail) {
         $sql .="
       INNER JOIN  auth_user_md5   AS v  ON(v.user_id = q.user_id)
       INNER JOIN  aliases         AS b  ON(b.id = q.user_id AND FIND_IN_SET('bestalias', b.flags))";
@@ -107,42 +102,36 @@ function select_notifs_base($base_watch, $full, $recent, $where_clause)
     }
 
     $sql .="
-      INNER JOIN  watch_ops       AS wo ON(wo.uid = u.user_id".$recent.")
+      INNER JOIN  watch_ops       AS wo ON(wo.uid = u.user_id AND wo.known > ".($mail ? 'q.watch_last' : '{?}').")
       INNER JOIN  watch_sub       AS ws ON(ws.cid = wo.cid AND ws.uid = w.uid)
       INNER JOIN  watch_cat       AS wc ON(wc.id = wo.cid{$our['freq_sql']})
        LEFT JOIN  aliases         AS a  ON(a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
-           WHERE  $where_clause )";
-    return $sql;
-}
-
-// récupère les evenements de $wuid, avec ou sans details, depuis $last, sous surveillance ou pas, ordonnés ou pas
-function select_notifs($wuid, $details, $last, $wflag, $order) {
-    $recent = ($last == 'watch_last');
-
-    // équivalent de FIND_IN_SET('contacts', q.watch_flags) mais en plus rapide
-    $contactflag = "(q.watch_flags=1 OR q.watch_flags=3)";
-
-    $where_clause = "";
-    if ($wuid != 'all')
-        $where_clause .= "w.uid = $wuid AND ";
-    if (!$recent)
-        $where_clause .= "wo.known > $last AND ";
-    if ($wflag)
-        $where_clause .= $contactflag." AND ";
-    $where_clause = substr($where_clause, 0, -5);
-
-    $sql = 
-        select_notifs_base('contacts',     $details, $recent, $where_clause.($wflag?'':" AND $contactflag"))."
-        UNION DISTINCT ".
-        select_notifs_base('watch_promo',  $details, $recent, $where_clause)."
-        UNION DISTINCT ".
-        select_notifs_base('watch_nonins', $details, $recent, $where_clause);
-
-    if ($order) $sql.="
-        ORDER BY cid, promo, nom";
+           WHERE  $where
+        )";
 
     return $sql;
 }
+
+// }}}
+// {{{ function select_notifs
+
+function select_notifs($mail, $uid=null, $last=null, $iterator=true)
+{
+    global $globals;
+    $where = $mail ? 'q.watch_flags=3' : 'w.uid = {?}';
+    $sql   = _select_notifs_base('contacts',     $mail, $where.($mail?'':' AND (q.watch_flags=1 OR q.watch_flags=3)')) . " UNION DISTINCT ";
+    $sql  .= _select_notifs_base('watch_promo',  $mail, $where) .  " UNION DISTINCT ";
+    $sql  .= _select_notifs_base('watch_nonins', $mail, $where);
+
+    if ($iterator) {
+        return $globals->xdb->iterator($sql . ' ORDER BY cid, promo, nom', $last, $uid, $last, $uid, $last, $uid);
+    } else {
+        return $globals->xdb->query($sql, $last, $uid, $last, $uid, $last, $uid);
+    }
+}
+
+// }}}
+// {{{ function getNbNotifs
 
 function getNbNotifs() {
     global $globals;
@@ -153,7 +142,7 @@ function getNbNotifs() {
     $watchlast = Session::get('watch_last');
 
     // selectionne les notifs de uid, sans detail sur le watcher, depuis $watchlast, meme ceux sans surveillance, non ordonnés
-    $res = $globals->xdb->query(select_notifs('{?}', false, '{?}', false, false), $uid, $watchlast, $uid, $watchlast, $uid, $watchlast);
+    $res = select_notifs(false, $uid, $watchlast, false);
     $n   = $res->numRows();
     $res->free();
     $url = smarty_modifier_url('carnet/panel.php');
@@ -161,6 +150,9 @@ function getNbNotifs() {
     if($n==1) { return "<a href='$url'>1 évènement !</a>"; }
     return "<a href='$url'>$n évènements !</a>";
 }
+
+// }}}
+// {{{ class AllNotifs
 
 class AllNotifs {
     var $_cats = Array();
@@ -175,7 +167,7 @@ class AllNotifs {
         }
 
 	// recupère tous les watchers, avec détails des watchers, a partir du watch_last de chacun, seulement ceux qui sont surveillés, ordonnés
-	$res = $globals->xdb->iterator(select_notifs('all', true, 'watch_last', 'watch_flag', true));
+	$res = select_notifs(true);
 
 	while($tmp = $res->next()) {
 	    $aid = $tmp['aid'];
@@ -186,6 +178,9 @@ class AllNotifs {
 	}
     }
 }
+
+// }}}
+// {{{ class Notifs
 
 class Notifs {
     var $_uid;
@@ -204,7 +199,7 @@ class Notifs {
 	$lastweek = date('YmdHis',mktime() - 7*24*60*60);
 
 	// recupere les notifs du watcher $uid, sans detail sur le watcher, depuis la semaine dernière, meme ceux sans surveillance, ordonnés
-	$res = $globals->xdb->iterator(select_notifs('{?}', false, $lastweek, false, true), $uid, $uid, $uid);
+        $res = select_notifs(false, $uid, $lastweek);
 	while($tmp = $res->next()) {
 	    $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
 	}
@@ -214,6 +209,9 @@ class Notifs {
 	}
     }
 }
+
+// }}}
+// {{{ class Watch
 
 class Watch {
     var $_uid;
@@ -267,6 +265,9 @@ class Watch {
     }
 }
 
+// }}}
+// {{{ class WatchSub
+
 class WatchSub {
     var $_uid;
     var $_data = Array();
@@ -292,6 +293,9 @@ class WatchSub {
 	}
     }
 }
+
+// }}}
+// {{{ class PromoNotifs
 
 class PromoNotifs {
     var $_uid;
@@ -366,6 +370,8 @@ class PromoNotifs {
     }
 }
 
+// }}}
+// {{{ class NoninsNotifs
 
 class NoninsNotifs {
     var $_uid;
@@ -400,4 +406,6 @@ class NoninsNotifs {
     }
 }
  
+// }}}
+
 ?>
