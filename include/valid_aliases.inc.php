@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_aliases.inc.php,v 1.13 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: valid_aliases.inc.php,v 1.14 2004-08-31 22:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 class AliasReq extends Validate {
@@ -50,9 +50,6 @@ class AliasReq extends Validate {
     function formu() { return 'include/form.valid.aliases.tpl'; }
 
     function handle_formu () {
-        global $no_update_bd;
-        if($no_update_bd) return false;
-        
         if(empty($_REQUEST['submit'])
                 || ($_REQUEST['submit']!="Accepter"    && $_REQUEST['submit']!="Refuser"))
             return false;
@@ -76,8 +73,7 @@ class AliasReq extends Validate {
     }
 
     function commit () {
-        global $no_update_bd,$globals;
-        if($no_update_bd) return false;
+        global $globals;
 
         $domain=$this->alias.'@melix.net';
         $globals->db->query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->username}'");

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.php,v 1.6 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: antispam.php,v 1.7 2004-08-31 22:01:30 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -26,8 +26,7 @@ new_skinned_page('antispam.tpl', AUTH_MDP);
 
 require("mtic.inc.php");
 
-if (isset($_REQUEST['filtre']) and isset($_REQUEST['statut_filtre'])
-        and !$no_update_bd) {
+if (isset($_REQUEST['filtre']) and isset($_REQUEST['statut_filtre'])) {
     // mise à jour du filtre
     $result = $globals->db->query("select find_in_set('drop', flags) from emails where uid = {$_SESSION['uid']} and num = 0 and find_in_set('active', flags)");
     list($filtre) = mysql_fetch_row($result);

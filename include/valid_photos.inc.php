@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_photos.inc.php,v 1.10 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: valid_photos.inc.php,v 1.11 2004-08-31 22:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -78,9 +78,6 @@ class PhotoReq extends Validate {
     function formu() { return 'include/form.valid.photos.tpl'; }
     
     function handle_formu () {
-        global $no_update_bd;
-        if($no_update_bd) return false;
-        
         if(empty($_REQUEST['submit'])
                 || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
             return false;
@@ -102,8 +99,7 @@ class PhotoReq extends Validate {
     }
     
     function commit () {
-        global $no_update_bd, $globals;
-        if($no_update_bd) return false;
+        global $globals;
         
         $globals->db->query("REPLACE INTO photo set uid='".$this->uid."', attachmime = '".$this->mimetype."', attach='"
             .addslashes($this->data)."', x='".$this->x."', y='".$this->y."'");

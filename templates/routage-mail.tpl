@@ -17,16 +17,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: routage-mail.tpl,v 1.5 2004-08-31 22:01:32 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
-{if $no_update_bd}
-<p>
-  Le site est en mode de consultation seulement, tu ne peux pas modifier tes adresses
-  de redirections.
-</p>
-{/if}
 {if $retour == $smarty.const.ERROR_INACTIVE_REDIRECTION}
   <p class="erreur">
   Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse

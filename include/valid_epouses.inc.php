@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_epouses.inc.php,v 1.12 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: valid_epouses.inc.php,v 1.13 2004-08-31 22:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -64,9 +64,6 @@ class EpouseReq extends Validate {
     function formu() { return 'include/form.valid.epouses.tpl'; }
 
     function handle_formu () {
-        global $no_update_bd;
-        if($no_update_bd) return false;
-        
         if(empty($_REQUEST['submit'])
                 || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
             return false;
@@ -94,8 +91,7 @@ class EpouseReq extends Validate {
     }
 
     function commit () {
-        global $no_update_bd, $globals;
-        if($no_update_bd) return false;
+        global $globals;
         
         $alias = ($this->epouse ? $this->alias : "");
         $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',alias='".$this->alias."' WHERE user_id=".$this->uid);

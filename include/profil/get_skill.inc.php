@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_skill.inc.php,v 1.2 2004-08-31 19:48:46 x2000habouzit Exp $
+        $Id: get_skill.inc.php,v 1.3 2004-08-31 22:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -31,7 +31,7 @@ if(isset($_REQUEST['langue_op'])){
     }
 }
 
-if(isset($_REQUEST['comppros_op']) && !$no_update_bd){
+if(isset($_REQUEST['comppros_op'])){
     if($_REQUEST['comppros_op']=='retirer'){
         $globals->db->query("delete from competences_ins where uid='{$_SESSION['uid']}' and cid='{$_REQUEST['comppros_id']}'");
     } elseif($_REQUEST['comppros_op'] == 'ajouter') {

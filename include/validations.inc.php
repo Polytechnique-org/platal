@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: validations.inc.php,v 1.12 2004-08-31 19:48:46 x2000habouzit Exp $
+        $Id: validations.inc.php,v 1.13 2004-08-31 22:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.12 2004-08-31 19:48:46 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.13 2004-08-31 22:01:31 x2000habouzit Exp $
  *
  */
 
@@ -133,8 +133,7 @@ class Validate {
      * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
      */
     function submit () {
-        global $no_update_bd, $globals;
-        if($no_update_bd) return false;
+        global $globals;
         if($this->unique)
             $globals->db->query("DELETE FROM requests WHERE user_id='".$this->uid
                     .   "' AND type='".$this->type."'");
@@ -154,8 +153,7 @@ class Validate {
      * attention, tout est supprimé si c'est un unique
      */
     function clean () {
-        global $no_update_bd, $globals;
-        if($no_update_bd) return false;
+        global $globals;
         return $globals->db->query("DELETE FROM requests WHERE user_id='".$this->uid."' AND type='".$this->type."'"
                 .($this->unique ? "" : " AND stamp='".$this->stamp."'"));
     }

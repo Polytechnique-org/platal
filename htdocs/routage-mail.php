@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.php,v 1.3 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: routage-mail.php,v 1.4 2004-08-31 22:01:30 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -27,7 +27,7 @@ require("email.classes.inc.php");
 
 $redirect = new Redirect();
 
-if (!$no_update_bd && isset($_REQUEST['emailop'])) {
+if (isset($_REQUEST['emailop'])) {
     if ($_REQUEST['emailop']=="retirer" && isset($_REQUEST['num'])) {
         $page->assign('retour', $redirect->delete_email($_REQUEST['num']));
     }
@@ -56,7 +56,6 @@ $page->assign('alias',$alias);
 foreach ($redirect->emails as $mail)
     $emails[] = $mail;
 $page->assign('emails',$emails);
-$page->assign('no_update_bd',$no_update_bd);
 
 $page->run();
 ?>

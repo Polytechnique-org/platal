@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: config.xorg.inc.php,v 1.4 2004-08-31 21:57:51 x2000habouzit Exp $
+        $Id: config.xorg.inc.php,v 1.5 2004-08-31 22:01:32 x2000habouzit Exp $
  ***************************************************************************/
 
-/* $Id: config.xorg.inc.php,v 1.4 2004-08-31 21:57:51 x2000habouzit Exp $ */
+/* $Id: config.xorg.inc.php,v 1.5 2004-08-31 22:01:32 x2000habouzit Exp $ */
 
 /* URL de la racine pour les mails contenant des URL (pas de slash final!) */
 if (!isset($baseurl)) $baseurl="http://dev.m4x.org";
@@ -29,7 +29,7 @@ if (!isset($baseurl)) $baseurl="http://dev.m4x.org";
 /* les parametres pour se connecter à la BDD */
 $globals->dbhost='localhost';
 $globals->dbdb = 'x4dat';
-$globals->dbuser =  $no_update_bd ? 'webro' : 'web';
+$globals->dbuser = 'web';
 $globals->dbpwd="*******";
 $globals->root="...";
 $globals->libroot="...";
