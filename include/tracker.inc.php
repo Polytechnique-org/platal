@@ -128,4 +128,13 @@ function tracker_update($name,$desc,$perms,$ml_id,$bits,$pris, $tr_id=0) {
     }
 }
 
+
+function request_delete($tr_id, $rq_id) {
+    mysql_query("DELETE FROM trackers.requests WHERE rq_id='$rq_id' AND tr_id='$tr_id'");
+    if(mysql_affected_rows()) {
+        mysql_query("DELETE FROM trackers.followups WHERE rq_id='$rq_id' AND tr_id='$tr_id'");
+# TODO mail
+    }
+}
+
 ?>

@@ -1,4 +1,23 @@
-{* $Id: show.tpl,v 1.1 2004-02-23 18:04:33 x2000habouzit Exp $ *}
+{* $Id: show.tpl,v 1.2 2004-02-23 19:09:38 x2000habouzit Exp $ *}
+
+{literal}
+<script type="text/javascript">
+  <!--
+  function del( myid ) {
+    if( confirm ("You are about to delete this request !\nDo you still want to proceed ?") ) {
+      ops = document.getElementById('op');
+      ops.id.value = myid;
+      ops.submit();
+      return action('del', myid);
+    }
+  }
+  -->
+</script>
+{/literal}
+
+<form id="op" method="post" action="{$smarty.server.REQUEST_URI}">
+  <input type="hidden" id="id" name="id" value="" />
+</form>
 
 {dynamic}
 
@@ -21,6 +40,14 @@
     <td>{$rq.date|date_format:"%m&nbsp;%Y"}</td>
     <td><a href="show_rq.php?tr_id={$smarty.get.tr_id}&amp;rq_id={$rq.rq_id}">{$rq.summary}</a></td>
     <td class="right">{if $rq.username}<a href="mailto:{$rq.username}@polytechnique.org">{$rq.username}</a>{else}-{/if}</td>
+  </tr>
+{/foreach}
+<tr><th colspan="3"></th></tr>
+{foreach item=rq from=$close}
+  <tr class="pri{$rq.pri}">
+    <td>{$rq.date|date_format:"%m&nbsp;%Y"}</td>
+    <td><a href="show_rq.php?tr_id={$smarty.get.tr_id}&amp;rq_id={$rq.rq_id}">{$rq.summary}</a></td>
+    <td class="action"><a href="javascript:del({$rq.rq_id})">delete</a></td>
   </tr>
 {/foreach}
 </table>
