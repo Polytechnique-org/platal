@@ -60,7 +60,7 @@
       <td>
         <strong>visibilité :</strong><br />
         <span class='smaller'>si coché, la liste sera listée dans listes/index.php.
-          (les listes d'admin doivent être déochées)</span>
+          (les listes d'admin doivent être décochées)</span>
       </td>
       <td>
         <input type='checkbox' name='advertised' {if $options.advertised}checked='checked'{/if} />
