@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.25 2004-11-05 14:34:04 x2000habouzit Exp $
+        $Id: search.tpl,v 1.26 2004-11-13 10:52:50 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -69,9 +69,9 @@
 
   {min_auth level='cookie'}
   <br />
-  <h1>Astuce</h1>
+  {if $advanced && $smarty.section.resultat.total>10}{include file=search.adv.links.tpl do_title=1}{/if}
   
-  {if $advanced}{include file=search.adv.links.tpl do_title=0}{/if}
+  <h2>Astuces</h2>
   
   <p>Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
   {/min_auth}
