@@ -43,9 +43,9 @@ Bug/Wish :
 		- #231 : Add a link to the user's fiche on moderation page.			-MC
 
 	* Search :
-		- #56 : Search on referent											-JS
-		- #189 : Selection of diplomas depends on schools					-JS
-		- #203 : New fields in search (alive, subscriber, free)				-JS
+		- #56 : Search on referent.											-JS
+		- #189 : Selection of diplomas depends on schools.					-JS
+		- #203 : New fields in search (alive, subscriber, free).			-JS
 
 	* User Interface :
 		- #211 : All imgs in the skins are links to login.php.				-MC
