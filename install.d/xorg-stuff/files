@@ -1,3 +1,7 @@
+htdocs/images/ax.png
+htdocs/images/logoBR.jpg
+htdocs/images/logo.jpg
+
 htdocs/docs/apropos.php
 htdocs/docs/charte.php
 htdocs/docs/contacts.php
@@ -21,6 +25,7 @@ htdocs/docs/index.php
 htdocs/docs/plan.php
 htdocs/docs/secu.php
 htdocs/docs/services.php
+htdocs/dons.php
 htdocs/images/docs_compte1.png
 htdocs/images/docs_compte2.png
 htdocs/images/docs_from1.png
@@ -77,3 +82,4 @@ templates/docs/index.tpl
 templates/docs/plan.tpl
 templates/docs/secu.tpl
 templates/docs/services.tpl
+templates/dons.tpl

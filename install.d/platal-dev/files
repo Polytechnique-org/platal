@@ -9,3 +9,4 @@ scripts/devel/tplgettext.php
 scripts/xhtml/get_classes.pl
 scripts/xhtml/validate.pl
 
+templates/database-debug.tpl

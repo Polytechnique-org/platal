@@ -1,0 +1,10 @@
+htdocs/admin/gerer_paiement.php
+htdocs/paiement/cyberpaiement.inc.php
+htdocs/paiement/cyberpaiement_retour.php
+htdocs/paiement/index.php
+htdocs/trezo/gere_operations.php
+htdocs/trezo/index.php
+include/trezo.inc.php
+templates/trezo/choix_date.tpl
+templates/trezo/gere_operations.tpl
+templates/trezo/index.tpl
