@@ -18,47 +18,42 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-
-{if !$c.wasinscrit}
-  {min_auth level="cookie"}
-  {if !$c.dcd}
-  <div class='bits'>
-    {if $show_action eq ajouter}
-    <a href="{rel}/carnet/notifs.php?add_nonins={$c.user_id}">{*
-      *}<img src="{rel}/images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
-    {else}
-    <a href="{rel}/carnet/notifs.php?del_nonins={$c.user_id}">{*
-      *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
-    {/if}
-    {perms level='admin'}
-    <a href="{rel}/marketing/private.php?uid={$c.user_id}">{*
-      *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
-    <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-      *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
-    {/perms}
-  </div>
-  {/if}
-  {/min_auth}
-  <div class="long"></div>
-{else}
-  {min_auth level="cookie"}
   <div class="bits">
-    <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
-      *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
-    <a href="{rel}/vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
-      *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
-    <a href="{rel}/carnet/mescontacts.php?action={$show_action}&amp;user={$c.forlife}">{*
-      *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
-        title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
+    {min_auth level="cookie"}
+    {if !$c.wasinscrit}
+      {if $show_action eq ajouter}
+        <a href="{rel}/carnet/notifs.php?add_nonins={$c.user_id}">{*
+        *}<img src="{rel}/images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
+      {else}
+        <a href="{rel}/carnet/notifs.php?del_nonins={$c.user_id}">{*
+        *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
+      {/if}
+    {elseif !$c.dcd}
+        <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
+        *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+        <a href="{rel}/vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
+        *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
+        <a href="{rel}/carnet/mescontacts.php?action={$show_action}&amp;user={$c.forlife}">{*
+        *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
+            title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
+    {/if}
+    {/min_auth}
+
     {perms level='admin'}
-    <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*
-      *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
-    <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-      *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
+      {if !$c.wasinscrit}
+      <a href="{rel}/marketing/private.php?uid={$c.user_id}">{*
+        *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
+      {elseif !$c.dcd}
+      <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*
+        *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
+      {/if}
+        <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
+        *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}
   </div>
-  {/min_auth}
+
   <div class="long">
+  {if $c.wasinscrit}
     {if $c.web || $c.mobile || $c.pays || $c.ville || $c.region || $c.entreprise || $c.freetext}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
@@ -96,7 +91,7 @@
       {/if}
     </table>
     {/if}
+  {/if}
   </div>
-{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
