@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.14 2004-10-12 16:25:27 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.15 2004-10-12 21:14:49 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -216,7 +216,7 @@ class StringSField extends SField {
         //Nouvelle version plus rapide
         $regexp = str_replace('-',' ',$this->value);
         $regexp = str_replace('*','%',$regexp);
-        return $field." LIKE LCASE('$regexp%')";
+        return "$field LIKE '$regexp%'";
     }
 
     /** clause ORDER BY correspondant à ce champ de formulaire */
