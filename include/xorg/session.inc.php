@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: session.inc.php,v 1.5 2004-11-23 11:38:44 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.6 2004-11-24 10:19:48 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.session.inc.php");
@@ -350,9 +350,12 @@ function set_skin()
 	    $_SESSION['skin_id'] = $globals->skin->def_id;
 	}
 	mysql_free_result($result);
-    } else {
+    } elseif ($globals->skin->enable) {
         $_SESSION['skin'] = $globals->skin->def_tpl;
         $_SESSION['skin_id'] = $globals->skin->def_id;
+    } else {
+        $_SESSION['skin'] = 'default.tpl';
+        $_SESSION['skin_id'] = -1;
     }
   
 }
