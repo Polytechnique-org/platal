@@ -59,9 +59,10 @@ if (Env::has('quick')) {
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search->per_page;
 
-    $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
-    $nb_total = $page->get_template_vars('nb_resultats_total');
-    $nbpages  = ($nb_total-1)/$globals->search->per_page;
+    $page->assign('resultats', $globals->xdb->iterator($sql));
+    $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
+    $nb_tot  = $res->fetchOneCell();
+    $nbpages  = ($nb_tot-1)/$globals->search->per_page;
 
     $url_ext = Array(
         'mod_date_sort' => Env::has('mod_date_sort')
@@ -70,12 +71,13 @@ if (Env::has('quick')) {
     $page->assign('offsets',  range(0, $nbpages));
     $page->assign('url_args', $fields->get_url($url_ext));
     $page->assign('perpage',  $globals->search->per_page);
+    $page->assign('nb_tot',   $nb_tot);
     
-    if (!logged() && $nb_total > $globals->search->public_max) {
+    if (!logged() && $nb_tot > $globals->search->public_max) {
 	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
-    } elseif ($nb_total > $globals->search->private_max) {
+    } elseif ($nb_tot > $globals->search->private_max) {
         new ThrowError('Recherche trop générale');
-    } elseif (empty($nb_total)) {
+    } elseif (empty($nb_tot)) {
         new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
     }
 

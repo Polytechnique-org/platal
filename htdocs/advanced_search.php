@@ -127,8 +127,9 @@ if (!Env::has('rechercher')) {
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'promo DESC, NomSortKey, prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search->per_page;
 
-    $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
-    $nb_tot  = $page->get_template_vars('nb_resultats_total');
+    $page->assign('resultats', $globals->xdb->iterator($sql));
+    $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
+    $nb_tot  = $res->fetchOneCell();
     $nbpages = ($nb_tot - 1)/$globals->search->per_page;
 
     $url_ext = Array(
@@ -144,6 +145,7 @@ if (!Env::has('rechercher')) {
     $page->assign('url_short', $url_short);
     $page->assign('url_args',  $url_args);
     $page->assign('perpage',   $globals->search->per_page);
+    $page->assign('nb_tot',    $nb_tot);
     
     if (empty($nb_tot)) {
         form_prepare();

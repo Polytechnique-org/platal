@@ -27,24 +27,23 @@
   {/if}
 
   <h1 class='right'>
-    {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
+    {if $nb_tot==0}Aucune{else}{$nb_tot}{/if} réponse{if $nb_tot>1}s{/if}.
   </h1>
 
   <div class="contact-list" style="clear:both">
     {capture name=list}
-    {section name=resultat loop=$resultats}
-        {if $resultats[resultat].contact || $resultats[resultat].watch}
-        {assign var="show_action" value="retirer"}
+    {iterate item=res from=$resultats}
+      {if $res.contact || $res.watch}
+        {include file=include/minifiche.tpl c=$res show_action="retirer"}
       {else}
-        {assign var="show_action" value="ajouter"}
+        {include file=include/minifiche.tpl c=$res show_action="ajouter"}
       {/if}
-      {include file=include/minifiche.tpl c=$resultats[resultat] show_action=$show_action}
-    {/section}
+    {/iterate}
     {/capture}
     {$smarty.capture.list|smarty:nodefaults}
   </div>
 
-  {if $perpage < $nb_resultats_total}
+  {if $perpage < $nb_tot}
   <p>
     {if $offset!=0}
     <a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;offset={$offset-$perpage}">Précédent</a>
@@ -58,7 +57,7 @@
       {/if}
       &nbsp;
     {/section}
-    {if $offset < $nb_resultats_total-$perpage}
+    {if $offset < $nb_tot-$perpage}
     <a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;offset={$offset+$perpage}">Suivant</a>
     &nbsp;
     {/if}

@@ -183,45 +183,6 @@ class XorgPage extends DiogenesCorePage
     function doAuth() { }
     
     // }}}
-    // {{{ function mysql_assign()
-
-    function mysql_assign($sql_query,$var_name,$var_nb_name='',$var_found_rows='') {
-        global $globals;
-        //lorsqu'on désire obtenir found_rows il faut désactiver la trace du résultat
-        $switch_trace = false;
-        if (!empty($var_found_rows) && $globals->db->_trace==1) {
-            $switch_trace = true;
-            $globals->db->trace_off();
-        }
-        
-        $sql = $globals->db->query($sql_query);
-        if (mysql_errno()) {
-            return(mysql_error($sql));
-        }
-
-        $array = Array();
-        while ($array[] = mysql_fetch_assoc($sql));
-        array_pop($array);
-        mysql_free_result($sql);
-        $this->assign_by_ref($var_name,$array);
-        if (!empty($var_nb_name)) {
-            $this->assign($var_nb_name, count($array));
-        }
-        
-        if (!empty($var_found_rows)) {
-            $res = $globals->xdb->query('SELECT FOUND_ROWS()');
-            $this->assign($var_found_rows, $res->fetchOneCell());
-            //si la trace était activée on affiche la trace sur la requête initiale
-            if ($switch_trace) {
-                $globals->db->trace_on();
-                $sql = $globals->db->query($sql_query);
-                mysql_free_result($sql);
-            }
-        }
-        return 0;
-    }
-
-    // }}}
     // {{{ function loadModule()
     
     function loadModule($modname)
