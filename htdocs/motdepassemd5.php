@@ -25,8 +25,9 @@ if (Env::has('response2'))  {             // la variable $response existe-t-elle
     // OUI, alors changeons le mot de passe
     $password = Post::get('response2');
     $sql      = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".Session::getInt('uid');
+    $log      =& Session::getMixed('log');
     $globals->db->query($sql);
-    $_SESSION['log']->log('passwd', '');
+    $log->log('passwd', '');
     new_skinned_page('motdepassemd5.success.tpl', AUTH_MDP);
     $page->run();
 }

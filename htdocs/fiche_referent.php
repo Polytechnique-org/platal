@@ -23,14 +23,14 @@
 require_once("xorg.inc.php");
 new_simple_page('fiche_referent.tpl',AUTH_COOKIE);
 
-if (!isset($_REQUEST['user'])) {
+if (!Env::has('user')) {
     exit;
 }
 
 $reqsql = "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
              FROM  auth_user_md5 AS u
        INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-       INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id AND a1.alias = '{$_REQUEST['user']}' AND a1.type!='homonyme')";
+       INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id AND a1.alias = '".Env::get('user')."' AND a1.type!='homonyme')";
 $result = $globals->db->query($reqsql);
 if (mysql_num_rows($result)!=1) {
     exit;

@@ -38,7 +38,7 @@ if (Get::has('email') && Get::has('action')) {
 	$message = "Bonjour !
 	
 Ce mail a été généré automatiquement par le service de patte cassée de
-Polytechnique.org car un autre utilisateur, {$_SESSION['prenom']} {$_SESSION['nom']},
+Polytechnique.org car un autre utilisateur, ".Session::get('prenom').' '.Session::get('nom').",
 nous a signalé qu'en t'envoyant un mail, il avait reçu un message d'erreur
 indiquant que ton adresse de redirection $email
 ne fonctionnait plus !
@@ -76,7 +76,7 @@ L'équipe d'administration <support@polytechnique.org>";
     if ($x = mysql_fetch_assoc($sel)) {
         // on écrit dans la base que l'adresse est cassée
         if (!$x['panne']) {
-            $globals->db->query("UPDATE emails SET panne='".date("Y-m-d")."' WHERE email =  '".$email."'");
+            $globals->db->query("UPDATE emails SET panne='".date('Y-m-d')."' WHERE email =  '$email'");
         }
         $page->assign_by_ref('x', $x);
     }

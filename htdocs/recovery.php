@@ -19,16 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 new_skinned_page('recovery.tpl', AUTH_PUBLIC);
 
-if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
-    if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST['birth'])) {
-        $page->trig_run("Date de naissance incorrecte ou incohérente");
+if (Env::has('login') and Env::has('birth'))  {
+    if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
+        $page->trig_run('Date de naissance incorrecte ou incohérente');
     }
-    $birth = sprintf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
+    $birth   = sprintf('%s-%s-%s', substr(Env::get('birth'),4,4), substr(Env::get('birth'),2,2), substr(Env::get('birth'),0,2));
 
-    $mailorg=strtok($_REQUEST['login'],"@");
+    $mailorg = strtok(Env::get('login', '@');
 
     // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
     // avec celle fournie ici en espérant que c'est la bonne
@@ -48,9 +48,9 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
 
     if ($naissance == $birth) {
         $page->assign('ok', true);
-        $url=rand_url_id();
-        $stamp=date("Y-m-d H:i:s");
-        $sql="INSERT INTO perte_pass (certificat,uid,created) VALUES ('$url',$uid,'$stamp')";
+        $url   = rand_url_id();
+        $stamp = date('Y-m-d H:i:s');
+        $sql   = "INSERT INTO perte_pass (certificat,uid,created) VALUES ('$url',$uid,'$stamp')";
 
         $globals->db->query($sql);
 
@@ -78,19 +78,19 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la 
 
 --
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".((!empty($_POST["email"])) ? "
+\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::has('email')) ? "
 
-Adresse de secours : {$_POST['email']}" : "")."
+Adresse de secours : ".Post::get('email') : "")."
 
 
-Mail envoyé à {$_REQUEST['login']}");
+Mail envoyé à ".Env::get('login'));
         $mymail->send();
 
         // on cree un objet logger et on log l'evenement
-	$logger = $_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
-	$logger->log("recovery",$emails);
+	$logger = $_SESSION['log'] = new DiogenesCoreLogger($uid);
+	$logger->log('recovery', $emails);
     } else {
-        $page->trig("Pas de résultat correspondant aux champs entrés dans notre base de données.");
+        $page->trig('Pas de résultat correspondant aux champs entrés dans notre base de données.');
     }
 }
 

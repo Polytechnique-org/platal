@@ -23,38 +23,20 @@
 require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
-//require_once("db_connect.inc.php");
-//require_once("controlpermanent.inc.php");
-//require_once("appel.inc.php");
-//require_once("validations.inc.php");
-
-// getdata.php3 - by Florian Dittmer <dittmer@gmx.net> 
-// Example php script to demonstrate the direct passing of binary data 
-// to the user. More infos at http://www.phpbuilder.com 
-// Syntax: getdata.php3?id=<id> 
-
-function url($url) {
-    $chemins = Array('.', '..', '/');
-    foreach ($chemins as $ch)
-	if (file_exists("$ch/login.php") || file_exists("$ch/public/login.php"))
-	    return "$ch/$url";
-    return "";
-}
-
-if(isset($_REQUEST['x'])) {
-    if(isset($_REQUEST['req']) && $_REQUEST['req']="true") {
-    include 'validations.inc.php';
-	$myphoto = PhotoReq::get_unique_request($_REQUEST['x']);
-	Header("Content-type: image/".$myphoto->mimetype);
+if (Env::has('x')) {
+    if (Env::get('req') == "true") {
+        include 'validations.inc.php';
+	$myphoto = PhotoReq::get_unique_request(Env::get('x'));
+	Header('Content-type: image/'.$myphoto->mimetype);
 	echo $myphoto->data;
     } else {
-	if(preg_match('/^\d*$/',$_REQUEST['x'])) {
-	    $result = $globals->db->query("SELECT attachmime, attach FROM photo WHERE uid = '{$_REQUEST['x']}'");
+	if(preg_match('/^\d*$/', Env::get('x'))) {
+	    $result = $globals->db->query('SELECT attachmime, attach FROM photo WHERE uid = '.Env::getInt('x'));
 	} else {
 	    $sql = "SELECT  attachmime, attach
 	              FROM  photo   AS p
 		INNER JOIN  aliases AS a ON p.uid=a.id
-		     WHERE  alias='{$_REQUEST['x']}'";
+		     WHERE  alias='".Env::get('x')."'";
 	    $result = $globals->db->query($sql);
 	}
 
@@ -62,8 +44,8 @@ if(isset($_REQUEST['x'])) {
 	    Header(  "Content-type: image/$type");
 	    echo $data;
 	} else {
-	    Header(  "Content-type: image/png");
-	    echo file_get_contents(dirname(__FILE__)."/images/none.png");
+	    Header(  'Content-type: image/png');
+	    echo file_get_contents(dirname(__FILE__).'/images/none.png');
 	}
     }
 }

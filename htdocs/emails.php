@@ -22,33 +22,36 @@
 require_once("xorg.inc.php");
 new_skinned_page('emails.tpl',AUTH_COOKIE);
 
-if(isset($_POST['best'])) {
-    $globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id='{$_SESSION["uid"]}'");
-    $globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id='{$_SESSION["uid"]}'");
+$uid = Session::getInt('uid');
+
+if (Post::has('best')) {
+    $globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id=$uid");
+    $globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id=$uid");
     $globals->db->query("UPDATE  aliases
 		            SET  flags=CONCAT(flags,',','bestalias')
-			  WHERE  id='{$_SESSION["uid"]}' AND alias='{$_POST['best']}'");
+			  WHERE  id=$uid AND alias='".Post::get('best')."'");
 }
 
 // on regarde si on a affaire à un homonyme
 $sql = "SELECT  alias, (type='a_vie') AS a_vie, FIND_IN_SET('bestalias',flags) AS best, expire
           FROM  aliases
-         WHERE  id='{$_SESSION['uid']}' AND type!='homonyme'
+         WHERE  id=$uid AND type!='homonyme'
       ORDER BY  LENGTH(alias)";
 $page->mysql_assign($sql, 'aliases');
 
 $sql = "SELECT email
         FROM emails
-        WHERE uid = {$_SESSION["uid"]} AND FIND_IN_SET('active', flags)";
+        WHERE uid = $uid AND FIND_IN_SET('active', flags)";
 $page->mysql_assign($sql, 'mails', 'nb_mails');
 
 
 // on regarde si l'utilisateur a un alias et si oui on l'affiche !
+$forlife = Session::get('forlife');
 $sql = "SELECT  alias
           FROM  virtual          AS v
     INNER JOIN  virtual_redirect AS vr USING(vid)
-         WHERE  (  redirect='{$_SESSION['forlife']}@{$globals->mail->domain}'
-                OR redirect='{$_SESSION['forlife']}@{$globals->mail->domain2}' )
+         WHERE  (  redirect='$forlife@{$globals->mail->domain}'
+                OR redirect='$forlife@{$globals->mail->domain2}' )
                 AND alias LIKE '%@{$globals->mail->alias_dom}'";
 $result = $globals->db->query($sql);
 if ($result && list($aliases) = mysql_fetch_row($result)) {

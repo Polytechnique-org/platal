@@ -22,35 +22,31 @@
 require_once("xorg.inc.php");
 new_skinned_page('confbanana.tpl', AUTH_MDP);
 
-if (!(isset($_POST["action"]) && isset($_POST["banananame"]) && 
-	isset($_POST["bananasig"]) &&  isset($_POST["bananadisplay"]) && 
-	isset($_POST["bananamail"]) && isset($_POST["bananaupdate"])
-	&& $_POST["action"]=="OK" ))
+if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig') && Post::has('bananadisplay')
+            && Post::has('bananamail') && Post::has('bananaupdate') && Post::get('action')=="OK" ))
 {
-  
     $req = $globals->db->query("
 	SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
 		IF(FIND_IN_SET('automaj',flags),'1','0') 
 	  FROM  forums.profils
-	 WHERE  uid='{$_SESSION['uid']}'");
-    if (!(list($nom,$mail,$sig,$disp,$maj)=mysql_fetch_row($req))) {
-	$nom = $_SESSION["prenom"]." ".$_SESSION["nom"];
-	$mail = $_SESSION["forlife"]."@polytechnique.org";
-	$sig = $nom." ({$_SESSION['promo']})";
-	$disp=0;
-	$maj=0;
+	 WHERE  uid=".Session::getInt('uid'));
+    if (!(list($nom,$mail,$sig,$disp,$maj) = mysql_fetch_row($req))) {
+	$nom  = Session::get('prenom').' '.Session::get('nom');
+	$mail = Session::get('forlife').'@'.$globals->mail->domain;
+	$sig  = $nom.' ('.Session::getInt('promo').')';
+	$disp = 0;
+        $maj  = 0;
     }
-    $page->assign('nom', $nom);
+    $page->assign('nom' , $nom);
     $page->assign('mail', $mail);
-    $page->assign('sig', $sig);
+    $page->assign('sig' , $sig);
     $page->assign('disp', $disp);
-    $page->assign('maj', $maj);
+    $page->assign('maj' , $maj);
 } else {
-  mysql_query("REPLACE INTO forums.profils (uid,sig,mail,nom,flags)
-		     VALUES ('{$_SESSION['uid']}','{$_POST['bananasig']}',
-			     '{$_POST['bananamail']}','{$_POST['banananame']}',
-			     '".($_POST['bananadisplay']?"threads":"").","
-			       .($_POST['bananaupdate']?"automaj":"")."')");
+    mysql_query("REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
+                       VALUES  (".Session::getInt('uid').", '".Post::get('bananasig')."', '".Post::get('bananamail')."',
+                                '".Post::get('banananame')."', '".(Post::getBool('bananadisplay') ? 'threads' : '').
+                                ",".(Post::getBool('bananaupdate') ? 'automaj' : '')."')");
 }
 
 $page->run();

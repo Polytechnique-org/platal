@@ -22,25 +22,13 @@
 require_once("xorg.inc.php");
 new_skinned_page('evenements.tpl', AUTH_MDP);
 
-if (isset($_POST['titre'])) {$titre = stripslashes($_POST['titre']);}
-else {$titre = "";}
-
-if (isset($_POST['texte'])) {$texte = stripslashes($_POST['texte']);}
-else {$texte = "";}
-
-if (isset($_POST['promo_min'])) {$promo_min = $_POST['promo_min'];}
-else {$promo_min = 0;}
-
-if (isset($_POST['promo_max'])) {$promo_max = $_POST['promo_max'];}
-else {$promo_max = 0;}
-
-if (isset($_POST['peremption'])) {$peremption = $_POST['peremption'];}
-else {$peremption = 0;}
-
-if (isset($_POST['validation_message'])) {$validation_message = stripslashes($_POST['validation_message']);}
-else {$validation_message = "";}
-
-if (isset($_POST['action'])) { $action = $_POST['action']; } else $action = "" ;
+$titre              = stripslashes(Post::get('titre'));
+$texte              = stripslashes(Post::get('texte'));
+$promo_min          = Post::getInt('promo_min');
+$promo_max          = Post::getInt('promo_max');
+$peremption         = Post::getInt('peremption');
+$validation_message = Post::get('validation_message');
+$action             = Post::get('action');
 
 $page->assign('titre', $titre);
 $page->assign('texte', $texte);
@@ -51,19 +39,15 @@ $page->assign('validation_message', $validation_message);
 $page->assign('action', strtolower($action));
 
 if ($action=="Confirmer") {
-    $sql = "INSERT INTO evenements set user_id = {$_SESSION['uid']}"
-	.", creation_date = NULL"
-	.", titre = '".addslashes($titre)."'"
-	.", texte = '".addslashes($texte)."'"
-	.", peremption = '".$peremption."'"
-	.", promo_min = '$promo_min', promo_max = '$promo_max'"
-	.", validation_message = '".addslashes($validation_message)."'"
-	.", validation_date = 0";
+    $sql = "INSERT INTO  evenements
+                    SET  user_id = ".Session::getInt('uid').", creation_date = NULL, titre = '".addslashes($titre)."',
+                         texte = '".addslashes($texte)."', peremption = '".$peremption."', promo_min = '$promo_min',
+                         promo_max = '$promo_max', validation_message = '".addslashes($validation_message)."', validation_date = 0";
 
     if ($res = $globals->db->query($sql)) {
 	require_once("validations.inc.php");
-	$evtreq = new evtreq(mysql_insert_id(),$titre,$texte,$promo_min,
-		$promo_max,$peremption,$validation_message,$_SESSION['uid']);
+	$evtreq = new evtreq(mysql_insert_id(), $titre, $texte, $promo_min,
+		$promo_max, $peremption, $validation_message, Session::getInt('uid'));
 	$evtreq->submit();
 	$page->assign('ok', true);
     }
