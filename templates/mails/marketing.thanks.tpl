@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: marketing.thanks.tpl,v 1.2 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: marketing.thanks.tpl,v 1.2 2004/08/31 11:25:41 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="marketing_thanks"}

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.php,v 1.12 2004-11-22 20:04:35 x2000habouzit Exp $
+        $Id: antispam.php,v 1.12 2004/11/22 20:04:35 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.misc.inc.php,v 1.9 2004-11-18 13:45:48 x2000habouzit Exp $
+        $Id: xorg.misc.inc.php,v 1.9 2004/11/18 13:45:48 x2000habouzit Exp $
  ***************************************************************************/
 
 function quoted_printable_encode($input, $line_max = 76) {

@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.83 2004-11-27 16:48:15 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.83 2004/11/27 16:48:15 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil

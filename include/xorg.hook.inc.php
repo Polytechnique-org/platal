@@ -41,7 +41,7 @@ require_once("PEAR.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
- * @version  $Id: xorg.hook.inc.php,v 1.8 2004-12-01 13:13:03 x2000habouzit Exp $
+ * @version  $Id: xorg.hook.inc.php,v 1.8 2004/12/01 13:13:03 x2000habouzit Exp $
  * @access   public
  * @link     http://doc.polytechnique.org/XOrgModule/#hook
  * @since    Classe available since 0.9.3

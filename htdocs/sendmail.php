@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.php,v 1.10 2004-11-22 20:04:36 x2000habouzit Exp $
+        $Id: sendmail.php,v 1.10 2004/11/22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid.liste.tpl,v 1.2 2004-11-17 12:21:49 x2000habouzit Exp $
+        $Id: valid.liste.tpl,v 1.2 2004/11/17 12:21:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_liste"}

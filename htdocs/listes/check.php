@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: check.php,v 1.8 2004-11-22 20:04:44 x2000habouzit Exp $
+        $Id: check.php,v 1.8 2004/11/22 20:04:44 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');

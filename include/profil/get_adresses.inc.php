@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_adresses.inc.php,v 1.1 2004-08-31 18:31:34 x2000habouzit Exp $
+        $Id: get_adresses.inc.php,v 1.1 2004/08/31 18:31:34 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('geoloc.inc.php');

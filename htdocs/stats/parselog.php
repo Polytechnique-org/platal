@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: parselog.php,v 1.6 2004-11-22 20:05:06 x2000habouzit Exp $
+        $Id: parselog.php,v 1.6 2004/11/22 20:05:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

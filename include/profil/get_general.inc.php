@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_general.inc.php,v 1.6 2004-10-31 16:12:14 x2000chevalier Exp $
+        $Id: get_general.inc.php,v 1.6 2004/10/31 16:12:14 x2000chevalier Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)

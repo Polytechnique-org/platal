@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xml-rpc-client.inc.php,v 1.3 2004-11-22 12:17:16 x2000habouzit Exp $
+        $Id: xml-rpc-client.inc.php,v 1.3 2004/11/22 12:17:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg/xml-rpc.inc.php');

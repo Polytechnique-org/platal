@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: smarty.plugins.inc.php,v 1.4 2004-11-30 09:34:52 x2000habouzit Exp $
+    $Id: smarty.plugins.inc.php,v 1.4 2004/11/30 09:34:52 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ function block_dynamic()

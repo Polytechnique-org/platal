@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: assign_emploi.inc.php,v 1.1 2004-08-31 19:18:26 x2000habouzit Exp $
+        $Id: assign_emploi.inc.php,v 1.1 2004/08/31 19:18:26 x2000habouzit Exp $
  ***************************************************************************/
 
 $page->assign('endrid',$endrid);

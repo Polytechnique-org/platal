@@ -14,7 +14,7 @@
  * Of course, this soft is provided "as is" without express or implied
  * warranty of any kind.
  *
- * $Id: md5.js,v 1.2 2004-08-31 10:05:27 x2000habouzit Exp $
+ * $Id: md5.js,v 1.2 2004/08/31 10:05:27 x2000habouzit Exp $
  *
  */
 

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_pattecassee.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: newsletter_pattecassee.tpl,v 1.5 2004/10/24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 

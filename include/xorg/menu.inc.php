@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: menu.inc.php,v 1.2 2004-11-23 20:56:43 x2000habouzit Exp $
+    $Id: menu.inc.php,v 1.2 2004/11/23 20:56:43 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ defines
@@ -43,7 +43,7 @@ define('XOM_INFOS',    "Informations");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@m4x.org>
- * @version  $Id: menu.inc.php,v 1.2 2004-11-23 20:56:43 x2000habouzit Exp $
+ * @version  $Id: menu.inc.php,v 1.2 2004/11/23 20:56:43 x2000habouzit Exp $
  * @access   public
  */
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.37 2004-11-22 17:28:14 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.37 2004/11/22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");

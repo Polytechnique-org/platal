@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: rss.tpl,v 1.5 2004-10-18 15:48:04 x2002marichez Exp $
+        $Id: rss.tpl,v 1.5 2004/10/18 15:48:04 x2002marichez Exp $
  ***************************************************************************}
 
 <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: function.select_db_table.php,v 1.3 2004-08-31 21:43:47 x2000habouzit Exp $
+        $Id: function.select_db_table.php,v 1.3 2004/08/31 21:43:47 x2000habouzit Exp $
  ***************************************************************************/
 
 

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: 20.alias.tpl,v 1.1 2004-11-24 10:12:48 x2000habouzit Exp $
+    $Id: 20.alias.tpl,v 1.1 2004/11/24 10:12:48 x2000habouzit Exp $
  ***************************************************************************}
 
 <h3><a href="{rel}/alias.php">Mon alias mail @melix.net/.org</a></h3>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid.epouses.tpl,v 1.4 2004-11-17 10:14:32 x2000habouzit Exp $
+        $Id: valid.epouses.tpl,v 1.4 2004/11/17 10:14:32 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_epouses"}

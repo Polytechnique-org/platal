@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: archives.php,v 1.4 2004-11-30 18:39:19 x2000habouzit Exp $
+        $Id: archives.php,v 1.4 2004/11/30 18:39:19 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');

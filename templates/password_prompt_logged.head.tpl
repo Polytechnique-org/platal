@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt_logged.head.tpl,v 1.10 2004-09-02 18:23:02 x2000habouzit Exp $
+        $Id: password_prompt_logged.head.tpl,v 1.10 2004/09/02 18:23:02 x2000habouzit Exp $
  ***************************************************************************}
 
 

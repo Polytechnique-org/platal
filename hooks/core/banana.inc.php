@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: banana.inc.php,v 1.1 2004-12-01 13:13:03 x2000habouzit Exp $
+    $Id: banana.inc.php,v 1.1 2004/12/01 13:13:03 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ function banana_subscirbe()

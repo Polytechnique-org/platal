@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_notifs.php,v 1.5 2004-11-21 23:35:33 x2000habouzit Exp $
+        $Id: send_notifs.php,v 1.5 2004/11/21 23:35:33 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');

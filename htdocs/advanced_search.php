@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.36 2004-11-27 16:44:33 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.36 2004/11/27 16:44:33 x2000bedo Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

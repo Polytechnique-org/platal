@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recherche.php,v 1.4 2004-10-02 15:34:53 x2000habouzit Exp $
+        $Id: recherche.php,v 1.4 2004/10/02 15:34:53 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.quick.form.tpl,v 1.4 2004-11-23 10:07:28 x2000habouzit Exp $
+        $Id: search.quick.form.tpl,v 1.4 2004/11/23 10:07:28 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Recherche simple dans l'annuaire</h1>

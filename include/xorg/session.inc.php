@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: session.inc.php,v 1.8 2004-12-01 12:30:11 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.8 2004/12/01 12:30:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.session.inc.php");

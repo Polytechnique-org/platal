@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscription.reussie.tpl,v 1.3 2004-09-06 09:59:00 x2000habouzit Exp $
+        $Id: inscription.reussie.tpl,v 1.3 2004/09/06 09:59:00 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="inscription"}

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.coupure.php,v 1.3 2004-09-19 15:50:45 x2000habouzit Exp $
+        $Id: index.coupure.php,v 1.3 2004/09/19 15:50:45 x2000habouzit Exp $
  ***************************************************************************/
 ?>
 <!DOCTYPE HTML PUBLIC "-//W4C//DTD HTML 4.01 Transitional//EN">

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.getNbNotifs.php,v 1.2 2004-11-14 15:14:54 x2000habouzit Exp $
+        $Id: insert.getNbNotifs.php,v 1.2 2004/11/14 15:14:54 x2000habouzit Exp $
  ***************************************************************************/
 
  

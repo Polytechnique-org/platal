@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: marketing.utilisateur.tpl,v 1.5 2004-11-01 18:16:42 x2002marichez Exp $
+        $Id: marketing.utilisateur.tpl,v 1.5 2004/11/01 18:16:42 x2002marichez Exp $
  ***************************************************************************}
 
 {subject text="Annuaire en ligne des Polytechniciens"}

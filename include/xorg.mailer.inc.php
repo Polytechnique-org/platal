@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.mailer.inc.php,v 1.2 2004-12-01 07:39:55 x2000habouzit Exp $
+    $Id: xorg.mailer.inc.php,v 1.2 2004/12/01 07:39:55 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.hermes.inc.php");

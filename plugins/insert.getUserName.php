@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: insert.getUserName.php,v 1.1 2004-11-22 07:48:50 x2000habouzit Exp $
+    $Id: insert.getUserName.php,v 1.1 2004/11/22 07:48:50 x2000habouzit Exp $
  ***************************************************************************/
 
 function smarty_insert_getUsername()

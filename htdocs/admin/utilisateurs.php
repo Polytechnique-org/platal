@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.35 2004-11-29 13:18:18 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.35 2004/11/29 13:18:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: forums.promo.tpl,v 1.2 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: forums.promo.tpl,v 1.2 2004/08/31 11:25:40 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="forums_promo"}

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.17 2004-11-30 19:02:07 x2000habouzit Exp $
+        $Id: trombi.php,v 1.17 2004/11/30 19:02:07 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.13 2004-11-22 20:05:04 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.13 2004/11/22 20:05:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

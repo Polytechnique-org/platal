@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.tpl,v 1.8 2004-11-17 21:37:06 x2000habouzit Exp $
+        $Id: fiche_referent.tpl,v 1.8 2004/11/17 21:37:06 x2000habouzit Exp $
  ***************************************************************************}
  
 <div id="fiche">
