@@ -118,7 +118,7 @@ if (!Env::has('rechercher')) {
                        w.ni_id AS watch
                  FROM  auth_user_md5  AS u 
             '.$fields->get_select_statement().'
-            '.(Env::has('only_referent') ? '' : ' INNER JOIN mentor AS m ON (m.uid = u.user_id)').'
+            '.(Env::has('only_referent') ? ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' : '').'
             LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
             LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
