@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.8 2004-09-02 23:06:11 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.9 2004-09-02 23:36:57 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -42,7 +42,7 @@
     <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}')">
       <img src="images/loupe.gif" alt="Afficher les détails" />
     </a>
-    <a href="vcard.php/{$c.prenom}{$c.nom}..{$c.promo}.vcf?x={$c.user_id}">
+    <a href="vcard.php/{$c.forlife}.vcf?x={$c.user_id}">
       <img src="images/vcard.png" alt="Afficher la carte de visite" />
     </a>
     <a href="mescontacts.php?action={$show_action}&amp;user={$c.user_id}">

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.8 2004-08-31 19:48:46 x2000habouzit Exp $
+        $Id: vcard.php,v 1.9 2004-09-02 23:36:57 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -77,17 +77,19 @@ function format_adr($params, &$smarty) {
 $page->register_modifier('qp_enc', 'quoted_printable_encode');
 $page->register_function('format_adr', 'format_adr');
 
-$myquery = 
-    "SELECT prenom, nom, epouse, username, mobile, web, libre, promo, alias, user_id, date
-    FROM auth_user_md5 AS a
-    WHERE username='{$_REQUEST['x']}'";
-    $result=$globals->db->query($myquery);
-if (mysql_num_rows($result)!=1) {
-    exit;
-}
+$myquery = "SELECT  prenom, nom, epouse, mobile, web, libre, promo, user_id, date, a.alias AS forlife
+              FROM  auth_user_md5 AS u
+        INNER JOIN  aliases       AS a  ON (u.user_id=a.id AND a.type='a_vie')
+             WHERE  a.id='{$_REQUEST['x']}'";
+
+$result=$globals->db->query($myquery);
+if (mysql_num_rows($result)!=1) { exit; }
+
 $vcard = mysql_fetch_assoc($result);
 $page->assign_by_ref('vcard', $vcard);
 mysql_free_result($result);
+
+$page->mysql_assign("SELECT alias FROM aliases WHERE id={$vcard['user_id']} AND type!='a_vie'",'aliases');
 
 $adr = $globals->db->query(
         "SELECT statut,adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax,
