@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.quick.tpl,v 1.1 2004-11-04 13:50:45 x2000habouzit Exp $
+        $Id: search.quick.tpl,v 1.2 2004-11-17 18:11:46 x2000habouzit Exp $
  ***************************************************************************}
 
 {include file="search.quick.form.tpl"}
@@ -27,7 +27,7 @@
 <h2>Nom, Prenom, Promo ...</h2>
 
 <p>
-La ligne de recherche ci-dessus accepte non seulement que des mélanges de <strong>noms</strong> et de <strong>prénoms</strong> ...
+La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong> ...
 mais elle accepte de plus la syntaxe suivante pour les <strong>promos</strong> :
 </p>
 <ul>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.tpl,v 1.12 2004-11-13 15:56:35 x2000habouzit Exp $
+        $Id: profil.tpl,v 1.13 2004-11-17 18:11:46 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -36,7 +36,7 @@
 tel qu'elle apparaîtra pour un camarade.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post" id="prof_annu">
-  <table class="cadre_a_onglet" cellpadding="0" cellspacing="0">
+  <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" style="width: 98%; margin-left:1%;">
     <tr>
       <td>
         <ul id='onglet'>
@@ -57,26 +57,24 @@ tel qu'elle apparaîtra pour un camarade.</p>
       </td>
     </tr>
     <tr>
-      <td>
-        <div class="conteneur_tab">
-          <table style="width:100%">
-            <tr>
-              <td colspan="2">
-                {include file=$onglet_tpl}
-              </td>
-            </tr>
-            <tr class="center">
-              <td>
-                <input type="submit" value="Valider ces modifications" name="modifier" />
-              </td>
-              {if $onglet != $onglet_last}
-              <td>
-                <input type="submit" value="Valider et passer au prochain onglet" name="suivant" />
-              </td>
-              {/if}
-            </tr>
-          </table>
-        </div>
+      <td class="conteneur_tab">
+        <table style="width:100%">
+          <tr>
+            <td colspan="2">
+              {include file=$onglet_tpl}
+            </td>
+          </tr>
+          <tr class="center">
+            <td>
+              <input type="submit" value="Valider ces modifications" name="modifier" />
+            </td>
+            {if $onglet != $onglet_last}
+            <td>
+              <input type="submit" value="Valider et passer au prochain onglet" name="suivant" />
+            </td>
+            {/if}
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
