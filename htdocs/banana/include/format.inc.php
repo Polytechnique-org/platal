@@ -115,6 +115,7 @@ function formatDisplayHeader($_header,$_text,$_spool) {
       $text=preg_split("/( |\t)/",strtr($text,$_spool->ids));
       $parents=preg_grep("/^\d+$/",$text);
       $p=array_pop($parents);
+      $valid_parents = Array();
       while ($p) {
         $valid_parents[]=$p;
         $p = $_spool->overview[$p]->parent;
