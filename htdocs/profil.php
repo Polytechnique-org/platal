@@ -41,15 +41,13 @@ if (Env::has('old_tab') && isset($tabname_array[Env::get('old_tab')])) {
 }
 $new_tab = Env::has('suivant') ? get_next_tab($opened_tab) : $opened_tab;
 
-// pour tous les tabs, on recupere les bits car on a besoin de tous les bits pour en mettre a jour un, la date d naissance pour verifier
+// pour tous les tabs, la date de naissance pour verifier
 // quelle est bien rentree et la date.
 $res = $globals->xdb->query(
-        "SELECT  FIND_IN_SET('mobile_public', bits), FIND_IN_SET('mobile_ax', bits),
-                 FIND_IN_SET('web_public', bits), FIND_IN_SET('libre_public', bits),
-                 naissance, DATE_FORMAT(date,'%d.%m.%Y')
+        "SELECT  naissance, DATE_FORMAT(date,'%d.%m.%Y')
            FROM  auth_user_md5
           WHERE  user_id={?}", Session::getInt('uid'));
-list($mobile_public, $mobile_ax,$web_public, $libre_public, $naissance, $date_modif_profil) = $res->fetchOneRow();
+list($naissance, $date_modif_profil) = $res->fetchOneRow();
 
 // lorsqu'on n'a pas la date de naissance en base de données
 if (!$naissance)  {
@@ -93,16 +91,6 @@ if (Env::has('modifier') || Env::has('suivant')) {
     */
     $globals->xdb->execute('REPLACE INTO user_changes SET user_id={?}', Session::getInt('uid'));
 
-    //Mise a jour des bits
-    // bits : set('mobile_public','mobile_ax','web_public','libre_public')
-    $bits_reply = "";
-    if ($mobile_public) $bits_reply .= 'mobile_public,';
-    if ($mobile_ax) $bits_reply .= 'mobile_ax,';
-    if ($web_public) $bits_reply .= 'web_public,';
-    if ($libre_public) $bits_reply .= 'libre_public,';
-    if (!empty($bits_reply)) $bits_reply = substr($bits_reply, 0, -1);
-    $globals->xdb->execute('UPDATE auth_user_md5 set bits={?} WHERE user_id={?}', $bits_reply, Session::getInt('uid'));
-    
     if (!Session::has('suid')) {
 	require_once('notifs.inc.php');
 	register_watch_op(Session::getInt('uid'), WATCH_FICHE);
@@ -125,4 +113,5 @@ $page->assign('onglet_last',get_last_tab());
 $page->assign('onglet_tpl',"profil/$new_tab.tpl");
 $page->run();
 
+// vim:set et sws=4 sw=4 sts=4:
 ?>

@@ -29,9 +29,13 @@ if ($appli_id2>0)
 else
      $globals->xdb->execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=1", Session::getInt('uid', -1));
 
+$globals->xdb->execute('UPDATE auth_user_quick SET profile_mobile_pub = {?}, profile_web_pub = {?}, profile_freetext_pub = {?} WHERE user_id = {?}',
+    $mobile_pub, $web_pub, $freetext_pub, Session::getInt('uid', -1));
+    
 $sql = "UPDATE auth_user_md5
-	   SET nationalite= {?}, web= {?}, mobile= {?}, libre= {?} WHERE user_id= {?}";
-$globals->xdb->execute($sql, $nationalite, $web, $mobile, $libre, Session::getInt('uid', -1));
-$globals->xdb->execute("UPDATE auth_user_quick SET profile_nick={?} WHERE user_id = {?}", $surnom, Session::getInt('uid', -1));
+	   SET nationalite= {?} WHERE user_id= {?}";
+$globals->xdb->execute($sql, $nationalite, Session::getInt('uid', -1));
+$globals->xdb->execute("UPDATE auth_user_quick SET profile_nick={?}, profile_mobile={?}, profile_web={?}, profile_freetext={?} WHERE user_id = {?}", $nickname, $mobile, $web, $freetext, Session::getInt('uid', -1));
 
+// vim:set et sws=4 sts=4 sw=4:
 ?>

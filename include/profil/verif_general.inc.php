@@ -37,7 +37,7 @@ if ($web=="http://" or $web == '') {
 }
 
 //validité du champ libre
-if (strlen(strtok($libre,"<>")) < strlen($libre))
+if (strlen(strtok($freetext,"<>")) < strlen($freetext))
 {
     $page->trig("Le champ 'Complément libre' contient un caractère interdit.");
 }

@@ -95,7 +95,7 @@ if (!Env::has('rechercher')) {
     $schoolField     = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
     $diplomaField    = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
   
-    $freeField       = new RefSField('free',array('u.libre'),'','','',false);
+    $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
     $offset          = new NumericSField('offset');
   
     $fields          = new SFieldGroup(true, array( $nameField, $firstnameField, $nicknameField, $promo1Field,

@@ -19,10 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$page->assign('mobile_public',$mobile_public);
-$page->assign('mobile_ax',$mobile_ax);
-$page->assign('libre_public',$libre_public);
-$page->assign('web_public',$web_public);
+$page->assign('mobile_pub',$mobile_pub);
+$page->assign('web_pub',$web_pub);
+$page->assign('freetext_pub',$freetext_pub);
 
 $page->assign('nom', $nom);
 $page->assign('prenom', $prenom);
@@ -36,7 +35,7 @@ $page->assign('mobile',$mobile);
 
 $page->assign('web',$web);
 
-$page->assign('libre',$libre);
+$page->assign('freetext',$freetext);
 
 $page->assign('appli_id1',$appli_id1);
 $page->assign('appli_id2',$appli_id2);
@@ -44,5 +43,5 @@ $page->assign('appli_type1',$appli_type1);
 $page->assign('appli_type2',$appli_type2);
 
 $page->assign('nouvellephoto', $nouvellephoto);
-$page->assign('surnom', $surnom);
+$page->assign('nickname', $nickname);
 ?>

@@ -155,9 +155,9 @@ function get_user_forlife($data) {
 function &get_user_details($login, $from_uid = '')
 {
     global $globals;
-    $reqsql = "SELECT  u.user_id, u.promo, u.prenom, u.nom, u.epouse, u.date, u.cv, u.mobile, u.web, u.libre,
+    $reqsql = "SELECT  u.user_id, u.promo, u.prenom, u.nom, u.epouse, u.date, u.cv,
                        u.perms IN ('admin','user') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
-                       q.profile_nick AS nickname, q.profile_from_ax,
+                       q.profile_nick AS nickname, q.profile_from_ax, q.profile_mobile AS mobile, q.profile_web AS web, q.profile_freetext AS freetext,
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
                        a.alias AS forlife, a2.alias AS bestalias,
                        c.uid IS NOT NULL AS is_contact,

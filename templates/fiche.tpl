@@ -92,7 +92,7 @@ function chgMainWinLoc( strPage ) {
       {if $x.binets_join}<em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span><br />{/if}
       {if $x.gpxs_join}<em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span><br />{/if}
       {if $x.web}<em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a>{/if}
-      {if $x.libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$x.libre|nl2br}</span>{/if}
+      {if $x.freetext}<br /><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br}</span>{/if}
     </td>
   </tr>
   {if $x.adr}

@@ -183,7 +183,7 @@
         <span class="titre">Surnom</span>
       </td>
       <td class="cold">
-        <input type="text" size="35" maxlength="64" name="surnom" value="{$surnom}" />
+        <input type="text" size="35" maxlength="64" name="nickname" value="{$nickname}" />
       </td>
     </tr>
     <tr>
@@ -191,16 +191,22 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="mobile_public" {if $mobile_public}checked="checked"{/if} />
+              <input type="radio" name="mobile_pub" {if $mobile_pub eq 'public'}checked="checked"{/if} value='public' />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="checkbox" name="mobile_ax" {if $mobile_ax}checked="checked"{/if} />
+              <input type="radio" name="mobile_pub" {if $mobile_pub eq 'ax'}checked="checked"{/if} value='ax' />
             </td>
             <td class="texte">
               transmis à l'AX
+            </td>
+            <td class="rouge">
+              <input type="radio" name="mobile_pub" {if $mobile_pub eq 'private'}checked="checked"{/if} value='private' />
+            </td>
+            <td class="texte">
+              privé
             </td>
             <td class="texte">
               <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
@@ -223,7 +229,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="web_public" {if $web_public}checked="checked"{/if} />
+              <input type="checkbox" name="web_pub" {if $web_pub eq 'public'}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
@@ -249,7 +255,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="libre_public" {if $libre_public}checked="checked"{/if} />
+              <input type="checkbox" name="freetext_pub" {if $freetext_pub eq 'public'}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
@@ -267,7 +273,7 @@
         <span class="comm">Commentaire? ICQ? etc...</span>
       </td>
       <td class="dcold">
-        <textarea name="libre" rows="3" cols="29" >{$libre}</textarea>
+        <textarea name="freetext" rows="3" cols="29" >{$freetext}</textarea>
       </td>
     </tr>
   </table>

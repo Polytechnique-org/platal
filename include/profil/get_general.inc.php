@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
-$sql = "SELECT  u.nom, u.prenom, u.promo, u.epouse, FIND_IN_SET('femme',u.flags), u.nationalite, u.mobile, u.web, u.libre,
-                q.profile_nick,
+$sql = "SELECT  u.nom, u.prenom, u.promo, u.epouse, FIND_IN_SET('femme',u.flags), u.nationalite,
+		q.profile_mobile, q.profile_mobile_pub, q.profile_web, q.profile_web_pub, q.profile_freetext, q.profile_freetext_pub, q.profile_nick,
                 a1.aid, a1.type, a2.aid, a2.type
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
@@ -30,25 +30,24 @@ $sql = "SELECT  u.nom, u.prenom, u.promo, u.epouse, FIND_IN_SET('femme',u.flags)
 	 WHERE  u.user_id = {?}";
 
 $result = $globals->xdb->query($sql, Session::getInt('uid', -1));
-list($nom, $prenom, $promo, $epouse, $femme,
-        $nationalite, $mobile, $web, $libre, $surnom, 
+list($nom, $prenom, $promo, $epouse, $femme, $nationalite,
+	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 
 replace_ifset($nationalite,'nationalite');
 replace_ifset($mobile,'mobile');
 replace_ifset($web,"web");
-replace_ifset($libre,"libre");
+replace_ifset($freetext,"freetext");
 replace_ifset($appli_id1,"appli_id1");
 replace_ifset($appli_id2,"appli_id2");
 replace_ifset($appli_type1,"appli_type1");
 replace_ifset($appli_type2,"appli_type2");
-replace_ifset($surnom,"surnom");
+replace_ifset($nickname,"nickname");
 
 if(Env::has('modifier') || Env::has('suivant')) {
-    $mobile_public = Env::has('mobile_public');
-    $mobile_ax = Env::has('mobile_ax');
-    $libre_public = Env::has('libre_public');
-    $web_public = Env::has('web_public');
+    $mobile_pub = Env::get('mobile_pub');
+    $web_pub = Env::has('web_pub')?'public':'private';
+    $freetext_pub = Env::has('freetext_pub')?'public':'private';
 }
 
 // Y a-t-il une photo en attente de confirmation ?
