@@ -36,7 +36,7 @@ sa dernière relance date du {$relance|date_format}
 {/if}
 </p>
 
-<p>[<a href='{$smarty.server.REQUEST_URI}&amp;relance=1'>le relancer</a>]</p>
+<p>[<a href='?uid={$smarty.request.uid}relance=1'>le relancer</a>]</p>
 
 {/if}
 
@@ -59,7 +59,7 @@ sa dernière relance date du {$relance|date_format}
     <td>{$a.last|date_format|default:'-'}</td>
     <td class='center'>{$a.nb|default:"-"}</td>
     <td class='action'>
-      <a href='{$smarty.server.REQUEST_URI}&amp;del={$a.email}'>del</a>
+      <a href='?uid={$smarty.request.uid}&amp;del={$a.email}'>del</a>
     </td>
   </tr>
   {/iterate}
