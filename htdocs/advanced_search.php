@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.14 2004-10-12 22:16:16 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.15 2004-10-14 17:55:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -123,7 +123,8 @@ else {
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             '.$globals->search_result_where_statement.'
                 '.(($where!='')?('WHERE '.$where):'').'
-             ORDER BY  '.implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
+             ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
+		        .implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
@@ -132,6 +133,7 @@ else {
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
     $page->assign('with_soundex',$with_soundex);
+    $page->assign('mod_date_sort',$_REQUEST['mod_date_sort']);
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
