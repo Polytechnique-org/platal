@@ -16,6 +16,5 @@ templates/mails/pattecasser.nl.tpl
 templates/pattecassee.tpl
 templates/preferences.tpl.d/10.mails.tpl
 templates/preferences.tpl.d/20.alias.tpl
-templates/preferences.tpl.d/30.redirect.tpl
 templates/routage-mail.tpl
 templates/sendmail.tpl
