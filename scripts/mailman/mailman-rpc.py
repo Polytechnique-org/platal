@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.46 2004-10-09 06:38:36 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.47 2004-10-09 07:25:51 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -131,8 +131,8 @@ def get_list_info((userdesc,perms),mlist,show_all_to_super=1):
                 'list' : mlist.real_name,
                 'addr' : str('-').join(chunks[1:]) + '@' + chunks[0],
                 'host' : chunks[0],
-                'desc' : Utils.uquote(mlist.description),
-                'info' : Utils.uquote(mlist.info),
+                'desc' : quote(mlist.description),
+                'info' : quote(mlist.info),
                 'diff' : (mlist.default_member_moderation>0) + (mlist.generic_nonmember_action>0),
                 'ins'  : mlist.subscribe_policy > 1,
                 'priv' : (1-mlist.advertised)+2*is_admin,
@@ -155,7 +155,7 @@ def get_options((userdesc,perms),vhost,listname,opts):
         for (k,v) in mlist.__dict__.iteritems():
             if k in opts:
                 if type(v) is str:
-                    options[k] = Utils.uquote(v)
+                    options[k] = quote(v)
                 else: options[k] = v
         details = get_list_info((userdesc,perms),mlist,1)[0]
         mlist.Unlock()
@@ -190,6 +190,9 @@ def set_options((userdesc,perms),vhost,listname,opts,vals):
         mlist.Unlock()
         raise
         return 0
+
+def quote(s):
+    return Utils.uquote(s.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
 
 #-------------------------------------------------------------------------------
 # users procedures for [ index.php ]
@@ -262,7 +265,7 @@ def get_members((userdesc,perms),vhost,listname):
     try:
         details,members = get_list_info((userdesc,perms),mlist)
         members.sort()
-        members = map(lambda member: (Utils.uquote(mlist.getMemberName(member)) or '', member), members)
+        members = map(lambda member: (quote(mlist.getMemberName(member)) or '', member), members)
         mlist.Unlock()
         return (details,members,mlist.owner)
     except:
@@ -405,9 +408,9 @@ def get_pending_ops((userdesc,perms),vhost,listname):
                 continue
             helds.append({
                     'id'    : id,
-                    'sender': Utils.uquote(sender),
+                    'sender': quote(sender),
                     'size'  : size,
-                    'subj'  : Utils.uquote(subject),
+                    'subj'  : quote(subject),
                     'stamp' : ptime
                     })
         if dosave: mlist.save()
@@ -457,10 +460,11 @@ def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
         results = []
         for part in typed_subpart_iterator(msg,'text','plain'):
             results.append (part.get_payload())
+        results = map(lambda x: quote(x), results)
         return {'id'    : id,
-                'sender': Utils.uquote(sender),
+                'sender': quote(sender),
                 'size'  : size,
-                'subj'  : Utils.uquote(subject),
+                'subj'  : quote(subject),
                 'stamp' : ptime,
                 'parts' : results }
     except:
