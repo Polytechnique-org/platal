@@ -306,7 +306,8 @@ class XOrgWikiToText
     // {{{ function render
 
     function render($AST, $idt = '') {
-        return $idt . $this->_render($AST, $idt, false);
+        $res = $this->_render($AST, $idt, false, true);
+        return substr($res, $res{0} == "\n")."\n";
     }
 
     // }}}
@@ -315,18 +316,21 @@ class XOrgWikiToText
 
     // {{{ function _render
     
-    function _render($AST, $idt, $list)
+    function _render($AST, $idt, $list, $first)
     {
         $res = '';
+        if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false && !$first) {
+            $res .= "\n$idt";
+        }
         if ($AST->type == 'ol' || $AST->type == 'ul') {
             if ($list) {
-                $idt .= '    ';
-                $res .= "\n$idt";
+                $res .= "$idt";
             } else {
                 $list = true;
             }
         } elseif ($AST->type == 'li') {
             $res .= '  - ';
+            $idt .= '    ';
         } elseif ($AST->type == 'u') {
             $res .= '_';
         } elseif ($AST->type == 'em') {
@@ -339,14 +343,14 @@ class XOrgWikiToText
             return "[{$AST->attrs['src']}]";
         }
         foreach ($AST->childs as $val) {
+            $first = false;
             if (is_string($val)) {
                 $res .= $val;
             } else {
-                $res .= $this->_render($val, $idt, $list);
+                $res .= $this->_render($val, $idt, $list, $first);
             }
         }
         if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false) {
-            $res .= "\n$idt";
         } elseif ($AST->type == 'u') {
             $res .= '_';
         } elseif ($AST->type == 'em') {
