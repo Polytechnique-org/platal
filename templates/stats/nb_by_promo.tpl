@@ -68,7 +68,7 @@ Voici le nombre d'inscrits par promo :
 <h1>Inscrits par promo en (%)</h1>
 
 <div class="center">
-  <img src="{"stats/graph-promo2.png"|url}" alt="[graphe du nombre d'inscrits par promo]" />
+  <img src="{"stats/graph_by_promo.php"|url}" alt="[graphe du nombre d'inscrits par promo]" />
 </div>
 
 {/if}
