@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: header_listes.tpl,v 1.3 2004-11-27 19:00:33 x2000habouzit Exp $
+        $Id: header_listes.tpl,v 1.4 2004-11-28 22:51:29 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -41,6 +41,11 @@
       {else}
       [trombinoscope]
       {/if}
+      {if $on neq archives}
+      [<a href='archives.php?liste={$smarty.request.liste}'>archives</a>]
+      {else}
+      [archives]
+      {/if}
     </td>
   </tr>
   {if $details.own || $smarty.session.perms eq admin}
@@ -63,7 +68,7 @@
       [options]
       {/if}
       {if $on neq delete}
-      [<a href='delete.php?liste={$smarty.get.liste}'>détruire liste</a>]
+      [<a href='delete.php?liste={$smarty.get.liste}'>détruire</a>]
       {else}
       [détruire liste]
       {/if}
