@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: archives.php,v 1.2 2004-11-29 21:42:07 x2000habouzit Exp $
+        $Id: archives.php,v 1.3 2004-11-30 11:30:57 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -31,7 +31,9 @@ require_once('xml-rpc-client.inc.php');
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 if (list($det) = $client->get_members($liste)) {
-    if (isset($_GET['file'])) {
+    if ( substr($liste,0,5) != 'promo' && ( $det['ins'] || $det['priv'] ) && !$det['own'] && ($det['sub']<2) ) {
+        $page->assign('no_list',true);
+    } elseif (isset($_GET['file'])) {
         $file = $_GET['file'];
         $rep  = $_GET['rep'];
         $page->assign('url', $globals->lists->spool."/polytechnique.org-$liste/$rep/$file");
