@@ -46,6 +46,9 @@ Bug/Wish :
 	
 	* Search :
 		- #249, #251, #253 : Some tweaks to be more accurate.				-MC
+	
+	* Profile :
+		- #65 : Add professionnal cellphone.								-Car
 
 	* Validations :
 		- #137: Now possible to add comments without any action.			-MC
