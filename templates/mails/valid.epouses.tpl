@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid.epouses.tpl,v 1.3 2004-09-02 21:09:33 x2000habouzit Exp $
+        $Id: valid.epouses.tpl,v 1.4 2004-11-17 10:14:32 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_epouses"}
@@ -32,7 +32,7 @@ Chère camarade,
 
 {if $oldepouse}  Les alias {$oldepouse}@polytechnique.org et {$oldepouse}@m4x.org ont été supprimés.
 {/if}
-  De plus, les alias {$alias}@polytechnique.org et {$alias}@m4x.org ont été créés.
+  De plus, les alias {$epouse}@polytechnique.org et {$epouse}@m4x.org ont été créés.
 
 Cordialement,
 L'équipe X.org
