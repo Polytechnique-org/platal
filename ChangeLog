@@ -59,7 +59,7 @@ Bug/Wish :
 		- #218 : Quit fiche using Escape key.								-Car
 
 	* Marketing :
-		- #256: Mail are now correctly sent.								-MC
+		- #256, #255: Mail are now correctly sent.						-MC/Car
 
 	* Misc :
 		- #65: Broken links.												-MC
