@@ -18,16 +18,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_poly.inc.php,v 1.3 2004-09-01 22:15:54 x2000habouzit Exp $
+        $Id: get_poly.inc.php,v 1.4 2004-10-31 16:12:14 x2000chevalier Exp $
  ***************************************************************************/
 
 
 //declaration des fonctions msarty pour les binets et groupex
 
 $sql = "SELECT u.nom, u.prenom".
-    ", u.promo, epouse, i.flags, section".
+    ", u.promo, epouse, u.flags, section".
     " FROM auth_user_md5 AS u".
-    " LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
     " WHERE user_id=".$_SESSION['uid'];
 
 $result = $globals->db->query($sql);

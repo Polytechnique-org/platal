@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: select_user.inc.php,v 1.3 2004-09-05 22:58:46 x2000habouzit Exp $
+        $Id: select_user.inc.php,v 1.4 2004-10-31 16:12:12 x2000chevalier Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
@@ -29,7 +29,7 @@ if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
 
     if (!empty($_REQUEST["xmat"])) {
 	// on a un matricule, on affiche juste l'entrée correspondante
-	$where = "id.matricule={$_REQUEST['xmat']}";
+	$where = "matricule={$_REQUEST['xmat']}";
     } else {
 	// on n'a pas le matricule, essayer de le trouver moi-meme, de le proposer
 	// et de reafficher le formulaire avec les propositions de matricules
@@ -52,18 +52,17 @@ if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
 	}
 
 	if(strlen($_REQUEST["promoR"])==4) {
-	    $rq="AND id.promo=".$_REQUEST["promoR"];
+	    $rq="AND promo=".$_REQUEST["promoR"];
 	} else {
 	    $rq="";
 	}
 
-	$where = "id.prenom LIKE '%{$_REQUEST['prenomR']}%' AND id.nom LIKE '%$chaine%' $rq ORDER BY id.promo,id.nom";
+	$where = "prenom LIKE '%{$_REQUEST['prenomR']}%' AND nom LIKE '%$chaine%' $rq ORDER BY promo,nom";
     } // a-t-on xmat
 
-    $sql = "SELECT  id.*,user_id
-              FROM  identification AS id
-         LEFT JOIN  auth_user_md5 USING(matricule)
-             WHERE  user_id IS NULL AND deces=0 AND $where";
+    $sql = "SELECT  matricule,matricule_ax,promo,nom,prenom,comment,appli,flags,last_known_email,deces,user_id
+              FROM  auth_user_md5
+             WHERE  perms = 'non-inscrit' AND deces=0 AND $where";
 
     new_admin_page('marketing/utilisateurs_select.tpl');
     $page->mysql_assign($sql, 'nonins');

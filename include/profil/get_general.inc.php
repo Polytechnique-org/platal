@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_general.inc.php,v 1.5 2004-09-02 23:25:30 x2000habouzit Exp $
+        $Id: get_general.inc.php,v 1.6 2004-10-31 16:12:14 x2000chevalier Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
 $sql = "SELECT u.nom, u.prenom".
-        ", u.promo, u.epouse, FIND_IN_SET('femme',i.flags), nationalite".
+        ", u.promo, u.epouse, FIND_IN_SET('femme',u.flags), nationalite".
 	", mobile".
 	", web".
         ", libre".
@@ -32,7 +32,6 @@ $sql = "SELECT u.nom, u.prenom".
 	" FROM auth_user_md5 AS u".
 	" LEFT  JOIN applis_ins AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)".
 	" LEFT  JOIN applis_ins AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)".
-	" LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
 	" WHERE user_id=".$_SESSION['uid'];
 
 $result = $globals->db->query($sql);

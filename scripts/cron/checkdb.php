@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.9 2004-10-17 20:15:42 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.10 2004-10-31 16:15:19 x2000chevalier Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.9 2004-10-17 20:15:42 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.10 2004-10-31 16:15:19 x2000chevalier Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -121,9 +121,6 @@ check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.ui
 check("SELECT a.uid, a.pays FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.pays = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
 check("SELECT a.uid, a.pays, a.region FROM adresses AS a LEFT JOIN geoloc_region AS gr ON (a.pays = gr.a2 AND a.region = gr.region) WHERE a.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils qui n'ont pas d'entree correspondante dans geoloc_region");
 
-/* vérifie que les champs promos d'identification et auth_user_md5 coïncident */
-check("select a.promo as promo_ok,i.promo as promo_bad,a.matricule,a.nom,a.prenom from auth_user_md5 as a inner join identification as i on a.matricule = i.matricule where a.promo != i.promo", "vérifie que les champs promos d'identification et auth_user_md5 coïncident");
-
 /* donne la liste des gens pour qui on a fait du marketing mais qui se sont inscrits depuis (nettoyage de envoidirect) */
 info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on e.matricule = a.matricule order by promo,nom;");
 
@@ -145,9 +142,8 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags
 check("SELECT  u.user_id, a.alias
 	 FROM  auth_user_md5  AS u 
    INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
-   INNER JOIN  identification AS i ON (i.matricule = u.matricule AND i.deces = 0)
     LEFT JOIN  emails         AS e ON(u.user_id=e.uid AND FIND_IN_SET('active',e.flags))
-        WHERE  e.uid IS NULL",
+        WHERE  e.uid IS NULL AND u.deces = 0",
 "donne les inscrits qui n'ont pas d'email actif");
 
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
@@ -167,7 +163,7 @@ check("SELECT  a.alias AS a_un_pb, email, rewrite AS broken
 
 /* validite du champ matricule_ax de la table identification */
 check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
-         FROM  identification
+         FROM  auth_user_md5
 	WHERE  matricule_ax != '0'
      GROUP BY  matricule_ax
        having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (identification) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");

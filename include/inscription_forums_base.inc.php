@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscription_forums_base.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: inscription_forums_base.inc.php,v 1.3 2004-10-31 16:12:12 x2000chevalier Exp $
  ***************************************************************************/
 
 
@@ -33,9 +33,9 @@ function inscription_forum_promo($uid,$promo) {
   // récupération de l'id du forum promo
   $result=$globals->db->query("SELECT fid FROM forums.list WHERE nom='xorg.promo.x$promo'");
   if (!list($fid)=mysql_fetch_row($result)) { // pas de forum promo, il faut le créer
-    $req_au=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo'");
+    $req_au=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo' AND perms!='non-inscrit'");
     list($effau) = mysql_fetch_row($req_au);
-    $req_id=$globals->db->query("SELECT count(*) FROM identification WHERE promo='$promo'");
+    $req_id=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo'");
     list($effid) = mysql_fetch_row($req_id);
     if (5*$effau>$effid) { // + de 20% d'inscrits
         $mymail = new TplMailer('forums.promo.tpl');

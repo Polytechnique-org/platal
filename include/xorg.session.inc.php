@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.34 2004-10-30 15:45:40 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.35 2004-10-31 16:12:12 x2000chevalier Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -221,7 +221,7 @@ function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("
 	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
-		a.alias, UNIX_TIMESTAMP(u.lastnewslogin), a2.alias, password
+		a.alias, UNIX_TIMESTAMP(u.lastnewslogin), a2.alias, password, FIND_IN_SET('femme', flags)
           FROM  auth_user_md5   AS u
     INNER JOIN	aliases         AS a ON (u.user_id = a.id AND a.type='a_vie')
     INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
@@ -230,7 +230,7 @@ function start_connexion ($uid, $identified) {
       ORDER BY  s.start DESC, a2.type != 'epouse', length(a2.alias)
          LIMIT  1");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host,
-	 $forlife, $lastnewslogin, $bestalias, $password) = mysql_fetch_row($result);
+	 $forlife, $lastnewslogin, $bestalias, $password, $femme) = mysql_fetch_row($result);
     mysql_free_result($result);
    
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
@@ -267,9 +267,7 @@ function start_connexion ($uid, $identified) {
     $_SESSION['bestalias'] = $bestalias;
     $_SESSION['matricule'] = $matricule;
     $_SESSION['password'] = $password;
-    $res = $globals->db->query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
-    $_SESSION['femme'] = mysql_num_rows($res) > 0;
-    mysql_free_result($res);
+    $_SESSION['femme'] = $femme;
     // on récupère le logger si il existe, sinon, on logge la connexion
     set_skin();
 }

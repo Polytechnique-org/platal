@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.10 2004-10-09 15:00:11 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.11 2004-10-31 16:12:12 x2000chevalier Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -87,7 +87,7 @@ if ($promo > 1995)  {
     // sinon le même X pourrait s'inscrire deux fois avec le même matricule
     // exemple yann.buril et yann.buril-dupont seraient acceptés ! alors que
     // le matricule est unique
-    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule=$matricule");
+    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule=$matricule AND user != 'non-inscrit'");
     if (mysql_num_rows($result))  {
 	$str="Matricule déjà existant. Causes possibles\n"
 	    ."- tu t'es trompé de matricule\n"
@@ -97,7 +97,7 @@ if ($promo > 1995)  {
 
     // promotion jeune
     $result=$globals->db->query("SELECT  nom, prenom
-			           FROM  identification
+			           FROM  auth_user_md5
 				  WHERE  matricule='$matricule' AND promo='$promo' AND deces=0");
     list($mynom, $myprenom) = mysql_fetch_row($result);
     $mynomup=strtoupper(replace_accent($mynom));
@@ -119,7 +119,7 @@ if ($promo > 1995)  {
 
 } else {
     // CODE SPECIAL POUR LES X DES PROMOTIONS AVANT 1996
-    $sql = "SELECT nom,prenom,matricule FROM identification WHERE promo='$promo' AND deces=0";
+    $sql = "SELECT nom,prenom,matricule FROM auth_user_md5 WHERE promo='$promo' AND deces=0";
     $result = $globals->db->query($sql);
     $autorisation = FALSE;
     
@@ -156,7 +156,7 @@ if ($promo > 1995)  {
     // exemple yann.buril et yan.buril seraient acceptés ! alors que le matricule
     // est unique
     if (! empty($matricule)) { 
-	$result=$globals->db->query("SELECT * FROM auth_user_md5 where matricule='".$matricule."'");
+	$result=$globals->db->query("SELECT * FROM auth_user_md5 WHERE matricule='".$matricule."' AND perms != 'non-inscrit'");
 	if ($myrow = mysql_fetch_array($result))  {
 	    $str="Tu t'es déjà inscrit une fois.\n"
 		."Ecris à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> pour tout problème.";
