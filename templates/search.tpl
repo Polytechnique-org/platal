@@ -15,20 +15,18 @@
       <a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>
     </div>
   </div>
-  <p>
-    <div class="contact-list">
-      {section name=resultat loop=$resultats}
-      <div class="contact">
-      <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
-        {include file="search.result.public.tpl" result=$resultats[resultat]}
-	{min_auth level="cookie"}
-          {include file="search.result.private.tpl" result=$resultats[resultat]}
-	{/min_auth}
-      </div>
-      </div>
-      {/section}
+  <div class="contact-list">
+    {section name=resultat loop=$resultats}
+    <div class="contact">
+    <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
+      {include file="search.result.public.tpl" result=$resultats[resultat]}
+      {min_auth level="cookie"}
+	{include file="search.result.private.tpl" result=$resultats[resultat]}
+      {/min_auth}
     </div>
-  </p>
+    </div>
+    {/section}
+  </div>
   {if $perpage < $nb_resultats_total}
   <p>
     {if $offset!=0}
