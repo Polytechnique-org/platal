@@ -18,6 +18,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+
+/***************************************************************************
+ * MISC
+ */
+
+// {{{ function getNow()
+
+/**
+ * function used to print the client's computer datetime on the page
+ */
 function getNow() {
     dt=new Date();
     dy=dt.getDay();
@@ -36,12 +46,37 @@ function getNow() {
     return days[dy]+" "+wd+" "+months[mh]+" "+yr+"<br />"+time;
 }
 
+// }}}
 
+/***************************************************************************
+ * POPUP THINGS
+ */
+
+// {{{ function popWin()
+
+/**
+ * function that pops an anchor
+ * 
+ * @param theNode anchor    the anchor we are talking about
+ * @param w       int       the desired width for the popup
+ * @param h       int       the desired height for the popup
+ */
 function popWin(theNode,w,h) {
     window.open(theNode.href, '_blank',
 	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
 }
 
+// }}}
+// {{{ function auto_links()
+
+/**
+ * parses an html file, and update the onclik handlers for anchors that need it.
+ *
+ * anchors :
+ *   - that points to another host are opened in a new window (mimic the target=_new)
+ *   - of class popup(2) or popup_###x### create real popups (no url bar, ...)
+ * This function is designed to be used in <body onload="javascript:auto_links()">
+ */
 function auto_links() {
     nodes = document.getElementsByTagName('a');
     fqdn = document.URL;
@@ -61,4 +96,18 @@ function auto_links() {
 	}
     }
 }
+
+// }}}
+
+/***************************************************************************
+ * The real OnLoad
+ */
+
+// {{{ function pa_onload
+
+function pa_onload() {
+    auto_links();
+}
+
+// }}}
 

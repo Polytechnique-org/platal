@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: default.tpl,v 1.20 2004-11-22 10:42:53 x2000habouzit Exp $
+        $Id: default.tpl,v 1.21 2004-11-26 16:30:32 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -31,7 +31,7 @@
     {/if}
     {include file=skin/common.bandeau.head.tpl}
   </head>
-  <body onload='auto_links()'>
+  <body onload='pa_onload()'>
     {include file=skin/common.devel.tpl}
 
     {if $smarty.session.suid}
