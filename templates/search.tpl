@@ -17,10 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.12 2004-08-31 22:21:05 x2000habouzit Exp $
+        $Id: search.tpl,v 1.13 2004-10-09 18:18:58 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
+
+{if $nb_resultats_total >= 600}{assign var='error' value="Recherche trop générale."}{/if}
+ 
 {if $formulaire==0 and !$error}
   <div class="rubrique">
     Résultats

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.8 2004-10-09 17:55:18 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.9 2004-10-09 18:18:58 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -49,7 +49,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $countryField = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
     $regionField = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
    
-    $entrepriseField = new RefSField('enteprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
+    $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
     $posteField = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
     $secteurField = new RefSField('secteur',array('es.secteur'),'entreprises','es','u.user_id=es.uid');
     $cvField = new RefSField('cv',array('u.cv'),'','','',false);
@@ -83,7 +83,8 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                        ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
-                 FROM  auth_user_md5  AS u '.$fields->get_select_statement().'
+                 FROM  auth_user_md5  AS u
+	   '.$fields->get_select_statement().'
            INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
            INNER JOIN  identification AS i ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
