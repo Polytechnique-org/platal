@@ -49,7 +49,6 @@ class EpouseReq extends Validate
         $this->Validate($_uid, true, 'epouse');
         $this->epouse  = $_epouse;
         $this->alias   = make_username($this->prenom, $this->epouse);
-        var_export($this);
 
         $res = $globals->xdb->query("
                 SELECT  e.alias, u.epouse, a.id
@@ -94,6 +93,7 @@ class EpouseReq extends Validate
                 $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
             }
             $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+            return $res;
         } else {
             return "  La demande de changement de nom de mariage que tu avais faite a été refusée.";
         }
