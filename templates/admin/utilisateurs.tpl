@@ -1,4 +1,4 @@
-{* $Id: utilisateurs.tpl,v 1.3 2004-02-20 03:15:07 x2000habouzit Exp $ *}
+{* $Id: utilisateurs.tpl,v 1.4 2004-08-25 21:31:14 x2000habouzit Exp $ *}
 
 {if $smarty.session.suid}
 <p class="erreur">
@@ -190,97 +190,6 @@ Attention, déjà en SUID !!!
         &nbsp;
       </td>
     </tr>
-{if $db_edu}
-    {foreach item=alias from=$alias_edu}
-    <tr>
-      <th class="polyedu">Alias polyedu
-        {if !$alias.email}
-          <br /><span="erreur">Attention, email indéfini !</span>
-          {assign var="edu_err" value=1}
-        {/if}
-        {if $alias.email neq "`$mr.username`@m4x.org"}
-          <br /><span="erreur">Attention, email mal défini !</span>
-          {assign var="edu_err" value=1}
-        {/if}
-        {if $alias.email && !$alias.act}
-          <br /><span="erreur">Attention, email inactif !</span>
-          {assign var="edu_err" value=1}
-        {/if}
-      </th>
-      {if $alias.alias}
-      <td class="polyedu">
-        <input type="text" name="alias_edu" size=20 maxlength=255 value="{$alias.alias}" />
-      </td>
-      <td class="polyedu">  
-        <form name="rmedu" method="post" action="{$smarty.server.PHP_SELF}">
-          <input type="hidden" name="id_edu" value="{$alias.id}" />
-          <input type="hidden" name="alias_edu" value="{$alias.alias}" />
-          <input type="hidden" name="login" value="{$mr.username}" />
-          <input type="hidden" name="select" value="edit" />
-          <input type="submit" name="remove_polyedu_alias" value="Supprimer" />
-        </form>
-      </td>
-      {else}
-      <td class="polyedu">
-        Erreur : entrée dans la table x mais pas dans la table alias
-      </td>
-      <td class="polyedu">
-        <form name="addedu" method="post" action="{$smarty.server.PHP_SELF}">
-          <input type="hidden" name="user_id" value="{$mr.user_id}" />
-          <input type="hidden" name="matricule" value="{$mr.matricule}" />
-          <input type="hidden" name="login" value="{$mr.username}" />
-          <input type="hidden" name="select" value="edit" />
-          <input type="hidden" name="alias_edu" value="" />
-          <input type="submit" name="add_polyedu_alias" value="Réparer" />
-        </form>
-      </td>
-      {/if}
-    </tr>
-    {/foreach}
-    {if $edu_err}
-    <tr> 
-      <th class="polyedu">
-        Alias polyedu
-      </th>
-      <td class="polyedu"> 
-        Un problème existe !!!
-      </td>
-      <td class="polyedu">
-        <form name="addedu" method="post" action="{$smarty.server.PHP_SELF}">
-          <input type="hidden" name="user_id" value="{$mr.user_id}" />
-          <input type="hidden" name="matricule" value="{$mr.matricule}" />
-          <input type="hidden" name="login" value="{$mr.username}" />
-          <input type="hidden" name="select" value="edit" />
-          <input type="hidden" name="alias_edu" value="" />
-          <input type="submit" name="add_polyedu_alias" value="Réparer" />
-        </form>
-      </td>
-    </tr>
-    {/if}
-    <form name="addedu" method="post" action="{$smarty.server.PHP_SELF}">
-      <input type="hidden" name="user_id" value="{$mr.user_id}" />
-      <input type="hidden" name="matricule" value="{$mr.matricule}" />
-      <input type="hidden" name="login" value="{$mr.username}" />
-      <input type="hidden" name="select" value="edit" />
-      <tr> 
-        <th class="polyedu">
-          Ajouter un alias polyedu
-        </th>
-        <td class="polyedu"> 
-          <input type="text" name="alias_edu" size=29 maxlength=60 value="" />
-        </td>
-        <td class="polyedu">
-          <input type="submit" name="add_polyedu_alias" value="Ajouter" />
-        </td>
-      </tr>
-    </form>
-{else}{* db_edu *}
-    <tr> 
-      <th class="polyedu" colspan="3">
-        Polyedu non joignable
-      </th>
-    </tr>
-{/if}
     {foreach item=mail from=$xorgmails}
     <form name="remove" method="post" action="{$smarty.server.PHP_SELF}">
       <tr> 

@@ -4,7 +4,6 @@ new_skinned_page('step4.tpl', AUTH_PUBLIC);
 
 require("inscription_listes_base.inc.php");
 require("inscription_forums_base.inc.php");
-require("db_connectpolyedu.inc.php");
 require('tpl.mailer.inc.php');
 
 define("ERROR_REF", 1);
@@ -97,29 +96,6 @@ if (!empty($_REQUEST['ref'])) {
     // insérer une ligne dans user_changes pour que les coordonnées complètes
     // soient envoyées a l'AX
     $globals->db->query("insert into user_changes ($uid)");
-
-    // inscription sur polytechnique.edu
-    $polyedu_ok=false;
-    $db_edu = connect_polyedu();
-    if($db_edu) {
-	    $result = mysql_query("select a.id, a.alias from x, aliases as a"
-		    ." where x.id=a.id and x.matricule = $matricule", $db_edu);
-	    if($result and list($id_edu, $alias_edu) = mysql_fetch_row($result)) {
-		    mysql_free_result($result);
-		    mysql_query("replace into emails (id,email) values ($id_edu,'$username@m4x.org')", $db_edu);
-		    $polyedu_ok = (mysql_errno($db_edu)==0);
-	    } // if($result)
-    } // if($db_edu)
-    if(!$polyedu_ok) $polyedu_error = mysql_errno($db_edu). ": ". mysql_error($db_edu);
-    mysql_close($db_edu);
-
-    // si erreur sur polyedu, envoi du mail aux gestionnaires
-    if(!$polyedu_ok) {
-        $mymail = new TplMailer('polyedu.error.tpl');
-        $mymail->assign('username', $username);
-        $mymail->assign('polyedu_error', $polyedu_error);
-        $mymail->send();
-    }
 
     // envoi du mail à l'utilisateur
     $mymail = new TplMailer('inscription.reussie.tpl');

@@ -1,14 +1,13 @@
 <?php
 require("auto.prepend.inc.php");
 new_admin_page('admin/utilisateurs.tpl', true, 'admin/utilisateurs.head.tpl');
-require("db_connectpolyedu.inc.php");
 require("xorg.misc.inc.php");
 
 $assignates = Array(
-        'add_email', 'add_polyedu_alias', 'aliasalias_edu', 'email', 'fwd', 'hashpass', 'homonyme',
-        'id_edu', 'login', 'loginbis', 'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num',
+        'add_email', 'email', 'fwd', 'hashpass', 'homonyme',
+        'login', 'loginbis', 'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num',
         'oldlogin', 'olduid', 'passw', 'password1', 'perms', 'permsN', 'prenomN', 'promoN',
-        'remove_email', 'remove_polyedu_alias', 'select', 'suid_button', 'user_id', 'u_edit',
+        'remove_email', 'select', 'suid_button', 'user_id', 'u_edit',
         'u_kill', 'u_kill_conf'
 );
 foreach($assignates as $ass) $$ass=isset($_REQUEST[$ass]) ? $_REQUEST[$ass] : '';
@@ -76,134 +75,6 @@ foreach($_POST as $key => $val) {
         case "remove_email":
             mysql_query("delete from emails where uid=$user_id and email = '$email'",$conn);
             my_msg("Suppression de $email effectué"); 
-            break;
-
-    // ajoute un alias sur polyedu
-        case "add_polyedu_alias":
-            $db_edu = connect_polyedu();
-            if($db_edu) {
-            // récupération de l'id_edu
-                $result=mysql_query("select id from x where matricule='$matricule'",$db_edu);
-                $id_edu=false;
-                if(!$result) {
-                    my_error("Erreur select dans x: ".mysql_error($db_edu));
-                } elseif (mysql_num_rows($result) == 0) {
-                    // pas d'X du matricule correspondant dans la base !
-                    // il faut l'ajouter
-                    $id_edu=0;
-                } elseif (list($id_edu) = mysql_fetch_row($result)) {
-                    // rien à faire, id_edu a la bonne valeur
-                } else {
-                    my_error("Impossible d'obtenir l'id_edu, recommence ".mysql_error($db_edu));
-                }
-                if($result) mysql_free_result($result);
-                if(is_bool($id_edu) and !$id_edu) {
-                    mysql_close($db_edu);
-                    break;
-                }
-                // ajout de l'entrée dans aliases
-                if($alias_edu == '') {
-                    $alias_edu = $login;
-                }
-                // vérification de la présence d'un alias
-                $alias_exist=false;
-                $alias_pris=false;
-                $exist_id_edu=0;
-                $result = mysql_query("select a.id, x.matricule, u.prenom, u.nom from aliases as a LEFT JOIN x USING(id) LEFT JOIN users as u ON(u.id=a.id) where a.alias = '$alias_edu'",$db_edu);
-                if(!$result) {
-                    my_error("Erreur select dans aliases, x et users: ".mysql_error($db_edu));
-                    mysql_close($db_edu);
-                    break;
-                } elseif (mysql_num_rows($result) == 0) {
-                    // pas d'alias, il faut l'ajouter
-                } elseif (list($exist_id_edu,$xmatricule_edu,$prenom_edu, $nom_edu) = mysql_fetch_row($result)) {
-                    $alias_exist=true;
-                    if(isset($xmatricule_edu) and $xmatricule_edu != $matricule) {
-                        my_error("Alias $login déjà pris par un autre X : $xmatricule_edu");
-                        $alias_pris=true;
-                    } elseif(isset($nom_edu)) {
-                        my_error("Alias $login déjà pris par un non-X : $prenom_edu $nom_edu ");
-                        $alias_pris=true;
-                    }
-                } else {
-                    my_error("Impossible d'obtenir l'alias_edu, recommence ".mysql_error($db_edu));
-                    mysql_close($db_edu);
-                    break;
-                }
-                if($result) mysql_free_result($result);
-                if($alias_pris) {
-                    mysql_close($db_edu);
-                    break;
-                }
-                if(!$alias_exist) { // l'alias n'existe pas, on l'ajoute
-                    mysql_query("insert into aliases (id,type,alias) VALUES ($id_edu,'X','$alias_edu')",$db_edu);
-                    if (mysql_errno($db_edu) != 0) {
-                        my_error("Failed: ".mysql_errno($db_edu).", ".mysql_error($db_edu));
-                        mysql_close($db_edu);
-                        break;
-                    }
-                    $exist_id_edu = ($id_edu?$id_edu:mysql_insert_id($db_edu));
-                }
-                // ajout de l'entrée dans la table X si nécessaire
-                // arrive typiquement en mode réparation
-                if ($id_edu == 0) {
-                    // il faut ajouter l'enregistrement dans la table X
-                    mysql_query("insert into x (id,matricule) values ($exist_id_edu,$matricule)",$db_edu);
-                    if (mysql_errno($db_edu) != 0) {
-                        my_error("Erreur ajout dans la table X: ".mysql_errno($db_edu).", ".mysql_error($db_edu));
-                        mysql_close($db_edu);
-                        break;
-                    }
-                    $id_edu = $exist_id_edu;
-                }
-                // on vérifie que le champ email est bien présent dans la table emails
-                $result=mysql_query("select email, flags, FIND_IN_SET('active', flags) from emails where id='$id_edu'",$db_edu);
-                if(!$result) {
-                    my_error("Erreur select dans emails: ".mysql_error($db_edu));
-                    mysql_close($db_edu);
-                    break;
-                }
-                if (list($email_edu, $flags_edu, $active_edu) = mysql_fetch_row($result)
-                        and $email_edu == ($login."@m4x.org")
-                        and $active_edu != 0) {
-                    // c'est ok
-                    my_msg("Ajout de $alias_edu sur polyedu effectué"); 
-                    mysql_free_result($result);
-                    mysql_close($db_edu);
-                    break;
-                }
-                mysql_free_result($result);
-                // pas d'email ou mauvais email pour l'X
-                // il faut supprimer l'ancien et ajouter le nouveau
-                mysql_query("delete from emails where id = $id_edu",$db_edu);
-                mysql_query("insert into emails (id,email,flags) values ($id_edu,'$login@m4x.org','active,$flags_edu')",$db_edu);
-                if (mysql_errno($db_edu) != 0) {
-                    my_error("Erreur ajout dans la table email: ".mysql_errno($db_edu).", ".mysql_error($db_edu));
-                } else {
-                    my_msg("Ajout de $alias_edu et email sur polyedu effectué"); 
-                }
-                mysql_close($db_edu);
-            } // if($db_edu)
-            else {
-                my_error("Connexion à la BD polyedu impossible");
-            } // if(!$db_edu)
-            break;
-
-    // supprime un alias sur polyedu
-        case "remove_polyedu_alias":
-            $db_edu = connect_polyedu();
-            if($db_edu) {
-                mysql_query("delete from aliases where id='$id_edu' and alias = '$alias_edu'",$db_edu);
-                if (mysql_errno($db_edu) != 0) {
-                    my_error("Failed: ".mysql_error($db_edu));
-                } else {
-                    my_msg("Suppression de $alias_edu effectué"); 
-                }
-                mysql_close($db_edu);
-            } // if($db_edu)
-            else {
-                my_error("Connexion à la BD polyedu impossible: ".mysql_error($db_edu));
-            } // if(!$db_edu)
             break;
 
     // Faire un suid (une partie du code se trouve tout là-haut pour affecter l'affichage du menu)
@@ -311,27 +182,6 @@ if (!empty($_REQUEST['select'])) {
 
         $str=false;
         
-        $db_edu = connect_polyedu();
-        if($db_edu) {
-            $page->assign('db_edu', 1);
-            $result=mysql_query("SELECT x.id, a.alias, e.email, FIND_IN_SET('active', e.flags) AS act
-                                 FROM x LEFT JOIN aliases AS a USING(id)
-                                 LEFT JOIN emails as e ON(e.id=x.id)
-                                 WHERE x.matricule = {$mr['matricule']}",$db_edu);
-            if(!$result) {
-                $str="Erreur sur la requ&ecirc;te: ".mysql_error($db_edu);
-            } elseif(mysql_num_rows($result) == 0) {
-                $str="Pas d'entrée dans la base !";
-            } else {
-                $alias_edu = Array();
-                while($alias_edu[] = mysql_fetch_assoc($result));
-                array_pop($alias_edu);
-                $page->assign_by_ref('alias_edu', $alias_edu);
-            } // mysql_num_rows != 0
-            mysql_free_result($result);
-            mysql_close($db_edu);
-        }
-
         $sql = "SELECT email, num, flags, panne
                 FROM emails
                 WHERE num != 0 AND uid = {$mr['user_id']} order by num";
