@@ -67,7 +67,8 @@ sa dernière relance date du {$relance|date_format}
     <td>{$a.last|date_format|default:'-'}</td>
     <td class='center'>{$a.nb|default:"-"}</td>
     <td class='action'>
-      <a href='?uid={$smarty.request.uid}&amp;del={$a.email}'>del</a>
+      <a href='?uid={$smarty.request.uid}&amp;del={$a.email}'>del</a><br />
+      <a href='?uid={$smarty.request.uid}&amp;rel={$a.email}'>relance</a>
     </td>
   </tr>
   {/iterate}
@@ -76,5 +77,45 @@ sa dernière relance date du {$relance|date_format}
     <td colspan='5' class='smaller'>(*): mail perso</td>
   </tr>
 </table>
+
+{if $rel_to}
+<form action="{$smarty.request.PHP_SELF}" method="post">
+  <table class="bicol">
+    <tr class="pair">
+      <th colspan="2">Edition du mail de relance</th>
+    </tr>
+    <tr class="pair">
+      <td align="right"><strong>From:</strong></td>
+      <td><select name="from">
+        <option value="staff">{$rel_from_staff}</option>
+        <option value="user">{$rel_from_user}</option>
+      </select></td>
+    </tr>
+    <tr class="pair">
+      <td align="right"><strong>To:</strong></td>
+      <td>
+        <input type="text" value="{$rel_to}" name="to" size="40" maxlength="100" />
+        <input type="submit" name="valider" value="Envoyer" />
+      </td>
+    </tr>
+    <tr class="pair">
+      <td align="right"><strong>Objet:</strong></td>
+      <td><input type="text" name="title" value="{$rel_title}" size="50" maxlength="100" /></td>
+    </tr>
+    <tr class="pair">
+      <td align="right"><strong>Message:</strong></td>
+      <td>
+        <textarea name="message" rows="40" cols="60">{$rel_text}</textarea>
+      </td>
+    </tr>
+  </table>
+  <div class="center">
+    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
+    <input type="hidden" name="email" value="{$smarty.request.rel}" />
+    <input type="reset" value="Recommencer" />
+    <input type="submit" name="valider" value="Envoyer" />
+  </div>
+</form>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -21,15 +21,28 @@
 
 require_once("xorg.misc.inc.php");
 
-// {{{ function mark_send_mail
-
-function mark_send_mail($uid, $email, $envoyeur, $email_envoyeur)
-{
-    require_once("diogenes/diogenes.hermes.inc.php");
+// {{{ function mark_from_mail
+function mark_from_mail($uid, $email) {
     global $globals;
+    $res = $globals->xdb->query(
+        "SELECT u.nom, u.prenom, a.alias
+           FROM register_marketing  AS r
+     INNER JOIN auth_user_md5       AS u ON (r.sender = u.user_id)
+     INNER JOIN aliases             AS a ON (a.id = r.sender AND a.type='a_vie')
+          WHERE r.uid = {?} AND r.email = {?}",
+        $uid, $email);
+    $sender = $res->fetchOneAssoc();
+    return "\"".$sender['prenom']." ".$sender['nom']."\" <".$sender['alias']."@polytechnique.org>";
     
-    $hash = rand_url_id(12);
-    $globals->xdb->execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $id, $email);
+}
+// }}}
+
+// {{{ function mark_text_mail
+
+function mark_text_mail($uid, $email)
+{
+    global $globals;
+    $title = "Annuaire en ligne des Polytechniciens";
 
     $res = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin', 'user') and deces = 0");
     $num_users = $res->fetchOneCell();
@@ -39,11 +52,13 @@ function mark_send_mail($uid, $email, $envoyeur, $email_envoyeur)
 
     $mailorg = make_forlife($u['prenom'],$u['nom'],$u['promo']);
 
+    $to = "\"".$u['prenom']." ".$u['nom']."\" <".$email.">";
+
     $titre = "Annuaire en ligne des Polytechniciens";
     $text  = "   ".($u['flags']?"Chère":"Cher")." camarade,\n\n";
     $text .= "   Ta fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :\n\n";
     $text .= "==========================================================\n";
-    $text .= $globals->baseurl."/register/?hash=".$hash."\n";
+    $text .= $globals->baseurl."/register/?hash=%%hash%%\n";
     $text .= "==========================================================\n\n";
     $text .= "Il ne te faut que 5 minutes sur http://www.polytechnique.org/ pour rejoindre les $num_users camarades branchés grâce au système de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prénom... et de bénéficier pour la vie d'une adresse prestigieuse $mailorg@polytechnique.org et son alias discret $mailorg@m4x.org (m4x = mail for X).\n\n";
     $text .= "Pas de nouvelle boîte aux lettres à relever, il suffit de la rerouter vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer tous les jours si tu veux sans imposer à tes correspondants de modifier leur carnet d'adresses...\n\n";
@@ -51,17 +66,41 @@ function mark_send_mail($uid, $email, $envoyeur, $email_envoyeur)
     $text .="N'hésite pas à transmettre ce message à tes camarades ou à nous écrire, nous proposer toute amélioration ou suggestion pour les versions prochaines du site.\n\n";
     $text .= "A bientôt sur http://www.polytechnique.org !\n";
     $text .= "Bien à toi,\n";
-    $text .= $envoyeur."\n\n";
+    $text .= "%%sender%%\n\n";
     $text .= "--\n";
     $text .= "Polytechnique.org\n";
     $text .= "\"Le portail des élèves & anciens élèves de l'X\"\n";
     $text .= "http://www.polytechnique.org/\n";
     $text .= "http://www.polytechnique.net/\n";
+    return array($to, $title, $text);
+}
+// }}}
+
+// {{{ function mark_send_mail()
+
+function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='') 
+{
+    require_once("diogenes/diogenes.hermes.inc.php");
+    global $globals;
+
+    $hash = rand_url_id(12);
+    $globals->xdb->execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $uid, $email);
+ 
+    if ($to == '')
+        list($to, $title, $text) = mark_text_mail($uid, $email);
+
+    if ($perso == 'staff')
+        $from = "\"Equipe Polytechnique.org\" <register@polytechnique.org>";
+    else
+        $from = mark_from_mail($uid, $email);
     
+    $sender = substr($from, 1, strpos($from, '"', 2)-1);
+    $text = str_replace(array("%%hash%%", "%%sender%%"), array($hash, $sender), $text);
+
     $mailer = new HermesMailer();
-    $mailer->setFrom($envoyeur." <".$email_envoyeur.">");
-    $mailer->addTo("\"{$u['prenom']} {$u['nom']}\" <{$email}>");
-    $mailer->setSubject($titre);
+    $mailer->setFrom($from);
+    $mailer->addTo($to);
+    $mailer->setSubject($title);
     $mailer->setTxtBody(wordwrap($text, 80));
     $mailer->send();
 }
@@ -109,4 +148,6 @@ function relance($uid, $nbx = -1)
 }
 
 // }}}
+
+// vim:set et sw=4 sts=4 sws=4:
 ?>

@@ -41,6 +41,23 @@ if (Env::has('del')) {
     $globals->xdb->execute('DELETE FROM register_marketing WHERE uid={?} AND email={?}', $uid, Env::get('del'));
 }
 
+if (Env::has('rel') && !Env::has('valider')) {
+    require_once('marketing.inc.php');
+    list($to, $title, $text) = mark_text_mail($uid, Env::get('rel'));
+    $from = mark_from_mail($uid, Env::get('rel'));
+    $page->assign('rel_from_user', $from);
+    $page->assign('rel_from_staff', "\"Equipe Polytechnique.org\" <register@polytechnique.org>");
+    $page->assign('rel_to', $to);
+    $page->assign('rel_title', $title);
+    $page->assign('rel_text', $text);
+}
+
+if (Env::get('valider') == 'Envoyer') {
+    require_once('marketing.inc.php');
+    mark_send_mail($uid, Env::get('rel'), Env::get('from'), Env::get('to'), Env::get('title'), Env::get('message'));
+    $page->trig("Mail envoyé");
+}
+
 if (Env::has('relance')) {
     require_once('marketing.inc.php');
     if (relance($uid)) {
@@ -64,4 +81,6 @@ if (list($pending, $relance) = $res->fetchOneCell()) {
 
 
 $page->run();
+
+// vim:set et sw=4 sws=4 sts=4:
 ?>
