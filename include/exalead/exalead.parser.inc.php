@@ -14,6 +14,9 @@ class Exalead{
   var $currentSpelling;
   var $currentHit;
   var $currentHitField;
+  var $currentHitGroup;
+  var $currentHitCategory;
+  var $currentAction;
   var $currentTextSegment;
   var $currentQuery;
   var $currentQueryTerm;
@@ -33,6 +36,9 @@ class Exalead{
      $this->currentSpelling = new ExaleadSpelling();
      $this->currentHit = new ExaleadHit();
      $this->currentHitField = new ExaleadHitField();
+     $this->currentHitGroup = new ExaleadHitGroup();
+     $this->currentHitCategory = new ExaleadHitCategory();
+     $this->currentAction = new ExaleadAction();
      $this->currentTextSegment = new ExaleadTextSegment();
      $this->currentQuery = new ExaleadQuery();
      $this->currentQueryTerm = new ExaleadQueryTerm();
@@ -161,7 +167,26 @@ class Exalead{
      $this->currentHit->url = $attrs['URL'];
      $this->currentHit->score = $attrs['SCORE'];
   }
+ 
+  function startHitGroup(&$attrs){
+     $this->currentHitGroup->title = utf8_decode($attrs['TITLE']);
+     $this->currentHitGroup->gid = $attrs['GID'];
+  }
   
+  function startHitCategory(&$attrs){
+     $this->currentHitCategory->name = $attrs['NAME'];
+     $this->currentHitCategory->display = utf8_decode($attrs['DISPLAY']);
+     $this->currentHitCategory->cref = $attrs['CREF'];
+     $this->currentHitCategory->gid = $attrs['GID'];
+     if(isset($attrs['BROWSEHREF'])) $this->currentHitCategory->browsehref = $attrs['BROWSEHREF'];
+  }
+  
+  function startAction(&$attrs){
+     $this->currentAction->display = $attrs['DISPLAY'];
+     $this->currentAction->kind = $attrs['KIND'];
+     if(isset($attrs['EXECHREF']))$this->currentAction->execHref = $attrs['EXECHREF'];
+  }
+ 
   function startHitField(&$attrs){
      $this->currentHitField->name = $attrs['NAME'];
      if(isset($attrs['VALUE'])) $this->currentHitField->value = utf8_decode($attrs['VALUE']);
@@ -228,6 +253,15 @@ class Exalead{
    elseif($name == 'HITFIELD'){
      $this->startHitField($attrs);
    }
+   elseif($name == 'HITGROUP'){
+     $this->startHitGroup($attrs);
+   }
+   elseif($name == 'HITCATEGORY'){
+     $this->startHitCategory($attrs);
+   }
+   elseif($name == 'ACTION'){
+     $this->startAction($attrs);
+   }
    elseif($name == 'TEXTSEG'){
      $this->startTextSeg($attrs);
    }
@@ -271,6 +305,18 @@ class Exalead{
   function endHit(){
      $this->data->addHit($this->currentHit);
      $this->currentHit->clear();
+  }
+  function endHitGroup(){
+    $this->currentHit->addHitGroup($this->currentHitGroup);
+    $this->currentHitGroup->clear();
+  }
+  function endHitCategory(){
+    $this->currentHitGroup->addHitCategory($this->currentHitCategory);
+    $this->currentHitCategory->clear();
+  }
+  function endAction(){
+    $this->currentHit->addAction($this->currentAction);
+    $this->currentAction->clear();
   }
   function endHitField(){
      $this->currentHit->addHitField($this->currentHitField);
@@ -321,6 +367,15 @@ class Exalead{
    }
    elseif($name == 'HITFIELD'){
      $this->endHitField();
+   }
+   elseif($name == 'HITGROUP'){
+     $this->endHitGroup();
+   }
+   elseif($name == 'HITCATEGORY'){
+     $this->endHitCategory();
+   }
+   elseif($name == 'ACTION'){
+     $this->endAction();
    }
    elseif($name == 'TEXTSEG'){
      $this->endTextSeg();

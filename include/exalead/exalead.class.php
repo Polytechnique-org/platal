@@ -148,6 +148,40 @@ class ExaleadHit{
   }
 }
 
+class ExaleadHitGroup{
+  var $hitcategories = array();
+  var $title = '';
+  var $gid = '';
+
+  function ExaleadHitGroup(){}
+
+  function addHitCategory($hitcategory){$this->hitcategories[] = $hitcategory;}
+
+  function clear(){
+    $this->hitcategories = array();
+    $this->title = '';
+    $this->gid = '';
+  }
+}
+
+class ExaleadHitCategory{
+  var $name = '';
+  var $display = '';
+  var $cref = '';
+  var $gid = '';
+  var $browseHref = '';
+
+  function ExaleadHitCategory(){}
+
+  function clear(){
+    $this->name = '';
+    $this->display = '';
+    $this->cref = '';
+    $this->gid = '';
+    $this->browseHref = '';
+  }
+}
+
 class ExaleadHitField{
   var $text_segments = array();
   var $has_text_cut = false;
@@ -164,6 +198,20 @@ class ExaleadHitField{
    $this->has_text_cut = false;
    $this->name = "";
    $this->value = "";
+  }
+}
+
+class ExaleadAction{
+  var $display;
+  var $kind;
+  var $execHref;
+
+  function ExaleadAction(){}
+
+  function clear(){
+    $this->display = '';
+    $this->kind = '';
+    $this->execHref = '';
   }
 }
 
