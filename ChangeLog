@@ -33,7 +33,7 @@ Bug/Wish :
 		- #207 : Enable for the user the choice of his prefered alias.		-MC
 
 	* Core :
-		- #185 : Implement perms levels : 'non-inscrit'+'disabled'.			-MC
+		- #183,185 : Implement perms levels : 'pending'+'disabled'.			-MC
 	
 	* Fiche :
 		- #83,208,222 : New fiche.											-MC
