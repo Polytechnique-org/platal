@@ -2,13 +2,13 @@
 
 ,---------------------.
 | NB Etats :          |
-|     -> rien de fait |
+| ;   -> rien de fait |
 | x   -> à tester     |
 | xx  -> en templates |
 | xxx -> anonyme      |
-| !!! -> postponned   |
+| ;!  -> postponned   |
 | --- -> supprimée    |
-| @@@ -> non modifiée |
+| xx! -> non modifiée |
 `---------------------'
 
 # PS pour trier : V<down><down>...<down>:!sort<enter>
@@ -16,118 +16,106 @@
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ admin ]---------------------------------+----------------
-	  | admin/admin_faqs.php					  | 
-	  | admin/admin_trombino.php				  | 
-	  | admin/comptesPOP.php					  | 
-	  | admin/correction_adr.php				  | 
-	  | admin/envoidirect.php					  | 
-	  | admin/evenements.php					  | 
-	  | admin/homonymes.php						  | 
-	  | admin/ins_confirmees.php				  | 
-	  | admin/pg.php							  | 
-	  | admin/utilisateurs.php					  | 
+;	  | admin/admin_faqs.php					  | 
+;	  | admin/admin_trombino.php				  | 
+;	  | admin/comptesPOP.php					  | 
+;	  | admin/correction_adr.php				  | 
+;	  | admin/envoidirect.php					  | 
+;	  | admin/evenements.php					  | 
+;	  | admin/homonymes.php						  | 
+;	  | admin/ins_confirmees.php				  | 
+;	  | admin/pg.php							  | 
+;	  | admin/utilisateurs.php					  | 
 ------+-[ marketing ]-----------------------------+----------------
-	  | admin/marketing.php						  | marketing/
-	  | admin/marketing_promo.php				  | marketing/
-	  | admin/marketing_volontaire.php			  | marketing/
-	  | admin/relance.php						  | marketing/ 
-	  | admin/utilisateurs_identification.php	  | marketing/
-	  | admin/utilisateurs_marketing.php		  | marketing/
-	  | marketing.php							  | marketing/index
+;	  | admin/marketing.php						  | marketing/
+;	  | admin/marketing_promo.php				  | marketing/
+;	  | admin/marketing_volontaire.php			  | marketing/
+;	  | admin/relance.php						  | marketing/ 
+;	  | admin/utilisateurs_identification.php	  | marketing/
+;	  | admin/utilisateurs_marketing.php		  | marketing/
+;	  | marketing.php							  | marketing/index
 ------+-[ docs ]----------------------------------+----------------
-	  | docs/FROM.php							  | docs/from.php
-	  | en-cours.php							  | docs/en-cours.php
-	  | info-groupesx.php						  | docs/info-groupesx.php
-	  | plan.php								  | ? docs/plan.php
-	  | services.php							  | docs/services.php
+;	  | docs/FROM.php							  | docs/from.php
+;	  | en-cours.php							  | docs/en-cours.php
+;	  | info-groupesx.php						  | docs/info-groupesx.php
+;	  | plan.php								  | ? docs/plan.php
+;	  | services.php							  | docs/services.php
 ------+-[ stats ]---------------------------------+----------------
-	  | parselogD.php							  | stats/...
-	  | parselogN.php							  | stats/...
-	  | parselogR.php							  | stats/...
-	  | stats.php								  | stats/index.php
+;	  | parselogD.php							  | stats/...
+;	  | parselogN.php							  | stats/...
+;	  | parselogR.php							  | stats/...
+;	  | stats.php								  | stats/index.php
 ------+-[ listes ]--------------------------------+----------------
-	  | listes/creation.php						  | 
-	  | listes/gere_listes.php					  | 
-	  | listes/gere_msg.php						  | 
-	  | listes/index.php						  | 
-	  | listes/liste.php						  | 
-	  | listes/mailtoins.inc.php				  | 
-	  | listes/trombiliste.php					  | 
+;	  | listes/creation.php						  | 
+;	  | listes/gere_listes.php					  | 
+;	  | listes/gere_msg.php						  | 
+;	  | listes/index.php						  | 
+;	  | listes/liste.php						  | 
+;	  | listes/mailtoins.inc.php				  | 
+;	  | listes/trombiliste.php					  | 
 ------+-[ paiement ]------------------------------+----------------
-	  | paiement/cyberpaiement.inc.php			  | 
-	  | paiement/cyberpaiement_retour.php		  | 
-	  | paiement/index.php						  | 
+;	  | paiement/cyberpaiement.inc.php			  | 
+;	  | paiement/cyberpaiement_retour.php		  | 
+;	  | paiement/index.php						  | 
 ------+-[ sondages ]------------------------------+----------------
-	  | sondage/accueil.php						  | 
-	  | sondage/bloc.php						  | 
-	  | sondage/droits.php						  | 
-	  | sondage/exemples.php					  | 
-	  | sondage/modifie.php						  | 
-	  | sondage/question.php					  | 
-	  | sondage/questionnaire.php				  | 
-	  | sondage/reponse.php						  | 
-	  | sondage/resultats.php					  | 
-	  | sondage/titre.php						  | 
-	  | sondage/validation.php					  | 
+;	  | admin/gerer_sondages.php				  |
+;	  | sondage/accueil.php						  | 
+;	  | sondage/bloc.php						  | 
+;	  | sondage/droits.php						  | 
+;	  | sondage/exemples.php					  | 
+;	  | sondage/modifie.php						  | 
+;	  | sondage/question.php					  | 
+;	  | sondage/questionnaire.php				  | 
+;	  | sondage/reponse.php						  | 
+;	  | sondage/resultats.php					  | 
+;	  | sondage/titre.php						  | 
+;	  | sondage/validation.php					  | 
 ------+-[ emails ... ]----------------------------+----------------
-	  | routage-mail.php						  | 
+;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
-	  | inscrire.php							  | 
-	  | maj.php									  | 
-	  | recovery.php							  | 
-	  | step4.php								  | 
-	  | tmpPWD.php								  | 
+;	  | inscrire.php							  | 
+;	  | maj.php									  | 
+;	  | recovery.php							  | 
+;	  | step4.php								  | 
+;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
-	  | domaine.php								  | 
-	  | emploi.php								  | 
-	  | emploi_public.php						  | 
-	  | evenements.php							  | 
-	  | index.coupure.php						  | 
-	  | mescontacts_pdf.php						  | 
-	  | pg.confirm.php							  | 
-	  | pg.php									  | 
-	  | profil.php								  | 
-	  | profil2.php								  | 
-	  | recherche.php							  | 
-	  | trombino.php							  | 
-	  | trombipromo.php							  | 
-	  | x.php									  | 
+;	  | domaine.php								  | 
+;	  | emploi.php								  | 
+;	  | emploi_public.php						  | 
+;	  | evenements.php							  | 
+;	  | index.coupure.php						  | 
+;	  | mescontacts_pdf.php						  | 
+;	  | pg.confirm.php							  | 
+;	  | pg.php									  | 
+;	  | profil.php								  | 
+;	  | profil2.php								  | 
+;	  | recherche.php							  | 
+;	  | trombino.php							  | 
+;	  | trombipromo.php							  | 
+;	  | x.php									  | 
 ------+-[ admin ]---------------------------------+----------------
-!!!	  | admin/gerer_applis.php					  | \
-!!!	  | admin/gerer_auth-groupex.php			  |  |
-!!!	  | admin/gerer_binets.php					  |  |
-!!!	  | admin/gerer_coupure.php					  |  |
-!!!	  | admin/gerer_groupesx.php				  |   > utiliser les classes Diogènes, j'ai pas diogènes hors ligne :/
-!!!	  | admin/gerer_listes.php					  |  |
-!!!	  | admin/gerer_paiement.php				  |  |
-!!!	  | admin/gerer_skins.php					  |  |---> mef la table a changé
-!!!	  | admin/gerer_sondages.php				  | /
-!!!	  | admin/logger.php						  | \
-!!!	  | admin/logger_actions.php				  |  \ Utiliser les classes de Jeremy, donc pour plus tard
-!!!	  | admin/logger_events.php					  |  /
-!!!	  | admin/logger_user.php					  | /
+;!	  | admin/logger.php						  | \
+;!	  | admin/logger_actions.php				  |  \ Utiliser les classes de Jeremy, donc pour plus tard
+;!	  | admin/logger_events.php					  |  /
+;!	  | admin/logger_user.php					  | /
 ------+-[ news ]----------------------------------+----------------
-!!!	  | news/abonnements.php					  | \
-!!!	  | news/article.php						  |  |
-!!!	  | news/attachment.php						  |  |
-!!!	  | news/config.news.inc.php				  |  |
-!!!	  | news/faq_admin.php						  |   \ s'en débarasser ?
-!!!	  | news/index.php							  |   /
-!!!	  | news/newsportal.php						  |  |
-!!!	  | news/offreemploi.php					  |  |
-!!!	  | news/post.php							  |  |
-!!!	  | news/thread.php							  | /
-!!!	  | confbanana.php							  | -> dépend de banana, à passer plus tard ...
+;!	  | news/abonnements.php					  | \
+;!	  | news/article.php						  |  |
+;!	  | news/attachment.php						  |  |
+;!	  | news/config.news.inc.php				  |  |
+;!	  | news/faq_admin.php						  |   \ s'en débarasser ?
+;!	  | news/index.php							  |   /
+;!	  | news/newsportal.php						  |  |
+;!	  | news/offreemploi.php					  |  |
+;!	  | news/post.php							  |  |
+;!	  | news/thread.php							  | /
+;!	  | confbanana.php							  | -> dépend de banana, à passer plus tard ...
 ------+-[ trackers ]------------------------------+----------------
-	  | trackers/tracker_show.php				  | -
-	  | trackers/tracker_show_rq.php			  | -
-	  | trackers/index.php						  | -
-	  | trackers/tracker_admin.php				  | -
+;	  | trackers/tracker_show.php				  | -
+;	  | trackers/tracker_show_rq.php			  | -
+;	  | trackers/index.php						  | -
+;	  | trackers/tracker_admin.php				  | -
 ------+-------------------------------------------+----------------
-@@@	  | groupex/donne-chall.php					  | -
-@@@	  | groupex/export-econfiance.php			  | -
-@@@	  | redirect/error.php						  | -
-@@@	  | redirect/redirect.php					  | -
 x	  | epouse.php								  | -
 x	  | parselog.php							  | stats/...
 xx	  | AccesPermanentOff.php					  | cookie_off.php
@@ -139,6 +127,14 @@ xx	  | admin/ax-xorg.php						  | -
 xx	  | admin/deces_promo.php					  | -
 xx	  | admin/FormatePrenomNOM2.php				  | scripts/
 xx	  | admin/FormatePrenomNOM.php				  | scripts/
+xx	  | admin/gerer_applis.php					  | -
+xx	  | admin/gerer_auth-groupex.php			  |
+xx	  | admin/gerer_binets.php					  |
+xx	  | admin/gerer_coupure.php					  |
+xx	  | admin/gerer_groupesx.php				  |
+xx	  | admin/gerer_listes.php					  |
+xx	  | admin/gerer_paiement.php				  |
+xx	  | admin/gerer_skins.php					  |
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
 xx	  | admin/index.php							  | -
 xx	  | admin/newsletter_archi.php				  | -
@@ -178,6 +174,8 @@ xx	  | ethique.php								  | docs/ethique.php
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
 xx	  | getphoto.php							  | -
+xx!	  | groupex/donne-chall.php					  | -
+xx!	  | groupex/export-econfiance.php			  | -
 xx	  | groupex.php								  | groupex/index.php 
 xx	  | index.php								  | -
 xx	  | login.php								  | -
@@ -188,6 +186,8 @@ xx	  | newsletter.php							  | -
 xx	  | newsletter_req.php						  | -
 xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
+xx!	  | redirect/error.php						  | -
+xx!	  | redirect/redirect.php					  | -
 xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | sendmail.php							  | -

@@ -59,7 +59,7 @@ class XorgPage extends DiogenesCorePage {
         $this->doAuth();
     }
 
-    function display($append_to_id="") {
+    function run($append_to_id="") {
         global $baseurl, $site_dev;
         if($this->_page_type == NO_SKIN)
             parent::display($this->_tpl);
