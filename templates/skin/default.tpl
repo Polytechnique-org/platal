@@ -1,4 +1,4 @@
-{* $Id: default.tpl,v 1.12 2004-08-29 17:35:35 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.13 2004-08-29 21:14:41 x2000habouzit Exp $ *}
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -69,7 +69,14 @@
           <div class="menu_item"><a href="{$menu_url|url}">{$menu_item}</a></div>
           {/foreach}
           {/foreach}
-          {perms level=admin}{insert name="mkStats"}{/perms}
+          {perms level=admin}
+          <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
+            <tr><th>Valid</th></tr>
+            <tr class="impair">
+              <td><a href="{"admin/valider.php"|url}">{insert name="mkStats"}</a></td>
+            </tr>
+          </table>
+          {/perms}
         </td>
         <td id="content">
           {include file=$xorg_tpl}
