@@ -23,21 +23,14 @@ require_once("xorg.inc.php");
 new_nonhtml_page('vcard.tpl', AUTH_COOKIE);
 require_once("xorg.misc.inc.php");
 
-function format_adr($params, &$smarty) {
+function format_adr($params, &$smarty)
+{
     // $adr1, $adr2, $adr3, $cp, $ville, $region, $pays
     extract($params['adr']);
-    $res = ";;";
-    if (! empty($adr1)) $res .= "$adr1\n";
-    if (! empty($adr2)) $res .= "$adr2\n";
-    if (! empty($adr3)) $res .= "$adr3\n";
-    if (! empty($adr1) || ! empty($adr2) || ! empty($adr3))
-        $res = substr($res, 0, -1);
-    $res .= ";";
-    if (! empty($ville)) $res .= "$ville;"; else $res .= ";";
-    if (! empty($region)) $res .= "$region;"; else $res .= ";";
-    if (! empty($cp)) $res .= "$cp;"; else $res .= ";";
-    if (! empty($pays)) $res .= "$pays";
-    return quoted_printable_encode($res);
+    $adr = $adr1;
+    $adr = trim("$adr\n$adr2");
+    $adr = trim("$adr\n$adr3");
+    return quoted_printable_encode(";;$adr;$ville;$region;$cp;$pays");
 }
 
 $page->register_modifier('qp_enc', 'quoted_printable_encode');

@@ -25,7 +25,7 @@ use HTTP::Request::Common 'POST';
 print LWP::UserAgent
   ->new
   ->request(
-            POST 'http://amaretto.inria.fr:8080/w3c-markup-validator/check',
+            POST 'http://murphy.polytechnique.org/w3c-markup-validator/check',
             Content_Type => 'form-data',
             Content      => [
                              output => 'xml',
