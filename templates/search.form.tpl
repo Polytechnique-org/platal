@@ -5,10 +5,12 @@
     Recherche simple
   {/if}
   <div class="floatright">
-    {if $advanced eq "1"}
-      <a href="search.php">-> Recherche simple</a>
-    {elseif $public_directory neq "1"}
-      <a href="advanced_search.php">-> Recherche avancée</a>
+    {if $advanced}
+      [<a href="search.php">Recherche simple</a>]
+    {else}
+      {min_auth level="cookie"}
+      [<a href="advanced_search.php">Recherche avancée</a>]
+      {/min_auth}
     {/if}
   </div>
 </div>
@@ -19,7 +21,6 @@
 {/if}
 <div class="center">
   <form action="{$smarty.server.PHP_SELF}" method="post" name="recherche">
-    <input type="hidden" name="public_directory" value="{$public_directory}">
     <table class="tinybicol" cellpadding="3" summary="Recherche">
       <tr>
         <td>Nom</td>
@@ -34,15 +35,15 @@
         <td>
           <select name="egal1">
             <option value="=" {if $smarty.request.egal1 eq "="}selected{/if}>&nbsp;=&nbsp;</option>
-            <option value=">" {if $smarty.request.egal1 eq ">"}selected{/if}>&nbsp;&gt;&nbsp;</option>
-            <option value="<" {if $smarty.request.egal1 eq "<"}selected{/if}>&nbsp;&lt;&nbsp;</option>
+	    <option value="&gt;" {if $smarty.request.egal1 eq ">"}selected{/if}>&nbsp;&gt;&nbsp;</option>
+            <option value="&lt;" {if $smarty.request.egal1 eq "<"}selected{/if}>&nbsp;&lt;&nbsp;</option>
           </select>
           <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
           &nbsp;ET&nbsp;
           <select name="egal2">
             <option value="=" {if $smarty.request.egal2 eq "="}selected{/if}>&nbsp;=&nbsp;</option>
-            <option value=">" {if $smarty.request.egal2 eq ">"}selected{/if}>&nbsp;&gt;&nbsp;</option>
-            <option value="<" {if $smarty.request.egal2 eq "<"}selected{/if}>&nbsp;&lt;&nbsp;</option>
+	    <option value="&gt;" {if $smarty.request.egal2 eq ">"}selected{/if}>&nbsp;&gt;&nbsp;</option>
+	    <option value="&lt;" {if $smarty.request.egal2 eq "<"}selected{/if}>&nbsp;&lt;&nbsp;</option>
           </select>
           <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
         </td>
@@ -59,7 +60,7 @@
         <td>Pays</td>
         <td>
           <select name="pays" onChange="javascript:document.recherche.submit();">
-          {if isset($smarty.request.pays)}
+          {if $smarty.request.pays}
             {assign var="pays" value=$smarty.request.pays}
           {else}
             {assign var="pays" value=""}
@@ -72,7 +73,7 @@
         <td>Région ou département</td>
         <td>
           <select name="region">
-          {if isset($smarty.request.region)}
+          {if $smarty.request.region}
             {assign var="region" value=$smarty.request.region}
           {else}
             {assign var="region" value=""}

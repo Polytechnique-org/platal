@@ -1,14 +1,13 @@
 <?php
 require("auto.prepend.inc.php");
 require("search.classes.inc.php");
-// choix entre partie publique (annuaire_public est vrai) et partie privée de l'annuaire.
-$public_directory = ((isset($_REQUEST['public_directory']) && $_REQUEST['public_directory']==1));
-if ($public_directory)
-    new_skinned_page('search.tpl', AUTH_PUBLIC);
-else
+
+new_skinned_page('search.tpl', AUTH_PUBLIC);
+if(logged()) {
     new_skinned_page('search.tpl', AUTH_COOKIE,true);
+}
+
 $page->assign('advanced',0);
-$page->assign('public_directory',$public_directory);
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
