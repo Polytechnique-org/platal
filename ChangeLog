@@ -3,6 +3,9 @@ VERSION 0.9.3														~20 Dec 2004
 
 New :
 
+	* Core :
+		- Members can be disabled. It deletes volatile datas.				-MC
+
 	* Mails : Use HermesMailer.												-MC
 
 	* Skins :
@@ -13,6 +16,9 @@ Bug/Wish :
 	* Bestalias :
 		- #206 : Use only the bestalias and the forlife in vcard and fiche.	-MC
 		- #207 : Enable for the user the choice of his prefered alias.		-MC
+
+	* Core :
+		- #185 : Implement perms levels : 'non-inscrit'+'disabled'.			-MC
 	
 	* Fiche :
 		- #83,208,222 : New fiche.											-MC
