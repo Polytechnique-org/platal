@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.10 2004-10-31 16:15:19 x2000chevalier Exp $
+        $Id: checkdb.php,v 1.11 2004-10-31 16:16:11 x2000chevalier Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.10 2004-10-31 16:15:19 x2000chevalier Exp $
+ * $Id: checkdb.php,v 1.11 2004-10-31 16:16:11 x2000chevalier Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -161,10 +161,10 @@ check("SELECT  a.alias AS a_un_pb, email, rewrite AS broken
    LEFT  JOIN  aliases AS b ON (b.id=a.id AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
         WHERE  a.type='a_vie' AND b.type IS NULL","gens qui ont des rewrite sur un alias perdu");
 
-/* validite du champ matricule_ax de la table identification */
+/* validite du champ matricule_ax de la table auth_user_md5 */
 check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
          FROM  auth_user_md5
 	WHERE  matricule_ax != '0'
      GROUP BY  matricule_ax
-       having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (identification) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
+       having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
 ?>
