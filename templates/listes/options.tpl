@@ -45,7 +45,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>
       <td>
-        <strong>description :</strong><br />
+        <strong>description courte :</strong><br />
         <span class='smaller'>une courte phrase pour décrire la liste.</span>
       </td>
       <td>
@@ -54,7 +54,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>info :</strong><br />
+        <strong>description longue :</strong><br />
         <span class='smaller'>une description plus longue de la liste.</span>
       </td>
       <td>
@@ -63,9 +63,9 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='pair'>
       <td>
-        <strong>welcome_msg :</strong><br />
+        <strong>message de bienvenue :</strong><br />
         <span class='smaller'>un texte de bienvenue incorporé au mail envoyé aux nouveaux
-          inscrits.</span>
+         abonnés à la liste.</span>
       </td>
       <td>
         <textarea cols='40' rows='8' name='welcome_msg'>{$options.welcome_msg}</textarea>
@@ -73,21 +73,21 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>goodbye_msg :</strong><br />
+        <strong>message d'adieu :</strong><br />
         <span class='smaller'>un texte d'au revoir incorporé au mail de départ envoyé aux
-          utilisateurs qui se désinscrivent.  Ce mail peut être désactivé</span>
+          utilisateurs qui se désinscrivent.  Ce mail peut être désactivé.</span>
       </td>
       <td>
         <input type='checkbox' name='send_goodbye_msg'
-        {if $options.send_goodbye_msg}checked='checked'{/if} /> activer le mail de départ.  <br />
+        {if $options.send_goodbye_msg}checked='checked'{/if} /> activer le mail d'adieu.  <br />
         <textarea cols='40' rows='8' name='goodbye_msg'>{$options.goodbye_msg}</textarea>
       </td>
     </tr>
     <tr><th colspan='2'>Options avancées de la liste {$details.addr}</th></tr>
     <tr class='impair'>
     <td>
-        <strong>subject_prefix :</strong><br />
-        <span class='smaller'>Un préfixe ajouté dans le sujet de chaque mail envoyé sur la liste.</span>
+        <strong>ajout dans le sujet :</strong><br />
+        <span class='smaller'>Un préfixe (optionnel) ajouté dans le sujet de chaque mail envoyé sur la liste te permet de trier plus facilement ton courrier.</span>
       </td>
       <td>
         <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix}" />
@@ -95,8 +95,8 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>admin_notify_mchanges :</strong><br />
-        <span class='smaller'>être notifé des inscriptions/désinscriptions sur cette liste.</span>
+        <strong>notification de (dés)abonnement :</strong><br />
+        <span class='smaller'>notifier les modérateurs des inscriptions/désinscriptions d'utilisateurs sur cette liste.</span>
       </td>
       <td>
         <input type='checkbox' name='admin_notify_mchanges'
@@ -105,7 +105,7 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>subscribe_policy :</strong><br />
+        <strong>inscription libre ou modérée :</strong><br />
         <span class='smaller'>détermine si les inscriptions à la liste sont modérées ou non.</span>
       </td>
       <td>
@@ -115,14 +115,14 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
-        <strong>bogo_level :</strong><br />
-        <span class='smaller'>détermine si la politique de l'antispam sur cette liste.</span>
+        <strong>antispam :</strong><br />
+        <span class='smaller'>détermine la politique de l'antispam sur cette liste.</span>
       </td>
       <td>
-        que faire des mails « [spam probable] » ?<br />
-        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer
-        <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les modérer
-        <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> les rejeter
+        <em>que faire des mails marqués « [spam probable] » ?</em><br />
+        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer<br />
+        <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation<br />
+        <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> les supprimer
       </td>
     </tr>
   </table>
