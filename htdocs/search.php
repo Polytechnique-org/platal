@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.23 2004-10-12 21:22:44 x2000bedo Exp $
+        $Id: search.php,v 1.24 2004-10-12 21:51:58 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -61,7 +61,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $offset = new NumericSField('offset');
    
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       r.matricule,i.matricule_ax,
+                       DISTINCT r.matricule,i.matricule_ax,
                        u.nom!="" AS inscrit,
                        u.*,
                        UPPER(IF(u.nom!="",u.nom,i.nom)) AS nom,
