@@ -19,6 +19,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ config HOOK
+// {{{ class ListsConfig
+
+class ListsConfig
+{
+    var $rpchost     = 'localhost';
+    var $rpcport     = 4949;
+    
+    var $spool       = '/var/spool/platal/archives/';
+
+    var $admin_owner = '';
+    var $vhost_sep   = '-';
+}
+
+// }}}
+
+function lists_config(&$result)
+{
+    global $globals;
+    $globals->lists = new ListsConfig;
+}
+
+// }}}
 // {{{ menu HOOK
 
 function &lists_menu(&$result)

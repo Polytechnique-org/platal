@@ -61,14 +61,13 @@ class XorgGlobals extends DiogenesCoreGlobals
         require_once("xorg/hook.inc.php");
         require_once("xorg/menu.inc.php");
 
-        $globals = new XorgGlobals;
-
+        $globals       = new XorgGlobals;
         $globals->root = dirname(dirname(__FILE__));
+        $globals->hook = new XOrgHook();
+        $globals->menu = new XOrgMenu();
 
-        foreach(glob($globals->root.'/include/conf.d/*.globals.inc.php') as $inc) {
-            require_once($inc);
-        }
-        
+        $globals->hook->config(null);
+
         $array = parse_ini_file($globals->root.'/configs/platal.conf', true);
         if (!is_array($array)) {
             return;
@@ -85,8 +84,6 @@ class XorgGlobals extends DiogenesCoreGlobals
             }
         }
         
-        $globals->hook = new XOrgHook();
-        $globals->menu = new XOrgMenu();
         $globals->hook->menu(null);
 
         $globals->dbconnect();

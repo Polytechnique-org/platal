@@ -19,22 +19,26 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ config HOOK
+
 // {{{ class SkinConfig
 
-class BananaConfig
+class SkinConfig
 {
-    var $server       = 'localhost';
-    var $port         = 119;
-    var $password     = '***';
-    var $web_user     = '***';
-    var $web_pass     = '***';
-
-    var $table_prefix = 'banana_';
+    var $enable  = 1;
+    var $def_id  = 1;
+    var $def_tpl = 'default.tpl';
 }
 
 // }}}
 
-$globals->banana = new BananaConfig;
+function skin_config(&$result)
+{
+    global $globals;
+    $globals->skin = new SkinConfig;
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -19,7 +19,29 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ config HOOK
+
+// {{{ class MoneyConfig
+
+class MoneyConfig
+{
+    var $mpay_enable   = true;
+    var $mpay_def_id   = 0;
+    var $mpay_def_meth = 0;
+    var $mpay_tprefix  = 'paiement.';
+}
+
+// }}}
+
+function money_config(&$result)
+{
+    global $globals;
+    $globals->money = new MoneyConfig;
+}
+
+// }}}
 // {{{ menu HOOK
+
 
 function money_menu(&$result)
 {

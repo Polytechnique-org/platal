@@ -19,6 +19,38 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// {{{ config HOOK
+
+// {{{ class SkinConfig
+
+class MailConfig
+{
+    var $domain     = '';
+    var $domain2    = '';
+
+    var $alias_dom  = '';
+    var $alias_dom2 = '';
+
+    var $send_form  = true;
+
+    function shorter_domain()
+    {
+        if (empty($this->domain2) || strlen($this->domain2)>strlen($this->domain)) {
+            return $this->domain;
+        } else {
+            return $this->domain2;
+        }
+    }
+}
+
+// }}}
+
+function emails_config(&$return)
+{
+    global $globals;
+    $globals->mail = new MailConfig;
+}
+// }}}
 // {{{ menu HOOK
 
 function emails_menu(&$return)

@@ -19,18 +19,24 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class SkinConfig
+// {{{ config HOOK
 
-class SkinConfig
+// {{{ class WebRedirConfig
+
+class WebRedirConfig
 {
-    var $enable  = 1;
-    var $def_id  = 1;
-    var $def_tpl = 'default.tpl';
+    var $domain       = '';
 }
 
 // }}}
 
-$globals->skin = new SkinConfig;
+function webredirect_config(&$result)
+{
+    global $globals;
+    $globals->webredirect = new WebRedirConfig;
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
