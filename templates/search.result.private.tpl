@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.12 2004-10-12 18:18:20 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.13 2004-10-12 18:20:22 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="bits">
@@ -50,6 +50,7 @@
 {/if}
 {else}
 <div class="long">
+  {if $result.nat || $result.web || $result.pays || $result.ville || $result.region || $result.entreprise}
   <table cellspacing="0" cellpadding="0">
     {if $result.nat}
     <tr>
@@ -63,7 +64,7 @@
       <td class="rt"><a href="{$result.web}">{$result.web}</a></td>
     </tr>
     {/if}
-    {if $result.pays || $result.ville || $result.pays}
+    {if $result.pays || $result.ville || $result.region}
     <tr>
       <td class="lt">Géographie:</td>
       <td class="rt">{implode sep=", " s1=$result.ville s2=$result.region s3=$result.pays}</td>
@@ -80,6 +81,7 @@
     </tr>
     {/if}
   </table>
+  {/if}
 </div>
 {/if}
 
