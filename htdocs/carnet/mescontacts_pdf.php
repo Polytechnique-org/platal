@@ -28,7 +28,7 @@ $sql = "SELECT  a.*,c.*,e.alias as epouse
 	  FROM  auth_user_md5 AS a
     INNER JOIN  contacts      AS c ON ( a.user_id = c.contact )
     LEFT  JOIN  aliases       AS e ON ( a.user_id = e.id and FIND_IN_SET('epouse',e.flags) )
-         WHERE  c.uid = ".Session::getInt('uid']);
+         WHERE  c.uid = ".Session::getInt('uid');
 // choix de l'ordre des réponses (par promo ou par noms)
 if (Get::get('order') == "promo") {
     $sql .= " ORDER BY  a.promo, a.nom, a.prenom";

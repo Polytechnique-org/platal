@@ -29,7 +29,7 @@ $user = Env::get('user');
 switch (Env::get('action')) {
     case 'retirer':
 	if (preg_match('/^\d+$/', $user)) {
-	    if ($globals->db->query("DELETE FROM contacts WHERE uid = $uid' AND contact='$user'"))
+	    if ($globals->db->query("DELETE FROM contacts WHERE uid = $uid AND contact='$user'"))
             {
 		$page->trig("Contact retiré !");
             }
@@ -47,7 +47,7 @@ switch (Env::get('action')) {
 
     case "ajouter":
         require_once('user.func.inc.php');
-        if ($login = get_user_login($user) !== false) {
+        if (($login = get_user_login($user)) !== false) {
             if ($globals->db->query("INSERT INTO  contacts (uid, contact)
                                           SELECT  $uid, id
                                             FROM  aliases
