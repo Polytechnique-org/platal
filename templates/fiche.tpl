@@ -129,36 +129,7 @@ function chgMainWinLoc( strPage ) {
     <td>
       <h2>Informations professionnelles :</h2>
       {foreach from=$x.adr_pro item="address" key="i"}
-      <div class="adresse">
-        {if $address.entreprise}
-        <div>
-          <em>Entreprise/Organisme : </em> <strong>{$address.entreprise}</strong>
-        </div>
-        {/if}
-        {if $address.secteur}
-        <div>
-          <em>Secteur : </em>
-          <strong>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</strong>
-        </div>
-        {/if}
-
-        {if $address.fonction}
-        <div>
-          <em>Fonction : </em> <strong>{$address.fonction}</strong>
-        </div>
-        {/if}
-        {if $address.poste}
-        <div>
-          <em>Poste : </em> <strong>{$address.poste}</strong>
-        </div>
-        {/if}
-        {if $address.email}
-        <div>
-          <em>E-mail : </em> <strong>{$address.email}</strong>
-        </div>
-        {/if}
-      </div>
-
+      {include file="include/emploi.tpl" address=$address}
       {include file="geoloc/address.tpl" address=$address titre="Adresse : "}
       <div class="spacer">&nbsp;</div>
       {/foreach}

@@ -67,34 +67,7 @@
 
   {foreach from=$adr_pro item="address" key="i"}
   <h2>{$address.entreprise}</h2>
-  <div class="adresse">
-    {if $address.entreprise}
-    <div>
-      <em>Entreprise/Organisme : </em>
-      <strong>{$address.entreprise}</strong>
-    </div>
-    {/if}
-    {if $address.secteur}
-    <div>
-      <em>Secteur : </em>
-      <strong>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</strong>
-    </div>
-    {/if}
-
-    {if $address.fonction}
-    <div>
-      <em>Fonction : </em>
-      <strong>{$address.fonction}</strong>
-    </div>
-    {/if}
-    {if $address.poste}
-    <div>
-      <em>Poste : </em>
-      <strong>{$address.poste}</strong>
-    </div>
-    {/if}
-  </div>
-
+  {include file="include/emploi.tpl" address=$address}
   {include file="geoloc/address.tpl" address=$address titre="Adresse : "}
   
   <div class="spacer">&nbsp;</div>
