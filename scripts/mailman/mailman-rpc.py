@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.56 2004-10-11 17:04:32 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.57 2004-10-13 09:02:48 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -363,7 +363,7 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
                     continue
                 userd = UserDesc(forlife+'@polytechnique.org', name, None, 0)
                 mlist.ApprovedAddMember(userd)
-                added.append( (userd.fullname, userd.address) )
+                added.append( (quote(userd.fullname), userd.address) )
         mlist.Save()
     except:
         pass
@@ -454,7 +454,7 @@ def get_pending_ops((userdesc,perms),vhost,listname):
                 dosave = True
                 continue
             seen.append(addr)
-            subs.append({'id': id, 'name': fullname, 'addr': addr })
+            subs.append({'id': id, 'name': quote(fullname), 'addr': addr })
 
         helds = []
         for id in mlist.GetHeldMessageIds():
