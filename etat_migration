@@ -139,12 +139,8 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-------------------------------------------+----------------
 @@@	  | groupex/donne-chall.php					  | -
 @@@	  | groupex/export-econfiance.php			  | -
-x	  | coupure.php								  | stats/coupure.php -> encore un pb (afficher deux coupures d'affilée)
-x	  | domaineperso.php						  | -
 x	  | epouse.php								  | -
-x	  | groupex.php								  | groupex/index.php 
 x	  | parselog.php							  | stats/...
-x	  | sendmail.php							  | -
 x	  | trackers/index.php						  | -
 x	  | trackers/tracker_admin.php				  | -
 xx	  | AccesPermanentOff.php					  | cookie_off.php
@@ -169,6 +165,7 @@ xx	  | auth-redirect.php						  | -
 xx	  | cacert.php								  | -
 xx	  | charte.php								  | docs/charte.php
 xx	  | contacts.php							  | docs/contacts.php
+xx	  | coupure.php								  | stats/coupure.php -> encore un pb (afficher deux coupures d'affilée)
 xx	  | deconnexion.php							  | -
 xx	  | docs/doc_carva.php						  | -
 xx	  | docs/doc_emails.php						  | -
@@ -182,11 +179,13 @@ xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
 xx	  | docs/index.php							  | -
+xx	  | domaineperso.php						  | -
 xx	  | dons.php								  | -
 xx	  | ethique.php								  | docs/ethique.php
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
 xx	  | getphoto.php							  | -
+xx	  | groupex.php								  | groupex/index.php 
 xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
@@ -195,6 +194,7 @@ xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
 xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
+xx	  | sendmail.php							  | -
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------

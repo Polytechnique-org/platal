@@ -1,30 +1,30 @@
-{* $Id: coupure.tpl,v 1.2 2004-02-04 23:22:05 x2000habouzit Exp $ *}
+{* $Id: coupure.tpl,v 1.3 2004-02-05 14:32:47 x2000habouzit Exp $ *}
 
 {dynamic}
 {if $cp}
 <table class="bicol" summary="Ruptures de service">
   <tr>
-    <th colspan="2">détails de l'interruption de service<th>
+    <th colspan="2">détails de l'interruption de service</th>
   </tr>
-  <tr>
+  <tr class="pair">
     <td class="titre">début</td>
     <td>{$cp.debut|date_format:"%d/%m/%Y, %Hh%M"}</td>
   </tr>
-  <tr>
+  <tr class="pair">
     <td class="titre">durée</td>
     <td>{$cp.duree}</td>
   </tr>
-  <tr>
+  <tr class="impair">
     <td class="titre">résumé</td>
     <td>{$cp.resume}</td>
   </tr>
-  <tr>
+  <tr class="impair">
     <td class="titre">services</td>
     <td>
-    {insert name="serv_to_str" arg=$cp.services script="insert.pattecassee.inc.php"}
+      {$cp.lg_services}
     </td>
   </tr>
-  <tr>
+  <tr class="pair">
     <td class="titre">description </td>
     <td>{$cp.description}</td>
   </tr>

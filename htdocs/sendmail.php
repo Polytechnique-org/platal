@@ -21,11 +21,11 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
             $_REQUEST['bcc'] = stripslashes($_REQUEST['bcc']);
             $autre_to = stripslashes($autre_to);
         }
-        require("mailer.inc.php");
+        require("diogenes.mailer.inc.php");
         $FROM = "From: {$_REQUEST['from']}";
         //$_REQUEST['contenu'] = chunk_split($_REQUEST['contenu'], 76, "\n"); // pas bon, ne tient pas compte des mots
             $dest = $_REQUEST['to'].', '.$autre_to;
-        $mymail = new mailer($_SESSION['username'], $dest, $_REQUEST['sujet'], false, $_REQUEST['cc'], $_REQUEST['bcc']);
+        $mymail = new DiogenesMailer($_SESSION['username'], $dest, $_REQUEST['sujet'], false, $_REQUEST['cc'], $_REQUEST['bcc']);
         $mymail->addHeader($FROM);
         $mymail->setBody(wordwrap($_REQUEST['contenu'],72,"\n"));
         if ($mymail->send()) {
@@ -41,7 +41,7 @@ $sql = "SELECT u.prenom, u.nom, u.promo, u.username
         FROM auth_user_md5 as u, contacts as c
         WHERE u.user_id = c.contact AND c.uid = {$_SESSION['uid']}
         ORDER BY u.nom, u.prenom";
-$page->mysql_assoc($sql, 'contacts','nb_contacts');
+$page->mysql_assign($sql, 'contacts','nb_contacts');
 
 $page->display();
 ?>

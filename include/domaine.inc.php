@@ -8,9 +8,9 @@ function liste_domaines() {
 
     // on récupère la liste des domaines gérables par l'utilisateur
     $sql = "SELECT domain FROM groupex.aliases as d ".
-            ($_SESSION['perms'] == 'admin'?'':', groupex.gestionnaires as g').
-           " WHERE domain NOT LIKE '%@%'".
-            ($_SESSION['perms'] == 'admin'?'':" AND g.did = d.id AND g.uid = {$_SESSION['uid']}").
+            (has_perms() ? '' : ', groupex.gestionnaires as g').
+           " WHERE domain NOT LIKE '%@%' ".
+            (has_perms() ? '' : " AND g.did = d.id AND g.uid = {$_SESSION['uid']}").
            " ORDER BY domain";
 
     $result = mysql_query($sql);

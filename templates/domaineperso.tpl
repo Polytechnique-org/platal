@@ -1,4 +1,4 @@
-{* $Id: domaineperso.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: domaineperso.tpl,v 1.2 2004-02-05 14:32:47 x2000habouzit Exp $ *}
 
 {include file='include/liste_domaines.tpl' result=$result nb_dom=$nbdom domaines=$domaines}
 
@@ -31,7 +31,7 @@
   Laisse le temps à la DNS de se mettre à jour (24 à 48h), et le tour est joué.
 </p>
 <p class="normal">
-  Pour toute question, n'hesite pas à {mailto address'info@polytechnique.org' text='envoyer un mail' encode='javascript'}
+  Pour toute question, n'hesite pas à {mailto address='info@polytechnique.org' text='envoyer un mail' encode='javascript'}
 </p>
 <div class="ssrubrique">
   Indique le domaine que tu souhaites gérer :
