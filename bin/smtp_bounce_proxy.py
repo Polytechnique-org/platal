@@ -89,7 +89,7 @@ class BounceMessage(Message.Message):
         it seems to be designed like this :
 
         =============================================
-        [...QMAIL crap...
+        [...QMAIL crap...]
         --- Below this line is a copy of the message.
 
         Return-Path: <...>
@@ -160,7 +160,7 @@ class BounceMessage(Message.Message):
         if int(mysql.rowcount) is not 1:
             return None
         uid = mysql.fetchone()[0]
-        mysql.execute("UPDATE emails SET panne = NOW() WHERE uid='%s' AND email='%s'""" % (uid, dest))
+        mysql.execute("UPDATE emails SET panne = NOW() WHERE uid='%s' AND email='%s'" % (uid, dest))
         mysql.execute("REPLACE INTO emails_broken (uid,email) VALUES(%s, '%s')" % (uid, dest))
         mysql.execute("""SELECT  COUNT(*),
                                  IFNULL(SUM(panne=0  OR  (last!=0 AND ( TO_DAYS(NOW())-TO_DAYS(last) )>7 AND panne<last)), 0),
@@ -178,18 +178,19 @@ class BounceMessage(Message.Message):
             + "------------------------------------------------------------\n\n"
 
         if nb_ok + nb_may is 0:
-            txt += "Toutes les adresses de redirections de ce correspondant\n" \
+            txt += "Toutes les adresses de redirection de ce correspondant\n" \
                 +  "sont cassées à l'heure actuelle.\n\n" \
                 +  "Prière de prévenir votre correspondant par d'autres moyens\n" \
-                +  "pour lui signaler ce problème pour qu'il puisse le corriger !!!"
+                +  "pour lui signaler ce problème et qu'il puisse le corriger !!!"
         elif nb_ok is 0:
             txt += "Ce correspondant possède néanmoins %i autre(s) adresse(s) active(s)\n" % (nb_may) \
-                +  "ayant recu des mails dans les 7 derniers jours,\n" \
-                +  "sans -- pour le moment -- avoir créé la moindre erreur.\n\n"
+                +  "en erreur, mais ayant recu des mails dans les 7 derniers jours,\n" \
+                +  "sans -- pour le moment -- avoir créé la moindre nouvelle erreur.\n\n" \
+                +  "Ces adresses sont donc peut-être valides.\n"
         else:
             txt += "Ce correspondant a en ce moment %i autre(s) adresse(s) valide(s).\n" % (nb_ok) \
-                +  "Rien ne prouve qu'elles étaient actives au moment de l'envoi\n" \
-                +  "qui a échoué."
+                +  "Rien ne prouve cependant qu'elles étaient actives \n" \
+                +  "au moment de l'envoi qui a échoué."
 
         msg = MIMEMultipart.MIMEMultipart()
         msg['Subject'] = self['Subject']
