@@ -261,12 +261,12 @@ htdocs/tmpPWD.php
 include/validations.inc.php
 include/xml-rpc-client.inc.php
 include/xorg.globals.inc.php.in
-include/xorg.hook.inc.php
+include/xorg/hook.inc.php
 include/xorg.inc.php
 include/xorg.mailer.inc.php
 include/xorg/menu.inc.php
 include/xorg.misc.inc.php
-include/xorg.page.inc.php
+include/xorg/page.inc.php
 include/xorg.plugin.inc.php
 include/xorg/session.inc.php
 include/xorg/smarty.plugins.inc.php
@@ -294,7 +294,6 @@ templates/admin/valider.tpl
 templates/cookie_off.tpl
 templates/cookie_on.tpl
 templates/deconnexion.tpl
-templates/failure.tpl
 templates/index.tpl
 templates/logger-view.tpl
 templates/motdepassemd5.head.tpl
@@ -311,5 +310,4 @@ templates/skin/common.footer.tpl
 templates/skin/common.header.tpl
 templates/skin/default.tpl
 templates/table-editor.tpl
-templates/tmpPWD.failure.tpl
 templates/tmpPWD.success.tpl

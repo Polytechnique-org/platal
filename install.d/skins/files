@@ -69,7 +69,6 @@ htdocs/images/sk_trapped_menu.gif
 htdocs/images/sk_trapped_monstre.jpg
 htdocs/images/sk_trapped_titre.gif
 htdocs/skins.php
-include/conf.d/skin.globals.inc.php
 templates/preferences.tpl.d/90.skin.tpl
 templates/skin/espace.tpl
 templates/skin/humlinux.tpl

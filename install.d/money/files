@@ -3,8 +3,6 @@ htdocs/paiement/cyberpaiement_retour.php
 htdocs/paiement/index.php
 htdocs/trezo/gere_operations.php
 htdocs/trezo/index.php
-include/conf.d/money.globals.inc.php
-include/conf.d/money.menu.inc.php
 include/money/cyberpaiement.inc.php
 include/money.inc.php
 include/money/trezo.inc.php

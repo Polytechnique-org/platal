@@ -1,2 +1,10 @@
-function menu()
-function subscribe($forlife, $uid, $promo, $pass)
+config()
+    function used to create new config entries in $globals.
+    usually, a module need to create a ....Config class to store the defaults.
+
+menu()
+    function used to add entries to $globals->menu    
+
+subscribe($forlife, $uid, $promo, $pass)
+    triggered when a user subscription is sucessfull
+

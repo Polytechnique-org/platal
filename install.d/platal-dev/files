@@ -1,10 +1,8 @@
-include/conf.d/README
-
 bin/devel/modules_status
 bin/devel/tplgettext.php
 bin/devel/lists.foreach_template.py
 
-bin/xhtml/get_classes.pl
-bin/xhtml/validate.pl
+bin/devel/xhtml.classes.pl
+bin/devel/xhtml.validate.pl
 
 templates/database-debug.tpl

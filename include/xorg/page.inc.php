@@ -123,7 +123,7 @@ class XorgPage extends DiogenesCorePage
                 fwrite($fd, $result);
                 fclose($fd);
 		
-		exec($globals->spoolroot."/bin/xhtml/validate.pl ".$this->cache_dir."valid.html", $val);
+		exec($globals->spoolroot."/bin/devel/validate.pl ".$this->cache_dir."valid.html", $val);
 		foreach ($val as $h) {
 		    if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
 			if ($m[1]) {

@@ -1,4 +1,4 @@
-hooks/core/banana.inc.php
+hooks/banana.inc.php
 htdocs/banana/article.php
 htdocs/banana/banana.css
 htdocs/banana/disconnect.php
@@ -20,8 +20,6 @@ htdocs/banana/subscribe.php
 htdocs/banana/thread.php
 htdocs/banana/xface.php
 htdocs/confbanana.php
-include/conf.d/banana.globals.inc.php
-include/conf.d/banana.menu.inc.php
 templates/banana.head.tpl
 templates/banana.tpl
 templates/confbanana.tpl
