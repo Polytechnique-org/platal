@@ -46,7 +46,8 @@ if(logged()) {
     $menu = Array(
         'Polytechniciens' => Array(
             'Me connecter !' => 'login.php',
-            'M\'inscrire' => 'inscrire.php'
+            'M\'inscrire' => 'inscrire.php',
+            'Pourquoi m\'inscrire ?' => 'services.php'
         ),
         'Visiteurs' => Array(
             'Annuaire de l\'X' => 'search.php?public_directory=1',
