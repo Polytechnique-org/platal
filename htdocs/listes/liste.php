@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.php,v 1.2 2004-09-10 22:28:39 x2000habouzit Exp $
+        $Id: liste.php,v 1.3 2004-09-10 22:45:43 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -34,10 +34,19 @@ mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 
+
 if(isset($_REQUEST['info'])) $client->set_welcome($liste, $_REQUEST['info']);
 
 if(isset($_REQUEST['add_member']) && isset($_REQUEST['member'])) {
-    $client->mass_subscribe($liste, Array($_REQUEST['member']));
+    if(list($added) = $client->mass_subscribe($liste, Array($_REQUEST['member']))) {
+	$members = $client->get_members($liste);
+	include_once("diogenes.mailer.inc.php");
+	$mailer = new DiogenesMailer("\"Mailing list $liste\" <$liste-owner@polytechnique.org>",
+				     "\"{$added[0]}\" <{$added[1]}>",
+				     "Bienvenue sur la liste de diffusion $liste@polytechnique.org");
+	$mailer->setBody($members[0]['info']);
+	$mailer->send();
+    }
 }
 
 if(isset($_REQUEST['del_member']) && isset($_REQUEST['member'])) {
@@ -66,7 +75,7 @@ if(isset($_REQUEST['del_owner']) && isset($_REQUEST['owner'])) {
     mysql_free_result($res);
 }
 
-$members = $client->get_members($liste);
+if(empty($members)) $members = $client->get_members($liste);
 if(is_array($members)) {
     $membres = Array();
     foreach($members[1] as $member) {
