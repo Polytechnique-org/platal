@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.71 2004-11-04 17:39:19 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.72 2004-11-09 18:20:06 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -154,7 +154,6 @@ def get_list_info((userdesc,perms),mlist,front_page=0):
     is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
     is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
     if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
-        chunks = mlist.internal_name().split('-')
         is_pending = False
         if front_page and not is_member and (mlist.subscribe_policy > 1):
             try:
@@ -170,8 +169,8 @@ def get_list_info((userdesc,perms),mlist,front_page=0):
         
         details = {
                 'list' : mlist.real_name,
-                'addr' : str('-').join(chunks[1:]) + '@' + chunks[0],
-                'host' : chunks[0],
+                'addr' : mlist.real_name.lower() + '@' + mlist.host_name.lower(),
+                'host' : mlist.host_name.lower(),
                 'desc' : quote(mlist.description),
                 'info' : quote(mlist.info),
                 'diff' : (mlist.default_member_moderation>0) + (mlist.generic_nonmember_action>0),
