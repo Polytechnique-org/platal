@@ -22,12 +22,12 @@
 
 require('./connect.db.inc.php');
 
-$date  = date('Y-m-d');
+$date  = date('Y-m-d', time() + 7 * 24*60*60);
 $stamp = date('Ymd000000');
-$like  = date('%-m-d');
+$like  = date('%-m-d', time() + 7 * 24*60*60);
 
 $globals->db->query("INSERT INTO  watch_ops (uid, cid, known, date)
-                          SELECT  user_id, 4, '$date', $stamp
+                          SELECT  user_id, 4, $stamp, '$date'
                             FROM  auth_user_md5
                            WHERE  naissance LIKE '$like'");
 

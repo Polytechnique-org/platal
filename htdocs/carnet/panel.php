@@ -31,7 +31,8 @@ if(Get::has('read')) {
 $page->assign('now',date('YmdHis'));
 $notifs = new Notifs(Session::getInt('uid'), true);
 
-$page->assign_by_ref('notifs', $notifs);
+$page->assign('notifs', $notifs);
+$page->assign('today', date('Y-m-d'));
 
 $page->run();
 

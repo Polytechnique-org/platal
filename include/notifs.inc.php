@@ -103,7 +103,7 @@ function _select_notifs_base($table, $mail, $where)
     }
 
     $sql .="
-      INNER JOIN  watch_ops       AS wo ON(wo.uid = u.user_id AND wo.known > ".($mail ? 'q.watch_last' : '{?}').")
+      INNER JOIN  watch_ops       AS wo ON(wo.uid = u.user_id AND ".($mail ? 'wo.known > q.watch_last' : '( wo.known > {?} OR wo.date=NOW() )').")
       INNER JOIN  watch_sub       AS ws ON(ws.cid = wo.cid AND ws.uid = w.uid)
       INNER JOIN  watch_cat       AS wc ON(wc.id = wo.cid{$our['freq_sql']})
        LEFT JOIN  aliases         AS a  ON(a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))

@@ -54,7 +54,7 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
 <table class='tinybicol'>
   {foreach from=$c key=p item=promo}
   {section name=row loop=$promo}
-  <tr {if $promo[row].known > $smarty.session.watch_last}style="font-weight: bold"{/if}>
+  <tr {if ( $promo[row].known > $smarty.session.watch_last ) || ( $promo[row].date eq $today ) }style="font-weight: bold"{/if}>
     <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
     <td>
       {if $promo[row].inscrit}
