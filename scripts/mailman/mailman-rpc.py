@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.61 2004-10-15 22:27:29 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.62 2004-10-16 10:41:32 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -585,6 +585,7 @@ check_opts = {
     'hold_these_nonmembers'         : [],
     'include_list_post_header'      : False,
     'include_rfc2369_headers'       : False,
+    'max_num_recipients'            : 0,
     'new_member_options'            : 256,
     'nondigestable'                 : True,
     'obscure_addresses'             : True,
