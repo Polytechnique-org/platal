@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.5 2004-09-04 20:14:30 x2000habouzit Exp $
+        $Id: email.classes.inc.php,v 1.6 2004-09-04 20:47:50 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -61,7 +61,7 @@ class Email {
             $globals->db->query("UPDATE emails
 	                            SET flags = CONCAT_WS(',',flags,'active')
 				  WHERE uid=$uid AND email='{$this->email}'");
-	    $_SESSION['log']->log("email_on",$this->email);
+	    $_SESSION['log']->log("email_on",$this->email.($uid!=$_SESSION['uid'] ? "(admin on $uid)" : ""));
             $this->active = true;
         }
     }
@@ -73,7 +73,7 @@ class Email {
             $globals->db->query("UPDATE emails
 				    SET flags ='$flags'
 				  WHERE uid=$uid AND email='{$this->email}'");
-	    $_SESSION['log']->log("email_off",$this->email);
+	    $_SESSION['log']->log("email_off",$this->email.($uid!=$_SESSION['uid'] ? "(admin on $uid)" : "") );
             $this->active = false;
         }
     }
@@ -115,7 +115,7 @@ class Redirect {
         if (!$this->other_active($email))
             return ERROR_INACTIVE_REDIRECTION;
         $globals->db->query("DELETE FROM emails WHERE uid={$this->uid} AND email='$email'");
-        $_SESSION['log']->log("email_del",$email);
+        $_SESSION['log']->log('email_del',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
 	foreach($this->emails as $i=>$mail) {
 	    if($email==$mail->email) unset($this->emails[$i]);
 	}
@@ -141,7 +141,7 @@ class Redirect {
             $mtic = 1;
         }
         $globals->db->query("REPLACE INTO emails (uid,email,flags) VALUES({$this->uid},'$email','$flags')");
-        $_SESSION['log']->log("email_add",$email);
+        $_SESSION['log']->log('email_add',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
 	foreach($this->emails as $mail) {
 	    if($mail->email == $email_stripped) return SUCCESS;
 	}
