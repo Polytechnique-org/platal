@@ -25,16 +25,16 @@ new_skinned_page('inscription/step4.tpl', AUTH_PUBLIC);
 require_once("user.func.inc.php");
 require_once('xorg.mailer.inc.php');
 
-if (!empty($_REQUEST['ref'])) {
-    $sql = "SELECT username,loginbis,matricule,promo,password".
-	        ",nom,prenom,nationalite,email,naissance,date".
-	        ",appli_id1,appli_type1,appli_id2,appli_type2".
-	        " FROM en_cours WHERE ins_id='".$_REQUEST["ref"]."'";
+if (Env::has('ref')) {
+    $sql = "SELECT  username,loginbis,matricule,promo,password,
+	            nom,prenom,nationalite,email,naissance,date,
+	            appli_id1,appli_type1,appli_id2,appli_type2
+	      FROM  en_cours WHERE ins_id=".Env::getInt('ref');
     $res = $globals->db->query($sql);
 }
 
 //vérifions que la référence de l'utilisateur est 
-if (empty($_REQUEST['ref']) ||
+if (!Env::has('ref')) ||
         !list( $forlife, $alias, $matricule, $promo, $password, $nom, $prenom,$nationalite, 
         $email, $naissance,$date,$appli_id1,$appli_type1,$appli_id2,$appli_type2) = mysql_fetch_row($res))
 {

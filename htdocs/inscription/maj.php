@@ -21,46 +21,45 @@
 
 require_once("xorg.inc.php");
 
-if (isset($_REQUEST['n'])) {
-    $sql = "SELECT * FROM envoidirect WHERE uid='".$_REQUEST["n"]."'";
+if (Env::has('n')) {
+    $sql    = "SELECT * FROM envoidirect WHERE uid=".Env::getInt('n');
     $result = $globals->db->query($sql);
-    $ligne = mysql_fetch_array($result); 
-}
+    if ($ligne  = mysql_fetch_assoc($result)) {
 
-if (isset($ligne) && $ligne) {
-    if(!isset($_REQUEST['charte'])) {
-	new_skinned_page('inscription/step1a.tpl', AUTH_PUBLIC);
-	$page->run();
+        if (!Env::has('charte')) {
+            new_skinned_page('inscription/step1a.tpl', AUTH_PUBLIC);
+            $page->run();
+        }
+
+        // il faut remettre le matricule dans son format de saisie
+
+        $year = intval(substr($ligne['matricule'],0,4));
+        $rang = intval(substr($ligne['matricule'],4,4));
+        if($year<1996) {
+            $_REQUEST['matricule'] = '';
+        } elseif($year<2000) {
+            $_REQUEST['matricule'] = sprintf('%02u0%03u',$year % 100,$rang);
+        } elseif($year<2100) {
+            $_REQUEST['matricule'] = sprintf('1%02u%03u',$year % 100,$rang);
+        }
+        $_REQUEST['promo']  = $ligne['promo'];
+        $_REQUEST['nom']    = $ligne['nom'];
+        $_REQUEST['prenom'] = $ligne['prenom'];
+        $_REQUEST['email']  = $ligne['email'];
+
+        new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC);
+        require_once("identification.inc.php");
+        require_once("applis.func.inc.php");
+
+        $page->assign('homonyme', $homonyme);
+        $page->assign('forlife',  $forlife);
+        $page->assign('mailorg',  $mailorg);
+        $page->assign('prenom',   $prenom);
+        $page->assign('nom',      $nom);
+
+        $page->assign('envoidirect', Env::getInt('n'));
+        $page->run();
     }
-
-    // il faut remettre le matricule dans son format de saisie
-    
-    $year = intval(substr($ligne['matricule'],0,4));
-    $rang = intval(substr($ligne['matricule'],4,4));
-    if($year<1996) {
-	$_REQUEST['matricule'] = '';
-    } elseif($year<2000) {
-	$_REQUEST['matricule'] = sprintf('%02u0%03u',$year % 100,$rang);
-    } elseif($year<2100) {
-	$_REQUEST['matricule'] = sprintf('1%02u%03u',$year % 100,$rang);
-    }
-    $_REQUEST['promo'] = $ligne['promo'];
-    $_REQUEST['nom'] = $ligne['nom'];
-    $_REQUEST['prenom'] = $ligne['prenom'];
-    $_REQUEST['email'] = $ligne['email'];
-
-    new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC);
-    require_once("identification.inc.php");
-    require_once("applis.func.inc.php");
-    
-    $page->assign('homonyme', $homonyme);
-    $page->assign('forlife',  $forlife);
-    $page->assign('mailorg',  $mailorg);
-    $page->assign('prenom',   $prenom);
-    $page->assign('nom',      $nom);
-
-    $page->assign('envoidirect',$_REQUEST['n']);
-    $page->run();
 }
 
 new_skinned_page('inscription/maj.tpl', AUTH_PUBLIC);
