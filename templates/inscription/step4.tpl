@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: step4.tpl,v 1.3 2004-11-08 11:13:36 x2000chevalier Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -27,7 +27,7 @@
   </h1>
   <p>
     Tu as maintenant accès au site en utilisant les paramètres reçus par mail.
-    Ton adresses électronique à vie <strong>{$forlife}@polytechnique.org</strong>
+    Ton adresse électronique à vie <strong>{$forlife}@polytechnique.org</strong>
     est déjà ouverte, essaie-la !
   </p>
   <p>
