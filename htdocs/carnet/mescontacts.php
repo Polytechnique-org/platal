@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.4 2004-11-22 11:15:31 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.5 2004-11-22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("xorg.inc.php");
@@ -87,7 +87,7 @@ if(isset($_GET['trombi'])) {
     $sql = "SELECT contact AS id,
 		   a.*, l.alias AS forlife,
 		   1 AS inscrit,
-		   a.perms != 'non-inscrit' AS wasinscrit,
+		   a.perms != 'pending' AS wasinscrit,
 		   a.deces != 0 AS dcd, a.deces, a.matricule_ax, FIND_IN_SET('femme', a.flags) AS sexe,
 		   e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
 		   IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,

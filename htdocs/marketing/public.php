@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: public.php,v 1.8 2004-11-22 11:15:45 x2000habouzit Exp $
+        $Id: public.php,v 1.9 2004-11-22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("xorg.inc.php");
@@ -28,7 +28,7 @@ if (! isset($_REQUEST["num"])) { exit; }
 
 $mat = $_REQUEST["num"];
 
-$res = $globals->db->query("SELECT nom,prenom,promo FROM auth_user_md5 WHERE matricule = '$mat' AND perms='non-inscrit'");
+$res = $globals->db->query("SELECT nom,prenom,promo FROM auth_user_md5 WHERE matricule = '$mat' AND perms='pending'");
 if (list($nom, $prenom, $promo) = mysql_fetch_row($res)) {
     $page->assign('prenom', $prenom);
     $page->assign('nom', $nom);

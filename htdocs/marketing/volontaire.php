@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: volontaire.php,v 1.8 2004-11-22 15:51:12 x2000habouzit Exp $
+    $Id: volontaire.php,v 1.9 2004-11-22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("xorg.inc.php");
@@ -52,7 +52,7 @@ $page->mysql_assign($sql, 'neuves');
 
 
 $sql = "SELECT  a.promo, a.nom, a.prenom,
-                m.email, a.perms!='non-inscrit' AS inscrit,
+                m.email, a.perms!='pending' AS inscrit,
                 sa.promo AS spromo, sa.nom AS snom, sa.prenom AS sprenom
           FROM  marketing     AS m
     INNER JOIN  auth_user_md5 AS a  ON a.matricule = m.dest
@@ -61,13 +61,13 @@ $sql = "SELECT  a.promo, a.nom, a.prenom,
 
 $page->mysql_assign($sql, 'used', 'nbused');
 
-$sql = "SELECT  COUNT(a.perms != 'non-inscrit') AS j,
+$sql = "SELECT  COUNT(a.perms != 'pending') AS j,
                 COUNT(i.matricule) AS i,
                 100 * COUNT(a.nom) / COUNT(i.matricule) as rate
           FROM  marketing     AS m
     INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
     INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
-    LEFT  JOIN  auth_user_md5 AS a  ON (a.matricule = m.dest AND a.perms!='non-inscrit')
+    LEFT  JOIN  auth_user_md5 AS a  ON (a.matricule = m.dest AND a.perms!='pending')
          WHERE  FIND_IN_SET('envoye', m.flags)";
 $res = $globals->db->query($sql);
 

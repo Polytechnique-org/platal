@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: relance.php,v 1.7 2004-11-22 11:15:45 x2000habouzit Exp $
+        $Id: relance.php,v 1.8 2004-11-22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("xorg.inc.php");
@@ -36,7 +36,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
 
     $res = $globals->db->query("SELECT  e.date,e.promo,e.nom,e.prenom,e.matricule,e.email,e.username
                           FROM  en_cours      AS e
-                    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'non-inscrit')");
+                    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')");
 
     $sent = Array();
 
@@ -75,7 +75,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
 
 $sql = "SELECT  e.date,e.relance,e.promo,e.nom,e.prenom,e.matricule
           FROM  en_cours      AS e
-    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'non-inscrit')
+    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')
       ORDER BY  date DESC";
 
 $page ->mysql_assign($sql, 'relance','nb');

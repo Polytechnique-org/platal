@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: promo.php,v 1.5 2004-11-22 11:15:45 x2000habouzit Exp $
+        $Id: promo.php,v 1.6 2004-11-22 17:28:14 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -36,7 +36,7 @@ $sql = "SELECT  u.nom, u.prenom, last_known_email, u.matricule, u.matricule_ax, 
           FROM  auth_user_md5  AS u
      LEFT JOIN  envoidirect    AS e ON (u.matricule = e.matricule)
      LEFT JOIN  en_cours       AS c ON (u.matricule = c.matricule)
-         WHERE  u.promo = $promo AND u.deces = 0 AND u.perms='non-inscrit'
+         WHERE  u.promo = $promo AND u.deces = 0 AND u.perms='pending'
       GROUP BY  u.matricule
       ORDER BY  nom,prenom";
 

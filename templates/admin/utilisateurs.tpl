@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.23 2004-11-18 17:39:11 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.24 2004-11-22 17:28:15 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -144,7 +144,7 @@ function del_fwd(fwd) {
         <select name="permsN">
           <option value="user" {if $mr.perms eq "user"}selected="selected"{/if}>user</option>
           <option value="admin" {if $mr.perms eq "admin"}selected="selected"{/if}>admin</option>
-          <option value="non-inscrit" {if $mr.perms eq "non-inscrit"}selected="selected"{/if}>non-inscrit</option>
+          <option value="pending" {if $mr.perms eq "pending"}selected="selected"{/if}>pending</option>
           <option value="disabled" {if $mr.perms eq "disabled"}selected="selected"{/if}>disabled</option>
         </select>
       </td>
