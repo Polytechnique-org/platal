@@ -23,9 +23,7 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
-;	  | fiche_referent.php						  | 
 ;	  | recherche.php							  | 
-;	  | x.php									  | 
 ------+-[ listes ]--------------------------------+----------------
  ;	  | listes/creation.php						  | \
  ;	  | listes/gere_listes.php					  |  |
@@ -143,6 +141,8 @@ xx	  | ethique.php								  | docs/ethique.php
 xx	  | evenements.php							  | 
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
+xx	  | fiche.php								  | encore laid
+xx	  | fiche_referent.php						  | encore laid
 xx	  | getphoto.php							  | -
 xx!	  | groupex/donne-chall.php					  | -
 xx!	  | groupex/export-econfiance.php			  | -
