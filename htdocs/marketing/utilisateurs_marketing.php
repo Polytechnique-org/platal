@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.8 2004-09-30 15:55:11 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.9 2004-10-31 16:39:06 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,7 +32,7 @@ switch ($_REQUEST["submit"]) {
 	if ($myrow = mysql_fetch_assoc($result)) 
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
   
-	$result = $globals->db->query("SELECT * FROM identification WHERE matricule=".$_REQUEST["xmat"]);
+	$result = $globals->db->query("SELECT * FROM auth_user_md5 WHERE matricule=".$_REQUEST["xmat"]);
 	$myrow = mysql_fetch_array($result);
 
         new_admin_page('marketing/utilisateurs_form.tpl');
@@ -57,10 +57,10 @@ switch ($_REQUEST["submit"]) {
             exit_error("L'email n'est pas valide.");
 		
 	$result=$globals->db->query("SELECT prenom,nom,promo,FIND_IN_SET('femme', flags)
-                                     FROM identification 
+                                     FROM auth_user_md5
                                      WHERE matricule=".$_REQUEST['xmat']);
 	if (!list($prenom,$nom,$promo,$femme) = mysql_fetch_row($result))
-            exit_error("Le matricule n'a pas été trouvé dans table identification.");
+            exit_error("Le matricule n'a pas été trouvé dans table auth_user_md5.");
 			
   	// calcul de l'envoyeur
         list($envoyeur) = explode('@', $_REQUEST["from"]);
@@ -89,7 +89,7 @@ switch ($_REQUEST["submit"]) {
 	// calcul du login
 	$mailorg = make_forlife($prenom,$nom,$promo);
 			
-	$globals->db->query("UPDATE  identification
+	$globals->db->query("UPDATE  auth_user_md5
                                 SET  last_known_email='{$_REQUEST['mail']}'
                               WHERE  matricule='{$_REQUEST['xmat']}'");
 	$requete="INSERT INTO  envoidirect

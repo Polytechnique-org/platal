@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deces_promo.php,v 1.4 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: deces_promo.php,v 1.5 2004-10-31 16:39:04 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -33,13 +33,13 @@ if(isset($_REQUEST['add10']))   $promo += 10;
 $page->assign('promo',$promo);
 
 if (isset($_REQUEST["valider"]) && $_REQUEST["valider"] == "Valider") {
-    $res = $globals->db->query("SELECT matricule FROM identification WHERE promo = $promo");
+    $res = $globals->db->query("SELECT matricule FROM auth_user_md5 WHERE promo = $promo");
     while (list($mat) = mysql_fetch_row($res)) {
-        $globals->db->query("UPDATE identification SET deces='".$_REQUEST[$mat]."' WHERE matricule = '".$mat."'");
+        $globals->db->query("UPDATE auth_user_md5 SET deces='".$_REQUEST[$mat]."' WHERE matricule = '".$mat."'");
     }
 }
 
-$sql = "SELECT matricule, nom, prenom, deces FROM identification WHERE promo = $promo ORDER BY nom,prenom";
+$sql = "SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = $promo ORDER BY nom,prenom";
 $page->mysql_assign($sql, 'decedes');
 
 $page->run();

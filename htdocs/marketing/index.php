@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.2 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: index.php,v 1.3 2004-10-31 16:39:06 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -27,19 +27,18 @@ new_admin_page('marketing/index.tpl');
 # Quelques statistiques
 
 $sql = "SELECT count(*) as vivants,
-	       count(u.matricule) as inscrits,
-	       100*count(u.matricule)/count(*) as ins_rate,
-	       count(NULLIF(i.promo >= 1972, 0)) as vivants72,
-	       count(NULLIF(i.promo >= 1972 AND u.matricule, 0)) as inscrits72,
-	       100 * count(NULLIF(i.promo >= 1972 AND u.matricule, 0)) /
-                   count(NULLIF(i.promo >= 1972, 0)) as ins72_rate,
-	       count(NULLIF(FIND_IN_SET('femme', i.flags), 0)) as vivantes,
-	       count(NULLIF(FIND_IN_SET('femme', i.flags) AND u.matricule, 0)) as inscrites,
-	       100 * count(NULLIF(FIND_IN_SET('femme', i.flags) AND u.matricule, 0)) /
-		   count(NULLIF(FIND_IN_SET('femme', i.flags), 0)) as inse_rate
-          FROM identification as i
-     LEFT JOIN auth_user_md5 as u USING(matricule)
-         WHERE i.deces = 0";
+	       count(user!='non-inscrit') as inscrits,
+	       100*count(user!='non-inscrit')/count(*) as ins_rate,
+	       count(NULLIF(promo >= 1972, 0)) as vivants72,
+	       count(NULLIF(promo >= 1972 AND user!='non-inscrit', 0)) as inscrits72,
+	       100 * count(NULLIF(promo >= 1972 AND user!='non-inscrit', 0)) /
+                   count(NULLIF(promo >= 1972, 0)) as ins72_rate,
+	       count(NULLIF(FIND_IN_SET('femme', flags), 0)) as vivantes,
+	       count(NULLIF(FIND_IN_SET('femme', flags) AND user!='non-inscrit', 0)) as inscrites,
+	       100 * count(NULLIF(FIND_IN_SET('femme', flags) AND user!='non-inscrit', 0)) /
+		   count(NULLIF(FIND_IN_SET('femme', flags), 0)) as inse_rate
+          FROM auth_user_md5
+         WHERE deces = 0";
 $res = $globals->db->query($sql);
 $stats = mysql_fetch_assoc($res);
 

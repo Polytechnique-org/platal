@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.php,v 1.4 2004-09-02 23:57:48 x2000bedo Exp $
+        $Id: volontaire.php,v 1.5 2004-10-31 16:39:06 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -42,33 +42,33 @@ $sql = "SELECT  m.id, m.expe, m.dest, m.email,
 		i.promo, i.nom, i.prenom, i.last_known_email, 
 		u.promo AS spromo, u.nom AS snom, u.prenom AS sprenom, a.alias AS forlife,
                 FIND_IN_SET('mail_perso', m.flags) AS mailperso
-          FROM  marketing      AS m
-    INNER JOIN  identification AS i  ON i.matricule = m.dest
-    INNER JOIN  auth_user_md5  AS u ON u.user_id = m.expe
-    INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
+          FROM  marketing     AS m
+    INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
+    INNER JOIN  auth_user_md5 AS u ON u.user_id = m.expe
+    INNER JOIN  aliases       AS a ON (u.user_id = a.id AND a.type='a_vie')
          WHERE  NOT FIND_IN_SET('envoye', m.flags)";
 
 $page->mysql_assign($sql, 'neuves');
 
 
 $sql = "SELECT  i.promo, i.nom, i.prenom,
-                m.email, a.nom AS inscrit,
+                m.email, perms!='non-inscrit' AS inscrit,
                 sa.promo AS sprormo, sa.nom AS snom, sa.prenom AS sprenom
-          FROM  marketing      AS m
-    INNER JOIN  identification AS i  ON i.matricule = m.dest
-    INNER JOIN  auth_user_md5  AS sa ON sa.user_id = m.expe
-    LEFT  JOIN  auth_user_md5  AS a  ON a.matricule = m.dest
+          FROM  marketing     AS m
+    INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
+    INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
+    LEFT  JOIN  auth_user_md5 AS a  ON a.matricule = m.dest
          WHERE  FIND_IN_SET('envoye', m.flags)";
 
 $page->mysql_assign($sql, 'used', 'nbused');
 
-$sql = "SELECT  COUNT(a.nom) AS j,
+$sql = "SELECT  COUNT(a.perms != 'non-inscrit') AS j,
                 COUNT(i.matricule) AS i,
                 100 * COUNT(a.nom) / COUNT(i.matricule) as rate
-          FROM  marketing      AS m
-    INNER JOIN  identification AS i  ON i.matricule = m.dest
-    INNER JOIN  auth_user_md5  AS sa ON sa.user_id = m.expe
-    LEFT  JOIN  auth_user_md5  AS a  ON a.matricule = m.dest
+          FROM  marketing     AS m
+    INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
+    INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
+    LEFT  JOIN  auth_user_md5 AS a  ON a.matricule = m.dest
          WHERE  FIND_IN_SET('envoye', m.flags)";
 $res = $globals->db->query($sql);
 

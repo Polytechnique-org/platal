@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.7 2004-10-09 10:44:03 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.8 2004-10-31 16:39:08 x2000chevalier Exp $
  ***************************************************************************/
 
 require("config.xorg.inc.php") ;
@@ -92,10 +92,9 @@ $montant = "$champ201 $champ202";
 
 /* on extrait les informations sur l'utilisateur */
 $res = $globals->db->query("
-    SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(i.flags,'femme')
-      FROM  auth_user_md5  AS a
-INNER JOIN  aliases        AS l ON (a.user_id=l.id AND type!='homonyme')
-INNER JOIN  identification AS i ON a.matricule=i.matricule
+    SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(a.flags,'femme')
+      FROM  auth_user_md5 AS a
+INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
      WHERE  a.user_id='$uid'");
 if (!list($prenom,$nom,$promo,$forlife,$femme) = mysql_fetch_row($res))
   erreur("uid invalide");
