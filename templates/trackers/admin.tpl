@@ -1,4 +1,4 @@
-{* $Id: admin.tpl,v 1.2 2004-02-23 17:06:59 x2000habouzit Exp $ *}
+{* $Id: admin.tpl,v 1.3 2004-02-23 17:10:11 x2000habouzit Exp $ *}
 
 {literal}
 <script type="text/javascript">
@@ -25,29 +25,14 @@
   <input type="hidden" id="trid" name="trid" value="" />
 </form>
 
-<div class="rubrique">
-  Administration des trackers
-</div>
-<div class="ssrubrique">
-  Nettoyer
-</div>
 <p class="normal">
   [<a href="javascript:action('clean',-1)">Nettoyer la table des mailing-lists</a>]
-</p>
-<div class="ssrubrique">
-  Ajouter un tracker
-</div>
-<p class="normal">
   [<a href="javascript:action('edit',-1)">Ajouter un tracker</a>]
 </p>
-
-<br />  
 
 <div class="rubrique">
   Liste des trackers
 </div>
-
-<br />
 
 <table class="bicol" summary="Liste des trackers">
   <tr>
@@ -74,8 +59,6 @@
   Liste des trackers persos
 </div>
 
-<br />
-
 <table class="bicol" summary="Liste des trackers">
   <tr>
     <th>Tracker</th>
@@ -95,5 +78,4 @@
 {/foreach}
 </table>
 
-<br />
 {* vim:set et sw=2 sts=2 sws=2: *}
