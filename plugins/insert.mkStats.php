@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.mkStats.php,v 1.11 2004-08-31 11:19:51 x2000habouzit Exp $
+        $Id: insert.mkStats.php,v 1.12 2004-11-21 23:10:47 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -33,8 +33,7 @@
  */
 function smarty_insert_mkStats($params, &$smarty)
 {
-    global $conn;
-    $req = mysql_query("select count(*) from requests",$conn);
+    $req = mysql_query("select count(*) from requests");
     list($stats_req) = mysql_fetch_row($req);
     mysql_free_result($req);
     return ($stats_req ? $stats_req : "-");
