@@ -14,11 +14,12 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 
     $nameField = new StringSField('name',array('u.nom','u.epouse','i.nom'),'i.nom');
     $firstnameField = new StringSField('firstname',array('u.prenom','i.prenom'),'i.prenom');
-    $promoField = new PromoSField('promo','egal',array('u.promo','i.promo'),'i.promo');
-    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promoField));
+    $promo1Field = new PromoSField('promo1','egal1',array('u.promo','i.promo'),'i.promo');
+    $promo2Field = new PromoSField('promo2','egal2',array('u.promo','i.promo'),'i.promo');
+    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
     
     if ($nameField->length()<2 && $firstnameField->length()<2 && 
-        ($public_directory || !$promoField->is_a_single_promo()))
+        ($public_directory || !$promo1Field->is_a_single_promo()))
     {
 	new ThrowError('Recherche trop générale.');
     }
@@ -40,7 +41,6 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                 WHERE  '.$fields->get_where_statement().'
              ORDER BY  '.implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
-    echo "<pre>$sql</pre>";
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
     

@@ -21,12 +21,19 @@
       <tr>
         <td>Promotion</td>
         <td>
-          <select name="egal">
+          <select name="egal1">
             <option value="=" selected>&nbsp;=&nbsp;</option>
             <option value=">" >&nbsp;&gt;&nbsp;</option>
             <option value="<" >&nbsp;&lt;&nbsp;</option>
           </select>
-          <input type="text" name="promo" size="4" maxlength="4" />
+          <input type="text" name="promo1" size="4" maxlength="4" />
+          &nbsp;ET&nbsp;
+          <select name="egal2">
+            <option value="=" selected>&nbsp;=&nbsp;</option>
+            <option value=">" >&nbsp;&gt;&nbsp;</option>
+            <option value="<" >&nbsp;&lt;&nbsp;</option>
+          </select>
+          <input type="text" name="promo2" size="4" maxlength="4" />
         </td>
       </tr>
       <tr>
