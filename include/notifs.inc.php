@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.8 2004-11-06 17:37:22 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.9 2004-11-06 18:18:44 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -26,10 +26,65 @@ define("WATCH_INSCR", 2);
 define("WATCH_DEATH", 3);
 
 function register_watch_op($uid,$cid,$date='',$info='') {
+    global $globals;
     $date = empty($date) ? 'NOW()' : "'$date'";
     $globals->db->query("REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES('$uid','$cid',NOW(),$date,'$info')");
     if($cid == WATCH_FICHE) {
 	$globals->db->query("UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id='$uid'");
+    }
+}
+
+class Notifs {
+    var $_uid;
+    var $_cats = Array();
+    var $_data = Array();
+    
+    function Notifs($uid) {
+	global $globals;
+	$this->_uid = $uid;
+	
+	$res = $globals->db->query("SELECT * FROM watch_cat");
+	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
+	mysql_free_result($res);
+
+	$res = $globals->db->query("SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, wo.*
+				      FROM  auth_user_quick AS q
+				INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
+	                        INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
+				INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
+				INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
+				 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+				     WHERE  q.user_id = '$uid' AND q.watch_contacts=1
+				  ORDER BY  wo.cid,promo,nom");
+	while($tmp = mysql_fetch_assoc($res)) {
+	    $this->_data[$tmp['cid']][$tmp['promo']][$tmp['uid']] = $tmp;
+	}
+	
+	$res = $globals->db->query("SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, wo.*
+				      FROM  watch_promo     AS w
+				INNER JOIN  auth_user_md5   AS u  USING(promo)
+	                        INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
+				INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+				INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
+				 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+				     WHERE  w.uid = '$uid'
+				  ORDER BY  wo.cid,promo,nom");
+	while($tmp = mysql_fetch_assoc($res)) {
+	    $this->_data[$tmp['cid']][$tmp['promo']][$tmp['uid']] = $tmp;
+	}
+	
+	$res = $globals->db->query("SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, wo.*
+				      FROM  watch_nonins    AS w
+				INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
+	                        INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
+				INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+				INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
+				 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+				     WHERE  w.uid = '$uid'
+				  ORDER BY  wo.cid,promo,nom");
+	while($tmp = mysql_fetch_assoc($res)) {
+	    $this->_data[$tmp['cid']][$tmp['promo']][$tmp['uid']] = $tmp;
+	}
     }
 }
 
@@ -40,7 +95,6 @@ class Watch {
     var $_cats = Array();
     var $_subs;
     var $watch_contacts;
-    var $watch_last;
     
     function Watch($uid) {
 	global $globals;
@@ -48,8 +102,8 @@ class Watch {
 	$this->_promos = new PromoNotifs($uid);
 	$this->_nonins = new NoninsNotifs($uid);
 	$this->_subs = new WatchSub($uid);
-	$res = $globals->db->query("SELECT watch_contacts,watch_last FROM auth_user_quick WHERE user_id='$uid'");
-	list($this->watch_contacts, $this->watch_last) = mysql_fetch_row($res);
+	$res = $globals->db->query("SELECT watch_contacts FROM auth_user_quick WHERE user_id='$uid'");
+	list($this->watch_contacts) = mysql_fetch_row($res);
 	mysql_free_result($res);
 	
 	$res = $globals->db->query("SELECT * FROM watch_cat");

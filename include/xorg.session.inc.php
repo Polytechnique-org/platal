@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.36 2004-11-06 13:53:52 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.37 2004-11-06 18:18:44 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -220,8 +220,9 @@ function try_cookie() {
 function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("
-	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
-		a.alias, UNIX_TIMESTAMP(q.lastnewslogin), a2.alias, password, FIND_IN_SET('femme', flags)
+	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias,
+		UNIX_TIMESTAMP(q.lastnewslogin), q.watch_last,
+		a2.alias, password, FIND_IN_SET('femme', flags)
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN	aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
@@ -230,8 +231,9 @@ function start_connexion ($uid, $identified) {
          WHERE  u.user_id=$uid
       ORDER BY  s.start DESC, a2.type != 'epouse', length(a2.alias)
          LIMIT  1");
-    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host,
-	 $forlife, $lastnewslogin, $bestalias, $password, $femme) = mysql_fetch_row($result);
+    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
+	 $lastnewslogin, $watch_last,
+	 $bestalias, $password, $femme) = mysql_fetch_row($result);
     mysql_free_result($result);
    
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
@@ -257,6 +259,7 @@ function start_connexion ($uid, $identified) {
     // le login est stocké pour un an
     $_SESSION['lastlogin'] = $lastlogin;
     $_SESSION['lastnewslogin'] = $lastnewslogin;
+    $_SESSION['watch_last'] = $watch_last;
     $_SESSION['host'] = $host;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
     $_SESSION['uid'] = $uid;
