@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.44 2004-10-01 13:33:18 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.45 2004-10-02 14:55:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -114,6 +114,7 @@ class XorgPage extends DiogenesCorePage {
     }
 
     function setLang($lang=null) {
+	global $globals;
 	$locale = empty($lang) ? 'fr_FR' : '$lang';
 	setlocale(LC_MESSAGES, $locale);
 	setlocale(LC_TIME, $locale);
