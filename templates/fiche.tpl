@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.8 2004-09-05 20:15:09 x2000coic Exp $
+        $Id: fiche.tpl,v 1.9 2004-09-06 06:25:10 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -43,9 +43,9 @@
 
 <div id="fiche_divers">
     <div><img alt="Photo de {$forlife}" src="{$photo_url}" width="{$size_x}" height="{$size_y}" /></div>
-    <em class="intitule">Section : </em><span>{$section}</span><br />
-    <em class="intitule">Binet(s) : </em><span>{$binets}</span><br />
-    <em class="intitule">Groupe(s) X : </em><span>{$groupes}</span><br />
+    {if $section}<em class="intitule">Section : </em><span>{$section}</span><br />{/if}
+    {if $binets}<em class="intitule">Binet(s) : </em><span>{$binets}</span><br />{/if}
+    {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes}</span><br />{/if}
     {if $mobile}<em class="intitule">Mobile : </em><span>{$mobile}</span><br />{/if}
     {if $web}<em class="intitule">Site Web : </em><br /><a href="{$web}" onclick="return popup(this)">{$web}</a><br />{/if}
     {if $libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$libre|nl2br}</span>{/if}
@@ -57,8 +57,8 @@
 
 <div id="fiche_adresses">
 {foreach from=$adr item="address" key="i"}
-  <div class="adresse" {if $adr|@count == 1}style="width: 450px; border: 0px;"{/if}>
-    <div class="titre">{$address.title}</div>
+  <div class="adresse" {if $adr|@count == 1}style="width: 450px;"{/if}>
+    <div class="titre" {if $adr|@count == 1}style="text-align: left;"{/if}>{$address.title}</div>
     {if $address.adr1 || $address.pays || $address.ville}
       <div>
           {if $address.adr1}<span>{$address.adr1}</span><br />{/if}

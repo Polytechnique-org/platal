@@ -361,6 +361,7 @@ em.intitule {
 
 #fiche div.categorie{
   float: left;
+  clear: left;
   color: purple;
   font-style: italic;
   font-size: medium;
@@ -451,7 +452,7 @@ div.entreprise div.adr_pro{
 #fiche_cv{
   float: left;
   padding: 10px;
-  width: 25ex;
+  width: 500px;
   margin: 5px; 
 }
 
@@ -580,4 +581,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.40 2004-09-05 21:19:01 x2000coic Exp $ */
+/* $Id: default.css,v 1.41 2004-09-06 06:25:07 x2000coic Exp $ */
