@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: marketing.relance.tpl,v 1.3 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: marketing.relance.tpl,v 1.4 2004-10-16 12:38:37 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="marketing_relance"}
@@ -39,7 +39,7 @@ mot de passe : {$nveau_pass}
 
 Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
 
-{$baseurl}/step4.php?ref={$lins_id}
+{$baseurl}/inscription/step4.php?ref={$lins_id}
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
 
