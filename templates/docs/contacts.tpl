@@ -1,11 +1,11 @@
-{* $Id: contacts.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: contacts.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 {if !$smarty.request.topic}
 <div class="rubrique">
   Contacts
 </div>
 
-<table class="bicol" width="95%" cellspacing="0" cellpadding="4">
+<table class="bicol" cellspacing="0" cellpadding="4">
   <tr>
     <th>
       Merci de choisir une rubrique parmi les suivantes.

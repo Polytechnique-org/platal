@@ -1,4 +1,4 @@
-{* $Id: doc_gratuits.tpl,v 1.4 2004-02-09 17:47:06 x2000habouzit Exp $ *}
+{* $Id: doc_gratuits.tpl,v 1.5 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Pourquoi et comment choisir un e-mail gratuit
@@ -126,7 +126,7 @@
     en contact avec Polytechnique.org.</strong>
   </p>
   <br />
-  <table border="0" class="bicol" cellspacing="0" cellpadding="4" width="80%" summary="Benchmark">
+  <table class="bicol" cellspacing="0" cellpadding="4" summary="Benchmark">
     <tr>
       <th>
         Qualité de service

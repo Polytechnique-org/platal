@@ -1,4 +1,4 @@
-{* $Id: doc_carva.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_carva.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Redirection de page WEB
@@ -42,7 +42,7 @@
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas 
   atteinte aux droits des tiers.
 </p>
-<hr>
+<hr />
 <p class="normal">
   Notamment, mais non exclusivement, l'utilisateur s'engage à ce que le contenu 
   du site référencé :

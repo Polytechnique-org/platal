@@ -1,6 +1,6 @@
-{* $Id: apropos.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: apropos.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%" summary="L'équipe">
+<table cellpadding="0" cellspacing="0" summary="L'équipe" style="width: 100%">
   <tr>
     <td style="width: 33%; padding-right:1em;">
       L'équipe des services aux Polytechniciens
@@ -135,11 +135,11 @@
   </tr>
 </table>
 <div class="center">
-  <table summary="l'équipe" width="550">
+  <table summary="l'équipe" style="width:550px">
     <tr>
       <td>
         <a href="images/equipe.jpg">
-          <img border=0 src="images/equipe.jpg" alt=" [ L'EQUIPE ] " width="540">
+          <img src="images/equipe.jpg" alt=" [ L'EQUIPE ] " />
         </a>
         <p class="normal">
         Sur cette photo un peu sombre, on peut reconnaître une partie de
@@ -153,9 +153,9 @@
 </div>
 <div class="center">
   <a href="http://x-org.polytechnique.org/">
-    <img border=0 src="images/logo.jpg" alt=" [ LOGO POLYTECHNIQUE.ORG ] ">
+    <img src="images/logo.jpg" alt=" [ LOGO POLYTECHNIQUE.ORG ] " />
   </a>
-  <img border=0 src="images/logoBR.jpg" alt=" [ LOGO BR ] ">
+  <img src="images/logoBR.jpg" alt=" [ LOGO BR ] " />
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -1,4 +1,4 @@
-{* $Id: newsletter_prep.tpl,v 1.1 2004-02-11 12:41:06 x2000habouzit Exp $ *}
+{* $Id: newsletter_prep.tpl,v 1.2 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 {if $erreur}
 
@@ -33,11 +33,11 @@
   <p class="normal">
     <span class="erreur">Pense à relacher le verrou quand tu as fini.</span>
   </p>
-  <div align="center">
-    <input type="submit" name="submit" value="Sauver et relacher le verrou">
-    <input type="submit" name="submit" value="Sauver">
+  <div class="center">
+    <input type="submit" name="submit" value="Sauver et relacher le verrou" />
+    <input type="submit" name="submit" value="Sauver" />
     <br />
-    <input type="submit" name="submit" value="Ne pas sauver et relacher le verrou">
+    <input type="submit" name="submit" value="Ne pas sauver et relacher le verrou" />
   </div>
 {elseif $is_lock}
   <p class="normal">
@@ -49,16 +49,16 @@
     vraiment certain qu'il n'est plus en train d'éditer, sinon, il risque d'y
     avoir des pertes dans les modifications faites à la lettre...
   </p>
-  <div align="center">
-    <input type="submit" name="submit" value="Relacher quand meme">
+  <div class="center">
+    <input type="submit" name="submit" value="Relacher quand meme" />
   </div>
   <br />
 {else}
   <p class="normal">
     Pas de lock sur le fichier, tu peux en prendre un.
   </p>
-  <div align="center">
-    <input type="submit" name="submit" value="Prendre un verrou">
+  <div class="center">
+    <input type="submit" name="submit" value="Prendre un verrou" />
   </div>
   <p class="normal">
     ou bien envoyer la newsletter tel qu'elle.
@@ -67,7 +67,7 @@
     <input type="text" name="test_to" size="40" value="{$smarty.session.username}@m4x.org" />
     <input type="submit" name="submit" value="Envoi Test" />
     <br />
-    <input type="submit" name="submit" value="Envoi Definitif" class="color:red;" />
+    <input type="submit" name="submit" value="Envoi Definitif" style="color:red;" />
   </div>
   <br />
 {/if}
@@ -84,7 +84,7 @@
     </tr>
     <tr>
       <td>
-        <input type="text" name="sujet" value="{$sujet}" size="55">
+        <input type="text" name="sujet" value="{$sujet}" size="55" />
       </td>
     </tr>
     <tr>
@@ -100,7 +100,7 @@
 {if $own_lock}
     <tr>
       <td class="bouton">
-        <input type="submit" name="submit" value="Sauver">
+        <input type="submit" name="submit" value="Sauver" />
       </td>
     </tr>
 {/if}

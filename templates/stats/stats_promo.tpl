@@ -1,4 +1,4 @@
-{* $Id: stats_promo.tpl,v 1.1 2004-02-04 19:47:48 x2000habouzit Exp $ *}
+{* $Id: stats_promo.tpl,v 1.2 2004-02-11 13:15:35 x2000habouzit Exp $ *}
 
 {dynamic}
 <div class="rubrique">
@@ -10,7 +10,7 @@
 </div>
 
 <div class="center">
-  <img src="{"stats/graph_promo.php?promo=$promo"|url}" alt=" [ INSCRITS ] " width="640" height="480">
+  <img src="{"stats/graph_promo.php?promo=$promo"|url}" alt=" [ INSCRITS ] " />
 </div>
 {/dynamic}
 

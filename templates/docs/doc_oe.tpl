@@ -1,4 +1,4 @@
-{* $Id: doc_oe.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: doc_oe.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <p class="normal">
   [<a href="{"docs/doc_oe.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -74,10 +74,10 @@
     La configuration pour utiliser le serveur SMTP de Polytechnique.org
 </div>
 
-<table summary="Première étape" cellpadding="5" width="480">
+<table summary="Première étape" cellpadding="5" style="width:480px">
 <tr> 
   <td colspan="2">
-    <img src="{"images/docs_compte1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_compte1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
@@ -92,12 +92,12 @@
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
-<table summary="Deuxième étape" cellpadding="5" width="640">
+<table summary="Deuxième étape" cellpadding="5" style="width:640px">
 <tr> 
   <td>
-    <img src="{"images/docs_compte2.png"|url}" width="640" height="308" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_compte2.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
@@ -114,11 +114,11 @@
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
 <table summary="Troisième étape" cellpadding="5">
 <tr> 
-  <td width="220">
+  <td style="width:220px">
     <p class="normal">
       Cet écran permet d'éditer directement tous les paramètres du compte.
     </p>
@@ -136,16 +136,16 @@
     </p>
   </td>
   <td>
-    <img src="{"images/docs_smtp1.png"|url}" width="403" height="443" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_smtp1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
 <table summary="Quatrième étape" cellpadding="5">
 <tr> 
-  <td style="verical-align: middle;" width="220">
+  <td style="verical-align: middle; width:220px">
     <p class="normal">
       1. Dans l'onglet <strong>&quot;Serveurs&quot;</strong>, indique 
       <strong>ssl.polytechnique.org</strong> comme serveur SMTP
@@ -163,14 +163,14 @@
     </p>
   </td>
   <td>
-    <img src="{"images/docs_smtp2.png"|url}" width="403" height="443" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_smtp2.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>
-<hr class="mark">
+<hr />
 <table summary="Cinquième étape" cellpadding="5">
 <tr> 
-  <td width="220">
+  <td style="width:220px">
     <p class="normal">
       La boîte ci-contre s'affiche alors. Indique ton <em>login</em> 
       et ton mot de passe,
@@ -180,14 +180,14 @@
     </p>
   </td>
   <td>
-    <img src="{"images/docs_smtp3.png"|url}" width="386" height="249" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_smtp3.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>
-<hr class="mark">
+<hr />
 <table summary="Sixième étape" cellpadding="5">
 <tr> 
-  <td width="220">
+  <td style="width:220px">
     <p class="normal">
       Enfin, dans l'onglet <strong>&quot;Avancée&quot;</strong>, spécifie le port <strong>465</strong>
       pour le <strong>Courrier sortant (SMTP)</strong> et coche la case 
@@ -199,11 +199,11 @@
     </p>
   </td>
   <td>
-    <img src="{"images/docs_smtp4.png"|url}" width="403" height="443" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_smtp4.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>
-<hr class="mark">
+<hr />
 
 Et maintenant quelques remarques :
 <ul>
@@ -226,7 +226,7 @@ Et maintenant quelques remarques :
 	</li>
 </ul>
 
-<hr class="mark">
+<hr />
 <table summary="Conclusion" cellpadding="5">
 <tr> 
   <td>
@@ -253,14 +253,14 @@ Et maintenant quelques remarques :
     <a name="nntp">La configuration pour utiliser le serveur NNTP de Polytechnique.org</a>
 </div>
 
-<table summary="Première étape" cellpadding="5" width="480">
+<table summary="Première étape" cellpadding="5" style="width:480px">
 <tr> 
   <td colspan="2">
-    <img src="{"images/docs_compte1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_compte1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
-  <td width="50%">
+  <td style="width:50%">
       1. Dans le menu principal d'Outlook Express, choisis le sous-menu 
       <strong>&quot;Comptes&quot;</strong>.
   </td>
@@ -270,15 +270,15 @@ Et maintenant quelques remarques :
   </td>
 </tr>
 </table>
-<hr class="mark">
+<hr />
 <table summary="Deuxième étape" cellpadding="5">
 <tr> 
   <td colspan="2">
-    <img src="{"images/docs_news1.png"|url}" width="634" height="308" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_news1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
-  <td width="50%">
+  <td style="width:50%">
       1. Un compte est désigné par un nom de serveur. Il est possible que tu aies une liste
       vide la première fois que tu ouvres cette boite.
       Ici tu vois à quoi tu devras arriver en fin de configuration.
@@ -290,16 +290,16 @@ Et maintenant quelques remarques :
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
-<table summary="Troisième étape" cellpadding="5" width="503">
+<table summary="Troisième étape" cellpadding="5" style="width:503px">
 <tr> 
   <td colspan="2">
-    <img src="{"images/docs_news2.png"|url}" width="503" height="385" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_news2.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
-  <td width="50%">
+  <td style="width:50%">
       1. Tu vas alors arriver à l'écran de configuration suivant
       (après avoir éventuellement du cliquer plusieurs fois sur <strong>suivant</strong>).
   </td>
@@ -310,10 +310,10 @@ Et maintenant quelques remarques :
   </td>
 </tr>
 </table>
-<hr class="mark">
+<hr />
 <table summary="Quatrième étape" cellpadding="5">
 <tr> 
-  <td width="220">
+  <td style="width:220px">
     <p class="normal">
       Il faut ensuite aller changer quelques options pour pouvoir utiliser les forums.
       Retourne dans le menu <strong>"Outils/Comptes"</strong> du début, puis choisis de modifier
@@ -326,14 +326,14 @@ Et maintenant quelques remarques :
     </p>
   </td>
   <td>
-    <img src="{"images/docs_news3.png"|url}" width="400" height="445" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_news3.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>
-<hr class="mark">
+<hr />
 <table summary="Cinquième étape" cellpadding="5">
 <tr> 
-  <td width="220">
+  <td style="width:220px">
     <p class="normal">
       Dernière étape, choisis l'onglet <strong>"Avancé"</strong> et coche la case
       <strong>ce serveur nécessite une connexion sécurisée (SSL)</strong>,
@@ -343,7 +343,7 @@ Et maintenant quelques remarques :
     </p>
   </td>
   <td>
-    <img src="{"images/docs_news4.png"|url}" width="400" height="445" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_news4.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>

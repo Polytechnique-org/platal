@@ -1,4 +1,4 @@
-{* $Id: doc_nn.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: doc_nn.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <p class="normal">
     [<a href="{"docs/doc_nn.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -56,10 +56,10 @@
     Utiliser le SMTP sécurisé
 </div>
 
-<table summary="Première étape" cellpadding="5" width="604">
+<table summary="Première étape" cellpadding="5" style="width:604px">
 <tr> 
   <td colspan="3">
-    <img src="{"images/docs_confnetscape0.png"|url}" width="604" height="476" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_confnetscape0.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
@@ -80,10 +80,10 @@
 
 <hr />
 
-<table summary="Deuxième étape" cellpadding="5" width="604">
+<table summary="Deuxième étape" cellpadding="5" style="width:604px">
 <tr>
   <td colspan="3">
-    <img src="{"images/docs_confnetscape1.png"|url}" width="604" height="477" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_confnetscape1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
@@ -93,7 +93,7 @@
       correspondre à l'écran ci-contre.
 		</p>
   </td>
-  <td width="50%">
+  <td style="width:50%">
     <p class="normal">
       2. Dans la partie <strong>Serveur de courrier sortant</strong>, indique
 			<code>ssl.polytechnique.org</code> dans le champ <strong>Serveur de
@@ -123,7 +123,7 @@
     </p>
   </td>
   <td>
-    <img src="{"images/docs_confnetscape2.png"|url}" width="382"
+    <img src="{"images/docs_confnetscape2.png"|url}" style="width:382px"
 			height="179" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
@@ -155,10 +155,10 @@ Et maintenant quelques remarques :
     Utiliser le NNTP sécurisé
 </div>
 
-<table summary="Première étape" cellpadding="5" width="603">
+<table summary="Première étape" cellpadding="5" style="width:603px">
 <tr> 
   <td colspan="3">
-    <img src="{"images/docs_nntp_nn1.png"|url}" width="603" height="475" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
@@ -181,7 +181,7 @@ Et maintenant quelques remarques :
 
 <hr />
 
-<table summary="Deuxième étape" cellpadding="5" width="604">
+<table summary="Deuxième étape" cellpadding="5" style="width:604px">
 <tr>
   <td>
       1. Dans ton client apparait maintenant une nouvelle ligne de serveur de forums appellée
@@ -197,7 +197,7 @@ Et maintenant quelques remarques :
       <em>prenom.nom</em>, puis valide.
   </td>
   <td>
-    <img src="{"images/docs_nntp_nn2.png"|url}" width="384" height="183" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn2.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>
@@ -206,17 +206,17 @@ Et maintenant quelques remarques :
       indiqué lors de <a href="{"smtp_acces.php"|url}">l'activation de ton compte</a>.
   </td>
   <td>
-    <img src="{"images/docs_nntp_nn3.png"|url}" width="384" height="183" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn3.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 </table>
 
 <hr />
 
-<table summary="Troisième étape" cellpadding="5" width="668">
+<table summary="Troisième étape" cellpadding="5" style="width:668px">
 <tr> 
   <td>
-    <img src="{"images/docs_nntp_nn4.png"|url}" width="668" height="466" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn4.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
 <tr>

@@ -1,4 +1,4 @@
-{* $Id: faq.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: faq.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Foire aux questions
@@ -8,7 +8,7 @@
   de la compléter sur un sujet en rapport avec le site si tu estimes
   que des informations manquent.
 </p>
-<hr>
+<hr />
 <div class="ssrubrique">
   Questions générales
 </div>
@@ -82,7 +82,7 @@
   </li>
 </ul>
 <br /><br />
-<hr>
+<hr />
 <div class="ssrubrique">
   Questions générales
 </div>
@@ -164,7 +164,7 @@
     (Dictionnaire de la langue française, Le Robert, Paris 1987)
   </p>
 </div>
-<hr>
+<hr />
 <div class="ssrubrique">
   Remplissage des champs
 </div>
@@ -303,7 +303,7 @@ parapente cinéma styx ...
     </form>
   </div>
 </div>
-<hr>
+<hr />
 <a id="connect" name="connect"></a>
 <div class="ssrubrique">
   Problèmes de connexion
@@ -375,7 +375,7 @@ parapente cinéma styx ...
     de toute façon, les doublons ne peuvent pas exister.
   </p>
 </div>
-<hr>
+<hr />
 <div class="ssrubrique">
   Utilisation post-connexion
 </div>

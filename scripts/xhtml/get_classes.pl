@@ -13,15 +13,17 @@ my $gra="[0m";
 
 sub parse_dir($) {
     my $dir = shift;
+    my @dirs;
     opendir DIR,$dir;
     while(my $a = readdir DIR) {
-        if(-d $a) {
-            &parse_dir($dir."/".$a) unless($a eq '.' or $a eq '..' or $a eq 'CVS');
+        if( -d $dir."/".$a ) {
+            push @dirs,$dir."/".$a unless($a eq '.' or $a eq '..' or $a eq 'CVS');
         } else {
             &parse_file($dir."/".$a) if($a =~ /\.(php|tpl|htm[l]?)$/i);
         }
     }
     closedir DIR;
+    foreach $dir (@dirs) { &parse_dir($dir); }
 }
 
 sub parse_file($) {

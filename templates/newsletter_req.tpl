@@ -1,4 +1,4 @@
-{* $Id: newsletter_req.tpl,v 1.2 2004-02-09 17:47:06 x2000habouzit Exp $ *}
+{* $Id: newsletter_req.tpl,v 1.3 2004-02-11 13:15:33 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposer un article pour la newsletter
@@ -101,7 +101,7 @@
       </tr>
       <tr class="pair">
         <td>
-          <input type="text" value="{$titre}" name="titre" size="68">
+          <input type="text" value="{$titre}" name="titre" size="68" />
         </td>
       </tr>
       <tr class="impair">

@@ -1,4 +1,4 @@
-{* $Id: deces_promo.tpl,v 1.2 2004-02-04 22:47:45 x2000habouzit Exp $ *}
+{* $Id: deces_promo.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <table class="tinybicol">
@@ -30,7 +30,7 @@
   <tr class="{cycle values="impair,pair"}">
     <td>{$x.nom} {$x.prenom}</td>
     <td class="center">
-      <input type="text" name="{$x.matricule}" value="{$x.deces}" size="10" maxlength="10">
+      <input type="text" name="{$x.matricule}" value="{$x.deces}" size="10" maxlength="10" />
     </td>
   </tr>
 {/foreach}

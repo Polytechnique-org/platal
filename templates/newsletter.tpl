@@ -1,4 +1,4 @@
-{* $Id: newsletter.tpl,v 1.1 2004-02-09 14:54:55 x2000habouzit Exp $ *}
+{* $Id: newsletter.tpl,v 1.2 2004-02-11 13:15:33 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,10 +6,10 @@
 
 {if $nl_titre}
 
-<p align="center">
+<p class="center">
 [<a href="{$smarty.server.REQUEST_URI}&amp;send_mail=1">me l'envoyer par mail</a>]
 </p>
-<table class="bicol" summary="Archives de la NL" align="center">
+<table class="bicol" summary="Archives de la NL">
   <tr>
     <th>
       {$nl_titre} - {$nl_date|date_format:"%d/%m/%Y"}

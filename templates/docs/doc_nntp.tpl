@@ -1,4 +1,4 @@
-{* $Id: doc_nntp.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_nntp.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <div class="rubrique">Les forums de Polytechnique.org</div>
 <p class="normal">
@@ -18,8 +18,14 @@
 <p class="normal">
   Nous avons testé les logiciels capables de lire les forums de discussion les plus courants.  La colonne <strong>O</strong> indique les logiciels qui fonctionnent, la colonne <strong>N</strong> ceux qui ne fonctionnent pas.
 </p>
-<p class="normal"><em><small>
-  La colonne <strong>S</strong> s'adresse aux utilisateurs aguerris et indique la possibilité de faire fonctionner le logiciel de news avec stunnel. La <a href="#stunnel">procédure</a> est décrite plus bas.</small></em>
+<p class="normal">
+<em>
+  <span class="smaller">
+    La colonne <strong>S</strong> s'adresse aux utilisateurs aguerris et indique la possibilité de
+    faire fonctionner le logiciel de news avec stunnel. La <a href="#stunnel">procédure</a> est
+    décrite plus bas.
+  </span>
+</em>
 </p>
 
 <table class="bicol" summary="liste des clients" cellpadding="4">
@@ -96,7 +102,7 @@
 <p class="normal">
   Certains logiciels de news sont capables de s'authentifier mais ne reconnaisent pas les connexions sécurisées de type SSL.  Il est possible de faire fonctionner ces logiciels à l'aide de <a href="http://www.stunnel.org/">stunnel</a> qui gère la couche sécurisée.
 </p>
-<table class="bicol" summary="conf stunnel" width="95%">
+<table class="bicol" summary="conf stunnel">
 <tr>
   <th>
     Pour les versions 3.x

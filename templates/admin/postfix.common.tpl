@@ -1,4 +1,4 @@
-{* $Id: postfix.common.tpl,v 1.2 2004-02-04 23:22:05 x2000habouzit Exp $ *}
+{* $Id: postfix.common.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 {dynamic}
 <p class="erreur">{$erreur}</p>
@@ -23,8 +23,8 @@
 
 {foreach item=line from=$list}
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="text" name="nomligne" value="{$line}" size="100">
-  <input type="submit" name="del" value="Del">
+  <input type="text" name="nomligne" value="{$line}" size="100" />
+  <input type="submit" name="del" value="Del" />
 </form>
 {/foreach}
 {/dynamic}

@@ -1,17 +1,16 @@
-{* $Id: index.tpl,v 1.3 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Documentations et Aides diverses
 </div>
 
-<center>
-<table class="bicol" summary="Docs: Services" width="95%">
+<table class="bicol" summary="Docs: Services" >
 <tr>
     <th colspan="2">Utilisation des services de Polytechnique.org
     </th>
 </tr>
 <tr class="impair">
-    <td width="50%">
+    <td style="width:50%">
 	<div class="lien">
 	    <a href="doc_emails.php">Mes adresses de redirection</a>
 	</div>
@@ -65,7 +64,7 @@
 </table>
 
 <br />
-<table class="bicol" summary="Docs: Services sécurisés" width="95%">
+<table class="bicol" summary="Docs: Services sécurisés">
 <tr>
     <th colspan="2">Utilisation des services <em>sécurisés</em> de Polytechnique.org
     </th>
@@ -81,7 +80,7 @@
     </td>
 </tr>
 <tr class="pair">
-    <td width="50%">
+    <td style="width:50%">
 	<div class="lien">
 	    <a href="doc_smtp.php">SMTP sécurisé</a>
 	</div>
@@ -102,13 +101,13 @@
 </table>
 
 <br />
-<table class="bicol" summary="Docs: Services sécurisés" width="95%">
+<table class="bicol" summary="Docs: Services sécurisés">
 <tr>
     <th colspan="2">Utiliser des logiciels de courrier/news avec Polytechnique.org
     </th>
 </tr>
 <tr class="impair">
-    <td width="50%">
+  <td style="width:50%">
 	<div class="lien">
 	    <a href="doc_oe.php">Outlook Express</a>
 	</div>
@@ -127,7 +126,6 @@
     </td>
 </tr>
 </table>
-</center>
 <br />
 
 {include file="docs/faq.tpl"}
