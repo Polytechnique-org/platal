@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.tpl,v 1.4 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: epouse.tpl,v 1.5 2004-09-01 22:01:48 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,7 +25,8 @@
   Nom de mariage
 </div>
 
-{if $not_femme}
+{dynamic}
+{if !$is_femme}
 
 <p class="erreur">
   Tu n'es pas autorisé à avoir accès à cette page !
@@ -33,7 +34,6 @@
 
 {else}
 
-  {dynamic}
   {if $same}
   <p class="erreur">
       Si ton nom de mariage est identique à ton nom à l'X, il n'est pas
@@ -62,31 +62,31 @@
       Encore merci de nous faire confiance pour tes e-mails !
     </p>
   {/if}
-  {/dynamic}
 
+  <p>
+  Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom de mariage, tu peux
+  saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
+  des adresses correspondantes @m4x.org et @polytechnique.org, en plus de
+  celles que tu possèdes déjà.
+  </p>
+
+  <br />
+
+  <form action="{$smarty.server.PHP_SELF}" method="post">
+  <table class="bicol" cellpadding="4" summary="Nom d'epouse">
+    <tr>
+      <th>Nom de mariage</th>
+    </tr>
+    <tr>
+      <td class="center"><input type="text" name="epouse" value="{$epouse_old}" /></td>
+    </tr>
+    <tr>
+      <td class="center"><input type="submit" name="submit" value="Envoyer" /></td>
+    </tr>
+  </table>
+  </form>
 {/if}
+{/dynamic}
   
-<p>
-Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom de mariage, tu peux
-saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
-des adresses correspondantes @m4x.org et @polytechnique.org, en plus de
-celles que tu possèdes déjà.
-</p>
-
-<br />
-
-<form action="{$smarty.server.PHP_SELF}" method="post" name="epouse_dem">
-<table class="bicol" cellpadding="4" summary="Nom d'epouse">
-  <tr>
-    <th>Nom de mariage</th>
-  </tr>
-  <tr>
-    <td class="center"><input type="text" name="epouse" value="{$epouse_old}" /></td>
-  </tr>
-  <tr>
-    <td class="center"><input type="submit" name="submit" value="Envoyer" /></td>
-  </tr>
-</table>
-</form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

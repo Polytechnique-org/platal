@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: epouse.php,v 1.5 2004-09-01 22:01:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -26,12 +26,14 @@ require("validations.inc.php");
 
 new_skinned_page('epouse.tpl', AUTH_MDP);
 
-$res = $globals->db->query("select u.nom,u.epouse,i.flags from auth_user_md5 as u
-                    left join identification as i using(matricule)
-                    where user_id=".$_SESSION['uid']);
+$res = $globals->db->query("SELECT  u.nom,a.alias  AS epouse,i.flags
+                              FROM  auth_user_md5  AS u
+                         LEFT JOIN  identification AS i USING(matricule)
+                         LEFT JOIN  aliases        AS a ON(u.user_id = a.id AND type='epouse')
+                             WHERE  user_id=".$_SESSION['uid']);
 list($nom,$epouse_old,$flags) = mysql_fetch_row($res);
 $flags=new flagset($flags);
-$page->assign('not_femme',!$flags->hasflag("femme"));
+$page->assign('is_femme',$flags->hasflag("femme"));
 
 $epouse = replace_accent(trim(clean_request('epouse'))); 
 $epouse = strtoupper($epouse);
