@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.5 2004-10-15 07:30:40 x2000habouzit Exp $
+        $Id: admin.php,v 1.6 2004-10-23 21:31:46 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -55,12 +55,14 @@ if(isset($_REQUEST['del_owner'])) {
 if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
     $membres = Array();
     foreach($mem as $member) {
-	if(preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
-	    $membres[$matches[2]][] = Array('n' => $member[0], 'l' => $matches[1]);
+	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@polytechnique.org$/', $member[1], $matches)) {
+	    $key = strtoupper($matches[2]{0});
+	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1]);
 	} else {
 	    $membres[0][] = Array('l' => $member[1]);
 	}
     }
+    foreach($membres as $key=>$val) ksort($membres[$key]);
     ksort($membres);
 
     $moderos = Array();
