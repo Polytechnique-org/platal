@@ -333,29 +333,136 @@ div.conteneur_tab {
         [ cas de la fiche ]
 *******************************************************************************/
 
-div.boite {
-  border: 1px solid #5555BB;
-  background: #FFFFC0;
-  padding: 5px;
-  margin: 5px;
+#fiche{
+  min-width: 760px;
+  font-size: small;
 }
 
-div.boite div.titre {
-  background: #9999FF;
-  margin: 5px;
+em.intitule {
+  color: purple;
+  font-size: small;
+}
+
+/*Boite en haut à gauche*/
+#fiche_identite{
+  float: left;
+  border: 1px solid #5555BB;
   padding: 5px;
+  margin: 5px;
+  width: 500px;
+}
+
+#fiche_identite div.civilite {
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
+}
+
+#fiche div.categorie{
+  float: left;
+  color: purple;
+  font-style: italic;
+  font-size: normal;
+}
+#fiche hr{
+  clear: left;
+  float: left;
+  width: 500px;
+  height: 1;
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+  border-top: 1px solid #003399;
+}
+
+/*Boite de droite : photos, binets*/
+#fiche_divers{
+  float: right;
+  width: 210px;
   text-align: center;
 }
 
-div.boite div.item {
+#fiche_adresses{
   float: left;
+  /*border: 1px solid #5555BB;*/
   padding: 5px;
+  margin: 5px;
+  width: 500px;
+}
+
+#fiche_adresses em{
+  color: purple;
+}
+#fiche_adresses span{
+  font-weight: bold;
+}
+
+div.adresse{
+  float: left;
+  padding: 10px;
+  /*border: 1px dotted #999;*/
+  width: 25ex;
+  margin: 5px;
+  margin-top: 0px;
+}
+
+div.adresse div.titre{
+  text-align: center;
+  width: 100%;
+  color: purple;
+}
+
+#fiche_infospro{
+  float: left;
+  /*border: 1px solid #5555BB;*/
+  padding: 10px;
+  width: 500px;
   margin: 5px;
 }
 
+#fiche_infospro em{
+  color: purple;
+}
+#fiche_infospro span{
+  font-weight: bold;
+}
+
+#fiche_infospro div.entreprise{
+  width: 100%;
+  border: 1px dotted #BBB;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+div.entreprise div.titre{
+  text-align: center;
+  width: 100%;
+  font-weight: bold;
+}
+
+div.entreprise div.details{
+  float: left;
+  padding: 10px;
+  width: 25ex;
+  margin: 5px;
+  margin-left: 0px;
+}
+
+div.entreprise div.adr_pro{
+  float: right;
+  padding: 10px;
+  width: 25ex;
+  margin: 5px;
+}
+
+#fiche_cv{
+  float: left;
+  padding: 10px;
+  width: 25ex;
+  margin: 5px; 
+}
+
 div.spacer { clear: both; }
-div.item div.title { font-weight: bold; }
-div.item div.value { }
 
 /*******************************************************************************
     A   SKIN
@@ -464,4 +571,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.38 2004-09-02 19:39:20 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.39 2004-09-05 20:15:06 x2000coic Exp $ */
