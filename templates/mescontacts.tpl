@@ -1,6 +1,8 @@
-{* $Id: mescontacts.tpl,v 1.3 2004-02-20 03:01:10 x2000habouzit Exp $ *}
+{* $Id: mescontacts.tpl,v 1.4 2004-08-07 11:21:27 x2000coic Exp $ *}
 
-{dyn s=$erreur}
+{dynamic}
+{$erreur}
+{/dynamic}
 
 <div class="rubrique">
   Ma liste personnelle de contacts
