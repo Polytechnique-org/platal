@@ -50,6 +50,7 @@ sa dernière relance date du {$relance|date_format}
 
 <h2>Adresses connues</h2>
 
+<form action="{$smarty.request.PHP_SELF}" method="post">
 <table class="bicol" cellpadding="0" cellspacing="0">
   <tr>
     <th>Adresse</th>
@@ -76,7 +77,23 @@ sa dernière relance date du {$relance|date_format}
     <td></td>
     <td colspan='5' class='smaller'>(*): mail perso</td>
   </tr>
+  <tr>
+    <td>
+      <input type='text' name='email' />
+    </td>
+    <td colspan="4">
+      <select name="type">
+        <option value="staff">staff</option>
+        <option value="user">user</option>
+      </select>
+    </td>
+    <td class='action'>
+      <input type='hidden' name='uid' value='{$smarty.request.uid}' />
+      <input type='submit' name='action' value='ajouter' />
+    </td>
+  </tr>
 </table>
+</form>
 
 {if $rel_to}
 <form action="{$smarty.request.PHP_SELF}" method="post">

@@ -65,6 +65,14 @@ if (Env::has('relance')) {
     }
 }
 
+if (Env::get('action') == 'ajouter') {
+    $globals->xdb->execute(
+        "INSERT INTO register_marketing
+                 SET uid = {?}, sender = {?}, email = {?},
+                     date = NOW(), type = {?}",
+        $uid, Session::get('uid'), Env::get('email'), Env::get('type')); 
+}
+
 $res = $globals->xdb->iterator(
         "SELECT  r.*, a.alias
            FROM  register_marketing AS r
