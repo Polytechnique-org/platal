@@ -80,8 +80,9 @@ if(list($det,$mem,$own) = $members) {
     $page->assign_by_ref('owners',  $moderos);
     $page->assign('nb_m',  count($mem));
 
-} else
-    $page->assign('no_list',true);
+} else {
+    $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
+}
 
 $page->run();
 ?>

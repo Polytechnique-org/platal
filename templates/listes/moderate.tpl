@@ -20,12 +20,6 @@
 
 {dynamic}
 
-{if $no_list}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
-
-{else}
-
 {include file="listes/header_listes.tpl" on=moderate}
 
 <h1>
@@ -101,8 +95,6 @@
 </table>
 {else}
 <p>pas de mails en attente de modération</p>
-{/if}
-
 {/if}
 
 {/dynamic}

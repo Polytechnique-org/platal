@@ -20,12 +20,6 @@
 
 {dynamic}
 
-{if $no_list}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit d'en voir les détails</p>
-
-{else}
-
 {include file="listes/header_listes.tpl" on=archives}
 
 
@@ -87,8 +81,6 @@
 {tidy}
 {include file="$url"}
 {/tidy}
-{/if}
-
 {/if}
 
 {/dynamic}

@@ -54,8 +54,9 @@ if(isset($_POST['submit'])) {
 if(list($details,$options) = $client->get_admin_options($liste)) {
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
-} else
-    $page->assign('no_list', true);
+} else {
+    $page->kill("La liste n'existe pas");
+}
 
 $page->run();
 ?>

@@ -19,10 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
+if (empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
 
-if(preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}-(.*)!", $liste,$matches)) {
+if (preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}-(.*)!", $liste, $matches)) {
     header('Location: ?liste='.$matches[1]);
 }
 
@@ -31,95 +31,58 @@ new_skinned_page('listes/moderate.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
 $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$page->register_modifier('qpd','quoted_printable_decode');
 
 if(isset($_REQUEST['sadd'])) {
-    $client->handle_request($liste,$_REQUEST['sadd'],4,'');
-    /** 4 is the magic for SUBSCRIBE see Defaults.py **/
+    $client->handle_request($liste,$_REQUEST['sadd'],4,''); /* 4 = SUBSCRIBE */
     header("Location: moderate.php?liste=$liste");
 }
 
 if(isset($_POST['sdel'])) {
-    $client->handle_request($liste,$_POST['sdel'],2,stripslashes($_POST['reason']));
-    /** 2 is the magic for REJECT see Defaults.py **/
+    $client->handle_request($liste,$_POST['sdel'],2,stripslashes($_POST['reason'])); /* 2 = REJECT */
 }
 
 if(isset($_REQUEST['mid'])) {
-    $mid = $_REQUEST['mid'];
-    require_once('diogenes.hernes.inc.php');
-    $mailer = new HermesMailer();
-    $mailer->addTo("$liste-owner@{$globals->mail->domain}");
-    $mailer->setFrom("$liste-bounces@{$globals->mail->domain}");
-    $mailer->addHeader('Reply-To', "$liste-owner@{$globals->mail->domain}");
-
-    $mail = $client->get_pending_mail($liste, $mid);
+    $mid    = $_REQUEST['mid'];
+    $mail   = $client->get_pending_mail($liste, $mid);
+    $reason = '';
 
     if(isset($_REQUEST['mok'])) {
-	unset($_GET['mid']);
-	if($client->handle_request($liste,$mid,1,'')) { /** 1 = APPROVE **/
-	    $mailer->setSubject("Message accepté");
-	    $texte = "le message suivant :\n\n"
-		    ."    Auteur: {$mail['sender']}\n"
-		    ."    Sujet : « {$mail['subj']} »\n"
-		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
-		    ."a été accepté par {$_SESSION['prenom']} {$_SESSION['nom']}.\n";
-	    $mailer->setTxtBody(wordwrap($texte,72));
-	    $mailer->send();
-	}
+        $action  = 1; /** 2 = ACCEPT **/
+        $subject = "Message accepté";
+        $append .= "a été accepté par {$_SESSION['prenom']} {$_SESSION['nom']}.\n";
     } elseif(isset($_POST['mno'])) {
-	$reason = stripslashes($_POST['reason']);
-	if($client->handle_request($liste,$mid,2,$reason)) { /** 2 = REJECT **/
-	    $mailer->setSubject("Message refusé");
-	    $texte = "le message suivant :\n\n"
-		    ."    Auteur: {$mail['sender']}\n"
-		    ."    Sujet : « {$mail['subj']} »\n"
-		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
-		    ."a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
-		    ."« $reason »";
-	    $mailer->setTxtBody(wordwrap($texte,72));
-	    $mailer->send();
-	}
+        $action  = 2; /** 2 = REJECT **/
+        $subject = "Message refusé";
+	$reason  = stripslashes($_POST['reason']);
+        $append  = "a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n\n"
+                .  $reason;
     } elseif(isset($_REQUEST['mdel'])) {
-	unset($_GET['mid']);
-	if($client->handle_request($liste,$mid,3,'')) { /** 3 = DISCARD **/
-	    $mailer->setSubject("Message supprimé");
-	    $texte = "le message suivant :\n\n"
-		    ."    Auteur: {$mail['sender']}\n"
-		    ."    Sujet : « {$mail['subj']} »\n"
-		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S",(int)$mail['stamp'])."\n\n"
-	            ."a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
-		    ."Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
-	    $mailer->setTxtBody(wordwrap($texte,72));
-	    $mailer->send();
-	}
+        $action  = 3; /** 3 = DISCARD **/
+        $sbuject = "Message supprimé";
+        $append  = "a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
+                .  "Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
     }
-}
+   
+    if (isset($action) && $client->handle_request($liste,$mid,$action,$reason) {
+        $texte = "le message suivant :\n\n"
+                ."    Auteur: {$mail['sender']}\n"
+                ."    Sujet : « {$mail['subj']} »\n"
+                ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
+                .$append;
+        require_once('diogenes.hernes.inc.php');
+        $mailer = new HermesMailer();
+        $mailer->addTo("$liste-owner@{$globals->mail->domain}");
+        $mailer->setFrom("$liste-bounces@{$globals->mail->domain}");
+        $mailer->addHeader('Reply-To', "$liste-owner@{$globals->mail->domain}");
+        $mailer->setSubject($subject);
+        $mailer->setTxtBody(wordwrap($texte,72));
+        $mailer->send();
+	unset($_GET['mid']);
+    }
 
-if(isset($_REQUEST['sid'])) {
-
-    $sid = $_REQUEST['sid'];
-    if(list($subs,$mails) = $client->get_pending_ops($liste)) {
-	foreach($subs as $user) {
-	    if($user['id'] == $sid) $u = $user;
-	}
-	if($u) {
-	    $page->changeTpl('listes/moderate_sub.tpl');
-	    $page->assign('del_user',$u);
-	} else {
-	    $page->assign_by_ref('subs', $subs);
-	    $page->assign_by_ref('mails', $mails);
-	}
-    } else
-	$page->assign('no_list', true);
-
-} elseif(isset($_GET['mid'])) {
-
-    $mid = $_REQUEST['mid'];
-    $mail = $client->get_pending_mail($liste,$mid);
-    if(is_array($mail)) {
-	$fname = '/etc/mailman/fr/refuse.txt';
-	$h = fopen($fname,'r');
-	$msg = fread($h, filesize($fname));
-	fclose($h);
+    if(isset($_GET['mid') && is_array($mail)) {
+	$msg = file_get_contents('/etc/mailman/fr/refuse.txt');
 	$msg = str_replace("%(adminaddr)s","$liste-owner@{$globals->mail->domain}", $msg);
 	$msg = str_replace("%(request)s","<< SUJET DU MAIL >>", $msg);
 	$msg = str_replace("%(reason)s","<< TON EXPLICATION >>", $msg);
@@ -128,22 +91,29 @@ if(isset($_REQUEST['sid'])) {
 
 	$page->changeTpl('listes/moderate_mail.tpl');
         $page->assign_by_ref('mail', $mail);
-    } else {
-	if(list($subs,$mails) = $client->get_pending_ops($liste)) {
-	    $page->assign_by_ref('subs', $subs);
-	    $page->assign_by_ref('mails', $mails);
-	} else
-	    $page->assign('no_list', true);
+        $page->run();
     }
 
-} elseif(list($subs,$mails) = $client->get_pending_ops($liste)) {
+} elseif(isset($_REQUEST['sid'])) {
 
+    if(list($subs,$mails) = $client->get_pending_ops($liste)) {
+	foreach($subs as $user) {
+	    if($user['id'] == $_REQUEST['sid']) {
+                $page->changeTpl('listes/moderate_sub.tpl');
+                $page->assign('del_user',$user);
+                $page->run();
+            }
+	}
+    }
+
+}
+
+if(list($subs,$mails) = $client->get_pending_ops($liste)) {
     $page->assign_by_ref('subs', $subs);
     $page->assign_by_ref('mails', $mails);
+} else {
+    $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modérer");
+}
 
-} else
-    $page->assign('no_list', true);
-
-$page->register_modifier('qpd','quoted_printable_decode');
 $page->run();
 ?>

@@ -22,12 +22,6 @@
 
 {dynamic}
 
-{if $no_list || ( !$details.own && $smarty.session.perms neq admin )}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
-
-{else}
-
 {if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.
@@ -175,8 +169,6 @@ redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller 
     </tr>
   </table>
 </form>
-{/if}
-
 {/if}
 
 {/dynamic}

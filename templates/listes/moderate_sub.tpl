@@ -20,12 +20,6 @@
 
 {dynamic}
 
-{if $no_list}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
-
-{else}
-
 <h1>
   Refuser l'inscription d'un utilisateur
 </h1>
@@ -51,8 +45,6 @@
     </tr>
   </table>
 </form>
-
-{/if}
 
 {/dynamic}
 

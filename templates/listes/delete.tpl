@@ -22,12 +22,6 @@
 
 {dynamic}
 
-{if $no_list || ( !$details.own && $smarty.session.perms neq admin )}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
-
-{else}
-
 {if $deleted}
 
 <p>[<a href='index.php'>Voir toutes les listes</a>]</p>
@@ -69,7 +63,6 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
   </table>
 </form>
-{/if}
 
 {/if}
 

@@ -22,12 +22,6 @@
 
 {dynamic}
 
-{if $no_list || $smarty.session.perms neq admin }
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
-
-{else}
-
 {include file="listes/header_listes.tpl" on=soptions}
 
 <h1>
@@ -109,8 +103,6 @@
     <input type='submit' name='submit' value='Valider les modifications' />
   </div>
 </form>
-
-{/if}
 
 {/dynamic}
 

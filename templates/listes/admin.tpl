@@ -20,12 +20,6 @@
 
 {dynamic}
 
-{if $no_list || ( !$details.own && $smarty.session.perms neq admin )}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
-
-{else}
-
 {if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.
@@ -107,8 +101,6 @@ qui y était abonné.
     </tr>
   </table>
 </form>
-
-{/if}
 
 {/dynamic}
 

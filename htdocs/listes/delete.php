@@ -32,11 +32,14 @@ if ( isset($_POST['valid']) && ($_POST['valid'] == 'OUI')
         && $client->delete_list($liste,!empty($_POST['del_archive'])) ) {
     $page->assign('deleted', true);
 } elseif (list($details,$options) = $client->get_owner_options($liste)) {
+    if (!$details['own'] && !has_perms()) {
+        $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
+    }
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
     $page->assign('bogo_level', $client->get_bogo_level($liste));
 } else {
-    $page->assign('no_list', true);
+    $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
 }
 
 $page->run();

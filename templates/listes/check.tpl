@@ -22,12 +22,6 @@
 
 {dynamic}
 
-{if $no_list || $smarty.session.perms neq admin }
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
-
-{else}
-
 {include file="listes/header_listes.tpl" on=check}
 
 {if $options|@count}
@@ -50,8 +44,6 @@
 </form>
 {else}
 <p>Liste correcte !</p>
-{/if}
-
 {/if}
 
 {/dynamic}

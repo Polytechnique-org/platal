@@ -30,12 +30,12 @@ $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 
 if (list($det) = $client->get_members($liste)) {
     if ( substr($liste,0,5) != 'promo' && ( $det['ins'] || $det['priv'] ) && !$det['own'] && ($det['sub']<2) ) {
-        $page->assign('no_list',true);
+        $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
     } elseif (isset($_GET['file'])) {
         $file = $_GET['file'];
         $rep  = $_GET['rep'];
         if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $_GET['rep'])) {
-            $page->assign('no_list',true);
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         } else { 
             $page->assign('url', $globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
         }
@@ -49,8 +49,9 @@ if (list($det) = $client->get_members($liste)) {
         $page->assign('archs', $archs);
         $page->assign('range', range(1,12));
     }
-} else
-    $page->assign('no_list',true);
+} else {
+    $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
+}
 
 $page->run();
 ?>

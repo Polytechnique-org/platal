@@ -64,6 +64,9 @@ if(isset($_REQUEST['del_owner'])) {
 }
 
 if(list($det,$mem,$own) = $client->get_members($liste)) {
+    if (!$det['own'] && !has_perms()) {
+        $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
+    }
     $membres = Array();
     foreach($mem as $member) {
 	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@'.$globals->mail->domain.'$/', $member[1], $matches)) {
@@ -97,8 +100,9 @@ if(list($det,$mem,$own) = $client->get_members($liste)) {
     $page->assign_by_ref('owners',  $moderos);
     $page->assign('np_m', count($mem));
 
-} else
-    $page->assign('no_list',true);
+} else {
+    $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
+}
 
 $page->run();
 ?>

@@ -84,8 +84,9 @@ if(is_array($owners)) {
     
     $trombi = new Trombi('getList');
     $page->assign_by_ref('trombi',$trombi);
-} else
-    $page->assign('no_list',true);
+} else {
+    $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
+}
 
 $page->run();
 ?>

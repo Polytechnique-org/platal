@@ -20,12 +20,6 @@
 
 {dynamic}
 
-{if $no_list}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
-
-{else}
-
 <h1>
   Propriétés du mail en attente
 </h1>
@@ -96,8 +90,6 @@
 En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement sera de la forme suivante :
 </p>
 <pre>{$msg}</pre>
-
-{/if}
 
 {/dynamic}
 
