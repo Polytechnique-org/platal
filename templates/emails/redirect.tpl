@@ -65,17 +65,19 @@
     {/foreach}
   </ul>
   <p>
-    Le routage est en place pour les adresses dont la case "Actif" est cochée.
+    Le routage est en place pour les adresses dont la case "<strong>Actif</strong>" est cochée.
     Si tu modifies souvent ton routage, tu as tout intérêt à rentrer toutes les
     adresses qui sont susceptibles de recevoir ton routage, de sorte qu'en
-    jouant avec les cases "Actif" tu pourras facilement mettre en place les unes
+    jouant avec les cases "<strong>Actif</strong>" tu pourras facilement mettre en place les unes
     ou bien les autres.
   </p>
   <p>
-    Enfin, la réécriture consiste à substituer à ton adresse email habituelle
+    Enfin, la <strong>réécriture</strong> consiste à substituer à ton adresse email habituelle
     (adresse wanadoo, yahoo, free, ou autre) ton adresse {#globals.mail.domain#} ou
-    {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque tu écris
-    à un camarade sur son adresse {#globals.mail.domain#}.
+    {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
+    passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
+    {#globals.mail.domain2#}, ou lorsque tu utilises notre
+    <a href="{rel}/docs/doc_smtp.php">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
