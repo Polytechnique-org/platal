@@ -63,7 +63,7 @@ if(Env::has('mid')) {
                 .  $reason;
     } elseif (Env::has('mdel')) {
         $action  = 3; /** 3 = DISCARD **/
-        $sbuject = "Message supprimé";
+        $subject = "Message supprimé";
         $append  = "a été supprimé par $prenom $nom.\n\n"
                 .  "Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
     }
