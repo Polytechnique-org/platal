@@ -1,4 +1,4 @@
-{* $Id: doc_oe.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_oe.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 
 <p class="normal">
   [<a href="{"docs/doc_oe.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -62,8 +62,10 @@
   ce qui est plus configurable que la page web du site depuis laquelle tu 
   peux également les voir.
 </p>
-<div class="mef">
-  Avant toute opération, <a href="{"acces_smtp.php"|url}">il faut avoir activé ton compte SMTP/NNTP</a>.
+<div class="center">
+  <span class="erreur">
+    Avant toute opération, <a href="{"acces_smtp.php"|url}">il faut avoir activé ton compte SMTP/NNTP</a>.
+  </span>
 </div>
 <br />
 
@@ -72,7 +74,7 @@
     La configuration pour utiliser le serveur SMTP de Polytechnique.org
 </div>
 
-<table class="etape" summary="Première étape" cellpadding="5" width="480">
+<table summary="Première étape" cellpadding="5" width="480">
 <tr> 
   <td colspan="2">
     <img src="{"images/docs_compte1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] ">
@@ -92,7 +94,7 @@
 
 <hr class="mark">
 
-<table class="etape" summary="Deuxième étape" cellpadding="5" width="640">
+<table summary="Deuxième étape" cellpadding="5" width="640">
 <tr> 
   <td>
     <img src="{"images/docs_compte2.png"|url}" width="640" height="308" alt=" [ CAPTURE D'ECRAN ] ">
@@ -114,7 +116,7 @@
 
 <hr class="mark">
 
-<table class="etape" summary="Troisième étape" cellpadding="5">
+<table summary="Troisième étape" cellpadding="5">
 <tr> 
   <td width="220">
     <p class="normal">
@@ -141,7 +143,7 @@
 
 <hr class="mark">
 
-<table class="etape" summary="Quatrième étape" cellpadding="5">
+<table summary="Quatrième étape" cellpadding="5">
 <tr> 
   <td style="verical-align: middle;" width="220">
     <p class="normal">
@@ -166,7 +168,7 @@
 </tr>
 </table>
 <hr class="mark">
-<table class="etape" summary="Cinquième étape" cellpadding="5">
+<table summary="Cinquième étape" cellpadding="5">
 <tr> 
   <td width="220">
     <p class="normal">
@@ -183,7 +185,7 @@
 </tr>
 </table>
 <hr class="mark">
-<table class="etape" summary="Sixième étape" cellpadding="5">
+<table summary="Sixième étape" cellpadding="5">
 <tr> 
   <td width="220">
     <p class="normal">
@@ -191,7 +193,7 @@
       pour le <strong>Courrier sortant (SMTP)</strong> et coche la case 
       <strong>&quot;Ce serveur utilise une connexion SSL&quot;</strong>.
     </p>
-    <p class="mef">
+    <p class="erreur">
       Cette dernière étape est indispensable, sinon ton mot de passe 
       risque de ne pas être chiffré lors de l'envoi de courriels.
     </p>
@@ -225,7 +227,7 @@ Et maintenant quelques remarques :
 </ul>
 
 <hr class="mark">
-<table class="etape" summary="Conclusion" cellpadding="5">
+<table summary="Conclusion" cellpadding="5">
 <tr> 
   <td>
     <p class="normal">
@@ -251,7 +253,7 @@ Et maintenant quelques remarques :
     <a name="nntp">La configuration pour utiliser le serveur NNTP de Polytechnique.org</a>
 </div>
 
-<table class="etape" summary="Première étape" cellpadding="5" width="480">
+<table summary="Première étape" cellpadding="5" width="480">
 <tr> 
   <td colspan="2">
     <img src="{"images/docs_compte1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] ">
@@ -269,7 +271,7 @@ Et maintenant quelques remarques :
 </tr>
 </table>
 <hr class="mark">
-<table class="etape" summary="Deuxième étape" cellpadding="5">
+<table summary="Deuxième étape" cellpadding="5">
 <tr> 
   <td colspan="2">
     <img src="{"images/docs_news1.png"|url}" width="634" height="308" alt=" [ CAPTURE D'ECRAN ] ">
@@ -290,7 +292,7 @@ Et maintenant quelques remarques :
 
 <hr class="mark">
 
-<table class="etape" summary="Troisième étape" cellpadding="5" width="503">
+<table summary="Troisième étape" cellpadding="5" width="503">
 <tr> 
   <td colspan="2">
     <img src="{"images/docs_news2.png"|url}" width="503" height="385" alt=" [ CAPTURE D'ECRAN ] ">
@@ -309,7 +311,7 @@ Et maintenant quelques remarques :
 </tr>
 </table>
 <hr class="mark">
-<table class="etape" summary="Quatrième étape" cellpadding="5">
+<table summary="Quatrième étape" cellpadding="5">
 <tr> 
   <td width="220">
     <p class="normal">
@@ -329,7 +331,7 @@ Et maintenant quelques remarques :
 </tr>
 </table>
 <hr class="mark">
-<table class="etape" summary="Cinquième étape" cellpadding="5">
+<table summary="Cinquième étape" cellpadding="5">
 <tr> 
   <td width="220">
     <p class="normal">

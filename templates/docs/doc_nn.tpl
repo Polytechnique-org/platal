@@ -1,4 +1,4 @@
-{* $Id: doc_nn.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_nn.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 
 <p class="normal">
     [<a href="{"docs/doc_nn.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -45,8 +45,10 @@
     discussions de Polytechnique.org. Il s'agit de les consulter depuis un logiciel comme Netscape,
     ce qui est tout de même bien plus pratique que le WebForum.
 </p>
-<div class="mef">
-  Avant toute opération, <a href="{"acces_smtp.php"|url}">active ton compte SMTP/NNTP</a>.
+<div class="center">
+  <span class="erreur">
+    Avant toute opération, <a href="{"acces_smtp.php"|url}">active ton compte SMTP/NNTP</a>.
+  </span>
 </div>
 <br />
 {if $smarty.get.doc eq 'smtp' || $smarty.get.doc eq 'all'}
@@ -54,7 +56,7 @@
     Utiliser le SMTP sécurisé
 </div>
 
-<table class="etape" summary="Première étape" cellpadding="5" width="604">
+<table summary="Première étape" cellpadding="5" width="604">
 <tr> 
   <td colspan="3">
     <img src="{"images/docs_confnetscape0.png"|url}" width="604" height="476" alt=" [ CAPTURE D'ECRAN ] ">
@@ -76,9 +78,9 @@
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
-<table class="etape" summary="Deuxième étape" cellpadding="5" width="604">
+<table summary="Deuxième étape" cellpadding="5" width="604">
 <tr>
   <td colspan="3">
     <img src="{"images/docs_confnetscape1.png"|url}" width="604" height="477" alt=" [ CAPTURE D'ECRAN ] ">
@@ -110,9 +112,9 @@
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
-<table class="etape" summary="Troisème étape" cellpadding="5">
+<table summary="Troisème étape" cellpadding="5">
 <tr> 
  <td>
    <p class="normal">
@@ -127,7 +129,7 @@
 </tr>
 </table>
 
-<hr class="mark">
+<hr /> 
 
 Et maintenant quelques remarques :
 <ul>
@@ -153,7 +155,7 @@ Et maintenant quelques remarques :
     Utiliser le NNTP sécurisé
 </div>
 
-<table class="etape" summary="Première étape" cellpadding="5" width="603">
+<table summary="Première étape" cellpadding="5" width="603">
 <tr> 
   <td colspan="3">
     <img src="{"images/docs_nntp_nn1.png"|url}" width="603" height="475" alt=" [ CAPTURE D'ECRAN ] ">
@@ -177,9 +179,9 @@ Et maintenant quelques remarques :
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
-<table class="etape" summary="Deuxième étape" cellpadding="5" width="604">
+<table summary="Deuxième étape" cellpadding="5" width="604">
 <tr>
   <td>
       1. Dans ton client apparait maintenant une nouvelle ligne de serveur de forums appellée
@@ -209,9 +211,9 @@ Et maintenant quelques remarques :
 </tr>
 </table>
 
-<hr class="mark">
+<hr />
 
-<table class="etape" summary="Troisième étape" cellpadding="5" width="668">
+<table summary="Troisième étape" cellpadding="5" width="668">
 <tr> 
   <td>
     <img src="{"images/docs_nntp_nn4.png"|url}" width="668" height="466" alt=" [ CAPTURE D'ECRAN ] ">

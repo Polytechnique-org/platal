@@ -1,5 +1,5 @@
 <?php
 require("auto.prepend.inc.php");
-new_skinned_page("docs/doc_oe.tpl",AUTH_PUBLIC,false,"docs/doc_nn.head.tpl");
+new_skinned_page("docs/doc_oe.tpl",AUTH_PUBLIC);
 $page->display(isset($_GET['doc']) ? $_GET['doc'] : "");
 ?>

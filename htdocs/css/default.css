@@ -1,84 +1,112 @@
-/** DEFAULTS **/
+/*
+
+..:: CSS Minimale ::..
+
+I.   Styles par défauts.                balises sans attributs ou classes sans contexte
+II.  Styles <p>, <div>, <span> ...      <p>, <div>, <span>, <li>, ...
+III. Tableaux bicolores                 Tableaux à lignes alternées, en taille normale, ou tiny
+IV.  Tableau de u choix de skins
+
+..:: Appendices ::..
+Choix de la skin
+*/
+
+/**: I. :**/
 
 body {
-    background-color: #ffffff;
     font-family: "Arial", sans-serif;
     color: #000000;
+    background: #ffffff;
 }
 
-a:link, a:visited, a:active, a:hover {
-    background-color: inherit;
-    color: #003399;
-}
-
+a:link, a:visited, a:active, a:hover { color: #003399; background: inherit; }
 a img { border: 0px; }
+td    { vertical-align: top; }
+li    { padding-left: 3px; padding-right: 3px; }
+hr    { width: 90%; text-align: center }
 
-td { vertical-align: top; }
+.center { text-align: center; }
+
+/**: II. :**/
 
 p.normal {
-	margin-bottom: 0.5em;
-	text-align: justify;
+    margin-bottom: 0.5em;
+    text-align: justify;
 }
 
 p.error, span.error, p.erreur, span.erreur {
-	font-weight: bold;
-	background-color: inherit;
-	color: #ff0000;
+    font-weight: bold;
+    color: #ff0000;
+    background: inherit;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
-.center { text-align: center; }
-	
 div.rubrique {
-	color: #555555;
-	background: url('/images/sk_default_titre.gif');
-	background-repeat: no-repeat;
-    
-	text-indent: 0.2em;
-	text-align: left;
-	font-family: "helvetica", sans-serif;
-	font-weight: bolder;
-	font-size: 120%;
-	
+    color: #555555;
+    background: url('/images/sk_default_titre.gif');
+    background-repeat: no-repeat;
+
+    text-indent: 0.2em;
+    text-align: left;
+    font-size: 120%;
+    font-family: "helvetica", sans-serif;
+    font-weight: bolder;
+
     margin-top: 1em;
-	margin-bottom: 1em;
-	padding-left: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.5em;
 }
 
 div.ssrubrique {
-	padding-top: 0.5em;
-	font-weight: bold;
+    padding-top: 0.5em;
+    font-weight: bold;
 }
 
-/* style pour les docs */
-.explication {
+p.sstitre, div.sstitre {
+    margin-top: 1em;
+    font-weight: bold;
+}
+
+p.explication, div.explication {
     font-style: italic;
     padding: 0.25em;
+    text-align: justify;
 }
-.lien {
+p.question, div.question {
     font-weight: bold;
     padding: 0.25em;
 }
-div.warn {
+p.warn, div.warn {
     font-style : italic;
     padding-top: 1em;
     padding-bottom: 1em;
 }
 
+li.spaced {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    text-align: justify;
+}
 
-/*******************************************
-*     TABLEAUX BICOLORES                   *
-*******************************************/
+p.smaller, div.smaller {
+    font-size: smaller;
+    font-style: italic;
+}
+
+/**: III. :**/
+
 table.bicol {
-    background-color: #eeeeee;
     color: inherit;
+    background: #eeeeee;
     border: 1px solid #336699;
     border-collapse: collapse;
     width: 98%;
     margin-left: 1%;
 }
 table.tinybicol {
-    background-color: #eeeeee;
     color: inherit;
+    background: #eeeeee;
     border: 1px solid #336699;
     border-collapse: collapse;
     width: 70%;
@@ -86,29 +114,31 @@ table.tinybicol {
 }
 table.tinybicol tr.impair, table.bicol tr.impair {}
 table.tinybicol tr.pair, table.bicol tr.pair {
-    background-color: #eeeed0;
     color: inherit;
+    background: #eeeed0;
 }
 table.tinybicol th, table.bicol th {
-    background-color: #336699;
-    color: #FFFFFF;
+    color: #ffffff;
+    background: #336699;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
 }
 table.tinybicol td, table.bicol td {
     color: #000000;
-    background-color: inherit;
+    background: inherit;
 }
-table.tinybicol td.bicoltitre, table.bicol td.bicoltitre {
+table.tinybicol td.titre, table.bicol td.titre {
     color: #000000;
-    background-color: inherit;
+    background: inherit;
     font-weight: bold;
 }
+table.tinybicol td.info, table.bicol td.info {
+      padding: 0.5em;
+      width: 50%;
+}
 
-/*******************************************
-*             CHOIX SKINS                  *
-*******************************************/
+/**: IV. :**/
 
 #skin {
     border-bottom: 1px solid #003399;
@@ -117,12 +147,12 @@ table.tinybicol td.bicoltitre, table.bicol td.bicoltitre {
     margin-left: 1%;
 }
 #skin td {
-    border-bottom: 1px solid #003399;
-    border-top: 1px solid #003399;
+    border-bottom: 2px solid #003399;
+    border-top: 1px solid #003499;
     vertical-align: middle;
 }
 #skin td.skigauche {
-    background-color: #eeeeee;
+    background: #eeeeee;
     color: inherit;
     vertical-align: middle;
 }
@@ -132,78 +162,80 @@ table.tinybicol td.bicoltitre, table.bicol td.bicoltitre {
 }
 #skin td.skidroite { padding: 0; }
 
-/**************
-    LAYOUTS 
-***************/
+/*************************/
+/*  ..:: Apendices ::..  */
+/*************************/
 
-    #suid {
-        color: white;
-        background: red;
-        width: 100%;
-    }
-    
-    #body {
-        width: 740px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+#suid {
+    color: white;
+    background: red;
+    width: 100%;
+}
 
-    #body-left {
-        width: 140px;
-        border-right: 1px solid gray;
-        text-align: center;
-        font-family: "MS Sans Serif", sans-serif;
-        padding-top: 4px;
-    }
+#body {
+    width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-    #body-top {
-        border-bottom: 1px solid gray;
-        text-align: center;
-        font-size: 75%;
-        font-weight: bold;
-        padding: 4px;
-        padding-bottom: 16px;
-        font-family: "MS Sans Serif", sans-serif;
-    }
+#body-left {
+    width: 140px;
+    border-right: 1px solid gray;
+    text-align: center;
+    font-family: "MS Sans Serif", sans-serif;
+    padding-top: 4px;
+}
 
-    #body-top table { width: 100%; padding: 4px; }
-    #body-top .date-heure { text-align: left; }
-    #body-top .inscrits { text-align: right; }
-    
-    #body-bottom {
-        border-top: 1px solid gray;
-        text-align: center;
-        padding: 4px;
-        font-size: 75%;
-        font-family: "MS Sans Serif", sans-serif;
-    }
+#body-top {
+    border-bottom: 1px solid gray;
+    text-align: center;
+    font-size: 75%;
+    font-weight: bold;
+    padding: 4px;
+    padding-bottom: 16px;
+    font-family: "MS Sans Serif", sans-serif;
+}
 
-    #menu {
-        width: 100%;
-        margin-top: 16px;
-        
-        font-size: 75%;
-        font-weight: bold;
-    }
-    
-    #menu .menu_item {
-        padding-left: 4px;
-        padding: 2px;
-        text-align: left;
-    }
-    
-    #menu .menu_title {
-        color: gray;
-        background: #eeeeee;
-        border-top: 1px solid gray;
-        border-bottom: 1px solid gray;
-        padding: 1px;
-        margin-top: 4px;
-        text-align: center;
-    }
-    
-    #content {
-        width: 600px;
-        padding: 4px 0px 4px 16px;
-        font-size: 95%;
-    }
+#body-top table { width: 100%; padding: 4px; }
+#body-top .date-heure { text-align: left; }
+#body-top .inscrits { text-align: right; }
+
+#body-bottom {
+    border-top: 1px solid gray;
+    text-align: center;
+    padding: 4px;
+    font-size: 75%;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+#menu {
+    width: 100%;
+    margin-top: 16px;
+
+    font-size: 75%;
+    font-weight: bold;
+}
+
+#menu .menu_item {
+    padding-left: 4px;
+    padding: 2px;
+    text-align: left;
+}
+
+#menu .menu_title {
+    color: gray;
+    background: #eeeeee;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    padding: 1px;
+    margin-top: 4px;
+    text-align: center;
+}
+
+#content {
+    width: 600px;
+    padding: 4px 0px 4px 16px;
+    font-size: 95%;
+}
+/* vim: set et ts=4 sts=4 sw=4: */
+/* $Id: default.css,v 1.11 2004-01-31 10:20:15 x2000habouzit Exp $ */

@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.6 2004-01-28 16:54:47 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.7 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -42,13 +42,13 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
 <br />
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" name="login" onSubmit="doChallengeResponse(); return false;">
-  <table id="pwd" class="bicol" cellpadding="4" summary="Formulaire de login">
+  <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">Connexion</th>
     </tr>
     <tr>
-      <td>
-        <span class="login">Login </span>(prenom.nom) :
+      <td class="titre">
+        Login (prenom.nom) :
       </td>
       <td>
         <input type="text" name="username"size=20 maxlength=50
@@ -56,8 +56,8 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
       </td>
     </tr>
     <tr>
-      <td>
-        <span class="login">Mot de passe:</span>
+      <td class="titre">
+        Mot de passe:
       </td>
       <td>
         <input type="password" name="password" size=10 maxlength=10>
@@ -83,7 +83,7 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 {dynamic}
 {if $smarty.request.response}<!-- failed login code //-->
 <br />
-<div class="warning">
+<div class="erreur">
   Erreur d'identification. Essaie à nouveau !
 </div>
 {/if}

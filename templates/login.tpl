@@ -1,4 +1,4 @@
-{* $Id: login.tpl,v 1.2 2004-01-26 19:40:51 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
@@ -11,7 +11,7 @@
   à jour sans que tu t'en aperçoives, mais d'autres nécessitent
   ton intervention.
   </p>
-  <p class="loinenbas">
+  <p class="normal" style="margin-top: 3em;">
     <a href="profil.php">Clique ici pour continuer.</a>
   </p>
 {elseif $naissance}
@@ -19,12 +19,12 @@
 {else}
 
 <div class="rubrique">Bienvenue {dyn s=$smarty.session.prenom} :o)
-  </div>
-  <div class="dernierlogin">
-    Ta connexion précédente date du
-    <strong>{dyn s=$smarty.session.lastlogin|date_format:"%x, %T"}</strong>
-    depuis la machine <strong>{dyn s=$smarty.session.host}</strong>
-  </div>
+</div>
+<div class="smaller">
+  Ta connexion précédente date du
+  <strong>{dyn s=$smarty.session.lastlogin|date_format:"%x, %T"}</strong>
+  depuis la machine <strong>{dyn s=$smarty.session.host}</strong>
+</div>
   
 {dynamic on="0$fiche_incitation"}
   <p class="normal">La dernière mise à jour de ta
@@ -69,7 +69,7 @@
       <td class="info">
         {$ev.texte|nl2br}
         <br />
-        <p class="warning">Annonce proposée par
+        <p class="smaller">Annonce proposée par
         <a href="javascript:x()" onclick="popWin('x.php?x={$ev.username}')">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
@@ -80,7 +80,7 @@
   {/foreach}
 {/dynamic}
 
-  <p class="warning">
+  <p class="smaller">
   Nota Bene : les informations présentées ici n'engagent que leurs auteurs
   respectifs et sont publiées à leur initiative. L'association Polytechnique.org
   ne pourrait en aucun cas être tenue responsable de la nature des propos relatés

@@ -1,4 +1,4 @@
-{* $Id: password_prompt_logged.tpl,v 1.5 2004-01-28 16:54:47 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.6 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 
 <div style="text-align:center">
   <table width="90%" summary="Accès sécurisé">
@@ -7,9 +7,11 @@
         <img src="{"images/cadenas_rouge.png"|url}" alt=" [ CADENAS ROUGE ] ">
       </td>
       <td>
-        <div class="explication">
-          Pour des raisons de sécurité, il est obligatoire de taper ton mot de passe, même
-          avec l'accès permanent, pour certaines opérations sensibles.
+        <div class="smaller">
+          <strong>
+            Pour des raisons de sécurité, il est obligatoire de taper ton mot de passe, même
+            avec l'accès permanent, pour certaines opérations sensibles.
+          </strong>
         </div>
       </td>
     </tr>
@@ -17,10 +19,10 @@
 </div>
 <br /><br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onSubmit='doChallengeResponse(); return false;'>
-  <table id="pwd" class="bicol" cellpadding="4" summary="Formulaire de login">
+  <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
-      <td>
-        <span class="login">Mot de passe:</span>
+      <td class="titre">
+        Mot de passe:
       </td>
       <td>
         <input type="password" name="password" size=10 maxlength=10>
@@ -40,7 +42,7 @@
 <br />
 {dynamic}
 {if $smarty.request.response}<!-- failed login code -->
-<div class="warning">
+<div class="erreur">
   Erreur d'identification. Essaie à nouveau !
 </div>
 {/if}

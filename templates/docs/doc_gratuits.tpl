@@ -1,4 +1,4 @@
-{* $Id: doc_gratuits.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_gratuits.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Pourquoi et comment choisir un e-mail gratuit
@@ -6,7 +6,7 @@
 
 
 <ul>
-  <li class="sstitre">
+  <li class="spaced">
   <div class="ssrubrique">
     A quoi sert un e-mail gratuit ?
   </div>
@@ -56,7 +56,7 @@
     perdus... Nous allons voir comment on peut objectivement faire un choix.
   </p>
   </li>
-  <li class="sstitre">
+  <li class="spaced">
   <div class="ssrubrique">
     Lequel choisir?
   </div>

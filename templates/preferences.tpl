@@ -1,4 +1,4 @@
-{* $Id: preferences.tpl,v 1.2 2004-01-26 19:40:51 x2000habouzit Exp $ *}
+{* $Id: preferences.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
 <div class="rubrique">
   Préférences
 </div>
@@ -10,14 +10,14 @@
       </th>
     </tr>
     <tr class="impair">
-      <td><div class="lien">
+      <td><div class="question">
           <a href="{"emails.php"|url}">Mes adresses de redirection</a>
         </div>
         <div class="explication">
           Tu peux configurer tes différentes redirections de mails ici.
         </div>
       </td>
-      <td><div class="lien">
+      <td><div class="question">
           <a href="{"alias.php"|url}">Mon alias mail @melix.net/.org</a>
         </div>
         <div class="explication">
@@ -26,14 +26,14 @@
       </td>
     </tr>
     <tr class="pair">
-      <td><div class="lien">
+      <td><div class="question">
           <a href="{"carva_redirect.php"|url}">Ma redirection de page WEB</a>
         </div>
         <div class="explication">
           Tu peux configurer ta redirection WEB http://www.carva.org/{dyn s=$smarty.session.username}
         </div>
       </td>
-      <td><div class="lien">
+      <td><div class="question">
           <a href="{"skins.php"|url}">Apparence du site (skins)</a>
         </div>
         <div class="explication">
@@ -50,7 +50,7 @@
       <th>Mots de passe et accès au site</th>
     </tr>
     <tr class="impair">
-      <td><div class="lien">
+      <td><div class="question">
           <a href="{"motdepassemd5.php"|url}">Changer mon mot de passe pour le site</a>
         </div>
         <div class="explication">
@@ -59,7 +59,7 @@
       </td>
     </tr>
     <tr class="pair">
-      <td><div class="lien">
+      <td><div class="question">
           <a href="{"acces_smtp.php"|url}">Activer l'accès SMTP et NNTP</a>
         </div>
         <div class="explication">
@@ -72,7 +72,7 @@
     <tr class="impair">
       <td>
 {if $has_cookie}
-        <div class="lien">
+        <div class="question">
           <a href="cookie_off.php">Supprimer l'accès permanent</a>
         </div>
         <div class="explication">
@@ -81,7 +81,7 @@
           comme initialement.
         </div>
 {else}
-        <div class="lien">
+        <div class="question">
           <a href="cookie_on.php">Attribuer un cookie d'authentification permanente</a>
         </div>
         <div class="explication">
