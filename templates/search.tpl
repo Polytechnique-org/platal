@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.22 2004-11-02 06:51:31 x2000habouzit Exp $
+        $Id: search.tpl,v 1.23 2004-11-02 07:19:07 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -34,7 +34,7 @@
         {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
       </td>
       <td class="right titre">
-        {if $with_soundex==0}
+        {if $with_soundex==0 && ($smarty.request.prenom || $smarty.request.nom)}
         [<a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
           Recherche par proximité sonore</a>]&nbsp;
         {/if}
@@ -60,7 +60,7 @@
         {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
       </td>
       <td class="right titre">
-        {if $with_soundex==0}
+        {if $with_soundex==0 && ($smarty.request.prenom || $smarty.request.nom)}
         [<a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
           Recherche par proximité sonore</a>]&nbsp;
         {/if}

@@ -8,16 +8,19 @@ Changes :
 		- First instance of the plugin class : class Trombi.  (FS#135)		-MC
 		- Now only use iso3166 countries, no more `nationalites`.			-MC
 
+	* Contacts :
+		- Trombino of the contacts is available !  (FS#138)					-MC
+
 	* Lists :
 		- Refusal message is shown on mail moderation page.  (FS#138)		-MC
+
+	* Search :
+		- Hide SoundEX search when neither name nor second name selected.	-MC
 
 	* Search+Contacts :
 		- Homeland is now a flag.  (FS#124)									-MC
 		- Women now have a &bull; (no more dirty gender icons).  (FS#122)	-MC
 		- Nicer icons.														-MC
-
-	* Contacts :
-		- Trombino of the contacts is available !  (FS#138)					-MC
 
 
 Fixes (from 0.9.1 branch) :
