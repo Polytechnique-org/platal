@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.15 2004-09-05 12:54:20 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.16 2004-09-05 12:54:46 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -193,7 +193,7 @@ function del_fwd(fwd) {
     <tr class="{cycle values="impair,pair"}">
       <td>
         {if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}
-        {if $a.expire}<span class='erreur'>(expire {$a.expire|date_format:"%d %b %Y"})</span>{/if}
+        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
       </td>
       {if $a.for_life}
       <td>garanti à vie*</td>
