@@ -29,10 +29,10 @@ require_once("xml-rpc-client.inc.php");
 function &lists_xmlrpc($uid, $pass, $fqdn=null)
 {
     global $globals;
-    
+
     $dom = empty($fqdn) ? $globals->mail->domain : $fqdn;
-    $url = "http://$uid:$pass/{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
-    $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+    $url = "http://$uid:$pass@{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
+    $client = new xmlrpc_client($url);
     return $client;
 }
 
