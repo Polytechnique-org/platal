@@ -61,6 +61,7 @@ class ExaleadKeyword{
 
 class ExaleadGroup{
 
+  var $gid = "";
   var $categories = array();
   var $title = "";
   var $clipped = false;
@@ -75,6 +76,7 @@ class ExaleadGroup{
     $this->categories[] = $category;
   }
 
+  function setGid($gid){$this->gid = $gid;}
   function setTitle($title){$this->title = $title;}
   function setClipped($clipped){$this->clipped = $clipped;}
   function setCount($count){$this->count = $count;}
@@ -83,6 +85,7 @@ class ExaleadGroup{
   function setResetHref($reset_href){$this->reset_href = $reset_href;}
 
   function clear(){
+   $this->gid = "";
    $this->categories = array();
    $this->title = "";
    $this->clipped = false;
