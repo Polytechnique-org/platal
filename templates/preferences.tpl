@@ -1,4 +1,4 @@
-{* $Id: preferences.tpl,v 1.1 2004-01-26 16:14:51 x2000habouzit Exp $ *}
+{* $Id: preferences.tpl,v 1.2 2004-01-26 19:40:51 x2000habouzit Exp $ *}
 <div class="rubrique">
   Préférences
 </div>
@@ -27,7 +27,7 @@
     </tr>
     <tr class="pair">
       <td><div class="lien">
-          <a href="{"acces_redirect.php"|url}">Ma redirection de page WEB</a>
+          <a href="{"carva_redirect.php"|url}">Ma redirection de page WEB</a>
         </div>
         <div class="explication">
           Tu peux configurer ta redirection WEB http://www.carva.org/{dyn s=$smarty.session.username}

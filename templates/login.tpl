@@ -1,4 +1,4 @@
-{* $Id: login.tpl,v 1.1 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.2 2004-01-26 19:40:51 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
@@ -26,8 +26,7 @@
     depuis la machine <strong>{dyn s=$smarty.session.host}</strong>
   </div>
   
-{if $fiche_incitation}
-{dynamic}
+{dynamic on="0$fiche_incitation"}
   <p class="normal">La dernière mise à jour de ta
   <a href="javascript:x()" onclick="popWin('x.php?x={$smarty.session.username}">fiche</a>
   date du {$fiche_incitation|date_format:"%x"}.
@@ -35,17 +34,14 @@
   Si tu souhaites la modifier, <a href=\"profil.php\">clique ici !</a>
   </p>
 {/dynamic}
-{/if}
 
-{if $photo_incitation}
-{dynamic}
+{dynamic on="0$photo_incitation"}
   <p class="normal">
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
     Clique <a href="javascript:x()" onclick="popWin('trombino.php','trmb','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=750,height=480')">ici</a>
     si tu souhaites en ajouter une.
   </p>
 {/dynamic}
-{/if}
 
 <br />
 

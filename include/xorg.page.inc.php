@@ -1,7 +1,10 @@
 <?php
 require("diogenes.core.page.inc.php");
 
-function block_dynamic($param, $content, &$smarty) { return $content; }
+function block_dynamic($param, $content, &$smarty) {
+    if(!isset($param['on']) || !empty($param['on']))
+        return $content;
+}
 
 function function_dyn($params) { return implode(' ',$params); }
 

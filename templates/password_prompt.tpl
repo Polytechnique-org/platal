@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.4 2004-01-26 12:50:19 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.5 2004-01-26 19:40:51 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -42,7 +42,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
 <br />
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" name="login" onSubmit="doChallengeResponse(); return false;">
-  <table class="bicol" cellpadding="4" summary="Formulaire de login">
+  <table id="pwd" class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">Connexion</th>
     </tr>

@@ -1,4 +1,4 @@
-{* $Id: password_prompt_logged.tpl,v 1.3 2004-01-26 12:50:19 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.4 2004-01-26 19:40:51 x2000habouzit Exp $ *}
 
 <div style="text-align:center">
   <table width="90%" summary="Accès sécurisé">
@@ -17,7 +17,7 @@
 </div>
 <br /><br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onSubmit='doChallengeResponse(); return false;'>
-  <table class="bicol" cellpadding="4" summary="Formulaire de login">
+  <table id="pwd" class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td>
         <span class="login">Mot de passe:</span>
