@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.33 2004-11-13 12:28:56 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.34 2004-11-13 12:48:44 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -101,8 +101,6 @@ class SField {
     function get_request() {
         $this->value =
         (isset($_REQUEST[$this->fieldFormName]))?trim($_REQUEST[$this->fieldFormName]):'';
-        if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
-            new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
     }
 
     /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
@@ -143,6 +141,8 @@ class QuickSearch extends SField {
     function QuickSearch($_fieldFormName) {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
+        if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
+            new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
     }
 
     function isempty() {
@@ -324,7 +324,7 @@ class StringSField extends SField {
         //return $field." RLIKE '^(.*[ -])?".replace_accent_regexp($regexp).".*'";
 
         //Nouvelle version plus rapide
-        $regexp = str_replace('-',' ',$this->value);
+        $regexp = str_replace('-','_',$this->value);
         $regexp = str_replace('*','%',$regexp);
         return "$field LIKE '$regexp%'";
     }
@@ -342,9 +342,9 @@ class StringSField extends SField {
 +*/
 class NameSField extends StringSField {
     function get_single_where_statement($field) {
-        $regexp = str_replace('-',' ',$this->value);
+        $regexp = str_replace('-','_',$this->value);
         $regexp = str_replace('*','%',$regexp);
-        return "$field LIKE '$regexp%' OR $field LIKE '% $regexp%'";
+        return "$field LIKE '$regexp%' OR $field LIKE '% $regexp%' OR $field LIKE '%-$regexp%'";
     }
     
     function get_order_statement() {
