@@ -61,7 +61,7 @@ switch (Env::get('action')) {
         }
 }
 
-if(Get::has('trombi')) {
+if(Get::get('trombi')) {
     require_once('trombi.inc.php');
     function getList($offset,$limit) {
 	global $globals;
