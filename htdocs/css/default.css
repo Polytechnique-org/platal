@@ -549,6 +549,7 @@ div.spacer { clear: both; }
     font-family: "MS Sans Serif", sans-serif;
     font-size: 75%;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 #body-menu .menu_item {
@@ -579,4 +580,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.45 2004-10-03 17:32:32 x2003bruneau Exp $ */
+/* $Id: default.css,v 1.46 2004-10-09 06:04:25 x2000habouzit Exp $ */
