@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.42 2004-09-25 20:14:05 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.43 2004-09-25 20:59:09 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -556,7 +556,6 @@ check_opts = {
     'forward_auto_discards'         : True,
     'header_filter_rules'           : [],
     'hold_these_nonmembers'         : [],
-    'host_name'                     : 'lists.polytechnique.org',
     'include_list_post_header'      : False,
     'include_rfc2369_headers'       : False,
     'new_member_options'            : 256,
@@ -586,10 +585,12 @@ def check_options((userdesc,perms),vhost,listname,correct=False):
             if mlist.__dict__[k] != v:
                 options[k] = v,mlist.__dict__[k]
                 if correct: mlist.__dict__[k] = v
-        real_name = str('-').join(mlist.internal_name().split('-')[1:])
-        if real_name != mlist.real_name:
-            options['real_name'] = real_name, mlist.real_name
-            if correct: mlist.real_name = real_name
+        if mlist.real_name != listname:
+            options['real_name'] = listname, mlist.real_name
+            if correct: mlist.real_name = listname
+        if mlist.host_name != vhost:
+            options['real_name'] = vhost, mlist.host_name
+            if correct: mlist.host_name = vhost
         if correct: mlist.Save()
         details = get_list_info((userdesc,perms),mlist)[0]
         mlist.Unlock()
@@ -619,6 +620,7 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
             os.umask(oldmask)
 
         mlist.real_name = listname
+        mlist.host_name = vhost
         mlist.description = desc
 
         mlist.advertised = int(advertise) is 0
@@ -627,6 +629,9 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.subscribe_policy = 2 * (int(inslevel) is 1)
         
         mlist.owner = map(lambda a: a+'@polytechnique.org', owners)
+        
+        mlist.subject_prefix = '['+listname+'] '
+        mlist.max_message_size = 0
 
         mlist.Save()
         mlist.Unlock()
