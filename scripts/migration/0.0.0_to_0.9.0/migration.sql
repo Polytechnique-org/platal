@@ -65,6 +65,6 @@ update groupex.aliases       AS gx
 drop table x4dat.listes_def;
 drop table x4dat.listes_ins;
 drop table x4dat.listes_mod;
-update x4dat.aliases set id=0 where `type`='liste'
+update x4dat.aliases set id=0 where `type`='liste';
 --------------------------------------------------------------------------------
 
