@@ -5,6 +5,10 @@ New :
 
 	* Core :
 		- Members can be disabled. It deletes volatile datas.				-MC
+	
+	* Install :
+		- Do not modify PHP include path from auto.prepend.inc.php			-SHK
+		- Add install.d/apache.conf with a sample Apache config file		-SHK
 
 	* Mails : Use HermesMailer.												-MC
 
@@ -144,6 +148,7 @@ ACRONYMS :
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
 	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
+	* SHK : Jeremy Lainé     (Sharky)   <jeremy.laine@m4x.org>
 	* VP  : Vincent Palatin             <vincent.palatin@m4x.org>
 	* XdX : Alexandre Hô     (XandreX)  <alexandre.ho@m4x.org>
 

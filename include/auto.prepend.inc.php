@@ -18,11 +18,9 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auto.prepend.inc.php,v 1.31 2004-11-16 20:36:12 x2000habouzit Exp $
+        $Id: auto.prepend.inc.php,v 1.32 2004-11-21 18:33:58 x99laine Exp $
  ***************************************************************************/
 
-ini_set('include_path',"/home/x2000habouzit/dev/diogenes/lib/:/usr/share/php:".ini_get('include_path'));
- 
 function microtime_float() 
 { 
     list($usec, $sec) = explode(" ", microtime()); 
