@@ -23,6 +23,10 @@ function function_dyn($params) {
     return stripslashes(htmlentities(implode(' ',$params)));
 }
 
+function escape_html(&$string) {
+    return is_string($string) ? htmlspecialchars($string) : $string;
+}
+
 class XorgPage extends DiogenesCorePage {
     var $_page_type;
     var $_tpl;
@@ -36,7 +40,8 @@ class XorgPage extends DiogenesCorePage {
         $this->config_dir   = $globals->spoolroot."/configs/";
         $this->cache_dir    = $globals->spoolroot."/cache/";
         
-	$this->default_modifiers = Array('escape');
+        $this->register_modifier('escape_html', 'escape_html');
+	$this->default_modifiers = Array('escape_html');
         $this->config_overwrite  = false;
         $this->compile_check     = isset($site_dev);
         $this->caching	         = ($type == SKINNED);

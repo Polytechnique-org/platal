@@ -5,7 +5,7 @@
   <tr class="impair">
     <td>
       <strong>QUERY:</strong><br />
-      {$query.query|regex_replace:"/(\n|^|$) */":"\n  "|replace:" ":"&nbsp;"|nl2br}
+      {$query.query|nl2br}
       <br />
     </td>
   </tr>
