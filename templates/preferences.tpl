@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: preferences.tpl,v 1.10 2004-11-04 16:59:30 x2000habouzit Exp $
+        $Id: preferences.tpl,v 1.11 2004-11-06 13:54:02 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
   Préférences
 </h1>
 
-<table class="bicol" summary="Préférences: services">
+<table class="bicol" summary="Préférences: services" cellpadding="0" cellspacing="0">
   <tr>
     <th colspan="2">Configuration des différents services du site
     </th>
@@ -47,7 +47,7 @@
       </div>
     </td>
   </tr>
-  <tr class="pair" cellpadding="0" cellspacing="0">
+  <tr class="pair">
     <td class='half'>
       <div class="question">
         <a href="{"carva_redirect.php"|url}">Ma redirection de page WEB</a>
