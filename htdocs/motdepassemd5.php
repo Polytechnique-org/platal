@@ -1,8 +1,6 @@
 <?php
 require("auto.prepend.inc.php");
-echo "<pre>";
-var_dump($_POST);
-echo "</pre>";
+
 if (!empty($_POST['response2']))  {             // la variable $response existe-t-elle ?
     // OUI, alors changeons le mot de passe
     $password = $_POST['response2'];
