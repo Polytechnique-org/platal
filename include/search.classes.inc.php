@@ -578,6 +578,9 @@ class PromoSField extends SField
     function get_request()
     {
         parent::get_request();
+        if (preg_match('/^[0-9]{2}$/', $this->value)){
+            $this->value = intval($this->value) + 1900;
+        }
         if (!(empty($this->value) or preg_match('/^[0-9]{4}$/', $this->value))) {
             new ThrowError('La promotion est une année à quatre chiffres.');
         }
