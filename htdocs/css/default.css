@@ -235,6 +235,29 @@ div.long td.lt { width: 35%; }
 div.long td.rt { width: 65%; }
 
 /**: VI. :**/
+  
+table.flags td.texte {
+    font-size: smaller;
+    font-weight: bold;
+    padding-left: 0.5em;
+}
+table.flags td.vert {
+    background-color: green;
+    width: 1.5em; height: 1.5em;
+    text-align: center;
+}
+table.flags td.orange {
+    background-color: #ff9900;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+}
+table.flags td.rouge {
+    background-color: red;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+}
 
 table.cadre_a_onglet{
     border-width: 0;
@@ -418,4 +441,4 @@ div.conteneur_tab {
     font-size: 95%
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.28 2004-07-24 16:06:57 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.29 2004-07-24 18:22:42 x2000habouzit Exp $ */

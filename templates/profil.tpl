@@ -1,4 +1,4 @@
-{* $Id: profil.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: profil.tpl,v 1.3 2004-07-24 18:22:43 x2000habouzit Exp $ *}
 
 {config_load file="profil.conf"}
 {literal}
@@ -22,10 +22,6 @@
   table.bicol span.nom {}
   table.bicol span.valeur {font-weight: bold;}
   table.bicol span.lien {font-size: smaller;}
-  table.flags td.texte {font-size: smaller; font-weight: bold; padding-left: 0.5em;}
-  table.flags td.vert {background-color: green; width: 1.5em; height: 1.5em; text-align: center;}
-  table.flags td.orange {background-color: #ff9900; width: 1.5em; height: 1.5em; text-align: center;}
-  table.flags td.rouge {background-color: red; width: 1.5em; height: 1.5em; text-align: center;}
   -->
 </style>
 {/literal}

@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.8 2004-02-20 10:14:58 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.9 2004-07-24 18:22:43 x2000habouzit Exp $
  *
  */
 
@@ -113,8 +113,6 @@ class Validate {
     function submit () {
         global $no_update_bd, $globals;
         if($no_update_bd) return false;
-        $globals->db->query("LOCK requests"); // le lock est obligatoire pour récupérer le dernier stamp !
-        
         if($this->unique)
             $globals->db->query("DELETE FROM requests WHERE user_id='".$this->uid
                     .   "' AND type='".$this->type."'");
@@ -127,8 +125,6 @@ class Validate {
                 .   "WHERE user_id='".$this->uid."' AND type='".$this->type."'");
         list($this->stamp) = mysql_fetch_row($sql);
         mysql_free_result($sql);
-
-        $globals->db->query("UNLOCK requests");
         return true;
     }
     

@@ -17,7 +17,6 @@
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
-------+-[ docs ]----------------------------------+----------------
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
@@ -26,7 +25,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ bordel ]--------------------------------+----------------
 ;	  | fiche_referent.php						  | 
 ;	  | recherche.php							  | 
-;	  | trombino.php							  | 
 ;	  | x.php									  | 
 ------+-[ listes ]--------------------------------+----------------
  ;	  | listes/creation.php						  | \
@@ -179,6 +177,7 @@ xx	  | services.php							  | docs/services.php
 xx	  | skins.php								  | -
 xx	  | trezo/gere_operations.php				  | -
 xx	  | trezo/index.php							  | -
+xx	  | trombino.php							  | 
 xx	  | trombipromo.php							  | 
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
