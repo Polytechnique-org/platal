@@ -25,7 +25,6 @@ div.nl {
     width: 64ex;
     text-align: justify;
     font-size: 10pt;
-    background: white;
 }
 
 div.nl a { text-decoration: none; }
@@ -38,9 +37,10 @@ div.nl div.title {
     border: 1px black solid;
     font-size: 140%;
     text-align: center;
-    color: #ff4040;
-    background: #ffffb0;
-    border: 2px #ff4040 solid;
+    color: inherit;
+    color: blue;
+    background: #eeeeee;
+    border: 2px #cccccc solid;
 }
 
 div.nl div.lnk {
@@ -55,16 +55,12 @@ div.nl h1 {
     padding: 2px 4ex 2px 0ex;
     width: 60ex;
     font-size: 100%;
-    border-bottom: 1px #ff4040 solid;
 }
 
 div.nl h1 span {
-    color: #ff4040;
-    background: #ffffb0;
     text-decoration: none;
     font-size: 140%;
     padding: 2px 1ex 2px 1ex;
-    border: 1px #ff4040 solid;
 }
 
 div.nl h2 {
@@ -81,7 +77,6 @@ div.nl h2 span {
     background: #eeeeee;
     text-decoration: none;
     padding: 2px 4px 2px 4px;
-    border: 1px #cccccc solid;
 }
 
 div.nl div.art {

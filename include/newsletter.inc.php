@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.22 2004-10-21 13:12:06 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.23 2004-10-24 16:56:13 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -420,14 +420,14 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68) {
 	$text = str_replace('[u]','<span style="text-decoration: underline">', $text);
 	$text = str_replace('[/u]','</span>', $text);
 	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','<a href="\1">\1</a>', $text);
-	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','<a href="mailto:\1">\1</a>', $text);
+	$text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','<a href="mailto:\1">\2</a>', $text);
 	return nl2br($text);
     } else {
 	$text = preg_replace('!\[\/?b\]!','*',$text);
 	$text = preg_replace('!\[\/?u\]!','_',$text);
 	$text = preg_replace('!\[\/?i\]!','/',$text);
 	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','[\1]', $text);
-	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','[mailto:\1]', $text);
+	$text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','[mailto:\1]', $text);
 	$text = $just ? justify($text,$width-$indent) : wordwrap($text,$width-$indent);
 	if($indent) {
 	    $ind = str_pad('',$indent);
