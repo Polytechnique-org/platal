@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.5 2004-02-11 15:35:32 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Documentations et Aides diverses
@@ -10,7 +10,7 @@
     </th>
 </tr>
 <tr class="impair">
-    <td style="width:50%">
+    <td class="half">
 	<div class="lien">
 	    <a href="doc_emails.php">Mes adresses de redirection</a>
 	</div>
@@ -80,7 +80,7 @@
     </td>
 </tr>
 <tr class="pair">
-    <td style="width:50%">
+    <td class="half">
 	<div class="lien">
 	    <a href="doc_smtp.php">SMTP sécurisé</a>
 	</div>
@@ -107,7 +107,7 @@
     </th>
 </tr>
 <tr class="impair">
-  <td style="width:50%">
+  <td class="half">
 	<div class="lien">
 	    <a href="doc_oe.php">Outlook Express</a>
 	</div>

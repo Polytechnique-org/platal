@@ -1,4 +1,4 @@
-{* $Id: doc_nntp.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: doc_nntp.tpl,v 1.4 2004-02-11 15:35:32 x2000habouzit Exp $ *}
 
 <div class="rubrique">Les forums de Polytechnique.org</div>
 <p class="normal">
@@ -88,7 +88,9 @@
 <ul>
   <li><strong>Serveur</strong> : <code>ssl.polytechnique.org</code></li>
   <li>Utiliser une connexion <strong>s&eacute;curis&eacute;e</strong> (SSL, port 563)</li>
-  <li style="text-align:justify;">Ce serveur demande &agrave; ce que tu t'identifies : utilise ton identifiant (prenom.nom) et le mot de passe que tu as choisi pour le service SMTP/NNTP.</li>
+  <li>
+    Ce serveur demande &agrave; ce que tu t'identifies : utilise ton identifiant (prenom.nom) et le mot de passe que tu as choisi pour le service SMTP/NNTP.
+  </li>
 </ul>
 <p class="normal">
   La configuration pas à pas, images à l'appui :

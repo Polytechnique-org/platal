@@ -1,4 +1,4 @@
-{* $Id: form.valid.ml.tpl,v 1.1 2004-02-07 18:04:56 x2000habouzit Exp $ *}
+{* $Id: form.valid.ml.tpl,v 1.2 2004-02-11 15:35:33 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
@@ -49,7 +49,7 @@
   <td>{$valid->membres_txt}</td>
 </tr>
 <tr>
-  <td style="border-top:1px dotted inherit; vertical-align: middle;">
+  <td class="middle" style="border-top:1px dotted inherit">
     <input type="submit" name="submit" value="Accepter" />
     <br /><br />
     <input type="submit" name="submit" value="Refuser" />

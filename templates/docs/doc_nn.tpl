@@ -1,4 +1,4 @@
-{* $Id: doc_nn.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: doc_nn.tpl,v 1.5 2004-02-11 15:35:32 x2000habouzit Exp $ *}
 
 <p class="normal">
     [<a href="{"docs/doc_nn.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -93,7 +93,7 @@
       correspondre à l'écran ci-contre.
 		</p>
   </td>
-  <td style="width:50%">
+  <td class="half">
     <p class="normal">
       2. Dans la partie <strong>Serveur de courrier sortant</strong>, indique
 			<code>ssl.polytechnique.org</code> dans le champ <strong>Serveur de

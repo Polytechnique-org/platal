@@ -1,4 +1,4 @@
-{* $Id: doc_oe.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: doc_oe.tpl,v 1.5 2004-02-11 15:35:32 x2000habouzit Exp $ *}
 
 <p class="normal">
   [<a href="{"docs/doc_oe.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -145,7 +145,7 @@
 
 <table summary="Quatrième étape" cellpadding="5">
 <tr> 
-  <td style="verical-align: middle; width:220px">
+  <td style="width:220px" class="middle">
     <p class="normal">
       1. Dans l'onglet <strong>&quot;Serveurs&quot;</strong>, indique 
       <strong>ssl.polytechnique.org</strong> comme serveur SMTP
@@ -260,7 +260,7 @@ Et maintenant quelques remarques :
   </td>
 </tr>
 <tr>
-  <td style="width:50%">
+  <td class="half">
       1. Dans le menu principal d'Outlook Express, choisis le sous-menu 
       <strong>&quot;Comptes&quot;</strong>.
   </td>
@@ -278,7 +278,7 @@ Et maintenant quelques remarques :
   </td>
 </tr>
 <tr>
-  <td style="width:50%">
+  <td class="half">
       1. Un compte est désigné par un nom de serveur. Il est possible que tu aies une liste
       vide la première fois que tu ouvres cette boite.
       Ici tu vois à quoi tu devras arriver en fin de configuration.
@@ -299,7 +299,7 @@ Et maintenant quelques remarques :
   </td>
 </tr>
 <tr>
-  <td style="width:50%">
+  <td class="half">
       1. Tu vas alors arriver à l'écran de configuration suivant
       (après avoir éventuellement du cliquer plusieurs fois sur <strong>suivant</strong>).
   </td>

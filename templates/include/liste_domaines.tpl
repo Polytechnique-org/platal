@@ -1,4 +1,4 @@
-{* $Id: liste_domaines.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: liste_domaines.tpl,v 1.2 2004-02-11 15:35:33 x2000habouzit Exp $ *}
 
 {dynamic}
 {$result}
@@ -14,12 +14,12 @@ Administrer le routage email sur ton(tes) domaine(s)
   Cependant, prends bien note que cette administration se fera bientôt depuis le site www.polytechnique.net.
 </p>
 
-<p style="text-align: right;">
+<div class="right">
 {foreach item=dom from=$domaines}
   <a href="{"domaine.php?domaine=$dom"|escape:"url"|url}">{$dom}</a>
   <br />
 {/foreach}
-</p>
+</div>
 {/if}
 
 {/dynamic}

@@ -68,7 +68,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | sondage/titre.php						  | 
 	  | sondage/validation.php					  | 
 ------+-[ emails ... ]----------------------------+----------------
-	  | emails.php								  | 
 	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
 	  | inscrire.php							  | 
@@ -174,6 +173,7 @@ xx	  | docs/doc_ssl.php						  | -
 xx	  | docs/index.php							  | -
 xx	  | domaineperso.php						  | -
 xx	  | dons.php								  | -
+xx	  | emails.php								  | -
 xx	  | ethique.php								  | docs/ethique.php
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php

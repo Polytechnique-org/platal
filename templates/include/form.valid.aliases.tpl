@@ -1,4 +1,4 @@
-{* $Id: form.valid.aliases.tpl,v 1.2 2004-02-07 17:18:16 x2000habouzit Exp $ *}
+{* $Id: form.valid.aliases.tpl,v 1.3 2004-02-11 15:35:33 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
@@ -24,7 +24,7 @@
   </td>
 </tr>
 <tr>
-  <td style="vertical-align: middle;">
+  <td class="middle">
     <input type="submit" name="submit" value="Accepter" />
     <br /><br />
     <input type="submit" name="submit" value="Refuser" />

@@ -1,4 +1,4 @@
-{* $Id: gere_operations.tpl,v 1.2 2004-02-11 13:15:35 x2000habouzit Exp $ *}
+{* $Id: gere_operations.tpl,v 1.3 2004-02-11 15:35:33 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -66,7 +66,7 @@
   <th>Solde en début de mois</th>
 </tr>
 <tr>
-  <td style="text-align:right">{$from_solde}</td>
+  <td class="right">{$from_solde}</td>
 </tr>
 </table>
 
@@ -102,8 +102,8 @@
     <td>{$op.id}</td>
     <td>{$op.date|date_format:"%d/%m/%Y"}</td>
     <td>{$op.label}</td>
-    <td style="text-align:right">{$op.debit}</td>
-    <td style="text-align:right">{$op.credit}</td>
+    <td class="right">{$op.debit}</td>
+    <td class="right">{$op.credit}</td>
     <td>
       <form method="POST" action="{$smarty.server.PHP_SELF}">
         <input type="hidden" name="operation_id" value="{$op.id}" />
@@ -124,7 +124,7 @@
   <th>Solde en fin de mois</th>
 </tr>
 <tr>
-  <td style="text-align:right">{$to_solde}</td>
+  <td class="right">{$to_solde}</td>
 </tr>
 </table>
 

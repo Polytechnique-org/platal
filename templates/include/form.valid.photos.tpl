@@ -1,4 +1,4 @@
-{* $Id: form.valid.photos.tpl,v 1.1 2004-02-07 18:32:41 x2000habouzit Exp $ *}
+{* $Id: form.valid.photos.tpl,v 1.2 2004-02-11 15:35:33 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
@@ -13,13 +13,13 @@
   </td>
 </tr>
 <tr>
-  <td style="vertical-align: middle;" colspan="2">
+  <td class="middle" colspan="2">
     <img src="{"getphoto.php?x=$valid->username"|url}" style="width:110px;" alt=" [ PHOTO ] " />
     <img src="{"getphoto.php?x=$valid->username&amp;req=true"|url}" style="width:110px;" alt=" [ PHOTO ] " />
   </td>
 </tr>
 <tr>
-  <td style="vertical-align: middle;">
+  <td class="middle">
     <input type="submit" name="submit" value="Accepter" />
     <br /><br />
     <input type="submit" name="submit" value="Refuser" />
