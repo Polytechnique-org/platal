@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.23 2004-10-25 12:48:02 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.24 2004-11-02 06:56:04 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -243,15 +243,13 @@
     <br />
     {min_auth level='cookie'}
     <input type='checkbox' name='mod_date_sort' {if $smarty.request.mod_date_sort}checked='checked'{/if} />
-    mettre les fiches modifiées récemment en premier <br />
+    mettre les fiches modifiées récemment en premier <br /> <br />
     {/min_auth}
     <input type="submit" name="rechercher" value="Chercher" />
-    </div>
+  </div>
 </form>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
 </p>
-{if $advanced eq "1"}
-  <strong>Attention !</strong> La recherche avancée concerne uniquement les inscrits sur le site polytechnique.org.
-{/if}
+
 {* vim:set et sw=2 sts=2 sws=2: *}
