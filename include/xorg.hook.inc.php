@@ -21,7 +21,7 @@
 
 require_once("PEAR.php");
 
-// {{{ XOrgHook
+// {{{ class XOrgHook
 
 /**
  * XOrg's Hooks API
@@ -41,7 +41,7 @@ require_once("PEAR.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
- * @version  $Id: xorg.hook.inc.php,v 1.5 2004-11-21 14:33:28 x2000habouzit Exp $
+ * @version  $Id: xorg.hook.inc.php,v 1.6 2004-11-21 14:43:57 x2000habouzit Exp $
  * @access   public
  * @link     http://doc.polytechnique.org/XOrgModule/#hook
  * @since    Classe available since 0.9.3
@@ -54,7 +54,7 @@ class XOrgHook extends PEAR
      * holds the name of the hook we want to run.
      *
      * @var    string
-     * @access private
+     m @access private
      */
     var $_name;
     
@@ -67,7 +67,7 @@ class XOrgHook extends PEAR
     var $_mods = Array();
     
     // }}}
-    // {{{ XOrgHook
+    // {{{ constructor XOrgHook()
 
     /**
      * Instanciates our Hook.
@@ -89,7 +89,7 @@ class XOrgHook extends PEAR
     }
 
     // }}}
-    // {{{ __call()
+    // {{{ function __call()
 
     /**
      * The overload helper for function calls.
