@@ -22,6 +22,7 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/utilisateurs.tpl');
 require_once("emails.inc.php");
+require_once("user.func.inc.php");
 
 /*
  * Already in SUID ?
@@ -31,23 +32,26 @@ if (isset($_SESSION['suid'])) {
     $page->kill("déjà en SUID !!!");
 }
 
+$login = isset($_REQUEST['login']) ? get_user_login($_REQUEST['login']) : false;
+
+
 /*
  * LOGS de l'utilisateur
  */
 
-if(isset($_REQUEST['logs_button'])) {
-    header("Location: logger.php?loguser={$_REQUEST['login']}&year=".date('Y')."&month=".date('m'));
+if(isset($_REQUEST['logs_button']) && $login) {
+    header("Location: logger.php?loguser=$login&year=".date('Y')."&month=".date('m'));
 }
 
 
 /*
  * SUID
  */
-if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SESSION['suid'])) {
-    $log_data = $_REQUEST['login']." by ".$_SESSION['forlife'];
+if(isset($_REQUEST['suid_button']) and $login and !isset($_SESSION['suid'])) {
+    $log_data = "login by ".$_SESSION['forlife'];
     $_SESSION['log']->log("suid_start",$log_data);
     $_SESSION['suid'] = $_SESSION;
-    $r=$globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['login']}'");
+    $r=$globals->db->query("SELECT id FROM aliases WHERE alias='$login'");
     if(list($uid) = mysql_fetch_row($r)) {
 	start_connexion($uid,true);
 	header("Location: ../");
@@ -60,57 +64,16 @@ if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SE
  * LE RESTE
  */
 
-if (!empty($_REQUEST['login'])) {
-    $needle = strtolower($_REQUEST['login']);
-
-    if (strstr($needle, '@')!==false) {
-        list($mbox, $fqdn) = split('@', $needle);
-        if ($fqdn=='polytechnique.org' || $fqdn=='m4x.org') {
-            $login = $mbox;
-        } elseif ($fqdn =='melix.net' || $fqdn=='melix.org') {
-            $res = $globals->db->query("SELECT  redirect
-                                          FROM  virtual_redirect
-                                    INNER JOIN  virtual USING(vid)
-                                         WHERE  alias='$mbox@melix.net'");
-            if (list($redir) = mysql_fetch_row($res)) {
-                list($login) = split('@', $redir);
-            } else {
-                $page->trig("il n'y a pas d'utilisateur avec cet alias melix");
-            }
-            mysql_free_result($res);
-        } else {
-            $res = $globals->db->query("SELECT  alias
-                                          FROM  aliases AS a
-                                    INNER JOIN  emails  AS e ON e.uid=a.id
-                                         WHERE  e.email='$needle' AND a.type='a_vie'");
-            if (($i=mysql_num_rows($res))!=1) {
-                if ($i) {
-                    $aliases = Array();
-                    while (list($a) = mysql_fetch_row($res)) $aliases[] = $a;
-                    $page->trig("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
-                } else {
-                    $page->trig("il n'y a pas d'utilisateur avec cette adresse mail");
-                }
-            } else {
-                list($login) = mysql_fetch_row($res);
-            }
-            mysql_free_result($res);
-        }
+if ($login) {
+    $r=$globals->db->query("SELECT  *
+                              FROM  auth_user_md5 AS u
+                        INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
+    if ($tmp = mysql_fetch_assoc($r)) {
+        $mr =& $tmp;
     } else {
-        $login = $needle;
+        $page->trig("il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)");
     }
-
-    if (!empty($login)) {
-        $r=$globals->db->query("SELECT  *
-                                  FROM  auth_user_md5 AS u
-                            INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
-        if ($tmp = mysql_fetch_assoc($r)) {
-            $mr =& $tmp;
-        } else {
-            $page->trig("il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)");
-        }
-        mysql_free_result($r);
-    }
+    mysql_free_result($r);
 }
 
 if (!empty($_REQUEST['user_id'])) {

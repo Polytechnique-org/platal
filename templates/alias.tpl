@@ -19,8 +19,8 @@
  ***************************************************************************}
 
 
+{dynamic}
 {if $success}
-  {dynamic}
   <p>
   a demande de création des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
   <strong>{$success}@{#globals.mail.alias_dom2#}</strong> a bien été enregistrée. Après
@@ -29,7 +29,6 @@
   <p>
     Encore merci de nous faire confiance pour tes e-mails !
   </p>
-  {/dynamic}
 {else}
   <h1>
     Adresses e-mail personnalisées
@@ -45,7 +44,6 @@
     sans doute à toutes tes questions
   </p>
 
-  {dynamic}
   {if $actuel}
   <p>
   <strong>Note : tu as déjà l'alias {$actuel}, or tu ne peux avoir qu'un seul alias à la fois.
@@ -83,7 +81,7 @@
       </tr>
     </table>
   </form>
-  {/dynamic}
 {/if}
+{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

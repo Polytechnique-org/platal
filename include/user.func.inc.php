@@ -67,6 +67,83 @@ function user_clear_all_subs($user_id, $really_del=true)
 }
 
 // }}}
+// {{{ function get_user_login()
 
+function get_user_login($data) {
+    global $globals, $page;
+
+    if (preg_match(',^[0-9]*$,', $data)) {
+        $res = $globals->db->query("SELECT alias FROM aliases WHERE type='a_vie' AND id=$data");
+        if (!mysql_num_rows($res)) {
+            $alias = false;
+        } else {
+            list($alias) = mysql_fetch_row($res);
+        }
+        mysql_free_result($res);
+        return $alias;
+    }
+
+    $data = trim(strtolower($data));
+
+    if (strstr($data, '@')===false) {
+        $data = $data.'@'.$globals->mail->domain;
+    }
+    
+    list($mbox, $fqdn) = split('@', $data);
+    if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
+
+        $res = $globals->db->query("SELECT COUNT(alias) FROM aliases WHERE alias='$mbox' AND type IN ('alias', 'a_vie')");
+        list($c) = mysql_fetch_row($res);
+        mysql_free_result($res);
+        if (!$c && $page) {
+            $page->trig("il n'y a pas d'utilisateur avec ce login");
+        }
+        return $c ? $mbox : false;
+
+    } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
+    
+        $res = $globals->db->query("SELECT  redirect
+                                      FROM  virtual_redirect
+                                INNER JOIN  virtual USING(vid)
+                                     WHERE  alias='$mbox@{$globals->mail->alias_dom}'");
+        if (list($redir) = mysql_fetch_row($res)) {
+            list($alias) = split('@', $redir);
+        } else {
+            $page->trig("il n'y a pas d'utilisateur avec cet alias");
+            $alias = false;
+        }
+        mysql_free_result($res);
+        return $alias;
+
+    } else {
+
+        $res = $globals->db->query("SELECT  alias
+                                      FROM  aliases AS a
+                                INNER JOIN  emails  AS e ON e.uid=a.id
+                                     WHERE  e.email='$data' AND a.type='a_vie'");
+        switch ($i = mysql_num_rows($res)) {
+            case 0:
+                $page->trig("il n'y a pas d'utilisateur avec cette addresse mail");
+                $alias = false;
+                break;
+                
+            case 1:
+                list($alias) = mysql_fetch_row($res);
+                break;
+                
+            default:
+                $alias = false;
+                if (has_perms()) {
+                    $aliases = Array();
+                    while (list($a) = mysql_fetch_row($res)) $aliases[] = $a;
+                    $page->trig("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
+                }
+        }
+        mysql_free_result($res);
+        return $alias;
+    }
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
