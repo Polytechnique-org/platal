@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.11 2004-09-09 22:57:38 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.12 2004-09-09 23:08:41 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -133,10 +133,11 @@ def get_members((userdesc,perms),listname):
     try:
         mlist = MailList.MailList(listname, lock=0)
     except:
-        return None
+        return 0
     members = mlist.getRegularMemberKeys()
     if ( mlist.advertised ) or ( is_admin_on(userdesc, perms, mlist) ) or ( userdesc.address in members ):
-            return (members,mlist.owner)
+        return (members,mlist.owner)
+    return 0
 
 def subscribe((userdesc,perms),listname):
     try:
@@ -181,7 +182,7 @@ def mass_subscribe((userdesc,perms),listname,users):
     try:
         mlist = MailList.MailList(listname)
     except:
-        return None
+        return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return None
@@ -206,7 +207,7 @@ def mass_unsubscribe((userdesc,prems),listname,users):
     try:
         mlist = MailList.MailList(listname)
     except:
-        return None
+        return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return None
@@ -224,7 +225,7 @@ def add_owner((userdesc,perms),listname,user):
     try:
         mlist = MailList.MailList(listname)
     except:
-        return None
+        return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return None
@@ -240,7 +241,7 @@ def del_owner((userdesc,perms),listname,user):
     try:
         mlist = MailList.MailList(listname)
     except:
-        return None
+        return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return None
@@ -254,16 +255,16 @@ def get_welcome((userdesc,perms),listname):
     try:
         mlist = MailList.MailList(listname, lock=0)
     except:
-        return None
+        return 0
     if not is_admin_on(userdesc, perms, mlist):
-        return None
+        return 0
     return mlist.info
 
 def set_welcome((userdesc,perms),listname,info):
     try:
         mlist = MailList.MailList(listname)
     except:
-        return None
+        return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return None
