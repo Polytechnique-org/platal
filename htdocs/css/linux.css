@@ -1,0 +1,101 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+div.rubrique {
+    color: #eeeeee;
+    background-color: #444444;
+    background-image: url( "../images/sk_linux_titre.jpg");
+    background-repeat: repeat-x;
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
+
+table.tinybicol, table.bicol {
+    background: #ccddff;
+    border: 1px solid #0067fe;
+    border-collapse: collapse;
+}
+
+table.tinybicol tr, table.bicol tr { }
+table.tinybicol tr.pair, table.bicol tr.pair      { background: #ddffcc; }
+table.tinybicol th, table.bicol th {
+    background-color: #0067fe;
+}
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+
+/*******************************************************************************
+    7   fiche.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+#body-logo {
+    border-bottom: none;
+    border-right: none;
+}
+
+#body-top {
+    border-bottom: none;
+}
+
+#body-menu {
+    border-right: none;
+}
+
+#body-menu .menu_title {
+    color: #000000;
+    background-image: url("../images/sk_linux_menu.jpg");
+    border-top: none;
+    border-bottom: none;
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */
+/* $Id: linux.css,v 1.1 2004-10-03 15:11:34 x2003cortot Exp $ */
