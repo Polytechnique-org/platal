@@ -17,9 +17,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.tpl,v 1.4 2004-09-02 23:36:57 x2000habouzit Exp $
+        $Id: vcard.tpl,v 1.5 2004-10-29 15:46:57 x2000habouzit Exp $
  ***************************************************************************}
-
 BEGIN:VCARD
 VERSION:3.0
 {if $vcard.epouse}
