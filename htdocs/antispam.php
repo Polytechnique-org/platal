@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.php,v 1.7 2004-08-31 22:01:30 x2000habouzit Exp $
+        $Id: antispam.php,v 1.8 2004-09-04 14:40:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -27,43 +27,43 @@ new_skinned_page('antispam.tpl', AUTH_MDP);
 require("mtic.inc.php");
 
 if (isset($_REQUEST['filtre']) and isset($_REQUEST['statut_filtre'])) {
-    // mise à jour du filtre
-    $result = $globals->db->query("select find_in_set('drop', flags) from emails where uid = {$_SESSION['uid']} and num = 0 and find_in_set('active', flags)");
-    list($filtre) = mysql_fetch_row($result);
-    mysql_free_result($result);
-    $new_filtre = (integer)$_REQUEST['statut_filtre'];
-    if ($new_filtre == 0 and isset($filtre)) {
-        // désactive le filtre
-        // échange les flags active et filtre d'un seul coup (de manière atomique)
-        $globals->db->query("UPDATE emails SET flags=IF(num=0, REPLACE(flags,'active','filtre'), REPLACE(flags,'filtre','active'))
-                     WHERE uid={$_SESSION['uid']} AND (find_in_set('active',flags) OR FIND_IN_SET('filtre',flags))");
-        // supprime la ligne num=0
-        $globals->db->query("delete from emails where uid={$_SESSION['uid']} and num = 0");
-    } elseif ($new_filtre != 0) {
-        // active le filtre
-        // ajoute la ligne num=0 avec le bon pipe et un flag filtre et pas de flag active
-        //  si le filtre n'est pas déjà actif et directement en actif si le filtre est déjà actif.
-        $globals->db->query("replace into emails set uid = {$_SESSION['uid']}, num = 0,
-                     email = '\"|maildrop /var/mail/.maildrop_filters/"
-                    .($new_filtre == 2 ? 'drop_spams':'tag_spams')." {$_SESSION['uid']}\"',
-                     flags = '".(isset($filtre) ? 'active' : 'filtre')
-                    .($new_filtre == 2 ? ',drop' : '')."'");
-        // échange les flags active et filtre d'un seul coup (de manière atomique) si le filtre n'est pas déjà actif
-        if (!isset($filtre))
-            $globals->db->query("UPDATE emails
-                         SET flags=IF(FIND_IN_SET('active',flags), REPLACE(flags,'active','filtre'), REPLACE(flags,'filtre','active'))
-                         WHERE uid={$_SESSION['uid']} AND (FIND_IN_SET('active',flags) OR FIND_IN_SET('filtre',flags))");
+    
+    $new_filter = intval($_REQUEST['statut_filtre']);
+    
+    $res = $globals->db->query("SELECT COUNT(*) FROM emails WHERE uid={$_SESSION['uid']} AND find_in_set('filter', flags)");
+    list($was_filter) = mysql_fetch_row($res);
+    mysql_free_result($res);
+
+    if ($new_filter == 0 && $was_filter) {
+	$globals->db->query("DELETE FROM emails WHERE uid = {$_SESSION['uid']} AND find_in_set('filter', flags)");
+    }
+
+    if ($new_filter != 0) {
+	$pipe = $new_filter == 2 ? 'drop_spams' : 'tag_spams';
+	if($was_filter) {
+	    $globals->db->query("UPDATE  emails
+				    SET  email = '\"|maildrop /var/mail/.maildrop_filters/$pipe {$_SESSION['uid']}\"'
+				  WHERE  uid = {$_SESSION['uid']} AND flags = 'filter'");
+	} else {
+	    $globals->db->query("INSERT INTO emails
+	                                 SET uid = {$_SESSION['uid']},
+				             email = '\"|maildrop /var/mail/.maildrop_filters/$pipe {$_SESSION['uid']}\"',
+					     flags = 'filter'");
+	}
     }
 }
 
-$result = $globals->db->query("SELECT FIND_IN_SET('drop', flags)!=0
+$result = $globals->db->query("SELECT email LIKE '%drop_spams%'
 				 FROM emails
-				 WHERE uid = {$_SESSION['uid']} AND num = 0 AND find_in_set('active', flags)");
-list($filtre) = mysql_fetch_row($result);
-$filtre += mysql_num_rows($result);
+				WHERE uid = {$_SESSION['uid']} AND find_in_set('filter', flags)");
+if(mysql_num_rows($result)) {
+    list($n) = mysql_fetch_row($result);
+    $page->assign('filtre',intval($n)+1);
+} else {
+    $page->assign('filtre',0);
+}
 mysql_free_result($result);
 
-$page->assign('filtre',$filtre);
 
 $page->run();
 ?>

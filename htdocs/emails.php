@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.5 2004-09-02 22:27:05 x2000habouzit Exp $
+        $Id: emails.php,v 1.6 2004-09-04 14:40:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -33,7 +33,7 @@ $page->mysql_assign($sql, 'aliases');
 
 $sql = "SELECT email
         FROM emails
-        WHERE uid = {$_SESSION["uid"]} AND num != 0 AND (FIND_IN_SET('active', flags) OR FIND_IN_SET('filtre', flags))";
+        WHERE uid = {$_SESSION["uid"]} AND FIND_IN_SET('active', flags)";
 $page->mysql_assign($sql, 'mails', 'nb_mails');
 
 

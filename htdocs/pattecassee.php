@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: pattecassee.php,v 1.7 2004-09-02 22:27:05 x2000habouzit Exp $
+        $Id: pattecassee.php,v 1.8 2004-09-04 14:40:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -78,7 +78,7 @@ L'équipe d'administration <support@polytechnique.org>";
     $page->assign('email',$email);
     $sel = $globals->db->query("SELECT e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
                         FROM emails as e1
-                        LEFT JOIN emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.num != e2.num)
+                        LEFT JOIN emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.email != e2.email)
                         INNER JOIN auth_user_md5 as u ON(e1.uid = u.user_id)
                         WHERE e1.email ='$email'
                         GROUP BY e1.uid");

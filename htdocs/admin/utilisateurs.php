@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.19 2004-09-02 23:57:43 x2000bedo Exp $
+        $Id: utilisateurs.php,v 1.20 2004-09-04 14:40:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -64,8 +64,8 @@ foreach($_POST as $key => $val) {
                 $errors[] = "invalid email $email";
                 break;
             }
-            $globals->db->query("INSERT INTO emails (uid,num,email,flags) 
-				 VALUES ({$_REQUEST['user_id']},{$_REQUEST['num']},'$email','active')");
+            $globals->db->query("INSERT INTO emails (uid,email,flags) 
+				 VALUES ({$_REQUEST['user_id']},'$email','active')");
             $errors[] = "Ajout de $email effectué";
             break;
 
@@ -180,9 +180,9 @@ if(isset($mr)) {
     $page->assign('lastlogin', $lastlogin);
     $page->assign('host', $host);
 
-    $sql = "SELECT email, num, flags, panne
-	    FROM emails
-	    WHERE num != 0 AND uid = {$mr['user_id']} order by num";
+    $sql = "SELECT email, flags, panne
+              FROM emails
+	     WHERE NOT FIND_IN_SET('filter',flags) AND uid = {$mr['user_id']}";
     $result=$globals->db->query($sql);
     $xorgmails = Array();
     $email_panne = Array();
@@ -190,7 +190,6 @@ if(isset($mr)) {
 	$xorgmails[] = $l;
 	if($l['panne']!="0000-00-00")
 	    $email_panne[] = "Adresse {$l['email']} signalée comme HS le {$l['panne']}";
-	$next_num = $l['num']+1;
     }
     mysql_free_result($result);
 
@@ -200,7 +199,6 @@ if(isset($mr)) {
 		       ORDER BY  type!= 'a_vie'", 'aliases');
     $page->assign_by_ref('xorgmails', $xorgmails);
     $page->assign_by_ref('email_panne', $email_panne);
-    $page->assign('next_num', $next_num);
 }
 
 $page->assign('errors',$errors);

@@ -1,6 +1,7 @@
 -- passage à diogenes
 ALTER TABLE `logger.sessions` ADD `auth` ENUM( 'native' ) DEFAULT 'native' NOT NULL AFTER `id`;
 ALTER TABLE `logger.sessions` ADD `sauth` ENUM( 'native' ) DEFAULT 'native' NOT NULL AFTER `host`;
+INSERT INTO logger.actions SET text="connexion_auth_ext",description="connection via l'auth des groupes X";
 
 -- gestion des skins
 ALTER TABLE `x4dat.skins` ADD COLUMN `skin_tpl` VARCHAR(32) AFTER `id`;
@@ -29,7 +30,6 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN host;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN nom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN prenom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse_soundex;
-INSERT INTO logger.actions SET text="connexion_auth_ext",description="connection via l'auth des groupes X";
 -- drop des anciens alias --> aliases
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN loginbis;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN username;

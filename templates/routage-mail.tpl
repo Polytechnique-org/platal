@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.tpl,v 1.6 2004-09-02 22:27:06 x2000habouzit Exp $
+        $Id: routage-mail.tpl,v 1.7 2004-09-04 14:40:03 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -37,12 +37,6 @@
   Erreur: {$smarty.session.forlife}@polytechnique.org doit renvoyer vers un email
   existant valide. En particulier, il ne peut pas être renvoyé vers lui-même,
   ni son équivalent en m4x.org, ni vers son équivalent polytechnique.edu.
-  </p>
-{/if}
-{if $retour == $smarty.const.ERROR_DUPLICATE_EMAIL}
-  <p class="erreur">
-  L'adresse {$smarty.request.email} fait déjà partie de tes adresses de redirection,
-  il est impossible de la mettre en double.
   </p>
 {/if}
 {if $mtic == 1}
@@ -89,27 +83,30 @@
       <tr class="{cycle values="pair,impair"}">
         <td><strong>{$e->email}</strong></td>
         <td>
-          <input type="checkbox" name="emails_actifs[]" value="{$e->num}" {if $e->active}checked="checked"{/if} /></td>
+          <input type="checkbox" name="emails_actifs[]" value="{$e->email}" {if $e->active}checked="checked"{/if} /></td>
         <td>
-          <select name="emails_rewrite[{$e->num}]">
-            <option value="poly" {if $e->rewrite == 1 and $e->m4x == 0}selected="selected"{/if}>
-              polytechnique.org</option>
-	    <option value="m4x" {if $e->rewrite == 1 and $e->m4x == 1}selected="selected"{/if}>
-              m4x.org</option>
-	    <option value="no" {if $e->rewrite == 0}selected="selected"{/if}>
-              aucune</option>
+          <select name="emails_rewrite[{$e->email}]">
+            <option value=''>--- aucune ---</option>
+            {foreach from=$alias item=a}
+            <option {if $e->rewrite eq "`$a.alias`@polytechnique.org"}selected='selected'{/if}
+              value='{$a.alias}@polytechnique.org'>{$a.alias}@polytechnique.org</option>
+            <option {if $e->rewrite eq "`$a.alias`@m4x.org"}selected='selected'{/if}
+              value='{$a.alias}@m4x.org'>{$a.alias}@m4x.org</option>
+            {/foreach}
           </select>
         </td>
-        <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;num={$e->num}">retirer</a></td>
+        <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;email={$e->email}">retirer</a></td>
       </tr>
       {/foreach}
     </table>
     <br />
     <input type="submit" value="Mettre à jour les emails actifs" name="emailop" />
   </div>
+</form>
   <p>
     Tu peux ajouter à cette liste une adresse email en la tapant ici et en cliquant sur Ajouter.
   </p>
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <div>
     <input type="text" size="35" maxlength="60" name="email" value="" />
     &nbsp;&nbsp;
