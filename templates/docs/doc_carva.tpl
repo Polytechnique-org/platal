@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_carva.tpl,v 1.8 2004-09-07 19:50:50 x2000coic Exp $
+        $Id: doc_carva.tpl,v 1.9 2004-09-07 19:58:18 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -50,7 +50,7 @@
 </div>
 <p>
   Dans le jargon de l'école, un 'carva' signifiait un 'X' lorsque celle-ci était 
-  située sur la montagne Ste Geneviève (<a href="javascript:x()" onclick="popWin('index.php#carva','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">
+  située sur la montagne Ste Geneviève (<a href="javascript:x()" onclick="popWin('{"docs/index.php#carva"|url}','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">
     voir la FAQ à ce sujet</a>). 
 </p>
 <br />
