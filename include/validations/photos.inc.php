@@ -32,7 +32,7 @@ class PhotoReq extends Validate
 
     var $unique = true;
 
-    var $rules = "Refuser les photos copyrightées, ou ayant 
+    var $rules = "Refuser les photos copyrightées, de mineurs, ou ayant 
     un caractère pornographique, violent, etc... Si une photo est mal 
     cadrée (20% de photo et 80% de blanc par exemple), si c'est un 
     camarade antique, on lui arrange sinon on lui 
