@@ -26,12 +26,14 @@
 <p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>, 
   il est possible de faire pointer 
+{dynamic}
 {if $smarty.session.alias}
-  l'adresse <strong>http://www.carva.org/{dyn s=$smarty.session.forlife}</strong>
+  l'adresse <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
 {else}
-  les adresses <strong>http://www.carva.org/{dyn s=$smarty.session.forlife}</strong>
+  les adresses <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
   et <strong>http://www.carva.org/{$smarty.session.alias}</strong> ";
 {/if}
+{/dynamic}
   vers la page WEB de ton choix.
 </p>
 <p>

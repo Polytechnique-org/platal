@@ -37,30 +37,32 @@
 {include file='include/form_naissance.tpl'}
 {else}
 
-<h1>
-  Bienvenue {dyn s=$smarty.session.prenom} :o)
-</h1>
+{dynamic}
+
+<h1>Bienvenue {$smarty.session.prenom} :o)</h1>
+
 <div class="smaller">
   Ta connexion précédente date du
-  <strong>{dyn s=$smarty.session.lastlogin|date_format:"%x, %T"}</strong>
-  depuis la machine <strong>{dyn s=$smarty.session.host}</strong>
+  <strong>{$smarty.session.lastlogin|date_format:"%x, %T"}</strong>
+  depuis la machine <strong>{$smarty.session.host}</strong>
 </div>
   
-{dynamic on="0$fiche_incitation"}
+{if $fiche_incitation}
   <p>La dernière mise à jour de ta
   <a href="{"fiche.php"|url}?user={$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format:"%x"}.
   Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
   </p>
-{/dynamic}
+{/if}
 
-{dynamic on="0$photo_incitation"}
+{if $photo_incitation}
   <p>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
     Clique <a href="{"trombino.php"|url}">ici</a>
     si tu souhaites en ajouter une.
   </p>
+{/if}
 {/dynamic}
 
 <br />

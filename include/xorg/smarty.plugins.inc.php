@@ -26,44 +26,7 @@
  */
 function block_dynamic($param, $content, &$smarty)
 {
-    if(isset($param['on']) xor empty($param['on'])) {
-        return $content;
-    }
-}
-
-// }}}
-// {{{ function function_implode()
-
-/**
- * smarty function equivalent to php implode one.
- */
-function function_implode($params)
-{
-    $sep = ' ';
-    if(isset($params['sep'])) {
-        $sep = $params['sep'];
-        unset($params['sep']);
-    }
-    foreach($params as $key=>$val) {
-        if(empty($params[$key])) {
-            unset($params[$key]);
-        }
-    }
-
-    return stripslashes(implode($sep,$params));
-}
-
-// }}}
-// {{{ function function_dyn()
-
-/**
- * smarty function, woking like {dynamic} block
- *
- * @deprecated since 0.9.0
- */
-function function_dyn($params)
-{
-    return stripslashes(implode(' ',$params));
+    return $content;
 }
 
 // }}}

@@ -74,8 +74,6 @@ class XorgPage extends DiogenesCorePage
         $this->DiogenesCorePage();
 	require_once('xorg/smarty.plugins.inc.php');
         $this->register_block('dynamic', 'block_dynamic', false);
-        $this->register_function('dyn', 'function_dyn', false);
-        $this->register_function('implode', 'function_implode');
         $this->register_prefilter('at_to_globals');
 
         // if necessary, construct new session

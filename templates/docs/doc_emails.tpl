@@ -21,9 +21,10 @@
 
 <h1>Mes Redirections d'adresses emails</h1>
 <h2>En quoi ça consiste, comment ça marche ?</h2>
+{dynamic}
 <p>
     Polytechnique.org te fournit un service de redirection de tes mails à vie. Toute ta vie, tu auras
-    l'adresse <strong>{dyn s=$smarty.session.forlife}@polytechnique.org</strong>
+    l'adresse <strong>{$smarty.session.forlife}@polytechnique.org</strong>
     à ta disposition. Cependant, il s'agit d'une redirection, il faut donc que tu aies une boite au
     lettres fonctionnelles pour recevoir ton courrier (il en existe des
     <a href="{"docs/doc_gratuits.php"|url}">gratuites</a>).
@@ -31,9 +32,10 @@
 <p>
     Ainsi, durant toute ta vie, et malgré d'eventuels nombreux changements d'adresses réelles, tous
     tes correspondants pourront toujours te contacter sur
-    <strong>{dyn s=$smarty.session.forlife}@polytechnique.org</strong> et 
-    <strong>{dyn s=$smarty.session.forlife}@m4x.org</strong>.
+    <strong>{$smarty.session.forlife}@polytechnique.org</strong> et 
+    <strong>{$smarty.session.forlife}@m4x.org</strong>.
 </p>
+{/dynamic}
 <p>
     L'utilisation de ce service est très simple. Sur <a href="{"emails.php"|url}">cette
     page</a>, tu trouveras un formulaire pour ajouter de nouvelles adresses de redirection. Tous

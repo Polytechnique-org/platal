@@ -19,12 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic on="0$message"}
-<p class="erreur">
-{$message}
-</p>
-{/dynamic}
-
 <h1>
 {if $actif}Modification du mot de passe SMTP/NNTP{else}Activation de ton compte SMTP/NNTP{/if}  
 </h1>

@@ -34,13 +34,13 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "Valider"
     $globals->db->query("update auth_user_md5 set smtppass = '{$_REQUEST['smtppass1']}' where user_id = ".$_SESSION['uid']);
     $_SESSION['log']->log("passwd_ssl");
 
-    $page->assign('message','Mot de passe enregistré');
+    $page->trig('Mot de passe enregistré');
 
 } elseif (isset($_REQUEST['op']) && $_REQUEST['op'] == "Supprimer") {
 
     $globals->db->query("update auth_user_md5 set smtppass = '' where user_id = ".$_SESSION['uid']);
     $_SESSION['log']->log("passwd_del");
-    $page->assign('message','Compte SMTP et NNTP supprimé');
+    $page->trig('Compte SMTP et NNTP supprimé');
 
 }
 

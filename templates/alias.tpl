@@ -20,14 +20,16 @@
 
 
 {if $success}
+  {dynamic}
   <p>
-  a demande de création des alias <strong>{dyn s=$success}@{#globals.mail.alias_dom#}</strong> et
-  <strong>{dyn s=$success}@{#globals.mail.alias_dom2#}</strong> a bien été enregistrée. Après
+  a demande de création des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
+  <strong>{$success}@{#globals.mail.alias_dom2#}</strong> a bien été enregistrée. Après
     vérification, tu recevras un mail te signalant l'ouverture de ces adresses.
   </p>
   <p>
     Encore merci de nous faire confiance pour tes e-mails !
   </p>
+  {/dynamic}
 {else}
   <h1>
     Adresses e-mail personnalisées
@@ -43,19 +45,20 @@
     sans doute à toutes tes questions
   </p>
 
-  {dynamic on="0$actuel"}
+  {dynamic}
+  {if $actuel}
   <p>
   <strong>Note : tu as déjà l'alias {$actuel}, or tu ne peux avoir qu'un seul alias à la fois.
     Si tu effectues une nouvelle demande l'ancien alias sera effacé.</strong>
   </p>
-  {/dynamic}
+  {/if}
 
-  {dynamic on="0$demande"}
+  {if $demande}
   <p>
   <strong>Note : tu as déjà effectué une demande pour {$demande->alias}, dont le traitement est
     en cours. Si tu souhaites modifier ceci refais une demande, sinon ce n'est pas la peine.</strong>
   </p>
-  {/dynamic}
+  {/if}
 
   <br />
   <form action="{$smarty.server.PHP_SELF}" method="post">
@@ -67,19 +70,20 @@
         <td>Alias demandé :</td>
       </tr>
       <tr>
-        <td><input type="text" name="alias" value="{dyn s=$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
+        <td><input type="text" name="alias" value="{$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
       </tr>
       <tr>
         <td>Brève explication :</td>
       </tr>
       <tr>
-        <td><textarea rows="5" cols="50" name="raison">{dyn s=$r_raison}</textarea></td>
+        <td><textarea rows="5" cols="50" name="raison">{$r_raison}</textarea></td>
       </tr>
       <tr>
         <td><input type="submit" name="submit" value="Envoyer" /></td>
       </tr>
     </table>
   </form>
+  {/dynamic}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -61,10 +61,10 @@
         <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
       </tr>
       {/if}
-      {if $c.pays || $c.ville || $c.region}
+      {if $c.pays || $c.ville}
       <tr>
         <td class="lt">Géographie:</td>
-        <td class="rt">{implode sep=", " s1=$c.ville s2=$c.region s3=$c.pays}</td>
+        <td class="rt">{$c.ville}{if $c.ville && $c.pays}, {/if}{$c.pays}</td>
       </tr>
       {/if}
       {if $c.mobile}
