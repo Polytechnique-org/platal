@@ -14,4 +14,4 @@ insert into  virtual_redirect
        from  virtual         AS v
  inner join  groupex.aliases as d ON(v.alias=d.domain);
 
-delete from virtual where domain like '%@melix.net';
+delete from groupex.aliases where domain like '%@melix.net';
