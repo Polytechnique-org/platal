@@ -15,7 +15,7 @@ class Exalead{
   var $data;
 
   var $currentGroup;
-  var $currentCategory;
+  var $currentCategories = array();
   var $currentSpelling;
   var $currentHit;
   var $currentHitField;
@@ -37,7 +37,7 @@ class Exalead{
   function Exalead($base_cgi = ''){
      $this->data = new ExaleadData();
      $this->currentGroup = new ExaleadGroup();
-     $this->currentCategory = new ExaleadCategory();
+     $this->currentCategories = array();
      $this->currentSpelling = new ExaleadSpelling();
      $this->currentHit = new ExaleadHit();
      $this->currentHitField = new ExaleadHitField();
@@ -112,7 +112,9 @@ class Exalead{
       }
       fclose($fp);
     }*/
+    //echo $xml_response;exit;
     $this->parse($xml_response);
+    //var_dump($this);
   }
 
   //pour recuperer tous les résultats d'une base indexée
@@ -252,17 +254,26 @@ class Exalead{
   }
 
   function startCategory(&$attrs){
-     $this->currentCategory->name = utf8_decode($attrs['NAME']);
-     $this->currentCategory->display = utf8_decode($attrs['DISPLAY']);
-     $this->currentCategory->count = $attrs['COUNT'];
-     $this->currentCategory->automatic = $attrs['AUTOMATIC'];
-     if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = convert_url($attrs['REFINEHREF']);
+     $currentCategory = new ExaleadCategory();
+     $currentCategory->name = utf8_decode($attrs['NAME']);
+     $currentCategory->display = utf8_decode($attrs['DISPLAY']);
+     $currentCategory->count = $attrs['COUNT'];
+     $currentCategory->automatic = $attrs['AUTOMATIC'];
+     $currentCategory->cref = $attrs['CREF'];
+     if(isset($attrs['REFINEHREF'])) $currentCategory->refine_href = convert_url($attrs['REFINEHREF']);
      //if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = $attrs['REFINEHREF'];
-     if(isset($attrs['EXCLUDEHREF'])) $this->currentCategory->exclude_href = $attrs['EXCLUDEHREF'];
-     if(isset($attrs['RESETHREF'])) $this->currentCategory->reset_href = $attrs['RESETHREF'];
-     $this->currentCategory->cref = $attrs['CREF'];
-     $this->currentCategory->gid = $attrs['GID'];
-     $this->currentCategory->gcount = $attrs['GCOUNT'];
+     if(isset($attrs['EXCLUDEHREF'])){
+       $currentCategory->exclude_href = $attrs['EXCLUDEHREF'];
+     }
+     else{
+       $currentCategory->exclude_href = '_c=-'.$currentCategory->cref;
+     }
+     if(isset($attrs['RESETHREF'])){
+       $currentCategory->reset_href = $attrs['RESETHREF'];
+     }
+     $currentCategory->gid = $attrs['GID'];
+     $currentCategory->gcount = $attrs['GCOUNT'];
+     $this->currentCategories[] = $currentCategory;
   }
 
   function startSearch(&$attrs){}
@@ -378,8 +389,20 @@ class Exalead{
      $this->currentGroup->clear();
   }
   function endCategory(){
-     $this->currentGroup->addCategory($this->currentCategory);
-     $this->currentCategory->clear();
+     //the parent element is a Group element ?
+     if(count($this->currentCategories) == 1){
+       $this->currentGroup->addCategory(array_pop($this->currentCategories));
+     }
+     else{
+       //var_dump($this->currentCategories);
+       $category = array_pop($this->currentCategories);
+       //reset($this->currentCategories);
+       end($this->currentCategories);
+       //var_dump($this->currentCategories);
+       $parentCategory = &$this->currentCategories[key($this->currentCategories)];
+       //var_dump($parentCategory);
+       $parentCategory->addCategory($category);
+     }
   }
   function endSearch(){
   }

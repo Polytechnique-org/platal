@@ -142,7 +142,7 @@ function _display_3_columns($title, $count, $refine, $exclude, $categorie){
 	                       href=\"?_C=".$refine."&amp;_f=xml2\"
 		               title=\"$title\"
 	                    >$extract</a></td><td width=\"10%\">$count</td><td width=\"10%\">
-			    <a href=\"?_C=".$exclude."?>&amp;_f=xml2\"
+			    <a href=\"?_C=".$exclude."&amp;_f=xml2\"
                                title=\"$title_exclude\">[-]</a></td>
 		        </tr>";
 
@@ -177,6 +177,30 @@ function _display_2_columns($title, $reset, $excluded, $categorie){
             </tr>";
 }
 
+function _display_resume_groupe_category(&$group, $context, $padding = ''){
+     $result = '';
+      foreach($group->categories as $categorie){
+        $title = (empty($categorie->display)?$categorie->name:$categorie->display);
+        $count = (empty($categorie->count)?'':' ('.$categorie->count.')');
+        $refine = $context.'/'.$categorie->refine_href;
+	$exclude = $context.'/'.$categorie->exclude_href;
+	$reset = $context.'/'.$categorie->reset_href;
+	
+        if($categorie->display != ''){
+	  if($categorie->is_normal()){
+            $result .= _display_3_columns($padding.$title, $count, $refine, $exclude, true);
+	  }
+	  else{
+            $result .= _display_2_columns($padding.$title, $reset, $categorie->is_excluded(), true);
+	  }
+	}
+	if(count($categorie->categories) > 0){
+          $result .= _display_resume_groupe_category($categorie, $context, $padding.'-');
+	}
+      }
+      return $result;
+}
+
 /**
 * This function is used to resume database content for given group (template argument 'groupe')
 */
@@ -194,24 +218,8 @@ function _display_resume_groupe($params, &$smarty){
   $groupe = $params['groupe'];
   foreach($exalead_data->groups as $group){
     if($group->title == $groupe){
-      $array = & $group->categories;
       $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">$groupe</th>";
-      foreach($array as $categorie){
-        $title = (empty($categorie->display)?$categorie->name:$categorie->display);
-        $count = (empty($categorie->count)?'':' ('.$categorie->count.')');
-        $refine = $exalead_data->query->context.'/'.$categorie->refine_href;
-	$exclude = $exalead_data->query->context.'/'.$categorie->exclude_href;
-	$reset = $exalead_data->query->context.'/'.$categorie->reset_href;
-	
-        if($categorie->display != ''){
-	  if($categorie->is_normal()){
-            $result .= _display_3_columns($title, $count, $refine, $exclude, true);
-	  }
-	  else{
-            $result .= _display_2_columns($title, $reset, $categorie->is_excluded(), true);
-	  }
-	}
-      }
+      $result .= _display_resume_groupe_category($group, $exalead_data->query->context);
       $result .= "</table>";
       return $result;
     }

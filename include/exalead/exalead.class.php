@@ -124,8 +124,13 @@ class ExaleadCategory{
   var $cref = "";
   var $gid = "";
   var $gcount = "";
+  var $categories = array();
 
   function ExaleadCategory(){}
+
+  function addCategory($category){
+    $this->categories[] = $category;
+  }
 
   function clear(){
    $this->name = "";
