@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.head.tpl,v 1.3 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: utilisateurs.head.tpl,v 1.4 2004-09-01 18:46:21 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -30,12 +30,13 @@
   table.admin th.login,th.password,th.perms {border-top: 1px solid black;}
   table.admin th.login,td.login {background-color: #f9e89b;}
   table.admin td.loginr {background-color: #f9e89b; font-weight: bold; text-align: right;}
-  table.admin th.action,td.action {background-color: blue; color: yellow;}
+  table.admin th.action,td.action {background-color: blue; color: yellow; font-weight: normal; text-align: center;}
   table.admin th.password,th.perms,td.password,td.perms {background-color: #ffc0c0;}
   table.admin th.detail {text-align: center;}
   table.admin th.alias,td.alias { background-color: #F9E89B;}
   table.admin th.polyedu,td.polyedu { border-top: 1px solid black; border-bottom: 1px solid black;}
   table.admin th.alias {text-align: center;}
+  .action input[type=submit] { height: 3ex; width: 80%; }
   -->
 </style>
 
