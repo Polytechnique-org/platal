@@ -27,7 +27,7 @@ div.rubrique {
         [ Tableaux à lignes alternées, en taille normale, ou tiny ]
 *******************************************************************************/
 
-table.bicol {
+table.tinybicol, table.bicol {
     background: #80a0c0;
     border: 1px solid #305070;
     border-collapse: collapse;
@@ -35,7 +35,7 @@ table.bicol {
 table.tinybicol tr, table.bicol tr { }
 table.tinybicol tr.impair , table.bicol tr.impair { background: #80a0c0; }
 table.tinybicol tr.pair, table.bicol tr.pair      { background: #99b9d0; }
-table.bicol th {
+table.tinybicol th, table.bicol th {
     background: #305070;
     color: #ffffff;
 }
@@ -128,4 +128,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: sharky.css,v 1.2 2004-08-29 16:02:39 x2000habouzit Exp $ */
+/* $Id: sharky.css,v 1.3 2004-08-29 16:20:42 x2000habouzit Exp $ */

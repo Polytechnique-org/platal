@@ -1,4 +1,4 @@
-{* $Id: sendmail.tpl,v 1.6 2004-08-29 16:02:39 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.7 2004-08-29 16:20:42 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -87,6 +87,10 @@
   </tr>
 {/if}
 {/foreach}
+{if $key is even}
+    <td></td>
+  </tr>
+{/if}
   </table>
 {/if}
 
