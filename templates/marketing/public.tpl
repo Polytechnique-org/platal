@@ -19,9 +19,20 @@
  ***************************************************************************}
 
 
-{if $smarty.request.num}
+{if $already}
 
-{if $smarty.request.valide}
+<p>
+Merci de nous avoir communiqué cette information !
+</p>
+<p>
+Nous avions déjà connaissance de cette adresse, nous espérons donc comme toi que {$prenom} va s'inscrire au plus vite.
+</p>
+<p>
+Si tu le connais personnellement, un petit mail pour lui expliquer les atouts de Polytechnique.org
+peut sans aucun doute l'aider à se décider !
+</p>
+
+{elseif $ok}
 
 <p>
   Merci de nous avoir communiqué cette information !  Un administrateur de Polytechnique.org va
@@ -74,8 +85,8 @@
     <tr class="impair">
       <td>Nous lui écrirons :</td>
       <td>
-        <input type="radio" name="origine" value="perso" checked="checked" /> en ton nom<br />
-        <input type="radio" name="origine" value="equipe" /> au nom de l'équipe Polytechnique.org
+        <input type="radio" name="origine" value="user" checked="checked" /> en ton nom<br />
+        <input type="radio" name="origine" value="staff" /> au nom de l'équipe Polytechnique.org
       </td>
     </tr>
   </table>
@@ -85,8 +96,6 @@
     <input type="submit" name="valide" value="Valider" />
   </div>
 </form>
-{/if}
-
 {/if}
 
 {/if}

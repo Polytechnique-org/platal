@@ -79,7 +79,6 @@
       <th>Nom</th>
       <th>Dernière adresse connue</th>
       <th>Statut</th>
-      <th>AX</th>
       <th>&nbsp;</th>
     </tr>
     {iterate from=$nonins item=it}
@@ -96,11 +95,10 @@
         {/if}
       </td>
       <td class="center">
+        <a href="private.php?uid={$it.user_id}">{*
+          *}<img src="{rel}/images/admin.png" alt='Marketing' title="Marketing" /></a>
         <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
           *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
-      </td>
-      <td>
-        <a href="utilisateurs_marketing.php?xmat={$it.user_id}">Marketing</a>
       </td>
     </tr>
     {/iterate}

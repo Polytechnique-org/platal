@@ -44,7 +44,7 @@
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && !$c.wasinscrit}
-    <a href="{"marketing/public.php"|url}?num={$c.matricule}" class='popup'>clique ici si tu connais son adresse email !</a>
+    <a href="{rel}/marketing/public.php?num={$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
     {/if}
     {/min_auth}
   </div>

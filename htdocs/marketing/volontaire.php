@@ -32,7 +32,7 @@ $page->assign('promos', $res->fetchColumn());
 
 
 if (Env::has('promo')) {
-    $sql = "SELECT  a.nom, a.prenom,
+    $sql = "SELECT  a.nom, a.prenom, a.user_id,
                     m.email, sa.alias AS forlife
               FROM  register_marketing AS m
         INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid AND a.promo = {?}
