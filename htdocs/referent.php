@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.php,v 1.6 2004-08-31 19:48:46 x2000habouzit Exp $
+        $Id: referent.php,v 1.7 2004-09-03 00:20:28 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -66,16 +66,16 @@ mysql_free_result($res);
 $page->assign_by_ref('secteurs', $secteurs);
 
 //on recupere les sous-secteurs si necessaire
+$ss_secteurs[''] = '';
 if(!empty($secteur_selectionne))
 {
   $res = $globals->db->query("SELECT id, label FROM emploi_ss_secteur
                       WHERE secteur = '$secteur_selectionne'");
-  $ss_secteurs[''] = '';
   while(list($tmp_id, $tmp_label) = mysql_fetch_row($res))
     $ss_secteurs[$tmp_id] = $tmp_label;  
   mysql_free_result($res);
-  $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 }
+$page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
 //recuperation des noms de pays
 $res = $globals->db->query("SELECT a2, pays FROM geoloc_pays WHERE pays <> '' ORDER BY pays");
@@ -88,11 +88,12 @@ $page->assign_by_ref('pays', $pays);
 //On vient d'un formulaire
 if(isset($_REQUEST['Chercher'])){
 
-  $champ_select = 'm.uid, a.prenom, a.nom, a.promo, a.username, m.expertise';
+  $champ_select = 'm.uid, a.prenom, a.nom, a.promo, l.alias, m.expertise';
   $champ_select = $champ_select.', mp.pid';
   $champ_select = $champ_select.', ms.secteur, ms.ss_secteur';
 
   $clause_from = 'FROM mentor as m LEFT JOIN auth_user_md5 AS a ON(m.uid = a.user_id)';
+  $clause_from = $clause_from.' INNER JOIN aliases AS l ON (a.user_id=l.id AND l.type=\'a_vie\')';
   $clause_from = $clause_from.' LEFT JOIN mentor_pays AS mp ON(m.uid = mp.uid)';
   $clause_from = $clause_from.' LEFT JOIN mentor_secteurs AS ms ON(m.uid = ms.uid)';
 
@@ -140,7 +141,7 @@ if(isset($_REQUEST['Chercher'])){
       $page->assign('resultats',true);
       $personnes = Array();
       $page->assign_by_ref('personnes',$personnes);
-      while((list($uid, $prenom, $nom, $promo, $username, $expertise_bd, $pays_id, $secteur_id, $ss_secteur_id) = mysql_fetch_row($res))
+      while((list($uid, $prenom, $nom, $promo, $forlife, $expertise_bd, $pays_id, $secteur_id, $ss_secteur_id) = mysql_fetch_row($res))
           || ($nb_resultats >= $nb_max_resultats_total)){
         if($current_uid != $uid){
           $current_uid = $uid;
@@ -150,7 +151,7 @@ if(isset($_REQUEST['Chercher'])){
             $pers_trouve['nom'] = $nom;
 	    $pers_trouve['prenom'] = $prenom;
 	    $pers_trouve['promo'] = $promo;
-	    $pers_trouve['username'] = $username;
+	    $pers_trouve['forlife'] = $forlife;
 	    $pers_trouve['expertise'] = $expertise_bd;
 	    $personnes[] = $pers_trouve;
           }

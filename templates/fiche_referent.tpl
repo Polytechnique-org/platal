@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: fiche_referent.tpl,v 1.5 2004-09-03 00:21:21 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 <div class="boite" style="text-align:center;">
   <span>{$prenom} {$nom}</span><br />
   <span>X{$promo}&nbsp;-&nbsp;</span>
-  <a href="mailto:{$username}@polytechnique.org">{$username}@polytechnique.org</a><br />
+  <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a><br />
 </div>
 
 {**a-t-il bien des infos de referents ? **}

@@ -17,16 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.tpl,v 1.8 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: referent.tpl,v 1.9 2004-09-03 00:20:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {literal}
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
   <!-- Begin
   function showPage( pNumber ) {
-    document.form_result.page_courante.value = pNumber;
-    document.form_result.submit();
+    document.forms.form_result.page_courante.value = pNumber;
+    document.forms.form_result.submit();
   }
   // End -->
 </script>
@@ -44,27 +44,27 @@ sans doute car ta requête était trop générale. Nous t'invitons à
 d'être plus précis.
 </p>
 {elseif $resultats}
-<form action="{$smarty.server.PHP_SELF}" method="post" name="form_result">
-  <input type="hidden" name="pays" value="{$pays_selectionne}" />
-  <input type="hidden" name="expertise" value="{$expertise_champ}" />
-  <input type="hidden" name="secteur" value="{$secteur_selectionne}" />
-  <input type="hidden" name="ss_secteur" value="{$ss_secteur_selectionne}" />
-  <input type="hidden" name="page_courante" value="1" />
-  <input type="hidden" name="Chercher" value="1" />
+<form action="{$smarty.server.PHP_SELF}" method="post" id="form_result">
   <table class="rechresult" cellpadding="0" cellspacing="0" summary="Résultats">
     {section name="resultat" loop=$personnes}
     <tr>
       <td class="rechnom">
         {$personnes[resultat].nom} {$personnes[resultat].prenom}
+        <input type="hidden" name="pays" value="{$pays_selectionne}" />
+        <input type="hidden" name="expertise" value="{$expertise_champ}" />
+        <input type="hidden" name="secteur" value="{$secteur_selectionne}" />
+        <input type="hidden" name="ss_secteur" value="{$ss_secteur_selectionne}" />
+        <input type="hidden" name="page_courante" value="1" />
+        <input type="hidden" name="Chercher" value="1" />
       </td>
       <td class="rechdetails">
         <span class="rechdiplo">X{$personnes[resultat].promo}</span>
       </td>
       <td class="rechdetails" style="width:15%">
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].username}')">voir sa fiche</a>
+        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].forlife}')">voir sa fiche</a>
       </td>
       <td class="rechdetails" style="width:25%">
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].username}')">voir sa fiche référent</a>
+        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].forlife}')">voir sa fiche référent</a>
       </td>
     </tr>
     <tr>
@@ -140,14 +140,14 @@ permettant certainement d'avoir une vision des choses plus complète.
 Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polytechnique.org.
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="form_ref">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <table cellpadding="0" cellspacing="0" summary="Formulaire de recherche de referents" class="bicol">
     <tr class="impair">
       <td class="titre">
         Secteur de compétence <br /> du référent
       </td>
       <td >
-        <select name="secteur" OnChange="javascript:submit()">
+        <select name="secteur" onchange="javascript:submit()">
           {html_options options=$secteurs selected=$secteur_selectionne}
         </select>
       </td>
