@@ -18,17 +18,37 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: xorg.plugin.inc.php,v 1.1 2004-10-28 20:28:42 x2000habouzit Exp $
+ $Id: xorg.plugin.inc.php,v 1.2 2004-10-29 01:51:32 x2000habouzit Exp $
  ***************************************************************************/
 
+
+/** class used for plugins whose behavior depends only from the GET.
+ */
 class XOrgPlugin {
+    /** have to override, contents the fields names used to drive the plugin */
     var $_get_vars = Array();
+    /** some polymorphism at low cost, may be used, or not */
     var $_callback;
-    
-    function XOrgPlugin($funcname) {
+   
+    /** constructor.
+     * the constructor override $_get_vars settings by prefixing the names with $prefix
+     */
+    function XOrgPlugin($funcname='',$prefix='') {
 	$this->_callback = $funcname;
+	$this->_prefix = $prefix;
+	foreach($this->_get_vars as $key=>$val) $this->_get_vars[$key] = $prefix.$val;
+    }
+    
+    /** transparent access to $_GET, wrt the right $prefix
+     */
+    function get_value($key) {
+	if(empty($_GET[$this->_prefix.$key])) return '';
+	return $_GET[$this->_prefix.$key];
     }
 
+    /** construct an url with the given parameters to drive the plugin.
+     * leave all other GET params alone
+     */
     function make_url($params) {
 	$get = Array();
 	$args = empty($params) ? Array() : $params;
@@ -57,6 +77,9 @@ class XOrgPlugin {
 
 	return $_SERVER['PHP_SELF'] . '?' . join('&amp;',$get);
     }
+
+    /** need to be overriden.  */
+    function show () { return ''; }
 }
 
 ?>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: trombi.inc.php,v 1.1 2004-10-28 20:28:41 x2000habouzit Exp $
+ $Id: trombi.inc.php,v 1.2 2004-10-29 01:51:32 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.plugin.inc.php');
@@ -32,9 +32,12 @@ class Trombi extends XOrgPlugin {
     function setAdmin() { $this->admin = true; }
     
     function show() {
+	/* this point is nasty...  but since show() is called from the template ...
+	 * I can't see any more clever way to achieve that
+	 */
 	global $page;
 
-	$offset = empty($_GET['offset']) ? 0 : intval($_GET['offset']);
+	$offset = $this->get_value('offset');
 	list($total, $list) = call_user_func($this->_callback, $offset, $this->limit);
 	$page_max = intval(($total-1)/$this->limit);
 
