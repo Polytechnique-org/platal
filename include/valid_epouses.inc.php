@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_epouses.inc.php,v 1.13 2004-08-31 22:01:31 x2000habouzit Exp $
+        $Id: valid_epouses.inc.php,v 1.14 2004-09-01 21:33:08 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -95,6 +95,8 @@ class EpouseReq extends Validate {
         
         $alias = ($this->epouse ? $this->alias : "");
         $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',alias='".$this->alias."' WHERE user_id=".$this->uid);
+	$globals->db->query("DELETE FROM aliases WHERE type='epouse' AND id=".$this->uid);
+	$globals->db->query("INSERT INTO aliases VALUES('".$this->alias."', 'epouse', ".$this->uid.")");
         $f = fopen("/tmp/flag_recherche","w");
         fputs($f,"1");
         fclose($f);
