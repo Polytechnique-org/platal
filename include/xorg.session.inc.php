@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.26 2004-09-25 22:10:54 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.27 2004-10-08 20:42:33 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -107,7 +107,7 @@ class XorgSession extends DiogenesCoreSession {
     /** Display login screen.
      */
     function doLogin(&$page, $new_name=false) {
-        $this->caching = false;
+        $page->caching = false;
 	if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGuid']) and !$new_name) {
 	    $page->changeTpl('password_prompt_logged.tpl');
 	    $page->assign("xorg_head", "password_prompt_logged.head.tpl");
