@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.32 2004-10-09 20:45:39 x2000chevalier Exp $
+        $Id: xorg.session.inc.php,v 1.33 2004-10-11 20:42:37 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -220,7 +220,8 @@ function try_cookie() {
 function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("
-	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias, u.lastnewslogin, a2.alias
+	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
+		a.alias, UNIX_TIMESTAMP(u.lastnewslogin), a2.alias
           FROM  auth_user_md5   AS u
     INNER JOIN	aliases         AS a ON (u.user_id = a.id AND a.type='a_vie')
     INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
