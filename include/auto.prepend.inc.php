@@ -1,5 +1,5 @@
 <?php
-ini_set('include_path', ".:..:./include:../include/:/home/x2000habouzit/dev/diogenes/lib/:/home/x2000habouzit/dev/smarty/");
+ini_set('include_path', ".:..:/home/x2000habouzit/dev/public/include:/home/x2000habouzit/dev/diogenes/lib/:/home/x2000habouzit/dev/smarty/");
 require("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
@@ -20,7 +20,7 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
 
     $page->template_dir = $globals->spoolroot . "/templates/";
     $page->compile_dir  = $globals->spoolroot . "/templates_c/";
-    $page->plugin_dir   = $globals->spoolroot . "/plugins/";
+    $page->plugins_dir  = $globals->spoolroot . "/plugins/";
     $page->cache_dir    = $globals->spoolroot . "/cache/";
 
     $page->assign('xorg_head', $tpl_head);
