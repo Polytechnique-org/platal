@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: manageurs.inc.php,v 1.1 2004-11-11 11:46:11 x2000coic Exp $
+        $Id: manageurs.inc.php,v 1.2 2004-11-11 12:11:24 x2000coic Exp $
  ***************************************************************************/
 
 $error_mat = "You didn't provide me with a valid matricule number...";
@@ -71,32 +71,5 @@ function manageurs_decrypt_array($array){
   }
   return $result;
 }
-
-
-function get_annuaire_infos($method, $params) { 
-    if (!empty($params[0])) {
-        $res = mysql_query("SELECT nom AS nom, epouse AS nom_patro, prenom AS prenom, promo AS prenom, deces=0 AS decede, mobile AS cell FROM auth_user_md5 WHERE matricule = '".addslashes($params[0])."'");
-	if ($array = mysql_fetch_array($res)) {
-	    // then it's perfectly fine ! we just have to use a good cypher...
-	    
-	    if(manageurs_encrypt_init($params[0]) == 1){
-	      $args = array("faultCode" => 1, "faultString" => $error_key);
-              $reply = xmlrpc_encode_request(NULL,$args);
-	    }
-	    else{
-	      $reply = manageurs_encrypt_array($array);
-
-	      manageurs_encrypt_close();
-	    }
-	} else {
-            $args = array("faultCode" => 1, "faultString" => $error_mat);
-	    $reply = xmlrpc_encode_request(NULL,$args);
-	}
-    } else {
-        $args = array("faultCode" => 1, "faultString" => $error_mat);
-	$reply = xmlrpc_encode_request(NULL,$args);
-    } 
-    return $reply; 
-} 
 
 ?>
