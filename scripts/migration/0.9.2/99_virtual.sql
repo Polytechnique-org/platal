@@ -13,3 +13,5 @@ insert into  virtual_redirect
      select  vid,CONCAT(email,'@m4x.org')
        from  virtual         AS v
  inner join  groupex.aliases as d ON(v.alias=d.domain);
+
+delete from virtual where domain like '%@melix.net';
