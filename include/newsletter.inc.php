@@ -18,12 +18,52 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.2 2004-10-15 12:57:10 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.3 2004-10-15 14:30:54 x2000habouzit Exp $
  ***************************************************************************/
+
+
+define('FEMME', 1);
+define('HOMME', 0);
 
 class NewsLetter {
     function NewsLetter() { }
 }
+
+class NLArticle {
+    function NLArticle() { }
+}
+
+class NLConstraint {
+    var $_func;
+    var $_arg;
+    
+    function NLConstraint($func, $arg) {
+	$this->_func = $func;
+	$this->_arg = $arg;
+    }
+
+    function check($user) { return false; }
+}
+
+class NLPromoConstraint {
+    function check($user) {
+	$promo = $user['promo'];
+	switch($this->_func) {
+	    case 'eq':   return ( $promo == $this->_arg );
+	    case 'neq':  return ( $promo != $this->_arg );
+	    case 'geq':  return ( $promo >= $this->_arg );
+	    case 'leq':  return ( $promo <= $this->_arg );
+	    case 'odd':  return ( $promo % 2 == 1 );
+	    case 'even': return ( $promo % 2 == 0 );
+	    default: return false;
+	}
+    }
+}
+
+class NLSexeConstraint {
+    function check($user) { return $user['sexe'] == $_arg; }
+}
+	
 
 function get_nl_list() {
     global $globals;
@@ -49,7 +89,7 @@ function unsubscribe_nl() {
  
 function subscribe_nl() {
     global $globals;
-    $globals->db->query("INSERT INTO newsletter_ins (user_id) VALUES ({$_SESSION['uid']})");
+    $globals->db->query("REPLACE INTO newsletter_ins (user_id,last) SELECT {$_SESSION['uid']}, MAX(id) FROM newsletter WHERE bits!='new'");
 }
  
 ?>
