@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.11 2004-10-31 16:16:11 x2000chevalier Exp $
+        $Id: checkdb.php,v 1.12 2004-11-14 21:21:26 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.11 2004-10-31 16:16:11 x2000chevalier Exp $
+ * $Id: checkdb.php,v 1.12 2004-11-14 21:21:26 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -122,7 +122,7 @@ check("SELECT a.uid, a.pays FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.
 check("SELECT a.uid, a.pays, a.region FROM adresses AS a LEFT JOIN geoloc_region AS gr ON (a.pays = gr.a2 AND a.region = gr.region) WHERE a.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils qui n'ont pas d'entree correspondante dans geoloc_region");
 
 /* donne la liste des gens pour qui on a fait du marketing mais qui se sont inscrits depuis (nettoyage de envoidirect) */
-info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on e.matricule = a.matricule order by promo,nom;");
+info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on (e.matricule = a.matricule and a.perms = 'user') order by promo,nom;");
 
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
 info("SELECT  a1.alias, a2.alias, e1.email, e2.flags

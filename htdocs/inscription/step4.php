@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.11 2004-11-14 21:14:12 x2000habouzit Exp $
+        $Id: step4.php,v 1.12 2004-11-14 21:23:30 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -81,7 +81,7 @@ if (!empty($_REQUEST['ref'])) {
 
     $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$forlife','a_vie')");
     if($alias) {
-	$p2 = sprintf("%02i",($promo%100));
+	$p2 = sprintf("%02u",($promo%100));
 	$globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias','alias')");
 	$globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias.$p2','alias')");
     }
