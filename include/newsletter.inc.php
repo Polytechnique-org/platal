@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.3 2004-10-15 14:30:54 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.4 2004-10-15 15:39:40 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -26,7 +26,19 @@ define('FEMME', 1);
 define('HOMME', 0);
 
 class NewsLetter {
-    function NewsLetter() { }
+    $_cats;
+    
+    function NewsLetter() {
+	global $globals;
+
+	$res = $globals->db->query("SELECT cid,title FROM newsletter_cat ORDER BY pos");
+	$this->_cats = Array();
+	while(list($cid,$title) = mysql_fetch_row($res)) {
+	    $this->_cats[$cid] = $title;
+	}
+	mysql_free_result($res)
+    
+    }
 }
 
 class NLArticle {
