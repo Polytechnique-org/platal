@@ -1,7 +1,7 @@
-{* $Id: mescontacts.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: mescontacts.tpl,v 1.7 2004-08-29 16:04:48 x2000habouzit Exp $ *}
 
 {dynamic}
-{$erreur}
+<p class="erreur">{$erreur}</p>
 {/dynamic}
 
 <div class="rubrique">

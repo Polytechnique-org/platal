@@ -10,7 +10,7 @@ if (isset($_REQUEST['action'])) {
         if (($res = $globals->db->query("SELECT user_id FROM auth_user_md5 WHERE username='{$_REQUEST['user']}'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
             if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='$cont_user_id'"))
-                $page->assign('erreur', "<p class='normal'><strong>Contact {$_REQUEST['user']} retiré !</strong></p>\n");
+                $page->assign('erreur', "Contact {$_REQUEST['user']} retiré !\n");
         }
 
         // si l'utilisateur demande l'ajout de qqun à sa liste
@@ -19,11 +19,11 @@ if (isset($_REQUEST['action'])) {
         if (($res = $globals->db->query("SELECT user_id FROM auth_user_md5 WHERE username='".$_REQUEST["user"]."'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
             if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
-                $page->assign('erreur', '<p class="normal"><strong>Contact ajouté !</strong></p>');
+                $page->assign('erreur', 'Contact ajouté !');
             } else
-                $page->assign('erreur', '<p class="erreur">Contact déjà dans la liste !</p>');
+                $page->assign('erreur', 'Contact déjà dans la liste !');
         } else {
-            $page->assign('erreur', '<p class="erreur">Utilisateur inexistant ou non inscrit !</p>');
+            $page->assign('erreur', 'Utilisateur inexistant ou non inscrit !');
         }
     }
 }
