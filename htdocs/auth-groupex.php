@@ -52,12 +52,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
         if (isset($_SESSION[$val])) {
             $tohash .= $_SESSION[$val];
         } else if ($val == 'username') {
-            $res = $globals->xdb->query(
-                    "SELECT  alias
-                       FROM  aliases       AS al
-                 INNER JOIN  auth_user_md5 AS a ON (a.user_id = al.id AND al.type IN('a_vie','alias'))
-                      WHERE  a.user_id = {?} AND alias LIKE '%.%'
-                   ORDER BY  LENGTH(alias)", Session::getInt('uid'));
+            $res = $globals->xdb->query("SELECT alias FROM aliases WHERE a.user_id = {?} AND FIND_IN_SET('bestalias', flags)", Session::getInt('uid'));
             $min_username = $res->fetchOneCell();
             $tohash      .= $min_username;
 	}
