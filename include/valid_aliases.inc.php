@@ -1,4 +1,5 @@
 <?php
+require_once("valid.conf.php") ;
 
 class AliasReq extends Validate {
     var $alias;
@@ -28,11 +29,12 @@ class AliasReq extends Validate {
     function formu() {
         $old = $this->old ? "({$this->old})" : "";
         $raison = nl2br(stripslashes(htmlentities($this->raison)));
+        $newAlias = addr_alias( $this->alias ) ; 
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this- />uid}" />
-        <input type="hidden" name="type" value="{$this- />type}" />
-        <input type="hidden" name="stamp" value="{$this- />stamp}" />
+        <input type="hidden" name="uid" value="{$this->uid}" />
+        <input type="hidden" name="type" value="{$this->type}" />
+        <input type="hidden" name="stamp" value="{$this->stamp}" />
         <table class="bicol" cellpadding="4" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:
@@ -43,7 +45,7 @@ class AliasReq extends Validate {
         </tr>
         <tr>
             <td>Nouvel&nbsp;alias&nbsp;:</td>
-            <td>{$this->alias}@melix.net</td>
+            <td>{$newAlias}</td>
         </tr>
         <tr>
             <td>Motif :</td>
@@ -76,35 +78,20 @@ ________EOF;
             return false;
 
         require_once("diogenes.mailer.inc.php");
-        $mxnet = $this->alias."@melix.net";
-        $mxorg = $this->alias."@melix.org";
 
-        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+melix@polytechnique.org>', 
-                $this->username."@polytechnique.org",
-                "[Polytechnique.org/MELIX] Demande de l'alias $mxnet par ".$this->username,
-                false, "validation+melix@m4x.org");
-
-        $message =
-            "Cher(e) camarade,\n".
-            "\n";
+        $mymail = new DiogenesMailer(
+                from_mail_valid_alias(),
+                to_mail_valid_alias( $this->username ),
+                subject_mail_valid_alias( $this->username , $this->alias ),
+                false,
+                cc_mail_valid_alias());
 
         if($_REQUEST['submit']=="Accepter") {
-            $this->commit();
-            $message .=
-                "  Les adresses e-mail $mxnet et $mxorg que tu avais demandées viennent".
-                " d'être créées, tu peux désormais les utiliser à ta convenance.\n";
-        } else {
-            $message .=
-                "La demande que tu avais faite pour les alias $mxnet et $mxorg a été refusée.\n";
-            if (!empty($_REQUEST["motif"]))
-                $message .= "\nLa raison de ce refus est : \n".
-                    stripslashes($_REQUEST["motif"])."\n";
-        }
+            $this->commit() ; 
+            $message = msg_valid_alias_OK( $this->alias ) ;
+        } else
+            $message = msg_valid_alias_NON( $this->alias , stripslashes($_REQUEST["motif"]) ) ;
 
-        $message .=
-            "\n".
-            "Cordialement,\n".
-            "L'équipe X.org";
         $message = wordwrap($message,78);  
         $mymail->setBody($message);
         $mymail->send();
@@ -117,9 +104,9 @@ ________EOF;
         global $no_update_bd;
         if($no_update_bd) return false;
 
+        $domain=addr_alias( $this->alias ) ;
         mysql_query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->username}'");
-        mysql_query("INSERT INTO groupex.aliases SET email='{$this->username}',domain='"
-                    .$this->alias."@melix.net',id=12");
+        mysql_query("INSERT INTO groupex.aliases SET email='{$this->username}',domain='$domain',id=12");         
     }
 }
 

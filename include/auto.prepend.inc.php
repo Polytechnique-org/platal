@@ -1,5 +1,6 @@
 <?php
-ini_set('include_path', ".:..:/home/x2000habouzit/dev/public/include:/home/x2000habouzit/dev/diogenes/lib/:/home/x2000habouzit/dev/smarty/");
+require("config.xorg.inc.php") ;
+ini_set('include_path', ".:..:{$globals->root}/include/:{$globals->root}/configs/:$globals->libroot") ;
 setlocale(LC_TIME, "fr_FR");
 require("xorg.common.inc.php");
 

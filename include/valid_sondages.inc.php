@@ -33,9 +33,9 @@ class SondageReq extends Validate {
         $url = "$baseurl/sondage/questionnaire.php?SID=".$this->sid;
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this- />uid}" />
-        <input type="hidden" name="type" value="{$this- />type}" />
-        <input type="hidden" name="stamp" value="{$this- />stamp}" />
+        <input type="hidden" name="uid" value="{$this->uid}" />
+        <input type="hidden" name="type" value="{$this->type}" />
+        <input type="hidden" name="stamp" value="{$this->stamp}" />
         <table class="bicol" cellpadding="4" summary="Sondage">
         <tr>
             <td>Demandeur&nbsp;:
@@ -56,7 +56,7 @@ class SondageReq extends Validate {
         </tr>
         <tr>
             <td>Alias du sondage&nbsp;:</td>
-            <td><input type="text" name="alias" value="{$this- />alias}" />&nbsp;(ne doit
+            <td><input type="text" name="alias" value="{$this->alias}" />&nbsp;(ne doit
             pas contenir le caractère ')</td>
         </tr>
         <tr>

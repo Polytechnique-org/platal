@@ -1,4 +1,4 @@
-{* $Id: default.tpl,v 1.4 2004-01-26 22:59:05 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.5 2004-02-03 09:52:09 x2000gommard Exp $ *}
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -27,7 +27,7 @@
       <td id="body-left" rowspan="2">
         <img src="{"images/sk_default_headlogo.jpg"|url}" alt="[ LOGO ]" />
         <div id="menu">
-{include_php file=menu.inc.php}
+{include_php file=menu.conf.php}
 {foreach key=menu_title item=menu_list from=$menu}
 {if $menu_title}
         <div class="menu_title">{$menu_title}</div>

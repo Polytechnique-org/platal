@@ -57,9 +57,9 @@ class PhotoReq extends Validate {
         $url_app = isset($_COOKIE[session_name()]) ?  "" : "&amp;".SID;
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this- />uid}" />
-        <input type="hidden" name="type" value="{$this- />type}" />
-        <input type="hidden" name="stamp" value="{$this- />stamp}" />
+        <input type="hidden" name="uid" value="{$this->uid}" />
+        <input type="hidden" name="type" value="{$this->type}" />
+        <input type="hidden" name="stamp" value="{$this->stamp}" />
         <table class="bicol" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:</td>

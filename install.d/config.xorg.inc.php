@@ -1,5 +1,5 @@
 <?php
-/* $Id: config.xorg.inc.php,v 1.1 2004-01-25 17:25:36 x2000habouzit Exp $ */
+/* $Id: config.xorg.inc.php,v 1.2 2004-02-03 09:52:04 x2000gommard Exp $ */
 
 /* URL de la racine pour les mails contenant des URL (pas de slash final!) */
 if (!isset($baseurl)) $baseurl="http://dev.m4x.org";
@@ -32,4 +32,10 @@ $dbhost = $globals->dbhost;  // recherche.php : 303
 $dbuser = $globals->dbuser;
 $dbpwd = $globals->dbpwd;
 $xdat = $globals->dbdb;
+
+/* domaines et mails utilisés */
+$globals->domaine_mail='domaine.org' ;
+$globals->domaine_mail_alias=array('alias.net','alias.org') ; // seul le 1er apparaît dans la BD
+$globals->addr_mail_valid_alias='validation+alias@'.$globals->domaine_mail ;
+
 ?>

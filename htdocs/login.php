@@ -29,31 +29,28 @@ if (mysql_num_rows($res) == 0)
 mysql_free_result($res);
 
 // affichage de la boîte avec quelques liens
+
 $res = mysql_query("SELECT id FROM newsletter ORDER BY date DESC");
 list($nb) = mysql_fetch_row($res);
 mysql_free_result($res);
 
-$publicite = Array(Array(), Array());
-$publicite[0]["motdepassemd5.php"] = "Changer mon mot de passe";
-$i = rand(0, 1);
-switch ($i) {
-    case 0 :
-        $publicite[0]["newsletter.php?nl_id=$nb"]="Afficher la dernière newsletter"; break;
-    case 1 :
-        $publicite[0]["http://asso.polytechnique.org\" target=\"new"]="Vers les autres sites polytechniciens"; break;
-}
-$i = rand(0, 1);
-switch ($i) {
-    case 0 :
-        $publicite[1]["trombipromo.php?xpromo={$_SESSION["promo"]}"]="Voir le trombi de ma promo"; break;
-    case 1 :
-        $publicite[1]["banana/"]="Un petit tour du côté des forums !!"; break;
-}
-$publicite[1]["dons.php"] = "Faire un don à l'association Polytechnique.org";
+include('login.conf.php') ;
+$pub_nbElem = $pub_nbLig * $pub_nbCol ;
+if (count($pub_tjs) <= $pub_nbElem)
+    $publicite = array_slice ($pub_tjs,0,$pub_nbElem) ;
+else
+    $publicite = $pub_tjs ;
+$nbAlea = $pub_nbElem - count($publicite) ;
+if ($nbAlea > 0) {
+    $choix = array_rand($pub_rnd,$nbAlea) ;
+    foreach ($choix as $url)
+        $publicite[$url] = $pub_rnd[$url] ;
+    }
+$publicite = array_chunk( $publicite , $pub_nbLig , true ) ;
 $page->assign_by_ref('publicite', $publicite);
 
 
-//affichage des evenements
+// affichage des evenements
 // annonces promos triées par présence d'une limite sur les promos
 // puis par dates croissantes d'expiration
 $res = mysql_query(

@@ -54,9 +54,9 @@ ________EOF;
                 
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this- />uid}" />
-        <input type="hidden" name="type" value="{$this- />type}" />
-        <input type="hidden" name="stamp" value="{$this- />stamp}" />
+        <input type="hidden" name="uid" value="{$this->uid}" />
+        <input type="hidden" name="type" value="{$this->type}" />
+        <input type="hidden" name="stamp" value="{$this->stamp}" />
         <table class="bicol" cellpadding="4" summary="Demande d'alias d'épouse">
         <tr>
             <td>Demandeur&nbsp;:</td>
