@@ -252,7 +252,7 @@ class ContactsPDF extends FPDF
                 } else {
                     $this->setX($_x);
                     $this->Cell($width, 20, '', "T");
-                    $h = ( $this->GetStringWidth($nom) + $width > 90 ) ? 10 : 20;
+                    $h = ( $this->GetStringWidth($nom) + $width > 85 ) ? 10 : 20;
                     $this->MultiCell(0, $h, $nom, 'T', 'C');
                     $ok = true;
                 }
