@@ -136,10 +136,10 @@ Tu n'es pas administrateur de la liste, mais du site.
 {if $details.diff eq 1}
 
 <h1>
-  Addresses non modérées de {$details.addr}
+  Adresses non modérées de {$details.addr}
 </h1>
 <p>
-Les envoi des personnes utilisant ces adresses ne sont pas modérés.
+Les envois des personnes utilisant ces adresses ne sont pas modérés.
 </p>
 
 <p class='erreur'>
