@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: openweb.tpl,v 1.1 2004-11-17 18:16:28 x2000habouzit Exp $
+        $Id: openweb.tpl,v 1.2 2004-11-17 18:56:15 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -89,7 +89,7 @@
           <div class="menu_title">{$menu_title}</div>
           {/if}
           {foreach key=menu_item item=menu_url from=$menu_list}
-          <div class="menu_item"><a href="{$menu_url|url}">{$menu_item}</a></div>
+          <a href="{$menu_url|url}">{$menu_item}</a>
           {/foreach}
           {/foreach}
           {perms level=admin}
