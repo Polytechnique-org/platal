@@ -28,7 +28,7 @@ if(logged()) {
         'Informations' => Array (
             'Lettres mensuelles' => 'newsletter/',
             'Documentations' => 'docs/',
-            'Nous contacter ' => "docs/contacts.php",
+            'Nous contacter ' => 'docs/contacts.php',
             'Emploi' => 'http://www.manageurs.com/'
         )
     );

@@ -143,13 +143,14 @@ div.contact div.long {
 
 #body-logo {
     border-top: none;
-    border-bottom: none;
+    border-bottom: 1px solid #777777;
     border-right: 1px solid #777777;
     border-left: none;
+    vertical-align: middle;
 }
 
 #body-top {
-    border-bottom: 2px solid #777777;
+    border-bottom: 1px solid #777777;
 }
 
 #body-bottom {
@@ -182,4 +183,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: trapped.css,v 1.5 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: trapped.css,v 1.6 2004-11-13 14:43:23 x2002bobillot Exp $ */

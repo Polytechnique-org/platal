@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: contacts.tpl,v 1.11 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: contacts.tpl,v 1.12 2004-11-13 14:43:23 x2002bobillot Exp $
  ***************************************************************************}
 
 
@@ -73,7 +73,7 @@ Celà nous permettra d'être les plus efficaces possible et de traiter ta demande 
   Je n'arrive pas à m'inscrire sur le site
 </h1>
 <p>
-L'inscription se déroule en <a href="{"inscrire.php"|url}">une étape sur notre site web</a>,
+L'inscription se déroule en <a href="{"inscription/"|url}">une étape sur notre site web</a>,
 suivie d'une étape de confirmation basée sur l'e-mail que tu as donné.
 </p>
 <p>
