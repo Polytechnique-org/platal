@@ -87,6 +87,13 @@ class XorgPage extends DiogenesCorePage {
             return parent::is_cached('skin/'.$_SESSION['skin'], $this->make_id($append_to_id));
     }
 
+    function xorg_clear_cache($tpl) {
+        if($this->_page_type == NO_SKIN)
+            return parent::clear_cache($tpl);
+        else
+            return parent::clear_cache(null, $tpl);
+    }
+
     function make_id($append_to_id="") {
         if($this->_page_type == NO_SKIN)
             return null;

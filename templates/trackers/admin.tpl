@@ -1,21 +1,19 @@
-{* $Id: admin.tpl,v 1.1 2004-02-22 21:04:23 x2000habouzit Exp $ *}
+{* $Id: admin.tpl,v 1.2 2004-02-23 17:06:59 x2000habouzit Exp $ *}
 
 {literal}
 <script type="text/javascript">
   <!--
   function action( action, myid ) {
-    document.operations.action.value = action;
-    document.operations.tr_id.value = myid;
-    document.operations.submit();
+    ops = document.getElementById('operations');
+    ops.action.value = action;
+    ops.trid.value = myid;
+    ops.submit();
     return true;
   }
   
   function del( myid ) {
     if( confirm ("You are about to delete this tracker !\nDo you still want to proceed ?") ) {
-      document.operations.action.value = "del";
-      document.operations.tr_id.value = myid;
-      document.operations.submit();
-      return true;
+      return action('del', myid);
     }
   }
   -->
@@ -23,8 +21,8 @@
 {/literal}
 
 <form id="operations" method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" id="action" value="" />
-  <input type="hidden" id="tr_id" value="" />
+  <input type="hidden" id="action" name="action" value="" />
+  <input type="hidden" id="trid" name="trid" value="" />
 </form>
 
 <div class="rubrique">
@@ -56,10 +54,11 @@
     <th>Tracker</th>
     <th>Description</th>
     <th>Géré&nbsp;par</th>
+    <th>Action</th>
   </tr>
-{foreach item=t from=$persos}
+{foreach item=t from=$trackers}
   <tr class="{cycle values="impair,pair"}">
-    <td><a href="{"tracker_show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
+    <td><a href="{"show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
     <td>{$t.description}</td>
     <td class="right"><a href="mailto:{$t.ml_name}">{$t.short}</a></td>
     <td class="action">
@@ -82,10 +81,11 @@
     <th>Tracker</th>
     <th>Description</th>
     <th>Géré&nbsp;par</th>
+    <th>Action</th>
   </tr>
-{foreach item=t from=$trackers}
+{foreach item=t from=$persos}
   <tr class="{cycle values="impair,pair"}">
-    <td><a href="{"tracker_show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
+    <td><a href="{"show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
     <td>{$t.description}</td>
     <td class="right"><a href="mailto:{$t.ml_name}">{$t.short}</a></td>
     <td class="action">
