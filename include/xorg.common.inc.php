@@ -9,6 +9,7 @@ define("PERMS_USER", "user");
 define("PERMS_ADMIN", "admin");
 
 define('SKIN_COMPATIBLE','default.tpl');
+define('SKIN_COMPATIBLE_ID',1);
 define('SKIN_POPUP_COMPATIBLE','default.popup.tpl');
 define('SKIN_STOCHASKIN_ID','254');
 

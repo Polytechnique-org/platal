@@ -83,6 +83,31 @@ table.bicol td.bicoltitre,span.bicoltitre {
 }
 table.bicol td.bouton { text-align: right; }
 
+/*******************************************
+*             CHOIX SKINS                  *
+*******************************************/
+
+#skin {
+    border-bottom: 1px solid #003399;
+    border-top: 1px solid #003399;
+    width: 98%;
+    margin-left: 1%;
+}
+#skin td {
+    border-bottom: 1px solid #003399;
+    border-top: 1px solid #003399;
+    vertical-align: middle;
+}
+#skin td.skigauche {
+    background-color: #eeeeee;
+    color: inherit;
+    vertical-align: middle;
+}
+#skin td.skimilieu {
+    padding-left: 1em;
+    width: 100%;
+}
+#skin td.skidroite { padding: 0; }
 
 /**************
     LAYOUTS 

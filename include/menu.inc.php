@@ -44,7 +44,6 @@ if(logged()) {
             'Documentations' => '###url###',
             'Clear cache' => 'clear_all_cache.php'
         );
-        if(empty($site_dev)) array_pop($menu['***']);
     }
 } else {
     $menu = Array(
