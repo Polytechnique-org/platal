@@ -11,5 +11,7 @@ class XorgGlobals extends DiogenesCoreGlobals {
   var $table_log_sessions = 'logger.sessions';
   var $table_log_events = 'logger.events';
 
+  var $tauth = array('native'=>"auth_user_md5");
+  var $tlabel = array('native'=>"X.Org");
 }
 ?>

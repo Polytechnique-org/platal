@@ -1,3 +1,5 @@
+{* $Id: table-editor.tpl,v 1.2 2004-02-20 01:46:23 x2000habouzit Exp $ *}
+
 {dynamic}
 
 <div class="rubrique">
@@ -124,3 +126,5 @@
 {/if}
 
 {/dynamic}
+
+{* vim:set et sw=2 sts=2 sws=2: *}

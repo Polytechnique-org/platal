@@ -228,7 +228,7 @@ div.long td.rt { width: 65%; }
 #dev {
     position: fixed;
     top     : 32px;
-    left    : 14px;
+    right   : 14px;
     width   : 128px;
     z-index : 1;
     
@@ -330,4 +330,4 @@ div.long td.rt { width: 65%; }
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.21 2004-02-19 19:35:00 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.22 2004-02-20 01:46:22 x2000habouzit Exp $ */
