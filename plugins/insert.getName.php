@@ -18,46 +18,21 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.common.inc.php,v 1.10 2004-11-22 07:48:49 x2000habouzit Exp $
+        $Id: insert.getName.php,v 1.1 2004-11-22 07:48:50 x2000habouzit Exp $
  ***************************************************************************/
 
-// {{{ defines
-
-$i=0;
-define("AUTH_PUBLIC", $i++);
-define("AUTH_COOKIE", $i++);
-define("AUTH_MDP", $i++);
-
-define("PERMS_EXT", "ext");
-define("PERMS_USER", "user");
-define("PERMS_ADMIN", "admin");
-
-define('SKIN_COMPATIBLE','default.tpl');
-define('SKIN_COMPATIBLE_ID',1);
-
-define('SKINNED', 0);
-define('NO_SKIN', 1);
-
-// }}}
-// {{{ import class definitions
-
-require_once("xorg.globals.inc.php");
-
-$globals = new XorgGlobals;
-require("xorg.config.inc.php");
-
-// }}}
-// {{{ start session + database connection
-
-session_start();
-
-// connect to database
-$globals->dbconnect();
-if ($globals->debug) {
-    $globals->db->trace_on();
+function smarty_insert_getName()
+{
+    global $globals;
+    if (empty($_COOKIE['ORGuid'])) {
+        return "";
+    }
+    $res = $globals->db->query("SELECT prenom FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}'");
+    if (list($prenom) = mysql_fetch_row($res)) {
+	mysql_free_result($res);
+	return $prenom;
+    }
+    return "";
 }
 
-//}}}
-
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -18,30 +18,25 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.password.inc.php,v 1.6 2004-11-17 10:12:45 x2000habouzit Exp $
+    $Id: insert.getUserName.php,v 1.1 2004-11-22 07:48:50 x2000habouzit Exp $
  ***************************************************************************/
 
-function smarty_insert_getName() {
+function smarty_insert_getUsername()
+{
     global $globals;
-    if(empty($_COOKIE['ORGuid'])) return "";
-    $res = $globals->db->query("SELECT prenom FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}'");
-    if(list($prenom) = mysql_fetch_row($res)) {
-	mysql_free_result($res);
-	return $prenom;
+    if (isset($_COOKIE['ORGuid'])) {
+        $id = $_COOKIE['ORGuid'];
     }
-    return "";
-}
-
-function smarty_insert_getUsername() {
-    global $globals;
-    if(isset($_COOKIE['ORGuid'])) $id = $_COOKIE['ORGuid'];
-    if(isset($_SESSION['uid'])) $id = $_SESSION['uid'];
-    if(empty($id)) return "";
+    if (isset($_SESSION['uid'])) {
+        $id = $_SESSION['uid'];
+    }
+    if (empty($id)) {
+        return "";
+    }
     $res = $globals->db->query("SELECT  alias
                                   FROM  aliases
-				 WHERE  id='$id' AND (type='a_vie' OR type='alias')
-			      ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias) LIMIT 1");
-    if(list($uname) = mysql_fetch_row($res)) {
+				 WHERE  id='$id' AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))");
+    if (list($uname) = mysql_fetch_row($res)) {
 	mysql_free_result($res);
 	return $uname;
     }

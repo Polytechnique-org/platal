@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt.tpl,v 1.24 2004-11-13 13:17:08 x2000habouzit Exp $
+        $Id: password_prompt.tpl,v 1.25 2004-11-22 07:48:50 x2000habouzit Exp $
  ***************************************************************************}
 
 <noscript>
@@ -36,7 +36,7 @@
 {min_auth level="cookie"}
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
-Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change le login ci-dessous, ou rends-toi sur
+Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi sur
 <a href="{"inscription/"|url}">la page d'inscription</a>.
 </p>
 {/min_auth}
@@ -73,7 +73,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
       </td>
       <td>
         <input type="text" name="username" size="20" maxlength="50"
-          value="{insert name="getUserName" script="insert.password.inc.php"}" />
+          value="{insert name="getUserName"}" />
       </td>
     </tr>
     <tr>
