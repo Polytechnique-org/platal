@@ -45,10 +45,10 @@ $res = $globals->xdb->query(
 	"SELECT alias
 	   FROM virtual
      INNER JOIN virtual_redirect USING(vid)
+     INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
      	  WHERE ( redirect={?} OR redirect={?} )
-	        AND alias LIKE '%@{$globals->mail->alias_dom}'
-		AND visibility = 'public'",
-	$user['forlife'].'@'.$globals->mail->domain, $user['forlife'].'@'.$globals->mail->domain2);
+	        AND alias LIKE '%@{$globals->mail->alias_dom}'",
+        Session::getInt('uid'), $user['forlife'].'@'.$globals->mail->domain, $user['forlife'].'@'.$globals->mail->domain2);
 $user['virtualalias'] = $res->fetchOneCell();
 
 $page->assign_by_ref('vcard', $user);

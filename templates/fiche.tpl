@@ -61,12 +61,12 @@ function chgMainWinLoc( strPage ) {
           {elseif !$x.inscrit}
           Le compte de cette personne n'est pas actif (personne non inscrite ou exclue).
           {else}
+          {if $virtualalias}
+          <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
+          {/if}
           <a href="mailto:{$x.bestalias}@polytechnique.org">{$x.bestalias}@polytechnique.org</a>
           {if $bestalias neq $x.forlife}<br />
           <a href="mailto:{$x.forlife}@polytechnique.org">{$x.forlife}@polytechnique.org</a>
-          {/if}
-          {if $virtualalias}<br />
-          <a href="mailto:{$virtualalias}">{$virtualalias}</a>
           {/if}
           {/if}
         </div>

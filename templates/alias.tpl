@@ -34,21 +34,19 @@
   </h1>
 
 {if $actuel}
-  <p>
-    Ton alias est actuellement : <strong>{$actuel}</strong>. Il est pour l'instant
-    {if $mail_public}
-      public et apparaît donc sur ta fiche.
-  </p>
-  <h3>
-    <a href='?visible=private'>Cacher mon alias</a>
-  </h3>
-    {else}
-      privé et n'apparaît nulle part sur le site.
-  </p>
-  <h3>
-    <a href='?visible=public'>Rendre mon alias public</a>
-  </h3>
-    {/if}
+<form action="?visible={if $mail_public}private{else}public{/if}" method='post'>
+  <table class="flags">
+    <tr>
+      <td class="vert">
+        <input type="checkbox" {if $mail_public}checked="checked"{/if} onclick="this.form.submit()" />
+      </td>
+      <td>
+        Ton alias est actuellement : <strong>{$actuel}</strong>. Il est pour l'instant
+        {if $mail_public}public et apparaît donc sur ta fiche.{else}privé et n'apparaît nulle part sur le site{/if}
+      </td>
+    </tr>
+  </table>
+</form>
     
 {else}
   <p>

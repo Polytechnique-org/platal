@@ -31,12 +31,12 @@ $page->assign('demande', AliasReq::get_unique_request($uid));
 
 //Récupération des alias éventuellement existants
 $res = $globals->xdb->query(
-        "SELECT  alias, visibility
-           FROM  virtual
+        "SELECT  alias, emails_alias_pub
+           FROM  auth_user_quick, virtual
      INNER JOIN  virtual_redirect USING(vid)
            WHERE ( redirect={?} OR redirect= {?} )
-                 AND alias LIKE '%@{$globals->mail->alias_dom}'", 
-        $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+                 AND alias LIKE '%@{$globals->mail->alias_dom}' AND user_id = {?}", 
+        $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2, Session::getInt('uid'));
 list($alias, $visibility) = $res->fetchOneRow();
 $page->assign('actuel', $alias);
 
@@ -84,18 +84,18 @@ if (Env::has('alias') and Env::has('raison')) {
 
 // montrer son alias
 elseif ((Env::get('visible') == 'public') && ($visibility != 'public')) {
-	$globals->xdb->execute("UPDATE virtual SET visibility = 'public' WHERE alias = {?}", $alias);
-	$visibility = 'public';
+    $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = 'public' WHERE user_id = {?}", Session::getInt('uid'));
+    $visibility = 'public';
 }
 
 // cacher son alias
 elseif ((Env::get('visible') == 'private') && ($visibility != 'private')) {
-	$globals->xdb->execute("UPDATE virtual SET visibility = 'private' WHERE alias = {?}", $alias);
-	$visibility = 'private';
+    $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = 'private' WHERE user_id = {?}", Session::getInt('uid'));
+    $visibility = 'private';
 }
 
 if ($visibility == 'public') {
-	$page->assign('mail_public', true);
+    $page->assign('mail_public', true);
 }
 
 $page->run();
