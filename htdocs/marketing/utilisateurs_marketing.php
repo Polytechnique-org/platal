@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.7 2004-09-05 22:58:46 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.8 2004-09-30 15:55:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -42,7 +42,7 @@ switch ($_REQUEST["submit"]) {
 	$prenom=$myrow["prenom"];
 	$nom=$myrow["nom"];
 	$promo=$myrow["promo"];
-	$from=$_SESSION['forlife']."@polytechnique.org";
+	$from = "Equipe Polytechnique.org <register@polytechnique.org>";
 
         $page->run();
   	break;
