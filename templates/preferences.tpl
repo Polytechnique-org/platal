@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: preferences.tpl,v 1.12 2004-11-24 08:54:09 x2000habouzit Exp $
+        $Id: preferences.tpl,v 1.13 2004-11-24 09:47:25 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -26,43 +26,39 @@
 
 <table class="bicol" summary="Préférences: services" cellpadding="0" cellspacing="0">
   <tr>
-    <th colspan="2">Configuration des différents services du site
+    <th>
+    Configuration des différents services du site
     </th>
   </tr>
-  <tr class="impair">
-    <td class='half'>
-      <div class="question">
-        <a href="{rel}/emails.php">Mes adresses de redirection</a>
+  <tr>
+    <td>
+      <div class='float2'>
+        <h3><a href="{rel}/emails.php">Mes adresses de redirection</a></h3>
+        <div class='explication'>
+          Tu peux configurer tes différentes redirections de mails ici.
+        </div>
       </div>
-      <div class="explication">
-        Tu peux configurer tes différentes redirections de mails ici.
+      <div class='float2'>
+        <h3><a href="{rel}/alias.php">Mon alias mail @melix.net/.org</a></h3>
+        <div class='explication'>
+          Pour choisir un alias @melix.net et @melix.org (en choisir un nouveau annule l'ancien).
+        </div>
       </div>
-    </td>
-    <td class='half'>
-      <div class="question">
-        <a href="{rel}/alias.php">Mon alias mail @melix.net/.org</a>
+      <div class='float2'>
+        <h3><a href="{rel}/carva_redirect.php}">Ma redirection de page WEB</a></h3>
+        <div class='explication'>
+          Tu peux configurer tes redirections WEB
+          http://www.carva.org/{dyn s=$smarty.session.bestalias}
+          et http://www.carva.org/{dyn s=$smarty.session.forlife}
+        </div>
       </div>
-      <div class="explication">
-        Pour choisir un alias @melix.net et @melix.org (en choisir un nouveau annule l'ancien).
+      <div class='float2'>
+        <h3><a href="{rel}/skins.php">Apparence du site (skins)</a></h3>
+        <div class='explication'>
+          Tu peux changer les couleurs et les images du site.
+        </div>
       </div>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td class='half'>
-      <div class="question">
-        <a href="{rel}/carva_redirect.php}">Ma redirection de page WEB</a>
-      </div>
-      <div class="explication">
-        Tu peux configurer tes redirections WEB http://www.carva.org/{dyn s=$smarty.session.bestalias} et http://www.carva.org/{dyn s=$smarty.session.forlife}
-      </div>
-    </td>
-    <td class='half'>
-      <div class="question">
-        <a href="{rel}/skins.php">Apparence du site (skins)</a>
-      </div>
-      <div class="explication">
-        Tu peux changer les couleurs et les images du site.
-      </div>
+      <br class='spacer' />
     </td>
   </tr>
 </table>
@@ -74,47 +70,38 @@
     <th>Mots de passe et accès au site</th>
   </tr>
   <tr class="impair">
-    <td><div class="question">
-        <a href="{"motdepassemd5.php"|url}">Changer mon mot de passe pour le site</a>
-      </div>
-      <div class="explication">
+    <td>
+      <h3><a href="{"motdepassemd5.php"|url}">Changer mon mot de passe pour le site</a></h3>
+      <div class='explication'>
         permet de changer ton mot de passe pour accéder au site Polytechnique.org
-      </div>
     </td>
   </tr>
   <tr class="pair">
-    <td><div class="question">
-        <a href="{"acces_smtp.php"|url}">Activer l'accès SMTP et NNTP</a>
-      </div>
-      <div class="explication">
+    <td>
+      <h3><a href="{"acces_smtp.php"|url}">Activer l'accès SMTP et NNTP</a></h3>
+      <div class='explication'>
         Pour activer ton compte sur le serveur SMTP et NNTP de Polytechnique.org.
         Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter
         les forums directement depuis ton logiciel habituel de courrier électronique.
-      </div>
     </td>
   </tr>
   <tr class="impair">
     <td>
-{if $has_cookie}
-      <div class="question">
-        <a href="cookie_off.php">Supprimer l'accès permanent</a>
-      </div>
-      <div class="explication">
+      {if $has_cookie}
+      <h3><a href="cookie_off.php">Supprimer l'accès permanent</a></h3>
+      <div class='explication'>
         Clique sur le lien ci-dessus pour retirer l'accès sans mot de passe au site. Après avoir
         cliqué, tu devras à nouveau entrer ton mot de passe pour accéder aux différentes pages
         comme initialement.
-      </div>
-{else}
-      <div class="question">
-        <a href="cookie_on.php">Attribuer un cookie d'authentification permanente</a>
-      </div>
-      <div class="explication">
+      {else}
+      <h3><a href="cookie_on.php">Attribuer un cookie d'authentification permanente</a></h3>
+      <div class='explication'>
         Cette option te permet de ne plus avoir à entrer ton mot de passe pour la majorité des pages
         du site. Ce dernier reste cependant nécessaire pour le profil ou le changement de mot de
         passe. Il s'agit d'une option destinée aux utilisateurs fréquents du site, plutôt à l'aise
         avec l'informatique, et pour un ordinateur non partagé.
       </div>
-{/if}
+      {/if}
     </td>
   </tr>
 </table>

@@ -64,6 +64,9 @@ legend {
 .smaller { font-size: smaller; font-style: italic; }
 .spacer { clear: both; }
 
+.float2 { float: left; width: 48%; margin: 2px; }
+.float3 { float: left; width: 33%; }
+
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
@@ -107,14 +110,17 @@ h2 {
     border-bottom: 1px dotted #369;
 }
 
+h3 {
+    margin: 0em;
+    font-weight: bold;
+    padding: 0.5em 0em;
+    font-size: 100%;
+}
+
+
 p.explication, div.explication {
     font-style: italic;
-    padding: 0.25em;
-    text-align: justify;
-}
-p.question, div.question {
-    font-weight: bold;
-    padding: 0.25em;
+    padding: 0em 1ex 1ex 1ex;
 }
 
 li.spaced {
@@ -551,4 +557,4 @@ table#body {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: openweb.css,v 1.7 2004-11-24 09:23:40 x2000habouzit Exp $ */
+/* $Id: openweb.css,v 1.8 2004-11-24 09:47:08 x2000habouzit Exp $ */

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.4 2004-11-13 08:48:27 x2000habouzit Exp $
+        $Id: index.tpl,v 1.5 2004-11-24 09:47:26 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Carnet polytechnicien</h1>
@@ -30,17 +30,17 @@
   </tr>
   <tr class="impair">
     <td class='half'>
-      <div class="question">
+      <h3>
         <a href="{"carnet/mescontacts.php"|url}">Page de tes contacts</a>
-      </div>
+      </h3>
       <div class="explication">
         Tu peux ici lister tes contacts, en ajouter et en retirer.
       </div>
     </td>
     <td class='half'>
-      <div class="question">
+      <h3>
         <a href="{"carnet/mescontacts.php?trombi=1"|url}">Le trombi de tes contacts</a>
-      </div>
+      </h3>
       <div class="explication">
         La même chose que la page de tes contacts... <strong>en images !</strong>
       </div>
@@ -58,17 +58,17 @@
   </tr>
   <tr class="pair">
     <td class='half'>
-      <div class="question">
+      <h3>
         <a href="{"carnet/panel.php"|url}">Tous les évenements de la semaine</a>
-      </div>
+      </h3>
       <div class="explication">
         Affichage de tous les évenements de camarades/promos
       </div>
     </td>
     <td class='half'>
-      <div class="question">
+      <h3>
         <a href="{"carnet/notifs.php"|url}">Configurer tes notifications</a>
-      </div>
+      </h3>
       <div class="explication">
         Être notifié des inscriptions, décès, changement de fiche, ...
       </div>
