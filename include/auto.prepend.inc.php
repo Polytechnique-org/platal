@@ -29,8 +29,10 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=
     if($popup)
         $page->assign('popup_enable', true);
 
-    $page->compile_check=true;
-    $page->caching=true;
+    $page->compile_check=0;
+    $page->caching=0;
+#    $page->compile_check=true;
+#    $page->caching=true;
 }
 
 function new_skinned_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {

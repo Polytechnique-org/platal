@@ -23,18 +23,14 @@ class XorgPage extends DiogenesCorePage {
     $this->register_function('dyn', 'function_dyn', false);
 
     // if necessary, construct new session
-    if (!session_is_registered('session')) {
-      session_register('session');
+    if (empty($_SESSION['session']))
       $_SESSION['session'] = new XorgSession;
-    }
 
     $this->assign('site_dev',$site_dev);
 
     // si necessaire, c'est *ici* que se fait l'authentification
     $_no_legacy = true;
     $this->doAuth();
-    if(empty($_SESSION['skin']))
-        set_skin();
   }
 
   function display($append_to_id="") {
