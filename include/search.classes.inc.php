@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.16 2004-10-12 21:22:47 x2000bedo Exp $
+        $Id: search.classes.inc.php,v 1.17 2004-10-12 21:56:51 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -87,7 +87,7 @@ class SField {
      * on met une chaîne vide si le champ n'a pas été complété */
     function get_request() {
         $this->value =
-        (isset($_REQUEST[$this->fieldFormName]))?trim(stripslashes($_REQUEST[$this->fieldFormName])):'';
+        (isset($_REQUEST[$this->fieldFormName]))?trim($_REQUEST[$this->fieldFormName]):'';
     }
 
     /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
