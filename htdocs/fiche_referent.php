@@ -89,6 +89,7 @@ $res = $globals->xdb->query(
       LEFT JOIN  geoloc_pays AS gp ON(m.pid = gp.a2)
           WHERE  uid = {?}", $user_id);
 $page->assign('pays', $res->fetchColumn());
-$page->run();
 
+$page->addJsLink('javascript/close_on_esc.js');
+$page->run();
 ?>

@@ -61,7 +61,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 <br />
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
-  <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
+  <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">Connexion</th>
     </tr>

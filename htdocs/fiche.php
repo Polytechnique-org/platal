@@ -86,6 +86,8 @@ $res = $globals->xdb->query(
 	        AND alias LIKE '%@{$globals->mail->alias_dom}'",
         Session::getInt('uid'), $user['forlife'].'@'.$globals->mail->domain, $user['forlife'].'@'.$globals->mail->domain2);
 $page->assign('virtualalias', $res->fetchOneCell());
+
+$page->addJsLink('javascript/close_on_esc.js');
 $page->run();
 
 ?>

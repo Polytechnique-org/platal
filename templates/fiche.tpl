@@ -24,8 +24,6 @@ function chgMainWinLoc( strPage ) {
   parent.opener.document.location = strPage;
 }
 </script>
-<script type="text/javascript" src="javascript/close_on_esc.js">
-</script>
 {/literal}
 
 <table id="fiche" cellpadding="0" cellspacing="0">
@@ -38,11 +36,11 @@ function chgMainWinLoc( strPage ) {
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
         </a>
         {if !$x.is_contact}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$x.forlife}')">
+        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/mescontacts.php?action=ajouter&amp;user={$x.forlife}')">
           <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
         </a>
         {else}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=retirer&amp;user={$x.forlife}')">
+        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/mescontacts.php?action=retirer&amp;user={$x.forlife}')">
           <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
         </a>
         {/if}
