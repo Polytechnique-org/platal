@@ -1,12 +1,12 @@
-{* $Id: password_prompt.tpl,v 1.14 2004-08-23 15:14:24 x2000chevalier Exp $ *}
+{* $Id: password_prompt.tpl,v 1.15 2004-08-24 22:57:20 x2000habouzit Exp $ *}
 <noscript>
-  <span class="erreur">
+  <p class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
-  </span>
-  <span class="normal">
+  </p>
+  <p class="normal">
     Cette forme de script web est nécessaire pour l'utilisation du site.
     Pour en savoir plus, regarde la <a href="faq.php#connect">FAQ</a>.
-  </span>
+  </p>
 </noscript>
 
 <div class="rubrique">
@@ -51,7 +51,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
         Login (prenom.nom) :
       </td>
       <td>
-        <input type="text" name="username"size="20" maxlength=50
+        <input type="text" name="username"size="20" maxlength="50"
           value="{insert name="getUserName" script="insert.password.inc.php"}" />
       </td>
     </tr>

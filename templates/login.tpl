@@ -1,4 +1,4 @@
-{* $Id: login.tpl,v 1.4 2004-02-07 15:50:35 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.5 2004-08-24 22:58:34 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
@@ -87,7 +87,7 @@
   sur cet espace d'expression et d'information. Elle se réserve le droit de
   refuser ou de retirer toute information de nature diffamante ou pouvant être
   interprétée comme polémique par un membre de la communauté polytechnicienne.
-  <p>
+  </p>
 
   <p class="normal">
   <a href="evenements.php">Proposer une information événementielle</a>

@@ -1,9 +1,9 @@
-{* $Id: motdepassemd5.head.tpl,v 1.1 2004-01-27 10:41:50 x2000habouzit Exp $ *}
+{* $Id: motdepassemd5.head.tpl,v 1.2 2004-08-24 22:57:20 x2000habouzit Exp $ *}
 
 <script language="javascript" type="text/javascript" src="{"javascript/md5.js"|url}"></script>
 {literal}
 <script language="javascript" type="text/javascript">
-  <!--
+//<![CDATA[
   function EnCryptedResponse() {
     pw1 = document.changepass.nouveau.value;
     pw2 = document.changepass.nouveau2.value;
@@ -23,7 +23,7 @@
     document.changepass2.submit();
     return true;
   }
-  // -->
+//]]>
 </script>
 {/literal}
 
