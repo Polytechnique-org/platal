@@ -68,7 +68,7 @@ function get_annuaire_infos($method, $params) {
                     {
                         if($adresse == $i){//si on veut cette adresse en particulier
                             $array['adresse'][0] = $adr;
-                            $res->free();
+                            //$res->free();
                             break;
                         }
                         elseif($adresse == 0){//si on veut toutes les adresses
