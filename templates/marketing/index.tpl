@@ -30,16 +30,11 @@
   </tr>
   <tr class="impair">
     <td>
-      <span class="item">Premier contact : </span>
-      <a href="search.php">Chercher un non inscrit</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="promo.php">Marketing promo</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="recap.php">Sollicitations faites</a>
-    </td>
-  </tr>
-  <tr class="pair">
-    <td>
-      <span class="item">Emails : </span>
-      <a href="volontaire.php">Utiliser les adresses données par les inscrits</a>
+      <a href="{rel}/search.php?nonins=1">Chercher un non inscrit</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="promo.php">Marketing promo</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="volontaire.php">Addresses données par les inscrits</a>
     </td>
   </tr>
 </table>

@@ -22,46 +22,23 @@
 require_once("xorg.inc.php");
 new_admin_page('marketing/volontaire.tpl');
 
-// traitement des paramètres éventuels
-if (!empty($_GET["del"])) {
-    $globals->xdb->execute("DELETE FROM marketing WHERE id ={?}" , Get::get('del'));
-    $page->trig("Entrée effacée");
-}
-if (!empty($_GET["done"])) {
-    $globals->xdb->execute("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id = {?}", Get::get('done'));
-    $page->trig("Entrée mise à jour");
-}
-
-$sql = "SELECT  m.id, m.expe, m.dest, m.email, 
-                i.promo, i.nom, i.prenom, i.last_known_email, 
-                u.promo AS spromo, u.nom AS snom, u.prenom AS sprenom, a.alias AS forlife,
-                FIND_IN_SET('mail_perso', m.flags) AS mailperso
-          FROM  marketing     AS m
-    INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
-    INNER JOIN  auth_user_md5 AS u ON u.user_id = m.expe
-    INNER JOIN  aliases       AS a ON (u.user_id = a.id AND a.type='a_vie')
-         WHERE  NOT FIND_IN_SET('envoye', m.flags)";
-$page->assign('neuves', $globals->xdb->iterator($sql));
-
-$sql = "SELECT  a.promo, a.nom, a.prenom,
-                m.email, a.perms!='pending' AS inscrit,
-                sa.promo AS spromo, sa.nom AS snom, sa.prenom AS sprenom
-          FROM  marketing     AS m
-    INNER JOIN  auth_user_md5 AS a  ON a.matricule = m.dest
-    INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
-         WHERE  FIND_IN_SET('envoye', m.flags)";
-$page->assign('used', $globals->xdb->iterator($sql));
-
 $res = $globals->xdb->query(
-        "SELECT  COUNT(a.perms != 'pending') AS j,
-                 COUNT(i.matricule) AS i,
-                 100 * COUNT(a.nom) / COUNT(i.matricule) as rate
-           FROM  marketing     AS m
-     INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
-     INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
-     LEFT  JOIN  auth_user_md5 AS a  ON (a.matricule = m.dest AND a.perms!='pending')
-          WHERE  FIND_IN_SET('envoye', m.flags)");
-$page->assign('rate', $res->fetchOneAssoc());
+        "SELECT
+       DISTINCT  a.promo
+           FROM  register_marketing AS m
+     INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid
+       ORDER BY  a.promo");
+$page->assign('promos', $res->fetchColumn());
 
+
+if (Env::has('promo')) {
+    $sql = "SELECT  a.nom, a.prenom,
+                    m.email, sa.alias AS forlife
+              FROM  register_marketing AS m
+        INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid AND a.promo = {?}
+        INNER JOIN  aliases            AS sa ON (m.sender = sa.id AND sa.type='a_vie')
+          ORDER BY  a.nom";
+    $page->assign('addr', $globals->xdb->iterator($sql, Env::get('promo')));
+}
 $page->run();
 ?>

@@ -35,6 +35,7 @@ if (Env::has('quick')) {
 
     $qSearch = new QuickSearch('quick');
     $fields  = new SFieldGroup(true, array($qSearch));
+
     $offset  = new NumericSField('offset');
     
     if ($qSearch->isempty()) {
@@ -53,7 +54,7 @@ if (Env::has('quick')) {
             LEFT JOIN  contacts       AS c   ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
             LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
             '.$globals->search->result_where_statement.'
-                WHERE  '.$fields->get_where_statement().'
+                WHERE  '.$fields->get_where_statement().(logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '').'
                HAVING  mark>0
              ORDER BY  '.(logged() && Env::has('mod_date_sort') ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'

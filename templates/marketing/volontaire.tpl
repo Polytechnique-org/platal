@@ -18,66 +18,43 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+<h1>Marketing volontaire</h1>
 
+<p>
+Choix de la promo :
+</p>
+<p>
+{foreach from=$promos item=p}
+<a href="?promo={$p}">{$p}</a>
+{cycle values=",,,,,,,,,,,,,,<br />"}
+{/foreach}
+</p>
 
-<h1>
-  Marketing volontaire
-</h1>
+{if $addr}
 
-<h2>Adresses neuves</h2>
+<p>[<a href="promo.php?promo={$smarty.get.promo}">Marketing promo pour la promo {$smarty.get.promo}</a>]</p>
 
-<table class="bicol" cellpadding="3" summary="Adresses neuves">
-  <tr>
-    <th>Camarade concerné</th>
-    <th>Adresse email</th>
-    <th>Camarade "informateur"</th>
-    <th>Dernière adresse connue</th>
-    <th>Lui écrire ?</th>
-  </tr>
-  {iterate from=$neuves item=it}
-  <tr class="{cycle values="pair,impair"}">
-    <td>{$it.nom} {$it.prenom} (X{$it.promo})</td>
-    <td>{$it.email}</td>
-    <td>{$it.snom} {$it.sprenom} (X{$it.spromo})</td>
-    <td>{$it.last_known_email}</td>
-    <td>
-      {if $it.mailperso}
-      <a
-      href="utilisateurs_marketing.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from={$it.sprenom}%20{$it.snom}%20<{$it.forlife}&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Perso</a>
-      {else}
-      <a href="utilisateurs_marketing.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from=Equipe%20Polytechnique.org%20<register&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Equipe</a>
-      {/if}
-      <a href="{$smarty.server.PHP_SELF}?done={$it.id}">Fait !</a>
-      <a href="{$smarty.server.PHP_SELF}?del={$it.id}">Del</a>
-    </td>
-  </tr>
-  {/iterate}
-</table>
-
-<br />
-<br />
-
-<h2>Adresses déjà utilisées</h2>
-
+{if $addr->total()}
+<h2>Marketing volontaire</h2>
 <table class="bicol" cellpadding="3" summary="Adresses déjà utilisées">
   <tr>
     <th>Camarade concerné</th>
     <th>Adresse email</th>
-    <th>Camarade "informateur"</th>
-    <th>inscrit?</th>
+    <th>"informateur"</th>
   </tr>
-  {iterate from=$used item=it}
+  {iterate from=$addr item=it}
   <tr class="{cycle values="pair,impair"}">
-    <td>{$it.nom} {$it.prenom} (X{$it.promo})</td>
+    <td>{$it.nom} {$it.prenom}</td>
     <td>{$it.email}</td>
-    <td>{$it.snom} {$it.sprenom} (X{$it.spromo})</td>
-    <td>{if $it.inscrit}OUI{else}NON{/if}</td>
+    <td>{$it.forlife}</td>
   </tr>
   {/iterate}
 </table>
-
+{else}
 <p>
-{$rate.j} inscrits sur {$rate.i} sollicités, soit {$rate.rate}% de succès.
+pas d'informations pour les gens de cette promo
 </p>
+{/if}
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
