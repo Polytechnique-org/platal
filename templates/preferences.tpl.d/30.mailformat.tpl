@@ -24,7 +24,7 @@
 <h3><a href="?mail_fmt=texte">Recevoir les mails en format texte</a></h3>
 {/if}
 <div class='explication'>
-  La lettre mensuelle et les mails de notification du carnet te sont actuellement envoyé en format {$smarty.session.mail_fmt} si tu t'y es inscrit.
+  Les mails envoyés par le site (lettre mensuelle, carnet, ...) le sont de préférence en format {$smarty.session.mail_fmt}.
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
