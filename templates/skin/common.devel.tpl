@@ -1,18 +1,4 @@
-{* $Id: common.devel.tpl,v 1.3 2004-08-25 08:59:18 x2000habouzit Exp $ *}
-
-{if $validate}
-  <div id="dev">
-    <div class="title">Outils de dev</div>
-    <div>
-      @NB_ERR@
-      <a href="http://jigsaw.w3.org/css-validator/validator?uri={$validate}">VALIDER CSS</a>
-    </div>
-    <div>
-      <a href="http://www.w3schools.com/xhtml/xhtml_reference.asp">XHTML ref.</a><br />
-      <a href="http://www.w3schools.com/css/css_reference.asp">CSS2 ref.</a>
-    </div>
-  </div>
-{/if}
+{* $Id: common.devel.tpl,v 1.4 2004-08-30 10:00:33 x2000habouzit Exp $ *}
 
 {dynamic}
 {if $db_trace neq "\n\n"}
@@ -23,6 +9,18 @@
     <div class="hide">
       {$db_trace|smarty:nodefaults}
     </div>
+  </div>
+{/if}
+
+{if $validate}
+  <div id="dev">
+    Validation :
+    @NB_ERR@
+    <a href="http://jigsaw.w3.org/css-validator/validator?uri={$validate}">CSS</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    références :
+    <a href="http://www.w3schools.com/xhtml/xhtml_reference.asp">XHTML</a>
+    <a href="http://www.w3schools.com/css/css_reference.asp">CSS2</a>
   </div>
 {/if}
 {/dynamic}
