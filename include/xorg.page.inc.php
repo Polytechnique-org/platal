@@ -37,10 +37,10 @@ class XorgPage extends DiogenesCorePage {
     $this->cache_dir    = $globals->spoolroot."/cache/";
 
     $this->config_overwrite=false;
-    $this->compile_check=true;
-    $this->caching=true;
+    $this->compile_check = isset($site_dev);
+    $this->caching = ($type == SKINNED);
 
-    $this->_page_type = SKINNED;
+    $this->_page_type = $type;
     $this->_tpl = $tpl;
 
     $this->DiogenesCorePage();
@@ -66,8 +66,8 @@ class XorgPage extends DiogenesCorePage {
       $id = $this->make_id($append_to_id);
       if($site_dev) {
           $this->assign('validate', urlencode($baseurl.'/valid.html'));
-          if($this->_page_type == POPUP)
-              $result = $this->fetch('skin/'.$_SESSION['skin_popup'], $id);
+          if($this->_page_type == NO_SKIN)
+              $result = $this->fetch($this->_tpl, $id);
           else
               $result = $this->fetch('skin/'.$_SESSION['skin'], $id);
           $fd = fopen($this->cache_dir."valid.html","w");
@@ -75,8 +75,8 @@ class XorgPage extends DiogenesCorePage {
           fclose($fd);
           echo $result;
       } else {
-          if($this->_page_type == POPUP)
-              parent::display('skin/'.$_SESSION['skin_popup'], $id);
+          if($this->_page_type == NO_SKIN)
+              parent::display($this->_tpl, $id);
           else
               parent::display('skin/'.$_SESSION['skin'], $id);
       }
@@ -85,14 +85,14 @@ class XorgPage extends DiogenesCorePage {
 
   function xorg_is_cached($append_to_id="") {
       $id = $this->make_id($append_to_id);
-      if($this->_page_type == POPUP)
-          return parent::is_cached('skin/'.$_SESSION['skin_popup'], $id);
+      if($this->_page_type == NO_SKIN)
+          return parent::is_cached($this->_tpl, $id);
       else
           return parent::is_cached('skin/'.$_SESSION['skin'], $id);
   }
 
   function make_id($append_to_id="") {
-      $ret = $this->_tpl;
+      $ret = ($this->_page_type == NO_SKIN ? "noskin|" : "") . $this->_tpl;
       if($append_to_id)
           $ret.="|$append_to_id";
 

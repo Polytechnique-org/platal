@@ -1,5 +1,6 @@
 <?php
-require("nonhtml.inc.php");
+require("auto.prepend.inc.php");
+new_nonhtml_page('vcard.tpl', AUTH_COOKIE);
 
 function quoted_printable_encode($input, $line_max = 76) {
     $hex = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
@@ -105,5 +106,5 @@ header("Cache-Control: ");
 header("Content-type: text/x-vcard\n");
 header("Content-Transfer-Encoding: Quoted-Printable\n");
 
-$page->display('vcard.tpl');
+$page->display();
 ?>

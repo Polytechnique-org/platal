@@ -215,20 +215,19 @@ function start_connexion ($username, $uid, $identified) {
 
 function set_skin() {
   if(logged()) {
-    $result = mysql_query("SELECT skin,skin_tpl,skin_popup
+    $result = mysql_query("SELECT skin,skin_tpl
                            FROM auth_user_md5 AS a INNER JOIN skins AS s
                            ON a.skin=s.id WHERE user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
-    if(list($_SESSION['skin_id'], $_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($result)) {
+    if(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result)) {
       if ($_SESSION['skin_id'] == SKIN_STOCHASKIN_ID) {
-          $res = mysql_query("SELECT id,skin,skin_popup FROM skins
+          $res = mysql_query("SELECT id,skin FROM skins
                               WHERE !FIND_IN_SET('cachee',type) order by rand() limit 1");
-          list($_SESSION['skin_id'], $_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($res);
+          list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($res);
           mysql_free_result($res);
       }
     } else {
       $_SESSION['skin'] = SKIN_COMPATIBLE;
       $_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
-      $_SESSION['skin_popup'] = SKIN_POPUP_COMPATIBLE;
     }
     mysql_free_result($result);
   }
@@ -238,7 +237,6 @@ function set_skin() {
   {
     $_SESSION['skin'] = SKIN_COMPATIBLE;
     $_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
-    $_SESSION['skin_popup'] = SKIN_POPUP_COMPATIBLE;
   }
 }
 

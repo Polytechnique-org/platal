@@ -1,5 +1,6 @@
 <?php
-require("nonhtml.inc.php");
+require("auto.prepend.inc.php");
+new_nonhtml_page('mescontacts_ldif.tpl', AUTH_COOKIE);
 
 function ensure_adr(&$table) {
     $trim = Array();
@@ -61,5 +62,5 @@ header("Pragma: ");
 header("Cache-Control: ");
 header("Content-type: text/x-ldif\n");
 
-$page->display('mescontacts_ldif.tpl');
+$page->display();
 ?>

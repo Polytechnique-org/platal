@@ -1,6 +1,5 @@
 <?php
 require("config.xorg.inc.php") ;
-ini_set('include_path', ".:..:{$globals->root}/include/:{$globals->root}/configs/:$globals->libroot") ;
 setlocale(LC_TIME, "fr_FR");
 require("xorg.common.inc.php");
 
@@ -30,8 +29,8 @@ function new_skinned_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
     _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
 }
 
-function new_popup_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
+function new_nonhtml_page($tpl_name, $min_auth) {
+    _new_page(NO_SKIN, $tpl_name, "", $min_auth, false);
 }
 
 function new_admin_page($tpl_name, $popup=false, $tpl_head="") {
