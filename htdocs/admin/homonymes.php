@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.5 2004-11-01 17:27:03 x2002marichez Exp $
+        $Id: homonymes.php,v 1.6 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_admin_page('admin/homonymes.tpl',true);
+new_admin_page('admin/homonymes.tpl');
 require("diogenes.mailer.inc.php");
 
 $op =  isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list';

@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.php,v 1.4 2004-09-02 23:33:56 x2000bedo Exp $
+        $Id: evenements.php,v 1.5 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_admin_page('admin/evenements.tpl', true);
+new_admin_page('admin/evenements.tpl');
 
 $arch = isset($_REQUEST['arch']) ? $_REQUEST['arch'] : 0;
 

@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.13 2004-11-06 17:37:21 x2000habouzit Exp $
+        $Id: profil.php,v 1.14 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page('profil.tpl',AUTH_MDP, true, 'profil.head.tpl');
+new_skinned_page('profil.tpl',AUTH_MDP, 'profil.head.tpl');
 
 require_once('tabs.inc.php');
 require_once('profil.func.inc.php');

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: motdepassemd5.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: motdepassemd5.php,v 1.6 2004-11-13 14:16:15 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -33,6 +33,6 @@ if (!empty($_POST['response2']))  {             // la variable $response existe-
     $page->run();
 }
 
-new_skinned_page('motdepassemd5.tpl', AUTH_MDP, true, 'motdepassemd5.head.tpl');
+new_skinned_page('motdepassemd5.tpl', AUTH_MDP, 'motdepassemd5.head.tpl');
 $page->run();
 ?>

@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: show.php,v 1.2 2004-10-18 07:06:49 x2000habouzit Exp $
+        $Id: show.php,v 1.3 2004-11-13 14:16:24 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page('newsletter/show.tpl', AUTH_COOKIE, false, 'newsletter/head.tpl');
+new_skinned_page('newsletter/show.tpl', AUTH_COOKIE, 'newsletter/head.tpl');
 require("newsletter.inc.php");
 
 $nid = empty($_GET['nid']) ? 'last' : $_GET['nid'];

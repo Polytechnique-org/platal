@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_emails.php,v 1.3 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: doc_emails.php,v 1.4 2004-11-13 14:16:17 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page("docs/doc_emails.tpl",AUTH_COOKIE,true);
+new_skinned_page("docs/doc_emails.tpl",AUTH_COOKIE);
 $page->run();
 ?>

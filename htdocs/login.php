@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.php,v 1.15 2004-11-01 09:15:34 x2000chevalier Exp $
+        $Id: login.php,v 1.16 2004-11-13 14:16:15 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page('login.tpl', AUTH_COOKIE, true);
+new_skinned_page('login.tpl', AUTH_COOKIE);
 
 $param=$globals->db->query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");
 list($date,$naissance) = mysql_fetch_row($param);

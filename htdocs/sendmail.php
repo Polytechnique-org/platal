@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.php,v 1.6 2004-09-02 21:22:18 x2000habouzit Exp $
+        $Id: sendmail.php,v 1.7 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page('sendmail.tpl',AUTH_MDP,true);
+new_skinned_page('sendmail.tpl',AUTH_MDP);
 
 
 // action si on recoit un formulaire

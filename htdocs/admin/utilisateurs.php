@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.25 2004-10-25 19:36:11 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.26 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_admin_page('admin/utilisateurs.tpl', true);
+new_admin_page('admin/utilisateurs.tpl');
 require("email.classes.inc.php");
 
 /*

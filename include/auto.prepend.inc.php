@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auto.prepend.inc.php,v 1.27 2004-10-08 16:59:09 x2000habouzit Exp $
+        $Id: auto.prepend.inc.php,v 1.28 2004-11-13 14:16:27 x2000habouzit Exp $
  ***************************************************************************/
 
 function microtime_float() 
@@ -31,7 +31,7 @@ $TIME_BEGIN = microtime_float();
 require("config.xorg.inc.php") ;
 require_once("xorg.common.inc.php");
 
-function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=false) {
+function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
     global $page;
     require_once("xorg.page.inc.php");
     if(!empty($admin)) {
@@ -49,17 +49,15 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=
 
     $page->assign('xorg_head', $tpl_head);
     $page->assign('xorg_tpl', $tpl_name);
-    if($popup)
-        $page->assign('popup_enable', true);
 }
 
-function new_skinned_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
+function new_skinned_page($tpl_name, $min_auth, $tpl_head="") {
+    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
 }
 
-function new_simple_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
+function new_simple_page($tpl_name, $min_auth, $tpl_head="") {
     global $page;
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
+    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
     $page->assign('simple', true);
 }
 
@@ -67,8 +65,8 @@ function new_nonhtml_page($tpl_name, $min_auth) {
     _new_page(NO_SKIN, $tpl_name, "", $min_auth, false);
 }
 
-function new_admin_page($tpl_name, $popup=false, $tpl_head="") {
-    _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, $popup, true);
+function new_admin_page($tpl_name, $tpl_head="") {
+    _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, true);
 }
 
 function new_admin_table_editor($table,$idfield,$idedit=false) {

@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.php,v 1.9 2004-09-19 10:41:05 x2000coic Exp $
+        $Id: fiche_referent.php,v 1.10 2004-11-13 14:16:15 x2000habouzit Exp $
  ***************************************************************************/
 
 
 require("auto.prepend.inc.php");
-new_simple_page('fiche_referent.tpl',AUTH_COOKIE, false);
+new_simple_page('fiche_referent.tpl',AUTH_COOKIE);
 
 //$isnetscape = !empty($_SESSION['skin_compatible']);
 

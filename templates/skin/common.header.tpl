@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.header.tpl,v 1.13 2004-10-12 19:58:11 x2000habouzit Exp $
+        $Id: common.header.tpl,v 1.14 2004-11-13 14:16:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -47,8 +47,6 @@
       {/if}
     </title>
     <script type="text/javascript" src="{"javascript/misc.js"|url}"></script>
-{if $popup_enable}
     <script type="text/javascript" src="{"javascript/popwin.js.php"|url}"> </script>
-{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.19 2004-11-02 07:13:08 x2000habouzit Exp $
+        $Id: fiche.php,v 1.20 2004-11-13 14:16:15 x2000habouzit Exp $
  ***************************************************************************/
 
 
 require("auto.prepend.inc.php");
-new_simple_page('fiche.tpl',AUTH_COOKIE, true);
+new_simple_page('fiche.tpl',AUTH_COOKIE);
 
 require_once('applis.func.inc.php');
 

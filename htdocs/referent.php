@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.php,v 1.7 2004-09-03 00:20:28 x2000habouzit Exp $
+        $Id: referent.php,v 1.8 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 
 require("auto.prepend.inc.php");
-new_skinned_page('referent.tpl',AUTH_COOKIE, true);
+new_skinned_page('referent.tpl',AUTH_COOKIE);
 
 $nb_max_resultats_total = 100;
 $nb_max_resultats_par_page = 10;

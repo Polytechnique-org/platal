@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: tmpPWD.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: tmpPWD.php,v 1.3 2004-11-13 14:16:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -45,7 +45,7 @@ if ($ligne = mysql_fetch_array($result))  {
         $page->run();
     }
     else {
-        new_skinned_page('motdepassemd5.tpl', AUTH_PUBLIC, true,'motdepassemd5.head.tpl');
+        new_skinned_page('motdepassemd5.tpl', AUTH_PUBLIC, 'motdepassemd5.head.tpl');
         $page->run();
     }
 }
