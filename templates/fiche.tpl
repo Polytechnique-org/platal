@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.12 2004-09-19 10:41:08 x2000coic Exp $
+        $Id: fiche.tpl,v 1.13 2004-10-10 08:38:58 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -33,7 +33,8 @@
   </div>
   <div class='right' style="font-size: smaller; width:100%">(Fiche mise à jour le {$date|date_format:"%d %B %Y"})</div>
   <div>
-    <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a><br />
+    <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a><br />
+    <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
   </div>
   <div><em>{$nationalite}</em> - X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
   {if $is_referent}
