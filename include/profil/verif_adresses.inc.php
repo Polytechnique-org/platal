@@ -26,6 +26,7 @@ function generate_new_adrid(){
     return 1;
   reset($adresses);
   $i = 0;
+  $adrid_array = Array();
   foreach($adresses as $numero => $adr){
     $adrid_array[$i] = $numero;
     $i++;
