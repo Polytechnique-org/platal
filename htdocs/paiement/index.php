@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.3 2004-09-02 21:22:19 x2000habouzit Exp $
+        $Id: index.php,v 1.4 2004-10-09 09:29:03 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -80,12 +80,12 @@ if (!ereg("^[0-9]+,[0-9]{2}$",$montant)) {
     $montant = $montant_def;
 }
 
-if ($montant < $montant_min) {
+if (intval($montant) < $montant_min) {
     $erreur[] = "Montant inférieur au minimum autorisé ($montant_min).";
     $montant = $montant_min;
 }
 
-if ($montant > $montant_max) {
+if (intval($montant) > $montant_max) {
     $erreur[] = "Montant supérieur au maximum autorisé ($montant_max).";
     $montant = $montant_max;
 }
