@@ -1,5 +1,11 @@
 <?php
+/** classe qui gère les erreurs dans les requêtes des utilisateurs finaux
+ * passe le message d'erreur au template de page et exécute le template
+ */
 class ThrowError {
+    /** constucteur
+     * @param explain message explicatif de l'erreur de l'utilisateur
+     */
     function ThrowError($explain) {
         global $page;
         $page->assign('error','Erreur : '.$explain);
@@ -7,12 +13,23 @@ class ThrowError {
     }
 }
 
+/** classe de base représentant un champ de recherche
+ * (correspond à un champ du formulaire mais peut être à plusieurs champs de la bdd)
+ * interface étendue pour chaque type de champ particulier
+ */
 class SField {
+    /** le nom du champ dans le formulaire HTML */
     var $fieldFormName;
+    /** champs de la bdd correspondant à ce champ sous forme d'un tableau */
     var $fieldDbName;
+    /** champ résultat dans la requête MySQL correspondant à ce champ
+     * (alias utilisé pour la clause ORDER BY) */
     var $fieldResultName;
+    /** valeur du champ instanciée par l'utilisateur */
     var $value;
 
+    /** constructeur
+     * (récupère la requête de l'utilisateur pour ce champ) */
     function SField($_fieldFormName,$_fieldDbName='',$_fieldResultName='') {
         $this->fieldFormName = $_fieldFormName;
         $this->fieldDbName = $_fieldDbName;
@@ -20,21 +37,31 @@ class SField {
         $this->get_request();
     }
 
+    /** récupérer la requête de l'utilisateur 
+     * on met une chaîne vide si le champ n'a pas été complété */
     function get_request() {
         $this->value =
         (isset($_REQUEST[$this->fieldFormName]))?trim(stripslashes($_REQUEST[$this->fieldFormName])):'';
     }
 
+    /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
+     * on parcourt l'ensemble des champs de la bdd de $fieldDbName et on associe 
+     * à chacun d'entre eux une clause spécifique
+     * la clause totale et la disjonction de ces clauses spécifiques */
     function get_where_statement() {
         return ($this->value!='')?
         '('.implode(' OR ',array_map(array($this,'get_single_where_statement'),$this->fieldDbName)).')'
         :false;
     }
 
+    /** récupérer la clause correspondant au champ dans la clause ORDER BY de la requête
+     * utilisé par exemple pour placer d'abord le nom égal à la requête avant les approximations */
     function get_order_statement() {
         return false;
     }
 
+    /** récupérer le bout d'URL correspondant aux paramètres permettant d'imiter une requête d'un
+     * utilisateur assignant la valeur $this->value à ce champ */
     function get_url() {
         if ($this->value=='')
             return false;
@@ -43,12 +70,17 @@ class SField {
     }
 }
 
+/** classe de champ numérique entier (offset par exemple)
+ */
 class NumericSField extends SField {
+    /** constructeur
+     * (récupère la requête de l'utilisateur pour ce champ) */
     function NumericSField($_fieldFormName) {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
     }
     
+    /** récupère la requête de l'utilisateur et échoue s'il ne s'agit pas d'un entier */
     function get_request() {
         parent::get_request();
         if ($this->value=='')
@@ -58,7 +90,11 @@ class NumericSField extends SField {
     }
 }
 
+/** classe de champ texte (nom par exemple)
+ */
 class StringSField extends SField {
+    /** récupère la requête de l'utilisateur et échoue si la chaîne contient des caractères
+     * interdits */
     function get_request() {
         parent::get_request();
         if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
@@ -66,12 +102,17 @@ class StringSField extends SField {
             .' impossible.<br>');
     }
 
+    /** donne la longueur de la requête de l'utilisateur
+     * (au sens strict i.e. pas d'* ni d'espace ou de trait d'union -> les contraintes réellement
+     * imposées par l'utilisateur) */
     function length() {
         global $lc_accent,$uc_accent;
         return
         strlen($this->value)-strlen(ereg_replace('[a-z'.$lc_accent.$uc_accent.']','',strtolower($this->value)));
     }
 
+    /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
+     * @param field nom de champ de la bdd concerné par la clause */
     function get_single_where_statement($field) {
         //on rend les traits d'union et les espaces équivalents
         $regexp = preg_replace('/[ -]/','[ \-]',$this->value);
@@ -80,6 +121,7 @@ class StringSField extends SField {
         return $field." RLIKE '^(.*[ -])?".replace_accent_regexp($regexp).".*'";
     }
 
+    /** clause ORDER BY correspondant à ce champ de formulaire */
     function get_order_statement() {
         if ($this->value!='')
             return $this->fieldResultName.'!="'.$this->value.'"';
@@ -88,28 +130,41 @@ class StringSField extends SField {
     }
 }
 
+/** classe de champ de promotion */
 class PromoSField extends SField {
+    /** opérateur de comparaison (<,>,=) de la promo utilisé pour ce champ de formulaire */
     var $compareField;
 
+    /** constructeur 
+     * compareField est un champ de formulaire très simple qui ne sert qu'à la construction de la
+     * clause WHERE de la promo */
     function PromoSField($_fieldFormName,$_compareFieldFormName,$_fieldDbName,$_fieldResultName) {
         parent::SField($_fieldFormName,$_fieldDbName,$_fieldResultName);
         $this->compareField = new SField($_compareFieldFormName);
     }
 
+    /** récupère la requête utilisateur et échoue si le champ du formulaire ne représente pas une
+     * promotion (nombre à 4 chiffres) */
     function get_request() {
         parent::get_request();
         if (!(empty($this->value) or preg_match("/^[0-9]{4}$/", $this->value)))
             new ThrowError('La promotion est une année à quatre chiffres.<br>');
     }
 
+    /** teste si la requête est de la forme =promotion -> contrainte forte imposée -> elle suffit
+     * pour autoriser un affichage des résultats alors que <promotion est insuffisant */
     function is_a_single_promo() {
         return ($this->compareField->value=='=' && $this->value!='');
     }
 
+    /** clause WHERE correspondant à ce champ */
     function get_single_where_statement($field) {
         return $field.$this->compareField->value.$this->value;
     }
 
+    /** récupérer le bout d'URL correspondant aux paramètres permettant d'imiter une requête
+     * d'un utilisateur assignant la valeur $this->value à ce champ et assignant l'opérateur de
+     * comparaison adéquat */
     function get_url() {
         if (!($u=parent::get_url()))
             return false;
@@ -117,37 +172,50 @@ class PromoSField extends SField {
     }
 }
 
+/** classe groupant des champs de formulaire de recherche */
 class SFieldGroup {
+    /** tableau des classes correspondant aux champs groupés */
     var $fields;
+    /** type de groupe : ET ou OU */
     var $and;
 
+    /** constructeur */
     function SFieldGroup($_and,$_fields) {
         $this->fields = $_fields;
         $this->and = $_and;
     }
 
+    /** récupérer la clause WHERE d'un objet champ de recherche */
     function field_get_where($f) {
         return $f->get_where_statement();
     }
 
+    /** récupérer la clause ORDER BY d'un objet champ de recherche */
     function field_get_order($f) {
         return $f->get_order_statement();
     }
 
+    /** récupérer le bout d'URL correspondant à un objet champ de recherche */
     function field_get_url($f) {
         return $f->get_url();
     }
 
+    /** récupérer la clause WHERE du groupe de champs = conjonction (ET) ou disjonction (OU) de
+     * clauses des champs élémentaires */
     function get_where_statement() {
         $joinText=($this->and)?' AND ':' OR ';
         return '('.implode($joinText,array_filter(array_map(array($this,'field_get_where'),$this->fields))).')';
     }
 
+    /** récupérer la clause ORDER BY du groupe de champs = conjonction (ET) ou disjonction (OU) de
+     * clauses des champs élémentaires */
     function get_order_statement() {
         $order = array_filter(array_map(array($this,'field_get_order'),$this->fields));
         return (count($order)>0)?implode(',',$order):false;
     }
 
+    /** récupérer le bout d'URL correspondant à ce groupe de champs = concaténation des bouts d'URL
+     * des champs élémentaires */
     function get_url() {
         $url = array_filter(array_map(array($this,'field_get_url'),$this->fields));
         return (count($url)>0)?implode('&',$url):false;
