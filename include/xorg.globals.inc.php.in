@@ -89,12 +89,7 @@ class XorgGlobals extends DiogenesCoreGlobals
         if ($globals->debug) {
             $globals->db->trace_on();
         }
-    }
-
-    function dbconnect()
-    {
-        parent::dbconnect();
-        $this->xdb =& new XOrgDB($this->db);
+        $globals->xdb =& new XOrgDB;
     }
 }
 

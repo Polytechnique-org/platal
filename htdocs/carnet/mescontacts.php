@@ -29,29 +29,30 @@ $user = Env::get('user');
 switch (Env::get('action')) {
     case 'retirer':
 	if (preg_match('/^\d+$/', $user)) {
-	    if ($globals->db->query("DELETE FROM contacts WHERE uid = $uid AND contact='$user'"))
+	    if ($globals->xdb->execute('DELETE FROM contacts WHERE uid = {?} AND contact = {?}', $uid, $user))
             {
 		$page->trig("Contact retiré !");
             }
 	} else {
-	    if ($globals->db->query(
-                        "DELETE FROM  contacts
+	    if ($globals->xdb->execute(
+                        'DELETE FROM  contacts
                                USING  contacts AS c
-                          INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
-                               WHERE  c.uid = $uid AND a.alias='$user'"))
+                          INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!="homonyme")
+                               WHERE  c.uid = {?} AND a.alias={?}', $uid, $user))
             {
 		$page->trig("Contact retiré !");
             }
 	}
         break;
 
-    case "ajouter":
+    case 'ajouter':
         require_once('user.func.inc.php');
         if (($login = get_user_login($user)) !== false) {
-            if ($globals->db->query("INSERT INTO  contacts (uid, contact)
-                                          SELECT  $uid, id
-                                            FROM  aliases
-                                           WHERE  alias='$login'"))
+            if ($globals->xdb->execute(
+                        'INSERT INTO  contacts (uid, contact)
+                              SELECT  {?}, id
+                                FROM  aliases
+                               WHERE  alias = {?}', $uid, $login))
             {
                 $page->trig('Contact ajouté !');
             } else {
@@ -64,22 +65,19 @@ if(Get::has('trombi')) {
     require_once('trombi.inc.php');
     function getList($offset,$limit) {
 	global $globals;
-        $uid = Session::getInt('uid');
-	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = $uid");
-	list($total) = mysql_fetch_row($res);
-	mysql_free_result($res);
+        $uid   = Session::getInt('uid');
+	$res   = $globals->xdb->query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
+	$total = $res->fetchOneCell();
 
-	$res = $globals->db->query("
+	$res   = $globals->xdb->query("
 	    	SELECT  u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, u.promo
 		  FROM  contacts       AS c
 	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
 	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
-		 WHERE  c.uid = $uid
+		 WHERE  c.uid = {?}
 	      ORDER BY  nom
-		 LIMIT  ".$offset*$limit.",$limit");
-	$list = Array();
-	while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
-	mysql_free_result($res);
+		 LIMIT  {?}, {?}", $uid, $offset*$limit, $limit);
+        $list  = $res->fetchAllAssoc();
 
 	return Array($total, $list);
     }
@@ -88,33 +86,33 @@ if(Get::has('trombi')) {
     $trombi->setNbRows(4);
     $page->assign_by_ref('trombi',$trombi);
 } else {
-    $sql = "SELECT contact AS id,
-		   a.*, l.alias AS forlife,
-		   1 AS inscrit,
-		   a.perms != 'pending' AS wasinscrit,
-		   a.deces != 0 AS dcd, a.deces, a.matricule_ax, FIND_IN_SET('femme', a.flags) AS sexe,
-		   e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
-		   IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-		   ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-		   ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-		   adr.ville, gp.a2, gp.pays, gr.name AS region,
-		   IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
-	    FROM       contacts       AS c
-	    INNER JOIN auth_user_md5  AS a   ON (a.user_id = c.contact)
-	    INNER JOIN aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')
-	    LEFT  JOIN entreprises    AS e   ON (e.entrid = 0 AND e.uid = a.user_id)
-	    LEFT  JOIN emploi_secteur AS es  ON (e.secteur = es.id)
-	    LEFT  JOIN fonctions_def  AS ef  ON (e.fonction = ef.id)
-	    LEFT  JOIN geoloc_pays    AS n   ON (a.nationalite = n.a2)
-	    LEFT  JOIN applis_ins     AS ai0 ON (a.user_id = ai0.uid AND ai0.ordre = 0)
-	    LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
-	    LEFT  JOIN applis_ins     AS ai1 ON (a.user_id = ai1.uid AND ai1.ordre = 1)
-	    LEFT  JOIN applis_def     AS ad1 ON (ad1.id = ai1.aid)
-	    LEFT  JOIN adresses       AS adr ON (a.user_id = adr.uid AND FIND_IN_SET('active', adr.statut))
-	    LEFT  JOIN geoloc_pays    AS gp  ON (adr.pays = gp.a2)
-	    LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
-	    WHERE c.uid = $uid
-	    ORDER BY sortkey, a.prenom";
+    $sql = "SELECT  contact AS id,
+		    a.*, l.alias AS forlife,
+		    1 AS inscrit,
+		    a.perms != 'pending' AS wasinscrit,
+		    a.deces != 0 AS dcd, a.deces, a.matricule_ax, FIND_IN_SET('femme', a.flags) AS sexe,
+		    e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
+		    IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
+		    ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
+		    ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
+		    adr.ville, gp.a2, gp.pays, gr.name AS region,
+		    IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
+	      FROM  contacts       AS c
+        INNER JOIN  auth_user_md5  AS a   ON (a.user_id = c.contact)
+        INNER JOIN  aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')
+         LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = a.user_id)
+         LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
+         LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
+         LEFT JOIN  geoloc_pays    AS n   ON (a.nationalite = n.a2)
+         LEFT JOIN  applis_ins     AS ai0 ON (a.user_id = ai0.uid AND ai0.ordre = 0)
+         LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
+         LEFT JOIN  applis_ins     AS ai1 ON (a.user_id = ai1.uid AND ai1.ordre = 1)
+         LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
+         LEFT JOIN  adresses       AS adr ON (a.user_id = adr.uid AND FIND_IN_SET('active', adr.statut))
+         LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
+         LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
+             WHERE  c.uid = $uid
+          ORDER BY  sortkey, a.prenom";
     
     $page->assign_by_ref('citer', $globals->xdb->iterator($sql));
 }

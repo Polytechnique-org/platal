@@ -25,16 +25,10 @@ require_once('diogenes.database.inc.php');
 
 class XOrgDB
 {
-    // {{{ properties
-   
-    var $_db;
-    
-    // }}}
     // {{{ constructor
 
-    function XOrgDB(&$diog_db)
+    function XOrgDB()
     {
-        $this->_db =& $diog_db;
     }
 
     // }}}
@@ -44,10 +38,21 @@ class XOrgDB
     {
         $args     = func_get_args();
         $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = $args[0];
-        return new XOrgDBResult(call_user_func_array('sprintf', $query), $this->_db);
+        $query[0] = str_replace('{?}', '%s', $args[0]);
+        return new XOrgDBResult(call_user_func_array('sprintf', $query));
     }
 
+    // }}}
+    // {{{ function execute()
+
+    function execute() {
+        global $globals;
+        $args     = func_get_args();
+        $query    = array_map(Array($this, '_db_escape'), $args);
+        $query[0] = str_replace('{?}', '%s', $args[0]);
+        return $globals->db->query(call_user_func_array('sprintf', $query));
+    }
+    
     // }}}
     // {{{ function iterator()
 
@@ -55,14 +60,14 @@ class XOrgDB
     {
         $args     = func_get_args();
         $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = $args[0];
-        return new XOrgDBIterator(call_user_func_array('sprintf', $query), $this->_db);
+        $query[0] = str_replace('{?}', '%s', $args[0]);
+        return new XOrgDBIterator(call_user_func_array('sprintf', $query));
     }
     
     // }}}
     // {{{ function _db_escape
 
-    function _db_escape(&$var)
+    function _db_escape($var)
     {
         switch (gettype($var)) {
             case 'boolean':
@@ -75,9 +80,9 @@ class XOrgDB
 
             case 'string':
                 if (get_magic_quotes_gpc()) {
-                    return addslashes(stripslashes($var));
+                    return "'".addslashes(stripslashes($var))."'";
                 } else {
-                    return addslashes($var);
+                    return "'".addslashes($var)."'";
                 }
 
             case 'NULL':
@@ -85,7 +90,7 @@ class XOrgDB
 
             case 'object':
             case 'array':
-                return addslashes(serialize($var));
+                return "'".addslashes(serialize($var))."'";
 
             default:
                 die(var_export($var, true).' is not a valid for a database entry');
@@ -107,9 +112,10 @@ class XOrgDBResult
     // }}}
     // {{{ constructor
 
-    function XOrgDBResult($query, &$db)
+    function XOrgDBResult($query)
     {
-        $this->_res =& $db->query($query);
+        global $globals;
+        $this->_res =& $globals->db->query($query);
     }
 
     // }}}
@@ -124,7 +130,7 @@ class XOrgDBResult
     // }}}
     // {{{ function fetchRow
 
-    function &fetchRow()
+    function _fetchRow()
     {
         return mysql_fetch_row($this->_res);
     }
@@ -132,7 +138,7 @@ class XOrgDBResult
     // }}}
     // {{{ function fetchAssoc
 
-    function &fetchAssoc()
+    function _fetchAssoc()
     {
         return mysql_fetch_assoc($this->_res);
     }
@@ -140,23 +146,55 @@ class XOrgDBResult
     // }}}
     // {{{ function fetchAllRow
 
-    function &fetchAllRow()
+    function fetchAllRow()
     {
         $result = Array();
         while ($result[] = mysql_fetch_row($this->_res)) { }
         array_pop($result);
+        $this->free();
         return $result;
     }
 
     // }}}
-    // {{{ function fetchAssoc
+    // {{{ function fetchAllAssoc
 
-    function &fetchAllAssoc()
+    function fetchAllAssoc()
     {
         $result = Array();
         while ($result[] = mysql_fetch_assoc($this->_res)) { }
         array_pop($result);
+        $this->free();
         return $result;
+    }
+
+    // }}}
+    // {{{ function fetchOneAssoc()
+
+    function fetchOneAssoc()
+    {
+        $tmp = $this->_fetchAssoc();
+        $this->free();
+        return $tmp;
+    }
+
+    // }}}
+    // {{{ function fetchOneRow()
+
+    function fetchOneRow()
+    {
+        $tmp = $this->_fetchRow();
+        $this->free();
+        return $tmp;
+    }
+
+    // }}}
+    // {{{ function fetchOneCell()
+
+    function fetchOneCell()
+    {
+        $tmp = $this->_fetchRow();
+        $this->free();
+        return $tmp[0];
     }
 
     // }}}
@@ -185,9 +223,9 @@ class XOrgDBIterator extends XOrgIterator
     // }}}
     // {{{
     
-    function XOrgDBIterator($query, &$db, $mode = MYSQL_ASSOC)
+    function XOrgDBIterator($query, $mode = MYSQL_ASSOC)
     {
-        $this->_result =& new XOrgDBResult($query, $db);
+        $this->_result =& new XOrgDBResult($query);
         $this->_pos    = 0;
         $this->_total  = $this->_result->numRows();
         $this->_mode   = $mode;
@@ -196,7 +234,7 @@ class XOrgDBIterator extends XOrgIterator
     // }}}
     // {{{ function next ()
     
-    function &next()
+    function next()
     {
         $this->_pos ++;
         if ($this->_pos > $this->_total) {
@@ -204,7 +242,7 @@ class XOrgDBIterator extends XOrgIterator
             unset($this);
             return null;
         }
-        return $this->_mode != MYSQL_ASSOC ? $this->_result->fetchRow() : $this->_result->fetchAssoc();
+        return $this->_mode != MYSQL_ASSOC ? $this->_result->_fetchRow() : $this->_result->_fetchAssoc();
     }
 
     // }}}

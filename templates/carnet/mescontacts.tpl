@@ -38,7 +38,7 @@
   il te suffit de cliquer sur l'icône <img src="{"images/ajouter.gif"|url}" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>  
 
-{if $citer->total()}
+{if $trombi || $citer->total()}
 <p>
   Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" class='popup'><strong>Triée par promo</strong></a>]

@@ -46,13 +46,6 @@ function smarty_compiler_iterate($tag_attrs, &$compiler)
     $_from = $compiler->_dequote($_params['from']);
     $_item = $compiler->_dequote($_params['item']);
 
-    if (!is_subclass_of($compiler->_tpl_vars[$_from], 'XOrgIterator')) {
-        $compiler->_syntax_error("iterate: 'from' parameter has to be a instance of an XOrgIterator Object",
-                E_USER_ERROR, __FILE__, __LINE__);
-        return;
-    }
-
-
     return "while ((\$this->_tpl_vars['$_item'] =& \$this->_tpl_vars['$_from']->next()) !== null):";
 }
 
