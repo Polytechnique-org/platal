@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.12 2004-09-02 23:25:31 x2000habouzit Exp $
+        $Id: general.tpl,v 1.13 2004-10-08 19:53:57 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -90,7 +90,7 @@
         <script type="text/javascript">
           <!--
           fillType(document.forms.prof_annu.appli_type1, document.forms.prof_annu.appli_id1.selectedIndex-1);
-          selectType(document.forms.prof_annu.appli_type1, '{dyn x=$appli_type1}');
+          selectType(document.forms.prof_annu.appli_type1, '{$appli_type1}');
           //-->
         </script>
       </td>
@@ -110,7 +110,7 @@
         <script type="text/javascript">
           <!--
           fillType(document.forms.prof_annu.appli_type2, document.forms.prof_annu.appli_id2.selectedIndex-1);
-          selectType(document.forms.prof_annu.appli_type2, '{dyn x=$appli_type2}');
+          selectType(document.forms.prof_annu.appli_type2, '{$appli_type2}');
           //-->
         </script>
       </td>
