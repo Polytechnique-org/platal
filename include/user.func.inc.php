@@ -103,6 +103,7 @@ function get_user_login($data, $get_forlife = false) {
                 $alias = $mbox;
             }
         } else {
+            $page->trig("il n'y a pas d'utilisateur avec ce login");
             $alias = false;
         }
         mysql_free_result($res);
