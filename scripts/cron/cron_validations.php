@@ -19,39 +19,45 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: clean.php,v 1.2 2004-10-02 15:28:11 x2000habouzit Exp $
+        $Id: cron_validations.php,v 1.1 2004-10-02 15:28:11 x2000habouzit Exp $
  ***************************************************************************/
+/* vim: set sw=4 ts=4 sts=4 tw=100:
+ * vérifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
+ * 
+ * $Id: cron_validations.php,v 1.1 2004-10-02 15:28:11 x2000habouzit Exp $
+*/ 
+
+$M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
+$R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
+
+ini_set("include_path","/usr/share/php");
 require("../../include/xorg.misc.inc.php");
 require("../../include/config.xorg.inc.php");
+require("../../../diogenes/lib/diogenes.mailer.inc.php");
+
 mysql_connect($globals->dbhost,$globals->dbuser,$globals->dbpwd);
 mysql_select_db($globals->dbdb);
 
-function query ($sql) {
-    mysql_query($sql);
-    if (mysql_errno() != 0) {
-	echo "error in \"$sql\" :\n", mysql_error(),"\n";
-    }
-}
+$sql = mysql_query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
+list($nb,$nbold,$nbveryold) = mysql_fetch_row($sql);
+mysql_free_result($sql);
 
-// la table en_cours est nettoyée
-query("DELETE FROM en_cours WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
-query("delete from en_cours where loginbis = 'INSCRIT'");
+if(empty($nb))
+	exit;
 
-// la table envoidirect est nettoyée
-query("update envoidirect set uid = CONCAT('+',uid) where uid not like '+%' and date_succes != 0");
+$mymail = new DiogenesMailer('validation@polytechnique.org', 
+		"validation@polytechnique.org",
+		(empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuées",
+		false, "");
 
-// quelques tables sont triées pour que la lecture triée soit plus facile
-query("alter table nationalites order by text");
-query("alter table applis_def order by text");
-query("alter table binets_def order by text");
-query("alter table groupesx_def order by text");
-query("alter table secteur order by text");
-query("alter table sections order by text");
+$message =
+	"il y a $nb validation à effectuer \n"
+	.(empty($nbold)?"":"dont $nbold depuis le dernier mail !!!\n")
+	.(empty($nbveryold)?"":"et dont *$nbveryold* sont en retard de plus de 6h !!!")
+	."\n"
+	."https://www.polytechnique.org/admin/valider.php\n";
 
-// on regarde si qqun a fait bcp de requêtes dans l'annuaire, puis on remete à 0
-//$res = mysql_query("SELECT nom,prenom,promo,nb_recherches FROM auth_user_md5 as u INNER JOIN nb_recherches as r ON(u.user_id = r.uid) WHERE r.nb_recherches > 90 AND u.perms != 'admin' order by r.nb_recherches");
-//while (list($n, $p, $pr, $nbr) = mysql_fetch_row($res))
-//    echo $n." ".$p.", X".$pr." : ".$nbr." recherches dans l'annuaire !\n";
-//query("UPDATE nb_recherches SET nb_recherches = 0");
-
+$message = wordwrap($message,78);  
+$mymail->setBody($message);
+$mymail->send();
 ?>
