@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.19 2004-09-19 21:09:12 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.20 2004-09-20 20:04:37 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os
@@ -35,6 +35,8 @@ from Mailman import Errors
 from Mailman import mm_cfg
 from Mailman import i18n
 from Mailman.UserDesc import UserDesc
+from Mailman.ListAdmin import readMessage
+from email.Iterators import typed_subpart_iterator
 
 class AuthFailed(Exception): pass
 
@@ -323,6 +325,7 @@ def get_pending_ops((userdesc,perms),listname):
                     'id'    : id,
                     'sender': sender,
                     'size'  : size,
+                    'subj'  : subject,
                     'stamp' : ptime
                     })
     except:
@@ -340,11 +343,47 @@ def handle_request((userdesc,perms),listname,id,value,comment):
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
-        mlist.HandleRequest(id,value,comment)
+        mlist.HandleRequest(int(id),value,comment)
         return 1
     except:
         return 0
 
+
+def get_pending_mail((userdesc,perms),listname,id,raw=0):
+    try:
+        mlist = MailList.MailList(listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(int(id))
+        fpath = os.path.join(mm_cfg.DATA_DIR, filename)
+        size = os.path.getsize(fpath)
+        msg = readMessage(fpath)
+        mlist.Unlock()
+        
+        if raw:
+            return str(msg)
+        results = []
+        for part in typed_subpart_iterator(msg,'text','plain'):
+            results.append (part.get_payload(decode=1))
+        return {'id'    : id,
+                'sender': sender,
+                'size'  : size,
+                'subj'  : subject,
+                'stamp' : ptime,
+                'parts' : results }
+    except:
+        mlist.Unlock()
+        return 0
+
+def is_admin((userdesc,perms),listname):
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except:
+        return 0
+    return is_admin_on(userdesc, perms, mlist)
 
 ################################################################################
 #
@@ -372,6 +411,8 @@ server.register_function(del_owner)
 server.register_function(set_welcome)
 server.register_function(get_pending_ops)
 server.register_function(handle_request)
+server.register_function(get_pending_mail)
+server.register_function(is_admin)
 
 server.serve_forever()
 

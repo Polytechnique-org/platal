@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.php,v 1.4 2004-09-11 15:11:13 x2000habouzit Exp $
+        $Id: liste.php,v 1.5 2004-09-20 20:04:37 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = $_REQUEST['liste'];
 
 require("auto.prepend.inc.php");
-new_skinned_page('listes/liste.tpl', AUTH_COOKIE, true);
+new_skinned_page('listes/liste.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
 $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
@@ -33,7 +33,6 @@ list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-
 
 if(isset($_REQUEST['welc'])) $client->set_welcome($liste, $_REQUEST['welc']);
 

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.tpl,v 1.6 2004-09-11 15:11:14 x2000habouzit Exp $
+        $Id: liste.tpl,v 1.7 2004-09-20 20:04:38 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -64,6 +64,7 @@
   modérateurs de la liste
 </div>
 
+{if $owners|@count}
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   {foreach from=$owners item=xs key=promo}
   <tr>
@@ -80,11 +81,13 @@
   </tr>
   {/foreach}
 </table>
+{/if}
 
 <div class='rubrique'>
   membres de la liste
 </div>
 
+{if $members|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
   {foreach from=$members item=xs key=promo}
   <tr>
@@ -101,6 +104,7 @@
   </tr>
   {/foreach}
 </table>
+{/if}
 
 {if $details.you > 1 || ($details.priv>1 && $smarty.session.perms eq admin)}
 <div class='rubrique'>
