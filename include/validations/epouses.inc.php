@@ -38,14 +38,13 @@ class EpouseReq extends Validate
     // }}}
     // {{{ constructor
 
-    function EpouseReq($_uid, $_forlife, $_epouse, $_stamp=0)
+    function EpouseReq($_uid, $_epouse)
     {
         global $globals;
-        $this->Validate($_uid, true, 'epouse', $_stamp);
+        $this->Validate($_uid, true, 'epouse');
         $this->epouse  = $_epouse;
-        $this->forlife = $_forlife;
-        list($prenom)  = explode('.',$_forlife);
-        $this->alias   = make_username($prenom, $this->epouse);
+        $this->alias   = make_username($this->prenom, $this->epouse);
+        var_export($this);
 
         $res = $globals->xdb->query("
                 SELECT  e.alias, u.epouse, a.id

@@ -37,7 +37,7 @@ $page->assign('is_femme',   $flags->hasflag("femme"));
 $page->assign('epouse_old', $epouse_old);
 $page->assign('alias_old',  $alias_old);
 
-$epouse = replace_accent(trim(clean_request('epouse'))); 
+$epouse = replace_accent(trim(Env::get('epouse'))); 
 $epouse = strtoupper($epouse);
 $page->assign('epouse_req', $epouse);
 
@@ -47,7 +47,7 @@ if (Env::has('submit') && ($epouse != $epouse_old)) {
         $page->assign('same', true);
     } else { // le nom de mariage est distinct du nom à l'X
         // on calcule l'alias pour l'afficher
-        $myepouse = new EpouseReq(Env::getInt('uid'), Env::get('forlife'), $epouse);
+        $myepouse = new EpouseReq(Session::getInt('uid'), $epouse);
         $myepouse->submit();
         $page->assign('myepouse', $myepouse);
     }
