@@ -168,23 +168,26 @@ class NewsLetter
 
     function footer($html)
     {
+        global $globals;
+        $url = $globals->baseurl;
+
 	if ($html) {
 	    return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
 	    .  '<div class="foot">'
-	    .  '[<a href="http://www.polytechnique.org/newsletter/">archives</a>&nbsp;|&nbsp;'
-	    .  '<a href="http://www.polytechnique.org/newsletter/submit.php">écrire dans la NL</a>&nbsp;|&nbsp;' 
-	    .  '<a href="http://www.polytechnique.org/listes/?nl_unsub=1">ne plus recevoir</a>&nbsp;|&nbsp;'
-	    .  '<a href="http://www.polytechnique.org/listes/?nl_sub=text">recevoir en texte brut</a>]'
+	    .  "[<a href=\"$url/newsletter/\">archives</a>&nbsp;|&nbsp;"
+	    .  "<a href=\"$url/newsletter/submit.php\">écrire dans la NL</a>&nbsp;|&nbsp;"
+	    .  "<a href=\"$url/newsletter/?out=1\">ne plus recevoir</a>&nbsp;|&nbsp;"
+	    .  "<a href=\"$url/newsletter/?in=text\">recevoir en texte brut</a>]"
 	    .  '</div>';
 	} else {
 	    return "\n\n--------------------------------------------------------------------\n"
 	         . "Cette lettre est envoyée à tous les Polytechniciens sur Internet par\n"
 	         . "l'intermédiaire de Polytechnique.org.\n"
 		 . "\n"
-		 . "archives : [http://www.polytechnique.org/newsletter/]\n"
-		 . "écrire   : [http://www.polytechnique.org/newsletter/submit.php]\n"
-		 . "ne plus recevoir: [http://www.polytechnique.org/listes/?nl_unsub=1]\n"
-		 . "recevoir en HTML: [http://www.polytechnique.org/listes/?nl_sub=html]\n";
+		 . "archives : [$url/newsletter/]\n"
+		 . "écrire   : [$url/newsletter/submit.php]\n"
+		 . "ne plus recevoir: [$url/newsletter/?out=1]\n"
+		 . "recevoir en HTML: [$url/newsletter/?in=html]\n";
 	}
     }
 

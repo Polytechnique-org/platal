@@ -26,12 +26,58 @@
 Tu trouveras ici les archives de la lettre d'information de Polytechnique.org.  Pour t'abonner à
 cette lettre, il te suffit de te <a href="{"listes/"|url}">rendre sur la page des listes</a>.
 </p>
+
 <p>
 <strong>Pour demander l'ajout d'une annonce dans la prochaine lettre mensuelle</strong>,
-utilise <a href='submit.php'>le formulaire dédié !</a>.
+utilise <a href='submit.php'>le formulaire dédié !</a>
 </p>
 
+<h2>Ton statut</h2>
+
 {dynamic}
+{if $nls eq html}
+<p>
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format HTML !
+</p>
+{elseif $nls eq text}
+<p>
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format texte !
+</p>
+{else}
+<p>
+Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
+</p>
+{/if}
+
+{if $nls neq "text"}
+<p>
+Pour recevoir la version texte suis le lien :
+</p>
+<div class='center'>
+  [<a href='?in=text'>m'inscrire pour le format texte</a>]
+</div>
+{/if}
+
+{if $nls neq "html"}
+<p>
+Pour recevoir la version HTML suis le lien :
+</p>
+<div class='center'>
+  [<a href='?in=html'>m'inscrire pour le format HTML</a>]
+</div>
+{/if}
+
+{if $nls}
+<p>
+Pour te désinscrire suis le lien :
+</p>
+<div class='center'>
+  [<a href='?out=1'>me désinscrire</a>]
+</div>
+{/if}
+
+<h2>Les archives</h2>
+
 <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
   <tr>
     <th>date</th>

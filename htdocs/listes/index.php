@@ -22,7 +22,6 @@
 require_once("xorg.inc.php");
 new_skinned_page('listes/index.tpl', AUTH_MDP);
 require_once('xml-rpc-client.inc.php');
-require_once('newsletter.inc.php');
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 if(isset($_GET['del'])) {
@@ -39,11 +38,7 @@ if(isset($_POST['promo_add'])) {
 	$client->subscribe("promo$promo");
     }
 }
-if(!empty($_GET['nl_unsub'])) unsubscribe_nl();
-if(!empty($_GET['nl_sub']))   subscribe_nl($_GET['nl_sub']=='html');
-
 $listes = $client->get_lists();
 $page->assign_by_ref('listes',$listes);
-$page->assign('nl',get_nl_state());
 $page->run();
 ?>
