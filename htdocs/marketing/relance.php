@@ -28,18 +28,17 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
     require_once("xorg.mailer.inc.php");
     
     
-    $res=$globals->db->query("SELECT COUNT(*) FROM auth_user_md5");
-    list($nbdix) = mysql_fetch_row($res);
-    mysql_free_result($res);
-
-    $res = $globals->db->query("SELECT  e.date,e.promo,e.nom,e.prenom,e.matricule,e.email,e.username
-                          FROM  en_cours      AS e
-                    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')");
+    $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5");
+    $nbdix = $res->fetchOneCell();
+    $res   = $globals->xdb->iterRow(
+            "SELECT  e.date,e.promo,e.nom,e.prenom,e.matricule,e.email,e.username
+               FROM  en_cours      AS e
+         INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')");
 
     $sent = Array();
 
-    while (list($ldate, $lpromo, $lnom, $lprenom, $lmatricule, $lemail, $lusername) = mysql_fetch_row($res)) {
-        if (isset($_POST[$lmatricule]) && $_POST[$lmatricule] == "1") {
+    while (list($ldate, $lpromo, $lnom, $lprenom, $lmatricule, $lemail, $lusername) = $res->next()) {
+        if (Post::get($lmatricule) == "1") {
             $lins_id = rand_url_id(12);
             $nveau_pass = rand_pass();
             $lpass = md5($nveau_pass);
@@ -56,9 +55,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
             $mymail->assign('lemail',$lemail);
             $mymail->assign('subj',$lusername."@polytechnique.org");
 
-            $globals->db->query("UPDATE  en_cours
-                            SET  ins_id='$lins_id',password='$lpass',relance='".date("Y-m-j")."'
-                          WHERE  matricule = '$lmatricule'");
+            $globals->xdb->execute("UPDATE en_cours SET ins_id={?}, password={?}, relance=NOW(), WHERE matricule = {?}", $lins_id, $lpass $lmatricule);
             // envoi du mail à l'utilisateur
 
             $mymail->send();

@@ -22,22 +22,20 @@
 require_once("xorg.inc.php");
 new_skinned_page('marketing/public.tpl', AUTH_MDP);
 
-if (! isset($_REQUEST["num"])) { exit; }
+if (! Env::has('num')) { exit; }
 
-$mat = $_REQUEST["num"];
+$mat = Env::get('num');
 
-$res = $globals->db->query("SELECT nom,prenom,promo FROM auth_user_md5 WHERE matricule = '$mat' AND perms='pending'");
-if (list($nom, $prenom, $promo) = mysql_fetch_row($res)) {
+$res = $globals->xdb->query("SELECT nom,prenom,promo FROM auth_user_md5 WHERE matricule={?} AND perms='pending'", $mat);
+if (list($nom, $prenom, $promo) = $res->fetchOneRow()) {
     $page->assign('prenom', $prenom);
     $page->assign('nom', $nom);
     $page->assign('promo', $promo);
 }
 
 if (isset($_REQUEST["valide"])) {
-	$globals->db->query(
-	  "INSERT INTO marketing
-       SET expe = {$_SESSION['uid']}, dest = '$mat', email = '{$_REQUEST['mail']}', flags = '".(($_REQUEST["origine"]=="perso") ? "mail_perso" : "")."'"
-	);
+    $globals->xdb->execute("INSERT INTO marketing SET expe={?}, dest={?}, email={?}, flags={?}",
+            Session::getInt('uid'), $mat, Env::get('mail'), (Env::get('origine') == 'perso' ? 'mail_perso', ''));
 }
 
 $page->run();

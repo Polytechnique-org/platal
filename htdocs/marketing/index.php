@@ -24,40 +24,31 @@ new_admin_page('marketing/index.tpl');
 
 # Quelques statistiques
 
-$sql = "SELECT count(*) as vivants,
-	       count(NULLIF(perms!='pending', 0)) as inscrits,
-	       100*count(NULLIF(perms!='pending', 0))/count(*) as ins_rate,
-	       count(NULLIF(promo >= 1972, 0)) as vivants72,
-	       count(NULLIF(promo >= 1972 AND perms!='pending', 0)) as inscrits72,
-	       100 * count(NULLIF(promo >= 1972 AND perms!='pending', 0)) /
-                   count(NULLIF(promo >= 1972, 0)) as ins72_rate,
-	       count(NULLIF(FIND_IN_SET('femme', flags), 0)) as vivantes,
-	       count(NULLIF(FIND_IN_SET('femme', flags) AND perms!='pending', 0)) as inscrites,
-	       100 * count(NULLIF(FIND_IN_SET('femme', flags) AND perms!='pending', 0)) /
-		   count(NULLIF(FIND_IN_SET('femme', flags), 0)) as inse_rate
-          FROM auth_user_md5
-         WHERE deces = 0";
-$res = $globals->db->query($sql);
-$stats = mysql_fetch_assoc($res);
-
+$res   = $globals->xdb->query(
+          "SELECT COUNT(*) AS vivants,
+                  COUNT(NULLIF(perms!='pending', 0)) AS inscrits,
+                  100*COUNT(NULLIF(perms!='pending', 0))/COUNT(*) AS ins_rate,
+                  COUNT(NULLIF(promo >= 1972, 0)) AS vivants72,
+                  COUNT(NULLIF(promo >= 1972 AND perms!='pending', 0)) AS inscrits72,
+                  100 * COUNT(NULLIF(promo >= 1972 AND perms!='pending', 0)) /
+                      COUNT(NULLIF(promo >= 1972, 0)) AS ins72_rate,
+                  COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS vivantes,
+                  COUNT(NULLIF(FIND_IN_SET('femme', flags) AND perms!='pending', 0)) AS inscrites,
+                  100 * COUNT(NULLIF(FIND_IN_SET('femme', flags) AND perms!='pending', 0)) /
+                      COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS inse_rate
+             FROM auth_user_md5
+            WHERE deces = 0");
+$stats = $res->fetchOneAssoc();
 $page->assign('stats', $stats);
-mysql_free_result($res);
 
-$res = $globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000");
-list($nbInsSem) = mysql_fetch_row($res);
-mysql_free_result($res);
+$res   = $globals->xdb->query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000");
+$page->assign('nbInsSem', $res->fetchOneCell());
 
-$page->assign('nbInsSem', $nbInsSem);
+$res = $globals->xdb->query("SELECT count(*) FROM en_cours WHERE loginbis != 'INSCRIT'");
+$page->assign('nbInsEnCours', $res->fetchOneCell());
 
-$res = $globals->db->query("SELECT count(*) FROM en_cours WHERE loginbis != 'INSCRIT'");
-list($nbInsEnCours) = mysql_fetch_row($res);
-mysql_free_result($res);
-$page->assign('nbInsEnCours', $nbInsEnCours);
-
-$res = $globals->db->query("SELECT count(*) FROM envoidirect as e left join auth_user_md5 as a ON e.matricule = a.matricule WHERE a.nom is null");
-list($nbInsEnvDir) = mysql_fetch_row($res);
-mysql_free_result($res);
-$page->assign('nbInsEnvDir', $nbInsEnvDir);
+$res = $globals->xdb->query("SELECT count(*) FROM envoidirect as e left join auth_user_md5 as a ON e.matricule = a.matricule WHERE a.nom is null");
+$page->assign('nbInsEnvDir', $res->fetchOneCell());
 
 $page->run();
 ?>

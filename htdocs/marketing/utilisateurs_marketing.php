@@ -24,41 +24,46 @@ $id_actions = array('Mailer');
 require_once("select_user.inc.php");
 
 //actions possible une fois un X désigné par son matricule
-switch ($_REQUEST["submit"]) {
+switch (Env::get('submit')) {
     case "Mailer":
-   	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule={$_REQUEST['xmat']} AND perms!='pending'");
-	if ($myrow = mysql_fetch_assoc($result)) 
+   	$res = $globals->xdb->query("SELECT user_id FROM auth_user_md5 where matricule={?} AND perms!='pending'", Env::getInt('xmat'));
+	if ($row = $res->fetchOneAssoc()) {
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
+        }
   
-	$result = $globals->db->query("SELECT * FROM auth_user_md5 WHERE matricule=".$_REQUEST["xmat"]);
-	$myrow = mysql_fetch_array($result);
+	$res = $globals->xdb->query('SELECT * FROM auth_user_md5 WHERE matricule={?}', Env::getInt('xmat'));
+	$row = $res->fetchOneAssoc();
 
         new_admin_page('marketing/utilisateurs_form.tpl');
 
         $page->assign('row', $myrow);
 
-	$prenom=$myrow["prenom"];
-	$nom=$myrow["nom"];
-	$promo=$myrow["promo"];
-	$from = "Equipe Polytechnique.org <register@polytechnique.org>";
+	$prenom = $myrow["prenom"];
+	$nom    = $myrow["nom"];
+	$promo  = $myrow["promo"];
+	$from   = "Equipe Polytechnique.org <register@polytechnique.org>";
 
         $page->run();
   	break;
 
     case "Envoyer le mail":
         require_once('xorg.misc.inc.php');
-	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule={$_REQUEST['xmat']} AND perms!='pending'");
-  	if ($myrow = mysql_fetch_assoc($result))
+   	
+        $res = $globals->xdb->query("SELECT user_id FROM auth_user_md5 where matricule={?} AND perms!='pending'", Env::getInt('xmat'));
+	if ($row = $res->fetchOneAssoc()) {
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
-			
-	if (!isvalid_email_redirection($_REQUEST["mail"]))
+        }
+
+	if (!isvalid_email_redirection(Env::get('mail')) {
             exit_error("L'email n'est pas valide.");
+        }
 		
-	$result=$globals->db->query("SELECT prenom,nom,promo,FIND_IN_SET('femme', flags)
-                                     FROM auth_user_md5
-                                     WHERE matricule=".$_REQUEST['xmat']);
-	if (!list($prenom,$nom,$promo,$femme) = mysql_fetch_row($result))
+	$res = $globals->xdb->query(
+            "SELECT prenom,nom,promo,FIND_IN_SET('femme', flags) FROM auth_user_md5 WHERE matricule={?}",
+            $_REQUEST['xmat']);
+	if (!list($prenom,$nom,$promo,$femme) = $res->fetchOneRow()) {
             exit_error("Le matricule n'a pas été trouvé dans table auth_user_md5.");
+        }
 			
   	// calcul de l'envoyeur
         list($envoyeur) = explode('@', $_REQUEST["from"]);
@@ -77,23 +82,19 @@ switch ($_REQUEST["submit"]) {
 	$nom_envoyeur=ucfirst($nom_envoyeur);
 			
 	// tirage aléatoire de UID et mot de passe
-	$user_id=rand_url_id(12);
-	$date=date("Y-m-j");
+	$user_id = rand_url_id(12);
+	$date    = date("Y-m-j");
 
 	// decompte du nombre d'utilisateurs;
-	$result=$globals->db->query("SELECT COUNT(*) FROM auth_user_md5");
-	$num_users=mysql_result($result,0,"count(*)");
+	$res = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5");
+        $num_users = $res->fetchOneCell();
 			
 	// calcul du login
 	$mailorg = make_forlife($prenom,$nom,$promo);
 			
-	$globals->db->query("UPDATE  auth_user_md5
-                                SET  last_known_email='{$_REQUEST['mail']}'
-                              WHERE  matricule='{$_REQUEST['xmat']}'");
-	$requete="INSERT INTO  envoidirect
-                          SET  matricule='{$_REQUEST['xmat']}',uid='$user_id',
-                               email='{$_REQUEST['mail']}',sender='{$_REQUEST['sender']}',date_envoi='$date'";
-	$globals->db->query($requete);
+	$globals->xdb->execute("UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule={?}", Env::get('mail'), Env::get('xmat'));
+        $globals->xdb->execute("INSERT INTO envoidirect SET matricule={?}, uid={?}, email={?}, sender={?},date_envoi={?}",
+                Env::get('xmat'), $user_id, Env::get('mail'), Env::get('sender'), $date);
 	// pas d'erreur pour l'insert
 
 	// envoi du mail à l'utilisateur

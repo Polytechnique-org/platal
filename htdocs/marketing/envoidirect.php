@@ -23,7 +23,7 @@ require_once("xorg.inc.php");
 new_admin_page('marketing/envoidirect.tpl');
 
 // effacement des inscrits il y a plus de 8 jours
-$globals->db->query("DELETE FROM envoidirect WHERE DATE_ADD(date_succes, INTERVAL 8 DAY) < CURRENT_DATE AND date_succes <> '0000-00-00'");
+$globals->xdb->execute("DELETE FROM envoidirect WHERE DATE_ADD(date_succes, INTERVAL 8 DAY) < CURRENT_DATE AND date_succes <> '0000-00-00'");
 $sql = "SELECT  e.date_succes,e.date_envoi,a.promo,a.nom,a.prenom,e.email,b.nom as sender
           FROM  envoidirect   AS e
     INNER JOIN  auth_user_md5 AS a ON e.matricule = a.matricule

@@ -24,17 +24,17 @@ new_admin_page('marketing/volontaire.tpl');
 
 // traitement des paramètres éventuels
 if (!empty($_GET["del"])) {
-    $globals->db->query("DELETE FROM marketing WHERE id ='{$_GET['del']}'");
+    $globals->xdb->execute("DELETE FROM marketing WHERE id ={?}" , Get::get('del'));
     $page->trig("Entrée effacée");
 }
 if (!empty($_GET["done"])) {
-    $globals->db->query("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id ='{$_GET['done']}'");
+    $globals->xdb->execute("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id = {?}", Get::get('done'));
     $page->trig("Entrée mise à jour");
 }
 
 $sql = "SELECT  m.id, m.expe, m.dest, m.email, 
-		i.promo, i.nom, i.prenom, i.last_known_email, 
-		u.promo AS spromo, u.nom AS snom, u.prenom AS sprenom, a.alias AS forlife,
+                i.promo, i.nom, i.prenom, i.last_known_email, 
+                u.promo AS spromo, u.nom AS snom, u.prenom AS sprenom, a.alias AS forlife,
                 FIND_IN_SET('mail_perso', m.flags) AS mailperso
           FROM  marketing     AS m
     INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
@@ -55,18 +55,16 @@ $sql = "SELECT  a.promo, a.nom, a.prenom,
 
 $page->mysql_assign($sql, 'used', 'nbused');
 
-$sql = "SELECT  COUNT(a.perms != 'pending') AS j,
-                COUNT(i.matricule) AS i,
-                100 * COUNT(a.nom) / COUNT(i.matricule) as rate
-          FROM  marketing     AS m
-    INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
-    INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
-    LEFT  JOIN  auth_user_md5 AS a  ON (a.matricule = m.dest AND a.perms!='pending')
-         WHERE  FIND_IN_SET('envoye', m.flags)";
-$res = $globals->db->query($sql);
-
-$page->assign('rate', mysql_fetch_assoc($res));
-mysql_free_result($res);
+$res = $globals->xdb->query(
+        "SELECT  COUNT(a.perms != 'pending') AS j,
+                 COUNT(i.matricule) AS i,
+                 100 * COUNT(a.nom) / COUNT(i.matricule) as rate
+           FROM  marketing     AS m
+     INNER JOIN  auth_user_md5 AS i  ON i.matricule = m.dest
+     INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
+     LEFT  JOIN  auth_user_md5 AS a  ON (a.matricule = m.dest AND a.perms!='pending')
+          WHERE  FIND_IN_SET('envoye', m.flags)");
+$page->assign('rate', $res->fetchOneAssoc());
 
 $page->run();
 ?>
