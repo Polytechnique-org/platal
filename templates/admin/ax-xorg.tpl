@@ -43,7 +43,7 @@
 </table>
 
 <p>
-  <strong>{$nb_diffs} camarades ont un état civil différent dans les 2 annuaires.</strong>
+  <strong>{$diffs|@count} camarades ont un état civil différent dans les 2 annuaires.</strong>
 </p>
 
 <br />
@@ -66,7 +66,7 @@
 {/foreach}
 </table>
 <p>
-  <strong>{$nb_mank} camarades sont absents de notre annuaire.</strong>
+  <strong>{$mank|count} camarades sont absents de notre annuaire.</strong>
 </p>
 
 <br />
@@ -88,7 +88,7 @@
 </table>
 
 <p>
-  <strong>{$nb_plus} camarades sont absents de l'annuaire de l'AX.</strong>
+  <strong>{$plus|count} camarades sont absents de l'annuaire de l'AX.</strong>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

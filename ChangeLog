@@ -2,7 +2,10 @@
 VERSION 0.9.4														 29 Jan 2004
 
 New :
-	
+
+	* Banana :
+		- Total rework, it's now a real library, exit from plat/al.			-MC
+
 	* Core :
 		- New SQL access API : gain in security and code factorization.		-MC
 		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC

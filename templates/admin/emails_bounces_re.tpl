@@ -63,7 +63,7 @@ Rappel sur les niveaux :
       </td>
     </tr>
     {/if}
-    {foreach from=$bre item=re}
+    {iterate from=$bre item=re}
     <tr class="{cycle values="pair,pair,impair,impair"}">
       <td>
         <input type='text' name='pos[{$re.id}]' value='{$re.pos}' size='4' maxlength='4' />
@@ -82,7 +82,7 @@ Rappel sur les niveaux :
         <input type="text" size="32" name='text[{$re.id}]' value="{$re.text}" /><br />
       </td>
     </tr>
-    {/foreach}
+    {/iterate}
     <tr class="{cycle values="pair,impair"}">
       <td colspan="2" class="center">
         <input type="submit" value="valider" name="submit" />

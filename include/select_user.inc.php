@@ -38,15 +38,16 @@ if (!Env::has("xmat") || !Env::has("submit")) {
 
         $rq = strlen(Env::get("promoR"))==4 ? "AND promo=".Env::getInt("promoR") : "";
 
-	$where = "prenom LIKE '%$prenom%' AND nom LIKE '%$chaine%' $rq ORDER BY promo,nom";
+	$where = "prenom LIKE '%".addslashes($prenom)."%' AND nom LIKE '%".addslashes($chaine)."%' $rq ORDER BY promo,nom";
     }
 
-    $sql = "SELECT  matricule,matricule_ax,promo,nom,prenom,comment,appli,flags,last_known_email,deces,user_id
-              FROM  auth_user_md5
-             WHERE  perms NOT IN ('admin','user') AND deces=0 AND $where";
+    $res = $globals->xdb->query(
+            "SELECT  matricule,matricule_ax,promo,nom,prenom,comment,appli,flags,last_known_email,deces,user_id
+               FROM  auth_user_md5
+              WHERE  perms NOT IN ('admin','user') AND deces=0 AND $where");
 
     new_admin_page('marketing/utilisateurs_select.tpl');
-    $page->mysql_assign($sql, 'nonins');
+    $page->assign('nonins', $res->fetchAllAssoc());
     $page->assign('id_actions', $id_actions);
     $page->run();
 }

@@ -54,7 +54,7 @@ switch (Env::get('submit')) {
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
         }
 
-	if (!isvalid_email_redirection(Env::get('mail')) {
+	if (!isvalid_email_redirection(Env::get('mail'))) {
             exit_error("L'email n'est pas valide.");
         }
 		

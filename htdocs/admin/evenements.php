@@ -90,7 +90,7 @@ if ($action != "Editer") {
         INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
              WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
           ORDER BY  FIND_IN_SET('valide',e.flags), peremption";
-    $page->mysql_assign($sql, 'evs');
+    $page->assign('evs', $globals->xdb->iterator($sql));
 }
 
 $page->run();

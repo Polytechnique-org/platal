@@ -68,7 +68,7 @@ $globals->xdb->execute(
         $date, Env::get('nationalite'), Env::get('appli_id1'), Env::get('appli_type1'),
         Env::get('appli_id2'), Env::get('appli_type2'), $mailorg, $forlife, $homonyme
 );
-$globals->db->execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', Env::get('email'), $matricule);
+$globals->xdb->execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', Env::get('email'), $matricule);
 // si on venait de la page maj.php, on met a jour la table envoidirect
 if (Env::get('envoidirect')) {
     $globals->xdb->execute('UPDATE envoidirect SET date_succes=NOW() WHERE uid={?}', Env::get('envoidirect'));

@@ -35,7 +35,7 @@
 
 {else}
 
-{foreach from=$evs item=ev}
+{iterate from=$evs item=ev}
 <table class="bicol">
   <tr>
     <th>
@@ -84,7 +84,7 @@
 </table>
 
 <br />
-{/foreach}
+{/iterate}
 
 {/if}
 

@@ -42,14 +42,14 @@
       <th>Nom</th>
       <th>Date de décès</th>
     </tr>
-    {foreach item=x from=$decedes}
+    {iterate item=x from=$decedes}
     <tr class="{cycle values="impair,pair"}">
       <td>{$x.nom} {$x.prenom}</td>
       <td class="center">
         <input type="text" name="{$x.matricule}" value="{$x.deces}" size="10" maxlength="10" />
       </td>
     </tr>
-    {/foreach}
+    {/iterate}
     <tr>
       <td class="center" colspan="2">
         <input type="hidden" name="promo" value="{$promo}" />

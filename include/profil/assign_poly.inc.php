@@ -19,16 +19,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
 $uid = Session::getInt('uid');
  
-$page->mysql_assign("SELECT  text,id
-                       FROM  binets_ins, binets_def
-                      WHERE  binets_def.id=binets_ins.binet_id AND user_id=$uid", 'binets');
+$res = $globals->xdb->query(
+        "SELECT  text,id
+           FROM  binets_ins, binets_def
+          WHERE  binets_def.id=binets_ins.binet_id AND user_id={?}", $uid);
+$page->assign('binets', $res->fetchAllAssoc());
 
-$page->mysql_assign("SELECT  text,id
-                       FROM  groupesx_ins, groupesx_def
-                      WHERE  groupesx_def.id=groupesx_ins.gid AND guid=$uid", 'groupesx');
+$res = $globals->xdb->query(
+        "SELECT  text,id
+           FROM  groupesx_ins, groupesx_def
+          WHERE  groupesx_def.id=groupesx_ins.gid AND guid={?}", $uid);
+$page->assign('groupesx', $res->fetchAllAssoc());
+
 $page->assign('section', $section);
 
 ?>

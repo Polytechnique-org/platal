@@ -31,7 +31,7 @@ if (Post::has('submit')) {
     }
 }
 
-$page->mysql_assign("SELECT * FROM emails_bounces_re ORDER BY pos", 'bre');
+$page->assign('bre', $globals->xdb->iterator("SELECT * FROM emails_bounces_re ORDER BY pos"));
 
 $page->run();
 ?>

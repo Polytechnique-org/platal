@@ -45,8 +45,8 @@ if (Env::get('valider') == "Valider") {
     }
 }
 
-$sql = "SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = $promo ORDER BY nom,prenom";
-$page->mysql_assign($sql, 'decedes');
+$res = $globals->xdb->iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
+$page->assign('decedes', $res);
 
 $page->run();
 ?>

@@ -165,12 +165,13 @@ if ($login) {
     $page->assign('lastlogin', $lastlogin);
     $page->assign('host', $host);
 
-    $page->mysql_assign("SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
-			   FROM  aliases
-			  WHERE  id = {$mr["user_id"]} AND type!='homonyme'
-		       ORDER BY  type!= 'a_vie'", 'aliases');
-    $page->assign_by_ref('xorgmails', $xorgmails);
-    $page->assign_by_ref('email_panne', $email_panne);    
+    $page->assign('aliases', $globals->xdb->iterator(
+                "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
+                   FROM  aliases
+                  WHERE  id = {?} AND type!='homonyme'
+	       ORDER BY  type!= 'a_vie'", $mr["user_id"]));
+    $page->assign('xorgmails', $xorgmails);
+    $page->assign('email_panne', $email_panne);    
     $page->assign('emails',$redirect->emails);
 
     $page->assign('mr',$mr);

@@ -202,7 +202,7 @@ Pour ceci changer ses permissions en 'disabled'.
         Alias e-mail
       </th>
     </tr>
-    {foreach from=$aliases item=a}
+    {iterate from=$aliases item=a}
     <tr class="{cycle values="impair,pair"}">
       <td>
         <input type="radio" name='best' {if $a.best}checked="checked"{/if} value='{$a.alias}' onclick="this.form.submit()" />
@@ -217,7 +217,7 @@ Pour ceci changer ses permissions en 'disabled'.
       </td>
       {/if}
     </tr>
-    {/foreach}
+    {/iterate}
     <tr class="{cycle values="impair,pair"}">
       <td class="detail">
         <input type="text" name="email" size="29" maxlength="60" value="" />
