@@ -14,6 +14,7 @@ New :
 		- Enhancements wrt COOKIE.											-MC
 		- More homogenous date formating (use %x / %X everywhere).			-MC
 		- No more .head.tpl. (thanks to JM for the tip).					-MC
+		- Strip unnecessary spaces from templates at compile time.			-MC
 
 	* Contacts :
 		- Brand new PDF of the contact list (using FPDF).					-MC

@@ -72,6 +72,7 @@ class XorgPage extends DiogenesCorePage
 
         $this->DiogenesCorePage();
         $this->register_prefilter('at_to_globals');
+        $this->register_prefilter('trimwhitespace');
         $this->addJsLink('javascript/xorg.js');
 
         $this->doAuth();
