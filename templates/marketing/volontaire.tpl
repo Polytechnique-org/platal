@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.tpl,v 1.3 2004-09-02 23:57:53 x2000bedo Exp $
+        $Id: volontaire.tpl,v 1.4 2004-10-08 21:26:51 web Exp $
  ***************************************************************************}
 
 
@@ -52,9 +52,9 @@
     <td>
       {if $it.mailperso}
       <a
-      href="utilisateurs.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from={$it.sprenom}%20{$it.snom}%20<{$it.forlife}&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Perso</a>
+      href="utilisateurs_marketing.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from={$it.sprenom}%20{$it.snom}%20<{$it.forlife}&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Perso</a>
       {else}
-      <a href="utilisateurs.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from=Equipe%20Polytechnique.org%20<register&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Equipe</a>
+      <a href="utilisateurs_marketing.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from=Equipe%20Polytechnique.org%20<register&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Equipe</a>
       {/if}
       <a href="{$smarty.server.PHP_SELF}?done={$it.id}">Fait !</a>
       <a href="{$smarty.server.PHP_SELF}?del={$it.id}">Del</a>
