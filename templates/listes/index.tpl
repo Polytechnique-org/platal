@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.9 2004-09-25 16:30:26 x2000habouzit Exp $
+        $Id: index.tpl,v 1.10 2004-09-25 20:11:36 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -59,9 +59,22 @@ La diffusion a trois niveaux de modération.  La diffusion peut être :
   <li>modérée: l'envoi d'un mail à la liste est alors filtré par des
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
-</p>
+
 <p class='smaller'>
 NB : les gestionnaires d'une liste sont aussi ses modérateurs.  
+</p>
+
+<div class='ssrubrique'>
+  Demander la création d'une liste de diffusion
+</div>
+
+<p>
+Nos listes ont pour but de réunir des X autour de thèmes ou centres d'intérêt communs.  C'est un
+moyen pratique et efficace de rassembler plusieurs personnes autour d'un projet commun ou d'une
+thématique particulière.
+</p>
+<p>
+Tu peux demander <a href='create.php'>la création</a> d'une liste de diffusion sur le thème de ton choix.  
 </p>
 
 {dynamic}

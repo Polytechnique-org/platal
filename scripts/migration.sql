@@ -20,6 +20,8 @@ drop trackers;
 -- pas sur que je veuille le dropper pr le moment celui la ... a voir
 --*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN lastnewslogin;
 
+-- cgt de type pour les ML
+ALTER TABLE x4dat.requests CHANGE `type` `type` ENUM('alias','epouse','liste','photo','sondage','emploi','evts' ) DEFAULT 'alias' NOT NULL
 -- lastlogin --> logger
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN lastlogin;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN host;

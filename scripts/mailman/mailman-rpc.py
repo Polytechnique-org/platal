@@ -18,10 +18,10 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.40 2004-09-25 15:55:56 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.41 2004-09-25 20:11:35 x2000habouzit Exp $
 #***************************************************************************
 
-import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
+import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
 from pwd import getpwnam
 from grp import getgrnam
 
@@ -92,9 +92,6 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
         else:
             return None
     
-    def log_message(self, format, *args):
-        return
-
 ################################################################################
 #
 # XML RPC STUFF
@@ -599,8 +596,48 @@ def check_options((userdesc,perms),vhost,listname,correct=False):
         return (details,options)
     except:
         mlist.Unlock()
+        return 0
+
+#-------------------------------------------------------------------------------
+# admin procedures [ soptions.php ]
+#
+
+def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel,owners,members):
+    if perms != 'admin':
+        return 0
+    name = vhost+'-'+listname;
+    if Utils.list_exists(name):
+        return 0
+
+    mlist = MailList.MailList()
+    try:
+        oldmask = os.umask(002)
+        pw = sha.new('foobar').hexdigest()
+        try:
+            mlist.Create(name, owners[0]+'@polytechnique.org', pw)
+        finally:
+            os.umask(oldmask)
+
+        mlist.real_name = listname
+        mlist.description = desc
+
+        mlist.advertised = int(advertise)
+        mlist.default_member_moderation = int(modlevel) is 2
+        mlist.generic_nonmember_action = int(modlevel) > 0
+        mlist.subscribe_policy = 2 * (int(inslevel) is 1)
+        
+        mlist.owner = map(lambda a: a+'@polytechnique.org', owners)
+
+        mlist.Save()
+        mlist.Unlock()
+        check_options((userdesc,perms),vhost,listname,True)
+        mass_subscribe((userdesc,perms),vhost,listname,members)
+    except:
         raise
         return 0
+    return 1
+    
+
 
 #-------------------------------------------------------------------------------
 # server
@@ -666,6 +703,8 @@ server.register_function(get_admin_options)
 server.register_function(set_admin_options)
 # check.php
 server.register_function(check_options)
+# create
+server.register_function(create_list)
 
 server.serve_forever()
 
