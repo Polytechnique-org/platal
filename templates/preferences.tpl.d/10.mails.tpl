@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -18,28 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- *  $Id: skins.php,v 1.12 2004-11-24 10:12:47 x2000habouzit Exp $
- ***************************************************************************/
+    $Id: 10.mails.tpl,v 1.1 2004-11-24 10:12:48 x2000habouzit Exp $
+ ***************************************************************************}
 
-require_once("xorg.inc.php");
-if (!$globals->skin->enable) {
-    header("Location: index.php");
-}
-new_skinned_page('skins.tpl', AUTH_COOKIE);
+<h3><a href="{rel}/emails.php">Mes adresses de redirection</a></h3>
+<div class='explication'>
+  Tu peux configurer tes différentes redirections de mails ici.
+</div>
 
-if (isset($_REQUEST['newskin']))  {  // formulaire soumis, traitons les données envoyées
-    $globals->db->query("UPDATE auth_user_quick
-                SET skin={$_REQUEST['newskin']}
-                WHERE user_id={$_SESSION['uid']}");
-    set_skin();
-}
-
-$sql = "SELECT s.*,auteur,count(*) AS nb
-          FROM skins AS s
-     LEFT JOIN auth_user_quick AS a ON s.id=a.skin
-         WHERE skin_tpl != '' AND ext != ''
-      GROUP BY id ORDER BY s.date DESC";
-$page->mysql_assign($sql, 'skins');
-
-$page->run();
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

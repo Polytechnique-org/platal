@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: smarty.plugins.inc.php,v 1.2 2004-11-23 12:01:32 x2000habouzit Exp $
+    $Id: smarty.plugins.inc.php,v 1.3 2004-11-24 10:12:47 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ function block_dynamic()
@@ -113,9 +113,9 @@ function _to_globals($s) {
     global $globals;
     $t = explode('.',$s);
     if (count($t) == 1) {
-        return $globals->$t[0];
+        return var_export($globals->$t[0],true);
     } else {
-        return $globals->$t[0]->$t[1];
+        return var_export($globals->$t[0]->$t[1],true);
     }
 }
 

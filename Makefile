@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2004-11-23 10:25:23 x2000habouzit Exp $
+# $Id: Makefile,v 1.4 2004-11-24 10:12:46 x2000habouzit Exp $
 ################################################################################
 # definitions
 
@@ -35,6 +35,7 @@ templates_c:
 	chmod o+w templates_c
 
 devel: build cache templates_c
+	ln -sf ../cache/valid.html htdocs/valid.html
 
 ################################################################################
 # diogenes package targets

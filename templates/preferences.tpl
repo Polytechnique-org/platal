@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: preferences.tpl,v 1.13 2004-11-24 09:47:25 x2000habouzit Exp $
+        $Id: preferences.tpl,v 1.14 2004-11-24 10:12:47 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -26,41 +26,24 @@
 
 <table class="bicol" summary="Préférences: services" cellpadding="0" cellspacing="0">
   <tr>
-    <th>
+    <th colspan="2">
     Configuration des différents services du site
     </th>
   </tr>
-  <tr>
-    <td>
-      <div class='float2'>
-        <h3><a href="{rel}/emails.php">Mes adresses de redirection</a></h3>
-        <div class='explication'>
-          Tu peux configurer tes différentes redirections de mails ici.
-        </div>
-      </div>
-      <div class='float2'>
-        <h3><a href="{rel}/alias.php">Mon alias mail @melix.net/.org</a></h3>
-        <div class='explication'>
-          Pour choisir un alias @melix.net et @melix.org (en choisir un nouveau annule l'ancien).
-        </div>
-      </div>
-      <div class='float2'>
-        <h3><a href="{rel}/carva_redirect.php}">Ma redirection de page WEB</a></h3>
-        <div class='explication'>
-          Tu peux configurer tes redirections WEB
-          http://www.carva.org/{dyn s=$smarty.session.bestalias}
-          et http://www.carva.org/{dyn s=$smarty.session.forlife}
-        </div>
-      </div>
-      <div class='float2'>
-        <h3><a href="{rel}/skins.php">Apparence du site (skins)</a></h3>
-        <div class='explication'>
-          Tu peux changer les couleurs et les images du site.
-        </div>
-      </div>
-      <br class='spacer' />
+  {foreach from="preferences.tpl.d/*.tpl"|glob item=inc key=id name=glob}
+  {if $id is even}
+  <tr class="{cycle values="impair,pair"}">
+  {/if}
+    <td class="half">
+      {include file=$inc}
     </td>
+    {if $id is even && $smarty.foreach.glob.last}
+    <td class="half"></td>
+    {/if}
+  {if $id is odd || $smarty.foreach.glob.last}
   </tr>
+  {/if}
+  {/foreach}
 </table>
 
 <br />
@@ -74,6 +57,7 @@
       <h3><a href="{"motdepassemd5.php"|url}">Changer mon mot de passe pour le site</a></h3>
       <div class='explication'>
         permet de changer ton mot de passe pour accéder au site Polytechnique.org
+      </div>
     </td>
   </tr>
   <tr class="pair">
@@ -83,6 +67,7 @@
         Pour activer ton compte sur le serveur SMTP et NNTP de Polytechnique.org.
         Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter
         les forums directement depuis ton logiciel habituel de courrier électronique.
+      </div>
     </td>
   </tr>
   <tr class="impair">
@@ -93,6 +78,7 @@
         Clique sur le lien ci-dessus pour retirer l'accès sans mot de passe au site. Après avoir
         cliqué, tu devras à nouveau entrer ton mot de passe pour accéder aux différentes pages
         comme initialement.
+      </div>
       {else}
       <h3><a href="cookie_on.php">Attribuer un cookie d'authentification permanente</a></h3>
       <div class='explication'>
