@@ -21,6 +21,9 @@ New :
 
 Bug/Wish :
 
+	* Core :
+		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
+
 	* Validations :
 		- #137: now possible to add comments without any action.			-MC
 
