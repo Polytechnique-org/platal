@@ -1,6 +1,6 @@
 <?php
 
-ini_set("include_path", "../../:/home/x2000habouzit/simpletest/");
+ini_set("include_path", "../../:./simpletest/");
 define('PATH', dirname(__FILE__));
 
 require_once('unit_tester.php');
