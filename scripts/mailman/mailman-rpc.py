@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.37 2004-09-25 09:48:07 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.38 2004-09-25 09:57:41 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -91,6 +91,9 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             return (userdesc,perms)
         else:
             return None
+    
+    def log_message(self, format, *args):
+        return
 
 ################################################################################
 #
@@ -601,7 +604,7 @@ def check_options((userdesc,perms),vhost,listname,correct=False):
 # server
 #
 class FastXMLRPCServer(SimpleXMLRPCServer):
-    allow_reuse_address = True
+    allow_reuse_address = True 
 
 ################################################################################
 #
