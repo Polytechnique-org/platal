@@ -44,7 +44,6 @@ templates/epouse.tpl
 templates/fiche.tpl
 templates/include/form.valid.epouses.tpl
 templates/include/form.valid.photos.tpl
-templates/include/minifiche_pvt.tpl
 templates/include/minifiche.tpl
 templates/profil/adresses.tpl
 templates/profil/emploi.tpl
