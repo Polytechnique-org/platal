@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.6 2004-08-31 21:35:22 x2000bedo Exp $
+        $Id: search.result.private.tpl,v 1.7 2004-08-31 22:21:05 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="bits">
@@ -41,7 +41,7 @@
 </div>
 {if $result.inscrit!=1}
   {if $result.decede != 1}
-    <div class="floatright">
+    <div style="float:right">
       <a href="javascript:x()" onclick="popWin('marketing.php?num={$result.matricule*2-100}')">
         clique ici si tu connais son adresse email !
       </a>

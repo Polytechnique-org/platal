@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.11 2004-08-31 21:35:22 x2000bedo Exp $
+        $Id: search.tpl,v 1.12 2004-08-31 22:21:05 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -25,19 +25,21 @@
   <div class="rubrique">
     Résultats
   </div>
-  <div class="sstitre">
-    {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
-    <div class="floatright">
-      {if $with_soundex==0}
+  <table style="width: 100%">
+    <tr>
+      <td class="titre">
+        {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
+      </td>
+      <td class="right titre">
+        {if $with_soundex==0}
         <a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}">
-          Recherche par proximité sonore
-        </a>
-      {/if}
-      &nbsp;
-      <a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>
-    </div>
-  </div>
-  <div class="contact-list">
+          Recherche par proximité sonore</a>&nbsp;
+        {/if}
+        <a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>
+      </td>
+    </tr>
+  </table>
+  <div class="contact-list" style="clear:both">
     {section name=resultat loop=$resultats}
     <div class="contact">
     <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
