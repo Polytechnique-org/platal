@@ -24,7 +24,12 @@ function function_dyn($params) {
 }
 
 function escape_html(&$string) {
-    return is_string($string) ? htmlspecialchars($string) : $string;
+    if(is_string($string)) {
+	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;');
+	return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,4};)/", "&amp;" , strtr($string, $transtbl));
+    } else {
+	return $string;
+    }
 }
 
 class XorgPage extends DiogenesCorePage {

@@ -1,4 +1,4 @@
-{* $Id: table-editor.tpl,v 1.6 2004-08-24 09:07:57 x2000habouzit Exp $ *}
+{* $Id: table-editor.tpl,v 1.7 2004-08-26 12:31:15 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -9,29 +9,31 @@
 {if !$doedit}
 
 {literal}
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
   <!--
   function del( myid ) {
     if (confirm ("You are about to delete this entry. Do you want to proceed?")) {
-      document.operations.action.value = "del";
-      document.operations.{/literal}{$prefix}{literal}id.value = myid;
-      document.operations.submit();
+      document.forms.operations.action.value = "del";
+      document.forms.operations.{/literal}{$prefix}{literal}id.value = myid;
+      document.forms.operations.submit();
       return true;
     }
   }
   function edit( myid ) {
-    document.operations.action.value = "edit";
-    document.operations.{/literal}{$prefix}{literal}id.value = myid;
-    document.operations.submit();
+    document.forms.operations.action.value = "edit";
+    document.forms.operations.{/literal}{$prefix}{literal}id.value = myid;
+    document.forms.operations.submit();
     return true;
   }
   // -->
 </script>
 {/literal}
 
-<form method="post" action="{$smarty.server.PHP_SELF}" name="operations">
-<input type="hidden" name="action" value="" />
-<input type="hidden" name="{$prefix}id" value="" />
+<form method="post" action="{$smarty.server.PHP_SELF}" id="operations">
+  <div>
+    <input type="hidden" name="action" value="" />
+    <input type="hidden" name="{$prefix}id" value="" />
+  </div>
 </form>
 
 <table class="bicol">
@@ -81,15 +83,16 @@
 {else}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="action" value="update" />
-  {if $id!=''}
-  <input type="hidden" name="{$prefix}id" value="{$id}"/>
-  {/if}
   <table class="bicol">
     <tr class="impair">
       <th colspan="2">
-        {if $id!=''}modification de l'entrée {$id}
-        {else}nouvelle entrée{/if}
+        <input type="hidden" name="action" value="update" />
+        {if $id!=''}
+        <input type="hidden" name="{$prefix}id" value="{$id}"/>
+        modification de l'entrée 
+        {else}
+        nouvelle entrée
+        {/if}
       </th>
     </tr>
     {foreach from=$vars key=mykey item=myval}

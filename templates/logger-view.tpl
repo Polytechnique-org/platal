@@ -1,4 +1,4 @@
-{* $Id: logger-view.tpl,v 1.3 2004-08-24 09:07:57 x2000habouzit Exp $ *}
+{* $Id: logger-view.tpl,v 1.4 2004-08-26 12:31:15 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Parcours des logs du site
@@ -10,18 +10,18 @@
 
 <table class="bicol">
 <tr>
-  <th colspan="2">Propri&eacute;t&eacute;s de la session</th>
+  <th colspan="2">{$msg_session_properties}</th>
 </tr>
 <tr class="impair">
-  <td><strong>user</strong></td>
+  <td class="titre">{$msg_user}</td>
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if} [<a href="?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
 </tr>
 <tr class="pair">
-  <td><strong>hote</strong></td>
-  <td><tt>IP: {$session.ip}</tt><br /><em>{$session.host}</em></td>
+  <td class="titre">{$msg_host}</td>
+  <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
 </tr>
 <tr class="impair">
-  <td><strong>browser</strong></td>
+  <td class="titre">{$msg_browser}</td>
   <td>{$session.browser}</td>
 </tr>
 </table>
@@ -30,9 +30,9 @@
 
 <table class="bicol">
 <tr>
-  <th>stamp</th>
-  <th>action</th>
-  <th>data</th>
+  <th>{$msg_date}</th>
+  <th>{$msg_action}</th>
+  <th>{$msg_data}</th>
 </tr>
 {foreach from=$events item=myevent}
 <tr class="{cycle values="impair,pair"}">
@@ -43,37 +43,36 @@
 {/foreach}
 </table>
 
-
 {else}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
 <table class="bicol">
 <tr>
-  <th colspan="2">filter by..</th>
+  <th colspan="2">{$msg_filter_by}</th>
 </tr>
 <tr>
-  <td>..<strong>date</strong></td>
+  <td><strong>{$msg_date}</strong></td>
   <td>
-    year
+    {$msg_year}
     <select name="year" onchange="this.form.submit()">
       {html_options options=$years selected=$year}
     </select>
-    &nbsp;month
+    &nbsp;{$msg_month}
     <select name="month" onchange="this.form.submit()">
       {html_options options=$months selected=$month}
     </select>
-    &nbsp;day
+    &nbsp;{$msg_day}
     <select name="day" onchange="this.form.submit()">
       {html_options options=$days selected=$day}
     </select>
   </td>
 </tr>
 <tr>
-  <td>..<strong>user</strong></td>
+  <td><strong>{$msg_user}</strong></td>
   <td>
     <input type="text" name="loguser" value="{$loguser}" />
     {html_options name="logauth" options=$auths selected=$logauth}
-    <input type="submit" />
+    <input type="submit" value="{$msg_submit}" />
   </td>
 </tr>
 </table>
@@ -84,10 +83,10 @@
 
 <table class="bicol" style="font-size: 90%">
   <tr>
-    <th>start</th>
-    <th>user</th>
-    <th>summary</th>
-    <th>actions</th>
+    <th>{$msg_start}</th>
+    <th>{$msg_user}</th>
+    <th>{$msg_summary}</th>
+    <th>{$msg_actions}</th>
   </tr>
 {foreach from=$sessions item=mysess}
   <tr class="{cycle values="impair,pair"}">
@@ -102,7 +101,12 @@
 {/foreach}
     </td>
   </tr>
-{/foreach}
+  {/foreach}
+{if $msg_nofilters}
+<tr>
+  <td>{$msg_nofilters}</td>
+</tr>
+{/if}
 </table>
 {/if}
 

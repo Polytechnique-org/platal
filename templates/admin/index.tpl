@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.2 2004-07-08 09:20:57 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.3 2004-08-26 12:31:16 x2000habouzit Exp $ *}
 
 <div class="rubrique">Administration Polytechnique.org</div>
 
@@ -19,7 +19,7 @@
 <tr class="impair"><td>
   <strong>S&eacute;curit&eacute; : </strong>
   <a href="logger.php">Logs des sessions</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-  <a href="logger_user.php">Logs utilisateur</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="utilisateurs.php">Logs utilisateur</a> &nbsp;&nbsp;|&nbsp;&nbsp;
   <a href="logger_actions.php">Actions</a>
 </td></tr>
 </table>
