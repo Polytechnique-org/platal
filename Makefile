@@ -36,21 +36,7 @@ templates_c:
 htdocs/valid.html:
 	ln -sf ../templates_c/valid.html htdocs/valid.html
 
-include/banana: ../banana/banana
-	ln -sf ../$< $@
-
-htdocs/banana/banana.css: ../banana/css/style.css
-	ln -sf ../../$< $@
-
-htdocs/banana/xface.php: ../banana/examples/xface.php
-	ln -sf ../../$< $@
-
-htdocs/banana/img: ../banana/img
-	ln -sf ../../$< $@
-
-devel: build templates_c htdocs/valid.html include/banana \
-	htdocs/banana/xface.php htdocs/banana/img htdocs/banana/banana.css
-
+devel: build templates_c htdocs/valid.html
 
 
 ################################################################################

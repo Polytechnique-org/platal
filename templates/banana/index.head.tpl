@@ -18,6 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-<link rel="stylesheet" type="text/css" href="banana.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
 
 {* vim:set et sw=2 sts=2 sws=2: *}
