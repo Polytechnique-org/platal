@@ -91,7 +91,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | marketing.php							  | 
 	  | mescontacts.php							  | 
 	  | mescontacts_pdf.php						  | 
-	  | newsletter.php							  | 
 	  | newsletter_req.php						  | 
 	  | pg.confirm.php							  | 
 	  | pg.php									  | 
@@ -186,6 +185,7 @@ xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
 xx	  | nbpromo2.php							  | stats/nb_by_promo.php
+xx	  | newsletter.php							  | -
 xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
 xx	  | rss.php									  | -

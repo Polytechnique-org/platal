@@ -52,6 +52,14 @@ class XorgPage extends DiogenesCorePage {
       exit;
   }
 
+  function xorg_is_cached($append_to_id="") {
+      $id = $this->make_id($append_to_id);
+      if($this->_page_type == POPUP)
+          return parent::is_cached('skin/'.$_SESSION['skin_popup'], $id);
+      else
+          return parent::is_cached('skin/'.$_SESSION['skin'], $id);
+  }
+
   function make_id($append_to_id="") {
       $ret = $this->_tpl;
       if($append_to_id)
