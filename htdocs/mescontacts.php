@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.15 2004-10-21 12:24:20 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.16 2004-10-22 12:12:23 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -59,7 +59,7 @@ if (isset($_REQUEST['action'])) {
 
 $sql = "SELECT contact AS id,
                a.*, l.alias AS forlife,
-               i.deces != 0 AS dcd, i.matricule_ax,
+               i.deces != 0 AS dcd, i.deces, i.matricule_ax,
                e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
                n.text AS nat,
                ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,

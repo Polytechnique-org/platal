@@ -17,17 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.16 2004-10-22 12:00:31 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.17 2004-10-22 12:12:24 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <div class="contact" title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}">
   <div class="nom">
     {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
-    {if $c.dcd}(décédé){/if}
   </div>
   <div class="appli">
-    {strip}
     (
     X{$c.promo}{if $c.app0text},
     {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
@@ -35,7 +33,7 @@
     {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}
     {/if}
     )
-    {/strip}
+    {if $c.dcd}<br />décédé le {$c.deces}{/if}
   </div>
   <div class="bits">
     <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}')">

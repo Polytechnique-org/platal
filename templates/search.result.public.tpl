@@ -17,12 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.public.tpl,v 1.8 2004-10-22 12:00:31 x2000habouzit Exp $
+        $Id: search.result.public.tpl,v 1.9 2004-10-22 12:12:24 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="nom">
   {if $result.epouse}{$result.epouse} {$result.prenom} <br />(née {$result.nom}){else}{$result.nom} {$result.prenom}{/if}
-  {if $result.decede == 1}(décédé){/if}
 </div>
 <div class="appli">
   {strip}
@@ -33,6 +32,7 @@
   {if $result.app1text},
     {applis_fmt type=$result.app1type text=$result.app1text url=$result.app1url}
   {/if})
+  {if $result.decede == 1}<br />décédé le {$result.deces}{/if}
   {/strip}
 </div>
 {* vim:set et sw=2 sts=2 sws=2: *}
