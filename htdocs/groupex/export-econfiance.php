@@ -33,8 +33,8 @@ if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md
     $res  = $globals->xdb->query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
     $pass = $res->fetchOneCell();
 
-    $client =& lists_xmlrpc(10154, $pass, "polytechnique.org");
-    $members = $client->get_members('x-econfiance');
+    $client =& lists_xmlrpc(10154, $pass, "x-econfiance.polytechnique.org");
+    $members = $client->get_members('membres');
     if(is_array($members)) {
         $membres = Array();
         foreach($members[1] as $member) {
