@@ -60,7 +60,7 @@
         <input type="hidden" name="stamp"  value="{$valid->stamp}" />
         <input type="submit" name="accept" value="Accepter" />
         <input type="submit" name="hold"   value="Commenter" />
-        <input type="submit" name="refuse" value="Refuser" />
+        {if $valid->refuse}<input type="submit" name="refuse" value="Refuser" />{/if}
         <input type="submit" name="delete" value="Supprimer" />
       </td>
     </tr>

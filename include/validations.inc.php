@@ -73,6 +73,8 @@ class Validate
 
     var $stamp;
     var $unique;
+    // enable the refuse button
+    var $refuse = true;
     var $type;
     var $comments = Array();
 
