@@ -97,7 +97,7 @@ function chgMainWinLoc( strPage ) {
       </div>
     </td>
     <td rowspan="4" id='photo'>
-      <img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />
+      {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />{/if}
       {min_auth level="cookie"}
       {if $x.section}<em class="intitule">Section : </em><span>{$x.section}</span><br />{/if}
       {if $x.binets_join}<em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span><br />{/if}

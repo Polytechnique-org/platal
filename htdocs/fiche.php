@@ -73,7 +73,6 @@ if($user['x'] < 160){
     $user['y'] = (integer)($user['y']*160/$user['x']);
     $user['x'] = 160;
 }
-$page->assign('photo_url', $photo);
 
 // manage the public fiche
 $page->assign('logged', logged());
@@ -127,6 +126,9 @@ if (!logged()) {
     if ($user['medals_pub'] != 'public') {
         unset($user['medals']);
     }
+    if ($user['photo_pub'] != 'public') {
+        $photo = "";
+    }
 }
 foreach($user['adr_pro'] as $i=>$pro) {
     if ($pro['entreprise'] == '' && $pro['fonction'] == ''
@@ -140,6 +142,7 @@ if (count($user['adr_pro']) == 0) unset($user['adr_pro']);
 if (count($user['adr']) == 0) unset($user['adr']);
 $page->assign_by_ref('x', $user);
 
+$page->assign('photo_url', $photo);
 // alias virtual
 $res = $globals->xdb->query(
 	"SELECT alias

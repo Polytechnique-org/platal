@@ -163,7 +163,7 @@ function &get_user_details($login, $from_uid = '')
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
                        a.alias AS forlife, a2.alias AS bestalias,
                        c.uid IS NOT NULL AS is_contact,
-                       s.text AS section, p.x, p.y,
+                       s.text AS section, p.x, p.y, p.pub AS photo_pub,
                        m.expertise != '' AS is_referent
                        
                  FROM  auth_user_md5   AS u
