@@ -24,9 +24,8 @@ new_skinned_page('webredirect.tpl', AUTH_MDP);
 
 if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUEST['submit'] == "Modifier") and isset($_REQUEST['url'])) {
     // on change la redirection (attention à http://)
-    $globals->db->query("update auth_user_quick set redirecturl = '{$_REQUEST['url']}'"
-              ." where user_id = '{$_SESSION['uid']}'");
-    if (mysql_errno($conn) == 0) {
+    $globals->db->query("update auth_user_quick set redirecturl = '{$_REQUEST['url']}' where user_id = '{$_SESSION['uid']}'");
+    if (mysql_errno() == 0) {
         $_SESSION['log']->log("carva_add","http://".$_REQUEST['url']);
         $page->assign('message',"<p class='normal'>Redirection activée vers <a href='http://"
                 .$_REQUEST['url']."'>{$_REQUEST['url']}</a></p>\n");
