@@ -6,9 +6,12 @@ New :
 	* Core :
 		- Members can be disabled. It deletes volatile datas.				-MC
 	
-	* Install :
+	* Distribution :
 		- Do not modify PHP include path from auto.prepend.inc.php			-SHK
 		- Add install.d/apache.conf with a sample Apache config file		-SHK
+		- Add Makefile to generate distribution tarballs					-SHK
+		- Generate xorg.config.inc.php using "make"							-SHK
+		- Add a basic README file											-SHK
 
 	* Mails : Use HermesMailer.												-MC
 
