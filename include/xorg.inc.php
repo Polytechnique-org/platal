@@ -108,7 +108,7 @@ function new_skinned_page($tpl_name, $min_auth)
 
 function new_simple_page($tpl_name, $min_auth)
 {
-    global $page,$globals;
+    global $page;
     _new_page(SKINNED, $tpl_name, $min_auth);
     $page->assign('simple', true);
 }
@@ -118,7 +118,7 @@ function new_simple_page($tpl_name, $min_auth)
 
 function new_nonhtml_page($tpl_name, $min_auth)
 {
-    _new_page(NO_SKIN, $tpl_name, "", $min_auth, false);
+    _new_page(NO_SKIN, $tpl_name, $min_auth, false);
 }
 
 // }}}
