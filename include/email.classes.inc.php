@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.7 2004-09-06 09:59:00 x2000habouzit Exp $
+        $Id: email.classes.inc.php,v 1.8 2004-11-03 15:55:23 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -41,6 +41,32 @@ function check_mtic($email) {
 	if (eregi($regexp,$domain)) return true;  // c'est le cas, on revoie true
     }
     return false;
+}
+
+class Bogo {
+    var $state;
+    var $_states = Array('let_spams', 'tag_spams', 'drop_spams');
+
+    function Bogo($uid) {
+	global $globals;
+	$res = $globals->db->query("SELECT email FROM emails WHERE uid = $uid AND find_in_set('filter', flags)");
+	if(mysql_num_rows($res)) {
+	    list($this->state) = mysql_fetch_row($res);
+	    mysql_free_result($res);
+	} else {
+	    $this->state = 'tag_spams';
+	    $res = $globals->db->query("INSERT INTO emails (uid,email,rewrite,panne,flags)
+					     VALUES ($uid,'{$this->state}','','0000-00-00','filter')");
+	}
+    }
+
+    function change($uid, $state) {
+	global $globals;
+	$this->state = is_int($state) ? $this->_states[$state] : $state;
+	$globals->db->query("UPDATE emails SET email='{$this->state}' WHERE uid='$uid' AND find_in_set('filter', flags)");
+    }
+
+    function level() { return array_search($this->state, $this->_states); }
 }
 
 class Email {
@@ -90,6 +116,7 @@ class Email {
 class Redirect {
     var $flag_active = 'active';
     var $emails;
+    var $bogo;
     var $uid;
 
     function Redirect($_uid) {
@@ -102,6 +129,7 @@ class Redirect {
         while ($row = mysql_fetch_row($result)) {
 	    $this->emails[] = new Email($row);
         }
+	$this->bogo = new Bogo($_uid);
     }
 
     function other_active($email) {
@@ -163,4 +191,5 @@ class Redirect {
         }
     }
 }
+
 ?>

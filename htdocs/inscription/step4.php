@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.6 2004-10-31 18:03:00 x2000chevalier Exp $
+        $Id: step4.php,v 1.7 2004-11-03 15:55:23 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -85,14 +85,10 @@ if (!empty($_REQUEST['ref'])) {
     $logger = new DiogenesCoreLogger($uid);
     $logger->log("inscription",$email);
 
-    /****************** insertion de l'email dans la table emails ***/
+    /****************** insertion de l'email dans la table emails + bogofilter ***/
     require("email.classes.inc.php");
     $redirect = new Redirect($uid);
     $redirect->add_email($email);
-    $globals->db->query("INSERT INTO emails
-				 SET uid = $uid,
-                                     email = '\"|maildrop /var/mail/.maildrop_filters/tag_spams $uid\"',
-				     flags = 'filter'");
     /****************** ajout des formations ****************/
     if (($appli_id1>0)&&($appli_type1))
         $globals->db->query("insert into applis_ins set uid=$uid,aid=$appli_id1,type='$appli_type1',ordre=0");
