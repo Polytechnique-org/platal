@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.10 2004-11-09 10:13:49 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.11 2004-11-09 10:52:04 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -70,7 +70,7 @@
 <form method='post' action='?liste={$smarty.request.liste}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     <tr>
-      <th class='titre'>Modérer le mail de :</th>
+      <th class='titre'>Modérer le mail</th>
     </tr>
     <tr>
       <td>raison (pour les refus) :
