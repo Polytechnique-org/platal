@@ -79,7 +79,7 @@
 {if $myval.sum}
   <td>
   {if $myval.type=="timestamp"}
-  <span class="smaller">{$myarr.$mykey|date_format:"%Y-%m-%d %H:%M:%S"}</span>
+  <span class="smaller">{$myarr.$mykey|date_format:"%x %X"}</span>
   {elseif $myval.type=="set" and $myval.trans}
   {$myval.trans[$myval.value]}
   {elseif $myval.type=="ext"}
@@ -139,7 +139,7 @@
         {elseif $myval.type=="ext"}
         {extval table=$table field=$mykey name="$prefix$mykey" vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield selected=$myval.value}
         {elseif $myval.type=="timestamp"}
-        <input type="text" name="{$prefix}{$mykey}" value="{$myval.value|date_format:"%Y-%m-%d %H:%M:%S"}" />
+        <input type="text" name="{$prefix}{$mykey}" value="{$myval.value|date_format:"%x %X"}" />
         {elseif $myval.type=="password"}
         <input type="password" name="{$prefix}{$mykey}" size="40" />
         {else}

@@ -24,7 +24,7 @@
 </h1>
 
 <p>
-<strong>Mot de passe enregistré le {$smarty.now|date_format:"%x"}</strong>
+<strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
 </p>
 <p>
   <strong>Attention!</strong> Il est crypté irréversiblement,

@@ -58,7 +58,7 @@
       {$user.forlife}
       {/if}
     </td>
-    <td>{$user.expire|date_format:"%d %b %Y"}</td>
+    <td>{$user.expire|date_format}</td>
     <td>
       <a href="{"fiche.php"|url}?user={$user.forlife}" class='popup2'>fiche</a>
       <a href="utilisateurs.php?login={$user.forlife}">edit</a>

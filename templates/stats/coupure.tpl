@@ -26,7 +26,7 @@
   </tr>
   <tr class="pair">
     <td class="titre">début</td>
-    <td>{$cp.debut|date_format:"%d/%m/%Y, %Hh%M"}</td>
+    <td>{$cp.debut|date_format:"%x %X"}</td>
   </tr>
   <tr class="pair">
     <td class="titre">durée</td>
@@ -75,7 +75,7 @@
   <tr class="{cycle values="pair,impair"}">
     <td>
       <span class="smaller">
-        {$cp.debut|date_format:"%d/%m/%Y"}
+        {$cp.debut|date_format}
       </span>
     </td>
     <td>

@@ -39,7 +39,7 @@
     <tr>
       <td>Date (DD/MM/YYYY)</td>
       <td><input type="text" name="op_date" size="40"
-        value="{$op_date|date_format:"%d/%m/%Y"}" /></td>
+        value="{$op_date|date_format}" /></td>
     </tr>
     <tr>
       <td>Description libre</td>
@@ -120,7 +120,7 @@
 {foreach item=op from=$ops}
   <tr class="{cycle values="pair,impair"}">
     <td>{$op.id}</td>
-    <td>{$op.date|date_format:"%d/%m/%Y"}</td>
+    <td>{$op.date|date_format}</td>
     <td>{$op.label}</td>
     <td class="right">{$op.debit}</td>
     <td class="right">{$op.credit}</td>

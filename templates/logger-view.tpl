@@ -54,7 +54,7 @@
 </tr>
 {foreach from=$events item=myevent}
 <tr class="{cycle values="impair,pair"}">
-  <td style="font-size:90%;">{$myevent.stamp|date_format:"%Y-%m-%d %H:%M:%S"}</td>
+  <td style="font-size:90%;">{$myevent.stamp|date_format:"%x %X"}</td>
   <td><strong>{$myevent.text}</strong></td>
   <td>{$myevent.data}</td>
 </tr>
@@ -108,7 +108,7 @@
   </tr>
 {foreach from=$sessions item=mysess}
   <tr class="{cycle values="impair,pair"}">
-    <td>{$mysess.start|date_format:"%Y-%m-%d %H:%M:%S"}</td>
+    <td>{$mysess.start|date_format:"%x %X"}</td>
     <td><strong>{$mysess.username}</strong> <span class="smaller">({$mysess.lauth})</span></td>
     <td>
       {foreach from=$mysess.events item=myevent}{$myevent}<br />{/foreach}

@@ -48,7 +48,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
       </td>
       <td class="skimilieu">
         <strong>{$skin.name}</strong>
-        ajoutée le {$skin.date|date_format:"%x"}<br />
+        ajoutée le {$skin.date|date_format}<br />
         {$skin.comment}
         <br /><br />
         Créée par <strong>{$skin.auteur}</strong>

@@ -52,12 +52,12 @@ function chgMainWinLoc( strPage ) {
       </div>
       <div class='maj'>
         Fiche mise à jour<br />
-        le {$x.date|date_format:"%d %b. %Y"}
+        le {$x.date|date_format}
       </div>
       <div class="contact">
         <div class='email'>
           {if $x.dcd}
-          Décédé{if $x.sexe}e{/if} le {$x.deces|date_format:"%d %B %Y"}
+          Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
           {elseif !$x.inscrit}
           Le compte de cette personne n'est pas actif (personne non inscrite ou exclue).
           {else}

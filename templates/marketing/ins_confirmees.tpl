@@ -28,7 +28,7 @@
   </tr>
 {foreach item=in from=$ins}
   <tr class="{cycle values="impair,pair"}">
-    <td class="center">{$in.date_ins|date_format:"%d/%m/%Y - %H:%M"}</td>
+    <td class="center">{$in.date_ins|date_format:"%x %X"}</td>
     <td class="center">
       <a href="promo.php?promo={$in.promo}">{$in.promo}</a>
     </td>

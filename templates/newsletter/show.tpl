@@ -19,7 +19,7 @@
  ***************************************************************************}
 
 <h1>
-  Lettre de Polytechnique.org du {$nl->_date|date_format:"%d %B %Y"}
+  Lettre de Polytechnique.org du {$nl->_date|date_format}
 </h1>
 
 <p>

@@ -29,7 +29,7 @@
 </tr>
 <tr class="impair">
   <td class="titre">Péremption</td>
-  <td>{$valid->peremption|date_format:"%d %B %Y"}</td>
+  <td>{$valid->peremption|date_format}</td>
 </tr>
 <tr class="impair">
   <td class="titre">Promos</td>

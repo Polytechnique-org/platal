@@ -61,7 +61,7 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
       {/if}
     </td>
     <td style="width:25%">
-      {$promo[row].date|date_format:"%d %b. %Y"}
+      {$promo[row].date|date_format}
     </td>
   </tr>
   {/section}

@@ -80,7 +80,7 @@ Pour te désinscrire suis le lien :
   </tr>
   {foreach item=nl from=$nl_list}
   <tr class="{cycle values="impair,pair"}">
-    <td>{$nl.date|date_format:"%d %b %Y"}</td>
+    <td>{$nl.date|date_format}</td>
     <td>
       <a href="{"newsletter/show.php"|url}?nid={$nl.id}">{$nl.titre}</a>
     </td>

@@ -46,7 +46,7 @@ des promotions {if $promo_min}X{$promo_min}{/if} {if $promo_max}jusqu'à X{$promo
 {else}
 de toutes les promotions
 {/if}
-et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format:"%e %b %Y"}
+et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format}
 </p>
 
 {if $validation_message}

@@ -59,7 +59,7 @@
     {foreach from=$alias item=a}
     <li>
     <strong>{$a.alias}@{#globals.mail.domain#}</strong>
-    {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
+    {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
     </li>
     {/foreach}
   </ul>

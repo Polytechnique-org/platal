@@ -38,7 +38,7 @@
   </tr>
   <tr>
     <td class='titre'>date</td>
-    <td>{$mail.stamp|date_format:"%H:%M:%S le %d %b %Y"}</td>
+    <td>{$mail.stamp|date_format:"%X le %x"}</td>
   </tr>
 </table>
 

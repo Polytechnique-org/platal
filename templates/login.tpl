@@ -42,14 +42,14 @@
 
 <div class="smaller">
   Ta connexion précédente date du
-  <strong>{$smarty.session.lastlogin|date_format:"%x, %T"}</strong>
+  <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
   depuis la machine <strong>{$smarty.session.host}</strong>
 </div>
   
 {if $fiche_incitation}
   <p>La dernière mise à jour de ta
   <a href="{"fiche.php"|url}?user={$smarty.session.forlife}" class="popup2">fiche</a>
-  date du {$fiche_incitation|date_format:"%x"}.
+  date du {$fiche_incitation|date_format}.
   Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
   </p>

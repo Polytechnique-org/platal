@@ -8,6 +8,7 @@ New :
 		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC
 		- Drop cache algorithm (was complex for no gain).					-MC
 		- Enhancements wrt COOKIE.											-MC
+		- More homogenous date formating (use %x / %X everywhere).			-MC
 
 	* Contacts :
 		- Brand new PDF of the contact list (using FPDF).					-MC

@@ -33,7 +33,7 @@
   </tr>
   {foreach item=nl from=$nl_list}
   <tr class="{cycle values="pair,impair"}">
-    <td>{$nl.date|date_format:"%Y-%m-%d"}</td>
+    <td>{$nl.date|date_format}</td>
     <td>
       <a href="{"admin/newsletter_edit.php"|url}?nid={$nl.id}">{$nl.titre|default:"[no title]"}</a>
     </td>

@@ -84,7 +84,7 @@
     <td>{$m.sender}</td>
     <td>{$m.subj|default:"[pas de sujet]"}</td>
     <td class='right'>{$m.size}o</td>
-    <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
+    <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
     <td class='action'>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a><br />

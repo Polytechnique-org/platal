@@ -19,17 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_modifier_date_format($string, $format="%d %b %Y", $default_date=null)
+function smarty_modifier_date_format($string, $format = '%x', $default_date=null)
 {
-    require_once('Date.php');
-    if($string != '') {
-        $date = new Date($string);
-        return $date->format($format);
-    } elseif (!empty($default_date)) {
-        $date = new Date($default_date);
-        return $date->format($format);
+    if (empty($format) && empty($default_date)) return;
+    $f = empty($format) ? $default_date : $format;
+    $f = str_replace('%X', '%T', str_replace('%x', '%d %B %Y', $f));
+   
+    if ( ($t = strtotime($string)) != -1 ) {
+        return strftime($f , $t);
     } else {
-        return;
+        require_once('Date.php');
+        $date = new Date($string);
+        return $date->format($f);
     }
 }
 

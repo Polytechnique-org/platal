@@ -207,7 +207,7 @@ Pour ceci changer ses permissions en 'disabled'.
       <td>
         <input type="radio" name='best' {if $a.best}checked="checked"{/if} value='{$a.alias}' onclick="this.form.submit()" />
         {if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}
-        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
+        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       </td>
       {if $a.for_life}
       <td>garanti à vie*</td>
@@ -275,7 +275,7 @@ Pour ceci changer ses permissions en 'disabled'.
 {foreach from=$emails item=mail}
 {if $email->panne && $email->panne neq "0000-00-00"}
 <p class="erreur">
-Panne pour l'email "{$mail->email}" le {$mail->panne|date_format:"%d %b %Y"}
+Panne pour l'email "{$mail->email}" le {$mail->panne|date_format}
 </p>
 {/if}
 {/foreach}

@@ -46,7 +46,7 @@
   </tr>
 {foreach item=op from=$ops}
   <tr class="{cycle values="impair,pair"}">
-    <td>{$op.date|date_format:"%d/%m/%Y"}</td>
+    <td>{$op.date|date_format}</td>
     <td>{$op.label}</td>
     <td class="right">{$op.debit}</td>
     <td class="right">{$op.credit}</td>

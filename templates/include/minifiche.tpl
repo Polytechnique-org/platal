@@ -20,7 +20,7 @@
 
 
 {if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
-<div class="contact" {if $c.inscrit}{min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}"{/min_auth}{/if}>
+<div class="contact" {if $c.inscrit}{min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format}"{/min_auth}{/if}>
   <div class="nom">
     {if $c.sexe}&bull;{/if}
     {min_auth level="cookie"}
@@ -41,7 +41,7 @@
     {/if}
     (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
     {/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
-    {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format:"%d %b. %Y"}{/if}
+    {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && !$c.wasinscrit}
     <a href="{"marketing/public.php"|url}?num={$c.matricule}" class='popup'>clique ici si tu connais son adresse email !</a>
