@@ -1,0 +1,42 @@
+
+  Notes for the skin module for plat/al
+
+
+STATUS
+------
+
+  This package is not ready for release.
+  
+  It's a Polytechnique.org only module, and is not supported.
+  Use at your own risk !
+
+
+CONFIG OPTIONS
+--------------
+
+  All settings of the module are shown here with their default and meaning
+
+  [Banana]
+
+  server = "localhost"  ; server name or IP address.
+  port = 119            ; port of the news server.
+  password = "***"      ; password for the web_* accounts
+  web_user = "***"      ; name of the web account
+  web_pass = "***"      ; pass of the web account
+
+
+BUGS
+----
+
+  http://trackers.polytechnique.org/index.php?cat=12
+
+
+DEPENDS
+-------
+
+  platal
+
+
+________________________________________________________________________________
+$ Id: README,v 1.4 2004/05/27 09:54:01 x99laine Exp $
+
