@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 {***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -17,10 +18,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: rss.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: rss.tpl,v 1.5 2004-10-18 15:48:04 x2002marichez Exp $
  ***************************************************************************}
-
-<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
  "http://my.netscape.com/publish/formats/rss-0.91.dtd">
