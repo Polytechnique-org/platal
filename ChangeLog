@@ -18,6 +18,9 @@ New :
 		- Add Makefile to generate distribution tarballs.					-SHK
 		- Generate xorg.config.inc.php using "make".						-SHK
 		- Add a basic README file.											-SHK
+	
+	* Lists :
+		- Moderators are now allowed to change the moderation level.		-MC
 
 	* Mails :
 		- Use HermesMailer.													-MC
