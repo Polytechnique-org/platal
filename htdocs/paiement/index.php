@@ -25,16 +25,15 @@ require_once('profil.func.inc.php');
 require_once('money.inc.php');
 
 // initialisation
-$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'select';
-
-$meth = new PayMethod(isset($_REQUEST['methode']) ? $_REQUEST['methode'] : -1);
-$pay  = new Payment(isset($_REQUEST['ref']) ? $_REQUEST['ref'] : -1);
+$op   = Env::get('op', 'select');
+$meth = new PayMethod(Env::getInt('methode', -1));
+$pay  = new Payment(Env::getInt('ref', -1));
 
 if($pay->flags->hasflag('old')){
     $page->trig("La transaction selectionnée est périmée.");
     $pay = new Payment();
 }
-$val  = (($op=="submit") && isset($_REQUEST['montant'])) ? $_REQUEST['montant'] : $pay->montant_def;
+$val  = ($op=="submit" && Env::has('montant')) ? Env::get('montant') : $pay->montant_def;
 
 if (($e = $pay->check($val)) !== true) {
     $page->trig($e);

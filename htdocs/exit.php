@@ -22,11 +22,12 @@
 require_once("xorg.inc.php");
 new_skinned_page('index.tpl',AUTH_MDP);
 
-if (isset($_SESSION['suid'])) {
-    $suid = $_SESSION['suid'];
-    $_SESSION['log']->log("suid_stop", "{$_SESSION['forlife']} by {$suid['forlife']}");
+if (Session::has('suid')) {
+    $suid = Session::getMixed('suid');
+    $log  = Session::getMixed('log');
+    $log->log("suid_stop", Session::get('forlife') . " by " . $suid['forlife']);
     $_SESSION = $suid;
-    unset($_SESSION['suid']);
+    Session::kill('suid');
 }
 
 header("Location: login.php");

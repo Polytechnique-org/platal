@@ -29,29 +29,29 @@ $res = $globals->db->query(
     "SELECT  u.nom,u.epouse,u.flags,e.alias
        FROM  auth_user_md5  AS u
   LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
-      WHERE  user_id=".$_SESSION['uid']);
+      WHERE  user_id=".Session::getInt('uid');
 
 list($nom,$epouse_old,$flags,$alias_old) = mysql_fetch_row($res);
 $flags=new flagset($flags);
-$page->assign('is_femme',$flags->hasflag("femme"));
-$page->assign('epouse_old',$epouse_old);
-$page->assign('alias_old',$alias_old);
+$page->assign('is_femme',   $flags->hasflag("femme"));
+$page->assign('epouse_old', $epouse_old);
+$page->assign('alias_old',  $alias_old);
 
 $epouse = replace_accent(trim(clean_request('epouse'))); 
 $epouse = strtoupper($epouse);
-$page->assign('epouse_req',$epouse);
+$page->assign('epouse_req', $epouse);
 
-if (!empty($_REQUEST['submit']) && ($epouse != $epouse_old)) {
+if (Env::has('submit') && ($epouse != $epouse_old)) {
     // on vient de recevoir une requete, differente de l'ancien nom de mariage
     if ($epouse == $nom) {
-        $page->assign('same',true);
+        $page->assign('same', true);
     } else { // le nom de mariage est distinct du nom à l'X
         // on calcule l'alias pour l'afficher
-        $myepouse = new EpouseReq($_SESSION['uid'], $_SESSION['forlife'], $epouse);
+        $myepouse = new EpouseReq(Env::getInt('uid'), Env::get('forlife'), $epouse);
         $myepouse->submit();
-        $page->assign('myepouse',$myepouse);
+        $page->assign('myepouse', $myepouse);
     }
 }
 
-$page->run($flags->hasflag("femme") ? '' : 'not_femme');
+$page->run($flags->hasflag('femme') ? '' : 'not_femme');
 ?>

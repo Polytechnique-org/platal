@@ -24,39 +24,36 @@ require_once("xorg.inc.php");
 new_simple_page('fiche.tpl',AUTH_COOKIE);
 require_once('user.func.inc.php');
 
-//$isnetscape = !empty($_SESSION['skin_compatible']);
-
-if (!isset($_REQUEST['user']) && !isset($_REQUEST['mat'])) {
+if (!Env::has('user') && !Env::has('mat')) {
     $page->kill("cette page n'existe pas");
 }
 
-if (isset($_REQUEST['user'])) {
-    $login = get_user_forlife($_REQUEST['user']);
+if (Env::has('user')) {
+    $login = get_user_forlife(Env::get('user'));
     if ($login === false) {
         $page->kill("");
     }
 }
 
-if (isset($_REQUEST['mat'])) {
+if (Enf::has('mat')) {
     $res = $globals->db->query("SELECT  alias 
                                   FROM  aliases       AS a
                             INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
-                                 WHERE  matricule='{$_REQUEST['mat']}'");
+                                 WHERE  matricule=".Env::getInt('mat'));
     if (!(list($login) = mysql_fetch_row($res))) {
         $page->kill("cette page n'existe pas");
     }
     mysql_free_result($res);
 }
 
-$new = (isset($_REQUEST["modif"]) && $_REQUEST["modif"]=="new");
-$user = get_user_details($login, $_SESSION['uid']);
-
-$title = $user['prenom'] . ' ' .  empty($user['epouse']) ? $user['nom'] : $user['epouse'];
+$new   = Env::get('modif') == 'new';
+$user  = get_user_details($login, Session::getInt('uid'));
+$title = $user['prenom'] . ' ' . empty($user['epouse']) ? $user['nom'] : $user['epouse'];
 $page->assign('xorg_title', $title);
 
 // photo
 
-$photo="getphoto.php?x=".$user['forlife'].($new ? '&amp;modif=new' : '');
+$photo = 'getphoto.php?x='.$user['forlife'].($new ? '&amp;modif=new' : '');
 
 if(!isset($user['y']) and !isset($user['x'])) {
     list($user['x'], $user['y']) = getimagesize("images/none.png");
