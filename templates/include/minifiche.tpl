@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.1 2004-10-24 14:22:22 x2000bedo Exp $
+        $Id: minifiche.tpl,v 1.2 2004-10-24 15:52:48 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -34,7 +34,7 @@
     {if $c.app1text},
       {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}
     {/if})
-    {if $c.dcd}<br />décédé le {$c.deces}{/if}
+    {if $c.dcd}&nbsp;décédé le {$c.deces}{/if}
     {/strip}
   </div>
   {min_auth level="cookie"}

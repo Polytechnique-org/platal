@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.2 2004-10-24 14:43:56 x2000bedo Exp $
+        $Id: minifiche_pvt.tpl,v 1.3 2004-10-24 15:52:48 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -44,7 +44,7 @@
 {else}
   {if $c.dcd neq 1}
   <div>
-    <a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">
+    &nbsp;<a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">
       clique ici si tu connais son adresse email !
     </a>
   </div>
