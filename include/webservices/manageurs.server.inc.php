@@ -83,7 +83,7 @@ function get_annuaire_infos($method, $params) {
             }
         }
         else { //cas où on ne veut pas d'adresse
-            $array = $res->fetchOneAssoc();
+            $array = $res->next();
         }
 
         if ($array) { // on a bien eu un résultat : le matricule etait bon

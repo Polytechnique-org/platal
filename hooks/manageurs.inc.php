@@ -24,7 +24,7 @@
 
 class ManageursConfig
 {
-    var $authorized_ips = '129.104.30.32 129.104.30.33';
+    var $authorized_ips = '129.104.30.32 129.104.30.33 213.251.145.200';
     var $manageurs_cipher_key = '';
     var $manageurs_pass = '';
 }

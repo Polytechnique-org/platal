@@ -25,7 +25,7 @@ $tripledes = '';
 
 function manageurs_encrypt_init($id_assoce){
   global $tripledes, $globals;
-  $cipher_key = $globals->webservice->cipher_key;
+  $cipher_key = $globals->manageurs->manageurs_cipher_key;
   if(!$tripledes){
     if(empty($cipher_key)){
       return 1;
