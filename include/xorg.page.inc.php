@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.43 2004-09-24 14:47:43 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.44 2004-10-01 13:33:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -114,20 +114,7 @@ class XorgPage extends DiogenesCorePage {
     }
 
     function setLang($lang=null) {
-	global $globals;
-	if(empty($lang)) {
-	    if(!empty($_COOKIE['lang'])) {
-		$locale = $_COOKIE['lang'];
-	    } else {
-		list($locale,) = explode(',', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-		$locale = strtolower(trim($locale));
-		$locale = strtr($locale,'-','_');
-		$locale = preg_replace('!_(.*)!e', "'_'.strtoupper('\\1')",$locale);
-		setcookie('lang',$locale,(time()+25920000),'/','',0);
-	    }
-	} else {
-	    $locale = $lang;
-	}
+	$locale = empty($lang) ? 'fr_FR' : '$lang';
 	setlocale(LC_MESSAGES, $locale);
 	setlocale(LC_TIME, $locale);
 	$this->compile_id = $locale;
