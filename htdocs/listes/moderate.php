@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.15 2004-10-30 15:45:40 x2000habouzit Exp $
+        $Id: moderate.php,v 1.16 2004-10-31 14:42:36 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = $_REQUEST['liste'];
+$liste = strtolower($_REQUEST['liste']);
 
 if(preg_match('!(?:[a-z0-9]+\.)?polytechnique\.org-(.*)!', $liste,$matches)) {
     header('Location: ?liste='.$matches[1]);

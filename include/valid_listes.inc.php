@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_listes.inc.php,v 1.2 2004-10-08 15:03:14 x2000habouzit Exp $
+        $Id: valid_listes.inc.php,v 1.3 2004-10-31 14:42:37 x2000habouzit Exp $
  ***************************************************************************/
 
 class ListeReq extends Validate {
@@ -95,11 +95,12 @@ class ListeReq extends Validate {
 	$ret = $client->create_list('polytechnique.org', $this->liste, $this->desc,
 	    $this->advertise, $this->modlevel, $this->inslevel,
 	    $this->owners, $this->members);
+	$liste = strtolower($this->liste);
 	if($ret) {
-	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}', 'liste')");
-	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}-owner', 'liste')");
-	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}-admin', 'liste')");
-	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}-bounces', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}-owner', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}-admin', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}-bounces', 'liste')");
 	}
 	return $ret;
     }

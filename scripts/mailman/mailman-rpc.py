@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.67 2004-10-28 20:28:42 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.68 2004-10-31 14:42:37 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -700,7 +700,7 @@ def get_all_lists((userdesc,perms),vhost):
 def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel,owners,members):
     if perms != 'admin':
         return 0
-    name = vhost+'-'+listname;
+    name = vhost.lower()+'-'+listname.lower();
     if Utils.list_exists(name):
         return 0
 
