@@ -1,4 +1,4 @@
-{* $Id: mescontacts.tpl,v 1.2 2004-02-19 13:42:57 x2000habouzit Exp $ *}
+{* $Id: mescontacts.tpl,v 1.3 2004-02-20 03:01:10 x2000habouzit Exp $ *}
 
 {dyn s=$erreur}
 
@@ -23,8 +23,8 @@
 {if $nb_contacts}
 <p class="normal">
   Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" target="blank"><b>Triée par promo</b></a>]
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf" target="blank"><b>Triée par noms</b></a>]
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" target="blank"><strong>Triée par promo</strong></a>]
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf" target="blank"><strong>Triée par noms</strong></a>]
 </p>
 
 <br />

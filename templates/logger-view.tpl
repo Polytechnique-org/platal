@@ -1,4 +1,8 @@
-{* $Id: logger-view.tpl,v 1.1 2004-02-20 01:46:23 x2000habouzit Exp $ *}
+{* $Id: logger-view.tpl,v 1.2 2004-02-20 03:01:10 x2000habouzit Exp $ *}
+
+<div class="rubrique">
+  Parcours des logs du site
+</div>
 
 {dynamic}
 
@@ -8,15 +12,15 @@
 <tr>
   <th colspan="2">Propri&eacute;t&eacute;s de la session</th>
 </tr>
-<tr>
+<tr class="impair">
   <td><strong>user</strong></td>
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if} [<a href="?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
 </tr>
-<tr>
+<tr class="pair">
   <td><strong>hote</strong></td>
-  <td>{$session.host} / {$session.ip}</td>
+  <td><tt>IP: {$session.ip}</tt><br /><em>{$session.host}</em></td>
 </tr>
-<tr>
+<tr class="impair">
   <td><strong>browser</strong></td>
   <td>{$session.browser}</td>
 </tr>

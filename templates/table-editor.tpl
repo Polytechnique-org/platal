@@ -1,4 +1,4 @@
-{* $Id: table-editor.tpl,v 1.2 2004-02-20 01:46:23 x2000habouzit Exp $ *}
+{* $Id: table-editor.tpl,v 1.3 2004-02-20 03:01:10 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -55,7 +55,7 @@
 {if $myval.sum}
   <td>
   {if $myval.type=="timestamp"}
-  <small>{$myarr.$mykey|date_format:"%Y-%m-%d %H:%M:%S"}</small>
+  <span class="smaller">{$myarr.$mykey|date_format:"%Y-%m-%d %H:%M:%S"}</span>
   {else}
   {$myarr.$mykey}
   {/if}
