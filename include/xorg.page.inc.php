@@ -45,12 +45,14 @@ class XorgPage extends DiogenesCorePage {
         $this->config_dir   = $globals->spoolroot."/configs/";
         $this->cache_dir    = $globals->spoolroot."/cache/";
 	$this->use_sub_dirs = false;
-        
-        $this->register_modifier('escape_html', 'escape_html');
-	$this->default_modifiers = Array('escape_html');
+
         $this->config_overwrite  = false;
         $this->compile_check     = isset($site_dev);
         $this->caching	         = ($type == SKINNED);
+	if($type == SKINNED) {
+	    $this->register_modifier('escape_html', 'escape_html');
+	    $this->default_modifiers = Array('escape_html');
+	}
 
         $this->_page_type = $type;
         $this->_tpl = $tpl;
