@@ -23,7 +23,7 @@ require_once('xorg.inc.php');
 
 if (Env::has('response2'))  {             // la variable $response existe-t-elle ?
     // OUI, alors changeons le mot de passe
-    $password = $_POST['response2'];
+    $password = Post:;get('response2');
     $sql      = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".Session::getInt('uid');
     $globals->db->query($sql);
     $_SESSION['log']->log('passwd', '');

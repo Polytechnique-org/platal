@@ -23,33 +23,18 @@
 require_once("xorg.inc.php");
 new_skinned_page('referent.tpl',AUTH_COOKIE);
 
-$nb_max_resultats_total = 100;
+$nb_max_resultats_total    = 100;
 $nb_max_resultats_par_page = 10;
-$show_formulaire = true;
+$show_formulaire           = true;
 $page->assign_by_ref('show_formulaire', $show_formulaire);
 $page->assign('show_resultat', false);
 
 
-$secteur_selectionne = '';
-if(isset($_POST['secteur'])){
-    $secteur_selectionne = "{$_POST['secteur']}";
-}
+$secteur_selectionne    = Post::get('secteur');
+$ss_secteur_selectionne = Post::get('ss_secteur');
+$pays_selectionne       = Post::get('pays', '00');
+$expertise_champ        = Post::get('expertise');
 
-$ss_secteur_selectionne = '';
-if(isset($_POST['ss_secteur'])){
-    $ss_secteur_selectionne = $_POST['ss_secteur'];
-}
-
-$pays_selectionne = '00';
-if(isset($_POST['pays'])){
-    $pays_selectionne = $_POST['pays'];
-}
-
-$expertise_champ = '';
-if(isset($_POST['expertise'])){
-    $expertise_champ = stripslashes($_POST['expertise']);
-}
-      
 $page->assign('pays_selectionne',$pays_selectionne);
 $page->assign('expertise_champ',$expertise_champ);
 $page->assign('secteur_selectionne',$secteur_selectionne);
@@ -87,7 +72,7 @@ mysql_free_result($res);
 $page->assign_by_ref('pays', $pays);
 
 //On vient d'un formulaire
-if(isset($_REQUEST['Chercher'])){
+if (Env::has('Chercher')) {
 
     $champ_select = 'm.uid, a.prenom, a.nom, a.promo, l.alias, m.expertise';
     $champ_select = $champ_select.', mp.pid';
@@ -121,7 +106,7 @@ if(isset($_REQUEST['Chercher'])){
 	$clause_where = substr($clause_where, 0, -3); //on vire le dernier AND
 
 	$sql = "SELECT $champ_select $clause_from $clause_where
-	    GROUP BY uid ORDER BY RAND({$_SESSION['uid']})";
+	    GROUP BY uid ORDER BY RAND(".Session::getInt('uid').')';
 
 	$res = $globals->db->query($sql);
 
@@ -130,8 +115,8 @@ if(isset($_REQUEST['Chercher'])){
 	    mysql_free_result($res);
 	}
 	else{
-	    if (isset($_REQUEST['page_courante'])) {
-		$page_courante = (int) $_REQUEST['page_courante'];
+	    if (Env::has('page_courante')) {
+		$page_courante = Env::getInt('page_courante');
 	    }
 	    else{
 		$page_courante = 1;

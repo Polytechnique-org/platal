@@ -23,16 +23,16 @@ require_once("xorg.inc.php");
 new_skinned_page('newsletter/show.tpl', AUTH_COOKIE, 'newsletter/head.tpl');
 require_once("newsletter.inc.php");
 
-$nid = empty($_GET['nid']) ? 'last' : $_GET['nid'];
+$nid = Get::get('nid', 'last');
 $nl = new NewsLetter($nid);
 $page->assign_by_ref('nl',$nl);
 
-if(isset($_POST['send'])) {
-    $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id='{$_SESSION['uid']}'");
+if (Post::has('send')) {
+    $res = $globals->db->query('SELECT pref FROM newsletter_ins WHERE user_id='.Session::getInt('uid'));
     if (!(list($format) = mysql_fetch_row($res))) {
         $format = 'html';
     }
-    $nl->sendTo($_SESSION['prenom'], $_SESSION['nom'], $_SESSION['bestalias'], $_SESSION['femme'], $format=='html');
+    $nl->sendTo(Session::get('prenom'), Session::get('nom'), Session::get('bestalias'), Session::get('femme'), $format=='html');
 }
 
 $page->run();

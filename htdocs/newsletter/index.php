@@ -23,8 +23,8 @@ require_once("xorg.inc.php");
 new_skinned_page('newsletter/index.tpl', AUTH_COOKIE);
 require_once("newsletter.inc.php");
 
-if(!empty($_GET['out'])) { unsubscribe_nl(); }
-if(!empty($_GET['in']))  { subscribe_nl($_GET['in']=='html'); }
+if(Get::has('out')) { unsubscribe_nl(); }
+if(Get::has('in'))  { subscribe_nl(Get::get('in')=='html'); }
 
 $page->assign('nls',get_nl_state());
 $page->assign_by_ref('nl_list',get_nl_list());

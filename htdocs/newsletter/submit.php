@@ -23,16 +23,17 @@ require_once("xorg.inc.php");
 new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE, 'newsletter/head.tpl');
 require_once("newsletter.inc.php");
 
-if(isset($_POST['see'])) {
-    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
+if (Post::has('see')) {
+    $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
     $page->assign('art', $art);
-} elseif(isset($_POST['valid'])) {
-    $nl = new Newsletter();
-    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
+} elseif (Post::has('valid')) {
+    $nl  = new Newsletter();
+    $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
     $nl->saveArticle($art);
 
     require_once("diogenes.hermes.inc.php");
-    $from = "\"{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']})\" <{$_SESSION['forlife']}@polytechnique.org>";
+    $from = sprintf('"%s %s (%s)" <%s@%s>', Session::get('prenom'), Session::get('nom'),
+            Session::get('promo'), Session::get('bestalias'), $globals->mail->domain);
     $mailer = new HermesMailer();
     $mailer->setSubject("proposition d'article dans la NL");
     $mailer->addTo('"Equipe Newsletter Polytechnique.org" <info+nlp@polytechnique.org>');
