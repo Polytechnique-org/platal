@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.17 2004-10-22 11:58:47 x2000habouzit Exp $
+        $Id: search.tpl,v 1.18 2004-10-22 12:18:23 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -72,25 +72,19 @@
   {if $perpage < $nb_resultats_total}
   <p>
     {if $offset!=0}
-      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$offset-$perpage}&amp;mod_date_sort={$mod_date_sort}">
-        Précédent
-      </a>
-      &nbsp;
+      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$offset-$perpage}&amp;mod_date_sort={$mod_date_sort}">Précédent</a>
+    &nbsp;
     {/if}
     {section name=offset loop=$offsets}
       {if $offset!=$smarty.section.offset.index*$perpage}
-        <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$smarty.section.offset.index*$perpage}&amp;mod_date_sort={$mod_date_sort}">
-          {$smarty.section.offset.index+1}
-        </a>
+        <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$smarty.section.offset.index*$perpage}&amp;mod_date_sort={$mod_date_sort}">{$smarty.section.offset.index+1}</a>
       {else}
         <strong>{$smarty.section.offset.index+1}</strong>
       {/if}
       &nbsp;
     {/section}
     {if $offset < $nb_resultats_total-$perpage}
-      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$offset+$perpage}&amp;mod_date_sort={$mod_date_sort}">
-        Suivant
-      </a>
+      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$offset+$perpage}&amp;mod_date_sort={$mod_date_sort}">Suivant</a>
       &nbsp;
     {/if}
   </p>
