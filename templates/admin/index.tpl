@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.2 2004-07-08 09:20:57 x2000habouzit Exp $ *}
 
 <div class="rubrique">Administration Polytechnique.org</div>
 
@@ -85,9 +85,9 @@
 <tr><th>Développement</th></tr>
 <tr class="impair">
     <td style="width:4em;"><strong>Trackers : </strong>
-    <a href="../trackers/tracker_show.php?tr_id=2">BugList</a>
+    TRACKERS
     &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="../trackers/tracker_show.php?tr_id=1">TodoList</a>
+    TICKETS
     </td>
 </tr>
 <tr class="pair">
