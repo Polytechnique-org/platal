@@ -1,18 +1,8 @@
 <?php
-/********************************************************************************
-* index.php : main page (newsgroups list)
-* -----------
-*
-* This file is part of the banana distribution
-* Copyright: See COPYING files that comes with this distribution
-********************************************************************************/
 
-require('auto.prepend.inc.php');
-new_skinned_page('banana.tpl', AUTH_COOKIE, true, 'banana.head.tpl');
-$page->caching = false;
-require('hack.inc.php');
+$face = base64_decode($_REQUEST['face']);
+$face = ereg_replace("'", "'\\''", $face);
 
-$page->register_function('banana', 'banana', false);
-
-$page->run();
+header("Content-Type: image/png");
+passthru("echo '$face'|uncompface -X |convert xbm:- png:-");
 ?>
