@@ -2,11 +2,13 @@
 class SField {
     var $fieldFormName;
     var $fieldDbName;
+    var $fieldResultName;
     var $value;
 
-    function SField($_fieldFormName,$_fieldDbName='') {
+    function SField($_fieldFormName,$_fieldDbName='',$_fieldResultName='') {
         $this->fieldFormName = $_fieldFormName;
         $this->fieldDbName = $_fieldDbName;
+        $this->fieldResultName = $_fieldResultName;
         $this->get_request();
     }
 
@@ -22,7 +24,9 @@ class SField {
     }
 
     function get_where_statement() {
-        return ($this->value!='');
+        return ($this->value!='')?
+        '('.implode(' OR ',array_map(array($this,'get_single_where_statement'),$this->fieldDbName)).')'
+        :false;
     }
 
     function get_order_statement() {
@@ -65,7 +69,7 @@ class StringSField extends SField {
         length($this->value)-length(ereg_replace('[a-z]'.$CARACTERES_ACCENTUES,'',strtolower($this->value)));
     }
 
-    function get_like($field) {
+    function get_single_where_statement($field) {
         //on rend les traits d'union et les espaces équivalents
         $regexp = preg_replace('/[ -]/','[ \-]',$this->value);
         //on remplace le pseudo language des * par une regexp
@@ -73,19 +77,9 @@ class StringSField extends SField {
         return $field." RLIKE '^(.*[ -])?".replace_accent_regexp($regexp).".*'";
     }
 
-    function get_where_statement() {
-        if (!parent::get_where_statement())
-            return false;
-        return '('.implode(' OR ',array_map(array($this,'get_like'),$this->fieldDbName)).')';
-    }
-
-    function get_different($field) {
-        return $field.'!="'.$this->value.'"';
-    }
-
     function get_order_statement() {
         if ($this->value!='')
-            return implode(',',array_map(array($this,'get_different'),$this->fieldDbName));
+            return $this->fieldResultName.'!="'.$this->value.'"';
         else
             return false;
     }
@@ -94,8 +88,8 @@ class StringSField extends SField {
 class PromoSField extends SField {
     var $compareField;
 
-    function PromoSField($_fieldFormName,$_compareFieldFormName,$_fieldDbName) {
-        parent::SField($_fieldFormName,$_fieldDbName);
+    function PromoSField($_fieldFormName,$_compareFieldFormName,$_fieldDbName,$_fieldResultName) {
+        parent::SField($_fieldFormName,$_fieldDbName,$_fieldResultName);
         $this->compareField = new SField($_compareFieldFormName);
     }
 
@@ -109,10 +103,8 @@ class PromoSField extends SField {
         return ($this->compareField->value=='=' && $this->value!='');
     }
 
-    function get_where_statement() {
-        if (!parent::get_where_statement())
-            return false;
-        return $this->fieldDbName.$this->compareField->value.$this->value;
+    function get_single_where_statement($field) {
+        return $field.$this->compareField->value.$this->value;
     }
 
     function get_url() {

@@ -120,8 +120,15 @@ class XorgPage extends DiogenesCorePage {
 
     function doAuth() { }
 
-    function mysql_assign($sql_query,$var_name,$var_nb_name='') {
+    function mysql_assign($sql_query,$var_name,$var_nb_name='',$var_found_rows='') {
         global $globals;
+        //lorsqu'on désire obtenir found_rows il faut désactiver la trace du résultat
+        $switch_trace = false;
+        if(!empty($var_found_rows) && $globals->db->_trace==1) {
+            $switch_trace = true;
+            $globals->db->trace_off();
+        }
+        
         $sql = $globals->db->query($sql_query);
         if(mysql_errno())
             return(mysql_error($sql));
@@ -130,10 +137,22 @@ class XorgPage extends DiogenesCorePage {
         while($array[] = mysql_fetch_assoc($sql));
         array_pop($array);
         mysql_free_result($sql);
-
         $this->assign_by_ref($var_name,$array);
         if(!empty($var_nb_name))
             $this->assign($var_nb_name, count($array));
+        
+        if(!empty($var_found_rows)) {
+            $n_res = $globals->db->query('SELECT FOUND_ROWS()');
+            $r = mysql_fetch_row($n_res);
+            $this->assign($var_found_rows, $r[0]);
+            mysql_free_result($n_res);
+            //si la trace était activée on affiche la trace sur la requête initiale
+            if ($switch_trace) {
+                $globals->db->trace_on();
+                $sql = $globals->db->query($sql_query);
+                mysql_free_result($sql);
+            }
+        }
         return 0;
     }
 
