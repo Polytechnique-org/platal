@@ -1,21 +1,21 @@
-{* $Id: choix_date.tpl,v 1.4 2004-08-24 23:07:24 x2000habouzit Exp $ *}
+{* $Id: choix_date.tpl,v 1.3 2004-08-24 23:06:06 x2000habouzit Exp $ *}
 
 {assign var=def_month value=$smarty.now|date_format:"%m"}
 {assign var=def_year value=$smarty.now|date_format:"%Y"}
 {assign var=month value=$smarty.request.mois|default:$def_month}
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
-  <div class="center">
+<div class="center">
+  <form method="post" action="{$smarty.server.PHP_SELF}">
     <input type="hidden" name="action" value="lister" />
     Afficher la période suivante :
     <select name="mois" size="1">
-      {foreach key=key item=item from=$month_arr}
+{foreach key=key item=item from=$month_arr}
       <option value="{$key}" {if $month eq $key}selected="selected"{/if}>{$item}</option>
-      {/foreach}
+{/foreach}
     </select>
     <input type="text" name="annee" size="10" value="{$smarty.request.annee|default:$def_year}" />
     <input type="submit" value="lister" />
-  </div>
-</form>
+  </form>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
