@@ -18,11 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: redirect.php,v 1.5 2004-09-05 12:54:20 x2000habouzit Exp $
+        $Id: redirect.php,v 1.6 2004-10-08 19:41:41 x2000habouzit Exp $
  ***************************************************************************/
 
 
-require("db_connect.inc.php");
+require_once("../../include/config.xorg.inc.php") ;
+require_once("../../include/xorg.common.inc.php");
 
 /*echo "<pre>";
 var_dump($_SERVER);
