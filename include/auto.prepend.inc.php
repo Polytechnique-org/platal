@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auto.prepend.inc.php,v 1.32 2004-11-21 18:33:58 x99laine Exp $
+        $Id: auto.prepend.inc.php,v 1.33 2004-11-21 21:48:58 x2000habouzit Exp $
  ***************************************************************************/
 
 function microtime_float() 
@@ -28,7 +28,6 @@ function microtime_float()
 } 
 $TIME_BEGIN = microtime_float();
  
-require("config.xorg.inc.php") ;
 require_once("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {

@@ -18,10 +18,9 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: redirect.php,v 1.2 2004-10-08 19:46:31 web Exp $
+        $Id: redirect.php,v 1.3 2004-11-21 21:49:26 x2000habouzit Exp $
  ***************************************************************************/
 
-require_once("../../include/config.xorg.inc.php") ;
 require_once("../../include/xorg.common.inc.php");
 
 // on coupe la chaîne REQUEST_URI selon les / et on ne garde que

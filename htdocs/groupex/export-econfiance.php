@@ -18,13 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: export-econfiance.php,v 1.8 2004-11-10 10:59:09 x2000habouzit Exp $
+        $Id: export-econfiance.php,v 1.9 2004-11-21 21:48:57 x2000habouzit Exp $
  ***************************************************************************/
 
 
 /* Script permettant l'export de la liste des membres de la mailing list eConfiance, pour intégration par J-P Figer dans la liste des membres de X-Informatique */
 
-require("config.xorg.inc.php") ;
 require_once("xorg.common.inc.php");
 require_once("xml-rpc-client.inc.php");
 

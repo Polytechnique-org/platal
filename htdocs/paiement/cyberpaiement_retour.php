@@ -18,10 +18,9 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.10 2004-11-16 21:02:46 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.11 2004-11-21 21:48:57 x2000habouzit Exp $
  ***************************************************************************/
 
-require("config.xorg.inc.php") ;
 require_once("xorg.common.inc.php");
 require("diogenes.hermes.inc.php");
 
