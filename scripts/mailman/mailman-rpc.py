@@ -18,11 +18,12 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.24 2004-09-22 08:42:25 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.25 2004-09-22 11:38:41 x2000habouzit Exp $
 #***************************************************************************
 
-import base64, MySQLdb, os
-import MySQLdb.converters
+import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
+from pwd import getpwnam
+from grp import getgrnam
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
@@ -332,9 +333,9 @@ def get_pending_ops((userdesc,perms),listname):
                 continue
             helds.append({
                     'id'    : id,
-                    'sender': sender,
+                    'sender': Utils.oneline(sender,'utf8'),
                     'size'  : size,
-                    'subj'  : subject,
+                    'subj'  : Utils.oneline(subject,'utf8'),
                     'stamp' : ptime
                     })
     except:
@@ -348,6 +349,7 @@ def handle_request((userdesc,perms),listname,id,value,comment):
     try:
         mlist = MailList.MailList(listname)
     except:
+        raise
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
@@ -357,6 +359,7 @@ def handle_request((userdesc,perms),listname,id,value,comment):
         mlist.Unlock()
         return 1
     except:
+        raise
         mlist.Unlock()
         return 0
 
@@ -379,11 +382,11 @@ def get_pending_mail((userdesc,perms),listname,id,raw=0):
             return str(msg)
         results = []
         for part in typed_subpart_iterator(msg,'text','plain'):
-            results.append (part.get_payload(decode=1))
+            results.append (part.get_payload())
         return {'id'    : id,
-                'sender': sender,
+                'sender': Utils.oneline(sender,'utf8'),
                 'size'  : size,
-                'subj'  : subject,
+                'subj'  : Utils.oneline(subject,'utf8'),
                 'stamp' : ptime,
                 'parts' : results }
     except:
@@ -401,10 +404,29 @@ def is_admin((userdesc,perms),listname):
 #
 # INIT 
 #
-#------------------------------------------------
-# server
+#-------------------------------------------------------------------------------
+# use Mailman user and group (not root)
+# fork in background if asked to
 #
 
+uid = getpwnam(mm_cfg.MAILMAN_USER)[2]
+gid = getgrnam(mm_cfg.MAILMAN_GROUP)[2]
+
+if not os.getuid():
+    os.setregid(gid,gid)
+    os.setreuid(gid,gid)
+
+if ( os.getuid() is not uid ) or ( os.getgid() is not gid):
+    sys.exit(0)
+
+opts, args = getopt.getopt(sys.argv[1:], 'f')
+for o, a in opts:
+    if o == '-f' and os.fork():
+        sys.exit(0)
+
+#-------------------------------------------------------------------------------
+# server
+#
 class FastXMLRPCServer(SimpleXMLRPCServer):
     allow_reuse_address = True
 
