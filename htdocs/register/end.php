@@ -102,7 +102,7 @@ while (list($salias, $snom, $sprenom) = $res->next()) {
     $mymail = new HermesMailer();
     $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
     $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
-    $mymail->addTo("\"$sprenom $snom\" <$alias@{$globals->mail->domain}>");
+    $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
     $msg = "Cher $sprenom,\n\n"
          . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
          . "que tu avais incité à s'inscrire à Polytechnique.org, "
