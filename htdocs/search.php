@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.19 2004-10-12 17:31:44 x2000habouzit Exp $
+        $Id: search.php,v 1.20 2004-10-12 17:37:09 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -77,8 +77,8 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        c.uid AS contact
                  FROM  '.(($with_soundex)?'recherche_soundex':'recherche').'      AS r
            INNER JOIN  identification AS i   ON (i.matricule=r.matricule)
-           INNER JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
-           INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
+            LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
+            LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
             LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
