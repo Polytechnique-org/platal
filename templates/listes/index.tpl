@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.2 2004-09-10 21:28:53 x2000habouzit Exp $
+        $Id: index.tpl,v 1.3 2004-09-20 20:37:15 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -42,11 +42,6 @@ cocher et de cliquer sur le bouton "Enregistrer".
 <p>
 Dans tous les cas, pour se désinscrire, il suffit de décocher la case et de cliquer sur
 "Enregistrer".  
-</p>
-
-<p>
-Si tu vois une * derrière le nom d'une liste, cela signifie que tu en es gestionnaire.  En cliquant
-sur la liste, tu pourras administrer les abonnés et les gestionnaires de la liste.
 </p>
 
 <div class='ssrubrique'>
@@ -77,7 +72,10 @@ NB : les gestionnaires d'une liste sont aussi ses modérateurs.
   {foreach from=$listes item=liste}
   {if $liste.priv eq 0}
   <tr class='{cycle values="impair,pair"}'>
-    <td>{$liste.list}{if $liste.you>1}*{/if}</td>
+    <td>
+      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
+      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
+    </td>
     <td>{$liste.desc}</td>
     <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
     <td class='right'>{if $liste.you is odd}désinscription{elseif $liste.ins}ins modérée{else}inscription{/if}</td>
@@ -100,7 +98,10 @@ NB : les gestionnaires d'une liste sont aussi ses modérateurs.
   {foreach from=$listes item=liste}
   {if $liste.priv eq 1}
   <tr class='{cycle values="impair,pair"}'>
-    <td>{$liste.list}{if $liste.you>1}*{/if}</td>
+    <td>
+      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
+      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
+    </td>
     <td>{$liste.desc}</td>
     <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
     <td class='right'>{if $liste.you is odd}désinscription{elseif $liste.ins}ins modérée{else}inscription{/if}</td>
@@ -124,7 +125,10 @@ NB : les gestionnaires d'une liste sont aussi ses modérateurs.
   {foreach from=$listes item=liste}
   {if $liste.priv > 1}
   <tr class='{cycle values="impair,pair"}'>
-    <td>{$liste.list}{if $liste.you>1}*{/if}</td>
+    <td>
+      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
+      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
+    </td>
     <td>{$liste.desc}</td>
     <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
     <td class='right'>{if $liste.you is odd}désinscription{elseif $liste.ins}ins modérée{else}inscription{/if}</td>
