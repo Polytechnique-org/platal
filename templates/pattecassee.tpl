@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: pattecassee.tpl,v 1.6 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: pattecassee.tpl,v 1.7 2004-11-17 14:31:05 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -82,13 +82,13 @@
   <form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
     <tr>
-      <th colspan="2">Adresse email défectueuse</th>
+      <th>Adresse email défectueuse</th>
     </tr>
     <tr>
       <td><input type="text" name="email" size="50" maxlength="50" /></td>
     </tr>
     <tr>
-      <td colspan="2" class="center"><input type="submit" value="Ok" /></td>
+      <td class="center"><input type="submit" value="Ok" /></td>
     </tr>
   </table>
   </form>
