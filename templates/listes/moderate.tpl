@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.16 2004-10-26 07:19:57 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.17 2004-10-30 14:05:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -104,7 +104,7 @@
     <td class='action'>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a><br />
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>rejeter</a></td>
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mdel=1'>rejeter</a></td>
   </tr>
   {/foreach}
 </table>
