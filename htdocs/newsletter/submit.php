@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.php,v 1.1 2004-10-16 17:49:37 x2000habouzit Exp $
+        $Id: submit.php,v 1.2 2004-10-16 17:53:40 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,7 +28,7 @@ require("newsletter.inc.php");
 if(isset($_POST['see'])) {
     $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
     $page->assign('art', $art);
-} elseif($_POST['valid']) {
+} elseif(isset($_POST['valid'])) {
     $nl = new Newsletter();
     $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
     $nl->saveArticle($art);

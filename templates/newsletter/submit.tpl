@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.tpl,v 1.1 2004-10-16 17:49:39 x2000habouzit Exp $
+        $Id: submit.tpl,v 1.2 2004-10-16 17:52:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -90,6 +90,14 @@ il faut te limiter à 8 lignes de 68 caractères.
 
 {/if}
 
+<p>
+Il faut absolument que ton article fasse moins de 8 lignes (non vides) de 68 caractères.
+</p>
+
+<p>
+Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à placer dans la case "Ajouts"
+</p>
+
 <form action="{$smarty.server.PHP_SELF}" method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
     <tr>
@@ -107,13 +115,13 @@ il faut te limiter à 8 lignes de 68 caractères.
         <textarea cols="68" rows="10" name='body'>{if $art}{$art->body()}{/if}</textarea>
       </td>
     </tr>
-    <tr class="pair">
-      <td class='titre'>Ajouts (emails,contacts,tarifs,site web, ...)</td>
+    <tr class="impair">
+      <td class='titre'>Ajouts (emails, contacts, tarifs, site web, ...)</td>
       <td>
         <textarea cols="68" rows="6" name='append'>{if $art}{$art->append()}{/if}</textarea>
       </td>
     </tr>
-    <tr class='impair'>
+    <tr class='pair'>
       <td colspan='2' class='center'>
         <input type='submit' name='see' value='visualiser' />
       </td>
