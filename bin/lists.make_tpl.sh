@@ -17,9 +17,8 @@ mkdir -p "$TARGET"
 
 for tpl in $TEMPLATES/*txt
 do
-    template=${tpl#$TEMPLATES/}
-    cat $template \
+    cat $tpl \
     | sed -e "s,{{{ALIST}}},$ALIST,g ; s,{{{LIST}}},$LIST,g ; s,{{{ADMIN}}},$ADMIN,g ; s,{{{MEMBERS}}},$MEMBERS,g ; s,{{{MODERATE}}},$MODERATE,g" \
-    > "$TARGET/$template"
+    > "$TARGET/${tpl#$TEMPLATES/}
 done
 
