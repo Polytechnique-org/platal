@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.12 2004-11-07 11:54:08 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.13 2004-11-07 14:30:32 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -91,6 +91,76 @@ function getNbNotifs() {
 	return "<a href='$url'>$n notification !</a>";
     }
     return "<a href='$url'>$n notifications !</a>";
+}
+
+class AllNotifs {
+    var $_cats = Array();
+    var $_data = Array();
+
+    function AllNotifs() {
+	global $globals;
+	
+	$res = $globals->db->query("SELECT * FROM watch_cat");
+	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
+	mysql_free_result($res);
+	
+	$res = $globals->db->query("
+	(
+		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
+			b.alias AS aforlife, (v.flags='femme') AS sexe,
+			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+			wo.*, 1 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+	          FROM  auth_user_quick AS q
+	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
+	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND b.type='a_vie')
+	    INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
+	    INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact AND wo.known > q.watch_last)
+	    INNER JOIN  watch_sub       AS ws ON(ws.uid=q.user_id AND wo.cid=ws.cid)
+	    INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
+	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+	         WHERE  q.watch_flags=3
+	) UNION DISTINCT (
+		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
+			b.alias AS aforlife, (v.flags='femme') AS sexe,
+			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+	          FROM  auth_user_quick AS q
+	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
+	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND b.type='a_vie')
+	    INNER JOIN  watch_promo     AS w  ON(w.uid=q.user_id)
+	    INNER JOIN  auth_user_md5   AS u  USING(promo)
+	     LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
+	    INNER JOIN  watch_sub       AS ws ON(ws.uid=w.uid)
+	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
+            INNER JOIN  watch_ops       AS wo ON(wo.cid=ws.cid AND wo.uid=u.user_id AND wo.known > q.watch_last)
+	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+		 WHERE  q.watch_flags=3 OR q.watch_flags=1
+	) UNION DISTINCT (
+		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
+			b.alias AS aforlife, (v.flags='femme') AS sexe,
+			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+			wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+	          FROM  auth_user_quick AS q
+	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
+	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND b.type='a_vie')
+	    INNER JOIN  watch_nonins    AS w  ON(w.uid=q.user_id)
+	    INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
+	    INNER JOIN  watch_sub       AS ws ON(ws.uid=w.uid)
+	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
+	    INNER JOIN  watch_ops       AS wo ON(wo.cid=ws.cid AND wo.uid=u.user_id AND wo.known > q.watch_last)
+	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+		 WHERE  q.watch_flags=3 OR q.watch_flags=1
+	)
+	ORDER BY  cid,promo,nom");
+
+	while($tmp = mysql_fetch_assoc($res)) {
+	    $aid = $tmp['aid'];
+	    $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
+				       'forlife'=>$tmp['aforlife'], 'sexe' => $tmp['sexe']);
+	    unset($tmp['aprenom'],$tmp['anom'],$tmp['aforlife'],$tmp['aid'],$tmp['sexe']);
+	    $this->_data[$aid]['data'][$tmp['cid']][] = $tmp;
+	}
+    }
 }
 
 class Notifs {

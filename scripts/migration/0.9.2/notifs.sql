@@ -1,6 +1,7 @@
 alter table aliases add index (type);
 alter table auth_user_quick add column watch_flags set('contacts','mail') not null default 'contacts';
 alter table auth_user_quick add column watch_last timestamp not null;
+alter table auth_user_quick add index(watch_flags);
 
 create table watch_cat (
     id smallint not null auto_increment,
