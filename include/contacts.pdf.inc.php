@@ -132,13 +132,13 @@ class ContactsPDF extends FPDF
         $this->broken = true;
     }
 
-    function Space()
+    function Space($w=0.1, $h=0.5)
     {
         $x = $this->getX();
         $y = $this->getY();
-        $this->SetLineWidth(0.1);
+        $this->SetLineWidth($w);
         $this->Line($x, $y, $x+90, $y);
-        $this->setY($this->getY()+0.5);
+        $this->Ln($h);
     }
 
     function TableRow($l, $r, $font = 'Sans')
@@ -215,6 +215,42 @@ class ContactsPDF extends FPDF
         $this->error = true;
     }
 
+    function wordwrap($text, $maxwidth = 90) {
+        $text = trim($text);
+        if ($text==='') { return 0; }
+        $space = $this->GetStringWidth(' ');
+        $lines = explode("\n", $text);
+        $text = '';
+        $count = 0;
+
+        foreach ($lines as $line)
+        {
+            $words = preg_split('/ +/', $line);
+            $width = 0;
+
+            foreach ($words as $word)
+            {
+                $wordwidth = $this->GetStringWidth($word);
+                if ($width + $wordwidth <= $maxwidth)
+                {
+                    $width += $wordwidth + $space;
+                    $text .= $word.' ';
+                }
+                else
+                {
+                    $width = $wordwidth + $space;
+                    $text = rtrim($text)."\n".$word.'
+                        ';
+                    $count++;
+                }
+            }
+            $text = rtrim($text)."\n";
+            $count++;
+        }
+        $text = rtrim($text);
+        return $count;
+    }
+
     function AddContact($x, $wp = true)
     {
         global $globals;
@@ -244,7 +280,7 @@ class ContactsPDF extends FPDF
                
                 $_x = $this->getX();
                 $_y = $this->getY();
-                $this->Cell(0, 20, '', '', 0, 'C', 1);
+                $this->Cell(0, 20, '', '', 0, '', 1);
                 $this->Image("var://p{$x['user_id']}", $_x, $_y, $width, 20, $photo['attachmime']);
                 
                 if ($this->error) {
@@ -252,7 +288,7 @@ class ContactsPDF extends FPDF
                 } else {
                     $this->setX($_x);
                     $this->Cell($width, 20, '', "T");
-                    $h = ( $this->GetStringWidth($nom) + $width > 85 ) ? 10 : 20;
+                    $h = 20 / $this->wordwrap($nom, 90-$width);
                     $this->MultiCell(0, $h, $nom, 'T', 'C');
                     $ok = true;
                 }
@@ -262,16 +298,14 @@ class ContactsPDF extends FPDF
             $this->MultiCell(0, 6, $nom, "T", 'C', 1);
         }
         
-        $this->Space();
-
         if ($x['mobile']) {
-            $this->TableRow('mobile', $x['mobile'], 'Mono');
             $this->Space();
+            $this->TableRow('mobile', $x['mobile'], 'Mono');
         }
 
         foreach ($x['adr'] as $a) {
-            $this->Address($a);
             $this->Space();
+            $this->Address($a);
         }
         
         foreach ($x['adr_pro'] as $a) {
@@ -280,11 +314,11 @@ class ContactsPDF extends FPDF
             {
                 continue;
             }
-            $this->AddressPro($a);
             $this->Space();
+            $this->AddressPro($a);
         }
 
-        $this->Ln(10);
+        $this->Space(0.4, 5);
 
         if ($this->broken) {
             $old->NextCol();
