@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.24 2004-11-02 07:28:33 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.25 2004-11-04 13:50:44 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -124,15 +124,23 @@ else {
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
-    
     $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
     $page->assign('offsets',range(0,$nbpages));
+    $page->assign('offset',$offset->value);
     $page->assign('url_args',$fields->get_url());
     $page->assign('with_soundex',$with_soundex);
     $page->assign('mod_date_sort',!empty($_REQUEST['mod_date_sort']));
-    $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
+    
+    if(!$page->get_template_vars('nb_resultats_total')) {
+        form_prepare();
+        new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
+    }
+    if($page->get_template_vars('nb_resultats_total')>800) {
+        new ThrowError('Recherche trop générale');
+    }
+    
 }
 
 $page->run();

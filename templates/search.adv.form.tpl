@@ -17,39 +17,40 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.25 2004-11-03 22:15:22 x2000habouzit Exp $
+        $Id: search.adv.form.tpl,v 1.1 2004-11-04 13:50:45 x2000habouzit Exp $
  ***************************************************************************}
 
-<h1>
-  {if $advanced eq "1"}
-  Recherche avancée
-  {else}
-  Recherche simple
-  {/if}
-</h1>
+<h1>Recherche avancée</h1>
+
 {if $error}
-  <p class="error">
-    {$error}
-  </p>
-  {/if}
-  
-{if $advanced}
-<p>[<a href="search.php">Recherche simple</a>]</p>
-{else}
-{min_auth level="cookie"}
-<p>[<a href="advanced_search.php">Recherche avancée</a>]</p>
-{/min_auth}
+<p class="error">{$error}</p>
 {/if}
 
-<form id="recherche" action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="{if !$advanced}tiny{/if}bicol" cellpadding="3" summary="Recherche">
+<p>[<a href="search.php">Recherche simple</a>]</p>
+
+<form id="recherche" action="{$smarty.server.PHP_SELF}" method="get">
+  <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <td>Nom</td>
-      <td><input type="text" name="name" size="32" value="{$smarty.request.name}" /></td>
+      <td>
+        <input type="text" name="name" size="32" value="{$smarty.request.name}" />
+        {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
+        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
+          étendre par proximité sonore
+        </a>
+        {/if}
+      </td>
     </tr>
     <tr>
       <td>Prénom</td>
-      <td><input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" /></td>
+      <td>
+        <input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
+        {if $smarty.request.firstname && !$with_soundex && $smarty.request.recherche}
+        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
+          étendre par proximité sonore
+        </a>
+        {/if}
+      </td>
     </tr>
     <tr>
       <td>Promotion</td>
@@ -69,7 +70,6 @@
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
       </td>
     </tr>
-{if $advanced eq "1"}
     <tr>
       <td>Sexe</td>
       <td>
@@ -237,7 +237,6 @@
         </select>
       </td>
     </tr>
-{/if}
   </table>
   <div class="center">
     <br />

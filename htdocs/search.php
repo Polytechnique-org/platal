@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.41 2004-11-03 22:15:21 x2000habouzit Exp $
+        $Id: search.php,v 1.42 2004-11-04 13:50:44 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -33,35 +33,19 @@ $page->assign('advanced',0);
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
-if (array_key_exists('rechercher', $_REQUEST)) {
+if (array_key_exists('quick', $_REQUEST)) {
     $page->assign('formulaire',0);
 
     $with_soundex = !empty($_REQUEST['with_soundex']);
 
-    if ($with_soundex) {
-        $nameField = new
-        StringWithSoundexSField('name',array('r.nom1_soundex','r.nom2_soundex','r.nom3_soundex'),'');
-        $firstnameField = new
-        StringWithSoundexSField('firstname',array('r.prenom1_soundex','r.prenom2_soundex'),'');
-    }
-    else {
-        $nameField = new NameSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
-        $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'r.prenom1');
-    }
-    $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
-    $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
-    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
+    $qSearch = new QuickSearch('quick');
+    $fields = new SFieldGroup(true,array($qSearch));
     
-    if (!$nameField->length() && !$firstnameField->length()
-	&& empty($_REQUEST['promo1']) && empty($_REQUEST['promo2']))
+    if ($qSearch->isempty())
     {
 	new ThrowError('Recherche trop générale.');
     }
     
-    if (!logged() && empty($_REQUEST['prenom']) && empty($_REQUEST['nom']))
-    {
-	new ThrowError('Il faut au moins entrer un nom ou un prenom.');
-    }
     $offset = new NumericSField('offset');
    
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
@@ -73,24 +57,18 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
                        c.uid AS contact
-                 FROM  '.($with_soundex?'recherche_soundex':'recherche').'      AS r
+                 FROM  '.($with_soundex?'recherche_soundex':'auth_user_md5').'      AS r
             LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             '.$globals->search_result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
-		        .implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,NomSortKey,prenom'))).'
-                LIMIT  '.$offset->value.','.$globals->search_results_per_page;
+		        .implode(',',array_filter(array($fields->get_order_statement(),'u.promo DESC,NomSortKey,prenom'))).'
+                LIMIT  '.(isset($_REQUEST['lucky']) ? "1" : $offset->value.','.$globals->search_results_per_page);
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
-    echo mysql_error();
     
-    if (!logged() &&
-	$page->get_template_vars('nb_resultats_total')>$globals->public_max_search_results)
-    {
-	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
-    }
     $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
@@ -99,6 +77,20 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
+    
+    if (!logged() &&
+	$page->get_template_vars('nb_resultats_total')>$globals->public_max_search_results)
+    {
+	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
+    }
+    
+    if($page->get_template_vars('nb_resultats_total')>800) {
+        new ThrowError('Recherche trop générale');
+    }
+
+    if(!$page->get_template_vars('nb_resultats_total')) {
+        new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
+    }
 }
 else
     $page->assign('formulaire',1);

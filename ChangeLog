@@ -1,32 +1,38 @@
 ================================================================================
 VERSION 0.9.2														~20 Nov 2004
 
-Changes :
+New :
 
 	* Core :
 		- Creation of the Plugin class.										-MC
-		- First instance of the plugin class : class Trombi.  (FS#135)		-MC
 		- Now only use iso3166 countries, no more `nationalites`.			-MC
-		- A photo change now updates the last time the `fiche` was edited.	-MC
 
 	* Contacts :
-		- Trombino of the contacts is available !  (FS#138)					-MC
-
-	* Lists :
-		- Refusal message is shown on mail moderation page.  (FS#138)		-MC
-		- Now supports non-X natively.										-MC
-
-	* Search :
-		- Hide SoundEX search when neither name nor second name selected.	-MC
-		- Married women are now well sorted.								-MC
+		- Trombino of the contacts is available.							-MC
 
 	* Search+Contacts :
-		- Homeland is now a flag.  (FS#124)									-MC
-		- Women now have a &bull; (no more dirty gender icons).  (FS#122)	-MC
+		- Married women are now well sorted (by their spouse name).			-MC
 		- Nicer icons.														-MC
 
+Bug/Wish :
+	
+	* Core :
+		- #135 : First instance of the plugin class : class Trombi.			-MC
+		- #158 : A photo change updates last `fiche` edition stamp.			-MC
+
+	* Lists :
+		- #138 : Refusal message is shown on mail moderation page.			-MC
+		- #161 : Now supports non-X natively								-MC
+
+	* Search :
+		- #112,113,126,133,167: google like search + some rewrite.			-MC
+
+	* Search+Contacts :
+		- #124 : Homeland is now a flag.									-MC
+		- #122 : Women now have a &bull; (no more dirty gender icons).		-MC
 
 Fixes (from 0.9.1 branch) :
+
 	* Lists :
 		- Better mails to -owners for reject/discard ops.					-MC
 		- Mailman is case sensitive, goto lowercase.						-MC
@@ -35,7 +41,7 @@ Fixes (from 0.9.1 branch) :
 ================================================================================
 VERSION 0.9.1														 25 Oct 2004
 
-Changes :
+New :
 
 	* Lists :
 		- Auto-moderate/discard mails detected as SPAM by bogofilter.		-MC
@@ -44,7 +50,7 @@ Changes :
 		- 1-click moderation for accept and reject cases.					-MC
 	
 	* Usability :
-		- All <a><img ... /></a> now have title (closes: FS#99).			-MC
+		- #99 : All <a><img ... /></a> now have title.						-MC
 
 	* NewsLetter :
 		- Brand New NewsLetter module.										-MC
@@ -78,7 +84,7 @@ Fixes (from 0.9.0 branch) :
 ================================================================================
 VERSION 0.9.0													     15 Oct 2004
 
-Changes :
+New :
 
 	* First Public Release.													-PoT
 

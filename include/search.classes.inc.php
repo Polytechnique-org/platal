@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.29 2004-11-02 07:28:34 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.30 2004-11-04 13:50:45 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -48,6 +48,7 @@ $globals->search_result_where_statement = '
                 LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
                 LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)';
+
 
 /** classe qui gère les erreurs dans les requêtes des utilisateurs finaux
  * passe le message d'erreur au template de page et exécute le template
@@ -125,6 +126,75 @@ class SField {
     }
 }
 
+class QuickSearch extends SField {
+    var $strings;
+    var $ranges;
+
+    function QuickSearch($_fieldFormName) {
+        $this->fieldFormName = $_fieldFormName;
+        $this->get_request();
+    }
+
+    function isempty() {
+	return empty($this->strings) && empty($this->ranges);
+    }
+    
+    function get_request() {
+	SField::get_request();
+	$s = replace_accent(trim($this->value));
+	$s = preg_replace('!\d+!', ' ', $s);
+	$s = preg_replace('! - !', '', $s);
+	$this->strings = preg_split("![^a-zA-Z\-]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+
+	$s = trim($this->value);
+	$s = preg_replace('! *- *!', '-', $s);
+	$s = preg_replace('!([<>]) *!', ' \1', $s);
+	$s = preg_replace('![^0-9\-><]!', ' ', $s);
+	$s = preg_replace('![<>\-] !', '', $s);
+	$ranges = preg_split('! +!', $s, -1, PREG_SPLIT_NO_EMPTY);
+	$this->ranges=Array();
+	foreach($ranges as $r) {
+	    if(preg_match('!^([<>]\d{4}|\d{4}(-\d{4})?)$!', $r)) $this->ranges[] = $r;
+	}
+    }
+
+    function get_where_statement() {
+	$where = Array();
+	foreach($this->strings as $s) {
+	    $where[] = "(r.nom LIKE '%$s%' OR r.epouse LIKE '%$s%' OR r.prenom LIKE '%$s%')";
+	}
+	
+	$wherep = Array();
+	foreach($this->ranges as $r) {
+	    if(preg_match('!^\d{4}$!', $r)) {
+		$wherep[] = "r.promo=$r";
+	    } elseif(preg_match('!^(\d{4})-(\d{4})$!', $r, $matches)) {
+		$p1=min(intval($matches[1]), intval($matches[2]));
+		$p2=max(intval($matches[1]), intval($matches[2]));
+		$wherep[] = "(r.promo>=$p1 AND r.promo<=$p2)";
+	    } elseif(preg_match('!^<(\d{4})!', $r, $matches)) {
+		$wherep[] = "r.promo<={$matches[1]}";
+	    } elseif(preg_match('!^>(\d{4})!', $r, $matches)) {
+		$wherep[] = "r.promo>={$matches[1]}";
+	    }
+	}
+	if(!empty($wherep)) $where[] = '('.join(' OR ',$wherep).')';
+	return join(" AND ", $where);
+    }
+    
+    function get_order_statement() {
+	if(empty($this->strings)) return false;
+	$order = Array();
+	foreach($this->strings as $s) {
+	    $order[] = "(r.nom='$s' OR r.prenom='$s' OR r.epouse='$s')*100 + "
+		    .  "(r.nom LIKE '$s%' OR r.prenom LIKE '$s%' OR r.epouse LIKE '$s%')";
+	}
+	$res = join(' + ', $order);
+	if($res) return "$res DESC";
+    }
+}
+		
+
 /** classe de champ numérique entier (offset par exemple)
  */
 class NumericSField extends SField {
@@ -198,10 +268,8 @@ class RefSField extends SField {
 }
 
 class RefWithSoundexSField extends RefSField {
-    function get_request() {
-        parent::get_request();
-        if ($this->value!='')
-            $this->value=soundex_fr($this->value);
+    function compare() {
+	return "='".soundex_fr($this->value)."'";
     }
 }
 
@@ -391,4 +459,5 @@ class SFieldGroup {
         return (count($url)>0)?implode('&',$url):false;
     }
 }
+
 ?>
