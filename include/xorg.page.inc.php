@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.42 2004-09-23 18:46:19 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.43 2004-09-24 14:47:43 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -136,7 +136,7 @@ class XorgPage extends DiogenesCorePage {
     }
 
     function run($append_to_id="") {
-        global $baseurl, $site_dev, $globals;
+        global $baseurl, $site_dev, $globals, $TIME_BEGIN;
         if($this->_page_type == NO_SKIN)
             $this->display($this->_tpl);
         else {
@@ -147,6 +147,7 @@ class XorgPage extends DiogenesCorePage {
                 $this->assign('validate', urlencode($baseurl.'/valid.html'));
 
 		$result = $this->fetch('skin/'.$_SESSION['skin'], $id);
+		$total_time = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
                 $fd = fopen($this->cache_dir."valid.html","w");
                 fwrite($fd, $result);
                 fclose($fd);
@@ -155,10 +156,10 @@ class XorgPage extends DiogenesCorePage {
 		foreach($val as $h)
 		    if(preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
 			if($m[1]) {
-			    echo str_replace("@NB_ERR@",
-				"<span class='erreur'><a href='http://validator.w3.org/check?uri=$baseurl/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />", $result);
+			    echo str_replace("@HOOK@",
+				"$total_time<span class='erreur'><a href='http://validator.w3.org/check?uri=$baseurl/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />", $result);
 			} else {
-			    echo str_replace("@NB_ERR@", "", $result);
+			    echo str_replace("@HOOK@", "$total_time", $result);
 			}
 			exit;
 		    }

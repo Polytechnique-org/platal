@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.devel.tpl,v 1.5 2004-08-31 11:25:43 x2000habouzit Exp $
+        $Id: common.devel.tpl,v 1.6 2004-09-24 14:47:43 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -35,8 +35,8 @@
 
 {if $validate}
   <div id="dev">
-    Validation :
-    @NB_ERR@
+    @HOOK@
+    Validation:
     <a href="http://jigsaw.w3.org/css-validator/validator?uri={$validate}">CSS</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
     références :
