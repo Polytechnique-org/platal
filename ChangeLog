@@ -15,10 +15,10 @@ Bug/Wish :
 		- #207 : Enable for the user the choice of his prefered alias.		-MC
 	
 	* Fiche :
-		- #208,222 : New fiche.												-MC
+		- #83,208,222 : New fiche.											-MC
 	
 	* User Interface :
-		- 211 : All imgs in the skins are links to login.php.				-MC
+		- #211 : All imgs in the skins are links to login.php.				-MC
 
 
 Fixes (from 0.9.2 branch) :
