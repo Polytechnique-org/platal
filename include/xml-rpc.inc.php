@@ -1,5 +1,16 @@
 <?php
 
+/******************************************************************************
+ *                                                                            *
+ *  Original file can be found on http://xmlrpc-epi.sourceforge.net/          *
+ *  in the module xmlrpc-epi-php v0.51 file samples/utils/utils.php           *
+ *                                                                            *
+ *				                  The Polytechnique.org TEAM  *
+ *                                                                            *
+ ******************************************************************************
+    $Id: xml-rpc.inc.php,v 1.2 2004-09-07 20:02:05 x2000habouzit Exp $
+ ******************************************************************************/
+
 /*
   This file is part of, or distributed with, libXMLRPC - a C library for 
   xml-encoded function calls.
@@ -33,30 +44,9 @@
 
 */
 
-
 /* xmlrpc utilities (xu) 
  * author: Dan Libby (dan@libby.com)
  */
-
-// ensure extension is loaded.
-xu_load_extension();
-
-// a function to ensure the xmlrpc extension is loaded.
-// xmlrpc_epi_dir = directory where libxmlrpc.so.0 is located
-// xmlrpc_php_dir = directory where xmlrpc-epi-php.so is located
-function xu_load_extension($xmlrpc_php_dir="") {
-   if(!extension_loaded('xmlrpc')) {
-      $bSuccess = true;
-      putenv("LD_LIBRARY_PATH=/usr/lib/php4/apache/xmlrpc/");
-      if ($xmlrpc_php_dir) {
-         $xmlrpc_php_dir .= '/';
-      }
-      if (!extension_loaded("xmlrpc")) {
-         $bSuccess = dl($xmlrpc_php_dir . "xmlrpc-epi-php.so");
-      }
-   }
-   return $bSuccess;
-}
 
 /* generic function to call an http server with post method */
 function xu_query_http_post($request, $host, $uri, $port, $debug, 
@@ -192,7 +182,7 @@ function find_and_decode_xml($buf, $debug) {
  *                   $output_options = array('output_type' => 'php');
  */
 function xu_rpc_http_concise($params) {
-   $host = $uri = $port = $method = $args = $debug = null;
+   $output = $host = $uri = $port = $method = $args = $debug = null;
    $timeout = $user = $pass = $secure = $debug = null;
 
 	extract($params);
@@ -205,7 +195,7 @@ function xu_rpc_http_concise($params) {
 		$uri = '/';
 	}
 	if(!$output) {
-		$output = array(version => 'xmlrpc');
+		$output = array('version' => 'xmlrpc');
 	}
 
    $response_buf = "";
@@ -224,16 +214,16 @@ function xu_rpc_http($method, $args, $host, $uri="/", $port=80, $debug=false,
                      $timeout=0, $user=false, $pass=false, $secure=false) {
 	return xu_rpc_http_concise(
 		array(
-			method  => $method,
-			args    => $args,
-			host    => $host,
-			uri     => $uri,
-			port    => $port,
-			debug   => $debug,
-			timeout => $timeout,
-			user    => $user,
-			pass    => $pass,
-			secure  => $secure
+			'method'  => $method,
+			'args'    => $args,
+			'host'    => $host,
+			'uri'     => $uri,
+			'port'    => $port,
+			'debug'   => $debug,
+			'timeout' => $timeout,
+			'user'    => $user,
+			'pass'    => $pass,
+			'secure'  => $secure
 		));
 }
 
