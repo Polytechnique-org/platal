@@ -29,9 +29,9 @@ create table profile_medals_sub (
 );
 
 insert into profile_medals (type, text, img)
-     values ('ordre',     'Ordre Nationnal de la Legion d\'Honneur',    'ordre_onlh.jpg'),
+     values ('ordre',     'Ordre National de la Legion d\'Honneur',     'ordre_onlh.jpg'),
             ('ordre',     'Ordre de la libération',                     'ordre_lib.jpg'),
-            ('ordre',     'Ordre Nationnal du Mérite',                  'ordre_nm.jpg'),
+            ('ordre',     'Ordre National du Mérite',                   'ordre_nm.jpg'),
             ('ordre',     'Ordre des Palmes Académiques',               'ordre_pa.jpg'),
             ('ordre',     'Ordre du Mérite Agricole',                   'ordre_ma.jpg'),
             ('ordre',     'Ordre du Mérite Maritime',                   'ordre_mm.jpg'),
