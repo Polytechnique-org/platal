@@ -491,11 +491,10 @@ div.adresse {
 #body-top {
     border-bottom: 1px solid gray;
     text-align: center;
-    font-size: 75%;
-    font-weight: bold;
+    font-size: 95%;
     padding: 4px;
     padding-bottom: 16px;
-    font-family: "MS Sans Serif", sans-serif;
+    font-family: "Arial", sans-serif;
 }
 
 #body-top table { width: 100%; padding: 4px; }
