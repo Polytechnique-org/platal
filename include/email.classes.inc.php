@@ -18,10 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.9 2004-11-17 10:49:51 x2000habouzit Exp $
+    $Id: email.classes.inc.php,v 1.10 2004-11-22 08:44:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
+
+// {{{ defines
+
 define("SUCCESS", 1);
 define("ERROR_INACTIVE_REDIRECTION", 2);
 define("ERROR_INVALID_EMAIL", 3);
@@ -29,7 +32,11 @@ define("ERROR_LOOP_EMAIL", 4);
 
 define("MTIC_DOMAINS", "/etc/postfix/forward-domaines.conf");
 
-function check_mtic($email) {
+// }}}
+// {{{ function check_mtic()
+
+function check_mtic($email)
+{
     list($local,$domain) = explode("@",$email);
     // lecture du fichier de configuration
     $tab = file(MTIC_DOMAINS);
@@ -38,17 +45,25 @@ function check_mtic($email) {
 	// pour chaque ligne, on regarde si la première partie qui correspond au domaine du destinataire
 	// matche le domaine de l'email donnée
 	list($regexp) = explode(':',$ligne);
-	if (eregi($regexp,$domain)) return true;  // c'est le cas, on revoie true
+	if (eregi($regexp,$domain)) {
+            return true;  // c'est le cas, on revoie true
+        }
     }
     return false;
 }
 
-function fix_bestalias($uid) {
+// }}}
+// {{{ function fix_bestalias()
+
+function fix_bestalias($uid)
+{
     global $globals;
     $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE id='$uid' AND FIND_IN_SET('bestalias',flags)");
     list($n) = mysql_fetch_row($res);
     mysql_free_result($res);
-    if($n) return;
+    if ($n) {
+        return;
+    }
     $globals->db->query("UPDATE  aliases
                             SET  flags=CONCAT(flags,',','bestalias')
 			  WHERE  id='$uid'
@@ -56,14 +71,24 @@ function fix_bestalias($uid) {
 		          LIMIT  1");
 }
 
-class Bogo {
+// }}}
+// {{{ class Bogo
+
+class Bogo
+{
+    // {{{ properties
+    
     var $state;
     var $_states = Array('let_spams', 'tag_spams', 'drop_spams');
 
-    function Bogo($uid) {
+    // }}}
+    // {{{ constructor
+    
+    function Bogo($uid)
+    {
 	global $globals;
 	$res = $globals->db->query("SELECT email FROM emails WHERE uid = $uid AND find_in_set('filter', flags)");
-	if(mysql_num_rows($res)) {
+	if (mysql_num_rows($res)) {
 	    list($this->state) = mysql_fetch_row($res);
 	    mysql_free_result($res);
 	} else {
@@ -73,28 +98,52 @@ class Bogo {
 	}
     }
 
-    function change($uid, $state) {
+    // }}}
+    // {{{ function change()
+
+    function change($uid, $state)
+    {
 	global $globals;
 	$this->state = is_int($state) ? $this->_states[$state] : $state;
 	$globals->db->query("UPDATE emails SET email='{$this->state}' WHERE uid='$uid' AND find_in_set('filter', flags)");
     }
 
-    function level() { return array_search($this->state, $this->_states); }
+    // }}}
+    // {{{ function level()
+
+    function level()
+    { return array_search($this->state, $this->_states); }
+
+    // }}}
 }
 
-class Email {
+// }}}
+// {{{ class Email
+
+class Email
+{
+    // {{{ properties
+    
     var $email;
     var $active;
     var $rewrite;
     var $mtic;
     var $panne;
 
-    function Email($row) {
+    // }}}
+    // {{{ constructor
+
+    function Email($row)
+    {
         list($this->email,$this->active,$this->rewrite,$this->mtic,$this->panne)
         = $row;
     }
 
-    function activate($uid) {
+    // }}}
+    // {{{ function activate()
+
+    function activate($uid)
+    {
         global $globals;
         if (!$this->active) {
             $globals->db->query("UPDATE emails
@@ -105,7 +154,11 @@ class Email {
         }
     }
 
-    function deactivate($uid) {
+    // }}}
+    // {{{ function deactivate()
+
+    function deactivate($uid)
+    {
         global $globals;
         if ($this->active) {
 	    $flags = $this->mtic ? 'mtic' : '';
@@ -116,23 +169,41 @@ class Email {
             $this->active = false;
         }
     }
+    
+    // }}}
+    // {{{ function rewrite()
 
-    function rewrite($rew,$uid) {
+    function rewrite($rew,$uid)
+    {
         global $globals;
-	if($this->rewrite == $rew) return;
+	if ($this->rewrite == $rew) {
+            return;
+        }
 	$globals->db->query("UPDATE emails SET rewrite='$rew' WHERE uid=$uid AND email='{$this->email}'");
 	$this->rewrite = $rew;
 	return;
     }
+
+    // }}}
 }
 
-class Redirect {
+// }}}
+// {{{ class Redirect
+
+class Redirect
+{
+    // {{{ properties
+    
     var $flag_active = 'active';
     var $emails;
     var $bogo;
     var $uid;
 
-    function Redirect($_uid) {
+    // }}}
+    // {{{ function Redirect()
+
+    function Redirect($_uid)
+    {
         global $globals;
 	$this->uid=$_uid;
         $result = $globals->db->query("
@@ -145,26 +216,42 @@ class Redirect {
 	$this->bogo = new Bogo($_uid);
     }
 
-    function other_active($email) {
-        foreach($this->emails as $mail)
-            if ($mail->email!=$email && $mail->active)
+    // }}}
+    // {{{ function other_active()
+
+    function other_active($email)
+    {
+        foreach ($this->emails as $mail) {
+            if ($mail->email!=$email && $mail->active) {
                 return true;
+            }
+        }
         return false;
     }
 
-    function delete_email($email) {
+    // }}}
+    // {{{ function delete_email()
+
+    function delete_email($email)
+    {
         global $globals;
         if (!$this->other_active($email))
             return ERROR_INACTIVE_REDIRECTION;
         $globals->db->query("DELETE FROM emails WHERE uid={$this->uid} AND email='$email'");
         $_SESSION['log']->log('email_del',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
-	foreach($this->emails as $i=>$mail) {
-	    if($email==$mail->email) unset($this->emails[$i]);
+	foreach ($this->emails as $i=>$mail) {
+	    if ($email==$mail->email) {
+                unset($this->emails[$i]);
+            }
 	}
         return SUCCESS;
     }
 
-    function add_email($email) {
+    // }}}
+    // {{{ function add_email()
+    
+    function add_email($email)
+    {
         global $globals;
         $email_stripped = strtolower(stripslashes($email));
         if (!isvalid_email($email_stripped))
@@ -183,19 +270,26 @@ class Redirect {
             $mtic = 1;
         }
         $globals->db->query("REPLACE INTO emails (uid,email,flags) VALUES({$this->uid},'$email','$flags')");
-	if(isset($_SESSION['log'])) // may be absent --> step4.php
+	if (isset($_SESSION['log'])) { // may be absent --> step4.php
 	    $_SESSION['log']->log('email_add',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
-	foreach($this->emails as $mail) {
-	    if($mail->email == $email_stripped) return SUCCESS;
+        }
+	foreach ($this->emails as $mail) {
+	    if ($mail->email == $email_stripped) {
+                return SUCCESS;
+            }
 	}
         $this->emails[] = new Email(array($email,1,'',$mtic,'0000-00-00'));
         return SUCCESS;
     }
 
-    function modify_email($emails_actifs,$emails_rewrite) {
+    // }}}
+    // {{{ function modify_email()
+
+    function modify_email($emails_actifs,$emails_rewrite)
+    {
         global $globals;
-	foreach($this->emails as $i=>$mail) {
-            if(in_array($mail->email,$emails_actifs)) {
+	foreach ($this->emails as $i=>$mail) {
+            if (in_array($mail->email,$emails_actifs)) {
                 $this->emails[$i]->activate($this->uid);
 	    } else {
                 $this->emails[$i]->deactivate($this->uid);
@@ -203,6 +297,11 @@ class Redirect {
 	    $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
         }
     }
+
+    // }}}
 }
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
