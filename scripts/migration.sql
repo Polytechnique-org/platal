@@ -20,7 +20,8 @@ drop trackers;
 --------------------------------------------------------------------------------
 DROP TABLE x4dat.log
 -- pas sur que je veuille le dropper pr le moment celui la ... a voir
-ALTER TABLE x4dat.auth_user_md5 DROP COLUMN lastnewslogin;
+--*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN lastnewslogin;
+
 -- lastlogin --> logger
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN lastlogin;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN host;
@@ -29,6 +30,11 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN nom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN prenom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse_soundex;
 INSERT INTO logger.actions SET text="connexion_auth_ext",description="connection via l'auth des groupes X";
+-- drop des anciens alias --> aliases
+--*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN loginbis;
+--*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN alias;
+--*-- ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse;
+
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
