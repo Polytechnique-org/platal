@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.4 2004-10-09 09:29:03 x2000habouzit Exp $
+        $Id: index.php,v 1.5 2004-11-02 07:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -26,6 +26,15 @@ new_skinned_page('paiment/index.tpl', AUTH_MDP);
 require_once('profil.func.inc.php');
 setlocale(LC_NUMERIC,'fr_FR');
 
+function comp($s1,$s2) {
+    list($r1,$a1) = split(',', $s1);
+    list($r2,$a2) = split(',', $s2);
+    $n1 = $r1*100+$a1;
+    $n2 = $r2*100+$a2;
+    if($n1>$n2) return 1;
+    if($n1<$n2) return -1;
+    return 0;
+}
 
 // initialisation
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'select';
@@ -70,9 +79,9 @@ $montant = strtr($montant, ".", ",");
 
 // on ajoute les centimes
 if (ereg("^[0-9]+$",$montant))
-$montant .= ",00";
+    $montant .= ",00";
 elseif (ereg("^[0-9]+,[0-9]$",$montant))
-$montant .= "0";
+    $montant .= "0";
 
 // on verifie que le montant est bien formatté
 if (!ereg("^[0-9]+,[0-9]{2}$",$montant)) {
@@ -80,12 +89,12 @@ if (!ereg("^[0-9]+,[0-9]{2}$",$montant)) {
     $montant = $montant_def;
 }
 
-if (intval($montant) < $montant_min) {
+if (comp($montant,$montant_min)<0) {
     $erreur[] = "Montant inférieur au minimum autorisé ($montant_min).";
     $montant = $montant_min;
 }
 
-if (intval($montant) > $montant_max) {
+if (comp($montant,$montant_max)>0) {
     $erreur[] = "Montant supérieur au maximum autorisé ($montant_max).";
     $montant = $montant_max;
 }
