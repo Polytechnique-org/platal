@@ -15,10 +15,6 @@
 
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
-------+-[ marketing ]-----------------------------+----------------
-x	  | admin/utilisateurs_identification.php	  | marketing/
-------+-[ inscription + mdp ]---------------------+----------------
-xx	  | tmpPWD.php								  | 
 ------+-[ listes ]--------------------------------+----------------
  ;	  | listes/creation.php						  | \
  ;	  | listes/gere_listes.php					  |  |
@@ -68,6 +64,7 @@ x	  | epouse.php								  | - non testé (flemme de faire des su ...)
 x	  | parselog.php							  | stats/... (non testé, pas de logs sous la main)
 x	  | recherche.php							  | 
 x	  | step4.php								  | 
+x	  | admin/utilisateurs_identification.php	  | marketing/
 xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
@@ -173,6 +170,7 @@ xx	  | secu.php								  | docs/secu.php
 xx	  | sendmail.php							  | -
 xx	  | services.php							  | docs/services.php
 xx	  | skins.php								  | -
+xx	  | tmpPWD.php								  | 
 xx	  | trezo/gere_operations.php				  | -
 xx	  | trezo/index.php							  | -
 xx	  | trombino.php							  | 
