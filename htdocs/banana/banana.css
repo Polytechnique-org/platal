@@ -23,6 +23,8 @@ table.bicol td.bouton {
 *             FORUMS                       *
 *******************************************/
 
+.new { font-weight: bold; }
+
 div.bananashortcuts {
     text-align: left;
     padding-bottom: 1em;
