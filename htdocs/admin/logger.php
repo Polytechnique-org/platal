@@ -4,7 +4,7 @@ new_admin_page('logger-view.tpl');
 require('diogenes.logger-view.inc.php');
 
 $logview = new DiogenesLoggerView;
-$logview->run($page,'logger-view.tpl',false);
+$logview->run($page);
 
 $page->run();
 ?>

@@ -13,7 +13,7 @@ class XOrgAdminTableEditor extends DiogenesTableEditor {
     
     function run() {
         global $page;
-        parent::run($page, 'table-editor.tpl', false);
+        parent::run($page);
         $page->run();
     }
 }

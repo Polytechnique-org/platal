@@ -9,7 +9,6 @@ class XorgSession extends DiogenesCoreSession {
     if(empty($_SESSION['username']))
         try_cookie();
     set_skin();
-
   }
 
   /** Try to do an authentication.
