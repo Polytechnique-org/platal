@@ -31,7 +31,7 @@
     {/if}
     {perms level='admin'}
     <a href="{rel}/marketing/private.php?uid={$c.user_id}">{*
-      *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
+      *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
     <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}

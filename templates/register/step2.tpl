@@ -45,7 +45,7 @@
         6 chiffres terminant par le numéro d'entrée (ex: 960532 ou 101532)<br />
         Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
         Pour les élèves étrangers voie 2, il est du type :<br />
-        Promotion: 1995, Matricule: 960XXX - Promotion: 2001, Matricule 102XXX.
+        Promotion: 1996, Matricule: 970XXX - Promotion: 2001, Matricule 102XXX.
       </td>
     </tr>
     {/if}

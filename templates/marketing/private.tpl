@@ -21,6 +21,11 @@
 
 <h1>Marketing de {$prenom} {$nom}</h1>
 
+<h2>Matricules</h2>
+Matricule &Eacute;cole (à rentrer lors de l'inscription) : <strong>{$matricule_X}</strong>
+<br />
+Matricule polytechnique.org : {$matricule}
+
 {if $pending}
 
 <h2>Inscription en cours</h2>

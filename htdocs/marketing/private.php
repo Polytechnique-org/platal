@@ -23,12 +23,16 @@ require_once('xorg.inc.php');
 new_admin_page('marketing/private.tpl');
 
 $uid = Env::get('uid');
-$res = $globals->xdb->query("SELECT nom, prenom, promo FROM auth_user_md5 WHERE user_id={?} AND perms='pending'", $uid);
+$res = $globals->xdb->query("SELECT nom, prenom, promo, matricule FROM auth_user_md5 WHERE user_id={?} AND perms='pending'", $uid);
 
-if (list($nom, $prenom, $promo) = $res->fetchOneRow()) {
+if (list($nom, $prenom, $promo, $matricule) = $res->fetchOneRow()) {
+    require_once('register.inc.php');
+    $matricule_X = get_X_mat($matricule);
     $page->gassign('nom');
     $page->gassign('prenom');
     $page->gassign('promo');
+    $page->gassign('matricule');
+    $page->assign('matricule_X',$matricule_X);
 } else {
     $page->kill('uid invalide');
 }
