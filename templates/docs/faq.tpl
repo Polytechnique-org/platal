@@ -17,22 +17,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: faq.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: faq.tpl,v 1.10 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Foire aux questions
-</h1>
+<h1>Foire aux questions</h1>
 <p>
 Cette rubrique est sans doute incomplète. N'hésite pas à nous demander
 de la compléter sur un sujet en rapport avec le site si tu estimes
 que des informations manquent.
 </p>
 <hr />
-<div class="ssrubrique">
-  Questions générales
-</div>
+<h2>Questions générales</h2>
 <ul>
   <li> 
   <a href="#pop">Comment récupérer mon courrier sur polytechnique.org ?</a>
@@ -48,9 +44,7 @@ que des informations manquent.
   <a href="#carva">Quelle est l'origine du nom de domaine carva.org ?</a>
   </li>
 </ul>
-<div class="ssrubrique">
-  Remplissage des champs
-</div>
+<h2>Remplissage des champs</h2>
 <ul>
   <li> 
   <a href="#mails1">Quelle est la différence entre les mails promo, emploi, 
@@ -66,9 +60,7 @@ que des informations manquent.
   <a href="#cv">Faut-il remplir le CV et comment ?</a>
   </li>
 </ul>
-<div class="ssrubrique">
-  Problèmes de connexion
-</div>
+<h2>Problèmes de connexion</h2>
 <ul>
   <li> 
   <a href="#config">Quels sont les paramètres et la configuration nécessaires 
@@ -81,9 +73,7 @@ que des informations manquent.
   <a href="#acces">Je n'arrive pas à me connecter ! Que faut-il essayer ?</a>
   </li>
 </ul>
-<div class="ssrubrique">
-  Utilisation post-connexion
-</div>
+<h2>Utilisation post-connexion</h2>
 <ul>
   <li>
   <a href="#ethique">Quelle est l'éthique que vous privilégiez pour les mails 
@@ -104,9 +94,7 @@ que des informations manquent.
 </ul>
 <br /><br />
 <hr />
-<div class="ssrubrique">
-  Questions générales
-</div>
+<h2>Questions générales</h2>
 <a id="pop"></a>
 <div class="sstitre">
   Comment récupérer mon courrier sur polytechnique.org ?
@@ -186,9 +174,7 @@ que des informations manquent.
   </p>
 </div>
 <hr />
-<div class="ssrubrique">
-  Remplissage des champs
-</div>
+<h2>Remplissage des champs</h2>
 <a id="mails1"></a> 
 <div class="sstitre">
   Quelle est la différence entre les mails promo, emploi, et les autres mails collectifs ?
@@ -328,9 +314,7 @@ que des informations manquent.
 </div>
 <hr />
 <a id="connect"></a>
-<div class="ssrubrique">
-  Problèmes de connexion
-</div>
+<h2>Problèmes de connexion</h2>
 <a id="config"></a>
 <div class="sstitre">
   Quels sont les paramètres et la configuration nécessaires pour se connecter 
@@ -399,9 +383,7 @@ que des informations manquent.
   </p>
 </div>
 <hr />
-<div class="ssrubrique">
-  Utilisation post-connexion
-</div>
+<h2>Utilisation post-connexion</h2>
 <a id="ethique"></a>
 <div class="sstitre">
   Quelle est l'éthique que vous privilégiez pour les mails collectifs ?

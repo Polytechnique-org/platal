@@ -17,20 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_gratuits.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_gratuits.tpl,v 1.10 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Pourquoi et comment choisir un e-mail gratuit
-</h1>
+<h1>Pourquoi et comment choisir un e-mail gratuit</h1>
 
 
 <ul>
   <li class="spaced">
-  <div class="ssrubrique">
-    A quoi sert un e-mail gratuit ?
-  </div>
+  <h2>A quoi sert un e-mail gratuit ?</h2>
   <ul>
     <li>Accessibilité depuis tout lieu relié à Internet</li>
     <li>Confidentialité</li>
@@ -78,9 +74,7 @@
   </p>
   </li>
   <li class="spaced">
-  <div class="ssrubrique">
-    Lequel choisir?
-  </div>
+  <h2>Lequel choisir?</h2>
   <p>
     Nous allons d'abord indiquer les critères retenus pour nos 
     benchmarks, avant de nommer les services que nous recommandons 

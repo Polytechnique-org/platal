@@ -17,20 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_smtp.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_smtp.tpl,v 1.6 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Le serveur SMTP de Polytechnique.org
-</h1>
+<h1>Le serveur SMTP de Polytechnique.org</h1>
 <p>
   Polytechnique.org propose un serveur SMTP ouvert à tous les inscrits 
   <a href="{"acces_smtp.php"|url}">qui en font la demande</a>.
 </p>
-<div class="ssrubrique">
-  A quoi sert le serveur SMTP ?
-</div>
+<h2>A quoi sert le serveur SMTP ?</h2>
 <p>
   Le serveur <abbr title="Simple Mail Transfert Protocol">SMTP</abbr> est la
 	machine sur laquelle se connecte ton logiciel de courrier électronique
@@ -42,9 +38,7 @@
 	aux lettres par envoi de courrier non sollicités).
       Ainsi, quand on utilise un ordinateur portable à la fois au bureau et à la maison, il faut sans cesse changer de serveur SMTP.
 </p>
-<div class="ssrubrique">
-  Pourquoi un tel service ?
-</div>
+<h2>Pourquoi un tel service ?</h2>
 <ul>
   <li>
     <p>
@@ -86,7 +80,7 @@
 	supprimé.
 </p>
 
-<div class="ssrubrique">Configuration</div>
+<h2>Configuration</h2>
 <p>
   Avant toute chose, il faut avoir accepté le certificat SSL de
 	Polytechnique.org.
@@ -98,9 +92,7 @@
   <li><a href="{"docs/doc_nn.php?doc=smtp"|url}">Configuration sous Netscape</a> (page longue à charger)</li>
 </ul>
 
-<div class="ssrubrique">
-  Attention !
-</div>
+<h2>Attention !</h2>
 <p>
   L'utilisation de <strong>certains logiciels antivirus</strong> (comme <em>Norton Antivirus</em>)
   nécessite un élément de configuration supplémentaire : il faut indiquer au

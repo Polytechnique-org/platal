@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.tpl,v 1.6 2004-10-24 14:41:14 x2000habouzit Exp $
+        $Id: volontaire.tpl,v 1.7 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,9 +31,7 @@
   Marketing volontaire
 </h1>
 
-<div class="ssrubrique">
-  Adresses neuves
-</div>
+<h2>Adresses neuves</h2>
 
 <table class="bicol" cellpadding="3" summary="Adresses neuves">
   <tr>
@@ -66,9 +64,7 @@
 <br />
 <br />
 
-<div class="ssrubrique">
-  Adresses déjà utilisées
-</div>
+<h2>Adresses déjà utilisées</h2>
 
 <table class="bicol" cellpadding="3" summary="Adresses déjà utilisées">
   <tr>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_oe.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_oe.tpl,v 1.10 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,9 +31,7 @@
   Utiliser le SMTP sécurisé et le NNTP sécurisé avec Outlook Express
 </h1>
 
-<div class="ssrubrique">
-  Prérequis
-</div>
+<h2>Prérequis</h2>
 
 <p>
   Comme pour toute aide à la configuration, la première étape consiste
@@ -65,9 +63,7 @@
   l'<a href="{"acces_smtp.php"|url}">activation de ton compte SMTP/NNTP</a>.
 </p>
 
-<div class="ssrubrique">
-  SMTP, NNTP, qu'est-ce ?
-</div>
+<h2>SMTP, NNTP, qu'est-ce ?</h2>
 <p>
   Le serveur SMTP est la machine sur laquelle ton client de courrier électronique se
   connecte pour envoyer des mails. En général, ton fournisseur d'accès

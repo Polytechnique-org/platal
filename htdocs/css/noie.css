@@ -79,8 +79,10 @@ h1 {
     padding: 0em 0em 0em 0.5em;
 }
 
-div.ssrubrique {
-    padding-top: 0.5em;
+h2 {
+    padding: 0.5em 0em 0em 0em;
+    margin: 0em;
+    font-size: 100%;
     font-weight: bold;
 }
 
@@ -480,4 +482,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: noie.css,v 1.4 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: noie.css,v 1.5 2004-10-24 14:58:26 x2000habouzit Exp $ */

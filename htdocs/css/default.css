@@ -78,8 +78,10 @@ h1 {
     padding: 0em 0em 0em 0.5em;
 }
 
-div.ssrubrique {
-    padding-top: 0.5em;
+h2 {
+    padding: 0.5em 0em 0em 0em;
+    margin: 0em;
+    font-size: 100%;
     font-weight: bold;
 }
 
@@ -580,4 +582,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.53 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.54 2004-10-24 14:58:26 x2000habouzit Exp $ */

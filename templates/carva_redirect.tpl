@@ -17,24 +17,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.tpl,v 1.12 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: carva_redirect.tpl,v 1.13 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic on="0$message"}
-<h1>
-  Mise à jour de la redirection
-</h1>
+<h1>Mise à jour de la redirection</h1>
 {$message|smarty:nodefaults}
 {/dynamic}
 
-<h1>
-  Redirection de page WEB
-</h1>
+<h1>Redirection de page WEB</h1>
 
-<div class="ssrubrique">
-  Pourquoi une redirection de page WEB ?
-</div>
+<h2>Pourquoi une redirection de page WEB ?</h2>
 <p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
   il est possible de faire pointer
@@ -46,9 +40,7 @@
   <a href="{"docs/doc_carva.php"|url}">cette page</a>
 </p>
 
-<div class="ssrubrique">
-  Conditions d'usage
-</div>
+<h2>Conditions d'usage</h2>
 <p>
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas

@@ -17,57 +17,43 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: charte.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: charte.tpl,v 1.6 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Conditions générales d'utilisation
-</h1>
+<h1>Conditions générales d'utilisation</h1>
 <p>
 L'utilisation des services de Polytechnique.org est soumise à certaines règles qui sont
 rappelées ici :
 </p>
 
-<div class="ssrubrique">
-  1 - MOT DE PASSE :
-</div>
+<h2>1 - MOT DE PASSE :</h2>
 <p>
 Intransmissible et secret, tu es responsable de ton mot de passe et de son secret.
 </p>
-<div class="ssrubrique">
-  2 - TRANSMISSION D'INFORMATIONS :
-</div>
+<h2>2 - TRANSMISSION D'INFORMATIONS :</h2>
 <p>
 Tu ne dois pas reprendre d'informations contenues dans le site, et les transmettre
 à qui que ce soit, s'il y a un risque de nuisance pour un X ou plusieurs enregistré
 sur Polytechnique.org ou pour l'image de l'école.
 </p>
-<div class="ssrubrique">
-  3 - SPAM :
-</div>
+<h2>3 - SPAM :</h2>
 <p>
 Tu n'es pas autorisé à écrire de mail collectif, sauf par l'intermédiaire des
 "mailing-lists". Tu autorises Polytechnique.org à filtrer tous les mails de plus
 de N destinataires polytechniciens où N est fixé par décision des administrateurs
 techniques du site et doit en tout état de cause être supérieur à 20.
 </p>
-<div class="ssrubrique">
-  4 - REROUTAGE :
-</div>
+<h2>4 - REROUTAGE :</h2>
 <p>
 Tu t'assures que tu as le droit d'utiliser ton adresse e-mail pour un reroutage
 (en particulier e-mail professionnel).
 </p>
-<div class="ssrubrique">
-  5 - LEGALITE :
-</div>
+<h2>5 - LEGALITE :</h2>
 <p>
 La liberté d'expression est limitée en France par certaines lois que tu dois respecter.
 </p>
-<div class="ssrubrique">
-  6 - ETHIQUE :
-</div>
+<h2>6 - ETHIQUE :</h2>
 <p>
 Tu t'engages à ne pas utiliser les outils de communication mis en place par le site
 pour des actions de calomnie ou de diffamation ou de publicité. D'autre part, l'e-mail
@@ -75,9 +61,7 @@ fourni par le site est associé à l'image de l'X. Tu dois donc être attentif à ne
 porter atteinte à l'image de l'Ecole polytechnique lorsque tu utilises son nom par
 l'intermédiaire de l'adresse e-mail à vie fournie par le site.
 </p>
-<div class="ssrubrique">
-  7- RUPTURE :
-</div>
+<h2>7- RUPTURE :</h2>
 <p>
 Polytechnique.org se réserve le droit de refuser le service à toute personne ne
 respectant pas l'une des conditions générales, notamment, mais pas seulement, en cas

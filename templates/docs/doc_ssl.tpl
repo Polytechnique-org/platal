@@ -17,12 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_ssl.tpl,v 1.8 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_ssl.tpl,v 1.9 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <h1><a id="ssl"></a>Le certificat SSL de Polytechnique.org</h1>
-<div class="ssrubrique">Pourquoi un certificat ?</div>
+<h2>Pourquoi un certificat ?</h2>
 <p>
   En plus du serveur web sécurisé, Polytechnique.org met à ta diposition
   d'autres services sécurisés comme le <a href="doc_smtp.php">
@@ -31,7 +31,7 @@
   l'authenticité de ces clés, nous les signons avec notre certificat.
 </p>
 
-<div class="ssrubrique">Notre certificat</div>
+<h2>Notre certificat</h2>
 <p>
   A l'installation, ton logiciel de courrier électronique n'a pas connaissance
   du certificat SSL de Polytechnique.org et il faut donc le lui fournir. Si ton
@@ -40,7 +40,7 @@
   Mail avec Mozilla, etc..) il te suffit de cliquer <a href="{"cacert.php/cacert.cer"|url}">ici</a>
   pour télécharger et installer notre certificat.
 </p>
-<div class="ssrubrique">Sous windows</div>
+<h2>Sous windows</h2>
 <p>
 Après avoir cliqué sur <a href="{"cacert.php/cacert.cer"|url}">ce lien</a>, tu vas recevoir notre
   certificat. Ton navigateur devrait te demander si tu veux télécharger ce fichier,

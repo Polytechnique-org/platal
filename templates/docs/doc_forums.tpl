@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_forums.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_forums.tpl,v 1.8 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -35,9 +35,7 @@
     sur la page de usenet france</a>, sont applicables sur les forums de
   Polytechnique.org.
 </p>
-<div class="ssrubrique">
-  Principes moraux et éthiques
-</div>
+<h2>Principes moraux et éthiques</h2>
 <ul>
   <li>
     Le <strong>respect</strong> mutuel doit être la base de toute communication
@@ -63,9 +61,7 @@
     d'annuler les messages en cas de non-respect des règles.
   </li>
 </ul>
-<div class="ssrubrique">
-  Principes techniques
-</div>
+<h2>Principes techniques</h2>
 <p>  
   Afin de permettre à tous de consulter les forums avec un certain
   confort, certaines règles doivent être respectées.

@@ -17,13 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: en-cours.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: en-cours.tpl,v 1.6 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Développements en cours
-</h1>
+<h1>Développements en cours</h1>
 
 <p>
 L'équipe Polytechnique.org t'informe des nouveaux services qu'elle est en
@@ -32,9 +30,7 @@ nous pourrions développer ou installer, nous t'invitons à nous en faire part
 <a href="mailto:info_developpement@polytechnique.org">en nous écrivant</a> !
 </p>
 
-<div class="ssrubrique">
-  Site de l'emploi
-</div>
+<h2>Site de l'emploi</h2>
 
 <p>
 Nous travaillons en collaboration avec l'AX à la mise au point d'un portail
@@ -44,9 +40,7 @@ Ce site devrait voir le jour au printemps.
 </p>
 
 
-<div class="ssrubrique">
-  Rendre notre site personnalisable
-</div>
+<h2>Rendre notre site personnalisable</h2>
 
 <p>
 Actuellement nous sommes en train de faire en sorte que notre site web soit
@@ -56,9 +50,7 @@ Nous prévoyons de publier nos sources sous licence de logiciel libre.
 </p>
 
 
-<div class="ssrubrique">
-  Répondeur automatique pour les courriers électroniques
-</div>
+<h2>Répondeur automatique pour les courriers électroniques</h2>
 
 <p>
 Il s'agit d'un service que tu pourras activer durant tes absences (vacances,
@@ -67,9 +59,7 @@ ton choix aux personnes essayant de te joindre par email.
 </p>
 
 
-<div class="ssrubrique">
-  Intégration des PDA
-</div>
+<h2>Intégration des PDA</h2>
 
 <p>
 Une fois cette fonction finalisée, il te sera possible d'exporter tes contacts
@@ -77,9 +67,7 @@ vers ton agenda électronique.
 </p>
 
 
-<div class="ssrubrique">
-  Site WAP
-</div>
+<h2>Site WAP</h2>
 
 <p>
 Nous sommes en train de créer une version allégée du site qui sera accessible
@@ -89,9 +77,7 @@ de redirection, et enfin les contacts.
 </p>
 
 
-<div class="ssrubrique">
-  Services aux groupes X
-</div>
+<h2>Services aux groupes X</h2>
 
 <p>
 Le site <a href="http://www.polytechnique.net/" onclick="return popup(this)">www.polytechnique.net</a>
@@ -102,9 +88,7 @@ présent site "X.org", alors que les services aux groupes seront concentrés sur
 </p>
 
 
-<div class="ssrubrique">
-  Filtrage des courriers électroniques
-</div>
+<h2>Filtrage des courriers électroniques</h2>
 
 <p>
 Nous développons un logiciel, nommé Philter, qui te permettra bientôt de créer
@@ -114,9 +98,7 @@ sujet du message, etc...
 </p>
 
 
-<div class="ssrubrique">
-  Et toujours...
-</div>
+<h2>Et toujours...</h2>
 
 <p>
 Nous continuons, bien entendu, à travailler à l'amélioration des fonctionnalités

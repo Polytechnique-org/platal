@@ -17,27 +17,25 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nntp.tpl,v 1.8 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_nntp.tpl,v 1.9 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Les forums de Polytechnique.org
-</h1>
+<h1>Les forums de Polytechnique.org</h1>
 <p>
   Polytechnique.org propose un serveur de news (forums de discussion)
   sécurisé <strong>ouvert à tous les inscrits</strong> qui ont
   <strong><a href="{"acces_smtp.php"|url}">activé leur compte SMTP/NNTP</a></strong>.
 </p>
 
-<div class="ssrubrique">A quoi sert le serveur de forums ?</div>
+<h2>A quoi sert le serveur de forums ?</h2>
 <p>
   Le serveur de forums te permet de consulter les forums de discussion de
   Polytechnique.org depuis ton logiciel de courrier électronique (Outlook
   Express, Netscape...).
 </p>
 
-<div class="ssrubrique">Quel logiciel utiliser ?</div>
+<h2>Quel logiciel utiliser ?</h2>
 <p>
   Nous avons testé les logiciels capables de lire les forums de discussion les plus courants.  La colonne <strong>O</strong> indique les logiciels qui fonctionnent, la colonne <strong>N</strong> ceux qui ne fonctionnent pas.
 </p>
@@ -100,7 +98,7 @@
 </table>
 
 <br />
-<div class="ssrubrique">Comment me connecter ?</div>
+<h2>Comment me connecter ?</h2>
 <p>
   Avant de configurer ton lecteur, il faut avoir accepté le certificat SSL de
   Polytechnique.org. <em><a href="{"docs/doc_ssl.php"|url}">Comment faire ?</a></em>.
@@ -123,7 +121,7 @@
   <li><a href="{"docs/doc_nn.php?doc=nntp"|url}">Netscape</a></li>
 </ul>
 
-<div class="ssrubrique"><a id="stunnel">Utiliser stunnel</a></div>
+<h2><a id="stunnel">Utiliser stunnel</a></h2>
 <p>
   Certains logiciels de news sont capables de s'authentifier mais ne reconnaisent pas les connexions sécurisées de type SSL.  Il est possible de faire fonctionner ces logiciels à l'aide de <a href="http://www.stunnel.org/">stunnel</a> qui gère la couche sécurisée.
 </p>
@@ -193,7 +191,7 @@ Ceci met en place un "tunnel" entre ton port local 119 et le port de NNTP sécuri
 Il ne te reste alors plus qu'à indiquer à ton logiciel de forums que le serveur est "localhost" sur le port 119.
 </p>
 
-<div class="ssrubrique">slrn (GNU/linux)</div>
+<h2>slrn (GNU/linux)</h2>
 <p>
   Le cas de slrn est particulier. Il est par défaut compilé sans le support du ssl, et on peut utiliser la méthode indiquée ci-dessus.
 </p>
@@ -204,7 +202,7 @@ Il ne te reste alors plus qu'à indiquer à ton logiciel de forums que le serveur 
   <a href="http://slrn.sourceforge.net/docs/README.SSL">la documentation officielle</a> (en anglais).
 </p>
 
-<div class="ssrubrique">Attention !</div>
+<h2>Attention !</h2>
 <p>
   Les forums de discussion ne sont pas considérés comme un service prioritaire (contrairement aux adresses à vie) et donc pourra être interrompu pour de courtes périodes si nous ne pouvons pas faire autrement.
 </p>

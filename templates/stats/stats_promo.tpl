@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: stats_promo.tpl,v 1.4 2004-10-24 14:41:17 x2000habouzit Exp $
+        $Id: stats_promo.tpl,v 1.5 2004-10-24 14:58:29 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,9 +26,9 @@
   Statistiques de la promotion {$promo}
 </h1>
 
-<div class="ssrubrique">
+<h2>
   Nombre d'inscrits de la promotion {$promo}
-</div>
+</h2>
 
 <div class="center">
   <img src="{"stats/graph_promo.php?promo=$promo"|url}" alt=" [ INSCRITS ] " />

@@ -17,16 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: antispam.tpl,v 1.10 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Ton filtre anti-spam
-</h1>
-<div class="ssrubrique">
-  Qu'est-ce qu'un spam ? Comment m'en débarrasser ?
-</div>
+<h1>Ton filtre anti-spam</h1>
+
+<h2>Qu'est-ce qu'un spam ? Comment m'en débarrasser ?</h2>
 <p>
 Un spam est un courrier électronique <strong>non sollicité</strong>. Ce peut-être un
 message de publicité, une proposition commerciale, etc... qui t'est envoyé
@@ -80,9 +77,7 @@ Si après quelques temps d'utilisation de l'option (2), tu en es satisfait,
 tu peux envisager d'opter pour l'option (3).
 </p>
 
-<div class="ssrubrique">
-  Que faire si jamais je me rends compte que le filtre s'est trompé ?
-</div>
+<h2>Que faire si jamais je me rends compte que le filtre s'est trompé ?</h2>
 <p>
 Pour que le logiciel fonctionne bien, il est préférable de lui indiquer,
 lorsqu'il s'est trompé, qu'il a fait une erreur ! Il est plutôt intelligent,
@@ -101,9 +96,7 @@ tous nos camarades bénéficieront d'un filtre anti-spam de meilleure qualité.
 </p>
 <h3 style="text-decoration: underline">Plus tu nous enverras tes spams, moins tu en recevras !!!</h3>
 
-<div class="ssrubrique">
-  Et techniquement, comment ça marche ?
-</div>
+<h2>Et techniquement, comment ça marche ?</h2>
 <p>
 Le filtre anti-spam tente de repérer les spams en fonction des mots
 qu'il contiennent, il extrait donc les mots d'un message et les comparer

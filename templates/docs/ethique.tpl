@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ethique.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: ethique.tpl,v 1.8 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -40,9 +40,7 @@ Le site te permet de réaliser des recherches sur tous les camarades <strong>insc
 ces recherches portant non seulement sur leur nom ou leur prénom, mais aussi sur des critères de binet, de lieu de
 résidence ou même de section sportive à l'X.
 </p>
-<div class="ssrubrique">
-  Profil, et photo
-</div>
+<h2>Profil, et photo</h2>
 <p>
 Tu as accès à une page te permettant de modifier ton <strong>profil</strong>. La mise à jour de
 ces informations t'es confiée : plus tu les tiens complètes et à jour, plus le site est d'intérêt.
@@ -57,9 +55,7 @@ photo est réalisée sous quelques heures en journée).
 <h1>
   Services liés au mail
 </h1>
-<div class="ssrubrique">
-  Redirection à vie
-</div>
+<h2>Redirection à vie</h2>
 <p>
 Une adresse prenom.nom&#64;polytechnique.org (ou &#64;m4x.org) t'es fournie à vie par Polytechnique.org.
 Sauf en cas d'homonyme, auquel cas, l'adresse sera modifiée en ajoutant ta
@@ -78,18 +74,14 @@ Pour les personnes ayant des patronymes particulièrement longs, il est possible 
 alias prenom.nom_usuel à la manière des femmes mariées. Il suffit de nous en faire la demande en écrivant à <?php echo mailto('support@polytechnique.org') ?>.
 Pour les autres, préférer plutôt l'utilisation d'un alias melix.
 </p>
-<div class="ssrubrique">
-  Alias melix
-</div>
+<h2>Alias melix</h2>
 <p>
 Les alias melix permettent de créer une nouvelle adresse plus courte, et pourquoi pas fantaisiste. Ce sont
 des adresses qui utilisent tes redirections d'adresses en polytechnique.org et m4x.org. Il est
 possible d'en avoir une par personne. Chaque demande d'alias melix doit être validé par un
 administrateur.
 </p>
-<div class="ssrubrique">
-  Protection antivirale et antispam
-</div>
+<h2>Protection antivirale et antispam</h2>
 <p>
 Un logiciel antivirus est installé sur Polytechnique.org. Il vise à te
 protéger des virus informatiques, qui ont souvent des effets destructeurs.
@@ -119,9 +111,7 @@ La charte d'utilisation des forums est <a href="{"docs/doc_forums.php"|url}">acc
 <h1>
   Qualité de service
 </h1>
-<div class="ssrubrique">
-  Temps de réponse
-</div>
+<h2>Temps de réponse</h2>
 <p>
 Nous cherchons dans la mesure du possible à répondre le plus rapidement à toutes les questions
 des utilisateurs de Polytechnique.org. En temps normal, nous répondons aux couriers qui nous sont adressés
@@ -133,9 +123,7 @@ Quelques services sont soumis à la modération des administrateurs (changement de
 mélix, femmes mariées, demande de Mailing list, etc ...). Nous essayons dans la mesure du
 possible de valider ces demandes dans les heures qui suivent en journée.
 </p>
-<div class="ssrubrique">
-  &Eacute;thique
-</div>
+<h2>&Eacute;thique</h2>
 <p>
 L'association Polytechnique.org est très attentive à maintenir un <strong>engagement
   éthique de très haut niveau</strong>.

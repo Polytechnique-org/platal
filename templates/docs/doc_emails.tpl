@@ -17,16 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_emails.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_emails.tpl,v 1.8 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Mes Redirections d'adresses emails
-</h1>
-<div class="ssrubrique">
-    En quoi ça consiste, comment ça marche ?
-</div>
+<h1>Mes Redirections d'adresses emails</h1>
+<h2>En quoi ça consiste, comment ça marche ?</h2>
 <p>
     Polytechnique.org te fournit un service de redirection de tes mails à vie. Toute ta vie, tu auras
     l'adresse <strong>{dyn s=$smarty.session.forlife}@polytechnique.org</strong>
@@ -50,9 +46,9 @@
 
 <br />
 
-<div class="ssrubrique">
-    <a href="{"docs/from.php"|url}">Utiliser mon adresse @polytechnique.org dans FROM:</a> (150 Ko)
-</div>
+<h2>
+  <a href="{"docs/from.php"|url}">Utiliser mon adresse @polytechnique.org dans FROM:</a> (150 Ko)
+</h2>
 <p>
     Ce lien t'explique comment configurer facilement plusieurs comptes e-mail dans Outlook Express.
     Quel intérêt? Tu peux écrire des e-mails en choisissant l'identité de toi qui envoie le mail. Tu
@@ -66,9 +62,7 @@
 </p>
 <br />
 
-<div class="ssrubrique">
-    Se protéger du courrier non solicité (SPAM)
-</div>
+<h2>Se protéger du courrier non solicité (SPAM)</h2>
 <p>
     Beaucoup d'entre vous se plaignent de recevoir du courrier non solicité, communément appelé
     SPAM. Très souvent, celà vient d'un manque de prudence. En effet, il faut bien faire attention
@@ -91,9 +85,7 @@
 </ul>
 <br />
 
-<div class="ssrubrique">
-    Une infinité d'alias e-mails en polytechnique.org et m4x.org
-</div>
+<h2>Une infinité d'alias e-mails en polytechnique.org et m4x.org</h2>
 <p>
     Lorsque tu écris à <strong>destinataire+truc@polytechnique.org</strong> ou
     <strong>destinataire_truc@polytechnique.org</strong> tout ce qui se trouve derrière le + ou le _

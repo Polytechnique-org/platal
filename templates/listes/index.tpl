@@ -17,16 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.15 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: index.tpl,v 1.16 2004-10-24 14:58:28 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
   Listes de diffusion de Polytechnique.org
 </h1>
 
-<div class='ssrubrique'>
-  L'inscription à une liste de diffusion
-</div>
+<h2>L'inscription à une liste de diffusion</h2>
 
 <p>
 Pour t'inscrire à une liste il suffit de cliquer sur l'icone
@@ -45,9 +43,7 @@ Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
 <img src="{"images/retirer.gif"|url}" alt="[ désinscription ]" />.
 </p>
 
-<div class='ssrubrique'>
-  La diffusion sur une liste de diffusion 
-</div>
+<h2>La diffusion sur une liste de diffusion</h2>
 <p>
 La diffusion a trois niveaux de modération.  La diffusion peut être :
 </p>
@@ -65,9 +61,7 @@ NB : les gestionnaires d'une liste sont aussi ses modérateurs.<br />
 les listes avec une asterisque sont les listes dont tu es le gestionnaire.
 </p>
 
-<div class='ssrubrique'>
-  Demander la création d'une liste de diffusion
-</div>
+<h2>Demander la création d'une liste de diffusion</h2>
 
 <p>
 Nos listes ont pour but de réunir des X autour de thèmes ou centres d'intérêt communs.  C'est un

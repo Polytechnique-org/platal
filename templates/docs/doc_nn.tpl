@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nn.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_nn.tpl,v 1.10 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -29,9 +29,7 @@
 <h1>
   Utiliser le SMTP sécurisé et le NNTP sécurisé avec Netscape (ou Mozilla)
 </h1>
-<div class="ssrubrique">
-    Prérequis
-</div>
+<h2>Prérequis</h2>
 <p>
     Cette page est valable pour Netscape Communicator 4.x. Les copies d'écran
 		ont été réalisées avec la version 4.7 sous Windows, mais restent valables
@@ -51,9 +49,7 @@
     et <strong>le mot de passe</strong> celui que tu as indiqué lors de
     l'<a href="{"acces_smtp.php"|url}">activation de ton compte SMTP/NNTP</a>.
 </p>
-<div class="ssrubrique">
-    SMTP, NNTP, qu'est-ce ?
-</div>
+<h2>SMTP, NNTP, qu'est-ce ?</h2>
 <p>
     Le SMTP est la machine sur laquelle ton client de courrier électronique se connecte pour envoyer
     des mails. En général, ton fournisseur d'accès internet t'en propose un. Mais il arrive souvent

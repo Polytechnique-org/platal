@@ -17,17 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_carva.tpl,v 1.10 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_carva.tpl,v 1.11 2004-10-24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<h1>
-  Redirection de page WEB
-</h1>
+<h1>Redirection de page WEB</h1>
 
-<div class="ssrubrique">
-  Pourquoi une redirection de page WEB ?
-</div>
+<h2>Pourquoi une redirection de page WEB ?</h2>
 
 <p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>, 
@@ -45,9 +41,7 @@
   simple et immuable pour référencer ton site personnel, quelle que soit la solution 
   d'hébergement retenue (free.fr, wanadoo.fr, ifrance.com, etc.).
 </p>
-<div class="ssrubrique">
-  Pourquoi le nom de domaine carva.org ?
-</div>
+<h2>Pourquoi le nom de domaine carva.org ?</h2>
 <p>
   Dans le jargon de l'école, un 'carva' signifiait un 'X' lorsque celle-ci était 
   située sur la montagne Ste Geneviève (<a href="javascript:x()" onclick="popWin('{"docs/index.php#carva"|url}','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">
