@@ -18,10 +18,11 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.82 2004-11-27 16:19:28 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.83 2004-11-27 16:48:15 x2000habouzit Exp $
 #***************************************************************************
 
-import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal, re
+import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil
+import MySQLdb.converters
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -159,6 +160,15 @@ def to_forlife(email):
             return (None,None)
     return (email,mbox)
 
+##
+# see /usr/lib/mailman/bin/rmlist
+##
+def remove_it(listname, filename):
+    if os.path.islink(filename) or os.path.isfile(filename):
+        os.unlink(filename)
+    elif os.path.isdir(filename):
+        shutil.rmtree(filename)
+    
 #-------------------------------------------------------------------------------
 # helpers on lists
 #
@@ -792,6 +802,34 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
         return 0
     return 1
 
+def delete_list(userdesc,perms,vhost,listname,del_archives=0):
+    lname = vhost+VHOST_SEP+listname.lower()
+    try:
+        mlist = MailList.MailList(lname,lock=0)
+    except:
+        return 0
+    try:
+        if perms != 'admin': return 0
+        # remove the list
+        REMOVABLES = [ os.path.join('lists', lname), ]
+        # remove stalled locks
+        for filename in os.listdir(mm_cfg.LOCK_DIR):
+            fn_lname = filename.split('.')[0]
+            if fn_lname == lname:
+                REMOVABLES.append(os.path.join(mm_cfg.LOCK_DIR, filename))
+        # remove archives ?
+        if del_archives:
+            REMOVABLES.extend([
+                    os.path.join('archives', 'private', lname),
+                    os.path.join('archives', 'private', lname+'.mbox'),
+                    os.path.join('archives', 'public',  lname),
+                    os.path.join('archives', 'public',  lname+'.mbox')
+                ])
+        map(lambda dir: remove_it(lname, os.path.join(mm_cfg.VAR_PREFIX, dir)), REMOVABLES)
+        return 1
+    except:
+        return 0
+
 def kill(userdesc,perms,vhost,alias,del_from_promo):
     exclude = []
     if not del_from_promo:
@@ -882,9 +920,10 @@ server.register_function(get_admin_options)
 server.register_function(set_admin_options)
 # check.php
 server.register_function(check_options)
-# create
+# create + del
 server.register_function(get_all_lists)
 server.register_function(create_list)
+server.register_function(delete_list)
 # utilisateurs.php
 server.register_function(kill)
 
