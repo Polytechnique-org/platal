@@ -28,7 +28,7 @@ if (Env::has('login') and Env::has('birth'))  {
     }
     $birth   = sprintf('%s-%s-%s', substr(Env::get('birth'),4,4), substr(Env::get('birth'),2,2), substr(Env::get('birth'),0,2));
 
-    $mailorg = strtok(Env::get('login', '@');
+    $mailorg = strtok(Env::get('login'), '@');
 
     // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
     // avec celle fournie ici en espérant que c'est la bonne
@@ -83,7 +83,7 @@ Polytechnique.org
 Adresse de secours : ".Post::get('email') : "")."
 
 
-Mail envoyé à ".Env::get('login'));
+Mail envoyé à ".Env::get('login');
         $mymail->send();
 
         // on cree un objet logger et on log l'evenement

@@ -94,7 +94,7 @@ if (Env::has('modifier') || Env::has('suivant')) {
     if ($web_public) $bits_reply .= 'web_public,';
     if ($libre_public) $bits_reply .= 'libre_public,';
     if (!empty($bits_reply)) $bits_reply = substr($bits_reply, 0, -1);
-    $sql = "UPDATE auth_user_md5 set bits = '$bits_reply' WHERE user_id=".Session::getInt('uid'));
+    $sql = "UPDATE auth_user_md5 set bits = '$bits_reply' WHERE user_id=".Session::getInt('uid');
     $globals->db->query($sql);
     
     if (!Session::has('suid')) {
