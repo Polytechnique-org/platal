@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.8 2004-10-30 09:09:07 x2000bedo Exp $
+        $Id: minifiche_pvt.tpl,v 1.9 2004-11-02 06:41:52 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -51,6 +51,12 @@
     &nbsp;<a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">
       clique ici si tu connais son adresse email !
     </a>
+    {perms level='admin'}
+    &nbsp;
+    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">
+      <img src="images/ax.png" alt='AX' title="fiche AX" />
+    </a>
+    {/perms}
   </div>
   {/if}
   <div class="long"></div>
