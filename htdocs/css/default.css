@@ -329,7 +329,7 @@ div.conteneur_tab {
 #onglet li img { margin-right : 2px; }
 
 /*******************************************************************************
-    7   fiche.php
+    7   fiche.php & fiche_referent.php
         [ cas de la fiche ]
 *******************************************************************************/
 
@@ -356,13 +356,14 @@ em.intitule {
   text-align: center;
   font-weight: bold;
   width: 100%;
+  font-size: medium;
 }
 
 #fiche div.categorie{
   float: left;
   color: purple;
   font-style: italic;
-  font-size: normal;
+  font-size: medium;
 }
 #fiche hr{
   clear: left;
@@ -390,12 +391,8 @@ em.intitule {
   width: 500px;
 }
 
-#fiche_adresses em{
-  color: purple;
-}
-#fiche_adresses span{
-  font-weight: bold;
-}
+#fiche_adresses em{ color: purple;}
+#fiche_adresses span{ font-weight: bold;}
 
 div.adresse{
   float: left;
@@ -420,12 +417,8 @@ div.adresse div.titre{
   margin: 5px;
 }
 
-#fiche_infospro em{
-  color: purple;
-}
-#fiche_infospro span{
-  font-weight: bold;
-}
+#fiche_infospro em{ color: purple;}
+#fiche_infospro span{ font-weight: bold;}
 
 #fiche_infospro div.entreprise{
   width: 100%;
@@ -463,6 +456,22 @@ div.entreprise div.adr_pro{
 }
 
 div.spacer { clear: both; }
+
+/* Spécial fiche_referent.php*/
+
+#fiche_referent{
+  float: left;
+  padding: 10px;
+  width: 500px;
+}
+
+#fiche_referent div.rubrique_referent{
+  width: 100%;
+  padding: 5px;
+}
+
+#fiche_referent em{color: purple;}
+#fiche_referent li{font-weight: bold;}
 
 /*******************************************************************************
     A   SKIN
@@ -571,4 +580,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.39 2004-09-05 20:15:06 x2000coic Exp $ */
+/* $Id: default.css,v 1.40 2004-09-05 21:19:01 x2000coic Exp $ */
