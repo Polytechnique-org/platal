@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.header.tpl,v 1.10 2004-09-05 20:26:25 x2000coic Exp $
+        $Id: common.header.tpl,v 1.11 2004-10-08 19:05:48 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,11 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     <title>
+      {if $xorg_title}
+      {dynamic}
       {$xorg_title|default:"Anciens eleves Polytechnique, annuaire email, Alumni"}
+      {/dynamic}
+      {/if}
     </title>
     <script type="text/javascript" src="{"javascript/misc.js"|url}"></script>
 {if $popup_enable}
