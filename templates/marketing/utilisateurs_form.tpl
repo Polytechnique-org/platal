@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_form.tpl,v 1.5 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: utilisateurs_form.tpl,v 1.6 2004-09-03 00:28:50 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -69,7 +69,7 @@ calcul&eacute; &agrave; partir de ces données.
       </td>
       <td>
         <input type="text" size="40" maxlength="60" name="from"
-        value="{$smarty.request.from|default:"`$smarty.session.username`@polytechnique.org"}" />
+        value="{$smarty.request.from|default:"`$smarty.session.forlife`@polytechnique.org"}" />
       </td>
     </tr>
     <tr>
