@@ -76,7 +76,7 @@ if (Env::has('Chercher')) {
 
     $clause_from = ' FROM  mentor        AS m
                 LEFT JOIN  auth_user_md5 AS a ON(m.uid = a.user_id)
-               INNER JOIN  aliases       AS l ON (a.user_id=l.id AND FIND_IN_SET(\'bestalias\',l.flags)
+               INNER JOIN  aliases       AS l ON (a.user_id=l.id AND FIND_IN_SET(\'bestalias\',l.flags))
                 LEFT JOIN  mentor_pays   AS mp ON(m.uid = mp.uid)
                 LEFT JOIN  mentor_secteurs AS ms ON(m.uid = ms.uid)';
 
@@ -138,7 +138,6 @@ if (Env::has('Chercher')) {
             $nb_pages = (int) ($nb_resultats/$nb_max_resultats_par_page) + 1;
             $page->assign('nb_pages_total', $nb_pages);
             $page->assign('page_courante', $page_courante);
-            mysql_free_result($res);
         }
     }
 }
