@@ -35,7 +35,7 @@
         {if $address.adr3}<strong>{$address.adr3}</strong><br />{/if}
         {if $address.ville}<strong>{$address.cp} {$address.ville}</strong><br />{/if}
         {if $address.pays}
-        <strong>{$address.pays}{if $address.region} ({$address.region}){/if}</strong>
+        <strong>{$address.pays}{if $address.region && $address.pays != 'France'} ({$address.region}){/if}</strong>
         {/if}
         
         {if $address.tel}
