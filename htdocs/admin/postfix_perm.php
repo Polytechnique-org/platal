@@ -15,14 +15,14 @@ if(isset($_REQUEST['nomligne'])) {
 }
 
 $permis = Array();
-$fd = fopen ("/etc/postfix/spampermis", "r");
+$fd = @fopen ("/etc/postfix/spampermis", "r");
 while ($fd && !feof ($fd)) {
     $buffer = fgets($fd, 4096);
     if ($buffer[0]!='#' && (strlen($buffer)>1)) { # FIXME $string[i] is deprecated
         $permis[] = $buffer;
     }
 }
-fclose($fd);
+@fclose($fd);
 
 $page->assign_by_ref('list',$blacklist);
 $page->assign('title','Permissions de polytechnique.org');

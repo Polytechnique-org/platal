@@ -15,14 +15,14 @@ if(isset($_REQUEST['nomligne'])) {
 }
 
 $blacklist = Array();
-$fd = fopen ("/etc/postfix/spamaccess", "r");
+$fd = @fopen ("/etc/postfix/spamaccess", "r");
 while ($fd && !feof ($fd)) {
     $buffer = fgets($fd, 4096);
     if ($buffer[0]!='#' && (strlen($buffer)>1)) { # FIXME $string[i] is deprecated
         $blacklist[] = $buffer;
     }
 }
-fclose($fd);
+@fclose($fd);
 
 $page->assign_by_ref('list',$blacklist);
 $page->assign('title','Bannis de polytechnique.org');

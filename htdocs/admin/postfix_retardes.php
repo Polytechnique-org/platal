@@ -8,7 +8,7 @@ if (isset($_REQUEST["del"]) && !empty($_REQUEST["del"])) {
 }
 	 
 $retard = Array();
-$fd = fopen ("/etc/postfix/spamdefer", "r");
+$fd = @fopen ("/etc/postfix/spamdefer", "r");
 
 while ($fd && !feof ($fd)) {
     $buffer = fgets($fd, 4096);
@@ -16,7 +16,7 @@ while ($fd && !feof ($fd)) {
         $retard[] = $buffer;
     }
 }
-fclose($fd);
+@fclose($fd);
 
 $page->assign_by_ref('list',$blacklist);
 $page->assign('title','Mails retardés de polytechnique.org');
