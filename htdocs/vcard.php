@@ -55,7 +55,7 @@ $page->register_modifier('qp_enc', 'quoted_printable_encode');
 $page->register_function('format_adr', 'format_adr');
 
 $myquery = 
-    "SELECT prenom, nom, epouse, username, mobile, web, libre, promo, alias, user_id
+    "SELECT prenom, nom, epouse, username, mobile, web, libre, promo, alias, user_id, date
     FROM auth_user_md5 AS a
     WHERE username='{$_REQUEST['x']}'";
     $result=mysql_query($myquery);

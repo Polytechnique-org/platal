@@ -1,4 +1,4 @@
-{* $Id: vcard.tpl,v 1.1 2004-01-27 13:41:41 x2000habouzit Exp $ *}
+{* $Id: vcard.tpl,v 1.2 2004-02-13 17:01:23 x2000habouzit Exp $ *}
 BEGIN:VCARD
 VERSION:3.0
 {if $vcard.epouse}
@@ -46,7 +46,7 @@ URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}
 {/if}
 NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.libre`"|qp_enc}
 SORT-STRING;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc}
-REV:{$smarty.now|date_format:"%Y-%m-%dT%TZ"}
+REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
 END:VCARD
 
 {* vim:set et sw=2 sts=2 sws=2: *}
