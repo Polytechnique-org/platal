@@ -37,7 +37,7 @@ class XorgPage extends DiogenesCorePage {
   function make_id() {
       $auth = (empty($_SESSION['auth']) ? 0 : $_SESSION['auth']);
       $perms = (empty($_SESSION['perms']) ? 0 : $_SESSION['perms']);
-      return $this->_tpl."|$auth|$perms";
+      return $this->_tpl."-$auth-$perms";
   }
 
   function doAuth() { }
