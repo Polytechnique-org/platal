@@ -1,4 +1,4 @@
-{***************************************************************************
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -16,8 +16,24 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************}
+ ***************************************************************************/
 
-<link rel="stylesheet" type="text/css" href="{"css/nl.css"|url}" media="screen,print" />
-
-{* vim:set et sw=2 sts=2 sws=2: *}
+function EnCryptedResponse() {
+    pw1 = document.forms.changepass.nouveau.value;
+    pw2 = document.forms.changepass.nouveau2.value;
+    if (pw1 != pw2) {
+        alert ("\nErreur : les deux champs ne sont pas identiques !")
+            return false;
+        exit;
+    }
+    if (pw1.length < 6) {
+        alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !")
+            return false;
+        exit;
+    }
+    str = MD5(document.forms.changepass.nouveau.value);
+    document.forms.changepass2.response2.value = str;
+    alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    document.forms.changepass2.submit();
+    return true;
+}

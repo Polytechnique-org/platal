@@ -22,12 +22,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    {include file=skin/common.header.tpl}
     <link rel="stylesheet" type="text/css" href="{"css/default.css"|url}" media="screen" />
     <link rel="stylesheet" type="text/css" href="{"css/oldtimes.css"|url}" media="screen" />
-    {if $xorg_head}
-    {include file=$xorg_head}
-    {/if}
+    {include file=skin/common.header.tpl}
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body onload='pa_onload()'>
@@ -37,8 +34,8 @@
     <table id="suid" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-                    {$smarty.session.suid} ({$smarty.session.forlife})
-                    [<a href="{"exit.php"|url}">exit</a>]
+          {$smarty.session.suid} ({$smarty.session.forlife})
+          [<a href="{"exit.php"|url}">exit</a>]
         </td>
       </tr>
     </table>

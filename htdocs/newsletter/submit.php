@@ -20,7 +20,8 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE, 'newsletter/head.tpl');
+new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE);
+$page->addCssLink('css/nl.css');
 require_once("newsletter.inc.php");
 
 if (Post::has('see')) {

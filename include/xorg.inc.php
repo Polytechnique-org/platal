@@ -73,7 +73,7 @@ if (ini_get("magic_quotes_gpc")) {
 // }}}
 // {{{ function _new_page()
 
-function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)
+function _new_page($type, $tpl_name, $min_auth, $admin=false)
 {
     global $page,$globals;
     require_once("xorg/page.inc.php");
@@ -92,25 +92,24 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)
             $page = new XorgAuth($tpl_name, $type);
     }
 
-    $page->assign('xorg_head', $tpl_head);
     $page->assign('xorg_tpl', $tpl_name);
 }
 
 // }}}
 // {{{ function new_skinned_page()
 
-function new_skinned_page($tpl_name, $min_auth, $tpl_head="")
+function new_skinned_page($tpl_name, $min_auth)
 {
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
+    _new_page(SKINNED, $tpl_name, $min_auth);
 }
 
 // }}}
 // {{{ function new_simple_page()
 
-function new_simple_page($tpl_name, $min_auth, $tpl_head="")
+function new_simple_page($tpl_name, $min_auth)
 {
     global $page,$globals;
-    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
+    _new_page(SKINNED, $tpl_name, $min_auth);
     $page->assign('simple', true);
 }
 
@@ -125,9 +124,9 @@ function new_nonhtml_page($tpl_name, $min_auth)
 // }}}
 // {{{ function new_admin_page()
 
-function new_admin_page($tpl_name, $tpl_head="")
+function new_admin_page($tpl_name)
 {
-    _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, true);
+    _new_page(SKINNED, $tpl_name, AUTH_MDP, true);
 }
 
 // }}}

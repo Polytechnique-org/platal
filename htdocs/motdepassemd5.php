@@ -37,6 +37,8 @@ if (Env::has('response2'))  {
     $page->run();
 }
 
-new_skinned_page('motdepassemd5.tpl', AUTH_MDP, 'motdepassemd5.head.tpl');
+new_skinned_page('motdepassemd5.tpl', AUTH_MDP);
+$page->addJsLink('javascript/md5.js');
+$page->addJsLink('javascript/motdepassemd5.js');
 $page->run();
 ?>

@@ -35,13 +35,13 @@
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
-    <title>
-      {if $xorg_title}
-            {$xorg_title}
-            {else}
-      Anciens eleves Polytechnique, annuaire email, Alumni
-      {/if}
-    </title>
-    <script type="text/javascript" src="{"javascript/xorg.js"|url}"></script>
+    {foreach from=$xorg_css item=css}
+    <link rel="stylesheet" type="text/css" href="{rel}/{$css}" />
+    {/foreach}
+    {foreach from=$xorg_js item=js}
+    <script type="text/javascript" src="{rel}/{$js}"></script>
+    {/foreach}
+
+    <title>{$xorg_title|default:"Anciens eleves Polytechnique, annuaire email, Alumni"}</title>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -72,6 +72,7 @@ class XorgPage extends DiogenesCorePage
 
         $this->DiogenesCorePage();
         $this->register_prefilter('at_to_globals');
+        $this->addJsLink('javascript/xorg.js');
 
         $this->doAuth();
     }
@@ -98,12 +99,12 @@ class XorgPage extends DiogenesCorePage
     function run()
     {
         global $globals, $TIME_BEGIN;
-        $this->assign_by_ref("xorg_error", $this->_errors);
+        $this->assign("xorg_error", $this->_errors);
         
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
         } else {
-            $this->assign_by_ref('menu', $globals->menu->menu());
+            $this->assign('menu', $globals->menu->menu());
             if ($globals->debug) {
                 $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
                 $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
@@ -188,6 +189,22 @@ class XorgPage extends DiogenesCorePage
     function loadModule($modname)
     {
         require_once("$modname.inc.php");
+    }
+
+    // }}}
+    // {{{ function addJsLink
+
+    function addJsLink($path)
+    {
+        $this->append('xorg_js', $path);
+    }
+
+    // }}}
+    // {{{ function addCssLink
+
+    function addCssLink($path)
+    {
+        $this->append('xorg_css', $path);
     }
 
     // }}}

@@ -1,4 +1,4 @@
-{***************************************************************************
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -16,36 +16,22 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************}
+ ***************************************************************************/
 
-{literal}
-<style type="text/css">
-  table.bicol+table.bicol { margin: 1ex; }
-  table.bicol td.right { white-space: nowrap; }
-  table.bicol td.subj { white-space: nowrap; }
-  table.bicol tr:hover td { background: yellow; }
-  table.bicol tr.pair:hover td { background: inherit; }
-  table.bicol tr.impair:hover td { background: inherit; }
-  table.bicol img { margin: 1ex; }
-  td.subj a { overflow: hidden; display: block; }
-  td.subj strong { overflow: hidden; display: block; }
-
-  .quote {
-    font-style: italic;
-    margin: 0em 0.3em;
-    padding-left: 0.3em;
-    color: green;
-    border-left: green solid 2px;
-  }
-  .quote .quote {
-    color: #95b;
-    border-left: #95b solid 2px;
-  }
-  .quote .quote .quote {
-    color: #888;
-    border-left: #888 solid 2px;
-  }
-</style>
-{/literal}
-
-{* vim:set et sw=2 sts=2 sws=2: *}
+div.blocunite {margin: 1em 0em 2em 0em;}
+div.blocunite_tab {margin: 0em 0em 2em 0em;}
+div.erreur {background-color: #FF3300; padding-left=0.5em; margin: 2px;}
+table.bicol td.cold,td.col {padding-right: 0.5em;}
+table.bicol td.colm {}
+table.bicol td.colg,td.col {padding-left: 0.5em;}
+table.bicol td.dcolm, td.dcolg, td.dcold {padding-bottom: 0.5em;}
+table.bicol td.dcolg {padding-left: 0.5em;}
+table.bicol td.dcold {padding-right: 0.5em;}
+table.bicol td.pflags {}
+table.bicol td.flags {padding-top: 0.5em;}
+table.bicol tr.top {vertical-align: top;}
+table.bicol span.titre {font-weight: bold;}
+table.bicol span.comm {font-size: smaller;}
+table.bicol span.nom {}
+table.bicol span.valeur {font-weight: bold;}
+table.bicol span.lien {font-size: smaller;}

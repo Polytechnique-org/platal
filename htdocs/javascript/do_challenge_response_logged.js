@@ -1,4 +1,4 @@
-{***************************************************************************
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -16,8 +16,28 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************}
+ ***************************************************************************/
 
-<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+function readCookie(name)
+{
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++)
+    {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+
+function doChallengeResponse() {
+    str = readCookie('ORGuid') + ":" +
+        MD5(document.forms.login.password.value) + ":" +
+        document.forms.loginsub.challenge.value;
+
+    document.forms.loginsub.response.value = MD5(str);
+    document.forms.login.password.value = "";
+    document.forms.loginsub.submit();
+}

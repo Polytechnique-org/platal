@@ -23,7 +23,8 @@ require_once("xorg.inc.php");
 if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
-new_skinned_page('listes/archives.tpl', AUTH_COOKIE, 'listes/archives.head.tpl');
+new_skinned_page('listes/archives.tpl', AUTH_COOKIE);
+$page->addCssLink('css/lists.archives.css');
 require_once('lists.inc.php');
 
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));

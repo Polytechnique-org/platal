@@ -147,16 +147,15 @@ class XorgSession extends DiogenesCoreSession
      */
     function doLogin(&$page, $new_name=false)
     {
+        $page->addJsLink('javascript/md5.js');
 	if (logged() and !$new_name) {
 	    $page->changeTpl('password_prompt_logged.tpl');
-	    $page->caching = false;
-	    $page->assign("xorg_head", "password_prompt_logged.head.tpl");
+            $page->addJsLink('javascript/do_challenge_response_logged.js');
 	    $page->assign("xorg_tpl", "password_prompt_logged.tpl");
 	    $page->run();
 	} else {
 	    $page->changeTpl('password_prompt.tpl');
-	    $page->caching = false;
-	    $page->assign("xorg_head", "password_prompt.head.tpl");
+            $page->addJsLink('javascript/do_challenge_response.js');
 	    $page->assign("xorg_tpl", "password_prompt.tpl");
 	    $page->run();
 	}

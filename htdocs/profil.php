@@ -20,7 +20,8 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('profil.tpl',AUTH_MDP, 'profil.head.tpl');
+new_skinned_page('profil.tpl',AUTH_MDP);
+$page->addCssLink('css/profil.css');
 
 require_once('tabs.inc.php');
 require_once('profil.func.inc.php');

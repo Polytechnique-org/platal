@@ -299,11 +299,8 @@ templates/cookie_on.tpl
 templates/deconnexion.tpl
 templates/index.tpl
 templates/logger-view.tpl
-templates/motdepassemd5.head.tpl
 templates/motdepassemd5.success.tpl
 templates/motdepassemd5.tpl
-templates/password_prompt.head.tpl
-templates/password_prompt_logged.head.tpl
 templates/password_prompt_logged.tpl
 templates/password_prompt.tpl
 templates/preferences.tpl

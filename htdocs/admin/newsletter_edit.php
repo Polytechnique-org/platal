@@ -20,7 +20,8 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_admin_page('admin/newsletter_edit.tpl', 'newsletter/head.tpl');
+new_admin_page('admin/newsletter_edit.tpl');
+$page->addCssLink('css/nl.css');
 require_once("newsletter.inc.php");
 
 $nid = Get::get('nid', 'last');
