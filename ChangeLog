@@ -5,11 +5,17 @@ New :
 
 	* Mails: use HermesMailer.												-MC
 
+	* Skins:
+		- new skin : openweb.												-MC
+
 Bug/Wish :
 
 	* Bestalias:
 		- #207 : enable for the user the choice of his prefered alias.		-MC
 		- #207 : use only the bestalias and the forlife in vcard and fiche.	-MC
+
+	* Fiche:
+		- #208,222 : new fiche.												-MC
 
 
 Fixes (from 0.9.2 branch) :

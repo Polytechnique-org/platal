@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.34 2004-11-17 12:21:48 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.35 2004-11-17 18:16:26 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -64,7 +64,7 @@ class NewsLetter {
 				      FROM  newsletter_art AS a
 				INNER JOIN  newsletter     AS n USING(id)
 				LEFT  JOIN  newsletter_cat AS c ON(a.cid=c.cid)
-				     WHERE  a.id=$id
+				     WHERE  a.id={$this->_id}
 				  ORDER BY  c.pos,a.pos");
 	while(list($title,$body,$append,$aid,$cid,$pos) = mysql_fetch_row($res)) {
 	    $this->_arts[$cid]["a$aid"] = new NLArticle($title,$body,$append,$aid,$cid,$pos);

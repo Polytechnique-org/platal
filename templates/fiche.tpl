@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.27 2004-11-17 18:11:46 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.28 2004-11-17 18:16:26 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -66,7 +66,7 @@ function chgMainWinLoc( strPage ) {
         <div class="mob">
           {if $mobile}<em class="intitule">Mobile : </em>{$mobile}<br />{/if}
         </div>
-        <div class='spacer'>&nbsp;</div>
+        <div class='spacer'></div>
       </div>
       <div class='formation'>
         {if $iso3166}

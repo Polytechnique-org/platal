@@ -24,34 +24,38 @@
 *******************************************************************************/
 
 body {
-    font-family: "Arial", sans-serif;
-    color: #000000;
-    background: #ffffff;
+    background-color:#369;
+    color: #096;
+    font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+    font-size:small;
+    margin:2em 1%;
+    padding:0;
 }
 
-a:link, a:visited, a:active, a:hover { color: #003399; background: none; }
+a:link, a:visited { color: #f60; background: transparent; }
+a:active, a:hover { color: #369; background: transparent; }
+
 img   { vertical-align: middle; }
 a img { border: 0px; }
 td    { vertical-align: top; }
-li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
-hr    { width: 90%; text-align: center }
+li    { padding: 0em 1em; text-align: justify; }
+hr    { width: 90%; margin: 1em 5%; border: 1px dotted #369; border-bottom: none; }
 
 fieldset {
-    border: 1px #336699 solid;
-    background: #eeeeee;
+    border: 1px dotted #69c;
+    background: #fff;
     color: inherit;
 
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin: 1em 0em;
+    padding: 1em;
 }
 
 legend {
-    border: 1px #336699 solid;
-    background: #f4d09c;
+    border: 1px dotted #69c;
+    background: #d6e1ec;
     color: inherit;
 
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 0em 1em;
 }
 
 .center { text-align: center; }
@@ -65,6 +69,7 @@ legend {
 *******************************************************************************/
 
 p {
+    padding: 0em 1em;
     margin-bottom: 0.5em;
     text-align: justify;
 }
@@ -83,25 +88,22 @@ p.error, span.error, p.erreur, span.erreur {
 }
 
 h1 {
-    color: #555555;
-    background: url('/images/sk_default_titre.gif');
-    background-repeat: no-repeat;
-
-    text-indent: 0.2em;
-    text-align: left;
-    font-size: 120%;
-    font-family: "helvetica", sans-serif;
-    font-weight: bolder;
-
-    margin: 1em 0em 1em 0em;
-    padding: 0em 0em 0em 0.5em;
+    color: #369;
+    font-size: 130%;
+    background: #f5f8fc;
+    margin: 0em;
+    border-bottom: 2px solid #369;
+    padding: 4px;
+    margin: 1em 0em;
 }
 
 h2 {
-    padding: 0.5em 0em 0em 0em;
-    margin: 0em;
+    color: #369;
+    padding: 0px 4px;
+    margin: 0.5em 0em;
     font-size: 100%;
     font-weight: bold;
+    border-bottom: 1px dotted #369;
 }
 
 p.explication, div.explication {
@@ -126,18 +128,18 @@ li.spaced {
 *******************************************************************************/
 
 table.bicol {
-    color: inherit;
-    background: #eeeeee;
-    border: 1px solid #336699;
     border-collapse: collapse;
+    color: inherit;
+    background: #fff;
+    border: 1px solid #a2c2e1;
     width: 98%;
     margin-left: 1%;
 }
 table.tinybicol {
-    color: inherit;
-    background: #eeeeee;
-    border: 1px solid #336699;
     border-collapse: collapse;
+    color: inherit;
+    background: #fff;
+    border: 1px solid #a2c2e1;
     width: 70%;
     margin-left: 15%;
 }
@@ -145,24 +147,25 @@ table.tinybicol {
 table.tinybicol tr.impair, table.bicol tr.impair {}
 table.tinybicol tr.pair, table.bicol tr.pair {
     color: inherit;
-    background: #eeeed0;
+    background: #eee;
 }
 
 table.tinybicol th, table.bicol th {
-    color: #ffffff;
-    background: #336699;
+    color: #369;
+    background: #d6e1ec;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
+    padding: 0px 4px;
 }
 table.tinybicol td, table.bicol td {
     color: #000000;
     background: inherit;
+    padding: 0px 4px;
 }
 
-table.tinybicol td, table.bicol td { padding-left: 4px; padding-right: 4px; }
-
 td.half { width: 50%; padding: 4px; }
+
 td.titre {
     color: #000000;
     background: inherit;
@@ -174,7 +177,7 @@ td.action {
     font-weight: bold;
     vertical-align: middle;
 }
-td.action a { padding: 0px 2px 0px 2px; }
+td.action a { padding: 0px 2px; }
 
 /*******************************************************************************
     4   Tableau de choix de skins
@@ -182,18 +185,18 @@ td.action a { padding: 0px 2px 0px 2px; }
 *******************************************************************************/
 
 #skin {
-    border-bottom: 1px solid #003399;
-    border-top: 1px solid #003399;
+    border-bottom: 1px solid #a2c2e1;
+    border-top: 1px solid #a2c2e1;
     width: 98%;
     margin-left: 1%;
 }
 #skin td {
-    border-bottom: 2px solid #003399;
-    border-top: 1px solid #003499;
+    border-top: 1px solid #a2c2e1;
+    border-bottom: 1px solid #a2c2e1;
     vertical-align: middle;
 }
 #skin td.skigauche {
-    background: #eeeeee;
+    background: #d6e1ec;
     color: inherit;
     vertical-align: middle;
 }
@@ -211,13 +214,14 @@ td.action a { padding: 0px 2px 0px 2px; }
 div.contact-list {
     width: 98%;
     margin-left: 1%;
+    border: 1px dotted #a2c2e1;
 }
 
 div.contact-list div.contact {
     width: 100%;
     text-align: left;
-    border-top: 1px solid #003399;
-    background: #F4D09C;
+    background: #ffecce;
+    border-top: 1px dotted black;
     color: inherit;
 }
 
@@ -226,10 +230,15 @@ div.grayed {
     font-style: italic;
 }
 
+div.grayed div.contact {
+    background: #eee;
+}
+
 div.contact div.nom {
     font-weight: bold;
     width: 35%;
     float: left;
+    padding-left: 2px;
 }
 
 div.contact div.appli {
@@ -244,14 +253,14 @@ div.contact div.bits {
 div.contact div.long {
     width: 100%;
     clear: both;
-    background: white;
+    background: #fff;
     color: inherit;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 1px 0px;
 }
 
+
 div.long table { width: 100%; }
-div.long td.lt { width: 35%; }
+div.long td.lt { width: 35%; padding-left: 4px; }
 div.long td.rt { width: 65%; }
 
 /*******************************************************************************
@@ -283,82 +292,78 @@ table.flags td.rouge {
 }
 
 table.cadre_a_onglet{
-    border-width: 0;
-    padding : 0;
-    margin: 0;
+    border-width: 0px;
+    padding : 0px;
+    margin: 0px;
 }
 
-div.conteneur_tab {
+td.conteneur_tab {
     border-width : 1px 2px 2px 1px;
     border-style : solid;
     border-color : #999;
     padding : 4px 0px 0px 4px;
-    background : #eceade;
+    background : #fff;
 }
 
-#onglet {
-    display : block;
-    margin : 0;
-    padding : 0;
-    /*height : 50px;*/
-}
+#onglet { display : block; margin : 0px; padding : 0px; }
 
 #onglet li {
     display : block;
     float : left;
     padding : 0.5ex;
-    margin : 0 0.3ex -1px 0;
-    background : #D2E0E6  repeat-x 0 100%;
-    border-width : 1px 1px 0px 1px;
-    border-style : solid;
-    border-color : #999;
-    border-bottom-color : #999;
+    margin : 0px 4px -1px 0px;
+    background : #d2e0e6;
     width: auto;
     height: 6ex;
     text-align: center;
+    border: 1px solid #999;
 }
 
-#onglet li:hover { background : #fc3 repeat-x 0 100%; }
+#onglet li:hover { background : #ffecce; }
 
 #onglet li.actif {
-    background : #eceade;
-    border-bottom-color : #eceade;
+    background : #fff;
     font-weight: bold;
+    border-bottom: 1px solid #fff;
 }
 
 #onglet li a {
-    /*font-family : Arial,Helvetica,sans-serif;*/
-    font-size: 80%;
+    font-size: 90%;
     font-weight : normal;
     text-decoration : none;
     color : #000;
 }
-
-#onglet li a:hover { text-decoration: underline; }
-#onglet li img { margin-right : 2px; }
 
 /*******************************************************************************
     7   fiche.php & fiche_referent.php
         [ cas de la fiche ]
 *******************************************************************************/
 
+em.intitule {
+    color: purple;
+    font-size: small;
+}
+
+div#body {
+    color: #000;
+    background: #fff;
+    border: 3px solid #000;
+    
+    width: 800px;
+    margin: 7px;
+}
+
 #fiche {
     width: 760px;
     font-size: 100%;
     vertical-align: top;
 
-    border: 1px solid #369;
+    background: #f5f8fc;
+    border: 1px solid #69c;
+    margin: 20px;
 }
 
 #fiche em { color: purple; }
-
-#fiche h2 {
-    color: #369;
-    padding: 0px 4px;
-    margin: 0.5em 0em;
-    font-weight: bold;
-    border-bottom: 1px dotted #369;
-}
 
 #fiche_identite {
     padding: 5px;
@@ -377,7 +382,7 @@ div.conteneur_tab {
 #fiche_identite div.maj {
     float: left;
     width: 20%;
-    font-size: 75%;
+    font-size: 80%;
     text-align: right;
     clear: right;
 }
@@ -401,12 +406,11 @@ div.conteneur_tab {
 
 #fiche_identite div.formation {
     margin: 0em 1em;
-    clear: both;
 }
 
 div.adresse {
     float: left;
-    width: 46%;
+    width: 48%;
     padding: 0px;
     margin: 0px 1%;
 }
@@ -421,17 +425,18 @@ div.entreprise{
 }
 
 div.spacer { clear: both; }
+
 /* only for fiche_referent.php*/
 
 #fiche_referent{
-  float: left;
-  padding: 10px;
-  width: 500px;
+    float: left;
+    padding: 10px;
+    width: 500px;
 }
 
 #fiche_referent div.rubrique_referent{
-  width: 100%;
-  padding: 5px;
+    width: 100%;
+    padding: 5px;
 }
 
 #fiche_referent em{color: purple;}
@@ -470,48 +475,24 @@ div.spacer { clear: both; }
 #suid td { padding: 2px; }
 #suid a { color: red; }
 
-#body {
-    width: 740px;
+table#body {
+    color: #000;
+    background: #fff;
+    border: 3px solid #000;
+    
+    width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
 
-#body-logo {
-    width: 140px;
-    border-right: 1px solid gray;
-    text-align: center;
-    font-family: "MS Sans Serif", sans-serif;
-    padding-top: 4px;
-    border-bottom: 1px solid gray;
-}
-
-#body-top {
-    border-bottom: 1px solid gray;
-    text-align: center;
-    font-size: 75%;
-    font-weight: bold;
-    padding: 4px;
-    padding-bottom: 16px;
-    font-family: "MS Sans Serif", sans-serif;
-}
-
-#body-top table { width: 100%; padding: 4px; }
-#body-top .date-heure { text-align: left; }
-#body-top .inscrits { text-align: right; }
-
-#body-bottom {
-    border-top: 1px solid gray;
-    text-align: center;
-    padding: 4px;
-    font-size: 75%;
-    font-family: "MS Sans Serif", sans-serif;
-}
+#body-logo   { border: none; text-align: center; }
+#body-top    { border: none; text-align: center;}
+#body-bottom { border: none; text-align: center;}
 
 #body-menu {
+    padding: 2em 0em 2em 2em;
+    border: 0px;
     width: 140px;
-    border-right: 1px solid gray;
-    text-align: center;
-    font-family: "MS Sans Serif", sans-serif;
     font-size: 75%;
     font-weight: bold;
     white-space: nowrap;
@@ -524,25 +505,32 @@ div.spacer { clear: both; }
 }
 
 #body-menu .menu_title {
-    color: gray;
-    background: #eeeeee;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
+    color: #f90;
+    background: #fff;
+    border-top: none;
+    border-bottom: 3px solid #f90;
     padding: 1px;
-    margin-top: 4px;
-    text-align: center;
+    text-transform: uppercase;
+    text-align: left;
 }
 
 #content {
-    width: 600px;
-    padding: 4px 0px 4px 16px;
-    font-size: 95%;
+    width: auto;
+    font-size: 100%;
     vertical-align: top;
+
+    background: #f5f8fc;
+    border: 1px solid #69c;
+    line-height:150%;
+    padding: 0em 1em 1em 1em;
+    margin: 2em;
 }
+
+#content-margin { width: 2em; }
 
 #content input {
     font-size: 95%;
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.63 2004-11-17 18:16:24 x2000habouzit Exp $ */
+/* $Id: openweb.css,v 1.1 2004-11-17 18:16:24 x2000habouzit Exp $ */

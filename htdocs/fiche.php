@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.22 2004-11-17 11:06:46 x2000habouzit Exp $
+        $Id: fiche.php,v 1.23 2004-11-17 18:16:23 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -43,7 +43,7 @@ if (isset($_REQUEST['user']))
 else
     $where_clause = " WHERE u.matricule = '{$_REQUEST['mat']}'";
 
-$reqsql = "SELECT  u.prenom, u.nom, u.epouse, IF(gp.nat='',gp.pays,gp.nat) AS text,
+$reqsql = "SELECT  u.prenom, u.nom, u.epouse, IF(gp.nat='',gp.pays,gp.nat) AS text, gp.a2,
 		   u.user_id, a.alias, a2.alias, u.matricule, u.deces != 0 as dcd,
 		   u.deces, u.date, u.cv, sections.text, u.mobile, u.web,
 		   u.libre, u.promo, c.uid IS NOT NULL, p.x, p.y
@@ -60,7 +60,7 @@ $result = $globals->db->query($reqsql);
 if (mysql_num_rows($result)!=1)
         exit;
 
-if (list($prenom, $nom, $epouse, $nationalite, 
+if (list($prenom, $nom, $epouse, $nationalite, $iso3166,
         $user_id, $forlife, $bestalias, $matricule, $dcd, $deces, 
         $date,
         $cv, $section, 
@@ -76,6 +76,7 @@ $page->assign('forlife', $forlife);
 $page->assign('bestalias', $bestalias);
 $page->assign('epouse', $epouse);
 $page->assign('nationalite', $nationalite);
+$page->assign('iso3166', $iso3166);
 $page->assign('user_id', $user_id);
 $page->assign('matricule', $matricule);
 $page->assign('dcd', $dcd);
@@ -102,13 +103,17 @@ $photo="getphoto.php?x=".$forlife.(SID == '' ? '' : '&amp;'.SID).($new ? '&amp;m
 if(!isset($size_y) and !isset($size_x)) list($size_x, $size_y) = getimagesize("images/none.png");
 if(!isset($size_y) or $size_y < 1) $size_y=1;
 if(!isset($size_x) or $size_x < 1) $size_x=1;
+if($size_x > 240){
+    $size_y = (integer)($size_y*240/$size_x);
+    $size_x = 240;
+}
 if($size_y > 300){
     $size_x = (integer)($size_x*300/$size_y);
     $size_y = 300;
 }
-if($size_x < 180){
-    $size_y = (integer)($size_y*180/$size_x);
-    $size_x = 180;
+if($size_x < 160){
+    $size_y = (integer)($size_y*160/$size_x);
+    $size_x = 160;
 }
 $page->assign('photo_url', $photo);
 $page->assign('size_x', $size_x);
