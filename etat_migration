@@ -17,7 +17,6 @@
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
-;	  | admin/utilisateurs_marketing.php		  | marketing/
 ------+-[ docs ]----------------------------------+----------------
 ;	  | docs/FROM.php							  | docs/from.php
 ------+-[ emails ... ]----------------------------+----------------
@@ -115,6 +114,7 @@ xx	  | admin/postfix_perm.php					  | -
 xx	  | admin/postfix_retardes.php				  | -
 xx	  | admin/relance.php						  | marketing/ 
 xx	  | admin/stats_promo.php					  | stats/stats_promo.php
+xx	  | admin/utilisateurs_marketing.php		  | marketing/
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
 xx	  | antispam.php							  | -
