@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.2 2004-11-13 15:25:00 x2000habouzit Exp $
+        $Id: mescontacts.tpl,v 1.3 2004-11-17 22:03:56 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -30,7 +30,7 @@
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
 <p>
-  Ajouter la personne suivante à ma liste de contacts (prenom.nom) :
+  Ajouter la personne suivante à ma liste de contacts (prenom.nom) :<br />
   <input type="hidden" name="action" value="ajouter" />
   <input type="text" name="user" size="20" maxlength="70" />&nbsp;
   <input type="submit" value="Ajouter" />
