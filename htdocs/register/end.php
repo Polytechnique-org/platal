@@ -24,7 +24,7 @@ new_skinned_page('register/end.tpl', AUTH_PUBLIC);
 require_once('user.func.inc.php');
 
 if (Env::has('hash')) {
-    $res = $globals->xdb->execute(
+    $res = $globals->xdb->query(
             "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2, r.password, r.email, r.relance, r.naissance,
                      u.prenom, u.nom, u.promo
                FROM  register_pending AS r
@@ -32,8 +32,8 @@ if (Env::has('hash')) {
               WHERE  hash={?} AND hash!='INSCRIT'", Env::get('hash'));
 }
 
-if ( !Env::has('ref') ||
-        !list( $uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $nom, $prenom, $promo) = $res->fetchOneRow())
+if ( !Env::has('hash') ||
+        !list($uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $nom, $prenom, $promo) = $res->fetchOneRow())
 {
     $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                  <p>Causes probables :</p>

@@ -77,8 +77,6 @@ function banana_subscribe($forlife, $uid, $promo, $password)
 	}
     }
 
-    echo "$promo, $uid, ";
-    var_export($cible);
     while (list ($key, $val) = each ($cible)) {
         $globals->xdb->execute("INSERT INTO  forums.abos (fid,uid)
                                      SELECT  fid,{?} FROM forums.list WHERE nom={?}", $uid, $val);

@@ -29,9 +29,9 @@ if (Post::has('relancer')) {
     $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
     $nbdix = $res->fetchOneCell();
     $res   = $globals->xdb->iterRow(
-            "SELECT  r.date, u.promo, u.nom, u.prenom, r.user_id, r.email, r.bestalias
+            "SELECT  r.date, u.promo, u.nom, u.prenom, r.uid, r.email, r.bestalias
                FROM  register_pending AS r
-         INNER JOIN  auth_user_md5    AS u ON u.user_id = e.uid");
+         INNER JOIN  auth_user_md5    AS u ON u.user_id = r.uid");
 
     $sent = Array();
 
@@ -53,7 +53,7 @@ if (Post::has('relancer')) {
             $mymail->assign('subj',       $lusername."@polytechnique.org");
 
             $globals->xdb->execute("UPDATE register_pending SET hash={?}, password={?}, relance=NOW() WHERE uid={?}",
-                    $lins_id, $lpass, $uid);
+                    $hash, $pass, $uid);
             $mymail->send();
 
             $sent[] = "$lprenom $lnom ($lpromo) a été relancé !";
