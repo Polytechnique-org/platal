@@ -51,7 +51,7 @@ class PayPal
 	// revienne sur le site
         global $globals;
 
-	$this->urlform = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+	$this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
             ."/paiement/paypal_retour.php?uid="
@@ -60,7 +60,7 @@ class PayPal
 	$this->infos = Array();
 	
 	$this->infos['commercant'] = Array(
-		'business'    => 'caribou+paypalsandbox@m4x.org',
+		'business'    => $globals->money->paypal_compte,
 		'rm' 	      => 2,
 		'return'      => $roboturl,
 		'cn'	      => 'Commentaires',

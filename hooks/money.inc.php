@@ -29,6 +29,8 @@ class MoneyConfig
     var $mpay_def_id   = 0;
     var $mpay_def_meth = 0;
     var $mpay_tprefix  = 'paiement.';
+    var $paypal_site = '';
+    var $paypal_comte = '';
 }
 
 // }}}
