@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.5 2004-09-02 23:57:48 x2000bedo Exp $
+        $Id: utilisateurs_marketing.php,v 1.6 2004-09-03 00:15:49 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -87,7 +87,7 @@ switch ($_REQUEST["submit"]) {
 	$num_users=mysql_result($result,0,"count(*)");
 			
 	// calcul du login
-	$mailorg = make_username($prenom,$nom);
+	$mailorg = make_forlife($prenom,$nom,$promo);
 			
 	$globals->db->query("UPDATE  identification
                                 SET  last_known_email='{$_REQUEST['mail']}'

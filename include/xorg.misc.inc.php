@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.misc.inc.php,v 1.5 2004-09-02 18:37:15 x2000habouzit Exp $
+        $Id: xorg.misc.inc.php,v 1.6 2004-09-03 00:15:51 x2000bedo Exp $
  ***************************************************************************/
 
 /** vérifie si une adresse email (sans @) correspond à un alias (FIXME ou une liste)...
@@ -87,5 +87,21 @@ function soundex_fr($sIn)
     $sIn = preg_replace( '`(.)\1`', '$1', $sIn ); 
     // on ne retient que 4 caractères ou on complète avec des blancs 
     return substr( $sIn . '    ', 0, 4); 
-} 
+}
+
+function make_forlife($prenom,$nom,$promo) {
+  /* on traite le prenom */
+  $prenomUS=replace_accent(trim($prenom));
+  $prenomUS=stripslashes($prenomUS);
+       
+  /* on traite le nom */
+  $nomUS=replace_accent(trim($nom));
+  $nomUS=stripslashes($nomUS);
+              
+  // calcul du login
+  $forlife = strtolower($prenomUS.".".$nomUS.".".$promo);
+  $forlife = str_replace(" ","-",$forlife);
+  $forlife = str_replace("'","",$forlife);
+  return $forlife;
+}
 ?>

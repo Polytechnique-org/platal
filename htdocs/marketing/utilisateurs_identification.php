@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_identification.php,v 1.4 2004-09-02 23:57:48 x2000bedo Exp $
+        $Id: utilisateurs_identification.php,v 1.5 2004-09-03 00:15:49 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -60,7 +60,7 @@ case "Inscrire":
     new_admin_page('marketing/utilisateurs_inscrire.tpl');
     $page->assign('row', $myrow);
 	//calcul du login de l'inscrit
-	$page->assign('mailorg',make_username($myrow['prenom'],$myrow['nom']));
+	$page->assign('mailorg',make_forlife($myrow['prenom'],$myrow['nom'],$myrow['promo']));
     $page->run();
 	break;
 		

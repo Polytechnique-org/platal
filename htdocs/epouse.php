@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.php,v 1.7 2004-09-02 23:06:10 x2000habouzit Exp $
+        $Id: epouse.php,v 1.8 2004-09-03 00:15:46 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -45,8 +45,8 @@ if (!empty($_REQUEST['submit']) && ($epouse != $epouse_old)) {
     } else { // le nom de mariage est distinct du nom à l'X
         // on calcule l'alias pour l'afficher
         $myepouse = new EpouseReq($_SESSION['uid'], $_SESSION['forlife'], $epouse);
-        list($prenom_username,) = explode('.',$_SESSION['forlife']);
-        $alias_old=make_username($prenom_username,$epouse_old);
+        list($prenom_forlife,$nom_forlife,$promo) = explode('.',$_SESSION['forlife']);
+        $alias_old=make_forlife($prenom_forlife,$epouse_old,$promo);
         $myepouse->submit();
 
         $page->assign('epouse_old',$epouse_old);
