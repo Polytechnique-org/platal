@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: preferences.tpl,v 1.11 2004-11-06 13:54:02 x2000habouzit Exp $
+        $Id: preferences.tpl,v 1.12 2004-11-24 08:54:09 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -32,7 +32,7 @@
   <tr class="impair">
     <td class='half'>
       <div class="question">
-        <a href="{"emails.php"|url}">Mes adresses de redirection</a>
+        <a href="{rel}/emails.php">Mes adresses de redirection</a>
       </div>
       <div class="explication">
         Tu peux configurer tes différentes redirections de mails ici.
@@ -40,7 +40,7 @@
     </td>
     <td class='half'>
       <div class="question">
-        <a href="{"alias.php"|url}">Mon alias mail @melix.net/.org</a>
+        <a href="{rel}/alias.php">Mon alias mail @melix.net/.org</a>
       </div>
       <div class="explication">
         Pour choisir un alias @melix.net et @melix.org (en choisir un nouveau annule l'ancien).
@@ -50,7 +50,7 @@
   <tr class="pair">
     <td class='half'>
       <div class="question">
-        <a href="{"carva_redirect.php"|url}">Ma redirection de page WEB</a>
+        <a href="{rel}/carva_redirect.php}">Ma redirection de page WEB</a>
       </div>
       <div class="explication">
         Tu peux configurer tes redirections WEB http://www.carva.org/{dyn s=$smarty.session.bestalias} et http://www.carva.org/{dyn s=$smarty.session.forlife}
@@ -58,7 +58,7 @@
     </td>
     <td class='half'>
       <div class="question">
-        <a href="{"skins.php"|url}">Apparence du site (skins)</a>
+        <a href="{rel}/skins.php">Apparence du site (skins)</a>
       </div>
       <div class="explication">
         Tu peux changer les couleurs et les images du site.
