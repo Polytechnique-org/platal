@@ -48,7 +48,7 @@ EOF;
 
     foreach($u['data'] as $cid=>$d) {
         $text .= "  {$all->_cats[$cid][(count($d)==1)?'mail_sg':'mail']} :\n\n";
-        $html .= "<h1 style='font-size: 120%'>{$all->_cats[$cid][(count($d))?'mail_sg':'mail']} :</h1>\n<ul>\n";
+        $html .= "<h1 style='font-size: 120%'>{$all->_cats[$cid][(count($d)==1)?'mail_sg':'mail']} :</h1>\n<ul>\n";
 
         foreach($d as $promo=>$x) {
             require_once('../../plugins/modifier.date_format.php');
