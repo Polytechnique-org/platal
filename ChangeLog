@@ -51,6 +51,7 @@ Bug/Wish :
 	* Search :
 		- #56 : Search on referent.											-JS
 		- #189 : Selection of diplomas depends on schools.					-JS
+		- #195 : Better heuristic for google like (thanks OG).				-MC
 		- #203 : New fields in search (alive, subscriber, free).			-JS
 
 	* User Interface :
@@ -177,6 +178,7 @@ ACRONYMS :
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
 	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
+	* OG  : Olivier Guillaumin			<olivier.guillaumin@m4x.org>
 	* SHK : Jeremy Lainé     (Sharky)   <jeremy.laine@m4x.org>
 	* VP  : Vincent Palatin             <vincent.palatin@m4x.org>
 	* XdX : Alexandre Hô     (XandreX)  <alexandre.ho@m4x.org>
