@@ -21,14 +21,6 @@ hr    { width: 90%; text-align: center }
 .middle { vertical-align: middle; }
 .smaller { font-size: smaller; font-style: italic; }
 
-.pri1, .pri2, .pri3, .pri4, .pri5 { color: inherit; }
-
-.pri1 { background-color: #dac0c0; font-style: italic; }
-.pri2 { background-color: #dab0b0; font-style: italic; }
-.pri3 { background-color: #daa0a0; }
-.pri4 { background-color: #da9090; }
-.pri5 { background-color: #da8080; font-weight: bold; }
-
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
@@ -243,18 +235,18 @@ table.flags td.texte {
     padding-left: 0.5em;
 }
 table.flags td.vert {
-    background-color: green;
+    background: green;
     width: 1.5em; height: 1.5em;
     text-align: center;
 }
 table.flags td.orange {
-    background-color: #ff9900;
+    background: #ff9900;
     width: 1.5em;
     height: 1.5em;
     text-align: center;
 }
 table.flags td.rouge {
-    background-color: red;
+    background: red;
     width: 1.5em;
     height: 1.5em;
     text-align: center;
@@ -324,13 +316,13 @@ div.conteneur_tab {
 
 div.boite {
   border: 1px solid #5555BB;
-  background-color: #FFFFC0;
+  background: #FFFFC0;
   padding: 5px;
   margin: 5px;
 }
 
 div.boite div.titre {
-  background-color: #9999FF;
+  background: #9999FF;
   margin: 5px;
   padding: 5px;
   text-align: center;
@@ -464,4 +456,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.31 2004-08-26 14:44:43 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.32 2004-08-29 15:46:53 x2000habouzit Exp $ */
