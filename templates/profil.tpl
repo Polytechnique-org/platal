@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.tpl,v 1.9 2004-08-31 15:03:33 x2000habouzit Exp $
+        $Id: profil.tpl,v 1.10 2004-08-31 21:39:01 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,15 @@
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0">
     <tr>
       <td>
-        {draw_onglets}
+        <ul id='onglet'>
+          {foreach from=$onglets key=o item=i}
+          {if $o eq $onglet}
+          <li class="actif">{$i|nl2br}</li>
+          {else}
+          <li><a href="{$smarty.server.PHP_SELF}?old_tab={$o}">{$i|nl2br}</a></li>
+          {/if}
+          {/foreach}
+        </ul>
         <input type="hidden" value="" name="binet_op" />
         <input type="hidden" value="" name="binet_id" />
         <input type="hidden" value="" name="groupex_op" />

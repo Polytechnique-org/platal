@@ -18,16 +18,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: tabs.inc.php,v 1.5 2004-08-31 19:48:46 x2000habouzit Exp $
+        $Id: tabs.inc.php,v 1.6 2004-08-31 21:39:01 x2000habouzit Exp $
  ***************************************************************************/
 
 
 $tabname_array = Array(
-    "general"  => "Informations<br/>générales",
-    "adresses" => "Adresses<br/>personnelles",
-    "poly"     => "Informations<br/>polytechniciennes",
-    "emploi"   => "Informations<br/>professionnelles",
-    "skill"    => "Compétences<br/>diverses",
+    "general"  => "Informations\ngénérales",
+    "adresses" => "Adresses\npersonnelles",
+    "poly"     => "Informations\npolytechniciennes",
+    "emploi"   => "Informations\nprofessionnelles",
+    "skill"    => "Compétences\ndiverses",
     "mentor"   => "Mentoring"
 );
     
@@ -60,40 +60,5 @@ function get_next_tab($tabname){
     reset($tabname_array);
     return key($tabname_array);
 }
-
-function draw_all_tabs(){
-    global $tabname_array, $new_tab;
-    reset($tabname_array);
-?>
-<ul id="onglet">
-<?php
-    while(list($current_tab,$current_tab_desc) = each($tabname_array)){
-        if($current_tab == $new_tab){
-            draw_tab($current_tab, true);
-        }
-        else{
-            draw_tab($current_tab, false);
-        }
-    }?>
-</ul>
-<?php
-}
-
-function draw_tab($tab_name, $is_opened){
-    global $tabname_array;
-    if($is_opened){?>
-           <li class="actif">
-              <?php echo $tabname_array["$tab_name"];?>
-           </li>
-  <?php }
-    else{ ?>
-           <li>
-          <a href="<?php echo "{$_SERVER['PHP_SELF']}?old_tab=$tab_name";?>">
-                 <?php echo $tabname_array["$tab_name"];?>
-              </a>
-           </li>
-  <?php }
-}
-
 
 ?>

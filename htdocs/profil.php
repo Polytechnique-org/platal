@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.8 2004-08-31 16:04:11 x2000habouzit Exp $
+        $Id: profil.php,v 1.9 2004-08-31 21:39:00 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('profil.tpl',AUTH_MDP, true, 'profil.head.tpl');
 
-//on charge les fonctions
-require_once('profil.inc.php');
+require_once('tabs.inc.php');
+require_once('profil.func.inc.php');
 
 //on met a jour $opened_tab et $new_tab qui sont le tab du POST et le tab demande
 // Tout d'abord, quel est le tab actuel ?
