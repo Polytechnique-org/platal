@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.2 2004-09-21 15:40:36 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.3 2004-09-22 11:39:51 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -35,11 +35,11 @@
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
     <td class='titre'>émetteur</td>
-    <td>{$mail.sender}</td>
+    <td>{$mail.sender|tl1}</td>
   </tr>
   <tr>
     <td class='titre'>sujet</td>
-    <td>{$mail.subj}</td>
+    <td>{$mail.subj|tl1}</td>
   </tr>
   <tr>
     <td class='titre'>taille</td>
@@ -60,11 +60,33 @@
   {foreach from=$mail.parts item=part key=i}
   <tr><th>Partie n°{$i}</th></tr>
   <tr class='{cycle values="impair,pair"}'>
-    <td><pre>{$part|regex_replace:"!\\n-- *\\n(.*?)$!sm":"</pre><hr style='width:98%;margin:1%'/><pre>\\1"}</pre></td>
+    <td><pre>{$part|qpd|regex_replace:"!\\n-- *\\n(.*?)$!sm":"</pre><hr style='width:98%;margin:1%'/><pre>\\1"}</pre></td>
   </tr>
   {/foreach}
 </table>
+<br />
 {/if}
+
+<form method='post' action='?liste={$smarty.request.liste}'>
+  <table class='tinybicol' cellpadding='0' cellspacing='0'>
+    <tr>
+      <th class='titre'>Modérer le mail de :</th>
+    </tr>
+    <tr>
+      <td>raison (pour les refus) :
+        <textarea cols='50' rows='10' name='reason'></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class='center'>
+        <input type='hidden' name='mid' value='{$smarty.get.mid}' />
+        <input type='submit' name='mok' value='Accepter !' />&nbsp;
+        <input type='submit' name='mno' value='Refuser !' />&nbsp;
+        <input type='submit' name='mdel' value='Rejeter !' style='color:red;' />
+      </td>
+    </tr>
+  </table>
+</form>
 
 {/if}
 

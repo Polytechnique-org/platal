@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.2 2004-09-21 15:40:35 x2000habouzit Exp $
+        $Id: moderate.php,v 1.3 2004-09-22 11:39:51 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -42,6 +42,16 @@ if(isset($_POST['sdel'])) {
     $client->handle_request($liste,$_POST['sdel'],2,stripslashes($_POST['reason'])); /** 2 is the magic for REJECT see Defaults.py **/
 }
 
+if(isset($_POST['mid'])) {
+    $mid = $_POST['mid'];
+    if(isset($_POST['mok']))
+	$client->handle_request($liste,$mid,1,''); /** 1 = APPROVE **/
+    elseif(isset($_POST['mno']))
+	$client->handle_request($liste,$mid,2,stripslashes($_POST['reason'])); /** 2 = REJECT **/
+    elseif(isset($_POST['mdel']))
+	$client->handle_request($liste,$mid,3,''); /** 3 = DISCARD **/
+}
+
 if(isset($_REQUEST['sid'])) {
     $sid = $_REQUEST['sid'];
     if(list($subs,$mails) = $client->get_pending_ops($liste)) {
@@ -58,14 +68,25 @@ if(isset($_REQUEST['sid'])) {
 	$page->assign_by_ref('subs', $subs);
 	$page->assign_by_ref('mails', $mails);
     }
-} elseif(isset($_REQUEST['mid'])) {
+
+} elseif(isset($_GET['mid'])) {
+
     $mid = $_REQUEST['mid'];
-    new_skinned_page('listes/moderate_mail.tpl', AUTH_MDP, true);
     $mail = $client->get_pending_mail($liste,$mid);
     if(is_array($mail)) {
+	new_skinned_page('listes/moderate_mail.tpl', AUTH_MDP, true);
         $page->assign_by_ref('mail', $mail);
+    } else {
+	new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
+
+	if(list($subs,$mails) = $client->get_pending_ops($liste)) {
+	    $page->assign_by_ref('subs', $subs);
+	    $page->assign_by_ref('mails', $mails);
+	}
     }
+
 } else {
+    
     new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
 
     if(list($subs,$mails) = $client->get_pending_ops($liste)) {
@@ -73,5 +94,9 @@ if(isset($_REQUEST['sid'])) {
 	$page->assign_by_ref('mails', $mails);
     }
 }
+
+function tolatin1($s) { return iconv('utf-8', 'iso-8859-1', $s); }
+$page->register_modifier('tl1','tolatin1');
+$page->register_modifier('qpd','quoted_printable_decode');
 $page->run();
 ?>
