@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.tpl,v 1.9 2004-10-09 14:51:30 x2000habouzit Exp $
+        $Id: carva_redirect.tpl,v 1.10 2004-10-10 11:52:26 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -39,7 +39,8 @@
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
   il est possible de faire pointer
   {dynamic}
-  l'adresse <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
+  les adresses <strong>http://www.carva.org/{$smarty.session.bestalias}</strong>
+  et <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
   {/dynamic}
   vers la page WEB de ton choix. Pour de plus amples détails, consulte
   <a href="{"docs/doc_carva.php"|url}">cette page</a>
@@ -61,14 +62,8 @@
 <p>
 {dynamic}
 {if $carva}
-  Actuellement, l'adresse <a href="http://www.carva.org/{$smarty.session.forlife}">http://www.carva.org/{$smarty.session.forlife}</a>
-  {if $alias}
-  ainsi que l'adresse <a href="http://www.carva.org/{$alias}">http://www.carva.org/{$alias}</a>
-  sont redirigées
-  {else}
-  est redirigée
-  {/if}
-  sur <a href="http://{$carva}">http://{$carva}</a>
+  Actuellement, les adresses <a href="http://www.carva.org/{$smarty.session.bestalias}">http://www.carva.org/{$smarty.session.bestalias}</a> et <a href="http://www.carva.org/{$smarty.session.forlife}">http://www.carva.org/{$smarty.session.forlife}</a>
+  sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
 {else}
   La redirection n'est pas utilisée ...
 {/if}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: preferences.tpl,v 1.7 2004-09-02 23:56:17 x2000habouzit Exp $
+        $Id: preferences.tpl,v 1.8 2004-10-10 11:52:26 x2000chevalier Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -50,7 +50,7 @@
         <a href="{"carva_redirect.php"|url}">Ma redirection de page WEB</a>
       </div>
       <div class="explication">
-        Tu peux configurer ta redirection WEB http://www.carva.org/{dyn s=$smarty.session.forlife}
+        Tu peux configurer tes redirections WEB http://www.carva.org/{dyn s=$smarty.session.bestalias} et http://www.carva.org/{dyn s=$smarty.session.forlife}
       </div>
     </td>
     <td><div class="question">
