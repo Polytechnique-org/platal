@@ -1,4 +1,4 @@
-{* $Id: default.tpl,v 1.9 2004-02-12 01:42:46 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.10 2004-02-12 02:58:16 x2000habouzit Exp $ *}
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -11,20 +11,9 @@
 {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
-    
 {if $validate}
-    <table style="width: 100%; background: #00ffff; color: blue;">
-      <tr>
-        <td>
-          [<a href="http://validator.w3.org/check?uri={$validate}">VALIDER XHTML !!!</a>]
-          &nbsp;&nbsp;
-          [<a href="http://jigsaw.w3.org/css-validator/validator?uri={$validate}">VALIDER CSS !!!</a>]
-        </td>
-      </tr>
-    </table>
+{include file=skin/common.dev.tpl validate=$validate}
 {/if}
-
-{include file=skin/common.bandeau.tpl}
 
 {if $smarty.session.suid}
     <table id="suid" cellpadding="0" cellspacing="0">
@@ -38,6 +27,8 @@
     </tr>
     </table>
 {/if}
+
+{include file=skin/common.bandeau.tpl}
 
     <table id="body" cellpadding="0" cellspacing="0">
     <tr>

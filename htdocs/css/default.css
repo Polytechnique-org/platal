@@ -170,11 +170,37 @@ table.tinybicol td.info, table.bicol td.info {
 /*  ..:: Apendices ::..  */
 /*************************/
 
+#dev {
+    position: fixed;
+    top     : 32px;
+    left    : 14px;
+    width   : 128px;
+    
+    color: #003399;
+    background: #e0ffff;
+    border: 1px dashed #003399;
+    
+    font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+}
+#dev div { padding: 3px; }
+#dev .title {
+    text-align: center;
+    font-size: larger;
+    text-decoration: underline;
+}
+#dev a:hover {
+    color: inherit;
+    background: #c0e0e0;
+}
+
 #suid {
     color: red;
     background: #ffc0cb;
     width: 100%;
     font-weight: bold;
+    position: fixed;
 }
 #suid td { padding: 2px; }
 #suid a { color: red; }
@@ -248,4 +274,4 @@ table.tinybicol td.info, table.bicol td.info {
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.16 2004-02-12 01:42:45 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.17 2004-02-12 02:58:15 x2000habouzit Exp $ */
