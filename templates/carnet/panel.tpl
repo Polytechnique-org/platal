@@ -17,63 +17,67 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: panel.tpl,v 1.1 2004-11-06 18:18:44 x2000habouzit Exp $
+        $Id: panel.tpl,v 1.2 2004-11-06 22:34:18 x2000habouzit Exp $
  ***************************************************************************}
 
-<h1>Carnet polytechnicien</h1>
+<h1>Bilan des Notifications</h1>
 
-<table class="bicol">
-  <tr>
-    <th colspan="2">
-      Tes contacts
-    </th>
-  </tr>
-  <tr class="impair">
-    <td class='half'>
-      <div class="question">
-        <a href="{"carnet/mescontacts.php"|url}">Page de tes contacts</a>
-      </div>
-      <div class="explication">
-        Tu peux ici lister tes contacts, en ajouter et en retirer.
-      </div>
-    </td>
-    <td class='half'>
-      <div class="question">
-        <a href="{"carnet/mescontacts.php?trombi=1"|url}">Le trombi de tes contacts</a>
-      </div>
-      <div class="explication">
-        La même chose que la page de tes contacts... <strong>en images !</strong>
-      </div>
-    </td>
-  </tr>
-</table>
+<p>
+Cette page récapitule tous les évènements que tu surveilles de la semaine écoulée
+</p>
+
+<p>
+Les lignes en gras sont les événements qui ont été porté à notre connaissance
+depuis ta dernière connexion sur cette page.<br />
+Tu peux les <a href="?read={$now}">marquer comme vus</a> sans te déconnecter.
+</p>
+
+<p>
+Tu peux choisir plus finement les données affichées sur cette page.
+Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration des notifications</a>.
+</p>
+
+{dynamic}
+
+{foreach from=$notifs->_data item=c key=cid}
+<h2>{$notifs->_cats[$cid].mail} :</h2>
 
 <br />
 
-<table class="bicol">
-  <tr>
-    <th colspan="2">
-      Notifications
-    </th>
-  </tr>
-  <tr class="pair">
-    <td class='half'>
-      <div class="question">
-        <a href="{"carnet/panel.php"|url}">Bilan de tes notifications</a>
-      </div>
-      <div class="explication">
-        Affichage de tous les évenements de camarades/promos
-      </div>
+<table class='tinybicol'>
+  {foreach from=$c key=p item=promo}
+  {section name=row loop=$promo}
+  <tr {if $promo[row].known > $smarty.session.watch_last}style="font-weight: bold"{/if}>
+    <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
+    <td>
+      {if $promo[row].inscrit}
+      <a href="javascript:x()" onclick="popupWin('fiche.php?user={$promo[row].forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
+        {$promo[row].prenom} {$promo[row].nom}
+      </a>
+      {if $promo[row].contact}
+      <a href="{"carnet/mescontacts.php"|url}?action=retirer&amp;user={$promo[row].forlife}">{*
+        *}<img src="{"images/retirer.gif"|url}" alt="retirer de mes contacts" />{*
+      *}</a>
+      {else}
+      <a href="{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$promo[row].forlife}">{*
+        *}<img src="{"images/ajouter.gif"|url}" alt="ajouter à mes contacts" />{*
+      *}</a>
+      {/if}
+      {else}
+      {$promo[row].prenom} {$promo[row].nom}
+      {/if}
     </td>
-    <td class='half'>
-      <div class="question">
-        <a href="{"carnet/notifs.php"|url}">Configurer tes notifications</a>
-      </div>
-      <div class="explication">
-        Être notifié des inscriptions, décès, changement de fiche, ...
-      </div>
+    <td style="width:25%">
+      {$promo[row].date|date_format:"%d %b. %Y"}
     </td>
   </tr>
+  {/section}
+  {/foreach}
 </table>
+
+<br />
+{/foreach}
+
+{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

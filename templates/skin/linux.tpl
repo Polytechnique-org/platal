@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: linux.tpl,v 1.1 2004-10-03 15:10:13 x2003cortot Exp $
+        $Id: linux.tpl,v 1.2 2004-11-06 22:34:18 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -74,7 +74,10 @@
                   //-->
                 </script>
               </td>
-              <td class="inscrits">{insert name="getNbIns"} polytechniciens sur le web</td>
+              <td class="inscrits">
+                {insert name="getNbIns"} polytechniciens sur le web<br />
+                {insert name="getNbNotifs"}
+              </td>
             </tr>
           </table>
           <img src="{"images/sk_linux_lesX.jpg"|url}" alt="[LES X SUR LE WEB]" />

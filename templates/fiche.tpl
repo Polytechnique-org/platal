@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.22 2004-11-04 15:33:28 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.23 2004-11-06 22:34:17 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -37,7 +37,7 @@ function chgMainWinLoc( strPage ) {
       <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
     </a>
     {if !$is_contact}
-    <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php|"url}?action=ajouter&amp;user={$forlife}')">
+    <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$forlife}')">
       <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
     </a>
     {else}

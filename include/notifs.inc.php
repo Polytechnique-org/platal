@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.10 2004-11-06 18:29:58 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.11 2004-11-06 22:34:17 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -34,12 +34,64 @@ function register_watch_op($uid,$cid,$date='',$info='') {
     }
 }
 
+function getNbNotifs() {
+    global $globals;
+    if(!isset($_SESSION['uid'])) return 0;
+    $uid = $_SESSION['uid'];
+
+    $res = $globals->db->query("
+    (
+	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+		    wo.*, 1 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+	      FROM  auth_user_quick AS q
+	INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
+	INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
+	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
+	INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
+	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+	     WHERE  q.user_id = '$uid' AND q.watch_contacts=1 AND wo.known > q.watch_last
+    ) UNION DISTINCT (
+	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+	      FROM  watch_promo     AS w
+	INNER JOIN  auth_user_md5   AS u  USING(promo)
+	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
+	 LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
+	INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
+	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
+	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+	     WHERE  w.uid = '$uid' AND wo.known > q.watch_last
+    ) UNION DISTINCT (
+	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+		    wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+	      FROM  watch_nonins    AS w
+	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
+	INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
+	INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
+	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
+	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
+	     WHERE  w.uid = '$uid' AND wo.known > q.watch_last
+    )");
+    $n = mysql_num_rows($res);
+    mysql_free_result($res);
+    $url = smarty_modifier_url('carnet/panel.php');
+    if($n==0) {
+	return;
+    }
+    if($n==1) {
+	return "<a href='$url'>$n notification !</a>";
+    }
+    return "<a href='$url'>$n notifications !</a>";
+}
+
 class Notifs {
     var $_uid;
     var $_cats = Array();
     var $_data = Array();
     
-    function Notifs($uid) {
+    function Notifs($uid,$up=false) {
 	global $globals;
 	$this->_uid = $uid;
 	
@@ -47,38 +99,48 @@ class Notifs {
 	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
 	mysql_free_result($res);
 
+	$lastweek = date('YmdHis',mktime() - 7*24*60*60);
+
 	$res = $globals->db->query("
 	(
-		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, wo.*
+		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+			wo.*, 1 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
 		  FROM  auth_user_quick AS q
 	    INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
 	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
 	    INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-		 WHERE  q.user_id = '$uid' AND q.watch_contacts=1
+		 WHERE  q.user_id = '$uid' AND q.watch_contacts=1 AND wo.known > $lastweek
 	) UNION DISTINCT (
-		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, wo.*
+		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
 		  FROM  watch_promo     AS w
 	    INNER JOIN  auth_user_md5   AS u  USING(promo)
+	     LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
 	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
 	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-		 WHERE  w.uid = '$uid'
+		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
 	) UNION DISTINCT (
-		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, wo.*
+		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
+			wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
 		  FROM  watch_nonins    AS w
 	    INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
 	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
 	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-		 WHERE  w.uid = '$uid'
+		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
 	)
-	ORDER BY  wo.cid,promo,nom");
+	ORDER BY  cid,promo,nom");
 	while($tmp = mysql_fetch_assoc($res)) {
-	    $this->_data[$tmp['cid']][$tmp['promo']][$tmp['uid']] = $tmp;
+	    $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
+	}
+
+	if($up) {
+	    $globals->db->query("UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id='$uid'");
 	}
     }
 }

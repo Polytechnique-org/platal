@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: noIE.tpl,v 1.4 2004-09-02 19:39:21 x2000habouzit Exp $
+        $Id: noIE.tpl,v 1.5 2004-11-06 22:34:18 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -56,7 +56,8 @@
       <div class="center">
         <img src="{"images/sk_sharky_ban.png"|url}" alt="[ BAN ]" />
         <span>
-          {insert name="getNbIns"} polytechniciens sur le web
+          {insert name="getNbIns"} polytechniciens sur le web<br />
+          {insert name="getNbNotifs"}
         </span>
       </div>
 

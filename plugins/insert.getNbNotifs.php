@@ -18,23 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: panel.php,v 1.2 2004-11-06 22:34:16 x2000habouzit Exp $
+        $Id: insert.getNbNotifs.php,v 1.1 2004-11-06 22:34:17 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
-new_skinned_page('carnet/panel.tpl', AUTH_COOKIE, true);
-require('notifs.inc.php');
-
-if(isset($_GET['read'])) {
-    $_SESSION['watch_last'] = $_GET['read'];
-    header("Location: panel.php");
+ 
+function smarty_insert_getNbNotifs($params, &$smarty)
+{
+    require_once('notifs.inc.php');
+    return getNbNotifs();
 }
-
-$page->assign('now',date('YmdHis'));
-$notifs = new Notifs($_SESSION['uid'], true);
-
-$page->assign_by_ref('notifs', $notifs);
-
-$page->run();
-
 ?>

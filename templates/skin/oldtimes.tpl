@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: oldtimes.tpl,v 1.1 2004-10-04 22:08:53 x2003bruneau Exp $
+        $Id: oldtimes.tpl,v 1.2 2004-11-06 22:34:18 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -74,7 +74,10 @@
                   //-->
                 </script>
               </td>
-              <td class="inscrits">{insert name="getNbIns"} polytechniciens sur le web</td>
+              <td class="inscrits">
+                {insert name="getNbIns"} polytechniciens sur le web<br />
+                {insert name="getNbNotifs"}
+              </td>
             </tr>
           </table>
           <img src="{"images/sk_oldtimes_lesX.gif"|url}" alt="[LES X SUR LE WEB]" />
