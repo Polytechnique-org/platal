@@ -40,9 +40,6 @@ define("PERMS_ADMIN", "admin");
 define('SKINNED', 0);
 define('NO_SKIN', 1);
 
-setlocale(LC_MESSAGES, 'fr_FR');
-setlocale(LC_TIME, 'fr_FR');
-
 // }}}
 // {{{ globals + session init
 
@@ -51,6 +48,9 @@ require_once('xorg.globals.inc.php');
 require_once('xorg/session.inc.php');
 XorgGlobals::init();
 XorgSession::init();
+
+setlocale(LC_MESSAGES, $globals->core->locale);
+setlocale(LC_TIME,     $globals->core->locale);
 
 // }}}
 // {{{ fix magic quotes
