@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.47 2004-10-15 07:06:14 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.48 2004-11-04 17:23:25 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -76,7 +76,7 @@ class XorgPage extends DiogenesCorePage {
 
 
         $this->config_overwrite  = false;
-        $this->compile_check     = isset($site_dev);
+        $this->compile_check     = !empty($site_dev);
         $this->caching	         = ($type == SKINNED);
 	if($type == SKINNED) {
 	    $this->register_modifier('escape_html', 'escape_html');
