@@ -1,4 +1,4 @@
-{* $Id: skins.tpl,v 1.5 2004-08-24 20:38:36 x2000habouzit Exp $ *}
+{* $Id: skins.tpl,v 1.6 2004-08-24 21:31:59 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Skins Polytechnique.org
@@ -17,20 +17,21 @@ nous te conseillons de télécharger une version récente de ton navigateur.
 </p>
 <p class="normal">
 Pour toute information complémentaire, n'hésite pas à écrire à
-{mailto address='support@polytechnique.org' subject='navigateurs' encode='javascript'}
+{mailto address='support@polytechnique.org' subject='navigateurs'}
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <div class="center">
     <input type="submit" value="Enregistrer" name="submit" />
+    <br />
+    <br />
   </div>
-  <br />
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
 {dynamic}
 {foreach item=skin from=$skins}    
     <tr>
       <td class="skigauche">
-        <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if}>
+        <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if} />
       </td>
       <td class="skimilieu">
         <strong>{$skin.name}</strong>
@@ -42,14 +43,14 @@ Pour toute information complémentaire, n'hésite pas à écrire à
         Utilisée par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
       </td>
       <td class="skidroite">
-        <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] ">
+        <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
 {/foreach}
 {/dynamic}
   </table>
-  <br />
   <div class="center">
+    <br />
     <input type="submit" value="Enregistrer" name="submit" />
   </div>
 
