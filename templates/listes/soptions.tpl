@@ -34,6 +34,8 @@
 
 <p>
 [<a href='index.php'>listes</a>] »
+[<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
+[<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
 [<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.10 2004-09-25 20:11:36 x2000habouzit Exp $
+        $Id: index.tpl,v 1.11 2004-10-09 12:49:38 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -61,7 +61,8 @@ La diffusion a trois niveaux de modération.  La diffusion peut être :
 </ul>
 
 <p class='smaller'>
-NB : les gestionnaires d'une liste sont aussi ses modérateurs.  
+NB : les gestionnaires d'une liste sont aussi ses modérateurs.<br />
+les listes avec une asterisque sont les listes dont tu es le gestionnaire.
 </p>
 
 <div class='ssrubrique'>

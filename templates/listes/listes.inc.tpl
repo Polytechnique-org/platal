@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.8 2004-09-25 16:30:26 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.9 2004-10-09 12:49:38 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
@@ -33,12 +33,7 @@
   {if $liste.priv >= $min && $liste.priv <= $max|default:$min}
   <tr class='{cycle values="impair,pair"}'>
     <td>
-      <a href='members.php?liste={$liste.list}'>{$liste.list}</a>
-      {if $liste.own}
-      [<a href='admin.php?liste={$liste.list}'>adm</a>]
-      {elseif $smarty.session.perms eq admin}
-      [<span class='erreur'><a href='admin.php?liste={$liste.list}'>adm</a></span>]
-      {/if}
+      <a href='members.php?liste={$liste.list}'>{$liste.list}{if $liste.own}&nbsp;*{/if}</a> 
     </td>
     <td>{$liste.desc}</td>
     <td class='center'>

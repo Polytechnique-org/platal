@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.6 2004-09-25 21:04:49 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.7 2004-10-09 12:49:38 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,7 +28,22 @@
 
 {else}
 
+<p>
 [<a href='index.php'>listes</a>]
+ »
+[<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
+[trombino]
+{if $details.own || $smarty.session.perms eq admin}
+ »
+[<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
+[<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
+[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
+{/if}
+{perms level=admin} »
+[<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
+[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
+{/perms}
+</p>
 
 <div class="rubrique">
   Liste {$smarty.request.liste}
@@ -55,11 +70,6 @@
     <td class='titre'> Inscription </td>
     <td>{if $details.ins}modérée{else}libre{/if}</td>
   </tr>
-  <tr>
-    <td colspan='2' class='center'>
-      <a href='members.php?liste={$smarty.request.liste}'>Page de la liste</a>
-    </td>
-  </tr>    
 </table>
 
 <div class='rubrique'>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.7 2004-09-25 09:48:07 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.8 2004-10-09 12:49:38 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -39,6 +39,8 @@ Tu n'es pas administrateur de la liste, mais du site.
 
 <p>
 [<a href='index.php'>listes</a>] »
+[<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
+[<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
 [abonnés]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
