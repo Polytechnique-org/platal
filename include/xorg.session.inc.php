@@ -172,19 +172,14 @@ function try_cookie() {
  */
 function start_connexion ($username, $uid, $identified) {
   global $globals;
-  $result=$globals->db->query("SELECT  prenom, nom, perms, promo, matricule, MAX(s.id), UNIX_TIMESTAMP(MAX(s.start)) AS lastlogin
+  $result=$globals->db->query("SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
 			         FROM  auth_user_md5   AS u
                             LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
                                 WHERE  user_id=$uid
-                             GROUP BY  s.uid");
-  list($prenom, $nom, $perms, $promo, $matricule, $s_id, $lastlogin) = mysql_fetch_row($result);
+			     ORDER BY  s.start DESC
+                                LIMIT  1");
+  list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host) = mysql_fetch_row($result);
   mysql_free_result($result);
-  if($s_id) {
-      $res = $globals->db->query("SELECT host FROM logger.sessions WHERE id=$s_id LIMIT 1");
-      list($host) = mysql_fetch_row($res);
-      mysql_free_result($res);
-  } else
-    $host=null;
   // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
   // authentification avec le cookie
   // on vérifie que c'est bien un logger de l'utilisateur en question
