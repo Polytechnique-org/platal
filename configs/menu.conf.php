@@ -50,7 +50,7 @@ if(logged()) {
             'Pourquoi m\'inscrire ?' => 'docs/services.php'
         ),
         'Visiteurs' => Array(
-            'Annuaire de l\'X' => 'search.php?public_directory=1',
+            'Annuaire de l\'X' => 'search.php',
             'Associations X' => 'http://www.polytechnique.net/',
             'Recrutement' => 'http://www.manageurs.com/'
         ),
