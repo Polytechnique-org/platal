@@ -138,7 +138,7 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
     }
     
     if ($mobile) {
-        $globals->xdb->execute("UPDATE auth_user_md5 SET mobile = {?} WHERE user_id = {?}", $userax['mobile'], $userax['uid']);
+        $globals->xdb->execute("UPDATE auth_user_quick SET profile_mobile = {?} WHERE user_id = {?}", $userax['mobile'], $userax['uid']);
     }
 
     if ($nationalite) {

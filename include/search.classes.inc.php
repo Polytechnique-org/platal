@@ -26,7 +26,7 @@ require_once("xorg.misc.inc.php");
 $globals->search->result_fields = '
                 u.user_id, u.promo, u.matricule, u.matricule_ax,
 		if(u.epouse=\'\', u.nom, u.epouse) AS NomSortKey,
-                u.epouse,u.date,u.web,u.mobile,
+                u.epouse,u.date,q.profile_web AS web,q.profile_mobile AS mobile,
                 u.deces!=0 AS dcd,u.deces,
 		u.perms IN (\'admin\',\'user\') AS inscrit,
 		u.perms != \'pending\' AS wasinscrit,
