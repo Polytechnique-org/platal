@@ -130,7 +130,7 @@ if ($login) {
                     $mailer = new HermesMailer();
                     $mailer->setFrom("webmaster@polytechnique.org");
                     $mailer->addTo("web@polytechnique.org");
-                    $mailer->setSubject("INTERVENTION ADMIN (".Session::get('forlife']).")");
+                    $mailer->setSubject("INTERVENTION ADMIN (".Session::get('forlife').")");
                     $mailer->setTxtBody(preg_replace("/[ \t]+/", ' ', $query));
                     $mailer->send();
 
@@ -152,7 +152,7 @@ if ($login) {
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
 		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION ADMIN (".Session::get('forlife']).")");
+		$mailer->setSubject("INTERVENTION ADMIN (".Session::get('forlife').")");
 		$mailer->setTxtBody("\nUtilisateur $login effacé");
 		$mailer->send();
 		break;
