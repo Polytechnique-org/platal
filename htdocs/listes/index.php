@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.4 2004-09-23 15:40:45 x2000habouzit Exp $
+        $Id: index.php,v 1.5 2004-09-25 14:56:53 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -37,6 +37,12 @@ if(isset($_GET['del'])) {
 if(isset($_GET['add'])) {
     $client->subscribe('polytechnique.org',$_GET['add']);
     header('Location: index.php');
+}
+if(isset($_POST['promo_add'])) {
+    $promo = intval($_POST['promo_add']);
+    if($promo>=1900 and $promo<2100) {
+	$client->subscribe('polytechnique.org',"promo$promo");
+    }
 }
 
 $listes = $client->get_lists('polytechnique.org');

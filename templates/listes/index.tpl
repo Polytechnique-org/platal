@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.6 2004-09-23 15:40:46 x2000habouzit Exp $
+        $Id: index.tpl,v 1.7 2004-09-25 14:56:53 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -64,7 +64,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 {include file='listes/listes.inc.tpl' min=0}
 
 <div class="rubrique">
-  Listes de diffusion privées
+  Listes de diffusion privées (et de promo)
 </div>
 
 <p>
@@ -72,6 +72,24 @@ Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire pa
 </p>
 
 {include file='listes/listes.inc.tpl' min=1}
+
+<br />
+
+<form method='post' action='{$smarty.server.REQUEST_URI}'>
+  <table class='tinybicol' cellspacing='0' cellpadding='2'>
+    <tr>
+      <th colspan='2'>Inscription à une liste de diffusion promo</th>
+    </tr>
+    <tr>
+      <td class='titre'>Promotion:</td>
+      <td>
+        <input type='text' size='4' maxlength='4' name='promo_add' />
+        &nbsp;
+        <input type='submit' value="m'inscrire" />
+      </td>
+    </tr>
+  </table>
+</form>
 
 {perms level=admin}
 <div class="rubrique">
