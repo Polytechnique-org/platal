@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.9 2004-09-06 06:25:10 x2000coic Exp $
+        $Id: fiche.tpl,v 1.10 2004-09-10 23:52:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,20 +25,17 @@
 <div id="fiche">
 
 <div id="fiche_identite">
-    <div class="civilite">{$prenom} {$nom}</div>
-    <div><em>{$nationalite}</em> - X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
-    <span style="font-size: small;">(Fiche mise à jour le {$date|date_format:"%d/%m/%Y"})</span><br />
-    <div>
-      <a href="vcard.php/{$forlife}.vcf?x={$user_id}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
-      {if !$is_contact}
-      <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
-      {/if}
-      <a
-        href="sendmail.php?contenu=Tu%20trouveras%20ci-apres%20la%20fiche%20de%20{$prenom}%20{$nom}%20https://www.polytechnique.org/fiche.php?user={$forlife}"  onclick="return popup(this)">
-        <img src="images/mail.png" alt="Envoyer l'URL" />
-      </a>
-    </div>
+  <div class="civilite">{$prenom} {$nom}
+    <a href="vcard.php/{$forlife}.vcf?x={$user_id}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
+    {if !$is_contact}
+    <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
+    {/if}
+  </div>
+  <div class='right' style="font-size: smaller; width:100%">(Fiche mise à jour le {$date|date_format:"%d %B %Y"})</div>
+  <div>
     <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a><br />
+  </div>
+  <div><em>{$nationalite}</em> - X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
 </div>
 
 <div id="fiche_divers">

@@ -344,7 +344,7 @@ em.intitule {
   font-size: small;
 }
 
-/*Boite en haut à gauche*/
+/* top left box */
 #fiche_identite{
   float: left;
   border: 1px solid #5555BB;
@@ -378,16 +378,15 @@ em.intitule {
   border-top: 1px solid #003399;
 }
 
-/*Boite de droite : photos, binets*/
+/* right box : photos, binets */
 #fiche_divers{
   float: right;
   width: 210px;
-  text-align: center;
+  text-align: left;
 }
 
 #fiche_adresses{
   float: left;
-  /*border: 1px solid #5555BB;*/
   padding: 5px;
   margin: 5px;
   width: 500px;
@@ -399,7 +398,6 @@ em.intitule {
 div.adresse{
   float: left;
   padding: 10px;
-  /*border: 1px dotted #999;*/
   width: 25ex;
   margin: 5px;
   margin-top: 0px;
@@ -413,7 +411,6 @@ div.adresse div.titre{
 
 #fiche_infospro{
   float: left;
-  /*border: 1px solid #5555BB;*/
   padding: 10px;
   width: 500px;
   margin: 5px;
@@ -459,7 +456,7 @@ div.entreprise div.adr_pro{
 
 div.spacer { clear: both; }
 
-/* Spécial fiche_referent.php*/
+/* only for fiche_referent.php*/
 
 #fiche_referent{
   float: left;
@@ -582,4 +579,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.42 2004-09-10 11:52:36 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.43 2004-09-10 23:52:13 x2000habouzit Exp $ */
