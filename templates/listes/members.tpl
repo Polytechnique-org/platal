@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.3 2004-09-25 16:32:52 x2000habouzit Exp $
+        $Id: members.tpl,v 1.4 2004-09-25 21:04:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -27,6 +27,8 @@
 <p class='erreur'>La liste n'existe pas ou tu n'as pas le droit d'en voir les détails</p>
 
 {else}
+
+[<a href='index.php'>listes</a>]
 
 <div class="rubrique">
   Liste {$smarty.request.liste}
