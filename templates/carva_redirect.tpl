@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.tpl,v 1.8 2004-10-09 14:44:05 x2000habouzit Exp $
+        $Id: carva_redirect.tpl,v 1.9 2004-10-09 14:51:30 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -92,7 +92,7 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <strong>http://</strong>&nbsp;<input size=50 maxlength=255 name="url"
+        <strong>http://</strong>&nbsp;<input size="50" maxlength="255" name="url"
         value="{$smarty.post.url|default:$carva}" />
       </td>
     </tr>
