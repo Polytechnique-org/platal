@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: acces_smtp.tpl,v 1.8 2004-09-02 22:33:55 x2000bedo Exp $
+        $Id: acces_smtp.tpl,v 1.9 2004-10-15 22:14:08 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -35,8 +35,8 @@
 <script type="text/javascript">
   <!--
   function CheckResponse() {
-    pw1 = document.smtppass_form.smtppass1.value;
-    pw2 = document.smtppass_form.smtppass2.value;
+    pw1 = document.forms.smtppass_form.smtppass1.value;
+    pw2 = document.forms.smtppass_form.smtppass2.value;
     if (pw1 != pw2) {
       alert ("\nErreur : les deux champs ne sont pas identiques !");
       exit;
@@ -47,14 +47,14 @@
       exit;
       return false;
     }
-    document.smtppass_form.op.value='Valider';
-    document.smtppass_form.submit();
+    document.forms.smtppass_form.op.value='Valider';
+    document.forms.smtppass_form.submit();
     return true;
   }
 
   function SupprimerMdp() {
-    document.smtppass_form.op.value='Supprimer';
-    document.smtppass_form.submit();
+    document.forms.smtppass_form.op.value='Supprimer';
+    document.forms.smtppass_form.submit();
   }
   // -->
 </script>
