@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.33 2004-09-24 14:35:13 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.34 2004-09-24 15:34:42 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -152,7 +152,9 @@ def get_options((userdesc,perms),vhost,listname,opts):
         options = { }
         for (k,v) in mlist.__dict__.iteritems():
             if k in opts:
-                options[k] = v
+                if type(v) is str:
+                    options[k] = Utils.uquote(v)
+                else: options[k] = v
         details = get_list_info((userdesc,perms),mlist)[0]
         mlist.Unlock()
         return (details,options)
@@ -169,8 +171,16 @@ def set_options((userdesc,perms),vhost,listname,opts,vals):
         if not is_admin_on(userdesc, perms, mlist):
             return 0
         for (k,v) in vals.iteritems():
-            if k in opts:
-                mlist.__dict__[k] = v
+            if k not in opts:
+                continue
+            if k == 'default_member_moderation':
+                for member in mlist.getMembers():
+                    mlist.setMemberOption(member, mm_cfg.Moderate, int(v))
+            t = type(mlist.__dict__[k])
+            if   t is bool: mlist.__dict__[k] = bool(v)
+            elif t is int:  mlist.__dict__[k] = int(v)
+            elif t is str:  mlist.__dict__[k] = Utils.uncanonstr(v,'fr')
+            else:           mlist.__dict__[k] = v
         mlist.Save()
         mlist.Unlock()
         return 1
@@ -457,17 +467,15 @@ def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
 # owner options [ options.php ]
 #
 
-def get_owner_options((userdesc,perms),vhost,listname):
-    opts = 'accept_these_nonmembers', 'admin_notify_mchanges', 'description', \
+owner_opts = ['accept_these_nonmembers', 'admin_notify_mchanges', 'description', \
         'info', 'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', \
-        'subscribe_policy', 'welcome_msg'
-    return get_options((userdesc,perms),vhost,listname,opts)
+        'subscribe_policy', 'welcome_msg']
+
+def get_owner_options((userdesc,perms),vhost,listname):
+    return get_options((userdesc,perms),vhost,listname,owner_opts)
 
 def set_owner_options((userdesc,perms),vhost,listname,values):
-    opts = 'accept_these_nonmembers', 'admin_notify_mchanges', 'description', \
-        'info', 'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', \
-        'subscribe_policy', 'welcome_msg'
-    return set_options((userdesc,perms),vhost,listname,opts,values)
+    return set_options((userdesc,perms),vhost,listname,owner_opts,values)
 
 def add_to_wl((userdesc,perms),vhost,listname,addr):
     try:
@@ -505,14 +513,19 @@ def del_from_wl((userdesc,perms),vhost,listname,addr):
 # admin procedures [ ?????.php ]
 #
 
+admin_opts = [ 'advertised', 'archive', 'default_member_moderation', \
+        'generic_nonmember_action', 'max_message_size', 'max_num_recipients', \
+        'member_moderation_action', 'msg_footer', 'msg_header', 'new_member_options' ]
+
 def get_admin_options((userdesc,perms),vhost,listname):
     if perms != 'admin':
         return 0
-    opts = 'advertised', 'archive', 'ban_list', 'default_member_moderation', \
-        'generic_nonmember_action', 'hold_these_nonmembers', 'max_message_size', \
-        'max_num_recipients', 'member_moderation_action', 'msg_footer', 'msg_header', \
-        'new_member_options', 'reject_these_nonmembers'
-    return get_options((userdesc,perms),vhost,listname,opts)
+    return get_options((userdesc,perms),vhost,listname,admin_opts)
+
+def set_admin_options((userdesc,perms),vhost,listname,values):
+    if perms != 'admin':
+        return 0
+    return set_options((userdesc,perms),vhost,listname,admin_opts,values)
 
 #-------------------------------------------------------------------------------
 # server
