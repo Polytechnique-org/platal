@@ -50,6 +50,15 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN username_sasl;
 
 
 --------------------------------------------------------------------------------
+-- MELIX
+--------------------------------------------------------------------------------
+update groupex.aliases       AS gx
+    inner join x4dat.aliases AS a ON (gx.email = a.alias)
+    inner join x4dat.aliases AS b ON (a.id=b.id AND b.type='a_vie')
+    set gx.email = b.alias
+    where gx.id = 12
+
+--------------------------------------------------------------------------------
 -- DROP des LISTES
 --------------------------------------------------------------------------------
 drop table x4dat.listes_def;
