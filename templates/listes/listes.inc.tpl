@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.9 2004-10-09 12:49:38 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.10 2004-10-16 14:54:51 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
@@ -46,13 +46,13 @@
     <td class='right'>
       {if $liste.sub eq 2}
       <a href='{$smarty.server.PHP_SELF}?del={$liste.list}'>
-        <img src="{"images/retirer.gif"|url}" alt="[ désinscription ]" />
+        <img src="{"images/retirer.gif"|url}" alt="[ désinscription ]" title="me désinscrire de {$liste.list}" />
       </a>
       {elseif $liste.sub eq 1}
-      <img src="{"images/flag.png"|url}" alt="[ en cours ]" />
+      <img src="{"images/flag.png"|url}" alt="[ en cours ]" title='inscription en attente de modération' />
       {else}
       <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>
-        <img src="{"images/ajouter.gif"|url}" alt="[ inscription ]" />
+        <img src="{"images/ajouter.gif"|url}" alt="[ inscription ]" title="m'inscrire sur {$liste.list}" />
       </a>
       {/if}
     </td>

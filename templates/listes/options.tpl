@@ -168,7 +168,7 @@ redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller 
         {if $options.accept_these_nonmembers|@count}
         {foreach from=$options.accept_these_nonmembers item=addr}
         {$addr}<a href='?liste={$smarty.get.liste}&amp;atn_del={$addr}'>
-          <img src='{"images/retirer.gif"|url}' alt='retirer de la whitelist' />
+          <img src='{"images/retirer.gif"|url}' alt='retirer de la whitelist' title="retirer {$addr} de la whitelist" />
         </a><br />
         {/foreach}
         {else}

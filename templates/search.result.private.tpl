@@ -17,19 +17,23 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.15 2004-10-16 14:36:09 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.16 2004-10-16 14:54:50 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="bits">
   {if $result.inscrit==1}
   <a href="javascript:x()" onclick="popupWin('fiche.php?user={$result.forlife}', 'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
-    <img src="images/loupe.gif" alt="Afficher les détails" />
+    <img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" />
   </a>
   <a href="vcard.php/{$result.forlife}.vcf?x={$result.forlife}">
-    <img src="images/vcard.png" alt="Afficher la carte de visite" />
+    <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" />
   </a>
   <a href="mescontacts.php?action={if $result.contact!=""}retirer{else}ajouter{/if}&amp;user={$result.forlife}&amp;mode=normal">
-    <img src="images/{if $result.contact!=""}retirer{else}ajouter{/if}.gif" alt="{if $result.contact!=""}Retirer de{else}Ajouter parmi{/if} mes contacts" />
+    {if $result.contact!=""}
+    <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
+    {else}
+    <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
+    {/if}
   </a>
   {/if}
   {perms level='admin'}

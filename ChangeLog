@@ -5,6 +5,9 @@ Changes :
 
 	* Lists :
 		- auto-moderate/discard mails tagged by bogofilter					-MC
+	
+	* Usability :
+		- all <a><img ... /></a> now have title (closes: FS#99).			-MC
 
 Fixes (from 0.9.0 branch) :
 

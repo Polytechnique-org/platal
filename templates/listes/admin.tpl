@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.9 2004-10-15 07:30:40 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.10 2004-10-16 14:54:50 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -72,7 +72,7 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
         {$x.l}
         {/if}
         <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.l}'>
-          <img src='{"images/retirer.gif"|url}' alt='retirer utilisateur' />
+          <img src='{"images/retirer.gif"|url}' alt='retirer modérateur' title='retirer modérater' />
         </a><br />
         {/foreach}
       </td>
@@ -107,7 +107,7 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
         {$x.l}
         {/if}
         <a href='?liste={$smarty.get.liste}&amp;del_member={$x.l}'>
-          <img src='{"images/retirer.gif"|url}' alt='retirer utilisateur' />
+          <img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' />
         </a><br />
         {/foreach}
       </td>

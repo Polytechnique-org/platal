@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.13 2004-10-12 19:54:36 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.14 2004-10-16 14:54:50 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -39,13 +39,13 @@
   </div>
   <div class="bits">
     <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}')">
-      <img src="images/loupe.gif" alt="Afficher les détails" />
+      <img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" />
     </a>
     <a href="vcard.php/{$c.forlife}.vcf?x={$c.user_id}">
-      <img src="images/vcard.png" alt="Afficher la carte de visite" />
+      <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" />
     </a>
     <a href="mescontacts.php?action={$show_action}&amp;user={$c.user_id}">
-      <img src="images/{$show_action}.gif" alt="{$show_action} aux/des contacts" />
+      <img src="images/{$show_action}.gif" alt="{$show_action} aux/des contacts" title="{$show_action} aux/des contacts" />
     </a>
     {perms level='admin'}
     <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}" onclick="return popup(this)">AX</a>

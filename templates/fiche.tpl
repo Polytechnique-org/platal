@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.16 2004-10-14 09:00:48 x2000coic Exp $
+        $Id: fiche.tpl,v 1.17 2004-10-16 14:54:50 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,9 +26,13 @@
 
 <div id="fiche_identite">
   <div class="civilite">{$prenom} {if $epouse eq ""}{$nom}{else}{$epouse} ({$nom}){/if}
-    <a href="vcard.php/{$forlife}.vcf?x={$user_id}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
+    <a href="vcard.php/{$forlife}.vcf?x={$user_id}">
+      <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
+    </a>&nbsp;
     {if !$is_contact}
-    <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
+    <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')">
+      <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
+    </a>&nbsp;
     {/if}
   </div>
   <div class='right' style="font-size: smaller; width:100%">(Fiche mise à jour le {$date|date_format:"%d %B %Y"})</div>
