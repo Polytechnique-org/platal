@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: options.php,v 1.3 2004-10-06 13:23:20 x2000habouzit Exp $
+        $Id: options.php,v 1.4 2004-10-16 11:39:38 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -36,7 +36,9 @@ $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 
 if(isset($_POST['submit'])) {
     $values =array_map('stripslashes',$_POST);
+    $client->set_bogo_level('polytechnique.org', $liste, intval($values['bogo_level']));
     unset($values['submit']);
+    unset($values['bogo_level']);
     $values['send_goodbye_msg'] = empty($values['send_goodbye_msg']) ? false : true;
     $values['admin_notify_mchanges'] = empty($values['admin_notify_mchanges']) ? false : true;
     $values['subscribe_policy'] = empty($values['subscribe_policy']) ? 0 : 2;
@@ -54,6 +56,7 @@ if(isset($_POST['submit'])) {
 if(list($details,$options) = $client->get_owner_options('polytechnique.org', $liste)) {
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
+    $page->assign('bogo_level', $client->get_bogo_level('polytechnique.org', $liste));
 } else
     $page->assign('no_list', true);
 

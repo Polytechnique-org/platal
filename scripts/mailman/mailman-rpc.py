@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.62 2004-10-16 10:41:32 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.63 2004-10-16 11:39:38 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -539,6 +539,47 @@ def del_from_wl((userdesc,perms),vhost,listname,addr):
         mlist.Unlock()
         return 0
 
+def get_bogo_level((userdesc,perms),vhost,listname):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        if mlist.header_filter_rules == []:
+            return 0
+        action = mlist.header_filter_rules[0][1]
+        if action == mm_cfg.HOLD:
+            return 1
+        if action == mm_cfg.DISCARD:
+            return 2
+    except:
+        return 0
+
+def set_bogo_level((userdesc,perms),vhost,listname,level):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        hfr = []
+        if int(level) is 1:
+            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
+        elif int(level) is 2:
+            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.DISCARD, False))
+        if mlist.header_filter_rules != hfr:
+            mlist.Lock()
+            mlist.header_filter_rules = hfr
+            mlist.Save()
+            mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
 #-------------------------------------------------------------------------------
 # admin procedures [ soptions.php ]
 #
@@ -676,6 +717,9 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.max_message_size = 0
 
         mlist.msg_footer = "_______________________________________________\nListe de diffusion %(real_name)s\nhttps://www.polytechnique.org/listes/"
+        
+        mlist.header_filter_rules = []
+        mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
 
         mlist.Save()
 
@@ -758,6 +802,8 @@ server.register_function(get_owner_options)
 server.register_function(set_owner_options)
 server.register_function(add_to_wl)
 server.register_function(del_from_wl)
+server.register_function(get_bogo_level)
+server.register_function(set_bogo_level)
 # soptions.php
 server.register_function(get_admin_options)
 server.register_function(set_admin_options)
