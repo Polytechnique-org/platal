@@ -8,7 +8,7 @@
  *                                                The Polytechnique.org TEAM  *
  *                                                                            *
  ******************************************************************************
-    $Id: xml-rpc.inc.php,v 1.3 2004-09-07 20:07:13 x2000habouzit Exp $
+    $Id: xml-rpc.inc.php,v 1.4 2004-09-09 23:21:42 x2000habouzit Exp $
  ******************************************************************************/
 
 /*
@@ -51,68 +51,67 @@
 /* generic function to call an http server with post method */
 function xu_query_http_post($request, $host, $uri, $port, $debug, 
                             $timeout, $user, $pass, $secure=false) {
-   $response_buf = "";
-   if ($host && $uri && $port) {
-      $content_len = strlen($request);
+    $response_buf = "";
+    if ($host && $uri && $port) {
+	$content_len = strlen($request);
 
-      $fsockopen = $secure ? "fsockopen_ssl" : "fsockopen";
+	$fsockopen = $secure ? "fsockopen_ssl" : "fsockopen";
 
-      dbg1("opening socket to host: $host, port: $port, uri: $uri", $debug);
-      $query_fd = $fsockopen($host, $port, $errno, $errstr, 10);
+	dbg1("opening socket to host: $host, port: $port, uri: $uri", $debug);
+	$query_fd = $fsockopen($host, $port, $errno, $errstr, 10);
 
-      if ($query_fd) {
+	if ($query_fd) {
 
-         $auth = "";
-         if ($user) {
-            $auth = "Authorization: Basic " .
-                    base64_encode($user . ":" . $pass) . "\r\n";
-         }
+	    $auth = "";
+	    if ($user) {
+		$auth = "Authorization: Basic " .  base64_encode($user . ":" . $pass) . "\r\n";
+	    }
 
-         $http_request = 
-         "POST $uri HTTP/1.0\r\n" .
-         "User-Agent: xmlrpc-epi-php/0.2 (PHP)\r\n" .
-         "Host: $host:$port\r\n" .
-         $auth .
-         "Content-Type: text/xml\r\n" .
-         "Content-Length: $content_len\r\n" . 
-         "\r\n" .
-         $request;
+	    $http_request =
+		"POST $uri HTTP/1.0\r\n" .
+		"Host: $host:$port\r\n" .
+		$auth .
+		"User-Agent: xmlrpc-epi-php/0.2 (PHP)\r\n" .
+		"Content-Type: text/xml\r\n" .
+		"Content-Length: $content_len\r\n" . 
+		"Connection: Close\r\n" .
+		"\r\n" .
+		$request;
 
-         dbg1("sending http request:</h3> <xmp>\n$http_request\n</xmp>", $debug);
+	    dbg1("sending http request:</h3> <xmp>\n$http_request\n</xmp>", $debug);
 
-         fputs($query_fd, $http_request, strlen($http_request));
+	    fputs($query_fd, $http_request, strlen($http_request));
 
-         dbg1("receiving response...", $debug);
+	    dbg1("receiving response...", $debug);
 
-         $header_parsed = false;
+	    $header_parsed = false;
 
-         $line = fgets($query_fd, 4096);
-         while ($line) {
-            if (!$header_parsed) {
-               if ($line === "\r\n" || $line === "\n") {
-                  $header_parsed = 1;
-               }
-               dbg2("got header - $line", $debug);
-            }
-            else {
-               $response_buf .= $line;
-            }
-            $line = fgets($query_fd, 4096);
-         }
+	    while (!feof($query_fd)) {
+		$line = fgets($query_fd, 4096);
+		if (!$header_parsed) {
+		    if ($line === "\r\n" || $line === "\n") {
+			$header_parsed = 1;
+		    }
+		    dbg2("got header - $line", $debug);
+		}
+		else {
+		    $response_buf .= $line;
+		}
+	    }
 
-         fclose($query_fd);
-      }
-      else {
-         dbg1("socket open failed", $debug);
-      }
-   }
-   else {
-      dbg1("missing param(s)", $debug);
-   }
+	    fclose($query_fd);
+	}
+	else {
+	    dbg1("socket open failed", $debug);
+	}
+    }
+    else {
+	dbg1("missing param(s)", $debug);
+    }
 
-   dbg1("got response:</h3>. <xmp>\n$response_buf\n</xmp>\n", $debug);
+    dbg1("got response:</h3>. <xmp>\n$response_buf\n</xmp>\n", $debug);
 
-   return $response_buf;
+    return $response_buf;
 }
 
 function xu_fault_code($code, $string) {
