@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.8 2004-11-05 15:22:12 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.9 2004-11-05 15:23:41 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -32,7 +32,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   <li>d'être notifié lorsque tes contacts changent leur fiche</li>
   <li>d'être notifié lorsque un de tes contacts décède</li>
   <li>si tu le désires, lorsque tu es notifié du décès d'un de tes camarades, il peut être automatiquement retiré de ta liste de contact.
-  (dans cec as ta liste de contact est vidée de tous les camarades qui sont décédés)
+  (dans ce cas ta liste de contact est vidée de tous les camarades qui sont décédés)
   </li>
 </ul>
 
