@@ -69,7 +69,7 @@ class MarkReq extends Validate
         if ($isok) {
             return "  Un mail de marketing vient d'être envoyé "
                 .($this->perso ? 'en ton nom' : 'en notre nom')
-                ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour l'encourrager à s'inscrire !\n\n"
+                ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour l'encourager à s'inscrire !\n\n"
                 ."Merci de ta participation !\n";
         } else {
             return "  Nous n'avons pas jugé bon d'envoyer de mail de marketing à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
