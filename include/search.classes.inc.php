@@ -280,10 +280,12 @@ class QuickSearch extends SField
             return "10 AS mark";
         }
 	$order = "0";
+        $sep   = "[ \\'\\-]";
 	foreach ($this->strings as $s) {
-	    $order .= " + ( (u.nom='$s' OR u.epouse='$s') + (CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '[ \\-]{$s}[ \\-]') )*100
-                        + ( u.nom LIKE '$s%' OR u.epouse LIKE '$s%' )*10
-                        + ( u.prenom LIKE '$s%' OR u.prenom LIKE '% $s%' OR u.prenom LIKE '%-$s%' )";
+	    $order .= " + ( (u.nom='$s' OR u.epouse='$s') + (CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '$sep{$s}$sep') )*1000
+                        + ( CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '$sep{$s}' )*100
+                        + ( (u.prenom = '$s') + (CONCAT(' ',u.prenom,' ') RLIKE '$sep{$s}$sep') )*10
+                        + ( u.prenom RLIKE '$sep{$s}' )";
 	}
         return $order.' AS mark';
     }

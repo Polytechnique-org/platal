@@ -37,6 +37,9 @@ Bug/Wish :
 
 	* Misc :
 		- #65: broken links.												-MC
+	
+	* Search :
+		- #249, #251, #253 : some tweaks to be more accurate.				-MC
 
 	* Validations :
 		- #137: now possible to add comments without any action.			-MC
