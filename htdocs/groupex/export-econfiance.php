@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: export-econfiance.php,v 1.5 2004-10-12 17:03:09 x2000habouzit Exp $
+        $Id: export-econfiance.php,v 1.6 2004-10-14 20:40:02 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -28,7 +28,7 @@ require("config.xorg.inc.php") ;
 require_once("xorg.common.inc.php");
 require_once("xml-rpc-client.inc.php");
 
-$cle = "186357043dcbe666ba6cb8.04581835";
+$cle = $globals->econfiance;
 
 if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md5($_SESSION["chall"].$cle)) {
 
