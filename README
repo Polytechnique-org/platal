@@ -48,5 +48,5 @@ BUILDING
 
 To build plat/al, simply run "make" from the toplevel directory.
 
-
+________________________________________________________________________________
 $ Id: README,v 1.4 2004/05/27 09:54:01 x99laine Exp $
