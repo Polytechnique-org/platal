@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.19 2004-10-22 11:18:04 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.20 2004-10-22 11:58:47 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -243,7 +243,7 @@
     <br />
     {min_auth level='cookie'}
     <input type='checkbox' name='mod_date_sort' {if $smarty.request.mod_date_sort}checked='checked'{/if} />
-    mettre les fiches modifiées récement en premier <br />
+    mettre les fiches modifiées récemment en premier <br />
     {/min_auth}
     <input type="submit" name="rechercher" value="Chercher" />
     </div>

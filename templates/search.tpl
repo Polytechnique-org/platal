@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.16 2004-10-14 11:58:26 x2000habouzit Exp $
+        $Id: search.tpl,v 1.17 2004-10-22 11:58:47 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -59,13 +59,13 @@
     {section name=resultat loop=$resultats}
     <div class="contact"
       {min_auth level='cookie'}title="fiche mise à jour le {$resultats[resultat].date|date_format:"%d %b %Y"}"{/min_auth}>
-      <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
-        {include file="search.result.public.tpl" result=$resultats[resultat]}
-        {min_auth level="cookie"}
-        {include file="search.result.private.tpl" result=$resultats[resultat]}
-        {/min_auth}
-        <div class="long"></div>
-      </div>
+      {if !$resultats[resultat].inscrit || $resultats[resultat].decede}<div class='grayed'>{/if}
+      {include file="search.result.public.tpl" result=$resultats[resultat]}
+      {min_auth level="cookie"}
+      {include file="search.result.private.tpl" result=$resultats[resultat]}
+      {/min_auth}
+      {if !$resultats[resultat].inscrit || $resultats[resultat].decede}</div>{/if}
+      <div class="long"></div>
     </div>
     {/section}
   </div>

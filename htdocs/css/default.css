@@ -211,6 +211,11 @@ div.contact-list div.contact {
     color: inherit;
 }
 
+div.grayed {
+    color: #444444;
+    font-style: italic;
+}
+
 div.contact div.nom {
     font-weight: bold;
     width: 35%;
@@ -218,13 +223,13 @@ div.contact div.nom {
 }
 
 div.contact div.appli {
-    width: 49%;
+    width: 48%;
     float: left;
 }
 
 div.contact div.bits {
     text-align: right;
-    width: 16%;
+    width: 17%;
     float: left;
 }
 
@@ -577,4 +582,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.50 2004-10-16 14:36:09 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.51 2004-10-22 11:58:47 x2000habouzit Exp $ */

@@ -13,6 +13,9 @@ Changes :
 		- Brand New NewsLetter module.										-MC
 		- Convert old archive to new model.									-Fco
 
+	* Search :
+		- dead members and non subsribed people are grayed.					-MC
+
 Fixes (from 0.9.0 branch) :
 
 	* Lists :
