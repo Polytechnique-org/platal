@@ -33,19 +33,13 @@ function erreur($text) {
     exit;
 }
 
-/* calcule la clé de Luhn d'un nombre */
+/* http://fr.wikipedia.org/wiki/Formule_de_Luhn */
 function luhn($nombre) {
+    $s = strrev($nombre);
     $sum = 0;
-    for ($i = 0; $i < strlen($nombre); $i++) {
-	$digit = substr($nombre,$i,1);
-	if ($i % 2) {
-	    if ($digit*2>9) 
-		$sum += 2*$digit - 9;
-	    else
-		$sum += 2*$digit;
-	} else {
-	    $sum += $digit;
-	}
+    for ($i = 0; $i < strlen($s); $i++) {
+	$dgt = $s{$i};
+        $sum += ($i % 2) ? (2*$dgt) % 9 : $dgt;
     }
     return $sum % 10;
 }
@@ -53,13 +47,13 @@ function luhn($nombre) {
 /* calcule la clé d'acceptation a partir de 5 champs */
 function cle_accept($d1,$d2,$d3,$d4,$d5)
 {
-    $m1 = luhn(strrev($d1.$d5));
-    $m2 = luhn(strrev($d2.$d5));
-    $m3 = luhn(strrev($d3.$d5));
-    $m4 = luhn(strrev($d4.$d5));
+    $m1 = luhn($d1.$d5);
+    $m2 = luhn($d2.$d5);
+    $m3 = luhn($d3.$d5);
+    $m4 = luhn($d4.$d5);
     $n = $m1 + $m2 + $m3 + $m4;
     $alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    return substr($alpha,$n-1,1).$m1.$m2.$m3.$m4;
+    return $alpha{$n-1}.$m1.$m2.$m3.$m4;
 }
 
 /* user id */
