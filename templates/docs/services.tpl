@@ -1,4 +1,4 @@
-{* $Id: services.tpl,v 1.1 2004-07-19 12:09:32 x2000habouzit Exp $ *}
+{* $Id: services.tpl,v 1.2 2004-08-23 14:32:09 x2000chevalier Exp $ *}
 
 <div class="rubrique">
   Services offerts aux X
