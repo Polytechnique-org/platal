@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: preferences.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: preferences.tpl,v 1.10 2004-11-04 16:59:30 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -30,14 +30,16 @@
     </th>
   </tr>
   <tr class="impair">
-    <td><div class="question">
+    <td class='half'>
+      <div class="question">
         <a href="{"emails.php"|url}">Mes adresses de redirection</a>
       </div>
       <div class="explication">
         Tu peux configurer tes différentes redirections de mails ici.
       </div>
     </td>
-    <td><div class="question">
+    <td class='half'>
+      <div class="question">
         <a href="{"alias.php"|url}">Mon alias mail @melix.net/.org</a>
       </div>
       <div class="explication">
@@ -45,15 +47,17 @@
       </div>
     </td>
   </tr>
-  <tr class="pair">
-    <td><div class="question">
+  <tr class="pair" cellpadding="0" cellspacing="0">
+    <td class='half'>
+      <div class="question">
         <a href="{"carva_redirect.php"|url}">Ma redirection de page WEB</a>
       </div>
       <div class="explication">
         Tu peux configurer tes redirections WEB http://www.carva.org/{dyn s=$smarty.session.bestalias} et http://www.carva.org/{dyn s=$smarty.session.forlife}
       </div>
     </td>
-    <td><div class="question">
+    <td class='half'>
+      <div class="question">
         <a href="{"skins.php"|url}">Apparence du site (skins)</a>
       </div>
       <div class="explication">
