@@ -18,8 +18,41 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.misc.inc.php,v 1.6 2004-09-03 00:15:51 x2000bedo Exp $
+        $Id: xorg.misc.inc.php,v 1.7 2004-10-21 13:12:06 x2000habouzit Exp $
  ***************************************************************************/
+
+function quoted_printable_encode($input, $line_max = 76) {
+    $hex = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+    $lines = preg_split("/(?:\r\n|\r|\n)/", $input);
+    $eol = "\r\n";
+    $linebreak = "=0A";
+    $escape = "=";
+    $output = "";
+
+    for ($j=0;$j<count($lines);$j++) {
+        $line = $lines[$j];
+        $linlen = strlen($line);
+        $newline = "";
+        for($i = 0; $i < $linlen; $i++) {
+            $c = substr($line, $i, 1);
+            $dec = ord($c);
+            if ( ($dec == 32) && ($i == ($linlen - 1)) ) { // convert space at eol only
+                $c = "=20";
+            } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) { // always encode "\t", which is *not* required
+                $h2 = floor($dec/16); $h1 = floor($dec%16);
+                $c = $escape.$hex["$h2"].$hex["$h1"];
+            }
+            if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
+                $output .= $newline.$escape."\n"; // soft line break; " =\r\n" is okay
+                $newline = "    ";
+            }
+            $newline .= $c;
+        } // end of for
+        $output .= $newline;
+        if ($j<count($lines)-1) $output .= $linebreak;
+    }
+    return trim($output);
+}
 
 /** vérifie si une adresse email (sans @) correspond à un alias (FIXME ou une liste)...
  * @param $email l'adresse email a verifier

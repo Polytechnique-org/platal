@@ -18,13 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.21 2004-10-20 20:04:28 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.22 2004-10-21 13:12:06 x2000habouzit Exp $
  ***************************************************************************/
-
 
 define('FEMME', 1);
 define('HOMME', 0);
 
+require_once("xorg.misc.inc.php");
 
 class NewsLetter {
     var $_id;
@@ -83,7 +83,10 @@ class NewsLetter {
 			      WHERE  id='{$this->_id}'");
     }
 
-    function title() { return stripslashes($this->_title); }
+    function title($mail_enc=false) {
+	$title = stripslashes($this->_title);
+	return $mail_enc ? "=?ISO-8859-1?Q?".quoted_printable_encode($title,200)."?=" : $title;;
+    }
     function head() { return stripslashes($this->_head); }
 
     function getArt($aid) {
@@ -251,7 +254,7 @@ EOF;
 	require_once('diogenes.mailer.inc.php');
 	$mailer = new DiogenesMailer("Lettre Mensuelle Polytechnique.org <info+nlp@polytechnique.org>",
 				     "$prenom $nom <$forlife@polytechnique.org>",
-				     replace_accent($this->title()),
+				     $this->title(true),
 				     $html);
 	if($html) {
 	    $mailer->addPart('text/plain; charset=iso-8859-1', 'iso-8859-1', $this->toText($prenom,$nom,$sex));
@@ -433,5 +436,4 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68) {
 	return $text;
     }
 }
-
 ?>
