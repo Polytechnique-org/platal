@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.20 2004-11-13 22:49:35 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.21 2004-11-17 10:49:52 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -192,6 +192,7 @@ function del_fwd(fwd) {
     {foreach from=$aliases item=a}
     <tr class="{cycle values="impair,pair"}">
       <td>
+        <input type="radio" name='best' {if $a.best}checked="checked"{/if} value='{$a.alias}' onclick="this.form.submit()" />
         {if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
       </td>

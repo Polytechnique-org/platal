@@ -18,14 +18,22 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.10 2004-11-07 20:17:22 x2000habouzit Exp $
+        $Id: emails.php,v 1.11 2004-11-17 10:49:50 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('emails.tpl',AUTH_COOKIE);
 
+if(isset($_POST['best'])) {
+    $globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id='{$_SESSION["uid"]}'");
+    $globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id='{$_SESSION["uid"]}'");
+    $globals->db->query("UPDATE  aliases
+		            SET  flags=CONCAT(flags,',','bestalias')
+			  WHERE  id='{$_SESSION["uid"]}' AND alias='{$_POST['best']}'");
+}
+
 // on regarde si on a affaire à un homonyme
-$sql = "SELECT  alias, (type='a_vie') AS a_vie, expire
+$sql = "SELECT  alias, (type='a_vie') AS a_vie, FIND_IN_SET('bestalias',flags) AS best, expire
           FROM  aliases
          WHERE  id='{$_SESSION['uid']}' AND type!='homonyme'
       ORDER BY  LENGTH(alias)";

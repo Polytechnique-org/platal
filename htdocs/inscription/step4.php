@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.12 2004-11-14 21:23:30 x2000habouzit Exp $
+        $Id: step4.php,v 1.13 2004-11-17 10:49:50 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -94,6 +94,7 @@ if (!empty($_REQUEST['ref'])) {
     require("email.classes.inc.php");
     $redirect = new Redirect($uid);
     $redirect->add_email($email);
+    fix_bestalias($uid);
     /****************** ajout des formations ****************/
     if (($appli_id1>0)&&($appli_type1))
         $globals->db->query("insert into applis_ins set uid=$uid,aid=$appli_id1,type='$appli_type1',ordre=0");

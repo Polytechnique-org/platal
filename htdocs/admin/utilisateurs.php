@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.29 2004-11-17 10:12:44 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.30 2004-11-17 10:49:50 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -101,6 +101,7 @@ if(isset($mr)) {
 		if(empty($val)) break;
 		$globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
 								AND type!='a_vie' AND type!='homonyme'");
+		fix_bestalias($_REQUEST['user_id']);
 		$errors[] = $val." a été supprimé";
 		break;
 
@@ -108,6 +109,15 @@ if(isset($mr)) {
 		$globals->db->query("INSERT INTO aliases (id,alias,type)
 				     VALUES ('{$_REQUEST['user_id']}','{$_REQUEST['email']}','alias')");
 		break;
+
+	    case "best":
+		$globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id='{$_REQUEST['user_id']}'");
+		$globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id='{$_REQUEST['user_id']}'");
+		$globals->db->query("UPDATE  aliases
+					SET  flags=CONCAT(flags,',','bestalias')
+				      WHERE  id='{$_REQUEST['user_id']}' AND alias='$val'");
+		break;
+
 
 	    // Editer un profil
 	    case "u_edit":
@@ -204,7 +214,7 @@ if(isset($mr)) {
     $page->assign('lastlogin', $lastlogin);
     $page->assign('host', $host);
 
-    $page->mysql_assign("SELECT  alias, type='a_vie' AS for_life,expire
+    $page->mysql_assign("SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
 			   FROM  aliases
 			  WHERE  id = {$mr["user_id"]} AND type!='homonyme'
 		       ORDER BY  type!= 'a_vie'", 'aliases');

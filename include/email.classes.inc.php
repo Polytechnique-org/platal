@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.8 2004-11-03 15:55:23 x2000habouzit Exp $
+        $Id: email.classes.inc.php,v 1.9 2004-11-17 10:49:51 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -41,6 +41,19 @@ function check_mtic($email) {
 	if (eregi($regexp,$domain)) return true;  // c'est le cas, on revoie true
     }
     return false;
+}
+
+function fix_bestalias($uid) {
+    global $globals;
+    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE id='$uid' AND FIND_IN_SET('bestalias',flags)");
+    list($n) = mysql_fetch_row($res);
+    mysql_free_result($res);
+    if($n) return;
+    $globals->db->query("UPDATE  aliases
+                            SET  flags=CONCAT(flags,',','bestalias')
+			  WHERE  id='$uid'
+		       ORDER BY  !FIND_IN_SET('epouse',flags),alias LIKE '%.%', LENGTH(alias)
+		          LIMIT  1");
 }
 
 class Bogo {

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: emails.tpl,v 1.10 2004-11-17 10:49:51 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -33,15 +33,20 @@
   </tr>
   <tr class="impair">
     <td>
-      Tes adresses polytechniciennes sont :
-      <ul>
-        {foreach from=$aliases item=a}
-        <li>
-        {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@polytechnique.org et @m4x.org 
-        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
-        </li>
-        {/foreach}
-      </ul>
+      Tes adresses polytechniciennes sont :<br /><br />
+      <form method='post' action='{$smarty.server.PHP_SELF}'>
+        <div>
+          {foreach from=$aliases item=a}
+          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='this.form.submit()' />
+          {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@polytechnique.org et @m4x.org 
+          {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
+          <br />
+          {/foreach}
+        </div>
+      </form>
+      <br />
+      L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche, etc...).
+      Coche une autre case pour en changer !
     </td>
   </tr>
   <tr class="pair">
