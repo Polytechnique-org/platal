@@ -18,12 +18,17 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: connect.db.inc.php,v 1.1 2004-10-02 15:34:53 x2000habouzit Exp $
+        $Id: connect.db.inc.php,v 1.2 2004-11-02 06:34:27 x2000habouzit Exp $
  ***************************************************************************/
 
-ini_set("include_path","/usr/share/php:../../include");
+ini_set("include_path","/usr/share/php/diogenes:/usr/share/php:../../include");
+
+require("diogenes.database.inc.php");
+require("../../include/xorg.globals.inc.php");
+$globals = new XorgGlobals;
+
 require("../../include/xorg.misc.inc.php");
 require("../../include/config.xorg.inc.php");
-mysql_connect($globals->dbhost,$globals->dbuser,$globals->dbpwd);
-mysql_select_db($globals->dbdb);
+$globals->dbconnect();
+
 ?>
