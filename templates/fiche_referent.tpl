@@ -17,25 +17,21 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: fiche_referent.tpl,v 1.8 2004-11-17 21:37:06 x2000habouzit Exp $
  ***************************************************************************}
  
 <div id="fiche">
   {dynamic}
 
-  <div id="fiche_identite">
-    <div class="civilite">{$prenom} {$nom}</div>
-    <span>X{$promo}&nbsp;-&nbsp;</span>
-    <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
+  <div class="center">
+    <strong>{$prenom} {$nom}</strong><br />
+    <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
   </div>
 
-  {**a-t-il bien des infos de referents ? **}
   {if $expertise != '' || ($nb_secteurs > 0)  || ($nb_pays > 0) }
 
-  <div style="clear: left;">&nbsp;</div>
-  <div class="categorie">Informations de référent : </div>
-  <hr />
-
+  <h2>Informations de référent :</h2>
+  
   <div id="fiche_referent">
     {if $expertise}
     <div class="rubrique_referent">
@@ -46,106 +42,89 @@
     {if $nb_secteurs > 0}
     <div class="rubrique_referent">
       <em>Secteurs :</em><br />
-      <div>
-        <ul>
-          {foreach from=$secteurs item="secteur" key="i"}
-          <li>{$secteur}{if $ss_secteurs.$i != ''} ({$ss_secteurs.$i}){/if}</li>
-          {/foreach}
-        </ul>
-      </div>
+      <ul>
+        {foreach from=$secteurs item="secteur" key="i"}
+        <li>{$secteur}{if $ss_secteurs.$i != ''} ({$ss_secteurs.$i}){/if}</li>
+        {/foreach}
+      </ul>
     </div>
     {/if}
     {if $nb_pays > 0}
     <div class="rubrique_referent">
       <em>Pays :</em>
-      <div>
-        <ul>
-          {foreach from=$pays item="pays_i"}
-          <li>{$pays_i}</li>
-          {/foreach}
-        </ul>
-      </div>
+      <ul>
+        {foreach from=$pays item="pays_i"}
+        <li>{$pays_i}</li>
+        {/foreach}
+      </ul>
     </div>
     {/if}
     <div class="spacer">&nbsp;</div>
   </div>
   {/if}
 
-  <div style="clear: left;">&nbsp;</div>
-  <div class="categorie">Informations professionnelles : </div>
-  <hr />
-
-  <div id="fiche_infospro">
-    {foreach from=$adr_pro item="address" key="i"}
-    <div class="entreprise">
-      <div class="titre">Entreprise n°{$i+1}</div>
-      <div class="details">
-        {if $address.entreprise}
-        <div>
-          <em>Entreprise/Organisme : </em>
-          <span>{$address.entreprise}</span>
-        </div>
-        {/if}
-        {if $address.secteur}
-        <div>
-          <em>Secteur : </em>
-          <span>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</span>
-        </div>
-        {/if}
-
-        {if $address.fonction}
-        <div>
-          <em>Fonction : </em>
-          <span>{$address.fonction}</span>
-        </div>
-        {/if}
-        {if $address.poste}
-        <div>
-          <em>Poste : </em>
-          <span>{$address.poste}</span>
-        </div>
-        {/if}
-      </div>
-
-      <div class="adr_pro">
-        {if $address.adr1 || $address.pays || $address.ville}
-        <em>Adresse : </em><br />
-        {if $address.adr1}<span>{$address.adr1}</span><br />{/if}
-        {if $address.adr2}<span>{$address.adr2}</span><br />{/if}
-        {if $address.adr3}<span>{$address.adr3}</span><br />{/if}
-        {if $address.ville}<span>{$address.cp} {$address.ville}</span><br />{/if}
-        {if $address.pays}
-        <span>{$address.pays}{if $address.region} ({$address.region}){/if}</span>
-        {/if}
-        {/if}
-
-        {if $address.tel}
-        <div>
-          <em>Tél : </em>
-          <span>{$address.tel}</span>
-        </div>
-        {/if}
-
-        {if $address.fax}
-        <div>
-          <em>Fax : </em>
-          <span>{$address.fax}</span>
-        </div>
-        {/if}
-      </div>
-      <div class="spacer">&nbsp;</div>
+  {foreach from=$adr_pro item="address" key="i"}
+  <h2>{$address.entreprise}</h2>
+  <div class="adresse">
+    {if $address.entreprise}
+    <div>
+      <em>Entreprise/Organisme : </em>
+      <strong>{$address.entreprise}</strong>
     </div>
-    {/foreach}
+    {/if}
+    {if $address.secteur}
+    <div>
+      <em>Secteur : </em>
+      <strong>{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</strong>
+    </div>
+    {/if}
+
+    {if $address.fonction}
+    <div>
+      <em>Fonction : </em>
+      <strong>{$address.fonction}</strong>
+    </div>
+    {/if}
+    {if $address.poste}
+    <div>
+      <em>Poste : </em>
+      <strong>{$address.poste}</strong>
+    </div>
+    {/if}
   </div>
+
+  <div class="adresse">
+    {if $address.adr1 || $address.pays || $address.ville}
+    <em>Adresse : </em><br />
+    {if $address.adr1}<strong>{$address.adr1}</strong><br />{/if}
+    {if $address.adr2}<strong>{$address.adr2}</strong><br />{/if}
+    {if $address.adr3}<strong>{$address.adr3}</strong><br />{/if}
+    {if $address.ville}<strong>{$address.cp} {$address.ville}</strong><br />{/if}
+    {if $address.pays}
+    <strong>{$address.pays}{if $address.region} ({$address.region}){/if}</strong>
+    {/if}
+    {/if}
+
+    {if $address.tel}
+    <div>
+      <em>Tél : </em>
+      <strong>{$address.tel}</strong>
+    </div>
+    {/if}
+
+    {if $address.fax}
+    <div>
+      <em>Fax : </em>
+      <strong>{$address.fax}</strong>
+    </div>
+    {/if}
+  </div>
+  <div class="spacer">&nbsp;</div>
+  {/foreach}
 
   {if $cv}
-  <div class="spacer">&nbsp;</div>
-  <div class="categorie">Curriculum Vitae : </div>
-  <hr />
-  <div class="spacer">&nbsp;</div>
-  <div id="fiche_cv">
-    <div>{$cv|nl2br}</div>
-  </div>
+  <h2>Curriculum Vitae : </h2>
+  <div>{$cv|nl2br}</div>
   {/if}
 
 

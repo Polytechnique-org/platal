@@ -411,31 +411,25 @@ div.adresse {
     margin: 0px 1% 1ex 1%;
 }
 
-div.adresse div.titre { color: purple; }
-
-div.entreprise{
-  width: 100%;
-  border: 1px dotted #BBB;
-  margin-bottom: 10px;
-  padding: 5px;
-}
-
 div.spacer { clear: both; }
 /* only for fiche_referent.php*/
 
 #fiche_referent{
-  float: left;
-  padding: 10px;
-  width: 500px;
+    padding: 10px;
+    width: 100%;
 }
 
 #fiche_referent div.rubrique_referent{
-  width: 100%;
-  padding: 5px;
+    float: left;
+    width: 31%;
+    padding: 0px;
+    margin: 0px 1% 1ex 1%;
+
 }
 
 #fiche_referent em{color: purple;}
-#fiche_referent li{font-weight: bold;}
+#fiche_referent ul { margin: 0px; padding: 0px 1em; }
+#fiche_referent li { font-weight: bold; margin: 0px; padding: 0px; }
 
 /*******************************************************************************
     A   SKIN
@@ -545,4 +539,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.64 2004-11-17 18:24:26 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.65 2004-11-17 21:37:06 x2000habouzit Exp $ */

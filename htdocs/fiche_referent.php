@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.php,v 1.10 2004-11-13 14:16:15 x2000habouzit Exp $
+        $Id: fiche_referent.php,v 1.11 2004-11-17 21:37:05 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -31,22 +31,22 @@ if (!isset($_REQUEST['user']))
   exit;
 
 //presuppose magic_quote à 'on'
-$reqsql = "SELECT  prenom, nom, user_id, promo, cv, a.alias AS forlife
+$reqsql = "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
              FROM  auth_user_md5 AS u
-       INNER JOIN  aliases       AS a ON (u.user_id=a.id AND a.type='a_vie')
+       INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
        INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id AND a1.alias = '{$_REQUEST['user']}' AND a1.type!='homonyme')";
 $result = $globals->db->query($reqsql);
 if (mysql_num_rows($result)!=1)
         exit;
 
-if (list($prenom, $nom, $user_id, $promo, $cv, $forlife) = mysql_fetch_row($result))
+if (list($prenom, $nom, $user_id, $promo, $cv, $bestalias) = mysql_fetch_row($result))
   mysql_free_result($result);
 
 $page->assign('prenom', $prenom);
 $page->assign('nom', $nom);
 $page->assign('promo', $promo);
 $page->assign('cv', $cv);
-$page->assign('forlife', $forlife);
+$page->assign('bestalias', $bestalias);
 
 
 //recuperation des infos professionnelles

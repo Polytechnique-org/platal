@@ -417,30 +417,25 @@ div.adresse {
 
 div.adresse div.titre { color: purple; }
 
-div.entreprise{
-  width: 100%;
-  border: 1px dotted #BBB;
-  margin-bottom: 10px;
-  padding: 5px;
-}
-
 div.spacer { clear: both; }
 
 /* only for fiche_referent.php*/
 
 #fiche_referent{
-    float: left;
     padding: 10px;
-    width: 500px;
+    width: 100%;
 }
 
 #fiche_referent div.rubrique_referent{
-    width: 100%;
-    padding: 5px;
+    float: left;
+    width: 31%;
+    padding: 0px;
+    margin: 0px 1% 1ex 1%;
 }
 
 #fiche_referent em{color: purple;}
-#fiche_referent li{font-weight: bold;}
+#fiche_referent ul { margin: 0px; padding: 0px 1em; }
+#fiche_referent li { font-weight: bold; margin: 0px; padding: 0px; }
 
 /*******************************************************************************
     A   SKIN
@@ -554,4 +549,4 @@ table#body {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: openweb.css,v 1.3 2004-11-17 18:56:13 x2000habouzit Exp $ */
+/* $Id: openweb.css,v 1.4 2004-11-17 21:37:06 x2000habouzit Exp $ */

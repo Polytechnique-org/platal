@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.tpl,v 1.12 2004-11-13 15:56:35 x2000habouzit Exp $
+        $Id: referent.tpl,v 1.13 2004-11-17 21:37:06 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -62,9 +62,9 @@ d'être plus précis.
       </div>
       <div class="bits" style="width: 40%;">
         <span class='smaller'>
-        <a href="{"fiche.php"|url}?user={$personnes[resultat].forlife}" class="popup2">
+        <a href="{"fiche.php"|url}?user={$personnes[resultat].bestalias}" class="popup2">
           <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
-          <a href="{"fiche_referent.php"|url}?user={$personnes[resultat].forlife}" class="popup2">Voir sa fiche référent</a>
+          <a href="{"fiche_referent.php"|url}?user={$personnes[resultat].bestalias}" class="popup2">Voir sa fiche référent</a>
         </span>
       </div>
       <div class="long">
