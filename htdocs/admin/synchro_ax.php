@@ -21,7 +21,7 @@
 
 
 require_once("xorg.inc.php");
-new_admin_page('synchro_ax.tpl');
+new_admin_page('admin/synchro_ax.tpl');
 
 require_once('user.func.inc.php');
 require_once('synchro_ax.inc.php');
@@ -47,32 +47,44 @@ if ($login) {
     $user  = get_user_details($login, Session::getInt('uid'));
     $userax= get_user_ax($user['user_id']);
 
-if (Env::has('importe')) {
+    if (Env::has('importe')) {
 
-    $adr_dels = array();
-    foreach ($user['adr'] as $adr)
-        if (Env::has('del_address'.$adr['adrid'])) $adr_dels[] = $adr['adrid'];
-        
-    $adr_adds = array();
-    foreach ($userax['adr'] as $i => $adr)
-        if (Env::has('add_address'.$i)) $adr_adds[] = $i;
-    
-    $pro_dels = array();
-    foreach ($user['adr_pro'] as $pro)
-        if (Env::has('del_pro'.$pro['entrid'])) $pro_dels[] = $pro['proid'];
+        $adr_dels = array();
+        foreach ($user['adr'] as $adr) {
+            if (Env::has('del_address'.$adr['adrid'])) {
+                $adr_dels[] = $adr['adrid'];
+            }
+        }
 
-    $pro_adds = array();
-    foreach ($userax['adr_pro'] as $i => $pro)
-        if (Env::has('add_pro'.$i)) $pro_adds[] = $i;
+        $adr_adds = array();
+        foreach ($userax['adr'] as $i => $adr) {
+            if (Env::has('add_address'.$i)) {
+                $adr_adds[] = $i;
+            }
+        }
 
-    import_from_ax($userax, Env::has('epouse'), Env::has('mobile'), $adr_dels, $adr_adds, $pro_dels, $pro_adds);
+        $pro_dels = array();
+        foreach ($user['adr_pro'] as $pro) {
+            if (Env::has('del_pro'.$pro['entrid'])) {
+                $pro_dels[] = $pro['proid'];
+            }
+        }
 
-}
+        $pro_adds = array();
+        foreach ($userax['adr_pro'] as $i => $pro) {
+            if (Env::has('add_pro'.$i)) {
+                $pro_adds[] = $i;
+            }
+        }
 
-$user  = get_user_details($login, Session::getInt('uid'));
+        import_from_ax($userax, Env::has('epouse'), Env::has('mobile'), $adr_dels, $adr_adds, $pro_dels, $pro_adds);
 
-$page->assign('x', $user);
-$page->assign('ax', $userax); 
+    }
+
+    $user  = get_user_details($login, Session::getInt('uid'));
+
+    $page->assign('x', $user);
+    $page->assign('ax', $userax); 
 }
 $page->run();
 
