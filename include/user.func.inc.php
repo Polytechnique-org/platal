@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: user.func.inc.php,v 1.5 2004-11-22 07:40:17 x2000habouzit Exp $
+    $Id: user.func.inc.php,v 1.6 2004-12-01 13:13:03 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ function user_clear_all_subs()
@@ -64,63 +64,6 @@ function user_clear_all_subs($user_id, $really_del=true)
     require_once('xml-rpc-client.inc.php');
     $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
     $client->kill($alias, $really_del);
-}
-
-// }}}
-// {{{ function inscription_forum_promo()
-
-/** inscrit l'uid donnée au forum promo 
- * @param $uid UID
- * @param $promo promo
- * @return la reponse MySQL
- * @see step4.php
- */
-function inscription_forum_promo($uid,$promo)
-{
-    global $globals;
-    // récupération de l'id du forum promo
-    $result=$globals->db->query("SELECT fid FROM forums.list WHERE nom='xorg.promo.x$promo'");
-    if (!list($fid)=mysql_fetch_row($result)) { // pas de forum promo, il faut le créer
-	$req_au=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo' AND perms IN ('admin','user')");
-	list($effau) = mysql_fetch_row($req_au);
-	$req_id=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo'");
-	list($effid) = mysql_fetch_row($req_id);
-	if (5*$effau>$effid) { // + de 20% d'inscrits
-	    require_once("xorg.mailer.inc.php");
-	    $mymail = new XOrgMailer('forums.promo.tpl');
-	    $mymail->assign('promo', $promo);
-	    $mymail->send();
-	}
-	$fid = false; 
-    }
-    mysql_free_result($result);
-    if ($fid) {
-	$globals->db->query("INSERT INTO forums.abos (fid,uid) VALUES ('$fid','$uid')");
-	$res = !($globals->db->err());
-    } else  $res = false;
-    return $res;
-} 
-
-// }}}
-// {{{ function inscription_forums()
-
-/** inscrit UID aux forums par défaut
- * @param $uid UID
- * @return la reponse MySQL globale
- * @see step4.php
- */
-function inscription_forums($uid)
-{
-    global $globals;
-    $res = true;
-    $cible = array('xorg.general','xorg.pa.emploi','xorg.pa.divers','xorg.pa.logements');
-    while (list ($key, $val) = each ($cible)) {
-	$result=$globals->db->query("SELECT fid FROM forums.list WHERE nom='$val'");
-	list($fid)=mysql_fetch_row($result);
-	$globals->db->query("INSERT INTO forums.abos (fid,uid) VALUES ('$fid','$uid')");
-	$res = $res and !($globals->db->err());
-    }
-    return $res;
 }
 
 // }}}

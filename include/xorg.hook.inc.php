@@ -41,7 +41,7 @@ require_once("PEAR.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
- * @version  $Id: xorg.hook.inc.php,v 1.7 2004-11-21 15:19:00 x2000habouzit Exp $
+ * @version  $Id: xorg.hook.inc.php,v 1.8 2004-12-01 13:13:03 x2000habouzit Exp $
  * @access   public
  * @link     http://doc.polytechnique.org/XOrgModule/#hook
  * @since    Classe available since 0.9.3
@@ -84,7 +84,7 @@ class XOrgHook extends PEAR
         }
         foreach (glob($globals->root."/hooks/$name/*.inc.php") as $file) {
             require_once("$file");
-            $this->_mods[] = str_replace('.inc.php', '', $file);
+            $this->_mods[] = basename($file, '.inc.php');
         }
     }
 
@@ -103,15 +103,16 @@ class XOrgHook extends PEAR
      */
     function __call($function, $arguments, &$return)
     {
-        if ( ($i = count($argument) - 1) < 0) {
+        if ( ($i = count($arguments) - 1) < 0) {
             $this->raiseError("In the Hook « {$this->_name} » the function « $function » expects at least 1 argument");
         }
         foreach ($this->_mods as $mod) {
+            echo $mod.'_'.$function;
             if (!function_exists($mod.'_'.$function)) continue;
-            $argument[$i] =& call_user_func_array($mod.'_'.$function,$argument);
+            $arguments[$i] =& call_user_func_array($mod.'_'.$function,$arguments);
         }
 
-        $return =& $argument[$i];
+        $return =& $arguments[$i];
         
         return true;
     }

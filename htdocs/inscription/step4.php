@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.20 2004-11-30 21:11:39 x2000habouzit Exp $
+        $Id: step4.php,v 1.21 2004-12-01 13:13:03 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -58,10 +58,10 @@ if (!empty($_REQUEST['ref'])) {
     $sql = "UPDATE auth_user_md5 SET password='$password', nationalite=$nationalite, perms='user',
             date='$date', naissance='$naissance', date_ins = NULL WHERE matricule='$matricule'";
     $globals->db->query($sql);
-    $sql = "INSERT INTO  auth_user_quick (user_id)
-                 SELECT  user_id
-		   FROM  auth_user_md5
-		  WHERE  matricule='$matricule'";
+    $sql = "REPLACE INTO  auth_user_quick (user_id)
+                  SELECT  user_id
+		    FROM  auth_user_md5
+		   WHERE  matricule='$matricule'";
     $globals->db->query($sql);
     
     // on vérifie qu'il n'y a pas eu d'erreur
@@ -114,13 +114,6 @@ if (!empty($_REQUEST['ref'])) {
         $mymail->send();
     }
    
-
-    /****************** inscription à la liste promo +nl ****************/
-    $inspromo = inscription_listes_base($uid,$password,$promo);
-    /****************** inscription aux forums de base   ****************/
-    $insforumpromo = inscription_forum_promo($uid,$promo);
-    $insforums = inscription_forums($uid);
-
     // effacer la pré-inscription devenue 
     $globals->db->query("update en_cours set loginbis='INSCRIT' WHERE username='$forlife'");
 
@@ -141,7 +134,14 @@ if (!empty($_REQUEST['ref'])) {
 
     // s'il est dans la table envoidirect, on le marque comme inscrit
     $globals->db->query("update envoidirect set date_succes=NOW() where matricule = $matricule");
+
+    require_once("xorg.hook.inc.php");
+    $hook = new XOrgHook('core');
+    $hook->subscribe($forlife, $uid, $promo, $password, true);
+    
     start_connexion($uid,false);
+    /****************** inscription à la liste promo +nl ****************/
+    $inspromo = inscription_listes_base($uid,$password,$promo);
 } else
     $page->assign('error',ERROR_REF);
 
