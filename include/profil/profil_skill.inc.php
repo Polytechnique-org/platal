@@ -3,14 +3,14 @@
 function select_comppros_name($cproname){
 	global $comppros_def, $comppros_title;
 	reset($comppros_def);
-	echo "<option value=\"\"".(($cproname == "")?" selected":"")."></option>";
+	echo "<option value=\"\"".(($cproname == "")?" selected='selected'":"")."></option>";
 	foreach( $comppros_def as $cid => $cname){
 		if($comppros_title[$cid] == 1){
 			//c'est un titre de categorie
-			echo "<option value=\"$cid\"".(($cname == $cproname)?" selected":"").">$cname</option>";
+			echo "<option value=\"$cid\"".(($cname == $cproname)?" selected='selected'":"").">$cname</option>";
 		}
 		else{
-			echo "<option value=\"$cid\"".(($cname == $cproname)?" selected":"").">-&nbsp;$cname</option>";
+			echo "<option value=\"$cid\"".(($cname == $cproname)?" selected='selected'":"").">-&nbsp;$cname</option>";
 		}
 	}
 }
@@ -22,9 +22,9 @@ $page->register_function('select_competence', '_select_comppros_name');
 function select_langue_name($lgname){
 	global $langues_def;
 	reset($langues_def);
-	echo "<option value=\"\"".(($lgname == "")?" selected":"")."></option>";
+	echo "<option value=\"\"".(($lgname == "")?" selected='selected'":"")."></option>";
 	foreach( $langues_def as $lid => $lname){
-		echo "<option value=\"$lid\"".(($lname == $lgname)?" selected":"").">$lname</option>";
+		echo "<option value=\"$lid\"".(($lname == $lgname)?" selected='selected'":"").">$lname</option>";
 	}
 }
 function _select_langue_name($params){
@@ -35,9 +35,9 @@ $page->register_function('select_langue', '_select_langue_name');
 function select_langue_level($llevel){
         global $langues_levels;
         reset($langues_levels);
-        echo "<option value=\"\"".(($lgname == "")?" selected":"")."></option>";
+        echo "<option value=\"\"".(($lgname == "")?" selected='selected'":"")."></option>";
         foreach( $langues_levels as $level => $levelname){
-                echo "<option value=\"$level\"".(($llevel == $level)?" selected":"").">&nbsp;$levelname&nbsp;</option>";
+                echo "<option value=\"$level\"".(($llevel == $level)?" selected='selected'":"").">&nbsp;$levelname&nbsp;</option>";
         }
 }
 function _select_langue_level($params){

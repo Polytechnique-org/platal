@@ -1,54 +1,55 @@
-{* $Id: mentor.tpl,v 1.5 2004-08-26 14:44:45 x2000habouzit Exp $ *}
+{* $Id: mentor.tpl,v 1.6 2004-08-30 11:35:37 x2000habouzit Exp $ *}
 
 {literal}
-<script language="JavaScript" type="text/javascript">
-  <!--
-
+<script type="text/javascript">
+  <![CDATA[
   function mentor_pays_add()
   {
-    var selid = document.prof_annu.mentor_pays_id_new.selectedIndex;
-    document.prof_annu.mentor_pays_id.value = document.prof_annu.mentor_pays_id_new.options[selid].value;
-    document.prof_annu.mentor_pays_name.value = document.prof_annu.mentor_pays_id_new.options[selid].text;
-    document.prof_annu.mentor_pays_op.value = "ajouter";
-    document.prof_annu.submit();
+    var selid = document.forms.prof_annu.mentor_pays_id_new.selectedIndex;
+    document.forms.prof_annu.mentor_pays_id.value = document.forms.prof_annu.mentor_pays_id_new.options[selid].value;
+    document.forms.prof_annu.mentor_pays_name.value = document.forms.prof_annu.mentor_pays_id_new.options[selid].text;
+    document.forms.prof_annu.mentor_pays_op.value = "ajouter";
+    document.forms.prof_annu.submit();
   } // function mentor_pays_add()
 
   function mentor_pays_del( pid )
   {
-    document.prof_annu.mentor_pays_id.value = pid;
-    document.prof_annu.mentor_pays_op.value = "retirer";
-    document.prof_annu.submit();
+    document.forms.prof_annu.mentor_pays_id.value = pid;
+    document.forms.prof_annu.mentor_pays_op.value = "retirer";
+    document.forms.prof_annu.submit();
   } // function mentor_pays_del( pid )
 
   function mentor_secteur_add()
   {
-    var selid_secteur = document.prof_annu.mentor_secteur_id_new.selectedIndex;
-    document.prof_annu.mentor_secteur_id.value = document.prof_annu.mentor_secteur_id_new.options[selid_secteur].value;
-    document.prof_annu.mentor_secteur_name.value = document.prof_annu.mentor_secteur_id_new.options[selid_secteur].text;
-    var selid_ss_secteur = document.prof_annu.mentor_ss_secteur_id_new.selectedIndex;
-    document.prof_annu.mentor_ss_secteur_id.value = document.prof_annu.mentor_ss_secteur_id_new.options[selid_ss_secteur].value;
-    document.prof_annu.mentor_ss_secteur_name.value = document.prof_annu.mentor_ss_secteur_id_new.options[selid_ss_secteur].text;
-    document.prof_annu.mentor_secteur_op.value = "ajouter";
-    document.prof_annu.submit();
+    var selid_secteur = document.forms.prof_annu.mentor_secteur_id_new.selectedIndex;
+    document.forms.prof_annu.mentor_secteur_id.value = document.forms.prof_annu.mentor_secteur_id_new.options[selid_secteur].value;
+    document.forms.prof_annu.mentor_secteur_name.value = document.forms.prof_annu.mentor_secteur_id_new.options[selid_secteur].text;
+    var selid_ss_secteur = document.forms.prof_annu.mentor_ss_secteur_id_new.selectedIndex;
+    document.forms.prof_annu.mentor_ss_secteur_id.value = document.forms.prof_annu.mentor_ss_secteur_id_new.options[selid_ss_secteur].value;
+    document.forms.prof_annu.mentor_ss_secteur_name.value = document.forms.prof_annu.mentor_ss_secteur_id_new.options[selid_ss_secteur].text;
+    document.forms.prof_annu.mentor_secteur_op.value = "ajouter";
+    document.forms.prof_annu.submit();
   } // function mentor_secteur_add()
 
   function mentor_secteur_del( sid )
   {
-    document.prof_annu.mentor_secteur_id.value = sid;
-    document.prof_annu.mentor_secteur_op.value = "retirer";
-    document.prof_annu.submit();
+    document.forms.prof_annu.mentor_secteur_id.value = sid;
+    document.forms.prof_annu.mentor_secteur_op.value = "retirer";
+    document.forms.prof_annu.submit();
   } // function mentor_secteur_del( sid )
 
-  //-->
+  //]]>
 </script>
 {/literal}
 
 <p>
 Si tu acceptes que ceux de nos camarades qui,
+</p>
 <ul>
   <li>encore jeunes, sont en train de bâtir leur projet professionnel,</li>
   <li>ou bien, plus âgés, souhaitent réorienter leur carrière,</li>
 </ul>
+<p>
 te contactent afin de te demander conseil, dans les domaines que tu connais
 bien, et pour lesquels tu pourrais les aider, remplis cette rubrique.<br />
 Tu peux mentionner ici les domaines de compétences, les expériences 
@@ -62,11 +63,11 @@ notamment internationales sur la base desquels tu seras identifiable depuis
     <tr>
       <th colspan="3">
         Pays dont tu connais bien la culture professionnelle
+        <input type="hidden" value="" name="mentor_pays_op" />
+        <input type="hidden" value="00" name="mentor_pays_id" />
+        <input type="hidden" value="" name="mentor_pays_name" />
       </th>
     </tr>
-    <input type="hidden" value="" name="mentor_pays_op" />
-    <input type="hidden" value="00" name="mentor_pays_id" />
-    <input type="hidden" value="" name="mentor_pays_name" />
     <tr>
       <td colspan="3" class="pflags">
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
@@ -137,13 +138,13 @@ notamment internationales sur la base desquels tu seras identifiable depuis
         <tr>
           <th colspan="3">
             Secteurs d'activité dans lesquels tu as beaucoup exercé
+            <input type="hidden" value="" name="mentor_secteur_op" />
+            <input type="hidden" value="" name="mentor_secteur_id" />
+            <input type="hidden" value="" name="mentor_secteur_name" />
+            <input type="hidden" value="" name="mentor_ss_secteur_id" />
+            <input type="hidden" value="" name="mentor_ss_secteur_name" />
           </th>
         </tr>
-        <input type="hidden" value="" name="mentor_secteur_op" />
-        <input type="hidden" value="" name="mentor_secteur_id" />
-        <input type="hidden" value="" name="mentor_secteur_name" />
-        <input type="hidden" value="" name="mentor_ss_secteur_id" />
-        <input type="hidden" value="" name="mentor_ss_secteur_name" />
         <tr>
           <td colspan="3" class="pflags">
             <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
@@ -194,7 +195,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
             <tr class="impair">
               {/if}
               <td class="colg">
-                <select name="mentor_secteur_id_new" OnChange="javascript:submit()">
+                <select name="mentor_secteur_id_new" onchange="javascript:submit()">
                   {select_secteur secteur=$mentor_secteur_id_new}
                 </select>
               </td>

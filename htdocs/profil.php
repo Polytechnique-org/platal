@@ -1,6 +1,6 @@
 <?php
 require("auto.prepend.inc.php");
-new_skinned_page('profil.tpl',AUTH_COOKIE, true);
+new_skinned_page('profil.tpl',AUTH_COOKIE, true, 'profil.head.tpl');
 
 if ($no_update_bd) {
     $_REQUEST = array();

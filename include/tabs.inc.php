@@ -68,7 +68,7 @@ function draw_tab($tab_name, $is_opened){
            <li>
 	      <a href="<?php echo "{$_SERVER['PHP_SELF']}?old_tab=$tab_name";?>">
                  <?php echo $tabname_array["$tab_name"];?>
-              </A>
+              </a>
            </li>
   <?php }
 }

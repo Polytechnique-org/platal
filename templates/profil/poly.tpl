@@ -1,9 +1,7 @@
-{* $Id: poly.tpl,v 1.2 2004-07-17 12:07:32 x2000habouzit Exp $ *}
+{* $Id: poly.tpl,v 1.3 2004-08-30 11:35:37 x2000habouzit Exp $ *}
 
 {literal}
-<script language="JavaScript" type="text/javascript">
-  <!--
-
+<script type="text/javascript">//<![CDATA[
   /** defgroup user_profile Gestion du profil utilisateur */
 
   /** ajout d'un binet au profil de l'utilisateur en base de données
@@ -13,10 +11,10 @@
   */
   function binet_add()
   {
-    var selid = document.prof_annu.binet_sel.selectedIndex;
-    document.prof_annu.binet_id.value = document.prof_annu.binet_sel.options[selid].value;
-    document.prof_annu.binet_op.value = "ajouter";
-    document.prof_annu.submit();
+    var selid = document.forms.prof_annu.binet_sel.selectedIndex;
+    document.forms.prof_annu.binet_id.value = document.forms.prof_annu.binet_sel.options[selid].value;
+    document.forms.prof_annu.binet_op.value = "ajouter";
+    document.forms.prof_annu.submit();
   } // function binet_add()
 
 
@@ -28,9 +26,9 @@
   */
   function binet_del( id )
   {
-    document.prof_annu.binet_id.value = id;
-    document.prof_annu.binet_op.value = "retirer";
-    document.prof_annu.submit();
+    document.forms.prof_annu.binet_id.value = id;
+    document.forms.prof_annu.binet_op.value = "retirer";
+    document.forms.prof_annu.submit();
   } // END function binet_del( id )
 
 
@@ -42,10 +40,10 @@
   */
   function groupex_add()
   {
-    var selid = document.prof_annu.groupex_sel.selectedIndex;
-    document.prof_annu.groupex_id.value = document.prof_annu.groupex_sel.options[selid].value;
-    document.prof_annu.groupex_op.value = "ajouter";
-    document.prof_annu.submit();
+    var selid = document.forms.prof_annu.groupex_sel.selectedIndex;
+    document.forms.prof_annu.groupex_id.value = document.forms.prof_annu.groupex_sel.options[selid].value;
+    document.forms.prof_annu.groupex_op.value = "ajouter";
+    document.forms.prof_annu.submit();
   } // END function groupex_add()
 
   /** suppression d'un groupeX du profil de l'utilisateur en base de données
@@ -55,12 +53,12 @@
   */
   function groupex_del( id )
   {
-    document.prof_annu.groupex_id.value = id;
-    document.prof_annu.groupex_op.value = 'retirer';
-    document.prof_annu.submit();
+    document.forms.prof_annu.groupex_id.value = id;
+    document.forms.prof_annu.groupex_op.value = 'retirer';
+    document.forms.prof_annu.submit();
   } // END function groupex_del( id )
 
-  //-->
+  //]]>
 </script>
 {/literal}
 <div class="blocunite_tab">
@@ -76,7 +74,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="rouge">
-              <input type="checkbox" name="accesX" checked"checked" disabled="disabled" />
+              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
               ne peut être ni public ni transmis à l'AX

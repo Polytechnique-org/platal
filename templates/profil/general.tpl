@@ -1,4 +1,4 @@
-{* $Id: general.tpl,v 1.6 2004-08-24 23:06:06 x2000habouzit Exp $ *}
+{* $Id: general.tpl,v 1.7 2004-08-30 11:35:37 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 <div class="blocunite_tab">
@@ -68,8 +68,8 @@
         </select>
         <script type="text/javascript">
           <!--
-          fillType(document.prof_annu.appli_type1, document.prof_annu.appli_id1.selectedIndex-1);
-          selectType(document.prof_annu.appli_type1, '{dyn x=$appli_type1}');
+          fillType(document.forms.prof_annu.appli_type1, document.forms.prof_annu.appli_id1.selectedIndex-1);
+          selectType(document.forms.prof_annu.appli_type1, '{dyn x=$appli_type1}');
           //-->
         </script>
       </td>
@@ -88,8 +88,8 @@
         </select>
         <script type="text/javascript">
           <!--
-          fillType(document.prof_annu.appli_type2, document.prof_annu.appli_id2.selectedIndex-1);
-          selectType(document.prof_annu.appli_type2, '{dyn x=$appli_type2}');
+          fillType(document.forms.prof_annu.appli_type2, document.forms.prof_annu.appli_id2.selectedIndex-1);
+          selectType(document.forms.prof_annu.appli_type2, '{dyn x=$appli_type2}');
           //-->
         </script>
       </td>
@@ -116,7 +116,7 @@
       </td>
     </tr>
     <tr>
-      <td class="col" colspan=3>
+      <td class="col" colspan="3">
         <table cellspacing="0" cellpadding="0" summary="Trombinoscope">
           <tr>
             <td class="dcold">
@@ -126,7 +126,7 @@
               <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
             </td>
             <td class="dcolg">
-              <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] ">
+              <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] " />
             </td>
           </tr>
         </table>

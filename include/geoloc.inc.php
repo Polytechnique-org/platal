@@ -9,7 +9,7 @@ function geoloc_pays($current) {
 
   $result = mysql_query($sql);
   while (list($my_id,$my_pays) = mysql_fetch_row($result))
-    printf("<option value=\"%s\" %s>%s</option>\n",$my_id,($current==$my_id?"selected":""),$my_pays);
+    printf("<option value=\"%s\" %s>%s</option>\n",$my_id,($current==$my_id?"selected='selected'":""),$my_pays);
 }
 function _geoloc_pays_smarty($params){
   if(!isset($params['pays']))
@@ -29,7 +29,7 @@ function geoloc_region($pays,$current) {
   
   echo "<option value=\"\"></option>";
   while (list($regid,$regname) = mysql_fetch_row($result))
-    printf("<option value=\"%s\" %s>%s</option>\n",$regid,($current==$regid?"selected":""),$regname);
+    printf("<option value=\"%s\" %s>%s</option>\n",$regid,($current==$regid?"selected='selected'":""),$regname);
 }
 function _geoloc_region_smarty($params){
   if(!isset($params['pays']))

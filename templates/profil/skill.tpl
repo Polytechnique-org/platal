@@ -1,43 +1,42 @@
-{* $Id: skill.tpl,v 1.3 2004-07-17 12:06:31 x2000habouzit Exp $ *}
+{* $Id: skill.tpl,v 1.4 2004-08-30 11:35:37 x2000habouzit Exp $ *}
 
 {literal}
-<script language="JavaScript" type="text/javascript">
-  <!--
-
+<script type="text/javascript">
+  //<![CDATA[
   function langue_add()
   {
-    var selectid = document.prof_annu.langue_sel_add.selectedIndex;
-    document.prof_annu.langue_id.value = document.prof_annu.langue_sel_add.options[selectid].value;
-    var selectid_level = document.prof_annu.langue_level_sel_add.selectedIndex;
-    document.prof_annu.langue_level.value = document.prof_annu.langue_level_sel_add.options[selectid_level].value;
-    document.prof_annu.langue_op.value = "ajouter";
-    document.prof_annu.submit();
+    var selectid = document.forms.prof_annu.langue_sel_add.selectedIndex;
+    document.forms.prof_annu.langue_id.value = document.forms.prof_annu.langue_sel_add.options[selectid].value;
+    var selectid_level = document.forms.prof_annu.langue_level_sel_add.selectedIndex;
+    document.forms.prof_annu.langue_level.value = document.forms.prof_annu.langue_level_sel_add.options[selectid_level].value;
+    document.forms.prof_annu.langue_op.value = "ajouter";
+    document.forms.prof_annu.submit();
   } // function langue_add()
 
   function langue_del( lid )
   {
-    document.prof_annu.langue_id.value = lid;
-    document.prof_annu.langue_op.value = "retirer";
-    document.prof_annu.submit();
+    document.forms.prof_annu.langue_id.value = lid;
+    document.forms.prof_annu.langue_op.value = "retirer";
+    document.forms.prof_annu.submit();
   } // function langue_del( id )
 
   function comppros_add()
   {
-    var selectid = document.prof_annu.comppros_sel_add.selectedIndex;
-    document.prof_annu.comppros_id.value = document.prof_annu.comppros_sel_add.options[selectid].value;
-    var selectid_level = document.prof_annu.comppros_level_sel_add.selectedIndex;
-    document.prof_annu.comppros_level.value = document.prof_annu.comppros_level_sel_add.options[selectid_level].value;
-    document.prof_annu.comppros_op.value = "ajouter";
-    document.prof_annu.submit();
+    var selectid = document.forms.prof_annu.comppros_sel_add.selectedIndex;
+    document.forms.prof_annu.comppros_id.value = document.forms.prof_annu.comppros_sel_add.options[selectid].value;
+    var selectid_level = document.forms.prof_annu.comppros_level_sel_add.selectedIndex;
+    document.forms.prof_annu.comppros_level.value = document.forms.prof_annu.comppros_level_sel_add.options[selectid_level].value;
+    document.forms.prof_annu.comppros_op.value = "ajouter";
+    document.forms.prof_annu.submit();
   } // function langue_add()
 
   function comppros_del( cid )
   {
-    document.prof_annu.comppros_id.value = cid;
-    document.prof_annu.comppros_op.value = "retirer";
-    document.prof_annu.submit();
+    document.forms.prof_annu.comppros_id.value = cid;
+    document.forms.prof_annu.comppros_op.value = "retirer";
+    document.forms.prof_annu.submit();
   } // function comppros_del( id )
-  //-->
+  //]]>
 </script>
 {/literal}
 
@@ -47,11 +46,11 @@
     <tr>
       <th colspan="3">
         Compétences professionnelles
+        <input type="hidden" value="" name="comppros_op" />
+        <input type="hidden" value="" name="comppros_id" />
+        <input type="hidden" value="" name="comppros_level" />
       </th>
     </tr>
-    <input type="hidden" value="" name="comppros_op" />
-    <input type="hidden" value="" name="comppros_id" />
-    <input type="hidden" value="" name="comppros_level" />
     <tr>
       <td colspan="3" class="pflags">
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
@@ -126,11 +125,11 @@
         <tr>
           <th colspan="3">
             Compétences linguistiques
+            <input type="hidden" value="" name="langue_op" />
+            <input type="hidden" value="" name="langue_id" />
+            <input type="hidden" value="" name="langue_level" />
           </th>
         </tr>
-        <input type="hidden" value="" name="langue_op" />
-        <input type="hidden" value="" name="langue_id" />
-        <input type="hidden" value="" name="langue_level" />
         <tr>
           <td colspan="3" class="pflags">
             <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">

@@ -1,4 +1,4 @@
-{* $Id: adresses.tpl,v 1.4 2004-08-24 23:06:06 x2000habouzit Exp $ *}
+{* $Id: adresses.tpl,v 1.5 2004-08-30 11:35:37 x2000habouzit Exp $ *}
 
 <div class="blocunite_tab">
   <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Adresses personnelles">
@@ -138,52 +138,53 @@
         <input type="radio" name="secondaire[{$adrid}]" value="1" {if $adr.secondaire}checked="checked"{/if} />
         une résidence secondaire
       </td>
-      <tr>
-        <td class="colg">
-          &nbsp;
-        </td>
-        <td class="cold">
-          <input type="checkbox" name="courrier[{$adrid}]" value="1" {if $adr.courrier}checked="checked"{/if} /> on peut m'y envoyer du courrier par la poste
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" class="flags">
-          <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-            <tr>
-              <td class="vert">
-                <input type="checkbox" name="tel_public[{$adrid}]" value="1" {if $adr.tel_public}checked="checked"{/if} />
-              </td>
-              <td class="texte">
-                site public
-              </td>
-              <td class="orange">
-                <input type="checkbox" name="tel_ax[{$adrid}]" value="1" {if $adr.tel_ax}checked="checked"{/if} />
-              </td>
-              <td class="texte">
-                transmis à l'AX
-              </td>
-              <td class="texte">
-                <a href="javascript:x()" onclick="popWin('aide.php#flags','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">Quelle couleur ??</a>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td class="colg">
-          <span class="titre">Téléphone associé</span>
-        </td>
-        <td>
-          <input type="text" size="19" maxlength="28" name="tel[{$adrid}]" value="{$adr.tel}" />
-          &nbsp;
-          <span class="titre">Fax</span>
-          <input type="text" size="19" maxlength="28" name="fax[{$adrid}]" value="{$adr.fax}" />
-        </td>
-      </tr>
-      <tr><td colspan="5">&nbsp;</td></tr>
-      {/section}
-      <tr><td colspan="5">&nbsp;</td></tr>
-    </table>
-  </div>
+    </tr>
+    <tr>
+      <td class="colg">
+        &nbsp;
+      </td>
+      <td class="cold">
+        <input type="checkbox" name="courrier[{$adrid}]" value="1" {if $adr.courrier}checked="checked"{/if} /> on peut m'y envoyer du courrier par la poste
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="flags">
+        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+          <tr>
+            <td class="vert">
+              <input type="checkbox" name="tel_public[{$adrid}]" value="1" {if $adr.tel_public}checked="checked"{/if} />
+            </td>
+            <td class="texte">
+              site public
+            </td>
+            <td class="orange">
+              <input type="checkbox" name="tel_ax[{$adrid}]" value="1" {if $adr.tel_ax}checked="checked"{/if} />
+            </td>
+            <td class="texte">
+              transmis à l'AX
+            </td>
+            <td class="texte">
+              <a href="javascript:x()" onclick="popWin('aide.php#flags','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">Quelle couleur ??</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Téléphone associé</span>
+      </td>
+      <td>
+        <input type="text" size="19" maxlength="28" name="tel[{$adrid}]" value="{$adr.tel}" />
+        &nbsp;
+        <span class="titre">Fax</span>
+        <input type="text" size="19" maxlength="28" name="fax[{$adrid}]" value="{$adr.fax}" />
+      </td>
+    </tr>
+    <tr><td colspan="5">&nbsp;</td></tr>
+    {/section}
+    <tr><td colspan="5">&nbsp;</td></tr>
+  </table>
+</div>
 
-  {* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2: *}
