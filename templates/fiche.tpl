@@ -2,7 +2,7 @@
 <div class="boite">
   <div class="item" style="text-align:center;padding-left: 20px;padding-right: 20px; max-width: 250px;">
   <strong>{$prenom} {$nom}</strong><br />
-  <span>X {$promo}&nbsp;-&nbsp;{$applis}</span><br />
+  <span>X {$promo}&nbsp;-&nbsp;{$applis|smarty:nodefaults}</span><br />
   <span style="font-size: small;">(Fiche mise à jour le {$date|date_format:"%d/%m/%Y"})</span><br />
   <span>
     <a href="vcard.php/{$username}.vcf?x={$username}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
