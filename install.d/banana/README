@@ -35,5 +35,6 @@ DEPENDS
 -------
 
   platal
-
+  + uncompface  (usually in compface)
+  + convert     (usually in imagemagick)
 

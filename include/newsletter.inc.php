@@ -253,12 +253,14 @@ EOF;
     }
     
     function sendTo($prenom,$nom,$login,$sex,$html) {
+        global $globals;
 	require_once('diogenes.hermes.inc.php');
+
 	$mailer = new HermesMailer();
-	$mailer->setFrom("\"Lettre Mensuelle Polytechnique.org\" <info_newsletter@polytechnique.org>");
+	$mailer->setFrom($globals->newsletter->from);
 	$mailer->setSubject($this->title());
 	$mailer->addTo("\"$prenom $nom\" <$login@polytechnique.org>");
-	$mailer->addHeader('Reply-To','info+nlp@polytechnique.org');
+	$mailer->addHeader('Reply-To',$globals->newsletter->replyto);
 	$mailer->setTxtBody($this->toText($prenom,$nom,$sex));
 	if($html) {
 	    $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
