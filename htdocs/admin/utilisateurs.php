@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.13 2004-09-01 23:06:49 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.14 2004-09-02 09:47:07 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -215,7 +215,7 @@ if (!empty($_REQUEST['select'])) {
         }
         mysql_free_result($result);
        
-	$page->mysql_assign("SELECT alias FROM aliases WHERE id = {$mr["user_id"]}", 'aliases');
+	$page->mysql_assign("SELECT alias, type='login' AS for_life FROM aliases WHERE id = {$mr["user_id"]} ORDER BY type!= 'login'", 'aliases');
         $page->assign_by_ref('xorgmails', $xorgmails);
         $page->assign_by_ref('email_panne', $email_panne);
         $page->assign('next_num', $next_num);

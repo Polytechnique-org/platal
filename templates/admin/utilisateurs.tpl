@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.10 2004-09-01 21:15:00 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.11 2004-09-02 09:47:07 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -170,16 +170,23 @@ depuis <strong>{$mr.host}</strong>
     </tr>
     <tr>
       <th class="alias" colspan="2">
-        Adresses e-mail
+        Alias e-mail
       </th>
       <td class="action">&nbsp;</td>
     </tr>
     {foreach from=$aliases item=a}
     <tr>
-      <td class="alias" colspan="2">{$a.alias}@polytechnique.org</td>
+      <th class="detail">{if $a.for_life}garantie à vie*{/if}</th>
+      <td class="detail">{if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}</td>
       <td class="action">&nbsp;</td>
     </tr>
     {/foreach}
+    <tr>
+      <th class="alias" colspan="2">
+        Redirections
+      </th>
+      <td class="action">&nbsp;</td>
+    </tr>
     {foreach item=mail from=$xorgmails}
     <tr> 
       <th class="detail"> 
@@ -214,6 +221,9 @@ depuis <strong>{$mr.host}</strong>
     </tr>
   </table>
 </form>
+<p>
+<strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
+</p>
 <p class="erreur">
 {foreach from=$email_panne item=e}
 {$p}<br />
