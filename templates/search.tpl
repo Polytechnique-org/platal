@@ -21,7 +21,7 @@
 
 {if $formulaire==0 and !$xorg_error->errs|count}
   {if !$advanced}
-  {include file='search.quick.form.tpl'}
+  {include file='search.quick.form.tpl' show_js=1}
   {else}
   {include file=search.adv.links.tpl do_title=1}
   {/if}

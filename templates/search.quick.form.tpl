@@ -20,7 +20,7 @@
 
 <h1>Recherche simple dans l'annuaire</h1>
 
-<form action="{"search.php"|url}" method="get">
+<form action="{"search.php"|url}" method="get"{if $show_js} id="quick_form"{/if}>
   <table class="bicol" cellspacing="0" cellpadding="4">
     <tr>
       <td style="width: 78%">
@@ -42,19 +42,14 @@
 
 <br />
 
+{if $show_js}
 {literal}
 <script type="text/javascript">
   <!--
   // Activate the first search input field.
-  var nodes = document.getElementsByTagName('input');
-  for(var i=0; i<nodes.length; i++) {
-    node = nodes[i];
-    if(node.name == 'quick') {
-      node.focus();
-      break;
-    }
-  }
+  document.getElementById("quick_form").quick.focus();
   // -->
 </script>
 {/literal}
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

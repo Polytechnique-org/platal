@@ -18,8 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{include file="search.quick.form.tpl"}
-
+{include file="search.quick.form.tpl" show_js=1}
 <h1>Comment faire une recherche ?</h1>
 
 <h2>Nom, Prenom, Promo ...</h2>
