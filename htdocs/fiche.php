@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.9 2004-09-05 17:42:35 x2000habouzit Exp $
+        $Id: fiche.php,v 1.10 2004-09-05 20:27:57 x2000coic Exp $
  ***************************************************************************/
 
 
@@ -83,6 +83,8 @@ $page->assign('section', $section);
 $page->assign('mobile', $mobile);
 $page->assign('web', $web);
 $page->assign('libre', $libre);
+
+$page->assign('xorg_title', "$prenom $nom");
 
 // reformatage is_contact
 $is_contact = (bool) $is_contact;
