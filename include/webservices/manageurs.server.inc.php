@@ -27,8 +27,9 @@ function get_annuaire_infos($method, $params) {
         //on ne recupere pas les adresses inutilement
         if(!isset($params[2])){
             $res = $globals->xdb->iterRow(
-                    "SELECT  a.mobile AS cell, a.naissance AS age
+                    "SELECT  aq.profile_mobile AS cell, a.naissance AS age
                        FROM  auth_user_md5 AS a
+		       INNER JOIN auth_user_quick AS aq ON (a.user_id = aq.user_id)
                       WHERE  a.matricule = {?}", $params[1]);
         }
         else{
