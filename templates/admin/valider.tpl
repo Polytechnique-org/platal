@@ -26,7 +26,7 @@
 {iterate item=valid from=$vit|smarty:nodefaults}
 <br />
 <form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol">
+  <table class="bicol" {popup caption="Règles de validation" text=$valid->rules}>
     <tr>
       <th colspan="2">{$valid->type}</th>
     </tr>

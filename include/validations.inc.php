@@ -77,6 +77,8 @@ class Validate
     var $refuse = true;
     var $type;
     var $comments = Array();
+    // the validations rules : comments for admins
+    var $rules = "Mieux vaut laisser une demande de validation à un autre admin que de valider une requête illégale ou que de refuser une demande légitime";
 
     // }}}
     // {{{ constructor
