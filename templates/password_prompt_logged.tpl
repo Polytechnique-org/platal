@@ -1,4 +1,4 @@
-{* $Id: password_prompt_logged.tpl,v 1.2 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.3 2004-01-26 12:50:19 x2000habouzit Exp $ *}
 
 <div style="text-align:center">
   <table width="90%" summary="Accès sécurisé">
@@ -17,7 +17,7 @@
 </div>
 <br /><br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onSubmit='doChallengeResponse(); return false;'>
-  <table class="bicol" align="center" cellpadding="4" summary="Formulaire de login">
+  <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td>
         <span class="login">Mot de passe:</span>
@@ -31,7 +31,7 @@
         <img src="{"images/pi.png"|url}" alt=" [ ? ] ">
         <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
       </td>
-      <td align=right>
+      <td style="text-align:right">
         <input  type="submit" name="submitbtn" value="Envoyer">
       </td>
     </tr>

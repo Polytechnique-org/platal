@@ -57,6 +57,7 @@ table.bicol {
     border: 1px solid #336699;
     border-collapse: collapse;
     width: 98%;
+    margin-left: 1%;
 }
 table.bicol tr.impair {}
 table.bicol tr.pair {
