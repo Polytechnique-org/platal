@@ -36,8 +36,10 @@ templates_c:
 	mkdir templates_c
 	chmod o+w templates_c
 
-devel: build cache templates_c
+htdocs/valid.html:
 	ln -sf ../cache/valid.html htdocs/valid.html
+
+devel: build cache templates_c htdocs/valid.html
 
 ################################################################################
 # diogenes package targets
