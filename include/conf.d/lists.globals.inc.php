@@ -23,10 +23,13 @@
 
 class ListsConfig
 {
-    var $rpchost  = 'localhost';
-    var $rpcport  = 4949;
+    var $rpchost     = 'localhost';
+    var $rpcport     = 4949;
     
-    var $spool    = '/var/spool/platal/archives/';
+    var $spool       = '/var/spool/platal/archives/';
+
+    var $admin_owner = '';
+    var $vhost_sep   = '-';
 }
 
 // }}}

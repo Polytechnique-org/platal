@@ -23,7 +23,8 @@
 
 class MailConfig
 {
-    var $domain       = 'polytechnique.org';
+    var $domain  = '';
+    var $domain2 = '';
 }
 
 // }}}

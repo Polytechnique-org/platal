@@ -19,7 +19,7 @@
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
 
-import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil
+import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil, ConfigParser
 import MySQLdb.converters
 
 sys.path.append('/usr/lib/mailman/bin')
@@ -43,10 +43,34 @@ from email.Iterators import typed_subpart_iterator
 
 class AuthFailed(Exception): pass
 
-try:
-    VHOST_SEP = mm_cfg.VHOST_SEP.lower()
-except:
-    VHOST_SEP = '-'
+################################################################################
+#
+# CONFIG
+#
+#------------------------------------------------
+
+config = ConfigParser.ConfigParser()
+config.read(os.path.dirname(__file__)+'/../configs/platal.conf')
+
+def get_config(sec,val,default=None):
+    try:
+        return config.get(sec, val)[1:-1]
+    except ConfigParser.NoOptionError, e:
+        if default is None:
+            print e
+            sys.exit(1)
+        else:
+            return default
+
+BASEURL        = get_config('Core', 'baseurl')
+MYSQL_USER     = get_config('Core', 'dbuser')
+MYSQL_PASS     = get_config('Core', 'dbpwd')
+
+PLATAL_DOMAIN  = get_config('Mail', 'domain')
+PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
+
+ML_OWNER       = get_config('Lists', 'admin_owner')
+VHOST_SEP      = get_config('Lists', 'vhost_sep', '-')
 
 ################################################################################
 #
@@ -97,13 +121,13 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                           LIMIT  1""" %( uid, md5 ) )
         if int(mysql.rowcount) is 1:
             name,forlife,perms = mysql.fetchone()
-            if vhost != 'polytechnique.org':
+            if vhost != PLATAL_DOMAIN:
                 mysql.execute ("""SELECT  uid
                                     FROM  groupex.membres AS m
                               INNER JOIN  groupex.asso    AS a ON (m.asso_id = a.id)
                                    WHERE  perms='admin' AND uid='%s' AND mail_domain='%s'""" %( uid , vhost ) )
                 if int(mysql.rowcount) is 1: perms= 'admin'
-            userdesc = UserDesc(forlife+'@polytechnique.org', name, None, 0)
+            userdesc = UserDesc(forlife+'@'+PLATAL_DOMAIN, name, None, 0)
             return (userdesc,perms,vhost)
         else:
             return None
@@ -119,14 +143,14 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 def connectDB():
     db = MySQLdb.connect(
             db='x4dat',
-            user=mm_cfg.MYSQL_USER,
-            passwd=mm_cfg.MYSQL_PASS,
+            user=MYSQL_USER,
+            passwd=MYSQL_PASS,
             unix_socket='/var/run/mysqld/mysqld.sock')
     db.ping()
     return db.cursor()
 
 def is_owner(userdesc,perms,mlist):
-    return ( perms == 'admin' and mm_cfg.ADMIN_ML_OWNER in mlist.owner ) or ( userdesc.address in mlist.owner )
+    return ( perms == 'admin' and ML_OWNER in mlist.owner ) or ( userdesc.address in mlist.owner )
 
 def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
@@ -144,14 +168,14 @@ def to_forlife(email):
         mbox,fqdn = email.split('@')
     except:
         mbox = email
-        fqdn = 'polytechnique.org'
-    if ( fqdn == 'm4x.org' ) or (fqdn == 'polytechnique.org' ):
-        mysql.execute ("""SELECT  CONCAT(f.alias,'@polytechnique.org'), CONCAT(u.prenom,' ',u.nom)
+        fqdn = PLATAL_DOMAIN
+    if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
+        mysql.execute ("""SELECT  CONCAT(f.alias,'@%s'), CONCAT(u.prenom,' ',u.nom)
                             FROM  auth_user_md5 AS u
                       INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
                       INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
                            WHERE  u.perms IN ('admin','user')
-                           LIMIT  1""" %( mbox ) )
+                           LIMIT  1""" %( PLATAL_DOMAIN, mbox ) )
         if int(mysql.rowcount) is 1:
             return mysql.fetchone()
         else:
@@ -174,7 +198,7 @@ def remove_it(listname, filename):
 def get_list_info(userdesc,perms,mlist,front_page=0):
     members    = mlist.getRegularMemberKeys()
     is_member  = userdesc.address in members
-    is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
+    is_admin   = ML_OWNER in mlist.owner
     is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
     if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
         is_pending = False
@@ -775,7 +799,9 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
 
-        mlist.msg_footer = "_______________________________________________\nListe de diffusion %(real_name)s\nhttps://www.polytechnique.org/listes/"
+        mlist.msg_footer = "_______________________________________________\n" \
+                         + "Liste de diffusion %(real_name)s\n" \
+                         + BASEURL+"/listes/"
         
         mlist.header_filter_rules = []
         mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
@@ -831,7 +857,7 @@ def delete_list(userdesc,perms,vhost,listname,del_archives=0):
 def kill(userdesc,perms,vhost,alias,del_from_promo):
     exclude = []
     if not del_from_promo:
-        exclude.append('polytechnique.org'+VHOST_SEP+'promo'+alias[-4:])
+        exclude.append(PLATAL_DOMAIN+VHOST_SEP+'promo'+alias[-4:])
     for list in Utils.list_names():
         if list in exclude: continue
         try:
@@ -840,7 +866,7 @@ def kill(userdesc,perms,vhost,alias,del_from_promo):
             continue
         try:
             mlist.Lock()
-            mlist.ApprovedDeleteMember(alias+'@polytechnique.org',None,0,0)
+            mlist.ApprovedDeleteMember(alias+'@'+PLATAL_DOMAIN,None,0,0)
             mlist.Save()
             mlist.Unlock()
         except:

@@ -15,15 +15,8 @@ CONFIG OPTIONS
   spool   = "/var/spool/platal/archives/"
                             ; the directory that holds mhonarc archives
 
-MAILMAN CONFIG
---------------
-
-add in /etc/mailman/mm_cfg.py
-
-    MYSQL_USER = <your mysql user here>
-    MYSQL_PASS = <your mysql pass here>
-    ADMIN_ML_OWNER = <the owner of admin ML's>
-    SENDER_HEADERS = ('X-Org-Mail', 'from', None, 'reply-to', 'sender')
+  vhost_sep   = '-'         ; the vhost separator in mailman hack
+  admin_owner = ''          ; the owner that distinguish admin ML's
 
 
 BUGS

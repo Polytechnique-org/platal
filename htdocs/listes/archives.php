@@ -37,11 +37,11 @@ if (list($det) = $client->get_members($liste)) {
         if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $_GET['rep'])) {
             $page->assign('no_list',true);
         } else { 
-            $page->assign('url', $globals->lists->spool."/{$globals->mail->domain}-$liste/$rep/$file");
+            $page->assign('url', $globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
         }
     } else {
         $archs = Array();
-        foreach (glob($globals->lists->spool."/{$globals->mail->domain}-$liste/*/*") as $rep) {
+        foreach (glob($globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/*/*") as $rep) {
             if (preg_match(",/(\d*)/(\d*)$,", $rep, $matches)) {
                 $archs[intval($matches[1])][intval($matches[2])] = true;
             }
