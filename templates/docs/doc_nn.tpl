@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nn.tpl,v 1.11 2004-11-01 10:09:25 x2000chevalier Exp $
+        $Id: doc_nn.tpl,v 1.12 2004-11-12 17:36:37 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,21 +27,18 @@
     [<a href="{"docs/doc_nn.php?doc=all"|url}">Doc. complète (gros)</a>]
 </p>
 <h1>
-  Utiliser le SMTP sécurisé et le NNTP sécurisé avec Netscape (ou Mozilla)
+  Utiliser le SMTP sécurisé et le NNTP sécurisé avec Mozilla (ou Netscape 7+)
 </h1>
 <h2>Prérequis</h2>
 <p>
-    Cette page est valable pour Netscape Communicator 4.x. Les copies d'écran
-		ont été réalisées avec la version 4.7 sous Windows, mais restent valables
-		pour les autres versions de Netscape Communicator sous d'autres systèmes
-		d'exploitation.
-    Cette page est tout à fait transposable à Netscape 6/7 et Mozilla.
+Les copies d'écran ont été réalisées avec la version 1.7.3 sous Windows, mais restent valables pour
+les autres versions de Mozilla sous d'autres systèmes d'exploitation.
+Cette page est tout à fait transposable à Netscape 6/7.
 </p>
 <p>
-    Tous les services de polytechnique.org étant sécurisés, il faut  commencer
-		par faire accepter à ton système d'exploitation les certificats de sécurités
-		de polytechnique.org. Pour ceci, suis les instructions de la
-		<a href="{"docs/doc_ssl.php"|url}">documentation ssl</a>.
+    Tous les services de polytechnique.org étant sécurisés, il faut  commencer par faire accepter à
+    ton système d'exploitation les certificats de sécurités de polytechnique.org. Pour ceci, suis
+    les instructions de la <a href="{"docs/doc_ssl.php"|url}">documentation ssl</a>.
 </p>
 <p>
     Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a>.
@@ -74,57 +71,20 @@
 </h1>
 
 <table summary="Première étape" cellpadding="5">
-<tr> 
-  <td colspan="3">
-    <img src="{"images/docs_confnetscape0.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+<tr>
+  <td colspan="2" class='center'>
+    <img src="{"images/docs_moz1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
   <td>
-      1. Dans le menu principal de Netscape Messenger, choisis le sous-menu 
-      <strong>&quot;&Eacute;dition/Préférences&quot;</strong>.
+      1. Dans le module de courier de Mozilla, choisis le sous-menu 
+      <strong>&quot;&Eacute;dition/Paramètres des comptes courriers et forums&quot;</strong>.
   </td>
   <td>
-      2. Choisis alors l'onglet <strong>Identité</strong> dans <strong>Courrier et Forums</strong>.
-      La fenêtre devrait alors correspondre à l'écran suivant.
-  </td>
-  <td>
-      3. Remplis alors les champs <strong>Nom</strong> et <strong>Adresse électronique</strong>
-      comme il convient avec ton adresse en polytechnique.org.
-  </td>
-</tr>
-</table>
-
-<hr />
-
-<table summary="Deuxième étape" cellpadding="5">
-<tr>
-  <td colspan="3">
-    <img src="{"images/docs_confnetscape1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
-  </td>
-</tr>
-<tr>
-  <td>
-    <p>
-      1. Clique alors sur l'onglet <strong>Serveurs de courrier</strong>, la fenêtre devrait
-      correspondre à l'écran ci-contre.
-		</p>
-  </td>
-  <td class="half">
-    <p>
-      2. Dans la partie <strong>Serveur de courrier sortant</strong>, indique
-			<code>ssl.polytechnique.org</code> dans le champ <strong>Serveur de
-			courrier sortant (SMTP)</strong> puis ton <em>login</em> dans le champ 
-			<strong>Utilisateur du serveur de courrier sortant</strong>, et enfin
-			coche <strong>Toujours</strong> dans la partie <strong>utiliser SSL ou
-			TLS</strong>.
-		</p>
-  </td>
-  <td>
-    <p>
-      3. <strong>Important</strong>, n'oublie pas de cocher <strong>Toujours</strong>, sinon ton
-			mot de passe risque de ne pas être chiffré lors de l'envoi de courriels.
-		</p>
+      2. Remplis ensuite les paramètres du <strong>Serveur sortant (SMTP)</strong> comme la copie
+      d'écran ci-contre, en remplacant pierre.habouzit.2000 par ton alias à vie @polytechnique.org.
+      <br />
   </td>
 </tr>
 </table>
@@ -133,14 +93,14 @@
 
 <table summary="Troisème étape" cellpadding="5">
 <tr> 
- <td>
-   <p>
-      Si tu envoyes un courriel, tu verras apparaître la fenêtre ci-contre.
-      Tape le mot de passe que tu as indiqué lors de l'<a href="{"acces_smtp.php"|url}">activation de ton compte</a>.
-    </p>
+  <td class='center'>
+    <img src="{"images/docs_moz2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
+</tr>
+<tr> 
   <td>
-    <img src="{"images/docs_confnetscape2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+    Si tu envoyes un courriel, tu verras apparaître la fenêtre ci-dessus.
+    Tape le mot de passe que tu as indiqué lors de l'<a href="{"acces_smtp.php"|url}">activation de ton compte</a>.
   </td>
 </tr>
 </table>
@@ -149,21 +109,15 @@
 
 Et maintenant quelques remarques :
 <ul>
-	<li>
-		<p>
-			Netscape Communicator ne permet pas de chosir le port du serveur SMTP.
-			Il utilise par défaut le port 25.  Avec Netscape 6/7 ou Mozilla, il est
-			recommandé d'utiliser le port 587, qui est le port dédié.
-		</p>
-	</li>
-	<li>
-		<p>
-			Certaines <abbr title="direction des systèmes informatiques">DSI</abbr>
-			locales interdisent l'utilisation de ports inférieurs à 1024. Il suffit
-			alors de spécifier comme numéro de port SMTP non pas 587, mais 2525.
-		</p>
-	</li>
-  </ul>
+  <li>
+    Il est possible d'utiliser le port 587 (en cochant l'option SSL au lieu de TLS).
+  </li>
+  <li>
+    Certaines <abbr title="direction des systèmes informatiques">DSI</abbr>
+    locales interdisent l'utilisation de ports inférieurs à 1024. Il suffit
+    alors de spécifier comme numéro de port SMTP non pas 587, mais 2525.
+  </li>
+</ul>
 {/if}
 {if $smarty.get.doc eq 'nntp' || $smarty.get.doc eq 'all'}
 <br />
@@ -172,25 +126,45 @@ Et maintenant quelques remarques :
 </h1>
 
 <table summary="Première étape" cellpadding="5">
-<tr> 
-  <td colspan="3">
-    <img src="{"images/docs_nntp_nn1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+<tr>
+  <td colspan="3" class='center'>
+    <img src="{"images/docs_moz_nntp1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
   <td>
-      1. Dans le menu principal de Netscape Messenger, choisis le sous-menu 
-      <strong>&quot;Edition/Préférences&quot;</strong>.
+    1. Dans le module de courier de Mozilla, choisis le sous-menu 
+    <strong>&quot;&Eacute;dition/Paramètres des comptes courriers et forums&quot;</strong>.
   </td>
   <td>
-      2. Choisis alors l'onglet <strong>Serveurs de forums</strong> dans <strong>Courrier et Forums</strong>.
-      clique alors sur le bouton <strong>ajouter</strong>.
-      La fenêtre devrait alors correspondre à l'écran ci-dessus.
+    2. Clique sur <strong>'Ajouter un compte ...'</strong> et choisis alors <strong>Compte
+      Forums</strong>.  clique ensuite sur <strong>suivant</strong>.
   </td>
   <td>
-      3. Remplis alors les champs <strong>Serveur</strong> et <strong>Port</strong> comme montré sur la capture d'écran.
-      N'oublie pas de cocher la case <strong>Supporte les connections chiffrées (SSL)</strong>.
-      Tu peux alors tout valider.
+    3. Mozilla te demande ton nom et ton adresse mail, ce sont les coordonnées qui seront vu par les
+    autres abonnés sur notre serveur.  Nous te conseillons donc d'utiliser ton adresse
+    polytechnicienne !.  clique ensuite à nouveau sur <strong>suivant</strong>.
+  </td>
+</tr>
+</table>
+
+<table summary="Première étape" cellpadding="5">
+<tr> 
+  <td colspan="3" class='center'>
+    <img src="{"images/docs_moz_nntp2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+  </td>
+</tr>
+<tr>
+  <td>
+    1. Saisis alors le nom du serveur NNTP de Polytechnique.org :
+    <strong>ssl.polytechnique.org</strong>, puis clique sur <strong>Suivant</strong>.
+  </td>
+  <td>
+      2. Mozilla te demande alors comment tu veux nommer ce compte, tu peux laisser ce qu'il te
+      propose par défaut et cliquer à nouveau sur <strong>Suivant</strong>.
+  </td>
+  <td>
+    3. Un écran récapitule tes choix, tu n'as plus qu'à cliquer sur <strong>Terminer</strong>.
   </td>
 </tr>
 </table>
@@ -199,30 +173,42 @@ Et maintenant quelques remarques :
 
 <table summary="Deuxième étape" cellpadding="5">
 <tr>
-  <td>
-      1. Dans ton client apparait maintenant une nouvelle ligne de serveur de forums appellée
-      <strong>ssl.polytechnique.org</strong>. Clique avec le bouton droit de ta souris sur cette ligne, et
-      demande de t'abonner à des forums.
-  </td>
-  <td>&nbsp;
+  <td class='center' colspan='2'>
+    <img src="{"images/docs_moz_nntp3.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
   <td>
-      2. La boite ci contrea apparait alors, donne alors ton <strong>identifiant</strong> de la forme
-      <em>prenom.nom</em>, puis valide.
+    Il faut ensuite dire à mozilla que le serveur de Forum est sécurisé.  Pour ceci coche la case
+    <strong>Utiliser une connexion sécurisée (SSL).</strong> comme sur la capture d'écran ci dessus.
+    clique ensuite sur <strong>OK</strong>.
   </td>
   <td>
-    <img src="{"images/docs_nntp_nn2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+    En te positionnant sur la ligne <strong>ssl.polytechnique.org</strong> alors créée, tu as la
+    possibilité de <strong>Gérer les inscriptions aux groupes de discussions</strong>.  Suis ce
+    lien.
   </td>
 </tr>
 <tr>
-  <td>
-      3. Netscape te demande alors de donner ton mot de passe, tape le mot de passe que tu as
-      indiqué lors de <a href="{"smtp_acces.php"|url}">l'activation de ton compte</a>.
+  <td class='center' colspan='2'>
+    <img src="{"images/docs_moz_nntp4.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
-  <td>
-    <img src="{"images/docs_nntp_nn3.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+</tr>
+<tr>
+  <td colspan='2'>
+    La boite ci dessus apparait alors, donne alors un de tes <strong>alias</strong>
+    @polytechnique.org, puis valide.
+  </td>
+</tr>
+<tr>
+  <td class='center' colspan='2'>
+    <img src="{"images/docs_moz_nntp5.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
+  </td>
+</tr>
+<tr>
+  <td colspan='2'>
+    La boite ci dessus apparait enfin, tape le mot de passe que tu as indiqué lors de
+    l'<a href="{"acces_smtp.php"|url}">activation de ton compte</a>.
   </td>
 </tr>
 </table>
