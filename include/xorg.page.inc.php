@@ -59,7 +59,7 @@ class XorgPage extends DiogenesCorePage {
 
   function mysql_assign($sql_query,$var_name,$var_nb_name='') {
     $sql = mysql_query($sql_query);
-    if(mysql_errno($sql))
+    if(mysql_errno())
       return(mysql_error($sql));
 
     $array = Array();
