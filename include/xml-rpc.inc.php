@@ -5,10 +5,10 @@
  *  Original file can be found on http://xmlrpc-epi.sourceforge.net/          *
  *  in the module xmlrpc-epi-php v0.51 file samples/utils/utils.php           *
  *                                                                            *
- *				                  The Polytechnique.org TEAM  *
+ *                                                The Polytechnique.org TEAM  *
  *                                                                            *
  ******************************************************************************
-    $Id: xml-rpc.inc.php,v 1.2 2004-09-07 20:02:05 x2000habouzit Exp $
+    $Id: xml-rpc.inc.php,v 1.3 2004-09-07 20:07:13 x2000habouzit Exp $
  ******************************************************************************/
 
 /*
