@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.5 2004-10-10 22:05:25 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.6 2004-10-15 07:30:40 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -86,6 +86,12 @@
       </td>
     </tr>
   </table>
+  <ul>
+    <li>« Refuser » rejette le mail avec un message à son auteur (celui que tu tapes dans le cadre)</li>
+    <li>
+    Rejeter efface le mail sans autre forme de procès, et c'est à utiliser UNIQUEMENT pour les
+    virus et les courriers indésirables
+    </li>
 </form>
 
 {/if}

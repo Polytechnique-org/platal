@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.4 2004-10-06 13:16:49 x2000habouzit Exp $
+        $Id: admin.php,v 1.5 2004-10-15 07:30:40 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -82,6 +82,7 @@ if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
     $page->assign_by_ref('details', $det);
     $page->assign_by_ref('members', $membres);
     $page->assign_by_ref('owners',  $moderos);
+    $page->assign('np_m', count($mem));
 
 } else
     $page->assign('no_list',true);

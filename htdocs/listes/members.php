@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.3 2004-10-14 19:01:31 x2000habouzit Exp $
+        $Id: members.php,v 1.4 2004-10-15 07:30:40 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -37,9 +37,9 @@ $members = $client->get_members('polytechnique.org', $liste);
 
 $tri_promo = empty($_REQUEST['alpha']);
 
-if(is_array($members)) {
+if(list($det,$mem,$own) = $members) {
     $membres = Array();
-    foreach($members[1] as $member) {
+    foreach($mem as $member) {
 	if(preg_match('/^([^.]*.([^.]*).(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
 	    $key = $tri_promo ? $matches[3] : strtoupper($matches[2]{0});
 	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1]);
@@ -51,7 +51,7 @@ if(is_array($members)) {
     foreach($membres as $key=>$val) ksort($membres[$key]);
 
     $moderos = Array();
-    foreach($members[2] as $owner) {
+    foreach($own as $owner) {
 	list($m) = split('@',$owner);
 	$res = $globals->db->query("SELECT  CONCAT(prenom, ' ', nom), promo
 				      FROM  auth_user_md5 AS u
@@ -66,9 +66,10 @@ if(is_array($members)) {
     }
     ksort($moderos);
 
-    $page->assign_by_ref('details', $members[0]);
+    $page->assign_by_ref('details', $det);
     $page->assign_by_ref('members', $membres);
     $page->assign_by_ref('owners',  $moderos);
+    $page->assign('nb_m',  count($mem));
 
 } else
     $page->assign('no_list',true);

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.8 2004-10-09 12:49:38 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.9 2004-10-15 07:30:40 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -91,7 +91,7 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
 
 
 <div class='rubrique'>
-  membres de la liste
+  {$np_m|default:"0"} membre(s) dans la liste
 </div>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
