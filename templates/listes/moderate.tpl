@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.12 2004-10-23 21:33:40 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.13 2004-10-24 12:54:44 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -87,7 +87,7 @@
   {foreach from=$mails item=m}
   <tr class='{cycle values="pair,impair"}'>
     <td>{$m.sender}</td>
-    <td>{$m.subj|qpd}</td>
+    <td>{$m.subj}</td>
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
     <td class='action'>

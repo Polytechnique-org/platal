@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.8 2004-10-16 14:03:03 x2000habouzit Exp $
+        $Id: moderate.php,v 1.9 2004-10-24 12:54:44 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -52,7 +52,7 @@ if(isset($_POST['mid'])) {
     include_once('diogenes.mailer.inc.php');
     $mid = $_POST['mid'];
     if(isset($_POST['mok'])) {
-	if $client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
+	$client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
     } elseif(isset($_POST['mno'])) {
 	$reason = stripslashes($_POST['reason']);
 	if($client->handle_request('polytechnique.org', $liste,$mid,2,$reason)) { /** 2 = REJECT **/

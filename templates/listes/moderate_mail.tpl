@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.6 2004-10-15 07:30:40 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.7 2004-10-24 12:54:44 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -92,6 +92,7 @@
     Rejeter efface le mail sans autre forme de procès, et c'est à utiliser UNIQUEMENT pour les
     virus et les courriers indésirables
     </li>
+  </ul>
 </form>
 
 {/if}
