@@ -40,7 +40,7 @@ class Tracker {
                 LEFT JOIN trackers.mail_lists AS m USING(ml_id)
                 WHERE tr_id='$tr_id'");
         if(!mysql_num_rows($req)) {
-            unset($this->id);
+            $this->id = 0;
             return;
         }
         $this->pris = array ();

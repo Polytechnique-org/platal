@@ -90,11 +90,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | sondage/resultats.php					  |  |
 ;	  | sondage/titre.php						  |  |
 ;	  | sondage/validation.php					  | /
-------+-[ trackers ]------------------------------+----------------
-;!	  | trackers/tracker_show.php				  | \
-;!	  | trackers/tracker_show_rq.php			  |  \_ ajouter à diogenes
-;!	  | trackers/index.php						  |  /  (mad)
-;!	  | trackers/tracker_admin.php				  | /
 ------+-[ news ]----------------------------------+----------------
 ;!	  | news/abonnements.php					  | \
 ;!	  | news/article.php						  |  |
@@ -201,4 +196,9 @@ x!!	  | auth-wiki.php							  | obsolete
 x!!	  | profil2.php								  | -
 x!!	  | trackers/tracker_delete.php				  | -
 x!!	  | trezo/trezo.inc.php						  | -
+------+-[ trackers ]------------------------------+----------------
+x!!	  | trackers/tracker_show.php				  | \
+x!!	  | trackers/tracker_show_rq.php			  |  \_ récrit de 0 (ou presque)
+x!!	  | trackers/index.php						  |  / 
+x!!	  | trackers/tracker_admin.php				  | /
 ------+-------------------------------------------+----------------

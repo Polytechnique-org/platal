@@ -81,8 +81,10 @@ class XorgPage extends DiogenesCorePage {
     }
 
     function failure() {
-        $this->_tpl = 'failure.tpl';
         $this->_page_type = SKINNED;
+        $this->_tpl = 'failure.tpl';
+        $this->assign('xorg_tpl', 'failure.tpl');
+        $this->caching=0;
         $this->run();
     }
 

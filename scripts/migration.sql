@@ -23,4 +23,6 @@ USE trackers;
 DROP TABLE cat_abo;
 DROP TABLE categories;
 ALTER TABLE requests DROP COLUMN cat_id;
+ALTER TABLE followups DROP COLUMN fu_id;
 ALTER TABLE requests ADD INDEX (tr_id);
+ALTER TABLE followups ADD INDEX (rq_id);
