@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.11 2004-09-24 21:51:42 x2002marichez Exp $
+        $Id: vcard.php,v 1.12 2004-10-08 19:58:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -77,10 +77,18 @@ function format_adr($params, &$smarty) {
 $page->register_modifier('qp_enc', 'quoted_printable_encode');
 $page->register_function('format_adr', 'format_adr');
 
-$myquery = "SELECT  prenom, nom, epouse, mobile, web, libre, promo, user_id, date, a.alias AS forlife
-              FROM  auth_user_md5 AS u
-        INNER JOIN  aliases       AS a  ON (u.user_id=a.id AND a.type='a_vie')
-             WHERE  a.id='{$_REQUEST['x']}'";
+if(preg_match('/^\d*$/',$_REQUEST['x'])) {
+    $myquery = "SELECT  prenom, nom, epouse, mobile, web, libre, promo, user_id, date, a.alias AS forlife
+		  FROM  auth_user_md5 AS u
+	    INNER JOIN  aliases       AS a  ON (u.user_id=a.id AND a.type='a_vie')
+		 WHERE  a.id='{$_REQUEST['x']}'";
+} else {
+    $myquery = "SELECT  prenom, nom, epouse, mobile, web, libre, promo, user_id, date, a.alias AS forlife
+		  FROM  auth_user_md5 AS u
+	    INNER JOIN  aliases       AS a  ON (u.user_id=a.id AND a.type='a_vie')
+	    INNER JOIN  aliases       AS b  ON (u.user_id=b.id AND a.type!='homonyme')
+		 WHERE  b.alias='{$_REQUEST['x']}'";
+}
 
 $result=$globals->db->query($myquery);
 if (mysql_num_rows($result)!=1) { exit; }
