@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.12 2004-10-10 13:51:22 x2000habouzit Exp $
+        $Id: index.tpl,v 1.13 2004-10-14 18:32:58 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -124,7 +124,11 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire par toi même !
 </p>
 
+{if $smarty.session.perms eq admin}
 {include file='listes/listes.inc.tpl' min=1}
+{else}
+{include file='listes/listes.inc.tpl' min=1 max=4}
+{/if}
 
 <br />
 
