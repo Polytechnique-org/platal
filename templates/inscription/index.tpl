@@ -17,11 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscrire.charte.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: index.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<form action="{"inscription/step1.php"|url}" method="post">
   <div class="rubrique">
     Conditions générales
   </div>
@@ -32,7 +32,6 @@
   </p>
   {include file="docs/charte.tpl"}
   <div class="center">
-    <input type="hidden" value="OUI" name="charte" />
     <input type="submit" value="J'accepte ces conditions" name="submit" />
   </div>
 </form>

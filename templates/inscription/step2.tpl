@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscrire.form_data.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: step2.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -29,23 +29,19 @@
 
 {dynamic}
 
-{foreach from=$erreur item=err}
-<p class="erreur">{$err|smarty:nodefaults}</p>
-{/foreach}
+<p class="erreur">{$erreur|smarty:nodefaults|nl2br}</p>
 
-<form action="{$gotourl|default:$smarty.server.REQUEST_URI}" method="post" name="infos">
+<form action="{$gotourl|default:"step3.php"}" method="post">
   {if $homonyme}
   <p>
-  Tu as un homonyme dans notre base de données, nous ne pouvons donc pas te donner 
-  l'adresse <strong>{$loginbis}@polytechnique.org</strong>, ton adresse sera 
-  <strong>{$mailorg}@polytechnique.org</strong> et l'adresse précédente sera 
-  redirigée vers un auto-reply indiquant l'existence d'homonymes. Sache que tu peux 
-  demander un alias qui te donne une autre adresse de ton choix.
+  Ton adresse sera : <strong>{$forlife}@polytechnique.org</strong>
   </p>
   {else}
   <p>
-  Ton adresse sera :<br/>
-  <strong>{$mailorg}@polytechnique.org</strong>
+  Tu n'as pour le moment aucun homonyme dans notre base de données, nous allons
+  donc te donner l'adresse <strong>{$mailorg}@polytechnique.org</strong>, en plus
+  de ton adresse à vie <strong>{$forlife}@polytechnique.org</strong>.
+  Sache que tu peux perdre cette adresse si un homonyme s'inscrit (même si cela reste assez rare).
   </p>
   {/if}
   
@@ -64,7 +60,7 @@
     <tr>
       <td class="titre">
         E-mail<br />
-        <span class="smaller">(Premier forward)</span>
+        <span class="smaller">(Première redirection)</span>
       </td>
       <td>
         <input type="text" size="35" maxlength="50" name="email" value="{$smarty.request.email}" />
@@ -154,7 +150,6 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="hidden" value="OUI" name="charte" />
         <input type="hidden" value="{$smarty.request.nom}" name="nom" />
         <input type="hidden" value="{$smarty.request.prenom}" name="prenom" />
         <input type="hidden" value="{$smarty.request.promo}" name="promo" />

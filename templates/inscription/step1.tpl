@@ -17,17 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscrire.form_id.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: step1.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
  ***************************************************************************}
 
-
 {dynamic}
-
-{foreach from=$erreur item=err}
-<p class="erreur">{$err}</p>
-{/foreach}
-
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<p class='erreur'>{$erreur|smarty:nodefaults|nl2br}</p>
+ 
+<form action="{"inscription/step2.php"|url}" method="post" id='idf'>
   <div class="rubrique">
     Identification
   </div>
@@ -92,12 +88,11 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="hidden" value="OUI" name="charte" />
-        <input type="submit" value="Continuer l'inscription" name="submit" />
+        <input type="submit" value="Continuer l'inscription" />
       </td>
     </tr>
   </table>
 </form>
-
 {/dynamic}
+
 {* vim:set et sw=2 sts=2 sws=2: *}
