@@ -46,7 +46,7 @@ div.rubrique {
 *******************************************************************************/
 
 table.tinybicol, table.bicol {
-    background: #800080;
+    background: #ecd0ff;
     border: 1px solid #800080;
     border-collapse: collapse;
 }
@@ -98,6 +98,20 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
+div.conteneur_tab {
+    background: #efddff;
+    border-color: #800080;
+}
+
+#onglet li {
+    background: #ecd0ff;
+    border-color: #800080;
+}
+
+#onglet li.actif {
+    background: #efddff;
+}
+
 /*******************************************************************************
     7   fiche.php
         [ cas de la fiche ]
@@ -141,4 +155,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: nbviolet.css,v 1.2 2004-10-09 12:03:23 x2003bruneau Exp $ */
+/* $Id: nbviolet.css,v 1.3 2004-10-16 23:10:54 x2003bruneau Exp $ */
