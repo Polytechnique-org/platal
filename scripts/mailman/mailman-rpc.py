@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.22 2004-09-21 16:14:35 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.23 2004-09-21 16:16:04 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os
@@ -144,11 +144,11 @@ def get_members((userdesc,perms),listname):
         mlist = MailList.MailList(listname, lock=0)
     except:
         return 0
+    members = mlist.getRegularMemberKeys()
     is_member = userdesc.address in members
     is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
     is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
     if mlist.advertised or is_member or is_owner or ( perms == 'admin' ):
-        members = mlist.getRegularMemberKeys()
         members.sort()
         details = { 'addr' : listname+'@polytechnique.org',
                     'desc' : mlist.description,
