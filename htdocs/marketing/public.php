@@ -2,7 +2,7 @@
 require("auto.prepend.inc.php");
 new_skinned_page('marketing/public.php', AUTH_MDP);
 
-if (! isset($_REQUEST["num"])) { require("footer.inc.php"); exit; }
+if (! isset($_REQUEST["num"])) { exit; }
 
 $mat = (((integer) $_REQUEST["num"]) + 100) / 2;
 
