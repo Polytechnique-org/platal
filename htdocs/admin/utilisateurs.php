@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.12 2004-09-01 21:17:35 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.13 2004-09-01 23:06:49 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -123,7 +123,7 @@ foreach($_POST as $key => $val) {
                         perms='$permsN',
                         prenom='$prenomN',
                         nom='$nomN',
-                        promo=$promoN,
+                        promo=$promoN
                       WHERE user_id=$olduid";
 
             $globals->db->query($query);
