@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.54 2004-10-10 21:16:32 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.55 2004-10-10 21:18:04 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -687,6 +687,8 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
+
+        mlist.msg_footer = "_______________________________________________\nListe de diffusion %(real_name)s\nhttps://www.polytechnique.org/listes/"
 
         mlist.Save()
 
