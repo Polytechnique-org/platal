@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.30 2004-10-09 10:05:01 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.31 2004-10-09 18:57:49 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -229,14 +229,28 @@ function start_connexion ($uid, $identified) {
          LIMIT  1");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, $lastnewslogin) = mysql_fetch_row($result);
     mysql_free_result($result);
+   
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
     // authentification avec le cookie
     // on vérifie que c'est bien un logger de l'utilisateur en question
     if(isset($_SESSION['log']) && $_SESSION['log']->uid==$uid)
 	$logger = $_SESSION['log'];
+
     // on vide la session pour effacer les valeurs précédentes (notamment de skin)
     // qui peuvent être celles de quelqu'un d'autre ou celle par defaut
-    $_SESSION = isset($_SESSION['suid']) ? Array('suid'=>$_SESSION['suid'], 'slog'=>$_SESSION['slog']) : array();
+    $suid = isset($_SESSION['suid']) ? $_SESSION['suid'] : null;
+    if($suid) {
+	$logger = new DiogenesCoreLogger($uid,$suid);
+	$logger->log("suid_start","{$_SESSION['forlife']} by {$_SESSION['suid']}");
+	$_SESSION = Array('suid'=>$_SESSION['suid'], 'slog'=>$_SESSION['slog'], 'log'=>$logger);
+    } else {
+	$_SESSION = Array();
+	$_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
+	if(empty($logger)) $_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
+	setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
+    }
+
+    // le login est stocké pour un an
     $_SESSION['lastlogin'] = $lastlogin;
     $_SESSION['lastnewslogin'] = $lastnewslogin;
     $_SESSION['host'] = $host;
@@ -252,11 +266,6 @@ function start_connexion ($uid, $identified) {
     $_SESSION['femme'] = mysql_num_rows($res) > 0;
     mysql_free_result($res);
     // on récupère le logger si il existe, sinon, on logge la connexion
-    $_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
-    if(empty($logger) && empty($_SESSION['suid']))
-	$_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
-    // le login est stocké pour un an
-    setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
     set_skin();
 }
 
