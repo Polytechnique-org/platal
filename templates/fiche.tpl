@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.13 2004-10-10 08:38:58 x2000chevalier Exp $
+        $Id: fiche.tpl,v 1.14 2004-10-10 08:57:56 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -25,7 +25,7 @@
 <div id="fiche">
 
 <div id="fiche_identite">
-  <div class="civilite">{$prenom} {$nom}
+  <div class="civilite">{$prenom} {if $epouse eq ""}{$nom}{else}{$epouse} ({$nom}){/if}
     <a href="vcard.php/{$forlife}.vcf?x={$user_id}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
     {if !$is_contact}
     <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
