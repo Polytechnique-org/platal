@@ -133,14 +133,17 @@ if (!Env::has('rechercher')) {
 
     $url_ext = Array(
         'mod_date_sort' => Env::has('mod_date_sort'),
-        'rechercher'    => true,
         'with_soundex'  => $with_soundex
     );
 
-    $page->assign('offset',   $offset->value);
-    $page->assign('offsets',  range(0, $nbpages));
-    $page->assign('url_args', $fields->get_url($url_ext));
-    $page->assign('perpage',  $globals->search->per_page);
+    $url_short = $fields->get_url($url_ext);
+    $url_args  = $url_short . '&amp;rechercher=1';
+
+    $page->assign('offset',    $offset->value);
+    $page->assign('offsets',   range(0, $nbpages));
+    $page->assign('url_short', $url_short);
+    $page->assign('url_args',  $url_args);
+    $page->assign('perpage',   $globals->search->per_page);
     
     if (empty($nb_tot)) {
         form_prepare();

@@ -28,7 +28,7 @@
   </li>
   {/if}
 
-  <li><strong><a href="{$smarty.server.PHP_SELF}?{$url_args}">Modifier</a>
+  <li><strong><a href="{$smarty.server.PHP_SELF}?{$url_short}">Modifier</a>
   </strong> ta recherche
   </li>
 
