@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.3 2004-09-22 11:39:51 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.4 2004-09-24 16:43:53 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -35,11 +35,11 @@
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
     <td class='titre'>émetteur</td>
-    <td>{$mail.sender|tl1}</td>
+    <td>{$mail.sender}</td>
   </tr>
   <tr>
     <td class='titre'>sujet</td>
-    <td>{$mail.subj|tl1}</td>
+    <td>{$mail.subj}</td>
   </tr>
   <tr>
     <td class='titre'>taille</td>
