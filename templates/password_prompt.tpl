@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt.tpl,v 1.20 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: password_prompt.tpl,v 1.21 2004-08-31 20:41:08 x2000bedo Exp $
  ***************************************************************************}
 
 <noscript>
@@ -72,7 +72,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
         Login (prenom.nom) :
       </td>
       <td>
-        <input type="text" name="username"size="20" maxlength="50"
+        <input type="text" name="username" size="20" maxlength="50"
           value="{insert name="getUserName" script="insert.password.inc.php"}" />
       </td>
     </tr>
