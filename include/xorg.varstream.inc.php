@@ -19,29 +19,56 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.inc.php');
-new_skinned_page('index.tpl', AUTH_COOKIE);
-require_once('contacts.pdf.inc.php');
-require_once('user.func.inc.php');
+// {{{ class VarStream
+ 
+class VarStream
+{
+    // {{{ properties
+    
+    // Stream handler to read from global variables
+    var $varname;
+    var $position;
 
-$sql = "SELECT  a.alias
-          FROM  aliases       AS a
-    INNER JOIN  auth_user_md5 AS u ON ( a.id = u.user_id )
-    INNER JOIN  contacts      AS c ON ( a.id = c.contact )
-         WHERE  c.uid = {?} AND a.type='a_vie'";
-if (Get::get('order') == "promo") {
-    $sql .= " ORDER BY  u.promo, u.nom, u.prenom";
-} else {
-    $sql .= " ORDER BY  u.nom, u.prenom, u.promo";
+    // }}}
+    // {{{ stream_open
+
+    function stream_open($path, $mode, $options, &$opened_path)
+    {
+        $url = parse_url($path);
+        $this->varname = $url['host'];
+        if(!isset($GLOBALS[$this->varname]))
+        {
+            trigger_error('Global variable '.$this->varname.' does not exist', E_USER_WARNING);
+            return false;
+        }
+        $this->position = 0;
+        return true;
+    }
+
+    // }}}
+    // {{{ stream_read
+
+    function stream_read($count)
+    {
+        $ret = substr($GLOBALS[$this->varname], $this->position, $count);
+        $this->position += strlen($ret);
+        return $ret;
+    }
+
+    // }}}
+    // {{{ stream_eof
+
+    function stream_eof()
+    {
+        return $this->position >= strlen($GLOBALS[$this->varname]);
+    }
+
+    // }}}
 }
 
-$citer = $globals->xdb->iterRow($sql, Session::getInt('uid'));
-$pdf   = new ContactsPDF();
+// }}}
 
-while (list($alias) = $citer->next()) {
-    $user = get_user_details($alias);
-    $pdf->addContact($user, Env::has('photo'));
-}
-$pdf->Output();
+stream_wrapper_register('var','VarStream');
 
+// vim:set et sw=4 sts=4 sws=4:
 ?>

@@ -39,10 +39,19 @@
 
 {if $trombi || $citer->total()}
 <p>
-  Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" class='popup'><strong>Triée par promo</strong></a>]
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf" class='popup'><strong>Triée par noms</strong></a>]
+Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
+(attention, les photos font beaucoup grossir les fichiers !)
 </p>
+<ul>
+  <li>avec les photos :
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo&amp;photo" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf?photo" class='popup'><strong>tri par noms</strong></a>]
+  </li>
+  <li>sans les photos :
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf" class='popup'><strong>tri par noms</strong></a>]
+  </li>
+</ul>
 
 {if $trombi}
 

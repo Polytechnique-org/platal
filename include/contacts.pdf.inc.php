@@ -21,14 +21,16 @@
 
 define ('FPDF_FONTPATH', dirname(__FILE__).'/fonts/');
 require_once('/usr/share/fpdf/fpdf.php');
+require_once('xorg.varstream.inc.php');
 
 class ContactsPDF extends FPDF
 {
     var $col = 0;
     var $y0;
 
-    var $title = "Mes contacts sur Polytechnique.org";
+    var $title  = "Mes contacts sur Polytechnique.org";
     var $broken = false;
+    var $error  = false;
 
     function ContactsPDF()
     {
@@ -42,6 +44,12 @@ class ContactsPDF extends FPDF
         $this->SetTitle($this->title);
         $this->SetCreator('Site Polytechnique.org');
         $this->AddPage();
+    }
+
+    function Output()
+    {
+        Header('Pragma: public');
+        parent::Output();
     }
 
     function Rotate($angle,$x=-1,$y=-1)
@@ -202,7 +210,12 @@ class ContactsPDF extends FPDF
         }
     }
 
-    function AddContact($x)
+    function Error()
+    {
+        $this->error = true;
+    }
+
+    function AddContact($x, $wp = true)
     {
         global $globals;
         /* infamous hack :
@@ -219,7 +232,36 @@ class ContactsPDF extends FPDF
         $this->SetLineWidth(0.4);
 
         $nom = $x['prenom'].' '.($x['epouse'] ? "{$x['epouse']} - née {$x['nom']}" : $x['nom'])." ({$x['promo']})";
-        $this->Cell(0, 6, $nom, "T", 1, 'C', 1, $globals->baseurl."/fiche.php?user={$x['forlife']}");
+        $ok  = false;
+
+        if ($wp) {
+            $res = $globals->xdb->query("SELECT * FROM photo WHERE attachmime IN ('jpeg','png') AND uid={?}", $x['user_id']);
+            if ($i = $res->numRows()) {
+                $old2  = $this;
+                $photo = $res->fetchOneAssoc();
+                $width = $photo['x'] * 20/$photo['y'];
+                $GLOBALS["p{$x['user_id']}"] = $photo['attach'];
+               
+                $_x = $this->getX();
+                $_y = $this->getY();
+                $this->Cell(0, 20, '', '', 0, 'C', 1);
+                $this->Image("var://p{$x['user_id']}", $_x, $_y, $width, 20, $photo['attachmime']);
+                
+                if ($this->error) {
+                    $this = $old2;
+                } else {
+                    $this->setX($_x);
+                    $this->Cell($width, 20, '', "T");
+                    $h = ( $this->GetStringWidth($nom) + $width > 90 ) ? 10 : 20;
+                    $this->MultiCell(0, $h, $nom, 'T', 'C');
+                    $ok = true;
+                }
+            }
+        }
+        if (!$ok) {
+            $this->MultiCell(0, 6, $nom, "T", 'C', 1);
+        }
+        
         $this->Space();
 
         if ($x['mobile']) {
@@ -242,12 +284,11 @@ class ContactsPDF extends FPDF
             $this->Space();
         }
 
-        $this->Ln();
-        $this->Ln();
+        $this->Ln(10);
 
         if ($this->broken) {
             $old->NextCol();
-            $old->AddContact($x);
+            $old->AddContact($x, $wp);
             $this = $old;
         }
     }
