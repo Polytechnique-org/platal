@@ -45,7 +45,7 @@ $nl = new NewsLetter($id);
 $nl->setSent();
 
 while(true) {
-    $sql = mysql_query("SELECT  ni.user_id,ni.pref, a.alias,
+    $sql = mysql_query("SELECT  ni.user_id, ni.pref, a.alias,
 				u.prenom, IF(u.epouse='', u.nom, u.epouse),
                                 FIND_IN_SET('femme', u.flags)
 			  FROM  newsletter_ins AS ni
