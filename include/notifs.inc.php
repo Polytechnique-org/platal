@@ -104,7 +104,8 @@ function select_notifs_base($base_watch, $champ_w, $champ_u, $watcher, $watcher_
 function select_notifs($wuid, $details, $last, $wflag, $order) {
 	$recent = ($last == 'watch_last');
 
-	$contactflag = "FIND_IN_SET('contacts', q.watch_flags)";
+	// équivalent de FIND_IN_SET('contacts', q.watch_flags) mais en plus rapide
+	$contactflag = "(q.watch_flags=1 OR q.watch_flags=3)";
 
 	$where_clause = "";
 	if ($wuid != 'all')
