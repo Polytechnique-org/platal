@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.3 2004-10-16 14:20:19 x2000habouzit Exp $
+        $Id: step4.php,v 1.4 2004-10-17 07:25:44 x2000coic Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -73,7 +73,7 @@ if (!empty($_REQUEST['ref'])) {
     $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$forlife','a_vie')");
     if($alias) {
 	$globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias','alias')");
-	$globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias.".($promo%100)."','alias')");
+	$globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias.".sprintf("%02d",$promo%100)."','alias')");
     }
 
     // on cree un objet logger et on log l'
