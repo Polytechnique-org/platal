@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: humlinux.tpl,v 1.1 2004-10-03 15:27:00 x2003bruneau Exp $
+        $Id: humlinux.tpl,v 1.2 2004-10-03 16:12:53 x2003cortot Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -64,7 +64,7 @@
           <img src="{"images/sk_humlinux_logo.gif"|url}" alt="[ LOGO ]" />
         </td>
         <td id="body-top">
-          <img src="{"images/sk_humlinux_ban.gif"|url}" alt="[ Polytechnique.org ]" />
+          <img src="{"images/sk_humlinux_lesX.gif"|url}" alt="[LES X SUR LE WEB]" />
           <table>
             <tr>
               <td class="date-heure">

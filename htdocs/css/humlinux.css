@@ -23,12 +23,6 @@
         [ balises sans attributs ou classes sans contexte ]
 *******************************************************************************/
 
-body {
-    background-image: url("../images/sk_humlinux_background.jpg");
-    background-repeat: repeat-y;
-    background-position: top;
-}
-
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
@@ -82,6 +76,12 @@ div.contact div.long {
         [ choix de classes faites par le skinneur
 *******************************************************************************/
 
+#body {
+    background-image: url("../images/sk_humlinux_background.jpg");
+    background-repeat: repeat-y;
+    background-position: top;
+}
+            
 #body-logo {
     border-top: none;
     border-bottom: none;
@@ -114,4 +114,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: humlinux.css,v 1.1 2004-10-03 15:27:06 x2003bruneau Exp $ */
+/* $Id: humlinux.css,v 1.2 2004-10-03 16:12:45 x2003cortot Exp $ */
