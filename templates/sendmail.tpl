@@ -1,4 +1,4 @@
-{* $Id: sendmail.tpl,v 1.3 2004-08-24 09:07:57 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.4 2004-08-24 11:45:19 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -21,8 +21,7 @@
   </li>
 </ul>
 
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
-  <input type='hidden' name='signature' value='1' />
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <table class="bicol" cellpadding="2" cellspacing="0" summary="En-têtes du message">
     <tr> 
       <th colspan="2">en-têtes</th>
@@ -30,35 +29,36 @@
     <tr> 
       <td class="titre">de&nbsp;:</td>
       <td>
-        <input type='text' name='from' size=45 value="{if $smarty.request.from}
+        <input type='hidden' name='signature' value='1' />
+        <input type='text' name='from' size='45' value='{if $smarty.request.from}
 {$smarty.request.from}
 {else}
 "{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.username}@polytechnique.org&gt;
-{/if}" />
+{/if}' />
       </td>
     </tr>
     <tr> 
       <td class="titre">à&nbsp;:</td>
       <td>
-        <input type='text' name='to' size=45 value="{$smarty.request.to}" />
+        <input type='text' name='to' size='45' value="{$smarty.request.to}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie&nbsp;:</td>
       <td>
-        <input type='text' name='cc' size=45 value="{$smarty.request.cc}" />
+        <input type='text' name='cc' size='45' value="{$smarty.request.cc}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size=45 value="{$smarty.request.bcc}" />
+        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">sujet&nbsp;:</td>
       <td> 
-        <input type='text' name='sujet' size=45 value="{$smarty.request.sujet}" />
+        <input type='text' name='sujet' size='45' value="{$smarty.request.sujet}" />
       </td>
     </tr>
   </table>

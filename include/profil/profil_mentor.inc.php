@@ -8,7 +8,7 @@ function affiche_pays(){
 	    if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
 ?>
 	<td class="colg">
-	<span class="valeur"><?php print_html($mentor_pays[$i]);?></span>
+	<span class="valeur"><?php htmlspecialchars($mentor_pays[$i]);?></span>
 	</td>
 	<td class="colm">
 	<span class="valeur">&nbsp;&nbsp;</span>

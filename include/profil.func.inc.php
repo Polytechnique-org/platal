@@ -20,17 +20,6 @@ function replace_ifset_i_j(&$var,$req,$i,$j) {
   }
 }
 
-//pour afficher qqchose en html par un modifier smarty
-function _print_html_modifier($string){
-  return htmlentities($string);
-}
-
-
-//pour afficher depuis le php
-function print_html($string){
-  echo _print_html_modifier($string);
-}
-
 //pour rentrer qqchose dans la base
 function put_in_db($string){
   return trim(addslashes($string));

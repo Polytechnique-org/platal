@@ -1,4 +1,4 @@
-{* $Id: emploi.tpl,v 1.3 2004-07-31 13:37:19 x2000coic Exp $ *}
+{* $Id: emploi.tpl,v 1.4 2004-08-24 11:45:19 x2000habouzit Exp $ *}
 
 {section name=adresses_pro loop=2}
 {assign var='i' value=$smarty.section.adresses_pro.index} 
@@ -41,7 +41,7 @@
       </td>
       <td class="cold">
         <input type="text" size="35" maxlength="100" name="entreprise[{$i}]"
-        value="{$entreprise.$i|print_html}" />
+        value="{$entreprise.$i}" />
       </td>
     </tr>
     <tr>
@@ -70,7 +70,7 @@
       </td>
       <td class="cold">
         <input type="text" size="35" maxlength="120" name="poste[{$i}]"
-        value="{$poste.$i|print_html}" />
+        value="{$poste.$i}" />
       </td>
     </tr>
     <tr>
@@ -112,7 +112,7 @@
         <span class="titre">Adresse professionnelle</span>
       </td>
       <td class="cold">
-        <input type="text" name="adrpro1[{$i}]" size="40" maxlength="88" value="{$adrpro1.$i|print_html}" />
+        <input type="text" name="adrpro1[{$i}]" size="40" maxlength="88" value="{$adrpro1.$i}" />
       </td>
     </tr>
     <tr>
@@ -120,7 +120,7 @@
         &nbsp;
       </td>
       <td class="cold">
-        <input type="text" name="adrpro2[{$i}]" size="40" maxlength="88" value="{$adrpro2.$i|print_html}" />
+        <input type="text" name="adrpro2[{$i}]" size="40" maxlength="88" value="{$adrpro2.$i}" />
       </td>
     </tr>
     <tr>
@@ -128,7 +128,7 @@
         &nbsp;
       </td>
       <td class="cold">
-        <input type="text" name="adrpro3[{$i}]" size="40" maxlength="88" value="{$adrpro3.$i|print_html}" />
+        <input type="text" name="adrpro3[{$i}]" size="40" maxlength="88" value="{$adrpro3.$i}" />
       </td>
     </tr>
     <tr>
@@ -136,7 +136,7 @@
         <span class="titre">Code postal</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="cppro[{$i}]" value="{$cppro.$i|print_html}" size="8" maxlength="8" />
+        <input type="text" name="cppro[{$i}]" value="{$cppro.$i}" size="8" maxlength="8" />
       </td>
     </tr>
     <tr>
@@ -144,7 +144,7 @@
         <span class="titre">Ville</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="villepro[{$i}]" value="{$villepro.$i|print_html}" size="40" maxlength="50" />
+        <input type="text" name="villepro[{$i}]" value="{$villepro.$i}" size="40" maxlength="50" />
       </td>
     </tr>
     <tr>
@@ -197,7 +197,7 @@
         <span class="titre">Téléphone professionnel</span>
       </td>
       <td>
-        <input type="text" size="18" maxlength="18" name="telpro[{$i}]" value="{$telpro.$i|print_html}" />
+        <input type="text" size="18" maxlength="18" name="telpro[{$i}]" value="{$telpro.$i}" />
         &nbsp;
       </td>
     </tr>
@@ -206,7 +206,7 @@
         <span class="titre">Fax</span>
       </td>
       <td>
-        <input type="text" size="18" maxlength="18" name="faxpro[{$i}]" value="{$faxpro.$i|print_html}" />
+        <input type="text" size="18" maxlength="18" name="faxpro[{$i}]" value="{$faxpro.$i}" />
       </td>
     </tr>
   </table>
@@ -244,7 +244,7 @@
             Comment remplir mon CV ?</a></span>
       </td>
       <td class="dcold">
-        <textarea name="cv" rows="15" cols="33">{$cv|print_html}</textarea>
+        <textarea name="cv" rows="15" cols="33">{$cv}</textarea>
       </td>
     </tr>
   </table>

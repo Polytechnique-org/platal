@@ -24,7 +24,7 @@ function function_dyn($params) {
 }
 
 function escape_html(&$string) {
-    return is_string($string) ? htmlspecialchars($string) : $string;
+    return is_string($string) ? htmlspecialchars($string, ENT_QUOTES) : $string;
 }
 
 class XorgPage extends DiogenesCorePage {

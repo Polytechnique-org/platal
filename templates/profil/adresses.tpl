@@ -1,4 +1,4 @@
-{* $Id: adresses.tpl,v 1.2 2004-07-17 11:58:56 x2000habouzit Exp $ *}
+{* $Id: adresses.tpl,v 1.3 2004-08-24 11:45:19 x2000habouzit Exp $ *}
 
 <div class="blocunite_tab">
   <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Adresses personnelles">
@@ -67,7 +67,7 @@
         <span class="titre">{if $adr.nouvelle != 'new'}Adresse n°{$smarty.section.i.index}{else}Nouvelle adresse{/if}</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="adr1[{$adrid}]" size="43" maxlength="88" value="{$adr.adr1|print_html}" />
+        <input type="text" name="adr1[{$adrid}]" size="43" maxlength="88" value="{$adr.adr1}" />
       </td>
     </tr>
     <tr>
@@ -75,7 +75,7 @@
         &nbsp;
       </td>
       <td class="cold">
-        <input type="text" name="adr2[{$adrid}]" size="43" maxlength="88" value="{$adr.adr2|print_html}" />
+        <input type="text" name="adr2[{$adrid}]" size="43" maxlength="88" value="{$adr.adr2}" />
       </td>
     </tr>
     <tr>
@@ -83,7 +83,7 @@
         &nbsp;
       </td>
       <td class="cold">
-        <input type="text" name="adr3[{$adrid}]" size="43" maxlength="88" value="{$adr.adr3|print_html}" />
+        <input type="text" name="adr3[{$adrid}]" size="43" maxlength="88" value="{$adr.adr3}" />
       </td>
     </tr>
     <tr>
@@ -91,9 +91,9 @@
         <span class="titre">Code postal / Ville</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="cp[{$adrid}]" value="{$adr.cp|print_html}" size="7" maxlength="18" />
+        <input type="text" name="cp[{$adrid}]" value="{$adr.cp}" size="7" maxlength="18" />
         &nbsp;
-        <input type="text" name="ville[{$adrid}]" value="{$adr.ville|print_html}" size="32" maxlength="78" />
+        <input type="text" name="ville[{$adrid}]" value="{$adr.ville}" size="32" maxlength="78" />
       </td>
     </tr>
     <tr>
@@ -174,10 +174,10 @@
           <span class="titre">Téléphone associé</span>
         </td>
         <td>
-          <input type="text" size="19" maxlength="28" name="tel[{$adrid}]" value="{$adr.tel|print_html}" />
+          <input type="text" size="19" maxlength="28" name="tel[{$adrid}]" value="{$adr.tel}" />
           &nbsp;
           <span class="titre">Fax</span>
-          <input type="text" size="19" maxlength="28" name="fax[{$adrid}]" value="{$adr.fax|print_html}" />
+          <input type="text" size="19" maxlength="28" name="fax[{$adrid}]" value="{$adr.fax}" />
         </td>
       </tr>
       <tr><td colspan="5">&nbsp;</td></tr>

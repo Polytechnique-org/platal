@@ -1,4 +1,4 @@
-{* $Id: general.tpl,v 1.4 2004-08-07 11:26:47 x2000coic Exp $ *}
+{* $Id: general.tpl,v 1.5 2004-08-24 11:45:19 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 <div class="blocunite_tab">
@@ -173,7 +173,7 @@
       </td>
       <td class="cold">
         <input type="text" size="18" maxlength="18" name="mobile"
-        value="{$mobile|print_html}" />
+        value="{$mobile}" />
       </td>
     </tr>
     <tr>
@@ -200,7 +200,7 @@
       </td>
       <td class="dcold">
         <input type="text" size="35" maxlength="95" name="web"  
-        value="{$web|print_html}" />
+        value="{$web}" />
       </td>
     </tr>
     <tr>
@@ -227,7 +227,7 @@
         <span class="comm">Commentaire? ICQ? etc...</span>
       </td>
       <td class="dcold">
-        <textarea name="libre" rows="3" cols="29" >{$libre|print_html}</textarea>
+        <textarea name="libre" rows="3" cols="29" >{$libre}</textarea>
       </td>
     </tr>
   </table>

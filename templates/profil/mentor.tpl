@@ -1,4 +1,4 @@
-{* $Id: mentor.tpl,v 1.3 2004-07-17 12:18:03 x2000habouzit Exp $ *}
+{* $Id: mentor.tpl,v 1.4 2004-08-24 11:45:19 x2000habouzit Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -100,7 +100,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
       <tr class="impair">
         {/if}
         <td class="colg">
-          <span class="valeur">{$mentor_pays.$i|print_html}</span>
+          <span class="valeur">{$mentor_pays.$i}</span>
         </td>
         <td class="colm">
           <span class="valeur">&nbsp;&nbsp;</span>
@@ -177,10 +177,10 @@ notamment internationales sur la base desquels tu seras identifiable depuis
           <tr class="impair">
             {/if}
             <td class="colg">
-              <span class="valeur">{$mentor_secteur.$i|print_html}</span>
+              <span class="valeur">{$mentor_secteur.$i}</span>
             </td>
             <td class="colm">
-              <span class="valeur">{$mentor_ss_secteur.$i|print_html}</span>
+              <span class="valeur">{$mentor_ss_secteur.$i}</span>
             </td>
             <td class="cold">
               <span class="lien"><a href="javascript:mentor_secteur_del('{$mentor_sid.$i}');">retirer</a></span>
@@ -246,7 +246,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
             </tr>
             <tr>
               <td colspan="3">
-                <textarea rows="8" cols="60" name="mentor_expertise">{$mentor_expertise|print_html}</textarea>
+                <textarea rows="8" cols="60" name="mentor_expertise">{$mentor_expertise}</textarea>
               </td>
             </tr>
           </table>
