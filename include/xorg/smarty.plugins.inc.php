@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: smarty.plugins.inc.php,v 1.1 2004-11-21 17:05:40 x2000habouzit Exp $
+    $Id: smarty.plugins.inc.php,v 1.2 2004-11-23 12:01:32 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ function block_dynamic()
@@ -100,6 +100,32 @@ function escape_html(&$string)
 function triple_quote_to_gettext($tpl_source, &$smarty)
 {
     return preg_replace('/"""(.*?)"""/se', 'gettext(stripslashes(\'\\1\'))',$tpl_source);
+}
+
+// }}}
+// {{{ function at_to_globals()
+
+/**
+ * helper
+ */
+
+function _to_globals($s) {
+    global $globals;
+    $t = explode('.',$s);
+    if (count($t) == 1) {
+        return $globals->$t[0];
+    } else {
+        return $globals->$t[0]->$t[1];
+    }
+}
+
+/**
+ * compilation plugin used to import $globals confing through #globals.foo.bar# directives
+ */
+
+function at_to_globals($tpl_source, &$smarty)
+{
+    return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
 }
 
 // }}}

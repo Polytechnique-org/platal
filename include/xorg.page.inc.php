@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.page.inc.php,v 1.52 2004-11-22 10:42:52 x2000habouzit Exp $
+    $Id: xorg.page.inc.php,v 1.53 2004-11-23 12:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.page.inc.php");
@@ -31,7 +31,7 @@ require_once("diogenes.core.page.inc.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Jeremy Lainé <jeremy.laine@polytechnique.org>
- * @version  $Id: xorg.page.inc.php,v 1.52 2004-11-22 10:42:52 x2000habouzit Exp $
+ * @version  $Id: xorg.page.inc.php,v 1.53 2004-11-23 12:01:31 x2000habouzit Exp $
  * @access   public
  * @see      DiogenesCorePage
  */
@@ -76,6 +76,7 @@ class XorgPage extends DiogenesCorePage
         $this->register_function('dyn', 'function_dyn', false);
         $this->register_function('implode', 'function_implode');
         $this->register_prefilter('triple_quote_to_gettext');
+        $this->register_prefilter('at_to_globals');
 
         // if necessary, construct new session
         if (empty($_SESSION['session']))
