@@ -17,6 +17,9 @@ New :
 
 Bug/Wish :
 
+	* Docs :
+		- #156 : exit Netscape4 (no more supported), Mozilla enters.		-MC
+
 	* Carnet :
 		- #29 : possible to watch subscribings, deaths, `fiche` modifs.		-MC
 	
@@ -37,7 +40,7 @@ Bug/Wish :
 		- #164 : Married women are now well sorted (by their spouse name).	-MC
 
 	* Stats :
-		- #134,156 : Return of the stats pages.								-VP
+		- #8,134 : Return of the stats pages.								-VP
 
 Fixes (from 0.9.1 branch) :
 
