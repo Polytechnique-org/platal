@@ -1,4 +1,4 @@
-{* $Id: contacts.tpl,v 1.5 2004-08-23 14:42:08 x2000chevalier Exp $ *}
+{* $Id: contacts.tpl,v 1.6 2004-08-23 14:44:45 x2000chevalier Exp $ *}
 
 {if !$smarty.request.topic}
 <div class="rubrique">
@@ -164,11 +164,11 @@ Les anciennes newsletters de <strong>Polytechnique.org</strong> sont
 <p class="normal">
 Polytechnique.org ne s'occupe que de l'Internet. Pour l'annuaire des
 Polytechniciens sur papier et d'une manière générale le support papier, merci
-de contacter l'Amicale des X à l'adresse <strong>{mailto address='ax@polytechnique.org' encode='hex'}</strong>.
+de contacter l'Amicale des X à l'adresse <strong>{mailto address='info@amicale.polytechnique.org' encode='hex'}</strong>.
 </p>
 <p class="normal">
 Pour toute demande qui concerne le recrutement de polytechniciens, vous pouvez consulter
-<a href="emploi_public.php"><strong>la page spécifiquement consacrée à l'emploi sur notre site.</strong></a>
+<a href="http://www.manageurs.com/?langue=fr"><strong>le site Manageurs.com, dédié aux problématique d'emploi et de gestion de carrière.</strong></a>
 </p>
 <p class="normal">
 Pour toute question n'ayant aucun rapport avec l'utilisation du site, vous pouvez nous contacter à
