@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.2 2004-09-21 15:40:36 x2000habouzit Exp $
+        $Id: moderate_sub.tpl,v 1.1 2004-09-21 15:40:36 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -29,42 +29,30 @@
 {else}
 
 <div class='rubrique'>
-  Propriétés du mail en attente
+  Refuser l'inscription d'un utilisateur
 </div>
 
-<table class='tinybicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <td class='titre'>émetteur</td>
-    <td>{$mail.sender}</td>
-  </tr>
-  <tr>
-    <td class='titre'>sujet</td>
-    <td>{$mail.subj}</td>
-  </tr>
-  <tr>
-    <td class='titre'>taille</td>
-    <td>{$mail.size} octets</td>
-  </tr>
-  <tr>
-    <td class='titre'>date</td>
-    <td>{$mail.stamp|date_format:"%H:%M:%S le %d %b %Y"}</td>
-  </tr>
-</table>
-
-<div class='rubrique'>
-  Contenu du mail en attente
-</div>
-
-{if $mail.parts|@count}
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$mail.parts item=part key=i}
-  <tr><th>Partie n°{$i}</th></tr>
-  <tr class='{cycle values="impair,pair"}'>
-    <td><pre>{$part|regex_replace:"!\\n-- *\\n(.*?)$!sm":"</pre><hr style='width:98%;margin:1%'/><pre>\\1"}</pre></td>
-  </tr>
-  {/foreach}
-</table>
-{/if}
+<form method='post' action='?liste={$smarty.request.liste}'>
+  <table class='tinybicol' cellpadding='0' cellspacing='0'>
+    <tr>
+      <th class='titre'>refuser l'inscription de :</th>
+    </tr>
+    <tr>
+      <td>{$del_user.name}</td>
+    </tr>
+    <tr>
+      <td>raison:
+        <textarea cols='50' rows='10' name='reason'></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class='center'>
+        <input type='hidden' name='sdel' value='{$del_user.id}' />
+        <input type='submit' value='Refuser !' />
+      </td>
+    </tr>
+  </table>
+</form>
 
 {/if}
 

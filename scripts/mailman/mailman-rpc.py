@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.20 2004-09-20 20:04:37 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.21 2004-09-21 15:40:35 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os
@@ -167,9 +167,9 @@ def subscribe((userdesc,perms),listname):
     except:
         return 0
     try:
-        if ( mlist.subscribe_policy in (0,1) ) or is_admin_on(userdesc, perms, mlist):
+        if ( mlist.subscribe_policy in (0,1) ) or ( userdesc.address in mlist.owner ) or ( mm_cfg.ADMIN_ML_OWNER in mlist.owner ):
             result = 2
-            mlist.ApprovedAddMember(userdesc,0,0)
+            mlist.ApprovedAddMember(userdesc)
         else:
             result = 1
             try:
@@ -188,7 +188,7 @@ def unsubscribe((userdesc,perms),listname):
     except:
         return 0
     try:
-        mlist.ApprovedDeleteMember(userdesc.address, None, 0, 0)
+        mlist.ApprovedDeleteMember(userdesc.address)
         mlist.Save()
         mlist.Unlock()
         return 1
@@ -222,7 +222,7 @@ def mass_subscribe((userdesc,perms),listname,users):
                 if forlife+'@polytechnique.org' in members:
                     continue
                 userd = UserDesc(forlife+'@polytechnique.org', name, None, 0)
-                mlist.ApprovedAddMember(userd,0,0)
+                mlist.ApprovedAddMember(userd)
                 added.append( (userd.fullname, userd.address) )
         mlist.Save()
     finally:
@@ -238,7 +238,7 @@ def mass_unsubscribe((userdesc,perms),listname,users):
         if not is_admin_on(userdesc, perms, mlist):
             return 0
     
-        map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org', None, 0, 0), users)
+        map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org'), users)
         mlist.Save()
     finally:
         mlist.Unlock()
@@ -343,9 +343,12 @@ def handle_request((userdesc,perms),listname,id,value,comment):
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
-        mlist.HandleRequest(int(id),value,comment)
+        mlist.HandleRequest(int(id),int(value),comment)
+        mlist.Save()
+        mlist.Unlock()
         return 1
     except:
+        mlist.Unlock()
         return 0
 
 

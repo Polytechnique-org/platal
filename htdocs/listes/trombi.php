@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.1 2004-09-10 23:13:04 x2000habouzit Exp $
+        $Id: trombi.php,v 1.2 2004-09-21 15:40:35 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = $_REQUEST['liste'];
+$liste = strtolower($_REQUEST['liste']);
 
 require("auto.prepend.inc.php");
 new_skinned_page('listes/trombi.tpl', AUTH_COOKIE, true);

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.tpl,v 1.7 2004-09-20 20:04:38 x2000habouzit Exp $
+        $Id: liste.tpl,v 1.8 2004-09-21 15:40:36 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -106,10 +106,17 @@
 </table>
 {/if}
 
-{if $details.you > 1 || ($details.priv>1 && $smarty.session.perms eq admin)}
+{if $details.you > 1 || $smarty.session.perms eq admin}
 <div class='rubrique'>
   Administrer la liste
 </div>
+{if $details.priv < 2}
+<p class='erreur'>
+Tu n'es pas administrateur de la liste, mais du site.
+</p>
+{/if}
+
+<p><strong>modération :</strong> <a href='moderate.php?liste={$smarty.request.liste}'>modérer la liste</a></p>
 
 <p>
 Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
@@ -148,10 +155,6 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
 <p>
 Un message est adressé automatiquement à toute personne ajoutée à la liste de diffusion.  Voici le
 message actuellement envoyé : il est modifiable à volonté !
-</p>
-<p>
-L'objet du mail est "Bienvenue sur la liste de diffusion {$details.name} !"<br />
-Et si la personne fait "répondre à", le message arrive aux modérateurs de la liste.
 </p>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>

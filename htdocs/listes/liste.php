@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.php,v 1.5 2004-09-20 20:04:37 x2000habouzit Exp $
+        $Id: liste.php,v 1.6 2004-09-21 15:40:35 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = $_REQUEST['liste'];
+$liste = strtolower($_REQUEST['liste']);
 
 require("auto.prepend.inc.php");
 new_skinned_page('listes/liste.tpl', AUTH_MDP, true);
@@ -37,15 +37,7 @@ $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 if(isset($_REQUEST['welc'])) $client->set_welcome($liste, $_REQUEST['welc']);
 
 if(isset($_REQUEST['add_member']) && isset($_REQUEST['member'])) {
-    if(list($added) = $client->mass_subscribe($liste, Array($_REQUEST['member']))) {
-	$members = $client->get_members($liste);
-	include_once("diogenes.mailer.inc.php");
-	$mailer = new DiogenesMailer("\"Mailing list $liste\" <$liste-owner@polytechnique.org>",
-				     "\"{$added[0]}\" <{$added[1]}>",
-				     "Bienvenue sur la liste de diffusion $liste@polytechnique.org");
-	$mailer->setBody($members[0]['welc']);
-	$mailer->send();
-    }
+    $client->mass_subscribe($liste, Array($_REQUEST['member']));
 }
 
 if(isset($_REQUEST['del_member']) && isset($_REQUEST['member'])) {
@@ -74,7 +66,7 @@ if(isset($_REQUEST['del_owner']) && isset($_REQUEST['owner'])) {
     mysql_free_result($res);
 }
 
-if(empty($members)) $members = $client->get_members($liste);
+$members = $client->get_members($liste);
 if(is_array($members)) {
     $membres = Array();
     foreach($members[1] as $member) {

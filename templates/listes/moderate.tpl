@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.2 2004-09-20 21:31:29 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.3 2004-09-21 15:40:36 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -33,6 +33,23 @@
 </div>
 
 {if $subs|@count}
+<table class='bicol' cellpadding='0' cellspacing='0'>
+  <tr>
+    <th>Nom</th>
+    <th>Adresse</th>
+    <th></th>
+  </tr>
+  {foreach from=$subs item=s}
+  <tr class='{cycle values="pair,impair"}'>
+    <td>{$s.name}</td>
+    <td>{$s.addr}</td>
+    <td class='action'>
+      <a href='?liste={$smarty.request.liste}&amp;sadd={$s.id}'>ajouter</a>
+      <a href='?liste={$smarty.request.liste}&amp;sid={$s.id}'>refuser</a>
+    </td>
+  </tr>
+  {/foreach}
+</table>
 {else}
 <p>pas d'inscriptions en attente de modération</p>
 {/if}
@@ -57,7 +74,7 @@
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
     <td class='action'>
-      <a href='{$smarty.server.PHP_SELF}?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
     </td>
   </tr>
   {/foreach}
