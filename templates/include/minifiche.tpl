@@ -17,22 +17,22 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.17 2004-11-17 15:22:14 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.18 2004-11-18 15:17:42 x2000habouzit Exp $
  ***************************************************************************}
 
 
-{if !$inscrit || $c.dcd}<div class='grayed'>{/if}
-<div class="contact" {if $inscrit}{min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}"{/min_auth}{/if}>
+{if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
+<div class="contact" {if $c.inscrit}{min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}"{/min_auth}{/if}>
   <div class="nom">
     {if $c.sexe}&bull;{/if}
     {min_auth level="cookie"}
-    {if !$c.dcd && $inscrit}
+    {if !$c.dcd && $c.inscrit}
     <a href="{"fiche.php"|url}?user={$c.forlife}" class="popup2">
     {/if}
     {/min_auth}
     {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
     {min_auth level="cookie"}
-    {if !$c.dcd && $inscrit}
+    {if !$c.dcd && $c.inscrit}
     </a>
     {/if}
     {/min_auth}
@@ -41,26 +41,18 @@
     {if $c.iso3166}
     <img src='{"images/"|url}flags/{$c.iso3166}.gif' alt='{$c.nat}' height='14' title='{$c.nat}' />&nbsp;
     {/if}
-    (X {$c.promo}{if $c.app0text},
-      {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
-    {/if}{if $c.app1text},
-      {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}
-    {/if})
+    (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
+    {/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format:"%d %B %Y"}{/if}
     {min_auth level="cookie"}
-    {if !$c.dcd && !$inscrit}
-    <a href="{"marketing/public.php"|url}?num={$c.matricule}" class='popup'>clique ici si tu connais son adresse email !
-    </a>
+    {if !$c.dcd && !$c.inscrit}
+    <a href="{"marketing/public.php"|url}?num={$c.matricule}" class='popup'>clique ici si tu connais son adresse email !</a>
     {/if}
     {/min_auth}
   </div>
-  {min_auth level="cookie"}
-  {include file="include/minifiche_pvt.tpl"}
-  {/min_auth}
-  {only_public}
-  <div class="long"></div>
-  {/only_public}
+  {min_auth level="cookie"}{include file="include/minifiche_pvt.tpl"}{/min_auth}
+  {only_public}<div class="long"></div>{/only_public}
 </div>
-{if !$inscrit || $c.dcd}</div>{/if}
+{if !$c.inscrit || $c.dcd}</div>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.29 2004-11-17 15:22:13 x2000habouzit Exp $
+        $Id: search.tpl,v 1.30 2004-11-18 15:17:42 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -41,7 +41,7 @@
       {else}
         {assign var="show_action" value="ajouter"}
       {/if}
-      {include file=include/minifiche.tpl c=$resultats[resultat] show_action=$show_action inscrit=$resultats[resultat].inscrit}
+      {include file=include/minifiche.tpl c=$resultats[resultat] show_action=$show_action}
     {/section}
     {/capture}
     {$smarty.capture.list|smarty:nodefaults}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.3 2004-11-17 22:03:56 x2000habouzit Exp $
+        $Id: mescontacts.tpl,v 1.4 2004-11-18 15:17:42 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -74,7 +74,7 @@ Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous 
 
 <div class="contact-list">
 {foreach item=contact from=$contacts}
-{include file=include/minifiche.tpl c=$contact show_action="retirer" inscrit=1}
+{include file=include/minifiche.tpl c=$contact show_action="retirer"}
 {/foreach}
 </div>
 

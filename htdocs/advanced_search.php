@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.30 2004-11-13 14:16:15 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.31 2004-11-18 15:17:40 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -106,7 +106,6 @@ else {
     $where = $fields->get_where_statement();
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
                        DISTINCT u.matricule,u.matricule_ax,u.user_id,
-                       perms!=\'non-inscrit\' AS inscrit,
                        u.nom,
                        u.prenom,
                        u.promo,

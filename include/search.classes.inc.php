@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.35 2004-11-13 13:19:38 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.36 2004-11-18 15:17:41 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -30,6 +30,8 @@ $globals->search_result_fields = '
 		if(u.epouse=\'\', u.nom, u.epouse) AS NomSortKey,
                 u.epouse,u.date,u.web,u.mobile,
                 u.deces!=0 AS dcd,u.deces,
+		u.perms IN (\'admin\',\'user\') AS inscrit,
+		u.perms != \'non-inscrit\' AS wasinscrit,
 		FIND_IN_SET(\'femme\', u.flags) AS sexe,
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
