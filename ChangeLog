@@ -9,6 +9,9 @@ New :
 		- Drop cache algorithm (was complex for no gain).					-MC
 		- Enhancements wrt COOKIE.											-MC
 
+	* Contacts :
+		- Brand new PDF of the contact list (using FPDF).					-MC
+
 	* Validation :
 		- quite a lot of rewrite, simplifications.							-MC
 		- now possible to add comments without any action.					-MC
