@@ -55,7 +55,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
             $mymail->assign('lemail',$lemail);
             $mymail->assign('subj',$lusername."@polytechnique.org");
 
-            $globals->xdb->execute("UPDATE en_cours SET ins_id={?}, password={?}, relance=NOW(), WHERE matricule = {?}", $lins_id, $lpass $lmatricule);
+            $globals->xdb->execute("UPDATE en_cours SET ins_id={?}, password={?}, relance=NOW(), WHERE matricule = {?}", $lins_id, $lpass, $lmatricule);
             // envoi du mail à l'utilisateur
 
             $mymail->send();
@@ -72,8 +72,7 @@ $sql = "SELECT  e.date,e.relance,e.promo,e.nom,e.prenom,e.matricule
           FROM  en_cours      AS e
     INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')
       ORDER BY  date DESC";
-
-$page ->mysql_assign($sql, 'relance','nb');
+$page->assign('relance', $globals->xdb->iterator($sql));
 
 $page->run();
 ?>

@@ -31,7 +31,7 @@
     <th>Nom</th>
     <th>inscription</th>
   </tr>
-  {foreach from=$recents item=it}
+  {iterate from=$recents item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.date_envoi|date_format}</td>
     <td>{$it.sender|lower|truncate:8:""}</td>
@@ -41,10 +41,10 @@
     </td>
     <td>{$it.date_succes|date_format}</td>
   </tr>
-  {/foreach}
+  {/iterate}
 </table>
 <p>
-{$nbrecents} Polytechniciens ont été sollicités et se sont inscrits.
+{$recents->total()} Polytechniciens ont été sollicités et se sont inscrits.
 </p>
 
 <h1>
@@ -57,7 +57,7 @@
     <th>Par</th>
     <th>Nom</th>
   </tr>
-  {foreach from=$notsub item=it}
+  {iterate from=$notsub item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.date_envoi|date_format}</td>
     <td>{$it.sender|lower|truncate:8:""}</td>
@@ -66,11 +66,11 @@
       (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
     </td>
   </tr>
-  {/foreach}
+  {/iterate}
 </table>
 
 <p>
-{$nbnotsub} Polytechniciens ont été sollicités et ne se sont toujours pas inscrits.
+{$notsub->total()} Polytechniciens ont été sollicités et ne se sont toujours pas inscrits.
 </p>
 
 

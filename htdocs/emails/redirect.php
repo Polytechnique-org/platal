@@ -53,10 +53,12 @@ if ($melix) {
     $page->assign('melix',$melix);
 }
 
-$page->mysql_assign("SELECT  alias,expire
-                       FROM  aliases
-		      WHERE  id=$uid AND (type='a_vie' OR type='alias')
-		   ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias)", 'alias');
+$res = $globals->xdb->query(
+        "SELECT  alias,expire
+           FROM  aliases
+          WHERE  id={?} AND (type='a_vie' OR type='alias')
+       ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias)", $uid);
+$page->assign('alias', $res->fetchAllAssoc());
 $page->assign('emails',$redirect->emails);
 
 $page->run();

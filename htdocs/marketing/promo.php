@@ -34,11 +34,10 @@ $sql = "SELECT  u.nom, u.prenom, last_known_email, u.matricule, u.matricule_ax, 
           FROM  auth_user_md5  AS u
      LEFT JOIN  envoidirect    AS e ON (u.matricule = e.matricule)
      LEFT JOIN  en_cours       AS c ON (u.matricule = c.matricule)
-         WHERE  u.promo = $promo AND u.deces = 0 AND u.perms='pending'
+         WHERE  u.promo = {?} AND u.deces = 0 AND u.perms='pending'
       GROUP BY  u.matricule
       ORDER BY  nom,prenom";
-
-$page->mysql_assign($sql, 'nonins', 'nbnonins');
+$page->assign('nonins', $globals->xdb->iterator($sql, $promo));
 
 $page->run();
 

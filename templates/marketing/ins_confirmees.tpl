@@ -26,7 +26,7 @@
     <th>Promo</th>
     <th>Nom</th>
   </tr>
-{foreach item=in from=$ins}
+{iterate item=in from=$ins}
   <tr class="{cycle values="impair,pair"}">
     <td class="center">{$in.date_ins|date_format:"%x %X"}</td>
     <td class="center">
@@ -37,7 +37,7 @@
         {$in.nom} {$in.prenom}</a>
     </td>
   </tr>
-{/foreach}
+{/iterate}
 </table>
 
 <br />
@@ -46,7 +46,7 @@
   [<a href="{$smarty.server.PHP_SELF}?sort=promo">par promo</a>]
 </div>
 <p>
-{$nb_ins} Polytechniciens se sont inscrits depuis le début de la semaine !
+{$ins->total()} Polytechniciens se sont inscrits depuis le début de la semaine !
 </p>
 
 

@@ -41,9 +41,7 @@ $sql = "SELECT  m.id, m.expe, m.dest, m.email,
     INNER JOIN  auth_user_md5 AS u ON u.user_id = m.expe
     INNER JOIN  aliases       AS a ON (u.user_id = a.id AND a.type='a_vie')
          WHERE  NOT FIND_IN_SET('envoye', m.flags)";
-
-$page->mysql_assign($sql, 'neuves');
-
+$page->assign('neuves', $globals->xdb->iterator($sql));
 
 $sql = "SELECT  a.promo, a.nom, a.prenom,
                 m.email, a.perms!='pending' AS inscrit,
@@ -52,8 +50,7 @@ $sql = "SELECT  a.promo, a.nom, a.prenom,
     INNER JOIN  auth_user_md5 AS a  ON a.matricule = m.dest
     INNER JOIN  auth_user_md5 AS sa ON sa.user_id = m.expe
          WHERE  FIND_IN_SET('envoye', m.flags)";
-
-$page->mysql_assign($sql, 'used', 'nbused');
+$page->assign('used', $globals->xdb->iterator($sql));
 
 $res = $globals->xdb->query(
         "SELECT  COUNT(a.perms != 'pending') AS j,

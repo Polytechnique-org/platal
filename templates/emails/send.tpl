@@ -83,7 +83,7 @@
     </tr>
   </table>
 
-{if $nb_contacts}
+  {if $contacts|@count}
   <ul>
     <li>
       <p>

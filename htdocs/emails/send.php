@@ -57,13 +57,14 @@ if (Env::get('submit') == 'Envoyer')
     $_REQUEST['bcc'] = Session::get('bestalias').'@'.$globals->mail->domain;
 }
 
-$sql = "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
-          FROM  auth_user_md5 AS u
-    INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
-    INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-         WHERE  c.uid = ".Session::getInt('uid')."
-        ORDER BY u.nom, u.prenom";
-$page->mysql_assign($sql, 'contacts','nb_contacts');
+$res = $globals->xdb->query(
+        "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
+           FROM  auth_user_md5 AS u
+     INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
+     INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+          WHERE  c.uid = {?}
+         ORDER BY u.nom, u.prenom", Session::getInt('uid'));
+$page->assign('contacts', $res->fetchAllAssoc());
 
 $page->run();
 ?>

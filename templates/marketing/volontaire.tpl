@@ -34,7 +34,7 @@
     <th>Dernière adresse connue</th>
     <th>Lui écrire ?</th>
   </tr>
-  {foreach from=$neuves item=it}
+  {iterate from=$neuves item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.nom} {$it.prenom} (X{$it.promo})</td>
     <td>{$it.email}</td>
@@ -51,7 +51,7 @@
       <a href="{$smarty.server.PHP_SELF}?del={$it.id}">Del</a>
     </td>
   </tr>
-  {/foreach}
+  {/iterate}
 </table>
 
 <br />
@@ -66,14 +66,14 @@
     <th>Camarade "informateur"</th>
     <th>inscrit?</th>
   </tr>
-  {foreach from=$used item=it}
+  {iterate from=$used item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.nom} {$it.prenom} (X{$it.promo})</td>
     <td>{$it.email}</td>
     <td>{$it.snom} {$it.sprenom} (X{$it.spromo})</td>
     <td>{if $it.inscrit}OUI{else}NON{/if}</td>
   </tr>
-  {/foreach}
+  {/iterate}
 </table>
 
 <p>

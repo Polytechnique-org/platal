@@ -36,7 +36,7 @@
       <th>Dernière relance</th>
       <th>&nbsp;</th>
     </tr>
-    {foreach from=$relance item=it}
+    {iterate from=$relance item=it}
     <tr class="{cycle values="pair,impair"}">
       <td class="center">{$it.date}</td>
       <td class="center">{$it.promo}</td>
@@ -48,11 +48,11 @@
         <input type="checkbox" name="{$it.matricule}" value="1" />
       </td>
     </tr>
-    {/foreach}
+    {/iterate}
   </table>
 
   <p>
-  {$nb} Polytechniciens n'ont pas effectué jusqu'au bout leur inscription.
+  {$relance->total()} Polytechniciens n'ont pas effectué jusqu'au bout leur inscription.
   </p>
   <div class="center">
     <input type="submit" name="relancer" value="Relancer" />

@@ -81,7 +81,7 @@
       <th>Date dernière relance<br />(si moins d'un an)</th>
       <th>&nbsp;</th>
     </tr>
-    {foreach from=$nonins item=it}
+    {iterate from=$nonins item=it}
     <tr class="{cycle values="pair,impair"}">
       <td>{$it.nom} {$it.prenom}</td>
       <td class="center">{if $it.last_known_email}{mailto address=$it.last_known_email}{/if}</td>
@@ -99,12 +99,12 @@
         <a href="utilisateurs_marketing.php?xmat={$it.matricule}">Marketing</a>
       </td>
     </tr>
-    {/foreach}
+    {/iterate}
   </table>
 </form>
 
 <p>
-{$nbnonins} Polytechniciens de la promo {$promo} ne sont pas inscrits !
+{$nonins->total()} Polytechniciens de la promo {$promo} ne sont pas inscrits !
 </p>
 
 

@@ -24,6 +24,7 @@ new_admin_page('marketing/envoidirect.tpl');
 
 // effacement des inscrits il y a plus de 8 jours
 $globals->xdb->execute("DELETE FROM envoidirect WHERE DATE_ADD(date_succes, INTERVAL 8 DAY) < CURRENT_DATE AND date_succes <> '0000-00-00'");
+
 $sql = "SELECT  e.date_succes,e.date_envoi,a.promo,a.nom,a.prenom,e.email,b.nom as sender
           FROM  envoidirect   AS e
     INNER JOIN  auth_user_md5 AS a ON e.matricule = a.matricule
@@ -31,7 +32,7 @@ $sql = "SELECT  e.date_succes,e.date_envoi,a.promo,a.nom,a.prenom,e.email,b.nom 
          WHERE  a.date_ins != 0
       ORDER BY  e.date_envoi DESC";
 
-$page->mysql_assign($sql, 'recents', 'nbrecents');
+$page->assign('recents', $globals->xdb->iterator($sql));
 
 $sql = "SELECT  DISTINCT e.date_envoi, a.promo, a.nom, a.prenom, e.email, b.nom as sender
           FROM  envoidirect   AS e
@@ -39,7 +40,7 @@ $sql = "SELECT  DISTINCT e.date_envoi, a.promo, a.nom, a.prenom, e.email, b.nom 
     INNER JOIN  auth_user_md5 AS b ON e.sender    = b.user_id
          WHERE  a.date_ins = 0
       ORDER BY  e.date_envoi DESC";
-$page->mysql_assign($sql, 'notsub', 'nbnotsub');
+$page->assign('notsub', $globals->xdb->iterator($sql));
 
 $page->run();
 

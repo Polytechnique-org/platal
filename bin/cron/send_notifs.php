@@ -20,10 +20,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require('./connect.db.inc.php');
-require("../../include/notifs.inc.php");
-require("diogenes.hermes.inc.php");
-require("diogenes.misc.inc.php");
+require_once('./connect.db.inc.php');
+require_once("../../include/notifs.inc.php");
+require_once("diogenes.hermes.inc.php");
+require_once("diogenes.misc.inc.php");
 
 $all = new AllNotifs();
 

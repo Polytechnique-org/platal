@@ -29,7 +29,7 @@ $sql = "SELECT a.alias AS forlife,u.date_ins,u.promo,u.nom,u.prenom
         INNER JOIN aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
 	WHERE u.date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000
         ORDER BY u.{$_GET['sort']} DESC";
-$page->mysql_assign($sql, 'ins', 'nb_ins');
+$page->assign('ins', $globals->xdb->iterator($sql));
 
 $page->run();
 ?>
