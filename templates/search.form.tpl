@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.12 2004-08-31 21:02:12 x2000bedo Exp $
+        $Id: search.form.tpl,v 1.13 2004-08-31 22:06:38 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -56,16 +56,16 @@
         <td>Promotion</td>
         <td>
           <select name="egal1">
-            <option value="=" {if $smarty.request.egal1 eq "="}selected{/if}>&nbsp;=&nbsp;</option>
-	    <option value="&gt;" {if $smarty.request.egal1 eq ">"}selected{/if}>&nbsp;&gt;&nbsp;</option>
-            <option value="&lt;" {if $smarty.request.egal1 eq "<"}selected{/if}>&nbsp;&lt;&nbsp;</option>
+            <option value="=" {if $smarty.request.egal1 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
+	    <option value="&gt;" {if $smarty.request.egal1 eq ">"}selected="selected"{/if}>&nbsp;&gt;&nbsp;</option>
+            <option value="&lt;" {if $smarty.request.egal1 eq "<"}selected="selected"{/if}>&nbsp;&lt;&nbsp;</option>
           </select>
           <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
           &nbsp;ET&nbsp;
           <select name="egal2">
-            <option value="=" {if $smarty.request.egal2 eq "="}selected{/if}>&nbsp;=&nbsp;</option>
-	    <option value="&gt;" {if $smarty.request.egal2 eq ">"}selected{/if}>&nbsp;&gt;&nbsp;</option>
-	    <option value="&lt;" {if $smarty.request.egal2 eq "<"}selected{/if}>&nbsp;&lt;&nbsp;</option>
+            <option value="=" {if $smarty.request.egal2 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
+	    <option value="&gt;" {if $smarty.request.egal2 eq ">"}selected="selected"{/if}>&nbsp;&gt;&nbsp;</option>
+	    <option value="&lt;" {if $smarty.request.egal2 eq "<"}selected="selected"{/if}>&nbsp;&lt;&nbsp;</option>
           </select>
           <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
         </td>
