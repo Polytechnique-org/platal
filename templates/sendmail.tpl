@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.tpl,v 1.10 2004-09-02 21:22:19 x2000habouzit Exp $
+        $Id: sendmail.tpl,v 1.11 2004-10-09 20:45:59 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -66,7 +66,7 @@
         <input type='text' name='from' size='45' value='{if $smarty.request.from}
 {$smarty.request.from}
 {else}
-"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.forlife}@polytechnique.org&gt;
+"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.bestalias}@polytechnique.org&gt;
 {/if}' />
       </td>
     </tr>
@@ -85,7 +85,7 @@
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.forlife}" />
+        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.bestalias}" />
       </td>
     </tr>
     <tr> 
