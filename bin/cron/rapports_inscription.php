@@ -30,7 +30,7 @@ $res = $globals->xdb->iterRow(
 if ($b = $res->total()) {
     $MESSAGE.="\n$b INSCRIPTIONS NON CONFIRMEES:\n";
     while (list($code, $usern, $mail, $quand) = $res->next()) {	
-	$MESSAGE.="$quand, X$prom, $forlife\n$mail";
+	$MESSAGE.="$quand, $usern,\n            $mail";
 	$MESSAGE.="\n";
 	$MESSAGE.="https://www.polytechnique.org/register/end.php?hash=$code\n";
     }
@@ -38,22 +38,14 @@ if ($b = $res->total()) {
 
 // ---------------------------------------
 
-$res = $globals->xdb->iterRow(
-        'SELECT  nom, prenom, promo, email, DATE_FORMAT(date_envoi,"%d.%m.%Y")
-           FROM  envoidirect 
-     INNER JOIN  auth_user_md5 USING(matricule)
-          WHERE  date_succes = ""
-       ORDER BY  date_envoi DESC, promo, nom');
-if ($c = $res->total()) {
-    $MESSAGE.="\n$c INSCRIPTIONS SOLICITÉEs:\n";
-    while (list($nom,$prenom,$promo,$mail,$date) = $res->next()) {
-	$MESSAGE.="$date: X$promo, $nom $prenom,\t$mail\n";
-    }
-}
+$res = $globals->xdb->query('SELECT COUNT(DISTINCT uid), COUNT(*) FROM register_marketing');
+list($a, $b) = $res->fetchOneRow();
+$MESSAGE .= "\n$c INSCRIPTIONS SOLICITÉES :\n";
+$MESSAGE .= "    $a utilisateurs\n    $b adresses mails\n";
 
 // ---------------------------------------
 
-$MESSAGE=$MESSAGE."\n\n";
+$MESSAGE .= "\n\n";
 
 require_once('diogenes/diogenes.hermes.inc.php');
 $mailer = new HermesMailer();
