@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: poly.tpl,v 1.4 2004-08-31 11:25:42 x2000habouzit Exp $
+        $Id: poly.tpl,v 1.5 2004-08-31 19:09:20 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -122,8 +122,22 @@
       <td class="colg">
         <span class="titre">(ex-)Binet(s)</span>
       </td>
+      {foreach from=$binets item=b}
       <td class="colm">
-        {print_binets uid=$smarty.session.uid}
+        <span class="valeur">{$b.text}</span>
+      </td>
+      <td class="cold">
+        <span class="lien">
+          <a href="javascript:binet_del({$b.id});">retirer</a>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        &nbsp;
+      </td>
+      {/foreach}
+      <td class="colm">
         <select name="binet_sel">
           {select_db_table table="binets_def" valeur=0 champ="text" pad='1'}
         </select>
@@ -139,7 +153,21 @@
       <td class="colg">
         <span class="titre">Groupe(s) X</span>
       </td>
-      {print_groupex uid=$smarty.session.uid}
+      {foreach from=$groupesx item=g}
+      <td class="colm">
+        <span class="valeur">{$g.text}</span>
+      </td>
+      <td class="cold">
+        <span class="lien">
+          <a href="javascript:groupex_del({$g.id});">retirer</a>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        &nbsp;
+      </td>
+      {/foreach}
       <td class="colm">
         <select name="groupex_sel">
           {select_db_table table="groupesx_def" valeur=0 champ="text" pad='1'}
