@@ -37,10 +37,12 @@ function getNow() {
 }
 
 
-function popWin2(theNode) {
+function popWin(theNode,w,h) {
     window.open(theNode.href, '_blank',
-	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=900,height=700');
+	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
 }
+
+function popWin2(theNode) { popWin(theNode,900,700); }
 
 function auto_links() {
     nodes = document.getElementsByTagName('a');
@@ -54,6 +56,10 @@ function auto_links() {
 	}
 	if(node.className == 'popup2') {
 	    node.onclick = function () { popWin2(this); return false; };
+	}
+	if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
+	    var w = matches[1], h = matches[2];
+	    node.onclick = function () { popWin(this,w,h); return false; };
 	}
     }
 }

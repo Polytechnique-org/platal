@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.16 2004-11-13 15:56:43 x2000habouzit Exp $
+        $Id: general.tpl,v 1.17 2004-11-13 22:49:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -182,7 +182,7 @@
               transmis à l'AX
             </td>
             <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup2">Quelle couleur ??</a>
+              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -208,7 +208,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup2">Quelle couleur ??</a>
+              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -234,7 +234,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup2">Quelle couleur ??</a>
+              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>

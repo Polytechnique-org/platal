@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.19 2004-11-13 15:56:35 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.20 2004-11-13 22:49:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -165,7 +165,7 @@ function del_fwd(fwd) {
     </tr>
     <tr class="center">
       <td>
-        <a href="{"fiche.php?user=`$mr.forlife`"|url}" class="popup2">[Voir fiche]</a>
+        <a href="{"fiche.php"|url}?user={$mr.forlife}" class="popup2">[Voir fiche]</a>
       </td>
       <td>
         <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />

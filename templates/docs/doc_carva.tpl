@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_carva.tpl,v 1.12 2004-11-13 15:56:36 x2000habouzit Exp $
+        $Id: doc_carva.tpl,v 1.13 2004-11-13 22:49:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -44,7 +44,7 @@
 <h2>Pourquoi le nom de domaine carva.org ?</h2>
 <p>
   Dans le jargon de l'école, un 'carva' signifiait un 'X' lorsque celle-ci était 
-  située sur la montagne Ste Geneviève (<a href="{"docs/index.php#carva"|url}" class="popup2">
+  située sur la montagne Ste Geneviève (<a href="{"docs/index.php#carva"|url}" class="popup_800x480">
     voir la FAQ à ce sujet</a>). 
 </p>
 <br />

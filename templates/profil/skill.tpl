@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: skill.tpl,v 1.8 2004-11-13 15:56:43 x2000habouzit Exp $
+        $Id: skill.tpl,v 1.9 2004-11-13 22:49:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -169,7 +169,7 @@
         <span class="titre">Niveau</span>
       </td>
       <td class="cold" style="width:15%">
-        <span class="lien"><a href="{"docs/faq.php"|url}#niveau_langue" class="popup2">Quel niveau ?</a></span>
+        <span class="lien"><a href="{"docs/faq.php"|url}#niveau_langue" class="popup_800x600">Quel niveau ?</a></span>
       </td>
     </tr>
     {foreach from=$langue_name item=name key=i}
