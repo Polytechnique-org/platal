@@ -19,33 +19,17 @@
  ***************************************************************************}
 
 
-
-{if $erreur}
-<p class="erreur">
-{$erreur}
-</p>
-<p>
-La photo soumise n'a pu être correctement téléchargée pour la raison précédente.
-La photo par défaut est donc gardée.
-</p>
-{/if}
-
-
-<h1>
-  Trombinoscope
-</h1>
+<h1>Trombinoscope</h1>
 
 <form enctype="multipart/form-data" action="{$smarty.server.REQUEST_URI}" method="post">
   <table class="flags" cellspacing="0" summary="Flags">
     <tr>
-      <td class="rouge"><input type="radio" checked="checked" />
-      </td>
-      <td class="texte">privé
-      </td>
+      <td class="rouge"><input type="radio" checked="checked" /></td>
+      <td class="texte">privé</td>
     </tr>
   </table>
 
-  {if ($session.promo ge 1995) or ($session.promo le 2002)}
+  {if ($session.promo ge 1995) || ($session.promo le 2002)}
   <p>
   Si tu n'as pas encore fourni de photo, c'est celle du trombinoscope de l'X qui est
   affichée par défaut dans le profil. Si elle ne te plaît pas, ou si tu n'es quand même
@@ -64,11 +48,11 @@ La photo par défaut est donc gardée.
     </tr>
     <tr>
       <td class="center">
-        <img src="{"getphoto.php"|url}?x={$smarty.session.uid}" width="110" alt=" [ PHOTO ] " />
+        <img src="{rel}/getphoto.php?x={$smarty.session.uid}" width="110" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
-        <img src="{"getphoto.php"|url}?x={$smarty.session.uid}&amp;req=true" width=110 alt=" [ PHOTO ] " />
+        <img src="{rel}/getphoto.php?x={$smarty.session.uid}&amp;req=true" width=110 alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}
