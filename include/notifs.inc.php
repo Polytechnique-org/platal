@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.17 2004-11-13 08:48:26 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.18 2004-11-14 17:39:12 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -52,7 +52,7 @@ function getNbNotifs() {
     if(!isset($_SESSION['uid'])) return 0;
     $uid = $_SESSION['uid'];
 
-    $watchlast = $_SESSION['watch_last'];
+    $watchlast = isset($_SESSION['watch_last']) ? $_SESSION['watch_last'] : 0;
 
     $res = $globals->db->query("
     (
