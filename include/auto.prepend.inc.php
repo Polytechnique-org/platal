@@ -5,7 +5,7 @@ setlocale(LC_TIME, "fr_FR");
 require("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=false) {
-    global $page,$globals;
+    global $page;
     require("xorg.page.inc.php");
     if(!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
@@ -20,20 +20,10 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=
             $page = new XorgAuth($tpl_name, $type);
     }
 
-    $page->template_dir = $globals->spoolroot . "/templates/";
-    $page->compile_dir  = $globals->spoolroot . "/templates_c/";
-    $page->plugins_dir[]= $globals->spoolroot . "/plugins/";
-    $page->config_dir   = $globals->spoolroot . "/configs/";
-    $page->cache_dir    = $globals->spoolroot . "/cache/";
-
     $page->assign('xorg_head', $tpl_head);
     $page->assign('xorg_tpl', $tpl_name);
     if($popup)
         $page->assign('popup_enable', true);
-
-    $page->config_overwrite=false;
-    $page->compile_check=true;
-    $page->caching=true;
 }
 
 function new_skinned_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {

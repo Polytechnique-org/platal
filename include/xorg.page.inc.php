@@ -13,7 +13,17 @@ class XorgPage extends DiogenesCorePage {
   var $_tpl;
   
   function XorgPage($tpl, $type=SKINNED) {
-    global $site_dev,$marketing_admin;
+    global $site_dev,$marketing_admin,$globals;
+
+    $this->template_dir = $globals->spoolroot."/templates/";
+    $this->compile_dir  = $globals->spoolroot."/templates_c/";
+    $this->plugins_dir[]= $globals->spoolroot."/plugins/";
+    $this->config_dir   = $globals->spoolroot."/configs/";
+    $this->cache_dir    = $globals->spoolroot."/cache/";
+
+    $this->config_overwrite=false;
+    $this->compile_check=true;
+    $this->caching=true;
 
     $this->_page_type = SKINNED;
     $this->_tpl = $tpl;
