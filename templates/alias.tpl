@@ -37,7 +37,7 @@
 <form action="?visible={if $mail_public}private{else}public{/if}" method='post'>
   <table class="flags">
     <tr>
-      <td class="vert">
+      <td class="orange">
         <input type="checkbox" {if $mail_public}checked="checked"{/if} onclick="this.form.submit()" />
       </td>
       <td>
