@@ -18,6 +18,24 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+
+{if $smarty.server.HTTP_USER_AGENT|truncate:10:'' eq 'Mozilla/4.'}
+<h1>ATTENTION !</h1>
+
+<p class="erreur">
+Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
+</p>
+<p>
+En effet, ils ne comprenent qu'une trop faible partie des standards du web.
+Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
+</p>
+<p>
+Nous conseillons très vivement d'utiliser des navigateurs récents, tels
+<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
+</p>
+<br />
+{/if}
+
 {foreach from=$xorg_error->errs|smarty:nodefaults item=err}
 <div class="erreur">{$err|smarty:nodefaults}</div>
 {/foreach}
