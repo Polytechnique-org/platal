@@ -68,11 +68,12 @@ class PlatalBanana extends Banana
 
     function run()
     {
-        global $banana;
+        global $banana, $globals;
 
         if (Get::get('banana') == 'updateall') {
             $globals->xdb->execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), Session::getInt('uid'));
             $_SESSION['banana_last'] = time();
+            header('Location: ?');
         }
         return Banana::run('PlatalBanana');
     }
