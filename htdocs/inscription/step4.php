@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.10 2004-11-07 11:54:07 x2000habouzit Exp $
+        $Id: step4.php,v 1.11 2004-11-14 21:14:12 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -58,6 +58,11 @@ if (!empty($_REQUEST['ref'])) {
     $prenom = stripslashes($prenom);
     $sql = "UPDATE auth_user_md5 SET password='$password', nationalite=$nationalite, perms='user',
             date='$date', naissance=$naissance, date_ins = NULL WHERE matricule='$matricule'";
+    $globals->db->query($sql);
+    $sql = "INSERT INTO  auth_user_quick (user_id)
+                 SELECT  user_id
+		   FROM  auth_user_md5
+		  WHERE  matricule='$matricule'";
     $globals->db->query($sql);
     
     // on vérifie qu'il n'y a pas eu d'erreur
