@@ -29,9 +29,13 @@ if ($appli_id2>0)
 else
      $globals->xdb->execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=1", Session::getInt('uid', -1));
 
-$sql = "UPDATE auth_user_md5
-	   SET nationalite= {?} WHERE user_id= {?}";
-$globals->xdb->execute($sql, $nationalite, Session::getInt('uid', -1));
+if ($nationalite != $nationalite_anc || $nom != $nom_anc || $prenom != $prenom_anc) {
+    $sql = "UPDATE auth_user_md5
+               SET nationalite= {?},
+                   nom = {?},
+                   prenom = {?} WHERE user_id= {?}";
+    $globals->xdb->execute($sql, $nationalite, $nom, $prenom, Session::getInt('uid', -1));
+}
 $globals->xdb->execute(
         "UPDATE auth_user_quick SET
             profile_nick={?},

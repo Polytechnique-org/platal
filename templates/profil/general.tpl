@@ -44,10 +44,28 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">Identité</span>
+        <span class="titre">Nom</span>
+        <span class="comm"></span>
       </td>
       <td class="cold">
-        <span class="nom">{$prenom} {$nom} X{$promo}</span>
+        <input type='text' name='nom' value="{$nom}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Prénom</span>
+        <span class="comm"></span>
+      </td>
+      <td class="cold">
+        <input type='text' name='prenom' value="{$prenom}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Promotion</span>
+      </td>
+      <td class="cold">
+        <span class="nom">X{$promo}</span>
       </td>
     </tr>     
     {if $femme}

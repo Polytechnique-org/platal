@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
-$sql = "SELECT  u.nom, u.prenom, u.promo, u.epouse, FIND_IN_SET('femme',u.flags), u.nationalite,
+$sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.epouse, FIND_IN_SET('femme',u.flags), u.nationalite,
 		q.profile_mobile, q.profile_mobile_pub, q.profile_web, q.profile_web_pub, q.profile_freetext, q.profile_freetext_pub, q.profile_nick,
                 a1.aid, a1.type, a2.aid, a2.type
           FROM  auth_user_md5   AS u
@@ -30,13 +30,19 @@ $sql = "SELECT  u.nom, u.prenom, u.promo, u.epouse, FIND_IN_SET('femme',u.flags)
 	 WHERE  u.user_id = {?}";
 
 $result = $globals->xdb->query($sql, Session::getInt('uid', -1));
-list($nom, $prenom, $promo, $epouse, $femme, $nationalite,
+list($nom, $prenom, $nom_ini, $prenom_ini, $promo, $epouse, $femme, $nationalite,
 	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 
 $result = $globals->xdb->query("SELECT pub FROM photo WHERE uid = {?}", Session::getInt('uid', -1));
 $photo_pub = $result->fetchOneCell();
 
+$nom_anc = $nom;
+$prenom_anc = $prenom;
+$nationalite_anc = $nationalite;
+
+replace_ifset($nom,'nom');
+replace_ifset($prenom,'prenom');
 replace_ifset($nationalite,'nationalite');
 replace_ifset($mobile,'mobile');
 replace_ifset($web,"web");
@@ -54,7 +60,40 @@ if(Env::has('modifier') || Env::has('suivant')) {
     $photo_pub = Env::has('photo_pub')?'public':'private';
 }
 
+    $accents_minuscules = "àáâãäåæçèéêëìíîïñòóôõöøùúûýÿ";
+    $minuscules         = "aaaaaaaceeeeiiiinoooooouuuyy";
+    $accents_majuscules = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ";
+    $majuscules         = "AAAAAAACEEEEIIIINOOOOOOUUUYY";
+    
+    function strtoupper_accents($s) {
+        global $accents_minuscules, $accents_majuscules;
+        return strtr(strtoupper($s), $accents_minuscules, $accents_majuscules);
+    }
+    function strtolower_accents($s) {
+        global $accents_minuscules, $accents_majuscules;
+        return strtr(strtolower($s), $accents_majuscules, $accents_minuscules);
+    }
+    function no_accents($s) {
+        global $accents_minuscules, $accents_majuscules, $minuscules, $majuscules;
+        return strtr($s, $accents_minuscules.$accents_majuscules, $minuscules.$majuscules);
+    }
+
+    $nom = strtoupper_accents($nom);
+    $nom_comp = no_accents($nom);
+    $nom_anc_comp = no_accents($nom_anc);
+
+    $prenom = strtolower_accents($prenom);
+    $prenom_comp = no_accents($prenom);
+    $prenom_anc_comp = strtolower(no_accents($prenom_anc));
+    $prenom_ini = strtolower($prenom_ini);
+    for ($i=-1;$i !== false;$i = strpos($prenom,'-',$i+1))
+        $prenom{$i+1} = strtoupper_accents($prenom{$i+1});
+    for ($i=0;($i = strpos($prenom,' ',$i))!==false;$i++)
+        $prenom{$i+1} = strtoupper_accents($prenom{$i+1});
+
 // Y a-t-il une photo en attente de confirmation ?
 $sql = $globals->xdb->query("SELECT COUNT(*) FROM requests WHERE type='photo' AND user_id = {?}", Session::getInt('uid', -1));
 $nouvellephoto=$sql->fetchOneCell();
+
+// vim:set et sws=4 sw=4 sts=4:
 ?>

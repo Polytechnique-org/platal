@@ -18,7 +18,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
+ 
+function strmatch_whole_words($nouveau, $ancien) {
+    $nouveau = strtoupper($nouveau);
+    $ancien = strtoupper($ancien);
+    $len_nouveau = strlen($nouveau);
+    return (($i = strpos($ancien, $nouveau)) !== false && ($i == 0 || $ancien{$i-1} == ' ' || $ancien{$i-1} == '-') && ($i + $len_nouveau == strlen($ancien) || $ancien{$i + $len_nouveau} == ' ' || $ancien{$i+$len_nouveau} == '-'));
+}
 
+// validite du nom
+if ($nom != $nom_anc &&
+    !strmatch_whole_words($nom_comp, $nom_anc_comp) &&
+    ($nom_anc_comp == $nom_ini || !strmatch_whole_words($nom_comp, $nom_ini))) {
+    $page->trig("Le nom que tu as choisi ($nom) est trop loin de ton nom initial ($nom_ini)".(($nom_ini==$nom_anc_comp)?"":" et de ton nom précédent ($nom_anc)"));
+}
+
+// validite du prenom
+if ($prenom != $prenom_anc &&
+    !strmatch_whole_words($prenom_comp, $prenom_anc_comp) &&
+    ($prenom_anc_comp == $prenom_ini || !strmatch_whole_words($prenom_comp, $prenom_ini))) {
+    $page->trig("Le prénom que tu as choisi ($prenom) est trop loin de ton prénom initial ($prenom_ini)".(($prenom_ini==$prenom_anc_comp)?"":" et de ton prénom précédent ($prenom_anc)"));
+}
 
 // validité du mobile
 if (strlen(strtok($mobile,"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($mobile)) {
@@ -42,4 +62,5 @@ if (strlen(strtok($freetext,"<>")) < strlen($freetext))
     $page->trig("Le champ 'Complément libre' contient un caractère interdit.");
 }
 
+// vim:set et sws=4 sts=4 sw=4:
 ?>
