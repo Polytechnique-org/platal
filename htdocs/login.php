@@ -22,8 +22,8 @@
 require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
-$res = $globals->xdb->query('SELECT date FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
-list($date) = $res->fetchOneRow();
+$res = $globals->xdb->query('SELECT date, naissance FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
+list($date, $naissance) = $res->fetchOneRow();
 
 // incitation à mettre à jour la fiche
 
@@ -31,6 +31,12 @@ $d2  = mktime(0, 0, 0, substr($date, 5, 2), substr($date, 8, 2), substr($date, 0
 if( (time() - $d2) > 60 * 60 * 24 * 400 ) {
     // si fiche date de + de 400j;
     $page->assign('fiche_incitation', $date);
+}
+
+// Souhaite bon anniversaire
+
+if (substr($naissance, 5) == date("m-d")) {
+	$page->assign('birthday', date("Y") - substr($naissance, 0, 4));
 }
 
 // incitation à mettre une photo

@@ -25,7 +25,14 @@
 
 {else}
 
-<h1>Bienvenue {$smarty.session.prenom} :o)</h1>
+<h1>
+Bienvenue {$smarty.session.prenom}
+{if $birthday}
+  et joyeux anniversaire de {$birthday} ans de la part de toute l'équipe !
+{else}
+:o)
+{/if}
+</h1>
 
 <div class="smaller">
   Ta connexion précédente date du
