@@ -1,13 +1,25 @@
 <?php
-require("db_connect.inc.php");
-require("controlpermanent.inc.php");
-require_once("appel.inc.php");
-require_once("validations.inc.php");
+
+require('auto.prepend.inc.php');
+new_skinned_page('login.tpl', AUTH_COOKIE);
+
+//require("db_connect.inc.php");
+//require("controlpermanent.inc.php");
+//require_once("appel.inc.php");
+//require_once("validations.inc.php");
 
 // getdata.php3 - by Florian Dittmer <dittmer@gmx.net> 
 // Example php script to demonstrate the direct passing of binary data 
 // to the user. More infos at http://www.phpbuilder.com 
 // Syntax: getdata.php3?id=<id> 
+
+function url($url) {
+    $chemins = Array('.', '..', '/');
+    foreach ($chemins as $ch)
+      if (file_exists("$ch/login.php") || file_exists("$ch/public/login.php"))
+        return "$ch/$url";
+    return "";
+}
 
 if(isset($_REQUEST['x'])) {
 	if(isset($_REQUEST['req']) && $_REQUEST['req']="true") {

@@ -5,7 +5,7 @@ if(logged()) {
         0 => Array( 'Page d\'accueil' => 'login.php' ),
         'Personnaliser' => Array(
             'Mes emails' => 'emails.php' ,
-            'Mon profil' => '###url###' ,
+            'Mon profil' => 'profil.php' ,
             'Mes contacts' => 'mescontacts.php' ,
             'Mon mot de passe' => 'motdepassemd5.php' ,
             'Mes préférences' => 'preferences.php' 
