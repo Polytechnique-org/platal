@@ -124,14 +124,13 @@ class ContactsPDF extends FPDF
         $this->broken = true;
     }
 
-    function Space($before=0.5)
+    function Space()
     {
         $x = $this->getX();
         $y = $this->getY();
-
         $this->SetLineWidth(0.1);
-        $this->Line($x, $y+$before, $x+90, $y+$before);
-        $this->setY($this->getY()+0.5+$before);
+        $this->Line($x, $y, $x+90, $y);
+        $this->setY($this->getY()+0.5);
     }
 
     function TableRow($l, $r, $font = 'Sans')
@@ -148,8 +147,8 @@ class ContactsPDF extends FPDF
         
         $this->setX($x+25);
         $this->MultiCell(65, 4, $r, '', 1);
-        
-        if ($y1 > $this->getY()) { $this->setY($y1); }
+       
+        $this->setY(max($y1, $this->getY())+0.5);
         $this->setX($x);
     }
 
@@ -221,7 +220,7 @@ class ContactsPDF extends FPDF
 
         $nom = $x['prenom'].' '.($x['epouse'] ? "{$x['epouse']} - née {$x['nom']}" : $x['nom'])." ({$x['promo']})";
         $this->Cell(0, 6, $nom, "T", 1, 'C', 1, $globals->baseurl."/fiche.php?user={$x['forlife']}");
-        $this->Space(0);
+        $this->Space();
 
         if ($x['mobile']) {
             $this->TableRow('mobile', $x['mobile'], 'Mono');
