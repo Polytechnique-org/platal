@@ -6,6 +6,10 @@ New :
 	* Banana :
 		- Total rework, it's now a real library, exit from plat/al.			-MC
 
+	* Contacts :
+		- Brand new PDF of the contact list (using FPDF).					-MC
+		- Even include Photos in the PDF (kludgy !).						-MC
+
 	* Core :
 		- New SQL access API : gain in security and code factorization.		-MC
 		- Drop good old mysql_assign, iterators are nicer.					-MC
@@ -17,10 +21,6 @@ New :
 		- Strip unnecessary spaces from templates at compile time.			-MC
 		- Allow users to choose email formats globally.						-Car
 		- Crons are now handled from plat/al with a global crontab file.	-MC
-
-	* Contacts :
-		- Brand new PDF of the contact list (using FPDF).					-MC
-		- Even include Photos in the PDF (kludgy !).						-MC
 
 	* Notifications :
 		- Use Pascal's work to enable a simple, nicer html mail.			-MC
@@ -40,15 +40,15 @@ New :
 
 Bug/Wish :
 
+	* Contacts :
+		- #180: Change the list order using name, promo or last change date.-Car
+		
 	* Core :
 		- #145: Use melix address to log in.								-Car
 		- #212: Various font-sizes fixed.                                   -Car
 		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
 		- #258: Netscape4 Warning.											-MC
 
-	* Contacts :
-		- #180: Change the list order using name, promo or last change date.-Car
-		
 	* Emails :
 		- #229: Possibility to show our melix address.						-Car
 
