@@ -1,6 +1,10 @@
 <?php
 require("diogenes.core.page.inc.php");
 
+function dynamic($param, $content, &$smarty) {
+    return $content;
+}
+
 class XorgPage extends DiogenesCorePage {
   var $_page_type;
   var $_tpl;
@@ -12,6 +16,7 @@ class XorgPage extends DiogenesCorePage {
     $this->_tpl = $tpl;
 
     $this->DiogenesCorePage();
+    $this->register_block('dynamic', 'dynamic', false);
 
     // if necessary, construct new session
     if (!session_is_registered('session')) {
@@ -118,37 +123,4 @@ class XorgAdmin extends XorgAuth
   }
 }
 
-
-/** ajoute le nb de ../ qvb
- * Cette fonction recherche login.php dans les chemins donnés par INCLUDE_PATH
- * et renvoie l'url avec le nombre de .. qvb
- * @param $param URL relative (à la page web)
- * @return URL absolue (au site web)
- * @see getphoto.php
- * @see ax/PasswordPromptScreen.inc
- * @see include/footer.inc.php
- * @see include/form_data_maj.inc.php
- * @see include/header1.inc.php
- * @see include/header2.inc.php
- * @see include/header_all.inc.php
- * @see include/header_logged.inc.php
- * @see include/passwordpromptscreen.inc.php
- * @see include/passwordpromptscreenlogged.inc.php
- * @see listes/index.php
- * @see mescontacts.php
- */
-function xorg_func_url($params)
-{
-  extract($params);
-
-  if (empty($rel))
-    return;
-
-  $chemins = Array('.', '..', '/');
-  foreach ($chemins as $ch) {
-    if (file_exists("$ch/login.php") || file_exists("$ch/public/login.php"))
-      return "$ch/$rel";
-  }
-  return "";
-}
 ?>

@@ -2,7 +2,7 @@
 
 if(logged()) {
     $menu = Array(
-        0 => Array( 'Page d\'accueil' => '###url###' ),
+        0 => Array( 'Page d\'accueil' => 'login.php' ),
         'Personnaliser' => Array(
             'Mes emails' => '###url###' ,
             'Mon profil' => '###url###' ,
@@ -33,7 +33,7 @@ if(logged()) {
     );
 
     if(identified()) {
-        $array = array_merge( Array('Déconnexion' => '###url###'),  $menu[0] );
+        $menu[0] = array_merge( Array('Déconnexion' => 'deconnexion.php'),  $menu[0] );
     }
 
     if(has_perms()) {
@@ -51,7 +51,7 @@ if(logged()) {
 } else {
     $menu = Array(
         'Polytechniciens' => Array(
-            'Me connecter !' => "###url###",
+            'Me connecter !' => "login.php",
             'M\'inscrire' => "###url###"
         ),
         'Visiteurs' => Array(

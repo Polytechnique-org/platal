@@ -111,7 +111,9 @@ class XorgSession extends DiogenesCoreSession {
     global $failed_ORGaccess,$site_dev;
 
     if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGlogin']) and !isset($failed_ORGaccess)) {
-      $page->display("passwordpromptscreenlogged.tpl");
+      $page->assign("xorg_head", "password_prompt_logged.head.tpl");
+      $page->assign("xorg_tpl", "password_prompt_logged.tpl");
+      $page->display();
     } else {
       if (isset($_COOKIE['ORGlogin'])) {
         $pre = strtok($_COOKIE['ORGlogin'],".");
@@ -126,14 +128,15 @@ class XorgSession extends DiogenesCoreSession {
         }
         $page->assign('prenom',$prenom);
       }
-      $page->display("passwordpromptscreen.tpl");
+      $page->assign("xorg_head", "password_prompt.head.tpl");
+      $page->assign("xorg_tpl", "password_prompt.tpl");
+      $page->display();
     }
     //    $page->assign('challenge',$this->challenge);
     exit;
   }
 
 }
-
 
 /** verifie si un utilisateur a les droits pour voir une page
  ** si ce n'est pas le cas, on affiche une erreur
