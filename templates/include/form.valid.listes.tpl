@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.listes.tpl,v 1.1 2004-09-25 20:11:35 x2000habouzit Exp $
+        $Id: form.valid.listes.tpl,v 1.2 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,7 +27,7 @@
       <td>Demandeur&nbsp;:
       </td>
       <td>
-        <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$valid->forlife}')">
+        <a href="{"fiche.php"|url}?user={$valid->forlife}" class="popup2">
           {$valid->forlife}</a>
       </td>
     </tr>
@@ -64,7 +64,7 @@
       <td>Getionnaires&nbsp;:</td>
       <td>
         {foreach from=$valid->owners item=o}
-        <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$o}')">{$o}</a>
+        <a href="{"fiche.php"|url}?user={$o}" class="popup2">{$o}</a>
         {/foreach}
       </td>
     </tr>
@@ -72,7 +72,7 @@
       <td>Membres&nbsp;:</td>
       <td>
         {foreach from=$valid->members item=o}
-        <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$o}')">{$o}</a>
+        <a href="{"fiche.php"|url}?user={$o}" class="popup2">{$o}</a>
         {/foreach}
       </td>
     </tr>

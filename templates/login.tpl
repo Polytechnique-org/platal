@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.tpl,v 1.13 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: login.tpl,v 1.14 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -50,7 +50,7 @@
   
 {dynamic on="0$fiche_incitation"}
   <p>La dernière mise à jour de ta
-  <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.forlife}">fiche</a>
+  <a href="{"fiche.php"|url}?user={$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format:"%x"}.
   Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
@@ -60,7 +60,7 @@
 {dynamic on="0$photo_incitation"}
   <p>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
-    Clique <a href="javascript:x()" onclick="popWin('trombino.php','trmb','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=750,height=480')">ici</a>
+    Clique <a href="{"trombino.php"|url}">ici</a>
     si tu souhaites en ajouter une.
   </p>
 {/dynamic}
@@ -92,7 +92,7 @@
         {$ev.texte|smarty:nodefaults|nl2br}
         <br />
         <p class="smaller">Annonce proposée par
-        <a href="javascript:x()" onclick="popWin('fiche.php?user={$ev.forlife}')">
+        <a href="{"fiche.php"|url}?user={$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
         </p>

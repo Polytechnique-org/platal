@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.4 2004-11-02 06:46:50 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.5 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -29,7 +29,7 @@
   <tr>
   {/if}
     <td class="center">
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$p.forlife}')">
+      <a href="{"fiche.php"|url}?user={$p.forlife}" class="popup2">
         <img src="{"getphoto.php"|url}?x={$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_admin && $smarty.session.perms eq 'admin'}
@@ -38,8 +38,8 @@
       </a>
       {/if}
       <br />
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$p.forlife}')">
-        {$p.prenom} {$p.nom}{if $trombi_show_promo}({$p.promo}){/if}
+      <a href="{"fiche.php"|url}?user={$p.forlife}" class="popup2">
+        {$p.prenom} {$p.nom}{if $trombi_show_promo} ({$p.promo}){/if}
       </a>
     </td>
   {if $loop eq "3"}

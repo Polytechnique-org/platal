@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: homonymes.tpl,v 1.8 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -63,7 +63,7 @@
     </td>
     <td>{$user.expire|date_format:"%d %b %Y"}</td>
     <td>
-      <a href="javascript:x()" onclick="popWin('../fiche.php?user={$user.forlife}')">fiche</a>
+      <a href="{"fiche.php"|url}?user={$user.forlife}" class='popup2'>fiche</a>
       <a href="utilisateurs.php?login={$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
       <a href="?op=mail-conf&amp;target={$user.user_id}">mailer</a>

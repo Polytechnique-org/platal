@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.15 2004-11-13 15:17:56 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.16 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,7 +26,7 @@
     {if $c.sexe}&bull;{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && $inscrit}
-    <a href="javascript:x()" onclick="popupWin('{"fiche.php"|url}?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
+    <a href="{"fiche.php"|url}?user={$c.forlife}" class="popup2">
     {/if}
     {/min_auth}
     {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
@@ -48,7 +48,7 @@
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format:"%d %B %Y"}{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && !$inscrit}
-    <a href="javascript:x()" onclick="popWin('{"marketing/public.php"|url}?num={$c.matricule}')">clique ici si tu connais son adresse email !
+    <a href="{"marketing/public.php"|url}?num={$c.matricule}" class='popup'>clique ici si tu connais son adresse email !
     </a>
     {/if}
     {/min_auth}

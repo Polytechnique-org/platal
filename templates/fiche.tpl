@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.24 2004-11-13 15:24:59 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.25 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -59,7 +59,7 @@ function chgMainWinLoc( strPage ) {
   <div>{if $nationalite}<em>{$nationalite}</em> - {/if}X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
   {if $mobile}<div><em class="intitule">Mobile : </em>{$mobile}</div>{/if}
   {if $is_referent}
-    <div><a href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$forlife}')">Ma fiche référent</a></div>
+    <div><a href="fiche_referent.php?user={$forlife}" class='popup'>Ma fiche référent</a></div>
   {/if}
 </div>
 

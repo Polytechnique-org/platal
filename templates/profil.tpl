@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.tpl,v 1.11 2004-09-02 23:25:31 x2000habouzit Exp $
+        $Id: profil.tpl,v 1.12 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -32,7 +32,8 @@
 <p class="erreur">{$e}</p>
 {/foreach}
 
-<p>Tu peux consulter <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.forlife}','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">l'état actuel de ta fiche</a> tel qu'elle apparaîtra pour un camarade.</p>
+<p>Tu peux consulter <a href="{"fiche.php"|url}?user={$smarty.session.forlife}" class="popup2">l'état actuel de ta fiche</a>
+tel qu'elle apparaîtra pour un camarade.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0">

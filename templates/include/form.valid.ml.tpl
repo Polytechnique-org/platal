@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.ml.tpl,v 1.8 2004-09-03 00:00:22 x2000habouzit Exp $
+        $Id: form.valid.ml.tpl,v 1.9 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,7 +26,7 @@
     <tr>
       <td>Demandeur&nbsp;:</td>
       <td>
-        <a href="javascript:x()" onclick="popWin('/fiche.php?user={$valid->forlife}')">
+        <a href="{"fiche.php"|url}?user={$valid->forlife}" class="popup2">
           {$valid->prenom} {$valid->nom}
         </a>
       </td>

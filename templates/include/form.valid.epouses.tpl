@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.epouses.tpl,v 1.10 2004-10-20 07:21:02 x2000habouzit Exp $
+        $Id: form.valid.epouses.tpl,v 1.11 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,7 +26,7 @@
     <tr>
       <td>Demandeur&nbsp;:</td>
       <td>
-        <a href="javascript:x()" onclick="popWin('/fiche.php?user={$valid->forlife}')">
+        <a href="{"fiche.php"|url}?user={$valid->forlife}" class="popup2">
           {$valid->prenom} {$valid->nom}
         </a>
         {if $valid->oldepouse}({$valid->oldepouse} - {$valid->oldalias}){/if}
@@ -44,7 +44,7 @@
     <tr>
       <td colspan="2">
         <span class="erreur">Probleme d'homonymie !
-          <a href="javascript:x()"  onclick="popWin('{"x.php?x=$valid->homonyme"|url}"> {$valid->homonyme}</a>
+          <a href="{"fiche.php"|url}?user=$valid->homonyme" class="popup2">{$valid->homonyme}</a>
         </span>
       </td>
     </tr>

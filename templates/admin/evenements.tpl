@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: evenements.tpl,v 1.8 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -42,7 +42,7 @@
 <table class="bicol">
   <tr>
     <th>
-      Posté par <a href="javascript:x()"  onclick="popWin('../fiche.php?user={$ev.forlife}')">{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
+      Posté par <a href="{"fiche.php"|url}?user={$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
       <a href="mailto:{$ev.forlife}@m4x.org">lui écrire</a>
     </th>
   </tr>

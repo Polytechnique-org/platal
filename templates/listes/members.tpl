@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.12 2004-11-07 14:58:35 x2000habouzit Exp $
+        $Id: members.tpl,v 1.13 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -82,7 +82,7 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
+      <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">{$x.n}</a><br />
       {else}
       {$x.l}<br />
       {/if}
@@ -110,7 +110,7 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
+      <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">{$x.n}</a><br />
       {else}
       {$x.l}<br />
       {/if}

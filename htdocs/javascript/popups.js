@@ -18,6 +18,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+function popWin2(theNode) {
+    window.open(theNode.href, '_blank',
+	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=900,height=700');
+}
+
 function auto_links() {
     nodes = document.getElementsByTagName('a');
     fqdn = document.URL;
@@ -26,8 +31,11 @@ function auto_links() {
 	node = nodes[i];
 	if(!node.href || node.className == 'xdx') continue;
 	if(node.href.indexOf(fqdn)<0 || node.className == 'popup') {
-	    node.title='foo';
 	    node.onclick = function () { window.open(this.href); return false; };
+	}
+	if(node.className == 'popup2') {
+	    node.onclick = function () { popWin2(this); return false; };
 	}
     }
 }
+

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.tpl,v 1.12 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: sendmail.tpl,v 1.13 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -114,7 +114,7 @@
       <input type="checkbox" name="contacts[{$contact.forlife}]"
         value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@polytechnique.org&gt;"
         {if $smarty.request.contacts && $smarty.request.contacts.forlife}checked="checked"{/if} />
-      <a href="javascript:x()" onclick="popWin('fiche.php?user={$contact.forlife}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
+      <a href="{"fiche.php"|url}?user={$contact.forlife}" class="popup2">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>
 {if $key is odd}
   </tr>

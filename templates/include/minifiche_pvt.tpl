@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.14 2004-11-13 15:22:06 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.15 2004-11-13 15:56:37 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -34,7 +34,7 @@
     *}</a>
     {/if}
     {perms level='admin'}
-    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">{*
+    <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}<img src="{"images/ax.png"|url}" alt='AX' title="fiche AX" />{*
     *}</a>
     {/perms}
@@ -43,8 +43,7 @@
   <div class="long"></div>
 {else}
   <div class="bits">
-    <a href="javascript:x()"
-      onclick="popupWin('{"fiche.php"|url}?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">{*
+    <a href="{"fiche.php"|url}?user={$c.forlife}" class="popup2">{*
       *}<img src="{"images/loupe.gif"|url}" alt="Afficher la fiche" title="Afficher la fiche" />{*
     *}</a>
     <a href="vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
@@ -59,7 +58,7 @@
     <a href="{"admin/utilisateurs.php"|url}?login={$c.forlife}">{*
       *}<img src="{"images/admin.png"|url}" alt='admin' title="administrer user" />{*
     *}</a>
-    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">{*
+    <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}<img src="{"images/ax.png"|url}" alt='AX' title="fiche AX" />{*
     *}</a>
     {/perms}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.tpl,v 1.11 2004-10-24 15:24:02 x2000coic Exp $
+        $Id: referent.tpl,v 1.12 2004-11-13 15:56:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -61,9 +61,11 @@ d'être plus précis.
         X{$personnes[resultat].promo}
       </div>
       <div class="bits" style="width: 40%;">
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].forlife}')">
-        <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].forlife}')">Voir sa fiche référent</a>
+        <span class='smaller'>
+        <a href="{"fiche.php"|url}?user={$personnes[resultat].forlife}" class="popup2">
+          <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
+          <a href="{"fiche_referent.php"|url}?user={$personnes[resultat].forlife}" class="popup2">Voir sa fiche référent</a>
+        </span>
       </div>
       <div class="long">
        <table cellspacing="0" cellpadding="0">

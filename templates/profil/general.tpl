@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.15 2004-10-29 01:24:22 x2000habouzit Exp $
+        $Id: general.tpl,v 1.16 2004-11-13 15:56:43 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -146,7 +146,7 @@
               Voilà la photo qui apparaîtra sur la fiche de ton profil (si tu viens
               de changer ta photo, la photo affichée peut correspondre à ton ancien
               profil : c'est le cas si elle n'a pas encore été validée par un administrateur du site !
-              <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.forlife}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
+              <a href="{"fiche.php"|url}?user={$smarty.session.forlife}&amp;modif=new" class="popup2">nouvelle photo</a>).
             </td>
             <td class="dcolg">
               <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] " />
@@ -182,7 +182,7 @@
               transmis à l'AX
             </td>
             <td class="texte">
-              <a href="javascript:x()" onclick="popWin('{"docs/faq.php"|url}#flags','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">Quelle couleur ??</a>
+              <a href="{"docs/faq.php"|url}#flags" class="popup2">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -208,7 +208,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="javascript:x()" onclick="popWin('{"docs/faq.php"|url}#flags','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">Quelle couleur ??</a>
+              <a href="{"docs/faq.php"|url}#flags" class="popup2">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -234,7 +234,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="javascript:x()" onclick="popWin('{"docs/faq.php"|url}#flags','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">Quelle couleur ??</a>
+              <a href="{"docs/faq.php"|url}#flags" class="popup2">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
