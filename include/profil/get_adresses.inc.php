@@ -67,9 +67,7 @@ $res = $globals->xdb->iterRow(
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
 	adr1, adr2, adr3, cp, ville,
-        pays, region, tel, fax,
-	FIND_IN_SET('adr_public', visibilite), FIND_IN_SET('adr_ax', visibilite),
-	FIND_IN_SET('tel_public', visibilite), FIND_IN_SET('tel_ax', visibilite)
+        pays, region, tel, fax, pub, tel_pub
 	FROM adresses
 	WHERE uid = {?} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
 , Session::getInt('uid', -1)
@@ -85,8 +83,8 @@ for ($i = 0; $i < $nb_adr; $i++) {
        $adresses[$adrid]['active'], $adresses[$adrid]['temporaire'],
        $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['cp'], $adresses[$adrid]['ville'],
        $adresses[$adrid]['pays'], $adresses[$adrid]['region'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
-       $adresses[$adrid]['adr_public'], $adresses[$adrid]['adr_ax'],
-       $adresses[$adrid]['tel_public'], $adresses[$adrid]['tel_ax']) = $res->next();
+       $adresses[$adrid]['pub'],
+       $adresses[$adrid]['tel_pub'],) = $res->next();
   $adresses[$adrid]['nouvelle'] = 'modif';
   $adresses[$adrid]['numero_formulaire'] = -1;
 }

@@ -27,13 +27,6 @@ foreach($adresses as $adrid => $adr){
   if($adr['nouvelle'] != 'new'){ // test si on vient de creer cette adresse dans verif_adresse.inc.php
   
     //construction des bits
-    $visibilite = "";
-    if ($adr['adr_public']) $visibilite .= 'adr_public,';
-    if ($adr['adr_ax'])     $visibilite .= 'adr_ax,';
-    if ($adr['tel_public']) $visibilite .= 'tel_public,';
-    if ($adr['tel_ax'])     $visibilite .= 'tel_ax,';
-    if (! empty($visibilite)) $visibilite = substr($visibilite, 0, -1);
-
     $statut = "";
     if ($adr["secondaire"])    $statut .= 'res-secondaire,';
     if ($adr["courrier"])      $statut .= 'courrier,';
@@ -54,7 +47,8 @@ foreach($adresses as $adrid => $adr){
 			 region = {?},
 			 tel = {?},
 			 fax = {?},
-			 visibilite = {?},
+			 pub = {?},
+			 tel_pub = {?},
 			 datemaj = NOW(),
 			 statut = {?},
 			 uid = {?}, adrid = {?}",
@@ -67,7 +61,8 @@ foreach($adresses as $adrid => $adr){
 			 $adr['region'],
 			 $adr['tel'],
 			 $adr['fax'],
-			 $visibilite,
+			 $adr['pub'],
+			 $adr['tel_pub'],
 			 $statut,
 			 Session::getInt('uid', -1), $adrid);
     }
@@ -85,7 +80,8 @@ foreach($adresses as $adrid => $adr){
 				 region = {?},
 				 tel = {?},
 				 fax = {?},
-				 visibilite = {?},
+				 pub = {?},
+				 tel_pub = {?},
 				 datemaj = NOW(),
 				 statut = {?}
 				 WHERE uid = {?} AND adrid = {?}",
@@ -98,7 +94,8 @@ foreach($adresses as $adrid => $adr){
 				 $adr['region'],
 				 $adr['tel'],
 				 $adr['fax'],
-				 $visibilite,
+				 $adr['pub'],
+				 $adr['tel_pub'],
 				 $statut,
 				 Session::getInt('uid', -1), $adrid
 		    );

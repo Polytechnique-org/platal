@@ -81,10 +81,8 @@ function replace_address($i){
   replace_ifset_adr('region', $i);
   replace_ifset_adr('tel', $i);
   replace_ifset_adr('fax', $i);
-  set_flag_adr('adr_public', $i);
-  set_flag_adr('adr_ax', $i);
-  set_flag_adr('tel_public', $i);
-  set_flag_adr('tel_ax', $i);
+  replace_ifset_adr('pub', $i);
+  replace_ifset_adr('tel_pub', $i);
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
     $GLOBALS['adresses'][$i]['numero_formulaire'] = $tab[$i];
@@ -173,10 +171,8 @@ if (!isset($adresses) || (count($adresses) < $nb_adr_max)){
   $adr['courrier'] = 0;
   $adr['active'] = 0;
   $adr['temporaire'] = 1;
-  $adr['adr_public'] = 0;
-  $adr['adr_ax'] = 0;
-  $adr['tel_public'] = 0;
-  $adr['tel_ax'] = 0;
+  $adr['pub'] = 'private';
+  $adr['tel_pub'] = 'private';
   $adr['nouvelle'] = 'new'; //n'est pas issue d'un formulaire (sert dans update_adresses...)
 }
 
