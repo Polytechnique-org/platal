@@ -50,8 +50,8 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | fiche_referent.php						  | 
 ;	  | index.coupure.php						  | 
 ;	  | mescontacts_pdf.php						  | 
-;	  | pg.confirm.php							  | 
-;	  | pg.php									  | 
+;!	  | pg.confirm.php							  | 
+;!	  | pg.php									  | 
 ;	  | recherche.php							  | 
 ;	  | trombino.php							  | 
 ;	  | trombipromo.php							  | 
