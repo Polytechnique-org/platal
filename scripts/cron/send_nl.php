@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_nl.php,v 1.4 2004-11-02 11:32:01 x2000habouzit Exp $
+        $Id: send_nl.php,v 1.5 2004-11-02 11:34:17 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
@@ -59,7 +59,7 @@ while(true) {
 	$sent[] = "user_id='$uid'";
 	$nl->sendTo($prenom,$nom,$forlife,$sexe,$html=='html');
     }
-    mysql_free_result($res);
+    mysql_free_result($sql);
     mysql_query("UPDATE newsletter_ins SET last=$id WHERE ".implode(' OR ',$sent));
     sleep(60);
 }
