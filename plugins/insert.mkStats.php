@@ -31,9 +31,9 @@
  */
 function smarty_insert_mkStats($params, &$smarty)
 {
-    $req = mysql_query("select count(*) from requests");
-    list($stats_req) = mysql_fetch_row($req);
-    mysql_free_result($req);
-    return ($stats_req ? $stats_req : "-");
+    global $globals;
+    $res = $globals->xdb->query('select count(*) from requests');
+    $cnt = $res->fetchOneCell();
+    return ($cnt ? $cnt : '-');
 }
 ?>

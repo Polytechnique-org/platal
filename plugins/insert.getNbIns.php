@@ -30,9 +30,9 @@
  */
 function smarty_insert_getNbIns($params, &$smarty)
 {
-    $result=mysql_query("select count(*) from auth_user_md5 where perms in ('admin','user') AND deces=0");
-    list($stats_count)=mysql_fetch_row($result);
-    mysql_free_result($result);
-    return number_format($stats_count, 0, ",", ".");
+    global $globals;
+    $res = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin','user') AND deces=0");
+    $cnt = $res->fetchOneCell();
+    return number_format($cnt, 0, ",", ".");
 }
 ?>
