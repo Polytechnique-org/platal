@@ -45,6 +45,9 @@ Bug/Wish :
 		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
 		- #258: Netscape4 Warning.											-MC
 
+	* Contacts :
+		- #180: Change the list order using name, promo or last change date.-Car
+		
 	* Emails :
 		- #229: Possibility to show our melix address.						-Car
 

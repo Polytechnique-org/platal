@@ -69,13 +69,24 @@ if(Get::has('trombi')) {
 	$res   = $globals->xdb->query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
 	$total = $res->fetchOneCell();
 
+        $order = Get::get('order');
+        $orders = Array(
+            'nom'     => 'nom DESC, u.prenom, u.promo',
+            'promo'   => 'promo DESC, nom, u.prenom',
+            'last'    => 'u.date DESC, nom, u.prenom, promo');
+        if ($order != 'promo' && $order != 'last')
+            $order = 'nom';
+        $order = $orders[$order];
+        if (Get::get('inv') == '')
+            $order = str_replace(" DESC,", ",", $order);
+            
 	$res   = $globals->xdb->query("
 	    	SELECT  u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, u.promo
 		  FROM  contacts       AS c
 	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
 	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
 		 WHERE  c.uid = {?}
-	      ORDER BY  nom
+	      ORDER BY  $order
 		 LIMIT  {?}, {?}", $uid, $offset*$limit, $limit);
         $list  = $res->fetchAllAssoc();
 
@@ -85,7 +96,27 @@ if(Get::has('trombi')) {
     $trombi = new Trombi('getList');
     $trombi->setNbRows(4);
     $page->assign_by_ref('trombi',$trombi);
+
+    $order = Get::get('order');
+    if ($order != 'promo' && $order != 'last')
+        $order = 'nom';
+    $page->assign('order', $order);
+    $page->assign('inv', Get::get('inv'));
 } else {
+
+    $order = Get::get('order');
+    $orders = Array(
+        'nom'     => 'sortkey DESC, a.prenom, a.promo',
+        'promo'   => 'promo DESC, sortkey, a.prenom',
+        'last'    => 'a.date DESC, sortkey, a.prenom, promo');
+    if ($order != 'promo' && $order != 'last')
+        $order = 'nom';
+    $page->assign('order', $order);
+    $page->assign('inv', Get::get('inv'));
+    $order = $orders[$order];
+    if (Get::get('inv') == '')
+        $order = str_replace(" DESC,", ",", $order);
+    
     $sql = "SELECT  contact AS id,
 		    a.*, l.alias AS forlife,
 		    1 AS inscrit,
@@ -112,10 +143,12 @@ if(Get::has('trombi')) {
          LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
          LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
              WHERE  c.uid = $uid
-          ORDER BY  sortkey, a.prenom";
+          ORDER BY  ".$order;
     
     $page->assign_by_ref('citer', $globals->xdb->iterator($sql));
 }
 
 $page->run();
+
+// vim:set et sw=4 sts=4 sws=4:
 ?>
