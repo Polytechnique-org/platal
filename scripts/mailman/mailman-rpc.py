@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.12 2004-09-09 23:08:41 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.13 2004-09-10 07:02:02 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -211,15 +211,12 @@ def mass_unsubscribe((userdesc,prems),listname,users):
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return None
-        
-        deleted = []
-        for user in users:
-            mlist.ApprovedDeleteMember(user+'@polytechnique.org', None, False, False)
-            deleted.append( user )
+    
+        map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org', None, 0, 0), users)
         mlist.Save()
     finally:
         mlist.Unlock()
-        return deleted
+        return users
 
 def add_owner((userdesc,perms),listname,user):
     try:
@@ -282,8 +279,11 @@ def set_welcome((userdesc,perms),listname,info):
 # server
 #
 
+class FastXMLRPCServer(SimpleXMLRPCServer):
+    allow_reuse_address = True
+
 mysql = connectDB()
-server = SimpleXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
+server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 
 server.register_function(get_lists)
 server.register_function(get_members)
