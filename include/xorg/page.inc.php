@@ -151,6 +151,7 @@ class XorgPage extends DiogenesCorePage
         $this->_errors->trig($msg);
     }
 
+    // }}}
     // {{{ function trig()
 
     function trig_run($msg)
