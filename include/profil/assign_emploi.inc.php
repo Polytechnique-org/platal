@@ -34,6 +34,7 @@ $page->assign('payspro',$payspro);
 $page->assign('regionpro',$regionpro);
 $page->assign('telpro',$telpro);
 $page->assign('faxpro',$faxpro);
+$page->assign('mobilepro', $mobilepro);
 $page->assign('entreprise_public',$entreprise_public);
 $page->assign('entreprise_ax',$entreprise_ax);
 $page->assign('adrpro_public',$adrpro_public);

@@ -225,6 +225,14 @@
         <input type="text" size="18" maxlength="18" name="faxpro[{$i}]" value="{$faxpro.$i}" />
       </td>
     </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Mobile</span>
+      </td>
+      <td>
+        <input type="text" size="18" maxlength="18" name="mobilepro[{$i}]" value="{$mobilepro.$i}" />
+      </td>
+    </tr>
   </table>
 </div>
 

@@ -35,21 +35,21 @@ for($i = 0; $i < 2; $i++){
     if (! empty($tab[$i])) $visibilite .= 'tel_ax,';
     if (! empty($visibilite)) $visibilite = substr($visibilite, 0, -1);
 
-    $globals->xdb->execute("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,poste,fonction,adr1,adr2,adr3,cp,ville,pays,region,tel,fax,visibilite) ".
+    $globals->xdb->execute("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,poste,fonction,adr1,adr2,adr3,cp,ville,pays,region,tel,fax,mobile,visibilite) ".
               "VALUES ({?}, {?}, {?}, ".
 	      "{?},".
 	      "{?}".
 	      ", {?}, {?}, ".
 	      "{?}, {?}, {?}, {?}, ".
 	      "{?}, {?}, ".
-	      "{?}, {?}, {?}, {?})",
+	      "{?}, {?}, {?}, {?}, {?})",
 	      Session::getInt('uid', -1) , $i , $entreprise[$i] ,
 	      ( ($secteur[$i] == "") ? null : $secteur[$i]), //sinon un faux 0 est rentre dans la base
 	      ( ($ss_secteur[$i] == "") ? null : $ss_secteur[$i]),
 	      $poste[$i], $fonction[$i],
               $adrpro1[$i], $adrpro2[$i], $adrpro3[$i], $cppro[$i],
               $villepro[$i], $payspro[$i],
-	      $regionpro[$i], $telpro[$i], $faxpro[$i], $visibilite);
+	      $regionpro[$i], $telpro[$i], $faxpro[$i], $mobilepro[$i], $visibilite);
 }
 $globals->xdb->execute("UPDATE auth_user_md5 set cv= {?} WHERE user_id = {?}", $cv, Session::getInt('uid', -1));
 ?>

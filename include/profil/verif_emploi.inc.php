@@ -45,6 +45,7 @@ replace_ifset_i($payspro,"payspro",$i);
 replace_ifset_i($regionpro,"regionpro",$i);
 replace_ifset_i($telpro,"telpro",$i);
 replace_ifset_i($faxpro,"faxpro",$i);
+replace_ifset_i($mobilepro,"mobilepro",$i);
 
 if(Env::has('adresse_flag')){
   set_flag_i($entreprise_public,"entreprise_public",$i);
@@ -102,6 +103,10 @@ if (strlen(strtok($adrpro1[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro1[$i]))
   if (strlen(strtok($faxpro[$i],"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($faxpro[$i]))
     {
       $str_error = $str_error."Le champ 'Fax professionnel $j' contient un caractère interdit.<BR />";
+    }
+  if (strlen(strtok($mobilepro[$i],"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($mobilepro[$i]))
+    {
+      $str_error = $str_error."Le champ 'Mobile professionnel $j' contient un caractère interdit.<BR />";
     }
 
 }
