@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.13 2004-02-12 02:03:08 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.14 2004-08-23 15:14:24 x2000chevalier Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -33,7 +33,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
   Si tu n'es jamais venu sur le site, <span class="warning">il faut
     t'enregistrer auprès de nous</span> pour obtenir un accès. Polytechnique.org
   c'est l'e-mail des X, l'annuaire en ligne, plus un tas d'autres services.
-  Nous te fournirons un accès le plus rapidement possible.<strong><a
+  Nous te fournirons un accès le plus rapidement possible. <strong><a
       href="inscrire.php">Clique ici pour nous demander tes paramètres personnels.</a></strong>
   </li>
 </ul>
