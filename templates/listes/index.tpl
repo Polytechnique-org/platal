@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.3 2004-09-20 20:37:15 x2000habouzit Exp $
+        $Id: index.tpl,v 1.4 2004-09-20 21:31:29 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -62,80 +62,21 @@ NB : les gestionnaires d'une liste sont aussi ses modérateurs.
   Listes de diffusion publiques
 </div>
 
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <th>Liste</th>
-    <th>Description</th>
-    <th>Diffusion</th>
-    <th>Inscription</th>
-  </tr>
-  {foreach from=$listes item=liste}
-  {if $liste.priv eq 0}
-  <tr class='{cycle values="impair,pair"}'>
-    <td>
-      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
-      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
-    </td>
-    <td>{$liste.desc}</td>
-    <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
-    <td class='right'>{if $liste.you is odd}désinscription{elseif $liste.ins}ins modérée{else}inscription{/if}</td>
-  </tr>
-  {/if}
-  {/foreach}
-</table>
+{include file='listes/listes.inc.tpl' min=0}
 
 <div class="rubrique">
   Listes de diffusion privées
 </div>
 
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <th>Liste</th>
-    <th>Description</th>
-    <th>Diffusion</th>
-    <th>Inscription</th>
-  </tr>
-  {foreach from=$listes item=liste}
-  {if $liste.priv eq 1}
-  <tr class='{cycle values="impair,pair"}'>
-    <td>
-      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
-      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
-    </td>
-    <td>{$liste.desc}</td>
-    <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
-    <td class='right'>{if $liste.you is odd}désinscription{elseif $liste.ins}ins modérée{else}inscription{/if}</td>
-  </tr>
-  {/if}
-  {/foreach}
-</table>
+{include file='listes/listes.inc.tpl' min=1}
 
 {perms level=admin}
 <div class="rubrique">
   Listes d'administration
 </div>
 
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <th>Liste</th>
-    <th>Description</th>
-    <th>Diffusion</th>
-    <th>Inscription</th>
-  </tr>
-  {foreach from=$listes item=liste}
-  {if $liste.priv > 1}
-  <tr class='{cycle values="impair,pair"}'>
-    <td>
-      <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
-      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
-    </td>
-    <td>{$liste.desc}</td>
-    <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
-    <td class='right'>{if $liste.you is odd}désinscription{elseif $liste.ins}ins modérée{else}inscription{/if}</td>
-  </tr>
-  {/if}
-  {/foreach}
-</table>
+{include file='listes/listes.inc.tpl' min=2 max=4}
+
 {/perms}
 
 {/dynamic}

@@ -17,57 +17,39 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.2 2004-09-20 21:31:29 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.1 2004-09-20 21:31:29 x2000habouzit Exp $
  ***************************************************************************}
 
-{dynamic}
-
-{if $no_list}
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
-
-{else}
-
-<div class='rubrique'>
-  Inscriptions en attente de modération
-</div>
-
-{if $subs|@count}
-{else}
-<p>pas d'inscriptions en attente de modération</p>
-{/if}
-
-{if $mails|@count}
-<div class='rubrique'>
-  Mails en attente de modération
-</div>
-
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <th>émetteur</th>
-    <th>sujet</th>
-    <th>taille</th>
-    <th>date</th>
-    <th></th>
-  </tr>
-  {foreach from=$mails item=m}
-  <tr class='{cycle values="pair,impair"}'>
-    <td>{$m.sender}</td>
-    <td>{$m.subj}</td>
-    <td class='right'>{$m.size}o</td>
-    <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
-    <td class='action'>
-      <a href='{$smarty.server.PHP_SELF}?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
-    </td>
-  </tr>
-  {/foreach}
-</table>
-{else}
-<p>pas de mails en attente de modération</p>
-{/if}
-
-{/if}
-
-{/dynamic}
+<form action='{$smarty.server.PHP_SELF}'>
+  <table class='bicol' cellpadding='0' cellspacing='0'>
+    <tr>
+      <th>Liste</th>
+      <th>Description</th>
+      <th>Diffusion</th>
+      <th>Inscription</th>
+    </tr>
+    {foreach from=$listes item=liste}
+    {if $liste.priv >= $min && $liste.priv <= $max|default:$min}
+    <tr class='{cycle values="impair,pair"}'>
+      <td>
+        <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
+        {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
+      </td>
+      <td>{$liste.desc}</td>
+      <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
+      <td class='right'>
+        {if $liste.you is odd}
+        {if $liste.ins}inscrit{/if} <input type='checkbox' checked='checked' name='{$liste.desc}' />
+        {elseif $liste.ins}
+        <input type='submit' name='{$liste.desc}' value='demander' />
+        {else}
+        <input type='checkbox' name='{$liste.desc}' />
+        {/if}
+      </td>
+    </tr>
+    {/if}
+    {/foreach}
+  </table>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
