@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: export-econfiance.php,v 1.6 2004-10-14 20:40:02 x2000habouzit Exp $
+        $Id: export-econfiance.php,v 1.7 2004-11-08 10:27:27 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -38,7 +38,7 @@ if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md
 
 
     $client = new xmlrpc_client("http://10154:$pass@localhost:4949");
-    $members = $client->get_members('polytechnique.org', 'x-eConfiance');
+    $members = $client->get_members('polytechnique.org', 'x-econfiance');
     if(is_array($members)) {
 	$membres = Array();
 	foreach($members[1] as $member) {
