@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_aliases.inc.php,v 1.17 2004-11-07 18:19:03 x2000habouzit Exp $
+        $Id: valid_aliases.inc.php,v 1.18 2004-11-07 20:17:23 x2000habouzit Exp $
  ***************************************************************************/
 
 class AliasReq extends Validate {
@@ -42,7 +42,7 @@ class AliasReq extends Validate {
 	INNER JOIN  aliases          AS l  ON (u.user_id=l.id AND l.type='a_vie')
 	 LEFT JOIN  virtual_redirect AS vr ON (CONCAT(l.alias,'@m4x.org') = vr.redirect)
 	 LEFT JOIN  virtual          AS v  USING(vid)
-             WHERE  user_id='".$this->uid."'");
+             WHERE  user_id='".$this->uid."' AND v.alias LIKE '%@melix.net'");
         list($this->forlife,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }

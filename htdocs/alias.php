@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: alias.php,v 1.7 2004-11-07 18:19:02 x2000habouzit Exp $
+        $Id: alias.php,v 1.8 2004-11-07 20:17:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,7 +32,7 @@ $page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
 $sql = "SELECT  alias
           FROM  virtual
     INNER JOIN  virtual_redirect USING(vid)
-          WHERE redirect='{$_SESSION['forlife']}@m4x.org'";
+          WHERE redirect='{$_SESSION['forlife']}@m4x.org' AND alias LIKE '%@melix.net'";
 if($result = $globals->db->query($sql)) {
     list($aliases) = mysql_fetch_row($result);
     mysql_free_result($result);

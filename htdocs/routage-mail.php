@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.php,v 1.9 2004-11-07 18:19:02 x2000habouzit Exp $
+        $Id: routage-mail.php,v 1.10 2004-11-07 20:17:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -46,7 +46,7 @@ if (isset($_REQUEST['emailop'])) {
 $sql = "SELECT  alias
           FROM  virtual
     INNER JOIN  virtual_redirect USING(vid)
-          WHERE redirect='{$_SESSION['forlife']}@m4x.org'";
+          WHERE redirect='{$_SESSION['forlife']}@m4x.org' AND alias LIKE '%@melix.net'";
 $res = $globals->db->query($sql);
 list($grx) = mysql_fetch_row($res);
 $page->assign('grx',$grx);

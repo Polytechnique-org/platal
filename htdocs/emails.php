@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.9 2004-11-07 18:19:02 x2000habouzit Exp $
+        $Id: emails.php,v 1.10 2004-11-07 20:17:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -41,7 +41,7 @@ $page->mysql_assign($sql, 'mails', 'nb_mails');
 $sql = "SELECT  alias
           FROM  virtual          AS v
     INNER JOIN  virtual_redirect AS vr USING(vid)
-         WHERE  redirect='{$_SESSION['forlife']}@m4x.org'";
+         WHERE  redirect='{$_SESSION['forlife']}@m4x.org' AND alias LIKE '%@melix.net'";
 $result = $globals->db->query($sql);
 if ($result && list($aliases) = mysql_fetch_row($result))
     $page->assign('melix', substr($aliases,0,-3));
