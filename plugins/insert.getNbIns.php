@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.getNbIns.php,v 1.5 2004-10-31 15:54:45 x2000chevalier Exp $
+        $Id: insert.getNbIns.php,v 1.6 2004-11-09 09:42:13 x2000habouzit Exp $
  ***************************************************************************/
 
 /*
@@ -33,7 +33,7 @@
 function smarty_insert_getNbIns($params, &$smarty)
 {
     global $conn;
-    $result=mysql_query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces = 0 AND perms != 'non-inscrit'",$conn);
+    $result=mysql_query("select count(*) from auth_user_md5 where perms in ('admin','user') AND deces=0",$conn);
     list($stats_count)=mysql_fetch_row($result);
     mysql_free_result($result);
     return number_format($stats_count, 0, ",", ".");
