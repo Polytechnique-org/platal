@@ -65,6 +65,7 @@ $globals->xdb->execute('INSERT INTO aliases (id,alias,type,flags) VALUES ({?}, {
 if ($mailorg2) {
     $globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "alias")', $uid, $mailorg2);
 }
+
 require_once('emails.inc.php');
 $redirect = new Redirect($uid);
 $redirect->add_email($email);
@@ -74,10 +75,6 @@ $logger = new DiogenesCoreLogger($uid);
 $logger->log('inscription', $email);
 
 $globals->xdb->execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
-
-require_once('notifs.inc.php');
-register_watch_op($uid, WATCH_INSCR);
-inscription_notifs_base($uid);
 
 $globals->hook->subscribe($forlife, $uid, $promo, $password);
 
@@ -108,7 +105,6 @@ while (list($sender_usern, $sender_date) = $res->next()) {
 
 // s'il est dans la table envoidirect, on le marque comme inscrit
 $globals->xdb->execute('UPDATE envoidirect SET date_succes=NOW() WHERE matricule = {?}', $matricule);
-
 
 $page->assign('forlife',$forlife);
 $page->run();

@@ -35,4 +35,17 @@ function tmp_menu()
     $globals->menu->addPublicEntry(XOM_INFOS, 10, 'Nous contacter',         'docs/contacts.php');
     $globals->menu->addPublicEntry(XOM_INFOS, 20, 'FAQ',                    'docs/faq.php');
 }
+
+// {{{ subscribe HOOK
+
+function tmp_subscribe($forlife, $uid, $promo, $password)
+{
+
+    require_once('notifs.inc.php');
+    register_watch_op($uid, WATCH_INSCR);
+    inscription_notifs_base($uid);
+}
+
+// }}}
+
 ?>
