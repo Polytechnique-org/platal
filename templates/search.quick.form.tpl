@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.quick.form.tpl,v 1.2 2004-11-04 14:54:41 x2000habouzit Exp $
+        $Id: search.quick.form.tpl,v 1.3 2004-11-13 12:17:55 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Recherche simple dans l'annuaire</h1>
 
 {if $error}<p class="error">{$error}</p>{/if}
 
-<form id="recherche" action="{"search.php"|url}" method="get">
+<form action="{"search.php"|url}" method="get">
   <table class="bicol" cellspacing="0" cellpadding="4">
     <tr>
       <td class='center' style="width: 78%">
