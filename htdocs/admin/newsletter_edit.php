@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.php,v 1.1 2004-10-16 19:54:34 x2000habouzit Exp $
+        $Id: newsletter_edit.php,v 1.2 2004-10-16 21:14:15 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,6 +32,11 @@ if(isset($_GET['del_aid'])) {
     header("Location: ?nid=$nid");
 }
 
+if(isset($_POST['update'])) {
+    $nl->_title = $_POST['title'];
+    $nl->save();
+}
+
 if(isset($_POST['save'])) {
     $eaid = $_GET['edit_aid'];
     $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append'], $eaid, $_POST['cid'], $_POST['pos']);
@@ -41,13 +46,11 @@ if(isset($_POST['save'])) {
 
 if(isset($_GET['edit_aid'])) {
     $eaid = $_GET['edit_aid'];
-    if($eaid<0) {
-	if(!empty($_POST)) {
-	    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append'],
-		    $eaid, $_POST['cid'], $_POST['pos']);
-	} else {
-	    $art = new NLArticle();
-	}
+    if(isset($_POST['aid'])) {
+	$art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append'],
+		$eaid, $_POST['cid'], $_POST['pos']);
+    } elseif($eaid<0) {
+	$art = new NLArticle();
     } else {
 	$art = $nl->getArt($_GET['edit_aid']);
     }

@@ -18,14 +18,52 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.8 2004-10-16 19:54:35 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.9 2004-10-16 21:14:15 x2000habouzit Exp $
  ***************************************************************************/
 
 
 define('FEMME', 1);
 define('HOMME', 0);
 
-function enriched_to_text($input,$html=false) {
+function justify($text,$n) {
+    $arr = split("\n",wordwrap($text,$n));
+    $arr = array_map(trim,$arr);
+    $res = '';
+    foreach($arr as $key => $line) {
+	$nxl = isset($arr[$key+1]) ? trim($arr[$key+1]) : '';
+	$nxl_split = preg_split('! +!',$nxl);
+	$nxw_len = count($nxl_split) ? strlen($nxl_split[0]) : 0;
+
+	if(strlen($line)+1+$nxw_len <= 68) {
+	    $res .= "$line\n";
+	    continue;
+	}
+
+	$tmp = preg_split('! +!',trim($line));
+	$words = count($tmp);
+	if($words <= 1) {
+	    $res .= "$line\n";
+	    continue;
+	}
+
+	$len = array_sum(array_map(strlen,$tmp));
+	$empty = $n - $len;
+	$sw = floatval($empty) / floatval($words-1);
+	
+	$cur = 0;
+	$l = '';
+	foreach($tmp as $word) {
+	    $l .= $word;
+	    $cur += $sw + strlen($word);
+	    $l = str_pad($l,intval($cur+0.5));
+	}
+	$res .= trim($l)."\n";
+    }
+    return trim($res);
+}
+
+
+function enriched_to_text($input,$html=false,$just=false) {
     $text = stripslashes(trim($input));
     if($html) {
 	$text = htmlspecialchars($text);
@@ -44,7 +82,7 @@ function enriched_to_text($input,$html=false) {
 	$text = preg_replace('!\[\/?i\]!','/',$text);
 	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','[\1]', $text);
 	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','[mailto:\1]', $text);
-	return wordwrap($text, 68);
+	return $just ? justify($text,68) : wordwrap($text,68);
     }
 }
 
@@ -91,6 +129,15 @@ class NewsLetter {
 	mysql_free_result($res);
     }
 
+    function save() {
+	global $globals;
+	$globals->db->query("UPDATE  newsletter
+				SET  date='{$this->_date}',titre='{$this->_title}'
+			      WHERE  id='{$this->_id}'");
+    }
+
+    function title() { return stripslashes($this->_title); }
+
     function getArt($aid) {
 	foreach($this->_arts as $key=>$artlist) {
 	    if(isset($artlist["a$aid"])) return $artlist["a$aid"];
@@ -125,8 +172,30 @@ class NewsLetter {
 	}
     }
 
+    function toText() {
+	$res = "";
+	foreach($this->_arts as $cid=>$arts) {
+	    $res .= "--------------------------------------------------------------------\n";
+	    $res .= "*{$this->_cats[$cid]}*\n";
+	    $res .= "--------------------------------------------------------------------\n\n";
+	    foreach($arts as $art) {
+		$res .= $art->toText();
+		$res .= "\n\n";
+	    }
+	}
+	return $res;
+    }
+    
     function toHtml() {
-	return "foo";
+	$res = "";
+	foreach($this->_arts as $cid=>$arts) {
+	    $res .= '<div style="margin: 2ex 0ex 2ex 0ex; padding: 2px 1ex 2px 1ex; width: 100%; border: 1px black solid; font-size: 125%;">';
+	    $res .= $this->_cats[$cid].'</div>';
+	    foreach($arts as $art) {
+		$res .= $art->toHtml();
+	    }
+	}
+	return $res;
     }
 }
 
@@ -152,7 +221,7 @@ class NLArticle {
 
     function toText() {
 	$title = '*'.stripslashes($this->_title).'*';
-	$body  = enriched_to_text($this->_body);
+	$body  = enriched_to_text($this->_body,false,true);
 	$app   = enriched_to_text($this->_append);
 	return trim("$title\n\n$body\n\n$app")."\n";
     }

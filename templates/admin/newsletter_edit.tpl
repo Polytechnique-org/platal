@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.tpl,v 1.1 2004-10-16 19:54:35 x2000habouzit Exp $
+        $Id: newsletter_edit.tpl,v 1.2 2004-10-16 21:14:15 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -27,13 +27,34 @@
 
 {if !$art}
 
+<p>[<a href="{"newsletter/show.php"|url}?nid={$nl->_id}">visualiser</a>]</p>
+
+<form action='{$smarty.server.PHP_SELF}?nid={$nl->_id}' method='post'>
+  <table class="bicol" cellpadding="3" cellspacing="0">
+    <tr>
+      <th colspan='2'>
+        Propriétés de la newsletter
+      </th>
+    </tr>
+    <tr>
+      <td class='titre'>
+        Titre
+      </td>
+      <td>
+        <input type='text' size='60' name='title' value="{$nl->title()}" />
+      </td>
+    </tr>
+    <tr class='center'>
+      <td colspan='2'>
+        <input type='submit' name='update' value='sauver' />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<br />
+
 <table class="bicol" cellpadding="3" cellspacing="0">
-  <tr>
-    <th>
-      {$nl->_title|default:"[no title]"}
-    </th>
-    <th></th>
-  </tr>
   <tr>
     <td>
       Créer un nouvel article ...
@@ -52,9 +73,7 @@
   {foreach from=$arts item=art}
   <tr class="{cycle values="impair,pair"}">
     <td>
-      <div class='nl'>
-        {$art->toHtml()|smarty:nodefaults}
-      </div>
+      <pre>{$art->toText()|smarty:nodefaults}</pre>
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
       <strong>Pos: {$art->_pos}</strong><br />
@@ -90,7 +109,7 @@
 
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<form action="{$smarty.server.REQUEST_URI}#edit" method="post">
   <table class='bicol'>
     <tr>
       <th colspan='2'>

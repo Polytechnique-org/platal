@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: show.tpl,v 1.1 2004-10-16 18:17:51 x2000habouzit Exp $
+        $Id: show.tpl,v 1.2 2004-10-16 21:14:16 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -25,7 +25,17 @@
   Lettre de Polytechnique.org de {$nl->_date|date_format:"%B %Y"}
 </div>
 
-<p>[<a href='index.php'>liste des lettres</a>]</p>
+<p>
+[<a href='index.php'>liste des lettres</a>]
+{if $smarty.get.text}
+[<a href='?nid={$nl->_id}'>version HTML</a>]
+{else}
+[<a href='?nid={$nl->_id}&amp;text=1'>version Texte</a>]
+{/if}
+{perms level='admin'}
+[<a href='{"admin/newsletter_edit.php"|url}?nid={$nl->_id}'>Editer</a>]
+{/perms}
+</p>
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
   <div class='center'>
@@ -35,10 +45,17 @@
 
 <table class="bicol" cellpadding="3" cellspacing="0">
   <tr>
+    <th>{$nl->title()}</th>
+  </tr>
+  <tr>
     <td>
+      {if $smarty.get.text}
+      <pre>{$nl->toText()}</pre>
+      {else}
       <div class='nl'>
-        {$nl->toHtml()}
+        {$nl->toHtml()|smarty:nodefaults}
       </div>
+      {/if}
     </td>
   </tr>
 </table>
