@@ -1,4 +1,4 @@
-{* $Id: utilisateurs.tpl,v 1.2 2004-02-11 21:02:41 x2000habouzit Exp $ *}
+{* $Id: utilisateurs.tpl,v 1.3 2004-02-20 03:15:07 x2000habouzit Exp $ *}
 
 {if $smarty.session.suid}
 <p class="erreur">
@@ -38,9 +38,10 @@ Attention, déjà en SUID !!!
     </tr>
     <tr>
       <td class="center">
-        <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
         <input type="hidden" name="hashpass" value="" /> 
-        <input type="submit" name="suid_button" value=" su " /> 
+        <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
+        <input type="submit" name="suid_button" value=" su " />  &nbsp;&nbsp;
+        <input type="submit" name="logs_button" value=" logs " /> 
       </td>
     </tr>
   </table>

@@ -18,6 +18,14 @@ $succes = Array();
 function my_error($msg) { global $erreur; $erreur[] = "<p class='erreur'>Erreur: $msg</p>"; }
 function my_msg($msg)   { global $succes; $succes[] = "<p class='succes'>O.K.: $msg</p>"; }
 
+/*
+ * LOGS de l'utilisateur
+ */
+
+if(isset($_REQUEST['logs_button'])) {
+    header("Location: logger.php?logauth=native&loguser={$_REQUEST['login']}");
+}
+
 
 /*
  * SUID

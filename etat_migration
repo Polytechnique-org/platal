@@ -25,7 +25,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | admin/homonymes.php						  | 
 ;	  | admin/ins_confirmees.php				  | 
 ;	  | admin/pg.php							  | 
-;	  | admin/utilisateurs.php					  | 
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/marketing.php						  | marketing/
 ;	  | admin/marketing_promo.php				  | marketing/
@@ -112,6 +111,7 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | trackers/index.php						  | -
 ;	  | trackers/tracker_admin.php				  | -
 ------+-------------------------------------------+----------------
+x	  | admin/utilisateurs.php					  | - y'a encore du boulot pour que ca valide !
 x	  | epouse.php								  | -
 x	  | parselog.php							  | stats/...
 xx	  | AccesPermanentOff.php					  | cookie_off.php
