@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.tpl,v 1.10 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: referent.tpl,v 1.11 2004-10-24 15:24:02 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -45,40 +45,37 @@ d'être plus précis.
 </p>
 {elseif $resultats}
 <form action="{$smarty.server.PHP_SELF}" method="post" id="form_result">
-  <table class="rechresult" cellpadding="0" cellspacing="0" summary="Résultats">
-    {section name="resultat" loop=$personnes}
-    <tr>
-      <td class="rechnom">
+  <div class="contact-list" style="clear:both" >
+  <input type="hidden" name="pays" value="{$pays_selectionne}" />
+  <input type="hidden" name="expertise" value="{$expertise_champ}" />
+  <input type="hidden" name="secteur" value="{$secteur_selectionne}" />
+  <input type="hidden" name="ss_secteur" value="{$ss_secteur_selectionne}" />
+  <input type="hidden" name="page_courante" value="1" />
+  <input type="hidden" name="Chercher" value="1" />
+  {section name="resultat" loop=$personnes}
+    <div class="contact">
+      <div class="nom">
         {$personnes[resultat].nom} {$personnes[resultat].prenom}
-        <input type="hidden" name="pays" value="{$pays_selectionne}" />
-        <input type="hidden" name="expertise" value="{$expertise_champ}" />
-        <input type="hidden" name="secteur" value="{$secteur_selectionne}" />
-        <input type="hidden" name="ss_secteur" value="{$ss_secteur_selectionne}" />
-        <input type="hidden" name="page_courante" value="1" />
-        <input type="hidden" name="Chercher" value="1" />
-      </td>
-      <td class="rechdetails">
-        <span class="rechdiplo">X{$personnes[resultat].promo}</span>
-      </td>
-      <td class="rechdetails" style="width:15%">
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].forlife}')">voir sa fiche</a>
-      </td>
-      <td class="rechdetails" style="width:25%">
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].forlife}')">voir sa fiche référent</a>
-      </td>
-    </tr>
-    <tr>
-      <td class="rechtitreitem">Expertise :</td>
-      <td class="rechitem" colspan="2">{$personnes[resultat].expertise|nl2br}</td>
-    </tr>
-    <tr>
-      <td>
-        &nbsp;
-      </td>
-    </tr>
-    {/section}
-  </table>
-  <br />
+      </div>
+      <div class="appli">
+        X{$personnes[resultat].promo}
+      </div>
+      <div class="bits" style="width: 40%;">
+        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].forlife}')">
+        <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
+        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].forlife}')">Voir sa fiche référent</a>
+      </div>
+      <div class="long">
+       <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td class="lt">Expertise :</td>
+          <td class="rt" colspan="2">{$personnes[resultat].expertise|nl2br}</td>
+        </tr>
+       </table>
+      </div>
+    </div>
+  {/section}
+  </div>
   <p>
     Pages&nbsp;:&nbsp;
     {section name="page_number" start=1 loop=$nb_pages_total+1}
