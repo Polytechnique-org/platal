@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_general.inc.php,v 1.3 2004-09-01 22:15:54 x2000habouzit Exp $
+        $Id: get_general.inc.php,v 1.4 2004-09-01 22:17:52 x2000habouzit Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
 $sql = "SELECT u.nom, u.prenom".
-        ", u.promo, a.alias as epouse, FIND_IN_SET('femme',i.flags), nationalite".
+        ", u.promo, u.epouse, FIND_IN_SET('femme',i.flags), nationalite".
 	", mobile".
 	", web".
         ", libre".
