@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.2 2004-10-10 13:51:13 x2000habouzit Exp $
+        $Id: step4.php,v 1.3 2004-10-16 14:20:19 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -98,7 +98,7 @@ if (!empty($_REQUEST['ref'])) {
     $res = $globals->db->query("SELECT  DISTINCT a.alias,e.date_envoi
                                   FROM  envoidirect AS e
 			    INNER JOIN  aliases     AS a ON ( a.id = e.sender AND a.type='a_vie' )
-                                 WHERE  e.matricule = '".$forlife."'");
+                                 WHERE  e.matricule = '$matricule'");
     while (list($sender_usern, $sender_date) = mysql_fetch_row($res)) {
         $mymail = new TplMailer('marketing.thanks.tpl');
         $mymail->assign('to', $sender_usern);
