@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.tpl,v 1.7 2004-10-09 20:50:33 x2000chevalier Exp $
+        $Id: emails.tpl,v 1.8 2004-10-10 09:35:58 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -60,8 +60,8 @@ Gestion de mes courriers électroniques
 </table>
 
 <p class="smaller">
-(*) les adresses mails marquées de (*) te sont réservées à vie (et même plus).
-Les autres pourraient t'être retirées si tu as un homonyme X qui s'inscrit sur le site (auquel cas l'adresse prenom.nom@polytechnique.org serait inactivée pour l'un et pour l'autre !)
+(*) l'adresse email marquée d'une (*) t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$smarty.session.promo+100}).
+Les autres te sont attribuées a priori à vie, sauf si tu venais à avoir un homonyme X. Dans ce cas, ni ton homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.nom.promo@polytechnique.org.
 </p>
 
 

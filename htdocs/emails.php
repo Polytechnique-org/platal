@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.7 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: emails.php,v 1.8 2004-10-10 09:35:56 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,7 +28,7 @@ new_skinned_page('emails.tpl',AUTH_COOKIE);
 $sql = "SELECT  alias, (type='a_vie') AS a_vie, expire
           FROM  aliases
          WHERE  id='{$_SESSION['uid']}' AND type!='homonyme'
-      ORDER BY  type!='a_vie'";
+      ORDER BY  LENGTH(alias)";
 $page->mysql_assign($sql, 'aliases');
 
 $sql = "SELECT email
