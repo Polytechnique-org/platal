@@ -30,3 +30,23 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN nom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN prenom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse_soundex;
 INSERT INTO logger.actions SET text="connexion_auth_ext",description="connection via l'auth des groupes X";
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- SKINS v2
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS skins;
+CREATE TABLE skins (
+  id tinyint(1) unsigned NOT NULL default '0',
+  name varchar(32) NOT NULL default '',
+  date varchar(10) NOT NULL default '',
+  comment varchar(255) NOT NULL default '',
+  auteur varchar(30) NOT NULL default '',
+  skin_tpl varchar(32) NOT NULL default '',
+  ext char(3) NOT NULL default '',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM PACK_KEYS=1 COMMENT='liste des skins';
+
+INSERT INTO skins VALUES (1,'Defaut','2000-03-07','Skin par défaut','Equipe X.org','default.tpl','png');
+--------------------------------------------------------------------------------
+

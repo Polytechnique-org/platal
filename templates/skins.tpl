@@ -1,4 +1,4 @@
-{* $Id: skins.tpl,v 1.4 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: skins.tpl,v 1.5 2004-08-24 20:38:36 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Skins Polytechnique.org
@@ -42,7 +42,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
         Utilisée par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
       </td>
       <td class="skidroite">
-        <img src="images/{$skin.snapshot}" style="width:171px; height:162px;" alt=" [ CAPTURE D'ECRAN ] ">
+        <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] ">
       </td>
     </tr>
 {/foreach}
