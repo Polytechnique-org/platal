@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.15 2004-11-15 21:04:29 x2002marichez Exp $
+        $Id: identification.inc.php,v 1.16 2004-11-16 20:43:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -192,12 +192,12 @@ if ( $homonyme ) {
     if ( $h_type != 'homonyme' and empty($expire) ) {
 	$globals->db->query("UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias='$mailorg'");
 	$globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES ($h_id,$h_id)");
-	require_once('diogenes.mailer.inc.php');
-	$mailer = new DiogenesMailer('Support Polytechnique.org <support@polytechnique.org>',
-				     "$mailorg@polytechnique.org",
-				     "perte de ton alias $mailorg dans un mois !",
-				     false,
-				     'Support Polytechnique.org <support@polytechnique.org>');
+	require_once('diogenes.hermes.inc.php');
+	$mailer = new HermesMailer();
+	$mailer->setFrom('Support Polytechnique.org <support@polytechnique.org>');
+	$mailer->addTo("$mailorg@polytechnique.org");
+	$mailer->setSubject("perte de ton alias $mailorg dans un mois !");
+	$mailer->addCc('Support Polytechnique.org <support@polytechnique.org>');
 	$msg =
 	    "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$mailorg'.\n\n".
 	    "Tu gardes tout de même l'usage de cet alias pour 1 mois encore à compter de ce jour.\n\n".
@@ -208,7 +208,7 @@ if ( $homonyme ) {
 	    "-- \n".
 	    "Polytechnique.org\n".
 	    "\"Le portail des élèves & anciens élèves de l'X\"";
-	$mailer->SetBody(wordwrap($msg,72));
+	$mailer->SetTxtBody(wordwrap($msg,72));
 	$mailer->send();
     }
     unset($mailorg);
