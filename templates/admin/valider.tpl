@@ -20,7 +20,6 @@
 
 <h1>Validation</h1>
  
-{dynamic}
 
 {if $vit->total()}
 
@@ -75,6 +74,5 @@
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

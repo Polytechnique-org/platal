@@ -27,7 +27,6 @@
   Liste des camarades qui n'apparaissent pas sous le même nom dans les deux annuaires
 </h2>
 
-{dynamic}
 <table class="bicol" summary="liste des absents de notre annuaire">
   <tr>
     <th>Promo</th>
@@ -46,7 +45,6 @@
 <p>
   <strong>{$nb_diffs} camarades ont un état civil différent dans les 2 annuaires.</strong>
 </p>
-{/dynamic}
 
 <br />
 <br />
@@ -55,7 +53,6 @@
   Liste des camarades de l'annuaire de l'AX qui manquent à notre annuaire
 </h2>
 
-{dynamic}
 <table class="bicol" summary="liste des absents de notre annuaire">
   <tr>
     <th>Promo</th>  <th>Nom</th>  <th>Prénom</th>
@@ -71,7 +68,6 @@
 <p>
   <strong>{$nb_mank} camarades sont absents de notre annuaire.</strong>
 </p>
-{/dynamic}
 
 <br />
 <br />
@@ -80,7 +76,6 @@
   Liste des camarades de notre annuaire qui ne sont pas dans l'annuaire de l'AX
 </h2>
 
-{dynamic}
 <table class="bicol" summary="liste des absents de l'AX">
   <tr>
     <th>Promo</th>        <th>Nom</th>        <th>Prénom</th>
@@ -95,6 +90,5 @@
 <p>
   <strong>{$nb_plus} camarades sont absents de l'annuaire de l'AX.</strong>
 </p>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

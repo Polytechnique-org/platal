@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <table class="bicol" summary="liste des nouveaux inscrits">
   <tr>
@@ -50,6 +49,5 @@
 {$nb_ins} Polytechniciens se sont inscrits depuis le début de la semaine !
 </p>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

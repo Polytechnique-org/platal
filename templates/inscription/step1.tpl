@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 
 <form action="{"inscription/step2.php"|url}" method="post" id='idf'>
   <h1>
@@ -90,6 +89,5 @@
     </tr>
   </table>
 </form>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

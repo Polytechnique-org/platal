@@ -23,7 +23,6 @@
   Proposition d'information événementielle
 </h1>
 
-{dynamic}
 
 {if $action eq "proposer"}
 
@@ -94,6 +93,5 @@ Une erreur s'est produite pendant l'enregistrement de ta proposition.  Merci de 
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

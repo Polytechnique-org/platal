@@ -19,7 +19,7 @@
  ***************************************************************************}
 
 
-<form action="{dynamic}{$smarty.server.REQUEST_URI}{/dynamic}" method="post">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <h1>
     Conditions générales
   </h1>

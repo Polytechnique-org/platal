@@ -23,7 +23,6 @@
   Gestion de mes courriers électroniques
 </h1>
 
-{dynamic}
 
 <table class="bicol">
   <tr>
@@ -131,6 +130,5 @@ homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.no
   </tr>
 </table>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

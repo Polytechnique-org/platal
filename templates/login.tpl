@@ -37,7 +37,6 @@
 {include file='include/form_naissance.tpl'}
 {else}
 
-{dynamic}
 
 <h1>Bienvenue {$smarty.session.prenom} :o)</h1>
 
@@ -63,11 +62,9 @@
     si tu souhaites en ajouter une.
   </p>
 {/if}
-{/dynamic}
 
 <br />
 
-{dynamic}
   <table class="bicol">
     <tr class="pair">
 {foreach item=links from=$publicite}
@@ -107,7 +104,6 @@
     </tr>
   </table>
   {/foreach}
-{/dynamic}
 
   <p class="smaller">
   Nota Bene : les informations présentées ici n'engagent que leurs auteurs

@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 {if $success}
   <p>
   a demande de création des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
@@ -82,6 +81,5 @@
     </table>
   </form>
 {/if}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

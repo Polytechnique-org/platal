@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <table style="margin-left: auto; margin-right: auto">
   <tr>
@@ -108,6 +107,5 @@
 {$nbnonins} Polytechniciens de la promo {$promo} ne sont pas inscrits !
 </p>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

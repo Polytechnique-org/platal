@@ -25,7 +25,6 @@
   Formulaire de pré-inscription
 </h1>
 
-{dynamic}
 
 <form action="{"inscription/step3.php"|url}" method="post">
   {if $homonyme}
@@ -160,6 +159,5 @@
   </table>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

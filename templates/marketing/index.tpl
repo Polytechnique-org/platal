@@ -54,7 +54,6 @@
 
 <br />
 
-{dynamic}
 <p>
 Nombre d'X vivants d'après notre base de données : {$stats.vivants}<br />
 Nombre d'X vivants inscrits à Polytechnique.org : {$stats.inscrits}<br />
@@ -79,6 +78,5 @@ Nombre d'inscrits depuis le début de la semaine : {$nbInsSem} <br />
 Nombre d'inscriptions en cours (2ème phase non terminée) : {$nbInsEnCours} <br />
 Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsEnvDir}
 </p>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

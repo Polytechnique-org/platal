@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 <h1>
   Chercher un X non inscrit
 </h1>
@@ -76,6 +75,5 @@ Si un champ est <strong>inconnu ou incertain</strong>, le remplir quand m&ecirc;
   </table>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

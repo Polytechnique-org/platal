@@ -20,11 +20,9 @@
 
 <h3><a href="{rel}/webredirect.php">Ma redirection de page WEB</a></h3>
 <div class='explication'>
-  {dynamic}
-  Tu peux configurer tes redirections WEB
+    Tu peux configurer tes redirections WEB
   http://www.carva.org/{$smarty.session.bestalias}
   et http://www.carva.org/{$smarty.session.forlife}
-  {/dynamic}
-</div>
+  </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

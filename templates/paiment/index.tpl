@@ -21,7 +21,6 @@
 
 <h1>Micropaiments</h1>
 
-{dynamic}
 {if $smarty.request.op eq "submit" and !$xorg_error->errs|count}
 
 {$pay->form($montant)|smarty:nodefaults}
@@ -76,6 +75,5 @@
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

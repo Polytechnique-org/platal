@@ -22,7 +22,6 @@
 <h1>
   Inscrire manuellement un X
 </h1>
-{dynamic}
 {if $success eq "1"}
 <p>
 Paramètres à transmettre:<br />
@@ -86,6 +85,5 @@ d'abord la table d'identification (écran précédent) avant d'inscrire cet X.
   </table>
 </form>
 {/if}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

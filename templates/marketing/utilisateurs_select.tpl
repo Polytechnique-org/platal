@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <h1>
   Selectionner un X non inscrit
@@ -55,6 +54,5 @@ Sélectionne l'X que tu veux inscrire ou &agrave; qui tu veux envoyer le mail de 
   </table>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

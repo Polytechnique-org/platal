@@ -25,11 +25,9 @@
 <p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
   il est possible de faire pointer
-  {dynamic}
-  les adresses <strong>http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}</strong>
+    les adresses <strong>http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}</strong>
   et <strong>http://{#globals.webredirect.domain#}/{$smarty.session.forlife}</strong>
-  {/dynamic}
-  vers la page WEB de ton choix. Pour de plus amples détails, consulte
+    vers la page WEB de ton choix. Pour de plus amples détails, consulte
   <a href="{"docs/doc_carva.php"|url}">cette page</a>
 </p>
 
@@ -45,7 +43,6 @@
   Mise en place de la redirection
 </h1>
 <p>
-{dynamic}
 {if $carva}
   Actuellement, les adresses
   <a href="http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}">
@@ -96,6 +93,5 @@
     </tr>
   </table>
 </form>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

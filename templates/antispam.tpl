@@ -44,15 +44,13 @@ Trois réglages sont possibles :
     <tr>
       <td>
         <strong>Choisis ton propre réglage :</strong><br />
-        {dynamic}
-        <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} />
+                <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} />
         (1) le filtre anti-spam est coupé<br />
         <input type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} />
         (2) le filtre anti-spam est activé, et marque les mails<br />
         <input type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} />
         (3) le filtre anti-spam est activé, et élimine les mails détectés comme spams<br />
-        {/dynamic}
-      </td>
+              </td>
     </tr>
     <tr>
       <td class="center">

@@ -18,11 +18,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 {foreach from=$xorg_error->errs|smarty:nodefaults item=err}
 <div class="erreur">{$err|smarty:nodefaults}</div>
 {/foreach}
-{/dynamic}
 
 {if !$xorg_error->failure}{include file=$xorg_tpl}{/if}
 

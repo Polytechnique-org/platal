@@ -37,10 +37,8 @@
 
     <title>
       {if $xorg_title}
-      {dynamic}
-      {$xorg_title}
-      {/dynamic}
-      {else}
+            {$xorg_title}
+            {else}
       Anciens eleves Polytechnique, annuaire email, Alumni
       {/if}
     </title>

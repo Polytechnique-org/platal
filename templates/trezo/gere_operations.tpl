@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 {if $smarty.request.action eq "edit"}
 <h1>
@@ -155,6 +154,5 @@
 
 {include file=trezo/choix_date.tpl month_arr=$month_arr}
 {/if}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

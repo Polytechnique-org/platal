@@ -20,7 +20,6 @@
         $Id : admin.tpl,v 1.4 2004/09/23 18:47:00 x2000habouzit Exp $
  ***************************************************************************}
 
-{dynamic}
 
 {if $deleted}
 
@@ -66,6 +65,5 @@ Tu n'es pas administrateur de la liste, mais du site.
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -23,7 +23,6 @@
   Liste des sollicités inscrits récemment
 </h1>
 
-{dynamic}
 
 <table class="bicol" summary="liste des sollicités inscrits">
   <tr>
@@ -74,6 +73,5 @@
 {$nbnotsub} Polytechniciens ont été sollicités et ne se sont toujours pas inscrits.
 </p>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

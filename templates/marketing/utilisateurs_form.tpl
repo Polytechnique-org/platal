@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <h1>
   Envoyer un mail de pr&eacute;-inscription
@@ -89,6 +88,5 @@ calcul&eacute; &agrave; partir de ces données.
   </table>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

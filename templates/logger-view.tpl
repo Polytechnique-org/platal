@@ -23,7 +23,6 @@
   Parcours des logs du site
 </h1>
 
-{dynamic}
 
 {if $smarty.request.logsess}
 
@@ -129,6 +128,5 @@
 </table>
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

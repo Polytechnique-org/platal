@@ -30,7 +30,6 @@ utilise <a href='submit.php'>le formulaire dédié !</a>
 
 <h2>Ton statut</h2>
 
-{dynamic}
 {if $nls eq html}
 <p>
 Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format HTML !
@@ -89,6 +88,5 @@ Pour te désinscrire suis le lien :
   {/foreach}
 </table>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

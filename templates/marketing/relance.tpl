@@ -23,7 +23,6 @@
   Relance
 </h1>
 
-{dynamic}
 {foreach from=$sent item=l}
 <p>{$l}</p>
 {/foreach}
@@ -59,6 +58,5 @@
     <input type="submit" name="relancer" value="Relancer" />
   </div>
 </form>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 <h1>
   Statistiques de la promotion {$promo}
 </h1>
@@ -31,6 +30,5 @@
 <div class="center">
   <img src="{"stats/graph_promo.php?promo=$promo"|url}" alt=" [ INSCRITS ] " />
 </div>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -59,7 +59,6 @@
   </table>
 </form>
 <br />
-{dynamic}
 {if $smarty.request.response}<!-- failed login code -->
 <div class="erreur">
   Erreur d'identification. Essaie à nouveau !
@@ -83,6 +82,5 @@
   // -->
 </script>
 {/literal}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <h1>Vérifier une patte cassée</h1>
 
@@ -48,7 +47,6 @@
   Nous ne pouvons donc malheureusement te fournir aucune information...
 </p>
 {/if}
-{/dynamic}
 
 <p>
   <strong>Qu'est-ce qu'une patte cassée ?</strong>

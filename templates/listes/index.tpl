@@ -70,7 +70,6 @@ thématique particulière.
 Tu peux demander <a href='create.php'>la création</a> d'une liste de diffusion sur le thème de ton choix.  
 </p>
 
-{dynamic}
 
 <h1>
   Listes de diffusion publiques
@@ -123,6 +122,5 @@ Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire pa
 
 {/perms}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

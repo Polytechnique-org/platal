@@ -35,7 +35,6 @@ Tu peux choisir plus finement les données affichées sur cette page.
 Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration des notifications</a>.
 </p>
 
-{dynamic}
 
 {foreach from=$notifs->_data item=c key=cid}
 <h2>{$notifs->_cats[$cid].mail} :</h2>
@@ -72,6 +71,5 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
 <br />
 {/foreach}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

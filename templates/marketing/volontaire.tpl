@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <h1>
   Marketing volontaire
@@ -80,6 +79,5 @@
 <p>
 {$rate.j} inscrits sur {$rate.i} sollicités, soit {$rate.rate}% de succès.
 </p>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -41,7 +41,6 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
-{dynamic}
 {foreach item=skin from=$skins}    
     <tr>
       <td class="skigauche">
@@ -61,7 +60,6 @@ Pour toute information complémentaire, n'hésite pas à écrire à
       </td>
     </tr>
 {/foreach}
-{/dynamic}
   </table>
 </form>
 

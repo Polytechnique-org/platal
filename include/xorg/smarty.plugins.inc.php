@@ -19,17 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function block_dynamic()
-
-/**
- * block function used to delimit non-cached blocks.
- */
-function block_dynamic($param, $content, &$smarty)
-{
-    return $content;
-}
-
-// }}}
 // {{{ function escape_html ()
 
 /**

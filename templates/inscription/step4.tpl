@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 <h1>Dernière étape</h1>
 <p>
   Tu as maintenant accès au site en utilisant les paramètres reçus par mail.
@@ -38,6 +37,5 @@
   site. Cela peut prendre plusieurs semaines, les pertes de mot de passe sont
   traitées avec la priorité minimale.
 </p>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

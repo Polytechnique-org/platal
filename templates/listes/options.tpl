@@ -20,7 +20,6 @@
         $Id : admin.tpl,v 1.4 2004/09/23 18:47:00 x2000habouzit Exp $
  ***************************************************************************}
 
-{dynamic}
 
 {if !$details.own}
 <p class='erreur'>
@@ -187,6 +186,5 @@ redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller 
 </form>
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

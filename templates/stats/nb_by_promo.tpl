@@ -27,7 +27,6 @@
 Voici le nombre d'inscrits par promo :
 </p>
 
-{dynamic}
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">
   <tr>
     <th></th>
@@ -74,6 +73,5 @@ Voici le nombre d'inscrits par promo :
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

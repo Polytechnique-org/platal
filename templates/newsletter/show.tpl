@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 <h1>
   Lettre de Polytechnique.org du {$nl->_date|date_format:"%d %B %Y"}
 </h1>
@@ -58,6 +57,5 @@
   </tr>
 </table>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -99,7 +99,6 @@ Problème de connexion ? <a href="{"docs/faq.php#connect"|url}">La réponse est là
 (Activer obligatoirement le <strong>javascript</strong>)
 </p>
 
-{dynamic}
 {if $smarty.request.response}<!-- failed login code //-->
 <br />
 <div class="erreur">
@@ -115,7 +114,6 @@ Problème de connexion ? <a href="{"docs/faq.php#connect"|url}">La réponse est là
     <input type="hidden" name="username"  value="" />
   </div>
 </form>
-{/dynamic}
 
 {literal}
 <script type="text/javascript">

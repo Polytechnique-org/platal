@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 
 {if !$details.own}
 <p class='erreur'>
@@ -102,6 +101,5 @@ qui y était abonné.
   </table>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

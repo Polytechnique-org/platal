@@ -22,7 +22,6 @@
 <h1>
   Editer la base de tous les X
 </h1>
-{dynamic}
 {if $success eq "1"}
 <p>
 La modification de la table identification a été effectuée.
@@ -88,5 +87,4 @@ modifiée !! (aucune vérification n'est faite)
   </form>
 </div>
 {/if}
-{/dynamic}
 {* vim:set et sw=2 sts=2 sws=2: *}

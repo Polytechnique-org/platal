@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 
 {foreach item=query from=$trace_data}
 <table class="bicol" style="width: 75%; font-family: monospace; font-size: smaller; margin-left:2px; margin-top: 3px;">
@@ -56,5 +55,4 @@
 {/if}
 {/foreach}
 
-{/dynamic}
 {* vim:set et sw=2 sts=2 sws=2: *}

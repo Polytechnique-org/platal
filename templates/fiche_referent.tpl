@@ -19,8 +19,7 @@
  ***************************************************************************}
  
 <div id="fiche">
-  {dynamic}
-
+  
   <div class="center">
     <strong>{$prenom} {$nom}</strong><br />
     <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
@@ -126,7 +125,6 @@
   {/if}
 
 
-  {/dynamic}
-
+  
 </div>
 {* vim:set et sw=2 sts=2 sws=2: *}

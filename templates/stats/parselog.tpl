@@ -32,7 +32,6 @@
 {/perms}
 </p>
 
-{dynamic}
 {if $smarty.request.order}
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques mails">
   <tr>
@@ -61,6 +60,5 @@
   {/if}
 {/perms}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

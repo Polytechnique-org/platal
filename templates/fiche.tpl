@@ -25,7 +25,6 @@ function chgMainWinLoc( strPage ) {
 }
 </script>
 {/literal}
-{dynamic}
 
 <table id="fiche" cellpadding="0" cellspacing="0">
   <tr>
@@ -207,6 +206,5 @@ function chgMainWinLoc( strPage ) {
   {/if}
 </table>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -21,7 +21,7 @@
 <h1>Récupération de mot de passe</h1>
 
 <p>
-<strong>Mot de passe enregistré le {dynamic}{$smarty.now|date_format:"%x"}{/dynamic}</strong>
+<strong>Mot de passe enregistré le {$smarty.now|date_format:"%x"}</strong>
 </p>
 <p>
   Cette procédure n'est pas sécurisée. Ton mot de passe est certes crypté, mais le

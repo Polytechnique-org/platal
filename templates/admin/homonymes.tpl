@@ -23,7 +23,6 @@
   Gestion des homonymes
 </h1>
 
-{dynamic}
 
 {if $op eq 'mail'}
 <p class="erreur">mail envoyé à {$forlife}</p>
@@ -149,6 +148,5 @@ L'équipe Polytechnique.org
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -33,7 +33,6 @@
 <h1>
   Rechercher un camarade pouvant m'aider à orienter mon parcours professionnel
 </h1>
-{dynamic}
 {if $recherche_trop_large}
 <p>
 Les critères de recherche que tu as rentrés n'ont pas produit de résultats,
@@ -189,6 +188,5 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
 </form>
 
 {/if}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

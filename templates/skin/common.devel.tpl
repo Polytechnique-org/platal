@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 {if $site_dev}
-{dynamic}
 {if $db_trace neq "\n\n"}
   <div id="db-trace">
     <h1>
@@ -42,7 +41,6 @@
     <a href="http://www.w3schools.com/css/css_reference.asp">CSS2</a>
   </div>
 {/if}
-{/dynamic}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -21,7 +21,6 @@
 
 <h1>Perte du mot de passe</h1>
 
-{dynamic}
 
 {if $ok}
 
@@ -99,6 +98,5 @@ certificat sur cette page.
   </table>
 </form>
 {/if}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

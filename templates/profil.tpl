@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 {if $etat_naissance}
 {include file="profil/naissance.tpl"}
 {/if}
@@ -76,6 +75,5 @@ tel qu'elle apparaîtra pour un camarade.</p>
   </table>
 </form>
 {/if}
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

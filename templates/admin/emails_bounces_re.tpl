@@ -30,7 +30,6 @@ Rappel sur les niveaux :
   <li>2: ERREUR == erreur</li>
 </ul>
 
-{dynamic}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="bicol" cellpadding='0' cellspacing='0'>
@@ -92,6 +91,5 @@ Rappel sur les niveaux :
   </table>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

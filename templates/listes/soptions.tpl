@@ -20,7 +20,6 @@
         $Id : admin.tpl,v 1.4 2004/09/23 18:47:00 x2000habouzit Exp $
  ***************************************************************************}
 
-{dynamic}
 
 {include file="listes/header_listes.tpl" on=soptions}
 
@@ -88,6 +87,5 @@
   </div>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

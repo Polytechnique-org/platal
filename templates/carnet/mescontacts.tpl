@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 <h1>
   Ma liste personnelle de contacts
@@ -81,6 +80,5 @@ Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous 
 <p>Actuellement ta liste de contacts est vide...</p>
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 {if $smarty.request.num}
 
 {if $smarty.request.valide}
@@ -91,7 +90,6 @@
 {/if}
 
 {/if}
-{/dynamic}
 
 
 {* vim:set et sw=2 sts=2 sws=2: *}

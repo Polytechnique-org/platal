@@ -26,7 +26,6 @@
 <p>
 La pré-inscription que tu viens de soumettre a été enregistrée.
 </p>
-{dynamic}
 <p>
 Les instructions te permettant notamment d'activer ton e-mail
 <strong>{$forlife}@polytechnique.org</strong>, ainsi que ton mot de passe pour
@@ -42,6 +41,5 @@ ne servant plus.
 <p>
 Si tu ne reçois rien, vérifie bien l'adresse <strong>{$smarty.request.email}</strong>.
 </p>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

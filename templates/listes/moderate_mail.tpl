@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 
 <h1>
   Propriétés du mail en attente
@@ -91,6 +90,5 @@ En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement s
 </p>
 <pre>{$msg}</pre>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

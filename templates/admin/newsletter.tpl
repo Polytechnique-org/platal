@@ -23,7 +23,6 @@
   Lettre de Polytechnique.org
 </h1>
 
-{dynamic}
 <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
   <tr>
     <th>date</th>
@@ -42,6 +41,5 @@
   {/foreach}
 </table>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -23,7 +23,6 @@
   Gestion du trombino
 </h1>
 
-{dynamic}
 <p>
 Photo actuelle de {$forlife}
 </p>
@@ -48,6 +47,5 @@ Photo actuelle de {$forlife}
   </div>
 </form>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -18,7 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{dynamic}
 
 <h1>Notifications automatiques</h1>
 
@@ -116,6 +115,5 @@ et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" />
   </tr>
 </table>
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

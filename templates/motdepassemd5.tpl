@@ -32,7 +32,6 @@
   stocké crypté irréversiblement sur nos serveurs.
 </p>
 <br />
-{dynamic}
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
   <table class="tinybicol" cellpadding="3" cellspacing="0"
     summary="Formulaire de mot de passe">
@@ -69,6 +68,5 @@
 <input type="hidden" name="response2"  value="" />
 </p>
 </form>
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

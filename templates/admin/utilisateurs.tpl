@@ -29,7 +29,6 @@ Attention, déjà en SUID !!!
   Gestion des utilisateurs
 </h1>
 
-{dynamic}
 
 {if $smarty.post.u_kill_conf}
 <form method="post" action="{$smarty.server.PHP_SELF}">
@@ -283,5 +282,4 @@ Panne pour l'email "{$mail->email}" le {$mail->panne|date_format:"%d %b %Y"}
 {/if}
 {/if}
 
-{/dynamic}
 {* vim:set et sw=2 sts=2 sws=2: *}

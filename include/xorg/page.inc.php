@@ -40,6 +40,11 @@ class XorgPage extends DiogenesCorePage
     var $_tpl;
     var $_errors;
 
+    // defaults
+    var $caching          = false;
+    var $config_overwrite = false;
+    var $use_sub_dirs     = false;
+
     // }}}
     // {{{ function XorgPage()
 
@@ -54,12 +59,8 @@ class XorgPage extends DiogenesCorePage
         $this->compile_dir   = $globals->spoolroot."/templates_c/";
         $this->plugins_dir[] = $globals->spoolroot."/plugins/";
         $this->config_dir    = $globals->spoolroot."/configs/";
-        $this->cache_dir     = $globals->spoolroot."/cache/";
-	$this->use_sub_dirs  = false;
 
-        $this->config_overwrite  = false;
-        $this->compile_check     = !empty($globals->debug);
-        $this->caching	         = ($type == SKINNED);
+        $this->compile_check = !empty($globals->debug);
 
         if ($type == SKINNED) {
             $this->register_modifier('escape_html', 'escape_html');
@@ -73,7 +74,6 @@ class XorgPage extends DiogenesCorePage
 
         $this->DiogenesCorePage();
 	require_once('xorg/smarty.plugins.inc.php');
-        $this->register_block('dynamic', 'block_dynamic', false);
         $this->register_prefilter('at_to_globals');
 
         $this->assign('site_dev',$globals->debug);
@@ -87,7 +87,6 @@ class XorgPage extends DiogenesCorePage
     {
 	$this->_tpl       = $tpl;
 	$this->_page_type = $type;
-        $this->caching	  = ($type == SKINNED);
 	if ($type == SKINNED) {
 	    $this->register_modifier('escape_html', 'escape_html');
 	    $this->default_modifiers = Array('@escape_html');
@@ -100,7 +99,7 @@ class XorgPage extends DiogenesCorePage
     // }}}
     // {{{ function run()
 
-    function run($append_to_id="")
+    function run()
     {
         global $globals, $TIME_BEGIN;
         $this->assign_by_ref("xorg_error", $this->_errors);
@@ -108,22 +107,18 @@ class XorgPage extends DiogenesCorePage
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
         } else {
-            if (Session::has('suid')) {
-                $this->caching=false;
-            }
             $this->assign_by_ref('menu', $globals->menu->menu());
-            $id = $this->make_id($append_to_id);
             if ($globals->debug) {
                 $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
                 $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
 
-		$result = $this->fetch('skin/'.Session::get('skin'), $id);
+		$result = $this->fetch('skin/'.Session::get('skin'));
 		$total_time = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
-                $fd = fopen($this->cache_dir."valid.html","w");
+                $fd = fopen($this->compile_dir."/valid.html","w");
                 fwrite($fd, $result);
                 fclose($fd);
 		
-		exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$this->cache_dir."valid.html", $val);
+		exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$this->compile_dir."/valid.html", $val);
 		foreach ($val as $h) {
 		    if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
 			if ($m[1]) {
@@ -138,7 +133,7 @@ class XorgPage extends DiogenesCorePage
 		    }
                 }
             } else {
-                $this->display('skin/'.Session::get('skin'), $id);
+                $this->display('skin/'.Session::get('skin'));
             }
         }
         exit;
@@ -173,7 +168,6 @@ class XorgPage extends DiogenesCorePage
 
     function fail($msg)
     {
-        $this->caching = false;
         $this->_errors->fail($msg);
     }
 
@@ -184,39 +178,6 @@ class XorgPage extends DiogenesCorePage
     {
         $this->fail($msg);
         $this->run();
-    }
-
-    // }}}
-    // {{{ function xorg_is_cached()
-
-    function xorg_is_cached($append_to_id="")
-    {
-        if ($this->_page_type == NO_SKIN) {
-            return parent::is_cached($this->_tpl);
-        } else {
-            return parent::is_cached('skin/'.Session::get('skin'), $this->make_id($append_to_id));
-        }
-    }
-
-    // }}}
-    // {{{ function make_id()
-
-    function make_id($append_to_id="")
-    {
-        if ($this->_page_type == NO_SKIN) {
-            return null;
-        }
-
-        $ret = $this->_tpl;
-        if ($append_to_id) {
-            $ret.="-$append_to_id";
-        }
-
-        $auth_trans = Array(AUTH_PUBLIC => 'public', AUTH_COOKIE => 'cookie', AUTH_MDP => 'passwd');
-        $ret .= '-'.$auth_trans[Session::get('auth', AUTH_PUBLIC)];
-        $ret .= '-'.Session::get('perms', PERMS_EXT);
-
-        return $ret;
     }
 
     // }}}

@@ -19,7 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic}
 
 {if !$smarty.request.xpromo || $error}
 <h1>
@@ -70,7 +69,6 @@ chaque page affiche au plus {$limit} photos.
 
 {/if}
 
-{/dynamic}
 
 
 {* vim:set et sw=2 sts=2 sws=2: *}

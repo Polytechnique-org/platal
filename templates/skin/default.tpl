@@ -36,10 +36,8 @@
     <table id="suid" cellpadding="0" cellspacing="0">
       <tr>
         <td>
-          {dynamic}
-          {$smarty.session.suid} ({$smarty.session.forlife})
-          {/dynamic}
-          [<a href="{"exit.php"|url}">exit</a>]
+                    {$smarty.session.suid} ({$smarty.session.forlife})
+                    [<a href="{"exit.php"|url}">exit</a>]
         </td>
       </tr>
     </table>

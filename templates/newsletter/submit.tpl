@@ -23,7 +23,6 @@
   Proposer un article à sur la prochaine Lettre mensuelle
 </h1>
 
-{dynamic}
 
 {if $submited}
 
@@ -129,6 +128,5 @@ Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à
 
 {/if}
 
-{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
