@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement.inc.php,v 1.2 2004-08-31 11:16:47 x2000habouzit Exp $
+        $Id: cyberpaiement.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -38,7 +38,7 @@ $prefix = ($ref_flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
 $fullref = substr("$prefix-xorg-$ref",-15);
 
 // on recupere les infos sur l'utilisateur
-$res = mysql_query("select username, nom, prenom from auth_user_md5 where user_id={$_SESSION['uid']}");
+$res = $globals->db->query("select username, nom, prenom from auth_user_md5 where user_id={$_SESSION['uid']}");
 list($username,$nom,$prenom) = mysql_fetch_row($res);
 mysql_free_result($res);
 ?>

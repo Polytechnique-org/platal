@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_general.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: profil_general.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
@@ -36,7 +36,7 @@ $sql = "SELECT u.nom, u.prenom".
 	" LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
 	" WHERE user_id=".$_SESSION['uid'];
 
-$result = mysql_query($sql);
+$result = $globals->db->query($sql);
 list($nom, $prenom,
      $promo, $epouse, $femme, $nationalite,
      $mobile, $web,

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: fiche_referent.php,v 1.6 2004-08-31 13:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -35,7 +35,7 @@ $reqsql = "SELECT prenom, nom, user_id, promo, cv, username"
          ." FROM auth_user_md5 as u"
 // conversion du username en user_id si nécessaire
          ." WHERE username = '{$_REQUEST['user']}'";
-$result = mysql_query($reqsql);
+$result = $globals->db->query($reqsql);
 if (mysql_num_rows($result)!=1)
         exit;
 
@@ -63,7 +63,7 @@ $reqsql =
    ORDER BY e.entrid
    ";
 
-$result = mysql_query($reqsql);
+$result = $globals->db->query($reqsql);
 
 $i = 0;
 while(list($adr_pro[$i]['entreprise'], $adr_pro[$i]['secteur'], $adr_pro[$i]['ss_secteur'],
@@ -90,7 +90,7 @@ mysql_free_result($result);
 /////  recuperations infos referent
 
 //expertise
-$result = mysql_query("SELECT expertise FROM mentor WHERE uid = $user_id");
+$result = $globals->db->query("SELECT expertise FROM mentor WHERE uid = $user_id");
 
 if(mysql_num_rows($result) > 0)
 list($expertise) = mysql_fetch_row($result);
@@ -99,7 +99,7 @@ mysql_free_result($result);
 $page->assign('expertise', $expertise);
 
 //secteurs
-$result = mysql_query("SELECT s.label, ss.label
+$result = $globals->db->query("SELECT s.label, ss.label
                        FROM mentor_secteurs AS m
 		       LEFT JOIN emploi_secteur AS s ON(m.secteur = s.id)
 		       LEFT JOIN emploi_ss_secteur AS ss ON(m.secteur = ss.secteur AND m.ss_secteur = ss.id)
@@ -115,7 +115,7 @@ $page->assign_by_ref('secteurs', $secteurs);
 $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
 //pays
-$result = mysql_query("SELECT gp.pays
+$result = $globals->db->query("SELECT gp.pays
                        FROM mentor_pays AS m
 		       LEFT JOIN geoloc_pays AS gp ON(m.pid = gp.a2)
                        WHERE uid = $user_id");

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_identification.php,v 1.2 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: utilisateurs_identification.php,v 1.3 2004-08-31 13:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -70,11 +70,11 @@ case "Creer le login":
   	// - que le login n'existe pas déjà
   	// - que la date de naissance est bien remplie
     
-	$result=mysql_query("SELECT user_id FROM auth_user_md5 where matricule='".$_REQUEST["xmat"]."'");
+	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule='".$_REQUEST["xmat"]."'");
   	if ($myrow = mysql_fetch_array($result))
 		exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
 				
-	$result=mysql_query("SELECT user_id FROM auth_user_md5 where username='".$_REQUEST["mailorg"]."'");
+	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where username='".$_REQUEST["mailorg"]."'");
   	if ($myrow = mysql_fetch_array($result))
 		exit_error("Le login existe d&eacute;j&agrave; dans la table auth_user_md5.");
 

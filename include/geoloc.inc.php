@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: geoloc.inc.php,v 1.3 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: geoloc.inc.php,v 1.4 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -29,7 +29,7 @@
 function geoloc_pays($current) {
   $sql = "SELECT a2,pays FROM geoloc_pays ORDER BY pays";
 
-  $result = mysql_query($sql);
+  $result = $globals->db->query($sql);
   while (list($my_id,$my_pays) = mysql_fetch_row($result))
     printf("<option value=\"%s\" %s>%s</option>\n",$my_id,($current==$my_id?"selected='selected'":""),$my_pays);
 }
@@ -47,7 +47,7 @@ $page->register_function('geoloc_pays', '_geoloc_pays_smarty');
  */
 function geoloc_region($pays,$current) {
   $sql = "SELECT region,name FROM geoloc_region where a2='".$pays."' ORDER BY name";
-  $result = mysql_query($sql);
+  $result = $globals->db->query($sql);
   
   echo "<option value=\"\"></option>";
   while (list($regid,$regname) = mysql_fetch_row($result))

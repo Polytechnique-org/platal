@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_emploi.inc.php,v 1.3 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: profil_emploi.inc.php,v 1.4 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('geoloc.inc.php');
 require_once('secteur.emploi.inc.php');
 require_once('fonction.emploi.inc.php');
 
-$res = mysql_query("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
+$res = $globals->db->query("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
 	adr1, adr2, adr3, cp, ville, pays, region, tel, fax,
 	FIND_IN_SET('entreprise_public',visibilite),FIND_IN_SET('entreprise_ax',visibilite),FIND_IN_SET('adr_public',visibilite),
 	FIND_IN_SET('adr_ax',visibilite),FIND_IN_SET('tel_public',visibilite),FIND_IN_SET('tel_ax',visibilite)
@@ -88,14 +88,14 @@ $page->assign_by_ref('telpro_ax',$telpro_ax);
 
 //recuperation des donnees sur les secteurs :
 
-$res = mysql_query("SELECT id, label from emploi_secteur");
+$res = $globals->db->query("SELECT id, label from emploi_secteur");
 
 while(list($tmp_secteur_id, $tmp_secteur_label) = mysql_fetch_row($res)){
 	$secteurs[$tmp_secteur_id] = $tmp_secteur_label;
 }
 
 //recuperation des donnees sur les fonctions :
-$res = mysql_query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
+$res = $globals->db->query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
 
 while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = mysql_fetch_row($res)){
 	$fonctions[$tmp_fonction_id] = $tmp_fonction_label;
@@ -103,7 +103,7 @@ while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = mysql_f
 }
 
 //recuperation du CV
-$res = mysql_query("SELECT cv from auth_user_md5 where user_id = '{$_SESSION['uid']}'");
+$res = $globals->db->query("SELECT cv from auth_user_md5 where user_id = '{$_SESSION['uid']}'");
 list($cv) = mysql_fetch_row($res);
 $page->assign_by_ref('cv',$cv);
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_poly.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: profil_poly.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -26,7 +26,7 @@
 
 function _print_binet_smarty($params){
   if(!isset($params['uid'])) return;
-  $result = mysql_query("select * from binets_ins, binets_def "
+  $result = $globals->db->query("select * from binets_ins, binets_def "
     ."where binets_def.id=binets_ins.binet_id and user_id='{$params['uid']}'");
   while ($myrow2=mysql_fetch_array($result)) { ?>
           <span class="valeur"><?php echo $myrow2['text'];?></span>
@@ -50,7 +50,7 @@ $page->register_function('print_binets','_print_binet_smarty');
 
 function _print_groupex_smarty($params){
   if(!isset($params['uid'])) return;
-  $result = mysql_query("select * from groupesx_ins, groupesx_def where groupesx_def.id=groupesx_ins.gid and guid='{$params['uid']}'");
+  $result = $globals->db->query("select * from groupesx_ins, groupesx_def where groupesx_def.id=groupesx_ins.gid and guid='{$params['uid']}'");
   while ($myrow2=mysql_fetch_array($result)) {
   ?>
 	<td class="colm">
@@ -78,7 +78,7 @@ $sql = "SELECT u.nom, u.prenom".
 	" LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
 	" WHERE user_id=".$_SESSION['uid'];
 
-$result = mysql_query($sql);
+$result = $globals->db->query($sql);
 list($nom, $prenom,
      $promo, $epouse, $flags, $section) = mysql_fetch_row($result);
 
@@ -92,22 +92,22 @@ $page->assign_by_ref('section', $section);
 if (isset($_REQUEST['binet_op']) && !$no_update_bd) {
 	// retrait binet
 	if($_REQUEST['binet_op']=="retirer" && !empty($_REQUEST['binet_id'])) {
-		mysql_query("delete from binets_ins where user_id='{$_SESSION['uid']}' and binet_id='{$_REQUEST['binet_id']}'");
+		$globals->db->query("delete from binets_ins where user_id='{$_SESSION['uid']}' and binet_id='{$_REQUEST['binet_id']}'");
 	}
 	// ajout binet
 	if ($_REQUEST['binet_op']=="ajouter" && !empty($_REQUEST['binet_id'])) {
-		mysql_query("insert into binets_ins (user_id,binet_id) VALUES('{$_SESSION['uid']}','{$_REQUEST['binet_id']}')");
+		$globals->db->query("insert into binets_ins (user_id,binet_id) VALUES('{$_SESSION['uid']}','{$_REQUEST['binet_id']}')");
 	}
 }
 /************* gestion des groupes X ************/
 if (isset($_REQUEST['groupex_op']) && !$no_update_bd) {
 	// retrait groupe X
 	if ($_REQUEST['groupex_op']=="retirer" && !empty($_REQUEST['groupex_id'])) {
-		mysql_query("delete from groupesx_ins where guid='{$_SESSION['uid']}' and gid='{$_REQUEST['groupex_id']}'");
+		$globals->db->query("delete from groupesx_ins where guid='{$_SESSION['uid']}' and gid='{$_REQUEST['groupex_id']}'");
 	}
 	// ajout groupe X
 	if ($_REQUEST['groupex_op']=="ajouter" && !empty($_REQUEST['groupex_id'])) {
-		mysql_query("insert into groupesx_ins (guid,gid) VALUES('{$_SESSION['uid']}','{$_REQUEST['groupex_id']}')");
+		$globals->db->query("insert into groupesx_ins (guid,gid) VALUES('{$_SESSION['uid']}','{$_REQUEST['groupex_id']}')");
 	}
 }
 

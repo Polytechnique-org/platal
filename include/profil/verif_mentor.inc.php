@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: verif_mentor.inc.php,v 1.3 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: verif_mentor.inc.php,v 1.4 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -28,7 +28,7 @@ if(isset($_POST['mentor_pays_op']) && ($_POST['mentor_pays_op'] == 'ajouter') &&
   if(isset($_POST['mentor_pays_id']) && ($_POST['mentor_pays_id'] != '00'))
   {
     $id_ajoutee = $_POST['mentor_pays_id'];
-    mysql_query("INSERT INTO mentor_pays(uid, pid)
+    $globals->db->query("INSERT INTO mentor_pays(uid, pid)
                  VALUES('{$_SESSION['uid']}', '$id_ajoutee')");
     if(mysql_affected_rows() == 1){
       $nb_mentor_pays++;
@@ -46,7 +46,7 @@ if(isset($_POST['mentor_secteur_op']) && ($_POST['mentor_secteur_op'] == 'ajoute
     $sid_ajoutee = $_POST['mentor_secteur_id'];
     if(isset($_POST['mentor_ss_secteur_id']))
       $ssid_ajoutee = $_POST['mentor_ss_secteur_id'];
-    mysql_query("INSERT INTO mentor_secteurs(uid, secteur, ss_secteur)
+    $globals->db->query("INSERT INTO mentor_secteurs(uid, secteur, ss_secteur)
                  VALUES('{$_SESSION['uid']}', '$sid_ajoutee',
 		 ".( ($ssid_ajoutee == '')?'NULL':"'$ssid_ajoutee'" ).")");
     if(mysql_affected_rows() == 1){

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.php,v 1.2 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: volontaire.php,v 1.3 2004-08-31 13:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,11 +28,11 @@ $errors = Array();
 
 // traitement des paramètres éventuels
 if (!empty($_GET["del"])) {
-    mysql_query("DELETE FROM marketing WHERE id ='{$_GET['del']}'");
+    $globals->db->query("DELETE FROM marketing WHERE id ='{$_GET['del']}'");
     $errors[] = "Entrée effacée";
 }
 if (!empty($_GET["done"])) {
-    mysql_query("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id ='{$_GET['done']}'");
+    $globals->db->query("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id ='{$_GET['done']}'");
     $errors[] = "Entrée mise à jour";
 }
 

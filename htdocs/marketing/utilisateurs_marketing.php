@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.3 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.4 2004-08-31 13:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -96,7 +96,7 @@ switch ($_REQUEST["submit"]) {
                           SET  matricule='{$_REQUEST['xmat']}',uid='$user_id',promo='$promo',
                                prenom='".addslashes($prenom)."',nom='".addslashes($nom)."',
                                email='{$_REQUEST['mail']}',sender='{$_REQUEST['sender']}',date_envoi='$date'";
-	$result = mysql_query($requete);
+	$result = $globals->db->query($requete);
 	if (mysql_errno() == 0  || mysql_affected_rows() == 1) {
             // pas d'erreur pour l'insert
 

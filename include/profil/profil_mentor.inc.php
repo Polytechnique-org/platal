@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_mentor.inc.php,v 1.4 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: profil_mentor.inc.php,v 1.5 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -74,7 +74,7 @@ if(isset($_POST['mentor_pays_op']) && ($_POST['mentor_pays_op'] == 'retirer'))
   if(isset($_POST['mentor_pays_id']))
   {
     $id_supprimee = $_POST['mentor_pays_id'];
-    mysql_query("DELETE FROM mentor_pays WHERE uid = {$_SESSION['uid']} AND pid = '$id_supprimee' LIMIT 1");
+    $globals->db->query("DELETE FROM mentor_pays WHERE uid = {$_SESSION['uid']} AND pid = '$id_supprimee' LIMIT 1");
   }
 }
 
@@ -84,12 +84,12 @@ if(isset($_POST['mentor_secteur_op']) && ($_POST['mentor_secteur_op'] == 'retire
   if(isset($_POST['mentor_secteur_id']))
   {
     $id_supprimee = $_POST['mentor_secteur_id'];
-    mysql_query("DELETE FROM mentor_secteurs WHERE uid = {$_SESSION['uid']} AND secteur = '$id_supprimee' LIMIT 1");
+    $globals->db->query("DELETE FROM mentor_secteurs WHERE uid = {$_SESSION['uid']} AND secteur = '$id_supprimee' LIMIT 1");
   }
 }
 
 //recuperation de l'expertise
-$res = mysql_query("SELECT expertise FROM mentor WHERE uid = {$_SESSION['uid']}");
+$res = $globals->db->query("SELECT expertise FROM mentor WHERE uid = {$_SESSION['uid']}");
 
 if(mysql_num_rows($res) > 0){
   list($mentor_expertise) = mysql_fetch_row($res);
@@ -101,7 +101,7 @@ $mentor_expertise_bd = $mentor_expertise;
 
 $page->assign_by_ref('mentor_expertise', $mentor_expertise);
 //recuperation des pays
-$res = mysql_query("SELECT m.pid, p.pays 
+$res = $globals->db->query("SELECT m.pid, p.pays 
                     FROM mentor_pays AS m
 		    LEFT JOIN geoloc_pays AS p ON(m.pid = p.a2) WHERE m.uid = {$_SESSION['uid']} LIMIT $max_mentor_pays");
 
@@ -115,7 +115,7 @@ $page->assign_by_ref('mentor_pays', $mentor_pays);
 $page->assign_by_ref('nb_mentor_pays', $nb_mentor_pays);
 
 //recuperation des secteurs
-$res = mysql_query("SELECT m.secteur, s.label, m.ss_secteur, ss.label
+$res = $globals->db->query("SELECT m.secteur, s.label, m.ss_secteur, ss.label
                     FROM mentor_secteurs AS m
 		    LEFT JOIN emploi_secteur AS s ON(m.secteur = s.id)
 		    LEFT JOIN emploi_ss_secteur AS ss ON(s.id = ss.secteur AND m.ss_secteur = ss.id)

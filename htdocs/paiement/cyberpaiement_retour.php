@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.2 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -92,7 +92,7 @@ $champ202 = clean_request('CHAMP202');
 $montant = "$champ201 $champ202";
 
 /* on extrait les informations sur l'utilisateur */
-$res = mysql_query("select a.prenom,a.nom,a.promo,a.username,FIND_IN_SET(i.flags,'femme') from auth_user_md5 as a inner join identification as i on a.matricule=i.matricule where a.user_id='$uid'");
+$res = $globals->db->query("select a.prenom,a.nom,a.promo,a.username,FIND_IN_SET(i.flags,'femme') from auth_user_md5 as a inner join identification as i on a.matricule=i.matricule where a.user_id='$uid'");
 if (!list($prenom,$nom,$promo,$username,$femme) = mysql_fetch_row($res))
   erreur("uid invalide");
 
@@ -101,13 +101,13 @@ if (!ereg('-xorg-([0-9]+)$',$champ200,$matches))
   erreur("référence de commande invalide");
 $ref = $matches[1];
 echo $ref;
-$res = mysql_query("select mail,text,confirmation from paiement.paiements where id='$ref'");
+$res = $globals->db->query("select mail,text,confirmation from paiement.paiements where id='$ref'");
 if (!list($conf_mail,$conf_title,$conf_text) = mysql_fetch_row($res))
   erreur("référence de commande inconnue");
 
 /* on extrait le code de retour */
 if ($champ906 != "0000") {
-  $res = mysql_query("select rcb.text,c.id,c.text from paiement.codeRCB as rcb left join paiement.codeC as c on rcb.codeC=c.id where rcb.id='$champ906'");
+  $res = $globals->db->query("select rcb.text,c.id,c.text from paiement.codeRCB as rcb left join paiement.codeC as c on rcb.codeC=c.id where rcb.id='$champ906'");
   if (list($rcb_text,$c_id,$c_text) = mysql_fetch_row($res)) 
     erreur("erreur lors du paiement : $c_text ($c_id)");
   else
@@ -115,7 +115,7 @@ if ($champ906 != "0000") {
 }
 
 /* on fait l'insertion en base de donnees */
-mysql_query("insert into paiement.transactions set id='$champ901',uid='$uid',ref='$ref',fullref='$champ200',montant='$montant',cle='$champ905'");
+$globals->db->query("insert into paiement.transactions set id='$champ901',uid='$uid',ref='$ref',fullref='$champ200',montant='$montant',cle='$champ905'");
 
 /* on genere le mail de confirmation */
 $conf_text = str_replace("<prenom>",$prenom,$conf_text);

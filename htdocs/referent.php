@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: referent.php,v 1.5 2004-08-31 13:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -58,7 +58,7 @@ $page->assign('secteur_selectionne',$secteur_selectionne);
 $page->assign('ss_secteur_selectionne',$ss_secteur_selectionne);
 
 //recuperation des noms de secteurs
-$res = mysql_query("SELECT id, label FROM emploi_secteur");
+$res = $globals->db->query("SELECT id, label FROM emploi_secteur");
 $secteurs[''] = '';
 while(list($tmp_id, $tmp_label) = mysql_fetch_row($res))
   $secteurs[$tmp_id] = $tmp_label;
@@ -68,7 +68,7 @@ $page->assign_by_ref('secteurs', $secteurs);
 //on recupere les sous-secteurs si necessaire
 if(!empty($secteur_selectionne))
 {
-  $res = mysql_query("SELECT id, label FROM emploi_ss_secteur
+  $res = $globals->db->query("SELECT id, label FROM emploi_ss_secteur
                       WHERE secteur = '$secteur_selectionne'");
   $ss_secteurs[''] = '';
   while(list($tmp_id, $tmp_label) = mysql_fetch_row($res))
@@ -78,7 +78,7 @@ if(!empty($secteur_selectionne))
 }
 
 //recuperation des noms de pays
-$res = mysql_query("SELECT a2, pays FROM geoloc_pays WHERE pays <> '' ORDER BY pays");
+$res = $globals->db->query("SELECT a2, pays FROM geoloc_pays WHERE pays <> '' ORDER BY pays");
 $pays['00'] = '';
 while(list($tmp_id, $tmp_label) = mysql_fetch_row($res))
   $pays[$tmp_id] = $tmp_label;
@@ -121,7 +121,7 @@ if(isset($_REQUEST['Chercher'])){
     $sql = "SELECT $champ_select $clause_from $clause_where
             GROUP BY uid ORDER BY RAND({$_SESSION['uid']})";
     //echo "requete : ".htmlentities($sql)."<br />";
-    $res = mysql_query($sql);
+    $res = $globals->db->query($sql);
     //  echo mysql_error()."<br/>";
     if(mysql_num_rows($res) == 0){
       $page->assign('recherche_trop_large',true);
@@ -166,7 +166,7 @@ if(isset($_REQUEST['Chercher'])){
 //sinon on affiche le formulaire
 if($show_formulaire){
 
-  $res = mysql_query("SELECT count(*) FROM mentor");
+  $res = $globals->db->query("SELECT count(*) FROM mentor");
   list($nb) = mysql_fetch_row($res);
   mysql_free_result($res);
 

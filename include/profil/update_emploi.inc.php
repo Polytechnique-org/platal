@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: update_emploi.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: update_emploi.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 for($i = 0; $i < 2; $i++){
@@ -32,7 +32,7 @@ for($i = 0; $i < 2; $i++){
  if (! empty($_REQUEST["telpro_ax"][$i]))     $visibilite .= 'tel_ax,';
  if (! empty($visibilite)) $visibilite = substr($visibilite, 0, -1);
 
-mysql_query("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,poste,fonction,adr1,adr2,adr3,cp,ville,pays,region,tel,fax,visibilite) ".
+$globals->db->query("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,poste,fonction,adr1,adr2,adr3,cp,ville,pays,region,tel,fax,visibilite) ".
               "VALUES ('{$_SESSION['uid']}','$i','".put_in_db($entreprise[$i])."',".
 	      ( ($secteur[$i] == "") ? "NULL ," : "'{$secteur[$i]}',") . //sinon un faux 0 est rentre dans la base
 	      ( ($ss_secteur[$i] == "") ? "NULL " : "'{$ss_secteur[$i]}'") .
@@ -41,5 +41,5 @@ mysql_query("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,p
               "'".put_in_db($villepro[$i])."','".put_in_db($payspro[$i])."','".put_in_db($regionpro[$i])."','".put_in_db($telpro[$i])."','".put_in_db($faxpro[$i])."', '$visibilite')");
   echo mysql_error();
 }
-mysql_query("UPDATE auth_user_md5 set cv='".put_in_db($cv)."' where user_id='{$_SESSION['uid']}'");
+$globals->db->query("UPDATE auth_user_md5 set cv='".put_in_db($cv)."' where user_id='{$_SESSION['uid']}'");
 ?>

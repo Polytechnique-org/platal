@@ -18,13 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fonction.emploi.inc.php,v 1.3 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: fonction.emploi.inc.php,v 1.4 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
 function select_fonction($fonction){
 	echo "<option value=\"\" ". (($fonction == '0')?"selected='selected'":"") .">&nbsp;</option>\n";
-        $res = mysql_query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
+        $res = $globals->db->query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
 	while(list($fid, $flabel, $ftitre) = mysql_fetch_row($res)){
 		if($ftitre)
 			echo "<option value=\"$fid\" " . (($fonction == $fid)?"selected='selected'":"") . ">$flabel</option>\n";

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_skill.inc.php,v 1.4 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: profil_skill.inc.php,v 1.5 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -81,21 +81,21 @@ $page->register_function('select_competence_level', '_select_cppro_level');
 
 if(isset($_REQUEST['langue_op']) && !$no_update_bd){
 	if($_REQUEST['langue_op']=='retirer'){
-		mysql_query("delete from langues_ins where uid='{$_SESSION['uid']}' and lid='{$_REQUEST['langue_id']}'");
+		$globals->db->query("delete from langues_ins where uid='{$_SESSION['uid']}' and lid='{$_REQUEST['langue_id']}'");
 	}
 	else if($_REQUEST['langue_op'] == 'ajouter'){
 		if(isset($_REQUEST['langue_id']) && ($_REQUEST['langue_id'] != ''))
-		mysql_query("insert into langues_ins (uid,lid,level) VALUES('{$_SESSION['uid']}','{$_REQUEST['langue_id']}','{$_REQUEST['langue_level']}')");
+		$globals->db->query("insert into langues_ins (uid,lid,level) VALUES('{$_SESSION['uid']}','{$_REQUEST['langue_id']}','{$_REQUEST['langue_level']}')");
 	}
 }
 
 if(isset($_REQUEST['comppros_op']) && !$no_update_bd){
 	if($_REQUEST['comppros_op']=='retirer'){
-		mysql_query("delete from competences_ins where uid='{$_SESSION['uid']}' and cid='{$_REQUEST['comppros_id']}'");
+		$globals->db->query("delete from competences_ins where uid='{$_SESSION['uid']}' and cid='{$_REQUEST['comppros_id']}'");
 	}
 	else if($_REQUEST['comppros_op'] == 'ajouter'){
 		if(isset($_REQUEST['comppros_id']) && ($_REQUEST['comppros_id'] != ''))
-		mysql_query("insert into competences_ins (uid,cid,level) VALUES('{$_SESSION['uid']}','{$_REQUEST['comppros_id']}','{$_REQUEST['comppros_level']}')");
+		$globals->db->query("insert into competences_ins (uid,cid,level) VALUES('{$_SESSION['uid']}','{$_REQUEST['comppros_id']}','{$_REQUEST['comppros_level']}')");
 	}
 }
 
@@ -106,7 +106,7 @@ $nb_cpro_max = 20;
 $page->assign('nb_lg_max', $nb_lg_max);
 $page->assign('nb_cpro_max', $nb_cpro_max);
 
-$res = mysql_query("SELECT ld.id, ld.langue_fr, li.level from langues_ins AS li, langues_def AS ld "
+$res = $globals->db->query("SELECT ld.id, ld.langue_fr, li.level from langues_ins AS li, langues_def AS ld "
                ."where (li.lid=ld.id and li.uid='{$_SESSION['uid']}') LIMIT $nb_lg_max");
 
 $nb_lg = mysql_num_rows($res);
@@ -119,7 +119,7 @@ $page->assign_by_ref('langue_id', $langue_id);
 $page->assign_by_ref('langue_name', $langue_name);
 $page->assign_by_ref('langue_level', $langue_level);
 
-$res = mysql_query("SELECT cd.id, cd.text_fr, ci.level from competences_ins AS ci, competences_def AS cd "
+$res = $globals->db->query("SELECT cd.id, cd.text_fr, ci.level from competences_ins AS ci, competences_def AS cd "
                ."where (ci.cid=cd.id and ci.uid='{$_SESSION['uid']}') LIMIT $nb_cpro_max");
 
 $nb_cpro = mysql_num_rows($res);
@@ -144,7 +144,7 @@ $langues_levels = Array(
 );
 $page->assign_by_ref('langues_level',$langues_level);
 
-$res = mysql_query("SELECT id, langue_fr FROM langues_def");
+$res = $globals->db->query("SELECT id, langue_fr FROM langues_def");
 //echo mysql_error();
 
 while(list($tmp_lid, $tmp_lg_fr) = mysql_fetch_row($res)){
@@ -159,7 +159,7 @@ $comppros_levels = Array(
 );
 $page->assign_by_ref('comppros_level',$comppros_level);
 
-$res = mysql_query("SELECT id, text_fr, FIND_IN_SET('titre',flags) FROM competences_def");
+$res = $globals->db->query("SELECT id, text_fr, FIND_IN_SET('titre',flags) FROM competences_def");
 //echo mysql_error();
 
 while(list($tmp_id, $tmp_text_fr, $tmp_title) = mysql_fetch_row($res)){

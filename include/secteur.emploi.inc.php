@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: secteur.emploi.inc.php,v 1.3 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: secteur.emploi.inc.php,v 1.4 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
 function select_secteur($secteur){
 	if($secteur == '') $secteur = -1;
 	echo "<option value=\"\" ". (($secteur == '')?"selected='selected'":"") .">&nbsp;</option>\n";
-	$res = mysql_query("SELECT id, label FROM emploi_secteur");
+	$res = $globals->db->query("SELECT id, label FROM emploi_secteur");
 	while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)){
 		echo "<option value=\"$tmp_id\" " . (($secteur == $tmp_id)?"selected='selected'":"") . ">$tmp_label</option>\n";
 	}
@@ -35,7 +35,7 @@ function select_secteur($secteur){
 function select_ss_secteur($secteur,$ss_secteur){
 	if($secteur != ''){
 		echo "<option value=\"\">&nbsp;</option>\n";
-		$res = mysql_query("SELECT id, label FROM emploi_ss_secteur WHERE secteur = '$secteur'");
+		$res = $globals->db->query("SELECT id, label FROM emploi_ss_secteur WHERE secteur = '$secteur'");
 		while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)){
 			echo "<option value=\"$tmp_id\" ". (($ss_secteur == $tmp_id)?"selected='selected'":"") .">$tmp_label</option>\n";
 		}

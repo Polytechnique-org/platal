@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: fiche.php,v 1.6 2004-08-31 13:59:42 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -59,7 +59,7 @@ $reqsql = "SELECT u.prenom, u.nom, u.epouse, nationalites.text"
   ." LEFT  JOIN photo as p ON(p.uid = u.user_id)"
 // conversion du username en user_id si nécessaire
   .$where_clause;
-$result = mysql_query($reqsql);
+$result = $globals->db->query($reqsql);
 
 if (mysql_num_rows($result)!=1)
         exit;
@@ -129,7 +129,7 @@ $reqsql =
    ORDER BY e.entrid
    ";
 
-$result = mysql_query($reqsql);
+$result = $globals->db->query($reqsql);
 
 $i = 0;
 while(list($adr_pro[$i]['entreprise'], $adr_pro[$i]['secteur'], $adr_pro[$i]['ss_secteur'],
@@ -165,7 +165,7 @@ $reqsql =
     WHERE uid=$user_id AND NOT FIND_IN_SET('pro',a.statut)
     ORDER BY NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
 
-$result = mysql_query($reqsql);
+$result = $globals->db->query($reqsql);
 
 $nbadr=mysql_num_rows($result);
 
@@ -190,7 +190,7 @@ mysql_free_result($result);
 
 
 // reformatage binets
-$result = mysql_query("SELECT text
+$result = $globals->db->query("SELECT text
                        FROM binets_ins
                        LEFT JOIN binets_def
                        ON binets_ins.binet_id = binets_def.id
@@ -204,7 +204,7 @@ mysql_free_result($result);
 $page->assign('binets', $binets);
 
 // reformatage Groupes X
-$result = mysql_query("SELECT text, url
+$result = $globals->db->query("SELECT text, url
                        FROM groupesx_ins
 		       LEFT JOIN groupesx_def ON groupesx_ins.gid = groupesx_def.id
 		       WHERE guid = '$user_id'");
@@ -219,7 +219,7 @@ mysql_free_result($result);
 $page->assign('groupes', $gxs);
 
 // reformatage appli
-$result = mysql_query("SELECT applis_def.text, applis_def.url, applis_ins.type
+$result = $globals->db->query("SELECT applis_def.text, applis_def.url, applis_ins.type
                        FROM applis_ins
 		       INNER JOIN applis_def ON applis_def.id = applis_ins.aid
 		       WHERE uid='$user_id'

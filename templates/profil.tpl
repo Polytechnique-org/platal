@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.tpl,v 1.7 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: profil.tpl,v 1.8 2004-08-31 13:59:44 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,13 +28,7 @@
 {/if}
 {if $etat_naissance == '' || $etat_naissance == 'ok'}
 
-{if $profil_error}
-<div class="erreur">
-  {$profil_error}
-</div>
-{else}
 <p>Tu peux consulter <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">l'état actuel de ta fiche</a> tel qu'elle apparaîtra pour un camarade.</p>
-{/if}
 
 <form action="{$smarty.server.PHP_SELF}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0">
@@ -64,7 +58,7 @@
               </td>
               {if $onglet != $onglet_last}
               <td>
-                <input type="submit" value="Valider et passer au prochain onglet" name="modifier+suivant" />
+                <input type="submit" value="Valider et passer au prochain onglet" name="suivant" />
               </td>
               {/if}
             </tr>

@@ -18,18 +18,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: update_general.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: update_general.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 if ($appli_id1>0)
-     mysql_query("replace into applis_ins set uid={$_SESSION['uid']},aid=$appli_id1,type='$appli_type1',ordre=0");
+     $globals->db->query("replace into applis_ins set uid={$_SESSION['uid']},aid=$appli_id1,type='$appli_type1',ordre=0");
 else
-     mysql_query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=0");
+     $globals->db->query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=0");
 
 if ($appli_id2>0)
-     mysql_query("replace into applis_ins set uid={$_SESSION['uid']},aid=$appli_id2,type='$appli_type2',ordre=1");
+     $globals->db->query("replace into applis_ins set uid={$_SESSION['uid']},aid=$appli_id2,type='$appli_type2',ordre=1");
 else
-     mysql_query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=1");
+     $globals->db->query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=1");
 
 $sql = "UPDATE auth_user_md5 SET ".
 // champs calculés ou vérifés
@@ -39,6 +39,6 @@ $sql = "UPDATE auth_user_md5 SET ".
 "libre='".put_in_db($libre)."' WHERE user_id={$_SESSION['uid']}";
 
 
-mysql_query($sql);
+$globals->db->query($sql);
 
 ?>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_adresses.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: profil_adresses.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -39,7 +39,7 @@ function is_adr_empty($adrid){
 }
 
 function delete_address($adrid, $in_request_array = false){
-    mysql_query("DELETE FROM adresses WHERE uid = ".$_SESSION["uid"]." AND adrid = '$adrid'");
+    $globals->db->query("DELETE FROM adresses WHERE uid = ".$_SESSION["uid"]." AND adrid = '$adrid'");
     if($in_request_array == true){
       unset($_REQUEST['adrid'][$adrid]);
     }
@@ -59,7 +59,7 @@ for($i = 1; $i <= $nb_adr_max; $i++){
 $sql_order = '';
 
 //recuperation des adrid
-$res = mysql_query("SELECT adrid FROM adresses WHERE uid = {$_SESSION['uid']} AND NOT FIND_IN_SET('pro',statut) ".$sql_order);
+$res = $globals->db->query("SELECT adrid FROM adresses WHERE uid = {$_SESSION['uid']} AND NOT FIND_IN_SET('pro',statut) ".$sql_order);
 $i = 1;
 while(list($adrids[$i]) = mysql_fetch_row($res)){
   $adresses[$adrids[$i]]['adrid'] = $adrids[$i];
@@ -69,7 +69,7 @@ while(list($adrids[$i]) = mysql_fetch_row($res)){
 $page->assign_by_ref('adresses', $adresses);
 
 //recuperation des donnees de la bd
-$res = mysql_query(
+$res = $globals->db->query(
 	"SELECT
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
