@@ -91,7 +91,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       <td></td>
       <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour que le site se souvienne de ce navigateur.<br />
         Il n'est pas conseillé de cocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
-        <input type="checkbox" name="remember" /> Etablir une connexion permanente
+        <input type="checkbox" name="remember" /> Garder l'accès aux services après déconnexion
       </td>
     </tr>
     <tr>

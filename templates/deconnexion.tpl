@@ -20,15 +20,11 @@
 
 
 <h1>
-  Déconnexion effectuée
+  Déconnexion {if $smarty.cookies.ORGaccess}partielle {/if}effectuée
 </h1>
 <p>
 La date de déconnexion servira à afficher les informations que tu n'auras
 pas encore vues d'ici ta prochaine connexion.
-</p>
-<p>
-D'autre part, toutes les données liées à ta connexion ont été effacées sur
-ton navigateur, et en particulier les formulaires postés.
 </p>
 {if $smarty.cookies.ORGaccess}
 <p>
