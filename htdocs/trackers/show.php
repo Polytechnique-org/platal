@@ -5,7 +5,7 @@ require('tracker.inc.php');
 
 $tracker = new Tracker($_GET['tr_id']);
 
-if(empty($tracker->id) || !$tracker->perms_ok())
+if(empty($tracker->id) || !$tracker->read_perms_ok())
     $page->failure();
 
 $page->assign('tracker', $tracker);

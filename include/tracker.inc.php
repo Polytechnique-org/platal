@@ -65,10 +65,30 @@ class Tracker {
                      WHERE r.rq_id=f.rq_id AND r.tr_id='{$this->id}'");
     }
 
-    function perms_ok() {
+    function post($sujet, $text, $prio, $status) {
+        mysql_query("INSERT INTO trackers.requests
+                     SET    tr_id='{$this->id}',user_id='{$_SESSION['uid']}',
+                            admin_id='-1',st_id='$status',pri='$prio',
+                            summary='$sujet',texte='$text'");
+        $id = mysql_insert_id();
+        # TODO : mail
+        return $id;
+    }
+
+    function read_perms_ok() {
         if(has_perms())
             return true;
         if(logged() && $this->perms == 'auth')
+            return true;
+        if($this->perms=="public")
+            return true;
+        return false;
+    }
+    
+    function post_perms_ok() {
+        if(has_perms())
+            return true;
+        if(identified() && $this->perms == 'auth')
             return true;
         if($this->perms=="public")
             return true;
@@ -107,4 +127,5 @@ function tracker_update($name,$desc,$perms,$ml_id,$bits,$pris, $tr_id=0) {
         return mysql_insert_id();
     }
 }
+
 ?>
