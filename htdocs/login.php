@@ -75,8 +75,5 @@ $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS
       ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
 $page->assign('evenement', $globals->xdb->iterator($sql, $promo, $promo));
 
-$page->assign('toto',"");
-$page->assign('tata',"1");
-
 $page->run();
 ?>
