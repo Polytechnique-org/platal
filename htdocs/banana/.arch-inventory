@@ -1,1 +1,1 @@
-precious ^(img|locales|spool)
+precious ^(img|spool|xface.php)
