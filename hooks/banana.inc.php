@@ -62,13 +62,13 @@ function banana_subscribe($forlife, $uid, $promo, $password)
     $p_for = "xorg.promo.x$promo";
     
     // récupération de l'id du forum promo
-    $res = $globals->db->query("SELECT fid FROM forums.list WHERE nom='$p_for'");
-    if (mysql_num_rows($res) == 1) {
+    $res = $globals->xdb->query("SELECT fid FROM forums.list WHERE nom={?}", $p_for);
+    if ($res->numRows()) {
         $cible[] = $p_for;
     } else { // pas de forum promo, il faut le créer
-	$req_au=$globals->db->query("SELECT SUM(perms IN ('admin','user') AND deces=0),COUNT(*) FROM auth_user_md5 WHERE promo='$promo'");
-	list($effau, $effid) = mysql_fetch_row($req_au);
-        mysql_free_result($req_au);
+	$res = $globals->xdb->query("SELECT  SUM(perms IN ('admin','user') AND deces=0),COUNT(*)
+                                       FROM  auth_user_md5 WHERE promo={?}", $promo);
+	list($effau, $effid) = $res->fetchOneRow();
 	if (5*$effau>$effid) { // + de 20% d'inscrits
 	    require_once("xorg.mailer.inc.php");
 	    $mymail = new XOrgMailer('forums.promo.tpl');
@@ -76,15 +76,12 @@ function banana_subscribe($forlife, $uid, $promo, $password)
 	    $mymail->send();
 	}
     }
-    mysql_free_result($res);
 
     echo "$promo, $uid, ";
     var_export($cible);
     while (list ($key, $val) = each ($cible)) {
-        $globals->db->query("INSERT INTO  forums.abos (fid,uid)
-                                  SELECT  fid,'$uid'
-                                    FROM  forums.list
-                                   WHERE  nom='$val'");
+        $globals->xdb->execute("INSERT INTO  forums.abos (fid,uid)
+                                     SELECT  fid,{?} FROM forums.list WHERE nom={?}", $uid, $val);
     }
 }
 
