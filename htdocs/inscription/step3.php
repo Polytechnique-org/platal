@@ -60,21 +60,18 @@ $birth = sprintf("%s-%s-%s", substr(Env::get('naissance'),4,4),
         substr(Env::get('naissance'),2,2), substr(Env::get('naissance'),0,2));
 
 // nouvelle inscription
-$sql="REPLACE INTO  en_cours
-	       SET  ins_id='$ins_id', password='$password', matricule='$matricule', promo='$promo',
-                    nom='".addslashes($nom)."', prenom='".addslashes($prenom)."', email='".Env::get('email')."',
-	            naissance='$birth', date='$date', nationalite='".Env::get('nationalite')."',
-                    appli_id1='".Env::get('appli_id1')."', appli_type1='".Env::get('appli_type1')."',
-                    appli_id2='".Env::get('appli_id2')."', appli_type2='".Env::get('appli_type2')."',
-                    loginbis='$mailorg', username='$forlife', homonyme='$homonyme'";
-$globals->db->query($sql);
-
-$globals->db->query("UPDATE auth_user_md5 SET last_known_email='".Env::get('email')."' WHERE matricule = $matricule");
+$globals->xdb->execute(
+        "REPLACE INTO  en_cours (ins_id, password, matricule, promo, nom, prenom, email, naissance, date, nationalite,
+                                 appli_id1, appli_type1, appli_id2, appli_type2, loginbis, username, homonyme)
+               VALUES  ({?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?},{?})"
+        $ins_id, $password, $matricule, $promo, $nom, $prenom, Env::get('email'), $birth,
+        $date, Env::get('nationalite'), Env::get('appli_id1'), Env::get('appli_type1'),
+        Env::get('appli_id2'), Env::get('appli_type2'), $mailorg, $forlife, $homonyme
+);
+$globals->db->execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', Env::get('email'), $matricule);
 // si on venait de la page maj.php, on met a jour la table envoidirect
-if (Env::has('envoidirect')) {
-  if (Env::get('envoidirect')) {
-    $globals->db->query("UPDATE envoidirect SET date_succes=NOW() WHERE uid='".Env::get('envoidirect')."'");
-  }
+if (Env::get('envoidirect')) {
+    $globals->xdb->execute('UPDATE envoidirect SET date_succes=NOW() WHERE uid={?}', Env::get('envoidirect'));
 }
 
 require_once('xorg.mailer.inc.php');

@@ -26,11 +26,11 @@ require_once("user.func.inc.php");
 require_once('xorg.mailer.inc.php');
 
 if (Env::has('ref')) {
-    $sql = "SELECT  username,homonyme,loginbis,matricule,promo,password,
-	            nom,prenom,nationalite,email,naissance,date,
-	            appli_id1,appli_type1,appli_id2,appli_type2
-	      FROM  en_cours WHERE ins_id='".Env::get('ref')."'";
-    $res = $globals->db->query($sql);
+    $globals->xdb->execute(
+            "SELECT  username,homonyme,loginbis,matricule,promo,password,
+                     nom,prenom,nationalite,email,naissance,date,
+                     appli_id1,appli_type1,appli_id2,appli_type2
+               FROM  en_cours WHERE ins_id={?}", Env::get('ref'));
 }
 
 // vérifions que la référence de l'utilisateur est une référence existante dans "en_cours"
@@ -54,21 +54,18 @@ $page->assign('forlife',$forlife);
 
 // vérifions qu'il n'y a pas déjà une inscription dans le passé
 // ce qui est courant car les double-clic...
-$res = $globals->db->query("SELECT alias FROM aliases WHERE alias='$forlife'");
-if (mysql_num_rows($res))  {
+$res = $globals->xdb->query('SELECT alias FROM aliases WHERE alias={?}', $forlife);
+if ($res->numRows()) {
     $page->kill("Tu es déjà inscrit à polytechnique.org.  Tu as sûrement cliqué deux fois sur le même lien de
             référence ou effectué un double clic.  Consultes tes mails pour obtenir ton identifiant et ton
             mot de passe.");
 }
 
-$sql = "UPDATE auth_user_md5 SET password='$password', nationalite='$nationalite', perms='user',
-        date='$date', naissance='$naissance', date_ins = NULL WHERE matricule='$matricule'";
-$globals->db->query($sql);
-$sql = "REPLACE INTO  auth_user_quick (user_id)
-              SELECT  user_id
-                FROM  auth_user_md5
-               WHERE  matricule='$matricule'";
-$globals->db->query($sql);
+$globals->xdb->execute('UPDATE  auth_user_md5
+                           SET  password={?}, nationalite={?}, perms='user',
+                                date={?}, naissance={?}, date_ins = NULL
+                         WHERE  matricule={?}', $password, $nationalite, $date, $naissance, $matricule);
+$globals->xdb->execute('REPLACE INTO auth_user_quick (user_id) SELECT user_id FROM auth_user_md5 WHERE matricule={?}', $matricule);
 
 // on vérifie qu'il n'y a pas eu d'erreur
 if ($globals->db->err()) {
@@ -78,24 +75,23 @@ if ($globals->db->err()) {
             <a href="mailto:webmestre@polytechnique.org">webmaster@polytechnique.org</a>');
 }
 // ok, pas d'erreur, on continue
-$resbis=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule='$matricule'");
-if ((list($uid) = mysql_fetch_row($resbis)) === false) {
+$res = $globals->xdb->query('SELECT user_id FROM auth_user_md5 WHERE matricule={?}', $matricule);
+$uid = $res->fetchOneCell();
+if (empty($uid)) {
     $page->kill($globals->db->error() .  '<br />
             Une erreur s\'est produite lors de la mise en place définitive de ton inscription,
             essaie à nouveau, si cela ne fonctionne toujours pas, envoie un mail à
             <a href="mailto:webmestre@polytechnique.org">webmaster@polytechnique.org</a>');
 }
 
-$globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$forlife','a_vie')");
+$globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "a_vie")', $uid, $forlife);
 if($alias) {
-    // Les alias supplémentaires sont prenom.nom.NN et, si pas d'homonymie, prenom.nom.NN
+    // Les alias supplémentaires sont prenom.nom.NN et, si pas d'homonymie, prenom.nom
     $p2 = sprintf("%02u",($promo%100));
-    // Vérification d'homonymie
     if(!$homonyme) {
-      // si homonyme, on a déjà calculé l'unique alias possible : prenom.nom.NN, qui se trouve dans $alias
-      $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias.$p2','alias')");
+        $globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "alias")', $uid, $alias);
     }
-    $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias','alias')");
+    $globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "alias")', $uid, "$alias.$p2");
 }
 
 // on cree un objet logger et on log l'inscription
@@ -108,17 +104,20 @@ $redirect = new Redirect($uid);
 $redirect->add_email($email);
 fix_bestalias($uid);
 /****************** ajout des formations ****************/
-if (($appli_id1>0)&&($appli_type1))
-    $globals->db->query("insert into applis_ins set uid=$uid,aid=$appli_id1,type='$appli_type1',ordre=0");
-if (($appli_id2>0)&&($appli_type2))
-    $globals->db->query("insert into applis_ins set uid=$uid,aid=$appli_id2,type='$appli_type2',ordre=1");
+if (($appli_id1>0)&&($appli_type1)) {
+    $globals->xdb->execute('INSERT INTO applis_ins SET uid={?},aid={?},type={?},ordre=0', $uid, $appli_id1, $appli_type1);
+}
+if (($appli_id2>0)&&($appli_type2)) {
+    $globals->xdb->execute('INSERT INTO applis_ins SET uid={?},aid={?},type={?},ordre=1', $uid, $appli_id2, $appli_type2);
+}
 /****************** envoi d'un mail au démarcheur ***************/
 /* si la personne a été marketingnisée, alors on prévient son démarcheur */
-$res = $globals->db->query("SELECT  DISTINCT a.alias,e.date_envoi
-                              FROM  envoidirect AS e
-                        INNER JOIN  aliases     AS a ON ( a.id = e.sender AND a.type='a_vie' )
-                             WHERE  e.matricule = '$matricule'");
-while (list($sender_usern, $sender_date) = mysql_fetch_row($res)) {
+$res = $globals->xdb->iterRow(
+        "SELECT  DISTINCT a.alias,e.date_envoi
+           FROM  envoidirect AS e
+     INNER JOIN  aliases     AS a ON ( a.id = e.sender AND a.type='a_vie' )
+          WHERE  e.matricule = {?}", $matricule);
+while (list($sender_usern, $sender_date) = $res->next()) {
     $mymail = new XOrgMailer('marketing.thanks.tpl');
     $mymail->assign('to', $sender_usern);
     $mymail->assign('prenom', $prenom);
@@ -128,7 +127,7 @@ while (list($sender_usern, $sender_date) = mysql_fetch_row($res)) {
 }
 
 // effacer la pré-inscription devenue 
-$globals->db->query("update en_cours set loginbis='INSCRIT' WHERE username='$forlife'");
+$globals->xdb->execute('UPDATE en_cours SET loginbis="INSCRIT" WHERE username={?}', $forlife);
 
 // insérer l'inscription dans la table des notifications
 require_once('notifs.inc.php');
@@ -137,7 +136,7 @@ inscription_notifs_base($uid);
 
 // insérer une ligne dans user_changes pour que les coordonnées complètes
 // soient envoyées a l'AX
-$globals->db->query("insert into user_changes values ($uid)");
+$globals->xdb->execute('insert into user_changes values ({?})', $uid);
 
 // envoi du mail à l'inscrit
 $mymail = new XOrgMailer('inscription.reussie.tpl');
@@ -146,7 +145,7 @@ $mymail->assign('prenom', $prenom);
 $mymail->send();
 
 // s'il est dans la table envoidirect, on le marque comme inscrit
-$globals->db->query("update envoidirect set date_succes=NOW() where matricule = $matricule");
+$globals->xdb->execute('UPDATE envoidirect SET date_succes=NOW() WHERE matricule = {?}', $matricule);
 $globals->hook->subscribe($forlife, $uid, $promo, $password, true);
 
 start_connexion($uid,false);

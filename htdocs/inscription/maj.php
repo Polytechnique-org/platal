@@ -22,9 +22,8 @@
 require_once("xorg.inc.php");
 
 if (Env::has('n')) {
-    $sql    = "SELECT * FROM envoidirect WHERE uid='".Env::get('n')."'";
-    $result = $globals->db->query($sql);
-    if ($ligne  = mysql_fetch_assoc($result)) {
+    $res = $globals->xdb->query('SELECT * FROM envoidirect WHERE uid={?}', Env::get('n'));
+    if ($ligne = $res->fetchOneRow()) {
 
         if (!Env::has('charte')) {
             new_skinned_page('inscription/step1a.tpl', AUTH_PUBLIC);
