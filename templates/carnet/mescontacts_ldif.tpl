@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.tpl,v 1.4 2004-09-02 23:55:57 x2000habouzit Exp $
+        $Id: mescontacts_ldif.tpl,v 1.1 2004-11-04 15:33:28 x2000habouzit Exp $
  ***************************************************************************}
 
 {foreach item=c from=$contacts}

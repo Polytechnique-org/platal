@@ -6,7 +6,8 @@ if(logged()) {
         'Personnaliser' => Array(
             'Mes emails' => 'emails.php' ,
             'Mon profil' => 'profil.php' ,
-            'Mes contacts' => 'mescontacts.php' ,
+            'Mes contacts' => 'carnet/mescontacts.php' ,
+            'Mon carnet' => 'carnet/' ,
             'Mon mot de passe' => 'motdepassemd5.php' ,
             'Mes préférences' => 'preferences.php' 
         ),

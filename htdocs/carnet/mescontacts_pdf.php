@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_pdf.php,v 1.4 2004-11-02 07:13:08 x2000habouzit Exp $
+        $Id: mescontacts_pdf.php,v 1.1 2004-11-04 15:33:27 x2000habouzit Exp $
  ***************************************************************************/
 
 #
-# $Id: mescontacts_pdf.php,v 1.4 2004-11-02 07:13:08 x2000habouzit Exp $
+# $Id: mescontacts_pdf.php,v 1.1 2004-11-04 15:33:27 x2000habouzit Exp $
 #
 
 require("auto.prepend.inc.php");

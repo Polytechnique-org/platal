@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: plan.tpl,v 1.3 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: plan.tpl,v 1.4 2004-11-04 15:33:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -67,13 +67,13 @@
   Cette page permet de modifier les informations publiques te concernant, comme tes coordonnées url=ta formation, etc...
   {/page}
 
-  {page title="Mes contacts" url="mescontacts.php"|url}
+  {page title="Mon carnet" url="carnet/"|url}
   A travers cette page tu peux gérer la liste de tes contacts X.  Cela te permettra d'accéder
   plus facilement à ces personnes sur les pages de ce site. Cette liste est aussi disponible en
   format imprimable.
   {/page}
 
-  {page title="Mes contacts en version imprimable (PDF)" url="mescontacts_pdf.php"|url}
+  {page title="Mes contacts en version imprimable (PDF)" url="carnet/mescontacts_pdf.php"|url}
   Cette page crée un document PDF imprimable avec la liste de tes contacts. Tu dois avoir Acrobat
   sur ton ordinateur pour pouvoir bénéficier de ce service. Si tu n'as pas ce logiciel, tu peux
   le télécharger gratuitement sur le site d'Adobe.

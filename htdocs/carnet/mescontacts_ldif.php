@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.php,v 1.11 2004-10-21 12:26:12 x2000habouzit Exp $
+        $Id: mescontacts_ldif.php,v 1.1 2004-11-04 15:33:27 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_nonhtml_page('mescontacts_ldif.tpl', AUTH_COOKIE);
+new_nonhtml_page('carnet/mescontacts_ldif.tpl', AUTH_COOKIE);
 
 function ensure_adr(&$table) {
     $trim = Array();

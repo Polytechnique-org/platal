@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.25 2004-11-02 07:48:40 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.1 2004-11-04 15:33:27 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page("mescontacts.tpl",AUTH_COOKIE,true);
+new_skinned_page("carnet/mescontacts.tpl",AUTH_COOKIE,true);
 require("applis.func.inc.php");
 
 // si l'utilisateur demande le retrait de qqun de sa liste

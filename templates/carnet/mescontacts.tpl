@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.12 2004-10-29 02:04:23 x2000habouzit Exp $
+        $Id: mescontacts.tpl,v 1.1 2004-11-04 15:33:28 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,7 @@
 </form>
 <p>
   Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
-  il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
+  il te suffit de cliquer sur l'icône <img src="{"images/ajouter.gif"|url}" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>  
 
 {if $nb_contacts || $trombi}
