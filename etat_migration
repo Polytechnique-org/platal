@@ -7,7 +7,7 @@
 | xx  -> en templates |
 | xxx -> anonyme      |
 | ;!  -> postponned   |
-| --- -> supprimée    |
+| x!! -> supprimée    |
 | xx! -> non modifiée |
 `---------------------'
 
@@ -94,10 +94,9 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | trombipromo.php							  | 
 ;	  | x.php									  | 
 ------+-[ admin ]---------------------------------+----------------
-;!	  | admin/logger.php						  | \
-;!	  | admin/logger_actions.php				  |  \ Utiliser les classes de Jeremy, donc pour plus tard
-;!	  | admin/logger_events.php					  |  /
-;!	  | admin/logger_user.php					  | /
+;!	  | admin/logger.php						  | 
+;!	  | admin/logger_events.php					  | 
+;!	  | admin/logger_user.php					  | 
 ------+-[ news ]----------------------------------+----------------
 ;!	  | news/abonnements.php					  | \
 ;!	  | news/article.php						  |  |
@@ -128,15 +127,16 @@ xx	  | admin/deces_promo.php					  | -
 xx	  | admin/FormatePrenomNOM2.php				  | scripts/
 xx	  | admin/FormatePrenomNOM.php				  | scripts/
 xx	  | admin/gerer_applis.php					  | -
-xx	  | admin/gerer_auth-groupex.php			  |
-xx	  | admin/gerer_binets.php					  |
-xx	  | admin/gerer_coupure.php					  |
-xx	  | admin/gerer_groupesx.php				  |
-xx	  | admin/gerer_listes.php					  |
-xx	  | admin/gerer_paiement.php				  |
-xx	  | admin/gerer_skins.php					  |
+xx	  | admin/gerer_auth-groupex.php			  | -
+xx	  | admin/gerer_binets.php					  | -
+xx	  | admin/gerer_coupure.php					  | -
+xx	  | admin/gerer_groupesx.php				  | -
+xx	  | admin/gerer_listes.php					  | -
+xx	  | admin/gerer_paiement.php				  | -
+xx	  | admin/gerer_skins.php					  | -
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
 xx	  | admin/index.php							  | -
+xx	  | admin/logger_actions.php				  | -
 xx	  | admin/newsletter_archi.php				  | -
 xx	  | admin/newsletter_pattecassee.php		  | -
 xx	  | admin/newsletter_prep.php				  | -
@@ -196,10 +196,10 @@ xx	  | trezo/gere_operations.php				  | -
 xx	  | trezo/index.php							  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
----	  | admin/newsletter_form.inc.php			  | -
----	  | admin/statut_antispam.php				  | inutilisée et même pas en var superglobales ...
----	  | aide.php								  | --> faq.php
----	  | auth-wiki.php							  | obsolete
----	  | trackers/tracker_delete.php				  | -
----	  | trezo/trezo.inc.php						  | -
+x!!	  | admin/newsletter_form.inc.php			  | -
+x!!	  | admin/statut_antispam.php				  | inutilisée et même pas en var superglobales ...
+x!!	  | aide.php								  | --> faq.php
+x!!	  | auth-wiki.php							  | obsolete
+x!!	  | trackers/tracker_delete.php				  | -
+x!!	  | trezo/trezo.inc.php						  | -
 ------+-------------------------------------------+----------------
