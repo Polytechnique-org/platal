@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: carva_redirect.php,v 1.5 2004-10-09 14:44:05 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -47,11 +47,10 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
     }
 }
 
-$result = $globals->db->query("select alias, redirecturl from auth_user_md5 where user_id={$_SESSION['uid']}");
-list($alias, $carva) = mysql_fetch_row($result);
+$result = $globals->db->query("select redirecturl from auth_user_md5 where user_id={$_SESSION['uid']}");
+list($carva) = mysql_fetch_row($result);
 mysql_free_result($result);
 $page->assign('carva', $carva);
-$page->assign('alias', $alias);
 
 $page->run();
 ?>
