@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auth-groupex.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: auth-groupex.php,v 1.5 2004-10-06 08:26:05 x2000habouzit Exp $
  ***************************************************************************/
 
 $gpex_pass = $_GET["pass"];
@@ -51,7 +51,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
         /* on verifie qu'on n'a pas demandé une
            variable inexistante ! */
         if (isset($_SESSION[$val])) {
-            $tohash .= $_SESSION[$val];
+            $tohash .= stripslashes($_SESSION[$val]);
         }
     }
     $tohash .= "1";
