@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.12 2004-10-12 17:36:24 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.13 2004-10-12 18:27:17 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,9 +28,19 @@ require("applis.func.inc.php");
 // si l'utilisateur demande le retrait de qqun de sa liste
 if (isset($_REQUEST['action'])) {
     if($_REQUEST['action']=='retirer') {
-	
-	if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$_REQUEST['user']}'"))
-	    $page->assign('erreur', "Contact retiré !\n");
+	$user = $_REQUEST['user'];
+	if (preg_match('/^\d+$/', $user)) {
+	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'"))
+		$page->assign('erreur', "Contact retiré !\n");
+	} else {
+	    if ($globals->db->query(
+		"DELETE FROM  contacts
+		       USING  contacts AS c
+                  INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
+		       WHERE  c.uid = '{$_SESSION['uid']}' AND a.alias='$user'"
+		   ))
+		$page->assign('erreur', "Contact retiré !\n");
+	}
 
         // si l'utilisateur demande l'ajout de qqun à sa liste
     } elseif ($_REQUEST["action"]=="ajouter") {
