@@ -96,47 +96,25 @@ ________EOF;
         if($no_update_bd) return false;
         
         if(empty($_REQUEST['submit'])
-                || ($_REQUEST['submit']!="Accepter"    && $_REQUEST['submit']!="Refuser"))
+                || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
             return false;
             
-        $message = "Chère camarade,\n\n";
-        
+        require_once("tpl.mailer.inc.php");
+        $mymail = new TplMailer('valid.epouses.tpl');
+        $mymail->assign('username', $this->username);
+
         if($_REQUEST['submit']=="Accepter") {
-            $message .=
-                "  La demande de changement de nom de mariage que tu as demandée vient".
-                " d'être effectuée.\n\n";
-
-            if ($this->oldepouse) {
-                $message .= 
-                    "  Les alias {$this->oldalias}@polytechnique.org et ".
-                    "{$this->oldalias}@m4x.org ont été supprimés.\n\n";
-            }
-
-            if ($this->epouse) {
-                $message .=
-                    "  De plus, les alias ".$this->alias."@polytechnique.org et ".
-                    $this->alias."@m4x.org ont été créés.\n\n";
-            }
+            $mymail->assign('answer','yes');
+            if($this->oldepouse)
+                $mymail->assign('oldepouse',$this->oldalias);
+            $mymail->assign('epouse',$this->alias);
             $this->commit();
         } else { // c'était donc Refuser
-            $message .=
-                "La demande de changement de nom de mariage que tu avais faite a été refusée.\n";
-            if ($_REQUEST["motif"] != "" )
-                $message .= "\nLa raison de ce refus est : \n".
-                    stripslashes($_REQUEST["motif"])."\n\n";
+            $mymail->assign('answer','no');
+            if (isset($_REQUEST["motif"]))
+                $_REQUEST["motif"] = stripslashes($_REQUEST["motif"]);
         }
-        
-        $message .=
-            "Cordialement,\n".
-            "L'équipe X.org";
 
-        $message = wordwrap($message,78);  
-        require_once("diogenes.mailer.inc.php");
-        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+epouse@polytechnique.org>',
-                $this->username."@polytechnique.org",
-                "[Polytechnique.org/EPOUSE] Changement de nom de mariage de ".$this->username,
-                false, "validation+epouse@m4x.org");
-        $mymail->setBody($message);
         $mymail->send();
 
         $this->clean();
