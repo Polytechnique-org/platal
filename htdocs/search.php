@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.22 2004-10-12 19:54:35 x2000habouzit Exp $
+        $Id: search.php,v 1.23 2004-10-12 21:22:44 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -69,28 +69,14 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        IF(u.promo!="",u.promo,i.promo) AS promo,
                        i.deces!=0 AS decede,
                        a.alias AS forlife,
-                       ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-                       ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-		       e.entreprise, es.label AS secteur, ef.label AS fonction,
-		       n.text AS nat,
-		       adr.ville, gp.pays, gr.name AS region,
+                       '.$globals->search_result_fields.'
                        c.uid AS contact
                  FROM  '.(($with_soundex)?'recherche_soundex':'recherche').'      AS r
            INNER JOIN  identification AS i   ON (i.matricule=r.matricule)
             LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
-            LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
-            LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
-            LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
-            LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
-	    LEFT JOIN  entreprises    AS e   ON (e.entrid = 1 AND e.uid = u.user_id)
-	    LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
-	    LEFT JOIN  emploi_naf     AS ef  ON (e.fonction = ef.id)
-	    LEFT JOIN  nationalites   AS n   ON (u.nationalite = n.id)
-	    LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\', adr.statut))
-	    LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
-	    LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
+            '.$globals->search_result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
              ORDER BY  '.(logged() && !empty($_POST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'

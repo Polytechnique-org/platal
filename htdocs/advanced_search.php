@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.11 2004-10-12 06:07:25 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.12 2004-10-12 21:22:44 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -114,18 +114,14 @@ else {
                        i.deces!=0 AS decede,
                        a.alias AS forlife,
                        u.date,
-                       ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-                       ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
+                       '.$globals->search_result_fields.'
                        c.uid AS contact
                  FROM  auth_user_md5  AS u
 	   '.$fields->get_select_statement().'
            INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
            INNER JOIN  identification AS i ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
-            LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
-            LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
-            LEFT  JOIN applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
-            LEFT  JOIN applis_def     AS ad1 ON (ad1.id = ai1.aid)
+            '.$globals->search_result_where_statement.'
                 '.(($where!='')?('WHERE '.$where):'').'
              ORDER BY  '.implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
