@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.32 2004-11-16 19:45:59 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.33 2004-11-16 21:02:46 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -259,7 +259,7 @@ EOF;
 	$mailer = new HermesMailer();
 	$mailer->setFrom("\"Lettre Mensuelle Polytechnique.org\" <info_newsletter@polytechnique.org>");
 	$mailer->setSubject($this->title());
-	$mailer->addTo("$prenom $nom <$forlife@polytechnique.org>");
+	$mailer->addTo("\"$prenom $nom\" <$forlife@polytechnique.org>");
 	$mailer->addHeader('Reply-To','info+nlp@polytechnique.org');
 	$mailer->setTxtBody($this->toText($prenom,$nom,$sex));
 	if($html) {

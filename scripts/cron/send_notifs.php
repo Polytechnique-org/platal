@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_notifs.php,v 1.2 2004-11-16 20:39:08 x2000habouzit Exp $
+        $Id: send_notifs.php,v 1.3 2004-11-16 21:02:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
@@ -54,7 +54,7 @@ foreach($all->_data as $u) {
     
     $mailer = new HermesMailer();
     $mailer->setFrom("Carnet Polytechnicien <support_carnet@polytechnique.org>");
-    $mailer->addTo("{$u['prenom']} {$u['nom']} <{$u['forlife']}@polytechnique.org>");
+    $mailer->addTo("\"{$u['prenom']} {$u['nom']}\" <{$u['forlife']}@polytechnique.org>");
     $mailer->setSubject("Notifications de la semaine ".date("W - Y"));
     $mailer->setTxtBody($text);
     $mailer->send();

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.php,v 1.5 2004-11-16 20:36:11 x2000habouzit Exp $
+        $Id: submit.php,v 1.6 2004-11-16 21:02:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -34,7 +34,7 @@ if(isset($_POST['see'])) {
     $nl->saveArticle($art);
 
     require("diogenes.hermes.inc.php");
-    $from = "{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']}) <{$_SESSION['forlife']}@polytechnique.org>";
+    $from = "\"{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']})\" <{$_SESSION['forlife']}@polytechnique.org>";
     $mailer = new HermesMailer();
     $mailer->setSubject("proposition d'article dans la NL");
     $mailer->setTo('Equipe Newsletter Polytechnique.org <info+nlp@polytechnique.org>');

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.7 2004-11-16 20:36:11 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.8 2004-11-16 21:02:45 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -53,7 +53,7 @@ $page->assign('baseurl',$baseurl);
 if ($target) {
     // from
     $cc = "support+homonyme@polytechnique.org";
-    $FROM = "Support Polytechnique.org <$cc>";
+    $FROM = "\"Support Polytechnique.org\" <$cc>";
     
     // on examine l'op a effectuer
     switch ($op) {

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.9 2004-11-16 20:36:12 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.10 2004-11-16 21:02:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("config.xorg.inc.php") ;
@@ -130,7 +130,7 @@ $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
 
 $mymail = new HermesMailer();
 $mymail->setFrom($conf_mail);
-$mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
+$mymail->addTo("\"$prenom $nom\" <$forlife@polytechnique.org>");
 $mymail->addCc($conf_mail);
 $mymail->setSubject($conf_title);
 $mymail->setTxtBody($conf_text);
