@@ -16,7 +16,7 @@
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ marketing ]-----------------------------+----------------
-;	  | admin/utilisateurs_identification.php	  | marketing/
+x	  | admin/utilisateurs_identification.php	  | marketing/
 ------+-[ inscription + mdp ]---------------------+----------------
 xx	  | tmpPWD.php								  | 
 ------+-[ listes ]--------------------------------+----------------
