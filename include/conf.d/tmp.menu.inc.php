@@ -15,9 +15,9 @@ $this->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',          'pattecassee.p
        
 $this->addPrivateEntry(XOM_GROUPS,   00, 'Annuaire',              'search.php');
 $this->addPrivateEntry(XOM_GROUPS,   10, 'Trombi promo',          'trombipromo.php');
-$this->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Professionnel', 'referent.php');
+$this->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',          'referent.php');
 $this->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',             'http://www.polytechnique.net/plan.php');
-$this->addPrivateEntry(XOM_GROUPS,   40, 'Sites Polytechniciens', 'http://www.polytechnique.net/');
+$this->addPrivateEntry(XOM_GROUPS,   40, 'Web Polytechnicien',    'http://www.polytechnique.net/');
 
 $this->addPrivateEntry(XOM_INFOS,    00, 'Lettres mensuelles',    'newsletter/');
 $this->addPrivateEntry(XOM_INFOS,    10, 'Documentations',        'docs/');

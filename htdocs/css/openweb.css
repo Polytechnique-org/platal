@@ -29,7 +29,7 @@ body {
     font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
     margin:2em 1%;
     padding:0;
-    font-size: 95%;
+    font-size: 9pt;
 }
 
 a:link, a:visited { color: #f60; background: transparent; }
@@ -93,7 +93,7 @@ p.error, span.error, p.erreur, span.erreur {
 
 h1 {
     color: #369;
-    font-size: 130%;
+    font-size: 140%;
     background: #f5f8fc;
     margin: 0em;
     border-bottom: 2px solid #369;
@@ -105,7 +105,7 @@ h2 {
     color: #369;
     padding: 0px 4px;
     margin: 0.5em 0em;
-    font-size: 100%;
+    font-size: 110%;
     font-weight: bold;
     border-bottom: 1px dotted #369;
 }
@@ -489,7 +489,7 @@ table#body {
 
 #body-top    {
     text-align: center;
-    font-size: 90%;
+    font-size: 94%;
     padding: 2em 2em 0em 2em;
     padding-bottom: 16px;
     font-family: Georgia,serif;
@@ -502,11 +502,12 @@ table#body {
 #body-bottom { text-align: center;}
 
 #body-menu {
-    padding: 2em 0em 2em 2em;
+    padding: 1em 0em 2em 2em;
     border: 0px;
     width: 140px;
     font-weight: bold;
     white-space: nowrap;
+    line-height: 100%;
 }
 
 #body-menu a {
@@ -516,7 +517,7 @@ table#body {
     display: block;
     padding: 1px 4px;
     text-align: left;
-    font-size: 80%;
+    font-size: 85%;
     font-family: Bitstream Vera Sans,Verdana,sans-serif;
     text-decoration: none;
 }
@@ -547,7 +548,7 @@ table#body {
     border: 1px solid #69c;
     line-height:125%;
     padding: 0em 1em 1em 1em;
-    margin: 2em;
+    margin: 1em 2em 2em 2em;
 }
 
 #content-margin { width: 2em; }
@@ -557,4 +558,4 @@ table#body {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: openweb.css,v 1.8 2004-11-24 09:47:08 x2000habouzit Exp $ */
+/* $Id: openweb.css,v 1.9 2004-11-30 09:59:31 x2000habouzit Exp $ */
