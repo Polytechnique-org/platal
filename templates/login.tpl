@@ -85,12 +85,17 @@
 
   <table class="bicol">
     <tr>
-      <th><a id="newsid{$ev.id}"></a>{$ev.titre|nl2br}</th>
+      <th>
+        <a id="newsid{$ev.id}"></a>
+	 {tidy}
+	   {$ev.titre|nl2br}
+	 {/tidy}
+      </th>
     </tr>
     <tr class="{cycle values="impair,pair"}">
       <td class="half">
         {tidy}
-        {$ev.texte|smarty:nodefaults|nl2br}
+          {$ev.texte|smarty:nodefaults|nl2br}
         {/tidy}
         <br />
         <p class="smaller">Annonce proposée par
