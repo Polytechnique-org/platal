@@ -53,8 +53,11 @@ if(Env::has('promo')) {
 if (Env::has('del_nonins')) $watch->_nonins->del(Env::get('del_nonins'));
 if (Env::has('add_nonins')) $watch->_nonins->add(Env::get('add_nonins'));
 if (Env::has('subs'))       $watch->_subs->update('sub');
-if (Env::has('flags')) {
+if (Env::has('flags_contacts')) {
     $watch->watch_contacts = Env::getBool('contacts');
+    $watch->saveFlags();
+}
+if (Env::has('flags_mail')) {
     $watch->watch_mail     = Env::getBool('mail');
     $watch->saveFlags();
 }

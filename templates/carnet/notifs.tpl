@@ -26,12 +26,22 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
+    <legend>Mail</legend>
+    <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
+    Recevoir un mail hebdomadaire des évènements que je n'ai pas déjà vus sur le site<br />
+    <input type='hidden' name='flags_mail' value='valider' />
+  </fieldset>
+</form>
+
+<form action="{$smarty.server.PHP_SELF}" method="post">
+  <fieldset>
     <legend>Événements à surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
     <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
-    {$s.short} {if $s.frequent}*{/if}<br />
+    {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}<br />
     {/foreach}
-    <span class='smaller'>(*): ne concerne pas les promos (évènements très fréquents)</span>
+    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (évènements très fréquents)</span><br />
+    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$smarty.session.promo+1} que tu surveilles</span>
   </fieldset>
   <div class='center'>
     <input type='submit' name='subs' value='valider' />
@@ -45,13 +55,9 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Contacts</legend>
-    <input type='checkbox' name='contacts' {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
-    <input type='checkbox' name='mail' {if $watch->watch_mail}checked="checked"{/if} />
-    Recevoir un mail hebdomadaire des évènements que je n'ai pas déjà vus sur le site<br />
+    <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
+    <input type='hidden' name='flags_contacts' value='valider' />
   </fieldset>
-  <div class='center'>
-    <input type='submit' name='flags' value='valider' />
-  </div>
 </form>
 
 <br />
