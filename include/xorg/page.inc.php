@@ -129,9 +129,9 @@ class XorgPage extends DiogenesCorePage
                 exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$this->compile_dir."/valid.html", $val);
                 foreach ($val as $h) {
                     if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
-                        $replc = '';
+                        $replc = '<span style="color: #080;">HTML OK</span><br />';
                         if ($m[1]) {
-                            $replc .= "<span class='erreur'><a href='http://validator.w3.org/check?uri={$globals->baseurl}"
+                            $replc = "<span class='erreur'><a href='http://validator.w3.org/check?uri={$globals->baseurl}"
                                 ."/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />";
                         }
                         break;
