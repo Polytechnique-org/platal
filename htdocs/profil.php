@@ -36,13 +36,13 @@ $new_tab = Env::has('suivant') ? get_next_tab($opened_tab) : $opened_tab;
 
 // pour tous les tabs, on recupere les bits car on a besoin de tous les bits pour en mettre a jour un, la date d naissance pour verifier
 // quelle est bien rentree et la date.
-$sql = "SELECT  FIND_IN_SET('mobile_public', bits), FIND_IN_SET('mobile_ax', bits),
-	        FIND_IN_SET('web_public', bits), FIND_IN_SET('libre_public', bits),
-		naissance, DATE_FORMAT(date,'%d.%m.%Y')
-	  FROM  auth_user_md5
-         WHERE  user_id=".Session::getInt('uid');
-$result = $globals->db->query($sql);
-list($mobile_public, $mobile_ax,$web_public, $libre_public, $naissance, $date_modif_profil) = mysql_fetch_row($result);
+$res = $globals->xdb->query(
+        "SELECT  FIND_IN_SET('mobile_public', bits), FIND_IN_SET('mobile_ax', bits),
+                 FIND_IN_SET('web_public', bits), FIND_IN_SET('libre_public', bits),
+                 naissance, DATE_FORMAT(date,'%d.%m.%Y')
+           FROM  auth_user_md5
+          WHERE  user_id={?}", Session::getInt('uid'));
+list($mobile_public, $mobile_ax,$web_public, $libre_public, $naissance, $date_modif_profil) = $res->fetchOneRow();
 
 // lorsqu'on n'a pas la date de naissance en base de données
 if (!$naissance)  {
@@ -56,7 +56,7 @@ if (!$naissance)  {
       
 	//sinon
         $birth = sprintf("%s-%s-%s", substr(Env::get('birth'),4,4), substr(Env::get('birth'),2,2), substr(Env::get('birth'),0,2));
-	$globals->db->query("UPDATE auth_user_md5 SET naissance='$birth' WHERE user_id=".Session::getInt('uid'));
+	$globals->xdb->execute("UPDATE auth_user_md5 SET naissance={?} WHERE user_id={?}", $birth, Session::getInt('uid'));
 	$page->assign('etat_naissance','ok');
 	$page->run();
     } else {
@@ -84,7 +84,7 @@ if (Env::has('modifier') || Env::has('suivant')) {
     /* on sauvegarde les changements dans user_changes :
     * on a juste besoin d'insérer le user_id de la personne dans la table
     */
-    $globals->db->query('REPLACE INTO user_changes SET user_id='.Session::getInt('uid'));
+    $globals->xdb->execute('REPLACE INTO user_changes SET user_id={?}', Session::getInt('uid'));
 
     //Mise a jour des bits
     // bits : set('mobile_public','mobile_ax','web_public','libre_public')
@@ -94,8 +94,7 @@ if (Env::has('modifier') || Env::has('suivant')) {
     if ($web_public) $bits_reply .= 'web_public,';
     if ($libre_public) $bits_reply .= 'libre_public,';
     if (!empty($bits_reply)) $bits_reply = substr($bits_reply, 0, -1);
-    $sql = "UPDATE auth_user_md5 set bits = '$bits_reply' WHERE user_id=".Session::getInt('uid');
-    $globals->db->query($sql);
+    $globals->xdb->execute('UPDATE auth_user_md5 set bits={?} WHERE user_id={?}', $bits_reply, Session::getInt('uid'));
     
     if (!Session::has('suid')) {
 	require_once('notifs.inc.php');

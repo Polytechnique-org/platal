@@ -25,14 +25,14 @@ require_once("xorg.misc.inc.php");
 
 new_skinned_page('epouse.tpl', AUTH_MDP);
 
-$res = $globals->db->query(
-    "SELECT  u.nom,u.epouse,u.flags,e.alias
-       FROM  auth_user_md5  AS u
-  LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
-      WHERE  user_id=".Session::getInt('uid');
+$res = $globals->xdb->query(
+        "SELECT  u.nom,u.epouse,u.flags,e.alias
+           FROM  auth_user_md5  AS u
+      LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
+          WHERE  user_id={?}", Session::getInt('uid'));
 
-list($nom,$epouse_old,$flags,$alias_old) = mysql_fetch_row($res);
-$flags=new flagset($flags);
+list($nom,$epouse_old,$flags,$alias_old) = $res->fetchOneRow();
+$flags = new flagset($flags);
 $page->assign('is_femme',   $flags->hasflag("femme"));
 $page->assign('epouse_old', $epouse_old);
 $page->assign('alias_old',  $alias_old);

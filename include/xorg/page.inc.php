@@ -208,10 +208,8 @@ class XorgPage extends DiogenesCorePage
         }
         
         if (!empty($var_found_rows)) {
-            $n_res = $globals->db->query('SELECT FOUND_ROWS()');
-            $r = mysql_fetch_row($n_res);
-            $this->assign($var_found_rows, $r[0]);
-            mysql_free_result($n_res);
+            $res = $globals->xdb->query('SELECT FOUND_ROWS()');
+            $this->assign($var_found_rows, $res->fetchOneCell());
             //si la trace était activée on affiche la trace sur la requête initiale
             if ($switch_trace) {
                 $globals->db->trace_on();

@@ -41,34 +41,30 @@ $page->assign('secteur_selectionne',$secteur_selectionne);
 $page->assign('ss_secteur_selectionne',$ss_secteur_selectionne);
 
 //recuperation des noms de secteurs
-$res = $globals->db->query("SELECT id, label FROM emploi_secteur");
+$res = $globals->xdb->iterRow("SELECT id, label FROM emploi_secteur");
 $secteurs[''] = '';
-while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)) {
+while (list($tmp_id, $tmp_label) = $res->next()) {
     $secteurs[$tmp_id] = $tmp_label;
 }
-mysql_free_result($res);
 $page->assign_by_ref('secteurs', $secteurs);
 
 //on recupere les sous-secteurs si necessaire
 $ss_secteurs[''] = '';
-if(!empty($secteur_selectionne))
+if (!empty($secteur_selectionne))
 {
-    $res = $globals->db->query("SELECT id, label FROM emploi_ss_secteur
-				 WHERE secteur = '$secteur_selectionne'");
-    while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)) {
-	$ss_secteurs[$tmp_id] = $tmp_label;
+    $res = $globals->xdb->iterRow("SELECT id, label FROM emploi_ss_secteur WHERE secteur = {?}", $secteur_selectionne);
+    while (list($tmp_id, $tmp_label) = $res->next()) {
+        $ss_secteurs[$tmp_id] = $tmp_label;
     }
-    mysql_free_result($res);
 }
 $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
 //recuperation des noms de pays
-$res = $globals->db->query("SELECT a2, pays FROM geoloc_pays WHERE pays <> '' ORDER BY pays");
+$res = $globals->xdb->iterRow("SELECT a2, pays FROM geoloc_pays WHERE pays <> '' ORDER BY pays");
 $pays['00'] = '';
-while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)) {
+while (list($tmp_id, $tmp_label) = $res->next()) {
     $pays[$tmp_id] = $tmp_label;
 }
-mysql_free_result($res);
 $page->assign_by_ref('pays', $pays);
 
 //On vient d'un formulaire
@@ -78,87 +74,78 @@ if (Env::has('Chercher')) {
     $champ_select = $champ_select.', mp.pid';
     $champ_select = $champ_select.', ms.secteur, ms.ss_secteur';
 
-    $clause_from = ' FROM mentor as m LEFT JOIN auth_user_md5 AS a ON(m.uid = a.user_id)'
-                 . ' INNER JOIN aliases AS l ON (a.user_id=l.id AND FIND_IN_SET(\'bestalias\',l.flags)'
-                 . ' LEFT JOIN mentor_pays AS mp ON(m.uid = mp.uid)'
-                 . ' LEFT JOIN mentor_secteurs AS ms ON(m.uid = ms.uid)';
+    $clause_from = ' FROM  mentor        AS m
+                LEFT JOIN  auth_user_md5 AS a ON(m.uid = a.user_id)
+               INNER JOIN  aliases       AS l ON (a.user_id=l.id AND FIND_IN_SET(\'bestalias\',l.flags)
+                LEFT JOIN  mentor_pays   AS mp ON(m.uid = mp.uid)
+                LEFT JOIN  mentor_secteurs AS ms ON(m.uid = ms.uid)';
 
-    $clause_where = 'WHERE';
+    $clause_where = '';
 
     if ($pays_selectionne != '00') {
-	$clause_where = $clause_where." mp.pid = '$pays_selectionne' AND";
+        $clause_where = $clause_where." mp.pid = '".addslashes($pays_selectionne)."' AND";
     }
-    if ($secteur_selectionne != '')
-    {
-	$clause_where = $clause_where." ms.secteur = '$secteur_selectionne' AND";
-	if($ss_secteur_selectionne)
-	    $clause_where = $clause_where." ms.ss_secteur = '$ss_secteur_selectionne' AND";
-    }
-
-    if($expertise_champ != '')
-    {
-	$clause_where = $clause_where." MATCH(m.expertise) AGAINST('".addslashes($expertise_champ)."') AND";
+    if ($secteur_selectionne) {
+        $clause_where = $clause_where." ms.secteur = '".addslashes($secteur_selectionne)."' AND";
+        if($ss_secteur_selectionne) {
+            $clause_where = $clause_where." ms.ss_secteur = '".addslashes($ss_secteur_selectionne)."' AND";
+        }
     }
 
-    if($clause_where != 'WHERE'){
+    if($expertise_champ) {
+        $clause_where = $clause_where." MATCH(m.expertise) AGAINST('".addslashes($expertise_champ)."') AND";
+    }
 
-	$show_formulaire = false;
-	$clause_where = substr($clause_where, 0, -3); //on vire le dernier AND
+    if($clause_where) {
 
-	$sql = "SELECT $champ_select $clause_from $clause_where
-	    GROUP BY uid ORDER BY RAND(".Session::getInt('uid').')';
+        $show_formulaire = false;
+        $clause_where    = substr($clause_where, 0, -3); //on vire le dernier AND
 
-	$res = $globals->db->query($sql);
+        $sql = "SELECT $champ_select $clause_from WHERE $clause_where GROUP BY uid ORDER BY RAND(".Session::getInt('uid').')';
+        $res = $globals->xdb->iterRow($sql);
 
-	if (mysql_num_rows($res) == 0) {
-	    $page->assign('recherche_trop_large',true);
-	    mysql_free_result($res);
-	}
-	else{
-	    if (Env::has('page_courante')) {
-		$page_courante = Env::getInt('page_courante');
-	    }
-	    else{
-		$page_courante = 1;
-	    }
+        if ($res->total() == 0) {
+            $page->assign('recherche_trop_large',true);
+        } else {
+            if (Env::has('page_courante')) {
+                $page_courante = Env::getInt('page_courante');
+            } else {
+                $page_courante = 1;
+            }
 
-	    $current_uid = 0;
-	    $nb_resultats = 0;
-	    $page->assign('resultats',true);
-	    $personnes = Array();
-	    $page->assign_by_ref('personnes',$personnes);
-	    while((list($uid, $prenom, $nom, $promo, $bestalias,
-			    $expertise_bd, $pays_id, $secteur_id, $ss_secteur_id) = mysql_fetch_row($res))
-		    || ($nb_resultats >= $nb_max_resultats_total)){
-		if($current_uid != $uid){
-		    $current_uid = $uid;
-		    $page_correspondante = (int)($nb_resultats / $nb_max_resultats_par_page) +1;
-		    $nb_resultats++;
-		    if( $page_correspondante == $page_courante){
-			$pers_trouve['nom'] = $nom;
-			$pers_trouve['prenom'] = $prenom;
-			$pers_trouve['promo'] = $promo;
-			$pers_trouve['bestalias'] = $bestalias;
-			$pers_trouve['expertise'] = $expertise_bd;
-			$personnes[] = $pers_trouve;
-		    }
-		}
-	    }
-	    $nb_pages = (int) ($nb_resultats/$nb_max_resultats_par_page) + 1;
-	    $page->assign('nb_pages_total', $nb_pages);
-	    $page->assign('page_courante', $page_courante);
-	    mysql_free_result($res);
-	}//fin else
-    }//fin if clause_where non vide
-}//fin if Chercher
-//sinon on affiche le formulaire
+            $current_uid = 0;
+            $nb_resultats = 0;
+            $page->assign('resultats',true);
+            $personnes = Array();
+            $page->assign_by_ref('personnes',$personnes);
+            while( (list($uid, $prenom, $nom, $promo, $bestalias,
+                        $expertise_bd, $pays_id, $secteur_id, $ss_secteur_id) = $res->next())
+                    || ($nb_resultats >= $nb_max_resultats_total)){
+                if ($current_uid != $uid) {
+                    $current_uid = $uid;
+                    $page_correspondante = (int)($nb_resultats / $nb_max_resultats_par_page) +1;
+                    $nb_resultats++;
+                    if( $page_correspondante == $page_courante){
+                        $pers_trouve['nom'] = $nom;
+                        $pers_trouve['prenom'] = $prenom;
+                        $pers_trouve['promo'] = $promo;
+                        $pers_trouve['bestalias'] = $bestalias;
+                        $pers_trouve['expertise'] = $expertise_bd;
+                        $personnes[] = $pers_trouve;
+                    }
+                }
+            }
+            $nb_pages = (int) ($nb_resultats/$nb_max_resultats_par_page) + 1;
+            $page->assign('nb_pages_total', $nb_pages);
+            $page->assign('page_courante', $page_courante);
+            mysql_free_result($res);
+        }
+    }
+}
 
 if ($show_formulaire) {
-    $res = $globals->db->query("SELECT count(*) FROM mentor");
-    list($nb) = mysql_fetch_row($res);
-    mysql_free_result($res);
-
-    $page->assign('mentors_number',$nb);
+    $res = $globals->xdb->query("SELECT count(*) FROM mentor");
+    $page->assign('mentors_number', $res->fetchOneCell());
 }
 
 $page->run();

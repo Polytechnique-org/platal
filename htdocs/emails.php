@@ -25,11 +25,9 @@ new_skinned_page('emails.tpl',AUTH_COOKIE);
 $uid = Session::getInt('uid');
 
 if (Post::has('best')) {
-    $globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id=$uid");
-    $globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id=$uid");
-    $globals->db->query("UPDATE  aliases
-		            SET  flags=CONCAT(flags,',','bestalias')
-			  WHERE  id=$uid AND alias='".Post::get('best')."'");
+    $globals->xdb->execute("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id={?}", $uid);
+    $globals->xdb->execute("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id={?}", $uid);
+    $globals->xdb->execute("UPDATE  aliases SET flags=CONCAT(flags,',','bestalias') WHERE id={?} AND alias={?}", $uid, Post::get('best'));
 }
 
 // on regarde si on a affaire à un homonyme
@@ -47,18 +45,14 @@ $page->mysql_assign($sql, 'mails', 'nb_mails');
 
 // on regarde si l'utilisateur a un alias et si oui on l'affiche !
 $forlife = Session::get('forlife');
-$sql = "SELECT  alias
-          FROM  virtual          AS v
-    INNER JOIN  virtual_redirect AS vr USING(vid)
-         WHERE  (  redirect='$forlife@{$globals->mail->domain}'
-                OR redirect='$forlife@{$globals->mail->domain2}' )
-                AND alias LIKE '%@{$globals->mail->alias_dom}'";
-$result = $globals->db->query($sql);
-if ($result && list($aliases) = mysql_fetch_row($result)) {
-    list($melix) = split('@', $aliases);
-    $page->assign('melix', $melix);
-}
-mysql_free_result($result);
+$res = $globals->xdb->query(
+        "SELECT  alias
+           FROM  virtual          AS v
+     INNER JOIN  virtual_redirect AS vr USING(vid)
+          WHERE  (redirect={?} OR redirect={?}) 
+                 AND alias LIKE '%@{$globals->mail->alias_dom}'",
+        $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+$page->assign('melix', $res->fetchOneCell());
 
 $page->run();
 ?> 

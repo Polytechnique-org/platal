@@ -26,20 +26,19 @@ $log =& Session::getMixed('log');
 $url = Env::get('url');
 
 if ((Env::get('submit') == 'Valider' or Env::get('submit') == 'Modifier') and Env::has('url')) {
-    // on change la redirection (attention à http://)
-    $globals->db->query("update auth_user_quick set redirecturl = '$url' where user_id = ".Session::getInt('uid'));
-    if (mysql_errno() == 0) {
+    if ($globals->xdb->execute('UPDATE auth_user_quick SET redirecturl = {?} WHERE user_id = {?}',
+                $url, Session::getInt('uid')))
+    {
         $log->log('carva_add', 'http://'.Env::get('url'));
         $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
     } else {
         $page->trig('Erreur de mise à jour');
     }
 } elseif (Env::get('submit') == "Supprimer") {
-    // on supprime la redirection
-    $globals->db->query("update auth_user_quick set redirecturl = '' where user_id = ".Session::getInt('uid'));
-    if (mysql_errno() == 0) {
+    if ($globals->xdb->execute("UPDATE auth_user_quick SET redirecturl = '' WHERE user_id = {?}", Session::getInt('uid')))
+    {
         $log->log("carva_del", $url);
-        Post::kil('url');
+        Post::kill('url');
         $page->trig('Redirection supprimée');
     } else {
         $page->trig('Erreur de suppression');
@@ -47,10 +46,8 @@ if ((Env::get('submit') == 'Valider' or Env::get('submit') == 'Modifier') and En
 }
 
 
-$result      = $globals->db->query("select redirecturl from auth_user_quick where user_id = ".Session::getInt('uid'));
-list($carva) = mysql_fetch_row($result);
-mysql_free_result($result);
-$page->assign('carva', $carva);
+$res = $globals->xdb->query('SELECT redirecturl FROM auth_user_quick WHERE user_id = {?}', Session::getInt('uid'));
+$page->assign('carva', $res->fetchOneCell());
 
 $page->run();
 ?>

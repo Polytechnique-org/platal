@@ -47,15 +47,14 @@ function form_prepare()
     } else {
         $sql = 'DESCRIBE applis_def type';
     }
-    $res = $globals->db->query($sql);
-    $row = mysql_fetch_row($res);
+    $res = $globals->xdb->query($sql);
+    $row = $res->fetchOneRow();
     if (Env::has('school')) {
         $types = $row[0];
     } else {
         $types = explode('(',$row[1]);
         $types = str_replace("'","",substr($types[1],0,-1));
     }
-    mysql_free_result($res);
     $page->assign('choix_diplomas', explode(',',$types));
 }
 

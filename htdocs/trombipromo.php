@@ -29,26 +29,22 @@ function getList($offset,$limit) {
     $xpromo = Env::getInt('xpromo');
     $where  = ( $xpromo>0 ? "WHERE promo='$xpromo'" : "" );
 
-    $res = $globals->db->query("SELECT  COUNT(*)
-				  FROM  auth_user_md5 AS u
-			    RIGHT JOIN  photo         AS p ON u.user_id=p.uid
-			    $where");
-    list($pnb) = mysql_fetch_row($res);
-    mysql_free_result($res);
+    $res = $globals->xdb->query(
+            "SELECT  COUNT(*)
+               FROM  auth_user_md5 AS u
+         RIGHT JOIN  photo         AS p ON u.user_id=p.uid
+         $where");
+    $pnb = $res->fetchOneCell();
 
-    $sql = "SELECT  promo,user_id,a.alias AS forlife,nom,prenom
-	      FROM  photo         AS p
-	INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
-	INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
-	    $where
-	  ORDER BY  promo,nom,prenom LIMIT ".($offset*$limit).",$limit";
-
-    $res = $globals->db->query($sql);
-    $list = Array();
-    while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
-    mysql_free_result($res);
-
-    return Array($pnb, $list);
+    $res = $globals->xdb->query(
+            "SELECT  promo,user_id,a.alias AS forlife,nom,prenom
+               FROM  photo         AS p
+         INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
+         INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
+              $where
+           ORDER BY  promo,nom,prenom LIMIT {?}, {?}", $offset*$limit, $limit);
+    
+    return Array($pnb, $res->fetchAllAssoc());
 }
 
 if (Env::has('xpromo')) {

@@ -21,24 +21,19 @@
 
 require_once("xorg.inc.php");
 
-$sql = "DELETE FROM perte_pass WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created";
-$globals->db->query($sql);
+$globals->xdb->execute('DELETE FROM perte_pass WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
-$certificat = Env::get('certificat');
-$sql        = "SELECT uid FROM perte_pass WHERE certificat='$certificat'";
-$result     = $globals->db->query($sql);
+$certif = Env::get('certificat');
+$res    = $globals->xdb->query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
 
-if ($ligne = mysql_fetch_array($result))  {
-    $uid=$ligne["uid"];
-    if (Post::has('response2'))  {             // la variable $response existe-t-elle ?
-    // OUI, alors changeons le mot de passe
+if ($ligne = $res->fetchOneAssoc())  {
+    $uid = $ligne["uid"];
+    if (Post::has('response2')) {
         $password = Post::get('response2');
-        $sql      = "UPDATE auth_user_md5 SET password='$password' WHERE user_id='$uid' AND perms IN('admin','user')";
-        $globals->db->query($sql);
         $logger   = new DiogenesCoreLogger($uid);
+        $globals->xdb->query('UPDATE auth_user_md5 SET password={?} WHERE user_id={?} AND perms IN("admin","user")', $password, $uid);
+        $globals->xdb->query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
         $logger->log("passwd","");
-        $sql      = "DELETE FROM perte_pass WHERE certificat='$certificat'";
-        $globals->db->query($sql);
         new_skinned_page('tmpPWD.success.tpl', AUTH_PUBLIC);
         $page->run();
     } else {

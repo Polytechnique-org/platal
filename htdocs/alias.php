@@ -30,17 +30,14 @@ $forlife = Session::get('forlife');
 $page->assign('demande', AliasReq::get_unique_request($uid));
 
 //Récupération des alias éventuellement existants
-$sql = "SELECT  alias
-          FROM  virtual
-    INNER JOIN  virtual_redirect USING(vid)
-          WHERE (  redirect='$forlife@{$globals->mail->domain}'
-                OR redirect='$forlife@{$globals->mail->domain2}' )
-                AND alias LIKE '%@{$globals->mail->alias_dom}'";
-if($result = $globals->db->query($sql)) {
-    list($aliases) = mysql_fetch_row($result);
-    mysql_free_result($result);
-    $page->assign('actuel',$aliases);
-}
+$res = $globals->xdb->query(
+        "SELECT  alias
+           FROM  virtual
+     INNER JOIN  virtual_redirect USING(vid)
+           WHERE ( redirect={?} OR redirect= {?} )
+                 AND alias LIKE '%@{$globals->mail->alias_dom}'", 
+        $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+$page->assign('actuel', $res->fetchOneCell());
 
 //Si l'utilisateur vient de faire une damande
 if (Env::has('alias') and Env::has('raison')) {
@@ -59,8 +56,8 @@ if (Env::has('alias') and Env::has('raison')) {
         $page->run('error');
     } else {
         //vérifier que l'alias n'est pas déja pris
-        $result = $globals->db->query("SELECT 1 FROM virtual WHERE alias='$alias@{$globals->mail->alias_dom}'");
-        if (mysql_num_rows($result)>0) {
+        $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual WHERE alias={?}', $alias.'@'.$globals->mail->alias_dom);
+        if ($res->fetchOneCell() > 0) {
             $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
                         Tu ne peux donc pas l'obtenir.");
             $page->run('error');

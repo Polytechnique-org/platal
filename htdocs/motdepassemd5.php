@@ -24,8 +24,7 @@ require_once('xorg.inc.php');
 if (Env::has('response2'))  {
     $_SESSION['password'] = $password = Post::get('response2');
     
-    $sql = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".Session::getInt('uid');
-    $globals->db->query($sql);
+    $globals->xdb->execute('UPDATE auth_user_md5 SET password={?} WHERE user_id={?}', $password, Session::getInt('uid'));
     
     $log =& Session::getMixed('log');
     $log->log('passwd', '');

@@ -22,9 +22,8 @@
 require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
-$param=$globals->db->query('SELECT date,naissance FROM auth_user_md5 WHERE user_id='.Session::getInt('uid'));
-list($date,$naissance) = mysql_fetch_row($param);
-mysql_free_result($param);
+$res = $globals->xdb->query('SELECT date,naissance FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
+list($date,$naissance) = $res->fetchOneRow();
 
 if ($naissance==0 || $naissance=='0000-00-00')  {
     $page->assign('ask_naissance', true);
@@ -34,19 +33,18 @@ if ($naissance==0 || $naissance=='0000-00-00')  {
 
 // incitation à mettre à jour la fiche
 
-$res = $globals->db->query('SELECT date FROM auth_user_md5 WHERE user_id='.Session::getInt('uid'));
-list($d) = mysql_fetch_row($res);
-$date_maj = mktime(0, 0, 0, substr($d, 5, 2), substr($d, 8, 2), substr($d, 0, 4));
-if(( (time() - $date_maj) > 60 * 60 * 24 * 400)) { // si fiche date de + de 400j;
+$res = $globals->xdb->query('SELECT date FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
+$d   = $res->fetchOneCell();
+$d2  = mktime(0, 0, 0, substr($d, 5, 2), substr($d, 8, 2), substr($d, 0, 4));
+if( (time() - $d2) > 60 * 60 * 24 * 400 ) {
+    // si fiche date de + de 400j;
     $page->assign('fiche_incitation', $d);
 }
 
 // incitation à mettre une photo
 
-$res = $globals->db->query('SELECT 1 FROM photo WHERE uid='.Session::getInt('uid'));
-if (mysql_num_rows($res) == 0)
-    $page->assign('photo_incitation', true);
-mysql_free_result($res);
+$res = $globals->xdb->query('SELECT COUNT(*) FROM photo WHERE uid={?}', Session::getInt('uid'));
+$page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
 // affichage de la boîte avec quelques liens
 

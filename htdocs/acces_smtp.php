@@ -24,28 +24,25 @@ new_skinned_page('acces_smtp.tpl', AUTH_MDP);
     
 $uid  = Session::getInt('uid');
 $pass = Env::get('smtppass1');
-$log  = Env::getMixed('log');
+$log  = Session::getMixed('log');
 
 if ( Env::get('op') == "Valider" && Env::get('smtppass1') == Env::get('smtppass2') && strlen($pass) >= 6 ) {
 
-    $globals->db->query("update auth_user_md5 set smtppass = '$pass' where user_id = $uid");
+    $globals->xdb->execute('update auth_user_md5 set smtppass = {?} where user_id = {?}', $pass, $uid);
     $page->trig('Mot de passe enregistré');
     $log->log("passwd_ssl");
 
 } elseif (Env::get('op') == "Supprimer") {
 
-    $globals->db->query("update auth_user_md5 set smtppass = '' where user_id = $uid");
+    $globals->xdb->execute('update auth_user_md5 set smtppass = "" where user_id = {?}', $uid);
     $page->trig('Compte SMTP et NNTP supprimé');
     $log->log("passwd_del");
 
 }
 
-$result = $globals->db->query("select IF(smtppass != '', 'actif', '') from auth_user_md5 where user_id = ".$uid);
-list($actif) = mysql_fetch_row($result);
-mysql_free_result($result);
-
-$page->assign('actif', $actif);
-$page->run($actif);
+$res = $globals->xdb->query("select IF(smtppass != '', 'actif', '') from auth_user_md5 where user_id = {?}", $uid);
+$page->assign('actif', $res->fetchOneCell());
+$page->run();
 
 // vim:et:sw=4:
 ?>

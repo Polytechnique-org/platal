@@ -55,12 +55,12 @@ if (Env::has('ordi') and
     }
 } elseif (Env::get('suppr')) {
     // effacement de la photo
-    $globals->db->query('DELETE FROM photo WHERE uid = '.Session::getInt('uid'));
-    $globals->db->query('DELETE FROM requests WHERE user_id = '.Session::getInt('uid').' AND type="photo"');
+    $globals->xdb->execute('DELETE FROM photo WHERE uid = {?}', Session::getInt('uid'));
+    $globals->xdb->execute('DELETE FROM requests WHERE user_id = {?} AND type="photo"', Session::getInt('uid'));
 }
 
-$sql = $globals->db->query('SELECT * FROM requests WHERE user_id='.Session::getInt('uid').' AND type="photo"');
-$page->assign('submited', mysql_num_rows($sql) > 0);
+$sql = $globals->xdb->query('SELECT COUNT(*) FROM requests WHERE user_id={?} AND type="photo"', Session::getInt('uid'));
+$page->assign('submited', $sql->fetchOneCell());
 
 $page->run();
 

@@ -33,43 +33,25 @@ if (Env::has('login') and Env::has('birth'))  {
     // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
     // avec celle fournie ici en espérant que c'est la bonne
 
-    $sql="SELECT  user_id, naissance
-	    FROM  auth_user_md5 AS u
-      INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
-	    WHERE a.alias='$mailorg' AND u.perms IN ('admin','user') AND u.deces=0";
-    $result=$globals->db->query($sql);
-    if (list($uid,$naissance)=mysql_fetch_array($result)) {
-        if((strlen($naissance))<5) {
-            $globals->db->query("UPDATE auth_user_md5 SET naissance='$birth' WHERE user_id=$uid");
-            $naissance = $birth;
-        }
-    }
-    mysql_free_result($result);
+    $res = $globals->xdb->query(
+            "SELECT  user_id, naissance
+               FROM  auth_user_md5 AS u
+         INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
+              WHERE  a.alias={?} AND u.perms IN ('admin','user') AND u.deces=0", $mailorg);
+    list($uid, $naissance) = $res->fetchOneRow();
 
     if ($naissance == $birth) {
         $page->assign('ok', true);
-        $url   = rand_url_id();
-        $stamp = date('Y-m-d H:i:s');
-        $sql   = "INSERT INTO perte_pass (certificat,uid,created) VALUES ('$url',$uid,'$stamp')";
 
-        $globals->db->query($sql);
-
-        // on recupere les emails sans tenir comptes du flags active (ni des autres)
-        // sauf qu'il ne faut pas prendre la ligne qui possède l'éventuel appel 
-        // au filtre personnel (ligne dont le num = 0)
-        $result=$globals->db->query("select email from emails where uid = $uid and NOT FIND_IN_SET('filter', flags)");
-        
-        $emails = array();
-        while(list($email) = mysql_fetch_row($result)) {
-            $emails[] = $email;
-        }
-        mysql_free_result($result);
-        $emails = implode(',', $emails);
+        $url   = rand_url_id(); 
+        $globals->xdb->execute('INSERT INTO perte_pass (certificat,uid,created) VALUES ({?},{?},NOW())', $url, $uid);
+        $res   = $globals->xdb->query('SELECT email FROM emails WHERE uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
+        $mails = implode(', ', $res->fetchColumn());
         
 	require_once("diogenes.hermes.inc.php");
 	$mymail = new HermesMailer();
 	$mymail->setFrom('"Gestion des mots de passe" <support+password@polytechnique.org>');
-	$mymail->addTo($emails);
+	$mymail->addTo($mails);
 	$mymail->setSubject('Ton certificat d\'authentification');
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 {$globals->baseurl}/tmpPWD.php?certificat=$url

@@ -26,9 +26,7 @@ if (!$globals->skin->enable) {
 new_skinned_page('skins.tpl', AUTH_COOKIE);
 
 if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
-    $globals->db->query('UPDATE auth_user_quick
-                SET skin='.Env::getInt('newskin').'
-                WHERE user_id='.Session::getInt('uid'));
+    $globals->xdb->execute('UPDATE auth_user_quick SET skin={?} WHERE user_id={?}', Env::getInt('newskin'), Session::getInt('uid'));
     set_skin();
 }
 
@@ -37,7 +35,7 @@ $sql = "SELECT s.*,auteur,count(*) AS nb
      LEFT JOIN auth_user_quick AS a ON s.id=a.skin
          WHERE skin_tpl != '' AND ext != ''
       GROUP BY id ORDER BY s.date DESC";
-$page->mysql_assign($sql, 'skins');
+$page->assign_by_ref('skins', $globals->xdb->iterator($sql));
 
 $page->run();
 ?>

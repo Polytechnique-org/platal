@@ -31,16 +31,16 @@ if (Env::has('x')) {
 	echo $myphoto->data;
     } else {
 	if(preg_match('/^\d*$/', Env::get('x'))) {
-	    $result = $globals->db->query('SELECT attachmime, attach FROM photo WHERE uid = '.Env::getInt('x'));
+	    $res = $globals->xdb->query('SELECT attachmime, attach FROM photo WHERE uid = {?}', Env::getInt('x'));
 	} else {
-	    $sql = "SELECT  attachmime, attach
-	              FROM  photo   AS p
-		INNER JOIN  aliases AS a ON p.uid=a.id
-		     WHERE  alias='".Env::get('x')."'";
-	    $result = $globals->db->query($sql);
+	    $res = $globals->xdb->query(
+                    "SELECT  attachmime, attach
+                       FROM  photo   AS p
+                 INNER JOIN  aliases AS a ON p.uid=a.id
+                      WHERE  alias={?}", Env::get('x'));
 	}
 
-	if(  list($type,$data) = @mysql_fetch_row($result) ) {
+	if( list($type,$data) = $res->fetchOneRow() ) {
 	    Header(  "Content-type: image/$type");
 	    echo $data;
 	} else {

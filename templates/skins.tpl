@@ -18,10 +18,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+<h1>Skins Polytechnique.org</h1>
 
-<h1>
-  Skins Polytechnique.org
-</h1>
 <p>
 Tu n'aimes pas les couleurs ou l'apparence de Polytechnique.org ? Normal, les goûts et les
 couleurs, ça ne se discute pas. Certains préfèrent une page sérieuse, d'autres plus
@@ -41,7 +39,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
-{foreach item=skin from=$skins}    
+    {iterate item=skin from=$skins}    
     <tr>
       <td class="skigauche">
         <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if} onclick="this.form.submit();" />
@@ -59,7 +57,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
         <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
-{/foreach}
+    {/iterate}
   </table>
 </form>
 

@@ -89,8 +89,9 @@ function gpex_make_params($chlg, $privkey, $datafields) {
 }
 
 /* on parcourt les entrees de groupes_auth */
-$res = $globals->db->query("select privkey,name,datafields from groupesx_auth");
-while (list($privkey,$name,$datafields) = mysql_fetch_row($res)) {
+$res = $globals->xdb->iterRow('select privkey,name,datafields from groupesx_auth');
+
+while (list($privkey,$name,$datafields) = $res->next()) {
     if (md5($gpex_challenge.$privkey) == $gpex_pass) {
         $returl = $gpex_url.gpex_make_params($gpex_challenge,$privkey,$datafields);
         header("Location:$returl");
