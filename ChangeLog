@@ -6,12 +6,15 @@ Changes :
 	* Lists :
 		- Refusal message is shown on mail moderation page.  (FS#138)		-MC
 
-	* Search+Contacts:
+	* Search+Contacts :
 		- Homeland is now a flag.  (FS#124)									-MC
 		- Women now have a &bull; (no more dirty gender icons).  (FS#122)	-MC
+		- Nicer icons.														-MC
 
 
 Fixes (from 0.9.1 branch) :
+	* Lists :
+		- better mails to -owners for reject/discard ops.					-MC
 
 
 ================================================================================

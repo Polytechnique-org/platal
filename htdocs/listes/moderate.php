@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.13 2004-10-28 14:12:42 x2000habouzit Exp $
+        $Id: moderate.php,v 1.14 2004-10-28 14:26:33 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -63,7 +63,7 @@ if(isset($_REQUEST['mid'])) {
 	    $texte = "le message suivant :\n\n"
 		    ."    Auteur: {$mail['sender']}\n"
 		    ."    Sujet : « {$mail['subj']} »\n"
-		    ."    Date  : ".date("%H:%M:%S le %d %b %Y",$mail['stamp'])."\n\n"
+		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
 		    ."a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
 		    ."« $reason »";
 	    $mailer->setBody(wordwrap($texte,72));
@@ -79,7 +79,7 @@ if(isset($_REQUEST['mid'])) {
 	    $texte = "le message suivant :\n\n"
 		    ."    Auteur: {$mail['sender']}\n"
 		    ."    Sujet : « {$mail['subj']} »\n"
-		    ."    Date  : ".date("%H:%M:%S le %d %b %Y",$mail['stamp'])."\n\n"
+		    ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S",(int)$mail['stamp'])."\n\n"
 	            ."a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
 		    ."Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
 	    $mailer->setBody(wordwrap($texte,72));
