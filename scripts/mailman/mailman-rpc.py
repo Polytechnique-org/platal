@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.5 2004-09-08 18:51:41 x2000palatin Exp $
+#       $Id: mailman-rpc.py,v 1.6 2004-09-08 19:00:49 x2000palatin Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -36,15 +36,7 @@ class UserDesc: pass
 
 class AuthFailed(Exception): pass
 
-from MySQLdb.constants import FIELD_TYPE
-_type_conv = { FIELD_TYPE.TINY: int,
-               FIELD_TYPE.SHORT: int,
-               FIELD_TYPE.LONG: long,
-               FIELD_TYPE.FLOAT: float,
-               FIELD_TYPE.DOUBLE: float,
-               FIELD_TYPE.LONGLONG: long,
-               FIELD_TYPE.INT24: int,
-               FIELD_TYPE.YEAR: int }
+import MySQLdb.converters
 
 #------------------------------------------------
 # Manage Basic authentication
