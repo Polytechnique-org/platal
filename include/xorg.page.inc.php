@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.39 2004-08-31 21:57:50 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.40 2004-09-19 15:50:45 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -54,6 +54,10 @@ function escape_html(&$string) {
     }
 }
 
+function triple_quote_to_gettext($tpl_source, &$smarty) {
+    return preg_replace('/"""(.*?)"""/se', 'gettext(stripslashes(\'\\1\'))',$tpl_source);
+}
+
 class XorgPage extends DiogenesCorePage {
     var $_page_type;
     var $_tpl;
@@ -61,12 +65,15 @@ class XorgPage extends DiogenesCorePage {
     function XorgPage($tpl, $type=SKINNED) {
         global $site_dev,$globals;
 
+	$this->setLang();
+
         $this->template_dir = $globals->spoolroot."/templates/";
         $this->compile_dir  = $globals->spoolroot."/templates_c/";
         $this->plugins_dir[]= $globals->spoolroot."/plugins/";
         $this->config_dir   = $globals->spoolroot."/configs/";
         $this->cache_dir    = $globals->spoolroot."/cache/";
 	$this->use_sub_dirs = false;
+
 
         $this->config_overwrite  = false;
         $this->compile_check     = isset($site_dev);
@@ -83,6 +90,7 @@ class XorgPage extends DiogenesCorePage {
         $this->register_block('dynamic', 'block_dynamic', false);
         $this->register_function('dyn', 'function_dyn', false);
         $this->register_function('implode', 'function_implode');
+        $this->register_prefilter('triple_quote_to_gettext');
 
         // if necessary, construct new session
         if (empty($_SESSION['session']))
@@ -92,10 +100,32 @@ class XorgPage extends DiogenesCorePage {
         $this->doAuth();
     }
 
+    function setLang($lang=null) {
+	global $globals;
+	if(empty($lang)) {
+	    if(!empty($_COOKIE['lang'])) {
+		$locale = $_COOKIE['lang'];
+	    } else {
+		list($locale,) = explode(',', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+		$locale = strtolower(trim($locale));
+		$locale = strtr($locale,'-','_');
+		$locale = preg_replace('!_(.*)!e', "'_'.strtoupper('\\1')",$locale);
+		setcookie('lang',$locale,(time()+25920000),'/','',0);
+	    }
+	} else {
+	    $locale = $lang;
+	}
+	setlocale(LC_MESSAGES, $locale);
+	setlocale(LC_TIME, $locale);
+	$this->compile_id = $locale;
+	bindtextdomain('xorg', $globals->spoolroot.'/locale/');
+	textdomain('xorg');
+    }
+
     function run($append_to_id="") {
         global $baseurl, $site_dev, $globals;
         if($this->_page_type == NO_SKIN)
-            parent::display($this->_tpl);
+            $this->display($this->_tpl);
         else {
             if(isset($_SESSION['suid'])) $this->caching=false;
             $id = $this->make_id($append_to_id);
@@ -120,7 +150,7 @@ class XorgPage extends DiogenesCorePage {
 			exit;
 		    }
             } else
-                parent::display('skin/'.$_SESSION['skin'], $id);
+                $this->display('skin/'.$_SESSION['skin'], $id);
         }
         exit;
     }

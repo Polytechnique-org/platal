@@ -18,13 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auto.prepend.inc.php,v 1.22 2004-08-31 11:16:47 x2000habouzit Exp $
+        $Id: auto.prepend.inc.php,v 1.23 2004-09-19 15:50:45 x2000habouzit Exp $
  ***************************************************************************/
 
 
 ini_set('include_path', '/home/x2000habouzit/dev/diogenes/lib/:'.ini_get('include_path'));
 require("config.xorg.inc.php") ;
-setlocale(LC_TIME, "fr_FR");
 require_once("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=false) {
