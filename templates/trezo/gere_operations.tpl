@@ -30,7 +30,7 @@
   <table class="bicol">
     <tr>
       <th colspan="2">
-        {if $operation_id}
+        {if $op_id}
         Modifier une opération
         {else}
         Ajouter une opération
@@ -39,24 +39,24 @@
     </tr>
     <tr>
       <td>Date (DD/MM/YYYY)</td>
-      <td><input type="text" name="operation_date" size="40"
-        value="{$operation_date|date_format:"%d/%m/%Y"}" /></td>
+      <td><input type="text" name="op_date" size="40"
+        value="{$op_date|date_format:"%d/%m/%Y"}" /></td>
     </tr>
     <tr>
       <td>Description libre</td>
-      <td><input type="text" name="operation_label" size="40" value="{$operation_label}" /></td>
+      <td><input type="text" name="op_label" size="40" value="{$op_label}" /></td>
     </tr>
     <tr>
       <td>Débit</td>
-      <td><input type="text" name="operation_debit" size="40" value="{$operation_debit}" /></td>
+      <td><input type="text" name="op_debit" size="40" value="{$op_debit}" /></td>
     </tr>
     <tr>
       <td>Crédit</td>
-      <td><input type="text" name="operation_credit" size="40" value="{$operation_credit}" /></td>
+      <td><input type="text" name="op_credit" size="40" value="{$op_credit}" /></td>
     </tr>
     <tr>
       <td class="center" colspan="2">
-        <input type="hidden" name="operation_id" value="{$operation_id}" />
+        <input type="hidden" name="op_id" value="{$op_id}" />
         <input type="hidden" name="action" value="update" />
         <input type="hidden" name="annee" value="{$annee_sel}" />
         <input type="hidden" name="mois" value="{$mois_sel}" />
@@ -67,7 +67,7 @@
 </form>
 
 <a href="{$smarty.server.PHP_SELF}">retour</a>
-{elseif $smarty.request.action eq "update" && $operation_id}
+{elseif $smarty.request.action eq "update" && $op_id}
 <strong>modification de l'opération</strong>
 {elseif $smarty.request.action eq "update"}
 <strong>ajout de l'opération</strong>
@@ -109,7 +109,7 @@
     <td>
       <form method="post" action="{$smarty.server.PHP_SELF}">
         <div>
-          <input type="hidden" name="operation_id" value="0" />
+          <input type="hidden" name="op_id" value="0" />
           <input type="hidden" name="action" value="edit" />
           <input type="hidden" name="annee" value="{$annee_sel}" />
           <input type="hidden" name="mois" value="{$mois_sel}" />
@@ -128,7 +128,7 @@
     <td>
       <form method="post" action="{$smarty.server.PHP_SELF}">
         <div>
-          <input type="hidden" name="operation_id" value="{$op.id}" />
+          <input type="hidden" name="op_id" value="{$op.id}" />
           <input type="hidden" name="annee" value="{$annee_sel}" />
           <input type="hidden" name="mois" value="{$mois_sel}" />
           <input type="submit" name="action" value="edit" />
