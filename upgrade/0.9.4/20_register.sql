@@ -28,7 +28,7 @@ create table register_marketing (/*{{{*/
     date        date         not null default '0000-00-00',
     last        date         not null default '0000-00-00',
     nb          tinyint      not null default 0,
-    type        set('user', 'staff') not null default 'user',
+    type        enum('user', 'staff') not null default 'user',
     hash        char(32)     not null,
     PRIMARY KEY (uid, email),
     INDEX (date),
