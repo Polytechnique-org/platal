@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.79 2004-11-18 13:45:48 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.80 2004-11-18 14:16:44 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -94,7 +94,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
         mysql.execute ("""SELECT CONCAT(u.prenom, ' ',u.nom),a.alias,u.perms
                            FROM  auth_user_md5 AS u
                      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
-                          WHERE  u.user_id = '%s' AND u.password = '%s'
+                          WHERE  u.user_id = '%s' AND u.password = '%s' AND u.perms IN ('admin','user')
                           LIMIT  1""" %( uid, md5 ) )
         if int(mysql.rowcount) is 1:
             name,forlife,perms = mysql.fetchone()
@@ -151,6 +151,7 @@ def to_forlife(email):
                             FROM  auth_user_md5 AS u
                       INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
                       INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
+                           WHERE  u.perms IN ('admin','user')
                            LIMIT  1""" %( mbox ) )
         if int(mysql.rowcount) is 1:
             return mysql.fetchone()
@@ -798,7 +799,6 @@ def kill(userdesc,perms,vhost,alias):
             mlist.ApprovedDeleteMember(alias+'@polytechnique.org',None,0,0)
             mlist.Save()
             mlist.Unlock()
-            print list
         except:
             mlist.Unlock()
     return 1
