@@ -19,124 +19,30 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 new_skinned_page('index.tpl', AUTH_COOKIE);
-require_once("texify.inc.php");
-require_once("applis.func.inc.php");
+require_once('contacts.pdf.inc.php');
+require_once('user.func.inc.php');
 
-$sql = "SELECT  a.*,c.*,e.alias as epouse
-	  FROM  auth_user_md5 AS a
-    INNER JOIN  contacts      AS c ON ( a.user_id = c.contact )
-    LEFT  JOIN  aliases       AS e ON ( a.user_id = e.id and FIND_IN_SET('epouse',e.flags) )
-         WHERE  c.uid = ".Session::getInt('uid');
-// choix de l'ordre des réponses (par promo ou par noms)
+$sql = "SELECT  a.alias
+          FROM  aliases       AS a
+    INNER JOIN  auth_user_md5 AS u ON ( a.id = u.user_id )
+    INNER JOIN  contacts      AS c ON ( a.id = c.contact )
+         WHERE  c.uid = {?} AND a.type='a_vie'";
 if (Get::get('order') == "promo") {
-    $sql .= " ORDER BY  a.promo, a.nom, a.prenom";
+    $sql .= " ORDER BY  u.promo, u.nom, u.prenom";
 } else {
-    $sql .= " ORDER BY  a.nom, a.prenom, a.promo";
-}
-$req = $globals->db->query($sql);
-
-// génération des en-têtes
-$texsrc = contacts_headers();
-
-// on traite ensuite les contacts un par un
-while ($myrow = mysql_fetch_array($req)) {
-
-    /* affichage de l'identité */
-    ereg( "[0-9]{2}([0-9]{2})-([0-9]{1,2})-([0-9]{1,2})", $myrow["date"], $regs );
-    $texsrc .= contact_tbl_hdr($myrow["prenom"], $myrow["nom"], $myrow["epouse"], $myrow["promo"], "$regs[3].$regs[2].$regs[1]");
-
-
-    /* affichage de l'école d'appli et de la post-appli */
-    $tmpreq=$globals->db->query(
-            "SELECT  applis_def.text,applis_def.url,applis_ins.type,applis_ins.ordre
-               FROM  applis_ins
-         INNER JOIN  applis_def ON applis_def.id=applis_ins.aid
-              WHERE  uid=".$myrow["user_id"]." ORDER by ordre"
-            );
-    while (list($rapp_txt,$rapp_url,$rapp_type,$rapp_ordre)=mysql_fetch_row($tmpreq)) {
-        if ($rapp_ordre==0) {
-            $texsrc .= contact_tbl_entry("Appli", applis_fmt($rapp_type,$rapp_txt,""));
-        } elseif ($rapp_ordre==1) {
-            $texsrc .= contact_tbl_entry("Post-appli", applis_fmt($rapp_type,$rapp_txt,""));
-        }
-    }
-    mysql_free_result($tmpreq);
-
-    /* affichage des différentes adresses persos */
-    $i = 0;
-    $tmpreq = $globals->db->query(
-            "SELECT  adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax
-               FROM  adresses AS adr
-          LEFT JOIN  geoloc_pays AS gp ON(adr.pays=gp.a2)
-          LEFT JOIN  geoloc_region AS gr ON(adr.pays=gr.a2 AND adr.region=gr.region)
-              WHERE  adr.uid = ".$myrow["user_id"]
-            );
-    while (list($adr1,$adr2,$adr3,$cp,$ville,$pays,$region,$tel,$fax)
-            = mysql_fetch_row($tmpreq)) {
-        $i++;
-	$ch_adr = "";
-	if (!empty($adr1)) $ch_adr .= "\n$adr1";
-	if (!empty($adr2)) $ch_adr .= "\n$adr2";
-	if (!empty($adr3)) $ch_adr .= "\n$adr3";
-	if (!empty($cp) || ! empty($ville)) $ch_adr .= "\n$cp $ville";
-	if (!empty($region)) $ch_adr .= "\n$region, ";
-	elseif (! empty($pays)) $ch_adr .= "\n";
-	if (!empty($pays)) $ch_adr .= "$pays";
-	$texsrc .= contact_tbl_entry("Adresse $i", substr($ch_adr, 1));
-	if (!empty($tel)) $texsrc .= contact_tbl_entry("Téléphone $i", $tel);
-	if (!empty($fax)) $texsrc .= contact_tbl_entry("Fax $i", $fax);
-	
-    }
-    mysql_free_result($tmpreq);
-
-    /* affichage du téléphone mobile */
-    if ($myrow["mobile"])
-    	$texsrc .= contact_tbl_entry("Mobile", $myrow["mobile"]);
-
-    /* affichage des infos professionnelles (poste, adresse, tel) */
-    $res_pro = $globals->db->query(
-            "SELECT  entreprise, s.label, ss.label, f.fonction_fr, poste,
-                     adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax
-               FROM  entreprises       AS e
-          LEFT JOIN  emploi_secteur    AS s  ON e.secteur = s.id
-          LEFT JOIN  emploi_ss_secteur AS ss ON (e.secteur = ss.secteur AND e.ss_secteur = ss.id)
-          LEFT JOIN  fonctions_def     AS f  ON f.id = e.fonction
-          LEFT JOIN  geoloc_pays       AS gp ON gp.a2 = e.pays
-         INNER JOIN  geoloc_region     AS gr ON (gr.a2 = e.pays AND gr.region = e.region)
-             WHERE e.uid = ".$myrow["user_id"]
-            );
-    while (list($entreprise, $secteur, $ss_secteur, $fonction, $poste, $adr1, $adr2, $adr3,
-                $cp, $ville, $pays, $region, $tel, $fax) = mysql_fetch_row($res_pro))
-    {
-        if (!empty($entreprise))
-    	    $texsrc .= contact_tbl_entry("Entreprise", $entreprise . ($secteur ? " ($secteur - $ss_secteur)" : ""));
-
-        if (!empty($poste))
-    	    $texsrc .= contact_tbl_entry("Poste / Fonction", $poste." / ".(($fonction) ? $fonction : "-"));
-	$ch_adr = "";
-	if (! empty($adr1)) $ch_adr .= "\n$adr1";
-	if (! empty($adr2)) $ch_adr .= "\n$adr2";
-	if (! empty($adr3)) $ch_adr .= "\n$adr3";
-	if (! empty($cp) || ! empty($ville)) $ch_adr .= "\n$cp $ville";
-	if (! empty($region)) $ch_adr .= "\n$region, ";
-	elseif (! empty($pays)) $ch_adr .= "\n";
-	if (! empty($pays)) $ch_adr .= "$pays";
-	$texsrc .= contact_tbl_entry("Adresse pro.", substr($ch_adr, 1));
-	if (! empty($tel)) $texsrc .= contact_tbl_entry("Téléphone pro.", $tel);
-	if (! empty($fax)) $texsrc .= contact_tbl_entry("Fax pro.", $fax);
-    }
-
-    /* fin du contact */
-    $texsrc .= contact_tbl_ftr();
+    $sql .= " ORDER BY  u.nom, u.prenom, u.promo";
 }
 
-// enfin on rajoute le footer
-$texsrc .= contacts_footer();
-mysql_free_result($req);
+$citer = $globals->xdb->iterRow($sql, Session::getInt('uid'));
+$pdf   = new ContactsPDF();
 
-// puis on convertit le fichier tex en pdf !
-tex_to_pdf($texsrc);
+while (list($alias) = $citer->next()) {
+    $user = get_user_details($alias);
+    $pdf->addContact($user);
+}
+
+$pdf->Output();
 
 ?>

@@ -19,7 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("diogenes.core.page.inc.php");
+require_once('diogenes.core.page.inc.php');
+require_once('xorg/errors.inc.php');
+require_once('xorg/smarty.plugins.inc.php');
 
 // {{{ class XorgPage
 
@@ -69,14 +71,11 @@ class XorgPage extends DiogenesCorePage
 
         $this->_page_type = $type;
         $this->_tpl       = $tpl;
-	require_once('xorg/errors.inc.php');
         $this->_errors    = new XOrgErrors;
 
         $this->DiogenesCorePage();
-	require_once('xorg/smarty.plugins.inc.php');
         $this->register_prefilter('at_to_globals');
 
-        $this->assign('site_dev',$globals->debug);
         $this->doAuth();
     }
 

@@ -216,6 +216,7 @@ function &get_user_details($login, $from_uid = '')
                                       FROM  groupesx_ins
                                  LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
                                      WHERE  guid = {?}", $uid);
+    $user['gpxs'] = Array();
     while (list($gxt, $gxu) = $res->next()) {
         $user['gpxs'][] = $gxu ? "<a href=\"$gxu\">$gxt</a>" : $gxt;
     } 
@@ -227,6 +228,7 @@ function &get_user_details($login, $from_uid = '')
                                     WHERE  uid={?}
                                  ORDER BY  ordre", $uid);
     
+    $user['applis_fmt'] = Array();
     while (list($txt, $url, $type) = $res->next()) {
         require_once('applis.func.inc.php');
         $user['applis_fmt'][] = applis_fmt($type, $txt, $url);

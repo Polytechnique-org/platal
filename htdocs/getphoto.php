@@ -21,7 +21,7 @@
 
 
 require_once('xorg.inc.php');
-new_skinned_page('login.tpl', AUTH_COOKIE);
+new_skinned_page('login.tpl', AUTH_PUBLIC);
 
 if (Env::has('x')) {
     if (Env::get('req') == "true") {
