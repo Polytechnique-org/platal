@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_emails.tpl,v 1.8 2004-10-24 14:58:27 x2000habouzit Exp $
+        $Id: doc_emails.tpl,v 1.9 2004-11-24 08:31:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -47,7 +47,7 @@
 <br />
 
 <h2>
-  <a href="{"docs/from.php"|url}">Utiliser mon adresse @polytechnique.org dans FROM:</a> (150 Ko)
+  <a href="{"docs/doc_from.php"|url}">Utiliser mon adresse @polytechnique.org dans FROM:</a> (150 Ko)
 </h2>
 <p>
     Ce lien t'explique comment configurer facilement plusieurs comptes e-mail dans Outlook Express.
