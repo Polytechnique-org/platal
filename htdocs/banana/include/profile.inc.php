@@ -24,6 +24,7 @@ function checkcancel($_headers) {
 
 function getprofile() {
     if (logged()) {
+        global $globals;
 	$req = mysql_query("SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
 				    IF(FIND_IN_SET('automaj',flags),'1','0') 
 			      FROM  forums.profils
@@ -44,7 +45,7 @@ function getprofile() {
 	$array['lastnews'] = $_SESSION['banana_last'];
 	$array['dropsig'] = true;
 	if ($maj) {
-	    mysql_query("UPDATE auth_user_md5 SET banana_last='"
+	    mysql_query("UPDATE auth_user_quick SET banana_last='"
 		.gmdate("YmdHis")."' WHERE user_id='{$_SESSION['uid']}'");
 	}
 	$req=mysql_query("SELECT  nom
