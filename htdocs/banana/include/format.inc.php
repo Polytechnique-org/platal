@@ -28,10 +28,9 @@ function url($string)
  */
 
 function formatDisplayHeader($_header,$_text,$_spool) {
-    global $locale;
     switch ($_header) {
         case "date": 
-            return locale_date($_text);
+            return formatDate($_text);
 
         case "followup":
         case "newsgroups":
@@ -79,7 +78,7 @@ function formatDisplayHeader($_header,$_text,$_spool) {
  * @return STRING HTML output
  */
 function displayshortcuts() {
-    global $news,$locale,$first,$spool,$group,$post,$id,$profile,$css;
+    global $news,$first,$spool,$group,$post,$id,$profile,$css;
     $sname = basename($_SERVER['SCRIPT_NAME']);
 
     echo "<div class=\"{$css['bananashortcuts']}\">";
@@ -101,8 +100,8 @@ function displayshortcuts() {
                 echo '[<a href="index.php?banana=updateall">Mettre à jour</a>] ';
             }
             echo '[<a href="'.url("confbanana.php").'">Profil</a>] ';
-            echo '[<a href="index.php">'.$locale['format']['grouplist'].'</a>] ';
-            echo "[<a href=\"post.php?group=$group\">".$locale['format']['newpost']."</a>] ";
+            echo '[<a href="index.php">'._('Liste des forums').'</a>] ';
+            echo "[<a href=\"post.php?group=$group\">"._('Nouveau message')."</a>] ";
             if (sizeof($spool->overview)>$news['max']) {
                 for ($ndx=1; $ndx<=sizeof($spool->overview); $ndx += $news['max']) {
                     if ($first==$ndx) {
@@ -118,16 +117,11 @@ function displayshortcuts() {
                 echo '[<a href="index.php?banana=updateall">Mettre à jour</a>] ';
             }
             echo '[<a href="'.url("confbanana.php").'">Profil</a>] ';
-            echo '[<a href="index.php">'.$locale['format']['grouplist']
-                .'</a>] ';
-            echo "[<a href=\"thread.php?group=$group\">"
-                .$locale['format']['group_b'].$group
-                .$locale['format']['group_a']."</a>] ";
-            echo "[<a href=\"post.php?group=$group&amp;id=$id&amp;type=followup\">"
-                .$locale['format']['followup']."</a>] ";
+            echo '[<a href="index.php">'._('Liste des forums').'</a>] ';
+            echo "[<a href=\"thread.php?group=$group\">$group</a>]";
+            echo "[<a href=\"post.php?group=$group&amp;id=$id&amp;type=followup\">"._('Répondre')."</a>] ";
             if (checkcancel($post->headers)) {
-                echo "[<a href=\"article.php?group=$group&amp;id=$id&amp;type=cancel\">"
-                    .$locale['format']['cancel']."</a>] ";
+                echo "[<a href=\"article.php?group=$group&amp;id=$id&amp;type=cancel\">"._('Annuler ce message')."</a>] ";
             }
             break;
         case 'post.php' :
@@ -135,11 +129,8 @@ function displayshortcuts() {
                 echo '[<a href="index.php?banana=updateall">Mettre à jour</a>] ';
             }
             echo '[<a href="'.url("confbanana.php").'">Profil</a>] ';
-            echo '[<a href="index.php">'.$locale['format']['grouplist']
-                .'</a>] ';
-            echo "[<a href=\"thread.php?group=$group\">"
-                .$locale['format']['group_b'].$group
-                .$locale['format']['group_a']."</a>] ";
+            echo '[<a href="index.php">'._('Liste des forums').'</a>] ';
+            echo "[<a href=\"thread.php?group=$group\">$group</a>] ";
             break;
     }
     echo '</div>';
