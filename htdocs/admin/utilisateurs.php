@@ -4,11 +4,10 @@ new_admin_page('admin/utilisateurs.tpl', true, 'admin/utilisateurs.head.tpl');
 require("xorg.misc.inc.php");
 
 $assignates = Array(
-        'add_email', 'email', 'fwd', 'alias', 'hashpass', 'homonyme',
-        'login', 'loginbis', 'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num',
-        'oldlogin', 'olduid', 'passw', 'password1', 'perms', 'permsN', 'prenomN', 'promoN',
-        'remove_email', 'select', 'suid_button', 'user_id', 'u_edit',
-        'u_kill', 'u_kill_conf'
+	'add_email', 'email', 'fwd', 'alias', 'hashpass', 'homonyme', 'login', 'loginbis',
+	'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num', 'oldlogin', 'olduid',
+	'passw', 'password1', 'perms', 'permsN', 'prenomN', 'promoN', 'remove_email',
+	'select', 'suid_button', 'user_id', 'u_edit', 'u_kill', 'u_kill_conf'
 );
 foreach($assignates as $ass) $$ass=isset($_REQUEST[$ass]) ? $_REQUEST[$ass] : '';
 
@@ -22,7 +21,7 @@ function my_msg($msg)   { global $succes; $succes[] = "<p class='succes'>O.K.: $
  */
 
 if(isset($_REQUEST['logs_button'])) {
-    header("Location: logger.php?logauth=native&loguser={$_REQUEST['login']}");
+    header("Location: logger.php?loguser={$_REQUEST['login']}&year=".date('Y')."&month=".date('m'));
 }
 
 
