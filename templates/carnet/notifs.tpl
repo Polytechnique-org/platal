@@ -17,10 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.9 2004-11-05 15:23:41 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.10 2004-11-06 16:08:28 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
+
+{foreach from=$err item=e}
+<p class='erreur'>{$e}</p>
+{/foreach}
 
 <h1>Notifications automatiques</h1>
 
@@ -39,8 +43,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Contacts</legend>
-    <input type='checkbox' name='contacts' {if $notifs->flags->hasflag('contacts')}checked="checked"{/if} /> Surveiller mes contacts<br />
-    <input type='checkbox' name='deaths' {if $notifs->flags->hasflag('deaths')}checked="checked"{/if}/> Retirer les camarades décédés de mes contacts
+    <input type='checkbox' name='contacts' {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
   </fieldset>
   <div class='center'>
     <input type='submit' name='flags' value='valider' />
@@ -57,17 +60,19 @@ Pour les promos, tu es notifié lorsque un camarade de cette promo s'inscrit, et 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Ajouter une promo</legend>
-    <input type='text' name='add_promo' maxlength='4' size='4' />
-    <input type='submit' value='ajouter' />
-    <span class='smaller'>mettre la promo sur quatre chiffres </span>
+    Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
+    ou des plages de promos (par ex. 1990-1992) : <br />
+    <input type='text' name='promo' />
+    <input type='submit' name='add_promo' value='ajouter' />
+    <input type='submit' name='del_promo' value='retirer' />
     <br />
-    {if $notifs->promos|@count eq 0}
+    {if $watch->promos()|@count eq 0}
     <p>Tu ne surveilles actuellement aucune promo.</p>
     {else}
-    <p>Tu surveilles {if $notifs->promos|@count eq 1}la promo{else}les promos{/if} :</p>
+    <p>Tu surveilles les les promos suivantes :</p>
     <ul>
-      {foreach from=$notifs->promos item=p}
-      <li>{$p} <a href="?del_promo={$p}"><img src="{"images/retirer.gif"|url}" alt="retirer cette promo" /></a></li>
+      {foreach from=$watch->promos() item=p}
+      <li>{if $p.0 eq $p.1}{$p.0}{else}{$p.0} à {$p.1}{/if}</li>
       {/foreach}
     </ul>
     {/if}

@@ -18,79 +18,164 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.5 2004-11-05 14:34:04 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.6 2004-11-06 16:08:27 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.flagset.inc.php');
 
-function register_watch_op($uid, $type) {
-    global $globals;
-    if(in_array($type, Array('fiche','death','photo','ins'))) {
-	$globals->db->query("REPLACE INTO watch_ops (user_id,op) VALUES('$uid','$type')");
+class Watch {
+    var $_uid;
+    var $_promos;
+    var $_nonins;
+    var $_cats;
+    var $_subs;
+    var $watch_contacts;
+    var $watch_last;
+    
+    function Watch($uid) {
+	global $globals;
+	$this->_uid = $uid;
+	$this->_promos = new PromoNotifs($uid);
+	$this->_nonins = new NoninsNotifs($uid);
+	$this->_cats = new WatchCat();
+	$this->_subs = new WatchSub($uid);
+	$res = $globals->db->query("SELECT watch_contacts,watch_last FROM auth_user_quick WHERE user_id='$uid'");
+	list($this->watch_contacts, $this->watch_last) = mysql_fetch_row($res);
+	mysql_free_result($res);
     }
-    if($type == 'fiche') {
-	$globals->db->query("UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id='$uid'");
+
+    function promos() {
+	return $this->_promos->toRanges();
     }
 }
 
-class Notifs {
-    var $uid;
-    var $flags;
-    var $promos = Array();
-    var $nonins = Array();
-
-    function Notifs($uid) {
+class WatchCat {
+    var $_data = Array();
+    
+    function WatchCat() {
 	global $globals;
-	$this->uid = $uid;
-
-	$res = $globals->db->query("SELECT watch FROM auth_user_md5 WHERE user_id = '$uid'");
-	list($flags) = mysql_fetch_row($res);
+	$res = $globals->db->query("SELECT * FROM watch_cat");
+	while($tmp = mysql_fetch_assoc($res)) $this->_data[$tmp['id']] = $tmp;
 	mysql_free_result($res);
-	$this->flags = new FlagSet($flags);
-	
-	$res = $globals->db->query("SELECT  type,arg,prenom,nom,promo,u.user_id
-				      FROM  watch         AS w
-				 LEFT JOIN  auth_user_md5 AS u ON(u.user_id = w.arg)
-				     WHERE  w.user_id = '$uid'
-				  ORDER BY  promo,nom,arg");
-	while(list($type, $arg, $prenom, $nom, $promo, $uid) = mysql_fetch_row($res)) {
-	    if($type=='promo') {
-		$this->promos[$arg] = $arg;
-	    } elseif($type =='non-inscrit') {
-		$this->nonins[$arg] = Array('prenom'=>$prenom, 'nom'=>$nom, 'promo'=>$promo, 'uid'=>$uid);
+    }
+}
+
+class WatchSub {
+    var $_uid;
+    var $_data;
+
+    function WatchSub($uid) {
+	$this->_uid = $uid;
+	global $globals;
+	$res = $globals->db->query("SELECT cid FROM watch_sub WHERE uid='$uid'");
+	while(list($c) = mysql_fetch_row($res)) $this->_data[$c] = $c;
+	mysql_free_result($res);
+    }
+}
+
+class PromoNotifs {
+    var $_uid;
+    var $_data = Array();
+
+    function PromoNotifs($uid) {
+	$this->_uid = $uid;
+	global $globals;
+	$res = $globals->db->query("SELECT promo FROM watch_promo WHERE uid='$uid' ORDER BY promo");
+	while(list($p) = mysql_fetch_row($res)) $this->_data[intval($p)] = intval($p);
+	mysql_free_result($res);
+    }
+
+    function add($p) {
+	global $globals;
+	$promo = intval($p);
+	$globals->db->query("REPLACE INTO watch_promo (uid,promo) VALUES('{$this->_uid}',$promo)");
+	$this->_data[$promo] = $promo;
+	asort($this->_data);
+    }
+    
+    function del($p) {
+	global $globals;
+	$promo = intval($p);
+	$globals->db->query("DELETE FROM watch_promo WHERE uid='{$this->_uid}' AND promo=$promo");
+	unset($this->_data[$promo]);
+    }
+    
+    function addRange($_p1,$_p2) {
+	global $globals;
+	$p1 = intval($_p1);
+	$p2 = intval($_p2);
+	$values = Array();
+	for($i = min($p1,$p2); $i<=max($p1,$p2); $i++) {
+	    $values[] = "('{$this->_uid}',$i)";
+	    $this->_data[$i] = $i;
+	}
+	$globals->db->query("REPLACE INTO watch_promo (uid,promo) VALUES ".join(',',$values));
+	asort($this->_data);
+    }
+
+    function delRange($_p1,$_p2) {
+	global $globals;
+	$p1 = intval($_p1);
+	$p2 = intval($_p2);
+	$where = Array();
+	for($i = min($p1,$p2); $i<=max($p1,$p2); $i++) {
+	    $where[] = "promo=$i";
+	    unset($this->_data[$i]);
+	}
+	$globals->db->query("DELETE FROM watch_promo WHERE uid='{$this->_uid}' AND (".join(' OR ',$where).')');
+    }
+
+    function toRanges() {
+	$ranges = Array();
+	$I = Array();
+	foreach($this->_data as $promo) {
+	    if(!isset($I[0])) {
+		$I = Array($promo,$promo);
+	    }
+	    elseif($I[1]+1 == $promo) {
+		$I[1] ++;
+	    }
+	    else {
+		$ranges[] = $I;
+		$I = Array($promo,$promo);
 	    }
 	}
+	if(isset($I[0])) $ranges[] = $I;
+	return $ranges;
     }
+}
 
-    function del_nonins($p) {
-	global $globals;
-	unset($this->nonins[$p]);
-	$globals->db->query("DELETE FROM watch WHERE user_id='{$this->uid}' AND type='non-inscrit' AND arg='$p'");
-    }
 
-    function add_nonins($p) {
+class NoninsNotifs {
+    var $_uid;
+    var $_data = Array();
+
+    function NoninsNotifs($uid) {
 	global $globals;
-	$globals->db->query("INSERT INTO watch (user_id,type,arg) VALUES('{$this->uid}','non-inscrit','$p')");
-	$res = $globals->db->query(" SELECT prenom,nom,promo,user_id FROM auth_user_md5 WHERE user_id='$p'");
-	$this->nonins[$p] = mysql_fetch_assoc($res);
+	$this->_uid = $uid;
+	$res = $globals->db->query("SELECT  u.prenom,IF(u.epouse='',u.nom,u.epouse) AS nom, u.promo, u.user_id
+				      FROM  watch_nonins  AS w
+				INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
+                                     WHERE  w.uid = '$uid'
+				  ORDER BY  promo,nom");
+	while($tmp = mysql_fetch_assoc($res)) $this->_data[$tmp['user_id']] = $tmp;
 	mysql_free_result($res);
     }
 
-    function del_promo($p) {
+    function del($p) {
 	global $globals;
-	unset($this->promos[$p]);
-	$globals->db->query("DELETE FROM watch WHERE user_id='{$this->uid}' AND type='promo' AND arg='$p'");
+	unset($this->_data["$p"]);
+	$globals->db->query("DELETE FROM watch_nonins WHERE uid='{$this->_uid}' AND ni_id='$p'");
     }
 
-    function add_promo($p) {
+    function add($p) {
 	global $globals;
-	$this->promos[$p] = $p;
-	$globals->db->query("REPLACE INTO watch (user_id,type,arg) VALUES ('{$this->uid}','promo','$p')");
-    }
-
-    function saveFlags() {
-	global $globals;
-	$globals->db->query("UPDATE auth_user_md5 SET watch='{$this->flags->value}' WHERE user_id='{$this->uid}'");
+	$globals->db->query("INSERT INTO watch_nonins (uid,ni_id) VALUES('{$this->_uid}','$p')");
+	$res = $globals->db->query("SELECT  prenom,IF(u.epouse='',u.nom,u.epouse),promo,user_id
+				      FROM  auth_user_md5
+				     WHERE  user_id='$p'");
+	$this->_data["$p"] = mysql_fetch_assoc($res);
+	mysql_free_result($res);
     }
 }
  

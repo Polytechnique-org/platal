@@ -18,50 +18,44 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.php,v 1.4 2004-11-05 14:34:04 x2000habouzit Exp $
+        $Id: notifs.php,v 1.5 2004-11-06 16:08:27 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('carnet/notifs.tpl', AUTH_COOKIE);
 require('notifs.inc.php');
 
-$notifs = new Notifs($_SESSION['uid']);
+$watch = new Watch($_SESSION['uid']);
 
 $err = Array();
 
-foreach($_REQUEST as $key=>$val) {
-    switch($key) {
-	case 'add_promo':
-	    $p = intval($val);
-	    if(($p<1900) || ($p>2100)) {
-		$err[] = "il faut entrer une promo sur 4 chiffres";
-	    } else {
-		$notifs->add_promo($val);
-	    };
-	    break;
-
-	case 'del_promo':
-	    $notifs->del_promo($val);
-	    break;
-
-	case 'add_nonins':
-	    $notifs->add_nonins($val);
-	    break;
-
-	case 'del_nonins':
-	    $notifs->del_nonins($val);
-	    break;
-
-	case 'flags':
-	    $flags = new FlagSet();
-	    if(isset($_REQUEST['contacts'])) $flags->addflag('contacts');
-	    if(isset($_REQUEST['deaths'])) $flags->addflag('deaths');
-	    $notifs->flags = $flags;
-	    $notifs->saveFlags();
-	    break;
+if(isset($_REQUEST['promo'])) {
+    if(preg_match('!^ *(\d{4}) *$!', $_REQUEST['promo'], $matches)) {
+	$p = intval($matches[1]);
+	if($p<1900 || $p>2100) {
+	    $err[] = 'la promo entrée est invalide';
+	} else {
+	    if(isset($_REQUEST['add_promo'])) $watch->_promos->add($p);
+	    if(isset($_REQUEST['del_promo'])) $watch->_promos->del($p);
+	}
+    } elseif (preg_match('!^ *(\d{4}) *- *(\d{4}) *$!', $_REQUEST['promo'], $matches)) {
+	$p1 = intval($matches[1]);
+	$p2 = intval($matches[2]);
+	if($p1<1900 || $p1>2100) {
+	    $err[] = 'la première promo de la plage entrée est invalide';
+	} elseif($p2<1900 || $p2>2100) {
+	    $err[] = 'la seconde promo de la plage entrée est invalide';
+	} else {
+	    if(isset($_REQUEST['add_promo'])) $watch->_promos->addRange($p1,$p2);
+	    if(isset($_REQUEST['del_promo'])) $watch->_promos->delRange($p1,$p2);
+	}
+    } else {
+	$err[] = "La promo (ou la plage de promo) entrée est dans un format incorrect.";
     }
 }
-$page->assign_by_ref('notifs', $notifs);
+
+$page->assign_by_ref('watch', $watch);
+$page->assign_by_ref('err', $err);
 
 $page->run();
 
