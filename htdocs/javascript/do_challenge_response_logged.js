@@ -38,6 +38,7 @@ function doChallengeResponse() {
         document.forms.loginsub.challenge.value;
 
     document.forms.loginsub.response.value = MD5(str);
+    document.forms.loginsub.remember.value = document.forms.login.remember.checked;
     document.forms.login.password.value = "";
     document.forms.loginsub.submit();
 }

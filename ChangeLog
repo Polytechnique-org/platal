@@ -31,13 +31,13 @@ New :
 		- Openweb : update.													-MC
 
 	* Validation :
-		- quite a lot of rewrite, simplifications.							-MC
+		- Quite a lot of rewrite, simplifications.							-MC
 
 Bug/Wish :
 
 	* Core :
-		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
 		- #145: Use melix address to log in.								-Car
+		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
 
 	* Emails :
 		- #229: Possibility to show our melix address.						-Car

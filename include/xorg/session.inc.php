@@ -157,18 +157,14 @@ class XorgSession extends DiogenesCoreSession
      */
     function doAuthCookie(&$page)
     {
-	global $failed_ORGaccess;
-	// si on est deja connecté, c'est bon, rien à faire
 	if (logged()) {
 	    return;
         }
 
-	// on vient de recevoir une demande d'auth, on passe la main a doAuth
 	if (Env::has('username') and Env::has('response')) {
 	    return $this->doAuth($page);
         }
 
-	// sinon, on vérifie que les bons cookies existent
 	if ($r = try_cookie()) {
 	    return $this->doAuth($page,($r>0));
         }

@@ -67,21 +67,16 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr style="white-space: nowrap">
       <td class="titre">
-      {if $domains}
         Adresse email :
-      {else}
-        Login (prenom.nom) :
-      {/if}
       </td>
       <td>
-        <input type="text" name="username" size="20" maxlength="50"
-          value="{insert name="getUserName"}" />
-        {if $domains}
-          @
-        <select name="domain">
-        {html_options values=$domains_value output=$domains selected=$r_domain}
+        <input type="text" name="username" size="20" maxlength="50" value="{insert name="getUserName"}" />&nbsp;@&nbsp;<select name="domain">
+          <option value="login">{#globals.mail.domain#} / {#globals.mail.domain2#}</option>
+          <option value="alias" {if $smarty.cookies.ORGdomain eq alias}selected="selected"{/if}>
+          {#globals.mail.alias_dom#} / {#globals.mail.alias_dom2#}
+          </option>
+          {$smarty.cookies.domain}
         </select>
-        {/if}
       </td>
     </tr>
     <tr>
