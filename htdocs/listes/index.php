@@ -18,13 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.12 2004-11-22 11:15:39 x2000habouzit Exp $
+        $Id: index.php,v 1.13 2004-11-22 20:04:44 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('listes/index.tpl', AUTH_MDP);
-include('xml-rpc-client.inc.php');
-include('newsletter.inc.php');
+require_once('xml-rpc-client.inc.php');
+require_once('newsletter.inc.php');
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 if(isset($_GET['del'])) {

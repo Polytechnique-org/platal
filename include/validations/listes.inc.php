@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: listes.inc.php,v 1.2 2004-11-22 07:40:18 x2000habouzit Exp $
+    $Id: listes.inc.php,v 1.3 2004-11-22 20:05:11 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class ListeReq
@@ -116,7 +116,7 @@ class ListeReq extends Validate
     function commit()
     {
         global $globals;
-        include('xml-rpc-client.inc.php');
+        require_once('xml-rpc-client.inc.php');
         $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
         list($pass) = mysql_fetch_row($res);
         mysql_free_result($res);

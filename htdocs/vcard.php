@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.16 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: vcard.php,v 1.17 2004-11-22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_nonhtml_page('vcard.tpl', AUTH_COOKIE);
-require("xorg.misc.inc.php");
+require_once("xorg.misc.inc.php");
 
 function format_adr($params, &$smarty) {
     // $adr1, $adr2, $adr3, $cp, $ville, $region, $pays

@@ -18,15 +18,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step2.php,v 1.3 2004-11-22 11:15:35 x2000habouzit Exp $
+        $Id: step2.php,v 1.4 2004-11-22 20:04:41 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
-require("identification.inc.php");
+require_once("xorg.inc.php");
+require_once("identification.inc.php");
 
 new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC);
 
-require("applis.func.inc.php");
+require_once("applis.func.inc.php");
 
 $page->assign('homonyme', $homonyme);
 $page->assign('forlife',  $forlife);

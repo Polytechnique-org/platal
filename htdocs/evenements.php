@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.php,v 1.3 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: evenements.php,v 1.4 2004-11-22 20:04:35 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('evenements.tpl', AUTH_MDP);
 
 if (isset($_POST['titre'])) {$titre = stripslashes($_POST['titre']);}
@@ -63,7 +63,7 @@ if ($action=="Confirmer") {
 	.", validation_date = 0";
 
     if ($res = $globals->db->query($sql)) {
-	require("validations.inc.php");
+	require_once("validations.inc.php");
 	$evtreq = new evtreq(mysql_insert_id(),$titre,$texte,$promo_min,
 		$promo_max,$peremption,$validation_message,$_SESSION['uid']);
 	$evtreq->submit();

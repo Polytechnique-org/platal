@@ -8,7 +8,7 @@ function banana($params) {
     $sname = array_pop($array);
     unset($array);
 
-    include("../../../banana/$sname");
+    require_once("../../../banana/$sname");
 }
 
 ?>

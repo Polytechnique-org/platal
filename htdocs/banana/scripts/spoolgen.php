@@ -10,13 +10,13 @@
 ini_set('max_execution_time','300');
 ini_set('include_path', '..:../include:../../include:../../../include');
 
-require("include/encoding.inc.php");
-require("include/config.inc.php");
-require("include/NetNNTP.inc.php");
-include("include/post.inc.php");
-include("include/groups.inc.php");
-require("include/spool.inc.php");
-require("include/password.inc.php");
+require_once("include/encoding.inc.php");
+require_once("include/config.inc.php");
+require_once("include/NetNNTP.inc.php");
+require_once("include/post.inc.php");
+require_once("include/groups.inc.php");
+require_once("include/spool.inc.php");
+require_once("include/password.inc.php");
 
 
 $nntp = new nntp($news['server']);

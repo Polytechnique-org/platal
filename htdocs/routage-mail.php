@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.php,v 1.12 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: routage-mail.php,v 1.13 2004-11-22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('routage-mail.tpl',AUTH_MDP);
-require("email.classes.inc.php");
+require_once("email.classes.inc.php");
 
 $redirect = new Redirect($_SESSION['uid']);
 

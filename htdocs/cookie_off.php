@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cookie_off.php,v 1.5 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: cookie_off.php,v 1.6 2004-11-22 20:04:35 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('index.tpl', AUTH_COOKIE);
 
 setcookie('ORGaccess','',(time()+1),'/','',0);

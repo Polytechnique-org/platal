@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.php,v 1.10 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: trombipromo.php,v 1.11 2004-11-22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('trombipromo.tpl', AUTH_COOKIE);
-require("trombi.inc.php");
+require_once("trombi.inc.php");
 
 function getList($offset,$limit) {
     global $globals;

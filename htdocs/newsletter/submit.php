@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.php,v 1.8 2004-11-22 11:15:53 x2000habouzit Exp $
+        $Id: submit.php,v 1.9 2004-11-22 20:05:01 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE, 'newsletter/head.tpl');
-require("newsletter.inc.php");
+require_once("newsletter.inc.php");
 
 if(isset($_POST['see'])) {
     $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
@@ -33,7 +33,7 @@ if(isset($_POST['see'])) {
     $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
     $nl->saveArticle($art);
 
-    require("diogenes.hermes.inc.php");
+    require_once("diogenes.hermes.inc.php");
     $from = "\"{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']})\" <{$_SESSION['forlife']}@polytechnique.org>";
     $mailer = new HermesMailer();
     $mailer->setSubject("proposition d'article dans la NL");

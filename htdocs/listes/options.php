@@ -18,15 +18,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: options.php,v 1.9 2004-11-22 11:15:39 x2000habouzit Exp $
+        $Id: options.php,v 1.10 2004-11-22 20:04:44 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('listes/options.tpl', AUTH_MDP);
-include('xml-rpc-client.inc.php');
+require_once('xml-rpc-client.inc.php');
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.6 2004-11-22 11:15:32 x2000habouzit Exp $
+        $Id: index.php,v 1.7 2004-11-22 20:04:38 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('docs/index.tpl',AUTH_PUBLIC);
 $page->run();
 ?>

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.php,v 1.17 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: login.php,v 1.18 2004-11-22 20:04:35 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
 $param=$globals->db->query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");
@@ -56,7 +56,7 @@ $res = $globals->db->query("SELECT id FROM newsletter ORDER BY date DESC");
 list($nb) = mysql_fetch_row($res);
 mysql_free_result($res);
 
-include('login.conf.php') ;
+require_once('login.conf.php') ;
 $pub_nbElem = $pub_nbLig * $pub_nbCol ;
 if (count($pub_tjs) <= $pub_nbElem)
     $publicite = array_slice ($pub_tjs,0,$pub_nbElem) ;

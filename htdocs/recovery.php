@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.10 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: recovery.php,v 1.11 2004-11-22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('recovery.tpl', AUTH_PUBLIC);
 
 $errors = Array();
@@ -70,7 +70,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         mysql_free_result($result);
         $emails = implode(',', $emails);
         
-	require("diogenes.hermes.inc.php");
+	require_once("diogenes.hermes.inc.php");
 	$mymail = new HermesMailer();
 	$mymail->setFrom('\"Gestion des mots de passe\" <support+password@polytechnique.org>');
 	$mymail->addTo($emails);

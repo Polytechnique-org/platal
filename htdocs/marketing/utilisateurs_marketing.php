@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.14 2004-11-22 17:28:14 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.15 2004-11-22 20:04:51 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 $id_actions = array('Mailer');
-require("select_user.inc.php");
+require_once("select_user.inc.php");
 
 //actions possible une fois un X désigné par son matricule
 switch ($_REQUEST["submit"]) {
@@ -48,7 +48,7 @@ switch ($_REQUEST["submit"]) {
   	break;
 
     case "Envoyer le mail":
-        require('xorg.misc.inc.php');
+        require_once('xorg.misc.inc.php');
 	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule={$_REQUEST['xmat']} AND perms!='pending'");
   	if ($myrow = mysql_fetch_assoc($result))
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
@@ -100,7 +100,7 @@ switch ($_REQUEST["submit"]) {
 	// pas d'erreur pour l'insert
 
 	// envoi du mail à l'utilisateur
-	require('xorg.mailer.inc.php');
+	require_once('xorg.mailer.inc.php');
 	$mymail = new XOrgMailer('marketing.utilisateur.tpl');
 
 	$mymail->assign('from', $_REQUEST["from"]);

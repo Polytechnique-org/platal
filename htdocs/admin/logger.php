@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: logger.php,v 1.5 2004-11-22 11:15:31 x2000habouzit Exp $
+        $Id: logger.php,v 1.6 2004-11-22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_admin_page('logger-view.tpl');
-require('diogenes.logger-view.inc.php');
+require_once('diogenes.logger-view.inc.php');
 
 if(empty($_REQUEST['logauth'])) $_REQUEST['logauth']='native';
 

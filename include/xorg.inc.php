@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.inc.php,v 1.1 2004-11-22 11:16:32 x2000habouzit Exp $
+    $Id: xorg.inc.php,v 1.2 2004-11-22 20:05:10 x2000habouzit Exp $
  ***************************************************************************/
 
 function microtime_float() 
@@ -53,7 +53,7 @@ require_once("xorg/menu.inc.php");
 require_once("xorg/session.inc.php");
 
 $globals = new XorgGlobals;
-require("xorg.config.inc.php");
+require_once("xorg.config.inc.php");
 
 // }}}
 // {{{ Build Menu, TODO: move that into appropriates hooks

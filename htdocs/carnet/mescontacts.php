@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.5 2004-11-22 17:28:14 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.6 2004-11-22 20:04:38 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page("carnet/mescontacts.tpl",AUTH_COOKIE);
-require("applis.func.inc.php");
+require_once("applis.func.inc.php");
 
 // si l'utilisateur demande le retrait de qqun de sa liste
 if (isset($_REQUEST['action'])) {

@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deconnexion.php,v 1.7 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: deconnexion.php,v 1.8 2004-11-22 20:04:35 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 
-if (isset($_SESSION['suid'])) { require('./exit.php'); }
+if (isset($_SESSION['suid'])) { require_once('./exit.php'); }
 
 if (isset($_SESSION['log'])) {
     if (isset($_SERVER['HTTP_REFERER']))

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: create.php,v 1.5 2004-11-22 11:15:39 x2000habouzit Exp $
+        $Id: create.php,v 1.6 2004-11-22 20:04:44 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('listes/create.tpl', AUTH_MDP);
 
 $owners  = empty($_POST['owners'])  ? Array() : preg_split("/[\r\n]+/",$_POST['owners']);
@@ -74,7 +74,7 @@ if(isset($_POST['submit'])) {
 
     if(!count($err)) {
 	$page->assign('created', true);
-	require('validations.inc.php');
+	require_once('validations.inc.php');
 	$req = new ListeReq($_SESSION['uid'], $_POST['liste'], $_POST['desc'],
 	    $_POST['advertise'], $_POST['modlevel'], $_POST['inslevel'],
 	    $owners, $members);

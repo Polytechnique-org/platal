@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.6 2004-11-22 11:15:35 x2000habouzit Exp $
+        $Id: step3.php,v 1.7 2004-11-22 20:04:41 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 
 $erreur = Array();
 
-require("identification.inc.php");
+require_once("identification.inc.php");
 
 if(!isvalid_email($_REQUEST["email"]))
     $erreur[] = "Le champ 'E-mail' n'est pas valide.";
@@ -36,7 +36,7 @@ if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST["naissance"]))
 
 if(!empty($erreur)) {
     new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC);
-    require("applis.func.inc.php");
+    require_once("applis.func.inc.php");
     $page->assign('homonyme', $homonyme);
     $page->assign('loginbis', isset($loginbis) ? $loginbis : '');
     $page->assign('mailorg', $mailorg);
@@ -73,7 +73,7 @@ $globals->db->query("UPDATE auth_user_md5 SET last_known_email='{$_REQUEST['emai
 if(isset($_REQUEST['envoidirect']))
     $globals->db->query("UPDATE envoidirect SET date_succes=NOW() WHERE uid='{$_REQUEST['envoidirect']}'");
 
-require("xorg.mailer.inc.php");
+require_once("xorg.mailer.inc.php");
 $mymail = new XOrgMailer('inscrire.mail.tpl');
 $mymail->assign('forlife',$forlife);
 $mymail->assign('lemail',$_REQUEST['email']);

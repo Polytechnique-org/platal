@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: stats_promo.php,v 1.4 2004-11-22 11:15:58 x2000habouzit Exp $
+        $Id: stats_promo.php,v 1.5 2004-11-22 20:05:06 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page("stats/stats_promo.tpl", AUTH_COOKIE);
 
 $promo = isset($_REQUEST["promo"]) ? intval($_REQUEST["promo"]) : $_SESSION["promo"];

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: photos.inc.php,v 1.2 2004-11-22 07:40:18 x2000habouzit Exp $
+    $Id: photos.inc.php,v 1.3 2004-11-22 20:05:11 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class PhotoReq
@@ -146,7 +146,7 @@ class PhotoReq extends Validate
         $globals->db->query("REPLACE INTO  photo (uid, attachmime, attach, x, y)
                                    VALUES  ('{$this->uid}', '{$this->mimetype}', '"
                                             .addslashes($this->data)."', '{$this->x}', '{$this->y}')");
-	require('notifs.inc.php');
+	require_once('notifs.inc.php');
 	register_watch_op($this->uid,WATCH_FICHE);
     }
 

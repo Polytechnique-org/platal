@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.21 2004-11-22 11:15:39 x2000habouzit Exp $
+        $Id: moderate.php,v 1.22 2004-11-22 20:04:44 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,9 +28,9 @@ if(preg_match('!(?:[a-z0-9]+\.)?polytechnique\.org-(.*)!', $liste,$matches)) {
     header('Location: ?liste='.$matches[1]);
 }
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('listes/moderate.tpl', AUTH_MDP);
-include('xml-rpc-client.inc.php');
+require_once('xml-rpc-client.inc.php');
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
@@ -47,7 +47,7 @@ if(isset($_POST['sdel'])) {
 
 if(isset($_REQUEST['mid'])) {
     $mid = $_REQUEST['mid'];
-    include_once('diogenes.hernes.inc.php');
+    require_once('diogenes.hernes.inc.php');
     $mailer = new HermesMailer();
     $mailer->addTo("$liste-owner@polytechnique.org");
     $mailer->setFrom("$liste-bounces@polytechnique.org");

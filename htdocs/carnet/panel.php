@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: panel.php,v 1.4 2004-11-22 11:15:31 x2000habouzit Exp $
+        $Id: panel.php,v 1.5 2004-11-22 20:04:38 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('carnet/panel.tpl', AUTH_COOKIE);
-require('notifs.inc.php');
+require_once('notifs.inc.php');
 
 if(isset($_GET['read'])) {
     $_SESSION['watch_last'] = $_GET['read'];

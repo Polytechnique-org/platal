@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.18 2004-11-22 11:15:35 x2000habouzit Exp $
+        $Id: step4.php,v 1.19 2004-11-22 20:04:41 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('inscription/step4.tpl', AUTH_PUBLIC);
 
-require("user.func.inc.php");
-require('xorg.mailer.inc.php');
+require_once("user.func.inc.php");
+require_once('xorg.mailer.inc.php');
 
 define("ERROR_REF", 1);
 define("ERROR_ALREADY_SUBSCRIBED", 2);
@@ -90,7 +90,7 @@ if (!empty($_REQUEST['ref'])) {
     $logger->log("inscription",$email);
 
     /****************** insertion de l'email dans la table emails + bogofilter ***/
-    require("email.classes.inc.php");
+    require_once("email.classes.inc.php");
     $redirect = new Redirect($uid);
     $redirect->add_email($email);
     fix_bestalias($uid);

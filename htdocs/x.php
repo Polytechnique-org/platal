@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('x.tpl', AUTH_PUBLIC);
 $page->assign('baseurl',$globals->baseurl);
 $page->run();

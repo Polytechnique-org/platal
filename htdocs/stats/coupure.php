@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: coupure.php,v 1.7 2004-11-22 11:15:58 x2000habouzit Exp $
+        $Id: coupure.php,v 1.8 2004-11-22 20:05:06 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('stats/coupure.tpl',AUTH_PUBLIC);
 
 function serv_to_str($params) {

@@ -18,13 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombino.php,v 1.5 2004-11-22 11:15:30 x2000habouzit Exp $
+        $Id: trombino.php,v 1.6 2004-11-22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('trombino.tpl', AUTH_MDP);
 
-require("validations.inc.php");
+require_once("validations.inc.php");
 
 if (isset($_REQUEST["ordi"]) and
     isset($_FILES["userfile"]) and isset($_FILES["userfile"]["tmp_name"])) {

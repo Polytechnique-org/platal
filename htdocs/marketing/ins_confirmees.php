@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ins_confirmees.php,v 1.7 2004-11-22 11:15:45 x2000habouzit Exp $
+        $Id: ins_confirmees.php,v 1.8 2004-11-22 20:04:50 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_admin_page('marketing/ins_confirmees.tpl');
 
 if (!isset($_GET["sort"]) || $_GET["sort"] != "promo") $_GET["sort"] = "date_ins";

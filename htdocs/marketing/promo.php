@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: promo.php,v 1.6 2004-11-22 17:28:14 x2000habouzit Exp $
+        $Id: promo.php,v 1.7 2004-11-22 20:04:50 x2000habouzit Exp $
  ***************************************************************************/
 
 
-require("xorg.inc.php");
+require_once("xorg.inc.php");
 new_admin_page('marketing/promo.tpl');
 
 $promo = (integer) (isset($_REQUEST["promo"]) ? $_REQUEST["promo"] : $_SESSION["promo"]);

@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: session.inc.php,v 1.1 2004-11-21 21:36:04 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.2 2004-11-22 20:05:13 x2000habouzit Exp $
  ***************************************************************************/
 
-require("diogenes.core.session.inc.php");
-require("diogenes.misc.inc.php");
+require_once("diogenes.core.session.inc.php");
+require_once("diogenes.misc.inc.php");
 
 // {{{ class XorgSession
 
