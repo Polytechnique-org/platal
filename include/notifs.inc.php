@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.14 2004-11-07 15:04:26 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.15 2004-11-07 20:54:50 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -38,6 +38,13 @@ function register_watch_op($uid,$cid,$date='',$info='') {
     $globals->db->query("REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES('$uid','$cid',NOW(),$date,'$info')");
     if($cid == WATCH_FICHE) {
 	$globals->db->query("UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id='$uid'");
+    } elseif($cid == WATCH_INSCR) {
+	$globals->db->query("REPLACE INTO  contacts (uid,contact)
+				   SELECT  wo.uid,wo.ni_id
+				     FROM  watch_nonins AS wo
+			       INNER JOIN  watch_sub    AS ws ON(wo.cid=ws.cid)
+			            WHERE  ni_id='$uid'");
+	$globals->db->query("DELETE FROM watch_nonins WHERE ni_id='$uid'");
     }
 }
 
