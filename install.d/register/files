@@ -18,3 +18,6 @@ templates/inscription/step3.tpl
 templates/inscription/step4.tpl
 templates/mails/inscription.reussie.tpl
 templates/mails/inscrire.mail.tpl
+htdocs/admin/deces_promo.php
+templates/admin/deces_promo.tpl
+templates/admin/utilisateurs.tpl

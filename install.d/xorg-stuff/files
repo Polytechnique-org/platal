@@ -70,6 +70,8 @@ htdocs/images/verisign.png
 htdocs/images/x.png
 htdocs/index.coupure.php
 htdocs/webservices/manageurs.php
+include/webservices/manageurs.inc.php
+include/webservices/manageurs.server.inc.php
 templates/admin/ax-xorg.tpl
 templates/admin/postfix_delayed.tpl
 templates/docs/apropos.tpl
