@@ -42,7 +42,7 @@ if (Env::has('forget')) {
 if (Env::has('mail_fmt')) {
     $fmt=Env::get('mail_fmt');
     if ($fmt != 'texte') $fmt = 'html';
-    $globals->xdb->execute("REPLACE INTO auth_user_quick
+    $globals->xdb->execute("      UPDATE auth_user_quick
                                      SET core_mail_fmt = '$fmt'
                                    WHERE user_id = {?}", Session::getInt('uid'));
     $_SESSION['mail_fmt'] = $fmt;
