@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.3 2004-11-06 18:18:44 x2000habouzit Exp $
+        $Id: index.tpl,v 1.4 2004-11-13 08:48:27 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Carnet polytechnicien</h1>
@@ -59,7 +59,7 @@
   <tr class="pair">
     <td class='half'>
       <div class="question">
-        <a href="{"carnet/panel.php"|url}">Bilan de tes notifications</a>
+        <a href="{"carnet/panel.php"|url}">Tous les évenements de la semaine</a>
       </div>
       <div class="explication">
         Affichage de tous les évenements de camarades/promos

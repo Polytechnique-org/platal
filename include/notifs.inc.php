@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.16 2004-11-08 06:09:03 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.17 2004-11-13 08:48:26 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -52,6 +52,8 @@ function getNbNotifs() {
     if(!isset($_SESSION['uid'])) return 0;
     $uid = $_SESSION['uid'];
 
+    $watchlast = $_SESSION['watch_last'];
+
     $res = $globals->db->query("
     (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
@@ -62,7 +64,7 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
 	INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-	     WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > q.watch_last
+	     WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $watchlast
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
 		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
@@ -74,7 +76,7 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-	     WHERE  w.uid = '$uid' AND wo.known > q.watch_last
+	     WHERE  w.uid = '$uid' AND wo.known > $watchlast
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
 		    wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
@@ -85,7 +87,7 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-	     WHERE  w.uid = '$uid' AND wo.known > q.watch_last
+	     WHERE  w.uid = '$uid' AND wo.known > $watchlast
     )");
     $n = mysql_num_rows($res);
     mysql_free_result($res);
