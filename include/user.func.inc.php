@@ -164,7 +164,7 @@ function get_user_forlife($data) {
 // }}}
 // {{{ function get_user_details()
 
-function &get_user_details($login, $from_uid)
+function &get_user_details($login, $from_uid = '')
 {
     global $globals;
     $reqsql = "SELECT  u.prenom, u.nom, u.epouse,

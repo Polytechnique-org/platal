@@ -25,37 +25,39 @@ FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.epouse` (`$vcard.nom`)"|q
 FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
 {/if}
 N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.epouse|qp_enc};;
-EMAIL;TYPE=internet:{$best[0].alias}@polytechnique.org
+EMAIL;TYPE=internet:{$vcard.bestalias}@polytechnique.org
+{if $vcard.bestalias neq $vcard.forlife}
 EMAIL;TYPE=internet:{$vcard.forlife}@polytechnique.org
+{/if}
 {if $vcard.mobile}
 TEL;TYPE=cell;ENCODING=QUOTED-PRINTABLE:{$vcard.mobile|qp_enc}
 {/if}
-{if $work}
-{if $work.entreprise}
-ORG;ENCODING=QUOTED-PRINTABLE:{$work.entreprise|qp_enc}
+{if $vcard.adr_pro}
+{if $vcard.adr_pro[0].entreprise}
+ORG;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].entreprise|qp_enc}
 {/if}
-{if $work.poste}
-TITLE;ENCODING=QUOTED-PRINTABLE:{$vcard.poste|qp_enc}
+{if $vcard.adr_pro[0].poste}
+TITLE;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].poste|qp_enc}
 {/if}
-{if $work.fonction}
-ROLE;ENCODING=QUOTED-PRINTABLE:{$work.fonction|qp_enc}
+{if $vcard.adr_pro[0].fonction}
+ROLE;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].fonction|qp_enc}
 {/if}
-{if $work.tel}
-TEL;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$work.tel|qp_enc}
+{if $vcard.adr_pro[0].tel}
+TEL;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].tel|qp_enc}
 {/if}
-{if $work.fax}
-FAX;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$work.fax|qp_enc}
+{if $vcard.adr_pro[0].fax}
+FAX;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].fax|qp_enc}
 {/if}
-ADR;TYPE=work;ENCODING=QUOTED-PRINTABLE:{format_adr adr=$work}
+ADR;TYPE=work;ENCODING=QUOTED-PRINTABLE:{format_adr adr=$vcard.adr_pro[0]}
 {/if}
-{foreach item=adr from=$home}
+{foreach item=adr from=$vcard.adr}
+ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr adr=$adr}
 {if $adr.tel}
 TEL;TYPE=home;ENCODING=QUOTED-PRINTABLE:{$adr.tel|qp_enc}
 {/if}
 {if $adr.fax}
 FAX;TYPE=home;ENCODING=QUOTED-PRINTABLE:{$adr.fax|qp_enc}
 {/if}
-ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr adr=$adr}
 {/foreach}
 {if $vcard.web}
 URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}
