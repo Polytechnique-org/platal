@@ -17,17 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.12 2004-11-05 14:34:05 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.13 2004-11-06 17:22:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {if !$inscrit}
   {if !$c.dcd}
-  <div class="appli">
-    &nbsp;<a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">
-      clique ici si tu connais son adresse email !
-    </a>
-  </div>
   <div class='bits'>
     {if $show_action eq ajouter}
     <a href="{"carnet/notifs.php"|url}?add_nonins={$c.user_id}">{*

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.11 2004-11-05 14:34:05 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.12 2004-11-06 17:22:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -36,23 +36,23 @@
     {/if}
     {/min_auth}
   </div>
-  {if $inscrit || $c.dcd}
   <div class="appli">
-    {strip}
     {if $c.iso3166}
     <img src='{"images/"|url}flags/{$c.iso3166}.gif' alt='{$c.nat}' height='14' title='{$c.nat}' />&nbsp;
     {/if}
-    (X {$c.promo}
-    {if $c.app0text},
+    (X {$c.promo}{if $c.app0text},
       {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
-    {/if}
-    {if $c.app1text},
+    {/if}{if $c.app1text},
       {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}
     {/if})
-    {if $c.dcd}&nbsp;décédé le {$c.deces}{/if}
-    {/strip}
+    {if $c.dcd}décédé le {$c.deces}{/if}
+    {min_auth level="cookie"}
+    {if !$c.dcd && !$inscrit}
+    <a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">clique ici si tu connais son adresse email !
+    </a>
+    {/if}
+    {/min_auth}
   </div>
-  {/if}
   {min_auth level="cookie"}
   {include file="include/minifiche_pvt.tpl"}
   {/min_auth}

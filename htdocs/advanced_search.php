@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.26 2004-11-05 14:34:03 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.27 2004-11-06 17:22:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -112,11 +112,13 @@ else {
                        u.promo,
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
-                       c.uid AS contact
+                       c.uid AS contact,
+                       w.ni_id AS contact
                  FROM  auth_user_md5  AS u
 	   '.$fields->get_select_statement().'
             LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
+            LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
             '.$globals->search_result_where_statement.'
                 '.(($where!='')?('WHERE '.$where):'').'
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.10 2004-11-06 16:08:28 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.11 2004-11-06 17:22:12 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -35,10 +35,19 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <ul>
   <li>d'être notifié lorsque tes contacts changent leur fiche</li>
   <li>d'être notifié lorsque un de tes contacts décède</li>
-  <li>si tu le désires, lorsque tu es notifié du décès d'un de tes camarades, il peut être automatiquement retiré de ta liste de contact.
-  (dans ce cas ta liste de contact est vidée de tous les camarades qui sont décédés)
-  </li>
 </ul>
+
+<form action="{$smarty.server.PHP_SELF}" method="post">
+  <fieldset>
+    <legend>Événements à surveiller</legend>
+    {foreach from=$watch->cats() item=s key=i}
+    <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} /> {$s.short}<br />
+    {/foreach}
+  </fieldset>
+  <div class='center'>
+    <input type='submit' name='subs' value='valider' />
+  </div>
+</form>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
@@ -97,14 +106,14 @@ et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" />
 <table class='tinybicol' cellpadding="0" cellspacing="0">
   <tr>
     <td>
-      {if $notifs->nonins|@count eq 0}
+      {if $watch->nonins()|@count eq 0}
       <p>Tu ne surveilles actuellement aucun non-inscrit.</p>
-      {elseif $notifs->nonins|@count}
-      <p>Tu surveilles {if $notifs->nonins|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
+      {elseif $watch->nonins()|@count}
+      <p>Tu surveilles {if $watch->nonins()|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
       <ul>
-        {foreach from=$notifs->nonins item=p}
+        {foreach from=$watch->nonins() item=p}
         <li>
-        {$p.prenom} {$p.nom} ({$p.promo}) <a href="?del_nonins={$p.uid}"><img src="{"images/retirer.gif"|url}" alt="retirer" /></a>
+        {$p.prenom} {$p.nom} ({$p.promo}) <a href="?del_nonins={$p.user_id}"><img src="{"images/retirer.gif"|url}" alt="retirer" /></a>
         </li>
         {/foreach}
       </ul>

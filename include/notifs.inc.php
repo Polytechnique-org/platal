@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.6 2004-11-06 16:08:27 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.7 2004-11-06 17:22:12 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.flagset.inc.php');
@@ -27,7 +27,7 @@ class Watch {
     var $_uid;
     var $_promos;
     var $_nonins;
-    var $_cats;
+    var $_cats = Array();
     var $_subs;
     var $watch_contacts;
     var $watch_last;
@@ -37,32 +37,36 @@ class Watch {
 	$this->_uid = $uid;
 	$this->_promos = new PromoNotifs($uid);
 	$this->_nonins = new NoninsNotifs($uid);
-	$this->_cats = new WatchCat();
 	$this->_subs = new WatchSub($uid);
 	$res = $globals->db->query("SELECT watch_contacts,watch_last FROM auth_user_quick WHERE user_id='$uid'");
 	list($this->watch_contacts, $this->watch_last) = mysql_fetch_row($res);
 	mysql_free_result($res);
+	
+	$res = $globals->db->query("SELECT * FROM watch_cat");
+	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
+	mysql_free_result($res);
     }
 
+    function cats() {
+	return $this->_cats;
+    }
+
+    function subs($i) {
+	return $this->_subs->_data[$i];
+    }
+    
     function promos() {
 	return $this->_promos->toRanges();
     }
-}
-
-class WatchCat {
-    var $_data = Array();
     
-    function WatchCat() {
-	global $globals;
-	$res = $globals->db->query("SELECT * FROM watch_cat");
-	while($tmp = mysql_fetch_assoc($res)) $this->_data[$tmp['id']] = $tmp;
-	mysql_free_result($res);
+    function nonins() {
+	return $this->_nonins->_data;
     }
 }
 
 class WatchSub {
     var $_uid;
-    var $_data;
+    var $_data = Array();
 
     function WatchSub($uid) {
 	$this->_uid = $uid;
@@ -70,6 +74,19 @@ class WatchSub {
 	$res = $globals->db->query("SELECT cid FROM watch_sub WHERE uid='$uid'");
 	while(list($c) = mysql_fetch_row($res)) $this->_data[$c] = $c;
 	mysql_free_result($res);
+    }
+
+    function update($ind) {
+	global $globals;
+	$this->_data = Array();
+	$globals->db->query("DELETE FROM watch_sub WHERE uid='{$this->_uid}'");
+	foreach($_REQUEST[$ind] as $key=>$val) {
+	    $globals->db->query("INSERT INTO  watch_sub
+	                              SELECT  '{$this->_uid}',id
+				        FROM  watch_cat
+				       WHERE  id='$key'");
+	    if(mysql_affected_rows()) $this->_data[$key] = $key;
+	}
     }
 }
 
@@ -171,7 +188,7 @@ class NoninsNotifs {
     function add($p) {
 	global $globals;
 	$globals->db->query("INSERT INTO watch_nonins (uid,ni_id) VALUES('{$this->_uid}','$p')");
-	$res = $globals->db->query("SELECT  prenom,IF(u.epouse='',u.nom,u.epouse),promo,user_id
+	$res = $globals->db->query("SELECT  prenom,IF(epouse='',nom,epouse) AS nom,promo,user_id
 				      FROM  auth_user_md5
 				     WHERE  user_id='$p'");
 	$this->_data["$p"] = mysql_fetch_assoc($res);
