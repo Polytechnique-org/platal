@@ -1,4 +1,4 @@
-{* $Id: inscrire.charte.tpl,v 1.1 2004-07-19 08:58:04 x2000habouzit Exp $ *}
+{* $Id: inscrire.charte.tpl,v 1.2 2004-08-24 22:18:47 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
   <div class="rubrique">
@@ -10,8 +10,8 @@
   recontactons pour te fournir un mot de passe et te demander de le changer.
   </p>
   {include file="docs/charte.tpl"}
-  <input type="hidden" value="OUI" name="charte" />
   <div class="center">
+    <input type="hidden" value="OUI" name="charte" />
     <input type="submit" value="J'accepte ces conditions" name="submit" />
   </div>
 </form>

@@ -1,4 +1,4 @@
-{* $Id: inscrire.form_id.tpl,v 1.1 2004-07-19 08:58:04 x2000habouzit Exp $ *}
+{* $Id: inscrire.form_id.tpl,v 1.2 2004-08-24 22:18:47 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,11 +6,10 @@
 <p class="erreur">{$err}</p>
 {/foreach}
 
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <div class="rubrique">
     Identification
   </div>
-  <input type="hidden" value="OUI" name="charte" />
   <p class="normal">
     Renseigne tes nom, prénom et promotion, et si tu es d'une promotion
     postérieure à la 1996, ton numéro de matricule.
@@ -72,6 +71,7 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
+        <input type="hidden" value="OUI" name="charte" />
         <input type="submit" value="Continuer l'inscription" name="submit" />
       </td>
     </tr>

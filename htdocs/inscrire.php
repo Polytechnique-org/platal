@@ -28,7 +28,7 @@ if(isset($_REQUEST["charte"])) { // ok la variable $_REQUEST["charte"] existe
             require("applis.func.inc.php");
 	    
 	    $page->assign('homonyme', $homonyme);
-	    $page->assign('loginbis', $loginbis);
+	    $page->assign('loginbis', isset($loginbis) ? $loginbis : '');
 	    $page->assign('mailorg', $mailorg);
 	    
 	    $page->assign('prenom', $prenom);
@@ -50,6 +50,14 @@ if(isset($_REQUEST["charte"])) { // ok la variable $_REQUEST["charte"] existe
 	
 	if(!empty($erreur)) {
 	    new_skinned_page('inscrire.form_data.tpl', AUTH_PUBLIC, true);
+	    require("applis.func.inc.php");
+	    $page->assign('homonyme', $homonyme);
+	    $page->assign('loginbis', isset($loginbis) ? $loginbis : '');
+	    $page->assign('mailorg', $mailorg);
+	    
+	    $page->assign('prenom', $prenom);
+	    $page->assign('nom', $nom);
+	    
 	    $page->assign('erreur', $erreur);
 	    $page->run();
 	}

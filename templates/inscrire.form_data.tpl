@@ -1,4 +1,4 @@
-{* $Id: inscrire.form_data.tpl,v 1.1 2004-07-19 08:58:04 x2000habouzit Exp $ *}
+{* $Id: inscrire.form_data.tpl,v 1.2 2004-08-24 22:18:47 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 
@@ -9,15 +9,10 @@
 {dynamic}
 
 {foreach from=$erreur item=err}
-<p class="erreur">{$err}</p>
+<p class="erreur">{$err|smarty:nodefaults}</p>
 {/foreach}
 
 <form action="{$gotourl|default:$smarty.server.REQUEST_URI}" method="post" name="infos">
-  <input type="hidden" value="OUI" name="charte" />
-  <input type="hidden" value="{$smarty.request.nom}" name="nom" />
-  <input type="hidden" value="{$smarty.request.prenom}" name="prenom" />
-  <input type="hidden" value="{$smarty.request.promo}" name="promo" />
-  <input type="hidden" value="{$smarty.request.matricule}" name="matricule" />
   {if $homonyme}
   <p class="normal">
   Tu as un homonyme dans notre base de données, nous ne pouvons donc pas te donner 
@@ -101,7 +96,7 @@
         Appli graduate
       </td>
       <td>
-        <select name="appli_id1" onChange="fillType(this.form.appli_type1, this.selectedIndex-1);">
+        <select name="appli_id1" onchange="fillType(this.form.appli_type1, this.selectedIndex-1);">
           {applis_options selected=$smarty.request.appli_id1}
         </select>
         <br />
@@ -121,7 +116,7 @@
         Post-graduate
       </td>
       <td>
-        <select name="appli_id2" onChange="fillType(this.form.appli_type2, this.selectedIndex-1);">
+        <select name="appli_id2" onchange="fillType(this.form.appli_type2, this.selectedIndex-1);">
           {applis_options selected=$smarty.request.appli_id2}
         </select>
         <br />
@@ -138,6 +133,11 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
+        <input type="hidden" value="OUI" name="charte" />
+        <input type="hidden" value="{$smarty.request.nom}" name="nom" />
+        <input type="hidden" value="{$smarty.request.prenom}" name="prenom" />
+        <input type="hidden" value="{$smarty.request.promo}" name="promo" />
+        <input type="hidden" value="{$smarty.request.matricule}" name="matricule" />
         <input type="submit" value="Terminer la pré-inscription" name="submit" />
       </td>
     </tr>

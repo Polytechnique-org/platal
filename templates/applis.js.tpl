@@ -1,6 +1,6 @@
-<script language="JavaScript" type="text/javascript">
-<!-- Begin
-applisType = new Array(
+<script type="text/javascript">
+//<![CDATA[
+    applisType = new Array(
 {applis_type}
 );
 
@@ -34,7 +34,6 @@ function selectType( selectCtrl, type ) {
       selectCtrl.selectedIndex=i;
   }
 }
-
-// End -->
-</script>
 {/literal}
+//]]>
+</script>

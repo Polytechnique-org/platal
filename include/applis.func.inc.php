@@ -14,8 +14,8 @@ function applis_options($current=0) {
     $res=$globals->db->query("select * from applis_def order by text");
     while ($arr_appli=mysql_fetch_array($res)) { 
 	echo '<option value="'.$arr_appli["id"].'"';
-	if ($arr_appli["id"]==$current) echo " selected";
-	echo '>'.$arr_appli["text"]."</option>\n";
+	if ($arr_appli["id"]==$current) echo " selected='selected'";
+	echo '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
     }
 }
 /** pour appeller applis_options depuis smarty

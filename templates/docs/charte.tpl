@@ -1,4 +1,4 @@
-{* $Id: charte.tpl,v 1.1 2004-01-29 14:18:55 x2000habouzit Exp $ *}
+{* $Id: charte.tpl,v 1.2 2004-08-24 22:18:47 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Conditions générales d'utilisation
@@ -43,6 +43,7 @@ Tu t'assures que tu as le droit d'utiliser ton adresse e-mail pour un reroutage
 </div>
 <p class="normal">
 La liberté d'expression est limitée en France par certaines lois que tu dois respecter.
+</p>
 <div class="ssrubrique">
   6 - ETHIQUE :
 </div>
