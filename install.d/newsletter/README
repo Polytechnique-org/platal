@@ -7,7 +7,10 @@ CONFIG OPTIONS
 
   All settings of the module are shown here with their default and meaning
 
-  N/A
+  [NewsLetter]
+
+  from    = "Lettre Mensuelle <null@example.org>"   ; from for NL mails
+  replyto = "null@example.org"                      ; Reply-to for NL mails
 
 
 BUGS
