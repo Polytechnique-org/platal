@@ -49,6 +49,9 @@ if (list($nom, $prenom, $promo) = $res->fetchOneRow()) {
                     "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                           VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
                     $uid, Session::getInt('uid'), $email, Env::get('origine'));
+            require_once('validations.inc.php');
+            $req = new MarkReq(Session::getInt('uid'), $uid, $email, Env::get('origine')=='user');
+            $req->submit();
         }
     }
 }
