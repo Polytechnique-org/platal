@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.34 2004-11-27 20:45:31 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.35 2004-11-29 13:18:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -69,8 +69,11 @@ if (!empty($_REQUEST['login'])) {
                                           FROM  virtual_redirect
                                     INNER JOIN  virtual USING(vid)
                                          WHERE  alias='$mbox@melix.net'");
-            list($redir) = mysql_fetch_row($res);
-            list($login) = split('@', $redir);
+            if (list($redir) = mysql_fetch_row($res)) {
+                list($login) = split('@', $redir);
+            } else {
+                $errors[] = "il n'y a pas d'utilisateur avec cet alias melix";
+            }
             mysql_free_result($res);
         } else {
             $res = $globals->db->query("SELECT  alias
@@ -94,11 +97,17 @@ if (!empty($_REQUEST['login'])) {
         $login = $needle;
     }
 
-    $r=$globals->db->query("SELECT  *
-			      FROM  auth_user_md5 AS u
-			INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
-    if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
-    mysql_free_result($r);
+    if (!empty($login)) {
+        $r=$globals->db->query("SELECT  *
+                                  FROM  auth_user_md5 AS u
+                            INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
+        if ($tmp = mysql_fetch_assoc($r)) {
+            $mr =& $tmp;
+        } else {
+            $errors[] = "il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)";
+        }
+        mysql_free_result($r);
+    }
 }
 
 if (!empty($_REQUEST['user_id'])) {
