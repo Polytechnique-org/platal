@@ -209,6 +209,15 @@ class XorgPage extends DiogenesCorePage
     }
 
     // }}}
+    // {{{ function gassign
+    
+    function gassign($varname)
+    {
+        global $$varname;
+        $this->assign($varname, $$varname);
+    }
+
+    // }}}
 }
 
 // }}}
