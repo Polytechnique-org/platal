@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('paiment/index.tpl', AUTH_MDP);
+new_skinned_page('paiement/index.tpl', AUTH_MDP);
 require_once('profil.func.inc.php');
 require_once('money.inc.php');
 
@@ -41,6 +41,7 @@ if (($e = $pay->check($val)) !== true) {
 
 if ($op=='submit') {
     $pay->init($val, $meth);
+    $pay->prepareform($pay);
 }
 
 $page->assign('montant',$val);

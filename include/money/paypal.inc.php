@@ -19,22 +19,23 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class CyberPayment
+class PayPal
 {
     // {{{ properties
 
-    var $val;
-
+    var $val_number;
     var $urlform;
-    var $nomsite = "la BP Lorraine Champagne";
+    var $nomsite = "PayPal";
+    var $text;
+    
     var $infos;
 
     // }}}
     // {{{ constructor
     
-    function CyberPayment($val)
+    function PayPal($val)
     {
-        $this->val = strtr(sprintf("%.02f", (float)$val), '.', ',');
+    	$this->val_number = $val;
     }
 
     // }}}
@@ -42,55 +43,62 @@ class CyberPayment
 
     function prepareform(&$pay)
     {
-    	// toute la doc se trouve sur
-	// http://www.cyberpaiement.tm.fr/donnees.htm
-
+    	// toute la doc sur :
+	// https://www.paypal.com/fr_FR/pdf/integration_guide.pdf
+	// attention : le renvoi automatique ne fonctionne que si
+	// on oblige les gens à créer un compte paypal
+	// nous ne l'utilisons pas ; il faut donc que l'utilisateur
+	// revienne sur le site
         global $globals;
 
+	$this->urlform = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/paiement/cyberpaiement_retour.php?uid="
-            .Session::getInt('uid')
-            ."&amp;CHAMPBPX";
-        if (Cookie::has(session_name())) {
-            $returnurl .= "?".SID;
-        }
+            ."/paiement/paypal_retour.php?uid="
+            .Session::getInt('uid');
+
+	$this->infos = Array();
+	
+	$this->infos['commercant'] = Array(
+		'business'    => 'caribou+paypalsandbox@m4x.org',
+		'rm' 	      => 2,
+		'return'      => $roboturl,
+		'cn'	      => 'Commentaires',
+		'no_shipping' => 1,
+		'cbt'         => 'Revenir sur polytechnique.org');
+	
+	$info_client = Array(
+		'first_name' => Session::get('prenom'),
+		'last_name'  => Session::get('nom'),
+		'email'      => Session::get('bestalias').'@polytechnique.org');
+		
+	$res = $globals->xdb->query(
+		"SELECT a.adr1 AS address1, a.adr2 AS address2,
+			a.ville AS city, a.cp AS zip, a.pays AS country,
+			IF(a.tel, a.tel, q.profile_mobile) AS night_phone_b
+		   FROM auth_user_quick AS q
+	      LEFT JOIN adresses	AS a ON (q.user_id = a.uid)
+	          WHERE q.user_id = {?} AND FIND_IN_SET('active', a.statut)
+		  LIMIT 1", Session::getInt('uid'));
+	$this->infos['client']=array_merge($info_client, $res->fetchOneAssoc());
 
         // on constuit la reference de la transaction
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-xorg-{$pay->id}",-15);
 
-        $this->urlform = "https://ecom.cimetz.com/telepaie/cgishell.exe/epaie01.exe";
-	$this->infos['commercant'] = Array(
-		'CHAMP000' => 510879,
-		'CHAMP001' => 5965,
-		'CHAMP002' => 5429159012,
-		'CHAMP003' => "I",
-		'CHAMP004' => "Polytechnique.org",
-		'CHAMP005' => $roboturl,
-		'CHAMP006' => "Polytechnique.org",
-		'CHAMP007' => $globals->baseurl,
-		'CHAMP008' => $pay->mail);
-	$this->infos['client'] = Array(
-		'CHAMP100' => Session::get('nom'),
-		'CHAMP101' => Session::get('prenom'),
-		'CHAMP102' => '.',
-		'CHAMP103' => '.',
-		'CHAMP104' => Session::get('bestalias').'@polytechnique.org',
-		'CHAMP106' => '.',
-		'CHAMP107' => '.',
-		'CHAMP108' => '.',
-		'CHAMP109' => '.',
-		'CHAMP110' => '.');
 	$this->infos['commande'] = Array(
-		'CHAMP200' => $fullref,
-		'CHAMP201' => $this->val,
-		'CHAMP202' => "EUR");
-	$this->infos['divers'] = Array('CHAMP900' => '01');
+		'item_name'	=> $pay->text,
+		'amount'	=> $this->val_number,
+		'currency_code' => 'EUR',
+		'custom'	=> $fullref);
+
+	$this->infos['divers'] = Array('cmd' => '_xclick');
+
     }
 
     // }}}
 }
 
-$api = 'CyberPayment';
+$api = 'PayPal';
 
 ?>

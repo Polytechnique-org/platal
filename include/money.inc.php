@@ -78,11 +78,11 @@ class Payment
     }
 
     // }}}
-    // {{{ function form()
+    // {{{ function prepareform()
 
-    function form()
+    function prepareform()
     {
-        return $this->api->form($this);
+        return $this->api->prepareform($this);
     }
 }
 
