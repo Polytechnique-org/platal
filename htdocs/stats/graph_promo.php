@@ -61,8 +61,10 @@ for ($i=-$JOURS;$i<=0;$i++) {
 //Genere le graphique à la volée avec GNUPLOT
 header( "Content-type: image/png");
 
-$ymin = round($init_nb*0.95,0);
-$ymax = round($total  *1.05,0);
+$delt = ($total - $init_nb) / 10;
+$delt += ($delt < 1);
+$ymin = round($init_nb - $delt,0);
+$ymax = round($total   + $delt,0);
 
 $gnuplot = <<<EOF2
 gnuplot <<EOF
