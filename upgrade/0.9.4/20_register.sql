@@ -21,7 +21,7 @@ CREATE TABLE register_pending (
     INDEX       (hash)
 );
 
-create table register_marketing (
+create table register_marketing (/*{{{*/
     uid         int          not null default 0,
     sender      int          not null default 0,
     email       varchar(255) not null default '',
@@ -68,4 +68,15 @@ replace into register_marketing (uid, sender, email, date, last, nb, type, hash)
       where date_ins = 0 and deces = 0;
 
 drop table envoidirect;
-drop table marketing;
+drop table marketing;/*}}}*/
+
+insert into  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
+     select  u.user_id, e.username,
+             IF(e.loginbis, e.loginbis, REPLACE(REPLACE(e.username, '.19', ''), '.20', '')),
+             IF(e.loginbis, REPLACE(REPLACE(e.username, '.19', ''), '.20', ''), NULL),
+             e.password, email, e.date, relance, e.naissance, ins_id
+       from  en_cours      AS e
+ inner join  auth_user_md5 AS u USING( matricule )
+      where  u.perms = 'pending';
+
+drop table en_cours;

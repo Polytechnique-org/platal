@@ -19,29 +19,45 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-new_admin_page('marketing/relance.tpl');
+require_once('xorg.inc.php');
+new_admin_page('marketing/private.tpl');
 
-/* une relance a été demandée - on envoit les mails correspondants */
-if (Post::has('relancer')) {
-    $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
-    $nbdix = $res->fetchOneCell();
+$uid = Env::get('uid');
+$res = $globals->xdb->query("SELECT nom, prenom, promo FROM auth_user_md5 WHERE user_id={?} AND perms='pending'", $uid);
 
-    $sent  = Array();
-    foreach (array_keys($_POST['relance']) as $uid) {
-        if ($tmp = relance($uid, $nbdix)) {
-            $sent[] = $tmp.' a été relancé';
-        }
-    }
-    $page->assign('sent', $sent);
+if (list($nom, $prenom, $promo) = $res->fetchOneRow()) {
+    $page->gassign('nom');
+    $page->gassign('prenom');
+    $page->gassign('promo');
+} else {
+    $page->kill('uid invalide');
 }
 
-$sql = "SELECT  r.date, r.relance, r.uid, u.promo, u.nom, u.prenom
-          FROM  register_pending AS r
-    INNER JOIN  auth_user_md5    AS u ON r. uid = u.user_id
-         WHERE  hash!='INSCRIT'
-      ORDER BY  date DESC";
-$page->assign('relance', $globals->xdb->iterator($sql));
+if (Env::has('del')) {
+    $globals->xdb->execute('DELETE FROM register_marketing WHERE uid={?} AND email={?}', $uid, Env::get('del'));
+}
+
+if (Env::has('relance')) {
+    require_once('marketing.inc.php');
+    if (relance($uid)) {
+        $page->trig('relance faite');
+    }
+}
+
+$res = $globals->xdb->iterator(
+        "SELECT  r.*, a.alias
+           FROM  register_marketing AS r
+     INNER JOIN  aliases            AS a ON (r.sender=a.id AND a.type = 'a_vie')
+          WHERE  uid={?}
+       ORDER BY  date", $uid);
+$page->assign('addr', $res);
+
+$res = $globals->xdb->query("SELECT date, relance FROM register_pending WHERE uid = {?}", $uid);
+if (list($pending, $relance) = $res->fetchOneCell()) {
+    $page->gassign('pending');
+    $page->gassign('relance');
+}
+
 
 $page->run();
 ?>

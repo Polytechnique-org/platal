@@ -19,42 +19,54 @@
  ***************************************************************************}
 
 
-<h1>Relance</h1>
+<h1>Marketing de {$prenom} {$nom}</h1>
 
-{foreach from=$sent item=l}
-<p>{$l}</p>
-{/foreach}
+{if $pending}
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol" summary="liste des inscriptions non confirmées">
-    <tr>
-      <th>Date</th>
-      <th>Promo</th> 
-      <th>Nom</th>
-      <th>Dernière relance</th>
-      <th>&nbsp;</th>
-    </tr>
-    {iterate from=$relance item=it}
-    <tr class="{cycle values="pair,impair"}">
-      <td class="center">{$it.date}</td>
-      <td class="center">{$it.promo}</td>
-      <td>{$it.nom} {$it.prenom}</td>
-      <td class="center">
-        {if $it.relance eq "0000-00-00"}Jamais{else}{$it.relance}{/if}
-      </td>
-      <td class="center">
-        <input type="checkbox" name="relance[{$it.uid}]" value="1" />
-      </td>
-    </tr>
-    {/iterate}
-  </table>
+<h2>Inscription en cours</h2>
 
-  <p>
-  {$relance->total()} Polytechniciens n'ont pas effectué jusqu'au bout leur inscription.
-  </p>
-  <div class="center">
-    <input type="submit" name="relancer" value="Relancer" />
-  </div>
-</form>
+<p>
+Cet utilisateur a une inscription en cours depuis le {$pending|date_format}.
+</p>
+<p>
+{if $relance eq '0000-00-00'}
+il n'a jamais été relancé.
+{else}
+sa dernière relance date du {$relance|date_format}
+{/if}
+</p>
+
+<p>[<a href='{$smarty.server.REQUEST_URI}&amp;relance=1'>le relancer</a>]</p>
+
+{/if}
+
+<h2>Adresses connues</h2>
+
+<table class="bicol" cellpadding="0" cellspacing="0">
+  <tr>
+    <th>Adresse</th>
+    <th>Marketeur</th>
+    <th>Date</th>
+    <th>Envois</th>
+    <th>Nb.</th>
+    <th>&nbsp;</th>
+  </tr>
+  {iterate from=$addr item=a}
+  <tr class="{cycle values='impair,pair'}">
+    <td>{$a.email}</td>
+    <td><a href="{rel}/fiche.php?user={$a.alias}" class="popup2">{$a.alias}</a> {if $a.type eq user}(*){/if}</td>
+    <td>{$a.date|date_format|default:'-'}</td>
+    <td>{$a.last|date_format|default:'-'}</td>
+    <td class='center'>{$a.nb|default:"-"}</td>
+    <td class='action'>
+      <a href='{$smarty.server.REQUEST_URI}&amp;del={$a.email}'>del</a>
+    </td>
+  </tr>
+  {/iterate}
+  <tr>
+    <td></td>
+    <td colspan='5' class='smaller'>(*): mail perso</td>
+  </tr>
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
