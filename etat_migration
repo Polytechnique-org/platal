@@ -27,8 +27,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/marketing.php						  | 
 	  | admin/marketing_promo.php				  | 
 	  | admin/marketing_volontaire.php			  | 
-	  | admin/newsletter_archi.php				  | 
-	  | admin/newsletter_form.inc.php			  | 
 	  | admin/newsletter_pattecassee.php		  | 
 	  | admin/newsletter_prep.php				  | 
 	  | admin/pg.php							  | 
@@ -146,6 +144,7 @@ xx	  | admin/FormatePrenomNOM2.php				  | scripts/
 xx	  | admin/FormatePrenomNOM.php				  | scripts/
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
 xx	  | admin/index.php							  | -
+xx	  | admin/newsletter_archi.php				  | -
 xx	  | admin/postfix_blacklist.php				  | -
 xx	  | admin/postfix_perm.php					  | -
 xx	  | admin/postfix_retardes.php				  | -
@@ -196,6 +195,7 @@ xx	  | trezo/gere_operations.php				  | -
 xx	  | trezo/index.php							  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
+---	  | admin/newsletter_form.inc.php			  | -
 ---	  | admin/statut_antispam.php				  | inutilisée et même pas en var superglobales ...
 ---	  | aide.php								  | --> faq.php
 ---	  | auth-wiki.php							  | obsolete
