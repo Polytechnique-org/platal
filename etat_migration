@@ -16,16 +16,15 @@
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ admin ]---------------------------------+----------------
-;	  | admin/admin_faqs.php					  | 
 ;	  | admin/admin_trombino.php				  | 
-;	  | admin/comptesPOP.php					  | 
+;	  | admin/comptesPOP.php					  | ???
 ;	  | admin/correction_adr.php				  | 
-;	  | admin/envoidirect.php					  | 
 ;	  | admin/evenements.php					  | 
 ;	  | admin/homonymes.php						  | 
 ;	  | admin/pg.php							  | 
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/marketing.php						  | marketing/
+;	  | admin/envoidirect.php					  | 
 ;	  | admin/marketing_promo.php				  | marketing/
 ;	  | admin/marketing_volontaire.php			  | marketing/
 ;	  | admin/relance.php						  | marketing/ 
@@ -196,8 +195,9 @@ x!!	  | auth-wiki.php							  | obsolete
 x!!	  | profil2.php								  | -
 x!!	  | trackers/tracker_delete.php				  | -
 x!!	  | trezo/trezo.inc.php						  | -
-x!!	  | emploi.php								  | 
-x!!	  | emploi_public.php						  | 
+x!!	  | emploi.php								  | -
+x!!	  | emploi_public.php						  | -
+x!!	  | admin/admin_faqs.php					  | -
 ------+-[ trackers ]------------------------------+----------------
 x!!	  | trackers/tracker_show.php				  | \
 x!!	  | trackers/tracker_show_rq.php			  |  \_ obsolete
