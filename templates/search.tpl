@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.27 2004-11-13 11:46:31 x2000habouzit Exp $
+        $Id: search.tpl,v 1.28 2004-11-13 12:16:45 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -72,7 +72,13 @@
 
   {min_auth level='cookie'}
   <br />
-  {if $advanced && $smarty.capture.list|smarty:nodefaults|display_lines > 20}{include file=search.adv.links.tpl do_title=1}{/if}
+  {if $smarty.capture.list|smarty:nodefaults|display_lines > 20}
+  {if $advanced}
+  {include file=search.adv.links.tpl do_title=1}
+  {else}
+  {include file='search.quick.form.tpl'}
+  {/if}
+  {/if}
   
   <p>
   <strong>Astuce:</strong>
