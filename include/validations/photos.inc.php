@@ -32,7 +32,7 @@ class PhotoReq extends Validate
 
     var $unique = true;
 
-    var $rules = "La validation des photos sert uniquement à interdire les photos qui ont un copyright, tout le reste est valable.";
+    var $rules = "Il faut interdire les photos : (1) protégées par des droits d'auteurs (2) de mineurs.";
 
     // }}}
     // {{{ constructor
