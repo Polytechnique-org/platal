@@ -46,8 +46,7 @@ if(isset($_REQUEST['logs_button'])) {
 if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SESSION['suid'])) {
     $log_data = $_REQUEST['login']." by ".$_SESSION['forlife'];
     $_SESSION['log']->log("suid_start",$log_data);
-    $_SESSION['slog'] = $_SESSION['log'];
-    $_SESSION['suid'] = $_SESSION['uid'];
+    $_SESSION['suid'] = $_SESSION;
     $r=$globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['login']}'");
     if(list($uid) = mysql_fetch_row($r)) {
 	start_connexion($uid,true);

@@ -48,7 +48,7 @@ class XorgSession extends DiogenesCoreSession
     {
 	global $globals;
 	if (identified()) { // ok, c'est bon, on n'a rien à faire
-	    return;
+	    return true;
 	}
 
 	if (isset($_REQUEST['username']) and isset($_REQUEST['response'])
@@ -61,38 +61,26 @@ class XorgSession extends DiogenesCoreSession
 					    FROM  auth_user_md5 AS u
          			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
 				           WHERE  a.$field='{$_REQUEST['username']}' AND u.perms IN('admin','user')");
-	    if (@mysql_num_rows($res) != 0) {
-		list($uid,$password)=mysql_fetch_row($res);
-		mysql_free_result($res);
+
+	    if (list($uid,$password)=mysql_fetch_row($res)) {
 		$expected_response=md5("{$_REQUEST['username']}:$password:{$_SESSION['session']->challenge}");
 		if ($_REQUEST['response'] == $expected_response) {
 		    unset($_SESSION['session']->challenge);
-		    // on logge la réussite pour les gens avec cookie
 		    if (isset($_SESSION['log'])) {
-			$_SESSION['log']->log("auth_ok");
+			$_SESSION['log']->log('auth_ok');
                     }
 		    start_connexion($uid, true);
 		    return true;
-		} else {
-		    // mot de passe incorrect pour le login existant
-		    // on logge l'échec pour les gens avec cookie
-		    if (isset($_SESSION['log'])) {
-			$_SESSION['log']->log("auth_fail","bad password");
-                    }
-		    $this->doLogin($page,$new_name);
-		}
-	    } else {
-		// login inexistant dans la base de donnees
-		// on logge l'échec pour les gens avec cookie
-		if (isset($_SESSION['log'])) {
-		    $_SESSION['log']->log("auth_fail","bad login");
+		} elseif (isset($_SESSION['log'])) {
+                    $_SESSION['log']->log('auth_fail','bad password');
                 }
-		$this->doLogin($page,$new_name);
-	    }
-	} else {
-	    // ni loggué ni tentative de login
-	    $this->doLogin($page,$new_name);
+	    } elseif (isset($_SESSION['log'])) {
+                $_SESSION['log']->log('auth_fail','bad login');
+            }
+            
+            mysql_free_result($res);
 	}
+        $this->doLogin($page,$new_name);
     }
 
     // }}}
@@ -302,7 +290,7 @@ function start_connexion ($uid, $identified)
     if ($suid) {
 	$logger = new DiogenesCoreLogger($uid,$suid);
 	$logger->log("suid_start","{$_SESSION['forlife']} by {$_SESSION['suid']}");
-	$_SESSION = Array('suid'=>$_SESSION['suid'], 'slog'=>$_SESSION['slog'], 'log'=>$logger);
+	$_SESSION = Array('suid'=>$_SESSION['suid'], 'log'=>$logger);
     } else {
 	$_SESSION = Array();
 	$_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
