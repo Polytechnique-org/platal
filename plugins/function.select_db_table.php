@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: function.select_db_table.php,v 1.2 2004-08-31 11:19:51 x2000habouzit Exp $
+        $Id: function.select_db_table.php,v 1.3 2004-08-31 21:43:47 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -34,7 +34,7 @@ function select_options($table,$valeur,$champ="text",$pad=false,$where="") {
     if ($pad)
 	$html.= '<option value="0"'.($valeur==0?$sel:"")."></option>\n";
     while (list($my_id,$my_text) = mysql_fetch_row($result)) {
-	$html .= printf("<option value=\"%s\" %s>%s</option>\n",$my_id,($valeur==$my_id?$sel:""),$my_text);
+	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$my_id,($valeur==$my_id?$sel:""),$my_text);
     }
     mysql_free_result($result);
     return $html;

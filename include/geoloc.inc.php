@@ -18,49 +18,53 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: geoloc.inc.php,v 1.5 2004-08-31 16:04:11 x2000habouzit Exp $
+        $Id: geoloc.inc.php,v 1.6 2004-08-31 21:43:47 x2000habouzit Exp $
  ***************************************************************************/
 
 
 /** donne la liste déroulante des pays
  * @param $current pays actuellement selectionné
- * @return echo
  */
 function geoloc_pays($current) {
     global $globals;
     $sql = "SELECT a2,pays FROM geoloc_pays ORDER BY pays";
 
     $result = $globals->db->query($sql);
+    $html = "";
     while (list($my_id,$my_pays) = mysql_fetch_row($result))
-	printf("<option value=\"%s\" %s>%s</option>\n",$my_id,($current==$my_id?"selected='selected'":""),$my_pays);
+	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$my_id,($current==$my_id?"selected='selected'":""),$my_pays);
+    
+    return $html;
 }
+
 function _geoloc_pays_smarty($params){
   if(!isset($params['pays']))
     return;
-  geoloc_pays($params['pays']);
+  return geoloc_pays($params['pays']);
 }
 $page->register_function('geoloc_pays', '_geoloc_pays_smarty');
 
 /** donne la liste deroulante des regions pour un pays
  * @param $pays le pays dont on veut afficher les regions
  * @param $current la region actuellement selectionnee
- * @return echo
  */
 function geoloc_region($pays,$current) {
     global $globals;
     $sql = "SELECT region,name FROM geoloc_region where a2='".$pays."' ORDER BY name";
     $result = $globals->db->query($sql);
   
-    echo "<option value=\"\"></option>";
+    $html = "<option value=\"\"></option>";
     while (list($regid,$regname) = mysql_fetch_row($result))
-	printf("<option value=\"%s\" %s>%s</option>\n",$regid,($current==$regid?"selected='selected'":""),$regname);
+	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$regid,($current==$regid?"selected='selected'":""),$regname);
+    return $html;
+
 }
 function _geoloc_region_smarty($params){
   if(!isset($params['pays']))
     return;
   if(!isset($params['region']))
     return;
-  geoloc_region($params['pays'], $params['region']);
+  return geoloc_region($params['pays'], $params['region']);
 }
 $page->register_function('geoloc_region', '_geoloc_region_smarty');
 
