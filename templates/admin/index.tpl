@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.10 2004-10-16 19:54:35 x2000habouzit Exp $
+        $Id: index.tpl,v 1.11 2004-10-16 22:39:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -70,8 +70,6 @@
       <strong>Newsletter : </strong>
       <a href="newsletter.php">Liste</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="newsletter_cats.php">Catégories</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="newsletter_prep.php">Préparation</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="newsletter_archi.php">Archives</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="newsletter_pattecassee.php">Adresses en panne</a>  
   </td></tr>
   <tr class="impair"><td>

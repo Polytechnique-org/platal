@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.tpl,v 1.4 2004-10-16 22:34:09 x2000habouzit Exp $
+        $Id: newsletter_edit.tpl,v 1.5 2004-10-16 22:39:35 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -27,7 +27,10 @@
 
 {if !$art}
 
-<p>[<a href="{"newsletter/show.php"|url}?nid={$nl->_id}">visualiser</a>]</p>
+<p>
+[<a href="{"admin/newsletter.php"|url}">liste</a>]
+[<a href="{"newsletter/show.php"|url}?nid={$nl->_id}">visualiser</a>]
+</p>
 
 <form action='{$smarty.server.PHP_SELF}?nid={$nl->_id}' method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0">
