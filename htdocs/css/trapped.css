@@ -32,7 +32,7 @@ a:hover { color: #47220a; }
 
 body {
     background-color: #ffffff;
-    background-image: url('../images/sk_trapped_monstre.jpg');
+    background-image: url('/images/sk_trapped_monstre.jpg');
     background-position: left bottom;
     background-repeat: no-repeat;
     font-family: "Arial", sans-serif;
@@ -46,7 +46,7 @@ body {
 
 div.rubrique {
     color: #ffffff;
-    background-image: url("../images/sk_trapped_titre.gif");
+    background-image: url("/images/sk_trapped_titre.gif");
     background-repeat: no-repeat;
     background-color: #200a00;
 /*    text-indent: 0.2em;
@@ -146,7 +146,7 @@ div.contact div.long {
 #body-menu .menu_title {
     color : #7a614f;
     background-color: #F2e9e2;
-    background-image: url("../images/sk_trapped_menu.jpg");
+    background-image: url("/images/sk_trapped_menu.jpg");
     border-top: 1px solid #ab8b7d;
     border-bottom: 1px solid #ab8b7d;
     font-size: smaller;
@@ -160,4 +160,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: trapped.css,v 1.1 2004-10-03 17:07:50 x2003bruneau Exp $ */
+/* $Id: trapped.css,v 1.2 2004-10-03 17:15:20 x2003bruneau Exp $ */
