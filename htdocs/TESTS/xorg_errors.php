@@ -29,5 +29,5 @@ class TestOfXOrgErrors extends UnitTestCase {
 }
 
 $test = &new TestOfXOrgErrors();
-$test->run(new HtmlReporter());
+$test->run($reporter);
 ?>

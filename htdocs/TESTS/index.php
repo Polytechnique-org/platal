@@ -4,21 +4,48 @@ require_once("__init__.php");
 require_once('shell_tester.php');
 require_once('mock_objects.php');
 
-class AllTests extends GroupTest {
-    function AllTests() {
-        $this->GroupTest('All tests');
-        foreach (glob(PATH.'/*_*.php') as $tfile) {
-            $this->addTestFile($tfile);
-        }
+class MyReporter extends SimpleReporter {
+    function MyReporter() {
+        HtmlReporter::sendNoCacheHeaders();
+        $this->SimpleReporter();
+    }
+
+    function paintFooter($test_name) {
+        global $tfile;
+        $class = $this->getFailCount() + $this->getExceptionCount() > 0 ?  "red" : "green";
+        print "<div class='$class'>";
+        print "<h1><a href='".basename($tfile)."'>$test_name</a> (";
+        print $this->getTestCaseProgress() . "/" . $this->getTestCaseCount();
+        print ")</h1>\n";
+        print "<strong>" . $this->getPassCount() . "</strong> passes | ";
+        print "<strong>" . $this->getFailCount() . "</strong> fails | ";
+        print "<strong>" . $this->getExceptionCount() . "</strong> exceptions.";
+        print "</div>\n";
+        flush();
     }
 }
 
-$test = &new AllTests();
+$reporter = new MyReporter;
+echo <<<EOF
+<html>
+  <head>
+    <title>ALL TESTS</title>
+    <style type="text/css">
+      body { padding: 0px; margin: 0px;}
+      div { float: left; color: white; padding: 1ex; border: 1px dashed white; }
+      h1  { padding: 0px; margin: 0px;  font-size: 120%; }
+      a , a:visited { color: inherit; }
+      .red   { background-color: red; }
+      .green { background-color: green; }
+      
+    </style>
+  </head>
+  <body>
+EOF;
 
-if (SimpleReporter::inCli())
-{
-    exit ($test->run(new TextReporter()) ? 0 : 1);
+foreach (glob(PATH.'/*_*.php') as $tfile) {
+    require_once($tfile);
 }
-$test->run(new HtmlReporter());
 
+print "</body>\n</html>\n";
 ?>

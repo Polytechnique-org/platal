@@ -57,5 +57,5 @@ class TestOfXOrgUsers extends UnitTestCase {
 }
 
 $test = &new TestOfXOrgUsers();
-$test->run(new HtmlReporter());
+$test->run($reporter);
 ?>
