@@ -3,7 +3,7 @@ Notes for plat/al, a platform for alumni services
 PRESENTATION
 ------------
 
-plat/al is the platform used by the Polytechnique.org [1], the alumni site of
+plat/al is the platform used by Polytechnique.org [1], the alumni site of
 Ecole Polytechnique [2], France. This package is a suite of web applications
 geared towards alumni websites. This is used to deliver services to more than
 12.000 registered alumni on Polytechnique.org.
