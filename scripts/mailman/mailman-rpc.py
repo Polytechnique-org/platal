@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.49 2004-10-09 11:42:15 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.50 2004-10-09 12:20:41 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -115,18 +115,22 @@ def is_owner(userdesc,perms,mlist):
 def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
 
-def get_list_info((userdesc,perms),mlist,show_all_to_super=1):
+def get_list_info((userdesc,perms),mlist,front_page=0):
     members    = mlist.getRegularMemberKeys()
     is_member  = userdesc.address in members
     is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
     is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
-    if mlist.advertised or is_member or is_owner or (show_all_to_super and perms == 'admin'):
-        is_pending = False
-        for id in mlist.GetSubscriptionIds():
-            if userdesc.address == mlist.GetRecord(id)[1]:
-                is_pending = True
-                break
+    if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
         chunks = mlist.internal_name().split('-')
+        is_pending = False
+        if not is_member and front_page:
+            mlist.Lock()
+            for id in mlist.GetSubscriptionIds():
+                if userdesc.address == mlist.GetRecord(id)[1]:
+                    is_pending = 1
+                    break
+            mlist.Unlock()
+        
         details = {
                 'list' : mlist.real_name,
                 'addr' : str('-').join(chunks[1:]) + '@' + chunks[0],
@@ -136,7 +140,7 @@ def get_list_info((userdesc,perms),mlist,show_all_to_super=1):
                 'diff' : (mlist.default_member_moderation>0) + (mlist.generic_nonmember_action>0),
                 'ins'  : mlist.subscribe_policy > 1,
                 'priv' : (1-mlist.advertised)+2*is_admin,
-                'sub'  : is_pending + 2*is_member,
+                'sub'  : 2*is_member + is_pending,
                 'own'  : is_owner,
                 'nbsub': len(members)
                 }
@@ -145,7 +149,7 @@ def get_list_info((userdesc,perms),mlist,show_all_to_super=1):
 
 def get_options((userdesc,perms),vhost,listname,opts):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
@@ -158,10 +162,8 @@ def get_options((userdesc,perms),vhost,listname,opts):
                     options[k] = quote(v)
                 else: options[k] = v
         details = get_list_info((userdesc,perms),mlist,1)[0]
-        mlist.Unlock()
         return (details,options)
     except:
-        mlist.Unlock()
         return 0
 
 def set_options((userdesc,perms),vhost,listname,opts,vals):
@@ -206,15 +208,14 @@ def get_lists((userdesc,perms),vhost):
         if not name.startswith(prefix):
             continue
         try:
-            mlist = MailList.MailList(name)
+            mlist = MailList.MailList(name,lock=0)
         except:
             continue
         try:
-            details = get_list_info((userdesc,perms),mlist,0)[0]
+            details = get_list_info((userdesc,perms),mlist,1)[0]
             result.append(details)
-            mlist.Unlock()
         except:
-            mlist.Unlock()
+            continue
     return result
 
 def subscribe((userdesc,perms),vhost,listname):
@@ -258,17 +259,15 @@ def unsubscribe((userdesc,perms),vhost,listname):
 
 def get_members((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         details,members = get_list_info((userdesc,perms),mlist)
         members.sort()
         members = map(lambda member: (quote(mlist.getMemberName(member)) or '', member), members)
-        mlist.Unlock()
         return (details,members,mlist.owner)
     except:
-        mlist.Unlock()
         return 0
 
 #-------------------------------------------------------------------------------
@@ -580,7 +579,7 @@ check_opts = {
 
 def check_options((userdesc,perms),vhost,listname,correct=False):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=correct)
     except:
         return 0
     try:
@@ -596,12 +595,13 @@ def check_options((userdesc,perms),vhost,listname,correct=False):
         if mlist.host_name != vhost:
             options['real_name'] = vhost, mlist.host_name
             if correct: mlist.host_name = vhost
-        if correct: mlist.Save()
+        if correct:
+            mlist.Save()
+            mlist.Unlock()
         details = get_list_info((userdesc,perms),mlist)[0]
-        mlist.Unlock()
         return (details,options)
     except:
-        mlist.Unlock()
+        if correct: mlist.Unlock()
         return 0
 
 #-------------------------------------------------------------------------------
