@@ -97,8 +97,8 @@ function chgMainWinLoc( strPage ) {
       </div>
     </td>
     <td rowspan="4" id='photo'>
-      {min_auth level="cookie"}
       <img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />
+      {min_auth level="cookie"}
       {if $x.section}<em class="intitule">Section : </em><span>{$x.section}</span><br />{/if}
       {if $x.binets_join}<em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span><br />{/if}
       {if $x.gpxs_join}<em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span><br />{/if}
@@ -160,7 +160,6 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
-  {min_auth level="cookie"}
   {if $x.medals}
   <tr>
     <td>
@@ -182,6 +181,7 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
+  {min_auth level="cookie"}
   {if $x.cv}
   <tr>
     <td>

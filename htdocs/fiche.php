@@ -124,6 +124,9 @@ if (!logged()) {
             }
         }
     }
+    if ($user['medals_pub'] != 'public') {
+        unset($user['medals']);
+    }
 }
 foreach($user['adr_pro'] as $i=>$pro) {
     if ($pro['entreprise'] == '' && $pro['fonction'] == ''

@@ -159,6 +159,7 @@ function &get_user_details($login, $from_uid = '')
                        u.perms IN ('admin','user') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_mobile AS mobile, q.profile_web AS web, q.profile_freetext AS freetext,
                        q.profile_mobile_pub AS mobile_pub, q.profile_web_pub AS web_pub, q.profile_freetext_pub AS freetext_pub,
+                       q.profile_medals_pub AS medals_pub,
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
                        a.alias AS forlife, a2.alias AS bestalias,
                        c.uid IS NOT NULL AS is_contact,

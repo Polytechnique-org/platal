@@ -4,7 +4,8 @@ ADD profile_mobile_pub ENUM('private', 'ax', 'public') DEFAULT 'private' NOT NUL
 ADD profile_web VARCHAR(255) NOT NULL,
 ADD profile_web_pub ENUM('private', 'public') DEFAULT 'private' NOT NULL,
 ADD profile_freetext VARCHAR(255) NOT NULL,
-ADD profile_freetext_pub ENUM('private', 'public') DEFAULT 'private' NOT NULL;
+ADD profile_freetext_pub ENUM('private', 'public') DEFAULT 'private' NOT NULL,
+ADD profile_medals_pub ENUM('private', 'public') DEFAULT 'private' NOT NULL;
 UPDATE auth_user_quick AS q INNER JOIN auth_user_md5 AS u USING(user_id) SET
 q.profile_mobile = u.mobile,
 q.profile_mobile_pub = IF(FIND_IN_SET('mobile_public', u.bits), 'public', IF(FIND_IN_SET('mobile_ax', u.bits), 'ax', 'private')),

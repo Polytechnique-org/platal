@@ -52,11 +52,11 @@
       <td colspan="3" class="pflags">
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
-            <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+            <td class="vert">
+              <input type="checkbox" name="medals_pub"{if $medals_pub eq 'public'} checked="checked"{/if} />
             </td>
             <td class="texte">
-              ne peut être ni public ni transmis à l'AX
+              ces informations sont normalement publiques (JO, ...) mais tu peux choisir de les associer a ta fiche publique
             </td>
           </tr>
         </table>

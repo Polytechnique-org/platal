@@ -38,6 +38,7 @@ $trad = Array('ordre' => 'Ordres ...', 'croix' => 'Croix ...', 'militaire' => 'M
 $page->gassign('grades');
 $page->gassign('medals');
 $page->gassign('trad');
+$page->assign('medals_pub', $medals_pub);
 $page->assign('medal_list', $mlist);
 
 ?>

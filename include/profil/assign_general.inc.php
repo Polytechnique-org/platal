@@ -42,6 +42,7 @@ $page->assign('appli_id2',$appli_id2);
 $page->assign('appli_type1',$appli_type1);
 $page->assign('appli_type2',$appli_type2);
 
+$page->assign('photo_pub',$photo_pub);
 $page->assign('nouvellephoto', $nouvellephoto);
 $page->assign('nickname', $nickname);
 ?>

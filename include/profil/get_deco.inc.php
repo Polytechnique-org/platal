@@ -42,4 +42,11 @@ $res    = $globals->xdb->query(
 
 $medals = $res->fetchAllAssoc();
 
+$res	= $globals->xdb->query("SELECT profile_medals_pub FROM auth_user_quick WHERE user_id = {?}", Session::getInt('uid', -1));
+$medals_pub = $res->fetchOneCell();
+
+if(Env::has('modifier') || Env::has('suivant')) {
+    $medals_pub = Env::has('medals_pub')?'public':'private';
+}
+// vim:set et sws=4 sw=4 sts=4:
 ?>

@@ -138,6 +138,16 @@
     </tr>
     <tr>
       <td class="col" colspan="3">
+        <table class="flags" cellspacing="0" summary="Flags">
+          <tr>
+            <td class="vert">
+              <input type="checkbox" name="photo_pub" {if $photo_pub eq 'public'}checked="checked" {/if}/>
+            </td>
+            <td class="texte">
+              site public
+            </td>
+          </tr>
+        </table>
         <table cellspacing="0" cellpadding="0" summary="Trombinoscope">
           <tr>
             <td class="dcold">

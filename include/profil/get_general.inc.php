@@ -34,6 +34,9 @@ list($nom, $prenom, $promo, $epouse, $femme, $nationalite,
 	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 
+$result = $globals->xdb->query("SELECT pub FROM photo WHERE uid = {?}", Session::getInt('uid', -1));
+$photo_pub = $result->fetchOneCell();
+
 replace_ifset($nationalite,'nationalite');
 replace_ifset($mobile,'mobile');
 replace_ifset($web,"web");
@@ -48,6 +51,7 @@ if(Env::has('modifier') || Env::has('suivant')) {
     $mobile_pub = Env::get('mobile_pub');
     $web_pub = Env::has('web_pub')?'public':'private';
     $freetext_pub = Env::has('freetext_pub')?'public':'private';
+    $photo_pub = Env::has('photo_pub')?'public':'private';
 }
 
 // Y a-t-il une photo en attente de confirmation ?

@@ -24,20 +24,22 @@ require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_PUBLIC);
 
 if (Env::has('x')) {
-    if (Env::get('req') == "true") {
+
+    $res = $globals->xdb->query("SELECT id, pub FROM aliases INNER JOIN photo ON(id=uid) WHERE alias = {?}", Env::get('x'));
+    list($uid, $photo_pub) = $res->fetchOneRow();
+    
+    if (Env::get('req') == "true" && logged()) {
         include 'validations.inc.php';
-        $res = $globals->xdb->query("SELECT id FROM aliases WHERE alias = {?}", Env::get('x'));
-	$myphoto = PhotoReq::get_request($a = $res->fetchOneCell());
+	$myphoto = PhotoReq::get_request($uid);
         Header('Content-type: image/'.$myphoto->mimetype);
 	echo $myphoto->data;
     } else {
         $res = $globals->xdb->query(
                 "SELECT  attachmime, attach
-                   FROM  photo   AS p
-             INNER JOIN  aliases AS a ON p.uid=a.id
-                  WHERE  alias={?}", Env::get('x'));
+                   FROM  photo
+                  WHERE  uid={?}", $uid);
 
-	if( list($type,$data) = $res->fetchOneRow() ) {
+	if( (list($type,$data) = $res->fetchOneRow()) && ($photo_pub == 'public' || logged()) ) {
 	    Header(  "Content-type: image/$type");
 	    echo $data;
 	} else {
@@ -46,4 +48,6 @@ if (Env::has('x')) {
 	}
     }
 }
+
+// vim:set et sws=4 sw=4 sts=4:
 ?>
