@@ -1,4 +1,4 @@
-{* $Id: apropos.tpl,v 1.1 2004-01-27 14:06:15 x2000habouzit Exp $ *}
+{* $Id: apropos.tpl,v 1.1 2004-01-27 21:45:28 x2000habouzit Exp $ *}
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%" summary="L'équipe">
   <tr>

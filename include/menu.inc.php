@@ -57,7 +57,7 @@ if(logged()) {
             'Recrutement' => "###url###"
         ),
         'Informations' => Array(
-            'A propos du site' => "###url###",
+            'A propos du site' => "docs/apropos.php",
             'Nous contacter ' => "###url###",
             'FAQ' => "###url###"
         )

@@ -78,8 +78,8 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | epouse.php								  | 
 	  | ethique.php								  | docs/ethique.php
 	  | evenements.php							  | 
-	  | exit.php								  | docs/faq.php
-	  | faq.php									  | 
+	  | exit.php								  | 
+	  | faq.php									  | docs/faq.php
 	  | groupex/donne-chall.php					  | 
 	  | groupex/export-econfiance.php			  | 
 	  | groupex.php								  | 
@@ -163,7 +163,7 @@ xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
-xx	  | apropos.php								  | -
+xx	  | apropos.php								  | docs/apropos.php
 xx	  | cacert.php								  | -
 xx	  | deconnexion.php							  | -
 xx	  | docs/doc_carva.php						  | -
