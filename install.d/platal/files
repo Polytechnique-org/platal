@@ -1,3 +1,6 @@
+bin/cron/clean.php
+bin/cron/connect.db.inc.php
+bin/cron/cron_validations.php
 htdocs/acces_smtp.php
 htdocs/admin/index.php
 htdocs/admin/logger_actions.php
@@ -258,9 +261,14 @@ htdocs/recovery.php
 htdocs/tmpPWD.php
 include/validations.inc.php
 include/xml-rpc-client.inc.php
+include/xorg/database.inc.php
+include/xorg/env.inc.php
+include/xorg/errors.inc.php
+include/xorg.globals.inc.php
 include/xorg.globals.inc.php.in
 include/xorg/hook.inc.php
 include/xorg.inc.php
+include/xorg/iterator.inc.php
 include/xorg.mailer.inc.php
 include/xorg/menu.inc.php
 include/xorg.misc.inc.php
@@ -283,9 +291,6 @@ plugins/insert.getUserName.php
 plugins/insert.mkStats.php
 plugins/modifier.glob.php
 plugins/modifier.url.php
-bin/cron/clean.php
-bin/cron/connect.db.inc.php
-bin/cron/cron_validations.php
 templates/acces_smtp.tpl
 templates/admin/index.tpl
 templates/admin/valider.tpl
