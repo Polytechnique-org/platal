@@ -31,10 +31,13 @@ class Exalead{
   //url de base du produit Exalead
   var $base_cgi = '';
 
+  // Query to dump indexed database
+  var $query_all= '';
+
 /****    Constructeur     *********/
 
 
-  function Exalead($base_cgi = ''){
+  function Exalead($base_cgi = '', $override_query_all = ''){
      $this->data = new ExaleadData();
      $this->currentGroup = new ExaleadGroup();
      $this->currentCategories = array();
@@ -52,6 +55,12 @@ class Exalead{
 
      //url de base du produit Exalead
      $this->base_cgi = $base_cgi;
+     if(!empty($override_query_all)){
+       $this->query_all = $override_query_all;
+     }
+     else{
+       $this->query_all = $GLOBALS['query_all'];
+     }
   }
 
 /****  Fonctions d'interface avec le cgi d'Exalead Corporate   ******/
@@ -119,7 +128,7 @@ class Exalead{
 
   //pour recuperer tous les résultats d'une base indexée
   function get_db_dump(){
-    $this->first_query($GLOBALS['query_all']);
+    $this->first_query($this->query_all);
   }
 
   function handle_request(){
