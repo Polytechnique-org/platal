@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ethique.tpl,v 1.4 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: ethique.tpl,v 1.5 2004-09-02 19:35:21 x2000charbonnier Exp $
  ***************************************************************************}
 
 
@@ -113,7 +113,7 @@ activé par chacun des utilisateurs, de manière individuelle.
 <p>
 Les forums visent à favoriser les échanges entre X, sur des thèmes aussi
 variés que la vie de promotion, l'emploi, les loisirs, etc...
-La charte d'utilisation des forums est <a href="docs/doc_forums.php">accessible ici</a>.
+La charte d'utilisation des forums est <a href="{"docs/doc_forums.php"|url}">accessible ici</a>.
 </p>
 
 <!--div class="rubrique">

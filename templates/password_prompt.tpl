@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt.tpl,v 1.21 2004-08-31 20:41:08 x2000bedo Exp $
+        $Id: password_prompt.tpl,v 1.22 2004-09-02 19:35:55 x2000charbonnier Exp $
  ***************************************************************************}
 
 <noscript>
@@ -96,7 +96,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
   </table>
 </form>
 <p>
-Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
+Problème de connexion ? <a href="{"docs/faq.php#connect"|url}">La réponse est là.</a>
 <br />
 (Activer obligatoirement le <strong>javascript</strong>)
 </p>
