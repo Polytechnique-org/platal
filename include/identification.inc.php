@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.18 2004-11-18 14:24:02 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.19 2004-12-01 07:39:55 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -194,10 +194,10 @@ if ( $homonyme ) {
 	$globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES ($h_id,$h_id)");
 	require_once('diogenes.hermes.inc.php');
 	$mailer = new HermesMailer();
-	$mailer->setFrom('\"Support Polytechnique.org\" <support@polytechnique.org>');
+	$mailer->setFrom('"Support Polytechnique.org" <support@polytechnique.org>');
 	$mailer->addTo("$mailorg@polytechnique.org");
 	$mailer->setSubject("perte de ton alias $mailorg dans un mois !");
-	$mailer->addCc('\"Support Polytechnique.org\" <support@polytechnique.org>');
+	$mailer->addCc('"Support Polytechnique.org" <support@polytechnique.org>');
 	$msg =
 	    "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$mailorg'.\n\n".
 	    "Tu gardes tout de même l'usage de cet alias pour 1 mois encore à compter de ce jour.\n\n".

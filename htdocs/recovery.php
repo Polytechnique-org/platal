@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.12 2004-11-30 21:11:39 x2000habouzit Exp $
+        $Id: recovery.php,v 1.13 2004-12-01 07:39:54 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -31,7 +31,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         $page->assign('error', "Date de naissance incorrecte ou incohérente");
         $page->run();
     }
-    $birth = printf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
+    $birth = sprintf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
 
     $mailorg=strtok($_REQUEST['login'],"@");
 
@@ -41,7 +41,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
     $sql="SELECT  user_id, naissance
 	    FROM  auth_user_md5 AS u
       INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
-	    WHERE a.alias='$mailorg' AND u.perms IN ('admin','user') AND u.deces!=0";
+	    WHERE a.alias='$mailorg' AND u.perms IN ('admin','user') AND u.deces=0";
     $result=$globals->db->query($sql);
     if (list($uid,$naissance)=mysql_fetch_array($result)) {
         if((strlen($naissance))<5) {
@@ -73,7 +73,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         
 	require_once("diogenes.hermes.inc.php");
 	$mymail = new HermesMailer();
-	$mymail->setFrom('\"Gestion des mots de passe\" <support+password@polytechnique.org>');
+	$mymail->setFrom('"Gestion des mots de passe" <support+password@polytechnique.org>');
 	$mymail->addTo($emails);
 	$mymail->setSubject('Ton certificat d\'authentification');
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :

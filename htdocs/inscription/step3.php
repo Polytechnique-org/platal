@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.8 2004-11-30 21:11:39 x2000habouzit Exp $
+        $Id: step3.php,v 1.9 2004-12-01 07:39:55 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -58,7 +58,7 @@ if (!isset($_REQUEST["appli_type1"])) $_REQUEST["appli_type1"]=0;
 if (!isset($_REQUEST["appli_type2"])) $_REQUEST["appli_type2"]=0;
 if (!isset($loginbis)) $loginbis="";
 
-$birth = printf("%s-%s-%s", substr($_REQUEST["naissance"],4,4), substr($_REQUEST["naissance"],2,2), substr($_REQUEST["naissance"],0,2));
+$birth = sprintf("%s-%s-%s", substr($_REQUEST["naissance"],4,4), substr($_REQUEST["naissance"],2,2), substr($_REQUEST["naissance"],0,2));
 
 // nouvelle inscription
 $sql="REPLACE INTO  en_cours

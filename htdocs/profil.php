@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.17 2004-11-30 21:11:39 x2000habouzit Exp $
+        $Id: profil.php,v 1.18 2004-12-01 07:39:54 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -56,7 +56,7 @@ if (!$naissance)  {
 	}
       
 	//sinon
-        $birth = printf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
+        $birth = sprintf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
 	$globals->db->query("UPDATE auth_user_md5 SET naissance='$birth' WHERE user_id=".$_SESSION['uid']);
 	$page->assign('etat_naissance','ok');
 	$page->run();

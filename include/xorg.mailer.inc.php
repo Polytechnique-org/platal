@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.mailer.inc.php,v 1.1 2004-11-22 07:40:17 x2000habouzit Exp $
+    $Id: xorg.mailer.inc.php,v 1.2 2004-12-01 07:39:55 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.hermes.inc.php");
@@ -54,16 +54,16 @@ class XOrgMailer extends Smarty
     // }}}
     // {{{ constructor
     
-    function TplMailer($tpl)
+    function XorgMailer($tpl)
     {
         global $globals;
         $this->_tpl = $tpl;
         $this->caching=false;
         $this->compile_check=true;
 
-        $this->template_dir = $globals->spoolroot . "/templates/";
-        $this->compile_dir  = $globals->spoolroot . "/templates_c/";
-        $this->config_dir   = $globals->spoolroot . "/configs/";
+        $this->template_dir = $globals->root . "/templates/";
+        $this->compile_dir  = $globals->root . "/templates_c/";
+        $this->config_dir   = $globals->root . "/configs/";
 
         $this->register_outputfilter('mail_format');
         $this->register_function('from', 'set_from');
