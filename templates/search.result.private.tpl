@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.6 2004-08-31 21:35:22 x2000bedo Exp $
  ***************************************************************************}
 
 <div class="bits">
@@ -48,6 +48,4 @@
     </div>
   {/if}
 {/if}
-<div class="long">
-</div>
 {* vim:set et sw=2 sts=2 sws=2: *}

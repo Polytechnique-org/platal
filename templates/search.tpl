@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.10 2004-08-31 21:19:45 x2000bedo Exp $
+        $Id: search.tpl,v 1.11 2004-08-31 21:35:22 x2000bedo Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -45,6 +45,7 @@
       {min_auth level="cookie"}
 	{include file="search.result.private.tpl" result=$resultats[resultat]}
       {/min_auth}
+      <div class="long"></div>
     </div>
     </div>
     {/section}
