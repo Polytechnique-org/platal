@@ -38,17 +38,17 @@ foreach ($emails as $_email) {
         continue;
     }
 
-    $sel = $globals->db->query(
+    $sel = $globals->xdb->query(
             "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo, a.alias
                FROM  emails        AS e1
           LEFT JOIN  emails        AS e2 ON (e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.email != e2.email)
          INNER JOIN  auth_user_md5 AS u  ON (e1.uid = u.user_id)
          INNER JOIN  aliases       AS a  ON (u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-              WHERE  e1.email ='$email'
-           GROUP BY  e1.uid");
-    if ($x = mysql_fetch_assoc($sel)) {
+              WHERE  e1.email = {?}
+           GROUP BY  e1.uid", $email);
+    if ($x = $sel->fetchOneAssoc()) {
         if (!$x['panne']) {
-            $globals->db->query("UPDATE emails SET panne='".date("Y-m-d")."' WHERE email =  '".$email."'");
+            $globals->xdb->execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
         }
 
         if (empty($x['nb_mails'])) {
