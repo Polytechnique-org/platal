@@ -63,6 +63,14 @@ function fix_gpc_magic(&$item, $key) {
     }
 }
 
+function unfix_gpc_magic(&$item, $key) {
+    if (is_array($item)) {
+        array_walk($item, 'fix_gpc_magic');
+    } else {
+        $item = addslashes($item);
+    }
+}
+
 if (ini_get("magic_quotes_gpc")) {
     array_walk($_GET, 'fix_gpc_magic');
     array_walk($_POST, 'fix_gpc_magic');
@@ -134,6 +142,10 @@ function new_admin_page($tpl_name)
 
 function new_admin_table_editor($table, $idfield, $idedit=false)
 {
+    array_walk($_GET, 'unfix_gpc_magic');
+    array_walk($_POST, 'unfix_gpc_magic');
+    array_walk($_REQUEST, 'unfix_gpc_magic');
+
     global $editor;
     new_admin_page('table-editor.tpl');
     require_once('xorg.table-editor.inc.php');
