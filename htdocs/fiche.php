@@ -76,6 +76,16 @@ if($user['x'] < 160){
 $page->assign('photo_url', $photo);
 $page->assign_by_ref('x', $user);
 
+// alias virtual
+$res = $globals->xdb->query(
+	"SELECT alias
+	   FROM virtual
+     INNER JOIN virtual_redirect USING(vid)
+          WHERE ( redirect={?} OR redirect={?} )
+	        AND alias LIKE '%@{$globals->mail->alias_dom}'
+		AND visibility = 'public'",
+	$user['forlife'].'@'.$globals->mail->domain, $user['forlife'].'@'.$globals->mail->domain2);
+$page->assign('virtualalias', $res->fetchOneCell());
 $page->run();
 
 ?>

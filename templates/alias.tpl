@@ -33,10 +33,30 @@
     Adresses e-mail personnalisées
   </h1>
 
+{if $actuel}
+  <p>
+    Ton alias est actuellement : <strong>{$actuel}</strong>. Il est pour l'instant
+    {if $mail_public}
+      public et apparaît donc sur ta fiche.
+  </p>
+  <h3>
+    <a href='?visible=private'>Cacher mon alias</a>
+  </h3>
+    {else}
+      privé et n'apparaît nulle part sur le site.
+  </p>
+  <h3>
+    <a href='?visible=public'>Rendre mon alias public</a>
+  </h3>
+    {/if}
+    
+{else}
   <p>
     Pour plus de <strong>convivialité</strong> dans l'utilisation de tes mails, tu peux choisir une adresse
     e-mail discrète et personnalisée. Ce nouvel e-mail peut par exemple correspondre à ton surnom.
   </p>
+{/if}
+
   <p>
     Pour de plus amples informations sur ce service, nous t'invitons à consulter
     <a href="{rel}/docs/doc_melix.php">cette documentation</a> qui répondra

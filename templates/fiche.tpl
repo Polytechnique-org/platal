@@ -65,6 +65,9 @@ function chgMainWinLoc( strPage ) {
           {if $bestalias neq $x.forlife}<br />
           <a href="mailto:{$x.forlife}@polytechnique.org">{$x.forlife}@polytechnique.org</a>
           {/if}
+          {if $virtualalias}<br />
+          <a href="mailto:{$virtualalias}">{$virtualalias}</a>
+          {/if}
           {/if}
         </div>
         <div class="mob">

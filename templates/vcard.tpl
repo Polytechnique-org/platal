@@ -29,6 +29,9 @@ EMAIL;TYPE=internet:{$vcard.bestalias}@polytechnique.org
 {if $vcard.bestalias neq $vcard.forlife}
 EMAIL;TYPE=internet:{$vcard.forlife}@polytechnique.org
 {/if}
+{if $vcard.virtualalias}
+EMAIL;TYPE=internet:{$vcard.virtualalias}
+{/if}
 {if $vcard.mobile}
 TEL;TYPE=cell;ENCODING=QUOTED-PRINTABLE:{$vcard.mobile|qp_enc}
 {/if}

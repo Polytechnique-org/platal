@@ -31,13 +31,14 @@ $page->assign('demande', AliasReq::get_unique_request($uid));
 
 //Récupération des alias éventuellement existants
 $res = $globals->xdb->query(
-        "SELECT  alias
+        "SELECT  alias, visibility
            FROM  virtual
      INNER JOIN  virtual_redirect USING(vid)
            WHERE ( redirect={?} OR redirect= {?} )
                  AND alias LIKE '%@{$globals->mail->alias_dom}'", 
         $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
-$page->assign('actuel', $res->fetchOneCell());
+list($alias, $visibility) = $res->fetchOneRow();
+$page->assign('actuel', $alias);
 
 //Si l'utilisateur vient de faire une damande
 if (Env::has('alias') and Env::has('raison')) {
@@ -79,6 +80,22 @@ if (Env::has('alias') and Env::has('raison')) {
         $page->assign('success',$alias);
         $page->run('succes');
     }
+}
+
+// montrer son alias
+elseif ((Env::get('visible') == 'public') && ($visibility != 'public')) {
+	$globals->xdb->execute("UPDATE virtual SET visibility = 'public' WHERE alias = {?}", $alias);
+	$visibility = 'public';
+}
+
+// cacher son alias
+elseif ((Env::get('visible') == 'private') && ($visibility != 'private')) {
+	$globals->xdb->execute("UPDATE virtual SET visibility = 'private' WHERE alias = {?}", $alias);
+	$visibility = 'private';
+}
+
+if ($visibility == 'public') {
+	$page->assign('mail_public', true);
 }
 
 $page->run();
