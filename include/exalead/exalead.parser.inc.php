@@ -2,6 +2,9 @@
 
 require_once('exalead.class.php');
 
+function convert_url($string){
+  return str_replace('+', '%2B', $string);
+}
 
 class Exalead{
 
@@ -83,7 +86,7 @@ class Exalead{
   function handle_get(){
     if(empty($this->base_cgi)) return false;
     if(empty($_GET['_C'])) return false;// _C est le contexte Exalead
-    $query_exa = $this->base_cgi.'/_C='.$_GET['_C'].'&_f=xml2';
+    $query_exa = $this->base_cgi.'/_C='.str_replace(' ', '%20', $_GET['_C']).'&_f=xml2';
 
     $xml_response = file_get_contents($query_exa);
     $this->parse($xml_response);
@@ -149,7 +152,7 @@ class Exalead{
      $this->currentKeyword->display = utf8_decode( $attrs['DISPLAY'] );
      $this->currentKeyword->count = $attrs['COUNT'];
      $this->currentKeyword->automatic = $attrs['AUTOMATIC'];
-     if(isset($attrs['REFINEHREF'])) $this->currentKeyword->refine_href = $attrs['REFINEHREF'];
+     if(isset($attrs['REFINEHREF'])) $this->currentKeyword->refine_href = convert_url($attrs['REFINEHREF']);
      if(isset($attrs['EXCLUDEHREF'])) $this->currentKeyword->exclude_href = $attrs['EXCLUDEHREF'];
      if(isset($attrs['RESETHREF'])) $this->currentKeyword->reset_href = $attrs['RESETHREF'];
   }
@@ -216,7 +219,7 @@ class Exalead{
      $this->currentCategory->display = utf8_decode($attrs['DISPLAY']);
      $this->currentCategory->count = $attrs['COUNT'];
      $this->currentCategory->automatic = $attrs['AUTOMATIC'];
-     if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = '_c=%2B'.substr($attrs['REFINEHREF'],4);
+     if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = convert_url($attrs['REFINEHREF']);
      //if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = $attrs['REFINEHREF'];
      if(isset($attrs['EXCLUDEHREF'])) $this->currentCategory->exclude_href = $attrs['EXCLUDEHREF'];
      if(isset($attrs['RESETHREF'])) $this->currentCategory->reset_href = $attrs['RESETHREF'];
