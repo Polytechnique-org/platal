@@ -59,7 +59,7 @@ if (Env::has('add_owner')) {
 }
 
 if (Env::has('del_owner')) {
-    $client->del_owner(Env::get('del_owner'));
+    $client->del_owner($liste, Env::get('del_owner'));
     header("Location: ?liste=$liste");
 }
 
