@@ -19,17 +19,17 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+if (!Env::has('liste')) header('Location: index.php');
+$liste = strtolower(Env::get('liste'));
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/options.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
-if(isset($_POST['submit'])) {
-    $values =array_map('stripslashes',$_POST);
+if(Post::has('submit')) {
+    $values = array_map('stripslashes',$_POST);
     $client->set_bogo_level($liste, intval($values['bogo_level']));
     unset($values['submit']);
     unset($values['bogo_level']);
@@ -40,10 +40,10 @@ if(isset($_POST['submit'])) {
 	$values['subject_prefix'] = trim($values['subject_prefix']).' ';
     }
     $client->set_owner_options($liste, $values);
-} elseif(isset($_POST['atn_add']) && isvalid_email($_POST['atn_add'])) {
-    $client->add_to_wl($liste, $_POST['atn_add']);
-} elseif(isset($_GET['atn_del'])) {
-    $client->del_from_wl($liste, $_GET['atn_del']);
+} elseif(isvalid_email(Post::get('atn_add')) {
+    $client->add_to_wl($liste, Post::get('atn_add'));
+} elseif(Get::has('atn_del')) {
+    $client->del_from_wl($liste, Get::get('atn_del'));
     header("Location: ?liste=$liste");
 }
 

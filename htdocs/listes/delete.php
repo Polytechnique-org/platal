@@ -19,17 +19,17 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+if (!Env::has('liste')) header('Location: index.php');
+$liste = strtolower(Env::get('liste'));
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/delete.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
-if ( isset($_POST['valid']) && ($_POST['valid'] == 'OUI')
-        && $client->delete_list($liste,!empty($_POST['del_archive'])) ) {
+
+if ( Post::get('valid') == 'OUI' && $client->delete_list($liste, Post::getBool('del_archive')) ) {
     $page->assign('deleted', true);
 } elseif (list($details,$options) = $client->get_owner_options($liste)) {
     if (!$details['own'] && !has_perms()) {

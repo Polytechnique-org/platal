@@ -19,28 +19,28 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+if (!Env::has('liste')) header('Location: index.php');
+$liste = strtolower(Env::get('liste'));
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/trombi.tpl', AUTH_COOKIE);
 require_once("trombi.inc.php");
 require_once('lists.inc.php');
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
-if(isset($_GET['del'])) {
+if(Get::has('del')) {
     $client->unsubscribe($liste);
     header("Location: ?liste=$liste");
 }
-if(isset($_GET['add'])) {
+if(Get::has('add')) {
     $client->subscribe($liste);
     header("Location: ?liste=$liste");
 }
 
 function getList($offset,$limit) {
     global $client, $globals;
-    $liste = $_REQUEST['liste'];
+    $liste = Env::get('liste');
     list($total,$members) = $client->get_members_limit($liste,$offset,$limit);
 
     $membres = Array();

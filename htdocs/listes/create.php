@@ -22,21 +22,19 @@
 require_once("xorg.inc.php");
 new_skinned_page('listes/create.tpl', AUTH_MDP);
 
-$owners  = empty($_POST['owners'])  ? Array() : preg_split("/[\r\n]+/",$_POST['owners']);
-$members = empty($_POST['members']) ? Array() : preg_split("/[\r\n]+/",$_POST['members']);
+$owners  = preg_split("/[\r\n]+/",Post::get('owners'));
+$members = preg_split("/[\r\n]+/",Post::get('members'));
 
-if(isset($_POST['desc'])) $_POST['desc'] = stripslashes($_POST['desc']);
-
-if(isset($_POST['add_owner_sub']) && !empty($_POST['add_owner'])) {
+if (Post::has('add_owner_sub') && Post::has('add_owner'])) {
     require_once('user.func.inc.php');
-    if (($forlife = get_user_forlife($_REQUEST['add_owner'])) === false) {;
+    if (($forlife = get_user_forlife(Post::get('add_owner'))) !== false) {
         $owners [] = $forlife;
     }
 }
 
-if(isset($_POST['add_member_sub']) && !empty($_POST['add_member'])) {
+if (Post::has('add_member_sub') && Post::has('add_member')) {
     require_once('user.func.inc.php');
-    if (($forlife = get_user_forlife($_REQUEST['add_member'])) === false) {;
+    if (($forlife = get_user_forlife(Post::get('add_member'))) !== false) {
         $members[] = $forlife;
     }
 }
@@ -44,16 +42,18 @@ if(isset($_POST['add_member_sub']) && !empty($_POST['add_member'])) {
 ksort($owners);	 array_unique($owners);
 ksort($members); array_unique($members);
 
-if(isset($_POST['submit'])) {
+if (Post::has('submit')) {
 
-    if(empty($_POST['liste'])) {
+    $liste = Post::get('liste');
+
+    if(empty($liste)) {
         $page->trig('champs «addresse souhaitée» vide');
     }
-    if(!preg_match("/^[a-zA-Z0-9\-]*$/", $_POST['liste'])) {
+    if(!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
 	$page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
     }
 
-    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE alias='{$_POST['liste']}'");
+    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE alias='$liste'");
     list($n) = mysql_fetch_row($res);
     mysql_free_result($res);
 
@@ -61,7 +61,7 @@ if(isset($_POST['submit'])) {
         $page->trig('cet alias est déjà pris');
     }
 
-    if(empty($_POST['desc'])) {
+    if(!Post::get(desc)) {
         $page->trig('le sujet est vide');
     }
     
@@ -76,10 +76,10 @@ if(isset($_POST['submit'])) {
     if (!$page->nb_errs()) {
 	$page->assign('created', true);
 	require_once('validations.inc.php');
-	$req = new ListeReq($_SESSION['uid'], $_POST['liste'], $_POST['desc'],
-	    $_POST['advertise'], $_POST['modlevel'], $_POST['inslevel'],
-	    $owners, $members);
-	$req->submit();
+	$req = new ListeReq(Session::getInt('uid'), $liste, Post::get('desc'),
+                Post::getInt('advertise'), Post::getInt('modlevel'), Post::getInt('inslevel'),
+                $owners, $members);
+        $req->submit();
     }
 }
 

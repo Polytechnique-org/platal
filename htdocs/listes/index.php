@@ -23,20 +23,22 @@ require_once("xorg.inc.php");
 new_skinned_page('listes/index.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
-if(isset($_GET['del'])) {
-    $client->unsubscribe($_GET['del']);
+if(Get::has('del')) {
+    $client->unsubscribe(Get::get('del'));
     header('Location: index.php');
 }
-if(isset($_GET['add'])) {
-    $client->subscribe($_GET['add']);
+if(Get::has('add')) {
+    $client->subscribe(Get::get('add'));
     header('Location: index.php');
 }
-if(isset($_POST['promo_add'])) {
-    $promo = intval($_POST['promo_add']);
-    if($promo>=1900 and $promo<2100) {
+if(Post::has('promo_add')) {
+    $promo = Post::getInt('promo_add');
+    if ($promo>=1900 and $promo<2100) {
 	$client->subscribe("promo$promo");
+    } else {
+        $page->trig("promo incorrecte, il faut une promo sur 4 chiffres.");
     }
 }
 $listes = $client->get_lists();

@@ -19,19 +19,19 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+if (!Env::has('liste')) header('Location: index.php');
+$liste = strtolower(Env::get('liste'));
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/admin.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
-if(isset($_REQUEST['add_member'])) {
+if (Env::has('add_member')) {
     require_once('user.func.inc.php');
-    if (($login = get_user_forlife($_REQUEST['add_member'])) === false) {;
-        $login = $_REQUEST['add_member'];
+    if (($login = get_user_forlife(Env::get('add_member')) === false) {;
+        $login = Env::get('add_member');
     }
 
     $arr = $client->mass_subscribe($liste, Array($login));
@@ -42,24 +42,24 @@ if(isset($_REQUEST['add_member'])) {
     }
 }
 
-if(isset($_REQUEST['del_member'])) {
-    $client->mass_unsubscribe($liste, Array($_REQUEST['del_member']));
+if (Env::has('del_member')) {
+    $client->mass_unsubscribe($liste, Array(Env::get('del_member')));
     header("Location: ?liste=$liste");
 }
 
-if(isset($_REQUEST['add_owner'])) {
+if (Env::has(['add_owner'])) {
     require_once('user.func.inc.php');
-    if (($login = get_user_forlife($_REQUEST['add_owner'])) === false) {;
-        $login = $_REQUEST['add_owner'];
+    if (($login = get_user_forlife(Env::get('add_owner'))) === false) {;
+        $login = Env::get('add_owner');
     }
 
     if($client->add_owner($liste, $login)) {
-        $page->trig($_REQUEST['add_owner']." ajouté aux modérateurs.");
+        $page->trig(Env::get('add_owner')." ajouté aux modérateurs.");
     }
 }
 
-if(isset($_REQUEST['del_owner'])) {
-    $client->del_owner($liste, $_REQUEST['del_owner']);
+if (Env::has('del_owner')) {
+    $client->del_owner($liste, Env::get('del_owner'));
     header("Location: ?liste=$liste");
 }
 

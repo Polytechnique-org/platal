@@ -19,22 +19,22 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+if (Env::has('liste')) header('Location: index.php');
+$liste = strtolower(Env::get('liste'));
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/archives.tpl', AUTH_COOKIE, 'listes/archives.head.tpl');
 require_once('lists.inc.php');
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if (list($det) = $client->get_members($liste)) {
     if ( substr($liste,0,5) != 'promo' && ( $det['ins'] || $det['priv'] ) && !$det['own'] && ($det['sub']<2) ) {
         $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
-    } elseif (isset($_GET['file'])) {
-        $file = $_GET['file'];
-        $rep  = $_GET['rep'];
-        if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $_GET['rep'])) {
+    } elseif (Get::has('file')) {
+        $file = Get::get('file');
+        $rep  = Get::get('rep');
+        if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $rep)) {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         } else { 
             $page->assign('url', $globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
