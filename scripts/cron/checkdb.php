@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.4 2004-10-09 19:02:53 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.5 2004-10-09 19:06:51 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.4 2004-10-09 19:02:53 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.5 2004-10-09 19:06:51 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -84,7 +84,10 @@ check("select uid, lid from langues_ins group by uid having count(lid) > 10","Ut
 check("select uid, cid from competences_ins group by uid having count(cid) > 20","Utilisateurs ayant trop de competences");
 
 /* validite de aliases */
-check("select a.* from aliases as a left join auth_user_md5 as u on u.user_id=a.id where (a.type='alias' or a.type='epouse' or a.type='login' or a.type='a_vie') and u.prenom is null");
+check("SELECT a.*
+         FROM aliases       AS a
+    LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
+        WHERE (a.type='alias' OR a.type='epouse' OR a.type='a_vie') AND u.prenom is null");
 
 /* validite de applis_ins */
 check("select a.* from applis_ins as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
@@ -146,10 +149,14 @@ check("SELECT  u.user_id, a.alias
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
 check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
          FROM  aliases AS a
-   INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire > NOW() )
+   INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
         WHERE  a.type = 'a_vie'",
 "donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
 
 /* validite du champ matricule_ax de la table identification */
-check("select matricule,nom,prenom,matricule_ax,count(matricule_ax) as c from identification where matricule_ax != '0' group by matricule_ax having c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (identification) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
+check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
+         FROM  identification
+	WHERE  matricule_ax != '0'
+     GROUP BY  matricule_ax
+       having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (identification) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
 ?>
