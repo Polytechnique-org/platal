@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.31 2004-10-22 12:12:23 x2000habouzit Exp $
+        $Id: search.php,v 1.32 2004-10-22 15:01:21 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,7 +36,7 @@ require_once("geoloc.inc.php");
 if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('formulaire',0);
 
-    $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
+    $with_soundex = !empty($_REQUEST['with_soundex']);
 
     if ($with_soundex) {
         $nameField = new
@@ -47,7 +47,6 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     else {
         $nameField = new NameSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
         $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'r.prenom1');
-        $with_soundex = ($nameField->length()==0 && $firstnameField->length()==0)?(-1):0;
     }
     $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
@@ -71,7 +70,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
                        c.uid AS contact
-                 FROM  '.(($with_soundex)?'recherche_soundex':'recherche').'      AS r
+                 FROM  '.($with_soundex?'recherche_soundex':'recherche').'      AS r
            INNER JOIN  identification AS i   ON (i.matricule=r.matricule)
             LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")

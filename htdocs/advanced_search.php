@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.18 2004-10-22 12:12:23 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.19 2004-10-22 15:01:21 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -61,7 +61,7 @@ if (!array_key_exists('rechercher', $_REQUEST)) {
 else {
     $page->assign('formulaire',0);
 
-    $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
+    $with_soundex = !empty($_REQUEST['with_soundex']);
 
     if ($with_soundex) {
         $nameField = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
