@@ -17,154 +17,99 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.2 2004-09-22 11:39:51 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.3 2004-09-23 17:20:36 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 
-{if $no_list}
+{if $no_list || !$details.own || $smarty.session.perms neq admin}
 
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit d'en voir les détails</p>
+<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
 
 {else}
 
-<div class="rubrique">
-  Liste {$smarty.request.liste}
-</div>
-
-<table class='tinybicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <td class='titre'> Adresse </td>
-    <td>{mailto address=$details.addr}</td>
-  </tr>
-  <tr>
-    <td class='titre'> Sujet </td>
-    <td>{$details.desc}</td>
-  </tr>
-  <tr>
-    <td class='titre'> Visibilité </td>
-    <td>{if $details.priv eq 0}publique{elseif $details.priv eq 1}privée{else}admin{/if}</td>
-  </tr>
-  <tr>
-    <td class='titre'> Diffusion </td>
-    <td>{if $details.diff}modérée{else}libre{/if}</td>
-  </tr>
-  <tr>
-    <td class='titre'> Inscription </td>
-    <td>{if $details.ins}modérée{else}libre{/if}</td>
-  </tr>
-  <tr>
-    <td colspan='2' class='center'>
-      <a href='trombi.php?liste={$smarty.request.liste}'>trombino de la liste</a> (page longue à charger)
-    </td>
-  </tr>    
-</table>
-
 <div class='rubrique'>
-  modérateurs de la liste
+  Administrer la liste {$details.addr}
 </div>
-
-{if $owners|@count}
-<table class='tinybicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$owners item=xs key=promo}
-  <tr>
-    <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-    <td>
-      {foreach from=$xs item=x}
-      {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
-      {else}
-      {$x.l}<br />
-      {/if}
-      {/foreach}
-    </td>
-  </tr>
-  {/foreach}
-</table>
-{/if}
-
-<div class='rubrique'>
-  membres de la liste
-</div>
-
-{if $members|@count}
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$members item=xs key=promo}
-  <tr>
-    <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-    <td>
-      {foreach from=$xs item=x}
-      {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
-      {else}
-      {$x.l}<br />
-      {/if}
-      {/foreach}
-    </td>
-  </tr>
-  {/foreach}
-</table>
-{/if}
-
-{if $details.you > 1 || $smarty.session.perms eq admin}
-<div class='rubrique'>
-  Administrer la liste
-</div>
-{if $details.you < 2}
+{if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.
 </p>
 {/if}
-
-<p><strong>modération :</strong> <a href='moderate.php?liste={$smarty.request.liste}'>modérer la liste</a></p>
 
 <p>
 Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
 c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
 </p>
 
+<div class='rubrique'>
+  modérateurs de la liste
+</div>
+
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
-  <table class='tinybicol'>
+  <table class='tinybicol' cellpadding='0' cellspacing='0'>
+    {foreach from=$owners item=xs key=promo}
     <tr>
-      <th>modifier les abonnés</th>
-      <th>modifier les modérateurs</th>
+      <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
+      <td>
+        {foreach from=$xs item=x}
+        {if $promo}
+        <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a>
+        {else}
+        {$x.l}
+        {/if}
+        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.l}'>
+          <img src='{"images/retirer.gif"|url}' alt='retirer utilisateur' />
+        </a><br />
+        {/foreach}
+      </td>
     </tr>
+    {/foreach}
     <tr>
+      <td class='titre'>Ajouter ...</td>
       <td>
-        <input type='text' name='member' />
-      </td>
-      <td>
-        <input type='text' name='owner' />
-      </td>
-    </tr>
-    <tr class='center'>
-      <td>
-        <input type='submit' name='add_member' value='ajouter' />
+        <input type='text' name='add_owner' />
         &nbsp;
-        <input type='submit' name='del_member' value='supprimer' />
-      </td>
-      <td>
-        <input type='submit' name='add_owner' value='ajouter' />
-        &nbsp;
-        <input type='submit' name='del_owner' value='supprimer' />
+        <input type='submit' value='ajouter' />
       </td>
     </tr>
   </table>
 </form>
 
-<p>
-Un message est adressé automatiquement à toute personne ajoutée à la liste de diffusion.  Voici le
-message actuellement envoyé : il est modifiable à volonté !
-</p>
+
+<div class='rubrique'>
+  membres de la liste
+</div>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
-  <div class='center'>
-    <textarea cols='50' rows='8' name='welc'>{$details.welc}</textarea><br />
-    <input type='submit' name='update' value='mettre à jour' />
-  </div>
+  <table class='bicol' cellpadding='0' cellspacing='0'>
+    {foreach from=$members item=xs key=promo}
+    <tr>
+      <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
+      <td>
+        {foreach from=$xs item=x}
+        {if $promo}
+        <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a>
+        {else}
+        {$x.l}
+        {/if}
+        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.l}'>
+          <img src='{"images/retirer.gif"|url}' alt='retirer utilisateur' />
+        </a><br />
+        {/foreach}
+      </td>
+    </tr>
+    {/foreach}
+    <tr>
+      <td class='titre'>Ajouter ...</td>
+      <td>
+        <input type='text' size='32' name='add_member' />
+        &nbsp;
+        <input type='submit' value='ajouter' />
+      </td>
+    </tr>
+  </table>
 </form>
-
-{/if}
 
 {/if}
 

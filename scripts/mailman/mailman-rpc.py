@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.30 2004-09-23 15:40:46 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.31 2004-09-23 17:20:36 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -146,7 +146,6 @@ def get_lists((userdesc,perms),vhost):
                     'diff' : mlist.generic_nonmember_action,
                     'ins'  : mlist.subscribe_policy > 1,
                     'priv' : (1-mlist.advertised)+2*is_admin,
-                    'welc' : mlist.welcome_msg,
                     'sub'  : is_pending + 2*is_member,
                     'own'  : is_owner
                     } )
@@ -194,26 +193,37 @@ def unsubscribe((userdesc,perms),vhost,listname):
 
 def get_members((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname, lock=0)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     members   = mlist.getRegularMemberKeys()
     is_member = userdesc.address in members
     is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
     is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
+    is_pending = False
+    for id in mlist.GetSubscriptionIds():
+        if userdesc.address == mlist.GetRecord(id)[1]:
+            is_pending = True
+            break
     if mlist.advertised or is_member or is_owner or ( perms == 'admin' ):
         members.sort()
         details = { 'addr' : listname+'@polytechnique.org',
                     'desc' : mlist.description,
                     'diff' : mlist.generic_nonmember_action,
-                    'ins'  : mlist.subscribe_policy > 0,
+                    'ins'  : mlist.subscribe_policy > 1,
                     'priv' : (1-mlist.advertised)+2*is_admin,
-                    'welc' : mlist.welcome_msg,
-                    'you'  : is_member + 2*is_owner
+                    'sub'  : is_pending + 2*is_member,
+                    'own'  : is_owner
                   }
         members = map(lambda member: (mlist.getMemberName(member) or '', member), members)
+        mlist.Unlock()
         return (details,members,mlist.owner)
+    mlist.Unlock()
     return 0
+
+#-------------------------------------------------------------------------------
+# users procedures for [ trombi.php ]
+#
 
 def get_members_limit((userdesc,perms),vhost,listname,page,nb_per_page):
     try:
@@ -224,12 +234,12 @@ def get_members_limit((userdesc,perms),vhost,listname,page,nb_per_page):
     return (details,members[i:i+int(nb_per_page)],owners,(len(members)-1)/int(nb_per_page)+1)
 
 #-------------------------------------------------------------------------------
-# owners procedures
+# owners procedures [ admin.php ]
 #
 
-def mass_subscribe((userdesc,perms),listname,users):
+def mass_subscribe((userdesc,perms),vhost,listname,users):
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     try:
@@ -256,9 +266,9 @@ def mass_subscribe((userdesc,perms),listname,users):
         mlist.Unlock()
         return added
 
-def mass_unsubscribe((userdesc,perms),listname,users):
+def mass_unsubscribe((userdesc,perms),vhost,listname,users):
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     try:
@@ -271,9 +281,9 @@ def mass_unsubscribe((userdesc,perms),listname,users):
         mlist.Unlock()
         return users
 
-def add_owner((userdesc,perms),listname,user):
+def add_owner((userdesc,perms),vhost,listname,user):
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     try:
@@ -293,9 +303,9 @@ def add_owner((userdesc,perms),listname,user):
         mlist.Unlock()
         return True
 
-def del_owner((userdesc,perms),listname,user):
+def del_owner((userdesc,perms),vhost,listname,user):
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     try:
@@ -308,6 +318,10 @@ def del_owner((userdesc,perms),listname,user):
     finally:
         mlist.Unlock()
         return True
+
+#-------------------------------------------------------------------------------
+# owners procedures [ admin.php ]
+#
 
 def set_welcome((userdesc,perms),listname,welcome):
     try:

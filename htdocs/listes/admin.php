@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.1 2004-09-21 16:14:35 x2000habouzit Exp $
+        $Id: admin.php,v 1.2 2004-09-23 17:20:35 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -34,39 +34,25 @@ mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 
-if(isset($_REQUEST['welc'])) $client->set_welcome($liste, $_REQUEST['welc']);
-
-if(isset($_REQUEST['add_member']) && isset($_REQUEST['member'])) {
-    $client->mass_subscribe($liste, Array($_REQUEST['member']));
+if(isset($_REQUEST['add_member'])) {
+    $client->mass_subscribe('polytechnique.org', $liste, Array($_REQUEST['add_member']));
 }
 
-if(isset($_REQUEST['del_member']) && isset($_REQUEST['member'])) {
-    $res = $globals->db->query("SELECT  b.alias
-                                  FROM  aliases AS a
-		            INNER JOIN  aliases AS b ON (a.id=b.id AND b.type='a_vie')
-		                 WHERE  a.alias='{$_REQUEST['member']}'");
-    if($forlife = mysql_fetch_row($res)) {
-	$client->mass_unsubscribe($liste, $forlife);
-    }
-    mysql_free_result($res);
+if(isset($_REQUEST['del_member'])) {
+    $client->mass_unsubscribe('polytechnique.org', $liste, Array($_REQUEST['del_member']));
+    header("Location: ?liste=$liste");
 }
 
-if(isset($_REQUEST['add_owner']) && isset($_REQUEST['owner'])) {
-    $client->add_owner($liste, $_REQUEST['owner']);
+if(isset($_REQUEST['add_owner'])) {
+    $client->add_owner('polytechnique.org', $liste, $_REQUEST['add_owner']);
 }
 
-if(isset($_REQUEST['del_owner']) && isset($_REQUEST['owner'])) {
-    $res = $globals->db->query("SELECT  b.alias
-                                  FROM  aliases AS a
-		            INNER JOIN  aliases AS b ON (a.id=b.id AND b.type='a_vie')
-		                 WHERE  a.alias='{$_REQUEST['owner']}'");
-    if(list($forlife) = mysql_fetch_row($res)) {
-	$client->del_owner($liste, $forlife);
-    }
-    mysql_free_result($res);
+if(isset($_REQUEST['del_owner'])) {
+    $client->del_owner('polytechnique.org', $liste, $_REQUEST['del_owner']);
+    header("Location: ?liste=$liste");
 }
 
-$members = $client->get_members($liste);
+$members = $client->get_members('polytechnique.org', $liste);
 if(is_array($members)) {
     $membres = Array();
     foreach($members[1] as $member) {

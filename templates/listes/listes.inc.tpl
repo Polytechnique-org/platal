@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.5 2004-09-23 15:40:46 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.6 2004-09-23 17:20:36 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
@@ -34,9 +34,9 @@
     <td>
       <a href='members.php?liste={$liste.list}'>{$liste.list}</a>
       {if $liste.own}
-      [<a href='moderate.php?liste={$liste.list}'>mod</a>]
+      [<a href='admin.php?liste={$liste.list}'>adm</a>]
       {elseif $smarty.session.perms eq admin}
-      [<span class='erreur'><a href='moderate.php?liste={$liste.list}'>mod</a></span>]
+      [<span class='erreur'><a href='admin.php?liste={$liste.list}'>adm</a></span>]
       {/if}
     </td>
     <td>{$liste.desc}</td>
