@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.6 2004-10-10 22:08:01 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.7 2004-10-14 18:06:45 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.6 2004-10-10 22:08:01 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.7 2004-10-14 18:06:45 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -150,6 +150,14 @@ check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
    INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
         WHERE  a.type = 'a_vie'",
 "donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
+
+/* verifie qu'il n'y a pas de gens qui recrivent sur un alias qu'ils n'ont plus */
+
+check("SELECT  a.alias AS a_un_pb, email, rewrite AS broken
+         FROM  aliases AS a
+   INNER JOIN  emails  AS e ON (a.id=e.uid AND rewrite!='')
+   LEFT  JOIN  aliases AS b ON (b.id=a.id AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
+        WHERE  a.type='a_vie' AND b.type IS NULL","gens qui ont des rewrite sur un alias perdu");
 
 /* validite du champ matricule_ax de la table identification */
 check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
