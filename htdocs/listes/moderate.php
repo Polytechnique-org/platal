@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.10 2004-10-24 13:49:02 x2000habouzit Exp $
+        $Id: moderate.php,v 1.11 2004-10-28 09:30:19 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -86,6 +86,16 @@ if(isset($_REQUEST['sid'])) {
 	    if($user['id'] == $sid) $u = $user;
 	}
 	if($u) {
+	    $fname = '/etc/mailman/fr/refuse.txt';
+	    $h = fopen($fname,'r');
+	    $msg = fread($h, filesize($fname));
+	    fclose($h);
+	    $msg = str_replace("%(adminaddr)s","$liste-owner@polytechnique.org", $msg);
+	    $msg = str_replace("%(request)s","<< SUJET DU MAIL >>", $msg);
+	    $msg = str_replace("%(reason)s","<< TON EXPLICATION >>", $msg);
+	    $msg = str_replace("%(listname)s","$liste", $msg);
+	    $page->assign('msg', $msg); 
+
 	    $page->changeTpl('listes/moderate_sub.tpl');
 	    $page->assign('del_user',$u);
 	} else {

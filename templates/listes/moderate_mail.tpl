@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.8 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.9 2004-10-28 09:30:20 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -94,6 +94,10 @@
     </li>
   </ul>
 </form>
+<p>
+En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement sera de la forme suivante :
+</p>
+<pre>{$msg}</pre>
 
 {/if}
 
