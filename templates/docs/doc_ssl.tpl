@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_ssl.tpl,v 1.10 2004-10-24 19:19:32 x2000habouzit Exp $
+        $Id: doc_ssl.tpl,v 1.11 2004-11-01 10:10:01 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -35,7 +35,7 @@
 <p>
   A l'installation, ton logiciel de courrier électronique n'a pas connaissance
   du certificat SSL de Polytechnique.org et il faut donc le lui fournir. Si ton
-  logiciel de courrier électronique fonctionne de paire avec ton navigateur web
+  logiciel de courrier électronique fonctionne de pair avec ton navigateur web
   (Outlook Express avec Internet Explorer, Netscape Mail avec Navigator, Mozilla
   Mail avec Mozilla, etc..) il te suffit de cliquer <a href="{"cacert.php/cacert.cer"|url}">ici</a>
   pour télécharger et installer notre certificat.

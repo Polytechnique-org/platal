@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nn.tpl,v 1.10 2004-10-24 14:58:27 x2000habouzit Exp $
+        $Id: doc_nn.tpl,v 1.11 2004-11-01 10:09:25 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -45,7 +45,7 @@
 </p>
 <p>
     Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a>.
-    Dans la suite, ton <strong>login</strong> désigne le logine que tu as utilises pour te connecter au site,
+    Dans la suite, ton <strong>login</strong> désigne le login que tu as utilise pour te connecter au site,
     et <strong>le mot de passe</strong> celui que tu as indiqué lors de
     l'<a href="{"acces_smtp.php"|url}">activation de ton compte SMTP/NNTP</a>.
 </p>
