@@ -115,6 +115,13 @@
       <strong>{$address.fax}</strong>
     </div>
     {/if}
+
+    {if $address.mobile}
+    <div>
+      <em>Mobile : </em>
+      <strong>{$address.mobile}</strong>
+    </div>
+    {/if}
   </div>
   <div class="spacer">&nbsp;</div>
   {/foreach}

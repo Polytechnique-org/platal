@@ -50,7 +50,7 @@ $page->assign('bestalias', $bestalias);
 $res = $globals->xdb->query(
         "SELECT  e.entreprise, s.label as secteur , ss.label as ss_secteur , f.fonction_fr as fonction,
                  e.poste, e.adr1, e.adr2, e.adr3, e.cp, e.ville,
-                 gp.pays, gr.name, e.tel, e.fax
+                 gp.pays, gr.name, e.tel, e.fax, e.mobile
            FROM  entreprises AS e
       LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
       LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
