@@ -18,11 +18,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_photos.inc.php,v 1.16 2004-11-17 12:21:48 x2000habouzit Exp $
+    $Id: photos.inc.php,v 1.1 2004-11-22 07:24:56 x2000habouzit Exp $
  ***************************************************************************/
 
+// {{{ class PhotoReq
 
-class PhotoReq extends Validate {
+class PhotoReq extends Validate
+{
+    // {{{ properties
+    
     var $mimetype;
     var $data;
     var $x;
@@ -31,8 +35,12 @@ class PhotoReq extends Validate {
     var $bestalias;
     var $prenom;
     var $nom;
+
+    // }}}
+    // {{{ constructor
    
-    function PhotoReq ($_uid, $_file, $_stamp=0) {
+    function PhotoReq($_uid, $_file, $_stamp=0)
+    {
         global $erreur, $globals;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
@@ -44,26 +52,37 @@ class PhotoReq extends Validate {
         list($this->bestalias,$this->prenom,$this->nom) = mysql_fetch_row($sql);
         mysql_free_result($sql);
         
-        if(!file_exists($_file)) {
+        if (!file_exists($_file)) {
             $erreur = "Fichier inexistant";
             return false;
         }
         // calcul de la taille de l'image
         $image_infos = getimagesize($_file);
-        if(empty($image_infos)) {
+        if (empty($image_infos)) {
             $erreur = "Image invalide";
             return false;
         }
         list($this->x, $this->y, $this->mimetype) = $image_infos;
         // récupération du type de l'image
-        switch($this->mimetype) {
-            case 1: $this->mimetype = "gif"; break;
-            case 2: $this->mimetype = "jpeg"; break;
-            case 3: $this->mimetype = "png"; break;
-            default: $erreur = "Type d'image invalide"; return false;
+        switch ($this->mimetype) {
+            case 1:
+                $this->mimetype = "gif";
+                break;
+                
+            case 2:
+                $this->mimetype = "jpeg";
+                break;
+                
+            case 3:
+                $this->mimetype = "png";
+                break;
+                
+            default:
+                $erreur = "Type d'image invalide";
+                return false;
         }
         // lecture du fichier
-        if(!($size = filesize($_file)) or $size > SIZE_MAX) {
+        if (!($size = filesize($_file)) or $size > SIZE_MAX) {
             $erreur = "Image trop grande (max 30ko)";
             return false;
         }
@@ -74,42 +93,67 @@ class PhotoReq extends Validate {
 
         unset($erreur);
     }
+    
+    // }}}
+    // {{{ function get_unique_request()
 
-    function get_unique_request($uid) {
+    function get_unique_request($uid)
+    {
         return parent::get_unique_request($uid,'photo');
     }
 
-    function formu() { return 'include/form.valid.photos.tpl'; }
+    // }}}
+    // {{{ function formu()
+
+    function formu()
+    { return 'include/form.valid.photos.tpl'; }
+
+    // }}}
+    // {{{ function handle_formu()
     
-    function handle_formu () {
-        if(empty($_REQUEST['submit'])
+    function handle_formu ()
+    {
+        if (empty($_REQUEST['submit'])
                 || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
+        {
             return false;
+        }
         
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.photos.tpl');
         $mymail->assign('bestalias', $this->bestalias);
 
-        if($_REQUEST['submit']=="Accepter") {
+        if ($_REQUEST['submit']=="Accepter") {
             $mymail->assign('answer','yes');
             $this->commit();
-        } else
+        } else {
             $mymail->assign('answer','no');
+        }
         
         $mymail->send();
 
         $this->clean();
         return "Mail envoyé";
     }
+
+    // }}}
+    // {{{ function commit()
     
-    function commit () {
+    function commit()
+    {
         global $globals;
         
-        $globals->db->query("REPLACE INTO photo set uid='".$this->uid."', attachmime = '".$this->mimetype."', attach='"
-            .addslashes($this->data)."', x='".$this->x."', y='".$this->y."'");
+        $globals->db->query("REPLACE INTO  photo (uid, attachmime, attach, x, y)
+                                   VALUES  ('{$this->uid}', '{$this->mimetype}', '"
+                                            .addslashes($this->data)."', '{$this->x}', '{$this->y}')");
 	require('notifs.inc.php');
 	register_watch_op($this->uid,WATCH_FICHE);
     }
+
+    // }}}
 }
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

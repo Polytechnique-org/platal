@@ -18,13 +18,17 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_epouses.inc.php,v 1.18 2004-11-17 10:12:45 x2000habouzit Exp $
+    $Id: epouses.inc.php,v 1.1 2004-11-22 07:24:56 x2000habouzit Exp $
  ***************************************************************************/
 
+// {{{ class EpouseReq
 
-class EpouseReq extends Validate {
+class EpouseReq extends Validate
+{
+    // {{{ properties
+
     var $epouse;
-    var $alias;
+    var $alias = '';
     var $forlife;
 
     var $oldepouse;
@@ -33,46 +37,64 @@ class EpouseReq extends Validate {
     var $nom;
 
     var $homonyme;
-    
-    function EpouseReq ($_uid, $_forlife, $_epouse, $_stamp=0) {
+
+    // }}}
+    // {{{ constructor
+
+    function EpouseReq($_uid, $_forlife, $_epouse, $_stamp=0)
+    {
         global $globals;
         $this->Validate($_uid, true, 'epouse', $_stamp);
         $this->epouse = $_epouse;
         $this->forlife = $_forlife;
-        
+
         list($prenom) = explode('.',$_forlife);
         $this->alias = make_username($prenom,$this->epouse);
-        if(empty($_epouse)) $this->alias = "";
-        
+
         $sql = $globals->db->query("
-	    SELECT  e.alias, u.epouse, u.prenom, u.nom, a.id
-	      FROM  auth_user_md5 as u
-	 LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('epouse',e.flags) AND e.id = u.user_id)
-	 LEFT JOIN  aliases       as a ON(a.alias = '{$this->alias}' AND a.id != u.user_id)
-	     WHERE  u.user_id = ".$this->uid);
+                SELECT  e.alias, u.epouse, u.prenom, u.nom, a.id
+                  FROM  auth_user_md5 as u
+             LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('epouse',e.flags) AND e.id = u.user_id)
+             LEFT JOIN  aliases       as a ON(a.alias = '{$this->alias}' AND a.id != u.user_id)
+                 WHERE  u.user_id = ".$this->uid);
         list($this->oldalias, $this->oldepouse, $this->prenom, $this->nom, $this->homonyme) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }
 
-    function get_unique_request($uid) {
+    // }}}
+    // {{{ function get_unique_request()
+
+    function get_unique_request($uid)
+    {
         return parent::get_unique_request($uid,'epouse');
     }
 
-    function formu() { return 'include/form.valid.epouses.tpl'; }
+    // }}}
+    // {{{ function formu()
 
-    function handle_formu () {
-        if(empty($_REQUEST['submit'])
+    function formu()
+    { return 'include/form.valid.epouses.tpl'; }
+
+    // }}}
+    // {{{ function handle_formu()
+
+    function handle_formu()
+    {
+        if (empty($_REQUEST['submit'])
                 || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
+        {
             return false;
-            
+        }
+
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.epouses.tpl');
         $mymail->assign('forlife', $this->forlife);
 
-        if($_REQUEST['submit']=="Accepter") {
+        if ($_REQUEST['submit']=="Accepter") {
             $mymail->assign('answer','yes');
-            if($this->oldepouse)
+            if ($this->oldepouse) {
                 $mymail->assign('oldepouse',$this->oldalias);
+            }
             $mymail->assign('epouse',$this->alias);
             $this->commit();
         } else { // c'était donc Refuser
@@ -87,17 +109,25 @@ class EpouseReq extends Validate {
         return "Mail envoyé";
     }
 
-    function commit () {
+    // }}}
+    // {{{ function commit()
+
+    function commit()
+    {
         global $globals;
-        
+
         $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."' WHERE user_id=".$this->uid);
-	$globals->db->query("DELETE FROM aliases WHERE FIND_IN_SET('epouse',flags) AND id=".$this->uid);
-	$globals->db->query("UPDATE aliases SET flags='' WHERE flags='bestalias' AND id=".$this->uid);
-	$globals->db->query("INSERT INTO aliases VALUES('".$this->alias."', 'alias', 'epouse,bestalias', ".$this->uid.", null)");
+        $globals->db->query("DELETE FROM aliases WHERE FIND_IN_SET('epouse',flags) AND id=".$this->uid);
+        $globals->db->query("UPDATE aliases SET flags='' WHERE flags='bestalias' AND id=".$this->uid);
+        $globals->db->query("INSERT INTO aliases VALUES('".$this->alias."', 'alias', 'epouse,bestalias', ".$this->uid.", null)");
         $f = fopen("/tmp/flag_recherche","w");
         fputs($f,"1");
         fclose($f);
     }
-}
 
+    // }}}
+}
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
