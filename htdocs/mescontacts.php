@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.9 2004-09-02 23:25:30 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.10 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,7 +36,7 @@ if (isset($_REQUEST['action'])) {
         // si l'utilisateur demande l'ajout de qqun à sa liste
     } elseif ($_REQUEST["action"]=="ajouter") {
 
-        if (($res = $globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['user']}'")) && mysql_num_rows($res)==1) {
+        if (($res = $globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['user']}' AND type!='homonyme'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
             if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
                 $page->assign('erreur', 'Contact ajouté !');

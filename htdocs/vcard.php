@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.9 2004-09-02 23:36:57 x2000habouzit Exp $
+        $Id: vcard.php,v 1.10 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -89,7 +89,7 @@ $vcard = mysql_fetch_assoc($result);
 $page->assign_by_ref('vcard', $vcard);
 mysql_free_result($result);
 
-$page->mysql_assign("SELECT alias FROM aliases WHERE id={$vcard['user_id']} AND type!='a_vie'",'aliases');
+$page->mysql_assign("SELECT alias FROM aliases WHERE id={$vcard['user_id']} AND type!='a_vie' AND type!='homonyme'",'aliases');
 
 $adr = $globals->db->query(
         "SELECT statut,adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax,

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.21 2004-09-04 20:14:30 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.22 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -55,7 +55,7 @@ if (!empty($_REQUEST['login'])) {
     $login = $_REQUEST['login'];
     $r=$globals->db->query("SELECT  *
 			      FROM  auth_user_md5 AS u
-			INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' )");
+			INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
     if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
     mysql_free_result($r);
 }
@@ -95,7 +95,8 @@ if(isset($mr)) {
 
 	    case "del_alias":
 		if(empty($val)) break;
-		$globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val' AND type!='a_vie'");
+		$globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
+								AND type!='a_vie' AND type!='homonyme'");
 		$errors[] = $val." a été supprimé";
 		break;
 
@@ -143,7 +144,7 @@ if(isset($mr)) {
 		$globals->db->query("delete from photo where uid=$user_id");
 		$globals->db->query("delete from perte_pass where uid=$user_id");
 		$globals->db->query("delete from user_changes where user_id=$user_id");
-		$globals->db->query("delete from aliases where id=$user_id and type in ('login','epouse','alias')");
+		$globals->db->query("delete from aliases where id=$user_id and type in ('a_vie','epouse','alias')");
 		$globals->db->query("delete from listes_ins where idu=$user_id");
 		$globals->db->query("delete from listes_mod where idu=$user_id");
 		$globals->db->query("delete from applis_ins where uid=$user_id");
@@ -182,9 +183,9 @@ if(isset($mr)) {
     $page->assign('lastlogin', $lastlogin);
     $page->assign('host', $host);
 
-    $page->mysql_assign("SELECT  alias, type='a_vie' AS for_life
+    $page->mysql_assign("SELECT  alias, type='a_vie' AS for_life,expire
 			   FROM  aliases
-			  WHERE  id = {$mr["user_id"]}
+			  WHERE  id = {$mr["user_id"]} AND type!='homonyme'
 		       ORDER BY  type!= 'a_vie'", 'aliases');
     $page->assign_by_ref('xorgmails', $xorgmails);
     $page->assign_by_ref('email_panne', $email_panne);    

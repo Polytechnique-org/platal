@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.tpl,v 1.7 2004-09-04 14:40:03 x2000habouzit Exp $
+        $Id: routage-mail.tpl,v 1.8 2004-09-05 12:54:20 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -55,7 +55,10 @@
   <ul>
     {if $grx neq ""}<li><strong>{$grx}</strong>, <strong>{$domaine}org</strong></li>{/if}
     {foreach from=$alias item=a}
-    <li><strong>{$a.alias}@polytechnique.org</strong></li>
+    <li>
+    <strong>{$a.alias}@polytechnique.org</strong>
+    {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
+    </li>
     {/foreach}
   </ul>
   <p>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: pattecassee.php,v 1.8 2004-09-04 14:40:02 x2000habouzit Exp $
+        $Id: pattecassee.php,v 1.9 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -44,7 +44,7 @@ if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
       "SELECT  e.uid, a.alias
          FROM  emails        AS e
    INNER JOIN  auth_user_md5 AS u ON e.uid = u.user_id
-   INNER JOIN  aliases       AS a ON e.uid = a.id
+   INNER JOIN  aliases       AS a ON (e.uid = a.id AND type!='homonyme')
         WHERE  e.email='$email'");
     if (list($uid, $dest) = mysql_fetch_row($sel)) {
 	// envoi du mail

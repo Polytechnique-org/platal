@@ -18,16 +18,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.6 2004-09-04 14:40:02 x2000habouzit Exp $
+        $Id: emails.php,v 1.7 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('emails.tpl',AUTH_COOKIE);
 
 // on regarde si on a affaire à un homonyme
-$sql = "SELECT  alias, (type='a_vie') AS a_vie
+$sql = "SELECT  alias, (type='a_vie') AS a_vie, expire
           FROM  aliases
-         WHERE  id='{$_SESSION['uid']}'
+         WHERE  id='{$_SESSION['uid']}' AND type!='homonyme'
       ORDER BY  type!='a_vie'";
 $page->mysql_assign($sql, 'aliases');
 

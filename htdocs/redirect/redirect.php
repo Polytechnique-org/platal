@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: redirect.php,v 1.4 2004-09-02 23:55:57 x2000habouzit Exp $
+        $Id: redirect.php,v 1.5 2004-09-05 12:54:20 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -37,7 +37,7 @@ list($user, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_N
 $result = $globals->db->query("
     SELECT  redirecturl
       FROM  auth_user_md5 AS u
-INNER JOIN  aliases       AS a ON u.user_id=a.id
+INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
      WHERE  a.alias='$user'");
 if ($result and list($url) = mysql_fetch_row($result) and $url != '') {
 	// on envoie un redirect (PHP met automatiquement le code de retour 302

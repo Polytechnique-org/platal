@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.php,v 1.7 2004-09-03 00:28:18 x2000habouzit Exp $
+        $Id: fiche_referent.php,v 1.8 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -34,7 +34,7 @@ if (!isset($_REQUEST['user']))
 $reqsql = "SELECT  prenom, nom, user_id, promo, cv, a.alias AS forlife
              FROM  auth_user_md5 AS u
        INNER JOIN  aliases       AS a ON (u.user_id=a.id AND a.type='a_vie')
-       INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id AND a1.alias = '{$_REQUEST['user']}')";
+       INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id AND a1.alias = '{$_REQUEST['user']}' AND a1.type!='homonyme')";
 $result = $globals->db->query($reqsql);
 if (mysql_num_rows($result)!=1)
         exit;

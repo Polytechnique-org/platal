@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.7 2004-09-02 23:25:30 x2000habouzit Exp $
+        $Id: fiche.php,v 1.8 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -39,7 +39,7 @@ if (isset($_REQUEST["modif"]) && $_REQUEST["modif"]=="new") {
 }
 
 if (isset($_REQUEST['user']))
-    $where_clause = "INNER JOIN aliases AS a1 ON (a1.id=u.user_id AND a1.alias = '{$_REQUEST['user']}')";
+    $where_clause = "INNER JOIN aliases AS a1 ON (a1.id=u.user_id AND a1.alias = '{$_REQUEST['user']}' AND type!='homonyne')";
 else
     $where_clause = " WHERE u.matricule = '{$_REQUEST['mat']}'";
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.4 2004-09-02 21:22:19 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.5 2004-09-05 12:54:20 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -95,7 +95,7 @@ $montant = "$champ201 $champ202";
 $res = $globals->db->query("
     SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(i.flags,'femme')
       FROM  auth_user_md5  AS a
-INNER JOIN  aliases        AS l ON a.user_id=l.id
+INNER JOIN  aliases        AS l ON (a.user_id=l.id AND type!='homonyme')
 INNER JOIN  identification AS i ON a.matricule=i.matricule
      WHERE  a.user_id='$uid'");
 if (!list($prenom,$nom,$promo,$forlife,$femme) = mysql_fetch_row($res))

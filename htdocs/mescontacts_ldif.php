@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.php,v 1.9 2004-09-02 23:55:56 x2000habouzit Exp $
+        $Id: mescontacts_ldif.php,v 1.10 2004-09-05 12:54:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -68,7 +68,7 @@ mysql_free_result($req);
 $req = $globals->db->query("SELECT  a.id,a.alias
                               FROM  aliases  AS a
 			INNER JOIN  contacts AS c ON a.id=c.contact
-			     WHERE  c.uid='{$_SESSION['uid']}' AND a.type!='a_vie'");
+			     WHERE  c.uid='{$_SESSION['uid']}' AND a.type!='a_vie' AND a.type!='homonyme'");
 while(list($id,$alias) = mysql_fetch_row($req)) {
     $contacts[$id]['aliases'][] = $alias;
 }
