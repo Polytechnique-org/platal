@@ -2,30 +2,112 @@
 
 require_once('webservices/manageurs.inc.php');
 
-function get_annuaire_infos($method, $params) { 
-    if (!empty($params[0])) {
-        $res = mysql_query("SELECT nom AS nom, epouse AS nom_patro, prenom AS prenom, promo AS prenom, deces=0 AS decede, mobile AS cell FROM auth_user_md5 WHERE matricule = '".addslashes($params[0])."'");
-	if ($array = mysql_fetch_array($res)) {
-	    // then it's perfectly fine ! we just have to use a good cypher...
-	    
-	    if(manageurs_encrypt_init($params[0]) == 1){
-	      $args = array("faultCode" => 1, "faultString" => $error_key);
-              $reply = xmlrpc_encode_request(NULL,$args);
-	    }
-	    else{
-	      $reply = manageurs_encrypt_array($array);
+$error_mat = "You didn't provide me with a valid matricule number...";
+$error_key = "You didn't provide me with a valid cipher key...";
 
-	      manageurs_encrypt_close();
-	    }
-	} else {
-            $args = array("faultCode" => 1, "faultString" => $error_mat);
-	    $reply = xmlrpc_encode_request(NULL,$args);
-	}
-    } else {
-        $args = array("faultCode" => 1, "faultString" => $error_mat);
-	$reply = xmlrpc_encode_request(NULL,$args);
-    } 
-    return $reply; 
+/**
+  le premier parametre doit etre le matricule
+  le second parametre facultatif doit etre le numero de l'adresse voulue :
+    -1 => on ne veut pas d'adresse
+    0 => on veut toutes les adresses
+    n => on veut l'adresse numero n
+*/
+function get_annuaire_infos($method, $params) {
+  global $error_mat, $error_key;
+  
+  //si on a adresse == -1 => on ne recupère aucune adresse
+  if(isset($params[1]) && ($params[1] == -1)) unset($params[1]);
+  
+  
+  if( !empty($params[0]) ){ // on verifie qu'on a bien un matricule
+
+     //on ne recupere pas les adresses inutilement
+     if(!isset($params[1])){
+        $res = mysql_query("SELECT a.mobile AS cell, a.naissance AS age
+	                    FROM auth_user_md5 AS a
+			    WHERE a.matricule = '".addslashes($params[0])."'");
+     }
+     else{
+       $res = mysql_query("SELECT a.mobile AS cell, a.naissance AS age,
+                                  adr.adr1, adr.adr2, adr.adr3,
+				  adr.cp, adr.ville, adr.pays,
+				  adr.tel, adr.fax
+	                   FROM auth_user_md5 AS a
+			   LEFT JOIN adresses AS adr ON(adr.uid = a.user_id)
+			   WHERE a.matricule = '".addslashes($params[0])."' AND
+			         NOT FIND_IN_SET('pro', adr.statut)
+			   ORDER BY NOT FIND_IN_SET('active', adr.statut),
+				    FIND_IN_SET('res-secondaire', adr.statut),
+				    NOT FIND_IN_SET('courrier', adr.statut)");
+     }
+
+     //traitement des adresss si necessaire
+     if(isset($params[1])){
+       if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'],
+               $adr['cp'], $adr['ville'],
+               $adr['pays'], $adr['tel'], $adr['fax']) = mysql_fetch_row($res)){
+           $array['cell'] = $cell;
+	   $array['age'] = $age;
+	   $array['adresse'][] = $adr;
+
+           //on clamp le numero au nombre d'adresses dispo
+           $adresse = (int) $params[1];
+	   if($adresse > mysql_num_rows($res)) $adresse = mysql_num_rows($res);
+
+	   
+           if($adresse != 1){//on ne veut pas la premiere adresse
+	     $i = 2;
+             while(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'],
+                        $adr['cp'], $adr['ville'],
+                        $adr['pays'], $adr['tel'], $adr['fax']) = mysql_fetch_row($res)){
+	       if($adresse == $i){//si on veut cette adresse en particulier
+                 $array['adresse'][0] = $adr;
+		 break;
+	       }
+	       elseif($adresse == 0){//si on veut toutes les adresses
+                 $array['adresse'][] = $adr;
+	       }
+	       $i++;
+	     }
+	   }
+       }
+       else{
+         $array = false;
+       }
+     }
+     else{ //cas où on ne veut pas d'adresse
+       $array = mysql_fetch_array($res);
+     }
+     
+     if ($array) { // on a bien eu un résultat : le matricule etait bon
+
+       //on n'envoit que l'age à manageurs
+       $year = (int) substr($array['age'],4,4);
+       $month = (int) substr($array['age'],2,2);
+       $day = (int) substr($array['age'],4,4);
+       $age = (int) date('Y') - $year - 1;
+       if(( $month < (int)date('m')) ||
+          (($month == (int)date('m')) && ($day >= (int)date('d')))) $age += 1;
+       $array['age'] = $age;
+
+       //on commence le cryptage des donnees
+       if(manageurs_encrypt_init($params[0]) == 1){//on a pas trouve la cle pour crypter
+          $args = array("erreur" => 3, "erreurstring" => $error_key);
+          $reply = xmlrpc_encode_request(NULL,$args);
+       }
+       else{
+         $reply = manageurs_encrypt_array($array);
+         manageurs_encrypt_close();
+       }
+     } else {//le matricule n'etait pas valide
+       $args = array("erreur" => 2, "erreurstring" => $erreur_mat);
+       $reply = xmlrpc_encode_request(NULL,$args);
+     }
+  } else {//le matricule n'etait pas en argument
+     $args = array("erreur" => 1, "erreurstring" => $error_mat);
+     $reply = xmlrpc_encode_request(NULL,$args);
+  } 
+  return $reply; 
 } 
 
 ?>

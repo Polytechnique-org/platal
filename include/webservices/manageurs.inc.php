@@ -18,11 +18,9 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: manageurs.inc.php,v 1.2 2004-11-11 12:11:24 x2000coic Exp $
+        $Id: manageurs.inc.php,v 1.3 2004-11-11 15:11:25 x2000coic Exp $
  ***************************************************************************/
 
-$error_mat = "You didn't provide me with a valid matricule number...";
-$error_key = "You didn't provide me with a valid cipher key...";
 
 $tripledes = '';
 
@@ -60,14 +58,24 @@ function manageurs_decrypt($message){
 
 function manageurs_encrypt_array($array){
   foreach($array as $key => $value){
-    $result[manageurs_encrypt($key)] = manageurs_encrypt($value);
+    if(is_array($value)){
+      $result[manageurs_encrypt($key)] = manageurs_encrypt_array($value);
+    }
+    else{
+      $result[manageurs_encrypt($key)] = manageurs_encrypt($value);
+    }
   }
   return $result;
 }
 
 function manageurs_decrypt_array($array){
   foreach($array as $key => $value){
-    $result[manageurs_decrypt($key)] = manageurs_decrypt($value);
+    if(is_array($value)){
+      $result[manageurs_decrypt($key)] = manageurs_decrypt_array($value);
+    }
+    else{
+      $result[manageurs_decrypt($key)] = manageurs_decrypt($value);
+    }
   }
   return $result;
 }
