@@ -27,7 +27,7 @@ require_once("diogenes.misc.inc.php");
 class XorgSession extends DiogenesCoreSession
 {
     // {{{ function XorgSession()
-    
+
     function XorgSession()
     {
 	$this->DiogenesCoreSession();
@@ -37,6 +37,16 @@ class XorgSession extends DiogenesCoreSession
 	set_skin();
     }
 
+    // }}}
+    // {{{ function init
+    
+    function init() {
+        @session_start();
+        if (empty($_SESSION['session'])) {
+            $_SESSION['session'] = new XorgSession;
+        }
+    }
+    
     // }}}
     // {{{ function doAuth()
 

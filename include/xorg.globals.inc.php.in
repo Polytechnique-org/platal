@@ -58,7 +58,6 @@ class XorgGlobals extends DiogenesCoreGlobals
     {
         global $globals;
         require_once("xorg/menu.inc.php");
-        require_once('xorg/session.inc.php');
 
         $globals = new XorgGlobals;
 
@@ -85,8 +84,6 @@ class XorgGlobals extends DiogenesCoreGlobals
         }
         
         $globals->menu = new XOrgMenu($globals->root.'/include/conf.d/');
-
-        @session_start();
 
         $globals->dbconnect();
         if ($globals->debug) {

@@ -41,10 +41,12 @@ define('SKINNED', 0);
 define('NO_SKIN', 1);
 
 // }}}
-// {{{ import class definitions
+// {{{ globals + session init
 
 require_once("xorg.globals.inc.php");
+require_once('xorg/session.inc.php');
 XorgGlobals::init();
+XorgSession::init();
 
 // }}}
 // {{{ function _new_page()
@@ -59,11 +61,11 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)
         case AUTH_PUBLIC:
             $page = new XorgPage($tpl_name, $type);
             break;
-            
+
         case AUTH_COOKIE:
             $page = new XorgCookie($tpl_name, $type);
             break;
-            
+
         case AUTH_MDP:
             $page = new XorgAuth($tpl_name, $type);
     }

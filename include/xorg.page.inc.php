@@ -76,10 +76,6 @@ class XorgPage extends DiogenesCorePage
         $this->register_block('dynamic', 'block_dynamic', false);
         $this->register_prefilter('at_to_globals');
 
-        // if necessary, construct new session
-        if (empty($_SESSION['session']))
-            $_SESSION['session'] = new XorgSession;
-
         $this->assign('site_dev',$globals->debug);
         $this->doAuth();
     }

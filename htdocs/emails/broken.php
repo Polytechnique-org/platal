@@ -22,7 +22,7 @@
 require_once('xorg.inc.php');
 new_skinned_page('emails/broken.tpl',AUTH_COOKIE);
 require_once('emails.inc.php');
-    
+
 if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
     $email = valide_email($_GET['email']);
     // vérifications d'usage
