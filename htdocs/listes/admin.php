@@ -71,7 +71,7 @@ if(list($det,$mem,$own) = $client->get_members($liste)) {
     foreach($mem as $member) {
 	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@'.$globals->mail->domain.'$/', $member[1], $matches)) {
 	    $key = strtoupper($matches[2]{0});
-	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1], 'a' => $member[1]);
+	    $membres[$key][$matches[2].$matches[1]] = Array('n' => $member[0], 'l' => $matches[1], 'a' => $member[1]);
 	} else {
 	    $membres[0][] = Array('l' => $member[1], 'a' => $member[1]);
 	}
