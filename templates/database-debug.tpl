@@ -4,11 +4,18 @@
 <br />
 <table class="bicol" style="width: 75%; font-family: fixed">
   <tr class="impair">
-    <td><strong>QUERY:</strong><br />{$query.query|nl2br}</td>
+    <td>
+      <strong>QUERY:</strong><br />
+      {$query.query|regex_replace:"/(\n|^|$) */":"\n  "|replace:" ":"&nbsp"|nl2br}
+      <br />
+    </td>
   </tr>
   {if $query.error}
   <tr>
-    <td><strong>ERROR:</strong><br />{$query.error|nl2br}</td>
+    <td>
+      <strong>ERROR:</strong><br />
+      {$query.error|nl2br}
+    </td>
   </tr>
   {/if}
 </table>
