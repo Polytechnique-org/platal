@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_emails.tpl,v 1.5 2004-09-02 23:55:58 x2000habouzit Exp $
+        $Id: doc_emails.tpl,v 1.6 2004-10-08 21:06:23 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -42,7 +42,7 @@
 </p>
 <p>
     L'utilisation de ce service est très simple. Sur <a href="{"emails.php"|url}">cette
-    page</a>, tu trouveras un formulmaire pour ajouter de nouvelles adresses de redirection. Tous
+    page</a>, tu trouveras un formulaire pour ajouter de nouvelles adresses de redirection. Tous
     les courries envoyés sur tes adresses @polytechnique.org et @m4x.org seront redirigés vers
     <strong>toutes</strong> les boites de redirection que tu auras spécifiées <strong>et</strong>
     activées.

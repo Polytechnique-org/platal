@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_forums.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: doc_forums.tpl,v 1.6 2004-10-08 21:06:23 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -131,7 +131,7 @@
 </div>
 <p>
   Si tu as des difficultés avec les forums, n'hésite pas à envoyer un mail à
-  {mailto address='forums@polytechnique.org' text='l\\\'équipe Polytechnique.org' encode="javascript"}
+  {mailto address='forums@polytechnique.org' text='l\\\'&eacute;quipe Polytechnique.org' encode="javascript"}
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
