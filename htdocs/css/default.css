@@ -29,6 +29,12 @@ body {
     background: #ffffff;
 }
 
+a[href*="http://"], a[href*="https://"] {
+    padding-right: 8px;
+    background: url('/images/link-out.gif') right top no-repeat;
+    margin-right: 2px;
+}
+
 a:link, a:visited, a:active, a:hover { color: #003399; background: none; }
 img   { vertical-align: middle; }
 a img { border: 0px; }
@@ -600,4 +606,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.58 2004-11-04 16:33:52 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.59 2004-11-13 14:01:02 x2000habouzit Exp $ */
