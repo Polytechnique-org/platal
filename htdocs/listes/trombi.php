@@ -63,21 +63,7 @@ function getList($offset,$limit) {
 $owners = $client->get_owners($liste);
 
 if(is_array($owners)) {
-    $moderos = Array();
-    foreach($owners[1] as $owner) {
-	list($m) = split('@',$owner);
-	$res = $globals->db->query("SELECT  IF(epouse='', CONCAT(prenom, ' ', nom), CONCAT(prenom, ' ', epouse)), promo
-				      FROM  auth_user_md5 AS u
-			        INNER JOIN  aliases AS a ON u.user_id = a.id
-				     WHERE  a.alias = '$m'");
-	if(list($nom, $promo) = mysql_fetch_row($res)) {
-	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m);
-	} else {
-	    $moderos[0][] = Array('l' => $owner);
-	}
-	mysql_free_result($res);
-    }
-    ksort($moderos);
+    $moderos = list_sort_owners($owners[1]);
 
     $page->assign_by_ref('details', $owners[0]);
     $page->assign_by_ref('owners',  $moderos);

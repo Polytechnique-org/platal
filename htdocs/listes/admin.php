@@ -35,7 +35,7 @@ if(isset($_REQUEST['add_member'])) {
     }
 
     $arr = $client->mass_subscribe($liste, Array($login));
-    if(is_array($arr)) {
+    if (is_array($arr)) {
 	foreach($arr as $addr) {
             $page->trig("{$addr[0]} inscrit.");
         }
