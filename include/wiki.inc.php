@@ -27,36 +27,92 @@ class XOrgWikiAST
 
     var $type;
     var $childs;
+    var $attrs;
 
     // }}}
     // {{{ constructor
     
-    function XOrgWikiAST($type, $childs = Array())
+    function XOrgWikiAST($type, $childs = Array(), $attrs = Array())
     {
         $this->type   = $type;
         $this->childs = $childs;
+        $this->attrs  = $attrs;
     }
 
     // }}}
-    // {{{ debug function (more or less dunp 2 html)
+    // {{{ function normalize
 
-    function _dump($level = 0) {
-        echo str_pad('', 2*$level, ' ')."<{$this->type}>\n";
-        foreach ($this->childs as $val) {
+    function normalize()
+    {
+        if ($this->type == 'pre') {
+            return;
+        }
+        foreach ($this->childs as $key=>$val) {
             if (is_string($val)) {
-                echo str_pad('', 2*$level+2)."$val\n";
+                $val = preg_replace(',\s+,', ' ', $val);
+                if ($key == 0) {
+                    $val = ltrim($val);
+                }
+                if (empty($val)) {
+                    unset($this->childs[$key]);
+                } else {
+                    $this->childs[$key] = $val;
+                }
             } else {
-                $val->_dump($level+1);
+                $this->childs[$key]->normalize();
             }
         }
-        echo str_pad('', 2*$level, ' ')."</{$this->type}>\n";
+
+        while ($val = end($this->childs)) {
+            if (is_string($val)) {
+                if ($val = rtrim($val)) {
+                    $this->childs[key($this->childs)] = $val;
+                    break;
+                } else {
+                    unset($this->childs[key($this->childs)]);
+                }
+            } else {
+                break;
+            }
+        }
+    }
+    
+    // }}}
+    // {{{ function render
+
+    function render($engine)
+    {
+        return $engine->render($this);
+    }
+
+    // }}}
+
+    /* private */
+
+    // {{{ debug function (more or less dunp 2 html)
+
+    function _dump() {
+        echo '<'.$this->type;
+        foreach ($this->attrs as $attr=>$val) {
+            printf(' %s="%s"', $attr, $val);
+        }
+        if (!count($this->childs)) { echo " />"; return; }
+        echo '>';
+        foreach ($this->childs as $val) {
+            if (is_string($val)) {
+                echo $val;
+            } else {
+                $val->_dump();
+            }
+        }
+        echo "</{$this->type}>";
     }
 
     // }}}
 }
 
 // }}}
-// {{{ class XOrgWiki
+// {{{ class XOrgWikiParser
 
 class XOrgWikiParser
 {
@@ -73,17 +129,21 @@ class XOrgWikiParser
     {
         $input = str_replace("\r", '', $in);
         $input = str_replace("\n=", "\r", $input);
+        $input = preg_replace(',(^|[^|])((https?|ftp)://[^\r\n\t ]*),', '\1[\2|\2]', $input);
+        $input = preg_replace(',(^|[^|])(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?),','\1[\2|\2]', $input);
         $lines = array_map(Array($this, '_analyse'), split("\n", $input));
         return $this->_share_nests($lines);
     }
 
     // }}}
+
     /* private functions */
+
     // {{{ function _analyse
 
     function _analyse(&$line)
     {
-        $modes = Array('!'=>'h1', '!!'=>'h2', '!!!'=>'h3', '>'=>'blockquote', '.'=>'pre', '*'=>'ul', '#'=>'ol');
+        $modes = Array('!'=>'h1', '!!'=>'h2', '!!!'=>'h3', '>'=>'blockquote', '.'=>'pre', '-'=>'ul', '#'=>'ol');
         $types = Array();
         /* non - nesting blocks */
         if (preg_match('/^(!!?!?|[.>])/', $line, $m)) {
@@ -93,12 +153,12 @@ class XOrgWikiParser
 
         /* nesting blocks */
         $pos = 0;
-        while ($line{$pos} == '*' || $line{$pos} == '#') {
+        while ($line{$pos} == '-' || $line{$pos} == '#') {
             $types[] = $modes[$line{$pos}];
             $pos ++;
         }
 
-        /* nesting blocks ore special lines */
+        /* nesting blocks or special lines */
         if ($pos) {
             return Array($types, substr($line, $pos));
         } elseif ($line == '----') {
@@ -128,6 +188,7 @@ class XOrgWikiParser
             $res->childs = array_merge($res->childs, $nest);
         }
 
+        $res->normalize();
         return $res;
     }
 
@@ -159,8 +220,141 @@ class XOrgWikiParser
 
     function _parse_line($line)
     {
-        // TODO
-        return Array($line);
+        $lexm = Array();
+        $i    = 0;
+        $cur  = '';
+        $len  = strlen($line);
+        while ($i < $len) {
+            switch ($c = $line{$i}) {
+                case "\r":
+                    $lexm[] = $cur;
+                    $lexm[] = new XOrgWikiAST('br');
+                    $cur = '';
+                    $i ++;
+                    break;
+
+                case '\\':
+                    if ($i + 1 < $len) {
+                        if (strpos('*/_@[()', $d = $line{$i+1}) !== false) {
+                            $cur .= $d;
+                            $i += 2;
+                            break;
+                        }
+                    }
+                    $cur .= '\\';
+                    $i ++;
+                    break;
+
+                case '*':
+                case '/':
+                case '_':
+                case '@':
+                    if (preg_match(",^[$c][$c](.*?[^\\\\])[$c][$c],", substr($line, $i), $m)) {
+                        $lexm[] = $cur;
+                        $type   = ($c == '*' ? 'strong' : ($c == '/' ? 'em' : ($c == '@' ? 'tt' : 'u')));
+                        $lexm[] = new XOrgWikiAST($type, $this->_parse_line($m[1]));
+                        $cur    = '';
+                        $i     += strlen($m[0]);
+                        break;
+                    }
+                    $cur .= $line{$i};
+                    $i ++;
+                    break;
+
+                case '[':
+                case '(':
+                    $re = ( $c=='[' ? ',^\[([^|]*)\|([^]]*)\],' : ',^\(([^|]*)\|([^)]*)\),' );
+                    if (preg_match($re, substr($line, $i), $m)) {
+                        $lexm[] = $cur;
+                        if ($c == '[') {
+                            $lexm[] = new XOrgWikiAST('a', Array($m[1]), Array('href'=>$m[2]));
+                        } else {
+                            $lexm[] = new XOrgWikiAST('img', Array($m[1]), Array('src'=>$m[2]));
+                        }
+                        $cur    = '';
+                        $i     += strlen($m[0]);
+                        break;
+                    }
+                    $cur .= $line{$i};
+                    $i ++;
+                    break;
+
+                default:
+                    $cur .= $line{$i};
+                    $i ++;
+            }
+        }
+        $lexm[] = $cur;
+        return $lexm;
+    }
+
+    // }}}
+}
+
+// }}}
+// {{{ class XOrgWikiToText
+
+class XOrgWikiToText
+{
+    // {{{ constructor
+    
+    function XOrgWikiToText()
+    {
+    }
+
+    // }}}
+    // {{{ function render
+
+    function render($AST, $idt = '') {
+        return $idt . $this->_render($AST, $idt, false);
+    }
+
+    // }}}
+
+    /* private */
+
+    // {{{ function _render
+    
+    function _render($AST, $idt, $list)
+    {
+        $res = '';
+        if ($AST->type == 'ol' || $AST->type == 'ul') {
+            if ($list) {
+                $idt .= '    ';
+                $res .= "\n$idt";
+            } else {
+                $list = true;
+            }
+        } elseif ($AST->type == 'li') {
+            $res .= '  - ';
+        } elseif ($AST->type == 'u') {
+            $res .= '_';
+        } elseif ($AST->type == 'em') {
+            $res .= '/';
+        } elseif ($AST->type == 'strong') {
+            $res .= '*';
+        } elseif ($AST->type == 'a') {
+            return "[{$AST->attrs['href']}]";
+        } elseif ($AST->type == 'img') {
+            return "[{$AST->attrs['src']}]";
+        }
+        foreach ($AST->childs as $val) {
+            if (is_string($val)) {
+                $res .= $val;
+            } else {
+                $res .= $this->_render($val, $idt, $list);
+            }
+        }
+        if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false) {
+            $res .= "\n$idt";
+        } elseif ($AST->type == 'u') {
+            $res .= '_';
+        } elseif ($AST->type == 'em') {
+            $res .= '/';
+        } elseif ($AST->type == 'strong') {
+            $res .= '*';
+        }
+        return $res;
     }
 
     // }}}
