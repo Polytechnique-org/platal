@@ -27,33 +27,67 @@ require_once("diogenes/diogenes.hermes.inc.php");
 $all = new AllNotifs();
 
 foreach($all->_data as $u) {
+    $week   = date("W - Y");
+
     $text =  "  ".($u['sexe'] ? 'Chère' : 'Cher')." {$u['prenom']},\n\n"
           .  "  Voici les évènements survenus dans la semaine écoulée,\n"
-	  .  "et depuis ta dernière visite sur le site.\n\n"
-	  .  "Tu trouveras les mêmes informations sur la page :\n"
-	  .  "    {$globals->baseurl}/carnet/panel.php\n\n";
-    $text .= "------------------------------------------------------------\n\n";
+          .  "et depuis ta dernière visite sur le site.\n\n"
+          .  "Tu trouveras les mêmes informations sur la page :\n"
+          .  "    {$globals->baseurl}/carnet/panel.php\n\n"
+          .  "------------------------------------------------------------------------\n\n";
+
+    $html  = <<<EOF
+<html>
+  <head>
+    <title>Notifications de la semaine $week</title>
+  </head>
+  <body>
+    <p>Voici les évènements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
+    <p>Tu trouveras les mêmes informations sur <a href='{$globals->baseurl}/carnet/panel.php'>cette page</a></p>
+EOF;
+
     foreach($u['data'] as $cid=>$d) {
-	$text .= "  {$all->_cats[$cid]['mail']} :\n\n";
-	foreach($d as $promo=>$x) {
-	    $text .= "    - (X{$x['promo']}) {$x['prenom']} {$x['nom']} le {$x['date']}\n";
-	}
-	$text .= "\n";
+        $text .= "  {$all->_cats[$cid]['mail']} :\n\n";
+        $html .= "<h1 style='font-size: 120%'>{$all->_cats[$cid]['mail']} :</h1>\n<ul>\n";
+
+        foreach($d as $promo=>$x) {
+            require_once('../../plugins/modifier.date_format.php');
+            $date  = smarty_modifier_date_format($x['date'], '%d %b %Y');
+            $text .= "    - (X{$x['promo']}) {$x['prenom']} {$x['nom']} le $date\n";
+            $text .= "      {$globals->baseurl}/fiche.php?user={$x['bestalias']}\n\n";
+            $html .= "<li>(X{$x['promo']}) <a href='{$globals->baseurl}/fiche.php?user={$x['bestalias']}'>{$x['prenom']} {$x['nom']}</a> le $date</li>\n";
+        }
+        $text .= "\n";
+        $html .= "</ul>\n";
     }
 
-    $text .= "------------------------------------------------------------\n\n"
-           . "Tu recois ce mail car tu as activé la notification\n"
-	   . "automatique par mail des évènements que tu surveilles.\n\n"
-	   . "Tu peux changer cette option sur :\n"
-	   . "    {$globals->baseurl}/carnet/notifs.php\n\n"
-	   . "-- \n"
-	   . "L'équipe de Polytechnique.org";
+    $text .= "-- \n"
+           . "L'équipe de Polytechnique.org\n\n"
+           . "------------------------------------------------------------------------\n\n"
+           . "Tu recois ce mail car tu as activé la notification automatique \n"
+           . "par mail des évènements que tu surveilles.\n\n"
+           . "Tu peux changer cette option sur :\n"
+           . "    {$globals->baseurl}/carnet/notifs.php";
+    $html .= <<<EOF
+    <hr />
+    <p>L'équipe de Polytechnique.org</p>
+    <br />
+    <p>
+    Tu recois ce mail car tu as activé la notification automatique par mail des évènements que tu surveilles.
+    </p>
+    <p>Tu peux changer cette option sur la <a href="{$globals->baseurl}/carnet/notifs.php">page
+    de configuration des notifications</a>
+    </p>
+  </body>
+</html>
+EOF;
     
     $mailer = new HermesMailer();
     $mailer->setFrom("Carnet Polytechnicien <support_carnet@polytechnique.org>");
     $mailer->addTo("\"{$u['prenom']} {$u['nom']}\" <{$u['bestalias']}@polytechnique.org>");
-    $mailer->setSubject("Notifications de la semaine ".date("W - Y"));
+    $mailer->setSubject("Notifications de la semaine $week");
     $mailer->setTxtBody($text);
+    if ($u['mail_fmt'] == 'html') { $mailer->setHtmlBody($html); }
     $mailer->send();
 }
 

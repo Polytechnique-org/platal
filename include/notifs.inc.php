@@ -85,7 +85,7 @@ function _select_notifs_base($table, $mail, $where)
     if ($mail) {
         $sql.=",
                   w.uid AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
-                  b.alias AS abestalias, (v.flags='femme') AS sexe"; 
+                  b.alias AS abestalias, (v.flags='femme') AS sexe, q.core_mail_fmt AS mail_fmt"; 
     }
 
     $sql .= "
@@ -172,9 +172,11 @@ class AllNotifs {
 
 	while($tmp = $res->next()) {
 	    $aid = $tmp['aid'];
-	    $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
-				       'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe']);
-	    unset($tmp['aprenom'],$tmp['anom'],$tmp['abestalias'],$tmp['aid'],$tmp['sexe']);
+            if (empty($this->_data[$aid])) {
+                $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
+                        'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt']);
+            }
+	    unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['sexe'], $tmp['mail_fmt']);
 	    $this->_data[$aid]['data'][$tmp['cid']][] = $tmp;
 	}
     }
