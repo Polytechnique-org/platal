@@ -18,26 +18,29 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.password.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: insert.password.inc.php,v 1.3 2004-09-02 18:23:02 x2000habouzit Exp $
  ***************************************************************************/
 
 function smarty_insert_getName() {
-    $pre = strtok($_COOKIE['ORGlogin'],".");
-    $pre1=strtok($pre,"-");
-    $pre2=strtok(" ");
-    $pre1=ucfirst($pre1);
-    $pre2=ucfirst($pre2);
-    if ($pre2) {
-        $prenom = $pre1."-".$pre2;
-    } else {
-        $prenom = $pre1;
+    global $globals;
+    if(empty($_COOKIE['ORGuid'])) return "";
+    $res = $globals->db->query("SELECT prenom FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}'");
+    if(list($prenom) = mysql_fetch_row($res)) {
+	mysql_free_result($res);
+	return $prenom;
     }
-    return $prenom;
+    return "";
 }
 
 function smarty_insert_getUsername() {
-    return isset($_SESSION['username'])
-        ? $_SESSION['username']
-        : (isset($_COOKIE['ORGlogin']) ? $_COOKIE['ORGlogin'] : "");
+    if(isset($_COOKIE['ORGuid'])) $id = $_COOKIE['ORGuid'];
+    if(isset($_SESSION['uid'])) $id = $_SESSION['uid'];
+    if(empty($id)) return "";
+    $res = $globals->db->query("SELECT alias FROM auth_user_md5 WHERE id='$id' AND type='a_vie'");
+    if(list($uname) = mysql_fetch_row($res)) {
+	mysql_free_result($res);
+	return $uname;
+    }
+    return "";
 }
 ?>

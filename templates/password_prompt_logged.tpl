@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt_logged.tpl,v 1.14 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: password_prompt_logged.tpl,v 1.15 2004-09-02 18:23:02 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -72,7 +72,7 @@
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
   <div>
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
-    <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}" />
+    <input type="hidden" name="username"  value="{$smarty.cookies.ORGuid}" />
     <input type="hidden" name="response"  value="" />
   </div>
 </form>

@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt_logged.head.tpl,v 1.9 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: password_prompt_logged.head.tpl,v 1.10 2004-09-02 18:23:02 x2000habouzit Exp $
  ***************************************************************************}
 
 
     <script src="{"javascript/md5.js"|url}" type="text/javascript"></script>
     <script type="text/javascript">//<![CDATA[
       function doChallengeResponse() {ldelim}
-        str = "{$smarty.cookies.ORGlogin}:" +
+        str = "{$smarty.cookies.ORGuid}:" +
         MD5(document.forms.login.password.value) + ":" +
         document.forms.loginsub.challenge.value;
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deconnexion.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: deconnexion.php,v 1.5 2004-09-02 18:23:01 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,7 +32,7 @@ if (isset($_SESSION['log'])) {
 }
 
 session_destroy();
-$has_cookie = (isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGlogin']));
+$has_cookie = (isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGuid']));
 $_SESSION = array();
 if($has_cookie)
     header("Location: login.php");

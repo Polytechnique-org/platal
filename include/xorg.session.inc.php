@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.19 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.20 2004-09-02 18:23:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -28,7 +28,7 @@ class XorgSession extends DiogenesCoreSession {
     function XorgSession()
     {
 	$this->DiogenesCoreSession();
-	if(empty($_SESSION['username']))
+	if(empty($_SESSION['uid']))
 	    try_cookie();
 	set_skin();
     }
@@ -48,9 +48,11 @@ class XorgSession extends DiogenesCoreSession {
 	{
 	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
 	    // ou passwordpromptscreenlogged.tpl
-	    $res = @$globals->db->query( "SELECT username,user_id,password FROM auth_user_md5 WHERE username='{$_REQUEST['username']}'");
+	    $res = @$globals->db->query( "SELECT  u.user_id,u.password
+					    FROM  auth_user_md5 AS u
+         			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.alias='{$_REQUEST['username']}' )");
 	    if(@mysql_num_rows($res) != 0) {
-		list($username,$uid,$password)=mysql_fetch_row($res);
+		list($uid,$password)=mysql_fetch_row($res);
 		mysql_free_result($res);
 		$expected_response=md5("{$_REQUEST['username']}:$password:{$_SESSION['session']->challenge}");
 		if($_REQUEST['response'] == $expected_response) {
@@ -58,7 +60,7 @@ class XorgSession extends DiogenesCoreSession {
 		    // on logge la réussite pour les gens avec cookie
 		    if(isset($_SESSION['log']))
 			$_SESSION['log']->log("auth_ok");
-		    start_connexion($username, $uid, true);
+		    start_connexion($uid, true);
 		    return true;
 		} else {
 		    // mot de passe incorrect pour le login existant
@@ -103,7 +105,7 @@ class XorgSession extends DiogenesCoreSession {
     /** Display login screen.
      */
     function doLogin(&$page, $new_name=false) {
-	if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGlogin']) and !$new_name) {
+	if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGuid']) and !$new_name) {
 	    $page->_tpl = 'password_prompt_logged.tpl';
 	    $page->assign("xorg_head", "password_prompt_logged.head.tpl");
 	    $page->assign("xorg_tpl", "password_prompt_logged.tpl");
@@ -139,7 +141,7 @@ function check_perms() {
     
 function has_perms($auth_array=array()) {
     return logged()
-	&& ( (!empty($auth_array) && in_array($_SESSION['username'], $auth_array))
+	&& ( (!empty($auth_array) && in_array($_SESSION['uid'], $auth_array))
 		|| ($_SESSION['perms']==PERMS_ADMIN) );
 }
 
@@ -171,16 +173,16 @@ function identified () {
  */
 function try_cookie() {
     global $globals;
-    if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGlogin']))
+    if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGuid']))
 	return -1;
 
-    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE username='{$_COOKIE['ORGlogin']}'");
+    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}'");
     if(@mysql_num_rows($res) != 0) {
 	list($uid,$password)=mysql_fetch_row($res);
 	mysql_free_result($res);
 	$expected_value=md5($password);
 	if($expected_value == $_COOKIE['ORGaccess']) {
-	    start_connexion($_COOKIE['ORGlogin'], $uid, false);
+	    start_connexion($_COOKIE['ORGuid'], $uid, false);
 	    return 0;
 	} else return 1;
     }
@@ -192,14 +194,14 @@ function try_cookie() {
  * @return void
  * @see controlpermanent.inc.php controlauthentication.inc.php
  */
-function start_connexion ($username, $uid, $identified) {
+function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
 	    FROM  auth_user_md5   AS u
-	    LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
-	    WHERE  user_id=$uid
-	    ORDER BY  s.start DESC
-	    LIMIT  1");
+       LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
+	   WHERE  user_id=$uid
+        ORDER BY  s.start DESC
+           LIMIT  1");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host) = mysql_fetch_row($result);
     mysql_free_result($result);
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
@@ -214,7 +216,6 @@ function start_connexion ($username, $uid, $identified) {
     $_SESSION['host'] = $host;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
     $_SESSION['uid'] = $uid;
-    $_SESSION['username'] = $username;
     $_SESSION['prenom'] = $prenom;
     $_SESSION['nom'] = $nom;
     $_SESSION['perms'] = $perms;
@@ -227,7 +228,7 @@ function start_connexion ($username, $uid, $identified) {
     if(empty($logger))
 	$_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
     // le login est stocké pour un an
-    setcookie('ORGlogin',$username,(time()+25920000),'/','',0);
+    setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
     set_skin();
 }
 
