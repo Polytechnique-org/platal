@@ -25,7 +25,7 @@ function _rss_encode_date($d) {
     } else {
         $t = strtotime($d);
     }
-    return date('r', $t);
+    return utf8_encode(date('r', $t));
 }
 
 function to_rss ($s)

@@ -49,10 +49,10 @@ create table register_mstats (
 --
 
 insert into register_mstats (uid, sender, success)
-     select u.user_id, e.sender, u.date_ins
+     select distinct u.user_id, e.sender, u.date_ins
        from envoidirect   as e
  inner join auth_user_md5 as u using(matricule)
-      where u.date_ins != 0;
+      where u.date_ins != 0 group by user_id;
 
 insert into register_marketing (uid, sender, email, date, last, nb, type, hash)
      select u.user_id, m.expe, m.email, 0, 0, FIND_IN_SET('envoye', m.flags), IF(FIND_IN_SET('mail_perso', m.flags), 'user', 'staff'), ''
