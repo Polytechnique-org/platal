@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: archives.php,v 1.3 2004-11-30 11:30:57 x2000habouzit Exp $
+        $Id: archives.php,v 1.4 2004-11-30 18:39:19 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -36,7 +36,11 @@ if (list($det) = $client->get_members($liste)) {
     } elseif (isset($_GET['file'])) {
         $file = $_GET['file'];
         $rep  = $_GET['rep'];
-        $page->assign('url', $globals->lists->spool."/polytechnique.org-$liste/$rep/$file");
+        if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $_GET['rep'])) {
+            $page->assign('no_list',true);
+        } else { 
+            $page->assign('url', $globals->lists->spool."/polytechnique.org-$liste/$rep/$file");
+        }
     } else {
         $archs = Array();
         foreach (glob($globals->lists->spool."/polytechnique.org-$liste/*/*") as $rep) {
