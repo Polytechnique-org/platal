@@ -57,8 +57,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
 ;	  | domaine.php								  | 
-;	  | emploi.php								  | 
-;	  | emploi_public.php						  | 
 ;	  | evenements.php							  | 
 ;	  | fiche_referent.php						  | 
 ;	  | index.coupure.php						  | 
@@ -78,18 +76,18 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | listes/mailtoins.inc.php				  |  |
 ;	  | listes/trombiliste.php					  | /
 ------+-[ sondages ]------------------------------+----------------
-;	  | admin/gerer_sondages.php				  | \
-;	  | sondage/accueil.php						  |  |
-;	  | sondage/bloc.php						  |  |
-;	  | sondage/droits.php						  |  |
-;	  | sondage/exemples.php					  |  |
-;	  | sondage/modifie.php						  |   \_ JS ?
-;	  | sondage/question.php					  |   /
-;	  | sondage/questionnaire.php				  |  |
-;	  | sondage/reponse.php						  |  | 
-;	  | sondage/resultats.php					  |  |
-;	  | sondage/titre.php						  |  |
-;	  | sondage/validation.php					  | /
+;!	  | admin/gerer_sondages.php				  | \
+;!	  | sondage/accueil.php						  |  |
+;!	  | sondage/bloc.php						  |  |
+;!	  | sondage/droits.php						  |  |
+;!	  | sondage/exemples.php					  |  |
+;!	  | sondage/modifie.php						  |   \_ JS ?
+;!	  | sondage/question.php					  |   /
+;!	  | sondage/questionnaire.php				  |  |
+;!	  | sondage/reponse.php						  |  | 
+;!	  | sondage/resultats.php					  |  |
+;!	  | sondage/titre.php						  |  |
+;!	  | sondage/validation.php					  | /
 ------+-[ news ]----------------------------------+----------------
 ;!	  | news/abonnements.php					  | \
 ;!	  | news/article.php						  |  |
@@ -198,6 +196,8 @@ x!!	  | auth-wiki.php							  | obsolete
 x!!	  | profil2.php								  | -
 x!!	  | trackers/tracker_delete.php				  | -
 x!!	  | trezo/trezo.inc.php						  | -
+x!!	  | emploi.php								  | 
+x!!	  | emploi_public.php						  | 
 ------+-[ trackers ]------------------------------+----------------
 x!!	  | trackers/tracker_show.php				  | \
 x!!	  | trackers/tracker_show_rq.php			  |  \_ obsolete
