@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require("../../include/xorg.inc.php");
+require("../include/xorg.inc.php");
 
 // on coupe la chaîne REQUEST_URI selon les / et on ne garde que
 // le premier non vide et éventuellement le second
