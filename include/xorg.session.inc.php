@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.40 2004-11-18 10:40:31 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.41 2004-11-21 20:56:26 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -275,30 +275,22 @@ function start_connexion ($uid, $identified) {
     set_skin();
 }
 
-function set_skin() {
+function set_skin()
+{
     global $globals;
-    if(logged()) {
+    if (logged()) {
 	$result = $globals->db->query("SELECT  skin,skin_tpl
 	                                 FROM  auth_user_quick AS a
 				   INNER JOIN  skins           AS s ON a.skin=s.id
 				        WHERE  user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
-	if(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result)) {
-	    if ($_SESSION['skin_id'] == SKIN_STOCHASKIN_ID) {
-		$res = $globals->db->query("SELECT id,skin FROM skins
-			WHERE !FIND_IN_SET('cachee',type) order by rand() limit 1");
-		list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($res);
-		mysql_free_result($res);
-	    }
-	} else {
+	if (!(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result))) {
 	    $_SESSION['skin'] = SKIN_COMPATIBLE;
 	    $_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
 	}
 	mysql_free_result($result);
     }
 
-    if( !logged() || !isset($_SERVER['HTTP_USER_AGENT'])
-	    || ereg("Mozilla/4\.[0-9]{1,2} \[",$_SERVER['HTTP_USER_AGENT']) )
-    {
+    if (!logged()) {
 	$_SESSION['skin'] = SKIN_COMPATIBLE;
 	$_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
     }

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.common.inc.php,v 1.5 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: xorg.common.inc.php,v 1.6 2004-11-21 20:56:26 x2000habouzit Exp $
  ***************************************************************************/
 
 $i=0;
@@ -26,13 +26,11 @@ define("AUTH_PUBLIC", $i++);
 define("AUTH_COOKIE", $i++);
 define("AUTH_MDP", $i++);
 
-define("PERMS_EXT", "ext");
 define("PERMS_USER", "user");
 define("PERMS_ADMIN", "admin");
 
 define('SKIN_COMPATIBLE','default.tpl');
 define('SKIN_COMPATIBLE_ID',1);
-define('SKIN_STOCHASKIN_ID','254');
 
 define('SKINNED', 0);
 define('NO_SKIN', 1);
