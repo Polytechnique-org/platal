@@ -8,6 +8,7 @@ New :
 
 	* Core :
 		- New SQL access API : gain in security and code factorization.		-MC
+		- Drop good old mysql_assign, iterators are nicer.					-MC
 		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC
 		- Drop cache algorithm (was complex for no gain).					-MC
 		- Enhancements wrt COOKIE.											-MC
