@@ -63,7 +63,7 @@
 </table>
 <p>
 Nous vous remercions de bien choisir la rubrique qui est la plus adaptée à votre besoin.
-Celà nous permettra d'être les plus efficaces possible et de traiter votre demande au plus vite.
+Cela nous permettra d'être les plus efficaces possible et de traiter votre demande au plus vite.
 </p>
 
 {elseif $smarty.request.topic eq 1}
