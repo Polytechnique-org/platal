@@ -1,9 +1,7 @@
 La liste de diffusion {{{LIST}}} vient d'être créée pour vous.
-Vous trouverez ci-dessous quelques informations indispensables sur
-cette liste. 
 
-Vous pouvez configurer votre liste de diffusion à l'adresse suivante: 
+Vous pouvez en régler les paramètres depuis la page web : 
 
     {{{ADMIN}}}
 
-Pour toute question adressez-vous à listes@polytechnique.org.
+Pour toute question adressez-vous à support@polytechnique.org.

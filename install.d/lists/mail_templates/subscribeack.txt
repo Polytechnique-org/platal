@@ -2,11 +2,12 @@ Bienvenue sur la liste {{{LIST}}}
 
 %(welcome)s
 
-Pour écrire à la liste, envoyez votre message à:
+Pour écrire à la liste, envoyez votre message à :
 
     {{{LIST}}}
 
-Les informations générales concernant cette liste sont à l'adresse :
+Les informations générales concernant cette liste (composition,
+trombinoscope, ...) sont à l'adresse :
 
     {{{MEMBERS}}}
 

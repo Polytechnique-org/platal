@@ -2,12 +2,12 @@ Vous avez envoyé un message à la liste de diffusion {{{LIST}}} :
 
     %(request)s 
 
-Votre message n'a pas été transmis à la liste.  Le modérateur a donné
-la justification suivante :
+Le modérateur n'a pas souhaité diffuser votre message vers les
+abonnés à la liste pour la raison suivante :
 
     "%(reason)s" 
 
 Toute question ou commentaire doit être adressé aux modérateurs de la
-liste :
+liste à cette adresse :
 
     {{{ALIST}}}

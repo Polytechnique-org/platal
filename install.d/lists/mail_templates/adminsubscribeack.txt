@@ -1,3 +1,4 @@
-%(member)s a été abonné à {{{LIST}}} avec succès.
+Nous vous confirmons l'abonnement de %(member)s 
+à la liste de diffusion {{{LIST}}}.
 
 

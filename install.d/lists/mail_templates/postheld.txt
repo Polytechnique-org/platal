@@ -2,12 +2,12 @@ Votre courrier à '{{{LIST}}}' dont l'objet est
 
     %(subject)s
 
-est en attente jusqu'à ce que le modérateur de la liste puisse
-le consulter pour approbation.
+a bien été transmis à l'animateur de la liste de diffusion,
+afin qu'il puisse le valider.
 
-La raison de cette mise en attente :
+En effet,
 
     %(reason)s
 
-Le message sera soit envoyé à la liste, soit vous recevrez une
-indication de la décision du modérateur.
+Vous serez informé de l'action prise par le modérateur dans
+les plus brefs délais.

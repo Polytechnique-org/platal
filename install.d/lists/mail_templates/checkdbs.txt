@@ -1,7 +1,8 @@
 La liste {{{LIST}}} a %(count)d requête(s) en attente
-de votre décision à l'adresse : 
+d'une action de votre part sur la page web : 
 
     {{{MODERATE}}}
 
-A traiter aussi rapidement que possible.  Cet avis de requête(s)
-en attente (s'il y en a...) vous sera envoyé quotidiennement.
+Merci de bien vouloir prendre le temps de les traiter.
+Cet avis de requête(s) en attente vous sera envoyé
+chaque jour où des messages sont en attente de modération.
