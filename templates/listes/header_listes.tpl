@@ -17,30 +17,73 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: header_listes.tpl,v 1.1 2004-11-07 14:22:49 x2000chevalier Exp $
+        $Id: header_listes.tpl,v 1.2 2004-11-07 14:58:35 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
-<p>
-[<a href='index.php'>Voir toutes les listes</a>]
-<br />
-<strong>Liste {$smarty.request.liste} : </strong>
-[<a href='members.php?liste={$smarty.request.liste}'>liste des membres</a>]
-[<a href='trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
-<br />
-{if $details.own || $smarty.session.perms eq admin}
-<strong>Administration de la liste {$smarty.request.liste} : </strong>
-[<a href='moderate.php?liste={$smarty.get.liste}'>modération des messages en attente</a>]
-[<a href='admin.php?liste={$smarty.get.liste}'>ajout/retrait de membres</a>]
-[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
-{/if}
-{perms level=admin}
-<br />
-<strong>Administrateurs du site : </strong>
-[<a href='soptions.php?liste={$smarty.get.liste}'>options avancées</a>]
-[<a href='check.php?liste={$smarty.get.liste}'>vérifications</a>]
-{/perms}
-</p>
+
+<table>
+  <tr>
+    <td colspan='2'>
+      [<a href='index.php'>Voir toutes les listes</a>]
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Liste {$smarty.request.liste} :</strong></td>
+    <td>
+      {if $on neq members}
+      [<a href='members.php?liste={$smarty.request.liste}'>liste des membres</a>]
+      {else}
+      [liste des membres]
+      {/if}
+      {if $on neq trombi}
+      [<a href='trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
+      {else}
+      [trombinoscope]
+      {/if}
+    </td>
+  </tr>
+  {if $details.own || $smarty.session.perms eq admin}
+  <tr>
+    <td><strong>Administration de la liste :</strong></td>
+    <td>
+      {if $on neq moderate}
+      [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
+      {else}
+      [modération]
+      {/if}
+      {if $on neq admin}
+      [<a href='admin.php?liste={$smarty.get.liste}'>ajout/retrait de membres</a>]
+      {else}
+      [ajout/retrait de membres]
+      {/if}
+      {if $on neq options}
+      [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
+      {else}
+      [options]
+      {/if}
+    </td>
+  </tr>
+  {/if}
+  {perms level=admin}
+  <tr>
+    <td><strong>Administration avancée :</strong></td>
+    <td>
+      {if $on neq soptions}
+      [<a href='soptions.php?liste={$smarty.get.liste}'>options avancées</a>]
+      {else}
+      [options avancées]
+      {/if}
+      {if $on neq check}
+      [<a href='check.php?liste={$smarty.get.liste}'>vérifications</a>]
+      {else}
+      [vérifications]
+      {/if}
+    </td>
+  </tr>
+  {/perms}
+</table>
+
 {/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.11 2004-11-07 14:22:49 x2000chevalier Exp $
+        $Id: members.tpl,v 1.12 2004-11-07 14:58:35 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,7 +28,7 @@
 
 {else}
 
-{include file="listes/header_listes.tpl"}
+{include file="listes/header_listes.tpl" on=members}
 
 <h1>
   Liste {$smarty.request.liste}

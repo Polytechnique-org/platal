@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.18 2004-11-07 14:22:49 x2000chevalier Exp $
+        $Id: moderate.tpl,v 1.19 2004-11-07 14:58:35 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,7 +28,7 @@
 
 {else}
 
-{include file="listes/header_listes.tpl"}
+{include file="listes/header_listes.tpl" on=moderate}
 
 <h1>
   Inscriptions en attente de modération

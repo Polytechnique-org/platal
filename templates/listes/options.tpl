@@ -34,7 +34,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </p>
 {/if}
 
-{include file="listes/header_listes.tpl"}
+{include file="listes/header_listes.tpl" on=options}
 
 <h1>
   Changer les options de la liste {$details.addr}

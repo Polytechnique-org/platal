@@ -28,7 +28,7 @@
 
 {else}
 
-{include file="listes/header_listes.tpl"}
+{include file="listes/header_listes.tpl" on=soptions}
 
 <h1>
   Changer les options de la liste {$details.addr}
