@@ -1,8 +1,8 @@
-{* $Id: sendmail.tpl,v 1.7 2004-08-29 16:20:42 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.8 2004-08-31 08:57:24 x2000habouzit Exp $ *}
 
 {dynamic}
 
-{$error}
+<p class="erreur">{$error}</p>
 
 <div class="rubrique">
   Envoyer un mail
@@ -21,7 +21,19 @@
   </li>
 </ul>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<script type="text/javascript">//<![CDATA[
+  {literal}
+  function check(form) {
+    if(form.sujet.value == "") {
+      return confirm ("Le sujet du mail est vide, veux tu continuer ?");
+    }
+    return true;
+  }
+  {/literal}
+//]]>
+</script>
+
+<form action="{$smarty.server.REQUEST_URI}" method="post" onsubmit="return check(this);">
   <table class="bicol" cellpadding="2" cellspacing="0" summary="En-têtes du message">
     <tr> 
       <th colspan="2">en-têtes</th>
@@ -52,7 +64,7 @@
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc}" />
+        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.username}" />
       </td>
     </tr>
     <tr> 
@@ -79,9 +91,9 @@
 {/if}
     <td>
       <input type="checkbox" name="contacts[{$contact.username}]"
-      value="{"`$contact.prenom` `$contact.nom` &lt;`$contact.username`@polytechnique.org&gt;"}"
+        value="{$contact.prenom} {$contact.nom} &lt;{$contact.username}@polytechnique.org&gt;"
         {if $smarty.request.contacts && $smarty.request.contacts.username}checked="checked"{/if} />
-        <a href="javascript:x()" onclick="popWin('fiche.php?user={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
+      <a href="javascript:x()" onclick="popWin('fiche.php?user={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>
 {if $key is odd}
   </tr>
@@ -113,8 +125,7 @@
       <td class="center">
         <textarea name='contenu' rows="30" cols="75">
 {$smarty.request.contenu}
-{if $smarty.request.signature}
-
+{if !$smarty.request.contenu}
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}
 {/if}</textarea>
