@@ -18,13 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.27 2004-11-02 11:40:14 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.28 2004-11-02 11:41:33 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
 define('HOMME', 0);
 
 require_once("xorg.misc.inc.php");
+require_once("diogenes.misc.inc.php");
 
 class NewsLetter {
     var $_id;
