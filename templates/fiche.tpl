@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.20 2004-11-02 07:13:08 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.21 2004-11-04 14:39:44 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -45,6 +45,11 @@ function chgMainWinLoc( strPage ) {
       <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
     </a>
     {/if}
+    {perms level=admin}
+    <a href="{"admin/utilisateurs.php"|url}?login={$forlife}">
+      <img src="images/admin.png" alt='admin' title="administrer user" />
+    </a>
+    {/perms}
   </div>
   <div class='right' style="font-size: smaller; width:100%">(Fiche mise à jour le {$date|date_format:"%d %B %Y"})</div>
   <div>
