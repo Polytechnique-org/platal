@@ -1,0 +1,134 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+a:link, a:visited, a:active, a:hover {
+    color: #0f2c57;
+    background: inherit;
+}
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
+
+/*body {
+    background: #99afc1;
+    color: #000000;
+}*/
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+div.rubrique {
+    color: #eeeeee;
+    background-color: #000000;
+    background-image: url( "../images/sk_espace_titre.jpg");
+    background-repeat: no-repeat;
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
+
+table.tinybicol, table.bicol {
+    background: #eeeeff;
+    border: 1px solid #2f006f;
+    border-collapse: collapse;
+}
+
+table.tinybicol tr, table.bicol tr { }
+table.tinybicol tr.pair, table.bicol tr.pair      { background: #ddddff; }
+table.tinybicol th, table.bicol th {
+    background-color: #2f006f;
+}
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
+/*div.contact-list div.contact {
+    border-top: 1px solid #305070;
+    background: #80a0c0;
+    color: inherit;
+}
+
+div.contact div.long {
+    background: #99b9d0;
+    color: inherit;
+}*/
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+
+/*******************************************************************************
+    7   fiche.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+#body-logo {
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+}
+
+#body-top {
+    border-bottom: 2px solid #777777;
+}
+
+#body-bottom {
+    border-top: 1px solid #777777;
+}
+
+#body-menu {
+    border-right: none;
+}
+
+#body-menu .menu_title {
+    color : #ffffff;
+    background-color: #dddddd;
+    background-image: url("../images/sk_espace_menu.jpg");
+/*border-top: 1px solid #003399;*/
+    border-bottom: none;
+}
+
+#body-menu .menu_item {
+    border-right: none;
+/*    padding-left: 0px;
+    text-align: left;*/
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */
+/* $Id: espace.css,v 1.1 2004-10-03 13:29:45 x2003bruneau Exp $ */
