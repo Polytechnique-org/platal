@@ -1,4 +1,4 @@
-<?
+<?php
 $this->addPrivateEntry(XOM_NO,       10, 'Page d\'accueil',       'login.php');
 
 $this->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',            'emails.php');
@@ -9,7 +9,6 @@ $this->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',      'motdepassemd5
 $this->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',       'preferences.php');
 
 $this->addPrivateEntry(XOM_SERVICES, 00, 'Envoyer un mail',       'sendmail.php');
-$this->addPrivateEntry(XOM_SERVICES, 10, 'Forums & PA',           'banana/');
 $this->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
 $this->addPrivateEntry(XOM_SERVICES, 30, 'Envoyer un mail',       'sendmail.php');
 $this->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',          'pattecassee.php');

@@ -41,10 +41,10 @@ function getprofile() {
 	$array['customhdr'] = "";
 	$array['display'] = $disp;
 	$array['autoup'] = $maj;
-	$array['lastnews'] = $_SESSION['lastnewslogin'];
+	$array['lastnews'] = $_SESSION['banana_last'];
 	$array['dropsig'] = true;
 	if ($maj) {
-	    mysql_query("UPDATE auth_user_md5 SET lastnewslogin='"
+	    mysql_query("UPDATE auth_user_md5 SET banana_last='"
 		.gmdate("YmdHis")."' WHERE user_id='{$_SESSION['uid']}'");
 	}
 	$req=mysql_query("SELECT  nom

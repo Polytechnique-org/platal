@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: session.inc.php,v 1.6 2004-11-24 10:19:48 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.7 2004-11-24 14:08:24 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.session.inc.php");
@@ -277,7 +277,7 @@ function start_connexion ($uid, $identified)
     global $globals;
     $result=$globals->db->query("
 	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias,
-		UNIX_TIMESTAMP(q.lastnewslogin), q.watch_last,
+		UNIX_TIMESTAMP(q.banana_last), q.watch_last,
 		a2.alias, password, FIND_IN_SET('femme', u.flags)
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
@@ -287,7 +287,7 @@ function start_connexion ($uid, $identified)
          WHERE  u.user_id=$uid AND u.perms IN('admin','user')
       ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
-            $lastnewslogin, $watch_last,
+            $banana_last, $watch_last,
             $bestalias, $password, $femme) = mysql_fetch_row($result);
     mysql_free_result($result);
    
@@ -316,7 +316,7 @@ function start_connexion ($uid, $identified)
 
     // le login est stocké pour un an
     $_SESSION['lastlogin'] = $lastlogin;
-    $_SESSION['lastnewslogin'] = $lastnewslogin;
+    $_SESSION['banana_last'] = $banana_last;
     $_SESSION['watch_last'] = $watch_last;
     $_SESSION['host'] = $host;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
