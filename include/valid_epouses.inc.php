@@ -38,58 +38,7 @@ class EpouseReq extends Validate {
         return parent::get_unique_request($uid,'epouse');
     }
 
-    function formu() {
-        $old_line = $this->oldepouse ? "({$this->oldepouse} - {$this->oldalias})" : "";
-        $homonyme = "";
-        
-        if (!empty($this->homonyme)) $homonyme = <<<________EOF
-        <tr>
-            <td colspan="2">
-                <span class="erreur">Probleme d'homonymie !
-                <a href="javascript:x()"  onclick="popWin('/x.php?x={$this->homonyme}"> {$this->homonyme}</a>
-                </span>
-            </td>
-        </tr>
-________EOF;
-                
-        return <<<________EOF
-        <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}" />
-        <input type="hidden" name="type" value="{$this->type}" />
-        <input type="hidden" name="stamp" value="{$this->stamp}" />
-        <table class="bicol" cellpadding="4" summary="Demande d'alias d'épouse">
-        <tr>
-            <td>Demandeur&nbsp;:</td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
-                {$this->prenom} {$this->nom}
-                </a>
-                $oldline
-            </td>
-        </tr>
-        <tr>
-            <td>&Eacute;pouse&nbsp;:</td>
-            <td>{$this->epouse}</td>
-        </tr>
-        <tr>
-            <td>Nouvel&nbsp;alias&nbsp;:</td>
-            <td>{$this->alias}</td>
-        </tr>
-        $homonyme
-        <tr>
-            <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter" />
-                <br /><br />
-                <input type="submit" name="submit" value="Refuser" />
-            </td>
-            <td>
-                <p>Raison du refus:</p>
-                <textarea rows="5" cols="74" name=motif></textarea>
-            </td>
-        </tr>
-        </table>
-        </form>
-________EOF;
-    }
+    function formu() { return 'include/form.valid.epouses.tpl'; }
 
     function handle_formu () {
         global $no_update_bd;
