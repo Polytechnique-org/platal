@@ -17,10 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.16 2004-11-13 15:56:37 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.17 2004-11-17 15:22:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
+{if !$inscrit || $c.dcd}<div class='grayed'>{/if}
 <div class="contact" {if $inscrit}{min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}"{/min_auth}{/if}>
   <div class="nom">
     {if $c.sexe}&bull;{/if}
@@ -60,5 +61,6 @@
   <div class="long"></div>
   {/only_public}
 </div>
+{if !$inscrit || $c.dcd}</div>{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

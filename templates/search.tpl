@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.28 2004-11-13 12:16:45 x2000habouzit Exp $
+        $Id: search.tpl,v 1.29 2004-11-17 15:22:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -36,14 +36,12 @@
   <div class="contact-list" style="clear:both">
     {capture name=list}
     {section name=resultat loop=$resultats}
-      {if !$resultats[resultat].inscrit || $resultats[resultat].decede}<div class='grayed'>{/if}
         {if $resultats[resultat].contact || $resultats[resultat].watch}
         {assign var="show_action" value="retirer"}
       {else}
         {assign var="show_action" value="ajouter"}
       {/if}
       {include file=include/minifiche.tpl c=$resultats[resultat] show_action=$show_action inscrit=$resultats[resultat].inscrit}
-      {if !$resultats[resultat].inscrit || $resultats[resultat].decede}</div>{/if}
     {/section}
     {/capture}
     {$smarty.capture.list|smarty:nodefaults}
