@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.12 2004-10-08 19:58:06 x2000habouzit Exp $
+        $Id: vcard.php,v 1.13 2004-10-21 12:26:12 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -118,9 +118,9 @@ $page->assign_by_ref('home', $home);
 
 
 $adr = $globals->db->query(
-        "SELECT adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax,poste,entreprise,f.label as fonction
+        "SELECT adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax,poste,entreprise,f.fonction_fr as fonction
         FROM entreprises as e
-        LEFT JOIN emploi_naf AS f ON(e.fonction = f.id)
+        LEFT JOIN fonctions_def AS f ON(e.fonction = f.id)
         LEFT JOIN geoloc_pays AS gp ON(e.pays = gp.a2)
         LEFT JOIN geoloc_region AS gr
         ON(e.pays = gr.a2 AND e.region = gr.region)

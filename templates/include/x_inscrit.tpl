@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.14 2004-10-16 14:54:50 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.15 2004-10-21 12:24:21 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -83,7 +83,7 @@
         <td class="rt">
           {$c.entreprise}
           {if $c.secteur}( {$c.secteur} ){/if}
-          {if $c.fonction}<br />{$c.fonction} ){/if}
+          {if $c.fonction}<br />( {$c.fonction} ){/if}
         </td>
       </tr>
       {/if}

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.php,v 1.10 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: mescontacts_ldif.php,v 1.11 2004-10-21 12:26:12 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -49,12 +49,12 @@ $page->register_modifier('utf8', 'utf8_encode');
 $contacts = Array();
 $req = $globals->db->query("SELECT contact AS id, date, prenom, nom, epouse, l.alias AS forlife, mobile, web, libre, promo,
                            entreprise, adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax,
-                           poste, f.label AS fonction
+                           poste, f.fonction_fr AS fonction
                     FROM      contacts      AS c 
                     LEFT JOIN auth_user_md5 AS a  ON(a.user_id = c.contact)
                    INNER JOIN aliases       AS l  ON(a.user_id = l.id AND type='a_vie')
                     LEFT JOIN entreprises   AS e  ON(a.user_id = e.uid)
-                    LEFT JOIN emploi_naf    AS f  ON(e.fonction = f.id)
+                    LEFT JOIN fonctions_def AS f  ON(e.fonction = f.id)
                     LEFT JOIN geoloc_pays   AS gp ON(e.pays = gp.a2)
                     LEFT JOIN geoloc_region AS gr ON(e.pays = gr.a2 AND e.region = gr.region)
                     WHERE c.uid ='{$_SESSION['uid']}'

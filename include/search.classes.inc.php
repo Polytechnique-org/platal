@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.21 2004-10-19 18:06:45 x2000bedo Exp $
+        $Id: search.classes.inc.php,v 1.22 2004-10-21 12:24:20 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -30,7 +30,7 @@ $globals->search_result_fields = '
                 u.epouse,u.date,u.web,
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-                e.entreprise, es.label AS secteur, ef.label AS fonction,
+                e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
                 n.text AS nat,
                 adr.ville, gp.pays, gr.name AS region,';
 $globals->search_result_where_statement = '
@@ -40,7 +40,7 @@ $globals->search_result_where_statement = '
                 LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
                 LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
                 LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
-                LEFT JOIN  emploi_naf     AS ef  ON (e.fonction = ef.id)
+                LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
                 LEFT JOIN  nationalites   AS n   ON (u.nationalite = n.id)
                 LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
