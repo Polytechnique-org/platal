@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: session.inc.php,v 1.2 2004-11-22 20:05:13 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.3 2004-11-22 20:11:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.session.inc.php");
@@ -176,7 +176,7 @@ class XorgSession extends DiogenesCoreSession
 }
 
 // }}}
-// {{{ funcion check_perms()
+// {{{ function check_perms()
 
 /** verifie si un utilisateur a les droits pour voir une page
  ** si ce n'est pas le cas, on affiche une erreur
@@ -193,7 +193,7 @@ function check_perms()
 }
 
 // }}}
-// {{{ funcion has_perms()
+// {{{ function has_perms()
 
 /** verifie si un utilisateur a les droits pour voir une page
  ** soit parce qu'il est admin, soit il est dans une liste
@@ -209,7 +209,7 @@ function has_perms($auth_array=array())
 }
 
 // }}}
-// {{{ funcion logged()
+// {{{ function logged()
 
 /** renvoie true si la session existe et qu'on est loggué correctement
  * false sinon
@@ -222,7 +222,7 @@ function logged ()
 }
 
 // }}}
-// {{{ funcion identified()
+// {{{ function identified()
 
 /** renvoie true si la session existe et qu'on est loggué correctement
  * et qu'on a été identifié par un mot de passe depuis le début de la session
@@ -236,7 +236,7 @@ function identified ()
 }
 
 // }}}
-// {{{ funcion try_cookie()
+// {{{ function try_cookie()
 
 /** réalise la récupération de $_SESSION pour qqn avec cookie
  * @return  int     0 if all OK, -1 if no cookie, 1 if cookie with bad hash,
@@ -265,7 +265,7 @@ function try_cookie()
 }
 
 // }}}
-// {{{ funcion start_connexion()
+// {{{ function start_connexion()
 
 /** place les variables de session dépendants de auth_user_md5
  * et met à jour les dates de dernière connexion si nécessaire
@@ -335,7 +335,7 @@ function start_connexion ($uid, $identified)
 }
 
 // }}}
-// {{{ funcion set_skin()
+// {{{ function set_skin()
 
 function set_skin()
 {
