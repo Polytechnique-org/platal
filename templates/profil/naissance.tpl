@@ -1,4 +1,4 @@
-{* $Id: naissance.tpl,v 1.2 2004-07-17 12:09:45 x2000habouzit Exp $ *}
+{* $Id: naissance.tpl,v 1.3 2004-07-17 15:03:13 x2000habouzit Exp $ *}
 
 {if $etat_naissance == 'ok'}
 <script language="javascript" type="text/javascript">
@@ -23,7 +23,7 @@
   {#profil_naissance_intro#}
   </p>
   <br />
-  <table class="tiny" cellpadding="4" cellspacing="0" summary="Formulaire de naissance">
+  <table class="tinybicol" cellpadding="4" cellspacing="0" summary="Formulaire de naissance">
     <tr>
       <th colspan="2">
         {#profil_date_titre#}

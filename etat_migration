@@ -33,7 +33,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ inscription + mdp ]---------------------+----------------
 ;	  | inscrire.php							  | 
 ;	  | maj.php									  | 
-;	  | recovery.php							  | 
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
@@ -175,6 +174,7 @@ xx	  | paiement/index.php						  | -
 xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
 xx	  | profil.php								  | TODO : reste 2-3 trucs comme popWin() a changer
+xx	  | recovery.php							  | 
 xx!	  | redirect/error.php						  | -
 xx!	  | redirect/redirect.php					  | -
 xx	  | referent.php							  | TODO : utilise la css de recherche qui n'est pas encore migré
