@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.19 2004-11-07 14:58:35 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.20 2004-11-09 10:13:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -71,7 +71,7 @@
   remplir le formulaire en bas de page.
   </li>
   <li>
-  <strong>rejeter:</strong> le mail est effacé sans autre forme de procès.
+  <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables.
   </li>
 </ul>
@@ -93,7 +93,7 @@
     <td class='action'>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a><br />
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mdel=1'>rejeter</a></td>
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mdel=1'>détruire</a></td>
   </tr>
   {/foreach}
 </table>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.9 2004-10-28 09:30:20 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.10 2004-11-09 10:13:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -82,14 +82,14 @@
         <input type='hidden' name='mid' value='{$smarty.get.mid}' />
         <input type='submit' name='mok' value='Accepter !' />&nbsp;
         <input type='submit' name='mno' value='Refuser !' />&nbsp;
-        <input type='submit' name='mdel' value='Rejeter !' style='color:red;' />
+        <input type='submit' name='mdel' value='Détruire !' style='color:red;' />
       </td>
     </tr>
   </table>
   <ul>
     <li>« Refuser » rejette le mail avec un message à son auteur (celui que tu tapes dans le cadre)</li>
     <li>
-    Rejeter efface le mail sans autre forme de procès, et c'est à utiliser UNIQUEMENT pour les
+    Détruire efface le mail sans autre forme de procès, et c'est à utiliser UNIQUEMENT pour les
     virus et les courriers indésirables
     </li>
   </ul>
