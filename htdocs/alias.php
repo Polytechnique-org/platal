@@ -28,14 +28,14 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
                                 Vérifie qu'elle comporte entre 3 et 20 caractères
                                 et qu'elle ne contient que des lettres non accentuées,
                                 des chiffres ou les caractères - et .");
-        $page->display('error');
+        $page->run('error');
     } else {
         //vérifier que l'alias n'est pas déja pris
         $result = mysql_query("SELECT 1 FROM groupex.aliases WHERE id=12 AND domain LIKE '$alias@melix.net'");
         if (mysql_num_rows($result)>0) {
             $page->assign('error', "L'alias $alias@melix.net a déja été attribué.
                                     Tu ne peux donc pas l'obtenir.");
-            $page->display('error');
+            $page->run('error');
         }
 
         //vérifier que l'alias n'est pas déja en demande
@@ -44,7 +44,7 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
             if ($req->type == "alias" and $req->alias == $alias) {
                 $page->assign('error', "L'alias $alias@melix.net a déja été demandé.
                                         Tu ne peux donc pas l'obtenir pour l'instant.");
-                $page->display('error');
+                $page->run('error');
             }
         }
 
@@ -52,9 +52,9 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         $myalias = new AliasReq($_SESSION['uid'], $alias, $raison);
         $myalias->submit();
         $page->assign('success',$alias);
-        $page->display('succes');
+        $page->run('succes');
     }
 }
 
-$page->display();
+$page->run();
 ?>

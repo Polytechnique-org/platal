@@ -32,5 +32,5 @@ if (!empty($_REQUEST['submit']) && ($epouse != $epouse_old)) {
     }
 }
 
-$page->display($flags->hasflag("femme") ? '' : 'not_femme');
+$page->run($flags->hasflag("femme") ? '' : 'not_femme');
 ?>

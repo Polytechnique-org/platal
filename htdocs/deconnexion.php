@@ -17,5 +17,5 @@ if($has_cookie)
 
 new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);
 
-$page->display();
+$page->run();
 ?>

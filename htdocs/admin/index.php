@@ -2,5 +2,5 @@
 require("auto.prepend.inc.php");
 new_admin_page('admin/index.tpl');
 
-$page->display();
+$page->run();
 ?>

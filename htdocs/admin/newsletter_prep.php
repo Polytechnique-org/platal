@@ -12,7 +12,7 @@ $lock = fopen($lockfile,"r+");
 // prend un lock en écriture
 if (!flock($lock, 2)) {
     $page->assign('erreur','Impossible de prendre un lock sur le fichier de lock, pas de fichier ?');
-    $page->display('errlock');
+    $page->run('errlock');
 }
 
 $contenu = (isset($_REQUEST['contenu']) ? $_REQUEST['contenu'] : "");
@@ -111,6 +111,6 @@ $page->assign('is_lock',$is_lock);
 
 $page->assign('contenu', $contenu);
 $page->assign('sujet', $sujet);
-$page->display();
+$page->run();
 
 ?>

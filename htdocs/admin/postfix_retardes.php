@@ -21,5 +21,5 @@ fclose($fd);
 $page->assign_by_ref('list',$blacklist);
 $page->assign('title','Mails retardés de polytechnique.org');
 $page->assign('expl','Les envoyeurs ici présents verront leurs mails retardés toutes les heures jusqu\'au délai de 5j (bounce). Placer ici uniquement des emails (pas de commentaires).');
-$page->display();
+$page->run();
 ?>

@@ -20,5 +20,5 @@ if (isset($_REQUEST["valider"]) && $_REQUEST["valider"] == "Valider") {
 $sql = "SELECT matricule, nom, prenom, deces FROM identification WHERE promo = $promo ORDER BY nom,prenom";
 $page->mysql_assign($sql, 'decedes');
 
-$page->display();
+$page->run();
 ?>

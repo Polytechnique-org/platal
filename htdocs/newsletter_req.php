@@ -44,5 +44,5 @@ if (isset($_POST["action"]) && (($_POST["action"]=="Tester")
     }
 }
 
-$page->display();
+$page->run();
 ?>

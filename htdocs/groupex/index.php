@@ -9,5 +9,5 @@ $domaines = liste_domaines();
 $page->assign('nb_dom',count($domaines));
 $page->assign_by_ref('domaines',$domaines);
 
-$page->display();
+$page->run();
 ?>

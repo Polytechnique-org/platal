@@ -68,5 +68,5 @@ L'équipe d'administration <support@polytechnique.org>";
     }
 }
 
-$page->display();
+$page->run();
 ?>

@@ -43,5 +43,5 @@ $sql = "SELECT u.prenom, u.nom, u.promo, u.username
         ORDER BY u.nom, u.prenom";
 $page->mysql_assign($sql, 'contacts','nb_contacts');
 
-$page->display();
+$page->run();
 ?>

@@ -57,5 +57,5 @@ echo mysql_error();
 
 $page->mysql_assign($sql,'contacts','nb_contacts');
 
-$page->display();
+$page->run();
 ?>

@@ -27,5 +27,5 @@ fclose($fd);
 $page->assign_by_ref('list',$blacklist);
 $page->assign('title','Bannis de polytechnique.org');
 $page->assign('expl','Ne mettre dans les cases que des emails (aucun espace ni commentaire supplémentaire)');
-$page->display();
+$page->run();
 ?>

@@ -62,5 +62,5 @@ header("Pragma: ");
 header("Cache-Control: ");
 header("Content-type: text/x-ldif\n");
 
-$page->display();
+$page->run();
 ?>

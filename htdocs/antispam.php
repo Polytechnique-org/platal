@@ -40,5 +40,5 @@ list($filtre) = mysql_num_rows($result) + intval(mysql_fetch_row($result));
 mysql_free_result($result);
 $page->assign('filtre',$filtre);
 
-$page->display();
+$page->run();
 ?>

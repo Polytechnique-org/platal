@@ -44,5 +44,5 @@ $sql = "SELECT date,label,credit,debit FROM trezo.operations
         ORDER BY date";
 $page->mysql_assign($sql,'ops');
 
-$page->display();
+$page->run();
 ?>

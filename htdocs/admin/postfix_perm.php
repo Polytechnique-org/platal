@@ -27,5 +27,5 @@ fclose($fd);
 $page->assign_by_ref('list',$blacklist);
 $page->assign('title','Permissions de polytechnique.org');
 $page->assign('expl','On peut placer dans les cases les emails de personnes pouvant diffuser sans restriction.');
-$page->display();
+$page->run();
 ?>

@@ -12,5 +12,5 @@ if(!identified()) {
     $_SESSION = array();
 }
 
-$page->display();
+$page->run();
 ?>

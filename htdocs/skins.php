@@ -16,5 +16,5 @@ $sql = "SELECT id,skin_tpl,skin_popup,snapshot,name,s.date,comment,auteur,count(
 $page->mysql_assign($sql, 'skins');
 $page->assign('stochaskin',SKIN_STOCHASKIN_ID);
 
-$page->display();
+$page->run();
 ?>

@@ -339,5 +339,5 @@ if (!empty($_REQUEST['select'])) {
     } // if(mysql_fetch_row)
 }
 
-$page->display();
+$page->run();
 ?>

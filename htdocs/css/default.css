@@ -136,9 +136,19 @@ table.tinybicol td.titre, table.bicol td.titre {
     font-weight: bold;
 }
 table.tinybicol td.info, table.bicol td.info {
-      padding: 0.5em;
-      width: 50%;
+    padding: 0.5em;
+    width: 50%;
 }
+table.tinybicol td.action, table.bicol td.action {
+    white-space: nowrap;
+    text-align: right;
+    font-weight: bold;
+    vertical-align: middle;
+}
+table.tinybicol td.action a, table.bicol td.action a {
+    padding: 4px;
+}
+            
 
 /**: IV. :**/
 
@@ -320,4 +330,4 @@ div.long td.rt { width: 65%; }
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.20 2004-02-16 11:06:49 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.21 2004-02-19 19:35:00 x2000habouzit Exp $ */

@@ -18,5 +18,5 @@ array_pop($valids);
 
 $page->assign_by_ref('valids', $valids);
 
-$page->display();
+$page->run();
 ?>

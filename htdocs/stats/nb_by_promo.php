@@ -15,5 +15,5 @@ $page->assign_by_ref('nbs', $nbpromo);
 $page->assign('min', $min-$min % 10);
 $page->assign('max', $max+10-$max%10);
 
-$page->display();
+$page->run();
 ?>

@@ -31,5 +31,5 @@ mysql_free_result($result);
 $page->assign('carva', $carva);
 $page->assign('alias', $alias);
 
-$page->display();
+$page->run();
 ?>

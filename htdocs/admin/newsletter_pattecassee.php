@@ -57,5 +57,5 @@ if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
     $page->assign('email', $email);
 }
 
-$page->display();
+$page->run();
 ?>

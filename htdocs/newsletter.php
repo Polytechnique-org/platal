@@ -29,5 +29,5 @@ if (($res)&&(list($nl_date, $nl_titre, $nl_text) = mysql_fetch_row($res))) {
 $sql = "SELECT id,date,titre FROM newsletter ORDER BY date DESC";
 $page->mysql_assign($sql, 'nl_list');
 
-$page->display();
+$page->run();
 ?>

@@ -13,5 +13,5 @@ $requete.=" ORDER BY (e.promo_min != 0 AND e.promo_max != 0) DESC,  e.peremption
 $page->mysql_assign($requete,'rss');
 
 header("Content-Type: text/xml");
-$page->display();
+$page->run();
 ?> 

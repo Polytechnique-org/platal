@@ -95,5 +95,5 @@ $sql = "SELECT id,date,label,credit,debit
         ORDER BY date";
 $page->mysql_assign($sql, 'ops');
 
-$page->display();
+$page->run();
 ?>

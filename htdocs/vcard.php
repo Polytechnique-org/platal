@@ -106,5 +106,5 @@ header("Cache-Control: ");
 header("Content-type: text/x-vcard\n");
 header("Content-Transfer-Encoding: Quoted-Printable\n");
 
-$page->display();
+$page->run();
 ?>

@@ -8,9 +8,9 @@ if (!empty($_POST['response2']))  {             // la variable $response existe-
     mysql_query($sql);
     $_SESSION['log']->log("passwd","");
     new_skinned_page('motdepassemd5.success.tpl', AUTH_MDP);
-    $page->display();
+    $page->run();
 }
 
 new_skinned_page('motdepassemd5.tpl', AUTH_MDP, true, 'motdepassemd5.head.tpl');
-$page->display();
+$page->run();
 ?>

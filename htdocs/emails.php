@@ -23,5 +23,5 @@ if ($result && list($aliases) = mysql_fetch_row($result))
     $page->assign('melix', substr($aliases,0,-3));
 mysql_free_result($result);
 
-$page->display();
+$page->run();
 ?> 

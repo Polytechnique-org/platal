@@ -30,5 +30,5 @@ mysql_free_result($result);
 
 $page->assign('actif', ($smtppass_old != ""));
 
-$page->display(($smtppass_old != "") ? "actif" : "");
+$page->run(($smtppass_old != "") ? "actif" : "");
 ?>

@@ -25,5 +25,5 @@ switch ($_REQUEST['action']) {
 
 $sql = "SELECT id,date,titre FROM newsletter ORDER BY date DESC";
 $page->mysql_assign($sql, 'nl_list');
-$page->display();
+$page->run();
 ?>

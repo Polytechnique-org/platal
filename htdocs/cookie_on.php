@@ -10,5 +10,5 @@ $cookie=md5($password);
 setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
 $_SESSION['log']->log("cookie_on");
 
-$page->display();
+$page->run();
 ?>

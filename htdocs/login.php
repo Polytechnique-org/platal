@@ -8,7 +8,7 @@ mysql_free_result($param);
 
 if ($naissance==0)  {
     $page->assign('ask_naissance', true);
-    $page->display('ask-naissance');
+    $page->run('ask-naissance');
     exit;
 }
 
@@ -65,5 +65,5 @@ $page->mysql_assign($sql, 'evenement');
 $page->assign('toto',"");
 $page->assign('tata',"1");
 
-$page->display();
+$page->run();
 ?>

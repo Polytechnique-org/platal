@@ -22,7 +22,7 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "valid") {
     mysql_query($sql);
 
     $page->assign('OK',true);
-    $page->display('OK');
+    $page->run('OK');
 } else { // pas de formulaire soumis
     $sql = "SELECT  FIND_IN_SET('actif',flags) AS actif,
                     FIND_IN_SET('useimage',flags) AS useimage,
@@ -41,6 +41,6 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "valid") {
 
     $page->assign('wap', mysql_fetch_assoc($result));
     mysql_free_result($result);
-    $page->display();
+    $page->run();
 }
 ?>

@@ -25,5 +25,5 @@ $sql = "SELECT promo,nom,prenom FROM identification WHERE matricule_ax IS NULL";
 $page->mysql_assign($sql,'plus','nb_plus');
 
 
-$page->display();
+$page->run();
 ?>

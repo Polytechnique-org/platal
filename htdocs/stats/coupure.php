@@ -27,5 +27,5 @@ if(($res)&&($cp = mysql_fetch_assoc($res))) {
     $page->mysql_assign($sql, 'coupures');
 }
 
-$page->display();
+$page->run();
 ?>
