@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.41 2004-09-25 20:11:35 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.42 2004-09-25 20:14:05 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -621,7 +621,7 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.real_name = listname
         mlist.description = desc
 
-        mlist.advertised = int(advertise)
+        mlist.advertised = int(advertise) is 0
         mlist.default_member_moderation = int(modlevel) is 2
         mlist.generic_nonmember_action = int(modlevel) > 0
         mlist.subscribe_policy = 2 * (int(inslevel) is 1)
