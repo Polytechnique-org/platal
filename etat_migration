@@ -16,8 +16,8 @@
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ admin ]---------------------------------+----------------
-	  | admin/FormatePrenomNOM.php				  | 
-	  | admin/FormatePrenomNOM2.php				  | 
+	  | admin/FormatePrenomNOM.php				  | scripts/
+	  | admin/FormatePrenomNOM2.php				  | scripts/
 	  | admin/admin_faqs.php					  | 
 	  | admin/admin_trombino.php				  | 
 	  | admin/comptesPOP.php					  | 
@@ -73,10 +73,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | sondage/resultats.php					  | 
 	  | sondage/titre.php						  | 
 	  | sondage/validation.php					  | 
-------+-[ trezo ]---------------------------------+----------------
-	  | trezo/gere_operations.php				  | 
-	  | trezo/index.php							  | 
-	  | trezo/trezo.inc.php						  | 
 ------+-[ emails ... ]----------------------------+----------------
 	  | emails.php								  | 
 	  | routage-mail.php						  | 
@@ -196,6 +192,9 @@ xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | sendmail.php							  | -
 xx	  | skins.php								  | -
+xx	  | trezo/gere_operations.php				  | 
+xx	  | trezo/index.php							  | 
+xx	  | trezo/trezo.inc.php						  | 
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
 ---	  | trackers/tracker_delete.php				  | -
