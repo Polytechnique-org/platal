@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: apropos.tpl,v 1.7 2004-10-09 05:59:58 x2000habouzit Exp $
+        $Id: apropos.tpl,v 1.8 2004-10-15 09:45:04 web Exp $
  ***************************************************************************}
 
 
@@ -97,15 +97,16 @@
   </tr>
   <tr>
     <td style="width: 33%; padding-right:1em;">
-      Le bureau de l'assocation
+      Le conseil d'administration de l'assocation
     </td>
     <td>
-      <strong>Yann Chevalier</strong> (X2000) <em>- président</em><br />
+      <strong>Raphaël Marichez</strong> (X2002) <em>- président</em><br />
       <strong>Olivier Guillaumin</strong> (X80) <em>- trésorier</em><br />
-      <strong>Alexandre Hô</strong> (X98) <em>- secrétaire</em><br />
-      <strong>Vincent Palatin </strong> (X2000) <em>- responsable services individuels</em><br />
-      <strong>Cyril Lathuilière</strong> (X2001) <em>- responsable services aux associations X</em><br />
-      <strong>Sophie Charbonnier</strong> (X2000) <em>- responsable relations extérieures</em><br /><br />
+      <strong>Cyril Lathuilière</strong> (X2001) <em>- secrétaire</em><br />
+      <strong>Yann Chevalier</strong> (X2000) <em>- en charge des relations extérieures</em><br />
+      <strong>Pierre Habouzit </strong> (X2000) <em>- responsable services individuels</em><br />
+      <strong>Sophie Charbonnier</strong> (X2000) <em>- responsable services aux associations X</em><br />
+      <strong>Jean-Marc Coïc</strong> (X2000) <em>- responsable du projet Manageurs</em><br /><br />
     </td>
   </tr>
   <tr>
