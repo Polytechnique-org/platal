@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.14 2004-10-12 19:54:36 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.15 2004-10-16 14:36:09 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="bits">
@@ -33,8 +33,9 @@
   </a>
   {/if}
   {perms level='admin'}
+  <a href="{"admin/utilisateurs.php"|url}?login={$result.forlife}">su</a>
   <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$result.matricule_ax}')">
-    AX
+    ax
   </a>
   {/perms}
 </div>

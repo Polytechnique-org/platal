@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.16 2004-09-05 12:54:46 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.17 2004-10-16 14:36:09 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -56,7 +56,7 @@ Attention, déjà en SUID !!!
     </tr>
     <tr>
       <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="" />
+        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login}" />
       </td>
     </tr>
     <tr>
