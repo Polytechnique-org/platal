@@ -20,19 +20,19 @@
  ***************************************************************************/
 
 if ($appli_id1>0)
-     $globals->db->query("replace into applis_ins set uid={$_SESSION['uid']},aid=$appli_id1,type='$appli_type1',ordre=0");
+     $globals->xdb->execute("REPLACE INTO applis_ins SET uid= {?}, aid = {?}, type = {?}, ordre = 0", Session::getInt('uid', -1), $appli_id1, $appli_type1);
 else
-     $globals->db->query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=0");
+     $globals->xdb->execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=0", Session::getInt('uid', -1));
 
 if ($appli_id2>0)
-     $globals->db->query("replace into applis_ins set uid={$_SESSION['uid']},aid=$appli_id2,type='$appli_type2',ordre=1");
+     $globals->xdb->execute("REPLACE INTO applis_ins SET uid= {?}, aid = {?}, type = {?}, ordre = 1", Session::getInt('uid', -1), $appli_id2, $appli_type2);
 else
-     $globals->db->query("delete from applis_ins where uid={$_SESSION['uid']} and ordre=1");
+     $globals->xdb->execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=1", Session::getInt('uid', -1));
 
 $sql = "UPDATE auth_user_md5
-	   SET nationalite='$nationalite',web='$web',mobile='$mobile',libre='".put_in_db($libre)."' WHERE user_id={$_SESSION['uid']}";
+	   SET nationalite= {?}, web= {?}, mobile= {?}, libre= {?} WHERE user_id= {?}";
 
 
-$globals->db->query($sql);
+$globals->xdb->execute($sql, $nationalite, $web, $mobile, $libre, Session::getInt('uid', -1));
 
 ?>

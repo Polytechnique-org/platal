@@ -23,19 +23,19 @@ require_once('geoloc.inc.php');
 require_once('secteur.emploi.inc.php');
 require_once('fonction.emploi.inc.php');
 
-$res = $globals->db->query("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
+$res = $globals->xdb->iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
 	adr1, adr2, adr3, cp, ville, pays, region, tel, fax,
 	FIND_IN_SET('entreprise_public',visibilite),FIND_IN_SET('entreprise_ax',visibilite),FIND_IN_SET('adr_public',visibilite),
 	FIND_IN_SET('adr_ax',visibilite),FIND_IN_SET('tel_public',visibilite),FIND_IN_SET('tel_ax',visibilite)
         FROM entreprises
-        WHERE uid = '{$_SESSION['uid']}' ORDER BY entrid");
+        WHERE uid = {?} ORDER BY entrid",Session::getInt('uid', -1));
 
-$nb_res = mysql_num_rows($res);
+$nb_res = $res->total();
 for($i = 0; $i < $nb_res ; $i++){
 	list($endrid[$i], $entreprise[$i], $secteur[$i], $ss_secteur[$i], $poste[$i], $fonction[$i],
        	     $adrpro1[$i], $adrpro2[$i], $adrpro3[$i], $cppro[$i], $villepro[$i], $payspro[$i], $regionpro[$i],
              $telpro[$i], $faxpro[$i], $entreprise_public[$i], $entreprise_ax[$i], $adrpro_public[$i], $adrpro_ax[$i],
-	     $telpro_public[$i], $telpro_ax[$i]) = mysql_fetch_row($res);
+	     $telpro_public[$i], $telpro_ax[$i]) = $res->next();
 }
 //limite dure a 2
 for($i = $nb_res; $i < 2 ; $i++){
@@ -64,22 +64,22 @@ for($i = $nb_res; $i < 2 ; $i++){
 
 //recuperation des donnees sur les secteurs :
 
-$res = $globals->db->query("SELECT id, label from emploi_secteur");
+$res = $globals->xdb->iterRow("SELECT id, label FROM emploi_secteur");
 
-while(list($tmp_secteur_id, $tmp_secteur_label) = mysql_fetch_row($res)){
+while(list($tmp_secteur_id, $tmp_secteur_label) = $res->next()){
     $secteurs[$tmp_secteur_id] = $tmp_secteur_label;
 }
 
 //recuperation des donnees sur les fonctions :
-$res = $globals->db->query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
+$res = $globals->xdb->iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) FROM fonctions_def ORDER BY id");
 
-while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = mysql_fetch_row($res)){
+while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = $res->next()){
     $fonctions[$tmp_fonction_id] = $tmp_fonction_label;
     $fonctions_titre[$tmp_fonction_id] = $tmp_fonction_titre;
 }
 
 //recuperation du CV
-$res = $globals->db->query("SELECT cv from auth_user_md5 where user_id = '{$_SESSION['uid']}'");
-list($cv) = mysql_fetch_row($res);
+$res = $globals->xdb->query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid', -1));
+$cv = $res->fetchOneCell();
 
 ?>

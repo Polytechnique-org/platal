@@ -22,7 +22,7 @@
 //mise a jour d'expertise si nécessaire
 
 if($mentor_expertise != $mentor_expertise_bd) {
-    $globals->db->query("REPLACE INTO mentor(uid, expertise) VALUES('{$_SESSION['uid']}', '".put_in_db($mentor_expertise)."')");
+    $globals->xdb->execute("REPLACE INTO mentor(uid, expertise) VALUES({?}, {?})", Session::getInt('uid', -1), $mentor_expertise);
 }
 
 

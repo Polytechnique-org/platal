@@ -26,81 +26,77 @@ $max_mentor_pays = 10;
 $max_mentor_secteurs = 10;
 
 //recuperation de l'expertise
-$res = $globals->db->query("SELECT expertise FROM mentor WHERE uid = {$_SESSION['uid']}");
+$res = $globals->xdb->query("SELECT expertise FROM mentor WHERE uid = {?}", Session::getInt('uid',-1));
 
-if(mysql_num_rows($res) > 0) {
-    list($mentor_expertise) = mysql_fetch_row($res);
-} else {
-    $mentor_expertise = '';
-}
+$mentor_expertise = $res->fetchOneCell();
 $mentor_expertise_bd = $mentor_expertise;
 
 //suppression eventuelle d'un pays
-if(isset($_POST['mentor_pays_op']) && ($_POST['mentor_pays_op'] == 'retirer')) {
-    if(isset($_POST['mentor_pays_id'])) {
-        $id_supprimee = $_POST['mentor_pays_id'];
-        $globals->db->query("DELETE FROM mentor_pays WHERE uid = {$_SESSION['uid']} AND pid = '$id_supprimee' LIMIT 1");
+if(Post::get('mentor_pays_op', '') == 'retirer') {
+    if(Post::has('mentor_pays_id')) {
+        $id_supprimee = Post::get('mentor_pays_id', '00');
+        $globals->xdb->execute("DELETE FROM mentor_pays WHERE uid = {?} AND pid = {?} LIMIT 1", Session::getInt('uid', -1), $id_supprimee);
     }
 }
 
 //recuperation des pays
-$res = $globals->db->query("SELECT m.pid, p.pays 
+$res = $globals->xdb->iterRow("SELECT m.pid, p.pays 
                     FROM mentor_pays AS m
-		    LEFT JOIN geoloc_pays AS p ON(m.pid = p.a2) WHERE m.uid = {$_SESSION['uid']} LIMIT $max_mentor_pays");
-$nb_mentor_pays = mysql_num_rows($res);
+		    LEFT JOIN geoloc_pays AS p ON(m.pid = p.a2) WHERE m.uid = {?} LIMIT {?}", Session::getInt('uid', -1), $max_mentor_pays);
+$nb_mentor_pays = $res->total();
 $mentor_pid = $mentor_pays = Array();
-for($i = 1; $i <= $nb_mentor_pays ; $i++) list($mentor_pid[$i], $mentor_pays[$i]) = mysql_fetch_row($res);
+for($i = 1; $i <= $nb_mentor_pays ; $i++) list($mentor_pid[$i], $mentor_pays[$i]) = $res->next();
 
 //ajout eventuel d'un pays
-if(isset($_POST['mentor_pays_op']) && ($_POST['mentor_pays_op'] == 'ajouter') && ($nb_mentor_pays < $max_mentor_pays)) {
-    if(isset($_POST['mentor_pays_id']) && ($_POST['mentor_pays_id'] != '00')) {
-	$id_ajoutee = $_POST['mentor_pays_id'];
-	$globals->db->query("INSERT INTO mentor_pays(uid, pid) VALUES('{$_SESSION['uid']}', '$id_ajoutee')");
+if((Post::get('mentor_pays_op', '') == 'ajouter') && ($nb_mentor_pays < $max_mentor_pays)) {
+    if(Post::get('mentor_pays_id', '00') != '00') {
+	$id_ajoutee = Post::get('mentor_pays_id', '00');
+	$globals->xdb->execute("INSERT INTO mentor_pays(uid, pid) VALUES({?}, {?})", Session::getInt('uid', -1), $id_ajoutee);
 	$nb_mentor_pays++;
 	$mentor_pid[$nb_mentor_pays] = $id_ajoutee;
-	$mentor_pays[$nb_mentor_pays] = $_POST['mentor_pays_name'];
+	$mentor_pays[$nb_mentor_pays] = Post::get('mentor_pays_name', '');
     }
 }
 
 
 
 //suppression d'un secteur / ss-secteur
-if(isset($_POST['mentor_secteur_op']) && ($_POST['mentor_secteur_op'] == 'retirer')) {
-    if(isset($_POST['mentor_secteur_id'])) {
-        $id_supprimee = $_POST['mentor_secteur_id'];
-        $globals->db->query("DELETE FROM mentor_secteurs WHERE uid = {$_SESSION['uid']} AND secteur = '$id_supprimee' LIMIT 1");
+if(Post::get('mentor_secteur_op', '') == 'retirer') {
+    if(Post::has('mentor_secteur_id')) {
+        $id_supprimee = Post::get('mentor_secteur_id', '');
+        $globals->xdb->execute("DELETE FROM mentor_secteurs WHERE uid = {?} AND secteur = {?} LIMIT 1", Session::getInt('uid', -1), $id_supprimee);
     }
 }
 
 //recuperation des secteurs
-$res = $globals->db->query("SELECT m.secteur, s.label, m.ss_secteur, ss.label
+$res = $globals->xdb->iterRow("SELECT m.secteur, s.label, m.ss_secteur, ss.label
                     FROM mentor_secteurs AS m
 		    LEFT JOIN emploi_secteur AS s ON(m.secteur = s.id)
 		    LEFT JOIN emploi_ss_secteur AS ss ON(s.id = ss.secteur AND m.ss_secteur = ss.id)
-		    WHERE m.uid = {$_SESSION['uid']}
-		    LIMIT $max_mentor_pays");
-$nb_mentor_secteurs = mysql_num_rows($res);
+		    WHERE m.uid = {?}
+		    LIMIT {?}", Session::getInt('uid', -1), $max_mentor_pays);
+$nb_mentor_secteurs = $res->total();
 $mentor_sid = $mentor_secteur = $mentor_ssid = $mentor_ss_secteur = Array();
 for($i = 1; $i <= $nb_mentor_secteurs ; $i++)
-    list($mentor_sid[$i], $mentor_secteur[$i], $mentor_ssid[$i], $mentor_ss_secteur[$i]) = mysql_fetch_row($res);
+    list($mentor_sid[$i], $mentor_secteur[$i], $mentor_ssid[$i], $mentor_ss_secteur[$i]) = $res->next();
 
 //ajout d'un secteur
 $mentor_secteur_id_new = '';
-if(isset($_POST['mentor_secteur_op']) && ($_POST['mentor_secteur_op'] == 'ajouter') && ($nb_mentor_secteurs < $max_mentor_secteurs)) {
-    if(isset($_POST['mentor_secteur_id']) && ($_POST['mentor_secteur_id'] != ''))
+if((Post::get('mentor_secteur_op', '')== 'ajouter') && ($nb_mentor_secteurs < $max_mentor_secteurs)) {
+    if(Post::get('mentor_secteur_id', '') != '')
     {
-	$sid_ajoutee = $_POST['mentor_secteur_id'];
-	if(isset($_POST['mentor_ss_secteur_id']))
-	    $ssid_ajoutee = $_POST['mentor_ss_secteur_id'];
-	$globals->db->query("INSERT INTO mentor_secteurs (uid, secteur, ss_secteur)
-				    VALUES('{$_SESSION['uid']}', '$sid_ajoutee',".( ($ssid_ajoutee == '')?'NULL':"'$ssid_ajoutee'" ).")");
+	$sid_ajoutee = Post::get('mentor_secteur_id', '');
+	if(Post::has('mentor_ss_secteur_id'))
+	    $ssid_ajoutee = Post::get('mentor_ss_secteur_id', '');
+	$globals->xdb->execute("INSERT INTO mentor_secteurs (uid, secteur, ss_secteur)
+				    VALUES({?}, {?}, {?})", Session::getInt('uid', -1), $sid_ajoutee, ($ssid_ajoutee == '')?null:$ssid_ajoutee);
 	$nb_mentor_secteurs++;
 	$mentor_sid[$nb_mentor_secteurs] = $sid_ajoutee;
-	$mentor_secteur[$nb_mentor_secteurs] = $_POST['mentor_secteur_name'];
+	$mentor_secteur[$nb_mentor_secteurs] = Post::get('mentor_secteur_name', '');
 	$mentor_ssid[$nb_mentor_secteurs] = $ssid_ajoutee;
-	$mentor_ss_secteur[$nb_mentor_secteurs] = $_POST['mentor_ss_secteur_name'];
+	$mentor_ss_secteur[$nb_mentor_secteurs] = Post::get('mentor_ss_secteur_name', '');
     }
-} elseif(isset($_POST['mentor_secteur_id_new'])){
-    $mentor_secteur_id_new = $_POST['mentor_secteur_id_new'];
+} elseif(Post::has('mentor_secteur_id_new')){
+    $mentor_secteur_id_new = Post::get('mentor_secteur_id_new', '');
 }
 ?>

@@ -30,16 +30,14 @@ $sql = "SELECT u.nom, u.prenom".
 	" FROM auth_user_md5 AS u".
 	" LEFT  JOIN applis_ins AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)".
 	" LEFT  JOIN applis_ins AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)".
-	" WHERE user_id=".$_SESSION['uid'];
+	" WHERE user_id = {?}";
 
-$result = $globals->db->query($sql);
+$result = $globals->xdb->query($sql, Session::getInt('uid', -1));
 list($nom, $prenom,
      $promo, $epouse, $femme, $nationalite,
      $mobile, $web, $libre,
      $appli_id1,$appli_type1,
-     $appli_id2,$appli_type2) = mysql_fetch_row($result);
-
-mysql_free_result($result);
+     $appli_id2,$appli_type2) = $result->fetchOneRow();
 
 replace_ifset($nationalite,'nationalite');
 replace_ifset($mobile,'mobile');
@@ -50,15 +48,14 @@ replace_ifset($appli_id2,"appli_id2");
 replace_ifset($appli_type1,"appli_type1");
 replace_ifset($appli_type2,"appli_type2");
 
-if(isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
-    $mobile_public = (isset($_REQUEST['mobile_public']));
-    $mobile_ax = (isset($_REQUEST['mobile_ax']));
-    $libre_public = (isset($_REQUEST['libre_public']));
-    $web_public = (isset($_REQUEST['web_public']));
+if(Env::has('modifier') || Env::has('suivant')) {
+    $mobile_public = Env::has('mobile_public');
+    $mobile_ax = Env::has('mobile_ax');
+    $libre_public = Env::has('libre_public');
+    $web_public = Env::has('web_public');
 }
 
 // Y a-t-il une photo en attente de confirmation ?
-$sql = $globals->db->query('SELECT COUNT(*) FROM requests WHERE type="photo" AND user_id='.$_SESSION['uid']);
-list($nouvellephoto)=mysql_fetch_row($sql);
-mysql_free_result($sql);
+$sql = $globals->xdb->query("SELECT COUNT(*) FROM requests WHERE type='photo' AND user_id = {?}", Session::getInt('uid', -1));
+$nouvellephoto=$sql->fetchOneCell();
 ?>

@@ -21,8 +21,8 @@
 
 
 //au cas ou le submit du formulaire vient d'un changement du nouveau secteur
-if(isset($_POST['mentor_expertise'])){
-  $mentor_expertise = $_POST['mentor_expertise'];
+if(Post::has('mentor_expertise')){
+  $mentor_expertise = Post::get('mentor_expertise');
   if(!empty($mentor_expertise)){
       if (strlen(strtok($mentor_expertise,"<>{}~§`|%$^")) < strlen($mentor_expertise)){//TODO: affiner la liste
 	    $page->trig("L'expertise contient un caractère interdit.");

@@ -44,39 +44,63 @@ foreach($adresses as $adrid => $adr){
 
     if ($adr["nouvelle"] == 'ajout') {
     //nouvelle adresse
-      $globals->db->query("INSERT INTO adresses SET
-			 adr1 = '".put_in_db($adr['adr1'])."',
-			 adr2 = '".put_in_db($adr['adr2'])."',
-			 adr3 = '".put_in_db($adr['adr3'])."',
-			 cp = '".put_in_db($adr['cp'])."',
-			 ville = '".put_in_db($adr['ville'])."',
-			 pays = '".$adr['pays']."',
-			 region = '".$adr['region']."',
-			 tel = '".put_in_db($adr['tel'])."',
-			 fax = '".put_in_db($adr['fax'])."',
-			 visibilite = '$visibilite',
+      $globals->xdb->execute("INSERT INTO adresses SET
+			 adr1 = {?},
+			 adr2 = {?},
+			 adr3 = {?},
+			 cp = {?},
+			 ville = {?},
+			 pays = {?},
+			 region = {?},
+			 tel = {?},
+			 fax = {?},
+			 visibilite = {?},
 			 datemaj = NOW(),
-			 statut = '$statut',
-			 uid = '{$_SESSION['uid']}', adrid = '$adrid'");
+			 statut = {?},
+			 uid = {?}, adrid = {?}",
+			 $adr['adr1'],
+			 $adr['adr2'],
+			 $adr['adr3'],
+			 $adr['cp'],
+			 $adr['ville'],
+			 $adr['pays'],
+			 $adr['region'],
+			 $adr['tel'],
+			 $adr['fax'],
+			 $visibilite,
+			 $statut,
+			 Session::getInt('uid', -1), $adrid);
     }
     
     else{ 
       //c'est une mise à jour
-      $globals->db->query(
+      $globals->xdb->execute(
 		    "UPDATE adresses SET
-				 adr1 = '".put_in_db($adr['adr1'])."',
-				 adr2 = '".put_in_db($adr['adr2'])."',
-				 adr3 = '".put_in_db($adr['adr3'])."',
-				 cp = '".put_in_db($adr['cp'])."',
-				 ville = '".put_in_db($adr['ville'])."',
-				 pays = '".$adr['pays']."',
-				 region = '".$adr['region']."',
-				 tel = '".put_in_db($adr['tel'])."',
-				 fax = '".put_in_db($adr['fax'])."',
-				 visibilite = '$visibilite',
+				 adr1 = {?},
+				 adr2 = {?},
+				 adr3 = {?},
+				 cp = {?},
+				 ville = {?},
+				 pays = {?},
+				 region = {?},
+				 tel = {?},
+				 fax = {?},
+				 visibilite = {?},
 				 datemaj = NOW(),
-				 statut = '$statut'
-				 WHERE uid = '".$_SESSION["uid"]."' AND adrid = '$adrid'"
+				 statut = {?}
+				 WHERE uid = {?} AND adrid = {?}",
+				 $adr['adr1'],
+				 $adr['adr2'],
+				 $adr['adr3'],
+				 $adr['cp'],
+				 $adr['ville'],
+				 $adr['pays'],
+				 $adr['region'],
+				 $adr['tel'],
+				 $adr['fax'],
+				 $visibilite,
+				 $statut,
+				 Session::getInt('uid', -1), $adrid
 		    );
     }// fin nouvelle / ancienne adresse
   }//fin if nouvellement crée

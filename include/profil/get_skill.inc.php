@@ -20,21 +20,21 @@
  ***************************************************************************/
 
 
-if(isset($_REQUEST['langue_op'])){
-    if($_REQUEST['langue_op']=='retirer'){
-        $globals->db->query("delete from langues_ins where uid='{$_SESSION['uid']}' and lid='{$_REQUEST['langue_id']}'");
-    } elseif($_REQUEST['langue_op'] == 'ajouter'){
-        if(isset($_REQUEST['langue_id']) && ($_REQUEST['langue_id'] != ''))
-            $globals->db->query("insert into langues_ins (uid,lid,level) VALUES('{$_SESSION['uid']}','{$_REQUEST['langue_id']}','{$_REQUEST['langue_level']}')");
+if(Env::has('langue_op')){
+    if(Env::get('langue_op', '')=='retirer'){
+        $globals->xdb->execute("DELETE FROM langues_ins WHERE uid = {?} AND lid = {?}", Session::getInt('uid', -1), Env::get('langue_id', ''));
+    } elseif(Env::get('langue_op', '') == 'ajouter'){
+        if(Env::get('langue_id', '') != '')
+            $globals->xdb->execute("INSERT INTO langues_ins (uid,lid,level) VALUES ({?}, {?}, {?})", Session::getInt('uid', -1), Env::get('langue_id', ''), Env::get('langue_level', ''));
     }
 }
 
-if(isset($_REQUEST['comppros_op'])){
-    if($_REQUEST['comppros_op']=='retirer'){
-        $globals->db->query("delete from competences_ins where uid='{$_SESSION['uid']}' and cid='{$_REQUEST['comppros_id']}'");
-    } elseif($_REQUEST['comppros_op'] == 'ajouter') {
-        if(isset($_REQUEST['comppros_id']) && ($_REQUEST['comppros_id'] != ''))
-	    $globals->db->query("insert into competences_ins (uid,cid,level) VALUES('{$_SESSION['uid']}','{$_REQUEST['comppros_id']}','{$_REQUEST['comppros_level']}')");
+if(Env::has('comppros_op')){
+    if(Env::get('comppros_op', '')=='retirer'){
+        $globals->xdb->execute("DELETE FROM competences_ins WHERE uid = {?} AND cid = {?}", Session::getInt('uid', -1), Env::get('comppros_id', ''));
+    } elseif(Env::get('comppros_op', '') == 'ajouter') {
+        if(Env::get('comppros_id', '') != '')
+	    $globals->xdb->execute("INSERT INTO competences_ins (uid,cid,level) VALUES({?}, {?}, {?})", Session::getInt('uid', -1), Env::get('comppros_id', ''), Env::get('comppros_level', ''));
     }
 }
 
@@ -43,22 +43,22 @@ $nb_lg_max = 10;
 // nombre maximum autorisé de compétences professionnelles
 $nb_cpro_max = 20;
 
-$res = $globals->db->query("SELECT ld.id, ld.langue_fr, li.level from langues_ins AS li, langues_def AS ld "
-               ."where (li.lid=ld.id and li.uid='{$_SESSION['uid']}') LIMIT $nb_lg_max");
+$res = $globals->xdb->iterRow("SELECT ld.id, ld.langue_fr, li.level FROM langues_ins AS li, langues_def AS ld "
+               ."WHERE (li.lid=ld.id AND li.uid= {?}) LIMIT $nb_lg_max", Session::getInt('uid', -1));
 
-$nb_lg = mysql_num_rows($res);
+$nb_lg = $res->total();
 
 for ($i = 1; $i <= $nb_lg; $i++) {
-    list($langue_id[$i], $langue_name[$i], $langue_level[$i]) = mysql_fetch_row($res);
+    list($langue_id[$i], $langue_name[$i], $langue_level[$i]) = $res->next();
 }
 
-$res = $globals->db->query("SELECT cd.id, cd.text_fr, ci.level from competences_ins AS ci, competences_def AS cd "
-               ."where (ci.cid=cd.id and ci.uid='{$_SESSION['uid']}') LIMIT $nb_cpro_max");
+$res = $globals->xdb->iterRow("SELECT cd.id, cd.text_fr, ci.level FROM competences_ins AS ci, competences_def AS cd "
+               ."WHERE (ci.cid=cd.id AND ci.uid={?}) LIMIT $nb_cpro_max", Session::getInt('uid', -1));
 
-$nb_cpro = mysql_num_rows($res);
+$nb_cpro = $res->total();
 
 for ($i = 1; $i <= $nb_cpro; $i++) {
-    list($cpro_id[$i], $cpro_name[$i], $cpro_level[$i]) = mysql_fetch_row($res);
+    list($cpro_id[$i], $cpro_name[$i], $cpro_level[$i]) = $res->next();
 }
 //Definitions des tables de correspondances id => nom
 
@@ -71,9 +71,9 @@ $langues_levels = Array(
     6 => "6"
 );
 
-$res = $globals->db->query("SELECT id, langue_fr FROM langues_def");
+$res = $globals->xdb->iterRow("SELECT id, langue_fr FROM langues_def");
 
-while(list($tmp_lid, $tmp_lg_fr) = mysql_fetch_row($res)){
+while(list($tmp_lid, $tmp_lg_fr) = $res->next()){
     $langues_def[$tmp_lid] = $tmp_lg_fr;
 }
 
@@ -83,9 +83,9 @@ $comppros_levels = Array(
     'expert' => 'expert'
 );
 
-$res = $globals->db->query("SELECT id, text_fr, FIND_IN_SET('titre',flags) FROM competences_def");
+$res = $globals->xdb->iterRow("SELECT id, text_fr, FIND_IN_SET('titre',flags) FROM competences_def");
 
-while(list($tmp_id, $tmp_text_fr, $tmp_title) = mysql_fetch_row($res)){
+while(list($tmp_id, $tmp_text_fr, $tmp_title) = $res->next()){
     $comppros_def[$tmp_id] = $tmp_text_fr;
     $comppros_title[$tmp_id] = $tmp_title;
 }

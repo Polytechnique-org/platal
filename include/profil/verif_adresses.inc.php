@@ -43,12 +43,14 @@ function generate_new_adrid(){
 }
 
 function replace_ifset_adr($varname, $i){
-   if (isset($_REQUEST[$varname][$i]))
-       $GLOBALS['adresses'][$i][$varname] = $_REQUEST[$varname][$i];
+  $tab = Env::getMixed($varname, Array());
+  if (isset($tab[$i]))
+       $GLOBALS['adresses'][$i][$varname] = $tab[$i];
 }
 
 function set_flag_adr($varname,$i){
-  if(isset($_REQUEST[$varname][$i])){
+  $tab = Env::getMixed($varname, Array());
+  if (isset($tab[$i])){
      $GLOBALS['adresses'][$i][$varname] = 1;
   }
   else
@@ -65,7 +67,7 @@ function replace_address($i){
   replace_ifset_adr('secondaire', $i);
   set_flag_adr('courrier', $i);
   replace_ifset_adr('temporaire', $i);
-  if(isset($_REQUEST['adrid_active']) && ($_REQUEST['adrid_active'] == $i))
+  if(Env::getInt('adrid_active', $i+1) == $i)
     $GLOBALS['adresses'][$i]['active'] = 1;
   else
     $GLOBALS['adresses'][$i]['active'] = 0;
@@ -82,8 +84,9 @@ function replace_address($i){
   set_flag_adr('adr_ax', $i);
   set_flag_adr('tel_public', $i);
   set_flag_adr('tel_ax', $i);
-  if($_REQUEST['numero_formulaire'][$i])
-    $GLOBALS['adresses'][$i]['numero_formulaire'] = $_REQUEST['numero_formulaire'][$i];
+  $tab = Env::getMixed('numero_formulaire', Array());
+  if($tab[$i])
+    $GLOBALS['adresses'][$i]['numero_formulaire'] = $tab[$i];
   else
     $GLOBALS['adresses'][$i]['numero_formulaire'] = -1;
 }
@@ -91,12 +94,13 @@ function replace_address($i){
 
 //remplace par les eventuelles nouvelles valeurs :
 for ($adrid = 1; $adrid <= $nb_adr_max; $adrid++) {
-  if(isset($_REQUEST['adrid'][$adrid])){ //cet adrid etait donc present dans le formulaire
+  $tab = Env::getMixed('adrid', Array());
+  if(isset($tab[$adrid])){ //cet adrid etait donc present dans le formulaire
     replace_address($adrid);
   }
 }
 
-if(($_REQUEST['old_tab'] == 'adresses') && isset($_REQUEST['modifier'])){ // on ne valide que qd on vient du formulaire
+if(Env::get('old_tab', '') == 'adresses' && Env::has('modifier')){ // on ne valide que qd on vient du formulaire
 $adresses_principales = 0;
 reset($adresses);
 foreach($adresses as $adrid => $adr) {

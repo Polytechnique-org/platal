@@ -19,8 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$sql = "UPDATE auth_user_md5 set section=$section WHERE user_id={$_SESSION['uid']}";
+$sql = "UPDATE auth_user_md5 set section= {?} WHERE user_id= {?}";
 
-$globals->db->query($sql);
+$globals->xdb->execute($sql, $section, Session::getInt('uid', -1));
 
 ?>

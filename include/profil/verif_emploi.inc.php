@@ -21,7 +21,8 @@
 
 
 function set_flag_i(&$var,$var_name,$i){
-  if(isset($_REQUEST[$var_name][$i])){
+  $tab = Env::getMixed($var_name, Array());
+  if(isset($tab[$i])){
   	$var[$i] = 1;
   }
   else
@@ -45,7 +46,7 @@ replace_ifset_i($regionpro,"regionpro",$i);
 replace_ifset_i($telpro,"telpro",$i);
 replace_ifset_i($faxpro,"faxpro",$i);
 
-if(isset($_REQUEST['adresse_flag'])){
+if(Env::has('adresse_flag')){
   set_flag_i($entreprise_public,"entreprise_public",$i);
   set_flag_i($entreprise_ax,"entreprise_ax",$i);
   set_flag_i($adrpro_public,"adrpro_public",$i);

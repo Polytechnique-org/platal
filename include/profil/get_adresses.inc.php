@@ -37,7 +37,7 @@ function is_adr_empty($adrid){
 
 function delete_address($adrid, $in_request_array = false){
     global $globals;
-    $globals->db->query("DELETE FROM adresses WHERE uid = ".$_SESSION["uid"]." AND adrid = '$adrid'");
+    $globals->xdb->execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
     if($in_request_array == true){
       unset($_REQUEST['adrid'][$adrid]);
     }
@@ -47,8 +47,9 @@ function delete_address($adrid, $in_request_array = false){
 }
 
 //on verifie si on nous a demande une suppression
+$req_adrid_del = Env::getMixed('adrid_del', Array());
 for($i = 1; $i <= $nb_adr_max; $i++){
-  if( isset( $_REQUEST['adrid_del'][$i] ) ) {
+  if( isset( $req_adrid_del[$i] ) ) {
     delete_address($i,true);
   }
 }
@@ -57,15 +58,11 @@ for($i = 1; $i <= $nb_adr_max; $i++){
 $sql_order = '';
 
 //recuperation des adrid
-$res = $globals->db->query("SELECT adrid FROM adresses WHERE uid = {$_SESSION['uid']} AND NOT FIND_IN_SET('pro',statut) ".$sql_order);
-$i = 1;
-while(list($adrids[$i]) = mysql_fetch_row($res)){
-  $adresses[$adrids[$i]]['adrid'] = $adrids[$i];
-  $i++;
-}
+$res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} AND NOT FIND_IN_SET('pro', statut) ".$sql_order, Session::getInt('uid', -1));
+$adrids = $res->fetchColumn();
 
 //recuperation des donnees de la bd
-$res = $globals->db->query(
+$res = $globals->xdb->iterRow(
 	"SELECT
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
@@ -74,20 +71,22 @@ $res = $globals->db->query(
 	FIND_IN_SET('adr_public', visibilite), FIND_IN_SET('adr_ax', visibilite),
 	FIND_IN_SET('tel_public', visibilite), FIND_IN_SET('tel_ax', visibilite)
 	FROM adresses
-	WHERE uid = {$_SESSION['uid']} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
+	WHERE uid = {?} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
+, Session::getInt('uid', -1)
 );
 
-$nb_adr = mysql_num_rows($res);
+$nb_adr = $res->total();
 
-for ($i = 1; $i <= $nb_adr; $i++) {
+for ($i = 0; $i < $nb_adr; $i++) {
   $adrid = $adrids[$i];
+  $adresses[$adrid]['adrid'] = $adrid;
   list(
        $adresses[$adrid]['secondaire'], $adresses[$adrid]['courrier'],
        $adresses[$adrid]['active'], $adresses[$adrid]['temporaire'],
        $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['cp'], $adresses[$adrid]['ville'],
        $adresses[$adrid]['pays'], $adresses[$adrid]['region'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
        $adresses[$adrid]['adr_public'], $adresses[$adrid]['adr_ax'],
-       $adresses[$adrid]['tel_public'], $adresses[$adrid]['tel_ax']) = mysql_fetch_row($res);
+       $adresses[$adrid]['tel_public'], $adresses[$adrid]['tel_ax']) = $res->next();
   $adresses[$adrid]['nouvelle'] = 'modif';
   $adresses[$adrid]['numero_formulaire'] = -1;
 }

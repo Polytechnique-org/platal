@@ -25,33 +25,33 @@
 $sql = "SELECT u.nom, u.prenom".
     ", u.promo, epouse, u.flags, section".
     " FROM auth_user_md5 AS u".
-    " WHERE user_id=".$_SESSION['uid'];
+    " WHERE user_id = {?}";
 
-$result = $globals->db->query($sql);
-list($nom, $prenom, $promo, $epouse, $flags, $section) = mysql_fetch_row($result);
+$result = $globals->xdb->query($sql, Session::getInt('uid', -1));
+list($nom, $prenom, $promo, $epouse, $flags, $section) = $result->fetchOneRow();
 
 replace_ifset($section,'section');
 
 /************* gestion des binets ************/
-if (isset($_REQUEST['binet_op'])) {
+if (Env::has('binet_op')) {
     // retrait binet
-    if($_REQUEST['binet_op']=="retirer" && !empty($_REQUEST['binet_id'])) {
-        $globals->db->query("delete from binets_ins where user_id='{$_SESSION['uid']}' and binet_id='{$_REQUEST['binet_id']}'");
+    if( (Env::get('binet_op', '')=='retirer')&&(Env::getInt('binet_id', 0) != 0)) {
+        $globals->xdb->execute("DELETE FROM binets_ins WHERE user_id = {?} AND binet_id = {?}", Session::getInt('uid', -1), Env::getInt('binet_id', -1));
     }
     // ajout binet
-    if ($_REQUEST['binet_op']=="ajouter" && !empty($_REQUEST['binet_id'])) {
-        $globals->db->query("insert into binets_ins (user_id,binet_id) VALUES('{$_SESSION['uid']}','{$_REQUEST['binet_id']}')");
+    if (Env::get('binet_op')=="ajouter" && (Env::getInt('binet_id', 0) != 0)) {
+        $globals->xdb->execute("INSERT INTO binets_ins (user_id,binet_id) VALUES({?}, {?})", Session::getInt('uid', -1), Env::getInt('binet_id', -1));
     }
 }
 /************* gestion des groupes X ************/
-if (isset($_REQUEST['groupex_op'])) {
+if (Env::has('groupex_op')) {
     // retrait groupe X
-    if ($_REQUEST['groupex_op']=="retirer" && !empty($_REQUEST['groupex_id'])) {
-        $globals->db->query("delete from groupesx_ins where guid='{$_SESSION['uid']}' and gid='{$_REQUEST['groupex_id']}'");
+    if (Env::get('groupex_op')=="retirer" && (Env::getInt('groupex_id', 0) != 0)) {
+        $globals->xdb->execute("DELETE FROM groupesx_ins WHERE guid = {?} AND gid = {?}", Session::getInt('uid', -1), Env::getInt('groupex_id', -1));
     }
     // ajout groupe X
-    if ($_REQUEST['groupex_op']=="ajouter" && !empty($_REQUEST['groupex_id'])) {
-        $globals->db->query("insert into groupesx_ins (guid,gid) VALUES('{$_SESSION['uid']}','{$_REQUEST['groupex_id']}')");
+    if (Env::get('groupex_op')=="ajouter" && (Env::getInt('groupex_id', 0) != 0)) {
+        $globals->xdb->execute("INSERT INTO groupesx_ins (guid, gid) VALUES ({?}, {?})", Session::getInt('uid', -1), Env::getInt('groupex_id', -1));
     }
 }
 
