@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.2 2004-09-21 15:40:36 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.3 2004-09-21 16:14:35 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
@@ -32,8 +32,15 @@
   {if $liste.priv >= $min && $liste.priv <= $max|default:$min}
   <tr class='{cycle values="impair,pair"}'>
     <td>
+      {if $liste.you>1}
+      <a href='admin.php?liste={$liste.list}'>{$liste.list}</a>
+      [<a href='moderate.php?liste={$liste.list}'>mod</a>]
+      {elseif $smarty.session.perms eq admin}
+      <a href='admin.php?liste={$liste.list}'>{$liste.list}</a>
+      <span class='erreur'>[<a href='moderate.php?liste={$liste.list}'>mod</a>]</span>
+      {else}
       <a href='liste.php?liste={$liste.list}'>{$liste.list}</a>
-      {if $liste.you>1}[<a href='moderate.php?liste={$liste.list}'>mod</a>]{/if}
+      {/if}
     </td>
     <td>{$liste.desc}</td>
     <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>

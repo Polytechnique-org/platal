@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #***************************************************************************
-#*  Copyright (C) 2namelytechnique.org                                   *
+#*  Copyright (C) 2004 polytechnique.org                                   *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.21 2004-09-21 15:40:35 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.22 2004-09-21 16:14:35 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os
@@ -125,9 +125,9 @@ def get_lists((userdesc,perms)):
         except:
             continue
         is_member = userdesc.address in mlist.getRegularMemberKeys()
-        is_owner  = userdesc.address in mlist.owner
         is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
-        if ( mlist.advertised ) or ( perms == 'admin' and is_admin ) or is_member or is_owner:
+        is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
+        if mlist.advertised or is_member or is_owner:
             result.append( {
                     'list' : name,
                     'desc' : mlist.description,
@@ -144,16 +144,17 @@ def get_members((userdesc,perms),listname):
         mlist = MailList.MailList(listname, lock=0)
     except:
         return 0
-    if ( mlist.advertised ) or ( is_admin_on(userdesc, perms, mlist) ) or ( userdesc.address in members ):
+    is_member = userdesc.address in members
+    is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
+    is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
+    if mlist.advertised or is_member or is_owner or ( perms == 'admin' ):
         members = mlist.getRegularMemberKeys()
         members.sort()
-        is_member = userdesc.address in members
-        is_owner  = userdesc.address in mlist.owner
         details = { 'addr' : listname+'@polytechnique.org',
                     'desc' : mlist.description,
                     'diff' : mlist.generic_nonmember_action,
                     'ins'  : mlist.subscribe_policy > 0,
-                    'priv' : (1-mlist.advertised)+2*(mm_cfg.ADMIN_ML_OWNER in mlist.owner),
+                    'priv' : (1-mlist.advertised)+2*is_admin,
                     'welc' : mlist.welcome_msg,
                     'you'  : is_member + 2*is_owner
                   }
