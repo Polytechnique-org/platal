@@ -21,3 +21,15 @@ echo "STILL TODO :
   - insert scripts/cron/send_notifs.php in the crontab
     suggested : 0 4 * * 6  (it means every saturday at 4 AM)
 "
+
+###########################################################
+echo "To make statistics work :
+  - remove old cron (web cron) : /home/web/bin/nbx,
+      genere.sh,genereParselog,genereParselog2
+  - add new scripts (from scripts/cron/stats)in cron
+      evolution-inscrits-mails, plot-graphs, mailParselog
+  - add symlinks :
+      in htdocs/stats : ln -s /home/web/stats/graph-* .
+      in templates/stats : ln -s /home/web/stats/lastParselog* . 
+
+"
