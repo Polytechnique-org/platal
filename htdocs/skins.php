@@ -19,16 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 if (!$globals->skin->enable) {
-    header("Location: index.php");
+    header('Location: index.php');
 }
 new_skinned_page('skins.tpl', AUTH_COOKIE);
 
-if (isset($_REQUEST['newskin']))  {  // formulaire soumis, traitons les données envoyées
-    $globals->db->query("UPDATE auth_user_quick
-                SET skin={$_REQUEST['newskin']}
-                WHERE user_id={$_SESSION['uid']}");
+if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
+    $globals->db->query('UPDATE auth_user_quick
+                SET skin='..Env::getInt('newskin').'
+                WHERE user_id='..Session::getInt('uid'));
     set_skin();
 }
 

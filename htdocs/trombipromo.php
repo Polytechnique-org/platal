@@ -26,8 +26,8 @@ require_once("trombi.inc.php");
 function getList($offset,$limit) {
     global $globals;
 
-    $xpromo = intval($_REQUEST['xpromo']);
-    $where = ( $xpromo>0 ? "WHERE promo='$xpromo'" : "" );
+    $xpromo = Env::getInt('xpromo');
+    $where  = ( $xpromo>0 ? "WHERE promo='$xpromo'" : "" );
 
     $res = $globals->db->query("SELECT  COUNT(*)
 				  FROM  auth_user_md5 AS u
@@ -51,10 +51,10 @@ function getList($offset,$limit) {
     return Array($pnb, $list);
 }
 
-if(isset($_REQUEST['xpromo'])) {
-    $xpromo = intval($_REQUEST['xpromo']);
+if (Env::has('xpromo')) {
+    $xpromo = Env::getInt('xpromo');
 
-    if ( $xpromo<1900 || $xpromo>date('Y') || ($xpromo == -1 && $_SESSION['perms']!="admin") ) {
+    if ( $xpromo<1900 || $xpromo>date('Y') || ($xpromo == -1 && Session::get('perms')!="admin") ) {
 	$page->trig("Promotion incorrecte (saisir au format YYYY). Recommence.");
         $page->assign('error', true);
     } else {

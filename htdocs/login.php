@@ -19,10 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
-$param=$globals->db->query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");
+$param=$globals->db->query('SELECT date,naissance FROM auth_user_md5 WHERE user_id='.Session::getInt('uid'));
 list($date,$naissance) = mysql_fetch_row($param);
 mysql_free_result($param);
 
@@ -34,7 +34,7 @@ if ($naissance==0 || $naissance=='0000-00-00')  {
 
 // incitation à mettre à jour la fiche
 
-$res = $globals->db->query("SELECT date FROM auth_user_md5 WHERE user_id=".$_SESSION["uid"]);
+$res = $globals->db->query('SELECT date FROM auth_user_md5 WHERE user_id='.Session::getInt('uid'));
 list($d) = mysql_fetch_row($res);
 $date_maj = mktime(0, 0, 0, substr($d, 5, 2), substr($d, 8, 2), substr($d, 0, 4));
 if(( (time() - $date_maj) > 60 * 60 * 24 * 400)) { // si fiche date de + de 400j;
@@ -43,7 +43,7 @@ if(( (time() - $date_maj) > 60 * 60 * 24 * 400)) { // si fiche date de + de 400j
 
 // incitation à mettre une photo
 
-$res = $globals->db->query("SELECT 1 FROM photo WHERE uid=".$_SESSION["uid"]);
+$res = $globals->db->query('SELECT 1 FROM photo WHERE uid='.Session::getInt('uid'));
 if (mysql_num_rows($res) == 0)
     $page->assign('photo_incitation', true);
 mysql_free_result($res);
@@ -68,13 +68,14 @@ $page->assign_by_ref('publicite', $publicite);
 // affichage des evenements
 // annonces promos triées par présence d'une limite sur les promos
 // puis par dates croissantes d'expiration
+$promo = Session::getInt('promo');
 $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
           FROM  evenements    AS e
     INNER JOIN  auth_user_md5 AS a ON e.user_id=a.user_id
     INNER JOIN  aliases       AS l ON ( a.user_id=l.id AND l.type='a_vie' )
          WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
-		AND (e.promo_min = 0 || e.promo_min <= {$_SESSION['promo']})
-		AND (e.promo_max = 0 || e.promo_max >= {$_SESSION['promo']})
+		AND (e.promo_min = 0 || e.promo_min <= $promo)
+		AND (e.promo_max = 0 || e.promo_max >= $promo)
       ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
 $page->mysql_assign($sql, 'evenement');
 

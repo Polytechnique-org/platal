@@ -19,14 +19,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 
-if (!empty($_POST['response2']))  {             // la variable $response existe-t-elle ?
+if (Env::has('response2'))  {             // la variable $response existe-t-elle ?
     // OUI, alors changeons le mot de passe
     $password = $_POST['response2'];
-    $sql = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".$_SESSION['uid'];
+    $sql      = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".Session::getInt('uid');
     $globals->db->query($sql);
-    $_SESSION['log']->log("passwd","");
+    $_SESSION['log']->log('passwd', '');
     new_skinned_page('motdepassemd5.success.tpl', AUTH_MDP);
     $page->run();
 }

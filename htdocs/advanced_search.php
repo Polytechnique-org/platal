@@ -42,18 +42,18 @@ function form_prepare()
     $page->mysql_assign('SELECT id,text FROM applis_def ORDER BY text',       'choix_schools');
     $page->mysql_assign('SELECT id,label FROM emploi_secteur ORDER BY label', 'choix_secteurs');
 
-    if (empty($_REQUEST['school'])) {
-        $sql = 'DESCRIBE applis_def type';
+    if (Env::has('school')) {
+        $sql = 'SELECT type FROM applis_def WHERE id='.Env::getInt('school');
     } else {
-        $sql = 'SELECT type FROM applis_def WHERE id='.$_REQUEST['school'];
+        $sql = 'DESCRIBE applis_def type';
     }
     $res = $globals->db->query($sql);
     $row = mysql_fetch_row($res);
-    if (empty($_REQUEST['school'])) {
+    if (Env::has('school')) {
+        $types = $row[0];
+    } else {
         $types = explode('(',$row[1]);
         $types = str_replace("'","",substr($types[1],0,-1));
-    } else {
-        $types = $row[0];
     }
     mysql_free_result($res);
     $page->assign('choix_diplomas', explode(',',$types));
@@ -61,11 +61,11 @@ function form_prepare()
 
 // }}}
 
-if (!array_key_exists('rechercher', $_REQUEST)) {
+if (!Env::has('rechercher')) {
     form_prepare();
 } else {
 
-    if ($with_soundex = !empty($_REQUEST['with_soundex'])) {
+    if ($with_soundex = Env::has('with_soundex')) {
         $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
         $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
     } else {
@@ -118,13 +118,13 @@ if (!array_key_exists('rechercher', $_REQUEST)) {
                        w.ni_id AS watch
                  FROM  auth_user_md5  AS u 
             '.$fields->get_select_statement().'
-            '.(empty($_REQUEST['only_referent']) ? '' : ' INNER JOIN mentor AS m ON (m.uid = u.user_id)').'
+            '.(Env::has('only_referent') ? '' : ' INNER JOIN mentor AS m ON (m.uid = u.user_id)').'
             LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
-            LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
-            LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
+            LEFT JOIN  contacts       AS c ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
+            LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
             '.$globals->search->result_where_statement.'
                 '.(empty($where) ? '' : "WHERE  $where").'
-             ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
+             ORDER BY  '.(logged() && Env::has('mod_date_sort') ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'promo DESC, NomSortKey, prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search->per_page;
 
@@ -133,7 +133,7 @@ if (!array_key_exists('rechercher', $_REQUEST)) {
     $nbpages = ($nb_tot - 1)/$globals->search->per_page;
 
     $url_ext = Array(
-        'mod_date_sort' => !empty($_REQUEST['mod_date_sort']),
+        'mod_date_sort' => Env::has('mod_date_sort'),
         'rechercher'    => true,
         'with_soundex'  => $with_soundex
     );

@@ -30,7 +30,7 @@ if (logged()) {
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
-if (isset($_REQUEST['quick'])) {
+if (Env::has('quick')) {
     $page->assign('formulaire', 0);
 
     $qSearch = new QuickSearch('quick');
@@ -50,12 +50,12 @@ if (isset($_REQUEST['quick'])) {
                        '.$qSearch->get_mark_statement().'
                  FROM  auth_user_md5  AS u
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
-            LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
-            LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
+            LEFT JOIN  contacts       AS c   ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
+            LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
             '.$globals->search->result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
                HAVING  mark>=10
-             ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
+             ORDER BY  '.(logged() && Env::has('mod_date_sort') ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search->per_page;
 
@@ -64,7 +64,7 @@ if (isset($_REQUEST['quick'])) {
     $nbpages  = ($nb_total-1)/$globals->search->per_page;
 
     $url_ext = Array(
-        'mod_date_sort' => !empty($_REQUEST['mod_date_sort'])
+        'mod_date_sort' => Env::has('mod_date_sort')
     );
     $page->assign('offset',   $offset->value);
     $page->assign('offsets',  range(0, $nbpages));

@@ -23,10 +23,10 @@ require_once("xorg.inc.php");
 new_skinned_page('antispam.tpl', AUTH_MDP);
 require_once("emails.inc.php");
 
-$bogo = new Bogo($_SESSION['uid']);
+$bogo = new Bogo(Session::getInt('uid'));
 
-if (isset($_REQUEST['filtre']) and isset($_REQUEST['statut_filtre'])) {
-    $bogo->change($_SESSION['uid'], intval($_REQUEST['statut_filtre']));
+if (Env::has('filtre') and Env::has('statut_filtre')) {
+    $bogo->change(Session::getInt('uid'), Env::getInt('statut_filtre'));
 }
 
 $page->assign('filtre',$bogo->level());

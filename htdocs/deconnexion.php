@@ -19,19 +19,19 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 
 if (isset($_SESSION['suid'])) { require_once('./exit.php'); }
 
 if (isset($_SESSION['log'])) {
-    $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "";
-    $_SESSION['log']->log("deconnexion",$ref);
+    $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+    $_SESSION['log']->log('deconnexion',$ref);
 }
 
 session_destroy();
 $_SESSION = array();
 if(isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGuid'])) {
-    header("Location: login.php");
+    header('Location: login.php');
 }
 
 new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);

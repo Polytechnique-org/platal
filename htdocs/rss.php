@@ -19,19 +19,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once('xorg.inc.php');
 new_nonhtml_page('rss.tpl', AUTH_PUBLIC);
 
-$requete="SELECT e.id,e.titre,e.texte FROM evenements AS e WHERE FIND_IN_SET(flags, 'valide') AND peremption >= NOW()";
+$requete='SELECT e.id,e.titre,e.texte FROM evenements AS e WHERE FIND_IN_SET(flags, 'valide') AND peremption >= NOW()';
 
-if (isset($_REQUEST["promo"])) {
-    $requete.=" AND (e.promo_min = 0 || e.promo_min <= {$_REQUEST['promo']}) AND (e.promo_max = 0 || e.promo_max >= {$_REQUEST['promo']})";
-    $page->assign('promo',$_REQUEST["promo"]);
+if (Env::has('promo')) {
+    $promo    = Env::getInt('promo');
+    $requete .= " AND (e.promo_min = 0 || e.promo_min <= $promo) AND (e.promo_max = 0 || e.promo_max >= $promo)";
+    $page->assign('promo', $promo);
 }
 
-$requete.=" ORDER BY (e.promo_min != 0 AND e.promo_max != 0) DESC,  e.peremption";
-$page->mysql_assign($requete,'rss');
+$requete.=' ORDER BY (e.promo_min != 0 AND e.promo_max != 0) DESC,  e.peremption';
+$page->mysql_assign($requete, 'rss');
 
-header("Content-Type: text/xml");
+header('Content-Type: text/xml');
 $page->run();
 ?> 

@@ -33,5 +33,5 @@ if(!identified()) {
     header("Location: index.php");
 }
 
-$page->run();
+header("Location: preferences.php");
 ?>

@@ -37,7 +37,7 @@ function format_adr($params, &$smarty)
 $page->register_modifier('qp_enc', 'quoted_printable_encode');
 $page->register_function('format_adr', 'format_adr');
 
-$login = get_user_forlife($_REQUEST['x']);
+$login = get_user_forlife(Env::get('x'));
 $user  = get_user_details($login);
 $page->assign_by_ref('vcard', $user);
 

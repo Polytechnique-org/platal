@@ -22,7 +22,7 @@
 require_once("xorg.inc.php");
 new_skinned_page('preferences.tpl', AUTH_COOKIE);
 
-$has_cookie = (isset($_COOKIE['ORGaccess']) ? 'cookie' : '');
+$has_cookie = (Cookie::has('ORGaccess') ? 'cookie' : '');
 $page->assign('has_cookie', $has_cookie);
 
 $page->run($has_cookie);
