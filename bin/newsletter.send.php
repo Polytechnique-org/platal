@@ -52,7 +52,7 @@ while(true) {
     if (!$res->total()) { exit; }
 
     $sent = Array();
-    while (list($uid, $fmt, $bestalias, $prenom, $nom, $sexe) = $res->next()) {
+    while (list($uid, $bestalias, $prenom, $nom, $sexe, $fmt) = $res->next()) {
 	$sent[] = "user_id='$uid'";
 	$nl->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html');
     }
