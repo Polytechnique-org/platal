@@ -51,81 +51,103 @@
   <tr>
     <th>champ</th>
     <th style='width:50%'>x.org</th>
-    <th>supprimer</th>
-    <th style='width:50%'>AX</th>
     <th>importer</th>
+    <th style='width:50%'>AX</th>
   </tr>
-  <tr class="pair">
-    <td>fiches</td>
-    <td colspan='2'>
+  <tr class="impair">
+    <td>fiche</td>
+    <td>
       <a href='{rel}/fiche.php?user={$x.user_id}' class='popup2'>polytechnique.org</a>
     </td>
-    <td colspan='2'>
+    <td>
+    </td>
+    <td>
       <a href='http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a>
     </td>
   </tr>
-{foreach from=$ax item='val' key='i'}
-  {if ($i neq 'adr') and ($i neq 'adr_pro')}
-    {if $x[$i] neq $val}
-    <tr class="{cycle values='impair,pair'}">
+{foreach from=$watch_champs item='i'}
+  {if $x[$i] or $ax[$i]}
+    <tr class="{if ($x[$i] eq $ax[$i]) or !$ax[$i]}im{/if}pair">
       <td>
         {$i}
       </td>
-      <td colspan='2'>
+      <td>
         {$x[$i]}
       </td>
-      <td colspan='2'>
-        {if (($i eq 'epouse') or ($i eq 'mobile')) and $val}
-        <div style='float:right'>
-          <input style='flat:right' type='checkbox' name='{$i}' />
-        </div>
+      <td class='center'>
+        {if $x[$i] eq $ax[$i]}
+          ==
+        {else}
+          {if $ax[$i]}
+            <input style='flat:right' type='checkbox' name='{$i}' />
+          {/if}
         {/if}
-        {$val}
+      </td>
+      <td>
+        {$ax[$i]}
       </td>
     </tr>
-    {/if}
   {/if}
 {/foreach}
-  <tr class='impair'>
-    <td>
-      adresses
-    </td>
-    <td colspan='2'>
+</table>
+
+<table>
+<tr>
+<td>
+{if $ax.adr[0]}
+{if $x.adr}
+<div>
+  Supprimer les adresses suivantes :
+</div>
+<table>
     {foreach from=$x.adr item='adr'}
-      <div style="padding:5px">
-        {if $ax.adr[0]}
-        <div style='float:right'>
+      <tr style="padding:5px">
+        <td>
           <input type='checkbox' name='del_address{$adr.adrid}' />
-        </div>
-        {/if}
-        {include file='geoloc/address.tpl' address=$adr no_div=1}
-      </div>
+        </td>
+        <td>
+          {include file='geoloc/address.tpl' address=$adr no_div=1}
+        </td>
+      </tr>
     {/foreach}
-    </td>
-    <td colspan='2'>
+</table>
+<div>
+  et les remplacer par les adresses suivantes de l'AX :
+</div>
+{else}
+<div>
+  Importer les adresses AX suivantes :
+</div>
+{/if}
+<table>
     {foreach from=$ax.adr item='adr' key='adrid'}
-      <div style='padding:5px'>
-        <div style='float:right'>
+      <tr style='padding:5px'>
+        <td>
           <input type='checkbox' name='add_address{$adrid}' />
-        </div>
-        {include file='geoloc/address.tpl' address=$adr no_div=1}
-      </div>
+        </td>
+        <td>
+          {include file='geoloc/address.tpl' address=$adr no_div=1}
+        </td>
+      </tr>
     {/foreach}
-    </td>
-  </tr>
-  <tr class='pair'>
-    <td>
-      adr_pro
-    </td>
-    <td colspan='2'>
+</table>
+{/if}
+</td>
+
+<td>
+{if $ax.adr_pro[0].entreprise}
+{if $x.adr_pro}
+<div>
+  Supprimer les emplois suivants :
+</div>
+<table>
     {foreach from=$x.adr_pro item='pro'}
     {if ($pro.poste) or ($pro.fonction) or ($pro.entreprise)}
-      <div style='padding:5px'>
-        {if $ax.adr_pro[0]}
-        <div style='float:right'>
+      <tr style='padding:5px'>
+        <td>
           <input type='checkbox' name='del_pro{$pro.entrid}' />
-        </div>
-        {/if}
+        </td>
+        <td>
         {if $pro.entreprise}
         <div>
           <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
@@ -148,17 +170,28 @@
         </div>
         {/if}
         {include file='geoloc/address.tpl' address=$pro no_div=1}
-      </div>
+        </td>
+      </tr>
     {/if}
     {/foreach}
-    </td>
-    <td colspan='2'>
+</table>
+
+<div>
+  et les remplacer par les emplois suivants de l'AX :
+</div>
+{else}
+<div>
+  Importer les emplois suivants depuis l'AX :
+</div>
+{/if}
+<table>
     {foreach from=$ax.adr_pro item='pro' key='proid'}
     {if ($pro.poste) or ($pro.fonction) or ($pro.entreprise)}
-      <div style='padding:5px'>
-        <div style='float:right'>
+      <tr style='padding:5px'>
+        <td>
           <input type='checkbox' name='add_pro{$proid}' />
-        </div>
+        </td>
+        <td>
         {if $pro.entreprise}
         <div>
           <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
@@ -170,11 +203,14 @@
         </div>
         {/if}
         {include file='geoloc/address.tpl' address=$pro no_div=1}
-      </div>
+        </td>
+      </tr>
     {/if}
     {/foreach}
-    </td>
-  </tr>
+</table>
+{/if}
+</td>
+</tr>
 </table>
 <div class='center'>
   <input type='hidden' name='user' value='{$ax.uid}' />
