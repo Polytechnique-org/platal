@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.tpl,v 1.7 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: newsletter.tpl,v 1.8 2004-09-04 21:58:22 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-{$erreur}
+<p class="erreur">{$erreur}</p>
 
 {if $nl_titre}
 
@@ -38,7 +38,7 @@
   </tr>
   <tr>
     <td style="padding: 1em;">
-      <tt>{$nl_text|smarty:nodefaults|replace:" ":"&nbsp;"|nl2br}</tt>
+      <tt style="white-space:pre;">{$nl_text|smarty:nodefaults|replace:"<u>":"<span style='text-decoration:underline;'>"|replace:"</u>":"</span>"|nl2br}</tt>
     </td>
   </tr>
 </table>
