@@ -1,6 +1,6 @@
 {***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
- *  http://opensource.polytechnique.org/                                   *
+ *  http ://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -17,85 +17,52 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.9 2004-09-25 09:48:07 x2000habouzit Exp $
+        $Id : admin.tpl,v 1.4 2004/09/23 18:47:00 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 
-{if $no_list}
+{if $no_list || $smarty.session.perms neq admin }
 
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
+<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
 
 {else}
 
 <div class='rubrique'>
-  Modérer la liste {$smarty.get.liste}@polytechnique.org
+  Changer les options de la liste {$details.addr}
 </div>
 
 <p>
 [<a href='index.php'>listes</a>] »
-[modération]
+[<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
 [<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
 {perms level=admin} »
 [<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
-[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
+[check]
 {/perms}
 </p>
 
-<div class='rubrique'>
-  Inscriptions en attente de modération
-</div>
-
-{if $subs|@count}
-<table class='bicol' cellpadding='0' cellspacing='0'>
+{if $options|@count}
+<table class='bicol' cellpadding='2' cellspacing='0'>
+  <tr><th colspan='3'>Options incorrectres pour {$details.addr}</th></tr>
+  <tr><th>champs</th><th>devrait être:</th><th>est ...</th></tr>
+  {foreach from=$options key=k item=o}
   <tr>
-    <th>Nom</th>
-    <th>Adresse</th>
-    <th></th>
-  </tr>
-  {foreach from=$subs item=s}
-  <tr class='{cycle values="pair,impair"}'>
-    <td>{$s.name}</td>
-    <td>{$s.addr}</td>
-    <td class='action'>
-      <a href='?liste={$smarty.request.liste}&amp;sadd={$s.id}'>ajouter</a>
-      <a href='?liste={$smarty.request.liste}&amp;sid={$s.id}'>refuser</a>
-    </td>
+    <td class='titre'>{$k}</td>
+    <td>{if $o[0] === false}False{elseif $o[0] === true}True{elseif $o[0] === ''}" "{else}{$o[0]}{/if}</td>
+    <td>{if $o[1] === false}False{elseif $o[1] === true}True{elseif $o[1] === ''}" "{else}{$o[1]}{/if}</td>
   </tr>
   {/foreach}
 </table>
+<form action='{$smarty.server.REQUEST_URI}' method='post'>
+  <div class='center'>
+    <br />
+    <input type='submit' name='correct' value='Corriger les valeurs !' />
+  </div>
+</form>
 {else}
-<p>pas d'inscriptions en attente de modération</p>
-{/if}
-
-<div class='rubrique'>
-  Mails en attente de modération
-</div>
-
-{if $mails|@count}
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <th>émetteur</th>
-    <th>sujet</th>
-    <th>taille</th>
-    <th>date</th>
-    <th></th>
-  </tr>
-  {foreach from=$mails item=m}
-  <tr class='{cycle values="pair,impair"}'>
-    <td>{$m.sender}</td>
-    <td>{$m.subj}</td>
-    <td class='right'>{$m.size}o</td>
-    <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
-    <td class='action'>
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
-    </td>
-  </tr>
-  {/foreach}
-</table>
-{else}
-<p>pas de mails en attente de modération</p>
+<p>Liste correcte !</p>
 {/if}
 
 {/if}

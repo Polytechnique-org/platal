@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.36 2004-09-24 16:43:52 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.37 2004-09-25 09:48:07 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -511,7 +511,7 @@ def del_from_wl((userdesc,perms),vhost,listname,addr):
         return 0
 
 #-------------------------------------------------------------------------------
-# admin procedures [ ?????.php ]
+# admin procedures [ soptions.php ]
 #
 
 admin_opts = [ 'advertised', 'archive', 'default_member_moderation', \
@@ -526,6 +526,76 @@ def set_admin_options((userdesc,perms),vhost,listname,values):
     if perms != 'admin':
         return 0
     return set_options((userdesc,perms),vhost,listname,admin_opts,values)
+
+#-------------------------------------------------------------------------------
+# admin procedures [ check.php ]
+#
+
+check_opts = {
+    'acceptable_aliases'            : '',
+    'admin_immed_notify'            : True,
+    'administrivia'                 : True,
+    'anonymous_list'                : False,
+    'autorespond_admin'             : False,
+    'autorespond_postings'          : False,
+    'autorespond_requests'          : False,
+    'available_languages'           : ['fr'],
+    'ban_list'                      : [],
+    'bounce_matching_headers'       : '',
+    'bounce_processing'             : False,
+    'convert_html_to_plaintext'     : False,
+    'digestable'                    : False,
+    'digest_is_default'             : False,
+    'discard_these_nonmembers'      : [],
+    'emergency'                     : False,
+    'encode_ascii_prefixes'         : 2,
+    'filter_content'                : False,
+    'first_strip_reply_to'          : False,
+    'forward_auto_discards'         : True,
+    'header_filter_rules'           : [],
+    'hold_these_nonmembers'         : [],
+    'host_name'                     : 'lists.polytechnique.org',
+    'include_list_post_header'      : False,
+    'include_rfc2369_headers'       : False,
+    'new_member_options'            : 256,
+    'nondigestable'                 : True,
+    'obscure_addresses'             : True,
+    'preferred_language'            : 'fr',
+    'reject_these_nonmembers'       : [],
+    'reply_goes_to_list'            : 0,
+    'reply_to_address'              : '',
+    'require_explicit_destination'  : False,
+    'send_reminders'                : 0,
+    'send_welcome_msg'              : True,
+    'topics_enabled'                : False,
+    'umbrella_list'                 : False,
+    'unsubscribe_policy'            : 0,
+}
+
+def check_options((userdesc,perms),vhost,listname,correct=False):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname)
+    except:
+        return 0
+    try:
+        if perms != 'admin': return 0
+        options = { }
+        for (k,v) in check_opts.iteritems():
+            if mlist.__dict__[k] != v:
+                options[k] = v,mlist.__dict__[k]
+                if correct: mlist.__dict__[k] = v
+        real_name = str('-').join(mlist.internal_name().split('-')[1:])
+        if real_name != mlist.real_name:
+            options['real_name'] = real_name, mlist.real_name
+            if correct: mlist.real_name = real_name
+        if correct: mlist.Save()
+        details = get_list_info((userdesc,perms),mlist)[0]
+        mlist.Unlock()
+        return (details,options)
+    except:
+        mlist.Unlock()
+        raise
+        return 0
 
 #-------------------------------------------------------------------------------
 # server
@@ -586,9 +656,11 @@ server.register_function(get_owner_options)
 server.register_function(set_owner_options)
 server.register_function(add_to_wl)
 server.register_function(del_from_wl)
-#
+# soptions.php
 server.register_function(get_admin_options)
 server.register_function(set_admin_options)
+# check.php
+server.register_function(check_options)
 
 server.serve_forever()
 

@@ -38,12 +38,13 @@ Tu n'es pas administrateur de la liste, mais du site.
 {/if}
 
 <p>
-[<a href='index.php'>listes</a>] &gt;
+[<a href='index.php'>listes</a>] »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
 [<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
 [options]
-{perms level=admin}
+{perms level=admin} »
 [<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
+[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
 {/perms}
 </p>
 

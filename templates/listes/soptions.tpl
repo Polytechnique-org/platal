@@ -31,19 +31,15 @@
 <div class='rubrique'>
   Changer les options de la liste {$details.addr}
 </div>
-{if !$details.own}
-<p class='erreur'>
-Tu n'es pas administrateur de la liste, mais du site.
-</p>
-{/if}
 
 <p>
-[<a href='index.php'>listes</a>] &gt;
+[<a href='index.php'>listes</a>] »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
 [<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
-{perms level=admin}
+{perms level=admin} »
 [Soptions]
+[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
 {/perms}
 </p>
 
