@@ -32,7 +32,7 @@ class SkinConfig
 
 // }}}
 
-function skin_config(&$result)
+function skin_config()
 {
     global $globals;
     $globals->skin = new SkinConfig;

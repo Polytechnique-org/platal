@@ -45,7 +45,7 @@ class MailConfig
 
 // }}}
 
-function emails_config(&$return)
+function emails_config()
 {
     global $globals;
     $globals->mail = new MailConfig;
@@ -53,7 +53,7 @@ function emails_config(&$return)
 // }}}
 // {{{ menu HOOK
 
-function emails_menu(&$return)
+function emails_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',          'emails.php');

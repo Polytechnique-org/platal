@@ -36,7 +36,7 @@ class BananaConfig
 
 // }}}
 
-function banana_config(&$return)
+function banana_config()
 {
     global $globals;
     $globals->banana = new BananaConfig;
@@ -45,7 +45,7 @@ function banana_config(&$return)
 // }}}
 // {{{ menu HOOK
 
-function &banana_menu(&$result)
+function &banana_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_SERVICES, 10, 'Forums & PA', 'banana/');
@@ -54,7 +54,7 @@ function &banana_menu(&$result)
 // }}}
 // {{{ subscribe HOOK
 
-function &banana_subscribe($forlife, $uid, $promo, $password, &$result)
+function &banana_subscribe($forlife, $uid, $promo, $password)
 {
     global $globals;
     
@@ -84,8 +84,6 @@ function &banana_subscribe($forlife, $uid, $promo, $password, &$result)
                                     FROM  forums.list
                                    WHERE  nom='$val'");
     }
-
-    return ($result = true);
 }
 
 // }}}

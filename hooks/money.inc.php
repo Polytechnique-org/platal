@@ -33,7 +33,7 @@ class MoneyConfig
 
 // }}}
 
-function money_config(&$result)
+function money_config()
 {
     global $globals;
     $globals->money = new MoneyConfig;
@@ -43,7 +43,7 @@ function money_config(&$result)
 // {{{ menu HOOK
 
 
-function money_menu(&$result)
+function money_menu()
 {
     global $globals;
     if ($globals->money->mpay_enable) {

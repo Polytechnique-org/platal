@@ -33,7 +33,7 @@ class SearchConfig
 
 // }}}
 
-function search_search(&$result)
+function search_config()
 {
     global $glabals;
     $globals->search = new SearchConfig;
@@ -42,7 +42,7 @@ function search_search(&$result)
 // }}}
 // {{{ menu HOOK
 
-function search_menu(&$result)
+function search_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_GROUPS, 00, 'Annuaire',         'search.php');

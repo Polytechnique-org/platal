@@ -35,7 +35,7 @@ class ListsConfig
 
 // }}}
 
-function lists_config(&$result)
+function lists_config()
 {
     global $globals;
     $globals->lists = new ListsConfig;
@@ -44,7 +44,7 @@ function lists_config(&$result)
 // }}}
 // {{{ menu HOOK
 
-function &lists_menu(&$result)
+function &lists_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
@@ -53,7 +53,7 @@ function &lists_menu(&$result)
 // }}}
 // {{{ subscribe HOOK
 
-function &lists_subscribe($forlife, $uid, $promo, $password, &$result)
+function &lists_subscribe($forlife, $uid, $promo, $password)
 {
     require_once('lists.inc.php');
     

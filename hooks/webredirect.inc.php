@@ -30,7 +30,7 @@ class WebRedirConfig
 
 // }}}
 
-function webredirect_config(&$result)
+function webredirect_config()
 {
     global $globals;
     $globals->webredirect = new WebRedirConfig;

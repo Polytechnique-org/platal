@@ -1,6 +1,6 @@
 <?php
 
-function tmp_menu(&$result)
+function tmp_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_NO,       10, 'Page d\'accueil',       'login.php');

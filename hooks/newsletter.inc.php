@@ -31,7 +31,7 @@ class NLConfig
 
 // }}}
 
-function newsletter_config(&$return) {
+function newsletter_config() {
     global $globals;
     $globals->newsletter = new NLConfig;
 }
@@ -39,7 +39,7 @@ function newsletter_config(&$return) {
 // }}}
 // {{{ menu HOOK
 
-function &newsletter_menu(&$result)
+function &newsletter_menu()
 {
     global $globals;
     $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
@@ -48,12 +48,10 @@ function &newsletter_menu(&$result)
 // }}}
 // {{{ subscribe HOOK
 
-function &newsletter_subscribe($forlife, $uid, $promo, $password, &$result)
+function &newsletter_subscribe($forlife, $uid, $promo, $password)
 {
     require_once('newsletter.inc.php');
     subscribe_nl(true,$uid);
-    
-    return ($result = true);
 }
 
 // }}}

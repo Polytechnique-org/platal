@@ -74,37 +74,34 @@ class XOrgHook
     }
 
     // }}}
-    // {{{ function __call()
+    // {{{ function config
 
-    /**
-     * The overload helper for function calls.
-     *
-     * @param  callback $function   the name of the function called
-     * @param  array    $arguments  the array of the arguments
-     * @param  mixed    $return     a reference to place the result of the called function
-     * @retuns mixed    returns the folded value
-     *                  f1(arg_1,...,arg_n-1, f2(arg1,...,arg_n-1, ... f_k(arg1,...arg_n))...)
-     * @see overload
-     */
-    function __call($function, $arguments, &$return)
+    function config()
     {
-        if ( ($i = count($arguments) - 1) < 0) {
-            $this->raiseError("The hook « $function » expects at least 1 argument");
-        }
         foreach ($this->_mods as $mod) {
-            if (!function_exists($mod.'_'.$function)) continue;
-            $arguments[$i] =& call_user_func_array($mod.'_'.$function,$arguments);
+            if (!function_exists($mod.'_config')) continue;
+            call_user_func($mod.'_config');
         }
+    }
 
-        $return =& $arguments[$i];
-        
-        return true;
+    function menu()
+    {
+        foreach ($this->_mods as $mod) {
+            if (!function_exists($mod.'_menu')) continue;
+            call_user_func($mod.'_menu');
+        }
+    }
+
+    function subscribe($forlife, $uid, $promo, $pass)
+    {
+        foreach ($this->_mods as $mod) {
+            if (!function_exists($mod.'_subscribe')) continue;
+            call_user_func($mod.'_subscribe', $forlife, $uid, $promo, $pass));
+        }
     }
 
     // }}}
 }
-
-overload('XOrgHook');
 
 // }}}
 
