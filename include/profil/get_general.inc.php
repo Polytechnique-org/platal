@@ -20,24 +20,19 @@
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
-$sql = "SELECT u.nom, u.prenom".
-        ", u.promo, u.epouse, FIND_IN_SET('femme',u.flags), nationalite".
-	", mobile".
-	", web".
-        ", libre".
-	", a1.aid, a1.type".
-	", a2.aid, a2.type".
-	" FROM auth_user_md5 AS u".
-	" LEFT  JOIN applis_ins AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)".
-	" LEFT  JOIN applis_ins AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)".
-	" WHERE user_id = {?}";
+$sql = "SELECT  u.nom, u.prenom, u.promo, u.epouse, FIND_IN_SET('femme',u.flags), u.nationalite, u.mobile, u.web, u.libre,
+                q.profile_nick,
+                a1.aid, a1.type, a2.aid, a2.type
+          FROM  auth_user_md5   AS u
+    INNER JOIN  auth_user_quick AS q  USING(user_id)
+    LEFT  JOIN  applis_ins      AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)
+    LEFT  JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
+	 WHERE  u.user_id = {?}";
 
 $result = $globals->xdb->query($sql, Session::getInt('uid', -1));
-list($nom, $prenom,
-     $promo, $epouse, $femme, $nationalite,
-     $mobile, $web, $libre,
-     $appli_id1,$appli_type1,
-     $appli_id2,$appli_type2) = $result->fetchOneRow();
+list($nom, $prenom, $promo, $epouse, $femme,
+        $nationalite, $mobile, $web, $libre, $surnom, 
+        $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 
 replace_ifset($nationalite,'nationalite');
 replace_ifset($mobile,'mobile');
@@ -47,6 +42,7 @@ replace_ifset($appli_id1,"appli_id1");
 replace_ifset($appli_id2,"appli_id2");
 replace_ifset($appli_type1,"appli_type1");
 replace_ifset($appli_type2,"appli_type2");
+replace_ifset($surnom,"surnom");
 
 if(Env::has('modifier') || Env::has('suivant')) {
     $mobile_public = Env::has('mobile_public');

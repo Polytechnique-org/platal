@@ -71,6 +71,7 @@ if (!Env::has('rechercher')) {
         $nameField      = new NameSField('name',array('u.nom','u.epouse'),'');
         $firstnameField = new StringSField('firstname',array('u.prenom'),'');
     }
+    $nicknameField   = new StringSField('nickname',array('q.profile_nick'),'');
     
     $promo1Field     = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field     = new PromoSField('promo2','egal2',array('u.promo'),'');
@@ -97,7 +98,7 @@ if (!Env::has('rechercher')) {
     $freeField       = new RefSField('free',array('u.libre'),'','','',false);
     $offset          = new NumericSField('offset');
   
-    $fields          = new SFieldGroup(true, array( $nameField, $firstnameField, $promo1Field,
+    $fields          = new SFieldGroup(true, array( $nameField, $firstnameField, $nicknameField, $promo1Field,
                 $promo2Field, $womanField, $subscriberField, $aliveField, $townField, $countryField,
                 $regionField, $entrepriseField, $posteField, $secteurField, $cvField, $natField,
                 $binetField, $groupexField, $sectionField, $schoolField, $diplomaField, $freeField)
@@ -115,7 +116,8 @@ if (!Env::has('rechercher')) {
                        '.$globals->search->result_fields.'
                        c.uid AS contact,
                        w.ni_id AS watch
-                 FROM  auth_user_md5  AS u 
+                 FROM  auth_user_md5   AS u 
+           INNER JOIN  auth_user_quick AS q USING(user_id)
             '.$fields->get_select_statement().'
             '.(Env::has('only_referent') ? ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' : '').'
             LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")

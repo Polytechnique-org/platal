@@ -31,8 +31,7 @@ else
 
 $sql = "UPDATE auth_user_md5
 	   SET nationalite= {?}, web= {?}, mobile= {?}, libre= {?} WHERE user_id= {?}";
-
-
 $globals->xdb->execute($sql, $nationalite, $web, $mobile, $libre, Session::getInt('uid', -1));
+$globals->xdb->execute("UPDATE auth_user_quick SET profile_nick={?} WHERE user_id = {?}", $surnom, Session::getInt('uid', -1));
 
 ?>

@@ -168,6 +168,28 @@
       <td colspan="2" class="pflags">
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
+            <td class="rouge">
+              <input type="checkbox" disabled="disabled" checked="checked" />
+            </td>
+            <td class="texte">
+              privé
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Surnom</span>
+      </td>
+      <td class="cold">
+        <input type="text" size="35" maxlength="64" name="surnom" value="{$surnom}" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="pflags">
+        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+          <tr>
             <td class="vert">
               <input type="checkbox" name="mobile_public" {if $mobile_public}checked="checked"{/if} />
             </td>

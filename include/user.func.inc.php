@@ -155,24 +155,24 @@ function get_user_forlife($data) {
 function &get_user_details($login, $from_uid = '')
 {
     global $globals;
-    $reqsql = "SELECT  u.prenom, u.nom, u.epouse,
+    $reqsql = "SELECT  u.user_id, u.promo, u.prenom, u.nom, u.epouse, u.date, u.cv, u.mobile, u.web, u.libre,
+                       u.perms IN ('admin','user') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
+                       q.profile_nick AS nickname,
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
-                       u.user_id, a.alias AS forlife, a2.alias AS bestalias,
-                       u.matricule, u.perms IN ('admin','user') AS inscrit,
-                       FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
-                       u.date, u.cv, sections.text AS section, u.mobile, u.web,
-                       u.libre, u.promo, c.uid IS NOT NULL AS is_contact, p.x, p.y,
-
+                       a.alias AS forlife, a2.alias AS bestalias,
+                       c.uid IS NOT NULL AS is_contact,
+                       s.text AS section, p.x, p.y,
                        m.expertise != '' AS is_referent
                        
-                 FROM  auth_user_md5  AS u
-           INNER JOIN  aliases        AS a  ON (u.user_id=a.id AND a.type='a_vie')
-           INNER JOIN  aliases        AS a2 ON (u.user_id=a2.id AND FIND_IN_SET('bestalias',a2.flags))
-            LEFT JOIN  contacts       AS c  ON (c.uid = {?} and c.contact = u.user_id)
-            LEFT JOIN  geoloc_pays    AS gp ON (gp.a2 = u.nationalite)
-           INNER JOIN  sections             ON (sections.id = u.section)
-            LEFT JOIN  photo          AS p  ON (p.uid = u.user_id) 
-            LEFT JOIN  mentor         AS m  ON (m.uid = u.user_id)
+                 FROM  auth_user_md5   AS u
+           INNER JOIN  auth_user_quick AS q  USING(user_id)
+           INNER JOIN  aliases         AS a  ON (u.user_id=a.id AND a.type='a_vie')
+           INNER JOIN  aliases         AS a2 ON (u.user_id=a2.id AND FIND_IN_SET('bestalias',a2.flags))
+            LEFT JOIN  contacts        AS c  ON (c.uid = {?} and c.contact = u.user_id)
+            LEFT JOIN  geoloc_pays     AS gp ON (gp.a2 = u.nationalite)
+           INNER JOIN  sections        AS s  ON (s.id  = u.section)
+            LEFT JOIN  photo           AS p  ON (p.uid = u.user_id) 
+            LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
                 WHERE  a.alias = {?}";
     $res  = $globals->xdb->query($reqsql, $from_uid, $login);
     $user = $res->fetchOneAssoc();

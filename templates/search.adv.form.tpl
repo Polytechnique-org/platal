@@ -47,6 +47,12 @@
       </td>
     </tr>
     <tr>
+      <td>Surnom</td>
+      <td>
+        <input type="text" name="nickname" size="32" value="{$smarty.request.nickname}" />
+      </td>
+    </tr>
+    <tr>
       <td>Promotion</td>
       <td>
         <select name="egal1">
