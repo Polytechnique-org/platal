@@ -173,11 +173,7 @@ class QuickSearch extends SField {
 
     function get_where_statement() {
 	$where = Array();
-	if(count($this->strings) == 1) {
-	    $t = '%'.str_replace('*', '%', $this->strings[0]).'%';
-	    $t = str_replace('%%', '%', $t);
-	    $where[] = "(r.nom LIKE '$t' OR r.epouse LIKE '$t')";
-	} else foreach($this->strings as $s) {
+	foreach($this->strings as $s) {
 	    $t = '%'.str_replace('*', '%', $s).'%';
 	    $t = str_replace('%%', '%', $t);
 	    $where[] = "(r.nom LIKE '$t' OR r.epouse LIKE '$t' OR r.prenom LIKE '$t')";
@@ -201,15 +197,20 @@ class QuickSearch extends SField {
 	return join(" AND ", $where);
     }
     
-    function get_order_statement() {
-	if(empty($this->strings)) return false;
+    function get_mark_statement() {
+	if(empty($this->strings)) return "1 AS mark";
 	$order = Array();
 	foreach($this->strings as $s) {
-	    $order[] = "(r.nom='$s' OR r.prenom='$s' OR r.epouse='$s')*100 + "
-		    .  "(r.nom LIKE '$s%' OR r.prenom LIKE '$s%' OR r.epouse LIKE '$s%')";
+	    $order[] = "(r.nom='$s' OR r.epouse='$s')*100 + "
+                    .  "(r.prenom='$s') * 10 + "
+                    .  "(r.nom LIKE '$s%' OR r.epouse LIKE '$s%')";
 	}
 	$res = join(' + ', $order);
-	if($res) return "$res DESC";
+	if($res) return "$res AS mark";
+    }
+    function get_order_statement() {
+	if(empty($this->strings)) return false;
+        return "mark DESC";
     }
 }
 		

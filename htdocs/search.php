@@ -46,8 +46,8 @@ if (array_key_exists('quick', $_REQUEST)) {
     
     $offset = new NumericSField('offset');
    
-    $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       DISTINCT r.matricule,u.matricule_ax,u.user_id,
+    $sql = 'SELECT SQL_CALC_FOUND_ROWS 
+                       DISTINCT '.$qSearch->get_mark_statement().',r.matricule,u.matricule_ax,u.user_id,
                        UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
                        IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
                        u.promo AS promo,
@@ -62,6 +62,7 @@ if (array_key_exists('quick', $_REQUEST)) {
             LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
             '.$globals->search_result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
+               HAVING  mark>0
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(),'u.promo DESC,NomSortKey,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
