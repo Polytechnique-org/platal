@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.12 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: index.tpl,v 1.13 2004-10-31 16:46:10 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -113,9 +113,7 @@
   <tr><th>Gestion et entretien</th></tr>
   <tr class="impair"><td>
       <strong>Reformatage Prenom NOM : </strong>
-      <a href="FormatePrenomNOM.php">Table
-        auth_user_md5</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="FormatePrenomNOM2.php">Table identification</a>
+      <a href="FormatePrenomNOM.php">Table auth_user_md5</a>
   </td></tr>
 </table>
 
