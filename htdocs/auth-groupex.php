@@ -42,23 +42,24 @@ if (!isset($_SESSION['suid'])) {
 
 /* cree le champs "auth" renvoye au Groupe X */
 function gpex_make_auth($chlg, $privkey, $datafields) {
+    global $globals;
     $fieldarr = split(",",$datafields);
-    $tohash = "1$chlg$privkey";
+    $tohash   = "1$chlg$privkey";
 
-    while(list(,$val) = each($fieldarr)) {
+    while (list(,$val) = each($fieldarr)) {
         /* on verifie qu'on n'a pas demandé une
            variable inexistante ! */
         if (isset($_SESSION[$val])) {
             $tohash .= $_SESSION[$val];
         } else if ($val == 'username') {
-	    $sql = "SELECT  alias
-	              FROM  aliases       AS al
-		INNER JOIN  auth_user_md5 AS a ON (a.user_id = al.id AND al.type IN('a_vie','alias'))
-		     WHERE  a.user_id = ".$_SESSION["uid"]." AND alias LIKE '%.%'
-		  ORDER BY  LENGTH(alias)";
-	    $res = mysql_query($sql);
-	    list($min_username) = mysql_fetch_array($res);
-            $tohash .= $min_username;
+            $res = $globals->xdb->query(
+                    "SELECT  alias
+                       FROM  aliases       AS al
+                 INNER JOIN  auth_user_md5 AS a ON (a.user_id = al.id AND al.type IN('a_vie','alias'))
+                      WHERE  a.user_id = {?} AND alias LIKE '%.%'
+                   ORDER BY  LENGTH(alias)", Session::getInt('uid'));
+            $min_username = $res->fetchOneCell();
+            $tohash      .= $min_username;
 	}
     }
     $tohash .= "1";
@@ -67,20 +68,21 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
 
 /* cree les parametres de l'URL de retour avec les champs demandes */
 function gpex_make_params($chlg, $privkey, $datafields) {
-    $params = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
+    global $globals;
+    $params   = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
     $fieldarr = split(",",$datafields);
-    while(list(,$val) = each($fieldarr)) {
+    while (list(,$val) = each($fieldarr)) {
         if (isset($_SESSION[$val])) {
             $params .= "&$val=".$_SESSION[$val];
         } else if ($val == 'username') {
-	    $sql = "SELECT  alias
-	              FROM  aliases       AS al
-	        INNER JOIN  auth_user_md5 AS a ON (a.user_id = al.id AND al.type IN('a_vie','alias'))
-	             WHERE  a.user_id = ".$_SESSION["uid"]." AND alias LIKE '%.%'
-		  ORDER BY  LENGTH(alias)";
-	    $res = mysql_query($sql);
-	    list($min_username) = mysql_fetch_array($res);
-            $params .= "&$val=".$min_username;
+            $res = $globals->xdb->query(
+                    "SELECT  alias
+                       FROM  aliases       AS al
+                 INNER JOIN  auth_user_md5 AS a ON (a.user_id = al.id AND al.type IN('a_vie','alias'))
+                      WHERE  a.user_id = {?} AND alias LIKE '%.%'
+                   ORDER BY  LENGTH(alias)", Session::getInt('uid'));
+            $min_username = $res->fetchOneCell();
+            $params      .= "&$val=".$min_username;
 	}
     }
     return $params;

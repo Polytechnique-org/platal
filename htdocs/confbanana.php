@@ -25,12 +25,12 @@ new_skinned_page('confbanana.tpl', AUTH_MDP);
 if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig') && Post::has('bananadisplay')
             && Post::has('bananamail') && Post::has('bananaupdate') && Post::get('action')=="OK" ))
 {
-    $req = $globals->db->query("
+    $req = $globals->xdb->query("
 	SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
 		IF(FIND_IN_SET('automaj',flags),'1','0') 
 	  FROM  forums.profils
-	 WHERE  uid=".Session::getInt('uid'));
-    if (!(list($nom,$mail,$sig,$disp,$maj) = mysql_fetch_row($req))) {
+	 WHERE  uid = {?}", Session::getInt('uid'));
+    if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
 	$nom  = Session::get('prenom').' '.Session::get('nom');
 	$mail = Session::get('forlife').'@'.$globals->mail->domain;
 	$sig  = $nom.' ('.Session::getInt('promo').')';
@@ -43,10 +43,12 @@ if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig') &
     $page->assign('disp', $disp);
     $page->assign('maj' , $maj);
 } else {
-    mysql_query("REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
-                       VALUES  (".Session::getInt('uid').", '".Post::get('bananasig')."', '".Post::get('bananamail')."',
-                                '".Post::get('banananame')."', '".(Post::getBool('bananadisplay') ? 'threads' : '').
-                                ",".(Post::getBool('bananaupdate') ? 'automaj' : '')."')");
+    $globals->xdb->execute(
+        'REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
+               VALUES  ({?},{?},{?},{?},{?})',
+               Session::getInt('uid'), Post::get('bananasig'), Post::get('bananamail'), Post::get('banananame'),
+               (Post::getBool('bananadisplay') ? 'threads,' : '') . (Post::getBool('bananaupdate') ? 'automaj' : '')
+    );
 }
 
 $page->run();

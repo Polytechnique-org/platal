@@ -25,22 +25,22 @@ new_admin_page('admin/postfix_delayed.tpl');
 
 if (Env::has('del')) {
     $crc = Env::get('crc');
-    mysql_query("UPDATE postfix_mailseen SET release = 'del' WHERE crc = '$crc'");
-    $page->assign('res', $crc." verra tous ses mails supprimés !");
+    $globals->xdb->execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
+    $page->trig($crc." verra tous ses mails supprimés !");
 } elseif (Env::has('ok')) {
     $crc = Env::get('crc');
-    mysql_query("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = '$crc'");
-    $page->assign('res', $crc." a le droit de passer !");
+    $globals->xdb->execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
+    $page->trig($crc." a le droit de passer !");
 }
 
-$sql = "SELECT  crc, nb, update_time, create_time,
-	        FIND_IN_SET('del', release) AS del,
-	        FIND_IN_SET('ok', release) AS ok
-	  FROM  postfix_mailseen
-	 WHERE  nb >= 30
-      ORDER BY  release != ''";
+$sql = $globals->xdb->iterator(
+        "SELECT  crc, nb, update_time, create_time,
+                 FIND_IN_SET('del', release) AS del,
+                 FIND_IN_SET('ok', release) AS ok
+           FROM  postfix_mailseen
+          WHERE  nb >= 30
+       ORDER BY  release != ''");
 
-$page->mysql_assign($sql,'mails');
-
+$page->assign_by_ref('mails', $sql);
 $page->run();
 ?>

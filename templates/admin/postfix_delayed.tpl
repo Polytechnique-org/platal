@@ -18,12 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-
-<p class='erreur'>{$res}</p>
- 
-<h1>
-  Mails en attente de décision
-</h1>
+<h1>Mails en attente de décision</h1>
 
 <table class="bicol" cellpadding='0' cellspacing='0'>
   <tr>
@@ -34,22 +29,24 @@
     <th>Etat</th>
     <th>Actions</th>
   </tr>
-  {foreach from=$mails item=m}
+  {iterate from=$mails item=m}
   <tr class="{cycle values="impair,pair"}">
     <td>{$m.crc}</td>
     <td><strong>{$m.nb}</strong></td>
-    <td>{$m.update_time}</td>
-    <td>{$m.creation_time}</td>
+    <td>{$m.update_time|date_format}</td>
+    <td>{$m.create_time|date_format}</td>
     <td><strong>{if $m.del}Poubelle{elseif $m.ok}Autorisé{else}En attente{/if}</strong></td>
     <td>
-      <form method="post">
-        <input type="hidden" name="crc" value="{$m.crc}" />
-        <input type="submit" name="ok"  value="Laisser passer" />
-        <input type="submit" name="del" value="Effacer les mails" />
+      <form method="post" action="{$smarty.server.PHP_SELF}">
+        <div>
+          <input type="hidden" name="crc" value="{$m.crc}" />
+          <input type="submit" name="ok"  value="Laisser passer" />
+          <input type="submit" name="del" value="Effacer les mails" />
+        </div>
       </form>
     </td>
   </tr>
-  {/foreach}
+  {/iterate}
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

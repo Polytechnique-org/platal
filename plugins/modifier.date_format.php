@@ -24,8 +24,15 @@ function smarty_modifier_date_format($string, $format = '%x', $default_date=null
     if (empty($format) && empty($default_date)) return;
     $f = empty($format) ? $default_date : $format;
     $f = str_replace('%X', '%T', str_replace('%x', '%d %B %Y', $f));
-   
-    if ( ($t = strtotime($string)) != -1 ) {
+
+    if (preg_match('/^\d{14}$/', $string)) {
+        $t = mktime(substr($string,8,2),substr($string,10,2),substr($string,12,2),
+                substr($string,4,2),substr($string,6,2),substr($string,0,4));
+    } else {
+        $t = strtotime($string);
+    }
+
+    if ( $t != -1 ) {
         return strftime($f , $t);
     } else {
         require_once('Date.php');
