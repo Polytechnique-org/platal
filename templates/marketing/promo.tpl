@@ -23,23 +23,23 @@
 <table style="margin-left: auto; margin-right: auto">
   <tr>
     <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="?" method="get">
         <div>
-          <input type="hidden" name="promo" value="{$promob10}" />
+          <input type="hidden" name="promo" value="{$promo-10}" />
           <input type="submit" value="&lt;&lt;" />
         </div>
       </form>
     </td>
     <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="?" method="get">
         <div>
-          <input type="hidden" name="promo" value="{$promob1}" />
+          <input type="hidden" name="promo" value="{$promo-1}" />
           <input type="submit" value="&lt;" />
         </div>
       </form>
     </td>
     <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="?" method="get">
         <div>
           Promotion : <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
           <input type="submit" value="GO" />
@@ -47,17 +47,17 @@
       </form>
     </td>
     <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="?" method="get">
         <div>
-          <input type="hidden" name="promo" value="{$promoa1}" />
+          <input type="hidden" name="promo" value="{$promo+1}" />
           <input type="submit" value="&gt;" />
         </div>
       </form>
     </td>
     <td>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="?" method="get">
         <div>
-          <input type="hidden" name="promo" value="{$promoa10}" />
+          <input type="hidden" name="promo" value="{$promo+10}" />
           <input type="submit" value="&gt;&gt;" />
         </div>
       </form> 
@@ -78,25 +78,29 @@
     <tr>
       <th>Nom</th>
       <th>Dernière adresse connue</th>
-      <th>Date dernière relance<br />(si moins d'un an)</th>
+      <th>Statut</th>
+      <th>AX</th>
       <th>&nbsp;</th>
     </tr>
     {iterate from=$nonins item=it}
     <tr class="{cycle values="pair,impair"}">
       <td>{$it.nom} {$it.prenom}</td>
-      <td class="center">{if $it.last_known_email}{mailto address=$it.last_known_email}{/if}</td>
+      <td>{if $it.last_known_email}{mailto address=$it.last_known_email}{/if}</td>
       <td class="center">
-        {if $it.dern_rel}
-        {$it.dern_rel}
+        {if $it.dern_rel && $it.dern_rel != '0000-00-00'}
+        Relance le: {$it.dern_rel}
         {elseif $it.email}
-        Ins en cours depuis {$it.email}
+        En cours : {$it.email}
         {else}
-        Jamais ou + d'1 an
+        -
         {/if}
       </td>
       <td class="center">
-        <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">Fiche AX</a>/
-        <a href="utilisateurs_marketing.php?xmat={$it.matricule}">Marketing</a>
+        <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
+          *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
+      </td>
+      <td>
+        <a href="utilisateurs_marketing.php?xmat={$it.user_id}">Marketing</a>
       </td>
     </tr>
     {/iterate}

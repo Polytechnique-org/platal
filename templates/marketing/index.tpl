@@ -31,9 +31,9 @@
   <tr class="impair">
     <td>
       <span class="item">Premier contact : </span>
-      <a href="utilisateurs_marketing.php">Chercher un non inscrit</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="search.php">Chercher un non inscrit</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="promo.php">Marketing promo</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="envoidirect.php">Sollicitations faites</a>
+      <a href="recap.php">Sollicitations faites</a>
     </td>
   </tr>
   <tr class="pair">

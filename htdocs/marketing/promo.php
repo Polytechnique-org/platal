@@ -25,18 +25,15 @@ new_admin_page('marketing/promo.tpl');
 
 $promo = (integer) (isset($_REQUEST["promo"]) ? $_REQUEST["promo"] : $_SESSION["promo"]);
 $page->assign('promo', $promo);
-$page->assign('promob10', $promo-10);
-$page->assign('promob1', $promo-1);
-$page->assign('promoa1', $promo+1);
-$page->assign('promoa10', $promo+10);
 
-$sql = "SELECT  u.nom, u.prenom, last_known_email, u.matricule, u.matricule_ax, MAX(e.date_envoi) AS dern_rel, c.email
-          FROM  auth_user_md5  AS u
-     LEFT JOIN  envoidirect    AS e ON (u.matricule = e.matricule)
-     LEFT JOIN  en_cours       AS c ON (u.matricule = c.matricule)
+$sql = "SELECT  u.user_id, u.nom, u.prenom, u.last_known_email, u.matricule_ax,
+                IF(MAX(m.last)>p.relance, MAX(m.last), p.relance) AS dern_rel, p.email
+          FROM  auth_user_md5      AS u
+     LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
+     LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
          WHERE  u.promo = {?} AND u.deces = 0 AND u.perms='pending'
-      GROUP BY  u.matricule
-      ORDER BY  nom,prenom";
+      GROUP BY  u.user_id
+      ORDER BY  nom, prenom";
 $page->assign('nonins', $globals->xdb->iterator($sql, $promo));
 
 $page->run();

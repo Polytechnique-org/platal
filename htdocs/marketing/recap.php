@@ -20,26 +20,24 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_admin_page('marketing/envoidirect.tpl');
+new_admin_page('marketing/recap.tpl');
 
-// effacement des inscrits il y a plus de 8 jours
-$globals->xdb->execute("DELETE FROM envoidirect WHERE DATE_ADD(date_succes, INTERVAL 8 DAY) < CURRENT_DATE AND date_succes <> '0000-00-00'");
-
-$sql = "SELECT  e.date_succes,e.date_envoi,a.promo,a.nom,a.prenom,e.email,b.nom as sender
-          FROM  envoidirect   AS e
-    INNER JOIN  auth_user_md5 AS a ON e.matricule = a.matricule
-    INNER JOIN  auth_user_md5 AS b ON e.sender    = b.user_id
-         WHERE  a.date_ins != 0
-      ORDER BY  e.date_envoi DESC";
-
+$sql = "SELECT  s.success, u.promo, u.nom, u.prenom, a.alias as forlife, b.nom as sender
+          FROM  register_mstats AS s
+    INNER JOIN  auth_user_md5   AS u ON s.uid    = u.user_id
+    INNER JOIN  aliases         AS a ON (s.uid   = a.id AND a.type='a_vie')
+    INNER JOIN  auth_user_md5   AS b ON s.sender = b.user_id
+         WHERE  s.success > ".date('Ymd000000', strtotime('1 month ago'))."
+      ORDER BY  s.success DESC";
 $page->assign('recents', $globals->xdb->iterator($sql));
 
-$sql = "SELECT  DISTINCT e.date_envoi, a.promo, a.nom, a.prenom, e.email, b.nom as sender
-          FROM  envoidirect   AS e
-    INNER JOIN  auth_user_md5 AS a ON e.matricule = a.matricule
-    INNER JOIN  auth_user_md5 AS b ON e.sender    = b.user_id
-         WHERE  a.date_ins = 0
-      ORDER BY  e.date_envoi DESC";
+$sql = "SELECT  m.uid, MAX(m.last) AS last, COUNT(m.email) AS nb, u.promo, u.nom, u.prenom,  b.nom as sender
+          FROM  register_marketing AS m
+    INNER JOIN  auth_user_md5      AS u ON m.uid    = u.user_id
+    INNER JOIN  auth_user_md5      AS b ON m.sender = b.user_id
+         WHERE  m.nb > 0
+      GROUP BY  m.uid
+      ORDER BY  u.promo, u.nom";
 $page->assign('notsub', $globals->xdb->iterator($sql));
 
 $page->run();

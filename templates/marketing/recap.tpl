@@ -26,18 +26,18 @@
 
 <table class="bicol" summary="liste des sollicités inscrits">
   <tr>
-    <th>Date</th>
+    <th>Date Ins.</th>
     <th>Par</th>
     <th>Nom</th>
     <th>inscription</th>
   </tr>
   {iterate from=$recents item=it}
   <tr class="{cycle values="pair,impair"}">
-    <td>{$it.date_envoi|date_format}</td>
-    <td>{$it.sender|lower|truncate:8:""}</td>
+    <td>{$it.success|date_format}</td>
+    <td>{$it.sender|lower}</td>
     <td>
-      <a href="mailto:{$it.email}" title="{$it.email}">{$it.nom} {$it.prenom}</a>
-      (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
+      <a href="{rel}/fiche.php?user={$it.forlife}" class="popup2">{$it.prenom} {$it.nom}</a>
+      (<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
     </td>
     <td>{$it.date_succes|date_format}</td>
   </tr>
@@ -53,17 +53,22 @@
 
 <table class="bicol" summary="liste des sollicités non inscrits">
   <tr>
-    <th>Date</th>
+    <th>Dernier envoi</th>
     <th>Par</th>
     <th>Nom</th>
+    <th>Nb mails testés</th>
   </tr>
-  {iterate from=$notsub item=it}
+  {iterate from=$notsub item=x}
   <tr class="{cycle values="pair,impair"}">
-    <td>{$it.date_envoi|date_format}</td>
-    <td>{$it.sender|lower|truncate:8:""}</td>
+    <td class="center">
+      {if $x.last != '0000-00-00'}{$x.last|date_format:"%d %b %y"}{else}-{/if}
+    </td>
+    <td>{$x.sender|lower}</td>
     <td>
-      <a href="mailto:{$it.email}" title="{$it.email}">{$it.nom} {$it.prenom}</a>
-      (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
+      {$x.promo} {$x.nom} {$x.prenom}
+    </td>
+    <td>
+      {$x.nb}
     </td>
   </tr>
   {/iterate}

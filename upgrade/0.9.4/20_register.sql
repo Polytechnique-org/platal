@@ -29,7 +29,8 @@ create table register_marketing (
     last        date         not null default '0000-00-00',
     nb          tinyint      not null default 0,
     type        set('user', 'staff') not null default 'user',
-    INDEX (uid),
+    hash        char(32)     not null,
+    PRIMARY KEY (uid, email),
     INDEX (date),
     INDEX (last),
     INDEX (nb)
@@ -41,4 +42,30 @@ create table register_mstats (
     success     date         not null default '0000-00-00',
     PRIMARY KEY (uid)
 );
-    
+
+
+--
+-- envoidirect -> register_mstats
+--
+
+insert into register_mstats (uid, sender, success)
+     select u.user_id, e.sender, u.date_ins
+       from envoidirect   as e
+ inner join auth_user_md5 as u using(matricule)
+      where u.date_ins != 0;
+
+insert into register_marketing (uid, sender, email, date, last, nb, type, hash)
+     select u.user_id, m.expe, m.email, 0, 0, FIND_IN_SET('envoye', m.flags), IF(FIND_IN_SET('mail_perso', m.flags), 'user', 'staff'), ''
+       from marketing     as m
+ inner join auth_user_md5 as u on u.matricule = m.dest
+      where date_ins = 0 and deces = 0
+      group by user_id, m.email;
+
+replace into register_marketing (uid, sender, email, date, last, nb, type, hash)
+     select u.user_id, e.sender, e.email, date_envoi, date_envoi, 1, 'staff', e.uid
+       from envoidirect   as e
+ inner join auth_user_md5 as u using(matricule)
+      where date_ins = 0 and deces = 0;
+
+drop table envoidirect;
+drop table marketing;

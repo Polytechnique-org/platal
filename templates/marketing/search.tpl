@@ -20,9 +20,7 @@
 
 
 
-<h1>
-  Envoyer un mail de pr&eacute;-inscription
-</h1>
+<h1>Envoyer un mail de pr&eacute;-inscription</h1>
 
 <p>
 Le nom, pr&eacute;nom et promotion sont pris dans la table d'identification.  Le login sera automatiquement

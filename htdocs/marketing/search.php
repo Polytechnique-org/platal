@@ -34,7 +34,7 @@ switch (Env::get('submit')) {
 	$res = $globals->xdb->query('SELECT * FROM auth_user_md5 WHERE matricule={?}', Env::getInt('xmat'));
 	$row = $res->fetchOneAssoc();
 
-        new_admin_page('marketing/utilisateurs_form.tpl');
+        new_admin_page('marketing/search.tpl');
 
         $page->assign('row', $myrow);
 
