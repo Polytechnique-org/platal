@@ -35,12 +35,12 @@
   {foreach from=$recents item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.date_envoi|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
-    <td>{$it.sender|lower|truncate:4:""}</td>
+    <td>{$it.sender|lower|truncate:8:""}</td>
     <td>
       <a href="mailto:{$it.email}" title="{$it.email}">{$it.nom} {$it.prenom}</a>
       (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
     </td>
-    <td>{$it.date_ins|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
+    <td>{$it.date_succes|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
   </tr>
   {/foreach}
 </table>
@@ -61,7 +61,7 @@
   {foreach from=$notsub item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.date_envoi|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
-    <td>{$it.sender|lower|truncate:4:""}</td>
+    <td>{$it.sender|lower|truncate:8:""}</td>
     <td>
       <a href="mailto:{$it.email}" title="{$it.email}">{$it.nom} {$it.prenom}</a>
       (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)

@@ -27,8 +27,8 @@ alter table en_cours drop column foo;
 --
 
 alter table auth_user_quick add column redirecturl varchar(255) not null;
-replace into auth_user_quick (user_id,banana_last,skin,watch_flags,watch_last,redirecturl)
-      select q.user_id,q.banana_last,q.skin,q.watch_flags,q.watch_last,u.redirecturl
+replace into auth_user_quick (user_id,lastnewslogin,skin,watch_flags,watch_last,redirecturl)
+      select q.user_id,q.lastnewslogin,q.skin,q.watch_flags,q.watch_last,u.redirecturl
         from auth_user_md5   as u
   inner join auth_user_quick as q USING(user_id)
        where u.redirecturl!='';

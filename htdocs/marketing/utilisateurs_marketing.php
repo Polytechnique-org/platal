@@ -91,8 +91,7 @@ switch ($_REQUEST["submit"]) {
                                 SET  last_known_email='{$_REQUEST['mail']}'
                               WHERE  matricule='{$_REQUEST['xmat']}'");
 	$requete="INSERT INTO  envoidirect
-                          SET  matricule='{$_REQUEST['xmat']}',uid='$user_id',promo='$promo',
-                               prenom='".addslashes($prenom)."',nom='".addslashes($nom)."',
+                          SET  matricule='{$_REQUEST['xmat']}',uid='$user_id',
                                email='{$_REQUEST['mail']}',sender='{$_REQUEST['sender']}',date_envoi='$date'";
 	$globals->db->query($requete);
 	// pas d'erreur pour l'insert
