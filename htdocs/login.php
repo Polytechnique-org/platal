@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.php,v 1.18 2004-11-22 20:04:35 x2000habouzit Exp $
+        $Id: login.php,v 1.19 2004-11-30 21:11:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -28,7 +28,7 @@ $param=$globals->db->query("SELECT date,naissance FROM auth_user_md5 WHERE user_
 list($date,$naissance) = mysql_fetch_row($param);
 mysql_free_result($param);
 
-if ($naissance==0)  {
+if ($naissance==0 || $naissance=='0000-00-00')  {
     $page->assign('ask_naissance', true);
     $page->run('ask-naissance');
     exit;

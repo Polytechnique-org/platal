@@ -37,6 +37,7 @@ Bug/Wish :
 
 	* Core :
 		- #183,185 : Implement perms levels : 'pending'+'disabled'.			-MC
+		- #154 : Birth fields are now of type DATE.							-MC
 
 	* Fiche :
 		- #83,208,222 : New fiche.											-MC

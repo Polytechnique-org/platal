@@ -84,10 +84,10 @@ function get_annuaire_infos($method, $params) {
      
      if ($array) { // on a bien eu un résultat : le matricule etait bon
 
-       //on n'envoit que l'age à manageurs
-       $year = (int) substr($array['age'],4,4);
-       $month = (int) substr($array['age'],2,2);
-       $day = (int) substr($array['age'],4,4);
+       //on n'envoit que l'age à manageurs le format est YYYY-MM-DD 0123-56-89
+       $year = (int) substr($array['age'],0,4);
+       $month = (int) substr($array['age'],5,2);
+       $day = (int) substr($array['age'],8,2);
        $age = (int) date('Y') - $year - 1;
        if(( $month < (int)date('m')) ||
           (($month == (int)date('m')) && ($day >= (int)date('d')))) $age += 1;

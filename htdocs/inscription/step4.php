@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.19 2004-11-22 20:04:41 x2000habouzit Exp $
+        $Id: step4.php,v 1.20 2004-11-30 21:11:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -56,7 +56,7 @@ if (!empty($_REQUEST['ref'])) {
     $nom = stripslashes($nom);
     $prenom = stripslashes($prenom);
     $sql = "UPDATE auth_user_md5 SET password='$password', nationalite=$nationalite, perms='user',
-            date='$date', naissance=$naissance, date_ins = NULL WHERE matricule='$matricule'";
+            date='$date', naissance='$naissance', date_ins = NULL WHERE matricule='$matricule'";
     $globals->db->query($sql);
     $sql = "INSERT INTO  auth_user_quick (user_id)
                  SELECT  user_id

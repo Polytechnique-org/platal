@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.11 2004-11-22 20:04:36 x2000habouzit Exp $
+        $Id: recovery.php,v 1.12 2004-11-30 21:11:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -31,6 +31,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         $page->assign('error', "Date de naissance incorrecte ou incohérente");
         $page->run();
     }
+    $birth = printf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
 
     $mailorg=strtok($_REQUEST['login'],"@");
 
@@ -44,13 +45,13 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
     $result=$globals->db->query($sql);
     if (list($uid,$naissance)=mysql_fetch_array($result)) {
         if((strlen($naissance))<5) {
-            $globals->db->query("UPDATE auth_user_md5 SET naissance={$_REQUEST['birth']} WHERE user_id=$uid");
-            $naissance = $_REQUEST['birth'];
+            $globals->db->query("UPDATE auth_user_md5 SET naissance='$birth' WHERE user_id=$uid");
+            $naissance = $birth;
         }
     }
     mysql_free_result($result);
 
-    if ($naissance == $_REQUEST['birth']) {
+    if ($naissance == $birth) {
         $page->assign('ok', true);
         $url=rand_url_id();
         $stamp=date("Y-m-d H:i:s");

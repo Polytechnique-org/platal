@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.7 2004-11-22 20:04:41 x2000habouzit Exp $
+        $Id: step3.php,v 1.8 2004-11-30 21:11:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -58,11 +58,13 @@ if (!isset($_REQUEST["appli_type1"])) $_REQUEST["appli_type1"]=0;
 if (!isset($_REQUEST["appli_type2"])) $_REQUEST["appli_type2"]=0;
 if (!isset($loginbis)) $loginbis="";
 
+$birth = printf("%s-%s-%s", substr($_REQUEST["naissance"],4,4), substr($_REQUEST["naissance"],2,2), substr($_REQUEST["naissance"],0,2));
+
 // nouvelle inscription
 $sql="REPLACE INTO  en_cours
 	       SET  ins_id='$ins_id', password='$password', matricule='$matricule', promo='$promo',
 	       nom='".addslashes($nom)."', prenom='".addslashes($prenom)."', email='{$_REQUEST['email']}',
-	       naissance='{$_REQUEST['naissance']}', date='$date', nationalite='{$_REQUEST['nationalite']}',
+	       naissance='$birth', date='$date', nationalite='{$_REQUEST['nationalite']}',
 	       appli_id1='{$_REQUEST['appli_id1']}', appli_type1='{$_REQUEST['appli_type1']}',
 	       appli_id2='{$_REQUEST['appli_id2']}', appli_type2='{$_REQUEST['appli_type2']}',
 	       loginbis='$mailorg', username='$forlife'";
