@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.11 2004-10-28 09:30:19 x2000habouzit Exp $
+        $Id: moderate.php,v 1.12 2004-10-28 14:07:49 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -55,11 +55,16 @@ if(isset($_REQUEST['mid'])) {
 	$client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
     } elseif(isset($_POST['mno'])) {
 	$reason = stripslashes($_POST['reason']);
+	$mail = $client->get_pending_mail('polytechnique.org', $liste, $mid);
 	if($client->handle_request('polytechnique.org', $liste,$mid,2,$reason)) { /** 2 = REJECT **/
 	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message refusé");
-	    $texte = "le message a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
+	    $texte = "le message suivant :\n\n"
+		    ."    Auteur: {$mail['sender']}\n"
+		    ."    Sujet : « {$mail['subj']} »\n"
+		    ."    Date  : ".date("%H:%M:%S le %d %b %Y",$mail['stamp'])."\n\n"
+		    ."a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
 		    ."« $reason »";
 	    $mailer->setBody(wordwrap($texte,72));
 	    $mailer->send();
@@ -86,16 +91,6 @@ if(isset($_REQUEST['sid'])) {
 	    if($user['id'] == $sid) $u = $user;
 	}
 	if($u) {
-	    $fname = '/etc/mailman/fr/refuse.txt';
-	    $h = fopen($fname,'r');
-	    $msg = fread($h, filesize($fname));
-	    fclose($h);
-	    $msg = str_replace("%(adminaddr)s","$liste-owner@polytechnique.org", $msg);
-	    $msg = str_replace("%(request)s","<< SUJET DU MAIL >>", $msg);
-	    $msg = str_replace("%(reason)s","<< TON EXPLICATION >>", $msg);
-	    $msg = str_replace("%(listname)s","$liste", $msg);
-	    $page->assign('msg', $msg); 
-
 	    $page->changeTpl('listes/moderate_sub.tpl');
 	    $page->assign('del_user',$u);
 	} else {
@@ -110,6 +105,16 @@ if(isset($_REQUEST['sid'])) {
     $mid = $_REQUEST['mid'];
     $mail = $client->get_pending_mail('polytechnique.org', $liste,$mid);
     if(is_array($mail)) {
+	    $fname = '/etc/mailman/fr/refuse.txt';
+	    $h = fopen($fname,'r');
+	    $msg = fread($h, filesize($fname));
+	    fclose($h);
+	    $msg = str_replace("%(adminaddr)s","$liste-owner@polytechnique.org", $msg);
+	    $msg = str_replace("%(request)s","<< SUJET DU MAIL >>", $msg);
+	    $msg = str_replace("%(reason)s","<< TON EXPLICATION >>", $msg);
+	    $msg = str_replace("%(listname)s","$liste", $msg);
+	    $page->assign('msg', $msg); 
+
 	$page->changeTpl('listes/moderate_mail.tpl');
         $page->assign_by_ref('mail', $mail);
     } else {
