@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_aliases.inc.php,v 1.16 2004-09-05 12:24:41 x2000habouzit Exp $
+        $Id: valid_aliases.inc.php,v 1.17 2004-11-07 18:19:03 x2000habouzit Exp $
  ***************************************************************************/
 
 class AliasReq extends Validate {
@@ -37,10 +37,11 @@ class AliasReq extends Validate {
         $this->raison = $_raison;
         
         $sql = $globals->db->query("
-	    SELECT  l.alias,prenom,nom,domain
-	      FROM  auth_user_md5   AS u
-	INNER JOIN  aliases         AS l ON (u.user_id=l.id AND type='a_vie')
-         LEFT JOIN  groupex.aliases AS a ON (a.email = l.alias and a.id = 12)
+	    SELECT  l.alias,prenom,nom,v.alias
+	      FROM  auth_user_md5    AS u
+	INNER JOIN  aliases          AS l  ON (u.user_id=l.id AND l.type='a_vie')
+	 LEFT JOIN  virtual_redirect AS vr ON (CONCAT(l.alias,'@m4x.org') = vr.redirect)
+	 LEFT JOIN  virtual          AS v  USING(vid)
              WHERE  user_id='".$this->uid."'");
         list($this->forlife,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
         mysql_free_result($sql);
@@ -78,9 +79,14 @@ class AliasReq extends Validate {
     function commit () {
         global $globals;
 
-        $domain=$this->alias.'@melix.net';
-        $globals->db->query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->forlife}'");
-        $globals->db->query("INSERT INTO groupex.aliases SET email='{$this->forlife}',domain='$domain',id=12");         
+	if($this->old) {
+	    $globals->db->query("UPDATE virtual SET alias='{$this->alias}@melix.net' WHERE alias='{$this->old}'");
+
+	} else {
+	    $globals->db->query("INSERT INTO virtual SET alias='{$this->alias}@melix.net',type='user'");
+	    $vid = mysql_insert_id();
+	    $globals->db->query("INSERT INTO virtual_redirect (vid,redirect) VALUES ($vid,'{$this->forlife}@m4x.org')");
+	}
     }
 }
 

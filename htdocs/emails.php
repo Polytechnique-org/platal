@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.8 2004-10-10 09:35:56 x2000chevalier Exp $
+        $Id: emails.php,v 1.9 2004-11-07 18:19:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -38,7 +38,10 @@ $page->mysql_assign($sql, 'mails', 'nb_mails');
 
 
 // on regarde si l'utilisateur a un alias et si oui on l'affiche !
-$sql = "SELECT domain FROM groupex.aliases WHERE id=12 AND email like '".$_SESSION['forlife']."'";
+$sql = "SELECT  alias
+          FROM  virtual          AS v
+    INNER JOIN  virtual_redirect AS vr USING(vid)
+         WHERE  redirect='{$_SESSION['forlife']}@m4x.org'";
 $result = $globals->db->query($sql);
 if ($result && list($aliases) = mysql_fetch_row($result))
     $page->assign('melix', substr($aliases,0,-3));
