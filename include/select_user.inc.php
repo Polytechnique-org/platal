@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: select_user.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: select_user.inc.php,v 1.3 2004-09-05 22:58:46 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
@@ -63,7 +63,7 @@ if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
     $sql = "SELECT  id.*,user_id
               FROM  identification AS id
          LEFT JOIN  auth_user_md5 USING(matricule)
-             WHERE  user_id IS NULL AND $where";
+             WHERE  user_id IS NULL AND deces=0 AND $where";
 
     new_admin_page('marketing/utilisateurs_select.tpl');
     $page->mysql_assign($sql, 'nonins');

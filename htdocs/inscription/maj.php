@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: maj.php,v 1.1 2004-09-05 22:25:44 x2000habouzit Exp $
+        $Id: maj.php,v 1.2 2004-09-05 22:58:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,6 +32,7 @@ if (isset($_REQUEST['n'])) {
 if (isset($ligne) && $ligne) {
     if(!isset($_REQUEST['charte'])) {
 	new_skinned_page('inscription/step1a.tpl', AUTH_PUBLIC);
+	$page->run();
     }
 
     // il faut remettre le matricule dans son format de saisie
@@ -41,9 +42,16 @@ if (isset($ligne) && $ligne) {
     $_REQUEST['prenom'] = $ligne['prenom'];
     $_REQUEST['email'] = $ligne['email'];
 
+    new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC);
     require("identification.inc.php");
+    require("applis.func.inc.php");
+    
+    $page->assign('homonyme', $homonyme);
+    $page->assign('forlife',  $forlife);
+    $page->assign('mailorg',  $mailorg);
+    $page->assign('prenom',   $prenom);
+    $page->assign('nom',      $nom);
 
-    new_skinned_page('inscrire/step2.tpl', AUTH_PUBLIC);
     $page->assign('envoidirect',$_REQUEST['n']);
     $page->run();
 }

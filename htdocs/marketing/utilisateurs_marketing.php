@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.6 2004-09-03 00:15:49 x2000bedo Exp $
+        $Id: utilisateurs_marketing.php,v 1.7 2004-09-05 22:58:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -96,29 +96,25 @@ switch ($_REQUEST["submit"]) {
                           SET  matricule='{$_REQUEST['xmat']}',uid='$user_id',promo='$promo',
                                prenom='".addslashes($prenom)."',nom='".addslashes($nom)."',
                                email='{$_REQUEST['mail']}',sender='{$_REQUEST['sender']}',date_envoi='$date'";
-	$result = $globals->db->query($requete);
-	if (mysql_errno() == 0  || mysql_affected_rows() == 1) {
-            // pas d'erreur pour l'insert
+	$globals->db->query($requete);
+	// pas d'erreur pour l'insert
 
-            // envoi du mail à l'utilisateur
-            require('tpl.mailer.inc.php');
-            $mymail = new TplMailer('marketing.utilisateur.tpl');
+	// envoi du mail à l'utilisateur
+	require('tpl.mailer.inc.php');
+	$mymail = new TplMailer('marketing.utilisateur.tpl');
 
-            $mymail->assign('from', $_REQUEST["from"]);
-            $mymail->assign('to', stripslashes($_REQUEST["mail"]));
-            $mymail->assign('femme', $femme);
-            $mymail->assign('baseurl', $baseurl);
-            $mymail->assign('user_id', $user_id);
-            $mymail->assign('num_users', $num_users);
-            $mymail->assign('mailorg', $mailorg);
-            $mymail->assign('envoyeur', $envoyeur);
-            $mymail->send();
-            
-            new_admin_page('marketing/utilisateurs_marketing.tpl');
-            $page->run();
-	} else {
-            exit_error("Une erreur s'est produite lors de la tentative d'insertion de la pré-inscription.");
-	}
+	$mymail->assign('from', $_REQUEST["from"]);
+	$mymail->assign('to', stripslashes($_REQUEST["mail"]));
+	$mymail->assign('femme', $femme);
+	$mymail->assign('baseurl', $baseurl);
+	$mymail->assign('user_id', $user_id);
+	$mymail->assign('num_users', $num_users);
+	$mymail->assign('mailorg', $mailorg);
+	$mymail->assign('envoyeur', $envoyeur);
+	$mymail->send();
+	
+	new_admin_page('marketing/utilisateurs_marketing.tpl');
+	$page->run();
 	break;
 }
 

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step2.tpl,v 1.2 2004-09-05 22:25:45 x2000habouzit Exp $
+        $Id: step2.tpl,v 1.3 2004-09-05 22:58:47 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -150,7 +150,7 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="envoidirect" value="{$envoidirect|default:$smarty.request.envoidirect}" name="nom" />
+        <input type="hidden" value="{$envoidirect|default:$smarty.request.envoidirect}" name="envoidirect" />
         <input type="hidden" value="{$smarty.request.nom}" name="nom" />
         <input type="hidden" value="{$smarty.request.prenom}" name="prenom" />
         <input type="hidden" value="{$smarty.request.promo}" name="promo" />
