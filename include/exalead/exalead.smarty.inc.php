@@ -130,6 +130,48 @@ function _exa_navigation_droite($params, &$smarty){
   return $res;
 }
 
+function _exa_navigation_barre($params, &$smarty){
+  if(!empty($params['exalead_data'])){
+    $exalead_data = &$GLOBALS[$params['exalead_data']];
+  }
+  else{
+    $exalead_data = &$GLOBALS['exalead_data'];
+  }
+  if(!empty($params['nb_res_per_page'])){
+    $nb_res_per_page = (int) $params['nb_res_per_page'];
+  }
+  else
+    $nb_res_per_page = 10;//10 results per page
+  if(!empty($params['max_results'])){
+    $nb_hits = (int) $params['max_results'];
+  }
+  else{
+    $nb_hits = (int) $exalead_data->nhits;
+  }
+  $res = '';
+  $nb_numero = 10;//We want 10 links
+  $current_page = (empty($_GET['_s'])?1:1+((int) $_GET['_s'] / $nb_res_per_page));
+  $first_number = 1;
+  if($nb_hits < ($nb_numero) * $nb_res_per_page){
+    $nb_numero =  (int) ($nb_hits / $nb_res_per_page);
+  }
+  else{
+    if($current_page > ($nb_numero/2))
+      $first_number = 1 + $current_page - ((int)$nb_numero/2);
+    if($nb_hits < (($first_number + $nb_numero - 1) * $nb_res_per_page)){
+       $first_number = (int) ($nb_hits / $nb_res_per_page) - $nb_numero+2;
+    }
+  }
+  
+  for($i = $first_number; $i <= $nb_numero + $first_number-1; $i++){
+    if($i == $current_page)
+      $res .= "<strong>$i</strong> ";
+    else
+      $res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".(($i-1)*10)."\">$i</a> ";
+  }
+  return $res;
+}
+
 //categorie = true if this line is for a category, false if this is for a keyword
 function _display_3_columns($title, $count, $refine, $exclude, $categorie){
   global $exa_max_length;
@@ -268,6 +310,7 @@ function register_smarty_exalead(&$page){
   $page->register_function('exa_display_keywords', '_display_keywords');
   $page->register_function('exa_navigation_gauche', '_exa_navigation_gauche');
   $page->register_function('exa_navigation_droite', '_exa_navigation_droite');
+  $page->register_function('exa_navigation_barre', '_exa_navigation_barre');
 }
 
 if(isset($page)){
