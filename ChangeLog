@@ -18,8 +18,12 @@ New :
 
 Bug/Wish :
 
-	- #109: Lots of sorting methods for search.								-Car
-	- #270: Private/public flags are now used for search.					-Car
+	* Misc :
+		- #282, #285: small text modifications in docs and index page.		-Car
+
+	* Search :
+		- #109: Lots of sorting methods for search.							-Car
+		- #270: Private/public flags are now used for search.				-Car
 
 Fixes (from 0.9.4 branch) :
 
