@@ -48,8 +48,7 @@
     {/if}
     {/min_auth}
   </div>
-  {min_auth level="cookie"}{include file="include/minifiche_pvt.tpl"}{/min_auth}
-  {only_public}<div class="long"></div>{/only_public}
+  {include file="include/minifiche_pvt.tpl"}
 </div>
 {if !$c.inscrit || $c.dcd}</div>{/if}
 

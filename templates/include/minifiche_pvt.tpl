@@ -20,6 +20,7 @@
 
 
 {if !$c.wasinscrit}
+  {min_auth level="cookie"}
   {if !$c.dcd}
   <div class='bits'>
     {if $show_action eq ajouter}
@@ -37,8 +38,10 @@
     {/perms}
   </div>
   {/if}
+  {/min_auth}
   <div class="long"></div>
 {else}
+  {min_auth level="cookie"}
   <div class="bits">
     <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
       *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
@@ -54,8 +57,9 @@
       *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}
   </div>
+  {/min_auth}
   <div class="long">
-    {if $c.web || $c.mobile || $c.pays || $c.ville || $c.region || $c.entreprise || $c.libre}
+    {if $c.web || $c.mobile || $c.pays || $c.ville || $c.region || $c.entreprise || $c.freetext}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
@@ -84,10 +88,10 @@
         </td>
       </tr>
       {/if}
-      {if $c.libre}
+      {if $c.freetext}
       <tr>
         <td class="lt">Commentaire:</td>
-        <td class="rt">{$c.libre|nl2br}</td>
+        <td class="rt">{$c.freetext|nl2br}</td>
       </tr>
       {/if}
     </table>

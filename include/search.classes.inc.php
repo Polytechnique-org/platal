@@ -26,7 +26,7 @@ require_once("xorg.misc.inc.php");
 $globals->search->result_fields = '
                 u.user_id, u.promo, u.matricule, u.matricule_ax,
 		if(u.epouse=\'\', u.nom, u.epouse) AS NomSortKey,
-                u.epouse,u.date,q.profile_web AS web,q.profile_mobile AS mobile,
+                u.epouse,u.date,
                 u.deces!=0 AS dcd,u.deces,
 		u.perms IN (\'admin\',\'user\') AS inscrit,
 		u.perms != \'pending\' AS wasinscrit,
@@ -34,9 +34,25 @@ $globals->search->result_fields = '
                 a.alias AS forlife,
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-                e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
-                IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-                adr.ville, gp.pays, gr.name AS region,';
+                es.label AS secteur, ef.fonction_fr AS fonction,
+                IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,';
+// hide private information if not logged
+if (logged()) 
+	$globals->search->result_fields .='
+		q.profile_web AS web,
+		q.profile_mobile AS mobile,
+		q.profile_freetext AS freetext,
+                adr.ville, gp.pays, gr.name AS region,
+		e.entreprise,';
+else
+	$globals->search->result_fields .="
+		IF(q.profile_web_pub='public', q.profile_web, '') AS web,
+		IF(q.profile_mobile_pub='public', q.profile_mobile, '') AS mobile,
+		IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
+		IF(adr.pub='public', adr.ville, '') AS ville,
+		IF(adr.pub='public', gp.pays, '') AS pays,
+		IF(adr.pub='public', gr.name, '') AS region,
+		IF(e.pub='public', e.entreprise, '') AS entreprise,";
 $globals->search->result_where_statement = '
                 LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
                 LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
