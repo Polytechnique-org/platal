@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.13 2004-10-12 21:51:58 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.14 2004-10-12 22:16:16 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -67,7 +67,7 @@ else {
         $nameField = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
         $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
     } else {
-        $nameField = new StringSField('name',array('u.nom','u.epouse'),'');
+        $nameField = new NameSField('name',array('u.nom','u.epouse'),'');
         $firstnameField = new StringSField('firstname',array('u.prenom'),'');
     }
     $promo1Field = new PromoSField('promo1','egal1',array('u.promo'),'');

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.24 2004-10-12 21:51:58 x2000bedo Exp $
+        $Id: search.php,v 1.25 2004-10-12 22:16:16 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -45,7 +45,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
         StringWithSoundexSField('firstname',array('r.prenom1_soundex','r.prenom2_soundex'),'');
     }
     else {
-        $nameField = new StringSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
+        $nameField = new NameSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
         $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'r.prenom1');
         $with_soundex = ($nameField->length()==0 && $firstnameField->length()==0)?(-1):0;
     }

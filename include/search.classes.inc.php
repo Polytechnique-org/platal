@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.18 2004-10-12 22:00:15 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.19 2004-10-12 22:16:19 x2000bedo Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -244,6 +244,23 @@ class StringSField extends SField {
     function get_order_statement() {
         if ($this->value!='' && $this->fieldResultName!='')
             return $this->fieldResultName.'!="'.$this->value.'"';
+        else
+            return false;
+    }
+}
+
+/** classe pour les noms : on cherche en plus du like 'foo%' le like '% foo' (particules)
++*/
+class NameSField extends StringSField {
+    function get_single_where_statement($field) {
+        $regexp = str_replace('-',' ',$this->value);
+        $regexp = str_replace('*','%',$regexp);
+        return "$field LIKE '$regexp%' OR $field LIKE '% $regexp%'";
+    }
+    
+    function get_order_statement() {
+        if ($this->value!='' && $this->fieldResultName!='')
+            return $this->fieldResultName.' NOT LIKE "'.$this->value.'"';
         else
             return false;
     }
