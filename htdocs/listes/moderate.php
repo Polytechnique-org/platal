@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.9 2004-10-24 12:54:44 x2000habouzit Exp $
+        $Id: moderate.php,v 1.10 2004-10-24 13:49:02 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -48,14 +48,15 @@ if(isset($_POST['sdel'])) {
     /** 2 is the magic for REJECT see Defaults.py **/
 }
 
-if(isset($_POST['mid'])) {
-    include_once('diogenes.mailer.inc.php');
-    $mid = $_POST['mid'];
-    if(isset($_POST['mok'])) {
+if(isset($_REQUEST['mid'])) {
+    $mid = $_REQUEST['mid'];
+    if(isset($_REQUEST['mok'])) {
+	unset($_GET['mid']);
 	$client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
     } elseif(isset($_POST['mno'])) {
 	$reason = stripslashes($_POST['reason']);
 	if($client->handle_request('polytechnique.org', $liste,$mid,2,$reason)) { /** 2 = REJECT **/
+	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message refusé");
 	    $texte = "le message a été refusé par {$_SESSION['prenom']} {$_SESSION['nom']} avec la raison :\n"
@@ -63,8 +64,10 @@ if(isset($_POST['mid'])) {
 	    $mailer->setBody(wordwrap($texte,72));
 	    $mailer->send();
 	}
-    } elseif(isset($_POST['mdel'])) {
+    } elseif(isset($_REQUEST['mdel'])) {
+	unset($_GET['mid']);
 	if($client->handle_request('polytechnique.org', $liste,$mid,3,'')) { /** 3 = DISCARD **/
+	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message supprimé");
 	    $texte = "le message a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
@@ -76,6 +79,7 @@ if(isset($_POST['mid'])) {
 }
 
 if(isset($_REQUEST['sid'])) {
+
     $sid = $_REQUEST['sid'];
     if(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
 	foreach($subs as $user) {

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.6 2004-10-23 21:31:46 x2000habouzit Exp $
+        $Id: admin.php,v 1.7 2004-10-24 13:49:02 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -31,11 +31,16 @@ include('xml-rpc-client.inc.php');
 $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
 list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
+    
+$err = Array();
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 
 if(isset($_REQUEST['add_member'])) {
-    $client->mass_subscribe('polytechnique.org', $liste, Array($_REQUEST['add_member']));
+    $arr = $client->mass_subscribe('polytechnique.org', $liste, Array($_REQUEST['add_member']));
+    if(is_array($arr)) {
+	foreach($arr as $addr) $err[] = "{$addr[0]} inscrit.";
+    }
 }
 
 if(isset($_REQUEST['del_member'])) {
@@ -44,7 +49,8 @@ if(isset($_REQUEST['del_member'])) {
 }
 
 if(isset($_REQUEST['add_owner'])) {
-    $client->add_owner('polytechnique.org', $liste, $_REQUEST['add_owner']);
+    if($client->add_owner('polytechnique.org', $liste, $_REQUEST['add_owner']))
+	$err = $_REQUEST['add_owner']." ajouté aux modérateurs.";
 }
 
 if(isset($_REQUEST['del_owner'])) {
@@ -89,5 +95,6 @@ if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
 } else
     $page->assign('no_list',true);
 
+$page->assign('err', $err);
 $page->run();
 ?>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.11 2004-10-23 21:33:40 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.12 2004-10-24 13:49:03 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -54,6 +54,10 @@ Tu n'es pas administrateur de la liste, mais du site.
 Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
 c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
 </p>
+
+{foreach from=$err item=e}
+<p class='error'>{$e}</p>
+{/foreach}
 
 <div class='rubrique'>
   modérateurs de la liste

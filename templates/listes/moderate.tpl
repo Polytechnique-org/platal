@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.13 2004-10-24 12:54:44 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.14 2004-10-24 13:49:03 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -76,6 +76,21 @@
 </div>
 
 {if $mails|@count}
+<ul>
+  <li>
+  <strong>accepter:</strong> le mail est immédiatement libéré, et envoyé à la
+  liste.
+  </li>
+  <li>
+  <strong>refuser:</strong> pour refuser un mail, suivre le lien [voir] et
+  remplir le formulaire en bas de page.
+  </li>
+  <li>
+  <strong>rejeter:</strong> le mail est effacé sans autre forme de procès.
+  N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables.
+  </li>
+</ul>
+
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
     <th>émetteur</th>
@@ -87,12 +102,13 @@
   {foreach from=$mails item=m}
   <tr class='{cycle values="pair,impair"}'>
     <td>{$m.sender}</td>
-    <td>{$m.subj}</td>
+    <td>{$m.subj|default:"[pas de sujet]"}</td>
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
     <td class='action'>
       <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
-    </td>
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a><br />
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>rejeter</a></td>
   </tr>
   {/foreach}
 </table>
