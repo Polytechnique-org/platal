@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.57 2004-10-13 09:02:48 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.58 2004-10-13 10:05:00 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -82,7 +82,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     def getUser(self, uid, md5):
         mysql.execute ("""SELECT CONCAT(u.prenom, ' ',u.nom),a.alias,u.perms
                            FROM  auth_user_md5 AS u
-                     INNER JOIN  aliases       AS a ON a.id=u.user_id
+                     INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
                           WHERE  u.user_id = '%s' AND u.password = '%s'
                           LIMIT  1""" %( uid, md5 ) )
         if int(mysql.rowcount) is 1:
@@ -355,7 +355,7 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
             mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom), f.alias
                                 FROM  auth_user_md5 AS u
                           INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
-                          INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s')
+                          INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
                                LIMIT  1""" %( user ) )
             if int(mysql.rowcount) is 1:
                 name, forlife = mysql.fetchone()
@@ -397,7 +397,7 @@ def add_owner((userdesc,perms),vhost,listname,user):
             return 0
         mysql.execute ("""SELECT  f.alias
                             FROM  aliases       AS f
-                      INNER JOIN  aliases       AS a ON (a.id=f.id AND a.alias='%s')
+                      INNER JOIN  aliases       AS a ON (a.id=f.id AND a.alias='%s' AND a.type!='homonyme')
                            WHERE  f.type='a_vie'
                            LIMIT  1""" %( user ) )
         if int(mysql.rowcount) is 1:
