@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.25 2004-09-22 11:38:41 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.26 2004-09-22 11:41:12 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -413,8 +413,8 @@ uid = getpwnam(mm_cfg.MAILMAN_USER)[2]
 gid = getgrnam(mm_cfg.MAILMAN_GROUP)[2]
 
 if not os.getuid():
+    os.setreuid(uid,uid)
     os.setregid(gid,gid)
-    os.setreuid(gid,gid)
 
 if ( os.getuid() is not uid ) or ( os.getgid() is not gid):
     sys.exit(0)
