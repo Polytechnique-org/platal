@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.header.tpl,v 1.12 2004-10-09 05:57:19 x2000habouzit Exp $
+        $Id: common.header.tpl,v 1.13 2004-10-12 19:58:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,10 +26,10 @@
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
     
-    <link rel="index" href="######" />
-    <link rel="author" href="########" />
-    <link rel="search" href="########" />
-    <link rel="help" href="##########" />
+    <link rel="index" href="{"index.php"|url}" />
+    <link rel="author" href="{"docs/faq.php"|url}" />
+    <link rel="search" href="{"search.php"|url}" />
+    <link rel="help" href="{"docs/faq.php"|url}" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />
