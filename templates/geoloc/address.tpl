@@ -20,7 +20,9 @@
 
 
       {if $address.adr1 || $address.pays || $geoloc_address.ville || $address.tel || $address.fax || $address.mobile}
+      {if $no_div neq 1}
       <div class="adresse">
+      {/if}
         {if $titre && ($address.adr1 || $address.ville || $address.pays)}
           {if $titre_div}
             <div class="titre">
@@ -59,7 +61,9 @@
         </div>
         {/if}
 
+      {if $no_div neq 1}
       </div>
+      {/if}
       {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

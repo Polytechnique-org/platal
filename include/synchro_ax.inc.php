@@ -94,7 +94,7 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
     global $globals;
 
     if ($epouse) {
-        $globals->xdb->execute("UPDATE auth_user_md5 SET epouse = {?} WHERE user_id = {?}", $userax['epouse'], $userax['uid']);
+        $globals->xdb->execute("UPDATE auth_user_md5 SET epouse = {?} WHERE user_id = {?}", strtoupper($userax['epouse']), $userax['uid']);
     }
     
     if ($mobile) {
@@ -105,10 +105,14 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
         $globals->xdb->execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}", $userax['uid'], $adrid);
     }
 
+    if (is_array($del_pro)) foreach($del_pro as $entrid) {
+        $globals->xdb->execute("DELETE FROM entreprises WHERE uid = {?} AND entrid = {?}", $userax['uid'], $entrid);
+    }
+
     if (is_array($add_address)) {
 
-    $res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} ORDER BY adrid", $userax['uid']);
-    $adrids = $res->fetchOneColumn();
+    $res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} AND adrid >= 1 ORDER BY adrid", $userax['uid']);
+    $adrids = $res->fetchColumn();
     $i_adrid = 0;
     $new_adrid = 1;
     
@@ -131,12 +135,55 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
                          adr1 = {?}, adr2 = {?}, adr3 = {?},
                          cp = {?}, ville = {?},
                          pays = {?},
+                         tel = {?}, fax = {?},
                          datemaj = NOW(),
                          visibilite = 'adr_ax,tel_ax'",
                 $userax['uid'], $new_adrid,
                 $adr['adr1'], $adr['adr2'], $adr['adr3'],
                 $adr['cp'], $adr['ville'],
-                $a2);
+                $a2,
+                $adr['tel'], $adr['fax']);
+    }}
+    
+    if (is_array($add_pro)) {
+
+    $res = $globals->xdb->query("SELECT entrid FROM entreprises WHERE uid = {?} AND entrid >= 1 ORDER BY entrid", $userax['uid']);
+    $entrids = $res->fetchColumn();
+    $i_entrid = 0;
+    $new_entrid = 1;
+   
+    $nb_entr = count($entrids);
+
+    foreach($add_pro as $entrid) if ($nb_entr < 2) {
+
+        $nb_entr++;
+    
+        $pro = $userax['adr_pro'][$entrid];
+
+        // find the next adrid not used
+        while ($entrids[$i_entrid] == $new_entrid) { $i_entrid++; $new_entrid++; }
+        
+        if ($pro['pays']) {
+            $res = $globals->xdb->query("SELECT a2 FROM geoloc_pays WHERE pays LIKE {?} OR country LIKE {?}", $pro['pays'], $pro['pays']);
+            $a2 = $res->fetchOneCell();
+        }
+        if (!$a2) $a2 = '00';
+        
+        $globals->xdb->execute(
+            "INSERT INTO entreprises
+                     SET uid = {?}, entrid = {?},
+                         adr1 = {?}, adr2 = {?}, adr3 = {?},
+                         cp = {?}, ville = {?},
+                         pays = {?},
+                         tel = {?}, fax = {?},
+                         entreprise = {?}, fonction = {?},
+                         visibilite = 'entreprise_ax,adr_ax,tel_ax'",
+                $userax['uid'], $new_entrid,
+                $pro['adr1'], $pro['adr2'], $pro['adr3'],
+                $pro['cp'], $pro['ville'],
+                $a2,
+                $pro['tel'], $pro['fax'],
+                $pro['entreprise'], $pro['fonction']);
     }}
 }
 

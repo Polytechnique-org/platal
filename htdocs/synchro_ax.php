@@ -26,10 +26,6 @@ new_admin_page('synchro_ax.tpl');
 require_once('user.func.inc.php');
 require_once('synchro_ax.inc.php');
 
-if (!Env::has('user') && !Env::has('mat')) {
-    $page->kill("cette page n'existe pas");
-}
-
 if (Env::has('user')) {
     $login = get_user_forlife(Env::get('user'));
     if ($login === false) {
@@ -44,17 +40,41 @@ if (Env::has('mat')) {
          INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
               WHERE  matricule={?}", Env::getInt('mat'));
     $login = $res->fetchOneCell();
-    if (empty($login)) {
-        $page->kill("cette page n'existe pas");
-    }
 }
 
-$new   = Env::get('modif') == 'new';
+if ($login) {
+    $new   = Env::get('modif') == 'new';
+    $user  = get_user_details($login, Session::getInt('uid'));
+    $userax= get_user_ax($user['user_id']);
+
+if (Env::has('importe')) {
+
+    $adr_dels = array();
+    foreach ($user['adr'] as $adr)
+        if (Env::has('del_address'.$adr['adrid'])) $adr_dels[] = $adr['adrid'];
+        
+    $adr_adds = array();
+    foreach ($userax['adr'] as $i => $adr)
+        if (Env::has('add_address'.$i)) $adr_adds[] = $i;
+    
+    $pro_dels = array();
+    foreach ($user['adr_pro'] as $pro)
+        if (Env::has('del_pro'.$pro['entrid'])) $pro_dels[] = $pro['proid'];
+
+    $pro_adds = array();
+    foreach ($userax['adr_pro'] as $i => $pro)
+        if (Env::has('add_pro'.$i)) $pro_adds[] = $i;
+
+    import_from_ax($userax, Env::has('epouse'), Env::has('mobile'), $adr_dels, $adr_adds, $pro_dels, $pro_adds);
+
+}
+
 $user  = get_user_details($login, Session::getInt('uid'));
 
 $page->assign('x', $user);
-$page->assign('ax', get_user_ax($user['user_id'])); 
-
+$page->assign('ax', $userax); 
+}
 $page->run();
 
+// vim:set et sts=4 sws=4 sw=4:
 ?>
