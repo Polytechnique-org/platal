@@ -11,24 +11,23 @@ if(logged()) {
             'Mes préférences' => 'preferences.php' 
         ),
         'Services' => Array (
-            'Envoyer un mail' => '###url###' ,
-            'Forums &amp; PA' => '###url###' ,
+            'Envoyer un mail' => 'sendmail.php' ,
+            'Forums &amp; PA' => 'banana/' ,
             'Listes de diffusion' => '###url###' ,
-            'Micropaiements' => '###url###' ,
+            'Micropaiements' => 'paiement/' ,
             'Patte cassée' => 'pattecassee.php' ,
-            'Sondages' => '###url###'
         ),
         'Communauté X' => Array (
-            'Annuaire' => '###url###',
-            'Trombi promo' => '###url###',
-            'Groupes X' => '###url###',
-            'Sites Polytechniciens' => '###url###'
+            'Annuaire' => 'search.php',
+            'Trombi promo' => 'trombipromo.php',
+            'Groupes X' => 'http://www.polytechnique.net/plan.php',
+            'Sites Polytechniciens' => 'http://www.polytechnique.net/'
         ),
         'Informations' => Array (
-            'Lettres mensuelles' => '###url###',
+            'Lettres mensuelles' => 'newsletter.php',
             'Documentations' => 'docs/',
             'Nous contacter ' => "docs/contacts.php",
-            'Emploi' => '###url###'
+            'Emploi' => 'http://www.manageurs.com/'
         )
     );
 
@@ -38,26 +37,26 @@ if(logged()) {
 
     if(has_perms()) {
         $menu['***'] = Array (
-            'Marketing' => '###url###',
-            'Administration' => '###url###',
+            'Marketing' => 'marketing/',
+            'Administration' => 'admin/',
             'Clear cache' => 'clear_all_cache.php'
         );
     }
 } else {
     $menu = Array(
         'Polytechniciens' => Array(
-            'Me connecter !' => "login.php",
-            'M\'inscrire' => "###url###"
+            'Me connecter !' => 'login.php',
+            'M\'inscrire' => 'inscrire.php'
         ),
         'Visiteurs' => Array(
-            'Annuaire de l\'X' => "###url###",
-            'Associations X' => "###url###",
-            'Recrutement' => "###url###"
+            'Annuaire de l\'X' => 'search.php?public_directory=1',
+            'Associations X' => 'http://www.polytechnique.net/',
+            'Recrutement' => 'http://www.manageurs.com/'
         ),
         'Informations' => Array(
-            'A propos du site' => "docs/apropos.php",
-            'Nous contacter ' => "docs/contacts.php",
-            'FAQ' => "###url###"
+            'A propos du site' => 'docs/apropos.php',
+            'Nous contacter ' => 'docs/contacts.php',
+            'FAQ' => 'docs/faq.php'
         )
     );
 }
