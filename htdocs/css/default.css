@@ -1,19 +1,7 @@
-/*
-
-..:: CSS Minimale ::..
-
-I.   Styles par défauts.                balises sans attributs ou classes sans contexte
-II.  Styles <p>, <div>, <span> ...      <p>, <div>, <span>, <li>, ...
-III. Tableaux bicolores                 Tableaux à lignes alternées, en taille normale, ou tiny
-IV.  Tableau de choix de skins
-V.   contacts
-VI.  profil (onglets)
-
-..:: Appendices ::..
-Choix de la skin
-*/
-
-/**: I. :**/
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
 
 body {
     font-family: "Arial", sans-serif;
@@ -41,9 +29,12 @@ hr    { width: 90%; text-align: center }
 .pri4 { background-color: #da9090; }
 .pri5 { background-color: #da8080; font-weight: bold; }
 
-/**: II. :**/
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
 
-p.normal {
+p {
     margin-bottom: 0.5em;
     text-align: justify;
 }
@@ -108,9 +99,10 @@ li.spaced {
     text-align: justify;
 }
 
-td.half { width: 50%; padding: 4px; }
-
-/**: III. :**/
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
 
 table.bicol {
     color: inherit;
@@ -128,11 +120,13 @@ table.tinybicol {
     width: 70%;
     margin-left: 15%;
 }
+
 table.tinybicol tr.impair, table.bicol tr.impair {}
 table.tinybicol tr.pair, table.bicol tr.pair {
     color: inherit;
     background: #eeeed0;
 }
+
 table.tinybicol th, table.bicol th {
     color: #ffffff;
     background: #336699;
@@ -144,27 +138,26 @@ table.tinybicol td, table.bicol td {
     color: #000000;
     background: inherit;
 }
-table.tinybicol td.titre, table.bicol td.titre {
+
+
+td.half { width: 50%; padding: 4px; }
+td.titre {
     color: #000000;
     background: inherit;
     font-weight: bold;
 }
-table.tinybicol td.info, table.bicol td.info {
-    padding: 0.5em;
-    width: 50%;
-}
-table.tinybicol td.action, table.bicol td.action {
+td.action {
     white-space: nowrap;
     text-align: right;
     font-weight: bold;
     vertical-align: middle;
 }
-table.tinybicol td.action a, table.bicol td.action a {
-    padding: 4px;
-}
+td.action a {  padding: 4px; }
 
-
-/**: IV. :**/
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
 
 #skin {
     border-bottom: 1px solid #003399;
@@ -188,7 +181,11 @@ table.tinybicol td.action a, table.bicol td.action a {
 }
 #skin td.skidroite { padding: 0; }
 
-/**: V. :**/
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
 div.contact-list {
     width: 98%;
     margin-left: 1%;
@@ -235,7 +232,10 @@ div.long table { width: 100%; }
 div.long td.lt { width: 35%; }
 div.long td.rt { width: 65%; }
 
-/**: VI. :**/
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
   
 table.flags td.texte {
     font-size: smaller;
@@ -266,9 +266,7 @@ table.cadre_a_onglet{
     margin: 0;
 }
 
-div.conteneur_onglets{
-    /*padding : 2px;*/
-}
+div.conteneur_onglets{ /*padding : 2px;*/ }
 
 div.conteneur_tab {
     border-width : 1px 2px 2px 1px;
@@ -300,9 +298,7 @@ div.conteneur_tab {
     text-align: center;
 }
 
-#onglet li:hover {
-    background : #fc3 repeat-x 0 100%;
-}
+#onglet li:hover { background : #fc3 repeat-x 0 100%; }
 
 #onglet li.actif {
     background : #eceade;
@@ -318,17 +314,42 @@ div.conteneur_tab {
     color : #000;
 }
 
-#onglet li a:hover {
-    text-decoration: underline;
+#onglet li a:hover { text-decoration: underline; }
+#onglet li img { margin-right : 2px; }
+
+/*******************************************************************************
+    7   fiche.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+div.boite {
+  border: 1px solid #5555BB;
+  background-color: #FFFFC0;
+  padding: 5px;
+  margin: 5px;
 }
 
-#onglet li img {
-    margin-right : 2px;
+div.boite div.titre {
+  background-color: #9999FF;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
 }
 
-/*************************/
-/*  ..:: Apendices ::..  */
-/*************************/
+div.boite div.item {
+  float: left;
+  padding: 5px;
+  margin: 5px;
+}
+
+div.spacer { clear: both; }
+div.item div.title { font-weight: bold; }
+div.item div.value { }
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
 
 #dev {
     position: fixed;
@@ -439,7 +460,8 @@ div.conteneur_tab {
 }
 
 #content input {
-    font-size: 95%
+    font-size: 95%;
 }
+
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.30 2004-08-06 00:35:34 x2000bedo Exp $ */
+/* $Id: default.css,v 1.31 2004-08-26 14:44:43 x2000habouzit Exp $ */

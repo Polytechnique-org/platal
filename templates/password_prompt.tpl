@@ -1,9 +1,9 @@
-{* $Id: password_prompt.tpl,v 1.17 2004-08-25 11:13:55 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.18 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 <noscript>
   <p class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
   </p>
-  <p class="normal">
+  <p>
     Cette forme de script web est nécessaire pour l'utilisation du site.
     Pour en savoir plus, regarde la <a href="faq.php#connect">FAQ</a>.
   </p>
@@ -13,7 +13,7 @@
   Accès réservé aux Polytechniciens
 </div>
 {min_auth level="cookie"}
-<p class="normal">
+<p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
 Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change le login ci-dessous, ou rends-toi sur
 <a href="{"inscrire.php"|url}">la page d'inscription</a>.
@@ -21,7 +21,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
 {/min_auth}
 
 {only_public}
-<p class="normal">
+<p>
 <strong>Tu ne connais pas ton mot de passe ?</strong>
 </p>
 <ul>
@@ -74,7 +74,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
     </tr>
   </table>
 </form>
-<p class="normal">
+<p>
 Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 <br />
 (Activer obligatoirement le <strong>javascript</strong>)

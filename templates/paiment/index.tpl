@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.5 2004-08-24 23:06:05 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.6 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Micropaiments
@@ -12,7 +12,7 @@
 {/foreach}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <p class="normal"> Si tu ne souhaites pas utiliser notre interface de
+  <p> Si tu ne souhaites pas utiliser notre interface de
   télépaiement, tu peux virer directement la somme de ton choix sur notre compte
   30004 00314 00010016782 60. Nous veillerons à ce que ton paiement parvienne à
   son destinataire.  Pense toutefois à le préciser dans le motif du

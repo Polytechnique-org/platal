@@ -1,16 +1,16 @@
-{* $Id: doc_smtp.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_smtp.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Le serveur SMTP de Polytechnique.org
 </div>
-<p class="normal">
+<p>
   Polytechnique.org propose un serveur SMTP ouvert à tous les inscrits 
   <a href="{"acces_smtp.php"|url}">qui en font la demande</a>.
 </p>
 <div class="ssrubrique">
   A quoi sert le serveur SMTP ?
 </div>
-<p class="normal">
+<p>
   Le serveur <abbr title="Simple Mail Transfert Protocol">SMTP</abbr> est la
 	machine sur laquelle se connecte ton logiciel de courrier électronique
 	(Outlook Express, Netscape, Eudora...) pour envoyer le courrier. On l'appelle
@@ -26,7 +26,7 @@
 </div>
 <ul>
   <li>
-    <p class="normal">
+    <p>
       Afin d'éviter le spam, les serveurs SMTP sont généralement assez
 			<strong>restrictifs</strong> sur les personnes autorisées à les utiliser,
 			ainsi pour
@@ -38,7 +38,7 @@
     </p>
   </li>
   <li>
-    <p class="normal">
+    <p>
       De plus, certains serveurs SMTP n'autorisent dans le champ d'expéditeur (
 			<code>From:</code>) qu'une adresse mail se terminant par leur domaine, ce
 			qui empêche l'envoi de courrier avec une adresse d'expéditeur en
@@ -46,7 +46,7 @@
     </p>
   </li>
   <li>
-    <p class="normal">
+    <p>
       Tu es dans une entreprise qui s'autorise la lecture des messages qui
 			passent par son serveur SMTP et tu veux 
       envoyer un messsage qui ne pourra être intercepté par le service
@@ -54,7 +54,7 @@
     </p>
   </li>
 </ul>
-<p class="normal">
+<p>
   Pour toutes ces raisons (et d'autres moins parlantes),
   le serveur SMTP de Polytechnique.org apporte une bonne solution. 
   Pour des raisons d'identification, ce serveur te demandera un <em>login</em> 
@@ -66,7 +66,7 @@
 </p>
 
 <div class="ssrubrique">Configuration</div>
-<p class="normal">
+<p>
   Avant toute chose, il faut avoir accepté le certificat SSL de
 	Polytechnique.org.
   Si tu ne l'as jamais fait, avant de configurer ton logiciel de messagerie
@@ -80,7 +80,7 @@
 <div class="ssrubrique">
   Attention !
 </div>
-<p class="normal">
+<p>
   L'utilisation de <strong>certains logiciels antivirus</strong> (comme <em>Norton Antivirus</em>)
   nécessite un élément de configuration supplémentaire : il faut indiquer au
 	logiciel de ne pas scanner le courrier sortant.

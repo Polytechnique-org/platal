@@ -1,4 +1,4 @@
-{* $Id: public.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: public.tpl,v 1.3 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 {dynamic}
 {if $smarty.request.num}
@@ -24,19 +24,19 @@
   Et si nous proposions à {$prenom} {$nom} de s'inscrire à Polytechnique.org ?
 </div>
 
-<p class="normal">
+<p>
   En effet notre camarade n'a pour l'instant pas encore rejoint la communauté des X sur le web...
   C'est dommage, et en nous indiquant son adresse email, tu nous permettrais de lui envoyer une
   proposition d'inscription.
 </p>
-<p class="normal">
+<p>
   Si tu es d'accord, merci d'indiquer ci-dessous l'adresse email de {$prenom} {$nom} si tu la
   connais.  Nous nous permettons d'attirer ton attention sur le fait que nous avons besoin d'être
   sûrs que cette adresse est bien la sienne, afin que la partie privée du site reste uniquement
   accessible aux seuls polytechniciens. Merci donc de ne nous donner ce renseignement uniquement si
   tu es certain de sa véracité !
 </p>
-<p class="normal">
+<p>
   Nous pouvons au choix lui écrire au nom de l'équipe Polytechnique.org, ou bien, si tu le veux
   bien, en ton nom. A toi de choisir la solution qui te paraît la plus adaptée !! Une fois {$prenom}
   {$nom} inscrit, nous t'enverrons un email pour te prévenir que son inscription a réussi.

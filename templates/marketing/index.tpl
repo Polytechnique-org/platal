@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.3 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.4 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 
 <div class="rubrique">Marketing Polytechnique.org</div>
@@ -34,26 +34,26 @@
 <br />
 
 {dynamic}
-<p class="normal">
+<p>
 Nombre d'X vivants d'après notre base de données : {$stats.vivants}<br />
 Nombre d'X vivants inscrits à Polytechnique.org : {$stats.inscrits}<br />
 Soit un pourcentage d'inscrits de : {$stats.ins_rate} %<br />
 </p>
 
-<p class="normal">
+<p>
 Parmi ceux-ci :<br />
 Nombre d'X vivants depuis 1972 d'après notre base de données : {$stats.vivants72}<br />
 Nombre d'X vivants depuis 1972 inscrits à Polytechnique.org : {$stats.inscrits72}<br />
 Soit un pourcentage d'inscrits de : {$stats.ins72_rate} % <br />
 </p>
 
-<p class="normal">
+<p>
 Nombre de Polytechniciennes vivantes : {$stats.vivantes}<br />
 Nombre de Polytechniciennes vivantes et inscrites : {$stats.inscrites} <br />
 Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
 </p>
 
-<p class="normal">
+<p>
 Nombre d'inscrits depuis le début de la semaine : {$nbInsSem} <br />
 Nombre d'inscriptions en cours (2ème phase non terminée) : {$nbInsEnCours} <br />
 Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsEnvDir}

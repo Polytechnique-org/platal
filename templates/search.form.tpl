@@ -205,7 +205,7 @@
     </p>
   </form>
 </div>
-<p class="normal">
+<p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
 </p>
 {if $advanced eq "1"}

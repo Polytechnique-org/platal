@@ -1,12 +1,12 @@
-{* $Id: alias.tpl,v 1.5 2004-02-12 02:03:08 x2000habouzit Exp $ *}
+{* $Id: alias.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {if $success}
-  <p class="normal">
+  <p>
     a demande de création des alias <strong>{dyn s=$success}@melix.net</strong> et
     <strong>{dyn s=$success}@melix.org</strong> a bien été enregistrée. Après
     vérification, tu recevras un mail te signalant l'ouverture de ces adresses.
   </p>
-  <p class="normal">
+  <p>
     Encore merci de nous faire confiance pour tes e-mails !
   </p>
 {else}
@@ -18,7 +18,7 @@
     Adresses e-mail personnalisées
   </div>
 
-  <p class="normal">
+  <p>
     Pour plus de <strong>convivialité</strong> dans l'utilisation de tes mails, tu peux choisir une adresse
     e-mail discrète et personnalisée. Ce nouvel e-mail peut par exemple correspondre à ton surnom.
   </p>
@@ -29,14 +29,14 @@
   </p>
 
   {dynamic on="0$actuel"}
-  <p class='normal'>
+  <p>
   <strong>Note : tu as déjà l'alias {$actuel}, or tu ne peux avoir qu'un seul alias à la fois.
     Si tu effectues une nouvelle demande l'ancien alias sera effacé.</strong>
   </p>
   {/dynamic}
 
   {dynamic on="0$demande"}
-  <p class='normal'>
+  <p>
   <strong>Note : tu as déjà effectué une demande pour {$demande->alias}, dont le traitement est
     en cours. Si tu souhaites modifier ceci refais une demande, sinon ce n'est pas la peine.</strong>
   </p>

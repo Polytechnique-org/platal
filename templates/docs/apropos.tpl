@@ -1,4 +1,4 @@
-{* $Id: apropos.tpl,v 1.4 2004-08-23 15:09:07 x2000chevalier Exp $ *}
+{* $Id: apropos.tpl,v 1.5 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <table cellpadding="0" cellspacing="0" summary="L'équipe" style="width: 100%">
   <tr>
@@ -136,7 +136,7 @@
         <a href="../images/equipe.jpg">
           <img src="../images/equipe.jpg" alt=" [ L'EQUIPE ] " />
         </a>
-        <p class="normal">
+        <p>
         Sur cette photo un peu sombre, on peut reconnaître une partie de
         l'équipe. De gauche à droite&nbsp;:<br />
         Matthieu, Sophie, Loïc, Jean-Marc, Yann C, Cyril, Yann B, Eric,

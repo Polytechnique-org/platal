@@ -1,4 +1,4 @@
-{* $Id: antispam.tpl,v 1.5 2004-08-24 23:06:04 x2000habouzit Exp $ *}
+{* $Id: antispam.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Ton filtre anti-spam
@@ -6,7 +6,7 @@
 <div class="ssrubrique">
   Qu'est-ce qu'un spam ? Comment m'en débarrasser ?
 </div>
-<p class="normal">
+<p>
 Un spam est un courrier électronique <strong>non sollicité</strong>. Ce peut-être un
 message de publicité, une proposition commerciale, etc... qui t'est envoyé
 par une personne que tu ne connais pas.<br />
@@ -46,7 +46,7 @@ Trois réglages sont possibles :
   </table>
 </form>
 
-<p class="normal">
+<p>
 Evidement, <strong>le système n'étant pas infaillible, il est possible qu'un
   message normal soit classé comme spam</strong>, auquel cas, si tu as choisi
 l'option (3), tu perdras un message que tu aurais sans doute souhaité
@@ -62,7 +62,7 @@ tu peux envisager d'opter pour l'option (3).
 <div class="ssrubrique">
   Que faire si jamais je me rends compte que le filtre s'est trompé ?
 </div>
-<p class="normal">
+<p>
 Pour que le logiciel fonctionne bien, il est préférable de lui indiquer,
 lorsqu'il s'est trompé, qu'il a fait une erreur ! Il est plutôt intelligent,
 et en tirera une leçon si on lui signale ses fautes, pour moins se tromper
@@ -83,7 +83,7 @@ tous nos camarades bénéficieront d'un filtre anti-spam de meilleure qualité.
 <div class="ssrubrique">
   Et techniquement, comment ça marche ?
 </div>
-<p class="normal">
+<p>
 Le filtre anti-spam tente de repérer les spams en fonction des mots
 qu'il contiennent, il extrait donc les mots d'un message et les comparer
 à deux ensembles de référence l'un contenant des spams, l'autre des
@@ -91,7 +91,7 @@ messages normaux. Il calcule ainsi une probabilité qu'un message soit
 un spam et si cette probabilité est forte, ce courriel est considéré comme
 un spam.
 </p>
-<p class="normal">
+<p>
 Le marquage est fait de deux manières :
 <ul>
   <li>la chaîne "[spam probable]" est ajoutée au début du sujet pour permettre une reconnaissance visuelle facile des spams,</li>

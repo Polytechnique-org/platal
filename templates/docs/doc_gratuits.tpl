@@ -1,4 +1,4 @@
-{* $Id: doc_gratuits.tpl,v 1.5 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: doc_gratuits.tpl,v 1.6 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Pourquoi et comment choisir un e-mail gratuit
@@ -16,7 +16,7 @@
     <li>Plus de fonctionnalités</li>
   </ul>
 
-  <p class="normal">
+  <p>
     Un service d'e-mail gratuit est particulièrement adapté pour les
     <strong>utilisateurs itinérants</strong> qui souhaitent accéder à leur
     e-mail du bureau, de la maison, de l'étranger ou en déplacement, etc.
@@ -32,7 +32,7 @@
     <code>POP3</code>). Cela rend sa consultation très fastidieuse et
     parfois tout simplement impossible hors du bureau.
   </p>
-  <p class="normal">
+  <p>
     D'autre part, la loi autorise  les
     employeurs à <strong>lire et sauvegarder le contenu des
       e-mails</strong> écrits/lus sur la boîte e-mail professionnelle. En
@@ -43,14 +43,14 @@
     l'employeur ou de toute personne qui partage un outil informatique (un 
     collègue par exemple),
   </p>
-  <p class="normal">
+  <p>
     Enfin, les services d'e-mails gratuits étant souvent bien plus 
     avancés que ceux mis en place par les directions informatiques des organismes 
     où vous travaillez (entreprises, ministères, universités...), 
     <strong>des possibilités supplémentaires</strong>, comme le téléchargement de ses e-mails sur téléphone 
     portable ou PDA, ou encore téléchargement chiffré de ses e-mails "en POP-SSL") qui sont offertes à l'utilisateur.
   </p>
-  <p class="normal">
+  <p>
     Plus d'hésitation ! Mais il n'est pas aisé de choisir le service gratuit adéquat : ils 
     sont loins d'être tous fiables, ce qui peut se traduire (pour certains) par des e-mails
     perdus... Nous allons voir comment on peut objectivement faire un choix.
@@ -60,7 +60,7 @@
   <div class="ssrubrique">
     Lequel choisir?
   </div>
-  <p class="normal">
+  <p>
     Nous allons d'abord indiquer les critères retenus pour nos 
     benchmarks, avant de nommer les services que nous recommandons 
     ou déconseillons vivement.
@@ -77,7 +77,7 @@
     logiciel classique de mail
     </li>
   </ol>
-  <p class="normal">
+  <p>
     Explications. <strong>Le critère 1</strong> est vital. Avec certains services de
     messagerie électronique, des e-mails 
     sont perdus. C'est inacceptable, c'est pourquoi Polytechnique.org est très
@@ -88,14 +88,14 @@
     Ce premier critère permet déjà 
     d'éliminer un grand nombre de services de messagerie gratuits.
   </p>
-  <p class="normal">
+  <p>
     <strong>Le critère 2</strong> permet de consulter ses e-mails sur son ordinateur
     normalement sans passer par le web. On bénéficie donc de toute l'interface
     et des fonctions du logiciel de messagerie (Outlook Express ou Netscape
     par exemple) à la place de celle du site web (qui est généralement assez
     sommaire).
   </p>
-  <p class="normal">
+  <p>
     D'autres questions en vrac que nous nous sommes posées pour classer les
     services : 
     Existence d'un webmail efficace?
@@ -112,7 +112,7 @@
   <div class="sstitre">
     Benchmarks
   </div>
-  <p class="normal">
+  <p>
     Vous trouverez dans la page des statistiques un lien vers la liste de tous
     les mailers avec lesquels Polytechnique.org est en contact. Les temps de 
     réponse et performances de chacuns d'eux sont mesurés tous les jours et la
@@ -120,7 +120,7 @@
     de ces statistiques fournit des informations précieuses sur la qualité
     d'un service.
   </p>
-  <p class="normal">
+  <p>
   <strong>L'équipe met à votre disposition une page présentant une
     <a href="/parselogR.php">comparaison quotidienne des performances de tous les mailers</a>
     en contact avec Polytechnique.org.</strong>
@@ -176,7 +176,7 @@
   <div class="sstitre">
     Commentaires
   </div>
-  <p class="normal">
+  <p>
     Il convient surtout d'éviter caramail.com dont les performances sont 
     désespérantes, les logs prouvent que chaque semaine des mails sont 
     <strong>PERDUS</strong> à destination de caramail. Pour le reste, les services mauvais 
@@ -188,14 +188,14 @@
     Microsoft ou Yahoo qui rendent couramment les services très lents voire 
     inaccessibles.
   </p>
-  <p class="normal">
+  <p>
     Dans la catégorie des services recommandés, une remarque s'impose, les providers 
     internet sont en général très performants compte-tenu de leurs installations en 
     serveurs probablement. On peut tout à fait s'abonner à un provider internet
     gratuit comme freesurf ou libertysurf sans jamais se connecter à internet par 
     ailleurs par modem avec ce provider! Cela n'empêche pas d'utiliser leurs serveurs.
   </p>
-  <p class="normal">
+  <p>
   <strong>Toutes caractéristiques confondues, nos deux services préférés et recommandés 
     sont freesurf.fr et netcourrier.com. Le service gmx.net est également très bon, 
     mais il comporte une option par défaut qui bloque les mails en provenance de 

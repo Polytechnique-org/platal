@@ -1,21 +1,21 @@
-{* $Id: skins.tpl,v 1.6 2004-08-24 21:31:59 x2000habouzit Exp $ *}
+{* $Id: skins.tpl,v 1.7 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Skins Polytechnique.org
 </div>
-<p class="normal">
+<p>
 Tu n'aimes pas les couleurs ou l'apparence de Polytechnique.org ? Normal, les goûts et les
 couleurs, ça ne se discute pas. Certains préfèrent une page sérieuse, d'autres plus
 fantaisiste. A toi de voir :)
 </p>
-<p class="normal">
+<p>
 Note aux utilisateurs du navigateur Netscape 4.x ou équivalent.
 La fonctionalité "skins" n'est hélas pas compatible avec ces navigateurs
 qui ne respectent pas les standards du web. <br />
 Pour profiter de toutes les fonctionnalités de Polytechnique.org,
 nous te conseillons de télécharger une version récente de ton navigateur.
 </p>
-<p class="normal">
+<p>
 Pour toute information complémentaire, n'hésite pas à écrire à
 {mailto address='support@polytechnique.org' subject='navigateurs'}
 </p>

@@ -1,4 +1,4 @@
-{* $Id: ax-xorg.tpl,v 1.2 2004-02-04 22:32:11 x2000habouzit Exp $ *}
+{* $Id: ax-xorg.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Vérifier notre table de correspondance entre l'annuaire de l'AX et le nôtre
@@ -24,7 +24,7 @@
 {/foreach}
 </table>
 
-<p class="normal">
+<p>
   <strong>{$nb_diffs} camarades ont un état civil différent dans les 2 annuaires.</strong>
 </p>
 {/dynamic}
@@ -49,7 +49,7 @@
   </tr>
 {/foreach}
 </table>
-<p class="normal">
+<p>
   <strong>{$nb_mank} camarades sont absents de notre annuaire.</strong>
 </p>
 {/dynamic}
@@ -73,7 +73,7 @@
 {/foreach}
 </table>
 
-<p class="normal">
+<p>
   <strong>{$nb_plus} camarades sont absents de l'annuaire de l'AX.</strong>
 </p>
 {/dynamic}

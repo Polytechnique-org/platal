@@ -1,4 +1,4 @@
-{* $Id: ins_confirmees.tpl,v 1.2 2004-08-26 09:22:22 x2000habouzit Exp $ *}
+{* $Id: ins_confirmees.tpl,v 1.3 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -27,7 +27,7 @@
   [<a href="{$smarty.server.PHP_SELF}?sort=date_ins">par date</a>]
   [<a href="{$smarty.server.PHP_SELF}?sort=promo">par promo</a>]
 </div>
-<p class="normal">
+<p>
 {$nb_ins} Polytechniciens se sont inscrits depuis le début de la semaine !
 </p>
 

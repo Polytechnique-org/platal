@@ -1,6 +1,6 @@
-{* $Id: doc_nn.tpl,v 1.5 2004-02-11 15:35:32 x2000habouzit Exp $ *}
+{* $Id: doc_nn.tpl,v 1.6 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
-<p class="normal">
+<p>
     [<a href="{"docs/doc_nn.php?doc=smtp"|url}">Configuration du smtp</a>]
     [<a href="{"docs/doc_nn.php?doc=nntp"|url}">Configuration du nntp</a>]
     [<a href="{"docs/doc_nn.php?doc=all"|url}">Doc. complète (gros)</a>]
@@ -11,20 +11,20 @@
 <div class="ssrubrique">
     Prérequis
 </div>
-<p class="normal">
+<p>
     Cette page est valable pour Netscape Communicator 4.x. Les copies d'écran
 		ont été réalisées avec la version 4.7 sous Windows, mais restent valables
 		pour les autres versions de Netscape Communicator sous d'autres systèmes
 		d'exploitation.
     Cette page est tout à fait transposable à Netscape 6/7 et Mozilla.
 </p>
-<p class="normal">
+<p>
     Tous les services de polytechnique.org étant sécurisés, il faut  commencer
 		par faire accepter à ton système d'exploitation les certificats de sécurités
 		de polytechnique.org. Pour ceci, suis les instructions de la
 		<a href="{"docs/doc_ssl.php"|url}">documentation ssl</a>.
 </p>
-<p class="normal">
+<p>
     Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a>.
     Dans la suite, ton <strong>login</strong> désigne le logine que tu as utilises pour te connecter au site,
     et <strong>le mot de passe</strong> celui que tu as indiqué lors de
@@ -33,14 +33,14 @@
 <div class="ssrubrique">
     SMTP, NNTP, qu'est-ce ?
 </div>
-<p class="normal">
+<p>
     Le SMTP est la machine sur laquelle ton client de courrier électronique se connecte pour envoyer
     des mails. En général, ton fournisseur d'accès internet t'en propose un. Mais il arrive souvent
     que ces serveurs aient des limitations (notament sur l'adresse mail que tu veux mettre dans le
     champ expéditeur). Pour tous ses inscrits, Polytechnique.org en propose une version sécurisée,
     accessible depuis tout le web.
 </p>
-<p class="normal">
+<p>
   Le NNTP est un autre nom pour désigner les <a href="{"banana/"|url}">forums</a> de
     discussions de Polytechnique.org. Il s'agit de les consulter depuis un logiciel comme Netscape,
     ce qui est tout de même bien plus pratique que le WebForum.
@@ -88,13 +88,13 @@
 </tr>
 <tr>
   <td>
-    <p class="normal">
+    <p>
       1. Clique alors sur l'onglet <strong>Serveurs de courrier</strong>, la fenêtre devrait
       correspondre à l'écran ci-contre.
 		</p>
   </td>
   <td class="half">
-    <p class="normal">
+    <p>
       2. Dans la partie <strong>Serveur de courrier sortant</strong>, indique
 			<code>ssl.polytechnique.org</code> dans le champ <strong>Serveur de
 			courrier sortant (SMTP)</strong> puis ton <em>login</em> dans le champ 
@@ -104,7 +104,7 @@
 		</p>
   </td>
   <td>
-    <p class="normal">
+    <p>
       3. <strong>Important</strong>, n'oublie pas de cocher <strong>Toujours</strong>, sinon ton
 			mot de passe risque de ne pas être chiffré lors de l'envoi de courriels.
 		</p>
@@ -117,7 +117,7 @@
 <table summary="Troisème étape" cellpadding="5">
 <tr> 
  <td>
-   <p class="normal">
+   <p>
       Si tu envoyes un courriel, tu verras apparaître la fenêtre ci-contre.
       Tape le mot de passe que tu as indiqué lors de l'<a href="{"acces_smtp.php"|url}">activation de ton compte</a>.
     </p>
@@ -134,14 +134,14 @@
 Et maintenant quelques remarques :
 <ul>
 	<li>
-		<p class="normal">
+		<p>
 			Netscape Communicator ne permet pas de chosir le port du serveur SMTP.
 			Il utilise par défaut le port 25.  Avec Netscape 6/7 ou Mozilla, il est
 			recommandé d'utiliser le port 587, qui est le port dédié.
 		</p>
 	</li>
 	<li>
-		<p class="normal">
+		<p>
 			Certaines <abbr title="direction des systèmes informatiques">DSI</abbr>
 			locales interdisent l'utilisation de ports inférieurs à 1024. Il suffit
 			alors de spécifier comme numéro de port SMTP non pas 587, mais 2525.

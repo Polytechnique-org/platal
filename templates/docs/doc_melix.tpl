@@ -1,9 +1,9 @@
-{* $Id: doc_melix.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_melix.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   alias @melix.net
 </div>
-<p class="normal">
+<p>
   <strong>Pourquoi un alias, alors que j'ai déjà mes adresses @polytechnique.org ?</strong>
 </p>
 <p>
@@ -19,7 +19,7 @@
     seront immédiatement redirigés sur tes adresses de renvoi habituelles définies sur
     <a href="{"emails.php"|url}">cette page</a>.
 </p>
-<p class="normal">
+<p>
   <strong>A combien d'alias @melix.net ai-je droit ?</strong>
 </p>
 <p>
@@ -28,7 +28,7 @@
     surnom ou un raccourci de ton nom seront acceptés. Tu recevras un mail une fois ta demande
     validée par un administrateur.
 </p>
-<p class="normal">
+<p>
   <strong>Je veux changer d'alias ...</strong>
 </p>
 <p>
@@ -39,7 +39,7 @@
     Attention, toute utilisation abusive de la création d'alias melix sera interdite, et sanctionnée
     par un refus de toutes les demandes de changement d'alias qui suivront.
 </p>
-<p class="normal">
+<p>
   <strong>Je n'ai plus besoin d'aucun alias</strong>
 </p>
 <p>

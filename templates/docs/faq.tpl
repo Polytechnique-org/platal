@@ -1,9 +1,9 @@
-{* $Id: faq.tpl,v 1.6 2004-08-24 22:51:48 x2000habouzit Exp $ *}
+{* $Id: faq.tpl,v 1.7 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Foire aux questions
 </div>
-<p class="normal">
+<p>
 Cette rubrique est sans doute incomplète. N'hésite pas à nous demander
 de la compléter sur un sujet en rapport avec le site si tu estimes
 que des informations manquent.

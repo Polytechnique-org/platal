@@ -1,4 +1,4 @@
-{* $Id: coupure.tpl,v 1.4 2004-02-11 13:15:35 x2000habouzit Exp $ *}
+{* $Id: coupure.tpl,v 1.5 2004-08-26 14:44:46 x2000habouzit Exp $ *}
 
 {dynamic}
 {if $cp}
@@ -36,14 +36,14 @@
 
 {else}
 
-<p class="normal">
+<p>
   Tu trouveras ici les interruptions de service de Polytechnique.org qui ont été
   constatées <strong>durant les trois dernières semaines</strong>, ou qui sont prévues dans le futur.
   Il est à noter qu'à ce jour la quasi-totalité des coupures proviennent 
   de défaillances du réseau de l'Ecole, où nos serveurs sont hébergés (rupture de la
   connexion internet de l'Ecole, problème électrique, etc...).
 </p>
-<p class="normal">
+<p>
   Pour avoir les détails d'une interruption particulière il te suffit de cliquer dessus.
 </p>
 

@@ -1,4 +1,4 @@
-{* $Id: referent.tpl,v 1.5 2004-08-24 23:06:05 x2000habouzit Exp $ *}
+{* $Id: referent.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -16,7 +16,7 @@
 </div>
 {dynamic}
 {if $recherche_trop_large}
-<p class="normal">
+<p>
 Les critères de recherche que tu as rentrés n'ont pas produit de résultats,
 sans doute car ta requête était trop générale. Nous t'invitons à
 <a href="referent.php">procéder à une nouvelle recherche</a>, en essayant
@@ -73,7 +73,7 @@ d'être plus précis.
   Si tu utilises ce service pour la première fois, lis attentivement le texte
   qui suit.
 </span>
-<p class="normal">
+<p>
 En <a href="profil.php">renseignant sa fiche dans l'annuaire</a>, chacun
 d'entre nous a la possibilité de renseigner, dans la section "Mentoring",
 s'il accepte de recevoir des messages de la part de camarades qui pourraient
@@ -105,7 +105,7 @@ autant de temps à quelqu'un que le ferait un mentor attentionné.
 La recherche proposée ici permet de trouver les deux types d'aide.
 </p>
 
-<p class="normal">
+<p>
 Dans le formulaire ci-dessous, tu peux rechercher des avis en fonction des
 domaines de compétence recherchés, des cultures professionnelles des pays
 connues par le référent, et enfin une dernière case te permettra de faire
@@ -114,7 +114,7 @@ Nous t'incitons à prendre plutôt 2 ou 3 contacts qu'un seul, cela te
 permettant certainement d'avoir une vision des choses plus complète.
 </p>
 
-<p class="normal">
+<p>
 Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polytechnique.org.
 </p>
 

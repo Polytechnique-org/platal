@@ -1,6 +1,6 @@
 {dynamic}
 {if $no_update_bd}
-<p class="normal">
+<p>
   Le site est en mode de consultation seulement, tu ne peux pas modifier tes adresses
   de redirections.
 </p>
@@ -30,7 +30,7 @@
   </p>
 {/if}
 {if $mtic == 1}
-  <p class="normal">
+  <p>
   Ton adresse de redirection {$smarty.request.email} fait partie d'un domaine refusant
   que les messages internes passent par l'extérieur, ces messages seront donc retransmis en pièces jointes.
   </p>
@@ -39,17 +39,17 @@
   <div class="rubrique">
     Tes adresses de redirection
   </div>
-  <p class="normal">
+  <p>
     Tu configures ici les adresses emails vers lesquelles tes adresses {if $grx neq ""}<strong>{$grx}</strong>, <strong>{$domaine}org</strong>, {/if}{if $alias neq ""}<strong>{$alias}@polytechnique.org</strong>, <strong>{$alias}@m4x.org</strong>,{/if}<strong>{$smarty.session.username}@polytechnique.org</strong> et <strong>{$smarty.session.username}@m4x.org</strong> sont redirigées.
   </p>
-  <p class="normal">
+  <p>
     Le routage est en place pour les adresses dont la case "Actif" est cochée.
     Si tu modifies souvent ton routage, tu as tout intérêt à rentrer toutes les
     adresses qui sont susceptibles de recevoir ton routage, de sorte qu'en
     jouant avec les cases "Actif" tu pourras facilement mettre en place les unes
     ou bien les autres.
   </p>
-  <p class="normal">
+  <p>
     Enfin, la réécriture consiste à substituer à ton adresse email habituelle
     (adresse wanadoo, yahoo, free, ou autre) ton adresse polytechnique.org ou
     m4x.org dans l'adresse d'expédition de tes messages, lorsque tu écris
@@ -88,7 +88,7 @@
     <br />
     <input type="submit" value="Mettre à jour les emails actifs" name="emailop">
   </div>
-  <p class="normal">
+  <p>
     Tu peux ajouter à cette liste une adresse email en la tapant ici et en cliquant sur Ajouter.
   </p>
   <input type="text" size="35" maxlength="60" name="email" value="" />

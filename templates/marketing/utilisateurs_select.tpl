@@ -1,4 +1,4 @@
-{* $Id: utilisateurs_select.tpl,v 1.1 2004-07-19 22:38:08 x2000habouzit Exp $ *}
+{* $Id: utilisateurs_select.tpl,v 1.2 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,7 +6,7 @@
   Selectionner un X non inscrit
 </div>
 
-<p class="normal">
+<p>
 Sélectionne l'X que tu veux inscrire ou &agrave; qui tu veux envoyer le mail de pré-inscription.
 </p>
 

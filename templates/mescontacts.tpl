@@ -1,4 +1,4 @@
-{* $Id: mescontacts.tpl,v 1.5 2004-08-24 12:23:40 x2000habouzit Exp $ *}
+{* $Id: mescontacts.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic}
 {$erreur}
@@ -9,21 +9,21 @@
 </div>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
-<p class="normal">
+<p>
   Ajouter la personne suivante à ma liste de contacts (prenom.nom) :
   <input type="hidden" name="action" value="ajouter" />
   <input type="text" name="user" size="20" maxlength="70" />&nbsp;
   <input type="submit" value="Ajouter" />
 </p>
 </form>
-<p class="normal">
+<p>
   Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
   il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>
 
 {dynamic}
 {if $nb_contacts}
-<p class="normal">
+<p>
   Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" onclick="return popup(this)"><strong>Triée par promo</strong></a>]
   [<a href="mescontacts_pdf.php/mes_contacts.pdf" onclick="return popup(this)"><strong>Triée par noms</strong></a>]
@@ -38,7 +38,7 @@
 </div>
 
 {else}
-<p class="normal">Actuellement ta liste de contacts est vide...</p>
+<p>Actuellement ta liste de contacts est vide...</p>
 {/if}
 {/dynamic}
 

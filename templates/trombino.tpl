@@ -1,4 +1,4 @@
-{* $Id: trombino.tpl,v 1.1 2004-07-24 18:22:43 x2000habouzit Exp $ *}
+{* $Id: trombino.tpl,v 1.2 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,7 +6,7 @@
 <p class="erreur">
 {$erreur}
 </p>
-<p class="normal">
+<p>
 La photo soumise n'a pu être correctement téléchargée pour la raison précédente.
 La photo par défaut est donc gardée.
 </p>
@@ -28,7 +28,7 @@ La photo par défaut est donc gardée.
   </table>
 
   {if ($session.promo ge 1995) or ($session.promo le 2002)}
-  <p class="normal">
+  <p>
   Si tu n'as pas encore fourni de photo, c'est celle du trombinoscope de l'X qui est
   affichée par défaut dans le profil. Si elle ne te plaît pas, ou si tu n'es quand même
   plus un tos, tu peux la remplacer par ta photo en suivant les instructions suivantes.
@@ -86,12 +86,12 @@ La photo par défaut est donc gardée.
     </tr>
     <tr>
       <td>
-        <p class="normal">
+        <p>
         Nous te proposons deux possibilités pour mettre à jour ta photo (30 Ko maximum). Tout dépend
         de savoir où se trouve ta photo. Si elle est sur ton poste de travail local, c'est la première
         solution qu'il faut choisir.
         </p>
-        <p class="normal">
+        <p>
         Si elle est sur Internet, choisis la seconde solution et nos robots iront la télécharger
         directement où il faut :-)
         </p>

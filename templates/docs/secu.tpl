@@ -1,4 +1,4 @@
-{* $Id: secu.tpl,v 1.4 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: secu.tpl,v 1.5 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <script language="JavaScript" type="text/javascript">
 {literal}
@@ -19,11 +19,11 @@
     <img src="{"images/verisign.png"|url}" alt=" [ LOGO CERTPLUS ] ">
   </a>
 </div>
-<p class="normal">
+<p>
 La sécurité des connexions sur le site Polytechnique.org est garantie par un
 certificat fourni par <a href="http://www.certplus.com/">Certplus</a>.
 </p>
-<p class="normal">
+<p>
 Créé en 1998 par quatre actionnaires fondateurs, Gemplus (49%), France Telecom (17%),
 EADS (Aérospatiale Matra) (17%) et VeriSign, rejoints début 2000 par la CIBP
 (Confédération Internationale des Banques Populaires), Certplus est le
@@ -35,11 +35,11 @@ confidentialité (Intranet, Extranet, VPN, applications informatiques), et de
 signature électronique (intégrité et non-répudiation de documents, formulaires 
 et déclarations en ligne).
 </p>
-<p class="normal">
+<p>
 Lorsque l'adresse de la page commence par <strong>https</strong> vous êtes assurés d'une 
 communication cryptée avec le serveur. 
 </p>
-<p class="normal">
+<p>
 L'association Polytechnique.org tient tout particulièrement à remercier <strong>Laurent 
   Malhomme</strong> (X92), <strong>Matthieu Bergot</strong> (X89) et <strong>Cyril Dujardin</strong> (X95)
 grâce à qui ce partenariat a pu être établi puis entretenu afin d'assurer

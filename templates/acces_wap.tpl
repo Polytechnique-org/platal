@@ -1,4 +1,4 @@
-{* $Id: acces_wap.tpl,v 1.3 2004-08-24 23:06:04 x2000habouzit Exp $ *}
+{* $Id: acces_wap.tpl,v 1.4 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {if $OK}
 <p class="erreur">
@@ -7,13 +7,13 @@
 {else}
 <div class="rubrique">Paramètre du site WAP</div>
 
-<p class="normal">
+<p>
   Tu peux utiliser certaines fonctionnalités du site Polytechnique.org sur un terminal WAP.<br />
   (téléphone portable, PDA, ...)<br />
   Il est disponible à l'adresse https://wap.polytechnique.org (# TODO # adresse de devel: http://wap.m4x.org/?u=prenom.nom&amp;p=passsmtp)<br />
   <a href="docs/doc_wap.php">Pourquoi et comment</a> utiliser le site WAP de Polytechnique.org. (##TODO## à ecrire)<br />
 </p>
-<p class="normal">
+<p>
   Pour utiliser le site WAP, il faut que tu l'actives explicitement en cochant la case ci dessous.
 </p>
 {dynamic}
@@ -58,7 +58,7 @@
     </tr>
   </table>
 
-  <p class="normal">
+  <p>
     La largeur et la hauteur de l'écran sont juste utilisé à titre <strong>indicatif</strong> pour améliorer l'affichage des photos.
     Si vous ne les connaissez pas, vous pouvez les laisser à la valeur par défaut ou faire des essais successifs.<br />
   </p>
@@ -104,7 +104,7 @@
       </td>
     </tr>
   </table>
-  <p class="normal">
+  <p>
     <br/>
     Si votre boite mail est sur un serveur <strong>IMAP</strong>, vous pouvez activer la lecture de vos mails depuis le site WAP.
   </p>

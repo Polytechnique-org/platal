@@ -1,12 +1,12 @@
-{* $Id: doc_patte_cassee.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_patte_cassee.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Vérifier une patte cassée
 </div>
-<p class="normal">
+<p>
   <strong>Qu'est-ce qu'une patte cassée ?</strong>
 </p>
-<p class="normal">
+<p>
     Tu peux choisir un nombre illimité d'adresses emails de redirection pour ton
     courrier reçu par Polytechnique.org : ces pattes de redirection peuvent parfois
     tomber en panne...! Par exemple, ton adresse de redirection @yahoo.fr ou
@@ -14,7 +14,7 @@
     définitivement (panne du fournisseur de boîte email, résililation de ton contrat
     avec ton fournisseur d'accès...).
 </p>
-<p class="normal">
+<p>
     Nous t'aidons donc à <strong>analyser les messages</strong> d'erreurs que tu recois
     lorsque tu envoies un mail à des utilisateurs de Polytechnique.org. Plus
     précisément, si après avoir rédigé un email, tu reçois en retour un message
@@ -22,17 +22,17 @@
     ses adresses de redirections, nous allons pouvoir te dire s'il a reçu ton
     email sur une autre adresse de redirection...!
 </p>
-<p class="normal">
+<p>
     Nous pouvons t'aider si par exemple tu as envoyé un mail et l'un de tes
     correspondants a une adresse de redirection qui est devenue invalide. Tu
     veux alors sans doute savoir si le destinataire a tout de même reçu ton
     email sur une autre adresse de redirection.
 </p>
 <br />
-<p class="normal">
+<p>
   <strong>Comment se sert-on de ce service ?</strong>
 </p>
-<p class="normal">
+<p>
     Rien ne vaut un exemple simple. imaginons que tu écrives à
     jean.dupont@polytechnique.org, et que tu recoives peu de temps après un mail
     du type :
@@ -56,7 +56,7 @@ from [129.104.218.132]
 </td>
 </tr>
 </table>
-<p class="normal">
+<p>
     J'imagine que tu veux savoir si Jean Dupont a effectivement recu ton
     courrier grâce à une autre adresse de redirection. Il te suffit de te
     rendre sur la page des  <a href="{"pattecassee.php"|url}">pattes cassées</a>

@@ -1,4 +1,4 @@
-{* $Id: doc_carva.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: doc_carva.tpl,v 1.4 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Redirection de page WEB
@@ -8,7 +8,7 @@
   Pourquoi une redirection de page WEB ?
 </div>
 
-<p class="normal">
+<p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>, 
   il est possible de faire pointer 
 {if $smarty.session.alias}
@@ -19,7 +19,7 @@
 {/if}
   vers la page WEB de ton choix.
 </p>
-<p class="normal">
+<p>
   La redirection fournie par <strong>carva.org</strong> t'offre ainsi une adresse Internet 
   simple et immuable pour référencer ton site personnel, quelle que soit la solution 
   d'hébergement retenue (free.fr, wanadoo.fr, ifrance.com, etc.).
@@ -27,7 +27,7 @@
 <div class="ssrubrique">
   Pourquoi le nom de domaine carva.org ?
 </div>
-<p class="normal">
+<p>
   Dans le jargon de l'école, un 'carva' signifiait un 'X' lorsque celle-ci était 
   située sur la montagne Ste Geneviève (<a href="javascript:x()" onclick="popWin('../aide.php#carva','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">
     voir la FAQ à ce sujet</a>). 
@@ -37,13 +37,13 @@
 <div class="rubrique">
   <a name="charte"></a>Conditions d'usage de la redirection de page WEB
 </div>
-<p class="normal">
+<p>
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité 
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas 
   atteinte aux droits des tiers.
 </p>
 <hr />
-<p class="normal">
+<p>
   Notamment, mais non exclusivement, l'utilisateur s'engage à ce que le contenu 
   du site référencé :
 </p>
@@ -99,10 +99,10 @@
     quelque manière que ce soit, aux droits ou aux biens des tiers.
   </li>
 </ul>
-<p class="normal">
+<p>
   Cette liste doit être considérée comme non limitative.
 </p>
-<p class="normal">
+<p>
   Polytechnique.org ne peut être considéré comme responsable du contenu des pages 
   WEB redirigées.
 </p>

@@ -1,14 +1,14 @@
-{* $Id: motdepassemd5.tpl,v 1.5 2004-08-25 09:52:08 x2000habouzit Exp $ *}
+{* $Id: motdepassemd5.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Changer de mot de passe
 </div>
 
-<p class="normal">
+<p>
   Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques. Attention
   au type de clavier que tu utilises (qwerty?) et aux majuscules/minuscules.
 </p>
-<p class="normal">
+<p>
   Pour une sécurité optimale, ton mot de passe circule de manière cryptée (https) et est
   stocké crypté irréversiblement sur nos serveurs.
 </p>

@@ -1,13 +1,13 @@
-{* $Id: doc_forums.tpl,v 1.3 2004-08-24 12:23:40 x2000habouzit Exp $ *}
+{* $Id: doc_forums.tpl,v 1.4 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Règles générales d'utilisation des forums de Polytechnique.org
 </div>
-<p class="normal">
+<p>
   Afin de permettre à tous une utilisation confortable des forums de
   Polytechnique.org, il est nécéssaire de respecter quelques règles. 
 </p>
-<p class="normal">
+<p>
   Bien que nous n'ayons pas vocation à avoir un rayonnement aussi large que
   Usenet, l'ensemble des règles relatives à Usenet (la netiquette), consultables
   <a href="http://www.usenet-fr.net/fr-chartes/rfc1855.html" onclick="return popup(this)">
@@ -45,7 +45,7 @@
 <div class="ssrubrique">
   Principes techniques
 </div>
-<p class="normal">  
+<p>  
   Afin de permettre à tous de consulter les forums avec un certain
   confort, certaines règles doivent être respectées.
 </p>
@@ -108,7 +108,7 @@
 <div class="rubrique">
   Contact
 </div>
-<p class="normal">
+<p>
   Si tu as des difficultés avec les forums, n'hésite pas à envoyer un mail à
   {mailto address='forums@polytechnique.org' text='l\\\'équipe Polytechnique.org' encode="javascript"}
 </p>

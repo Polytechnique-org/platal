@@ -1,4 +1,4 @@
-{* $Id: recovery.tpl,v 1.1 2004-07-17 15:03:12 x2000habouzit Exp $ *}
+{* $Id: recovery.tpl,v 1.2 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Perte du mot de passe
@@ -10,13 +10,13 @@
 
 {if $ok}
 
-<p class="normal">
+<p>
 <strong>Un certificat d'authentification aléatoire</strong> vient de t'être attribué et envoyé à
 ton adresse en polytechnique.org.<span class="mef"> Il expire dans six heures.</span> Tu dois donc
 <strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliqué
 dans le mail pour changer ton mot de passe.
 </p>
-<p class="normal">
+<p>
 Si tu n'accèdes pas à ton mail dans les
 6 heures, sollicite un nouveau
 certificat sur cette page.
@@ -25,7 +25,7 @@ certificat sur cette page.
 {else}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
-  <p class="normal">
+  <p>
   Il est impossible de récupérer le mot de passe perdu (nous n'avons que le résultat après un
   chiffrement irréversible de ton mot de passe). La procédure suivante va te permettre de choisir un
   nouveau mot de passe.

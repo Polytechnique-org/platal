@@ -1,4 +1,4 @@
-{* $Id: inscrire.form_data.tpl,v 1.2 2004-08-24 22:18:47 x2000habouzit Exp $ *}
+{* $Id: inscrire.form_data.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 
@@ -14,7 +14,7 @@
 
 <form action="{$gotourl|default:$smarty.server.REQUEST_URI}" method="post" name="infos">
   {if $homonyme}
-  <p class="normal">
+  <p>
   Tu as un homonyme dans notre base de données, nous ne pouvons donc pas te donner 
   l'adresse <strong>{$loginbis}@polytechnique.org</strong>, ton adresse sera 
   <strong>{$mailorg}@polytechnique.org</strong> et l'adresse précédente sera 
@@ -22,13 +22,13 @@
   demander un alias qui te donne une autre adresse de ton choix.
   </p>
   {else}
-  <p class="normal">
+  <p>
   Ton adresse sera :<br/>
   <strong>{$mailorg}@polytechnique.org</strong>
   </p>
   {/if}
   
-  <p class="normal">
+  <p>
   Elle pointera sur les e-mails de ton choix, indique-s-en un pour commencer
   (tu pourras indiquer les autres une fois l'inscription terminée).
   Attention, il doit <strong>impérativement être correct</strong> pour que nous puissions 

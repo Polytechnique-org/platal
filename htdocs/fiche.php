@@ -1,7 +1,7 @@
 <?php
 
 require("auto.prepend.inc.php");
-new_simple_page('fiche.tpl',AUTH_COOKIE, true, 'add_fiche_css.tpl');
+new_simple_page('fiche.tpl',AUTH_COOKIE, true);
 
 require_once('applis.func.inc.php');
 

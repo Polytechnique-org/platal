@@ -1,4 +1,4 @@
-{* $Id: trombipromo.tpl,v 1.2 2004-08-26 09:34:02 x2000habouzit Exp $ *}
+{* $Id: trombipromo.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,11 +6,11 @@
 <div class="rubrique">
   Trombinoscope promo
 </div>
-<p class="normal">
+<p>
 Cette page te permet de voir l'album photo d'une promotion
 donnée.
 </p>
-<p class="normal">
+<p>
 Fais attention, si tu as une connexion à internet lente (par
 exemple si tu es sur un vieux modem), la page que tu vas télécharger
 en validant peut être longue à afficher. Pour te donner une
@@ -49,7 +49,7 @@ chaque page affiche au plus {$limit} photos.
 </div>
 
 {if $pnb}
-<p class="normal">
+<p>
 {$pnb} polytechnicien{if $pnb gt 1}s de la promotion {$smarty.request.xpromo} ont
 {else} de la promotion {$smarty.request.xpromo} a {/if} une photo dans l'album photo :
 </p>
@@ -91,7 +91,7 @@ chaque page affiche au plus {$limit} photos.
 
 {else}
 
-<div class="normal">
+<div>
   Il n'y a aucune photo de camarade de cette promotion sur nos serveurs.
 </div>
 

@@ -1,4 +1,4 @@
-{* $Id: pattecassee.tpl,v 1.3 2004-02-05 13:03:11 x2000habouzit Exp $ *}
+{* $Id: pattecassee.tpl,v 1.4 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic on="0$erreur"}
 <p class="erreur">{$erreur}</p>
@@ -35,10 +35,10 @@
 {/if}
 {/dynamic}
 
-<p class="normal">
+<p>
   <strong>Qu'est-ce qu'une patte cassée ?</strong>
 </p>
-<p class="normal">
+<p>
     Cette page sert à <strong>analyser les messages d'erreur</strong> que tu reçois
     lorsque tu envoies un mail à des utilisateurs de Polytechnique.org. Plus
     précisément, si après avoir rédigé un email, tu reçois en retour un message
@@ -50,7 +50,7 @@
     Pour plus d'explications concernant cette page, nous t'invitons à consulter
     la <a href="{"docs/doc_patte_cassee.php"|url}">documentation suivante</a>
 </p>
-<p class="normal">
+<p>
     Rentre dans la zone de saisie ci-dessous l'adresse email à laquelle ton
     courrier n'a pas été distribué puis valide. Nous te dirons si le
     destinataire possède d'autres adresses de redirection grâce auxquelles il a

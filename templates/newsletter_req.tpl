@@ -1,10 +1,10 @@
-{* $Id: newsletter_req.tpl,v 1.5 2004-08-24 23:06:04 x2000habouzit Exp $ *}
+{* $Id: newsletter_req.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposer un article pour la newsletter
 </div>
 
-<p class="normal">
+<p>
   La newsletter mensuelle est un excellent moyen de faire passer une 
   information. Nous devons cependant nous astreindre à certaines règles
   dans la rédaction pour en conserver la qualité et l'efficacité.
@@ -31,7 +31,7 @@
   {/if}
   
   {if $preview}
-    <p class="normal">
+    <p>
       Le texte de ton annonce aura sensiblement l'allure suivante :
     </p>
     <div styleclass="center">
@@ -55,12 +55,12 @@
       Ton annonce a été envoyée à l'équipe de rédaction. Merci de ta contribution !
     </p>
     {elseif $nb_lines < 9}{* > *}
-    <p class="normal">
+    <p>
     Félicitations, ton article respecte les règles de pagination de la 
     newsletter !!! Il pourra cependant être revu en fonction des 
     nécéssités de la newsletter.
     </p>
-    <p class="normal">
+    <p>
     Tu peux le soumettre à l'équipe de validation en validant ta demande.
     Tu seras recontacté par mail par un rédacteur pour te confirmer la
     bonne récéption de ta demande.
@@ -71,7 +71,7 @@
       <input type="hidden" name="bonus" value="{$bonus}" />
       <input type="submit" name="action" value="valider" />
     </form>
-    <p class="normal">
+    <p>
     Si tu n'es pas satisfait de ton annonce, tu peux la retravailler :
     </p>
     {elseif $nb_lines > 9}

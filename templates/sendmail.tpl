@@ -1,4 +1,4 @@
-{* $Id: sendmail.tpl,v 1.4 2004-08-24 11:45:19 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.5 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -66,7 +66,7 @@
 {if $nb_contacts}
   <ul>
     <li>
-      <p class="normal">
+      <p>
         Tu peux également ajouter certains de tes contacts aux destinataires :
       </p>
     </li>

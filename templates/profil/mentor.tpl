@@ -1,4 +1,4 @@
-{* $Id: mentor.tpl,v 1.4 2004-08-24 11:45:19 x2000habouzit Exp $ *}
+{* $Id: mentor.tpl,v 1.5 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -43,7 +43,7 @@
 </script>
 {/literal}
 
-<p class="normal">
+<p>
 Si tu acceptes que ceux de nos camarades qui,
 <ul>
   <li>encore jeunes, sont en train de bâtir leur projet professionnel,</li>

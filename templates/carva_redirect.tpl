@@ -1,4 +1,4 @@
-{* $Id: carva_redirect.tpl,v 1.4 2004-08-24 23:06:04 x2000habouzit Exp $ *}
+{* $Id: carva_redirect.tpl,v 1.5 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <div class="rubrique">
@@ -14,7 +14,7 @@
 <div class="ssrubrique">
   Pourquoi une redirection de page WEB ?
 </div>
-<p class="normal">
+<p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
   il est possible de faire pointer
 {dynamic}
@@ -32,7 +32,7 @@
 <div class="ssrubrique">
   Conditions d'usage
 </div>
-<p class="normal">
+<p>
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas
   atteinte aux droits des tiers
@@ -42,7 +42,7 @@
 <div class="rubrique">
   Mise en place de la redirection
 </div>
-<p class="normal">
+<p>
 {dynamic}
 {if $carva}
   Actuellement, l'adresse <a href="http://www.carva.org/{$smarty.session.username}">http://www.carva.org/{$smarty.session.username}</a>
@@ -58,7 +58,7 @@
 {/if}
 </p>
 
-<p class="normal">
+<p>
   Pour modifier cette redirection remplis le champ suivant et clique sur <strong>Modifier</strong>.
 {if $carva}
   Si tu veux annuler ta redirection, clique sur <strong>Supprimer</strong>.

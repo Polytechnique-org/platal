@@ -1,4 +1,4 @@
-{* $Id: inscrire.form_id.tpl,v 1.2 2004-08-24 22:18:47 x2000habouzit Exp $ *}
+{* $Id: inscrire.form_id.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -10,7 +10,7 @@
   <div class="rubrique">
     Identification
   </div>
-  <p class="normal">
+  <p>
     Renseigne tes nom, prénom et promotion, et si tu es d'une promotion
     postérieure à la 1996, ton numéro de matricule.
   </p>

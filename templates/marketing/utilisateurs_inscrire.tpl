@@ -3,17 +3,17 @@
 </div>
 {dynamic}
 {if $success eq "1"}
-  <p class="normal">
+  <p>
     Paramètres à transmettre:<br />
     Login=<strong>{$mailorg}</strong><br />
     Password=<strong>{$pass_clair}</strong>
   </p>
-  <p class="normal">
+  <p>
     Pour éditer le profil,
     <a href="../admin/utilisateurs.php?login={$mailorg}">clique sur ce lien.</a>
   </p>
 {else}
-<p class="normal">
+<p>
   Les prénom, nom, promo sont pré-remplis suivant la table d'identification.
   Modifie-les comme tu le souhaites. Une autre solution consiste à éditer
   d'abord la table d'identification (écran précédent) avant d'inscrire cet X.

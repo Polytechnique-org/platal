@@ -1,4 +1,4 @@
-{* $Id: newsletter_prep.tpl,v 1.4 2004-08-24 23:06:05 x2000habouzit Exp $ *}
+{* $Id: newsletter_prep.tpl,v 1.5 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {if $erreur}
 
@@ -17,7 +17,7 @@
 </div>
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
-  <p class="normal">
+  <p>
     Conseil : enregistre souvent tes modifs pour éviter de les perdre si 
     le navigateur plante et pour éviter d'oublier<br />
     Vérifie bien que les lignes ne dépassent pas la largueur du cadre, 
@@ -25,10 +25,10 @@
   </p>
   
 {if $own_lock}
-  <p class="normal">
+  <p>
     Tu possèdes un verrou, tu peux éditer la newsletter.
   </p>
-  <p class="normal">
+  <p>
     <span class="erreur">Pense à relacher le verrou quand tu as fini.</span>
   </p>
   <div class="center">
@@ -39,7 +39,7 @@
   </div>
   <br />
 {elseif $is_lock}
-  <p class="normal">
+  <p>
     <span class="erreur">{$id_lock} est en train d'éditer la newsletter depuis le
       {$date_lock|date_format:"%c"}
     </span>, tu ne peux pas éditer la newsletter ni prendre de verrou. Si l'admin 

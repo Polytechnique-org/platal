@@ -1,10 +1,10 @@
-{* $Id: nb_by_promo.tpl,v 1.2 2004-02-04 19:47:48 x2000habouzit Exp $ *}
+{* $Id: nb_by_promo.tpl,v 1.3 2004-08-26 14:44:46 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Inscrits par promo
 </div>
 
-<p class="normal">
+<p>
 Voici le nombre d'inscrits par promo :
 </p>
 

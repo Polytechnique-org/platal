@@ -1,4 +1,4 @@
-{* $Id: homonymes.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: homonymes.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Gestion des homonymes
@@ -14,7 +14,7 @@
 
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
 
-<p class="normal">
+<p>
   Les utilisateurs signalés en rouge sont ceux qui conservent actuellement
   l'alias prenom.nom et empêchent donc la mise en place du robot détrompeur.
 </p>

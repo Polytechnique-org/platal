@@ -1,10 +1,10 @@
-{* $Id: dons.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: dons.tpl,v 1.2 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
 Dons au profit de l'association Polytechnique.org
 </div>
 
-<p class="normal">
+<p>
 Comme tu le sais sans doute, le site Polytechnique.org est géré par 
 l'<a href="http://x-org.polytechnique.org/">association</a> loi 1901 du même
 nom. Le travail effectué sur le site est entièrement bénévole et les outils
@@ -15,12 +15,12 @@ différents noms de domaines du site et l'achat de matériel informatique pour
 suivre la progression rapide du nombre d'inscrits au site.
 </p>
 
-<p class="normal">
+<p>
 Nous mettons à ta disposition les informations concernant nos comptes <a
 href="trezo/">ici</a>.
 </p>
 
-<p class="normal">
+<p>
 Si tu le souhaites, tu peux nous aider à maintenir et à développer la qualité
 de nos services à la communauté polytechnicienne en <a href="paiement/?ref=0">effectuant un don</a>
 du montant de ton choix à l'association.

@@ -1,4 +1,4 @@
-{* $Id: postfix.common.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: postfix.common.tpl,v 1.4 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic}
 <p class="erreur">{$erreur}</p>
@@ -12,7 +12,7 @@
 <a href="{"admin/postfix_perm.php"|url}">permissions</a> | 
 <a href="{"admin/postfix_retardes.php"|url}">mails retardés</a>
 
-<p class="normal">
+<p>
 {$expl}
 </p>
 

@@ -1,6 +1,6 @@
-{* $Id: doc_oe.tpl,v 1.5 2004-02-11 15:35:32 x2000habouzit Exp $ *}
+{* $Id: doc_oe.tpl,v 1.6 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
-<p class="normal">
+<p>
   [<a href="{"docs/doc_oe.php?doc=smtp"|url}">Configuration du smtp</a>]
   [<a href="{"docs/doc_oe.php?doc=nntp"|url}">Configuration du nntp</a>]
   [<a href="{"docs/doc_oe.php?doc=all"|url}">Doc. complète (gros)</a>]
@@ -14,7 +14,7 @@
   Prérequis
 </div>
 
-<p class="normal">
+<p>
   Comme pour toute aide à la configuration, la première étape consiste
   souvent à mettre à jour ses logiciels installés. En effet, la présente page
   a été écrite pour la version 5.5 d'Outlook Express qui est une version déja
@@ -23,7 +23,7 @@
   recommandons la mise à jour pour tout type de configuration d'ordinateur.
 </p>
 
-<p class="normal">
+<p>
   Cependant, les principes de cette configuration sont toujours les mêmes
   dans les autres versions du logiciel et il est simple de leur transposer
   cette explication.
@@ -31,13 +31,13 @@
   la mise à jour à partir du site de Microsoft.
 </p>
 
-<p class="normal">
+<p>
   Tous les services de polytechnique.org sont sécurisés, il faut donc
   commencer par ajouter les certificats de sécurité de polytechnique.org au
   panier des certificats de Windows. Pour ce faire, suis les instructions de
   la <a href="{"docs/doc_ssl.php"|url}">documentation ssl</a>.
 </p>
-<p class="normal">
+<p>
   Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a>.
   Par la suite, ton <strong>login</strong> désigne l'identifiant que tu utilises pour te connecter au site,
   et <strong>le mot de passe</strong> celui que tu as indiqué lors de
@@ -47,7 +47,7 @@
 <div class="ssrubrique">
   SMTP, NNTP, qu'est-ce ?
 </div>
-<p class="normal">
+<p>
   Le serveur SMTP est la machine sur laquelle ton client de courrier électronique se
   connecte pour envoyer des mails. En général, ton fournisseur d'accès
   internet t'en propose un. Mais il arrive souvent que ces serveurs aient des
@@ -55,7 +55,7 @@
   expéditeur). Pour tous ses inscrits, Polytechnique.org propose un serveur
   sécurisé, accessible depuis tout internet.
 </p>
-<p class="normal">
+<p>
   Le NNTP est un autre nom pour désigner les <a href="{"banana/"|url}">forums</a> de
   discussions de Polytechnique.org. Il s'agit de les consulter depuis un
   logiciel comme Outlook Express,
@@ -119,14 +119,14 @@
 <table summary="Troisième étape" cellpadding="5">
 <tr> 
   <td style="width:220px">
-    <p class="normal">
+    <p>
       Cet écran permet d'éditer directement tous les paramètres du compte.
     </p>
-    <p class="normal">
+    <p>
       Dans l'onglet <strong>&quot;Général&quot;</strong>, on trouve l'adresse 
       d'envoi du compte, et le <strong>&quot;Nom&quot;</strong> affich&eacute;.
     </p>
-    <p class="normal">
+    <p>
       La petite case <strong>&quot;Inclure ce compte&quot; </strong>est importante. 
       Si tu la coches, cela veut dire que ce compte est réel et pas 
       seulement formel et Outlook Express va aller vérifier la présence 
@@ -146,19 +146,19 @@
 <table summary="Quatrième étape" cellpadding="5">
 <tr> 
   <td style="width:220px" class="middle">
-    <p class="normal">
+    <p>
       1. Dans l'onglet <strong>&quot;Serveurs&quot;</strong>, indique 
       <strong>ssl.polytechnique.org</strong> comme serveur SMTP
       et coche la case <strong>&quot;Mon serveur nécessite une 
       authentification&quot;</strong>.
     </p>
-    <p class="normal">
+    <p>
       2. Dans la case <strong>&quot;Courrier entrant (POP3)&quot;</strong>
       indique le serveur POP du compte mail où tu redirige ton
       courrier (par exemple le serveur de courier entrant de ton
       fournisseur d'accès Internet).
     </p>
-    <p class="normal">
+    <p>
       3. Tu peux alors cliquer sur le bouton <strong>&quot;Paramètres...&quot;</strong>
     </p>
   </td>
@@ -171,11 +171,11 @@
 <table summary="Cinquième étape" cellpadding="5">
 <tr> 
   <td style="width:220px">
-    <p class="normal">
+    <p>
       La boîte ci-contre s'affiche alors. Indique ton <em>login</em> 
       et ton mot de passe,
     </p>
-    <p class="normal">
+    <p>
       puis clique sur <strong>&quot;OK&quot;</strong>
     </p>
   </td>
@@ -188,7 +188,7 @@
 <table summary="Sixième étape" cellpadding="5">
 <tr> 
   <td style="width:220px">
-    <p class="normal">
+    <p>
       Enfin, dans l'onglet <strong>&quot;Avancée&quot;</strong>, spécifie le port <strong>465</strong>
       pour le <strong>Courrier sortant (SMTP)</strong> et coche la case 
       <strong>&quot;Ce serveur utilise une connexion SSL&quot;</strong>.
@@ -208,7 +208,7 @@
 Et maintenant quelques remarques :
 <ul>
 	<li>
-		<p class="normal">
+		<p>
 			Le port de communication avec le serveur SMTP est officiellement le port
 			587. Cependant, certaines versions d'Outlook Express ne fonctionnent
 			qu'avec le port 465. L'équipe de Polytechnique.org ne peut qu'insister
@@ -217,7 +217,7 @@ Et maintenant quelques remarques :
 		</p>
 	</li>
 	<li>
-		<p class="normal">
+		<p>
 			Certaines <abbr title="direction des systèmes informatiques">DSI</abbr>
 			locales interdisent l'utilisation de ports inférieurs à 1024. Il faut
 			alors spécifier comme numéro de port non pas 587 ou 465, mais 2525 (ne
@@ -230,13 +230,13 @@ Et maintenant quelques remarques :
 <table summary="Conclusion" cellpadding="5">
 <tr> 
   <td>
-    <p class="normal">
+    <p>
       Voilà, c'est terminé, tes messages sont maintenant envoyés par 
       Polytechnique.org, la connexion est authentifiée et chiffrée jusqu'à 
       notre serveur, donc ni ton mot de passe ni ton mail ne passe en clair
       entre toi et nous.
     </p>
-    <p class="normal">
+    <p>
       La première fois que tu enverras un mail par notre serveur tu auras 
       certainement un message t'expliquant que notre certificat n'est pas signé 
       par une autorité de confiance, c'est normal. Nous allons essayer de changer 
@@ -314,7 +314,7 @@ Et maintenant quelques remarques :
 <table summary="Quatrième étape" cellpadding="5">
 <tr> 
   <td style="width:220px">
-    <p class="normal">
+    <p>
       Il faut ensuite aller changer quelques options pour pouvoir utiliser les forums.
       Retourne dans le menu <strong>"Outils/Comptes"</strong> du début, puis choisis de modifier
       les <strong>"Propriétés"</strong> du compte de News que tu viens de créer.
@@ -334,7 +334,7 @@ Et maintenant quelques remarques :
 <table summary="Cinquième étape" cellpadding="5">
 <tr> 
   <td style="width:220px">
-    <p class="normal">
+    <p>
       Dernière étape, choisis l'onglet <strong>"Avancé"</strong> et coche la case
       <strong>ce serveur nécessite une connexion sécurisée (SSL)</strong>,
       puis clique sur <strong>&quot;OK&quot;</strong>.

@@ -1,4 +1,4 @@
-{* $Id: utilisateurs_recherche.tpl,v 1.2 2004-08-26 09:22:22 x2000habouzit Exp $ *}
+{* $Id: utilisateurs_recherche.tpl,v 1.3 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 {dynamic}
 <div class="rubrique">
@@ -9,11 +9,11 @@
 <p class="erreur">{$err}</p>
 {/if}
 
-<p class="normal">
+<p>
 Bien remplir tous les champs pour passer à la page suivante.
 </p>
 
-<p class="normal">
+<p>
 Si un champ est <strong>inconnu ou incertain</strong>, le remplir quand m&ecirc;me avec
 <strong>le caract&egrave;re % (pourcent). La promo peut rester vide.</strong>
 </p>

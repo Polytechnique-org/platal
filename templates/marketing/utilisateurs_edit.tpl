@@ -3,14 +3,14 @@
 </div>
 {dynamic}
 {if $success eq "1"}
-  <p class="normal">
+  <p>
     La modification de la table identification a été effectuée.
   </p>
   <p>
     <a href="{$smarty.server.PHP_SELF}">Retour</a>
   </p>
 {else}
-  <p class="normal">
+  <p>
     <strong>Attention</strong> la table d'identification contenant la liste des polytechniciens sera
 modifiée !! (aucune vérification n'est faite)
   </p>

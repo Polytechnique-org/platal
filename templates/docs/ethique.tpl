@@ -1,11 +1,11 @@
-{* $Id: ethique.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: ethique.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
-<p class="normal">
+<p>
 L'association Polytechnique.org fournit à la communauté divers <strong>services</strong>, cette
 page les liste et te permet de connaitre les engagements pris par les administrateurs quant à la
 maintenance de ces services.
 </p>
-<p class="normal">
+<p>
 Cette association est constituée de membres bénévoles, nous nous engageons donc à fournir ces
 services dans la limite de nos disponibilités respectives, en mettant un point d'honneur à
 fournir un <strong>service mail continu</strong>.
@@ -14,7 +14,7 @@ fournir un <strong>service mail continu</strong>.
 <div class="rubrique">
   Annuaire
 </div>
-<p class="normal">
+<p>
 Le site te permet de réaliser des recherches sur tous les camarades <strong>inscrits</strong>,
 ces recherches portant non seulement sur leur nom ou leur prénom, mais aussi sur des critères de binet, de lieu de
 résidence ou même de section sportive à l'X.
@@ -22,11 +22,11 @@ résidence ou même de section sportive à l'X.
 <div class="ssrubrique">
   Profil, et photo
 </div>
-<p class="normal">
+<p>
 Tu as accès à une page te permettant de modifier ton <strong>profil</strong>. La mise à jour de
 ces informations t'es confiée : plus tu les tiens complètes et à jour, plus le site est d'intérêt.
 </p>
-<p class="normal">
+<p>
 Pour des raisons légales nous sommes obligés de vérifier et de modérer les photos soumises une à
 une (droits d'auteurs par exemple). Il y a donc un délai entre le moment où ta photo est soumise
 et le moment où tu la verras réellement aparaitre sur le site. (En général, la validation d'une
@@ -39,7 +39,7 @@ photo est réalisée sous quelques heures en journée).
 <div class="ssrubrique">
   Redirection à vie
 </div>
-<p class="normal">
+<p>
 Une adresse prenom.nom&#64;polytechnique.org (ou &#64;m4x.org) t'es fournie à vie par Polytechnique.org.
 Sauf en cas d'homonyme, auquel cas, l'adresse sera modifiée en ajoutant ta
 promotion entre prenom.nom et le caractère @. Le premier arrivé sur le site gardera son alias prenom.nom pendant 1 mois, ce après quoi il lui est retiré.
@@ -47,12 +47,12 @@ Ensuite c'est un robot qui répond aux mails envoyés à cette adresse pour signale
 présence d'un homonyme à l'auteur du mail, permettant ainsi que les mails arrivent bien à leur
 destinataire et non à un autre polytechnicien du même nom. <strong>Le critère d'attribution que nous avons retenu est donc la devinabilité de l'adresse !</strong>
 </p>
-<p class="normal">
+<p>
 Les femmes qui se marient n'ont qu'à renseigner leur nom de mariage sur leur fiche de profil pour obtenir immédiatement (après validation de la demande
 par un administrateur - pour éviter tout abus), un alias prenom.nom_de_femme_mariée en plus de
 leur alias prenom.nom_de_jeune_fille qu'elle conserveront bien entendu.
 </p>
-<p class="normal">
+<p>
 Pour les personnes ayant des patronymes particulièrement longs, il est possible de créer un
 alias prenom.nom_usuel à la manière des femmes mariées. Il suffit de nous en faire la demande en écrivant à <?php echo mailto('support@polytechnique.org') ?>.
 Pour les autres, préférer plutôt l'utilisation d'un alias melix.
@@ -60,7 +60,7 @@ Pour les autres, préférer plutôt l'utilisation d'un alias melix.
 <div class="ssrubrique">
   Alias melix
 </div>
-<p class="normal">
+<p>
 Les alias melix permettent de créer une nouvelle adresse plus courte, et pourquoi pas fantaisiste. Ce sont
 des adresses qui utilisent tes redirections d'adresses en polytechnique.org et m4x.org. Il est
 possible d'en avoir une par personne. Chaque demande d'alias melix doit être validé par un
@@ -69,7 +69,7 @@ administrateur.
 <div class="ssrubrique">
   Protection antivirale et antispam
 </div>
-<p class="normal">
+<p>
 Un logiciel antivirus est installé sur Polytechnique.org. Il vise à te
 protéger des virus informatiques, qui ont souvent des effets destructeurs.
 Il filtre chacun des emails que tu reçois à tes adresses polytechnique.org,
@@ -80,7 +80,7 @@ récents dont il n'a pas encore la connaissance... Un antivirus n'est jamais
 parfait, et nous ne pouvons être tenus responsables dans le cas où un virus
 arriverait dans ta boîte aux lettres.
 </p>
-<p class="normal">
+<p>
 Un logiciel antispam est en cours d'installation. Plusieurs tests ont été
 menés avec succès. Il sera bientôt installé en production, et pourra être
 activé par chacun des utilisateurs, de manière individuelle.
@@ -89,7 +89,7 @@ activé par chacun des utilisateurs, de manière individuelle.
 <div class="rubrique">
   Forums
 </div>
-<p class="normal">
+<p>
 Les forums visent à favoriser les échanges entre X, sur des thèmes aussi
 variés que la vie de promotion, l'emploi, les loisirs, etc...
 La charte d'utilisation des forums est <a href="docs/doc_forums.php">accessible ici</a>.
@@ -98,7 +98,7 @@ La charte d'utilisation des forums est <a href="docs/doc_forums.php">accessible 
 <!--div class="rubrique">
 Services aux groupes X
 </div>
-<p class="normal">
+<p>
 Plusieurs services sont offerts aux groupes X...
 </p-->
 
@@ -108,13 +108,13 @@ Plusieurs services sont offerts aux groupes X...
 <div class="ssrubrique">
   Temps de réponse
 </div>
-<p class="normal">
+<p>
 Nous cherchons dans la mesure du possible à répondre le plus rapidement à toutes les questions
 des utilisateurs de Polytechnique.org. En temps normal, nous répondons aux couriers qui nous sont adressés
 dans la semaine. Il ne faut pas hésiter à nous contacter par le biais des <strong>forums</strong>
 où d'autres utilisateurs avertis pourront vous répondre.
 </p>
-<p class="normal">
+<p>
 Quelques services sont soumis à la modération des administrateurs (changement de photo, alias
 mélix, femmes mariées, demande de Mailing list, etc ...). Nous essayons dans la mesure du
 possible de valider ces demandes dans les heures qui suivent en journée.
@@ -122,24 +122,24 @@ possible de valider ces demandes dans les heures qui suivent en journée.
 <div class="ssrubrique">
   &Eacute;thique
 </div>
-<p class="normal">
+<p>
 L'association Polytechnique.org est très attentive à maintenir un <strong>engagement
   éthique de très haut niveau</strong>.
 </p>
-<p class="normal">
+<p>
 Dans cette optique, nous tenons à rappeler que nous sommes notamment
 vigilants à l'égard de toute pratique de <strong>spam</strong>. Les lois contre le spam 
 devenant de plus en plus en sévères, celles-ci nous donnent la possibilité de 
 défendre nos abonnés contre les pratiques de ce genre.
 </p>
-<p class="normal">
+<p>
 D'autre part, toutes les données contenues sur le site sont soumises aux
 lois sur l'informatique et la liberté du 6 janvier 1978. Aucune donnée concernant
 un polytechnicien n'est transmise à un tiers sans son accord. Toutes les informations
 publiques de ce site sont soumises à une <strong>règle d'usage strictement individuel et 
   privé</strong>. Toute utilisation commerciale de ces données est formellement interdite.
 </p>
-<p class="normal">
+<p>
 Pour tout problème ou complément éthique, une adresse est à votre disposition,
 il s'agit de <?php echo mailto('abuse@polytechnique.org') ?>.
 </p>  

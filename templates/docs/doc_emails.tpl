@@ -1,4 +1,4 @@
-{* $Id: doc_emails.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_emails.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique">
     Mes Redirections d'adresses emails
@@ -6,20 +6,20 @@
 <div class="ssrubrique">
     En quoi ça consiste, comment ça marche ?
 </div>
-<p class="normal">
+<p>
     Polytechnique.org te fournit un service de redirection de tes mails à vie. Toute ta vie, tu auras
     l'adresse <strong>{dyn s=$smarty.session.username}@polytechnique.org</strong>
     à ta disposition. Cependant, il s'agit d'une redirection, il faut donc que tu aies une boite au
     lettres fonctionnelles pour recevoir ton courrier (il en existe des
     <a href="{"docs/doc_gratuits.php"|url}">gratuites</a>).
 </p>
-<p class="normal">
+<p>
     Ainsi, durant toute ta vie, et malgré d'eventuels nombreux changements d'adresses réelles, tous
     tes correspondants pourront toujours te contacter sur
     <strong>{dyn s=$smarty.session.username}@polytechnique.org</strong> et 
     <strong>{dyn s=$smarty.session.username}@m4x.org</strong>.
 </p>
-<p class="normal">
+<p>
     L'utilisation de ce service est très simple. Sur <a href="{"emails.php"|url}">cette
     page</a>, tu trouveras un formulmaire pour ajouter de nouvelles adresses de redirection. Tous
     les courries envoyés sur tes adresses @polytechnique.org et @m4x.org seront redirigés vers
@@ -48,12 +48,12 @@
 <div class="ssrubrique">
     Se protéger du courrier non solicité (SPAM)
 </div>
-<p class="normal">
+<p>
     Beaucoup d'entre vous se plaignent de recevoir du courrier non solicité, communément appelé
     SPAM. Très souvent, celà vient d'un manque de prudence. En effet, il faut bien faire attention
     de ne pas laisser son adresse mails trop facilement compréhensible par des robots.
 </p>
-<p class="normal">
+<p>
     Il existe plusieurs manières de se prémunir de l'indexation de ton adresse mail par des robots :
 </p>
 <ul>
@@ -73,12 +73,12 @@
 <div class="ssrubrique">
     Une infinité d'alias e-mails en polytechnique.org et m4x.org
 </div>
-<p class="normal">
+<p>
     Lorsque tu écris à <strong>destinataire+truc@polytechnique.org</strong> ou
     <strong>destinataire_truc@polytechnique.org</strong> tout ce qui se trouve derrière le + ou le _
     est ignoré.
 </p>
-<p class="normal">
+<p>
     Autrement dit, c'est comme écrire à <strong>destinataire@polytechnique.org</strong>.
     Tu peux te servir de cette infinité d'alias pour un tas d'usages différents. Citons-en deux.
 </p>
@@ -97,7 +97,7 @@
     fonction de l'adresse de utilisée.
     </li>
 </ul>
-<p class="normal"><em>
+<p><em>
     <strong>NB:</strong> Le _ a été ajouté car certains sites web refusent le + dans une adresse
     email, qui est pourtant parfaitement valide d'après les RFCs...
 </em></p>

@@ -1,8 +1,8 @@
-{* $Id: doc_ssl.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: doc_ssl.tpl,v 1.4 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 
 <div class="rubrique"><a id="ssl" name="ssl"></a>Le certificat SSL de Polytechnique.org</div>
 <div class="ssrubrique">Pourquoi un certificat ?</div>
-<p class="normal">
+<p>
   En plus du serveur web sécurisé, Polytechnique.org met à ta diposition
   d'autres services sécurisés comme le <a href="doc_smtp.php">
   serveur SMTP</a> ou le <a href="doc_nntp.php">serveur de news</a>.
@@ -11,7 +11,7 @@
 </p>
 
 <div class="ssrubrique">Notre certificat</div>
-<p class="normal">
+<p>
   A l'installation, ton logiciel de courrier électronique n'a pas connaissance
   du certificat SSL de Polytechnique.org et il faut donc le lui fournir. Si ton
   logiciel de courrier électronique fonctionne de paire avec ton navigateur web
@@ -20,7 +20,7 @@
   pour télécharger et installer notre certificat.
 </p>
 <div class="ssrubrique">Sous windows</div>
-<p class="normal">
+<p>
 Après avoir cliqué sur <a href="{"cacert.php/cacert.cer"}|url">ce lien</a>, tu vas recevoir notre
   certificat. Ton navigateur devrait te demander si tu veux télécharger ce fichier,
   clique sur "ouvrir" :

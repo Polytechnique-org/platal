@@ -1,4 +1,4 @@
-{* $Id: acces_smtp.tpl,v 1.5 2004-08-24 23:06:04 x2000habouzit Exp $ *}
+{* $Id: acces_smtp.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <p class="erreur">
@@ -39,11 +39,11 @@
 </script>
 {/literal}
 
-<p class="normal">
+<p>
   <a href="docs/doc_smtp.php">Pourquoi et comment</a> utiliser le serveur SMTP de Polytechnique.org. <br />
   <a href="docs/doc_nntp.php">Pourquoi et comment</a> utiliser le serveur NNTP de Polytechnique.org. <br />
 </p>
-<p class="normal">
+<p>
 {if $actif}
   Clique sur <strong>"Supprimer"</strong> si tu veux supprimer ton compte SMTP/NNTP.
 {else}
@@ -84,7 +84,7 @@
     </tr>
   </table>
 </form>
-<p class="normal">
+<p>
   Ce mot de passe peut être le même que celui d'accès au site. Il doit faire au
   moins <strong>6 caractères</strong> quelconques. Attention au type de clavier que tu
   utilises (qwerty?) et aux majuscules/minuscules.

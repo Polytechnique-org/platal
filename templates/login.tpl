@@ -1,17 +1,17 @@
-{* $Id: login.tpl,v 1.5 2004-08-24 22:58:34 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
     Assistant première connexion
   </div>
-  <p class="normal">
+  <p>
   Le programme a détecté que tu te connectes pour la première fois
   sur ce site. Un certain nombre de paramètres ne sont donc pas à
   jour pour fonctionner correctement. La plupart se mettront eux-mêmes
   à jour sans que tu t'en aperçoives, mais d'autres nécessitent
   ton intervention.
   </p>
-  <p class="normal" style="margin-top: 3em;">
+  <p style="margin-top: 3em;">
     <a href="profil.php">Clique ici pour continuer.</a>
   </p>
 {elseif $naissance}
@@ -27,7 +27,7 @@
 </div>
   
 {dynamic on="0$fiche_incitation"}
-  <p class="normal">La dernière mise à jour de ta
+  <p>La dernière mise à jour de ta
   <a href="javascript:x()" onclick="popWin('x.php?x={$smarty.session.username}">fiche</a>
   date du {$fiche_incitation|date_format:"%x"}.
   Il est possible qu'elle ne soit pas à jour.
@@ -36,7 +36,7 @@
 {/dynamic}
 
 {dynamic on="0$photo_incitation"}
-  <p class="normal">
+  <p>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
     Clique <a href="javascript:x()" onclick="popWin('trombino.php','trmb','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=750,height=480')">ici</a>
     si tu souhaites en ajouter une.
@@ -49,7 +49,7 @@
   <table class="bicol">
     <tr class="pair">
 {foreach item=links from=$publicite}
-      <td class="info">
+      <td class="half">
 {foreach key=url item=text from=$links}
         <a href="{$url}">{$text}</a><br />
 {/foreach}
@@ -66,7 +66,7 @@
       <th><a name="newsid{$ev.id}">{$ev.titre|nl2br}</a></th>
     </tr>
     <tr class="{cycle values="impair,pair"}">
-      <td class="info">
+      <td class="half">
         {$ev.texte|nl2br}
         <br />
         <p class="smaller">Annonce proposée par
@@ -89,7 +89,7 @@
   interprétée comme polémique par un membre de la communauté polytechnicienne.
   </p>
 
-  <p class="normal">
+  <p>
   <a href="evenements.php">Proposer une information événementielle</a>
   </p>
 {/if}

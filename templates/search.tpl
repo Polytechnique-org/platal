@@ -7,7 +7,7 @@
     {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
     <div class="floatright">
       {if $with_soundex==0}
-        <a href="{$smarty.server.PHP_SELF}?with_soundex=1&rechercher=1&{$url_args}">
+        <a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}">
           Etendre à la recherche par proximité sonore
         </a>
       {/if}
@@ -15,7 +15,7 @@
       <a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>
     </div>
   </div>
-  <p class="normal">
+  <p>
     <div class="contact-list">
       {section name=resultat loop=$resultats}
       <div class="contact">
@@ -29,17 +29,17 @@
       {/section}
     </div>
   </p>
-  {if $perpage<$nb_resultats_total}
-  <p class="normal">
+  {if $perpage < $nb_resultats_total}
+  <p>
     {if $offset!=0}
-      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$offset-$perpage}">
+      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$offset-$perpage}">
         Précédent
       </a>
       &nbsp;
     {/if}
     {section name=offset loop=$offsets}
       {if $offset!=$smarty.section.offset.index*$perpage}
-        <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$smarty.section.offset.index*$perpage}">
+        <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$smarty.section.offset.index*$perpage}">
           {$smarty.section.offset.index+1}
         </a>
       {else}
@@ -47,8 +47,8 @@
       {/if}
       &nbsp;
     {/section}
-    {if $offset<$nb_resultats_total-$perpage}
-      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$offset+$perpage}">
+    {if $offset < $nb_resultats_total-$perpage}
+      <a href="{$smarty.server.PHP_SELF}?with_soundex={$with_soundex}&amp;rechercher=1&amp;{$url_args}&amp;offset={$offset+$perpage}">
         Suivant
       </a>
       &nbsp;

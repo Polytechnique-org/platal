@@ -41,7 +41,7 @@
 
 {/dynamic}
 
-<p class="normal">
+<p>
 Rentre dans la zone de saisie ci-dessous l'adresse email qui est revenue
 en erreur suite à la distribution de la newsletter :
 </p>

@@ -1,10 +1,10 @@
-{* $Id: form_naissance.tpl,v 1.1 2004-02-07 15:50:36 x2000habouzit Exp $ *}
+{* $Id: form_naissance.tpl,v 1.2 2004-08-26 14:44:44 x2000habouzit Exp $ *}
 <div class="rubrique">
   Date de naissance
 </div>
 
 <form action="profil2.php" method="post">
-  <p class="normal">
+  <p>
   Avant d'accéder à ton profil pour la première fois, tu dois donner 
   ta date de naissance au format JJMMAAAA. Elle ne sera plus demandée
   par la suite et ne pourra être changée. Elle servira en cas de

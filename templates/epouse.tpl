@@ -1,4 +1,4 @@
-{* $Id: epouse.tpl,v 1.2 2004-08-24 23:06:04 x2000habouzit Exp $ *}
+{* $Id: epouse.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Nom de mariage
@@ -20,7 +20,7 @@
   </p>
   {else}
     {if $epouse_old}
-    <p class="normal">
+    <p>
       Ta demande de suppression de ton nom de mariage ainsi que de tes
       alias {$alias_old}@polytechnique.org et
       {$alias_old}@m4x.org a bien été enregistrée. 
@@ -28,7 +28,7 @@
     {/if}
 
     {if $epouse_req}
-    <p class="normal">
+    <p>
       Ta demande d'ajout de ton nom de mariage a bien été enregistrée. Sa
       validation engendrera la création des alias
       <strong>{$myepouse->alias}@polytechnique.org</strong> et
@@ -36,7 +36,7 @@
     </p>
     {/if}
     
-    <p class="normal">
+    <p>
       Tu recevras un mail dès que les changements demandés auront été effectués. 
       Encore merci de nous faire confiance pour tes e-mails !
     </p>
@@ -45,7 +45,7 @@
 
 {/if}
   
-<p class="normal">
+<p>
 Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom de mariage, tu peux
 saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
 des adresses correspondantes @m4x.org et @polytechnique.org, en plus de

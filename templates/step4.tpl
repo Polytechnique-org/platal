@@ -3,19 +3,19 @@
   <div class="rubrique">
     Dernière étape
   </div>
-  <p class="normal">
+  <p>
     Tu as maintenant accès au site en utilisant les paramètres reçus par mail.
     Les adresses électroniques <strong>{$username}@polytechnique.org</strong>
     et <strong>{$username}@m4x.org</strong> sont déjà ouvertes, essaie-les !
   </p>
-  <p class="normal">
+  <p>
     Remarque: m4x.org est un domaine "discret" qui veut dire "mail for X" et
     qui comporte exactement les mêmes adresses que le domaine polytechnique.org.
   </p>
-  <p class="normal">
+  <p>
     <strong><a href="{if $dev eq 0}https://www.polytechnique.org/{/if}motdepassemd5.php">Clique ici pour changer ton mot de passe.</a></strong>
   </p>
-  <p class="normal">
+  <p>
     N'oublie pas : si tu perds ton mot de passe, nous n'avons aucun engagement, en
     particulier en termes de rapidité, mais pas seulement, à te redonner accès au
     site. Cela peut prendre plusieurs semaines, les pertes de mot de passe sont
@@ -24,13 +24,13 @@
 {elseif $error eq $smarty.const.ERROR_DB}
   {$error_db}
 
-  <p class="normal">
+  <p>
     Une erreur s'est produite lors de la mise en place définitive de ton inscription,
     essaie à nouveau, si cela ne fonctionne toujours pas, envoie un mail à
     <a href="mailto:webmestre@polytechnique.org">webmaster@polytechnique.org</a>
   </p>
 {elseif $error eq $smarty.const.ERROR_ALREADY_SUBSCRIBED}
-  <p class="normal">
+  <p>
     Tu es déjà inscrit à polytechnique.org. Tu as sûrement cliqué deux fois sur le même lien de
     référence ou effectué un double clic. Consultes tes mails pour obtenir ton identifiant et ton
     mot de passe.
@@ -39,10 +39,10 @@
   <div class="rubrique">
     OOOooups !
   </div>
-  <p class="normal">
+  <p>
     Cette adresse n'existe pas, ou plus, sur le serveur.
   </p>
-  <p class="normal">
+  <p>
     Causes probables :
   </p>
   <ol>

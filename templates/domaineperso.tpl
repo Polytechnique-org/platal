@@ -1,4 +1,4 @@
-{* $Id: domaineperso.tpl,v 1.2 2004-02-05 14:32:47 x2000habouzit Exp $ *}
+{* $Id: domaineperso.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 {include file='include/liste_domaines.tpl' result=$result nb_dom=$nbdom domaines=$domaines}
 
@@ -6,10 +6,10 @@
   Gère les emails de ton domaine perso
 </div>
 
-<p class="normal">
+<p>
  Polytechnique.org te propose de gérer les emails de ton domaine personnel.
 </p>
-<p class="normal">
+<p>
   Effet, si tu disposes d'un domaine personnel comme ton-nom.org, tu dois utiliser un hébergeur pour ta 
   DNS, pour tes adresses emails et pour ton espace web. En général, c'est le même pour 
   les trois éléments, mais tu peux aussi utiliser des hébergeurs différents. Il en 
@@ -17,20 +17,20 @@
   Mydomain</a>), mais pas toujours très performants. Polytechnique.org te propose de 
   s'occuper de tes emails dans un premier temps.
 </p>
-<p class="normal">
+<p>
   Pour que ton domaine soit géré par Polytechnique.org, active d'abord le domaine dans 
   le formulaire ci-dessous. Le domaine apparaît alors en haut de cette page, places-y 
   les alias que tu désires.
 </p>
-<p class="normal">
+<p>
   Ensuite, configure ton serveur DNS pour que le champ MX de ton domaine soit 
   a.mx.polytechnique.org (ou a.mx.m4x.org pour être plus discret
   mais pas les deux, c'est la même machine).
 </p>
-<p class="normal">
+<p>
   Laisse le temps à la DNS de se mettre à jour (24 à 48h), et le tour est joué.
 </p>
-<p class="normal">
+<p>
   Pour toute question, n'hesite pas à {mailto address='info@polytechnique.org' text='envoyer un mail' encode='javascript'}
 </p>
 <div class="ssrubrique">

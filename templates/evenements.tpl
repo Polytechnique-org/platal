@@ -1,4 +1,4 @@
-{* $Id: evenements.tpl,v 1.2 2004-08-24 09:07:57 x2000habouzit Exp $ *}
+{* $Id: evenements.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposition d'information événementielle
@@ -8,7 +8,7 @@
 
 {if $action eq "proposer"}
 
-<p class="normal">
+<p>
 Voici ton annonce :
 </p>
 
@@ -21,7 +21,7 @@ Voici ton annonce :
   </tr>
 </table>
 
-<p class="normal">
+<p>
 Ce message est à destination
 {if $promo_min || $promo_max}
 des promotions {if $promo_min}X{$promo_min}{/if} {if $promo_max}jusqu'à X{$promo_max}{else}et plus{/if}
@@ -32,7 +32,7 @@ et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format:"%e %b %
 </p>
 
 {if $validation_message}
-<p class="normal">
+<p>
 Tu as ajouté le message suivant à l'intention du validateur : {$validation_message|nl2br}
 </p>
 {/if}
@@ -52,13 +52,13 @@ Tu as ajouté le message suivant à l'intention du validateur : {$validation_messa
 {elseif $action eq "confirmer"}
 
 {if $ok}
-<p class="normal">
+<p>
 Ta proposition a bien été enregistrée, un administrateur va se charger de la valider aussi rapidement que possible.
 </p>
-<p class="normal">
+<p>
 Merci pour ta contribution à la vie du site!
 </p>
-<p class="normal">
+<p>
 <a href="login.php">Retour à la page d'accueil</a>
 </p>
 {else}

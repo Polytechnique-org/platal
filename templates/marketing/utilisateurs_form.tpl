@@ -1,4 +1,4 @@
-{* $Id: utilisateurs_form.tpl,v 1.2 2004-08-26 09:22:22 x2000habouzit Exp $ *}
+{* $Id: utilisateurs_form.tpl,v 1.3 2004-08-26 14:44:45 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -6,7 +6,7 @@
   Envoyer un mail de pr&eacute;-inscription
 </div>
 
-<p class="normal">
+<p>
 Le nom, pr&eacute;nom et promotion sont pris dans la table d'identification.  Le login sera automatiquement
 calcul&eacute; &agrave; partir de ces données.
 </p>

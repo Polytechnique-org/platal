@@ -1,10 +1,10 @@
-{* $Id: index.tpl,v 1.5 2004-08-23 14:27:22 x2000chevalier Exp $ *}
+{* $Id: index.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Bienvenue sur le portail des élèves et anciens élèves de l'X !
 </div>
 
-<p class="normal">
+<p>
   Polytechnique.org est le site qui connecte la communauté des polytechniciens.
   Il comporte une partie publique, et une partie privée réservée aux
   polytechniciens.
@@ -29,7 +29,7 @@
    <li class="spaced"><strong><a href="http://asso.polytechnique.org/">accéder à la liste des sites en rapport avec l'École</a></strong> - les sites officiels de l'École sont <a href="http://www.polytechnique.fr">polytechnique.fr</a> et <a href="http://www.polytechnique.edu">polytechnique.edu</a>, le portail des X sur le web est <a href="http://www.polytechnique.org/">polytechnique.org</a>, et le site de l'amicale des Anciens est <a href="http://www.polytechniciens.com/">polytechniciens.com</a>.</li>
   </ul>
  
-<p class="normal">
+<p>
   <strong>Bonne visite !</strong>
   <br /><cite>L'équipe Polytechnique.org</cite>
 </p>
