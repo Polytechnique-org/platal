@@ -47,7 +47,7 @@ class EpouseReq extends Validate
         list($prenom)  = explode('.',$_forlife);
         $this->alias   = make_username($prenom, $this->epouse);
 
-        $sql = $globals->xdb->query("
+        $res = $globals->xdb->query("
                 SELECT  e.alias, u.epouse, a.id
                   FROM  auth_user_md5 as u
              LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('epouse',e.flags) AND e.id = u.user_id)

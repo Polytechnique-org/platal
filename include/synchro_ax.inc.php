@@ -261,7 +261,7 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
 function copy_from_ax($uid)
 {
      $uax = get_user_ax($uid);
-     import_from_ax($uax, true, true, null, array_keys($uax['adr']), null, array_keys($uax['adr_pro']), true); 
+     import_from_ax($uax, false, true, null, array_keys($uax['adr']), null, array_keys($uax['adr_pro']), true); 
 }
 
 // vim:set et sw=4 sts=4 sws=4:
