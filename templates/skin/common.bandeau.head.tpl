@@ -9,7 +9,7 @@
         padding: 0; background: #CCCCCC ; height: 14px; width: auto; font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif;
       }
       td.xdx img    {border: 0; padding: 0; margin: 0; }
-      a.xdx         { vertical-align: top; color: #505050; }
+      a.xdx         { vertical-align: bottom; color: #505050; }
       a.xdx:link    { text-decoration: none ; }
       a.xdx:visited { text-decoration: none ; }
       a.xdx:hover   { text-decoration: underline; }
@@ -19,4 +19,4 @@
     <!-- BANDEAU FIN -->
 {/literal}
 {* vim:set et sw=2 sts=2 sws=2: *}
-{* $Id: common.bandeau.head.tpl,v 1.1 2004-01-25 17:19:21 x2000habouzit Exp $ *}
+{* $Id: common.bandeau.head.tpl,v 1.2 2004-01-25 20:42:46 x2000habouzit Exp $ *}
