@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.10 2004-10-10 23:51:19 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.11 2004-10-12 06:07:25 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -42,12 +42,12 @@ function form_prepare() {
     $page->mysql_assign($sql,'choix_sections');
     $sql = 'SELECT id,text FROM applis_def ORDER BY text';
     $page->mysql_assign($sql,'choix_schools');
-    if (isset($_REQUEST['school'])) {
-        $sql = 'SELECT type FROM applis_def WHERE id='.$_REQUEST['school'];
-        $result = $globals->db->query($sql);
-        list($types) = mysql_fetch_row($result);
-        $page->assign('choix_diplomas',explode(',',$types));
-    }
+    $sql = 'DESCRIBE applis_def type';
+    $result = $globals->db->query($sql);
+    $row = mysql_fetch_row($result);
+    $types = explode('(',$row[1]);
+    $types = str_replace("'","",substr($types[1],0,-1));
+    $page->assign('choix_diplomas',explode(',',$types));
     $sql = 'SELECT id,label FROM emploi_secteur ORDER BY label';
     $page->mysql_assign($sql,'choix_secteurs');
     $sql = 'SELECT id,fonction_fr FROM fonctions_def ORDER BY fonction_fr';
