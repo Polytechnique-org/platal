@@ -96,11 +96,17 @@ class XorgSession extends DiogenesCoreSession
 			$logger->log('auth_ok');
                     }
 		    start_connexion($uid, true);
-                    if (Env::has('remember')) {
+                    if (Env::get('remember', 'false') == 'true') {
                         $cookie = md5(Session::get('password'));
                         setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
                         if ($logger) {
                             $logger->log("cookie_on");
+                        }
+                    } else {
+                        setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+                        
+                        if ($logger) {
+                            $logger->log("cookie_off");
                         }
                     }
 		    return true;
