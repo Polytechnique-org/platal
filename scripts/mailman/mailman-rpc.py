@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.76 2004-11-10 11:17:43 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.77 2004-11-11 18:20:15 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -199,7 +199,7 @@ def get_list_info(userdesc,perms,mlist,front_page=0):
 
 def get_options(userdesc,perms,vhost,listname,opts):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -218,7 +218,7 @@ def get_options(userdesc,perms,vhost,listname,opts):
 
 def set_options(userdesc,perms,vhost,listname,opts,vals):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -247,7 +247,11 @@ def set_options(userdesc,perms,vhost,listname,opts,vals):
 # users procedures for [ index.php ]
 #
 
-def get_lists(userdesc,perms,vhost):
+def get_lists(userdesc,perms,vhost,email=None):
+    if email is None:
+        udesc = userdesc
+    else:
+        udesc = UserDesc(email, email, None, 0)
     prefix = vhost.lower()+VHOST_SEP
     names = Utils.list_names()
     names.sort()
@@ -260,7 +264,7 @@ def get_lists(userdesc,perms,vhost):
         except:
             continue
         try:
-            details = get_list_info(userdesc,perms,mlist,1)[0]
+            details = get_list_info(udesc,perms,mlist,(email is None))[0]
             result.append(details)
         except:
             continue
@@ -268,7 +272,7 @@ def get_lists(userdesc,perms,vhost):
 
 def subscribe(userdesc,perms,vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -290,7 +294,7 @@ def subscribe(userdesc,perms,vhost,listname):
 
 def unsubscribe(userdesc,perms,vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -309,7 +313,7 @@ def unsubscribe(userdesc,perms,vhost,listname):
 
 def get_members(userdesc,perms,vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -326,7 +330,7 @@ def get_members(userdesc,perms,vhost,listname):
 
 def get_members_limit(userdesc,perms,vhost,listname,page,nb_per_page):
     try:
-        members = get_members(userdesc,perms,vhost,listname)[1]
+        members = get_members(userdesc,perms,vhost,listname.lower())[1]
     except:
         return 0
     i = int(page) * int(nb_per_page)
@@ -334,7 +338,7 @@ def get_members_limit(userdesc,perms,vhost,listname,page,nb_per_page):
 
 def get_owners(userdesc,perms,vhost,listname):
     try:
-        details,members,owners = get_members(userdesc,perms,vhost,listname)
+        details,members,owners = get_members(userdesc,perms,vhost,listname.lower())
     except:
         return 0
     return (details,owners)
@@ -345,7 +349,7 @@ def get_owners(userdesc,perms,vhost,listname):
 
 def mass_subscribe(userdesc,perms,vhost,listname,users):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -370,7 +374,7 @@ def mass_subscribe(userdesc,perms,vhost,listname,users):
 
 def mass_unsubscribe(userdesc,perms,vhost,listname,users):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -387,7 +391,7 @@ def mass_unsubscribe(userdesc,perms,vhost,listname,users):
 
 def add_owner(userdesc,perms,vhost,listname,user):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -407,7 +411,7 @@ def add_owner(userdesc,perms,vhost,listname,user):
 
 def del_owner(userdesc,perms,vhost,listname,user):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -429,7 +433,7 @@ def del_owner(userdesc,perms,vhost,listname,user):
 
 def get_pending_ops(userdesc,perms,vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -475,7 +479,7 @@ def get_pending_ops(userdesc,perms,vhost,listname):
 
 def handle_request(userdesc,perms,vhost,listname,id,value,comment):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -493,7 +497,7 @@ def handle_request(userdesc,perms,vhost,listname,id,value,comment):
 
 def get_pending_mail(userdesc,perms,vhost,listname,id,raw=0):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -532,14 +536,14 @@ owner_opts = ['accept_these_nonmembers', 'admin_notify_mchanges', 'description',
         'subscribe_policy', 'welcome_msg']
 
 def get_owner_options(userdesc,perms,vhost,listname):
-    return get_options(userdesc,perms,vhost,listname,owner_opts)
+    return get_options(userdesc,perms,vhost,listname.lower(),owner_opts)
 
 def set_owner_options(userdesc,perms,vhost,listname,values):
-    return set_options(userdesc,perms,vhost,listname,owner_opts,values)
+    return set_options(userdesc,perms,vhost,listname.lower(),owner_opts,values)
 
 def add_to_wl(userdesc,perms,vhost,listname,addr):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -556,7 +560,7 @@ def add_to_wl(userdesc,perms,vhost,listname,addr):
 
 def del_from_wl(userdesc,perms,vhost,listname,addr):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -573,7 +577,7 @@ def del_from_wl(userdesc,perms,vhost,listname,addr):
 
 def get_bogo_level(userdesc,perms,vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -591,7 +595,7 @@ def get_bogo_level(userdesc,perms,vhost,listname):
 
 def set_bogo_level(userdesc,perms,vhost,listname,level):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
@@ -622,12 +626,12 @@ admin_opts = [ 'advertised', 'archive', 'default_member_moderation', \
 def get_admin_options(userdesc,perms,vhost,listname):
     if perms != 'admin':
         return 0
-    return get_options(userdesc,perms,vhost,listname,admin_opts)
+    return get_options(userdesc,perms,vhost,listname.lower(),admin_opts)
 
 def set_admin_options(userdesc,perms,vhost,listname,values):
     if perms != 'admin':
         return 0
-    return set_options(userdesc,perms,vhost,listname,admin_opts,values)
+    return set_options(userdesc,perms,vhost,listname.lower(),admin_opts,values)
 
 #-------------------------------------------------------------------------------
 # admin procedures [ check.php ]
@@ -676,7 +680,7 @@ check_opts = {
 
 def check_options(userdesc,perms,vhost,listname,correct=False):
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname,lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(),lock=0)
     except:
         return 0
     try:
