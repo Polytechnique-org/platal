@@ -207,8 +207,9 @@ table.tinybicol td.info, table.bicol td.info {
 
 #body {
     width: 740px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: -370px;
+    position: relative;
+    left: 50%;
 }
 
 #body-logo {
@@ -274,4 +275,4 @@ table.tinybicol td.info, table.bicol td.info {
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.17 2004-02-12 02:58:15 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.18 2004-02-13 17:11:17 x2000habouzit Exp $ */
