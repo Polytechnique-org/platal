@@ -1,4 +1,4 @@
-{* $Id: gere_operations.tpl,v 1.4 2004-08-24 23:06:06 x2000habouzit Exp $ *}
+{* $Id: gere_operations.tpl,v 1.5 2004-08-30 09:24:25 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -8,10 +8,6 @@
 </div>
 
 <form method="post" action="{$smarty.server.PHP_SEL}">
-  <input type="hidden" name="operation_id" value="{$operation_id}" />
-  <input type="hidden" name="action" value="update" />
-  <input type="hidden" name="annee" value="{$annee_sel}" />
-  <input type="hidden" name="mois" value="{$mois_sel}" />
   <table class="bicol">
     <tr>
       <th colspan="2">
@@ -41,6 +37,10 @@
     </tr>
     <tr>
       <td class="center" colspan="2">
+        <input type="hidden" name="operation_id" value="{$operation_id}" />
+        <input type="hidden" name="action" value="update" />
+        <input type="hidden" name="annee" value="{$annee_sel}" />
+        <input type="hidden" name="mois" value="{$mois_sel}" />
         <input type="submit" value="enregistrer" /> 
       </td>
     </tr>
@@ -89,11 +89,13 @@
     <td>&nbsp;</td>
     <td>
       <form method="post" action="{$smarty.server.PHP_SELF}">
-        <input type="hidden" name="operation_id" value="0" />
-        <input type="hidden" name="action" value="edit" />
-        <input type="hidden" name="annee" value="{$annee_sel}" />
-        <input type="hidden" name="mois" value="{$mois_sel}" />
-        <input type="submit" value="new" />
+        <div>
+          <input type="hidden" name="operation_id" value="0" />
+          <input type="hidden" name="action" value="edit" />
+          <input type="hidden" name="annee" value="{$annee_sel}" />
+          <input type="hidden" name="mois" value="{$mois_sel}" />
+          <input type="submit" value="new" />
+        </div>
       </form>
     </td>
   </tr>
@@ -106,11 +108,13 @@
     <td class="right">{$op.credit}</td>
     <td>
       <form method="post" action="{$smarty.server.PHP_SELF}">
-        <input type="hidden" name="operation_id" value="{$op.id}" />
-        <input type="hidden" name="annee" value="{$annee_sel}" />
-        <input type="hidden" name="mois" value="{$mois_sel}" />
-        <input type="submit" name="action" value="edit" />
-        <input type="submit" name="action" value="del" />
+        <div>
+          <input type="hidden" name="operation_id" value="{$op.id}" />
+          <input type="hidden" name="annee" value="{$annee_sel}" />
+          <input type="hidden" name="mois" value="{$mois_sel}" />
+          <input type="submit" name="action" value="edit" />
+          <input type="submit" name="action" value="del" />
+        </div>
       </form>
     </td>
   </tr>

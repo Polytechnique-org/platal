@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.4 2004-08-30 09:14:49 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.5 2004-08-30 09:24:24 x2000habouzit Exp $ *}
 
 <div class="rubrique">Administration Polytechnique.org</div>
 
@@ -63,10 +63,6 @@
       <a href="evenements.php">&Eacute;v&eacute;nements</a>
   </td></tr>
   <tr class="impair"><td>
-      <strong>Forums : </strong>
-      <a href="admin_faqs.php">FAQs</a> 
-  </td></tr>
-  <tr class="pair"><td>
       <strong>Tr&eacute;sorerie : </strong>
       <a href="../trezo/gere_operations.php">Comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -79,15 +75,14 @@
   <tr><th>Développement</th></tr>
   <tr class="impair">
     <td style="width:4em;"><strong>Trackers : </strong>
-      TRACKERS
+      <a href="http://trackers.polytechnique.org/">trackers</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      TICKETS
+      <a href="http://support.polytechnique.org/">tickets</a>
     </td>
   </tr>
   <tr class="pair">
     <td><strong>CVS : </strong>
-      <a href="http://dev.m4x.org/cvs/">ViewCVS</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="http://dev.m4x.org/depview/">DepView</a>
+      <a href="http://dev.m4x.org/cvs/">ViewCVS</a>
     </td>
   </tr>
 </table>
