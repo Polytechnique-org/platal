@@ -17,18 +17,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.7 2004-08-31 22:21:05 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.8 2004-09-02 23:04:21 x2000bedo Exp $
  ***************************************************************************}
 
 <div class="bits">
   {if $result.inscrit==1}
-    <a href="javascript:x()" onclick="popWin('fiche.php?user={$result.username}')">
+    <a href="javascript:x()" onclick="popWin('fiche.php?user={$result.forlife}')">
       <img src="images/loupe.gif" alt="Afficher les détails" />
     </a>
-    <a href="vcard.php/{$result.username}.vcf?x={$result.username}">
+    <a href="vcard.php/{$result.forlife}.vcf?x={$result.forlife}">
       <img src="images/vcard.png" alt="Afficher la carte de visite" />
     </a>
-    <a href="mescontacts.php?action={if $result.contact!=""}retirer{else}ajouter{/if}&amp;user={$result.username}&amp;mode=normal">
+    <a href="mescontacts.php?action={if $result.contact!=""}retirer{else}ajouter{/if}&amp;user={$result.forlife}&amp;mode=normal">
       <img src="images/{if $result.contact!=""}retirer{else}ajouter{/if}.gif" alt="{if $result.contact!=""}Retirer de{else}Ajouter parmi{/if} mes contacts" />
     </a>
   {/if}

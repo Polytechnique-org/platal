@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.6 2004-08-31 21:02:10 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.7 2004-09-02 23:04:19 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -78,12 +78,13 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        u.prenom,
                        u.promo,
                        i.deces!=0 AS decede,
-                       u.username,
+                       a.alias AS forlife,
                        u.date,
                        ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                        ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
                  FROM  auth_user_md5  AS u '.$fields->get_select_statement().'
+           INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
            INNER JOIN  identification AS i ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
