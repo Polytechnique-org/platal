@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ethique.tpl,v 1.5 2004-09-02 19:35:21 x2000charbonnier Exp $
+        $Id: ethique.tpl,v 1.6 2004-10-12 16:24:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -162,7 +162,7 @@ publiques de ce site sont soumises à une <strong>règle d'usage strictement indiv
 </p>
 <p>
 Pour tout problème ou complément éthique, une adresse est à votre disposition,
-il s'agit de <?php echo mailto('abuse@polytechnique.org') ?>.
+il s'agit de {mailto address="abuse@polytechnique.org"}.
 </p>  
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.13 2004-10-10 23:51:21 x2000bedo Exp $
+        $Id: search.classes.inc.php,v 1.14 2004-10-12 16:25:27 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -115,7 +115,7 @@ class NumericSField extends SField {
         if ($this->value=='')
             $this->value = 0;
         if (!preg_match("/^[0-9]+$/", $this->value))
-            new ThrowError('Un champ numérique contient des caractères alphanumériques.<br>');
+            new ThrowError('Un champ numérique contient des caractères alphanumériques.<br />');
     }
 }
 
@@ -188,7 +188,7 @@ class StringSField extends SField {
         parent::get_request();
         if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
             new ThrowError('Un champ contient un caractère interdit rendant la recherche'
-            .' impossible.<br>');
+            .' impossible.<br />');
     }
 
     /** donne la longueur de la requête de l'utilisateur
@@ -256,7 +256,7 @@ class PromoSField extends SField {
     function get_request() {
         parent::get_request();
         if (!(empty($this->value) or preg_match("/^[0-9]{4}$/", $this->value)))
-            new ThrowError('La promotion est une année à quatre chiffres.<br>');
+            new ThrowError('La promotion est une année à quatre chiffres.<br />');
     }
 
     /** teste si la requête est de la forme =promotion -> contrainte forte imposée -> elle suffit
