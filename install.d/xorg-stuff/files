@@ -1,6 +1,9 @@
-templates/skin/common.bandeau.head.tpl
-templates/skin/common.bandeau.tpl
 htdocs/admin/ax-xorg.php
+htdocs/admin/postfix_blacklist.php
+htdocs/admin/postfix_delayed.php
+htdocs/admin/postfix_whitelist.php
+htdocs/auth-groupex.php
+htdocs/auth-redirect.php
 htdocs/cacert.php
 htdocs/docs/apropos.php
 htdocs/docs/charte.php
@@ -26,6 +29,8 @@ htdocs/docs/plan.php
 htdocs/docs/secu.php
 htdocs/docs/services.php
 htdocs/dons.php
+htdocs/groupex/donne-chall.php
+htdocs/groupex/export-econfiance.php
 htdocs/images/ax.png
 htdocs/images/docs_compte1.png
 htdocs/images/docs_compte2.png
@@ -62,7 +67,9 @@ htdocs/images/logo.jpg
 htdocs/images/SceauCertplus_petit.png
 htdocs/images/verisign.png
 htdocs/images/x.png
+htdocs/index.coupure.php
 templates/admin/ax-xorg.tpl
+templates/admin/postfix_delayed.tpl
 templates/docs/apropos.tpl
 templates/docs/charte.tpl
 templates/docs/contacts.tpl
@@ -87,3 +94,5 @@ templates/docs/plan.tpl
 templates/docs/secu.tpl
 templates/docs/services.tpl
 templates/dons.tpl
+templates/skin/common.bandeau.head.tpl
+templates/skin/common.bandeau.tpl

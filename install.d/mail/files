@@ -13,6 +13,7 @@ templates/antispam.tpl
 templates/emails.tpl
 templates/include/form.valid.aliases.tpl
 templates/mails/pattecasser.nl.tpl
+templates/mails/valid.alias.tpl
 templates/pattecassee.tpl
 templates/preferences.tpl.d/10.mails.tpl
 templates/preferences.tpl.d/20.alias.tpl
