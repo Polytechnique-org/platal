@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auth-groupex.php,v 1.5 2004-10-06 08:26:05 x2000habouzit Exp $
+        $Id: auth-groupex.php,v 1.6 2004-10-08 17:25:48 web Exp $
  ***************************************************************************/
 
 $gpex_pass = $_GET["pass"];
@@ -38,7 +38,7 @@ new_skinned_page('index.tpl',AUTH_COOKIE);
 
 // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
 if (!isset($_SESSION['suid'])) {
-    $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid==$uid) ? $_SESSION['log'] : new DiogenesCoreLogger($uid));
+    $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid==$uid) ? $_SESSION['log'] : new DiogenesCoreLogger($uid);
     $logger->log("connexion_auth_ext",$_SERVER['PHP_SELF']);
 }
 
