@@ -65,13 +65,23 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     <tr>
       <th colspan="2">Connexion</th>
     </tr>
-    <tr>
+    <tr style="white-space: nowrap">
       <td class="titre">
+      {if $domains}
+        Adresse email :
+      {else}
         Login (prenom.nom) :
+      {/if}
       </td>
       <td>
         <input type="text" name="username" size="20" maxlength="50"
           value="{insert name="getUserName"}" />
+        {if $domains}
+          @
+        <select name="domain">
+        {html_options values=$domains_value output=$domains selected=$r_domain}
+        </select>
+        {/if}
       </td>
     </tr>
     <tr>
@@ -89,12 +99,16 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       </td>
     </tr>
     <tr>
+      <td colspan="2">
+      <table width="100%"><tr>
       <td>
         <img src="{rel}/images/pi.png" alt=" [ ? ] " />
         <a href="{rel}/recovery.php">mot de passe perdu ?</a>
       </td>
       <td class="right">
         <input type="submit" name="submitbtn" value="Envoyer" />
+      </td>
+      </tr></table>
       </td>
     </tr>
   </table>
@@ -119,6 +133,7 @@ Problème de connexion ? <a href="{rel}/docs/faq.php#connect">La réponse est là.<
     <input type="hidden" name="response"  value="" />
     <input type="hidden" name="username"  value="" />
     <input type="hidden" name="remember"  value="" />
+    <input type="hidden" name="domain"    value="" />
   </div>
 </form>
 

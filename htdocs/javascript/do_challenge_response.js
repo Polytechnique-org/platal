@@ -26,6 +26,7 @@ function doChallengeResponse() {
     document.forms.loginsub.response.value = MD5(str);
     document.forms.loginsub.username.value = document.forms.login.username.value;
     document.forms.loginsub.remember.value = document.forms.login.remember.checked;
+    document.forms.loginsub.domain.value = document.forms.login.domain.value;
     document.forms.login.password.value = "";
     document.forms.loginsub.submit();
 }

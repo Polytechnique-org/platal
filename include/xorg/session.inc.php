@@ -74,17 +74,45 @@ class XorgSession extends DiogenesCoreSession
             $session =& Session::getMixed('session');
         }
 
-	if (Env::has('username') && Env::has('response') && isset($session->challenge))
+        if (Env::has('domain')) {
+            if (($domain = Env::get('domain', 'login')) == 'alias') {
+                setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
+            } else {
+                setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
+            }
+            // pour que la modification soit effective dans le reste de la page
+            $_COOKIE['ORGdomain'] = $domain;
+        }
+
+        if (Env::has('username') && Env::has('response') && isset($session->challenge))
 	{
 	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
 	    // ou passwordpromptscreenlogged.tpl
             $uname = Env::get('username');
-	    $field = preg_match('/^\d*$/', $uname) ? 'id' : 'alias';
+            
+            if ($domain == "alias") {
+            
+                $res = $globals->xdb->query(
+                    "SELECT redirect
+                       FROM virtual
+                 INNER JOIN virtual_redirect USING(vid)
+                      WHERE alias LIKE {?}", $uname."@".$globals->mail->alias_dom);
+                $redirect = $res->fetchOneCell();
+                if ($redirect) {
+                    $login = substr($redirect, 0, strpos($redirect, '@'));
+                } else {
+                    $login = "";
+                }
+            } else {
+                $login = $uname;
+            }
+
+	    $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
 	    $res   = $globals->xdb->query(
                     "SELECT  u.user_id, u.password
                        FROM  auth_user_md5 AS u
                  INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-                      WHERE  a.$field = {?} AND u.perms IN('admin','user')", $uname);
+                      WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
 
             $logger =& Session::getMixed('log');
 
@@ -163,6 +191,15 @@ class XorgSession extends DiogenesCoreSession
 	    $page->changeTpl('password_prompt.tpl');
             $page->addJsLink('javascript/do_challenge_response.js');
 	    $page->assign("xorg_tpl", "password_prompt.tpl");
+            
+            global $globals;
+            if ($globals->mail->alias_dom) {
+                $page->assign("domains", Array(
+                    $globals->mail->domain."/".$globals->mail->domain2,
+                    $globals->mail->alias_dom."/".$globals->mail->alias_dom2));
+                $page->assign("domains_value", Array("login", "alias"));
+                $page->assign("r_domain", Cookie::get('ORGdomain', 'login'));
+            }
 	    $page->run();
 	}
 	exit;
@@ -184,7 +221,7 @@ class XorgSession extends DiogenesCoreSession
     function getUsername($auth,$uid)
     {
 	global $globals;
-	$res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND type='a_vie'", $uid);
+        $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND type='a_vie'", $uid);
         return $res->fetchOneCell();
     }
 
