@@ -1,4 +1,4 @@
-{* $Id: faq.tpl,v 1.5 2004-02-12 02:03:09 x2000habouzit Exp $ *}
+{* $Id: faq.tpl,v 1.6 2004-08-24 22:51:48 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Foire aux questions
@@ -86,7 +86,7 @@ que des informations manquent.
 <div class="ssrubrique">
   Questions générales
 </div>
-<a id="pop" name="pop"></a>
+<a id="pop"></a>
 <div class="sstitre">
   Comment récupérer mon courrier sur polytechnique.org ?
 </div>
@@ -98,7 +98,7 @@ que des informations manquent.
   aucun changement n'est introduit par l'existence de ton adresse sur polytechnique.org.
   </p>
 </div>   
-<a id="smtp" name="smtp"></a> 
+<a id="smtp"></a> 
 <div class="sstitre">
   Comment envoyer mon courrier avec comme champ expéditeur (From) mon adresse en 
   polytechnique.org ?
@@ -117,7 +117,7 @@ que des informations manquent.
   </p>
 </div>
 
-<a id="nntp" name="nntp"></a> 
+<a id="nntp"></a> 
 <div class="sstitre">
   Comment lire les forums avec mon logiciel de courrier électronique ?
 </div>
@@ -130,7 +130,7 @@ que des informations manquent.
   </p>
 </div>
 
-<a id="carva" name="carva"></a>
+<a id="carva"></a>
 <div class="sstitre">
   Quelle est l'origine du nom de domaine carva.org ?
 </div>
@@ -168,7 +168,7 @@ que des informations manquent.
 <div class="ssrubrique">
   Remplissage des champs
 </div>
-<a id="mails1" name="mails1"></a> 
+<a id="mails1"></a> 
 <div class="sstitre">
   Quelle est la différence entre les mails promo, emploi, et les autres mails collectifs ?
 </div>
@@ -195,7 +195,7 @@ que des informations manquent.
   autorisés (sauf évidemment mailing lists). 
   </p>
 </div>
-<a id="flags" name="flags"></a> 
+<a id="flags"></a> 
 <div class="sstitre">
   Quelle est la différence entre les cases de visibilité ?
 </div>
@@ -213,7 +213,7 @@ que des informations manquent.
   aux polytechniciens.
   </p>
 </div>
-<a id="niveau_langue" name="niveau_langue"></a>
+<a id="niveau_langue"></a>
 <div class="sstitre">
   A quoi correspondent les niveaux de langues ?
 </div>
@@ -272,7 +272,7 @@ que des informations manquent.
   </ul>
 </div>
 
-<a id="cv" name="cv"></a>
+<a id="cv"></a>
 <div class="sstitre">
   Faut-il remplir le CV et comment ?
 </div>
@@ -306,11 +306,11 @@ que des informations manquent.
   </div>
 </div>
 <hr />
-<a id="connect" name="connect"></a>
+<a id="connect"></a>
 <div class="ssrubrique">
   Problèmes de connexion
 </div>
-<a id="config" name="config"></a>
+<a id="config"></a>
 <div class="sstitre">
   Quels sont les paramètres et la configuration nécessaires pour se connecter 
   correctement ?
@@ -323,7 +323,7 @@ que des informations manquent.
   vérifier déjà que ce paramètre est bien activé avant de continuer.
   </p>
 </div>    
-<a id="passe" name="passe"></a>
+<a id="passe"></a>
 <div class="sstitre">
   J'ai perdu mon mot de passe, que faire ?
 </div>
@@ -335,7 +335,7 @@ que des informations manquent.
   de ton mot de passe !
   </p>
 </div>
-<a id="acces" name="acces"></a>
+<a id="acces"></a>
 <div class="sstitre">
   Je n'arrive pas à me connecter ! Que faut-il essayer ?
 </div>
@@ -381,7 +381,7 @@ que des informations manquent.
 <div class="ssrubrique">
   Utilisation post-connexion
 </div>
-<a id="ethique" name="ethique"></a>
+<a id="ethique"></a>
 <div class="sstitre">
   Quelle est l'éthique que vous privilégiez pour les mails collectifs ?
 </div>
@@ -393,7 +393,7 @@ que des informations manquent.
   satisfaction des inscrits (publi-mailing).
   </p>
 </div>
-<a id="mails2" name="mails2"></a> 
+<a id="mails2"></a> 
 <div class="sstitre">
   Puis-je envoyer un mail à des X et comment ?
 </div>
@@ -424,7 +424,7 @@ que des informations manquent.
   envois.
   </p>
 </div>
-<a id="secu" name="secu"></a>
+<a id="secu"></a>
 <div class="sstitre">
   Puis-je utiliser le même mot de passe qu'ailleurs ?
 </div>
@@ -447,7 +447,7 @@ que des informations manquent.
   </p>
 </div>
 
-<a id="secu2" name="secu2"></a>
+<a id="secu2"></a>
 <div class="sstitre">
   Quel est le niveau de sécurité de Polytechnique.org ?
 </div>
@@ -468,7 +468,7 @@ que des informations manquent.
   </p>
 </div>
 
-<a id="panne" name="panne"></a>
+<a id="panne"></a>
 <div class="sstitre">
   Vous tombez souvent en panne ?
 </div>
