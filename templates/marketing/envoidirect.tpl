@@ -1,4 +1,4 @@
-{* $Id: envoidirect.tpl,v 1.3 2004-08-26 09:22:22 x2000habouzit Exp $ *}
+{* $Id: envoidirect.tpl,v 1.4 2004-08-30 09:36:23 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Liste des sollicités inscrits récemment
@@ -8,23 +8,20 @@
 
 <table class="bicol" summary="liste des sollicités inscrits">
   <tr>
-    <th>Date sollicitation</th>
-    <th>Promo</th>
+    <th>Date</th>
+    <th>Par</th>
     <th>Nom</th>
-    <th>Email</th>
-    <th>Date inscription</th>
+    <th>inscription</th>
   </tr>
   {foreach from=$recents item=it}
   <tr class="{cycle values="pair,impair"}">
-    <td class="center">{$it.date_envoi|date_format:"%e %b %Y"} (par {$it.sender|truncate:4:""})</td>
-    <td class="center">
-      <a href="promo.php?promo={$it.promo}">{$it.promo}</a>
-    </td>
-    <td>{$it.nom} {$it.prenom}</td>
+    <td>{$it.date_envoi|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
+    <td>{$it.sender|lower|truncate:4:""}</td>
     <td>
-      <a href="mailto:{$it.email}">{$it.email}</a>
+      <a href="mailto:{$it.email}" title="{$it.email}">{$it.nom} {$it.prenom}</a>
+      (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
     </td>
-    <td class="center">{$it.date_ins|date_format:"%e %b %Y"}</td>
+    <td>{$it.date_ins|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
   </tr>
   {/foreach}
 </table>
@@ -38,20 +35,17 @@
 
 <table class="bicol" summary="liste des sollicités non inscrits">
   <tr>
-    <th>Date sollicitation</th>
-    <th>Promo</th>
+    <th>Date</th>
+    <th>Par</th>
     <th>Nom</th>
-    <th>Email</th>
   </tr>
   {foreach from=$notsub item=it}
   <tr class="{cycle values="pair,impair"}">
-    <td class="center">{$it.date_envoi|date_format:"%e %b %Y"} (par {$it.sender|truncate:4:""})</td>
-    <td class="center">
-      <a href="promo.php?promo={$it.promo}">{$it.promo}</a>
-    </td>
-    <td>{$it.nom} {$it.prenom}</td>
+    <td>{$it.date_envoi|date_format:"%e&nbsp;%b&nbsp;%y"}</td>
+    <td>{$it.sender|lower|truncate:4:""}</td>
     <td>
-      <a href="mailto:{$it.email}">{$it.email}</a>
+      <a href="mailto:{$it.email}" title="{$it.email}">{$it.nom} {$it.prenom}</a>
+      (x<a href="promo.php?promo={$it.promo}">{$it.promo}</a>)
     </td>
   </tr>
   {/foreach}

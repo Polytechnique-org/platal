@@ -12,10 +12,10 @@ $sql = "SELECT  a.date_ins,e.date_envoi,e.promo,e.nom,e.prenom,e.email,b.nom as 
 
 $page->mysql_assign($sql, 'recents', 'nbrecents');
 
-$sql = "SELECT  e.date_envoi, e.promo, e.nom, e.prenom, e.email, b.nom as sender
+$sql = "SELECT  DISTINCT e.date_envoi, e.promo, e.nom, e.prenom, e.email, b.nom as sender
           FROM  envoidirect   AS e
     LEFT  JOIN  auth_user_md5 AS a ON e.matricule = a.matricule
-    LEFT  JOIN  auth_user_md5 AS b ON e.sender    = b.user_id
+    INNER JOIN  auth_user_md5 AS b ON e.sender    = b.user_id
          WHERE  a.nom is null
       ORDER BY  e.date_envoi DESC";
 $page->mysql_assign($sql, 'notsub', 'nbnotsub');
