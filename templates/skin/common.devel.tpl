@@ -1,10 +1,10 @@
-{* $Id: common.devel.tpl,v 1.2 2004-08-24 20:05:35 x2000habouzit Exp $ *}
+{* $Id: common.devel.tpl,v 1.3 2004-08-25 08:59:18 x2000habouzit Exp $ *}
 
 {if $validate}
   <div id="dev">
     <div class="title">Outils de dev</div>
     <div>
-      <a href="http://validator.w3.org/check?uri={$validate}">VALIDER XHTML 1.1</a><br />
+      @NB_ERR@
       <a href="http://jigsaw.w3.org/css-validator/validator?uri={$validate}">VALIDER CSS</a>
     </div>
     <div>

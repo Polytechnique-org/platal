@@ -75,11 +75,23 @@ class XorgPage extends DiogenesCorePage {
             if($site_dev) {
                 $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
                 $this->assign('validate', urlencode($baseurl.'/valid.html'));
-                $result = $this->fetch('skin/'.$_SESSION['skin'], $id);
+
+		$result = $this->fetch('skin/'.$_SESSION['skin'], $id);
                 $fd = fopen($this->cache_dir."valid.html","w");
                 fwrite($fd, $result);
                 fclose($fd);
-                echo $result;
+		
+		exec($globals->spoolroot."/scripts/xhtml/validate.pl ".$this->cache_dir."valid.html", $val);
+		foreach($val as $h)
+		    if(preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
+			if($m[1]) {
+			    echo str_replace("@NB_ERR@",
+				"<span class='erreur'><a href='http://validator.w3.org/check?uri=$baseurl/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />", $result);
+			} else {
+			    echo str_replace("@NB_ERR@", "", $result);
+			}
+			exit;
+		    }
             } else
                 parent::display('skin/'.$_SESSION['skin'], $id);
         }
