@@ -4,7 +4,13 @@ VERSION 0.9.4														 29 Jan 2004
 New :
 	
 	* Core :
-		- new SQL access API : gain in security and code factorization.		-MC
+		- New SQL access API : gain in security and code factorization.		-MC
+		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC
+		- Drop cache algorithm (was complex for no gain).					-MC
+
+	* Validation :
+		- quite a lot of rewrite, simplifications.							-MC
+		- now possible to add comments without any action.					-MC
 
 	* Skins :
 		- Openweb : update.													-MC

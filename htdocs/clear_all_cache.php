@@ -20,14 +20,9 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_admin_page('index.tpl');
-$page->clear_all_cache();
+new_skinned_page('index.tpl', AUTH_COOKIE);
 $page->clear_compiled_tpl();
 
-$ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-if($ref && strpos($ref,'clear_all_cache.php')===false) {
-    header("Location: {$_SERVER['HTTP_REFERER']}");
-} else {
-    header("Location: index.php");
-}
+header("Location: " . (empty($_SERVER['HTTP_REFERER']) ? 'index.php' : $_SERVER['HTTP_REFERER']));
+
 ?>
