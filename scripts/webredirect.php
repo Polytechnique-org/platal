@@ -30,7 +30,7 @@ $res = $globals->xdb->query(
         "SELECT  redirecturl
            FROM  auth_user_quick AS a
      INNER JOIN  aliases         AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias' OR al.type='epouse'))
-          WHERR  al.alias = {?}", $username);
+          WHERE  al.alias = {?}", $username);
 
 if ($url = $res->fetchOneCell()) {
     $url = preg_replace('@/+$@', '', $url);
