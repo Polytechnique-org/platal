@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.26 2004-11-13 14:16:16 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.27 2004-11-16 21:11:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -135,9 +135,14 @@ if(isset($mr)) {
 
 		$errors[] = "updaté correctement.";
 		// envoi du mail au webmaster
-		$HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
-		$MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
-		mail("web@polytechnique.org","INTERVENTION ADMIN",$MESSAGE,$HEADER);
+		require_once("diogenes.hermes.inc.php");
+		$mailer = new HermesMailer();
+		$mailer->setFrom("webmaster@polytechnique.org");
+		$msg = "Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\n"
+		    .  "Opérations effectuées\n\n\"".$query
+		    .  "\"\n\nCe rapport a été généré par le script d'administration";
+		$mailer->addTo("web@polytechnique.org");
+		$mailer->setSubject("INTERVENTION ADMIN",$msg);
 		break;
 
 	// DELETE FROM auth_user_md5
@@ -166,9 +171,15 @@ if(isset($mr)) {
 		$globals->db->query("delete from logger.sessions where uid=$user_id");	
 
 		$errors[] = "'$user_id' a été supprimé !";
-		$HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
-		$MESSAGE="Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\nOpérations effectuées\n\n\"".$query."\"\n\nCe rapport a été généré par le script d'administration";
-		mail("web@polytechnique.org","INTERVENTION ADMIN",$MESSAGE,$HEADER);
+		require_once("diogenes.hermes.inc.php");
+		$mailer = new HermesMailer();
+		$mailer->setFrom("webmaster@polytechnique.org");
+		$msg = "Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\n"
+		    .  "Opérations effectuées\n\n\"".$query
+		    .  "\"\n\nCe rapport a été généré par le script d'administration";
+		$mailer->addTo("web@polytechnique.org");
+		$mailer->setSubject("INTERVENTION ADMIN",$msg);
+		break;
 		break;
 	}
     }
