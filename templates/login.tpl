@@ -19,24 +19,11 @@
  ***************************************************************************}
 
 
-{if $date}
-  <h1>
-    Assistant première connexion
-  </h1>
-  <p>
-  Le programme a détecté que tu te connectes pour la première fois
-  sur ce site. Un certain nombre de paramètres ne sont donc pas à
-  jour pour fonctionner correctement. La plupart se mettront eux-mêmes
-  à jour sans que tu t'en aperçoives, mais d'autres nécessitent
-  ton intervention.
-  </p>
-  <p style="margin-top: 3em;">
-    <a href="profil.php">Clique ici pour continuer.</a>
-  </p>
-{elseif $naissance}
-{include file='include/form_naissance.tpl'}
-{else}
+{if $ask_naissance}
 
+{include file='include/form_naissance.tpl'}
+
+{else}
 
 <h1>Bienvenue {$smarty.session.prenom} :o)</h1>
 

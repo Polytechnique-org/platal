@@ -22,23 +22,15 @@
 require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
-$res = $globals->xdb->query('SELECT date,naissance FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
-list($date,$naissance) = $res->fetchOneRow();
-
-if ($naissance==0 || $naissance=='0000-00-00')  {
-    $page->assign('ask_naissance', true);
-    $page->run('ask-naissance');
-    exit;
-}
+$res = $globals->xdb->query('SELECT date FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
+list($date) = $res->fetchOneRow();
 
 // incitation à mettre à jour la fiche
 
-$res = $globals->xdb->query('SELECT date FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
-$d   = $res->fetchOneCell();
-$d2  = mktime(0, 0, 0, substr($d, 5, 2), substr($d, 8, 2), substr($d, 0, 4));
+$d2  = mktime(0, 0, 0, substr($date, 5, 2), substr($date, 8, 2), substr($date, 0, 4));
 if( (time() - $d2) > 60 * 60 * 24 * 400 ) {
     // si fiche date de + de 400j;
-    $page->assign('fiche_incitation', $d);
+    $page->assign('fiche_incitation', $date);
 }
 
 // incitation à mettre une photo

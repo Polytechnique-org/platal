@@ -25,8 +25,7 @@ require_once('user.func.inc.php');
 
 if (Env::has('hash')) {
     $res = $globals->xdb->query(
-            "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2, r.password, r.email, r.relance, r.naissance,
-                     u.prenom, u.nom, u.promo
+            "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2, r.password, r.email, r.naissance, u.nom, u.prenom, u.promo
                FROM  register_pending AS r
          INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
               WHERE  hash={?} AND hash!='INSCRIT'", Env::get('hash'));

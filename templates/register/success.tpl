@@ -22,7 +22,7 @@
 
 <p>
 Tu as maintenant accès au site !!!
-Ton adresse électronique à vie <strong>{$forlife}@polytechnique.org</strong> est déjà ouverte, essaie-la !
+Ton adresse électronique à vie <strong>{$smarty.session.forlife}@polytechnique.org</strong> est déjà ouverte, essaie-la !
 </p>
 <p>
   Remarque: m4x.org est un domaine "discret" qui veut dire "mail for X" et

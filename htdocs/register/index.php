@@ -111,11 +111,10 @@ switch ($sub_state['step']) {
             if (isset($err)) {
                 $err = join('<br />', $err);
             } else {
-                $birth = sprintf("%s-%s-%s", substr(Env::get('naissance'),4,4),
-                        substr(Env::get('naissance'),2,2), substr(Env::get('naissance'),0,2));
-                $sub_state['step']      = 4;
+                $birth = Env::get('naissance');
+                $sub_state['naissance'] = sprintf("%s-%s-%s", substr($birth,4,4), substr($birth,2,2), substr($birth,0,2));
                 $sub_state['email']     = Post::get('email');
-                $sub_state['naissance'] = $birth;
+                $sub_state['step']      = 4;
                 finish_ins($sub_state);
             }
         }
