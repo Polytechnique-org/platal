@@ -831,7 +831,7 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
 def delete_list(userdesc,perms,vhost,listname,del_archives=0):
     lname = vhost+VHOST_SEP+listname.lower()
     try:
-        mlist = MailList.MailList(lname,lock=0)
+        mlist = MailList.MailList(listname,lock=0)
     except:
         return 0
     try:
