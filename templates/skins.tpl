@@ -1,4 +1,4 @@
-{* $Id: skins.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: skins.tpl,v 1.4 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Skins Polytechnique.org
@@ -21,9 +21,10 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 </p>
 
 <form action="{$smarty.server.REQUEST_URI}" method="POST">
-  <div style="text-align:center; margin: 1em;">
+  <div class="center">
     <input type="submit" value="Enregistrer" name="submit" />
   </div>
+  <br />
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
 {dynamic}
 {foreach item=skin from=$skins}    
@@ -41,13 +42,14 @@ Pour toute information complémentaire, n'hésite pas à écrire à
         Utilisée par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
       </td>
       <td class="skidroite">
-        <img src="images/{$skin.snapshot}" width=171 height=162 alt=" [ CAPTURE D'ECRAN ] ">
+        <img src="images/{$skin.snapshot}" style="width:171px; height:162px;" alt=" [ CAPTURE D'ECRAN ] ">
       </td>
     </tr>
 {/foreach}
 {/dynamic}
   </table>
-  <div style="text-align:center; margin: 1em;">
+  <br />
+  <div class="center">
     <input type="submit" value="Enregistrer" name="submit" />
   </div>
 

@@ -1,4 +1,4 @@
-{* $Id: antispam.tpl,v 1.2 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: antispam.tpl,v 1.3 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Ton filtre anti-spam
@@ -24,7 +24,7 @@ Trois réglages sont possibles :
 </ul>
 </p>
 <form action="{$smarty.server.PHP_SELF}" method="POST" name="filtre">
-  <table class="tinybicol" width="90%" summary="filtre anti-spam">
+  <table class="tinybicol" summary="filtre anti-spam">
     <tr>
       <td>
         <strong>Choisis ton propre réglage :</strong><br />

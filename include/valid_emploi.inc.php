@@ -47,7 +47,7 @@ class EmploiReq extends Validate {
               <td colspan="2"><pre>{$texte}</pre></td>
             </tr>
             <tr>
-              <td class="bouton" colspan="2">
+              <td class="center" colspan="2">
                 <input type="submit" name="submit" value="Accepter" />
                 <input type="submit" name="submit" value="Refuser" />
               </td>

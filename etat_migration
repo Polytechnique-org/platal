@@ -3,45 +3,29 @@
 ,---------------------.
 | NB Etats :          |
 |     -> rien de fait |
-| x   -> en cours     |
+| x   -> à tester     |
 | xx  -> en templates |
 | xxx -> anonyme      |
+| !!! -> postponned   |
 | --- -> supprimée    |
+| @@@ -> non modifiée |
 `---------------------'
 
 # PS pour trier : V<down><down>...<down>:!sort<enter>
 
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
-------+-------------------------------------------+----------------
-	  | acces_wap.php							  | 
+------+-[ admin ]---------------------------------+----------------
+	  | admin/FormatePrenomNOM.php				  | 
+	  | admin/FormatePrenomNOM2.php				  | 
 	  | admin/admin_faqs.php					  | 
 	  | admin/admin_trombino.php				  | 
-	  | admin/ax-xorg.php						  | 
 	  | admin/comptesPOP.php					  | 
 	  | admin/correction_adr.php				  | 
-	  | admin/deces_promo.php					  | 
 	  | admin/envoidirect.php					  | 
 	  | admin/evenements.php					  | 
-	  | admin/FormatePrenomNOM2.php				  | 
-	  | admin/FormatePrenomNOM.php				  | 
-	  | admin/gerer_applis.php					  | 
-	  | admin/gerer_auth-groupex.php			  | 
-	  | admin/gerer_binets.php					  | 
-	  | admin/gerer_coupure.php					  | 
-	  | admin/gerer_groupesx.php				  | 
-	  | admin/gerer_listes.php					  | 
-	  | admin/gerer_paiement.php				  | 
-	  | admin/gerer_skins.php					  | 
-	  | admin/gerer_sondages.php				  | 
-	  | admin/graph_promo.php					  | 
 	  | admin/homonymes.php						  | 
-	  | admin/index.php							  | 
 	  | admin/ins_confirmees.php				  | 
-	  | admin/logger_actions.php				  | 
-	  | admin/logger_events.php					  | 
-	  | admin/logger.php						  | 
-	  | admin/logger_user.php					  | 
 	  | admin/marketing.php						  | 
 	  | admin/marketing_promo.php				  | 
 	  | admin/marketing_volontaire.php			  | 
@@ -50,33 +34,22 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/newsletter_pattecassee.php		  | 
 	  | admin/newsletter_prep.php				  | 
 	  | admin/pg.php							  | 
-	  | admin/postfix_blacklist.php				  | 
-	  | admin/postfix_perm.php					  | 
-	  | admin/postfix_retardes.php				  | 
 	  | admin/relance.php						  | 
-	  | admin/stats_promo.php					  | 
-	  | admin/statut_antispam.php				  | 
+	  | admin/utilisateurs.php					  | 
 	  | admin/utilisateurs_identification.php	  | 
 	  | admin/utilisateurs_marketing.php		  | 
-	  | admin/utilisateurs.php					  | 
-	  | confbanana.php							  | 
-	  | coupure.php								  | stats/coupure.php
+------+-[ docs ]----------------------------------+----------------
 	  | docs/FROM.php							  | docs/from.php
-	  | domaineperso.php						  | 
-	  | domaine.php								  | 
-	  | dons.php								  | 
-	  | emails.php								  | 
-	  | emploi.php								  | 
-	  | emploi_public.php						  | 
 	  | en-cours.php							  | docs/en-cours.php
-	  | epouse.php								  | 
-	  | evenements.php							  | 
-	  | groupex/donne-chall.php					  | 
-	  | groupex/export-econfiance.php			  | 
-	  | groupex.php								  | 
-	  | index.coupure.php						  | 
-	  | info-groupesx.php						  | 
-	  | inscrire.php							  | 
+	  | info-groupesx.php						  | docs/info-groupesx.php
+	  | plan.php								  | ? docs/plan.php
+	  | services.php							  | docs/services.php
+------+-[ stats ]---------------------------------+----------------
+	  | parselogD.php							  | stats/...
+	  | parselogN.php							  | stats/...
+	  | parselogR.php							  | stats/...
+	  | stats.php								  | stats/index.php
+------+-[ listes ]--------------------------------+----------------
 	  | listes/creation.php						  | 
 	  | listes/gere_listes.php					  | 
 	  | listes/gere_msg.php						  | 
@@ -84,69 +57,109 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | listes/liste.php						  | 
 	  | listes/mailtoins.inc.php				  | 
 	  | listes/trombiliste.php					  | 
-	  | maj.php									  | 
-	  | marketing.php							  | 
-	  | mescontacts_pdf.php						  | 
-	  | mescontacts.php							  | 
-	  | news/abonnements.php					  | 
-	  | news/article.php						  | 
-	  | news/attachment.php						  | 
-	  | news/config.news.inc.php				  | 
-	  | news/faq_admin.php						  | 
-	  | news/index.php							  | 
-	  | newsletter.php							  | 
-	  | newsletter_req.php						  | 
-	  | news/newsportal.php						  | 
-	  | news/offreemploi.php					  | 
-	  | news/post.php							  | 
-	  | news/thread.php							  | 
+------+-[ paiement ]------------------------------+----------------
 	  | paiement/cyberpaiement.inc.php			  | 
 	  | paiement/cyberpaiement_retour.php		  | 
 	  | paiement/index.php						  | 
-	  | parselogD.php							  | stats/...
-	  | parselogN.php							  | stats/...
-	  | parselog.php							  | stats/...
-	  | parselogR.php							  | stats/...
-	  | pattecassee.php							  | 
-	  | pg.confirm.php							  | 
-	  | pg.php									  | 
-	  | plan.php								  | ? docs/plan.php
-	  | profil2.php								  | 
-	  | profil.php								  | 
-	  | recherche.php							  | 
-	  | recovery.php							  | 
-	  | redirect/error.php						  | 
-	  | redirect/redirect.php					  | 
-	  | routage-mail.php						  | 
-	  | rss.php									  | 
-	  | sendmail.php							  | 
-	  | services.php							  | docs/services.php
+------+-[ sondages ]------------------------------+----------------
 	  | sondage/accueil.php						  | 
 	  | sondage/bloc.php						  | 
 	  | sondage/droits.php						  | 
 	  | sondage/exemples.php					  | 
 	  | sondage/modifie.php						  | 
-	  | sondage/questionnaire.php				  | 
 	  | sondage/question.php					  | 
+	  | sondage/questionnaire.php				  | 
 	  | sondage/reponse.php						  | 
 	  | sondage/resultats.php					  | 
 	  | sondage/titre.php						  | 
 	  | sondage/validation.php					  | 
-	  | stats.php								  | stats/index.php
-	  | step4.php								  | 
-	  | tmpPWD.php								  | 
-	  | trackers/index.php						  | 
-	  | trackers/tracker_admin.php				  | 
-	  | trackers/tracker_delete.php				  | 
-	  | trackers/tracker_show.php				  | 
-	  | trackers/tracker_show_rq.php			  | 
+------+-[ trezo ]---------------------------------+----------------
 	  | trezo/gere_operations.php				  | 
 	  | trezo/index.php							  | 
 	  | trezo/trezo.inc.php						  | 
+------+-[ emails ... ]----------------------------+----------------
+	  | emails.php								  | 
+	  | routage-mail.php						  | 
+------+-[ inscription + mdp ]---------------------+----------------
+	  | inscrire.php							  | 
+	  | maj.php									  | 
+	  | recovery.php							  | 
+	  | step4.php								  | 
+	  | tmpPWD.php								  | 
+------+-[ bordel ]--------------------------------+----------------
+	  | domaine.php								  | 
+	  | emploi.php								  | 
+	  | emploi_public.php						  | 
+	  | evenements.php							  | 
+	  | index.coupure.php						  | 
+	  | marketing.php							  | 
+	  | mescontacts.php							  | 
+	  | mescontacts_pdf.php						  | 
+	  | newsletter.php							  | 
+	  | newsletter_req.php						  | 
+	  | pg.confirm.php							  | 
+	  | pg.php									  | 
+	  | profil.php								  | 
+	  | profil2.php								  | 
+	  | recherche.php							  | 
+	  | redirect/error.php						  | 
+	  | redirect/redirect.php					  | 
 	  | trombino.php							  | 
 	  | trombipromo.php							  | 
 	  | x.php									  | 
+------+-[ admin ]---------------------------------+----------------
+!!!	  | admin/gerer_applis.php					  | \
+!!!	  | admin/gerer_auth-groupex.php			  |  |
+!!!	  | admin/gerer_binets.php					  |  |
+!!!	  | admin/gerer_coupure.php					  |  |
+!!!	  | admin/gerer_groupesx.php				  |   > utiliser les classes Diogènes, j'ai pas diogènes hors ligne :/
+!!!	  | admin/gerer_listes.php					  |  |
+!!!	  | admin/gerer_paiement.php				  |  |
+!!!	  | admin/gerer_skins.php					  |  |---> mef la table a changé
+!!!	  | admin/gerer_sondages.php				  | /
+!!!	  | admin/logger.php						  | \
+!!!	  | admin/logger_actions.php				  |  \ Utiliser les classes de Jeremy, donc pour plus tard
+!!!	  | admin/logger_events.php					  |  /
+!!!	  | admin/logger_user.php					  | /
+------+-[ news ]----------------------------------+----------------
+!!!	  | news/abonnements.php					  | \
+!!!	  | news/article.php						  |  |
+!!!	  | news/attachment.php						  |  |
+!!!	  | news/config.news.inc.php				  |  |
+!!!	  | news/faq_admin.php						  |   \ s'en débarasser ?
+!!!	  | news/index.php							  |   /
+!!!	  | news/newsportal.php						  |  |
+!!!	  | news/offreemploi.php					  |  |
+!!!	  | news/post.php							  |  |
+!!!	  | news/thread.php							  | /
+!!!	  | confbanana.php							  | -> dépend de banana, à passer plus tard ...
+------+-[ trackers ]------------------------------+----------------
+ x	  | trackers/tracker_show.php				  | -
+ x	  | trackers/tracker_show_rq.php			  | -
 ------+-------------------------------------------+----------------
+@@@	  | groupex/donne-chall.php					  | -
+@@@	  | groupex/export-econfiance.php			  | -
+x	  | acces_wap.php							  | -
+x	  | admin/ax-xorg.php						  | -
+x	  | admin/deces_promo.php					  | -
+x	  | admin/graph_promo.php					  | stats/graph_promo.php
+x	  | admin/index.php							  | -
+x	  | admin/postfix_blacklist.php				  | -
+x	  | admin/postfix_perm.php					  | -
+x	  | admin/postfix_retardes.php				  | -
+x	  | admin/stats_promo.php					  | stats/stats_promo.php
+x	  | coupure.php								  | stats/coupure.php
+x	  | domaineperso.php						  | -
+x	  | dons.php								  | -
+x	  | epouse.php								  | -
+x	  | groupex.php								  | groupex/index.php 
+x	  | nbpromo2.php							  | stats/nb_by_promo.php
+x	  | parselog.php							  | stats/...
+x	  | pattecassee.php							  | -
+x	  | rss.php									  | -
+x	  | sendmail.php							  | -
+x	  | trackers/index.php						  | -
+x	  | trackers/tracker_admin.php				  | -
 xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
@@ -180,12 +193,13 @@ xx	  | getphoto.php							  | -
 xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
-xx	  | nbpromo2.php							  | stats/nb_by_promo.php
 xx	  | preferences.php							  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
----	  | aide.php								  | 
----	  | auth-wiki.php							  | 
+---	  | trackers/tracker_delete.php				  | -
+---	  | admin/statut_antispam.php				  | inutilisée et même pas en var superglobales ...
+---	  | aide.php								  | --> faq.php
+---	  | auth-wiki.php							  | obsolete
 ------+-------------------------------------------+----------------

@@ -190,8 +190,7 @@ ________EOF;
         global $no_update_bd;
         if($no_update_bd) return false;
         
-        require_once("flagset.inc.php");
-        $type = new flagset();
+        $type = new DiogenesFlagset();
         if ($this->libre) $type->addflag('libre');
         if ($this->publique) $type->addflag('publique');
         if ($this->archive) $type->addflag('archive');

@@ -43,7 +43,7 @@ class XorgPage extends DiogenesCorePage {
   }
 
   function make_id($append_to_id="") {
-      $ret = str_replace('/','|',$this->_tpl);
+      $ret = $this->_tpl;
       if($append_to_id)
           $ret.="|$append_to_id";
 
@@ -56,6 +56,22 @@ class XorgPage extends DiogenesCorePage {
   }
 
   function doAuth() { }
+
+  function mysql_assign($sql_query,$var_name,$var_nb_name='') {
+    $sql = mysql_query($sql_query);
+    if(mysql_errno($sql))
+      return(mysql_error($sql));
+
+    $array = Array();
+    while($array[] = mysql_fetch_assoc($sql));
+    array_pop($array);
+    mysql_free_result($sql);
+
+    $this->assign_by_ref($var_name,$array);
+    if(!empty($var_nb_name))
+      $this->assign($var_nb_name, count($array));
+    return 0;
+  }
 
 }
 

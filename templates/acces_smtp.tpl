@@ -1,4 +1,4 @@
-{* $Id: acces_smtp.tpl,v 1.2 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: acces_smtp.tpl,v 1.3 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <p class="erreur">
@@ -51,7 +51,7 @@
 {/if}
 </p>
 <form action="{$smarty.server.REQUEST_URI}" method="POST" name="smtppass_form" id="smtppass_form">
-  <table class="tinybicol" cellpadding="3" border="0" summary="Définition du mot de passe">
+  <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <th colspan="2">
         Définition du mot de passe

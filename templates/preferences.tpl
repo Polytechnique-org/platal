@@ -1,4 +1,4 @@
-{* $Id: preferences.tpl,v 1.4 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: preferences.tpl,v 1.5 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 <div class="rubrique">
   Préférences
 </div>
@@ -44,7 +44,7 @@
 
 <br />
 
-<table class="bicol" summary="Préférences: mdp" width="95%" cellpadding="3">
+<table class="bicol" summary="Préférences: mdp" cellpadding="3">
   <tr>
     <th>Mots de passe et accès au site</th>
   </tr>

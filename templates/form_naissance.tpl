@@ -1,4 +1,4 @@
-{* $Id: form_naissance.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: form_naissance.tpl,v 1.4 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 <div class="rubrique">
   Date de naissance
 </div>
@@ -12,8 +12,7 @@
   à cela. Elle n'est jamais visible ou lisible.
   </p>
   <br />
-  <table class="bicol" border="0" cellpadding="4" cellspacing="0"
-    summary="Formulaire de naissance" width="60%">
+  <table class="tinybicol" cellpadding="4" cellspacing="0"  summary="Formulaire de naissance">
     <tr>
       <th colspan="2">
         Date de naissance

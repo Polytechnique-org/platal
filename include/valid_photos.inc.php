@@ -70,8 +70,8 @@ class PhotoReq extends Validate {
         </tr>
         <tr>
             <td style="vertical-align: middle;" colspan="2">
-                <img src="../getphoto.php?x={$this->uid}$url_app" width=110 alt=" [ PHOTO ] " />
-                <img src="../getphoto.php?x={$this->uid}&amp;req=true$url_app" width=110 alt=" [ PHOTO ] " />
+                <img src="../getphoto.php?x={$this->uid}$url_app" style="width:110px;" alt=" [ PHOTO ] " />
+                <img src="../getphoto.php?x={$this->uid}&amp;req=true$url_app" style="width:110px;" alt=" [ PHOTO ] " />
             </td>
         </tr>
         <tr>

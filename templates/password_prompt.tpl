@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.9 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.10 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -68,7 +68,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
         <img src="{"images/pi.png"|url}" alt=" [ ? ] " />
         <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
       </td>
-      <td align=right>
+      <td style="text-align:right;">
         <input type="submit" name="submitbtn" value="Envoyer" />
       </td>
     </tr>

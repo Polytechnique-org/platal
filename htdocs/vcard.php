@@ -1,6 +1,5 @@
 <?php
-require("auto.prepend.inc.php");
-require("Smarty.class.php");
+require("nonhtml.inc.php");
 
 function quoted_printable_encode($input, $line_max = 76) {
     $hex = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
@@ -51,15 +50,6 @@ function format_adr($params, &$smarty) {
     if (! empty($pays)) $res .= "$pays";
     return quoted_printable_encode($res);
 }
-
-
-$page = new smarty();
-$page->template_dir = $globals->spoolroot . "/templates/";
-$page->compile_dir  = $globals->spoolroot . "/templates_c/";
-$page->plugins_dir[]= $globals->spoolroot . "/plugins/";
-$page->cache_dir    = $globals->spoolroot . "/cache/";
-$page->compile_check = true;
-$page->caching = false;
 
 $page->register_modifier('qp_enc', 'quoted_printable_encode');
 $page->register_function('format_adr', 'format_adr');

@@ -1,7 +1,7 @@
-{* $Id: password_prompt_logged.tpl,v 1.7 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.8 2004-02-04 19:47:47 x2000habouzit Exp $ *}
 
 <div class="center">
-  <table width="90%" summary="Accès sécurisé">
+  <table summary="Accès sécurisé" style="width: 90%;">
     <tr>
       <td>
         <img src="{"images/cadenas_rouge.png"|url}" alt=" [ CADENAS ROUGE ] ">
@@ -33,7 +33,7 @@
         <img src="{"images/pi.png"|url}" alt=" [ ? ] ">
         <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
       </td>
-      <td style="text-align:right">
+      <td style="text-align:right;">
         <input  type="submit" name="submitbtn" value="Envoyer" />
       </td>
     </tr>

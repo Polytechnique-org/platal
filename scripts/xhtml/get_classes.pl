@@ -59,9 +59,12 @@ sub parse_tag($$) {
 
     # tag interdits en xhtml
     print STDERR "${red}XHTML error: ${yel}<$1> ${blu}($file)${gra}\n"
-        if($tag =~ /^(b|i|u|center)( |$)/);
+        if($tag =~ /^(b|i|u|big|small|font|center)( |$)/);
     print STDERR "${red}XHTML error: ${yel}<$1> sans '/' ${blu}($file)${gra}\n"
         if($tag =~ /^(br|hr|img|link|input)( [^\/]*)?$/);
+
+    print STDERR "${red}XHTML error: ${yel}attribut $1 ${blu}($file)${gra}\n"
+        if($tag =~ / (align|width|border|color|valign)=/);
    
     # récupération des classes utilisées ...
     if($tag =~ /^(\w+).* class=('{[^}]*}'|"{[^}]*}"|'[^{}']*'|"[^{}"]*")/) {

@@ -53,18 +53,14 @@ $page->assign_by_ref('publicite', $publicite);
 // affichage des evenements
 // annonces promos triées par présence d'une limite sur les promos
 // puis par dates croissantes d'expiration
-$res = mysql_query(
-        "SELECT e.id,e.titre,e.texte,a.username,a.nom,a.prenom,a.promo
+$sql = "SELECT e.id,e.titre,e.texte,a.username,a.nom,a.prenom,a.promo
         FROM evenements AS e INNER JOIN auth_user_md5 AS a
         ON e.user_id=a.user_id
         WHERE FIND_IN_SET(flags, 'valide') AND peremption >= NOW()
         AND (e.promo_min = 0 || e.promo_min <= {$_SESSION['promo']})
         AND (e.promo_max = 0 || e.promo_max >= {$_SESSION['promo']})
-        ORDER BY (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption");
-$evenement = Array();
-while($evenement[] = mysql_fetch_assoc($res));
-@array_pop($evenement);
-mysql_free_result($res);
-$page->assign_by_ref('evenement', $evenement);
+        ORDER BY (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
+$page->mysql_assign($sql, 'evenement');
+
 $page->display();
 ?>

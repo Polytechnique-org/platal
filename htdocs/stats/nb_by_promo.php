@@ -7,8 +7,8 @@ $max=0; $min=3000;
 while(list($promo,$nb)=mysql_fetch_row($result)) {
     $promo=intval($promo);
     if(!isset($nbpromo[$promo/10]))
-        $nbpromo[$promo/10] = Array('','', '','', '','', '','', '','');
-    $nbpromo[$promo/10][$promo%10]=$nb;
+        $nbpromo[$promo/10] = Array('','','','','','','','','',''); // tableau de 10 cases vides
+    $nbpromo[$promo/10][$promo%10]=Array('promo' => $promo, 'nb' => $nb);
 }
 
 $page->assign_by_ref('nbs', $nbpromo);

@@ -77,7 +77,7 @@ class EvtReq extends Validate {
                 <td>{$this->comment}</td>
               </tr>
               <tr>
-                <td class="bouton" colspan="2">
+                <td class="center" colspan="2">
                   <input type="submit" name="action" value="Valider" />
                   <input type="submit" name="action" value="Invalider" />
                   <input type="submit" name="action" value="Supprimer" />

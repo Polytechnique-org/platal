@@ -1,0 +1,32 @@
+{* $Id: postfix.common.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+
+{dynamic}
+<p class="erreur">{$erreur}</p>
+
+<div class="rubrique">
+{$title}
+</div>
+
+<a href="{""|url}">page d'admin</a> |
+<a href="{"postfix_blacklist.php"|url}">blacklist</a> |
+<a href="{"postfix_perm.php"|url}">permissions</a> | 
+<a href="{"postfix_retardes.php"|url}">mails retardés</a>
+
+<p class="normal">
+{$expl}
+</p>
+
+<form method="post" action="{$smarty.server.PHP_SELF}">
+  <input type="text" name="nomligne" size="100" />
+  <input type="submit" name="add" value="Add" />
+</form>
+
+{foreach item=line from=$list}
+<form method="post" action="{$smarty.server.PHP_SELF}">
+  <input type="text" name="nomligne" value="{$line}" size="100">
+  <input type="submit" name="del" value="Del">
+</form>
+{/foreach}
+{/dynamic}
+
+{* vim:set et sw=2 sts=2 sws=2: *}
