@@ -18,10 +18,10 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.18 2004-09-11 15:13:07 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.19 2004-09-19 21:09:12 x2000habouzit Exp $
 #***************************************************************************
 
-import base64, MySQLdb
+import base64, MySQLdb, os
 import MySQLdb.converters
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -294,6 +294,58 @@ def set_welcome((userdesc,perms),listname,welcome):
         mlist.Unlock()
         return True
 
+def get_pending_ops((userdesc,perms),listname):
+    try:
+        mlist = MailList.MailList(listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        subs = []
+        for id in mlist.GetSubscriptionIds():
+            time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+            subs.append({
+                    'id'    : id,
+                    'name'  : fullname,
+                    'addr'  : addr
+                    })
+
+        helds = []
+        for id in mlist.GetHeldMessageIds():
+            ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(id)
+            try:
+                size = os.path.getsize(os.path.join(mm_cfg.DATA_DIR, filename))
+            except OSError, e:
+                if e.errno <> errno.ENOENT: raise
+                continue
+            helds.append({
+                    'id'    : id,
+                    'sender': sender,
+                    'size'  : size,
+                    'stamp' : ptime
+                    })
+    except:
+        mlist.Unlock()
+        return 0
+    mlist.Unlock()
+    return (subs,helds)
+
+
+def handle_request((userdesc,perms),listname,id,value,comment):
+    try:
+        mlist = MailList.MailList(listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        mlist.HandleRequest(id,value,comment)
+        return 1
+    except:
+        return 0
+
+
 ################################################################################
 #
 # INIT 
@@ -318,6 +370,8 @@ server.register_function(mass_unsubscribe)
 server.register_function(add_owner)
 server.register_function(del_owner)
 server.register_function(set_welcome)
+server.register_function(get_pending_ops)
+server.register_function(handle_request)
 
 server.serve_forever()
 
