@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.12 2004-10-28 14:07:49 x2000habouzit Exp $
+        $Id: moderate.php,v 1.13 2004-10-28 14:12:42 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -71,11 +71,16 @@ if(isset($_REQUEST['mid'])) {
 	}
     } elseif(isset($_REQUEST['mdel'])) {
 	unset($_GET['mid']);
+	$mail = $client->get_pending_mail('polytechnique.org', $liste, $mid);
 	if($client->handle_request('polytechnique.org', $liste,$mid,3,'')) { /** 3 = DISCARD **/
 	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message supprimé");
-	    $texte = "le message a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
+	    $texte = "le message suivant :\n\n"
+		    ."    Auteur: {$mail['sender']}\n"
+		    ."    Sujet : « {$mail['subj']} »\n"
+		    ."    Date  : ".date("%H:%M:%S le %d %b %Y",$mail['stamp'])."\n\n"
+	            ."a été supprimé par {$_SESSION['prenom']} {$_SESSION['nom']}.\n\n"
 		    ."Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
 	    $mailer->setBody(wordwrap($texte,72));
 	    $mailer->send();
