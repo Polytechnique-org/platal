@@ -23,7 +23,7 @@
 </h1>
 
 {dynamic}
-{if !$smarty.post}
+{if !$smarty.post.action}
 
 <p class="normal">
   Tu peux régler quelques paramètres qui apparaîtront sur les messages lorsque 

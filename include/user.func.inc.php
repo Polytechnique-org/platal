@@ -59,28 +59,11 @@ function user_clear_all_subs($user_id, $really_del=true)
     $globals->db->query("delete from user_changes where user_id=$uid");
     $globals->db->query("delete from watch_sub where uid=$uid");
     
-    require_once('xml-rpc-client.inc.php');
-    $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
-    $client->kill($alias, $really_del);
-}
-
-// }}}
-// {{{ function inscription_listes_base()
-
-/** inscrit l'uid donnée à la promo
- * @param $uid UID
- * @param $promo promo
- * @return reponse MySQL
- * @see admin/RegisterNewUser.php
- * @see step4.php
- */
-function inscription_listes_base($uid,$pass,$promo)
-{
-    require_once('xml-rpc-client.inc.php');
-    global $globals;
-    // récupération de l'id de la liste promo
-    $client = new xmlrpc_client("http://$uid:$pass@localhost:4949/polytechnique.org");
-    $client->subscribe("promo$promo");
+    include_once('lists.inc.php');
+    if (function_exists(lists_xmlrpc)) {
+        $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+        $client->kill($alias, $really_del);
+    }
 }
 
 // }}}

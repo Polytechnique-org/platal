@@ -24,11 +24,10 @@ $liste = strtolower($_REQUEST['liste']);
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/admin.tpl', AUTH_MDP);
-require_once('xml-rpc-client.inc.php');
+require_once('lists.inc.php')
 
 $err = Array();
-
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 
 if(isset($_REQUEST['add_member'])) {
     $arr = $client->mass_subscribe($liste, Array($_REQUEST['add_member']));
@@ -55,7 +54,7 @@ if(isset($_REQUEST['del_owner'])) {
 if(list($det,$mem,$own) = $client->get_members($liste)) {
     $membres = Array();
     foreach($mem as $member) {
-	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@polytechnique.org$/', $member[1], $matches)) {
+	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@'.$globals->mail->domain.'$/', $member[1], $matches)) {
 	    $key = strtoupper($matches[2]{0});
 	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1], 'a' => $member[1]);
 	} else {

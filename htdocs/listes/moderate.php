@@ -22,15 +22,15 @@
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
 
-if(preg_match('!(?:[a-z0-9]+\.)?polytechnique\.org-(.*)!', $liste,$matches)) {
+if(preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}-(.*)!", $liste,$matches)) {
     header('Location: ?liste='.$matches[1]);
 }
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/moderate.tpl', AUTH_MDP);
-require_once('xml-rpc-client.inc.php');
+require_once('lists.inc.php')
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 
 if(isset($_REQUEST['sadd'])) {
     $client->handle_request($liste,$_REQUEST['sadd'],4,'');
@@ -47,9 +47,9 @@ if(isset($_REQUEST['mid'])) {
     $mid = $_REQUEST['mid'];
     require_once('diogenes.hernes.inc.php');
     $mailer = new HermesMailer();
-    $mailer->addTo("$liste-owner@polytechnique.org");
-    $mailer->setFrom("$liste-bounces@polytechnique.org");
-    $mailer->addHeader('Reply-To', "$liste-owner@polytechnique.org");
+    $mailer->addTo("$liste-owner@{$globals->mail->domain}");
+    $mailer->setFrom("$liste-bounces@{$globals->mail->domain}");
+    $mailer->addHeader('Reply-To', "$liste-owner@{$globals->mail->domain}");
 
     $mail = $client->get_pending_mail($liste, $mid);
 
@@ -120,7 +120,7 @@ if(isset($_REQUEST['sid'])) {
 	$h = fopen($fname,'r');
 	$msg = fread($h, filesize($fname));
 	fclose($h);
-	$msg = str_replace("%(adminaddr)s","$liste-owner@polytechnique.org", $msg);
+	$msg = str_replace("%(adminaddr)s","$liste-owner@{$globals->mail->domain}", $msg);
 	$msg = str_replace("%(request)s","<< SUJET DU MAIL >>", $msg);
 	$msg = str_replace("%(reason)s","<< TON EXPLICATION >>", $msg);
 	$msg = str_replace("%(listname)s","$liste", $msg);

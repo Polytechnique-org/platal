@@ -21,9 +21,10 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/index.tpl', AUTH_MDP);
-require_once('xml-rpc-client.inc.php');
+require_once('lists.inc.php')
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+
 if(isset($_GET['del'])) {
     $client->unsubscribe($_GET['del']);
     header('Location: index.php');

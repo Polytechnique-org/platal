@@ -65,7 +65,6 @@ if ($nbAlea > 0) {
 $publicite = array_chunk( $publicite , $pub_nbLig , true ) ;
 $page->assign_by_ref('publicite', $publicite);
 
-
 // affichage des evenements
 // annonces promos triées par présence d'une limite sur les promos
 // puis par dates croissantes d'expiration

@@ -24,7 +24,7 @@
 class ListsConfig
 {
     var $rpchost  = 'localhost';
-    var $rpcport  = 119;
+    var $rpcport  = 4949;
     
     var $spool    = '/var/spool/platal/archives/';
 }

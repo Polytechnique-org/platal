@@ -1,7 +1,7 @@
-bin/mailman/foreach_template.py
-bin/mailman/mailman-rpc.py
-bin/mailman/mhonarc_by_month.pl
-bin/mailman/mhonarc_pipe.sh
+bin/lists.mhonarc_by_month.pl
+bin/lists.mhonarc_pipe.sh
+bin/lists.rpc.py
+hooks/core/lists.inc.php
 htdocs/admin/lists.php
 htdocs/images/lists_date.png
 htdocs/images/lists_firstia.png
@@ -24,11 +24,15 @@ htdocs/listes/moderate.php
 htdocs/listes/options.php
 htdocs/listes/soptions.php
 htdocs/listes/trombi.php
+include/conf.d/lists.globals.inc.php
+include/conf.d/lists.menu.inc.php
+include/lists.inc.php
 include/validations/listes.inc.php
 templates/admin/lists.tpl
 templates/include/form.valid.listes.tpl
 templates/include/form.valid.ml.tpl
 templates/listes/admin.tpl
+templates/listes/archives.head.tpl
 templates/listes/archives.tpl
 templates/listes/check.tpl
 templates/listes/create.tpl

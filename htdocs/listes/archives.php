@@ -24,9 +24,9 @@ $liste = strtolower($_REQUEST['liste']);
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/archives.tpl', AUTH_COOKIE, 'listes/archives.head.tpl');
-require_once('xml-rpc-client.inc.php');
+require_once('lists.inc.php')
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 
 if (list($det) = $client->get_members($liste)) {
     if ( substr($liste,0,5) != 'promo' && ( $det['ins'] || $det['priv'] ) && !$det['own'] && ($det['sub']<2) ) {
@@ -37,11 +37,11 @@ if (list($det) = $client->get_members($liste)) {
         if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $_GET['rep'])) {
             $page->assign('no_list',true);
         } else { 
-            $page->assign('url', $globals->lists->spool."/polytechnique.org-$liste/$rep/$file");
+            $page->assign('url', $globals->lists->spool."/{$globals->mail->domain}-$liste/$rep/$file");
         }
     } else {
         $archs = Array();
-        foreach (glob($globals->lists->spool."/polytechnique.org-$liste/*/*") as $rep) {
+        foreach (glob($globals->lists->spool."/{$globals->mail->domain}-$liste/*/*") as $rep) {
             if (preg_match(",/(\d*)/(\d*)$,", $rep, $matches)) {
                 $archs[intval($matches[1])][intval($matches[2])] = true;
             }

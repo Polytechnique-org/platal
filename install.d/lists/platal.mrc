@@ -490,7 +490,4 @@ date
 </LITemplate>
 
 
-<!-- vim:set syntax=mhonarc:sw=2: -->
-
 <!-- ------------------------------------------------------------------------ -->
-<!-- vim:set syntax=mhonarc:sw=2: -->

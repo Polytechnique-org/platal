@@ -24,10 +24,11 @@ $liste = strtolower($_REQUEST['liste']);
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/trombi.tpl', AUTH_COOKIE);
-require_once('xml-rpc-client.inc.php');
 require_once("trombi.inc.php");
+require_once('lists.inc.php')
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+
 if(isset($_GET['del'])) {
     $client->unsubscribe($liste);
     header("Location: ?liste=$liste");

@@ -22,10 +22,6 @@
 <h1>
   Lettre de Polytechnique.org
 </h1>
-<p>
-Tu trouveras ici les archives de la lettre d'information de Polytechnique.org.  Pour t'abonner à
-cette lettre, il te suffit de te <a href="{"listes/"|url}">rendre sur la page des listes</a>.
-</p>
 
 <p>
 <strong>Pour demander l'ajout d'une annonce dans la prochaine lettre mensuelle</strong>,

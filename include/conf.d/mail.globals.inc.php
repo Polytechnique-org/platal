@@ -19,25 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+// {{{ class SkinConfig
 
-require_once("xorg.inc.php");
-new_skinned_page('listes/delete.tpl', AUTH_MDP);
-require_once('lists.inc.php')
-
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
-
-if ( isset($_POST['valid']) && ($_POST['valid'] == 'OUI')
-        && $client->delete_list($liste,!empty($_POST['del_archive'])) ) {
-    $page->assign('deleted', true);
-} elseif (list($details,$options) = $client->get_owner_options($liste)) {
-    $page->assign_by_ref('details', $details);
-    $page->assign_by_ref('options', $options);
-    $page->assign('bogo_level', $client->get_bogo_level($liste));
-} else {
-    $page->assign('no_list', true);
+class MailConfig
+{
+    var $domain       = 'polytechnique.org';
 }
 
-$page->run();
+// }}}
+
+$this->mail = new MailConfig;
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

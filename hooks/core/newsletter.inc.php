@@ -23,9 +23,8 @@
 
 function &newsletter_subscribe($forlife, $uid, $promo, $password, &$result)
 {
-    global $globals;
     require_once('newsletter.inc.php');
-    subscribe_nl();
+    subscribe_nl(true,$uid);
     
     return ($result = true);
 }

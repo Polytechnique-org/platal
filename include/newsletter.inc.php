@@ -323,7 +323,7 @@ EOF;
 	$mailer = new HermesMailer();
 	$mailer->setFrom($globals->newsletter->from);
 	$mailer->setSubject($this->title());
-	$mailer->addTo("\"$prenom $nom\" <$login@polytechnique.org>");
+	$mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
         if (!empty($globals->newsletter->replyto)) {
             $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
         }
@@ -481,12 +481,13 @@ function unsubscribe_nl()
     $globals->db->query("DELETE FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
 }
  
-function subscribe_nl($html=true)
+function subscribe_nl($html=true, $uid=-1)
 {
     global $globals;
+    $user = $uid == -1 ? $_SESSION['uid'] : $uid;
     $format = $html ? 'html' : 'text';
     $globals->db->query("REPLACE INTO  newsletter_ins (user_id,last,pref)
-			       SELECT  {$_SESSION['uid']}, MAX(id), '$format'
+			       SELECT  '$user', MAX(id), '$format'
 				 FROM  newsletter WHERE bits!='new'");
 }
  

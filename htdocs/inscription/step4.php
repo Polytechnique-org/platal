@@ -138,8 +138,6 @@ if (!empty($_REQUEST['ref'])) {
     $hook->subscribe($forlife, $uid, $promo, $password, true);
     
     start_connexion($uid,false);
-    /****************** inscription à la liste promo +nl ****************/
-    $inspromo = inscription_listes_base($uid,$password,$promo);
 } else
     $page->assign('error',ERROR_REF);
 

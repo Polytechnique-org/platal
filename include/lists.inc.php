@@ -19,25 +19,24 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+// {{{ import class definitions
 
-require_once("xorg.inc.php");
-new_skinned_page('listes/delete.tpl', AUTH_MDP);
-require_once('lists.inc.php')
+require_once("xml-rpc-client.inc.php");
 
-$client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+// }}}
+// {{{ function lists_xmlrpc
 
-if ( isset($_POST['valid']) && ($_POST['valid'] == 'OUI')
-        && $client->delete_list($liste,!empty($_POST['del_archive'])) ) {
-    $page->assign('deleted', true);
-} elseif (list($details,$options) = $client->get_owner_options($liste)) {
-    $page->assign_by_ref('details', $details);
-    $page->assign_by_ref('options', $options);
-    $page->assign('bogo_level', $client->get_bogo_level($liste));
-} else {
-    $page->assign('no_list', true);
+function &lists_xmlrpc($uid, $pass, $fqdn=null)
+{
+    global $globals;
+    
+    $dom = empty($fqdn) ? $globals->mail->domain;
+    $url = "http://$uid:$pass/{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
+    $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+    return $client;
 }
 
-$page->run();
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

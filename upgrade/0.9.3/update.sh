@@ -20,7 +20,6 @@ done
 echo "BE CAREFUL :
 
 * scripts/ is now essentially in bin/
-  (with for this release, the inner path unchanged)
   --> have to modify crons
   --> have to modify xml-rpc path in the daemontools
 
