@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.1 2004-09-23 15:40:46 x2000habouzit Exp $
+        $Id: members.tpl,v 1.2 2004-09-25 10:13:29 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -57,8 +57,17 @@
     <td colspan='2' class='center'>
       <a href='trombi.php?liste={$smarty.request.liste}'>trombino de la liste</a> (page longue à charger)
     </td>
-  </tr>    
+  </tr>
 </table>
+{if $details.info}
+<br />
+<table class='tinybicol' cellpadding='0' cellspacing='0'>
+  <tr><th colspan='2'>Informations sur la liste</th></tr>
+  <tr>
+    <td colspan='2'>{$details.info|nl2br}</td>
+  </tr>
+</table>
+{/if}
 
 <div class='rubrique'>
   modérateurs de la liste

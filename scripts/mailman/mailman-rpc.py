@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.38 2004-09-25 09:57:41 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.39 2004-09-25 10:13:28 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -134,7 +134,8 @@ def get_list_info((userdesc,perms),mlist):
                 'list' : mlist.real_name,
                 'addr' : str('-').join(chunks[1:]) + '@' + chunks[0],
                 'host' : chunks[0],
-                'desc' : mlist.description,
+                'desc' : Utils.uquote(mlist.description),
+                'info' : Utils.uquote(mlist.info),
                 'diff' : (mlist.default_member_moderation>0) + (mlist.generic_nonmember_action>0),
                 'ins'  : mlist.subscribe_policy > 1,
                 'priv' : (1-mlist.advertised)+2*is_admin,
