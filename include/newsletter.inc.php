@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.14 2004-10-18 09:19:50 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.15 2004-10-18 12:20:06 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -144,16 +144,16 @@ class NewsLetter {
 
 	$i = 1;
 	foreach($this->_arts as $cid=>$arts) {
-	    $res .= "<strong>$i. {$this->_cats[$cid]}</strong><br />";
+	    $res .= "<div class='lnk'><a href='#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
 	    foreach($arts as $art) {
-		$res .= '- '.htmlentities($art->title())."<br />\n";
+		$res .= "<a href='#art{$art->_aid}'>&nbsp;&nbsp;- ".htmlentities($art->title())."</a>";
 	    }
-	    $res .= '<br />';
+	    $res .= '</div>';
 	    $i ++;
 	}
 
 	foreach($this->_arts as $cid=>$arts) {
-	    $res .= '<h1>'.$this->_cats[$cid].'</h1>';
+	    $res .= "<h1><a id='cat$cid'></a>".$this->_cats[$cid].'</h1>';
 	    foreach($arts as $art) {
 		$res .= $art->toHtml();
 	    }
@@ -164,12 +164,14 @@ class NewsLetter {
 <html>
   <head>
     <style type="text/css">
-      div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 58ex; text-align: justify; }
+      div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
       div.title { margin: 2ex 0ex 4ex 0ex; padding: 1ex; width: 100%; border: 1px black solid; font-size: 125%; text-align: center; }
-      div.art   {	padding-left: 1ex; margin: 0ex 0ex 4ex 0ex; }
-      div.app   { padding-left: 4ex; margin: 2ex 0ex 2ex 0ex; text-align: left; }
+      div.art   { padding-left: 2ex; margin: 0ex 0ex 4ex 0ex; width: 58ex; }
+      div.app   { padding-left: 4ex; margin: 2ex 0ex 2ex 0ex; width: 54ex; text-align: left; }
+      div.lnk   { margin: 2ex 0ex 2ex 0ex; }
+      div.lnk a { display: block; }
       h1 { margin: 3ex 0ex 2ex 0ex; padding: 2px 1ex 2px 1ex; width: 100%; border: 1px black dotted; font-size: 125%; }
-      h2 { margin: 0ex 0ex 2ex 0ex; width: 100%; border-bottom: 1px #aaaaaa solid; font-weight:bold; font-style: italic; font-size: 125% }
+      h2 { margin: 0ex 0ex 2ex 0ex; padding: 1px; width: 100%; border-bottom: 1px #aaaaaa solid; font-weight:bold; font-style: italic; font-size: 125% }
     </style>
   </head>
   <body>
@@ -229,7 +231,7 @@ class NLArticle {
     }
 
     function toHtml() {
-	$title = '<h2>'.htmlentities($this->title()).'</h2>';
+	$title = "<h2><a id='art{$this->_aid}'></a>".htmlentities($this->title()).'</h2>';
 	$body  = enriched_to_text($this->_body,true);
 	$app   = enriched_to_text($this->_append,true);
 	

@@ -22,18 +22,22 @@
 div.nl {
     margin: auto;
     font-family: "Georgia","times new roman",serif;
-    width: 58ex;
+    width: 60ex;
     text-align: justify;
 }
 
 div.nl div.title {
-    margin: 2ex 0ex 4ex 0ex;
+    margin: 2ex 0ex 2ex 0ex;
     padding: 1ex;
     width: 100%;
     border: 1px black solid;
     font-size: 125%;
     text-align: center;
 }
+
+div.nl div.lnk { margin: 2ex 0ex 2ex 0ex; }
+
+div.nl div.lnk a { display: block; }
 
 div.nl h1 {
     margin: 3ex 0ex 2ex 0ex;
@@ -53,12 +57,14 @@ div.nl h2 {
 }
 
 div.nl div.art {
-    padding-left: 1ex;
+    padding-left: 2ex;
     margin: 0ex 0ex 4ex 0ex;
+    width: 58ex;
 }
 
 div.nl div.app {
     padding-left: 4ex;
+    width: 54ex;
     margin: 2ex 0ex 2ex 0ex;
     text-align: left;
 }
