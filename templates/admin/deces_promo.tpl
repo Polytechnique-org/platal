@@ -1,7 +1,7 @@
-{* $Id: deces_promo.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: deces_promo.tpl,v 1.2 2004-02-04 22:47:45 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
-<table class="bicol">
+<table class="tinybicol">
   <tr>
     <td><input type="submit" value="<<" name="sub10" /></td>
     <td><input type="submit" value="<"  name="sub01" /></td>

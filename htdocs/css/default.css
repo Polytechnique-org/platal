@@ -178,12 +178,13 @@ table.tinybicol td.info, table.bicol td.info {
     margin-right: auto;
 }
 
-#body-left {
+#body-logo {
     width: 140px;
     border-right: 1px solid gray;
     text-align: center;
     font-family: "MS Sans Serif", sans-serif;
     padding-top: 4px;
+    border-bottom: 1px solid gray;
 }
 
 #body-top {
@@ -208,21 +209,22 @@ table.tinybicol td.info, table.bicol td.info {
     font-family: "MS Sans Serif", sans-serif;
 }
 
-#menu {
-    width: 100%;
-    margin-top: 16px;
-
+#body-menu {
+    width: 140px;
+    border-right: 1px solid gray;
+    text-align: center;
+    font-family: "MS Sans Serif", sans-serif;
     font-size: 75%;
     font-weight: bold;
 }
 
-#menu .menu_item {
+#body-menu .menu_item {
     padding-left: 4px;
     padding: 2px;
     text-align: left;
 }
 
-#menu .menu_title {
+#body-menu .menu_title {
     color: gray;
     background: #eeeeee;
     border-top: 1px solid gray;
@@ -236,6 +238,7 @@ table.tinybicol td.info, table.bicol td.info {
     width: 600px;
     padding: 4px 0px 4px 16px;
     font-size: 95%;
+    vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.12 2004-02-02 11:48:34 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.13 2004-02-04 22:47:45 x2000habouzit Exp $ */

@@ -1,7 +1,7 @@
 <?php
 require("auto.prepend.inc.php");
 
-new_skinned_page('access_wap.tpl', AUTH_MDP);
+new_skinned_page('acces_wap.tpl', AUTH_MDP);
 
 if (isset($_REQUEST['op']) && $_REQUEST['op'] == "valid") {
     // on enregistre les modifications des parametres
@@ -41,5 +41,6 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "valid") {
 
     $page->assign('wap', mysql_fetch_assoc($result));
     mysql_free_result($result);
+    $page->display();
 }
 ?>

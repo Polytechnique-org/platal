@@ -1,4 +1,4 @@
-{* $Id: acces_wap.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: acces_wap.tpl,v 1.2 2004-02-04 22:47:45 x2000habouzit Exp $ *}
 
 {if $OK}
 <p class="erreur">
@@ -127,7 +127,7 @@
         Utiliser le SSL:
       </td>
       <td>
-        <input type="checkbox" name="IMAPssl" {if $wap.IMAPssl}checked="checked"{if} />
+        <input type="checkbox" name="IMAPssl" {if $wap.IMAPssl}checked="checked"{/if} />
       </td>
     </tr>
     <tr>
