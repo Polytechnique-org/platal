@@ -41,6 +41,7 @@
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="{rel}/{$js}"></script>
     {/foreach}
+    <script type="text/javascript" src="{rel}/javascript/overlib.js"></script>
 
     <title>{$xorg_title|default:"Anciens eleves Polytechnique, annuaire email, Alumni"}</title>
 
