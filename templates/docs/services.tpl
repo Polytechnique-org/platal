@@ -49,31 +49,30 @@ consulter le trombinoscope</a> des promotions.
 
 <p>
 Le site te permet <a href="{rel}/emails/send.php">d'envoyer des mails</a>,
-<a href="{"banana/thread.php?group=xorg.pa.emploi"|url}">de consulter des offres
-  d'emplois</a> ou plus généralement <a href="{"banana/"|url}">des forums de
+de consulter <a href="{"banana/"|url}">des forums de
   discussions</a>, aux sujets variés, de <a href="{"listes/"|url}">t'inscrire sur des
   listes de diffusion</a> dédiées à une thème particulier.
 </p>
 
 <p>
-Il t'offre aussi des services plus techniques, utiles aux X responsablse de
+Il t'offre aussi des services plus techniques, utiles aux X responsables de
 groupes ou chargés d'organiser des manifestations polytechniciennes.
-qui réalise des questionnaires consultables en ligne, aux résultats anonymes,
-ou encore *} <a href="{"paiement/"|url}">le système de télépaiement</a> qui sert entre autres
+qui réalisent des questionnaires consultables en ligne, aux résultats anonymes,
+ou encore <a href="{"paiement/"|url}">le système de télépaiement</a> qui sert entre autres
 à l'organisation de repas et séminaires de groupes ou de promotions.
 </p>
 
 <p>
 Enfin Polytechnique.org favorise le développement d'activités associatives. Le
 site <a href="http://www.polytechnique.net/">www.polytechnique.net</a> te
-présente ainsi des groupes existants et la <a href="{"newsletter.php"|url}">newsletter
+présente ainsi des groupes existants et la <a href="{rel}/newsletter/">newsletter
   mensuelle</a> te met au courant des dernières actualités de la communauté.
 </p>
 
 <p>
 Cependant, cette liste n'est pas exhaustive, car d'autres fonctionnalités sont
 encore à l'étude et t'offriront bientôt des services encore plus innovants.
-Tu peux <a href="{"en-cours.php"|url}">en consulter la liste</a>.
+Tu peux <a href="{rel}/docs/en-cours.php">en consulter la liste</a>.
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
