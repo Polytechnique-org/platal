@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.50 2004-10-09 12:20:41 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.51 2004-10-09 13:08:43 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -123,7 +123,7 @@ def get_list_info((userdesc,perms),mlist,front_page=0):
     if mlist.advertised or is_member or is_owner or (not front_page and perms == 'admin'):
         chunks = mlist.internal_name().split('-')
         is_pending = False
-        if not is_member and front_page:
+        if front_page and not is_member and (mlist.subscribe_policy > 1):
             mlist.Lock()
             for id in mlist.GetSubscriptionIds():
                 if userdesc.address == mlist.GetRecord(id)[1]:
