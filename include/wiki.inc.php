@@ -116,6 +116,13 @@ class XOrgWikiAST
 
 class XOrgWikiParser
 {
+    // {{{ properties
+
+    var $max_title_level = 3;
+    var $enable_img      = true;
+    var $enable_hr       = true;
+
+    // }}}
     // {{{ constructor
     
     function XOrgWikiParser()
@@ -143,12 +150,24 @@ class XOrgWikiParser
 
     function _analyse(&$line)
     {
-        $modes = Array('!'=>'h1', '!!'=>'h2', '!!!'=>'h3', '>'=>'blockquote', '.'=>'pre', '-'=>'ul', '#'=>'ol');
         $types = Array();
+        $modes = Array( '>'=>'blockquote', '.'=>'pre', '-'=>'ul', '#'=>'ol');
+
+        for ($i = 1; $i <= $this->max_title_level; $i++) {
+            $modes[str_pad('!', $i, '!')] = "h$i";
+        }
+
         /* non - nesting blocks */
-        if (preg_match('/^(!!?!?|[.>])/', $line, $m)) {
+        $hre = $this->max_title_level ? str_pad('!', $this->max_title_level * 2 - 1, '!?') : '';
+        
+        if (preg_match("/^($hre|[.>])/", $line, $m)) {
             $types[] = $modes[$m[1]];
             return Array($types, substr($line, strlen($m[1])));
+        }
+
+        /* hr */
+        if ($this->enable_hr && $line == '----') {
+            return Array(Array('hr'), '');
         }
 
         /* nesting blocks */
@@ -161,8 +180,6 @@ class XOrgWikiParser
         /* nesting blocks or special lines */
         if ($pos) {
             return Array($types, substr($line, $pos));
-        } elseif ($line == '----') {
-            return Array(Array('hr'), '');
         } elseif ($line) {
             return Array(Array('p'), $line);
         } else {
@@ -235,7 +252,7 @@ class XOrgWikiParser
 
                 case '\\':
                     if ($i + 1 < $len) {
-                        if (strpos('*/_@[()', $d = $line{$i+1}) !== false) {
+                        if (strpos('*/_{}[()', $d = $line{$i+1}) !== false) {
                             $cur .= $d;
                             $i += 2;
                             break;
@@ -248,10 +265,9 @@ class XOrgWikiParser
                 case '*':
                 case '/':
                 case '_':
-                case '@':
                     if (preg_match(",^[$c][$c](.*?[^\\\\])[$c][$c],", substr($line, $i), $m)) {
                         $lexm[] = $cur;
-                        $type   = ($c == '*' ? 'strong' : ($c == '/' ? 'em' : ($c == '@' ? 'tt' : 'u')));
+                        $type   = ($c == '*' ? 'strong' : ($c == '/' ? 'em' : 'u'));
                         $lexm[] = new XOrgWikiAST($type, $this->_parse_line($m[1]));
                         $cur    = '';
                         $i     += strlen($m[0]);
@@ -261,8 +277,23 @@ class XOrgWikiParser
                     $i ++;
                     break;
 
-                case '[':
+                case '{':
+                    if (preg_match(",^{{(.*?[^\\\\])}},", substr($line, $i), $m)) {
+                        $lexm[] = $cur;
+                        $lexm[] = new XOrgWikiAST('tt', $this->_parse_line($m[1]));
+                        $cur    = '';
+                        $i     += strlen($m[0]);
+                        break;
+                    }
+                    $cur .= $line{$i};
+                    $i ++;
+                    break;
+
                 case '(':
+                    if (!$this->enable_img) {
+                        break;
+                    }
+                case '[':
                     $re = ( $c=='[' ? ',^\[([^|]*)\|([^]]*)\],' : ',^\(([^|]*)\|([^)]*)\),' );
                     if (preg_match($re, substr($line, $i), $m)) {
                         $lexm[] = $cur;
@@ -319,6 +350,9 @@ class XOrgWikiToText
     function _render($AST, $idt, $list, $fst)
     {
         $res = '';
+        if ($AST->type == 'hr') {
+            return "\n ---------------------------------------------------------------------- ";
+        }
         if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false && !$fst) {
             $res .= "\n$idt";
         }
