@@ -24,6 +24,8 @@ function chgMainWinLoc( strPage ) {
   parent.opener.document.location = strPage;
 }
 </script>
+<script type="text/javascript" src="javascript/close_on_esc.js">
+</script>
 {/literal}
 
 <table id="fiche" cellpadding="0" cellspacing="0">

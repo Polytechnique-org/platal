@@ -37,6 +37,7 @@ Bug/Wish :
 
 	* Core :
 		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
+		- #145: Use melix address to log in.								-Car
 
 	* Emails :
 		- #229: Possibility to show our melix address.						-Car
@@ -49,6 +50,7 @@ Bug/Wish :
 	
 	* Profile :
 		- #65 : Add professionnal cellphone.								-Car
+		- #170 : Remove region display for french departments.				-Car
 
 	* Validations :
 		- #137: Now possible to add comments without any action.			-MC
@@ -109,6 +111,7 @@ Bug/Wish :
 
 	* Fiche :
 		- #83,208,222 : New fiche.											-MC
+		- #218 : Quit fiche using Escape key.								-Car
 
 	* Lists :
 		- #86 : Yet another old old wish : lists archives are online !		-MC
