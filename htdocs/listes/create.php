@@ -27,28 +27,18 @@ $members = empty($_POST['members']) ? Array() : preg_split("/[\r\n]+/",$_POST['m
 
 if(isset($_POST['desc'])) $_POST['desc'] = stripslashes($_POST['desc']);
 
-if(isset($_POST['add_owner_sub']) && isset($_POST['add_owner'])) {
-    $res = $globals->db->query("
-	SELECT  a.alias AS forlife
-          FROM  aliases         AS a
-    INNER JOIN	aliases         AS b USING(id)
-         WHERE  b.alias='{$_POST['add_owner']}' AND b.type!='homonyme' AND a.type='a_vie'");
-    if(list($forlife) = mysql_fetch_row($res)) {
-	$owners [] = $forlife;
+if(isset($_POST['add_owner_sub']) && !empty($_POST['add_owner'])) {
+    require_once('user.func.inc.php');
+    if (($forlife = get_user_forlife($_REQUEST['add_owner'])) === false) {;
+        $owners [] = $forlife;
     }
-    mysql_free_result($res);
 }
 
-if(isset($_POST['add_member_sub']) && isset($_POST['add_member'])) {
-    $res = $globals->db->query("
-	SELECT  a.alias AS forlife
-          FROM  aliases         AS a
-    INNER JOIN	aliases         AS b USING(id)
-         WHERE  b.alias='{$_POST['add_member']}' AND b.type!='homonyme' AND a.type='a_vie'");
-    if(list($forlife) = mysql_fetch_row($res)) {
-	$members[] = $forlife;
+if(isset($_POST['add_member_sub']) && !empty($_POST['add_member'])) {
+    require_once('user.func.inc.php');
+    if (($forlife = get_user_forlife($_REQUEST['add_member'])) === false) {;
+        $members[] = $forlife;
     }
-    mysql_free_result($res);
 }
 
 ksort($owners);	 array_unique($owners);

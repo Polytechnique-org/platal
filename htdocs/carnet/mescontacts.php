@@ -45,15 +45,19 @@ if (isset($_REQUEST['action'])) {
         // si l'utilisateur demande l'ajout de qqun à sa liste
     } elseif ($_REQUEST["action"]=="ajouter") {
 
-        if (($res = $globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['user']}' AND type!='homonyme'")) && mysql_num_rows($res)==1) {
-            list($cont_user_id) = mysql_fetch_row($res);
-            if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
+        require_once('user.func.inc.php');
+        if (($login = get_user_login($_REQUEST['user'])) !== false) {
+            if ($globals->db->query("INSERT INTO  contacts (uid, contact)
+                                          SELECT  '{$_SESSION['uid']}', id
+                                            FROM  aliases
+                                           WHERE  alias='$login'"))
+            {
                 $page->trig('Contact ajouté !');
-            } else
+            } else {
                 $page->trig('Contact déjà dans la liste !');
-        } else {
-            $page->trig('Utilisateur inexistant ou non inscrit !');
+            }
         }
+
     }
 }
 

@@ -29,6 +29,8 @@ class TestOfXOrgUsers extends UnitTestCase {
 
         $login = get_user_login("madcoder@polytechnique.org");
         $this->assertIdentical($login, 'madcoder');
+        $login = get_user_login("madcoder@polytechnique.org", true);
+        $this->assertIdentical($login, 'pierre.habouzit.2000');
         
         $login = get_user_login("madcoder@m4x.org");
         $this->assertIdentical($login, 'madcoder');

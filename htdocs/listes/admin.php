@@ -29,10 +29,16 @@ require_once('lists.inc.php');
 $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 
 if(isset($_REQUEST['add_member'])) {
-    $arr = $client->mass_subscribe($liste, Array($_REQUEST['add_member']));
+    require_once('user.func.inc.php');
+    if (($login = get_user_forlife($_REQUEST['add_member'])) === false) {;
+        $login = $_REQUEST['add_member'];
+    }
+
+    $arr = $client->mass_subscribe($liste, Array($login));
     if(is_array($arr)) {
 	foreach($arr as $addr) {
             $page->trig("{$addr[0]} inscrit.");
+        }
     }
 }
 
@@ -42,7 +48,12 @@ if(isset($_REQUEST['del_member'])) {
 }
 
 if(isset($_REQUEST['add_owner'])) {
-    if($client->add_owner($liste, $_REQUEST['add_owner'])) {
+    require_once('user.func.inc.php');
+    if (($login = get_user_forlife($_REQUEST['add_owner'])) === false) {;
+        $login = $_REQUEST['add_owner'];
+    }
+
+    if($client->add_owner($liste, $login)) {
         $page->trig($_REQUEST['add_owner']." ajouté aux modérateurs.");
     }
 }

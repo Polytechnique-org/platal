@@ -69,7 +69,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 // }}}
 // {{{ function get_user_login()
 
-function get_user_login($data) {
+function get_user_login($data, $get_forlife = false) {
     global $globals, $page;
 
     if (preg_match(',^[0-9]*$,', $data)) {
@@ -92,13 +92,21 @@ function get_user_login($data) {
     list($mbox, $fqdn) = split('@', $data);
     if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
 
-        $res = $globals->db->query("SELECT COUNT(alias) FROM aliases WHERE alias='$mbox' AND type IN ('alias', 'a_vie')");
-        list($c) = mysql_fetch_row($res);
-        mysql_free_result($res);
-        if (!$c && $page) {
-            $page->trig("il n'y a pas d'utilisateur avec ce login");
+        $res = $globals->db->query("SELECT  a.alias
+                                      FROM  aliases AS a
+                                INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias='$mbox')
+                                     WHERE  a.type = 'a_vie'");
+        if (mysql_num_rows($res)) {
+            if ($get_forlife) {
+                list($alias) = mysql_fetch_row($res);
+            } else {
+                $alias = $mbox;
+            }
+        } else {
+            $alias = false;
         }
-        return $c ? $mbox : false;
+        mysql_free_result($res);
+        return $alias;
 
     } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
     
@@ -145,5 +153,13 @@ function get_user_login($data) {
 }
 
 // }}}
+// {{{ function get_user_forlife()
+
+function get_user_forlife($data) {
+    return get_user_login($data, true);
+}
+
+// }}}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
