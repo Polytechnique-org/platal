@@ -297,7 +297,8 @@ function start_connexion ($uid, $identified)
     INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
      LEFT JOIN  logger.sessions AS s  ON (s.uid=u.user_id AND s.suid=0)
          WHERE  u.user_id = {?} AND u.perms IN('admin','user')
-      ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)", $uid);
+      ORDER BY  s.start DESC
+         LIMIT  1", $uid);
     $sess = $res->fetchOneAssoc();
     echo mysql_error();
     $suid = Session::getMixed('suid');
