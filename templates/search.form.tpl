@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.15 2004-10-11 00:21:42 x2000bedo Exp $
+        $Id: search.form.tpl,v 1.16 2004-10-11 06:52:59 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -47,7 +47,7 @@
     {$error}
   </p>
 {/if}
-<form name="recherche" action="{$smarty.server.PHP_SELF}" method="post">
+<form id="recherche" action="{$smarty.server.PHP_SELF}" method="post">
   <table class="{if !$advanced}tiny{/if}bicol" cellpadding="3" summary="Recherche">
     <tr>
       <td>Nom</td>
@@ -94,7 +94,7 @@
     <tr>
       <td>Pays</td>
       <td>
-        <select name="pays" onchange="javascript:document.recherche.submit();">
+        <select name="pays" onchange="javascript:document.forms.recherche.submit();">
         {if $smarty.request.pays}
           {assign var="pays" value=$smarty.request.pays}
         {else}
@@ -218,7 +218,7 @@
     <tr>
       <td>Formation</td>
       <td>
-        <select name="school" onchange="javascript:document.recherche.submit();">
+        <select name="school" onchange="javascript:document.forms.recherche.submit();">
           <option value="0"></option>
           {section name=school loop=$choix_schools}
           <option value="{$choix_schools[school].id}" {if $smarty.request.school eq
