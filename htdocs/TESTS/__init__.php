@@ -7,4 +7,6 @@ require_once('unit_tester.php');
 require_once('mock_objects.php');
 require_once('reporter.php');
 
+require_once('xorg.globals.inc.php');
+XorgGlobals::init();
 ?>

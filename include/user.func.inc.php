@@ -75,6 +75,7 @@ function get_user_login($data, $get_forlife = false) {
     if (preg_match(',^[0-9]*$,', $data)) {
         $res = $globals->db->query("SELECT alias FROM aliases WHERE type='a_vie' AND id=$data");
         if (!mysql_num_rows($res)) {
+            $page->trig("il n'y a pas d'utilisateur avec cet id");
             $alias = false;
         } else {
             list($alias) = mysql_fetch_row($res);
