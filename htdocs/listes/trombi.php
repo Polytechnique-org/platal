@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.16 2004-11-22 20:04:44 x2000habouzit Exp $
+        $Id: trombi.php,v 1.17 2004-11-30 19:02:07 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -30,6 +30,14 @@ require_once('xml-rpc-client.inc.php');
 require_once("trombi.inc.php");
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+if(isset($_GET['del'])) {
+    $client->unsubscribe($liste);
+    header("Location: ?liste=$liste");
+}
+if(isset($_GET['add'])) {
+    $client->subscribe($liste);
+    header("Location: ?liste=$liste");
+}
 
 function getList($offset,$limit) {
     global $client, $globals;

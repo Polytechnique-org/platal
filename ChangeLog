@@ -13,11 +13,11 @@ New :
 		- Adds include/conf.d and the glob modifier.						-MC
 	
 	* Distribution :
-		- Do not modify PHP include path from auto.prepend.inc.php			-SHK
-		- Add install.d/apache.conf with a sample Apache config file		-SHK
-		- Add Makefile to generate distribution tarballs					-SHK
-		- Generate xorg.config.inc.php using "make"							-SHK
-		- Add a basic README file											-SHK
+		- Do not modify PHP include path from auto.prepend.inc.php.			-SHK
+		- Add install.d/apache.conf with a sample Apache config file.		-SHK
+		- Add Makefile to generate distribution tarballs.					-SHK
+		- Generate xorg.config.inc.php using "make".						-SHK
+		- Add a basic README file.											-SHK
 
 	* Mails : Use HermesMailer.												-MC
 
@@ -42,7 +42,8 @@ Bug/Wish :
 		- #83,208,222 : New fiche.											-MC
 
 	* Lists :
-		- #86 : yet another old old wish : lists archives are online !		-MC
+		- #86 : Yet another old old wish : lists archives are online !		-MC
+		- #144 : Users can subscribe from members/trombi page too.			-MC
 		- #184 : Owners can now delete their lists.							-MC
 		- #231 : Add a link to the user's fiche on moderation page.			-MC
 

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.13 2004-11-13 15:56:37 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.14 2004-11-30 19:02:07 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -54,6 +54,22 @@
   <tr>
     <td class='titre'> Inscription </td>
     <td>{if $details.ins}modérée{else}libre{/if}</td>
+  </tr>
+  <tr class="pair">
+    <td class="titre">Ton statut:</td>
+    <td>
+      {if $details.sub>1}
+      Tu es inscrit sur la liste.<br />
+      Te désinscrire :
+      <a href='?liste={$smarty.request.liste}&amp;del=1'><img src="{rel}/images/retirer.gif" alt="[me désinsiscrire]" /></a>
+      {elseif $details.sub eq 1}
+      Ta demande d'inscription est en cours de validation.
+      {else}
+      Tu n'es pas inscrit.<br />
+      Demander ton inscription :
+      <a href="?liste={$smarty.request.liste}&amp;add=1"><img src="{rel}/images/ajouter.gif" alt="[demander mon inscription]" /></a>
+      {/if}
+    </td>
   </tr>
 </table>
 
