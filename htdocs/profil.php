@@ -26,6 +26,11 @@ $page->addCssLink('css/profil.css');
 require_once('tabs.inc.php');
 require_once('profil.func.inc.php');
 
+
+if (Post::has('register_from_ax_question')) {
+    $globals->xdb->query('UPDATE auth_user_quick SET profile_from_ax = 1 WHERE user_id = {?}', Session::getInt('uid'));
+}
+
 //on met a jour $opened_tab et $new_tab qui sont le tab du POST et le tab demande
 // Tout d'abord, quel est le tab actuel ?
 // si on vient d'un POST, old_tab etait le tab courant

@@ -91,7 +91,7 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
               WHERE  promo={?} AND deces=0 AND perms="pending"', $promo);
 
     while (list($_uid, $_nom, $_prenom, $_mat) = $res->next()) {
-        if (user_cmp($prenon, $nom, $_prenom, $_nom)) {
+        if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
             $ourid  = $_uid;
             $ourmat = $_mat;
             return true;

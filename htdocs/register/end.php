@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once('xorg.inc.php');
-new_skinned_page('register/end.tpl', AUTH_PUBLIC);
+new_simple_page('register/end.tpl', AUTH_PUBLIC);
 require_once('user.func.inc.php');
 
 if (Env::has('hash')) {
@@ -58,7 +58,7 @@ if ( !Env::has('hash') ||
 
 $globals->xdb->execute('UPDATE  auth_user_md5
                            SET  password={?}, perms="user", date=NOW(), naissance={?}, date_ins = NOW()
-                         WHERE  uid={?}', $password, $naissance, $uid);
+                         WHERE  user_id={?}', $password, $naissance, $uid);
 $globals->xdb->execute('REPLACE INTO auth_user_quick (user_id) VALUES ({?})', $uid);
 $globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "a_vie")', $uid, $forlife);
 $globals->xdb->execute('INSERT INTO aliases (id,alias,type,flags) VALUES ({?}, {?}, "alias", "bestalias")', $uid, $bestalias);
@@ -85,15 +85,16 @@ $mymail->assign('prenom', $prenom);
 $mymail->send();
 
 start_connexion($uid,false);
+$_SESSION['auth'] = AUTH_MDP;
 
 /***********************************************************/
 /************* envoi d'un mail au démarcheur ***************/
 /***********************************************************/
 $res = $globals->xdb->iterRow(
-        "SELECT  DISTINCT sa.alias, sa.nom, sa.prenom
+        "SELECT  DISTINCT sa.alias, s.nom, s.prenom
            FROM  register_marketing AS m
      INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
-     INNER JOIN  aliases            AS sa ON ( a.id = m.sender AND FIND_IN_SET('bestalias', a.flags) )
+     INNER JOIN  aliases            AS sa ON ( sa.id = m.sender AND FIND_IN_SET('bestalias', sa.flags) )
           WHERE  m.uid = {?}", $uid);
 
 while (list($salias, $snom, $sprenom) = $res->next()) {
@@ -115,6 +116,8 @@ while (list($salias, $snom, $sprenom) = $res->next()) {
 
 $globals->xdb->execute("DELETE FROM register_mstats WHERE uid = {?}", $uid);
 
-$page->assign('forlife',$forlife);
+header('Location: success.php');
+$page->assign('uid', $uid);
 $page->run();
+
 ?>

@@ -123,7 +123,7 @@ switch ($sub_state['step']) {
 }
 
 $_SESSION['sub_state'] = $sub_state;
-new_skinned_page('register/step'.intval($sub_state['step']).'.tpl', AUTH_PUBLIC);
+new_simple_page('register/step'.intval($sub_state['step']).'.tpl', AUTH_PUBLIC);
 if (isset($err)) { $page->trig($err); }
 $page->run();
 ?>
