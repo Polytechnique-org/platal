@@ -8,12 +8,11 @@
  * Purpose:  
  * -------------------------------------------------------------
  */
-function smarty_block_min_perms($params, $content, &$smarty)
+function smarty_block_perms($params, $content, &$smarty)
 {
     if( empty($content) || empty($params['level'] ))
         return;
     if( ($params['level'] == 'public') ||
-        ($params['level'] == 'marketing' && has_perms($marketing_admin)) ||
         ($params['level'] == 'admin' && has_perms()) )
         return $content;
 }
