@@ -1,4 +1,4 @@
-{* $Id: ax-xorg.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: ax-xorg.tpl,v 1.2 2004-02-04 22:32:11 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Vérifier notre table de correspondance entre l'annuaire de l'AX et le nôtre
@@ -15,7 +15,7 @@
     <th>Nom X.org</th>  <th>Prénom X.org</th>   <th>Mat X.org</th>
     <th>Nom AX</th>     <th>Prénom AX</th>      <th>Mat AX</th>
   </tr>
-{foreach item=x from=$diff}
+{foreach item=x from=$diffs}
   <tr class="{cycle values="impair,pair"}">
     <td>{$x.promo}</td>
     <td>{$x.nom}</td>   <td>{$x.prenom}</td>    <td>{$x.mat}</td>
@@ -37,7 +37,7 @@
 </div>
 
 {dynamic}
-<table class="bicol" summary="liste des absents de notre annuaire">;
+<table class="bicol" summary="liste des absents de notre annuaire">
   <tr>
     <th>Promo</th>  <th>Nom</th>  <th>Prénom</th>
   </tr>
@@ -74,7 +74,7 @@
 </table>
 
 <p class="normal">
-  <strong>{$nb_plus} camarades sont absents de notre annuaire.</strong>
+  <strong>{$nb_plus} camarades sont absents de l'annuaire de l'AX.</strong>
 </p>
 {/dynamic}
 

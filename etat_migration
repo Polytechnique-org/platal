@@ -140,7 +140,6 @@ Etat  | Ancien nom								  | Nouveau nom
 @@@	  | groupex/donne-chall.php					  | -
 @@@	  | groupex/export-econfiance.php			  | -
 x	  | acces_wap.php							  | -
-x	  | admin/ax-xorg.php						  | -
 x	  | admin/deces_promo.php					  | -
 x	  | admin/graph_promo.php					  | stats/graph_promo.php
 x	  | admin/index.php							  | -
@@ -164,6 +163,7 @@ xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
+xx	  | admin/ax-xorg.php						  | -
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
 xx	  | antispam.php							  | -
