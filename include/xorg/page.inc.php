@@ -108,7 +108,7 @@ class XorgPage extends DiogenesCorePage
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
         } else {
-            if (isset($_SESSION['suid'])) {
+            if (Session::has('suid')) {
                 $this->caching=false;
             }
             $this->assign_by_ref('menu', $globals->menu->menu());
@@ -117,7 +117,7 @@ class XorgPage extends DiogenesCorePage
                 $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
                 $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
 
-		$result = $this->fetch('skin/'.$_SESSION['skin'], $id);
+		$result = $this->fetch('skin/'.Session::get('skin'), $id);
 		$total_time = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
                 $fd = fopen($this->cache_dir."valid.html","w");
                 fwrite($fd, $result);
@@ -138,7 +138,7 @@ class XorgPage extends DiogenesCorePage
 		    }
                 }
             } else {
-                $this->display('skin/'.$_SESSION['skin'], $id);
+                $this->display('skin/'.Session::get('skin'), $id);
             }
         }
         exit;
@@ -194,7 +194,7 @@ class XorgPage extends DiogenesCorePage
         if ($this->_page_type == NO_SKIN) {
             return parent::is_cached($this->_tpl);
         } else {
-            return parent::is_cached('skin/'.$_SESSION['skin'], $this->make_id($append_to_id));
+            return parent::is_cached('skin/'.Session::get('skin'), $this->make_id($append_to_id));
         }
     }
 
@@ -213,8 +213,8 @@ class XorgPage extends DiogenesCorePage
         }
 
         $auth_trans = Array(AUTH_PUBLIC => 'public', AUTH_COOKIE => 'cookie', AUTH_MDP => 'passwd');
-        $ret .= '-'.$auth_trans[empty($_SESSION['auth']) ? AUTH_PUBLIC : $_SESSION['auth']];
-        $ret .= '-'.(empty($_SESSION['perms']) ? PERMS_EXT : $_SESSION['perms']);
+        $ret .= '-'.$auth_trans[Session::get('auth', AUTH_PUBLIC)];
+        $ret .= '-'.Session::get('perms', PERMS_EXT);
 
         return $ret;
     }
