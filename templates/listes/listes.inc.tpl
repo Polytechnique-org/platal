@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.6 2004-09-23 17:20:36 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.7 2004-09-25 15:55:26 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
     <th>Liste</th>
     <th>Description</th>
-    <th>Diffusion</th>
-    <th>Inscription</th>
+    <th>Régulation</th>
+    <th>Nb</th>
     <th></th>
   </tr>
   {foreach from=$listes item=liste}
@@ -40,17 +40,22 @@
       {/if}
     </td>
     <td>{$liste.desc}</td>
-    <td class='center'>{if $liste.diff}modérée{else}libre{/if}</td>
-    <td class='center'>{if $liste.ins}modérée{else}libre{/if}</td>
+    <td class='center'>
+      {if $liste.diff eq 2}2{elseif $list.diff}1{else}0{/if}
+      {if $liste.ins}modérée{else}libre{/if}
+    </td>
+    <td class='right'>{$liste.nbsub}</td>
     <td class='right'>
       {if $liste.sub eq 2}
-      <a href='{$smarty.server.PHP_SELF}?del={$liste.list}'>me désinscrire</a>
+      <a href='{$smarty.server.PHP_SELF}?del={$liste.list}'>
+        <img src="{"images/retirer.gif"|url}" alt="[ désinscription ]" />
+      </a>
       {elseif $liste.sub eq 1}
-      <span class='erreur'>en cours</span>
-      {elseif $liste.ins}
-      <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>demander son inscription</a>
+      <img src="{"images/flag.png"|url}" alt="[ en cours ]" />
       {else}
-      <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>m'inscrire</a>
+      <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>
+        <img src="{"images/ajouter.gif"|url}" alt="[ inscription ]" />
+      </a>
       {/if}
     </td>
   </tr>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.7 2004-09-25 14:56:53 x2000habouzit Exp $
+        $Id: index.tpl,v 1.8 2004-09-25 15:55:26 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -29,14 +29,20 @@
 </div>
 
 <p>
-Certaines listes sont à inscription modérée, l'inscription n'y est pas
-immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
-(ou éventuellement refuser) ta candidature.
+Pour t'inscrire à une liste il suffit de cliquer sur l'icone
+<img src="{"images/ajouter.gif"|url}" alt="[ inscription ]" /> située en fin de ligne.
 </p>
 
 <p>
-Dans tous les cas, pour se désinscrire, il suffit de décocher la case et de cliquer sur
-"Enregistrer".  
+Certaines listes sont à inscription modérée, l'inscription n'y est pas
+immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
+(ou éventuellement refuser) ta candidature.  Ces listes apparaissent avec l'icone 
+<img src="{"images/flag.png"|url}" alt="[ en cours ]" />.
+</p>
+
+<p>
+Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
+<img src="{"images/retirer.gif"|url}" alt="[ désinscription ]" />.
 </p>
 
 <div class='ssrubrique'>
