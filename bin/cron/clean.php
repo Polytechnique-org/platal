@@ -41,7 +41,6 @@ query("delete from en_cours where loginbis = 'INSCRIT'");
 query("update envoidirect set uid = CONCAT('+',uid) where uid not like '+%' and date_succes != 0");
 
 // quelques tables sont triées pour que la lecture triée soit plus facile
-query("alter table nationalites order by text");
 query("alter table applis_def order by text");
 query("alter table binets_def order by text");
 query("alter table groupesx_def order by text");
