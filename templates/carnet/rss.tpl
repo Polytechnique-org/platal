@@ -31,15 +31,22 @@
     </image>
     {foreach from=$notifs->_data item=c key=cid}
     {foreach from=$c item=promo}
-    {section name=row loop=$promo}
+    {foreach from=$promo item=x}
     <item>
       <title>
-        [{$notifs->_cats[$cid].short}] {$promo[row].prenom} {$promo[row].nom} (le {$promo[row].date|date_format})
+        [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format}
       </title>
-      <link>{#globals.baseurl#}/fiche.php?user={$promo[row].bestalias}</link>
-      <pubDate>{$promo[row]->known|rss_date}</pubDate>
+      <link>{#globals.baseurl#}/fiche.php?user={$x.bestalias}</link>
+      <description><![CDATA[
+        {if !$x.contact}
+        <a href="{#globals.baseurl#}/carnet/mescontacts.php?action=ajouter&amp;user={$x.bestalias}">
+          ajouter &agrave; mes contacts
+        </a>
+        {/if}
+        ]]></description>
+      <pubDate>{$x->known|rss_date}</pubDate>
     </item>
-    {/section}
+    {/foreach}
     {/foreach}
     {/foreach}
   </channel>

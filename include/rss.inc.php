@@ -19,8 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function _rss_encode_date($s) {
-    return date('r', strtotime($s));
+function _rss_encode_date($d) {
+    if (preg_match('/^\d{14}$/', $d)) {
+        $t = mktime(substr($d,8,2), substr($d,10,2), substr($d,12,2), substr($d,4,2), substr($d,6,2), substr($d,0,4));
+    } else {
+        $t = strtotime($d);
+    }
+    return date('r', $t);
 }
 
 function to_rss ($s)

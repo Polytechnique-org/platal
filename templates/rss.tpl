@@ -34,6 +34,7 @@
       <title>{$line.titre|strip_tags}</title>
       <link>{#globals.baseurl#}/login.php#newsid{$line.id}</link>
       <description><![CDATA[{$line.texte|nl2br}]]></description>
+      <pubDate>{$line.creation_date|rss_date}</pubDate>
     </item>
     {/iterate}
   </channel>
