@@ -45,4 +45,11 @@ function popWin(theURL) {
 function popWin2(theURL) {
     popupWin(theURL,'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=200,height=100');
 }
+function popSimple(theURL) {
+    popupWin(theURL,'');
+}
 function x() { return; }
+
+function remote(url){
+    window.opener.location=url
+}

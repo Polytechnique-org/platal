@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.9 2004-10-29 13:26:15 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.10 2004-10-30 09:09:07 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -26,7 +26,7 @@
     {if $c.sexe}&bull;{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && $inscrit}
-    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
+    <a href="javascript:x()" onclick="popupWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
     {/if}
     {/min_auth}
     {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}

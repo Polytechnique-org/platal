@@ -17,10 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.18 2004-10-29 02:11:05 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.19 2004-10-30 09:09:04 x2000bedo Exp $
  ***************************************************************************}
 
-
+{literal}
+<script type="text/javascript">
+function chgMainWinLoc( strPage ) {
+  parent.opener.document.location = strPage;
+}
+</script>
+{/literal}
 {dynamic}
 <div id="fiche">
 
@@ -31,11 +37,11 @@
       <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
     </a>
     {if !$is_contact}
-    <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$forlife}')">
+    <a href="javascript:x()"  onclick="chgMainWinLoc('mescontacts.php?action=ajouter&amp;user={$forlife}')">
       <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
     </a>
     {else}
-    <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=retirer&amp;user={$forlife}')">
+    <a href="javascript:x()"  onclick="chgMainWinLoc('mescontacts.php?action=retirer&amp;user={$forlife}')">
       <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
     </a>
     {/if}
@@ -57,7 +63,7 @@
     {if $section}<em class="intitule">Section : </em><span>{$section}</span><br />{/if}
     {if $binets}<em class="intitule">Binet(s) : </em><span>{$binets}</span><br />{/if}
     {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes|smarty:nodefaults}</span><br />{/if}
-    {if $web}<em class="intitule">Site Web : </em><br /><a href="{$web}" onclick="return popup(this)">{$web}</a><br />{/if}
+    {if $web}<em class="intitule">Site Web : </em><br /><a href="javascript:x()" onclick="popSimple('{$web}')">{$web}</a><br />{/if}
     {if $libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$libre|nl2br}</span>{/if}
 </div>
 {if $adr|@count > 0}
