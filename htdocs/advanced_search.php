@@ -1,35 +1,19 @@
 <?php
 require("auto.prepend.inc.php");
 require("search.classes.inc.php");
-// choix entre partie publique (annuaire_public est vrai) et partie privée de l'annuaire.
-$public_directory = ((isset($_REQUEST['public_directory']) && $_REQUEST['public_directory']==1));
-if ($public_directory)
-    new_skinned_page('search.tpl', AUTH_PUBLIC);
-else
-    new_skinned_page('search.tpl', AUTH_COOKIE);
-$page->assign('advanced',0);
-$page->assign('public_directory',$public_directory);
+new_skinned_page('search.tpl', AUTH_COOKIE);
+$page->assign('advanced',1);
+$page->assign('public_directory',0);
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
 if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('formulaire',0);
 
-    $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
-
-    if ($with_soundex) {
-        $nameField = new
-        StringWithSoundexSField('name',array('r.nom1_soundex','r.nom2_soundex','r.nom3_soundex'),'');
-        $firstnameField = new
-        StringWithSoundexSField('firstname',array('r.prenom1_soundex','r.prenom2_soundex'),'');
-    }
-    else {
-        $nameField = new StringSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
-        $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'r.prenom1');
-        $with_soundex = ($nameField->length()==0 && $firstnameField->length()==0)?(-1):0;
-    }
-    $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
-    $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
+    $nameField = new StringSField('name',array('u.nom','u.epouse'),'');
+    $firstnameField = new StringSField('firstname',array('u.prenom'),'');
+    $promo1Field = new PromoSField('promo1','egal1',array('u.promo'),'');
+    $promo2Field = new PromoSField('promo2','egal2',array('u.promo'),'');
     $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
     
     if ($nameField->length()<2 && $firstnameField->length()<2 && 
@@ -40,21 +24,19 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $offset = new NumericSField('offset');
     
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       r.matricule,i.matricule_ax,
-                       u.nom!="" AS inscrit,
-                       IF(u.nom!="",u.nom,i.nom) AS nom,
+                       u.matricule,i.matricule_ax,
+                       u.nom,
                        u.epouse,
-                       IF(u.prenom!="",u.prenom,i.prenom) AS prenom,
-                       IF(u.promo!="",u.promo,i.promo) AS promo,
+                       u.prenom,
+                       u.promo,
                        i.deces!=0 AS decede,
                        u.username,
                        u.date,
                        ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                        ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
-                 FROM  '.(($with_soundex)?'recherche_soundex':'recherche').'      AS r
-           INNER JOIN  identification AS i ON (i.matricule=r.matricule)
-            LEFT JOIN  auth_user_md5  AS u ON (u.matricule=r.matricule)
+                 FROM  auth_user_md5  AS u
+           INNER JOIN  identification AS i ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
             LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
@@ -66,20 +48,36 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
     
-    if ($public_directory &&
-	$page->get_template_vars('nb_resultats_total')>$globals->public_max_search_results)
-    {
-	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
-    }
     $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
-    $page->assign('with_soundex',$with_soundex);
+    $page->assign('with_soundex',0);
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
 }
-else
+else {
     $page->assign('formulaire',1);
+    $sql = 'SELECT id,text FROM nationalites ORDER BY text';
+    $page->mysql_assign($sql,'choix_nationalites');
+    $sql = 'SELECT id,text FROM binets_def ORDER BY text';
+    $page->mysql_assign($sql,'choix_binets');
+    $sql = 'SELECT id,text FROM groupesx_def ORDER BY text';
+    $page->mysql_assign($sql,'choix_groupesx');
+    $sql = 'SELECT id,text FROM sections ORDER BY text';
+    $page->mysql_assign($sql,'choix_sections');
+    $sql = 'SELECT id,text FROM applis_def ORDER BY text';
+    $page->mysql_assign($sql,'choix_schools');
+    if (isset($_REQUEST['school'])) {
+        $sql = 'SELECT type FROM applis_def WHERE id='.$_REQUEST['school'];
+        $result = $globals->db->query($sql);
+        list($types) = mysql_fetch_row($result);
+        $page->assign('choix_diplomas',explode(',',$types));
+    }
+    $sql = 'SELECT id,label FROM emploi_secteur ORDER BY label';
+    $page->mysql_assign($sql,'choix_secteurs');
+    $sql = 'SELECT id,fonction_fr FROM fonctions_def ORDER BY fonction_fr';
+    $page->mysql_assign($sql,'choix_postes');
+}
 $page->run();
 ?>
