@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.59 2004-10-14 22:16:01 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.60 2004-10-15 20:52:31 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -475,7 +475,8 @@ def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
             return str(msg)
         results = []
         for part in typed_subpart_iterator(msg,'text','plain'):
-            results.append (part.get_payload())
+            c = part.get_payload()
+            if c is not None: results.append (c)
         results = map(lambda x: quote(x), results)
         return {'id'    : id,
                 'sender': quote(sender),
