@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: xorg.hook.inc.php,v 1.1 2004-11-20 22:32:01 x2000habouzit Exp $
+ $Id: xorg.hook.inc.php,v 1.2 2004-11-20 22:46:29 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("PEAR.php");
@@ -48,7 +48,7 @@ class XOrgHook extends PEAR
 	$this->PEAR();
 
 	if (!file_exists($globals->root."/hooks/$name/API")) {
-	    $this->raiseError("The hook $name do not exists, or is undocumented",1,PEAR_ERROR_DIE);
+	    $this->raiseError("The hook « $name » do not exists, or is undocumented",1,PEAR_ERROR_DIE);
 	}
 	foreach (glob($globals->root."/hooks/$name/*.inc.php") as $file) {
 	    require_once("$file");
