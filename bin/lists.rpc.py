@@ -214,11 +214,12 @@ def get_list_info(userdesc,perms,mlist,front_page=0):
             except:
                 mlist.Unlock()
                 return 0
-        
+
+        host = mlist.internal_name().split(VHOST_SEP)[0].lower()
         details = {
                 'list' : mlist.real_name,
-                'addr' : mlist.real_name.lower() + '@' + mlist.host_name.lower(),
-                'host' : mlist.host_name.lower(),
+                'addr' : mlist.real_name.lower() + '@' + host,
+                'host' : host,
                 'desc' : quote(mlist.description),
                 'info' : quote(mlist.info),
                 'diff' : (mlist.default_member_moderation>0) + (mlist.generic_nonmember_action>0),
