@@ -123,7 +123,7 @@ class RefSField extends SField {
         if ($this->exact)
             return "='".$this->value."'";
         else
-            return "LIKE '%".$this->value."%'";
+            return " LIKE '%".$this->value."%'";
     }
 
     function get_single_where_statement($field) {

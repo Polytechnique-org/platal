@@ -19,10 +19,10 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $countryField = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
     $regionField = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
    
-    $entrepriseField = new RefSField('enteprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid');
+    $entrepriseField = new RefSField('enteprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
     $posteField = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
     $secteurField = new RefSField('secteur',array('es.secteur'),'entreprises','es','u.user_id=es.uid');
-    $cvField = new StringSField('cv',array('u.cv'),'');
+    $cvField = new RefSField('cv',array('u.cv'),'','','',false);
    
     $nationaliteField = new RefSField('nationalite',array('u.nationalite'),'','','');
     $binetField = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
