@@ -60,11 +60,15 @@ sub parse_tag($$) {
     my $tag = shift;
 
     # tag interdits en xhtml
+    print STDERR "${red}XHTML error: ${yel}<$1> (majuscules) ${blu}($file)${gra}\n"
+        if($tag =~ /^((?:[A-Z]+[a-z]*)+)( |$)/);
     print STDERR "${red}XHTML error: ${yel}<$1> ${blu}($file)${gra}\n"
         if($tag =~ /^(b|i|u|big|small|font|center)( |$)/);
     print STDERR "${red}XHTML error: ${yel}<$1> sans '/' ${blu}($file)${gra}\n"
         if($tag =~ /^(br|hr|img|link|input)( [^\/]*)?$/);
 
+    print STDERR "${red}XHTML error: ${yel}attribut $1 sans = ${blu}($file)${gra}\n"
+        if($tag =~ / (checked|disabled|multiple|readonly)( |$)/);
     print STDERR "${red}XHTML error: ${yel}attribut $1 ${blu}($file)${gra}\n"
         if($tag =~ / (align|width|border|color|valign)=/);
    

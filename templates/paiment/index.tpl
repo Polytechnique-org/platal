@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.2 2004-07-17 11:23:10 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.3 2004-07-17 12:21:02 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Micropaiments
@@ -20,7 +20,7 @@
   versement.
   <br /><br />
   </p>
-  <table class="bicol" width="98%">
+  <table class="bicol">
     <tr>
       <th colspan="2">Effectuer un télépaiement</th>
     </tr>
