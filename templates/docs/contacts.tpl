@@ -1,4 +1,4 @@
-{* $Id: contacts.tpl,v 1.4 2004-08-23 14:41:10 x2000chevalier Exp $ *}
+{* $Id: contacts.tpl,v 1.5 2004-08-23 14:42:08 x2000chevalier Exp $ *}
 
 {if !$smarty.request.topic}
 <div class="rubrique">
@@ -154,7 +154,7 @@ de nous le soumettre par email (éviter les pièces jointes) à cette adresse :
 </p>
 <p class="normal">
 Les anciennes newsletters de <strong>Polytechnique.org</strong> sont
-<strong><a href="newsletter.php">archivées</a></strong> si tu veux t'en inspirer.
+<strong><a href="../newsletter.php">archivées</a></strong> si tu veux t'en inspirer.
 </p>
 
 {elseif $smarty.request.topic eq 6}
