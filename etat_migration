@@ -98,8 +98,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | profil.php								  | 
 	  | profil2.php								  | 
 	  | recherche.php							  | 
-	  | redirect/error.php						  | 
-	  | redirect/redirect.php					  | 
 	  | trombino.php							  | 
 	  | trombipromo.php							  | 
 	  | x.php									  | 
@@ -137,6 +135,8 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-------------------------------------------+----------------
 @@@	  | groupex/donne-chall.php					  | -
 @@@	  | groupex/export-econfiance.php			  | -
+@@@	  | redirect/error.php						  | -
+@@@	  | redirect/redirect.php					  | -
 x	  | epouse.php								  | -
 x	  | parselog.php							  | stats/...
 xx	  | AccesPermanentOff.php					  | cookie_off.php
