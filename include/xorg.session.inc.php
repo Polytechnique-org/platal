@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.27 2004-10-08 20:42:33 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.28 2004-10-08 21:13:57 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -245,6 +245,7 @@ function start_connexion ($uid, $identified) {
     $_SESSION['perms'] = $perms;
     $_SESSION['promo'] = $promo;
     $_SESSION['forlife'] = $forlife;
+    $_SESSION['matricule'] = $matricule;
     $res = $globals->db->query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
     $_SESSION['femme'] = mysql_num_rows($res) > 0;
     mysql_free_result($res);
