@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.14 2004-11-07 20:38:32 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.15 2004-11-07 20:56:27 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -67,7 +67,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <h1>Surveiller des promos</h1>
 
 <p>
-Pour les promos, tu es notifié lorsque un camarade de cette promo s'inscrit, et lorsque un camarade de cette promo décède.
+Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (par exemple les changements de fiche).
 </p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
@@ -93,10 +93,6 @@ Pour les promos, tu es notifié lorsque un camarade de cette promo s'inscrit, et 
 </form>
 
 <h1>Surveiller des non inscrits</h1>
-
-<p>
-Pour les non-inscrits, tu es notifié lorsqu'il s'inscrit, ou lorsque ce camarade décède.
-</p>
 
 <p>
 Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à tes contacts.
