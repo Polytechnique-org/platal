@@ -3,7 +3,7 @@
 SCRIPTSDIR=`dirname $0`
 STATSDIR=/home/web/stats
 
-MAILLOG=/var/log/mail.log.1.gz
+MAILLOG=/var/log/mail.log.1
 #MAILLOG=/var/log/maillog.1.gz
 STATINSCRITS=$STATSDIR/nbinscrits
 STATMAILS=$STATSDIR/nbmails
@@ -17,4 +17,4 @@ else
 fi
 
 DATE=$(date "+%D" -d "1 day ago")
-zcat $MAILLOG | $SCRIPTSDIR/pflogsumm-1.1.0-x.org.pl | head -12 | grep ed | cut -c-9 | xargs echo $DATE >> $STATMAILS
+cat $MAILLOG | $SCRIPTSDIR/pflogsumm-1.1.0-x.org.pl | head -12 | grep ed | cut -c-9 | xargs echo $DATE >> $STATMAILS
