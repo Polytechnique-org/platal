@@ -33,18 +33,20 @@ function get_annuaire_infos($method, $params) {
         }
         else{
             $res = $globals->xdb->iterRow(
-                    "SELECT  a.mobile AS cell, a.naissance AS age,
+                 "SELECT  aq.profile_mobile AS cell, a.naissance AS age,
                              adr.adr1, adr.adr2, adr.adr3,
                              adr.cp, adr.ville, adr.pays,
                              adr.tel, adr.fax
                        FROM  auth_user_md5 AS a
+                INNER JOIN auth_user_quick AS aq ON (a.user_id = aq.user_id)
                   LEFT JOIN  adresses AS adr ON(adr.uid = a.user_id)
                       WHERE  a.matricule = {?} AND
                              NOT FIND_IN_SET('pro', adr.statut)
                    ORDER BY  NOT FIND_IN_SET('active', adr.statut),
                              FIND_IN_SET('res-secondaire', adr.statut),
                              NOT FIND_IN_SET('courrier', adr.statut)", $params[1]);
-        }
+
+                       }
 
         //traitement des adresss si necessaire
         if (isset($params[2])) {
