@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: naissance.tpl,v 1.6 2004-10-24 14:41:16 x2000habouzit Exp $
+        $Id: naissance.tpl,v 1.7 2004-11-23 22:50:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,23 +31,25 @@
 
 {if $etat_naissance == 'erreur'}
 <p class="erreur">
-{#profil_naissance_erreur#}
+Date de naissance incorrecte ou incohérente.
+Exemple: 1er février 1990 se rentre 01021990.
 </p>
 {/if}
 
-<h1>
-  {#profil_naissance_titre#}
-</h1>
+<h1>Date de naissance</h1>
 
 <form action="profil.php" method="post">
   <p>
-  {#profil_naissance_intro#}
+  Avant d'accéder à ton profil pour la première fois, tu dois donner ta date de naissance au format JJMMAAAA.
+  Elle ne sera plus demandée par la suite et ne pourra être changée.
+  Elle servira en cas de perte du mot de passe comme sécurité supplémentaire, et uniquement à cela.
+  Elle n'est jamais visible ou lisible.
   </p>
   <br />
   <table class="tinybicol" cellpadding="4" cellspacing="0" summary="Formulaire de naissance">
     <tr>
       <th colspan="2">
-        {#profil_date_titre#}
+      Date de naissance
       </th>
     </tr>
     <tr>

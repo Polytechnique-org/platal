@@ -17,11 +17,9 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.tpl,v 1.13 2004-11-17 18:11:46 x2000habouzit Exp $
+        $Id: profil.tpl,v 1.14 2004-11-23 22:50:11 x2000habouzit Exp $
  ***************************************************************************}
 
-
-{config_load file="profil.conf"}
 {dynamic}
 {if $etat_naissance}
 {include file="profil/naissance.tpl"}
