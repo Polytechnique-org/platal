@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.4 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: recovery.php,v 1.5 2004-09-22 18:11:00 x2000coic Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -61,7 +61,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         // on recupere les emails sans tenir comptes du flags active (ni des autres)
         // sauf qu'il ne faut pas prendre la ligne qui possède l'éventuel appel 
         // au filtre personnel (ligne dont le num = 0)
-        $result=$globals->db->query("select email from emails where uid = $uid and num != 0");
+        $result=$globals->db->query("select email from emails where uid = $uid and NOT FIND_IN_SET('filter', flags)");
         
         $emails = array();
         while(list($email) = mysql_fetch_row($result)) {
@@ -69,8 +69,8 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
         }
         mysql_free_result($result);
         $emails = implode(',', $emails);
-
-        require("diogenes.mailer.inc.php");
+        
+	require("diogenes.mailer.inc.php");
         $mymail = new DiogenesMailer('Gestion des mots de passe <support+password@polytechnique.org>',
 		$emails, 'Ton certificat d\'authentification', false);
 
