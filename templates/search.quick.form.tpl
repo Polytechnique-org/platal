@@ -42,4 +42,19 @@
 
 <br />
 
+{literal}
+<script type="text/javascript">
+  <!--
+  // Activate the first search input field.
+  var nodes = document.getElementsByTagName('input');
+  for(var i=0; i<nodes.length; i++) {
+    node = nodes[i];
+    if(node.name == 'quick') {
+      node.focus();
+      break;
+    }
+  }
+  // -->
+</script>
+{/literal}
 {* vim:set et sw=2 sts=2 sws=2: *}
