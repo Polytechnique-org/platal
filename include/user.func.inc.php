@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: user.func.inc.php,v 1.2 2004-11-18 14:24:02 x2000habouzit Exp $
+        $Id: user.func.inc.php,v 1.3 2004-11-18 15:35:36 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -26,7 +26,7 @@
  * we still keep his birthdate, adresses, and personnal stuff
  * kills the entreprises, mentor, emails and lists subscription stuff
  */
-function user_clear_all_subs($user_id) {
+function user_clear_all_subs($user_id, $del_emails=true) {
     // keep datas in : aliases, adresses, applis_ins, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
     // delete in     : auth_user_md5, auth_user_quick, competences_ins, emails, entreprises, langues_ins, mentor,
     //                 mentor_pays, mentor_secteurs, newsletter_ins, perte_pass, requests, user_changes, virtual_redirect, watch_sub
@@ -37,14 +37,15 @@ function user_clear_all_subs($user_id) {
     $res = $globals->db->query("select alias from aliases where type='a_vie' AND id=$uid");
     list($alias) = mysql_fetch_row($res);
     mysql_free_result($res);
+    if($del_emails) $globals->db->query("delete from emails where uid=$uid");
+
     $globals->db->query("delete from virtual_redirect where redirect ='$alias@m4x.org'");
     $globals->db->query("delete from virtual_redirect where redirect ='$alias@polytechnique.org'");
 
-    $globals->db->query("update auth_user_md5 SET passwd='',perms='non-inscrit' WHERE user_id=$uid");
+    $globals->db->query("update auth_user_md5 SET passwd='',smtppass='' WHERE user_id=$uid");
     $globals->db->query("update auth_user_quick SET watch_flags='' WHERE user_id=$uid");
 
     $globals->db->query("delete from competences_ins where uid=$user_id");
-    $globals->db->query("delete from emails where uid=$uid");
     $globals->db->query("delete from entreprises     where uid=$user_id");
     $globals->db->query("delete from langues_ins     where uid=$user_id");
     $globals->db->query("delete from mentor_pays    where uid=$user_id");

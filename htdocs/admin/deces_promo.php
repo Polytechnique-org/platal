@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deces_promo.php,v 1.8 2004-11-18 14:32:08 x2000habouzit Exp $
+        $Id: deces_promo.php,v 1.9 2004-11-18 15:35:35 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,11 +36,12 @@ if (isset($_REQUEST["valider"]) && $_REQUEST["valider"] == "Valider") {
     $res = $globals->db->query("SELECT user_id,matricule,deces FROM auth_user_md5 WHERE promo = $promo");
     while (list($uid,$mat,$deces) = mysql_fetch_row($res)) {
 	if($_REQUEST[$mat] == $deces) continue;
-	$perms=($deces != '0000-00-00' ? ",perms='disabled',password='' " : '');
-	$globals->db->query("UPDATE auth_user_md5 SET deces='{$_REQUEST[$mat]}' $perms WHERE matricule = '$mat'");
+	$globals->db->query("UPDATE auth_user_md5 SET deces='{$_REQUEST[$mat]}' WHERE matricule = '$mat'");
 	if($deces=='0000-00-00' or empty($deces)) {
 	    require_once('notifs.inc.php');
 	    register_watch_op($uid,WATCH_DEATH,$_REQUEST[$mat]);
+	    require_once('user.func.inc.php');
+	    user_clear_all_subs($uid, false);	// by default, dead ppl do not loose their email
 	}
     }
 }
