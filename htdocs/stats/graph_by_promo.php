@@ -29,18 +29,15 @@ $depart = 1920;
 
 //recupere le nombre d'inscriptions par jour sur la plage concernée
 $res = $globals->xdb->iterRow(
-        "SELECT  IF (promo < $depart, ".($depart-1).", promo) AS annee,COUNT(user_id)
+        "SELECT  promo, SUM(perms IN ('admin', 'user')) / COUNT(*) * 100
            FROM  auth_user_md5
-          WHERE  promo >= $depart AND perms IN ('admin','user')
-       GROUP BY  annee");
+          WHERE  promo >= $depart AND deces = 0
+       GROUP BY  promo");
 
 //genere des donnees compatibles avec GNUPLOT
 $inscrits='';
 
 // la première ligne contient le total des inscrits avant la date de départ
-list(,$init_nb) = $res->next();
-$total = $init_nb;
-
 list($annee, $nb) = $res->next();
 
 for ($i=$depart;$i<=date("Y");$i++) {
@@ -50,7 +47,6 @@ for ($i=$depart;$i<=date("Y");$i++) {
             $nb = 0;
         }
     }
-    if ($nb > $total) $total = $nb;
     if ($nb > 0 || $i < date("Y"))
     	$inscrits .= $i." ".$nb."\n";
 }
@@ -58,8 +54,10 @@ for ($i=$depart;$i<=date("Y");$i++) {
 //Genere le graphique à la volée avec GNUPLOT
 header( "Content-type: image/png");
 
-$ymin = round($init_nb*0.95,0);
-$ymax = round($total  *1.05,0);
+$ymin = 0;
+$ymax = 100;
+
+$fin = $i+10;
 
 $gnuplot = <<<EOF2
 gnuplot <<EOF
@@ -68,7 +66,7 @@ set term png small color
 set size 640/480
 set timefmt "%d/%m/%y"
 
-set xr [$depart:$i]
+set xr [$depart:$fin]
 set yr [$ymin:$ymax]
 
 set title "Nombre d'inscrits par promotion depuis $depart."
