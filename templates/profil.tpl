@@ -1,4 +1,25 @@
-{* $Id: profil.tpl,v 1.6 2004-08-30 11:35:37 x2000habouzit Exp $ *}
+{***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************
+        $Id: profil.tpl,v 1.7 2004-08-31 11:25:39 x2000habouzit Exp $
+ ***************************************************************************}
+
 
 {config_load file="profil.conf"}
 {dynamic}
@@ -14,7 +35,6 @@
 {else}
 <p>Tu peux consulter <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">l'état actuel de ta fiche</a> tel qu'elle apparaîtra pour un camarade.</p>
 {/if}
-{* dessin des onglets *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0">

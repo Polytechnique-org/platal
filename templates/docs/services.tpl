@@ -1,4 +1,25 @@
-{* $Id: services.tpl,v 1.5 2004-08-26 14:44:44 x2000habouzit Exp $ *}
+{***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************
+        $Id: services.tpl,v 1.6 2004-08-31 11:25:40 x2000habouzit Exp $
+ ***************************************************************************}
+
 
 <div class="rubrique">
   Services offerts aux X
@@ -39,7 +60,6 @@ Le site te permet <a href="{"sendmail.php"|url}">d'envoyer des mails</a>,
 <p>
 Il t'offre aussi des services plus techniques, utiles aux X responsablse de
 groupes ou chargés d'organiser des manifestations polytechniciennes.
-Nous citerons notamment {* <a href="sondage/accueil.php">l'outil de sondage</a>, 
 qui réalise des questionnaires consultables en ligne, aux résultats anonymes,
 ou encore *} <a href="{"paiement/"|url}">le système de télépaiement</a> qui sert entre autres
 à l'organisation de repas et séminaires de groupes ou de promotions.

@@ -1,8 +1,27 @@
-{* $Id: mescontacts_ldif.tpl,v 1.2 2004-02-15 15:45:29 x2000habouzit Exp $ *}
-{* http://developer.kde.org/documentation/library/cvs-api/kabc/html/ldifconverter_8cpp-source.html *}
+{***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************
+        $Id: mescontacts_ldif.tpl,v 1.3 2004-08-31 11:25:39 x2000habouzit Exp $
+ ***************************************************************************}
+
 {foreach item=c from=$contacts}
 {******************************************************************************}
-{* DONNEES PERSOS                                                             *}
 {******************************************************************************}
 {if $c.epouse}
 dn: cn={"`$c.prenom` `c.epouse` (`$c.nom`)"|utf8},mail={$c.username}@polytechnique.org
@@ -28,7 +47,6 @@ homeurl:: {$vcard.web|ldif_format}
 workurl:: {$vcard.web|ldif_format}
 {/if}
 {******************************************************************************}
-{* ENTREPRISE/WORK                                                            *}
 {******************************************************************************}
 {if $c.entreprise}
 o:: {$c.entreprise|ldif_format}
@@ -73,7 +91,6 @@ facsimiletelephonenumber: {$c.faxx|utf8}
 {/if}
 {/if}
 {******************************************************************************}
-{* ADDRESSE PERSO                                                             *}
 {******************************************************************************}
 {if $c.home.adr_fmt}
 streethomeaddress:: {$c.home.adr_fmt|ldif_format}
@@ -102,7 +119,6 @@ mozillahomestate:: {$c.home.name|ldif_format}
 mozillahomecountryname:: {$c.home.name|ldif_format}
 {/if}
 {******************************************************************************}
-{* ADDRESSES PERSO                                                            *}
 {******************************************************************************}
 description:: {"(X`$c.promo`)\n`$c.libre`"|ldif_format}
 modifytimestamp: {$c.date|date_format:"%Y%m%dT000000Z"}
