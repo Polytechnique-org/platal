@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.13 2004-10-18 07:06:50 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.14 2004-10-18 09:19:50 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -164,7 +164,7 @@ class NewsLetter {
 <html>
   <head>
     <style type="text/css">
-      div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 56ex; text-align: justify; }
+      div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 58ex; text-align: justify; }
       div.title { margin: 2ex 0ex 4ex 0ex; padding: 1ex; width: 100%; border: 1px black solid; font-size: 125%; text-align: center; }
       div.art   {	padding-left: 1ex; margin: 0ex 0ex 4ex 0ex; }
       div.app   { padding-left: 4ex; margin: 2ex 0ex 2ex 0ex; text-align: left; }
