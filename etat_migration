@@ -61,7 +61,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/utilisateurs.php					  | 
 	  | auth-groupex.php						  | 
 	  | auth-redirect.php						  | 
-	  | charte.php								  | docs/charte.php
 	  | confbanana.php							  | 
 	  | coupure.php								  | stats/coupure.php
 	  | docs/FROM.php							  | docs/from.php
@@ -73,7 +72,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | emploi_public.php						  | 
 	  | en-cours.php							  | docs/en-cours.php
 	  | epouse.php								  | 
-	  | ethique.php								  | docs/ethique.php
 	  | evenements.php							  | 
 	  | exit.php								  | 
 	  | groupex/donne-chall.php					  | 
@@ -124,7 +122,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | redirect/redirect.php					  | 
 	  | routage-mail.php						  | 
 	  | rss.php									  | 
-	  | secu.php								  | docs/secu.php
 	  | sendmail.php							  | 
 	  | services.php							  | docs/services.php
 	  | sondage/accueil.php						  | 
@@ -162,6 +159,7 @@ xx	  | alias.php								  | -
 xx	  | antispam.php							  | -
 xx	  | apropos.php								  | docs/apropos.php
 xx	  | cacert.php								  | -
+xx	  | charte.php								  | docs/charte.php
 xx	  | contacts.php							  | docs/contacts.php
 xx	  | deconnexion.php							  | -
 xx	  | docs/doc_carva.php						  | -
@@ -175,7 +173,9 @@ xx	  | docs/doc_oe.php							  | -
 xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
+xx	  | secu.php								  | docs/secu.php
 xx	  | docs/index.php							  | -
+xx	  | ethique.php								  | docs/ethique.php
 xx	  | faq.php									  | docs/faq.php
 xx	  | getphoto.php							  | -
 xx	  | index.php								  | -
