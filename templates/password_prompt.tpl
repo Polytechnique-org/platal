@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.16 2004-08-25 09:33:30 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.17 2004-08-25 11:13:55 x2000habouzit Exp $ *}
 <noscript>
   <p class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -102,7 +102,6 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 <script type="text/javascript">
   <!--
   // Activate the appropriate input form field.
-  login = document.getElementById('login');
   if (document.forms.login.username.value == '') {
     document.forms.login.username.focus();
   } else {
