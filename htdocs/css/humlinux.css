@@ -76,7 +76,7 @@ div.contact div.long {
         [ choix de classes faites par le skinneur
 *******************************************************************************/
 
-#body {
+#content {
     background-image: url("/images/sk_humlinux_background.jpg");
     background-repeat: repeat-y;
     background-position: top;
@@ -114,4 +114,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: humlinux.css,v 1.3 2004-10-03 17:15:20 x2003bruneau Exp $ */
+/* $Id: humlinux.css,v 1.4 2004-10-04 12:29:54 x2003bruneau Exp $ */
