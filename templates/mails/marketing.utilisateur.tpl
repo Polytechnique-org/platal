@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: marketing.utilisateur.tpl,v 1.3 2004-09-05 22:25:46 x2000habouzit Exp $
+        $Id: marketing.utilisateur.tpl,v 1.4 2004-11-01 18:08:27 x2002marichez Exp $
  ***************************************************************************}
 
 {subject text="Annuaire en ligne des Polytechniciens"}
@@ -29,7 +29,7 @@ Chère camarade,
 Chèr camarade,
 {/if}
 
-a fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :
+Ta fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :
 
 ==========================================================
 {$baseurl}/inscription/maj.php?n={$user_id}
