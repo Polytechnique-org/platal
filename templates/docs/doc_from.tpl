@@ -1,4 +1,4 @@
-{* $Id: doc_from.tpl,v 1.1 2004-07-24 16:38:21 x2000habouzit Exp $ *}
+{* $Id: doc_from.tpl,v 1.2 2004-07-24 16:42:11 x2000habouzit Exp $ *}
 
 <div class="texte">
   <div class="rubrique">
@@ -22,7 +22,7 @@
   d'envoi à chaque e-mail envoyé (polytechnique.org, m4x.org,
   ton entreprise, ton fournisseur d'accès, etc).
   </p>
-  <hr class="mark" />
+  <hr />
   <table class="etape" summary="Premiere étape" cellpadding="5">
     <tr>
       <td>
@@ -40,7 +40,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <table class="etape" summary="Deuxième étape" cellpadding="5">
     <tr>
       <td>
@@ -62,7 +62,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <table class="etape" summary="Troisieme étape" cellpadding="5">
     <tr>
       <td>
@@ -87,7 +87,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <table class="etape" cellpadding="5" summary="Quatrième étape">
     <tr>
       <td>
@@ -120,7 +120,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <table class="etape" cellpadding="5" summary="Cinquième étape">
     <tr>
       <td>
@@ -203,7 +203,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <table class="etape" cellspacing="5" summary="Septième étape">
     <tr>
       <td>
@@ -235,7 +235,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <table class="etape" cellspacing="5" summary="Huitième étape">
     <tr>
       <td>
@@ -255,7 +255,7 @@
       </td>
     </tr>
   </table>
-  <hr class="mark" />
+  <hr />
   <div class="rubrique">
     Configuration avancée
   </div>
@@ -281,21 +281,21 @@
   Premier compte :
   </p>
   <p class="normal">
-  <span class="item">E-mail:</span> prenom.nom@mycompany.fr<br />
-  <span class="item">Serveur POP3:</span>
+  <strong>E-mail:</strong> prenom.nom@mycompany.fr<br />
+  <strong>Serveur POP3:</strong>
   pop.mycompany.fr (vérifier le nom au cas par cas)<br />
-  <span class="item">Serveur SMTP:</span>
+  <strong>Serveur SMTP:</strong>
   smtp.mycompany.fr (même remarque)<br />
-  <span class="item">Case &quot;inclure ce compte&quot;:</span> cochée
+  <strong>Case &quot;inclure ce compte&quot;:</strong> cochée
   </p>
   <p class="sstitre">
   Deuxième compte :
   </p>
   <p class="normal">
-  <span class="item">E-mail:</span> prenom.nom@polytechnique.org<br />
-  <span class="item">Serveur POP3:</span> pop.netcourrier.com<br />
-  <span class="item">Serveur SMTP:</span> smtp.mycompany.fr<br />
-  <span class="item">Case &quot;inclure ce compte&quot;:</span> cochée<br />
+  <strong>E-mail:</strong> prenom.nom@polytechnique.org<br />
+  <strong>Serveur POP3:</strong> pop.netcourrier.com<br />
+  <strong>Serveur SMTP:</strong> smtp.mycompany.fr<br />
+  <strong>Case &quot;inclure ce compte&quot;:</strong> cochée<br />
   </p>
   <p class="normal">
   A supposer maintenant que tu es réellement sur un portable. Quand
@@ -346,11 +346,11 @@
   Troisième compte :
   </p>
   <p class="normal">
-  <span class="item">E-mail:</span> prenom.nom@polytechnique.org<br />
-  <span class="item">Serveur POP3:</span> <em>peu importe, inutilisé</em><br />
-  <span class="item">Serveur SMTP:</span> smtp.libertysurf.fr (ce compte sert
+  <strong>E-mail:</strong> prenom.nom@polytechnique.org<br />
+  <strong>Serveur POP3:</strong> <em>peu importe, inutilisé</em><br />
+  <strong>Serveur SMTP:</strong> smtp.libertysurf.fr (ce compte sert
   quand le premier serveur rencontré sur le réseau est un serveur libertysurf)<br />
-  <span class="item">Case &quot;inclure ce compte&quot;:</span> non cochée (en effet,
+  <strong>Case &quot;inclure ce compte&quot;:</strong> non cochée (en effet,
   ce compte sert à envoyer un email en étant connecté à Libertysurf, pas à en
   réceptionner)
   </p>
