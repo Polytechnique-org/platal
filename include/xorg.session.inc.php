@@ -226,15 +226,16 @@ function start_connexion ($username, $uid, $identified) {
 
 function set_skin() {
   if(logged()) {
-    $result = mysql_query("SELECT skin FROM auth_user_md5 WHERE user_id='{$_SESSION['uid']}'");
-    if(list($skin) = mysql_fetch_row($result)) {
-      if ($skin == SKIN_STOCHASKIN_ID)
-        $sql = " !FIND_IN_SET('cachee',type) order by rand() limit 1";
-      else
-        $sql = "id='$skin'";
-      $res = mysql_query("SELECT id,skin,skin_popup FROM skins WHERE $sql");
-      list($_SESSION['skin_id'], $_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($res);
-      mysql_free_result($res);
+    $result = mysql_query("SELECT skin,skin_tpl,skin_popup
+                           FROM auth_user_md5 AS a INNER JOIN skins AS s
+                           ON a.skin=s.id WHERE user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
+    if(list($_SESSION['skin_id'], $_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($result)) {
+      if ($_SESSION['skin_id'] == SKIN_STOCHASKIN_ID) {
+          $res = mysql_query("SELECT id,skin,skin_popup FROM skins
+                              WHERE !FIND_IN_SET('cachee',type) order by rand() limit 1");
+          list($_SESSION['skin_id'], $_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($res);
+          mysql_free_result($res);
+      }
     } else {
       $_SESSION['skin'] = SKIN_COMPATIBLE;
       $_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;

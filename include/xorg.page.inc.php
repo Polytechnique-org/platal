@@ -33,6 +33,8 @@ class XorgPage extends DiogenesCorePage {
     // si necessaire, c'est *ici* que se fait l'authentification
     $_no_legacy = true;
     $this->doAuth();
+    if(empty($_SESSION['skin']))
+        set_skin();
   }
 
   function display($append_to_id="") {

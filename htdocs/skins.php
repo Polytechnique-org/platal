@@ -9,10 +9,11 @@ if (isset($_REQUEST['submit']))  {  // formulaire soumis, traitons les données e
     set_skin();
 }
 
-$res = mysql_query("SELECT id,s.skin,s.skin_popup,snapshot,name,s.date,comment,auteur,count(*) AS nb FROM skins AS s
+$res = mysql_query("SELECT id,skin_tpl,skin_popup,snapshot,name,s.date,comment,auteur,count(*) AS nb FROM skins AS s
                     LEFT JOIN auth_user_md5 AS a ON s.id=a.skin
-                    WHERE !FIND_IN_SET('cachee',type) AND s.skin != ''
+                    WHERE !FIND_IN_SET('cachee',type) AND skin_tpl != ''
                     GROUP BY id ORDER BY s.date DESC");
+echo mysql_error();
 $skins = Array();
 while($skins[] = mysql_fetch_assoc($res));
 mysql_free_result($res);
