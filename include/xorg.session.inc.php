@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.23 2004-09-02 19:39:20 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.24 2004-09-05 12:24:41 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -51,7 +51,8 @@ class XorgSession extends DiogenesCoreSession {
 	    $field = preg_match('/^\d*$/', $_REQUEST['username']) ? 'id' : 'alias';
 	    $res = @$globals->db->query( "SELECT  u.user_id,u.password
 					    FROM  auth_user_md5 AS u
-         			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.$field='{$_REQUEST['username']}' )");
+         			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
+				           WHERE  a.$field='{$_REQUEST['username']}'");
 	    if(@mysql_num_rows($res) != 0) {
 		list($uid,$password)=mysql_fetch_row($res);
 		mysql_free_result($res);

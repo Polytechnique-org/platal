@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_aliases.inc.php,v 1.15 2004-09-02 20:11:23 x2000habouzit Exp $
+        $Id: valid_aliases.inc.php,v 1.16 2004-09-05 12:24:41 x2000habouzit Exp $
  ***************************************************************************/
 
 class AliasReq extends Validate {
@@ -38,9 +38,9 @@ class AliasReq extends Validate {
         
         $sql = $globals->db->query("
 	    SELECT  l.alias,prenom,nom,domain
-	      FROM  auth_user_md5 AS u
-	INNER JOIN  aliases       AS l ON(u.user_id=l.id AND type='a_vie')
-         LEFT JOIN  groupex.aliases as a ON (a.email = l.alias and a.id = 12)
+	      FROM  auth_user_md5   AS u
+	INNER JOIN  aliases         AS l ON (u.user_id=l.id AND type='a_vie')
+         LEFT JOIN  groupex.aliases AS a ON (a.email = l.alias and a.id = 12)
              WHERE  user_id='".$this->uid."'");
         list($this->forlife,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
         mysql_free_result($sql);
