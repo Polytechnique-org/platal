@@ -5,6 +5,6 @@ Votre autorisation est requise pour une demande d'abonnement :
 
 Quand vous le pourrez, consultezla page web :
 
-    http://dev.m4x.org/listes/moderate.php?liste=%(listname)s
+    https://www.polytechnique.org/listes/moderate.php?liste=%(listname)s
 
 pour traiter la requête.

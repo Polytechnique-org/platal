@@ -8,6 +8,6 @@ pour l'envoi du message suivant vers la liste:
 
 Quand vous le souhaitez, consulter la page web : 
 
-    http://dev.m4x.org/listes/moderate.php?liste=%(listname)s
+    https://www.polytechnique.org/listes/moderate.php?liste=%(listname)s
 
 pour approuver ou rejeter la demande. 

@@ -8,10 +8,10 @@ Pour écrire à la liste, envoyez votre message à:
 
 Les informations générales concernant cette liste sont à l'adresse :
 
-  http://dev.m4x.org/listes/members.php?liste=%(real_name)s
+  https://www.polytechnique.org/listes/members.php?liste=%(real_name)s
 
 Si vous souhaitez vous désabonner consultez votre page d'abonnement
 à l'adresse :
 
-  http://dev.m4x.org/listes/
+  https://www.polytechnique.org/listes/
 

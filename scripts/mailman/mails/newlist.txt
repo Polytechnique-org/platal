@@ -4,10 +4,10 @@ cette liste.
 
 Vous pouvez configurer votre liste de diffusion à l'adresse suivante: 
 
-    http://dev.m4x.org/listes/admin.php?liste=%(listname)s
+    https://www.polytechnique.org/listes/admin.php?liste=%(listname)s
 
 La page web pour les utilisateurs de votre liste est: 
 
-    http://dev.m4x.org/listes/liste.php?liste=%(listname)s
+    https://www.polytechnique.org/listes/liste.php?liste=%(listname)s
 
 Pour toute question adressez-vous à %(siteowner)s.
