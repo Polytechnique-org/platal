@@ -46,15 +46,9 @@ replace_ifset_i($regionpro,"regionpro",$i);
 replace_ifset_i($telpro,"telpro",$i);
 replace_ifset_i($faxpro,"faxpro",$i);
 replace_ifset_i($mobilepro,"mobilepro",$i);
-
-if(Env::has('adresse_flag')){
-  set_flag_i($entreprise_public,"entreprise_public",$i);
-  set_flag_i($entreprise_ax,"entreprise_ax",$i);
-  set_flag_i($adrpro_public,"adrpro_public",$i);
-  set_flag_i($adrpro_ax,"adrpro_ax",$i);
-  set_flag_i($telpro_public,"telpro_public",$i);
-  set_flag_i($telpro_ax,"telpro_ax",$i);
-}
+replace_ifset_i($pubpro,"pubpro",$i);
+replace_ifset_i($adr_pubpro,"adr_pubpro",$i);
+replace_ifset_i($tel_pubpro,"tel_pubpro",$i);
 replace_ifset($cv,"cv");
 
 // validité de l'entreprise

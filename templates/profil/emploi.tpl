@@ -35,16 +35,22 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="entreprise_public[{$i}]" value="1" {if $entreprise_public.$i}checked="checked"{/if} />
+              <input type="radio" name="pubpro[{$i}]" value="public" {if $pubpro.$i eq 'public'}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="checkbox" name="entreprise_ax[{$i}]" value="1" {if $entreprise_ax.$i}checked="checked"{/if} />
+              <input type="radio" name="pubpro[{$i}]" value="ax" {if $pubpro.$i eq 'ax'}checked="checked"{/if} />
             </td>
             <td class="texte">
               transmis à l'AX
+            </td>
+            <td class="rouge">
+              <input type="radio" name="pubpro[{$i}]" value="private" {if $pubpro.$i eq 'private'}checked="checked"{/if} />
+            </td>
+            <td class="texte">
+              prive
             </td>
             <td class="texte">
               <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
@@ -106,16 +112,22 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="adrpro_public[{$i}]" value="1" {if $adrpro_public.$i}checked="checked"{/if} />
+              <input type="radio" name="adr_pubpro[{$i}]" value="public" {if $adr_pubpro.$i eq 'public'}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="checkbox" name="adrpro_ax[{$i}]" value="1" {if $adrpro_ax.$i}checked="checked"{/if} />
+              <input type="radio" name="adr_pubpro[{$i}]" value="ax" {if $adr_pubpro.$i eq 'ax'}checked="checked"{/if} />
             </td>
             <td class="texte">
               transmis à l'AX
+            </td>
+            <td class="rouge">
+              <input type="radio" name="adr_pubpro[{$i}]" value="private" {if $adr_pubpro.$i eq 'private'}checked="checked"{/if} />
+            </td>
+            <td class="texte">
+              prive
             </td>
             <td class="texte">
               <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
@@ -190,16 +202,22 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="vert">
-              <input type="checkbox" name="telpro_public[{$i}]" value="1" {if $telpro_public.$i}checked="checked"{/if} />
+              <input type="radio" name="tel_pubpro[{$i}]" value="public" {if $tel_pubpro.$i eq 'public'}checked="checked"{/if} />
             </td>
             <td class="texte">
               site public
             </td>
             <td class="orange">
-              <input type="checkbox" name="telpro_ax[{$i}]" value="1" {if $telpro_ax.$i}checked="checked"{/if} />
+              <input type="radio" name="tel_pubpro[{$i}]" value="ax" {if $tel_pubpro.$i eq 'ax'}checked="checked"{/if} />
             </td>
             <td class="texte">
               transmis à l'AX
+            </td>
+            <td class="rouge">
+              <input type="radio" name="tel_pubpro[{$i}]" value="private" {if $tel_pubpro.$i eq 'private'}checked="checked"{/if} />
+            </td>
+            <td class="texte">
+              prive
             </td>
             <td class="texte">
               <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>

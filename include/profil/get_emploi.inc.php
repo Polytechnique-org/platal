@@ -25,8 +25,7 @@ require_once('fonction.emploi.inc.php');
 
 $res = $globals->xdb->iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
 	adr1, adr2, adr3, cp, ville, pays, region, tel, fax, mobile,
-	FIND_IN_SET('entreprise_public',visibilite),FIND_IN_SET('entreprise_ax',visibilite),FIND_IN_SET('adr_public',visibilite),
-	FIND_IN_SET('adr_ax',visibilite),FIND_IN_SET('tel_public',visibilite),FIND_IN_SET('tel_ax',visibilite)
+	pub, adr_pub, tel_pub
         FROM entreprises
         WHERE uid = {?} ORDER BY entrid",Session::getInt('uid', -1));
 
@@ -34,8 +33,8 @@ $nb_res = $res->total();
 for($i = 0; $i < $nb_res ; $i++){
 	list($endrid[$i], $entreprise[$i], $secteur[$i], $ss_secteur[$i], $poste[$i], $fonction[$i],
        	     $adrpro1[$i], $adrpro2[$i], $adrpro3[$i], $cppro[$i], $villepro[$i], $payspro[$i], $regionpro[$i],
-             $telpro[$i], $faxpro[$i], $mobilepro[$i], $entreprise_public[$i], $entreprise_ax[$i], $adrpro_public[$i], $adrpro_ax[$i],
-	     $telpro_public[$i], $telpro_ax[$i]) = $res->next();
+             $telpro[$i], $faxpro[$i], $mobilepro[$i], $pubpro[$i], $adr_pubpro[$i],
+	     $tel_pubpro[$i]) = $res->next();
 }
 //limite dure a 2
 for($i = $nb_res; $i < 2 ; $i++){
@@ -55,12 +54,9 @@ for($i = $nb_res; $i < 2 ; $i++){
         $telpro[$i] = '';
 	$faxpro[$i] = '';
 	$mobilepro[$i] = '';
-	$entreprise_public[$i] = '';
-	$entreprise_ax[$i] ='';
-	$adrpro_public[$i] = '';
-	$adrpro_ax[$i] = '';	             
-	$telpro_public[$i] = '';
-	$telpro_ax[$i] = '';
+	$pubpro[$i] = '';
+	$adr_pubpro[$i] = '';
+	$tel_pubpro[$i] = '';
 }
 
 //recuperation des donnees sur les secteurs :

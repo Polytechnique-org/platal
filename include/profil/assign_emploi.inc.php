@@ -4,7 +4,7 @@
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
- *  it under the terms of the GNU General Public License as published by   *
+ *  it under the terms of the GNU General Public License as pubprolished by   *
  *  the Free Software Foundation; either version 2 of the License, or      *
  *  (at your option) any later version.                                    *
  *                                                                         *
@@ -35,12 +35,9 @@ $page->assign('regionpro',$regionpro);
 $page->assign('telpro',$telpro);
 $page->assign('faxpro',$faxpro);
 $page->assign('mobilepro', $mobilepro);
-$page->assign('entreprise_public',$entreprise_public);
-$page->assign('entreprise_ax',$entreprise_ax);
-$page->assign('adrpro_public',$adrpro_public);
-$page->assign('adrpro_ax',$adrpro_ax);
-$page->assign('telpro_public',$telpro_public);
-$page->assign('telpro_ax',$telpro_ax);
+$page->assign('pubpro',$pubpro);
+$page->assign('adr_pubpro',$adr_pubpro);
+$page->assign('tel_pubpro',$tel_pubpro);
 $page->assign('cv',$cv);
 
 ?>

@@ -247,7 +247,7 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
                          cp = {?}, ville = {?},
                          pays = {?},
                          tel = {?}, fax = {?},
-                         visibilite = 'entreprise_ax,adr_ax,tel_ax'",
+                         pub = 'ax', adr_pub = 'ax', tel_pub = 'ax'",
                 $userax['uid'], $new_entrid,
                 $pro['entreprise'], $pro['fonction'],
                 $pro['adr1'], $pro['adr2'], $pro['adr3'],
