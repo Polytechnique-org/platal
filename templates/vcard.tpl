@@ -19,12 +19,12 @@
  ***************************************************************************}
 BEGIN:VCARD
 VERSION:3.0
-{if $vcard.epouse}
-FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.epouse` (`$vcard.nom`)"|qp_enc}
+{if $vcard.nom_usage}
+FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom_usage` (`$vcard.nom`)"|qp_enc}
 {else}
 FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
 {/if}
-N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.epouse|qp_enc};;
+N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.nom_usage|qp_enc};;
 EMAIL;TYPE=internet:{$vcard.bestalias}@polytechnique.org
 {if $vcard.bestalias neq $vcard.forlife}
 EMAIL;TYPE=internet:{$vcard.forlife}@polytechnique.org

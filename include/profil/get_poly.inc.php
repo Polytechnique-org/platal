@@ -22,13 +22,12 @@
 
 //declaration des fonctions msarty pour les binets et groupex
 
-$sql = "SELECT u.nom, u.prenom".
-    ", u.promo, epouse, u.flags, section".
+$sql = "SELECT section".
     " FROM auth_user_md5 AS u".
     " WHERE user_id = {?}";
 
 $result = $globals->xdb->query($sql, Session::getInt('uid', -1));
-list($nom, $prenom, $promo, $epouse, $flags, $section) = $result->fetchOneRow();
+$section = $result->fetchOneCell();
 
 replace_ifset($section,'section');
 

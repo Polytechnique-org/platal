@@ -96,10 +96,11 @@ if ($login) {
 		break;
 
 	    case "best":
-		$globals->xdb->execute("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id={?}", $mr['user_id']);
-		$globals->xdb->execute("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id={?}", $mr['user_id']);
+                // 'bestalias' is the first bit of the set : 1
+                // 255 is the max for flags (8 sets max)
+		$globals->xdb->execute("UPDATE  aliases SET flags= flags & (255 - 1) WHERE id={?}", $mr['user_id']);
 		$globals->xdb->execute("UPDATE  aliases
-                                           SET  flags=CONCAT(flags,',','bestalias')
+                                           SET  flags= flags | 1
                                         WHERE  id={?} AND alias={?}", $mr['user_id'], $val);
 		break;
 

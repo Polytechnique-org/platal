@@ -19,44 +19,45 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class EpouseReq
+// {{{ class UsageReq
 
-class EpouseReq extends Validate
+class UsageReq extends Validate
 {
     // {{{ properties
 
     var $unique = true;
 
-    var $epouse;
+    var $nom_usage;
     var $alias = '';
 
-    var $oldepouse;
+    var $oldusage;
     var $oldalias;
 
     var $homonyme;
     
     var $rules = "Refuser 
     tout ce qui n'est visiblement pas un nom de famille (ce qui est 
-    extrmement rare car à peu près n'importe quoi peut être un nom de 
+    extremement rare car à peu près n'importe quoi peut être un nom de 
     famille...)";
 
     // }}}
     // {{{ constructor
 
-    function EpouseReq($_uid, $_epouse)
+    function UsageReq($_uid, $_usage)
     {
         global $globals;
-        $this->Validate($_uid, true, 'epouse');
-        $this->epouse  = $_epouse;
-        $this->alias   = make_username($this->prenom, $this->epouse);
+        $this->Validate($_uid, true, 'usage');
+        $this->nom_usage  = $_usage;
+        $this->alias   = make_username($this->prenom, $this->nom_usage);
+        if (!$this->nom_usage) $this->alias = "";
 
         $res = $globals->xdb->query("
-                SELECT  e.alias, u.epouse, a.id
+                SELECT  e.alias, u.nom_usage, a.id
                   FROM  auth_user_md5 as u
-             LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('epouse',e.flags) AND e.id = u.user_id)
+             LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('usage',e.flags) AND e.id = u.user_id)
              LEFT JOIN  aliases       as a ON(a.alias = {?} AND a.id != u.user_id)
                  WHERE  u.user_id = {?}", $this->alias, $this->uid);
-        list($this->oldalias, $this->oldepouse, $this->homonyme) = $res->fetchOneRow();
+        list($this->oldalias, $this->oldusage, $this->homonyme) = $res->fetchOneRow();
     }
 
     // }}}
@@ -64,21 +65,21 @@ class EpouseReq extends Validate
 
     function get_request($uid)
     {
-        return parent::get_request($uid,'epouse');
+        return parent::get_request($uid,'usage');
     }
 
     // }}}
     // {{{ function formu()
 
     function formu()
-    { return 'include/form.valid.epouses.tpl'; }
+    { return 'include/form.valid.nomusage.tpl'; }
 
     // }}}
     // {{{ function _mail_subj()
 
     function _mail_subj()
     {
-        return "[Polytechnique.org/EPOUSE] Changement de nom de mariage";
+        return "[Polytechnique.org/USAGE] Changement de nom d'usage";
     }
 
     // }}}
@@ -88,14 +89,16 @@ class EpouseReq extends Validate
     {
         global $globals;
         if ($isok) {
-            $res = "  La demande de changement de nom de mariage que tu as demandée vient d'être effectuée.";
+            $res = "  La demande de changement de nom d'usage que tu as demandée vient d'être effectuée.";
             if ($this->oldalias) {
                 $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
             }
-            $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+            if ($nom_usage) {
+                $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+            }
             return $res;
         } else {
-            return "  La demande de changement de nom de mariage que tu avais faite a été refusée.";
+            return "  La demande de changement de nom d'usage que tu avais faite a été refusée.";
         }
     }
 
@@ -106,11 +109,17 @@ class EpouseReq extends Validate
     {
         global $globals;
 
-        $globals->xdb->execute("UPDATE auth_user_md5 set epouse={?} WHERE user_id={?}",$this->epouse ,$this->uid);
-        $globals->xdb->execute("DELETE FROM aliases WHERE FIND_IN_SET('epouse',flags) AND id={?}", $this->uid);
-        $globals->xdb->execute("UPDATE aliases SET flags='' WHERE flags='bestalias' AND id={?}", $this->uid);
-        $globals->xdb->execute("INSERT INTO aliases VALUES({?}, 'alias', 'epouse,bestalias', {?}, null)",
+        $globals->xdb->execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$this->nom_usage ,$this->uid);
+        $globals->xdb->execute("DELETE FROM aliases WHERE FIND_IN_SET('usage',flags) AND id={?}", $this->uid);
+        if ($this->alias) {
+            $globals->xdb->execute("UPDATE aliases SET flags=flags & 255-1 WHERE id={?}", $this->uid);
+            $globals->xdb->execute("INSERT INTO aliases VALUES({?}, 'alias', 'usage,bestalias', {?}, null)",
                 $this->alias, $this->uid);
+        }
+        $r = $globals->xdb->query("SELECT alias FROM aliases WHERE FIND_IN_SET('bestalias', flags) AND id = {?}", $this->uid);
+        if ($r->fetchOneCell() == "") {
+            $globals->xdb->execute("UPDATE aliases SET flags = 1 | flags WHERE id = {?} LIMIT 1", $this->uid);
+        }
         $f = fopen("/tmp/flag_recherche","w");
         fputs($f,"1");
         fclose($f);

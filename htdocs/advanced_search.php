@@ -71,7 +71,7 @@ if (!Env::has('rechercher')) {
             $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
             $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
         } else {
-            $nameField      = new NameSField('name',array('u.nom','u.epouse'),'');
+            $nameField      = new NameSField('name',array('u.nom','u.nom_usage'),'');
             $firstnameField = new StringSField('firstname',array('u.prenom'),'');
         }
         $nicknameField   = new StringSField('nickname',array('q.profile_nick'),'');

@@ -25,9 +25,10 @@ new_skinned_page('emails.tpl',AUTH_COOKIE);
 $uid = Session::getInt('uid');
 
 if (Post::has('best')) {
-    $globals->xdb->execute("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id={?}", $uid);
-    $globals->xdb->execute("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id={?}", $uid);
-    $globals->xdb->execute("UPDATE  aliases SET flags=CONCAT(flags,',','bestalias') WHERE id={?} AND alias={?}", $uid, Post::get('best'));
+    // bestalias is the first bit : 1
+    // there will be maximum 8 bits in flags : 255
+    $globals->xdb->execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
+    $globals->xdb->execute("UPDATE  aliases SET flags=flags | 1 WHERE id={?} AND alias={?}", $uid, Post::get('best'));
 }
 
 // on regarde si on a affaire à un homonyme

@@ -26,8 +26,7 @@ $page->assign('freetext_pub',$freetext_pub);
 $page->assign('nom', $nom);
 $page->assign('prenom', $prenom);
 $page->assign('promo', $promo);
-$page->assign('epouse', $epouse);
-$page->assign('femme', $femme);
+$page->assign('nom_usage', $nom_usage);
 
 $page->assign('nationalite',$nationalite);
 

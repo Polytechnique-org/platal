@@ -25,8 +25,8 @@ require_once("xorg.misc.inc.php");
 
 $globals->search->result_fields = '
                 u.user_id, u.promo, u.matricule, u.matricule_ax,
-		if(u.epouse=\'\', u.nom, u.epouse) AS NomSortKey,
-                u.epouse,u.date,
+		if(u.nom_usage=\'\', u.nom, u.nom_usage) AS NomSortKey,
+                u.nom_usage,u.date,
                 u.deces!=0 AS dcd,u.deces,
 		u.perms IN (\'admin\',\'user\') AS inscrit,
 		u.perms != \'pending\' AS wasinscrit,
@@ -264,7 +264,7 @@ class QuickSearch extends SField
 	foreach ($this->strings as $s) {
 	    $t = '%'.str_replace('*', '%', $s).'%';
 	    $t = str_replace('%%', '%', $t);
-	    $where[] = "(u.nom LIKE '$t' OR u.epouse LIKE '$t' OR u.prenom LIKE '$t')";
+	    $where[] = "(u.nom LIKE '$t' OR u.nom_usage LIKE '$t' OR u.prenom LIKE '$t')";
 	}
 	
 	$wherep = Array();
@@ -298,8 +298,8 @@ class QuickSearch extends SField
 	$order = "0";
         $sep   = "[ \\'\\-]";
 	foreach ($this->strings as $s) {
-	    $order .= " + ( (u.nom='$s' OR u.epouse='$s') + (CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '$sep{$s}$sep') )*1000
-                        + ( CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '$sep{$s}' )*100
+	    $order .= " + ( (u.nom='$s' OR u.nom_usage='$s') + (CONCAT(' ',u.nom,' ',u.nom_usage,' ') RLIKE '$sep{$s}$sep') )*1000
+                        + ( CONCAT(' ',u.nom,' ',u.nom_usage,' ') RLIKE '$sep{$s}' )*100
                         + ( (u.prenom = '$s') + (CONCAT(' ',u.prenom,' ') RLIKE '$sep{$s}$sep') )*10
                         + ( u.prenom RLIKE '(^|$sep){$s}' )";
 	}

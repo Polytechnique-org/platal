@@ -1,7 +1,7 @@
 USE x4dat;
 DROP TABLE IF EXISTS recherche;
 CREATE TABLE recherche SELECT matricule AS matricule,LOWER(REPLACE(nom_ini,'-',' ')) AS nom1,
-LOWER(REPLACE(nom,'-',' ')) AS nom2, LOWER(REPLACE(epouse,'-',' ')) AS nom3,
+LOWER(REPLACE(nom,'-',' ')) AS nom2, LOWER(REPLACE(nom_usage,'-',' ')) AS nom3,
 LOWER(REPLACE(prenom_ini,'-',' ')) AS prenom1, LOWER(REPLACE(prenom,'-',' ')) AS prenom2, promo AS
 promo FROM auth_user_md5;
 DROP TABLE IF EXISTS recherche_soundex;

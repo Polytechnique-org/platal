@@ -20,8 +20,8 @@
 
 
 <tr class="impair">
-  <td class="titre">Épouse&nbsp;:</td>
-  <td>{$valid->epouse}</td>
+  <td class="titre">Nom d'usage&nbsp;:</td>
+  <td>{$valid->nom_usage}</td>
 </tr>
 <tr class="impair">
   <td class="titre">Nouvel&nbsp;alias&nbsp;:</td>

@@ -23,35 +23,34 @@ require_once("xorg.inc.php");
 require_once("validations.inc.php");
 require_once("xorg.misc.inc.php");
 
-new_skinned_page('epouse.tpl', AUTH_MDP);
+new_skinned_page('nomusage.tpl', AUTH_MDP);
 
 $res = $globals->xdb->query(
-        "SELECT  u.nom,u.epouse,u.flags,e.alias
+        "SELECT  u.nom,u.nom_usage,u.flags,e.alias
            FROM  auth_user_md5  AS u
       LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
-          WHERE  user_id={?}", Session::getInt('uid'));
+          WHERE  user_id={?} AND FIND_IN_SET('usage', e.flags)", Session::getInt('uid'));
 
-list($nom,$epouse_old,$flags,$alias_old) = $res->fetchOneRow();
+list($nom,$usage_old,$flags,$alias_old) = $res->fetchOneRow();
 $flags = new flagset($flags);
-$page->assign('is_femme',   $flags->hasflag("femme"));
-$page->assign('epouse_old', $epouse_old);
+$page->assign('usage_old', $usage_old);
 $page->assign('alias_old',  $alias_old);
 
-$epouse = replace_accent(trim(Env::get('epouse'))); 
-$epouse = strtoupper($epouse);
-$page->assign('epouse_req', $epouse);
+$nom_usage = replace_accent(trim(Env::get('nom_usage'))); 
+$nom_usage = strtoupper($nom_usage);
+$page->assign('usage_req', $nom_usage);
 
-if (Env::has('submit') && ($epouse != $epouse_old)) {
-    // on vient de recevoir une requete, differente de l'ancien nom de mariage
-    if ($epouse == $nom) {
+if (Env::has('submit') && ($nom_usage != $usage_old)) {
+    // on vient de recevoir une requete, differente de l'ancien nom d'usage
+    if ($nom_usage == $nom) {
         $page->assign('same', true);
     } else { // le nom de mariage est distinct du nom à l'X
         // on calcule l'alias pour l'afficher
-        $myepouse = new EpouseReq(Session::getInt('uid'), $epouse);
-        $myepouse->submit();
-        $page->assign('myepouse', $myepouse);
+        $myusage = new UsageReq(Session::getInt('uid'), $nom_usage);
+        $myusage->submit();
+        $page->assign('myusage', $myusage);
     }
 }
 
-$page->run($flags->hasflag('femme') ? '' : 'not_femme');
+$page->run();
 ?>

@@ -267,7 +267,7 @@ class ContactsPDF extends FPDF
         $this->SetFillColor(245, 248, 252);
         $this->SetLineWidth(0.4);
 
-        $nom = $x['prenom'].' '.($x['epouse'] ? "{$x['epouse']} - née {$x['nom']}" : $x['nom'])." ({$x['promo']})";
+        $nom = $x['prenom'].' '.($x['nom_usage'] ? "{$x['nom_usage']} ({$x['nom']})" : $x['nom'])." ({$x['promo']})";
         $ok  = false;
 
         if ($wp) {

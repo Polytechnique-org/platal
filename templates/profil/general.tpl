@@ -68,18 +68,16 @@
         <span class="nom">X{$promo}</span>
       </td>
     </tr>     
-    {if $femme}
     <tr>
       <td class="colg">
-        <span class="titre">Nom de mariage</span><br />
+        <span class="titre">Nom d'usage</span><br />
         <span class="comm">(si différent de {$nom} seulement)</span>
       </td>
       <td class="cold">
-        <span class="nom">{$epouse|default:"Aucun"}</span>
-        <span class="lien"><a href="epouse.php">modifier</a></span>
+        <span class="nom">{$nom_usage|default:"Aucun"}</span>
+        <span class="lien"><a href="nomusage.php">modifier</a></span>
       </td>
     </tr>
-    {/if}
     <tr>
       <td class="colg">
         <span class="titre">Nationalité</span>

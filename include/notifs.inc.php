@@ -77,14 +77,14 @@ function _select_notifs_base($table, $mail, $where)
     $our   = $cases[$table];
     $sql = "
         (
-          SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom,
+          SELECT  u.promo, u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom,
                   a.alias AS bestalias,
                   wo.*,
                   {$our['contact_sql']} AS contact,
                   (u.perms IN('admin','user')) AS inscrit";
     if ($mail) {
         $sql.=",
-                  w.uid AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
+                  w.uid AS aid, v.prenom AS aprenom, IF(v.nom_usage='',v.nom,v.nom_usage) AS anom,
                   b.alias AS abestalias, (v.flags='femme') AS sexe, q.core_mail_fmt AS mail_fmt"; 
     }
 
@@ -383,7 +383,7 @@ class NoninsNotifs {
     function NoninsNotifs($uid) {
 	global $globals;
 	$this->_uid = $uid;
-	$res = $globals->xdb->iterator("SELECT  u.prenom,IF(u.epouse='',u.nom,u.epouse) AS nom, u.promo, u.user_id
+	$res = $globals->xdb->iterator("SELECT  u.prenom,IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, u.promo, u.user_id
                                           FROM  watch_nonins  AS w
                                     INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
                                          WHERE  w.uid = {?}
@@ -402,7 +402,7 @@ class NoninsNotifs {
     function add($p) {
 	global $globals;
 	$globals->xdb->execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
-	$res = $globals->xdb->query('SELECT  prenom,IF(epouse="",nom,epouse) AS nom,promo,user_id
+	$res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
                                        FROM  auth_user_md5
                                       WHERE  user_id={?}', $p);
 	$this->_data["$p"] = $res->fetchOneAssoc();

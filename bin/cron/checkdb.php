@@ -84,7 +84,7 @@ check("select uid, cid from competences_ins group by uid having count(cid) > 20"
 check("SELECT a.*
         FROM aliases       AS a
         LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
-        WHERE (a.type='alias' OR a.type='epouse' OR a.type='a_vie') AND u.prenom is null");
+        WHERE (a.type='alias' OR a.type='a_vie') AND u.prenom is null");
 
 /* validite de applis_ins */
 check("select a.* from applis_ins as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
@@ -131,7 +131,7 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags
         INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
         INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
         INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
-        WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.epouse AND u2.nom!=u1.epouse
+        WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
         ORDER BY  a1.alias",
         "donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes");
 

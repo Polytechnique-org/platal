@@ -66,7 +66,7 @@ function switch_bestalias($uid, $loginbis) {
     $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND alias != {?} AND expire IS NULL ORDER BY LENGTH(alias) LIMIT 1", $uid, $loginbis);
     $newbest = $res->fetchOneCell();
     // change the bestalias flag
-    $globals->xdb->execute("UPDATE aliases SET flags = CONCAT(IF(FIND_IN_SET('epouse', flags), 'epouse', ''), ',' , IF(alias = {?}, 'bestalias', '')) WHERE id = {?}", $newbest, $uid);
+    $globals->xdb->execute("UPDATE aliases SET flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0) WHERE id = {?}", $newbest, $uid);
 
     return $newbest;
 }

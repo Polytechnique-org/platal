@@ -77,7 +77,7 @@ if ($login) {
             }
         }
 
-        import_from_ax($userax, Env::has('epouse'), Env::has('mobile'), $adr_dels, $adr_adds, $pro_dels, $pro_adds, Env::has('nationalite'));
+        import_from_ax($userax, Env::has('nom_usage'), Env::has('mobile'), $adr_dels, $adr_adds, $pro_dels, $pro_adds, Env::has('nationalite'));
 
     }
 
@@ -87,10 +87,10 @@ if ($login) {
         $user['matricule_ax'] = $userax['matricule_ax'];
         unset($userax['matricule_ax']);
         $user['nom'] = ucwords(strtolower($user['nom']));
-        $user['epouse'] = ucwords(strtolower($user['epouse']));
+        $user['nom_usage'] = ucwords(strtolower($user['nom_usage']));
     }
 
-    $page->assign('watch_champs',array('nom', 'epouse', 'prenom', 'nationalite', 'mobile'));
+    $page->assign('watch_champs',array('nom', 'nom_usage', 'prenom', 'nationalite', 'mobile'));
     $page->assign('modifiables', array(0,1,0,1,1));
 
     $page->assign('x', $user);

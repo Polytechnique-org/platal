@@ -12,6 +12,7 @@ New :
 	* Profile :
 		- One can choose precisely which fields appear on his public fiche.	-Car
 		- Accents and special chars in name and first name					-Car
+		- Spouse name extended to usage name								-Car
 
 	* Register :
 		- Already subscribed members now have a warning.					-MC

@@ -81,7 +81,7 @@ if(Get::get('trombi')) {
             $order = str_replace(" DESC,", ",", $order);
             
 	$res   = $globals->xdb->query("
-	    	SELECT  u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, u.promo
+	    	SELECT  u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, a.alias AS forlife, u.promo
 		  FROM  contacts       AS c
 	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
 	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
@@ -127,7 +127,7 @@ if(Get::get('trombi')) {
 		    ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
 		    ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
 		    adr.ville, gp.a2, gp.pays, gr.name AS region,
-		    IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
+		    IF(a.nom_usage<>'',a.nom_usage,a.nom) AS sortkey
 	      FROM  contacts       AS c
         INNER JOIN  auth_user_md5  AS a   ON (a.user_id = c.contact)
         INNER JOIN  aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')

@@ -46,7 +46,7 @@ function get_user_ax($uid, $raw=false)
     $ancien = $array['dump']['ancien'];
     $userax['nom'] = $ancien[0];
     // ancien1 = ?
-    $userax['epouse'] = ($ancien[2] != $ancien[0])?$ancien[2]:"";
+    $userax['nom_usage'] = ($ancien[2] != $ancien[0])?$ancien[2]:"";
     // ancien3 = ?
     $userax['prenom'] = $ancien[4];
     $userax['sexe'] = ($ancien[5] != 'M')?1:0;
@@ -129,12 +129,12 @@ function get_user_ax($uid, $raw=false)
     return $userax;
 }
 
-function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null, $add_address=null, $del_pro=null, $add_pro=null, $nationalite=false)
+function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=null, $add_address=null, $del_pro=null, $add_pro=null, $nationalite=false)
 { 
     global $globals;
 
-    if ($epouse) {
-        $globals->xdb->execute("UPDATE auth_user_md5 SET epouse = {?} WHERE user_id = {?}", strtoupper($userax['epouse']), $userax['uid']);
+    if ($nom_usage) {
+        $globals->xdb->execute("UPDATE auth_user_md5 SET nom_usage = {?} WHERE user_id = {?}", strtoupper($userax['nom_usage']), $userax['uid']);
     }
     
     if ($mobile) {

@@ -47,7 +47,7 @@ function getList($offset,$limit)
     $membres = Array();
     foreach ($members as $member) {
         list($m) = split('@',$member[1]);
-        $res = $globals->xdb->query("SELECT  prenom,IF(epouse='', nom, epouse) AS nom, promo, a.alias AS forlife
+        $res = $globals->xdb->query("SELECT  prenom,IF(nom_usage='', nom, nom_usage) AS nom, promo, a.alias AS forlife
                                        FROM  auth_user_md5 AS u
                                  INNER JOIN  aliases AS a ON u.user_id = a.id
                                       WHERE  a.alias = {?}", $m);

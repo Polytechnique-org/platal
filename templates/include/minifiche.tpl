@@ -30,7 +30,7 @@
     {only_public}
     {if !$c.dcd && $c.inscrit}<a href="{"fiche.php"|url}?user={$c.user_id}" class="popup2">{/if}
     {/only_public}
-    {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
+    {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
     {if !$c.dcd && $c.inscrit}</a>{/if}
   </div>
 

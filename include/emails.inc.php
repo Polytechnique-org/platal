@@ -41,7 +41,7 @@ function fix_bestalias($uid)
     $globals->xdb->execute("UPDATE  aliases
                                SET  flags=CONCAT(flags,',','bestalias')
 			     WHERE  id={?} AND type!='homonyme'
-		          ORDER BY  !FIND_IN_SET('epouse',flags),alias LIKE '%.%', LENGTH(alias)
+		          ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
 		             LIMIT  1", $uid);
 }
 

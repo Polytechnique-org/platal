@@ -49,7 +49,7 @@ if (Env::has('mat')) {
 
 $new   = Env::get('modif') == 'new';
 $user  = get_user_details($login, Session::getInt('uid'));
-$title = $user['prenom'] . ' ' . empty($user['epouse']) ? $user['nom'] : $user['epouse'];
+$title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
 $page->assign('xorg_title', $title);
 
 // photo

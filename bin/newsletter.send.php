@@ -40,7 +40,7 @@ $nl->setSent();
 while(true) {
     $res = $globals->xdb->iterRow(
             "SELECT  ni.user_id, a.alias,
-                     u.prenom, IF(u.epouse='', u.nom, u.epouse),
+                     u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
                      FIND_IN_SET('femme', u.flags),
 		     q.core_mail_fmt AS pref
                FROM  newsletter_ins  AS ni

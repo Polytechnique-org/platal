@@ -57,7 +57,7 @@ $res = $globals->xdb->query(
         "SELECT  alias,expire
            FROM  aliases
           WHERE  id={?} AND (type='a_vie' OR type='alias')
-       ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias)", $uid);
+       ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $uid);
 $page->assign('alias', $res->fetchAllAssoc());
 $page->assign('emails',$redirect->emails);
 

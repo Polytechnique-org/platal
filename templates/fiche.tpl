@@ -31,7 +31,7 @@ function chgMainWinLoc( strPage ) {
     <td id="fiche_identite">
       <div class="civilite">
         {if $x.sexe}&bull;{/if}
-        {$x.prenom} {if $x.epouse eq ""}{$x.nom}{else}{$x.epouse} ({$x.nom}){/if}
+        {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
         {min_auth level="cookie"}
         {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
         <a href="vcard.php/{$x.forlife}.vcf?x={$x.forlife}">
