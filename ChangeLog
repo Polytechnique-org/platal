@@ -86,6 +86,7 @@ Bug/Wish :
 	* Validations :
 		- #137: Now possible to add comments without any action.			-MC
 		- #191, #256: Marketing now uses the validation process.			-MC
+		- #267: Newsletter uses the validation process too.					-MC
 
 ================================================================================
 VERSION 0.9.3														 27 Dec 2004

@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-require_once("validations.inc.php");
 new_admin_page('admin/valider.tpl');
+require_once("validations.inc.php");
 
 if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
     $req = Validate::get_request(Env::get('uid'), Env::get('type'), Env::get('stamp'));

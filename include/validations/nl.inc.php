@@ -19,20 +19,66 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE);
+// {{{ class NLReq
+
 require_once("newsletter.inc.php");
 
-if (Post::has('see')) {
-    $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
-    $page->assign('art', $art);
-} elseif (Post::has('valid')) {
-    require_once('validations.inc.php');
-    $art = new NLReq(Session::getInt('uid'), Post::get('title'), Post::get('body'), Post::get('append'));
-    $art->submit();
+class NLReq extends Validate
+{
+    // {{{ properties
+
+    var $art;
     
-    $page->assign('submited', true);
+    // }}}
+    // {{{ constructor
+
+    function NlReq($uid, $title, $body, $append) {
+        $this->Validate($uid, false, 'nl');
+        $this->art = new NLArticle($title, $body, $append);
+    }
+
+    // }}}
+    // {{{ function formu()
+
+    function formu()
+    {
+        return 'include/form.valid.nl.tpl';
+    }
+
+    // }}}
+    // {{{ function _mail_subj
+    
+    function _mail_subj()
+    {
+        return "[Polytechnique.org/NL] Proposition d'article dans la NL";
+    }
+
+    // }}}
+    // {{{ function _mail_body
+
+    function _mail_body($isok)
+    {
+        if ($isok) {
+            return "  L'annonce que tu avais proposée ({$this->title}) vient d'être validée.";
+        } else {
+            return "  L'annonce que tu avais proposée ({$this->title}) a été refusée.";
+        }
+    }
+
+    // }}}
+    // {{{ function commit()
+
+    function commit()
+    {
+        $nl  = new Newsletter();
+        $nl->saveArticle($this->art);
+        return true;
+    }
+
+    // }}}
 }
 
-$page->run();
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

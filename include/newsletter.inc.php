@@ -24,6 +24,10 @@
 require_once("xorg.misc.inc.php");
 require_once("diogenes/diogenes.misc.inc.php");
 
+if (isset($page)) {
+    $page->addCssLink('css/nl.css');
+}
+
 define('FEMME', 1);
 define('HOMME', 0);
 
@@ -138,7 +142,7 @@ class NewsLetter
                                           $a->_title, $a->_body, $a->_append);
 	    $this->_arts['a'.$a->_aid] = $a;
 	} else {
-	    $globals->xdb->executey(
+	    $globals->xdb->execute(
 		'INSERT INTO  newsletter_art
 		      SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
 			FROM  newsletter_art AS a

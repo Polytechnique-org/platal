@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,22 +16,19 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
 
-require_once("xorg.inc.php");
-new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE);
-require_once("newsletter.inc.php");
+<tr class="pair">
+  <td class="titre">Version texte</td>
+  <td style='border: 1px dotted #888'><pre>{$valid->art->toText()}</pre></td>
+</tr>
+<tr class="pair">
+  <td class="titre">Version html</td>
+  <td style='border: 1px dotted #888'>
+    <div class='nl'>
+      {$valid->art->toHtml()|smarty:nodefaults}
+    </div>
+  </td>
+</tr>
 
-if (Post::has('see')) {
-    $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
-    $page->assign('art', $art);
-} elseif (Post::has('valid')) {
-    require_once('validations.inc.php');
-    $art = new NLReq(Session::getInt('uid'), Post::get('title'), Post::get('body'), Post::get('append'));
-    $art->submit();
-    
-    $page->assign('submited', true);
-}
-
-$page->run();
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

@@ -21,7 +21,6 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('newsletter/show.tpl', AUTH_COOKIE);
-$page->addCssLink('css/nl.css');
 require_once("newsletter.inc.php");
 
 $nid = Get::get('nid', 'last');

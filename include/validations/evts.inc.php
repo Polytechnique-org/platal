@@ -38,7 +38,7 @@ class EvtReq extends Validate
 
     function EvtReq($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid) {
         global $globals;
-        $this->Validate($_uid, false, 'evts', $_stamp);
+        $this->Validate($_uid, false, 'evts');
         $this->titre      = $_titre;
         $this->texte      = $_texte;
         $this->pmin       = $_pmin;
