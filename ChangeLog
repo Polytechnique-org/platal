@@ -8,6 +8,7 @@ New :
 		- Start the new work on modules (XOrgHook).							-MC
 		- XOrgMenu class to deal with Menu entries.							-MC
 		- Lots of includes renames, rewrites, beautifuling.					-MC
+		- Try to avoid the unreadable {"..."|url} modifier, use {rel}/.		-MC
 	
 	* Distribution :
 		- Do not modify PHP include path from auto.prepend.inc.php			-SHK
