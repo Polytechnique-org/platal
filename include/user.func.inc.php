@@ -261,7 +261,7 @@ function &get_user_details($login, $from_uid = '')
                                  WHERE  uid='{$user['user_id']}'
                               ORDER BY  ordre");
     
-    while (list($type, $txt, $url) = mysql_fetch_assoc($res)) {
+    while (list($txt, $url, $type) = mysql_fetch_row($res)) {
         require_once('applis.func.inc.php');
         $user['applis_fmt'][] = applis_fmt($type, $txt, $url);
     }
