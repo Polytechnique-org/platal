@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.8 2004-09-25 15:55:26 x2000habouzit Exp $
+        $Id: index.tpl,v 1.9 2004-09-25 16:30:26 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -49,9 +49,16 @@ Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
   La diffusion sur une liste de diffusion 
 </div>
 <p>
-Certaines listes sont à diffusion modérée, l'envoi d'un mail à la liste est alors filtré par des
-modérateurs : eux seuls peuvent accepter un message envoyé à la liste.  Pour les autres listes, la
-diffusion est immédiate.
+La diffusion a trois niveaux de modération.  La diffusion peut être :
+</p>
+<ul>
+  <li>libre : tout le monde peut y envoyer des mails, la diffusion y est
+  immédiate;</li>
+  <li>restreinte : les membres de la liste peuvent envoyer librement des mails,
+  les extérieurs sont modérés;</li>
+  <li>modérée: l'envoi d'un mail à la liste est alors filtré par des
+  modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
+</ul>
 </p>
 <p class='smaller'>
 NB : les gestionnaires d'une liste sont aussi ses modérateurs.  

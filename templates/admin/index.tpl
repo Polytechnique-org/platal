@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.6 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: index.tpl,v 1.7 2004-09-25 16:30:26 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,7 @@
       <a href="../webalizer/">Webalizer</a>
   </td></tr>
   <tr class="impair"><td>
-      <strong>S&eacute;curit&eacute; : </strong>
+      <strong>Sécurité : </strong>
       <a href="logger.php">Logs des sessions</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="logger_actions.php">Actions</a>
   </td></tr>
@@ -57,7 +57,7 @@
   <tr class="pair"><td>
       <strong>Infos dynamiques : </strong>
       <a href="gerer_coupure.php">Coupures</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="evenements.php">&Eacute;v&eacute;nements</a>
+      <a href="evenements.php">événements</a>
   </td></tr>
   <tr class="impair"><td>
       <strong>Champs profil : </strong>
@@ -68,23 +68,23 @@
   </td></tr>
   <tr class="pair"><td>
       <strong>Newsletter : </strong>
-      <a href="newsletter_prep.php">Pr&eacute;paration</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="newsletter_prep.php">Préparation</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="newsletter_archi.php">Archives</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="newsletter_pattecassee.php">Adresses en panne</a>  
   </td></tr>
   <tr class="impair"><td>
       <strong>Administrer : </strong>
       <a href="gerer_auth-groupex.php">Auth Groupes X</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="../listes/gere_listes.php">Listes</a>
+      <a href="lists.php">Listes</a>
   </td></tr>
   <tr class="pair"><td>
       <strong>Valider demandes : </strong>
       <a href="valider.php">Valider</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="evenements.php">&Eacute;v&eacute;nements</a>
+      <a href="evenements.php">événements</a>
   </td></tr>
   <tr class="impair"><td>
-      <strong>Tr&eacute;sorerie : </strong>
+      <strong>Trésorerie : </strong>
       <a href="../trezo/gere_operations.php">Comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="gerer_paiement.php">Paiements</a>

@@ -29,7 +29,8 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN prenom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse_soundex;
 -- drop des anciens alias --> aliases
 alter table x4dat.aliases add column expire date;
-ALTER TABLE x$dat.aliases CHANGE `type` `type` ENUM( 'a_vie', 'epouse', 'alias', 'homonyme', 'liste', 'liste-owner', 'liste-request', 'liste-sans-moderation' ) DEFAULT 'alias' NOT NULL
+ALTER TABLE x4dat.aliases CHANGE `type` `type` ENUM( 'a_vie', 'epouse', 'alias', 'homonyme', 'liste' ) DEFAULT 'alias' NOT NULL
+delete from x4dat.aliases where type='';
 
 -- auth_user_md5
 update x4dat.aliases as a inner join x4dat.auth_user_md5 as u ON(u.loginbis=a.alias)

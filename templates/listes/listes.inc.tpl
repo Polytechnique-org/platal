@@ -17,14 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.7 2004-09-25 15:55:26 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.8 2004-09-25 16:30:26 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
     <th>Liste</th>
     <th>Description</th>
-    <th>Régulation</th>
+    <th>Diff.</th>
+    <th>Inscr.</th>
     <th>Nb</th>
     <th></th>
   </tr>
@@ -41,7 +42,9 @@
     </td>
     <td>{$liste.desc}</td>
     <td class='center'>
-      {if $liste.diff eq 2}2{elseif $list.diff}1{else}0{/if}
+      {if $liste.diff eq 2}modérée{elseif $liste.diff}restreinte{else}libre{/if}
+    </td>
+    <td class='center'>
       {if $liste.ins}modérée{else}libre{/if}
     </td>
     <td class='right'>{$liste.nbsub}</td>

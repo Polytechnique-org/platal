@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -18,19 +17,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: gerer_listes.php,v 1.2 2004-08-31 10:03:29 x2000habouzit Exp $
- ***************************************************************************/
+        $Id: lists.tpl,v 1.1 2004-09-25 16:30:26 x2000habouzit Exp $
+ ***************************************************************************}
 
-require('auto.prepend.inc.php');
-new_admin_table_editor('listes_def','id');
 
-$editor->add_join_table('aliases','id','aliases.type=\'liste\'');
+<div class="rubrique">
+   Mail Lists
+</div>
 
-$editor->add_join_field('aliases','alias','alias','','liste',true);
-$editor->describe('topic','topic',true);
-$editor->describe('type','type',true,'set');
+<table class='bicol' cellpadding='0' cellspacing='0'>
+  <tr>
+    <th>Listes</th>
+    <th>Sujet</th>
+    <th>Nb</th>
+  </tr>
+  {foreach from=$listes item=l}
+  <tr class='{cycle values="impair,pair"}'>
+    <td><a href='{"listes/soptions.php"|url}?liste={$l.list}'>{$l.list}</a></td>
+    <td>{$l.desc}</td>
+    <td class='right'>{$l.nbsub}</td>
+  </tr>
+  {/foreach}
+</table>
 
-$editor->assign('title', 'Gestion des liste des diffusion');
-
-$editor->run();
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}
