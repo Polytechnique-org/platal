@@ -67,7 +67,7 @@ il faut te limiter à 8 lignes de 68 caractères.
     </tr>
     <tr>
       <td>
-        Si tu es content de ton article, tu peux le soummetre.
+        Si tu es content de ton article, tu peux le soumetre.
         Sinon, tu peux continuer à l'éditer en dessous
       </td>
     </tr>
