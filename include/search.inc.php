@@ -33,9 +33,9 @@ class XOrgSearch extends XOrgPlugin
     var $order_defaut = 'promo';
     // type of orders : (field name, default ASC, text name, auth)
     var $orders = array(
-            'promo'     =>array('promo',  false, 'promotion',             AUTH_PUBLIC),
             'nom'       =>array('nom,prenom',   true,  'nom',             AUTH_PUBLIC),
-            'date_mod'  =>array('u.date', false, 'dernière modification', AUTH_COOKIE)
+            'promo'     =>array('promo,nom',  false, 'promotion',             AUTH_PUBLIC),
+            'date_mod'  =>array('u.date,nom', false, 'dernière modification', AUTH_COOKIE)
         );
 
     // }}}
@@ -65,8 +65,12 @@ class XOrgSearch extends XOrgPlugin
 
     function addOrder($name, $field, $inv_order, $text, $auth, $defaut=false)
     {
+        // reverse the array, to get the defaut order first
+        if ($defaut)
+            $this->orders = array_reverse($this->orders);
         $this->orders[$name] = array($field, $inv_order, $text, $auth);
         if ($defaut) {
+            $this->orders = array_reverse($this->orders);
             $this->order_defaut = $name;
         }
     }
