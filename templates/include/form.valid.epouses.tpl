@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.epouses.tpl,v 1.9 2004-10-19 22:05:09 x2000habouzit Exp $
+        $Id: form.valid.epouses.tpl,v 1.10 2004-10-20 07:21:02 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -60,7 +60,7 @@
       </td>
       <td>
         <p>Raison du refus:</p>
-        <textarea rows="5" cols="50" name=motif></textarea>
+        <textarea rows="5" cols="50" name="motif"></textarea>
       </td>
     </tr>
   </table>
