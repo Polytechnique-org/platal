@@ -90,39 +90,8 @@
     {/if}
   </div>
 
-  <div class="adresse">
-    {if $address.adr1 || $address.pays || $address.ville}
-    <em>Adresse : </em><br />
-    {if $address.adr1}<strong>{$address.adr1}</strong><br />{/if}
-    {if $address.adr2}<strong>{$address.adr2}</strong><br />{/if}
-    {if $address.adr3}<strong>{$address.adr3}</strong><br />{/if}
-    {if $address.ville}<strong>{$address.cp} {$address.ville}</strong><br />{/if}
-    {if $address.pays}
-    <strong>{$address.pays}{if $address.region} ({$address.region}){/if}</strong>
-    {/if}
-    {/if}
-
-    {if $address.tel}
-    <div>
-      <em>Tél : </em>
-      <strong>{$address.tel}</strong>
-    </div>
-    {/if}
-
-    {if $address.fax}
-    <div>
-      <em>Fax : </em>
-      <strong>{$address.fax}</strong>
-    </div>
-    {/if}
-
-    {if $address.mobile}
-    <div>
-      <em>Mobile : </em>
-      <strong>{$address.mobile}</strong>
-    </div>
-    {/if}
-  </div>
+  {include file="geoloc/address.tpl" address=$address titre="Adresse : "}
+  
   <div class="spacer">&nbsp;</div>
   {/foreach}
 
