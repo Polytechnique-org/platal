@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: manageurs.inc.php,v 1.3 2004-11-11 15:11:25 x2000coic Exp $
+        $Id: manageurs.inc.php,v 1.4 2004-11-11 17:17:23 x2000coic Exp $
  ***************************************************************************/
 
 
@@ -53,7 +53,7 @@ function manageurs_encrypt($message){
 
 function manageurs_decrypt($message){
   global $tripledes;
-  return mdecrypt_generic($tripledes, base64_decode($message));
+  return trim(mdecrypt_generic($tripledes, base64_decode($message)));
 }
 
 function manageurs_encrypt_array($array){
