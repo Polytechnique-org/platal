@@ -2,12 +2,13 @@ Votre demande à la liste de diffusion %(listname)s
 
     %(request)s 
 
-a été rejetée par le modérateur de la liste. Le modérateur a
-donné la justification suivante comme cause de ce rejet: 
+n'a pas été transmis par le modérateur à la liste.
+Le modérateur a donné la justification suivante comme
+raison de son refus :
 
     "%(reason)s" 
 
-Toute question ou commentaire doit être adressé à l'administrateur
-de la liste à l'adresse:
+Toute question ou commentaire doit être adressé
+à l'administrateur de la liste à l'adresse:
 
     %(adminaddr)s
