@@ -13,7 +13,7 @@
  */
 
 function checkcancel($_headers) {
-    return ($_headers->xorgid == $_SESSION['forlife'] or has_perms());
+    return ($_headers->xorgid == Session::get('forlife') or has_perms());
 }
 
 /** getprofile : sets profile variables
@@ -25,33 +25,35 @@ function checkcancel($_headers) {
 function getprofile() {
     if (logged()) {
         global $globals;
+        
+        $uid = Session::getInt('uid');
 	$req = mysql_query("SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
 				    IF(FIND_IN_SET('automaj',flags),'1','0') 
 			      FROM  {$globals->banana->table_prefix}profils
-			     WHERE  uid='{$_SESSION['uid']}'");
+			     WHERE  uid=$uid");
 	if (!(list($nom,$mail,$sig,$disp,$maj)=mysql_fetch_row($req))) {
-	    $nom = $_SESSION['prenom']." ".$_SESSION['nom'];
-	    $mail = $_SESSION['forlife']."@polytechnique.org";
-	    $sig = $nom." (".$_SESSION['promo'].")";
+	    $nom  = Session::get('prenom')." ".Session::get('nom');
+	    $mail = Session::get('forlife')."@polytechnique.org";
+	    $sig  = $nom." (".Session::getInt('promo').")";
 	    $disp = 0;
-	    $maj = 1;
+	    $maj  = 1;
 	}
-	$array['name'] = "$nom <$mail>";
-	$array['sig'] = $sig;
-	$array['org']  = "Utilisateur de Polytechnique.org";
+	$array['name']      = "$nom <$mail>";
+	$array['sig']       = $sig;
+	$array['org']       = "Utilisateur de Polytechnique.org";
 	$array['customhdr'] = "";
-	$array['display'] = $disp;
-	$array['autoup'] = $maj;
-	$array['lastnews'] = $_SESSION['banana_last'];
-	$array['dropsig'] = true;
+	$array['display']   = $disp;
+	$array['autoup']    = $maj;
+	$array['lastnews']  = Session::get('banana_last');
+	$array['dropsig']   = true;
 	if ($maj) {
 	    mysql_query("UPDATE auth_user_quick SET banana_last='"
-		.gmdate("YmdHis")."' WHERE user_id='{$_SESSION['uid']}'");
+		.gmdate("YmdHis")."' WHERE user_id=$uid");
 	}
 	$req=mysql_query("SELECT  nom
 	                    FROM  {$globals->banana->table_prefix}abos
 		       LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
-		           WHERE  uid={$_SESSION['uid']};");
+		           WHERE  uid=$uid");
 	$array['subscribe']=array();
 	while (list($fnom)=mysql_fetch_array($req)) {
 	    array_push($array['subscribe'],$fnom);

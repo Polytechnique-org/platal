@@ -12,18 +12,20 @@ $array = explode('/',$sname);
 $sname = array_pop($array);
 unset($array);
 switch ($sname) {
-  case "thread.php":
-    if (!isset($_SESSION['bananapostok'])) 
-      $_SESSION['bananapostok']=true;
+    case "thread.php":
+        if (!Session::has('bananapostok')) {
+            $_SESSION['bananapostok']=true;
+        }
     break;
-  case "index.php":
-    if (isset($_GET["banana"]) && ($_GET["banana"]=="updateall")) {
-      mysql_query("UPDATE auth_user_quick SET banana_last='"
-              .gmdate("YmdHis")."' WHERE user_id='{$_SESSION['uid']}'");
-      $_SESSION["banana_last"]=time();
-    }
-  default:
+    
+    case "index.php":
+        if (Get::get('banana') == 'updateall') {
+            mysql_query("UPDATE auth_user_quick SET banana_last='"
+                    .gmdate("YmdHis")."' WHERE user_id=".Session::getInt('uid'));
+            $_SESSION["banana_last"]=time();
+        }
+
+    default:
     $_SESSION['bananapostok']=true;
-    break;
 }
 ?>

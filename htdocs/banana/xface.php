@@ -1,6 +1,6 @@
 <?php
 
-$face = base64_decode($_REQUEST['face']);
+$face = base64_decode(Env::get('face'));
 $face = ereg_replace("'", "'\\''", $face);
 
 header("Content-Type: image/png");
