@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.5 2004-10-15 09:40:31 web Exp $
+        $Id: members.php,v 1.6 2004-10-15 09:52:22 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -41,12 +41,13 @@ if(list($det,$mem,$own) = $members) {
     $membres = Array();
     foreach($mem as $member) {
         list($m) = split('@',$member[1]);
-        $res = $globals->db->query("SELECT  IF(epouse='', CONCAT(prenom, ' ', nom), CONCAT(prenom, ' ', epouse)), promo
+        $res = $globals->db->query("SELECT  prenom,IF(epouse='', nom, epouse), promo
                                       FROM  auth_user_md5 AS u
                                 INNER JOIN  aliases AS a ON u.user_id = a.id
                                      WHERE  a.alias = '$m'");
-        if(list($nom, $promo) = mysql_fetch_row($res)) {
-            $membres[$promo][] = Array('n' => $nom, 'l' => $m);
+        if(list($prenom, $nom, $promo) = mysql_fetch_row($res)) {
+	    $key = $tri_promo ? $promo : strtoupper($nom{0});
+            $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
         } else {
             $membres[0][] = Array('l' => $member[0]);
         }
