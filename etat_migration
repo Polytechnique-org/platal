@@ -20,7 +20,7 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ emails ... ]----------------------------+----------------
 x	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
-;	  | step4.php								  | 
+x	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
 x	  | recherche.php							  | 
