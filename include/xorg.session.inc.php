@@ -6,22 +6,23 @@ class XorgSession extends DiogenesCoreSession {
   function XorgSession()
   {
     $this->DiogenesCoreSession();
-    $_SESSION['challenge']=rand_token();
+    if(empty($_SESSION['username']))
+        try_cookie();
     set_skin();
-  }
 
+  }
 
   /** Try to do an authentication.
    *
    * @param page the calling page (by reference)
    */
-  function doAuth(&$page) {
+  function doAuth(&$page,$new_name=false) {
     if(identified()) { // ok, c'est bon, on n'a rien à faire
       return;
     }
 
     if (isset($_REQUEST['username']) and isset($_REQUEST['response'])
-        and isset($_SESSION['challenge']))
+        and isset($_SESSION['session']->challenge))
     {
       // si on vient de recevoir une identification par passwordpromptscreen.tpl
       // ou passwordpromptscreenlogged.tpl
@@ -29,9 +30,9 @@ class XorgSession extends DiogenesCoreSession {
       if(@mysql_num_rows($res) != 0) {
         list($username,$uid,$password)=mysql_fetch_row($res);
         mysql_free_result($res);
-        $expected_response=md5("{$_REQUEST['username']}:$password:{$_SESSION['challenge']}");
+        $expected_response=md5("{$_REQUEST['username']}:$password:{$_SESSION['session']->challenge}");
         if($_REQUEST['response'] == $expected_response) {
-          unset($_SESSION['challenge']);
+          unset($_SESSION['session']->challenge);
           // on logge la réussite pour les gens avec cookie
           if(isset($_SESSION['log']))
             $_SESSION['log']->log("auth_ok");
@@ -42,18 +43,18 @@ class XorgSession extends DiogenesCoreSession {
           // on logge l'échec pour les gens avec cookie
           if(isset($_SESSION['log']))
             $_SESSION['log']->log("auth_fail","bad password");
-          $this->doLogin($page);
+          $this->doLogin($page,$new_name);
         }
       } else {
         // login inexistant dans la base de donnees
         // on logge l'échec pour les gens avec cookie
         if(isset($_SESSION['log']))
           $_SESSION['log']->log("auth_fail","bad login");
-        $this->doLogin($page);
+        $this->doLogin($page,$new_name);
       }
     } else {
       // ni loggué ni tentative de login
-      $this->doLogin($page);
+      $this->doLogin($page,$new_name);
     }
   }
 
@@ -63,6 +64,7 @@ class XorgSession extends DiogenesCoreSession {
    * @param page the calling page (by reference)
    */
   function doAuthCookie(&$page) {
+    global $failed_ORGaccess;
     // si on est deja connecté, c'est bon, rien à faire
     if(logged())
       return;
@@ -72,46 +74,14 @@ class XorgSession extends DiogenesCoreSession {
       return $this->doAuth($page);
 
     // sinon, on vérifie que les bons cookies existent
-    if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == ''
-        or !isset($_COOKIE['ORGlogin']))
-      return $this->doAuth($page);
-
-
-    // les bons cookies existent, donc ça veut dire que la session a expirée
-    // il faut donc vérifier que les cookies sont bons et recréer la session
-    // et d'authoriser l'accès
-    $res = @mysql_query( "SELECT user_id,password FROM auth_user_md5 WHERE username='{$_COOKIE['ORGlogin']}'");
-    if(@mysql_num_rows($res) != 0) {
-      list($uid,$password)=mysql_fetch_row($res);
-      mysql_free_result($res);
-      $expected_value=md5($password);
-      if($expected_value == $_COOKIE['ORGaccess']) {
-        //session_start();
-        start_connexion($_COOKIE['ORGlogin'], $uid, false);
-        return true;
-      } else {
-        // ORGaccess n'est pas bon
-        // cette variable failed_ORGaccess permet à
-        // controlauthentication.inc.php de mettre
-        // passwordpromtscreen.inc.php plutôt que
-        // passwordpromtscreenlogged.inc.php dans le
-        // cas ou ORGaccess n'est pas bon, permettant à l'utilisateur
-        // de changer son login ci-nécessaire.
-        $failed_ORGaccess = true;
-        return $this->doAuth($page);
-      }
-    } else {
-      // ORGlogin n'est pas bon
-      return $this->doAuth($page);
-    }
+    if($r = try_cookie())
+      return $this->doAuth($page,($r>0));
   }
 
   /** Display login screen.
    */
-  function doLogin(&$page) {
-    global $failed_ORGaccess,$site_dev;
-
-    if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGlogin']) and !isset($failed_ORGaccess)) {
+  function doLogin(&$page, $new_name=false) {
+    if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGlogin']) and !$new_name) {
       $page->_tpl = 'password_prompt_logged.tpl';
       $page->assign("xorg_head", "password_prompt_logged.head.tpl");
       $page->assign("xorg_tpl", "password_prompt_logged.tpl");
@@ -124,7 +94,6 @@ class XorgSession extends DiogenesCoreSession {
     }
     exit;
   }
-
 }
 
 /** verifie si un utilisateur a les droits pour voir une page
@@ -162,7 +131,7 @@ function check_perms($auth_array=array()) {
  * @see header2.inc.php
  */
 function logged () {
-  return(isset($_SESSION['auth']) and $_SESSION['auth']>=AUTH_COOKIE);
+  return(isset($_SESSION['auth']) and ($_SESSION['auth']>=AUTH_COOKIE));
 }
 
 
@@ -177,6 +146,26 @@ function identified () {
   return(isset($_SESSION['auth']) and $_SESSION['auth']>=AUTH_MDP);
 }
 
+/** réalise la récupération de $_SESSION pour qqn avec cookie
+ * @return  int     0 if all OK, -1 if no cookie, 1 if cookie with bad hash,
+ *                  -2 should not happen
+ */
+function try_cookie() {
+    if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGlogin']))
+        return -1;
+
+    $res = @mysql_query( "SELECT user_id,password FROM auth_user_md5 WHERE username='{$_COOKIE['ORGlogin']}'");
+    if(@mysql_num_rows($res) != 0) {
+      list($uid,$password)=mysql_fetch_row($res);
+      mysql_free_result($res);
+      $expected_value=md5($password);
+      if($expected_value == $_COOKIE['ORGaccess']) {
+        start_connexion($_COOKIE['ORGlogin'], $uid, false);
+        return 0;
+      } else return 1;
+    }
+    return -2;
+}
 
 /** place les variables de session dépendants de auth_user_md5
  * et met à jour les dates de dernière connexion si nécessaire
