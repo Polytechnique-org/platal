@@ -22,7 +22,7 @@
 require_once("xorg.inc.php");
 new_skinned_page('paiment/index.tpl', AUTH_MDP);
 require_once('profil.func.inc.php');
-require_once("money.inc.php");
+require_once('money.inc.php');
 
 // initialisation
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'select';
@@ -51,6 +51,6 @@ $page->assign('montant',$val);
 $page->assign('meth', $meth);
 $page->assign('pay',  $pay);
 
-$page->assign('prefix',$globals->money->table_prefix);
+$page->assign('prefix',$globals->money->mpay_tprefix);
 $page->run();
 ?>

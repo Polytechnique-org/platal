@@ -19,20 +19,16 @@
  ***************************************************************************}
 
 
-{assign var=def_month value=$smarty.now|date_format:"%m"}
-{assign var=def_year value=$smarty.now|date_format:"%Y"}
-{assign var=month value=$smarty.request.mois|default:$def_month}
-
 <form method="post" action="{$smarty.server.PHP_SELF}">
   <div class="center">
     <input type="hidden" name="action" value="lister" />
     Afficher la période suivante :
     <select name="mois" size="1">
       {foreach key=key item=item from=$month_arr}
-      <option value="{$key}" {if $month eq $key}selected="selected"{/if}>{$item}</option>
+      <option value="{$key}" {if $mois_sel eq $key}selected="selected"{/if}>{$item}</option>
       {/foreach}
     </select>
-    <input type="text" name="annee" size="10" value="{$smarty.request.annee|default:$def_year}" />
+    <input type="text" name="annee" size="10" value="{$smarty.request.annee|default:$annee_sel}" />
     <input type="submit" value="lister" />
   </div>
 </form>

@@ -29,7 +29,7 @@ class NLConfig
 
 // }}}
 
-$this->newsletter = new NLConfig;
+$globals->newsletter = new NLConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

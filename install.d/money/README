@@ -1,0 +1,35 @@
+
+  Notes for the money module for plat/al
+
+STATUS
+------
+
+TODO: 
+  tables are atm in paiments.* and we should put it in x4dat.money_*
+  we have to wait for x.net here.
+
+CONFIG OPTIONS
+--------------
+
+  All settings of the module are shown here with their default and meaning
+
+  [Money]
+
+  mpay_enable   = 1     ; enable micro-payments
+  mpay_def_id   = 0     ; id of the default micro-payment id
+  mpay_def_meth = 0     ; id of the default payment method
+  mpay_tprefix  = paiments. 
+                        ; obsolete when TODO will be closed
+
+
+BUGS
+----
+
+  http://trackers.polytechnique.org/index.php?cat=16
+
+
+DEPENDS
+-------
+
+  platal
+

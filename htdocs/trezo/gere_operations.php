@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once('xorg.inc.php');
-require_once("trezo.inc.php");
+require_once("money/trezo.inc.php");
 new_admin_page('trezo/gere_operations.tpl');
 
 //Table operations :
@@ -35,31 +35,23 @@ new_admin_page('trezo/gere_operations.tpl');
 //+--------+---------------+------+-----+------------+----------------+
 
 $action = clean_request('action');
-$annee_sel = clean_request('annee');
-$mois_sel = clean_request('mois');
 $operation_id = clean_request('operation_id');
 $operation_date = clean_request('operation_date');
 $operation_label = clean_request('operation_label');
 $operation_credit = clean_request('operation_credit');
 $operation_debit = clean_request('operation_debit');
 
-//selection mois et date
-if (!$annee_sel) $annee_sel = date("Y");
-    
-if ($mois_sel) {
-    $from_date = $annee_sel."-".$mois_sel."-01";
-    $to_date = $annee_sel."-".$mois_sel."-31";
-    $mon_sel = $mois_fr[$mois_sel]." ".$annee_sel;
-} else {
-    $from_date = date("Y-m")."-01";
-    $to_date = date("Y-m")."-31";
-    $mon_sel = $mois_fr[date("m")]." ".date("Y");
-}
+$annee_sel = isset($_REQUEST['annee']) ? $_REQUEST['annee'] : date("Y");
+$mois_sel  = isset($_REQUEST['mois']) ? $_REQUEST['mois'] : sprintf("%02u", date('m'));
+
+$from_date    = "$annee_sel-$mois_sel-01";
+$to_date      = "$annee_sel-$mois_sel-31";
+$mon_sel      = $trim_fr[$mois_sel]." $annee_sel";
 
 switch($action) {
     case "edit":
         if ($operation_id) {
-            $res=$globals->db->query("select date,label,credit,debit from trezo.operations where id='$operation_id'");
+            $res=$globals->db->query("select date,label,credit,debit from money_trezo where id='$operation_id'");
             list($operation_date,$operation_label,$operation_credit,$operation_debit)=mysql_fetch_row($res);
         }
     break;
@@ -83,14 +75,14 @@ switch($action) {
         }
 
         if ($operation_id) {
-            $sql = "update trezo.operations set date='".$mydate."',label='".$operation_label."'".$sql_add." where id='".$operation_id."'";
+            $sql = "update money_trezo set date='".$mydate."',label='".$operation_label."'".$sql_add." where id='".$operation_id."'";
         } else { 
-            $sql = "insert into trezo.operations set date='".$mydate."',label='".$operation_label."'".$sql_add;
+            $sql = "insert into money_trezo set date='".$mydate."',label='".$operation_label."'".$sql_add;
         }
     break;
     case "del":
         if ($operation_id) {
-            $globals->db->query("delete from trezo.operations where id='".$operation_id."'");
+            $globals->db->query("delete from money_trezo where id='".$operation_id."'");
         }
     break;
 
@@ -110,7 +102,7 @@ $page->assign('to_solde', solde_until($to_date));
 $page->assign_by_ref('month_arr', $mois_fr);
 
 $sql = "SELECT id,date,label,credit,debit 
-        FROM trezo.operations
+        FROM money_trezo
         WHERE date >= '$from_date' AND date <= '$to_date' 
         ORDER BY date";
 $page->mysql_assign($sql, 'ops');

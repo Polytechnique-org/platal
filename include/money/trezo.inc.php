@@ -55,7 +55,7 @@ function isDate($date)
 function solde_until($date='')
 {
     global $globals;
-    $sql = "select sum(credit)-sum(debit) from trezo.operations";
+    $sql = "select sum(credit)-sum(debit) from money_trezo";
     if(!empty($date))
         $sql .= " where date <= '$date'";
     $res = $globals->db->query($sql);
@@ -64,4 +64,3 @@ function solde_until($date='')
 }
 
 ?>
-

@@ -21,13 +21,15 @@
 
 {dynamic}
 
-<h1>
-  Tr&eacute;sorerie pour {$mon_sel}
-</h1>
+<h1>Tr&eacute;sorerie pour {$mon_sel}</h1>
+
+{perms level=admin}
+<p>[<a href="{rel}/trezo/gere_operations.php">éditer les comptes</a>]</p>
+{/perms}
 
 <table class="bicol">
 <tr>
-  <th>Solde en début de mois</th>
+  <th>Solde en début de période</th>
 </tr>
 <tr>
   <td class="right">{$from_solde}</td>

@@ -54,14 +54,21 @@ class XorgGlobals extends DiogenesCoreGlobals
     var $spoolroot = "/var/spool/xorg";
     var $root      = null;
 
-    function XorgGlobals() {
-        $this->root = dirname(dirname(__FILE__));
+    function init()
+    {
+        global $globals;
+        require_once("xorg/menu.inc.php");
+        require_once('xorg/session.inc.php');
 
-        foreach(glob($this->root.'/include/conf.d/*.globals.inc.php') as $inc) {
+        $globals = new XorgGlobals;
+
+        $globals->root = dirname(dirname(__FILE__));
+
+        foreach(glob($globals->root.'/include/conf.d/*.globals.inc.php') as $inc) {
             require_once($inc);
         }
         
-        $array = parse_ini_file($this->root.'/configs/platal.conf', true);
+        $array = parse_ini_file($globals->root.'/configs/platal.conf', true);
         if (!is_array($array)) {
             return;
         }
@@ -69,21 +76,21 @@ class XorgGlobals extends DiogenesCoreGlobals
         foreach ($array as $cat=>$conf) {
             $c = strtolower($cat);
             foreach ($conf as $key=>$val) {
-                if ($c == 'core' && isset($this->$key)) {
-                    $this->$key=$val;
+                if ($c == 'core' && isset($globals->$key)) {
+                    $globals->$key=$val;
                 } else {
-                    $this->$c->$key = $val;
+                    $globals->$c->$key = $val;
                 }
             }
         }
         
-        $this->menu = new XOrgMenu($this->root.'/include/conf.d/');
+        $globals->menu = new XOrgMenu($globals->root.'/include/conf.d/');
 
         session_start();
 
-        $this->dbconnect();
-        if ($this->debug) {
-            $this->db->trace_on();
+        $globals->dbconnect();
+        if ($globals->debug) {
+            $globals->db->trace_on();
         }
     }
 }

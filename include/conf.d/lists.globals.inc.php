@@ -34,7 +34,7 @@ class ListsConfig
 
 // }}}
 
-$this->lists = new ListsConfig;
+$globals->lists = new ListsConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

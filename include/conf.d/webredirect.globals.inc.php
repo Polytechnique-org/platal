@@ -28,7 +28,7 @@ class WebRedirConfig
 
 // }}}
 
-$this->webredirect = new WebRedirConfig;
+$globals->webredirect = new WebRedirConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

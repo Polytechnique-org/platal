@@ -31,7 +31,7 @@ class SearchConfig
 
 // }}}
 
-$this->search = new SearchConfig;
+$globals->search = new SearchConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

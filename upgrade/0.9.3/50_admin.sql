@@ -83,7 +83,7 @@ insert into admin_a values(7, 'Listes', 'admin/lists.php', 10);
 insert into admin_a values(8, 'Valider', 'admin/valider.php',  0);
 insert into admin_a values(8, 'Événements', 'admin/evenements.php', 10);
 
-insert into admin_a values(9, 'Comptes', 'admin/gere_operations.php', 0);
+insert into admin_a values(9, 'Comptes', 'trezo/gere_operations.php', 0);
 insert into admin_a values(9, 'Paiements', 'admin/gerer_paiement.php', 10);
 
 insert into admin_a values(10, 'Table auth_user_md5', 'admin/FormatePrenomNOM.php', 0);

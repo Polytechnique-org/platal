@@ -30,7 +30,7 @@ class SkinConfig
 
 // }}}
 
-$this->skin = new SkinConfig;
+$globals->skin = new SkinConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

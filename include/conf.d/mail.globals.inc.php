@@ -29,7 +29,7 @@ class MailConfig
 
 // }}}
 
-$this->mail = new MailConfig;
+$globals->mail = new MailConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

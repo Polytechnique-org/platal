@@ -23,14 +23,15 @@
 
 class MoneyConfig
 {
-    var $payment_def  = 0;
-    var $method_def   = 0;
-    var $table_prefix = 'paiement.';
+    var $mpay_enable   = true;
+    var $mpay_def_id   = 0;
+    var $mpay_def_meth = 0;
+    var $mpay_tprefix  = 'paiement.';
 }
 
 // }}}
 
-$this->money = new MoneyConfig;
+$globals->money = new MoneyConfig;
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

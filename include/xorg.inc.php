@@ -44,10 +44,7 @@ define('NO_SKIN', 1);
 // {{{ import class definitions
 
 require_once("xorg.globals.inc.php");
-require_once("xorg/menu.inc.php");
-require_once("xorg/session.inc.php");
-
-$globals = new XorgGlobals;
+XorgGlobals::init();
 
 // }}}
 // {{{ function _new_page()

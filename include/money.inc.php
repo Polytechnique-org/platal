@@ -42,9 +42,9 @@ class Payment
     function Payment($ref=-1)
     {
         global $globals;
-        $r   = $ref==-1 ? $globals->money->payment_def : $ref;
+        $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
         $res = $globals->db->query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def
-                                      FROM  {$globals->money->table_prefix}paiements WHERE id='$r'");
+                                      FROM  {$globals->money->mpay_tprefix}paiements WHERE id='$r'");
         list($this->id, $this->text, $this->url, $flags, $this->mail,
                 $this->montant_min, $this->montant_max, $this->montant_def)
             = mysql_fetch_row($res);
@@ -105,8 +105,8 @@ class PayMethod
     function PayMethod($id=-1)
     {
         global $globals;
-        $i   = $id==-1 ? $globals->money->method_def : $id;
-        $res = $globals->db->query("SELECT id,text,include FROM {$globals->money->table_prefix}methodes WHERE id='$i'");
+        $i   = $id==-1 ? $globals->money->mpay_def_meth : $id;
+        $res = $globals->db->query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id='$i'");
         list($this->id, $this->text, $this->inc) = mysql_fetch_row($res);
         mysql_free_result($res);
     } 
