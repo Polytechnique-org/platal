@@ -408,7 +408,7 @@ div.adresse {
     float: left;
     width: 46%;
     padding: 0px;
-    margin: 0px 1%;
+    margin: 0px 1% 1ex 1%;
 }
 
 div.adresse div.titre { color: purple; }
@@ -545,4 +545,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.63 2004-11-17 18:16:24 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.64 2004-11-17 18:24:26 x2000habouzit Exp $ */
