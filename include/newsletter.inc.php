@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.10 2004-10-16 22:06:33 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.11 2004-10-16 22:34:09 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -99,7 +99,7 @@ class NewsLetter {
 			      ".($a->_pos ? $a->_pos : "MAX(pos)+1").",
 			      '{$a->_title}','{$a->_body}','{$a->_append}'
 			FROM  newsletter_art AS a
-		       WHERE  a.id={$this->_id} AND cid='{$a->_cid}'");
+		       WHERE  a.id={$this->_id}");
 	    $this->_arts['a'.$a->_aid] = $a;
 	}
     }
@@ -117,9 +117,6 @@ class NewsLetter {
 	$res .= ' '.$this->title()."\n";
 	$res .= "====================================================================\n\n";
 
-	$res .= "INTRO\n\n";
-
-	$res .= "--------------------------------------------------------------------\n";
 	$i = 1;
 	foreach($this->_arts as $cid=>$arts) {
 	    $res .= "\n$i *{$this->_cats[$cid]}*\n";
@@ -128,7 +125,7 @@ class NewsLetter {
 	    }
 	    $i ++;
 	}
-	$res .= "\n";
+	$res .= "\n\n";
 	    
 	foreach($this->_arts as $cid=>$arts) {
 	    $res .= "--------------------------------------------------------------------\n";
@@ -151,7 +148,7 @@ class NewsLetter {
 	foreach($this->_arts as $cid=>$arts) {
 	    $res .= "<strong>$i. {$this->_cats[$cid]}</strong><br />";
 	    foreach($arts as $art) {
-		$res .= '- '.$art->title()."<br />\n";
+		$res .= '- '.htmlentities($art->title())."<br />\n";
 	    }
 	    $res .= '<br />';
 	    $i ++;
@@ -198,7 +195,7 @@ class NLArticle {
 
     function toHtml() {
 	$title = '<div style="margin: 2ex 0ex 2ex 0ex; font-weight:bold; font-style: italic; font-size: 125%">'
-		.$this->title().'</div>';
+		.htmlentities($this->title()).'</div>';
 	$body  = enriched_to_text($this->_body,true);
 	$app   = enriched_to_text($this->_append,true);
 	

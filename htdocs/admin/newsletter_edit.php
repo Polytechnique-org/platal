@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.php,v 1.3 2004-10-16 22:06:32 x2000habouzit Exp $
+        $Id: newsletter_edit.php,v 1.4 2004-10-16 22:34:09 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
