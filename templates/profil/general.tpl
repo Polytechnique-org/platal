@@ -1,8 +1,8 @@
-{* $Id: general.tpl,v 1.2 2004-07-17 12:19:26 x2000habouzit Exp $ *}
+{* $Id: general.tpl,v 1.3 2004-07-17 12:20:23 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 <div class="blocunite_tab">
-  <table class="bicol" width="98%" cellspacing="0" cellpadding="0" 
+  <table class="bicol" cellspacing="0" cellpadding="0" 
     summary="Profil : Informations générales">
     <tr>
       <th colspan="2">
@@ -98,7 +98,7 @@
 </div>
 
 <div class="bolcunite">
-  <table class="bicol" width="98%" cellspacing="0" cellpadding="0"
+  <table class="bicol" cellspacing="0" cellpadding="0"
     summary="Profil: Trombinoscope">
     <tr>
       <th colspan="3">
@@ -110,7 +110,7 @@
         Pour profiter de cette fonction intéressante, tu dois disposer 
         quelque part (sur ton ordinateur ou sur Internet) d'une photo
         d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
-        <div align="center">
+        <div class="center">
           <span class="lien"><a href="javascript:x()" onclick="popWin('trombino.php','trmb','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=750,height=480')">Éditer ta photo</a></span>
         </div>
       </td>
@@ -126,7 +126,7 @@
               <a href="javascript:x()" onclick="popWin('x.php?x={$smarty.session.username}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
             </td>
             <td class="dcolg">
-              <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" width=80 alt=" [ PHOTO ] ">
+              <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] ">
             </td>
           </tr>
         </table>
@@ -135,7 +135,7 @@
   </table>
 </div>
 <div class="blocunite">
-  <table class="bicol" width="98%" cellspacing="0" cellpadding="0"
+  <table class="bicol" cellspacing="0" cellpadding="0"
     summary="Profil: Divers">
     <tr>
       <th colspan="2">
