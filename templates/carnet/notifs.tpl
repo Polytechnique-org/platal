@@ -24,12 +24,6 @@
 <p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
 S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
-<p>tu peux ici activer la surveillance de tes contacts, ce qui te permet :</p>
-<ul>
-  <li>d'être notifié lorsque tes contacts changent leur fiche</li>
-  <li>d'être notifié lorsque un de tes contacts décède</li>
-</ul>
-
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Événements à surveiller</legend>
@@ -44,6 +38,10 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   </div>
 </form>
 
+<h1>Qui/Que surveiller ?</h1>
+
+<h2>Surveiller ses contacts</h2>
+
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Contacts</legend>
@@ -57,7 +55,8 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 </form>
 
 <br />
-<h1>Surveiller des promos</h1>
+
+<h2>Surveiller des promos</h2>
 
 <p>
 Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (par exemple les changements de fiche).
@@ -85,7 +84,7 @@ Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (
   </fieldset>
 </form>
 
-<h1>Surveiller des non inscrits</h1>
+<h2>Surveiller des non inscrits</h2>
 
 <p>
 Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à tes contacts.
@@ -114,6 +113,5 @@ et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" />
     </td>
   </tr>
 </table>
-
 
 {* vim:set et sw=2 sts=2 sws=2: *}
