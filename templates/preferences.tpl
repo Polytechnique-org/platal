@@ -69,23 +69,6 @@
       </div>
     </td>
   </tr>
-  <tr class="impair">
-    <td>
-      {if $smarty.cookies.ORGaccess}
-      <h3><a href="?forget=1">M'oublier</a></h3>
-      <div class='explication'>
-        Clique sur le lien ci-dessus pour retirer l'accès sans mot de passe au site. Après avoir
-        cliqué, tu devras entrer ton mot de passe pour accéder aux différentes pages.
-      </div>
-      {else}
-      <h3><a href="?remember=1">Se souvenir de moi</a></h3>
-      <div class='explication'>
-        Cette option te permet de ne plus avoir à entrer ton mot de passe pour la majorité des pages du site.
-        Il s'agit d'une option destinée aux utilisateurs fréquents du site, et pour un ordinateur non partagé.
-      </div>
-      {/if}
-    </td>
-  </tr>
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -3,7 +3,6 @@
 function tmp_menu()
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_NO,       10, 'Page d\'accueil',       'login.php');
 
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',            'profil.php');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',          'carnet/mescontacts.php');

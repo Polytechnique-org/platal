@@ -49,8 +49,9 @@
     </tr>
     <tr>
       <td></td>
-      <td>
-        <input type="checkbox" name="remember" checked="checked" /> Se souvenir de moi
+      <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour que le site se souvienne de ce navigateur.<br />
+        Il n'est pas conseillé de cocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
+        <input type="checkbox" name="remember" checked="checked" /> Etablir une connexion permanente
       </td>
     </tr>
     <tr>

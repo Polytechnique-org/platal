@@ -23,6 +23,12 @@ require_once('xorg.inc.php');
 
 if (isset($_SESSION['suid'])) { require_once('./exit.php'); }
 
+if (Get::has('forget')) {
+    setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+    Cookie::kill('ORGaccess');
+    $_SESSION['log']->log("cookie_off");
+}
+
 if (isset($_SESSION['log'])) {
     $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
     $_SESSION['log']->log('deconnexion',$ref);
