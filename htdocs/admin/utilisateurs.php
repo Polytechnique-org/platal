@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.27 2004-11-16 21:11:22 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.28 2004-11-16 21:13:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -143,6 +143,7 @@ if(isset($mr)) {
 		    .  "\"\n\nCe rapport a été généré par le script d'administration";
 		$mailer->addTo("web@polytechnique.org");
 		$mailer->setSubject("INTERVENTION ADMIN",$msg);
+		$mailer->send();
 		break;
 
 	// DELETE FROM auth_user_md5
@@ -179,7 +180,7 @@ if(isset($mr)) {
 		    .  "\"\n\nCe rapport a été généré par le script d'administration";
 		$mailer->addTo("web@polytechnique.org");
 		$mailer->setSubject("INTERVENTION ADMIN",$msg);
-		break;
+		$mailer->send();
 		break;
 	}
     }
