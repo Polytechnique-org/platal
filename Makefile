@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 2004-11-24 10:12:46 x2000habouzit Exp $
+# $Id: Makefile,v 1.5 2004-11-25 20:18:39 x99laine Exp $
 ################################################################################
 # definitions
 
@@ -17,6 +17,8 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 build: pkg-build 
 
 dist: clean pkg-dist
+
+bzdist: clean pkg-bzdist
 
 clean:
 	rm -rf locale include/xorg.globals.inc.php
@@ -43,8 +45,7 @@ devel: build cache templates_c
 pkg-build: include/xorg.globals.inc.php
 #	make -C po
 
-pkg-dist: pkg-build
-	rm -rf $(PKG_DIST) $(PKG_DIST).tar.gz
+$(PKG_DIST): pkg-build
 	mkdir $(PKG_DIST)
 	cp -a $(PKG_FILES) $(PKG_DIST)
 	for dir in `find $(PKG_DIRS) -type d $(VCS_FILTER)`; \
@@ -52,9 +53,16 @@ pkg-dist: pkg-build
           mkdir -p $(PKG_DIST)/$$dir; \
 	  find $$dir -type f -maxdepth 1 -exec cp {} $(PKG_DIST)/$$dir \; ; \
 	done
+
+pkg-dist: $(PKG_DIST)
+	rm -f $(PKG_DIST).tar.gz
 	tar czf $(PKG_DIST).tar.gz $(PKG_DIST)
 	rm -rf $(PKG_DIST)
 
+pkg-bzdist: $(PKG_DIST)
+	rm -f $(PKG_DIST).tar.bz2
+	tar cjf $(PKG_DIST).tar.bz2 $(PKG_DIST)
+	rm -rf $(PKG_DIST)
 
 .PHONY: build dist clean pkg-build pkg-dist
 
