@@ -14,11 +14,9 @@
  * Of course, this soft is provided "as is" without express or implied
  * warranty of any kind.
  *
- * $Id: md5.js,v 1.1 2004-01-25 20:36:24 x2000habouzit Exp $
+ * $Id: md5.js,v 1.2 2004-08-31 10:05:27 x2000habouzit Exp $
  *
  */
-
-
 
 function array(n) {
   for(i=0;i<n;i++) this[i]=0;
