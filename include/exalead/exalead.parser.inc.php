@@ -20,11 +20,13 @@ class Exalead{
   var $currentQueryParameter;
   var $currentKeyword;
 
+  //url de base du produit Exalead
+  var $base_cgi = '';
 
 /****    Constructeur     *********/
 
 
-  function Exalead(){
+  function Exalead($base_cgi = ''){
      $this->data = new ExaleadData();
      $this->currentGroup = new ExaleadGroup();
      $this->currentCategory = new ExaleadCategory();
@@ -36,9 +38,50 @@ class Exalead{
      $this->currentQueryTerm = new ExaleadQueryTerm();
      $this->currentQueryParameter = new ExaleadQueryParameter();
      $this->currentKeyword = new ExaleadKeyword();
+
+     //url de base du produit Exalead
+     $this->base_cgi = $base_cgi;
   }
 
+/****  Fonctions d'interface avec le cgi d'Exalead Corporate   ******/
 
+  function set_base_cgi($base_cgi){
+    $this->base_cgi = $base_cgi;
+  }
+
+  //retourne vrai si une requete a été faite, faux sinon
+  function query($varname = 'query'){
+    if(!empty($_REQUEST[$varname])){
+
+      $this->first_query(stripslashes($_REQUEST[$varname]));
+      return true;
+    }
+    elseif(isset($_GET['_C'])){
+
+      $this->handle_get();
+      return true;
+    }
+    return false;
+  }
+
+  //a appeller pour faire la premiere requete
+  function first_query($query){
+    if(empty($this->base_cgi)) return false;
+    
+    $query_exa = $this->base_cgi."?_q=".urlencode($query)."&_f=xml2";
+
+    $xml_response = file_get_contents($query_exa);
+    $this->parse($xml_response);
+  }
+
+  function handle_get(){
+    if(empty($this->base_cgi)) return false;
+    if(empty($_GET['_C'])) return false;// _C est le contexte Exalead
+    $query_exa = $this->base_cgi.'/_C='.$_GET['_C'].'&_f=xml2';
+
+    $xml_response = file_get_contents($query_exa);
+    $this->parse($xml_response);
+  }
 
 /********      Fonctions annexes relatives au parser     ********/
 
@@ -149,6 +192,7 @@ class Exalead{
      $this->currentCategory->count = $attrs['COUNT'];
      $this->currentCategory->automatic = $attrs['AUTOMATIC'];
      if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = '_c=%2B'.substr($attrs['REFINEHREF'],4);
+     //if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = $attrs['REFINEHREF'];
      if(isset($attrs['EXCLUDEHREF'])) $this->currentCategory->exclude_href = $attrs['EXCLUDEHREF'];
      if(isset($attrs['RESETHREF'])) $this->currentCategory->reset_href = $attrs['RESETHREF'];
      $this->currentCategory->cref = $attrs['CREF'];
