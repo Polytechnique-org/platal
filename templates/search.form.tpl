@@ -78,7 +78,11 @@
           {else}
             {assign var="region" value=""}
           {/if}
+          {if $smarty.request.pays neq ""}
           {geoloc_region pays=$smarty.request.pays region=$region}
+          {else}
+          <option value=""></option>
+          {/if}
           </select>
         </td>
       </tr>
