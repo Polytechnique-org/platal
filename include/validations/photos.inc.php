@@ -33,21 +33,21 @@ class PhotoReq extends Validate
     // }}}
     // {{{ constructor
    
-    function PhotoReq($_uid, $_file, $_stamp=0)
+    function PhotoReq($_uid, $_data, $_stamp=0)
     {
-        global $erreur, $globals;
+        global $globals, $page;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
         
-        if (!file_exists($_file)) {
-            $erreur = "Fichier inexistant";
-            return false;
-        }
         // calcul de la taille de l'image
-        $image_infos = getimagesize($_file);
+        require_once('xorg.varstream.inc.php');
+        $GLOBALS['photoreq'] = $_data;
+        $image_infos = getimagesize('var://photoreq');
+        unset ($GLOBALS['photoreq']);
+
         if (empty($image_infos)) {
-            $erreur = "Image invalide";
-            return false;
+            $page->trig("Image invalide");
+            return ($this = null);
         }
         list($this->x, $this->y, $this->mimetype) = $image_infos;
         // récupération du type de l'image
@@ -65,20 +65,15 @@ class PhotoReq extends Validate
                 break;
                 
             default:
-                $erreur = "Type d'image invalide";
-                return false;
+                $page->trig("Type d'image invalide");
+                return ($this = null);
         }
-        // lecture du fichier
-        if (!($size = filesize($_file)) or $size > SIZE_MAX) {
-            $erreur = "Image trop grande (max 30ko)";
-            return false;
-        }
-        $fd = fopen($_file, 'r');
-        if (!$fd) return false;
-        $this->data = fread($fd, SIZE_MAX);
-        fclose($fd);
 
-        unset($erreur);
+        if (strlen($_data) > SIZE_MAX)  {
+            $page->trig("Image trop grande (max 30ko)");
+            return ($this = null);
+        }
+        $this->data = $_data;
     }
     
     // }}}

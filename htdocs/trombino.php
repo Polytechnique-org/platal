@@ -24,32 +24,25 @@ new_skinned_page('trombino.tpl', AUTH_MDP);
 
 require_once('validations.inc.php');
 
-if (Env::has('ordi') and
-        isset($_FILES['userfile']) and isset($_FILES['userfile']['tmp_name'])) {
-    //Fichier en local
-    $myphoto = new PhotoReq(Session::getInt('uid'), $_FILES['userfile']['tmp_name']);
-    $myphoto->submit();
+if (Env::has('ordi') and isset($_FILES['userfile']['tmp_name'])) {
+    $data = file_get_contents($_FILES['userfile']['tmp_name']);
+    if ($myphoto = new PhotoReq(Session::getInt('uid'), $data)) {
+        $myphoto->submit();
+    }
 } elseif (Env::has('web') and Env::has('photo')) {
     // net
-    $fp = fopen(Env::get('photo'), 'r');
-    if (!$fp) {
-        $page->trig('Fichier inexistant');
+    if ($s = file_get_contents(Env::get('photo'))) {
+        if ($myphoto = new PhotoReq(Session::getInt('uid'), $s)) {
+            $myphoto->submit();
+        }
     } else {
-        $attach = fread($fp, 35000);
-        fclose($fp);
-        $file = tempnam('/tmp','photo_');
-        $fp   = fopen($file,'w');
-        fwrite($fp, $attach);
-        fclose($fp);
-
-        $myphoto = new PhotoReq(Session::getInt('uid'), $file);
-        $myphoto->submit();
+        $page->trig('Fichier inexistant ou vide');
     }
 } elseif (Env::has('trombi')) {
     // Fichier à récupérer dans les archives trombi + commit immédiat
     $file = '/home/web/trombino/photos'.Session::get('promo').'/'.Session::get('forlife').'.jpg';
-    $myphoto = new PhotoReq(Session::getInt('uid'), $file);
-    if($myphoto){// There was no errors, we can go on
+    $myphoto = new PhotoReq(Session::getInt('uid'), file_get_contents($file));
+    if ($myphoto) {// There was no errors, we can go on
         $myphoto->commit();
         $myphoto->clean();
     }
