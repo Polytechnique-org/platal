@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.8 2004-09-18 17:25:30 x2000coic Exp $
+        $Id: identification.inc.php,v 1.9 2004-09-30 14:52:08 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -66,15 +66,21 @@ if ($promo > 1995)  {
      */
 
     $matrcondense = $_REQUEST["matricule"];
-    $rangentree = substr($_REQUEST["matricule"], 3, 3);
-    $anneeimmatric = substr($_REQUEST["matricule"],0,2);
-    if ($anneeimmatric >= 96 && $anneeimmatric <= 99) {
+    $rangentree = intval(substr($_REQUEST["matricule"], 3, 3));
+    $anneeimmatric = intval(substr($_REQUEST["matricule"],0,2));
+    if ($anneeimmatric < 96) {
+	sortie_id("ton matricule est incorrect");
+    } elseif ($anneeimmatric < 100) {
 	// jusqu'à la promo 99 c'est 9?0XXX
-	$matricule = "19" . substr($_REQUEST["matricule"], 0, 3) . $rangentree;
-    }  else  {
+	$year = 1900 + intval(substr($_REQUEST["matricule"], 0, 2));
+    }  elseif($anneeimmatric < 200) {
 	// depuis les 2000 c'est 10?XXX
-	$matricule = "20" . substr($_REQUEST["matricule"], 1, 2) . "0" . $rangentree;
+	$year = 2000 + intval(substr($_REQUEST["matricule"], 1, 2));
+    } else {
+	sortie_id("la gestion des promotions >= 2100 n'est pas prête !");
     }
+
+    $matricule = sprintf('%04u%04u', $year, $rangentree);
 
     // on vérifie que le matricule n'est pas déjà dans auth_user_md5
     // sinon le même X pourrait s'inscrire deux fois avec le même matricule
