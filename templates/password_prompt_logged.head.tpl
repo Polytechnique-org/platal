@@ -1,8 +1,7 @@
-{* $Id: password_prompt_logged.head.tpl,v 1.7 2004-08-25 09:33:30 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.head.tpl,v 1.8 2004-08-29 14:58:54 x2000habouzit Exp $ *}
 
     <script src="{"javascript/md5.js"|url}" type="text/javascript"></script>
-    <script type="text/javascript">//<![PCDATA[
-      <!--
+    <script type="text/javascript">//<![CDATA[
       function doChallengeResponse() {ldelim}
         str = "{$smarty.cookies.ORGlogin}:" +
         MD5(document.forms.login.password.value) + ":" +
