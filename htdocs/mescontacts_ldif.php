@@ -36,7 +36,6 @@ $req = mysql_query("SELECT contact AS id, date, prenom, nom, epouse, username, m
                     WHERE c.uid ='{$_SESSION['uid']}'
                     ORDER BY contact");
 while($line = mysql_fetch_assoc($req)) {
-    $line['addr'] = Array();
     $contacts[$line['id']] = ensure_adr($line);
 }
 mysql_free_result($req);
@@ -51,19 +50,20 @@ $req = mysql_query(
         INNER JOIN adresses      AS a  ON (a.uid = c.contact)
         LEFT  JOIN geoloc_pays   AS gp ON (a.pays = gp.a2)
         LEFT  JOIN geoloc_region AS gr ON (a.pays = gr.a2 AND a.region = gr.region)
-        WHERE c.uid = {$_SESSION['uid']} 
-        ORDER BY c.contact, FIND_IN_SET('active', a.statut), NOT FIND_IN_SET('res-secondaire', a.statut)"
+        WHERE c.uid = {$_SESSION['uid']} AND FIND_IN_SET('active', a.statut)
+            AND NOT FIND_IN_SET('res-secondaire', a.statut)
+        ORDER BY c.contact
+        "
 );
+echo mysql_error();
 while($line = mysql_fetch_assoc($req))
-    $contacts[$line['id']]['addr'][] = ensure_adr($line);
+    $contacts[$line['id']]['home'] = ensure_adr($line);
 mysql_free_result($req);
-
 $page->assign_by_ref('contacts',$contacts);
 
 header("Pragma: ");
 header("Cache-Control: ");
-#header("Content-type: text/x-ldif\n");
-header("Content-type: text/plain\n");
+header("Content-type: text/x-ldif\n");
 
 $page->display('mescontacts_ldif.tpl');
 ?>

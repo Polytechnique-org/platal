@@ -1,4 +1,4 @@
-{* $Id: mescontacts_ldif.tpl,v 1.1 2004-02-13 17:01:23 x2000habouzit Exp $ *}
+{* $Id: mescontacts_ldif.tpl,v 1.2 2004-02-15 15:45:29 x2000habouzit Exp $ *}
 {* http://developer.kde.org/documentation/library/cvs-api/kabc/html/ldifconverter_8cpp-source.html *}
 {foreach item=c from=$contacts}
 {******************************************************************************}
@@ -25,6 +25,7 @@ cellphone: {$c.mobile|utf8}
 {/if}
 {if $vcard.web}
 homeurl:: {$vcard.web|ldif_format}
+workurl:: {$vcard.web|ldif_format}
 {/if}
 {******************************************************************************}
 {* ENTREPRISE/WORK                                                            *}
@@ -72,37 +73,34 @@ facsimiletelephonenumber: {$c.faxx|utf8}
 {/if}
 {/if}
 {******************************************************************************}
-{* ADDRESSES PERSO                                                            *}
+{* ADDRESSE PERSO                                                             *}
 {******************************************************************************}
-{foreach item=adr from=$c.addr}
-{* adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax, courrier *}
-{if $adr.adr_fmt}
-streethomeaddress:: {$adr.adr_fmt|ldif_format}
+{if $c.home.adr_fmt}
+streethomeaddress:: {$c.home.adr_fmt|ldif_format}
 {/if}
-{if $adr.courrier}
-{if $adr.adr0}
-homepostaladdress:: {$adr.adr0|ldif_format}
+{if $c.home.courrier}
+{if $c.home.adr0}
+homepostaladdress:: {$c.home.adr0|ldif_format}
 {/if}
-{if $adr.adr1}
-mozillahomepostaladdress2:: {$adr.adr1|ldif_format}
+{if $c.home.adr1}
+mozillahomepostaladdress2:: {$c.home.adr1|ldif_format}
 {/if}
-{if $adr.adr2}
-mozillahomepostaladdress2:: {$adr.adr2|ldif_format}
+{if $c.home.adr2}
+mozillahomepostaladdress2:: {$c.home.adr2|ldif_format}
 {/if}
-{if $adr.cp}
-mozillahomepostalcode: {$adr.cp|utf8}
+{if $c.home.cp}
+mozillahomepostalcode: {$c.home.cp|utf8}
 {/if}
 {/if}
-{if $adr.ville}
-mozillahomelocalityname:: {$adr.ville|ldif_format}
+{if $c.home.ville}
+mozillahomelocalityname:: {$c.home.ville|ldif_format}
 {/if}
-{if $adr.name}
-mozillahomestate:: {$adr.name|ldif_format}
+{if $c.home.name}
+mozillahomestate:: {$c.home.name|ldif_format}
 {/if}
-{if $adr.pays}
-mozillahomecountryname:: {$adr.name|ldif_format}
+{if $c.home.pays}
+mozillahomecountryname:: {$c.home.name|ldif_format}
 {/if}
-{/foreach}
 {******************************************************************************}
 {* ADDRESSES PERSO                                                            *}
 {******************************************************************************}

@@ -175,6 +175,7 @@ table.tinybicol td.info, table.bicol td.info {
     top     : 32px;
     left    : 14px;
     width   : 128px;
+    z-index : 1;
     
     color: #003399;
     background: #e0ffff;
@@ -207,9 +208,8 @@ table.tinybicol td.info, table.bicol td.info {
 
 #body {
     width: 740px;
-    margin-left: -370px;
-    position: relative;
-    left: 50%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #body-logo {
@@ -275,4 +275,4 @@ table.tinybicol td.info, table.bicol td.info {
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.18 2004-02-13 17:11:17 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.19 2004-02-15 15:45:29 x2000habouzit Exp $ */
