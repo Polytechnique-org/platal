@@ -155,7 +155,7 @@ function del_fwd(fwd) {
         Date de naissance
       </td>
       <td>
-        <input type="text" name="naissanceN" size="10" maxlength="10" value="{$mr.naissance}" />
+        <input type="text" name="naissanceN" size="12" maxlength="10" value="{$mr.naissance}" />
       </td>
     </tr>
     <tr class="pair">
