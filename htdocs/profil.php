@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.9 2004-08-31 21:39:00 x2000habouzit Exp $
+        $Id: profil.php,v 1.10 2004-09-04 21:04:25 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -109,7 +109,7 @@ if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     // mise a jour des champs relatifs au tab ouvert
     require_once("profil/update_{$opened_tab}.inc.php");
 
-    $_SESSION['log']->log("profil");
+    $_SESSION['log']->log("profil",$opened_tab);
     $page->assign('etat_update','ok');
 }
 
