@@ -1,4 +1,4 @@
-{* $Id: default.tpl,v 1.10 2004-02-12 02:58:16 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.11 2004-02-20 11:44:07 x2000habouzit Exp $ *}
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -11,9 +11,7 @@
 {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
-{if $validate}
-{include file=skin/common.dev.tpl validate=$validate}
-{/if}
+{include file=skin/common.devel.tpl}
 
 {if $smarty.session.suid}
     <table id="suid" cellpadding="0" cellspacing="0">

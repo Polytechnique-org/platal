@@ -251,6 +251,9 @@ div.long td.rt { width: 65%; }
     background: #c0e0e0;
 }
 
+#db-trace div.hide       { display: none; }
+#db-trace:hover div.hide { display: block }
+
 #suid {
     color: red;
     background: #ffc0cb;
@@ -330,4 +333,4 @@ div.long td.rt { width: 65%; }
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.22 2004-02-20 01:46:22 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.23 2004-02-20 11:44:06 x2000habouzit Exp $ */

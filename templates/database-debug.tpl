@@ -1,8 +1,7 @@
 {dynamic}
 
 {foreach item=query from=$trace_data}
-<br />
-<table class="bicol" style="width: 75%; font-family: fixed">
+<table class="bicol" style="width: 75%; font-family: fixed; margin-left:2px; margin-top: 3px;">
   <tr class="impair">
     <td>
       <strong>QUERY:</strong><br />
@@ -19,7 +18,7 @@
   </tr>
   {/if}
 </table>
-<table class="bicol" style="width: 75%; font-family: fixed">
+<table class="bicol" style="width: 75%; font-family: fixed; margin-left: 2px; margin-bottom: 3px; margin-top: -1px;">
   <tr>
     <th>table</th>
     <th>type</th>
@@ -41,7 +40,6 @@
     <td class="center">{$query.explain.Extra}</td>
   </tr>
 </table>
-<br />
 {/foreach}
 
 {/dynamic}

@@ -67,8 +67,7 @@ class XorgPage extends DiogenesCorePage {
             if(isset($_SESSION['suid'])) $this->caching=false;
             $id = $this->make_id($append_to_id);
             if($site_dev) {
-                echo $globals->db->trace_format($this, 'database-debug.tpl');
-
+                $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
                 $this->assign('validate', urlencode($baseurl.'/valid.html'));
                 $result = $this->fetch('skin/'.$_SESSION['skin'], $id);
                 $fd = fopen($this->cache_dir."valid.html","w");
