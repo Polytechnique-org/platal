@@ -22,7 +22,6 @@
 require_once('xorg.inc.php');
 new_nonhtml_page('rss.tpl', AUTH_PUBLIC);
 
-if (!Env::has('promo')) { exit; }
 require_once('rss.inc.php');
 
 $rss = $globals->xdb->iterator(
@@ -32,7 +31,7 @@ $rss = $globals->xdb->iterator(
                  AND (e.promo_min = 0 || e.promo_min <= {?})
                  AND (e.promo_max = 0 || e.promo_max >= {?})
        ORDER BY  (e.promo_min != 0 AND e.promo_max != 0) DESC, e.peremption',
-       Env::getInt('promo'), Env::getInt('promo'));
+       Env::getInt('promo', 3000), Env::getInt('promo'));
 $page->assign('rss', $rss);
 
 header('Content-Type: text/xml; charset=utf-8');
