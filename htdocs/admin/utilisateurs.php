@@ -298,7 +298,7 @@ if (!empty($_REQUEST['select'])) {
     $r=mysql_query("select * from auth_user_md5 where $looking_field='$login' order by username",$conn);
     if ($mr=mysql_fetch_assoc($r)){
         if ($numeric_login) $login = $mr['username'];
-        $param=mysql_query("SELECT UNIX_TIMESTAMP(lastlogin) FROM auth_user_md5 WHERE username='$login'",$conn);
+        $param=mysql_query("SELECT UNIX_TIMESTAMP(MAX(start)) FROM logger.sessions WHERE uid={$mr['user_id']} AND suid=0 GROUP BY uid'",$conn);
         list($lastlogin) = mysql_fetch_row($param);
         mysql_free_result($param);
 

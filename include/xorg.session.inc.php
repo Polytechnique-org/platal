@@ -172,9 +172,19 @@ function try_cookie() {
  */
 function start_connexion ($username, $uid, $identified) {
   global $globals;
-  $result=$globals->db->query("SELECT prenom, nom, perms, promo, UNIX_TIMESTAMP(lastnewslogin), UNIX_TIMESTAMP(lastlogin), host, matricule FROM auth_user_md5 WHERE user_id=$uid;");
-  list($prenom, $nom, $perms, $promo, $lastnewslogin, $lastlogin, $host, $matricule) = mysql_fetch_row($result);
+  $result=$globals->db->query("SELECT  prenom, nom, perms, promo, matricule, MAX(s.id), UNIX_TIMESTAMP(MAX(s.start)) AS lastlogin
+			         FROM  auth_user_md5   AS u
+                            LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
+                                WHERE  user_id=$uid
+                             GROUP BY  s.uid");
+  list($prenom, $nom, $perms, $promo, $matricule, $s_id, $lastlogin) = mysql_fetch_row($result);
   mysql_free_result($result);
+  if($s_id) {
+      $res = $globals->db->query("SELECT host FROM logger.sessions WHERE id=$s_id LIMIT 1");
+      list($host) = mysql_fetch_row($res);
+      mysql_free_result($res);
+  } else
+    $host=null;
   // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
   // authentification avec le cookie
   // on vérifie que c'est bien un logger de l'utilisateur en question
@@ -183,15 +193,8 @@ function start_connexion ($username, $uid, $identified) {
   // on vide la session pour effacer les valeurs précédentes (notamment de skin)
   // qui peuvent être celles de quelqu'un d'autre ou celle par defaut
   $_SESSION = array();
-  if (!isset($_SESSION['suid'])) {
-    // mise à jour de la date de dernière connexion
-    // sauf lorsque l'on est en SUID
-    $newhost=strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
-    $globals->db->query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=$uid;");
-    $_SESSION['lastlogin'] = $lastlogin;
-    $_SESSION['host'] = $host;
-  }
-  // mise en place des variables de session
+  $_SESSION['lastlogin'] = $lastlogin;
+  $_SESSION['host'] = $host;
   $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
   $_SESSION['uid'] = $uid;
   $_SESSION['username'] = $username;
@@ -199,7 +202,6 @@ function start_connexion ($username, $uid, $identified) {
   $_SESSION['nom'] = $nom;
   $_SESSION['perms'] = $perms;
   $_SESSION['promo'] = $promo;
-  $_SESSION['lastnewslogin'] = $lastnewslogin;
   $res = $globals->db->query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
   $_SESSION['femme'] = mysql_num_rows($res) > 0;
   mysql_free_result($res);

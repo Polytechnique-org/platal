@@ -15,9 +15,9 @@ require("auto.prepend.inc.php");
 new_skinned_page('index.tpl',AUTH_COOKIE);
 
 // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
-$newhost=strtolower(gethostbyaddr($_SERVER["REMOTE_ADDR"]));
 if (!isset($_SESSION['suid'])) {
-    $globals->db->query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=".$_SESSION['uid']);
+    $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid==$uid) ? $_SESSION['log'] : new DiogenesCoreLogger($uid));
+    $logger->log("connexion_auth_ext",$_SERVER['PHP_SELF']);
 }
 
 /* cree le champs "auth" renvoye au Groupe X */
