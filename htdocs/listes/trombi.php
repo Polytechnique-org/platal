@@ -18,57 +18,56 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: getphoto.php,v 1.6 2004-09-10 23:13:03 x2000habouzit Exp $
+        $Id: trombi.php,v 1.1 2004-09-10 23:13:04 x2000habouzit Exp $
  ***************************************************************************/
 
+if(empty($_REQUEST['liste'])) header('Location: index.php');
+$liste = $_REQUEST['liste'];
 
-require('auto.prepend.inc.php');
-new_skinned_page('login.tpl', AUTH_COOKIE);
+require("auto.prepend.inc.php");
+new_skinned_page('listes/trombi.tpl', AUTH_COOKIE, true);
+include('xml-rpc-client.inc.php');
 
-//require("db_connect.inc.php");
-//require("controlpermanent.inc.php");
-//require_once("appel.inc.php");
-//require_once("validations.inc.php");
+$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
+list($pass) = mysql_fetch_row($res);
+mysql_free_result($res);
 
-// getdata.php3 - by Florian Dittmer <dittmer@gmx.net> 
-// Example php script to demonstrate the direct passing of binary data 
-// to the user. More infos at http://www.phpbuilder.com 
-// Syntax: getdata.php3?id=<id> 
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
+$members = $client->get_members($liste);
 
-function url($url) {
-    $chemins = Array('.', '..', '/');
-    foreach ($chemins as $ch)
-	if (file_exists("$ch/login.php") || file_exists("$ch/public/login.php"))
-	    return "$ch/$url";
-    return "";
-}
-
-if(isset($_REQUEST['x'])) {
-    if(isset($_REQUEST['req']) && $_REQUEST['req']="true") {
-    include 'validations.inc.php';
-	$myphoto = PhotoReq::get_unique_request($_REQUEST['x']);
-	Header("Content-type: image/".$myphoto->mimetype);
-	echo $myphoto->data;
-    } else {
-	if(preg_match('/^\d*$/',$_REQUEST['x'])) {
-	    $result = $globals->db->query("SELECT attachmime, attach FROM photo WHERE uid = '{$_REQUEST['x']}'");
+if(is_array($members)) {
+    $membres = Array();
+    foreach($members[1] as $member) {
+	if(preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
+	    $membres[$matches[2]][] = Array('n' => $member[0], 'l' => $matches[1]);
 	} else {
-	    $sql = "SELECT  attachmime, attach
-	              FROM  photo   AS p
-		INNER JOIN  aliases AS a ON p.uid=a.id
-		     WHERE  alias='{$_REQUEST['x']}'";
-	    $result = $globals->db->query($sql);
-	}
-
-	if(  list($type,$data) = @mysql_fetch_row($result) ) {
-	    Header(  "Content-type: image/$type");
-	    echo $data;
-	} else {
-	    Header(  "Content-type: image/png");
-	    $f=fopen(url("images/none.png"),"r");
-	    echo fread($f,30000);
-	    fclose($f);
+	    $membres[0][] = Array('l' => $member[1]);
 	}
     }
-}
+    ksort($membres);
+
+    $moderos = Array();
+    foreach($members[2] as $owner) {
+	list($m) = split('@',$owner);
+	$res = $globals->db->query("SELECT  CONCAT(prenom, ' ', nom), promo
+				      FROM  auth_user_md5 AS u
+			        INNER JOIN  aliases AS a ON u.user_id = a.id
+				     WHERE  a.alias = '$m'");
+	if(list($nom, $promo) = mysql_fetch_row($res)) {
+	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m);
+	} else {
+	    $moderos[0][] = Array('l' => $owner);
+	}
+	mysql_free_result($res);
+    }
+    ksort($moderos);
+
+    $page->assign_by_ref('details', $members[0]);
+    $page->assign_by_ref('members', $membres);
+    $page->assign_by_ref('owners',  $moderos);
+
+} else
+    $page->assign('no_list',true);
+
+$page->run();
 ?>

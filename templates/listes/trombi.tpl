@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.tpl,v 1.5 2004-09-10 23:13:04 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.1 2004-09-10 23:13:04 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -55,7 +55,7 @@
   </tr>
   <tr>
     <td colspan='2' class='center'>
-      <a href='trombi.php?liste={$smarty.request.liste}'>trombino de la liste</a> (page longue à charger)
+      <a href='liste.php?liste={$smarty.request.liste}'>Page de la liste</a>
     </td>
   </tr>    
 </table>
@@ -64,100 +64,56 @@
   modérateurs de la liste
 </div>
 
-<table class='tinybicol' cellpadding='0' cellspacing='0'>
+<table cellpadding="8" cellspacing="2" style="width:100%;">
   {foreach from=$owners item=xs key=promo}
-  <tr>
-    <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-    <td>
-      {foreach from=$xs item=x}
+    {foreach from=$xs item=x}
       {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
-      {else}
-      {$x.l}<br />
+      {cycle values="1,2,3" assign="loop"}
+      {if $loop eq "1"}<tr>{/if}
+        <td class='center'>
+          <img src="{"getphoto.php"|url}?x={$x.l}" width="110" alt=" [ PHOTO ] " />
+          <br />
+          <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">
+            {$x.n} ({$promo})
+          </a>
+        </td>
+      {if $loop eq "3"}</tr>{/if}
       {/if}
-      {/foreach}
-    </td>
-  </tr>
+    {/foreach}
   {/foreach}
+  {if $loop eq "1"}
+    {cycle values="1,2,3" assign="loop"}
+    {cycle values="1,2,3" assign="loop"}
+    <td></td><td></td></tr>
+  {elseif $loop eq "2"}
+    {cycle values="1,2,3" assign="loop"}
+    <td></td></tr>
+  {/if}
 </table>
 
 <div class='rubrique'>
   membres de la liste
 </div>
 
-<table class='bicol' cellpadding='0' cellspacing='0'>
+<table cellpadding="8" cellspacing="2" style="width:100%;">
   {foreach from=$members item=xs key=promo}
-  <tr>
-    <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-    <td>
-      {foreach from=$xs item=x}
+    {foreach from=$xs item=x}
       {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
-      {else}
-      {$x.l}<br />
+      {cycle values="1,2,3" assign="loop"}
+      {if $loop eq "1"}<tr>{/if}
+        <td class='center'>
+          <img src="{"getphoto.php"|url}?x={$x.l}" width="110" alt=" [ PHOTO ] " />
+          <br />
+          <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">
+            {$x.n} ({$promo})
+          </a>
+        </td>
+      {if $loop eq "3"}</tr>{/if}
       {/if}
-      {/foreach}
-    </td>
-  </tr>
+    {/foreach}
   {/foreach}
+  {if $loop eq "1"}<td></td><td></td></tr>{elseif $loop eq "2"}<td></td></tr>{/if}
 </table>
-
-{if $details.you > 1 || ($details.priv>1 && $smarty.session.perms eq admin)}
-<div class='rubrique'>
-  Administrer la liste
-</div>
-
-<p>
-Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
-c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
-</p>
-
-<form method='post' action='{$smarty.server.REQUEST_URI}'>
-  <table class='tinybicol'>
-    <tr>
-      <th>modifier les abonnés</th>
-      <th>modifier les modérateurs</th>
-    </tr>
-    <tr>
-      <td>
-        <input type='text' name='member' />
-      </td>
-      <td>
-        <input type='text' name='owner' />
-      </td>
-    </tr>
-    <tr class='center'>
-      <td>
-        <input type='submit' name='add_member' value='ajouter' />
-        &nbsp;
-        <input type='submit' name='del_member' value='supprimer' />
-      </td>
-      <td>
-        <input type='submit' name='add_owner' value='ajouter' />
-        &nbsp;
-        <input type='submit' name='del_owner' value='supprimer' />
-      </td>
-    </tr>
-  </table>
-</form>
-
-<p>
-Un message est adressé automatiquement à toute personne ajoutée à la liste de diffusion.  Voici le
-message actuellement envoyé : il est modifiable à volonté !
-</p>
-<p>
-L'objet du mail est "Bienvenue sur la liste de diffusion {$details.name} !"<br />
-Et si la personne fait "répondre à", le message arrive aux modérateurs de la liste.
-</p>
-
-<form method='post' action='{$smarty.server.REQUEST_URI}'>
-  <div class='center'>
-    <textarea cols='50' rows='8' name='info'>{$details.info}</textarea><br />
-    <input type='submit' name='update' value='mettre à jour' />
-  </div>
-</form>
-
-{/if}
 
 {/if}
 
