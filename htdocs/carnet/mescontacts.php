@@ -23,28 +23,25 @@ require_once("xorg.inc.php");
 new_skinned_page("carnet/mescontacts.tpl",AUTH_COOKIE);
 require_once("applis.func.inc.php");
 
-// si l'utilisateur demande le retrait de qqun de sa liste
 if (isset($_REQUEST['action'])) {
     if($_REQUEST['action']=='retirer') {
 	$user = $_REQUEST['user'];
 	if (preg_match('/^\d+$/', $user)) {
-	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'")) {
+	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'"))
+            {
 		$page->trig("Contact retiré !");
             }
 	} else {
 	    if ($globals->db->query(
-		"DELETE FROM  contacts
-		       USING  contacts AS c
-                  INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
-		       WHERE  c.uid = '{$_SESSION['uid']}' AND a.alias='$user'"
-		   )) {
+                        "DELETE FROM  contacts
+                               USING  contacts AS c
+                          INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
+                               WHERE  c.uid = '{$_SESSION['uid']}' AND a.alias='$user'"))
+            {
 		$page->trig("Contact retiré !");
             }
 	}
-
-        // si l'utilisateur demande l'ajout de qqun à sa liste
     } elseif ($_REQUEST["action"]=="ajouter") {
-
         require_once('user.func.inc.php');
         if (($login = get_user_login($_REQUEST['user'])) !== false) {
             if ($globals->db->query("INSERT INTO  contacts (uid, contact)
@@ -57,7 +54,6 @@ if (isset($_REQUEST['action'])) {
                 $page->trig('Contact déjà dans la liste !');
             }
         }
-
     }
 }
 
