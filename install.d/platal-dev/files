@@ -1,8 +1,5 @@
 include/conf.d/README
 
-bin/devel/foobar.php
-bin/devel/foobar.pl
-bin/devel/foobar.tpl
 bin/devel/modules_status
 bin/devel/tplgettext.php
 

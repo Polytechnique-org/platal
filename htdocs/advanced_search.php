@@ -122,7 +122,7 @@ else {
                        u.prenom,
                        u.promo,
                        a.alias AS forlife,
-                       '.$globals->search_result_fields.'
+                       '.$globals->search->result_fields.'
                        c.uid AS contact,
                        w.ni_id AS contact
                  FROM  auth_user_md5  AS u'
@@ -131,20 +131,20 @@ else {
        .'   LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
-            '.$globals->search_result_where_statement.'
+            '.$globals->search->result_where_statement.'
                 '.(($where!='')?('WHERE '.$where):'').'
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,NomSortKey,prenom'))).'
-                LIMIT  '.$offset->value.','.$globals->search_results_per_page;
+                LIMIT  '.$offset->value.','.$globals->search->per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
-    $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
+    $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search->per_page;
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('offset',$offset->value);
     $page->assign('url_args',$fields->get_url());
     $page->assign('with_soundex',$with_soundex);
     $page->assign('mod_date_sort',!empty($_REQUEST['mod_date_sort']));
-    $page->assign('perpage',$globals->search_results_per_page);
+    $page->assign('perpage',$globals->search->per_page);
     $page->assign('is_admin',has_perms());
     
     if(!$page->get_template_vars('nb_resultats_total')) {

@@ -18,11 +18,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: foobar.php,v 1.4 2004/11/22 11:16:34 x2000habouzit Exp $
+    $Id: banana.globals.inc.php,v 1.2 2004/12/01 14:25:44 x2000habouzit Exp $
  ***************************************************************************/
 
-require('xorg.inc.php');
+// {{{ class SearchConfig
 
- 
+class SearchConfig
+{
+    var $public_max = 25;
+    var $per_page   = 20;
+}
+
+// }}}
+
+$this->search = new SearchConfig;
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

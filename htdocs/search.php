@@ -52,7 +52,7 @@ if (array_key_exists('quick', $_REQUEST)) {
                        IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
                        u.promo AS promo,
                        a.alias AS forlife,
-                       '.$globals->search_result_fields.'
+                       '.$globals->search->result_fields.'
                        c.uid AS contact,
 		       w.ni_id AS watch
                  FROM  auth_user_md5  AS r
@@ -60,26 +60,26 @@ if (array_key_exists('quick', $_REQUEST)) {
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
-            '.$globals->search_result_where_statement.'
+            '.$globals->search->result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
                HAVING  mark>0
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(),'u.promo DESC,NomSortKey,prenom'))).'
-                LIMIT  '.$offset->value.','.$globals->search_results_per_page;
+                LIMIT  '.$offset->value.','.$globals->search->per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
     echo mysql_error();
     
-    $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
+    $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search->per_page;
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
     $page->assign('mod_date_sort',!empty($_REQUEST['mod_date_sort']));
     $page->assign('offset',$offset->value);
-    $page->assign('perpage',$globals->search_results_per_page);
+    $page->assign('perpage',$globals->search->per_page);
     $page->assign('is_admin',has_perms());
     
     if (!logged() &&
-	$page->get_template_vars('nb_resultats_total')>$globals->public_max_search_results)
+	$page->get_template_vars('nb_resultats_total')>$globals->search->public_max)
     {
 	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
     }

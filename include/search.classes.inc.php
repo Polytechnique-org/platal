@@ -26,7 +26,7 @@ require_once("xorg.misc.inc.php");
 /*
  * Variables globales pour l'affichage des résultats de la recherche
  */
-$globals->search_result_fields = '
+$globals->search->result_fields = '
 		if(u.epouse=\'\', u.nom, u.epouse) AS NomSortKey,
                 u.epouse,u.date,u.web,u.mobile,
                 u.deces!=0 AS dcd,u.deces,
@@ -38,7 +38,7 @@ $globals->search_result_fields = '
                 e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
                 IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
                 adr.ville, gp.pays, gr.name AS region,';
-$globals->search_result_where_statement = '
+$globals->search->result_where_statement = '
                 LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
                 LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
                 LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)

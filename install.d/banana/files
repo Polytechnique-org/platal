@@ -15,7 +15,7 @@ htdocs/banana/include/subscribe.inc.php
 htdocs/banana/index.php
 htdocs/banana/install.sh
 htdocs/banana/post.php
-htdocs/banana/bin/spoolgen.php
+htdocs/banana/scripts/spoolgen.php
 htdocs/banana/subscribe.php
 htdocs/banana/thread.php
 htdocs/banana/xface.php

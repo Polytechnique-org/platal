@@ -13,16 +13,6 @@ htdocs/listes/archives.php
 include/validations/listes.inc.php
 bin/mailman/foreach_template.py
 bin/mailman/mailman-rpc.py
-bin/mailman/mails/adminsubscribeack.txt
-bin/mailman/mails/approve.txt
-bin/mailman/mails/checkdbs.txt
-bin/mailman/mails/masthead.txt
-bin/mailman/mails/newlist.txt
-bin/mailman/mails/postauth.txt
-bin/mailman/mails/postheld.txt
-bin/mailman/mails/refuse.txt
-bin/mailman/mails/subauth.txt
-bin/mailman/mails/subscribeack.txt
 templates/admin/lists.tpl
 templates/include/form.valid.listes.tpl
 templates/include/form.valid.ml.tpl
