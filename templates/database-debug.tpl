@@ -1,7 +1,7 @@
 {dynamic}
 
 {foreach item=query from=$trace_data}
-<table class="bicol" style="width: 75%; font-family: fixed; margin-left:2px; margin-top: 3px;">
+<table class="bicol" style="width: 75%; font-family: monospace; margin-left:2px; margin-top: 3px;">
   <tr class="impair">
     <td>
       <strong>QUERY:</strong><br />
@@ -19,7 +19,7 @@
   {/if}
 </table>
 {if $query.explain}
-<table class="bicol" style="width: 75%; font-family: fixed; margin-left: 2px; margin-bottom: 3px;">
+<table class="bicol" style="width: 75%; font-family: monospace; margin-left: 2px; margin-bottom: 3px;">
   <tr>
     {foreach key=key item=item from=$query.explain[0]}
     <th>{$key}</th>
