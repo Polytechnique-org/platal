@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.22 2004-10-25 12:41:05 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.23 2004-10-25 12:48:02 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -56,15 +56,15 @@
       <td>
         <select name="egal1">
           <option value="=" {if $smarty.request.egal1 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
-          <option value="&gt;" {if $smarty.request.egal1 eq ">"}selected="selected"{/if}>&nbsp;&gt;&nbsp;</option>
-          <option value="&lt;" {if $smarty.request.egal1 eq "<"}selected="selected"{/if}>&nbsp;&lt;&nbsp;</option>
+          <option value="&gt;=" {if $smarty.request.egal1 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
+          <option value="&lt;=" {if $smarty.request.egal1 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
         </select>
         <input type="text" name="promo1" size="4" maxlength="4" value="{$smarty.request.promo1}" />
         &nbsp;ET&nbsp;
         <select name="egal2">
           <option value="=" {if $smarty.request.egal2 eq "="}selected="selected"{/if}>&nbsp;=&nbsp;</option>
-          <option value="&gt;" {if $smarty.request.egal2 eq ">"}selected="selected"{/if}>&nbsp;&gt;&nbsp;</option>
-          <option value="&lt;" {if $smarty.request.egal2 eq "<"}selected="selected"{/if}>&nbsp;&lt;&nbsp;</option>
+          <option value="&gt;=" {if $smarty.request.egal2 eq "&gt;="}selected="selected"{/if}>&nbsp;&gt;=&nbsp;</option>
+          <option value="&lt;=" {if $smarty.request.egal2 eq "&lt;="}selected="selected"{/if}>&nbsp;&lt;=&nbsp;</option>
         </select>
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
       </td>
@@ -72,9 +72,9 @@
     <tr>
       <td>Sexe</td>
       <td>
-        <input type="radio" name="woman" value="0" checked="checked" />Homme ou femme&nbsp;
-        <input type="radio" name="woman" value="1" />Homme&nbsp;
-        <input type="radio" name="woman" value="2" />Femme
+        <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />Homme ou femme&nbsp;
+        <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} />Homme&nbsp;
+        <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} />Femme
       </td>
     </tr>
 {if $advanced eq "1"}

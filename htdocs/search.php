@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.34 2004-10-25 12:41:04 x2000habouzit Exp $
+        $Id: search.php,v 1.35 2004-10-25 12:48:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -53,11 +53,6 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $womanField = new RefSField('woman',array('FIND_IN_SET(i.flags,\'femme\')+1'),'','','');
     $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField));
     
-    if ($nameField->length()<2 && $firstnameField->length()<2 && 
-        (!logged() || !$promo1Field->is_a_single_promo()))
-    {
-	new ThrowError('Recherche trop générale.');
-    }
     $offset = new NumericSField('offset');
    
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
