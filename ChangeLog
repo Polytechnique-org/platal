@@ -1,5 +1,19 @@
 ================================================================================
-VERSION 0.9.0
+VERSION 0.9.1														~30 Oct 2004
+
+Changes :
+
+	* Lists :
+		- auto-moderate/discard mails tagged by bogofilter					-MC
+
+Fixes (from 0.9.0 branch) :
+
+	* Lists :
+		- corrects problem about mails that have non text/* parts			-MC
+		- rpc daemon can live everywhere									-MC
+
+================================================================================
+VERSION 0.9.0													     15 Oct 2004
 
 Changes :
 
