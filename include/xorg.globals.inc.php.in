@@ -24,6 +24,15 @@ require_once('diogenes.database.inc.php');
 require_once('xorg/iterator.inc.php');
 require_once('xorg/database.inc.php');
 
+// {{{ class CoreConfig
+
+class CoreConfig
+{
+    var $locale = 'fr_FR';
+}
+
+// }}}
+
 // {{{ class XorgGlobals
 
 class XorgGlobals extends DiogenesCoreGlobals
@@ -64,6 +73,7 @@ class XorgGlobals extends DiogenesCoreGlobals
         require_once('xorg/menu.inc.php');
 
         $globals       = new XorgGlobals;
+        $globals->core = new CoreConfig;
         $globals->root = dirname(dirname(__FILE__));
         $globals->hook = new XOrgHook();
         $globals->menu = new XOrgMenu();
