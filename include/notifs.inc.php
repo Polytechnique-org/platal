@@ -65,7 +65,7 @@ function _select_notifs_base($table, $mail, $where)
                 'contact_sql' => '1'
             ),
             'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
-                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (w.promo <= u.promo+1 AND w.promo >= u.promo-1) )',
+                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (w.promo <= v.promo+1 AND w.promo >= v.promo-1) )',
                 'contact_sql' => 'NOT (c.contact IS NULL)'
             ),
             'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,
@@ -91,10 +91,10 @@ function _select_notifs_base($table, $mail, $where)
     $sql .= "
             FROM  $table          AS w
       INNER JOIN  auth_user_md5   AS u  ON(u.{$our['ufield']} = w.{$our['wfield']})
-      INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)";
+      INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
+      INNER JOIN  auth_user_md5   AS v  ON(v.user_id = q.user_id)";
     if ($mail) {
         $sql .="
-      INNER JOIN  auth_user_md5   AS v  ON(v.user_id = q.user_id)
       INNER JOIN  aliases         AS b  ON(b.id = q.user_id AND FIND_IN_SET('bestalias', b.flags))";
     }
     if ($our['need_contact']) {

@@ -29,4 +29,8 @@ You now have to :
 (*) apt-get install php-banana (may not be on public servers)
     and add a rewrite rule on www.polytechnique.org (http and https) :
     ^/banana/([^/]*/.*)$    /usr/share/banana/\$1
+
+(*) install the new cron : bin/cron/notifs.birthday.php
+    suggested :
+    0 1 * * *   ...../bin/cron/notifs.birthday.php
 "
