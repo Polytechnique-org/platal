@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_forums.tpl,v 1.9 2004-11-13 15:25:00 x2000habouzit Exp $
+        $Id: doc_forums.tpl,v 1.10 2004-11-17 15:01:56 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -76,7 +76,7 @@
     pas, les lecteurs devront lire plusieurs fois le même message, et
     plusieurs discussions parallèles se créeront, ce qui nuit à la
     lisibilité des forums.
-    <div class="warn">
+    <p>
       Si tu ne respectes pas ce principe, le serveur peut refuser ton
       message avec les erreurs suivantes : <br />
       <strong>Le forum de suivi doit être destinataire</strong> : tu as indiqué
@@ -94,17 +94,17 @@
       <strong>Tu as déjà diffusé ce message sur le serveur</strong> : Tu as déjà
       diffusé ce message, tu ne peux donc en diffuser un identique sur
       un autre forum.
-    </div>
+    </p>
   </li>
   <li>
     La diffusion d'un même message sur plus de dix forums en même
     temps est interdite
-    <div class="warn">
+    <p>
       Si tu ne respectes pas ce principe, le serveur peut refuser ton
       message avec l'erreur suivante : <br />
       <strong>Il n'est pas possible de poster sur plus de 10 forums en même
       temps</strong>
-    </div>
+    </p>
   </li>
   <li>
     Afin de ne pas augmenter les temps de téléchargement des
@@ -114,12 +114,12 @@
     Si tu dois diffuser un document, place-le sur un endroit
     accessible sur internet (internet regorge d'hébergeurs gratuits),
     et indique juste dans ton message un lien vers ton document.
-    <div class="warn">
+    <p>
       Si tu ne respectes pas ce principe, le serveur peut refuser ton
       message avec l'erreur suivante : <br />
       <strong>Seuls les messages en text/plain sont acceptés sur la
       hiérarchie xorg.*</strong>
-    </div>
+    </p>
   </li>
 </ul>
 <h1>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: faq.tpl,v 1.10 2004-10-24 14:58:28 x2000habouzit Exp $
+        $Id: faq.tpl,v 1.11 2004-11-17 14:58:55 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -94,11 +94,9 @@ que des informations manquent.
 </ul>
 <br /><br />
 <hr />
-<h2>Questions générales</h2>
+<h1>Questions générales</h1>
 <a id="pop"></a>
-<div class="sstitre">
-  Comment récupérer mon courrier sur polytechnique.org ?
-</div>
+<h2>Comment récupérer mon courrier sur polytechnique.org ?</h2>
 <div class="explication">
   <p>
   Les mails envoyés sur polytechnique.org sont redirigés vers la ou les adresses e-mails 
@@ -108,10 +106,10 @@ que des informations manquent.
   </p>
 </div>   
 <a id="smtp"></a> 
-<div class="sstitre">
+<h2>
   Comment envoyer mon courrier avec comme champ expéditeur (From) mon adresse en 
   polytechnique.org ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Normalement, il suffit de <a href="{"docs/doc_emails.php"|url}">configurer son identité</a>
@@ -127,9 +125,9 @@ que des informations manquent.
 </div>
 
 <a id="nntp"></a> 
-<div class="sstitre">
+<h2>
   Comment lire les forums avec mon logiciel de courrier électronique ?
-</div>
+</h2>
 <div class="explication">
   <p>
   En complément de l'interface web il t'est possible d'accéder aux forums
@@ -140,9 +138,9 @@ que des informations manquent.
 </div>
 
 <a id="carva"></a>
-<div class="sstitre">
+<h2>
   Quelle est l'origine du nom de domaine carva.org ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Dans le jargon de l'école, un 'carva' signifiait un 'X' lorsque celle-ci était 
@@ -174,11 +172,11 @@ que des informations manquent.
   </p>
 </div>
 <hr />
-<h2>Remplissage des champs</h2>
+<h1>Remplissage des champs</h1>
 <a id="mails1"></a> 
-<div class="sstitre">
+<h2>
   Quelle est la différence entre les mails promo, emploi, et les autres mails collectifs ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Les mails promo concernent des événements promo, réunion, informations sur les 
@@ -203,9 +201,9 @@ que des informations manquent.
   </p>
 </div>
 <a id="flags"></a> 
-<div class="sstitre">
+<h2>
   Quelle est la différence entre les cases de visibilité ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Pour chaque information, il est possible de choisir son degré de visibilité.
@@ -221,9 +219,9 @@ que des informations manquent.
   </p>
 </div>
 <a id="niveau_langue"></a>
-<div class="sstitre">
+<h2>
   A quoi correspondent les niveaux de langues ?
-</div>
+</h2>
 <div class="explication">
   <ul>
     <li>Niveau 6 : Maîtrise complète de la langue.
@@ -280,9 +278,9 @@ que des informations manquent.
 </div>
 
 <a id="cv"></a>
-<div class="sstitre">
+<h2>
   Faut-il remplir le CV et comment ?
-</div>
+</h2>
 <div class="explication">
   <p>
   D'abord, le CV reste d'accès limité aux inscrits, il n'est pas possible de 
@@ -314,12 +312,12 @@ que des informations manquent.
 </div>
 <hr />
 <a id="connect"></a>
-<h2>Problèmes de connexion</h2>
+<h1>Problèmes de connexion</h1>
 <a id="config"></a>
-<div class="sstitre">
+<h2>
   Quels sont les paramètres et la configuration nécessaires pour se connecter 
   correctement ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Il faut un navigateur qui exécute le javascript. 
@@ -329,9 +327,9 @@ que des informations manquent.
   </p>
 </div>    
 <a id="passe"></a>
-<div class="sstitre">
+<h2>
   J'ai perdu mon mot de passe, que faire ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Rends toi sur la page "me connecter", là où tu aurais tapé ton mot de passe 
@@ -341,9 +339,9 @@ que des informations manquent.
   </p>
 </div>
 <a id="acces"></a>
-<div class="sstitre">
+<h2>
   Je n'arrive pas à me connecter ! Que faut-il essayer ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Bon, il y a beaucoup de possibilités, on va les prendre dans l'ordre.
@@ -383,11 +381,11 @@ que des informations manquent.
   </p>
 </div>
 <hr />
-<h2>Utilisation post-connexion</h2>
+<h1>Utilisation post-connexion</h1>
 <a id="ethique"></a>
-<div class="sstitre">
+<h2>
   Quelle est l'éthique que vous privilégiez pour les mails collectifs ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Nous ne faisons pas d'éthique. C'est à toi de dire ce que tu es prêt à recevoir 
@@ -397,9 +395,9 @@ que des informations manquent.
   </p>
 </div>
 <a id="mails2"></a> 
-<div class="sstitre">
+<h2>
   Puis-je envoyer un mail à des X et comment ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Oui, bien sûr. Si tu as une information promo, envoie-la aux responsables web 
@@ -428,9 +426,9 @@ que des informations manquent.
   </p>
 </div>
 <a id="secu"></a>
-<div class="sstitre">
+<h2>
   Puis-je utiliser le même mot de passe qu'ailleurs ?
-</div>
+</h2>
 <div class="explication">
   <p>
   D'une manière générale, le système le mieux sécurisé pâtit de l'utilisation du
@@ -451,9 +449,9 @@ que des informations manquent.
 </div>
 
 <a id="secu2"></a>
-<div class="sstitre">
+<h2>
   Quel est le niveau de sécurité de Polytechnique.org ?
-</div>
+</h2>
 <div class="explication">
   <p>
   Concernant le mot de passe de l'utilisateur : le plus élevé imaginable puisqu'il 
@@ -472,9 +470,9 @@ que des informations manquent.
 </div>
 
 <a id="panne"></a>
-<div class="sstitre">
+<h2>
   Vous tombez souvent en panne ?
-</div>
+</h2>
 <div class="explication">
   <p>
   En fait, il arrive au service d'être interrompu, bien que nous n'y puissions rien.

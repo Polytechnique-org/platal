@@ -104,11 +104,6 @@ h2 {
     font-weight: bold;
 }
 
-p.sstitre, div.sstitre {
-    margin-top: 1em;
-    font-weight: bold;
-}
-
 p.explication, div.explication {
     font-style: italic;
     padding: 0.25em;
@@ -600,4 +595,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.60 2004-11-13 14:04:33 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.61 2004-11-17 14:58:55 x2000habouzit Exp $ */

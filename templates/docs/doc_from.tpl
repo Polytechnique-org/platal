@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_from.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: doc_from.tpl,v 1.8 2004-11-17 14:58:55 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -298,9 +298,7 @@
   <p>
   Dans ce cas, la bonne configuration est la suivante.
   </p>
-  <p class="sstitre">
-  Premier compte :
-  </p>
+  <h2>Premier compte :</h2>
   <p>
   <strong>E-mail:</strong> prenom.nom@mycompany.fr<br />
   <strong>Serveur POP3:</strong>
@@ -309,9 +307,7 @@
   smtp.mycompany.fr (même remarque)<br />
   <strong>Case &quot;inclure ce compte&quot;:</strong> cochée
   </p>
-  <p class="sstitre">
-  Deuxième compte :
-  </p>
+  <h2>Deuxième compte :</h2>
   <p>
   <strong>E-mail:</strong> prenom.nom@polytechnique.org<br />
   <strong>Serveur POP3:</strong> pop.netcourrier.com<br />
@@ -363,9 +359,7 @@
   un serveur différent des deux premiers comptes qui utilisent tous les deux
   smtp.mycompany.fr.
   </p>
-  <p class="sstitre">
-  Troisième compte :
-  </p>
+  <h2>Troisième compte :</h2>
   <p>
   <strong>E-mail:</strong> prenom.nom@polytechnique.org<br />
   <strong>Serveur POP3:</strong> <em>peu importe, inutilisé</em><br />
