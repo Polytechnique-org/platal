@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.55 2004-10-10 21:18:04 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.56 2004-10-11 17:04:32 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -115,6 +115,14 @@ def is_owner(userdesc,perms,mlist):
 def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
 
+
+def quote(s):
+    return Utils.uquote(s.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
+
+#-------------------------------------------------------------------------------
+# helpers on lists
+#
+
 def get_list_info((userdesc,perms),mlist,front_page=0):
     members    = mlist.getRegularMemberKeys()
     is_member  = userdesc.address in members
@@ -124,12 +132,16 @@ def get_list_info((userdesc,perms),mlist,front_page=0):
         chunks = mlist.internal_name().split('-')
         is_pending = False
         if front_page and not is_member and (mlist.subscribe_policy > 1):
-            mlist.Lock()
-            for id in mlist.GetSubscriptionIds():
-                if userdesc.address == mlist.GetRecord(id)[1]:
-                    is_pending = 1
-                    break
-            mlist.Unlock()
+            try:
+                mlist.Lock()
+                for id in mlist.GetSubscriptionIds():
+                    if userdesc.address == mlist.GetRecord(id)[1]:
+                        is_pending = 1
+                        break
+                mlist.Unlock()
+            except:
+                mlist.Unlock()
+                return 0
         
         details = {
                 'list' : mlist.real_name,
@@ -168,12 +180,13 @@ def get_options((userdesc,perms),vhost,listname,opts):
 
 def set_options((userdesc,perms),vhost,listname,opts,vals):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
+        mlist.Lock()
         for (k,v) in vals.iteritems():
             if k not in opts:
                 continue
@@ -191,9 +204,6 @@ def set_options((userdesc,perms),vhost,listname,opts,vals):
     except:
         mlist.Unlock()
         return 0
-
-def quote(s):
-    return Utils.uquote(s.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
 
 #-------------------------------------------------------------------------------
 # users procedures for [ index.php ]
@@ -220,13 +230,14 @@ def get_lists((userdesc,perms),vhost):
 
 def subscribe((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
+        mlist.Lock()
         if ( mlist.subscribe_policy in (0,1) ) or is_owner(userdesc,perms,mlist):
-            result = 2
             mlist.ApprovedAddMember(userdesc)
+            result = 2
         else:
             result = 1
             try:
@@ -241,10 +252,11 @@ def subscribe((userdesc,perms),vhost,listname):
 
 def unsubscribe((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
+        mlist.Lock()
         mlist.ApprovedDeleteMember(userdesc.address)
         mlist.Save()
         mlist.Unlock()
@@ -255,11 +267,12 @@ def unsubscribe((userdesc,perms),vhost,listname):
 
 def subscribe_nl((userdesc,perms)):
     try:
-        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER)
+        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER,lock=0)
     except:
         return 0
     try:
-        mlist.ApprovedAddMember(userdesc)
+        mlist.Lock()
+        mlist.ApprovedAddMember(userdesc,0,0)
         mlist.Save()
         mlist.Unlock()
         return 1
@@ -269,11 +282,12 @@ def subscribe_nl((userdesc,perms)):
 
 def unsubscribe_nl((userdesc,perms)):
     try:
-        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER)
+        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER,lock=0)
     except:
         return 0
     try:
-        mlist.ApprovedDeleteMember(userdesc.address)
+        mlist.Lock()
+        mlist.ApprovedDeleteMember(userdesc.address,0,0)
         mlist.Save()
         mlist.Unlock()
         return 1
@@ -327,7 +341,7 @@ def get_members_limit((userdesc,perms),vhost,listname,page,nb_per_page):
 
 def mass_subscribe((userdesc,perms),vhost,listname,users):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
@@ -336,6 +350,7 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
         
         members = mlist.getRegularMemberKeys()
         added = []
+        mlist.Lock()
         for user in users:
             mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom), f.alias
                                 FROM  auth_user_md5 AS u
@@ -357,13 +372,14 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
 
 def mass_unsubscribe((userdesc,perms),vhost,listname,users):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
-    
+        
+        mlist.Lock()
         map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org'), users)
         mlist.Save()
     except:
@@ -373,7 +389,7 @@ def mass_unsubscribe((userdesc,perms),vhost,listname,users):
 
 def add_owner((userdesc,perms),vhost,listname,user):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
@@ -387,6 +403,7 @@ def add_owner((userdesc,perms),vhost,listname,user):
         if int(mysql.rowcount) is 1:
             forlife = mysql.fetchone()[0]
             if forlife+'@polytechnique.org' not in mlist.owner:
+                mlist.Lock()
                 mlist.owner.append(forlife+'@polytechnique.org')
                 mlist.Save()
     except:
@@ -396,7 +413,7 @@ def add_owner((userdesc,perms),vhost,listname,user):
 
 def del_owner((userdesc,perms),vhost,listname,user):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
@@ -404,6 +421,7 @@ def del_owner((userdesc,perms),vhost,listname,user):
             return 0
         if len(mlist.owner) < 2:
             return 0
+        mlist.Lock()
         mlist.owner.remove(user+'@polytechnique.org')
         mlist.Save()
     except:
@@ -417,12 +435,15 @@ def del_owner((userdesc,perms),vhost,listname,user):
 
 def get_pending_ops((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
+       
+        mlist.Lock()
+        
         subs = []
         seen = []
         dosave = False
@@ -433,11 +454,7 @@ def get_pending_ops((userdesc,perms),vhost,listname):
                 dosave = True
                 continue
             seen.append(addr)
-            subs.append({
-                    'id'    : id,
-                    'name'  : fullname,
-                    'addr'  : addr
-                    })
+            subs.append({'id': id, 'name': fullname, 'addr': addr })
 
         helds = []
         for id in mlist.GetHeldMessageIds():
@@ -454,22 +471,23 @@ def get_pending_ops((userdesc,perms),vhost,listname):
                     'subj'  : quote(subject),
                     'stamp' : ptime
                     })
-        if dosave: mlist.save()
+        if dosave: mlist.Save()
+        mlist.Unlock()
     except:
         mlist.Unlock()
         return 0
-    mlist.Unlock()
     return (subs,helds)
 
 
 def handle_request((userdesc,perms),vhost,listname,id,value,comment):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
+        mlist.Lock()
         mlist.HandleRequest(int(id),int(value),comment)
         mlist.Save()
         mlist.Unlock()
@@ -481,12 +499,13 @@ def handle_request((userdesc,perms),vhost,listname,id,value,comment):
 
 def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
+        mlist.Lock()
         ptime, sender, subject, reason, filename, msgdata = mlist.GetRecord(int(id))
         fpath = os.path.join(mm_cfg.DATA_DIR, filename)
         size = os.path.getsize(fpath)
@@ -525,12 +544,13 @@ def set_owner_options((userdesc,perms),vhost,listname,values):
 
 def add_to_wl((userdesc,perms),vhost,listname,addr):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
+        mlist.Lock()
         mlist.accept_these_nonmembers.append(addr)
         mlist.Save()
         mlist.Unlock()
@@ -541,12 +561,13 @@ def add_to_wl((userdesc,perms),vhost,listname,addr):
 
 def del_from_wl((userdesc,perms),vhost,listname,addr):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
+        mlist.Lock()
         mlist.accept_these_nonmembers.remove(addr)
         mlist.Save()
         mlist.Unlock()
@@ -618,11 +639,13 @@ check_opts = {
 
 def check_options((userdesc,perms),vhost,listname,correct=False):
     try:
-        mlist = MailList.MailList(vhost+'-'+listname,lock=correct)
+        mlist = MailList.MailList(vhost+'-'+listname,lock=0)
     except:
         return 0
     try:
         if perms != 'admin': return 0
+        if correct:
+            mlist.Lock()
         options = { }
         for (k,v) in check_opts.iteritems():
             if mlist.__dict__[k] != v:
@@ -703,11 +726,12 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.Save()
         mlist.Unlock()
     except:
-        raise
+        try:
+            mlist.Unlock()
+        except:
+            pass
         return 0
     return 1
-    
-
 
 #-------------------------------------------------------------------------------
 # server
