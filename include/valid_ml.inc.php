@@ -38,19 +38,12 @@ class MListReq extends Validate {
     }
 
     function formu() {
-        $comment = nl2br($this->comment);
-
-        $pub = $this->publique ? "checked=\"checked\" " : "";
-        $lib = $this->libre    ? "checked=\"checked\" " : "";
-        $fre = $this->freeins  ? "checked=\"checked\" " : "";
-        $arc = $this->archive  ? "checked=\"checked\" " : "";
-        
         $sql = mysql_query("SELECT username FROM auth_user_md5"
             ." WHERE user_id IN ({$this->moderos})"
             ." ORDER BY nom, prenom");
         $tab = array();
         while(list($username) = mysql_fetch_row($sql)) $tab[] = $username;
-        $modero = implode(', ', $tab);
+        $this->moderos_txt = implode(', ', $tab);
         mysql_free_result($sql);
 
         $sql = mysql_query("SELECT username FROM auth_user_md5"
@@ -58,71 +51,9 @@ class MListReq extends Validate {
             ." ORDER BY nom, prenom");
         $tab = array();
         while(list($username) = mysql_fetch_row($sql)) $tab[] = $username;
-        $membres = implode(', ', $tab);
+        $this->membres_txt = implode(', ', $tab);
         mysql_free_result($sql);
-
-        return <<<________EOF
-        <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}" />
-        <input type="hidden" name="type" value="{$this->type}" />
-        <input type="hidden" name="stamp" value="{$this->stamp}" />
-        <table class="bicol">
-        <tr>
-            <td>Demandeur&nbsp;:</td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
-                {$this->prenom} {$this->nom}
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <td>Motif :</td>
-            <td>{$comment}
-            </td>
-        </tr>
-        <tr>
-            <td style="border-top:1px dotted inherit">
-                Alias :
-            </td>
-            <td style="border-top:1px dotted inherit">
-                <input type="text" name="alias" value="{$this->alias}" />@polytechnique.org
-            </td>
-        </tr>
-        <tr>
-            <td>Topic :</td>
-            <td><input type="text" name="topic" size="60" value="{$this->topic}" />
-            </td>
-        </tr>
-        <tr>
-            <td>Propriétés :</td>
-            <td>
-                <input type="checkbox" name="publique" $pub/>Publique
-                <input type="checkbox" name="libre" $lib/>Libre
-                <input type="checkbox" name="freeins" $fre/>Freeins
-                <input type="checkbox" name="archive" $arc/>Archive
-            </td>
-        </tr>
-        <tr>
-            <td style="border-top:1px dotted inherit">Modéros :</td>
-            <td style="border-top:1px dotted inherit">$moderos</td>
-        </tr>
-        <tr>
-            <td>Membres :</td>
-            <td>$membres</td>
-        </tr>
-        <tr>
-            <td style="border-top:1px dotted inherit; vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter" />
-                <br /><br />
-                <input type="submit" name="submit" value="Refuser" />
-            </td>
-            <td style="border-top:1px dotted inherit">
-                <p>Explication complémentaire (refus ou changement de config, ...)</p>
-                <textarea rows="5" cols="74" name=motif></textarea>
-            </td>
-        </tr>
-        </table>
-        </form>
-________EOF;
+        return 'include/form.valid.ml.tpl';
     }
     
     function handle_formu () {
@@ -143,45 +74,23 @@ ________EOF;
         $this->clean();
         $this->submit();
 
-        require_once("diogenes.mailer.inc.php");
+        require_once("tpl.mailer.inc.php");
         
-        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+listes@polytechnique.org>', 
-                $this->username."@polytechnique.org",
-                "[Polytechnique.org/LISTES] Demande de la liste {$this->alias} par ".$this->username,
-                false, "validation+listes@m4x.org");
-
-        $message =
-            "Cher(e) camarade,\n".
-            "\n";
+        $mymail = new TplMailer();
+        $mymail->assign('username',$this->username);
+        $mymail->assign('alias',$this->alias);
+        $mymail->assign('motif',stripslashes($_REQUEST['motif']));
 
         if($_REQUEST['submit']=="Accepter") {
-            if($this->commit()) {
-                $message .=
-                    "  La mailing list {$this->alias} que tu avais demandée vient".
-                    " d'être créée\n";
-                if (!empty($_REQUEST["motif"]))
-                    $message .= "\nInformations complémentaires :\n".
-                        stripslashes($_REQUEST["motif"])."\n";
-            } else {
-                echo "<p class=\"erreur\">Aucun mail envoyé, erreur !</p>\n";
-                return false;
+            $mymail->assign('answer', 'yes');
+            if(!$this->commit()) {
+                return "<p class=\"erreur\">Aucun mail envoyé, erreur !</p>\n";
             }
         } else {
-            $message .=
-                "La demande que tu avais faite pour la mailing list ".
-                $this->alias." a été refusée.\n";
-            if (!empty($_REQUEST["motif"]))
-                $message .= "\nLa raison de ce refus est : \n".
-                    stripslashes($_REQUEST["motif"])."\n";
+            $mymail->assign('answer', 'no');
             $this->clean();
         }
 
-        $message .=
-            "\n".
-            "Cordialement,\n".
-            "L'équipe X.org";
-        $message = wordwrap($message,78);  
-        $mymail->setBody($message);
         $mymail->send();
         return "Mail envoyé";
     }
