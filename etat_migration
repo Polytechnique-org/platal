@@ -63,32 +63,29 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | antispam.php							  | 
 	  | auth-groupex.php						  | 
 	  | auth-redirect.php						  | 
-	  | cacert.php								  | 
-	  | charte.php								  | 
+	  | charte.php								  | docs/charte.php
 	  | confbanana.php							  | 
 	  | contacts.php							  | 
-	  | coupure.php								  | 
-	  | docs/FROM.php							  | from.php
+	  | coupure.php								  | stats/coupure.php
+	  | docs/FROM.php							  | docs/from.php
 	  | domaineperso.php						  | 
 	  | domaine.php								  | 
 	  | dons.php								  | 
 	  | emails.php								  | 
 	  | emploi.php								  | 
 	  | emploi_public.php						  | 
-	  | en-cours.php							  | 
+	  | en-cours.php							  | docs/en-cours.php
 	  | epouse.php								  | 
-	  | ethique.php								  | 
+	  | ethique.php								  | docs/ethique.php
 	  | evenements.php							  | 
-	  | exit.php								  | 
+	  | exit.php								  | docs/faq.php
 	  | faq.php									  | 
-	  | getphoto.php							  | 
 	  | groupex/donne-chall.php					  | 
 	  | groupex/export-econfiance.php			  | 
 	  | groupex.php								  | 
 	  | index.coupure.php						  | 
 	  | info-groupesx.php						  | 
 	  | inscrire.php							  | 
-	  | install.d/config.xorg.inc.php			  | 
 	  | listes/creation.php						  | 
 	  | listes/gere_listes.php					  | 
 	  | listes/gere_msg.php						  | 
@@ -100,7 +97,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | marketing.php							  | 
 	  | mescontacts_pdf.php						  | 
 	  | mescontacts.php							  | 
-	  | nbpromo2.php							  | 
 	  | news/abonnements.php					  | 
 	  | news/article.php						  | 
 	  | news/attachment.php						  | 
@@ -116,14 +112,14 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | paiement/cyberpaiement.inc.php			  | 
 	  | paiement/cyberpaiement_retour.php		  | 
 	  | paiement/index.php						  | 
-	  | parselogD.php							  | 
-	  | parselogN.php							  | 
-	  | parselog.php							  | 
-	  | parselogR.php							  | 
+	  | parselogD.php							  | stats/...
+	  | parselogN.php							  | stats/...
+	  | parselog.php							  | stats/...
+	  | parselogR.php							  | stats/...
 	  | pattecassee.php							  | 
 	  | pg.confirm.php							  | 
 	  | pg.php									  | 
-	  | plan.php								  | 
+	  | plan.php								  | ? docs/plan.php
 	  | profil2.php								  | 
 	  | profil.php								  | 
 	  | recherche.php							  | 
@@ -132,9 +128,9 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | redirect/redirect.php					  | 
 	  | routage-mail.php						  | 
 	  | rss.php									  | 
-	  | secu.php								  | 
+	  | secu.php								  | docs/secu.php
 	  | sendmail.php							  | 
-	  | services.php							  | 
+	  | services.php							  | docs/services.php
 	  | sondage/accueil.php						  | 
 	  | sondage/bloc.php						  | 
 	  | sondage/droits.php						  | 
@@ -146,7 +142,7 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | sondage/resultats.php					  | 
 	  | sondage/titre.php						  | 
 	  | sondage/validation.php					  | 
-	  | stats.php								  | 
+	  | stats.php								  | stats/index.php
 	  | step4.php								  | 
 	  | tmpPWD.php								  | 
 	  | trackers/index.php						  | 
@@ -168,6 +164,7 @@ xx	  | acces_smtp.php							  | -
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
 xx	  | apropos.php								  | -
+xx	  | cacert.php								  | -
 xx	  | deconnexion.php							  | -
 xx	  | docs/doc_carva.php						  | -
 xx	  | docs/doc_emails.php						  | -
@@ -181,9 +178,11 @@ xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
 xx	  | docs/index.php							  | -
+xx	  | getphoto.php							  | -
 xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
+xx	  | nbpromo2.php							  | stats/nb_by_promo.php
 xx	  | preferences.php							  | -
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -
