@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.23 2004-10-24 16:56:13 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.24 2004-10-24 18:28:53 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -85,7 +85,7 @@ class NewsLetter {
 
     function title($mail_enc=false) {
 	$title = stripslashes($this->_title);
-	return $mail_enc ? "=?ISO-8859-1?Q?".quoted_printable_encode($title,200)."?=" : $title;;
+	return $mail_enc ? "=?ISO-8859-1?Q?".quoted_printable_encode(str_replace(' ','_',$title),200)."?=" : $title;;
     }
     function head() { return stripslashes($this->_head); }
 
