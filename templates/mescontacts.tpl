@@ -1,4 +1,4 @@
-{* $Id: mescontacts.tpl,v 1.1 2004-02-16 11:06:50 x2000habouzit Exp $ *}
+{* $Id: mescontacts.tpl,v 1.2 2004-02-19 13:42:57 x2000habouzit Exp $ *}
 
 {dyn s=$erreur}
 
@@ -7,16 +7,16 @@
 </div>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
-<input type="hidden" name="action" value="ajouter" />
 <p class="normal">
   Ajouter la personne suivante à ma liste de contacts (prenom.nom) :
+  <input type="hidden" name="action" value="ajouter" />
   <input type="text" name="user" size="20" maxlength="70" />&nbsp;
   <input type="submit" value="Ajouter" />
 </p>
 </form>
 <p class="normal">
   Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
-  il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact"> en face de son nom dans les résultats !
+  il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>
 
 {dynamic}

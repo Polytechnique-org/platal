@@ -1,4 +1,4 @@
-{* $Id: x_inscrit.tpl,v 1.1 2004-02-16 11:06:51 x2000habouzit Exp $ *}
+{* $Id: x_inscrit.tpl,v 1.2 2004-02-19 13:42:58 x2000habouzit Exp $ *}
 
 <div class="contact">
   <div class="nom">
@@ -18,10 +18,14 @@
     {/strip}
   </div>
   <div class="bits">
-    <a href="javascript:x()" onclick="popWin('x.php?x={$c.username}')"><img src="images/loupe.gif" alt="Afficher les détails"></a>
-    <a href="vcard.php/{$c.username}.vcf?x={$c.username}"><img src="images/vcard.png" alt="Afficher la carte de visite"></a>
+    <a href="javascript:x()" onclick="popWin('x.php?x={$c.username}')">
+      <img src="images/loupe.gif" alt="Afficher les détails" />
+    </a>
+    <a href="vcard.php/{$c.username}.vcf?x={$c.username}">
+      <img src="images/vcard.png" alt="Afficher la carte de visite" />
+    </a>
     <a href="mescontacts.php?action={$show_action}&amp;user={$c.username}">
-      <img src="images/{$show_action}.gif" alt="{$show_action} aux/des contacts">
+      <img src="images/{$show_action}.gif" alt="{$show_action} aux/des contacts" />
     </a>
     {perms level='admin'}
     <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}" target="new">AX</a>
