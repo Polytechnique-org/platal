@@ -1,5 +1,6 @@
 <?php
 class AliasReq extends Validate {
+    var $tpl_form='include/form.valid.aliases.tpl';
     var $alias;
     var $raison;
 
@@ -22,49 +23,6 @@ class AliasReq extends Validate {
 
     function get_unique_request($uid) {
         return parent::get_unique_request($uid,'alias');
-    }
-
-    function formu() {
-        $old = $this->old ? "({$this->old})" : "";
-        $raison = nl2br(stripslashes(htmlentities($this->raison)));
-        $newAlias = $this->alias.'@melix.net';
-        return <<<________EOF
-        <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}" />
-        <input type="hidden" name="type" value="{$this->type}" />
-        <input type="hidden" name="stamp" value="{$this->stamp}" />
-        <table class="bicol" cellpadding="4" summary="Demande d'alias">
-        <tr>
-            <td>Demandeur&nbsp;:
-            </td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}">
-                {$this->prenom} {$this->nom}</a> $old
-            </td>
-        </tr>
-        <tr>
-            <td>Nouvel&nbsp;alias&nbsp;:</td>
-            <td>{$newAlias}</td>
-        </tr>
-        <tr>
-            <td>Motif :</td>
-            <td style="border: 1px dotted inherit">
-                $raison
-            </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter" />
-                <br /><br />
-                <input type="submit" name="submit" value="Refuser" />
-            </td>
-            <td>
-                <p>Raison du refus:</p>
-                <textarea rows="5" cols="74" name=motif></textarea>
-            </td>
-        </tr>
-        </table>
-        </form>
-________EOF;
     }
 
     function handle_formu () {
