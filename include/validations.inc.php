@@ -202,9 +202,9 @@ class Validate
         require_once('diogenes/diogenes.hermes.inc.php');
         $mailer = new HermesMailer;
         $mailer->setSubject($this->_mail_subj());
-        $mailer->setFrom("validations+{$this->type}@{$globals->mail->domain}");
+        $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
         $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");
-        $mailer->addCc("validations+{$this->type}@{$globals->mail->domain}");
+        $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
 
         $body = "Cher(e) camarade,\n\n"
               . $this->_mail_body($isok)
