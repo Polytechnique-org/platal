@@ -1,7 +1,7 @@
-{* $Id: password_prompt_logged.head.tpl,v 1.4 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.head.tpl,v 1.5 2004-02-12 02:03:08 x2000habouzit Exp $ *}
 
-    <script language="javascript" src="{"javascript/md5.js"|url}" type="text/javascript"></script>
-    <script language="javascript"type="text/javascript">
+    <script src="{"javascript/md5.js"|url}" type="text/javascript"></script>
+    <script type="text/javascript">
       <!--
       function doChallengeResponse() {ldelim}
         str = "{$smarty.cookies.ORGlogin}:" +

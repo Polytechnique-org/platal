@@ -1,10 +1,10 @@
-{* $Id: password_prompt_logged.tpl,v 1.9 2004-02-11 15:35:32 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.10 2004-02-12 02:03:08 x2000habouzit Exp $ *}
 
 <div class="center">
   <table summary="Accès sécurisé" style="width: 90%;">
     <tr>
       <td>
-        <img src="{"images/cadenas_rouge.png"|url}" alt=" [ CADENAS ROUGE ] ">
+        <img src="{"images/cadenas_rouge.png"|url}" alt=" [ CADENAS ROUGE ] " />
       </td>
       <td>
         <div class="smaller">
@@ -18,19 +18,19 @@
   </table>
 </div>
 <br /><br />
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onSubmit='doChallengeResponse(); return false;'>
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onsubmit='doChallengeResponse(); return false;'>
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td class="titre">
         Mot de passe:
       </td>
       <td>
-        <input type="password" name="password" size=10 maxlength=10 />
+        <input type="password" name="password" size="10" maxlength="10" />
       </td>
     </tr>
     <tr>
       <td>
-        <img src="{"images/pi.png"|url}" alt=" [ ? ] ">
+        <img src="{"images/pi.png"|url}" alt=" [ ? ] " />
         <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
       </td>
       <td class="right">
@@ -48,14 +48,16 @@
 {/if}
 
 <!-- Set up the form with the challenge value and an empty reply value -->
-<form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
-  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
-  <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}" />
-  <input type="hidden" name="response"  value="" />
+<form action="{$smarty.server.REQUEST_URI}" method="post" name="loginsub">
+  <div>
+    <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
+    <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}" />
+    <input type="hidden" name="response"  value="" />
+  </div>
 </form>
 
 {literal}
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
   <!--
   // Activate the appropriate input form field.
   document.login.password.focus();

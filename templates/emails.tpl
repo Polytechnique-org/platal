@@ -1,4 +1,4 @@
-{* $Id: emails.tpl,v 1.1 2004-02-11 15:35:32 x2000habouzit Exp $ *}
+{* $Id: emails.tpl,v 1.2 2004-02-12 02:03:08 x2000habouzit Exp $ *}
 
 <div class="rubrique">
 Gestion de mes courriers électroniques
@@ -27,7 +27,6 @@ Gestion de mes courriers électroniques
       Elles seront prochainement <strong>complétées d'une adresse @polytechnique.edu</strong>,
       plus lisible dans les pays du monde où "Polytechnique" n'évoque pas grand chose,
       .edu étant le suffixe propre aux universités et établissements d'enseignement supérieur.
-      </p>
     </td>
   </tr>
 </table>
@@ -56,7 +55,7 @@ Gestion de mes courriers électroniques
 
 <table class="bicol">
   <tr>
-    <th colspan="2">Antivirus, antispam</td>
+    <th colspan="2">Antivirus, antispam</th>
   </tr>
   <tr>
     <td class="half">

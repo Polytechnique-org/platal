@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.12 2004-02-11 15:35:32 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.13 2004-02-12 02:03:08 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -41,7 +41,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
 
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="login" onSubmit="doChallengeResponse(); return false;">
+<form action="{$smarty.server.REQUEST_URI}" method="post" name="login" onsubmit="doChallengeResponse(); return false;">
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">Connexion</th>
@@ -51,7 +51,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
         Login (prenom.nom) :
       </td>
       <td>
-        <input type="text" name="username"size=20 maxlength=50
+        <input type="text" name="username"size="20" maxlength=50
           value="{insert name="getUserName" script="insert.password.inc.php"}" />
       </td>
     </tr>
@@ -60,7 +60,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
         Mot de passe:
       </td>
       <td>
-        <input type="password" name="password" size=10 maxlength=10 />
+        <input type="password" name="password" size="10" maxlength="10" />
       </td>
     </tr>
     <tr>
@@ -89,15 +89,17 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 {/if}
 
 <!-- Set up the form with the challenge value and an empty reply value //-->
-<form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
-  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
-  <input type="hidden" name="response"  value="" />
-  <input type="hidden" name="username"  value="" />
+<form action="{$smarty.server.REQUEST_URI}" method="post" name="loginsub">
+  <div>
+    <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
+    <input type="hidden" name="response"  value="" />
+    <input type="hidden" name="username"  value="" />
+  </div>
 </form>
 {/dynamic}
 
 {literal}
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
   <!--
   // Activate the appropriate input form field.
   if (document.login.username.value == '') {
