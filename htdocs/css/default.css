@@ -7,6 +7,7 @@ II.  Styles <p>, <div>, <span> ...      <p>, <div>, <span>, <li>, ...
 III. Tableaux bicolores                 Tableaux à lignes alternées, en taille normale, ou tiny
 IV.  Tableau de choix de skins
 V.   contacts
+VI.  profil (onglets)
 
 ..:: Appendices ::..
 Choix de la skin
@@ -228,6 +229,74 @@ div.long table { width: 100%; }
 div.long td.lt { width: 35%; }
 div.long td.rt { width: 65%; }
 
+/**: VI. :**/
+
+table.cadre_a_onglet{
+  border-width: 0;
+  padding : 0;
+  margin: 0;
+}
+
+div.conteneur_onglets{
+ /*padding : 2px;*/
+}
+
+div.conteneur_tab {
+ border-width : 1px 2px 2px 1px;
+ border-style : solid;
+ border-color : #999;
+ padding : 4px 0px 0px 4px;
+ background : #eceade;
+}
+
+#onglet {
+ display : block;
+ margin : 0;
+ padding : 0;
+ /*height : 50px;*/
+}
+      
+#onglet li {
+display : block;
+float : left;
+padding : 0.5ex;
+margin : 0 0.3ex -1px 0;
+background : #D2E0E6  repeat-x 0 100%;
+border-width : 1px 1px 0px 1px;
+border-style : solid;
+border-color : #999;
+border-bottom-color : #999;
+width: auto;
+height: 6ex;
+text-align: center;
+}
+
+#onglet li:hover {
+background : #fc3 repeat-x 0 100%;
+}
+
+#onglet li.actif {
+background : #eceade;
+border-bottom-color : #eceade;
+font-weight: bold;
+}
+
+#onglet li a {
+/*font-family : Arial,Helvetica,sans-serif;*/
+font-size: 80%;
+font-weight : normal;
+text-decoration : none;
+color : #000;
+}
+
+#onglet li a:hover {
+text-decoration: underline;
+}
+
+#onglet li img {
+margin-right : 2px;
+}
+
 /*************************/
 /*  ..:: Apendices ::..  */
 /*************************/
@@ -340,4 +409,4 @@ div.long td.rt { width: 65%; }
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.24 2004-02-23 18:04:32 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.25 2004-03-26 21:23:44 x2000coic Exp $ */
