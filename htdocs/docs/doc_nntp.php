@@ -20,6 +20,6 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page("docs/doc_nntp.tpl",AUTH_PUBLIC);
+new_skinned_page("docs/doc_nntp.tpl",AUTH_COOKIE);
 $page->run();
 ?>
