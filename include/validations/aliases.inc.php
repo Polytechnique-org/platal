@@ -84,7 +84,7 @@ class AliasReq extends Validate
 
     function handle_formu()
     {
-        if (Env::get('submit'] != "Accepter" && Env::get('submit') != "Refuser") {
+        if (Env::get('submit') != "Accepter" && Env::get('submit') != "Refuser") {
             return false;
         }
 
