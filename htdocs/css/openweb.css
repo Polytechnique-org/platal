@@ -62,6 +62,7 @@ legend {
 .right  { text-align: right; }
 .middle { vertical-align: middle; }
 .smaller { font-size: smaller; font-style: italic; }
+.spacer { clear: both; }
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -417,8 +418,6 @@ div.adresse {
 
 div.adresse div.titre { color: purple; }
 
-div.spacer { clear: both; }
-
 /* only for fiche_referent.php*/
 
 #fiche_referent{
@@ -552,4 +551,4 @@ table#body {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: openweb.css,v 1.6 2004-11-18 12:27:50 x2000habouzit Exp $ */
+/* $Id: openweb.css,v 1.7 2004-11-24 09:23:40 x2000habouzit Exp $ */

@@ -58,6 +58,7 @@ legend {
 .right  { text-align: right; }
 .middle { vertical-align: middle; }
 .smaller { font-size: smaller; font-style: italic; }
+.spacer { clear: both; }
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -415,7 +416,6 @@ div.adresse {
     margin: 0px 1% 1ex 1%;
 }
 
-div.spacer { clear: both; }
 /* only for fiche_referent.php*/
 
 #fiche_referent{
@@ -543,4 +543,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.67 2004-11-18 14:52:57 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.68 2004-11-24 09:23:39 x2000habouzit Exp $ */
