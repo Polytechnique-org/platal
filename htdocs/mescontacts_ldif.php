@@ -25,7 +25,7 @@ $page->register_modifier('utf8', 'utf8_encode');
  * On construit la liste des contacts, et de l'entreprise à laquelle ils appartiennent
  */
 $contacts = Array();
-$req = mysql_query("SELECT contact AS id, date, prenom, nom, epouse, username, mobile, web, libre, promo, alias,
+$req = $globals->db->query("SELECT contact AS id, date, prenom, nom, epouse, username, mobile, web, libre, promo, alias,
                            entreprise, adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax,
                            poste, f.label AS fonction
                     FROM      contacts      AS c 
@@ -44,7 +44,7 @@ mysql_free_result($req);
 /*
  * On y ajoute les infos d'adresses
  */
-$req = mysql_query(
+$req = $globals->db->query(
        "SELECT c.contact AS id, adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax
         FROM       contacts      AS c
         INNER JOIN adresses      AS a  ON (a.uid = c.contact AND FIND_IN_SET('active', a.statut))

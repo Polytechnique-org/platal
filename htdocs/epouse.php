@@ -4,7 +4,7 @@ require("validations.inc.php");
 
 new_skinned_page('epouse.tpl', AUTH_MDP);
 
-$res = mysql_query("select u.nom,u.epouse,i.flags from auth_user_md5 as u
+$res = $globals->db->query("select u.nom,u.epouse,i.flags from auth_user_md5 as u
                     left join identification as i using(matricule)
                     where user_id=".$_SESSION['uid']);
 list($nom,$epouse_old,$flags) = mysql_fetch_row($res);

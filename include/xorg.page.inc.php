@@ -105,7 +105,8 @@ class XorgPage extends DiogenesCorePage {
     function doAuth() { }
 
     function mysql_assign($sql_query,$var_name,$var_nb_name='') {
-        $sql = mysql_query($sql_query);
+        global $globals;
+        $sql = $globals->db->query($sql_query);
         if(mysql_errno())
             return(mysql_error($sql));
 

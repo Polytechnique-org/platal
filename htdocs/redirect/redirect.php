@@ -12,7 +12,7 @@ echo "</pre>";*/
 // REQUEST_URI = /prenom.nom(/path/fichier.hmtl)?
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
 
-$result = mysql_query("select redirecturl from auth_user_md5 where username= '$username' or alias = '$username'");
+$result = $globals->db->query("select redirecturl from auth_user_md5 where username= '$username' or alias = '$username'");
 if ($result and list($url) = mysql_fetch_row($result) and $url != '') {
 	// on envoie un redirect (PHP met automatiquement le code de retour 302
 	if (!empty($path)) {

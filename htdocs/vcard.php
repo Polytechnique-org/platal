@@ -59,7 +59,7 @@ $myquery =
     "SELECT prenom, nom, epouse, username, mobile, web, libre, promo, alias, user_id, date
     FROM auth_user_md5 AS a
     WHERE username='{$_REQUEST['x']}'";
-    $result=mysql_query($myquery);
+    $result=$globals->db->query($myquery);
 if (mysql_num_rows($result)!=1) {
     echo 'erreur';
     exit;
@@ -68,7 +68,7 @@ $vcard = mysql_fetch_assoc($result);
 $page->assign_by_ref('vcard', $vcard);
 mysql_free_result($result);
 
-$adr = mysql_query(
+$adr = $globals->db->query(
         "SELECT statut,adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax,
         FIND_IN_SET('courrier', a.statut) AS courrier
         FROM adresses as a
@@ -86,7 +86,7 @@ mysql_free_result($adr);
 $page->assign_by_ref('home', $home);
 
 
-$adr = mysql_query(
+$adr = $globals->db->query(
         "SELECT adr1,adr2,adr3,cp,ville,gp.pays,gr.name,tel,fax,poste,entreprise,f.label as fonction
         FROM entreprises as e
         LEFT JOIN emploi_naf AS f ON(e.fonction = f.id)

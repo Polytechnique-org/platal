@@ -9,7 +9,7 @@
  * @see include/form_rech_av.inc.php
 function applis_options($current=0) {
   echo '<option value="-1"></option>';
-  $res=mysql_query("select * from applis_def order by text");
+  $res=$globals->db->query("select * from applis_def order by text");
   while ($arr_appli=mysql_fetch_array($res)) { 
     echo '<option value="'.$arr_appli["id"].'"';
     if ($arr_appli["id"]==$current) echo " selected";

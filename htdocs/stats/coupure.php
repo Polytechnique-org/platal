@@ -13,7 +13,7 @@ function serv_to_str($params) {
     return implode(', ',$ret);
 }
 if (isset($_REQUEST['cp_id'])) 
-    $res=mysql_query("select UNIX_TIMESTAMP(debut) AS debut, TIME_FORMAT(duree,'%kh%i') AS duree, resume, description, services from coupures where id='{$_REQUEST['cp_id']}'");
+    $res=$globals->db->query("select UNIX_TIMESTAMP(debut) AS debut, TIME_FORMAT(duree,'%kh%i') AS duree, resume, description, services from coupures where id='{$_REQUEST['cp_id']}'");
 else
     $res="";
 

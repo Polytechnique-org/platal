@@ -28,7 +28,7 @@ class MListReq extends Validate {
         $this->moderos = $_moderos;
         $this->membres = $_membres;
         
-        $sql = mysql_query("SELECT username,prenom,nom FROM auth_user_md5 WHERE user_id=".$this->uid);
+        $sql = $globals->db->query("SELECT username,prenom,nom FROM auth_user_md5 WHERE user_id=".$this->uid);
         list($this->username,$this->prenom,$this->nom) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }
@@ -38,7 +38,7 @@ class MListReq extends Validate {
     }
 
     function formu() {
-        $sql = mysql_query("SELECT username FROM auth_user_md5"
+        $sql = $globals->db->query("SELECT username FROM auth_user_md5"
             ." WHERE user_id IN ({$this->moderos})"
             ." ORDER BY nom, prenom");
         $tab = array();
@@ -46,7 +46,7 @@ class MListReq extends Validate {
         $this->moderos_txt = implode(', ', $tab);
         mysql_free_result($sql);
 
-        $sql = mysql_query("SELECT username FROM auth_user_md5"
+        $sql = $globals->db->query("SELECT username FROM auth_user_md5"
             ." WHERE user_id IN ({$this->membres})"
             ." ORDER BY nom, prenom");
         $tab = array();
@@ -105,14 +105,14 @@ class MListReq extends Validate {
         if ($this->archive) $type->addflag('archive');
         if ($this->freeins) $type->addflag('freeins'); 
         
-        mysql_query("INSERT INTO listes_def SET type='".$type->value."', topic='{$this->topic}'");
+        $globals->db->query("INSERT INTO listes_def SET type='".$type->value."', topic='{$this->topic}'");
         echo "<p class=\"normal\">Liste {$this->alias} créée</p>\n";
     
         if(!mysql_errno()) {
             $id = mysql_insert_id();
             if ($this->archive)
-                mysql_query("replace into listes_ins set idl=$id, idu=0");
-            mysql_query("INSERT INTO aliases (alias,type,id) VALUES".
+                $globals->db->query("replace into listes_ins set idl=$id, idu=0");
+            $globals->db->query("INSERT INTO aliases (alias,type,id) VALUES".
                     "('{$this->alias}','liste',$id)".
                     ",('owner-{$this->alias}','liste-owner',$id)".
                     ",('sm-{$this->alias}','liste-sans-moderation',$id)".
@@ -127,7 +127,7 @@ class MListReq extends Validate {
                         $values[] = "($id,$tok)";
                     }
                     $values = implode(',', $values);
-                    mysql_query("INSERT INTO listes_mod (idl, idu) VALUES $values");
+                    $globals->db->query("INSERT INTO listes_mod (idl, idu) VALUES $values");
                 }
 
                 // ajout des membres si précisés
@@ -138,15 +138,15 @@ class MListReq extends Validate {
                         $values[] = "($id,$tok)";
                     }
                     $values = implode(',', $values);
-                    mysql_query("INSERT INTO listes_ins (idl, idu) VALUES $values");
+                    $globals->db->query("INSERT INTO listes_ins (idl, idu) VALUES $values");
                 }
 
                 $this->clean();
                 return true;
             } else { // alias déjà existant ?
-                mysql_query("DELETE FROM aliases WHERE id='$id'");
-                mysql_query("DELETE FROM listes_ins WHERE id='$id'");
-                mysql_query("DELETE FROM listes_def WHERE id='$id'");
+                $globals->db->query("DELETE FROM aliases WHERE id='$id'");
+                $globals->db->query("DELETE FROM listes_ins WHERE id='$id'");
+                $globals->db->query("DELETE FROM listes_def WHERE id='$id'");
                 echo "<p class=\"erreur\">Nom déjà utilisé (owner-{$this->alias} ou {$this->alias}-request)</p>\n";
                 return false;
             } // if mysql_errno == 0 pour insert dans aliases

@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.6 2004-02-07 17:18:15 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.7 2004-02-20 09:54:45 x2000habouzit Exp $
  *
  */
 
@@ -13,7 +13,7 @@ class ValidateIterator {
     
     /** constructeur */
     function ValidateIterator () {
-        $this->sql = mysql_query("SELECT data,stamp FROM requests ORDER BY stamp");
+        $this->sql = $globals->db->query("SELECT data,stamp FROM requests ORDER BY stamp");
     }
 
     /** renvoie l'objet suivant, ou false */
@@ -54,7 +54,7 @@ class Validate {
      * à utiliser uniquement pour récupérer un objet <strong>unique</strong>
      */
     function get_unique_request($uid,$type) {
-        $sql = mysql_query("SELECT data,stamp FROM requests WHERE user_id='$uid' and type='$type'");
+        $sql = $globals->db->query("SELECT data,stamp FROM requests WHERE user_id='$uid' and type='$type'");
         if(list($result,$stamp) = mysql_fetch_row($sql)) {
             $result = unserialize($result);
             // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
@@ -77,7 +77,7 @@ class Validate {
      * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_request(...)
      */
     function get_request($uid, $type, $stamp) {
-        $sql = mysql_query("SELECT data,stamp"
+        $sql = $globals->db->query("SELECT data,stamp"
             ." FROM requests"
             ." WHERE user_id='$uid' and type = '$type' and stamp='$stamp'");
         if(list($result,$stamp) = mysql_fetch_row($sql)) {
@@ -110,22 +110,22 @@ class Validate {
     function submit () {
         global $no_update_bd;
         if($no_update_bd) return false;
-        mysql_query("LOCK requests"); // le lock est obligatoire pour récupérer le dernier stamp !
+        $globals->db->query("LOCK requests"); // le lock est obligatoire pour récupérer le dernier stamp !
         
         if($this->unique)
-            mysql_query("DELETE FROM requests WHERE user_id='".$this->uid
+            $globals->db->query("DELETE FROM requests WHERE user_id='".$this->uid
                     .   "' AND type='".$this->type."'");
        
-        mysql_query("INSERT INTO requests SET user_id='".$this->uid."', type='".$this->type
+        $globals->db->query("INSERT INTO requests SET user_id='".$this->uid."', type='".$this->type
                 .   "', data='".addslashes(serialize($this))."'");
 
         // au cas où l'objet est réutilisé après un commit, il faut mettre son stamp à jour
-        $sql = mysql_query("SELECT MAX(stamp) FROM requests "
+        $sql = $globals->db->query("SELECT MAX(stamp) FROM requests "
                 .   "WHERE user_id='".$this->uid."' AND type='".$this->type."'");
         list($this->stamp) = mysql_fetch_row($sql);
         mysql_free_result($sql);
 
-        mysql_query("UNLOCK requests");
+        $globals->db->query("UNLOCK requests");
         return true;
     }
     
@@ -135,7 +135,7 @@ class Validate {
     function clean () {
         global $no_update_bd;
         if($no_update_bd) return false;
-        return mysql_query("DELETE FROM requests WHERE user_id='".$this->uid."' AND type='".$this->type."'"
+        return $globals->db->query("DELETE FROM requests WHERE user_id='".$this->uid."' AND type='".$this->type."'"
                 .($this->unique ? "" : " AND stamp='".$this->stamp."'"));
     }
     

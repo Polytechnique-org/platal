@@ -10,7 +10,7 @@ if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md
 
 require("db_connect.inc.php");
 
-$all = mysql_query("SELECT prenom,nom,username FROM auth_user_md5 as u,listes_ins as i WHERE i.idu=u.user_id AND i.idl=174 AND i.idu != 0 ORDER BY nom");
+$all = $globals->db->query("SELECT prenom,nom,username FROM auth_user_md5 as u,listes_ins as i WHERE i.idu=u.user_id AND i.idl=174 AND i.idu != 0 ORDER BY nom");
 
 $res = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<membres>\n\n";
 

@@ -3,9 +3,9 @@ require("auto.prepend.inc.php");
 new_skinned_page('newsletter.tpl', AUTH_COOKIE);
 
 if (isset($_REQUEST['last']))
-    $res=mysql_query("SELECT UNIX_TIMESTAMP(date),titre,text FROM newsletter ORDER BY id DESC LIMIT 1");
+    $res=$globals->db->query("SELECT UNIX_TIMESTAMP(date),titre,text FROM newsletter ORDER BY id DESC LIMIT 1");
 elseif (isset($_REQUEST['nl_id'])) 
-    $res=mysql_query("SELECT UNIX_TIMESTAMP(date),titre,text FROM newsletter WHERE id='{$_REQUEST['nl_id']}'");
+    $res=$globals->db->query("SELECT UNIX_TIMESTAMP(date),titre,text FROM newsletter WHERE id='{$_REQUEST['nl_id']}'");
 else
     $res="";
 

@@ -19,7 +19,7 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "valid") {
     if (isset($_REQUEST['IMAPport'])&&is_integer($_REQUEST['IMAPport'])) $sql.=",IMAPport = {$_REQUEST['IMAPport']}";
     if (isset($_REQUEST['IMAPdir'])) $sql.=",IMAPdir = '".addslashes($_REQUEST['IMAPdir'])."'";
     $sql.=" where uid = ".$_SESSION['uid'];
-    mysql_query($sql);
+    $globals->db->query($sql);
 
     $page->assign('OK',true);
     $page->run('OK');
@@ -31,12 +31,12 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "valid") {
                     IMAPserver,IMAPport,IMAPdir,
                     FIND_IN_SET('IMAPssl',flags) AS IMAPssl
                     FROM wap WHERE uid = ".$_SESSION['uid'];
-    $result = mysql_query($sql);
+    $result = $globals->db->query($sql);
 
     if (mysql_num_rows($result)==0) {
         //l'utilisateur n'a pas de profil WAP => on le crée
-        mysql_query("INSERT INTO wap (uid) VALUES (".$_SESSION['uid'].")");
-        $result = mysql_query($sql);
+        $globals->db->query("INSERT INTO wap (uid) VALUES (".$_SESSION['uid'].")");
+        $result = $globals->db->query($sql);
     }
 
     $page->assign('wap', mysql_fetch_assoc($result));

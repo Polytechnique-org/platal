@@ -14,7 +14,7 @@ class PhotoReq extends Validate {
         global $erreur;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
-        $sql = mysql_query("SELECT username, prenom, nom FROM auth_user_md5 WHERE user_id=".$this->uid);
+        $sql = $globals->db->query("SELECT username, prenom, nom FROM auth_user_md5 WHERE user_id=".$this->uid);
         list($this->username,$this->prenom,$this->nom) = mysql_fetch_row($sql);
         mysql_free_result($sql);
         
@@ -83,7 +83,7 @@ class PhotoReq extends Validate {
         global $no_update_bd;
         if($no_update_bd) return false;
         
-        mysql_query("REPLACE INTO photo set uid='".$this->uid."', attachmime = '".$this->mimetype."', attach='"
+        $globals->db->query("REPLACE INTO photo set uid='".$this->uid."', attachmime = '".$this->mimetype."', attach='"
             .addslashes($this->data)."', x='".$this->x."', y='".$this->y."'");
     }
 }

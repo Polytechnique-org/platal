@@ -12,7 +12,7 @@ $JOURS=364;
 define('DUREEJOUR',24*3600);
 
 //recupere le nombre d'inscriptions par jour sur la plage concernée
-$donnees=mysql_query("SELECT if(date_ins>DATE_SUB(NOW(),INTERVAL $JOURS DAY), TO_DAYS(date_ins)-TO_DAYS(NOW()), ".(-($JOURS+1)).") AS jour,
+$donnees=$globals->db->query("SELECT if(date_ins>DATE_SUB(NOW(),INTERVAL $JOURS DAY), TO_DAYS(date_ins)-TO_DAYS(NOW()), ".(-($JOURS+1)).") AS jour,
                              count(username) AS nb
                       FROM auth_user_md5 WHERE promo = $promo GROUP BY jour");
 

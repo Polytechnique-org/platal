@@ -7,18 +7,18 @@ require("applis.func.inc.php");
 if (isset($_REQUEST['action'])) {
     if($_REQUEST['action']=='retirer') {
 
-        if (($res = mysql_query("SELECT user_id FROM auth_user_md5 WHERE username='{$_REQUEST['user']}'")) && mysql_num_rows($res)==1) {
+        if (($res = $globals->db->query("SELECT user_id FROM auth_user_md5 WHERE username='{$_REQUEST['user']}'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
-            if (mysql_query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='$cont_user_id'"))
+            if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='$cont_user_id'"))
                 $page->assign('erreur', "<p class='normal'><strong>Contact {$_REQUEST['user']} retiré !</strong></p>\n");
         }
 
         // si l'utilisateur demande l'ajout de qqun à sa liste
     } elseif ($_REQUEST["action"]=="ajouter") {
 
-        if (($res = mysql_query("SELECT user_id FROM auth_user_md5 WHERE username='".$_REQUEST["user"]."'")) && mysql_num_rows($res)==1) {
+        if (($res = $globals->db->query("SELECT user_id FROM auth_user_md5 WHERE username='".$_REQUEST["user"]."'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
-            if (mysql_query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
+            if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
                 $page->assign('erreur', '<p class="normal"><strong>Contact ajouté !</strong></p>');
             } else
                 $page->assign('erreur', '<p class="erreur">Contact déjà dans la liste !</p>');
@@ -52,7 +52,7 @@ $sql = "SELECT contact AS id,
         LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
         WHERE c.uid = {$_SESSION['uid']}
         ORDER BY a.nom, a.prenom";
-mysql_query($sql);
+$globals->db->query($sql);
 echo mysql_error();
 
 $page->mysql_assign($sql,'contacts','nb_contacts');

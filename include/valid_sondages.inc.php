@@ -13,11 +13,11 @@ class SondageReq extends Validate {
         $this->Validate($_uid, false, 'sondage', $_stamp);
         $this->sid = $_sid;
         
-        $sql = mysql_query("SELECT username,prenom,nom FROM auth_user_md5 "
+        $sql = $globals->db->query("SELECT username,prenom,nom FROM auth_user_md5 "
             .   "WHERE user_id='".$this->uid."'");
         list($this->username,$this->prenom,$this->nom) = mysql_fetch_row($sql);
         mysql_free_result($sql);
-        $sql = mysql_query("SELECT titre FROM sondage.description_generale "
+        $sql = $globals->db->query("SELECT titre FROM sondage.description_generale "
             .   "WHERE ids='".$this->sid."'");
         list($this->titre) = mysql_fetch_row($sql);
         mysql_free_result($sql);
@@ -51,7 +51,7 @@ class SondageReq extends Validate {
                     return "<p class='erreur'>L'alias ne doit pas contenir le caractère '</p>";
                 }
                 else {//on vérifie que l'alias n'existe pas déjà
-                    $resultat = mysql_query("select alias from sondage.description_generale ".
+                    $resultat = $globals->db->query("select alias from sondage.description_generale ".
                     "where alias='$alias'");
                     if (mysql_num_rows($resultat)>0) {
                         return "<p class='erreur'>Cet alias est déjà utilisé.</p>";

@@ -9,19 +9,19 @@ function isvalid_email_local($email) {
   // et MySQL ne sait pas utiliser les index dans ce cas
   // (ce n'est plus vrai dans MySQL 4.x donc quand on y passera, on pourra
   // combiner les 2 requêtes suivantes en une seule)
-  $req = mysql_query("select count(*) from auth_user_md5 where username='$email'");
+  $req = $globals->db->query("select count(*) from auth_user_md5 where username='$email'");
   list($nb)=mysql_fetch_row($req);
   mysql_free_result($req);
   if ($nb>0) return true;
 
-  $req = mysql_query("select count(*) from auth_user_md5 where alias='$email'");
+  $req = $globals->db->query("select count(*) from auth_user_md5 where alias='$email'");
   list($nb)=mysql_fetch_row($req);
   mysql_free_result($req);
   if ($nb>0) return true;
 
   // vérification des adresses types $liste et $liste-request
   // ATTENTION, il ne faut pas accepter les adresses types owner-$liste et sm-$liste
-  $req = mysql_query("select count(*) from aliases where (alias='$email' and type='liste') or (alias='$email-request' and type='liste-request')");
+  $req = $globals->db->query("select count(*) from aliases where (alias='$email' and type='liste') or (alias='$email-request' and type='liste-request')");
   list($nb)=mysql_fetch_row($req);
   mysql_free_result($req);
   if ($nb>0) return true;

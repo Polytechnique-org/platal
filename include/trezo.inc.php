@@ -37,7 +37,7 @@ function solde_until($date='')
     $sql = "select sum(credit)-sum(debit) from trezo.operations";
     if(!empty($date))
         $sql .= " where date <= '$date'";
-    $res = mysql_query($sql);
+    $res = $globals->db->query($sql);
     list($mysolde) = mysql_fetch_row($res);
     return $mysolde;
 }

@@ -2,7 +2,7 @@
 require("auto.prepend.inc.php");
 new_skinned_page('stats/nb_by_promo.tpl', AUTH_COOKIE);
 
-$result = mysql_query("SELECT promo,COUNT(*) FROM auth_user_md5 WHERE promo > 1900 GROUP BY promo ORDER BY promo");
+$result = $globals->db->query("SELECT promo,COUNT(*) FROM auth_user_md5 WHERE promo > 1900 GROUP BY promo ORDER BY promo");
 $max=0; $min=3000;
 while(list($promo,$nb)=mysql_fetch_row($result)) {
     $promo=intval($promo);

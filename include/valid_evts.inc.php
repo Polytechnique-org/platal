@@ -24,7 +24,7 @@ class EvtReq extends Validate {
         $this->pmax = $_pmax;
         $this->peremption = $_peremption;
         $this->comment = $_comment;
-        $req = mysql_query("SELECT username,promo,nom,prenom FROM "
+        $req = $globals->db->query("SELECT username,promo,nom,prenom FROM "
           ."auth_user_md5 WHERE user_id='$_uid'");
         list($this->username,$this->promo,$this->nom,$this->prenom) 
             = mysql_fetch_row($req);
@@ -45,21 +45,21 @@ class EvtReq extends Validate {
             $mymail->assign('titre',$this->titre);
 
             if($_REQUEST['action']=="Valider") {
-                mysql_query("UPDATE evenements
+                $globals->db->query("UPDATE evenements
                              SET creation_date = creation_date, validation_user_id = {$_SESSION['uid']},
                                  validation_date = NULL, flags = CONCAT(flags,',valide')
                              WHERE id='{$this->evtid}' LIMIT 1");
                 $mymail->assign('answer','yes');
             }
             if($_REQUEST['action']=="Invalider") {
-                mysql_query("UPDATE evenements
+                $globals->db->query("UPDATE evenements
                              SET creation_date = creation_date, validation_user_id = {$_SESSION['uid']},
                                  validation_date = NULL, flags = REPLACE(flags,'valide','')
                              WHERE id='{$this->evtid}' LIMIT 1");
                 $mymail->assign('answer', 'no');
             }
             if($_REQUEST['action']=="Supprimer") {
-                mysql_query("DELETE from evenements WHERE id='{$this->evtid}' LIMIT 1");
+                $globals->db->query("DELETE from evenements WHERE id='{$this->evtid}' LIMIT 1");
             }
             if ($_POST['action']!="Supprimer")
                 $mymail->send();

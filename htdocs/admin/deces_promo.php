@@ -11,9 +11,9 @@ if(isset($_REQUEST['add10']))   $promo += 10;
 $page->assign('promo',$promo);
 
 if (isset($_REQUEST["valider"]) && $_REQUEST["valider"] == "Valider") {
-    $res = mysql_query("SELECT matricule FROM identification WHERE promo = $promo");
+    $res = $globals->db->query("SELECT matricule FROM identification WHERE promo = $promo");
     while (list($mat) = mysql_fetch_row($res)) {
-        mysql_query("UPDATE identification SET deces='".$_REQUEST[$mat]."' WHERE matricule = '".$mat."'");
+        $globals->db->query("UPDATE identification SET deces='".$_REQUEST[$mat]."' WHERE matricule = '".$mat."'");
     }
 }
 

@@ -13,7 +13,7 @@ class AliasReq extends Validate {
         $this->alias = $_alias;
         $this->raison = $_raison;
         
-        $sql = mysql_query("SELECT username,prenom,nom,domain FROM auth_user_md5 as u "
+        $sql = $globals->db->query("SELECT username,prenom,nom,domain FROM auth_user_md5 as u "
                         .  "LEFT JOIN groupex.aliases as a ON (a.email = u.username and a.id = 12)    "
                         .  "WHERE user_id='".$this->uid."'");
         list($this->username,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
@@ -57,8 +57,8 @@ class AliasReq extends Validate {
         if($no_update_bd) return false;
 
         $domain=$this->alias.'@melix.net';
-        mysql_query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->username}'");
-        mysql_query("INSERT INTO groupex.aliases SET email='{$this->username}',domain='$domain',id=12");         
+        $globals->db->query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->username}'");
+        $globals->db->query("INSERT INTO groupex.aliases SET email='{$this->username}',domain='$domain',id=12");         
     }
 }
 

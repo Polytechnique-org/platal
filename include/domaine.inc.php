@@ -13,7 +13,7 @@ function liste_domaines() {
             (has_perms() ? '' : " AND g.did = d.id AND g.uid = {$_SESSION['uid']}").
            " ORDER BY domain";
 
-    $result = mysql_query($sql);
+    $result = $globals->db->query($sql);
 
     $ret = Array();
     while (list($domaine) = mysql_fetch_row($result)) {
@@ -36,15 +36,15 @@ function add_domain($domaine) {
         $sql = "SELECT 1 FROM groupex.aliases AS a, groupex.gestionnaires AS g
                 WHERE g.uid = {$_SESSION['uid']} AND a.id = g.did AND a.domain NOT LIKE '%@%'
                     AND a.domain NOT LIKE '%polytechnique.org'";
-        $result = mysql_query($sql);
+        $result = $globals->db->query($sql);
         $ok = (mysql_num_rows($result) < 1);
     }
     if ($ok) {
         // ok, ajout du domaine et des droits d'utilisation (sauf si admin)
-        if(mysql_query("insert into groupex.aliases set domain = '$domaine'")) {;
+        if($globals->db->query("insert into groupex.aliases set domain = '$domaine'")) {;
         $did = mysql_insert_id();
             if ($_SESSION['perms'] != 'admin')
-            if(mysql_query("INSERT INTO groupex.gestionnaires SET did = $did, uid = {$_SESSION['uid']}"))
+            if($globals->db->query("INSERT INTO groupex.gestionnaires SET did = $did, uid = {$_SESSION['uid']}"))
                 return "<p class='erreur'>Félicitations, ton domaine a été ajouté aux domaines gérés par Polytechnique.org.\n"
                     .  "Clique sur le lien ci-dessous pour lui ajouter des alias</p>\n";
         } else

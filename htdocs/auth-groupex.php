@@ -17,7 +17,7 @@ new_skinned_page('index.tpl',AUTH_COOKIE);
 // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
 $newhost=strtolower(gethostbyaddr($_SERVER["REMOTE_ADDR"]));
 if (!isset($_SESSION['suid'])) {
-    mysql_query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=".$_SESSION['uid']);
+    $globals->db->query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=".$_SESSION['uid']);
 }
 
 /* cree le champs "auth" renvoye au Groupe X */
@@ -49,7 +49,7 @@ function gpex_make_params($chlg, $privkey, $datafields) {
 }
 
 /* on parcourt les entrees de groupes_auth */
-$res = mysql_query("select privkey,name,datafields from groupesx_auth");
+$res = $globals->db->query("select privkey,name,datafields from groupesx_auth");
 while (list($privkey,$name,$datafields) = mysql_fetch_row($res)) {
     if (md5($gpex_challenge.$privkey) == $gpex_pass) {
         $returl = $gpex_url.gpex_make_params($gpex_challenge,$privkey,$datafields);

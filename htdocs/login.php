@@ -2,7 +2,7 @@
 require("auto.prepend.inc.php");
 new_skinned_page('login.tpl', AUTH_COOKIE, true);
 
-$param=mysql_query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");
+$param=$globals->db->query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");
 list($date,$naissance) = mysql_fetch_row($param);
 mysql_free_result($param);
 
@@ -14,7 +14,7 @@ if ($naissance==0)  {
 
 // incitation à mettre à jour la fiche
 
-$res = mysql_query("SELECT date FROM auth_user_md5 WHERE user_id=".$_SESSION["uid"]);
+$res = $globals->db->query("SELECT date FROM auth_user_md5 WHERE user_id=".$_SESSION["uid"]);
 list($d) = mysql_fetch_row($res);
 $date_maj = mktime(0, 0, 0, substr($d, 5, 2), substr($d, 8, 2), substr($d, 0, 4));
 if(( (time() - $date_maj) > 60 * 60 * 24 * 400)) { // si fiche date de + de 400j;
@@ -23,14 +23,14 @@ if(( (time() - $date_maj) > 60 * 60 * 24 * 400)) { // si fiche date de + de 400j
 
 // incitation à mettre une photo
 
-$res = mysql_query("SELECT 1 FROM photo WHERE uid=".$_SESSION["uid"]);
+$res = $globals->db->query("SELECT 1 FROM photo WHERE uid=".$_SESSION["uid"]);
 if (mysql_num_rows($res) == 0)
     $page->assign('photo_incitation', true);
 mysql_free_result($res);
 
 // affichage de la boîte avec quelques liens
 
-$res = mysql_query("SELECT id FROM newsletter ORDER BY date DESC");
+$res = $globals->db->query("SELECT id FROM newsletter ORDER BY date DESC");
 list($nb) = mysql_fetch_row($res);
 mysql_free_result($res);
 

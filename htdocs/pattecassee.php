@@ -18,7 +18,7 @@ function valide_email($str) {
 if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
     $email = valide_email($_GET['email']);
     // vérifications d'usage
-    $sel = mysql_query(
+    $sel = $globals->db->query(
       "SELECT e.uid, a.username
        FROM emails AS e
        INNER JOIN auth_user_md5 AS a ON e.uid = a.user_id
@@ -54,7 +54,7 @@ L'équipe d'administration <support@polytechnique.org>";
 } elseif (array_key_exists('email', $_POST)) {
     $email = valide_email($_POST['email']);
     $page->assign('email',$email);
-    $sel = mysql_query("SELECT e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
+    $sel = $globals->db->query("SELECT e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
                         FROM emails as e1
                         LEFT JOIN emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.num != e2.num)
                         INNER JOIN auth_user_md5 as u ON(e1.uid = u.user_id)
@@ -63,7 +63,7 @@ L'équipe d'administration <support@polytechnique.org>";
     if ($x = mysql_fetch_assoc($sel)) {
         // on écrit dans la base que l'adresse est cassée
         if (!$x['panne'])
-            mysql_query("UPDATE emails SET panne='".date("Y-m-d")."' WHERE email =  '".$email."'");
+            $globals->db->query("UPDATE emails SET panne='".date("Y-m-d")."' WHERE email =  '".$email."'");
         $page->assign_by_ref('x',$x);
     }
 }

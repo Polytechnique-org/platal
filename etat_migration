@@ -65,7 +65,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | pg.confirm.php							  | 
 ;	  | pg.php									  | 
 ;	  | profil.php								  | 
-;	  | profil2.php								  | 
 ;	  | recherche.php							  | 
 ;	  | trombino.php							  | 
 ;	  | trombipromo.php							  | 
@@ -199,6 +198,7 @@ x!!	  | admin/newsletter_form.inc.php			  | -
 x!!	  | admin/statut_antispam.php				  | inutilisée et même pas en var superglobales ...
 x!!	  | aide.php								  | --> faq.php
 x!!	  | auth-wiki.php							  | obsolete
+x!!	  | profil2.php								  | -
 x!!	  | trackers/tracker_delete.php				  | -
 x!!	  | trezo/trezo.inc.php						  | -
 ------+-------------------------------------------+----------------

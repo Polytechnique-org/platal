@@ -22,7 +22,7 @@ class EpouseReq extends Validate {
         if(empty($_epouse))
             $this->alias = "<span class=\"erreur\">suppression</a>";
         
-        $sql = mysql_query("select u1.alias, u1.epouse, u1.prenom, u1.nom"
+        $sql = $globals->db->query("select u1.alias, u1.epouse, u1.prenom, u1.nom"
             .", IFNULL(u2.username,u3.username)"
             ." FROM auth_user_md5 as u1"
             ." LEFT JOIN auth_user_md5 as u2"
@@ -75,7 +75,7 @@ class EpouseReq extends Validate {
         if($no_update_bd) return false;
         
         $alias = ($this->epouse ? $this->alias : "");
-        mysql_query("UPDATE auth_user_md5 set epouse='".$this->epouse."',epouse_soundex='".soundex_fr($this->epouse)."',alias='".$this->alias."' WHERE user_id=".$this->uid);
+        $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',epouse_soundex='".soundex_fr($this->epouse)."',alias='".$this->alias."' WHERE user_id=".$this->uid);
     }
 }
 

@@ -3,7 +3,7 @@ require("auto.prepend.inc.php");
 new_skinned_page('index.tpl',AUTH_MDP);
 
 if (isset($_SESSION['suid'])) {
-    $res = @mysql_query( "SELECT username,prenom,nom,promo,perms FROM auth_user_md5 WHERE user_id='{$_SESSION['suid']}'");
+    $res = @$globals->db->query( "SELECT username,prenom,nom,promo,perms FROM auth_user_md5 WHERE user_id='{$_SESSION['suid']}'");
     if(@mysql_num_rows($res) != 0) {
         list($username,$prenom,$nom,$promo,$perms)=mysql_fetch_row($res);
         // on rétablit les loggers

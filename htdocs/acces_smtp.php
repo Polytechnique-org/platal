@@ -8,23 +8,23 @@ if (isset($_REQUEST['op']) && $_REQUEST['op'] == "Valider"
         && strlen($_REQUEST['smtppass1'])>=6) {
 
     // on change le mot de passe
-    $result = mysql_query("select smtppass from auth_user_md5 where user_id = ".$_SESSION['uid']);
+    $result = $globals->db->query("select smtppass from auth_user_md5 where user_id = ".$_SESSION['uid']);
     list($smtppass_old) = mysql_fetch_row($result);
     mysql_free_result($result);
-    mysql_query("update auth_user_md5 set smtppass = '{$_REQUEST['smtppass1']}' where user_id = ".$_SESSION['uid']);
+    $globals->db->query("update auth_user_md5 set smtppass = '{$_REQUEST['smtppass1']}' where user_id = ".$_SESSION['uid']);
     $_SESSION['log']->log("passwd_ssl");
 
     $page->assign('message','Mot de passe enregistré');
 
 } elseif (isset($_REQUEST['op']) && $_REQUEST['op'] == "Supprimer") {
 
-    mysql_query("update auth_user_md5 set smtppass = '' where user_id = ".$_SESSION['uid']);
+    $globals->db->query("update auth_user_md5 set smtppass = '' where user_id = ".$_SESSION['uid']);
     $_SESSION['log']->log("passwd_del");
     $page->assign('message','Compte SMTP et NNTP supprimé');
 
 }
 
-$result = mysql_query("select smtppass from auth_user_md5 where user_id = ".$_SESSION['uid']);
+$result = $globals->db->query("select smtppass from auth_user_md5 where user_id = ".$_SESSION['uid']);
 list($smtppass_old) = mysql_fetch_row($result);
 mysql_free_result($result);
 

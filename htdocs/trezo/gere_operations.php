@@ -39,7 +39,7 @@ if ($mois_sel) {
 switch($action) {
     case "edit":
         if ($operation_id) {
-            $res=mysql_query("select date,label,credit,debit from trezo.operations where id='$operation_id'");
+            $res=$globals->db->query("select date,label,credit,debit from trezo.operations where id='$operation_id'");
             list($operation_date,$operation_label,$operation_credit,$operation_debit)=mysql_fetch_row($res);
         }
     break;
@@ -70,7 +70,7 @@ switch($action) {
     break;
     case "del":
         if ($operation_id) {
-            mysql_query("delete from trezo.operations where id='".$operation_id."'");
+            $globals->db->query("delete from trezo.operations where id='".$operation_id."'");
         }
     break;
 

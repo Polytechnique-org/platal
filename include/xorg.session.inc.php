@@ -26,7 +26,7 @@ class XorgSession extends DiogenesCoreSession {
     {
       // si on vient de recevoir une identification par passwordpromptscreen.tpl
       // ou passwordpromptscreenlogged.tpl
-      $res = @mysql_query( "SELECT username,user_id,password FROM auth_user_md5 WHERE username='{$_REQUEST['username']}'");
+      $res = @$globals->db->query( "SELECT username,user_id,password FROM auth_user_md5 WHERE username='{$_REQUEST['username']}'");
       if(@mysql_num_rows($res) != 0) {
         list($username,$uid,$password)=mysql_fetch_row($res);
         mysql_free_result($res);
@@ -154,7 +154,7 @@ function try_cookie() {
     if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGlogin']))
         return -1;
 
-    $res = @mysql_query( "SELECT user_id,password FROM auth_user_md5 WHERE username='{$_COOKIE['ORGlogin']}'");
+    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE username='{$_COOKIE['ORGlogin']}'");
     if(@mysql_num_rows($res) != 0) {
       list($uid,$password)=mysql_fetch_row($res);
       mysql_free_result($res);
@@ -173,7 +173,7 @@ function try_cookie() {
  * @see controlpermanent.inc.php controlauthentication.inc.php
  */
 function start_connexion ($username, $uid, $identified) {
-  $result=mysql_query("SELECT prenom, nom, perms, promo, UNIX_TIMESTAMP(lastnewslogin), UNIX_TIMESTAMP(lastlogin), host, matricule FROM auth_user_md5 WHERE user_id=$uid;");
+  $result=$globals->db->query("SELECT prenom, nom, perms, promo, UNIX_TIMESTAMP(lastnewslogin), UNIX_TIMESTAMP(lastlogin), host, matricule FROM auth_user_md5 WHERE user_id=$uid;");
   list($prenom, $nom, $perms, $promo, $lastnewslogin, $lastlogin, $host, $matricule) = mysql_fetch_row($result);
   mysql_free_result($result);
   // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
@@ -188,7 +188,7 @@ function start_connexion ($username, $uid, $identified) {
     // mise à jour de la date de dernière connexion
     // sauf lorsque l'on est en SUID
     $newhost=strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
-    mysql_query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=$uid;");
+    $globals->db->query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=$uid;");
     $_SESSION['lastlogin'] = $lastlogin;
     $_SESSION['host'] = $host;
   }
@@ -201,7 +201,7 @@ function start_connexion ($username, $uid, $identified) {
   $_SESSION['perms'] = $perms;
   $_SESSION['promo'] = $promo;
   $_SESSION['lastnewslogin'] = $lastnewslogin;
-  $res = mysql_query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
+  $res = $globals->db->query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
   $_SESSION['femme'] = mysql_num_rows($res) > 0;
   mysql_free_result($res);
   // on récupère le logger si il existe, sinon, on logge la connexion
@@ -215,12 +215,12 @@ function start_connexion ($username, $uid, $identified) {
 
 function set_skin() {
   if(logged()) {
-    $result = mysql_query("SELECT skin,skin_tpl
+    $result = $globals->db->query("SELECT skin,skin_tpl
                            FROM auth_user_md5 AS a INNER JOIN skins AS s
                            ON a.skin=s.id WHERE user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
     if(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result)) {
       if ($_SESSION['skin_id'] == SKIN_STOCHASKIN_ID) {
-          $res = mysql_query("SELECT id,skin FROM skins
+          $res = $globals->db->query("SELECT id,skin FROM skins
                               WHERE !FIND_IN_SET('cachee',type) order by rand() limit 1");
           list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($res);
           mysql_free_result($res);

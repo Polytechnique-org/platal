@@ -3,7 +3,7 @@ require("auto.prepend.inc.php");
 new_skinned_page('skins.tpl', AUTH_COOKIE);
 
 if (isset($_REQUEST['submit']))  {  // formulaire soumis, traitons les données envoyées
-    mysql_query("UPDATE auth_user_md5
+    $globals->db->query("UPDATE auth_user_md5
                 SET skin={$_REQUEST['newskin']}
                 WHERE user_id={$_SESSION['uid']}");
     set_skin();

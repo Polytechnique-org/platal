@@ -15,7 +15,7 @@ if(isset($_REQUEST['x'])) {
 		Header("Content-type: image/".$myphoto->mimetype);
 		echo $myphoto->data;
 	} else {
-		$result = mysql_query("SELECT attachmime, attach FROM photo WHERE uid = '{$_REQUEST['x']}'");
+		$result = $globals->db->query("SELECT attachmime, attach FROM photo WHERE uid = '{$_REQUEST['x']}'");
 
 		if(  list($type,$data) = @mysql_fetch_row($result) ) {
 			Header(  "Content-type: image/$type");

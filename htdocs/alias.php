@@ -8,7 +8,7 @@ $page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
 
 //Récupération des alias éventuellement existants
 $sql = "SELECT domain from groupex.aliases WHERE id=12 AND email like '".$_SESSION['username']."'";
-if($result = mysql_query($sql)) {
+if($result = $globals->db->query($sql)) {
     list($aliases) = mysql_fetch_row($result);
     mysql_free_result($result);
     $page->assign('actuel',$aliases);
@@ -31,7 +31,7 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         $page->run('error');
     } else {
         //vérifier que l'alias n'est pas déja pris
-        $result = mysql_query("SELECT 1 FROM groupex.aliases WHERE id=12 AND domain LIKE '$alias@melix.net'");
+        $result = $globals->db->query("SELECT 1 FROM groupex.aliases WHERE id=12 AND domain LIKE '$alias@melix.net'");
         if (mysql_num_rows($result)>0) {
             $page->assign('error', "L'alias $alias@melix.net a déja été attribué.
                                     Tu ne peux donc pas l'obtenir.");
