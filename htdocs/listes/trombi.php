@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.6 2004-10-15 09:40:31 web Exp $
+        $Id: trombi.php,v 1.7 2004-10-15 09:47:32 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -50,12 +50,6 @@ if(is_array($members)) {
             $membres[0][] = Array('l' => $member[0]);
         }
         mysql_free_result($res);
-
-/*	if(preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
-	    $membres[$matches[2]][] = Array('n' => $member[0], 'l' => $matches[1]);
-	} else {
-	    $membres[0][] = Array('l' => $member[1]);
-	}*/
     }
     ksort($membres);
 
