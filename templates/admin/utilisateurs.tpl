@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.7 2004-09-01 18:02:00 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.8 2004-09-01 18:04:45 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -101,17 +101,6 @@ depuis <strong>{$mr.host}</strong>
           <option value="admin" {if $mr.perms eq "admin"}selected="selected"{/if}>admin</option>
         </select>
       </td>
-    </tr>
-    <tr> 
-      <td class="loginr">
-        then prenom.nom=
-      </td>
-      <td class="login">
-        <input type="text" name="loginbis" size="24" maxlength="255" value="{$mr.loginbis}" />
-      </td>
-      <th class="action">
-        Action
-      </th>
     </tr>
     <tr> 
       <th>UID</th>
