@@ -48,23 +48,14 @@
     </tr>
     <tr>
       <td class="center">
-        <img src="{rel}/getphoto.php?x={$smarty.session.uid}" width="110" alt=" [ PHOTO ] " />
+        <img src="{rel}/getphoto.php?x={$smarty.session.uid}" width="200" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
-        <img src="{rel}/getphoto.php?x={$smarty.session.uid}&amp;req=true" width=110 alt=" [ PHOTO ] " />
+        <img src="{rel}/getphoto.php?x={$smarty.session.uid}&amp;req=true" width="200" alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="center">
-        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par : <br />
-        {if ($session.promo ge 1995) or ($session.promo le 2002)}
-        <input type="submit" value="Trombino de l'X" name="trombi" /><br />
-        {/if}
-        <input type="submit" value="Image par défaut" name="suppr" />
       </td>
     </tr>
     <tr>
@@ -75,16 +66,33 @@
         photo aura été contrôlée.
       </td>
     </tr>
-  </table>
-
-  <table class="bicol" cellspacing="0" cellpadding="2">
     <tr>
-      <th>
+      <th colspan="2">
+        Actions immédiates
+      </th>
+    </tr>
+    <tr>
+      <td {if !$submited}colspan="2"{/if} class="center">
+        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par : <br />
+        {if $has_trombi_x}
+        <input type="submit" value="Trombino de l'X" name="trombi" /><br />
+        {/if}
+        <input type="submit" value="Image par défaut" name="suppr" />
+      </td>
+      {if $submited}
+      <td class="center">
+        Tu peux annuler ta soumission et garder ta photo actuelle : <br />
+        <input type="submit" value="Annuler ta soumission" name="cancel" />
+      </td>
+      {/if}
+    </tr>
+    <tr>
+      <th colspan="2">
         Changement de ta photo
       </th>
     </tr>
     <tr>
-      <td>
+      <td colspan="2">
         <p>
         Nous te proposons deux possibilités pour mettre à jour ta photo (30 Ko maximum). Tout dépend
         de savoir où se trouve ta photo. Si elle est sur ton poste de travail local, c'est la première
@@ -100,23 +108,14 @@
       <td class="titre">
         Sur ton ordinateur
       </td>
-    </tr>
-    <tr>
-      <td>
-        <input name="userfile" type="file" size="20" maxlength="150" />
-      </td>
-    </tr>
-    <tr>
-      <td class="center">
-        <input type="submit" value="  OK  " name="ordi" />
-      </td>
-    </tr>
-    <tr>
       <td class="titre">
         Sur Internet
       </td>
     </tr>
     <tr>
+      <td>
+        <input name="userfile" type="file" size="20" maxlength="150" />
+      </td>
       <td>
         <input type="text" size="45" maxlength="140" name="photo"
         value="{$smarty.request.photo|default:"http://www.multimania.com/joe/maphoto.jpg"}" />
@@ -124,7 +123,10 @@
     </tr>
     <tr>
       <td class="center">
-        <input type="submit" value="  OK  " name="web" />
+        <input type="submit" value="Envoyer !" name="upload" />
+      </td>
+      <td class="center">
+        <input type="submit" value="Envoyer !" name="upload" />
       </td>
     </tr>
   </table>

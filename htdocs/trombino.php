@@ -24,36 +24,33 @@ new_skinned_page('trombino.tpl', AUTH_MDP);
 
 require_once('validations.inc.php');
 
-if (Env::has('ordi') and isset($_FILES['userfile']['tmp_name'])) {
-    $data = file_get_contents($_FILES['userfile']['tmp_name']);
-    if ($myphoto = new PhotoReq(Session::getInt('uid'), $data)) {
-        $myphoto->submit();
-    }
-} elseif (Env::has('web') and Env::has('photo')) {
-    // net
-    if ($s = file_get_contents(Env::get('photo'))) {
-        if ($myphoto = new PhotoReq(Session::getInt('uid'), $s)) {
+$trombi_x = '/home/web/trombino/photos'.Session::get('promo').'/'.Session::get('forlife').'.jpg';
+
+if (Env::has('upload')) {
+    $file = isset($_FILES['userfile']['tmp_name']) ? $_FILES['userfile']['tmp_name'] : Env::get('photo');
+    if ($data = file_get_contents($file)) {
+        if ($myphoto = new PhotoReq(Session::getInt('uid'), $data)) {
             $myphoto->submit();
         }
     } else {
         $page->trig('Fichier inexistant ou vide');
     }
 } elseif (Env::has('trombi')) {
-    // Fichier à récupérer dans les archives trombi + commit immédiat
-    $file = '/home/web/trombino/photos'.Session::get('promo').'/'.Session::get('forlife').'.jpg';
-    $myphoto = new PhotoReq(Session::getInt('uid'), file_get_contents($file));
-    if ($myphoto) {// There was no errors, we can go on
+    $myphoto = new PhotoReq(Session::getInt('uid'), file_get_contents($trombi_x));
+    if ($myphoto) {
         $myphoto->commit();
         $myphoto->clean();
     }
 } elseif (Env::get('suppr')) {
-    // effacement de la photo
     $globals->xdb->execute('DELETE FROM photo WHERE uid = {?}', Session::getInt('uid'));
     $globals->xdb->execute('DELETE FROM requests WHERE user_id = {?} AND type="photo"', Session::getInt('uid'));
+} elseif (Env::get('cancel')) {
+    $sql = $globals->xdb->query('DELETE FROM requests WHERE user_id={?} AND type="photo"', Session::getInt('uid'));
 }
 
 $sql = $globals->xdb->query('SELECT COUNT(*) FROM requests WHERE user_id={?} AND type="photo"', Session::getInt('uid'));
 $page->assign('submited', $sql->fetchOneCell());
+$page->assign('has_trombi_x', file_exists($trombi_x));
 
 $page->run();
 
