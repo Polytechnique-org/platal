@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.4 2004-02-03 17:42:45 x2000gommard Exp $
  *
  */
 
@@ -153,6 +153,12 @@ class Validate {
      */
     function commit () { }
 }
+
+
+/*** Personnalisation des validations ***/
+require("valid.conf.php");
+
+
 
 //***************************************************************************************
 //

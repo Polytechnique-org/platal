@@ -61,52 +61,34 @@ ________EOF;
     function handle_formu() {
         if (isset($_POST['submit'])) {
             require("diogenes.mailer.inc.php");
-            $mymail = new DiogenesMailer('Equipe Polytechnique.org '
-                .'<validation+recrutement@polytechnique.org>', 
+            $mymail = new DiogenesMailer(
+                from_mail_valid_emploi(),
                 $this->mail,
-                "[Polytechnique.org/EMPLOI] Annonce emploi : ".$this->entreprise,
-                false, "validation+recrutement@m4x.org");
-
-            $message =
-                "Bonjour,\n".
-                "\n";
+                subject_mail_valid_emploi($this->entreprise),
+                false,
+                cc_mail_valid_emploi());
 
             if($_REQUEST['submit']=="Accepter") {
                 require("nntp.inc.php");
                 require("poster.inc.php");
                 $post = new poster(
-                  "Annonces recrutement <recrutement@polytechnique.org>", 
-                  "xorg.pa.emploi", 
-                  "[OFFRE PUBLIQUE] {$this->entreprise} : {$this->titre}");
+                    from_post_emploi(),
+                    to_post_emploi(),
+                    subject_post_emploi($this)) ;
+                    
 # Ca c'est pour faire les tests (xorg.test)
 #                $post = new poster(
-#                  "Tests annonces recrutement <support@polytechnique.org>", 
-#                  "xorg.test", 
-#                  "[TEST PUBLIC] {$this->entreprise} : {$this->titre}");
-                $post->setbody($this->text
-                 ."\n\n\n"
-                 ."#############################################################################\n"
-                 ." Ce forum n'est pas accessible à l'entreprise qui a proposé  cette  annonce.\n"
-                 ." Pour  y  répondre,  utilise  les  coordonnées  mentionnées  dans  l'annonce\n"
-                 ." elle-même.\n"
-                 ."#############################################################################\n"
-                 );
+#                   from_post_emploi_test(),
+#                   to_post_emploi_test(),
+#                   subject_post_emploi_test($this)) ;
+
+                $post->setbody( msg_post_emploi($this) ) ;
                 $post->post();
-                $message .= 
-                "  L'annonce << {$this->titre} >> ".
-                "a été acceptée par les modérateurs. Elle apparaîtra ".
-                "dans le forum emploi du site\n\n".
-                "Nous vous remercions d'avoir proposé cette annonce.";
+                $message = msg_valid_emploi_OK( $this->titre ) ;
             } else {
-                $message .=
-                "  L'annonce << {$this->titre} >> ".
-                "a été refusée par les modérateurs.\n\n";
+                $message = msg_valid_emploi_NON( $this->titre ) ;
             }
 
-            $message .=
-                "\n".
-                "Cordialement,\n".
-                "L'équipe X.org";
             $message = wordwrap($message,78);  
             $mymail->setBody($message);
             $mymail->send();

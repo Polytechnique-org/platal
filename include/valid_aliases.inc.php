@@ -1,6 +1,4 @@
 <?php
-require_once("valid.conf.php") ;
-
 class AliasReq extends Validate {
     var $alias;
     var $raison;
