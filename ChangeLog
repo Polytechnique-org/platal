@@ -22,7 +22,8 @@ Changes :
 
 Fixes (from 0.9.1 branch) :
 	* Lists :
-		- better mails to -owners for reject/discard ops.					-MC
+		- Better mails to -owners for reject/discard ops.					-MC
+		- Mailman is case sensitive, goto lowercase.						-MC
 
 
 ================================================================================
