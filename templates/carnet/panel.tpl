@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: panel.tpl,v 1.2 2004-11-06 22:34:18 x2000habouzit Exp $
+        $Id: panel.tpl,v 1.3 2004-11-13 08:36:27 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Bilan des Notifications</h1>
@@ -51,7 +51,7 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
     <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
     <td>
       {if $promo[row].inscrit}
-      <a href="javascript:x()" onclick="popupWin('fiche.php?user={$promo[row].forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
+      <a href="javascript:x()" onclick="popupWin('{"fiche.php"|url}?user={$promo[row].forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
         {$promo[row].prenom} {$promo[row].nom}
       </a>
       {if $promo[row].contact}
