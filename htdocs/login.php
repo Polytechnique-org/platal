@@ -62,5 +62,8 @@ $sql = "SELECT e.id,e.titre,e.texte,a.username,a.nom,a.prenom,a.promo
         ORDER BY (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
 $page->mysql_assign($sql, 'evenement');
 
+$page->assign('toto',"");
+$page->assign('tata',"1");
+
 $page->display();
 ?>

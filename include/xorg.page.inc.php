@@ -2,7 +2,7 @@
 require("diogenes.core.page.inc.php");
 
 function block_dynamic($param, $content, &$smarty) {
-    if(!isset($param['on']) || !empty($param['on']))
+    if(isset($param['on']) xor empty($param['on']))
         return $content;
 }
 
@@ -24,103 +24,101 @@ function function_dyn($params) {
 }
 
 class XorgPage extends DiogenesCorePage {
-  var $_page_type;
-  var $_tpl;
-  
-  function XorgPage($tpl, $type=SKINNED) {
-    global $site_dev,$marketing_admin,$globals;
+    var $_page_type;
+    var $_tpl;
 
-    $this->template_dir = $globals->spoolroot."/templates/";
-    $this->compile_dir  = $globals->spoolroot."/templates_c/";
-    $this->plugins_dir[]= $globals->spoolroot."/plugins/";
-    $this->config_dir   = $globals->spoolroot."/configs/";
-    $this->cache_dir    = $globals->spoolroot."/cache/";
+    function XorgPage($tpl, $type=SKINNED) {
+        global $site_dev,$marketing_admin,$globals;
 
-    $this->config_overwrite=false;
-    $this->compile_check = isset($site_dev);
-    $this->caching = ($type == SKINNED);
+        $this->template_dir = $globals->spoolroot."/templates/";
+        $this->compile_dir  = $globals->spoolroot."/templates_c/";
+        $this->plugins_dir[]= $globals->spoolroot."/plugins/";
+        $this->config_dir   = $globals->spoolroot."/configs/";
+        $this->cache_dir    = $globals->spoolroot."/cache/";
 
-    $this->_page_type = $type;
-    $this->_tpl = $tpl;
+        $this->config_overwrite=false;
+        $this->compile_check = isset($site_dev);
+        $this->caching = ($type == SKINNED);
 
-    $this->DiogenesCorePage();
-    $this->register_block('dynamic', 'block_dynamic', false);
-    $this->register_function('dyn', 'function_dyn', false);
-    $this->register_function('implode', 'function_implode');
+        $this->_page_type = $type;
+        $this->_tpl = $tpl;
 
-    // if necessary, construct new session
-    if (empty($_SESSION['session']))
-      $_SESSION['session'] = new XorgSession;
+        $this->DiogenesCorePage();
+        $this->register_block('dynamic', 'block_dynamic', false);
+        $this->register_function('dyn', 'function_dyn', false);
+        $this->register_function('implode', 'function_implode');
 
-    $this->assign('site_dev',$site_dev);
+        // if necessary, construct new session
+        if (empty($_SESSION['session']))
+            $_SESSION['session'] = new XorgSession;
 
-    // si necessaire, c'est *ici* que se fait l'authentification
-    $_no_legacy = true;
-    $this->doAuth();
-  }
+        $this->assign('site_dev',$site_dev);
 
-  function display($append_to_id="") {
-      global $baseurl, $site_dev;
-      if(isset($_SESSION['suid']))
-          $this->caching=false;
-      $id = $this->make_id($append_to_id);
-      if($site_dev) {
-          $this->assign('validate', urlencode($baseurl.'/valid.html'));
-          if($this->_page_type == NO_SKIN)
-              $result = $this->fetch($this->_tpl, $id);
-          else
-              $result = $this->fetch('skin/'.$_SESSION['skin'], $id);
-          $fd = fopen($this->cache_dir."valid.html","w");
-          fwrite($fd, $result);
-          fclose($fd);
-          echo $result;
-      } else {
-          if($this->_page_type == NO_SKIN)
-              parent::display($this->_tpl, $id);
-          else
-              parent::display('skin/'.$_SESSION['skin'], $id);
-      }
-      exit;
-  }
+        // si necessaire, c'est *ici* que se fait l'authentification
+        $_no_legacy = true;
+        $this->doAuth();
+    }
 
-  function xorg_is_cached($append_to_id="") {
-      $id = $this->make_id($append_to_id);
-      if($this->_page_type == NO_SKIN)
-          return parent::is_cached($this->_tpl, $id);
-      else
-          return parent::is_cached('skin/'.$_SESSION['skin'], $id);
-  }
+    function display($append_to_id="") {
+        global $baseurl, $site_dev;
+        if($this->_page_type == NO_SKIN)
+            parent::display($this->_tpl);
+        else {
+            if(isset($_SESSION['suid'])) $this->caching=false;
+            $id = $this->make_id($append_to_id);
+            if($site_dev) {
+                $this->assign('validate', urlencode($baseurl.'/valid.html'));
+                $result = $this->fetch('skin/'.$_SESSION['skin'], $id);
+                $fd = fopen($this->cache_dir."valid.html","w");
+                fwrite($fd, $result);
+                fclose($fd);
+                echo $result;
+            } else
+                parent::display('skin/'.$_SESSION['skin'], $id);
+        }
+        exit;
+    }
 
-  function make_id($append_to_id="") {
-      $ret = ($this->_page_type == NO_SKIN ? "noskin|" : "") . $this->_tpl;
-      if($append_to_id)
-          $ret.="|$append_to_id";
+    function xorg_is_cached($append_to_id="") {
+        if($this->_page_type == NO_SKIN)
+            return parent::is_cached($this->_tpl);
+        else
+            return parent::is_cached('skin/'.$_SESSION['skin'], $this->make_id($append_to_id));
+    }
 
-      $auth_trans = Array(AUTH_PUBLIC => 'public', AUTH_COOKIE => 'cookie', AUTH_MDP => 'passwd');
-      $ret .= '|A_'.$auth_trans[empty($_SESSION['auth']) ? AUTH_PUBLIC : $_SESSION['auth']];
-      
-      $ret .= '-'.(empty($_SESSION['perms']) ? PERMS_EXT : $_SESSION['perms']);
+    function make_id($append_to_id="") {
+        if($this->_page_type == NO_SKIN)
+            return null;
 
-      return $ret;
-  }
+        $ret = $this->_tpl;
+        if($append_to_id)
+            $ret.="|$append_to_id";
 
-  function doAuth() { }
+        $auth_trans = Array(AUTH_PUBLIC => 'public', AUTH_COOKIE => 'cookie', AUTH_MDP => 'passwd');
+        $ret .= '|A_'.$auth_trans[empty($_SESSION['auth']) ? AUTH_PUBLIC : $_SESSION['auth']];
 
-  function mysql_assign($sql_query,$var_name,$var_nb_name='') {
-    $sql = mysql_query($sql_query);
-    if(mysql_errno())
-      return(mysql_error($sql));
+        $ret .= '-'.(empty($_SESSION['perms']) ? PERMS_EXT : $_SESSION['perms']);
 
-    $array = Array();
-    while($array[] = mysql_fetch_assoc($sql));
-    array_pop($array);
-    mysql_free_result($sql);
+        return $ret;
+    }
 
-    $this->assign_by_ref($var_name,$array);
-    if(!empty($var_nb_name))
-      $this->assign($var_nb_name, count($array));
-    return 0;
-  }
+    function doAuth() { }
+
+    function mysql_assign($sql_query,$var_name,$var_nb_name='') {
+        $sql = mysql_query($sql_query);
+        if(mysql_errno())
+            return(mysql_error($sql));
+
+        $array = Array();
+        while($array[] = mysql_fetch_assoc($sql));
+        array_pop($array);
+        mysql_free_result($sql);
+
+        $this->assign_by_ref($var_name,$array);
+        if(!empty($var_nb_name))
+            $this->assign($var_nb_name, count($array));
+        return 0;
+    }
 
 }
 
@@ -130,15 +128,15 @@ class XorgPage extends DiogenesCorePage {
  */
 class XorgAuth extends XorgPage
 {
-  function XorgAuth($tpl, $type=SKINNED)
-  {
-    $this->XorgPage($tpl, $type);
-  }
+    function XorgAuth($tpl, $type=SKINNED)
+    {
+        $this->XorgPage($tpl, $type);
+    }
 
-  function doAuth()
-  {
-    $_SESSION['session']->doAuth($this);
-  }
+    function doAuth()
+    {
+        $_SESSION['session']->doAuth($this);
+    }
 }
 
 
@@ -147,15 +145,15 @@ class XorgAuth extends XorgPage
  */
 class XorgCookie extends XorgPage
 {
-  function XorgCookie($tpl, $type=SKINNED)
-  {
-    $this->XorgPage($tpl, $type);
-  }
+    function XorgCookie($tpl, $type=SKINNED)
+    {
+        $this->XorgPage($tpl, $type);
+    }
 
-  function doAuth()
-  {
-    $_SESSION['session']->doAuthCookie($this);
-  }
+    function doAuth()
+    {
+        $_SESSION['session']->doAuthCookie($this);
+    }
 }
 
 
@@ -163,11 +161,11 @@ class XorgCookie extends XorgPage
  */
 class XorgAdmin extends XorgAuth
 {
-  function XorgAdmin($tpl, $type=SKINNED)
-  {
-    $this->XorgAuth($tpl, $type);
-    check_perms();
-  }
+    function XorgAdmin($tpl, $type=SKINNED)
+    {
+        $this->XorgAuth($tpl, $type);
+        check_perms();
+    }
 }
 
 ?>
