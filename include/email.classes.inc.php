@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.6 2004-09-04 20:47:50 x2000habouzit Exp $
+        $Id: email.classes.inc.php,v 1.7 2004-09-06 09:59:00 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -98,6 +98,7 @@ class Redirect {
         $result = $globals->db->query("
 	    SELECT email, FIND_IN_SET('active',flags), rewrite, FIND_IN_SET('mtic',flags),panne
 	      FROM emails WHERE uid = $_uid AND NOT FIND_IN_SET('filter',flags)");
+	$this->emails=Array();
         while ($row = mysql_fetch_row($result)) {
 	    $this->emails[] = new Email($row);
         }
@@ -141,7 +142,8 @@ class Redirect {
             $mtic = 1;
         }
         $globals->db->query("REPLACE INTO emails (uid,email,flags) VALUES({$this->uid},'$email','$flags')");
-        $_SESSION['log']->log('email_add',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
+	if(isset($_SESSION['log'])) // may be absent --> step4.php
+	    $_SESSION['log']->log('email_add',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
 	foreach($this->emails as $mail) {
 	    if($mail->email == $email_stripped) return SUCCESS;
 	}

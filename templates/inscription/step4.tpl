@@ -17,25 +17,25 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: step4.tpl,v 1.1 2004-09-06 09:59:00 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
-{if $error}
+{if !$error}
   <div class="rubrique">
     Dernière étape
   </div>
   <p>
     Tu as maintenant accès au site en utilisant les paramètres reçus par mail.
-    Les adresses électroniques <strong>{$username}@polytechnique.org</strong>
-    et <strong>{$username}@m4x.org</strong> sont déjà ouvertes, essaie-les !
+    Ton adresses électronique à vie <strong>{$forlife}@polytechnique.org</strong>
+    est déjà ouverte, essaie-la !
   </p>
   <p>
     Remarque: m4x.org est un domaine "discret" qui veut dire "mail for X" et
     qui comporte exactement les mêmes adresses que le domaine polytechnique.org.
   </p>
   <p>
-    <strong><a href="{if $dev eq 0}https://www.polytechnique.org/{/if}motdepassemd5.php">Clique ici pour changer ton mot de passe.</a></strong>
+  <strong><a href="{if $dev eq 0}https://www.polytechnique.org/motdepassemd5.php{else}{"motdepassemd5.php"|url}{/if}">Clique ici pour changer ton mot de passe.</a></strong>
   </p>
   <p>
     N'oublie pas : si tu perds ton mot de passe, nous n'avons aucun engagement, en

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.6 2004-09-06 08:27:04 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.7 2004-09-06 09:59:00 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -185,7 +185,7 @@ if ( $homonyme ) {
 
     if ( $h_type != 'homonyme' and empty($expire) ) {
 	$globals->db->query("UPDATE aliases SET expire=ADD_DATE(NOW(),INTERVAL 1 MONTH) WHERE alias='$mailorg'");
-	$globals->db->query("REPLACE INTO homonymes SET (homonyme_id,user_id) VALUES ($h_id,$h_id)");
+	$globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES ($h_id,$h_id)");
 	require_once('diogenes.mailer.inc.php');
 	$mailer = new DiogenesMailer('Support Polytechnique.org <support@polytechnique.org>',
 				     "$mailorg@polytechnique.org",
