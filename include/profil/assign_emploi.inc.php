@@ -18,27 +18,30 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fonction.emploi.inc.php,v 1.5 2004-08-31 19:18:26 x2000habouzit Exp $
+        $Id: assign_emploi.inc.php,v 1.1 2004-08-31 19:18:26 x2000habouzit Exp $
  ***************************************************************************/
 
-function select_fonction($fonction){
-    global $globals;
-    $html = "<option value='' ". (($fonction == '0')?"selected='selected'":"") .">&nbsp;</option>\n";
+$page->assign('endrid',$endrid);
+$page->assign('entreprise',$entreprise);
+$page->assign('secteur',$secteur);
+$page->assign('ss_secteur',$ss_secteur);
+$page->assign('poste',$poste);
+$page->assign('fonction',$fonction);
+$page->assign('adrpro1',$adrpro1);
+$page->assign('adrpro2',$adrpro2);
+$page->assign('adrpro3',$adrpro3);
+$page->assign('cppro',$cppro);
+$page->assign('villepro',$villepro);
+$page->assign('payspro',$payspro);
+$page->assign('regionpro',$regionpro);
+$page->assign('telpro',$telpro);
+$page->assign('faxpro',$faxpro);
+$page->assign('entreprise_public',$entreprise_public);
+$page->assign('entreprise_ax',$entreprise_ax);
+$page->assign('adrpro_public',$adrpro_public);
+$page->assign('adrpro_ax',$adrpro_ax);
+$page->assign('telpro_public',$telpro_public);
+$page->assign('telpro_ax',$telpro_ax);
+$page->assign('cv',$cv);
 
-    $res = $globals->db->query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
-    while(list($fid, $flabel, $ftitre) = mysql_fetch_row($res)){
-	if($ftitre)
-	    $html.= "<option value='$fid' " . (($fonction == $fid)?"selected='selected'":"") . ">$flabel</option>\n";
-	else
-	    $html .= "<option value=\"$fid\" " . (($fonction == $fid)?"selected='selected'":"") . ">* $flabel</option>\n";
-    }
-    mysql_free_result($res);
-    return $html;
-}
-
-function _select_fonction_smarty($params){
-    return select_fonction($params['fonction']);
-}
-
-$page->register_function('select_fonction', '_select_fonction_smarty');
 ?>
