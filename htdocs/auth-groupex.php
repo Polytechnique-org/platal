@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auth-groupex.php,v 1.6 2004-10-08 17:25:48 web Exp $
+        $Id: auth-groupex.php,v 1.7 2004-10-08 20:07:18 web Exp $
  ***************************************************************************/
 
 $gpex_pass = $_GET["pass"];
@@ -52,7 +52,12 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
            variable inexistante ! */
         if (isset($_SESSION[$val])) {
             $tohash .= stripslashes($_SESSION[$val]);
-        }
+        } else if ($val == 'username') {
+	    $sql = "SELECT alias FROM aliases AS al INNER JOIN auth_user_md5 AS a ON (a.user_id = al.id AND (al.type = 'a_vie' OR al.type = 'alias' OR al.type = 'epouse')) WHERE a.user_id = ".$_SESSION["uid"]." AND alias LIKE '%.%' ORDER BY LENGTH(alias)";
+	    $res = mysql_query($sql);
+	    list($min_username) = mysql_fetch_array($res);
+            $tohash .= stripslashes($min_username);
+	}
     }
     $tohash .= "1";
     return md5($tohash);
@@ -65,7 +70,12 @@ function gpex_make_params($chlg, $privkey, $datafields) {
     while(list(,$val) = each($fieldarr)) {
         if (isset($_SESSION[$val])) {
             $params .= "&$val=".$_SESSION[$val];
-        }
+        } else if ($val == 'username') {
+	    $sql = "SELECT alias FROM aliases AS al INNER JOIN auth_user_md5 AS a ON (a.user_id = al.id AND (al.type = 'a_vie' OR al.type = 'alias' OR al.type = 'epouse')) WHERE a.user_id = ".$_SESSION["uid"]." AND alias LIKE '%.%' ORDER BY LENGTH(alias)";
+	    $res = mysql_query($sql);
+	    list($min_username) = mysql_fetch_array($res);
+            $params .= "&$val=".$min_username;
+	}
     }
     return $params;
 }
