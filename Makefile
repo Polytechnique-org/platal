@@ -1,5 +1,5 @@
-# $Id: Makefile,v 1.1 2004-11-21 20:40:57 x99laine Exp $
-
+# $Id: Makefile,v 1.2 2004-11-22 11:26:09 x2000habouzit Exp $
+################################################################################
 # definitions
 
 VERSION := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/\t.*//")
@@ -11,6 +11,7 @@ PKG_DIRS = configs htdocs include install.d plugins po scripts templates upgrade
 
 VCS_FILTER = ! -name .arch-ids ! -name CVS
 
+################################################################################
 # global targets
 
 build: pkg-build 
@@ -23,9 +24,24 @@ clean:
 %: %.in Makefile
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
 
+################################################################################
+# devel targets
+cache:
+	mkdir cache
+	chmod o+w cache
 
+templates_c:
+	mkdir templates_c
+	chmod o+w templates_c
+
+devel: build cache templates_c
+
+################################################################################
 # diogenes package targets
 
+config:
+	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
+	
 pkg-build: include/xorg.globals.inc.php
 #	make -C po
 
