@@ -17,26 +17,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.4 2004-09-20 21:31:29 x2000habouzit Exp $
+        $Id: index.tpl,v 1.5 2004-09-22 12:51:08 x2000habouzit Exp $
  ***************************************************************************}
+
+{if $smarty.request.add}
+<p class='erreur'>
+Ta demande d'inscription sur {$smarty.request.add} a été prise en compte.
+</p>
+{/if}
 
 <div class="rubrique">
   Listes de diffusion de Polytechnique.org
 </div>
-
-<p>
-Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
-</p>
 
 <div class='ssrubrique'>
   L'inscription à une liste de diffusion
 </div>
 
 <p>
-Certaines listes sont à inscription modérée, pour t'y inscrire, il te faut envoyer un mail aux
-modérateurs en cliquant sur le lien "s'inscrire", si tu es déjà inscrit, le mot "inscrit" apparaît
-près de la case à cocher.  Les autres listes sont dites libres : il suffit de cocher la case à
-cocher et de cliquer sur le bouton "Enregistrer".
+Certaines listes sont à inscription modérée, l'inscription n'y est pas
+immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
+(ou éventuellement refuser) ta candidature.
 </p>
 
 <p>
@@ -62,11 +63,19 @@ NB : les gestionnaires d'une liste sont aussi ses modérateurs.
   Listes de diffusion publiques
 </div>
 
+<p>
+Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
+</p>
+
 {include file='listes/listes.inc.tpl' min=0}
 
 <div class="rubrique">
   Listes de diffusion privées
 </div>
+
+<p>
+Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire par toi même !
+</p>
 
 {include file='listes/listes.inc.tpl' min=1}
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.2 2004-09-21 15:40:35 x2000habouzit Exp $
+        $Id: index.php,v 1.3 2004-09-22 12:51:07 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -30,7 +30,7 @@ mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 if(isset($_GET['del'])) { $client->unsubscribe($_GET['del']); header('Location: index.php'); }
-if(isset($_GET['add'])) { $client->subscribe($_GET['add']); header('Location: index.php'); }
+if(isset($_GET['add'])) { $client->subscribe($_GET['add']); }
 
 $listes = $client->get_lists();
 $page->assign_by_ref('listes',$listes);

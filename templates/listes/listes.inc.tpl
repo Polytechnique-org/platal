@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: listes.inc.tpl,v 1.3 2004-09-21 16:14:35 x2000habouzit Exp $
+        $Id: listes.inc.tpl,v 1.4 2004-09-22 12:51:08 x2000habouzit Exp $
  ***************************************************************************}
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
@@ -49,6 +49,8 @@
       {if $liste.you is odd}
       <a href='{$smarty.server.PHP_SELF}?del={$liste.list}'>me désinscrire</a>
       {elseif $liste.ins}
+      <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>demander une inscription</a>
+      {else}
       <a href='{$smarty.server.PHP_SELF}?add={$liste.list}'>m'inscrire</a>
       {/if}
     </td>
