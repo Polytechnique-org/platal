@@ -38,7 +38,7 @@ class XorgPage extends DiogenesCorePage {
   }
 
   function display($append_to_id="") {
-      $id = $this->make_id() . ($append_to_id ? "-$append_to_id" : "");
+      $id = $this->make_id($append_to_id);
       if($this->_page_type == POPUP)
           parent::display('skin/'.$_SESSION['skin_popup'], $id);
       else
@@ -46,10 +46,17 @@ class XorgPage extends DiogenesCorePage {
       exit;
   }
 
-  function make_id() {
-      $auth = (empty($_SESSION['auth']) ? 0 : $_SESSION['auth']);
-      $perms = (empty($_SESSION['perms']) ? 0 : $_SESSION['perms']);
-      return $this->_tpl."-$auth-$perms";
+  function make_id($append_to_id="") {
+      $ret = str_replace('/','|',$this->_tpl);
+      if($append_to_id)
+          $ret.="|$append_to_id";
+
+      $auth_trans = Array(AUTH_PUBLIC => 'public', AUTH_COOKIE => 'cookie', AUTH_MDP => 'passwd');
+      $ret .= '|A_'.$auth_trans[empty($_SESSION['auth']) ? AUTH_PUBLIC : $_SESSION['auth']];
+      
+      $ret .= '-'.(empty($_SESSION['perms']) ? PERMS_EXT : $_SESSION['perms']);
+
+      return $ret;
   }
 
   function doAuth() { }
