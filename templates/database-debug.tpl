@@ -21,15 +21,17 @@
 {if $query.explain}
 <table class="bicol" style="width: 75%; font-family: fixed; margin-left: 2px; margin-bottom: 3px;">
   <tr>
-    {foreach key=key item=item from=$query.explain}
+    {foreach key=key item=item from=$query.explain[0]}
     <th>{$key}</th>
     {/foreach}
   </tr>
+  {foreach item=explain_row from=$query.explain}
   <tr class="impair">
-    {foreach item=item from=$query.explain}
+    {foreach item=item from=$explain_row}
     <td class="center">{$item}</td>
     {/foreach}
   </tr>
+  {/foreach}
 </table>
 {/if}
 {/foreach}
