@@ -18,8 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-
-{if $smarty.server.HTTP_USER_AGENT|truncate:10:'' eq 'Mozilla/4.'}
+{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
 <h1>ATTENTION !</h1>
 
 <p class="erreur">
