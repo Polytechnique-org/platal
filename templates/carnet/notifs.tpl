@@ -17,82 +17,87 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.1 2004-11-04 16:59:31 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.2 2004-11-04 17:47:24 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Notifications automatiques</h1>
 
-<h2>Surveiller tes contacts</h2>
-
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Contacts</legend>
-    <input type='checkbox' name='' /> Surveiller les changements de fiche de tes contacts (y compris celles de photo)<br />
+    <input type='checkbox' name='' /> Surveiller les changements de fiche de tes contacts<br />
     <input type='checkbox' name='' /> Surveiller les décès parmis tes contacts
   </fieldset>
+  
+  <fieldset>
+    <legend>Surveillance des promos</legend>
+    <input type='checkbox' name='' /> Surveiller les inscriptions<br />
+    <input type='checkbox' name='' /> Surveiller les décès<br />
+  </fieldset>
+  
+  <fieldset>
+    <legend>Surveillance des non-inscrits</legend>
+    <input type='checkbox' name='' /> Surveiller les inscriptions<br />
+    <input type='checkbox' name='' /> Surveiller les décès<br />  
+  </fieldset>
+  
   <div class='center'>
     <input type='submit' value='valider' />
   </div>
 </form>
 
-<h2>Surveiller des promotions</h2>
+<br />
+<h1>Promotions à surveiller</h1>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Ajouter une promotion</legend>
-    Ajouter une surveillance sur la promotion :
+    Ajouter une surveillance sur la promotion (YYYY) :
     <input type='text' name='' maxlength='4' size='4' />
     <input type='submit' value='ajouter' />
   </fieldset>
 </form>
 
-{if $promos|@count}
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  {foreach from=$promos item=p}
-  <fieldset>
-    <legend>Promo {$p.promo}</legend>
-    <input type='checkbox' name='' /> Surveiller les inscriptions<br />
-    <input type='checkbox' name='' /> Surveiller les décès
-  </fieldset>
-  {/foreach}
-  
-  <div class='center'>
-    <input type='submit' value='tout valider' />
-  </div>
-</form>
-{/if}
-
-<h2>Surveiller des non inscrits</h2>
-
-<table style="width: 100%">
+<table class='tinybicol' cellpadding="0" cellspacing="0">
   <tr>
-    <td class='half'>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
-        <fieldset>
-          <legend>Surveiller des inscriptions</legend>
-          <input type='text' name='' />
-          <input type='submit' value='ajouter' />
-          <br />
-          {foreach from=$watch_ins item=w}
-          {$w.forlife}
-          {/foreach}
-        </fieldset>
-      </form>
-    </td>
-    <td class='half'>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
-        <fieldset>
-          <legend>Surveiller des décès</legend>
-          <input type='text' name='' />
-          <input type='submit' value='ajouter' />
-          <br />
-          {foreach from=$watch_dcd item=w}
-          {$w.forlife}
-          {/foreach}
-        </fieldset>
-      </form>
+    <td>
+      {if !$promos|@count}
+      Tu ne surveilles actuellement aucune promo.<br />
+      {elseif $promos|@count}
+      Tu surveilles {if $promos|@count eq 1}la promo{else}les promos{/if} :
+      {foreach from=$promos item=p}{$p} {/foreach}<br />
+      {/if}
     </td>
   </tr>
 </table>
+
+<br />
+<h1>Surveiller des non inscrits</h1>
+
+<form action="{$smarty.server.PHP_SELF}" method="post">
+  <fieldset>
+    <legend>Ajouter un non-inscrit</legend>
+    Si la personne est en fait inscrite, elle sera ajoutée à tes contacts.<br />
+    <input type='text' name='' />
+    <input type='submit' value='ajouter' />
+    <span class='smaller'>Il faut entrer le "login" (prenom.nom ou prenom.nom.promo).</span>
+  </fieldset>
+</form>
+
+<table class='tinybicol' cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      {if !$nonins|@count}
+      Tu ne surveilles actuellement aucun non-inscrit.<br />
+      {elseif $promos|@count}
+      Tu surveilles {if $promos|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :
+      {foreach from=$nonins item=p}
+      {$p}<br />
+      {/foreach}
+      {/if}
+    </td>
+  </tr>
+</table>
+
 
 {* vim:set et sw=2 sts=2 sws=2: *}
