@@ -5,6 +5,7 @@ alter table aliases change column type type enum('a_vie','alias','homonyme','lis
 alter table aliases add index (flags);
 
     update  aliases AS a
-left  join  aliases AS b ON(a.id=b.id and b.alias like '%.%' and length(b.alias)<length(a.alias))
+left  join  aliases AS b 
+	ON(a.id=b.id and b.alias like '%.%' and length(b.alias)<length(a.alias) and b.type!='homonyme')
        set  a.flags=CONCAT(a.flags,',bestalias')
-     where  a.alias LIKE '%.%' and b.alias IS NULL and a.type!='homonyme' and b.type!='homonyme';
+     where  a.alias LIKE '%.%' and b.alias IS NULL and a.type!='homonyme';
