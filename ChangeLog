@@ -26,6 +26,7 @@ Bug/Wish :
 	* Core :
 		- #135 : First instance of the plugin class : class Trombi.			-MC
 		- #158 : A photo change updates last `fiche` edition stamp.			-MC
+		- #100,199 : Kludge to determine if a link is popup or not.			-MC
 
 	* Lists :
 		- #138 : Refusal message is shown on mail moderation page.			-MC
