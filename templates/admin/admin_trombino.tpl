@@ -27,15 +27,15 @@
 Photo actuelle de {$forlife}
 </p>
 
-<img src="../getphoto.php?x={$smarty.request.uid}" alt="[ PHOTO ]" />
+<img src="../getphoto.php?x={$forlife}" alt="[ PHOTO ]" />
 <br />
 
 <p>
-<a href="{$smarty.server.PHP_SELF}?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
+<a href="?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
 </p>
 
 <p>
-<a href="{$smarty.server.PHP_SELF}?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
 </p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post" enctype="multipart/form-data">

@@ -148,7 +148,7 @@
               {/if}.
             </td>
             <td class="dcolg">
-              <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] " />
+              <img src="getphoto.php?x={$smarty.session.forlife}" alt=" [ PHOTO ] " />
             </td>
           </tr>
         </table>

@@ -21,9 +21,9 @@
 <tr class="pair">
   <td class="titre">Photos</td>
   <td>
-    <img src="{rel}/getphoto.php?x={$valid->uid}" style="width:110px;" alt=" [ PHOTO ] " />
+    <img src="{rel}/getphoto.php?x={$valid->forlife}" style="width:110px;" alt=" [ PHOTO ] " />
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="{rel}/getphoto.php?x={$valid->uid}&amp;req=true" style="width:110px;" alt=" [ PHOTO ] " />
+    <img src="{rel}/getphoto.php?x={$valid->forlife}&amp;req=true" style="width:110px;" alt=" [ PHOTO ] " />
   </td>
 </tr>
 

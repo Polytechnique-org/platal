@@ -30,15 +30,11 @@ if (Env::has('x')) {
 	Header('Content-type: image/'.$myphoto->mimetype);
 	echo $myphoto->data;
     } else {
-	if(preg_match('/^\d*$/', Env::get('x'))) {
-	    $res = $globals->xdb->query('SELECT attachmime, attach FROM photo WHERE uid = {?}', Env::getInt('x'));
-	} else {
-	    $res = $globals->xdb->query(
-                    "SELECT  attachmime, attach
-                       FROM  photo   AS p
-                 INNER JOIN  aliases AS a ON p.uid=a.id
-                      WHERE  alias={?}", Env::get('x'));
-	}
+        $res = $globals->xdb->query(
+                "SELECT  attachmime, attach
+                   FROM  photo   AS p
+             INNER JOIN  aliases AS a ON p.uid=a.id
+                  WHERE  alias={?}", Env::get('x'));
 
 	if( list($type,$data) = $res->fetchOneRow() ) {
 	    Header(  "Content-type: image/$type");

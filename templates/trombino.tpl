@@ -48,11 +48,11 @@
     </tr>
     <tr>
       <td class="center">
-        <img src="{rel}/getphoto.php?x={$smarty.session.uid}" width="200" alt=" [ PHOTO ] " />
+        <img src="{rel}/getphoto.php?x={$smarty.session.forlife}" width="200" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
-        <img src="{rel}/getphoto.php?x={$smarty.session.uid}&amp;req=true" width="200" alt=" [ PHOTO ] " />
+        <img src="{rel}/getphoto.php?x={$smarty.session.forlife}&amp;req=true" width="200" alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}
