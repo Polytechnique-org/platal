@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.72 2004-11-09 18:20:06 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.73 2004-11-10 09:36:28 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -674,7 +674,7 @@ def check_options((userdesc,perms),vhost,listname,correct=False):
             if mlist.__dict__[k] != v:
                 options[k] = v,mlist.__dict__[k]
                 if correct: mlist.__dict__[k] = v
-        if mlist.real_name != listname:
+        if mlist.real_name.lower() != listname:
             options['real_name'] = listname, mlist.real_name
             if correct: mlist.real_name = listname
         if mlist.host_name != vhost:
@@ -752,9 +752,9 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.Save()
 
         mlist.Unlock()
-        
-        check_options((userdesc,perms),vhost,listname,True)
-        mass_subscribe((userdesc,perms),vhost,listname,members)
+
+        check_options((userdesc,perms),vhost,listname.lower(),True)
+        mass_subscribe((userdesc,perms),vhost,listname.lower(),members)
 
         # avoid the "-1 mail to moderate" bug
         mlist = MailList.MailList(name)
