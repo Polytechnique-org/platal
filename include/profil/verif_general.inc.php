@@ -18,13 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: verif_general.inc.php,v 1.4 2004-08-31 15:03:33 x2000habouzit Exp $
+        $Id: verif_general.inc.php,v 1.5 2004-08-31 16:04:11 x2000habouzit Exp $
  ***************************************************************************/
 
 
 // validité du mobile
 if (strlen(strtok($mobile,"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($mobile)) {
-    $verif_errs = true;
     $errs[] = "Le champ 'Téléphone mobile' contient un caractère interdit."; 
 }
 

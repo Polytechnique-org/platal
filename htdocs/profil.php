@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.7 2004-08-31 15:03:33 x2000habouzit Exp $
+        $Id: profil.php,v 1.8 2004-08-31 16:04:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -72,7 +72,7 @@ if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     require_once("profil/get_{$opened_tab}.inc.php");
     require_once("profil/verif_{$opened_tab}.inc.php");
 
-    if(isset($verif_errs)) {
+    if(!empty($errs)) {
 	require_once("profil/assign_{$opened_tab}.inc.php");
 	$page->assign("errs", $errs);
 	$page->assign('onglet',$opened_tab);

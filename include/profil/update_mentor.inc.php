@@ -18,14 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: update_mentor.inc.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
+        $Id: update_mentor.inc.php,v 1.4 2004-08-31 16:04:11 x2000habouzit Exp $
  ***************************************************************************/
 
 //mise a jour d'expertise si nécessaire
 
-if($mentor_expertise != $mentor_expertise_bd)
-{
-  $globals->db->query("REPLACE INTO mentor(uid, expertise) VALUES('{$_SESSION['uid']}', '".put_in_db($mentor_expertise)."')");
+if($mentor_expertise != $mentor_expertise_bd) {
+    $globals->db->query("REPLACE INTO mentor(uid, expertise) VALUES('{$_SESSION['uid']}', '".put_in_db($mentor_expertise)."')");
 }
 
 
