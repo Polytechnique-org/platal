@@ -5,13 +5,23 @@ require_once("Smarty.class.php");
 /** Classe de mail avec corps en templates.
  */
 class TplMailer extends Smarty {
+    /** Directory used to store mails_templates.
+     * Smarty::template_dir subdir used to sotre the mails templates.
+     * The body of the message is taken from a tsmarty template
+     */
     var $mail_dir = "mails";
+    /** stores the mail template name */
     var $_tpl;
 
+    /** stores the mail From: header */
     var $_from;
+    /** stores the recipients of the mail */
     var $_to  = Array();
+    /** stores the Cc recipients of the mail */
     var $_cc  = Array();
+    /** stores the Bcc recipients of the mail */
     var $_bcc = Array();
+    /** stores the subject of the mail */
     var $_subject;
     
     function TplMailer($tpl) {
@@ -33,6 +43,8 @@ class TplMailer extends Smarty {
     }
 
     function send() {
+        // do not try to optimize, in the templates, some function can modify our object, then we
+        // have to fetch in the first time, and only then send the mail.
         $body = $this->fetch($this->mail_dir."/".$this->_tpl);
         $mailer = new DiogenesMailer($this->_from, implode(',',$this->_to),
                                      $this->_subject, false,
@@ -42,6 +54,7 @@ class TplMailer extends Smarty {
     }
 }
 
+/** used to remove the empty lines due to {from ...}, {to ...} ... functions */
 function mail_format($output, &$smarty) {
     return wordwrap("\n".trim($output)."\n",75);
 }
@@ -55,10 +68,29 @@ function format_addr(&$params) {
         return $params['text'].' <'.$params['addr'].'>';
 }
 
+/** template function : from.
+ * {from full=...} for an already formatted address
+ * {from addr=... [text=...]} else
+ */
 function set_from($params, &$smarty) { $smarty->_from  = format_addr($params); }
+/** template function : to.
+ * {to full=...} for an already formatted address
+ * {to addr=... [text=...]} else
+ */
 function set_to($params, &$smarty)   { $smarty->_to[]  = format_addr($params); }
+/** template function : cc.
+ * {cc full=...} for an already formatted address
+ * {cc addr=... [text=...]} else
+ */
 function set_cc($params, &$smarty)   { $smarty->_cc[]  = format_addr($params); }
+/** template function : bcc.
+ * {bcc full=...} for an already formatted address
+ * {bcc addr=... [text=...]} else
+ */
 function set_bcc($params, &$smarty)  { $smarty->_bcc[] = format_addr($params); }
+/** template function : subject.
+ * {subject text=...} 
+ */
 function set_subject($params, &$smarty) {
     $smarty->_subject = $params['text'];
 }
