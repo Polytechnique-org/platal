@@ -3,7 +3,7 @@ $this->addPrivateEntry(XOM_NO,       10, 'Page d\'accueil',       'login.php');
 
 $this->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',            'emails.php');
 $this->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',            'profil.php');
-$this->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',          'profil.php');
+$this->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',          'carnet/mescontacts.php');
 $this->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',            'carnet/');
 $this->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',      'motdepassemd5.php');
 $this->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',       'preferences.php');
