@@ -35,13 +35,24 @@ templates_c:
 htdocs/valid.html:
 	ln -sf ../templates_c/valid.html htdocs/valid.html
 
-devel: build templates_c htdocs/valid.html
+include/banana:
+	ln -sf ../../banana/include ./include/banana
+
+htdocs/banana/banana.css:
+	ln -s ../../../banana/css/style.css htdocs/banana/banana.css
+
+htdocs/banana/%: ../banana/%
+	ln -s ../../$< $@
+
+devel: build templates_c htdocs/valid.html include/banana \
+	htdocs/banana/xface.php htdocs/banana/img htdocs/banana/banana.css
+
+
 
 ################################################################################
 # diogenes package targets
 
 pkg-build: include/xorg.globals.inc.php
-#	make -C po
 
 $(PKG_DIST): pkg-build
 	mkdir $(PKG_DIST)
