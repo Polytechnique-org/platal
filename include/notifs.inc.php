@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.13 2004-11-07 14:30:32 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.14 2004-11-07 15:04:26 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -88,9 +88,9 @@ function getNbNotifs() {
 	return;
     }
     if($n==1) {
-	return "<a href='$url'>$n notification !</a>";
+	return "<a href='$url'>1 évènement !</a>";
     }
-    return "<a href='$url'>$n notifications !</a>";
+    return "<a href='$url'>$n évènements !</a>";
 }
 
 class AllNotifs {
