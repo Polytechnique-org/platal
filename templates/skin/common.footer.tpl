@@ -1,11 +1,11 @@
-{* $Id: common.footer.tpl,v 1.8 2004-08-23 14:27:24 x2000chevalier Exp $ *}
+{* $Id: common.footer.tpl,v 1.9 2004-08-23 14:36:55 x2000chevalier Exp $ *}
 
 <div>
   Copyright © 1999-2004 Association <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
-  <a href="docs/convention_ax.php">Lien avec l'AX</a>
+  <a href="{"docs/convention_ax.php"|url}">Lien avec l'AX</a>
   &nbsp;-&nbsp;
-  <a href="docs/apropos.php">A propos de ce site</a>
+  <a href="{"docs/apropos.php"|url}">A propos de ce site</a>
 <br />
   <a href="{"docs/secu.php"|url}">Sécurité et confidentialité</a>
   | <a href="{"docs/ethique.php"|url}">Services et Ethique</a>
