@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.php,v 1.6 2004-11-06 17:22:12 x2000habouzit Exp $
+        $Id: notifs.php,v 1.7 2004-11-07 11:54:07 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -57,6 +57,11 @@ if(isset($_REQUEST['promo'])) {
 if(isset($_REQUEST['del_nonins'])) $watch->_nonins->del($_REQUEST['del_nonins']);
 if(isset($_REQUEST['add_nonins'])) $watch->_nonins->add($_REQUEST['add_nonins']);
 if(isset($_REQUEST['subs'])) $watch->_subs->update('sub');
+if(isset($_REQUEST['flags'])) {
+    $watch->watch_contacts = !empty($_REQUEST['contacts']);
+    $watch->watch_mail     = !empty($_REQUEST['mail']);
+    $watch->saveFlags();
+}
 
 $page->assign_by_ref('watch', $watch);
 $page->assign_by_ref('err', $err);

@@ -18,12 +18,19 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.11 2004-11-06 22:34:17 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.12 2004-11-07 11:54:08 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
 define("WATCH_INSCR", 2);
 define("WATCH_DEATH", 3);
+
+function inscription_notifs_base($uid) {
+    global $globals;
+    $globals->db->query("REPLACE INTO  watch_sub (uid,cid)
+                               SELECT  '$uid',id
+			         FROM  watch_cat");
+}
 
 function register_watch_op($uid,$cid,$date='',$info='') {
     global $globals;
@@ -49,7 +56,7 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
 	INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-	     WHERE  q.user_id = '$uid' AND q.watch_contacts=1 AND wo.known > q.watch_last
+	     WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > q.watch_last
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
 		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
@@ -58,7 +65,7 @@ function getNbNotifs() {
 	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
 	 LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
 	INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
 	     WHERE  w.uid = '$uid' AND wo.known > q.watch_last
@@ -69,7 +76,7 @@ function getNbNotifs() {
 	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
 	INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
 	INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
 	     WHERE  w.uid = '$uid' AND wo.known > q.watch_last
@@ -108,10 +115,10 @@ class Notifs {
 		  FROM  auth_user_quick AS q
 	    INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
-	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
+	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=q.user_id)
 	    INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
-		 WHERE  q.user_id = '$uid' AND q.watch_contacts=1 AND wo.known > $lastweek
+		 WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $lastweek
 	) UNION DISTINCT (
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife,
 			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
@@ -119,7 +126,7 @@ class Notifs {
 	    INNER JOIN  auth_user_md5   AS u  USING(promo)
 	     LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
 		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
@@ -129,7 +136,7 @@ class Notifs {
 		  FROM  watch_nonins    AS w
 	    INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid)
+	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND a.type='a_vie')
 		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
@@ -152,6 +159,7 @@ class Watch {
     var $_cats = Array();
     var $_subs;
     var $watch_contacts;
+    var $watch_mail;
     
     function Watch($uid) {
 	global $globals;
@@ -159,13 +167,24 @@ class Watch {
 	$this->_promos = new PromoNotifs($uid);
 	$this->_nonins = new NoninsNotifs($uid);
 	$this->_subs = new WatchSub($uid);
-	$res = $globals->db->query("SELECT watch_contacts FROM auth_user_quick WHERE user_id='$uid'");
-	list($this->watch_contacts) = mysql_fetch_row($res);
+	$res = $globals->db->query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
+				      FROM  auth_user_quick
+				     WHERE  user_id='$uid'");
+	list($this->watch_contacts,$this->watch_mail) = mysql_fetch_row($res);
 	mysql_free_result($res);
 	
 	$res = $globals->db->query("SELECT * FROM watch_cat");
 	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
 	mysql_free_result($res);
+    }
+
+    function saveFlags() {
+	global $globals;
+	$flags = "";
+	if($this->watch_contacts) $flags = "contacts";
+	if($this->watch_mail) $flags .= ($flags ? ',' : '')."mail";
+	$globals->db->query("UPDATE auth_user_quick SET watch_flags='$flags' WHERE user_id='{$this->_uid}'");
+	
     }
 
     function cats() {

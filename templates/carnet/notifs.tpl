@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.12 2004-11-07 09:36:03 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.13 2004-11-07 11:54:08 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -55,6 +55,8 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   <fieldset>
     <legend>Contacts</legend>
     <input type='checkbox' name='contacts' {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
+    <input type='checkbox' name='mail' {if $watch->watch_mail}checked="checked"{/if} />
+      Recevoir un mail hebdomadaire des évènements que je n'ai pas vus sur le site<br />
   </fieldset>
   <div class='center'>
     <input type='submit' name='flags' value='valider' />

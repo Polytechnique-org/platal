@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.9 2004-11-06 17:37:22 x2000habouzit Exp $
+        $Id: step4.php,v 1.10 2004-11-07 11:54:07 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -123,6 +123,7 @@ if (!empty($_REQUEST['ref'])) {
     $globals->db->query("INSERT INTO ins_confirmees SET id=$uid");
     require_once('notifs.inc.php');
     register_watch_op($uid,WATCH_INSCR);
+    inscription_notifs_base($uid);
 
     // insérer une ligne dans user_changes pour que les coordonnées complè
     // soient envoyées a l'

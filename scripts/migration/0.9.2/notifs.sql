@@ -1,5 +1,5 @@
 alter table aliases add index (type);
-alter table auth_user_quick add column watch_contacts tinyint(1) not null default 1;
+alter table auth_user_quick add column watch_flags set('contacts','mail') not null default 'contacts';
 alter table auth_user_quick add column watch_last timestamp not null;
 
 create table watch_cat (
@@ -41,5 +41,11 @@ create table watch_promo (
     promo smallint not null,
     primary key (uid,promo)
 );
+
+replace into  watch_sub
+     select  u.user_id,id
+       from  auth_user_md5 AS u
+       join  watch_cat
+      where  u.perms != 'non-inscrit';
 
 
