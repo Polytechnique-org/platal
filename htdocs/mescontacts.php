@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.24 2004-11-02 06:46:48 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.25 2004-11-02 07:48:40 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -82,7 +82,6 @@ if(isset($_GET['trombi'])) {
     
     $trombi = new Trombi('getList');
     $trombi->setNbRows(4);
-    $trombi->showPromo();
     $page->assign_by_ref('trombi',$trombi);
 } else {
     $sql = "SELECT contact AS id,

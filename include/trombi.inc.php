@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: trombi.inc.php,v 1.3 2004-11-02 06:46:49 x2000habouzit Exp $
+ $Id: trombi.inc.php,v 1.4 2004-11-02 07:48:41 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.plugin.inc.php');
@@ -27,11 +27,11 @@ class Trombi extends XOrgPlugin {
     var $_get_vars = Array('offset');
     var $limit = 24;
     var $admin = false;
-    var $showpromo = false;
+    var $showpromo = true;
 
     function setNbRows($row) { $this->limit = $row*3; }
     function setAdmin() { $this->admin = true; }
-    function showPromo() { $this->showpromo = true; }
+    function hidePromo() { $this->showpromo = false; }
     
     function show() {
 	/* this point is nasty...  but since show() is called from the template ...

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.11 2004-11-02 06:46:49 x2000habouzit Exp $
+        $Id: trombi.php,v 1.12 2004-11-02 07:48:40 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -76,7 +76,6 @@ if(is_array($owners)) {
     $page->assign_by_ref('owners',  $moderos);
     
     $trombi = new Trombi('getList');
-    $trombi->showPromo();
     $page->assign_by_ref('trombi',$trombi);
 } else
     $page->assign('no_list',true);
