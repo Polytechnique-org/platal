@@ -24,34 +24,26 @@ new_admin_page('admin/utilisateurs.tpl');
 require_once("emails.inc.php");
 require_once("user.func.inc.php");
 
-/*
- * Already in SUID ?
- */
-
 if (isset($_SESSION['suid'])) {
     $page->kill("déjà en SUID !!!");
 }
 
-$login = isset($_REQUEST['login']) ? get_user_login($_REQUEST['login']) : false;
-
-
-/*
- * LOGS de l'utilisateur
- */
+if (!empty($_REQUEST['user_id'])) {
+    $login = get_user_login($_REQUEST['user_id']);
+} elseif (isset($_REQUEST['login'])) {
+    $login = get_user_login($_REQUEST['login']);
+} else {
+    $login = false;
+}
 
 if(isset($_REQUEST['logs_button']) && $login) {
     header("Location: logger.php?loguser=$login&year=".date('Y')."&month=".date('m'));
 }
 
-
-/*
- * SUID
- */
 if(isset($_REQUEST['suid_button']) and $login and !isset($_SESSION['suid'])) {
-    $log_data = "login by ".$_SESSION['forlife'];
-    $_SESSION['log']->log("suid_start",$log_data);
+    $_SESSION['log']->log("suid_start", "login by ".$_SESSION['forlife']);
     $_SESSION['suid'] = $_SESSION;
-    $r=$globals->db->query("SELECT id FROM aliases WHERE alias='$login'");
+    $r = $globals->db->query("SELECT id FROM aliases WHERE alias='$login'");
     if(list($uid) = mysql_fetch_row($r)) {
 	start_connexion($uid,true);
 	header("Location: ../");
@@ -59,60 +51,41 @@ if(isset($_REQUEST['suid_button']) and $login and !isset($_SESSION['suid'])) {
     mysql_free_result($r);
 }
 
-
-/*
- * LE RESTE
- */
-
 if ($login) {
-    $r=$globals->db->query("SELECT  *
-                              FROM  auth_user_md5 AS u
-                        INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
-    if ($tmp = mysql_fetch_assoc($r)) {
-        $mr =& $tmp;
-    } else {
-        $page->trig("il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)");
-    }
+    $r  = $globals->db->query("SELECT  *, a.alias AS forlife
+                                 FROM  auth_user_md5 AS u
+                           INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
+    $mr = mysql_fetch_assoc($r);
     mysql_free_result($r);
-}
 
-if (!empty($_REQUEST['user_id'])) {
-    $r=$globals->db->query("SELECT  *
-			      FROM  auth_user_md5
- 			     WHERE  user_id='{$_REQUEST['user_id']}'");
-    if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
-    mysql_free_result($r);
-}
-
-if(isset($mr)) {
     $redirect = new Redirect($mr['user_id']);
-
-    if(isset($_REQUEST['password']))  $pass_clair = $_REQUEST['password'];
 
     // Check if there was a submission
     foreach($_POST as $key => $val) {
 	switch ($key) {
 	    case "add_fwd":
-		$email = $_REQUEST['email'];
+		$email = trim($_REQUEST['email']);
 		if (!isvalid_email_redirection($email)) {
                     $page->trig("invalid email $email");
-		    break;
-		}
-		$redirect->add_email(trim($email));
-                $page->trig("Ajout de $email effectué");
+		} else {
+                    $redirect->add_email($email);
+                    $page->trig("Ajout de $email effectué");
+                }
 		break;
 
 	    case "del_fwd":
-		if(empty($val)) break;
-		$redirect->delete_email($val);
+		if (!empty($val)) {
+                    $redirect->delete_email($val);
+                }
 		break;
 
 	    case "del_alias":
-		if(empty($val)) break;
-		$globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
-								AND type!='a_vie' AND type!='homonyme'");
-		fix_bestalias($_REQUEST['user_id']);
-                $page->trig($val." a été supprimé");
+		if (!empty($val)) {
+                    $globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
+                            AND type!='a_vie' AND type!='homonyme'");
+                    fix_bestalias($_REQUEST['user_id']);
+                    $page->trig($val." a été supprimé");
+                }
 		break;
 
 	    case "add_alias":
@@ -142,64 +115,47 @@ if(isset($mr)) {
 			    promo='{$_REQUEST['promoN']}',
 			    comment='{$_REQUEST['commentN']}'
 			  WHERE user_id='{$_REQUEST['user_id']}'";
-		$globals->db->query($query);
-		$r=$globals->db->query("SELECT  *
-					  FROM  auth_user_md5 AS u
-				    INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.id='{$_REQUEST['user_id']}' )");
-		if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
+		if ($globals->db->query($query)) {
+                    // FIXME: recherche
+                    system('echo 1 > /tmp/flag_recherche');
+
+                    require_once("diogenes.hermes.inc.php");
+                    $mailer = new HermesMailer();
+                    $mailer->setFrom("webmaster@polytechnique.org");
+                    $mailer->addTo("web@polytechnique.org");
+                    $mailer->setSubject("INTERVENTION ADMIN ({$_SESSION['forlife']})");
+                    $mailer->setTxtBody(preg_replace("/[ \t]+/", ' ', $query));
+                    $mailer->send();
+
+                    $page->trig("updaté correctement.");
+                }
+		$r  = $globals->db->query("SELECT  *, a.alias AS forlife
+                                             FROM  auth_user_md5 AS u
+                                       INNER JOIN  aliases       AS a ON (u.user_id=a.id)
+                                            WHERE  user_id = {$_REQUEST['user_id']}");
+                $mr = mysql_fetch_assoc($r);
 		mysql_free_result($r);
-
-		// FIXME: recherche
-		$f = fopen("/tmp/flag_recherche","w");
-		fputs($f,"1");
-		fclose($f);
-
-                $page->trig("updaté correctement.");
-		// envoi du mail au webmaster
-		require_once("diogenes.hermes.inc.php");
-		$mailer = new HermesMailer();
-		$mailer->setFrom("webmaster@polytechnique.org");
-		$msg = "Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\n"
-		    .  "Opérations effectuées\n\n\"".$query
-		    .  "\"\n\nCe rapport a été généré par le script d'administration";
-		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION ADMIN");
-		$mailer->setTxtBody($msg);
-		$mailer->send();
 		break;
 
-	// DELETE FROM auth_user_md5
+            // DELETE FROM auth_user_md5
 	    case "u_kill":
-		require_once("user.func.inc.php");
 		user_clear_all_subs($_REQUEST['user_id']);
                 $page->trig("'{$_REQUEST['user_id']}' a été désinscrit !");
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
-		$msg = "Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\n"
-		    .  "Opérations effectuées : utilisateur {$_REQUEST['user_id']} effacé\n\n\""
-		    .  "\"\n\nCe rapport a été généré par le script d'administration";
 		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION ADMIN");
-		$mailer->setTxtBody($msg);
+		$mailer->setSubject("INTERVENTION ADMIN ({$_SESSION['forlife']})");
+		$mailer->setTxtBody("\nUtilisateur $login effacé");
 		$mailer->send();
 		break;
 	}
     }
 
-
-    
-    $r=$globals->db->query("SELECT alias FROM aliases WHERE ( id = {$mr['user_id']} AND type='a_vie' )");
-    list($forlife) = mysql_fetch_row($r);
-    mysql_free_result($r);
-    $mr['forlife'] = $forlife;
-    $page->assign('mr',$mr);
-
-    $result=$globals->db->query("SELECT  UNIX_TIMESTAMP(s.start), s.host
-				   FROM  auth_user_md5   AS u
-			      LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
-				  WHERE  user_id={$mr['user_id']}
-			       ORDER BY  s.start DESC
+    $result=$globals->db->query("SELECT  UNIX_TIMESTAMP(start), host
+			           FROM  logger.sessions
+				  WHERE  uid={$mr['user_id']} AND suid=0
+			       ORDER BY  start DESC
 				  LIMIT  1");
     list($lastlogin,$host) = mysql_fetch_row($result);
     mysql_free_result($result);
@@ -213,6 +169,8 @@ if(isset($mr)) {
     $page->assign_by_ref('xorgmails', $xorgmails);
     $page->assign_by_ref('email_panne', $email_panne);    
     $page->assign('emails',$redirect->emails);
+
+    $page->assign('mr',$mr);
 }
 
 $page->run();
