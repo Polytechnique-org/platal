@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: options.php,v 1.2 2004-10-06 13:16:49 x2000habouzit Exp $
+        $Id: options.php,v 1.3 2004-10-06 13:23:20 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -35,7 +35,7 @@ mysql_free_result($res);
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 
 if(isset($_POST['submit'])) {
-    $values = $_POST;
+    $values =array_map('stripslashes',$_POST);
     unset($values['submit']);
     $values['send_goodbye_msg'] = empty($values['send_goodbye_msg']) ? false : true;
     $values['admin_notify_mchanges'] = empty($values['admin_notify_mchanges']) ? false : true;
