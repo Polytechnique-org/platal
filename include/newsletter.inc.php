@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.17 2004-10-20 12:59:32 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.18 2004-10-20 13:57:56 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -112,6 +112,27 @@ class NewsLetter {
 	}
     }
 
+    function footer($html) {
+	if($html) {
+	    return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
+	    .  '<div class="foot">'
+	    .  '[<a href="http://www.polytechnique.org/newsletter/">archives</a>&nbsp;|&nbsp;'
+	    .  '<a href="http://www.polytechnique.org/newsletter/submit.php">écrire dans la NL</a>&nbsp;|&nbsp;' 
+	    .  '<a href="http://www.polytechnique.org/listes/?nl_unsub=1">ne plus recevoir</a>&nbsp;|&nbsp;'
+	    .  '<a href="http://www.polytechnique.org/listes/?nl_sub=text">recevoir en texte brut</a>]'
+	    .  '</div>';
+	} else {
+	    return "\n\n--------------------------------------------------------------------\n"
+	         . "Cette lettre est envoyée à tous les Polytechniciens sur Internet par\n"
+	         . "l'intermédiaire de Polytechnique.org.\n"
+		 . "\n"
+		 . "archives : [http://www.polytechnique.org/newsletter/]\n"
+		 . "écrire   : [http://www.polytechnique.org/newsletter/submit.php]\n"
+		 . "ne plus recevoir: [http://www.polytechnique.org/listes/?nl_unsub=1]\n"
+		 . "recevoir en HTML: [http://www.polytechnique.org/listes/?nl_sub=html]\n";
+	}
+    }
+
     function toText() {
 	$res  = "====================================================================\n";
 	$res .= ' '.$this->title()."\n";
@@ -136,6 +157,9 @@ class NewsLetter {
 		$res .= "\n\n";
 	    }
 	}
+	
+	$res .= $this->footer(false);
+	
 	return $res;
     }
     
@@ -159,6 +183,8 @@ class NewsLetter {
 	    }
 	}
 
+	$res .= $this->footer(true);
+
 	if($body) {
 	    $res = <<<EOF
 <html>
@@ -178,6 +204,7 @@ class NewsLetter {
       
       div.art { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 1px #cccccc solid; }
       div.app { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
+      div.foot { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit; text-align: center; }
     </style>
   </head>
   <body>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: show.tpl,v 1.3 2004-10-16 22:44:40 x2000habouzit Exp $
+        $Id: show.tpl,v 1.4 2004-10-20 13:57:56 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -37,7 +37,7 @@
 {/perms}
 </p>
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="{$smarty.server.PHP_SELF}?nid={$nl->_id}">
   <div class='center'>
     <input type='submit' value="me l'envoyer" name='send' />
   </div>

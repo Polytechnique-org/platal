@@ -94,3 +94,12 @@ div.nl div.app {
     font-size: 95%;
 }
 
+div.nl div.foot {
+    border-top: 1px #808080 dashed;
+    font-size: 95%;
+    padding: 1ex;
+    color: #808080;
+    background: inherit;
+    text-align: center;
+}
+
