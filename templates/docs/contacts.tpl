@@ -62,8 +62,8 @@
   </tr>
 </table>
 <p>
-Nous te remercions de bien choisir la rubrique qui est la plus adaptée à ton besoin.
-Celà nous permettra d'être les plus efficaces possible et de traiter ta demande au plus vite.
+Nous vous remercions de bien choisir la rubrique qui est la plus adaptée à votre besoin.
+Celà nous permettra d'être les plus efficaces possible et de traiter votre demande au plus vite.
 </p>
 
 {elseif $smarty.request.topic eq 1}
@@ -75,17 +75,17 @@ L'inscription se déroule en <a href="{rel}/register/">une étape sur notre site w
 suivie d'une étape de confirmation basée sur l'e-mail que tu as donné.
 </p>
 <p>
-<strong>En cas de problème pour t'enregistrer:</strong>
+<strong>En cas de problème pour vous enregistrer:</strong>
 </p>
 <ul>
-  <li class="item"> <strong>Problème d'identification:</strong> écris-nous en précisant bien tes prénom,
+  <li class="item"> <strong>Problème d'identification:</strong> écrivez-nous en précisant bien vos prénom,
   nom, nom de mariage, promo, date de naissance, matricule (pour les X des promos plus récentes que 1995 seulement), etc...
   </li>
   <li class="item"><strong>Problème avec le site:</strong>
-  télécharge la dernière version de ton navigateur et réessaie avant de nous écrire.
+  téléchargez la dernière version de votre navigateur et réessayez avant de nous écrire.
   </li>
-  <li class="item"><strong>Tu ne reçois rien par e-mail:</strong> réessaie avec un autre email, celui
-  que tu utilisais était peut-être en panne ou mal orthographié.
+  <li class="item"><strong>Vous ne recevez rien par e-mail:</strong> réessayez avec un autre email, celui
+  que vous utilisiez était peut-être en panne ou mal orthographié.
   </li>
 </ul>
 Pour toute question ou problème relatif à l'inscription, merci
@@ -100,17 +100,17 @@ d'utiliser uniquement l'adresse
 Il y a deux façons de faire.
 </p>
 <p>
-La première méthode est automatique, sécurisée et te prendra environ 5 minutes.
-Il faut que tu accèdes encore à tes emails en polytechnique.org
-pour récupérer tes paramètres par cette méthode.
+La première méthode est automatique, sécurisée et vous prendra environ 5 minutes.
+Il faut que vous accèdiez encore à vos emails en polytechnique.org
+pour récupérer vos paramètres par cette méthode.
 </p>
-<a href="{"recovery.php"|url}"><strong>Clique ici pour retrouver un mot de passe.</strong></a>
+<a href="{"recovery.php"|url}"><strong>Cliquez ici pour retrouver un mot de passe.</strong></a>
 <p>
-La seconde méthode est entièrement manuelle. Pour cette raison, assure-toi de nous fournir
-toutes les informations dont nous disposons sur toi dans ta dernière fiche. En particulier :
+La seconde méthode est entièrement manuelle. Pour cette raison, assurez-vous de nous fournir
+toutes les informations dont nous disposons sur vous dans votre dernière fiche. En particulier :
 login, promo, date de naissance, matricule, adresse/téléphone mobile. Les mots de passe sont
-réinitialisés environ toutes les deux semaines si tu as été correctement identifié. Ainsi, <strong>merci
-  d'attendre au minimum deux semaines</strong> dans le cas où tu ne reçois pas de réponse à ta première
+réinitialisés environ toutes les deux semaines si vous avez été correctement identifié. Ainsi, <strong>merci
+  d'attendre au minimum deux semaines</strong> dans le cas où vous ne receviez pas de réponse à votre première
 demande avant de nous réécrire.
 </p>
 <p>
@@ -123,13 +123,13 @@ L'adresse à utiliser est uniquement <strong>{mailto address='resetpass@polytechn
 </h1>
 <p>
 Deux solutions, ou bien c'est un bug du site, ce qui est rare mais peut
-encore arriver. Ou bien un problème de configuration sur ton ordinateur/réseau
-t'empêche d'utiliser correctement le site. Avant de nous écrire,
-mets à jour ton navigateur et consulte également <a href="faq.php">notre FAQ</a>. Les réponses sur les
+encore arriver. Ou bien un problème de configuration sur votre ordinateur/réseau
+vous empêche d'utiliser correctement le site. Avant de nous écrire,
+mettez à jour votre navigateur et consultez également <a href="faq.php">notre FAQ</a>. Les réponses sur les
 problèmes de connexion y sont toutes traitées.
 </p>
 <p>
-En cas de problème persistant, tu peux nous écrire à l'adresse
+En cas de problème persistant, vous pouvez nous écrire à l'adresse
 <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong>
 </p>
 
@@ -139,7 +139,7 @@ En cas de problème persistant, tu peux nous écrire à l'adresse
 </h1>
 <p>
 Pour toute suggestion concernant la liste des binets, des groupes x, des pays, des formations
-complémentaires, écris-nous à l'adresse <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong> :
+complémentaires, écrivez-nous à l'adresse <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong> :
 nous essayerons de les rajouter au plus vite.
 </p>
 <p>
@@ -149,9 +149,9 @@ du site (c'est à dire qu'il faut attendre quelques semaines avant que
 l'innovation proposée, si elle est retenue, apparaisse sur le site).
 </p>
 <p>
-Merci de nous aider à améliorer la qualité du site Polytechnique.org. Ecris à
+Merci de nous aider à améliorer la qualité du site Polytechnique.org. Ecrivez à
 <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong>
-ou poste un message sur le forum
+ou postez un message sur le forum
 <a href="../banana/thread.php?group=xorg.m4x.support">xorg.m4x.support</a>
 pour toute idée de développement ou d'amélioration du site.
 </p>
@@ -167,17 +167,17 @@ la newsletter : le texte du message doit faire au plus <strong>8 lignes de 68 ca
 sus).
 </p>
 <p>
-Un formulaire en ligne te permet de nous soumettre un article, et se chargera de vérifier
-ces contraintes pour toi : <a href='{"newsletter/submit.php"|url}'>soumission d'article</a>.
+Un formulaire en ligne vous permet de nous soumettre un article, et se chargera de vérifier
+ces contraintes pour vous : <a href='{"newsletter/submit.php"|url}'>soumission d'article</a>.
 </p>
 <p>
-Sinon, une fois que ton article est prêt et qu'il ne dépasse pas la taille indiquée,
-tu peux aussi nous le soumettre par email (éviter les pièces jointes) à cette adresse :
+Sinon, une fois que votre article est prêt et qu'il ne dépasse pas la taille indiquée,
+vous pouvez aussi nous le soumettre par email (éviter les pièces jointes) à cette adresse :
 <strong>{mailto address='info_nlp@polytechnique.org' encode='hex'}</strong>.
 </p>
 <p>
 Les anciennes newsletters de <strong>Polytechnique.org</strong> sont
-<strong><a href="{"newsletter/"|url}">archivées</a></strong> si tu veux t'en inspirer.
+<strong><a href="{"newsletter/"|url}">archivées</a></strong> si vous voulez vous en inspirer.
 </p>
 
 {elseif $smarty.request.topic eq 6}
