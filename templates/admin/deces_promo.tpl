@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deces_promo.tpl,v 1.6 2004-11-04 20:19:37 x2000habouzit Exp $
+        $Id: deces_promo.tpl,v 1.7 2004-11-11 20:42:42 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -63,5 +63,4 @@
 </form>
 
 {/dynamic}
-
 {* vim:set et sw=2 sts=2 sws=2: *}
