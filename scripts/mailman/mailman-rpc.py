@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.47 2004-10-09 07:25:51 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.48 2004-10-09 08:58:49 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -436,7 +436,6 @@ def handle_request((userdesc,perms),vhost,listname,id,value,comment):
         mlist.Unlock()
         return 1
     except:
-        raise
         mlist.Unlock()
         return 0
 
