@@ -111,7 +111,6 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
             'SELECT  user_id, nom, prenom, matricule
                FROM  auth_user_md5
               WHERE  promo={?} AND deces=0 AND perms="pending"', $promo);
-
     while (list($_uid, $_nom, $_prenom, $_mat) = $res->next()) {
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
             $ourid  = $_uid;
@@ -120,7 +119,19 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
         }
     }
 
-    return "erreur dans l'identification.  Réessaie, il y a une erreur quelque part !";
+    $res = $globals->xdb->iterRow(
+            'SELECT  user_id, nom, prenom, matricule, alias
+               FROM  auth_user_md5 AS u
+         INNER JOIN  aliases       AS a ON (u.user_id = a.id and FIND_IN_SET("bestalias", a.flags))
+              WHERE  promo={?} AND deces=0 AND perms IN ("user","admin")', $promo);
+    while (list($_uid, $_nom, $_prenom, $_mat, $alias) = $res->next()) {
+        if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
+            $ourid  = $_uid;
+            $ourmat = $_mat;
+            return "Tu es vraissemblablement déjà inscrit !";
+        }
+    }
+    return "erreur: vérifie que tu as bien orthographié ton nom !";
 }
 
 // }}}
