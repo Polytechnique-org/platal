@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.page.inc.php,v 1.53 2004-11-23 12:01:31 x2000habouzit Exp $
+    $Id: xorg.page.inc.php,v 1.54 2004-11-30 10:17:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.page.inc.php");
@@ -31,7 +31,7 @@ require_once("diogenes.core.page.inc.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Jeremy Lainé <jeremy.laine@polytechnique.org>
- * @version  $Id: xorg.page.inc.php,v 1.53 2004-11-23 12:01:31 x2000habouzit Exp $
+ * @version  $Id: xorg.page.inc.php,v 1.54 2004-11-30 10:17:04 x2000habouzit Exp $
  * @access   public
  * @see      DiogenesCorePage
  */
@@ -49,7 +49,7 @@ class XorgPage extends DiogenesCorePage
     {
         global $globals;
 
-	$this->setLang();
+	$this->setLang('fr_FR');
 
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/templates_c/";
@@ -109,7 +109,7 @@ class XorgPage extends DiogenesCorePage
     function setLang($lang=null)
     {
 	global $globals;
-	$locale = empty($lang) ? 'fr_FR' : '$lang';
+	$locale = empty($lang) ? 'fr_FR' : $lang;
 	setlocale(LC_MESSAGES, $locale);
 	setlocale(LC_TIME, $locale);
 	$this->compile_id = $locale;
