@@ -61,10 +61,8 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/utilisateurs.php					  | 
 	  | aide.php								  | 
 	  | antispam.php							  | 
-	  | apropos.php								  | 
 	  | auth-groupex.php						  | 
 	  | auth-redirect.php						  | 
-	  | auth-wiki.php							  | 
 	  | cacert.php								  | 
 	  | charte.php								  | 
 	  | confbanana.php							  | 
@@ -181,6 +179,7 @@ xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
+xx	  | apropos.php								  | -
 xx	  | deconnexion.php							  | -
 xx	  | index.php								  | -
 xx	  | login.php								  | -
@@ -188,4 +187,6 @@ xx	  | motdepassemd5.php						  | -
 xx	  | preferences.php							  | -
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -
+------+-------------------------------------------+----------------
+---	  | auth-wiki.php							  | 
 ------+-------------------------------------------+----------------
