@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  **************************************************************************/
 
-require_once('diogenes.database.inc.php');
-
 // {{{ class XOrgDB
 
 class XOrgDB
@@ -62,6 +60,17 @@ class XOrgDB
         $query    = array_map(Array($this, '_db_escape'), $args);
         $query[0] = str_replace('{?}', '%s', $args[0]);
         return new XOrgDBIterator(call_user_func_array('sprintf', $query));
+    }
+    
+    // }}}
+    // {{{ function iterator()
+
+    function &iterRow()
+    {
+        $args     = func_get_args();
+        $query    = array_map(Array($this, '_db_escape'), $args);
+        $query[0] = str_replace('{?}', '%s', $args[0]);
+        return new XOrgDBIterator(call_user_func_array('sprintf', $query), MYSQL_NUM);
     }
     
     // }}}
@@ -198,6 +207,25 @@ class XOrgDBResult
     }
 
     // }}}
+    // {{{ function fetchOneCell()
+
+    function fetchColumn($key = 0)
+    {
+        $res = Array();
+        if (is_numeric($key)) {
+            while($tmp = $this->_fetchRow()) {
+                $res[] = $tmp[$key];
+            }
+        } else {
+            while($tmp = $this->_fetchAssoc()) {
+                $res[] = $tmp[$key];
+            }
+        }
+        $this->free();
+        return $res;
+    }
+
+    // }}}
     // {{{ function numRows
     
     function numRows()
@@ -221,7 +249,7 @@ class XOrgDBIterator extends XOrgIterator
     var $_mode = MYSQL_ASSOC;
 
     // }}}
-    // {{{
+    // {{{ constructor
     
     function XOrgDBIterator($query, $mode = MYSQL_ASSOC)
     {

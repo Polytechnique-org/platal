@@ -80,14 +80,15 @@ class XorgSession extends DiogenesCoreSession
 	    // ou passwordpromptscreenlogged.tpl
             $uname = Env::get('username');
 	    $field = preg_match('/^\d*$/', $uname) ? 'id' : 'alias';
-	    $res = @$globals->db->query( "SELECT  u.user_id,u.password
-					    FROM  auth_user_md5 AS u
-         			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-				           WHERE  a.$field='$uname' AND u.perms IN('admin','user')");
+	    $res   = $globals->xdb->query(
+                    "SELECT  u.user_id, u.password
+                       FROM  auth_user_md5 AS u
+                 INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
+                      WHERE  a.$field = {?} AND u.perms IN('admin','user')", $uname);
 
             $logger =& Session::getMixed('log');
 
-	    if (list($uid,$password)=mysql_fetch_row($res)) {
+	    if (list($uid, $password) = $res->fetchOneRow()) {
 		$expected_response=md5("$uname:$password:{$session->challenge}");
 		if (Env::get('response') == $expected_response) {
 		    unset($session->challenge);
@@ -102,8 +103,6 @@ class XorgSession extends DiogenesCoreSession
 	    } elseif ($logger) {
                 $logger->log('auth_fail','bad login');
             }
-            
-            mysql_free_result($res);
 	}
         $this->doLogin($page,$new_name);
     }
@@ -163,11 +162,8 @@ class XorgSession extends DiogenesCoreSession
     function getUserId($auth,$username)
     {
 	global $globals;
-
-	$res = $globals->db->query("SELECT id FROM aliases WHERE alias='$username'");
-	list($uid) = mysql_fetch_row($res);
-	mysql_free_result($res);
-	return $uid;
+	$res = $globals->xdb->query("SELECT id FROM aliases WHERE alias = {?}",$username);
+        return $res->fetchOneCell();
     }
 
     // }}}
@@ -176,11 +172,8 @@ class XorgSession extends DiogenesCoreSession
     function getUsername($auth,$uid)
     {
 	global $globals;
-
-	$res = $globals->db->query("SELECT alias FROM aliases WHERE id='$uid' AND type='a_vie'");
-	list($username) = mysql_fetch_row($res);
-	mysql_free_result($res);
-	return $username;
+	$res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND type='a_vie'", $uid);
+        return $res->fetchOneCell();
     }
 
     // }}}
@@ -258,12 +251,13 @@ function try_cookie()
 	return -1;
     }
 
-    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id="
-            .Cookie::getInt('ORGuid')." AND perms IN('admin','user')");
-    if (@mysql_num_rows($res) != 0) {
-	list($uid,$password)=mysql_fetch_row($res);
-	mysql_free_result($res);
-	$expected_value=md5($password);
+    $res = @$globals->xdb->query(
+            "SELECT user_id,password FROM auth_user_md5 WHERE user_id = {?} AND perms IN('admin','user')",
+            Cookie::getInt('ORGuid')
+    );
+    if ($res->numRows() != 0) {
+	list($uid, $password) = $res->fetchOneRow();
+	$expected_value       = md5($password);
 	if ($expected_value == Cookie::get('ORGaccess')) {
 	    start_connexion($uid, false);
 	    return 0;
@@ -286,52 +280,34 @@ function try_cookie()
 function start_connexion ($uid, $identified)
 {
     global $globals;
-    $result=$globals->db->query("
-	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias,
-		UNIX_TIMESTAMP(q.banana_last), q.watch_last,
-		a2.alias, password, FIND_IN_SET('femme', u.flags)
+    $res  = $globals->xdb->query("
+	SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
+                a.alias AS forlife, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last,
+		a2.alias AS bestalias, password, FIND_IN_SET('femme', u.flags) AS femme
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN	aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
     INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
      LEFT JOIN  logger.sessions AS s  ON (s.uid=u.user_id AND s.suid=0)
-         WHERE  u.user_id=$uid AND u.perms IN('admin','user')
-      ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)");
-    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
-            $banana_last, $watch_last,
-            $bestalias, $password, $femme) = mysql_fetch_row($result);
-    mysql_free_result($result);
-   
+         WHERE  u.user_id = {?} AND u.perms IN('admin','user')
+      ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)", $uid);
+    $sess = $res->fetchOneAssoc();
+    echo mysql_error();
     $suid = Session::getMixed('suid');
     
     if ($suid) {
-	$logger = new DiogenesCoreLogger($uid,$suid);
-	$logger->log("suid_start",Session::get('forlife')." by {$suid['uid']}");
-	$_SESSION = Array('suid'=>$suid, 'log'=>$logger);
+	$logger = new DiogenesCoreLogger($uid, $suid);
+	$logger->log("suid_start", Session::get('forlife')." by {$suid['uid']}");
+        $sess['suid'] = $suid;
     } else {
         $logger = Session::getMixed('log', new DiogenesCoreLogger($uid));
-	$_SESSION = Array('log' => $logger);
-        $logger->log("connexion",$_SERVER['PHP_SELF']);
-	setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
+        $logger->log("connexion", $_SERVER['PHP_SELF']);
+	setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
 
-    // le login est stocké pour un an
-    $_SESSION['lastlogin'] = $lastlogin;
-    $_SESSION['banana_last'] = $banana_last;
-    $_SESSION['watch_last'] = $watch_last;
-    $_SESSION['host'] = $host;
+    $_SESSION         = $sess;
+    $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
-    $_SESSION['uid'] = $uid;
-    $_SESSION['prenom'] = $prenom;
-    $_SESSION['nom'] = $nom;
-    $_SESSION['perms'] = $perms;
-    $_SESSION['promo'] = $promo;
-    $_SESSION['forlife'] = $forlife;
-    $_SESSION['bestalias'] = $bestalias;
-    $_SESSION['matricule'] = $matricule;
-    $_SESSION['password'] = $password;
-    $_SESSION['femme'] = $femme;
-    // on récupère le logger si il existe, sinon, on logge la connexion
     set_skin();
 }
 
@@ -343,23 +319,21 @@ function set_skin()
     global $globals;
     if (logged() && $globals->skin->enable) {
         $uid = Session::getInt('uid');
-	$result = $globals->db->query("SELECT  skin,skin_tpl
-	                                 FROM  auth_user_quick AS a
-				   INNER JOIN  skins           AS s ON a.skin=s.id
-				        WHERE  user_id=$uid AND skin_tpl != ''");
-	if (!(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result))) {
-	    $_SESSION['skin'] = $globals->skin->def_tpl;
-	    $_SESSION['skin_id'] = $globals->skin->def_id;
-	}
-	mysql_free_result($result);
-    } elseif ($globals->skin->enable) {
+	$res = $globals->xdb->query("SELECT  skin,skin_tpl
+	                               FROM  auth_user_quick AS a
+				 INNER JOIN  skins           AS s ON a.skin=s.id
+			              WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+	if (list($_SESSION['skin_id'], $_SESSION['skin']) = $res->fetchOneRow()) {
+            return;
+        }
+    }
+    if ($globals->skin->enable) {
         $_SESSION['skin'] = $globals->skin->def_tpl;
         $_SESSION['skin_id'] = $globals->skin->def_id;
     } else {
         $_SESSION['skin'] = 'default.tpl';
         $_SESSION['skin_id'] = -1;
     }
-  
 }
 
 // }}}

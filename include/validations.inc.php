@@ -29,36 +29,26 @@ define('SIZE_MAX', 32768);
 /**
  * Iterator class, that lists objects through the database
  */
-class ValidateIterator
+class ValidateIterator extends XOrgDBIterator
 {
-    // {{{ properties
-    
-    /** variable interne qui conserve l'état en cours de la requête */
-    var $sql;
-
-    // }}}
     // {{{ constuctor
     
-    /** constructeur */
     function ValidateIterator ()
     {
-        global $globals;
-        $this->sql = $globals->db->query("SELECT data,stamp FROM requests ORDER BY stamp");
+        parent::XOrgDBIterator('SELECT data,stamp FROM requests ORDER BY stamp', MYSQL_NUM);
     }
 
     // }}}
     // {{{ function next()
 
-    /** renvoie l'objet suivant, ou false */
     function next ()
     {
-        if (list($result,$stamp) = mysql_fetch_row($this->sql)) {
+        if (list($result, $stamp) = parent::next()) {
             $result = unserialize($result);
             $result->stamp = $stamp;
             return($result);
         } else {
-            mysql_free_result($this->sql);
-            return(false);
+            return null;
         }
     }
 
@@ -118,18 +108,18 @@ class Validate
     function get_unique_request($uid,$type)
     {
         global $globals;
-        $sql = $globals->db->query("SELECT data,stamp FROM requests WHERE user_id='$uid' and type='$type'");
-        if (list($result,$stamp) = mysql_fetch_row($sql)) {
+        $res = $globals->xdb->query('SELECT data,stamp FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        if (list($result, $stamp) = $res->fetchOneRow()) {
             $result = unserialize($result);
             // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
             $result->stamp = $stamp;
             if (!$result->unique) { // on vérifie que c'est tout de même bien un objet unique
                 $result = false;
             }
-        } else
+        } else {
             $result = false;
-
-        mysql_free_result($sql);
+        }
+        
         return $result;
     }
 
@@ -147,10 +137,9 @@ class Validate
     function get_request($uid, $type, $stamp)
     {
         global $globals;
-        $sql = $globals->db->query("SELECT data,stamp"
-            ." FROM requests"
-            ." WHERE user_id='$uid' and type = '$type' and stamp='$stamp'");
-        if (list($result,$stamp) = mysql_fetch_row($sql)) {
+        $res = $globals->xdb->query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}",
+                $uid, $type, $stamp);
+        if (list($result, $stamp) = $res->fetchOneRow()) {
             $result = unserialize($result);
             // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
             $result->stamp = $stamp;
@@ -158,7 +147,6 @@ class Validate
             $result = false;
         }
 
-        mysql_free_result($sql);
         return($result);
     }
 
@@ -172,17 +160,15 @@ class Validate
     {
         global $globals;
         if ($this->unique) {
-            $globals->db->query("DELETE FROM requests WHERE user_id='{$this->uid}' AND type='{$this->type}'");
+            $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
         }
        
-        $globals->db->query("INSERT INTO  requests (user_id, type, data)
-                                  VALUES  ('{$this->uid}', '{$this->type}', '".addslashes(serialize($this))."')");
+        $globals->xdb->execute('INSERT INTO requests (user_id, type, data) VALUES ({?}, {?}, {?})',
+                $this->uid, $this->type, $this);
 
         // au cas où l'objet est réutilisé après un commit, il faut mettre son stamp à jour
-        $sql = $globals->db->query("SELECT MAX(stamp) FROM requests
-                                     WHERE user_id='{$this->uid}' AND type='{$this->type}'");
-        list($this->stamp) = mysql_fetch_row($sql);
-        mysql_free_result($sql);
+        $res = $globals->xdb->query('SELECT MAX(stamp) FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
+        $this->stamp = $res->fetchOneCell();
         return true;
     }
 
@@ -195,8 +181,13 @@ class Validate
     function clean ()
     {
         global $globals;
-        return $globals->db->query("DELETE FROM requests WHERE user_id='{$this->uid}' AND type='{$this->type}'"
-                .($this->unique ? "" : " AND stamp='".$this->stamp."'"));
+        if ($this->unique) {
+            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
+                    $this->uid, $this->type);
+        } else {
+            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
+                    $this->uid, $this->type, $this->stamp);
+        }
     }
 
     // }}}

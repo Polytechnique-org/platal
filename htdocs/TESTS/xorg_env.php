@@ -31,7 +31,7 @@ class TestOfEnv extends UnitTestCase {
         $_REQUEST['foo'] = Array(1,'a');
         $this->assertIdentical(Env::getMixed('foo'), Array(1,'a'));
 
-        $this->assertIdentical(Env::getMixed('bar'), '');
+        $this->assertIdentical(Env::getMixed('bar'), null);
         $this->assertIdentical(Env::getMixed('bar', 'bar'), 'bar');
     }
     

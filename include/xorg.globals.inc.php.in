@@ -20,6 +20,9 @@
  ***************************************************************************/
 
 require_once('diogenes.core.globals.inc.php');
+require_once('diogenes.database.inc.php');
+require_once('xorg/iterator.inc.php');
+require_once('xorg/database.inc.php');
 
 // {{{ class XorgGlobals
 
