@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.21 2004-10-29 02:04:23 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.22 2004-10-31 16:02:44 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -86,7 +86,7 @@ if(isset($_GET['trombi'])) {
 } else {
     $sql = "SELECT contact AS id,
 		   a.*, l.alias AS forlife,
-		   i.deces != 0 AS dcd, i.deces, i.matricule_ax, FIND_IN_SET('femme', i.flags) AS sexe,
+		   u.deces != 0 AS dcd, u.deces, u.matricule_ax, FIND_IN_SET('femme', u.flags) AS sexe,
 		   e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
 		   IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
 		   ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
@@ -95,7 +95,6 @@ if(isset($_GET['trombi'])) {
 		   IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
 	    FROM       contacts       AS c
 	    INNER JOIN auth_user_md5  AS a   ON (a.user_id = c.contact)
-	    INNER JOIN identification AS i   ON (a.matricule = i.matricule)
 	    INNER JOIN aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')
 	    LEFT  JOIN entreprises    AS e   ON (e.entrid = 0 AND e.uid = a.user_id)
 	    LEFT  JOIN emploi_secteur AS es  ON (e.secteur = es.id)

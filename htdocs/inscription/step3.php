@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.1 2004-09-05 22:25:44 x2000habouzit Exp $
+        $Id: step3.php,v 1.2 2004-10-31 16:02:46 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -68,7 +68,7 @@ $sql="REPLACE INTO  en_cours
 	       loginbis='$mailorg', username='$forlife'";
 $globals->db->query($sql);
 
-$globals->db->query("UPDATE identification SET last_known_email='{$_REQUEST['email']}' WHERE matricule = $matricule");
+$globals->db->query("UPDATE auth_user_md5 SET last_known_email='{$_REQUEST['email']}' WHERE matricule = $matricule");
 // si on venait de la page maj.php, on met a jour la table envoidirect
 if(isset($_REQUEST['envoidirect']))
     $globals->db->query("UPDATE envoidirect SET date_succes='NOW()' WHERE uid='{$_REQUEST['envoidirect']}'");

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.36 2004-10-25 20:27:52 x2000habouzit Exp $
+        $Id: search.php,v 1.37 2004-10-31 16:02:44 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -50,7 +50,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     }
     $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
-    $womanField = new RefSField('woman',array('FIND_IN_SET(i.flags,\'femme\')+1'),'','','');
+    $womanField = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
     $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField));
     
     if (!$nameField->length() && !$firstnameField->length()
@@ -62,16 +62,15 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $offset = new NumericSField('offset');
    
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       DISTINCT r.matricule,i.matricule_ax,
+                       DISTINCT r.matricule,u.matricule_ax,
                        u.nom!="" AS inscrit,
-                       UPPER(IF(u.nom!="",u.nom,i.nom)) AS nom,
-                       IF(u.prenom!="",u.prenom,i.prenom) AS prenom,
-                       IF(u.promo!="",u.promo,i.promo) AS promo,
+                       UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
+                       IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
+                       u.promo AS promo,
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
                        c.uid AS contact
                  FROM  '.($with_soundex?'recherche_soundex':'recherche').'      AS r
-           INNER JOIN  identification AS i   ON (i.matricule=r.matricule)
             LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.php,v 1.9 2004-10-19 22:05:09 x2000habouzit Exp $
+        $Id: epouse.php,v 1.10 2004-10-31 16:02:44 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,9 +28,8 @@ require("xorg.misc.inc.php");
 new_skinned_page('epouse.tpl', AUTH_MDP);
 
 $res = $globals->db->query(
-    "SELECT  u.nom,u.epouse,i.flags,e.alias
+    "SELECT  u.nom,u.epouse,u.flags,e.alias
        FROM  auth_user_md5  AS u
-  LEFT JOIN  identification AS i USING(matricule)
   LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
       WHERE  user_id=".$_SESSION['uid']);
 

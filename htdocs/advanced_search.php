@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.21 2004-10-29 01:24:20 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.22 2004-10-31 16:02:44 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -72,7 +72,7 @@ else {
     }
     $promo1Field = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('u.promo'),'');
-    $womanField = new RefSField('woman',array('FIND_IN_SET(i.flags,\'femme\')+1'),'','','');
+    $womanField = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
    
     $townField = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
     $countryField = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
@@ -105,7 +105,7 @@ else {
    
     $where = $fields->get_where_statement();
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       DISTINCT u.matricule,i.matricule_ax,
+                       DISTINCT u.matricule,u.matricule_ax,
                        1 AS inscrit,
                        u.nom,
                        u.prenom,
@@ -116,7 +116,6 @@ else {
                  FROM  auth_user_md5  AS u
 	   '.$fields->get_select_statement().'
            INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
-           INNER JOIN  identification AS i ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             '.$globals->search_result_where_statement.'
                 '.(($where!='')?('WHERE '.$where):'').'
