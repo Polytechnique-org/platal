@@ -1,5 +1,6 @@
-{***************************************************************************
- *  Copyright (C) 2004 Polytechnique.org                                   *
+<?php
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -16,22 +17,11 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************}
+ ***************************************************************************/
 
+require_once("xorg.inc.php");
+new_skinned_page("stats/evolution_inscrits.tpl", AUTH_COOKIE);
 
-<h1>
-  Statistiques
-</h1>
+$page->run();
 
-<p>
-Quelques statistiques sur l'utilisation des services de Polytechnique.org ainsi que sur l'evolution et la repartition du nombre d'inscrits.
-</p>
-
-<ul>
-<li><a href="evolution_inscrits.php">Nombre d'inscrits au cours du temps</a></li>
-<li><a href="stats_promo.php">Nombre d'inscrits dans ta promotion</a></li>
-<li><a href="nb_by_promo.php">Nombre d'inscrits par promotion</a></li>
-<li><a href="parselog.php">Statistiques mail</a></li>
-</ul>
-
-{* vim:set et sw=2 sts=2 sws=2: *}
+?>

@@ -1,5 +1,5 @@
 {***************************************************************************
- *  Copyright (C) 2004 Polytechnique.org                                   *
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -20,18 +20,33 @@
 
 
 <h1>
-  Statistiques
+  Evolution du nombre d'inscrits au site polytechnique.org
 </h1>
 
-<p>
-Quelques statistiques sur l'utilisation des services de Polytechnique.org ainsi que sur l'evolution et la repartition du nombre d'inscrits.
-</p>
-
-<ul>
-<li><a href="evolution_inscrits.php">Nombre d'inscrits au cours du temps</a></li>
-<li><a href="stats_promo.php">Nombre d'inscrits dans ta promotion</a></li>
-<li><a href="nb_by_promo.php">Nombre d'inscrits par promotion</a></li>
-<li><a href="parselog.php">Statistiques mail</a></li>
-</ul>
+<div class="center">
+{if $smarty.request.jours eq 1826}
+[<strong>depuis 5 ans</strong>]
+{else}
+[<a href="?jours=1826">depuis 5 ans</a>]
+{/if}
+{if $smarty.request.jours eq 731}
+[<strong>depuis 2 ans</strong>]
+{else}
+[<a href="?jours=731">depuis 2 ans</a>]
+{/if}
+{if (!$smarty.request.jours) or ($smarty.request.jours eq 364)}
+[<strong>depuis un an</strong>]
+{else}
+[<a href="?jours=364">depuis un an</a>]
+{/if}
+{if $smarty.request.jours eq 30}
+[<strong>depuis un mois</strong>]
+{else}
+[<a href="?jours=30">depuis 1 mois</a>]
+{/if}
+</div>
+<div class="center">
+  <img src="{"stats/graph_evolution.php?jours="|url}{$smarty.request.jours}" alt=" [ INSCRITS ] " />
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

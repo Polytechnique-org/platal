@@ -77,7 +77,10 @@ Bug/Wish :
 
 	* Search :
 		- #249, #251, #253 : Some tweaks to be more accurate.				-MC
-	
+
+	* Stats :
+		- #261: Stats of registrations over the time.                       -Car
+		
 	* Validations :
 		- #137: Now possible to add comments without any action.			-MC
 		- #191, #256: Marketing now uses the validation process.			-MC
