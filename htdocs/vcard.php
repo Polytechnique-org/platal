@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.7 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: vcard.php,v 1.8 2004-08-31 19:48:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -83,7 +83,6 @@ $myquery =
     WHERE username='{$_REQUEST['x']}'";
     $result=$globals->db->query($myquery);
 if (mysql_num_rows($result)!=1) {
-    echo 'erreur';
     exit;
 }
 $vcard = mysql_fetch_assoc($result);

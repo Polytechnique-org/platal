@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.php,v 1.5 2004-08-31 13:59:42 x2000habouzit Exp $
+        $Id: referent.php,v 1.6 2004-08-31 19:48:46 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -120,9 +120,9 @@ if(isset($_REQUEST['Chercher'])){
  
     $sql = "SELECT $champ_select $clause_from $clause_where
             GROUP BY uid ORDER BY RAND({$_SESSION['uid']})";
-    //echo "requete : ".htmlentities($sql)."<br />";
+
     $res = $globals->db->query($sql);
-    //  echo mysql_error()."<br/>";
+
     if(mysql_num_rows($res) == 0){
       $page->assign('recherche_trop_large',true);
       mysql_free_result($res);
@@ -134,7 +134,7 @@ if(isset($_REQUEST['Chercher'])){
       else{
         $page_courante = 1;
       }
-      //echo "nombre de pages : $nb_pages<br/>";
+
       $current_uid = 0;
       $nb_resultats = 0;
       $page->assign('resultats',true);

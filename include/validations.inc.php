@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: validations.inc.php,v 1.11 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: validations.inc.php,v 1.12 2004-08-31 19:48:46 x2000habouzit Exp $
  ***************************************************************************/
 
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.11 2004-08-31 11:16:48 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.12 2004-08-31 19:48:46 x2000habouzit Exp $
  *
  */
 
@@ -181,7 +181,6 @@ class Validate {
 require("valid_aliases.inc.php");
 require("valid_epouses.inc.php");
 require("valid_photos.inc.php");
-require("valid_ml.inc.php");
 require("valid_sondages.inc.php");
 require("valid_emploi.inc.php");
 require("valid_evts.inc.php");

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_skill.inc.php,v 1.1 2004-08-31 15:12:37 x2000habouzit Exp $
+        $Id: get_skill.inc.php,v 1.2 2004-08-31 19:48:46 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -74,7 +74,6 @@ $langues_levels = Array(
 );
 
 $res = $globals->db->query("SELECT id, langue_fr FROM langues_def");
-//echo mysql_error();
 
 while(list($tmp_lid, $tmp_lg_fr) = mysql_fetch_row($res)){
     $langues_def[$tmp_lid] = $tmp_lg_fr;
@@ -87,7 +86,6 @@ $comppros_levels = Array(
 );
 
 $res = $globals->db->query("SELECT id, text_fr, FIND_IN_SET('titre',flags) FROM competences_def");
-//echo mysql_error();
 
 while(list($tmp_id, $tmp_text_fr, $tmp_title) = mysql_fetch_row($res)){
     $comppros_def[$tmp_id] = $tmp_text_fr;

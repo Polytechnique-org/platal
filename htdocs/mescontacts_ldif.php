@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_ldif.php,v 1.7 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: mescontacts_ldif.php,v 1.8 2004-08-31 19:48:46 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -74,7 +74,7 @@ $req = $globals->db->query(
         LEFT  JOIN geoloc_region AS gr ON (a.pays = gr.a2 AND a.region = gr.region)
         WHERE c.uid = {$_SESSION['uid']}
         ORDER BY c.contact");
-echo mysql_error();
+
 while($line = mysql_fetch_assoc($req))
     $contacts[$line['id']]['home'] = ensure_adr($line);
 mysql_free_result($req);
