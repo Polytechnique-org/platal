@@ -29,9 +29,36 @@ if (Get::has('back') && Get::getInt('back') < $sub_state['step']) {
     $sub_state['step'] = max(0,Get::getInt('back'));
 }
 
+if (Env::has('hash')) {
+    $res = $globals->xdb->query(
+            "SELECT  m.uid, u.promo, u.prenom, u.nom, u.matricule
+               FROM  register_marketing AS m
+         INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
+              WHERE  m.hash={?}", Env::get('hash'));
+    if (list($uid, $promo, $nom, $prenom, $ourmat) = $res->fetchOneRow()) {
+        $sub_state['hash']   = Env::get('hash');
+        $sub_state['promo']  = $promo;
+        $sub_state['nom']    = $nom;
+        $sub_state['prenom'] = $prenom;
+        $sub_state['ourmat'] = $ourmat;
+
+        $globals->xdb->execute(
+                "REPLACE INTO  register_mstats (uid,sender,success)
+                       SELECT  m.uid, m.sender, NOW()
+                         FROM  register_marketing AS m
+                        WHERE  m.hash", $sub_state['hash']);
+    }
+}
+
 switch ($sub_state['step']) {
     case 0:
-        if (Post::has('step1')) { $sub_state['step'] = 1; }
+        if (Post::has('step1')) {
+            $sub_state['step'] = 1;
+            if (isset($sub_date['hash'])) {
+                $sub_state['step'] = 3;
+                create_aliases($sub_state);
+            }
+        }
         break;
 
     case 1:

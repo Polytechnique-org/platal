@@ -90,21 +90,30 @@ start_connexion($uid,false);
 /************* envoi d'un mail au démarcheur ***************/
 /***********************************************************/
 $res = $globals->xdb->iterRow(
-        "SELECT  DISTINCT a.alias,e.date_envoi
-           FROM  envoidirect AS e
-     INNER JOIN  aliases     AS a ON ( a.id = e.sender AND a.type='a_vie' )
-          WHERE  e.matricule = {?}", $matricule);
-while (list($sender_usern, $sender_date) = $res->next()) {
-    $mymail = new XOrgMailer('marketing.thanks.tpl');
-    $mymail->assign('to',     $sender_usern);
-    $mymail->assign('prenom', $prenom);
-    $mymail->assign('nom',    $nom);
-    $mymail->assign('promo',  $promo);
+        "SELECT  DISTINCT sa.alias, sa.nom, sa.prenom
+           FROM  register_marketing AS m
+     INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
+     INNER JOIN  aliases            AS sa ON ( a.id = m.sender AND FIND_IN_SET('bestalias', a.flags) )
+          WHERE  m.uid = {?}", $uid);
+
+while (list($salias, $snom, $sprenom) = $res->next()) {
+    require_once('diogenes/diogenes.hermes.inc.php');
+    $mymail = new HermesMailer();
+    $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
+    $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
+    $mymail->addTo("\"$sprenom $snom\" <$alias@{$globals->mail->domain}");
+    $msg = "Cher $sprenom,\n\n"
+         . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
+         . "que tu avais incité à s'inscrire à Polytechnique.org, "
+         . "vient à l'instant de terminer son inscription !!\n\n"
+         . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
+         . "Bien cordialement,\n"
+         . "L'équipe Polytechnique.org";
+    $mymail->setTxtBody(wordwrap($msg, 72));
     $mymail->send();
 }
 
-// s'il est dans la table envoidirect, on le marque comme inscrit
-$globals->xdb->execute('UPDATE envoidirect SET date_succes=NOW() WHERE matricule = {?}', $matricule);
+$globals->xdb->execute("DELETE FROM register_mstats WHERE uid = {?}", $uid);
 
 $page->assign('forlife',$forlife);
 $page->run();
