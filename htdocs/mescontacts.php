@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.10 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.11 2004-10-09 13:30:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,8 +28,7 @@ require("applis.func.inc.php");
 // si l'utilisateur demande le retrait de qqun de sa liste
 if (isset($_REQUEST['action'])) {
     if($_REQUEST['action']=='retirer') {
-
-	list($cont_user_id) = mysql_fetch_row($res);
+	
 	if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$_REQUEST['user']}'"))
 	    $page->assign('erreur', "Contact retiré !\n");
 
