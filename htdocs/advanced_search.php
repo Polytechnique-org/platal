@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.34 2004-11-27 12:01:54 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.35 2004-11-27 15:41:00 x2000bedo Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -120,9 +120,10 @@ else {
                        '.$globals->search_result_fields.'
                        c.uid AS contact,
                        w.ni_id AS contact
-                 FROM  auth_user_md5  AS u
-	   '.$fields->get_select_statement().'
-            LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
+                 FROM  auth_user_md5  AS u'
+	   .$fields->get_select_statement()
+       .((!empty($_REQUEST['only_referent']))?' INNER JOIN mentor AS m ON (m.uid = u.user_id)':'')
+       .'   LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
             '.$globals->search_result_where_statement.'
