@@ -64,6 +64,16 @@ class Tracker {
                      FROM trackers.followups AS f,trackers.requests AS r
                      WHERE r.rq_id=f.rq_id AND r.tr_id='{$this->id}'");
     }
+
+    function perms_ok() {
+        if(has_perms())
+            return true;
+        if(logged() && $this->perms == 'auth')
+            return true;
+        if($this->perms=="public")
+            return true;
+        return false;
+    }
 }
 
 function tracker_clean_bd() {

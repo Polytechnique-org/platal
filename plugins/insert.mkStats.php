@@ -48,12 +48,12 @@ function smarty_insert_mkStats($params, &$smarty)
         <tr class="impair">
           <td><a href="$rel/admin/valider.php">$stats_req</a></td>
           <td>
-            <a href="$rel/trackers/tracker_show.php?tr_id=2">
+            <a href="$rel/trackers/show.php?tr_id=2">
             <strong>{$nbtrk[0]}</strong> / {$nbtrk[1]}
             </a>
           </td>
           <td>
-            <a href="$rel/trackers/tracker_show.php?tr_id=1">
+            <a href="$rel/trackers/show.php?tr_id=1">
             <strong>{$nbtrk[2]}</strong> / {$nbtrk[3]}
             </a>
           </td>

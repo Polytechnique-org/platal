@@ -1,4 +1,4 @@
-{* $Id: admin.tpl,v 1.3 2004-02-23 17:10:11 x2000habouzit Exp $ *}
+{* $Id: admin.tpl,v 1.4 2004-02-23 18:04:33 x2000habouzit Exp $ *}
 
 {literal}
 <script type="text/javascript">
@@ -43,7 +43,7 @@
   </tr>
 {foreach item=t from=$trackers}
   <tr class="{cycle values="impair,pair"}">
-    <td><a href="{"show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
+    <td><a href="{"trackers/show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
     <td>{$t.description}</td>
     <td class="right"><a href="mailto:{$t.ml_name}">{$t.short}</a></td>
     <td class="action">
@@ -68,7 +68,7 @@
   </tr>
 {foreach item=t from=$persos}
   <tr class="{cycle values="impair,pair"}">
-    <td><a href="{"show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
+    <td><a href="{"trackers/show.php?tr_id=`$t.tr_id`"|url}">{$t.tr_name}</a></td>
     <td>{$t.description}</td>
     <td class="right"><a href="mailto:{$t.ml_name}">{$t.short}</a></td>
     <td class="action">

@@ -31,6 +31,13 @@ hr    { width: 90%; text-align: center }
 .middle { vertical-align: middle; }
 .smaller { font-size: smaller; font-style: italic; }
 
+.pri1, .pri2, .pri3, .pri4, .pri5 { color: inherit; }
+
+.pri1 { background-color: #dac0c0; font-style: italic; }
+.pri2 { background-color: #dab0b0; font-style: italic; }
+.pri3 { background-color: #daa0a0; }
+.pri4 { background-color: #da9090; }
+.pri5 { background-color: #da8080; font-weight: bold; }
 
 /**: II. :**/
 
@@ -333,4 +340,4 @@ div.long td.rt { width: 65%; }
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.23 2004-02-20 11:44:06 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.24 2004-02-23 18:04:32 x2000habouzit Exp $ */

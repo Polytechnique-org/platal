@@ -100,11 +100,11 @@ class XorgSession extends DiogenesCoreSession {
 /** verifie si un utilisateur a les droits pour voir une page
  ** si ce n'est pas le cas, on affiche une erreur
  * @return void
- * TODO RECODER
  */
-function check_perms($auth_array=array()) {
+function check_perms() {
   global $page;
-  if (!has_perms($auth_array)) {
+  if (!has_perms()) {
+    require_once("diogenes.core.logger.inc.php");
     $_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
     $page->failure();
   }
