@@ -35,8 +35,24 @@ a img { border: 0px; }
 td    { vertical-align: top; }
 li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
 hr    { width: 90%; text-align: center }
-fieldset { border: 1px black dotted; }
-legend { border: 1px #305070 solid; }
+
+fieldset {
+    border: 1px #336699 solid;
+    background: #eeeeee;
+    color: inherit;
+
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+legend {
+    border: 1px #336699 solid;
+    background: #f4d09c;
+    color: inherit;
+
+    padding-left: 4px;
+    padding-right: 4px;
+}
 
 .center { text-align: center; }
 .right  { text-align: right; }
@@ -584,4 +600,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.57 2004-11-04 16:21:45 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.58 2004-11-04 16:33:52 x2000habouzit Exp $ */
