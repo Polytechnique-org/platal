@@ -1,5 +1,4 @@
 htdocs/admin/lists.php
-
 htdocs/listes/admin.php
 htdocs/listes/check.php
 htdocs/listes/create.php
@@ -9,9 +8,7 @@ htdocs/listes/moderate.php
 htdocs/listes/options.php
 htdocs/listes/soptions.php
 htdocs/listes/trombi.php
-
 include/validations/listes.inc.php
-
 scripts/mailman/foreach_template.py
 scripts/mailman/mailman-rpc.py
 scripts/mailman/mails/adminsubscribeack.txt
@@ -24,9 +21,8 @@ scripts/mailman/mails/postheld.txt
 scripts/mailman/mails/refuse.txt
 scripts/mailman/mails/subauth.txt
 scripts/mailman/mails/subscribeack.txt
-
+templates/admin/lists.tpl
 templates/include/form.valid.listes.tpl
-
 templates/listes/admin.tpl
 templates/listes/check.tpl
 templates/listes/create.tpl
@@ -40,5 +36,5 @@ templates/listes/moderate.tpl
 templates/listes/options.tpl
 templates/listes/soptions.tpl
 templates/listes/trombi.tpl
-
 templates/mails/listes.promo.tpl
+templates/mails/valid.liste.tpl
