@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.tpl,v 1.11 2004-09-02 23:06:11 x2000habouzit Exp $
+        $Id: login.tpl,v 1.12 2004-09-20 19:52:50 x2002bobillot Exp $
  ***************************************************************************}
 
 
@@ -52,7 +52,7 @@
   <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.forlife}">fiche</a>
   date du {$fiche_incitation|date_format:"%x"}.
   Il est possible qu'elle ne soit pas à jour.
-  Si tu souhaites la modifier, <a href=\"profil.php\">clique ici !</a>
+  Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
   </p>
 {/dynamic}
 
