@@ -1,5 +1,5 @@
 USE x4dat;
-DROP TABLE recherche;
+DROP TABLE IF EXISTS recherche;
 CREATE TABLE recherche SELECT i.matricule AS matricule,LOWER(REPLACE(i.nom,'-',' ')) AS nom1,
 LOWER(REPLACE(u.nom,'-',' ')) AS nom2, LOWER(REPLACE(u.epouse,'-',' ')) AS nom3,
 LOWER(REPLACE(i.prenom,'-',' ')) AS prenom1, LOWER(REPLACE(u.prenom,'-',' ')) AS prenom2,i.promo AS

@@ -16,16 +16,16 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
 
     if ($with_soundex) {
-        $nameField = new StringWithSoundexSField('name',array('u.nom_soundex','u.epouse_soundex','i.nom_soundex'),'i.nom');
-        $firstnameField = new StringWithSoundexSField('firstname',array('u.prenom_soundex','i.prenom_soundex'),'i.prenom');
+        $nameField = new StringWithSoundexSField('name',array('s.nom_soundex','s.epouse_soundex','i.nom_soundex'),'');
+        $firstnameField = new StringWithSoundexSField('firstname',array('s.prenom_soundex','i.prenom_soundex'),'');
     }
     else {
-        $nameField = new StringSField('name',array('u.nom','u.epouse','i.nom'),'i.nom');
-        $firstnameField = new StringSField('firstname',array('u.prenom','i.prenom'),'i.prenom');
+        $nameField = new StringSField('name',array('r.nom1','r.nom2','r.nom3'),'');
+        $firstnameField = new StringSField('firstname',array('r.prenom1','r.prenom2'),'');
         $with_soundex = ($nameField->length()==0 && $firstnameField->length()==0)?(-1):0;
     }
-    $promo1Field = new PromoSField('promo1','egal1',array('u.promo','i.promo'),'i.promo');
-    $promo2Field = new PromoSField('promo2','egal2',array('u.promo','i.promo'),'i.promo');
+    $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
+    $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
     $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
     
     if ($nameField->length()<2 && $firstnameField->length()<2 && 
@@ -36,7 +36,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $offset = new NumericSField('offset');
     
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       i.matricule_ax,i.matricule,
+                       r.matricule,i.matricule_ax,
                        u.nom!="" AS inscrit,
                        IF(u.nom!="",u.nom,i.nom) AS nom,
                        u.epouse,
@@ -48,8 +48,10 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                        ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
-                 FROM  identification AS i
-            LEFT JOIN  auth_user_md5  AS u ON (i.matricule=u.matricule)
+                 FROM  recherche      AS r
+           INNER JOIN  identification AS i ON (i.matricule=r.matricule)
+            LEFT JOIN  auth_user_md5  AS u ON (u.matricule=r.matricule)
+            '.(($with_soundex)?'LEFT JOIN __soundex AS s ON (s.user_id=u.user_id)':'').'
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
             LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)

@@ -117,10 +117,15 @@ class StringSField extends SField {
      * @param field nom de champ de la bdd concerné par la clause */
     function get_single_where_statement($field) {
         //on rend les traits d'union et les espaces équivalents
-        $regexp = preg_replace('/[ -]/','[ \-]',$this->value);
+        //$regexp = preg_replace('/[ -]/','[ \-]',$this->value);
         //on remplace le pseudo language des * par une regexp
-        $regexp = str_replace('*','.+',$regexp);
-        return $field." RLIKE '^(.*[ -])?".replace_accent_regexp($regexp).".*'";
+        //$regexp = str_replace('*','.+',$regexp);
+        //return $field." RLIKE '^(.*[ -])?".replace_accent_regexp($regexp).".*'";
+
+        //Nouvelle version plus rapide
+        $regexp = str_replace('-',' ',$this->value);
+        $regexp = str_replace('*','%',$regexp);
+        return $field." LIKE LCASE($regexp%)";
     }
 
     /** clause ORDER BY correspondant à ce champ de formulaire */
