@@ -17,12 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.9 2004-10-09 14:26:01 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.10 2004-10-12 15:25:32 x2000coic Exp $
  ***************************************************************************}
 
 <div class="bits">
   {if $result.inscrit==1}
-    <a href="javascript:x()" onclick="popWin('fiche.php?user={$result.forlife}')">
+    <a href="javascript:x()" onclick="popupWin('fiche.php?user={$result.forlife}', 'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
       <img src="images/loupe.gif" alt="Afficher les détails" />
     </a>
     <a href="vcard.php/{$result.forlife}.vcf?x={$result.forlife}">
