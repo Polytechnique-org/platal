@@ -1,4 +1,4 @@
-{* $Id: utilisateurs.tpl,v 1.4 2004-08-25 21:31:14 x2000habouzit Exp $ *}
+{* $Id: utilisateurs.tpl,v 1.5 2004-08-26 09:11:17 x2000habouzit Exp $ *}
 
 {if $smarty.session.suid}
 <p class="erreur">
@@ -14,7 +14,7 @@ Attention, déjà en SUID !!!
 
 {if $smarty.post.u_kill_conf}
 <div class="center">
-  <form name="yes" method="post" action="{$smarty.server.PHP_SELF}">
+  <form id="yes" method="post" action="{$smarty.server.PHP_SELF}">
     <input type="hidden" name="login" value="{$smarty.request.login}" />
     Confirmer la suppression de {$smarty.request.login}&nbsp;&nbsp;
     <input type="submit" name="u_kill" value="continuer" />
@@ -24,7 +24,7 @@ Attention, déjà en SUID !!!
 
 {/dynamic}
 
-<form name="add" method="post" action="{$smarty.server.PHP_SELF}">
+<form id="add" method="post" action="{$smarty.server.PHP_SELF}">
   <table class="tinybicol" cellspacing="0" cellpadding="3">
     <tr>
       <th>
@@ -41,24 +41,23 @@ Attention, déjà en SUID !!!
         <input type="hidden" name="hashpass" value="" /> 
         <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
         <input type="submit" name="suid_button" value=" su " />  &nbsp;&nbsp;
-        <input type="submit" name="logs_button" value=" logs " /> 
+        <input type="submit" name="logs_button" value=" logs " />
       </td>
     </tr>
   </table>
 </form>
 
 {dynamic on="0`$smarty.request.select`"}
-<table cellspacing="0" cellpadding="0" class="admin">
-  <p class="smaller">
-  Derniére connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
-  depuis <strong>{$mr.host}</strong>
-  </p>
-  <form name="edit" method="post" action="{$smarty.server.PHP_SELF}">
+<p class="smaller">
+Derniére connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
+depuis <strong>{$mr.host}</strong>
+</p>
+<form id="edit" method="post" action="{$smarty.server.PHP_SELF}">
+  <table cellspacing="0" cellpadding="0" class="admin">
     <tr> 
       <th class="login">
         Login
       </th>
-      <input type="hidden" name="hashpass" value="" />
       <th class="password"> 
         Password
       </th>
@@ -69,11 +68,11 @@ Attention, déjà en SUID !!!
     <tr> 
       <td class="login"> 
         <input type="hidden" name="hashpass" value="" />
-        <input type="text" name="login" size=20 maxlength=50 value="{$mr.username}" />
+        <input type="text" name="login" size="20" maxlength="50" value="{$mr.username}" />
       </td>
       <td class="password"> 
-        <input type="text" name="newpass_clair" size=10 maxlength=10 value="********" />
-        <input type="hidden" name="passw" size=32 maxlength=32 value="{$mr.password}" />
+        <input type="text" name="newpass_clair" size="10" maxlength="10" value="********" />
+        <input type="hidden" name="passw" size="32" maxlength="32" value="{$mr.password}" />
       </td>
       <td class="perms"> 
         <select name="permsN">
@@ -88,13 +87,13 @@ Attention, déjà en SUID !!!
       </td>
       <td class="login"> 
         <select name="homonyme">
-        {if $mr.loginbis && ($mr.loginbis neq $mr.username)}
+          {if $mr.loginbis && ($mr.loginbis neq $mr.username)}
           <option value="1" selected="selected"> OUI </option>
           <option value="0"> NON </option>
-        {else}
+          {else}
           <option value="1"> OUI </option>
           <option value="0" selected="selected"> NON </option>
-        {/if}
+          {/if}
         </select>
         /* pour homonymes */
       </td>
@@ -107,7 +106,7 @@ Attention, déjà en SUID !!!
         then prenom.nom=
       </td>
       <td class="login">
-        <input type="text" name="loginbis" size=24 maxlength=255 value="{$mr.loginbis}" />
+        <input type="text" name="loginbis" size="24" maxlength="255" value="{$mr.loginbis}" />
       </td>
       <th class="action">
         Action
@@ -117,8 +116,8 @@ Attention, déjà en SUID !!!
       <th>UID</th>
       <td>
         {$mr.user_id}
-        <input type="hidden" name="olduid" size=6 maxlength=6 value="{$mr.user_id}" />
-        <input type="hidden" name="oldlogin" size=100 maxlength=100 value="{$mr.username}" />
+        <input type="hidden" name="olduid" size="6" maxlength="6" value="{$mr.user_id}" />
+        <input type="hidden" name="oldlogin" size="100" maxlength="100" value="{$mr.username}" />
       </td>
       <td class="action">
         <input type="submit" name="u_kill_conf" value="DELETE" />
@@ -132,7 +131,7 @@ Attention, déjà en SUID !!!
         {$mr.matricule}
       </td>
       <td class="action"> 
-        <input onClick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
+        <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
       </td>
     </tr>
     <tr> 
@@ -140,7 +139,7 @@ Attention, déjà en SUID !!!
         Date de naissance
       </th>
       <td class="detail"> 
-        <input type="text" name="naissanceN" size=10 maxlength=10 value="{$mr.naissance}" />
+        <input type="text" name="naissanceN" size="10" maxlength="10" value="{$mr.naissance}" />
       </td>
       <td class="action">
         &nbsp;
@@ -151,7 +150,7 @@ Attention, déjà en SUID !!!
         Promo
       </th>
       <td class="detail"> 
-        <input type="text" name="promoN" size=4 maxlength=4 value="{$mr.promo}" />
+        <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
       </td>
       <td class="action">
         &nbsp;
@@ -162,7 +161,7 @@ Attention, déjà en SUID !!!
         Nom
       </th>
       <td class="detail">
-        <input type="text" name="nomN" size=20 maxlength=255 value="{$mr.nom}" />
+        <input type="text" name="nomN" size="20" maxlength="255" value="{$mr.nom}" />
       </td>
       <td class="action">
         <a href="javascript:x()" onclick="popWin('{"x.php?x=`$mr.username`"|url}')">[Voir fiche]</a>
@@ -173,7 +172,7 @@ Attention, déjà en SUID !!!
         Prénom
       </th>
       <td class="detail">
-        <input type="text" name="prenomN" size=20 maxlength=30 value="{$mr.prenom}" />
+        <input type="text" name="prenomN" size="20" maxlength="30" value="{$mr.prenom}" />
       </td>
       <td class="action">
         <a href="admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
@@ -184,48 +183,44 @@ Attention, déjà en SUID !!!
         Alias e-mail
       </th>
       <td class="alias"> 
-        <input type="text" name="alias" size=20 maxlength=255 value="{$mr.alias}" />@m4x.org
+        <input type="text" name="alias" size="20" maxlength="255" value="{$mr.alias}" />@m4x.org
       </td>
       <td class="action">
         &nbsp;
       </td>
     </tr>
     {foreach item=mail from=$xorgmails}
-    <form name="remove" method="post" action="{$smarty.server.PHP_SELF}">
-      <tr> 
-        <th class="detail"> 
-          e-mail forward {$mail.num} ({$mail.flags})
-        </th>
-        <td class="detail"> 
-          <input type="text" name="fwd" size=29 maxlength=255 value="{$mail.email}" />
-        </td>
-        <td class="action"> 
-          <input type="hidden" name="user_id" value="{$mr.user_id}" />
-          <input type="hidden" name="login" value="{$mr.username}" />
-          <input type="hidden" name="email" value="{$mail.email}" />
-          <input type="hidden" name="select" value="edit" />
-          <input type="submit" name="remove_email" value="Supprimer" />
-        </td>
-      </tr>
-    </form>
+    <tr> 
+      <th class="detail"> 
+        e-mail forward {$mail.num} ({$mail.flags})
+      </th>
+      <td class="detail"> 
+        <input type="text" name="fwd" size="29" maxlength="255" value="{$mail.email}" />
+      </td>
+      <td class="action"> 
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="login" value="{$mr.username}" />
+        <input type="hidden" name="email" value="{$mail.email}" />
+        <input type="hidden" name="select" value="edit" />
+        <input type="submit" name="remove_email" value="Supprimer" />
+      </td>
+    </tr>
     {/foreach}
-    <form name="add" method="post" action="{$smarty.server.PHP_SELF}">
-      <input type="hidden" name="user_id" value="{$mr.user_id}" />
-      <input type="hidden" name="login" value="{$mr.username}" />
-      <input type="hidden" name="select" value="edit" />
-      <input type="hidden" name="num" value="{$next_num}" />
-      <tr> 
-        <th class="detail">
-          Ajouter un email
-        </td>
-        <td class="detail"> 
-          <input type="text" name="email" size=29 maxlength=60 value="" />
-        </td>
-        <td class="action">
-          <input type="submit" name="add_email" value="Ajouter" />
-        </td>
-      </tr>
-    </form>
+    <tr> 
+      <th class="detail">
+        Ajouter un email
+      </th>
+      <td class="detail"> 
+        <input type="text" name="email" size="29" maxlength="60" value="" />
+      </td>
+      <td class="action">
+        <input type="hidden" name="user_id" value="{$mr.user_id}" />
+        <input type="hidden" name="login" value="{$mr.username}" />
+        <input type="hidden" name="select" value="edit" />
+        <input type="hidden" name="num" value="{$next_num}" />
+        <input type="submit" name="add_email" value="Ajouter" />
+      </td>
+    </tr>
   </table>
 </form>
 <p class="erreur">

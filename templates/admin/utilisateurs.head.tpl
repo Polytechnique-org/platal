@@ -1,7 +1,7 @@
-{* $Id: utilisateurs.head.tpl,v 1.1 2004-02-11 20:00:38 x2000habouzit Exp $ *}
+{* $Id: utilisateurs.head.tpl,v 1.2 2004-08-26 09:11:17 x2000habouzit Exp $ *}
 
 {literal}
-<script language="javascript" type="text/javascript" src="md5.js"></script>
+<script type="text/javascript" src="md5.js"></script>
 <style type="text/css" media="screen,print">
   <!-- 
   p.succes {font-weight: bold;}
@@ -18,17 +18,17 @@
   -->
 </style>
 
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
 <!--
 function doAddUser() {
-    document.add.hashpass.value = MD5(document.add.password.value);
-    document.add.password.value = "";
-    document.add.submit();
+    document.forms.add.hashpass.value = MD5(document.forms.add.password.value);
+    document.forms.add.password.value = "";
+    document.forms.add.submit();
 }
 function doEditUser() {
-    document.edit.hashpass.value = MD5(document.edit.password.value);
-    document.edit.password.value = "";
-    document.edit.submit();
+    document.forms.edit.hashpass.value = MD5(document.forms.edit.password.value);
+    document.forms.edit.password.value = "";
+    document.forms.edit.submit();
 }
 // -->
 </script>

@@ -4,7 +4,7 @@ new_admin_page('admin/utilisateurs.tpl', true, 'admin/utilisateurs.head.tpl');
 require("xorg.misc.inc.php");
 
 $assignates = Array(
-        'add_email', 'email', 'fwd', 'hashpass', 'homonyme',
+        'add_email', 'email', 'fwd', 'alias', 'hashpass', 'homonyme',
         'login', 'loginbis', 'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num',
         'oldlogin', 'olduid', 'passw', 'password1', 'perms', 'permsN', 'prenomN', 'promoN',
         'remove_email', 'select', 'suid_button', 'user_id', 'u_edit',
@@ -32,7 +32,7 @@ if(isset($_REQUEST['logs_button'])) {
 if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login'])
         and !isset($_SESSION['suid']) // pas de su imbriqués
   ) {
-    $res = @mysql_query( "SELECT user_id,prenom,nom,promo,perms FROM auth_user_md5 WHERE username='{$_REQUEST['login']}'",$conn);
+    $res = @$globals->db->query( "SELECT user_id,prenom,nom,promo,perms FROM auth_user_md5 WHERE username='{$_REQUEST['login']}'");
     if(@mysql_num_rows($res) != 0) {
         list($uid,$prenom,$nom,$promo,$perms)=mysql_fetch_row($res);
         // on déplace le log de l'admin dans slog, et on crée un log de suid en log
@@ -66,14 +66,14 @@ foreach($_POST as $key => $val) {
                 my_error("invalid email");
                 break;
             }
-            mysql_query("INSERT INTO emails (uid,num,email,flags) VALUES ($user_id,$num,'$email','active')",$conn);
+            $globals->db->query("INSERT INTO emails (uid,num,email,flags) VALUES ($user_id,$num,'$email','active')");
             my_msg("Ajout de $email effectué"); 
             break;
 
     // supprime un email
 
         case "remove_email":
-            mysql_query("delete from emails where uid=$user_id and email = '$email'",$conn);
+            $globals->db->query("delete from emails where uid=$user_id and email = '$email'");
             my_msg("Suppression de $email effectué"); 
             break;
 
@@ -107,7 +107,7 @@ foreach($_POST as $key => $val) {
                         alias='$alias'
                       WHERE user_id=$olduid";
 
-            mysql_query($query,$conn);
+            $globals->db->query($query);
             if (mysql_errno($conn) != 0) {
                 my_error("<b>Failed:</b> $query");
                 break;
@@ -127,28 +127,28 @@ foreach($_POST as $key => $val) {
     // DELETE FROM auth_user_md5
         case "u_kill":
 
-            $result=mysql_query("select user_id from auth_user_md5 where username='$login'",$conn);
+            $result=$globals->db->query("select user_id from auth_user_md5 where username='$login'");
             if(list($user_id) = mysql_fetch_row($result)) {
                 $query = "DELETE FROM auth_user_md5 WHERE username='$login'";
-                mysql_query($query,$conn);
-                mysql_query("delete from emails where uid=$user_id",$conn);
-                mysql_query("delete from binets_ins where user_id=$user_id",$conn);
-                mysql_query("delete from groupesx_ins where guid=$user_id",$conn);
-                mysql_query("delete from photo where uid=$user_id",$conn);
-                mysql_query("delete from perte_pass where uid=$user_id",$conn);
-                mysql_query("delete from user_changes where user_id=$user_id",$conn);
-                mysql_query("delete from aliases where id=$user_id and type in ('login','epouse','alias')",$conn);
-                mysql_query("delete from listes_ins where idu=$user_id",$conn);
-                mysql_query("delete from listes_mod where idu=$user_id",$conn);
-                mysql_query("delete from forums_abo where uid=$user_id",$conn);
-                mysql_query("delete from applis_ins where uid=$user_id",$conn);
-                mysql_query("delete from contacts where uid=$user_id",$conn);
-                mysql_query("delete from contacts where contact=$user_id",$conn);
+                $globals->db->query($query);
+                $globals->db->query("delete from emails where uid=$user_id");
+                $globals->db->query("delete from binets_ins where user_id=$user_id");
+                $globals->db->query("delete from groupesx_ins where guid=$user_id");
+                $globals->db->query("delete from photo where uid=$user_id");
+                $globals->db->query("delete from perte_pass where uid=$user_id");
+                $globals->db->query("delete from user_changes where user_id=$user_id");
+                $globals->db->query("delete from aliases where id=$user_id and type in ('login','epouse','alias')");
+                $globals->db->query("delete from listes_ins where idu=$user_id");
+                $globals->db->query("delete from listes_mod where idu=$user_id");
+                $globals->db->query("delete from forums_abo where uid=$user_id");
+                $globals->db->query("delete from applis_ins where uid=$user_id");
+                $globals->db->query("delete from contacts where uid=$user_id");
+                $globals->db->query("delete from contacts where contact=$user_id");
                 // on purge les entrees dans logger
-                $res=mysql_query("select id from logger.sessions where uid=$user_id",$conn);
+                $res=$globals->db->query("select id from logger.sessions where uid=$user_id");
                 while (list($session_id)=mysql_fetch_row($res)) 
-                    mysql_query("delete from logger.events where session=$session_id",$conn);
-                mysql_query("delete from logger.sessions where uid=$user_id",$conn);	
+                    $globals->db->query("delete from logger.events where session=$session_id");
+                $globals->db->query("delete from logger.sessions where uid=$user_id");	
 
                 my_msg(" \"$login\" a été supprimé !<BR>");
                 $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
@@ -171,10 +171,10 @@ if (!empty($_REQUEST['select'])) {
         $numeric_login = true;
         $looking_field = 'user_id';
     }
-    $r=mysql_query("select * from auth_user_md5 where $looking_field='$login' order by username",$conn);
+    $r=$globals->db->query("select * from auth_user_md5 where $looking_field='$login' order by username");
     if ($mr=mysql_fetch_assoc($r)){
         if ($numeric_login) $login = $mr['username'];
-        $param=mysql_query("SELECT UNIX_TIMESTAMP(MAX(start)) FROM logger.sessions WHERE uid={$mr['user_id']} AND suid=0 GROUP BY uid'",$conn);
+        $param=$globals->db->query("SELECT UNIX_TIMESTAMP(MAX(start)) FROM logger.sessions WHERE uid={$mr['user_id']} AND suid=0 GROUP BY uid");
         list($lastlogin) = mysql_fetch_row($param);
         mysql_free_result($param);
 
@@ -185,7 +185,7 @@ if (!empty($_REQUEST['select'])) {
         $sql = "SELECT email, num, flags, panne
                 FROM emails
                 WHERE num != 0 AND uid = {$mr['user_id']} order by num";
-        $result=mysql_query($sql,$conn);
+        $result=$globals->db->query($sql);
         $xorgmails = Array();
         $email_panne = "";
         while($l = mysql_fetch_assoc($result)) {
