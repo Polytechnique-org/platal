@@ -75,8 +75,46 @@
         &nbsp;
 	</td>
       </tr>
-       {print_comppros}
-   </table>
+  {section name=comp loop=$nb_cpro+1 start=1}
+    {assign var='i' value=$smarty.section.comp.index}
+    {if $i%2}
+      <tr class="pair">
+    {else}
+      <tr class="impair">
+    {/if}
+	<td class="colg">
+	  <span class="valeur">{$cpro_name.$i}</span>
+	</td>
+	<td class="colm">
+	  <span class="valeur">&nbsp;&nbsp;{$cpro_level.$i}</span>
+	</td>
+        <td class="cold">
+	  <span class="lien"><a href="javascript:comppros_del('{$cpro_id.$i}');">retirer</a></span>
+        </td>
+      </tr>
+   {/section}
+   {if $nb_cpro < $nb_cpro_max}
+    {if $i%2}
+      <tr class="pair">
+    {else}
+      <tr class="impair">
+    {/if}
+       <td class="colg">
+        <select name="comppros_sel_add">
+          {select_competence competence=""}
+        </select>
+       </td>
+       <td class="colm">
+        <select name="comppros_level_sel_add">
+           {select_competence_level level=""}
+        </select>
+       </td>
+       <td class="cold">
+        <span class="lien"><a href="javascript:comppros_add();">ajouter</a></span>
+       </td>
+      </tr>
+   {/if}   
+</table>
 </div>
 
 
@@ -116,6 +154,44 @@
 	  <span class="lien"><a href="javascript:x()" onclick="popWin('aide.php#niveau_langue','remplissage','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=400,height=500')">Quel niveau ?</a></span>
         </td>
       </tr>
-      {print_langues}
+      {section name=lg loop=$nb_lg+1 start=1}
+        {assign var='i' value=$smarty.section.lg.index}
+	{if $i%2}
+	  <tr class="pair">
+	{else}
+	  <tr class="impair">
+	{/if}
+	    <td class="colg">
+	       <span class="valeur">{$langue_name.$i}</span>
+	    </td>
+	    <td class="colm">
+	       <span class="valeur">&nbsp;&nbsp;{if $langue_level.$i == 0}-{else}{$langue_level.$i}{/if}</span>
+	    </td>
+            <td class="cold">
+	      <span class="lien"><a href="javascript:langue_del('{$langue_id.$i}');">retirer</a></span>
+            </td>
+          </tr>
+	{/section}
+	{if $nb_lg < $nb_lg_max}
+          {if $i%2}
+	  <tr class="pair">
+	  {else}
+	  <tr class="impair">
+	  {/if}
+            <td class="colg">
+              <select name="langue_sel_add">
+                {select_langue langue=""}
+              </select>
+            </td>
+            <td class="colm">
+              <select name="langue_level_sel_add">
+                {select_langue_level level=0}
+              </select>
+            </td>
+            <td class="cold">
+              <span class="lien"><a href="javascript:langue_add();">ajouter</a></span>
+            </td>
+          </tr>
+         {/if}
    </table>
 </div>

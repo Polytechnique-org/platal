@@ -14,6 +14,10 @@ function select_comppros_name($cproname){
 		}
 	}
 }
+function _select_comppros_name($params){
+  select_comppros_name($params['competence']);
+}
+$page->register_function('select_competence', '_select_comppros_name');
 
 function select_langue_name($lgname){
 	global $langues_def;
@@ -23,6 +27,10 @@ function select_langue_name($lgname){
 		echo "<option value=\"$lid\"".(($lname == $lgname)?" selected":"").">$lname</option>";
 	}
 }
+function _select_langue_name($params){
+  select_langue_name($params['langue']);
+}
+$page->register_function('select_langue', '_select_langue_name');
 
 function select_langue_level($llevel){
         global $langues_levels;
@@ -32,6 +40,10 @@ function select_langue_level($llevel){
                 echo "<option value=\"$level\"".(($llevel == $level)?" selected":"").">&nbsp;$levelname&nbsp;</option>";
         }
 }
+function _select_langue_level($params){
+  select_langue_level($params['level']);
+}
+$page->register_function('select_langue_level', '_select_langue_level');
 
 function select_comppros_level(){
         global $comppros_levels;
@@ -40,89 +52,10 @@ function select_comppros_level(){
                 echo "<option value=\"$level\">$levelname</option>";
         }
 }
-
-function affiche_langues(){
-	global $nb_lg, $nb_lg_max, $langue_name, $langue_level, $langue_id;
-	for($i = 1; $i <= $nb_lg ; $i++){
-	    if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
-?>
-	<td class="colg">
-	<span class="valeur"><?php echo $langue_name[$i];?></span>
-	</td>
-	<td class="colm">
-	<span class="valeur">&nbsp;&nbsp;<?php echo ($langue_level[$i] == 0)?'-':$langue_level[$i];?></span>
-	</td>
-        <td class="cold">
-	  <span class="lien"><a href="javascript:langue_del('<?php echo $langue_id[$i]; ?>');">retirer</a></span>
-        </td>
-      </tr>
-<?php } if($nb_lg < $nb_lg_max) {
-          if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
-?>
-       <td class="colg">
-        <select name="langue_sel_add">
-          <?php select_langue_name("");?>
-        </select>
-       </td>
-       <td class="colm">
-        <select name="langue_level_sel_add">
-           <?php select_langue_level(0);?>
-        </select>
-       </td>
-       <td class="cold">
-        <span class="lien"><a href="javascript:langue_add();">ajouter</a></span>
-       </td>
-      </tr>
-
-<?php
-	}
+function _select_cppro_level($params){
+  select_comppros_level($params['level']);
 }
-
-function affiche_comppros() {
-	global $nb_cpro, $nb_cpro_max, $cpro_name, $cpro_level, $cpro_id;
-	for($i = 1; $i <= $nb_cpro ; $i++){
-	    if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
-?>
-	<td class="colg">
-	<span class="valeur"><?php echo $cpro_name[$i];?></span>
-	</td>
-	<td class="colm">
-	<span class="valeur">&nbsp;&nbsp;<?php echo $cpro_level[$i];?></span>
-	</td>
-        <td class="cold">
-	  <span class="lien"><a href="javascript:comppros_del('<?php echo $cpro_id[$i]; ?>');">retirer</a></span>
-        </td>
-      </tr>
-<?php } if($nb_cpro < $nb_cpro_max) {
-          if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
-?>
-       <td class="colg">
-        <select name="comppros_sel_add">
-          <?php select_comppros_name("");?>
-        </select>
-       </td>
-       <td class="colm">
-        <select name="comppros_level_sel_add">
-           <?php select_comppros_level();?>
-        </select>
-       </td>
-       <td class="cold">
-        <span class="lien"><a href="javascript:comppros_add();">ajouter</a></span>
-       </td>
-      </tr>
-
-<?php
-	}
-}
-function _print_langues_smarty($params){
-  affiche_langues();
-}
-function _print_comppros_smarty($params){
-  affiche_comppros();
-}
-$page->register_function('print_langues', '_print_langues_smarty');
-$page->register_function('print_comppros', '_print_comppros_smarty');
-
+$page->register_function('select_competence_level', '_select_cppro_level');
 
 if(isset($_REQUEST['langue_op']) && !$no_update_bd){
 	if($_REQUEST['langue_op']=='retirer'){
@@ -148,7 +81,8 @@ if(isset($_REQUEST['comppros_op']) && !$no_update_bd){
 $nb_lg_max = 10;
 // nombre maximum autorisé de compétences professionnelles
 $nb_cpro_max = 20;
-
+$page->assign('nb_lg_max', $nb_lg_max);
+$page->assign('nb_cpro_max', $nb_cpro_max);
 
 $res = mysql_query("SELECT ld.id, ld.langue_fr, li.level from langues_ins AS li, langues_def AS ld "
                ."where (li.lid=ld.id and li.uid='{$_SESSION['uid']}') LIMIT $nb_lg_max");
@@ -158,6 +92,10 @@ $nb_lg = mysql_num_rows($res);
 for ($i = 1; $i <= $nb_lg; $i++) {
   list($langue_id[$i], $langue_name[$i], $langue_level[$i]) = mysql_fetch_row($res);
 }
+$page->assign('nb_lg', $nb_lg);
+$page->assign_by_ref('langue_id', $langue_id);
+$page->assign_by_ref('langue_name', $langue_name);
+$page->assign_by_ref('langue_level', $langue_level);
 
 $res = mysql_query("SELECT cd.id, cd.text_fr, ci.level from competences_ins AS ci, competences_def AS cd "
                ."where (ci.cid=cd.id and ci.uid='{$_SESSION['uid']}') LIMIT $nb_cpro_max");
@@ -167,6 +105,10 @@ $nb_cpro = mysql_num_rows($res);
 for ($i = 1; $i <= $nb_cpro; $i++) {
   list($cpro_id[$i], $cpro_name[$i], $cpro_level[$i]) = mysql_fetch_row($res);
 }
+$page->assign('nb_cpro', $nb_cpro);
+$page->assign_by_ref('cpro_id', $cpro_id);
+$page->assign_by_ref('cpro_name', $cpro_name);
+$page->assign_by_ref('cpro_level', $cpro_level);
 
 //Definitions des tables de correspondances id => nom
 
@@ -178,6 +120,7 @@ $langues_levels = Array(
 	5 => "5",
 	6 => "6"
 );
+$page->assign_by_ref('langues_level',$langues_level);
 
 $res = mysql_query("SELECT id, langue_fr FROM langues_def");
 //echo mysql_error();
@@ -185,12 +128,14 @@ $res = mysql_query("SELECT id, langue_fr FROM langues_def");
 while(list($tmp_lid, $tmp_lg_fr) = mysql_fetch_row($res)){
 	$langues_def[$tmp_lid] = $tmp_lg_fr;
 }
+$page->assign_by_ref('langues_def',$langues_def);
 
 $comppros_levels = Array(
 	'initié' => 'initié',
 	'bonne connaissance' => 'bonne connaissance',
 	'expert' => 'expert'
 );
+$page->assign_by_ref('comppros_level',$comppros_level);
 
 $res = mysql_query("SELECT id, text_fr, FIND_IN_SET('titre',flags) FROM competences_def");
 //echo mysql_error();
@@ -199,5 +144,7 @@ while(list($tmp_id, $tmp_text_fr, $tmp_title) = mysql_fetch_row($res)){
 	$comppros_def[$tmp_id] = $tmp_text_fr;
 	$comppros_title[$tmp_id] = $tmp_title;
 }
+$page->assign_by_ref('comppros_def',$comppros_def);
+$page->assign_by_ref('comppros_title',$comppros_title);
 
 ?>
