@@ -30,16 +30,18 @@ class AliasReq extends Validate
     var $unique = true;
 
     var $old='';
+    var $public='private';
 
     // }}}
     // {{{ constructor
 
-    function AliasReq ($_uid, $_alias, $_raison, $_stamp=0)
+    function AliasReq ($_uid, $_alias, $_raison, $_public, $_stamp=0)
     {
         global $globals;
         $this->Validate($_uid, true, 'alias', $_stamp);
         $this->alias  = $_alias.'@'.$globals->mail->alias_dom;
         $this->raison = $_raison;
+        $this->public = $_public;
 
         $res = $globals->xdb->query("
                 SELECT  v.alias
@@ -79,7 +81,7 @@ class AliasReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  L'adresse mail {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.";
+            return "  L'adresse mail {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.".(($this->public == 'public')?" A ta demande, cette adresse apparaît maintenant sur ta fiche.":"");
         } else {
             return "  La demande que tu avais faite pour l'alias {$this->alias} a été refusée.";
         }
@@ -91,6 +93,8 @@ class AliasReq extends Validate
     function commit ()
     {
         global $globals;
+        
+        $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}", $this->public, $this->uid);
 
         if ($this->old) {
             return $globals->xdb->execute('UPDATE virtual SET alias={?} WHERE alias={?}', $this->alias, $this->old);

@@ -44,9 +44,13 @@ $page->assign('actuel', $alias);
 if (Env::has('alias') and Env::has('raison')) {
     $alias  = Env::get('alias');
     $raison = Env::get('raison');
+    $public = (Env::get('public', 'off') == 'on')?"public":"private";
 
     $page->assign('r_alias', $alias);
     $page->assign('r_raison', $raison);
+    if ($public == 'public') {
+    	$page->assign('r_public', true);
+    }
 
     //Quelques vérifications sur l'alias (caractères spéciaux)
     if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
@@ -75,7 +79,7 @@ if (Env::has('alias') and Env::has('raison')) {
         }
 
         //Insertion de la demande dans la base, écrase les requêtes précédente
-        $myalias = new AliasReq($uid, $alias, $raison);
+        $myalias = new AliasReq($uid, $alias, $raison, $public);
         $myalias->submit();
         $page->assign('success',$alias);
         $page->run('succes');

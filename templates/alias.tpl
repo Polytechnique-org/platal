@@ -88,6 +88,20 @@
         <td><input type="text" name="alias" value="{$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
       </tr>
       <tr>
+        <td>
+          <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
+            <tr>
+              <td class="orange">
+                <input type="checkbox" name="public" {if $r_public}checked{/if}/>
+              </td>
+              <td class="texte">
+                adresse publique (apparaît sur ta fiche).
+              </td>
+             </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
         <td>Brève explication :</td>
       </tr>
       <tr>
