@@ -1,7 +1,7 @@
 <?php
 
 require("auto.prepend.inc.php");
-new_simple_page('fiche_referent.tpl',AUTH_COOKIE);
+new_simple_page('fiche_referent.tpl',AUTH_COOKIE, false, 'add_fiche_css.tpl');
 
 //$isnetscape = !empty($_SESSION['skin_compatible']);
 
@@ -63,10 +63,6 @@ unset($adr_pro[$i]);
 $nb_infos_pro = $i;
 $page->assign('nb_infos_pro', $nb_infos_pro);
 $page->assign_by_ref('adr_pro', $adr_pro);
-if ($nb_infos_pro!=0)
-  $taille_adr_pro=(int)(100/$nb_infos_pro);
-else
-  $taille_adr_pro=100;
 mysql_free_result($result);
 
 /////  recuperations infos referent

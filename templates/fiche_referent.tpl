@@ -1,41 +1,4 @@
 {dynamic}
-{literal}
-<style type="text/css" media="screen,print">
-div.boite{
-  border: 1px solid #5555BB;
-  background-color: #FFFFC0;
-  padding: 5px;
-  margin: 5px;
-}
-
-div.boite div.titre{
-  background-color: #9999FF;
-  margin: 5px;
-  padding: 5px;
-  text-align: center;
-}
-
-div.spacer{
-  clear: both;
-}
-
-div.boite div.item{
-  float: left;
-  padding: 5px;
-  margin: 5px;
-}
-
-div.item div.title{
-  font-weight: bold;
-}
-
-div.item div.value{
-
-}
-
-</style>
-{/literal}
-
 <div class="boite" style="text-align:center;">
   <span>{$prenom} {$nom}</span><br />
   <span>X{$promo}&nbsp;-&nbsp;</span>
