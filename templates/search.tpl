@@ -23,7 +23,7 @@
   {if !$advanced}
   {include file='search.quick.form.tpl' show_js=1}
   {else}
-  {include file=search.adv.links.tpl do_title=1}
+  {include file=search.adv.links.tpl do_title=1 with_soundex=$with_soundex}
   {/if}
 
   <h1 class='right'>

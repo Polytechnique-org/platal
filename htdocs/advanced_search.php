@@ -146,6 +146,7 @@ if (!Env::has('rechercher')) {
     $page->assign('url_args',  $url_args);
     $page->assign('perpage',   $globals->search->per_page);
     $page->assign('nb_tot',    $nb_tot);
+    $page->assign('with_soundex',   $with_soundex);
     
     if (empty($nb_tot)) {
         form_prepare();
