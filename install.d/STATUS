@@ -1,10 +1,12 @@
 MODULES IN GOOD SHAPE
 ---------------------
 
-skins       one minor bug
-lists       harmonize configs between python and php
+lists
 newsletter
 webredirect
+
+skins       one minor bug
+money       move paiments.* into x4dat.money_*
 
 STILL NEED SOME WORK
 --------------------
@@ -26,7 +28,6 @@ contacts
 exalead
 mail
 marketing
-money
 news
 platal
 platal-dev

@@ -21,6 +21,8 @@ New :
 
 	* Mails : Use HermesMailer.												-MC
 
+	* Money : standalone module.											-MC
+
 	* Skins :
 		- New skin : openweb.												-MC
 		- No more annoying submit button, onclick is used to submit.		-MC
