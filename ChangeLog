@@ -11,7 +11,7 @@ New :
 		- Drop good old mysql_assign, iterators are nicer.					-MC
 		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC
 		- Drop cache algorithm (was complex for no gain).					-MC
-		- Enhancements wrt COOKIE.											-MC
+		- Enhancements wrt COOKIE.										-MC -Car
 		- More homogenous date formating (use %x / %X everywhere).			-MC
 		- No more .head.tpl. (thanks to JM for the tip).					-MC
 		- Strip unnecessary spaces from templates at compile time.			-MC
@@ -235,6 +235,7 @@ ACRONYMS :
 
 	* PoT : Polytechnique.org TEAM (see Authors).
 
+	* Car : Pascal Corpet    (Caribou)  <pascal.corpet@m4x.org>
 	* FAL : Raphaël Marichez (Falco)    <raphael.marichez@m4x.org>
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
