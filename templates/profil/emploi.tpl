@@ -1,11 +1,11 @@
-{* $Id: emploi.tpl,v 1.2 2004-07-17 12:03:58 x2000habouzit Exp $ *}
+{* $Id: emploi.tpl,v 1.3 2004-07-31 13:37:19 x2000coic Exp $ *}
 
 {section name=adresses_pro loop=2}
 {assign var='i' value=$smarty.section.adresses_pro.index} 
 
 <div class="blocunite{if !$i}tab{/if}">
 
-  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise n°{eval $i+1}">
+  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise n°{$i+1}">
     <tr>
       <th colspan="2">
         Informations professionnelles - Entreprise n°{$i+1}
