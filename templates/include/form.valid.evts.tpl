@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.evts.tpl,v 1.8 2004-11-13 15:56:37 x2000habouzit Exp $
+        $Id: form.valid.evts.tpl,v 1.9 2004-11-17 12:21:48 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,10 +28,10 @@
     </tr>
     <tr>
       <td  colspan="2">
-        Posté par <a href="{"fiche.php"|url}?user={$valid->forlife}" class="popup2">
+        Posté par <a href="{"fiche.php"|url}?user={$valid->bestalias}" class="popup2">
           {$valid->prenom} {$valid->nom} (X{$valid->promo})
         </a>
-        [<a href="mailto:{$valid->forlife}@polytechnique.org">lui écrire</a>]
+        [<a href="mailto:{$valid->bestalias}@polytechnique.org">lui écrire</a>]
       </td>
     </tr>
     <tr>

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid.evts.tpl,v 1.3 2004-09-02 21:09:33 x2000habouzit Exp $
+        $Id: valid.evts.tpl,v 1.4 2004-11-17 12:21:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_evts"}
 {subject text="[Polytechnique.org/EVENEMENTS] Proposition d'événement"}
 {from full=#from#}
-{to addr="$forlife@polytechnique.org"}
+{to addr="$bestalias@polytechnique.org"}
 {cc full=#cc#}
 {if $answer eq "yes"}
 Cher(e) camarade,

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid.liste.tpl,v 1.1 2004-09-25 20:11:36 x2000habouzit Exp $
+        $Id: valid.liste.tpl,v 1.2 2004-11-17 12:21:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_liste"}
-{subject text="[Polytechnique.org/LISTES] Demande de la liste $alias par $forlife"}
+{subject text="[Polytechnique.org/LISTES] Demande de la liste $alias par $bestalias"}
 {from full=#from#}
-{to addr="$forlife@polytechnique.org"}
+{to addr="$bestalias@polytechnique.org"}
 {cc full=#cc#}
 {if $answer eq "yes"}
 Cher(e) camarade,

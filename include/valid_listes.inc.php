@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_listes.inc.php,v 1.4 2004-11-10 10:59:10 x2000habouzit Exp $
+        $Id: valid_listes.inc.php,v 1.5 2004-11-17 12:21:48 x2000habouzit Exp $
  ***************************************************************************/
 
 class ListeReq extends Validate {
-    var $forlife;
+    var $bestalias;
     var $liste;
     var $desc;
 
@@ -49,9 +49,9 @@ class ListeReq extends Validate {
         $sql = $globals->db->query("
 	    SELECT  l.alias
 	      FROM  auth_user_md5   AS u
-	INNER JOIN  aliases         AS l ON (u.user_id=l.id AND type='a_vie')
+	INNER JOIN  aliases         AS l ON (u.user_id=l.id AND FIND_IN_SET('bestalias',l.flags))
              WHERE  user_id='".$this->uid."'");
-        list($this->forlife) = mysql_fetch_row($sql);
+        list($this->bestalias) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }
 
@@ -69,7 +69,7 @@ class ListeReq extends Validate {
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.liste.tpl');
         $mymail->assign('alias', $this->liste);
-        $mymail->assign('forlife', $this->forlife);
+        $mymail->assign('bestalias', $this->bestalias);
 	$mymail->assign('motif', stripslashes($_REQUEST['motif']));
 
         if($_REQUEST['submit']=="Accepter") {

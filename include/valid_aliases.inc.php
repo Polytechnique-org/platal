@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_aliases.inc.php,v 1.19 2004-11-15 08:30:15 x2000habouzit Exp $
+        $Id: valid_aliases.inc.php,v 1.20 2004-11-17 12:21:48 x2000habouzit Exp $
  ***************************************************************************/
 
 class AliasReq extends Validate {
@@ -26,9 +26,10 @@ class AliasReq extends Validate {
     var $raison;
 
     var $forlife;
+    var $bestalias;
     var $prenom;
     var $nom;
-    var $old;
+    var $old='';
     
     function AliasReq ($_uid, $_alias, $_raison, $_stamp=0) {
         global $globals;
@@ -37,13 +38,20 @@ class AliasReq extends Validate {
         $this->raison = $_raison;
         
         $sql = $globals->db->query("
-	    SELECT  l.alias,prenom,nom,v.alias
+	    SELECT  l.alias,m.alias,prenom,nom
 	      FROM  auth_user_md5    AS u
 	INNER JOIN  aliases          AS l  ON (u.user_id=l.id AND l.type='a_vie')
-	 LEFT JOIN  virtual_redirect AS vr ON (CONCAT(l.alias,'@m4x.org') = vr.redirect)
-	 LEFT JOIN  virtual          AS v  ON(v.vid=vr.vid AND v.alias LIKE '%@melix.net')
+	INNER JOIN  aliases          AS m  ON (u.user_id=m.id AND FIND_IN_SET('bestalias',m.flags))
              WHERE  user_id='".$this->uid."'");
-        list($this->forlife,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
+        list($this->forlife,$this->bestalias,$this->prenom,$this->nom) = mysql_fetch_row($sql);
+        mysql_free_result($sql);
+
+	$sql = $globals->db->query("
+	    SELECT  v.alias
+	      FROM  virtual_redirect AS vr
+	INNER JOIN  virtual          AS v  ON (v.vid=vr.vid AND v.alias LIKE '%@melix.net')
+	     WHERE  vr.redirect='{$this->forlife}@m4x.org'");
+	if(mysql_num_rows($sql)) list($this->old) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }
 
@@ -61,7 +69,7 @@ class AliasReq extends Validate {
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.alias.tpl');
         $mymail->assign('alias', $this->alias);
-        $mymail->assign('forlife', $this->forlife);
+        $mymail->assign('bestalias', $this->bestalias);
 
         if($_REQUEST['submit']=="Accepter") {
             $mymail->assign('answer', 'yes');

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: show.php,v 1.3 2004-11-13 14:16:24 x2000habouzit Exp $
+        $Id: show.php,v 1.4 2004-11-17 12:21:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,7 +32,7 @@ $page->assign_by_ref('nl',$nl);
 if(isset($_POST['send'])) {
     $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id='{$_SESSION['uid']}'");
     if(!(list($format) = mysql_fetch_row($res))) $format = 'html';
-    $nl->sendTo($_SESSION['prenom'], $_SESSION['nom'], $_SESSION['forlife'], $_SESSION['femme'], $format=='html');
+    $nl->sendTo($_SESSION['prenom'], $_SESSION['nom'], $_SESSION['bestalias'], $_SESSION['femme'], $format=='html');
 }
 
 $page->run();

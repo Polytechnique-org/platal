@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_evts.inc.php,v 1.11 2004-09-02 21:09:32 x2000habouzit Exp $
+        $Id: valid_evts.inc.php,v 1.12 2004-11-17 12:21:48 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -31,7 +31,7 @@ class EvtReq extends Validate {
     var $peremption;    
     var $comment;
     
-    var $forlife;
+    var $bestalias;
     var $promo;
     var $nom;
     var $prenom;
@@ -50,9 +50,9 @@ class EvtReq extends Validate {
         $req = $globals->db->query("
 	    SELECT  a.alias,promo,nom,prenom
 	      FROM  auth_user_md5 AS u
-        INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND type='a_vie')
+        INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
 	     WHERE  user_id='$_uid'");
-        list($this->forlife,$this->promo,$this->nom,$this->prenom) 
+        list($this->bestalias,$this->promo,$this->nom,$this->prenom) 
             = mysql_fetch_row($req);
         mysql_free_result($req);
     }
@@ -68,7 +68,7 @@ class EvtReq extends Validate {
         if (isset($_POST['action'])) {
             require("tpl.mailer.inc.php");
             $mymail = new TplMailer('valid.evts.tpl');
-            $mymail->assign('forlife',$this->forlife);
+            $mymail->assign('bestalias',$this->bestalias);
             $mymail->assign('titre',$this->titre);
 
             if($_REQUEST['action']=="Valider") {
