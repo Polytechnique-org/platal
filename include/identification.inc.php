@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.17 2004-11-16 21:02:46 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.18 2004-11-18 14:24:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -87,7 +87,7 @@ if ($promo > 1995)  {
     // sinon le même X pourrait s'inscrire deux fois avec le même matricule
     // exemple yann.buril et yann.buril-dupont seraient acceptés ! alors que
     // le matricule est unique
-    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule=$matricule AND perms != 'non-inscrit'");
+    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule=$matricule AND perms IN('admin','user')");
     if (mysql_num_rows($result))  {
 	$str="Matricule déjà existant. Causes possibles\n"
 	    ."- tu t'es trompé de matricule\n"
@@ -156,7 +156,7 @@ if ($promo > 1995)  {
     // exemple yann.buril et yan.buril seraient acceptés ! alors que le matricule
     // est unique
     if (! empty($matricule)) { 
-	$result=$globals->db->query("SELECT * FROM auth_user_md5 WHERE matricule='".$matricule."' AND perms != 'non-inscrit'");
+	$result=$globals->db->query("SELECT * FROM auth_user_md5 WHERE matricule='".$matricule."' AND perms IN ('admin','user')");
 	if ($myrow = mysql_fetch_array($result))  {
 	    $str="Tu t'es déjà inscrit une fois.\n"
 		."Ecris à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> pour tout problème.";

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: select_user.inc.php,v 1.4 2004-10-31 16:12:12 x2000chevalier Exp $
+        $Id: select_user.inc.php,v 1.5 2004-11-18 14:24:02 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
@@ -62,7 +62,7 @@ if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
 
     $sql = "SELECT  matricule,matricule_ax,promo,nom,prenom,comment,appli,flags,last_known_email,deces,user_id
               FROM  auth_user_md5
-             WHERE  perms = 'non-inscrit' AND deces=0 AND $where";
+             WHERE  perms IN ('admin','user') AND deces=0 AND $where";
 
     new_admin_page('marketing/utilisateurs_select.tpl');
     $page->mysql_assign($sql, 'nonins');

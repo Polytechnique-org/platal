@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: user.func.inc.php,v 1.1 2004-11-18 13:45:48 x2000habouzit Exp $
+        $Id: user.func.inc.php,v 1.2 2004-11-18 14:24:02 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -72,7 +72,7 @@ function inscription_forum_promo($uid,$promo) {
     // récupération de l'id du forum promo
     $result=$globals->db->query("SELECT fid FROM forums.list WHERE nom='xorg.promo.x$promo'");
     if (!list($fid)=mysql_fetch_row($result)) { // pas de forum promo, il faut le créer
-	$req_au=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo' AND perms!='non-inscrit'");
+	$req_au=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo' AND perms IN ('admin','user')");
 	list($effau) = mysql_fetch_row($req_au);
 	$req_id=$globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE promo='$promo'");
 	list($effid) = mysql_fetch_row($req_id);

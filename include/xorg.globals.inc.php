@@ -18,27 +18,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.globals.inc.php,v 1.5 2004-11-02 07:16:30 x2000habouzit Exp $
+        $Id: xorg.globals.inc.php,v 1.6 2004-11-18 14:24:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.globals.inc.php");
 
 class XorgGlobals extends DiogenesCoreGlobals {
-  var $page = 'XorgPage';
-  var $session = 'XorgSession';
+    var $page = 'XorgPage';
+    var $session = 'XorgSession';
 
-  var $dbdb = 'x4dat';
-  var $table_auth = 'auth_user_md5';
-  var $table_log_actions = 'logger.actions';
-  var $table_log_sessions = 'logger.sessions';
-  var $table_log_events = 'logger.events';
+    var $dbdb = 'x4dat';
+    var $table_auth = 'auth_user_md5';
+    var $table_log_actions = 'logger.actions';
+    var $table_log_sessions = 'logger.sessions';
+    var $table_log_events = 'logger.events';
 
-  /** logger */
-  var $tauth = array('native'=>"auth_user_md5");
-  var $tlabel = array('native'=>"X.Org");
-  
-  /** recherche */
-  var $public_max_search_results = 25;
-  var $search_results_per_page = 20;
+    /** logger */
+    var $tauth = array('native'=>"auth_user_md5");
+    var $tlabel = array('native'=>"X.Org");
+
+    /** recherche */
+    var $public_max_search_results = 25;
+    var $search_results_per_page = 20;
 }
 ?>

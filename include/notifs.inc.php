@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.19 2004-11-17 11:20:13 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.20 2004-11-18 14:24:02 x2000habouzit Exp $
  ***************************************************************************/
 
 define("WATCH_FICHE", 1);
@@ -57,7 +57,7 @@ function getNbNotifs() {
     $res = $globals->db->query("
     (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-		    wo.*, 1 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+		    wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
 	      FROM  auth_user_quick AS q
 	INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
 	INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
@@ -67,7 +67,7 @@ function getNbNotifs() {
 	     WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $watchlast
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
 	      FROM  watch_promo     AS w
 	INNER JOIN  auth_user_md5   AS u  USING(promo)
 	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
@@ -79,7 +79,7 @@ function getNbNotifs() {
 	     WHERE  w.uid = '$uid' AND wo.known > $watchlast
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-		    wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+		    wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
 	      FROM  watch_nonins    AS w
 	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
 	INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
@@ -117,7 +117,7 @@ class AllNotifs {
 		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
 			b.alias AS abestalias, (v.flags='femme') AS sexe,
 			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 1 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+			wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
 	          FROM  auth_user_quick AS q
 	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
 	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND FIND_IN_SET('bestalias',b.flags))
@@ -131,7 +131,7 @@ class AllNotifs {
 		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
 			b.alias AS abestalias, (v.flags='femme') AS sexe,
 			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
 	          FROM  auth_user_quick AS q
 	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
 	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND FIND_IN_SET('bestalias',b.flags))
@@ -147,7 +147,7 @@ class AllNotifs {
 		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
 			b.alias AS abestalias, (v.flags='femme') AS sexe,
 			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+			wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
 	          FROM  auth_user_quick AS q
 	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
 	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND FIND_IN_SET('bestalias',b.flags))
@@ -189,7 +189,7 @@ class Notifs {
 	$res = $globals->db->query("
 	(
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 1 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+			wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
 		  FROM  auth_user_quick AS q
 	    INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
@@ -199,7 +199,7 @@ class Notifs {
 		 WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $lastweek
 	) UNION DISTINCT (
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
 		  FROM  watch_promo     AS w
 	    INNER JOIN  auth_user_md5   AS u  USING(promo)
 	     LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
@@ -210,7 +210,7 @@ class Notifs {
 		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
 	) UNION DISTINCT (
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 0 AS contact, (u.perms='admin' OR u.perms='user') AS inscrit
+			wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
 		  FROM  watch_nonins    AS w
 	    INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
 	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
