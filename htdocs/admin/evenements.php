@@ -28,52 +28,33 @@ $page->assign('arch', $arch);
 
 switch(Post::get('action')) {
     case "Proposer":
-	$req = "UPDATE  evenements
-	           SET  titre='".Post::get('titre')."', texte='".Post::get('texte')."', peremption='".Post::get('peremption')."',
-		        promo_min = ".Post::get('promo_min').", promo_max = ".Post::get('promo_max')."
-                 WHERE  id = $evid
-                 LIMIT  1";
-        $result = $globals->db->query ($req);
+        $globals->xdb->execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
+                Post::get('titre'), Post::get('texte'), Post::get('peremption'), Post::get('promo_min'), Post::get('promo_max'));
         break;
 
     case "Valider":
-	// le 'creation_date = creation_date' est indispensable pour que 
-	// creation_date conserve sa valeur.
-	$req="UPDATE  evenements
-                 SET  creation_date = creation_date, flags = CONCAT(flags,',valide')
-               WHERE  id = $evid
-               LIMIT  1";
-        $result = $globals->db->query ($req);
+        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",valide") WHERE id = {?}', $evid);
         break;
 
     case "Invalider":
-	// le 'creation_date = creation_date' est indispensable pour que 
-	// creation_date conserve sa valeur.
-	$req="UPDATE  evenements
-                 SET  creation_date = creation_date, flags = REPLACE(flags, 'valide','')
-               WHERE  id = $evid
-               LIMIT  1";
-        $result = $globals->db->query ($req);
+        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"valide", "") WHERE id = {?}', $evid);
         break;
 
     case "Supprimer":
-	$req="DELETE from evenements WHERE id = $evid LIMIT 1";
-        $result = $globals->db->query ($req);
+        $globals->xdb->execute('DELETE from evenements WHERE id = {?}', $evid);
         break;
 
     case "Archiver":
-	$req="UPDATE evenements SET flags = CONCAT(flags,',archive') WHERE id = $evid LIMIT 1";
-        $result = $globals->db->query ($req);
+        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",archive") WHERE id = {?}', $evid);
         break;
 
     case "Desarchiver":
-	$req="UPDATE evenements SET flags = REPLACE(flags,'archive','') WHERE id = $evid LIMIT 1";
-        $result = $globals->db->query ($req);
+        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"archive","") WHERE id = {?}', $evid);
         break;
 
     case "Editer":
-	$evt_req = $globals->db->query("SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id= $evid");
-        list($titre, $texte, $peremption, $promo_min, $promo_max) = mysql_fetch_row($evt_req) ;
+        $res = $globals->xdb->query('SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id={?}', $evid);
+        list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
         $page->assign('mode', 'edit');
         $page->assign('titre',$titre);
         $page->assign('texte',$texte);

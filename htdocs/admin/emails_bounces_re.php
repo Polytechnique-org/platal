@@ -24,9 +24,10 @@ new_admin_page('admin/emails_bounces_re.tpl');
 
 if (Post::has('submit')) {
     foreach (Env::getMixed('lvl') as $id=>$val) {
-        $globals->db->query("REPLACE INTO  emails_bounces_re (id,pos,lvl,re,text)
-                                   VALUES  ($id, '{$_POST['pos'][$id]}', '{$_POST['lvl'][$id]}',
-                                                 '{$_POST['re'][$id]}', '{$_POST['text'][$id]}')");
+        $globals->xdb->query(
+                "REPLACE INTO emails_bounces_re (id,pos,lvl,re,text) VALUES ({?}, {?}, {?}, {?}, {?})",
+                $id, $_POST['pos'][$id], $_POST['lvl'][$id], $_POST['re'][$id], $_POST['text'][$id]
+        );
     }
 }
 

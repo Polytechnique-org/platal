@@ -23,11 +23,12 @@ require_once("xorg.inc.php");
 new_admin_page('admin/admin_trombino.tpl');
 
 $uid = Env::getInt('uid');
-$q   = $globals->db->query("SELECT  a.alias,promo
-                              FROM  auth_user_md5 AS u
-                        INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
-                             WHERE  user_id = $uid");
-list($forlife, $promo) = mysql_fetch_row($q);
+$q   = $globals->xdb->query(
+        "SELECT  a.alias,promo
+          FROM  auth_user_md5 AS u
+    INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
+         WHERE  user_id = {?}", $uid);
+list($forlife, $promo) = $q->fetchOneRow();
 
 switch (Env::get('action')) {
 
@@ -42,13 +43,13 @@ switch (Env::get('action')) {
 	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
 	$mimetype = substr($_FILES['userfile']['type'], 6);
 	unlink($_FILES['userfile']['tmp_name']);
-        $globals->db->query("REPLACE INTO  photo
-                                      SET  uid=$uid,  attachmime = '$mimetype',
-                                           attach='".addslashes($data)."', x=$x, y=$y");
+        $globals->xdb->execute(
+                "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
+                $uid, $mimetype, $data, $x, $y);
     	break;
 
     case "supprimer":
-        $globals->db->query("DELETE FROM photo WHERE uid = $uid");
+        $globals->xdb->execute('DELETE FROM photo WHERE uid = {?}', $uid);
         break;
 }
 

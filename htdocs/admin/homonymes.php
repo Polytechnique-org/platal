@@ -27,18 +27,18 @@ $op     = Env::get('op', 'list');
 $target = Env::getInt('target');
 
 if ($target) {
-    $res = $globals->db->query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
-                                  FROM  auth_user_md5 AS u
-			    INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
-			    INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
-			         WHERE  user_id = $target");
-    if (! list($prenom,$nom,$forlife,$loginbis) = mysql_fetch_row($res)) {
+    $res = $globals->xdb->query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
+                                   FROM  auth_user_md5 AS u
+                             INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
+                             INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
+                                  WHERE  user_id = {?}", $target);
+    if (! list($prenom,$nom,$forlife,$loginbis) = $res->fetchOneRow()) {
         $target=0;
     } else {
         $page->assign('nom',$nom);
         $page->assign('prenom',$prenom);
         $page->assign('forlife',$forlife);
-	$page->assign('loginbis',$loginbis);
+        $page->assign('loginbis',$loginbis);
     }
 }
 
@@ -56,46 +56,45 @@ if ($target) {
     switch ($op) {
         case 'mail':
             $mymail = new HermesMailer();
-  	    $mymail->setFrom($FROM);
-  	    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
-  	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
-  	    $mymail->addCc($cc);
+            $mymail->setFrom($FROM);
+            $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
+            $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
+            $mymail->addCc($cc);
             $mymail->setTxtBody(Env::get('mailbody'));
             $mymail->send();
             $op = 'list';
             break;
         case 'correct':
-            $globals->db->query("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias='$loginbis'");
-            $globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES('$target','$target')");
+            $globals->xdb->execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
+            $globals->xdb->execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
             $mymail = new HermesMailer();
-  	    $mymail->setFrom($FROM);
-  	    $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
-  	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
-  	    $mymail->addCc($cc);
+            $mymail->setFrom($FROM);
+            $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
+            $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
+            $mymail->addCc($cc);
             $mymail->setTxtBody(Env::get('mailbody'));
             $mymail->send();
-	    $op = 'list';
-	    break;
+            $op = 'list';
+            break;
     }
 }
 
 if ($op == 'list') {
-    $res = $globals->db->query("SELECT  a.alias AS homonyme,s.id AS user_id,s.alias AS forlife,
-					promo,prenom,nom,
-					IF(h.homonyme_id=s.id, a.expire, NULL) AS expire,
-					IF(h.homonyme_id=s.id, a.type, NULL) AS type
-				  FROM  aliases       AS a
-			     LEFT JOIN  homonymes     AS h ON (h.homonyme_id = a.id)
-			    INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')
-			    INNER JOIN  auth_user_md5 AS u ON (s.id=u.user_id)
-			         WHERE  a.type='homonyme' OR a.expire!=''
-			      ORDER BY  a.alias,promo");
+    $res = $globals->xdb->iterator(
+            "SELECT  a.alias AS homonyme,s.id AS user_id,s.alias AS forlife,
+                     promo,prenom,nom,
+                     IF(h.homonyme_id=s.id, a.expire, NULL) AS expire,
+                     IF(h.homonyme_id=s.id, a.type, NULL) AS type
+               FROM  aliases       AS a
+          LEFT JOIN  homonymes     AS h ON (h.homonyme_id = a.id)
+         INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')
+         INNER JOIN  auth_user_md5 AS u ON (s.id=u.user_id)
+              WHERE  a.type='homonyme' OR a.expire!=''
+           ORDER BY  a.alias,promo");
     $hnymes = Array();
-    while ($tab = mysql_fetch_assoc($res)) {
-	$hnymes[$tab['homonyme']][] = $tab;
+    while ($tab = $res->next()) {
+        $hnymes[$tab['homonyme']][] = $tab;
     }
-    mysql_free_result($res);
-
     $page->assign_by_ref('hnymes',$hnymes);
 }
 

@@ -31,11 +31,11 @@ if (Env::has('add10')) $promo += 10;
 $page->assign('promo',$promo);
 
 if (Env::get('valider') == "Valider") {
-    $res = $globals->db->query("SELECT user_id,matricule,deces FROM auth_user_md5 WHERE promo = $promo");
-    while (list($uid,$mat,$deces) = mysql_fetch_row($res)) {
+    $res = $globals->xdb->iterRow("SELECT user_id,matricule,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
+    while (list($uid,$mat,$deces) = $res->next()) {
         $val = Env::get($mat);
 	if($val == $deces) continue;
-	$globals->db->query("UPDATE auth_user_md5 SET deces='$val' WHERE matricule = '$mat'");
+	$globals->xdb->execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
 	if($deces=='0000-00-00' or empty($deces)) {
 	    require_once('notifs.inc.php');
 	    register_watch_op($uid, WATCH_DEATH, $val);
