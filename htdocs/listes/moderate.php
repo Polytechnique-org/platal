@@ -18,82 +18,80 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.3 2004-09-22 11:39:51 x2000habouzit Exp $
+        $Id: moderate.php,v 1.4 2004-09-23 18:46:58 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
 
 require("auto.prepend.inc.php");
+new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
+
 $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
 list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
-
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-if(!$client->is_admin($liste)) header('Location: index.php');
 
 if(isset($_REQUEST['sadd'])) {
-    $client->handle_request($liste,$_REQUEST['sadd'],4,''); /** 4 is the magic for SUBSCRIBE see Defaults.py **/
+    $client->handle_request('polytechnique.org', $liste,$_REQUEST['sadd'],4,'');
+    /** 4 is the magic for SUBSCRIBE see Defaults.py **/
     header("Location: moderate.php?liste=$liste");
 }
 
 if(isset($_POST['sdel'])) {
-    $client->handle_request($liste,$_POST['sdel'],2,stripslashes($_POST['reason'])); /** 2 is the magic for REJECT see Defaults.py **/
+    $client->handle_request('polytechnique.org', $liste,$_POST['sdel'],2,stripslashes($_POST['reason']));
+    /** 2 is the magic for REJECT see Defaults.py **/
 }
 
 if(isset($_POST['mid'])) {
     $mid = $_POST['mid'];
     if(isset($_POST['mok']))
-	$client->handle_request($liste,$mid,1,''); /** 1 = APPROVE **/
+	$client->handle_request('polytechnique.org', $liste,$mid,1,''); /** 1 = APPROVE **/
     elseif(isset($_POST['mno']))
-	$client->handle_request($liste,$mid,2,stripslashes($_POST['reason'])); /** 2 = REJECT **/
+	$client->handle_request('polytechnique.org', $liste,$mid,2,stripslashes($_POST['reason'])); /** 2 = REJECT **/
     elseif(isset($_POST['mdel']))
-	$client->handle_request($liste,$mid,3,''); /** 3 = DISCARD **/
+	$client->handle_request('polytechnique.org', $liste,$mid,3,''); /** 3 = DISCARD **/
 }
 
 if(isset($_REQUEST['sid'])) {
     $sid = $_REQUEST['sid'];
-    if(list($subs,$mails) = $client->get_pending_ops($liste)) {
+    if(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
 	foreach($subs as $user) {
 	    if($user['id'] == $sid) $u = $user;
 	}
-    }
-
-    if($u) {
-	new_skinned_page('listes/moderate_sub.tpl', AUTH_MDP, true);
-	$page->assign('del_user',$user);
-    } else {
-	new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
-	$page->assign_by_ref('subs', $subs);
-	$page->assign_by_ref('mails', $mails);
-    }
+	if($u) {
+	    $page->changeTpl('listes/moderate_sub.tpl');
+	    $page->assign('del_user',$u);
+	} else {
+	    $page->assign_by_ref('subs', $subs);
+	    $page->assign_by_ref('mails', $mails);
+	}
+    } else
+	$page->assign('no_list', true);
 
 } elseif(isset($_GET['mid'])) {
 
     $mid = $_REQUEST['mid'];
-    $mail = $client->get_pending_mail($liste,$mid);
+    $mail = $client->get_pending_mail('polytechnique.org', $liste,$mid);
     if(is_array($mail)) {
-	new_skinned_page('listes/moderate_mail.tpl', AUTH_MDP, true);
+	$page->changeTpl('listes/moderate_mail.tpl');
         $page->assign_by_ref('mail', $mail);
     } else {
-	new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
-
-	if(list($subs,$mails) = $client->get_pending_ops($liste)) {
+	if(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
 	    $page->assign_by_ref('subs', $subs);
 	    $page->assign_by_ref('mails', $mails);
-	}
+	} else
+	    $page->assign('no_list', true);
     }
 
-} else {
-    
-    new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
+} elseif(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
 
-    if(list($subs,$mails) = $client->get_pending_ops($liste)) {
-	$page->assign_by_ref('subs', $subs);
-	$page->assign_by_ref('mails', $mails);
-    }
-}
+    $page->assign_by_ref('subs', $subs);
+    $page->assign_by_ref('mails', $mails);
+
+} else
+    $page->assign('no_list', true);
 
 function tolatin1($s) { return iconv('utf-8', 'iso-8859-1', $s); }
 $page->register_modifier('tl1','tolatin1');

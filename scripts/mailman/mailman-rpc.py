@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.31 2004-09-23 17:20:36 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.32 2004-09-23 18:46:59 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -323,23 +323,9 @@ def del_owner((userdesc,perms),vhost,listname,user):
 # owners procedures [ admin.php ]
 #
 
-def set_welcome((userdesc,perms),listname,welcome):
+def get_pending_ops((userdesc,perms),vhost,listname):
     try:
-        mlist = MailList.MailList(listname)
-    except:
-        return 0
-    try:
-        if not is_admin_on(userdesc, perms, mlist):
-            return 0
-        mlist.welcome_msg = welcome
-        mlist.Save()
-    finally:
-        mlist.Unlock()
-        return True
-
-def get_pending_ops((userdesc,perms),listname):
-    try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     try:
@@ -347,10 +333,12 @@ def get_pending_ops((userdesc,perms),listname):
             return 0
         subs = []
         seen = []
+        dosave = False
         for id in mlist.GetSubscriptionIds():
             time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
             if addr in seen:
                 mlist.HandleRequest(id, mm_cfg.DISCARD)
+                dosave = True
                 continue
             seen.append(addr)
             subs.append({
@@ -374,17 +362,18 @@ def get_pending_ops((userdesc,perms),listname):
                     'subj'  : Utils.oneline(subject,'utf8'),
                     'stamp' : ptime
                     })
-        mlist.save();
+        if dosave: mlist.save()
     except:
         mlist.Unlock()
+        raise
         return 0
     mlist.Unlock()
     return (subs,helds)
 
 
-def handle_request((userdesc,perms),listname,id,value,comment):
+def handle_request((userdesc,perms),vhost,listname,id,value,comment):
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         raise
         return 0
@@ -401,9 +390,9 @@ def handle_request((userdesc,perms),listname,id,value,comment):
         return 0
 
 
-def get_pending_mail((userdesc,perms),listname,id,raw=0):
+def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
     try:
-        mlist = MailList.MailList(listname)
+        mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
     try:
@@ -429,13 +418,6 @@ def get_pending_mail((userdesc,perms),listname,id,raw=0):
     except:
         mlist.Unlock()
         return 0
-
-def is_admin((userdesc,perms),listname):
-    try:
-        mlist = MailList.MailList(listname, lock=0)
-    except:
-        return 0
-    return is_admin_on(userdesc, perms, mlist)
 
 ################################################################################
 #
@@ -470,21 +452,23 @@ class FastXMLRPCServer(SimpleXMLRPCServer):
 mysql = connectDB()
 server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 
+# index.php
 server.register_function(get_lists)
-server.register_function(get_members)
-server.register_function(get_members_limit)
 server.register_function(subscribe)
 server.register_function(unsubscribe)
-
+# members.php
+server.register_function(get_members)
+# trombi.php
+server.register_function(get_members_limit)
+# admin.php
 server.register_function(mass_subscribe)
 server.register_function(mass_unsubscribe)
 server.register_function(add_owner)
 server.register_function(del_owner)
-server.register_function(set_welcome)
+# moderate.php
 server.register_function(get_pending_ops)
 server.register_function(handle_request)
 server.register_function(get_pending_mail)
-server.register_function(is_admin)
 
 server.serve_forever()
 

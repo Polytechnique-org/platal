@@ -17,12 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.3 2004-09-23 17:20:36 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.4 2004-09-23 18:47:00 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 
-{if $no_list || !$details.own || $smarty.session.perms neq admin}
+{if $no_list || ( !$details.own && $smarty.session.perms neq admin )}
 
 <p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
 
@@ -36,6 +36,10 @@
 Tu n'es pas administrateur de la liste, mais du site.
 </p>
 {/if}
+
+<p>
+[<a href='moderate.php?liste={$smarty.get.liste}'>modérer la liste</a>]
+</p>
 
 <p>
 Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
