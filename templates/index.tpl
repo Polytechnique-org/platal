@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.4 2004-08-23 14:19:37 x2000chevalier Exp $ *}
+{* $Id: index.tpl,v 1.5 2004-08-23 14:27:22 x2000chevalier Exp $ *}
 
 <div class="rubrique">
   Bienvenue sur le portail des élèves et anciens élèves de l'X !
@@ -20,7 +20,7 @@
    <li class="spaced">vous pouvez <strong><a href="inscrire.php">vous inscrire à Polytechnique.org</a></strong> si ce n'est pas encore fait,</li>
    <li class="spaced">ou <strong><a href="login.php">vous connecter</a></strong> si vous êtes inscrit !</li>
   </ul>
-   Vous pouvez <strong><a href="services.php">consulter la liste de ce que vous apporte Polytechnique.org</a></strong> si vous hésitez à vous inscrire !
+   Vous pouvez <strong><a href="docs/services.php">consulter la liste de ce que vous apporte Polytechnique.org</a></strong> si vous hésitez à vous inscrire !
    <br />
    <br />
   <strong>Dans tous les cas,</strong> vous pouvez :
