@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.9 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: search.tpl,v 1.10 2004-08-31 21:19:45 x2000bedo Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -30,7 +30,7 @@
     <div class="floatright">
       {if $with_soundex==0}
         <a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}">
-          Etendre à la recherche par proximité sonore
+          Recherche par proximité sonore
         </a>
       {/if}
       &nbsp;
