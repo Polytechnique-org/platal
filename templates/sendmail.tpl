@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.tpl,v 1.9 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: sendmail.tpl,v 1.10 2004-09-02 21:22:19 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -66,7 +66,7 @@
         <input type='text' name='from' size='45' value='{if $smarty.request.from}
 {$smarty.request.from}
 {else}
-"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.username}@polytechnique.org&gt;
+"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.forlife}@polytechnique.org&gt;
 {/if}' />
       </td>
     </tr>
@@ -85,7 +85,7 @@
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.username}" />
+        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.forlife}" />
       </td>
     </tr>
     <tr> 
@@ -111,10 +111,10 @@
   <tr class="{cycle values="impair,pair"}">
 {/if}
     <td>
-      <input type="checkbox" name="contacts[{$contact.username}]"
-        value="{$contact.prenom} {$contact.nom} &lt;{$contact.username}@polytechnique.org&gt;"
-        {if $smarty.request.contacts && $smarty.request.contacts.username}checked="checked"{/if} />
-      <a href="javascript:x()" onclick="popWin('fiche.php?user={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
+      <input type="checkbox" name="contacts[{$contact.forlife}]"
+        value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@polytechnique.org&gt;"
+        {if $smarty.request.contacts && $smarty.request.contacts.forlife}checked="checked"{/if} />
+      <a href="javascript:x()" onclick="popWin('fiche.php?user={$contact.forlife}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>
 {if $key is odd}
   </tr>

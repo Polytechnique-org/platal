@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: sendmail.php,v 1.6 2004-09-02 21:22:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -49,7 +49,7 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
         $FROM = "From: {$_REQUEST['from']}";
         //$_REQUEST['contenu'] = chunk_split($_REQUEST['contenu'], 76, "\n"); // pas bon, ne tient pas compte des mots
             $dest = $_REQUEST['to'].', '.$autre_to;
-        $mymail = new DiogenesMailer($_SESSION['username'], $dest, $_REQUEST['sujet'], false, $_REQUEST['cc'], $_REQUEST['bcc']);
+        $mymail = new DiogenesMailer($_SESSION['forlife'], $dest, $_REQUEST['sujet'], false, $_REQUEST['cc'], $_REQUEST['bcc']);
         $mymail->addHeader($FROM);
         $mymail->setBody(wordwrap($_REQUEST['contenu'],72,"\n"));
         if ($mymail->send()) {
@@ -61,9 +61,11 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
     } // ! if ($_REQUEST['to'] == '' and $_REQUEST['cc'] == '')
 }
 
-$sql = "SELECT u.prenom, u.nom, u.promo, u.username
-        FROM auth_user_md5 as u, contacts as c
-        WHERE u.user_id = c.contact AND c.uid = {$_SESSION['uid']}
+$sql = "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
+          FROM  auth_user_md5 AS u
+    INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
+    INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type='a_vie')
+         WHERE  c.uid = {$_SESSION['uid']}
         ORDER BY u.nom, u.prenom";
 $page->mysql_assign($sql, 'contacts','nb_contacts');
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cyberpaiement_retour.php,v 1.3 2004-08-31 13:59:43 x2000habouzit Exp $
+        $Id: cyberpaiement_retour.php,v 1.4 2004-09-02 21:22:19 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -92,8 +92,13 @@ $champ202 = clean_request('CHAMP202');
 $montant = "$champ201 $champ202";
 
 /* on extrait les informations sur l'utilisateur */
-$res = $globals->db->query("select a.prenom,a.nom,a.promo,a.username,FIND_IN_SET(i.flags,'femme') from auth_user_md5 as a inner join identification as i on a.matricule=i.matricule where a.user_id='$uid'");
-if (!list($prenom,$nom,$promo,$username,$femme) = mysql_fetch_row($res))
+$res = $globals->db->query("
+    SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(i.flags,'femme')
+      FROM  auth_user_md5  AS a
+INNER JOIN  aliases        AS l ON a.user_id=l.id
+INNER JOIN  identification AS i ON a.matricule=i.matricule
+     WHERE  a.user_id='$uid'");
+if (!list($prenom,$nom,$promo,$forlife,$femme) = mysql_fetch_row($res))
   erreur("uid invalide");
 
 /* on extrait la reference de la commande */
@@ -124,14 +129,14 @@ $conf_text = str_replace("<promo>",$promo,$conf_text);
 $conf_text = str_replace("<montant>",$montant,$conf_text);
 $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
 
-$mymail = new DiogenesMailer($conf_mail,$username,$conf_title,false,$conf_mail);
+$mymail = new DiogenesMailer($conf_mail,$forlife,$conf_title,false,$conf_mail);
 $mymail->setBody($conf_text);
 $mymail->send();
 
 /* on envoie les details de la transaction à telepaiement@ */
 $mymail = new DiogenesMailer("webmaster","telepaiement",$conf_title,false);
 $msg = "utilisateur : $prenom $nom ($uid)\n".
-       "mail : $username@polytechnique.org\n\n".
+       "mail : $forlife@polytechnique.org\n\n".
        "paiement : $conf_title ($conf_mail)\n".
        "reference : $champ200\n".
        "montant : $montant\n\n".

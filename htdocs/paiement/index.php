@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.2 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: index.php,v 1.3 2004-09-02 21:22:19 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('paiment/index.tpl', AUTH_MDP);
-require('profil.inc.php');
+require_once('profil.func.inc.php');
 setlocale(LC_NUMERIC,'fr_FR');
 
 
