@@ -30,8 +30,19 @@ pas encore vues d'ici ta prochaine connexion.
 D'autre part, toutes les données liées à ta connexion ont été effacées sur
 ton navigateur, et en particulier les formulaires postés.
 </p>
+{if $smarty.cookies.ORGaccess}
+<p>
+Tu as demandé la connexion permanente donc cette deconnexion ne t'empêche pas d'utiliser la plupart des fonctionnalités du site. Mais tu peux aussi te <a href='?forget=1'>deconnecter complètement</a>.
+</p>
+{elseif $smarty.cookies.ORGuid}
+<p>
+Ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux <a href='?forgetUid=1'>supprimer cette information</a>.
+</p>
+{/if}
+{only_public}
 <p>
 <strong>Merci et à bientôt !</strong>
 </p>
+{/only_public}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

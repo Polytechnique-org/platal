@@ -26,7 +26,15 @@ if (isset($_SESSION['suid'])) { require_once('./exit.php'); }
 if (Get::has('forget')) {
     setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
     Cookie::kill('ORGaccess');
-    $_SESSION['log']->log("cookie_off");
+    if (isset($_SESSION['log']))
+        $_SESSION['log']->log("cookie_off");
+}
+
+if (Get::has('forgetUid')) {
+    setcookie('ORGuid', '', time() - 3600, '/', '', 0);
+    Cookie::kill('ORGuid');
+    setcookie('ORGdomain', '', time() - 3600, '/', '', 0);
+    Cookie::kill('ORGdomain');
 }
 
 if (isset($_SESSION['log'])) {
@@ -35,11 +43,10 @@ if (isset($_SESSION['log'])) {
 }
 
 XorgSession::destroy();
-if(isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGuid'])) {
-    header('Location: login.php');
-}
 
 new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);
 
 $page->run();
+
+// vim:set et sws=4 sts=4 sw=4:
 ?>
