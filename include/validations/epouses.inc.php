@@ -34,6 +34,11 @@ class EpouseReq extends Validate
     var $oldalias;
 
     var $homonyme;
+    
+    var $rules = "Refuser 
+    tout ce qui n'est visiblement pas un nom de famille (ce qui est 
+    extrmement rare car à peu près n'importe quoi peut être un nom de 
+    famille...)";
 
     // }}}
     // {{{ constructor

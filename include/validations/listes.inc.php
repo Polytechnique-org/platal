@@ -35,6 +35,8 @@ class ListeReq extends Validate
     var $owners;
     var $members;
 
+    var $rules = "Refuser les listes de binets si elles ne sont pas datées (apv20002@ et non apv@).
+        Refuser également des listes qui pourraient nous servir (admin, postmaster,...)";
     // }}}
     // {{{ constructor
     

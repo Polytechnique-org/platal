@@ -33,7 +33,10 @@ class MarkReq extends Validate
     var $m_prenom;
     var $m_promo;
 
-    var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance)";
+    var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le 
+    demandeur marque sa propre adresse mail, refuser dans tous les cas.
+    Ne pas marqueter au nom de Polytechnique.org plus d'une 
+    fois par an.";
     // }}}
     // {{{ constructor
 
