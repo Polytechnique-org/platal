@@ -43,31 +43,10 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | parselogN.php							  | stats/...
 ;	  | parselogR.php							  | stats/...
 ;	  | stats.php								  | stats/index.php
-------+-[ listes ]--------------------------------+----------------
-;	  | listes/creation.php						  | 
-;	  | listes/gere_listes.php					  | 
-;	  | listes/gere_msg.php						  | 
-;	  | listes/index.php						  | 
-;	  | listes/liste.php						  | 
-;	  | listes/mailtoins.inc.php				  | 
-;	  | listes/trombiliste.php					  | 
 ------+-[ paiement ]------------------------------+----------------
 ;	  | paiement/cyberpaiement.inc.php			  | 
 ;	  | paiement/cyberpaiement_retour.php		  | 
 ;	  | paiement/index.php						  | 
-------+-[ sondages ]------------------------------+----------------
-;	  | admin/gerer_sondages.php				  |
-;	  | sondage/accueil.php						  | 
-;	  | sondage/bloc.php						  | 
-;	  | sondage/droits.php						  | 
-;	  | sondage/exemples.php					  | 
-;	  | sondage/modifie.php						  | 
-;	  | sondage/question.php					  | 
-;	  | sondage/questionnaire.php				  | 
-;	  | sondage/reponse.php						  | 
-;	  | sondage/resultats.php					  | 
-;	  | sondage/titre.php						  | 
-;	  | sondage/validation.php					  | 
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
@@ -91,6 +70,32 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | trombino.php							  | 
 ;	  | trombipromo.php							  | 
 ;	  | x.php									  | 
+------+-[ listes ]--------------------------------+----------------
+;	  | listes/creation.php						  | \
+;	  | listes/gere_listes.php					  |  |
+;	  | listes/gere_msg.php						  |  |
+;	  | listes/index.php						  |   > lll ?
+;	  | listes/liste.php						  |  |
+;	  | listes/mailtoins.inc.php				  |  |
+;	  | listes/trombiliste.php					  | /
+------+-[ sondages ]------------------------------+----------------
+;	  | admin/gerer_sondages.php				  | \
+;	  | sondage/accueil.php						  |  |
+;	  | sondage/bloc.php						  |  |
+;	  | sondage/droits.php						  |  |
+;	  | sondage/exemples.php					  |  |
+;	  | sondage/modifie.php						  |   \_ JS ?
+;	  | sondage/question.php					  |   /
+;	  | sondage/questionnaire.php				  |  |
+;	  | sondage/reponse.php						  |  | 
+;	  | sondage/resultats.php					  |  |
+;	  | sondage/titre.php						  |  |
+;	  | sondage/validation.php					  | /
+------+-[ trackers ]------------------------------+----------------
+;!	  | trackers/tracker_show.php				  | \
+;!	  | trackers/tracker_show_rq.php			  |  \_ ajouter à diogenes
+;!	  | trackers/index.php						  |  /  (mad)
+;!	  | trackers/tracker_admin.php				  | /
 ------+-[ news ]----------------------------------+----------------
 ;!	  | news/abonnements.php					  | \
 ;!	  | news/article.php						  |  |
@@ -103,15 +108,10 @@ Etat  | Ancien nom								  | Nouveau nom
 ;!	  | news/post.php							  |  |
 ;!	  | news/thread.php							  | /
 ;!	  | confbanana.php							  | -> dépend de banana, à passer plus tard ...
-------+-[ trackers ]------------------------------+----------------
-;	  | trackers/tracker_show.php				  | -
-;	  | trackers/tracker_show_rq.php			  | -
-;	  | trackers/index.php						  | -
-;	  | trackers/tracker_admin.php				  | -
 ------+-------------------------------------------+----------------
 x	  | admin/utilisateurs.php					  | - y'a encore du boulot pour que ca valide !
-x	  | epouse.php								  | -
-x	  | parselog.php							  | stats/...
+x	  | epouse.php								  | - non testé (flemme de faire des su ...)
+x	  | parselog.php							  | stats/... (non testé, pas de logs sous la main)
 xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
