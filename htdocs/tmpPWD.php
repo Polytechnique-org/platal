@@ -37,7 +37,9 @@ if ($ligne = $res->fetchOneAssoc())  {
         new_skinned_page('tmpPWD.success.tpl', AUTH_PUBLIC);
         $page->run();
     } else {
-        new_skinned_page('motdepassemd5.tpl', AUTH_PUBLIC, 'motdepassemd5.head.tpl');
+        new_skinned_page('motdepassemd5.tpl', AUTH_PUBLIC);
+        $page->addJsLink('javascript/md5.js');
+        $page->addJsLink('javascript/motdepassemd5.js');
         $page->run();
     }
 } else {
