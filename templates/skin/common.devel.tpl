@@ -1,4 +1,4 @@
-{* $Id: common.devel.tpl,v 1.1 2004-02-20 11:44:07 x2000habouzit Exp $ *}
+{* $Id: common.devel.tpl,v 1.2 2004-08-24 20:05:35 x2000habouzit Exp $ *}
 
 {if $validate}
   <div id="dev">
@@ -21,7 +21,7 @@
       Trace de l'exécution de cette page sur mysql (hover me)
     </div>
     <div class="hide">
-  {$db_trace}
+      {$db_trace|smarty:nodefaults}
     </div>
   </div>
 {/if}

@@ -1,4 +1,4 @@
-{* $Id: newsletter.tpl,v 1.4 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: newsletter.tpl,v 1.5 2004-08-24 20:05:35 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -17,7 +17,7 @@
   </tr>
   <tr>
     <td style="padding: 1em;">
-      <tt>{$nl_text|replace:" ":"&nbsp;"|nl2br}</tt>
+      <tt>{$nl_text|smarty:nodefaults|replace:" ":"&nbsp;"|nl2br}</tt>
     </td>
   </tr>
 </table>

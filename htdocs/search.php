@@ -32,7 +32,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
     
     if ($nameField->length()<2 && $firstnameField->length()<2 && 
-        ($public_directory || !$promo1Field->is_a_single_promo()))
+        (!logged() || !$promo1Field->is_a_single_promo()))
     {
 	new ThrowError('Recherche trop générale.');
     }
@@ -65,7 +65,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
     
-    if ($public_directory &&
+    if (!logged() &&
 	$page->get_template_vars('nb_resultats_total')>$globals->public_max_search_results)
     {
 	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
