@@ -75,7 +75,5 @@ while($evenement[] = mysql_fetch_assoc($res));
 @array_pop($evenement);
 mysql_free_result($res);
 $page->assign_by_ref('evenement', $evenement);
-
-setlocale(LC_TIME, "fr_FR");
 $page->display();
 ?>

@@ -85,6 +85,11 @@ table.tinybicol td, table.bicol td {
     color: #000000;
     background-color: inherit;
 }
+table.tinybicol td.bicoltitre, table.bicol td.bicoltitre {
+    color: #000000;
+    background-color: inherit;
+    font-weight: bold;
+}
 
 /*******************************************
 *             CHOIX SKINS                  *

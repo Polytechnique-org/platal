@@ -1,5 +1,6 @@
 <?php
 ini_set('include_path', ".:..:/home/x2000habouzit/dev/public/include:/home/x2000habouzit/dev/diogenes/lib/:/home/x2000habouzit/dev/smarty/");
+setlocale(LC_TIME, "fr_FR");
 require("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=false) {
