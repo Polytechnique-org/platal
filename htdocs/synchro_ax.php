@@ -20,64 +20,41 @@
  ***************************************************************************/
 
 
-$tripledes = '';
+require_once("xorg.inc.php");
+new_admin_page('synchro_ax.tpl');
 
+require_once('user.func.inc.php');
+require_once('synchro_ax.inc.php');
 
-function manageurs_encrypt_init($id_assoce){
-  global $tripledes, $globals;
-  $cipher_key = $globals->webservice->cipher_key;
-  if(!$tripledes){
-    if(empty($cipher_key)){
-      return 1;
+if (!Env::has('user') && !Env::has('mat')) {
+    $page->kill("cette page n'existe pas");
+}
+
+if (Env::has('user')) {
+    $login = get_user_forlife(Env::get('user'));
+    if ($login === false) {
+        $page->kill("");
     }
-    $tripledes = mcrypt_module_open('tripledes', '', 'ecb', '');
-    $iv = mcrypt_create_iv (mcrypt_enc_get_iv_size($tripledes), MCRYPT_RAND);
-    mcrypt_generic_init($tripledes, $cipher_key.$id_assoce, $iv);
-    return 0;
-  }
 }
 
-function manageurs_encrypt_close(){
-  global $tripledes;
-  if($tripledes){
-    mcrypt_generic_deinit($tripledes);
-    mcrypt_module_close($tripledes);
-    $tripledes = '';
-  }
-}
-
-function manageurs_encrypt($message){
-  global $tripledes;
-  return base64_encode(mcrypt_generic($tripledes, $message));
-}
-
-function manageurs_decrypt($message){
-  global $tripledes;
-  return trim(mdecrypt_generic($tripledes, base64_decode($message)));
-}
-
-function manageurs_encrypt_array($array){
-  foreach($array as $key => $value){
-    if(is_array($value)){
-      $result[manageurs_encrypt($key)] = manageurs_encrypt_array($value);
+if (Env::has('mat')) {
+    $res = $globals->xdb->query(
+            "SELECT  alias 
+               FROM  aliases       AS a
+         INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
+              WHERE  matricule={?}", Env::getInt('mat'));
+    $login = $res->fetchOneCell();
+    if (empty($login)) {
+        $page->kill("cette page n'existe pas");
     }
-    else{
-      $result[manageurs_encrypt($key)] = manageurs_encrypt($value);
-    }
-  }
-  return $result;
 }
 
-function manageurs_decrypt_array($array){
-  foreach($array as $key => $value){
-    if(is_array($value)){
-      $result[manageurs_decrypt($key)] = manageurs_decrypt_array($value);
-    }
-    else{
-      $result[manageurs_decrypt($key)] = manageurs_decrypt($value);
-    }
-  }
-  return $result;
-}
+$new   = Env::get('modif') == 'new';
+$user  = get_user_details($login, Session::getInt('uid'));
+
+$page->assign('x', $user);
+$page->assign('ax', get_user_ax($user['user_id'])); 
+
+$page->run();
 
 ?>
