@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: recovery.tpl,v 1.5 2004-08-31 19:59:25 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,7 +27,7 @@
 
 {dynamic}
 
-<p class="erreur">{$error}</div>
+<div class="erreur">{$error}</div>
 
 {if $ok}
 
