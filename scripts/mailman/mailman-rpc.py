@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.17 2004-09-11 15:11:13 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.18 2004-09-11 15:13:07 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -132,6 +132,7 @@ def get_lists((userdesc,perms)):
                     'diff' : mlist.generic_nonmember_action,
                     'ins'  : mlist.subscribe_policy > 0,
                     'priv' : (1-mlist.advertised)+2*is_admin,
+                    'welc' : mlist.welcome_msg,
                     'you'  : is_member + 2*is_owner
                     } )
     return result
@@ -151,7 +152,7 @@ def get_members((userdesc,perms),listname):
                     'diff' : mlist.generic_nonmember_action,
                     'ins'  : mlist.subscribe_policy > 0,
                     'priv' : (1-mlist.advertised)+2*(mm_cfg.ADMIN_ML_OWNER in mlist.owner),
-                    'welc' : mlist.welcome_msg
+                    'welc' : mlist.welcome_msg,
                     'you'  : is_member + 2*is_owner
                   }
         members = map(lambda member: (mlist.getMemberName(member) or '', member), members)
