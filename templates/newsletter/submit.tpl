@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.tpl,v 1.3 2004-10-16 18:17:51 x2000habouzit Exp $
+        $Id: submit.tpl,v 1.4 2004-10-16 19:54:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -51,39 +51,39 @@ il faut te limiter à 8 lignes de 68 caractères.
 {/if}
 
 <form action="{$smarty.server.PHP_SELF}" method='post'>
-<table class='tinybicol'>
-  <tr><th>Version texte</th></tr>
-  <tr id='text'>
+  <table class='tinybicol'>
+    <tr><th>Version texte</th></tr>
+    <tr id='text'>
     <td><pre>{$art->toText()}</pre></td>
-  </tr>
-  {if $art->check()}
-  <tr><th>Version html</th></tr>
-  <tr id='html'>
-    <td>
-      <div class='nl'>
-        {$art->toHtml()|smarty:nodefaults}
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <th>Soumettre</th>
-  </tr>
-  <tr>
-    <td>
-      Si tu es content de ton article, tu peux le soummetre.
-      Sinon, tu peux continuer à l'éditer en dessous
-    </td>
-  </tr>
-  <tr>
-    <td class='center'>
-      <input type='hidden' value="{$smarty.request.title}" name='title' />
-      <input type='hidden' value="{$art->body()}" name="body" />
-      <input type='hidden' value="{$art->append()}" name='append' />
-      <input type='submit' name='valid' value='soumettre' />
-    </td>
-  </tr>
-  {/if}
-</table>
+    </tr>
+    {if $art->check()}
+    <tr><th>Version html</th></tr>
+    <tr id='html'>
+      <td>
+        <div class='nl'>
+          {$art->toHtml()|smarty:nodefaults}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th>Soumettre</th>
+    </tr>
+    <tr>
+      <td>
+        Si tu es content de ton article, tu peux le soummetre.
+        Sinon, tu peux continuer à l'éditer en dessous
+      </td>
+    </tr>
+    <tr>
+      <td class='center'>
+        <input type='hidden' value="{$smarty.request.title}" name='title' />
+        <input type='hidden' value="{$art->body()}" name="body" />
+        <input type='hidden' value="{$art->append()}" name='append' />
+        <input type='submit' name='valid' value='soumettre' />
+      </td>
+    </tr>
+    {/if}
+  </table>
 </form>
 
 <br />
@@ -106,7 +106,7 @@ Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à
     <tr class="impair">
       <td class='titre'>Sujet</td>
       <td>
-        <input type='text' value='{$smarty.request.title}' name='title' />
+        <input size='60' type='text' value='{$smarty.request.title}' name='title' />
       </td>
     </tr>
     <tr class="pair">
