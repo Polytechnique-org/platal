@@ -1,4 +1,4 @@
-{* $Id: show.tpl,v 1.4 2004-02-25 12:43:33 x2000habouzit Exp $ *}
+{* $Id: show.tpl,v 1.5 2004-02-25 13:14:39 x2000habouzit Exp $ *}
 
 {literal}
 <script type="text/javascript">
@@ -15,7 +15,7 @@
 </script>
 {/literal}
 
-<form id="op" method="post" action="{$smarty.server.PHP_SELF}">
+<form id="op" method="post" action="{$smarty.server.REQUEST_URI}">
   <input type="hidden" id="id" name="id" value="" />
 </form>
 
