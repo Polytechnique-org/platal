@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_ssl.tpl,v 1.6 2004-09-02 22:33:58 x2000bedo Exp $
+        $Id: doc_ssl.tpl,v 1.7 2004-09-07 19:50:50 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -42,7 +42,7 @@
 </p>
 <div class="ssrubrique">Sous windows</div>
 <p>
-Après avoir cliqué sur <a href="{"cacert.php/cacert.cer"}|url">ce lien</a>, tu vas recevoir notre
+Après avoir cliqué sur <a href="{"cacert.php/cacert.cer"|url}">ce lien</a>, tu vas recevoir notre
   certificat. Ton navigateur devrait te demander si tu veux télécharger ce fichier,
   clique sur "ouvrir" :
 </p>
