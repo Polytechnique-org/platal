@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.32 2004-11-13 11:54:28 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.33 2004-11-13 12:28:56 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -101,6 +101,8 @@ class SField {
     function get_request() {
         $this->value =
         (isset($_REQUEST[$this->fieldFormName]))?trim($_REQUEST[$this->fieldFormName]):'';
+        if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
+            new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
     }
 
     /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
@@ -152,7 +154,8 @@ class QuickSearch extends SField {
 	$s = replace_accent(trim($this->value));
 	$s = preg_replace('!\d+!', ' ', $s);
 	$s = preg_replace('! - !', '', $s);
-	$this->strings = preg_split("![^a-zA-Z\-]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+        $s = str_replace('*','%',$s);
+	$this->strings = preg_split("![^a-zA-Z\-%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
 
 	$s = trim($this->value);
 	$s = preg_replace('! *- *!', '-', $s);
@@ -169,10 +172,13 @@ class QuickSearch extends SField {
     function get_where_statement() {
 	$where = Array();
 	if(count($this->strings) == 1) {
-	    $s = $this->strings[0];
-	    $where[] = "(r.nom LIKE '%$s%' OR r.epouse LIKE '%$s%')";
+	    $t = '%'.str_replace('*', '%', $this->strings[0]).'%';
+	    $t = str_replace('%%', '%', $t);
+	    $where[] = "(r.nom LIKE '$t' OR r.epouse LIKE '$t')";
 	} else foreach($this->strings as $s) {
-	    $where[] = "(r.nom LIKE '%$s%' OR r.epouse LIKE '%$s%' OR r.prenom LIKE '%$s%')";
+	    $t = '%'.str_replace('*', '%', $s).'%';
+	    $t = str_replace('%%', '%', $t);
+	    $where[] = "(r.nom LIKE '$t' OR r.epouse LIKE '$t' OR r.prenom LIKE '$t')";
 	}
 	
 	$wherep = Array();
