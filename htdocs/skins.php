@@ -27,8 +27,8 @@ new_skinned_page('skins.tpl', AUTH_COOKIE);
 
 if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
     $globals->db->query('UPDATE auth_user_quick
-                SET skin='..Env::getInt('newskin').'
-                WHERE user_id='..Session::getInt('uid'));
+                SET skin='.Env::getInt('newskin').'
+                WHERE user_id='.Session::getInt('uid'));
     set_skin();
 }
 
