@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.2 2004-10-06 13:16:49 x2000habouzit Exp $
+        $Id: members.php,v 1.3 2004-10-14 19:01:31 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -35,16 +35,20 @@ mysql_free_result($res);
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 $members = $client->get_members('polytechnique.org', $liste);
 
+$tri_promo = empty($_REQUEST['alpha']);
+
 if(is_array($members)) {
     $membres = Array();
     foreach($members[1] as $member) {
-	if(preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
-	    $membres[$matches[2]][] = Array('n' => $member[0], 'l' => $matches[1]);
+	if(preg_match('/^([^.]*.([^.]*).(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
+	    $key = $tri_promo ? $matches[3] : strtoupper($matches[2]{0});
+	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1]);
 	} else {
 	    $membres[0][] = Array('l' => $member[1]);
 	}
     }
     ksort($membres);
+    foreach($membres as $key=>$val) ksort($membres[$key]);
 
     $moderos = Array();
     foreach($members[2] as $owner) {

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.6 2004-10-09 12:58:28 x2000habouzit Exp $
+        $Id: members.tpl,v 1.7 2004-10-14 19:01:31 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -105,6 +105,11 @@
 
 <div class='rubrique'>
   membres de la liste
+  {if $smarty.get.alpha}
+  (<a href='?liste={$smarty.request.liste}'>trier par promo</a>)
+  {else}
+  (<a href='?liste={$smarty.request.liste}&amp;alpha=1'>trier par nom</a>)
+  {/if}
 </div>
 
 {if $members|@count}
