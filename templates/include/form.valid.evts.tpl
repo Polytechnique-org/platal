@@ -1,4 +1,4 @@
-{* $Id: form.valid.evts.tpl,v 1.4 2004-08-25 09:43:59 x2000habouzit Exp $ *}
+{* $Id: form.valid.evts.tpl,v 1.5 2004-08-29 16:02:40 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post" name="modif">
   <table class="bicol">
@@ -7,7 +7,7 @@
     </tr>
     <tr>
       <td>
-        Posté par <a href="javascript:x()"  onclick="popWin('{"x.php?x=$valid->username"|url}">
+        Posté par <a href="javascript:x()"  onclick="popWin('{"fiche.php"|url}?user={$valid->username}">
           {$valid->prenom} {$valid->nom} (X{$valid->promo})
         </a>
         [<a href="mailto:{$valid->username}@polytechnique.org">lui écrire</a>]

@@ -1,4 +1,4 @@
-{* $Id: ins_confirmees.tpl,v 1.3 2004-08-26 14:44:45 x2000habouzit Exp $ *}
+{* $Id: ins_confirmees.tpl,v 1.4 2004-08-29 16:02:40 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -15,7 +15,7 @@
       <a href="promo.php?promo={$in.promo}">{$in.promo}</a>
     </td>
     <td>
-      <a href="javascript:x()"  onclick="popWin('{"x.php"|url}?x={$in.username}')">
+      <a href="javascript:x()"  onclick="popWin('{"fiche.php"|url}?user={$in.username}')">
         {$in.nom} {$in.prenom}</a>
     </td>
   </tr>

@@ -1,11 +1,11 @@
-{* $Id: form.valid.sondages.tpl,v 1.5 2004-08-25 09:43:59 x2000habouzit Exp $ *}
+{* $Id: form.valid.sondages.tpl,v 1.6 2004-08-29 16:02:40 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <table class="bicol" cellpadding="4" summary="Sondage">
 <tr>
   <td>Demandeur&nbsp;:
   </td>
-  <td><a href="javascript:x()" onclick="popWin('{"x.php?x=$valid->username"|url}')">
+  <td><a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$valid->username}')">
       {$valid->prenom} {$valid->nom}</a>
     {if $valid->old}({$valid->old}){/if}
   </td>

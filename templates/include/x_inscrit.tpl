@@ -1,4 +1,4 @@
-{* $Id: x_inscrit.tpl,v 1.4 2004-08-24 12:23:41 x2000habouzit Exp $ *}
+{* $Id: x_inscrit.tpl,v 1.5 2004-08-29 16:02:40 x2000habouzit Exp $ *}
 
 <div class="contact">
   <div class="nom">
@@ -18,7 +18,7 @@
     {/strip}
   </div>
   <div class="bits">
-    <a href="javascript:x()" onclick="popWin('x.php?x={$c.username}')">
+    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.username}')">
       <img src="images/loupe.gif" alt="Afficher les détails" />
     </a>
     <a href="vcard.php/{$c.username}.vcf?x={$c.username}">

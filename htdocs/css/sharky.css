@@ -66,6 +66,16 @@ table.bicol th {
         [ Styles liés à l'affichage de contacts ]
 *******************************************************************************/
 
+div.contact-list div.contact {
+    border-top: 1px solid #305070;
+    background: #80a0c0;
+    color: inherit;
+}
+
+div.contact div.long {
+    background: #99b9d0;
+    color: inherit;
+}
 
 /*******************************************************************************
     6   Profil
@@ -100,7 +110,7 @@ table.bicol th {
 #body-menu {
     border-left: 1px solid #305070;
     border-right: 1px solid #305070;
-    background-image: url("images/sk_sharky_bubbles.png");
+    background-image: url("/images/sk_sharky_bubbles.png");
     background-position: 0px 100px;
     background-repeat: repeat-y;
 }
@@ -118,4 +128,4 @@ table.bicol th {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: sharky.css,v 1.1 2004-08-29 15:46:53 x2000habouzit Exp $ */
+/* $Id: sharky.css,v 1.2 2004-08-29 16:02:39 x2000habouzit Exp $ */

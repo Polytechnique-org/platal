@@ -1,4 +1,4 @@
-{* $Id: sendmail.tpl,v 1.5 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.6 2004-08-29 16:02:39 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -81,7 +81,7 @@
       <input type="checkbox" name="contacts[{$contact.username}]"
       value="{"`$contact.prenom` `$contact.nom` &lt;`$contact.username`@polytechnique.org&gt;"}"
         {if $smarty.request.contacts && $smarty.request.contacts.username}checked="checked"{/if} />
-      <a href="javascript:x()" onclick="popWin('x.php?x={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
+        <a href="javascript:x()" onclick="popWin('fiche.php?user={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>
 {if $key is odd}
   </tr>

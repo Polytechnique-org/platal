@@ -1,4 +1,4 @@
-{* $Id: trombipromo.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: trombipromo.tpl,v 1.4 2004-08-29 16:02:39 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -61,7 +61,7 @@ chaque page affiche au plus {$limit} photos.
   <tr>
   {/if}
     <td class="center">
-      <a href="javascript:x()" onclick="popWin('x.php?x={$p.username}')">
+      <a href="javascript:x()" onclick="popWin('fiche.php?user={$p.username}')">
         <img src="getphoto.php?x={$p.user_id}" width="110" alt=" [ PHOTO ] " />
       </a>
       {mailto address="`$p.username`@polytechnique.org" text="`$p.prenom`&nbsp;`$p.nom`"}

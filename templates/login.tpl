@@ -1,4 +1,4 @@
-{* $Id: login.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.7 2004-08-29 16:02:39 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
@@ -28,7 +28,7 @@
   
 {dynamic on="0$fiche_incitation"}
   <p>La dernière mise à jour de ta
-  <a href="javascript:x()" onclick="popWin('x.php?x={$smarty.session.username}">fiche</a>
+  <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}">fiche</a>
   date du {$fiche_incitation|date_format:"%x"}.
   Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier, <a href=\"profil.php\">clique ici !</a>
@@ -70,7 +70,7 @@
         {$ev.texte|nl2br}
         <br />
         <p class="smaller">Annonce proposée par
-        <a href="javascript:x()" onclick="popWin('x.php?x={$ev.username}')">
+        <a href="javascript:x()" onclick="popWin('fiche.php?user={$ev.username}')">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
         </p>

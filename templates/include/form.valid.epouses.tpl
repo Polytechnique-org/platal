@@ -1,11 +1,11 @@
-{* $Id: form.valid.epouses.tpl,v 1.4 2004-08-25 09:43:59 x2000habouzit Exp $ *}
+{* $Id: form.valid.epouses.tpl,v 1.5 2004-08-29 16:02:40 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="bicol" cellpadding="4" summary="Demande d'alias d'épouse">
     <tr>
       <td>Demandeur&nbsp;:</td>
       <td>
-        <a href="javascript:x()" onclick="popWin('/x.php?x={$valid->username}')">
+        <a href="javascript:x()" onclick="popWin('/fiche.php?user={$valid->username}')">
           {$valid->prenom} {$valid->nom}
         </a>
         {if $valid->oldepouse}({$valid->oldepouse} - {$valid->oldalias}){/if}
