@@ -35,7 +35,7 @@
   que les messages internes passent par l'extérieur, ces messages seront donc retransmis en pièces jointes.
   </p>
 {/if}
-<form action="{$smarty.server.PHP_SELF}" method="post" name="redirect">
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <div class="rubrique">
     Tes adresses de redirection
   </div>
@@ -67,32 +67,34 @@
       <tr class="{cycle values="pair,impair"}">
         <td><strong>{$emails[i]->email}</strong></td>
         <td><input type="checkbox" name="emails_actifs[]" value="{$emails[i]->num}" {if
-        $emails[i]->active}checked{/if} /></td>
+        $emails[i]->active}checked="checked"{/if} /></td>
         <td>
           <select name="emails_rewrite[{$emails[i]->num}]">
-            <option value="poly" {if $emails[i]->rewrite == 1 and $emails[i]->m4x == 0}selected{/if}>
+            <option value="poly" {if $emails[i]->rewrite == 1 and $emails[i]->m4x == 0}selected="selected"{/if}>
               polytechnique.org
             </option>
-            <option value="m4x" {if $emails[i]->m4x == 1}selected{/if}>
+	    <option value="m4x" {if $emails[i]->m4x == 1}selected="selected"{/if}>
               m4x.org
             </option>
-            <option value="no" {if $emails[i]->rewrite == 0}selected{/if}>
+	    <option value="no" {if $emails[i]->rewrite == 0}selected="selected"{/if}>
               aucune
             </option>
           </select>
         </td>
-        <td><a href={$smarty.server.PHP_SELF}?emailop=retirer&amp;num={$emails[i]->num}>retirer</a></td>
+        <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;num={$emails[i]->num}">retirer</a></td>
       </tr>
       {/section}
     </table>
     <br />
-    <input type="submit" value="Mettre à jour les emails actifs" name="emailop">
+    <input type="submit" value="Mettre à jour les emails actifs" name="emailop" />
   </div>
   <p>
     Tu peux ajouter à cette liste une adresse email en la tapant ici et en cliquant sur Ajouter.
   </p>
-  <input type="text" size="35" maxlength="60" name="email" value="" />
-  &nbsp;&nbsp;
-  <input type="submit" value="ajouter" name="emailop">
+  <div>
+    <input type="text" size="35" maxlength="60" name="email" value="" />
+    &nbsp;&nbsp;
+    <input type="submit" value="ajouter" name="emailop" />
+  </div>
 </form>
 {/dynamic}
