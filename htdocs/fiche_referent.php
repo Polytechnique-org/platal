@@ -18,12 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche_referent.php,v 1.6 2004-08-31 13:59:42 x2000habouzit Exp $
+        $Id: fiche_referent.php,v 1.7 2004-09-03 00:28:18 x2000habouzit Exp $
  ***************************************************************************/
 
 
 require("auto.prepend.inc.php");
-new_simple_page('fiche_referent.tpl',AUTH_COOKIE, false, 'add_fiche_css.tpl');
+new_simple_page('fiche_referent.tpl',AUTH_COOKIE, false);
 
 //$isnetscape = !empty($_SESSION['skin_compatible']);
 
@@ -31,22 +31,22 @@ if (!isset($_REQUEST['user']))
   exit;
 
 //presuppose magic_quote à 'on'
-$reqsql = "SELECT prenom, nom, user_id, promo, cv, username"
-         ." FROM auth_user_md5 as u"
-// conversion du username en user_id si nécessaire
-         ." WHERE username = '{$_REQUEST['user']}'";
+$reqsql = "SELECT  prenom, nom, user_id, promo, cv, a.alias AS forlife
+             FROM  auth_user_md5 AS u
+       INNER JOIN  aliases       AS a ON (u.user_id=a.id AND a.type='a_vie')
+       INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id AND a1.alias = '{$_REQUEST['user']}')";
 $result = $globals->db->query($reqsql);
 if (mysql_num_rows($result)!=1)
         exit;
 
-if (list($prenom, $nom, $user_id, $promo, $cv, $username) = mysql_fetch_row($result))
+if (list($prenom, $nom, $user_id, $promo, $cv, $forlife) = mysql_fetch_row($result))
   mysql_free_result($result);
 
 $page->assign('prenom', $prenom);
 $page->assign('nom', $nom);
 $page->assign('promo', $promo);
 $page->assign('cv', $cv);
-$page->assign('username', $username);
+$page->assign('forlife', $forlife);
 
 //recuperation des infos professionnelles
 $reqsql = 
@@ -93,10 +93,10 @@ mysql_free_result($result);
 $result = $globals->db->query("SELECT expertise FROM mentor WHERE uid = $user_id");
 
 if(mysql_num_rows($result) > 0)
-list($expertise) = mysql_fetch_row($result);
-mysql_free_result($result);
-
-$page->assign('expertise', $expertise);
+if(list($expertise) = mysql_fetch_row($result)) {
+    mysql_free_result($result);
+    $page->assign('expertise', $expertise);
+}
 
 //secteurs
 $result = $globals->db->query("SELECT s.label, ss.label
