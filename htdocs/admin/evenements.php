@@ -8,8 +8,6 @@ $page->assign('arch', $arch);
 
 $action = isset($_POST['action']) ? $_POST['action'] : "";
 
-$err = Array();
-
 switch($action) {
     case "Proposer":
 	$req = "UPDATE  evenements
@@ -18,7 +16,6 @@ switch($action) {
                  WHERE  id = {$_POST['evt_id']}
                  LIMIT  1";
         $result = $globals->db->query ($req);
-        $err[] = "Requete effectuée : $req";
         break;
 
     case "Valider":
@@ -30,7 +27,6 @@ switch($action) {
                WHERE  id ='{$_POST['evt_id']}'
                LIMIT  1";
         $result = $globals->db->query ($req);
-        $err[] = "Requete effectuée : $req";
         break;
 
     case "Invalider":
@@ -42,25 +38,21 @@ switch($action) {
                WHERE  id = ".$_POST['evt_id']."
                LIMIT  1";
         $result = $globals->db->query ($req);
-        $err[] = "Requete effectuée : $req";
         break;
 
     case "Supprimer":
 	$req="DELETE from evenements WHERE id = ".$_POST['evt_id']." LIMIT 1";
         $result = $globals->db->query ($req);
-        $err[] = "Requete effectuée : $req";
         break;
 
     case "Archiver":
 	$req="UPDATE evenements SET flags = CONCAT(flags,',archive')WHERE id = ".$_POST['evt_id']." LIMIT 1";
         $result = $globals->db->query ($req);
-        $err[] = "Requete effectuée : $req";
         break;
 
     case "Desarchiver":
 	$req="UPDATE evenements SET flags = REPLACE(flags,'archive','')WHERE id = ".$_POST['evt_id']." LIMIT 1";
         $result = $globals->db->query ($req);
-        $err[] = "Requete effectuée : $req";
         break;
 
     case "Editer":
@@ -105,6 +97,5 @@ if ($action != "Editer") {
     $page->mysql_assign($sql, 'evs');
 }
 
-$page->assign('err', $err);
 $page->run();
 ?>

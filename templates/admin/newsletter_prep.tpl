@@ -1,4 +1,4 @@
-{* $Id: newsletter_prep.tpl,v 1.5 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: newsletter_prep.tpl,v 1.6 2004-08-30 09:14:49 x2000habouzit Exp $ *}
 
 {if $erreur}
 
@@ -37,7 +37,6 @@
     <br />
     <input type="submit" name="submit" value="Ne pas sauver et relacher le verrou" />
   </div>
-  <br />
 {elseif $is_lock}
   <p>
     <span class="erreur">{$id_lock} est en train d'éditer la newsletter depuis le
@@ -51,27 +50,22 @@
   <div class="center">
     <input type="submit" name="submit" value="Relacher quand meme" />
   </div>
-  <br />
 {else}
   <div class="ssrubrique">
     Pas de lock sur le fichier, tu peux en prendre un.
   </div>
-  <br />
   <div class="center">
     <input type="submit" name="submit" value="Prendre un verrou" />
   </div>
-  <br />
   <div class="ssrubrique">
     envoyer la newsletter tel qu'elle.
   </div>
-  <br />
   <div class="center">
     <input type="text" name="test_to" size="40" value="{$smarty.session.username}@m4x.org" />
     <input type="submit" name="submit" value="Envoi Test" />
     <br />
     <input type="submit" name="submit" value="Envoi Definitif" style="color:red;" />
   </div>
-  <br />
 {/if}
   <table class="bicol" cellpadding="3" summary="Newsletter">
     <tr>

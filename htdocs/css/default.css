@@ -144,7 +144,7 @@ td.action {
     font-weight: bold;
     vertical-align: middle;
 }
-td.action a {  padding: 4px; }
+td.action a { padding: 0px 2px 0px 2px; }
 
 /*******************************************************************************
     4   Tableau de choix de skins
@@ -458,4 +458,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.33 2004-08-29 21:26:04 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.34 2004-08-30 09:14:49 x2000habouzit Exp $ */

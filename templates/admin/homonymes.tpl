@@ -1,4 +1,4 @@
-{* $Id: homonymes.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: homonymes.tpl,v 1.4 2004-08-30 09:14:49 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Gestion des homonymes
@@ -42,11 +42,11 @@
     </td>
     <td>{$user.date}</td>
     <td>
-      <a href="javascript:x()" onclick="popWin('../x.php?x={$user.username}">fiche</a>
+      <a href="javascript:x()" onclick="popWin('../fiche.php?user={$user.username}')">fiche</a>
       <a href="javascript:x()" onclick="popWin('utilisateurs.php?login={$user.username}&amp;select=1')">edit</a>
       {if $user.alias eq $login}
-      <a href="?op=mail-conf&target={$user.user_id}">mailer</a>
-      <a href="?op=correct-conf&target={$user.user_id}">corriger</a>
+      <a href="?op=mail-conf&amp;target={$user.user_id}">mailer</a>
+      <a href="?op=correct-conf&amp;target={$user.user_id}">corriger</a>
       {/if}
     </td>
   </tr>

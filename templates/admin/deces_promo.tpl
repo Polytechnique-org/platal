@@ -1,10 +1,10 @@
-{* $Id: deces_promo.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: deces_promo.tpl,v 1.4 2004-08-30 09:14:49 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <table class="tinybicol">
   <tr>
-    <td><input type="submit" value="<<" name="sub10" /></td>
-    <td><input type="submit" value="<"  name="sub01" /></td>
+    <td><input type="submit" value="&lt;&lt;" name="sub10" /></td>
+    <td><input type="submit" value="&lt;"  name="sub01" /></td>
     <td>
       Promotion :
 {dynamic}
@@ -12,14 +12,13 @@
 {/dynamic}
       <input type="submit" value="GO" />
     </td>
-    <td><input type="submit" value=">"  name="add01" /></td>
-    <td><input type="submit" value=">>" name="add10" /></td>
+    <td><input type="submit" value="&gt;"  name="add01" /></td>
+    <td><input type="submit" value="&gt;&gt;" name="add10" /></td>
   </tr>
 </table>
 </form>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
-<input type="hidden" name="promo" value="{$promo}" />
 <table class="bicol" summary="liste des dates de décès">
   <tr>
     <th>Nom</th>
@@ -36,7 +35,8 @@
 {/foreach}
 {/dynamic}
   <tr>
-    <td class="center">
+    <td class="center" colspan="2">
+      <input type="hidden" name="promo" value="{$promo}" />
       <input type="submit" name="valider" value="Valider" />
     </td>
   </tr>

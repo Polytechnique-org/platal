@@ -1,4 +1,4 @@
-{* $Id: login.tpl,v 1.7 2004-08-29 16:02:39 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.8 2004-08-30 09:14:49 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
@@ -63,11 +63,11 @@
 
   <table class="bicol">
     <tr>
-      <th><a name="newsid{$ev.id}">{$ev.titre|nl2br}</a></th>
+      <th><a id="newsid{$ev.id}"></a>{$ev.titre|nl2br}</th>
     </tr>
     <tr class="{cycle values="impair,pair"}">
       <td class="half">
-        {$ev.texte|nl2br}
+        {$ev.texte|smarty:nodefaults|nl2br}
         <br />
         <p class="smaller">Annonce proposée par
         <a href="javascript:x()" onclick="popWin('fiche.php?user={$ev.username}')">

@@ -1,7 +1,6 @@
-{* $Id: form.evenement.tpl,v 1.1 2004-07-19 13:35:36 x2000habouzit Exp $ *}
+{* $Id: form.evenement.tpl,v 1.2 2004-08-30 09:14:50 x2000habouzit Exp $ *}
 
-<form action="{$smarty.server.PHP_SELF}" method="post" name="evenement_nouveau">
-  <input type="hidden" name="evt_id" value="{$smarty.post.evt_id}" />
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="bicol">
     <tr>
       <th colspan="2">Contenu du message</th>
@@ -17,8 +16,6 @@
       <td><textarea name="texte" rows="10" cols="60">{$texte}</textarea></td>
     </tr>
   </table>
-
-  <br />
 
   <table class="bicol">
     <tr>
@@ -53,7 +50,7 @@
       </td>
       <td>
         <select name="peremption">
-          {$select}
+          {$select|smarty:nodefaults}
         </select>
       </td>
     </tr>
@@ -63,9 +60,8 @@
     </tr>
   </table>
 
-  <br />
-
   <div class="center">
+    <input type="hidden" name="evt_id" value="{$smarty.post.evt_id}" />
     <input type="submit" name="action" value="Proposer" />
   </div>
 
