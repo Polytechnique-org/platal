@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.10 2004-09-10 23:52:13 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.11 2004-09-10 23:54:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -42,7 +42,7 @@
     <div><img alt="Photo de {$forlife}" src="{$photo_url}" width="{$size_x}" height="{$size_y}" /></div>
     {if $section}<em class="intitule">Section : </em><span>{$section}</span><br />{/if}
     {if $binets}<em class="intitule">Binet(s) : </em><span>{$binets}</span><br />{/if}
-    {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes}</span><br />{/if}
+    {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes|smarty:nodefaults}</span><br />{/if}
     {if $mobile}<em class="intitule">Mobile : </em><span>{$mobile}</span><br />{/if}
     {if $web}<em class="intitule">Site Web : </em><br /><a href="{$web}" onclick="return popup(this)">{$web}</a><br />{/if}
     {if $libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$libre|nl2br}</span>{/if}
