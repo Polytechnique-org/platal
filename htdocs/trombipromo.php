@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.php,v 1.5 2004-09-02 22:27:05 x2000habouzit Exp $
+        $Id: trombipromo.php,v 1.6 2004-10-08 19:38:37 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -32,7 +32,7 @@ if(!isset($_REQUEST['xpromo'])) $page->run();
 
 $xpromo = intval($_REQUEST['xpromo']);
 
-if ( $xpromo<1900 || $xpromo>date('Y') || ($xpormo = -1 && $_SESSION['perms']!="admin") ) {
+if ( $xpromo<1900 || $xpromo>date('Y') || ($xpromo == -1 && $_SESSION['perms']!="admin") ) {
     $page->assign('erreur', "Promotion incorrecte (saisir au format YYYY). Recommence.");
 }
 
