@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.23 2004-11-27 16:01:03 x2000habouzit Exp $
+        $Id: moderate.php,v 1.24 2004-11-27 16:19:28 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -132,11 +132,6 @@ if(isset($_REQUEST['sid'])) {
         $page->assign_by_ref('mail', $mail);
     } else {
 	if(list($subs,$mails) = $client->get_pending_ops($liste)) {
-            foreach ($subs as $key=>$val) {
-                if (preg_match('/^([^.]*\.[^.]*\.\d\d\d\d)@polytechnique.org$/', $subs['addr'], $matches)) {
-                    $subs[$key]['login'] = $matches[1];
-                }
-            }
 	    $page->assign_by_ref('subs', $subs);
 	    $page->assign_by_ref('mails', $mails);
 	} else

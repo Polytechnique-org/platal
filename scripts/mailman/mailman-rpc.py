@@ -18,10 +18,10 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.81 2004-11-18 17:39:11 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.82 2004-11-27 16:19:28 x2000habouzit Exp $
 #***************************************************************************
 
-import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
+import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal, re
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -453,7 +453,11 @@ def get_pending_ops(userdesc,perms,vhost,listname):
                 dosave = True
                 continue
             seen.append(addr)
-            subs.append({'id': id, 'name': quote(fullname), 'addr': addr })
+            try:
+                login = re.match("^[^.]*\.[^.]*\.\d\d\d\d$", addr.split('@')[0]).group()
+                subs.append({'id': id, 'name': quote(fullname), 'addr': addr, 'login': login })
+            except:
+                subs.append({'id': id, 'name': quote(fullname), 'addr': addr })
 
         helds = []
         for id in mlist.GetHeldMessageIds():
