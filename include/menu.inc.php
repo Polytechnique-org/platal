@@ -4,10 +4,10 @@ if(logged()) {
     $menu = Array(
         0 => Array( 'Page d\'accueil' => 'login.php' ),
         'Personnaliser' => Array(
-            'Mes emails' => '###url###' ,
+            'Mes emails' => 'emails.php' ,
             'Mon profil' => '###url###' ,
             'Mes contacts' => '###url###' ,
-            'Mon mot de passe' => '###url###' ,
+            'Mon mot de passe' => 'motdepassemd5.php' ,
             'Mes préférences' => 'preferences.php' 
         ),
         'Services' => Array (
