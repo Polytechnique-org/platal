@@ -21,18 +21,13 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/homonymes.tpl');
-require_once("diogenes/diogenes.hermes.inc.php");
+require_once("homonymes.inc.php");
 
 $op     = Env::get('op', 'list');
 $target = Env::getInt('target');
 
 if ($target) {
-    $res = $globals->xdb->query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
-                                   FROM  auth_user_md5 AS u
-                             INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
-                             INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
-                                  WHERE  user_id = {?}", $target);
-    if (! list($prenom,$nom,$forlife,$loginbis) = $res->fetchOneRow()) {
+    if (! list($prenom,$nom,$forlife,$loginbis) = select_if_homonyme($target)) {
         $target=0;
     } else {
         $page->assign('nom',$nom);
@@ -48,32 +43,19 @@ $page->assign('baseurl',$globals->baseurl);
 
 // on a un $target valide, on prepare les mails
 if ($target) {
-    // from
-    $cc = "support+homonyme@polytechnique.org";
-    $FROM = "\"Support Polytechnique.org\" <$cc>";
     
     // on examine l'op a effectuer
     switch ($op) {
         case 'mail':
-            $mymail = new HermesMailer();
-            $mymail->setFrom($FROM);
-            $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
-            $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
-            $mymail->addCc($cc);
-            $mymail->setTxtBody(Env::get('mailbody'));
-            $mymail->send();
+	    send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
+	    switch_bestalias($target, $loginbis);
             $op = 'list';
             break;
         case 'correct':
+	    switch_bestalias($target, $loginbis);
             $globals->xdb->execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
             $globals->xdb->execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
-            $mymail = new HermesMailer();
-            $mymail->setFrom($FROM);
-            $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
-            $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
-            $mymail->addCc($cc);
-            $mymail->setTxtBody(Env::get('mailbody'));
-            $mymail->send();
+	    send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
             $op = 'list';
             break;
     }
