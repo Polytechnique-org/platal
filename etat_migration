@@ -27,7 +27,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/marketing.php						  | 
 	  | admin/marketing_promo.php				  | 
 	  | admin/marketing_volontaire.php			  | 
-	  | admin/newsletter_pattecassee.php		  | 
 	  | admin/pg.php							  | 
 	  | admin/relance.php						  | 
 	  | admin/utilisateurs.php					  | 
@@ -144,6 +143,7 @@ xx	  | admin/FormatePrenomNOM.php				  | scripts/
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
 xx	  | admin/index.php							  | -
 xx	  | admin/newsletter_archi.php				  | -
+xx	  | admin/newsletter_pattecassee.php		  | -
 xx	  | admin/newsletter_prep.php				  | -
 xx	  | admin/postfix_blacklist.php				  | -
 xx	  | admin/postfix_perm.php					  | -
