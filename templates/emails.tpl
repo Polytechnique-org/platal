@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.tpl,v 1.6 2004-10-09 20:47:59 x2000chevalier Exp $
+        $Id: emails.tpl,v 1.7 2004-10-09 20:50:33 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -61,7 +61,7 @@ Gestion de mes courriers électroniques
 
 <p class="smaller">
 (*) les adresses mails marquées de (*) te sont réservées à vie (et même plus).
-les autres sont sujettes à être supprimées (en cas d'homonymie, ou de changement de nom d'épouse pour les femmes)
+Les autres pourraient t'être retirées si tu as un homonyme X qui s'inscrit sur le site (auquel cas l'adresse prenom.nom@polytechnique.org serait inactivée pour l'un et pour l'autre !)
 </p>
 
 
