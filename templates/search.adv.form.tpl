@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.adv.form.tpl,v 1.3 2004-11-27 15:41:03 x2000bedo Exp $
+        $Id: search.adv.form.tpl,v 1.4 2004-11-27 15:54:00 x2000bedo Exp $
  ***************************************************************************}
 
 <h1>Recherche avancée</h1>
@@ -121,7 +121,7 @@
     <tr>
       <td colspan="2">
         <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} />
-        chercher uniquement parmis les camarades se proposant comme référent
+        chercher uniquement parmi les camarades se proposant comme référent
       </td>
     </tr>
     <tr>
