@@ -21,7 +21,7 @@ m2h_text_plain::filter; fancyquote maxwidth=80 quoteclass=quote
 </MIMEArgs>
 
 <AttachmentDir>
-/home/x2000habouzit/mh/attach/
+/var/spool/platal/archives/attachments/
 </AttachmentDir>
 
 <AttachmentURL>
