@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.3 2004-10-29 02:16:43 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.4 2004-11-02 06:46:50 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -39,7 +39,7 @@
       {/if}
       <br />
       <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$p.forlife}')">
-        {$p.prenom} {$p.nom} ({$p.promo})
+        {$p.prenom} {$p.nom}{if $trombi_show_promo}({$p.promo}){/if}
       </a>
     </td>
   {if $loop eq "3"}
