@@ -21,6 +21,9 @@ Changes :
 		- dead members now have the date of death printed.					-MC
 		- better things done for married women.								-MC
 		- Mobile is know printed too.										-MC
+	
+	* Search+Contacts :
+		- Unified template.													-JS
 
 Fixes (from 0.9.0 branch) :
 
@@ -47,9 +50,11 @@ Changes :
 ACRONYMS :
 
 	* PoT : Polytechnique.org TEAM (see Authors).
-	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
+
 	* FAL : Raphaël Marichez (Falco)    <raphael.marichez@m4x.org>
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
+	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
+	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
 
 ================================================================================
 vim:noet:ts=4:sw=4:tw=80:
