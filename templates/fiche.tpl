@@ -31,65 +31,65 @@ function chgMainWinLoc( strPage ) {
   <tr>
     <td id="fiche_identite">
       <div class="civilite">
-        {if $sexe}&bull;{/if}
-        {$prenom} {if $epouse eq ""}{$nom}{else}{$epouse} ({$nom}){/if}&nbsp;
-        <a href="vcard.php/{$forlife}.vcf?x={$user_id}">
+        {if $x.sexe}&bull;{/if}
+        {$x.prenom} {if $x.epouse eq ""}{$x.nom}{else}{$x.epouse} ({$x.nom}){/if}&nbsp;
+        <a href="vcard.php/{$x.forlife}.vcf?x={$x.forlife}">
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
         </a>
-        {if !$is_contact}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$forlife}')">
+        {if !$x.is_contact}
+        <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$x.forlife}')">
           <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
         </a>
         {else}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=retirer&amp;user={$forlife}')">
+        <a href="javascript:x()"  onclick="chgMainWinLoc('{"carnet/mescontacts.php"|url}?action=retirer&amp;user={$x.forlife}')">
           <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
         </a>
         {/if}
         {perms level=admin}
-        <a href="{"admin/utilisateurs.php"|url}?login={$forlife}">
+        <a href="{rel}/admin/utilisateurs.php?login={$x.forlife}">
           <img src="images/admin.png" alt='admin' title="administrer user" />
         </a>
         {/perms}
       </div>
       <div class='maj'>
         Fiche mise à jour<br />
-        le {$date|date_format:"%d %b. %Y"}
+        le {$x.date|date_format:"%d %b. %Y"}
       </div>
       <div class="contact">
         <div class='email'>
-          {if $dcd}
-          Décédé{if $sexe}e{/if} le {$deces|date_format:"%d %B %Y"}
-          {elseif !$inscrit}
+          {if $x.dcd}
+          Décédé{if $x.sexe}e{/if} le {$x.deces|date_format:"%d %B %Y"}
+          {elseif !$x.inscrit}
           Le compte de cette personne n'est pas actif (personne non inscrite ou exclue).
           {else}
-          <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
-          {if $bestalias neq $forlife}<br />
-          <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
+          <a href="mailto:{$x.bestalias}@polytechnique.org">{$x.bestalias}@polytechnique.org</a>
+          {if $bestalias neq $x.forlife}<br />
+          <a href="mailto:{$x.forlife}@polytechnique.org">{$x.forlife}@polytechnique.org</a>
           {/if}
           {/if}
         </div>
         <div class="mob">
-          {if $mobile}<em class="intitule">Mobile : </em>{$mobile}<br />{/if}
+          {if $x.mobile}<em class="intitule">Mobile : </em>{$x.mobile}<br />{/if}
         </div>
         <div class='spacer'></div>
       </div>
       <div class='formation'>
-        {if $iso3166}
-        <img src='{"images/"|url}flags/{$iso3166}.gif' alt='{$nationalite}' height='14' title='{$nationalite}' />&nbsp;
+        {if $x.iso3166}
+        <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='14' title='{$x.nationalite}' />&nbsp;
         {/if}
-        X {$promo}{if $applis}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}{/if}
-        {if $is_referent}
-        [<a href="fiche_referent.php?user={$forlife}" class='popup'>Ma fiche référent</a>]
+        X {$x.promo}{if $applis}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}{/if}
+        {if $x.is_referent}
+        [<a href="fiche_referent.php?user={$x.forlife}" class='popup'>Ma fiche référent</a>]
         {/if}
       </div>
     </td>
     <td rowspan="4" id='photo'>
-      <img alt="Photo de {$forlife}" src="{$photo_url}" width="{$size_x}" height="{$size_y}" />
-      {if $section}<em class="intitule">Section : </em><span>{$section}</span><br />{/if}
+      <img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />
+      {if $x.section}<em class="intitule">Section : </em><span>{$x.section}</span><br />{/if}
       {if $binets}<em class="intitule">Binet(s) : </em><span>{$binets}</span><br />{/if}
       {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes|smarty:nodefaults}</span><br />{/if}
-      {if $web}<em class="intitule">Site Web : </em><a href="{$web}" class='popup'>{$web}</a>{/if}
-      {if $libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$libre|nl2br}</span>{/if}
+      {if $x.web}<em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a>{/if}
+      {if $x.libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$x.libre|nl2br}</span>{/if}
     </td>
   </tr>
   {if $adr|@count > 0}
@@ -98,7 +98,15 @@ function chgMainWinLoc( strPage ) {
       <h2>Contact : </h2>
       {foreach from=$adr item="address" key="i"}
       <div class="adresse">
-        <div class="titre">{$address.title}</div>
+        <div class="titre">
+          {if $address.active}
+          Mon adresse actuelle :
+          {elseif $address.secondaire}
+          Adresse secondaire :
+          {else}
+          Adresse principale :
+          {/if}
+        </div>
         {if $address.adr1 || $address.pays || $address.ville}
         <div>
           {if $address.adr1}<strong>{$address.adr1}</strong><br />{/if}
@@ -189,11 +197,11 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
-  {if $cv}
+  {if $x.cv}
   <tr>
     <td>
       <h2>Curriculum Vitae :</h2>
-      {$cv|nl2br}
+      {$x.cv|nl2br}
     </td>
   </tr>
   {/if}
