@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: alias.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: alias.php,v 1.6 2004-09-02 20:11:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -29,7 +29,7 @@ new_skinned_page('alias.tpl', AUTH_MDP);
 $page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
 
 //Récupération des alias éventuellement existants
-$sql = "SELECT domain from groupex.aliases WHERE id=12 AND email like '".$_SESSION['username']."'";
+$sql = "SELECT domain from groupex.aliases WHERE id=12 AND email='{$_SESSION['forlife']}'";
 if($result = $globals->db->query($sql)) {
     list($aliases) = mysql_fetch_row($result);
     mysql_free_result($result);

@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_aliases.inc.php,v 1.14 2004-08-31 22:01:31 x2000habouzit Exp $
+        $Id: valid_aliases.inc.php,v 1.15 2004-09-02 20:11:23 x2000habouzit Exp $
  ***************************************************************************/
 
 class AliasReq extends Validate {
     var $alias;
     var $raison;
 
-    var $username;
+    var $forlife;
     var $prenom;
     var $nom;
     var $old;
@@ -36,10 +36,13 @@ class AliasReq extends Validate {
         $this->alias = $_alias;
         $this->raison = $_raison;
         
-        $sql = $globals->db->query("SELECT username,prenom,nom,domain FROM auth_user_md5 as u "
-                        .  "LEFT JOIN groupex.aliases as a ON (a.email = u.username and a.id = 12)    "
-                        .  "WHERE user_id='".$this->uid."'");
-        list($this->username,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
+        $sql = $globals->db->query("
+	    SELECT  l.alias,prenom,nom,domain
+	      FROM  auth_user_md5 AS u
+	INNER JOIN  aliases       AS l ON(u.user_id=l.id AND type='a_vie')
+         LEFT JOIN  groupex.aliases as a ON (a.email = l.alias and a.id = 12)
+             WHERE  user_id='".$this->uid."'");
+        list($this->forlife,$this->prenom,$this->nom,$this->old) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }
 
@@ -57,7 +60,7 @@ class AliasReq extends Validate {
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.alias.tpl');
         $mymail->assign('alias', $this->alias);
-        $mymail->assign('username', $this->username);
+        $mymail->assign('forlife', $this->forlife);
 
         if($_REQUEST['submit']=="Accepter") {
             $mymail->assign('answer', 'yes');
@@ -76,8 +79,8 @@ class AliasReq extends Validate {
         global $globals;
 
         $domain=$this->alias.'@melix.net';
-        $globals->db->query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->username}'");
-        $globals->db->query("INSERT INTO groupex.aliases SET email='{$this->username}',domain='$domain',id=12");         
+        $globals->db->query("DELETE FROM groupex.aliases WHERE id=12 AND email='{$this->forlife}'");
+        $globals->db->query("INSERT INTO groupex.aliases SET email='{$this->forlife}',domain='$domain',id=12");         
     }
 }
 

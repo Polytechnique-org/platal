@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: alias.tpl,v 1.8 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: alias.tpl,v 1.9 2004-09-02 20:11:23 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -65,9 +65,9 @@
 
   <br />
   <form action="{$smarty.server.PHP_SELF}" method="post">
-    <table class="tinybicol" cellpadding="4" summary="Demande d'alias">
+    <table class="bicol" cellpadding="4" summary="Demande d'alias">
       <tr>
-        <th colspan="2">Demande d'alias</th>
+        <th>Demande d'alias</th>
       </tr>
       <tr>
         <td>Alias demandé :</td>
