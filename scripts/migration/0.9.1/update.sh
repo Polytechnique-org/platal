@@ -31,9 +31,12 @@ echo 'drop table x4dat.emploi_naf;' | mysql -u root x4dat &>/dev/null
 echo .
 
 ###########################################################
-echo -n "updating newsletter table"
+echo -n "updating newsletter tables"
 mysql -u root x4dat < newsleter.sql &>/dev/null
+mysql -u root x4dat < newsleter_art.sql &>/dev/null
+mysql -u root x4dat < newsleter_cat.sql &>/dev/null
+mysql -u root x4dat < newsleter_ins.sql &>/dev/null
 echo '.'
 
 ###########################################################
-echo ""
+echo "ALL IS OK."
