@@ -18,6 +18,6 @@ done
 ###########################################################
 echo "STILL TODO :
   - update the mailman-rpc daemon
-  - insert scripts/cron/watch.notifs.php in the crontab
+  - insert scripts/cron/send_notifs.php in the crontab
     suggested : 0 4 * * 6  (it means every saturday at 4 AM)
 "
