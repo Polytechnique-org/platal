@@ -30,6 +30,7 @@ body {
 }
 
 a:link, a:visited, a:active, a:hover { color: #003399; background: none; }
+img   { vertical-align: middle; }
 a img { border: 0px; }
 td    { vertical-align: top; }
 li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
@@ -229,7 +230,6 @@ div.contact div.appli {
 
 div.contact div.bits {
     text-align: right;
-    width: 17%;
     float: right;
 }
 
@@ -582,4 +582,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.54 2004-10-24 14:58:26 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.55 2004-10-28 12:20:59 x2000habouzit Exp $ */

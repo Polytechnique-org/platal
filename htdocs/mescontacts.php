@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.17 2004-10-25 12:41:04 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.18 2004-10-28 12:20:59 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -61,10 +61,10 @@ $sql = "SELECT contact AS id,
                a.*, l.alias AS forlife,
                i.deces != 0 AS dcd, i.deces, i.matricule_ax, FIND_IN_SET('femme', i.flags) AS sexe,
                e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
-               n.text AS nat,
+               n.text AS nat, n.iso3166,
                ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-               adr.ville, gp.pays, gr.name AS region,
+               adr.ville, gp.a2, gp.pays, gr.name AS region,
 	       IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
         FROM       contacts       AS c
         INNER JOIN auth_user_md5  AS a   ON (a.user_id = c.contact)

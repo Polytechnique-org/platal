@@ -17,17 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.5 2004-10-25 18:29:37 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.6 2004-10-28 12:21:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <div class="contact" {min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}"{/min_auth}>
   <div class="nom">
-    {if $c.sexe}
-    <img src="{"images/woman.gif"|url}" alt="[femme]" style='margin-right: 4px;' />
-    {else}
-    <img src="{"images/man.gif"|url}" alt="[homme]" style='margin-right: 4px;' />
-    {/if}
+    {if $c.sexe}&bull;{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && $inscrit}
     <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
@@ -42,6 +38,9 @@
   </div>
   <div class="appli">
     {strip}
+    {if $c.nat}
+    <img src='{"images/"|url}flags/{$c.iso3166}.gif' alt='{$c.nat}' height='14' title='{$c.nat}' />&nbsp;
+    {/if}
     (X {$c.promo}
     {if $c.app0text},
       {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}

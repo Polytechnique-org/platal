@@ -3,6 +3,13 @@ VERSION 0.9.2														~20 Nov 2004
 
 Changes :
 
+	* Lists :
+		- Refusal message is shown on mail moderation page.  (FS#138)		-MC
+
+	* Search+Contacts:
+		- Homeland is now a flag.  (FS#124)									-MC
+		- Women now have a &bull; (no more dirty gender icons).  (FS#122)	-MC
+
 
 Fixes (from 0.9.1 branch) :
 
@@ -26,7 +33,7 @@ Changes :
 		- Convert old archive to new model.									-FAL
 
 	* Search+Contacts :
-		- Added sex icons.													-MC
+		- Added gender icons.												-MC
 		- Better things done for married women.								-MC
 		- Deceased members and non-subscribers special treatments.			-MC
 		- Mobile is now printed too.										-MC

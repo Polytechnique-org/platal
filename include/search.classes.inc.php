@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.25 2004-10-25 12:41:05 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.26 2004-10-28 12:20:59 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -33,7 +33,7 @@ $globals->search_result_fields = '
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                 e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
-                n.text AS nat,
+                n.text AS nat, n.iso3166,
                 adr.ville, gp.pays, gr.name AS region,';
 $globals->search_result_where_statement = '
                 LEFT JOIN  applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)

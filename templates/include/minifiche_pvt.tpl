@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.5 2004-10-25 12:41:05 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.6 2004-10-28 12:21:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -54,14 +54,8 @@
 {/if}
 {if $inscrit==1}
   <div class="long">
-    {if $c.nat || $c.web || $c.mobile || $c.pays || $c.ville || $c.region || $c.entreprise || $c.libre}
+    {if $c.web || $c.mobile || $c.pays || $c.ville || $c.region || $c.entreprise || $c.libre}
     <table cellspacing="0" cellpadding="0">
-      {if $c.nat}
-      <tr>
-        <td class="lt">Nationalité:</td>
-        <td class="rt">{$c.nat}</td>
-      </tr>
-      {/if}
       {if $c.web}
       <tr>
         <td class="lt">Page web:</td>
