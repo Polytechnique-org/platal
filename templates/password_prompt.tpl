@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.15 2004-08-24 22:57:20 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.16 2004-08-25 09:33:30 x2000habouzit Exp $ *}
 <noscript>
   <p class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -41,7 +41,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
 
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="login" onsubmit="doChallengeResponse(); return false;">
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">Connexion</th>
@@ -89,7 +89,7 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 {/if}
 
 <!-- Set up the form with the challenge value and an empty reply value //-->
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="loginsub">
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
   <div>
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
     <input type="hidden" name="response"  value="" />
@@ -102,10 +102,11 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 <script type="text/javascript">
   <!--
   // Activate the appropriate input form field.
-  if (document.login.username.value == '') {
-    document.login.username.focus();
-    } else {
-    document.login.password.focus();
+  login = document.getElementById('login');
+  if (document.forms.login.username.value == '') {
+    document.forms.login.username.focus();
+  } else {
+    document.forms.login.password.focus();
   }
   // -->
 </script>

@@ -1,4 +1,4 @@
-{* $Id: password_prompt_logged.tpl,v 1.10 2004-02-12 02:03:08 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.11 2004-08-25 09:33:30 x2000habouzit Exp $ *}
 
 <div class="center">
   <table summary="Accès sécurisé" style="width: 90%;">
@@ -18,7 +18,7 @@
   </table>
 </div>
 <br /><br />
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onsubmit='doChallengeResponse(); return false;'>
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" id="login" onsubmit='doChallengeResponse(); return false;'>
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td class="titre">
@@ -48,7 +48,7 @@
 {/if}
 
 <!-- Set up the form with the challenge value and an empty reply value -->
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="loginsub">
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
   <div>
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
     <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}" />
@@ -60,7 +60,7 @@
 <script type="text/javascript">
   <!--
   // Activate the appropriate input form field.
-  document.login.password.focus();
+  document.forms.login.password.focus();
   // -->
 </script>
 {/literal}

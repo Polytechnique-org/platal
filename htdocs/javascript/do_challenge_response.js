@@ -1,10 +1,10 @@
 function doChallengeResponse() {
-    str = document.login.username.value + ":" +
-        MD5(document.login.password.value) + ":" +
-        document.loginsub.challenge.value;
+    str = document.forms.login.username.value + ":" +
+        MD5(document.forms.login.password.value) + ":" +
+        document.forms.loginsub.challenge.value;
 
-    document.loginsub.response.value = MD5(str);
-    document.loginsub.username.value = document.login.username.value;
-    document.login.password.value = "";
-    document.loginsub.submit();
+    document.forms.loginsub.response.value = MD5(str);
+    document.forms.loginsub.username.value = document.forms.login.username.value;
+    document.forms.login.password.value = "";
+    document.forms.loginsub.submit();
 }
