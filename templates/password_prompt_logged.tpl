@@ -1,4 +1,4 @@
-{* $Id: password_prompt_logged.tpl,v 1.4 2004-01-26 19:40:51 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.5 2004-01-28 16:54:47 x2000habouzit Exp $ *}
 
 <div style="text-align:center">
   <table width="90%" summary="Accès sécurisé">
@@ -47,8 +47,8 @@
 
 <!-- Set up the form with the challenge value and an empty reply value -->
 <form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
-  <input type="hidden" name="challenge" value="{$smarty.session.challenge}">
-  <input type="hidden" name="username" value="{$smarty.cookies.ORGlogin}">
+  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}">
+  <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}">
   <input type="hidden" name="response"  value="">
 </form>
 
