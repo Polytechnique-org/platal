@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.tpl,v 1.2 2004-10-16 17:52:27 x2000habouzit Exp $
+        $Id: submit.tpl,v 1.3 2004-10-16 18:17:51 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -60,7 +60,7 @@ il faut te limiter à 8 lignes de 68 caractères.
   <tr><th>Version html</th></tr>
   <tr id='html'>
     <td>
-      <div style="margin: auto; font-familly:georgia; width:56ex; text-align: justify">
+      <div class='nl'>
         {$art->toHtml()|smarty:nodefaults}
       </div>
     </td>

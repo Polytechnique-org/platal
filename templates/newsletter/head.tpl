@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -18,31 +17,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.php,v 1.3 2004-10-16 18:17:50 x2000habouzit Exp $
- ***************************************************************************/
+        $Id: head.tpl,v 1.1 2004-10-16 18:17:51 x2000habouzit Exp $
+ ***************************************************************************}
 
-require("auto.prepend.inc.php");
-new_skinned_page('newsletter/submit.tpl', AUTH_COOKIE, false, 'newsletter/head.tpl');
-require("newsletter.inc.php");
+{literal}
+<style type="text/css">
+  div.nl {
+    margin: auto;
+    font-familly: georgia,"times new roman",serif;
+    width:56ex;
+    text-align: justify;
+  }
+</style>
+{/literal}
 
-if(isset($_POST['see'])) {
-    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
-    $page->assign('art', $art);
-} elseif(isset($_POST['valid'])) {
-    $nl = new Newsletter();
-    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append']);
-    $nl->saveArticle($art);
-
-    require("diogenes.mailer.inc.php");
-    $to = 'Equipe Newsletter Polytechnique.org <info+nlp@polytechnique.org>';
-    $from = "{$_SESSION['prenom']} {$_SESSION['nom']} ({$_SESSION['promo']}) <{$_SESSION['forlife']}@polytechnique.org>";
-    $mailer = new DiogenesMailer($from,$to,"proposition d'article dans la NL",false,$from);
-    $text = "l'article suivant a été proposé par:\n\n    $from\n\n\n".$art->toText();
-    $mailer->setBody($text);
-    $mailer->send();
-    
-    $page->assign('submited', true);
-}
-
-$page->run();
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

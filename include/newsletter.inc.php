@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.6 2004-10-16 17:49:38 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.7 2004-10-16 18:17:51 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -51,29 +51,42 @@ function enriched_to_text($input,$html=false) {
 
 class NewsLetter {
     var $_id;
-    var $_cats;
+    var $_date;
+    var $_cats = Array();
+    var $_arts = Array();
     
     function NewsLetter($id=null) {
 	global $globals;
 
 	if(isset($id)) {
+	    if($id == 'last') {
+		$res = $globals->db->query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
+		list($id) = mysql_fetch_row($res);
+	    }
 	    $res = $globals->db->query("SELECT * FROM newsletter WHERE id='$id'");
 	} else {
 	    $res = $globals->db->query("SELECT * FROM newsletter WHERE bits='new'");
 	}
 	$nl = mysql_fetch_assoc($res);
 	$this->_id = $nl['id'];
+	$this->_date = $nl['date'];
 	mysql_free_result($res);
 
 	$res = $globals->db->query("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
-	$this->_cats = Array();
 	while(list($cid,$title) = mysql_fetch_row($res)) {
 	    $this->_cats[$cid] = $title;
 	}
 	mysql_free_result($res);
-    
+	
+	$res = $globals->db->query("SELECT  title,body,append,aid,cid,pos
+				      FROM  newsletter_art AS a
+				INNER JOIN  newsletter     AS n USING(id)
+				  ORDER BY  a.pos");
+	while(list($title,$body,$append,$aid,$cid,$pos) = mysql_fetch_row($res)) {
+	    $_arts["a$aid"] = new NLArticle($title,$body,$append,$aid,$cid,$pos);
+	}
+	mysql_free_result($res);
     }
-
 
     function saveArticle(&$a) {
 	global $globals;
@@ -81,13 +94,19 @@ class NewsLetter {
 	    $globals->db->query("REPLACE INTO newsletter_art (id,aid,cid,pos,title,body.append)
 				VALUES({$this->_id},{$a->_aid},{$a->_cid},{$a->_pos},
 				       '{$a->_title}','{$a->_body}','{$a->_append}')");
+	    $this->_arts['a'.$a->_aid] = $a;
 	} else {
 	    $globals->db->query(
 		"INSERT INTO  newsletter_art
-		      SELECT  {$this->_id},MAX(aid)+1,0,100,'{$a->_title}','{$a->_body}','{$a->_append}'
+		      SELECT  {$this->_id},MAX(aid)+1,0,IF(MAX(pos)<100,100,MAX(pos)+1),'{$a->_title}','{$a->_body}','{$a->_append}'
 			FROM  newsletter_art AS a
 		       WHERE  a.id={$this->_id}");
+	    $this->_arts['a'.$a->_aid] = $a;
 	}
+    }
+
+    function toHtml() {
+	return "foo";
     }
 }
 
@@ -172,7 +191,7 @@ class NLSexeConstraint {
 
 function get_nl_list() {
     global $globals;
-    $res = $globals->db->query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");
+    $res = $globals->db->query("SELECT id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
     $ans = Array();
     while($tmp = mysql_fetch_assoc($res)) $ans[] = $tmp;
     mysql_free_result($res);
