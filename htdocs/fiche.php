@@ -189,7 +189,7 @@ $result = mysql_query("SELECT text, url
 $gxs = "";
 while (list($gxt,$gxu) = mysql_fetch_row($result)) {
         if ($gxs) $gxs .= ", ";
-        if ($gxu) $gxs .= "<a target=\"_blank\" href=\"$gxu\">";
+        if ($gxu) $gxs .= "<a href=\"$gxu\" onclick=\"return popup(this)\">";
         $gxs .= $gxt;
         if ($gxu) $gxs .= "</a>";
 } 

@@ -61,7 +61,7 @@ function applis_fmt($type, $text, $url) {
     if ($text!="Université") {
 	if ($txt) $txt .= " ";
 	if ($url) 
-	    $txt .= "<a target=\"_blank\" href=\"$url\">$text</a>";
+	    $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$text</a>";
 	else 
 	    $txt .= $text;
     }
