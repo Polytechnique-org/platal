@@ -1,4 +1,4 @@
-{* $Id: contacts.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: contacts.tpl,v 1.4 2004-08-23 14:41:10 x2000chevalier Exp $ *}
 
 {if !$smarty.request.topic}
 <div class="rubrique">
@@ -133,7 +133,7 @@ l'innovation proposée, si elle est retenue, apparaisse sur le site).
 Merci de nous aider à améliorer la qualité du site Polytechnique.org. Ecris à
 <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong>
 ou poste un message sur le forum
-<a href="<?php echo url('banana/thread.php?group=xorg.m4x.support') ?>">xorg.m4x.support</a>
+<a href="../banana/thread.php?group=xorg.m4x.support">xorg.m4x.support</a>
 pour toute idée de développement ou d'amélioration du site.
 </p>
 
