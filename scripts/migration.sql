@@ -18,6 +18,8 @@ drop trackers;
 --------------------------------------------------------------------------------
 -- X4DAT
 --------------------------------------------------------------------------------
+DROP TABLE x4dat.user_changes
+DROP TABLE x4dat.log
 -- pas sur que je veuille le dropper pr le moment celui la ... a voir
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN lastnewslogin;
 -- lastlogin --> logger
