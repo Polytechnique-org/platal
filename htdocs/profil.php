@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.6 2004-08-31 14:48:56 x2000habouzit Exp $
+        $Id: profil.php,v 1.7 2004-08-31 15:03:33 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -65,10 +65,21 @@ if (!$naissance)  {
     $page->run();//on affiche le formulaire pour naissance
 }
 
+$errs=Array();
+
 //doit-on faire un update ?
 if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
-    require_once("profil/profil_{$opened_tab}.inc.php");
+    require_once("profil/get_{$opened_tab}.inc.php");
     require_once("profil/verif_{$opened_tab}.inc.php");
+
+    if(isset($verif_errs)) {
+	require_once("profil/assign_{$opened_tab}.inc.php");
+	$page->assign("errs", $errs);
+	$page->assign('onglet',$opened_tab);
+	$page->assign('onglet_last',get_last_tab());
+	$page->assign('onglet_tpl',"profil/$opened_tab.tpl");
+	$page->run();
+    }
 
     $date=date("Y-m-j");//nouvelle date de mise a jour
 
@@ -102,9 +113,11 @@ if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     $page->assign('etat_update','ok');
 }
 
-require_once("profil/profil_{$new_tab}.inc.php");
+require_once("profil/get_{$new_tab}.inc.php");
 require_once("profil/verif_{$new_tab}.inc.php");
+require_once("profil/assign_{$new_tab}.inc.php");
 
+$page->assign("errs", $errs);
 $page->assign('onglet',$new_tab);
 $page->assign('onglet_last',get_last_tab());
 $page->assign('onglet_tpl',"profil/$new_tab.tpl");

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.tpl,v 1.8 2004-08-31 13:59:44 x2000habouzit Exp $
+        $Id: profil.tpl,v 1.9 2004-08-31 15:03:33 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,6 +27,10 @@
 {include file="profil/naissance.tpl"}
 {/if}
 {if $etat_naissance == '' || $etat_naissance == 'ok'}
+
+{foreach from=$errs item=e}
+<p class="erreur">{$e}</p>
+{/foreach}
 
 <p>Tu peux consulter <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">l'état actuel de ta fiche</a> tel qu'elle apparaîtra pour un camarade.</p>
 
