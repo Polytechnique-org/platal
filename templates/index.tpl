@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: index.tpl,v 1.10 2004-11-28 22:26:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,7 @@
   </ul>
   <strong>Si vous êtes polytechnicien,</strong>
   <ul>
-   <li class="spaced">vous pouvez <strong><a href="inscrire.php">vous inscrire à Polytechnique.org</a></strong> si ce n'est pas encore fait,</li>
+   <li class="spaced">vous pouvez <strong><a href="/inscription/">vous inscrire à Polytechnique.org</a></strong> si ce n'est pas encore fait,</li>
    <li class="spaced">ou <strong><a href="login.php">vous connecter</a></strong> si vous êtes inscrit !</li>
   </ul>
    Vous pouvez <strong><a href="docs/services.php">consulter la liste de ce que vous apporte Polytechnique.org</a></strong> si vous hésitez à vous inscrire !

@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: maj.tpl,v 1.1 2004-09-05 22:25:45 x2000habouzit Exp $
+        $Id: maj.tpl,v 1.2 2004-11-28 22:26:35 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <p>
 Cette page n'existe pas ou plus. Tu as peut-être déjà cliqué une fois, l'adresse
 envoyée par e-mail n'est valable qu'une seule fois. Le plus simple est d'aller à
-la page d'enregistrement <a href="inscrire.php"><strong>en cliquant sur ce lien.</strong></a>
+la page d'enregistrement <a href="/inscription/"><strong>en cliquant sur ce lien.</strong></a>
 </p>
 <p>
 A la fin de l'enregistrement, tu obtiendras <strong>login et mot de passe</strong> pour
