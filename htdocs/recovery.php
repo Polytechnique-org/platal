@@ -78,12 +78,12 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la 
 
 --
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::has('email')) ? "
+\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::has('email') ? "
 
 Adresse de secours : ".Post::get('email') : "")."
 
 
-Mail envoyé à ".Env::get('login');
+Mail envoyé à ".Env::get('login'));
         $mymail->send();
 
         // on cree un objet logger et on log l'evenement
