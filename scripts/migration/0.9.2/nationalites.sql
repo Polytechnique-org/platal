@@ -1,108 +1,85 @@
--- MySQL dump 9.11
---
--- Host: localhost    Database: x4dat
--- ------------------------------------------------------
--- Server version	4.0.21-log
 
---
--- Table structure for table `nationalites`
---
+alter table `nationalites` add column iso3166 varchar(2) not null;
 
-DROP TABLE IF EXISTS `nationalites`;
-CREATE TABLE `nationalites` (
-  `id` tinyint(3) unsigned NOT NULL default '0',
-  `text` varchar(50) NOT NULL default '',
-  `iso3166` char(2) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM PACK_KEYS=1 COMMENT='liste des nationalits';
-
---
--- Dumping data for table `nationalites`
---
-
-INSERT INTO `nationalites` VALUES (0,'','');
-INSERT INTO `nationalites` VALUES (1,'Albanais','AL');
-INSERT INTO `nationalites` VALUES (2,'Algérien','DZ');
-INSERT INTO `nationalites` VALUES (3,'Allemand','DE');
-INSERT INTO `nationalites` VALUES (4,'Américain','US');
-INSERT INTO `nationalites` VALUES (5,'Argentin','AR');
-INSERT INTO `nationalites` VALUES (6,'Australien','AU');
-INSERT INTO `nationalites` VALUES (7,'Autrichien','AT');
-INSERT INTO `nationalites` VALUES (8,'Belge','BE');
-INSERT INTO `nationalites` VALUES (9,'Benin','BJ');
-INSERT INTO `nationalites` VALUES (10,'Botswanais','BW');
-INSERT INTO `nationalites` VALUES (11,'Bouthan','BT');
-INSERT INTO `nationalites` VALUES (12,'Brésilien','BR');
-INSERT INTO `nationalites` VALUES (13,'Britannique','GB');
-INSERT INTO `nationalites` VALUES (14,'Bulgare','BG');
-INSERT INTO `nationalites` VALUES (15,'Burkina Faso','BF');
-INSERT INTO `nationalites` VALUES (16,'Cambodgien','KH');
-INSERT INTO `nationalites` VALUES (17,'Camerounais','');
-INSERT INTO `nationalites` VALUES (18,'Canadien','');
-INSERT INTO `nationalites` VALUES (19,'Chilien','');
-INSERT INTO `nationalites` VALUES (20,'Chinois','');
-INSERT INTO `nationalites` VALUES (21,'Colombien','');
-INSERT INTO `nationalites` VALUES (22,'Coréen','');
-INSERT INTO `nationalites` VALUES (80,'Croate','');
-INSERT INTO `nationalites` VALUES (23,'Cubain','');
-INSERT INTO `nationalites` VALUES (24,'Danois','');
-INSERT INTO `nationalites` VALUES (25,'Ecossais','');
-INSERT INTO `nationalites` VALUES (26,'Egyptien','');
-INSERT INTO `nationalites` VALUES (81,'Equatorien','');
-INSERT INTO `nationalites` VALUES (27,'Espagnol','');
-INSERT INTO `nationalites` VALUES (28,'Estonien','');
-INSERT INTO `nationalites` VALUES (29,'Finlandais','');
-INSERT INTO `nationalites` VALUES (30,'Français','FR');
-INSERT INTO `nationalites` VALUES (31,'Gabonais','');
-INSERT INTO `nationalites` VALUES (32,'Georgien','');
-INSERT INTO `nationalites` VALUES (33,'Grec','');
-INSERT INTO `nationalites` VALUES (34,'Haïtien','');
-INSERT INTO `nationalites` VALUES (36,'Hong-Kong','');
-INSERT INTO `nationalites` VALUES (37,'Hongrois','');
-INSERT INTO `nationalites` VALUES (38,'Indien','');
-INSERT INTO `nationalites` VALUES (39,'Iranien','');
-INSERT INTO `nationalites` VALUES (40,'Irlandais','');
-INSERT INTO `nationalites` VALUES (41,'Islandais','');
-INSERT INTO `nationalites` VALUES (42,'Israélien','');
-INSERT INTO `nationalites` VALUES (43,'Italien','');
-INSERT INTO `nationalites` VALUES (44,'Ivoirien','');
-INSERT INTO `nationalites` VALUES (45,'Jamaïcain','');
-INSERT INTO `nationalites` VALUES (46,'Japonais','');
-INSERT INTO `nationalites` VALUES (47,'Kazakh','');
-INSERT INTO `nationalites` VALUES (48,'Kurde','');
-INSERT INTO `nationalites` VALUES (49,'Lettonien','');
-INSERT INTO `nationalites` VALUES (50,'Libanais','');
-INSERT INTO `nationalites` VALUES (51,'Lituanien','');
-INSERT INTO `nationalites` VALUES (52,'Luxembourgeois','');
-INSERT INTO `nationalites` VALUES (53,'Macédonien','');
-INSERT INTO `nationalites` VALUES (82,'Malgache','');
-INSERT INTO `nationalites` VALUES (54,'Malien','');
-INSERT INTO `nationalites` VALUES (55,'Marocain','');
-INSERT INTO `nationalites` VALUES (56,'Mexicain','');
-INSERT INTO `nationalites` VALUES (35,'Néerlandais','');
-INSERT INTO `nationalites` VALUES (57,'Néo-Zélandais','');
-INSERT INTO `nationalites` VALUES (58,'Norvégien','');
-INSERT INTO `nationalites` VALUES (59,'Palestinien','');
-INSERT INTO `nationalites` VALUES (60,'Péruvien','');
-INSERT INTO `nationalites` VALUES (61,'Polonais','');
-INSERT INTO `nationalites` VALUES (62,'Portugais','');
-INSERT INTO `nationalites` VALUES (63,'Roumain','');
-INSERT INTO `nationalites` VALUES (64,'Russe','');
-INSERT INTO `nationalites` VALUES (65,'Sénégalais','');
-INSERT INTO `nationalites` VALUES (66,'Serbe','');
-INSERT INTO `nationalites` VALUES (84,'Singapourien','');
-INSERT INTO `nationalites` VALUES (67,'Slovaque','');
-INSERT INTO `nationalites` VALUES (69,'Sud-Africain','');
-INSERT INTO `nationalites` VALUES (70,'Suédois','');
-INSERT INTO `nationalites` VALUES (71,'Suisse','');
-INSERT INTO `nationalites` VALUES (72,'Tadjik','');
-INSERT INTO `nationalites` VALUES (73,'Taïwanais','');
-INSERT INTO `nationalites` VALUES (74,'Tchèque','');
-INSERT INTO `nationalites` VALUES (75,'Tunisien','');
-INSERT INTO `nationalites` VALUES (76,'Turc','');
-INSERT INTO `nationalites` VALUES (83,'Ukrainien','');
-INSERT INTO `nationalites` VALUES (85,'Uruguayen','');
-INSERT INTO `nationalites` VALUES (77,'Vénézuélien','');
-INSERT INTO `nationalites` VALUES (78,'Vietnamien','');
-INSERT INTO `nationalites` VALUES (79,'Yougoslave','');
+replace INTO `nationalites` VALUES (1,'Albanais','AL');
+replace INTO `nationalites` VALUES (2,'Algérien','DZ');
+replace INTO `nationalites` VALUES (3,'Allemand','DE');
+replace INTO `nationalites` VALUES (4,'Américain','US');
+replace INTO `nationalites` VALUES (5,'Argentin','AR');
+replace INTO `nationalites` VALUES (6,'Australien','AU');
+replace INTO `nationalites` VALUES (7,'Autrichien','AT');
+replace INTO `nationalites` VALUES (8,'Belge','BE');
+replace INTO `nationalites` VALUES (9,'Benin','BJ');
+replace INTO `nationalites` VALUES (10,'Botswanais','BW');
+replace INTO `nationalites` VALUES (11,'Bouthan','BT');
+replace INTO `nationalites` VALUES (12,'Brésilien','BR');
+replace INTO `nationalites` VALUES (13,'Britannique','GB');
+replace INTO `nationalites` VALUES (14,'Bulgare','BG');
+replace INTO `nationalites` VALUES (15,'Burkina Faso','BF');
+replace INTO `nationalites` VALUES (16,'Cambodgien','KH');
+replace INTO `nationalites` VALUES (17,'Camerounais','CM');
+replace INTO `nationalites` VALUES (18,'Canadien','CA');
+replace INTO `nationalites` VALUES (19,'Chilien','CL');
+replace INTO `nationalites` VALUES (20,'Chinois','CN');
+replace INTO `nationalites` VALUES (21,'Colombien','CO');
+replace INTO `nationalites` VALUES (80,'Croate','HR');
+replace INTO `nationalites` VALUES (23,'Cubain','CU');
+replace INTO `nationalites` VALUES (24,'Danois','DK');
+replace INTO `nationalites` VALUES (26,'Egyptien','EG');
+replace INTO `nationalites` VALUES (81,'Equatorien','EC');
+replace INTO `nationalites` VALUES (27,'Espagnol','ES');
+replace INTO `nationalites` VALUES (28,'Estonien','EE');
+replace INTO `nationalites` VALUES (29,'Finlandais','FI');
+replace INTO `nationalites` VALUES (30,'Français','FR');
+replace INTO `nationalites` VALUES (31,'Gabonais','GA');
+replace INTO `nationalites` VALUES (32,'Georgien','GE');
+replace INTO `nationalites` VALUES (33,'Grec','GR');
+replace INTO `nationalites` VALUES (34,'Haïtien','HT');
+replace INTO `nationalites` VALUES (36,'Hong-Kong','HK');
+replace INTO `nationalites` VALUES (37,'Hongrois','HU');
+replace INTO `nationalites` VALUES (38,'Indien','IN');
+replace INTO `nationalites` VALUES (39,'Iranien','IR');
+replace INTO `nationalites` VALUES (40,'Irlandais','IE');
+replace INTO `nationalites` VALUES (41,'Islandais','IS');
+replace INTO `nationalites` VALUES (42,'Israélien','IL');
+replace INTO `nationalites` VALUES (43,'Italien','IT');
+replace INTO `nationalites` VALUES (44,'Ivoirien','CI');
+replace INTO `nationalites` VALUES (45,'Jamaïcain','JM');
+replace INTO `nationalites` VALUES (46,'Japonais','JP');
+replace INTO `nationalites` VALUES (47,'Kazakh','KZ');
+replace INTO `nationalites` VALUES (49,'Lettonien','LV');
+replace INTO `nationalites` VALUES (50,'Libanais','LB');
+replace INTO `nationalites` VALUES (51,'Lituanien','LT');
+replace INTO `nationalites` VALUES (52,'Luxembourgeois','LU');
+replace INTO `nationalites` VALUES (53,'Macédonien','MK');
+replace INTO `nationalites` VALUES (82,'Malgache','MG');
+replace INTO `nationalites` VALUES (54,'Malien','ML');
+replace INTO `nationalites` VALUES (55,'Marocain','MA');
+replace INTO `nationalites` VALUES (56,'Mexicain','MX');
+replace INTO `nationalites` VALUES (35,'Néerlandais','NL');
+replace INTO `nationalites` VALUES (57,'Néo-Zélandais','NZ');
+replace INTO `nationalites` VALUES (58,'Norvégien','NO');
+replace INTO `nationalites` VALUES (59,'Palestinien','PS');
+replace INTO `nationalites` VALUES (60,'Péruvien','PE');
+replace INTO `nationalites` VALUES (61,'Polonais','PL');
+replace INTO `nationalites` VALUES (62,'Portugais','PT');
+replace INTO `nationalites` VALUES (63,'Roumain','RO');
+replace INTO `nationalites` VALUES (64,'Russe','RU');
+replace INTO `nationalites` VALUES (65,'Sénégalais','SN');
+replace INTO `nationalites` VALUES (66,'Serbe','CS');
+replace INTO `nationalites` VALUES (84,'Singapourien','SG');
+replace INTO `nationalites` VALUES (67,'Slovaque','SI');
+replace INTO `nationalites` VALUES (69,'Sud-Africain','ZA');
+replace INTO `nationalites` VALUES (70,'Suédois','SE');
+replace INTO `nationalites` VALUES (71,'Suisse','CH');
+replace INTO `nationalites` VALUES (72,'Tadjik','TJ');
+replace INTO `nationalites` VALUES (73,'Taïwanais','TW');
+replace INTO `nationalites` VALUES (74,'Tchèque','CZ');
+replace INTO `nationalites` VALUES (75,'Tunisien','TN');
+replace INTO `nationalites` VALUES (76,'Turc','TR');
+replace INTO `nationalites` VALUES (83,'Ukrainien','UA');
+replace INTO `nationalites` VALUES (85,'Uruguayen','UY');
+replace INTO `nationalites` VALUES (77,'Vénézuélien','VE');
+replace INTO `nationalites` VALUES (78,'Vietnamien','VN');
+replace INTO `nationalites` VALUES (79,'Yougoslave','CS');
 
