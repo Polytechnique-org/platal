@@ -29,6 +29,7 @@ $news['head'] = array(
   'Organization' => 'organization',
   'References' => 'references',
   'X-Face' => 'xface',
+  'Content-Type' => 'contenttype',
   'Content-Transfer-Encoding' => 'contentencoding'
   );
 
