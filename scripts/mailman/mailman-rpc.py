@@ -18,10 +18,11 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.8 2004-09-09 09:28:34 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.9 2004-09-09 12:49:24 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
+import MySQLdb.converters
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
@@ -36,8 +37,10 @@ class UserDesc: pass
 
 class AuthFailed(Exception): pass
 
-import MySQLdb.converters
-
+################################################################################
+#
+# CLASSES
+#
 #------------------------------------------------
 # Manage Basic authentication
 #
@@ -93,58 +96,53 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
         else:
             return None
 
-#------------------------------------------------
-# Procedures
+################################################################################
+#
+# XML RPC STUFF
+#
+#-------------------------------------------------------------------------------
+# helpers
 #
 
 def connectDB():
-    try:
-        db = MySQLdb.connect(
-                db='x4dat',
-                user=mm_cfg.MYSQL_USER,
-                passwd=mm_cfg.MYSQL_PASS,
-                unix_socket='/var/run/mysqld/mysqld.sock')
-        db.ping()
-        return db.cursor()
-    except:
-        return None
+    db = MySQLdb.connect(
+            db='x4dat',
+            user=mm_cfg.MYSQL_USER,
+            passwd=mm_cfg.MYSQL_PASS,
+            unix_socket='/var/run/mysqld/mysqld.sock')
+    db.ping()
+    return db.cursor()
 
-def lists_names(userdesc):
+def is_admin_on(userdesc,mlist):
+    return ( userdesc.perms == 'admin' ) or ( userdesc.address in mlist.owner )
+
+#-------------------------------------------------------------------------------
+# users procedures
+#
+
+def get_lists(userdesc):
     names = Utils.list_names()
     names.sort()
     result = []
     for name in names:
         try:
             mlist = MailList.MailList(name, lock=0)
-        except Errors.MMListError:
+        except Errors.MMListError, e:
             continue
-        is_member = False
-        is_owner = False
-        for member in mlist.getRegularMemberKeys():
-            if userdesc.address == member:
-                is_member = True
-                break
-        for owner in mlist.owner:
-            if userdesc.address == owner:
-                is_owner = True
-                break
-        if ( mlist.advertised ) or ( userdesc.perms == 'admin' ) or is_member or is_owner:
-            result.append( (name,mlist.advertised,is_member,is_owner) )
+        is_member = userdesc.address in mlist.getRegularMemberKeys()
+        is_owner  = userdesc.address in mlist.owner
+        is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
+        if ( mlist.advertised ) or ( userdesc.perms == 'admin' and is_admin ) or is_member or is_owner:
+            result.append( (name,1-mlist.advertised+is_admin,is_member,is_owner) )
     return result
 
-def members(userdesc,listname):
+def get_members(userdesc,listname):
     try:
         mlist = MailList.MailList(listname, lock=False)
     except Errors.MMListError, e:
         return None
     members = mlist.getRegularMemberKeys()
-    if ( userdesc.perms == 'admin' ) or ( mlist.advertised ):
-        return (members,mlist.owner)
-    for member in members:
-        if member == userdesc.address:
-            return (members,mlist.owner)
-    for member in mlist.owner:
-        if member == userdesc.address:
+    if ( mlist.advertised ) or ( is_admin_on(userdesc, mlist) ) or ( userdesc.address in members ):
             return (members,mlist.owner)
 
 def subscribe(userdesc,listname):
@@ -153,22 +151,15 @@ def subscribe(userdesc,listname):
     except Errors.MMListError, e:
         return 0
     try:
-        approved = ( mlist.subscribe_policy in (0,1) ) or ( userdesc.perms == 'admin' )
-        if approved is False :
-            for owner in mlist.owner:
-                if owner == userdesc.address:
-                    approved = True
-                    break
-        if approved:
+        if ( mlist.subscribe_policy in (0,1) ) or is_admin_on(userdesc,mlist):
             result = 2
             mlist.ApprovedAddMember(userdesc)
             mlist.Save()
         else:
             result = 1
             mlist.AddMember(userdesc,'xml-rpc iface')
-    except Exception, e:
-        mlist.Unlock()
-        return 0
+    except:
+        result = 0
     mlist.Unlock()
     return result
 
@@ -180,24 +171,117 @@ def unsubscribe(userdesc,listname):
     except Errors.MMListError, e:
         return 0
     try:
-        mlist.ApprovedDeleteMember(userdesc.address, 'xml-rpc iface', False, False);
+        mlist.ApprovedDeleteMember(userdesc.address, 'xml-rpc iface', False, False)
         mlist.Save()
-    except Exception, e:
+    except:
         mlist.Unlock()
         return 0
     mlist.Unlock()
     return 1
 
+#-------------------------------------------------------------------------------
+# owners procedures
+#
+
+def mass_subscribe(userdesc,listname,users):
+    try:
+        mlist = MailList.MailList(listname, lock=True)
+    except Errors.MMListError, e:
+        return None
+    try:
+        if not is_admin_on(userdesc,mlist):
+            return None
+        
+        added = []
+        for user in users:
+            mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom)
+                                FROM  auth_user_md5 AS u
+                          INNER JOIN  aliases       AS a ON (a.id=u.user_id AND alias='%s')
+                               LIMIT  1""" %( user ) )
+            if int(mysql.rowcount) is 1:
+                row = mysql.fetchone()
+                userd = UserDesc()
+                userd.fullname = row[0]
+                userd.address = user+'@polytechnique.org'
+                userd.digest = 0
+                mlist.ApprovedAddMember(userd)
+                added.append( (userd.fullname, userd.address) )
+    except:
+        pass
+    mlist.Save()
+    mlist.Unlock()
+    return added
+
+def mass_unsubscribe(userdesc,listname,users):
+    try:
+        mlist = MailList.MailList(listname, lock=True)
+    except Errors.MMListError, e:
+        return None
+    try:
+        if not is_admin_on(userdesc,mlist):
+            return None
+        
+        deleted = []
+        for user in users:
+            mlist.ApprovedDeleteMember(user+'@polytechnique.org', 'xml-rpc iface', False, False)
+            deleted.append( user )
+    except:
+        pass
+    mlist.Save()
+    mlist.Unlock()
+    return deleted
+
+def add_owner(userdesc,listname,user):
+    try:
+        mlist = MailList.MailList(listname, lock=True)
+    except Errors.MMListError, e:
+        return None
+    try:
+        if not is_admin_on(userdesc,mlist):
+            return None
+        addr = user+'@polytechnique.org'
+        if addr not in mlist.owner:
+            mlist.owner.append(addr)
+    except:
+        pass
+    mlist.Save()
+    mlist.Unlock()
+    return True
+
+def del_owner(userdesc,listname,user):
+    try:
+        mlist = MailList.MailList(listname, lock=True)
+    except Errors.MMListError, e:
+        return None
+    try:
+        if not is_admin_on(userdesc,mlist):
+            return None
+        mlist.owner.remove(user+'@polytechnique.org')
+    except:
+        pass
+    mlist.Save()
+    mlist.Unlock()
+    return True
+
+################################################################################
+#
+# INIT 
+#
 #------------------------------------------------
 # server
 #
 
 mysql = connectDB()
 server = SimpleXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
-server.register_function(lists_names)
-server.register_function(members)
+server.register_function(get_lists)
+server.register_function(get_members)
 server.register_function(subscribe)
 server.register_function(unsubscribe)
+
+server.register_function(mass_subscribe)
+server.register_function(mass_unsubscribe)
+server.register_function(add_owner)
+server.register_function(del_owner)
 #server.register_introspection_functions()
 server.serve_forever()
 
