@@ -44,6 +44,90 @@ function register_watch_op($uid,$cid,$date='',$info='') {
     }
 }
 
+function select_notifs_base($base_watch, $champ_w, $champ_u, $watcher, $watcher_detail, $is_contact, $not_frequent, $recent, $where_clause) {
+	// base_watch : la base dans laquelle on regarde
+	// is_contact  : test si la personne regardée est un contact
+	// not_frequent : watch seulement les evts nons fréquents
+	// recent : evenement recent
+	
+	// les réponses sont-elles des contacts
+	if ($champ_w == 'contact')
+		$contact = '1';
+	elseif ($is_contact)
+		$contact = 'NOT (c.contact IS NULL)';
+	else
+		$contact = '0';
+
+	if ($watcher_detail) $watcher = true;
+	// traduction de la clause not_frequent
+	if ($not_frequent)
+		$not_frequent = " AND wc.frequent=0";
+		
+	// traduction de la clause recent
+	if ($recent)
+		$recent = " AND wo.known > q.watch_last";
+
+	$sql = "
+	  ( SELECT u.promo,
+	           u.prenom,
+		   IF(u.epouse='',u.nom,u.epouse) AS nom,
+		   a.alias AS bestalias,
+		   wo.*,
+		   $contact AS contact,
+		   (u.perms IN('admin','user')) AS inscrit";
+	if ($watcher_detail) $sql.="
+	           w.uid AS aid,
+		   v.prenom AS aprenom,
+		   IF(v.epouse='',v.nom,v.prenom) AS anom,
+		   b.alias AS abestalias,
+		   (v.flags='femme') AS sexe"; 
+	$sql .= "
+	      FROM ".$base_watch." AS w
+	INNER JOIN auth_user_md5   AS u  ON(u.$champ_u = w.$champ_w)";
+	if ($watcher) $sql .="
+	INNER JOIN auth_user_quick AS q  ON(q.user_id = w.uid)";
+	if ($watcher_detail) $sql .="
+	INNER JOIN auth_user_md5   AS v  ON(v.user_id = q.user_id)
+	INNER JOIN aliases         AS b  ON(b.id = q.user_id AND FIND_IN_SET('bestalias', b.flags))";
+	if ($is_contact) $sql .="
+	 LEFT JOIN contacts        AS c  ON(c.uid = w.uid AND c.contact = u.user_id)";
+	$sql .="
+	INNER JOIN watch_ops       AS wo ON(wo.uid = u.user_id".$recent.")
+	INNER JOIN watch_sub       AS ws ON(ws.cid = wo.cid AND ws.uid = w.uid)
+	INNER JOIN watch_cat       AS wc ON(wc.id = wo.cid".$not_frequent.")
+	 LEFT JOIN aliases         AS a  ON(a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
+	     WHERE $where_clause )";
+	 return $sql;
+}
+
+// récupère les evenements de $wuid, avec ou sans details, depuis $last, sous surveillance ou pas, ordonnés ou pas
+function select_notifs($wuid, $details, $last, $wflag, $order) {
+	$recent = ($last == 'watch_last');
+
+	$contactflag = "FIND_IN_SET('contacts', q.watch_flags)";
+
+	$where_clause = "";
+	if ($wuid != 'all')
+		$where_clause .= "w.uid = $wuid AND ";
+	if (!$recent)
+		$where_clause .= "wo.known > $last AND ";
+	if ($wflag)
+		$where_clause .= $contactflag." AND ";
+	$where_clause = substr($where_clause, 0, -5);
+
+	$sql = 
+	select_notifs_base('contacts','contact','user_id','q',$details,false,false,$recent, $where_clause.($wflag?'':" AND $contactflag"))."
+    UNION DISTINCT ".
+	select_notifs_base('watch_promo','promo','promo',false,$details,'is contact','not frequent',$recent, $where_clause)."
+    UNION DISTINCT ".
+    	select_notifs_base("watch_nonins",'ni_id', 'user_id',false,$details,false,false,$recent, $where_clause);
+	
+	if ($order) $sql.="
+	  ORDER BY cid, promo, nom";
+
+	return $sql;
+}
+
 function getNbNotifs() {
     global $globals;
     if (!Session::has('uid')) {
@@ -52,41 +136,8 @@ function getNbNotifs() {
     $uid       = Session::getInt('uid', -1);
     $watchlast = Session::get('watch_last');
 
-    $res = $globals->xdb->query("
-    (
-	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-		    wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
-	      FROM  auth_user_quick AS q
-	INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
-	INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
-	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
-	INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
-	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	     WHERE  q.user_id = {?} AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > {?}
-    ) UNION DISTINCT (
-	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
-	      FROM  watch_promo     AS w
-	INNER JOIN  auth_user_md5   AS u  USING(promo)
-	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
-	 LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
-	INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
-	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
-	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	     WHERE  w.uid = {?} AND wo.known > {?}
-    ) UNION DISTINCT (
-	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-		    wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
-	      FROM  watch_nonins    AS w
-	INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
-	INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
-	INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
-	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
-	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	     WHERE  w.uid = {?} AND wo.known > {?}
-    )", $uid, $watchlast, $uid, $watchlast, $uid, $watchlast);
+    // selectionne les notifs de uid, sans detail sur le watcher, depuis $watchlast, meme ceux sans surveillance, non ordonnés
+    $res = $globals->xdb->query(select_notifs('{?}', false, '{?}', false, false), $uid, $watchlast, $uid, $watchlast, $uid, $watchlast);
     $n   = $res->numRows();
     $res->free();
     $url = smarty_modifier_url('carnet/panel.php');
@@ -106,55 +157,9 @@ class AllNotifs {
 	while($tmp = $res->next()) {
             $this->_cats[$tmp['id']] = $tmp;
         }
-	
-	$res = $globals->xdb->iterator("
-	(
-		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
-			b.alias AS abestalias, (v.flags='femme') AS sexe,
-			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
-	          FROM  auth_user_quick AS q
-	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
-	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND FIND_IN_SET('bestalias',b.flags))
-	    INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
-	    INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact AND wo.known > q.watch_last)
-	    INNER JOIN  watch_sub       AS ws ON(ws.uid=q.user_id AND wo.cid=ws.cid)
-	    INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
-	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	         WHERE  q.watch_flags=3
-	) UNION DISTINCT (
-		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
-			b.alias AS abestalias, (v.flags='femme') AS sexe,
-			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
-	          FROM  auth_user_quick AS q
-	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
-	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND FIND_IN_SET('bestalias',b.flags))
-	    INNER JOIN  watch_promo     AS w  ON(w.uid=q.user_id)
-	    INNER JOIN  auth_user_md5   AS u  USING(promo)
-	     LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
-	    INNER JOIN  watch_sub       AS ws ON(ws.uid=w.uid)
-	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
-            INNER JOIN  watch_ops       AS wo ON(wo.cid=ws.cid AND wo.uid=u.user_id AND wo.known > q.watch_last)
-	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  q.watch_flags=3 OR q.watch_flags=1
-	) UNION DISTINCT (
-		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
-			b.alias AS abestalias, (v.flags='femme') AS sexe,
-			u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
-	          FROM  auth_user_quick AS q
-	    INNER JOIN  auth_user_md5   AS v  USING(user_id)
-	    INNER JOIN  aliases         AS b  ON(q.user_id = b.id AND FIND_IN_SET('bestalias',b.flags))
-	    INNER JOIN  watch_nonins    AS w  ON(w.uid=q.user_id)
-	    INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
-	    INNER JOIN  watch_sub       AS ws ON(ws.uid=w.uid)
-	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
-	    INNER JOIN  watch_ops       AS wo ON(wo.cid=ws.cid AND wo.uid=u.user_id AND wo.known > q.watch_last)
-	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  q.watch_flags=3 OR q.watch_flags=1
-	)
-	ORDER BY  cid,promo,nom");
+
+	// recupère tous les watchers, avec détails des watchers, a partir du watch_last de chacun, seulement ceux qui sont surveillés, ordonnés
+	$res = $globals->xdb->iterator(select_notifs('all', true, 'watch_last', 'watch_flag', 'order'));
 
 	while($tmp = $res->next()) {
 	    $aid = $tmp['aid'];
@@ -182,40 +187,8 @@ class Notifs {
 
 	$lastweek = date('YmdHis',mktime() - 7*24*60*60);
 
-	$res = $globals->xdb->iterator("
-	(
-		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
-		  FROM  auth_user_quick AS q
-	    INNER JOIN  contacts        AS c  ON(q.user_id = c.uid)
-	    INNER JOIN  watch_ops       AS wo ON(wo.uid=c.contact)
-	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=q.user_id)
-	    INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
-	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  q.user_id = {?} AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $lastweek
-	) UNION DISTINCT (
-		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
-		  FROM  watch_promo     AS w
-	    INNER JOIN  auth_user_md5   AS u  USING(promo)
-	     LEFT JOIN  contacts        AS c  ON(w.uid = c.uid AND c.contact=u.user_id)
-	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
-	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
-	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  w.uid = {?} AND wo.known > $lastweek
-	) UNION DISTINCT (
-		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
-			wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
-		  FROM  watch_nonins    AS w
-	    INNER JOIN  auth_user_md5   AS u  ON(w.ni_id=u.user_id)
-	    INNER JOIN  watch_ops       AS wo ON(wo.uid=u.user_id)
-	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
-	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
-	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  w.uid = {?} AND wo.known > $lastweek
-	)
-	ORDER BY  cid,promo,nom", $uid, $uid, $uid);
+	// recupere les notifs du watcher $uid, sans detail sur le watcher, depuis la semaine dernière, meme ceux sans surveillance, ordonnés
+	$res = $globals->xdb->iterator(select_notifs('{?}', false, $lastweek, false, 'order'), $uid, $uid, $uid);
 	while($tmp = $res->next()) {
 	    $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
 	}
