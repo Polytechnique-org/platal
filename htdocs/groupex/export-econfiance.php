@@ -26,7 +26,7 @@ require_once('xorg.inc.php');
 require_once('xml-rpc-client.inc.php');
 require_once('lists.inc.php');
 
-$cle = $globals->econfiance;
+$cle = $globals->core->econfiance;
 
 if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md5($_SESSION["chall"].$cle)) {
 
