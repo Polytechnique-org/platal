@@ -126,17 +126,30 @@ class RefSField extends SField {
             return " LIKE '%".$this->value."%'";
     }
 
+    function get_single_match_statement($field) {
+        return $field.$this->compare();
+    }
+
     function get_single_where_statement($field) {
         if ($this->refTable=='')
-            return $field.$this->compare();
+            return $this->get_single_match_statement($field);
         return false;
     }
 
     function get_select_statement() {
         if ($this->value=='' || $this->refTable=='')
             return false;
+        $res = implode(' OR ',array_filter(array_map(array($this,'get_single_match_statement'),$this->fieldDbName)));
         return 'INNER JOIN '.$this->refTable.' AS '.$this->refAlias.
-        ' ON('.$this->refCondition.' AND '.$this->fieldDbName[0].$this->compare().")";
+        ' ON('.$this->refCondition.' AND '.'('.$res.')'.")";
+    }
+}
+
+class RefWithSoundexSField extends RefSField {
+    function get_request() {
+        parent::get_request();
+        if ($this->value!='')
+            $this->value=soundex_fr($this->value);
     }
 }
 
