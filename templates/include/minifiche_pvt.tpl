@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.6 2004-10-28 12:21:00 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.7 2004-10-28 13:30:27 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -35,9 +35,11 @@
     </a>
     {if $c.dcd neq 1}
     {perms level='admin'}
-    <a href="{"admin/utilisateurs.php"|url}?login={$c.forlife}">su</a>
+    <a href="{"admin/utilisateurs.php"|url}?login={$c.forlife}">
+      <img src="images/admin.png" alt='admin' title="administrer user" />
+    </a>
     <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">
-      ax
+      <img src="images/ax.png" alt='AX' title="fiche AX" />
     </a>
     {/perms}
     {/if}
