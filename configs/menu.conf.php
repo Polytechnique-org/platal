@@ -20,6 +20,7 @@ if(logged()) {
         'Communauté X' => Array (
             'Annuaire' => 'search.php',
             'Trombi promo' => 'trombipromo.php',
+            'Conseil Professionnel' => 'referent.php',
             'Groupes X' => 'http://www.polytechnique.net/plan.php',
             'Sites Polytechniciens' => 'http://www.polytechnique.net/'
         ),
