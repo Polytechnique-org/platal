@@ -37,9 +37,9 @@ div.nl div.title {
     border: 1px black solid;
     font-size: 140%;
     text-align: center;
-    color: black;
+    color: #ff4040;
     background: #ffffb0;
-    border: 1px #ff4040 solid;
+    border: 2px #ff4040 solid;
 }
 
 div.nl div.lnk {
@@ -57,8 +57,8 @@ div.nl h1 {
     border-bottom: 1px #ff4040 solid;
 }
 
-div.nl h1 a, div.nl h1 a:hover {
-    color: black;
+div.nl h1 span {
+    color: #ff4040;
     background: #ffffb0;
     text-decoration: none;
     font-size: 140%;
@@ -75,7 +75,7 @@ div.nl h2 {
     font-size: 95%;
 }
 
-div.nl h2 a, div.nl h2 a:hover {
+div.nl h2 span {
     color: blue;
     background: #eeeeee;
     text-decoration: none;
