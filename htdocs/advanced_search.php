@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.22 2004-10-31 16:02:44 x2000chevalier Exp $
+        $Id: advanced_search.php,v 1.23 2004-10-31 17:47:55 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -106,7 +106,7 @@ else {
     $where = $fields->get_where_statement();
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
                        DISTINCT u.matricule,u.matricule_ax,
-                       1 AS inscrit,
+                       perms!=\'non-inscrit\' AS inscrit,
                        u.nom,
                        u.prenom,
                        u.promo,
@@ -115,7 +115,7 @@ else {
                        c.uid AS contact
                  FROM  auth_user_md5  AS u
 	   '.$fields->get_select_statement().'
-           INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
+            LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             '.$globals->search_result_where_statement.'
                 '.(($where!='')?('WHERE '.$where):'').'
