@@ -1,1 +1,1 @@
-precious ^(img|spool|xface.php)
+precious ^(img|spool|xface.php|banana.css)

@@ -42,18 +42,18 @@ function hook_displayshortcuts($sname, $first = -1) {
     
     switch ($sname) {
         case 'subscribe.php' :
-            echo '[<a href="index.php">Liste des forums</a>] ';
-            echo '[<a href="'.url("confbanana.php").'">Profil</a>] ';
+            return '[<a href="index.php">Liste des forums</a>] [<a href="'.url("confbanana.php").'">Profil</a>] ';
             break;
 
         case 'index.php' :
         case 'thread.php' :
         case 'article.php' :
         case 'post.php' :
+            $res = '';
             if (!$banana->profile['autoup']) { 
-                echo '[<a href="index.php?banana=updateall">Mettre à jour</a>] ';
+                $res .= '[<a href="index.php?banana=updateall">Mettre à jour</a>] ';
             }
-            echo '[<a href="'.url("confbanana.php").'">Profil</a>] ';
+            return $res . '[<a href="'.url("confbanana.php").'">Profil</a>] ';
             break;
     }
 }
