@@ -71,6 +71,7 @@ PLATAL_DOMAIN2 = get_config('Mail', 'domain2', '')
 
 ML_OWNER       = get_config('Lists', 'admin_owner')
 VHOST_SEP      = get_config('Lists', 'vhost_sep', '_')
+ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
 
 ################################################################################
 #
@@ -815,6 +816,9 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
         mlist._UpdateRecords()
         mlist.Save()
         mlist.Unlock()
+        if ON_CREATE_CMD != '':
+            try:    os.system(ON_CREATE_CMD + ' ' + name)
+            except: pass
     except:
         try:
             mlist.Unlock()
