@@ -4,7 +4,7 @@
 drop table if exists profile_medals;
 create table profile_medals (
         id      int not null auto_increment,
-        type    enum('ordre', 'croix', 'militaire', 'honneur', 'resistance') not null,
+        type    enum('ordre', 'croix', 'militaire', 'honneur', 'resistance', 'prix') not null,
         text    varchar(255),
         img     varchar(255),
         primary key (id)
@@ -73,5 +73,14 @@ insert into profile_medals (type, text, img)
 
             ('resistance','Médaille de la Résistance Française',            'resi_rf.jpg'),
             ('resistance','Croix du Volontaire de la Résistance',           'resi_cvr.jpg'),
-            ('resistance','Médaille de la Déportation - Résistance',        'resi_dr.jpg');
+            ('resistance','Médaille de la Déportation - Résistance',        'resi_dr.jpg'),
+
+            ('prix',      'Médaille Fields',                                'prix_fields.gif'),
+            ('prix',      'Prix Nobel d\'Économie',                         'prix_nb_eco.jpg'),
+            ('prix',      'Prix Nobel de Littérature',                      'prix_nb_lit.jpg'),
+            ('prix',      'Prix Nobel de Médecine',                         'prix_nb_med.jpg'),
+            ('prix',      'Prix Nobel de la Paix',                          'prix_nb_paix.jpg'),
+            ('prix',      'Prix Nobel de Physique/Chimie',                  'prix_nb_pc.jpg');
+
+insert into admin_a values (5, 'Décorations', 'admin/gerer_decos.php', 40);
 

@@ -33,7 +33,7 @@ while ($tmp = $res->next()) {
 }
 
 $trad = Array('ordre' => 'Ordres ...', 'croix' => 'Croix ...', 'militaire' => 'Médailles militaires ...',
-        'honneur' => 'Médailles d\'honneur', 'resistance' => 'Médailles de la résistance ...');
+        'honneur' => 'Médailles d\'honneur', 'resistance' => 'Médailles de la résistance ...', 'prix' => 'Prix ...');
 
 $page->gassign('grades');
 $page->gassign('medals');
