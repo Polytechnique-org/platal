@@ -23,10 +23,12 @@
         [ balises sans attributs ou classes sans contexte ]
 *******************************************************************************/
 
-body {
-    background: #99afc1;
-    color: #000000;
-}
+body { color: #000000; }
+
+a:link    { color: #3252A7; text-decoration: none; }
+a:visited { color: #3252A7; text-decoration: none; }
+a:active  { color: #3252A7; text-decoration: underline; }
+a:hover   { color: #0F2C57; text-decoration: none; }
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -34,12 +36,8 @@ body {
 *******************************************************************************/
 
 h1 {
-    color: #ffffff;
-    background: #657590;
-    border-top: 1px solid #305070;
-    border-bottom: 1px solid #305070;
-    font-family: "Verdana", sans-serif;
-    font-size: 100%;
+    color: #660099;
+    background: #FFFF99;
 }
 
 /*******************************************************************************
@@ -48,16 +46,16 @@ h1 {
 *******************************************************************************/
 
 table.tinybicol, table.bicol {
-    background: #80a0c0;
-    border: 1px solid #305070;
+    background: #FDFDE9;
+    border: 1px solid #FFFF99;
     border-collapse: collapse;
 }
 table.tinybicol tr, table.bicol tr { }
-table.tinybicol tr.impair , table.bicol tr.impair { background: #80a0c0; }
-table.tinybicol tr.pair, table.bicol tr.pair      { background: #99b9d0; }
+table.tinybicol tr.impair , table.bicol tr.impair { background: #FDFDE9; }
+table.tinybicol tr.pair, table.bicol tr.pair      { background: #F8EBFF; }
 table.tinybicol th, table.bicol th {
-    background: #305070;
-    color: #ffffff;
+    background: #FFFF99;
+    color: #C866FA;
 }
 
 /*******************************************************************************
@@ -102,6 +100,26 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
+div.conteneur_tab {
+    background-color: #F8EBFF;
+    border-color: #C866FA;
+    border-right-color: #660099;
+    border-bottom-color: #660099;
+}
+
+#onglet li {
+    background-color: #FDFDE9;
+    xborder-bottom: 1px solid red;
+}
+
+#onglet li.actif {
+    background-color: #F8EBFF;
+    border-top-color: #C866FA;
+    border-right-color: #C866FA;
+    border-left-color: #C866FA;
+    border-bottom-color: #F8EBFF;
+}
+
 /*******************************************************************************
     7   fiche.php
         [ cas de la fiche ]
@@ -113,33 +131,31 @@ div.contact div.long {
 *******************************************************************************/
 
 #body-logo {
-    border-top: 1px solid #305070;
-    border-right: 1px solid #305070;
-    border-left: 1px solid #305070;
+    border-top: 1px solid #660099;
+    border-right: 1px solid #660099;
+    border-left: 1px solid #660099;
     border-bottom: none;
+    padding-top: 35px;
 }
 
 #body-top {
-    border-bottom: 1px solid #305070;
+    border-bottom: 1px solid #660099;
 }
 
 #body-bottom {
-    border-top: 1px solid #305070;
+    border-top: 1px solid #660099;
 }
 
 #body-menu {
-    border-left: 1px solid #305070;
-    border-right: 1px solid #305070;
-    background-image: url("/images/sk_sharky_bubbles.png");
-    background-position: 0px 100px;
-    background-repeat: repeat-y;
+    border-left: 1px solid #660099;
+    border-right: 1px solid #660099;
 }
 
 #body-menu .menu_title {
-    color : #ffffff;
-    background: #657590;
-    border-top: 1px solid #305070;
-    border-bottom: 1px solid #305070;
+    color : #660099;
+    background: #FFFF99;
+    border-top: 1px solid #660099;
+    border-bottom: 1px solid #660099;
 }
 
 #body-menu .menu_item {
@@ -148,4 +164,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: liteskin.css,v 1.2 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: liteskin.css,v 1.3 2004-10-24 22:58:15 x98ho Exp $ */
