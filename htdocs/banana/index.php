@@ -8,11 +8,11 @@
 ********************************************************************************/
 
 require_once('xorg.inc.php');
-new_skinned_page('banana.tpl', AUTH_COOKIE, 'banana.head.tpl');
-$page->caching = false;
-require_once('hack.inc.php');
+new_skinned_page('banana/index.tpl', AUTH_COOKIE, 'banana/index.head.tpl');
+require_once('banana.inc.php');
 
-$page->register_function('banana', 'banana', false);
-
+$res = PlatalBanana::run();
+$page->assign_by_ref('banana', $banana);
+$page->assign('banana_res', $res);
 $page->run();
 ?>

@@ -18,6 +18,15 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-{banana}
+<h1>Options</h1>
+
+{if !$banana->profile.autoup}
+[<a href="?banana=updateall">Mettre à jour</a>]
+{/if}
+[<a href="profile.php">Profil</a>]
+
+<br />
+
+{$banana_res|smarty:nodefaults}
  
 {* vim:set et sw=2 sts=2 sws=2: *}

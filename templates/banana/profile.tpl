@@ -37,7 +37,7 @@
   n'afficher que les fils de discussion contenant des messages lus.
 </p>
 <p class="normal">
-  Retour aux <a href="banana/index.php">forums</a>
+Retour aux <a href="{rel}/banana/">forums</a>
 </p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
@@ -110,7 +110,7 @@
   Ton profil est enregistré !!!
 </p>
 <p class="normal">
-  Retour aux <a href="banana/index.php">forums</a>
+Retour aux <a href="{rel}/banana/">forums</a>
 </p>
 {/if}
 

@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('confbanana.tpl', AUTH_MDP);
+new_skinned_page('banana/profile.tpl', AUTH_MDP);
 
 if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig') && Post::has('bananadisplay')
             && Post::has('bananamail') && Post::has('bananaupdate') && Post::get('action')=="OK" ))
