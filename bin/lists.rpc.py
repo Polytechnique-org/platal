@@ -298,7 +298,7 @@ def get_lists(userdesc,perms,vhost,email=None):
         except:
             continue
         try:
-            details = get_list_info(udesc,perms,mlist,(email is None))[0]
+            details = get_list_info(udesc,perms,mlist,(email is None and vhost == PLATAL_DOMAIN))[0]
             result.append(details)
         except:
             continue
