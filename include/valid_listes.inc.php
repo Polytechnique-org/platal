@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_listes.inc.php,v 1.1 2004-09-25 20:11:34 x2000habouzit Exp $
+        $Id: valid_listes.inc.php,v 1.2 2004-10-08 15:03:14 x2000habouzit Exp $
  ***************************************************************************/
 
 class ListeReq extends Validate {
@@ -97,6 +97,9 @@ class ListeReq extends Validate {
 	    $this->owners, $this->members);
 	if($ret) {
 	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}-owner', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}-admin', 'liste')");
+	    $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$this->liste}-bounces', 'liste')");
 	}
 	return $ret;
     }
