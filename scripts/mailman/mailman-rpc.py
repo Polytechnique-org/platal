@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.51 2004-10-09 13:08:43 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.52 2004-10-10 08:47:47 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -161,7 +161,7 @@ def get_options((userdesc,perms),vhost,listname,opts):
                 if type(v) is str:
                     options[k] = quote(v)
                 else: options[k] = v
-        details = get_list_info((userdesc,perms),mlist,1)[0]
+        details = get_list_info((userdesc,perms),mlist)[0]
         return (details,options)
     except:
         return 0
