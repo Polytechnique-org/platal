@@ -1,4 +1,4 @@
-{* $Id: doc_from.tpl,v 1.4 2004-08-30 12:18:40 x2000habouzit Exp $ *}
+{* $Id: doc_from.tpl,v 1.5 2004-08-30 12:34:41 x2000habouzit Exp $ *}
 
 <div class="texte">
   <div class="rubrique">
@@ -23,7 +23,7 @@
   ton entreprise, ton fournisseur d'accès, etc).
   </p>
   <hr />
-  <table class="etape" summary="Premiere étape" cellpadding="5">
+  <table summary="Premiere étape" cellpadding="5">
     <tr>
       <td>
         <p>
@@ -41,7 +41,7 @@
     </tr>
   </table>
   <hr />
-  <table class="etape" summary="Deuxième étape" cellpadding="5">
+  <table summary="Deuxième étape" cellpadding="5">
     <tr>
       <td>
         <p>
@@ -63,7 +63,7 @@
     </tr>
   </table>
   <hr />
-  <table class="etape" summary="Troisieme étape" cellpadding="5">
+  <table summary="Troisieme étape" cellpadding="5">
     <tr>
       <td>
         <p>
@@ -88,7 +88,7 @@
     </tr>
   </table>
   <hr />
-  <table class="etape" cellpadding="5" summary="Quatrième étape">
+  <table cellpadding="5" summary="Quatrième étape">
     <tr>
       <td>
         <p>
@@ -121,7 +121,7 @@
     </tr>
   </table>
   <hr />
-  <table class="etape" cellpadding="5" summary="Cinquième étape">
+  <table cellpadding="5" summary="Cinquième étape">
     <tr>
       <td>
         <p>
@@ -182,7 +182,7 @@
   <strong>&quot;Terminer&quot;</strong>.
   </p>
   <hr />
-  <table class="etape" summary="Sixième étape" cellpadding="5">
+  <table summary="Sixième étape" cellpadding="5">
     <tr>
       <td>
         <p>
@@ -204,7 +204,7 @@
     </tr>
   </table>
   <hr />
-  <table class="etape" cellspacing="5" summary="Septième étape">
+  <table cellspacing="5" summary="Septième étape">
     <tr>
       <td>
         <p>
@@ -236,7 +236,7 @@
     </tr>
   </table>
   <hr />
-  <table class="etape" cellspacing="5" summary="Huitième étape">
+  <table cellspacing="5" summary="Huitième étape">
     <tr>
       <td>
         <p>

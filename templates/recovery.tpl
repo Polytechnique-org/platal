@@ -1,4 +1,4 @@
-{* $Id: recovery.tpl,v 1.2 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: recovery.tpl,v 1.3 2004-08-30 12:34:41 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Perte du mot de passe
@@ -12,7 +12,7 @@
 
 <p>
 <strong>Un certificat d'authentification aléatoire</strong> vient de t'être attribué et envoyé à
-ton adresse en polytechnique.org.<span class="mef"> Il expire dans six heures.</span> Tu dois donc
+ton adresse en polytechnique.org.<span class="erreur"> Il expire dans six heures.</span> Tu dois donc
 <strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliqué
 dans le mail pour changer ton mot de passe.
 </p>

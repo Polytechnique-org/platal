@@ -1,11 +1,10 @@
-{* $Id: profil.head.tpl,v 1.1 2004-08-30 11:35:37 x2000habouzit Exp $ *}
+{* $Id: profil.head.tpl,v 1.2 2004-08-30 12:34:41 x2000habouzit Exp $ *}
 
 {literal}
 <style type="text/css">
   <!--
   div.blocunite {margin: 1em 0em 2em 0em;}
   div.blocunite_tab {margin: 0em 0em 2em 0em;}
-  div.bloc {margin: 0em 0.5em 0.5em 0.5em;}
   div.erreur {background-color: #FF3300; padding-left=0.5em; margin: 2px;}
   table.bicol td.cold,td.col {padding-right: 0.5em;}
   table.bicol td.colm {}

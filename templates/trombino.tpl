@@ -1,4 +1,4 @@
-{* $Id: trombino.tpl,v 1.3 2004-08-30 12:18:40 x2000habouzit Exp $ *}
+{* $Id: trombino.tpl,v 1.4 2004-08-30 12:34:41 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -107,7 +107,7 @@ La photo par défaut est donc gardée.
       </td>
     </tr>
     <tr>
-      <td class="bouton">
+      <td class="center">
         <input type="submit" value="  OK  " name="ordi" />
       </td>
     </tr>

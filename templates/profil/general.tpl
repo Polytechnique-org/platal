@@ -1,4 +1,4 @@
-{* $Id: general.tpl,v 1.7 2004-08-30 11:35:37 x2000habouzit Exp $ *}
+{* $Id: general.tpl,v 1.8 2004-08-30 12:34:42 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 <div class="blocunite_tab">
@@ -97,7 +97,7 @@
   </table>
 </div>
 
-<div class="bolcunite">
+<div class="blocunite">
   <table class="bicol" cellspacing="0" cellpadding="0"
     summary="Profil: Trombinoscope">
     <tr>
