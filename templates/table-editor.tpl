@@ -1,4 +1,4 @@
-{* $Id: table-editor.tpl,v 1.3 2004-02-20 03:01:10 x2000habouzit Exp $ *}
+{* $Id: table-editor.tpl,v 1.4 2004-04-26 13:40:12 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -56,6 +56,10 @@
   <td>
   {if $myval.type=="timestamp"}
   <span class="smaller">{$myarr.$mykey|date_format:"%Y-%m-%d %H:%M:%S"}</span>
+  {elseif $myval.type=="set" and $myval.trans}
+  {$myval.trans[$myval.value]}
+  {elseif $myval.type=="ext"}
+  {extval table=$table field=$mykey value=$myarr.$mykey vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield}
   {else}
   {$myarr.$mykey}
   {/if}
@@ -99,7 +103,13 @@
 {if $myval.type=="textarea"}
     <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value|escape}</textarea>
 {elseif $myval.type=="set"}
+    {if $myval.trans}
+    {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.trans[$myval.value] trans=$myval.trans}
+    {else}
     {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.value}
+    {/if}
+{elseif $myval.type=="ext"}
+    {extval table=$table field=$mykey name="$prefix$mykey" vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield selected=$myval.value}
 {elseif $myval.type=="timestamp"}
     <input type="text" name="{$prefix}{$mykey}" value="{$myval.value|date_format:"%Y-%m-%d %H:%M:%S"}" />
 {elseif $myval.type=="password"}
