@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: naissance.tpl,v 1.5 2004-08-31 11:25:42 x2000habouzit Exp $
+        $Id: naissance.tpl,v 1.6 2004-10-24 14:41:16 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -35,9 +35,9 @@
 </p>
 {/if}
 
-<div class="rubrique">
+<h1>
   {#profil_naissance_titre#}
-</div>
+</h1>
 
 <form action="profil.php" method="post">
   <p>

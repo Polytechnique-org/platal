@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombino.tpl,v 1.6 2004-09-02 21:09:32 x2000habouzit Exp $
+        $Id: trombino.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -34,9 +34,9 @@ La photo par défaut est donc gardée.
 {/if}
 
 
-<div class="rubrique">
+<h1>
   Trombinoscope
-</div>
+</h1>
 
 <form enctype="multipart/form-data" action="{$smarty.server.REQUEST_URI}" method="post">
   <table class="flags" cellspacing="0" summary="Flags">

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.9 2004-10-23 21:33:40 x2000habouzit Exp $
+        $Id: members.tpl,v 1.10 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -44,9 +44,9 @@
 {/perms}
 </p>
 
-<div class="rubrique">
+<h1>
   Liste {$smarty.request.liste}
-</div>
+</h1>
 
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
@@ -84,9 +84,9 @@
 </table>
 {/if}
 
-<div class='rubrique'>
+<h1>
   modérateurs de la liste
-</div>
+</h1>
 
 {if $owners|@count}
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
@@ -107,14 +107,14 @@
 </table>
 {/if}
 
-<div class='rubrique'>
+<h1>
   membres de la liste
   {if $smarty.get.alpha}
   (<a href='?liste={$smarty.request.liste}'>trier par promo</a>)
   {else}
   (<a href='?liste={$smarty.request.liste}&amp;alpha=1'>trier par nom</a>)
   {/if}
-</div>
+</h1>
 
 {if $members|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>

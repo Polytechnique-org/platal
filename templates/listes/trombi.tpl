@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.8 2004-10-23 21:33:40 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.9 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -45,9 +45,9 @@
 {/perms}
 </p>
 
-<div class="rubrique">
+<h1>
   Liste {$smarty.request.liste}
-</div>
+</h1>
 
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
@@ -72,9 +72,9 @@
   </tr>
 </table>
 
-<div class='rubrique'>
+<h1>
   modérateurs de la liste
-</div>
+</h1>
 
 <table cellpadding="8" cellspacing="2" style="width:100%;">
   {foreach from=$owners item=xs key=promo}
@@ -103,9 +103,9 @@
   {/if}
 </table>
 
-<div class='rubrique'>
+<h1>
   membres de la liste
-</div>
+</h1>
 
 <table cellpadding="8" cellspacing="2" style="width:100%;">
   {foreach from=$members item=xs key=promo}

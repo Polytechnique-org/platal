@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nn.tpl,v 1.8 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: doc_nn.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,9 +26,9 @@
     [<a href="{"docs/doc_nn.php?doc=nntp"|url}">Configuration du nntp</a>]
     [<a href="{"docs/doc_nn.php?doc=all"|url}">Doc. complète (gros)</a>]
 </p>
-<div class="rubrique">
-    Utiliser le SMTP sécurisé et le NNTP sécurisé avec Netscape (ou Mozilla)
-</div>
+<h1>
+  Utiliser le SMTP sécurisé et le NNTP sécurisé avec Netscape (ou Mozilla)
+</h1>
 <div class="ssrubrique">
     Prérequis
 </div>
@@ -73,9 +73,9 @@
 </div>
 <br />
 {if $smarty.get.doc eq 'smtp' || $smarty.get.doc eq 'all'}
-<div class="rubrique">
-    Utiliser le SMTP sécurisé
-</div>
+<h1>
+  Utiliser le SMTP sécurisé
+</h1>
 
 <table summary="Première étape" cellpadding="5">
 <tr> 
@@ -171,9 +171,9 @@ Et maintenant quelques remarques :
 {/if}
 {if $smarty.get.doc eq 'nntp' || $smarty.get.doc eq 'all'}
 <br />
-<div class="rubrique">
-    Utiliser le NNTP sécurisé
-</div>
+<h1>
+  Utiliser le NNTP sécurisé
+</h1>
 
 <table summary="Première étape" cellpadding="5">
 <tr> 

@@ -63,7 +63,7 @@ p.error, span.error, p.erreur, span.erreur {
     background: inherit;
 }
 
-div.rubrique {
+h1 {
     color: #555555;
     background: url('/images/sk_default_titre.gif');
     background-repeat: no-repeat;
@@ -74,9 +74,8 @@ div.rubrique {
     font-family: "helvetica", sans-serif;
     font-weight: bolder;
 
-    margin-top: 1em;
-    margin-bottom: 1em;
-    padding-left: 0.5em;
+    margin: 1em 0em 1em 0em;
+    padding: 0em 0em 0em 0.5em;
 }
 
 div.ssrubrique {
@@ -581,4 +580,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.52 2004-10-24 14:21:33 x2000bedo Exp $ */
+/* $Id: default.css,v 1.53 2004-10-24 14:41:11 x2000habouzit Exp $ */

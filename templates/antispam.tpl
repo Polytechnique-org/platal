@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.tpl,v 1.8 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: antispam.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Ton filtre anti-spam
-</div>
+</h1>
 <div class="ssrubrique">
   Qu'est-ce qu'un spam ? Comment m'en débarrasser ?
 </div>

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deconnexion.tpl,v 1.5 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: deconnexion.tpl,v 1.6 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Déconnexion effectuée
-</div>
+</h1>
 <p>
 La date de déconnexion servira à afficher les informations que tu n'auras
 pas encore vues d'ici ta prochaine connexion.

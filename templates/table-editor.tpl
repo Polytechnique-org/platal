@@ -17,15 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: table-editor.tpl,v 1.10 2004-10-09 08:05:58 x2000habouzit Exp $
+        $Id: table-editor.tpl,v 1.11 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-<div class="rubrique">
-    {$title}
-</div>
+<h1>{$title}</h1>
 
 {if !$doedit}
 {if !$readonly}

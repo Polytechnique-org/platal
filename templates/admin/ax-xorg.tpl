@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ax-xorg.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: ax-xorg.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Vérifier notre table de correspondance entre l'annuaire de l'AX et le nôtre
-</div>
+</h1>
 
 <div class="ssrubrique">
   Liste des camarades qui n'apparaissent pas sous le même nom dans les deux annuaires

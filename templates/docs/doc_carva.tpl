@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_carva.tpl,v 1.9 2004-09-07 19:58:18 x2000coic Exp $
+        $Id: doc_carva.tpl,v 1.10 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Redirection de page WEB
-</div>
+</h1>
 
 <div class="ssrubrique">
   Pourquoi une redirection de page WEB ?
@@ -55,9 +55,9 @@
 </p>
 <br />
 
-<div class="rubrique">
+<h1>
   <a id="charte"></a>Conditions d'usage de la redirection de page WEB
-</div>
+</h1>
 <p>
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité 
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas 

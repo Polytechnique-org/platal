@@ -17,11 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nntp.tpl,v 1.7 2004-09-02 22:33:58 x2000bedo Exp $
+        $Id: doc_nntp.tpl,v 1.8 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">Les forums de Polytechnique.org</div>
+<h1>
+  Les forums de Polytechnique.org
+</h1>
 <p>
   Polytechnique.org propose un serveur de news (forums de discussion)
   sécurisé <strong>ouvert à tous les inscrits</strong> qui ont

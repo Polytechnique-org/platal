@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.tpl,v 1.1 2004-09-06 09:59:00 x2000habouzit Exp $
+        $Id: step4.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 {if !$error}
-  <div class="rubrique">
+  <h1>
     Dernière étape
-  </div>
+  </h1>
   <p>
     Tu as maintenant accès au site en utilisant les paramètres reçus par mail.
     Ton adresses électronique à vie <strong>{$forlife}@polytechnique.org</strong>
@@ -58,9 +58,9 @@
     mot de passe.
   </p>
 {elseif $error eq $smarty.const.ERROR_REF}
-  <div class="rubrique">
+  <h1>
     OOOooups !
-  </div>
+  </h1>
   <p>
     Cette adresse n'existe pas, ou plus, sur le serveur.
   </p>

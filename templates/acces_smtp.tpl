@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: acces_smtp.tpl,v 1.9 2004-10-15 22:14:08 x2000habouzit Exp $
+        $Id: acces_smtp.tpl,v 1.10 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,9 +27,9 @@
 </p>
 {/dynamic}
 
-<div class="rubrique">
+<h1>
 {if $actif}Modification du mot de passe SMTP/NNTP{else}Activation de ton compte SMTP/NNTP{/if}  
-</div>
+</h1>
 
 {literal}
 <script type="text/javascript">

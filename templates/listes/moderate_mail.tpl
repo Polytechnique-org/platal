@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.7 2004-10-24 12:54:44 x2000habouzit Exp $
+        $Id: moderate_mail.tpl,v 1.8 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,9 +28,9 @@
 
 {else}
 
-<div class='rubrique'>
+<h1>
   Propriétés du mail en attente
-</div>
+</h1>
 
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
@@ -51,9 +51,9 @@
   </tr>
 </table>
 
-<div class='rubrique'>
+<h1>
   Contenu du mail en attente
-</div>
+</h1>
 
 {if $mail.parts|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>

@@ -33,7 +33,7 @@ body {
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
-div.rubrique {
+h1 {
     color: #ffffff;
     background: #657590;
     border-top: 1px solid #305070;
@@ -148,4 +148,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: sharky.css,v 1.4 2004-08-31 10:05:26 x2000habouzit Exp $ */
+/* $Id: sharky.css,v 1.5 2004-10-24 14:41:11 x2000habouzit Exp $ */

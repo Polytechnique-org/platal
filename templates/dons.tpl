@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: dons.tpl,v 1.3 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: dons.tpl,v 1.4 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
-Dons au profit de l'association Polytechnique.org
-</div>
+<h1>
+  Dons au profit de l'association Polytechnique.org
+</h1>
 
 <p>
 Comme tu le sais sans doute, le site Polytechnique.org est géré par 

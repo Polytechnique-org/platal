@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: plan.tpl,v 1.2 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: plan.tpl,v 1.3 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -58,9 +58,9 @@
 
 <br/>
 
-<div id="perso" class="rubrique">
+<h1>
   Informations personnelles
-</div>
+</h1>
 
 <ul>
   {page title="Mon profil" url="profil.php"|url}
@@ -131,9 +131,9 @@
 
 <br/>
 
-<div id="services" class="rubrique">
+<h1>
   Services
-</div>
+</h1>
 
 <ul>
   {page title="Envoyer un mail" url="sendmail.php"|url}
@@ -180,9 +180,9 @@
 
 <br/>
 
-<div id="communaute" class="rubrique">
+<h1>
   Communauté X
-</div>
+</h1>
 
 <ul>
   {page title="Annuaire" url="recherche.php"|url}{/page}
@@ -198,9 +198,9 @@
 
 <br/>
 
-<div id="general" class="rubrique">
+<h1>
   Informations générales
-</div>
+</h1>
 
 <ul>
   {page title="Accueil et évènements" url="login.php"|url}{/page}
@@ -211,9 +211,9 @@
 </ul>
 
 <br/>
-<div id="doc" class="rubrique">
+<h1>
   Documentation
-</div>
+</h1>
 
 <ul>
   {page title="Foire aux questions" url="docs/index.php"|url}{/page}
@@ -259,9 +259,9 @@
 
 
 <br/>
-<div id="asso" class="rubrique">
+<h1>
   L'association Polytechnique.org
-</div>
+</h1>
 
 <ul>
   {page title="Le site de l'association" url="http://x-org.polytechnique.org"}{/page}

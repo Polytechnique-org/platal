@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_pattecassee.tpl,v 1.4 2004-09-02 23:34:00 x2000bedo Exp $
+        $Id: newsletter_pattecassee.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Vérifier une patte cassée suite à l'envoi de la newsletter
-</div>
+</h1>
 
 {dynamic}
 

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: envoidirect.tpl,v 1.5 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: envoidirect.tpl,v 1.6 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Liste des sollicités inscrits récemment
-</div>
+</h1>
 
 {dynamic}
 
@@ -50,9 +50,9 @@
 {$nbrecents} Polytechniciens ont été sollicités et se sont inscrits.
 </p>
 
-<div class="rubrique">
+<h1>
   Liste des sollicités non inscrits
-</div>
+</h1>
 
 <table class="bicol" summary="liste des sollicités non inscrits">
   <tr>

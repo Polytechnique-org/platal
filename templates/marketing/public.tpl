@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: public.tpl,v 1.6 2004-10-09 14:31:42 x2000habouzit Exp $
+        $Id: public.tpl,v 1.7 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -41,9 +41,9 @@
 {else}
 
 {if $prenom}
-<div class="rubrique">
+<h1>
   Et si nous proposions à {$prenom} {$nom} de s'inscrire à Polytechnique.org ?
-</div>
+</h1>
 
 <p>
   En effet notre camarade n'a pour l'instant pas encore rejoint la communauté des X sur le web...

@@ -17,16 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.devel.tpl,v 1.7 2004-10-08 17:11:24 x2000habouzit Exp $
+        $Id: common.devel.tpl,v 1.8 2004-10-24 14:41:17 x2000habouzit Exp $
  ***************************************************************************}
 
 {if $site_dev}
 {dynamic}
 {if $db_trace neq "\n\n"}
   <div id="db-trace">
-    <div class="rubrique">
+    <h1>
       Trace de l'exécution de cette page sur mysql (hover me)
-    </div>
+    </h1>
     <div class="hide">
       {$db_trace|smarty:nodefaults}
     </div>

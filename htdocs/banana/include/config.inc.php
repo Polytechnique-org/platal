@@ -68,7 +68,6 @@ $news['customhdr'] =
 
 $css = array(
  'bananashortcuts' => 'bananashortcuts',
- 'title' => 'rubrique',
  'bicol' => 'bicol',
  'bicoltitre' => 'bicoltitre',
  'bicolvpadd' => 'bicolvpadd',

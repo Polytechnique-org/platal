@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: postfix_delayed.tpl,v 1.1 2004-10-08 12:04:05 x2000habouzit Exp $
+        $Id: postfix_delayed.tpl,v 1.2 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <p class='erreur'>{$res}</p>
  
-<div class="rubrique">
+<h1>
   Mails en attente de décision
-</div>
+</h1>
 
 <table class="bicol" cellpadding='0' cellspacing='0'>
   <tr>

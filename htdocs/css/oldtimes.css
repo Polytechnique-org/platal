@@ -33,17 +33,17 @@
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
-div.rubrique a:link, div.rubrique a:active, div.rubrique a:visited {
+h1 a:link, h1 a:active, h1 a:visited {
     color: #70ff00;
     background: inherit;
 }
 
-div.rubrique a:hover {
+h1 a:hover {
     color: #c0ff00;
     background: inherit;
 }
 
-div.rubrique {
+h1 {
     color: #ffff00;
     background-color: #0005c0;
     background-image: url( "/images/sk_oldtimes_titre.jpg");
@@ -136,4 +136,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: oldtimes.css,v 1.2 2004-10-17 12:23:02 x2003bruneau Exp $ */
+/* $Id: oldtimes.css,v 1.3 2004-10-24 14:41:11 x2000habouzit Exp $ */

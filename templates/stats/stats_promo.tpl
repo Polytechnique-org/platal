@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: stats_promo.tpl,v 1.3 2004-08-31 11:25:44 x2000habouzit Exp $
+        $Id: stats_promo.tpl,v 1.4 2004-10-24 14:41:17 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
-<div class="rubrique">
+<h1>
   Statistiques de la promotion {$promo}
-</div>
+</h1>
 
 <div class="ssrubrique">
   Nombre d'inscrits de la promotion {$promo}

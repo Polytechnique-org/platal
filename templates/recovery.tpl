@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.tpl,v 1.5 2004-08-31 19:59:25 x2000habouzit Exp $
+        $Id: recovery.tpl,v 1.6 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Perte du mot de passe
-</div>
+</h1>
 
 {dynamic}
 

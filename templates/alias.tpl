@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: alias.tpl,v 1.9 2004-09-02 20:11:23 x2000habouzit Exp $
+        $Id: alias.tpl,v 1.10 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -35,9 +35,9 @@
   <p class="erreur">{dyn s=$error}</p>
   {/if}
 
-  <div class="rubrique">
+  <h1>
     Adresses e-mail personnalisées
-  </div>
+  </h1>
 
   <p>
     Pour plus de <strong>convivialité</strong> dans l'utilisation de tes mails, tu peux choisir une adresse

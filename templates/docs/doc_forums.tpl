@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_forums.tpl,v 1.6 2004-10-08 21:06:23 x2000habouzit Exp $
+        $Id: doc_forums.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Règles générales d'utilisation des forums de Polytechnique.org
-</div>
+</h1>
 <p>
   Afin de permettre à tous une utilisation confortable des forums de
   Polytechnique.org, il est nécéssaire de respecter quelques règles. 
@@ -126,9 +126,9 @@
     </div>
   </li>
 </ul>
-<div class="rubrique">
+<h1>
   Contact
-</div>
+</h1>
 <p>
   Si tu as des difficultés avec les forums, n'hésite pas à envoyer un mail à
   {mailto address='forums@polytechnique.org' text='l\\\'&eacute;quipe Polytechnique.org' encode="javascript"}

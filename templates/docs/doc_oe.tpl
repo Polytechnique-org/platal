@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_oe.tpl,v 1.8 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: doc_oe.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,9 +27,9 @@
   [<a href="{"docs/doc_oe.php?doc=all"|url}">Doc. complète (gros)</a>]
 </p>
 
-<div class="rubrique">
+<h1>
   Utiliser le SMTP sécurisé et le NNTP sécurisé avec Outlook Express
-</div>
+</h1>
 
 <div class="ssrubrique">
   Prérequis
@@ -91,9 +91,9 @@
 <br />
 
 {if $smarty.get.doc eq 'smtp' || $smarty.get.doc eq 'all'}
-<div class="rubrique">
-    La configuration pour utiliser le serveur SMTP de Polytechnique.org
-</div>
+<h1>
+  La configuration pour utiliser le serveur SMTP de Polytechnique.org
+</h1>
 
 <table summary="Première étape" cellpadding="5">
 <tr> 
@@ -270,9 +270,9 @@ Et maintenant quelques remarques :
 <br />
 {/if}
 {if $smarty.get.doc eq 'nntp' || $smarty.get.doc eq 'all'}
-<div class="rubrique">
-    <a id="nntp">La configuration pour utiliser le serveur NNTP de Polytechnique.org</a>
-</div>
+<h1>
+  <a id="nntp">La configuration pour utiliser le serveur NNTP de Polytechnique.org</a>
+</h1>
 
 <table summary="Première étape" cellpadding="5">
 <tr> 

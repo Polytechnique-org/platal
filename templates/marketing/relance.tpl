@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: relance.tpl,v 1.2 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: relance.tpl,v 1.3 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Relance
-</div>
+</h1>
 
 {dynamic}
 {foreach from=$sent item=l}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt.tpl,v 1.22 2004-09-02 19:35:55 x2000charbonnier Exp $
+        $Id: password_prompt.tpl,v 1.23 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 <noscript>
@@ -30,9 +30,9 @@
   </p>
 </noscript>
 
-<div class="rubrique">
+<h1>
   Accès réservé aux Polytechniciens
-</div>
+</h1>
 {min_auth level="cookie"}
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>

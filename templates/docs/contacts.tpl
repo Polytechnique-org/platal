@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: contacts.tpl,v 1.10 2004-10-16 17:49:39 x2000habouzit Exp $
+        $Id: contacts.tpl,v 1.11 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {if !$smarty.request.topic}
-<div class="rubrique">
+<h1>
   Contacts
-</div>
+</h1>
 
 <table class="bicol" cellspacing="0" cellpadding="4">
   <tr>
@@ -69,9 +69,9 @@ Celà nous permettra d'être les plus efficaces possible et de traiter ta demande 
 </p>
 
 {elseif $smarty.request.topic eq 1}
-<div class="rubrique">
+<h1>
   Je n'arrive pas à m'inscrire sur le site
-</div>
+</h1>
 <p>
 L'inscription se déroule en <a href="{"inscrire.php"|url}">une étape sur notre site web</a>,
 suivie d'une étape de confirmation basée sur l'e-mail que tu as donné.
@@ -95,9 +95,9 @@ d'utiliser uniquement l'adresse
 {mailto address='register@polytechnique.org' encode='hex'}
 
 {elseif $smarty.request.topic eq 2}
-<div class="rubrique">
+<h1>
   J'ai perdu mon mot de passe
-</div>
+</h1>
 <p>
 Il y a deux façons de faire.
 </p>
@@ -120,9 +120,9 @@ L'adresse à utiliser est uniquement <strong>{mailto address='resetpass@polytechn
 </p>
 
 {elseif $smarty.request.topic eq 3}
-<div class="rubrique">
+<h1>
   Ca ne marche pas, je ne comprends pas !
-</div>
+</h1>
 <p>
 Deux solutions, ou bien c'est un bug du site, ce qui est rare mais peut
 encore arriver. Ou bien un problème de configuration sur ton ordinateur/réseau
@@ -136,9 +136,9 @@ En cas de problème persistant, tu peux nous écrire à l'adresse
 </p>
 
 {elseif $smarty.request.topic eq 4}
-<div class="rubrique">
+<h1>
   J'ai une amélioration/correction à proposer
-</div>
+</h1>
 <p>
 Pour toute suggestion concernant la liste des binets, des groupes x, des pays, des formations
 complémentaires, écris-nous à l'adresse <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong> :
@@ -159,9 +159,9 @@ pour toute idée de développement ou d'amélioration du site.
 </p>
 
 {elseif $smarty.request.topic eq 5}
-<div class="rubrique">
+<h1>
   Je voudrais ajouter un article dans la newsletter
-</div>
+</h1>
 <p>
 Par soucis de légèreté, nous devons imposer quelques contraintes sur les annonces de
 la newsletter : le texte du message doit faire au plus <strong>8 lignes de 68 caractères</strong>
@@ -183,9 +183,9 @@ Les anciennes newsletters de <strong>Polytechnique.org</strong> sont
 </p>
 
 {elseif $smarty.request.topic eq 6}
-<div class="rubrique">
+<h1>
   Je voudrais vous contacter
-</div>
+</h1>
 <p>
 Polytechnique.org ne s'occupe que de l'Internet. Pour l'annuaire des
 Polytechniciens sur papier et d'une manière générale le support papier, merci

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: parselog.tpl,v 1.3 2004-08-31 11:25:44 x2000habouzit Exp $
+        $Id: parselog.tpl,v 1.4 2004-10-24 14:41:17 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Logs de polytechnique.org
-</div>
+</h1>
 
 <p>
 {dynamic}

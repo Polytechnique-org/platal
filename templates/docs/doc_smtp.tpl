@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_smtp.tpl,v 1.4 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: doc_smtp.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Le serveur SMTP de Polytechnique.org
-</div>
+</h1>
 <p>
   Polytechnique.org propose un serveur SMTP ouvert à tous les inscrits 
   <a href="{"acces_smtp.php"|url}">qui en font la demande</a>.

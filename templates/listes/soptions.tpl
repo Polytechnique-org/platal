@@ -28,9 +28,9 @@
 
 {else}
 
-<div class='rubrique'>
+<h1>
   Changer les options de la liste {$details.addr}
-</div>
+</h1>
 
 <p>
 [<a href='index.php'>listes</a>] »

@@ -17,12 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: confbanana.tpl,v 1.1 2004-09-26 15:02:34 x2000habouzit Exp $
+        $Id: confbanana.tpl,v 1.2 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
  
-<div class="rubrique">
+<h1>
   Configuration de Banana
-</div>
+</h1>
 
 {dynamic}
 {if !$smarty.post}

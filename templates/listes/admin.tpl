@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.12 2004-10-24 13:49:03 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.13 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,9 +28,9 @@
 
 {else}
 
-<div class='rubrique'>
+<h1>
   Gestion des membres de la liste {$details.addr}
-</div>
+</h1>
 {if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.
@@ -59,9 +59,9 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
 <p class='error'>{$e}</p>
 {/foreach}
 
-<div class='rubrique'>
+<h1>
   modérateurs de la liste
-</div>
+</h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
@@ -94,9 +94,9 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
 </form>
 
 
-<div class='rubrique'>
+<h1>
   {$np_m|default:"0"} membre(s) dans la liste
-</div>
+</h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   <table class='bicol' cellpadding='0' cellspacing='0'>

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: skins.tpl,v 1.8 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: skins.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Skins Polytechnique.org
-</div>
+</h1>
 <p>
 Tu n'aimes pas les couleurs ou l'apparence de Polytechnique.org ? Normal, les goûts et les
 couleurs, ça ne se discute pas. Certains préfèrent une page sérieuse, d'autres plus

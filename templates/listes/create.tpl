@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: create.tpl,v 1.1 2004-09-25 20:11:36 x2000habouzit Exp $
+        $Id: create.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -26,9 +26,9 @@
 <p class='erreur'>{$e}</p>
 {/foreach}
  
-<div class="rubrique">
+<h1>
   Création d'une liste de diffusion
-</div>
+</h1>
 
 {if $created}
 <p class='erreur'>Demande de création envoyée !</p>

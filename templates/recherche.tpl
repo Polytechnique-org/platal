@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recherche.tpl,v 1.1 2004-10-12 16:47:36 x2000habouzit Exp $
+        $Id: recherche.tpl,v 1.2 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   La page a bougé !
-</div>
+</h1>
 
 <p>
 Elle se trouve maintenant <a href='search.php'>ici</a>

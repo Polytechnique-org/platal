@@ -28,9 +28,9 @@
 
 {else}
 
-<div class='rubrique'>
+<h1>
   Changer les options de la liste {$details.addr}
-</div>
+</h1>
 {if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.
@@ -145,9 +145,9 @@ Tu n'es pas administrateur de la liste, mais du site.
 
 {if $details.diff eq 1}
 
-<div class='rubrique'>
+<h1>
   Addresses non modérées de {$details.addr}
-</div>
+</h1>
 <p>
 Les envoi des personnes utilisant les adresses ne sont pas modérés.
 </p>

@@ -17,16 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.20 2004-10-22 11:58:47 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.21 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
-<div class="rubrique">
-    {if $advanced eq "1"}
-    Recherche avancée
-    {else}
-    Recherche simple
-    {/if}
-</div>
+<h1>
+  {if $advanced eq "1"}
+  Recherche avancée
+  {else}
+  Recherche simple
+  {/if}
+</h1>
 {if $error}
   <p class="error">
     {$error}

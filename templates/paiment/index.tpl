@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.7 2004-08-31 11:25:42 x2000habouzit Exp $
+        $Id: index.tpl,v 1.8 2004-10-24 14:41:15 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Micropaiments
-</div>
+</h1>
 {dynamic}
 {if $op eq "submit" and !$error}
 {include_php file=$methode_include}

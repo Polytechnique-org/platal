@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.9 2004-10-24 14:21:42 x2000bedo Exp $
+        $Id: mescontacts.tpl,v 1.10 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,9 +25,9 @@
 <p class="erreur">{$erreur}</p>
 {/dynamic}
 
-<div class="rubrique">
+<h1>
   Ma liste personnelle de contacts
-</div>
+</h1>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <p>

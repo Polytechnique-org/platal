@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate_sub.tpl,v 1.1 2004-09-21 15:40:36 x2000habouzit Exp $
+        $Id: moderate_sub.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,9 +28,9 @@
 
 {else}
 
-<div class='rubrique'>
+<h1>
   Refuser l'inscription d'un utilisateur
-</div>
+</h1>
 
 <form method='post' action='?liste={$smarty.request.liste}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>

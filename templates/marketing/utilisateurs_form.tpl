@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_form.tpl,v 1.6 2004-09-03 00:28:50 x2000habouzit Exp $
+        $Id: utilisateurs_form.tpl,v 1.7 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-<div class="rubrique">
+<h1>
   Envoyer un mail de pr&eacute;-inscription
-</div>
+</h1>
 
 <p>
 Le nom, pr&eacute;nom et promotion sont pris dans la table d'identification.  Le login sera automatiquement

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: sendmail.tpl,v 1.11 2004-10-09 20:45:59 x2000chevalier Exp $
+        $Id: sendmail.tpl,v 1.12 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,9 +25,9 @@
 
 <p class="erreur">{$error}</p>
 
-<div class="rubrique">
+<h1>
   Envoyer un mail
-</div>
+</h1>
 
 <ul>
   <li>

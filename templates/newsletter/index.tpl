@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.3 2004-10-16 22:44:40 x2000habouzit Exp $
+        $Id: index.tpl,v 1.4 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Lettre de Polytechnique.org
-</div>
+</h1>
 <p>
 Tu trouveras ici les archives de la lettre d'information de Polytechnique.org.  Pour t'abonner à
 cette lettre, il te suffit de te <a href="{"listes/"|url}">rendre sur la page des listes</a>.

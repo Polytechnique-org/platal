@@ -17,11 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.11 2004-10-16 22:39:35 x2000habouzit Exp $
+        $Id: index.tpl,v 1.12 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">Administration Polytechnique.org</div>
+<h1>Administration Polytechnique.org</h1>
 
 <table class="bicol" cellpadding="3" summary="Système">
   <tr><th>Syst&egrave;me</th></tr>

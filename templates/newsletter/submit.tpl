@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: submit.tpl,v 1.4 2004-10-16 19:54:35 x2000habouzit Exp $
+        $Id: submit.tpl,v 1.5 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Proposer un article à sur la prochaine Lettre mensuelle
-</div>
+</h1>
 
 {dynamic}
 

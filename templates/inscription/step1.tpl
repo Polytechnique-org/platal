@@ -17,16 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step1.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
+        $Id: step1.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 <p class='erreur'>{$erreur|smarty:nodefaults|nl2br}</p>
  
 <form action="{"inscription/step2.php"|url}" method="post" id='idf'>
-  <div class="rubrique">
+  <h1>
     Identification
-  </div>
+  </h1>
   <p>
     Renseigne tes nom, prénom et promotion, et si tu es d'une promotion
     postérieure à la 1996, ton numéro de matricule.

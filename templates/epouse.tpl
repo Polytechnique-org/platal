@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.tpl,v 1.6 2004-10-19 22:16:14 x2000habouzit Exp $
+        $Id: epouse.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Nom de mariage
-</div>
+</h1>
 
 {dynamic}
 {if !$is_femme}

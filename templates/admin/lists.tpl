@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: lists.tpl,v 1.2 2004-10-08 21:53:58 x2000habouzit Exp $
+        $Id: lists.tpl,v 1.3 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
-   Mail Lists
-</div>
+<h1>
+  Mail Lists
+</h1>
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>

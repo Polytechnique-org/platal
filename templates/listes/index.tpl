@@ -17,12 +17,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.14 2004-10-18 07:06:50 x2000habouzit Exp $
+        $Id: index.tpl,v 1.15 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
-<div class="rubrique">
+<h1>
   Listes de diffusion de Polytechnique.org
-</div>
+</h1>
 
 <div class='ssrubrique'>
   L'inscription à une liste de diffusion
@@ -80,9 +80,9 @@ Tu peux demander <a href='create.php'>la création</a> d'une liste de diffusion s
 
 {dynamic}
 
-<div class="rubrique">
+<h1>
   Lettre mensuelle de Polytechnique.org
-</div>
+</h1>
 
 {if $nl eq html}
 <p>
@@ -125,9 +125,9 @@ Pour te désinscrire suis le lien :
 </div>
 {/if}
 
-<div class="rubrique">
+<h1>
   Listes de diffusion publiques
-</div>
+</h1>
 
 <p>
 Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
@@ -135,9 +135,9 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 
 {include file='listes/listes.inc.tpl' min=0}
 
-<div class="rubrique">
+<h1>
   Listes de diffusion privées (et de promo)
-</div>
+</h1>
 
 <p>
 Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire par toi même !
@@ -168,9 +168,9 @@ Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire pa
 </form>
 
 {perms level=admin}
-<div class="rubrique">
+<h1>
   Listes d'administration
-</div>
+</h1>
 
 {include file='listes/listes.inc.tpl' min=2 max=4}
 

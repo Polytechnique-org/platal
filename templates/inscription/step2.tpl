@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step2.tpl,v 1.3 2004-09-05 22:58:47 x2000habouzit Exp $
+        $Id: step2.tpl,v 1.4 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {include file="applis.js.tpl"}
 
-<div class="rubrique">
+<h1>
   Formulaire de pré-inscription
-</div>
+</h1>
 
 {dynamic}
 

@@ -17,11 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_ssl.tpl,v 1.7 2004-09-07 19:50:50 x2000coic Exp $
+        $Id: doc_ssl.tpl,v 1.8 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique"><a id="ssl"></a>Le certificat SSL de Polytechnique.org</div>
+<h1><a id="ssl"></a>Le certificat SSL de Polytechnique.org</h1>
 <div class="ssrubrique">Pourquoi un certificat ?</div>
 <p>
   En plus du serveur web sécurisé, Polytechnique.org met à ta diposition

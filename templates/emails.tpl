@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.tpl,v 1.8 2004-10-10 09:35:58 x2000chevalier Exp $
+        $Id: emails.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
-Gestion de mes courriers électroniques
-</div>
+<h1>
+  Gestion de mes courriers électroniques
+</h1>
 
 {dynamic}
 

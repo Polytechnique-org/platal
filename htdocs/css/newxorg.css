@@ -38,7 +38,7 @@ body {
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
-div.rubrique {
+h1 {
     color: #ff9900;
     background-color: #458bb6;
     background-image: url( "/images/sk_newxorg_titre.jpg");
@@ -120,4 +120,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: newxorg.css,v 1.1 2004-10-03 22:32:45 x2003bruneau Exp $ */
+/* $Id: newxorg.css,v 1.2 2004-10-24 14:41:11 x2000habouzit Exp $ */

@@ -37,12 +37,12 @@ a:link, a:visited, a:active, a:hover {
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
-div.rubrique a:link, div.rubrique a:visited, div.rubrique a:active, div.rubrique a:hover {
+h1 a:link, h1 a:visited, h1 a:active, h1 a:hover {
     color: #3f7ce7;
     background: inherit;
 }
 
-div.rubrique {
+h1 {
     color: #eeeeee;
     background-color: #000000;
     background-image: url( "/images/sk_espace_titre.jpg");
@@ -136,4 +136,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: espace.css,v 1.4 2004-10-17 12:00:14 x2003bruneau Exp $ */
+/* $Id: espace.css,v 1.5 2004-10-24 14:41:11 x2000habouzit Exp $ */

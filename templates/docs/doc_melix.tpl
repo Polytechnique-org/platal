@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_melix.tpl,v 1.4 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: doc_melix.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   alias @melix.net
-</div>
+</h1>
 <p>
   <strong>Pourquoi un alias, alors que j'ai déjà mes adresses @polytechnique.org ?</strong>
 </p>

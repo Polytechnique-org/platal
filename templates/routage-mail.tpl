@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.tpl,v 1.8 2004-09-05 12:54:20 x2000habouzit Exp $
+        $Id: routage-mail.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -46,9 +46,9 @@
   </p>
 {/if}
 <form action="{$smarty.server.PHP_SELF}" method="post">
-  <div class="rubrique">
+  <h1>
     Tes adresses de redirection
-  </div>
+  </h1>
   <p>
   Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées :
   </p>

@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
+        $Id: index.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <form action="{"inscription/step1.php"|url}" method="post">
-  <div class="rubrique">
+  <h1>
     Conditions générales
-  </div>
+  </h1>
   <p>
   L'enregistrement se déroule <strong>en deux étapes</strong>. La pré-inscription te prendra moins
   de 5 minutes. La seconde étape est une phase de validation où c'est nous qui te

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: motdepassemd5.tpl,v 1.8 2004-10-11 07:12:07 x2000habouzit Exp $
+        $Id: motdepassemd5.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Changer de mot de passe
-</div>
+</h1>
 
 <p>
   Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques. Attention

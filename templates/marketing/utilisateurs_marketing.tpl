@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.tpl,v 1.3 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.tpl,v 1.4 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-<div class="rubrique">
+<h1>
   E-mail de pr&eacute;inscription
-</div>
+</h1>
 <p>
 L'e-mail a &eacute;t&eacute; envoy&eacute; et la pr&eacute;-inscription a
 &eacute;t&eacute; ins&eacute;r&eacute;e en attente de confirmation.

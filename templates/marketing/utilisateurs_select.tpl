@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_select.tpl,v 1.3 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: utilisateurs_select.tpl,v 1.4 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-<div class="rubrique">
+<h1>
   Selectionner un X non inscrit
-</div>
+</h1>
 
 <p>
 Sélectionne l'X que tu veux inscrire ou &agrave; qui tu veux envoyer le mail de pré-inscription.

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.tpl,v 1.6 2004-09-05 17:39:42 x2000habouzit Exp $
+        $Id: homonymes.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Gestion des homonymes
-</div>
+</h1>
 
 {dynamic}
 

@@ -17,15 +17,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.4 2004-08-31 11:25:44 x2000habouzit Exp $
+        $Id: index.tpl,v 1.5 2004-10-24 14:41:18 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-<div class="rubrique">
+<h1>
   Tr&eacute;sorerie pour {$mon_sel}
-</div>
+</h1>
 
 <table class="bicol">
 <tr>

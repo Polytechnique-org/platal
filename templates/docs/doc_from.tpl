@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_from.tpl,v 1.6 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: doc_from.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <div class="texte">
-  <div class="rubrique">
+  <h1>
     Polytechnique.org comme e-mail dans le champ FROM
-  </div>
+  </h1>
   <p>
   Comme pour toute aide à la configuration, la première étape
   consiste souvent à mettre à jour ses logiciels installés.
@@ -277,9 +277,9 @@
     </tr>
   </table>
   <hr />
-  <div class="rubrique">
+  <h1>
     Configuration avancée
-  </div>
+  </h1>
   <p>
   Prenons un exemple. Tu travailles chez MyCompany où tu as un e-mail
   prenom.nom@mycompany.fr et d'autre part, tu as ouvert un email chez netcourrier.com

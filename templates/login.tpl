@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.tpl,v 1.12 2004-09-20 19:52:50 x2002bobillot Exp $
+        $Id: login.tpl,v 1.13 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {if $date}
-  <div class="rubrique">
+  <h1>
     Assistant première connexion
-  </div>
+  </h1>
   <p>
   Le programme a détecté que tu te connectes pour la première fois
   sur ce site. Un certain nombre de paramètres ne sont donc pas à
@@ -39,8 +39,9 @@
 {include file='include/form_naissance.tpl'}
 {else}
 
-<div class="rubrique">Bienvenue {dyn s=$smarty.session.prenom} :o)
-</div>
+<h1>
+  Bienvenue {dyn s=$smarty.session.prenom} :o)
+</h1>
 <div class="smaller">
   Ta connexion précédente date du
   <strong>{dyn s=$smarty.session.lastlogin|date_format:"%x, %T"}</strong>

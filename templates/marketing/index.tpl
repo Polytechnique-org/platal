@@ -17,12 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.5 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: index.tpl,v 1.6 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
 
-<div class="rubrique">Marketing Polytechnique.org</div>
+<h1>
+  Marketing Polytechnique.org
+</h1>
 
 <table class="bicol" cellpadding="3" summary="Système">
   <tr>

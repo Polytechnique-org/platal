@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: convention_ax.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: convention_ax.tpl,v 1.6 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
-Le rapprochement de l'AX et de Polytechnique.org
-</div>
+<h1>
+  Le rapprochement de l'AX et de Polytechnique.org
+</h1>
 <p>
   Polytechnique.org est une association loi de 1901 créée en mai 2000. Son
 objet est la promotion et la dynamisation des liens communautaires

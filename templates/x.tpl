@@ -19,9 +19,7 @@
  ***************************************************************************}
 
 {dynamic}
-<div class="rubrique">
-  La page a bougé !
-</div>
+<h1>La page a bougé !</h1>
 
 <p>
 Elle se trouve maintenant <a href='fiche.php?user={$smarty.request.x}'>ici</a>.

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
+        $Id: step3.tpl,v 1.2 2004-10-24 14:41:13 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Pré-inscription réussie
-</div>
+</h1>
 
 <p>
 La pré-inscription que tu viens de soumettre a été enregistrée.

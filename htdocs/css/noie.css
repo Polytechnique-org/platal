@@ -63,7 +63,7 @@ p.error, span.error, p.erreur, span.erreur {
     background: inherit;
 }
 
-div.rubrique {
+h1 {
     color: #ffffff;
     background: #657590;
 
@@ -75,9 +75,8 @@ div.rubrique {
     border-bottom: 1px solid #305070;
     font-size: 100%;
 
-    margin-top: 1em;
-    margin-bottom: 1em;
-    padding-left: 0.5em;
+    margin: 1em 0em 1em 0em;
+    padding: 0em 0em 0em 0.5em;
 }
 
 div.ssrubrique {
@@ -481,4 +480,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: noie.css,v 1.3 2004-08-31 22:21:05 x2000habouzit Exp $ */
+/* $Id: noie.css,v 1.4 2004-10-24 14:41:11 x2000habouzit Exp $ */

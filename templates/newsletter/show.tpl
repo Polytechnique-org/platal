@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: show.tpl,v 1.5 2004-10-20 15:09:59 x2000habouzit Exp $
+        $Id: show.tpl,v 1.6 2004-10-24 14:41:14 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
-<div class="rubrique">
+<h1>
   Lettre de Polytechnique.org du {$nl->_date|date_format:"%d %B %Y"}
-</div>
+</h1>
 
 <p>
 [<a href='index.php'>liste des lettres</a>]

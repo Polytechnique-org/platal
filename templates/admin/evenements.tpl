@@ -17,20 +17,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.tpl,v 1.6 2004-09-02 23:34:00 x2000bedo Exp $
+        $Id: evenements.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
-<div class="rubrique">
+<h1>
   Gestion des événements :
   {if $arch}
   [&nbsp;<a href="{$smarty.server.PHP_SELF}?arch=0">Actualités</a>&nbsp;|&nbsp;Archives&nbsp;]
   {else}
   [&nbsp;Actualités&nbsp;|&nbsp;<a href="{$smarty.server.PHP_SELF}?arch=1">Archives</a>&nbsp;]
   {/if}
-</div>
+</h1>
 
 {if $mode}
 

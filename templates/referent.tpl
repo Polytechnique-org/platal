@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: referent.tpl,v 1.9 2004-09-03 00:20:28 x2000habouzit Exp $
+        $Id: referent.tpl,v 1.10 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -32,9 +32,9 @@
 </script>
 {/literal}
 
-<div class="rubrique">
+<h1>
   Rechercher un camarade pouvant m'aider à orienter mon parcours professionnel
-</div>
+</h1>
 {dynamic}
 {if $recherche_trop_large}
 <p>

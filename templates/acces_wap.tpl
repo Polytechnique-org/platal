@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: acces_wap.tpl,v 1.6 2004-09-02 23:55:57 x2000habouzit Exp $
+        $Id: acces_wap.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,7 +26,7 @@
   Configuration du site WAP enregistrée.
 </p>
 {else}
-<div class="rubrique">Paramètre du site WAP</div>
+<h1>Paramètre du site WAP</h1>
 
 <p>
   Tu peux utiliser certaines fonctionnalités du site Polytechnique.org sur un terminal WAP.<br />

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.17 2004-10-16 14:36:09 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.18 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,9 +27,9 @@ Attention, déjà en SUID !!!
 </p>
 {/if}
 
-<div class="rubrique">
+<h1>
   Gestion des utilisateurs
-</div>
+</h1>
 
 {dynamic}
 

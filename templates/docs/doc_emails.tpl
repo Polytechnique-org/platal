@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_emails.tpl,v 1.6 2004-10-08 21:06:23 x2000habouzit Exp $
+        $Id: doc_emails.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
-    Mes Redirections d'adresses emails
-</div>
+<h1>
+  Mes Redirections d'adresses emails
+</h1>
 <div class="ssrubrique">
     En quoi ça consiste, comment ça marche ?
 </div>

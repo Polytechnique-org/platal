@@ -17,16 +17,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.tpl,v 1.6 2004-09-02 22:27:06 x2000habouzit Exp $
+        $Id: trombipromo.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 
 {if !$smarty.request.xpromo || $erreur}
-<div class="rubrique">
+<h1>
   Trombinoscope promo
-</div>
+</h1>
 <p>
 Cette page te permet de voir l'album photo d'une promotion
 donnée.
@@ -61,13 +61,13 @@ chaque page affiche au plus {$limit} photos.
 
 {else}
 
-<div class="rubrique">
+<h1>
   {if $smarty.request.xpromo eq 'all'}
   Album photo Polytechnique.org
   {else}
   Album photo promotion {$smarty.request.xpromo}
   {/if}
-</div>
+</h1>
 
 {if $pnb}
 <p>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ethique.tpl,v 1.6 2004-10-12 16:24:14 x2000habouzit Exp $
+        $Id: ethique.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -32,9 +32,9 @@ services dans la limite de nos disponibilités respectives, en mettant un point d
 fournir un <strong>service mail continu</strong>.
 </p>
 
-<div class="rubrique">
+<h1>
   Annuaire
-</div>
+</h1>
 <p>
 Le site te permet de réaliser des recherches sur tous les camarades <strong>inscrits</strong>,
 ces recherches portant non seulement sur leur nom ou leur prénom, mais aussi sur des critères de binet, de lieu de
@@ -54,9 +54,9 @@ et le moment où tu la verras réellement aparaitre sur le site. (En général, la v
 photo est réalisée sous quelques heures en journée).
 </p>
 
-<div class="rubrique">
+<h1>
   Services liés au mail
-</div>
+</h1>
 <div class="ssrubrique">
   Redirection à vie
 </div>
@@ -107,25 +107,18 @@ menés avec succès. Il sera bientôt installé en production, et pourra être
 activé par chacun des utilisateurs, de manière individuelle.
 </p>
 
-<div class="rubrique">
+<h1>
   Forums
-</div>
+</h1>
 <p>
 Les forums visent à favoriser les échanges entre X, sur des thèmes aussi
 variés que la vie de promotion, l'emploi, les loisirs, etc...
 La charte d'utilisation des forums est <a href="{"docs/doc_forums.php"|url}">accessible ici</a>.
 </p>
 
-<!--div class="rubrique">
-Services aux groupes X
-</div>
-<p>
-Plusieurs services sont offerts aux groupes X...
-</p-->
-
-<div class="rubrique">
+<h1>
   Qualité de service
-</div>
+</h1>
 <div class="ssrubrique">
   Temps de réponse
 </div>

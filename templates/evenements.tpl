@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.tpl,v 1.6 2004-09-02 21:09:32 x2000habouzit Exp $
+        $Id: evenements.tpl,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Proposition d'information événementielle
-</div>
+</h1>
 
 {dynamic}
 

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.19 2004-10-24 14:21:42 x2000bedo Exp $
+        $Id: search.tpl,v 1.20 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -26,9 +26,9 @@
  
 {if $formulaire==0 and !$error}
   {min_auth level='cookie'}
-  <div class="rubrique">
+  <h1>
     Astuce
-  </div>
+  </h1>
   <p>
   Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
   </p>
@@ -38,9 +38,9 @@
   </p>
   {/if}
   {/min_auth}
-  <div class="rubrique">
+  <h1>
     Résultats
-  </div>
+  </h1>
   <table style="width: 100%">
     <tr>
       <td class="titre">

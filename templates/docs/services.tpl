@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: services.tpl,v 1.6 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: services.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Services offerts aux X
-</div>
+</h1>
 
 <p>
 Polytechnique.org est le site web dédié aux Polytechniciens, anciens ou élèves.

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.8 2004-10-09 11:02:36 x2000habouzit Exp $
+        $Id: index.tpl,v 1.9 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Bienvenue sur le portail des élèves et anciens élèves de l'X !
-</div>
+</h1>
 
 <p>
   Polytechnique.org est le site qui connecte la communauté des polytechniciens.

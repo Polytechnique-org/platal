@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_gratuits.tpl,v 1.8 2004-09-02 22:33:58 x2000bedo Exp $
+        $Id: doc_gratuits.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Pourquoi et comment choisir un e-mail gratuit
-</div>
+</h1>
 
 
 <ul>

@@ -17,20 +17,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.tpl,v 1.11 2004-10-12 18:50:59 x2000habouzit Exp $
+        $Id: carva_redirect.tpl,v 1.12 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic on="0$message"}
-<div class="rubrique">
+<h1>
   Mise à jour de la redirection
-</div>
+</h1>
 {$message|smarty:nodefaults}
 {/dynamic}
 
-<div class="rubrique">
+<h1>
   Redirection de page WEB
-</div>
+</h1>
 
 <div class="ssrubrique">
   Pourquoi une redirection de page WEB ?
@@ -56,9 +56,9 @@
   (<a href="{"docs/doc_carva.php#charte"|url}">plus de précisions</a>).
 </p>
 
-<div class="rubrique">
+<h1>
   Mise en place de la redirection
-</div>
+</h1>
 <p>
 {dynamic}
 {if $carva}

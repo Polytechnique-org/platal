@@ -28,16 +28,16 @@
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
-div.rubrique a:link, div.rubrique a:visited, div.rubrique a:active {
+h1 a:link, h1 a:visited, h1 a:active {
     color: #999999;
     background: inherit;
 }
 
-div.rubrique a:hover {
+h1 a:hover {
     color: #cccccc;
 }
         
-div.rubrique {
+h1 {
     color: #eeeeee;
     background-color: #444444;
     background-image: url( "/images/sk_linux_titre.jpg");
@@ -99,4 +99,4 @@ div.contact-list div.contact {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: linux.css,v 1.4 2004-10-17 12:23:02 x2003bruneau Exp $ */
+/* $Id: linux.css,v 1.5 2004-10-24 14:41:11 x2000habouzit Exp $ */

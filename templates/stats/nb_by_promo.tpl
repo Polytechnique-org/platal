@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: nb_by_promo.tpl,v 1.4 2004-08-31 11:25:44 x2000habouzit Exp $
+        $Id: nb_by_promo.tpl,v 1.5 2004-10-24 14:41:17 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Inscrits par promo
-</div>
+</h1>
 
 <p>
 Voici le nombre d'inscrits par promo :
@@ -53,9 +53,9 @@ Voici le nombre d'inscrits par promo :
 {/dynamic}
 </table>
 
-<div class="rubrique">
+<h1>
   Inscrits par promo en (%)
-</div>
+</h1>
 
 <img src="/stats/graph-promo2.png" />
 

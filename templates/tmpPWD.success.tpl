@@ -17,12 +17,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: tmpPWD.success.tpl,v 1.3 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: tmpPWD.success.tpl,v 1.4 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
-<div class="rubrique">
-  Récupération de mot de passe
-</div>
+<h1>Récupération de mot de passe</h1>
 
 <p>
 <strong>Mot de passe enregistré le {dyn s=$smarty.now|date_format:"%x"}</strong>

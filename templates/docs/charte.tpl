@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: charte.tpl,v 1.4 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: charte.tpl,v 1.5 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Conditions générales d'utilisation
-</div>
+</h1>
 <p>
 L'utilisation des services de Polytechnique.org est soumise à certaines règles qui sont
 rappelées ici :

@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cookie_off.tpl,v 1.3 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: cookie_off.tpl,v 1.4 2004-10-24 14:41:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Contrôle d'accès au site
-</div>
+</h1>
 <p>
   L'accès sans mot de passe au site vient d'être supprimé pour l'ordinateur sur lequel tu
   es connecté en ce moment. Depuis ce poste de travail, tu devras donc entrer ton mot de

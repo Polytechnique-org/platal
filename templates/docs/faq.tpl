@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: faq.tpl,v 1.8 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: faq.tpl,v 1.9 2004-10-24 14:41:12 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="rubrique">
+<h1>
   Foire aux questions
-</div>
+</h1>
 <p>
 Cette rubrique est sans doute incomplète. N'hésite pas à nous demander
 de la compléter sur un sujet en rapport avec le site si tu estimes
