@@ -1,6 +1,6 @@
 <?php
 
-global $baseurl,$ref_flags,$fullref,$montant,$ref_text,$ref;
+global $baseurl,$ref_flags,$fullref,$montant,$ref_text,$ref,$ref_mail;
 
 // on construit l'adresse de retour pour le robot de la banque
 $roboturl = str_replace("https://","http://",$baseurl)."/paiement/cyberpaiement_retour.php?uid={$_SESSION['uid']}&amp;CHAMPBPX";
