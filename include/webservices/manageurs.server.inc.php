@@ -14,18 +14,21 @@ $error_key = "You didn't provide me with a valid cipher key...";
 */
 function get_annuaire_infos($method, $params) {
   global $error_mat, $error_key;
-  
+
+  //verif du mdp
+  if(!isset($params[0]) || ($params[0] != $GLOBALS['manageurs_pass'])){return false;}
+
   //si on a adresse == -1 => on ne recupère aucune adresse
-  if(isset($params[1]) && ($params[1] == -1)) unset($params[1]);
+  if(isset($params[2]) && ($params[2] == -1)) unset($params[2]);
   
   
-  if( !empty($params[0]) ){ // on verifie qu'on a bien un matricule
+  if( !empty($params[1]) ){ // on verifie qu'on a bien un matricule
 
      //on ne recupere pas les adresses inutilement
-     if(!isset($params[1])){
+     if(!isset($params[2])){
         $res = mysql_query("SELECT a.mobile AS cell, a.naissance AS age
 	                    FROM auth_user_md5 AS a
-			    WHERE a.matricule = '".addslashes($params[0])."'");
+			    WHERE a.matricule = '".addslashes($params[1])."'");
      }
      else{
        $res = mysql_query("SELECT a.mobile AS cell, a.naissance AS age,
@@ -34,7 +37,7 @@ function get_annuaire_infos($method, $params) {
 				  adr.tel, adr.fax
 	                   FROM auth_user_md5 AS a
 			   LEFT JOIN adresses AS adr ON(adr.uid = a.user_id)
-			   WHERE a.matricule = '".addslashes($params[0])."' AND
+			   WHERE a.matricule = '".addslashes($params[1])."' AND
 			         NOT FIND_IN_SET('pro', adr.statut)
 			   ORDER BY NOT FIND_IN_SET('active', adr.statut),
 				    FIND_IN_SET('res-secondaire', adr.statut),
@@ -42,7 +45,7 @@ function get_annuaire_infos($method, $params) {
      }
 
      //traitement des adresss si necessaire
-     if(isset($params[1])){
+     if(isset($params[2])){
        if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'],
                $adr['cp'], $adr['ville'],
                $adr['pays'], $adr['tel'], $adr['fax']) = mysql_fetch_row($res)){
@@ -51,7 +54,7 @@ function get_annuaire_infos($method, $params) {
 	   $array['adresse'][] = $adr;
 
            //on clamp le numero au nombre d'adresses dispo
-           $adresse = (int) $params[1];
+           $adresse = (int) $params[2];
 	   if($adresse > mysql_num_rows($res)) $adresse = mysql_num_rows($res);
 
 	   
@@ -91,7 +94,7 @@ function get_annuaire_infos($method, $params) {
        $array['age'] = $age;
 
        //on commence le cryptage des donnees
-       if(manageurs_encrypt_init($params[0]) == 1){//on a pas trouve la cle pour crypter
+       if(manageurs_encrypt_init($params[1]) == 1){//on a pas trouve la cle pour crypter
           $args = array("erreur" => 3, "erreurstring" => $error_key);
           $reply = xmlrpc_encode_request(NULL,$args);
        }
