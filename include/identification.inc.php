@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.11 2004-10-31 16:12:12 x2000chevalier Exp $
+        $Id: identification.inc.php,v 1.12 2004-11-09 21:02:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -190,7 +190,7 @@ if ( $homonyme ) {
     mysql_free_result($result);
 
     if ( $h_type != 'homonyme' and empty($expire) ) {
-	$globals->db->query("UPDATE aliases SET expire=ADD_DATE(NOW(),INTERVAL 1 MONTH) WHERE alias='$mailorg'");
+	$globals->db->query("UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias='$mailorg'");
 	$globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES ($h_id,$h_id)");
 	require_once('diogenes.mailer.inc.php');
 	$mailer = new DiogenesMailer('Support Polytechnique.org <support@polytechnique.org>',
@@ -199,10 +199,10 @@ if ( $homonyme ) {
 				     false,
 				     'Support Polytechnique.org <support@polytechnique.org>');
 	$msg =
-	    "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$loginbis'.\n\n".
+	    "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$mailorg'.\n\n".
 	    "Tu gardes toute de même à compter de ce jour, l'usage de cet alias pour 1 mois encore\n\n".
 	    "Lorsque cet alias sera désactivé, l'adresse :\n".
-	    "    $loginbis@polytechnique.org\n".
+	    "    $mailorg@polytechnique.org\n".
 	    "renverra vers un robot qui indique qu'il y a plusieurs personnes portant le même nom ; cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
 	    "Cordialement\n\n".
 	    "-- \n".
