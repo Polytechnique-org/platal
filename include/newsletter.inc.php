@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.11 2004-10-16 22:34:09 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.12 2004-10-16 23:02:44 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -189,7 +189,7 @@ class NLArticle {
     function toText() {
 	$title = '*'.$this->title().'*';
 	$body  = enriched_to_text($this->_body,false,true);
-	$app   = enriched_to_text($this->_append);
+	$app   = enriched_to_text($this->_append,false,false,4);
 	return trim("$title\n\n$body\n\n$app")."\n";
     }
 
@@ -200,7 +200,7 @@ class NLArticle {
 	$app   = enriched_to_text($this->_append,true);
 	
 	$art = "$title\n$body<br />";
-	if ($app) $art .= "<br />$app<br />";
+	if ($app) $art .= "<div style='padding-left: 4ex; margin: 2ex 0ex 2ex 0ex;'>$app</div>";
 	
 	return $art;
     }
@@ -299,7 +299,7 @@ function justify($text,$n) {
 }
 
 
-function enriched_to_text($input,$html=false,$just=false) {
+function enriched_to_text($input,$html=false,$just=false,$indent=0) {
     $text = stripslashes(trim($input));
     if($html) {
 	$text = htmlspecialchars($text);
@@ -318,7 +318,12 @@ function enriched_to_text($input,$html=false,$just=false) {
 	$text = preg_replace('!\[\/?i\]!','/',$text);
 	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','[\1]', $text);
 	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','[mailto:\1]', $text);
-	return $just ? justify($text,68) : wordwrap($text,68);
+	$text = $just ? justify($text,68-$indent) : wordwrap($text,68-$indent);
+	if($indent) {
+	    $ind = str_pad('',$indent);
+	    $text = $ind.str_replace("\n","\n$ind",$text);
+	}
+	return $text;
     }
 }
 
