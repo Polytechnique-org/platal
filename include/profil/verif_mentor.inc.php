@@ -43,6 +43,8 @@ else if(isset($_POST['mentor_secteur_id_new'])){
 else{
   $mentor_secteur_id_new = '';
 }
+$page->assign_by_ref('mentor_secteur_id_new', $mentor_secteur_id_new);
+
 if(isset($_POST['mentor_expertise'])){
   $mentor_expertise = stripslashes($_POST['mentor_expertise']);
   if(!empty($mentor_expertise)){

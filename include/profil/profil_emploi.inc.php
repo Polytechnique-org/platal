@@ -1,54 +1,7 @@
 <?php
 require_once('geoloc.inc.php');
-//fonctions pour afficher des select avec les bonnes options
-function select_secteur($secteur){
-	global $secteurs;
-	reset($secteurs);
-	if($secteur == '') $secteur = -1;
-	echo "<option value=\"\" ". (($secteur == '')?"selected":"") .">&nbsp;</option>\n";
-	foreach($secteurs as $sid => $slabel){
-		echo "<option value=\"$sid\" " . (($secteur == $sid)?"selected":"") . ">$slabel</option>\n";
-	}
-}
-function select_fonction($fonction){
-	global $fonctions, $fonctions_titre;
-	reset($fonctions);
-	echo "<option value=\"\" ". (($fonction == '0')?"selected":"") .">&nbsp;</option>\n";
-	foreach($fonctions as $fid => $flabel){
-		if($fonctions_titre[$fid] == 1)
-			echo "<option value=\"$fid\" " . (($fonction == $fid)?"selected":"") . ">$flabel</option>\n";
-		else
-			echo "<option value=\"$fid\" " . (($fonction == $fid)?"selected":"") . ">* $flabel</option>\n";
-	}
-}
-function select_ss_secteur($secteur,$ss_secteur){
-	if($secteur != ''){
-		echo "<option value=\"\">&nbsp;</option>\n";
-		$res = mysql_query("SELECT id, label FROM emploi_ss_secteur WHERE secteur = '$secteur'");
-		while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)){
-			echo "<option value=\"$tmp_id\" ". (($ss_secteur == $tmp_id)?"selected":"") .">$tmp_label</option>\n";
-		}
-	}
-	else{
-	  echo "<option value=\"\" selected>&nbsp;</option>\n";
-	}
-}
-
-//fonctions pour smarty
-function _select_secteur_smarty($params){
-  select_secteur($params['secteur']);
-}
-function _select_ss_secteur_smarty($params){
-  if(!isset($params['secteur'])) return;
-  select_ss_secteur($params['secteur'], $params['ss_secteur']);
-}
-function _select_fonction_smarty($params){
-  select_fonction($params['fonction']);
-}
-$page->register_function('select_secteur', '_select_secteur_smarty');
-$page->register_function('select_ss_secteur', '_select_ss_secteur_smarty');
-$page->register_function('select_fonction', '_select_fonction_smarty');
-
+require_once('secteur.emploi.inc.php');
+require_once('fonction.emploi.inc.php');
 
 $res = mysql_query("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
 	adr1, adr2, adr3, cp, ville, pays, region, tel, fax,

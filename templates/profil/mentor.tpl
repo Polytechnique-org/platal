@@ -90,7 +90,42 @@
         &nbsp;
 	</td>
       </tr>
-      {print_pays}
+   {section name=pays loop=$nb_mentor_pays+1 start=1}
+     {assign var='i' value=$smarty.section.pays.index}
+	{if $i%2}
+	  <tr class="pair">
+	{else}
+	  <tr class="impair">
+	{/if}
+	<td class="colg">
+	  <span class="valeur">{$mentor_pays.$i|print_html}</span>
+	</td>
+	<td class="colm">
+	<span class="valeur">&nbsp;&nbsp;</span>
+	</td>
+        <td class="cold">
+	  <span class="lien"><a href="javascript:mentor_pays_del('{$mentor_pid.$i}');">retirer</a></span>
+        </td>
+      </tr>
+     {/section}
+     {if $nb_mentor_pays < $max_mentor_pays}
+       {if $i%2}
+         <tr class="pair">
+       {else}
+         <tr class="impair">
+       {/if}
+       <td class="colg">
+        <select name="mentor_pays_id_new">
+          {geoloc_pays pays='00'}
+        </select>
+       </td>
+       <td class="colm">
+       </td>
+       <td class="cold">
+        <span class="lien"><a href="javascript:mentor_pays_add();">ajouter</a></span>
+       </td>
+      </tr>
+     {/if}
    </table>
 </div>
 
@@ -132,7 +167,45 @@
         &nbsp;
 	</td>
       </tr>
-      {print_secteurs_mentor}
+   {section name=secteur loop=$nb_mentor_secteurs+1 start=1}
+     {assign var='i' value=$smarty.section.secteur.index}
+     {if $i%2}
+      <tr class="pair">
+     {else}
+      <tr class="impair">
+     {/if}
+	<td class="colg">
+          <span class="valeur">{$mentor_secteur.$i|print_html}</span>
+	</td>
+	<td class="colm">
+	<span class="valeur">{$mentor_ss_secteur.$i|print_html}</span>
+	</td>
+        <td class="cold">
+	  <span class="lien"><a href="javascript:mentor_secteur_del('{$mentor_sid.$i}');">retirer</a></span>
+        </td>
+      </tr>
+      {/section}
+      {if $nb_mentor_secteurs < $max_mentor_secteurs}
+          {if $i%2}
+	    <tr class="pair">
+	  {else}
+	    <tr class="impair">
+	  {/if}
+       <td class="colg">
+        <select name="mentor_secteur_id_new" OnChange="javascript:submit()">
+          {select_secteur secteur=$mentor_secteur_id_new}
+        </select>
+       </td>
+       <td class="colm">
+        <select name="mentor_ss_secteur_id_new">
+          {select_ss_secteur secteur=$mentor_secteur_id_new ss_secteur=''}
+        </select>
+       </td>
+       <td class="cold">
+        <span class="lien"><a href="javascript:mentor_secteur_add();">ajouter</a></span>
+       </td>
+             </tr>
+      {/if}
    </table>
 </div>
 

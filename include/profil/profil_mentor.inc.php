@@ -1,7 +1,7 @@
 <?php
 
 require_once('geoloc.inc.php');
-
+require_once('secteur.emploi.inc.php');
 function affiche_pays(){
 	global $mentor_pid, $mentor_pays, $nb_mentor_pays, $max_mentor_pays;
 	for($i = 1; $i <= $nb_mentor_pays ; $i++){
@@ -36,73 +36,15 @@ function affiche_pays(){
 	}
 }
 
-function select_secteur($secteur){
-	if($secteur == '') $secteur = -1;
-	echo "<option value=\"\" ". (($secteur == '')?"selected":"") .">&nbsp;</option>\n";
-	$res = mysql_query("SELECT id, label FROM emploi_secteur");
-        while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)){
-		echo "<option value=\"$tmp_id\" " . (($secteur == $tmp_id)?"selected":"") . ">$tmp_label</option>\n";
-	}
-}
-
-function select_ss_secteur($secteur,$ss_secteur){
-	if($secteur != ''){
-		echo "<option value=\"\">&nbsp;</option>\n";
-		$res = mysql_query("SELECT id, label FROM emploi_ss_secteur WHERE secteur = '$secteur'");
-		while(list($tmp_id, $tmp_label) = mysql_fetch_row($res)){
-			echo "<option value=\"$tmp_id\" ". (($ss_secteur == $tmp_id)?"selected":"") .">$tmp_label</option>\n";
-		}
-	}
-	else{
-	  echo "<option value=\"\" selected>&nbsp;</option>\n";
-	}
-}
-
-function affiche_secteurs(){
-	global $mentor_sid, $mentor_secteur, $mentor_ssid, $mentor_ss_secteur, $nb_mentor_secteurs, $max_mentor_secteurs;
-	global $mentor_secteur_id_new;
-	for($i = 1; $i <= $nb_mentor_secteurs ; $i++){
-	    if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
-?>
-	<td class="colg">
-	<span class="valeur"><?php print_html($mentor_secteur[$i]);?></span>
-	</td>
-	<td class="colm">
-	<span class="valeur"><?php print_html($mentor_ss_secteur[$i]);?></span>
-	</td>
-        <td class="cold">
-	  <span class="lien"><a href="javascript:mentor_secteur_del('<?php echo $mentor_sid[$i]; ?>');">retirer</a></span>
-        </td>
-      </tr>
-<?php } if($nb_mentor_secteurs < $max_mentor_secteurs) {
-          if ($i%2) echo '<tr class="pair">'; else echo '<tr class="impair">';
-?>
-       <td class="colg">
-        <select name="mentor_secteur_id_new" OnChange="javascript:submit()">
-          <?php select_secteur($mentor_secteur_id_new);?>
-        </select>
-       </td>
-       <td class="colm">
-        <select name="mentor_ss_secteur_id_new">
-          <?php select_ss_secteur($mentor_secteur_id_new, '');?>
-        </select>
-       </td>
-       <td class="cold">
-        <span class="lien"><a href="javascript:mentor_secteur_add();">ajouter</a></span>
-       </td>
-      </tr>
-
-<?php
-	}
-}
 function _print_pays_smarty($params){affiche_pays();}
-function _print_secteurs_mentor_smarty($params){affiche_secteurs();}
 $page->register_function('print_pays','_print_pays_smarty');
-$page->register_function('print_secteurs_mentor','_print_secteurs_mentor_smarty');
 
 
 $max_mentor_pays = 10;
 $max_mentor_secteurs = 10;
+
+$page->assign('max_mentor_pays', $max_mentor_pays);
+$page->assign('max_mentor_secteurs', $max_mentor_secteurs);
 
 //suppression eventuelle d'un pays
 if(isset($_POST['mentor_pays_op']) && ($_POST['mentor_pays_op'] == 'retirer'))
@@ -146,6 +88,9 @@ if($nb_mentor_pays > 0){
   for($i = 1; $i <= $nb_mentor_pays ; $i++)
     list($mentor_pid[$i], $mentor_pays[$i]) = mysql_fetch_row($res);
 }
+$page->assign_by_ref('mentor_pid', $mentor_pid);
+$page->assign_by_ref('mentor_pays', $mentor_pays);
+$page->assign_by_ref('nb_mentor_pays', $nb_mentor_pays);
 
 //recuperation des secteurs
 $res = mysql_query("SELECT m.secteur, s.label, m.ss_secteur, ss.label
@@ -160,5 +105,10 @@ if($nb_mentor_secteurs > 0){
     list($mentor_sid[$i], $mentor_secteur[$i],
          $mentor_ssid[$i], $mentor_ss_secteur[$i]) = mysql_fetch_row($res);
 }
+$page->assign_by_ref('mentor_sid', $mentor_sid);
+$page->assign_by_ref('mentor_secteur', $mentor_secteur);
+$page->assign_by_ref('mentor_ssid', $mentor_ssid);
+$page->assign_by_ref('mentor_ss_secteur', $mentor_ss_secteur);
+$page->assign_by_ref('nb_mentor_secteurs', $nb_mentor_secteurs);
 
 ?>
