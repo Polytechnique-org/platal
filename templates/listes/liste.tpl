@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.tpl,v 1.5 2004-09-10 23:13:04 x2000habouzit Exp $
+        $Id: liste.tpl,v 1.6 2004-09-11 15:11:14 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -152,7 +152,7 @@ Et si la personne fait "répondre à", le message arrive aux modérateurs de la lis
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   <div class='center'>
-    <textarea cols='50' rows='8' name='info'>{$details.info}</textarea><br />
+    <textarea cols='50' rows='8' name='welc'>{$details.welc}</textarea><br />
     <input type='submit' name='update' value='mettre à jour' />
   </div>
 </form>

@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.16 2004-09-10 22:28:39 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.17 2004-09-11 15:11:13 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -151,7 +151,7 @@ def get_members((userdesc,perms),listname):
                     'diff' : mlist.generic_nonmember_action,
                     'ins'  : mlist.subscribe_policy > 0,
                     'priv' : (1-mlist.advertised)+2*(mm_cfg.ADMIN_ML_OWNER in mlist.owner),
-                    'info' : mlist.info,
+                    'welc' : mlist.welcome_msg
                     'you'  : is_member + 2*is_owner
                   }
         members = map(lambda member: (mlist.getMemberName(member) or '', member), members)
@@ -166,7 +166,7 @@ def subscribe((userdesc,perms),listname):
     try:
         if ( mlist.subscribe_policy in (0,1) ) or is_admin_on(userdesc, perms, mlist):
             result = 2
-            mlist.ApprovedAddMember(userdesc, None, 0)
+            mlist.ApprovedAddMember(userdesc,0,0)
         else:
             result = 1
             try:
@@ -185,7 +185,7 @@ def unsubscribe((userdesc,perms),listname):
     except:
         return 0
     try:
-        mlist.ApprovedDeleteMember(userdesc.address, None, False, False)
+        mlist.ApprovedDeleteMember(userdesc.address, None, 0, 0)
         mlist.Save()
         mlist.Unlock()
         return 1
@@ -219,7 +219,7 @@ def mass_subscribe((userdesc,perms),listname,users):
                 if forlife+'@polytechnique.org' in members:
                     continue
                 userd = UserDesc(forlife+'@polytechnique.org', name, None, 0)
-                mlist.ApprovedAddMember(userd)
+                mlist.ApprovedAddMember(userd,0,0)
                 added.append( (userd.fullname, userd.address) )
         mlist.Save()
     finally:
@@ -279,7 +279,7 @@ def del_owner((userdesc,perms),listname,user):
         mlist.Unlock()
         return True
 
-def set_welcome((userdesc,perms),listname,info):
+def set_welcome((userdesc,perms),listname,welcome):
     try:
         mlist = MailList.MailList(listname)
     except:
@@ -287,7 +287,7 @@ def set_welcome((userdesc,perms),listname,info):
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
-        mlist.info = info
+        mlist.welcome_msg = welcome
         mlist.Save()
     finally:
         mlist.Unlock()
