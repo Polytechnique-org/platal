@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.tpl,v 1.4 2004-10-08 21:26:51 web Exp $
+        $Id: volontaire.tpl,v 1.5 2004-10-09 14:37:24 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -77,7 +77,7 @@
     <th>Camarade "informateur"</th>
     <th>inscrit?</th>
   </tr>
-  {foreach from=$neuves item=it}
+  {foreach from=$used item=it}
   <tr class="{cycle values="pair,impair"}">
     <td>{$it.nom} {$it.prenom} (X{$it.promo})</td>
     <td>{$it.email}</td>
