@@ -63,6 +63,7 @@ function form_prepare()
 if (!Env::has('rechercher')) {
     form_prepare();
 } else {
+
     // {{{ function get_list()
 
     function get_list($offset, $limit, $order, $order_inv) {

@@ -33,6 +33,7 @@ require_once("geoloc.inc.php");
 if (Env::has('quick')) {
     $page->assign('formulaire', 0);
 
+    // {{{ get_list
     function get_list($offset, $limit, $order, $order_inv) {
         global $globals;
         $qSearch = new QuickSearch('quick');
@@ -66,6 +67,8 @@ if (Env::has('quick')) {
         $nb_tot  = $res->fetchOneCell();
         return array($list, $nb_tot);
     }
+
+    // }}}
 
     $search = new XOrgSearch(get_list);
     $search->setNbLines($globals->search->per_page);

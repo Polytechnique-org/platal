@@ -28,14 +28,15 @@ class XOrgSearch extends XOrgPlugin
 {
     // {{{ properties
     
-    var $_get_vars = Array('offset', 'order', 'order_inv', 'rechercher');
-    var $limit = 20;
+    var $_get_vars    = Array('offset', 'order', 'order_inv', 'rechercher');
+    var $limit        = 20;
     var $order_defaut = 'promo';
     // type of orders : (field name, default ASC, text name, auth)
     var $orders = array(
-            'promo'     =>array('promo', false, 'promotion', AUTH_PUBLIC),
-            'nom'       =>array('nom', true, 'nom', AUTH_PUBLIC),
-            'date_mod'  =>array('u.date', false, 'dernière modification', AUTH_COOKIE));
+            'promo'     =>array('promo',  false, 'promotion',             AUTH_PUBLIC),
+            'nom'       =>array('nom',    true,  'nom',                   AUTH_PUBLIC),
+            'date_mod'  =>array('u.date', false, 'dernière modification', AUTH_COOKIE)
+        );
 
     // }}}
     // {{{ function setNbLines()
