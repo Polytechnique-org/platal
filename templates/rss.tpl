@@ -23,7 +23,7 @@
     <title>Polytechnique.org :: News</title>
     <language>fr</language>
     <link>{#globals.baseurl#}/</link>
-    <description>L'actualit&eacute; polytechnicienne...</description>
+    <description>L'actualite polytechnicienne...</description>
     <image>
       <title>Polytechnique.org</title>
       <url>{#globals.baseurl#}/images/logo.png</url>
