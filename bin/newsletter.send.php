@@ -49,7 +49,7 @@ while(true) {
          INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
               WHERE  ni.last<{?}
               LIMIT  60", $id);
-    if (!$res->numRows()) { exit; }
+    if (!$res->total()) { exit; }
 
     $sent = Array();
     while (list($uid, $fmt, $bestalias, $prenom, $nom, $sexe) = $res->next()) {
