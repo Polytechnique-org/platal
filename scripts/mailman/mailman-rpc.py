@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.69 2004-11-02 09:03:42 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.70 2004-11-04 15:40:42 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -790,6 +790,7 @@ for o, a in opts:
     if o == '-f' and os.fork():
         sys.exit(0)
 
+i18n.set_language('fr')
 mysql = connectDB()
 
 #-------------------------------------------------------------------------------
