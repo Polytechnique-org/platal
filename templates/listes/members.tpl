@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.2 2004-09-25 10:13:29 x2000habouzit Exp $
+        $Id: members.tpl,v 1.3 2004-09-25 16:32:52 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -47,7 +47,7 @@
   </tr>
   <tr>
     <td class='titre'> Diffusion </td>
-    <td>{if $details.diff}modérée{else}libre{/if}</td>
+    <td>{if $details.diff eq 2}modérée{elseif $details.diff}restreinte{else}libre{/if}</td>
   </tr>
   <tr>
     <td class='titre'> Inscription </td>
