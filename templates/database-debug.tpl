@@ -5,7 +5,7 @@
   <tr class="impair">
     <td>
       <strong>QUERY:</strong><br />
-      {$query.query|regex_replace:"/(\n|^|$) */":"\n  "|replace:" ":"&nbsp"|nl2br}
+      {$query.query|regex_replace:"/(\n|^|$) */":"\n  "|replace:" ":"&nbsp;"|nl2br}
       <br />
     </td>
   </tr>
@@ -18,7 +18,8 @@
   </tr>
   {/if}
 </table>
-<table class="bicol" style="width: 75%; font-family: fixed; margin-left: 2px; margin-bottom: 3px; margin-top: -1px;">
+{if $query.explain}
+<table class="bicol" style="width: 75%; font-family: fixed; margin-left: 2px; margin-bottom: 3px;">
   <tr>
     {foreach key=key item=item from=$query.explain}
     <th>{$key}</th>
@@ -30,6 +31,7 @@
     {/foreach}
   </tr>
 </table>
+{/if}
 {/foreach}
 
 {/dynamic}
