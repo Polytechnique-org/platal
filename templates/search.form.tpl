@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.14 2004-08-31 22:21:05 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.15 2004-10-11 00:21:42 x2000bedo Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -47,7 +47,7 @@
     {$error}
   </p>
 {/if}
-<form action="{$smarty.server.PHP_SELF}" method="post" id="recherche">
+<form name="recherche" action="{$smarty.server.PHP_SELF}" method="post">
   <table class="{if !$advanced}tiny{/if}bicol" cellpadding="3" summary="Recherche">
     <tr>
       <td>Nom</td>
@@ -166,7 +166,8 @@
       <td>
         <select name="nationalite">
         {section name=nationalite loop=$choix_nationalites}
-          <option value="{$choix_nationalites[nationalite].id}" {if $smarty.request.nationalite eq $choix_nationalites[nationalite].id}selected{/if}>
+          <option value="{$choix_nationalites[nationalite].id}" {if $smarty.request.nationalite eq
+          $choix_nationalites[nationalite].id}selected="selected"{/if}>
             {$choix_nationalites[nationalite].text}
           </option>
         {/section}
@@ -179,7 +180,8 @@
         <select name="binet">
         <option value="0"></option>
         {section name=binet loop=$choix_binets}
-          <option value="{$choix_binets[binet].id}" {if $smarty.request.binet eq $choix_binets[binet].id}selected{/if}>
+          <option value="{$choix_binets[binet].id}" {if $smarty.request.binet eq
+          $choix_binets[binet].id}selected="selected"{/if}>
             {$choix_binets[binet].text}
           </option>
         {/section}
@@ -192,7 +194,8 @@
         <select name="groupex">
         <option value="0"></option>
         {section name=groupex loop=$choix_groupesx}
-          <option value="{$choix_groupesx[groupex].id}" {if $smarty.request.groupex eq $choix_groupesx[groupex].id}selected{/if}>
+          <option value="{$choix_groupesx[groupex].id}" {if $smarty.request.groupex eq
+          $choix_groupesx[groupex].id}selected="selected"{/if}>
             {$choix_groupesx[groupex].text}
           </option>
         {/section}
@@ -204,7 +207,8 @@
       <td>
         <select name="section">
         {section name=section loop=$choix_sections}
-          <option value="{$choix_sections[section].id}" {if $smarty.request.section eq $choix_sections[section].id}selected{/if}>
+          <option value="{$choix_sections[section].id}" {if $smarty.request.section eq
+          $choix_sections[section].id}selected="selected"{/if}>
             {$choix_sections[section].text}
           </option>
         {/section}
@@ -217,7 +221,8 @@
         <select name="school" onchange="javascript:document.recherche.submit();">
           <option value="0"></option>
           {section name=school loop=$choix_schools}
-          <option value="{$choix_schools[school].id}" {if $smarty.request.school eq $choix_schools[school].id}selected{/if}>
+          <option value="{$choix_schools[school].id}" {if $smarty.request.school eq
+          $choix_schools[school].id}selected="selected"{/if}>
             {$choix_schools[school].text}
           </option>
           {/section}
@@ -230,7 +235,8 @@
         <select name="diploma">
           <option value="0"></option>
           {section name=diploma loop=$choix_diplomas}
-          <option value="{$choix_diplomas[diploma]}" {if $smarty.request.diploma eq $choix_diplomas[diploma]}selected{/if}>
+          <option value="{$choix_diplomas[diploma]}" {if $smarty.request.diploma eq
+          $choix_diplomas[diploma]}selected="selected"{/if}>
             {$choix_diplomas[diploma]}
           </option>
           {/section}
