@@ -9,6 +9,7 @@ class AliasReq extends Validate {
     var $old;
     
     function AliasReq ($_uid, $_alias, $_raison, $_stamp=0) {
+        global $globals;
         $this->Validate($_uid, true, 'alias', $_stamp);
         $this->alias = $_alias;
         $this->raison = $_raison;
@@ -53,7 +54,7 @@ class AliasReq extends Validate {
     }
 
     function commit () {
-        global $no_update_bd;
+        global $no_update_bd,$globals;
         if($no_update_bd) return false;
 
         $domain=$this->alias.'@melix.net';

@@ -17,6 +17,7 @@ class XorgSession extends DiogenesCoreSession {
    * @param page the calling page (by reference)
    */
   function doAuth(&$page,$new_name=false) {
+    global $globals;
     if(identified()) { // ok, c'est bon, on n'a rien à faire
       return;
     }
@@ -151,6 +152,7 @@ function identified () {
  *                  -2 should not happen
  */
 function try_cookie() {
+    global $globals;
     if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGlogin']))
         return -1;
 
@@ -173,6 +175,7 @@ function try_cookie() {
  * @see controlpermanent.inc.php controlauthentication.inc.php
  */
 function start_connexion ($username, $uid, $identified) {
+  global $globals;
   $result=$globals->db->query("SELECT prenom, nom, perms, promo, UNIX_TIMESTAMP(lastnewslogin), UNIX_TIMESTAMP(lastlogin), host, matricule FROM auth_user_md5 WHERE user_id=$uid;");
   list($prenom, $nom, $perms, $promo, $lastnewslogin, $lastlogin, $host, $matricule) = mysql_fetch_row($result);
   mysql_free_result($result);
@@ -214,6 +217,7 @@ function start_connexion ($username, $uid, $identified) {
 }
 
 function set_skin() {
+  global $globals;
   if(logged()) {
     $result = $globals->db->query("SELECT skin,skin_tpl
                            FROM auth_user_md5 AS a INNER JOIN skins AS s

@@ -17,6 +17,7 @@ class MListReq extends Validate {
 
     function MListReq ($_uid, $_alias, $_topic, $_publique, $_libre, $_archive, $_freeins,
             $_comment, $_moderos, $_membres, $_stamp=0) {
+        global $globals;
         $this->Validate($_uid, false, 'ml', $_stamp);
         $this->alias = $_alias;
         $this->topic = $_topic;
@@ -38,6 +39,7 @@ class MListReq extends Validate {
     }
 
     function formu() {
+        global $globals;
         $sql = $globals->db->query("SELECT username FROM auth_user_md5"
             ." WHERE user_id IN ({$this->moderos})"
             ." ORDER BY nom, prenom");
@@ -96,7 +98,7 @@ class MListReq extends Validate {
     }
 
     function commit () {
-        global $no_update_bd;
+        global $no_update_bd, $globals;
         if($no_update_bd) return false;
         
         $type = new DiogenesFlagset();

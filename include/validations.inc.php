@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.7 2004-02-20 09:54:45 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.8 2004-02-20 10:14:58 x2000habouzit Exp $
  *
  */
 
@@ -13,6 +13,7 @@ class ValidateIterator {
     
     /** constructeur */
     function ValidateIterator () {
+        global $globals;
         $this->sql = $globals->db->query("SELECT data,stamp FROM requests ORDER BY stamp");
     }
 
@@ -54,6 +55,7 @@ class Validate {
      * à utiliser uniquement pour récupérer un objet <strong>unique</strong>
      */
     function get_unique_request($uid,$type) {
+        global $globals;
         $sql = $globals->db->query("SELECT data,stamp FROM requests WHERE user_id='$uid' and type='$type'");
         if(list($result,$stamp) = mysql_fetch_row($sql)) {
             $result = unserialize($result);
@@ -77,6 +79,7 @@ class Validate {
      * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_request(...)
      */
     function get_request($uid, $type, $stamp) {
+        global $globals;
         $sql = $globals->db->query("SELECT data,stamp"
             ." FROM requests"
             ." WHERE user_id='$uid' and type = '$type' and stamp='$stamp'");
@@ -108,7 +111,7 @@ class Validate {
      * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
      */
     function submit () {
-        global $no_update_bd;
+        global $no_update_bd, $globals;
         if($no_update_bd) return false;
         $globals->db->query("LOCK requests"); // le lock est obligatoire pour récupérer le dernier stamp !
         
@@ -133,7 +136,7 @@ class Validate {
      * attention, tout est supprimé si c'est un unique
      */
     function clean () {
-        global $no_update_bd;
+        global $no_update_bd, $globals;
         if($no_update_bd) return false;
         return $globals->db->query("DELETE FROM requests WHERE user_id='".$this->uid."' AND type='".$this->type."'"
                 .($this->unique ? "" : " AND stamp='".$this->stamp."'"));

@@ -11,7 +11,7 @@ class PhotoReq extends Validate {
     var $nom;
    
     function PhotoReq ($_uid, $_file, $_stamp=0) {
-        global $erreur;
+        global $erreur, $globals;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
         $sql = $globals->db->query("SELECT username, prenom, nom FROM auth_user_md5 WHERE user_id=".$this->uid);
@@ -80,7 +80,7 @@ class PhotoReq extends Validate {
     }
     
     function commit () {
-        global $no_update_bd;
+        global $no_update_bd, $globals;
         if($no_update_bd) return false;
         
         $globals->db->query("REPLACE INTO photo set uid='".$this->uid."', attachmime = '".$this->mimetype."', attach='"

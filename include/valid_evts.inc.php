@@ -16,6 +16,7 @@ class EvtReq extends Validate {
 
     function EvtReq($_evtid,$_titre,$_texte,$_pmin,$_pmax,$_peremption,
       $_comment,$_uid,$_stamp=0) {
+        global $globals;
         $this->Validate($_uid, false, 'evts', $_stamp);
         $this->evtid = $_evtid;
         $this->titre = $_titre;
@@ -38,6 +39,7 @@ class EvtReq extends Validate {
     function formu() { return 'include/form.valid.evts.tpl'; }
 
     function handle_formu() {
+        global $globals;
         if (isset($_POST['action'])) {
             require("tpl.mailer.inc.php");
             $mymail = new TplMailer('valid.evts.tpl');

@@ -13,6 +13,7 @@ class EpouseReq extends Validate {
     var $homonyme;
     
     function EpouseReq ($_uid, $_username, $_epouse, $_stamp=0) {
+        global $globals;
         $this->Validate($_uid, true, 'epouse', $_stamp);
         $this->epouse = $_epouse;
         $this->username = $_username;
@@ -71,7 +72,7 @@ class EpouseReq extends Validate {
     }
 
     function commit () {
-        global $no_update_bd;
+        global $no_update_bd, $globals;
         if($no_update_bd) return false;
         
         $alias = ($this->epouse ? $this->alias : "");

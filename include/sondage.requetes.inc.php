@@ -23,7 +23,8 @@ function est_vide($donnees) {
  * @param $requete la requête MySQL à exécuter
  * @return $resultat le résultat de la requête
  */
-function $globals->db->query_p($requete) {
+function mysql_query_p($requete) {
+    global $globals;
     $resultat = $globals->db->query($requete);
     if ($resultat == false) {
 		erreur("Erreur dans une requête.");
@@ -37,8 +38,9 @@ function $globals->db->query_p($requete) {
  * @param $requete la requête MySQL
  * @return $resultat le résultat de la requête
  */
-function $globals->db->query_p_non_vide($requete) {
-	$resultat = $globals->db->query_p($requete);
+function mysql_query_p_non_vide($requete) {
+    global $globals;
+	$resultat = mysql_query_p($requete);
 	if (mysql_num_rows($resultat) <= 0) {
 		erreur("Erreur : pas d'enregistrement correspondant à la requête.");
 		require("footer.inc.php");
@@ -63,7 +65,8 @@ function usernames($liste) {
  * @return $res un tableau d'enregistrements (promo,nom,prenom)
  */
 function moderateurs($SID) {
-	$resultat = $globals->db->query_p("select user_id,prenom,nom,promo,username ".
+    global $globals;
+	$resultat = mysql_query_p("select user_id,prenom,nom,promo,username ".
 	"from x4dat.auth_user_md5 as u,sondage.moderateurs as m ".
 	"where u.user_id=m.idu and m.ids=$SID order by promo,nom,prenom");
 	$res = null;
@@ -84,7 +87,7 @@ function moderateurs($SID) {
  * @return $res une adresse mail (chaîne)
  */
 function mail_moderateurs($SID) {
-	$resultat=$globals->db->query_p("select username ".
+	$resultat=mysql_query_p("select username ".
 	"from x4dat.auth_user_md5 as u, sondage.moderateurs as m ".
 	"where m.ids=$SID and m.idu=u.user_id");
 	$res = "";
@@ -102,7 +105,7 @@ function mail_moderateurs($SID) {
  * @return $res un tableau d'enregistrements (promo,nom,prenom)
  */
 function inscrits($SID) {
-	$resultat = $globals->db->query_p("select user_id,prenom,nom,promo,username ".
+	$resultat = mysql_query_p("select user_id,prenom,nom,promo,username ".
 	"from x4dat.auth_user_md5 as u,sondage.inscrits as i ".
 	"where u.user_id=i.idu and i.ids=$SID order by promo,nom,prenom");
 	$res = null;
@@ -123,7 +126,7 @@ function inscrits($SID) {
  * @return l'uid ou NULL s'il n'y a pas d'utilisateur avec cet username
  */
 function recupere_uid($adresse) {
-	$resultat = $globals->db->query_p("select user_id from x4dat.auth_user_md5 ".
+	$resultat = mysql_query_p("select user_id from x4dat.auth_user_md5 ".
 	"where username='$adresse'");
 	if (mysql_num_rows($resultat)<=0) {
 		erreur("Il n'y a pas d'X inscrit d'identifiant : $adresse.");
@@ -143,7 +146,7 @@ function recupere_uid($adresse) {
 function ajouter_moderateur($SID,$adresse) {
 	$UID = recupere_uid($adresse);
 	if (isset($UID))
-		$globals->db->query_p("insert into sondage.moderateurs (ids,idu) values($SID,$UID)");
+		mysql_query_p("insert into sondage.moderateurs (ids,idu) values($SID,$UID)");
 }
 
 /** ajoute un inscrit à un sondage
@@ -154,7 +157,7 @@ function ajouter_moderateur($SID,$adresse) {
 function ajouter_inscrit($SID,$adresse) {
     $UID = recupere_uid($adresse);
 	if (isset($UID))
-		$globals->db->query_p("insert into sondage.inscrits (ids,idu) values($SID,$UID)");
+		mysql_query_p("insert into sondage.inscrits (ids,idu) values($SID,$UID)");
 }
 
 /** supprime un modérateur à un sondage
@@ -163,13 +166,13 @@ function ajouter_inscrit($SID,$adresse) {
  * @return rien
  */
 function supprimer_moderateur($SID,$adresse) {
-	$resultat = $globals->db->query_p("select idu from sondage.moderateurs where ids=$SID");
+	$resultat = mysql_query_p("select idu from sondage.moderateurs where ids=$SID");
 	if (mysql_num_rows($resultat) <= 1)
 		erreur("Il doit y avoir au moins un modérateur pour un sondage.");
 	else {
         $UID = recupere_uid($adresse);
 		if (isset($UID))
-			$globals->db->query_p("delete from sondage.moderateurs where ids=$SID and idu=$UID");
+			mysql_query_p("delete from sondage.moderateurs where ids=$SID and idu=$UID");
 	}
 }
 
@@ -181,7 +184,7 @@ function supprimer_moderateur($SID,$adresse) {
 function supprimer_inscrit($SID,$adresse) {
     $UID = recupere_uid($adresse);
 	if (isset($UID))                   
-		$globals->db->query_p("delete from sondage.inscrits where ids=$SID and idu=$UID");
+		mysql_query_p("delete from sondage.inscrits where ids=$SID and idu=$UID");
 } 
 
 /** renvoie les titres des sondages qui sont/ne sont pas en production pour un certain utilisateur
@@ -194,7 +197,7 @@ function sondages($prod,$uid) {
         $not = "";
     else
         $not = "!";
-	$resultat=$globals->db->query_p("select d.ids,titre ".
+	$resultat=mysql_query_p("select d.ids,titre ".
 	"from sondage.description_generale as d,sondage.moderateurs as m ".
 	"where $not FIND_IN_SET('prod',d.flags) and d.ids=m.ids and m.idu=$uid");
 	$res = null;
@@ -227,7 +230,7 @@ function sondages_non_en_prod($uid) {
  * @return $res un enregistrement (en_prod,en_modif)
  */
 function nb_sondages_prod($uid) {
-    $resultat = $globals->db->query_p("select sum(FIND_IN_SET('prod',d.flags)),count(d.flags)".
+    $resultat = mysql_query_p("select sum(FIND_IN_SET('prod',d.flags)),count(d.flags)".
     "from sondage.description_generale as d,sondage.moderateurs as m ".
     "where d.ids=m.ids and m.idu=$uid");
     list($res->en_prod,$res->en_modif) = mysql_fetch_row($resultat);
@@ -240,7 +243,7 @@ function nb_sondages_prod($uid) {
  * @return rien
  */
 function passer_en_prod($SID,$alias) {
-	$globals->db->query_p("update sondage.description_generale "
+	mysql_query_p("update sondage.description_generale "
     . "set flags=CONCAT_WS(',',flags,'prod'), alias='$alias' where ids=$SID");
 }
 
@@ -251,7 +254,7 @@ function passer_en_prod($SID,$alias) {
  * @return un booléen
  */
 function deja_vote($SID,$user_id,$sondage) {
-	$resultat = $globals->db->query_p("select idu from sondage.sondes where ids=$SID and idu=$user_id");
+	$resultat = mysql_query_p("select idu from sondage.sondes where ids=$SID and idu=$user_id");
 	if (mysql_num_rows($resultat) > 0 && $sondage->en_prod==1)
 		return 1;
 	else
@@ -263,7 +266,7 @@ function deja_vote($SID,$user_id,$sondage) {
  * @return $res un enregistrement (titre,en_tete,pied,parties,prod,tous,mail)
  */
 function infos_sondage($SID) {
-	$resultat=$globals->db->query_p("select titre,en_tete,pied,mail".
+	$resultat=mysql_query_p("select titre,en_tete,pied,mail".
         ", FIND_IN_SET('prod',flags), !FIND_IN_SET('parties',flags), !FIND_IN_SET('tous',flags)".
 	    " from sondage.description_generale where ids=$SID");
 	$res = null;
@@ -286,7 +289,7 @@ function infos_sondage($SID) {
  */
 function obtenir_sid($alias) {
     global $sondage;
-    $resultat=$globals->db->query_p("select ids,titre,en_tete,pied,mail".
+    $resultat=mysql_query_p("select ids,titre,en_tete,pied,mail".
     ", FIND_IN_SET('prod',flags), !FIND_IN_SET('parties',flags), !FIND_IN_SET('tous',flags)".
     " from sondage.description_generale where alias='$alias'");
     if (mysql_num_rows($resultat)>0) {
@@ -309,7 +312,7 @@ function obtenir_sid($alias) {
  * @return $res un enregistrement (idp,titre,en_tete,pied,ordre)
  */
 function infos_partie($SID,$PID) {
-	$resultat=$globals->db->query_p("select idp,sous_titre,en_tete,pied,ordre ".
+	$resultat=mysql_query_p("select idp,sous_titre,en_tete,pied,ordre ".
 	"from sondage.parties where ids=$SID and idp=$PID");
 	$res = null;
 	if (mysql_num_rows($resultat)>0) {
@@ -330,7 +333,7 @@ function infos_partie($SID,$PID) {
  * @return $res un enregistrement (idq,texte,type_reponse,ordre)
  */
 function infos_question($SID,$PID,$QID) {
-	$resultat=$globals->db->query_p("select idq,texte,type_reponse,ordre ".
+	$resultat=mysql_query_p("select idq,texte,type_reponse,ordre ".
 	"from sondage.questions where ids=$SID and idp=$PID and idq=$QID");
 	$res = null;
 	if (mysql_num_rows($resultat)>0) {
@@ -352,7 +355,7 @@ function infos_question($SID,$PID,$QID) {
  * @return $res un enregistrement (idr,texte,coche,ordre)
  */
 function infos_reponse($SID,$PID,$QID,$RID) {
-	$resultat=$globals->db->query_p("select idr,reponse,coche,ordre ".
+	$resultat=mysql_query_p("select idr,reponse,coche,ordre ".
 	"from sondage.choix where ids=$SID and idp=$PID and idq=$QID and idr=$RID");
 	$res = null;
 	if (mysql_num_rows($resultat)>0) {
@@ -371,7 +374,7 @@ function infos_reponse($SID,$PID,$QID,$RID) {
  * @return $res un tableau d'enregistrements (idp,titre,en_tete,pied,ordre)
  */
 function infos_parties($SID) {
-	$resultat=$globals->db->query_p("select idp from sondage.parties where ids=$SID order by ordre");
+	$resultat=mysql_query_p("select idp from sondage.parties where ids=$SID order by ordre");
 	$res = null;
 	for ($i=0;$i<mysql_num_rows($resultat);$i++) {
 		$ligne = mysql_fetch_array($resultat);
@@ -388,16 +391,16 @@ function infos_parties($SID) {
  */
 function infos_parties_une_seule_requete($SID,$en_prod) {
     global $UNIQUE,$MULTIPLE,$QUESTION_TEXTE,$QUESTION_MULT;
-    $parties=$globals->db->query_p("select idp,sous_titre,en_tete,pied,ordre ".
+    $parties=mysql_query_p("select idp,sous_titre,en_tete,pied,ordre ".
     "from sondage.parties where ids=$SID order by idp");
-    $questions=$globals->db->query_p("select idp,idq,texte,type_reponse,ordre ".
+    $questions=mysql_query_p("select idp,idq,texte,type_reponse,ordre ".
     "from sondage.questions where ids=$SID order by idp,idq");
-    $reponses=$globals->db->query_p("select idp,idq,idr,reponse,coche,ordre ".
+    $reponses=mysql_query_p("select idp,idq,idr,reponse,coche,ordre ".
     "from sondage.choix where ids=$SID order by idp,idq,ordre");
     if ($en_prod == 1) {
-        $reponses_texte=$globals->db->query_p("select idp,idq,reponse from sondage.reponses_texte ".
+        $reponses_texte=mysql_query_p("select idp,idq,reponse from sondage.reponses_texte ".
         "where ids=$SID order by idp,idq");
-        $reponses_choix=$globals->db->query_p("select idp,idq,code from sondage.reponses_choix_multiple ".
+        $reponses_choix=mysql_query_p("select idp,idq,code from sondage.reponses_choix_multiple ".
         "where ids=$SID order by idp,idq");
         if (mysql_num_rows($reponses_texte)>0)
             $reponse_texte = mysql_fetch_array($reponses_texte);
@@ -514,7 +517,7 @@ function infos_parties_une_seule_requete($SID,$en_prod) {
  * @return $res un tableau d'enregistrements (idq,texte,type_reponse,ordre)
  */
 function infos_questions($SID,$PID) {
-        $resultat=$globals->db->query_p("select idq from sondage.questions where ids=$SID and idp=$PID order by ordre");
+        $resultat=mysql_query_p("select idq from sondage.questions where ids=$SID and idp=$PID order by ordre");
 	$res = null;			        
 	for ($i=0;$i<mysql_num_rows($resultat);$i++) {
 		$ligne = mysql_fetch_array($resultat);
@@ -530,7 +533,7 @@ function infos_questions($SID,$PID) {
  * @return $res un tableau d'enregistrements (idr,texte,coche,ordre)
  */
 function infos_reponses($SID,$PID,$QID) {
-	$resultat=$globals->db->query_p("select idr from sondage.choix where ids=$SID and idp=$PID and idq=$QID order by ordre");
+	$resultat=mysql_query_p("select idr from sondage.choix where ids=$SID and idp=$PID and idq=$QID order by ordre");
 	$res = null;
 	for ($i=0;$i<mysql_num_rows($resultat);$i++) {
 		$ligne = mysql_fetch_array($resultat);
@@ -546,7 +549,7 @@ function infos_reponses($SID,$PID,$QID) {
  * @return $res un tableau de chaînes
  */
 function reponses_texte($SID,$PID,$QID) {
-	$resultat = $globals->db->query_p("select reponse from sondage.reponses_texte where ids=$SID and idp=$PID and idq=$QID");
+	$resultat = mysql_query_p("select reponse from sondage.reponses_texte where ids=$SID and idp=$PID and idq=$QID");
 	$res = null;
 	for ($i=0;$i<mysql_num_rows($resultat);$i++) {
 		$ligne = mysql_fetch_array($resultat);
@@ -566,7 +569,7 @@ function reponses_texte($SID,$PID,$QID) {
 function reponses_choix($SID,$PID,$QID,$nb_reponses,$codage) {
 	global $UNIQUE;
 
-	$resultat = $globals->db->query_p("select code from sondage.reponses_choix_multiple where ids=$SID and idp=$PID and idq=$QID");
+	$resultat = mysql_query_p("select code from sondage.reponses_choix_multiple where ids=$SID and idp=$PID and idq=$QID");
 	for ($j=0;$j<$nb_reponses;$j++)
 		$votes[]=0;
 	for ($i=0;$i<mysql_num_rows($resultat);$i++) {
@@ -598,7 +601,7 @@ function reponses_choix($SID,$PID,$QID,$nb_reponses,$codage) {
  * @return une chaîne
  */
 function topo_req($TOPO) {
-	$resultat = $globals->db->query_p("select texte from sondage.topo where ref = $TOPO");
+	$resultat = mysql_query_p("select texte from sondage.topo where ref = $TOPO");
 	$ligne = mysql_fetch_array($resultat);
 	return $ligne["texte"];
 }
@@ -609,19 +612,19 @@ function topo_req($TOPO) {
  */
 function ajouter_sondage($user_id) {
     //on vérifie que l'utilisateur n'a pas trop de sondages
-    $resultat = $globals->db->query_p("select count(ids) from sondage.moderateurs where idu=$user_id");
+    $resultat = mysql_query_p("select count(ids) from sondage.moderateurs where idu=$user_id");
     list($nb_sondages) = mysql_fetch_row($resultat);
     if ($nb_sondages > 5) {
         erreur("Tu as atteint le quota maximal de sondages autorisés. Tu ne peux plus en créer.");
         require("footer.inc.php");
         exit;
     }
-	$globals->db->query_p("insert into sondage.description_generale (titre) values('')");
+	mysql_query_p("insert into sondage.description_generale (titre) values('')");
     $globals->db->query("lock sondage.description_generale");//lock nécessaire pour le retour de SID
-	$resultat = $globals->db->query_p("select max(ids) from sondage.description_generale");
+	$resultat = mysql_query_p("select max(ids) from sondage.description_generale");
     $ligne = mysql_fetch_row($resultat);
 	$SID = $ligne[0];
-	$globals->db->query_p("insert into sondage.moderateurs (ids,idu) values($SID,$user_id)");
+	mysql_query_p("insert into sondage.moderateurs (ids,idu) values($SID,$user_id)");
     $globals->db->query("unlock sondage.description_generale");
 	return $SID;
 }
@@ -631,7 +634,7 @@ function ajouter_sondage($user_id) {
  * @return l'ordre de la partie
  */
 function pid_transitoire($SID) {
-	$resultat = $globals->db->query_p("select max(ordre) from sondage.parties where ids=$SID");
+	$resultat = mysql_query_p("select max(ordre) from sondage.parties where ids=$SID");
 	$ligne = mysql_fetch_array($resultat);
 	if ($ligne[0]==null)
 		return 1;
@@ -645,7 +648,7 @@ function pid_transitoire($SID) {
  * @return l'ordre de la question
  */
 function qid_transitoire($SID,$PID) {
-    $resultat = $globals->db->query_p("select max(ordre) from sondage.questions where ids=$SID and idp=$PID");
+    $resultat = mysql_query_p("select max(ordre) from sondage.questions where ids=$SID and idp=$PID");
 	$ligne = mysql_fetch_array($resultat);
 	if ($ligne[0]==null)
 		return 1;
@@ -660,7 +663,7 @@ function qid_transitoire($SID,$PID) {
  * @return l'ordre du choix
  */
 function rid_transitoire($SID,$PID,$QID) {
-    $resultat = $globals->db->query_p("select max(ordre) from sondage.choix where ids=$SID and idp=$PID and idq=$QID");
+    $resultat = mysql_query_p("select max(ordre) from sondage.choix where ids=$SID and idp=$PID and idq=$QID");
 	$ligne = mysql_fetch_array($resultat);
 	if ($ligne[0]==null)
 		return 1;
@@ -674,7 +677,7 @@ function rid_transitoire($SID,$PID,$QID) {
  */
 function ajouter_partie($SID) {
 	$globals->db->query("lock sondage.parties");//lock nécessaire pour le retour de PID
-	$resultat = $globals->db->query_p("select max(idp),max(ordre) from sondage.parties where ids = $SID");
+	$resultat = mysql_query_p("select max(idp),max(ordre) from sondage.parties where ids = $SID");
 	$ligne = mysql_fetch_array($resultat);
 	if ($ligne[0]==null)
 		$PID = 1;
@@ -684,7 +687,7 @@ function ajouter_partie($SID) {
         $ordre = 1;
     else
         $ordre = $ligne[1]+1;                    
-	$globals->db->query_p("insert into sondage.parties (ids,idp,ordre,sous_titre,en_tete,pied) values($SID,$PID,$ordre,'','','')");
+	mysql_query_p("insert into sondage.parties (ids,idp,ordre,sous_titre,en_tete,pied) values($SID,$PID,$ordre,'','','')");
 	$globals->db->query("unlock sondage.parties");
 	return $PID;
 }
@@ -696,7 +699,7 @@ function ajouter_partie($SID) {
  */
 function ajouter_question($SID,$PID) {
 	$globals->db->query("lock sondage.questions");//lock nécessaire pour le retour de QID
-        $resultat = $globals->db->query_p("select max(idq),max(ordre) from sondage.questions where ids = $SID and idp=$PID");
+        $resultat = mysql_query_p("select max(idq),max(ordre) from sondage.questions where ids = $SID and idp=$PID");
 	$ligne = mysql_fetch_array($resultat);
 	if ($ligne[0]==null)
 		$QID = 1;
@@ -706,7 +709,7 @@ function ajouter_question($SID,$PID) {
         $ordre = 1;
     else
         $ordre = $ligne[1]+1;
-	$globals->db->query_p("insert into sondage.questions (ids,idp,idq,ordre,texte,type_reponse) values($SID,$PID,$QID,$ordre,'',0)");
+	mysql_query_p("insert into sondage.questions (ids,idp,idq,ordre,texte,type_reponse) values($SID,$PID,$QID,$ordre,'',0)");
 	$globals->db->query("unlock sondage.questions");
 	return $QID;
 }
@@ -719,7 +722,7 @@ function ajouter_question($SID,$PID) {
  */
 function ajouter_reponse($SID,$PID,$QID) {
 	$globals->db->query("lock sondage.choix");//lock nécessaire pour le retour de RID
-    $resultat = $globals->db->query_p("select max(idr),max(ordre) from sondage.choix where ids = $SID and idp=$PID and idq=$QID");
+    $resultat = mysql_query_p("select max(idr),max(ordre) from sondage.choix where ids = $SID and idp=$PID and idq=$QID");
 	$ligne = mysql_fetch_array($resultat);
 	if ($ligne[0]==null)
 		$RID = 1;
@@ -729,7 +732,7 @@ function ajouter_reponse($SID,$PID,$QID) {
         $ordre = 1;
     else
         $ordre = $ligne[1]+1;
-	$globals->db->query_p("insert into sondage.choix (ids,idp,idq,idr,ordre) values($SID,$PID,$QID,$RID,$ordre)");
+	mysql_query_p("insert into sondage.choix (ids,idp,idq,idr,ordre) values($SID,$PID,$QID,$RID,$ordre)");
 	$globals->db->query("unlock sondage.choix");
 	return $RID;
 }
@@ -750,7 +753,7 @@ function mettre_a_jour_sondage($SID,$titre,$en_tete,$pied,$prod,$parties,$tous,$
     $flags = ($prod == 1 ? 'prod,' : '');
     $flags .= ($parties != 1 ? 'parties,' : '');
     $flags .= ($tous != 1 ? 'tous,' : '');
-	$globals->db->query_p("update sondage.description_generale "
+	mysql_query_p("update sondage.description_generale "
     ."set titre='$titre',en_tete='$en_tete',pied='$pied', flags = '$flags', mail='$mail' where ids=$SID");
 }
 
@@ -763,7 +766,7 @@ function mettre_a_jour_sondage($SID,$titre,$en_tete,$pied,$prod,$parties,$tous,$
  * @return rien
  */
 function mettre_a_jour_partie($SID,$PID,$titre,$en_tete,$pied) {
-    $globals->db->query_p("update sondage.parties set sous_titre='$titre',en_tete='$en_tete',pied='$pied' ".
+    mysql_query_p("update sondage.parties set sous_titre='$titre',en_tete='$en_tete',pied='$pied' ".
     "where ids=$SID and idp=$PID");
 }
 
@@ -776,7 +779,7 @@ function mettre_a_jour_partie($SID,$PID,$titre,$en_tete,$pied) {
  * @return rien
  */
 function mettre_a_jour_question($SID,$PID,$QID,$texte,$type_question) {
-    $globals->db->query_p("update sondage.questions set texte='$texte',type_reponse='$type_question' ".
+    mysql_query_p("update sondage.questions set texte='$texte',type_reponse='$type_question' ".
     "where ids=$SID and idp=$PID and idq=$QID");
 }
 
@@ -791,7 +794,7 @@ function mettre_a_jour_question($SID,$PID,$QID,$texte,$type_question) {
  */
 function mettre_a_jour_reponse($SID,$PID,$QID,$RID,$texte,$coche) {
 	if ($texte!="") {
-		$globals->db->query_p("update sondage.choix set reponse='$texte',coche='$coche' ".
+		mysql_query_p("update sondage.choix set reponse='$texte',coche='$coche' ".
         "where ids=$SID and idp=$PID and idq=$QID and idr=$RID");
 	}
 }
@@ -802,9 +805,9 @@ function mettre_a_jour_reponse($SID,$PID,$QID,$RID,$texte,$coche) {
  * @return rien
  */
 function supprimer_partie($SID,$PID) {
-	$globals->db->query_p("delete from sondage.parties where ids=$SID and idp=$PID");
-	$globals->db->query_p("delete from sondage.questions where ids=$SID and idp=$PID");
-	$globals->db->query_p("delete from sondage.choix where ids=$SID and idp=$PID");
+	mysql_query_p("delete from sondage.parties where ids=$SID and idp=$PID");
+	mysql_query_p("delete from sondage.questions where ids=$SID and idp=$PID");
+	mysql_query_p("delete from sondage.choix where ids=$SID and idp=$PID");
 }
 
 /** supprimer une question
@@ -814,8 +817,8 @@ function supprimer_partie($SID,$PID) {
  * @return rien
  */
 function supprimer_question($SID,$PID,$QID) {
-	$globals->db->query_p("delete from sondage.questions where ids=$SID and idp=$PID and idq=$QID");
-	$globals->db->query_p("delete from sondage.choix where ids=$SID and idp=$PID and idq=$QID");
+	mysql_query_p("delete from sondage.questions where ids=$SID and idp=$PID and idq=$QID");
+	mysql_query_p("delete from sondage.choix where ids=$SID and idp=$PID and idq=$QID");
 }
 
 /** supprimer un choix de réponse
@@ -826,7 +829,7 @@ function supprimer_question($SID,$PID,$QID) {
  * @return rien
  */
 function supprimer_reponse($SID,$PID,$QID,$RID) {
-	$globals->db->query_p("delete from sondage.choix where ids=$SID and idp=$PID and idq=$QID and idr=$RID");
+	mysql_query_p("delete from sondage.choix where ids=$SID and idp=$PID and idq=$QID and idr=$RID");
 }
 
 /** échanger la position de deux parties
@@ -837,9 +840,9 @@ function supprimer_reponse($SID,$PID,$QID,$RID) {
  */
 function echanger_partie($SID,$PID1,$PID2,$temp) {
 	//$temp = pid_transitoire($SID);
-	$globals->db->query_p("update sondage.parties set ordre=$temp where ids=$SID and ordre=$PID1");
-	$globals->db->query_p("update sondage.parties set ordre=$PID1 where ids=$SID and ordre=$PID2");
-	$globals->db->query_p("update sondage.parties set ordre=$PID2 where ids=$SID and ordre=$temp");
+	mysql_query_p("update sondage.parties set ordre=$temp where ids=$SID and ordre=$PID1");
+	mysql_query_p("update sondage.parties set ordre=$PID1 where ids=$SID and ordre=$PID2");
+	mysql_query_p("update sondage.parties set ordre=$PID2 where ids=$SID and ordre=$temp");
 }
 
 /** échanger la position de deux questions
@@ -851,9 +854,9 @@ function echanger_partie($SID,$PID1,$PID2,$temp) {
  */
 function echanger_question($SID,$PID,$QID1,$QID2,$temp) {
 	//$temp = qid_transitoire($SID,$PID);
-	$globals->db->query_p("update sondage.questions set ordre=$temp where ids=$SID and idp=$PID and ordre=$QID1");
-	$globals->db->query_p("update sondage.questions set ordre=$QID1 where ids=$SID and idp=$PID and ordre=$QID2");
-	$globals->db->query_p("update sondage.questions set ordre=$QID2 where ids=$SID and idp=$PID and ordre=$temp");
+	mysql_query_p("update sondage.questions set ordre=$temp where ids=$SID and idp=$PID and ordre=$QID1");
+	mysql_query_p("update sondage.questions set ordre=$QID1 where ids=$SID and idp=$PID and ordre=$QID2");
+	mysql_query_p("update sondage.questions set ordre=$QID2 where ids=$SID and idp=$PID and ordre=$temp");
 }
 
 /** échanger la position de deux choix de réponse
@@ -866,9 +869,9 @@ function echanger_question($SID,$PID,$QID1,$QID2,$temp) {
  */
 function echanger_reponse($SID,$PID,$QID,$RID1,$RID2,$temp) {
 	//$temp = rid_transitoire($SID,$PID,$QID);
-	$globals->db->query_p("update sondage.choix set ordre=$temp where ids=$SID and idp=$PID and idq=$QID and ordre=$RID1");
-	$globals->db->query_p("update sondage.choix set ordre=$RID1 where ids=$SID and idp=$PID and idq=$QID and ordre=$RID2");
-	$globals->db->query_p("update sondage.choix set ordre=$RID2 where ids=$SID and idp=$PID and idq=$QID and ordre=$temp");
+	mysql_query_p("update sondage.choix set ordre=$temp where ids=$SID and idp=$PID and idq=$QID and ordre=$RID1");
+	mysql_query_p("update sondage.choix set ordre=$RID1 where ids=$SID and idp=$PID and idq=$QID and ordre=$RID2");
+	mysql_query_p("update sondage.choix set ordre=$RID2 where ids=$SID and idp=$PID and idq=$QID and ordre=$temp");
 }
 
 /** descendre une partie d'un niveau
@@ -878,7 +881,7 @@ function echanger_reponse($SID,$PID,$QID,$RID1,$RID2,$temp) {
  */
 function descendre_partie($SID,$PID) {
 	$globals->db->query("lock sondage.parties");//lock nécessaire pour récupérer max(ordre)
-	$resultat = $globals->db->query_p("select min(s1.ordre),s2.ordre ".
+	$resultat = mysql_query_p("select min(s1.ordre),s2.ordre ".
     "from sondage.parties as s1,sondage.parties as s2 ".
     "where s2.ids=$SID and s2.idp=$PID and s1.ids=$SID and s1.ordre>s2.ordre group by s2.ordre");
     if (mysql_num_rows($resultat)>0) {
@@ -897,7 +900,7 @@ function descendre_partie($SID,$PID) {
  */
 function descendre_question($SID,$PID,$QID) {
 	$globals->db->query("lock sondage.questions");//lock nécessaire pour récupérer max(ordre)
-	$resultat = $globals->db->query_p("select min(s1.ordre),s2.ordre ".
+	$resultat = mysql_query_p("select min(s1.ordre),s2.ordre ".
     "from sondage.questions as s1,sondage.questions as s2 ".
     "where s2.ids=$SID and s2.idp=$PID and s2.idq=$QID and ".
     "s1.ids=$SID and s1.idp=$PID and s1.ordre>s2.ordre group by s2.ordre");
@@ -918,7 +921,7 @@ function descendre_question($SID,$PID,$QID) {
  */
 function descendre_reponse($SID,$PID,$QID,$RID) {
 	$globals->db->query("lock sondage.choix");//lock nécessaire pour récupérer max(ordre)
-    $resultat = $globals->db->query_p("select min(s1.ordre),s2.ordre ".
+    $resultat = mysql_query_p("select min(s1.ordre),s2.ordre ".
     "from sondage.choix as s1,sondage.choix as s2 ".
     "where s2.ids=$SID and s2.idp=$PID and s2.idq=$QID and s2.idr=$RID and ".
     "s1.ids=$SID and s1.idp=$PID and s1.idq=$QID and s1.ordre>s2.ordre group by s2.ordre");
@@ -937,7 +940,7 @@ function descendre_reponse($SID,$PID,$QID,$RID) {
  */
 function monter_partie($SID,$PID) {
 	$globals->db->query("lock sondage.parties");//lock nécessaire pour récupérer max(ordre)
-    $resultat = $globals->db->query_p("select max(s1.ordre),s2.ordre ".
+    $resultat = mysql_query_p("select max(s1.ordre),s2.ordre ".
     "from sondage.parties as s1,sondage.parties as s2 ".
     "where s2.ids=$SID and s2.idp=$PID and s1.ids=$SID and s1.ordre<s2.ordre group by s2.ordre");
     if (mysql_num_rows($resultat)>0) {
@@ -956,7 +959,7 @@ function monter_partie($SID,$PID) {
  */
 function monter_question($SID,$PID,$QID) {
 	$globals->db->query("lock sondage.questions");//lock nécessaire pour récupérer max(ordre)
-    $resultat = $globals->db->query_p("select max(s1.ordre),s2.ordre ".
+    $resultat = mysql_query_p("select max(s1.ordre),s2.ordre ".
     "from sondage.questions as s1,sondage.questions as s2 ".
     "where s2.ids=$SID and s2.idp=$PID and s2.idq=$QID and ".
     "s1.ids=$SID and s1.idp=$PID and s1.ordre<s2.ordre group by s2.ordre");
@@ -977,7 +980,7 @@ function monter_question($SID,$PID,$QID) {
  */
 function monter_reponse($SID,$PID,$QID,$RID) {
 	$globals->db->query("lock sondage.choix");//lock nécessaire pour récupérer max(ordre)
-    $resultat = $globals->db->query_p("select max(s1.ordre),s2.ordre ".
+    $resultat = mysql_query_p("select max(s1.ordre),s2.ordre ".
     "from sondage.choix as s1,sondage.choix as s2 ".
     "where s2.ids=$SID and s2.idp=$PID and s2.idq=$QID and s2.idr=$RID and ".
     "s1.ids=$SID and s1.idp=$PID and s1.idq=$QID and s1.ordre<s2.ordre group by s2.ordre");

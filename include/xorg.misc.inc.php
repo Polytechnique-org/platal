@@ -4,6 +4,7 @@
  * @return BOOL
  */
 function isvalid_email_local($email) {
+  global $globals;
   // ATTENTION, les requêtes sur le username et l'alias ne doivent pas être faites
   // dans la même requête MySQL, car elles portent sur 2 index de la table avec un OR
   // et MySQL ne sait pas utiliser les index dans ce cas

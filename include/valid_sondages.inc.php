@@ -10,6 +10,7 @@ class SondageReq extends Validate {
     var $nom;
     
     function SondageReq ($_uid, $_sid, $_stamp) {
+        global $globals;
         $this->Validate($_uid, false, 'sondage', $_stamp);
         $this->sid = $_sid;
         
@@ -31,7 +32,7 @@ class SondageReq extends Validate {
     function formu() { return 'include/form.valid.sondages.tpl'; }
 
     function handle_formu () {
-        global $no_update_bd,$baseurl;
+        global $no_update_bd,$baseurl, $globals;
         if($no_update_bd) return false;
         
         if(empty($_REQUEST['submit'])
