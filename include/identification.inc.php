@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.14 2004-11-13 14:59:00 x2000coic Exp $
+        $Id: identification.inc.php,v 1.15 2004-11-15 21:04:29 x2002marichez Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -87,7 +87,7 @@ if ($promo > 1995)  {
     // sinon le même X pourrait s'inscrire deux fois avec le même matricule
     // exemple yann.buril et yann.buril-dupont seraient acceptés ! alors que
     // le matricule est unique
-    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule=$matricule AND user != 'non-inscrit'");
+    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule=$matricule AND perms != 'non-inscrit'");
     if (mysql_num_rows($result))  {
 	$str="Matricule déjà existant. Causes possibles\n"
 	    ."- tu t'es trompé de matricule\n"
