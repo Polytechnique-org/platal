@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.20 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: search.tpl,v 1.21 2004-10-24 15:58:38 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -25,19 +25,6 @@
 {if $nb_resultats_total >= 800}{assign var='error' value="Recherche trop générale."}{/if}
  
 {if $formulaire==0 and !$error}
-  {min_auth level='cookie'}
-  <h1>
-    Astuce
-  </h1>
-  <p>
-  Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
-  </p>
-  {if $advanced eq "1"}
-  <p>
-  La recherche avancée ne porte que sur les inscrits à Polytechnique.org !
-  </p>
-  {/if}
-  {/min_auth}
   <h1>
     Résultats
   </h1>
@@ -67,6 +54,20 @@
       {if !$resultats[resultat].inscrit || $resultats[resultat].decede}</div>{/if}
     {/section}
   </div>
+  <table style="width: 100%">
+    <tr>
+      <td class="titre">
+        {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
+      </td>
+      <td class="right titre">
+        {if $with_soundex==0}
+        [<a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}&amp;mod_date_sort={$mod_date_sort}">
+          Recherche par proximité sonore</a>]&nbsp;
+        {/if}
+        [<a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>]
+      </td>
+    </tr>
+  </table>
   {if $perpage < $nb_resultats_total}
   <p>
     {if $offset!=0}
@@ -87,6 +88,19 @@
     {/if}
   </p>
   {/if}
+  {min_auth level='cookie'}
+  <h1>
+    Astuce
+  </h1>
+  <p>
+  Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
+  </p>
+  {if $advanced eq "1"}
+  <p>
+  La recherche avancée ne porte que sur les inscrits à Polytechnique.org !
+  </p>
+  {/if}
+  {/min_auth}
 {else}
   {include file="search.form.tpl"}
 {/if}
