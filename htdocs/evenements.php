@@ -39,6 +39,8 @@ $page->assign('validation_message', $validation_message);
 $page->assign('action', strtolower($action));
 
 if ($action=="Confirmer") {
+    $texte = preg_replace( "/((http|ftp)+(s)?:\/\/[^<>\s]+)/i", "<a href=\"\\0\">\\0</a>", $texte );
+    $texte = preg_replace( "/([^,\s]+@[^,\s]+)/i", "<a href=\"mailto:\\0\">\\0</a>", $texte );
     require_once("validations.inc.php");
     $evtreq = new evtreq($titre, $texte, $promo_min, $promo_max,
             $peremption, $validation_message, Session::getInt('uid'));
