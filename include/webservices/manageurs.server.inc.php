@@ -16,7 +16,7 @@ function get_annuaire_infos($method, $params) {
     global $error_mat, $error_key, $globals;
 
     //verif du mdp
-    if(!isset($params[0]) || ($params[0] != $globals->manageurs->manageurs_pass)){return false;}
+    if(!isset($params[0]) || ($params[0] != $globals->webservice->pass)){return false;}
 
     //si on a adresse == -1 => on ne recupère aucune adresse
     if(isset($params[2]) && ($params[2] == -1)) unset($params[2]);
@@ -27,19 +27,19 @@ function get_annuaire_infos($method, $params) {
         //on ne recupere pas les adresses inutilement
         if(!isset($params[2])){
             $res = $globals->xdb->iterRow(
-                    "SELECT  aq.profile_mobile AS cell, a.naissance AS age
+                    "SELECT  q.profile_mobile AS cell, a.naissance AS age
                        FROM  auth_user_md5 AS a
-		       INNER JOIN auth_user_quick AS aq ON (a.user_id = aq.user_id)
+		       INNER JOIN auth_user_quick AS q USING (user_id)
                       WHERE  a.matricule = {?}", $params[1]);
         }
         else{
             $res = $globals->xdb->iterRow(
-                 "SELECT  aq.profile_mobile AS cell, a.naissance AS age,
+                 "SELECT     q.profile_mobile AS cell, a.naissance AS age,
                              adr.adr1, adr.adr2, adr.adr3,
                              adr.cp, adr.ville, adr.pays,
                              adr.tel, adr.fax
                        FROM  auth_user_md5 AS a
-                INNER JOIN auth_user_quick AS aq ON (a.user_id = aq.user_id)
+                 INNER JOIN  auth_user_quick AS q USING (user_id)
                   LEFT JOIN  adresses AS adr ON(adr.uid = a.user_id)
                       WHERE  a.matricule = {?} AND
                              NOT FIND_IN_SET('pro', adr.statut)
