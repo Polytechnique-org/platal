@@ -17,13 +17,16 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
- $Id: xorg.hook.inc.php,v 1.3 2004-11-21 12:20:22 x2000habouzit Exp $
- ***************************************************************************/
+ **************************************************************************/
 
 require_once("PEAR.php");
- 
-/** Hooks are used in modules to allow modules that depends upon us to hook
+
+// {{{ XOrgHook
+
+/**
+ * XOrg's Hooks API
+ *
+ * Hooks are used in modules to allow modules that depends upon us to hook
  * themselves in our core functionnalities.
  *
  * Every module will use some hools, and define their names.
@@ -34,41 +37,87 @@ require_once("PEAR.php");
  *
  * If the hook's API has to change, the functions that change MUST change their
  * name to avoid any compatibility problem.
+ *
+ * @category XOrgCore
+ * @package  XOrgCore
+ * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
+ * @version  $Id: xorg.hook.inc.php,v 1.4 2004-11-21 12:49:20 x2000habouzit Exp $
+ * @access   public
+ * @link     http://doc.polytechnique.org/XOrgModule/#hook
+ * @since    Classe available since 0.9.3
  */
 class XOrgHook extends PEAR
 {
-    /** name of the hook we want to run */
+    // {{{ properties
+    
+    /**
+     * holds the name of the hook we want to run.
+     *
+     * @var    string
+     * @access private
+     */
     var $_name;
-    /** name of all the modules that have exported some functions */
+    
+    /**
+     * list of all the modules names that have implemented some reactions to our triggers
+     *
+     * @var    array
+     * @access private
+     */
     var $_mods = Array();
-   
+    
+    // }}}
+    // {{{ XOrgHook
+
+    /**
+     * Instanciates our Hook.
+     *
+     * @param string $name  the name of the hook
+     */
     function XOrgHook($name)
     {
-	global $globals;
-	$this->PEAR();
+        global $globals;
+        $this->PEAR();
 
-	if (!file_exists($globals->root."/hooks/$name/API")) {
-	    $this->raiseError("The hook « $name » do not exists, or is undocumented",1,PEAR_ERROR_DIE);
-	}
-	foreach (glob($globals->root."/hooks/$name/*.inc.php") as $file) {
-	    require_once("$file");
-	    $this->_mods[] = str_replace('.inc.php', '', $file);
-	}
+        if (!file_exists($globals->root."/hooks/$name/API")) {
+            $this->raiseError("The hook « $name » do not exists, or is undocumented",1,PEAR_ERROR_DIE);
+        }
+        foreach (glob($globals->root."/hooks/$name/*.inc.php") as $file) {
+            require_once("$file");
+            $this->_mods[] = str_replace('.inc.php', '', $file);
+        }
     }
 
+    // }}}
+    // {{{ __call()
+
+    /**
+     * The overload helper for function calls.
+     *
+     * @param  callback $function   the name of the function called
+     * @param  array    $arguments  the array of the arguments
+     * @param  mixed    $return     a reference to place the result of the called function
+     * @retuns bool  returns true if the called function exists (we allways do so here)
+     * @see overload
+     */
     function __call($function, $arguments, &$return)
     {
-	$return = true;
-	
-	foreach ($this->_mods as $mod) {
-	    if (!function_exists($mod.'_'.$function)) continue;
-	    $return &= ( call_user_func_array($mod.'_'.$function,$argument) !== false );
-	}
-	
-	return true;
+        $return = true;
+
+        foreach ($this->_mods as $mod) {
+            if (!function_exists($mod.'_'.$function)) continue;
+            $return &= ( call_user_func_array($mod.'_'.$function,$argument) !== false );
+        }
+
+        return true;
     }
+
+    // }}}
 }
 
 overload('XOrgHook');
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4:
 ?>
