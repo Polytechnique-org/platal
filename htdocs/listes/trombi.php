@@ -56,7 +56,6 @@ function getList($offset,$limit)
         } else {
             $membres[$member[0]] = Array('addr' => $member[0]);
         }
-        mysql_free_result($res);
     }
     return Array($total,$membres);
 }
