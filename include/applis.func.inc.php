@@ -18,34 +18,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: applis.func.inc.php,v 1.8 2004-08-31 11:16:47 x2000habouzit Exp $
+        $Id: applis.func.inc.php,v 1.9 2004-08-31 20:22:19 x2000habouzit Exp $
  ***************************************************************************/
 
 
-/** donne la liste déroulante des ecoles d'appli
- * @param $current application actuellement selectionnée
- * @return echo
- * @see include/form_data.inc.php
- * @see include/form_data_maj.inc.php
- * @see include/form_profil.inc.php
- * @see include/form_rech_av.inc.php
- */
 function applis_options($current=0) {
     global $globals;
-    echo '<option value="-1"></option>';
+    $html = '<option value="-1"></option>';
     $res=$globals->db->query("select * from applis_def order by text");
     while ($arr_appli=mysql_fetch_array($res)) { 
-	echo '<option value="'.$arr_appli["id"].'"';
-	if ($arr_appli["id"]==$current) echo " selected='selected'";
-	echo '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
+	$html .= '<option value="'.$arr_appli["id"].'"';
+	if ($arr_appli["id"]==$current) $html .= " selected='selected'";
+	$html .= '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
     }
+    return $html;
 }
 /** pour appeller applis_options depuis smarty
  */
 function _applis_options_smarty($params){
     if(!isset($params['selected']))
 	$params['selected'] = 0;
-    applis_options($params['selected']);
+    return applis_options($params['selected']);
 }
 $page->register_function('applis_options','_applis_options_smarty');
 
@@ -54,12 +47,14 @@ $page->register_function('applis_options','_applis_options_smarty');
  */
 function applis_type(){
     global $globals;
+    $html = "";
     $res=$globals->db->query("select type from applis_def order by text");
     if (list($appli_type)=mysql_fetch_row($res))
-	echo "new Array('".str_replace(",","','",$appli_type)."')";
+	$html .= "new Array('".str_replace(",","','",$appli_type)."')";
     while (list($appli_type)=mysql_fetch_row($res))
-	echo ",\nnew Array('".str_replace(",","','",$appli_type)."')";
+	$html .= ",\nnew Array('".str_replace(",","','",$appli_type)."')";
     mysql_free_result($res);
+    return $html;
 }
 $page->register_function('applis_type','applis_type');
 
@@ -69,8 +64,8 @@ function applis_type_all(){
     global $globals;
     $res = $globals->db->query("show columns from applis_def like 'type'");
     $arr_appli = mysql_fetch_array($res);
-    echo str_replace(")","",str_replace("set(","",$arr_appli["Type"]));
     mysql_free_result($res);
+    return str_replace(")","",str_replace("set(","",$arr_appli["Type"]));
 }
 $page->register_function('applis_type_all','applis_type_all');
 
