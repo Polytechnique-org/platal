@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.25 2004-11-13 15:56:35 x2000habouzit Exp $
+        $Id: fiche.tpl,v 1.26 2004-11-17 11:12:00 x2000habouzit Exp $
  ***************************************************************************}
 
 {literal}
@@ -53,8 +53,11 @@ function chgMainWinLoc( strPage ) {
   </div>
   <div class='right' style="font-size: smaller; width:100%">(Fiche mise à jour le {$date|date_format:"%d %B %Y"})</div>
   <div>
-    <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a><br />
+    <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
+    {if $bestalias neq $forlife}
+    <br />
     <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
+    {/if}
   </div>
   <div>{if $nationalite}<em>{$nationalite}</em> - {/if}X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
   {if $mobile}<div><em class="intitule">Mobile : </em>{$mobile}</div>{/if}

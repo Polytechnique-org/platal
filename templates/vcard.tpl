@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.tpl,v 1.5 2004-10-29 15:46:57 x2000habouzit Exp $
+        $Id: vcard.tpl,v 1.6 2004-11-17 11:12:00 x2000habouzit Exp $
  ***************************************************************************}
 BEGIN:VCARD
 VERSION:3.0
@@ -27,10 +27,8 @@ FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.epouse` (`$vcard.nom`)"|q
 FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
 {/if}
 N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.epouse|qp_enc};;
+EMAIL;TYPE=internet:{$best[0].alias}@polytechnique.org
 EMAIL;TYPE=internet:{$vcard.forlife}@polytechnique.org
-{foreach from=$aliases item=a}
-EMAIL;TYPE=internet:{$a.alias}@polytechnique.org
-{/foreach}
 {if $vcard.mobile}
 TEL;TYPE=cell;ENCODING=QUOTED-PRINTABLE:{$vcard.mobile|qp_enc}
 {/if}
