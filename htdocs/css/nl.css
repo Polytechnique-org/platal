@@ -28,6 +28,7 @@ div.nl {
 }
 
 div.nl a { text-decoration: none; }
+div.nl a:hover { text-decoration: underline; }
 
 div.nl div.title {
     margin: 2ex 0ex 2ex 0ex;
@@ -41,7 +42,10 @@ div.nl div.title {
     border: 1px #ff4040 solid;
 }
 
-div.nl div.lnk { margin: 2ex 0ex 2ex 0ex; }
+div.nl div.lnk {
+    padding: 0ex 2ex 0ex 2ex;
+    margin: 2ex 0ex 2ex 0ex;
+}
 
 div.nl div.lnk a { display: block; }
 
@@ -92,6 +96,10 @@ div.nl div.app {
     margin: 0ex;
     text-align: left;
     font-size: 95%;
+}
+
+div.nl div.intro {
+    padding: 2ex;
 }
 
 div.nl div.foot {

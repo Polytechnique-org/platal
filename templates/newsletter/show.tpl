@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: show.tpl,v 1.4 2004-10-20 13:57:56 x2000habouzit Exp $
+        $Id: show.tpl,v 1.5 2004-10-20 15:09:59 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -50,10 +50,10 @@
   <tr>
     <td>
       {if $smarty.get.text}
-      <pre>{$nl->toText()}</pre>
+      <pre>{$nl->toText($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)}</pre>
       {else}
       <div class='nl'>
-        {$nl->toHtml()|smarty:nodefaults}
+        {$nl->toHtml($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)|smarty:nodefaults}
       </div>
       {/if}
     </td>

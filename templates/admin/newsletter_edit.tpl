@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.tpl,v 1.5 2004-10-16 22:39:35 x2000habouzit Exp $
+        $Id: newsletter_edit.tpl,v 1.6 2004-10-20 15:09:59 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -55,6 +55,14 @@
         <input type='text' size='60' name='date' value="{$nl->_date}" />
       </td>
     </tr>
+    <tr>
+      <td class='titre'>
+        Intro de la lettre
+      </td>
+      <td>
+        <textarea name='head' cols='60' rows='6'>{$nl->head()}</textarea>
+      </td>
+    </tr>
     <tr class='center'>
       <td colspan='2'>
         <input type='submit' name='update' value='sauver' />
@@ -84,7 +92,7 @@
   {foreach from=$arts item=art}
   <tr class="{cycle values="impair,pair"}">
     <td>
-      <pre>{$art->toText()|smarty:nodefaults}</pre>
+      <pre>{$art->toText($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)|smarty:nodefaults}</pre>
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
       <strong>Pos: {$art->_pos}</strong><br />

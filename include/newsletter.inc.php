@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.18 2004-10-20 13:57:56 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.19 2004-10-20 15:09:58 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -30,6 +30,7 @@ class NewsLetter {
     var $_id;
     var $_date;
     var $_title;
+    var $_head;
     var $_cats = Array();
     var $_arts = Array();
     
@@ -49,6 +50,7 @@ class NewsLetter {
 	$this->_id = $nl['id'];
 	$this->_date = $nl['date'];
 	$this->_title = $nl['titre'];
+	$this->_head = $nl['head'];
 	mysql_free_result($res);
 
 	$res = $globals->db->query("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
@@ -72,11 +74,12 @@ class NewsLetter {
     function save() {
 	global $globals;
 	$globals->db->query("UPDATE  newsletter
-				SET  date='{$this->_date}',titre='{$this->_title}'
+				SET  date='{$this->_date}',titre='{$this->_title}',head='{$this->_head}'
 			      WHERE  id='{$this->_id}'");
     }
 
     function title() { return stripslashes($this->_title); }
+    function head() { return stripslashes($this->_head); }
 
     function getArt($aid) {
 	foreach($this->_arts as $key=>$artlist) {
@@ -133,10 +136,18 @@ class NewsLetter {
 	}
     }
 
-    function toText() {
+    function toText($prenom,$nom,$sexe) {
 	$res  = "====================================================================\n";
 	$res .= ' '.$this->title()."\n";
 	$res .= "====================================================================\n\n";
+
+	$head = $this->head();
+	$head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+	$head = str_replace('<prenom>', $prenom, $head);
+	$head = str_replace('<nom>',    $nom,    $head);
+	$head = enriched_to_text($head,false,true,2,64);
+
+	if($head) $res .= "\n$head\n\n\n";
 
 	$i = 1;
 	foreach($this->_arts as $cid=>$arts) {
@@ -163,8 +174,17 @@ class NewsLetter {
 	return $res;
     }
     
-    function toHtml($body=false) {
+    function toHtml($prenom,$nom,$sexe,$body=false) {
 	$res  = '<div class="title">'.$this->title().'</div>';
+	
+	$head = $this->head();
+	$head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+	$head = str_replace('<prenom>', $prenom, $head);
+	$head = str_replace('<nom>',    $nom,    $head);
+	$head = enriched_to_text($head,true);
+
+	if($head) $res .= "<div class='intro'>$head</div>";
+
 
 	$i = 1;
 	foreach($this->_arts as $cid=>$arts) {
@@ -193,18 +213,22 @@ class NewsLetter {
       div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
       div.title { margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; border: 1px black solid;
 		  font-size: 140%; text-align: center; color: black; background: #ffffb0; border: 1px #ff4040 solid; }
-      div.lnk   { margin: 2ex 0ex 2ex 0ex; }
+      
+      a         { text-decoration: none; }
+      a:hover   { text-decoration: underline; }
+      
+      div.lnk   { margin: 2ex 0ex 2ex 0ex; padding: 0ex 2ex 0ex 2ex; }
       div.lnk a { display: block; }
       
-      a  { text-decoration: none; }
       h1 { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%; border-bottom: 1px #ff4040 solid; }
       h2 { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
       h1 a, h1 a:hover { color: black; background: #ffffb0; text-decoration: none; font-size: 140%; padding: 2px 1ex 2px 1ex; border: 1px #ff4040 solid; }
       h2 a, h2 a:hover { color: blue; background: #eeeeee; text-decoration: none; padding: 2px 4px 2px 4px; border: 1px #cccccc solid; }
       
-      div.art { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 1px #cccccc solid; }
-      div.app { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
-      div.foot { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit; text-align: center; }
+      div.art   { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 1px #cccccc solid; }
+      div.app   { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
+      div.intro { padding: 2ex; }
+      div.foot  { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit; text-align: center; }
     </style>
   </head>
   <body>
@@ -225,10 +249,10 @@ EOF;
 				     replace_accent($this->title()),
 				     $html);
 	if($html) {
-	    $mailer->addPart('text/plain; charset=iso-8859-1', 'iso-8859-1', $this->toText());
-	    $mailer->addPart('text/html; charset=iso-8859-1', 'iso-8859-1', $this->toHtml(true));
+	    $mailer->addPart('text/plain; charset=iso-8859-1', 'iso-8859-1', $this->toText($prenom,$nom,$sex));
+	    $mailer->addPart('text/html; charset=iso-8859-1', 'iso-8859-1', $this->toHtml($prenom,$nom,$sex,true));
 	} else {
-	    $mailer->setBody($this->toText());
+	    $mailer->setBody($this->toText($prenom,$nom,$sex));
 	}
 	$mailer->send();
 				     
@@ -343,7 +367,7 @@ function justify($text,$n) {
 	$nxw_len = count($nxl_split) ? strlen($nxl_split[0]) : 0;
 	$line = trim($line);
 
-	if(strlen($line)+1+$nxw_len < 68) {
+	if(strlen($line)+1+$nxw_len < $n) {
 	    $res .= "$line\n";
 	    continue;
 	}
@@ -377,7 +401,7 @@ function justify($text,$n) {
 }
 
 
-function enriched_to_text($input,$html=false,$just=false,$indent=0) {
+function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68) {
     $text = stripslashes(trim($input));
     if($html) {
 	$text = htmlspecialchars($text);
@@ -396,7 +420,7 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0) {
 	$text = preg_replace('!\[\/?i\]!','/',$text);
 	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','[\1]', $text);
 	$text = preg_replace('!([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)!','[mailto:\1]', $text);
-	$text = $just ? justify($text,68-$indent) : wordwrap($text,68-$indent);
+	$text = $just ? justify($text,$width-$indent) : wordwrap($text,$width-$indent);
 	if($indent) {
 	    $ind = str_pad('',$indent);
 	    $text = $ind.str_replace("\n","\n$ind",$text);

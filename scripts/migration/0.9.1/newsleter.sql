@@ -2,6 +2,7 @@
 -- update old table
 --
 alter table newsletter change `date` `date` date not null;
+alter table newsletter add column head mediumtext default '' not null;
 alter table newsletter add column bits enum('old','sent','new') default 'new' not null;
 update newsletter set bits='old';
 
