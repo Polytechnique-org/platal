@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.adv.form.tpl,v 1.1 2004-11-04 13:50:45 x2000habouzit Exp $
+        $Id: search.adv.form.tpl,v 1.2 2004-11-27 12:01:57 x2000bedo Exp $
  ***************************************************************************}
 
 <h1>Recherche avancée</h1>
@@ -212,7 +212,7 @@
     <tr>
       <td>Formation</td>
       <td>
-        <select name="school">
+        <select name="school" onchange="javascript:document.forms.recherche.submit();">
           <option value="0"></option>
           {section name=school loop=$choix_schools}
           <option value="{$choix_schools[school].id}" {if $smarty.request.school eq

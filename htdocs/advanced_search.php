@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.33 2004-11-22 20:04:35 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.34 2004-11-27 12:01:54 x2000bedo Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -42,11 +42,18 @@ function form_prepare() {
     $page->mysql_assign($sql,'choix_sections');
     $sql = 'SELECT id,text FROM applis_def ORDER BY text';
     $page->mysql_assign($sql,'choix_schools');
-    $sql = 'DESCRIBE applis_def type';
+    if (empty($_REQUEST['school']))
+        $sql = 'DESCRIBE applis_def type';
+    else
+        $sql = 'SELECT type FROM applis_def WHERE id='.$_REQUEST['school'];
     $result = $globals->db->query($sql);
     $row = mysql_fetch_row($result);
-    $types = explode('(',$row[1]);
-    $types = str_replace("'","",substr($types[1],0,-1));
+    if (empty($_REQUEST['school'])) {
+        $types = explode('(',$row[1]);
+        $types = str_replace("'","",substr($types[1],0,-1));
+    }
+    else
+        $types = $row[0];
     $page->assign('choix_diplomas',explode(',',$types));
     $sql = 'SELECT id,label FROM emploi_secteur ORDER BY label';
     $page->mysql_assign($sql,'choix_secteurs');
@@ -139,6 +146,7 @@ else {
         new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
     }
     if($page->get_template_vars('nb_resultats_total')>800) {
+        form_prepare();
         new ThrowError('Recherche trop générale');
     }
     
