@@ -1,4 +1,4 @@
-{* $Id: acces_wap.tpl,v 1.2 2004-02-04 22:47:45 x2000habouzit Exp $ *}
+{* $Id: acces_wap.tpl,v 1.3 2004-08-24 23:06:04 x2000habouzit Exp $ *}
 
 {if $OK}
 <p class="erreur">
@@ -17,7 +17,7 @@
   Pour utiliser le site WAP, il faut que tu l'actives explicitement en cochant la case ci dessous.
 </p>
 {dynamic}
-<form action="{$smarty.server.REQUEST_URI}" method="POST" name="wap_form">
+<form action="{$smarty.server.REQUEST_URI}" method="post" name="wap_form">
   <table class="bicol" cellpadding="3" summary="Paramètres généraux du site WAP">
     <tr>
       <th colspan="2">

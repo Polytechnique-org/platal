@@ -1,4 +1,4 @@
-{* $Id: referent.tpl,v 1.4 2004-08-24 12:23:40 x2000habouzit Exp $ *}
+{* $Id: referent.tpl,v 1.5 2004-08-24 23:06:05 x2000habouzit Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -23,7 +23,7 @@ sans doute car ta requête était trop générale. Nous t'invitons à
 d'être plus précis.
 </p>
 {elseif $resultats}
-<form action="{$smarty.server.PHP_SELF}" method="POST" name="form_result">
+<form action="{$smarty.server.PHP_SELF}" method="post" name="form_result">
   <input type="hidden" name="pays" value="{$pays_selectionne}" />
   <input type="hidden" name="expertise" value="{$expertise_champ}" />
   <input type="hidden" name="secteur" value="{$secteur_selectionne}" />

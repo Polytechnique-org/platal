@@ -1,4 +1,4 @@
-{* $Id: general.tpl,v 1.5 2004-08-24 11:45:19 x2000habouzit Exp $ *}
+{* $Id: general.tpl,v 1.6 2004-08-24 23:06:06 x2000habouzit Exp $ *}
 
 {include file="applis.js.tpl"}
 <div class="blocunite_tab">
@@ -59,7 +59,7 @@
         <span class="comm">(4ème année de l'X)</span>
       </td>
       <td class="cold">
-        <select name="appli_id1" onChange="fillType(this.form.appli_type1, this.selectedIndex-1);">  
+        <select name="appli_id1" onchange="fillType(this.form.appli_type1, this.selectedIndex-1);">  
           {applis_options selected=$appli_id1}
         </select>
         <br />
@@ -79,7 +79,7 @@
         <span class="titre">Post-application</span>
       </td>
       <td class="dcold">
-        <select name="appli_id2" onChange="fillType(this.form.appli_type2, this.selectedIndex-1);">   
+        <select name="appli_id2" onchange="fillType(this.form.appli_type2, this.selectedIndex-1);">   
           {applis_options selected=$appli_id2}
         </select>
         <br />

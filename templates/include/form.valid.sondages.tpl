@@ -1,6 +1,6 @@
-{* $Id: form.valid.sondages.tpl,v 1.3 2004-08-24 12:23:41 x2000habouzit Exp $ *}
+{* $Id: form.valid.sondages.tpl,v 1.4 2004-08-24 23:06:05 x2000habouzit Exp $ *}
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="post">
 <input type="hidden" name="uid" value="{$valid->uid}" />
 <input type="hidden" name="type" value="{$valid->type}" />
 <input type="hidden" name="stamp" value="{$valid->stamp}" />

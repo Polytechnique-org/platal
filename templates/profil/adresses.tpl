@@ -1,4 +1,4 @@
-{* $Id: adresses.tpl,v 1.3 2004-08-24 11:45:19 x2000habouzit Exp $ *}
+{* $Id: adresses.tpl,v 1.4 2004-08-24 23:06:06 x2000habouzit Exp $ *}
 
 <div class="blocunite_tab">
   <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Adresses personnelles">
@@ -101,7 +101,7 @@
         <span class="titre">Pays</span>
       </td>
       <td class="cold">
-        <select name="pays[{$adrid}]" onChange="this.form.submit();">
+        <select name="pays[{$adrid}]" onchange="this.form.submit();">
           {geoloc_pays pays=$adr.pays}
         </select>
       </td>

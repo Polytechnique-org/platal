@@ -1,4 +1,4 @@
-{* $Id: newsletter.list.tpl,v 1.2 2004-02-09 17:47:07 x2000habouzit Exp $ *}
+{* $Id: newsletter.list.tpl,v 1.3 2004-08-24 23:06:05 x2000habouzit Exp $ *}
 
 <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
 <tr>
@@ -14,14 +14,14 @@
   </td>
   {if $admin}
   <td>
-    <form method="POST" action="{$smarty.server.PHP_SELF}">
+    <form method="post" action="{$smarty.server.PHP_SELF}">
       <input type="hidden" name="nl_id" value="{$nl.id}" />
       <input type="hidden" name="action" value="edit" />
       <input type="submit" value="edit" />
     </form>
   </td>
   <td>
-    <form method="POST" action="{$smarty.server.PHP_SELF}">
+    <form method="post" action="{$smarty.server.PHP_SELF}">
       <input type="hidden" name="nl_id" value="{$nl.id}" />
       <input type="hidden" name="action" value="delete" />
       <input type="submit" value="del" />

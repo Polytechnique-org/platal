@@ -1,4 +1,4 @@
-{* $Id: profil.tpl,v 1.4 2004-08-07 11:26:45 x2000coic Exp $ *}
+{* $Id: profil.tpl,v 1.5 2004-08-24 23:06:05 x2000habouzit Exp $ *}
 
 {config_load file="profil.conf"}
 {literal}
@@ -41,7 +41,7 @@
 {/if}
 {* dessin des onglets *}
 
-<form action="{$smarty.server.PHP_SELF}" method="POST" name="prof_annu">
+<form action="{$smarty.server.PHP_SELF}" method="post" name="prof_annu">
   <input type="hidden" value="" name="binet_op" />
   <input type="hidden" value="" name="binet_id" />
   <input type="hidden" value="" name="groupex_op" />

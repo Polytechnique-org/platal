@@ -1,4 +1,4 @@
-{* $Id: carva_redirect.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: carva_redirect.tpl,v 1.4 2004-08-24 23:06:04 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <div class="rubrique">
@@ -67,7 +67,7 @@
 
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <table class="bicol" summary="[ redirection ]">
     <tr>
       <th colspan="2">

@@ -1,4 +1,4 @@
-{* $Id: gere_operations.tpl,v 1.3 2004-02-11 15:35:33 x2000habouzit Exp $ *}
+{* $Id: gere_operations.tpl,v 1.4 2004-08-24 23:06:06 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -7,7 +7,7 @@
   Gestion des opérations de trésorerie
 </div>
 
-<form method="POST" action="{$smarty.server.PHP_SEL}">
+<form method="post" action="{$smarty.server.PHP_SEL}">
   <input type="hidden" name="operation_id" value="{$operation_id}" />
   <input type="hidden" name="action" value="update" />
   <input type="hidden" name="annee" value="{$annee_sel}" />
@@ -88,7 +88,7 @@
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>
-      <form method="POST" action="{$smarty.server.PHP_SELF}">
+      <form method="post" action="{$smarty.server.PHP_SELF}">
         <input type="hidden" name="operation_id" value="0" />
         <input type="hidden" name="action" value="edit" />
         <input type="hidden" name="annee" value="{$annee_sel}" />
@@ -105,7 +105,7 @@
     <td class="right">{$op.debit}</td>
     <td class="right">{$op.credit}</td>
     <td>
-      <form method="POST" action="{$smarty.server.PHP_SELF}">
+      <form method="post" action="{$smarty.server.PHP_SELF}">
         <input type="hidden" name="operation_id" value="{$op.id}" />
         <input type="hidden" name="annee" value="{$annee_sel}" />
         <input type="hidden" name="mois" value="{$mois_sel}" />

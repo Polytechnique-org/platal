@@ -1,4 +1,4 @@
-{* $Id: acces_smtp.tpl,v 1.4 2004-02-09 17:47:06 x2000habouzit Exp $ *}
+{* $Id: acces_smtp.tpl,v 1.5 2004-08-24 23:06:04 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <p class="erreur">
@@ -50,7 +50,7 @@
   Pour activer un compte SMTP/NNTP sur <strong>ssl.polytechnique.org</strong>, tape un mot de passe ci-dessous.
 {/if}
 </p>
-<form action="{$smarty.server.REQUEST_URI}" method="POST" name="smtppass_form" id="smtppass_form">
+<form action="{$smarty.server.REQUEST_URI}" method="post" name="smtppass_form" id="smtppass_form">
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <th colspan="2">

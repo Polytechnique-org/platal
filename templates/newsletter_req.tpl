@@ -1,4 +1,4 @@
-{* $Id: newsletter_req.tpl,v 1.4 2004-02-11 13:30:36 x2000habouzit Exp $ *}
+{* $Id: newsletter_req.tpl,v 1.5 2004-08-24 23:06:04 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposer un article pour la newsletter
@@ -65,7 +65,7 @@
     Tu seras recontacté par mail par un rédacteur pour te confirmer la
     bonne récéption de ta demande.
     </p>
-    <form action="{$smarty.server.PHP_SELF}" method="POST">
+    <form action="{$smarty.server.PHP_SELF}" method="post">
       <input type="hidden" name="titre" value="{$titre}" />
       <input type="hidden" name="article" value="{$article}" />
       <input type="hidden" name="bonus" value="{$bonus}" />
@@ -84,7 +84,7 @@
 {/if}
 
 {if !$sent}
-<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="bicol" cellpadding="3" cellspacing="0" summary="Proposition d'article newsletter">
     <thead>
       <tr>

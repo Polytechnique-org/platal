@@ -1,4 +1,4 @@
-{* $Id: newsletter_prep.tpl,v 1.3 2004-02-11 13:30:36 x2000habouzit Exp $ *}
+{* $Id: newsletter_prep.tpl,v 1.4 2004-08-24 23:06:05 x2000habouzit Exp $ *}
 
 {if $erreur}
 
@@ -16,7 +16,7 @@
   Préparer la Newsletter
 </div>
 
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <p class="normal">
     Conseil : enregistre souvent tes modifs pour éviter de les perdre si 
     le navigateur plante et pour éviter d'oublier<br />

@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.4 2004-08-24 12:23:41 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.5 2004-08-24 23:06:05 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Micropaiments
@@ -11,8 +11,7 @@
 <p class="erreur">{$e}</p>
 {/foreach}
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="op" value="submit" />
+<form method="post" action="{$smarty.server.PHP_SELF}">
   <p class="normal"> Si tu ne souhaites pas utiliser notre interface de
   télépaiement, tu peux virer directement la somme de ton choix sur notre compte
   30004 00314 00010016782 60. Nous veillerons à ce que ton paiement parvienne à
@@ -27,7 +26,7 @@
     <tr>
       <td>Transaction</td>
       <td>
-        <select name="ref" onChange="this.form.op.value='select'; this.form.submit();">
+        <select name="ref" onchange="this.form.op.value='select'; this.form.submit();">
           {select_db_table table="paiement.paiements" valeur=$ref where=" WHERE FIND_IN_SET('old',flags)=0"}
         </select>
         {if $ref_url}
@@ -39,7 +38,7 @@
       <td>Méthode</td>
       <td>
         <select name="methode">
-          {select_db_table table="paiement.methodes" valeur={$methode});
+          {select_db_table table="paiement.methodes" valeur=$methode}
         </select>
       </td>
     </tr>
@@ -50,6 +49,7 @@
     <tr>
       <td>&nbsp;</td>
       <td>
+        <input type="hidden" name="op" value="submit" />
         <input type="submit" value="Continuer" />
       </td>
     </tr>

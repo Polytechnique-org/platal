@@ -59,7 +59,7 @@
       <tr>
         <td>Pays</td>
         <td>
-          <select name="pays" onChange="javascript:document.recherche.submit();">
+          <select name="pays" onchange="javascript:document.recherche.submit();">
           {if $smarty.request.pays}
             {assign var="pays" value=$smarty.request.pays}
           {else}
@@ -175,7 +175,7 @@
       <tr>
         <td>Formation</td>
         <td>
-          <select name="school" onChange="javascript:document.recherche.submit();">
+          <select name="school" onchange="javascript:document.recherche.submit();">
             <option value="0"></option>
             {section name=school loop=$choix_schools}
             <option value="{$choix_schools[school].id}" {if $smarty.request.school eq $choix_schools[school].id}selected{/if}>

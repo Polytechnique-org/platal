@@ -1,4 +1,4 @@
-{* $Id: epouse.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: epouse.tpl,v 1.2 2004-08-24 23:06:04 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Nom de mariage
@@ -54,7 +54,7 @@ celles que tu possèdes déjà.
 
 <br />
 
-<form action="{$smarty.server.PHP_SELF}" method="POST" name="epouse_dem">
+<form action="{$smarty.server.PHP_SELF}" method="post" name="epouse_dem">
 <table class="bicol" cellpadding="4" summary="Nom d'epouse">
   <tr>
     <th>Nom de mariage</th>

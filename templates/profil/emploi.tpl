@@ -1,4 +1,4 @@
-{* $Id: emploi.tpl,v 1.4 2004-08-24 11:45:19 x2000habouzit Exp $ *}
+{* $Id: emploi.tpl,v 1.5 2004-08-24 23:06:06 x2000habouzit Exp $ *}
 
 {section name=adresses_pro loop=2}
 {assign var='i' value=$smarty.section.adresses_pro.index} 
@@ -49,7 +49,7 @@
         <span class="titre">Secteur d'activité</span>
       </td>
       <td class="cold">
-        <select name="secteur[{$i}]" onChange="this.form.submit();">
+        <select name="secteur[{$i}]" onchange="this.form.submit();">
           {select_secteur secteur=$secteur.$i}
         </select>
       </td>
@@ -152,7 +152,7 @@
         <span class="titre">Pays</span>
       </td>
       <td class="cold">
-        <select name="payspro[{$i}]" onChange="this.form.submit();">
+        <select name="payspro[{$i}]" onchange="this.form.submit();">
           {geoloc_pays pays=$payspro.$i}
         </select>
       </td>
