@@ -48,7 +48,7 @@ consulter le trombinoscope</a> des promotions.
 </p>
 
 <p>
-Le site te permet <a href="{"sendmail.php"|url}">d'envoyer des mails</a>,
+Le site te permet <a href="{rel}/emails/send.php">d'envoyer des mails</a>,
 <a href="{"banana/thread.php?group=xorg.pa.emploi"|url}">de consulter des offres
   d'emplois</a> ou plus généralement <a href="{"banana/"|url}">des forums de
   discussions</a>, aux sujets variés, de <a href="{"listes/"|url}">t'inscrire sur des

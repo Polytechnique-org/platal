@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('sendmail.tpl',AUTH_MDP);
+new_skinned_page('emails/send.tpl',AUTH_MDP);
 
 
 // action si on recoit un formulaire
@@ -65,7 +65,7 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
 $sql = "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
           FROM  auth_user_md5 AS u
     INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
-    INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type='a_vie')
+    INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
          WHERE  c.uid = {$_SESSION['uid']}
         ORDER BY u.nom, u.prenom";
 $page->mysql_assign($sql, 'contacts','nb_contacts');

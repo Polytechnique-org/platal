@@ -134,7 +134,7 @@
 </h1>
 
 <ul>
-  {page title="Envoyer un mail" url="sendmail.php"|url}
+  {page title="Envoyer un mail" url="emqils/send.php"|url}
   Tu peux rédiger tes mails directement par le site web de Polytechnique.org.
   {/page}
 

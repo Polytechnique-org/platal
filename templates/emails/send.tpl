@@ -58,35 +58,35 @@
       <td class="titre">de&nbsp;:</td>
       <td>
         <input type='hidden' name='signature' value='1' />
-        <input type='text' name='from' size='45' value='{if $smarty.request.from}
+        <input type='text' name='from' size='60' value='{if $smarty.request.from}
 {$smarty.request.from}
 {else}
-"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.bestalias}@polytechnique.org&gt;
+"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.bestalias}@{#globals.mail.domain#}&gt;
 {/if}' />
       </td>
     </tr>
     <tr> 
       <td class="titre">à&nbsp;:</td>
       <td>
-        <input type='text' name='to' size='45' value="{$smarty.request.to}" />
+        <input type='text' name='to' size='60' value="{$smarty.request.to}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie&nbsp;:</td>
       <td>
-        <input type='text' name='cc' size='45' value="{$smarty.request.cc}" />
+        <input type='text' name='cc' size='60' value="{$smarty.request.cc}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='45' value="{$smarty.request.bcc|default:$smarty.session.bestalias}@polytechnique.org" />
+        <input type='text' name='bcc' size='60' value="{$smarty.request.bcc|default:$smarty.session.bestalias}@{#globals.mail.domain#}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">sujet&nbsp;:</td>
       <td> 
-        <input type='text' name='sujet' size='45' value="{$smarty.request.sujet}" />
+        <input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" />
       </td>
     </tr>
   </table>
@@ -107,7 +107,7 @@
 {/if}
     <td>
       <input type="checkbox" name="contacts[{$contact.forlife}]"
-        value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@polytechnique.org&gt;"
+        value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@{#globals.mail.domain#}&gt;"
         {if $smarty.request.contacts && $smarty.request.contacts.forlife}checked="checked"{/if} />
       <a href="{"fiche.php"|url}?user={$contact.forlife}" class="popup2">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>

@@ -7,7 +7,7 @@ include/conf.d/money.globals.inc.php
 include/conf.d/money.menu.inc.php
 include/money/cyberpaiement.inc.php
 include/money.inc.php
-include/trezo.inc.php
+include/money/trezo.inc.php
 templates/paiment/index.tpl
 templates/trezo/choix_date.tpl
 templates/trezo/gere_operations.tpl
