@@ -53,42 +53,7 @@ class PhotoReq extends Validate {
         return parent::get_unique_request($uid,'photo');
     }
 
-    function echo_formu() {
-        $url_app = isset($_COOKIE[session_name()]) ?  "" : "&amp;".SID;
-        return <<<________EOF
-        <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}" />
-        <input type="hidden" name="type" value="{$this->type}" />
-        <input type="hidden" name="stamp" value="{$this->stamp}" />
-        <table class="bicol" summary="Demande d'alias">
-        <tr>
-            <td>Demandeur&nbsp;:</td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
-                {$this->prenom} {$this->nom}
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: middle;" colspan="2">
-                <img src="../getphoto.php?x={$this->uid}$url_app" style="width:110px;" alt=" [ PHOTO ] " />
-                <img src="../getphoto.php?x={$this->uid}&amp;req=true$url_app" style="width:110px;" alt=" [ PHOTO ] " />
-            </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter" />
-                <br /><br />
-                <input type="submit" name="submit" value="Refuser" />
-            </td>
-            <td>
-                <p>Raison du refus:</p>
-                <textarea rows="5" cols="74" name="motif"></textarea>
-            </td>
-        </tr>
-        </table>
-        </form>
-________EOF;
-    }
+    function formu() { return 'include/form.valid.photos.tpl'; }
     
     function handle_formu () {
         global $no_update_bd;
@@ -98,37 +63,16 @@ ________EOF;
                 || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
             return false;
         
-        $message = "Cher(e) camarade,\n\n";
-        
+        require_once("tpl.mailer.inc.php");
+        $mymail = new TplMailer('valid.photos.tpl');
+        $mymail->assign('username', $this->username);
+
         if($_REQUEST['submit']=="Accepter") {
-            $sql = mysql_query("SELECT alias FROM auth_user_md5 WHERE user_id=".$this->uid);
-            list($old) = mysql_fetch_row($sql);
-            mysql_free_result($sql);
-
-            $message .=
-                "  La demande de changement de photo que tu as "
-                ."demandée vient d'être effectuée.\n\n";
-
+            $mymail->assign('answer','yes');
             $this->commit();
-        } else { // c'était donc Refuser
-            $message .=
-                "La demande de changement de photo que tu avais faite a été refusée.\n";
-            if ($_REQUEST["motif"] != "" )
-                $message .= "\nLa raison de ce refus est : \n".
-                    stripslashes($_REQUEST["motif"])."\n\n";
-        }
+        } else
+            $mymail->assign('answer','no');
         
-        $message .=
-            "Cordialement,\n".
-            "L'équipe X.org";
-
-        $message = wordwrap($message,78);  
-        require_once("diogenes.mailer.inc.php");
-        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+trombino@polytechnique.org>',
-                $this->username."@polytechnique.org",
-                "[Polytechnique.org/PHOTO] Changement de photo de ".$this->username,
-                false, "validation+trombino@m4x.org");
-        $mymail->setBody($message);
         $mymail->send();
 
         $this->clean();
