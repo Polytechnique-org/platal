@@ -6,7 +6,7 @@ alter table newsletter add column head mediumtext default '' not null;
 alter table newsletter add column bits enum('old','sent','new') default 'new' not null;
 update newsletter set bits='old';
 
-alter table newsletter_ins add column last int;
+alter table newsletter_ins add column last int not null default 0;
 alter table newsletter_ins add index (last);
 --
 -- -----------------------------------------------------------------------------
