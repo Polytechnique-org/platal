@@ -24,7 +24,7 @@ Bug/Wish :
 		- #161 : Now supports non-X natively								-MC
 
 	* Search :
-		- #112,113,126,133,167: google like search + some rewrite.			-MC
+		- #112,113,126,133,167,171: google like search + some rewrite.		-MC
 
 	* Search+Contacts :
 		- #122 : Women now have a &bull; (no more dirty gender icons).		-MC
