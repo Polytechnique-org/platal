@@ -42,6 +42,10 @@
     <script type="text/javascript" src="{rel}/{$js}"></script>
     {/foreach}
     <script type="text/javascript" src="{rel}/javascript/overlib.js"></script>
+    
+    {if $xorg_rss}
+    <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{rel}{$xorg_rss.href}" />
+    {/if}
 
     <title>{$xorg_title|default:"Anciens eleves Polytechnique, annuaire email, Alumni"}</title>
 

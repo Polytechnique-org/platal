@@ -21,6 +21,11 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('carnet/index.tpl', AUTH_COOKIE);
+
+if (Session::has('core_rss_hash')) {
+    $page->assign('xorg_rss', Array("title" => "Polytechnique.org :: Carnet", "href" => "/carnet/rss.php/".Session::get('forlife')."/".Session::get('core_rss_hash').".xml"));
+}
+
 $page->run();
 
 ?>

@@ -64,4 +64,6 @@ if (Env::has('flags_mail')) {
 
 $page->assign_by_ref('watch', $watch);
 $page->run();
+
+// vim:set et sws=4 sw=4 sts=4:
 ?>

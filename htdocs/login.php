@@ -61,6 +61,12 @@ if ($nbAlea > 0) {
 $publicite = array_chunk( $publicite , $pub_nbLig , true ) ;
 $page->assign_by_ref('publicite', $publicite);
 
+// ajout du lien RSS
+
+if (Session::has('core_rss_hash')) {
+    $page->assign('xorg_rss', Array("title" => "Polytechnique.org :: News", "href" => "/rss.php/".Session::get('forlife')."/".Session::get('core_rss_hash').".xml"));
+}
+
 // affichage des evenements
 // annonces promos triées par présence d'une limite sur les promos
 // puis par dates croissantes d'expiration
@@ -76,4 +82,6 @@ $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS
 $page->assign('evenement', $globals->xdb->iterator($sql, $promo, $promo));
 
 $page->run();
+
+// vim:set et sws=4 sw=4 sts=4:
 ?>
