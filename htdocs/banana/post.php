@@ -7,7 +7,7 @@
 * Copyright: See COPYING files that comes with this distribution
 ********************************************************************************/
 
-require('auto.prepend.inc.php');
+require('xorg.inc.php');
 new_skinned_page('banana.tpl', AUTH_COOKIE, 'banana.head.tpl');
 $page->caching = false;
 require('hack.inc.php');

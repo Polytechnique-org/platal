@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.php,v 1.7 2004-11-07 11:54:07 x2000habouzit Exp $
+        $Id: notifs.php,v 1.8 2004-11-22 11:15:31 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('carnet/notifs.tpl', AUTH_COOKIE);
 require('notifs.inc.php');
 

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.php,v 1.10 2004-10-31 16:02:44 x2000chevalier Exp $
+        $Id: epouse.php,v 1.11 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 require("validations.inc.php");
 require("xorg.misc.inc.php");
 

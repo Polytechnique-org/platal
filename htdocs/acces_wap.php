@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: acces_wap.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: acces_wap.php,v 1.6 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 
 new_skinned_page('acces_wap.tpl', AUTH_MDP);
 

@@ -18,13 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.11 2004-11-13 14:16:18 x2000habouzit Exp $
+        $Id: members.php,v 1.12 2004-11-22 11:15:39 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('listes/members.tpl', AUTH_COOKIE);
 include('xml-rpc-client.inc.php');
 

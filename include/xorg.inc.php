@@ -18,9 +18,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.common.inc.php,v 1.11 2004-11-22 10:42:52 x2000habouzit Exp $
+    $Id: xorg.inc.php,v 1.1 2004-11-22 11:16:32 x2000habouzit Exp $
  ***************************************************************************/
 
+function microtime_float() 
+{ 
+    list($usec, $sec) = explode(" ", microtime()); 
+    return ((float)$usec + (float)$sec); 
+} 
+$TIME_BEGIN = microtime_float();
+ 
 // {{{ defines
 
 $i=0;
@@ -47,20 +54,11 @@ require_once("xorg/session.inc.php");
 
 $globals = new XorgGlobals;
 require("xorg.config.inc.php");
-$globals->menu = new XOrgMenu();
 
 // }}}
-// {{{ start session + database connection
+// {{{ Build Menu, TODO: move that into appropriates hooks
 
-session_start();
-
-// connect to database
-$globals->dbconnect();
-if ($globals->debug) {
-    $globals->db->trace_on();
-}
-
-//}}}
+$globals->menu = new XOrgMenu();
 
 $globals->menu->addPrivateEntry(XOM_NO,       10, 'Page d\'accueil',       'login.php');
 
@@ -103,6 +101,91 @@ $globals->menu->addPublicEntry(XOM_EXT,   20, 'Recrutement',            'http://
 $globals->menu->addPublicEntry(XOM_INFOS, 00, 'A propos du site',       'docs/apropos.php');
 $globals->menu->addPublicEntry(XOM_INFOS, 10, 'Nous contacter',         'docs/contacts.php');
 $globals->menu->addPublicEntry(XOM_INFOS, 20, 'FAQ',                    'docs/faq.php');
+
+// }}}
+// {{{ start session + database connection
+
+session_start();
+
+// connect to database
+$globals->dbconnect();
+if ($globals->debug) {
+    $globals->db->trace_on();
+}
+
+//}}}
+
+// {{{ function _new_page()
+
+function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)
+{
+    global $page;
+    require_once("xorg.page.inc.php");
+    if (!empty($admin)) {
+        $page = new XorgAdmin($tpl_name, $type);
+    } else switch($min_auth) {
+        case AUTH_PUBLIC:
+            $page = new XorgPage($tpl_name, $type);
+            break;
+            
+        case AUTH_COOKIE:
+            $page = new XorgCookie($tpl_name, $type);
+            break;
+            
+        case AUTH_MDP:
+            $page = new XorgAuth($tpl_name, $type);
+    }
+
+    $page->assign('xorg_head', $tpl_head);
+    $page->assign('xorg_tpl', $tpl_name);
+}
+
+// }}}
+// {{{ function new_skinned_page()
+
+function new_skinned_page($tpl_name, $min_auth, $tpl_head="")
+{
+    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
+}
+
+// }}}
+// {{{ function new_simple_page()
+
+function new_simple_page($tpl_name, $min_auth, $tpl_head="")
+{
+    global $page;
+    _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
+    $page->assign('simple', true);
+}
+
+// }}}
+// {{{ function new_nonhtml_page()
+
+function new_nonhtml_page($tpl_name, $min_auth)
+{
+    _new_page(NO_SKIN, $tpl_name, "", $min_auth, false);
+}
+
+// }}}
+// {{{ function new_admin_page()
+
+function new_admin_page($tpl_name, $tpl_head="")
+{
+    _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, true);
+}
+
+// }}}
+// {{{ function new_admin_table_editor()
+
+function new_admin_table_editor($table, $idfield, $idedit=false)
+{
+    global $editor;
+    new_admin_page('table-editor.tpl');
+    require_once('xorg.table-editor.inc.php');
+    $editor = new XOrgAdminTableEditor($table,$idfield,$idedit);
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

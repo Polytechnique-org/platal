@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.20 2004-11-16 20:36:11 x2000habouzit Exp $
+        $Id: moderate.php,v 1.21 2004-11-22 11:15:39 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,7 +28,7 @@ if(preg_match('!(?:[a-z0-9]+\.)?polytechnique\.org-(.*)!', $liste,$matches)) {
     header('Location: ?liste='.$matches[1]);
 }
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('listes/moderate.tpl', AUTH_MDP);
 include('xml-rpc-client.inc.php');
 

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.5 2004-11-22 07:40:16 x2000habouzit Exp $
+        $Id: step3.php,v 1.6 2004-11-22 11:15:35 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 
 $erreur = Array();
 

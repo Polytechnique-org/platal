@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin_trombino.php,v 1.3 2004-09-02 22:27:05 x2000habouzit Exp $
+        $Id: admin_trombino.php,v 1.4 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_admin_page('admin/admin_trombino.tpl');
 
 $q = $globals->db->query("SELECT  a.alias,promo

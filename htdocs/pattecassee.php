@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: pattecassee.php,v 1.10 2004-11-16 20:36:10 x2000habouzit Exp $
+        $Id: pattecassee.php,v 1.11 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('pattecassee.tpl',AUTH_COOKIE);
     
 function valide_email($str) {

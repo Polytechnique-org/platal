@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: foobar.php,v 1.3 2004-11-21 16:31:48 x2000habouzit Exp $
+    $Id: foobar.php,v 1.4 2004-11-22 11:16:34 x2000habouzit Exp $
  ***************************************************************************/
 
-require('auto.prepend.inc.php');
+require('xorg.inc.php');
 
  
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:

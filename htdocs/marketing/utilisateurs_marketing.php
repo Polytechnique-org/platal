@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.12 2004-11-22 07:40:17 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.13 2004-11-22 11:15:45 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 $id_actions = array('Mailer');
 require("select_user.inc.php");
 

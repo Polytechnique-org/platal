@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: lists.php,v 1.3 2004-11-10 10:59:09 x2000habouzit Exp $
+        $Id: lists.php,v 1.4 2004-11-22 11:15:31 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_admin_page('admin/lists.tpl');
 include('xml-rpc-client.inc.php');
 

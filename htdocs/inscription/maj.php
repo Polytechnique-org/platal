@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: maj.php,v 1.3 2004-09-30 15:13:08 x2000habouzit Exp $
+        $Id: maj.php,v 1.4 2004-11-22 11:15:35 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 
 if (isset($_REQUEST['n'])) {
     $sql = "SELECT * FROM envoidirect WHERE uid='".$_REQUEST["n"]."'";

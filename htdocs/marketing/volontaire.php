@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.php,v 1.6 2004-11-10 13:32:37 x2000chevalier Exp $
+        $Id: volontaire.php,v 1.7 2004-11-22 11:15:45 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_admin_page('marketing/volontaire.tpl');
 
 $errors = Array();

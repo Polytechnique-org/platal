@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: parselog.php,v 1.4 2004-11-09 13:59:23 x2000palatin Exp $
+        $Id: parselog.php,v 1.5 2004-11-22 11:15:58 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page("stats/parselog.tpl",AUTH_COOKIE);
 
 $page->run();

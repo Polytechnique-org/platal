@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: logger.php,v 1.4 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: logger.php,v 1.5 2004-11-22 11:15:31 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_admin_page('logger-view.tpl');
 require('diogenes.logger-view.inc.php');
 

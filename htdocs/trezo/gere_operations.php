@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: gere_operations.php,v 1.4 2004-08-31 10:03:32 x2000habouzit Exp $
+        $Id: gere_operations.php,v 1.5 2004-11-22 11:16:00 x2000habouzit Exp $
  ***************************************************************************/
 
-require('auto.prepend.inc.php');
+require('xorg.inc.php');
 require("trezo.inc.php");
 new_admin_page('trezo/gere_operations.tpl');
 

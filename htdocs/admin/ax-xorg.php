@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ax-xorg.php,v 1.4 2004-10-31 16:39:04 x2000chevalier Exp $
+        $Id: ax-xorg.php,v 1.5 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require('auto.prepend.inc.php');
+require('xorg.inc.php');
 new_admin_page('admin/ax-xorg.tpl');
 
 // liste des différences

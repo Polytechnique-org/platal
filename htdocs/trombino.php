@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombino.php,v 1.4 2004-11-12 21:30:58 x2000coic Exp $
+        $Id: trombino.php,v 1.5 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('trombino.tpl', AUTH_MDP);
 
 require("validations.inc.php");

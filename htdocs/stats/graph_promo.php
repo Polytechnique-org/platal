@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: graph_promo.php,v 1.5 2004-11-14 16:29:53 x2000habouzit Exp $
+        $Id: graph_promo.php,v 1.6 2004-11-22 11:15:58 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('index.tpl',AUTH_COOKIE);
 
 

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.php,v 1.10 2004-11-03 15:55:22 x2000habouzit Exp $
+        $Id: antispam.php,v 1.11 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('antispam.tpl', AUTH_MDP);
 require("email.classes.inc.php");
 

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.9 2004-11-21 23:35:31 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.10 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_admin_page('admin/homonymes.tpl');
 require("diogenes.hermes.inc.php");
 

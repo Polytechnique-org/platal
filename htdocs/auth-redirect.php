@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auth-redirect.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: auth-redirect.php,v 1.3 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('index.tpl',AUTH_COOKIE);
 
 //adresse de redirection par defaut

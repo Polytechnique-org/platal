@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.php,v 1.16 2004-11-13 14:16:15 x2000habouzit Exp $
+        $Id: login.php,v 1.17 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
 $param=$globals->db->query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SESSION['uid']};");

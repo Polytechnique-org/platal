@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: clear_all_cache.php,v 1.6 2004-10-09 12:57:45 x2000habouzit Exp $
+        $Id: clear_all_cache.php,v 1.7 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_admin_page('index.tpl');
 $page->clear_all_cache();
 $page->clear_compiled_tpl();

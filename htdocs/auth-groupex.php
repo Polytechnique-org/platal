@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auth-groupex.php,v 1.8 2004-11-17 10:12:44 x2000habouzit Exp $
+        $Id: auth-groupex.php,v 1.9 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
 $gpex_pass = $_GET["pass"];
@@ -33,7 +33,7 @@ if (!preg_match("/^(http|https):\/\/.*/",$gpex_url))
     $gpex_url = "http://$gpex_url";
 $gpex_challenge = $_GET["challenge"];
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('index.tpl',AUTH_COOKIE);
 
 // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid

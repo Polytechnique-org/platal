@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: create.php,v 1.4 2004-10-13 11:21:34 x2000habouzit Exp $
+        $Id: create.php,v 1.5 2004-11-22 11:15:39 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('listes/create.tpl', AUTH_MDP);
 
 $owners  = empty($_POST['owners'])  ? Array() : preg_split("/[\r\n]+/",$_POST['owners']);

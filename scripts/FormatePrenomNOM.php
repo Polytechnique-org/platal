@@ -19,10 +19,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: FormatePrenomNOM.php,v 1.2 2004-08-31 11:19:51 x2000habouzit Exp $
+        $Id: FormatePrenomNOM.php,v 1.3 2004-11-22 11:16:32 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.common.inc.php");
+require("xorg.inc.php");
 
 $result=mysql_query("SELECT user_id,prenom,nom FROM auth_user_md5");
 

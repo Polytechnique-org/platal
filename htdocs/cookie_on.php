@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cookie_on.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: cookie_on.php,v 1.5 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('cookie_on.tpl', AUTH_MDP);
 
 $res = @$globals->db->query( "SELECT password FROM auth_user_md5 WHERE user_id='{$_SESSION['uid']}'" );

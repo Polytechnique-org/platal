@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.3 2004-11-18 15:17:41 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.4 2004-11-22 11:15:31 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page("carnet/mescontacts.tpl",AUTH_COOKIE);
 require("applis.func.inc.php");
 

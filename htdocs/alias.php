@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: alias.php,v 1.8 2004-11-07 20:17:22 x2000habouzit Exp $
+        $Id: alias.php,v 1.9 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 require("validations.inc.php");
 
 new_skinned_page('alias.tpl', AUTH_MDP);

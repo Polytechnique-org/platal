@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_pdf.php,v 1.2 2004-11-17 10:12:45 x2000habouzit Exp $
+        $Id: mescontacts_pdf.php,v 1.3 2004-11-22 11:15:31 x2000habouzit Exp $
  ***************************************************************************/
 
 #
-# $Id: mescontacts_pdf.php,v 1.2 2004-11-17 10:12:45 x2000habouzit Exp $
+# $Id: mescontacts_pdf.php,v 1.3 2004-11-22 11:15:31 x2000habouzit Exp $
 #
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('index.tpl', AUTH_COOKIE);
 require("texify.inc.php");
 require("applis.func.inc.php");

@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: nb_by_promo.php,v 1.6 2004-11-14 16:13:25 x2000habouzit Exp $
+        $Id: nb_by_promo.php,v 1.7 2004-11-22 11:15:58 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require("xorg.inc.php");
 new_skinned_page('stats/nb_by_promo.tpl', AUTH_COOKIE);
 
 $result = $globals->db->query("SELECT  promo,COUNT(*)

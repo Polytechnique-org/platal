@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: getphoto.php,v 1.6 2004-09-10 23:13:03 x2000habouzit Exp $
+        $Id: getphoto.php,v 1.7 2004-11-22 11:15:30 x2000habouzit Exp $
  ***************************************************************************/
 
 
-require('auto.prepend.inc.php');
+require('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
 //require("db_connect.inc.php");
