@@ -80,7 +80,7 @@ Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (
     {if $watch->promos()|@count eq 0}
     <p>Tu ne surveilles actuellement aucune promo.</p>
     {else}
-    <p>Tu surveilles les les promos suivantes :</p>
+    <p>Tu surveilles les promos suivantes :</p>
     <ul>
       {foreach from=$watch->promos() item=p}
       <li>{if $p.0 eq $p.1}{$p.0}{else}{$p.0} à {$p.1}{/if}</li>
