@@ -29,7 +29,7 @@ Bug/Wish :
 
 	* Lists :
 		- #138 : Refusal message is shown on mail moderation page.			-MC
-		- #161 : Now supports non-X natively								-MC
+		- #161 : Now supports non-X natively.								-MC
 
 	* Search :
 		- #112,113,126,133,167,171: google like search + some rewrite.		-MC
