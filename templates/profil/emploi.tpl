@@ -173,7 +173,15 @@
         <span class="titre">E-mail</span>
       </td>
       <td>
-        <input tyep="text" size="30" maxlength="60" name="emailpro[{$i}]" value="{$emailpro.$i}" />
+        <input type="text" size="30" maxlength="60" name="emailpro[{$i}]" value="{$emailpro.$i}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Page web</span>
+      </td>
+      <td>
+        <input type="text" size="30" maxlength="255" name="webpro[{$i}]" value="{$webpro.$i}" />
       </td>
     </tr>
   </table>

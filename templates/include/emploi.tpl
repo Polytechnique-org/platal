@@ -23,7 +23,7 @@
         {if $address.entreprise}
         <tr>
           <td><em>Ent/Org: </em></td>
-          <td><strong>{$address.entreprise}</strong></td>
+          <td><strong>{$address.entreprise}{if $address.web} [<a href='{$address.web}'>site</a>]{/if}</strong></td>
         </tr>
         {/if}
         {if $address.secteur}
@@ -47,7 +47,7 @@
         {/if}
         {if $address.email}
         <tr>
-          <td><em>E-mail : </em></td>
+          <td><em>E-mail: </em></td>
           <td><strong>{$address.email}</strong></td>
         </tr>
         {/if}

@@ -21,7 +21,7 @@
 
 for($i = 0; $i < 2; $i++){
 
-    $globals->xdb->execute("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,poste,fonction,adr1,adr2,adr3,cp,ville,pays,region,tel,fax,mobile,pub, adr_pub, tel_pub, email, email_pub) ".
+    $globals->xdb->execute("REPLACE INTO entreprises(uid,entrid,entreprise,secteur,ss_secteur,poste,fonction,adr1,adr2,adr3,cp,ville,pays,region,tel,fax,mobile,pub, adr_pub, tel_pub, email, email_pub, web) ".
               "VALUES ({?}, {?}, {?}, ".
 	      "{?},".
 	      "{?}".
@@ -30,7 +30,7 @@ for($i = 0; $i < 2; $i++){
 	      "{?}, {?}, ".
 	      "{?}, {?}, {?}, {?}, ".
 	      "{?}, {?}, {?}, ".
-	      "{?}, {?})",
+	      "{?}, {?}, {?})",
 	      Session::getInt('uid', -1) , $i , $entreprise[$i] ,
 	      ( ($secteur[$i] == "") ? null : $secteur[$i]), //sinon un faux 0 est rentre dans la base
 	      ( ($ss_secteur[$i] == "") ? null : $ss_secteur[$i]),
@@ -39,7 +39,7 @@ for($i = 0; $i < 2; $i++){
               $villepro[$i], $payspro[$i],
 	      $regionpro[$i], $telpro[$i], $faxpro[$i], $mobilepro[$i],
 	      $pubpro[$i], $adr_pubpro[$i], $tel_pubpro[$i],
-	      $emailpro[$i], $email_pubpro[$i]);
+	      $emailpro[$i], $email_pubpro[$i], $webpro[$i]);
 }
 $globals->xdb->execute("UPDATE auth_user_md5 set cv= {?} WHERE user_id = {?}", $cv, Session::getInt('uid', -1));
 ?>

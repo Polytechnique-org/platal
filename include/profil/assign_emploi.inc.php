@@ -40,6 +40,7 @@ $page->assign('adr_pubpro',$adr_pubpro);
 $page->assign('tel_pubpro',$tel_pubpro);
 $page->assign('emailpro',$emailpro);
 $page->assign('email_pubpro',$email_pubpro);
+$page->assign('webpro',$webpro);
 $page->assign('cv',$cv);
 
 ?>

@@ -9,4 +9,5 @@ tel_pub = IF(FIND_IN_SET('tel_public', visibilite), 'public', IF(FIND_IN_SET('te
 ALTER TABLE entreprises DROP visibilite;
 ALTER TABLE entreprises
 ADD email VARCHAR(60) NOT NULL AFTER mobile,
+ADD web VARCHAR(255) NOT NULL AFTER email,
 ADD email_pub ENUM('private', 'ax', 'public') DEFAULT 'private' NOT NULL;

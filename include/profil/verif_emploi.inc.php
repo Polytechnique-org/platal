@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+include_once('xorg.misc.inc.php');
 
 function set_flag_i(&$var,$var_name,$i){
   $tab = Env::getMixed($var_name, Array());
@@ -51,6 +52,7 @@ replace_ifset_i($adr_pubpro,"adr_pubpro",$i);
 replace_ifset_i($tel_pubpro,"tel_pubpro",$i);
 replace_ifset_i($emailpro,"emailpro",$i);
 replace_ifset_i($email_pubpro,"email_pubpro",$i);
+replace_ifset_i($webpro,"webpro",$i);
 replace_ifset($cv,"cv");
 
 // validité de l'entreprise
@@ -70,6 +72,25 @@ $str_error = $str_error."Le champ 'Poste $j' contient un caractère interdit.<BR 
 if (strlen(strtok($cv,"<>{}~§`")) < strlen($cv))
 {
   $str_error = $str_error."Le champ 'Curriculum vitae' contient un caractère interdit.<BR />";
+}
+
+// correction du champ web si vide
+if ($webpro[$i]=="http://" or $webpro[$i] == '') {
+    $webpro[$i]='';
+} elseif (!preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $webpro[$i])) {
+    // validité de l'url donnée dans web
+    $page->trig("URL incorrecte dans le champ 'Page web', une url doit commencer par
+                    http:// ou https:// ou ftp:// et ne pas contenir de caractères interdits");
+} else {
+    $webpro[$i] = str_replace('&', '&amp;', $webpro[$i]);
+}
+
+// validité de l'e-mail
+if ($emailpro[$i]) {
+    $emailpro[$i] = strtolower(trim($emailpro[$i]));
+    if (!isvalid_email($emailpro[$i])) {
+    	$page->trig("Adresse e-mail incorrecte dans le champ 'E-mail'");
+    }
 }
 
 if (strlen(strtok($adrpro1[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro1[$i]))

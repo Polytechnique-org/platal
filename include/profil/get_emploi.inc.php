@@ -25,7 +25,7 @@ require_once('fonction.emploi.inc.php');
 
 $res = $globals->xdb->iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
 	adr1, adr2, adr3, cp, ville, pays, region, tel, fax, mobile,
-	pub, adr_pub, tel_pub, email, email_pub
+	pub, adr_pub, tel_pub, email, email_pub, web
         FROM entreprises
         WHERE uid = {?} ORDER BY entrid",Session::getInt('uid', -1));
 
@@ -34,7 +34,7 @@ for($i = 0; $i < $nb_res ; $i++){
 	list($endrid[$i], $entreprise[$i], $secteur[$i], $ss_secteur[$i], $poste[$i], $fonction[$i],
        	     $adrpro1[$i], $adrpro2[$i], $adrpro3[$i], $cppro[$i], $villepro[$i], $payspro[$i], $regionpro[$i],
              $telpro[$i], $faxpro[$i], $mobilepro[$i], $pubpro[$i], $adr_pubpro[$i],
-	     $tel_pubpro[$i], $emailpro[$i], $email_pubpro[$i]) = $res->next();
+	     $tel_pubpro[$i], $emailpro[$i], $email_pubpro[$i], $webpro[$i]) = $res->next();
 }
 //limite dure a 2
 for($i = $nb_res; $i < 2 ; $i++){
@@ -59,6 +59,7 @@ for($i = $nb_res; $i < 2 ; $i++){
 	$tel_pubpro[$i] = '';
 	$emailpro[$i] = '';
 	$email_pubpro[$i] = '';
+	$webpro[$i] = '';
 }
 
 //recuperation des donnees sur les secteurs :
