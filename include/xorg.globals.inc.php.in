@@ -19,8 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('diogenes.core.globals.inc.php');
-require_once('diogenes.database.inc.php');
+require_once('diogenes/diogenes.core.globals.inc.php');
+require_once('diogenes/diogenes.database.inc.php');
 require_once('xorg/iterator.inc.php');
 require_once('xorg/database.inc.php');
 
@@ -44,7 +44,7 @@ class XorgGlobals extends DiogenesCoreGlobals
 
     /** The x.org version */
     var $version = '@VERSION@';
-    var $debug   = false;
+    var $debug   = 0;
 
     /** db params */
     var $dbdb               = 'x4dat';
@@ -99,7 +99,7 @@ class XorgGlobals extends DiogenesCoreGlobals
         $globals->hook->menu(null);
 
         $globals->dbconnect();
-        if ($globals->debug) {
+        if ($globals->debug & 1) {
             $globals->db->trace_on();
         }
         $globals->xdb =& new XOrgDB;

@@ -19,7 +19,7 @@
  ***************************************************************************}
 
 {if #globals.debug#}
-{if $db_trace neq "\n\n"}
+{if $db_trace && $db_trace neq "\n\n"}
   <div id="db-trace">
     <h1>
       Trace de l'exécution de cette page sur mysql (hover me)
