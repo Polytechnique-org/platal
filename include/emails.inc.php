@@ -56,17 +56,15 @@ function check_mtic($email)
 function fix_bestalias($uid)
 {
     global $globals;
-    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE id='$uid' AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'");
-    list($n) = mysql_fetch_row($res);
-    mysql_free_result($res);
-    if ($n) {
+    $res = $globals->xdb->query("SELECT COUNT(*) FROM aliases WHERE id={?} AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'", $uid);
+    if ($n = $res->fetchOneCell()) {
         return;
     }
-    $globals->db->query("UPDATE  aliases
-                            SET  flags=CONCAT(flags,',','bestalias')
-			  WHERE  id='$uid' AND type!='homonyme'
-		       ORDER BY  !FIND_IN_SET('epouse',flags),alias LIKE '%.%', LENGTH(alias)
-		          LIMIT  1");
+    $globals->xdb->execute("UPDATE  aliases
+                               SET  flags=CONCAT(flags,',','bestalias')
+			     WHERE  id={?} AND type!='homonyme'
+		          ORDER BY  !FIND_IN_SET('epouse',flags),alias LIKE '%.%', LENGTH(alias)
+		             LIMIT  1", $uid);
 }
 
 // }}}
@@ -101,14 +99,13 @@ class Bogo
     function Bogo($uid)
     {
 	global $globals;
-	$res = $globals->db->query("SELECT email FROM emails WHERE uid = $uid AND find_in_set('filter', flags)");
-	if (mysql_num_rows($res)) {
-	    list($this->state) = mysql_fetch_row($res);
-	    mysql_free_result($res);
+	$res = $globals->xdb->query('SELECT email FROM emails WHERE uid={?} AND find_in_set("filter", flags)', $uid);
+	if ($res->numRows()) {
+            $this->state = $res->fetchOneCell();
 	} else {
 	    $this->state = 'tag_spams';
-	    $res = $globals->db->query("INSERT INTO emails (uid,email,rewrite,panne,flags)
-					     VALUES ($uid,'{$this->state}','','0000-00-00','filter')");
+	    $res = $globals->xdb->query("INSERT INTO emails (uid,email,rewrite,panne,flags)
+					      VALUES ({?},'tag_spams','','0000-00-00','filter')", $uid);
 	}
     }
 
@@ -119,7 +116,7 @@ class Bogo
     {
 	global $globals;
 	$this->state = is_int($state) ? $this->_states[$state] : $state;
-	$globals->db->query("UPDATE emails SET email='{$this->state}' WHERE uid='$uid' AND find_in_set('filter', flags)");
+	$globals->xdb->execute('UPDATE emails SET email={?} WHERE uid={?} AND find_in_set("filter", flags)', $this->state, $uid);
     }
 
     // }}}
@@ -160,10 +157,9 @@ class Email
     {
         global $globals;
         if (!$this->active) {
-            $globals->db->query("UPDATE emails
-	                            SET flags = CONCAT_WS(',',flags,'active')
-				  WHERE uid=$uid AND email='{$this->email}'");
-	    $_SESSION['log']->log("email_on",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : ""));
+            $globals->xdb->execute("UPDATE  emails SET flags = CONCAT_WS(',',flags,'active')
+                                     WHERE  uid={?} AND email={?}", $uid, $this->email);
+	    $_SESSION['log']->log("email_on", $this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
         }
     }
@@ -176,9 +172,8 @@ class Email
         global $globals;
         if ($this->active) {
 	    $flags = $this->mtic ? 'mtic' : '';
-            $globals->db->query("UPDATE emails
-				    SET flags ='$flags'
-				  WHERE uid=$uid AND email='{$this->email}'");
+            $globals->xdb->execute("UPDATE  emails SET flags ='$flags'
+				     WHERE  uid={?} AND email={?}", $uid, $this->email);
 	    $_SESSION['log']->log("email_off",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
         }
@@ -187,13 +182,13 @@ class Email
     // }}}
     // {{{ function rewrite()
 
-    function rewrite($rew,$uid)
+    function rewrite($rew, $uid)
     {
         global $globals;
 	if ($this->rewrite == $rew) {
             return;
         }
-	$globals->db->query("UPDATE emails SET rewrite='$rew' WHERE uid=$uid AND email='{$this->email}'");
+	$globals->xdb->execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
 	$this->rewrite = $rew;
 	return;
     }
@@ -220,11 +215,11 @@ class Redirect
     {
         global $globals;
 	$this->uid=$_uid;
-        $result = $globals->db->query("
+        $res = $globals->xdb->iterRow("
 	    SELECT email, FIND_IN_SET('active',flags), rewrite, FIND_IN_SET('mtic',flags),panne
-	      FROM emails WHERE uid = $_uid AND NOT FIND_IN_SET('filter',flags)");
+	      FROM emails WHERE uid = {?} AND NOT FIND_IN_SET('filter',flags)", $_uid);
 	$this->emails=Array();
-        while ($row = mysql_fetch_row($result)) {
+        while ($row = $res->next()) {
 	    $this->emails[] = new Email($row);
         }
 	$this->bogo = new Bogo($_uid);
@@ -249,9 +244,10 @@ class Redirect
     function delete_email($email)
     {
         global $globals;
-        if (!$this->other_active($email))
+        if (!$this->other_active($email)) {
             return ERROR_INACTIVE_REDIRECTION;
-        $globals->db->query("DELETE FROM emails WHERE uid={$this->uid} AND email='$email'");
+        }
+        $globals->xdb->execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
         $_SESSION['log']->log('email_del',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
 	foreach ($this->emails as $i=>$mail) {
 	    if ($email==$mail->email) {
@@ -267,11 +263,13 @@ class Redirect
     function add_email($email)
     {
         global $globals;
-        $email_stripped = strtolower(stripslashes($email));
-        if (!isvalid_email($email_stripped))
+        $email_stripped = strtolower(stripslashes(trim($email)));
+        if (!isvalid_email($email_stripped)) {
             return ERROR_INVALID_EMAIL;
-        if (!isvalid_email_redirection($email_stripped))
+        }
+        if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
+        }
         //construction des flags
         $flags = 'active';
         // on verifie si le domaine de email ou email est un domaine interdisant
@@ -283,7 +281,7 @@ class Redirect
             $page->assign('mtic',1);
             $mtic = 1;
         }
-        $globals->db->query("REPLACE INTO emails (uid,email,flags) VALUES({$this->uid},'$email','$flags')");
+        $globals->xdb->execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},{?})', $this->uid, $email, $flags);
 	if ($logger = Session::getMixed('log', null)) { // may be absent --> step4.php
 	    $logger->log('email_add',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
         }

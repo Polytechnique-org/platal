@@ -84,8 +84,8 @@ if ($promo > 1995)  {
     // sinon le même X pourrait s'inscrire deux fois avec le même matricule
     // exemple yann.buril et yann.buril-dupont seraient acceptés ! alors que
     // le matricule est unique
-    $result=$globals->db->query("SELECT user_id FROM auth_user_md5 WHERE matricule=$matricule AND perms IN('admin','user')");
-    if (mysql_num_rows($result))  {
+    $res = $globals->xdb->query('SELECT user_id FROM auth_user_md5 WHERE matricule={?} AND perms IN("admin","user")', $matricule);
+    if ($res->numRows())  {
 	$str="Matricule déjà existant. Causes possibles\n"
 	    ."- tu t'es trompé de matricule\n"
 	    ."- tu t'es déjà inscrit une fois";
@@ -93,12 +93,11 @@ if ($promo > 1995)  {
     }
 
     // promotion jeune
-    $result=$globals->db->query("SELECT  nom, prenom
-			           FROM  auth_user_md5
-				  WHERE  matricule='$matricule' AND promo='$promo' AND deces=0");
-    list($mynom, $myprenom) = mysql_fetch_row($result);
-    $mynomup=strtoupper(replace_accent($mynom));
-    $myprenomup=strtoupper(replace_accent($myprenom));
+    $res = $globals->xdb->query('SELECT  nom, prenom FROM auth_user_md5
+                                  WHERE  matricule={?} AND promo={?} AND deces=0', $matricule, $promo);
+    list($mynom, $myprenom) = $res->fetchOneRow();
+    $mynomup      = strtoupper(replace_accent($mynom));
+    $myprenomup   = strtoupper(replace_accent($myprenom));
     $autorisation = FALSE;
 
     if (strlen($chaine2)>0)  {        // il existe au moins 2 chaines
@@ -116,45 +115,42 @@ if ($promo > 1995)  {
 
 } else {
     // CODE SPECIAL POUR LES X DES PROMOTIONS AVANT 1996
-    $sql = "SELECT nom,prenom,matricule FROM auth_user_md5 WHERE promo='$promo' AND deces=0";
-    $result = $globals->db->query($sql);
-    $autorisation = FALSE;
+    $res = $globals->xdb->iterRow('SELECT nom,prenom,matricule FROM auth_user_md5 WHERE promo={?} AND deces=0', $promo);
+    $autorisation = false;
     
     if (strlen($chaine2)>0)  {        // il existe au moins 2 chaines
-	while (list($mynom,$myprenom,$mymat) = mysql_fetch_array($result))  {
+	while (list($mynom,$myprenom,$mymat) = $res->next()) {
 	    // verification de toute la promo !
-	    $mynomup=strtoupper(replace_accent($mynom));
-	    $myprenomup=strtoupper(replace_accent($myprenom));
+	    $mynomup    = strtoupper(replace_accent($mynom));
+	    $myprenomup = strtoupper(replace_accent($myprenom));
 
 	    if ( strstr($mynomup,$chaine1) && strstr($mynomup,$chaine2) && ($myprenomup==$prenomup) )  {
-		$autorisation = TRUE;
-		$matricule=$mymat;
+		$autorisation = true;
+		$matricule    = $mymat;
 		break;
 	    }
 	}
     } else {                       // une seule chaine
 
-	while (list($mynom,$myprenom,$mymat) = mysql_fetch_array($result))  {
+	while (list($mynom,$myprenom,$mymat) = $res->next()) {
 	    // verification de toute la promo !
-	    $mynomup=strtoupper(replace_accent($mynom));
-	    $myprenomup=strtoupper(replace_accent($myprenom));
+	    $mynomup    = strtoupper(replace_accent($mynom));
+	    $myprenomup = strtoupper(replace_accent($myprenom));
 	    if ( strstr($mynomup,$chaine) && ($myprenomup==$prenomup) )  {
-		$autorisation = TRUE;
-		$matricule=$mymat;
+		$autorisation = true;
+		$matricule    = $mymat;
 		break;
 	    }
 	}
     }
-
-    mysql_free_result($result);
 
     // on vérifie que le matricule n'est pas déjà dans auth_user_md5
     // sinon le même X pourrait s'inscrire deux fois avec le même matricule
     // exemple yann.buril et yan.buril seraient acceptés ! alors que le matricule
     // est unique
     if (! empty($matricule)) { 
-	$result=$globals->db->query("SELECT * FROM auth_user_md5 WHERE matricule='".$matricule."' AND perms IN ('admin','user')");
-	if ($myrow = mysql_fetch_array($result))  {
+	$res = $globals->xdb->query('SELECT * FROM auth_user_md5 WHERE matricule={?} AND perms IN ("admin","user")', $matricule);
+	if ($res->numRows())  {
 	    $str="Tu t'es déjà inscrit une fois.\n"
 		."Ecris à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> pour tout problème.";
 	    sortie_id($str);
@@ -172,25 +168,24 @@ if ($promo > 1995)  {
 /***************************** IDENTIFICATION OK *****************************/
 /*****************************************************************************/
 
-$result = $globals->db->query("SELECT id,type,expire FROM aliases WHERE alias='$mailorg'");
-$homonyme = mysql_num_rows($result) > 0;
+$res      = $globals->xdb->query('SELECT id,type,expire FROM aliases WHERE alias={?}', $mailorg);
+$homonyme = $res->numRows() > 0;
 
 if ( $homonyme ) {
     $newbestalias = $mailorg . "." . sprintf("%02u",($promo%100));
     
-    list($h_id,$h_type,$expire) = mysql_fetch_row($result);
-    mysql_free_result($result);
+    list($h_id, $h_type, $expire) = $res->fetchOneRow();
 
-    $result = $globals->db->query("SELECT alias FROM aliases WHERE alias='$forlife'");
-    if ( mysql_num_rows($result) > 0 ) {
+    $res = $globals->xdb->query('SELECT alias FROM aliases WHERE alias={?}', $forlife);
+    if ( $res->numRows() > 0 ) {
 	sortie_id("Tu as un homonyme dans ta promo, il faut traiter ce cas manuellement.\n".
 		"envoie un mail à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a>");
     }
-    mysql_free_result($result);
+    $res->free();
 
     if ( $h_type != 'homonyme' and empty($expire) ) {
-	$globals->db->query("UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias='$mailorg'");
-	$globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES ($h_id,$h_id)");
+	$globals->xdb->execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
+	$globals->xdb->execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
 	require_once('diogenes.hermes.inc.php');
 	$mailer = new HermesMailer();
 	$mailer->setFrom('"Support Polytechnique.org" <support@polytechnique.org>');

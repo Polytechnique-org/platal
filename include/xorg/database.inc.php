@@ -30,14 +30,22 @@ class XOrgDB
     }
 
     // }}}
+    // {{{ function _prepare
+
+    function _prepare($args) {
+        $query    = array_map(Array($this, '_db_escape'), $args);
+        $query[0] = str_replace('%',   '%%', $args[0]);
+        $query[0] = str_replace('{?}', '%s', $query[0]);
+        return call_user_func_array('sprintf', $query);
+    }
+    
+    // }}}
     // {{{ function query
 
     function &query()
     {
-        $args     = func_get_args();
-        $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = str_replace('{?}', '%s', $args[0]);
-        return new XOrgDBResult(call_user_func_array('sprintf', $query));
+        $query = $this->_prepare(func_get_args());
+        return new XOrgDBResult($query);
     }
 
     // }}}
@@ -45,10 +53,8 @@ class XOrgDB
 
     function execute() {
         global $globals;
-        $args     = func_get_args();
-        $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = str_replace('{?}', '%s', $args[0]);
-        return $globals->db->query(call_user_func_array('sprintf', $query));
+        $query = $this->_prepare(func_get_args());
+        return $globals->db->query($query);
     }
     
     // }}}
@@ -56,21 +62,17 @@ class XOrgDB
 
     function &iterator()
     {
-        $args     = func_get_args();
-        $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = str_replace('{?}', '%s', $args[0]);
-        return new XOrgDBIterator(call_user_func_array('sprintf', $query));
+        $query = $this->_prepare(func_get_args());
+        return new XOrgDBIterator($query);
     }
     
     // }}}
-    // {{{ function iterator()
+    // {{{ function iterRow()
 
     function &iterRow()
     {
-        $args     = func_get_args();
-        $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = str_replace('{?}', '%s', $args[0]);
-        return new XOrgDBIterator(call_user_func_array('sprintf', $query), MYSQL_NUM);
+        $query = $this->_prepare(func_get_args());
+        return new XOrgDBIterator($query, MYSQL_NUM);
     }
     
     // }}}
@@ -207,7 +209,7 @@ class XOrgDBResult
     }
 
     // }}}
-    // {{{ function fetchOneCell()
+    // {{{ function fetchColumn()
 
     function fetchColumn($key = 0)
     {

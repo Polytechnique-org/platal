@@ -25,13 +25,12 @@
  */
 function geoloc_pays($current) {
     global $globals;
-    $sql = "SELECT a2,pays FROM geoloc_pays ORDER BY pays";
-
-    $result = $globals->db->query($sql);
+    $res  = $globals->xdb->iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
     $html = "";
-    while (list($my_id,$my_pays) = mysql_fetch_row($result))
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$my_id,($current==$my_id?"selected='selected'":""),$my_pays);
-    
+    while (list($my_id, $my_pays) = $res->next()) {
+	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
+                $my_id, ($current==$my_id?"selected='selected'":""), $my_pays);
+    }
     return $html;
 }
 
@@ -48,12 +47,12 @@ $page->register_function('geoloc_pays', '_geoloc_pays_smarty');
  */
 function geoloc_region($pays,$current) {
     global $globals;
-    $sql = "SELECT region,name FROM geoloc_region where a2='".$pays."' ORDER BY name";
-    $result = $globals->db->query($sql);
-  
+    $res  = $globals->xdb->iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $pays);
     $html = "<option value=\"\"></option>";
-    while (list($regid,$regname) = mysql_fetch_row($result))
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$regid,($current==$regid?"selected='selected'":""),$regname);
+    while (list($regid, $regname) = $res->next()) {
+	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
+                $regid, ($current==$regid?"selected='selected'":""), $regname);
+    }
     return $html;
 
 }

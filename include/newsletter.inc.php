@@ -50,37 +50,35 @@ class NewsLetter
 
 	if (isset($id)) {
 	    if ($id == 'last') {
-		$res = $globals->db->query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
-		list($id) = mysql_fetch_row($res);
+		$res = $globals->xdb->query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
+                $id  = $res->fetchOneCell();
 	    }
-	    $res = $globals->db->query("SELECT * FROM newsletter WHERE id='$id'");
+	    $res = $globals->xdb->query("SELECT * FROM newsletter WHERE id={?}", $id);
 	} else {
-	    $res = $globals->db->query("SELECT * FROM newsletter WHERE bits='new'");
+	    $res = $globals->xdb->query("SELECT * FROM newsletter WHERE bits='new'");
 	}
-	$nl = mysql_fetch_assoc($res);
-	mysql_free_result($res);
+	$nl = $res->fetchOneAssoc();
 
 	$this->_id    = $nl['id'];
 	$this->_date  = $nl['date'];
 	$this->_title = $nl['titre'];
 	$this->_head  = $nl['head'];
 
-	$res = $globals->db->query("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
-	while (list($cid, $title) = mysql_fetch_row($res)) {
+	$res = $globals->xdb->iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
+	while (list($cid, $title) = $res->next()) {
 	    $this->_cats[$cid] = $title;
 	}
-	mysql_free_result($res);
 	
-	$res = $globals->db->query("SELECT  a.title,a.body,a.append,a.aid,a.cid,a.pos
-				      FROM  newsletter_art AS a
-				INNER JOIN  newsletter     AS n USING(id)
-				LEFT  JOIN  newsletter_cat AS c ON(a.cid=c.cid)
-				     WHERE  a.id={$this->_id}
-				  ORDER BY  c.pos,a.pos");
-	while( list($title,$body,$append,$aid,$cid,$pos) = mysql_fetch_row($res)) {
+	$res = $globals->xdb->iterRow(
+                "SELECT  a.title,a.body,a.append,a.aid,a.cid,a.pos
+                   FROM  newsletter_art AS a
+             INNER JOIN  newsletter     AS n USING(id)
+             LEFT  JOIN  newsletter_cat AS c ON(a.cid=c.cid)
+                  WHERE  a.id={?}
+               ORDER BY  c.pos,a.pos", $this->_id);
+	while (list($title, $body, $append, $aid, $cid, $pos) = $res->next()) {
 	    $this->_arts[$cid]["a$aid"] = new NLArticle($title, $body, $append, $aid, $cid, $pos);
 	}
-	mysql_free_result($res);
     }
 
     // }}}
@@ -89,7 +87,7 @@ class NewsLetter
     function setSent()
     {
 	global $globals;
-	$globals->db->query("UPDATE  newsletter SET bits='sent' WHERE id='{$this->_id}'");
+	$globals->xdb->execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
     }
 
     // }}}
@@ -98,9 +96,8 @@ class NewsLetter
     function save()
     {
 	global $globals;
-	$globals->db->query("UPDATE  newsletter
-				SET  date='{$this->_date}',titre='{$this->_title}',head='{$this->_head}'
-			      WHERE  id='{$this->_id}'");
+	$globals->xdb->execute('UPDATE newsletter SET date={?},titre={?},head={?} WHERE id={?}',
+                $this->_date, $this->_title, $this->_head, $this->_id);
     }
 
     // }}}
@@ -135,18 +132,18 @@ class NewsLetter
     {
 	global $globals;
 	if ($a->_aid>=0) {
-	    $globals->db->query("REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
-				VALUES({$this->_id},{$a->_aid},{$a->_cid},{$a->_pos},
-				       '{$a->_title}','{$a->_body}','{$a->_append}')");
+	    $globals->xdb->execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
+                                          VALUES  ({?},{?},{?},{?},{?},{?},{?})',
+                                          $this->_id, $a->_aid, $a->_cid, $a->_pos,
+                                          $a->_title, $a->_body, $a->_append);
 	    $this->_arts['a'.$a->_aid] = $a;
 	} else {
-	    $globals->db->query(
-		"INSERT INTO  newsletter_art
-		      SELECT  {$this->_id},MAX(aid)+1,{$a->_cid},
-			      ".($a->_pos ? $a->_pos : "MAX(pos)+1").",
-			      '{$a->_title}','{$a->_body}','{$a->_append}'
+	    $globals->xdb->executey(
+		'INSERT INTO  newsletter_art
+		      SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
 			FROM  newsletter_art AS a
-		       WHERE  a.id={$this->_id}");
+		       WHERE  a.id={?}',
+                       $this->_id, $a->_cid, $a->_title, $a->_body, $a->_append, $this->_id);
 	    $this->_arts['a'.$a->_aid] = $a;
 	}
     }
@@ -157,7 +154,7 @@ class NewsLetter
     function delArticle($aid)
     {
 	global $globals;
-	$globals->db->query("DELETE FROM newsletter_art WHERE id='{$this->_id}' AND aid='$aid'");
+	$globals->xdb->execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
 	foreach ($this->_arts as $key=>$art) {
 	    unset($this->_arts[$key]["a$aid"]);
 	}
@@ -437,48 +434,34 @@ class NLArticle
 function insert_new_nl()
 {
     global $globals;
-    $globals->db->query("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued'");
+    $globals->xdb->execute("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued'");
 }
 
 function get_nl_slist()
 {
     global $globals;
-    $res = $globals->db->query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");
-    $ans = Array();
-    while ($tmp = mysql_fetch_assoc($res)) {
-        $ans[] = $tmp;
-    }
-    mysql_free_result($res);
-    return $ans;
+    $res = $globals->xdb->query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");
+    return $res->fetchAllAssoc();
 }
 
 function get_nl_list()
 {
     global $globals;
-    $res = $globals->db->query("SELECT id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
-    $ans = Array();
-    while ($tmp = mysql_fetch_assoc($res)) {
-        $ans[] = $tmp;
-    }
-    mysql_free_result($res);
-    return $ans;
+    $res = $globals->xdb->query("SELECT id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
+    return $res->fetchAllAssoc();
 }
 
 function get_nl_state()
 {
     global $globals;
-    $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id=".Session::getInt('uid'));
-    if (!(list($st) = mysql_fetch_row($res))) {
-        $st = false;
-    }
-    mysql_free_result($res);
-    return $st;
+    $res = $globals->xdb->query('SELECT pref FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
+    return $res->fetchOneCell();
 }
  
 function unsubscribe_nl()
 {
     global $globals;
-    $globals->db->query("DELETE FROM newsletter_ins WHERE user_id=".Session::getInt('uid'));
+    $globals->xdb->execute('DELETE FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
 }
  
 function subscribe_nl($html=true, $uid=-1)
@@ -486,9 +469,8 @@ function subscribe_nl($html=true, $uid=-1)
     global $globals;
     $user = ($uid == -1) ? Session::getInt('uid') : $uid;
     $format = $html ? 'html' : 'text';
-    $globals->db->query("REPLACE INTO  newsletter_ins (user_id,last,pref)
-			       SELECT  '$user', MAX(id), '$format'
-				 FROM  newsletter WHERE bits!='new'");
+    $globals->xdb->execute('REPLACE INTO  newsletter_ins (user_id,last,pref)
+			          SELECT  {?}, MAX(id), {?} FROM newsletter WHERE bits!="new"', $user, $format);
 }
  
 function justify($text,$n)

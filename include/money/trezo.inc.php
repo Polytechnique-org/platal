@@ -55,12 +55,13 @@ function isDate($date)
 function solde_until($date='')
 {
     global $globals;
-    $sql = "select sum(credit)-sum(debit) from money_trezo";
-    if(!empty($date))
-        $sql .= " where date <= '$date'";
-    $res = $globals->db->query($sql);
-    list($mysolde) = mysql_fetch_row($res);
-    return $mysolde;
+    $sql = "SELECT SUM(credit)-SUM(debit) FROM money_trezo";
+    if (empty($date)) {
+        $res = $globals->xdb->query($sql);
+    } else {
+        $res = $globals->xdb->query($sql." WHERE date <= {?}", $date);
+    }
+    return $res->fetchOneCell();
 }
 
 ?>

@@ -24,8 +24,8 @@ global $page;
 function applis_options($current=0) {
     global $globals;
     $html = '<option value="-1"></option>';
-    $res=$globals->db->query("select * from applis_def order by text");
-    while ($arr_appli=mysql_fetch_array($res)) { 
+    $res  = $globals->xdb->iterator("select * from applis_def order by text");
+    while ($arr_appli = $res->next()) { 
 	$html .= '<option value="'.$arr_appli["id"].'"';
 	if ($arr_appli["id"]==$current) $html .= " selected='selected'";
 	$html .= '>'.htmlspecialchars($arr_appli["text"])."</option>\n";
@@ -47,12 +47,13 @@ $page->register_function('applis_options','_applis_options_smarty');
 function applis_type(){
     global $globals;
     $html = "";
-    $res=$globals->db->query("select type from applis_def order by text");
-    if (list($appli_type)=mysql_fetch_row($res))
+    $res=$globals->xdb->iterRow("select type from applis_def order by text");
+    if (list($appli_type) = $res->next()) {
 	$html .= "new Array('".str_replace(",","','",$appli_type)."')";
-    while (list($appli_type)=mysql_fetch_row($res))
+    }
+    while (list($appli_type) = $res->next()) {
 	$html .= ",\nnew Array('".str_replace(",","','",$appli_type)."')";
-    mysql_free_result($res);
+    }
     return $html;
 }
 $page->register_function('applis_type','applis_type');
@@ -61,9 +62,8 @@ $page->register_function('applis_type','applis_type');
  */
 function applis_type_all(){
     global $globals;
-    $res = $globals->db->query("show columns from applis_def like 'type'");
-    $arr_appli = mysql_fetch_array($res);
-    mysql_free_result($res);
+    $res = $globals->xdb->query("show columns from applis_def like 'type'");
+    $arr_appli = $res->fetchOneAssoc();
     return str_replace(")","",str_replace("set(","",$arr_appli["Type"]));
 }
 $page->register_function('applis_type_all','applis_type_all');

@@ -25,23 +25,22 @@ define("WATCH_DEATH", 3);
 
 function inscription_notifs_base($uid) {
     global $globals;
-    $globals->db->query("REPLACE INTO  watch_sub (uid,cid)
-                               SELECT  '$uid',id
-			         FROM  watch_cat");
+    $globals->xdb->execute('REPLACE INTO  watch_sub (uid,cid) SELECT {?},id FROM watch_cat', $uid);
 }
 
 function register_watch_op($uid,$cid,$date='',$info='') {
     global $globals;
     $date = empty($date) ? 'NOW()' : "'$date'";
-    $globals->db->query("REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES('$uid','$cid',NOW(),$date,'$info')");
+    $globals->xdb->execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
+            $uid, $cid, $date, $info);
     if($cid == WATCH_FICHE) {
-	$globals->db->query("UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id='$uid'");
+	$globals->xdb->execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
     } elseif($cid == WATCH_INSCR) {
-	$globals->db->query("REPLACE INTO  contacts (uid,contact)
-				   SELECT  uid,ni_id
-				     FROM  watch_nonins
-			            WHERE  ni_id='$uid'");
-	$globals->db->query("DELETE FROM watch_nonins WHERE ni_id='$uid'");
+	$globals->xdb->execute('REPLACE INTO  contacts (uid,contact)
+				      SELECT  uid,ni_id
+				        FROM  watch_nonins
+			               WHERE  ni_id={?}', $uid);
+	$globals->xdb->execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
     }
 }
 
@@ -53,7 +52,7 @@ function getNbNotifs() {
     $uid       = Session::getInt('uid', -1);
     $watchlast = Session::get('watch_last');
 
-    $res = $globals->db->query("
+    $res = $globals->xdb->query("
     (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
 		    wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
@@ -63,7 +62,7 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=c.uid)
 	INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	     WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $watchlast
+	     WHERE  q.user_id = {?} AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > {?}
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
 		    wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
@@ -75,7 +74,7 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	     WHERE  w.uid = '$uid' AND wo.known > $watchlast
+	     WHERE  w.uid = {?} AND wo.known > {?}
     ) UNION DISTINCT (
 	    SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
 		    wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
@@ -86,17 +85,13 @@ function getNbNotifs() {
 	INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
 	 LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-	     WHERE  w.uid = '$uid' AND wo.known > $watchlast
-    )");
-    $n = mysql_num_rows($res);
-    mysql_free_result($res);
+	     WHERE  w.uid = {?} AND wo.known > {?}
+    )", $uid, $watchlast, $uid, $watchlast, $uid, $watchlast);
+    $n   = $res->numRows();
+    $res->free();
     $url = smarty_modifier_url('carnet/panel.php');
-    if($n==0) {
-	return;
-    }
-    if($n==1) {
-	return "<a href='$url'>1 évènement !</a>";
-    }
+    if($n==0) { return; }
+    if($n==1) { return "<a href='$url'>1 évènement !</a>"; }
     return "<a href='$url'>$n évènements !</a>";
 }
 
@@ -107,11 +102,12 @@ class AllNotifs {
     function AllNotifs() {
 	global $globals;
 	
-	$res = $globals->db->query("SELECT * FROM watch_cat");
-	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
-	mysql_free_result($res);
+	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	while($tmp = $res->next()) {
+            $this->_cats[$tmp['id']] = $tmp;
+        }
 	
-	$res = $globals->db->query("
+	$res = $globals->xdb->iterator("
 	(
 		SELECT  q.user_id AS aid, v.prenom AS aprenom, IF(v.epouse='',v.nom,v.prenom) AS anom,
 			b.alias AS abestalias, (v.flags='femme') AS sexe,
@@ -160,7 +156,7 @@ class AllNotifs {
 	)
 	ORDER BY  cid,promo,nom");
 
-	while($tmp = mysql_fetch_assoc($res)) {
+	while($tmp = $res->next()) {
 	    $aid = $tmp['aid'];
 	    $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
 				       'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe']);
@@ -179,13 +175,14 @@ class Notifs {
 	global $globals;
 	$this->_uid = $uid;
 	
-	$res = $globals->db->query("SELECT * FROM watch_cat");
-	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
-	mysql_free_result($res);
+	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	while($tmp = $res->next()) {
+            $this->_cats[$tmp['id']] = $tmp;
+        }
 
 	$lastweek = date('YmdHis',mktime() - 7*24*60*60);
 
-	$res = $globals->db->query("
+	$res = $globals->xdb->iterator("
 	(
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
 			wo.*, 1 AS contact, (u.perms IN ('admin','user')) AS inscrit
@@ -195,7 +192,7 @@ class Notifs {
 	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=q.user_id)
 	    INNER JOIN  auth_user_md5   AS u  ON(u.user_id = wo.uid)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  q.user_id = '$uid' AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $lastweek
+		 WHERE  q.user_id = {?} AND FIND_IN_SET('contacts',q.watch_flags) AND wo.known > $lastweek
 	) UNION DISTINCT (
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
 			wo.*, NOT (c.contact IS NULL) AS contact, (u.perms IN ('admin','user')) AS inscrit
@@ -206,7 +203,7 @@ class Notifs {
 	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid AND wc.frequent=0)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
+		 WHERE  w.uid = {?} AND wo.known > $lastweek
 	) UNION DISTINCT (
 		SELECT  u.promo, u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS bestalias,
 			wo.*, 0 AS contact, (u.perms IN ('admin','user')) AS inscrit
@@ -216,15 +213,15 @@ class Notifs {
 	    INNER JOIN  watch_sub       AS ws ON(wo.cid=ws.cid AND ws.uid=w.uid)
 	    INNER JOIN  watch_cat       AS wc ON(wc.id=wo.cid)
 	     LEFT JOIN  aliases         AS a  ON(u.user_id = a.id AND FIND_IN_SET('bestalias',a.flags))
-		 WHERE  w.uid = '$uid' AND wo.known > $lastweek
+		 WHERE  w.uid = {?} AND wo.known > $lastweek
 	)
-	ORDER BY  cid,promo,nom");
-	while($tmp = mysql_fetch_assoc($res)) {
+	ORDER BY  cid,promo,nom", $uid, $uid, $uid);
+	while($tmp = $res->next()) {
 	    $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
 	}
 
 	if($up) {
-	    $globals->db->query("UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id='$uid'");
+	    $globals->xdb->execute('UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id={?}', $uid);
 	}
     }
 }
@@ -244,15 +241,15 @@ class Watch {
 	$this->_promos = new PromoNotifs($uid);
 	$this->_nonins = new NoninsNotifs($uid);
 	$this->_subs = new WatchSub($uid);
-	$res = $globals->db->query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
-				      FROM  auth_user_quick
-				     WHERE  user_id='$uid'");
-	list($this->watch_contacts,$this->watch_mail) = mysql_fetch_row($res);
-	mysql_free_result($res);
+	$res = $globals->xdb->query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
+				       FROM  auth_user_quick
+				      WHERE  user_id={?}", $uid);
+	list($this->watch_contacts,$this->watch_mail) = $res->fetchOneRow();
 	
-	$res = $globals->db->query("SELECT * FROM watch_cat");
-	while($tmp = mysql_fetch_assoc($res)) $this->_cats[$tmp['id']] = $tmp;
-	mysql_free_result($res);
+	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	while($tmp = $res->next()) {
+            $this->_cats[$tmp['id']] = $tmp;
+        }
     }
 
     function saveFlags() {
@@ -260,7 +257,7 @@ class Watch {
 	$flags = "";
 	if($this->watch_contacts) $flags = "contacts";
 	if($this->watch_mail) $flags .= ($flags ? ',' : '')."mail";
-	$globals->db->query("UPDATE auth_user_quick SET watch_flags='$flags' WHERE user_id='{$this->_uid}'");
+	$globals->xdb->execute('UPDATE auth_user_quick SET watch_flags={?} WHERE user_id={?}', $flags, $this->_uid);
 	
     }
 
@@ -288,21 +285,21 @@ class WatchSub {
     function WatchSub($uid) {
 	$this->_uid = $uid;
 	global $globals;
-	$res = $globals->db->query("SELECT cid FROM watch_sub WHERE uid='$uid'");
-	while(list($c) = mysql_fetch_row($res)) $this->_data[$c] = $c;
-	mysql_free_result($res);
+	$res = $globals->xdb->iterRow('SELECT cid FROM watch_sub WHERE uid={?}', $uid);
+	while(list($c) = $res->next()) {
+            $this->_data[$c] = $c;
+        }
     }
 
     function update($ind) {
 	global $globals;
 	$this->_data = Array();
-	$globals->db->query("DELETE FROM watch_sub WHERE uid='{$this->_uid}'");
+	$globals->xdb->execute('DELETE FROM watch_sub WHERE uid={?}', $this->_uid);
 	foreach(Env::getMixed($ind) as $key=>$val) {
-	    $globals->db->query("INSERT INTO  watch_sub
-	                              SELECT  '{$this->_uid}',id
-				        FROM  watch_cat
-				       WHERE  id='$key'");
-	    if(mysql_affected_rows()) $this->_data[$key] = $key;
+	    $globals->xdb->query('INSERT INTO watch_sub SELECT {?},id FROM watch_cat WHERE id={?}', $this->_uid, $key);
+	    if(mysql_affected_rows()) {
+                $this->_data[$key] = $key;
+            }
 	}
     }
 }
@@ -314,15 +311,16 @@ class PromoNotifs {
     function PromoNotifs($uid) {
 	$this->_uid = $uid;
 	global $globals;
-	$res = $globals->db->query("SELECT promo FROM watch_promo WHERE uid='$uid' ORDER BY promo");
-	while(list($p) = mysql_fetch_row($res)) $this->_data[intval($p)] = intval($p);
-	mysql_free_result($res);
+	$res = $globals->xdb->iterRow('SELECT promo FROM watch_promo WHERE uid={?} ORDER BY promo', $uid);
+	while (list($p) = $res->next()) {
+            $this->_data[intval($p)] = intval($p);
+        }
     }
 
     function add($p) {
 	global $globals;
 	$promo = intval($p);
-	$globals->db->query("REPLACE INTO watch_promo (uid,promo) VALUES('{$this->_uid}',$promo)");
+	$globals->xdb->execute('REPLACE INTO watch_promo (uid,promo) VALUES({?},{?})', $this->_uid, $promo);
 	$this->_data[$promo] = $promo;
 	asort($this->_data);
     }
@@ -330,7 +328,7 @@ class PromoNotifs {
     function del($p) {
 	global $globals;
 	$promo = intval($p);
-	$globals->db->query("DELETE FROM watch_promo WHERE uid='{$this->_uid}' AND promo=$promo");
+	$globals->xdb->execute('DELETE FROM watch_promo WHERE uid={?} AND promo={?}', $this->_uid, $promo);
 	unset($this->_data[$promo]);
     }
     
@@ -343,7 +341,7 @@ class PromoNotifs {
 	    $values[] = "('{$this->_uid}',$i)";
 	    $this->_data[$i] = $i;
 	}
-	$globals->db->query("REPLACE INTO watch_promo (uid,promo) VALUES ".join(',',$values));
+	$globals->xdb->execute('REPLACE INTO watch_promo (uid,promo) VALUES '.join(',',$values));
 	asort($this->_data);
     }
 
@@ -356,7 +354,7 @@ class PromoNotifs {
 	    $where[] = "promo=$i";
 	    unset($this->_data[$i]);
 	}
-	$globals->db->query("DELETE FROM watch_promo WHERE uid='{$this->_uid}' AND (".join(' OR ',$where).')');
+	$globals->xdb->execute('DELETE FROM watch_promo WHERE uid={?} AND ('.join(' OR ',$where).')', $this->_uid);
     }
 
     function toRanges() {
@@ -387,29 +385,29 @@ class NoninsNotifs {
     function NoninsNotifs($uid) {
 	global $globals;
 	$this->_uid = $uid;
-	$res = $globals->db->query("SELECT  u.prenom,IF(u.epouse='',u.nom,u.epouse) AS nom, u.promo, u.user_id
-				      FROM  watch_nonins  AS w
-				INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
-                                     WHERE  w.uid = '$uid'
-				  ORDER BY  promo,nom");
-	while($tmp = mysql_fetch_assoc($res)) $this->_data[$tmp['user_id']] = $tmp;
-	mysql_free_result($res);
+	$res = $globals->xdb->iterator("SELECT  u.prenom,IF(u.epouse='',u.nom,u.epouse) AS nom, u.promo, u.user_id
+                                          FROM  watch_nonins  AS w
+                                    INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
+                                         WHERE  w.uid = {?}
+				      ORDER BY  promo,nom", $uid);
+	while($tmp = $res->next()) {
+            $this->_data[$tmp['user_id']] = $tmp;
+        }
     }
 
     function del($p) {
 	global $globals;
 	unset($this->_data["$p"]);
-	$globals->db->query("DELETE FROM watch_nonins WHERE uid='{$this->_uid}' AND ni_id='$p'");
+	$globals->xdb->execute('DELETE FROM watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
     }
 
     function add($p) {
 	global $globals;
-	$globals->db->query("INSERT INTO watch_nonins (uid,ni_id) VALUES('{$this->_uid}','$p')");
-	$res = $globals->db->query("SELECT  prenom,IF(epouse='',nom,epouse) AS nom,promo,user_id
-				      FROM  auth_user_md5
-				     WHERE  user_id='$p'");
-	$this->_data["$p"] = mysql_fetch_assoc($res);
-	mysql_free_result($res);
+	$globals->xdb->execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
+	$res = $globals->xdb->query('SELECT  prenom,IF(epouse="",nom,epouse) AS nom,promo,user_id
+                                       FROM  auth_user_md5
+                                      WHERE  user_id={?}', $p);
+	$this->_data["$p"] = $res->fetchOneAssoc();
     }
 }
  

@@ -43,23 +43,21 @@ class ListeReq extends Validate
     {
         global $globals;
         $this->Validate($_uid, true, 'liste', $_stamp);
-        $this->liste = $_liste;
-        $this->desc = $_desc;
-
+        
+        $this->liste     = $_liste;
+        $this->desc      = $_desc;
         $this->advertise = $_advertise;
-        $this->modlevel = $_modlevel;
-        $this->inslevel = $_inslevel;
+        $this->modlevel  = $_modlevel;
+        $this->inslevel  = $_inslevel;
+        $this->owners    = $_owners;
+        $this->members   = $_members;
         
-        $this->owners = $_owners;
-        $this->members = $_members;
-        
-        $sql = $globals->db->query("
+        $res = $globals->xdb->query("
                 SELECT  l.alias
                   FROM  auth_user_md5   AS u
             INNER JOIN  aliases         AS l ON (u.user_id=l.id AND FIND_IN_SET('bestalias',l.flags))
-                 WHERE  user_id='".$this->uid."'");
-        list($this->bestalias) = mysql_fetch_row($sql);
-        mysql_free_result($sql);
+                 WHERE  user_id={?}", $this->uid);
+        $this->bestalias = $res->fetchOneCell();
     }
 
     // }}}
@@ -121,10 +119,9 @@ class ListeReq extends Validate
             $this->owners, $this->members);
         $liste = strtolower($this->liste);
         if ($ret) {
-            $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}', 'liste')");
-            $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}-owner', 'liste')");
-            $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}-admin', 'liste')");
-            $globals->db->query("INSERT INTO aliases (alias,type) VALUES('{$liste}-bounces', 'liste')");
+            foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces") as $l) {
+                $globals->xdb->execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
+            }
         }
         return $ret;
     }

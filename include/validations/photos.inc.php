@@ -42,13 +42,12 @@ class PhotoReq extends Validate
         global $erreur, $globals;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
-        $sql = $globals->db->query("
+        $res = $globals->xdb->query("
 	    SELECT  a.alias, prenom, nom
 	      FROM  auth_user_md5 AS u
         INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND FIND_IN_SET('bestalias',a.flags) )
-	     WHERE  user_id=".$this->uid);
-        list($this->bestalias,$this->prenom,$this->nom) = mysql_fetch_row($sql);
-        mysql_free_result($sql);
+	     WHERE  user_id={?}", $this->uid);
+        list($this->bestalias,$this->prenom,$this->nom) = $res->fetchOneRow();
         
         if (!file_exists($_file)) {
             $erreur = "Fichier inexistant";
@@ -139,9 +138,9 @@ class PhotoReq extends Validate
     {
         global $globals;
         
-        $globals->db->query("REPLACE INTO  photo (uid, attachmime, attach, x, y)
-                                   VALUES  ('{$this->uid}', '{$this->mimetype}', '"
-                                            .addslashes($this->data)."', '{$this->x}', '{$this->y}')");
+        $globals->xdb->execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
+                                      VALUES  ({?},{?},{?},{?},{?})',
+                                      $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
 	require_once('notifs.inc.php');
 	register_watch_op($this->uid,WATCH_FICHE);
     }

@@ -23,14 +23,13 @@ function select_fonction($fonction){
     global $globals;
     $html = "<option value='' ". (($fonction == '0')?"selected='selected'":"") .">&nbsp;</option>\n";
 
-    $res = $globals->db->query("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
-    while(list($fid, $flabel, $ftitre) = mysql_fetch_row($res)){
+    $res = $globals->xdb->iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
+    while(list($fid, $flabel, $ftitre) = $res->next()){
 	if($ftitre)
 	    $html.= "<option value='$fid' " . (($fonction == $fid)?"selected='selected'":"") . ">$flabel</option>\n";
 	else
 	    $html .= "<option value=\"$fid\" " . (($fonction == $fid)?"selected='selected'":"") . ">* $flabel</option>\n";
     }
-    mysql_free_result($res);
     return $html;
 }
 

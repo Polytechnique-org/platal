@@ -33,7 +33,7 @@ if (Env::has('emailop')) {
     if (Env::get('emailop') == "retirer" && Env::has('email')) {
         $page->assign('retour', $redirect->delete_email(Env::get('email')));
     } elseif (Env::get('emailop') == "ajouter" && Env::has('email')) {
-        $page->assign('retour', $redirect->add_email(trim(Env::get('email'))));
+        $page->assign('retour', $redirect->add_email(Env::get('email')));
     } elseif (empty($actifs)) {
         $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
     } elseif (is_array($actifs)) {

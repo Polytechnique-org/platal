@@ -43,12 +43,10 @@ class Payment
     {
         global $globals;
         $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
-        $res = $globals->db->query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def
-                                      FROM  {$globals->money->mpay_tprefix}paiements WHERE id='$r'");
+        $res = $globals->xdb->query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def
+                                       FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
-                $this->montant_min, $this->montant_max, $this->montant_def)
-            = mysql_fetch_row($res);
-        mysql_free_result($res);
+                $this->montant_min, $this->montant_max, $this->montant_def) = $res->fetchOneRow();
         
         $this->montant_min = (float)$this->montant_min;
         $this->montant_max = (float)$this->montant_max;
@@ -106,9 +104,8 @@ class PayMethod
     {
         global $globals;
         $i   = $id==-1 ? $globals->money->mpay_def_meth : $id;
-        $res = $globals->db->query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id='$i'");
-        list($this->id, $this->text, $this->inc) = mysql_fetch_row($res);
-        mysql_free_result($res);
+        $res = $globals->xdb->query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id={?}", $i);
+        list($this->id, $this->text, $this->inc) = $res->fetchOneRow();
     } 
 
     // }}}
