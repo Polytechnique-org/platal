@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.17 2004-11-07 14:22:49 x2000chevalier Exp $
+        $Id: admin.tpl,v 1.18 2004-11-07 14:27:11 x2000chevalier Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -37,8 +37,10 @@ Tu n'es pas administrateur de la liste, mais du site.
 {include file="listes/header_listes.tpl"}
 
 <p>
-Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
-c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
+Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant
+son identifiant, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie.
+L'icône <img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
+qui y était abonné.
 </p>
 
 {foreach from=$err item=e}
@@ -61,9 +63,8 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
         {else}
         {$x.l}
         {/if}
-        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.a}'>
-          <img src='{"images/retirer.gif"|url}' alt='retirer modérateur' title='retirer modérateur' />
-        </a><br />
+        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.a}'><img src='{"images/retirer.gif"|url}' alt='retirer modérateur' title='retirer modérateur' /></a>
+        <br />
         {/foreach}
       </td>
     </tr>
@@ -96,9 +97,8 @@ c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
         {else}
         {$x.l}
         {/if}
-        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.a}'>
-          <img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' />
-        </a><br />
+        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.a}'><img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' /></a>
+        <br />
         {/foreach}
       </td>
     </tr>
