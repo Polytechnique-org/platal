@@ -7,7 +7,7 @@ alter table virtual_redirect add index (redirect);
 insert into virtual
     select null,domain,'user'
     from   groupex.aliases
-    where  domain like'%@melix.net';
+    where  domain like '%@melix.net';
 
 insert into  virtual_redirect
      select  vid,CONCAT(email,'@m4x.org')
