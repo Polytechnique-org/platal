@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.9 2004-10-31 16:39:06 x2000chevalier Exp $
+        $Id: utilisateurs_marketing.php,v 1.10 2004-11-18 14:43:27 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,7 +28,7 @@ require("select_user.inc.php");
 //actions possible une fois un X désigné par son matricule
 switch ($_REQUEST["submit"]) {
     case "Mailer":
-   	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule=".$_REQUEST["xmat"]);
+   	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule={$_REQUEST['xmat']} AND perms!='non-inscrit'");
 	if ($myrow = mysql_fetch_assoc($result)) 
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
   
@@ -49,7 +49,7 @@ switch ($_REQUEST["submit"]) {
 
     case "Envoyer le mail":
         require('xorg.misc.inc.php');
-	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule=".$_REQUEST["xmat"]);
+	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where matricule={$_REQUEST['xmat']} AND perms!='non-inscrit'");
   	if ($myrow = mysql_fetch_assoc($result))
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
 			
