@@ -34,9 +34,8 @@ function query ($sql) {
 $eight_days_ago = date("YmdHis",mktime() - 8*24*60*60);
 query("DELETE FROM watch_ops WHERE known<$eight_days_ago");
 
-// la table en_cours est nettoyée
-query("DELETE FROM en_cours WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
-query("delete from en_cours where loginbis = 'INSCRIT'");
+query("DELETE FROM register_pending WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
+query("delete from register_pending WHERE hash = 'INSCRIT'");
 
 // la table envoidirect est nettoyée
 query("update envoidirect set uid = CONCAT('+',uid) where uid not like '+%' and date_succes != 0");

@@ -1,0 +1,115 @@
+<?
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+require_once('xorg.inc.php');
+new_skinned_page('register/end.tpl', AUTH_PUBLIC);
+require_once('user.func.inc.php');
+
+if (Env::has('hash')) {
+    $res = $globals->xdb->execute(
+            "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2, r.password, r.email, r.relance, r.naissance,
+                     u.prenom, u.nom, u.promo
+               FROM  register_pending AS r
+         INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
+              WHERE  hash={?} AND hash!='INSCRIT'", Env::get('hash'));
+}
+
+if ( !Env::has('ref') ||
+        !list( $uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $nom, $prenom, $promo) = $res->fetchOneRow())
+{
+    $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
+                 <p>Causes probables :</p>
+                 <ol>
+                   <li>Vérifie que tu visites l'adresse du dernier e-mail reçu s'il y en a eu plusieurs.</li>
+                   <li>Tu as peut-être mal copié l'adresse reçue par mail, vérifie-la à la main.</li>
+                   <li>
+                   Tu as peut-être attendu trop longtemps pour confirmer.  Les
+                   pré-inscriptions sont annulées tous les 30 jours.
+                   </li>
+                   <li>
+                   Tu es en fait déjà inscrit.
+                   </li>
+                </ol>");
+}
+
+
+
+/***********************************************************/
+/****************** REALLY CREATE ACCOUNT ******************/
+/***********************************************************/
+
+$globals->xdb->execute('UPDATE  auth_user_md5
+                           SET  password={?}, perms="user", date=NOW(), naissance={?}, date_ins = NOW()
+                         WHERE  uid={?}', $password, $naissance, $uid);
+$globals->xdb->execute('REPLACE INTO auth_user_quick (user_id) VALUES ({?})', $uid);
+$globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "a_vie")', $uid, $forlife);
+$globals->xdb->execute('INSERT INTO aliases (id,alias,type,flags) VALUES ({?}, {?}, "alias", "bestalias")', $uid, $bestalias);
+if ($mailorg2) {
+    $globals->xdb->execute('INSERT INTO aliases (id,alias,type) VALUES ({?}, {?}, "alias")', $uid, $mailorg2);
+}
+require_once('emails.inc.php');
+$redirect = new Redirect($uid);
+$redirect->add_email($email);
+
+// on cree un objet logger et on log l'inscription
+$logger = new DiogenesCoreLogger($uid);
+$logger->log('inscription', $email);
+
+$globals->xdb->execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
+
+require_once('notifs.inc.php');
+register_watch_op($uid, WATCH_INSCR);
+inscription_notifs_base($uid);
+
+$globals->hook->subscribe($forlife, $uid, $promo, $password);
+
+require_once('xorg.mailer.inc.php');
+$mymail = new XOrgMailer('inscription.reussie.tpl');
+$mymail->assign('forlife', $forlife);
+$mymail->assign('prenom', $prenom);
+$mymail->send();
+
+start_connexion($uid,false);
+
+/***********************************************************/
+/************* envoi d'un mail au démarcheur ***************/
+/***********************************************************/
+$res = $globals->xdb->iterRow(
+        "SELECT  DISTINCT a.alias,e.date_envoi
+           FROM  envoidirect AS e
+     INNER JOIN  aliases     AS a ON ( a.id = e.sender AND a.type='a_vie' )
+          WHERE  e.matricule = {?}", $matricule);
+while (list($sender_usern, $sender_date) = $res->next()) {
+    $mymail = new XOrgMailer('marketing.thanks.tpl');
+    $mymail->assign('to',     $sender_usern);
+    $mymail->assign('prenom', $prenom);
+    $mymail->assign('nom',    $nom);
+    $mymail->assign('promo',  $promo);
+    $mymail->send();
+}
+
+// s'il est dans la table envoidirect, on le marque comme inscrit
+$globals->xdb->execute('UPDATE envoidirect SET date_succes=NOW() WHERE matricule = {?}', $matricule);
+
+
+$page->assign('forlife',$forlife);
+$page->run();
+?>

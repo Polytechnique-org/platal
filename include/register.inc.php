@@ -139,11 +139,8 @@ function create_aliases (&$sub)
     extract ($sub);
 
     $mailorg  = make_username($prenom, $nom);
-    $mailorg2 = sprintf("%02u", ($promo%100));
+    $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
     $forlife  = make_forlife($prenom, $nom, $promo);
-    /*****************************************************************************/
-    /***************************** IDENTIFICATION OK *****************************/
-    /*****************************************************************************/
 
     $res      = $globals->xdb->query('SELECT COUNT(*) FROM aliases WHERE alias={?}', $forlife);
     if ($res->fetchOneCell() > 0) {
