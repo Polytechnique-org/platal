@@ -10,7 +10,7 @@ if ($sname == "spoolgen.php") {
     $news["pass"] = $globals->banana->web_pass;
 } elseif (isset($_SESSION['forlife'])) {
     $news["user"]= "web_".$_SESSION['forlife'];
-    $news["pass"]= $globals->banana->web_pass;
+    $news["pass"]= $globals->banana->password;
 }
 $news['server']="$news_server:$news_port";
 ?>

@@ -8,11 +8,10 @@ function banana($params) {
     $sname = array_pop($array);
     unset($array);
 
-    global $news_server,$news_port,$news_auth_pass;
+    global $news_server,$news_port;
 
     $news_server    = $globals->banana->server;
     $news_port      = $globals->banana->port;
-    $news_auth_pass = $globals->banana->password;
 
     require_once("../../../banana/$sname");
 }
