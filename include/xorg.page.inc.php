@@ -49,7 +49,7 @@ class XorgPage extends DiogenesCorePage {
           $this->caching=false;
       $id = $this->make_id($append_to_id);
       if($site_dev) {
-          $this->assign('validate', "http://validator.w3.org/check?uri=".urlencode($baseurl.'/valid.html'));
+          $this->assign('validate', urlencode($baseurl.'/valid.html'));
           if($this->_page_type == POPUP)
               $result = $this->fetch('skin/'.$_SESSION['skin_popup'], $id);
           else

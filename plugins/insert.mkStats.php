@@ -41,9 +41,9 @@ function smarty_insert_mkStats($params, &$smarty)
         <table class="bicol"
           style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
         <tr>
-          <th width="33%">Valid</th>
-          <th width="33%">Bugs</th>
-          <th width="33%">Todo</th>
+          <th style="width:33%">Valid</th>
+          <th style="width:33%">Bugs</th>
+          <th style="width:33%">Todo</th>
         </tr>
         <tr class="impair">
           <td><a href="$rel/admin/valider.php">$stats_req</a></td>
