@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.25 2004-10-12 22:16:16 x2000bedo Exp $
+        $Id: search.php,v 1.26 2004-10-14 11:47:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -78,7 +78,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             '.$globals->search_result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
-             ORDER BY  '.(logged() && !empty($_POST['mod_date_sort']) ? 'date DESC,' :'')
+             ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
 
