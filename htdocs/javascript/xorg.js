@@ -50,7 +50,7 @@ function auto_links() {
     fqdn = fqdn.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
     for(var i=0; i<nodes.length; i++) {
 	node = nodes[i];
-	if(!node.href || node.className == 'xdx') continue;
+	if(!node.href || node.className == 'xdx' || node.href.indexOf('mailto:') > -1 ) continue;
 	if(node.href.indexOf(fqdn)<0 || node.className == 'popup') {
 	    node.onclick = function () { window.open(this.href); return false; };
 	}

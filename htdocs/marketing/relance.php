@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: relance.php,v 1.3 2004-08-31 13:59:42 x2000habouzit Exp $
+        $Id: relance.php,v 1.4 2004-11-15 09:22:15 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,8 +36,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
 
     $res = $globals->db->query("SELECT  e.date,e.promo,e.nom,e.prenom,e.matricule,e.email,e.username
                           FROM  en_cours      AS e
-                     LEFT JOIN  auth_user_md5 AS a ON e.matricule=a.matricule
-                         WHERE  a.nom IS null");
+                    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'non-inscrit')");
 
     $sent = Array();
 
@@ -76,8 +75,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
 
 $sql = "SELECT  e.date,e.relance,e.promo,e.nom,e.prenom,e.matricule
           FROM  en_cours      AS e
-     LEFT JOIN  auth_user_md5 AS a ON e.matricule=a.matricule
-         WHERE  a.nom IS null
+    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'non-inscrit')
       ORDER BY  date DESC";
 
 $page ->mysql_assign($sql, 'relance','nb');

@@ -130,8 +130,7 @@ function formatDisplayHeader($_header,$_text,$_spool) {
       .'"  alt="x-face" />';
     case "xorgid":
       return "$_text".(preg_match("/[\w]+\.[\w\d]+/",$_text)?
-        " [<a href=\"javascript:x()\"  onclick=\"popWin('"
-        .url("fiche.php")."?user=$_text')\">fiche</a>]":"");
+        " [<a href=\"".url("fiche.php")."?user=$_text\" class='popup2'>fiche</a>]":"");
     default:
       return htmlentities($_text);
   }
