@@ -5,6 +5,7 @@ Changes :
 
 	* Lists :
 		- auto-moderate/discard mails detected as SPAM by bogofilter.		-MC
+		- alpha-sort on listes/admin.php page (members gestion).			-MC
 	
 	* Usability :
 		- all <a><img ... /></a> now have title (closes: FS#99).			-MC
