@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.6 2004-10-28 12:21:00 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.7 2004-10-28 12:37:49 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,7 @@
   </div>
   <div class="appli">
     {strip}
-    {if $c.nat}
+    {if $c.iso3166}
     <img src='{"images/"|url}flags/{$c.iso3166}.gif' alt='{$c.nat}' height='14' title='{$c.nat}' />&nbsp;
     {/if}
     (X {$c.promo}
