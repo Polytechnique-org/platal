@@ -18,10 +18,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.7 2004-11-06 17:22:12 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.8 2004-11-06 17:37:22 x2000habouzit Exp $
  ***************************************************************************/
 
-require_once('diogenes.flagset.inc.php');
+define("WATCH_FICHE", 1);
+define("WATCH_INSCR", 2);
+define("WATCH_DEATH", 3);
+
+function register_watch_op($uid,$cid,$date='',$info='') {
+    $date = empty($date) ? 'NOW()' : "'$date'";
+    $globals->db->query("REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES('$uid','$cid',NOW(),$date,'$info')");
+    if($cid == WATCH_FICHE) {
+	$globals->db->query("UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id='$uid'");
+    }
+}
 
 class Watch {
     var $_uid;
