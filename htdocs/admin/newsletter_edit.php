@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.php,v 1.2 2004-10-16 21:14:15 x2000habouzit Exp $
+        $Id: newsletter_edit.php,v 1.3 2004-10-16 22:06:32 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -34,6 +34,7 @@ if(isset($_GET['del_aid'])) {
 
 if(isset($_POST['update'])) {
     $nl->_title = $_POST['title'];
+    $nl->_date = $_POST['date'];
     $nl->save();
 }
 

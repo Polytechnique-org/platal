@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_edit.tpl,v 1.2 2004-10-16 21:14:15 x2000habouzit Exp $
+        $Id: newsletter_edit.tpl,v 1.3 2004-10-16 22:06:33 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -42,6 +42,14 @@
       </td>
       <td>
         <input type='text' size='60' name='title' value="{$nl->title()}" />
+      </td>
+    </tr>
+    <tr>
+      <td class='titre'>
+        Date d'envoi
+      </td>
+      <td>
+        <input type='text' size='60' name='date' value="{$nl->_date}" />
       </td>
     </tr>
     <tr class='center'>
@@ -120,7 +128,7 @@
     <tr class="impair">
       <td class='titre'>Sujet</td>
       <td>
-        <input size='60' type='text' value='{$art->_title}' name='title' />
+        <input size='60' type='text' value='{$art->title()}' name='title' />
       </td>
     </tr>
     <tr class="impair">
