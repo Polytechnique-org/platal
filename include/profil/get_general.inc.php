@@ -57,4 +57,8 @@ if(isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     $web_public = (isset($_REQUEST['web_public']));
 }
 
+// Y a-t-il une photo en attente de confirmation ?
+$sql = $globals->db->query('SELECT COUNT(*) FROM requests WHERE type="photo" AND user_id='.$_SESSION['uid']);
+list($nouvellephoto)=mysql_fetch_row($sql);
+mysql_free_result($sql);
 ?>

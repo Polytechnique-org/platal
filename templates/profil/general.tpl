@@ -141,10 +141,11 @@
         <table cellspacing="0" cellpadding="0" summary="Trombinoscope">
           <tr>
             <td class="dcold">
-              Voilà la photo qui apparaîtra sur la fiche de ton profil (si tu viens
-              de changer ta photo, la photo affichée peut correspondre à ton ancien
-              profil : c'est le cas si elle n'a pas encore été validée par un administrateur du site !
-              <a href="{"fiche.php"|url}?user={$smarty.session.forlife}&amp;modif=new" class="popup2">nouvelle photo</a>).
+              Voilà la photo qui apparaîtra sur la fiche de ton profil{if $nouvellephoto} (tu viens
+              de changer ta photo, celle-ci correspond à ton ancien
+              profil car la nouvelle n'a pas encore été validée par un administrateur du site !
+              <a href="{"fiche.php"|url}?user={$smarty.session.forlife}&amp;modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
+              {/if}.
             </td>
             <td class="dcolg">
               <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] " />
