@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: clean.php,v 1.4 2004-11-07 11:58:16 x2000habouzit Exp $
+        $Id: clean.php,v 1.5 2004-11-20 10:16:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
@@ -33,7 +33,7 @@ function query ($sql) {
 
 // la table des notifs est nettoyée
 $eight_days_ago = date("YmdHis",mktime() - 8*24*60*60);
-query("DELETE FROM watch_ops WHERE known>$eight_days_ago");
+query("DELETE FROM watch_ops WHERE known<$eight_days_ago");
 
 // la table en_cours est nettoyée
 query("DELETE FROM en_cours WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
