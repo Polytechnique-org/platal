@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.52 2004-10-10 08:47:47 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.53 2004-10-10 13:51:20 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -205,7 +205,7 @@ def get_lists((userdesc,perms),vhost):
     names.sort()
     result = []
     for name in names:
-        if not name.startswith(prefix):
+        if not name.startswith(prefix) or name == mm_cfg.MAIN_NEWSLETTER:
             continue
         try:
             mlist = MailList.MailList(name,lock=0)
@@ -252,6 +252,45 @@ def unsubscribe((userdesc,perms),vhost,listname):
     except:
         mlist.Unlock()
         return 0
+
+def subscribe_nl((userdesc,perms)):
+    try:
+        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER)
+    except:
+        return 0
+    try:
+        mlist.ApprovedAddMember(userdesc)
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
+def unsubscribe_nl((userdesc,perms)):
+    try:
+        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER)
+    except:
+        return 0
+    try:
+        mlist.ApprovedDeleteMember(userdesc.address)
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
+def get_nl_state((userdesc,perms)):
+    try:
+        mlist = MailList.MailList(mm_cfg.MAIN_NEWSLETTER,lock=0)
+    except:
+        return 0
+    try:
+        return ( userdesc.address in mlist.getRegularMemberKeys() )
+    except:
+        return 0
+
 
 #-------------------------------------------------------------------------------
 # users procedures for [ index.php ]
@@ -704,6 +743,9 @@ server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 server.register_function(get_lists)
 server.register_function(subscribe)
 server.register_function(unsubscribe)
+server.register_function(subscribe_nl)
+server.register_function(unsubscribe_nl)
+server.register_function(get_nl_state)
 # members.php
 server.register_function(get_members)
 # trombi.php

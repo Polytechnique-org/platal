@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.11 2004-10-09 12:49:38 x2000habouzit Exp $
+        $Id: index.tpl,v 1.12 2004-10-10 13:51:22 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -79,6 +79,32 @@ Tu peux demander <a href='create.php'>la création</a> d'une liste de diffusion s
 </p>
 
 {dynamic}
+
+<div class="rubrique">
+  Lettre mensuelle de Polytechnique.org
+</div>
+
+{if $nl}
+<p>
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org !
+</p>
+<p>
+Pour te désinscrire suis le lien :
+</p>
+<div class='center'>
+  [<a href='?nl_unsub=1'>me désinscrire</a>]
+</div>
+{else}
+<p>
+Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
+</p>
+<p>
+Pour t'y abonner suis le lien :
+</p>
+<div class='center'>
+  [<a href='?nl_sub=1'>m'inscrire</a>]
+</div>
+{/if}
 
 <div class="rubrique">
   Listes de diffusion publiques

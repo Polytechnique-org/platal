@@ -18,11 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscription_listes_base.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: inscription_listes_base.inc.php,v 1.3 2004-10-10 13:51:17 x2000habouzit Exp $
  ***************************************************************************/
 
-
-
+include('xml-rpc-client.inc.php');
 
 /** inscrit l'uid donnée à la promo
  * @param $uid UID
@@ -31,41 +30,12 @@
  * @see admin/RegisterNewUser.php
  * @see step4.php
  */
-function inscription_liste_promo($uid,$promo) {
+function inscription_listes_base($uid,$pass,$promo) {
   global $globals;
   // récupération de l'id de la liste promo
-  $result=$globals->db->query("select id from aliases where alias = 'promo$promo' and type = 'liste'");
-  if (!list($Lid)=mysql_fetch_row($result)) { // pas de liste promo, il faut la créer
-        $mymail = new TplMailer('listes.promo.tpl');
-        $mymail->assign('promo', $promo);
-        $mymail->send();
-        $Lid=false;
-  }
-  mysql_free_result($result);
-  if ($Lid) {
-    $globals->db->query("insert into listes_ins set idl=$Lid, idu=$uid");
-    $res = !($globals->db->err());
-  } else  $res = false;
-  return $res;
-}
-
-
-
-/** inscription à la newsletter
- * @param $uid UID
- * @return reponse MySQL
- * @see admin/RegisterNewUser.php
- * @see step4.php
- */
-function inscription_newsletter($uid) {
-    global $globals;
-    $result=$globals->db->query("select id from aliases where alias = 'newsletter' and type = 'liste'");
-    if (list($Lid)=mysql_fetch_row($result)) {
-        $globals->db->query("insert into listes_ins set idl=$Lid, idu=$uid");
-        $res = !($globals->db->err());
-    } else $res = false;
-    mysql_free_result($result);
-    return $res;
+  $client = new xmlrpc_client("http://$uid:$pass@localhost:4949");
+  $client->subscribe('polytechnique.org',"promo$promo");
+  $client->subscribe_nl();
 }
 
 ?>

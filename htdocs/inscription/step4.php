@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.1 2004-09-06 09:58:59 x2000habouzit Exp $
+        $Id: step4.php,v 1.2 2004-10-10 13:51:13 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -109,14 +109,11 @@ if (!empty($_REQUEST['ref'])) {
     }
    
 
-    /****************** inscription à la liste promo ****************/
-//    $inspromo = inscription_liste_promo($uid,$promo);
-    /****************** inscription à la newsletter  ****************/
-//    $insnewsletter = inscription_newsletter($uid);
-    /****************** inscription à la newsletter  ****************/
-//    $insforumpromo = inscription_forum_promo($uid,$promo);
-    /****************** inscription à la newsletter  ****************/
-//    $insforums = inscription_forums($uid);
+    /****************** inscription à la liste promo +nl ****************/
+    $inspromo = inscription_listes_base($uid,$password,$promo);
+    /****************** inscription aux forums de base   ****************/
+    $insforumpromo = inscription_forum_promo($uid,$promo);
+    $insforums = inscription_forums($uid);
 
     // effacer la pré-inscription devenue 
     $globals->db->query("update en_cours set loginbis='INSCRIT' WHERE username='$forlife'");
