@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: redirect.php,v 1.4 2004/11/22 11:16:33 x2000habouzit Exp $
  ***************************************************************************/
 
 require("../../include/xorg.inc.php");

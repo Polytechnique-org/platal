@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: xorg.table-editor.inc.php,v 1.4 2004/10/08 11:30:10 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.table-editor.inc.php');

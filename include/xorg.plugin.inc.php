@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-    $Id: xorg.plugin.inc.php,v 1.4 2004/11/21 23:48:40 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class XOrgPlugin
@@ -31,7 +29,6 @@
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
- * @version  $Id: xorg.plugin.inc.php,v 1.4 2004/11/21 23:48:40 x2000habouzit Exp $
  * @access   public
  * @since    Classe available since 0.9.2
  */

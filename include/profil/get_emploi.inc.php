@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: get_emploi.inc.php,v 1.1 2004/08/31 19:18:26 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('geoloc.inc.php');

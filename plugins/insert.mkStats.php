@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: insert.mkStats.php,v 1.12 2004/11/21 23:10:47 x2000habouzit Exp $
  ***************************************************************************/
 
 

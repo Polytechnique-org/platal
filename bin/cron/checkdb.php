@@ -18,13 +18,10 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: checkdb.php,v 1.12 2004/11/14 21:21:26 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.12 2004/11/14 21:21:26 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');

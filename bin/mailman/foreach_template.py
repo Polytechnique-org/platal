@@ -18,8 +18,6 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: foreach_template.py,v 1.2 2004/10/28 21:42:51 x2000habouzit Exp $
-#***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
 

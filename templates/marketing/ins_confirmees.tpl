@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: ins_confirmees.tpl,v 1.7 2004/11/13 15:56:40 x2000habouzit Exp $
  ***************************************************************************}
 
 

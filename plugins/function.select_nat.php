@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
- $Id: function.select_nat.php,v 1.1 2004/10/29 01:24:21 x2000habouzit Exp $
  ***************************************************************************/
 
 

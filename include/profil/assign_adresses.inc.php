@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: assign_adresses.inc.php,v 1.1 2004/08/31 18:31:34 x2000habouzit Exp $
  ***************************************************************************/
 
 $page->assign('adresses', $adresses);

@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-    $Id: 30.redirect.tpl,v 1.2 2004/11/24 16:32:37 x2000habouzit Exp $
  ***************************************************************************}
 
 <h3><a href="{rel}/carva_redirect.php">Ma redirection de page WEB</a></h3>

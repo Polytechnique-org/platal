@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: ax-xorg.tpl,v 1.6 2004/10/24 14:58:27 x2000habouzit Exp $
  ***************************************************************************}
 
 

@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-    $Id: 90.skin.tpl,v 1.1 2004/11/24 10:12:48 x2000habouzit Exp $
  ***************************************************************************}
 
 {if #globals.skin.enable#}

@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: valid.evts.tpl,v 1.4 2004/11/17 12:21:49 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_evts"}

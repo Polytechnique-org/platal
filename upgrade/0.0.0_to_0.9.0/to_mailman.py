@@ -18,8 +18,6 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: to_mailman.py,v 1.1 2004/11/20 22:53:52 x2000habouzit Exp $
-#***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
 from pwd import getpwnam

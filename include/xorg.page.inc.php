@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-    $Id: xorg.page.inc.php,v 1.54 2004/11/30 10:17:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.page.inc.php");
@@ -31,7 +29,6 @@ require_once("diogenes.core.page.inc.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Jeremy Lainé <jeremy.laine@polytechnique.org>
- * @version  $Id: xorg.page.inc.php,v 1.54 2004/11/30 10:17:04 x2000habouzit Exp $
  * @access   public
  * @see      DiogenesCorePage
  */

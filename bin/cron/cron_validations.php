@@ -18,13 +18,9 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: cron_validations.php,v 1.4 2004/11/16 20:39:08 x2000habouzit Exp $
  ***************************************************************************/
 /* vim: set sw=4 ts=4 sts=4 tw=100:
  * vérifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
- * 
- * $Id: cron_validations.php,v 1.4 2004/11/16 20:39:08 x2000habouzit Exp $
 */ 
 
 $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h

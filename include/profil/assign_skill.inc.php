@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: assign_skill.inc.php,v 1.2 2004/08/31 19:48:46 x2000habouzit Exp $
  ***************************************************************************/
 
 $page->assign('nb_lg_max', $nb_lg_max);

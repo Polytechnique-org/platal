@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: profil.php,v 1.18 2004/12/01 07:39:54 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");

@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-    $Id: skin.globals.inc.php,v 1.1 2004/11/23 20:56:43 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class SkinConfig

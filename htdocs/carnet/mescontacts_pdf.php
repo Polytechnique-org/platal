@@ -17,13 +17,7 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: mescontacts_pdf.php,v 1.4 2004/11/22 20:04:38 x2000habouzit Exp $
  ***************************************************************************/
-
-#
-# $Id: mescontacts_pdf.php,v 1.4 2004/11/22 20:04:38 x2000habouzit Exp $
-#
 
 require_once("xorg.inc.php");
 new_skinned_page('index.tpl', AUTH_COOKIE);

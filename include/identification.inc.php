@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: identification.inc.php,v 1.19 2004/12/01 07:39:55 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');

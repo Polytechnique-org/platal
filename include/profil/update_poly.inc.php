@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: update_poly.inc.php,v 1.3 2004/08/31 13:59:43 x2000habouzit Exp $
  ***************************************************************************/
 
 $sql = "UPDATE auth_user_md5 set section=$section WHERE user_id={$_SESSION['uid']}";

@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: referent.php,v 1.11 2004/11/22 20:04:36 x2000habouzit Exp $
  ***************************************************************************/
 
 

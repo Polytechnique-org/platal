@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: connect.db.inc.php,v 1.4 2004/11/22 11:16:33 x2000habouzit Exp $
  ***************************************************************************/
 
 ini_set("include_path","/usr/share/php/diogenes:/usr/share/php:../../include");

@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: contacts.tpl,v 1.13 2004/11/13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 

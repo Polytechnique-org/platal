@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: geoloc.inc.php,v 1.7 2004/10/14 22:32:02 x2000habouzit Exp $
  ***************************************************************************/
 
 

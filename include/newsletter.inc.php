@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: newsletter.inc.php,v 1.35 2004/11/17 18:16:26 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);

@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: modifier.url.php,v 1.5 2004/08/31 11:19:51 x2000habouzit Exp $
  ***************************************************************************/
 
 function smarty_modifier_url($string)

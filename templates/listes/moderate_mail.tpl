@@ -16,8 +16,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: moderate_mail.tpl,v 1.11 2004/11/09 10:52:04 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}

@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: assign_general.inc.php,v 1.2 2004/09/02 23:25:30 x2000habouzit Exp $
  ***************************************************************************/
 
 $page->assign('mobile_public',$mobile_public);

@@ -17,8 +17,6 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: cacert.php,v 1.2 2004/08/31 10:03:28 x2000habouzit Exp $
  ***************************************************************************/
 
   $fp=fopen("/etc/ssl/xorgCA/cacert.pem","r");
