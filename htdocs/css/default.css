@@ -25,6 +25,8 @@ p.error, span.error, p.erreur, span.erreur {
 	background-color: inherit;
 	color: #ff0000;
 }
+
+.center { text-align: center; }
 	
 div.rubrique {
 	color: #555555;
@@ -47,7 +49,20 @@ div.ssrubrique {
 	font-weight: bold;
 }
 
-.center { text-align: center; }
+/* style pour les docs */
+.explication {
+    font-style: italic;
+    padding: 0.25em;
+}
+.lien {
+    font-weight: bold;
+    padding: 0.25em;
+}
+div.warn {
+    font-style : italic;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
 
 
 /*******************************************

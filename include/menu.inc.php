@@ -41,7 +41,7 @@ if(logged()) {
             'Marketing' => '###url###',
             'Administration' => '###url###',
             'Trackers' => '###url###',
-            'Documentations' => '###url###',
+            'Documentations' => 'docs/',
             'Clear cache' => 'clear_all_cache.php'
         );
     }

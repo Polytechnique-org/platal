@@ -68,19 +68,7 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | confbanana.php							  | 
 	  | contacts.php							  | 
 	  | coupure.php								  | 
-	  | docs/doc_carva.php						  | 
-	  | docs/doc_emails.php						  | 
-	  | docs/doc_forums.php						  | 
-	  | docs/doc_gratuits.php					  | 
-	  | docs/doc_melix.php						  | 
-	  | docs/doc_nn.php							  | 
-	  | docs/doc_nntp.php						  | 
-	  | docs/doc_oe.php							  | 
-	  | docs/doc_patte_cassee.php				  | 
-	  | docs/doc_smtp.php						  | 
-	  | docs/doc_ssl.php						  | 
-	  | docs/FROM.php							  | 
-	  | docs/index.php							  | 
+	  | docs/FROM.php							  | from.php
 	  | domaineperso.php						  | 
 	  | domaine.php								  | 
 	  | dons.php								  | 
@@ -181,6 +169,18 @@ xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
 xx	  | apropos.php								  | -
 xx	  | deconnexion.php							  | -
+xx	  | docs/doc_carva.php						  | -
+xx	  | docs/doc_emails.php						  | -
+xx	  | docs/doc_forums.php						  | -
+xx	  | docs/doc_gratuits.php					  | -
+xx	  | docs/doc_melix.php						  | -
+xx	  | docs/doc_nn.php							  | -
+xx	  | docs/doc_nntp.php						  | -
+xx	  | docs/doc_oe.php							  | -
+xx	  | docs/doc_patte_cassee.php				  | -
+xx	  | docs/doc_smtp.php						  | -
+xx	  | docs/doc_ssl.php						  | -
+xx	  | docs/index.php							  | -
 xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
