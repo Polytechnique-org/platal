@@ -103,13 +103,10 @@ class XorgSession extends DiogenesCoreSession {
  * TODO RECODER
  */
 function check_perms($auth_array=array()) {
+  global $page;
   if (!has_perms($auth_array)) {
     $_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
-    echo "<div class=\"erreur\">";
-    echo "Tu n'as pas les permissions n&eacute;cessaires pour acc&eacute;der &agrave; cette page.";
-    echo "</div>";
-    include("footer.inc.php");
-    exit;
+    $page->failure();
   }
 }
 

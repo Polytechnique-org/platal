@@ -80,6 +80,12 @@ class XorgPage extends DiogenesCorePage {
         exit;
     }
 
+    function failure() {
+        $this->_tpl = 'failure.tpl';
+        $this->_page_type = SKINNED;
+        $this->run();
+    }
+
     function xorg_is_cached($append_to_id="") {
         if($this->_page_type == NO_SKIN)
             return parent::is_cached($this->_tpl);
