@@ -23,6 +23,7 @@
 
 function mark_send_mail($uid, $email)
 {
+    global $globals;
 
     $hash = rand_url_id(12);
     $globals->xdb->execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $id, $email);

@@ -83,7 +83,7 @@ class MarkReq extends Validate
     {
         global $globals;
         require_once('marketing.inc.php');
-        mark_send_mail();
+        mark_send_mail($this->m_id, $this->m_email);
         return true;
     }
 
