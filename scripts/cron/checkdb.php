@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.7 2004-10-14 18:06:45 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.8 2004-10-17 19:47:02 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.7 2004-10-14 18:06:45 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.8 2004-10-17 19:47:02 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -128,7 +128,7 @@ check("select a.promo as promo_ok,i.promo as promo_bad,a.matricule,a.nom,a.preno
 info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on e.matricule = a.matricule order by promo,nom;");
 
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
-info("SELECT  a1.alias, e1.uid, a2.alias, e2.uid, e1.email, e1.flags, e2.flags
+info("SELECT  a1.alias, a2.alias, e1.email
         FROM  emails  AS e1
   INNER JOIN  emails  AS e2 ON(e1.email = e2.email AND e1.uid < e2.uid)
   INNER JOIN  aliases AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
