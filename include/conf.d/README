@@ -1,0 +1,11 @@
+WHAT IS PUT HERE ?
+------------------
+
+*.globals.inc.php :
+    in there you can extend $globals with new params.
+    each module can have as many files it wants here.
+    in thoses scripts, $this is the current $globals beeing created.
+
+*.menu.inc.php :
+    quite the same as previous one, but for menus.
+    you can add $this->addPrivateEntry/addPublicEntry to extend the menu.
