@@ -26,10 +26,7 @@ require_once('user.func.inc.php');
 
 function get_user_ax($uid, $raw=false) {
     require_once('webservices/manageurs.inc.php');
-
-    require_once('xml-rpc-client.inc.php');
-
-    require_once('manageurs.client.inc.php');
+    require_once('webservices/manageurs.client.inc.php');
 
     global $globals;
 
@@ -54,38 +51,45 @@ function get_user_ax($uid, $raw=false) {
     $userax['nationalite'] = $ancien[9];
     $userax['date'] = substr($ancien[12], 0, 10);
     $userax['mobile'] = $array['cell'];
-    if ($ancien[13] == 'D' || $ancien[13] == 'Z')
+    if ($ancien[13] == 'D' || $ancien[13] == 'Z') {
         $userax['applis_join'] = "pas un corps";
-    else
+    } else {
         $userax['applis_join'] = "Corps ".$ancien[13]." - ".$ancien[14];
+    }
+
     $userax['adr_pro'] = array();
-    if (is_array($array['dump']['pro']))
-    foreach ($array['dump']['pro'] as $job) {
-        $jobax['entreprise'] = $job[1];
-        $jobax['fonction'] = $job[6];
-        $jobax['adr1'] = $job[10];
-        $jobax['adr2'] = $job[11];
-        $jobax['adr3'] = $job[12];
-        $jobax['cp']   = $job[13];
-        $jobax['ville'] = $job[14];
-        $jobax['pays'] = $job[17];
-        $jobax['tel']  = $job[19];
-        $userax['adr_pro'][] = $jobax;
+    if (is_array($array['dump']['pro'])) {
+        foreach ($array['dump']['pro'] as $job) {
+            $jobax['entreprise'] = $job[1];
+            $jobax['fonction'] = $job[6];
+            $jobax['adr1'] = $job[10];
+            $jobax['adr2'] = $job[11];
+            $jobax['adr3'] = $job[12];
+            $jobax['cp']   = $job[13];
+            $jobax['ville'] = $job[14];
+            $jobax['pays'] = $job[17];
+            $jobax['tel']  = $job[19];
+            $userax['adr_pro'][] = $jobax;
+        }
     }
+
     $userax['adr'] = array();
-    if (is_array($array['dump']['adresse']))
-    foreach ($array['dump']['adresse'] as $adr) {
-        $adrax['adr1'] = $adr[3];
-        $adrax['adr2'] = $adr[4];
-        $adrax['adr3'] = $adr[5];
-        $adrax['cp'] = $adr[6];
-        $adrax['ville'] = $adr[7];
-        $adrax['pays'] = $adr[10];
-        $adrax['tel'] = $adr[12];
-        $adrax['fax'] = $adr[13];
-        $userax['adr'][] = $adrax;
+    if (is_array($array['dump']['adresse'])) {
+        foreach ($array['dump']['adresse'] as $adr) {
+            $adrax['adr1'] = $adr[3];
+            $adrax['adr2'] = $adr[4];
+            $adrax['adr3'] = $adr[5];
+            $adrax['cp'] = $adr[6];
+            $adrax['ville'] = $adr[7];
+            $adrax['pays'] = $adr[10];
+            $adrax['tel'] = $adr[12];
+            $adrax['fax'] = $adr[13];
+            $userax['adr'][] = $adrax;
+        }
     }
-    if ($raw) $userax['raw'] = $array;
+    if ($raw) {
+        $userax['raw'] = $array;
+    }
 
     return $userax;
 }
@@ -127,7 +131,9 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
             $res = $globals->xdb->query("SELECT a2 FROM geoloc_pays WHERE pays LIKE {?} OR country LIKE {?}", $adr['pays'], $adr['pays']);
             $a2 = $res->fetchOneCell();
         }
-        if (!$a2) $a2 = '00';
+        if (!$a2) {
+            $a2 = '00';
+        }
         
         $globals->xdb->execute(
             "INSERT INTO adresses
@@ -167,7 +173,9 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
             $res = $globals->xdb->query("SELECT a2 FROM geoloc_pays WHERE pays LIKE {?} OR country LIKE {?}", $pro['pays'], $pro['pays']);
             $a2 = $res->fetchOneCell();
         }
-        if (!$a2) $a2 = '00';
+        if (!$a2) {
+            $a2 = '00';
+        }
         
         $globals->xdb->execute(
             "INSERT INTO entreprises
