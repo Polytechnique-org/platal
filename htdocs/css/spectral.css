@@ -114,8 +114,9 @@ div.contact div.long {
 
 #body-menu .menu_title {
     color : #000000;
-    background-color: #ffffff;
+    background-color: #3601ff;
     background-image: url("/images/sk_spectral_menu.jpg");
+    background-repeat: repeat-y;
     border-top: 1px solid #003399;
     border-bottom: 1px solid #003399;
 }
@@ -126,4 +127,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: spectral.css,v 1.4 2004-10-03 21:12:00 x2000habouzit Exp $ */
+/* $Id: spectral.css,v 1.5 2004-10-09 11:56:28 x2003bruneau Exp $ */
