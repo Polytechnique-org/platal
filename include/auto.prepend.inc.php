@@ -32,7 +32,9 @@ function new_skinned_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
 }
 
 function new_simple_page($tpl_name, $min_auth, $popup=false, $tpl_head="") {
+    global $page;
     _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth, $popup);
+    $page->assign('simple', true);
 }
 
 function new_nonhtml_page($tpl_name, $min_auth) {
