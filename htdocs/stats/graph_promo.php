@@ -29,25 +29,27 @@ $JOURS=364;
 define('DUREEJOUR',24*3600);
 
 //recupere le nombre d'inscriptions par jour sur la plage concernée
-$donnees=$globals->db->query("SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $JOURS DAY),
-				          TO_DAYS(date_ins)-TO_DAYS(NOW()),
-					  ".(-($JOURS+1)).") AS jour,
-                                      count(user_id) AS nb
-				FROM  auth_user_md5 
-			       WHERE  promo = $promo AND perms IN ('admin','user')
-			    GROUP BY  jour");
+$res = $globals->xdb->iterRow(
+        "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $JOURS DAY),
+                     TO_DAYS(date_ins)-TO_DAYS(NOW()),
+                    ".(-($JOURS+1)).") AS jour,
+                 COUNT(user_id) AS nb
+           FROM  auth_user_md5 
+          WHERE  promo = {?} AND perms IN ('admin','user')
+       GROUP BY  jour", $promo);
 
 //genere des donnees compatibles avec GNUPLOT
 $inscrits='';
 
 // la première ligne contient le total des inscrits avant la date de départ (J - $JOURS)
-list(,$init_nb)=mysql_fetch_row($donnees);
+list(,$init_nb) = $res->next();
 $total = $init_nb;
 
-list($numjour, $nb) = mysql_fetch_row($donnees);
+list($numjour, $nb) = $res->next();
+
 for ($i=-$JOURS;$i<=0;$i++) {
     if ($numjour<$i) {
-        if(!list($numjour, $nb) = mysql_fetch_row($donnees)) {
+        if(!list($numjour, $nb) = $res->next()) {
             $numjour = 0;
             $nb = 0;
         }

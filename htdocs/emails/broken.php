@@ -26,14 +26,14 @@ require_once('emails.inc.php');
 if (Get::has('email') && Get::has('action')) {
     $email = valide_email(Get::get('email'));
     // vérifications d'usage
-    $sel = $globals->db->query(
+    $sel = $globals->xdb->query(
             "SELECT  e.uid, a.alias
                FROM  emails        AS e
          INNER JOIN  auth_user_md5 AS u ON e.uid = u.user_id
          INNER JOIN  aliases       AS a ON (e.uid = a.id AND type!='homonyme' AND FIND_IN_SET('bestalias',a.flags))
-              WHERE  e.email='$email'");
+              WHERE  e.email={?}", $email);
 
-    if (list($uid, $dest) = mysql_fetch_row($sel)) {
+    if (list($uid, $dest) = $sel->fetchOneRow()) {
 	// envoi du mail
 	$message = "Bonjour !
 	
@@ -66,17 +66,17 @@ L'équipe d'administration <support@polytechnique.org>";
 } elseif (Post::has('email')) {
     $email = valide_email(Post::get('email'));
     $page->assign('email',$email);
-    $sel = $globals->db->query(
+    $sel = $globals->xdb->query(
             "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
                FROM  emails as e1
           LEFT JOIN  emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.email != e2.email)
          INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
-              WHERE  e1.email ='$email'
-           GROUP BY  e1.uid");
-    if ($x = mysql_fetch_assoc($sel)) {
+              WHERE  e1.email = {?}
+           GROUP BY  e1.uid", $email);
+    if ($x = $sel->fetchOneAssoc()) {
         // on écrit dans la base que l'adresse est cassée
         if (!$x['panne']) {
-            $globals->db->query("UPDATE emails SET panne='".date('Y-m-d')."' WHERE email =  '$email'");
+            $globals->xdb->execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
         }
         $page->assign_by_ref('x', $x);
     }

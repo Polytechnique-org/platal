@@ -22,14 +22,14 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/index.tpl');
 
-$res = $globals->db->query("
+$res = $globals->xdb->iterRow("
             SELECT  h1, h2, texte, url
               FROM  admin_a  AS a
         INNER JOIN  admin_h2 AS h2 USING(h2id)
         INNER JOIN  admin_h1 AS h1 USING(h1id)
           ORDER BY  h1.prio, h2.prio, a.prio");
 $index = Array();
-while(list($h1,$h2,$txt,$url) = mysql_fetch_row($res)) {
+while(list($h1,$h2,$txt,$url) = $res->next()) {
     $index[$h1][$h2][] = Array('txt' => $txt, 'url'=>$url);
 }
 $page->assign_by_ref('index', $index);

@@ -43,20 +43,18 @@ if(Env::has('logs_button') && $login) {
 if(Env::has('suid_button') && $login) {
     $_SESSION['log']->log("suid_start", "login by ".Session::get('forlife'));
     $_SESSION['suid'] = $_SESSION;
-    $r = $globals->db->query("SELECT id FROM aliases WHERE alias='$login'");
-    if(list($uid) = mysql_fetch_row($r)) {
+    $r = $globals->xdb->query("SELECT id FROM aliases WHERE alias={?}", $login);
+    if($uid = $r->fetchOneCell()) {
 	start_connexion($uid,true);
 	header("Location: ../");
     }
-    mysql_free_result($r);
 }
 
 if ($login) {
-    $r  = $globals->db->query("SELECT  *, a.alias AS forlife
-                                 FROM  auth_user_md5 AS u
-                           INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
-    $mr = mysql_fetch_assoc($r);
-    mysql_free_result($r);
+    $r  = $globals->xdb->query("SELECT  *, a.alias AS forlife
+                                  FROM  auth_user_md5 AS u
+                            INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
+    $mr = $r->fetchOneAssoc();
 
     $redirect = new Redirect($mr['user_id']);
 
@@ -81,24 +79,24 @@ if ($login) {
 
 	    case "del_alias":
 		if (!empty($val)) {
-                    $globals->db->query("DELETE FROM aliases WHERE id='{$mr['user_id']}' AND alias='$val'
-                            AND type!='a_vie' AND type!='homonyme'");
+                    $globals->xdb->execute("DELETE FROM aliases WHERE id={?} AND alias={?}
+                            AND type!='a_vie' AND type!='homonyme'", $mr['user_id'], $val);
                     fix_bestalias($nr['user_id']);
                     $page->trig($val." a été supprimé");
                 }
 		break;
 
 	    case "add_alias":
-		$globals->db->query("INSERT INTO aliases (id,alias,type)
-				     VALUES ('{$mr['user_id']}','".Env::get('email')."','alias')");
+		$globals->xdb->execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
+                        $mr['user_id'], Env::get('email'));
 		break;
 
 	    case "best":
-		$globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id='{$mr['user_id']}'");
-		$globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id='{$mr['user_id']}'");
-		$globals->db->query("UPDATE  aliases
-					SET  flags=CONCAT(flags,',','bestalias')
-				      WHERE  id='{$mr['user_id']}' AND alias='$val'");
+		$globals->xdb->execute("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id={?}", $mr['user_id']);
+		$globals->xdb->execute("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id={?}", $mr['user_id']);
+		$globals->xdb->execute("UPDATE  aliases
+                                           SET  flags=CONCAT(flags,',','bestalias')
+                                        WHERE  id={?} AND alias={?}", $mr['user_id'], $val);
 		break;
 
 
@@ -117,12 +115,12 @@ if ($login) {
 			    naissance = '$naiss',
 			    password  = '$pass_md5B',
 			    perms     = '$perms',
-			    prenom    = '$prenm',
-			    nom       = '$nom',
+			    prenom    = '".addslashes($prenm)."',
+			    nom       = '".addslashes($nom)."',
 			    promo     = $promo,
-			    comment   = '$comm'
+			    comment   = '".addslashes($comm)."'
 			  WHERE user_id = '{$mr['user_id']}'";
-		if ($globals->db->query($query)) {
+		if ($globals->xdb->execute($query)) {
                     // FIXME: recherche
                     system('echo 1 > /tmp/flag_recherche');
 
@@ -136,12 +134,11 @@ if ($login) {
 
                     $page->trig("updaté correctement.");
                 }
-		$r  = $globals->db->query("SELECT  *, a.alias AS forlife
-                                             FROM  auth_user_md5 AS u
-                                       INNER JOIN  aliases       AS a ON (u.user_id=a.id)
-                                            WHERE  user_id = {$mr['user_id']}");
-                $mr = mysql_fetch_assoc($r);
-		mysql_free_result($r);
+		$r  = $globals->xdb->query("SELECT  *, a.alias AS forlife
+                                              FROM  auth_user_md5 AS u
+                                        INNER JOIN  aliases       AS a ON (u.user_id=a.id)
+                                             WHERE  user_id = {?}", $mr['user_id']);
+                $mr = $r->fetchOneAssoc();
 		break;
 
             // DELETE FROM auth_user_md5
@@ -159,13 +156,12 @@ if ($login) {
 	}
     }
 
-    $result=$globals->db->query("SELECT  UNIX_TIMESTAMP(start), host
+    $res = $globals->xdb->query("SELECT  UNIX_TIMESTAMP(start), host
 			           FROM  logger.sessions
-				  WHERE  uid={$mr['user_id']} AND suid=0
+				  WHERE  uid={?} AND suid=0
 			       ORDER BY  start DESC
-				  LIMIT  1");
-    list($lastlogin,$host) = mysql_fetch_row($result);
-    mysql_free_result($result);
+				  LIMIT  1", $mr['user_id']);
+    list($lastlogin,$host) = $res->fetchOneRow();
     $page->assign('lastlogin', $lastlogin);
     $page->assign('host', $host);
 

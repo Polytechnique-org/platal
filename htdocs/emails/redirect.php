@@ -40,15 +40,15 @@ if (Env::has('emailop')) {
         $page->assign('retour', $redirect->modify_email($actifs, Env::getMixed('emails_rewrite',Array())));
     }
 }
-$sql = "SELECT  alias
-          FROM  virtual
-    INNER JOIN  virtual_redirect USING(vid)
-          WHERE (  redirect='$forlife@{$globals->mail->domain}'
-                OR redirect='$forlife@{$globals->mail->domain2}' )
-                AND alias LIKE '%@{$globals->mail->alias_dom}'";
-$res = $globals->db->query($sql);
-if (mysql_num_rows($res)) {
-    list($melix) = mysql_fetch_row($res);
+$res = $globals->xdb->query(
+        "SELECT  alias
+           FROM  virtual
+     INNER JOIN  virtual_redirect USING(vid)
+          WHERE  (redirect={?} OR redirect={?})
+                 AND alias LIKE '%@{$globals->mail->alias_dom}'", 
+        $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+$melix = $res->fetchOneCell();
+if ($melix) {
     list($melix) = split('@', $melix);
     $page->assign('melix',$melix);
 }

@@ -75,12 +75,12 @@ $champ202 = clean_request('CHAMP202');
 $montant = "$champ201 $champ202";
 
 /* on extrait les informations sur l'utilisateur */
-$res = $globals->db->query("
+$res = $globals->xdb->query("
     SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(a.flags,'femme')
       FROM  auth_user_md5 AS a
 INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
-     WHERE  a.user_id='$uid'");
-if (!list($prenom,$nom,$promo,$forlife,$femme) = mysql_fetch_row($res)) {
+     WHERE  a.user_id={?}", $uid);
+if (!list($prenom,$nom,$promo,$forlife,$femme) = $res->fetchOneRow()) {
     erreur("uid invalide");
 }
 
@@ -91,26 +91,28 @@ if (!ereg('-xorg-([0-9]+)$',$champ200,$matches)) {
 }
 
 echo ($ref = $matches[1]);
-$res = $globals->db->query("select mail,text,confirmation from paiement.paiements where id='$ref'");
-if (!list($conf_mail,$conf_title,$conf_text) = mysql_fetch_row($res)) {
+$res = $globals->xdb->query("SELECT mail,text,confirmation FROM paiement.paiements WHERE id={?}", $ref);
+if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
     erreur("référence de commande inconnue");
 }
 
 /* on extrait le code de retour */
 if ($champ906 != "0000") {
-    $res = $globals->db->query("SELECT  rcb.text,c.id,c.text
-                                  FROM  paiement.codeRCB AS rcb
-			     LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
-			         WHERE  rcb.id='$champ906'");
-    if (list($rcb_text,$c_id,$c_text) = mysql_fetch_row($res)) 
-	erreur("erreur lors du paiement : $c_text ($c_id)");
-    else
-	erreur("erreur inconnue lors du paiement");
+    $res = $globals->xdb->query("SELECT  rcb.text,c.id,c.text
+                                   FROM  paiement.codeRCB AS rcb
+                              LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
+                                  WHERE  rcb.id='$champ906'");
+    if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
+        erreur("erreur lors du paiement : $c_text ($c_id)");
+    } else{ 
+        erreur("erreur inconnue lors du paiement");
+    }
 }
 
 /* on fait l'insertion en base de donnees */
-$globals->db->query("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
-                          VALUES  ('$champ901','$uid','$ref','$champ200','$montant','$champ905')");
+$globals->xdb->execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
+                             VALUES  ({?},{?},{?},{?},{?},{?})",
+                        $champ901, $uid, $ref, $champ200, $montant, $champ905);
 
 /* on genere le mail de confirmation */
 $conf_text = str_replace("<prenom>",$prenom,$conf_text);

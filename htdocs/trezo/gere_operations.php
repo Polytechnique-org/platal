@@ -40,8 +40,8 @@ $mon_sel   = $trim_fr[$mois_sel]." $annee_sel";
 switch($action) {
     case "edit":
         if ($op_id) {
-            $res=$globals->db->query("select date,label,credit,debit from money_trezo where id='$op_id'");
-            list($op_date,$op_label,$op_credit,$op_debit)=mysql_fetch_row($res);
+            $res = $globals->xdb->query("SELECT date,label,credit,debit FROM money_trezo WHERE id={?}", $op_id);
+            list($op_date,$op_label,$op_credit,$op_debit) = $res->fetchOneRow();
         }
         break;
 
@@ -53,18 +53,18 @@ switch($action) {
             $mydate   = date("Y-m-d");
         }
 
-        $sql = "replace into money_trezo set date='$mydate',label='$op_label'";
+        $sql = "replace into money_trezo set date='$mydate',label='".addslashes($op_label)."'";
 
         if ($op_credit) { $sql .= ',credit='.$op_credit; }
         if ($op_debit)  { $sql .= ",debit=".$op_debit;   }
         if ($op_id)     { $sql .= ",id='$op_id'";        }
         
-        $globals->db->query($sql);
+        $globals->xdb->execute($sql);
         break;
 
     case "del":
         if ($op_id) {
-            $globals->db->query("delete from money_trezo where id='".$op_id."'");
+            $globals->xdb->execute("DELETE FROM money_trezo WHERE id={?}", $op_id);
         }
         break;
 }

@@ -22,16 +22,19 @@
 require_once("xorg.inc.php");
 new_skinned_page('stats/nb_by_promo.tpl', AUTH_COOKIE);
 
-$result = $globals->db->query("SELECT  promo,COUNT(*)
-                                 FROM  auth_user_md5
-				WHERE  promo > 1900 AND perms IN ('admin','user')
-			     GROUP BY  promo
-			     ORDER BY  promo");
+$res = $globals->xdb->iterRow(
+        "SELECT  promo,COUNT(*)
+           FROM  auth_user_md5
+          WHERE  promo > 1900 AND perms IN ('admin','user')
+       GROUP BY  promo
+       ORDER BY  promo");
 $max=0; $min=3000;
-while(list($promo,$nb)=mysql_fetch_row($result)) {
-    $promo=intval($promo);
-    if(!isset($nbpromo[$promo/10]))
+
+while (list($promo,$nb) = $res->next()) {
+    $promo = intval($promo);
+    if(!isset($nbpromo[$promo/10])) {
         $nbpromo[$promo/10] = Array('','','','','','','','','',''); // tableau de 10 cases vides
+    }
     $nbpromo[$promo/10][$promo%10]=Array('promo' => $promo, 'nb' => $nb);
 }
 

@@ -53,9 +53,8 @@ if (Post::has('submit')) {
 	$page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
     }
 
-    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE alias='$liste'");
-    list($n) = mysql_fetch_row($res);
-    mysql_free_result($res);
+    $res = $globals->xdb->query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
+    $n   = $res->fetchOneCell();
 
     if($n) {
         $page->trig('cet alias est déjà pris');

@@ -35,12 +35,12 @@ function serv_to_str($params) {
 }
 
 if (Env::has('cp_id')) {
-    $res = $globals->db->query("SELECT  UNIX_TIMESTAMP(debut) AS debut,
-                                        TIME_FORMAT(duree,'%kh%i') AS duree,
-                                        resume, description, services
-                                  FROM  coupures
-                                 WHERE  id = ".Env::getInt('cp_id'));
-    $cp = @mysql_fetch_assoc($res);
+    $res = $globals->xdb->query("SELECT  UNIX_TIMESTAMP(debut) AS debut,
+                                         TIME_FORMAT(duree,'%kh%i') AS duree,
+                                         resume, description, services
+                                   FROM  coupures
+                                  WHERE  id = {?}", Env::getInt('cp_id'));
+    $cp  = $res->fetchOneAssoc();
 }
 
 if($cp) {
