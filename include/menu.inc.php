@@ -27,7 +27,7 @@ if(logged()) {
         'Informations' => Array (
             'Lettres mensuelles' => '###url###',
             'Documentation' => '###url###',
-            'Nous contacter' => '###url###',
+            'Nous contacter ' => "docs/contacts.php",
             'Emploi' => '###url###'
         )
     );
@@ -58,7 +58,7 @@ if(logged()) {
         ),
         'Informations' => Array(
             'A propos du site' => "docs/apropos.php",
-            'Nous contacter ' => "###url###",
+            'Nous contacter ' => "docs/contacts.php",
             'FAQ' => "###url###"
         )
     );

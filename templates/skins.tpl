@@ -1,4 +1,4 @@
-{* $Id: skins.tpl,v 1.1 2004-01-26 18:00:03 x2000habouzit Exp $ *}
+{* $Id: skins.tpl,v 1.2 2004-01-28 17:19:47 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Skins Polytechnique.org
@@ -17,7 +17,7 @@ nous te conseillons de télécharger une version récente de ton navigateur.
 </p>
 <p class="normal">
 Pour toute information complémentaire, n'hésite pas à écrire à
-<a href="mailto:support@polytechnique.org?subject=navigateurs">support@polytechnique.org</a>
+{mailto address='support@polytechnique.org' subject='navigateurs' encode='javascript'}
 </p>
 
 <form action="{$smarty.server.REQUEST_URI}" method="POST">
