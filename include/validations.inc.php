@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: validations.inc.php,v 1.18 2004-11-22 20:05:10 x2000habouzit Exp $
+    $Id: validations.inc.php,v 1.19 2004-11-24 08:51:49 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ DEFINES
@@ -232,11 +232,11 @@ class Validate
 // }}}
 // {{{ IMPLEMENTATIONS
 
-require_once("valid/aliases.inc.php");
-require_once("valid/epouses.inc.php");
-require_once("valid/photos.inc.php");
-require_once("valid/evts.inc.php");
-require_once("valid/listes.inc.php");
+require_once("validations/aliases.inc.php");
+require_once("validations/epouses.inc.php");
+require_once("validations/photos.inc.php");
+require_once("validations/evts.inc.php");
+require_once("validations/listes.inc.php");
 
 // }}}
 
