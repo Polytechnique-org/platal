@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: foobar.php,v 1.2 2004-11-21 14:33:29 x2000habouzit Exp $
+    $Id: foobar.php,v 1.3 2004-11-21 16:31:48 x2000habouzit Exp $
  ***************************************************************************/
 
 require('auto.prepend.inc.php');
