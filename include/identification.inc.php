@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.5 2004-09-05 22:25:45 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.6 2004-09-06 08:27:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -169,11 +169,11 @@ if ($promo > 1995)  {
 /***************************** IDENTIFICATION OK *****************************/
 /*****************************************************************************/
 
-$result = $globals->db->query("SELECT id,type FROM aliases WHERE alias='$mailorg'");
+$result = $globals->db->query("SELECT id,type,expire FROM aliases WHERE alias='$mailorg'");
 $homonyme = mysql_num_rows($result) > 0;
 
 if ( $homonyme ) {
-    list($h_id,$h_type) = mysql_fetch_row($result);
+    list($h_id,$h_type,$expire) = mysql_fetch_row($result);
     mysql_free_result($result);
 
     $result = $globals->db->query("SELECT alias FROM aliases WHERE alias='$forlife'");
@@ -183,8 +183,9 @@ if ( $homonyme ) {
     }
     mysql_free_result($result);
 
-    if ( $h_type != 'homonyme' ) {
+    if ( $h_type != 'homonyme' and empty($expire) ) {
 	$globals->db->query("UPDATE aliases SET expire=ADD_DATE(NOW(),INTERVAL 1 MONTH) WHERE alias='$mailorg'");
+	$globals->db->query("REPLACE INTO homonymes SET (homonyme_id,user_id) VALUES ($h_id,$h_id)");
 	require_once('diogenes.mailer.inc.php');
 	$mailer = new DiogenesMailer('Support Polytechnique.org <support@polytechnique.org>',
 				     "$mailorg@polytechnique.org",
