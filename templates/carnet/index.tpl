@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.1 2004-11-04 15:33:28 x2000habouzit Exp $
+        $Id: index.tpl,v 1.2 2004-11-04 15:48:45 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Carnet polytechnicien</h1>
@@ -25,18 +25,20 @@
 <table class="bicol">
   <tr>
     <th colspan="2">
-      Gestion de tes contacts
+      Tes contacts
     </th>
   </tr>
   <tr class="impair">
-    <td><div class="question">
+    <td>
+      <div class="question">
         <a href="{"carnet/mescontacts.php"|url}">Page de tes contacts</a>
       </div>
       <div class="explication">
         Tu peux ici lister tes contacts, en ajouter et en retirer.
       </div>
     </td>
-    <td><div class="question">
+    <td>
+      <div class="question">
         <a href="{"carnet/mescontacts.php?trombi=1"|url}">Le trombi de tes contacts</a>
       </div>
       <div class="explication">
@@ -44,29 +46,13 @@
       </div>
     </td>
   </tr>
-</table>
-
-<br />
-
-<table class="bicol">
-  <tr>
-    <th colspan="2">
-      Notifications automatiques
-    </th>
-  </tr>
-  <tr class="impair">
-    <td><div class="question">
-        <a href="{""|url}"> ... </a>
+  <tr class="pair">
+    <td colspan="2">
+      <div class="question">
+        <a href="{"carnet/notifs.php"|url}">Notifications hebdomadaires automatiques</a>
       </div>
       <div class="explication">
-        ...
-      </div>
-    </td>
-    <td><div class="question">
-        <a href="{""|url}"> ... </a>
-      </div>
-      <div class="explication">
-        ...
+        Être notifié des inscriptions, décès, changement de fiche, ...
       </div>
     </td>
   </tr>
