@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.3 2004-10-02 15:34:53 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.4 2004-10-09 19:02:53 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.3 2004-10-02 15:34:53 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.4 2004-10-09 19:02:53 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -85,7 +85,6 @@ check("select uid, cid from competences_ins group by uid having count(cid) > 20"
 
 /* validite de aliases */
 check("select a.* from aliases as a left join auth_user_md5 as u on u.user_id=a.id where (a.type='alias' or a.type='epouse' or a.type='login' or a.type='a_vie') and u.prenom is null");
-check("select a.* from aliases as a left join listes_def as ld on ld.id=a.id where a.type like('liste%') and ld.topic is null");
 
 /* validite de applis_ins */
 check("select a.* from applis_ins as a left join auth_user_md5 as u on u.user_id=a.uid where u.prenom is null");
@@ -111,14 +110,6 @@ check("select f.* from forums.respofaqs as f left join auth_user_md5 as u on u.u
 /* validite de groupesx_ins */
 check("select g.* from groupesx_ins as g left join auth_user_md5 as u on u.user_id=g.guid where u.prenom is null");
 check("select g.* from groupesx_ins as g left join groupesx_def as gd on g.gid=g.gid where gd.text is null");
-
-/* validite de listes_ins */
-check("select l.* from listes_ins as l left join auth_user_md5 as u on u.user_id=l.idu where l.idu and u.prenom is null");
-check("select l.* from listes_ins as l left join listes_def as ld on ld.id=l.idl where ld.topic is null");
-
-/* validite de listes_mod */
-check("select l.* from listes_mod as l left join auth_user_md5 as u on u.user_id=l.idu where u.prenom is null");
-check("select l.* from listes_mod as l left join listes_def as ld on ld.id=l.idl where ld.topic is null");
 
 /* validite de photo */
 check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.uid where u.prenom is null");
