@@ -55,22 +55,24 @@ photo est réalisée sous quelques heures en journée).
 </h1>
 <h2>Redirection à vie</h2>
 <p>
-Une adresse prenom.nom&#64;polytechnique.org (ou &#64;m4x.org) t'es fournie à vie par Polytechnique.org.
-Sauf en cas d'homonyme, auquel cas, l'adresse sera modifiée en ajoutant ta
-promotion entre prenom.nom et le caractère @. Le premier arrivé sur le site gardera son alias prenom.nom pendant 1 mois, ce après quoi il lui est retiré.
-Ensuite c'est un robot qui répond aux mails envoyés à cette adresse pour signaler la
+Une adresse prenom.nom.promo&#64;polytechnique.org (ou &#64;m4x.org) t'es fournie à vie par Polytechnique.org.
+L'alias prenom.nom&#64;polytechnique.org ou &#64;m4x.org est aussi disponible, mais non garanti. En effet, en
+cas d'homonyme, le premier arrivé sur le site gardera son alias prenom.nom pendant 1 mois, ce après quoi il
+lui sera retiré. Ensuite c'est un robot qui répond aux mails envoyés à cette adresse pour signaler la
 présence d'un homonyme à l'auteur du mail, permettant ainsi que les mails arrivent bien à leur
-destinataire et non à un autre polytechnicien du même nom. <strong>Le critère d'attribution que nous avons retenu est donc la devinabilité de l'adresse !</strong>
+destinataire et non à un autre polytechnicien du même nom. <strong>Le critère d'attribution que nous avons retenu est
+donc la devinabilité de l'adresse !</strong>
 </p>
 <p>
-Les femmes qui se marient n'ont qu'à renseigner leur nom de mariage sur leur fiche de profil pour obtenir immédiatement (après validation de la demande
-par un administrateur - pour éviter tout abus), un alias prenom.nom_de_femme_mariée en plus de
+Les femmes qui se marient n'ont qu'à renseigner leur nom de mariage sur leur fiche de profil pour obtenir immédiatement
+(après validation de la demande par un administrateur - pour éviter tout abus), un alias prenom.nom_de_femme_mariée en plus de
 leur alias prenom.nom_de_jeune_fille qu'elle conserveront bien entendu.
 </p>
 <p>
-Pour les personnes ayant des patronymes particulièrement longs, il est possible de créer un
-alias prenom.nom_usuel à la manière des femmes mariées. Il suffit de nous en faire la demande en écrivant à <?php echo mailto('support@polytechnique.org') ?>.
-Pour les autres, préférer plutôt l'utilisation d'un alias melix.
+Pour les personnes ayant des patronymes particulièrement longs, il est possible de créer un alias
+prenom.nom_usuel à la manière des femmes mariées. Il suffit de nous en faire la demande en écrivant à
+{mailto address='support@polytechnique.org' encode='hex'}. Pour les autres, préférer plutôt l'utilisation
+d'un alias melix.
 </p>
 <h2>Alias melix</h2>
 <p>
