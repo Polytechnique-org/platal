@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.4 2004-10-31 17:58:32 x2000chevalier Exp $
+        $Id: index.php,v 1.5 2004-11-20 19:07:02 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -45,7 +45,7 @@ $stats = mysql_fetch_assoc($res);
 $page->assign('stats', $stats);
 mysql_free_result($res);
 
-$res = $globals->db->query("SELECT count(*) FROM ins_confirmees");
+$res = $globals->db->query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000");
 list($nbInsSem) = mysql_fetch_row($res);
 mysql_free_result($res);
 

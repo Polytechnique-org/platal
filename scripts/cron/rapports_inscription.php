@@ -6,10 +6,10 @@ $MESSAGE = '';
 // ---------------------------------------
 
 $result=mysql_query("SELECT  a.alias, u.promo, email
-                       FROM  ins_confirmees AS i
-		  LEFT JOIN  auth_user_md5  AS u ON( i.id = u.user_id )
-		  LEFT JOIN  aliases        AS a ON( i.id=a.id AND a.type='a_vie' )
+		       FROM  auth_user_md5  AS u
+		  LEFT JOIN  aliases        AS a ON( u.user_id=a.id AND a.type='a_vie' )
 		  LEFT JOIN  emails         AS e ON( e.uid = u.user_id AND NOT FIND_IN_SET('filter',e.flags) )
+		      WHERE  u.date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000
 		   GROUP BY  alias
 		   ORDER BY  promo");
 $a = mysql_num_rows($result);
@@ -65,5 +65,4 @@ $HEADER="From: register\nReply-To: register@polytechnique.org\n".
         "Content-Disposition: inline\n".
         "Content-Transfer-Encoding: 8bit\n";
 mail("register@polytechnique.org, jean-michel.yolin+register@polytechnique.org","$a confirmées, $b en attente et $c sollicitées",$MESSAGE,$HEADER);
-mysql_query("DELETE FROM ins_confirmees");
 ?>

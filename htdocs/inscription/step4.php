@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.14 2004-11-18 13:45:47 x2000habouzit Exp $
+        $Id: step4.php,v 1.15 2004-11-20 19:07:00 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -124,23 +124,22 @@ if (!empty($_REQUEST['ref'])) {
     // effacer la pré-inscription devenue 
     $globals->db->query("update en_cours set loginbis='INSCRIT' WHERE username='$forlife'");
 
-    // insérer l'inscription dans la table des inscriptions confirmé
-    $globals->db->query("INSERT INTO ins_confirmees SET id=$uid");
+    // insérer l'inscription dans la table des notifications
     require_once('notifs.inc.php');
     register_watch_op($uid,WATCH_INSCR);
     inscription_notifs_base($uid);
 
-    // insérer une ligne dans user_changes pour que les coordonnées complè
-    // soient envoyées a l'
+    // insérer une ligne dans user_changes pour que les coordonnées complètes
+    // soient envoyées a l'AX
     $globals->db->query("insert into user_changes ($uid)");
 
-    // envoi du mail à l'
+    // envoi du mail à l'inscrit
     $mymail = new TplMailer('inscription.reussie.tpl');
     $mymail->assign('forlife', $forlife);
     $mymail->assign('prenom', $prenom);
     $mymail->send();
 
-    // s'il est dans la table envoidirect, on le marque comme 
+    // s'il est dans la table envoidirect, on le marque comme inscrit
     $globals->db->query("update envoidirect set date_succes=NOW() where matricule = $matricule");
     start_connexion($uid,false);
 } else

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ins_confirmees.php,v 1.5 2004-11-13 14:16:21 x2000habouzit Exp $
+        $Id: ins_confirmees.php,v 1.6 2004-11-20 19:07:03 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -27,9 +27,9 @@ new_admin_page('marketing/ins_confirmees.tpl');
 if (!isset($_GET["sort"]) || $_GET["sort"] != "promo") $_GET["sort"] = "date_ins";
 
 $sql = "SELECT a.alias AS forlife,u.date_ins,u.promo,u.nom,u.prenom
-        FROM       ins_confirmees AS i
-        INNER JOIN auth_user_md5  AS u ON i.id=u.user_id
+        FROM auth_user_md5  AS u
         INNER JOIN aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
+	WHERE u.date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000
         ORDER BY u.{$_GET['sort']} DESC";
 $page->mysql_assign($sql, 'ins', 'nb_ins');
 
