@@ -22,55 +22,49 @@
 require_once("xorg.inc.php");
 new_admin_page('marketing/relance.tpl');
 
-
 /* une relance a été demandée - on envoit les mails correspondants */
-if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
+if (Post::has('relancer')) {
     require_once("xorg.mailer.inc.php");
     
-    
-    $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5");
+    $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
     $nbdix = $res->fetchOneCell();
     $res   = $globals->xdb->iterRow(
-            "SELECT  e.date,e.promo,e.nom,e.prenom,e.matricule,e.email,e.username
-               FROM  en_cours      AS e
-         INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')");
+            "SELECT  r.date, u.promo, u.nom, u.prenom, r.user_id, r.email, r.bestalias
+               FROM  register_pending AS r
+         INNER JOIN  auth_user_md5    AS u ON u.user_id = e.uid");
 
     $sent = Array();
 
-    while (list($ldate, $lpromo, $lnom, $lprenom, $lmatricule, $lemail, $lusername) = $res->next()) {
-        if (Post::get($lmatricule) == "1") {
-            $lins_id = rand_url_id(12);
-            $nveau_pass = rand_pass();
-            $lpass = md5($nveau_pass);
-            $fdate = substr($ldate, 8, 2)."/".substr($ldate, 5, 2)."/".substr($ldate, 0, 4);
+    while (list($ldate, $lpromo, $lnom, $lprenom, $uid, $lemail, $lusername) = $res->next()) {
+        if (Post::get($uid) == "1") {
+            $hash     = rand_url_id(12);
+            $pass     = rand_pass();
+            $pass_md5 = md5($nveau_pass);
+            $fdate    = substr($ldate, 8, 2)."/".substr($ldate, 5, 2)."/".substr($ldate, 0, 4);
             
             $mymail = new XOrgMailer('marketing.relance.tpl');
-            $mymail->assign('nbdix',$nbdix);
-            $mymail->assign('fdate',$fdate);
-            $mymail->assign('lusername',$lusername);
-            $mymail->assign('nveau_pass',$nveau_pass);
-            $mymail->assign('baseurl',$globals->baseurl);
-            $mymail->assign('lins_id',$lins_id);
-            
-            $mymail->assign('lemail',$lemail);
-            $mymail->assign('subj',$lusername."@polytechnique.org");
+            $mymail->assign('nbdix',      $nbdix);
+            $mymail->assign('fdate',      $fdate);
+            $mymail->assign('lusername',  $lusername);
+            $mymail->assign('nveau_pass', $pass);
+            $mymail->assign('baseurl',    $globals->baseurl);
+            $mymail->assign('lins_id',    $hash);
+            $mymail->assign('lemail',     $lemail);
+            $mymail->assign('subj',       $lusername."@polytechnique.org");
 
-            $globals->xdb->execute("UPDATE en_cours SET ins_id={?}, password={?}, relance=NOW(), WHERE matricule = {?}", $lins_id, $lpass, $lmatricule);
-            // envoi du mail à l'utilisateur
-
+            $globals->xdb->execute("UPDATE register_pending SET hash={?}, password={?}, relance=NOW() WHERE uid={?}",
+                    $lins_id, $lpass, $uid);
             $mymail->send();
 
             $sent[] = "$lprenom $lnom ($lpromo) a été relancé !";
         }
     }
     $page->assign_by_ref('sent', $sent);
-
-/* pas d'action particulière => on affiche la liste des relançables... */
 }
 
-$sql = "SELECT  e.date,e.relance,e.promo,e.nom,e.prenom,e.matricule
-          FROM  en_cours      AS e
-    INNER JOIN  auth_user_md5 AS a ON (e.matricule=a.matricule AND a.perms = 'pending')
+$sql = "SELECT  r.date, r.relance, r.uid, u.promo, u.nom, u.prenom
+          FROM  register_pending AS r
+    INNER JOIN  auth_user_md5    AS u ON r. uid = u.user_id
       ORDER BY  date DESC";
 $page->assign('relance', $globals->xdb->iterator($sql));
 

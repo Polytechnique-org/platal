@@ -19,9 +19,7 @@
  ***************************************************************************}
 
 
-<h1>
-  Relance
-</h1>
+<h1>Relance</h1>
 
 {foreach from=$sent item=l}
 <p>{$l}</p>
@@ -45,7 +43,7 @@
         {if $it.relance eq "0000-00-00"}Jamais{else}{$it.relance}{/if}
       </td>
       <td class="center">
-        <input type="checkbox" name="{$it.matricule}" value="1" />
+        <input type="checkbox" name="{$it.uid}" value="1" />
       </td>
     </tr>
     {/iterate}

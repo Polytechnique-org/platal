@@ -19,8 +19,18 @@
  ***************************************************************************}
 
 
+<h1>Inscrits des 7 derniers jours</h1>
 
-<table class="bicol" summary="liste des nouveaux inscrits">
+<p>
+{$ins->total()} Polytechniciens se sont inscrits ces 7 derniers jours !
+</p>
+
+<div class="right">
+  [<a href="{$smarty.server.PHP_SELF}?sort=date_ins">par date</a>]
+  [<a href="{$smarty.server.PHP_SELF}?sort=promo">par promo</a>]
+</div>
+
+<table class="tinybicol">
   <tr>
     <th>Inscription</th>
     <th>Promo</th>
@@ -40,14 +50,10 @@
 {/iterate}
 </table>
 
-<br />
 <div class="right">
   [<a href="{$smarty.server.PHP_SELF}?sort=date_ins">par date</a>]
   [<a href="{$smarty.server.PHP_SELF}?sort=promo">par promo</a>]
 </div>
-<p>
-{$ins->total()} Polytechniciens se sont inscrits depuis le début de la semaine !
-</p>
 
 
 {* vim:set et sw=2 sts=2 sws=2: *}

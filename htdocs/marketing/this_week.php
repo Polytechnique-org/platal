@@ -20,15 +20,15 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_admin_page('marketing/ins_confirmees.tpl');
+new_admin_page('marketing/this_week.tpl');
 
-if (!isset($_GET["sort"]) || $_GET["sort"] != "promo") $_GET["sort"] = "date_ins";
+$sort = Get::get('sort') == 'promo' ? 'promo' : 'date_ins';
 
-$sql = "SELECT a.alias AS forlife,u.date_ins,u.promo,u.nom,u.prenom
-        FROM auth_user_md5  AS u
-        INNER JOIN aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
-	WHERE u.date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000
-        ORDER BY u.{$_GET['sort']} DESC";
+$sql = "SELECT  a.alias AS forlife, u.date_ins, u.promo, u.nom, u.prenom
+          FROM  auth_user_md5  AS u
+    INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
+         WHERE  u.date_ins > ".date("Ymd000000", strtotime ('1 week ago'))."
+      ORDER BY  u.$sort DESC";
 $page->assign('ins', $globals->xdb->iterator($sql));
 
 $page->run();

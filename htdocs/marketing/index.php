@@ -41,14 +41,17 @@ $res   = $globals->xdb->query(
 $stats = $res->fetchOneAssoc();
 $page->assign('stats', $stats);
 
-$res   = $globals->xdb->query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000");
+$res   = $globals->xdb->query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".date('Ymd000000', strtotime('1 week ago')));
 $page->assign('nbInsSem', $res->fetchOneCell());
 
-$res = $globals->xdb->query("SELECT count(*) FROM en_cours WHERE loginbis != 'INSCRIT'");
+$res = $globals->xdb->query("SELECT count(*) FROM register_pending WHERE hash != 'INSCRIT'");
 $page->assign('nbInsEnCours', $res->fetchOneCell());
 
-$res = $globals->xdb->query("SELECT count(*) FROM envoidirect as e left join auth_user_md5 as a ON e.matricule = a.matricule WHERE a.nom is null");
-$page->assign('nbInsEnvDir', $res->fetchOneCell());
+$res = $globals->xdb->query("SELECT count(*) FROM register_marketing");
+$page->assign('nbInsMarket', $res->fetchOneCell());
+
+$res = $globals->xdb->query("SELECT count(*) FROM register_mstats WHERE TO_DAYS(NOW()) - TO_DAYS(success) <= 7");
+$page->assign('nbInsMarkOK', $res->fetchOneCell());
 
 $page->run();
 ?>

@@ -38,14 +38,6 @@
   </tr>
   <tr class="pair">
     <td>
-      <span class="item">Relances : </span>
-      <a href="ins_confirmees.php">Inscriptions confirmées</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="relance.php">Relance des ½-inscrits</a>
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
       <span class="item">Emails : </span>
       <a href="volontaire.php">Utiliser les adresses données par les inscrits</a>
     </td>
@@ -74,9 +66,10 @@ Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
 </p>
 
 <p>
-Nombre d'inscrits depuis le début de la semaine : {$nbInsSem} <br />
-Nombre d'inscriptions en cours (2ème phase non terminée) : {$nbInsEnCours} <br />
-Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsEnvDir}
+Nombre d'<a href="this_week.php">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
+Nombre d'<a href="relance.php">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
+Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsMarket}<br />
+Nombre d'envois marketing ayant abouti cette semaine : {$nbInsMarkOK}
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
