@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.33 2004-10-24 14:21:30 x2000bedo Exp $
+        $Id: search.php,v 1.34 2004-10-25 12:41:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -50,7 +50,8 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     }
     $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
-    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
+    $womanField = new RefSField('woman',array('FIND_IN_SET(i.flags,\'femme\')+1'),'','','');
+    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField));
     
     if ($nameField->length()<2 && $firstnameField->length()<2 && 
         (!logged() || !$promo1Field->is_a_single_promo()))

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.4 2004-10-25 11:55:00 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.5 2004-10-25 12:41:05 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -84,9 +84,8 @@
       <tr>
         <td class="lt">Profession:</td>
         <td class="rt">
-          {$c.entreprise}
-          {if $c.secteur}( {$c.secteur} ){/if}
-          {if $c.fonction}<br />( {$c.fonction} ){/if}
+          {$c.entreprise} {if $c.secteur}({$c.secteur}){/if}
+          {if $c.fonction}<br />{$c.fonction}{/if}
         </td>
       </tr>
       {/if}
