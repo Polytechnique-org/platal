@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.11 2004-11-06 17:22:12 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.12 2004-11-07 09:36:03 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -41,8 +41,10 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   <fieldset>
     <legend>Événements à surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
-    <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} /> {$s.short}<br />
+    <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
+    {$s.short} {if $s.frequent}*{/if}<br />
     {/foreach}
+    <span class='smaller'>(*): ne concerne pas les promos (évènements très fréquents)</span>
   </fieldset>
   <div class='center'>
     <input type='submit' name='subs' value='valider' />
