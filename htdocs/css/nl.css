@@ -1,4 +1,4 @@
-{***************************************************************************
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -16,10 +16,49 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************
-        $Id: head.tpl,v 1.2 2004-10-18 07:06:50 x2000habouzit Exp $
- ***************************************************************************}
+ ***************************************************************************/
 
-<link rel="stylesheet" type="text/css" href="{"css/nl.css"|url}" media="screen,print" />
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+div.nl {
+    margin: auto;
+    font-family: "Georgia","times new roman",serif;
+    width: 56ex;
+    text-align: justify;
+}
+
+div.nl div.title {
+    margin: 2ex 0ex 4ex 0ex;
+    padding: 1ex;
+    width: 100%;
+    border: 1px black solid;
+    font-size: 125%;
+    text-align: center;
+}
+
+div.nl h1 {
+    margin: 3ex 0ex 2ex 0ex;
+    padding: 2px 1ex 2px 1ex;
+    width: 100%;
+    border: 1px black dotted;
+    font-size: 125%;
+}
+
+div.nl h2 {
+    margin: 0ex 0ex 2ex 0ex;
+    width: 100%;
+    border-bottom: 1px #aaaaaa solid;
+    font-weight:bold;
+    font-style: italic;
+    font-size: 125%
+}
+
+div.nl div.art {
+    padding-left: 1ex;
+    margin: 0ex 0ex 4ex 0ex;
+}
+
+div.nl div.app {
+    padding-left: 4ex;
+    margin: 2ex 0ex 2ex 0ex;
+    text-align: left;
+}

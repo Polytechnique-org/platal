@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.13 2004-10-14 18:32:58 x2000habouzit Exp $
+        $Id: index.tpl,v 1.14 2004-10-18 07:06:50 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -84,25 +84,44 @@ Tu peux demander <a href='create.php'>la création</a> d'une liste de diffusion s
   Lettre mensuelle de Polytechnique.org
 </div>
 
-{if $nl}
+{if $nl eq html}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org !
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format HTML !
 </p>
+{elseif $nl eq text}
+<p>
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format texte !
+</p>
+{else}
+<p>
+Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
+</p>
+{/if}
+
+{if $nl neq "text"}
+<p>
+Pour recevoir la version texte suis le lien :
+</p>
+<div class='center'>
+  [<a href='?nl_sub=text'>m'inscrire pour le format texte</a>]
+</div>
+{/if}
+
+{if $nl neq "html"}
+<p>
+Pour recevoir la version HTML suis le lien :
+</p>
+<div class='center'>
+  [<a href='?nl_sub=html'>m'inscrire pour le format HTML</a>]
+</div>
+{/if}
+
+{if $nl}
 <p>
 Pour te désinscrire suis le lien :
 </p>
 <div class='center'>
   [<a href='?nl_unsub=1'>me désinscrire</a>]
-</div>
-{else}
-<p>
-Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
-</p>
-<p>
-Pour t'y abonner suis le lien :
-</p>
-<div class='center'>
-  [<a href='?nl_sub=1'>m'inscrire</a>]
 </div>
 {/if}
 

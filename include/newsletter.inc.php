@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.12 2004-10-16 23:02:44 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.13 2004-10-18 07:06:50 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -139,10 +139,8 @@ class NewsLetter {
 	return $res;
     }
     
-    function toHtml() {
-	$res  = '<div style="margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; border: 1px black solid; font-size: 125%; text-align: center">';
-	$res .= $this->title();
-	$res .= '</div>';
+    function toHtml($body=false) {
+	$res  = '<div class="title">'.$this->title().'</div>';
 
 	$i = 1;
 	foreach($this->_arts as $cid=>$arts) {
@@ -155,13 +153,50 @@ class NewsLetter {
 	}
 
 	foreach($this->_arts as $cid=>$arts) {
-	    $res .= '<div style="margin: 2ex 0ex 2ex 0ex; padding: 2px 1ex 2px 1ex; width: 100%; border: 1px black dotted; font-size: 125%;">';
-	    $res .= $this->_cats[$cid].'</div>';
+	    $res .= '<h1>'.$this->_cats[$cid].'</h1>';
 	    foreach($arts as $art) {
 		$res .= $art->toHtml();
 	    }
 	}
+
+	if($body) {
+	    $res = <<<EOF
+<html>
+  <head>
+    <style type="text/css">
+      div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 56ex; text-align: justify; }
+      div.title { margin: 2ex 0ex 4ex 0ex; padding: 1ex; width: 100%; border: 1px black solid; font-size: 125%; text-align: center; }
+      div.art   {	padding-left: 1ex; margin: 0ex 0ex 4ex 0ex; }
+      div.app   { padding-left: 4ex; margin: 2ex 0ex 2ex 0ex; text-align: left; }
+      h1 { margin: 3ex 0ex 2ex 0ex; padding: 2px 1ex 2px 1ex; width: 100%; border: 1px black dotted; font-size: 125%; }
+      h2 { margin: 0ex 0ex 2ex 0ex; width: 100%; border-bottom: 1px #aaaaaa solid; font-weight:bold; font-style: italic; font-size: 125% }
+    </style>
+  </head>
+  <body>
+    <div class='nl'>
+    $res
+    </div>
+  </body>
+</html>
+EOF;
+	}
 	return $res;
+    }
+    
+    function sendTo($prenom,$nom,$forlife,$sex,$html) {
+	require_once('diogenes.mailer.inc.php');
+	$mailer = new DiogenesMailer("Lettre Mensuelle Polytechnique.org <info+nlp@polytechnique.org>",
+				     "$prenom $nom <$forlife@polytechnique.org>",
+				     replace_accent($this->title()),
+				     $html);
+	if($html) {
+	    $mailer->addPart('text/plain; charset=iso-8859-1', 'iso-8859-1', $this->toText());
+	    $mailer->addPart('text/html; charset=iso-8859-1', 'iso-8859-1', $this->toHtml(true));
+	} else {
+	    $mailer->setBody($this->toText());
+	}
+	$mailer->send();
+				     
     }
 }
 
@@ -194,13 +229,14 @@ class NLArticle {
     }
 
     function toHtml() {
-	$title = '<div style="margin: 2ex 0ex 2ex 0ex; font-weight:bold; font-style: italic; font-size: 125%">'
-		.htmlentities($this->title()).'</div>';
+	$title = '<h2>'.htmlentities($this->title()).'</h2>';
 	$body  = enriched_to_text($this->_body,true);
 	$app   = enriched_to_text($this->_append,true);
 	
-	$art = "$title\n$body<br />";
-	if ($app) $art .= "<div style='padding-left: 4ex; margin: 2ex 0ex 2ex 0ex;'>$app</div>";
+	$art  = "$title\n";
+	$art .= "<div class='art'>\n$body\n";
+	if ($app) $art .= "<div class='app'>$app</div>";
+	$art .= "</div>\n";
 	
 	return $art;
     }
@@ -212,6 +248,7 @@ class NLArticle {
 	foreach($arr as $line) if(trim($line)) $c++;
 	return $c<9;
     }
+
 }
 
 /////////////////////////
@@ -237,10 +274,10 @@ function get_nl_list() {
 
 function get_nl_state() {
     global $globals;
-    $res = $globals->db->query("SELECT COUNT(*)>0 FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
-    list($b) = mysql_fetch_row($res);
+    $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
+    if(!(list($st) = mysql_fetch_row($res))) $st = false;
     mysql_free_result($res);
-    return $b;
+    return $st;
 }
  
 function unsubscribe_nl() {
@@ -248,16 +285,17 @@ function unsubscribe_nl() {
     $globals->db->query("DELETE FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
 }
  
-function subscribe_nl() {
+function subscribe_nl($html=true) {
     global $globals;
-    $globals->db->query("REPLACE INTO  newsletter_ins (user_id,last)
-			       SELECT  {$_SESSION['uid']}, MAX(id)
+    $format = $html ? 'html' : 'text';
+    $globals->db->query("REPLACE INTO  newsletter_ins (user_id,last,pref)
+			       SELECT  {$_SESSION['uid']}, MAX(id), '$format'
 				 FROM  newsletter WHERE bits!='new'");
 }
  
 function justify($text,$n) {
     $arr = split("\n",wordwrap($text,$n));
-    $arr = array_map(trim,$arr);
+    $arr = array_map('trim',$arr);
     $res = '';
     foreach($arr as $key => $line) {
 	$nxl = isset($arr[$key+1]) ? trim($arr[$key+1]) : '';
@@ -282,7 +320,7 @@ function justify($text,$n) {
 	    continue;
 	}
 
-	$len = array_sum(array_map(strlen,$tmp));
+	$len = array_sum(array_map('strlen',$tmp));
 	$empty = $n - $len;
 	$sw = floatval($empty) / floatval($words-1);
 	
