@@ -24,7 +24,7 @@
 class EvtReq extends Validate
 {
     // {{{ properties
-    
+
     var $evtid;
     var $titre;
     var $texte;
@@ -45,14 +45,6 @@ class EvtReq extends Validate
         $this->pmax       = $_pmax;
         $this->peremption = $_peremption;
         $this->comment    = $_comment;
-    }
-
-    // }}}
-    // {{{ function get_unique_request()
-    
-    function get_unique_request($uid)
-    {
-        return false;  //non unique
     }
 
     // }}}

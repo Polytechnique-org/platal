@@ -27,7 +27,7 @@ new_skinned_page('alias.tpl', AUTH_MDP);
 $uid     = Session::getInt('uid');
 $forlife = Session::get('forlife');
 
-$page->assign('demande', AliasReq::get_unique_request($uid));
+$page->assign('demande', AliasReq::get_request($uid));
 
 //Récupération des alias éventuellement existants
 $res = $globals->xdb->query(

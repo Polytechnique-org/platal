@@ -53,14 +53,6 @@ class ListeReq extends Validate
     }
 
     // }}}
-    // {{{ function get_unique_request()
-
-    function get_unique_request($uid)
-    {
-        return parent::get_unique_request($uid,'liste');
-    }
-
-    // }}}
     // {{{ function formu()
 
     function formu()

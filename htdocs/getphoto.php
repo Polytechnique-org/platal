@@ -26,8 +26,9 @@ new_skinned_page('login.tpl', AUTH_PUBLIC);
 if (Env::has('x')) {
     if (Env::get('req') == "true") {
         include 'validations.inc.php';
-	$myphoto = PhotoReq::get_unique_request(Env::get('x'));
-	Header('Content-type: image/'.$myphoto->mimetype);
+        $res = $globals->xdb->query("SELECT id FROM aliases WHERE alias = {?}", Env::get('x'));
+	$myphoto = PhotoReq::get_request($a = $res->fetchOneCell());
+        Header('Content-type: image/'.$myphoto->mimetype);
 	echo $myphoto->data;
     } else {
         $res = $globals->xdb->query(

@@ -25,6 +25,8 @@ class EpouseReq extends Validate
 {
     // {{{ properties
 
+    var $unique = true;
+
     var $epouse;
     var $alias = '';
 
@@ -55,11 +57,11 @@ class EpouseReq extends Validate
     }
 
     // }}}
-    // {{{ function get_unique_request()
+    // {{{ function get_request()
 
-    function get_unique_request($uid)
+    function get_request($uid)
     {
-        return parent::get_unique_request($uid,'epouse');
+        return parent::get_request($uid,'epouse');
     }
 
     // }}}

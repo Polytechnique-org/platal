@@ -27,6 +27,7 @@ class AliasReq extends Validate
 
     var $alias;
     var $raison;
+    var $unique = true;
 
     var $old='';
 
@@ -51,11 +52,11 @@ class AliasReq extends Validate
     }
 
     // }}}
-    // {{{ function get_unique_request()
+    // {{{ function get_request()
 
-    function get_unique_request($uid)
+    function get_request($uid)
     {
-        return parent::get_unique_request($uid,'alias');
+        return parent::get_request($uid,'alias');
     }
 
     // }}}

@@ -30,6 +30,8 @@ class PhotoReq extends Validate
     var $x;
     var $y;
 
+    var $unique = true;
+
     // }}}
     // {{{ constructor
    
@@ -93,11 +95,11 @@ class PhotoReq extends Validate
     }
     
     // }}}
-    // {{{ function get_unique_request()
+    // {{{ function get_request()
 
-    function get_unique_request($uid)
+    function get_request($uid)
     {
-        return parent::get_unique_request($uid,'photo');
+        return parent::get_request($uid,'photo');
     }
 
     // }}}

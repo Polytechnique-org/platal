@@ -224,34 +224,6 @@ class Validate
     }
     
     // }}}
-    // --- VIRTUAL FUNCTIONS ---
-    // {{{ function get_unique_request
-    
-    /** fonction statique qui renvoie la requête dans le cas d'un objet unique de l'utilisateur d'id $uid
-     * @param   $uid    l'id de l'utilisateur concerné
-     * @param   $type   le type de la requête
-     *
-     * XXX fonction "statique" XXX
-     * XXX à dériver XXX
-     * à utiliser uniquement pour récupérer un objet <strong>unique</strong>
-     */
-    function get_unique_request($uid, $type)
-    {
-        global $globals;
-        $res = $globals->xdb->query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
-        if ($result = $res->fetchOneCell()) {
-            $result = unserialize($result);
-            if (!$result->unique) { // on vérifie que c'est tout de même bien un objet unique
-                $result = false;
-            }
-        } else {
-            $result = false;
-        }
-        
-        return $result;
-    }
-
-    // }}}
     // {{{ function get_request()
 
     /** fonction statique qui renvoie la requête de l'utilisateur d'id $uidau timestamp $t
@@ -262,11 +234,14 @@ class Validate
      * XXX fonction "statique" XXX
      * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_request(...)
      */
-    function get_request($uid, $type, $stamp)
+    function get_request($uid, $type, $stamp = -1)
     {
         global $globals;
-        $res = $globals->xdb->query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}",
-                $uid, $type, $stamp);
+        if ($stamp == -1) {
+            $res = $globals->xdb->query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        } else {
+            $res = $globals->xdb->query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}", $uid, $type, $stamp);
+        }
         if ($result = $res->fetchOneCell()) {
             $result = unserialize($result);
         } else {
