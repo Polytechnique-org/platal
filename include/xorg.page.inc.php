@@ -6,7 +6,7 @@ function block_dynamic($param, $content, &$smarty) {
         return $content;
 }
 
-function function_dyn($params) { return implode(' ',$params); }
+function function_dyn($params) { return stripslashes(htmlentities(implode(' ',$params))); }
 
 class XorgPage extends DiogenesCorePage {
   var $_page_type;
@@ -41,6 +41,7 @@ class XorgPage extends DiogenesCorePage {
           parent::display('skin/'.$_SESSION['skin_popup'], $id);
       else
           parent::display('skin/'.$_SESSION['skin'], $id);
+      exit;
   }
 
   function make_id() {

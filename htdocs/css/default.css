@@ -61,29 +61,30 @@ table.bicol {
     width: 98%;
     margin-left: 1%;
 }
-table.bicol tr.impair {}
-table.bicol tr.pair {
+table.tinybicol {
+    background-color: #eeeeee;
+    color: inherit;
+    border: 1px solid #336699;
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+}
+table.tinybicol tr.impair, table.bicol tr.impair {}
+table.tinybicol tr.pair, table.bicol tr.pair {
     background-color: #eeeed0;
     color: inherit;
 }
-table.bicol th {
+table.tinybicol th, table.bicol th {
     background-color: #336699;
     color: #FFFFFF;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
 }
-table.bicol td {
+table.tinybicol td, table.bicol td {
     color: #000000;
     background-color: inherit;
 }
-table.bicolrech td {font-weight: bold;}
-table.bicol td.bicoltitre,span.bicoltitre {
-    color: #000000;
-    background-color: inherit;
-    font-weight: bold;
-}
-table.bicol td.bouton { text-align: right; }
 
 /*******************************************
 *             CHOIX SKINS                  *
