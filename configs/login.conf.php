@@ -11,7 +11,7 @@ $pub_tjs = array(
 
 // Liens apparaissant de façon aléatoire
 $pub_rnd = array(
-    "newsletter.php?nl_id=$nb"                      => "Afficher la dernière newsletter" ,
+    "newsletter.php?last=1"                      => "Afficher la dernière newsletter" ,
     "http://asso.polytechnique.org\" target=\"new"  => "Vers les autres sites polytechniciens" ,
     "trombipromo.php?xpromo={$_SESSION["promo"]}"   => "Voir le trombi de ma promo" ,
     "banana/"                                       => "Un petit tour du côté des forums !!"
