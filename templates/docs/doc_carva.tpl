@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_carva.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: doc_carva.tpl,v 1.6 2004-09-02 22:33:58 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -56,7 +56,7 @@
 <br />
 
 <div class="rubrique">
-  <a name="charte"></a>Conditions d'usage de la redirection de page WEB
+  <a id="charte"></a>Conditions d'usage de la redirection de page WEB
 </div>
 <p>
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité 

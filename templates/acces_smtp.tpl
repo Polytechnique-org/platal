@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: acces_smtp.tpl,v 1.7 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: acces_smtp.tpl,v 1.8 2004-09-02 22:33:55 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -32,7 +32,7 @@
 </div>
 
 {literal}
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
   <!--
   function CheckResponse() {
     pw1 = document.smtppass_form.smtppass1.value;
@@ -71,7 +71,7 @@
   Pour activer un compte SMTP/NNTP sur <strong>ssl.polytechnique.org</strong>, tape un mot de passe ci-dessous.
 {/if}
 </p>
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="smtppass_form" id="smtppass_form">
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="smtppass_form">
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <th colspan="2">
@@ -83,7 +83,7 @@
         Mot de passe :
       </td>
       <td>
-        <input type="password" size=15 maxlength=15 name="smtppass1" />
+        <input type="password" size="15" maxlength="15" name="smtppass1" />
       </td>
     </tr>
     <tr>
@@ -91,15 +91,15 @@
         Retape-le une fois (pour vérification):
       </td>
       <td>
-        <input type="password" size=15 maxlength=15 name="smtppass2" />
+        <input type="password" size="15" maxlength="15" name="smtppass2" />
       </td>
     </tr>
     <tr>
       <td colspan="2" class="center">
         <input type="hidden" name="op" value="" />
-        <input type="submit" value="Valider" onClick="CheckResponse(); return false;" />
+        <input type="submit" value="Valider" onclick="CheckResponse(); return false;" />
 {if $actif}
-        &nbsp;&nbsp;<input type="submit" value="Supprimer" onClick="SupprimerMdp();" />
+        &nbsp;&nbsp;<input type="submit" value="Supprimer" onclick="SupprimerMdp();" />
 {/if}
       </td>
     </tr>

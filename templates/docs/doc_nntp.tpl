@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_nntp.tpl,v 1.6 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: doc_nntp.tpl,v 1.7 2004-09-02 22:33:58 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -121,7 +121,7 @@
   <li><a href="{"docs/doc_nn.php?doc=nntp"|url}">Netscape</a></li>
 </ul>
 
-<div class="ssrubrique"><a name="stunnel">Utiliser stunnel</a></div>
+<div class="ssrubrique"><a id="stunnel">Utiliser stunnel</a></div>
 <p>
   Certains logiciels de news sont capables de s'authentifier mais ne reconnaisent pas les connexions sécurisées de type SSL.  Il est possible de faire fonctionner ces logiciels à l'aide de <a href="http://www.stunnel.org/">stunnel</a> qui gère la couche sécurisée.
 </p>

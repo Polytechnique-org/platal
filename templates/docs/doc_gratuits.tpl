@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_gratuits.tpl,v 1.7 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: doc_gratuits.tpl,v 1.8 2004-09-02 22:33:58 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -222,6 +222,7 @@
     mais il comporte une option par défaut qui bloque les mails en provenance de 
     hotmail ou yahoo à décocher.</strong>
   </p>
+  </li>
 </ul>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
