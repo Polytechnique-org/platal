@@ -21,7 +21,8 @@ create table watch_ops (
     known timestamp not null,
     date date not null,
     info varchar(255),
-    primary key (uid,cid)
+    primary key (uid,cid),
+    index (known)
 );
 
 create table watch_sub (
