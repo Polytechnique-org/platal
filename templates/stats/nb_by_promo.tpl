@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: nb_by_promo.tpl,v 1.5 2004-10-24 14:41:17 x2000habouzit Exp $
+        $Id: nb_by_promo.tpl,v 1.6 2004-10-29 10:42:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -29,20 +29,22 @@
 Voici le nombre d'inscrits par promo :
 </p>
 
+{dynamic}
 <table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">
   <tr>
     <th></th>
     <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th>
     <th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
   </tr>
-{dynamic}
   {foreach item=nb10 key=lustre from=$nbs}
   <tr>
     <th>{$lustre}-</th>
     {foreach item=nb from=$nb10}
     <td class="center">
-      {if $nb}
-      <a href="{"stats/stats_promo.php?promo=`$nb.promo`"|url}">{$nb.nb}</a>
+      {if $nb && $nb.promo eq $smarty.request.promo}
+      <span class='error'>{$nb.nb}</span>
+      {elseif $nb}
+      <a href="?promo={$nb.promo}">{$nb.nb}</a>
       {else}
       -
       {/if}
@@ -50,13 +52,30 @@ Voici le nombre d'inscrits par promo :
     {/foreach}
   </tr>
   {/foreach}
-{/dynamic}
 </table>
 
-<h1>
-  Inscrits par promo en (%)
-</h1>
+{if $smarty.request.promo}
 
-<img src="/stats/graph-promo2.png" />
+<p class='center'>
+[<a href="{$smarty.server.PHP_SELF}">répartition des inscrits par promo</a>]
+</p>
+
+<h1>Courbe d'inscription de la promo {$smarty.request.promo}</h1>
+
+<div class="center">
+  <img src="{"stats/graph_promo.php"|url}?promo={$smarty.request.promo}" alt=" [ INSCRITS ] " />
+</div>
+
+{else}
+
+<h1>Inscrits par promo en (%)</h1>
+
+<div class="center">
+  <img src="/stats/graph-promo2.png" alt="[graphe du nombre d'inscrits par promo]" />
+</div>
+
+{/if}
+
+{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
