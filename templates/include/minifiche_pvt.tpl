@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.1 2004-10-24 14:22:22 x2000bedo Exp $
+        $Id: minifiche_pvt.tpl,v 1.2 2004-10-24 14:43:56 x2000bedo Exp $
  ***************************************************************************}
 
 
 {if $inscrit==1}
   <div class="bits">
-    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500)')">
+    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
       <img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" />
     </a>
     <a href="vcard.php/{$c.forlife}.vcf?x={$c.forlife}">
