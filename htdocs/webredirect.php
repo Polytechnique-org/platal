@@ -35,7 +35,7 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
 } elseif (isset($_REQUEST['submit']) and $_REQUEST['submit'] == "Supprimer") {
     // on supprime la redirection
     $globals->db->query("update auth_user_quick set redirecturl = '' where user_id = {$_SESSION['uid']}");
-    if (mysql_errno($conn) == 0) {
+    if (mysql_errno() == 0) {
         $_SESSION['log']->log("carva_del",$_REQUEST['url']);
         $_POST['url'] = '';
         $page->assign('message',"<p class='normal'>Redirection supprimée</p>");
