@@ -22,18 +22,19 @@
 div.nl {
     margin: auto;
     font-family: "Georgia","times new roman",serif;
-    width: 60ex;
+    width: 64ex;
     text-align: justify;
     font-size: 10pt;
+    background: white;
 }
 
 div.nl a { text-decoration: none; }
 div.nl a:hover { text-decoration: underline; }
 
 div.nl div.title {
-    margin: 2ex 0ex 2ex 0ex;
+    margin: 2ex auto 2ex auto;
     padding: 1ex;
-    width: 100%;
+    width: 90%;
     border: 1px black solid;
     font-size: 140%;
     text-align: center;
