@@ -45,6 +45,7 @@ consulter la page <https://www.polytechnique.org/pattecassee.php>.
 A bientôt sur Polytechnique.org !
 L'équipe d'administration <support@polytechnique.org>";
 
+    require_once("diogenes.mailer.inc.php");
 	$mail = new DiogenesMailer('Polytechnique.org <support@polytechnique.org>', $dest, "Une de tes adresse de redirection Polytechnique.org ne marche plus !!", false);
 	$mail->setBody($message);
 	$mail->send();
@@ -53,12 +54,12 @@ L'équipe d'administration <support@polytechnique.org>";
 } elseif (array_key_exists('email', $_POST)) {
     $email = valide_email($_POST['email']);
     $page->assign('email',$email);
-    $sel = mysql_query("SELECT e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo"
-        ." FROM emails as e1"
-        ." LEFT JOIN emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.num != e2.num)"
-        ." INNER JOIN auth_user_md5 as u ON(e1.uid = u.user_id)"
-        ." WHERE e1.email ='$email'"
-        ." GROUP BY e1.uid");
+    $sel = mysql_query("SELECT e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
+                        FROM emails as e1
+                        LEFT JOIN emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.num != e2.num)
+                        INNER JOIN auth_user_md5 as u ON(e1.uid = u.user_id)
+                        WHERE e1.email ='$email'
+                        GROUP BY e1.uid");
     if ($x = mysql_fetch_assoc($sel)) {
         // on écrit dans la base que l'adresse est cassée
         if (!$x['panne'])

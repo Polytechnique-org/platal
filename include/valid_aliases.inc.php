@@ -76,7 +76,6 @@ ________EOF;
             return false;
 
         require_once("diogenes.mailer.inc.php");
-
         $mymail = new DiogenesMailer(
                 from_mail_valid_alias(),
                 to_mail_valid_alias( $this->username ),

@@ -15,7 +15,7 @@ if(logged()) {
             'Forums & PA' => '###url###' ,
             'Listes de diffusion' => '###url###' ,
             'Micropaiements' => '###url###' ,
-            'Patte cassée' => '###url###' ,
+            'Patte cassée' => 'pattecassee.php' ,
             'Sondages' => '###url###'
         ),
         'Communauté X' => Array (

@@ -1,4 +1,4 @@
-{* $Id: pattecassee.tpl,v 1.2 2004-02-04 23:22:05 x2000habouzit Exp $ *}
+{* $Id: pattecassee.tpl,v 1.3 2004-02-05 13:03:11 x2000habouzit Exp $ *}
 
 {dynamic on="0$erreur"}
 <p class="erreur">{$erreur}</p>
@@ -9,9 +9,9 @@
 </div>
 
 {dynamic}
-{if $x && $x.nb_emails}
+{if $x && $x.nb_mails}
   <p class="erreur">
-    Ton correspondant a à l'heure actuelle {$x.nb_emails} adresse(s) email(s) de redirection active(s)
+    Ton correspondant a à l'heure actuelle {$x.nb_mails} adresse(s) email(s) de redirection active(s)
     en dehors de celle que tu nous as communiquée. Cela ne veut pas forcément dire qu'il les avait
     déjà activées lorsque tu as envoyé ton email, mais c'est fort probable.
   </p>
@@ -59,7 +59,7 @@
 <br />
 <div class="center">
   <form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol" cellpadding="3" summary="Saisie email en panne">
+  <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
     <tr>
       <th colspan="2">Adresse email défectueuse</th>
     </tr>

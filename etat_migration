@@ -144,7 +144,6 @@ x	  | domaineperso.php						  | -
 x	  | epouse.php								  | -
 x	  | groupex.php								  | groupex/index.php 
 x	  | parselog.php							  | stats/...
-x	  | pattecassee.php							  | - -> encore buggué
 x	  | sendmail.php							  | -
 x	  | trackers/index.php						  | -
 x	  | trackers/tracker_admin.php				  | -
@@ -192,6 +191,7 @@ xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
 xx	  | nbpromo2.php							  | stats/nb_by_promo.php
+xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
 xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
