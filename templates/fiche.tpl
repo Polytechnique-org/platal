@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.15 2004-10-12 15:37:22 x2000coic Exp $
+        $Id: fiche.tpl,v 1.16 2004-10-14 09:00:48 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -37,6 +37,7 @@
     <a href="mailto:{$forlife}@polytechnique.org">{$forlife}@polytechnique.org</a>
   </div>
   <div><em>{$nationalite}</em> - X {$promo}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}</div>
+  {if $mobile}<div><em class="intitule">Mobile : </em>{$mobile}</div>{/if}
   {if $is_referent}
     <div><a href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$forlife}')">Ma fiche référent</a></div>
   {/if}
@@ -47,7 +48,6 @@
     {if $section}<em class="intitule">Section : </em><span>{$section}</span><br />{/if}
     {if $binets}<em class="intitule">Binet(s) : </em><span>{$binets}</span><br />{/if}
     {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes|smarty:nodefaults}</span><br />{/if}
-    {if $mobile}<em class="intitule">Mobile : </em><span>{$mobile}</span><br />{/if}
     {if $web}<em class="intitule">Site Web : </em><br /><a href="{$web}" onclick="return popup(this)">{$web}</a><br />{/if}
     {if $libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$libre|nl2br}</span>{/if}
 </div>
@@ -99,7 +99,7 @@
 <div id="fiche_infospro">
 {foreach from=$adr_pro item="address" key="i"}
 <div class="entreprise">
-  <div class="titre">Entreprise n°{$i+1}</div>
+  {*<div class="titre">Entreprise n°{$i+1}</div>*}
   <div class="details">
     {if $address.entreprise}
     <div>
