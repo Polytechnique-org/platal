@@ -10,6 +10,7 @@ New :
 		- Lots of includes renames, rewrites, beautifuling.					-MC
 		- Try to avoid the unreadable {"..."|url} modifier, use {rel}/.		-MC
 		- Use a real .conf file, and no more .php's for configuration.		-MC
+		- Adds include/conf.d and the glob modifier.						-MC
 	
 	* Distribution :
 		- Do not modify PHP include path from auto.prepend.inc.php			-SHK
@@ -23,6 +24,7 @@ New :
 	* Skins :
 		- New skin : openweb.												-MC
 		- No more annoying submit button, onclick is used to submit.		-MC
+		- This is the first autonom module of the site !					-MC
 
 Bug/Wish :
 
