@@ -1,13 +1,9 @@
-La liste de diffusion `%(listname)s' vient d'être créée pour vous.
+La liste de diffusion {{{LIST}}} vient d'être créée pour vous.
 Vous trouverez ci-dessous quelques informations indispensables sur
 cette liste. 
 
 Vous pouvez configurer votre liste de diffusion à l'adresse suivante: 
 
-    https://www.polytechnique.org/listes/admin.php?liste=%(listname)s
+    {{{ADMIN}}}
 
-La page web pour les utilisateurs de votre liste est: 
-
-    https://www.polytechnique.org/listes/liste.php?liste=%(listname)s
-
-Pour toute question adressez-vous à %(siteowner)s.
+Pour toute question adressez-vous à listes@polytechnique.org.

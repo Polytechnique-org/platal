@@ -1,4 +1,4 @@
-Vous avez envoyé un message à la liste de diffusion %(listname)s :
+Vous avez envoyé un message à la liste de diffusion {{{LIST}}} :
 
     %(request)s 
 
@@ -10,4 +10,4 @@ la justification suivante :
 Toute question ou commentaire doit être adressé aux modérateurs de la
 liste :
 
-    %(adminaddr)s
+    {{{ALIST}}}

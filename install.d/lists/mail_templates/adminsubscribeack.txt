@@ -1,3 +1,3 @@
-%(member)s a été abonné à %(listname)s avec succès.
+%(member)s a été abonné à {{{LIST}}} avec succès.
 
 

@@ -4,6 +4,6 @@ Votre autorisation est requise pour une demande d'abonnement :
 
 Quand vous le pourrez, consultez la page web :
 
-    https://www.polytechnique.org/listes/moderate.php?liste=%(listname)s
+    {{{MODERATE}}}
 
 pour traiter la requête.
