@@ -513,13 +513,13 @@ table#body {
     text-align: left;
     font-size: 80%;
     font-family: Bitstream Vera Sans,Verdana,sans-serif;
+    text-decoration: none;
 }
 
 #body-menu a:hover {
     color: #690;
     background: #eaf2db;
     border: 1px dotted #690;
-    text-decoration: none;
 }
 
 #body-menu .menu_title {
@@ -552,4 +552,4 @@ table#body {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: openweb.css,v 1.5 2004-11-17 21:58:06 x2000habouzit Exp $ */
+/* $Id: openweb.css,v 1.6 2004-11-18 12:27:50 x2000habouzit Exp $ */
