@@ -24,6 +24,32 @@ class SField {
     function get_where_statement() {
         return ($this->value!='');
     }
+
+    function get_order_statement() {
+        return false;
+    }
+
+    function get_url() {
+        if ($this->value=='')
+            return false;
+        else
+            return $this->fieldFormName.'='.urlencode($this->value);
+    }
+}
+
+class NumericSField extends SField {
+    function NumericSField($_fieldFormName) {
+        $this->fieldFormName = $_fieldFormName;
+        $this->get_request();
+    }
+    
+    function get_request() {
+        parent::get_request();
+        if ($this->value=='')
+            $this->value = 0;
+        if (!preg_match("/^[0-9]+$/", $this->value))
+            $this->error('Un champ numérique contient des caractères alphanumériques.<br>');
+    }
 }
 
 class StringSField extends SField {
@@ -52,6 +78,17 @@ class StringSField extends SField {
             return false;
         return '('.implode(' OR ',array_map(array($this,'get_like'),$this->fieldDbName)).')';
     }
+
+    function get_different($field) {
+        return $field.'!="'.$this->value.'"';
+    }
+
+    function get_order_statement() {
+        if ($this->value!='')
+            return implode(',',array_map(array($this,'get_different'),$this->fieldDbName));
+        else
+            return false;
+    }
 }
 
 class PromoSField extends SField {
@@ -77,6 +114,12 @@ class PromoSField extends SField {
             return false;
         return $this->fieldDbName.$this->compareField->value.$this->value;
     }
+
+    function get_url() {
+        if (!($u=parent::get_url()))
+            return false;
+        return $u.'&'.$this->compareField->get_url();
+    }
 }
 
 class SFieldGroup {
@@ -92,9 +135,27 @@ class SFieldGroup {
         return $f->get_where_statement();
     }
 
+    function field_get_order($f) {
+        return $f->get_order_statement();
+    }
+
+    function field_get_url($f) {
+        return $f->get_url();
+    }
+
     function get_where_statement() {
         $joinText=($this->and)?' AND ':' OR ';
         return '('.implode($joinText,array_filter(array_map(array($this,'field_get_where'),$this->fields))).')';
+    }
+
+    function get_order_statement() {
+        $order = array_filter(array_map(array($this,'field_get_order'),$this->fields));
+        return (count($order)>0)?implode(',',$order):false;
+    }
+
+    function get_url() {
+        $url = array_filter(array_map(array($this,'field_get_url'),$this->fields));
+        return (count($url)>0)?implode('&',$url):false;
     }
 }
 ?>
