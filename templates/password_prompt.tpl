@@ -1,3 +1,4 @@
+{* $Id: password_prompt.tpl,v 1.3 2004-01-26 12:36:32 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -107,3 +108,5 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
   // -->
 </script>
 {/literal}
+
+{* vim:set et sw=2 sts=2 sws=2: *}

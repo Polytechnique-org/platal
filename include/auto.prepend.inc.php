@@ -13,6 +13,7 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
             break;
         case AUTH_COOKIE:
             $page = new XorgCookie($tpl_name, $type);
+            break;
         case AUTH_MDP:
             $page = new XorgAuth($tpl_name, $type);
     }

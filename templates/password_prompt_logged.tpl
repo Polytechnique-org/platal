@@ -1,3 +1,5 @@
+{* $Id: password_prompt_logged.tpl,v 1.2 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+
 <div style="text-align:center">
   <table width="90%" summary="Accès sécurisé">
     <tr>
@@ -14,7 +16,7 @@
   </table>
 </div>
 <br /><br />
-<form action="{$smarty.server.REQUEST_URI}" method="post" name="login" onSubmit='doChallengeResponse(); return false;'>
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" name="login" onSubmit='doChallengeResponse(); return false;'>
   <table class="bicol" align="center" cellpadding="4" summary="Formulaire de login">
     <tr>
       <td>
@@ -46,10 +48,9 @@
 <!-- Set up the form with the challenge value and an empty reply value -->
 <form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
   <input type="hidden" name="challenge" value="{$smarty.session.challenge}">
-  <input type="hidden" name="username" value="{$smarty.cookie.ORGlogin}">
+  <input type="hidden" name="username" value="{$smarty.cookies.ORGlogin}">
   <input type="hidden" name="response"  value="">
 </form>
-{/dynamic}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -59,3 +60,6 @@
   // -->
 </script>
 {/literal}
+{/dynamic}
+
+{* vim:set et sw=2 sts=2 sws=2: *}

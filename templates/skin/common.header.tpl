@@ -1,4 +1,5 @@
-{* head par defaut *}
+{* $Id: common.header.tpl,v 1.2 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta name="description" content="Le Portail des Polytechniciens" />
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
@@ -19,5 +20,5 @@
       Anciens eleves Polytechnique, annuaire email, Alumni
     </title>
     <script language="JavaScript" type="text/javascript" src="javascript/getnow.js"></script>
+
 {* vim:set et sw=2 sts=2 sws=2: *}
-{* $Id: common.header.tpl,v 1.1 2004-01-25 17:19:21 x2000habouzit Exp $ *}

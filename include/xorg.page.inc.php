@@ -1,9 +1,9 @@
 <?php
 require("diogenes.core.page.inc.php");
 
-function dynamic($param, $content, &$smarty) {
-    return $content;
-}
+function block_dynamic($param, $content, &$smarty) { return $content; }
+
+function function_dyn($params) { return implode(' ',$params); }
 
 class XorgPage extends DiogenesCorePage {
   var $_page_type;
@@ -16,7 +16,8 @@ class XorgPage extends DiogenesCorePage {
     $this->_tpl = $tpl;
 
     $this->DiogenesCorePage();
-    $this->register_block('dynamic', 'dynamic', false);
+    $this->register_block('dynamic', 'block_dynamic', false);
+    $this->register_function('dyn', 'function_dyn', false);
 
     // if necessary, construct new session
     if (!session_is_registered('session')) {
@@ -32,11 +33,12 @@ class XorgPage extends DiogenesCorePage {
     $this->set_skin();
   }
 
-  function display() {
+  function display($append_to_id="") {
+      $id = $this->make_id() . ($append_to_id ? "-$append_to_id" : "");
       if($this->_page_type == POPUP)
-          parent::display('skin/'.$_SESSION['skin_popup'], $this->make_id());
+          parent::display('skin/'.$_SESSION['skin_popup'], $id);
       else
-          parent::display('skin/'.$_SESSION['skin'], $this->make_id());
+          parent::display('skin/'.$_SESSION['skin'], $id);
   }
 
   function make_id() {

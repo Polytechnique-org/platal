@@ -1,4 +1,5 @@
-{* Bandeau fédérateur : style *}
+{* $Id: common.bandeau.head.tpl,v 1.3 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+
 {literal}
     <!-- BANDEAU DEBUT -->
     <style type="text/css">
@@ -18,5 +19,5 @@
     <meta name="MSSmartTagsPreventParsing" content="true">
     <!-- BANDEAU FIN -->
 {/literal}
+
 {* vim:set et sw=2 sts=2 sws=2: *}
-{* $Id: common.bandeau.head.tpl,v 1.2 2004-01-25 20:42:46 x2000habouzit Exp $ *}

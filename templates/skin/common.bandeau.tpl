@@ -1,4 +1,5 @@
-{* Bandeau : body *}
+{* $Id: common.bandeau.tpl,v 1.3 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+
     <!-- BANDEAU DEBUT -->
 
     <!-- ligne grise de 1px -->
@@ -9,5 +10,5 @@
     <table class="ligne" cellspacing="0" cellpadding="0" width="100%" border="0" summary=""><tr><td class="ligne"></td></tr></table>
 
     <!-- BANDEAU FIN -->
+
 {* vim:set et sw=2 sts=2 sws=2: *}
-{* $Id: common.bandeau.tpl,v 1.2 2004-01-25 20:42:46 x2000habouzit Exp $ *}

@@ -111,23 +111,12 @@ class XorgSession extends DiogenesCoreSession {
     global $failed_ORGaccess,$site_dev;
 
     if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGlogin']) and !isset($failed_ORGaccess)) {
+      $page->_tpl = "password_prompt_logged.tpl";
       $page->assign("xorg_head", "password_prompt_logged.head.tpl");
       $page->assign("xorg_tpl", "password_prompt_logged.tpl");
       $page->display();
     } else {
-      if (isset($_COOKIE['ORGlogin'])) {
-        $pre = strtok($_COOKIE['ORGlogin'],".");
-        $pre1=strtok($pre,"-");
-        $pre2=strtok(" ");
-        $pre1=ucfirst($pre1);
-        $pre2=ucfirst($pre2);
-        if ($pre2) {
-          $prenom = $pre1."-".$pre2;
-        } else {
-          $prenom = $pre1;
-        }
-        $page->assign('prenom',$prenom);
-      }
+      $page->_tpl = "password_prompt.tpl";
       $page->assign("xorg_head", "password_prompt.head.tpl");
       $page->assign("xorg_tpl", "password_prompt.tpl");
       $page->display();

@@ -56,6 +56,7 @@ table.bicol {
     color: inherit;
     border: 1px solid #336699;
     border-collapse: collapse;
+    width: 98%;
 }
 table.bicol tr.impair {}
 table.bicol tr.pair {
@@ -103,6 +104,7 @@ table.bicol td.bouton { text-align: right; }
         border-right: 1px solid gray;
         text-align: center;
         font-family: "MS Sans Serif", sans-serif;
+        padding-top: 4px;
     }
 
     #body-top {
@@ -153,6 +155,6 @@ table.bicol td.bouton { text-align: right; }
     
     #content {
         width: 600px;
-        padding: 4px 10px 4px 10px;
+        padding: 4px 0px 4px 16px;
         font-size: 95%;
     }

@@ -1,3 +1,5 @@
+{* $Id: password_prompt.head.tpl,v 1.2 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+
 {literal}
     <style type="text/css" media="screen">
       <!--
@@ -9,3 +11,5 @@
 {/literal}
     <script language="javascript" src="{"javascript/md5.js"|url}" type="text/javascript"></script>
     <script language="javascript" src="{"javascript/do_challenge_response.js"|url}" type="text/javascript"></script>
+
+{* vim:set et sw=2 sts=2 sws=2: *}

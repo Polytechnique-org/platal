@@ -1,4 +1,5 @@
-{* foot par defaut *}
+{* $Id: common.footer.tpl,v 1.2 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+
 <p>
   Copyright © 1999-2003 Association <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
@@ -14,4 +15,3 @@
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
-{* $Id: common.footer.tpl,v 1.1 2004-01-25 17:19:21 x2000habouzit Exp $ *}
