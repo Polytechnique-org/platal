@@ -32,10 +32,24 @@ function to_rss ($s)
     }
 }
 
-$page->register_modifier('rss_date', '_rss_encode_date');
-$page->default_modifiers = Array('@to_rss');
 
-header('Content-Type: text/xml; charset=utf-8');
+function init_rss($template)
+{
+    global $page;
+    new_nonhtml_page($template, AUTH_PUBLIC);
+    $page->register_modifier('rss_date', '_rss_encode_date');
+    $page->default_modifiers = Array('@to_rss');
+
+    if (preg_match(',^/([^/]+)/([^/]+)\.xml$,', $_SERVER['PATH_INFO'], $m)) {
+        $alias = $m[1];
+        $hash  = $m[2];
+    } else {
+        exit;
+    }
+
+    header('Content-Type: application/rss+xml; charset=utf8');
+    return Array($alias, $hash);
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -110,6 +110,11 @@ Bienvenue {$smarty.session.prenom}
   <p>
   <a href="evenements.php">Proposer une information événementielle</a>
   </p>
+  {if $smarty.session.core_rss_hash}
+  <div class="right">
+    <a href='{rel}/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+  </div>
+  {/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

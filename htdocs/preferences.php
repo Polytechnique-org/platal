@@ -44,8 +44,21 @@ if (Env::has('mail_fmt')) {
     if ($fmt != 'texte') $fmt = 'html';
     $globals->xdb->execute("REPLACE INTO auth_user_quick
                                      SET core_mail_fmt = '$fmt'
-                                   WHERE user_id = {?}", Session::get('uid'));
+                                   WHERE user_id = {?}", Session::getInt('uid'));
     $_SESSION['mail_fmt'] = $fmt;
+    header('Location: preferences.php');
+}
+
+if (Env::has('rss')) {
+    if (Env::getBool('rss')) {
+        $_SESSION['core_rss_hash'] = rand_url_id(16);
+        $globals->xdb->execute('UPDATE auth_user_quick SET core_rss_hash={?} WHERE user_id={?}',
+                Session::get('core_rss_hash'), Session::getInt('uid'));
+    } else {
+        $globals->xdb->execute('UPDATE auth_user_quick SET core_rss_hash="" WHERE user_id={?}', Session::getInt('uid'));
+        Session::kill('core_rss_hash');
+    }
+    header('Location: preferences.php');
 }
 
 $page->assign('prefs', $globals->hook->prefs());

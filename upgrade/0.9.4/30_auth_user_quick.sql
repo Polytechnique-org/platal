@@ -7,3 +7,4 @@ alter table auth_user_quick add column core_mail_fmt enum('html', 'texte') not n
 alter table auth_user_quick add column profile_nick varchar(64) not null;
 alter table auth_user_quick add index(profile_nick);
 
+alter table auth_user_quick add column core_rss_hash char(32) not null default '';

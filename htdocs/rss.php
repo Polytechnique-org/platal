@@ -20,20 +20,21 @@
  ***************************************************************************/
 
 require_once('xorg.inc.php');
-new_nonhtml_page('rss.tpl', AUTH_PUBLIC);
-
 require_once('rss.inc.php');
+
+list($alias, $hash) = init_rss('rss.tpl');
 
 $rss = $globals->xdb->iterator(
         'SELECT  e.id, e.titre, e.texte, e.creation_date
-           FROM  evenements AS e
-          WHERE  FIND_IN_SET(flags, "valide") AND peremption >= NOW()
-                 AND (e.promo_min = 0 || e.promo_min <= {?})
-                 AND (e.promo_max = 0 || e.promo_max >= {?})
-       ORDER BY  (e.promo_min != 0 AND e.promo_max != 0) DESC, e.peremption',
-       Env::getInt('promo', 3000), Env::getInt('promo'));
+           FROM  evenements      AS e
+     INNER JOIN  aliases         AS a ON ( a.alias = {?} AND a.type != "homonyme" )
+     INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND core_rss_hash = {?} )
+     INNER JOIN  auth_user_md5   AS u USING(user_id)
+          WHERE  FIND_IN_SET(e.flags, "valide") AND peremption >= NOW()
+                 AND (e.promo_min = 0 || e.promo_min <= u.promo)
+                 AND (e.promo_max = 0 || e.promo_max >= u.promo)',
+        $alias, $hash);
 $page->assign('rss', $rss);
 
-header('Content-Type: text/xml; charset=utf-8');
 $page->run();
 ?> 
