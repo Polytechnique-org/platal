@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: noIE.tpl,v 1.2 2004-08-31 11:25:43 x2000habouzit Exp $
+        $Id: noIE.tpl,v 1.3 2004-09-02 18:46:49 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -45,7 +45,7 @@
       {if $smarty.session.suid}
       <div id="suid">
         {dynamic}
-        {$smarty.session.suid} ({$smarty.session.username})
+        {$smarty.session.suid} ({$smarty.session.user_id})
         {/dynamic}
         [<a href="{"exit.php"|url}">exit</a>]
       </div>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.20 2004-09-02 18:23:02 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.21 2004-09-02 18:46:49 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -257,6 +257,26 @@ function set_skin() {
     {
 	$_SESSION['skin'] = SKIN_COMPATIBLE;
 	$_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
+    }
+  
+    
+    function getUserId($auth,$username) {
+	global $globals;
+
+	$res = $globals->db->query("SELECT id FROM aliases WHERE alias='$username'");
+	list($uid) = mysql_fetch_row($res);
+	mysql_free_result($res);
+	return $uid;
+    }
+
+
+    function getUsername($auth,$uid) {
+	global $globals;
+
+	$res = $globals->db->query("SELECT alias FROM aliases WHERE id='$uid' AND type='a_vie'");
+	list($username) = mysql_fetch_row($res);
+	mysql_free_result($res);
+	return $username;
     }
 }
 
