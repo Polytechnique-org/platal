@@ -149,10 +149,7 @@ $mymail->send();
 
 // s'il est dans la table envoidirect, on le marque comme inscrit
 $globals->db->query("update envoidirect set date_succes=NOW() where matricule = $matricule");
-
-require_once("xorg.hook.inc.php");
-$hook = new XOrgHook();
-$hook->subscribe($forlife, $uid, $promo, $password, true);
+$globals->hook->subscribe($forlife, $uid, $promo, $password, true);
 
 start_connexion($uid,false);
 $page->run();

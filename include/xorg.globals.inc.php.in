@@ -29,6 +29,7 @@ class XorgGlobals extends DiogenesCoreGlobals
     var $page    = 'XorgPage';
     var $session = 'XorgSession';
     var $menu;
+    var $hook;
 
     /** The x.org version */
     var $version = "@VERSION@";
@@ -57,6 +58,7 @@ class XorgGlobals extends DiogenesCoreGlobals
     function init()
     {
         global $globals;
+        require_once("xorg/hook.inc.php");
         require_once("xorg/menu.inc.php");
 
         $globals = new XorgGlobals;
@@ -83,7 +85,9 @@ class XorgGlobals extends DiogenesCoreGlobals
             }
         }
         
+        $globals->hook = new XOrgHook();
         $globals->menu = new XOrgMenu($globals->root.'/include/conf.d/');
+        $globals->hook->menu(null);
 
         $globals->dbconnect();
         if ($globals->debug) {

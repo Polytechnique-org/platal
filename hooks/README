@@ -1,1 +1,2 @@
+function menu()
 function subscribe($forlife, $uid, $promo, $pass)

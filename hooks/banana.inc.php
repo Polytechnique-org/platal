@@ -19,7 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function banana_subscirbe()
+// {{{ menu HOOK
+
+function &banana_menu(&$result)
+{
+    global $globals;
+    $globals->menu->addPrivateEntry(XOM_SERVICES, 10, 'Forums & PA', 'banana/');
+}
+
+// }}}
+// {{{ subscribe HOOK
 
 function &banana_subscribe($forlife, $uid, $promo, $password, &$result)
 {
