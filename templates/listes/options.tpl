@@ -130,7 +130,7 @@ Tu n'es pas administrateur de la liste, mais du site.
       </td>
       <td>
         que faire des mails « [spam probable] » ?<br />
-        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les ignorer
+        <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer
         <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les modérer
         <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> les rejeter
       </td>
