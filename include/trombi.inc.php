@@ -18,22 +18,45 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: trombi.inc.php,v 1.5 2004-11-15 10:39:18 x2000habouzit Exp $
+    $Id: trombi.inc.php,v 1.6 2004-11-22 07:29:52 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.plugin.inc.php');
- 
-class Trombi extends XOrgPlugin {
+
+// {{{ class Trombi
+
+class Trombi extends XOrgPlugin
+{
+    // {{{ properties
+    
     var $_get_vars = Array('offset');
     var $limit = 24;
     var $admin = false;
     var $showpromo = true;
 
-    function setNbRows($row) { $this->limit = $row*3; }
-    function setAdmin() { $this->admin = true; }
-    function hidePromo() { $this->showpromo = false; }
+    // }}}
+    // {{{ function setNbRows()
     
-    function show() {
+    function setNbRows($row)
+    { $this->limit = $row*3; }
+
+    // }}}
+    // {{{ function setAdmin()
+    
+    function setAdmin()
+    { $this->admin = true; }
+
+    // }}}
+    // {{{ function hidePromo()
+    
+    function hidePromo()
+    { $this->showpromo = false; }
+
+    // }}}
+    // {{{ function show()
+    
+    function show()
+    {
 	/* this point is nasty...  but since show() is called from the template ...
 	 * I can't see any more clever way to achieve that
 	 */
@@ -44,13 +67,13 @@ class Trombi extends XOrgPlugin {
 	$page_max = intval(($total-1)/$this->limit);
 
 	$links = Array();
-	if($offset) {
+	if ($offset) {
 	    $links[] = Array('u'=> $this->make_url($offset-1), 'i' => $offset-1,  'text' => 'précédent');
 	}
-	for($i = 0; $i <= $page_max ; $i++)
+	for ($i = 0; $i <= $page_max ; $i++) {
 	    $links[] = Array('u'=>$this->make_url($i), 'i' => $i, 'text' => $i+1);
-
-	if($offset < $page_max) {
+        }
+	if ($offset < $page_max) {
 	    $links[] = Array ('u' => $this->make_url($offset+1), 'i' => $offset+1, 'text' => 'suivant');
 	}
 
@@ -60,6 +83,11 @@ class Trombi extends XOrgPlugin {
 	$page->assign('trombi_admin', $this->admin);
 	return $page->fetch('include/trombi.tpl');
     }
+    
+    // }}}
 }
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
