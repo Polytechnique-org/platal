@@ -34,7 +34,7 @@ if (Env::has('quick')) {
     $page->assign('formulaire', 0);
 
     // {{{ get_list
-    function get_list($offset, $limit, $order, $order_inv) {
+    function get_list($offset, $limit, $order) {
         global $globals;
         $qSearch = new QuickSearch('quick');
         $fields  = new SFieldGroup(true, array($qSearch));
@@ -59,7 +59,7 @@ if (Env::has('quick')) {
                 '.$globals->search->result_where_statement.'
                     WHERE  '.$fields->get_where_statement().(logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '').'
                    HAVING  mark>0
-                 ORDER BY '.($order?($order.($order_inv?" DESC":"").', '):'')
+                 ORDER BY '.($order?($order.', '):'')
                             .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
                     LIMIT  '.$offset * $globals->search->per_page.','.$globals->search->per_page;
         $list    = $globals->xdb->iterator($sql);

@@ -34,7 +34,7 @@ class XOrgSearch extends XOrgPlugin
     // type of orders : (field name, default ASC, text name, auth)
     var $orders = array(
             'promo'     =>array('promo',  false, 'promotion',             AUTH_PUBLIC),
-            'nom'       =>array('nom',    true,  'nom',                   AUTH_PUBLIC),
+            'nom'       =>array('nom,prenom',   true,  'nom',             AUTH_PUBLIC),
             'date_mod'  =>array('u.date', false, 'dernière modification', AUTH_COOKIE)
         );
 
@@ -86,8 +86,12 @@ class XOrgSearch extends XOrgPlugin
         }
         $order     = $tab[0];
         $order_inv = ($this->get_value('order_inv') != '') == $tab[1];
-	
-        list($list, $total) = call_user_func($this->_callback, $offset, $this->limit, $order, $order_inv);
+
+        if ($order_inv && $order)
+            $sql_order = str_replace(",", " DESC,", $order)." DESC";
+        else $sql_order = $order;
+
+        list($list, $total) = call_user_func($this->_callback, $offset, $this->limit, $sql_order);
         
 	$page_max = intval(($total-1)/$this->limit);
 

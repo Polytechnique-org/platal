@@ -66,7 +66,7 @@ if (!Env::has('rechercher')) {
 
     // {{{ function get_list()
 
-    function get_list($offset, $limit, $order, $order_inv) {
+    function get_list($offset, $limit, $order) {
         if ($with_soundex = Env::has('with_soundex')) {
             $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
             $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
@@ -133,7 +133,7 @@ if (!Env::has('rechercher')) {
                 LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
                 '.$globals->search->result_where_statement.'
                 '.(empty($where) ? '' : "WHERE  $where").'
-                 ORDER BY  '.($order?($order.($order_inv?' DESC':'').', '):'')
+                 ORDER BY  '.($order?($order.', '):'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'promo DESC, NomSortKey, prenom'))).'
                     LIMIT  '.($offset * $limit).','.$limit;
         $liste   = $globals->xdb->iterator($sql);
