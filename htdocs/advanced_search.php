@@ -115,7 +115,7 @@ if (!array_key_exists('rechercher', $_REQUEST)) {
                        u.nom, u.prenom,
                        '.$globals->search->result_fields.'
                        c.uid AS contact,
-                       w.ni_id AS contact
+                       w.ni_id AS watch
                  FROM  auth_user_md5  AS u 
             '.$fields->get_select_statement().'
             '.(empty($_REQUEST['only_referent']) ? '' : ' INNER JOIN mentor AS m ON (m.uid = u.user_id)').'
