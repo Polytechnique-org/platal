@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.7 2004-09-02 23:04:19 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.8 2004-10-09 17:55:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -58,7 +58,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $binetField = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
     $groupexField = new RefSField('groupex',array('g.gid'),'groupesx_ins','g','u.user_id=g.guid');
     $sectionField = new RefSField('section',array('u.section'),'','','');
-    $schoolField = new RefSField('school',array('as.aid'),'applis_ins','as','u.user_id=as.uid');
+    $schoolField = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
     $diplomaField = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
    
     $fields = new
