@@ -543,6 +543,11 @@ div.adresse {
     vertical-align: top;
 }
 
+div#content {
+    padding: 1em;
+    margin: 0em;
+}
+
 #content input {
     font-size: 95%;
 }
