@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.4 2004-09-05 17:39:42 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.5 2004-11-01 17:27:03 x2002marichez Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -64,7 +64,7 @@ if ($target) {
           $op = 'list';
           break;
       case 'correct':
-          $globals->db->query("UPDATE aliases SET type='homonyme',expire='NOW()' WHERE alias='$loginbis'");
+          $globals->db->query("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias='$loginbis'");
           $globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES('$target','$target')");
           $mymail = new DiogenesMailer($cc,$forlife,"Mise en place du robot $loginbis@polytechnique.org",false,$cc);
           $mymail->addHeader($FROM);

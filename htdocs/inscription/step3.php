@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.2 2004-10-31 16:02:46 x2000chevalier Exp $
+        $Id: step3.php,v 1.3 2004-11-01 17:27:07 x2002marichez Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -71,7 +71,7 @@ $globals->db->query($sql);
 $globals->db->query("UPDATE auth_user_md5 SET last_known_email='{$_REQUEST['email']}' WHERE matricule = $matricule");
 // si on venait de la page maj.php, on met a jour la table envoidirect
 if(isset($_REQUEST['envoidirect']))
-    $globals->db->query("UPDATE envoidirect SET date_succes='NOW()' WHERE uid='{$_REQUEST['envoidirect']}'");
+    $globals->db->query("UPDATE envoidirect SET date_succes=NOW() WHERE uid='{$_REQUEST['envoidirect']}'");
 
 require("tpl.mailer.inc.php");
 $mymail = new TplMailer('inscrire.mail.tpl');
