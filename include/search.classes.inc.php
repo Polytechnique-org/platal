@@ -129,7 +129,7 @@ class SField
      * on met une chaîne vide si le champ n'a pas été complété */
     function get_request()
     {
-        $this->value = (isset($_REQUEST[$this->fieldFormName])) ? trim($_REQUEST[$this->fieldFormName]) : '';
+        $this->value = trim(Env::get($this->fieldFormName));
     }
 
     // }}}

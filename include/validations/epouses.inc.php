@@ -78,9 +78,7 @@ class EpouseReq extends Validate
 
     function handle_formu()
     {
-        if (empty($_REQUEST['submit'])
-                || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
-        {
+        if (Env::get('submit') != "Accepter" && Env::get('submit') != "Refuser") {
             return false;
         }
 
@@ -88,7 +86,7 @@ class EpouseReq extends Validate
         $mymail = new XOrgMailer('valid.epouses.tpl');
         $mymail->assign('forlife', $this->forlife);
 
-        if ($_REQUEST['submit']=="Accepter") {
+        if (Env::get('submit') == "Accepter") {
             $mymail->assign('answer','yes');
             if ($this->oldepouse) {
                 $mymail->assign('oldepouse',$this->oldalias);
@@ -97,8 +95,6 @@ class EpouseReq extends Validate
             $this->commit();
         } else { // c'était donc Refuser
             $mymail->assign('answer','no');
-            if (isset($_REQUEST["motif"]))
-                $_REQUEST["motif"] = stripslashes($_REQUEST["motif"]);
         }
 
         $mymail->send();

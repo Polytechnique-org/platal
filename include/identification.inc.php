@@ -27,7 +27,7 @@ function sortie_id($err) {
     $page->trig_run($err);
 }
 
-$promo = intval($_REQUEST["promo"]);
+$promo = Env::getInt('promo');
 if ($promo<1900 || $promo>2100) {
     sortie_id("La promotion doit comporter 4 chiffres.");
 }
@@ -53,7 +53,7 @@ $chaine = strlen($chaine2) > strlen($chaine1) ? $chaine2 : $chaine1;
 // c'est parti pour l'identification, les champs étant corrects
 if ($promo > 1995)  {
 
-    if (strlen($_REQUEST["matricule"]) != 6) {
+    if (strlen(Env::get('matricule')) != 6) {
 	sortie_id("Le matricule qu'il faut que tu  rentres doit comporter 6 chiffres.");
     }
 
@@ -62,18 +62,18 @@ if ($promo > 1995)  {
      * (i.e. le numéro de promotion sauf pour les étrangers voie 2) et XXX le numéro d'entrée cette année-là
      */
 
-    $matrcondense = $_REQUEST["matricule"];
-    $rangentree = intval(substr($_REQUEST["matricule"], 3, 3));
-    $anneeimmatric = intval(substr($_REQUEST["matricule"],0,3));
+    $matrcondense  = Env::get('matricule');
+    $rangentree    = intval(substr($matrcondense, 3, 3));
+    $anneeimmatric = intval(substr($matrcondense, 0, 3));
     if($anneeimmatric > 950) $anneeimmatric/=10;
     if ($anneeimmatric < 96) {
 	sortie_id("ton matricule est incorrect");
     } elseif ($anneeimmatric < 100) {
 	// jusqu'à la promo 99 c'est 9?0XXX
-	$year = 1900 + intval(substr($_REQUEST["matricule"], 0, 2));
+	$year = 1900 + intval(substr($matrcondense, 0, 2));
     }  elseif($anneeimmatric < 200) {
 	// depuis les 2000 c'est 10?XXX
-	$year = 2000 + intval(substr($_REQUEST["matricule"], 1, 2));
+	$year = 2000 + intval(substr($matrcondense, 1, 2));
     } else {
 	sortie_id("la gestion des promotions >= 2100 n'est pas prête !");
     }

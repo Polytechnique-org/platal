@@ -32,7 +32,7 @@ function tex_to_pdf($texte) {
     global $pdf_tmp_dir;
     set_time_limit(300); // timeout de 5 minutes au cas où le texte serait gros
                          // et pdflatex lent
-    $pdf_tmp_dir=('/tmp/mescontacts_'.$_SESSION['forlife']);
+    $pdf_tmp_dir=('/tmp/mescontacts_'.Session::get('forlife'));
     // fonction pour effacer le rep temporaire
     function clean_tmp_dir() {
         global $pdf_tmp_dir;

@@ -19,44 +19,27 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if(empty($_REQUEST["xmat"]) || empty($_REQUEST["submit"])) {
-    if (empty($_REQUEST["xmat"]) && (empty($_REQUEST["prenomR"]) || empty($_REQUEST["nomR"]))) {
+if (!Env::has("xmat") || !Env::has("submit")) {
+    if ( !Env::has("xmat") && (!Env::has("prenomR") || !Env::has("nomR")) ) {
         new_admin_page('marketing/utilisateurs_recherche.tpl');
         $page->run();
     }
 
-    if (!empty($_REQUEST["xmat"])) {
-	// on a un matricule, on affiche juste l'entrée correspondante
-	$where = "matricule={$_REQUEST['xmat']}";
+    if (Env::has("xmat")) {
+	$where = "matricule=".Env::getInt('xmat');
     } else {
-	// on n'a pas le matricule, essayer de le trouver moi-meme, de le proposer
-	// et de reafficher le formulaire avec les propositions de matricules
-
-	// suppression accents et passage en majuscules des champs entrés
-	$nomUS=replace_accent($_REQUEST["nomR"]);
-	$nomup=strtoupper($nomUS);
-	$nomup=str_replace("\'","'",$nomup);
-	$prenomUS=replace_accent($_REQUEST["prenomR"]);
-	$prenomup=strtoupper($prenomUS);
-	$prenomup=str_replace("\'","'",$prenomup);
+	$nom    = Env::get('nomR');
+	$prenom = Env::get('prenomR');
 
 	// calcul de la plus longue chaine servant à l'identification
-	$chaine1=strtok($nomup," -'");
-	$chaine2=strtok(" -'");
-	if ( strlen($chaine2) > strlen($chaine1) ) {
-	    $chaine = $chaine2;
-	}  else  {
-	    $chaine = $chaine1;
-	}
+	$chaine1 = strtok($nom," -'");
+	$chaine2 = strtok(" -'");
+        $chaine  = ( strlen($chaine2) > strlen($chaine1) ) ? $chaine2 : $chaine1;
 
-	if(strlen($_REQUEST["promoR"])==4) {
-	    $rq="AND promo=".$_REQUEST["promoR"];
-	} else {
-	    $rq="";
-	}
+        $rq = strlen(Env::get("promoR")==4 ? "AND promo=".Env::getInt("promoR") : "";
 
-	$where = "prenom LIKE '%{$_REQUEST['prenomR']}%' AND nom LIKE '%$chaine%' $rq ORDER BY promo,nom";
-    } // a-t-on xmat
+	$where = "prenom LIKE '%$prenom%' AND nom LIKE '%$chaine%' $rq ORDER BY promo,nom";
+    }
 
     $sql = "SELECT  matricule,matricule_ax,promo,nom,prenom,comment,appli,flags,last_known_email,deces,user_id
               FROM  auth_user_md5

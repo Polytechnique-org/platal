@@ -47,10 +47,11 @@ function register_watch_op($uid,$cid,$date='',$info='') {
 
 function getNbNotifs() {
     global $globals;
-    if(!isset($_SESSION['uid'])) return 0;
-    $uid = $_SESSION['uid'];
-
-    $watchlast = isset($_SESSION['watch_last']) ? $_SESSION['watch_last'] : 0;
+    if (!Session::has('uid')) {
+        return 0;
+    }
+    $uid       = Session::getInt('uid', -1);
+    $watchlast = Session::getInt('watch_last');
 
     $res = $globals->db->query("
     (
@@ -296,7 +297,7 @@ class WatchSub {
 	global $globals;
 	$this->_data = Array();
 	$globals->db->query("DELETE FROM watch_sub WHERE uid='{$this->_uid}'");
-	foreach($_REQUEST[$ind] as $key=>$val) {
+	foreach(Env::getMixed($ind) as $key=>$val) {
 	    $globals->db->query("INSERT INTO  watch_sub
 	                              SELECT  '{$this->_uid}',id
 				        FROM  watch_cat

@@ -82,32 +82,32 @@ class EvtReq extends Validate
     function handle_formu()
     {
         global $globals;
-        if (isset($_POST['action'])) {
+        if (Post::has('action')) {
             require_once("xorg.mailer.inc.php");
             $mymail = new XOrgMailer('valid.evts.tpl');
             $mymail->assign('bestalias',$this->bestalias);
             $mymail->assign('titre',$this->titre);
 
-            if ($_REQUEST['action']=="Valider") {
+            $uid = Session::getInt('uid');
+
+            if (Env::get('action') == "Valider") {
                 $globals->db->query("UPDATE  evenements
-                                        SET  creation_date = creation_date, validation_user_id = {$_SESSION['uid']},
+                                        SET  creation_date = creation_date, validation_user_id = $uid,
                                              validation_date = NULL, flags = CONCAT(flags,',valide')
                                       WHERE  id='{$this->evtid}' LIMIT 1");
                 $mymail->assign('answer','yes');
-            }
-            if ($_REQUEST['action']=="Invalider") {
+                $mymail->send();
+            } elseif (Env::get('action') == "Invalider") {
                 $globals->db->query("UPDATE  evenements
-                                        SET  creation_date = creation_date, validation_user_id = {$_SESSION['uid']},
+                                        SET  creation_date = creation_date, validation_user_id = $uid,
                                              validation_date = NULL, flags = REPLACE(flags,'valide','')
                                       WHERE  id='{$this->evtid}' LIMIT 1");
                 $mymail->assign('answer', 'no');
-            }
-            if ($_REQUEST['action']=="Supprimer") {
+                $mymail->send();
+            } elseif (Env::get('action') == "Supprimer") {
                 $globals->db->query("DELETE from evenements WHERE id='{$this->evtid}' LIMIT 1");
             }
-            if ($_POST['action'] != "Supprimer") {
-                $mymail->send();
-            }
+            
             $this->clean();
         }
         return "";

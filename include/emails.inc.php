@@ -163,7 +163,7 @@ class Email
             $globals->db->query("UPDATE emails
 	                            SET flags = CONCAT_WS(',',flags,'active')
 				  WHERE uid=$uid AND email='{$this->email}'");
-	    $_SESSION['log']->log("email_on",$this->email.($uid!=$_SESSION['uid'] ? "(admin on $uid)" : ""));
+	    $_SESSION['log']->log("email_on",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
         }
     }
@@ -179,7 +179,7 @@ class Email
             $globals->db->query("UPDATE emails
 				    SET flags ='$flags'
 				  WHERE uid=$uid AND email='{$this->email}'");
-	    $_SESSION['log']->log("email_off",$this->email.($uid!=$_SESSION['uid'] ? "(admin on $uid)" : "") );
+	    $_SESSION['log']->log("email_off",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
         }
     }
@@ -252,7 +252,7 @@ class Redirect
         if (!$this->other_active($email))
             return ERROR_INACTIVE_REDIRECTION;
         $globals->db->query("DELETE FROM emails WHERE uid={$this->uid} AND email='$email'");
-        $_SESSION['log']->log('email_del',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
+        $_SESSION['log']->log('email_del',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
 	foreach ($this->emails as $i=>$mail) {
 	    if ($email==$mail->email) {
                 unset($this->emails[$i]);
@@ -284,8 +284,8 @@ class Redirect
             $mtic = 1;
         }
         $globals->db->query("REPLACE INTO emails (uid,email,flags) VALUES({$this->uid},'$email','$flags')");
-	if (isset($_SESSION['log'])) { // may be absent --> step4.php
-	    $_SESSION['log']->log('email_add',$email.($this->uid!=$_SESSION['uid'] ? " (admin on {$this->uid})" : ""));
+	if ($logger = Session::getMixed('log', null)) { // may be absent --> step4.php
+	    $logger->log('email_add',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
         }
 	foreach ($this->emails as $mail) {
 	    if ($mail->email == $email_stripped) {

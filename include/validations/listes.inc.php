@@ -81,9 +81,7 @@ class ListeReq extends Validate
 
     function handle_formu()
     {
-        if (empty($_REQUEST['submit'])
-                || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
-        {
+        if (Env::get('submit') != "Accepter" && Env::get('submit') != "Refuser") {
             return false;
         }
 
@@ -91,9 +89,9 @@ class ListeReq extends Validate
         $mymail = new XOrgMailer('valid.liste.tpl');
         $mymail->assign('alias', $this->liste);
         $mymail->assign('bestalias', $this->bestalias);
-        $mymail->assign('motif', stripslashes($_REQUEST['motif']));
+        $mymail->assign('motif', stripslashes(Env::get('motif')));
 
-        if ($_REQUEST['submit']=="Accepter") {
+        if (Env::get('submit') == "Accepter") {
             $mymail->assign('answer', 'yes');
             if (!$this->commit()) {
                 return 'problème';
@@ -115,11 +113,9 @@ class ListeReq extends Validate
     {
         global $globals;
         require_once('xml-rpc-client.inc.php');
-        $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-        list($pass) = mysql_fetch_row($res);
-        mysql_free_result($res);
+        require_once('lists.inc.php');
 
-        $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949/polytechnique.org");
+        $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
         $ret = $client->create_list($this->liste, $this->desc,
             $this->advertise, $this->modlevel, $this->inslevel,
             $this->owners, $this->members);

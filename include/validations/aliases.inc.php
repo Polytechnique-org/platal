@@ -84,7 +84,7 @@ class AliasReq extends Validate
 
     function handle_formu()
     {
-        if (empty($_REQUEST['submit']) || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser")) {
+        if (Env::get('submit'] != "Accepter" && Env::get('submit') != "Refuser") {
             return false;
         }
 
@@ -93,12 +93,12 @@ class AliasReq extends Validate
         $mymail->assign('alias', $this->alias);
         $mymail->assign('bestalias', $this->bestalias);
 
-        if ($_REQUEST['submit']=="Accepter") {
+        if (Env::get('submit') == "Accepter") {
             $mymail->assign('answer', 'yes');
             $this->commit() ; 
         } else {
             $mymail->assign('answer', 'no');
-            $mymail->assign('motif', stripslashes($_REQUEST['motif']));
+            $mymail->assign('motif', stripslashes(Env::get('motif')));
         }
         $mymail->send();
         //Suppression de la demande

@@ -61,7 +61,7 @@ function user_clear_all_subs($user_id, $really_del=true)
     
     include_once('lists.inc.php');
     if (function_exists(lists_xmlrpc)) {
-        $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
+        $client =& lists_xmlrpc(Session::getInt('id'), Session::get('password'));
         $client->kill($alias, $really_del);
     }
 }

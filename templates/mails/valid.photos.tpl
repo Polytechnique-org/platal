@@ -35,7 +35,7 @@ Cher(e) camarade,
 
   La demande de changement de photo que tu avais faite a été refusée.
 La raison de ce refus est :
-{$smarty.request.motif}
+{$smarty.request.motif|stripslashes}
 
 Cordialement,
 L'équipe X.org

@@ -31,7 +31,7 @@ class XorgSession extends DiogenesCoreSession
     function XorgSession()
     {
 	$this->DiogenesCoreSession();
-	if (empty($_SESSION['uid'])) {
+	if (!Session::has('uid')) {
 	    try_cookie();
         }
 	set_skin();
@@ -42,7 +42,7 @@ class XorgSession extends DiogenesCoreSession
     
     function init() {
         @session_start();
-        if (empty($_SESSION['session'])) {
+        if (!Session::has('session')) {
             $_SESSION['session'] = new XorgSession;
         }
     }
@@ -61,31 +61,37 @@ class XorgSession extends DiogenesCoreSession
 	    return true;
 	}
 
-	if (isset($_REQUEST['username']) and isset($_REQUEST['response'])
-		and isset($_SESSION['session']->challenge))
+        if (Session::has('session')) {
+            $session =& Session::getMixed('session');
+        }
+
+	if (Env::has('username') && Env::has('response') && isset($session->challenge))
 	{
 	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
 	    // ou passwordpromptscreenlogged.tpl
-	    $field = preg_match('/^\d*$/', $_REQUEST['username']) ? 'id' : 'alias';
+            $uname = Env::get('username');
+	    $field = preg_match('/^\d*$/', $uname) ? 'id' : 'alias';
 	    $res = @$globals->db->query( "SELECT  u.user_id,u.password
 					    FROM  auth_user_md5 AS u
          			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-				           WHERE  a.$field='{$_REQUEST['username']}' AND u.perms IN('admin','user')");
+				           WHERE  a.$field='$uname' AND u.perms IN('admin','user')");
+
+            $logger =& Session::getMixed('log');
 
 	    if (list($uid,$password)=mysql_fetch_row($res)) {
-		$expected_response=md5("{$_REQUEST['username']}:$password:{$_SESSION['session']->challenge}");
-		if ($_REQUEST['response'] == $expected_response) {
-		    unset($_SESSION['session']->challenge);
-		    if (isset($_SESSION['log'])) {
-			$_SESSION['log']->log('auth_ok');
+		$expected_response=md5("$uname:$password:{$session->challenge}");
+		if (Env::get('response') == $expected_response) {
+		    unset($session->challenge);
+		    if ($logger) {
+			$logger->log('auth_ok');
                     }
 		    start_connexion($uid, true);
 		    return true;
-		} elseif (isset($_SESSION['log'])) {
-                    $_SESSION['log']->log('auth_fail','bad password');
+		} elseif ($logger) {
+                    $logger->log('auth_fail','bad password');
                 }
-	    } elseif (isset($_SESSION['log'])) {
-                $_SESSION['log']->log('auth_fail','bad login');
+	    } elseif ($logger) {
+                $logger->log('auth_fail','bad login');
             }
             
             mysql_free_result($res);
@@ -109,7 +115,7 @@ class XorgSession extends DiogenesCoreSession
         }
 
 	// on vient de recevoir une demande d'auth, on passe la main a doAuth
-	if (isset($_REQUEST['username']) and isset($_REQUEST['response'])) {
+	if (Env::has('username') and Env::has('response')) {
 	    return $this->doAuth($page);
         }
 
@@ -197,11 +203,9 @@ function check_perms()
  * @return BOOL
  */
     
-function has_perms($auth_array=array())
+function has_perms()
 {
-    return logged()
-	&& ( (!empty($auth_array) && in_array($_SESSION['uid'], $auth_array))
-		|| ($_SESSION['perms']==PERMS_ADMIN) );
+    return logged() && Session::get('perms')==PERMS_ADMIN;
 }
 
 // }}}
@@ -214,7 +218,7 @@ function has_perms($auth_array=array())
  */
 function logged ()
 {
-    return(isset($_SESSION['auth']) and ($_SESSION['auth']>=AUTH_COOKIE));
+    return Session::get('auth', AUTH_PUBLIC) >= AUTH_COOKIE;
 }
 
 // }}}
@@ -228,7 +232,7 @@ function logged ()
  */
 function identified ()
 {
-    return(isset($_SESSION['auth']) and $_SESSION['auth']>=AUTH_MDP);
+    return Session::get('auth', AUTH_PUBLIC) >= AUTH_MDP;
 }
 
 // }}}
@@ -241,22 +245,24 @@ function identified ()
 function try_cookie()
 {
     global $globals;
-    if (!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGuid'])) {
+    if (Cookie::get('ORGaccess') == '' or !Cookie::has('ORGuid')) {
 	return -1;
     }
 
-    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}' AND perms IN('admin','user')");
+    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id="
+            .Cookie::getInt('ORGuid')." AND perms IN('admin','user')");
     if (@mysql_num_rows($res) != 0) {
 	list($uid,$password)=mysql_fetch_row($res);
 	mysql_free_result($res);
 	$expected_value=md5($password);
-	if ($expected_value == $_COOKIE['ORGaccess']) {
+	if ($expected_value == Cookie::get('ORGaccess')) {
 	    start_connexion($uid, false);
 	    return 0;
 	} else {
             return 1;
         }
     }
+
     return -2;
 }
 
@@ -287,26 +293,16 @@ function start_connexion ($uid, $identified)
             $bestalias, $password, $femme) = mysql_fetch_row($result);
     mysql_free_result($result);
    
-    // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
-    // authentification avec le cookie
-    // on vérifie que c'est bien un logger de l'utilisateur en question
-    if (isset($_SESSION['log']) && $_SESSION['log']->uid==$uid) {
-	$logger = $_SESSION['log'];
-    }
-
-    // on vide la session pour effacer les valeurs précédentes (notamment de skin)
-    // qui peuvent être celles de quelqu'un d'autre ou celle par defaut
-    $suid = isset($_SESSION['suid']) ? $_SESSION['suid'] : null;
+    $suid = Session::getMixed('suid');
+    
     if ($suid) {
 	$logger = new DiogenesCoreLogger($uid,$suid);
-	$logger->log("suid_start","{$_SESSION['forlife']} by {$_SESSION['suid']}");
-	$_SESSION = Array('suid'=>$_SESSION['suid'], 'log'=>$logger);
+	$logger->log("suid_start",Session::get('forlife')." by {$suid['uid']}");
+	$_SESSION = Array('suid'=>$suid, 'log'=>$logger);
     } else {
-	$_SESSION = Array();
-	$_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
-	if (empty($logger)) {
-            $_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
-        }
+        $logger = Session::getMixed('log', new DiogenesCoreLogger($uid));
+	$_SESSION = Array('log' => $logger);
+        $logger->log("connexion",$_SERVER['PHP_SELF']);
 	setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
     }
 
@@ -337,10 +333,11 @@ function set_skin()
 {
     global $globals;
     if (logged() && $globals->skin->enable) {
+        $uid = Session::getInt('uid');
 	$result = $globals->db->query("SELECT  skin,skin_tpl
 	                                 FROM  auth_user_quick AS a
 				   INNER JOIN  skins           AS s ON a.skin=s.id
-				        WHERE  user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
+				        WHERE  user_id=$uid AND skin_tpl != ''");
 	if (!(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result))) {
 	    $_SESSION['skin'] = $globals->skin->def_tpl;
 	    $_SESSION['skin_id'] = $globals->skin->def_id;

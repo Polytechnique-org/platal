@@ -111,9 +111,7 @@ class PhotoReq extends Validate
     
     function handle_formu ()
     {
-        if (empty($_REQUEST['submit'])
-                || ($_REQUEST['submit']!="Accepter" && $_REQUEST['submit']!="Refuser"))
-        {
+        if (Session::get('submit') != "Accepter" && Session::get('submit') != "Refuser") {
             return false;
         }
         
@@ -121,7 +119,7 @@ class PhotoReq extends Validate
         $mymail = new XOrgMailer('valid.photos.tpl');
         $mymail->assign('bestalias', $this->bestalias);
 
-        if ($_REQUEST['submit']=="Accepter") {
+        if (Session::get('submit') == "Accepter") {
             $mymail->assign('answer','yes');
             $this->commit();
         } else {

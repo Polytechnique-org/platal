@@ -20,15 +20,15 @@
  ***************************************************************************/
 
 
+$uid = Session::getInt('uid');
+ 
 $page->mysql_assign("SELECT  text,id
                        FROM  binets_ins, binets_def
-                      WHERE  binets_def.id=binets_ins.binet_id AND
-                      user_id='{$_SESSION['uid']}'", 'binets');
+                      WHERE  binets_def.id=binets_ins.binet_id AND user_id=$uid", 'binets');
 
 $page->mysql_assign("SELECT  text,id
                        FROM  groupesx_ins, groupesx_def
-                      WHERE  groupesx_def.id=groupesx_ins.gid AND
-                      guid='{$_SESSION['uid']}'", 'groupesx');
+                      WHERE  groupesx_def.id=groupesx_ins.gid AND guid=$uid", 'groupesx');
 $page->assign('section', $section);
 
 ?>

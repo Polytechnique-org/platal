@@ -35,7 +35,7 @@ L'équipe X.org
 Cher(e) camarade,
 
   La demande que tu avais faite pour les alias {$alias}@melix.net et {$alias}@melix.org a été refusée pour la raison suivante :
-{$motif}
+{$motif|stripslashes}
 
 Cordialement,
 L'équipe X.org

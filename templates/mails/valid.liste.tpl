@@ -29,7 +29,7 @@ Cher(e) camarade,
   La mailing list {$alias} que tu avais demandée vient d'être créée.
 {if $motif}
 Informations complémentaires:
-{$motif}
+{$motif|stripslashes}
 {/if}
 
 Cordialement,
@@ -39,7 +39,7 @@ Cher(e) camarade,
 
   La demande que tu avais faite pour la mailing list {$alias} a été refusée.
 La raison de ce refus est :
-{$motif}
+{$motif|stripslashes}
 
 Cordialement,
 L'équipe X.org

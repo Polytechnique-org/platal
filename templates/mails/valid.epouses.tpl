@@ -40,7 +40,7 @@ Chère camarade,
   La demande de changement de nom de mariage que tu avais faite a été refusée.
 {if $smarty.request.motif}
 La raison de ce refus est :
-{$smarty.request.motif}
+{$smarty.request.motif|stripslashes}
 {/if}
 
 Cordialement,

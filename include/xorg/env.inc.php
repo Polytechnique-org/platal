@@ -55,9 +55,9 @@ class Env
     }
 
     // }}}
-    // {{{ function getMixed
+    // {{{ function &getMixed
     
-    function getMixed($key, $default='')
+    function &getMixed($key, $default=null)
     {
         return Env::_get($key, $default);
     }
@@ -119,9 +119,9 @@ class Post
     }
 
     // }}}
-    // {{{ function getMixed
+    // {{{ function &getMixed
     
-    function getMixed($key, $default='')
+    function &getMixed($key, $default=null)
     {
         return Post::_get($key, $default);
     }
@@ -183,9 +183,9 @@ class Get
     }
 
     // }}}
-    // {{{ function getMixed
+    // {{{ function &getMixed
     
-    function getMixed($key, $default='')
+    function &getMixed($key, $default=null)
     {
         return Get::_get($key, $default);
     }
@@ -247,9 +247,9 @@ class Session
     }
 
     // }}}
-    // {{{ function getMixed
+    // {{{ function &getMixed
     
-    function getMixed($key, $default='')
+    function &getMixed($key, $default=null)
     {
         return Session::_get($key, $default);
     }
@@ -311,9 +311,9 @@ class Cookie
     }
 
     // }}}
-    // {{{ function getMixed
+    // {{{ function &getMixed
     
-    function getMixed($key, $default='')
+    function &getMixed($key, $default=null)
     {
         return Cookie::_get($key, $default);
     }

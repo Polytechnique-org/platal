@@ -41,8 +41,10 @@ class CyberPayment
         global $globals;
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/paiement/cyberpaiement_retour.php?uid={$_SESSION['uid']}&amp;CHAMPBPX";
-        if (! isset($_COOKIE[session_name()])) {
+            ."/paiement/cyberpaiement_retour.php?uid="
+            .Session::getInt('uid')
+            ."&amp;CHAMPBPX";
+        if (Cookie::has(session_name())) {
             $returnurl .= "?".SID;
         }
 
@@ -50,7 +52,7 @@ class CyberPayment
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-xorg-{$pay->id}",-15);
 
-        $e = $_SESSION['sexe'] ? 'e' : '';
+        $e = Session::getBool('sexe') ? 'e' : '';
         
         return <<<EOF
 <table class="bicol">

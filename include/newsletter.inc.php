@@ -467,7 +467,7 @@ function get_nl_list()
 function get_nl_state()
 {
     global $globals;
-    $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
+    $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id=".Session::getInt('uid'));
     if (!(list($st) = mysql_fetch_row($res))) {
         $st = false;
     }
@@ -478,13 +478,13 @@ function get_nl_state()
 function unsubscribe_nl()
 {
     global $globals;
-    $globals->db->query("DELETE FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
+    $globals->db->query("DELETE FROM newsletter_ins WHERE user_id=".Session::getInt('uid'));
 }
  
 function subscribe_nl($html=true, $uid=-1)
 {
     global $globals;
-    $user = $uid == -1 ? $_SESSION['uid'] : $uid;
+    $user = ($uid == -1) ? Session::getInt('uid') : $uid;
     $format = $html ? 'html' : 'text';
     $globals->db->query("REPLACE INTO  newsletter_ins (user_id,last,pref)
 			       SELECT  '$user', MAX(id), '$format'
