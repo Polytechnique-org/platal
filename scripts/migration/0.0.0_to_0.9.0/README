@@ -1,0 +1,6 @@
+
+1- run the python script first, in order to update ML
+2- mysql x4dat < emails.sql
+3- mysql x4dat < migration.sql
+4- mysql x4dat < skins.sql
+
