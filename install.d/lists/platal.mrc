@@ -36,7 +36,12 @@ m2h_text_plain::filter; fancyquote maxwidth=80 quoteclass=quote
 
 <DefineVar>
 MY-LINK
-?liste={$$smarty.request.liste}&amp;file=
+?liste={$$smarty.request.liste}&amp;rep={$$smarty.request.rep}&amp;file=
+</DefineVar>
+
+<DefineVar>
+TOP-ARCH
+<p>[<a href="?liste={$$smarty.request.liste}">toutes les archives</a>]</p>
 </DefineVar>
 
 <DefineVar>
@@ -163,6 +168,7 @@ MY-SUBJNA
 
 <TopLinks>
     <h1>Vue de message</h1>
+    $TOP-ARCH$
     <table class='bicol' cellpadding="0" cellspacing="0">
     <tr>
       <th>fil&nbsp;précédent</th>
@@ -266,6 +272,7 @@ subject:strong
 
 <THead>
     <h1>Archives de la liste {$$smarty.request.liste} ($PAGENUM$/$NUMOFPAGES$)</h1>
+    $TOP-ARCH$
     <table class='bicol' cellpadding="0" cellspacing="0">
     <tr>
       <th>&nbsp;</th>
@@ -442,6 +449,7 @@ date
 
 <ListBegin>
     <h1>Archives de la liste {$$smarty.request.liste} ($PAGENUM$/$NUMOFPAGES$)</h1>
+    $TOP-ARCH$
     <table class='bicol' cellpadding="0" cellspacing="0">
     <tr>
       <th>&nbsp;</th>

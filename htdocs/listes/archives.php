@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: archives.php,v 1.1 2004-11-28 22:51:28 x2000habouzit Exp $
+        $Id: archives.php,v 1.2 2004-11-29 21:42:07 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -31,8 +31,20 @@ require_once('xml-rpc-client.inc.php');
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 if (list($det) = $client->get_members($liste)) {
-    $file = isset($_GET['file']) ? $_GET['file'] : "dates.html";
-    $page->assign('url', $globals->lists->spool."/polytechnique.org-$liste/$file");
+    if (isset($_GET['file'])) {
+        $file = $_GET['file'];
+        $rep  = $_GET['rep'];
+        $page->assign('url', $globals->lists->spool."/polytechnique.org-$liste/$rep/$file");
+    } else {
+        $archs = Array();
+        foreach (glob($globals->lists->spool."/polytechnique.org-$liste/*/*") as $rep) {
+            if (preg_match(",/(\d*)/(\d*)$,", $rep, $matches)) {
+                $archs[intval($matches[1])][intval($matches[2])] = true;
+            }
+        }
+        $page->assign('archs', $archs);
+        $page->assign('range', range(1,12));
+    }
 } else
     $page->assign('no_list',true);
 
