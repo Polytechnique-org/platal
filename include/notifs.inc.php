@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.4 2004-11-05 13:49:16 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.5 2004-11-05 14:34:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.flagset.inc.php');
@@ -66,6 +66,14 @@ class Notifs {
 	global $globals;
 	unset($this->nonins[$p]);
 	$globals->db->query("DELETE FROM watch WHERE user_id='{$this->uid}' AND type='non-inscrit' AND arg='$p'");
+    }
+
+    function add_nonins($p) {
+	global $globals;
+	$globals->db->query("INSERT INTO watch (user_id,type,arg) VALUES('{$this->uid}','non-inscrit','$p')");
+	$res = $globals->db->query(" SELECT prenom,nom,promo,user_id FROM auth_user_md5 WHERE user_id='$p'");
+	$this->nonins[$p] = mysql_fetch_assoc($res);
+	mysql_free_result($res);
     }
 
     function del_promo($p) {

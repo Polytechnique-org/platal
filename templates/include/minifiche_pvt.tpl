@@ -17,11 +17,36 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.11 2004-11-04 15:33:29 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.12 2004-11-05 14:34:05 x2000habouzit Exp $
  ***************************************************************************}
 
 
-{if $inscrit==1}
+{if !$inscrit}
+  {if !$c.dcd}
+  <div class="appli">
+    &nbsp;<a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">
+      clique ici si tu connais son adresse email !
+    </a>
+  </div>
+  <div class='bits'>
+    {if $show_action eq ajouter}
+    <a href="{"carnet/notifs.php"|url}?add_nonins={$c.user_id}">{*
+      *}<img src="{"images"|url}/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" />{*
+    *}</a>
+    {else}
+    <a href="{"carnet/notifs.php"|url}?del_nonins={$c.user_id}">{*
+      *}<img src="{"images"|url}/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" />{*
+    *}</a>
+    {/if}
+    {perms level='admin'}
+    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">{*
+      *}<img src="{"images/ax.png"|url}" alt='AX' title="fiche AX" />{*
+    *}</a>
+    {/perms}
+  </div>
+  {/if}
+  <div class="long"></div>
+{else}
   <div class="bits">
     <a href="javascript:x()"
     onclick="popupWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">{*
@@ -45,23 +70,6 @@
     {/perms}
     {/if}
   </div>
-{else}
-  {if $c.dcd neq 1}
-  <div>
-    &nbsp;<a href="javascript:x()" onclick="popWin('marketing/public.php?num={$c.matricule}')">
-      clique ici si tu connais son adresse email !
-    </a>
-    {perms level='admin'}
-    &nbsp;
-    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">{*
-      *}<img src="{"images/ax.png"|url}" alt='AX' title="fiche AX" />{*
-    *}</a>
-    {/perms}
-  </div>
-  {/if}
-  <div class="long"></div>
-{/if}
-{if $inscrit==1}
   <div class="long">
     {if $c.web || $c.mobile || $c.pays || $c.ville || $c.region || $c.entreprise || $c.libre}
     <table cellspacing="0" cellpadding="0">

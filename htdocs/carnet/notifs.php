@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.php,v 1.3 2004-11-05 13:49:15 x2000habouzit Exp $
+        $Id: notifs.php,v 1.4 2004-11-05 14:34:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -42,6 +42,10 @@ foreach($_REQUEST as $key=>$val) {
 
 	case 'del_promo':
 	    $notifs->del_promo($val);
+	    break;
+
+	case 'add_nonins':
+	    $notifs->add_nonins($val);
 	    break;
 
 	case 'del_nonins':

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.45 2004-11-04 14:54:39 x2000habouzit Exp $
+        $Id: search.php,v 1.46 2004-11-05 14:34:03 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -47,18 +47,20 @@ if (array_key_exists('quick', $_REQUEST)) {
     $offset = new NumericSField('offset');
    
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
-                       DISTINCT r.matricule,u.matricule_ax,
+                       DISTINCT r.matricule,u.matricule_ax,u.user_id,
                        u.perms!="non-inscrit" AS inscrit,
                        UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
                        IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
                        u.promo AS promo,
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
-                       c.uid AS contact
+                       c.uid AS contact,
+		       w.arg AS watch
                  FROM  auth_user_md5  AS r
             LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
+            LEFT JOIN  watch          AS w   ON (w.arg=u.user_id AND w.user_id='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND w.type="non-inscrit")
             '.$globals->search_result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
