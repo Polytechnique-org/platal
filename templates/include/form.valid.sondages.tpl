@@ -1,9 +1,6 @@
-{* $Id: form.valid.sondages.tpl,v 1.4 2004-08-24 23:06:05 x2000habouzit Exp $ *}
+{* $Id: form.valid.sondages.tpl,v 1.5 2004-08-25 09:43:59 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
-<input type="hidden" name="uid" value="{$valid->uid}" />
-<input type="hidden" name="type" value="{$valid->type}" />
-<input type="hidden" name="stamp" value="{$valid->stamp}" />
 <table class="bicol" cellpadding="4" summary="Sondage">
 <tr>
   <td>Demandeur&nbsp;:
@@ -29,6 +26,9 @@
 </tr>
 <tr>
   <td class="middle">
+    <input type="hidden" name="uid" value="{$valid->uid}" />
+    <input type="hidden" name="type" value="{$valid->type}" />
+    <input type="hidden" name="stamp" value="{$valid->stamp}" />
       <input type="submit" name="submit" value="Accepter" />
       <br /><br />
       <input type="submit" name="submit" value="Refuser" />

@@ -1,9 +1,6 @@
-{* $Id: form.valid.evts.tpl,v 1.3 2004-07-19 13:35:36 x2000habouzit Exp $ *}
+{* $Id: form.valid.evts.tpl,v 1.4 2004-08-25 09:43:59 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="post" name="modif">
-  <input type="hidden" name="uid" value="{$valid->uid}" />
-  <input type="hidden" name="type" value="{$valid->type}" />
-  <input type="hidden" name="stamp" value="{$valid->stamp}" />
   <table class="bicol">
     <tr>
       <th class="titre" colspan="2">Événement</th>
@@ -38,6 +35,9 @@
     </tr>
     <tr>
       <td class="center" colspan="2">
+        <input type="hidden" name="uid" value="{$valid->uid}" />
+        <input type="hidden" name="type" value="{$valid->type}" />
+        <input type="hidden" name="stamp" value="{$valid->stamp}" />
         <input type="submit" name="action" value="Valider" />
         <input type="submit" name="action" value="Invalider" />
         <input type="submit" name="action" value="Supprimer" />
