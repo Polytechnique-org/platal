@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.10 2004-11-02 09:03:42 x2000habouzit Exp $
+        $Id: admin.php,v 1.11 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -30,31 +30,31 @@ include('xml-rpc-client.inc.php');
 
 $err = Array();
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 if(isset($_REQUEST['add_member'])) {
-    $arr = $client->mass_subscribe('polytechnique.org', $liste, Array($_REQUEST['add_member']));
+    $arr = $client->mass_subscribe($liste, Array($_REQUEST['add_member']));
     if(is_array($arr)) {
 	foreach($arr as $addr) $err[] = "{$addr[0]} inscrit.";
     }
 }
 
 if(isset($_REQUEST['del_member'])) {
-    $client->mass_unsubscribe('polytechnique.org', $liste, Array($_REQUEST['del_member']));
+    $client->mass_unsubscribe($liste, Array($_REQUEST['del_member']));
     header("Location: ?liste=$liste");
 }
 
 if(isset($_REQUEST['add_owner'])) {
-    if($client->add_owner('polytechnique.org', $liste, $_REQUEST['add_owner']))
+    if($client->add_owner($liste, $_REQUEST['add_owner']))
 	$err = $_REQUEST['add_owner']." ajouté aux modérateurs.";
 }
 
 if(isset($_REQUEST['del_owner'])) {
-    $client->del_owner('polytechnique.org', $liste, $_REQUEST['del_owner']);
+    $client->del_owner($liste, $_REQUEST['del_owner']);
     header("Location: ?liste=$liste");
 }
 
-if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
+if(list($det,$mem,$own) = $client->get_members($liste)) {
     $membres = Array();
     foreach($mem as $member) {
 	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@polytechnique.org$/', $member[1], $matches)) {

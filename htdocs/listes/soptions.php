@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: soptions.php,v 1.5 2004-10-31 14:42:36 x2000habouzit Exp $
+        $Id: soptions.php,v 1.6 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,7 +28,7 @@ require("auto.prepend.inc.php");
 new_admin_page('listes/soptions.tpl', true);
 include('xml-rpc-client.inc.php');
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 if(isset($_POST['submit'])) {
     $values = array_map('stripslashes', $_POST);
@@ -50,10 +50,10 @@ if(isset($_POST['submit'])) {
     unset($values['moderate']);
     $values['advertised'] = empty($values['advertised']) ? false : true;
     $values['archive'] = empty($values['archive']) ? false : true;
-    $client->set_admin_options('polytechnique.org', $liste, $values);
+    $client->set_admin_options($liste, $values);
 }
 
-if(list($details,$options) = $client->get_admin_options('polytechnique.org', $liste)) {
+if(list($details,$options) = $client->get_admin_options($liste)) {
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
 } else

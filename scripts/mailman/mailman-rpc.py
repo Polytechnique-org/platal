@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.73 2004-11-10 09:36:28 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.74 2004-11-10 10:59:10 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -66,14 +66,19 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     def _dispatch(self,method,params):
         # TODO: subclass in SimpleXMLRPCDispatcher and not here.
         new_params = list(params)
-        new_params.insert(0,self.data)
+        new_params.insert(0,self.data[2])
+        new_params.insert(0,self.data[0:2])
         return self.server._dispatch(method,new_params)
 
     def do_POST(self):
         try:
             _, auth   = self.headers["authorization"].split()
             uid, md5  = base64.decodestring(auth).strip().split(':')
-            self.data = self.getUser(uid,md5)
+            try:
+                vhost = self.path.split('/')[1].lower()
+            except:
+                vhost = 'polytechnique.org'
+            self.data = self.getUser(uid,md5,vhost)
             if self.data is None:
                 raise AuthFailed
             # Call super.do_POST() to do the actual work
@@ -82,7 +87,7 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.send_response(401)
             self.end_headers()
 
-    def getUser(self, uid, md5):
+    def getUser(self, uid, md5, vhost):
         mysql.execute ("""SELECT CONCAT(u.prenom, ' ',u.nom),a.alias,u.perms
                            FROM  auth_user_md5 AS u
                      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
@@ -90,8 +95,14 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
                           LIMIT  1""" %( uid, md5 ) )
         if int(mysql.rowcount) is 1:
             name,forlife,perms = mysql.fetchone()
+            if vhost != 'polytechnique.org':
+                mysql.execute ("""SELECT  uid
+                                    FROM  groupex.membres AS m
+                              INNER JOIN  groupex.asso    AS a ON (m.asso_id = a.id)
+                                   WHERE  perms='admin' AND uid='%s' AND mail_domain='%s'""" %( uid , vhost ) )
+                if int(mysql.rowcount) is 1: perms= 'admin'
             userdesc = UserDesc(forlife+'@polytechnique.org', name, None, 0)
-            return (userdesc,perms)
+            return (userdesc,perms,vhost)
         else:
             return None
     

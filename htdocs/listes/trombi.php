@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.12 2004-11-02 07:48:40 x2000habouzit Exp $
+        $Id: trombi.php,v 1.13 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -29,12 +29,12 @@ new_skinned_page('listes/trombi.tpl', AUTH_COOKIE, true);
 include('xml-rpc-client.inc.php');
 require("trombi.inc.php");
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 function getList($offset,$limit) {
     global $client, $globals;
     $liste = $_REQUEST['liste'];
-    list($total,$members) = $client->get_members_limit('polytechnique.org',$liste,$offset,$limit);
+    list($total,$members) = $client->get_members_limit($liste,$offset,$limit);
 
     $membres = Array();
     foreach($members as $member) {
@@ -53,7 +53,7 @@ function getList($offset,$limit) {
     return Array($total,$membres);
 }
 
-$owners = $client->get_owners('polytechnique.org',$liste);
+$owners = $client->get_owners($liste);
 
 if(is_array($owners)) {
     $moderos = Array();

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.9 2004-11-02 09:08:56 x2000habouzit Exp $
+        $Id: members.php,v 1.10 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,8 +28,8 @@ require("auto.prepend.inc.php");
 new_skinned_page('listes/members.tpl', AUTH_COOKIE, true);
 include('xml-rpc-client.inc.php');
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
-$members = $client->get_members('polytechnique.org', $liste);
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
+$members = $client->get_members($liste);
 
 $tri_promo = empty($_REQUEST['alpha']);
 

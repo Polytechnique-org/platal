@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.17 2004-11-09 21:02:23 x2000habouzit Exp $
+        $Id: moderate.php,v 1.18 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -32,16 +32,16 @@ require("auto.prepend.inc.php");
 new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 if(isset($_REQUEST['sadd'])) {
-    $client->handle_request('polytechnique.org', $liste,$_REQUEST['sadd'],4,'');
+    $client->handle_request($liste,$_REQUEST['sadd'],4,'');
     /** 4 is the magic for SUBSCRIBE see Defaults.py **/
     header("Location: moderate.php?liste=$liste");
 }
 
 if(isset($_POST['sdel'])) {
-    $client->handle_request('polytechnique.org', $liste,$_POST['sdel'],2,stripslashes($_POST['reason']));
+    $client->handle_request($liste,$_POST['sdel'],2,stripslashes($_POST['reason']));
     /** 2 is the magic for REJECT see Defaults.py **/
 }
 
@@ -49,7 +49,7 @@ if(isset($_REQUEST['mid'])) {
     $mid = $_REQUEST['mid'];
     if(isset($_REQUEST['mok'])) {
 	unset($_GET['mid']);
-	if($client->handle_request('polytechnique.org', $liste,$mid,1,'')) { /** 1 = APPROVE **/
+	if($client->handle_request($liste,$mid,1,'')) { /** 1 = APPROVE **/
 	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message accepté");
@@ -63,8 +63,8 @@ if(isset($_REQUEST['mid'])) {
 	}
     } elseif(isset($_POST['mno'])) {
 	$reason = stripslashes($_POST['reason']);
-	$mail = $client->get_pending_mail('polytechnique.org', $liste, $mid);
-	if($client->handle_request('polytechnique.org', $liste,$mid,2,$reason)) { /** 2 = REJECT **/
+	$mail = $client->get_pending_mail($liste, $mid);
+	if($client->handle_request($liste,$mid,2,$reason)) { /** 2 = REJECT **/
 	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message refusé");
@@ -79,8 +79,8 @@ if(isset($_REQUEST['mid'])) {
 	}
     } elseif(isset($_REQUEST['mdel'])) {
 	unset($_GET['mid']);
-	$mail = $client->get_pending_mail('polytechnique.org', $liste, $mid);
-	if($client->handle_request('polytechnique.org', $liste,$mid,3,'')) { /** 3 = DISCARD **/
+	$mail = $client->get_pending_mail($liste, $mid);
+	if($client->handle_request($liste,$mid,3,'')) { /** 3 = DISCARD **/
 	    include_once('diogenes.mailer.inc.php');
 	    $mailer = new DiogenesMailer("$liste-bounces@polytechnique.org",
 		"$liste-owner@polytechnique.org", "Message supprimé");
@@ -99,7 +99,7 @@ if(isset($_REQUEST['mid'])) {
 if(isset($_REQUEST['sid'])) {
 
     $sid = $_REQUEST['sid'];
-    if(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
+    if(list($subs,$mails) = $client->get_pending_ops($liste)) {
 	foreach($subs as $user) {
 	    if($user['id'] == $sid) $u = $user;
 	}
@@ -116,7 +116,7 @@ if(isset($_REQUEST['sid'])) {
 } elseif(isset($_GET['mid'])) {
 
     $mid = $_REQUEST['mid'];
-    $mail = $client->get_pending_mail('polytechnique.org', $liste,$mid);
+    $mail = $client->get_pending_mail($liste,$mid);
     if(is_array($mail)) {
 	$fname = '/etc/mailman/fr/refuse.txt';
 	$h = fopen($fname,'r');
@@ -131,14 +131,14 @@ if(isset($_REQUEST['sid'])) {
 	$page->changeTpl('listes/moderate_mail.tpl');
         $page->assign_by_ref('mail', $mail);
     } else {
-	if(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
+	if(list($subs,$mails) = $client->get_pending_ops($liste)) {
 	    $page->assign_by_ref('subs', $subs);
 	    $page->assign_by_ref('mails', $mails);
 	} else
 	    $page->assign('no_list', true);
     }
 
-} elseif(list($subs,$mails) = $client->get_pending_ops('polytechnique.org', $liste)) {
+} elseif(list($subs,$mails) = $client->get_pending_ops($liste)) {
 
     $page->assign_by_ref('subs', $subs);
     $page->assign_by_ref('mails', $mails);

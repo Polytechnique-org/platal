@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: options.php,v 1.6 2004-10-31 14:42:36 x2000habouzit Exp $
+        $Id: options.php,v 1.7 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,11 +28,11 @@ require("auto.prepend.inc.php");
 new_skinned_page('listes/options.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
 if(isset($_POST['submit'])) {
     $values =array_map('stripslashes',$_POST);
-    $client->set_bogo_level('polytechnique.org', $liste, intval($values['bogo_level']));
+    $client->set_bogo_level($liste, intval($values['bogo_level']));
     unset($values['submit']);
     unset($values['bogo_level']);
     $values['send_goodbye_msg'] = empty($values['send_goodbye_msg']) ? false : true;
@@ -41,18 +41,18 @@ if(isset($_POST['submit'])) {
     if(isset($values['subject_prefix'])) {
 	$values['subject_prefix'] = trim($values['subject_prefix']).' ';
     }
-    $client->set_owner_options('polytechnique.org', $liste, $values);
+    $client->set_owner_options($liste, $values);
 } elseif(isset($_POST['atn_add']) && isvalid_email($_POST['atn_add'])) {
-    $client->add_to_wl('polytechnique.org', $liste, $_POST['atn_add']);
+    $client->add_to_wl($liste, $_POST['atn_add']);
 } elseif(isset($_GET['atn_del'])) {
-    $client->del_from_wl('polytechnique.org', $liste, $_GET['atn_del']);
+    $client->del_from_wl($liste, $_GET['atn_del']);
     header("Location: ?liste=$liste");
 }
 
-if(list($details,$options) = $client->get_owner_options('polytechnique.org', $liste)) {
+if(list($details,$options) = $client->get_owner_options($liste)) {
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
-    $page->assign('bogo_level', $client->get_bogo_level('polytechnique.org', $liste));
+    $page->assign('bogo_level', $client->get_bogo_level($liste));
 } else
     $page->assign('no_list', true);
 

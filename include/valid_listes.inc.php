@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_listes.inc.php,v 1.3 2004-10-31 14:42:37 x2000habouzit Exp $
+        $Id: valid_listes.inc.php,v 1.4 2004-11-10 10:59:10 x2000habouzit Exp $
  ***************************************************************************/
 
 class ListeReq extends Validate {
@@ -91,8 +91,8 @@ class ListeReq extends Validate {
 	list($pass) = mysql_fetch_row($res);
 	mysql_free_result($res);
 
-	$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-	$ret = $client->create_list('polytechnique.org', $this->liste, $this->desc,
+	$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949/polytechnique.org");
+	$ret = $client->create_list($this->liste, $this->desc,
 	    $this->advertise, $this->modlevel, $this->inslevel,
 	    $this->owners, $this->members);
 	$liste = strtolower($this->liste);

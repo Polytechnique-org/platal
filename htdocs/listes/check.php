@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: check.php,v 1.4 2004-10-31 14:42:36 x2000habouzit Exp $
+        $Id: check.php,v 1.5 2004-11-10 10:59:09 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,11 +28,11 @@ require("auto.prepend.inc.php");
 new_admin_page('listes/check.tpl', true);
 include('xml-rpc-client.inc.php');
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
 
-if(isset($_POST['correct'])) { $client->check_options('polytechnique.org', $liste, true); }
+if(isset($_POST['correct'])) { $client->check_options($liste, true); }
 
-if(list($details,$options) = $client->check_options('polytechnique.org', $liste)) {
+if(list($details,$options) = $client->check_options($liste)) {
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
 } else
