@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.1 2004-07-16 20:22:03 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.2 2004-07-17 10:14:56 x2000habouzit Exp $ *}
 
 
 <div class="rubrique">Marketing Polytechnique.org</div>
@@ -11,7 +11,7 @@
     <td>
       <span class="item">Premier contact : </span>
       <a href="utilisateurs_marketing.php">Chercher un non inscrit</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="marketing_promo.php">Marketing promo</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="promo.php">Marketing promo</a> &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="envoidirect.php">Sollicitations faites</a>
     </td>
   </tr>

@@ -22,7 +22,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | admin/evenements.php					  | 
 ;!	  | admin/pg.php							  | 
 ------+-[ marketing ]-----------------------------+----------------
-;	  | admin/marketing_promo.php				  | marketing/
 ;	  | admin/marketing_volontaire.php			  | marketing/
 ;	  | admin/relance.php						  | marketing/ 
 ;	  | admin/utilisateurs_identification.php	  | marketing/
@@ -120,6 +119,7 @@ xx	  | admin/ins_confirmees.php				  | -
 xx	  | admin/logger_actions.php				  | -
 xx	  | admin/logger.php						  | -
 xx	  | admin/marketing.php						  | marketing/index.php
+xx	  | admin/marketing_promo.php				  | marketing/promo.php
 xx	  | admin/newsletter_archi.php				  | -
 xx	  | admin/newsletter_pattecassee.php		  | -
 xx	  | admin/newsletter_prep.php				  | -
