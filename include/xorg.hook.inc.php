@@ -41,7 +41,7 @@ require_once("PEAR.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
- * @version  $Id: xorg.hook.inc.php,v 1.4 2004-11-21 12:49:20 x2000habouzit Exp $
+ * @version  $Id: xorg.hook.inc.php,v 1.5 2004-11-21 14:33:28 x2000habouzit Exp $
  * @access   public
  * @link     http://doc.polytechnique.org/XOrgModule/#hook
  * @since    Classe available since 0.9.3
@@ -119,5 +119,5 @@ overload('XOrgHook');
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
