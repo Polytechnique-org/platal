@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.15 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.16 2004-10-26 07:19:57 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -27,10 +27,6 @@
 <p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
 
 {else}
-
-<h1>
-  Modérer la liste {$smarty.get.liste}@polytechnique.org
-</h1>
 
 <p>
 [<a href='index.php'>listes</a>] »

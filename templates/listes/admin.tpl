@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.13 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.14 2004-10-26 07:19:57 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,9 +28,6 @@
 
 {else}
 
-<h1>
-  Gestion des membres de la liste {$details.addr}
-</h1>
 {if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.

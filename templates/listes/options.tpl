@@ -28,9 +28,6 @@
 
 {else}
 
-<h1>
-  Changer les options de la liste {$details.addr}
-</h1>
 {if !$details.own}
 <p class='erreur'>
 Tu n'es pas administrateur de la liste, mais du site.
@@ -49,6 +46,10 @@ Tu n'es pas administrateur de la liste, mais du site.
 [<a href='check.php?liste={$smarty.get.liste}'>check</a>]
 {/perms}
 </p>
+
+<h1>
+  Changer les options de la liste {$details.addr}
+</h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   <table class='bicol' cellpadding='2' cellspacing='0'>

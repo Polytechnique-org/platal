@@ -28,10 +28,6 @@
 
 {else}
 
-<h1>
-  Changer les options de la liste {$details.addr}
-</h1>
-
 <p>
 [<a href='index.php'>listes</a>] »
 [<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
@@ -44,6 +40,10 @@
 [<a href='check.php?liste={$smarty.get.liste}'>check</a>]
 {/perms}
 </p>
+
+<h1>
+  Changer les options de la liste {$details.addr}
+</h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
   <table class='bicol' cellpadding='2' cellspacing='0'>

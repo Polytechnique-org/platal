@@ -28,10 +28,6 @@
 
 {else}
 
-<h1>
-  Changer les options de la liste {$details.addr}
-</h1>
-
 <p>
 [<a href='index.php'>listes</a>] »
 [<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
