@@ -36,11 +36,9 @@ class EvtReq extends Validate
     // }}}
     // {{{ constructor
 
-    function EvtReq($_evtid,$_titre,$_texte,$_pmin,$_pmax,$_peremption,
-      $_comment,$_uid,$_stamp=0) {
+    function EvtReq($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid) {
         global $globals;
         $this->Validate($_uid, false, 'evts', $_stamp);
-        $this->evtid      = $_evtid;
         $this->titre      = $_titre;
         $this->texte      = $_texte;
         $this->pmin       = $_pmin;
@@ -64,51 +62,39 @@ class EvtReq extends Validate
     { return 'include/form.valid.evts.tpl'; }
 
     // }}}
-    // {{{ function handle_formu()
-
-    function handle_formu()
+    // {{{ function _mail_subj
+    
+    function _mail_subj()
     {
-        global $globals;
-        if (Post::has('action')) {
-            require_once("xorg.mailer.inc.php");
-            $mymail = new XOrgMailer('valid.evts.tpl');
-            $mymail->assign('bestalias',$this->bestalias);
-            $mymail->assign('titre',$this->titre);
+        return "[Polytechnique.org/EVENEMENTS] Proposition d'événement";
+    }
 
-            $uid = Session::getInt('uid');
+    // }}}
+    // {{{ function _mail_body
 
-            if (Env::get('action') == "Valider") {
-                $globals->xdb->execute(
-                        "UPDATE  evenements
-                            SET  creation_date = creation_date, validation_user_id = {?},
-                                 validation_date = NULL, flags = CONCAT(flags,',valide')
-                          WHERE  id={?}
-                          LIMIT  1", $uid, $this->evtid);
-                $mymail->assign('answer','yes');
-                $mymail->send();
-            } elseif (Env::get('action') == "Invalider") {
-                $globals->xdb->execute(
-                        "UPDATE  evenements
-                            SET  creation_date = creation_date, validation_user_id = {?},
-                                 validation_date = NULL, flags = REPLACE(flags,'valide','')
-                          WHERE  id='{?}'
-                          LIMIT 1", $uid, $this->evtid);
-                $mymail->assign('answer', 'no');
-                $mymail->send();
-            } elseif (Env::get('action') == "Supprimer") {
-                $globals->xdb->execute("DELETE FROM evenements WHERE id={?} LIMIT 1", $this->evtid);
-            }
-            
-            $this->clean();
+    function _mail_body($isok)
+    {
+        if ($isok) {
+            return "  L'annonce que tu avais proposée ({$this->titre}) vient d'être validée.";
+        } else {
+            return "  L'annonce que tu avais proposée ({$this->titre}) a été refusée.";
         }
-        return "";
     }
 
     // }}}
     // {{{ function commit()
 
     function commit()
-    { }
+    {
+        global $globals;
+        $globals->xdb->execute(
+                "INSERT INTO  evenements
+                         SET  user_id = {?}, creation_date=NULL, titre={?}, texte={?},
+                              peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide')",
+                $this->_uid, $this->titre, $this->texte,
+                $this->peremption, $this->pmin, $this->pmax);
+        return true;
+    }
 
     // }}}
 }

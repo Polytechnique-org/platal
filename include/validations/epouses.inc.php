@@ -69,33 +69,28 @@ class EpouseReq extends Validate
     { return 'include/form.valid.epouses.tpl'; }
 
     // }}}
-    // {{{ function handle_formu()
+    // {{{ function _mail_subj()
 
-    function handle_formu()
+    function _mail_subj()
     {
-        if (Env::get('submit') != "Accepter" && Env::get('submit') != "Refuser") {
-            return false;
-        }
+        return "[Polytechnique.org/EPOUSE] Changement de nom de mariage";
+    }
 
-        require_once("xorg.mailer.inc.php");
-        $mymail = new XOrgMailer('valid.epouses.tpl');
-        $mymail->assign('forlife', $this->forlife);
+    // }}}
+    // {{{ function _mail_body
 
-        if (Env::get('submit') == "Accepter") {
-            $mymail->assign('answer','yes');
-            if ($this->oldepouse) {
-                $mymail->assign('oldepouse',$this->oldalias);
+    function _mail_body($isok)
+    {
+        global $globals;
+        if ($isok) {
+            $res = "  La demande de changement de nom de mariage que tu as demandée vient d'être effectuée.";
+            if ($this->oldalias) {
+                $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
             }
-            $mymail->assign('epouse',$this->alias);
-            $this->commit();
-        } else { // c'était donc Refuser
-            $mymail->assign('answer','no');
+            $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+        } else {
+            return "  La demande de changement de nom de mariage que tu avais faite a été refusée.";
         }
-
-        $mymail->send();
-
-        $this->clean();
-        return "Mail envoyé";
     }
 
     // }}}
@@ -113,6 +108,7 @@ class EpouseReq extends Validate
         $f = fopen("/tmp/flag_recherche","w");
         fputs($f,"1");
         fclose($f);
+        return true;
     }
 
     // }}}

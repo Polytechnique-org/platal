@@ -40,22 +40,24 @@
 <table class="bicol">
   <tr>
     <th>
-      Posté par <a href="{"fiche.php"|url}?user={$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
-      <a href="mailto:{$ev.forlife}@m4x.org">lui écrire</a>
+      Posté par <a href="{rel}/fiche.php?user={$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
     </th>
   </tr>
   <tr class="{if $ev.fvalide}impair{else}pair{/if}">
     <td>
-      <strong>{$ev.titre}</strong><br />
-      {$ev.texte|nl2br}<br />
-      <hr />
+      <strong>{$ev.titre}</strong>
+    </td>
+  </tr>
+  <tr class="{if $ev.fvalide}impair{else}pair{/if}">
+    <td>
+      {tidy}{$ev.texte|nl2br}{/tidy}
+    </td>
+  </tr>
+  <tr class="{if $ev.fvalide}impair{else}pair{/if}">
+    <td>
       Création : {$ev.creation_date}<br />
-      {if $ev.fvalide}
-      Validation : {$ev.validation_date}<br />
-      {/if}
       Péremption : {$ev.peremption}<br />
       Promos : {$ev.promo_min} - {$ev.promo_max}<br />
-      Message : {$ev.validation_message}
     </td>
   </tr>
   <tr>

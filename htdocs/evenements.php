@@ -39,18 +39,11 @@ $page->assign('validation_message', $validation_message);
 $page->assign('action', strtolower($action));
 
 if ($action=="Confirmer") {
-    $sql = "INSERT INTO  evenements
-                    SET  user_id = ".Session::getInt('uid').", creation_date = NULL, titre = '".addslashes($titre)."',
-                         texte = '".addslashes($texte)."', peremption = '".$peremption."', promo_min = '$promo_min',
-                         promo_max = '$promo_max', validation_message = '".addslashes($validation_message)."', validation_date = 0";
-
-    if ($res = $globals->db->query($sql)) {
-	require_once("validations.inc.php");
-	$evtreq = new evtreq(mysql_insert_id(), $titre, $texte, $promo_min,
-		$promo_max, $peremption, $validation_message, Session::getInt('uid'));
-	$evtreq->submit();
-	$page->assign('ok', true);
-    }
+    require_once("validations.inc.php");
+    $evtreq = new evtreq($titre, $texte, $promo_min, $promo_max,
+            $peremption, $validation_message, Session::getInt('uid'));
+    $evtreq->submit();
+    $page->assign('ok', true);
 }
 
 $select = "";

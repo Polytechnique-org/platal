@@ -19,49 +19,22 @@
  ***************************************************************************}
 
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol" cellpadding="4" summary="Demande d'alias d'épouse">
-    <tr>
-      <td>Demandeur&nbsp;:</td>
-      <td>
-        <a href="{"fiche.php"|url}?user={$valid->forlife}" class="popup2">
-          {$valid->prenom} {$valid->nom}
-        </a>
-        {if $valid->oldepouse}({$valid->oldepouse} - {$valid->oldalias}){/if}
-      </td>
-    </tr>
-    <tr>
-      <td>&Eacute;pouse&nbsp;:</td>
-      <td>{$valid->epouse}</td>
-    </tr>
-    <tr>
-      <td>Nouvel&nbsp;alias&nbsp;:</td>
-      <td>{$valid->alias|default:"<span class='erreur'>suppression</span>"}</td>
-    </tr>
-    {if $valid->homonyme}
-    <tr>
-      <td colspan="2">
-        <span class="erreur">Probleme d'homonymie !
-          <a href="{"fiche.php"|url}?user=$valid->homonyme" class="popup2">{$valid->homonyme}</a>
-        </span>
-      </td>
-    </tr>
-    {/if}
-    <tr>
-      <td class="middle">
-        <input type="hidden" name="uid" value="{$valid->uid}" />
-        <input type="hidden" name="type" value="{$valid->type}" />
-        <input type="hidden" name="stamp" value="{$valid->stamp}" />
-        <input type="submit" name="submit" value="Accepter" />
-        <br /><br />
-        <input type="submit" name="submit" value="Refuser" />
-      </td>
-      <td>
-        <p>Raison du refus:</p>
-        <textarea rows="5" cols="50" name="motif"></textarea>
-      </td>
-    </tr>
-  </table>
-</form>
+<tr class="impair">
+  <td class="titre">Épouse&nbsp;:</td>
+  <td>{$valid->epouse}</td>
+</tr>
+<tr class="impair">
+  <td class="titre">Nouvel&nbsp;alias&nbsp;:</td>
+  <td>{$valid->alias|default:"<span class='erreur'>suppression</span>"}</td>
+</tr>
+{if $valid->homonyme}
+<tr class="impair">
+  <td colspan="2">
+    <span class="erreur">Probleme d'homonymie !
+      <a href="{rel}/fiche.php?user=$valid->homonyme" class="popup2">{$valid->homonyme}</a>
+    </span>
+  </td>
+</tr>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -73,10 +73,6 @@
         </select>
       </td>
     </tr>
-    <tr>
-      <td><strong>Message pour le validateur</strong></td>
-      <td><textarea name="validation_message" cols="50" rows="7">{$validation_message}</textarea></td>
-    </tr>
   </table>
 
   <div class="center">

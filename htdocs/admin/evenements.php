@@ -40,8 +40,7 @@ switch(Post::get('action')) {
 	// le 'creation_date = creation_date' est indispensable pour que 
 	// creation_date conserve sa valeur.
 	$req="UPDATE  evenements
-                 SET  creation_date = creation_date, validation_user_id = ".Session::getInt('uid').",
-                      validation_date = NULL, flags = CONCAT(flags,',valide')
+                 SET  creation_date = creation_date, flags = CONCAT(flags,',valide')
                WHERE  id = $evid
                LIMIT  1";
         $result = $globals->db->query ($req);
@@ -51,8 +50,7 @@ switch(Post::get('action')) {
 	// le 'creation_date = creation_date' est indispensable pour que 
 	// creation_date conserve sa valeur.
 	$req="UPDATE  evenements
-                 SET  creation_date = creation_date, validation_user_id = ".Session::getInt('uid').",
-                      validation_date = NULL, flags = REPLACE(flags, 'valide','')
+                 SET  creation_date = creation_date, flags = REPLACE(flags, 'valide','')
                WHERE  id = $evid
                LIMIT  1";
         $result = $globals->db->query ($req);
@@ -74,14 +72,13 @@ switch(Post::get('action')) {
         break;
 
     case "Editer":
-	$evt_req = $globals->db->query("SELECT titre, texte, peremption, promo_min, promo_max, validation_message FROM evenements WHERE id= $evid");
-        list($titre, $texte, $peremption, $promo_min, $promo_max, $validation_message) = mysql_fetch_row($evt_req) ;
+	$evt_req = $globals->db->query("SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id= $evid");
+        list($titre, $texte, $peremption, $promo_min, $promo_max) = mysql_fetch_row($evt_req) ;
         $page->assign('mode', 'edit');
         $page->assign('titre',$titre);
         $page->assign('texte',$texte);
         $page->assign('promo_min',$promo_min);
         $page->assign('promo_max',$promo_max);
-        $page->assign('validation_message',$validation_message);
         $page->assign('peremption',$peremption);
 
         $select = "";
@@ -102,9 +99,8 @@ if ($action != "Editer") {
 
     $sql = "SELECT  e.id, e.titre, e.texte,
                     DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
-                    DATE_FORMAT(e.validation_date,'%d/%m/%Y %T') AS validation_date,
                     DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
-                    e.promo_min, e.promo_max, e.validation_message, e.validation_user_id,
+                    e.promo_min, e.promo_max,
                     FIND_IN_SET('valide', e.flags) AS fvalide,
                     FIND_IN_SET('archive', e.flags) AS farch,
                     u.promo, u.nom, u.prenom, a.alias AS forlife
