@@ -16,6 +16,7 @@ Changes :
 
 	* Search :
 		- Hide SoundEX search when neither name nor second name selected.	-MC
+		- Married women are now well sorted.								-MC
 
 	* Search+Contacts :
 		- Homeland is now a flag.  (FS#124)									-MC
