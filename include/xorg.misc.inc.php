@@ -18,33 +18,17 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.misc.inc.php,v 1.4 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: xorg.misc.inc.php,v 1.5 2004-09-02 18:37:15 x2000habouzit Exp $
  ***************************************************************************/
 
-/** vérifie si une adresse email (sans @) correspond à un username ou alias ou une liste...
+/** vérifie si une adresse email (sans @) correspond à un alias (FIXME ou une liste)...
  * @param $email l'adresse email a verifier
  * @return BOOL
  */
 function isvalid_email_local($email) {
   global $globals;
-  // ATTENTION, les requêtes sur le username et l'alias ne doivent pas être faites
-  // dans la même requête MySQL, car elles portent sur 2 index de la table avec un OR
-  // et MySQL ne sait pas utiliser les index dans ce cas
-  // (ce n'est plus vrai dans MySQL 4.x donc quand on y passera, on pourra
-  // combiner les 2 requêtes suivantes en une seule)
-  $req = $globals->db->query("select count(*) from auth_user_md5 where username='$email'");
-  list($nb)=mysql_fetch_row($req);
-  mysql_free_result($req);
-  if ($nb>0) return true;
-
-  $req = $globals->db->query("select count(*) from auth_user_md5 where alias='$email'");
-  list($nb)=mysql_fetch_row($req);
-  mysql_free_result($req);
-  if ($nb>0) return true;
-
-  // vérification des adresses types $liste et $liste-request
-  // ATTENTION, il ne faut pas accepter les adresses types owner-$liste et sm-$liste
-  $req = $globals->db->query("select count(*) from aliases where (alias='$email' and type='liste') or (alias='$email-request' and type='liste-request')");
+  
+  $req = $globals->db->query("select count(*) from aliases where alias='$email'");
   list($nb)=mysql_fetch_row($req);
   mysql_free_result($req);
   if ($nb>0) return true;

@@ -18,19 +18,19 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: exit.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: exit.php,v 1.5 2004-09-02 18:37:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('index.tpl',AUTH_MDP);
 
 if (isset($_SESSION['suid'])) {
-    $res = @$globals->db->query( "SELECT username,prenom,nom,promo,perms FROM auth_user_md5 WHERE user_id='{$_SESSION['suid']}'");
+    $res = @$globals->db->query( "SELECT prenom,nom,promo,perms FROM auth_user_md5 WHERE user_id='{$_SESSION['suid']}'");
     if(@mysql_num_rows($res) != 0) {
-        list($username,$prenom,$nom,$promo,$perms)=mysql_fetch_row($res);
+        list($prenom,$nom,$promo,$perms)=mysql_fetch_row($res);
         // on rétablit les loggers
         // on loggue la fermeture de la session de su
-        $log_data = $_SESSION['username']." by ".$username;
+        $log_data = "{$_SESSION['prenom']} {$_SESSION['nom']} {$_SESSION['promo']} by $prenom $nom $promo";
         $_SESSION['log']->log("suid_stop",$log_data);
         $_SESSION['log'] = $_SESSION['slog'];
         unset($_SESSION['slog']);
@@ -41,7 +41,6 @@ if (isset($_SESSION['suid'])) {
         $_SESSION['prenom'] = $prenom;
         $_SESSION['nom'] = $nom;
         $_SESSION['promo'] = $promo;
-        $_SESSION['username'] = $username;
         $_SESSION['perms'] = $perms;
     }
 }
