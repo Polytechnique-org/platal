@@ -76,7 +76,7 @@ class EpouseReq extends Validate {
         if($no_update_bd) return false;
         
         $alias = ($this->epouse ? $this->alias : "");
-        $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',epouse_soundex='".soundex_fr($this->epouse)."',alias='".$this->alias."' WHERE user_id=".$this->uid);
+        $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',alias='".$this->alias."' WHERE user_id=".$this->uid);
         $f = fopen("/tmp/flag_recherche","w");
         fputs($f,"1");
         fclose($f);

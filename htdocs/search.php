@@ -7,6 +7,7 @@ if ($public_directory)
     new_skinned_page('search.tpl', AUTH_PUBLIC);
 else
     new_skinned_page('search.tpl', AUTH_COOKIE);
+$page->assign('advanced',0);
 $page->assign('public_directory',$public_directory);
 require_once("applis.func.inc.php");
 
@@ -17,9 +18,9 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 
     if ($with_soundex) {
         $nameField = new
-        StringWithSoundexSField('name',array('s.nom_soundex','s.epouse_soundex','i.nom_soundex'),'r.nom1');
+        StringWithSoundexSField('name',array('r.nom1_soundex','r.nom2_soundex','r.nom3_soundex'),'');
         $firstnameField = new
-        StringWithSoundexSField('firstname',array('s.prenom_soundex','i.prenom_soundex'),'r.prenom1');
+        StringWithSoundexSField('firstname',array('r.prenom1_soundex','r.prenom2_soundex'),'');
     }
     else {
         $nameField = new StringSField('name',array('r.nom1','r.nom2','r.nom3'),'r.nom1');
@@ -50,10 +51,9 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                        ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
-                 FROM  recherche      AS r
+                 FROM  '.(($with_soundex)?'recherche_soundex':'recherche').'      AS r
            INNER JOIN  identification AS i ON (i.matricule=r.matricule)
             LEFT JOIN  auth_user_md5  AS u ON (u.matricule=r.matricule)
-            '.(($with_soundex)?'LEFT JOIN __soundex AS s ON (s.user_id=u.user_id)':'').'
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
             LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
