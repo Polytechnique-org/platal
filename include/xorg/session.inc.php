@@ -74,23 +74,13 @@ class XorgSession extends DiogenesCoreSession
             $session =& Session::getMixed('session');
         }
 
-        if (Env::has('domain')) {
-            if (($domain = Env::get('domain', 'login')) == 'alias') {
-                setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
-            } else {
-                setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
-            }
-            // pour que la modification soit effective dans le reste de la page
-            $_COOKIE['ORGdomain'] = $domain;
-        }
-
         if (Env::has('username') && Env::has('response') && isset($session->challenge))
 	{
 	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
 	    // ou passwordpromptscreenlogged.tpl
             $uname = Env::get('username');
             
-            if ($domain == "alias") {
+            if (Env::get('domain') == "alias") {
             
                 $res = $globals->xdb->query(
                     "SELECT redirect
@@ -119,6 +109,16 @@ class XorgSession extends DiogenesCoreSession
 	    if (list($uid, $password) = $res->fetchOneRow()) {
 		$expected_response=md5("$uname:$password:{$session->challenge}");
 		if (Env::get('response') == $expected_response) {
+                    if (Env::has('domain')) {
+                        if (($domain = Env::get('domain', 'login')) == 'alias') {
+                            setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
+                        } else {
+                            setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
+                        }
+                        // pour que la modification soit effective dans le reste de la page
+                        $_COOKIE['ORGdomain'] = $domain;
+                    }
+
 		    unset($session->challenge);
 		    if ($logger) {
 			$logger->log('auth_ok');
