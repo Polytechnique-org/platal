@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.39 2004-11-17 10:53:02 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.40 2004-11-18 10:40:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -52,7 +52,7 @@ class XorgSession extends DiogenesCoreSession {
 	    $res = @$globals->db->query( "SELECT  u.user_id,u.password
 					    FROM  auth_user_md5 AS u
          			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-				           WHERE  a.$field='{$_REQUEST['username']}'");
+				           WHERE  a.$field='{$_REQUEST['username']}' AND u.perms IN('admin','user')");
 	    if(@mysql_num_rows($res) != 0) {
 		list($uid,$password)=mysql_fetch_row($res);
 		mysql_free_result($res);
@@ -199,7 +199,7 @@ function try_cookie() {
     if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGuid']))
 	return -1;
 
-    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}'");
+    $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}' AND perms IN('admin','user')");
     if(@mysql_num_rows($res) != 0) {
 	list($uid,$password)=mysql_fetch_row($res);
 	mysql_free_result($res);
@@ -228,7 +228,7 @@ function start_connexion ($uid, $identified) {
     INNER JOIN	aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
     INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
      LEFT JOIN  logger.sessions AS s  ON (s.uid=u.user_id AND s.suid=0)
-         WHERE  u.user_id=$uid
+         WHERE  u.user_id=$uid AND u.perms IN('admin','user')
       ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
 	 $lastnewslogin, $watch_last,
@@ -278,9 +278,10 @@ function start_connexion ($uid, $identified) {
 function set_skin() {
     global $globals;
     if(logged()) {
-	$result = $globals->db->query("SELECT skin,skin_tpl
-		FROM auth_user_quick AS a INNER JOIN skins AS s
-		ON a.skin=s.id WHERE user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
+	$result = $globals->db->query("SELECT  skin,skin_tpl
+	                                 FROM  auth_user_quick AS a
+				   INNER JOIN  skins           AS s ON a.skin=s.id
+				        WHERE  user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
 	if(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result)) {
 	    if ($_SESSION['skin_id'] == SKIN_STOCHASKIN_ID) {
 		$res = $globals->db->query("SELECT id,skin FROM skins
