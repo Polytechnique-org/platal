@@ -57,7 +57,7 @@ if (Post::has('submit')) {
     $client->add_to_wl($liste, Post::get('atn_add'));
 } elseif (Get::has('atn_del')) {
     $client->del_from_wl($liste, Get::get('atn_del'));
-    header("Location: ?liste=$liste");
+    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if(list($details,$options) = $client->get_owner_options($liste)) {

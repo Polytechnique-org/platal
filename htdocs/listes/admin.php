@@ -44,7 +44,7 @@ if (Env::has('add_member')) {
 
 if (Env::has('del_member')) {
     $client->mass_unsubscribe($liste, Array(Env::get('del_member').'@'.$globals->mail->domain));
-    header("Location: ?liste=$liste");
+    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if (Env::has('add_owner')) {
@@ -60,7 +60,7 @@ if (Env::has('add_owner')) {
 
 if (Env::has('del_owner')) {
     $client->del_owner($liste, Env::get('del_owner').'@'.$globals->mail->domain);
-    header("Location: ?liste=$liste");
+    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if(list($det,$mem,$own) = $client->get_members($liste)) {

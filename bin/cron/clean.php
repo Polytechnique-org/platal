@@ -37,9 +37,6 @@ query("DELETE FROM watch_ops WHERE known<$eight_days_ago");
 query("DELETE FROM register_pending WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
 query("delete from register_pending WHERE hash = 'INSCRIT'");
 
-// la table envoidirect est nettoyée
-query("update envoidirect set uid = CONCAT('+',uid) where uid not like '+%' and date_succes != 0");
-
 // quelques tables sont triées pour que la lecture triée soit plus facile
 query("alter table applis_def order by text");
 query("alter table binets_def order by text");

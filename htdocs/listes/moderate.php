@@ -24,7 +24,7 @@ if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
 if (preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}-(.*)!", $liste, $matches)) {
-    header('Location: ?liste='.$matches[1]);
+    header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
 }
 
 new_skinned_page('listes/moderate.tpl', AUTH_MDP);

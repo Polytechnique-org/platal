@@ -30,11 +30,11 @@ $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if(Get::has('del')) {
     $client->unsubscribe($liste);
-    header("Location: ?liste=$liste");
+    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 if(Get::has('add')) {
     $client->subscribe($liste);
-    header("Location: ?liste=$liste");
+    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 $members = $client->get_members($liste);
 
