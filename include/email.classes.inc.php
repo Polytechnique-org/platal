@@ -64,7 +64,7 @@ function fix_bestalias($uid)
     }
     $globals->db->query("UPDATE  aliases
                             SET  flags=CONCAT(flags,',','bestalias')
-			  WHERE  id='$uid'
+			  WHERE  id='$uid' AND type!='homonyme'
 		       ORDER BY  !FIND_IN_SET('epouse',flags),alias LIKE '%.%', LENGTH(alias)
 		          LIMIT  1");
 }

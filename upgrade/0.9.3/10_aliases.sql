@@ -7,4 +7,4 @@ alter table aliases add index (flags);
     update  aliases AS a
 left  join  aliases AS b ON(a.id=b.id and b.alias like '%.%' and length(b.alias)<length(a.alias))
        set  a.flags=CONCAT(a.flags,',bestalias')
-     where  a.alias LIKE '%.%' and b.alias IS NULL;
+     where  a.alias LIKE '%.%' and b.alias IS NULL and a.type!='homonyme' and b.type!='homonyme';
