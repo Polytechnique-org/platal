@@ -127,9 +127,8 @@
   d'un service.
 </p>
 <p>
-<strong>L'équipe met à votre disposition une page présentant une
-  <a href="/parselogR.php">comparaison quotidienne des performances de tous les mailers</a>
-  en contact avec Polytechnique.org.</strong>
+<strong>Les forums de discusssion, notament <a href="{rel}/banana/?group=xorg.informatique.divers">xorg.informatique.divers</a>
+  te permettront de recevoir les conseils du moment sur quel fournisseur il vaut mieux choisir</strong>
 </p>
 <br />
 <table class="bicol" cellspacing="0" cellpadding="4" summary="Benchmark">
