@@ -18,11 +18,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.1 2004-10-14 22:16:01 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.2 2004-10-15 12:57:10 x2000habouzit Exp $
  ***************************************************************************/
 
 class NewsLetter {
     function NewsLetter() { }
+}
+
+function get_nl_list() {
+    global $globals;
+    $res = $globals->db->query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");
+    $ans = Array();
+    while($tmp = mysql_fetch_assoc($res)) $ans[] = $tmp;
+    mysql_free_result($res);
+    return $ans;
 }
 
 function get_nl_state() {

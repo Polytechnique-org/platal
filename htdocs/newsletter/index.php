@@ -18,38 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.php,v 1.7 2004-09-04 21:58:22 x2000habouzit Exp $
+        $Id: index.php,v 1.1 2004-10-15 12:57:10 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
-new_skinned_page('newsletter.tpl', AUTH_COOKIE);
+new_skinned_page('newsletter/index.tpl', AUTH_COOKIE);
+require("newsletter.inc.php");
 
-if (isset($_REQUEST['last']))
-    $res=$globals->db->query("SELECT UNIX_TIMESTAMP(date),titre,text FROM newsletter ORDER BY id DESC LIMIT 1");
-elseif (isset($_REQUEST['nl_id'])) 
-    $res=$globals->db->query("SELECT UNIX_TIMESTAMP(date),titre,text FROM newsletter WHERE id='{$_REQUEST['nl_id']}'");
-else
-    $res="";
-
-if (($res)&&(list($nl_date, $nl_titre, $nl_text) = mysql_fetch_row($res))) {
-    $page->assign('nl_date', $nl_date);
-    $page->assign('nl_titre', $nl_titre);
-    $page->assign('nl_text', $nl_text);
-
-    if (isset($_REQUEST['send_mail'])) {
-        require('diogenes.mailer.inc.php');
-        $mymail = new DiogenesMailer("info_newsletter@polytechnique.org",
-                $_SESSION['forlife']."@polytechnique.org",
-                "[polytechnique.org] ".$nl_titre);
-        $mymail->addHeader("From: \"Equipe polytechnique.org\" <info_newsletter@polytechnique.org>");
-        $mymail->setBody("Suite à ta demande sur le site web, nous te réexpédions cette lettre d'informations archivée.\r\n\r\n".strip_tags($nl_text));
-        $mymail->send();
-        $page->assign('erreur', 'Mail envoyé.');
-    }
-}
-
-$sql = "SELECT id,date,titre FROM newsletter ORDER BY date DESC";
-$page->mysql_assign($sql, 'nl_list');
-
+$page->assign_by_ref('nl_list',get_nl_list());
 $page->run();
 ?>

@@ -24,7 +24,7 @@ if(logged()) {
             'Sites Polytechniciens' => 'http://www.polytechnique.net/'
         ),
         'Informations' => Array (
-            'Lettres mensuelles' => 'newsletter.php',
+            'Lettres mensuelles' => 'newsletter/',
             'Documentations' => 'docs/',
             'Nous contacter ' => "docs/contacts.php",
             'Emploi' => 'http://www.manageurs.com/'
