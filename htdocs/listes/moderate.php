@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.14 2004-10-28 14:26:33 x2000habouzit Exp $
+        $Id: moderate.php,v 1.15 2004-10-30 15:45:40 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -32,10 +32,7 @@ require("auto.prepend.inc.php");
 new_skinned_page('listes/moderate.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
-$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-list($pass) = mysql_fetch_row($res);
-mysql_free_result($res);
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
 
 if(isset($_REQUEST['sadd'])) {
     $client->handle_request('polytechnique.org', $liste,$_REQUEST['sadd'],4,'');

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.7 2004-10-24 13:49:02 x2000habouzit Exp $
+        $Id: admin.php,v 1.8 2004-10-30 15:45:40 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,13 +28,9 @@ require("auto.prepend.inc.php");
 new_skinned_page('listes/admin.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
-$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-list($pass) = mysql_fetch_row($res);
-mysql_free_result($res);
-    
 $err = Array();
 
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
 
 if(isset($_REQUEST['add_member'])) {
     $arr = $client->mass_subscribe('polytechnique.org', $liste, Array($_REQUEST['add_member']));

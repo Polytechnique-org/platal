@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: options.php,v 1.4 2004-10-16 11:39:38 x2000habouzit Exp $
+        $Id: options.php,v 1.5 2004-10-30 15:45:40 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -28,11 +28,7 @@ require("auto.prepend.inc.php");
 new_skinned_page('listes/options.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
-$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-list($pass) = mysql_fetch_row($res);
-mysql_free_result($res);
-
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
 
 if(isset($_POST['submit'])) {
     $values =array_map('stripslashes',$_POST);

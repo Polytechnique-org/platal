@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.9 2004-10-18 07:06:49 x2000habouzit Exp $
+        $Id: index.php,v 1.10 2004-10-30 15:45:40 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -26,11 +26,7 @@ new_skinned_page('listes/index.tpl', AUTH_MDP);
 include('xml-rpc-client.inc.php');
 include('newsletter.inc.php');
 
-$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-list($pass) = mysql_fetch_row($res);
-mysql_free_result($res);
-
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
+$client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949");
 if(isset($_GET['del'])) {
     $client->unsubscribe('polytechnique.org',$_GET['del']);
     header('Location: index.php');
