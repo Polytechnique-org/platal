@@ -8,7 +8,7 @@
 [X]   o supprimer un utilisateur
 [X]   o ajouter/supprimer un autre gestionnaire
 [X]   o ajouter supprimer un moderateur
-[ ]   o possibilité de changer le message de bienvenue sur la liste
+[X]   o possibilité de changer le message de bienvenue sur la liste
 [ ]   o possiblité de modérer des messages via _notre_ interface
 
     - pour les modérateurs

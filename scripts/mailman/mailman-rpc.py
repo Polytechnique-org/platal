@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.9 2004-09-09 12:49:24 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.10 2004-09-09 13:08:50 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -263,6 +263,30 @@ def del_owner(userdesc,listname,user):
     mlist.Unlock()
     return True
 
+def get_welcome(userdesc,listname):
+    try:
+        mlist = MailList.MailList(listname, lock=0)
+    except Errors.MMListError, e:
+        return None
+    if not is_admin_on(userdesc,mlist):
+        return None
+    return mlist.info
+
+def set_welcome(userdesc,listname,info):
+    try:
+        mlist = MailList.MailList(listname, lock=True)
+    except Errors.MMListError, e:
+        return None
+    try:
+        if not is_admin_on(userdesc,mlist):
+            return None
+        mlist.info = info
+    except:
+        pass
+    mlist.Save()
+    mlist.Unlock()
+    return True
+
 ################################################################################
 #
 # INIT 
@@ -282,6 +306,8 @@ server.register_function(mass_subscribe)
 server.register_function(mass_unsubscribe)
 server.register_function(add_owner)
 server.register_function(del_owner)
+server.register_function(get_welcome)
+server.register_function(set_welcome)
 #server.register_introspection_functions()
 server.serve_forever()
 
