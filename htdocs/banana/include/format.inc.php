@@ -142,14 +142,20 @@ function formatDisplayHeader($_header,$_text,$_spool) {
  * @return STRING HTML output
  */
 function formatbody($_text) {
-  global $news;
-  $res ="\n\n";
-  $res .= htmlentities(wrap($_text,"",$news['wrap']))."\n";
-  $res = preg_replace("/(&lt;|&gt;|&quot;)/"," \\1 ",$res);
-  $res = preg_replace('/(["\[])?((https?|ftp|news):\/\/[a-z@0-9.~%$£µ&i#\-+=_\/\?]*)(["\]])?/i',
-    "\\1<a href=\"\\2\">\\2</a>\\4", $res);
-  $res = preg_replace("/ (&lt;|&gt;|&quot;) /","\\1",$res);
-  return $res."\n";
+    global $news;
+    $res = "\n\n" . htmlentities(wrap($_text,"",$news['wrap']))."\n\n";
+    $res = preg_replace("/(&lt;|&gt;|&quot;)/"," \\1 ",$res);
+    $res = preg_replace('/(["\[])?((https?|ftp|news):\/\/[a-z@0-9.~%$£µ&i#\-+=_\/\?]*)(["\]])?/i', "\\1<a href=\"\\2\">\\2</a>\\4", $res);
+    $res = preg_replace("/ (&lt;|&gt;|&quot;) /","\\1",$res);
+   
+    $parts = preg_split("/\n-- ?\n/", $res);
+
+    if (count($parts) > 1) {
+        $sign = "</pre><hr style='width: 100%; margin: 1em 0em; ' /><pre>" . array_pop($parts);
+        return join("\n-- \n", $parts).$sign;
+    } else {
+        return $res;
+    }
 }
 
 /** contextual links 
