@@ -42,7 +42,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 [<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
 [<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
-[<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
+[<a href='admin.php?liste={$smarty.get.liste}'>membres</a>]
 [options]
 {perms level=admin} »
 [<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]

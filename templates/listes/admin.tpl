@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.10 2004-10-16 14:54:50 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.11 2004-10-23 21:33:40 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -29,7 +29,7 @@
 {else}
 
 <div class='rubrique'>
-  Abonnés de la liste {$details.addr}
+  Gestion des membres de la liste {$details.addr}
 </div>
 {if !$details.own}
 <p class='erreur'>
@@ -42,7 +42,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 [<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
 [<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
-[abonnés]
+[membres]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
 {perms level=admin} »
 [<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]

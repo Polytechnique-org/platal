@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.11 2004-10-10 22:05:25 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.12 2004-10-23 21:33:40 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -37,7 +37,7 @@
 [<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
 [<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
 [modération]
-[<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
+[<a href='admin.php?liste={$smarty.get.liste}'>membres</a>]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
 {perms level=admin} »
 [<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]

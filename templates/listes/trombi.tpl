@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.7 2004-10-09 12:49:38 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.8 2004-10-23 21:33:40 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -36,7 +36,7 @@
 {if $details.own || $smarty.session.perms eq admin}
  »
 [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
-[<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
+[<a href='admin.php?liste={$smarty.get.liste}'>membres</a>]
 [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
 {/if}
 {perms level=admin} »
