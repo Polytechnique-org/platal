@@ -85,12 +85,12 @@ class XorgSession extends DiogenesCoreSession {
       $page->_tpl = 'password_prompt_logged.tpl';
       $page->assign("xorg_head", "password_prompt_logged.head.tpl");
       $page->assign("xorg_tpl", "password_prompt_logged.tpl");
-      $page->display();
+      $page->run();
     } else {
       $page->_tpl = 'password_prompt.tpl';
       $page->assign("xorg_head", "password_prompt.head.tpl");
       $page->assign("xorg_tpl", "password_prompt.tpl");
-      $page->display();
+      $page->run();
     }
     exit;
   }
