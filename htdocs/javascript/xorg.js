@@ -42,8 +42,6 @@ function popWin(theNode,w,h) {
 	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
 }
 
-function popWin2(theNode) { popWin(theNode,900,700); }
-
 function auto_links() {
     nodes = document.getElementsByTagName('a');
     fqdn = document.URL;
@@ -55,7 +53,7 @@ function auto_links() {
 	    node.onclick = function () { window.open(this.href); return false; };
 	}
 	if(node.className == 'popup2') {
-	    node.onclick = function () { popWin2(this); return false; };
+	    node.onclick = function () { popWin(this,840,600); return false; };
 	}
 	if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
 	    var w = matches[1], h = matches[2];
