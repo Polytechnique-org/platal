@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.28 2004-10-08 21:13:57 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.29 2004-10-09 09:34:15 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -219,14 +219,14 @@ function try_cookie() {
 function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("
-	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias
+	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias, u.lastnewslogin
           FROM  auth_user_md5   AS u
     INNER JOIN	aliases         AS a ON (u.user_id = a.id AND a.type='a_vie')
      LEFT JOIN  logger.sessions AS s ON (s.uid=u.user_id AND s.suid=0)
          WHERE  user_id=$uid
       ORDER BY  s.start DESC
          LIMIT  1");
-    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife) = mysql_fetch_row($result);
+    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, $lastnewslogin) = mysql_fetch_row($result);
     mysql_free_result($result);
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
     // authentification avec le cookie
@@ -237,6 +237,7 @@ function start_connexion ($uid, $identified) {
     // qui peuvent être celles de quelqu'un d'autre ou celle par defaut
     $_SESSION = isset($_SESSION['suid']) ? Array('suid'=>$_SESSION['suid'], 'slog'=>$_SESSION['slog']) : array();
     $_SESSION['lastlogin'] = $lastlogin;
+    $_SESSION['lastnewslogin'] = $lastnewslogin;
     $_SESSION['host'] = $host;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
     $_SESSION['uid'] = $uid;
