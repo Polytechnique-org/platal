@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.php,v 1.4 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: trombipromo.php,v 1.5 2004-09-02 22:27:05 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -47,9 +47,10 @@ $res = $globals->db->query("SELECT  COUNT(*)
 list($pnb) = mysql_fetch_row($res);
 $page->assign('pnb', $pnb);
 
-$sql = "SELECT  promo,user_id,username,nom,prenom
-          FROM  auth_user_md5 AS u
-    RIGHT JOIN  photo         AS p ON u.user_id=p.uid
+$sql = "SELECT  promo,user_id,a.alias AS forlife,nom,prenom
+          FROM  photo         AS p
+    INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
+    INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
         $where
       ORDER BY  promo,nom,prenom LIMIT $offset,$limit";
 

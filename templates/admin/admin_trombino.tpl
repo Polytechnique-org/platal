@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin_trombino.tpl,v 1.2 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: admin_trombino.tpl,v 1.3 2004-09-02 22:27:06 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -27,10 +27,10 @@
 
 {dynamic}
 <p>
-Photo actuelle de {$username}
+Photo actuelle de {$forlife}
 </p>
 
-<img src="../getphoto.php?x={$smarty.request.uid}" />
+<img src="../getphoto.php?x={$smarty.request.uid}" alt="[ PHOTO ]" />
 <br />
 
 <p>
@@ -42,10 +42,12 @@ Photo actuelle de {$username}
 </p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="uid" value="{$smarty.request.uid}" />
-  <input type="hidden" name="action" value="valider" />
-  <input name="userfile" type="file" size="20" maxlength="150" />
-  <input type="submit" value="Envoyer" />
+  <div>
+    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
+    <input type="hidden" name="action" value="valider" />
+    <input name="userfile" type="file" size="20" maxlength="150" />
+    <input type="submit" value="Envoyer" />
+  </div>
 </form>
 
 {/dynamic}

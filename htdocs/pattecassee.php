@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: pattecassee.php,v 1.6 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: pattecassee.php,v 1.7 2004-09-02 22:27:05 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -41,19 +41,19 @@ if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
     $email = valide_email($_GET['email']);
     // vérifications d'usage
     $sel = $globals->db->query(
-      "SELECT e.uid, a.username
-       FROM emails AS e
-       INNER JOIN auth_user_md5 AS a ON e.uid = a.user_id
-       WHERE e.email='$email'");
+      "SELECT  e.uid, a.alias
+         FROM  emails        AS e
+   INNER JOIN  auth_user_md5 AS u ON e.uid = u.user_id
+   INNER JOIN  aliases       AS a ON e.uid = a.id
+        WHERE  e.email='$email'");
     if (list($uid, $dest) = mysql_fetch_row($sel)) {
 	// envoi du mail
 	$message = "Bonjour !
 	
 Ce mail a été généré automatiquement par le service de patte cassée de
-Polytechnique.org car un autre utilisateur, "
-.$_SESSION["prenom"]." ".$_SESSION["nom"].",
+Polytechnique.org car un autre utilisateur, {$_SESSION['prenom']} {$_SESSION['nom']},
 nous a signalé qu'en t'envoyant un mail, il avait reçu un message d'erreur
-indiquant que ton adresse de redirection " . $email . "
+indiquant que ton adresse de redirection $email
 ne fonctionnait plus !
 
 Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre

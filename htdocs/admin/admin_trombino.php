@@ -18,21 +18,24 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin_trombino.php,v 1.2 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: admin_trombino.php,v 1.3 2004-09-02 22:27:05 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_admin_page('admin/admin_trombino.tpl');
 
-$q = $globals->db->query("SELECT username,promo FROM auth_user_md5 WHERE user_id = '" . $_REQUEST["uid"] . "'");
-list($username, $promo) = mysql_fetch_row($q);
+$q = $globals->db->query("SELECT  a.alias,promo
+			    FROM  auth_user_md5 AS u
+		      INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
+			   WHERE  user_id = '{$_REQUEST['uid']}'");
+list($forlife, $promo) = mysql_fetch_row($q);
 
 if (isset($_REQUEST["action"])) {
     switch ($_REQUEST["action"]) {
 
     case "ecole":
         header("Content-type: image/jpeg");
-	readfile("/home/web/trombino/photos".$promo."/".$username.".jpg");
+	readfile("/home/web/trombino/photos".$promo."/".$forlife.".jpg");
         exit;
 	break;
 
@@ -57,6 +60,6 @@ if (isset($_REQUEST["action"])) {
     }
 }
 
-$page->assign('username', $username);
+$page->assign('forlife', $forlife);
 $page->run();
 ?>

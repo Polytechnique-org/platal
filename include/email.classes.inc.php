@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: email.classes.inc.php,v 1.3 2004-09-02 22:27:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require("xorg.misc.inc.php");
@@ -50,23 +50,23 @@ class Email {
         $this->active = $this->filtre;
     }
 
-    function set($flag) {
+    function set($flag,$uid) {
         global $globals;
         if (!$this->{$flag}) {
             $globals->db->query("update emails set flags = CONCAT_WS(',',flags,'".$this->{'flag_'.$flag}.
-            "') where uid={$_SESSION['uid']} and num=".$this->num);
+            "') where uid=$uid and num=".$this->num);
             if ($flag=='active')
                 $_SESSION['log']->log("email_on",$this->email);
             $this->{$flag} = true;
         }
     }
 
-    function deset($flag) {
+    function deset($flag,$uid) {
         global $globals;
         if ($this->{$flag}) {
             $globals->db->query("update emails set flags = flags & 
             ~(1 << (FIND_IN_SET('".$this->{'flag_'.$flag}."',flags)-1)) 
-            where uid={$_SESSION['uid']} and num=".$this->num);
+            where uid=$uid and num=".$this->num);
             if ($flag=='active')
                 $_SESSION['log']->log("email_off",$this->email);
             $this->{$flag} = false;
@@ -77,13 +77,15 @@ class Email {
 class Redirect {
     var $flag_active = 'active';
     var $emails;
+    var $uid;
 
-    function Redirect() {
+    function Redirect($_uid) {
         global $globals;
+	$this->uid=$_uid;
         $result = $globals->db->query("select num, email,
         FIND_IN_SET('active',flags),FIND_IN_SET('filtre',flags),
         FIND_IN_SET('rewrite',flags), FIND_IN_SET('m4x',flags), FIND_IN_SET('mtic',flags) 
-        from emails where uid = {$_SESSION['uid']}");
+        from emails where uid = $_uid");
         while ($row = mysql_fetch_row($result)) {
             $num = $row[0];
             if ($num!=0)
@@ -124,7 +126,7 @@ class Redirect {
         global $globals;
         if (!$this->other_active($num))
             return ERROR_INACTIVE_REDIRECTION;
-        $globals->db->query("delete from emails where uid={$_SESSION['uid']} and num='$num'");
+        $globals->db->query("delete from emails where uid={$this->uid} and num='$num'");
         $_SESSION['log']->log("email_del",$this->emails[$num]->email);
         unset($this->emails[$num]);
         return SUCCESS;
@@ -151,7 +153,7 @@ class Redirect {
             $mtic = 1;
         }
         $newnum = $this->freenum();
-        $globals->db->query("insert into emails (uid,num,email,flags) VALUES({$_SESSION['uid']},'$newnum','$email','$flags')");
+        $globals->db->query("insert into emails (uid,num,email,flags) VALUES({$this->uid},'$newnum','$email','$flags')");
         $_SESSION['log']->log("email_add",$email);
         $this->emails[$newnum] = new Email(array($newnum,$email,1,1,1,0,$mtic));
         return SUCCESS;
@@ -161,15 +163,15 @@ class Redirect {
         global $globals;
         foreach($this->emails as $num=>$mail) {
             if ($emails_rewrite[$num] != 'no')
-                $this->emails[$num]->set('rewrite');
+                $this->emails[$num]->set('rewrite',$this->uid);
             else
                 $this->emails[$num]->deset('rewrite');
             if ($emails_rewrite[$num] == 'm4x')
-                $this->emails[$num]->set('m4x');
+                $this->emails[$num]->set('m4x',$this->uid);
             else
                 $this->emails[$num]->deset('m4x');
             if(in_array($num,$emails_actifs))
-                $this->emails[$num]->set('active');
+                $this->emails[$num]->set('active',$this->uid);
             else
                 $this->emails[$num]->deset('active');
         }

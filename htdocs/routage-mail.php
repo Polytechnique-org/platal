@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.php,v 1.4 2004-08-31 22:01:30 x2000habouzit Exp $
+        $Id: routage-mail.php,v 1.5 2004-09-02 22:27:05 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('routage-mail.tpl',AUTH_MDP);
 require("email.classes.inc.php");
 
-$redirect = new Redirect();
+$redirect = new Redirect($_SESSION['uid']);
 
 if (isset($_REQUEST['emailop'])) {
     if ($_REQUEST['emailop']=="retirer" && isset($_REQUEST['num'])) {
@@ -40,22 +40,17 @@ if (isset($_REQUEST['emailop'])) {
     }
     elseif (isset($_REQUEST['emails_actifs']) && is_array($_REQUEST['emails_actifs'])
         && isset($_REQUEST['emails_rewrite']) && is_array($_REQUEST['emails_rewrite'])) {
-        $page->assign('retour',
-        $redirect->modify_email($_REQUEST['emails_actifs'],$_REQUEST['emails_rewrite']));
+        $page->assign('retour', $redirect->modify_email($_REQUEST['emails_actifs'],$_REQUEST['emails_rewrite']));
     }
 }
-$sql = "SELECT domain FROM groupex.aliases WHERE id=12 AND email like'".$_SESSION['username']."'";
+$sql = "SELECT domain FROM groupex.aliases WHERE id=12 AND email like'".$_SESSION['forlife']."'";
 $res = $globals->db->query($sql);
 list($grx) = mysql_fetch_row($res);
 $page->assign('grx',$grx);
 $page->assign('domaine',substr($grx,0,-3));
-$sql = "SELECT alias FROM auth_user_md5 WHERE user_id=".$_SESSION["uid"];
-$res = $globals->db->query($sql);
-list($alias) = mysql_fetch_row($res);
-$page->assign('alias',$alias);
-foreach ($redirect->emails as $mail)
-    $emails[] = $mail;
-$page->assign('emails',$emails);
+
+$page->mysql_assign("SELECT alias FROM aliases WHERE id=".$_SESSION["uid"], 'alias');
+$page->assign('emails',$redirect->emails);
 
 $page->run();
 ?>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombipromo.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: trombipromo.tpl,v 1.6 2004-09-02 22:27:06 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -82,10 +82,10 @@ chaque page affiche au plus {$limit} photos.
   <tr>
   {/if}
     <td class="center">
-      <a href="javascript:x()" onclick="popWin('fiche.php?user={$p.username}')">
+      <a href="javascript:x()" onclick="popWin('fiche.php?user={$p.forlife}')">
         <img src="getphoto.php?x={$p.user_id}" width="110" alt=" [ PHOTO ] " />
       </a>
-      {mailto address="`$p.username`@polytechnique.org" text="`$p.prenom`&nbsp;`$p.nom`"}
+      {mailto address="`$p.forlife`@polytechnique.org" text="`$p.prenom`&nbsp;`$p.nom`"}
       {if $smarty.request.xpromo eq 'all'}{$p.promo}{/if}
       {if $smarty.session.perms eq 'admin'}<br /><a href="admin/admin_trombino.php?uid={$p.user_id}">[admin]</a>{/if}
     </td>

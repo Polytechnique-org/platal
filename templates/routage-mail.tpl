@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.tpl,v 1.5 2004-08-31 22:01:32 x2000habouzit Exp $
+        $Id: routage-mail.tpl,v 1.6 2004-09-02 22:27:06 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 {if $retour == $smarty.const.ERROR_INACTIVE_REDIRECTION}
   <p class="erreur">
   Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse
-  {$smarty.session.username}@polytechnique.org ne fonctionnerait plus.
+  {$smarty.session.forlife}@polytechnique.org ne fonctionnerait plus.
   </p>
 {/if}
 {if $retour == $smarty.const.ERROR_INVALID_EMAIL}
@@ -34,7 +34,7 @@
 {/if}
 {if $retour == $smarty.const.ERROR_LOOP_EMAIL}
   <p class="erreur">
-  Erreur: {$smarty.session.username}@polytechnique.org doit renvoyer vers un email
+  Erreur: {$smarty.session.forlife}@polytechnique.org doit renvoyer vers un email
   existant valide. En particulier, il ne peut pas être renvoyé vers lui-même,
   ni son équivalent en m4x.org, ni vers son équivalent polytechnique.edu.
   </p>
@@ -56,8 +56,14 @@
     Tes adresses de redirection
   </div>
   <p>
-    Tu configures ici les adresses emails vers lesquelles tes adresses {if $grx neq ""}<strong>{$grx}</strong>, <strong>{$domaine}org</strong>, {/if}{if $alias neq ""}<strong>{$alias}@polytechnique.org</strong>, <strong>{$alias}@m4x.org</strong>,{/if}<strong>{$smarty.session.username}@polytechnique.org</strong> et <strong>{$smarty.session.username}@m4x.org</strong> sont redirigées.
+  Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées :
   </p>
+  <ul>
+    {if $grx neq ""}<li><strong>{$grx}</strong>, <strong>{$domaine}org</strong></li>{/if}
+    {foreach from=$alias item=a}
+    <li><strong>{$a.alias}@polytechnique.org</strong></li>
+    {/foreach}
+  </ul>
   <p>
     Le routage est en place pour les adresses dont la case "Actif" est cochée.
     Si tu modifies souvent ton routage, tu as tout intérêt à rentrer toutes les
@@ -79,27 +85,24 @@
         <th>Réécriture</th>
         <th>&nbsp;</th>
       </tr>
-      {section name=i loop=$emails}
+      {foreach from=$emails item=e}
       <tr class="{cycle values="pair,impair"}">
-        <td><strong>{$emails[i]->email}</strong></td>
-        <td><input type="checkbox" name="emails_actifs[]" value="{$emails[i]->num}" {if
-        $emails[i]->active}checked="checked"{/if} /></td>
+        <td><strong>{$e->email}</strong></td>
         <td>
-          <select name="emails_rewrite[{$emails[i]->num}]">
-            <option value="poly" {if $emails[i]->rewrite == 1 and $emails[i]->m4x == 0}selected="selected"{/if}>
-              polytechnique.org
-            </option>
-	    <option value="m4x" {if $emails[i]->m4x == 1}selected="selected"{/if}>
-              m4x.org
-            </option>
-	    <option value="no" {if $emails[i]->rewrite == 0}selected="selected"{/if}>
-              aucune
-            </option>
+          <input type="checkbox" name="emails_actifs[]" value="{$e->num}" {if $e->active}checked="checked"{/if} /></td>
+        <td>
+          <select name="emails_rewrite[{$e->num}]">
+            <option value="poly" {if $e->rewrite == 1 and $e->m4x == 0}selected="selected"{/if}>
+              polytechnique.org</option>
+	    <option value="m4x" {if $e->rewrite == 1 and $e->m4x == 1}selected="selected"{/if}>
+              m4x.org</option>
+	    <option value="no" {if $e->rewrite == 0}selected="selected"{/if}>
+              aucune</option>
           </select>
         </td>
-        <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;num={$emails[i]->num}">retirer</a></td>
+        <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;num={$e->num}">retirer</a></td>
       </tr>
-      {/section}
+      {/foreach}
     </table>
     <br />
     <input type="submit" value="Mettre à jour les emails actifs" name="emailop" />

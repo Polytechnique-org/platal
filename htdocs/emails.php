@@ -18,19 +18,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: emails.php,v 1.5 2004-09-02 22:27:05 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('emails.tpl',AUTH_COOKIE);
 
 // on regarde si on a affaire à un homonyme
-$res = $globals->db->query("SELECT username!=loginbis AND loginbis!='',alias FROM auth_user_md5 WHERE username = '".$_SESSION["username"]."'");
-list($is_homonyme,$alias) = mysql_fetch_row($res);
-mysql_free_result($res);
-$page->assign('is_homonyme', $is_homonyme);
-$page->assign('alias', $alias);
-
+$sql = "SELECT  alias, (type='a_vie') AS a_vie
+          FROM  aliases
+         WHERE  id='{$_SESSION['uid']}'
+      ORDER BY  type!='a_vie'";
+$page->mysql_assign($sql, 'aliases');
 
 $sql = "SELECT email
         FROM emails
@@ -39,7 +38,7 @@ $page->mysql_assign($sql, 'mails', 'nb_mails');
 
 
 // on regarde si l'utilisateur a un alias et si oui on l'affiche !
-$sql = "SELECT domain FROM groupex.aliases WHERE id=12 AND email like '".$_SESSION['username']."'";
+$sql = "SELECT domain FROM groupex.aliases WHERE id=12 AND email like '".$_SESSION['forlife']."'";
 $result = $globals->db->query($sql);
 if ($result && list($aliases) = mysql_fetch_row($result))
     $page->assign('melix', substr($aliases,0,-3));
