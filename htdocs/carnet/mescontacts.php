@@ -22,12 +22,14 @@
 require_once("xorg.inc.php");
 new_skinned_page("carnet/mescontacts.tpl",AUTH_COOKIE);
 require_once("applis.func.inc.php");
+        
+$uid  = Session::getInt('uid');
+$user = Env::get('user');
 
-if (isset($_REQUEST['action'])) {
-    if($_REQUEST['action']=='retirer') {
-	$user = $_REQUEST['user'];
+switch (Env::get('action')) {
+    case 'retirer':
 	if (preg_match('/^\d+$/', $user)) {
-	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'"))
+	    if ($globals->db->query("DELETE FROM contacts WHERE uid = $uid' AND contact='{$user}'"))
             {
 		$page->trig("Contact retiré !");
             }
@@ -36,16 +38,18 @@ if (isset($_REQUEST['action'])) {
                         "DELETE FROM  contacts
                                USING  contacts AS c
                           INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
-                               WHERE  c.uid = '{$_SESSION['uid']}' AND a.alias='$user'"))
+                               WHERE  c.uid = $uid AND a.alias='$user'"))
             {
 		$page->trig("Contact retiré !");
             }
 	}
-    } elseif ($_REQUEST["action"]=="ajouter") {
+        break;
+
+    case "ajouter":
         require_once('user.func.inc.php');
-        if (($login = get_user_login($_REQUEST['user'])) !== false) {
+        if (($login = get_user_login($user) !== false) {
             if ($globals->db->query("INSERT INTO  contacts (uid, contact)
-                                          SELECT  '{$_SESSION['uid']}', id
+                                          SELECT  $uid, id
                                             FROM  aliases
                                            WHERE  alias='$login'"))
             {
@@ -54,14 +58,13 @@ if (isset($_REQUEST['action'])) {
                 $page->trig('Contact déjà dans la liste !');
             }
         }
-    }
 }
 
-if(isset($_GET['trombi'])) {
+if(Get::has('trombi')) {
     require_once('trombi.inc.php');
     function getList($offset,$limit) {
 	global $globals;
-	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = {$_SESSION['uid']}");
+	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = $uid");
 	list($total) = mysql_fetch_row($res);
 	mysql_free_result($res);
 
@@ -70,7 +73,7 @@ if(isset($_GET['trombi'])) {
 		  FROM  contacts       AS c
 	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
 	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
-		 WHERE  c.uid = {$_SESSION['uid']}
+		 WHERE  c.uid = $uid
 	      ORDER BY  nom
 		 LIMIT  ".$offset*$limit.",$limit");
 	$list = Array();
@@ -109,7 +112,7 @@ if(isset($_GET['trombi'])) {
 	    LEFT  JOIN adresses       AS adr ON (a.user_id = adr.uid AND FIND_IN_SET('active', adr.statut))
 	    LEFT  JOIN geoloc_pays    AS gp  ON (adr.pays = gp.a2)
 	    LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
-	    WHERE c.uid = {$_SESSION['uid']}
+	    WHERE c.uid = $uid
 	    ORDER BY sortkey, a.prenom";
     $page->mysql_assign($sql,'contacts','nb_contacts');
 }

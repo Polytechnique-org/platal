@@ -23,13 +23,13 @@ require_once("xorg.inc.php");
 new_skinned_page('carnet/panel.tpl', AUTH_COOKIE);
 require_once('notifs.inc.php');
 
-if(isset($_GET['read'])) {
-    $_SESSION['watch_last'] = $_GET['read'];
+if(Get::has('read')) {
+    $_SESSION['watch_last'] = Get::get('read');
     header("Location: panel.php");
 }
 
 $page->assign('now',date('YmdHis'));
-$notifs = new Notifs($_SESSION['uid'], true);
+$notifs = new Notifs(Session::getInt('uid'), true);
 
 $page->assign_by_ref('notifs', $notifs);
 

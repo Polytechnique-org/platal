@@ -23,18 +23,18 @@ require_once("xorg.inc.php");
 new_skinned_page('carnet/notifs.tpl', AUTH_COOKIE);
 require_once('notifs.inc.php');
 
-$watch = new Watch($_SESSION['uid']);
+$watch = new Watch(Session::getInt('uid'));
 
-if(isset($_REQUEST['promo'])) {
-    if(preg_match('!^ *(\d{4}) *$!', $_REQUEST['promo'], $matches)) {
+if(Env::has('promo')) {
+    if(preg_match('!^ *(\d{4}) *$!', Env::get('promo'), $matches)) {
 	$p = intval($matches[1]);
 	if($p<1900 || $p>2100) {
             $page->trig("la promo entrée est invalide");
 	} else {
-	    if(isset($_REQUEST['add_promo'])) $watch->_promos->add($p);
-	    if(isset($_REQUEST['del_promo'])) $watch->_promos->del($p);
+	    if (Env::has('add_promo')) $watch->_promos->add($p);
+	    if (Env::has('del_promo')) $watch->_promos->del($p);
 	}
-    } elseif (preg_match('!^ *(\d{4}) *- *(\d{4}) *$!', $_REQUEST['promo'], $matches)) {
+    } elseif (preg_match('!^ *(\d{4}) *- *(\d{4}) *$!', Env::get('promo'), $matches)) {
 	$p1 = intval($matches[1]);
 	$p2 = intval($matches[2]);
 	if($p1<1900 || $p1>2100) {
@@ -42,20 +42,20 @@ if(isset($_REQUEST['promo'])) {
 	} elseif($p2<1900 || $p2>2100) {
             $page->trig('la seconde promo de la plage entrée est invalide');
 	} else {
-	    if(isset($_REQUEST['add_promo'])) $watch->_promos->addRange($p1,$p2);
-	    if(isset($_REQUEST['del_promo'])) $watch->_promos->delRange($p1,$p2);
+	    if (Env::has('add_promo')) $watch->_promos->addRange($p1,$p2);
+	    if (Env::has('del_promo')) $watch->_promos->delRange($p1,$p2);
 	}
     } else {
         $page->trig("La promo (ou la plage de promo) entrée est dans un format incorrect.");
     }
 }
 
-if(isset($_REQUEST['del_nonins'])) $watch->_nonins->del($_REQUEST['del_nonins']);
-if(isset($_REQUEST['add_nonins'])) $watch->_nonins->add($_REQUEST['add_nonins']);
-if(isset($_REQUEST['subs'])) $watch->_subs->update('sub');
-if(isset($_REQUEST['flags'])) {
-    $watch->watch_contacts = !empty($_REQUEST['contacts']);
-    $watch->watch_mail     = !empty($_REQUEST['mail']);
+if (Env::has('del_nonins')) $watch->_nonins->del(Env::get('del_nonins'));
+if (Env::has('add_nonins')) $watch->_nonins->add(Env::get('add_nonins'));
+if (Env::has('subs'))       $watch->_subs->update('sub');
+if (Env::has('flags')) {
+    $watch->watch_contacts = Env::getBool('contacts');
+    $watch->watch_mail     = Env::getBool('mail');
     $watch->saveFlags();
 }
 
