@@ -147,11 +147,8 @@ if (!Env::has('rechercher')) {
     $page->assign('perpage',   $globals->search->per_page);
     $page->assign('nb_tot',    $nb_tot);
     $page->assign('with_soundex',   $with_soundex);
-    
-    if (empty($nb_tot)) {
-        form_prepare();
-        new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
-    } elseif ($nb_tot > $globals->search->private_max) {
+            
+    if ($nb_tot > $globals->search->private_max) {
         form_prepare();
         new ThrowError('Recherche trop générale');
     }
