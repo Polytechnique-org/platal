@@ -42,16 +42,19 @@ Bug/Wish :
 	* Emails :
 		- #229: Possibility to show our melix address.						-Car
 
+	* Marketing :
+		- #256: Mail are now correctly sent.								-MC
+
 	* Misc :
 		- #65: Broken links.												-MC
-	
-	* Search :
-		- #249, #251, #253 : Some tweaks to be more accurate.				-MC
 	
 	* Profile :
 		- #65 : Add professionnal cellphone.								-Car
 		- #170 : Remove region display for french departments.				-Car
 
+	* Search :
+		- #249, #251, #253 : Some tweaks to be more accurate.				-MC
+	
 	* Validations :
 		- #137: Now possible to add comments without any action.			-MC
 		- #256: Marketing now uses the validation process.					-MC
