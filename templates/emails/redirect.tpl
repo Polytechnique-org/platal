@@ -22,7 +22,7 @@
 {if $retour == $smarty.const.ERROR_INACTIVE_REDIRECTION}
   <p class="erreur">
   Tu ne peux pas avoir aucune adresse de redirection active, sinon ton adresse
-  {$smarty.session.forlife}@polytechnique.org ne fonctionnerait plus.
+  {$smarty.session.forlife}@{#globals.mail.domain#} ne fonctionnerait plus.
   </p>
 {/if}
 {if $retour == $smarty.const.ERROR_INVALID_EMAIL}
@@ -32,9 +32,9 @@
 {/if}
 {if $retour == $smarty.const.ERROR_LOOP_EMAIL}
   <p class="erreur">
-  Erreur: {$smarty.session.forlife}@polytechnique.org doit renvoyer vers un email
+  Erreur: {$smarty.session.forlife}@{#globals.mail.domain#} doit renvoyer vers un email
   existant valide. En particulier, il ne peut pas être renvoyé vers lui-même,
-  ni son équivalent en m4x.org, ni vers son équivalent polytechnique.edu.
+  ni son équivalent en {#globals.mail.domain2#}.
   </p>
 {/if}
 {if $mtic == 1}
@@ -51,10 +51,15 @@
   Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées :
   </p>
   <ul>
-    {if $grx neq ""}<li><strong>{$grx}</strong>, <strong>{$domaine}org</strong></li>{/if}
+    {if $melix}
+    <li>
+    <strong>{$melix}@{#globals.mail.alias_dom#}</strong>,
+    <strong>{$melix}@{#globals.mail.alias_dom2#}</strong>
+    </li>
+    {/if}
     {foreach from=$alias item=a}
     <li>
-    <strong>{$a.alias}@polytechnique.org</strong>
+    <strong>{$a.alias}@{#globals.mail.domain#}</strong>
     {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
     </li>
     {/foreach}
@@ -68,9 +73,9 @@
   </p>
   <p>
     Enfin, la réécriture consiste à substituer à ton adresse email habituelle
-    (adresse wanadoo, yahoo, free, ou autre) ton adresse polytechnique.org ou
-    m4x.org dans l'adresse d'expédition de tes messages, lorsque tu écris
-    à un camarade sur son adresse polytechnique.org.
+    (adresse wanadoo, yahoo, free, ou autre) ton adresse {#globals.mail.domain#} ou
+    {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque tu écris
+    à un camarade sur son adresse {#globals.mail.domain#}.
   </p>
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">

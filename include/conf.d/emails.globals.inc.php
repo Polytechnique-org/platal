@@ -23,8 +23,22 @@
 
 class MailConfig
 {
-    var $domain  = '';
-    var $domain2 = '';
+    var $domain     = '';
+    var $domain2    = '';
+
+    var $alias_dom  = '';
+    var $alias_dom2 = '';
+
+    var $send_form  = true;
+
+    function shorter_domain()
+    {
+        if (empty($this->domain2) || strlen($this->domain2)>strlen($this->domain)) {
+            return $this->domain;
+        } else {
+            return $this->domain2;
+        }
+    }
 }
 
 // }}}

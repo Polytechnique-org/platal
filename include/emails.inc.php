@@ -70,6 +70,22 @@ function fix_bestalias($uid)
 }
 
 // }}}
+// {{{ function valide_email()
+
+function valide_email($str)
+{
+   $em = trim(rtrim($str));
+   $em = str_replace('<', '', $em);
+   $em = str_replace('>', '', $em);
+   list($ident, $dom) = explode('@', $em);
+   if ($dom == $globals->mail->domain or $dom == $globals->mail->domain2) {
+       list($ident1) = explode('_', $ident);
+       list($ident) = explode('+', $ident1);
+   }
+   return $ident . '@' . $dom;
+}
+
+// }}}
 // {{{ class Bogo
 
 class Bogo

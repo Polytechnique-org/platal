@@ -18,9 +18,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-<h3><a href="{rel}/alias.php">Mon alias mail @melix.net/.org</a></h3>
+{if #globals.mail.alias_dom#}
+<h3><a href="{rel}/alias.php">Mon alias mail {#globals.mail.alias_dom#}</a></h3>
 <div class='explication'>
-  Pour choisir un alias @melix.net et @melix.org (en choisir un nouveau annule l'ancien).
+  Pour choisir un alias {#globals.mail.alias_dom#} et {#globals.mail.alias_dom2#} (en choisir un nouveau annule l'ancien).
 </div>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

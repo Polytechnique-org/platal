@@ -56,8 +56,9 @@ class AliasReq extends Validate
         $sql = $globals->db->query("
                 SELECT  v.alias
                   FROM  virtual_redirect AS vr
-            INNER JOIN  virtual          AS v  ON (v.vid=vr.vid AND v.alias LIKE '%@melix.net')
-                 WHERE  vr.redirect='{$this->forlife}@m4x.org'");
+            INNER JOIN  virtual          AS v  ON (v.vid=vr.vid AND v.alias LIKE '%@{$globals->mail->alias_dom}')
+                 WHERE  vr.redirect='{$this->forlife}@{$globals->mail->domain}'
+                        OR vr.redirect='{$this->forlife}@{$globals->mail->domain2}'");
         if (mysql_num_rows($sql)) {
             list($this->old) = mysql_fetch_row($sql);
         }
@@ -113,12 +114,14 @@ class AliasReq extends Validate
         global $globals;
 
         if ($this->old) {
-            $globals->db->query("UPDATE virtual SET alias='{$this->alias}@melix.net' WHERE alias='{$this->old}'");
+            $globals->db->query("UPDATE virtual SET alias='{$this->alias}@{$globals->mail->alias_dom}' WHERE alias='{$this->old}'");
 
         } else {
-            $globals->db->query("INSERT INTO virtual SET alias='{$this->alias}@melix.net',type='user'");
+            $globals->db->query("INSERT INTO virtual SET alias='{$this->alias}@{$globals->mail->alias_dom}',type='user'");
             $vid = mysql_insert_id();
-            $globals->db->query("INSERT INTO virtual_redirect (vid,redirect) VALUES ($vid,'{$this->forlife}@m4x.org')");
+            require_once('emails.inc.php');
+            $dom = $globals->mail->shorter_domain();
+            $globals->db->query("INSERT INTO virtual_redirect (vid,redirect) VALUES ($vid,'{$this->forlife}@$dom')");
         }
     }
 

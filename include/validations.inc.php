@@ -175,8 +175,8 @@ class Validate
             $globals->db->query("DELETE FROM requests WHERE user_id='{$this->uid}' AND type='{$this->type}'");
         }
        
-        $globals->db->query("INSERT INTO  requests (user_id, type, user_id)
-                                  VALUES  ('{$this->uid}', '{$this->type}, '".addslashes(serialize($this))."')");
+        $globals->db->query("INSERT INTO  requests (user_id, type, data)
+                                  VALUES  ('{$this->uid}', '{$this->type}', '".addslashes(serialize($this))."')");
 
         // au cas où l'objet est réutilisé après un commit, il faut mettre son stamp à jour
         $sql = $globals->db->query("SELECT MAX(stamp) FROM requests

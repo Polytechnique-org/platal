@@ -21,7 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/utilisateurs.tpl');
-require_once("email.classes.inc.php");
+require_once("emails.inc.php");
 
 /*
  * LOGS de l'utilisateur

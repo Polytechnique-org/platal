@@ -21,8 +21,8 @@
 
 {if $success}
   <p>
-    a demande de création des alias <strong>{dyn s=$success}@melix.net</strong> et
-    <strong>{dyn s=$success}@melix.org</strong> a bien été enregistrée. Après
+  a demande de création des alias <strong>{dyn s=$success}@{#globals.mail.alias_dom#}</strong> et
+  <strong>{dyn s=$success}@{#globals.mail.alias_dom2#}</strong> a bien été enregistrée. Après
     vérification, tu recevras un mail te signalant l'ouverture de ces adresses.
   </p>
   <p>
@@ -43,7 +43,7 @@
   </p>
   <p>
     Pour de plus amples informations sur ce service, nous t'invitons à consulter
-    <a href="{"docs/doc_melix.php"|url}">cette documentation</a> qui répondra
+    <a href="{rel}/docs/doc_melix.php">cette documentation</a> qui répondra
     sans doute à toutes tes questions
   </p>
 
@@ -71,7 +71,7 @@
         <td>Alias demandé :</td>
       </tr>
       <tr>
-        <td><input type="text" name="alias" value="{dyn s=$r_alias}" />@melix.net et @melix.org</td>
+        <td><input type="text" name="alias" value="{dyn s=$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
       </tr>
       <tr>
         <td>Brève explication :</td>

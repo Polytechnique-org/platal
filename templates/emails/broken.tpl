@@ -19,30 +19,30 @@
  ***************************************************************************}
 
 
-{dynamic on="0$erreur"}
-<p class="erreur">{$erreur}</p>
-{/dynamic}
-
-<h1>
-  Vérifier une patte cassée
-</h1>
-
 {dynamic}
+
+{if $erreur}
+<p class="erreur">{$erreur}</p>
+{/if}
+
+<h1>Vérifier une patte cassée</h1>
+
 {if $x && $x.nb_mails}
-  <p class="erreur">
-    Ton correspondant a à l'heure actuelle {$x.nb_mails} adresse(s) email(s) de redirection active(s)
-    en dehors de celle que tu nous as communiquée. Cela ne veut pas forcément dire qu'il les avait
+  <p>
+    Ton correspondant a à l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
+    en dehors de celle que tu nous as communiquée</span>. Cela ne veut pas forcément dire qu'il les avait
     déjà activées lorsque tu as envoyé ton email, mais c'est fort probable.
   </p>
-  <p class="erreur">
+  <p>
     Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
     Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
-    <a href="{$smarty.server.PHP_SELF}?email={$email}&amp;action=mail">clique sur ce lien</a>.
+    <a href="?email={$email}&amp;action=mail">clique sur ce lien</a>.
   </p>
 {elseif $x}
-  <p class="erreur">
+  <p>
     Désolé, mais ton correspondant, {$x.prenom} {$x.nom} (X{$x.promo}),
-    n'a actuellement aucune adresse email de redirection active autre que celle que tu viens de rentrer.
+    n'a actuellement <span class="erreur">aucune adresse email de redirection 
+      active autre que celle que tu viens de rentrer.</span>
     Nous t'invitons à prendre contact avec lui autrement que par email,
     l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée...!
   </p>
@@ -67,7 +67,7 @@
 </p>
 <p>
     Pour plus d'explications concernant cette page, nous t'invitons à consulter
-    la <a href="{"docs/doc_patte_cassee.php"|url}">documentation suivante</a>
+    la <a href="{rel}/docs/doc_patte_cassee.php">documentation suivante</a>
 </p>
 <p>
     Rentre dans la zone de saisie ci-dessous l'adresse email à laquelle ton
@@ -83,7 +83,7 @@
       <th>Adresse email défectueuse</th>
     </tr>
     <tr>
-      <td><input type="text" name="email" size="50" maxlength="50" /></td>
+      <td class='center'><input type="text" name="email" size="60" /></td>
     </tr>
     <tr>
       <td class="center"><input type="submit" value="Ok" /></td>

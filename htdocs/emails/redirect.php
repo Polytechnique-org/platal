@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('routage-mail.tpl',AUTH_MDP);
-require_once("email.classes.inc.php");
+new_skinned_page('emails/redirect.tpl',AUTH_MDP);
+require_once("emails.inc.php");
 
 $redirect = new Redirect($_SESSION['uid']);
 
@@ -44,11 +44,15 @@ if (isset($_REQUEST['emailop'])) {
 $sql = "SELECT  alias
           FROM  virtual
     INNER JOIN  virtual_redirect USING(vid)
-          WHERE redirect='{$_SESSION['forlife']}@m4x.org' AND alias LIKE '%@melix.net'";
+          WHERE (  redirect='{$_SESSION['forlife']}@{$globals->mail->domain}'
+                OR redirect='{$_SESSION['forlife']}@{$globals->mail->domain2}' )
+                AND alias LIKE '%@{$globals->mail->alias_dom}'";
 $res = $globals->db->query($sql);
-list($grx) = mysql_fetch_row($res);
-$page->assign('grx',$grx);
-$page->assign('domaine',substr($grx,0,-3));
+if (mysql_num_rows($res)) {
+    list($melix) = mysql_fetch_row($res);
+    list($melix) = split('@', $melix);
+    $page->assign('melix',$melix);
+}
 
 $page->mysql_assign("SELECT  alias,expire
                        FROM  aliases

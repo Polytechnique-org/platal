@@ -47,10 +47,14 @@ $page->mysql_assign($sql, 'mails', 'nb_mails');
 $sql = "SELECT  alias
           FROM  virtual          AS v
     INNER JOIN  virtual_redirect AS vr USING(vid)
-         WHERE  redirect='{$_SESSION['forlife']}@m4x.org' AND alias LIKE '%@melix.net'";
+         WHERE  (  redirect='{$_SESSION['forlife']}@{$globals->mail->domain}'
+                OR redirect='{$_SESSION['forlife']}@{$globals->mail->domain2}' )
+                AND alias LIKE '%@{$globals->mail->alias_dom}'";
 $result = $globals->db->query($sql);
-if ($result && list($aliases) = mysql_fetch_row($result))
-    $page->assign('melix', substr($aliases,0,-3));
+if ($result && list($aliases) = mysql_fetch_row($result)) {
+    list($melix) = split('@', $aliases);
+    $page->assign('melix', $melix);
+}
 mysql_free_result($result);
 
 $page->run();

@@ -36,7 +36,7 @@
         <div>
           {foreach from=$aliases item=a}
           <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='this.form.submit()' />
-          {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@polytechnique.org et @m4x.org 
+          {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
           {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
           <br />
           {/foreach}
@@ -50,21 +50,15 @@
   <tr class="pair">
     <td>
       (M4X signifie <em>mail for X</em>, son intérêt est de te doter d'une adresse à vie
-      moins "voyante" que l'adresse @polytechnique.org).
-    </td>
-  </tr>
-  <tr class="impair">
-    <td>
-      Elles seront prochainement <strong>complétées d'une adresse @polytechnique.edu</strong>,
-      plus lisible dans les pays du monde où "Polytechnique" n'évoque pas grand chose,
-      .edu étant le suffixe propre aux universités et établissements d'enseignement supérieur.
+      moins "voyante" que l'adresse @{#globals.mail.domain#}).
     </td>
   </tr>
 </table>
 
 <p class="smaller">
-(*) l'adresse email marquée d'une (*) t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en {$smarty.session.promo+100}).
-Les autres te sont attribuées a priori à vie, sauf si tu venais à avoir un homonyme X. Dans ce cas, ni ton homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.nom.promo@polytechnique.org.
+(*) l'adresse email marquée d'une (*) t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en
+{$smarty.session.promo+100}).  Les autres te sont attribuées a priori à vie, sauf si tu venais à avoir un homonyme X. Dans ce cas, ni ton
+homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.nom.promo@{#globals.mail.domain#}.
 </p>
 
 
@@ -84,7 +78,7 @@ Les autres te sont attribuées a priori à vie, sauf si tu venais à avoir un homon
         {/section}
       </ul>
       Si tu souhaites <strong>modifier ce reroutage de ton courrier,</strong>
-      <a href="{"routage-mail.php"|url}">il te suffit de te rendre ici !</a>
+      <a href="{rel}/emails/redirect.php">il te suffit de te rendre ici !</a>
     </td>
   </tr>
 </table>
@@ -114,22 +108,23 @@ Les autres te sont attribuées a priori à vie, sauf si tu venais à avoir un homon
 
 <table class="bicol">
   <tr>
-    <th>Un alias sympatique : melix !</th>
+    <th>Un alias sympatique : {#globals.mail.alias_dom#} !</th>
   </tr>
   <tr class="pair">
     <td>
-      Tu peux ouvrir en supplément une adresse synonyme de ton adresse @polytechnique.org, 
-      sur les domaines @melix.org et @melix.net (melix = Mél X).
+      Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
+      sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).
     </td>
   </tr>
   <tr class="impair">
     <td>
       {if $melix}
-      Tu disposes à l'heure actuelle des adresses <strong>{$melix}net</strong> et <strong>{$melix}org</strong>.
-      Pour <strong>demander à la place un autre alias melix</strong>,
+      Tu disposes à l'heure actuelle des adresses <strong>{$melix}@{#globals.mail.alias_dom#}</strong>
+      et <strong>{$melix}@{#globals.mail.alias_dom2#}</strong>.
+      Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
       <a href="alias.php">il te suffit de te rendre ici</a>
       {else}
-      A l'heure actuelle <strong>tu n'as pas activé d'adresse melix</strong>.
+      A l'heure actuelle <strong>tu n'as pas activé d'adresse @{#globals.mail.alias_dom#}</strong>.
       Si tu souhaites le faire, <a href="alias.php">il te suffit de venir ici</a>
       {/if}
     </td>

@@ -88,7 +88,7 @@ if (!empty($_REQUEST['ref'])) {
     $logger->log("inscription",$email);
 
     /****************** insertion de l'email dans la table emails + bogofilter ***/
-    require_once("email.classes.inc.php");
+    require_once("emails.inc.php");
     $redirect = new Redirect($uid);
     $redirect->add_email($email);
     fix_bestalias($uid);

@@ -30,7 +30,9 @@ $page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
 $sql = "SELECT  alias
           FROM  virtual
     INNER JOIN  virtual_redirect USING(vid)
-          WHERE redirect='{$_SESSION['forlife']}@m4x.org' AND alias LIKE '%@melix.net'";
+          WHERE (  redirect='{$_SESSION['forlife']}@{$globals->mail->domain}'
+                OR redirect='{$_SESSION['forlife']}@{$globals->mail->domain2}' )
+                AND alias LIKE '%@{$globals->mail->alias_dom}'";
 if($result = $globals->db->query($sql)) {
     list($aliases) = mysql_fetch_row($result);
     mysql_free_result($result);
@@ -54,9 +56,9 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         $page->run('error');
     } else {
         //vérifier que l'alias n'est pas déja pris
-        $result = $globals->db->query("SELECT 1 FROM virtual WHERE alias='$alias@melix.net'");
+        $result = $globals->db->query("SELECT 1 FROM virtual WHERE alias='$alias@{$globals->mail->alias_dom}'");
         if (mysql_num_rows($result)>0) {
-            $page->assign('error', "L'alias $alias@melix.net a déja été attribué.
+            $page->assign('error', "L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
                                     Tu ne peux donc pas l'obtenir.");
             $page->run('error');
         }
@@ -65,7 +67,7 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         $it = new ValidateIterator ();
         while($req = $it->next()) {
             if ($req->type == "alias" and $req->alias == $alias) {
-                $page->assign('error', "L'alias $alias@melix.net a déja été demandé.
+                $page->assign('error', "L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
                                         Tu ne peux donc pas l'obtenir pour l'instant.");
                 $page->run('error');
             }

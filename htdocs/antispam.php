@@ -21,7 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('antispam.tpl', AUTH_MDP);
-require_once("email.classes.inc.php");
+require_once("emails.inc.php");
 
 $bogo = new Bogo($_SESSION['uid']);
 
