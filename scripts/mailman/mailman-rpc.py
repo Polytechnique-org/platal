@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import base64
+
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 
@@ -15,7 +17,7 @@ class UserDesc: pass
 # Manage Basic authentication
 #
 
-class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
+class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 
     """XMLRPC Request Handler
     This request handler is used to provide BASIC HTTP user authentication.
@@ -25,19 +27,18 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandle
 
     def do_POST(self):
 	headers = self.headers
-	print headers
 	if not headers.has_key("authorization"):
 	    self.send_response(401)
 	    self.end_headers()
-	auth = headers["authorization"]
-	auth = auth.replace("Basic ","")
-	decoded_auth = base64.decodestring(auth)
 	try:
-	    user, passwd = decoded_auth.split(':')
+	    auth = headers["authorization"]
+	    _, auth = auth.split()
+	    user, passwd = base64.decodestring(auth).strip().split(':')
+	    # Call super.do_POST() to do the actual work
+	    SimpleXMLRPCRequestHandler.do_POST(self)
 	except:
-	
-	# Call super.do_POST() to do the actual work
-	SimpleXMLRPCServer.SimpleXMLRPCRequestHandler.do_POST(self)
+	    self.send_response(401)
+	    self.end_headers()
 
 
 #------------------------------------------------
@@ -91,7 +92,7 @@ def unsubscribe(listname,mail):
 # server
 #
 
-server = SimpleXMLRPCServer(("localhost", 4949))
+server = SimpleXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 server.register_function(lists_names)
 server.register_function(members)
 server.register_function(subscribe)
