@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.43 2004-09-25 20:59:09 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.44 2004-09-25 21:29:29 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -210,7 +210,8 @@ def get_lists((userdesc,perms),vhost):
         try:
             details = get_list_info((userdesc,perms),mlist)[0]
             result.append(details)
-        finally:
+            mlist.Unlock()
+        except:
             mlist.Unlock()
     return result
 
