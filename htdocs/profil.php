@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.11 2004-11-04 20:19:35 x2000habouzit Exp $
+        $Id: profil.php,v 1.12 2004-11-05 13:29:52 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -103,7 +103,7 @@ if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     if(empty($_SESSION['suid'])) {
         $sql = $sql.",date='$date' WHERE user_id={$_SESSION['uid']}";
 	require_once('notifs.inc.php');
-	register_watch_op($this->uid,'fiche');
+	register_watch_op($_SESSION['uid'],'fiche');
     }
 
     // mise a jour des champs relatifs au tab ouvert
