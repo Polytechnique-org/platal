@@ -16,6 +16,7 @@ New :
 		- No more .head.tpl. (thanks to JM for the tip).					-MC
 		- Strip unnecessary spaces from templates at compile time.			-MC
 		- Allow users to choose email formats globally.						-Car
+		- Crons are now handled from plat/al with a global crontab file.	-MC
 
 	* Contacts :
 		- Brand new PDF of the contact list (using FPDF).					-MC

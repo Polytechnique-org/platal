@@ -30,7 +30,7 @@ You now have to :
     and add a rewrite rule on www.polytechnique.org (http and https) :
     ^/banana/([^/]*/.*)$    /usr/share/banana/\$1
 
-(*) install the new cron : bin/cron/notifs.birthday.php
-    suggested :
-    0 1 * * *   ...../bin/cron/notifs.birthday.php
+(*) install the new cron system :
+    delete ALL web crons from the crontab EXCEPT for the /home/web/bin/espace_disque that is not a plat/al feature
+    and then, link /etc/cron.d/platal -> platal/configs/platal.cron
 "
