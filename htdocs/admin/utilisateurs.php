@@ -241,6 +241,11 @@ foreach($_POST as $key => $val) {
                 my_error("<b>Failed:</b> $query");
                 break;
             }
+            
+            $f = fopen("/tmp/flag_recherche","w");
+            fputs($f,"1");
+            fclose($f);
+
             my_msg("\"$login\" updaté correctement.");
             // envoi du mail au webmaster
             $HEADER="From: ADMINISTRATION\nReply-To: webmaster@polytechnique.org\nX-Mailer: PHP/" . phpversion();
