@@ -30,35 +30,7 @@
         Informations professionnelles - Entreprise n°{$i+1}
       </th>
     </tr>
-    <tr>
-      <td colspan="5" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="radio" name="pubpro[{$i}]" value="public" {if $pubpro.$i eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="orange">
-              <input type="radio" name="pubpro[{$i}]" value="ax" {if $pubpro.$i eq 'ax'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              transmis à l'AX
-            </td>
-            <td class="rouge">
-              <input type="radio" name="pubpro[{$i}]" value="private" {if $pubpro.$i eq 'private'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              prive
-            </td>
-            <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    {include file=include/flags.radio.tpl name="pubpro[$i]" val=$pubpro.$i}
     <tr>
       <td class="colg">
         <span class="titre">Entreprise ou organisme</span>
@@ -107,35 +79,7 @@
         </select>
       </td>
     </tr>
-    <tr>
-      <td colspan="5" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="radio" name="adr_pubpro[{$i}]" value="public" {if $adr_pubpro.$i eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="orange">
-              <input type="radio" name="adr_pubpro[{$i}]" value="ax" {if $adr_pubpro.$i eq 'ax'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              transmis à l'AX
-            </td>
-            <td class="rouge">
-              <input type="radio" name="adr_pubpro[{$i}]" value="private" {if $adr_pubpro.$i eq 'private'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              prive
-            </td>
-            <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    {include file=include/flags.radio.tpl name="adr_pubpro[$i]" val=$adr_pubpro.$i}
     <tr>
       <td class="colg">
         <span class="titre">Adresse professionnelle</span>
@@ -197,35 +141,7 @@
         </select>
       </td>
     </tr>
-    <tr>
-      <td colspan="5" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="radio" name="tel_pubpro[{$i}]" value="public" {if $tel_pubpro.$i eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="orange">
-              <input type="radio" name="tel_pubpro[{$i}]" value="ax" {if $tel_pubpro.$i eq 'ax'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              transmis à l'AX
-            </td>
-            <td class="rouge">
-              <input type="radio" name="tel_pubpro[{$i}]" value="private" {if $tel_pubpro.$i eq 'private'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              prive
-            </td>
-            <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    {include file=include/flags.radio.tpl name="tel_pubpro[$i]" val=$tel_pubpro.$i}
     <tr>
       <td class="colg">
         <span class="titre">Téléphone professionnel</span>
@@ -249,6 +165,15 @@
       </td>
       <td>
         <input type="text" size="18" maxlength="18" name="mobilepro[{$i}]" value="{$mobilepro.$i}" />
+      </td>
+    </tr>
+    {include file=include/flags.radio.tpl name="email_pubpro[$i]" val=$email_pubpro.$i}
+    <tr>
+      <td class="colg">
+        <span class="titre">E-mail</span>
+      </td>
+      <td>
+        <input tyep="text" size="30" maxlength="60" name="emailpro[{$i}]" value="{$emailpro.$i}" />
       </td>
     </tr>
   </table>

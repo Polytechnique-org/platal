@@ -98,7 +98,7 @@ if (!logged()) {
         }
     }
     foreach ($user['adr_pro'] as $i=>$adr) {
-        if ($adr['pub'] != 'public' && $adr['tel_pub'] != 'public' && $adr['adr_pub'] != 'public')
+        if ($adr['pub'] != 'public' && $adr['tel_pub'] != 'public' && $adr['adr_pub'] != 'public' && $adr['email_pub'] != 'public')
             unset($user['adr_pro'][$i]);
         else {
             if ($adr['adr_pub'] != 'public') {
@@ -121,6 +121,9 @@ if (!logged()) {
                 $user['adr_pro'][$i]['fax'] = '';
                 $user['adr_pro'][$i]['mobile'] = '';
             }
+            if ($adr['email_pub'] != 'public') {
+                $user['adr_pro'][$i]['email'] = '';
+            }
         }
     }
     if ($user['medals_pub'] != 'public') {
@@ -135,7 +138,8 @@ foreach($user['adr_pro'] as $i=>$pro) {
         && $pro['secteur'] == '' && $pro['poste'] == ''
         && $pro['adr1'] == '' && $pro['adr2'] == '' && $pro['adr3'] == ''
         && $pro['cp'] == '' && $pro['ville'] == '' && $pro['pays'] == ''
-        && $pro['tel'] == '' && $pro['fax'] == '' && $pro['mobile'] == '')
+        && $pro['tel'] == '' && $pro['fax'] == '' && $pro['mobile'] == ''
+        && $pro['email'] == '')
         unset($user['adr_pro'][$i]);
 }
 if (count($user['adr_pro']) == 0) unset($user['adr_pro']);

@@ -152,6 +152,11 @@ function chgMainWinLoc( strPage ) {
           <em>Poste : </em> <strong>{$address.poste}</strong>
         </div>
         {/if}
+        {if $address.email}
+        <div>
+          <em>E-mail : </em> <strong>{$address.email}</strong>
+        </div>
+        {/if}
       </div>
 
       {include file="geoloc/address.tpl" address=$address titre="Adresse : "}

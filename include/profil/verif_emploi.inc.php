@@ -49,6 +49,8 @@ replace_ifset_i($mobilepro,"mobilepro",$i);
 replace_ifset_i($pubpro,"pubpro",$i);
 replace_ifset_i($adr_pubpro,"adr_pubpro",$i);
 replace_ifset_i($tel_pubpro,"tel_pubpro",$i);
+replace_ifset_i($emailpro,"emailpro",$i);
+replace_ifset_i($email_pubpro,"email_pubpro",$i);
 replace_ifset($cv,"cv");
 
 // validité de l'entreprise
