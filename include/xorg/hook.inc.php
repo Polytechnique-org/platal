@@ -84,6 +84,9 @@ class XOrgHook
         }
     }
 
+    // }}}
+    // {{{ function menu
+
     function menu()
     {
         foreach ($this->_mods as $mod) {
@@ -92,12 +95,29 @@ class XOrgHook
         }
     }
 
+    // }}}
+    // {{{ function subscribe
+
     function subscribe($forlife, $uid, $promo, $pass)
     {
         foreach ($this->_mods as $mod) {
             if (!function_exists($mod.'_subscribe')) continue;
             call_user_func($mod.'_subscribe', $forlife, $uid, $promo, $pass);
         }
+    }
+
+    // }}}
+    // {{{ function prefs
+
+    function prefs()
+    {
+        $res = Array();
+        foreach ($this->_mods as $mod) {
+            if (!function_exists($mod.'_prefs')) continue;
+            $res = array_merge($res, call_user_func($mod.'_prefs'));
+        }
+        usort($res, create_function('$a, $b', 'return strcmp($a["weight"], $b["weight"]);'));
+        return $res;
     }
 
     // }}}

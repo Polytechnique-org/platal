@@ -39,6 +39,25 @@ function skin_config()
 }
 
 // }}}
+// {{{ prefs hook
+
+function skin_prefs()
+{
+    global $globals;
+    if (empty($globals->skin->enable)) {
+        return null;
+    }
+    return Array(
+            Array(
+                'url'    => 'skins.php',
+                'title'  => 'Apparence du site (skins)',
+                'text'   => 'Tu peux changer les couleurs et les images du site.',
+                'weight' => 90
+            )
+        );
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

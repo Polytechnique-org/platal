@@ -48,7 +48,8 @@ if (Env::has('mail_fmt')) {
     $_SESSION['mail_fmt'] = $fmt;
 }
 
-$page->run($has_cookie);
+$page->assign('prefs', $globals->hook->prefs());
+$page->run();
 
 // vim:set et sw=4 sts=4 sws=4:
 ?>

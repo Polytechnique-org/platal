@@ -28,12 +28,13 @@
     Configuration des différents services du site
     </th>
   </tr>
-  {foreach from="preferences.tpl.d/*.tpl"|glob item=inc key=id name=glob}
+  {foreach from=$prefs item=pref key=id name=glob}
   {if $id is even}
   <tr class="{cycle values="impair,pair"}">
-  {/if}
+    {/if}
     <td class="half">
-      {include file=$inc}
+      <h3><a href="{rel}/{$pref.url}">{$pref.title}</a></h3>
+      <div class='explication'>{$pref.text|smarty:nodefaults}</div>
     </td>
     {if $id is even && $smarty.foreach.glob.last}
     <td class="half"></td>

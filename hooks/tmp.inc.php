@@ -47,5 +47,21 @@ function tmp_subscribe($forlife, $uid, $promo, $password)
 }
 
 // }}}
+// {{{ prfs hook
 
+function tmp_prefs()
+{
+    $fmt  = Session::get('mail_fmt', 'html') == 'html' ? 'texte' : 'html';
+    $fmt2 = Session::get('mail_fmt', 'html') == 'html' ? 'texte' : 'HTML';
+    return Array(
+            Array(
+                'url'    => 'preferences.php?mail_fmt='.$fmt,
+                'title'  => 'Recevoir les mails en format '.$fmt2,
+                'text'   => 'Les mails envoyés par le site (lettre mensuelle, carnet, ...) le sont de préférence en format '.Session::get('mail_fmt', 'html'),
+                'weight' => 30
+            )
+        );
+}
+
+// }}}
 ?>

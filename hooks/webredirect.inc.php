@@ -37,6 +37,26 @@ function webredirect_config()
 }
 
 // }}}
+// {{{ prefs hook
+
+function webredirect_prefs()
+{
+    $text = "Tu peux configurer tes redirections WEB http://www.carva.org/" . Session::get('bestalias');
+    if (Session::get('forlife') != Session::get('bestalias')) {
+        $text .= ' et http://www.carva.org/'.Session::get('forlife');
+    }
+
+    return Array(
+            Array(
+                'url'    => 'webredirect.php',
+                'title'  => 'Ma redirection de page WEB',
+                'text'   => $text,
+                'weight' => 80
+            )
+        );
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
