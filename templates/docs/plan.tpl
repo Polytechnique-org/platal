@@ -247,7 +247,6 @@
   <ul>
     {page title="Charte" url="charte.php"|url}{/page}
     {page title="Services et éthique" url="ethique.php"|url}{/page}
-    {page title="Sécurité et confidentialité" url="secu.php"|url}{/page}
     {page title="Règles générales d'utilisation des forums" url="docs/doc_forums.php"|url}{/page}
   </ul>
 
