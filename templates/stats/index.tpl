@@ -1,5 +1,5 @@
 {***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2004 Polytechnique.org                                   *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -17,65 +17,22 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: nb_by_promo.tpl,v 1.7 2004-11-09 09:01:05 x2000palatin Exp $
+        $Id: index.tpl,v 1.1 2004-11-09 09:01:05 x2000palatin Exp $
  ***************************************************************************}
 
 
 <h1>
-  Inscrits par promo
+  Statistiques
 </h1>
 
 <p>
-Voici le nombre d'inscrits par promo :
+Quelques statistiques sur l'utilisation des services de Polytechnique.org ainsi que sur l'evolution et la repartition du nombre d'inscrits.
 </p>
 
-{dynamic}
-<table class="bicol" cellpadding="3" cellspacing="0" summary="Statistiques">
-  <tr>
-    <th></th>
-    <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th>
-    <th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
-  </tr>
-  {foreach item=nb10 key=lustre from=$nbs}
-  <tr>
-    <th>{$lustre}-</th>
-    {foreach item=nb from=$nb10}
-    <td class="center">
-      {if $nb && $nb.promo eq $smarty.request.promo}
-      <span class='error'>{$nb.nb}</span>
-      {elseif $nb}
-      <a href="?promo={$nb.promo}">{$nb.nb}</a>
-      {else}
-      -
-      {/if}
-    </td>
-    {/foreach}
-  </tr>
-  {/foreach}
-</table>
-
-{if $smarty.request.promo}
-
-<p class='center'>
-[<a href="{$smarty.server.PHP_SELF}">répartition des inscrits par promo</a>]
-</p>
-
-<h1>Courbe d'inscription de la promo {$smarty.request.promo}</h1>
-
-<div class="center">
-  <img src="{"stats/graph_promo.php"|url}?promo={$smarty.request.promo}" alt=" [ INSCRITS ] " />
-</div>
-
-{else}
-
-<h1>Inscrits par promo en (%)</h1>
-
-<div class="center">
-  <img src="{"stats/graph-promo2.png"|url}" alt="[graphe du nombre d'inscrits par promo]" />
-</div>
-
-{/if}
-
-{/dynamic}
+<ul>
+<li><a href="stats_promo.php">Nombre d'inscrits dans ta promotion</a></li>
+<li><a href="nb_by_promo.php">Nombre d'inscrits par promotion</a></li>
+<li><a href="parselog.php">Statistiques mail</a></li>
+</ul>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
