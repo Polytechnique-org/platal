@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.4 2004-09-23 15:40:45 x2000habouzit Exp $
+        $Id: trombi.php,v 1.5 2004-10-06 13:16:49 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+$liste = $_REQUEST['liste'];
 $npage = isset($_REQUEST['npage']) ? $_REQUEST['npage'] : 1;
 
 require("auto.prepend.inc.php");

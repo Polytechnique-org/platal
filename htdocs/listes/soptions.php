@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: soptions.php,v 1.1 2004-09-24 16:28:05 x2000habouzit Exp $
+        $Id: soptions.php,v 1.2 2004-10-06 13:16:49 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
-$liste = strtolower($_REQUEST['liste']);
+$liste = $_REQUEST['liste'];
 
 require("auto.prepend.inc.php");
 new_admin_page('listes/soptions.tpl', true);
