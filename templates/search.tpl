@@ -3,6 +3,11 @@
   <div class="rubrique">
     Résultats
   </div>
+  {if $with_soundex==0}
+    <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex=1&rechercher=1&{$url_args}">
+      Etendre à la recherche par proximité sonore
+    </a>
+  {/if}
   <div class="right">
     <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}">Nouvelle recherche</a>
   </div>
@@ -22,14 +27,14 @@
   {if $perpage<$nb_resultats_total}
   <p>
     {if $offset!=0}
-      <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&rechercher=1&{$url_args}&offset={$offset-$perpage}">
+      <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$offset-$perpage}">
         Précédent
       </a>
       &nbsp;
     {/if}
     {section name=offset loop=$offsets}
       {if $offset!=$smarty.section.offset.index*$perpage}
-        <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&rechercher=1&{$url_args}&offset={$smarty.section.offset.index*$perpage}">
+        <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$smarty.section.offset.index*$perpage}">
           {$smarty.section.offset.index+1}
         </a>
       {else}
@@ -38,7 +43,7 @@
       &nbsp;
     {/section}
     {if $offset<$nb_resultats_total-$perpage}
-      <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&rechercher=1&{$url_args}&offset={$offset+$perpage}">
+      <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$offset+$perpage}">
         Suivant
       </a>
       &nbsp;

@@ -12,8 +12,17 @@ $page->assign('public_directory',$public_directory);
 if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('formulaire',0);
 
-    $nameField = new StringSField('name',array('u.nom','u.epouse','i.nom'),'i.nom');
-    $firstnameField = new StringSField('firstname',array('u.prenom','i.prenom'),'i.prenom');
+    $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
+
+    if ($with_soundex) {
+        $nameField = new StringWithSoundexSField('name',array('u.nom_soundex','u.epouse_soundex','i.nom_soundex'),'i.nom');
+        $firstnameField = new StringWithSoundexSField('firstname',array('u.prenom_soundex','i.prenom_soundex'),'i.prenom');
+    }
+    else {
+        $nameField = new StringSField('name',array('u.nom','u.epouse','i.nom'),'i.nom');
+        $firstnameField = new StringSField('firstname',array('u.prenom','i.prenom'),'i.prenom');
+        $with_soundex = ($nameField->length()==0 && $firstnameField->length()==0)?(-1):0;
+    }
     $promo1Field = new PromoSField('promo1','egal1',array('u.promo','i.promo'),'i.promo');
     $promo2Field = new PromoSField('promo2','egal2',array('u.promo','i.promo'),'i.promo');
     $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
@@ -52,6 +61,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
+    $page->assign('with_soundex',$with_soundex);
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());

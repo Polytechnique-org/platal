@@ -1,4 +1,6 @@
 <?php
+require_once("xorg.misc.inc.php");
+
 /** classe qui gère les erreurs dans les requêtes des utilisateurs finaux
  * passe le message d'erreur au template de page et exécute le template
  */
@@ -127,6 +129,16 @@ class StringSField extends SField {
             return $this->fieldResultName.'!="'.$this->value.'"';
         else
             return false;
+    }
+}
+
+/** classe de champ texte avec soundex (nom par exemple)
+ */
+class StringWithSoundexSField extends StringSField {
+    /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
+     * @param field nom de champ de la bdd concerné par la clause */
+    function get_single_where_statement($field) {
+        return $field.'="'.soundex_fr($this->value).'"';
     }
 }
 
