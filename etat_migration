@@ -26,7 +26,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
-;	  | evenements.php							  | 
 ;	  | fiche_referent.php						  | 
 ;	  | index.coupure.php						  | 
 ;	  | mescontacts_pdf.php						  | 
@@ -146,6 +145,7 @@ xx	  | dons.php								  | -
 xx	  | emails.php								  | -
 xx	  | en-cours.php							  | docs/en-cours.php
 xx	  | ethique.php								  | docs/ethique.php
+xx	  | evenements.php							  | 
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
 xx	  | getphoto.php							  | -

@@ -63,10 +63,11 @@ class EvtReq extends Validate {
             if($_REQUEST['action']=="Supprimer") {
                 $globals->db->query("DELETE from evenements WHERE id='{$this->evtid}' LIMIT 1");
             }
-            if ($_POST['action']!="Supprimer")
+            if ($_POST['action'] != "Supprimer")
                 $mymail->send();
             $this->clean();
         }
+	return "";
     }
 
     function commit() {
