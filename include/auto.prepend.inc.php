@@ -3,11 +3,11 @@
 ini_set('include_path', '/home/x2000habouzit/dev/diogenes/lib/:'.ini_get('include_path'));
 require("config.xorg.inc.php") ;
 setlocale(LC_TIME, "fr_FR");
-require("xorg.common.inc.php");
+require_once("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=false) {
     global $page;
-    require("xorg.page.inc.php");
+    require_once("xorg.page.inc.php");
     if(!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
     } else switch($min_auth) {
@@ -42,7 +42,7 @@ function new_admin_page($tpl_name, $popup=false, $tpl_head="") {
 function new_admin_table_editor($table,$idfield) {
     global $editor;
     new_admin_page('table-editor.tpl');
-    require('xorg.table-editor.inc.php');
+    require_once('xorg.table-editor.inc.php');
     $editor = new XOrgAdminTableEditor($table,$idfield);
 }
 

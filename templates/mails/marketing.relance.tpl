@@ -1,5 +1,5 @@
-{* $Id: marketing.relance.tpl,v 1.1 2004-07-17 14:16:47 x2000habouzit Exp $ *}
-{config_load file="mails.conf" section="valid_alias"}
+{* $Id: marketing.relance.tpl,v 1.2 2004-07-19 08:58:04 x2000habouzit Exp $ *}
+{config_load file="mails.conf" section="marketing_relance"}
 {subject text="$subj"}
 {from full=#from#}
 {to addr="$lemail"}

@@ -36,30 +36,4 @@ function put_in_db($string){
   return trim(addslashes($string));
 }
 
-function select_options($table,$valeur,$champ="text",$pad=false,$where="") {
-  $sql = "SELECT id,$champ FROM $table $where ORDER BY $champ";
-  $result = mysql_query($sql);
-  // on ajoute une entree vide si $pad est vrai
-  if ($pad) 
-    printf("<option value=\"0\" %s></option>\n",($valeur==0?"selected":""));
-  while (list($my_id,$my_text) = mysql_fetch_row($result)) {
-    printf("<option value=\"%s\" %s>%s</option>\n",$my_id,($valeur==$my_id?"selected":""),$my_text);
-  }
-  mysql_free_result($result);
-}
-
-function _select_options_smarty($params){
-  if((!isset($params['table'])) || (!isset($params['valeur'])))
-    return;
-  if(!isset($params['champ']))
-    $params['champ'] = 'text';
-  if(!isset($params['pad']) || !($params['pad']))
-    $pad = false;
-  else
-    $pad = true;
-  if(!isset($params['where']))
-    $params['where'] = '';
-  select_options($params['table'], $params['valeur'], $params['champ'], $pad, $params['where']);
-}
-
 ?>
