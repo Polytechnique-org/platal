@@ -3,7 +3,7 @@ ini_set('include_path', ".:..:./include:../include/:/home/x2000habouzit/dev/diog
 require("xorg.common.inc.php");
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
-    global $page;
+    global $page,$globals;
     require("xorg.page.inc.php");
     if(!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
@@ -17,6 +17,11 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false) {
         case AUTH_MDP:
             $page = new XorgAuth($tpl_name, $type);
     }
+
+    $page->template_dir = $globals->spoolroot . "/templates/";
+    $page->compile_dir  = $globals->spoolroot . "/templates_c/";
+    $page->plugin_dir   = $globals->spoolroot . "/plugins/";
+    $page->cache_dir    = $globals->spoolroot . "/cache/";
 
     $page->assign('xorg_head', $tpl_head);
     $page->assign('xorg_tpl', $tpl_name);

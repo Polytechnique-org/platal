@@ -1,10 +1,10 @@
-{* $Id: default.tpl,v 1.3 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.4 2004-01-26 22:59:05 x2000habouzit Exp $ *}
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
 {include file=skin/common.header.tpl}
-    <link rel="stylesheet" type="text/css" href="css/default.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="{"css/default.css"|url}" media="screen" />
 {if $xorg_head}
 {include file=$xorg_head}
 {/if}
@@ -25,7 +25,7 @@
     <table id="body" cellpadding="0" cellspacing="0">
     <tr>
       <td id="body-left" rowspan="2">
-        <img src="images/sk_default_headlogo.jpg" alt="[ LOGO ]" />
+        <img src="{"images/sk_default_headlogo.jpg"|url}" alt="[ LOGO ]" />
         <div id="menu">
 {include_php file=menu.inc.php}
 {foreach key=menu_title item=menu_list from=$menu}
@@ -39,7 +39,7 @@
 {perms level=admin}{insert name="mkStats"}{/perms}
       </td>
       <td id="body-top">
-        <img src="images/sk_default_ban.jpg" alt="[ Polytechnique.org ]" />
+        <img src="{"images/sk_default_ban.jpg"|url}" alt="[ Polytechnique.org ]" />
         <table>
         <tr>
           <td class="date-heure">
@@ -52,7 +52,7 @@
           <td class="inscrits">{insert name="getNbIns"} polytechniciens sur le web</td>
         </tr>
         </table>
-        <img src="images/sk_default_lesX.gif" alt="[LES X SUR LE WEB]" />
+        <img src="{"images/sk_default_lesX.gif"|url}" alt="[LES X SUR LE WEB]" />
       </td>
     </tr>
     <tr>
