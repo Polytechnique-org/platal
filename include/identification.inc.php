@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.9 2004-09-30 14:52:08 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.10 2004-10-09 15:00:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -67,7 +67,8 @@ if ($promo > 1995)  {
 
     $matrcondense = $_REQUEST["matricule"];
     $rangentree = intval(substr($_REQUEST["matricule"], 3, 3));
-    $anneeimmatric = intval(substr($_REQUEST["matricule"],0,2));
+    $anneeimmatric = intval(substr($_REQUEST["matricule"],0,3));
+    if($anneeimmatric > 950) $anneeimmatric/=10;
     if ($anneeimmatric < 96) {
 	sortie_id("ton matricule est incorrect");
     } elseif ($anneeimmatric < 100) {
