@@ -22,7 +22,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | admin/evenements.php					  | 
 ;!	  | admin/pg.php							  | 
 ------+-[ marketing ]-----------------------------+----------------
-;	  | admin/envoidirect.php					  | 
 ;	  | admin/marketing_promo.php				  | marketing/
 ;	  | admin/marketing_volontaire.php			  | marketing/
 ;	  | admin/relance.php						  | marketing/ 
@@ -103,6 +102,7 @@ xx	  | acces_smtp.php							  | -
 xx	  | acces_wap.php							  | -
 xx	  | admin/ax-xorg.php						  | -
 xx	  | admin/deces_promo.php					  | -
+xx	  | admin/envoidirect.php					  | marketing/envoidirect.php
 xx	  | admin/FormatePrenomNOM2.php				  | scripts/
 xx	  | admin/FormatePrenomNOM.php				  | scripts/
 xx	  | admin/gerer_applis.php					  | -
