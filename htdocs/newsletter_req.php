@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter_req.php,v 1.3 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: newsletter_req.php,v 1.4 2004-09-03 00:08:48 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -52,7 +52,7 @@ if (isset($_POST["action"]) && (($_POST["action"]=="Tester")
 
         if ((count($result)<9) and ($_POST["action"]=="valider")) {
             require_once("diogenes.mailer.inc.php");
-            $mailer = new DiogenesMailer($_SESSION['username']."@polytechnique.org", 
+            $mailer = new DiogenesMailer($_SESSION['forlife']."@polytechnique.org", 
                     "info+nl@polytechnique.org", 
                     "Proposition d'article pour la newsletter", 
                     false);
