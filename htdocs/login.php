@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.php,v 1.14 2004-09-02 23:06:10 x2000habouzit Exp $
+        $Id: login.php,v 1.15 2004-11-01 09:15:34 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -79,7 +79,7 @@ $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS
           FROM  evenements    AS e
     INNER JOIN  auth_user_md5 AS a ON e.user_id=a.user_id
     INNER JOIN  aliases       AS l ON ( a.user_id=l.id AND l.type='a_vie' )
-         WHERE  FIND_IN_SET(flags, 'valide') AND peremption >= NOW()
+         WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
 		AND (e.promo_min = 0 || e.promo_min <= {$_SESSION['promo']})
 		AND (e.promo_max = 0 || e.promo_max >= {$_SESSION['promo']})
       ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
