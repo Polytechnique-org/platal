@@ -6,11 +6,11 @@ $sname = array_pop($array);
 unset($array);
 
 if ($sname == "spoolgen.php") {
-    $news["user"]=$news_web_user;
-    $news["pass"]=$news_web_pass;
+    $news["user"] = $globals->banana->web_user;
+    $news["pass"] = $globals->banana->web_pass;
 } elseif (isset($_SESSION['forlife'])) {
-    $news["user"]="web_".$_SESSION['forlife'];
-    $news["pass"]=$news_auth_pass;
+    $news["user"]= "web_".$_SESSION['forlife'];
+    $news["pass"]= $globals->banana->web_pass;
 }
 $news['server']="$news_server:$news_port";
 ?>
