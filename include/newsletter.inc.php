@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.26 2004-10-25 19:36:12 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.27 2004-11-02 11:40:14 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -256,7 +256,7 @@ EOF;
 	require_once('diogenes.mailer.inc.php');
 	$fullname = "=?ISO-8859-1?Q?".quoted_printable_encode(str_replace(' ','_',"$prenom $nom"),200)."?=";
 	$mailer = new DiogenesMailer("Lettre Mensuelle Polytechnique.org <info+nlp@polytechnique.org>",
-				     "$fullname <$forlife@polytechnique.org>",
+				     replace_accent("$fullname <$forlife@polytechnique.org>"),
 				     $this->title(true),
 				     $html);
 	if($html) {
