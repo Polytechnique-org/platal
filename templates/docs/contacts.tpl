@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: contacts.tpl,v 1.8 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: contacts.tpl,v 1.9 2004-08-31 20:19:30 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -73,7 +73,7 @@ Celà nous permettra d'être les plus efficaces possible et de traiter ta demande 
   Je n'arrive pas à m'inscrire sur le site
 </div>
 <p>
-L'inscription se déroule en <a href="inscrire.php">une étape sur notre site web</a>,
+L'inscription se déroule en <a href="{"inscrire.php"|url}">une étape sur notre site web</a>,
 suivie d'une étape de confirmation basée sur l'e-mail que tu as donné.
 </p>
 <p>
@@ -106,7 +106,7 @@ La première méthode est automatique, sécurisée et te prendra environ 5 minutes.
 Il faut que tu accèdes encore à tes emails en polytechnique.org
 pour récupérer tes paramètres par cette méthode.
 </p>
-<a href="recovery.php"><strong>Clique ici pour retrouver un mot de passe.</strong></a>
+<a href="{"recovery.php"|url}"><strong>Clique ici pour retrouver un mot de passe.</strong></a>
 <p>
 La seconde méthode est entièrement manuelle. Pour cette raison, assure-toi de nous fournir
 toutes les informations dont nous disposons sur toi dans ta dernière fiche. En particulier :
@@ -189,7 +189,7 @@ de contacter l'Amicale des X à l'adresse <strong>{mailto address='info@amicale.p
 </p>
 <p>
 Pour toute demande qui concerne le recrutement de polytechniciens, vous pouvez consulter
-<a href="http://www.manageurs.com/?langue=fr"><strong>le site Manageurs.com, dédié aux problématique d'emploi et de gestion de carrière.</strong></a>
+<a onclick="return popup(this);" href="http://www.manageurs.com/?langue=fr"><strong>le site Manageurs.com, dédié aux problématique d'emploi et de gestion de carrière.</strong></a>
 </p>
 <p>
 Pour toute question n'ayant aucun rapport avec l'utilisation du site, vous pouvez nous contacter à
