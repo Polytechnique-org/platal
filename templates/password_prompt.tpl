@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: password_prompt.tpl,v 1.23 2004-10-24 14:41:11 x2000habouzit Exp $
+        $Id: password_prompt.tpl,v 1.24 2004-11-13 13:17:08 x2000habouzit Exp $
  ***************************************************************************}
 
 <noscript>
@@ -37,7 +37,7 @@
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
 Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change le login ci-dessous, ou rends-toi sur
-<a href="{"inscrire.php"|url}">la page d'inscription</a>.
+<a href="{"inscription/"|url}">la page d'inscription</a>.
 </p>
 {/min_auth}
 
@@ -54,7 +54,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
   Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
     nous</strong> pour obtenir un accès. Polytechnique.org c'est l'e-mail des X,
   l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
-  rapidement possible. <strong> <a href="inscrire.php">Clique ici pour nous demander tes
+  rapidement possible. <strong> <a href="{"inscription/"|url}">Clique ici pour nous demander tes
       paramètres personnels.</a></strong>
   </li>
 </ul>
