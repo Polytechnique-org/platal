@@ -47,7 +47,7 @@ if(logged()) {
         'Polytechniciens' => Array(
             'Me connecter !' => 'login.php',
             'M\'inscrire' => 'inscrire.php',
-            'Pourquoi m\'inscrire ?' => 'services.php'
+            'Pourquoi m\'inscrire ?' => 'docs/services.php'
         ),
         'Visiteurs' => Array(
             'Annuaire de l\'X' => 'search.php?public_directory=1',
