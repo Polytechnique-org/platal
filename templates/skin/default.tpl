@@ -5,7 +5,9 @@
   <head>
 {include file=skin/common.header.tpl}
     <link rel="stylesheet" type="text/css" href="css/default.css" media="screen" />
-{if $xorg_head}{include file=$xorg_head}{/if}
+{if $xorg_head}
+{include file=$xorg_head}
+{/if}
 {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>
@@ -31,7 +33,7 @@
         <div class="menu_title">{$menu_title}</div>
 {/if}
 {foreach key=menu_item item=menu_url from=$menu_list}
-        <div class="menu_item"><a href="{$menu_url}">{$menu_item}</a></div>
+        <div class="menu_item"><a href="{$menu_url|url}">{$menu_item}</a></div>
 {/foreach}
 {/foreach}
 {min_perms level=admin}{insert name="mkStats"}{/min_perms}
@@ -68,4 +70,4 @@
   </body>
 </html>
 {* vim:set et sw=2 sts=2 sws=2: *}
-{* $Id: default.tpl,v 1.1 2004-01-25 17:19:21 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.2 2004-01-25 20:35:46 x2000habouzit Exp $ *}
