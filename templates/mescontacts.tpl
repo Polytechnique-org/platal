@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.8 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: mescontacts.tpl,v 1.9 2004-10-24 14:21:42 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -54,7 +54,7 @@
 
 <div class="contact-list">
 {foreach item=contact from=$contacts}
-{include file=include/x_inscrit.tpl c=$contact show_action="retirer"}
+{include file=include/minifiche.tpl c=$contact show_action="retirer" inscrit=1}
 {/foreach}
 </div>
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.19 2004-10-22 15:01:21 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.20 2004-10-24 14:21:30 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -110,8 +110,6 @@ else {
                        u.nom,
                        u.prenom,
                        u.promo,
-                       i.deces!=0 AS decede,
-		       i.deces,
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
                        c.uid AS contact

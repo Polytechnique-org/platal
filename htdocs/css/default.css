@@ -223,14 +223,13 @@ div.contact div.nom {
 }
 
 div.contact div.appli {
-    width: 48%;
     float: left;
 }
 
 div.contact div.bits {
     text-align: right;
     width: 17%;
-    float: left;
+    float: right;
 }
 
 div.contact div.long {
@@ -582,4 +581,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.51 2004-10-22 11:58:47 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.52 2004-10-24 14:21:33 x2000bedo Exp $ */
