@@ -1,4 +1,4 @@
-{* $Id: show.tpl,v 1.6 2004-04-26 14:17:19 x2000habouzit Exp $ *}
+{* $Id: show.tpl,v 1.7 2004-04-26 14:45:53 x2000habouzit Exp $ *}
 
 {literal}
 <script type="text/javascript">
@@ -37,7 +37,7 @@
   </tr>
 {foreach item=rq from=$requests}
   <tr class="pri{$rq.pri}">
-    <td>{$rq.date|date_format:"%d %b&nbsp;%Y"}</td>
+    <td>{$rq.date|date_format:"%d&nbsp;%b&nbsp;%Y"}</td>
     <td><a href="show_rq.php?tr_id={$smarty.get.tr_id}&amp;rq_id={$rq.rq_id}">{$rq.summary}</a></td>
     <td class="right">{if $rq.username}<a href="mailto:{$rq.username}@polytechnique.org">{$rq.username}</a>{else}-{/if}</td>
   </tr>
@@ -45,7 +45,7 @@
 <tr><th colspan="3"></th></tr>
 {foreach item=rq from=$close}
   <tr>
-    <td>{$rq.date|date_format:"%d %b&nbsp;%Y"}</td>
+    <td>{$rq.date|date_format:"%d&nbsp;%b&nbsp;%Y"}</td>
     <td><a href="show_rq.php?tr_id={$smarty.get.tr_id}&amp;rq_id={$rq.rq_id}">{$rq.summary}</a></td>
     <td class="action"><a href="javascript:del({$rq.rq_id})">delete</a></td>
   </tr>

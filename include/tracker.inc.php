@@ -69,7 +69,7 @@ class Tracker {
         mysql_query("INSERT INTO trackers.requests
                      SET    tr_id='{$this->id}',user_id='{$_SESSION['uid']}',
                             admin_id='-1',st_id='$status',pri='$prio',
-                            summary='$sujet',texte='$text'");
+                            summary='$sujet',texte='$text',date=NOW()");
         $id = mysql_insert_id();
         # TODO : mail
         return $id;
