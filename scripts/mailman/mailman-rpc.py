@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.27 2004-09-22 11:42:40 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.28 2004-09-22 12:39:38 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -315,8 +315,13 @@ def get_pending_ops((userdesc,perms),listname):
         if not is_admin_on(userdesc, perms, mlist):
             return 0
         subs = []
+        seen = []
         for id in mlist.GetSubscriptionIds():
             time, addr, fullname, passwd, digest, lang = mlist.GetRecord(id)
+            if addr in seen:
+                mlist.HandleRequest(id, mm_cfg.DISCARD)
+                continue
+            seen.append(addr)
             subs.append({
                     'id'    : id,
                     'name'  : fullname,
