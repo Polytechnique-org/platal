@@ -8,21 +8,15 @@ $page->assign('limit', $limit);
 
 if(!isset($_REQUEST['xpromo'])) $page->run();
 
-if (ereg("[0-9]{2}",$_REQUEST['xpromo'])) {
-    if ($_REQUEST['xpromo'] > 20) {
-        $_REQUEST['xpromo'] += 1900;
-    } else {
-        $_REQUEST['xpromo'] += 2000;
-    }
-}
+$xpromo = intval($_REQUEST['xpromo']);
 
-if (!ereg("(19|20)[0-9]{2}",$_REQUEST['xpromo']) && ($_REQUEST['xpromo']!="all" || $_SESSION['perms']!="admin")) {
-    $page->assign('erreur', "La promotion doit être saisie au format YYYY. Recommence.");
+if ( $xpromo<1900 || $xpromo>date('Y') || ($xpormo = -1 && $_SESSION['perms']!="admin") ) {
+    $page->assign('erreur', "Promotion incorrecte (saisir au format YYYY). Recommence.");
 }
 
 $offset = (empty($_REQUEST['offset']) ? 0 : $_REQUEST['offset']);
 
-$where = ( $_REQUEST['xpromo']!="all" ? "WHERE promo='{$_REQUEST['xpromo']}'" : "" );
+$where = ( $xpromo>0 ? "WHERE promo='$xpromo'" : "" );
 
 $res = $globals->db->query("SELECT  COUNT(*)
                               FROM  auth_user_md5 AS u

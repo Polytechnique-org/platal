@@ -1,4 +1,4 @@
-{* $Id: trombipromo.tpl,v 1.1 2004-07-24 16:06:57 x2000habouzit Exp $ *}
+{* $Id: trombipromo.tpl,v 1.2 2004-08-26 09:34:02 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -74,7 +74,7 @@ chaque page affiche au plus {$limit} photos.
   {/foreach}
   {if $loop eq "1"}
   <td></td><td></td></tr>
-  {else if $loop eq "2"}
+  {elseif $loop eq "2"}
   <td></td></tr>
   {/if}
 </table>
