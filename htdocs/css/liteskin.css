@@ -30,6 +30,18 @@ a:visited { color: #3252A7; text-decoration: none; }
 a:active  { color: #3252A7; text-decoration: underline; }
 a:hover   { color: #0F2C57; text-decoration: none; }
 
+fieldset {
+    background-color: #fdfde9;
+    border: 1px #660099 solid;
+    color: inherit;
+}
+
+legend {
+    background-color: #ffff99;
+    border: none;
+    color: #660099;
+}
+
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
@@ -164,4 +176,4 @@ div.conteneur_tab {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: liteskin.css,v 1.3 2004-10-24 22:58:15 x98ho Exp $ */
+/* $Id: liteskin.css,v 1.4 2004-11-13 16:30:17 x2003bruneau Exp $ */

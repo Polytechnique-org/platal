@@ -28,6 +28,18 @@ a:visited { color: #800080; }
 a:active  { color: #800080; }
 a:hover   { color: #800080;}
 
+fieldset {
+    background-color: #f5eeff;
+    border: 1px #800080 solid;
+    color: inherit;
+}
+
+legend {
+    background-color: #ecd0ff;
+    border: 1px #800080 solid;
+    color: inherit;
+}
+
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
@@ -165,4 +177,4 @@ div.conteneur_tab {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: nbviolet.css,v 1.5 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: nbviolet.css,v 1.6 2004-11-13 16:30:17 x2003bruneau Exp $ */

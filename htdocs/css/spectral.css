@@ -23,10 +23,16 @@
         [ balises sans attributs ou classes sans contexte ]
 *******************************************************************************/
 
-/*body {
-    background: #99afc1;
-    color: #000000;
-}*/
+fieldset {
+    background-color: #ddffcc;
+    border: 1px #0067fe solid;
+    color: inherit;
+}
+
+legend {
+    border: 1px #0067fe solid;
+    color: inherit;
+}
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -136,4 +142,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: spectral.css,v 1.7 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: spectral.css,v 1.8 2004-11-13 16:30:17 x2003bruneau Exp $ */
