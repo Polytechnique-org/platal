@@ -11,7 +11,7 @@ Changes :
 
 	* NewsLetter :
 		- Brand New NewsLetter module.										-MC
-		- Convert old archive to new model.									-Fco
+		- Convert old archive to new model.									-FAL
 
 	* Search :
 		- dead members and non subsribed people are grayed.					-MC
@@ -31,7 +31,7 @@ Fixes (from 0.9.0 branch) :
 		- we used the bad table to search functions names.					-MC
 
 	* Skins :
-		- minor updates.													-Fno
+		- minor updates.													-FRU
 
 ================================================================================
 VERSION 0.9.0													     15 Oct 2004
@@ -45,8 +45,8 @@ ACRONYMS :
 
 	* PoT : Polytechnique.org TEAM (see Authors).
 	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
-	* Fco : Raphaël Marichez (Falco)    <raphael.marichez@m4x.org>
-	* Fno : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
+	* FAL : Raphaël Marichez (Falco)    <raphael.marichez@m4x.org>
+	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 
 ================================================================================
 vim:noet:ts=4:sw=4:tw=80:
