@@ -34,7 +34,11 @@ $res = $globals->xdb->query(
 
 if ($url = $res->fetchOneCell()) {
     $url = preg_replace('@/+$@', '', $url);
-    header("Location: http://$url/$path");
+    if($path) {
+        header("Location: http://$url/$path");
+    } else {
+        header("Location: http://$url");
+    }
     exit();
 }
 
