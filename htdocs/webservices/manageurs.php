@@ -18,16 +18,16 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: manageurs.php,v 1.4 2004-11-11 11:46:15 x2000coic Exp $
+        $Id: manageurs.php,v 1.5 2004-11-15 07:11:41 x2000coic Exp $
  ***************************************************************************/
 
 require_once('auto.prepend.inc.php');
-require_once('webservices/manageurs.inc.php');
+require_once('webservices/manageurs.server.inc.php');
 
 
 $server = xmlrpc_server_create();
 
-xmlrpc_server_register_method($server, "getAnnuaireInfos", "get_annuaire_infos");
+xmlrpc_server_register_method($server, "get_annuaire_infos", "get_annuaire_infos");
 
 $request = $GLOBALS['HTTP_RAW_POST_DATA'];
 
