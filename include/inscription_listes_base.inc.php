@@ -18,10 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: inscription_listes_base.inc.php,v 1.3 2004-10-10 13:51:17 x2000habouzit Exp $
+        $Id: inscription_listes_base.inc.php,v 1.4 2004-10-14 22:16:01 x2000habouzit Exp $
  ***************************************************************************/
 
 include('xml-rpc-client.inc.php');
+include('newsletter.inc.php');
 
 /** inscrit l'uid donnée à la promo
  * @param $uid UID
@@ -35,7 +36,7 @@ function inscription_listes_base($uid,$pass,$promo) {
   // récupération de l'id de la liste promo
   $client = new xmlrpc_client("http://$uid:$pass@localhost:4949");
   $client->subscribe('polytechnique.org',"promo$promo");
-  $client->subscribe_nl();
+  subscribe_nl();
 }
 
 ?>

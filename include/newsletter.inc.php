@@ -18,38 +18,29 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.8 2004-10-14 22:16:01 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.1 2004-10-14 22:16:01 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
-new_skinned_page('listes/index.tpl', AUTH_MDP);
-include('xml-rpc-client.inc.php');
-include('newsletter.inc.php');
-
-$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-list($pass) = mysql_fetch_row($res);
-mysql_free_result($res);
-
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-if(isset($_GET['del'])) {
-    $client->unsubscribe('polytechnique.org',$_GET['del']);
-    header('Location: index.php');
+class NewsLetter {
+    function NewsLetter() { }
 }
-if(isset($_GET['add'])) {
-    $client->subscribe('polytechnique.org',$_GET['add']);
-    header('Location: index.php');
-}
-if(isset($_POST['promo_add'])) {
-    $promo = intval($_POST['promo_add']);
-    if($promo>=1900 and $promo<2100) {
-	$client->subscribe('polytechnique.org',"promo$promo");
-    }
-}
-if(!empty($_GET['nl_unsub'])) unsubscribe_nl();
-if(!empty($_GET['nl_sub']))   subscribe_nl();
 
-$listes = $client->get_lists('polytechnique.org');
-$page->assign_by_ref('listes',$listes);
-$page->assign('nl',get_nl_state());
-$page->run();
+function get_nl_state() {
+    global $globals;
+    $res = $globals->db->query("SELECT COUNT(*)>0 FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
+    list($b) = mysql_fetch_row($res);
+    mysql_free_result($res);
+    return $b;
+}
+ 
+function unsubscribe_nl() {
+    global $globals;
+    $globals->db->query("DELETE FROM newsletter_ins WHERE user_id={$_SESSION['uid']}");
+}
+ 
+function subscribe_nl() {
+    global $globals;
+    $globals->db->query("INSERT INTO newsletter_ins (user_id) VALUES ({$_SESSION['uid']})");
+}
+ 
 ?>
