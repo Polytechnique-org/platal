@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.45 2004-10-08 21:53:58 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.46 2004-10-09 06:38:36 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -645,6 +645,8 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
 
+        mlist._UpdateRecords()
+
         mlist.Save()
         mlist.Unlock()
         check_options((userdesc,perms),vhost,listname,True)
@@ -683,7 +685,9 @@ if ( os.getuid() is not uid ) or ( os.getgid() is not gid):
 
 opts, args = getopt.getopt(sys.argv[1:], 'f')
 for o, a in opts:
-    if o == '-f' and os.fork():
+#--------------------------------------------------
+#     if o == '-f' and os.fork():
+#-------------------------------------------------- 
         sys.exit(0)
 
 mysql = connectDB()
