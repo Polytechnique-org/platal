@@ -50,10 +50,6 @@ mysql_free_result($res);
 
 // affichage de la boîte avec quelques liens
 
-$res = $globals->db->query("SELECT id FROM newsletter ORDER BY date DESC");
-list($nb) = mysql_fetch_row($res);
-mysql_free_result($res);
-
 require_once('login.conf.php') ;
 $pub_nbElem = $pub_nbLig * $pub_nbCol ;
 if (count($pub_tjs) <= $pub_nbElem)

@@ -1,3 +1,5 @@
+bin/newsletter.send.php
+hooks/core/newsletter.inc.php
 htdocs/admin/newsletter_cats.php
 htdocs/admin/newsletter_edit.php
 htdocs/admin/newsletter.php
@@ -5,8 +7,8 @@ htdocs/css/nl.css
 htdocs/newsletter/index.php
 htdocs/newsletter/show.php
 htdocs/newsletter/submit.php
+include/conf.d/newsletter.menu.inc.php
 include/newsletter.inc.php
-bin/cron/send_nl.php
 templates/admin/newsletter_edit.tpl
 templates/admin/newsletter.tpl
 templates/newsletter/head.tpl

@@ -77,12 +77,10 @@ function user_clear_all_subs($user_id, $really_del=true)
 function inscription_listes_base($uid,$pass,$promo)
 {
     require_once('xml-rpc-client.inc.php');
-    require_once('newsletter.inc.php');
     global $globals;
     // récupération de l'id de la liste promo
     $client = new xmlrpc_client("http://$uid:$pass@localhost:4949/polytechnique.org");
     $client->subscribe("promo$promo");
-    subscribe_nl();
 }
 
 // }}}

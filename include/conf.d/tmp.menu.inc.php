@@ -18,7 +18,6 @@ $this->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',          'referent.php'
 $this->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',             'http://www.polytechnique.net/plan.php');
 $this->addPrivateEntry(XOM_GROUPS,   40, 'Web Polytechnicien',    'http://www.polytechnique.net/');
 
-$this->addPrivateEntry(XOM_INFOS,    00, 'Lettres mensuelles',    'newsletter/');
 $this->addPrivateEntry(XOM_INFOS,    10, 'Documentations',        'docs/');
 $this->addPrivateEntry(XOM_INFOS,    20, 'Nous contacter',        'docs/contacts.php');
 $this->addPrivateEntry(XOM_INFOS,    30, 'Emploi',                'http://www.manageurs.com/');

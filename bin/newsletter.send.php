@@ -21,7 +21,7 @@
  ***************************************************************************/
 
 require('./connect.db.inc.php');
-require("../../include/newsletter.inc.php");
+require("newsletter.inc.php");
 
 function query ($sql) {
     mysql_query($sql);

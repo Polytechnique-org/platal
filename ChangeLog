@@ -25,6 +25,8 @@ New :
 		- New skin : openweb.												-MC
 		- No more annoying submit button, onclick is used to submit.		-MC
 		- This is the first autonom module of the site !					-MC
+	
+	* WebRedirect (was: Carva) : now standalone.							-MC
 
 Bug/Wish :
 
