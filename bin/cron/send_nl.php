@@ -46,10 +46,11 @@ $nl->setSent();
 
 while(true) {
     $sql = mysql_query("SELECT  ni.user_id,ni.pref, a.alias,
-				u.prenom, IF(u.epouse='', u.nom, u.epouse)
+				u.prenom, IF(u.epouse='', u.nom, u.epouse),
+                                FIND_IN_SET('femme', u.flags)
 			  FROM  newsletter_ins AS ni
 		    INNER JOIN  auth_user_md5  AS u  USING(user_id)
-		    INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags)
+		    INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
 		         WHERE  ni.last<$id 
 			 LIMIT  60");
     if(!mysql_num_rows($sql)) exit(0);
