@@ -20,17 +20,17 @@
 
 
 <div>
-  Copyright © 1999-2004 Association <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
+  Copyright © 1999-2005 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
-  <a href="{"docs/convention_ax.php"|url}">Lien avec l'AX</a>
+  <a href="{$rel}docs/convention_ax.php">Lien avec l'AX</a>
   &nbsp;-&nbsp;
-  <a href="{"docs/apropos.php"|url}">A propos de ce site</a>
+  <a href="{$rel}docs/apropos.php">A propos de ce site</a>
 <br />
-  <a href="{"docs/ethique.php"|url}">Services et Ethique</a>
-  | <a href="{"docs/charte.php"|url}">Charte</a>
+  <a href="{$rel}docs/ethique.php">Services et Ethique</a>
+  | <a href="{$rel}docs/charte.php">Charte</a>
 {min_auth level=cookie}
-  | <a href="{"stats/coupure.php"|url}">Disponibilité</a>
-  | <a href="{"stats/"|url}">Statistiques</a>
+  | <a href="{$rel}stats/coupure.php">Disponibilité</a>
+  | <a href="{rel}stats/">Statistiques</a>
 {/min_auth}
 </div>
 
