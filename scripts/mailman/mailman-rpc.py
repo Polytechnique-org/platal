@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.70 2004-11-04 15:40:42 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.71 2004-11-04 17:39:19 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -140,6 +140,8 @@ def to_forlife(email):
                            LIMIT  1""" %( mbox ) )
         if int(mysql.rowcount) is 1:
             return mysql.fetchone()
+        else:
+            return (None,None)
     return (email,mbox)
 
 #-------------------------------------------------------------------------------
@@ -342,7 +344,7 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
         mlist.Lock()
         for user in users:
             email, name = to_forlife(user)
-            if email in members:
+            if ( email is None ) or ( email in members ):
                 continue
             userd = UserDesc(email, name, None, 0)
             mlist.ApprovedAddMember(userd)
@@ -379,6 +381,8 @@ def add_owner((userdesc,perms),vhost,listname,user):
         if not is_admin_on(userdesc, perms, mlist):
             return 0
         email = to_forlife(user)[0]
+        if email is None:
+            return 0
         if email not in mlist.owner:
             mlist.Lock()
             mlist.owner.append(email)
@@ -707,14 +711,22 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
     name = vhost.lower()+'-'+listname.lower();
     if Utils.list_exists(name):
         return 0
+        
+    owner = []
+    for o in owners:
+        email = to_forlife(o)[0]
+        if email is not None:
+            owner.append(email)
+    if len(owner) is 0:
+        return 0
 
     mlist = MailList.MailList()
     try:
         oldmask = os.umask(002)
         pw = sha.new('foobar').hexdigest()
+        
         try:
-            email = to_forlife(owners[0])[0]
-            mlist.Create(name, email, pw)
+            mlist.Create(name, owner[0], pw)
         finally:
             os.umask(oldmask)
 
@@ -728,7 +740,7 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.subscribe_policy = 2 * (int(inslevel) is 1)
         mlist.admin_notify_mchanges = (mlist.subscribe_policy or mlist.generic_nonmember_action or mlist.default_member_moderation or not mlist.advertised)
         
-        mlist.owner = map(lambda a: to_forlife(a)[0], owners)
+        mlist.owner = owner
         
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
