@@ -18,42 +18,56 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.php,v 1.2 2004-11-04 19:57:42 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.1 2004-11-04 19:57:43 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
-new_skinned_page('carnet/notifs.tpl', AUTH_COOKIE);
-require('notifs.inc.php');
+require_once('diogenes.flagset.inc.php');
+ 
+class Notifs {
+    var $uid;
+    var $flags;
+    var $promos = Array();
+    var $nonins = Array();
 
-$notifs = new Notifs($_SESSION['uid']);
+    function Notifs($uid) {
+	global $globals;
+	$this->uid = $uid;
 
-$err = Array();
+	$res = $globals->db->query("SELECT watch FROM auth_user_md5 WHERE user_id = '$uid'");
+	list($flags) = mysql_fetch_row($res);
+	mysql_free_result($res);
+	$this->flags = new FlagSet($flags);
+	
+	$res = $globals->db->query("SELECT  type,arg,prenom,nom,promo
+				      FROM  watch
+				INNER JOIN  auth_user_md5 USING(user_id)
+				     WHERE  watch.user_id = '$uid'
+				  ORDER BY  arg");
+	while(list($type, $arg, $prenom, $nom, $promo) = mysql_fetch_row($res)) {
+	    if($type=='promo') {
+		$this->promos[$arg] = $arg;
+	    } elseif($type =='non-inscrit') {
+		$this->nonins[$arg] = Array('prenom'=>$prenom, 'nom'=>$nom, 'promo'=>$promo);
+	    }
+	}
+    }
 
-foreach($_REQUEST as $key=>$val) {
-    switch($key) {
-	case 'add_promo':
-	    $p = intval($val);
-	    if(($p<1900) || ($p>2100)) {
-		$err[] = "il faut entrer une promo sur 4 chiffres";
-	    } else {
-		$notifs->add_promo($val);
-	    };
-	    break;
-	case 'del_promo':
-	    $notifs->del_promo($val);
-	    break;
+    function del_promo($p) {
+	global $globals;
+	unset($this->promos[$p]);
+	$globals->db->query("DELETE FROM watch WHERE user_id='{$this->uid}' AND type='promo' AND arg='$p'");
+    }
 
-	case 'flags':
-	    $flags = new FlagSet();
-	    if(isset($_REQUEST['contacts'])) $flags->addflag('contacts');
-	    if(isset($_REQUEST['deaths'])) $flags->addflag('deaths');
-	    $notifs->flags = $flags;
-	    $notifs->saveFlags();
-	    break;
+    function add_promo($p) {
+	global $globals;
+	$this->promos[$p] = $p;
+	$globals->db->query("REPLACE INTO watch (user_id,type,arg) VALUES ('{$this->uid}','promo','$p')");
+    }
+
+    function saveFlags() {
+	global $globals;
+	$globals->db->query("UPDATE auth_user_md5 SET watch='{$this->flags->value}' WHERE user_id='{$this->uid}'");
     }
 }
-$page->assign_by_ref('notifs', $notifs);
-
-$page->run();
-
+ 
 ?>

@@ -17,8 +17,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.3 2004-11-04 18:24:01 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.4 2004-11-04 19:57:46 x2000habouzit Exp $
  ***************************************************************************}
+
+{dynamic}
 
 <h1>Notifications automatiques</h1>
 
@@ -36,16 +38,42 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
-    <legend>Options</legend>
-    <input type='checkbox' name='' /> Surveiller mes contacts<br />
-    <input type='checkbox' name='' /> Supprimer les camarades décédés de mes contacts
+    <legend>Contacts</legend>
+    <input type='checkbox' name='contacts' {if $notifs->flags->hasflag('contacts')}checked="checked"{/if} /> Surveiller mes contacts<br />
+    <input type='checkbox' name='deaths' {if $notifs->flags->hasflag('deaths')}checked="checked"{/if}/> Supprimer les camarades décédés de mes contacts
   </fieldset>
   <div class='center'>
-    <input type='submit' value='valider' />
+    <input type='submit' name='flags' value='valider' />
   </div>
 </form>
 
 <br />
+<h1>Surveiller des promos</h1>
+
+<p>
+Pour les promos, tu es notifié lorsque un camarade de cette promo s'inscrit, et lorsque un camarade de cette promo décède.
+</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="post">
+  <fieldset>
+    <legend>Ajouter une promo</legend>
+    <input type='text' name='add_promo' maxlength='4' size='4' />
+    <input type='submit' value='ajouter' />
+    <span class='smaller'>mettre la promo sur quatre chiffres </span>
+    <br />
+    {if $notifs->promos|@count eq 0}
+    <p>Tu ne surveilles actuellement aucune promo.</p>
+    {else}
+    <p>Tu surveilles {if $notifs->promos|@count eq 1}la promo{else}les promos{/if} :</p>
+    <ul>
+      {foreach from=$notifs->promos item=p}
+      <li>{$p} <a href="?del_promo={$p}"><img src="{"images/retirer.gif"|url}" alt="retirer cette promo" /></a></li>
+      {/foreach}
+    </ul>
+    {/if}
+  </fieldset>
+</form>
+
 <h1>Surveiller des non inscrits</h1>
 
 <p>
@@ -69,16 +97,19 @@ Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à t
   <tr>
     <td>
       {if !$nonins|@count}
-      Tu ne surveilles actuellement aucun non-inscrit.<br />
+      <p>Tu ne surveilles actuellement aucun non-inscrit.</p>
       {elseif $promos|@count}
-      Tu surveilles {if $promos|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :
-      {foreach from=$nonins item=p}
-      {$p}<br />
-      {/foreach}
+      <p>Tu surveilles {if $promos|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
+      <ul>
+        {foreach from=$nonins item=p}
+        <li>{$p}</li>
+        {/foreach}
+      </ul>
       {/if}
     </td>
   </tr>
 </table>
 
+{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
