@@ -36,7 +36,7 @@ class SondageReq extends Validate {
         <input type="hidden" name="uid" value="{$this->uid}">
         <input type="hidden" name="type" value="{$this->type}">
         <input type="hidden" name="stamp" value="{$this->stamp}">
-        <table class="bicol" align="center" cellpadding="4" summary="Sondage">
+        <table class="bicol" cellpadding="4" summary="Sondage">
         <tr>
             <td>Demandeur&nbsp;:
             </td>
@@ -60,7 +60,7 @@ class SondageReq extends Validate {
             pas contenir le caractère ')</td>
         </tr>
         <tr>
-            <td align="center" valign="middle">
+            <td style="vertical-align: middle;">
                 <input type="submit" name="submit" value="Accepter">
                 <br /><br />
                 <input type="submit" name="submit" value="Refuser">

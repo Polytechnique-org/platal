@@ -1,4 +1,4 @@
-{* $Id: doc_ssl.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_ssl.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique"><a id="ssl" name="ssl"></a>Le certificat SSL de Polytechnique.org</div>
 <div class="ssrubrique">Pourquoi un certificat ?</div>
@@ -25,13 +25,13 @@ Après avoir cliqué sur <a href="{"cacert.php/cacert.cer"}|url">ce lien</a>, tu v
   certificat. Ton navigateur devrait te demander si tu veux télécharger ce fichier,
   clique sur "ouvrir" :
 </p>
-<div align="center">
+<div class="center">
   <img src="{"images/docs_ssl_dl.png"|url}" alt="[téléchargement]" width="398" height="191" />
 </div>
 <p>
   Ceci devrait t'ouvrir la fenêtre suivante.
 </p>
-<div align="center">
+<div class="center">
     <img src="{"images/docs_ssl_install.png"|url}" alt="[Certificat]" width="409" height="476" />
 </div>
 <p>
@@ -39,7 +39,7 @@ Après avoir cliqué sur <a href="{"cacert.php/cacert.cer"}|url">ce lien</a>, tu v
   tu devrais alors voir la fenêtre suivante apparaître, valide-la.
   Un message apparaît alors, te signifiant que tout s'est bien déroulé
 </p>
-<div align="center">
+<div class="center">
     <img src="{"images/docs_ssl_accept.png"|url}" alt="[Valider]" width="629" height="204" />
 </div>
 

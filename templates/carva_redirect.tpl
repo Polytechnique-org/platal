@@ -1,4 +1,4 @@
-{* $Id: carva_redirect.tpl,v 1.1 2004-01-26 19:40:51 x2000habouzit Exp $ *}
+{* $Id: carva_redirect.tpl,v 1.2 2004-01-29 16:21:53 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <div class="rubrique">
@@ -15,7 +15,7 @@
   Pourquoi une redirection de page WEB ?
 </div>
 <p class="normal">
-  Dans la lignée du service de redirection d'emails de <b>Polytechnique.org</b>,
+  Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
   il est possible de faire pointer
 {dynamic}
 {if $alias}

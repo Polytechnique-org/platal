@@ -1,26 +1,26 @@
-{* $Id: doc_melix.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_melix.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   alias @melix.net
 </div>
 <p class="normal">
-  <b>Pourquoi un alias, alors que j'ai déjà mes adresses @polytechnique.org ?</b>
+  <strong>Pourquoi un alias, alors que j'ai déjà mes adresses @polytechnique.org ?</strong>
 </p>
 <p>
-    Les adresses <b>@polytechnique.org</b> et <b>@m4x.org</b> sont figées, et ne peuvent pas être
+    Les adresses <strong>@polytechnique.org</strong> et <strong>@m4x.org</strong> sont figées, et ne peuvent pas être
     personnalisées. Pour plus de convivialité dans l'utilisation de tes mails, tu peux donc choisir
     une adresse e-mail discrète et personnalisée. Ce nouvel e-mail peut par exemple correspondre à
     ton surnom.
 </p>
 <p>
     Par soucis de distinction avec les adresses prenom.nom@polytechnique.org ou prenom.nom@m4x.org,
-    ces adresses personnalisées auront pour suffixe <b>@melix.net</b> et <b>@melix.org</b>. Ces
+    ces adresses personnalisées auront pour suffixe <strong>@melix.net</strong> et <strong>@melix.org</strong>. Ces
     domaines sont aussi gérés par nos serveurs, et tous les mails que tu recevras à cette adresse
     seront immédiatement redirigés sur tes adresses de renvoi habituelles définies sur
     <a href="{"emails.php"|url}">cette page</a>.
 </p>
 <p class="normal">
-  <b>A combien d'alias @melix.net ai-je droit ?</b>
+  <strong>A combien d'alias @melix.net ai-je droit ?</strong>
 </p>
 <p>
     Afin d'éviter tout abus, une seule adresse par personne est disponible et cette demande doit
@@ -29,7 +29,7 @@
     validée par un administrateur.
 </p>
 <p class="normal">
-  <b>Je veux changer d'alias ...</b>
+  <strong>Je veux changer d'alias ...</strong>
 </p>
 <p>
     Il est interdit d'avoir deux alias différents. Donc pour changer d'alias melix, il te suffit
@@ -40,7 +40,7 @@
     par un refus de toutes les demandes de changement d'alias qui suivront.
 </p>
 <p class="normal">
-  <b>Je n'ai plus besoin d'aucun alias</b>
+  <strong>Je n'ai plus besoin d'aucun alias</strong>
 </p>
 <p>
     Aucun problème, si tu as un alias et que tu veux l'abandonner, il te suffit de cliquer sur le

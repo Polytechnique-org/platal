@@ -66,7 +66,7 @@ class MListReq extends Validate {
         <input type="hidden" name="uid" value="{$this->uid}">
         <input type="hidden" name="type" value="{$this->type}">
         <input type="hidden" name="stamp" value="{$this->stamp}">
-        <table class="bicol" align="center">
+        <table class="bicol">
         <tr>
             <td>Demandeur&nbsp;:</td>
             <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
@@ -110,7 +110,7 @@ class MListReq extends Validate {
             <td>$membres</td>
         </tr>
         <tr>
-            <td align="center" valign="middle" style="border-top:1px dotted inherit">
+            <td style="border-top:1px dotted inherit; vertical-align: middle;">
                 <input type="submit" name="submit" value="Accepter">
                 <br /><br />
                 <input type="submit" name="submit" value="Refuser">

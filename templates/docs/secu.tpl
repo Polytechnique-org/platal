@@ -1,4 +1,4 @@
-{* $Id: secu.tpl,v 1.2 2004-01-29 14:27:12 x2000habouzit Exp $ *}
+{* $Id: secu.tpl,v 1.3 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <script language="JavaScript" type="text/javascript">
 {literal}
@@ -9,7 +9,7 @@
 {/literal}
 </script>
 
-<div align="center">
+<div class="center">
   <a
     href="javascript:popUp('https://servicecenter.verisign.com/cgi-bin/Xquery.exe?Template=authCertByIssuer&amp;remote_host=https://www.certplus.com/server/cgi-bin/haydn.exe&amp;form_file=../fdf/authCertByIssuer.fdf&amp;issuerSerial=2a7ca007e2dd1cfe5cb7c705cf197084')">
     <img src="{"images/SceauCertplus_petit.png"|url}" alt=" [ SCEAU CERTPLUS ] " border="0">

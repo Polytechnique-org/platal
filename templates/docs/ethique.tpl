@@ -1,4 +1,4 @@
-{* $Id: ethique.tpl,v 1.1 2004-01-29 14:18:55 x2000habouzit Exp $ *}
+{* $Id: ethique.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <p class="normal">
 L'association Polytechnique.org fournit à la communauté divers <strong>services</strong>, cette
@@ -123,12 +123,12 @@ possible de valider ces demandes dans les heures qui suivent en journée.
   &Eacute;thique
 </div>
 <p class="normal">
-L'association Polytechnique.org est très attentive à maintenir un <b>engagement
-  éthique de très haut niveau</b>.
+L'association Polytechnique.org est très attentive à maintenir un <strong>engagement
+  éthique de très haut niveau</strong>.
 </p>
 <p class="normal">
 Dans cette optique, nous tenons à rappeler que nous sommes notamment
-vigilants à l'égard de toute pratique de <b>spam</b>. Les lois contre le spam 
+vigilants à l'égard de toute pratique de <strong>spam</strong>. Les lois contre le spam 
 devenant de plus en plus en sévères, celles-ci nous donnent la possibilité de 
 défendre nos abonnés contre les pratiques de ce genre.
 </p>
@@ -136,8 +136,8 @@ défendre nos abonnés contre les pratiques de ce genre.
 D'autre part, toutes les données contenues sur le site sont soumises aux
 lois sur l'informatique et la liberté du 6 janvier 1978. Aucune donnée concernant
 un polytechnicien n'est transmise à un tiers sans son accord. Toutes les informations
-publiques de ce site sont soumises à une <b>règle d'usage strictement individuel et 
-  privé</b>. Toute utilisation commerciale de ces données est formellement interdite.
+publiques de ce site sont soumises à une <strong>règle d'usage strictement individuel et 
+  privé</strong>. Toute utilisation commerciale de ces données est formellement interdite.
 </p>
 <p class="normal">
 Pour tout problème ou complément éthique, une adresse est à votre disposition,

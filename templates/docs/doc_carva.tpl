@@ -1,4 +1,4 @@
-{* $Id: doc_carva.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_carva.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Redirection de page WEB
@@ -9,18 +9,18 @@
 </div>
 
 <p class="normal">
-  Dans la lignée du service de redirection d'emails de <b>Polytechnique.org</b>, 
+  Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>, 
   il est possible de faire pointer 
 {if $smarty.session.alias}
-  l'adresse <b>http://www.carva.org/{dyn s=$smarty.session.username}</b>
+  l'adresse <strong>http://www.carva.org/{dyn s=$smarty.session.username}</strong>
 {else}
-  les adresses <b>http://www.carva.org/{dyn s=$smarty.session.username}</b>
-  et <b>http://www.carva.org/{$smarty.session.alias}</b> ";
+  les adresses <strong>http://www.carva.org/{dyn s=$smarty.session.username}</strong>
+  et <strong>http://www.carva.org/{$smarty.session.alias}</strong> ";
 {/if}
   vers la page WEB de ton choix.
 </p>
 <p class="normal">
-  La redirection fournie par <b>carva.org</b> t'offre ainsi une adresse Internet 
+  La redirection fournie par <strong>carva.org</strong> t'offre ainsi une adresse Internet 
   simple et immuable pour référencer ton site personnel, quelle que soit la solution 
   d'hébergement retenue (free.fr, wanadoo.fr, ifrance.com, etc.).
 </p>

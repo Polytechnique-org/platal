@@ -1,4 +1,4 @@
-{* $Id: doc_gratuits.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_gratuits.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Pourquoi et comment choisir un e-mail gratuit
@@ -78,7 +78,7 @@
     </li>
   </ol>
   <p class="normal">
-    Explications. <b>Le critère 1</b> est vital. Avec certains services de
+    Explications. <strong>Le critère 1</strong> est vital. Avec certains services de
     messagerie électronique, des e-mails 
     sont perdus. C'est inacceptable, c'est pourquoi Polytechnique.org est très
     attentif à maintenir un service performant et permanent. Même si la 
@@ -89,7 +89,7 @@
     d'éliminer un grand nombre de services de messagerie gratuits.
   </p>
   <p class="normal">
-    <b>Le critère 2</b> permet de consulter ses e-mails sur son ordinateur
+    <strong>Le critère 2</strong> permet de consulter ses e-mails sur son ordinateur
     normalement sans passer par le web. On bénéficie donc de toute l'interface
     et des fonctions du logiciel de messagerie (Outlook Express ou Netscape
     par exemple) à la place de celle du site web (qui est généralement assez
@@ -126,62 +126,60 @@
     en contact avec Polytechnique.org.</strong>
   </p>
   <br />
-  <div align="center">
-    <table border="0" class="bicol" cellspacing="0" cellpadding="4" width="80%" summary="Benchmark">
-      <tr>
-        <th>
-          Qualité de service
-        </th>
-        <th>
-          Nom du service
-        </th>
-      </tr>
-      <tr>
-        <td class="bicoltitre">
-          à éviter impérativement
-        </td>
-        <td>
-          caramail.com
-        </td>
-      </tr>
-      <tr>
-        <td class="bicoltitre">
-          mauvaise
-        </td>
-        <td>
-          mail.com<br />
-          multimania.com
-        </td>
-      </tr>
-      <tr>
-        <td class="bicoltitre">
-          moyenne
-        </td>
-        <td>
-          freesurf.fr<br />
-          hotmail.com<br />
-          yahoo.fr
-        </td>
-      </tr>
-      <tr>
-        <td class="bicoltitre">
-          bonne ou satisfaisante
-        </td>
-        <td>
-          free.fr<br />
-          ifrance.com<br />
-          libertysurf.fr
-        </td>
-      </tr>
-    </table> 
-  </div>
+  <table border="0" class="bicol" cellspacing="0" cellpadding="4" width="80%" summary="Benchmark">
+    <tr>
+      <th>
+        Qualité de service
+      </th>
+      <th>
+        Nom du service
+      </th>
+    </tr>
+    <tr>
+      <td class="bicoltitre">
+        à éviter impérativement
+      </td>
+      <td>
+        caramail.com
+      </td>
+    </tr>
+    <tr>
+      <td class="bicoltitre">
+        mauvaise
+      </td>
+      <td>
+        mail.com<br />
+        multimania.com
+      </td>
+    </tr>
+    <tr>
+      <td class="bicoltitre">
+        moyenne
+      </td>
+      <td>
+        freesurf.fr<br />
+        hotmail.com<br />
+        yahoo.fr
+      </td>
+    </tr>
+    <tr>
+      <td class="bicoltitre">
+        bonne ou satisfaisante
+      </td>
+      <td>
+        free.fr<br />
+        ifrance.com<br />
+        libertysurf.fr
+      </td>
+    </tr>
+  </table> 
   <div class="sstitre">
     Commentaires
   </div>
   <p class="normal">
     Il convient surtout d'éviter caramail.com dont les performances sont 
     désespérantes, les logs prouvent que chaque semaine des mails sont 
-    <b>PERDUS</b> à destination de caramail. Pour le reste, les services mauvais 
+    <strong>PERDUS</strong> à destination de caramail. Pour le reste, les services mauvais 
     sont ceux qui connaissent des pannes régulières et relativement fréquentes, 
     le plus souvent sans aucune perte de mail mais avec des retards qui peuvent 
     atteindre plusieurs jours. En ce qui concerne les services moyens, on trouve 
@@ -198,10 +196,10 @@
     ailleurs par modem avec ce provider! Cela n'empêche pas d'utiliser leurs serveurs.
   </p>
   <p class="normal">
-  <b>Toutes caractéristiques confondues, nos deux services préférés et recommandés 
+  <strong>Toutes caractéristiques confondues, nos deux services préférés et recommandés 
     sont freesurf.fr et netcourrier.com. Le service gmx.net est également très bon, 
     mais il comporte une option par défaut qui bloque les mails en provenance de 
-    hotmail ou yahoo à décocher.</b>
+    hotmail ou yahoo à décocher.</strong>
   </p>
 </ul>
 

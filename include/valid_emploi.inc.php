@@ -28,7 +28,7 @@ class EmploiReq extends Validate {
         <input type="hidden" name="uid" value="{$this->uid}" />
         <input type="hidden" name="type" value="{$this->type}" />
         <input type="hidden" name="stamp" value="{$this->stamp}" />
-        <table class="bicol" align="center" cellpadding="4" summary="Annonce emploi">
+        <table class="bicol" cellpadding="4" summary="Annonce emploi">
           <thead>
           <tr>
             <th colspan="2">Offre d'emploi</th>

@@ -1,4 +1,4 @@
-{* $Id: faq.tpl,v 1.1 2004-01-29 13:57:56 x2000habouzit Exp $ *}
+{* $Id: faq.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Foire aux questions
@@ -288,7 +288,7 @@
     remplir ce champ avec toutes les informations que tu souhaites. A priori, tu ne 
     peux qu'y gagner.
   </p>
-  <div align="center">
+  <div class="center">
     <form action="">
       <textarea name="cv_example" rows="7" cols="34">
 * internet e-commerce startup

@@ -1,4 +1,4 @@
-{* $Id: doc_oe.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_oe.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <p class="normal">
   [<a href="{"docs/doc_oe.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -39,8 +39,8 @@
 </p>
 <p class="normal">
   Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a>.
-  Par la suite, ton <b>login</b> désigne l'identifiant que tu utilises pour te connecter au site,
-  et <b>le mot de passe</b> celui que tu as indiqué lors de
+  Par la suite, ton <strong>login</strong> désigne l'identifiant que tu utilises pour te connecter au site,
+  et <strong>le mot de passe</strong> celui que tu as indiqué lors de
   l'<a href="{"acces_smtp.php"|url}">activation de ton compte SMTP/NNTP</a>.
 </p>
 
@@ -78,10 +78,10 @@
     <img src="{"images/docs_compte1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
-<tr valign="top">
+<tr>
   <td>
       1. Dans le menu principal d'Outlook Express, choisis le sous-menu 
-      <b>&quot;Comptes&quot;</b>.
+      <strong>&quot;Comptes&quot;</strong>.
   </td>
   <td>
       2. La fenêtre qui s'affiche à l'écran suivant montre la liste des comptes 
@@ -98,16 +98,16 @@
     <img src="{"images/docs_compte2.png"|url}" width="640" height="308" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
-<tr valign="top">
+<tr>
   <td>
-      Un compte est désigné par un nom, ici c'est <i>adupont@mail.com</i> 
+      Un compte est désigné par un nom, ici c'est <em>adupont@mail.com</em> 
       qui désigne le compte utilisé dans l'exemple. Le plus souvent,
       la différence entre deux comptes est l'adresse e-mail d'envoi uniquement,
       mais parfois, les comptes se différencient aussi par les serveurs 
       utilisés pour recevoir ou envoyer un e-mail. C'est ce que nous allons faire 
       ici. <br /><br />
       Sélectionne le compte que tu utilises pour envoyer ton courrier puis 
-      clique sur le bouton <b>Propriétés</b>.
+      clique sur le bouton <strong>Propriétés</strong>.
   </td>
 </tr>
 </table>
@@ -121,11 +121,11 @@
       Cet écran permet d'éditer directement tous les paramètres du compte.
     </p>
     <p class="normal">
-      Dans l'onglet <b>&quot;Général&quot;</b>, on trouve l'adresse 
-      d'envoi du compte, et le <b>&quot;Nom&quot;</b> affich&eacute;.
+      Dans l'onglet <strong>&quot;Général&quot;</strong>, on trouve l'adresse 
+      d'envoi du compte, et le <strong>&quot;Nom&quot;</strong> affich&eacute;.
     </p>
     <p class="normal">
-      La petite case <b>&quot;Inclure ce compte&quot; </b>est importante. 
+      La petite case <strong>&quot;Inclure ce compte&quot; </strong>est importante. 
       Si tu la coches, cela veut dire que ce compte est réel et pas 
       seulement formel et Outlook Express va aller vérifier la présence 
       de messages sur le serveur POP3 (courrier entrant). Si elle n'est 
@@ -143,24 +143,24 @@
 
 <table class="etape" summary="Quatrième étape" cellpadding="5">
 <tr> 
-  <td valign="middle" width="220">
+  <td style="verical-align: middle;" width="220">
     <p class="normal">
-      1. Dans l'onglet <b>&quot;Serveurs&quot;</b>, indique 
-      <b>ssl.polytechnique.org</b> comme serveur SMTP
-      et coche la case <b>&quot;Mon serveur nécessite une 
-      authentification&quot;</b>.
+      1. Dans l'onglet <strong>&quot;Serveurs&quot;</strong>, indique 
+      <strong>ssl.polytechnique.org</strong> comme serveur SMTP
+      et coche la case <strong>&quot;Mon serveur nécessite une 
+      authentification&quot;</strong>.
     </p>
     <p class="normal">
-      2. Dans la case <b>&quot;Courrier entrant (POP3)&quot;</b>
+      2. Dans la case <strong>&quot;Courrier entrant (POP3)&quot;</strong>
       indique le serveur POP du compte mail où tu redirige ton
       courrier (par exemple le serveur de courier entrant de ton
       fournisseur d'accès Internet).
     </p>
     <p class="normal">
-      3. Tu peux alors cliquer sur le bouton <b>&quot;Paramètres...&quot;</b>
+      3. Tu peux alors cliquer sur le bouton <strong>&quot;Paramètres...&quot;</strong>
     </p>
   </td>
-  <td align="center">
+  <td>
     <img src="{"images/docs_smtp2.png"|url}" width="403" height="443" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
@@ -170,11 +170,11 @@
 <tr> 
   <td width="220">
     <p class="normal">
-      La boîte ci-contre s'affiche alors. Indique ton <i>login</i> 
+      La boîte ci-contre s'affiche alors. Indique ton <em>login</em> 
       et ton mot de passe,
     </p>
     <p class="normal">
-      puis clique sur <b>&quot;OK&quot;</b>
+      puis clique sur <strong>&quot;OK&quot;</strong>
     </p>
   </td>
   <td>
@@ -187,9 +187,9 @@
 <tr> 
   <td width="220">
     <p class="normal">
-      Enfin, dans l'onglet <b>&quot;Avancée&quot;</b>, spécifie le port <b>465</b>
-      pour le <b>Courrier sortant (SMTP)</b> et coche la case 
-      <b>&quot;Ce serveur utilise une connexion SSL&quot;</b>.
+      Enfin, dans l'onglet <strong>&quot;Avancée&quot;</strong>, spécifie le port <strong>465</strong>
+      pour le <strong>Courrier sortant (SMTP)</strong> et coche la case 
+      <strong>&quot;Ce serveur utilise une connexion SSL&quot;</strong>.
     </p>
     <p class="mef">
       Cette dernière étape est indispensable, sinon ton mot de passe 
@@ -257,10 +257,10 @@ Et maintenant quelques remarques :
     <img src="{"images/docs_compte1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
-<tr valign="top">
+<tr>
   <td width="50%">
       1. Dans le menu principal d'Outlook Express, choisis le sous-menu 
-      <b>&quot;Comptes&quot;</b>.
+      <strong>&quot;Comptes&quot;</strong>.
   </td>
   <td>
       2. La fenêtre qui s'affiche à l'écran suivant montre la liste des comptes 
@@ -275,7 +275,7 @@ Et maintenant quelques remarques :
     <img src="{"images/docs_news1.png"|url}" width="634" height="308" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
-<tr valign="top">
+<tr>
   <td width="50%">
       1. Un compte est désigné par un nom de serveur. Il est possible que tu aies une liste
       vide la première fois que tu ouvres cette boite.
@@ -283,7 +283,7 @@ Et maintenant quelques remarques :
   </td>
   <td>
       2. Choisis d'ajouter un nouveau serveur de news comme montré sur l'image,
-      en choisissant <b>Ajouter</b>, puis <b>News</b>
+      en choisissant <strong>Ajouter</strong>, puis <strong>News</strong>
   </td>
 </tr>
 </table>
@@ -296,14 +296,14 @@ Et maintenant quelques remarques :
     <img src="{"images/docs_news2.png"|url}" width="503" height="385" alt=" [ CAPTURE D'ECRAN ] ">
   </td>
 </tr>
-<tr valign="top">
+<tr>
   <td width="50%">
       1. Tu vas alors arriver à l'écran de configuration suivant
-      (après avoir éventuellement du cliquer plusieurs fois sur <b>suivant</b>).
+      (après avoir éventuellement du cliquer plusieurs fois sur <strong>suivant</strong>).
   </td>
   <td>
-      2. Choisis <b>ssl.polytechnique.org</b> comme serveur puis clique autant de fois que nécessaire
-      sur <b>Suivant</b>, en remplissant les champs qui te seront demandés. Valide par <b>Terminer</b>
+      2. Choisis <strong>ssl.polytechnique.org</strong> comme serveur puis clique autant de fois que nécessaire
+      sur <strong>Suivant</strong>, en remplissant les champs qui te seront demandés. Valide par <strong>Terminer</strong>
       à la fin.
   </td>
 </tr>
@@ -314,12 +314,12 @@ Et maintenant quelques remarques :
   <td width="220">
     <p class="normal">
       Il faut ensuite aller changer quelques options pour pouvoir utiliser les forums.
-      Retourne dans le menu <b>"Outils/Comptes"</b> du début, puis choisis de modifier
-      les <b>"Propriétés"</b> du compte de News que tu viens de créer.
+      Retourne dans le menu <strong>"Outils/Comptes"</strong> du début, puis choisis de modifier
+      les <strong>"Propriétés"</strong> du compte de News que tu viens de créer.
     </p>
     <p>
-      Choisis alors l'onglet <b>"Serveur"</b> et remplis le comme sur la capture
-      d'écran. Le <i>login</i> est ton identifiant <i>prenom.nom</i> et le mot
+      Choisis alors l'onglet <strong>"Serveur"</strong> et remplis le comme sur la capture
+      d'écran. Le <em>login</em> est ton identifiant <em>prenom.nom</em> et le mot
       de passe, le <a href="{"acces_smtp.php"|url}">mot de passe de ton compte NNTP/SMTP</a>.
     </p>
   </td>
@@ -333,9 +333,9 @@ Et maintenant quelques remarques :
 <tr> 
   <td width="220">
     <p class="normal">
-      Dernière étape, choisis l'onglet <b>"Avancé"</b> et coche la case
-      <b>ce serveur nécessite une connexion sécurisée (SSL)</b>,
-      puis clique sur <b>&quot;OK&quot;</b>.
+      Dernière étape, choisis l'onglet <strong>"Avancé"</strong> et coche la case
+      <strong>ce serveur nécessite une connexion sécurisée (SSL)</strong>,
+      puis clique sur <strong>&quot;OK&quot;</strong>.
       Tu es alors prêt à utiliser les news de polytechnique.org.<br />
       Bonne lecture !
     </p>

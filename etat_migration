@@ -59,8 +59,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/utilisateurs_identification.php	  | 
 	  | admin/utilisateurs_marketing.php		  | 
 	  | admin/utilisateurs.php					  | 
-	  | auth-groupex.php						  | 
-	  | auth-redirect.php						  | 
 	  | confbanana.php							  | 
 	  | coupure.php								  | stats/coupure.php
 	  | docs/FROM.php							  | docs/from.php
@@ -73,7 +71,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | en-cours.php							  | docs/en-cours.php
 	  | epouse.php								  | 
 	  | evenements.php							  | 
-	  | exit.php								  | 
 	  | groupex/donne-chall.php					  | 
 	  | groupex/export-econfiance.php			  | 
 	  | groupex.php								  | 
@@ -158,6 +155,8 @@ xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
 xx	  | antispam.php							  | -
 xx	  | apropos.php								  | docs/apropos.php
+xx	  | auth-groupex.php						  | -
+xx	  | auth-redirect.php						  | -
 xx	  | cacert.php								  | -
 xx	  | charte.php								  | docs/charte.php
 xx	  | contacts.php							  | docs/contacts.php
@@ -173,9 +172,9 @@ xx	  | docs/doc_oe.php							  | -
 xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
-xx	  | secu.php								  | docs/secu.php
 xx	  | docs/index.php							  | -
 xx	  | ethique.php								  | docs/ethique.php
+xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
 xx	  | getphoto.php							  | -
 xx	  | index.php								  | -
@@ -183,6 +182,7 @@ xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
 xx	  | nbpromo2.php							  | stats/nb_by_promo.php
 xx	  | preferences.php							  | -
+xx	  | secu.php								  | docs/secu.php
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------

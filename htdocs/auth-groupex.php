@@ -1,0 +1,65 @@
+<?php
+$gpex_pass = $_GET["pass"];
+$gpex_url = urldecode($_GET["url"]);
+if (strpos($gpex_url, '?') === false) {
+    $gpex_url .= "?PHPSESSID=" . $_GET["session"];
+} else {
+    $gpex_url .= "&PHPSESSID=" . $_GET["session"];
+}
+/* a-t-on besoin d'ajouter le http:// ? */
+if (!preg_match("/^(http|https):\/\/.*/",$gpex_url))
+    $gpex_url = "http://$gpex_url";
+$gpex_challenge = $_GET["challenge"];
+
+require("auto.prepend.inc.php");
+new_skinned_page('index.tpl',AUTH_COOKIE);
+
+// mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
+$newhost=strtolower(gethostbyaddr($_SERVER["REMOTE_ADDR"]));
+if (!isset($_SESSION['suid'])) {
+    mysql_query("UPDATE auth_user_md5 SET host='$newhost',lastlogin=NULL WHERE user_id=".$_SESSION['uid']);
+}
+
+/* cree le champs "auth" renvoye au Groupe X */
+function gpex_make_auth($chlg, $privkey, $datafields) {
+    $fieldarr = split(",",$datafields);
+    $tohash = "1$chlg$privkey";
+
+    while(list(,$val) = each($fieldarr)) {
+        /* on verifie qu'on n'a pas demandé une
+           variable inexistante ! */
+        if (isset($_SESSION[$val])) {
+            $tohash .= $_SESSION[$val];
+        }
+    }
+    $tohash .= "1";
+    return md5($tohash);
+}
+
+/* cree les parametres de l'URL de retour avec les champs demandes */
+function gpex_make_params($chlg, $privkey, $datafields) {
+    $params = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
+    $fieldarr = split(",",$datafields);
+    while(list(,$val) = each($fieldarr)) {
+        if (isset($_SESSION[$val])) {
+            $params .= "&$val=".$_SESSION[$val];
+        }
+    }
+    return $params;
+}
+
+/* on parcourt les entrees de groupes_auth */
+$res = mysql_query("select privkey,name,datafields from groupesx_auth");
+while (list($privkey,$name,$datafields) = mysql_fetch_row($res)) {
+    if (md5($gpex_challenge.$privkey) == $gpex_pass) {
+        $returl = $gpex_url.gpex_make_params($gpex_challenge,$privkey,$datafields);
+        header("Location:$returl");
+        exit(0);
+    }
+}
+
+/* si on n'a pas trouvé, on renvoit sur x.org */
+header("Location:https://www.polytechnique.org/");
+exit(0);
+
+?>

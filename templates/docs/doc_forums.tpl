@@ -1,4 +1,4 @@
-{* $Id: doc_forums.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_forums.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Règles générales d'utilisation des forums de Polytechnique.org
@@ -19,7 +19,7 @@
 </div>
 <ul>
   <li>
-    Le <b>respect</b> mutuel doit être la base de toute communication sur les
+    Le <strong>respect</strong> mutuel doit être la base de toute communication sur les
     forums, les propos injurieux ou dégradants n'y ont pas leur place.
     Toute intervention illégale par son contenu pourra faire l'objet
     d'une annulation, et l'accès de l'auteur aux forums de
@@ -52,9 +52,9 @@
 <ul>
   <li>
     Lorsqu'un message intéresse plusieurs forums, il faut réaliser un
-    <b>crosspost</b>, c'est à dire qu'il faut indiquer à ton logiciel
+    <strong>crosspost</strong>, c'est à dire qu'il faut indiquer à ton logiciel
     de messagerie qu'il doit diffuser ce message à plusieurs forums en
-    même temps. Tu devras alors spécifier un forum de suivi (<b>Followup-To</b>)
+    même temps. Tu devras alors spécifier un forum de suivi (<strong>Followup-To</strong>)
     qui canalisera toutes les discussions qui suivront. Si tu ne le fais 
     pas, les lecteurs devront lire plusieurs fois le même message, et
     plusieurs discussions parallèles se créeront, ce qui nuit à la
@@ -62,19 +62,19 @@
     <div class="warn">
       Si tu ne respectes pas ce principe, le serveur peut refuser ton
       message avec les erreurs suivantes : <br />
-      <b>Le forum de suivi doit être destinataire</b> : tu as indiqué
+      <strong>Le forum de suivi doit être destinataire</strong> : tu as indiqué
       un forum de suivi, mais tu n'y écris pas. Il peut être difficile
       pour les lecteurs de comprendre à quoi correspondraient les
       réponses à ton message.<br />
-      <b>Un seul forum peut accueillir le suivi des discussions</b> :
+      <strong>Un seul forum peut accueillir le suivi des discussions</strong> :
       il est vraiment pénible de voir les même messages sur plusieurs
       forums, et cela prend de la place inutilement sur nos serveurs.
       Par conséquent, nous n'autorisons qu'un seul forum pour le suivi
       des discussions.<br />
-      <b>Un forum de suivi de discussion pertinent doit être mentionné
-      dans les en-têtes</b> : tu n'as pas indiqué de forum de suivi.
+      <strong>Un forum de suivi de discussion pertinent doit être mentionné
+      dans les en-têtes</strong> : tu n'as pas indiqué de forum de suivi.
       <br />
-      <b>Tu as déjà diffusé ce message sur le serveur</b> : Tu as déjà
+      <strong>Tu as déjà diffusé ce message sur le serveur</strong> : Tu as déjà
       diffusé ce message, tu ne peux donc en diffuser un identique sur
       un autre forum.
     </div>
@@ -85,14 +85,14 @@
     <div class="warn">
       Si tu ne respectes pas ce principe, le serveur peut refuser ton
       message avec l'erreur suivante : <br />
-      <b>Il n'est pas possible de poster sur plus de 10 forums en même
-      temps</b>
+      <strong>Il n'est pas possible de poster sur plus de 10 forums en même
+      temps</strong>
     </div>
   </li>
   <li>
     Afin de ne pas augmenter les temps de téléchargement des
     utilisateurs aux connexions lentes, les messages doivent
-    absolument être en <b>texte brut</b> (text/plain). Cela signifie
+    absolument être en <strong>texte brut</strong> (text/plain). Cela signifie
     également que les pièces jointes sont interdites sur les forums.
     Si tu dois diffuser un document, place-le sur un endroit
     accessible sur internet (internet regorge d'hébergeurs gratuits),
@@ -100,8 +100,8 @@
     <div class="warn">
       Si tu ne respectes pas ce principe, le serveur peut refuser ton
       message avec l'erreur suivante : <br />
-      <b>Seuls les messages en text/plain sont acceptés sur la
-      hiérarchie xorg.*</b>
+      <strong>Seuls les messages en text/plain sont acceptés sur la
+      hiérarchie xorg.*</strong>
     </div>
   </li>
 </ul>

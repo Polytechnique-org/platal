@@ -60,7 +60,7 @@ class PhotoReq extends Validate {
         <input type="hidden" name="uid" value="{$this->uid}">
         <input type="hidden" name="type" value="{$this->type}">
         <input type="hidden" name="stamp" value="{$this->stamp}">
-        <table class="bicol" align="center" summary="Demande d'alias">
+        <table class="bicol" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:</td>
             <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
@@ -69,13 +69,13 @@ class PhotoReq extends Validate {
             </td>
         </tr>
         <tr>
-            <td align="center" valign="middle" colspan="2">
+            <td style="vertical-align: middle;" colspan="2">
                 <img src="../getphoto.php?x={$this->uid}$url_app" width=110 alt=" [ PHOTO ] " />
                 <img src="../getphoto.php?x={$this->uid}&amp;req=true$url_app" width=110 alt=" [ PHOTO ] " />
             </td>
         </tr>
         <tr>
-            <td align="center" valign="middle">
+            <td style="vertical-align: middle;">
                 <input type="submit" name="submit" value="Accepter">
                 <br /><br />
                 <input type="submit" name="submit" value="Refuser">

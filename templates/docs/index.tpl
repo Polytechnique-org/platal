@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.2 2004-01-29 13:57:56 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.3 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Documentations et Aides diverses
@@ -67,7 +67,7 @@
 <br />
 <table class="bicol" summary="Docs: Services sécurisés" width="95%">
 <tr>
-    <th colspan="2">Utilisation des services <i>sécurisés</i> de Polytechnique.org
+    <th colspan="2">Utilisation des services <em>sécurisés</em> de Polytechnique.org
     </th>
 </tr>
 <tr class="impair">
@@ -76,7 +76,7 @@
 	    <a href="doc_ssl.php">Certificat de sécurité</a>
 	</div>
 	<div class="explication">
-	    <b>Avant toute chose</b>, il faut configurer ton système pour accepter notre certificat de sécurité !
+	    <strong>Avant toute chose</strong>, il faut configurer ton système pour accepter notre certificat de sécurité !
 	</div>
     </td>
 </tr>

@@ -1,4 +1,4 @@
-{* $Id: apropos.tpl,v 1.1 2004-01-27 21:45:28 x2000habouzit Exp $ *}
+{* $Id: apropos.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%" summary="L'équipe">
   <tr>
@@ -135,7 +135,7 @@
   </tr>
 </table>
 <div class="center">
-  <table summary="l'équipe" align="center" width="550">
+  <table summary="l'équipe" width="550">
     <tr>
       <td>
         <a href="images/equipe.jpg">

@@ -1,4 +1,4 @@
-{* $Id: doc_smtp.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_smtp.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Le serveur SMTP de Polytechnique.org
@@ -57,9 +57,9 @@
 <p class="normal">
   Pour toutes ces raisons (et d'autres moins parlantes),
   le serveur SMTP de Polytechnique.org apporte une bonne solution. 
-  Pour des raisons d'identification, ce serveur te demandera un <i>login</i> 
-  et un mot de passe, <a href="{"acces_smtp.php"|url}"><b>il faut
-	donc activer ton compte</b></a> avant de continuer la configuration.
+  Pour des raisons d'identification, ce serveur te demandera un <em>login</em> 
+  et un mot de passe, <a href="{"acces_smtp.php"|url}"><strong>il faut
+	donc activer ton compte</strong></a> avant de continuer la configuration.
 	&Eacute;videment, le SPAM est interdit en utilisant le serveur SMTP de
 	Polytechnique.org, et si tu te rends coupable de spam, ton compte sera
 	supprimé.
@@ -81,7 +81,7 @@
   Attention !
 </div>
 <p class="normal">
-  L'utilisation de <b>certains logiciels antivirus</b> (comme <i>Norton Antivirus</i>)
+  L'utilisation de <strong>certains logiciels antivirus</strong> (comme <em>Norton Antivirus</em>)
   nécessite un élément de configuration supplémentaire : il faut indiquer au
 	logiciel de ne pas scanner le courrier sortant.
 </p>

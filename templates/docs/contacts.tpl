@@ -1,11 +1,11 @@
-{* $Id: contacts.tpl,v 1.1 2004-01-28 17:19:47 x2000habouzit Exp $ *}
+{* $Id: contacts.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 {if !$smarty.request.topic}
 <div class="rubrique">
   Contacts
 </div>
 
-<table class="bicol" width="95%" align="center" cellspacing="0" cellpadding="4">
+<table class="bicol" width="95%" cellspacing="0" cellpadding="4">
   <tr>
     <th>
       Merci de choisir une rubrique parmi les suivantes.
@@ -56,16 +56,16 @@ L'inscription se déroule en <a href="inscrire.php">une étape sur notre site web<
 suivie d'une étape de confirmation basée sur l'e-mail que tu as donné.
 </p>
 <p class="normal">
-<b>En cas de problème pour t'enregistrer:</b>
+<strong>En cas de problème pour t'enregistrer:</strong>
 </p>
 <ul>
-  <li class="item"> <b>Problème d'identification:</b> écris-nous en précisant bien tes prénom,
+  <li class="item"> <strong>Problème d'identification:</strong> écris-nous en précisant bien tes prénom,
   nom, nom de mariage, promo, date de naissance, matricule (pour les X des promos plus récentes que 1995 seulement), etc...
   </li>
-  <li class="item"><b>Problème avec le site:</b>
+  <li class="item"><strong>Problème avec le site:</strong>
   télécharge la dernière version de ton navigateur et réessaie avant de nous écrire.
   </li>
-  <li class="item"><b>Tu ne reçois rien par e-mail:</b> réessaie avec un autre email, celui
+  <li class="item"><strong>Tu ne reçois rien par e-mail:</strong> réessaie avec un autre email, celui
   que tu utilisais était peut-être en panne ou mal orthographié.
   </li>
 </ul>
@@ -85,13 +85,13 @@ La première méthode est automatique, sécurisée et te prendra environ 5 minutes.
 Il faut que tu accèdes encore à tes emails en polytechnique.org
 pour récupérer tes paramètres par cette méthode.
 </p>
-<a href="recovery.php"><b>Clique ici pour retrouver un mot de passe.</b></a>
+<a href="recovery.php"><strong>Clique ici pour retrouver un mot de passe.</strong></a>
 <p class="normal">
 La seconde méthode est entièrement manuelle. Pour cette raison, assure-toi de nous fournir
 toutes les informations dont nous disposons sur toi dans ta dernière fiche. En particulier :
 login, promo, date de naissance, matricule, adresse/téléphone mobile. Les mots de passe sont
-réinitialisés environ toutes les deux semaines si tu as été correctement identifié. Ainsi, <b>merci
-  d'attendre au minimum deux semaines</b> dans le cas où tu ne reçois pas de réponse à ta première
+réinitialisés environ toutes les deux semaines si tu as été correctement identifié. Ainsi, <strong>merci
+  d'attendre au minimum deux semaines</strong> dans le cas où tu ne reçois pas de réponse à ta première
 demande avant de nous réécrire.
 </p>
 <p class="normal">
@@ -143,7 +143,7 @@ pour toute idée de développement ou d'amélioration du site.
 </div>
 <p class="normal">
 Par soucis de légèreté, nous devons imposer quelques contraintes sur les annonces de
-la newsletter : le texte du message doit faire au plus <b>8 lignes de 68 caractères</b>
+la newsletter : le texte du message doit faire au plus <strong>8 lignes de 68 caractères</strong>
 (le titre et les éventuels numéros de téléphones / sites web / adresses emails sont en
 sus).
 </p>
@@ -153,8 +153,8 @@ de nous le soumettre par email (éviter les pièces jointes) à cette adresse :
 <strong>{mailto address='info_nlp@polytechnique.org' encode='hex'}</strong>.
 </p>
 <p class="normal">
-Les anciennes newsletters de <b>Polytechnique.org</b> sont
-<b><a href="newsletter.php">archivées</a></b> si tu veux t'en inspirer.
+Les anciennes newsletters de <strong>Polytechnique.org</strong> sont
+<strong><a href="newsletter.php">archivées</a></strong> si tu veux t'en inspirer.
 </p>
 
 {elseif $smarty.request.topic eq 6}
@@ -168,7 +168,7 @@ de contacter l'Amicale des X à l'adresse <strong>{mailto address='ax@polytechniq
 </p>
 <p class="normal">
 Pour toute demande qui concerne le recrutement de polytechniciens, vous pouvez consulter
-<a href="emploi_public.php"><b>la page spécifiquement consacrée à l'emploi sur notre site.</b></a>
+<a href="emploi_public.php"><strong>la page spécifiquement consacrée à l'emploi sur notre site.</strong></a>
 </p>
 <p class="normal">
 Pour toute question n'ayant aucun rapport avec l'utilisation du site, vous pouvez nous contacter à

@@ -1,10 +1,10 @@
-{* $Id: cookie_on.tpl,v 1.1 2004-01-26 16:14:51 x2000habouzit Exp $ *}
+{* $Id: cookie_on.tpl,v 1.2 2004-01-29 16:21:53 x2000habouzit Exp $ *}
 
   <div class="rubrique">
     Contrôle d'accès au site
   </div>
   <p class="normal">
-    L'accès permanent sans mot de passe <b>vient d'être attribué</b> à cet ordinateur.
+    L'accès permanent sans mot de passe <strong>vient d'être attribué</strong> à cet ordinateur.
     Toute personne accédant au web par ce poste de travail peut donc consulter l'annuaire
     on-line et accéder à la partie privée du site.
   </p>

@@ -33,7 +33,7 @@ class AliasReq extends Validate {
         <input type="hidden" name="uid" value="{$this->uid}">
         <input type="hidden" name="type" value="{$this->type}">
         <input type="hidden" name="stamp" value="{$this->stamp}">
-        <table class="bicol" align="center" cellpadding="4" summary="Demande d'alias">
+        <table class="bicol" cellpadding="4" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:
             </td>
@@ -52,7 +52,7 @@ class AliasReq extends Validate {
             </td>
         </tr>
         <tr>
-            <td align="center" valign="middle">
+            <td style="vertical-align: middle;">
                 <input type="submit" name="submit" value="Accepter">
                 <br /><br />
                 <input type="submit" name="submit" value="Refuser">

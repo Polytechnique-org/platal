@@ -1,4 +1,4 @@
-{* $Id: doc_emails.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_emails.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">
     Mes Redirections d'adresses emails
@@ -57,7 +57,7 @@
     Il existe plusieurs manières de se prémunir de l'indexation de ton adresse mail par des robots :
 </p>
 <ul>
-    <li>Utiliser son adresse <b>@m4x.org</b> plutot que @polytechnique.org, elle est plus discrète
+    <li>Utiliser son adresse <strong>@m4x.org</strong> plutot que @polytechnique.org, elle est plus discrète
     </li>
     <li>rendre son adresse mail invalide : par exemple, sur les forums Usenet, il n'est pas rare de
     rencontrer des adresses mails du type &lt;j.dupont@_NOSPAM_wanadoo.fr&gt;. Tous les humains

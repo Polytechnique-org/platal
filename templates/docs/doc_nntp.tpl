@@ -1,4 +1,4 @@
-{* $Id: doc_nntp.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: doc_nntp.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
 
 <div class="rubrique">Les forums de Polytechnique.org</div>
 <p class="normal">
@@ -22,7 +22,7 @@
   La colonne <strong>S</strong> s'adresse aux utilisateurs aguerris et indique la possibilité de faire fonctionner le logiciel de news avec stunnel. La <a href="#stunnel">procédure</a> est décrite plus bas.</small></em>
 </p>
 
-<table class="bicol" summary="liste des clients" align="center"cellpadding="4">
+<table class="bicol" summary="liste des clients" cellpadding="4">
 <tr>
   <th>Logiciel</th>
   <th>O</th>
@@ -80,8 +80,8 @@
   Pour te connecter, tu as besoin des param&egrave;tres suivants:
 </p>
 <ul>
-  <li><u>Serveur</u> : <code>ssl.polytechnique.org</code></li>
-  <li>Utiliser une connexion <u>s&eacute;curis&eacute;e</u> (SSL, port 563)</li>
+  <li><strong>Serveur</strong> : <code>ssl.polytechnique.org</code></li>
+  <li>Utiliser une connexion <strong>s&eacute;curis&eacute;e</strong> (SSL, port 563)</li>
   <li style="text-align:justify;">Ce serveur demande &agrave; ce que tu t'identifies : utilise ton identifiant (prenom.nom) et le mot de passe que tu as choisi pour le service SMTP/NNTP.</li>
 </ul>
 <p class="normal">
@@ -96,7 +96,7 @@
 <p class="normal">
   Certains logiciels de news sont capables de s'authentifier mais ne reconnaisent pas les connexions sécurisées de type SSL.  Il est possible de faire fonctionner ces logiciels à l'aide de <a href="http://www.stunnel.org/">stunnel</a> qui gère la couche sécurisée.
 </p>
-<table class="bicol" summary="conf stunnel" width="95%" align="center">
+<table class="bicol" summary="conf stunnel" width="95%">
 <tr>
   <th>
     Pour les versions 3.x
