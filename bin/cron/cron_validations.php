@@ -26,15 +26,15 @@
 $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
 $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 
-require("/usr/share/php/diogenes/diogenes.hermes.inc.php");
 require('./connect.db.inc.php');
+require('diogenes.hermes.inc.php');
 
-$sql = mysql_query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
-list($nb,$nbold,$nbveryold) = mysql_fetch_row($sql);
-mysql_free_result($sql);
+$res = $globals->xdb->query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
+list($nb,$nbold,$nbveryold) = $res->fetchOneRow();
 
-if(empty($nb))
-	exit;
+if (empty($nb)) {
+    exit;
+}
 
 $mymail = new HermesMailer();
 $mymail->setFrom('validation@polytechnique.org');

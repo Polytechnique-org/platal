@@ -23,13 +23,6 @@
 require('./connect.db.inc.php');
 require("newsletter.inc.php");
 
-function query ($sql) {
-    mysql_query($sql);
-    if (mysql_errno() != 0) {
-	echo "error in \"$sql\" :\n", mysql_error(),"\n";
-    }
-}
-
 $opt = getopt('i:h');
 
 if(empty($opt['i']) || isset($opt['h'])) {
@@ -45,22 +38,23 @@ $nl = new NewsLetter($id);
 $nl->setSent();
 
 while(true) {
-    $sql = mysql_query("SELECT  ni.user_id, ni.pref, a.alias,
-				u.prenom, IF(u.epouse='', u.nom, u.epouse),
-                                FIND_IN_SET('femme', u.flags)
-			  FROM  newsletter_ins AS ni
-		    INNER JOIN  auth_user_md5  AS u  USING(user_id)
-		    INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-		         WHERE  ni.last<$id 
-			 LIMIT  60");
-    if(!mysql_num_rows($sql)) exit(0);
+    $res = $globals->dbx->iterRow(
+            "SELECT  ni.user_id, ni.pref, a.alias,
+                     u.prenom, IF(u.epouse='', u.nom, u.epouse),
+                     FIND_IN_SET('femme', u.flags)
+               FROM  newsletter_ins AS ni
+         INNER JOIN  auth_user_md5  AS u  USING(user_id)
+         INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+              WHERE  ni.last<{?}
+              LIMIT  60", $id);
+    if (!$res->numRows()) { exit; }
+
     $sent = Array();
-    while(list($uid,$fmt,$bestalias,$prenom,$nom,$sexe) = mysql_fetch_row($sql)) {
+    while (list($uid, $fmt, $bestalias, $prenom, $nom, $sexe) = $res->next()) {
 	$sent[] = "user_id='$uid'";
-	$nl->sendTo($prenom,$nom,$bestalias,$sexe,$fmt=='html');
+	$nl->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html');
     }
-    mysql_free_result($sql);
-    mysql_query("UPDATE newsletter_ins SET last=$id WHERE ".implode(' OR ',$sent));
+    $globals->dbx->execute('UPDATE newsletter_ins SET last={?} WHERE '.implode(' OR ', $sent), $id);
     sleep(60);
 }
 

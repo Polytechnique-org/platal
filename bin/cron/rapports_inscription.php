@@ -5,64 +5,62 @@ $MESSAGE = '';
 
 // ---------------------------------------
 
-$result=mysql_query("SELECT  a.alias, u.promo, email
-		       FROM  auth_user_md5  AS u
-		  LEFT JOIN  aliases        AS a ON( u.user_id=a.id AND a.type='a_vie' )
-		  LEFT JOIN  emails         AS e ON( e.uid = u.user_id AND NOT FIND_IN_SET('filter',e.flags) )
-		      WHERE  u.date_ins > ".date("Ymd", strtotime ("last Monday"))."*1000000
-		   GROUP BY  alias
-		   ORDER BY  promo");
-$a = mysql_num_rows($result);
-if ($a > 0) {
+$res = $globals->xdb->iterRow(
+        "SELECT  a.alias, u.promo, email
+           FROM  auth_user_md5  AS u
+      LEFT JOIN  aliases        AS a ON( u.user_id=a.id AND a.type='a_vie' )
+      LEFT JOIN  emails         AS e ON( e.uid = u.user_id AND NOT FIND_IN_SET('filter',e.flags) )
+          WHERE  u.date_ins > {?}
+       GROUP BY  alias
+       ORDER BY  promo", date("Ymd000000", strtotime ("last Monday")));
+if ($a = $res->total()) {
     $MESSAGE.="$a INSCRIPTIONS CONFIRMEES:\n";
-    while (list($usern,$promo,$mail) = mysql_fetch_row($result)) {
+    while (list($usern,$promo,$mail) = $res->next()) {
 	$MESSAGE.="X$promo, $usern, $mail\n";
     }
 }
-mysql_free_result($result);
 
 // ---------------------------------------
 
-$result=mysql_query("SELECT  ins_id,username,promo,email,date
-		       FROM  en_cours
-		      WHERE  loginbis != 'INSCRIT'
-		   ORDER BY  date");
-$b = mysql_num_rows($result);
-if ($b > 0) {
+$res = $globals->xdb->iterRow(
+        "SELECT  ins_id,username,promo,email,date
+           FROM  en_cours
+          WHERE  loginbis != 'INSCRIT'
+       ORDER BY  date");
+if ($b = $res->total()) {
     $MESSAGE.="\n$b INSCRIPTIONS NON CONFIRMEES:\n";
-    while (list($code,$usern,$prom,$mail,$quand) = mysql_fetch_row($result)) {	
+    while (list($code,$usern,$prom,$mail,$quand) = $res->next()) {	
 	$MESSAGE.="$quand, X$prom, $usern\n$mail";
 	$MESSAGE.="\n";
 	$MESSAGE.="http://www.polytechnique.org/step4.php?ref=$code\n";
     }
 }
-mysql_free_result($result);
 
 // ---------------------------------------
 
-$result=mysql_query("SELECT  nom, prenom, promo, email, DATE_FORMAT(date_envoi,'%d/%m/%Y')
-                       FROM  envoidirect 
-		      WHERE  date_succes = ''
-		   ORDER BY  date_envoi DESC, promo, nom");
-$c = mysql_num_rows($result);
-if ($c > 0) {
+$res = $globals->xdb->iterRow(
+        'SELECT  nom, prenom, promo, email, DATE_FORMAT(date_envoi,"%d.%m.%Y")
+           FROM  envoidirect 
+     INNER JOIN  auth_user_md5 USING(matricule)
+          WHERE  date_succes = ""
+       ORDER BY  date_envoi DESC, promo, nom');
+if ($c = $res->total()) {
     $MESSAGE.="\n$c INSCRIPTIONS SOLICITÉEs:\n";
-    while (list($nom,$prenom,$promo,$mail,$date) = mysql_fetch_row($result)) {
+    while (list($nom,$prenom,$promo,$mail,$date) = $res->next()) {
 	$MESSAGE.="$date: X$promo, $nom $prenom,\t$mail\n";
     }
 }
-mysql_free_result($result);
 
 // ---------------------------------------
 
 $MESSAGE=$MESSAGE."\n\n";
 
-// envoi du mail à register@
-$HEADER="From: register\nReply-To: register@polytechnique.org\n".
-	"X-Mailer: PHP/" . phpversion()."\n".
-        "Mime-Version: 1.0\n".
-        "Content-Type: text/plain; charset=iso-8859-1\n".
-        "Content-Disposition: inline\n".
-        "Content-Transfer-Encoding: 8bit\n";
-mail("register@polytechnique.org, jean-michel.yolin+register@polytechnique.org","$a confirmées, $b en attente et $c sollicitées",$MESSAGE,$HEADER);
+require_once('diogenes.hermes.inc.php');
+$mailer = new HermesMailer();
+$mailer->setSubject("$a confirmées, $b en attente et $c sollicitées");
+$mailer->setFrom('register@polytechnique.org');
+$mailer->addTo('register@polytechnique.org');
+$mailer->addCc('jean-michel.yolin+register@polytechnique.org');
+$mailer->setTxtBody($MESSAGE);
+$mailer->send();
 ?>

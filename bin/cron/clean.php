@@ -23,7 +23,8 @@
 require('./connect.db.inc.php');
 
 function query ($sql) {
-    mysql_query($sql);
+    global $globals;
+    $globals->xdb->execute($sql);
     if (mysql_errno() != 0) {
 	echo "error in \"$sql\" :\n", mysql_error(),"\n";
     }
@@ -47,10 +48,5 @@ query("alter table groupesx_def order by text");
 query("alter table secteur order by text");
 query("alter table sections order by text");
 
-// on regarde si qqun a fait bcp de requêtes dans l'annuaire, puis on remete à 0
-//$res = mysql_query("SELECT nom,prenom,promo,nb_recherches FROM auth_user_md5 as u INNER JOIN nb_recherches as r ON(u.user_id = r.uid) WHERE r.nb_recherches > 90 AND u.perms != 'admin' order by r.nb_recherches");
-//while (list($n, $p, $pr, $nbr) = mysql_fetch_row($res))
-//    echo $n." ".$p.", X".$pr." : ".$nbr." recherches dans l'annuaire !\n";
-//query("UPDATE nb_recherches SET nb_recherches = 0");
 
 ?>

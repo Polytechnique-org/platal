@@ -28,27 +28,27 @@ require('./connect.db.inc.php');
 require("Console/Getopt.php");
 
 function check($sql, $commentaire='') {
-  $res=mysql_query($sql);
-  if($err = mysql_error()) echo $err;
-  if (mysql_num_rows($res)>0) {
-    echo "Erreur pour la verification : $commentaire\n$sql\n\n";
-    echo "|";
-    while($col = mysql_fetch_field($res)) echo "\t".$col->name."\t|";
-    echo "\n";
-    
-    while ($arr=mysql_fetch_row($res)) {
-      echo "|";
-      foreach ($arr as $val) echo "\t$val\t|";
-      echo "\n";
-    } 
-    echo "\n";
-  }
+    $res = mysql_query($sql);
+    if ($err = mysql_error()) echo $err;
+    if (mysql_num_rows($res)>0) {
+        echo "Erreur pour la verification : $commentaire\n$sql\n\n";
+        echo "|";
+        while($col = mysql_fetch_field($res)) echo "\t".$col->name."\t|";
+        echo "\n";
+
+        while ($arr = mysql_fetch_row($res)) {
+            echo "|";
+            foreach ($arr as $val) echo "\t$val\t|";
+            echo "\n";
+        } 
+        echo "\n";
+    }
 }
 
 function info($sql,$commentaire='') {
-  global $opt_verbose;
-  if ($opt_verbose)
-    check($sql,$commentaire);
+    global $opt_verbose;
+    if ($opt_verbose)
+        check($sql,$commentaire);
 }
 
 /* on parse les options */
@@ -56,17 +56,17 @@ $opts = Console_GetOpt::getopt($argv, "v");
 $opt_verbose=false;
 
 if ( PEAR::isError($opts) ) {
-  echo $opts->getMessage();
+    echo $opts->getMessage();
 } else {
-  $opts = $opts[0];
-  foreach ( $opts as $opt) {
-    switch ($opt[0]) {
-    case "v":
-      $opt_verbose=true;
-      echo "Mode verbeux\n";
-      break;
+    $opts = $opts[0];
+    foreach ( $opts as $opt) {
+        switch ($opt[0]) {
+            case "v":
+                $opt_verbose=true;
+            echo "Mode verbeux\n";
+            break;
+        }
     }
-  }
 }
 
 /* validite de adresses */
@@ -82,8 +82,8 @@ check("select uid, cid from competences_ins group by uid having count(cid) > 20"
 
 /* validite de aliases */
 check("SELECT a.*
-         FROM aliases       AS a
-    LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
+        FROM aliases       AS a
+        LEFT JOIN auth_user_md5 AS u ON u.user_id=a.id
         WHERE (a.type='alias' OR a.type='epouse' OR a.type='a_vie') AND u.prenom is null");
 
 /* validite de applis_ins */
@@ -124,44 +124,44 @@ info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
 info("SELECT  a1.alias, a2.alias, e1.email, e2.flags
         FROM  emails        AS e1
-  INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
-				     (e1.uid<e2.uid  OR  NOT FIND_IN_SET(e2.flags,'active'))
-				    )
-  INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
-  INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
-  INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
-  INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
-       WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.epouse AND u2.nom!=u1.epouse
-    ORDER BY  a1.alias",
-"donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes");
+        INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
+            (e1.uid<e2.uid  OR  NOT FIND_IN_SET(e2.flags,'active'))
+            )
+        INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
+        INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
+        INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
+        INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+        WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.epouse AND u2.nom!=u1.epouse
+        ORDER BY  a1.alias",
+        "donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes");
 
 /* vérif que tous les inscrits ont bien au moins un email actif */
 check("SELECT  u.user_id, a.alias
-	 FROM  auth_user_md5  AS u 
-   INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
-    LEFT JOIN  emails         AS e ON(u.user_id=e.uid AND FIND_IN_SET('active',e.flags))
+        FROM  auth_user_md5  AS u 
+        INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
+        LEFT JOIN  emails         AS e ON(u.user_id=e.uid AND FIND_IN_SET('active',e.flags))
         WHERE  e.uid IS NULL AND u.deces = 0",
-"donne les inscrits qui n'ont pas d'email actif");
+        "donne les inscrits qui n'ont pas d'email actif");
 
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
 check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
-         FROM  aliases AS a
-   INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
+        FROM  aliases AS a
+        INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
         WHERE  a.type = 'a_vie'",
-"donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
+        "donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
 
 /* verifie qu'il n'y a pas de gens qui recrivent sur un alias qu'ils n'ont plus */
 
 check("SELECT  a.alias AS a_un_pb, email, rewrite AS broken
-         FROM  aliases AS a
-   INNER JOIN  emails  AS e ON (a.id=e.uid AND rewrite!='')
-   LEFT  JOIN  aliases AS b ON (b.id=a.id AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
+        FROM  aliases AS a
+        INNER JOIN  emails  AS e ON (a.id=e.uid AND rewrite!='')
+        LEFT  JOIN  aliases AS b ON (b.id=a.id AND rewrite LIKE CONCAT(b.alias,'@%') AND b.type!='homonyme')
         WHERE  a.type='a_vie' AND b.type IS NULL","gens qui ont des rewrite sur un alias perdu");
 
 /* validite du champ matricule_ax de la table auth_user_md5 */
 check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
-         FROM  auth_user_md5
-	WHERE  matricule_ax != '0'
-     GROUP BY  matricule_ax
-       having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
+        FROM  auth_user_md5
+        WHERE  matricule_ax != '0'
+        GROUP BY  matricule_ax
+        having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
 ?>
