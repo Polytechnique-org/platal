@@ -54,8 +54,7 @@ $page->register_function('applis_type_all','applis_type_all');
 
 /** formatte une ecole d'appli pour l'affichage
  */
-function applis_fmt($params, &$smarty) {
-    extract($params);
+function applis_fmt($type, $text, $url) {
     $txt="";
     if (($type!="Ingénieur")&&($type!="Diplôme"))
 	$txt .= $type;
@@ -68,6 +67,10 @@ function applis_fmt($params, &$smarty) {
     }
     return $txt;
 }
-$page->register_function('applis_fmt','applis_fmt');
+function _applis_fmt($params, &$smarty) {
+    extract($params);
+    return applis_fmt($type, $text, $url);
+}
+$page->register_function('applis_fmt','_applis_fmt');
 
 ?>
