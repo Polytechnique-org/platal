@@ -326,6 +326,9 @@ EOF;
         if (!empty($globals->newsletter->replyto)) {
             $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
         }
+        if (!empty($globals->newsletter->retpath)) {
+            $mailer->addHeader('Return-Path',$globals->newsletter->retpath);
+        }
 	$mailer->setTxtBody($this->toText($prenom,$nom,$sex));
 	if ($html) {
 	    $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));

@@ -27,6 +27,7 @@ class NLConfig
 {
     var $from    = "Lettre Mensuelle <null@example.org>";
     var $replyto = "";
+    var $retpath = "";
 }
 
 // }}}
