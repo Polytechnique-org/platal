@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: trombi.inc.php,v 1.4 2004-11-02 07:48:41 x2000habouzit Exp $
+ $Id: trombi.inc.php,v 1.5 2004-11-15 10:39:18 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('xorg.plugin.inc.php');
@@ -39,7 +39,7 @@ class Trombi extends XOrgPlugin {
 	 */
 	global $page;
 
-	$offset = $this->get_value('offset');
+	$offset = intval($this->get_value('offset'));
 	list($total, $list) = call_user_func($this->_callback, $offset, $this->limit);
 	$page_max = intval(($total-1)/$this->limit);
 
