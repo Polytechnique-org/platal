@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: tpl.mailer.inc.php,v 1.4 2004-11-16 20:45:09 x2000habouzit Exp $
+        $Id: tpl.mailer.inc.php,v 1.5 2004-11-16 20:59:06 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.hermes.inc.php");
@@ -68,12 +68,12 @@ class TplMailer extends Smarty {
         // do not try to optimize, in the templates, some function can modify our object, then we
         // have to fetch in the first time, and only then send the mail.
         $body = $this->fetch($this->mail_dir."/".$this->_tpl);
-        $mailer = new HermesMailer()
+        $mailer = new HermesMailer();
 	$mailer->setFrom($this->_from);
 	$mailer->addTo(implode(',',$this->_to));
 	$mailer->setSubject($this->_subject);
 	if (!empty($this->_cc)) $mailer->addCc(implode(',',$this->_cc));
-	if (!empty($this->_cc)) $mailer->addBcc(implode(',',$this->_bcc));
+	if (!empty($this->_bcc)) $mailer->addBcc(implode(',',$this->_bcc));
         $mailer->setTxtBody($body);
         $mailer->send();
     }
