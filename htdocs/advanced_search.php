@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.15 2004-10-14 17:55:18 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.16 2004-10-15 09:42:37 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -80,7 +80,7 @@ else {
    
     $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
     $posteField = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
-    $secteurField = new RefSField('secteur',array('es.secteur'),'entreprises','es','u.user_id=es.uid');
+    $secteurField = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
     $cvField = new RefSField('cv',array('u.cv'),'','','',false);
    
     $nationaliteField = new RefSField('nationalite',array('u.nationalite'),'','','');
@@ -133,7 +133,7 @@ else {
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
     $page->assign('with_soundex',$with_soundex);
-    $page->assign('mod_date_sort',$_REQUEST['mod_date_sort']);
+    $page->assign('mod_date_sort',!empty($_REQUEST['mod_date_sort']));
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
