@@ -24,7 +24,7 @@ $liste = strtolower($_REQUEST['liste']);
 
 require_once("xorg.inc.php");
 new_admin_page('listes/soptions.tpl');
-require_once('lists.inc.php')
+require_once('lists.inc.php');
 
 $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 

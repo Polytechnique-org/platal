@@ -28,7 +28,7 @@ if(preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}-(.*)!", $liste,$matche
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/moderate.tpl', AUTH_MDP);
-require_once('lists.inc.php')
+require_once('lists.inc.php');
 
 $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 

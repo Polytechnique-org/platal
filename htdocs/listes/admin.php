@@ -24,7 +24,7 @@ $liste = strtolower($_REQUEST['liste']);
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/admin.tpl', AUTH_MDP);
-require_once('lists.inc.php')
+require_once('lists.inc.php');
 
 $err = Array();
 $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
