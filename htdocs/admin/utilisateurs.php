@@ -40,6 +40,10 @@ if(Env::has('logs_button') && $login) {
     header("Location: logger.php?loguser=$login&year=".date('Y')."&month=".date('m'));
 }
 
+if (Env::has('ax_button') && $login) {
+    header("Location: synchro_ax.php?user=$login");
+}
+
 if(Env::has('suid_button') && $login) {
     $_SESSION['log']->log("suid_start", "login by ".Session::get('forlife'));
     $_SESSION['suid'] = $_SESSION;
@@ -178,4 +182,6 @@ if ($login) {
 }
 
 $page->run();
+
+// vim:set et sws=4 sts=4 sw=4:
 ?>

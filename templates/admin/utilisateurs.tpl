@@ -64,6 +64,7 @@ Attention, déjà en SUID !!!
         <input type="hidden" name="hashpass" value="" />
         <input type="submit" name="select" value=" edit " /> &nbsp;&nbsp;
         <input type="submit" name="suid_button" value=" su " />  &nbsp;&nbsp;
+        <input type="submit" name="ax_button" value=" AX " /> &nbsp;&nbsp;
         <input type="submit" name="logs_button" value=" logs " />
       </td>
     </tr>
