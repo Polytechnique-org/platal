@@ -142,7 +142,7 @@ function _exa_navigation_barre($params, &$smarty){
   }
   else
     $nb_res_per_page = 10;//10 results per page
-  if(!empty($params['max_results'])){
+  if(!empty($params['max_results']) && ((int) $params['max_results'] < $exalead_data->nhits)){
     $nb_hits = (int) $params['max_results'];
   }
   else{
