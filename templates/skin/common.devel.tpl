@@ -17,10 +17,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: common.devel.tpl,v 1.6 2004-09-24 14:47:43 x2000habouzit Exp $
+        $Id: common.devel.tpl,v 1.7 2004-10-08 17:11:24 x2000habouzit Exp $
  ***************************************************************************}
 
-
+{if $site_dev}
 {dynamic}
 {if $db_trace neq "\n\n"}
   <div id="db-trace">
@@ -45,5 +45,6 @@
   </div>
 {/if}
 {/dynamic}
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
