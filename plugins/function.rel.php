@@ -18,14 +18,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: function.rel.php,v 1.1 2004-11-22 11:00:39 x2000habouzit Exp $
+        $Id: function.rel.php,v 1.2 2004-11-22 11:05:06 x2000habouzit Exp $
  ***************************************************************************/
 
-function smarty_function_url($string)
+function smarty_function_rel($string)
 {
-    global $globals;
-    $url = parse_url($globals->baseurl);
-    return $url['path'];
+    static $rel;
+    if (empty($rel)) {
+        global $globals;
+        $url = parse_url($globals->baseurl);
+        return ($rel = $url['path']);
+    }
+    return $rel;
 }
 
 ?>
