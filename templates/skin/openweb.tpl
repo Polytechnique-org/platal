@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: openweb.tpl,v 1.2 2004-11-17 18:56:15 x2000habouzit Exp $
+        $Id: openweb.tpl,v 1.3 2004-11-17 22:16:31 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -60,10 +60,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <img src="{"images/sk_default_headlogo.jpg"|url}" alt="[ LOGO ]" />
+          <a href="{"login.php"|url}"><img src="{"images/sk_default_headlogo.jpg"|url}" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <img src="{"images/sk_default_ban.jpg"|url}" alt="[ Polytechnique.org ]" />
+          <a href="{"login.php"|url}"><img src="{"images/sk_default_ban.jpg"|url}" alt="[ Polytechnique.org ]" /></a>
           <table>
             <tr>
               <td class="date-heure">

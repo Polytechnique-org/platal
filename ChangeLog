@@ -3,19 +3,22 @@ VERSION 0.9.3														~20 Dec 2004
 
 New :
 
-	* Mails: use HermesMailer.												-MC
+	* Mails : Use HermesMailer.												-MC
 
-	* Skins:
-		- new skin : openweb.												-MC
+	* Skins :
+		- New skin : openweb.												-MC
 
 Bug/Wish :
 
-	* Bestalias:
-		- #206 : use only the bestalias and the forlife in vcard and fiche.	-MC
-		- #207 : enable for the user the choice of his prefered alias.		-MC
-
-	* Fiche:
-		- #208,222 : new fiche.												-MC
+	* Bestalias :
+		- #206 : Use only the bestalias and the forlife in vcard and fiche.	-MC
+		- #207 : Enable for the user the choice of his prefered alias.		-MC
+	
+	* Fiche :
+		- #208,222 : New fiche.												-MC
+	
+	* User Interface :
+		- 211 : All imgs in the skins are links to login.php.				-MC
 
 
 Fixes (from 0.9.2 branch) :
@@ -26,7 +29,7 @@ VERSION 0.9.2														 14 Nov 2004
 
 New :
 
-	* Carnet: brand new.													-MC
+	* Carnet : Brand new.													-MC
 
 	* Core :
 		- Creation of the Plugin class.										-MC
@@ -44,10 +47,10 @@ New :
 Bug/Wish :
 
 	* Docs :
-		- #156 : exit Netscape4 (no more supported), Mozilla enters.		-MC
+		- #156 : Exit Netscape4 (no more supported), Mozilla enters.		-MC
 
 	* Carnet :
-		- #29,147 : possible to watch subscribings, deaths, `fiche` modifs.	-MC
+		- #29,147 : Possible to watch subscribings, deaths, `fiche` modifs.	-MC
 	
 	* Core :
 		- #135 : First instance of the plugin class : class Trombi.			-MC
