@@ -19,12 +19,12 @@
  ***************************************************************************}
 
 
-<h1>Notifications automatiques</h1>
+<h1 id='top'>Notifications automatiques</h1>
 
 <p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
 S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="#top" method="post">
   <fieldset>
     <legend>Mail</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
@@ -48,11 +48,11 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   </div>
 </form>
 
-<h1>Qui/Que surveiller ?</h1>
+<h1 id='middle'>Qui/Que surveiller ?</h1>
 
 <h2>Surveiller ses contacts</h2>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="#middle" method="post">
   <fieldset>
     <legend>Contacts</legend>
     <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
