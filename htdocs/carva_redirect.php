@@ -18,10 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: carva_redirect.php,v 1.6 2004-11-22 22:35:24 x2000habouzit Exp $
+    $Id: carva_redirect.php,v 1.7 2004-11-22 22:37:48 x2000habouzit Exp $
  ***************************************************************************/
 
-require("auto.prepend.inc.php");
+require_once("xorg.inc.php");
 new_skinned_page('carva_redirect.tpl', AUTH_MDP);
 
 if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUEST['submit'] == "Modifier") and isset($_REQUEST['url'])) {
