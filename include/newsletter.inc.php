@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.30 2004-11-02 19:57:48 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.31 2004-11-04 07:19:37 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -219,6 +219,7 @@ class NewsLetter {
 <html>
   <head>
     <style type="text/css">
+    <!--
       div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
       div.title { margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; font-size: 140%; text-align: center;
 		  font-weight: bold; border-bottom: 3px red solid; border-top: 3px red solid; }
@@ -240,6 +241,7 @@ class NewsLetter {
       div.intro { padding: 2ex; }
       div.foot  { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit;
 		  text-align: center; width: 100% }
+    -->
     </style>
   </head>
   <body>
