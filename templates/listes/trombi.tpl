@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.tpl,v 1.2 2004-09-21 16:14:35 x2000habouzit Exp $
+        $Id: trombi.tpl,v 1.3 2004-09-22 08:42:26 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -117,6 +117,17 @@
     {/foreach}
   {/foreach}
   {if $loop eq "1"}<td></td><td></td></tr>{elseif $loop eq "2"}<td></td></tr>{/if}
+  <tr>
+    <td colspan='3' class='center'>
+      {foreach from=$links item=l}
+      {if $l.i eq $npage}
+      <span class='erreur'>{$l.text}</span>
+      {else}
+      <a href='?liste={$smarty.request.liste}&amp;npage={$l.i}'>{$l.text}</a>
+      {/if}
+      {/foreach}
+    </td>
+  </tr>
 </table>
 
 {/if}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.3 2004-09-21 15:40:36 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.4 2004-09-22 08:42:26 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -27,6 +27,11 @@
 <p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de la modérer</p>
 
 {else}
+
+<p>
+[<a href='admin.php?liste={$smarty.request.liste}'>page de la liste</a>]
+[<a href='index.php'>retour</a>]
+</p>
 
 <div class='rubrique'>
   Inscriptions en attente de modération
@@ -54,11 +59,11 @@
 <p>pas d'inscriptions en attente de modération</p>
 {/if}
 
-{if $mails|@count}
 <div class='rubrique'>
   Mails en attente de modération
 </div>
 
+{if $mails|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
     <th>émetteur</th>

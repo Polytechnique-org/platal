@@ -18,11 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombi.php,v 1.2 2004-09-21 15:40:35 x2000habouzit Exp $
+        $Id: trombi.php,v 1.3 2004-09-22 08:42:25 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
+$npage = isset($_REQUEST['npage']) ? $_REQUEST['npage'] : 1;
 
 require("auto.prepend.inc.php");
 new_skinned_page('listes/trombi.tpl', AUTH_COOKIE, true);
@@ -33,7 +34,7 @@ list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-$members = $client->get_members($liste);
+$members = $client->get_members_limit($liste,$npage,30);
 
 if(is_array($members)) {
     $membres = Array();
@@ -65,6 +66,15 @@ if(is_array($members)) {
     $page->assign_by_ref('details', $members[0]);
     $page->assign_by_ref('members', $membres);
     $page->assign_by_ref('owners',  $moderos);
+    $links = Array();
+    if($npage>1)
+	$links[] = Array('i'=>$npage - 1, 'text' => 'Précédent');
+    for($i=1; $i<=$members[3]; $i++)
+	$links[] = Array('i'=>$i, 'text' => $i);
+    if($npage<$members[3])
+	$links[] = Array('i'=>$npage + 1, 'text' => 'Suivant');
+    $page->assign('links', $links);
+    $page->assign('npage', $npage);
 
 } else
     $page->assign('no_list',true);

@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.23 2004-09-21 16:16:04 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.24 2004-09-22 08:42:25 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os
@@ -161,6 +161,14 @@ def get_members((userdesc,perms),listname):
         members = map(lambda member: (mlist.getMemberName(member) or '', member), members)
         return (details,members,mlist.owner)
     return 0
+
+def get_members_limit((userdesc,perms),listname,page,nb_per_page):
+    try:
+        details,members,owners = get_members((userdesc,perms),listname)
+    except:
+        return 0
+    i = (int(page)-1) * int(nb_per_page)
+    return (details,members[i:i+int(nb_per_page)],owners,(len(members)-1)/int(nb_per_page)+1)
 
 def subscribe((userdesc,perms),listname):
     try:
@@ -405,6 +413,7 @@ server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 
 server.register_function(get_lists)
 server.register_function(get_members)
+server.register_function(get_members_limit)
 server.register_function(subscribe)
 server.register_function(unsubscribe)
 
