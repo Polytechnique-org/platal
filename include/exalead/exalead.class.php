@@ -44,6 +44,19 @@ class ExaleadKeyword{
     $exclude_href = "";
     $reset_href = "";  
   }
+ 
+  function is_normal(){
+    return empty($this->reset_href);
+  }
+
+  function is_refined(){
+    return ( (!empty($this->reset_href)) && ($this->count > 0) );
+  }
+  
+  function is_excluded(){
+    return ( (!empty($this->reset_href)) && ($this->count == 0) );
+  }
+ 
 }
 
 class ExaleadGroup{
@@ -124,6 +137,18 @@ class ExaleadCategory{
    $this->gcount = "";
   }
   
+  function is_normal(){
+    return empty($this->reset_href);
+  }
+
+  function is_refined(){
+    return ( (!empty($this->reset_href)) && ($this->count > 0) );
+  }
+  
+  function is_excluded(){
+    return ( (!empty($this->reset_href)) && ($this->count == 0) );
+  }
+
 }
 
 class ExaleadHit{
