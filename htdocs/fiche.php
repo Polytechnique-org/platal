@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.11 2004-09-19 10:41:05 x2000coic Exp $
+        $Id: fiche.php,v 1.12 2004-10-06 13:25:40 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -236,6 +236,8 @@ if (list($rapp_txt, $rapp_url, $rapp_type) = mysql_fetch_row($result)) {
                 $applis .=", ";
                 $applis .= applis_fmt($rapp_type, $rapp_txt, $rapp_url);
         }
+} else {
+    $applis = '';
 }
 mysql_free_result($result);
 $page->assign('applis', $applis);
