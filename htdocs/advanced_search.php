@@ -87,7 +87,8 @@ if (!Env::has('rechercher')) {
         $regionField     = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
        
         $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
-        $posteField      = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
+        $posteField      = new RefSField('poste',array('ep.poste'),'entreprises','ep','u.user_id=ep.uid', false);
+        $fonctionField   = new RefSField('fonction',array('ef.fonction'),'entreprises','ef','u.user_id=ef.uid');
         $secteurField    = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
         $cvField         = new RefSField('cv',array('u.cv'),'','','',false);
        
@@ -106,7 +107,7 @@ if (!Env::has('rechercher')) {
                     $townField, $countryField, $regionField, $entrepriseField,
                     $posteField, $secteurField, $cvField, $natField, $binetField,
                     $groupexField, $sectionField, $schoolField, $diplomaField,
-                    $freeField)
+                    $freeField, $fonctionField)
                 );
 
     

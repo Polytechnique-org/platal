@@ -169,17 +169,21 @@
       <td><input type="text" name="entreprise" size="32" value="{$smarty.request.entreprise}" /></td>
     </tr>
     <tr>
-      <td>Poste</td>
+      <td>Fonction</td>
       <td>
-        <select name="poste">
+        <select name="fonction">
           <option value="0"></option>
           {iterate from=$choix_postes item=cp}
-          <option value="{$cp.id}" {if $smarty.request.poste eq $cp.id}selected{/if}>
+          <option value="{$cp.id}" {if $smarty.request.fonction eq $cp.id}selected{/if}>
             {$cp.fonction_fr}
           </option>
           {/iterate}
         </select>
       </td>
+    </tr>
+    <tr>
+      <td>Poste</td>
+      <td><input type="text" name="poste" size="32" value="{$smarty.request.poste}" /></td>
     </tr>
     <tr>
       <td>Secteur</td>

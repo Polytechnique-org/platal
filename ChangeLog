@@ -38,6 +38,7 @@ Bug/Wish :
 		- #278: professionnal email and web site.							-Car
 
 	* Search :
+		- #82: Search by fonction and post for jobs.						-Car
 		- #109, 288: Lots of sorting methods for search.					-Car
 		- #270: Private/public flags are now used for search.				-Car
 
