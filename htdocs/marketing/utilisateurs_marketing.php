@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_marketing.php,v 1.10 2004-11-18 14:43:27 x2000habouzit Exp $
+        $Id: utilisateurs_marketing.php,v 1.11 2004-11-21 23:35:32 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -106,7 +106,7 @@ switch ($_REQUEST["submit"]) {
 	$mymail->assign('from', $_REQUEST["from"]);
 	$mymail->assign('to', stripslashes($_REQUEST["mail"]));
 	$mymail->assign('femme', $femme);
-	$mymail->assign('baseurl', $baseurl);
+	$mymail->assign('baseurl', $globals->baseurl);
 	$mymail->assign('user_id', $user_id);
 	$mymail->assign('num_users', $num_users);
 	$mymail->assign('mailorg', $mailorg);

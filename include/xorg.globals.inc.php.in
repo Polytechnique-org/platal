@@ -18,30 +18,50 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.globals.inc.php.in,v 1.1 2004-11-21 20:40:57 x99laine Exp $
+    $Id: xorg.globals.inc.php.in,v 1.2 2004-11-21 23:35:32 x2000habouzit Exp $
  ***************************************************************************/
 
-require("diogenes.core.globals.inc.php");
+require_once("diogenes.core.globals.inc.php");
+require_once("diogenes.database.inc.php");
+require_once("xorg/session.inc.php");
 
-class XorgGlobals extends DiogenesCoreGlobals {
-    var $page = 'XorgPage';
+// {{{ class XorgGlobals
+
+class XorgGlobals extends DiogenesCoreGlobals
+{
+    var $page    = 'XorgPage';
     var $session = 'XorgSession';
 
     /** The x.org version */
     var $version = "@VERSION@";
+    var $debug   = false;
 
-    var $dbdb = 'x4dat';
-    var $table_auth = 'auth_user_md5';
-    var $table_log_actions = 'logger.actions';
+    /** db params */
+    var $dbdb               = 'x4dat';
+    var $dbhost             = 'localhost';
+    var $dbuser             = 'x4dat';
+    var $dbpwd              = 'x4dat';
+    
+    var $table_auth         = 'auth_user_md5';
+    var $table_log_actions  = 'logger.actions';
     var $table_log_sessions = 'logger.sessions';
-    var $table_log_events = 'logger.events';
+    var $table_log_events   = 'logger.events';
 
     /** logger */
-    var $tauth = array('native'=>"auth_user_md5");
+    var $tauth  = array('native'=>"auth_user_md5");
     var $tlabel = array('native'=>"X.Org");
+
+    /** paths */
+    var $baseurl   = "http://localhost/xorg";
+    var $root      = "/usr/share/xorg";
+    var $spoolroot = "/var/spool/xorg";
 
     /** recherche */
     var $public_max_search_results = 25;
-    var $search_results_per_page = 20;
+    var $search_results_per_page   = 20;
 }
+
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

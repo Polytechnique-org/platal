@@ -18,8 +18,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.common.inc.php,v 1.7 2004-11-21 21:36:02 x2000habouzit Exp $
+    $Id: xorg.common.inc.php,v 1.8 2004-11-21 23:35:32 x2000habouzit Exp $
  ***************************************************************************/
+
+// {{{ defines
 
 $i=0;
 define("AUTH_PUBLIC", $i++);
@@ -35,19 +37,26 @@ define('SKIN_COMPATIBLE_ID',1);
 define('SKINNED', 0);
 define('NO_SKIN', 1);
 
-// import class definitions
-require("diogenes.database.inc.php");
-require("xorg.globals.inc.php");
-require("xorg/session.inc.php");
+// }}}
+// {{{ import class definitions
+
+require_once("xorg.globals.inc.php");
 
 $globals = new XorgGlobals;
 require("config.xorg.inc.php");
+
+// }}}
+// {{{ start session + database connection
 
 session_start();
 
 // connect to database
 $globals->dbconnect();
-$conn = $globals->db->connect_id;
-if($site_dev)
+if ($globals->debug) {
     $globals->db->trace_on();
+}
+
+//}}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.15 2004-11-20 19:07:00 x2000chevalier Exp $
+        $Id: step4.php,v 1.16 2004-11-21 23:35:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -145,6 +145,6 @@ if (!empty($_REQUEST['ref'])) {
 } else
     $page->assign('error',ERROR_REF);
 
-$page->assign('dev',(isset($site_dev) && $site_dev)?1:0);
+$page->assign('dev',$globals->debug);
 $page->run();
 ?>

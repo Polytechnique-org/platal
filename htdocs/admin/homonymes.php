@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.8 2004-11-16 21:02:45 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.9 2004-11-21 23:35:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -47,7 +47,7 @@ if ($target) {
 
 $page->assign('op',$op);
 $page->assign('target',$target);
-$page->assign('baseurl',$baseurl);
+$page->assign('baseurl',$globals->baseurl);
 
 // on a un $target valide, on prepare les mails
 if ($target) {

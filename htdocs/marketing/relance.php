@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: relance.php,v 1.4 2004-11-15 09:22:15 x2000habouzit Exp $
+        $Id: relance.php,v 1.5 2004-11-21 23:35:32 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -52,7 +52,7 @@ if (isset($_POST["relancer"]) && isset($_POST["relancer"]) != "") {
             $mymail->assign('fdate',$fdate);
             $mymail->assign('lusername',$lusername);
             $mymail->assign('nveau_pass',$nveau_pass);
-            $mymail->assign('baseurl',$baseurl);
+            $mymail->assign('baseurl',$globals->baseurl);
             $mymail->assign('lins_id',$lins_id);
             
             $mymail->assign('lemail',$lemail);

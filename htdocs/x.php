@@ -21,6 +21,6 @@
 
 require("auto.prepend.inc.php");
 new_skinned_page('x.tpl', AUTH_PUBLIC);
-$page->assign('baseurl',$baseurl);
+$page->assign('baseurl',$globals->baseurl);
 $page->run();
 ?>

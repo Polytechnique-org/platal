@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_notifs.php,v 1.4 2004-11-17 11:20:14 x2000habouzit Exp $
+        $Id: send_notifs.php,v 1.5 2004-11-21 23:35:33 x2000habouzit Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
@@ -34,7 +34,7 @@ foreach($all->_data as $u) {
           .  "  Voici les évènements survenus dans la semaine écoulée,\n"
 	  .  "et depuis ta dernière visite sur le site.\n\n"
 	  .  "Tu trouveras les mêmes informations sur la page :\n"
-	  .  "    $baseurl/carnet/panel.php\n\n";
+	  .  "    {$globals->baseurl}/carnet/panel.php\n\n";
     $text .= "------------------------------------------------------------\n\n";
     foreach($u['data'] as $cid=>$d) {
 	$text .= "  {$all->_cats[$cid]['mail']} :\n\n";
@@ -48,7 +48,7 @@ foreach($all->_data as $u) {
            . "Tu recois ce mail car tu as activé la notification\n"
 	   . "automatique par mail des évènements que tu surveilles.\n\n"
 	   . "Tu peux changer cette option sur :\n"
-	   . "    $baseurl/carnet/notifs.php\n\n"
+	   . "    {$globals->baseurl}/carnet/notifs.php\n\n"
 	   . "-- \n"
 	   . "L'équipe de Polytechnique.org";
     

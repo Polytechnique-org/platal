@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step3.php,v 1.3 2004-11-01 17:27:07 x2002marichez Exp $
+        $Id: step3.php,v 1.4 2004-11-21 23:35:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -78,7 +78,7 @@ $mymail = new TplMailer('inscrire.mail.tpl');
 $mymail->assign('forlife',$forlife);
 $mymail->assign('lemail',$_REQUEST['email']);
 $mymail->assign('pass_clair',$pass_clair);
-$mymail->assign('baseurl',$baseurl);
+$mymail->assign('baseurl',$globals->baseurl);
 $mymail->assign('ins_id',$ins_id);
 $mymail->assign('subj',$forlife."@polytechnique.org");
 $mymail->send();

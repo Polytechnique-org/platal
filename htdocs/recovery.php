@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.8 2004-11-18 15:35:35 x2000habouzit Exp $
+        $Id: recovery.php,v 1.9 2004-11-21 23:35:30 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -76,7 +76,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
 	$mymail->addTo($emails);
 	$mymail->setSubject('Ton certificat d\'authentification');
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
-$baseurl/tmpPWD.php?certificat=$url
+{$globals->baseurl}/tmpPWD.php?certificat=$url
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
 

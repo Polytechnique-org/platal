@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.page.inc.php,v 1.50 2004-11-21 17:31:25 x2000habouzit Exp $
+    $Id: xorg.page.inc.php,v 1.51 2004-11-21 23:35:32 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.page.inc.php");
@@ -31,7 +31,7 @@ require_once("diogenes.core.page.inc.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Jeremy Lainé <jeremy.laine@polytechnique.org>
- * @version  $Id: xorg.page.inc.php,v 1.50 2004-11-21 17:31:25 x2000habouzit Exp $
+ * @version  $Id: xorg.page.inc.php,v 1.51 2004-11-21 23:35:32 x2000habouzit Exp $
  * @access   public
  * @see      DiogenesCorePage
  */
@@ -47,7 +47,7 @@ class XorgPage extends DiogenesCorePage
 
     function XorgPage($tpl, $type=SKINNED)
     {
-        global $site_dev, $globals;
+        global $globals;
 
 	$this->setLang();
 
@@ -60,7 +60,7 @@ class XorgPage extends DiogenesCorePage
 
 
         $this->config_overwrite  = false;
-        $this->compile_check     = !empty($site_dev);
+        $this->compile_check     = !empty($globals->debug);
         $this->caching	         = ($type == SKINNED);
 	if ($type == SKINNED) {
 	    $this->register_modifier('escape_html', 'escape_html');
@@ -81,7 +81,7 @@ class XorgPage extends DiogenesCorePage
         if (empty($_SESSION['session']))
             $_SESSION['session'] = new XorgSession;
 
-        $this->assign('site_dev',$site_dev);
+        $this->assign('site_dev',$globals->debug);
         $this->doAuth();
     }
 
@@ -121,7 +121,7 @@ class XorgPage extends DiogenesCorePage
 
     function run($append_to_id="")
     {
-        global $baseurl, $site_dev, $globals, $TIME_BEGIN;
+        global $globals, $TIME_BEGIN;
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
         } else {
@@ -129,9 +129,9 @@ class XorgPage extends DiogenesCorePage
                 $this->caching=false;
             }
             $id = $this->make_id($append_to_id);
-            if ($site_dev) {
+            if ($globals->debug) {
                 $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
-                $this->assign('validate', urlencode($baseurl.'/valid.html'));
+                $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
 
 		$result = $this->fetch('skin/'.$_SESSION['skin'], $id);
 		$total_time = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
@@ -144,7 +144,9 @@ class XorgPage extends DiogenesCorePage
 		    if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
 			if ($m[1]) {
 			    echo str_replace("@HOOK@",
-				"$total_time<span class='erreur'><a href='http://validator.w3.org/check?uri=$baseurl/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />", $result);
+				"$total_time<span class='erreur'><a href='http://validator.w3.org/check?uri="
+                                .$globals->baseurl."/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />",
+                                $result);
 			} else {
 			    echo str_replace("@HOOK@", "$total_time", $result);
 			}
