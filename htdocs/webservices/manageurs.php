@@ -23,16 +23,20 @@ require_once('xorg.inc.php');
 require_once('webservices/manageurs.server.inc.php');
 
 
-$server = xmlrpc_server_create();
+if(isset($GLOBALS['manageurs_authorized_ips'][$_SERVER['REMOTE_ADDR']])){
 
-xmlrpc_server_register_method($server, "get_annuaire_infos", "get_annuaire_infos");
+  $server = xmlrpc_server_create();
 
-$request = $GLOBALS['HTTP_RAW_POST_DATA'];
+  xmlrpc_server_register_method($server, "get_annuaire_infos", "get_annuaire_infos");
 
-$response = xmlrpc_server_call_method($server, $request, null);
-header('Content-Type: text/xml');
-print $response;
+  $request = $GLOBALS['HTTP_RAW_POST_DATA'];
 
-xmlrpc_server_destroy($server);
+  $response = xmlrpc_server_call_method($server, $request, null);
+  header('Content-Type: text/xml');
+  print $response;
+
+  xmlrpc_server_destroy($server);
+
+}
 
 ?>
