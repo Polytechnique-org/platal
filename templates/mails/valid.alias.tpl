@@ -17,13 +17,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid.alias.tpl,v 1.2 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: valid.alias.tpl,v 1.3 2004-09-02 21:09:33 x2000habouzit Exp $
  ***************************************************************************}
 
 {config_load file="mails.conf" section="valid_alias"}
-{subject text="[Polytechnique.org/MELIX] Demande de l'alias $alias@melix.net par $username"}
+{subject text="[Polytechnique.org/MELIX] Demande de l'alias $alias@melix.net par $forlife"}
 {from full=#from#}
-{to addr="$username@polytechnique.org"}
+{to addr="$forlife@polytechnique.org"}
 {cc full=#cc#}
 {if $answer eq "yes"}
 Cher(e) camarade,

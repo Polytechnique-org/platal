@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.photos.tpl,v 1.7 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: form.valid.photos.tpl,v 1.8 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,7 +25,7 @@
 <table class="bicol" summary="Demande d'alias">
 <tr>
   <td>Demandeur&nbsp;:</td>
-  <td><a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$valid->username}')">
+  <td><a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$valid->forlife}')">
       {$valid->prenom} {$valid->nom}
       </a>
   </td>
@@ -33,6 +33,7 @@
 <tr>
   <td class="middle" colspan="2">
     <img src="{"getphoto.php"|url}?x={$valid->uid}" style="width:110px;" alt=" [ PHOTO ] " />
+    &nbsp;
     <img src="{"getphoto.php"|url}?x={$valid->uid}&amp;req=true" style="width:110px;" alt=" [ PHOTO ] " />
   </td>
 </tr>
@@ -47,7 +48,7 @@
   </td>
   <td>
     <p>Raison du refus:</p>
-    <textarea rows="5" cols="74" name="motif"></textarea>
+    <textarea rows="5" cols="50" name="motif"></textarea>
   </td>
 </tr>
 </table>

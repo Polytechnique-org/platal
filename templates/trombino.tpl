@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombino.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: trombino.tpl,v 1.6 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -67,7 +67,7 @@ La photo par défaut est donc gardée.
     </tr>
     <tr>
       <td class="center">
-        <img src="{"getphoto.php"|url}?x={$smarty.session.uid}" width=110 alt=" [ PHOTO ] " />
+        <img src="{"getphoto.php"|url}?x={$smarty.session.uid}" width="110" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
@@ -95,8 +95,6 @@ La photo par défaut est donc gardée.
       </td>
     </tr>
   </table>
-
-  <br />
 
   <table class="bicol" cellspacing="0" cellpadding="2">
     <tr>

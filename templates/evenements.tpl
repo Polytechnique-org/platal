@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: evenements.tpl,v 1.5 2004-08-31 11:25:38 x2000habouzit Exp $
+        $Id: evenements.tpl,v 1.6 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -58,15 +58,17 @@ Tu as ajouté le message suivant à l'intention du validateur : {$validation_messa
 </p>
 {/if}
 
-<form action="{$smarty.request.PHP_SELF}" method="post" name="evenement_nouveau">
-  <input type="hidden" name="titre" value="{$titre}" />
-  <input type="hidden" name="texte" value="{$texte}" />
-  <input type="hidden" name="promo_min" value="{$promo_min}" />
-  <input type="hidden" name="promo_max" value="{$promo_max}" />
-  <input type="hidden" name="peremption" value="{$peremption}" />
-  <input type="hidden" name="validation_message" value="{$validation_message}" />
-  <input type="submit" name="action" value="Confirmer" />
-  <input type="submit" name="action" value="Modifier" />
+<form action="{$smarty.request.PHP_SELF}" method="post">
+  <div>
+    <input type="hidden" name="titre" value="{$titre}" />
+    <input type="hidden" name="texte" value="{$texte}" />
+    <input type="hidden" name="promo_min" value="{$promo_min}" />
+    <input type="hidden" name="promo_max" value="{$promo_max}" />
+    <input type="hidden" name="peremption" value="{$peremption}" />
+    <input type="hidden" name="validation_message" value="{$validation_message}" />
+    <input type="submit" name="action" value="Confirmer" />
+    <input type="submit" name="action" value="Modifier" />
+  </div>
 </form>
 
 

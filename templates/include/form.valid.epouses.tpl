@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.epouses.tpl,v 1.7 2004-09-01 22:51:00 x2000habouzit Exp $
+        $Id: form.valid.epouses.tpl,v 1.8 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -26,7 +26,7 @@
     <tr>
       <td>Demandeur&nbsp;:</td>
       <td>
-        <a href="javascript:x()" onclick="popWin('/fiche.php?user={$valid->username}')">
+        <a href="javascript:x()" onclick="popWin('/fiche.php?user={$valid->forlife}')">
           {$valid->prenom} {$valid->nom}
         </a>
         {if $valid->oldepouse}({$valid->oldepouse} - {$valid->oldalias}){/if}
@@ -60,7 +60,7 @@
       </td>
       <td>
         <p>Raison du refus:</p>
-        <textarea rows="5" cols="74" name=motif></textarea>
+        <textarea rows="5" cols="50" name=motif></textarea>
       </td>
     </tr>
   </table>

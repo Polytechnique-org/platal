@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombino.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: trombino.php,v 1.3 2004-09-02 21:09:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -51,7 +51,7 @@ if (isset($_REQUEST["ordi"]) and
     }
 } elseif (isset($_REQUEST["trombi"])) {
     // Fichier à récupérer dans les archives trombi + commit immédiat
-    $file = "/home/web/trombino/photos".$_SESSION["promo"]."/".$_SESSION["username"].".jpg";
+    $file = "/home/web/trombino/photos".$_SESSION["promo"]."/".$_SESSION["forlife"].".jpg";
     $myphoto = new PhotoReq($_SESSION['uid'], $file);
     $myphoto->commit();
     $myphoto->clean();

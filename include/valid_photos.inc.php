@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_photos.inc.php,v 1.11 2004-08-31 22:01:31 x2000habouzit Exp $
+        $Id: valid_photos.inc.php,v 1.12 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -28,7 +28,7 @@ class PhotoReq extends Validate {
     var $x;
     var $y;
 
-    var $username;
+    var $forlife;
     var $prenom;
     var $nom;
    
@@ -36,8 +36,12 @@ class PhotoReq extends Validate {
         global $erreur, $globals;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
-        $sql = $globals->db->query("SELECT username, prenom, nom FROM auth_user_md5 WHERE user_id=".$this->uid);
-        list($this->username,$this->prenom,$this->nom) = mysql_fetch_row($sql);
+        $sql = $globals->db->query("
+	    SELECT  a.alias, prenom, nom
+	      FROM  auth_user_md5 AS u
+        INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type='a_vie' )
+	     WHERE  user_id=".$this->uid);
+        list($this->forlife,$this->prenom,$this->nom) = mysql_fetch_row($sql);
         mysql_free_result($sql);
         
         if(!file_exists($_file)) {
@@ -84,7 +88,7 @@ class PhotoReq extends Validate {
         
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.photos.tpl');
-        $mymail->assign('username', $this->username);
+        $mymail->assign('forlife', $this->forlife);
 
         if($_REQUEST['submit']=="Accepter") {
             $mymail->assign('answer','yes');

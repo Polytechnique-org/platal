@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_epouses.inc.php,v 1.15 2004-09-01 22:51:00 x2000habouzit Exp $
+        $Id: valid_epouses.inc.php,v 1.16 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************/
 
 
 class EpouseReq extends Validate {
     var $epouse;
     var $alias;
-    var $username;
+    var $forlife;
 
     var $oldepouse;
     var $oldalias;
@@ -34,24 +34,21 @@ class EpouseReq extends Validate {
 
     var $homonyme;
     
-    function EpouseReq ($_uid, $_username, $_epouse, $_stamp=0) {
+    function EpouseReq ($_uid, $_forlife, $_epouse, $_stamp=0) {
         global $globals;
         $this->Validate($_uid, true, 'epouse', $_stamp);
         $this->epouse = $_epouse;
-        $this->username = $_username;
+        $this->forlife = $_forlife;
         
-        list($prenom) = explode('.',$_username);
-        $this->alias = make_username($prenom,$this->epouse);
+        list($prenom) = explode('.',$_forlife);
+        $this->alias = make_forlife($prenom,$this->epouse);
         if(empty($_epouse)) $this->alias = "";
         
-        $sql = $globals->db->query("select u1.alias, u1.epouse, u1.prenom, u1.nom"
-            .", IFNULL(u2.username,u3.username)"
-            ." FROM auth_user_md5 as u1"
-            ." LEFT JOIN auth_user_md5 as u2"
-                ." ON(u2.username = '{$this->alias}' and u2.user_id != u1.user_id)"
-            ." LEFT JOIN auth_user_md5 as u3"
-                ." ON(u3.alias = '{$this->alias}' and u3.user_id != u1.user_id)"
-            ." WHERE u1.user_id = ".$this->uid);
+        $sql = $globals->db->query("
+	    SELECT  u.alias, u.epouse, u.prenom, u.nom, a.id
+	      FROM  auth_user_md5 as u
+	 LEFT JOIN  aliases       as a ON(a.alias = '{$this->alias}' and a.id != u.user_id)
+	     WHERE  u.user_id = ".$this->uid);
         list($this->oldalias, $this->oldepouse, $this->prenom, $this->nom, $this->homonyme) = mysql_fetch_row($sql);
         mysql_free_result($sql);
     }
@@ -69,7 +66,7 @@ class EpouseReq extends Validate {
             
         require_once("tpl.mailer.inc.php");
         $mymail = new TplMailer('valid.epouses.tpl');
-        $mymail->assign('username', $this->username);
+        $mymail->assign('forlife', $this->forlife);
 
         if($_REQUEST['submit']=="Accepter") {
             $mymail->assign('answer','yes');

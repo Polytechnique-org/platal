@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: general.tpl,v 1.10 2004-08-31 14:48:57 x2000habouzit Exp $
+        $Id: general.tpl,v 1.11 2004-09-02 21:09:33 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -132,7 +132,9 @@
         quelque part (sur ton ordinateur ou sur Internet) d'une photo
         d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
         <div class="center">
-          <span class="lien"><a href="javascript:x()" onclick="popWin('trombino.php','trmb','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=750,height=480')">Éditer ta photo</a></span>
+          <span class="lien">
+            <a href="trombino.php">Éditer ta photo</a>
+          </span>
         </div>
       </td>
     </tr>

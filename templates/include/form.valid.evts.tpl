@@ -17,21 +17,21 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.evts.tpl,v 1.6 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: form.valid.evts.tpl,v 1.7 2004-09-02 21:09:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<form action="{$smarty.server.PHP_SELF}" method="post" name="modif">
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="bicol">
     <tr>
       <th class="titre" colspan="2">Événement</th>
     </tr>
     <tr>
-      <td>
-        Posté par <a href="javascript:x()"  onclick="popWin('{"fiche.php"|url}?user={$valid->username}">
+      <td  colspan="2">
+        Posté par <a href="javascript:x()"  onclick="popWin('{"fiche.php"|url}?user={$valid->forlife}')">
           {$valid->prenom} {$valid->nom} (X{$valid->promo})
         </a>
-        [<a href="mailto:{$valid->username}@polytechnique.org">lui écrire</a>]
+        [<a href="mailto:{$valid->forlife}@polytechnique.org">lui écrire</a>]
       </td>
     </tr>
     <tr>
