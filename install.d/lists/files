@@ -8,6 +8,8 @@ htdocs/listes/moderate.php
 htdocs/listes/options.php
 htdocs/listes/soptions.php
 htdocs/listes/trombi.php
+htdocs/listes/delete.php
+htdocs/listes/archives.php
 include/validations/listes.inc.php
 scripts/mailman/foreach_template.py
 scripts/mailman/mailman-rpc.py
@@ -37,6 +39,8 @@ templates/listes/moderate.tpl
 templates/listes/options.tpl
 templates/listes/soptions.tpl
 templates/listes/trombi.tpl
+templates/listes/delete.tpl
+templates/listes/archives.tpl
 templates/mails/listes.promo.tpl
 templates/mails/valid.liste.tpl
 htdocs/images/lists_date.png
