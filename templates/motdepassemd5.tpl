@@ -1,4 +1,4 @@
-{* $Id: motdepassemd5.tpl,v 1.3 2004-02-09 17:47:06 x2000habouzit Exp $ *}
+{* $Id: motdepassemd5.tpl,v 1.4 2004-08-22 23:34:20 x2000bedo Exp $ *}
 
 <div class="rubrique">
   Changer de mot de passe
@@ -13,7 +13,7 @@
   stocké crypté irréversiblement sur nos serveurs.
 </p>
 <br />
-<form action="{$smarty.server.REQUEST_URI}" method=POST id="changepass" name="changepass">
+<form action="{dynamic}{$smarty.server.REQUEST_URI}{/dynamic}" method=POST id="changepass" name="changepass">
   <table class="tinybicol" cellpadding="3" cellspacing="0"
     summary="Formulaire de mot de passe">
     <tr>
