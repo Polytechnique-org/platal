@@ -55,30 +55,41 @@ ksort($owners);	 array_unique($owners);
 ksort($members); array_unique($members);
 
 if(isset($_POST['submit'])) {
-    $err = Array();
 
-    if(empty($_POST['liste'])) $err[] = 'champs «addresse souhaitée» vide';
-    if(!preg_match("/^[a-zA-Z0-9\-]*$/", $_POST['liste']))
-	$err = 'le nom de la liste ne doit contenir que des lettres, chiffres et tirets';
+    if(empty($_POST['liste'])) {
+        $page->trigger('champs «addresse souhaitée» vide');
+    }
+    if(!preg_match("/^[a-zA-Z0-9\-]*$/", $_POST['liste'])) {
+	$page->trigger('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+    }
 
     $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE alias='{$_POST['liste']}'");
     list($n) = mysql_fetch_row($res);
     mysql_free_result($res);
-    if($n) $err[] = 'cet alias est déjà pris';
 
-    if(empty($_POST['desc'])) $err[] = 'le sujet est vide';
-    if(!count($owners)) $err[] = 'pas de gestionnaire';
-    if(count($members)<4) $err[] = 'pas assez de membres';
+    if($n) {
+        $page->trigger('cet alias est déjà pris');
+    }
 
-    if(!count($err)) {
+    if(empty($_POST['desc'])) {
+        $page->trigger('le sujet est vide');
+    }
+    
+    if(!count($owners)) {
+        $page->trigger('pas de gestionnaire');
+    }
+    
+    if(count($members)<4) {
+        $page->trigger('pas assez de membres');
+    }
+
+    if (!$page->nb_errs()) {
 	$page->assign('created', true);
 	require_once('validations.inc.php');
 	$req = new ListeReq($_SESSION['uid'], $_POST['liste'], $_POST['desc'],
 	    $_POST['advertise'], $_POST['modlevel'], $_POST['inslevel'],
 	    $owners, $members);
 	$req->submit();
-    } else {
-	$page->assign('err', $err);
     }
 }
 

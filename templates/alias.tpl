@@ -29,10 +29,6 @@
     Encore merci de nous faire confiance pour tes e-mails !
   </p>
 {else}
-  {if $error}
-  <p class="erreur">{dyn s=$error}</p>
-  {/if}
-
   <h1>
     Adresses e-mail personnalisées
   </h1>

@@ -20,7 +20,7 @@
 
 {dynamic}
 
-{if $formulaire==0 and !$error}
+{if $formulaire==0 and !$xorg_error->errs|count}
   {if !$advanced}
   {include file='search.quick.form.tpl'}
   {else}
@@ -55,7 +55,7 @@
       {if $offset!=$smarty.section.offset.index*$perpage}
       <a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;offset={$smarty.section.offset.index*$perpage}">{$smarty.section.offset.index+1}</a>
       {else}
-      <span class="error">{$smarty.section.offset.index+1}</span>
+      <span class="erreur">{$smarty.section.offset.index+1}</span>
       {/if}
       &nbsp;
     {/section}

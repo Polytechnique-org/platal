@@ -78,7 +78,7 @@ p {
     text-align: justify;
 }
 
-p.error, span.error, p.erreur, span.erreur {
+.erreur {
     font-weight: bold;
     color: #ff0000;
     background: inherit;

@@ -40,7 +40,7 @@ Voici le nombre d'inscrits par promo :
     {foreach item=nb from=$nb10}
     <td class="center">
       {if $nb && $nb.promo eq $smarty.request.promo}
-      <span class='error'>{$nb.nb}</span>
+      <span class='erreur'>{$nb.nb}</span>
       {elseif $nb}
       <a href="?promo={$nb.promo}">{$nb.nb}</a>
       {else}

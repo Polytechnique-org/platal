@@ -26,26 +26,24 @@ require_once('money.inc.php');
 
 // initialisation
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'select';
-$erreur = Array();
 
 $meth = new PayMethod(isset($_REQUEST['methode']) ? $_REQUEST['methode'] : -1);
 $pay  = new Payment(isset($_REQUEST['ref']) ? $_REQUEST['ref'] : -1);
 
 if($pay->flags->hasflag('old')){
-    $erreur[] = "La transaction selectionnée est périmée.";
+    $page->trigger("La transaction selectionnée est périmée.");
     $pay = new Payment();
 }
 $val  = (($op=="submit") && isset($_REQUEST['montant'])) ? $_REQUEST['montant'] : $pay->montant_def;
 
 if (($e = $pay->check($val)) !== true) {
-    $erreur[] = $e;
+    $page->trigger($e);
 }
 
 if ($op=='submit') {
     $pay->init($val, $meth);
 }
 
-$page->assign('erreur', $erreur);
 $page->assign('montant',$val);
 
 $page->assign('meth', $meth);

@@ -21,8 +21,6 @@
 
 {dynamic}
 
-<p class="erreur">{$error}</p>
-
 <h1>
   Envoyer un mail
 </h1>

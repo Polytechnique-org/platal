@@ -19,8 +19,7 @@
  ***************************************************************************}
 
 {dynamic}
-<p class='erreur'>{$erreur|smarty:nodefaults|nl2br}</p>
- 
+
 <form action="{"inscription/step2.php"|url}" method="post" id='idf'>
   <h1>
     Identification

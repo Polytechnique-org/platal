@@ -61,7 +61,7 @@ L'équipe d'administration <support@polytechnique.org>";
 	$mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
 	$mail->setTxtBody($message);
 	$mail->send();
-        $page->assign('erreur', "Mail envoyé ! :o)");
+        $page->trigger("Mail envoyé ! :o)");
     }
 } elseif (array_key_exists('email', $_POST)) {
     $email = valide_email($_POST['email']);

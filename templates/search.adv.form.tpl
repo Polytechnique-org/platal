@@ -20,10 +20,6 @@
 
 <h1>Recherche avancée</h1>
 
-{if $error}
-<p class="error">{$error}</p>
-{/if}
-
 <p>[<a href="search.php">Recherche simple</a>]</p>
 
 <form id="recherche" action="{$smarty.server.PHP_SELF}" method="get">

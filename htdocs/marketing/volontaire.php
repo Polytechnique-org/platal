@@ -22,19 +22,15 @@
 require_once("xorg.inc.php");
 new_admin_page('marketing/volontaire.tpl');
 
-$errors = Array();
-
 // traitement des paramètres éventuels
 if (!empty($_GET["del"])) {
     $globals->db->query("DELETE FROM marketing WHERE id ='{$_GET['del']}'");
-    $errors[] = "Entrée effacée";
+    $page->trigger("Entrée effacée");
 }
 if (!empty($_GET["done"])) {
     $globals->db->query("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id ='{$_GET['done']}'");
-    $errors[] = "Entrée mise à jour";
+    $page->trigger("Entrée mise à jour");
 }
-
-$page->assign_by_ref('errors', $errors);
 
 $sql = "SELECT  m.id, m.expe, m.dest, m.email, 
 		i.promo, i.nom, i.prenom, i.last_known_email, 

@@ -106,7 +106,6 @@ class XOrgHook extends PEAR
             $this->raiseError("In the Hook « {$this->_name} » the function « $function » expects at least 1 argument");
         }
         foreach ($this->_mods as $mod) {
-            echo $mod.'_'.$function;
             if (!function_exists($mod.'_'.$function)) continue;
             $arguments[$i] =& call_user_func_array($mod.'_'.$function,$arguments);
         }

@@ -55,7 +55,8 @@ if(isset($_REQUEST['xpromo'])) {
     $xpromo = intval($_REQUEST['xpromo']);
 
     if ( $xpromo<1900 || $xpromo>date('Y') || ($xpromo == -1 && $_SESSION['perms']!="admin") ) {
-	$page->assign('erreur', "Promotion incorrecte (saisir au format YYYY). Recommence.");
+	$page->trigger("Promotion incorrecte (saisir au format YYYY). Recommence.");
+        $page->assign('error', true);
     } else {
 	$trombi = new Trombi('getList');
 	$trombi->hidePromo();

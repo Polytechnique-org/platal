@@ -21,10 +21,6 @@
 
 {dynamic}
 
-{foreach from=$errros item=err}
-<p class="erreur">{$err}</p>
-{/foreach}
-
 <h1>
   Marketing volontaire
 </h1>

@@ -26,13 +26,13 @@ require_once("xorg.inc.php");
 new_skinned_page('listes/admin.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
-$err = Array();
 $client =& lists_xmlrpc($_SESSION['uid'], $_SESSION['password']);
 
 if(isset($_REQUEST['add_member'])) {
     $arr = $client->mass_subscribe($liste, Array($_REQUEST['add_member']));
     if(is_array($arr)) {
-	foreach($arr as $addr) $err[] = "{$addr[0]} inscrit.";
+	foreach($arr as $addr) {
+            $page->trigger("{$addr[0]} inscrit.");
     }
 }
 
@@ -42,8 +42,9 @@ if(isset($_REQUEST['del_member'])) {
 }
 
 if(isset($_REQUEST['add_owner'])) {
-    if($client->add_owner($liste, $_REQUEST['add_owner']))
-	$err = $_REQUEST['add_owner']." ajouté aux modérateurs.";
+    if($client->add_owner($liste, $_REQUEST['add_owner'])) {
+        $page->trigger($_REQUEST['add_owner']." ajouté aux modérateurs.");
+    }
 }
 
 if(isset($_REQUEST['del_owner'])) {
@@ -88,6 +89,5 @@ if(list($det,$mem,$own) = $client->get_members($liste)) {
 } else
     $page->assign('no_list',true);
 
-$page->assign('err', $err);
 $page->run();
 ?>

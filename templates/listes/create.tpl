@@ -20,15 +20,12 @@
 
 {dynamic}
 
-{foreach from=$err item=e}
-<p class='erreur'>{$e}</p>
-{/foreach}
- 
 <h1>
   Création d'une liste de diffusion
 </h1>
 
 {if $created}
+
 <p class='erreur'>Demande de création envoyée !</p>
 
 {else}

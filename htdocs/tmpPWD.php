@@ -41,15 +41,13 @@ if ($ligne = mysql_fetch_array($result))  {
         $globals->db->query($sql);
         new_skinned_page('tmpPWD.success.tpl', AUTH_PUBLIC);
         $page->run();
-    }
-    else {
+    } else {
         new_skinned_page('motdepassemd5.tpl', AUTH_PUBLIC, 'motdepassemd5.head.tpl');
         $page->run();
     }
-}
-else {
-    new_skinned_page('tmpPWD.failure.tpl', AUTH_PUBLIC);
-    $page->run();
+} else {
+    new_skinned_page('index.tpl', AUTH_PUBLIC);
+    $page->kill("Cette adresse n'existe pas ou n'existe plus sur le serveur.");
 }
 
 ?>

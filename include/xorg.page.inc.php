@@ -38,6 +38,7 @@ class XorgPage extends DiogenesCorePage
     
     var $_page_type;
     var $_tpl;
+    var $_errors;
 
     // }}}
     // {{{ function XorgPage()
@@ -65,7 +66,9 @@ class XorgPage extends DiogenesCorePage
 	}
 
         $this->_page_type = $type;
-        $this->_tpl = $tpl;
+        $this->_tpl       = $tpl;
+	require_once('xorg/errors.inc.php');
+        $this->_errors    = new XOrgErrors;
 
         $this->DiogenesCorePage();
 	require_once('xorg/smarty.plugins.inc.php');
@@ -120,6 +123,8 @@ class XorgPage extends DiogenesCorePage
     function run($append_to_id="")
     {
         global $globals, $TIME_BEGIN;
+        $this->assign_by_ref("xorg_error", $this->_errors);
+        
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
         } else {
@@ -160,14 +165,36 @@ class XorgPage extends DiogenesCorePage
     }
 
     // }}}
-    // {{{ function failure()
+    // {{{ function trigger()
 
-    function failure()
+    function trigger($msg)
     {
-        $this->_page_type = SKINNED;
-        $this->_tpl = 'failure.tpl';
-        $this->assign('xorg_tpl', 'failure.tpl');
-        $this->caching=0;
+        $this->_errors->trigger($msg);
+    }
+
+    // }}}
+    // {{{ function nb_errs()
+
+    function nb_errs()
+    {
+        return count($this->_errors->errs);
+    }
+
+    // }}}
+    // {{{ function fail()
+
+    function fail($msg)
+    {
+        $this->caching = false;
+        $this->_errors->fail($msg);
+    }
+
+    // }}}
+    // {{{ function kill()
+
+    function kill($msg)
+    {
+        $this->fail($msg);
         $this->run();
     }
 

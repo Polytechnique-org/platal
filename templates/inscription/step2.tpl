@@ -27,8 +27,6 @@
 
 {dynamic}
 
-<p class="erreur">{$erreur|smarty:nodefaults|nl2br}</p>
-
 <form action="{"inscription/step3.php"|url}" method="post">
   {if $homonyme}
   <p>

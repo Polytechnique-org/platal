@@ -48,7 +48,7 @@
   {if $simple}
 
     <div id="content">
-      {include file=$xorg_tpl}
+      {include file="skin/common.content.tpl"}
     </div>
 
   {else}
@@ -100,7 +100,7 @@
           {/perms}
         </td>
         <td id="content">
-          {include file=$xorg_tpl}
+          {include file="skin/common.content.tpl"}
         </td>
       </tr>
       <tr>

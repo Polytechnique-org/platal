@@ -19,13 +19,9 @@
  ***************************************************************************}
 
 
-<h1>
-  Perte du mot de passe
-</h1>
+<h1>Perte du mot de passe</h1>
 
 {dynamic}
-
-<div class="erreur">{$error}</div>
 
 {if $ok}
 

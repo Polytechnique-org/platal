@@ -18,9 +18,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+{dynamic}
+{foreach from=$xorg_error->errs|smarty:nodefaults item=err}
+<div class="erreur">{$err|smarty:nodefaults}</div>
+{/foreach}
+{/dynamic}
 
-<div class=\"erreur\">
-Tu n'as pas les permissions n&eacute;cessaires pour acc&eacute;der &agrave; cette page.
-</div>
+{if !$xorg_error->failure}{include file=$xorg_tpl}{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

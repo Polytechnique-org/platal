@@ -31,10 +31,6 @@ Attention, déjà en SUID !!!
 
 {dynamic}
 
-{foreach from=$errors item=e}
-<p class="erreur">{$e}</p>
-{/foreach}
-
 {if $smarty.post.u_kill_conf}
 <form method="post" action="{$smarty.server.PHP_SELF}">
   <div class="center">

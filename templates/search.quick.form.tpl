@@ -20,8 +20,6 @@
 
 <h1>Recherche simple dans l'annuaire</h1>
 
-{if $error}<p class="error">{$error}</p>{/if}
-
 <form action="{"search.php"|url}" method="get">
   <table class="bicol" cellspacing="0" cellpadding="4">
     <tr>

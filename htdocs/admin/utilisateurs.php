@@ -24,6 +24,14 @@ new_admin_page('admin/utilisateurs.tpl');
 require_once("emails.inc.php");
 
 /*
+ * Already in SUID ?
+ */
+
+if (isset($_SESSION['suid'])) {
+    $page->kill("déjà en SUID !!!");
+}
+
+/*
  * LOGS de l'utilisateur
  */
 
@@ -53,8 +61,6 @@ if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SE
  * LE RESTE
  */
 
-$errors = Array();
-
 if (!empty($_REQUEST['login'])) {
     $needle = strtolower($_REQUEST['login']);
 
@@ -70,7 +76,7 @@ if (!empty($_REQUEST['login'])) {
             if (list($redir) = mysql_fetch_row($res)) {
                 list($login) = split('@', $redir);
             } else {
-                $errors[] = "il n'y a pas d'utilisateur avec cet alias melix";
+                $page->trigger("il n'y a pas d'utilisateur avec cet alias melix");
             }
             mysql_free_result($res);
         } else {
@@ -82,9 +88,9 @@ if (!empty($_REQUEST['login'])) {
                 if ($i) {
                     $aliases = Array();
                     while (list($a) = mysql_fetch_row($res)) $aliases[] = $a;
-                    $errors[] = "Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases) ;
+                    $page->trigger("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
                 } else {
-                    $errors[] = "il n'y a pas d'utilisateur avec cette adresse mail";
+                    $page->trigger("il n'y a pas d'utilisateur avec cette adresse mail");
                 }
             } else {
                 list($login) = mysql_fetch_row($res);
@@ -102,7 +108,7 @@ if (!empty($_REQUEST['login'])) {
         if ($tmp = mysql_fetch_assoc($r)) {
             $mr =& $tmp;
         } else {
-            $errors[] = "il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)";
+            $page->trigger("il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)");
         }
         mysql_free_result($r);
     }
@@ -127,11 +133,11 @@ if(isset($mr)) {
 	    case "add_fwd":
 		$email = $_REQUEST['email'];
 		if (!isvalid_email_redirection($email)) {
-		    $errors[] = "invalid email $email";
+                    $page->trigger("invalid email $email");
 		    break;
 		}
 		$redirect->add_email(trim($email));
-		$errors[] = "Ajout de $email effectué";
+                $page->trigger("Ajout de $email effectué");
 		break;
 
 	    case "del_fwd":
@@ -144,7 +150,7 @@ if(isset($mr)) {
 		$globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
 								AND type!='a_vie' AND type!='homonyme'");
 		fix_bestalias($_REQUEST['user_id']);
-		$errors[] = $val." a été supprimé";
+                $page->trigger($val." a été supprimé");
 		break;
 
 	    case "add_alias":
@@ -186,7 +192,7 @@ if(isset($mr)) {
 		fputs($f,"1");
 		fclose($f);
 
-		$errors[] = "updaté correctement.";
+                $page->trigger("updaté correctement.");
 		// envoi du mail au webmaster
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
@@ -204,7 +210,7 @@ if(isset($mr)) {
 	    case "u_kill":
 		require_once("user.func.inc.php");
 		user_clear_all_subs($_REQUEST['user_id']);
-		$errors[] = "'{$_REQUEST['user_id']}' a été désinscrit !";
+                $page->trigger("'{$_REQUEST['user_id']}' a été désinscrit !");
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
@@ -247,6 +253,5 @@ if(isset($mr)) {
     $page->assign('emails',$redirect->emails);
 }
 
-$page->assign('errors',$errors);
 $page->run();
 ?>

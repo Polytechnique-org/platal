@@ -21,10 +21,6 @@
 
 {dynamic}
 
-{if $erreur}
-<p class="erreur">{$erreur}</p>
-{/if}
-
 <h1>Vérifier une patte cassée</h1>
 
 {if $x && $x.nb_mails}

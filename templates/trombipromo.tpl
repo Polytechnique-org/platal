@@ -21,7 +21,7 @@
 
 {dynamic}
 
-{if !$smarty.request.xpromo || $erreur}
+{if !$smarty.request.xpromo || $error}
 <h1>
   Trombinoscope promo
 </h1>
@@ -36,7 +36,6 @@ en validant peut être longue à afficher. Pour te donner une
 idée de la taille, chaque photo est limitée à 30 ko, et
 chaque page affiche au plus {$limit} photos.
 </p>
-{if $erreur}<p>{$erreur}</p>{/if}
 
 <form action="{$smarty.server.PHP_SELF}" method="get">
   <table class="tinybicol" cellpadding="3" summary="Saisie promo" style="width: 30%; margin-left:35%">

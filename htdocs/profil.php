@@ -49,7 +49,8 @@ if (!$naissance)  {
     if (isset($_REQUEST['birth'])) {
 	//en cas d'erreur :
 	if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST['birth'])) {
-	    $page->assign('etat_naissance','erreur');
+            $page->trigger("Date de naissance incorrecte ou incohérente.");
+	    $page->assign('etat_naissance','query');
 	    $page->run();//on reaffiche le formulaire
 	}
       
@@ -64,16 +65,13 @@ if (!$naissance)  {
     $page->run();//on affiche le formulaire pour naissance
 }
 
-$errs=Array();
-
 //doit-on faire un update ?
 if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     require_once("profil/get_{$opened_tab}.inc.php");
     require_once("profil/verif_{$opened_tab}.inc.php");
 
-    if(!empty($errs)) {
+    if($page->nb_errs()) {
 	require_once("profil/assign_{$opened_tab}.inc.php");
-	$page->assign("errs", $errs);
 	$page->assign('onglet',$opened_tab);
 	$page->assign('onglet_last',get_last_tab());
 	$page->assign('onglet_tpl',"profil/$opened_tab.tpl");
@@ -115,7 +113,6 @@ require_once("profil/get_{$new_tab}.inc.php");
 require_once("profil/verif_{$new_tab}.inc.php");
 require_once("profil/assign_{$new_tab}.inc.php");
 
-$page->assign("errs", $errs);
 $page->assign('onglet',$new_tab);
 $page->assign('onglet_last',get_last_tab());
 $page->assign('onglet_tpl',"profil/$new_tab.tpl");

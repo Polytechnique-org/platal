@@ -22,15 +22,11 @@
 <h1>Micropaiments</h1>
 
 {dynamic}
-{if $smarty.request.op eq "submit" and !$erreur|count}
+{if $smarty.request.op eq "submit" and !$xorg_error->errs|count}
 
 {$pay->form($montant)|smarty:nodefaults}
 
 {else}
-
-{foreach from=$erreur item=e}
-<p class="erreur">{$e}</p>
-{/foreach}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
   <p> Si tu ne souhaites pas utiliser notre interface de

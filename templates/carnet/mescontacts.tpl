@@ -20,7 +20,6 @@
 
 
 {dynamic}
-<p class="erreur">{$erreur}</p>
 
 <h1>
   Ma liste personnelle de contacts

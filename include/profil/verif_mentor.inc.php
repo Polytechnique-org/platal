@@ -25,7 +25,7 @@ if(isset($_POST['mentor_expertise'])){
   $mentor_expertise = stripslashes($_POST['mentor_expertise']);
   if(!empty($mentor_expertise)){
       if (strlen(strtok($mentor_expertise,"<>{}~§`|%$^")) < strlen($mentor_expertise)){//TODO: affiner la liste
-	    $errs[] = "L'expertise contient un caractère interdit.";
+	    $page->trigger("L'expertise contient un caractère interdit.");
 	}
   }
 }

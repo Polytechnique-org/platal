@@ -41,10 +41,6 @@ L'icône <img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retire
 qui y était abonné.
 </p>
 
-{foreach from=$err item=e}
-<p class='error'>{$e}</p>
-{/foreach}
-
 <h1>
   modérateurs de la liste
 </h1>

@@ -19,11 +19,6 @@
  ***************************************************************************}
 
 
-{dynamic on="0$message"}
-<h1>Mise à jour de la redirection</h1>
-{$message|smarty:nodefaults}
-{/dynamic}
-
 <h1>Redirection de page WEB</h1>
 
 <h2>Pourquoi une redirection de page WEB ?</h2>

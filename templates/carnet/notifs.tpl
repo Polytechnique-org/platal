@@ -20,10 +20,6 @@
 
 {dynamic}
 
-{foreach from=$err item=e}
-<p class='erreur'>{$e}</p>
-{/foreach}
-
 <h1>Notifications automatiques</h1>
 
 <p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).

@@ -1,4 +1,5 @@
-{***************************************************************************
+<?php
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -16,10 +17,42 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************}
+ ***************************************************************************/
 
-<h1>OOOooups !</h1>
-<p>
-  Cette adresse n'existe pas ou n'existe plus sur le serveur.
-</p>
-{* vim:set et sw=2 sts=2 sws=2: *}
+// {{{ class XOrgErrors
+
+class XOrgErrors
+{
+    // {{{ properties
+    
+    var $errs    = Array();
+    var $failure = false;
+    
+    // }}}
+    // {{{ constructor
+    
+    function XOrgErrors()
+    { }
+
+    // }}}
+    // {{{ function trigger
+        
+    function trigger($text) {
+        $this->errs[] = $text;
+    }
+
+    // }}}
+    // {{{
+    
+    function fail($text) {
+        $this->trigger($text);
+        $this->failure = true;
+    }
+
+    // }}}
+}
+
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+?>

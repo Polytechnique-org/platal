@@ -18,11 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
- {if $do_title}<h1>Recherche avancée</h1>{/if}
-
-{if $error}
-<p class="error">{$error}</p>
-{/if}
+{if $do_title}<h1>Recherche avancée</h1>{/if}
 
 <ul>
   {if !$with_soundex && ($smarty.request.firstname || $smarty.request.name)}

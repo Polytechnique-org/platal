@@ -47,9 +47,9 @@
 
   {if $simple}
 
-    <div id="body">
-      {include file=$xorg_tpl}
-    </div>
+  <div id="body">
+    {include file="skin/common.content.tpl"}
+  </div>
 
   {else}
 
@@ -100,7 +100,7 @@
         </td>
         <td>
           <div id="content">
-            {include file=$xorg_tpl}
+            {include file="skin/common.content.tpl"}
           </div>
         </td>
       </tr>

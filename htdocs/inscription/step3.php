@@ -20,29 +20,35 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-
-$erreur = Array();
-
+new_skinned_page('inscription/step3.tpl', AUTH_PUBLIC);
 require_once("identification.inc.php");
 
-if(!isvalid_email($_REQUEST["email"]))
-    $erreur[] = "Le champ 'E-mail' n'est pas valide.";
-if (!isvalid_email_redirection($_REQUEST["email"]))
-    $erreur[] = "\"$forlife@polytechnique.org\" doit renvoyer vers un email existant valide. En particulier, il ne peut pas être renvoyé vers lui-même.";
-if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST["naissance"]))
-    $erreur[] = "La 'Date de naissance' n'est pas correcte. Elle est obligatoire pour continuer mais ne sera jamais visible sur le site par la suite.";
+$page->assign('mailorg', $mailorg);
+$page->assign('forlife', $forlife);
 
-if(!empty($erreur)) {
-    new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC);
+if(!isvalid_email($_REQUEST["email"])) {
+    $page->trigger("Le champ 'E-mail' n'est pas valide.");
+}
+
+if (!isvalid_email_redirection($_REQUEST["email"])) {
+    $page->trigger("\"$forlife@polytechnique.org\" doit renvoyer vers un email existant valide.
+            En particulier, il ne peut pas être renvoyé vers lui-même.");
+}
+
+if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST["naissance"])) {
+    $page->trigger("La 'Date de naissance' n'est pas correcte.
+            Elle est obligatoire pour continuer mais ne sera jamais visible sur le site par la suite.");
+}
+
+if($page->nb_errs()) {
+    $page->changeTpl('inscription/step2.tpl');
     require_once("applis.func.inc.php");
     $page->assign('homonyme', $homonyme);
     $page->assign('loginbis', isset($loginbis) ? $loginbis : '');
-    $page->assign('mailorg', $mailorg);
     
     $page->assign('prenom', $prenom);
     $page->assign('nom', $nom);
     
-    $page->assign('erreur', join("\n",$erreur));
     $page->run();
 }
 
@@ -83,8 +89,5 @@ $mymail->assign('ins_id',$ins_id);
 $mymail->assign('subj',$forlife."@polytechnique.org");
 $mymail->send();
 
-new_skinned_page('inscription/step3.tpl', AUTH_PUBLIC);
-$page->assign('mailorg', $mailorg);
-$page->assign('forlife', $forlife);
 $page->run();
 ?>

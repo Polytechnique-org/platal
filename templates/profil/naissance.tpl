@@ -27,13 +27,6 @@
 </script>
 {else}
 
-{if $etat_naissance == 'erreur'}
-<p class="erreur">
-Date de naissance incorrecte ou incohérente.
-Exemple: 1er février 1990 se rentre 01021990.
-</p>
-{/if}
-
 <h1>Date de naissance</h1>
 
 <form action="profil.php" method="post">

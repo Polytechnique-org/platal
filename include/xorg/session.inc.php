@@ -186,7 +186,7 @@ function check_perms()
     if (!has_perms()) {
 	require_once("diogenes.core.logger.inc.php");
 	$_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
-	$page->failure();
+	$page->die("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
     }
 }
 

@@ -28,16 +28,18 @@ if (isset($_REQUEST['action'])) {
     if($_REQUEST['action']=='retirer') {
 	$user = $_REQUEST['user'];
 	if (preg_match('/^\d+$/', $user)) {
-	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'"))
-		$page->assign('erreur', "Contact retiré !\n");
+	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'")) {
+		$page->trigger("Contact retiré !");
+            }
 	} else {
 	    if ($globals->db->query(
 		"DELETE FROM  contacts
 		       USING  contacts AS c
                   INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
 		       WHERE  c.uid = '{$_SESSION['uid']}' AND a.alias='$user'"
-		   ))
-		$page->assign('erreur', "Contact retiré !\n");
+		   )) {
+		$page->trigger("Contact retiré !");
+            }
 	}
 
         // si l'utilisateur demande l'ajout de qqun à sa liste
@@ -46,11 +48,11 @@ if (isset($_REQUEST['action'])) {
         if (($res = $globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['user']}' AND type!='homonyme'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
             if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
-                $page->assign('erreur', 'Contact ajouté !');
+                $page->trigger('Contact ajouté !');
             } else
-                $page->assign('erreur', 'Contact déjà dans la liste !');
+                $page->trigger('Contact déjà dans la liste !');
         } else {
-            $page->assign('erreur', 'Utilisateur inexistant ou non inscrit !');
+            $page->trigger('Utilisateur inexistant ou non inscrit !');
         }
     }
 }
