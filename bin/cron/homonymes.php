@@ -28,7 +28,7 @@ $W_PERIOD = "INTERVAL 7 DAY"; // temps d'envoi du warning avant la deadline
 
 require('./connect.db.inc.php');
 
-$resRobot = $globals->xdb->iterator("SELECT id, alias, expire FROM aliases WHERE expire < NOW() + $W_PERIOD AND type = 'alias'");
+$resRobot = $globals->xdb->iterator("SELECT id, alias, expire FROM aliases WHERE (expire = NOW() + $W_PERIOD OR expire <= NOW()) AND type = 'alias'");
 
 if ($resRobot->total()) {
     require_once('validations/homonymes.inc.php');
