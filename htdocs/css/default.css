@@ -29,6 +29,7 @@ hr    { width: 90%; text-align: center }
 
 .center { text-align: center; }
 .right  { text-align: right; }
+.floatright { float: right; }
 .middle { vertical-align: middle; }
 .smaller { font-size: smaller; font-style: italic; }
 
@@ -441,4 +442,4 @@ div.conteneur_tab {
     font-size: 95%
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.29 2004-07-24 18:22:42 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.30 2004-08-06 00:35:34 x2000bedo Exp $ */

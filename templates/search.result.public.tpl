@@ -1,12 +1,20 @@
-<td>
-  <strong>{$result.nom} {$result.prenom}</strong>
+<div class="nom">
+  {$result.nom} {$result.prenom}
   {if $result.epouse neq ""}
-    <div>({$result.epouse} {$result.prenom})</div>
+    <br />({$result.epouse} {$result.prenom})
   {/if}
   {if $result.decede == 1}
-    <div>(décédé)</div>
+    (décédé)
   {/if}
-</td>
-<td>
-  (X {$result.promo})
-</td>
+</div>
+<div class="appli">
+  {strip}
+  (X {$result.promo}
+  {if $result.app0text},
+    {applis_fmt type=$result.app0type text=$result.app0text url=$result.app0url}
+  {/if}
+  {if $c.app1text},
+    {applis_fmt type=$result.app1type text=$result.app1text url=$result.app1url}
+  {/if})
+  {/strip}
+</div>

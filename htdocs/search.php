@@ -8,6 +8,7 @@ if ($public_directory)
 else
     new_skinned_page('search.tpl', AUTH_COOKIE);
 $page->assign('public_directory',$public_directory);
+require_once("applis.func.inc.php");
 
 if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('formulaire',0);
@@ -43,10 +44,17 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        IF(u.promo!="",u.promo,i.promo) AS promo,
                        i.deces!=0 AS decede,
                        u.username,
+                       u.date,
+                       ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
+                       ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
                  FROM  identification AS i
             LEFT JOIN  auth_user_md5  AS u ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
+            LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
+            LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
+            LEFT  JOIN applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
+            LEFT  JOIN applis_def     AS ad1 ON (ad1.id = ai1.aid)
                 WHERE  '.$fields->get_where_statement().'
              ORDER BY  '.implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;

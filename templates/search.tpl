@@ -3,29 +3,34 @@
   <div class="rubrique">
     Résultats
   </div>
-  {if $with_soundex==0}
-    <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex=1&rechercher=1&{$url_args}">
-      Etendre à la recherche par proximité sonore
-    </a>
-  {/if}
-  <div class="right">
-    <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}">Nouvelle recherche</a>
-  </div>
-  <p class="smaller">
+  <div class="sstitre">
     {if $nb_resultats_total==0}Aucune{else}{$nb_resultats_total}{/if} réponse{if $nb_resultats_total>1}s{/if}.
-  </p>
-  <table class="bicol">
-    {section name=resultat loop=$resultats}
-    <tr class="{cycle values="pair,impair"}">
-      {include file="search.result.public.tpl" result=$resultats[resultat]}
-      {if $public_directory!=1}
-        {include file="search.result.private.tpl" result=$resultats[resultat]}
+    <div class="floatright">
+      {if $with_soundex==0}
+        <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex=1&rechercher=1&{$url_args}">
+          Etendre à la recherche par proximité sonore
+        </a>
       {/if}
-    </tr>
-    {/section}
-  </table>
+      &nbsp;
+      <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}">Nouvelle recherche</a>
+    </div>
+  </div>
+  <p class="normal">
+    <div class="contact-list">
+      {section name=resultat loop=$resultats}
+      <div class="contact">
+      <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
+        {include file="search.result.public.tpl" result=$resultats[resultat]}
+        {if $public_directory!=1}
+          {include file="search.result.private.tpl" result=$resultats[resultat]}
+        {/if}
+      </div>
+      </div>
+      {/section}
+    </div>
+  </p>
   {if $perpage<$nb_resultats_total}
-  <p>
+  <p class="normal">
     {if $offset!=0}
       <a href="{$smarty.server.PHP_SELF}?public_directory={$public_directory}&with_soundex={$with_soundex}&rechercher=1&{$url_args}&offset={$offset-$perpage}">
         Précédent
