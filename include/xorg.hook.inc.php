@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: xorg.hook.inc.php,v 1.2 2004-11-20 22:46:29 x2000habouzit Exp $
+ $Id: xorg.hook.inc.php,v 1.3 2004-11-21 12:20:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("PEAR.php");
@@ -58,12 +58,14 @@ class XOrgHook extends PEAR
 
     function __call($function, $arguments, &$return)
     {
+	$return = true;
+	
 	foreach ($this->_mods as $mod) {
 	    if (!function_exists($mod.'_'.$function)) continue;
-	    call_user_func_array($mod.'_'.$function,$argument);
+	    $return &= ( call_user_func_array($mod.'_'.$function,$argument) !== false );
 	}
-
-	return ($return=true);
+	
+	return true;
     }
 }
 
