@@ -278,11 +278,13 @@ class QuickSearch extends SField
     function get_mark_statement()
     {
 	if (empty($this->strings)) {
-            return "1 AS mark";
+            return "10 AS mark";
         }
 	$order = "0";
 	foreach ($this->strings as $s) {
-	    $order .= " + (u.nom='$s' OR u.epouse='$s')*100 + (u.prenom='$s')*10 + (u.nom LIKE '$s%' OR u.epouse LIKE '$s%')";
+	    $order .= " + ( (u.nom='$s' OR u.epouse='$s') + (CONCAT(' ',u.nom,' ',u.epouse,' ') RLIKE '[ \\-]{$s}[ \\-]') )*100
+                        + ( u.nom LIKE '$s%' OR u.epouse LIKE '$s%' )*10
+                        + ( u.prenom LIKE '$s%' OR u.prenom LIKE '% $s%' OR u.prenom LIKE '%-$s%' )";
 	}
         return $order.' AS mark';
     }

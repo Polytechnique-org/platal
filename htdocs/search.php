@@ -54,7 +54,7 @@ if (isset($_REQUEST['quick'])) {
             LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).')
             '.$globals->search->result_where_statement.'
                 WHERE  '.$fields->get_where_statement().'
-               HAVING  mark>0
+               HAVING  mark>=10
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search->per_page;
