@@ -26,8 +26,6 @@ function smarty_insert_mkStats($params, &$smarty)
     mysql_free_result($req);
     $stats_req = ($stats_req ? $stats_req : "-");
 
-    $nbtrk = array(nb_trk(5,2), nb_trk(4,2), nb_trk(5,1), nb_trk(4,1));
-
     $rel = url();
     return <<<EOF
         <table class="bicol"

@@ -17,7 +17,7 @@
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ admin ]---------------------------------+----------------
 ;	  | admin/admin_trombino.php				  | 
-;	  | admin/comptesPOP.php					  | ???
+;!	  | admin/comptesPOP.php					  | ???
 ;	  | admin/correction_adr.php				  | 
 ;	  | admin/evenements.php					  | 
 ;	  | admin/homonymes.php						  | 
@@ -42,10 +42,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | parselogN.php							  | stats/...
 ;	  | parselogR.php							  | stats/...
 ;	  | stats.php								  | stats/index.php
-------+-[ paiement ]------------------------------+----------------
-;	  | paiement/cyberpaiement.inc.php			  | 
-;	  | paiement/cyberpaiement_retour.php		  | 
-;	  | paiement/index.php						  | 
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
@@ -104,6 +100,9 @@ x	  | admin/utilisateurs.php					  | - y'a encore du boulot pour que ca valide !
 x	  | epouse.php								  | - non testé (flemme de faire des su ...)
 x	  | parselog.php							  | stats/... (non testé, pas de logs sous la main)
 xx	  | AccesPermanentOff.php					  | cookie_off.php
+xx	  | paiement/cyberpaiement.inc.php			  | dans include/
+xx	  | paiement/cyberpaiement_retour.php		  | -
+xx	  | paiement/index.php						  | -
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -

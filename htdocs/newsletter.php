@@ -15,8 +15,8 @@ if (($res)&&(list($nl_date, $nl_titre, $nl_text) = mysql_fetch_row($res))) {
     $page->assign('nl_text', $nl_text);
 
     if (isset($_REQUEST['send_mail'])) {
-        require('mailer.inc.php');
-        $mymail = new mailer("info_newsletter@polytechnique.org",
+        require('diogenes.mailer.inc.php');
+        $mymail = new DiogenesMailer("info_newsletter@polytechnique.org",
                 $_SESSION['username']."@polytechnique.org",
                 "[polytechnique.org] ".$nl_titre);
         $mymail->addHeader("From: \"Equipe polytechnique.org\" <info_newsletter@polytechnique.org>");
