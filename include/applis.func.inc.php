@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+global $page;
 
 function applis_options($current=0) {
     global $globals;

@@ -77,7 +77,7 @@ function chgMainWinLoc( strPage ) {
         {if $x.iso3166}
         <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='14' title='{$x.nationalite}' />&nbsp;
         {/if}
-        X {$x.promo}{if $applis}&nbsp;-&nbsp;Formation&nbsp;: {$applis|smarty:nodefaults}{/if}
+        X {$x.promo}{if $x.applis_join}&nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}{/if}
         {if $x.is_referent}
         [<a href="fiche_referent.php?user={$x.forlife}" class='popup'>Ma fiche référent</a>]
         {/if}
@@ -86,17 +86,17 @@ function chgMainWinLoc( strPage ) {
     <td rowspan="4" id='photo'>
       <img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />
       {if $x.section}<em class="intitule">Section : </em><span>{$x.section}</span><br />{/if}
-      {if $binets}<em class="intitule">Binet(s) : </em><span>{$binets}</span><br />{/if}
-      {if $groupes}<em class="intitule">Groupe(s) X : </em><span>{$groupes|smarty:nodefaults}</span><br />{/if}
+      {if $x.binets_join}<em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span><br />{/if}
+      {if $x.gpxs_join}<em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span><br />{/if}
       {if $x.web}<em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a>{/if}
       {if $x.libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$x.libre|nl2br}</span>{/if}
     </td>
   </tr>
-  {if $adr|@count > 0}
+  {if $x.adr}
   <tr>
     <td>
       <h2>Contact : </h2>
-      {foreach from=$adr item="address" key="i"}
+      {foreach from=$x.adr item="address" key="i"}
       <div class="adresse">
         <div class="titre">
           {if $address.active}
@@ -136,11 +136,11 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
-  {if $adr_pro|@count > 0}
+  {if $x.adr_pro}
   <tr>
     <td>
       <h2>Informations professionnelles :</h2>
-      {foreach from=$adr_pro item="address" key="i"}
+      {foreach from=$x.adr_pro item="address" key="i"}
       <div class="adresse">
         {if $address.entreprise}
         <div>

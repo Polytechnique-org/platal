@@ -162,6 +162,117 @@ function get_user_forlife($data) {
 }
 
 // }}}
+// {{{ function get_user_details()
 
+function &get_user_details($login, $from_uid)
+{
+    global $globals;
+    $reqsql = "SELECT  u.prenom, u.nom, u.epouse,
+                       IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
+                       u.user_id, a.alias AS forlife, a2.alias AS bestalias,
+                       u.matricule, u.perms IN ('admin','user') AS inscrit,
+                       FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
+                       u.date, u.cv, sections.text AS section, u.mobile, u.web,
+                       u.libre, u.promo, c.uid IS NOT NULL AS is_contact, p.x, p.y,
+
+                       m.expertise != '' AS is_referent
+                       
+                 FROM  auth_user_md5  AS u
+           INNER JOIN  aliases        AS a  ON (u.user_id=a.id AND a.type='a_vie')
+           INNER JOIN  aliases        AS a2 ON (u.user_id=a2.id AND FIND_IN_SET('bestalias',a2.flags))
+            LEFT JOIN  contacts       AS c  ON (c.uid = '$from_uid' and c.contact = u.user_id)
+            LEFT JOIN  geoloc_pays    AS gp ON (gp.a2 = u.nationalite)
+           INNER JOIN  sections             ON (sections.id = u.section)
+            LEFT JOIN  photo          AS p  ON (p.uid = u.user_id) 
+            LEFT JOIN  mentor         AS m  ON (m.uid = u.user_id)
+                WHERE  a.alias = '$login'";
+
+    $res  = $globals->db->query($reqsql);
+    $user = mysql_fetch_assoc($res);
+    mysql_free_result($res);
+
+    $uid = $user['user_id'];
+
+    $sql = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
+                    e.poste, e.adr1, e.adr2, e.adr3, e.cp, e.ville,
+                    gp.pays, gr.name, e.tel, e.fax
+              FROM  entreprises AS e
+         LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
+         LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
+         LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
+         LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.pays)
+         LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.pays and gr.region = e.region)
+             WHERE  e.uid = $uid
+          ORDER BY  e.entrid";
+    $res = $globals->db->query($sql);
+    while($tmp = mysql_fetch_assoc($res)) {
+        $user['adr_pro'][] = $tmp;
+    }
+    mysql_free_result($res);
+
+    $sql = "SELECT  a.adr1,a.adr2,a.adr3,a.cp,a.ville,
+                    gp.pays,gr.name AS region,a.tel,a.fax,
+                    FIND_IN_SET('active', a.statut) AS active,
+                    FIND_IN_SET('res-secondaire', a.statut) AS secondaire
+              FROM  adresses AS a
+         LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.pays)
+         LEFT JOIN  geoloc_region AS gr ON (gr.a2=a.pays and gr.region=a.region)
+             WHERE  uid={$user['user_id']} AND NOT FIND_IN_SET('pro',a.statut)
+          ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
+    $res = $globals->db->query($sql);
+    while($tmp = mysql_fetch_assoc($res)) {
+        $user['adr'][] = $tmp;
+    }
+    mysql_free_result($res);
+
+
+    $sql = "SELECT  text
+              FROM  binets_ins
+         LEFT JOIN  binets_def ON binets_ins.binet_id = binets_def.id
+             WHERE  user_id = {$user['user_id']}";
+    $res = $globals->db->query($sql);
+    while (list($binet) = mysql_fetch_row($res)) {
+        $user['binets'][] = $binet;
+    }
+    if (mysql_num_rows($res)) {
+        $user['binets_join'] = join(', ', $user['binets']);
+    }
+    mysql_free_result($res);
+
+    $res = $globals->db->query("SELECT  text, url
+                                  FROM  groupesx_ins
+                             LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
+                                 WHERE  guid = '{$user['user_id']}'");
+    while (list($gxt,$gxu) = mysql_fetch_row($res)) {
+        if ($gxu) {
+            $user['gpxs'][] = "<a href=\"$gxu\">$gxt</a>";
+        } else {
+            $user['gpxs'][] = $gxt;
+        }
+    } 
+    if (mysql_num_rows($res)) {
+        $user['gpxs_join'] = join(', ', $user['gpxs']);
+    }
+    mysql_free_result($res);
+
+    $res = $globals->db->query("SELECT  applis_def.text, applis_def.url, applis_ins.type
+                                  FROM  applis_ins
+                            INNER JOIN  applis_def ON applis_def.id = applis_ins.aid
+                                 WHERE  uid='{$user['user_id']}'
+                              ORDER BY  ordre");
+    
+    while (list($type, $txt, $url) = mysql_fetch_assoc($res)) {
+        require_once('applis.func.inc.php');
+        $user['applis_fmt'][] = applis_fmt($type, $txt, $url);
+    }
+    if (mysql_num_rows($res)) {
+        $user['applis_join'] = join(', ', $user['applis_fmt']);
+    }
+    mysql_free_result($res);
+
+    return $user;
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
