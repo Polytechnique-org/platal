@@ -1,4 +1,4 @@
-{* $Id: convention_ax.tpl,v 1.1 2004-08-23 14:37:15 x2000chevalier Exp $ *}
+{* $Id: convention_ax.tpl,v 1.2 2004-08-24 12:23:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
 Le rapprochement de l'AX et de Polytechnique.org
@@ -26,12 +26,17 @@ l'article premier de ses statuts. L'AX a ainsi pour but :
   <li>de représenter la collectivité des anciens élèves de l'Ecole polytechnique,</li>
   <li>de tout mettre en oeuvre pour que l'Ecole polytechnique reste en tête du haut enseignement scientifique et pour maintenir la renommée de la formation qu'elle dispense.</li>
   </ul>
-  Les activités de l'AX comprennent notamment la publication de l'annuaire papier, spécifique à l'AX, l'édition de la revue <u>La Jaune et la Rouge</u> et le fonctionnement de la Caisse de Secours. L'AX dispose également d'un <a href="http://www.polytechniciens.com/" target="new">site web</a>, distinct des deux précédents.
+  Les activités de l'AX comprennent notamment la publication de l'annuaire
+  papier, spécifique à l'AX, l'édition de la revue <u>La Jaune et la Rouge</u>
+  et le fonctionnement de la Caisse de Secours. L'AX dispose également d'un
+  <a href="http://www.polytechniciens.com/" onclick="return popup(this)">site
+    web</a>, distinct des deux précédents.
 <p class="normal">
   Les deux associations ont décidé conjointement d'un rapprochement,
 concrétisé par la mise en place, l'animation et le développement du réseau
 baptisé RETIX. Cette coopération fait l'objet d'une
-<a href="http://x-org.polytechnique.org/convention-ax/" target="new">convention</a> entre l'AX et Polytechnique.org, signée en janvier 2004.
+<a href="http://x-org.polytechnique.org/convention-ax/" onclick="return popup(this)">convention</a>
+entre l'AX et Polytechnique.org, signée en janvier 2004.
 </p>
 <p class="normal">
   RETIX poursuit un double objectif : la promotion des X à l'international,

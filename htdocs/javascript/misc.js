@@ -15,3 +15,5 @@ function getNow() {
     months=new Array ("janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre");
     return days[dy]+" "+wd+" "+months[mh]+" "+yr+"<br />"+time;
 }
+
+function popup(an) { window.open(an.href); return false; }

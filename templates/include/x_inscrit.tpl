@@ -1,4 +1,4 @@
-{* $Id: x_inscrit.tpl,v 1.3 2004-08-24 09:07:58 x2000habouzit Exp $ *}
+{* $Id: x_inscrit.tpl,v 1.4 2004-08-24 12:23:41 x2000habouzit Exp $ *}
 
 <div class="contact">
   <div class="nom">
@@ -28,7 +28,7 @@
       <img src="images/{$show_action}.gif" alt="{$show_action} aux/des contacts" />
     </a>
     {perms level='admin'}
-    <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}" target="new">AX</a>
+    <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}" onclick="return popup(this)">AX</a>
     {/perms}
     <span class="smaller"><strong>{$c.date|date_format:"%d-%m-%Y"}</strong></span>
   </div>

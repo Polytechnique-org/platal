@@ -54,7 +54,7 @@ modifiée !! (aucune vérification n'est faite)
       </tr>
       <tr>
         <td colspan="2">
-          <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$row.matricule_ax}" target="new">Voir sa fiche sur le site de l'AX</a>
+          <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$row.matricule_ax}" onclick="return popup(this)">Voir sa fiche sur le site de l'AX</a>
         </td>
       </tr>
       <tr>

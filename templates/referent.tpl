@@ -1,4 +1,4 @@
-{* $Id: referent.tpl,v 1.3 2004-08-07 11:26:45 x2000coic Exp $ *}
+{* $Id: referent.tpl,v 1.4 2004-08-24 12:23:40 x2000habouzit Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -48,7 +48,7 @@ d'être plus précis.
     </tr>
     <tr>
       <td class="rechtitreitem">Expertise :</td>
-      <td class="rechitem" colspan="2">{$personnes[resultat].expertise}</td>
+      <td class="rechitem" colspan="2">{$personnes[resultat].expertise|nl2br}</td>
     </tr>
     <tr>
       <td>

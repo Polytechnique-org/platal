@@ -1,4 +1,4 @@
-{* $Id: services.tpl,v 1.2 2004-08-23 14:32:09 x2000chevalier Exp $ *}
+{* $Id: services.tpl,v 1.3 2004-08-24 12:23:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Services offerts aux X
@@ -47,7 +47,7 @@ ou encore <a href="paiement/">le système de télépaiement</a> qui sert notamment
 
 <p class="normal">
 Enfin Polytechnique.org favorise le développement d'activités associatives. Le
-site <a href="http://www.polytechnique.net/" target="new">www.polytechnique.net</a> te
+site <a href="http://www.polytechnique.net/" onclick="return popup(this)">www.polytechnique.net</a> te
 présente ainsi des groupes existants et la <a href="newsletter.php">newsletter
 mensuelle</a> te met au courant des dernières actualités de la communauté.
 </p>

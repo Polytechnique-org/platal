@@ -1,4 +1,4 @@
-{* $Id: en-cours.tpl,v 1.1 2004-07-19 12:09:32 x2000habouzit Exp $ *}
+{* $Id: en-cours.tpl,v 1.2 2004-08-24 12:23:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Développements en cours
@@ -73,10 +73,11 @@ de redirection, et enfin les contacts.
 </div>
 
 <p class="normal">
-Le site <a href="http://www.polytechnique.net/" target="new">www.polytechnique.net</a> va regrouper rapidement l'ensemble des services aux groupes X.
-Ainsi l'ensemble des services plutôt orientés vers l'individu seront accessibles
-depuis le présent site "X.org", alors que les services aux
-groupes seront concentrés sur "X.net".
+Le site <a href="http://www.polytechnique.net/" onclick="return popup(this)">www.polytechnique.net</a>
+va regrouper rapidement l'ensemble des services aux groupes X.  Ainsi l'ensemble
+des services plutôt orientés vers l'individu seront accessibles depuis le
+présent site "X.org", alors que les services aux groupes seront concentrés sur
+"X.net".
 </p>
 
 

@@ -16,11 +16,11 @@ function function_implode($params) {
         if(empty($params[$key]))
             unset($params[$key]);
 
-    return stripslashes(htmlentities(implode($sep,$params)));
+    return stripslashes(implode($sep,$params));
 }
 
 function function_dyn($params) {
-    return stripslashes(htmlentities(implode(' ',$params)));
+    return stripslashes(implode(' ',$params));
 }
 
 function escape_html(&$string) {

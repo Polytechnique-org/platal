@@ -1,4 +1,4 @@
-{* $Id: common.header.tpl,v 1.7 2004-02-12 01:42:46 x2000habouzit Exp $ *}
+{* $Id: common.header.tpl,v 1.8 2004-08-24 12:23:42 x2000habouzit Exp $ *}
 
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta name="description" content="Le Portail des Polytechniciens" />
@@ -19,7 +19,7 @@
     <title>
       Anciens eleves Polytechnique, annuaire email, Alumni
     </title>
-    <script type="text/javascript" src="{"javascript/getnow.js"|url}"></script>
+    <script type="text/javascript" src="{"javascript/misc.js"|url}"></script>
 {if $popup_enable}
     <script type="text/javascript" src="{"javascript/popwin.js.php"|url}"> </script>
 {/if}

@@ -31,7 +31,7 @@ if(isset($_POST['expertise'])){
 }
       
 $page->assign('pays_selectionne',$pays_selectionne);
-$page->assign('expertise_champ',htmlentities($expertise_champ));
+$page->assign('expertise_champ',$expertise_champ);
 $page->assign('secteur_selectionne',$secteur_selectionne);
 $page->assign('ss_secteur_selectionne',$ss_secteur_selectionne);
 
@@ -129,7 +129,7 @@ if(isset($_REQUEST['Chercher'])){
 	    $pers_trouve['prenom'] = $prenom;
 	    $pers_trouve['promo'] = $promo;
 	    $pers_trouve['username'] = $username;
-	    $pers_trouve['expertise'] = nl2br(htmlentities($expertise_bd));
+	    $pers_trouve['expertise'] = $expertise_bd;
 	    $personnes[] = $pers_trouve;
           }
         }

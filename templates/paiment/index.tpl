@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.3 2004-07-17 12:21:02 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.4 2004-08-24 12:23:41 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Micropaiments
@@ -31,7 +31,7 @@
           {select_db_table table="paiement.paiements" valeur=$ref where=" WHERE FIND_IN_SET('old',flags)=0"}
         </select>
         {if $ref_url}
-        <a target="_blank" href="{$ref_url}">plus d'informations</a>
+        <a href="{$ref_url}" onclick="return popup(this)">plus d'informations</a>
         {/if}
       </td>
     </tr>

@@ -1,4 +1,4 @@
-{* $Id: doc_forums.tpl,v 1.2 2004-01-29 16:21:54 x2000habouzit Exp $ *}
+{* $Id: doc_forums.tpl,v 1.3 2004-08-24 12:23:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Règles générales d'utilisation des forums de Polytechnique.org
@@ -8,22 +8,22 @@
   Polytechnique.org, il est nécéssaire de respecter quelques règles. 
 </p>
 <p class="normal">
-  Bien que nous n'ayons pas vocation à avoir un rayonnement aussi
-  large que Usenet, l'ensemble des règles relatives à Usenet (la
-  netiquette), consultables <a
-  href="http://www.usenet-fr.net/fr-chartes/rfc1855.html" target="new">ici</a>,
-  sont applicables sur les forums de Polytechnique.org.
+  Bien que nous n'ayons pas vocation à avoir un rayonnement aussi large que
+  Usenet, l'ensemble des règles relatives à Usenet (la netiquette), consultables
+  <a href="http://www.usenet-fr.net/fr-chartes/rfc1855.html" onclick="return popup(this)">
+    sur la page de usenet france</a>, sont applicables sur les forums de
+  Polytechnique.org.
 </p>
 <div class="ssrubrique">
   Principes moraux et éthiques
 </div>
 <ul>
   <li>
-    Le <strong>respect</strong> mutuel doit être la base de toute communication sur les
-    forums, les propos injurieux ou dégradants n'y ont pas leur place.
-    Toute intervention illégale par son contenu pourra faire l'objet
-    d'une annulation, et l'accès de l'auteur aux forums de
-    Polytechnique.org pourra être supprimé en cas d'abus.
+    Le <strong>respect</strong> mutuel doit être la base de toute communication
+    sur les forums, les propos injurieux ou dégradants n'y ont pas leur place.
+    Toute intervention illégale par son contenu pourra faire l'objet d'une
+    annulation, et l'accès de l'auteur aux forums de Polytechnique.org pourra
+    être supprimé en cas d'abus.
   </li>
   <li>
     Il n'est pas possible d'écrire anonymement sur les forums, et les

@@ -13,7 +13,7 @@
     {if $expertise}
       <div class="item">
        <div class="title">Expertise :</div>
-       <span>{$expertise|htmlentities|nl2br}</span>
+       <span>{$expertise|nl2br}</span>
       </div>
       <div class="spacer">&nbsp;</div>
     {/if}
@@ -23,7 +23,7 @@
         <div class="value">
           <ul>
      {foreach from=$secteurs item="secteur" key="i"}
-            <li>{$secteur|htmlentities}{if $ss_secteurs.$i != ''} ({$ss_secteurs.$i|htmlentities}){/if}</li>
+            <li>{$secteur}{if $ss_secteurs.$i != ''} ({$ss_secteurs.$i}){/if}</li>
      {/foreach}
           </ul>
         </div>
@@ -35,7 +35,7 @@
       <div class="value">
         <ul>
      {foreach from=$pays item="pays_i"}
-          <li>{$pays_i|htmlentities}</li>
+          <li>{$pays_i}</li>
      {/foreach}
         </ul>
       </div>
@@ -51,13 +51,13 @@
           {if $address.entreprise}
 	    <div class="item">
 	     <div class="title">Entreprise/Organisme :</div>
-             <div class="value">{$address.entreprise|htmlentities}</div>
+             <div class="value">{$address.entreprise}</div>
 	    </div>
 	  {/if}
 	  {if $address.secteur}
 	    <div class="item">
 	     <div class="title">Secteur :</div>
-	     <div class="value">{$address.secteur|htmlentities}{if $address.ss_secteur} ({$address.ss_secteur|htmlentities}){/if}</div>
+	     <div class="value">{$address.secteur}{if $address.ss_secteur} ({$address.ss_secteur}){/if}</div>
 	    </div>
 	  {/if}
 	<div class="spacer">&nbsp;</div>
@@ -66,12 +66,12 @@
 	    <div class="item">
 	     <div class="title">Adresse :</div>
 	     <div class="value">
-	       {if $address.adr1}<span>{$address.adr1|htmlentities}</span><br />{/if}
-	       {if $address.adr2}<span>{$address.adr2|htmlentities}</span><br />{/if}
-	       {if $address.adr3}<span>{$address.adr3|htmlentities}</span><br />{/if}
-	       {if $address.ville}<span>{$address.cp|htmlentities} {$address.ville|htmlentities}</span><br />{/if}
+	       {if $address.adr1}<span>{$address.adr1}</span><br />{/if}
+	       {if $address.adr2}<span>{$address.adr2}</span><br />{/if}
+	       {if $address.adr3}<span>{$address.adr3}</span><br />{/if}
+	       {if $address.ville}<span>{$address.cp} {$address.ville}</span><br />{/if}
              {if $address.pays}
-	       <span>{$address.pays|htmlentities}{if $address.region} ({$address.region|htmlentities}){/if}</span>
+	       <span>{$address.pays}{if $address.region} ({$address.region}){/if}</span>
              {/if}
 	    </div>
 	   </div>
@@ -81,13 +81,13 @@
 	  {if $address.fonction}
 	    <div class="item">
              <div class="title">Fonction :</div>
-             <div class="value">{$address.fonction|htmlentities}</div>
+             <div class="value">{$address.fonction}</div>
 	    </div>
 	  {/if}
 	  {if $address.poste}
 	    <div class="item">
              <div class="title">Poste :</div>
-             <div class="value">{$address.poste|htmlentities}</div>
+             <div class="value">{$address.poste}</div>
 	    </div>
 	  {/if}
 	<div class="spacer">&nbsp;</div>
@@ -95,14 +95,14 @@
 	  {if $address.tel}
 	    <div class="item">
              <div class="title">Tél :</div>
-             <div class="value">{$address.tel|htmlentities}</div>
+             <div class="value">{$address.tel}</div>
 	    </div>
 	  {/if}
 
 	  {if $address.fax}
 	    <div class="item">
              <div class="title">Fax :</div>
-             <div class="value">{$address.fax|htmlentities}</div>
+             <div class="value">{$address.fax}</div>
 	    </div>
 	  {/if}
 	<div class="spacer">&nbsp;</div>
@@ -112,7 +112,7 @@
 {if $cv}
 <div class="boite">
   <div class="titre">CV</div>
-  <div class="item">{$cv|htmlentities|nl2br}</div>
+  <div class="item">{$cv|nl2br}</div>
   <div class="spacer">&nbsp;</div>
 </div>
 {/if}
