@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.tpl,v 1.14 2004-10-10 08:57:56 x2000chevalier Exp $
+        $Id: fiche.tpl,v 1.15 2004-10-12 15:37:22 x2000coic Exp $
  ***************************************************************************}
 
 
@@ -51,7 +51,7 @@
     {if $web}<em class="intitule">Site Web : </em><br /><a href="{$web}" onclick="return popup(this)">{$web}</a><br />{/if}
     {if $libre}<br /><em class="intitule">Commentaires : </em><br /><span>{$libre|nl2br}</span>{/if}
 </div>
-
+{if $adr|@count > 0}
 <div style="clear: left;">&nbsp;</div>
 <div class="categorie">Contact : </div>
 <hr />
@@ -90,6 +90,9 @@
 <div class="spacer">&nbsp;</div>
 </div>
 
+{/if}
+
+{if $adr_pro|@count > 0}
 <div class="categorie">Informations professionnelles : </div>
 <hr />
 
@@ -155,6 +158,8 @@
 </div>
 {/foreach}
 </div>
+
+{/if}
 
 {if $cv}
 <div class="spacer">&nbsp;</div>
