@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: apropos.tpl,v 1.8 2004-10-15 09:45:04 web Exp $
+        $Id: apropos.tpl,v 1.9 2004-10-19 19:44:14 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -58,7 +58,7 @@
       <strong>Olivier Guillaumin</strong> (X80) <br />
       <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Pierre Habouzit</strong> (X2000) <br />
-      <strong>Olivier Herz</strong> (X80) <br />
+      <strong>Olivier Herz</strong> (X79) <br />
       <strong>Alexandre Hô</strong> (X98) <br />
       <strong>Jeremy Lainé</strong> (X99) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
@@ -83,7 +83,7 @@
       <strong>Yann Chevalier</strong> (X2000) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
       <strong>Eric Gruson</strong> (X2002) <br />
-      <strong>Olivier Herz</strong> (X80) <br />
+      <strong>Olivier Herz</strong> (X79) <br />
       <strong>Alexandre Hô</strong> (X98) <br />
       <strong>Jeremy Lainé</strong> (X99) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
