@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.19 2004-10-12 22:16:19 x2000bedo Exp $
+        $Id: search.classes.inc.php,v 1.20 2004-10-16 15:13:12 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -37,7 +37,7 @@ $globals->search_result_where_statement = '
                 LEFT JOIN  applis_def     AS ad0 ON (ad0.id = ai0.aid)
                 LEFT JOIN  applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
                 LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
-                LEFT JOIN  entreprises    AS e   ON (e.entrid = 1 AND e.uid = u.user_id)
+                LEFT JOIN  entreprises    AS e   ON (e.entrid = 0 AND e.uid = u.user_id)
                 LEFT JOIN  emploi_secteur AS es  ON (e.secteur = es.id)
                 LEFT JOIN  emploi_naf     AS ef  ON (e.fonction = ef.id)
                 LEFT JOIN  nationalites   AS n   ON (u.nationalite = n.id)

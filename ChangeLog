@@ -15,6 +15,9 @@ Fixes (from 0.9.0 branch) :
 		- corrects problem about mails that have non text/* parts			-MC
 		- rpc daemon can live everywhere									-MC
 		- moderation : refusing/rejecting a mail informs other moderators	-MC
+	
+	* Fiche + Search :
+		- corrects bad handling of firms.									-MC
 
 ================================================================================
 VERSION 0.9.0													     15 Oct 2004
