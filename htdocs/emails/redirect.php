@@ -29,13 +29,12 @@ $forlife = Session::get('forlife');
 $redirect = new Redirect(Session::getInt('uid'));
 
 if (Env::has('emailop')) {
+    $actifs = Env::getMixed('emails_actifs', Array());
     if (Env::get('emailop') == "retirer" && Env::has('email')) {
         $page->assign('retour', $redirect->delete_email(Env::get('email')));
     } elseif (Env::get('emailop') == "ajouter" && Env::has('email')) {
         $page->assign('retour', $redirect->add_email(trim(Env::get('email'))));
-    }
-    $actifs = Env::getMixed('emails_actifs', Array());
-    if (empty($actifs)) {
+    } elseif (empty($actifs)) {
         $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
     } elseif (is_array($actifs)) {
         $page->assign('retour', $redirect->modify_email($actifs, Env::getMixed('emails_rewrite',Array())));
