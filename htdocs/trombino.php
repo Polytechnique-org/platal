@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: trombino.php,v 1.3 2004-09-02 21:09:31 x2000habouzit Exp $
+        $Id: trombino.php,v 1.4 2004-11-12 21:30:58 x2000coic Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -53,8 +53,10 @@ if (isset($_REQUEST["ordi"]) and
     // Fichier à récupérer dans les archives trombi + commit immédiat
     $file = "/home/web/trombino/photos".$_SESSION["promo"]."/".$_SESSION["forlife"].".jpg";
     $myphoto = new PhotoReq($_SESSION['uid'], $file);
-    $myphoto->commit();
-    $myphoto->clean();
+    if($myphoto){// There was no errors, we can go on
+      $myphoto->commit();
+      $myphoto->clean();
+    }
 } elseif (isset($_REQUEST["suppr"])) {
     // effacement de la photo
     $globals->db->query("DELETE FROM photo WHERE uid = ".$_SESSION["uid"]);
