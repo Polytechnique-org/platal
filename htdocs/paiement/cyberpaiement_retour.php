@@ -124,6 +124,7 @@ $conf_text = str_replace("<nom>",$nom,$conf_text);
 $conf_text = str_replace("<promo>",$promo,$conf_text);
 $conf_text = str_replace("<montant>",$montant,$conf_text);
 $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
+$conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
 
 $mymail = new HermesMailer();
 $mymail->setFrom($conf_mail);

@@ -19,13 +19,15 @@
  ***************************************************************************}
 
 
-<h1>
-  Micropaiments
-</h1>
+<h1>Micropaiments</h1>
+
 {dynamic}
-{if $op eq "submit" and !$error}
-{include_php file=$methode_include}
+{if $smarty.request.op eq "submit" and !$erreur|count}
+
+{$pay->form($montant)|smarty:nodefaults}
+
 {else}
+
 {foreach from=$erreur item=e}
 <p class="erreur">{$e}</p>
 {/foreach}
@@ -46,10 +48,11 @@
       <td>Transaction</td>
       <td>
         <select name="ref" onchange="this.form.op.value='select'; this.form.submit();">
-          {select_db_table table="paiement.paiements" valeur=$ref where=" WHERE FIND_IN_SET('old',flags)=0"}
+          {select_db_table table="`$prefix`paiements" valeur=$pay->id where=" WHERE FIND_IN_SET('old',flags)=0"}
         </select>
-        {if $ref_url}
-        <a href="{$ref_url}">plus d'informations</a>
+        {if $pay->url}
+        <br />
+        <a href="{$pay->url}">plus d'informations</a>
         {/if}
       </td>
     </tr>
@@ -63,7 +66,7 @@
     </tr>
     <tr>
       <td>Montant (euros)</td>
-      <td><input type="text" name="montant" size="13" value="{$montant}" /></td>
+      <td><input type="text" name="montant" size="13" class='right' value="{$montant}" /></td>
     </tr>
     <tr>
       <td>&nbsp;</td>

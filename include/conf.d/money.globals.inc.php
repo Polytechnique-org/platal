@@ -19,38 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-new_skinned_page('paiment/index.tpl', AUTH_MDP);
-require_once('profil.func.inc.php');
-require_once("money.inc.php");
+// {{{ class MoneyConfig
 
-// initialisation
-$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'select';
-$erreur = Array();
-
-$meth = new PayMethod(isset($_REQUEST['methode']) ? $_REQUEST['methode'] : -1);
-$pay  = new Payment(isset($_REQUEST['ref']) ? $_REQUEST['ref'] : -1);
-
-if($pay->flags->hasflag('old')){
-    $erreur[] = "La transaction selectionnée est périmée.";
-    $pay = new Payment();
-}
-$val  = (($op=="submit") && isset($_REQUEST['montant'])) ? $_REQUEST['montant'] : $pay->montant_def;
-
-if (($e = $pay->check($val)) !== true) {
-    $erreur[] = $e;
+class MoneyConfig
+{
+    var $payment_def  = 0;
+    var $method_def   = 0;
+    var $table_prefix = 'paiement.';
 }
 
-if ($op=='submit') {
-    $pay->init($val, $meth);
-}
+// }}}
 
-$page->assign('erreur', $erreur);
-$page->assign('montant',$val);
+$this->money = new MoneyConfig;
 
-$page->assign('meth', $meth);
-$page->assign('pay',  $pay);
-
-$page->assign('prefix',$globals->money->table_prefix);
-$page->run();
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
