@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.3 2004-09-01 17:59:07 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.4 2004-09-05 17:39:42 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -30,13 +30,17 @@ $op =  isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list';
 
 $target = isset($_REQUEST['target']) ? $_REQUEST['target'] : 0;
 if ($target) {
-    $res = $globals->db->query("SELECT prenom,username,loginbis FROM auth_user_md5 WHERE user_id='$target'");
-    if (! list($prenom,$username,$loginbis) = mysql_fetch_row($res)) {
+    $res = $globals->db->query("SELECT  prenom,a.alias AS forlife,h.alias AS loginbis
+                                  FROM  auth_user_md5 AS u
+			    INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
+			    INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
+			         WHERE  user_id='$target'");
+    if (! list($prenom,$forlife,$loginbis) = mysql_fetch_row($res)) {
         $target=0;
     } else {
         $page->assign('prenom',$prenom);
-        $page->assign('username',$username);
-        $page->assign('loginbis',$loginbis);
+        $page->assign('forlife',$forlife);
+	$page->assign('loginbis',$loginbis);
     }
 }
 
@@ -53,15 +57,16 @@ if ($target) {
   // on examine l'op a effectuer
   switch ($op) {
       case 'mail':
-          $mymail = new DiogenesMailer($cc,$username,"Dans 2 semaines, suppression de $loginbis@polytechnique.org",false,$cc);
+          $mymail = new DiogenesMailer($cc,$forlife,"Dans 2 semaines, suppression de $loginbis@polytechnique.org",false,$cc);
           $mymail->addHeader($FROM);
           $mymail->setBody(stripslashes($_REQUEST['mailbody']));
           $mymail->send();
           $op = 'list';
           break;
       case 'correct':
-          $globals->db->query("REPLACE INTO aliases VALUES ('$loginbis', 'homonyme', 0)");
-          $mymail = new DiogenesMailer($cc,$username,"Mise en place du robot $loginbis@polytechnique.org",false,$cc);
+          $globals->db->query("UPDATE aliases SET type='homonyme',expire='NOW()' WHERE alias='$loginbis'");
+          $globals->db->query("REPLACE INTO homonymes (homonyme_id,user_id) VALUES('$target','$target')");
+          $mymail = new DiogenesMailer($cc,$forlife,"Mise en place du robot $loginbis@polytechnique.org",false,$cc);
           $mymail->addHeader($FROM);
           $mymail->setBody(stripslashes($_REQUEST['mailbody']));
           $mymail->send(); 
@@ -69,14 +74,22 @@ if ($target) {
           break;
   }
 }
-if ($op == 'list') {
-    $res = $globals->db->query("SELECT loginbis FROM auth_user_md5 WHERE loginbis!='' GROUP BY loginbis ORDER BY loginbis");
-    $hnymes = Array();
-    while (list($loginbis) = mysql_fetch_row($res)) $hnymes[$loginbis] = Array();
-    mysql_free_result($res);
 
-    $res = $globals->db->query("SELECT loginbis,user_id,username,promo,prenom,nom,alias,date_mise_alias_temp AS date FROM auth_user_md5 WHERE loginbis!='' ORDER BY promo");
-    while ($tab = mysql_fetch_assoc($res)) $hnymes[$tab['loginbis']][] = $tab;
+if ($op == 'list') {
+    $res = $globals->db->query("SELECT  a.alias AS homonyme,s.id AS user_id,s.alias AS forlife,
+					promo,prenom,nom,
+					IF(h.homonyme_id=s.id, a.expire, NULL) AS expire,
+					IF(h.homonyme_id=s.id, a.type, NULL) AS type
+				  FROM  aliases       AS a
+			     LEFT JOIN  homonymes     AS h ON (h.homonyme_id = a.id)
+			    INNER JOIN  aliases       AS s ON (s.id = h.user_id AND s.type='a_vie')
+			    INNER JOIN  auth_user_md5 AS u ON (s.id=u.user_id)
+			         WHERE  a.type='homonyme' OR a.expire!=''
+			      ORDER BY  a.alias,promo");
+    $hnymes = Array();
+    while ($tab = mysql_fetch_assoc($res)) {
+	$hnymes[$tab['homonyme']][] = $tab;
+    }
     mysql_free_result($res);
 
     $page->assign_by_ref('hnymes',$hnymes);

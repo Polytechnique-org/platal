@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.tpl,v 1.5 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: homonymes.tpl,v 1.6 2004-09-05 17:39:42 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,9 +28,9 @@
 {dynamic}
 
 {if $op eq 'mail'}
-<p class="erreur">mail envoyé à {$username}</p>
+<p class="erreur">mail envoyé à {$forlife}</p>
 {elseif $op eq 'correct'}
-<p class="erreur">mail envoyé à {$username}, alias supprimé</p>
+<p class="erreur">mail envoyé à {$forlife}, alias supprimé</p>
 {/if}
 
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
@@ -42,8 +42,8 @@
 
 <table class="bicol">
   <tr>
-    <th>username</th>
-    <th>date de l'alias</th>
+    <th>alias concerné</th>
+    <th>date de péremption de l'alias</th>
     <th>op</th>
   </tr>
   {foreach from=$hnymes key=login item=row}
@@ -55,17 +55,17 @@
   {foreach from=$row item=user}
   <tr class="impair">
     <td>&nbsp;&nbsp;
-      {if $user.alias eq $login}
-      <span class="erreur"><strong>{$user.username}</strong></span>
+      {if $user.type eq 'alias'}
+      <span class="erreur"><strong>{$user.forlife}</strong></span>
       {else}
-      {$user.username}
+      {$user.forlife}
       {/if}
     </td>
-    <td>{$user.date}</td>
+    <td>{$user.expire|date_format:"%d %b %Y"}</td>
     <td>
-      <a href="javascript:x()" onclick="popWin('../fiche.php?user={$user.username}')">fiche</a>
-      <a href="javascript:x()" onclick="popWin('utilisateurs.php?login={$user.username}&amp;select=1')">edit</a>
-      {if $user.alias eq $login}
+      <a href="javascript:x()" onclick="popWin('../fiche.php?user={$user.forlife}')">fiche</a>
+      <a href="utilisateurs.php?login={$user.forlife}">edit</a>
+      {if $user.type eq 'alias'}
       <a href="?op=mail-conf&amp;target={$user.user_id}">mailer</a>
       <a href="?op=correct-conf&amp;target={$user.user_id}">corriger</a>
       {/if}
@@ -78,8 +78,6 @@
 {elseif $op eq 'mail-conf'}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="target" value="{$target}" />
-  <input type="hidden" name="op" value="mail" />
   <table class="bicol">
     <tr>
       <th>Envoyer un mail pour prévenir l'utilisateur</th>
@@ -92,8 +90,8 @@
 
 Comme nous t'en avons informé par mail il y a quelques temps,
 pour respecter nos engagements en terme d'adresses e-mail devinables,
-tu te verras bientôt attribuer de façon définitive l'adresse
-{$username}@polytechnique.org.
+tu te verras bientôt retirer l'alias {$loginbis}@polytechnique.org pour
+ne garder que {$forlife}@polytechnique.org.
 
 Toute personne qui écrira à {$loginbis}@polytechnique.org recevra la
 réponse d'un robot qui l'informera que {$loginbis}@polytechnique.org
@@ -106,6 +104,8 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
+        <input type="hidden" name="target" value="{$target}" />
+        <input type="hidden" name="op" value="mail" />
         <input type="submit" value="Envoyer" />
       </td>
     </tr>
@@ -115,8 +115,6 @@ L'équipe Polytechnique.org
 {elseif $op eq 'correct-conf'}
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="target" value="{$target}" />
-  <input type="hidden" name="op" value="correct" />
   <table class="bicol">
     <tr>
       <th>Mettre en place le robot {$loginbis}@polytechnique.org</th>
@@ -127,8 +125,8 @@ L'équipe Polytechnique.org
 {$prenom},
           
 Comme nous t'en avons informé par mail il y a quelques temps,
-nous t'avons attribué de façon définitive l'adresse
-{$username}@polytechnique.org.
+nous t'avons retiré de façon définitive l'adresse
+{$loginbis}@polytechnique.org.
 
 Toute personne qui écrit à {$loginbis}@polytechnique.org reçoit la
 réponse d'un robot qui l'informe que {$loginbis}@polytechnique.org
@@ -143,6 +141,8 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
+        <input type="hidden" name="target" value="{$target}" />
+        <input type="hidden" name="op" value="correct" />
         <input type="submit" value="Envoyer et corriger" />
       </td>
     </tr>
