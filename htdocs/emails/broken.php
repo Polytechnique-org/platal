@@ -23,8 +23,8 @@ require_once('xorg.inc.php');
 new_skinned_page('emails/broken.tpl',AUTH_COOKIE);
 require_once('emails.inc.php');
 
-if (array_key_exists('email', $_GET) && array_key_exists('action', $_GET)) {
-    $email = valide_email($_GET['email']);
+if (Get::has('email') && Get::has('action')) {
+    $email = valide_email(Get::get('email'));
     // vérifications d'usage
     $sel = $globals->db->query(
             "SELECT  e.uid, a.alias
@@ -63,8 +63,8 @@ L'équipe d'administration <support@polytechnique.org>";
 	$mail->send();
         $page->trig("Mail envoyé ! :o)");
     }
-} elseif (array_key_exists('email', $_POST)) {
-    $email = valide_email($_POST['email']);
+} elseif (Post::has('email')) {
+    $email = valide_email(Post::get('email'));
     $page->assign('email',$email);
     $sel = $globals->db->query(
             "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo

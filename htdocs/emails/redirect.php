@@ -23,29 +23,29 @@ require_once("xorg.inc.php");
 new_skinned_page('emails/redirect.tpl',AUTH_MDP);
 require_once("emails.inc.php");
 
-$redirect = new Redirect($_SESSION['uid']);
+$uid     = Session::getInt('uid');
+$forlife = Session::get('forlife');
 
-if (isset($_REQUEST['emailop'])) {
-    if ($_REQUEST['emailop']=="retirer" && isset($_REQUEST['email'])) {
-        $page->assign('retour', $redirect->delete_email($_REQUEST['email']));
+$redirect = new Redirect(Session::getInt('uid'));
+
+if (Env::has('emailop')) {
+    if (Env::get('emailop') == "retirer" && Env::has('email')) {
+        $page->assign('retour', $redirect->delete_email(Env::get('email')));
+    } elseif (Env::get('emailop') == "ajouter" && Env::has('email')) {
+        $page->assign('retour', $redirect->add_email(trim(Env::get('email'))));
     }
-    elseif ($_REQUEST['emailop']=="ajouter" && isset($_REQUEST['email'])) {
-        $page->assign('retour', $redirect->add_email(trim($_REQUEST['email'])));
-    }
-    elseif (!isset($_REQUEST['emails_actifs']) || !is_array($_REQUEST['emails_actifs'])
-        || count($_REQUEST['emails_actifs'])==0) {
+    $actifs = Env::getMixed('emails_actifs', Array());
+    if (empty($actifs)) {
         $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
-    }
-    elseif (isset($_REQUEST['emails_actifs']) && is_array($_REQUEST['emails_actifs'])
-        && isset($_REQUEST['emails_rewrite']) && is_array($_REQUEST['emails_rewrite'])) {
-        $page->assign('retour', $redirect->modify_email($_REQUEST['emails_actifs'],$_REQUEST['emails_rewrite']));
+    } elseif (is_array($actifs)) {
+        $page->assign('retour', $redirect->modify_email($actifs, Env::getMixed('emails_rewrite',Array())));
     }
 }
 $sql = "SELECT  alias
           FROM  virtual
     INNER JOIN  virtual_redirect USING(vid)
-          WHERE (  redirect='{$_SESSION['forlife']}@{$globals->mail->domain}'
-                OR redirect='{$_SESSION['forlife']}@{$globals->mail->domain2}' )
+          WHERE (  redirect='$forlife@{$globals->mail->domain}'
+                OR redirect='$forlife@{$globals->mail->domain2}' )
                 AND alias LIKE '%@{$globals->mail->alias_dom}'";
 $res = $globals->db->query($sql);
 if (mysql_num_rows($res)) {
@@ -56,7 +56,7 @@ if (mysql_num_rows($res)) {
 
 $page->mysql_assign("SELECT  alias,expire
                        FROM  aliases
-		      WHERE  id='{$_SESSION['uid']}' AND (type='a_vie' OR type='alias')
+		      WHERE  id=$uid AND (type='a_vie' OR type='alias')
 		   ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias)", 'alias');
 $page->assign('emails',$redirect->emails);
 
