@@ -1,4 +1,4 @@
-{* $Id: apropos.tpl,v 1.3 2004-02-11 13:15:34 x2000habouzit Exp $ *}
+{* $Id: apropos.tpl,v 1.4 2004-08-23 15:09:07 x2000chevalier Exp $ *}
 
 <table cellpadding="0" cellspacing="0" summary="L'équipe" style="width: 100%">
   <tr>
@@ -7,20 +7,19 @@
     </td>
     <td>
       <strong>Jean-Sébastien Bedo</strong> (X2000) <br />
+      <strong>Damien Bobillot</strong> (X2002) <br />
       <strong>Yann Chevalier</strong> (X2000) <br />
       <strong>Jean-Marc Coïc</strong> (X2000) <br />
-      <strong>Guillaume Gommard</strong> (X2000) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
+      <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Pierre Habouzit</strong> (X2000) <br />
       <strong>Alexandre Hô</strong> (X98) <br />
       <strong>Jeremy Lainé</strong> (X99) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
       <strong>Loïc Le Loarer</strong> (X97) <br />
-      <strong>Julien Lerouge</strong> (X99) <br />
-      <strong>Pascal Manchon</strong> (X2000) <br />
-      <strong>Thomas-Xavier Martin</strong> (X89) <br />
+      <strong>Raphaël Marichez</strong> (X2002) <br />
+      <strong>Alexandre Mege</strong> (X2002) <br />
       <strong>Vincent Palatin</strong> (X2000) <br />
-      <strong>Quoc-Anh Tran</strong> (X62) <br />
       <strong>Jean-Michel Yolin</strong> (X65) <br /><br />
     </td>
   </tr>
@@ -29,25 +28,24 @@
       L'équipe des services aux associations polytechniciennes
     </td>
     <td>
-      <strong>David Bachelart</strong> (X99) <br />
       <strong>Jean-Sébastien Bedo</strong> (X2000) <br />
       <strong>Matthieu Bergot</strong> (X89) <br />
+      <strong>Damien Bobillot</strong> (X2002) <br />
       <strong>Sophie Charbonnier</strong> (X2000) <br />
       <strong>Yann Chevalier</strong> (X2000) <br />
       <strong>Jean-Marc Coïc</strong> (X2000) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
+      <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Pierre Habouzit</strong> (X2000) <br />
       <strong>Olivier Herz</strong> (X80) <br />
       <strong>Alexandre Hô</strong> (X98) <br />
       <strong>Jeremy Lainé</strong> (X99) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
-      <strong>Julien Lerouge</strong> (X99) <br />
-      <strong>Pascal Manchon</strong> (X2000) <br />
-      <strong>Thomas-Xavier Martin</strong> (X89) <br />
+      <strong>Raphaël Marichez</strong> (X2002) <br />
+      <strong>Alexandre Mege</strong> (X2002) <br />
       <strong>Vincent Palatin</strong> (X2000) <br />
       <strong>Bertrand de Singly</strong> (X95) <br />
       <strong>Cyril Tikhomiroff</strong> (X95) <br />
-      <strong>Julien Trolet</strong> (X2001) <br />
       <strong>Quoc-Anh Tran</strong> (X62) <br />
       <strong>Jean-Michel Yolin</strong> (X65) <br /><br />
     </td>
@@ -57,25 +55,22 @@
       L'équipe des relations extérieures
     </td>
     <td>
-      <strong>David Bachelart</strong> (X99) <br />
       <strong>Matthieu Bergot</strong> (X89) <br />
+      <strong>Damien Bobillot</strong> (X2002) <br />
       <strong>Yann Buril</strong> (X96) <br />
       <strong>Sophie Charbonnier</strong> (X2000) <br />
       <strong>Yann Chevalier</strong> (X2000) <br />
-      <strong>Guillaume Gommard</strong> (X2000) <br />
-      <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
+      <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Olivier Herz</strong> (X80) <br />
       <strong>Alexandre Hô</strong> (X98) <br />
       <strong>Jeremy Lainé</strong> (X99) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
-      <strong>Julien Lerouge</strong> (X99) <br />
-      <strong>Pascal Manchon</strong> (X2000) <br />
+      <strong>Raphaël Marichez</strong> (X2002) <br />
+      <strong>Alexandre Mege</strong> (X2002) <br />
       <strong>Vincent Palatin</strong> (X2000) <br />
       <strong>Bertrand de Singly</strong> (X95) <br />
       <strong>Quoc-Anh Tran</strong> (X62) <br />
-      <strong>Julien Trolet</strong> (X2001) <br />
-      <strong>Jérôle Van de Voort</strong> (X2001) <br />
       <strong>Jean-Michel Yolin</strong> (X65) <br /><br />
     </td>
   </tr>
@@ -85,7 +80,7 @@
     </td>
     <td>
       <strong>Yann Chevalier</strong> (X2000) <em>- président</em><br />
-      <strong>Julien Lerouge</strong> (X99) <em>- trésorier</em><br />
+      <strong>Olivier Guillaumin</strong> (X80) <em>- trésorier</em><br />
       <strong>Alexandre Hô</strong> (X98) <em>- secrétaire</em><br />
       <strong>Vincent Palatin </strong> (X2000) <em>- responsable services individuels</em><br />
       <strong>Cyril Lathuilière</strong> (X2001) <em>- responsable services aux associations X</em><br />
@@ -138,8 +133,8 @@
   <table summary="l'équipe" style="width:550px">
     <tr>
       <td>
-        <a href="images/equipe.jpg">
-          <img src="images/equipe.jpg" alt=" [ L'EQUIPE ] " />
+        <a href="../images/equipe.jpg">
+          <img src="../images/equipe.jpg" alt=" [ L'EQUIPE ] " />
         </a>
         <p class="normal">
         Sur cette photo un peu sombre, on peut reconnaître une partie de
@@ -153,9 +148,9 @@
 </div>
 <div class="center">
   <a href="http://x-org.polytechnique.org/">
-    <img src="images/logo.jpg" alt=" [ LOGO POLYTECHNIQUE.ORG ] " />
+    <img src="../images/logo.jpg" alt=" [ LOGO POLYTECHNIQUE.ORG ] " />
   </a>
-  <img src="images/logoBR.jpg" alt=" [ LOGO BR ] " />
+  <img src="../images/logoBR.jpg" alt=" [ LOGO BR ] " />
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
