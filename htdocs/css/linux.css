@@ -31,7 +31,7 @@
 div.rubrique {
     color: #eeeeee;
     background-color: #444444;
-    background-image: url( "../images/sk_linux_titre.jpg");
+    background-image: url( "/images/sk_linux_titre.jpg");
     background-repeat: repeat-x;
 }
 
@@ -92,10 +92,10 @@ table.tinybicol th, table.bicol th {
 
 #body-menu .menu_title {
     color: #000000;
-    background-image: url("../images/sk_linux_menu.jpg");
+    background-image: url("/images/sk_linux_menu.jpg");
     border-top: none;
     border-bottom: none;
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: linux.css,v 1.1 2004-10-03 15:11:34 x2003cortot Exp $ */
+/* $Id: linux.css,v 1.2 2004-10-03 17:35:34 x2003cortot Exp $ */
