@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.31 2004-10-09 18:57:49 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.32 2004-10-09 20:45:39 x2000chevalier Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -220,14 +220,15 @@ function try_cookie() {
 function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("
-	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias, u.lastnewslogin
+	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias, u.lastnewslogin, a2.alias
           FROM  auth_user_md5   AS u
     INNER JOIN	aliases         AS a ON (u.user_id = a.id AND a.type='a_vie')
+    INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
      LEFT JOIN  logger.sessions AS s ON (s.uid=u.user_id AND s.suid=0)
          WHERE  user_id=$uid
-      ORDER BY  s.start DESC
+      ORDER BY  s.start DESC, a2.type != 'epouse', length(a2.alias)
          LIMIT  1");
-    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, $lastnewslogin) = mysql_fetch_row($result);
+    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, $lastnewslogin, $bestalias) = mysql_fetch_row($result);
     mysql_free_result($result);
    
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
@@ -261,6 +262,7 @@ function start_connexion ($uid, $identified) {
     $_SESSION['perms'] = $perms;
     $_SESSION['promo'] = $promo;
     $_SESSION['forlife'] = $forlife;
+    $_SESSION['bestalias'] = $bestalias;
     $_SESSION['matricule'] = $matricule;
     $res = $globals->db->query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
     $_SESSION['femme'] = mysql_num_rows($res) > 0;
