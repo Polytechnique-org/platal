@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.tpl,v 1.5 2004-09-01 22:01:48 x2000habouzit Exp $
+        $Id: epouse.tpl,v 1.6 2004-10-19 22:16:14 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -40,6 +40,7 @@
       nécessaire de le saisir ici!
   </p>
   {else}
+    {if $myepouse}
     {if $epouse_old}
     <p>
       Ta demande de suppression de ton nom de mariage ainsi que de tes
@@ -48,7 +49,7 @@
     </p>
     {/if}
 
-    {if $epouse_req}
+    {if $myepouse->alias}
     <p>
       Ta demande d'ajout de ton nom de mariage a bien été enregistrée. Sa
       validation engendrera la création des alias
@@ -61,30 +62,33 @@
       Tu recevras un mail dès que les changements demandés auront été effectués. 
       Encore merci de nous faire confiance pour tes e-mails !
     </p>
+
+    {else}
+
+    <p>
+    Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom de mariage, tu peux
+    saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
+    des adresses correspondantes @m4x.org et @polytechnique.org, en plus de
+    celles que tu possèdes déjà.
+    </p>
+
+    <br />
+
+    <form action="{$smarty.server.PHP_SELF}" method="post">
+      <table class="bicol" cellpadding="4" summary="Nom d'epouse">
+        <tr>
+          <th>Nom de mariage</th>
+        </tr>
+        <tr>
+          <td class="center"><input type="text" name="epouse" value="{$epouse_old}" /></td>
+        </tr>
+        <tr>
+          <td class="center"><input type="submit" name="submit" value="Envoyer" /></td>
+        </tr>
+      </table>
+    </form>
+    {/if}
   {/if}
-
-  <p>
-  Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom de mariage, tu peux
-  saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
-  des adresses correspondantes @m4x.org et @polytechnique.org, en plus de
-  celles que tu possèdes déjà.
-  </p>
-
-  <br />
-
-  <form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol" cellpadding="4" summary="Nom d'epouse">
-    <tr>
-      <th>Nom de mariage</th>
-    </tr>
-    <tr>
-      <td class="center"><input type="text" name="epouse" value="{$epouse_old}" /></td>
-    </tr>
-    <tr>
-      <td class="center"><input type="submit" name="submit" value="Envoyer" /></td>
-    </tr>
-  </table>
-  </form>
 {/if}
 {/dynamic}
   
