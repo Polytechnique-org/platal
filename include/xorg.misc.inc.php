@@ -51,24 +51,6 @@ function quoted_printable_encode($input, $line_max = 76) {
     return trim($output);
 }
 
-/** vérifie si une adresse email (sans @) correspond à un alias (FIXME ou une liste)...
- * @param $email l'adresse email a verifier
- * @return BOOL
- */
-function isvalid_email_local($email) {
-    global $globals;
-
-    $req = $globals->db->query("select count(*) from aliases where alias='$email'");
-    list($nb)=mysql_fetch_row($req);
-    mysql_free_result($req);
-    if ($nb>0) return true;
-
-    // reste à vérifier si c'est pas une adresse dans /etc/aliases
-    // surement possible en utilisant postmap -q $email hash:/etc/aliases
-
-    return false;
-}
-
 /** vérifie si une adresse email convient comme adresse de redirection 
  * @param $email l'adresse email a verifier
  * @return BOOL
