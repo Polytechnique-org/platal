@@ -24,16 +24,17 @@ require_once("xorg.inc.php");
 
 require_once('user.func.inc.php');
 
-function get_user_ax($uid, $raw=false) {
+function get_user_ax($uid, $raw=false)
+{
     require_once('webservices/manageurs.inc.php');
     require_once('webservices/manageurs.client.inc.php');
 
     global $globals;
 
     $res = $globals->xdb->query(
-            "SELECT matricule_ax
-              FROM auth_user_md5 AS u
-             WHERE u.user_id = {?}", $uid);
+        "SELECT matricule_ax
+           FROM auth_user_md5 AS u
+          WHERE u.user_id = {?}", $uid);
     $matricule_ax = $res->fetchOneCell();
 
     $array = get_annuaire_infos(2, $matricule_ax, 0);
@@ -42,13 +43,21 @@ function get_user_ax($uid, $raw=false) {
 
     $userax = Array();
 
+    $userax['matricule_ax'] = $matricule_ax;
     $userax['uid'] = $uid;
+    
     $userax['nom'] = $ancien[0];
-    $userax['prenom'] = $ancien[4];
+    // ancien1 = ?
     $userax['epouse'] = ($ancien[2] != $ancien[0])?$ancien[2]:"";
-    $userax['promo'] = $ancien[6];
+    // ancien3 = ?
+    $userax['prenom'] = $ancien[4];
     $userax['sexe'] = ($ancien[5] != 'M')?1:0;
+    $userax['promo'] = $ancien[6];
+    // ancien7 = Type de membre à l'AX
+    // ancien8 = dernière année de cotisation
     $userax['nationalite'] = $ancien[9];
+    // ancien10 = ?
+    // ancine11 = ?
     $userax['date'] = substr($ancien[12], 0, 10);
     $userax['mobile'] = $array['cell'];
     if ($ancien[13] == 'D' || $ancien[13] == 'Z') {
@@ -56,19 +65,37 @@ function get_user_ax($uid, $raw=false) {
     } else {
         $userax['applis_join'] = "Corps ".$ancien[13]." - ".$ancien[14];
     }
+    // ancien15 = login AX
+    // ancien16 = ?
+    // ancien17 = prenom.nom
 
     $userax['adr_pro'] = array();
     if (is_array($array['dump']['pro'])) {
         foreach ($array['dump']['pro'] as $job) {
+            // job0 = code identifiant de l'entreprise
             $jobax['entreprise'] = $job[1];
+            // job2 = comme job1 (peut etre plus court pour les noms longs)
+            // job4 = sigle de l'entreprise
+            // job5 = maj de l'adresse pro
             $jobax['fonction'] = $job[6];
+            // job7 = ? peut être id de l'adresse dans la base AX
+            // job8 = matricule AX
+            // job9 = type d'adresse PRO = professionelle
             $jobax['adr1'] = $job[10];
             $jobax['adr2'] = $job[11];
             $jobax['adr3'] = $job[12];
             $jobax['cp']   = $job[13];
             $jobax['ville'] = $job[14];
+            // job15 = ?
+            // job16 = ?
             $jobax['pays'] = $job[17];
+            // job18 = ?
             $jobax['tel']  = $job[19];
+            $jobax['fax']  = $job[20];
+            // job21 = f ?
+            // job22 = ?
+            // job23 = date de mise à jour de l'adresse
+            // job24 = ?
             $userax['adr_pro'][] = $jobax;
         }
     }
@@ -76,14 +103,23 @@ function get_user_ax($uid, $raw=false) {
     $userax['adr'] = array();
     if (is_array($array['dump']['adresse'])) {
         foreach ($array['dump']['adresse'] as $adr) {
+            // adr0 : ?
+            // adr1 = matricule ax
+            // adr2 = type d'adresse P = personnelle
             $adrax['adr1'] = $adr[3];
             $adrax['adr2'] = $adr[4];
             $adrax['adr3'] = $adr[5];
             $adrax['cp'] = $adr[6];
             $adrax['ville'] = $adr[7];
+            // adr8 = ?
+            // adr9 = ?
             $adrax['pays'] = $adr[10];
+            // adr 11 = ?
             $adrax['tel'] = $adr[12];
             $adrax['fax'] = $adr[13];
+            // adr 14 = t ?
+            // adr15 = ?
+            // adr 16 = date de mise a jour
             $userax['adr'][] = $adrax;
         }
     }
@@ -94,7 +130,8 @@ function get_user_ax($uid, $raw=false) {
     return $userax;
 }
 
-function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null, $add_address=null, $del_pro=null, $add_pro=null) { 
+function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null, $add_address=null, $del_pro=null, $add_pro=null)
+{ 
     global $globals;
 
     if ($epouse) {
@@ -180,18 +217,18 @@ function import_from_ax($userax, $epouse=false, $mobile=false, $del_address=null
         $globals->xdb->execute(
             "INSERT INTO entreprises
                      SET uid = {?}, entrid = {?},
+                         entreprise = {?}, poste = {?},
                          adr1 = {?}, adr2 = {?}, adr3 = {?},
                          cp = {?}, ville = {?},
                          pays = {?},
                          tel = {?}, fax = {?},
-                         entreprise = {?}, fonction = {?},
                          visibilite = 'entreprise_ax,adr_ax,tel_ax'",
                 $userax['uid'], $new_entrid,
+                $pro['entreprise'], $pro['fonction'],
                 $pro['adr1'], $pro['adr2'], $pro['adr3'],
                 $pro['cp'], $pro['ville'],
                 $a2,
-                $pro['tel'], $pro['fax'],
-                $pro['entreprise'], $pro['fonction']);
+                $pro['tel'], $pro['fax']);
     }}
 }
 

@@ -66,7 +66,7 @@ if ($login) {
         $pro_dels = array();
         foreach ($user['adr_pro'] as $pro) {
             if (Env::has('del_pro'.$pro['entrid'])) {
-                $pro_dels[] = $pro['proid'];
+                $pro_dels[] = $pro['entrid'];
             }
         }
 
@@ -82,6 +82,11 @@ if ($login) {
     }
 
     $user  = get_user_details($login, Session::getInt('uid'));
+    
+    if ($userax) {
+        $user['matricule_ax'] = $userax['matricule_ax'];
+        unset($userax['matricule_ax']);
+    }
 
     $page->assign('x', $user);
     $page->assign('ax', $userax); 

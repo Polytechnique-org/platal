@@ -36,6 +36,7 @@
 </table>
 </form>
 
+{if $x}
 <form action='{$smarty.request.PHP_SELF}' method='post'>
 {if $x.profile_from_ax}
 <div style="text-align:center;margin:5px;background:green">
@@ -50,19 +51,31 @@
   <tr>
     <th>champ</th>
     <th style='width:50%'>x.org</th>
+    <th>supprimer</th>
     <th style='width:50%'>AX</th>
+    <th>importer</th>
+  </tr>
+  <tr class="pair">
+    <td>fiches</td>
+    <td colspan='2'>
+      <a href='{rel}/fiche.php?user={$x.user_id}' class='popup2'>polytechnique.org</a>
+    </td>
+    <td colspan='2'>
+      <a href='http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a>
+    </td>
   </tr>
 {foreach from=$ax item='val' key='i'}
   {if ($i neq 'adr') and ($i neq 'adr_pro')}
+    {if $x[$i] neq $val}
     <tr class="{cycle values='impair,pair'}">
       <td>
         {$i}
       </td>
-      <td>
+      <td colspan='2'>
         {$x[$i]}
       </td>
-      <td>
-        {if ($i eq 'epouse') or ($i eq 'mobile')}
+      <td colspan='2'>
+        {if (($i eq 'epouse') or ($i eq 'mobile')) and $val}
         <div style='float:right'>
           <input style='flat:right' type='checkbox' name='{$i}' />
         </div>
@@ -70,23 +83,26 @@
         {$val}
       </td>
     </tr>
+    {/if}
   {/if}
 {/foreach}
   <tr class='impair'>
     <td>
       adresses
     </td>
-    <td>
+    <td colspan='2'>
     {foreach from=$x.adr item='adr'}
       <div style="padding:5px">
+        {if $ax.adr[0]}
         <div style='float:right'>
           <input type='checkbox' name='del_address{$adr.adrid}' />
         </div>
+        {/if}
         {include file='geoloc/address.tpl' address=$adr no_div=1}
       </div>
     {/foreach}
     </td>
-    <td>
+    <td colspan='2'>
     {foreach from=$ax.adr item='adr' key='adrid'}
       <div style='padding:5px'>
         <div style='float:right'>
@@ -101,13 +117,15 @@
     <td>
       adr_pro
     </td>
-    <td>
+    <td colspan='2'>
     {foreach from=$x.adr_pro item='pro'}
     {if ($pro.poste) or ($pro.fonction) or ($pro.entreprise)}
       <div style='padding:5px'>
+        {if $ax.adr_pro[0]}
         <div style='float:right'>
-          <input type='checkbox' name='add_pro{$pro.entrid}' />
+          <input type='checkbox' name='del_pro{$pro.entrid}' />
         </div>
+        {/if}
         {if $pro.entreprise}
         <div>
           <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
@@ -134,7 +152,7 @@
     {/if}
     {/foreach}
     </td>
-    <td>
+    <td colspan='2'>
     {foreach from=$ax.adr_pro item='pro' key='proid'}
     {if ($pro.poste) or ($pro.fonction) or ($pro.entreprise)}
       <div style='padding:5px'>
@@ -163,5 +181,6 @@
   <input type='submit' name='importe' value='Importer' />
 </div>
 </form>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
