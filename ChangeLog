@@ -4,6 +4,7 @@ VERSION 0.9.2														~20 Nov 2004
 New :
 
 	* Carnet: brand new.													-MC
+
 	* Core :
 		- Creation of the Plugin class.										-MC
 		- Now only use iso3166 countries, no more `nationalites`.			-MC
@@ -34,6 +35,9 @@ Bug/Wish :
 		- #122 : Women now have a &bull; (no more dirty gender icons).		-MC
 		- #124 : Homeland is now a flag.									-MC
 		- #164 : Married women are now well sorted (by their spouse name).	-MC
+
+	* Stats :
+		- #134,156 : Return of the stats pages.								-VP
 
 Fixes (from 0.9.1 branch) :
 
@@ -101,6 +105,7 @@ ACRONYMS :
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
 	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
+	* VP  : Vincent Palatin             <vincent.palatin@m4x.org>
 	* XdX : Alexandre Hô     (XandreX)  <alexandre.ho@m4x.org>
 
 ================================================================================
