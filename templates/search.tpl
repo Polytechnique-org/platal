@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.26 2004-11-13 10:52:50 x2000habouzit Exp $
+        $Id: search.tpl,v 1.27 2004-11-13 11:46:31 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -34,6 +34,7 @@
   </h1>
 
   <div class="contact-list" style="clear:both">
+    {capture name=list}
     {section name=resultat loop=$resultats}
       {if !$resultats[resultat].inscrit || $resultats[resultat].decede}<div class='grayed'>{/if}
         {if $resultats[resultat].contact || $resultats[resultat].watch}
@@ -44,6 +45,8 @@
       {include file=include/minifiche.tpl c=$resultats[resultat] show_action=$show_action inscrit=$resultats[resultat].inscrit}
       {if !$resultats[resultat].inscrit || $resultats[resultat].decede}</div>{/if}
     {/section}
+    {/capture}
+    {$smarty.capture.list|smarty:nodefaults}
   </div>
 
   {if $perpage < $nb_resultats_total}
@@ -69,11 +72,11 @@
 
   {min_auth level='cookie'}
   <br />
-  {if $advanced && $smarty.section.resultat.total>10}{include file=search.adv.links.tpl do_title=1}{/if}
+  {if $advanced && $smarty.capture.list|smarty:nodefaults|display_lines > 20}{include file=search.adv.links.tpl do_title=1}{/if}
   
-  <h2>Astuces</h2>
-  
-  <p>Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
+  <p>
+  <strong>Astuce:</strong>
+  Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
   {/min_auth}
 {else}
   {if $advanced}
