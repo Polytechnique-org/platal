@@ -34,7 +34,6 @@ function new_popup_page($tpl_name, $min_auth, $tpl_head="") {
 }
 
 function new_admin_page($tpl_name, $tpl_head="") {
-    require("xorg.page.inc.php");
     _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, true);
 }
 

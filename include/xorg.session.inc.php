@@ -7,6 +7,7 @@ class XorgSession extends DiogenesCoreSession {
   {
     $this->DiogenesCoreSession();
     $_SESSION['challenge']=rand_token();
+    set_skin();
   }
 
 
@@ -111,17 +112,16 @@ class XorgSession extends DiogenesCoreSession {
     global $failed_ORGaccess,$site_dev;
 
     if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGlogin']) and !isset($failed_ORGaccess)) {
-      $page->_tpl = "password_prompt_logged.tpl";
+      $page->_tpl = 'password_prompt_logged.tpl';
       $page->assign("xorg_head", "password_prompt_logged.head.tpl");
       $page->assign("xorg_tpl", "password_prompt_logged.tpl");
       $page->display();
     } else {
-      $page->_tpl = "password_prompt.tpl";
+      $page->_tpl = 'password_prompt.tpl';
       $page->assign("xorg_head", "password_prompt.head.tpl");
       $page->assign("xorg_tpl", "password_prompt.tpl");
       $page->display();
     }
-    //    $page->assign('challenge',$this->challenge);
     exit;
   }
 
@@ -221,6 +221,35 @@ function start_connexion ($username, $uid, $identified) {
     $_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
   // le login est stocké pour un an
   setcookie('ORGlogin',$username,(time()+25920000),'/','',0);
+  set_skin();
+}
+
+function set_skin() {
+  if(logged()) {
+    $result = mysql_query("SELECT skin FROM auth_user_md5 WHERE username = '{$_SESSION['uid']}'");
+    if(list($skin) = mysql_fetch_row($result)) {
+      $sql = "SELECT normal,popup FROM skins WHERE ";
+      if ($_SESSION['skin'] == SKIN_STOCHASKIN_ID) {
+        $sql .= " !FIND_IN_SET('cachee',type) order by rand() limit 1";
+      } else {
+        $sql .= "id='$skin'";
+      }
+      $res = mysql_query($sql);
+      list($_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($res);
+      mysql_free_result($res);
+    } else {
+      $_SESSION['skin'] = SKIN_COMPATIBLE;
+      $_SESSION['skin_popup'] = SKIN_COMPATIBLE;
+    }
+    mysql_free_result($result);
+  }
+
+  if( !logged() || !isset($_SERVER['HTTP_USER_AGENT'])
+      || ereg("Mozilla/4\.[0-9]{1,2} \[",$_SERVER['HTTP_USER_AGENT']) )
+  {
+    $_SESSION['skin'] = SKIN_COMPATIBLE;
+    $_SESSION['skin_popup'] = SKIN_COMPATIBLE;
+  }
 }
 
 ?>

@@ -13,7 +13,7 @@ session_destroy();
 $has_cookie = (isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGlogin']));
 $_SESSION = array();
 if($has_cookie)
-    header("Location: ".url("login.php"));
+    header("Location: login.php");
 
 new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);
 

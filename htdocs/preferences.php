@@ -1,0 +1,9 @@
+<?php
+require("auto.prepend.inc.php");
+new_skinned_page('preferences.tpl', AUTH_COOKIE, 'preferences.head.tpl');
+
+$has_cookie = (isset($_COOKIE['ORGaccess']) ? 'cookie' : '');
+$page->assign('has_cookie', $has_cookie);
+
+$page->display($has_cookie);
+?>

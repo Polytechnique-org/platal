@@ -30,7 +30,6 @@ class XorgPage extends DiogenesCorePage {
     // si necessaire, c'est *ici* que se fait l'authentification
     $_no_legacy = true;
     $this->doAuth();
-    $this->set_skin();
   }
 
   function display($append_to_id="") {
@@ -48,34 +47,6 @@ class XorgPage extends DiogenesCorePage {
   }
 
   function doAuth() { }
-  
-  function set_skin() {
-    if(logged()) {
-      $result = mysql_query("SELECT skin FROM auth_user_md5 WHERE username = '{$_SESSION['uid']}'");
-      if(list($skin) = mysql_fetch_row($result)) {
-        $sql = "SELECT normal,popup FROM skins WHERE ";
-        if ($_SESSION['skin'] == SKIN_STOCHASKIN_ID) {
-          $sql .= " !FIND_IN_SET('cachee',type) order by rand() limit 1";
-        } else {
-          $sql .= "id='$skin'";
-        }
-        $res = mysql_query($sql);
-        list($_SESSION['skin'], $_SESSION['skin_popup']) = mysql_fetch_row($res);
-        mysql_free_result($res);
-      } else {
-        $_SESSION['skin'] = SKIN_COMPATIBLE;
-        $_SESSION['skin_popup'] = SKIN_COMPATIBLE;
-      }
-      mysql_free_result($result);
-    }
-
-    if( !logged() || !isset($_SERVER['HTTP_USER_AGENT'])
-        || ereg("Mozilla/4\.[0-9]{1,2} \[",$_SERVER['HTTP_USER_AGENT']) )
-    {
-      $_SESSION['skin'] = SKIN_COMPATIBLE;
-      $_SESSION['skin_popup'] = SKIN_COMPATIBLE;
-    }
-  }
 
 }
 

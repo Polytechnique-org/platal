@@ -8,7 +8,7 @@ if(logged()) {
             'Mon profil' => '###url###' ,
             'Mes contacts' => '###url###' ,
             'Mon mot de passe' => '###url###' ,
-            'Mes préférences' => '###url###' 
+            'Mes préférences' => 'preferences.php' 
         ),
         'Services' => Array (
             'Envoyer un mail' => '###url###' ,
@@ -41,12 +41,10 @@ if(logged()) {
             'Marketing' => '###url###',
             'Administration' => '###url###',
             'Trackers' => '###url###',
-            'Documentations' => '###url###'
+            'Documentations' => '###url###',
+            'Clear cache' => 'clear_all_cache.php'
         );
-    } elseif(has_perms($marketing_admin)) {
-        $menu['***'] = Array (
-            'Marketing' => '###url###'
-        );
+        if(empty($site_dev)) pop($menu['***']);
     }
 } else {
     $menu = Array(
