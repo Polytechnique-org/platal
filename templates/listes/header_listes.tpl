@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: header_listes.tpl,v 1.2 2004-11-07 14:58:35 x2000habouzit Exp $
+        $Id: header_listes.tpl,v 1.3 2004-11-27 19:00:33 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -45,7 +45,7 @@
   </tr>
   {if $details.own || $smarty.session.perms eq admin}
   <tr>
-    <td><strong>Administration de la liste :</strong></td>
+    <td><strong>Administrer la liste :</strong></td>
     <td>
       {if $on neq moderate}
       [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
@@ -62,12 +62,17 @@
       {else}
       [options]
       {/if}
+      {if $on neq delete}
+      [<a href='delete.php?liste={$smarty.get.liste}'>détruire liste</a>]
+      {else}
+      [détruire liste]
+      {/if}
     </td>
   </tr>
   {/if}
   {perms level=admin}
   <tr>
-    <td><strong>Administration avancée :</strong></td>
+    <td><strong>Administrer (avancé) :</strong></td>
     <td>
       {if $on neq soptions}
       [<a href='soptions.php?liste={$smarty.get.liste}'>options avancées</a>]

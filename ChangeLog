@@ -39,7 +39,7 @@ Bug/Wish :
 		- #83,208,222 : New fiche.											-MC
 	
 	* Lists :
-		- #184 : XML-RPC now know how to delete a list.						-MC
+		- #184 : Owners can now delete their lists.							-MC
 		- #231 : Add a link to the user's fiche on moderation page.			-MC
 
 	* Search :
