@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.39 2004-09-25 10:13:28 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.40 2004-09-25 15:55:56 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -140,7 +140,8 @@ def get_list_info((userdesc,perms),mlist):
                 'ins'  : mlist.subscribe_policy > 1,
                 'priv' : (1-mlist.advertised)+2*is_admin,
                 'sub'  : is_pending + 2*is_member,
-                'own'  : is_owner
+                'own'  : is_owner,
+                'nbsub': len(members)
                 }
         return (details,members)
     return 0
