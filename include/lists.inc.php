@@ -37,6 +37,45 @@ function &lists_xmlrpc($uid, $pass, $fqdn=null)
 }
 
 // }}}
+// {{{ function list_sort_owners
 
+function list_sort_owners(&$members, $tri_promo = true) {
+    global $globals;
+
+    $membres = Array();
+    
+    foreach($members as $mem) {
+        list($m, $dom) = split('@',$mem);
+        if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
+            $res = $globals->db->query("SELECT  prenom,IF(epouse='', nom, epouse), promo
+                                          FROM  auth_user_md5 AS u
+                                    INNER JOIN  aliases AS a ON u.user_id = a.id
+                                         WHERE  a.alias = '$m'");
+            if(list($prenom, $nom, $promo) = mysql_fetch_row($res)) {
+                $key = $tri_promo ? $promo : strtoupper($nom{0});
+                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
+            } else {
+                $membres[0][] = Array('l' => $mem);
+            }
+            mysql_free_result($res);
+        } else {
+            $membres[0][] = Array('l' => $mem);
+        }
+    }
+    
+    ksort($membres);
+    foreach($membres as $key=>$val) ksort($membres[$key]);
+    return $membres;
+}
+
+// }}}
+// {{{ function list_sort_members
+
+function list_sort_members(&$members, $tri_promo = true) {
+    $pi1 = create_function('$arr', 'return $arr[1];');
+    return list_sort_owners(array_map($pi1, $members), $tri_promo);
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

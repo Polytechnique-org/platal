@@ -25,7 +25,6 @@ class MyReporter extends SimpleReporter {
     }
 }
 
-$reporter = new MyReporter;
 echo <<<EOF
 <html>
   <head>
@@ -44,6 +43,7 @@ echo <<<EOF
 EOF;
 
 foreach (glob(PATH.'/*_*.php') as $tfile) {
+    $reporter = new MyReporter;
     require_once($tfile);
 }
 

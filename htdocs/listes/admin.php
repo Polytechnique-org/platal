@@ -67,33 +67,9 @@ if(list($det,$mem,$own) = $client->get_members($liste)) {
     if (!$det['own'] && !has_perms()) {
         $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
     }
-    $membres = Array();
-    foreach($mem as $member) {
-	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@'.$globals->mail->domain.'$/', $member[1], $matches)) {
-	    $key = strtoupper($matches[2]{0});
-	    $membres[$key][$matches[2].$matches[1]] = Array('n' => $member[0], 'l' => $matches[1], 'a' => $member[1]);
-	} else {
-	    $membres[0][] = Array('l' => $member[1], 'a' => $member[1]);
-	}
-    }
-    foreach($membres as $key=>$val) ksort($membres[$key]);
-    ksort($membres);
-
-    $moderos = Array();
-    foreach($own as $owner) {
-	list($m) = split('@',$owner);
-	$res = $globals->db->query("SELECT  CONCAT(prenom, ' ', nom), promo
-				      FROM  auth_user_md5 AS u
-			        INNER JOIN  aliases AS a ON u.user_id = a.id
-				     WHERE  a.alias = '$m'");
-	if(list($nom, $promo) = mysql_fetch_row($res)) {
-	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m, 'a'=>$owner);
-	} else {
-	    $moderos[0][] = Array('l' => $owner, 'a' => $owner);
-	}
-	mysql_free_result($res);
-    }
-    ksort($moderos);
+    
+    $membres = list_sort_members($mem, $tri_promo);
+    $moderos = list_sort_owners($own, $tri_promo);
 
     $page->assign_by_ref('details', $det);
     $page->assign_by_ref('members', $membres);

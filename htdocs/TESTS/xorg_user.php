@@ -7,7 +7,7 @@ Mock::generate('XorgPage');
 
 class TestOfXOrgUsers extends UnitTestCase {
     function TestOfXOrgUsers() {
-        $this->UnitTestCase('XOrg Users Test');
+        $this->UnitTestCase('Users functions');
     }
 
     function test_get_user_login() {

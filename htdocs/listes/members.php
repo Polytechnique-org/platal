@@ -41,39 +41,8 @@ $members = $client->get_members($liste);
 $tri_promo = empty($_REQUEST['alpha']);
 
 if(list($det,$mem,$own) = $members) {
-    $membres = Array();
-    foreach($mem as $member) {
-        list($m) = split('@',$member[1]);
-        $res = $globals->db->query("SELECT  prenom,IF(epouse='', nom, epouse), promo
-                                      FROM  auth_user_md5 AS u
-                                INNER JOIN  aliases AS a ON u.user_id = a.id
-                                     WHERE  a.alias = '$m'");
-        if(list($prenom, $nom, $promo) = mysql_fetch_row($res)) {
-	    $key = $tri_promo ? $promo : strtoupper($nom{0});
-            $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
-        } else {
-            $membres[0][] = Array('l' => $member[1]);
-        }
-        mysql_free_result($res);
-    }
-    ksort($membres);
-    foreach($membres as $key=>$val) ksort($membres[$key]);
-
-    $moderos = Array();
-    foreach($own as $owner) {
-	list($m) = split('@',$owner);
-	$res = $globals->db->query("SELECT  IF(epouse='', CONCAT(prenom, ' ', nom), CONCAT(prenom, ' ', epouse)), promo
-				      FROM  auth_user_md5 AS u
-			        INNER JOIN  aliases AS a ON u.user_id = a.id
-				     WHERE  a.alias = '$m'");
-	if(list($nom, $promo) = mysql_fetch_row($res)) {
-	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m);
-	} else {
-	    $moderos[0][] = Array('l' => $owner);
-	}
-	mysql_free_result($res);
-    }
-    ksort($moderos);
+    $membres = list_sort_members($mem, $tri_promo);
+    $moderos = list_sort_owners($own, $tri_promo);
 
     $page->assign_by_ref('details', $det);
     $page->assign_by_ref('members', $membres);
