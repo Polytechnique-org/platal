@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.38 2004-11-17 10:12:45 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.39 2004-11-17 10:53:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -226,11 +226,10 @@ function start_connexion ($uid, $identified) {
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN	aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
-    INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias') AND a2.alias LIKE '%.%')
-     LEFT JOIN  logger.sessions AS s ON (s.uid=u.user_id AND s.suid=0)
+    INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
+     LEFT JOIN  logger.sessions AS s  ON (s.uid=u.user_id AND s.suid=0)
          WHERE  u.user_id=$uid
-      ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)
-         LIMIT  1");
+      ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
 	 $lastnewslogin, $watch_last,
 	 $bestalias, $password, $femme) = mysql_fetch_row($result);
