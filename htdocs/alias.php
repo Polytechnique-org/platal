@@ -24,14 +24,17 @@ require_once("validations.inc.php");
 
 new_skinned_page('alias.tpl', AUTH_MDP);
 
-$page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
+$uid     = Session::getInt('uid');
+$forlife = Session::get('forlife');
+
+$page->assign('demande', AliasReq::get_unique_request($uid));
 
 //Récupération des alias éventuellement existants
 $sql = "SELECT  alias
           FROM  virtual
     INNER JOIN  virtual_redirect USING(vid)
-          WHERE (  redirect='{$_SESSION['forlife']}@{$globals->mail->domain}'
-                OR redirect='{$_SESSION['forlife']}@{$globals->mail->domain2}' )
+          WHERE (  redirect='$forlife@{$globals->mail->domain}'
+                OR redirect='$forlife@{$globals->mail->domain2}' )
                 AND alias LIKE '%@{$globals->mail->alias_dom}'";
 if($result = $globals->db->query($sql)) {
     list($aliases) = mysql_fetch_row($result);
@@ -40,9 +43,9 @@ if($result = $globals->db->query($sql)) {
 }
 
 //Si l'utilisateur vient de faire une damande
-if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
-    $alias  = $_REQUEST['alias'];
-    $raison = $_REQUEST['raison'];
+if (Env::has('alias') and Env::has('raison')) {
+    $alias  = Env::get('alias');
+    $raison = Env::get('raison');
 
     $page->assign('r_alias', $alias);
     $page->assign('r_raison', $raison);
@@ -74,7 +77,7 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         }
 
         //Insertion de la demande dans la base, écrase les requêtes précédente
-        $myalias = new AliasReq($_SESSION['uid'], $alias, $raison);
+        $myalias = new AliasReq($uid, $alias, $raison);
         $myalias->submit();
         $page->assign('success',$alias);
         $page->run('succes');

@@ -19,22 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+// {{{ function smarty_modifier_stripslashes()
 
-if (isset($_SESSION['suid'])) { require_once('./exit.php'); }
-
-if (isset($_SESSION['log'])) {
-    $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "";
-    $_SESSION['log']->log("deconnexion",$ref);
+/**
+ * smarty modifier that perform a glob in the templates directory
+ */
+function smarty_modifier_stripslashes($string)
+{
+    return stripslashes($string);
 }
 
-session_destroy();
-$_SESSION = array();
-if(isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGuid'])) {
-    header("Location: login.php");
-}
+// }}}
 
-new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);
-
-$page->run();
 ?>

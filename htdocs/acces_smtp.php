@@ -21,36 +21,30 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('acces_smtp.tpl', AUTH_MDP);
+    
+$uid  = Session::getInt('uid');
+$pass = Env::get('smtppass1');
 
-if (isset($_REQUEST['op']) && $_REQUEST['op'] == "Valider"
-        && isset($_REQUEST['smtppass1']) && isset($_REQUEST['smtppass2'])
-        && $_REQUEST['smtppass1'] == $_REQUEST['smtppass2']
-        && strlen($_REQUEST['smtppass1'])>=6) {
+if ( Env::get('op') == "Valider" && Env::get('smtppass1') == Env::get('smtppass2') && strlen($pass) >= 6 ) {
 
-    // on change le mot de passe
-    $result = $globals->db->query("select smtppass from auth_user_md5 where user_id = ".$_SESSION['uid']);
-    list($smtppass_old) = mysql_fetch_row($result);
-    mysql_free_result($result);
-    $globals->db->query("update auth_user_md5 set smtppass = '{$_REQUEST['smtppass1']}' where user_id = ".$_SESSION['uid']);
+    $globals->db->query("update auth_user_md5 set smtppass = '$pass' where user_id = $uid");
     $_SESSION['log']->log("passwd_ssl");
-
     $page->trig('Mot de passe enregistré');
 
-} elseif (isset($_REQUEST['op']) && $_REQUEST['op'] == "Supprimer") {
+} elseif (Env::get('op') == "Supprimer") {
 
-    $globals->db->query("update auth_user_md5 set smtppass = '' where user_id = ".$_SESSION['uid']);
+    $globals->db->query("update auth_user_md5 set smtppass = '' where user_id = $uid");
     $_SESSION['log']->log("passwd_del");
     $page->trig('Compte SMTP et NNTP supprimé');
 
 }
 
-$result = $globals->db->query("select smtppass from auth_user_md5 where user_id = ".$_SESSION['uid']);
-list($smtppass_old) = mysql_fetch_row($result);
+$result = $globals->db->query("select IF(smtppass != '', 'actif', '') from auth_user_md5 where user_id = ".$_SESSION['uid']);
+list($actif) = mysql_fetch_row($result);
 mysql_free_result($result);
 
-$page->assign('actif', ($smtppass_old != ""));
-
-$page->run(($smtppass_old != "") ? "actif" : "");
+$page->assign('actif', $actif);
+$page->run($actif);
 
 // vim:et:sw=4:
 ?>

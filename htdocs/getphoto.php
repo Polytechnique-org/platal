@@ -63,9 +63,7 @@ if(isset($_REQUEST['x'])) {
 	    echo $data;
 	} else {
 	    Header(  "Content-type: image/png");
-	    $f=fopen(url("images/none.png"),"r");
-	    echo fread($f,30000);
-	    fclose($f);
+	    echo file_get_contents(dirname(__FILE__)."/images/none.png");
 	}
     }
 }

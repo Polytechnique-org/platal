@@ -21,7 +21,8 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('index.tpl', AUTH_PUBLIC);
-if(logged())
+if (logged()) {
     header("Location: login.php");
+}
 $page->run();
 ?>

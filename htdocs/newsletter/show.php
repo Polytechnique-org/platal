@@ -29,7 +29,9 @@ $page->assign_by_ref('nl',$nl);
 
 if(isset($_POST['send'])) {
     $res = $globals->db->query("SELECT pref FROM newsletter_ins WHERE user_id='{$_SESSION['uid']}'");
-    if(!(list($format) = mysql_fetch_row($res))) $format = 'html';
+    if (!(list($format) = mysql_fetch_row($res))) {
+        $format = 'html';
+    }
     $nl->sendTo($_SESSION['prenom'], $_SESSION['nom'], $_SESSION['bestalias'], $_SESSION['femme'], $format=='html');
 }
 

@@ -31,7 +31,7 @@
     </tr>
     <tr>
       <td>Nouvel&nbsp;alias&nbsp;:</td>
-      <td>{$valid->alias}@{#globals.mail.alias_dom}</td>
+      <td>{$valid->alias}@{#globals.mail.alias_dom#}</td>
     </tr>
     <tr>
       <td>Motif :</td>

@@ -45,6 +45,7 @@ define('NO_SKIN', 1);
 
 require_once("xorg.globals.inc.php");
 require_once('xorg/session.inc.php');
+require_once('xorg/env.inc.php');
 XorgGlobals::init();
 XorgSession::init();
 

@@ -22,51 +22,46 @@
 require_once("xorg.inc.php");
 new_skinned_page('emails/send.tpl',AUTH_MDP);
 
-
 // action si on recoit un formulaire
-if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
-    and isset($_REQUEST['to']) and isset($_REQUEST['sujet']) 
-    and isset($_REQUEST['contenu']) and isset($_REQUEST['cc'])
-    and isset($_REQUEST['bcc'])) {
-        $autre_to = (isset($_REQUEST['contacts']) ? join(', ',$_REQUEST['contacts']) : '');
+if (Env::get('submit') == 'Envoyer')
+{
+    $to2  = stripslashes(join(', ', Env::getMixed('contacts', Array())));
+    $txt  = str_replace('^M', '', stripslashes(Env::get('contenu')));
+    $to   = stripslashes(Env::get('to'));
+    $subj = stripslashes(Env::get('sujet'));
+    $from = stripslashes(Env::get('from'));
+    $cc   = stripslashes(Env::get('cc'));
+    $bcc  = stripslashes(Env::get('bcc'));
 
-    if (get_magic_quotes_gpc()) {
-	$_REQUEST['contenu'] = str_replace('', '', stripslashes($_REQUEST['contenu']));
-	$_REQUEST['to'] = stripslashes($_REQUEST['to']);
-	$_REQUEST['sujet'] = stripslashes($_REQUEST['sujet']);
-	$_REQUEST['from'] = stripslashes($_REQUEST['from']);
-	$_REQUEST['cc'] = stripslashes($_REQUEST['cc']);
-	$_REQUEST['bcc'] = stripslashes($_REQUEST['bcc']);
-	$autre_to = stripslashes($autre_to);
-    }
-    
-    if ($_REQUEST['to'] == '' and $_REQUEST['cc'] == '' and $autre_to == '') {
+    if (empty($to) && empty($cc) && empty($to2)) {
         $page->trig("Indique au moins un destinataire.");
     } else {
         require_once("diogenes.hermes.inc.php");
-        //$_REQUEST['contenu'] = chunk_split($_REQUEST['contenu'], 76, "\n"); // pas bon, ne tient pas compte des mots
-	$dest = $_REQUEST['to'].', '.$autre_to;
+
         $mymail = new HermesMailer();
-	$mymail->setFrom($_REQUEST['from']);
-	$mymail->addTo($dest);
-	$mymail->setSubject($_REQUEST['sujet']);
-	if (!empty($_REQUEST['cc'])) $mymail->addCc($_REQUEST['cc']);
-	if (!empty($_REQUEST['bcc'])) $mymail->addBcc($_REQUEST['bcc']);
-        $mymail->setTxtBody(wordwrap($_REQUEST['contenu'],72,"\n"));
+	$mymail->setFrom($from);
+	$mymail->setSubject($subj);
+	if (!empty($to))  { $mymail->addTo($to); }
+	if (!empty($cc))  { $mymail->addCc($cc); }
+	if (!empty($bcc)) { $mymail->addCc($bcc); }
+	if (!empty($to2)) { $mymail->addTo($to2); }
+        $mymail->setTxtBody(wordwrap($txt,72,"\n"));
         if ($mymail->send()) {
             $page->trig("Ton mail a bien été envoyé.");
-            $_REQUEST = array();
+            $_REQUEST = array('bcc' => Session::get('bestalias').'@'.$globals->mail->domain);
         } else {
             $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
         }
-    } // ! if ($_REQUEST['to'] == '' and $_REQUEST['cc'] == '')
+    }
+} else {
+    $_REQUEST['bcc'] = Session::get('bestalias').'@'.$globals->mail->domain;
 }
 
 $sql = "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
           FROM  auth_user_md5 AS u
     INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
     INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-         WHERE  c.uid = {$_SESSION['uid']}
+         WHERE  c.uid = ".Session::getInt('uid')."
         ORDER BY u.nom, u.prenom";
 $page->mysql_assign($sql, 'contacts','nb_contacts');
 

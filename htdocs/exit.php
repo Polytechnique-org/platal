@@ -24,8 +24,7 @@ new_skinned_page('index.tpl',AUTH_MDP);
 
 if (isset($_SESSION['suid'])) {
     $suid = $_SESSION['suid'];
-    $log_data = "{$_SESSION['forlife']} by $suid}";
-    $_SESSION['log']->log("suid_stop",$log_data);
+    $_SESSION['log']->log("suid_stop", "{$_SESSION['forlife']} by {$suid['forlife']}");
     $_SESSION = $suid;
     unset($_SESSION['suid']);
 }

@@ -39,6 +39,7 @@
   {literal}
   function check(form) {
     if(form.sujet.value == "") {
+      form.sujet.focus();
       return confirm ("Le sujet du mail est vide, veux tu continuer ?");
     }
     return true;
@@ -48,16 +49,16 @@
 </script>
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" onsubmit="return check(this);">
-  <table class="bicol" cellpadding="2" cellspacing="0" summary="En-têtes du message">
+  <table class="bicol" cellpadding="2" cellspacing="0">
     <tr> 
-      <th colspan="2">en-têtes</th>
+      <th colspan="2">Destinataires</th>
     </tr>
     <tr> 
       <td class="titre">de&nbsp;:</td>
       <td>
         <input type='hidden' name='signature' value='1' />
         <input type='text' name='from' size='60' value='{if $smarty.request.from}
-{$smarty.request.from}
+{$smarty.request.from|stripslashes}
 {else}
 "{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.bestalias}@{#globals.mail.domain#}&gt;
 {/if}' />
@@ -66,25 +67,19 @@
     <tr> 
       <td class="titre">à&nbsp;:</td>
       <td>
-        <input type='text' name='to' size='60' value="{$smarty.request.to}" />
+        <input type='text' name='to' size='60' value="{$smarty.request.to|stripslashes}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie&nbsp;:</td>
       <td>
-        <input type='text' name='cc' size='60' value="{$smarty.request.cc}" />
+        <input type='text' name='cc' size='60' value="{$smarty.request.cc|stripslashes}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='60' value="{$smarty.request.bcc|default:$smarty.session.bestalias}@{#globals.mail.domain#}" />
-      </td>
-    </tr>
-    <tr> 
-      <td class="titre">sujet&nbsp;:</td>
-      <td> 
-        <input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" />
+        <input type='text' name='bcc' size='60' value="{$smarty.request.bcc|stripslashes}" />
       </td>
     </tr>
   </table>
@@ -131,14 +126,22 @@
 
   <table class="bicol" cellspacing="0" cellpadding="2" summary="Corps du message">
     <tr> 
+      <th>sujet</th>
+    </tr>
+    <tr> 
+      <td class="center"> 
+        <input type='text' name='sujet' size='75' value="{$smarty.request.sujet|stripslashes}" />
+      </td>
+    </tr>
+    <tr> 
       <th>
-        contenu
+        Corps du mail
       </th>
     </tr>
     <tr> 
       <td class="center">
         <textarea name='contenu' rows="30" cols="75">
-{$smarty.request.contenu}
+{$smarty.request.contenu|stripslashes}
 {if !$smarty.request.contenu}
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}
@@ -146,7 +149,7 @@
       </td>
     </tr>
     <tr> 
-      <td class="center"> 
+      <td class="center">
         <input type="submit" name="submit" value="Envoyer" />
       </td>
     </tr>
