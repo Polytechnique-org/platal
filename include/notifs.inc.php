@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.3 2004-11-05 13:41:31 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.4 2004-11-05 13:49:16 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.flagset.inc.php');
@@ -48,18 +48,24 @@ class Notifs {
 	mysql_free_result($res);
 	$this->flags = new FlagSet($flags);
 	
-	$res = $globals->db->query("SELECT  type,arg,prenom,nom,promo
+	$res = $globals->db->query("SELECT  type,arg,prenom,nom,promo,u.user_id
 				      FROM  watch         AS w
 				 LEFT JOIN  auth_user_md5 AS u ON(u.user_id = w.arg)
 				     WHERE  w.user_id = '$uid'
 				  ORDER BY  promo,nom,arg");
-	while(list($type, $arg, $prenom, $nom, $promo) = mysql_fetch_row($res)) {
+	while(list($type, $arg, $prenom, $nom, $promo, $uid) = mysql_fetch_row($res)) {
 	    if($type=='promo') {
 		$this->promos[$arg] = $arg;
 	    } elseif($type =='non-inscrit') {
-		$this->nonins[$arg] = Array('prenom'=>$prenom, 'nom'=>$nom, 'promo'=>$promo);
+		$this->nonins[$arg] = Array('prenom'=>$prenom, 'nom'=>$nom, 'promo'=>$promo, 'uid'=>$uid);
 	    }
 	}
+    }
+
+    function del_nonins($p) {
+	global $globals;
+	unset($this->nonins[$p]);
+	$globals->db->query("DELETE FROM watch WHERE user_id='{$this->uid}' AND type='non-inscrit' AND arg='$p'");
     }
 
     function del_promo($p) {

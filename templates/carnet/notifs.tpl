@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.5 2004-11-05 13:41:31 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.6 2004-11-05 13:49:16 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -83,7 +83,7 @@ Pour les non-inscrits, tu es notifié lorsqu'il s'inscrit, ou lorsque ce camarade
 <p>
 Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à tes contacts.
 </p>
-
+<!--
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Ajouter un non-inscrit</legend>
@@ -92,7 +92,7 @@ Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à t
     <span class='smaller'>Il faut entrer le "login" (prenom.nom ou prenom.nom.promo).</span>
   </fieldset>
 </form>
-
+-->
 <table class='tinybicol' cellpadding="0" cellspacing="0">
   <tr>
     <td>
@@ -102,7 +102,9 @@ Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à t
       <p>Tu surveilles {if $notifs->nonins|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
       <ul>
         {foreach from=$notifs->nonins item=p}
-        <li>{$p.prenom} {$p.nom} ({$p.promo})</li>
+        <li>
+        {$p.prenom} {$p.nom} ({$p.promo}) <a href="?del_nonins={$p.uid}"><img src="{"images/retirer.gif"|url}" alt="retirer" /></a>
+        </li>
         {/foreach}
       </ul>
       {/if}
