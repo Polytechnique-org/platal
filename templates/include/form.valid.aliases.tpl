@@ -1,4 +1,4 @@
-{* $Id: form.valid.aliases.tpl,v 1.3 2004-02-11 15:35:33 x2000habouzit Exp $ *}
+{* $Id: form.valid.aliases.tpl,v 1.4 2004-08-24 09:07:58 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
@@ -20,7 +20,7 @@
 <tr>
   <td>Motif :</td>
   <td style="border: 1px dotted inherit">
-    {$this->raison|escape:"html"|nl2br}
+    {$this->raison|nl2br}
   </td>
 </tr>
 <tr>

@@ -1,4 +1,4 @@
-{* $Id: sendmail.tpl,v 1.2 2004-02-09 17:47:06 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.3 2004-08-24 09:07:57 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -31,34 +31,34 @@
       <td class="titre">de&nbsp;:</td>
       <td>
         <input type='text' name='from' size=45 value="{if $smarty.request.from}
-{$smarty.request.from|escape:"html"}
+{$smarty.request.from}
 {else}
-{"\"`$smarty.session.prenom` `$smarty.session.nom`\" &lt;`$smarty.session.username`@polytechnique.org&gt;"|escape:"html"}
+"{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.username}@polytechnique.org&gt;
 {/if}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">à&nbsp;:</td>
       <td>
-        <input type='text' name='to' size=45 value="{$smarty.request.to|escape:"html"}" />
+        <input type='text' name='to' size=45 value="{$smarty.request.to}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie&nbsp;:</td>
       <td>
-        <input type='text' name='cc' size=45 value="{$smarty.request.cc|escape:"html"}" />
+        <input type='text' name='cc' size=45 value="{$smarty.request.cc}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size=45 value="{$smarty.request.bcc|escape:"html"}" />
+        <input type='text' name='bcc' size=45 value="{$smarty.request.bcc}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">sujet&nbsp;:</td>
       <td> 
-        <input type='text' name='sujet' size=45 value="{$smarty.request.sujet|escape:"html"}" />
+        <input type='text' name='sujet' size=45 value="{$smarty.request.sujet}" />
       </td>
     </tr>
   </table>
@@ -79,7 +79,7 @@
 {/if}
     <td>
       <input type="checkbox" name="contacts[{$contact.username}]"
-      value="{"`$contact.prenom` `$contact.nom` &lt;`$contact.username`@polytechnique.org&gt;"|escape:"html"}"
+      value="{"`$contact.prenom` `$contact.nom` &lt;`$contact.username`@polytechnique.org&gt;"}"
         {if $smarty.request.contacts && $smarty.request.contacts.username}checked="checked"{/if} />
       <a href="javascript:x()" onclick="popWin('x.php?x={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>

@@ -1,4 +1,4 @@
-{* $Id: form.valid.emploi.tpl,v 1.1 2004-02-07 17:18:16 x2000habouzit Exp $ *}
+{* $Id: form.valid.emploi.tpl,v 1.2 2004-08-24 09:07:58 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
@@ -13,14 +13,14 @@
   <tbody>
     <tr>
       <td>Demandeur</td>
-      <td>{$valid->entreprise|escape:"html"} ({$valid->mail|escape:"html"})</td>
+      <td>{$valid->entreprise} ({$valid->mail})</td>
     </tr>
     <tr>
       <td>Titre du post</td>
-      <td>{$valid->titre|escape:"html"}</td>
+      <td>{$valid->titre}</td>
     </tr>
     <tr>
-      <td colspan="2"><pre>{$valid->text|escape:"html"}</pre></td>
+      <td colspan="2"><pre>{$valid->text}</pre></td>
     </tr>
     <tr>
       <td class="center" colspan="2">

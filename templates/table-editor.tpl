@@ -1,4 +1,4 @@
-{* $Id: table-editor.tpl,v 1.5 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: table-editor.tpl,v 1.6 2004-08-24 09:07:57 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -101,7 +101,7 @@
       </td>
       <td>
         {if $myval.type=="textarea"}
-        <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value|escape}</textarea>
+        <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value}</textarea>
         {elseif $myval.type=="set"}
         {if $myval.trans}
         {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.trans[$myval.value] trans=$myval.trans}
@@ -115,7 +115,7 @@
         {elseif $myval.type=="password"}
         <input type="password" name="{$prefix}{$mykey}" size="40" />
         {else}
-        <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value|escape}" />
+        <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value}" />
         {/if}
       </td>
     </tr>

@@ -1,4 +1,4 @@
-{* $Id: form.valid.ml.tpl,v 1.2 2004-02-11 15:35:33 x2000habouzit Exp $ *}
+{* $Id: form.valid.ml.tpl,v 1.3 2004-08-24 09:07:58 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
@@ -15,7 +15,7 @@
 </tr>
 <tr>
   <td>Motif :</td>
-  <td>{$valid->comment|escape:"html"|nl2br}
+  <td>{$valid->comment|nl2br}
   </td>
 </tr>
 <tr>

@@ -1,4 +1,4 @@
-{* $Id: rss.tpl,v 1.2 2004-02-19 13:22:05 x2000habouzit Exp $ *}
+{* $Id: rss.tpl,v 1.3 2004-08-24 09:07:57 x2000habouzit Exp $ *}
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
@@ -14,7 +14,7 @@
 
 {foreach item=line from=$rss}
 <item>
-<title>{$line.titre|strip_tags|escape:"html"}</title>
+<title>{$line.titre|strip_tags}</title>
 <link>http://{$smarty.server.SERVER_NAME}/login.php#newsid{$line.id}</link>
 </item>
 {/foreach}

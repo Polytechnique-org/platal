@@ -1,4 +1,4 @@
-{* $Id: evenements.tpl,v 1.1 2004-07-19 13:35:35 x2000habouzit Exp $ *}
+{* $Id: evenements.tpl,v 1.2 2004-08-24 09:07:57 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposition d'information événementielle
@@ -38,12 +38,12 @@ Tu as ajouté le message suivant à l'intention du validateur : {$validation_messa
 {/if}
 
 <form action="{$smarty.request.PHP_SELF}" method="post" name="evenement_nouveau">
-  <input type="hidden" name="titre" value="{$titre|escape}" />
-  <input type="hidden" name="texte" value="{$texte|escape}" />
+  <input type="hidden" name="titre" value="{$titre}" />
+  <input type="hidden" name="texte" value="{$texte}" />
   <input type="hidden" name="promo_min" value="{$promo_min}" />
   <input type="hidden" name="promo_max" value="{$promo_max}" />
   <input type="hidden" name="peremption" value="{$peremption}" />
-  <input type="hidden" name="validation_message" value="{$validation_message|escape}" />
+  <input type="hidden" name="validation_message" value="{$validation_message}" />
   <input type="submit" name="action" value="Confirmer" />
   <input type="submit" name="action" value="Modifier" />
 </form>

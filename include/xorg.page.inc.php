@@ -35,10 +35,11 @@ class XorgPage extends DiogenesCorePage {
         $this->plugins_dir[]= $globals->spoolroot."/plugins/";
         $this->config_dir   = $globals->spoolroot."/configs/";
         $this->cache_dir    = $globals->spoolroot."/cache/";
-
-        $this->config_overwrite=false;
-        $this->compile_check = isset($site_dev);
-        $this->caching = ($type == SKINNED);
+        
+	$this->default_modifiers = Array('escape');
+        $this->config_overwrite  = false;
+        $this->compile_check     = isset($site_dev);
+        $this->caching	         = ($type == SKINNED);
 
         $this->_page_type = $type;
         $this->_tpl = $tpl;

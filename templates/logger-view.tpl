@@ -1,4 +1,4 @@
-{* $Id: logger-view.tpl,v 1.2 2004-02-20 03:01:10 x2000habouzit Exp $ *}
+{* $Id: logger-view.tpl,v 1.3 2004-08-24 09:07:57 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Parcours des logs du site
@@ -38,7 +38,7 @@
 <tr class="{cycle values="impair,pair"}">
   <td style="font-size:90%;">{$myevent.stamp|date_format:"%Y-%m-%d %H:%M:%S"}</td>
   <td><strong>{$myevent.text}</strong></td>
-  <td>{$myevent.data|escape}</td>
+  <td>{$myevent.data}</td>
 </tr>
 {/foreach}
 </table>

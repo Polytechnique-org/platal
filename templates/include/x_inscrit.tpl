@@ -1,4 +1,4 @@
-{* $Id: x_inscrit.tpl,v 1.2 2004-02-19 13:42:58 x2000habouzit Exp $ *}
+{* $Id: x_inscrit.tpl,v 1.3 2004-08-24 09:07:58 x2000habouzit Exp $ *}
 
 <div class="contact">
   <div class="nom">
@@ -62,16 +62,16 @@
       <tr>
         <td class="lt">Profession:</td>
         <td class="rt">
-          {$c.entreprise|escape:"html"}
-          {if $c.secteur}( {$c.secteur|escape:"html"} ){/if}
-          {if $c.fonction}<br />{$c.fonction|escape:"html"} ){/if}
+          {$c.entreprise}
+          {if $c.secteur}( {$c.secteur} ){/if}
+          {if $c.fonction}<br />{$c.fonction} ){/if}
         </td>
       </tr>
       {/if}
       {if $c.libre}
       <tr>
         <td class="lt">Commentaire:</td>
-        <td class="rt">{$c.libre|escape:"html"|nl2br}</td>
+        <td class="rt">{$c.libre|nl2br}</td>
       </tr>
       {/if}
     </table>
