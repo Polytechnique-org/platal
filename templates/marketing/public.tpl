@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: public.tpl,v 1.4 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: public.tpl,v 1.5 2004-10-09 14:30:01 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -64,7 +64,6 @@
 </p>
 
 <form method="post" action="{$smarty.server.PHP_SELF}">
-  <input type="hidden" name="num" value="{$smarty.request.num}" />
   <table class="bicol" summary="Fiche camarade">
     <tr class="impair"><td>Nom :</td><td>{$nom}</td></tr>
     <tr class="pair"><td>Prénom :</td><td>{$prenom}</td></tr>
@@ -83,8 +82,11 @@
       </td>
     </tr>
   </table>
-  <br />
-  <input type="submit" name="valide" value="Valider" />
+  <div>
+    <br />
+    <input type="hidden" name="num" value="{$smarty.request.num}" />
+    <input type="submit" name="valide" value="Valider" />
+  </div>
 </form>
 {/if}
 
