@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.20 2004-11-09 10:13:49 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.21 2004-11-27 16:01:04 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -43,7 +43,11 @@
   </tr>
   {foreach from=$subs item=s}
   <tr class='{cycle values="pair,impair"}'>
-    <td>{$s.name}</td>
+    <td>{$s.name}{if $s.login}
+      <a href="{rel}/fiche.php?user={$s.login}" class="popup2">{*
+        *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+      {/if}
+    </td>
     <td>{$s.addr}</td>
     <td class='action'>
       <a href='?liste={$smarty.request.liste}&amp;sadd={$s.id}'>ajouter</a>

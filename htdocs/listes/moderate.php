@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.22 2004-11-22 20:04:44 x2000habouzit Exp $
+        $Id: moderate.php,v 1.23 2004-11-27 16:01:03 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -53,6 +53,8 @@ if(isset($_REQUEST['mid'])) {
     $mailer->setFrom("$liste-bounces@polytechnique.org");
     $mailer->addHeader('Reply-To', "$liste-owner@polytechnique.org");
 
+    $mail = $client->get_pending_mail($liste, $mid);
+
     if(isset($_REQUEST['mok'])) {
 	unset($_GET['mid']);
 	if($client->handle_request($liste,$mid,1,'')) { /** 1 = APPROVE **/
@@ -67,7 +69,6 @@ if(isset($_REQUEST['mid'])) {
 	}
     } elseif(isset($_POST['mno'])) {
 	$reason = stripslashes($_POST['reason']);
-	$mail = $client->get_pending_mail($liste, $mid);
 	if($client->handle_request($liste,$mid,2,$reason)) { /** 2 = REJECT **/
 	    $mailer->setSubject("Message refusé");
 	    $texte = "le message suivant :\n\n"
@@ -81,7 +82,6 @@ if(isset($_REQUEST['mid'])) {
 	}
     } elseif(isset($_REQUEST['mdel'])) {
 	unset($_GET['mid']);
-	$mail = $client->get_pending_mail($liste, $mid);
 	if($client->handle_request($liste,$mid,3,'')) { /** 3 = DISCARD **/
 	    $mailer->setSubject("Message supprimé");
 	    $texte = "le message suivant :\n\n"
@@ -132,6 +132,11 @@ if(isset($_REQUEST['sid'])) {
         $page->assign_by_ref('mail', $mail);
     } else {
 	if(list($subs,$mails) = $client->get_pending_ops($liste)) {
+            foreach ($subs as $key=>$val) {
+                if (preg_match('/^([^.]*\.[^.]*\.\d\d\d\d)@polytechnique.org$/', $subs['addr'], $matches)) {
+                    $subs[$key]['login'] = $matches[1];
+                }
+            }
 	    $page->assign_by_ref('subs', $subs);
 	    $page->assign_by_ref('mails', $mails);
 	} else
