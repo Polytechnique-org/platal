@@ -25,7 +25,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ docs ]----------------------------------+----------------
 ;	  | docs/FROM.php							  | docs/from.php
 ;	  | en-cours.php							  | docs/en-cours.php
-;	  | info-groupesx.php						  | docs/info-groupesx.php
 ;	  | plan.php								  | ? docs/plan.php
 ;	  | services.php							  | docs/services.php
 ------+-[ emails ... ]----------------------------+----------------
@@ -55,7 +54,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ bordel postponed ]----------------------+----------------
 ;!	  | admin/comptesPOP.php					  | ???
 ;!	  | admin/pg.php							  | 
-;!	  | domaine.php								  | 
 ;!	  | pg.confirm.php							  | 
 ;!	  | pg.php									  | 
 ------+-[ stats ]---------------------------------+----------------
