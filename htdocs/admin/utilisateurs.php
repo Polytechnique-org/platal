@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.30 2004-11-17 10:49:50 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.31 2004-11-18 13:45:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -129,7 +129,8 @@ if(isset($mr)) {
 			    perms='{$_REQUEST['permsN']}',
 			    prenom='{$_REQUEST['prenomN']}',
 			    nom='{$_REQUEST['nomN']}',
-			    promo='{$_REQUEST['promoN']}'
+			    promo='{$_REQUEST['promoN']}',
+			    comment='{$_REQUEST['commentN']}'
 			  WHERE user_id='{$_REQUEST['user_id']}'";
 		$globals->db->query($query);
 		$r=$globals->db->query("SELECT  *
@@ -152,44 +153,25 @@ if(isset($mr)) {
 		    .  "Opérations effectuées\n\n\"".$query
 		    .  "\"\n\nCe rapport a été généré par le script d'administration";
 		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION ADMIN",$msg);
+		$mailer->setSubject("INTERVENTION ADMIN");
+		$mailer->setTxtBody($msg);
 		$mailer->send();
 		break;
 
 	// DELETE FROM auth_user_md5
 	    case "u_kill":
-
-		$user_id = $_REQUEST['user_id'];
-
-		$query = "DELETE FROM auth_user_md5 WHERE user_id='$user_id'";
-		$globals->db->query($query);
-		$globals->db->query("delete from emails where uid=$user_id");
-		$globals->db->query("delete from binets_ins where user_id=$user_id");
-		$globals->db->query("delete from groupesx_ins where guid=$user_id");
-		$globals->db->query("delete from photo where uid=$user_id");
-		$globals->db->query("delete from perte_pass where uid=$user_id");
-		$globals->db->query("delete from user_changes where user_id=$user_id");
-		$globals->db->query("delete from aliases where id=$user_id and type in ('a_vie','alias')");
-		$globals->db->query("delete from listes_ins where idu=$user_id");
-		$globals->db->query("delete from listes_mod where idu=$user_id");
-		$globals->db->query("delete from applis_ins where uid=$user_id");
-		$globals->db->query("delete from contacts where uid=$user_id");
-		$globals->db->query("delete from contacts where contact=$user_id");
-		// on purge les entrees dans logger
-		$res=$globals->db->query("select id from logger.sessions where uid=$user_id");
-		while (list($session_id)=mysql_fetch_row($res))
-		    $globals->db->query("delete from logger.events where session=$session_id");
-		$globals->db->query("delete from logger.sessions where uid=$user_id");	
-
-		$errors[] = "'$user_id' a été supprimé !";
+		require_once("user.func.inc.php");
+		user_clear_all_subs($_REQUEST['user_id']);
+		$errors[] = "'{$_REQUEST['user_id']}' a été désinscrit !";
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
 		$msg = "Intervention manuelle de l'administrateur login=".$_SESSION['forlife']." (UID=".$_SESSION['uid'].")\n\n"
-		    .  "Opérations effectuées\n\n\"".$query
+		    .  "Opérations effectuées : utilisateur {$_REQUEST['user_id']} effacé\n\n\""
 		    .  "\"\n\nCe rapport a été généré par le script d'administration";
 		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION ADMIN",$msg);
+		$mailer->setSubject("INTERVENTION ADMIN");
+		$mailer->setTxtBody($msg);
 		$mailer->send();
 		break;
 	}

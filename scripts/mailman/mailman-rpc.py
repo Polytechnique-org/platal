@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.78 2004-11-11 23:08:57 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.79 2004-11-18 13:45:48 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -708,7 +708,7 @@ def check_options(userdesc,perms,vhost,listname,correct=False):
         return 0
 
 #-------------------------------------------------------------------------------
-# admin procedures [ soptions.php ]
+# super-admin procedures
 #
 
 def get_all_lists(userdesc,perms,vhost):
@@ -787,6 +787,23 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
         return 0
     return 1
 
+def kill(userdesc,perms,vhost,alias):
+    for list in Utils.list_names():
+        try:
+            mlist = MailList.MailList(list,lock=0)
+        except:
+            continue
+        try:
+            mlist.Lock()
+            mlist.ApprovedDeleteMember(alias+'@polytechnique.org',None,0,0)
+            mlist.Save()
+            mlist.Unlock()
+            print list
+        except:
+            mlist.Unlock()
+    return 1
+
+
 #-------------------------------------------------------------------------------
 # server
 #
@@ -860,6 +877,8 @@ server.register_function(check_options)
 # create
 server.register_function(get_all_lists)
 server.register_function(create_list)
+# utilisateurs.php
+server.register_function(kill)
 
 server.serve_forever()
 

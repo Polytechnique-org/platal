@@ -18,14 +18,13 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.13 2004-11-17 10:49:50 x2000habouzit Exp $
+        $Id: step4.php,v 1.14 2004-11-18 13:45:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('inscription/step4.tpl', AUTH_PUBLIC);
 
-require("inscription_listes_base.inc.php");
-require("inscription_forums_base.inc.php");
+require("user.func.inc.php");
 require('tpl.mailer.inc.php');
 
 define("ERROR_REF", 1);

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.21 2004-11-17 10:49:52 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.22 2004-11-18 13:45:49 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -56,7 +56,7 @@ Attention, déjà en SUID !!!
     </tr>
     <tr>
       <td class="center">
-        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login}" />
+        <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.forlife}" />
       </td>
     </tr>
     <tr>
@@ -144,6 +144,8 @@ function del_fwd(fwd) {
         <select name="permsN">
           <option value="user" {if $mr.perms eq "user"}selected="selected"{/if}>user</option>
           <option value="admin" {if $mr.perms eq "admin"}selected="selected"{/if}>admin</option>
+          <option value="non-inscrit" {if $mr.perms eq "non-inscrit"}selected="selected"{/if}>non-inscrit</option>
+          <option value="disabled" {if $mr.perms eq "disabled"}selected="selected"{/if}>disabled</option>
         </select>
       </td>
     </tr>
@@ -163,6 +165,14 @@ function del_fwd(fwd) {
         <input type="text" name="promoN" size="4" maxlength="4" value="{$mr.promo}" />
       </td>
     </tr>
+    <tr class="impair">
+      <td class="titre">
+        Commentaire
+      </td>
+      <td>
+        <input type="text" name="commentN" size="40" maxlength="64" value="{$mr.comment}" />
+      </td>
+    </tr>
     <tr class="center">
       <td>
         <a href="{"fiche.php"|url}?user={$mr.forlife}" class="popup2">[Voir fiche]</a>
@@ -176,7 +186,7 @@ function del_fwd(fwd) {
         <a href="admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
       </td>
       <td>
-        <input type="submit" name="u_kill_conf" value="DELETE" />
+        <input type="submit" name="u_kill_conf" value="Désinscrire" />
       </td>
     </tr>
   </table>

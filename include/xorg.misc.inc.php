@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.misc.inc.php,v 1.8 2004-10-29 14:59:26 x2000habouzit Exp $
+        $Id: xorg.misc.inc.php,v 1.9 2004-11-18 13:45:48 x2000habouzit Exp $
  ***************************************************************************/
 
 function quoted_printable_encode($input, $line_max = 76) {
@@ -29,26 +29,26 @@ function quoted_printable_encode($input, $line_max = 76) {
     $output = "";
 
     foreach ($lines as $j => $line) {
-        $linlen = strlen($line);
-        $newline = "";
-        for($i = 0; $i < $linlen; $i++) {
-            $c = $line{$i};
-            $dec = ord($c);
-            if ( ($dec == 32) && ($i == ($linlen - 1)) ) {
+	$linlen = strlen($line);
+	$newline = "";
+	for($i = 0; $i < $linlen; $i++) {
+	    $c = $line{$i};
+	    $dec = ord($c);
+	    if ( ($dec == 32) && ($i == ($linlen - 1)) ) {
 		// convert space at eol only
-                $c = "=20";
-            } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
+		$c = "=20";
+	    } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
 		// always encode "\t", which is *not* required
-                $c = $escape.strtoupper(sprintf("%02x",$dec));
-            }
-            if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
-                $output .= $newline.$escape.$eol;
-                $newline = "    ";
-            }
-            $newline .= $c;
-        } // end of for
-        $output .= $newline;
-        if ($j<count($lines)-1) $output .= $linebreak;
+		$c = $escape.strtoupper(sprintf("%02x",$dec));
+	    }
+	    if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
+		$output .= $newline.$escape.$eol;
+		$newline = "    ";
+	    }
+	    $newline .= $c;
+	} // end of for
+	$output .= $newline;
+	if ($j<count($lines)-1) $output .= $linebreak;
     }
     return trim($output);
 }
@@ -58,17 +58,17 @@ function quoted_printable_encode($input, $line_max = 76) {
  * @return BOOL
  */
 function isvalid_email_local($email) {
-  global $globals;
-  
-  $req = $globals->db->query("select count(*) from aliases where alias='$email'");
-  list($nb)=mysql_fetch_row($req);
-  mysql_free_result($req);
-  if ($nb>0) return true;
+    global $globals;
 
-  // reste à vérifier si c'est pas une adresse dans /etc/aliases
-  // surement possible en utilisant postmap -q $email hash:/etc/aliases
+    $req = $globals->db->query("select count(*) from aliases where alias='$email'");
+    list($nb)=mysql_fetch_row($req);
+    mysql_free_result($req);
+    if ($nb>0) return true;
 
-  return false;
+    // reste à vérifier si c'est pas une adresse dans /etc/aliases
+    // surement possible en utilisant postmap -q $email hash:/etc/aliases
+
+    return false;
 }
 
 /** vérifie si une adresse email convient comme adresse de redirection 
@@ -76,14 +76,14 @@ function isvalid_email_local($email) {
  * @return BOOL
  */
 function isvalid_email_redirection($email) {
-  return isvalid_email($email) && 
-         !preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
+    return isvalid_email($email) && 
+	!preg_match("/@(polytechnique\.(org|edu)|melix\.(org|net)|m4x\.org)$/", $email);
 }
 
 /* Un soundex en français posté par Frédéric Bouchery
-Voici une adaptation en PHP de la fonction soundex2 francisée de Frédéric BROUARD (http://sqlpro.developpez.com/Soundex/).
-C'est une bonne démonstration de la force des expressions régulières compatible Perl.
-trouvé sur http://expreg.com/voirsource.php?id=40&type=Chaines%20de%20caract%E8res */
+   Voici une adaptation en PHP de la fonction soundex2 francisée de Frédéric BROUARD (http://sqlpro.developpez.com/Soundex/).
+   C'est une bonne démonstration de la force des expressions régulières compatible Perl.
+   trouvé sur http://expreg.com/voirsource.php?id=40&type=Chaines%20de%20caract%E8res */
 function soundex_fr($sIn)
 { 
     // Si il n'y a pas de mot, on sort immédiatement 
@@ -122,18 +122,18 @@ function soundex_fr($sIn)
 }
 
 function make_forlife($prenom,$nom,$promo) {
-  /* on traite le prenom */
-  $prenomUS=replace_accent(trim($prenom));
-  $prenomUS=stripslashes($prenomUS);
-       
-  /* on traite le nom */
-  $nomUS=replace_accent(trim($nom));
-  $nomUS=stripslashes($nomUS);
-              
-  // calcul du login
-  $forlife = strtolower($prenomUS.".".$nomUS.".".$promo);
-  $forlife = str_replace(" ","-",$forlife);
-  $forlife = str_replace("'","",$forlife);
-  return $forlife;
+    /* on traite le prenom */
+    $prenomUS=replace_accent(trim($prenom));
+    $prenomUS=stripslashes($prenomUS);
+
+    /* on traite le nom */
+    $nomUS=replace_accent(trim($nom));
+    $nomUS=stripslashes($nomUS);
+
+    // calcul du login
+    $forlife = strtolower($prenomUS.".".$nomUS.".".$promo);
+    $forlife = str_replace(" ","-",$forlife);
+    $forlife = str_replace("'","",$forlife);
+    return $forlife;
 }
 ?>
