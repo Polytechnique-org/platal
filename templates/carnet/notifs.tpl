@@ -17,67 +17,48 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.2 2004-11-04 17:47:24 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.3 2004-11-04 18:24:01 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Notifications automatiques</h1>
 
+<p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
+S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
+
+<p>tu peux ici activer la surveillance de tes contacts, ce qui te permet :</p>
+<ul>
+  <li>d'être notifié lorsque tes contacts changent leur fiche</li>
+  <li>d'être notifié lorsque un de tes contacts décède</li>
+  <li>si tu le désires, lorsque tu es notifié du décès d'un de tes camarades, il peut être automatiquement retiré de ta liste de contact.
+  (dans cec as ta liste de contact est vidée de tous les camarades qui sont décédés)
+  </li>
+</ul>
+
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
-    <legend>Contacts</legend>
-    <input type='checkbox' name='' /> Surveiller les changements de fiche de tes contacts<br />
-    <input type='checkbox' name='' /> Surveiller les décès parmis tes contacts
+    <legend>Options</legend>
+    <input type='checkbox' name='' /> Surveiller mes contacts<br />
+    <input type='checkbox' name='' /> Supprimer les camarades décédés de mes contacts
   </fieldset>
-  
-  <fieldset>
-    <legend>Surveillance des promos</legend>
-    <input type='checkbox' name='' /> Surveiller les inscriptions<br />
-    <input type='checkbox' name='' /> Surveiller les décès<br />
-  </fieldset>
-  
-  <fieldset>
-    <legend>Surveillance des non-inscrits</legend>
-    <input type='checkbox' name='' /> Surveiller les inscriptions<br />
-    <input type='checkbox' name='' /> Surveiller les décès<br />  
-  </fieldset>
-  
   <div class='center'>
     <input type='submit' value='valider' />
   </div>
 </form>
 
 <br />
-<h1>Promotions à surveiller</h1>
-
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <fieldset>
-    <legend>Ajouter une promotion</legend>
-    Ajouter une surveillance sur la promotion (YYYY) :
-    <input type='text' name='' maxlength='4' size='4' />
-    <input type='submit' value='ajouter' />
-  </fieldset>
-</form>
-
-<table class='tinybicol' cellpadding="0" cellspacing="0">
-  <tr>
-    <td>
-      {if !$promos|@count}
-      Tu ne surveilles actuellement aucune promo.<br />
-      {elseif $promos|@count}
-      Tu surveilles {if $promos|@count eq 1}la promo{else}les promos{/if} :
-      {foreach from=$promos item=p}{$p} {/foreach}<br />
-      {/if}
-    </td>
-  </tr>
-</table>
-
-<br />
 <h1>Surveiller des non inscrits</h1>
+
+<p>
+Pour les non-inscrits, tu es notifié lorsqu'il s'inscrit, ou lorsque ce camarade décède.
+</p>
+
+<p>
+Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à tes contacts.
+</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend>Ajouter un non-inscrit</legend>
-    Si la personne est en fait inscrite, elle sera ajoutée à tes contacts.<br />
     <input type='text' name='' />
     <input type='submit' value='ajouter' />
     <span class='smaller'>Il faut entrer le "login" (prenom.nom ou prenom.nom.promo).</span>
