@@ -18,68 +18,110 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
- $Id: xorg.plugin.inc.php,v 1.3 2004-10-29 02:16:42 x2000habouzit Exp $
+    $Id: xorg.plugin.inc.php,v 1.4 2004-11-21 23:48:40 x2000habouzit Exp $
  ***************************************************************************/
 
+// {{{ class XOrgPlugin
 
-/** class used for plugins whose behavior depends only from the GET.
+/**
+ * XOrg Plugins class
+ *
+ * this class is used for plugins whose behavior depends only from the GET.
+ *
+ * @category XOrgCore
+ * @package  XOrgCore
+ * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
+ * @version  $Id: xorg.plugin.inc.php,v 1.4 2004-11-21 23:48:40 x2000habouzit Exp $
+ * @access   public
+ * @since    Classe available since 0.9.2
  */
-class XOrgPlugin {
+class XOrgPlugin
+{
+    // {{{ properties
+    
     /** have to override, contents the fields names used to drive the plugin */
     var $_get_vars = Array();
     /** some polymorphism at low cost, may be used, or not */
     var $_callback;
+
+    // }}}
+    // {{{ function XOrgPlugin()
    
     /** constructor.
      * the constructor override $_get_vars settings by prefixing the names with $prefix
      */
-    function XOrgPlugin($funcname='',$prefix='') {
+    function XOrgPlugin($funcname='', $prefix='')
+    {
 	$this->_callback = $funcname;
 	$this->_prefix = $prefix;
-	foreach($this->_get_vars as $key=>$val) $this->_get_vars[$key] = $prefix.$val;
+	foreach ($this->_get_vars as $key=>$val) {
+            $this->_get_vars[$key] = $prefix.$val;
+        }
     }
+
+    // }}}
+    // {{{ function get_value()
     
     /** transparent access to $_GET, wrt the right $prefix
      */
-    function get_value($key) {
-	if(empty($_GET[$this->_prefix.$key])) return '';
+    function get_value($key)
+    {
+	if (empty($_GET[$this->_prefix.$key])) {
+            return '';
+        }
 	return $_GET[$this->_prefix.$key];
     }
 
+    // }}}
+    // {{{ function make_url()
+    
     /** construct an url with the given parameters to drive the plugin.
      * leave all other GET params alone
      */
-    function make_url($params) {
+    function make_url($params)
+    {
 	$get = Array();
 	$args = isset($params) ? $params : Array();
 
-	if(!is_array($args)) {
-	    if(count($this->_get_vars)!=1) {
+	if (!is_array($args)) {
+	    if (count($this->_get_vars)!=1) {
 		return "<p class='erreur'>params should be an array</p>";
 	    } else {
 		$args = Array($this->_get_vars[0]=>$params);
 	    }
 	}
 
-	foreach($_GET as $key=>$val) {
-	    if(in_array($key,$this->_get_vars) && array_key_exists($key,$args)) continue;
+	foreach ($_GET as $key=>$val) {
+	    if (in_array($key,$this->_get_vars) && array_key_exists($key,$args)) {
+                continue;
+            }
 	    $get[] = urlencode($key) . '=' . urlencode($val);
 	}
 
-	foreach($this->_get_vars as $key) {
-	    if(array_key_exists($key,$args)) {
-		if($args[$key]) $get[] = urlencode($key) . '=' . urlencode($args[$key]);
-	    } elseif(isset($_GET['key'])) {
+	foreach ($this->_get_vars as $key) {
+	    if (array_key_exists($key,$args)) {
+		if ($args[$key]) {
+                    $get[] = urlencode($key) . '=' . urlencode($args[$key]);
+                }
+            } elseif (isset($_GET['key'])) {
 		$get[] = urlencode($key) . '=' . urlencode($_GET[$key]);
-		
 	    }
 	}
 
 	return $_SERVER['PHP_SELF'] . '?' . join('&amp;',$get);
     }
 
+    // }}}
+    // {{{ function show()
+
     /** need to be overriden.  */
-    function show () { return ''; }
+    function show ()
+    { return ''; }
+
+    // }}}
 }
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
