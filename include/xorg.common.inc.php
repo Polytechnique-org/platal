@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.common.inc.php,v 1.8 2004-11-21 23:35:32 x2000habouzit Exp $
+    $Id: xorg.common.inc.php,v 1.9 2004-11-22 06:50:03 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ defines
@@ -43,7 +43,7 @@ define('NO_SKIN', 1);
 require_once("xorg.globals.inc.php");
 
 $globals = new XorgGlobals;
-require("config.xorg.inc.php");
+require("xorg.config.inc.php");
 
 // }}}
 // {{{ start session + database connection
