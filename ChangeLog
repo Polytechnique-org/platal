@@ -25,6 +25,9 @@ Changes :
 	* Search+Contacts :
 		- Unified template.													-JS
 
+	* Skins:
+		- liteskin.															-XdX
+
 Fixes (from 0.9.0 branch) :
 
 	* Lists :
@@ -55,6 +58,7 @@ ACRONYMS :
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
 	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
+	* XdX : Alexandre Hô     (XandreX)  <alexandre.ho@m4x.org>
 
 ================================================================================
 vim:noet:ts=4:sw=4:tw=80:
