@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.18 2004-09-02 23:33:56 x2000bedo Exp $
+        $Id: utilisateurs.php,v 1.19 2004-09-02 23:57:43 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -163,7 +163,7 @@ if (!empty($_REQUEST['user_id'])) {
 }
     
 if(isset($mr)) {
-    $r=$globals->db->query("SELECT alias FROM aliases WHERE ( id = {$mr['user_id']} AND tpe='a_vie' )");
+    $r=$globals->db->query("SELECT alias FROM aliases WHERE ( id = {$mr['user_id']} AND type='a_vie' )");
     list($forlife) = mysql_fetch_row($r);
     mysql_free_result($r);
     $mr['forlife'] = $forlife;

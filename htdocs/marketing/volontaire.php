@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.php,v 1.3 2004-08-31 13:59:42 x2000habouzit Exp $
+        $Id: volontaire.php,v 1.4 2004-09-02 23:57:48 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -40,11 +40,12 @@ $page->assign_by_ref('errors', $errors);
 
 $sql = "SELECT  m.id, m.expe, m.dest, m.email, 
 		i.promo, i.nom, i.prenom, i.last_known_email, 
-		sa.promo AS spromo, sa.nom AS snom, sa.prenom AS sprenom, sa.username AS susername,
+		u.promo AS spromo, u.nom AS snom, u.prenom AS sprenom, a.alias AS forlife,
                 FIND_IN_SET('mail_perso', m.flags) AS mailperso
           FROM  marketing      AS m
     INNER JOIN  identification AS i  ON i.matricule = m.dest
-    INNER JOIN  auth_user_md5  AS sa ON sa.user_id = m.expe
+    INNER JOIN  auth_user_md5  AS u ON u.user_id = m.expe
+    INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
          WHERE  NOT FIND_IN_SET('envoye', m.flags)";
 
 $page->mysql_assign($sql, 'neuves');

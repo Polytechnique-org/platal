@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_identification.php,v 1.3 2004-08-31 13:59:42 x2000habouzit Exp $
+        $Id: utilisateurs_identification.php,v 1.4 2004-09-02 23:57:48 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -74,7 +74,8 @@ case "Creer le login":
   	if ($myrow = mysql_fetch_array($result))
 		exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
 				
-	$result=$globals->db->query("SELECT user_id FROM auth_user_md5 where username='".$_REQUEST["mailorg"]."'");
+	$result=$globals->db->query("SELECT user_id FROM aliases AS a 
+    WHERE a.type='a_vie' AND a.alias='".$_REQUEST["mailorg"]."'");
   	if ($myrow = mysql_fetch_array($result))
 		exit_error("Le login existe d&eacute;j&agrave; dans la table auth_user_md5.");
 
@@ -85,11 +86,13 @@ case "Creer le login":
 	$password=md5($pass_clair);
 	$date=date("Y-m-j");
 				
-	$sql = "INSERT INTO auth_user_md5 SET username='".$_REQUEST['mailorg']."',matricule='".$_REQUEST['xmat']."',promo='".$_REQUEST['promoN']."',password='$password',nom='".$_REQUEST['nomN']."',prenom='".$_REQUEST['prenomN']."',date='$date',naissance='$naissance', date_ins = NULL";
+	$sql = "INSERT INTO auth_user_md5 SET matricule='".$_REQUEST['xmat']."',promo='".$_REQUEST['promoN']."',password='$password',nom='".$_REQUEST['nomN']."',prenom='".$_REQUEST['prenomN']."',date='$date',naissance='$naissance', date_ins = NULL";
 	$result=$globals->db->query($sql);
 
 	if (!$globals->db->err()) {
 		$newuid = mysql_insert_id();
+        $sql = "INSERT INTO aliases SET alias='".$_REQUEST['mailorg']."',type='a_vie',id='$newuid'";
+        $result=$globals->db->query($sql);
 		/** inscription à la liste promo ****************/
 		$inspromo = inscription_liste_promo($newuid,$_REQUEST['promoN']);
 		/** inscription à la newsletter  ***************/

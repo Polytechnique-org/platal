@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: volontaire.tpl,v 1.2 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: volontaire.tpl,v 1.3 2004-09-02 23:57:53 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -51,7 +51,8 @@
     <td>{$it.last_known_email}</td>
     <td>
       {if $it.mailperso}
-      <a href="utilisateurs.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from={$it.sprenom}%20{$it.snom}%20<{$it.susername}&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Perso</a>
+      <a
+      href="utilisateurs.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from={$it.sprenom}%20{$it.snom}%20<{$it.forlife}&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Perso</a>
       {else}
       <a href="utilisateurs.php?xmat={$it.dest}&amp;sender={$it.expe}&amp;from=Equipe%20Polytechnique.org%20<register&#64;polytechnique.org>&amp;mail={$it.email}&amp;submit=Mailer">Equipe</a>
       {/if}

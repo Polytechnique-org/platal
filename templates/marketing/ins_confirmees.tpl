@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: ins_confirmees.tpl,v 1.5 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: ins_confirmees.tpl,v 1.6 2004-09-02 23:57:53 x2000bedo Exp $
  ***************************************************************************}
 
 
@@ -36,7 +36,7 @@
       <a href="promo.php?promo={$in.promo}">{$in.promo}</a>
     </td>
     <td>
-      <a href="javascript:x()"  onclick="popWin('{"fiche.php"|url}?user={$in.username}')">
+      <a href="javascript:x()"  onclick="popWin('{"fiche.php"|url}?user={$in.forlife}')">
         {$in.nom} {$in.prenom}</a>
     </td>
   </tr>
