@@ -1,1 +1,2 @@
-ALTER TABLE photo ADD pub ENUM('purivate', 'public') DEFAULT 'private' NOT NULL;
+ALTER TABLE photo ADD column pub ENUM('private', 'public') DEFAULT 'private' NOT NULL;
+
