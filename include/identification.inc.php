@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.7 2004-09-06 09:59:00 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.8 2004-09-18 17:25:30 x2000coic Exp $
  ***************************************************************************/
 
 require_once('xorg.misc.inc.php');
@@ -36,8 +36,8 @@ if ($promo<1900 || $promo>2100) {
 }
 
 /* on recupere les donnees  */
-$prenom = preg_replace('/ +/','',trim(strip_request('prenom')));
-$nom    = preg_replace('/ +/','',trim(strip_request('nom')));
+$prenom = preg_replace('/ +/',' ',trim(strip_request('prenom')));
+$nom    = preg_replace('/ +/',' ',trim(strip_request('nom')));
 
 // majuscules pour nom et prenom
 $nom    = strtoupper(replace_accent($nom));
@@ -115,9 +115,8 @@ if ($promo > 1995)  {
     $sql = "SELECT nom,prenom,matricule FROM identification WHERE promo='$promo' AND deces=0";
     $result = $globals->db->query($sql);
     $autorisation = FALSE;
-
+    
     if (strlen($chaine2)>0)  {        // il existe au moins 2 chaines
-
 	while (list($mynom,$myprenom,$mymat) = mysql_fetch_array($result))  {
 	    // verification de toute la promo !
 	    $mynomup=strtoupper(replace_accent($mynom));
