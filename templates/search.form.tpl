@@ -36,6 +36,61 @@
           <input type="text" name="promo2" size="4" maxlength="4" />
         </td>
       </tr>
+{if $advanced eq "1"}
+      <tr>
+        <th colspan="2">Divers</th>
+      </tr>
+      <tr>
+        <td>Nationalité</td>
+        <td>
+          <select name="nationalite">
+          {section name=nationalite loop=$choix_nationalites}
+            <option value="{$choix_nationalites[nationalite].id}">
+              {$choix_nationalites[nationalite].text}
+            </option>
+          {/section}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Binet</td>
+        <td>
+          <select name="binet">
+          <option value="0"></option>
+          {section name=binet loop=$choix_binets}
+            <option value="{$choix_binets[binet].id}">
+              {$choix_binets[binet].text}
+            </option>
+          {/section}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Groupe X</td>
+        <td>
+          <select name="groupex">
+          <option value="0"></option>
+          {section name=groupex loop=$choix_groupesx}
+            <option value="{$choix_groupesx[groupex].id}">
+              {$choix_groupesx[groupex].text}
+            </option>
+          {/section}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Section</td>
+        <td>
+          <select name="section">
+          {section name=section loop=$choix_sections}
+            <option value="{$choix_sections[section].id}">
+              {$choix_sections[section].text}
+            </option>
+          {/section}
+          </select>
+        </td>
+      </tr>
+{/if}
       <tr>
         <td colspan="2" class="center"><input type="submit" name="rechercher" value="Ok" /></td>
       </tr>
