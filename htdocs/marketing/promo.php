@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: promo.php,v 1.3 2004-10-31 16:39:06 x2000chevalier Exp $
+        $Id: promo.php,v 1.4 2004-11-14 16:19:00 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -32,11 +32,11 @@ $page->assign('promob1', $promo-1);
 $page->assign('promoa1', $promo+1);
 $page->assign('promoa10', $promo+10);
 
-$sql = "SELECT  nom, prenom, last_known_email, matricule, matricule_ax, MAX(e.date_envoi) AS dern_rel, c.email
+$sql = "SELECT  u.nom, u.prenom, last_known_email, u.matricule, u.matricule_ax, MAX(e.date_envoi) AS dern_rel, c.email
           FROM  auth_user_md5  AS u
      LEFT JOIN  envoidirect    AS e ON (u.matricule = e.matricule)
      LEFT JOIN  en_cours       AS c ON (u.matricule = c.matricule)
-         WHERE  a.nom is NULL AND u.promo = $promo AND u.deces = 0 AND u.perms='non-inscrit'
+         WHERE  u.promo = $promo AND u.deces = 0 AND u.perms='non-inscrit'
       GROUP BY  u.matricule
       ORDER BY  nom,prenom";
 
