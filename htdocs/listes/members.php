@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.8 2004-10-31 14:42:36 x2000habouzit Exp $
+        $Id: members.php,v 1.9 2004-11-02 09:08:56 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -45,7 +45,7 @@ if(list($det,$mem,$own) = $members) {
 	    $key = $tri_promo ? $promo : strtoupper($nom{0});
             $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
         } else {
-            $membres[0][] = Array('l' => $member[0]);
+            $membres[0][] = Array('l' => $member[1]);
         }
         mysql_free_result($res);
     }
