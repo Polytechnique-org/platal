@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: lists.php,v 1.1 2004-09-25 16:30:25 x2000habouzit Exp $
+        $Id: lists.php,v 1.2 2004-10-08 21:53:58 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -30,7 +30,7 @@ list($pass) = mysql_fetch_row($res);
 mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
-$listes = $client->get_lists('polytechnique.org');
+$listes = $client->get_all_lists('polytechnique.org');
 $page->assign_by_ref('listes',$listes);
 $page->run();
 ?>

@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.44 2004-09-25 21:29:29 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.45 2004-10-08 21:53:58 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -115,12 +115,12 @@ def is_owner(userdesc,perms,mlist):
 def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
 
-def get_list_info((userdesc,perms),mlist):
+def get_list_info((userdesc,perms),mlist,show_all_to_super=1):
     members    = mlist.getRegularMemberKeys()
     is_member  = userdesc.address in members
     is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
     is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
-    if mlist.advertised or is_member or is_owner:
+    if mlist.advertised or is_member or is_owner or (show_all_to_super and perms == 'admin'):
         is_pending = False
         for id in mlist.GetSubscriptionIds():
             if userdesc.address == mlist.GetRecord(id)[1]:
@@ -157,7 +157,7 @@ def get_options((userdesc,perms),vhost,listname,opts):
                 if type(v) is str:
                     options[k] = Utils.uquote(v)
                 else: options[k] = v
-        details = get_list_info((userdesc,perms),mlist)[0]
+        details = get_list_info((userdesc,perms),mlist,1)[0]
         mlist.Unlock()
         return (details,options)
     except:
@@ -208,7 +208,7 @@ def get_lists((userdesc,perms),vhost):
         except:
             continue
         try:
-            details = get_list_info((userdesc,perms),mlist)[0]
+            details = get_list_info((userdesc,perms),mlist,0)[0]
             result.append(details)
             mlist.Unlock()
         except:
@@ -604,6 +604,17 @@ def check_options((userdesc,perms),vhost,listname,correct=False):
 # admin procedures [ soptions.php ]
 #
 
+def get_all_lists((userdesc,perms),vhost):
+    prefix = vhost.lower()+'-'
+    names = Utils.list_names()
+    names.sort()
+    result = []
+    for name in names:
+        if not name.startswith(prefix):
+            continue
+        result.append(name.replace(prefix,''))
+    return result
+
 def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel,owners,members):
     if perms != 'admin':
         return 0
@@ -710,6 +721,7 @@ server.register_function(set_admin_options)
 # check.php
 server.register_function(check_options)
 # create
+server.register_function(get_all_lists)
 server.register_function(create_list)
 
 server.serve_forever()

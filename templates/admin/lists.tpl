@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: lists.tpl,v 1.1 2004-09-25 16:30:26 x2000habouzit Exp $
+        $Id: lists.tpl,v 1.2 2004-10-08 21:53:58 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,14 +28,10 @@
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
     <th>Listes</th>
-    <th>Sujet</th>
-    <th>Nb</th>
   </tr>
   {foreach from=$listes item=l}
   <tr class='{cycle values="impair,pair"}'>
-    <td><a href='{"listes/soptions.php"|url}?liste={$l.list}'>{$l.list}</a></td>
-    <td>{$l.desc}</td>
-    <td class='right'>{$l.nbsub}</td>
+    <td><a href='{"listes/soptions.php"|url}?liste={$l}'>{$l}</a></td>
   </tr>
   {/foreach}
 </table>
