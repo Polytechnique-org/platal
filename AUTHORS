@@ -13,12 +13,21 @@ Polytechnique.org TEAM :
     Vincent Palatin         <vincent.palatin@m4x.org>
 
 
-XML-RPC stuff :
+    
+XML-RPC stuff (public domain/GPL) :
     Dan Libby               <dan@libby.com>                 http://xmlrpc-epi.sourceforge.net/
     Marc Boeren             <mboeren@php.net>               http://fr2.php.net/xml-rpc
 
-Smarty Trimwhitespace prefilter :
+Smarty Trimwhitespace prefilter (public domain) :
     Monte Ohrt              <monte@ispi.net>                http://smarty.incutio.com/?page=SmartyTips
 
-Some of the icons :
+Some of the icons (under LGPL) :
     David Vignoni           <dave@icon-king.com>            http://www.icon-king.com/
+
+Wiki2xhtml (under MPL) :
+    Olivier Meunier.                                        http://www.neokraft.net/
+    Stephanie Booth
+    Mathieu Pillard
+    Christophe Bonijol
+    Jean-Charles Bagneris
+
