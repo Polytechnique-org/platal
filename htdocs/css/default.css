@@ -156,7 +156,7 @@ table.tinybicol td.action, table.bicol td.action {
 table.tinybicol td.action a, table.bicol td.action a {
     padding: 4px;
 }
-            
+
 
 /**: IV. :**/
 
@@ -232,69 +232,69 @@ div.long td.rt { width: 65%; }
 /**: VI. :**/
 
 table.cadre_a_onglet{
-  border-width: 0;
-  padding : 0;
-  margin: 0;
+    border-width: 0;
+    padding : 0;
+    margin: 0;
 }
 
 div.conteneur_onglets{
- /*padding : 2px;*/
+    /*padding : 2px;*/
 }
 
 div.conteneur_tab {
- border-width : 1px 2px 2px 1px;
- border-style : solid;
- border-color : #999;
- padding : 4px 0px 0px 4px;
- background : #eceade;
+    border-width : 1px 2px 2px 1px;
+    border-style : solid;
+    border-color : #999;
+    padding : 4px 0px 0px 4px;
+    background : #eceade;
 }
 
 #onglet {
- display : block;
- margin : 0;
- padding : 0;
- /*height : 50px;*/
+    display : block;
+    margin : 0;
+    padding : 0;
+    /*height : 50px;*/
 }
-      
+
 #onglet li {
-display : block;
-float : left;
-padding : 0.5ex;
-margin : 0 0.3ex -1px 0;
-background : #D2E0E6  repeat-x 0 100%;
-border-width : 1px 1px 0px 1px;
-border-style : solid;
-border-color : #999;
-border-bottom-color : #999;
-width: auto;
-height: 6ex;
-text-align: center;
+    display : block;
+    float : left;
+    padding : 0.5ex;
+    margin : 0 0.3ex -1px 0;
+    background : #D2E0E6  repeat-x 0 100%;
+    border-width : 1px 1px 0px 1px;
+    border-style : solid;
+    border-color : #999;
+    border-bottom-color : #999;
+    width: auto;
+    height: 6ex;
+    text-align: center;
 }
 
 #onglet li:hover {
-background : #fc3 repeat-x 0 100%;
+    background : #fc3 repeat-x 0 100%;
 }
 
 #onglet li.actif {
-background : #eceade;
-border-bottom-color : #eceade;
-font-weight: bold;
+    background : #eceade;
+    border-bottom-color : #eceade;
+    font-weight: bold;
 }
 
 #onglet li a {
-/*font-family : Arial,Helvetica,sans-serif;*/
-font-size: 80%;
-font-weight : normal;
-text-decoration : none;
-color : #000;
+    /*font-family : Arial,Helvetica,sans-serif;*/
+    font-size: 80%;
+    font-weight : normal;
+    text-decoration : none;
+    color : #000;
 }
 
 #onglet li a:hover {
-text-decoration: underline;
+    text-decoration: underline;
 }
 
 #onglet li img {
-margin-right : 2px;
+    margin-right : 2px;
 }
 
 /*************************/
@@ -307,11 +307,11 @@ margin-right : 2px;
     right   : 14px;
     width   : 128px;
     z-index : 1;
-    
+
     color: #003399;
     background: #e0ffff;
     border: 1px dashed #003399;
-    
+
     font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
     font-size: 10pt;
     font-weight: bold;
@@ -413,4 +413,4 @@ margin-right : 2px;
     font-size: 95%
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.26 2004-04-26 14:17:19 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.27 2004-07-17 12:28:10 x2000habouzit Exp $ */
