@@ -1,16 +1,5 @@
 <?php
 
-/** comparison function for the overview 
- * @param $a OBJECT spoolhead 
- * @param $b OBJECT spoolhead
- * @return
- */
-
-function spoolcompare($a,$b) {
-  global $news;
-  return ($b->date>=$a->date);
-}
-
 // spool config in spool.inc.php
 $news['maxspool'] = 2000;
 
@@ -18,32 +7,20 @@ $news['maxspool'] = 2000;
 $news['hdecode'] = array('from','name','organization','subject');
 
 // headers in post
-$news['head'] = array(
-  'From' => 'from',
-  'Subject' => 'subject',
-  'Newsgroups' => 'newsgroups',
-  'Message-ID' => 'msgid',
-  'Followup-To' => 'followup',
-  'Date' => 'date',
-  'X-Org-Id' => 'xorgid',
-  'Organization' => 'organization',
-  'References' => 'references',
-  'X-Face' => 'xface',
-  'Content-Type' => 'contenttype',
-  'Content-Transfer-Encoding' => 'contentencoding'
-  );
+$news['head'] = array('from', 'subject', 'newsgroups', 'message-id', 'followup-to', 'date',
+    'x-org-id', 'organization', 'references', 'x-face', 'content-type', 'content-transfer-encoding');
 
 // headers in article.php
-$news['headdisp']=array(
+$news['headdisp'] = array(
   'from',
   'subject',
   'newsgroups',
-  'followup',
+  'followup-id',
   'date',
   'organization',
   'references',
-  'xorgid',
-  'xface',
+  'x-org-id',
+  'x-face',
 );
 $locale['headers']['xorgid']='Identité';
 

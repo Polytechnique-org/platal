@@ -13,7 +13,7 @@
  */
 
 function checkcancel($_headers) {
-    return ($_headers->xorgid == Session::get('forlife') or has_perms());
+    return ($_headers['x-org-id'] == Session::get('forlife') or has_perms());
 }
 
 /** getprofile : sets profile variables

@@ -32,7 +32,7 @@ function formatDisplayHeader($_header,$_text,$_spool) {
         case "date": 
             return formatDate($_text);
 
-        case "followup":
+        case "followup-to":
         case "newsgroups":
             $res = "";
             $groups = preg_split("/(\t| )*,(\t| )*/",$_text);
@@ -63,10 +63,10 @@ function formatDisplayHeader($_header,$_text,$_spool) {
             }
             return $rsl;
 
-        case "xface":
+        case "x-face":
             return '<img src="xface.php?face='.base64_encode($_text).'"  alt="x-face" />';
 
-        case "xorgid":
+        case "x-org-id":
             return "$_text".(preg_match("/[\w]+\.[\w\d]+/",$_text)?" [<a href=\"".url("fiche.php")."?user=$_text\" class='popup2'>fiche</a>]":"");
 
         default:
