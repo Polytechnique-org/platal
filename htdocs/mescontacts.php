@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.11 2004-10-09 13:30:42 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.12 2004-10-12 17:36:24 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -54,7 +54,8 @@ $sql = "SELECT contact AS id,
                n.text AS nat,
                ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-               adr.ville, gp.pays, gr.name AS region
+               adr.ville, gp.pays, gr.name AS region,
+	       IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
         FROM       contacts       AS c
         INNER JOIN auth_user_md5  AS a   ON (a.user_id = c.contact)
         INNER JOIN identification AS i   ON (a.matricule = i.matricule)
@@ -71,7 +72,7 @@ $sql = "SELECT contact AS id,
         LEFT  JOIN geoloc_pays    AS gp  ON (adr.pays = gp.a2)
         LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
         WHERE c.uid = {$_SESSION['uid']}
-        ORDER BY a.nom, a.prenom";
+        ORDER BY sortkey, a.prenom";
 $page->mysql_assign($sql,'contacts','nb_contacts');
 
 $page->run();
