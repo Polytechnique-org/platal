@@ -1,4 +1,5 @@
 alter table auth_user_quick drop column skin;
+insert into admin_a values(5, 'Skins', 'admin/gerer_skins.php', 30);
 
 --
 -- Table structure for table `skins`

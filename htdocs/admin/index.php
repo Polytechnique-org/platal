@@ -18,11 +18,25 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.php,v 1.5 2004-11-22 20:04:36 x2000habouzit Exp $
+        $Id: index.php,v 1.6 2004-11-24 13:09:21 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
 new_admin_page('admin/index.tpl');
+
+if (!$page->xorg_is_cached()) {
+    $res = $globals->db->query("
+                SELECT  h1, h2, texte, url
+                  FROM  admin_a  AS a
+            INNER JOIN  admin_h2 AS h2 USING(h2id)
+            INNER JOIN  admin_h1 AS h1 USING(h1id)
+              ORDER BY  h1.prio, h2.prio, a.prio");
+    $index = Array();
+    while(list($h1,$h2,$txt,$url) = mysql_fetch_row($res)) {
+        $index[$h1][$h2][] = Array('txt' => $txt, 'url'=>$url);
+    }
+    $page->assign_by_ref('index', $index);
+}
 
 $page->run();
 ?>
