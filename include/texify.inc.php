@@ -18,14 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: texify.inc.php,v 1.3 2004-09-02 23:55:57 x2000habouzit Exp $
+    $Id: texify.inc.php,v 1.4 2004-10-29 02:25:43 x2000habouzit Exp $
  ***************************************************************************/
 
 /*
  * Fonctions de générations de tex pour les pages de .org
  * Auteur original : Pierre HABOUZIT
- *
- * $Id: texify.inc.php,v 1.3 2004-09-02 23:55:57 x2000habouzit Exp $
  */
 
 /** Fonction qui gère les pdflatexisations :)
@@ -74,10 +72,12 @@ function tex_to_pdf($texte) {
  * @return en têtes tex pour la feuille de contacts (imprimercontacts.php)
  */
 function contacts_headers() {
-    return "\\documentclass[twocolumn,a4paper,10pt]{article}\n"
+    return "\\documentclass[twocolumn,a4paper,10pt,oneside]{article}\n"
 	.  "\\usepackage[francais]{babel}\n"
-	.  "\\usepackage[latin1]{inputenc}\n"
-	.  "\\usepackage[left=1.5cm,right=1.5cm,top=1cm,bottom=1cm]{geometry}\n"
+	.  "\\usepackage[latin9]{inputenc}\n"
+	.  "\\usepackage[T1]{fontenc}\n"
+	.  "\\addtolength{\\hoffset}{-1.5cm} \\addtolength{\\textwidth}{3cm}\n"
+	.  "\\addtolength{\\voffset}{-2cm} \\addtolength{\\textheight}{4cm}\n"
 	.  "\\usepackage{tabularx,float}\n"
 	.  "\n"
 	.  "\\makeatletter\n"
