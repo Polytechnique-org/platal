@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: login.tpl,v 1.14 2004-11-13 15:56:35 x2000habouzit Exp $
+        $Id: login.tpl,v 1.15 2004-11-30 09:34:54 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -89,7 +89,9 @@
     </tr>
     <tr class="{cycle values="impair,pair"}">
       <td class="half">
+        {tidy}
         {$ev.texte|smarty:nodefaults|nl2br}
+        {/tidy}
         <br />
         <p class="smaller">Annonce proposée par
         <a href="{"fiche.php"|url}?user={$ev.forlife}" class="popup2">

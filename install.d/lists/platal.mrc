@@ -5,7 +5,7 @@
 %d-%m-%y
 </MsgLocalDateFmt>
 <IdxSize>
-25
+50
 </IdxSize>
 <NoFolRefs>
 
@@ -121,7 +121,7 @@ MY-SUBJNA
 </TPrevInButton>
 
 <TPrevInButtonIA>
-<img src="/images/lists_previa.png" />
+<img src="/images/lists_previa.png" alt="précedent" />
 </TPrevInButtonIA>
 
 <TNextInButton>
@@ -350,6 +350,7 @@ subject:strong
 <!-- ------------------------------------------------------------------------ -->
 
 <TSingleTxt>
+<tr class="pair"><td colspan="3" class="center"> - - - </td></tr>
 <tr>
   <td>$MSGLOCALDATE$</td>
   <td class='subj' style="padding-left: $TLEVEL$em">$MY-SUBJ$</td>

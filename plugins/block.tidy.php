@@ -18,22 +18,43 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: lists.globals.inc.php,v 1.2 2004-11-30 09:34:51 x2000habouzit Exp $
+        $Id: block.tidy.php,v 1.1 2004-11-30 09:34:54 x2000habouzit Exp $
  ***************************************************************************/
 
-// {{{ class ListsConfig
+$tidy_on = Array(
+    'drop-empty-paras',
+    'drop-font-tags',
+    'drop-proprietary-attributes',
+    'hide-comments',
+    'logical-emphasis',
+    'output-xhtml',
+    'replace-color',
+    'show-body-only'
+);
+$tidy_off = Array(
+    'clean',
+    'join-styles',
+    'join-classes'
+);
 
-class ListsConfig
+foreach($tidy_on as $opt) { tidy_setopt($opt, true); }
+foreach($tidy_off as $opt) { tidy_setopt($opt, false); }
+tidy_setopt('alt-text', '[ inserted by TIDY ]');
+tidy_setopt('wrap', '120');
+unset($tidy_o, $tydy_off);
+
+/*
+ * Smarty plugin
+ * -------------------------------------------------------------
+ * File:     block.min_perms.php
+ * Type:     block
+ * Name:     min_perms
+ * Purpose:  
+ * -------------------------------------------------------------
+ */
+function smarty_block_tidy($params, $content, &$smarty)
 {
-    var $rpchost  = 'localhost';
-    var $rpcport  = 119;
-    
-    var $spool    = '/var/spool/platal/archives/';
+    return tidy_repair_string($content);
 }
 
-// }}}
-
-$this->lists = new ListsConfig;
-
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: archives.tpl,v 1.2 2004-11-29 21:42:08 x2000habouzit Exp $
+        $Id: archives.tpl,v 1.3 2004-11-30 09:34:55 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -33,6 +33,35 @@
 
 {if $archs}
 <h1>Archives de la liste {$smarty.request.liste}</h1>
+
+<h2>Triés par fils de discussion</h2>
+
+<table class="tinybicol" cellspacing="0" cellpadding="0">
+  <tr>
+    <th>Année</th>
+    <th colspan="6">
+      Mois
+    </th>
+  </tr>
+  {foreach from=$archs item=m key=y}
+  <tr class="center">
+    <td class="titre" rowspan="2">{$y}</td>
+    {foreach from=$range item=i}
+    <td>
+      {if $m[$i]}
+      [<a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%b"}</a>]
+      {else}
+      [&nbsp;&nbsp;&nbsp;]
+      {/if}
+    </td>
+    {if $i eq 6}</tr><tr class="center">{/if}
+    {/foreach}
+  </tr>
+  {/foreach}
+</table>
+
+<h2>Triés par date</h2>
+
 <table class="tinybicol" cellspacing="0" cellpadding="0">
   <tr>
     <th>Année</th>
@@ -57,7 +86,9 @@
   {/foreach}
 </table>
 {elseif $url}
+{tidy}
 {include file="$url"}
+{/tidy}
 {/if}
 
 {/if}

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: smarty.plugins.inc.php,v 1.3 2004-11-24 10:12:47 x2000habouzit Exp $
+    $Id: smarty.plugins.inc.php,v 1.4 2004-11-30 09:34:52 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ function block_dynamic()
@@ -129,6 +129,5 @@ function at_to_globals($tpl_source, &$smarty)
 }
 
 // }}}
-
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
