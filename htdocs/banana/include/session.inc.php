@@ -18,7 +18,7 @@ switch ($sname) {
     break;
   case "index.php":
     if (isset($_GET["banana"]) && ($_GET["banana"]=="updateall")) {
-      mysql_query("UPDATE auth_user_md5 SET lastnewslogin='"
+      mysql_query("UPDATE auth_user_quick SET lastnewslogin='"
               .gmdate("YmdHis")."' WHERE user_id='{$_SESSION['uid']}'");
       $_SESSION["lastnewslogin"]=time();
     }

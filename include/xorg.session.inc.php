@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.35 2004-10-31 16:12:12 x2000chevalier Exp $
+        $Id: xorg.session.inc.php,v 1.36 2004-11-06 13:53:52 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -221,12 +221,13 @@ function start_connexion ($uid, $identified) {
     global $globals;
     $result=$globals->db->query("
 	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
-		a.alias, UNIX_TIMESTAMP(u.lastnewslogin), a2.alias, password, FIND_IN_SET('femme', flags)
+		a.alias, UNIX_TIMESTAMP(q.lastnewslogin), a2.alias, password, FIND_IN_SET('femme', flags)
           FROM  auth_user_md5   AS u
-    INNER JOIN	aliases         AS a ON (u.user_id = a.id AND a.type='a_vie')
+    INNER JOIN  auth_user_quick AS q  USING(user_id)
+    INNER JOIN	aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
     INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
      LEFT JOIN  logger.sessions AS s ON (s.uid=u.user_id AND s.suid=0)
-         WHERE  user_id=$uid
+         WHERE  u.user_id=$uid
       ORDER BY  s.start DESC, a2.type != 'epouse', length(a2.alias)
          LIMIT  1");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host,
@@ -276,7 +277,7 @@ function set_skin() {
     global $globals;
     if(logged()) {
 	$result = $globals->db->query("SELECT skin,skin_tpl
-		FROM auth_user_md5 AS a INNER JOIN skins AS s
+		FROM auth_user_quick AS a INNER JOIN skins AS s
 		ON a.skin=s.id WHERE user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
 	if(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result)) {
 	    if ($_SESSION['skin_id'] == SKIN_STOCHASKIN_ID) {
