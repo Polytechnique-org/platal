@@ -20,44 +20,24 @@
  ***************************************************************************/
 
 
-$tabname_array = Array(
-    "general"  => "Informations\ngénérales",
-    "adresses" => "Adresses\npersonnelles",
-    "poly"     => "Informations\npolytechniciennes",
-    "deco"     => "Décorations\nMédailles",
-    "emploi"   => "Informations\nprofessionnelles",
-    "skill"    => "Compétences\ndiverses",
-    "mentor"   => "Mentoring"
-);
-    
-$opened_tab = 'general';
-
-$page->assign("onglets",$tabname_array);
-$page->assign("onglet_last",'mentor');
-
-function get_last_tab(){
-    end($GLOBALS['tabname_array']);
-    return key($GLOBALS['tabname_array']);
+$res    = $globals->xdb->iterator("SELECT * FROM profile_medals_grades ORDER BY mid, pos");
+$grades = Array();
+while ($tmp = $res->next()) {
+    $grades[$tmp['mid']][] = $tmp;
 }
 
-function get_next_tab($tabname){
-    global $tabname_array;
-    reset($tabname_array);
-    $marker = false;
-    while(list($current_tab,$current_tab_desc) = each($tabname_array)){
-        if($current_tab == $tabname){
-            $res = key($tabname_array);// each() sets key to the next element
-            if($res != NULL)// if it was the last call of each(), key == NULL => we return the first key
-                return $res;
-            else{
-                reset($tabname_array);
-                return key($tabname_array);
-            }
-        }
-    }
-    // We should not arrive to this point, but at least, we return the first key
-    reset($tabname_array);
-    return key($tabname_array);
+$res    = $globals->xdb->iterator("SELECT * FROM profile_medals ORDER BY type, text");
+$mlist  = Array();
+while ($tmp = $res->next()) {
+    $mlist[$tmp['type']][] = $tmp;
 }
+
+$trad = Array('ordre' => 'Ordres ...', 'croix' => 'Croix ...', 'militaire' => 'Médailles militaires ...',
+        'honneur' => 'Médailles d\'honneur', 'resistance' => 'Médailles de la résistance ...');
+
+$page->gassign('grades');
+$page->gassign('medals');
+$page->gassign('trad');
+$page->assign('medal_list', $mlist);
 
 ?>

@@ -19,45 +19,27 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
-$tabname_array = Array(
-    "general"  => "Informations\ngénérales",
-    "adresses" => "Adresses\npersonnelles",
-    "poly"     => "Informations\npolytechniciennes",
-    "deco"     => "Décorations\nMédailles",
-    "emploi"   => "Informations\nprofessionnelles",
-    "skill"    => "Compétences\ndiverses",
-    "mentor"   => "Mentoring"
-);
-    
-$opened_tab = 'general';
-
-$page->assign("onglets",$tabname_array);
-$page->assign("onglet_last",'mentor');
-
-function get_last_tab(){
-    end($GLOBALS['tabname_array']);
-    return key($GLOBALS['tabname_array']);
-}
-
-function get_next_tab($tabname){
-    global $tabname_array;
-    reset($tabname_array);
-    $marker = false;
-    while(list($current_tab,$current_tab_desc) = each($tabname_array)){
-        if($current_tab == $tabname){
-            $res = key($tabname_array);// each() sets key to the next element
-            if($res != NULL)// if it was the last call of each(), key == NULL => we return the first key
-                return $res;
-            else{
-                reset($tabname_array);
-                return key($tabname_array);
-            }
-        }
+if (Env::has('medal_op')) {
+    if (Env::get('medal_op')=='retirer' && Env::getInt('medal_id')) {
+        $globals->xdb->execute("DELETE FROM profile_medals_sub WHERE uid = {?} AND mid = {?}", Session::getInt('uid', -1), Env::getInt('medal_id', -1));
     }
-    // We should not arrive to this point, but at least, we return the first key
-    reset($tabname_array);
-    return key($tabname_array);
+
+    if (Env::get('medal_op')=='ajouter' && Env::getInt('medal_id')) {
+        $globals->xdb->execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", Session::getInt('uid', -1), Env::getInt('medal_id'));
+    }
 }
+
+foreach (Post::getMixed('grade') as $mid=>$gid) {
+    $globals->xdb->execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, Session::getInt('uid'), $mid);
+}
+ 
+
+$res    = $globals->xdb->query(
+	"SELECT  m.id, m.text AS medal, m.type, m.img, s.gid
+           FROM  profile_medals_sub    AS s
+     INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
+          WHERE  s.uid = {?}", Session::getInt('uid', -1));
+
+$medals = $res->fetchAllAssoc();
 
 ?>

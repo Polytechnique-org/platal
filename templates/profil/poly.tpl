@@ -81,6 +81,10 @@
 </script>
 {/literal}
 <div class="blocunite_tab">
+  <input type="hidden" value="" name="binet_op" />
+  <input type="hidden" value="" name="binet_id" />
+  <input type="hidden" value="" name="groupex_op" />
+  <input type="hidden" value="" name="groupex_id" />
   <table class="bicol" cellspacing="0" cellpadding="0" 
     summary="Profil: Informations Polytechniciennes">
     <tr>

@@ -43,10 +43,6 @@ tel qu'elle apparaîtra pour un camarade.</p>
           {/if}
           {/foreach}
         </ul>
-        <input type="hidden" value="" name="binet_op" />
-        <input type="hidden" value="" name="binet_id" />
-        <input type="hidden" value="" name="groupex_op" />
-        <input type="hidden" value="" name="groupex_id" />
         <input type="hidden" value="{$onglet}" name="old_tab" />
         <input type="hidden" value="" name="adresse_flag" />
       </td>

@@ -20,6 +20,14 @@ create table profile_medals_grades (
         primary key (mid, gid)
 );
 
+drop table if exists profile_medals_sub;
+create table profile_medals_sub (
+        uid int not null,
+        mid int not null,
+        gid int not null,
+        primary key (uid,mid)
+);
+
 insert into profile_medals (type, text, img)
      values ('ordre',     'Ordre Nationnal de la Legion d\'Honneur',    'ordre_onlh.jpg'),
             ('ordre',     'Ordre de la libération',                     'ordre_lib.jpg'),
