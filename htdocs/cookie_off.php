@@ -10,6 +10,7 @@ $_SESSION['log']->log("cookie_off");
 if(!identified()) {
     session_destroy();
     $_SESSION = array();
+    header("Location: index.php");
 }
 
 $page->run();
