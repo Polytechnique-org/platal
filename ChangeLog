@@ -42,6 +42,7 @@ Bug/Wish :
 
 	* Core :
 		- #145: Use melix address to log in.								-Car
+		- #212: Various font-sizes fixed.                                   -Car
 		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
 		- #258: Netscape4 Warning.											-MC
 
