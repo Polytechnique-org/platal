@@ -35,9 +35,9 @@ class XOrgErrors
     { }
 
     // }}}
-    // {{{ function trigger
+    // {{{ function trig
         
-    function trigger($text) {
+    function trig($text) {
         $this->errs[] = $text;
     }
 
@@ -45,7 +45,7 @@ class XOrgErrors
     // {{{
     
     function fail($text) {
-        $this->trigger($text);
+        $this->trig($text);
         $this->failure = true;
     }
 

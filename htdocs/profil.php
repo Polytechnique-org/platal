@@ -49,9 +49,8 @@ if (!$naissance)  {
     if (isset($_REQUEST['birth'])) {
 	//en cas d'erreur :
 	if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST['birth'])) {
-            $page->trigger("Date de naissance incorrecte ou incohérente.");
 	    $page->assign('etat_naissance','query');
-	    $page->run();//on reaffiche le formulaire
+            $page->trig_run("Date de naissance incorrecte ou incohérente.");
 	}
       
 	//sinon

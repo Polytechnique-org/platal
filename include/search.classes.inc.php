@@ -84,8 +84,7 @@ class ThrowError
     function ThrowError($explain)
     {
         global $page;
-        $page->trigger('Erreur : '.$explain);
-        $page->run();
+        $page->trig_run('Erreur : '.$explain);
     }
 }
 

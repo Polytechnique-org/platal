@@ -24,8 +24,7 @@ require_once('xorg.misc.inc.php');
 function sortie_id($err) {
     global $page;
     new_skinned_page('inscription/step1.tpl', AUTH_PUBLIC);
-    $page->trigger($err);
-    $page->run();
+    $page->trig_run($err);
 }
 
 $promo = intval($_REQUEST["promo"]);

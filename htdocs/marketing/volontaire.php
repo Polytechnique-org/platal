@@ -25,11 +25,11 @@ new_admin_page('marketing/volontaire.tpl');
 // traitement des paramètres éventuels
 if (!empty($_GET["del"])) {
     $globals->db->query("DELETE FROM marketing WHERE id ='{$_GET['del']}'");
-    $page->trigger("Entrée effacée");
+    $page->trig("Entrée effacée");
 }
 if (!empty($_GET["done"])) {
     $globals->db->query("UPDATE marketing SET flags = CONCAT(flags,',envoye') WHERE id ='{$_GET['done']}'");
-    $page->trigger("Entrée mise à jour");
+    $page->trig("Entrée mise à jour");
 }
 
 $sql = "SELECT  m.id, m.expe, m.dest, m.email, 

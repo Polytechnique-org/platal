@@ -22,7 +22,7 @@
 
 // validité du mobile
 if (strlen(strtok($mobile,"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($mobile)) {
-    $page->trigger("Le champ 'Téléphone mobile' contient un caractère interdit.");
+    $page->trig("Le champ 'Téléphone mobile' contient un caractère interdit.");
 }
 
 // correction du champ web si vide
@@ -30,7 +30,7 @@ if ($web=="http://" or $web == '') {
     $web='';
 } elseif (!preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $web)) {
     // validité de l'url donnée dans web
-    $page->trigger("URL incorrecte dans le champ 'Page web perso', une url doit commencer par
+    $page->trig("URL incorrecte dans le champ 'Page web perso', une url doit commencer par
                     http:// ou https:// ou ftp:// et ne pas contenir de caractères interdits");
 } else {
     $web = str_replace('&', '&amp;', $web);
@@ -39,7 +39,7 @@ if ($web=="http://" or $web == '') {
 //validité du champ libre
 if (strlen(strtok($libre,"<>")) < strlen($libre))
 {
-    $page->trigger("Le champ 'Complément libre' contient un caractère interdit.");
+    $page->trig("Le champ 'Complément libre' contient un caractère interdit.");
 }
 
 ?>

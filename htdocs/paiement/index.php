@@ -31,13 +31,13 @@ $meth = new PayMethod(isset($_REQUEST['methode']) ? $_REQUEST['methode'] : -1);
 $pay  = new Payment(isset($_REQUEST['ref']) ? $_REQUEST['ref'] : -1);
 
 if($pay->flags->hasflag('old')){
-    $page->trigger("La transaction selectionnée est périmée.");
+    $page->trig("La transaction selectionnée est périmée.");
     $pay = new Payment();
 }
 $val  = (($op=="submit") && isset($_REQUEST['montant'])) ? $_REQUEST['montant'] : $pay->montant_def;
 
 if (($e = $pay->check($val)) !== true) {
-    $page->trigger($e);
+    $page->trig($e);
 }
 
 if ($op=='submit') {

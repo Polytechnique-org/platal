@@ -24,8 +24,7 @@ new_skinned_page('recovery.tpl', AUTH_PUBLIC);
 
 if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
     if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST['birth'])) {
-        $page->trigger("Date de naissance incorrecte ou incohérente");
-        $page->run();
+        $page->trig_run("Date de naissance incorrecte ou incohérente");
     }
     $birth = sprintf("%s-%s-%s", substr($_REQUEST["birth"],4,4), substr($_REQUEST["birth"],2,2), substr($_REQUEST["birth"],0,2));
 
@@ -91,7 +90,7 @@ Mail envoyé à {$_REQUEST['login']}");
 	$logger = $_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
 	$logger->log("recovery",$emails);
     } else {
-        $page->trigger("Pas de résultat correspondant aux champs entrés dans notre base de données.");
+        $page->trig("Pas de résultat correspondant aux champs entrés dans notre base de données.");
     }
 }
 

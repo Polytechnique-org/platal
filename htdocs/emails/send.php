@@ -41,7 +41,7 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
     }
     
     if ($_REQUEST['to'] == '' and $_REQUEST['cc'] == '' and $autre_to == '') {
-        $page->trigger("Indique au moins un destinataire.");
+        $page->trig("Indique au moins un destinataire.");
     } else {
         require_once("diogenes.hermes.inc.php");
         //$_REQUEST['contenu'] = chunk_split($_REQUEST['contenu'], 76, "\n"); // pas bon, ne tient pas compte des mots
@@ -54,10 +54,10 @@ if (isset($_REQUEST['submit']) and $_REQUEST['submit'] == 'Envoyer'
 	if (!empty($_REQUEST['bcc'])) $mymail->addBcc($_REQUEST['bcc']);
         $mymail->setTxtBody(wordwrap($_REQUEST['contenu'],72,"\n"));
         if ($mymail->send()) {
-            $page->trigger("Ton mail a bien été envoyé.");
+            $page->trig("Ton mail a bien été envoyé.");
             $_REQUEST = array();
         } else {
-            $page->trigger("Erreur lors de l'envoi du courriel, réessaye.");
+            $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
         }
     } // ! if ($_REQUEST['to'] == '' and $_REQUEST['cc'] == '')
 }

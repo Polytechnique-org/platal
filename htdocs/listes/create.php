@@ -57,10 +57,10 @@ ksort($members); array_unique($members);
 if(isset($_POST['submit'])) {
 
     if(empty($_POST['liste'])) {
-        $page->trigger('champs «addresse souhaitée» vide');
+        $page->trig('champs «addresse souhaitée» vide');
     }
     if(!preg_match("/^[a-zA-Z0-9\-]*$/", $_POST['liste'])) {
-	$page->trigger('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+	$page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
     }
 
     $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE alias='{$_POST['liste']}'");
@@ -68,19 +68,19 @@ if(isset($_POST['submit'])) {
     mysql_free_result($res);
 
     if($n) {
-        $page->trigger('cet alias est déjà pris');
+        $page->trig('cet alias est déjà pris');
     }
 
     if(empty($_POST['desc'])) {
-        $page->trigger('le sujet est vide');
+        $page->trig('le sujet est vide');
     }
     
     if(!count($owners)) {
-        $page->trigger('pas de gestionnaire');
+        $page->trig('pas de gestionnaire');
     }
     
     if(count($members)<4) {
-        $page->trigger('pas assez de membres');
+        $page->trig('pas assez de membres');
     }
 
     if (!$page->nb_errs()) {

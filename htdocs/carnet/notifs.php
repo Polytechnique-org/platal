@@ -29,7 +29,7 @@ if(isset($_REQUEST['promo'])) {
     if(preg_match('!^ *(\d{4}) *$!', $_REQUEST['promo'], $matches)) {
 	$p = intval($matches[1]);
 	if($p<1900 || $p>2100) {
-            $page->trigger("la promo entrée est invalide");
+            $page->trig("la promo entrée est invalide");
 	} else {
 	    if(isset($_REQUEST['add_promo'])) $watch->_promos->add($p);
 	    if(isset($_REQUEST['del_promo'])) $watch->_promos->del($p);
@@ -38,15 +38,15 @@ if(isset($_REQUEST['promo'])) {
 	$p1 = intval($matches[1]);
 	$p2 = intval($matches[2]);
 	if($p1<1900 || $p1>2100) {
-            $page->trigger('la première promo de la plage entrée est invalide');
+            $page->trig('la première promo de la plage entrée est invalide');
 	} elseif($p2<1900 || $p2>2100) {
-            $page->trigger('la seconde promo de la plage entrée est invalide');
+            $page->trig('la seconde promo de la plage entrée est invalide');
 	} else {
 	    if(isset($_REQUEST['add_promo'])) $watch->_promos->addRange($p1,$p2);
 	    if(isset($_REQUEST['del_promo'])) $watch->_promos->delRange($p1,$p2);
 	}
     } else {
-        $page->trigger("La promo (ou la plage de promo) entrée est dans un format incorrect.");
+        $page->trig("La promo (ou la plage de promo) entrée est dans un format incorrect.");
     }
 }
 

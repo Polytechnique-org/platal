@@ -27,16 +27,16 @@ $page->assign('mailorg', $mailorg);
 $page->assign('forlife', $forlife);
 
 if(!isvalid_email($_REQUEST["email"])) {
-    $page->trigger("Le champ 'E-mail' n'est pas valide.");
+    $page->trig("Le champ 'E-mail' n'est pas valide.");
 }
 
 if (!isvalid_email_redirection($_REQUEST["email"])) {
-    $page->trigger("\"$forlife@polytechnique.org\" doit renvoyer vers un email existant valide.
+    $page->trig("\"$forlife@polytechnique.org\" doit renvoyer vers un email existant valide.
             En particulier, il ne peut pas être renvoyé vers lui-même.");
 }
 
 if (!ereg("[0-3][0-9][0-1][0-9][1][9]([0-9]{2})", $_REQUEST["naissance"])) {
-    $page->trigger("La 'Date de naissance' n'est pas correcte.
+    $page->trig("La 'Date de naissance' n'est pas correcte.
             Elle est obligatoire pour continuer mais ne sera jamais visible sur le site par la suite.");
 }
 

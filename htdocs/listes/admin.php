@@ -32,7 +32,7 @@ if(isset($_REQUEST['add_member'])) {
     $arr = $client->mass_subscribe($liste, Array($_REQUEST['add_member']));
     if(is_array($arr)) {
 	foreach($arr as $addr) {
-            $page->trigger("{$addr[0]} inscrit.");
+            $page->trig("{$addr[0]} inscrit.");
     }
 }
 
@@ -43,7 +43,7 @@ if(isset($_REQUEST['del_member'])) {
 
 if(isset($_REQUEST['add_owner'])) {
     if($client->add_owner($liste, $_REQUEST['add_owner'])) {
-        $page->trigger($_REQUEST['add_owner']." ajouté aux modérateurs.");
+        $page->trig($_REQUEST['add_owner']." ajouté aux modérateurs.");
     }
 }
 

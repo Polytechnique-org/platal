@@ -88,19 +88,6 @@ function escape_html(&$string)
 }
 
 // }}}
-// {{{ function triple_quote_to_gettext()
-
-/**
- * compilation plugin used for i18n purposes.
- *
- * Not used.
- */
-function triple_quote_to_gettext($tpl_source, &$smarty)
-{
-    return preg_replace('/"""(.*?)"""/se', 'gettext(stripslashes(\'\\1\'))',$tpl_source);
-}
-
-// }}}
 // {{{ function at_to_globals()
 
 /**

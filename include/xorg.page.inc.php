@@ -47,7 +47,8 @@ class XorgPage extends DiogenesCorePage
     {
         global $globals;
 
-	$this->setLang('fr_FR');
+	setlocale(LC_MESSAGES, 'fr_FR');
+	setlocale(LC_TIME, 'fr_FR');
 
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/templates_c/";
@@ -75,7 +76,6 @@ class XorgPage extends DiogenesCorePage
         $this->register_block('dynamic', 'block_dynamic', false);
         $this->register_function('dyn', 'function_dyn', false);
         $this->register_function('implode', 'function_implode');
-        $this->register_prefilter('triple_quote_to_gettext');
         $this->register_prefilter('at_to_globals');
 
         // if necessary, construct new session
@@ -101,20 +101,6 @@ class XorgPage extends DiogenesCorePage
 
         $this->_page_type = $type;
 	$this->assign('xorg_tpl', $tpl);
-    }
-
-    // }}}
-    // {{{ function setLang()
-
-    function setLang($lang=null)
-    {
-	global $globals;
-	$locale = empty($lang) ? 'fr_FR' : $lang;
-	setlocale(LC_MESSAGES, $locale);
-	setlocale(LC_TIME, $locale);
-	$this->compile_id = $locale;
-	bindtextdomain('xorg', $globals->spoolroot.'/locale/');
-	textdomain('xorg');
     }
 
     // }}}
@@ -165,19 +151,27 @@ class XorgPage extends DiogenesCorePage
     }
 
     // }}}
-    // {{{ function trigger()
-
-    function trigger($msg)
-    {
-        $this->_errors->trigger($msg);
-    }
-
-    // }}}
     // {{{ function nb_errs()
 
     function nb_errs()
     {
         return count($this->_errors->errs);
+    }
+
+    // }}}
+    // {{{ function trig()
+
+    function trig($msg)
+    {
+        $this->_errors->trig($msg);
+    }
+
+    // {{{ function trig()
+
+    function trig_run($msg)
+    {
+        $this->_errors->trig($msg);
+        $this->run();
     }
 
     // }}}
@@ -207,18 +201,6 @@ class XorgPage extends DiogenesCorePage
             return parent::is_cached($this->_tpl);
         } else {
             return parent::is_cached('skin/'.$_SESSION['skin'], $this->make_id($append_to_id));
-        }
-    }
-
-    // }}}
-    // {{{ function xorg_clear_cache()
-
-    function xorg_clear_cache($tpl)
-    {
-        if ($this->_page_type == NO_SKIN) {
-            return parent::clear_cache($tpl);
-        } else {
-            return parent::clear_cache(null, $tpl);
         }
     }
 

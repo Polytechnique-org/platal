@@ -49,17 +49,17 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
 
     //Quelques vérifications sur l'alias (caractères spéciaux)
     if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
-        $page->trigger("L'adresse demandée n'est pas valide.
-                        Vérifie qu'elle comporte entre 3 et 20 caractères
-                        et qu'elle ne contient que des lettres non accentuées,
-                        des chiffres ou les caractères - et .");
+        $page->trig("L'adresse demandée n'est pas valide.
+                    Vérifie qu'elle comporte entre 3 et 20 caractères
+                    et qu'elle ne contient que des lettres non accentuées,
+                    des chiffres ou les caractères - et .");
         $page->run('error');
     } else {
         //vérifier que l'alias n'est pas déja pris
         $result = $globals->db->query("SELECT 1 FROM virtual WHERE alias='$alias@{$globals->mail->alias_dom}'");
         if (mysql_num_rows($result)>0) {
-            $page->trigger("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
-                            Tu ne peux donc pas l'obtenir.");
+            $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
+                        Tu ne peux donc pas l'obtenir.");
             $page->run('error');
         }
 
@@ -67,8 +67,8 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         $it = new ValidateIterator ();
         while($req = $it->next()) {
             if ($req->type == "alias" and $req->alias == $alias) {
-                $page->trigger("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
-                                Tu ne peux donc pas l'obtenir pour l'instant.");
+                $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
+                            Tu ne peux donc pas l'obtenir pour l'instant.");
                 $page->run('error');
             }
         }

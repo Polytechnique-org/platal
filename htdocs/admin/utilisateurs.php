@@ -76,7 +76,7 @@ if (!empty($_REQUEST['login'])) {
             if (list($redir) = mysql_fetch_row($res)) {
                 list($login) = split('@', $redir);
             } else {
-                $page->trigger("il n'y a pas d'utilisateur avec cet alias melix");
+                $page->trig("il n'y a pas d'utilisateur avec cet alias melix");
             }
             mysql_free_result($res);
         } else {
@@ -88,9 +88,9 @@ if (!empty($_REQUEST['login'])) {
                 if ($i) {
                     $aliases = Array();
                     while (list($a) = mysql_fetch_row($res)) $aliases[] = $a;
-                    $page->trigger("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
+                    $page->trig("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
                 } else {
-                    $page->trigger("il n'y a pas d'utilisateur avec cette adresse mail");
+                    $page->trig("il n'y a pas d'utilisateur avec cette adresse mail");
                 }
             } else {
                 list($login) = mysql_fetch_row($res);
@@ -108,7 +108,7 @@ if (!empty($_REQUEST['login'])) {
         if ($tmp = mysql_fetch_assoc($r)) {
             $mr =& $tmp;
         } else {
-            $page->trigger("il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)");
+            $page->trig("il n'y a pas d'utilisateur avec ce login (ou alors il a des homonymes)");
         }
         mysql_free_result($r);
     }
@@ -133,11 +133,11 @@ if(isset($mr)) {
 	    case "add_fwd":
 		$email = $_REQUEST['email'];
 		if (!isvalid_email_redirection($email)) {
-                    $page->trigger("invalid email $email");
+                    $page->trig("invalid email $email");
 		    break;
 		}
 		$redirect->add_email(trim($email));
-                $page->trigger("Ajout de $email effectué");
+                $page->trig("Ajout de $email effectué");
 		break;
 
 	    case "del_fwd":
@@ -150,7 +150,7 @@ if(isset($mr)) {
 		$globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
 								AND type!='a_vie' AND type!='homonyme'");
 		fix_bestalias($_REQUEST['user_id']);
-                $page->trigger($val." a été supprimé");
+                $page->trig($val." a été supprimé");
 		break;
 
 	    case "add_alias":
@@ -192,7 +192,7 @@ if(isset($mr)) {
 		fputs($f,"1");
 		fclose($f);
 
-                $page->trigger("updaté correctement.");
+                $page->trig("updaté correctement.");
 		// envoi du mail au webmaster
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
@@ -210,7 +210,7 @@ if(isset($mr)) {
 	    case "u_kill":
 		require_once("user.func.inc.php");
 		user_clear_all_subs($_REQUEST['user_id']);
-                $page->trigger("'{$_REQUEST['user_id']}' a été désinscrit !");
+                $page->trig("'{$_REQUEST['user_id']}' a été désinscrit !");
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");

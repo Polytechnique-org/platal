@@ -29,7 +29,7 @@ if (isset($_REQUEST['action'])) {
 	$user = $_REQUEST['user'];
 	if (preg_match('/^\d+$/', $user)) {
 	    if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$user}'")) {
-		$page->trigger("Contact retiré !");
+		$page->trig("Contact retiré !");
             }
 	} else {
 	    if ($globals->db->query(
@@ -38,7 +38,7 @@ if (isset($_REQUEST['action'])) {
                   INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!='homonyme')
 		       WHERE  c.uid = '{$_SESSION['uid']}' AND a.alias='$user'"
 		   )) {
-		$page->trigger("Contact retiré !");
+		$page->trig("Contact retiré !");
             }
 	}
 
@@ -48,11 +48,11 @@ if (isset($_REQUEST['action'])) {
         if (($res = $globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['user']}' AND type!='homonyme'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
             if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
-                $page->trigger('Contact ajouté !');
+                $page->trig('Contact ajouté !');
             } else
-                $page->trigger('Contact déjà dans la liste !');
+                $page->trig('Contact déjà dans la liste !');
         } else {
-            $page->trigger('Utilisateur inexistant ou non inscrit !');
+            $page->trig('Utilisateur inexistant ou non inscrit !');
         }
     }
 }

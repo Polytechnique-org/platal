@@ -13,9 +13,9 @@ class TestOfXOrgErrors extends UnitTestCase {
         $this->assertIdentical($errors->failure, false);
     }
 
-    function testTrigger() {
+    function testTrig() {
         $errors = new XOrgErrors();
-        $errors->trigger("Foo error");
+        $errors->trig("Foo error");
         $this->assertIdentical($errors->errs, Array("Foo error"));
         $this->assertIdentical($errors->failure, false);
     }

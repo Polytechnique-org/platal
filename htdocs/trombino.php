@@ -33,7 +33,7 @@ if (isset($_REQUEST["ordi"]) and
     // net
     $fp = fopen($_REQUEST["photo"], 'r');
     if (!$fp) {
-        $page->trigger("Fichier inexistant");
+        $page->trig("Fichier inexistant");
     } else {
         $attach = fread($fp, 35000);
         fclose($fp);

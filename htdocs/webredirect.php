@@ -27,9 +27,9 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
     $globals->db->query("update auth_user_quick set redirecturl = '{$_REQUEST['url']}' where user_id = '{$_SESSION['uid']}'");
     if (mysql_errno() == 0) {
         $_SESSION['log']->log("carva_add","http://".$_REQUEST['url']);
-        $page->trigger("Redirection activée vers <a href='http://{$_REQUEST['url']}'>{$_REQUEST['url']}</a>");
+        $page->trig("Redirection activée vers <a href='http://{$_REQUEST['url']}'>{$_REQUEST['url']}</a>");
     } else {
-        $page->trigger('Erreur de mise à jour');
+        $page->trig('Erreur de mise à jour');
     }
 } elseif (isset($_REQUEST['submit']) and $_REQUEST['submit'] == "Supprimer") {
     // on supprime la redirection
@@ -37,9 +37,9 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
     if (mysql_errno() == 0) {
         $_SESSION['log']->log("carva_del",$_REQUEST['url']);
         $_POST['url'] = '';
-        $page->trigger('Redirection supprimée');
+        $page->trig('Redirection supprimée');
     } else {
-        $page->trigger('Erreur de suppression');
+        $page->trig('Erreur de suppression');
     }
 }
 
