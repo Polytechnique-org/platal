@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.15 2004-09-02 17:43:14 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.16 2004-09-02 19:39:20 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -37,29 +37,12 @@ if(isset($_REQUEST['logs_button'])) {
 /*
  * SUID
  */
-if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login'])
-        and !isset($_SESSION['suid']) // pas de su imbriqués
-  ) {
-    $res = @$globals->db->query( "SELECT user_id,prenom,nom,promo,perms FROM auth_user_md5 WHERE username='{$_REQUEST['login']}'");
-    if(@mysql_num_rows($res) != 0) {
-        list($uid,$prenom,$nom,$promo,$perms)=mysql_fetch_row($res);
-        // on déplace le log de l'admin dans slog, et on crée un log de suid en log
-        // on loggue le démarrage de la session suid pour l'admin et l'utilisateur
-        $log_data = $_REQUEST['login']." by ".$_SESSION['username'];
-        $_SESSION['log']->log("suid_start",$log_data);
-        $_SESSION['slog'] = $_SESSION['log'];
-        $_SESSION['log'] = new DiogenesCoreLogger($uid,$_SESSION['uid']);
-        $_SESSION['log']->log("suid_start",$log_data);
-        // on modifie les variables de session suffisantes pour faire un su
-        // rem : la skin n'est pas modifiée
-        $_SESSION['suid'] = $_SESSION['uid'];
-        $_SESSION['username'] = $_REQUEST['login'];
-        $_SESSION['perms'] = $perms;
-        $_SESSION['uid'] = $uid;
-        $_SESSION['prenom'] = $prenom;
-        $_SESSION['nom'] = $nom;
-        $_SESSION['promo'] = $promo;
-    }
+if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SESSION['suid'])) {
+    $log_data = $_REQUEST['login']." by ".$_SESSION['forlife'];
+    $_SESSION['log']->log("suid_start",$log_data);
+    $_SESSION['slog'] = $_SESSION['log'];
+    $_SESSION['suid'] = $_SESSION['uid'];
+    start_connexion($_SESSION['uid'],true);
     header("Location: ../");
 }
 

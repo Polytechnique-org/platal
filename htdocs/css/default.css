@@ -386,7 +386,6 @@ div.item div.value { }
     background: #ffc0cb;
     width: 100%;
     font-weight: bold;
-    position: fixed;
 }
 #suid td { padding: 2px; }
 #suid a { color: red; }
@@ -465,4 +464,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.37 2004-08-31 22:21:05 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.38 2004-09-02 19:39:20 x2000habouzit Exp $ */

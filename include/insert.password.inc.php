@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.password.inc.php,v 1.3 2004-09-02 18:23:02 x2000habouzit Exp $
+        $Id: insert.password.inc.php,v 1.4 2004-09-02 19:39:20 x2000habouzit Exp $
  ***************************************************************************/
 
 function smarty_insert_getName() {
@@ -33,10 +33,11 @@ function smarty_insert_getName() {
 }
 
 function smarty_insert_getUsername() {
+    global $globals;
     if(isset($_COOKIE['ORGuid'])) $id = $_COOKIE['ORGuid'];
     if(isset($_SESSION['uid'])) $id = $_SESSION['uid'];
     if(empty($id)) return "";
-    $res = $globals->db->query("SELECT alias FROM auth_user_md5 WHERE id='$id' AND type='a_vie'");
+    $res = $globals->db->query("SELECT alias FROM aliases WHERE id='$id' AND type='a_vie'");
     if(list($uname) = mysql_fetch_row($res)) {
 	mysql_free_result($res);
 	return $uname;

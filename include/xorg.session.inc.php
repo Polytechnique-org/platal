@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.22 2004-09-02 19:03:19 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.23 2004-09-02 19:39:20 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -48,9 +48,10 @@ class XorgSession extends DiogenesCoreSession {
 	{
 	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
 	    // ou passwordpromptscreenlogged.tpl
+	    $field = preg_match('/^\d*$/', $_REQUEST['username']) ? 'id' : 'alias';
 	    $res = @$globals->db->query( "SELECT  u.user_id,u.password
 					    FROM  auth_user_md5 AS u
-         			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.alias='{$_REQUEST['username']}' )");
+         			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.$field='{$_REQUEST['username']}' )");
 	    if(@mysql_num_rows($res) != 0) {
 		list($uid,$password)=mysql_fetch_row($res);
 		mysql_free_result($res);
@@ -215,13 +216,15 @@ function try_cookie() {
  */
 function start_connexion ($uid, $identified) {
     global $globals;
-    $result=$globals->db->query("SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host
-	    FROM  auth_user_md5   AS u
-       LEFT JOIN  logger.sessions AS s ON(s.uid=u.user_id AND s.suid=0)
-	   WHERE  user_id=$uid
-        ORDER BY  s.start DESC
-           LIMIT  1");
-    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host) = mysql_fetch_row($result);
+    $result=$globals->db->query("
+	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias
+          FROM  auth_user_md5   AS u
+    INNER JOIN	aliases         AS a ON (u.user_id = a.id AND a.type='a_vie')
+     LEFT JOIN  logger.sessions AS s ON (s.uid=u.user_id AND s.suid=0)
+         WHERE  user_id=$uid
+      ORDER BY  s.start DESC
+         LIMIT  1");
+    list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife) = mysql_fetch_row($result);
     mysql_free_result($result);
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
     // authentification avec le cookie
@@ -230,7 +233,7 @@ function start_connexion ($uid, $identified) {
 	$logger = $_SESSION['log'];
     // on vide la session pour effacer les valeurs précédentes (notamment de skin)
     // qui peuvent être celles de quelqu'un d'autre ou celle par defaut
-    $_SESSION = array();
+    $_SESSION = isset($_SESSION['suid']) ? Array('suid'=>$_SESSION['suid'], 'slog'=>$_SESSION['slog']) : array();
     $_SESSION['lastlogin'] = $lastlogin;
     $_SESSION['host'] = $host;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
@@ -239,12 +242,13 @@ function start_connexion ($uid, $identified) {
     $_SESSION['nom'] = $nom;
     $_SESSION['perms'] = $perms;
     $_SESSION['promo'] = $promo;
+    $_SESSION['forlife'] = $forlife;
     $res = $globals->db->query("SELECT flags FROM identification WHERE matricule = '$matricule' AND FIND_IN_SET(flags, 'femme')");
     $_SESSION['femme'] = mysql_num_rows($res) > 0;
     mysql_free_result($res);
     // on récupère le logger si il existe, sinon, on logge la connexion
     $_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
-    if(empty($logger))
+    if(empty($logger) && empty($_SESSION['suid']))
 	$_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
     // le login est stocké pour un an
     setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
