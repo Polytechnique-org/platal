@@ -48,7 +48,7 @@
   
 {if $fiche_incitation}
   <p>La dernière mise à jour de ta
-  <a href="{"fiche.php"|url}?user={$smarty.session.forlife}" class="popup2">fiche</a>
+  <a href="{rel}/fiche.php}?user={$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format}.
   Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
@@ -58,8 +58,7 @@
 {if $photo_incitation}
   <p>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
-    Clique <a href="{"trombino.php"|url}">ici</a>
-    si tu souhaites en ajouter une.
+    Clique <a href="{rel}/trombino.php">ici</a> si tu souhaites en ajouter une.
   </p>
 {/if}
 
@@ -96,7 +95,7 @@
         {/tidy}
         <br />
         <p class="smaller">Annonce proposée par
-        <a href="{"fiche.php"|url}?user={$ev.forlife}" class="popup2">
+        <a href="{rel}/fiche.php?user={$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
         </p>
