@@ -17,31 +17,31 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche_pvt.tpl,v 1.9 2004-11-02 06:41:52 x2000habouzit Exp $
+        $Id: minifiche_pvt.tpl,v 1.10 2004-11-02 07:01:07 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {if $inscrit==1}
   <div class="bits">
     <a href="javascript:x()"
-    onclick="popupWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">
-      <img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" />
-    </a>
-    <a href="vcard.php/{$c.forlife}.vcf?x={$c.forlife}">
-      <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" />
-    </a>
-    <a href="mescontacts.php?action={$show_action}&amp;user={$c.forlife}">
-      <img src="images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
-        title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" />
-    </a>
+    onclick="popupWin('fiche.php?user={$c.forlife}','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=500')">{*
+      *}<img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" />{*
+    *}</a>
+    <a href="vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
+      *}<img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" />{*
+    *}</a>
+    <a href="mescontacts.php?action={$show_action}&amp;user={$c.forlife}">{*
+      *}<img src="images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
+        title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" />{*
+    *}</a>
     {if $c.dcd neq 1}
     {perms level='admin'}
-    <a href="{"admin/utilisateurs.php"|url}?login={$c.forlife}">
-      <img src="images/admin.png" alt='admin' title="administrer user" />
-    </a>
-    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">
-      <img src="images/ax.png" alt='AX' title="fiche AX" />
-    </a>
+    <a href="{"admin/utilisateurs.php"|url}?login={$c.forlife}">{*
+      *}<img src="images/admin.png" alt='admin' title="administrer user" />{*
+    *}</a>
+    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">{*
+      *}<img src="images/ax.png" alt='AX' title="fiche AX" />{*
+    *}</a>
     {/perms}
     {/if}
   </div>
@@ -53,9 +53,9 @@
     </a>
     {perms level='admin'}
     &nbsp;
-    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">
-      <img src="images/ax.png" alt='AX' title="fiche AX" />
-    </a>
+    <a href="javascript:x()" onclick="popWin('http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}')">{*
+      *}<img src="images/ax.png" alt='AX' title="fiche AX" />{*
+    *}</a>
     {/perms}
   </div>
   {/if}
