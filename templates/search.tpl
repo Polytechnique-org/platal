@@ -27,12 +27,27 @@
   {/if}
 
   <h1 class='right'>
-    {if $nb_tot==0}Aucune{else}{$nb_tot}{/if} réponse{if $nb_tot>1}s{/if}.
+    {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}.
   </h1>
+
+  {if $search_results_nb > 1}
+  <div>
+    Trier par :
+    {foreach from=$search_order_link item=tri}
+    [<a href='{$tri.url}'>
+    {if $tri.asc or $tri.desc}<strong>{/if}
+    {$tri.text}
+    {if  $tri.asc}<img src='{rel}/images/up.png' />{/if}
+    {if $tri.desc}<img src='{rel}/images/dn.png' />{/if}
+    {if $tri.asc or $tri.desc}</strong>{/if}
+    </a>]
+    {/foreach}
+  </div>
+  {/if}
 
   <div class="contact-list" style="clear:both">
     {capture name=list}
-    {iterate item=res from=$resultats}
+    {iterate item=res from=$search_results}
       {if $res.contact || $res.watch}
         {include file=include/minifiche.tpl c=$res show_action="retirer"}
       {else}
@@ -43,24 +58,15 @@
     {$smarty.capture.list|smarty:nodefaults}
   </div>
 
-  {if $perpage < $nb_tot}
+  {if $search_pages_nb > 1}
   <p>
-    {if $offset!=0}
-    <a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;offset={$offset-$perpage}">Précédent</a>
-    &nbsp;
+    {foreach from=$search_pages_link item=l}
+    {if $l.i eq $search_page}
+    <span class="erreur">{$l.text}</span>
+    {else}
+    <a href="{$l.u}">{$l.text}</a>
     {/if}
-    {section name=offset loop=$offsets}
-      {if $offset!=$smarty.section.offset.index*$perpage}
-      <a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;offset={$smarty.section.offset.index*$perpage}">{$smarty.section.offset.index+1}</a>
-      {else}
-      <span class="erreur">{$smarty.section.offset.index+1}</span>
-      {/if}
-      &nbsp;
-    {/section}
-    {if $offset < $nb_tot-$perpage}
-    <a href="{$smarty.server.PHP_SELF}?{$url_args}&amp;offset={$offset+$perpage}">Suivant</a>
-    &nbsp;
-    {/if}
+    {/foreach}
   </p>
   {/if}
 

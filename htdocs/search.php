@@ -31,50 +31,50 @@ require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
 if (Env::has('quick')) {
+    require_once("xorg.search.inc.php");
     $page->assign('formulaire', 0);
 
-    $qSearch = new QuickSearch('quick');
-    $fields  = new SFieldGroup(true, array($qSearch));
+    function get_list($offset, $limit, $order, $order_inv) {
+        global $globals;
+        $qSearch = new QuickSearch('quick');
+        $fields  = new SFieldGroup(true, array($qSearch));
 
-    $offset  = new NumericSField('offset');
-    
-    if ($qSearch->isempty()) {
-	new ThrowError('Recherche trop générale.');
+        $offset  = new NumericSField('offset');
+        
+        if ($qSearch->isempty()) {
+            new ThrowError('Recherche trop générale.');
+        }
+       
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS  DISTINCT 
+                           UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
+                           IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
+                           '.$globals->search->result_fields.'
+                           c.uid AS contact,
+                           w.ni_id AS watch,
+                           '.$qSearch->get_mark_statement().'
+
+                     FROM  auth_user_md5  AS u
+                LEFT JOIN  auth_user_quick AS q  USING(user_id)
+                LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
+                LEFT JOIN  contacts       AS c   ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
+                LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
+                '.$globals->search->result_where_statement.'
+                    WHERE  '.$fields->get_where_statement().(logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '').'
+                   HAVING  mark>0
+                 ORDER BY '.($order?($order.($order_inv?" DESC":"").', '):'')
+                            .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
+                    LIMIT  '.$offset->value.','.$globals->search->per_page;
+        $list = $globals->xdb->iterator($sql);
+        $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
+        $nb_tot  = $res->fetchOneCell();
+        return array($list, $nb_tot);
     }
-   
-    $sql = 'SELECT SQL_CALC_FOUND_ROWS  DISTINCT 
-                       UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
-                       IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
-                       '.$globals->search->result_fields.'
-                       c.uid AS contact,
-		       w.ni_id AS watch,
-                       '.$qSearch->get_mark_statement().'
 
-                 FROM  auth_user_md5  AS u
-           INNER JOIN  auth_user_quick AS q  USING(user_id)
-	    LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
-            LEFT JOIN  contacts       AS c   ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
-            LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
-            '.$globals->search->result_where_statement.'
-                WHERE  '.$fields->get_where_statement().(logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '').'
-               HAVING  mark>0
-             ORDER BY  '.(logged() && Env::has('mod_date_sort') ? 'date DESC,' :'')
-		        .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
-                LIMIT  '.$offset->value.','.$globals->search->per_page;
-
-    $page->assign('resultats', $globals->xdb->iterator($sql));
-    $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
-    $nb_tot  = $res->fetchOneCell();
-    $nbpages  = ($nb_tot-1)/$globals->search->per_page;
-
-    $url_ext = Array(
-        'mod_date_sort' => Env::has('mod_date_sort')
-    );
-    $page->assign('offset',   $offset->value);
-    $page->assign('offsets',  range(0, $nbpages));
-    $page->assign('url_args', $fields->get_url($url_ext));
-    $page->assign('perpage',  $globals->search->per_page);
-    $page->assign('nb_tot',   $nb_tot);
+    $search = new XOrgSearch(get_list);
+    $search->setNbLines($globals->search->per_page);
+    $search->addOrder('mark', 'mark', false, 'pertinence', AUTH_PUBLIC, true);
+    
+    $nb_tot = $search->show();
     
     if (!logged() && $nb_tot > $globals->search->public_max) {
 	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
@@ -90,4 +90,6 @@ if (Env::has('quick')) {
 
 $page->register_modifier('display_lines', 'display_lines');
 $page->run();
+
+// vim:set et sws=4 sw=4 sts=4:
 ?>

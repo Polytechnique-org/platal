@@ -21,14 +21,14 @@
 {if $do_title}<h1>Recherche avancée</h1>{/if}
 
 <ul>
-  {if !$with_soundex && ($smarty.request.firstname || $smarty.request.name)}
+  {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}
   <li>Étendre ta recherche par <strong>
-    <a  href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">proximité sonore</a>
+    <a  href="{$with_soundex}">proximité sonore</a>
   </strong>
   </li>
   {/if}
 
-  <li><strong><a href="{$smarty.server.PHP_SELF}?{$url_short}">Modifier</a>
+  <li><strong><a href="{$url_search_form}">Modifier</a>
   </strong> ta recherche
   </li>
 

@@ -63,93 +63,93 @@ function form_prepare()
 if (!Env::has('rechercher')) {
     form_prepare();
 } else {
+    require_once('xorg.search.inc.php');
+    // {{{ function get_list()
 
-    if ($with_soundex = Env::has('with_soundex')) {
-        $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
-        $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
-    } else {
-        $nameField      = new NameSField('name',array('u.nom','u.epouse'),'');
-        $firstnameField = new StringSField('firstname',array('u.prenom'),'');
-    }
-    $nicknameField   = new StringSField('nickname',array('q.profile_nick'),'');
-    
-    $promo1Field     = new PromoSField('promo1','egal1',array('u.promo'),'');
-    $promo2Field     = new PromoSField('promo2','egal2',array('u.promo'),'');
-    $womanField      = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
-    $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
-    $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
-   
-    $townField       = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
-    $countryField    = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
-    $regionField     = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
-   
-    $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
-    $posteField      = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
-    $secteurField    = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
-    $cvField         = new RefSField('cv',array('u.cv'),'','','',false);
-   
-    $natField        = new RefSField('nationalite',array('u.nationalite'),'','','');
-    $binetField      = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
-    $groupexField    = new RefSField('groupex',array('g.gid'),'groupesx_ins','g','u.user_id=g.guid');
-    $sectionField    = new RefSField('section',array('u.section'),'','','');
-    $schoolField     = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
-    $diplomaField    = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
-  
-    $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
-    $offset          = new NumericSField('offset');
-  
-    $fields          = new SFieldGroup(true, array( $nameField, $firstnameField, $nicknameField, $promo1Field,
-                $promo2Field, $womanField, $subscriberField, $aliveField, $townField, $countryField,
-                $regionField, $entrepriseField, $posteField, $secteurField, $cvField, $natField,
-                $binetField, $groupexField, $sectionField, $schoolField, $diplomaField, $freeField)
-            );
+    function get_list($offset, $limit, $order, $order_inv) {
+        if ($with_soundex = Env::has('with_soundex')) {
+            $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
+            $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
+        } else {
+            $nameField      = new NameSField('name',array('u.nom','u.epouse'),'');
+            $firstnameField = new StringSField('firstname',array('u.prenom'),'');
+        }
+        $nicknameField   = new StringSField('nickname',array('q.profile_nick'),'');
+        
+        $promo1Field     = new PromoSField('promo1','egal1',array('u.promo'),'');
+        $promo2Field     = new PromoSField('promo2','egal2',array('u.promo'),'');
+        $womanField      = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
+        $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
+        $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
+       
+        $townField       = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
+        $countryField    = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
+        $regionField     = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
+       
+        $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
+        $posteField      = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
+        $secteurField    = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
+        $cvField         = new RefSField('cv',array('u.cv'),'','','',false);
+       
+        $natField        = new RefSField('nationalite',array('u.nationalite'),'','','');
+        $binetField      = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
+        $groupexField    = new RefSField('groupex',array('g.gid'),'groupesx_ins','g','u.user_id=g.guid');
+        $sectionField    = new RefSField('section',array('u.section'),'','','');
+        $schoolField     = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
+        $diplomaField    = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
+      
+        $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
+      
+        $fields          = new SFieldGroup(true, array( 
+            $nameField, $firstnameField, $nicknameField, $promo1Field,
+            $promo2Field, $womanField, $subscriberField, $aliveField,
+            $townField, $countryField, $regionField, $entrepriseField,
+            $posteField, $secteurField, $cvField, $natField, $binetField,
+            $groupexField, $sectionField, $schoolField, $diplomaField,
+            $freeField)
+                );
 
     
-    if ($fields->too_large()) {
-        form_prepare();
-        new ThrowError('Recherche trop générale.');
-    }
-   
-    $where = $fields->get_where_statement();
-    $sql = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
-                       u.nom, u.prenom,
-                       '.$globals->search->result_fields.'
-                       c.uid AS contact,
-                       w.ni_id AS watch
-                 FROM  auth_user_md5   AS u 
-           INNER JOIN  auth_user_quick AS q USING(user_id)
-            '.$fields->get_select_statement().'
-            '.(Env::has('only_referent') ? ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' : '').'
-            LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
-            LEFT JOIN  contacts       AS c ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
-            LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
-            '.$globals->search->result_where_statement.'
+        if ($fields->too_large()) {
+            form_prepare();
+            new ThrowError('Recherche trop générale.');
+        }
+        global $globals;
+    
+        $where = $fields->get_where_statement();
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+                           u.nom, u.prenom,
+                           '.$globals->search->result_fields.'
+                           c.uid AS contact,
+                           w.ni_id AS watch
+                     FROM  auth_user_md5   AS u 
+               LEFT JOIN  auth_user_quick AS q USING(user_id)
+                '.$fields->get_select_statement().'
+                '.(Env::has('only_referent') ?
+                    ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' :
+                    '').'
+                LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
+                LEFT JOIN  contacts       AS c ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
+                LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
+                '.$globals->search->result_where_statement.'
                 '.(empty($where) ? '' : "WHERE  $where").'
-             ORDER BY  '.(logged() && Env::has('mod_date_sort') ? 'date DESC,' :'')
+                 ORDER BY  '.($order?($order.($order_inv?' DESC':'').', '):'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'promo DESC, NomSortKey, prenom'))).'
-                LIMIT  '.$offset->value.','.$globals->search->per_page;
+                    LIMIT  '.($offset * $limit).','.$limit;
+        $liste   = $globals->xdb->iterator($sql);
+        $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
+        $nb_tot  = $res->fetchOneCell();
+        return Array($liste, $nb_tot);
+    }
 
-    $page->assign('resultats', $globals->xdb->iterator($sql));
-    $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
-    $nb_tot  = $res->fetchOneCell();
-    $nbpages = ($nb_tot - 1)/$globals->search->per_page;
-
-    $url_ext = Array(
-        'mod_date_sort' => Env::has('mod_date_sort'),
-        'with_soundex'  => $with_soundex
-    );
-
-    $url_short = $fields->get_url($url_ext);
-    $url_args  = $url_short . '&amp;rechercher=1';
-
-    $page->assign('offset',    $offset->value);
-    $page->assign('offsets',   range(0, $nbpages));
-    $page->assign('url_short', $url_short);
-    $page->assign('url_args',  $url_args);
-    $page->assign('perpage',   $globals->search->per_page);
-    $page->assign('nb_tot',    $nb_tot);
-    $page->assign('with_soundex',   $with_soundex);
+    $search = new XOrgSearch(get_list);
+    $search->setNbLines($globals->search->per_page);
             
+    $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
+    $page->assign('with_soundex', Env::has('with_soundex')?"":($search->make_url(Array())."&with_soundex=1"));
+    
+    $nb_tot = $search->show();
+    
     if ($nb_tot > $globals->search->private_max) {
         form_prepare();
         new ThrowError('Recherche trop générale');
@@ -159,4 +159,6 @@ if (!Env::has('rechercher')) {
 
 $page->register_modifier('display_lines', 'display_lines');
 $page->run();
+
+// vim:set et sws=4 sw=4 sts=4:
 ?>
