@@ -35,6 +35,8 @@ a img { border: 0px; }
 td    { vertical-align: top; }
 li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
 hr    { width: 90%; text-align: center }
+fieldset { border: 1px black dotted; }
+legend { border: 1px #305070 solid; }
 
 .center { text-align: center; }
 .right  { text-align: right; }
@@ -582,4 +584,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.56 2004-11-04 15:14:37 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.57 2004-11-04 16:21:45 x2000habouzit Exp $ */

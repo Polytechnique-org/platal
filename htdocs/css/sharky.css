@@ -27,6 +27,16 @@ body {
     background: #99afc1;
     color: #000000;
 }
+fieldset {
+    border: 1px #305070 solid;
+    background: #80a0c0;
+    color: inherit;
+}
+legend {
+    border: 1px #305070 solid;
+    background: #99b9d0;
+    color: inherit;
+}
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -148,4 +158,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: sharky.css,v 1.5 2004-10-24 14:41:11 x2000habouzit Exp $ */
+/* $Id: sharky.css,v 1.6 2004-11-04 16:21:46 x2000habouzit Exp $ */
