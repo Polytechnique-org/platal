@@ -344,7 +344,6 @@ div.item div.value { }
 *******************************************************************************/
 
 #dev {
-    position: fixed;
     top     : 32px;
     right   : 14px;
     width   : 128px;
@@ -357,7 +356,10 @@ div.item div.value { }
     font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
     font-size: 10pt;
     font-weight: bold;
+    behavior: "\"}"; /* ugly hack, but IE sucks */
+    position: fixed;
 }
+
 #dev div { padding: 3px; }
 #dev .title {
     text-align: center;
@@ -456,4 +458,4 @@ div.item div.value { }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.32 2004-08-29 15:46:53 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.33 2004-08-29 21:26:04 x2000habouzit Exp $ */
