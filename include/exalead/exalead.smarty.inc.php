@@ -1,5 +1,8 @@
 <?php
 
+
+$exa_max_length = 15;
+
 function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_groupe', $img_path = 'images/'){
   $compteur = 0;
   $titre = ($keywords)?'Mot-clés':$group->title;
@@ -127,10 +130,58 @@ function _exa_navigation_droite($params, &$smarty){
   return $res;
 }
 
+//categorie = true if this line is for a category, false if this is for a keyword
+function _display_3_columns($title, $count, $refine, $exclude, $categorie){
+  global $exa_max_length;
+  if($categorie) $title_exclude = 'Ne pas afficher cette catégorie';
+  else $title_exclude = 'Ne pas afficher ce mot-clé';
+  $extract = ((strlen($title) > $exa_max_length + 3)?substr($title,0,$exa_max_length).'...':$title);
+  return "<tr class=\"categ\">
+	                  <td>
+			    <a style=\"text-decoration: none;\"
+	                       href=\"?_C=".$refine."&amp;_f=xml2\"
+		               title=\"$title\"
+	                    >$extract</a></td><td width=\"10%\">$count</td><td width=\"10%\">
+			    <a href=\"?_C=".$exclude."?>&amp;_f=xml2\"
+                               title=\"$title_exclude\">[-]</a></td>
+		        </tr>";
+
+}
+
+//excluded = true if this line is an excluded result, = false if this line is a refined result
+//categorie = true if this line is for a category, false if this is for a keyword
+function _display_2_columns($title, $reset, $excluded, $categorie){
+  global $exa_max_length;
+  if($excluded){
+    if($categorie) $title_link = 'Afficher de nouveau cette catégorie';
+    else $title_link = 'Afficher de nouveau ce mot-clé';
+    $link = '[+]';
+    $style = 'text-decoration: line-through;';
+  } else{
+    if($categorie) $title_link = 'Voir les autres catégories';
+    else $title_link = 'Voir les autres mots-clés';
+    $link = '[-]';
+    $style = 'text-decoration: none; font-weight: bold;';
+  }
+  $extract = ((strlen($title) > $exa_max_length + 3)?substr($title,0,$exa_max_length).'...':$title);
+   return "<tr class=\"categ\">
+	     <td colspan=\"2\">
+	      <a style=\"$style\" href=\"?_C=".$reset."&amp;_f=xml2\"
+		 title=\"$title\">$extract</a>
+             </td>
+	     <td width=\"10%\"><a style=\"$style\"
+			          href=\"?_C=".$reset."&amp;_f=xml2\"
+				  title=\"$title_link\"
+	                       >$link</a>
+	     </td>
+            </tr>";
+}
+
 /**
 * This function is used to resume database content for given group (template argument 'groupe')
 */
 function _display_resume_groupe($params, &$smarty){
+  global $exa_max_length;
   if(!empty($params['exalead_data'])){
     $exalead_data = &$GLOBALS[$params['exalead_data']];
   }
@@ -144,52 +195,68 @@ function _display_resume_groupe($params, &$smarty){
   foreach($exalead_data->groups as $group){
     if($group->title == $groupe){
       $array = & $group->categories;
-      $result = "<div class=\"exa_resume\"><div class=\"titre\">$groupe</div><ul>";
+      $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">$groupe</th>";
       foreach($array as $categorie){
+        $title = (empty($categorie->display)?$categorie->name:$categorie->display);
+        $count = (empty($categorie->count)?'':' ('.$categorie->count.')');
+        $refine = $exalead_data->query->context.'/'.$categorie->refine_href;
+	$exclude = $exalead_data->query->context.'/'.$categorie->exclude_href;
+	$reset = $exalead_data->query->context.'/'.$categorie->reset_href;
+	
         if($categorie->display != ''){
 	  if($categorie->is_normal()){
-            $result .= "<li>
-	                  <div class=\"categ\">
-			    <a style=\"text-decoration: none;\"
-	                       href=\"?_C=".$exalead_data->query->context.'/'.$categorie->refine_href."&amp;_f=xml2\"
-		               title=\"Parcourir seulement cette catégorie\"
-	                    >".(empty($categorie->display)?$categorie->name:$categorie->display).(empty($categorie->count)?'':' ('.$categorie->count.')')."</a>
-			    <a href=\"?_C=".$exalead_data->query->context.'/'.$categorie->exclude_href."?>&amp;_f=xml2\"
-                               title=\"Ne pas afficher cette catégorie\">[-]</a>
-			  </div>
-		        </li>";
-	  }
-	  elseif($categorie->is_excluded()){
-            $result .= "<li>
-	                  <div class=\"categ\">
-			      <a style=\"text-decoration: line-through;\"
-	                         href=\"?_C=".$exalead_data->query->context.'/'.$categorie->reset_href."&amp;_f=xml2\"
-		                 title=\"Afficher de nouveau cette catégorie\"
-	                       >".(empty($categorie->display)?$categorie->name:$categorie->display)." [+]</a>
-	                  </div>
-			</li>";
+            $result .= _display_3_columns($title, $count, $refine, $exclude, true);
 	  }
 	  else{
-            $result .= "<li>
-	                  <div class=\"categ\">
-			      <strong><a style=\"text-decoration: none;\"
-	                         href=\"?_C=".$exalead_data->query->context.'/'.$categorie->reset_href."&amp;_f=xml2\"
-		                 title=\"Voir les autres catégories\"
-	                       >".(empty($categorie->display)?$categorie->name:$categorie->display)." [-]</a></strong>
-	                  </div>
-			</li>";
-          }
+            $result .= _display_2_columns($title, $reset, $categorie->is_excluded(), true);
+	  }
 	}
       }
-      $result .= "</ul></div>";
+      $result .= "</table>";
       return $result;
     }
   }
 }
 
+/**
+* This function is used to resume database content for keywords
+*/
+function _display_resume_keywords($params, &$smarty){
+  global $exa_max_length;
+  if(!empty($params['exalead_data'])){
+    $exalead_data = &$GLOBALS[$params['exalead_data']];
+  }
+  else{
+    $exalead_data = &$GLOBALS['exalead_data'];
+  }
+  
+  //if no keywrods, do not display anything
+  if(count($exalead_data->keywords) == 0) return '';
+  
+  $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">Mots-Clés</th>";
+  foreach($exalead_data->keywords as $keyword){
+     if($keyword->display != ''){
+       $title = (empty($keyword->display)?$keyword->name:$keyword->display);
+       $count = (empty($keyword->count)?'':' ('.$keyword->count.')');
+       $refine = $exalead_data->query->context.'/'.$keyword->refine_href;
+       $exclude = $exalead_data->query->context.'/'.$keyword->exclude_href;
+       $reset = $exalead_data->query->context.'/'.$keyword->reset_href;
+       if($keyword->is_normal()){
+         $result .= _display_3_columns($title, $count, $refine, $exclude, false);
+       }
+       else{
+         $result .= _display_2_columns($title, $reset, $keyword->is_excluded(), false);
+       }
+     }
+  }
+  $result .= "</table>";
+  return $result;
+}
+
 function register_smarty_exalead(&$page){
   $page->register_function('exa_display_groupes', '_display_groupes');
   $page->register_function('exa_display_resume_groupe', '_display_resume_groupe');
+  $page->register_function('exa_display_resume_keywords', '_display_resume_keywords');
   $page->register_function('exa_display_keywords', '_display_keywords');
   $page->register_function('exa_navigation_gauche', '_exa_navigation_gauche');
   $page->register_function('exa_navigation_droite', '_exa_navigation_droite');

@@ -79,12 +79,39 @@ class Exalead{
   function first_query($query, $offset = 0){
     if(empty($this->base_cgi)) return false;
     
+    //$tmp = parse_url($this->base_cgi);
+    //$view_name = substr($tmp['path'], 5);
+    //$query_exa = $this->base_cgi."?_q=".urlencode($query)."&_f=xml2&A=-1&_vn=".$view_name;
     $query_exa = $this->base_cgi."?_q=".urlencode($query)."&_f=xml2";
     if($offset > 0){
       $query_exa .= "&_s=".$offset;
     }
-
+    
     $xml_response = file_get_contents($query_exa);
+    /*$xml_response = '';
+    $query_explode = parse_url($query_exa);
+    
+    $fp = fsockopen("murphy.m4x.org", 10000, $errno, $errstr, 30);
+    if (!$fp) {
+      echo "$errstr ($errno)<br />\n";
+    } else {
+      $out = "GET {$query_explode['path']}?{$query_explode['query']} HTTP/1.1\r\n";
+      $out .= "Host: murphy.m4x.org:10000\r\n";
+      $out .= "Accept: text/xml\r\n";
+      $out .= "Accept-Charset: utf-8\r\n";
+      $out .= "Connection: Close\r\n\r\n";
+    
+      fwrite($fp, $out);
+      $body = false;
+      while (!feof($fp)) {
+       $s = fgets($fp, 1024);
+        if ( $body )
+          $xml_response .= $s;
+        if ( $s == "\r\n" )
+          $body = true;
+      }
+      fclose($fp);
+    }*/
     $this->parse($xml_response);
   }
 
