@@ -50,6 +50,9 @@ Bug/Wish :
 		- #184 : Owners can now delete their lists.							-MC
 		- #231 : Add a link to the user's fiche on moderation page.			-MC
 
+	* Newsletter :
+		- #242 : Newsletter is standalone.									-MC
+
 	* Search :
 		- #56 : Search on referent.											-JS
 		- #189 : Selection of diplomas depends on schools.					-JS

@@ -23,8 +23,8 @@
 
 class NLConfig
 {
-    var $from         = "\"Lettre Mensuelle\" <null@example.org>";
-    var $replyto      = "null@example.org";
+    var $from    = "Lettre Mensuelle <null@example.org>";
+    var $replyto = "";
 }
 
 // }}}

@@ -324,7 +324,9 @@ EOF;
 	$mailer->setFrom($globals->newsletter->from);
 	$mailer->setSubject($this->title());
 	$mailer->addTo("\"$prenom $nom\" <$login@polytechnique.org>");
-	$mailer->addHeader('Reply-To',$globals->newsletter->replyto);
+        if (!empty($globals->newsletter->replyto)) {
+            $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
+        }
 	$mailer->setTxtBody($this->toText($prenom,$nom,$sex));
 	if ($html) {
 	    $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
