@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.15 2004-10-18 12:20:06 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.16 2004-10-18 12:57:47 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -256,6 +256,11 @@ class NLArticle {
 /////////////////////////
 // functions ............
 //
+function insert_new_nl() {
+    global $globals;
+    $globals->db->query("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued'");
+}
+
 function get_nl_slist() {
     global $globals;
     $res = $globals->db->query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");

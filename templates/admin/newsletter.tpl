@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.tpl,v 1.1 2004-10-16 19:54:35 x2000habouzit Exp $
+        $Id: newsletter.tpl,v 1.2 2004-10-18 12:57:47 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,8 +31,11 @@
     <th>date</th>
     <th>titre</th>
   </tr>
+  <tr>
+    <td colspan='2'><a href='?new'>Créer une nouvelle ML</a></td>
+  </tr>
   {foreach item=nl from=$nl_list}
-  <tr class="{cycle values="impair,pair"}">
+  <tr class="{cycle values="pair,impair"}">
     <td>{$nl.date|date_format:"%Y-%m-%d"}</td>
     <td>
       <a href="{"admin/newsletter_edit.php"|url}?nid={$nl.id}">{$nl.titre|default:"[no title]"}</a>
