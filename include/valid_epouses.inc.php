@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_epouses.inc.php,v 1.14 2004-09-01 21:33:08 x2000habouzit Exp $
+        $Id: valid_epouses.inc.php,v 1.15 2004-09-01 22:51:00 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -42,8 +42,7 @@ class EpouseReq extends Validate {
         
         list($prenom) = explode('.',$_username);
         $this->alias = make_username($prenom,$this->epouse);
-        if(empty($_epouse))
-            $this->alias = "<span class=\"erreur\">suppression</a>";
+        if(empty($_epouse)) $this->alias = "";
         
         $sql = $globals->db->query("select u1.alias, u1.epouse, u1.prenom, u1.nom"
             .", IFNULL(u2.username,u3.username)"
@@ -93,7 +92,6 @@ class EpouseReq extends Validate {
     function commit () {
         global $globals;
         
-        $alias = ($this->epouse ? $this->alias : "");
         $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',alias='".$this->alias."' WHERE user_id=".$this->uid);
 	$globals->db->query("DELETE FROM aliases WHERE type='epouse' AND id=".$this->uid);
 	$globals->db->query("INSERT INTO aliases VALUES('".$this->alias."', 'epouse', ".$this->uid.")");
