@@ -18,13 +18,17 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: nb_by_promo.php,v 1.5 2004-08-31 10:03:31 x2000habouzit Exp $
+        $Id: nb_by_promo.php,v 1.6 2004-11-14 16:13:25 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('stats/nb_by_promo.tpl', AUTH_COOKIE);
 
-$result = $globals->db->query("SELECT promo,COUNT(*) FROM auth_user_md5 WHERE promo > 1900 GROUP BY promo ORDER BY promo");
+$result = $globals->db->query("SELECT  promo,COUNT(*)
+                                 FROM  auth_user_md5
+				WHERE  promo > 1900 AND perms IN ('admin','user')
+			     GROUP BY  promo
+			     ORDER BY  promo");
 $max=0; $min=3000;
 while(list($promo,$nb)=mysql_fetch_row($result)) {
     $promo=intval($promo);
