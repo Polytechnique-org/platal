@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: session.inc.php,v 1.3 2004-11-22 20:11:42 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.4 2004-11-23 11:32:34 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.session.inc.php");
@@ -340,21 +340,19 @@ function start_connexion ($uid, $identified)
 function set_skin()
 {
     global $globals;
-    if (logged()) {
+    if (logged() && $globals->core->skin_enable) {
 	$result = $globals->db->query("SELECT  skin,skin_tpl
 	                                 FROM  auth_user_quick AS a
 				   INNER JOIN  skins           AS s ON a.skin=s.id
 				        WHERE  user_id='{$_SESSION['uid']}' AND skin_tpl != ''");
 	if (!(list($_SESSION['skin_id'], $_SESSION['skin']) = mysql_fetch_row($result))) {
-	    $_SESSION['skin'] = SKIN_COMPATIBLE;
-	    $_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
+	    $_SESSION['skin'] = $globals->core->skin_tpl;
+	    $_SESSION['skin_id'] = $globals->core->skin_id;
 	}
 	mysql_free_result($result);
-    }
-
-    if (!logged()) {
-	$_SESSION['skin'] = SKIN_COMPATIBLE;
-	$_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
+    } else {
+        $_SESSION['skin'] = $globals->core->skin_tpl;
+        $_SESSION['skin_id'] = $globals->core->skin_id;
     }
   
 }

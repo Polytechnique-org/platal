@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.inc.php,v 1.3 2004-11-22 21:40:47 x2000habouzit Exp $
+    $Id: xorg.inc.php,v 1.4 2004-11-23 11:32:34 x2000habouzit Exp $
  ***************************************************************************/
 
 function microtime_float() 
@@ -38,9 +38,6 @@ define("AUTH_MDP", $i++);
 define("PERMS_EXT", "ext");
 define("PERMS_USER", "user");
 define("PERMS_ADMIN", "admin");
-
-define('SKIN_COMPATIBLE','default.tpl');
-define('SKIN_COMPATIBLE_ID',1);
 
 define('SKINNED', 0);
 define('NO_SKIN', 1);
