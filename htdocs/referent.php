@@ -1,7 +1,7 @@
 <?php
 
 require("auto.prepend.inc.php");
-new_skinned_page('referent.tpl',AUTH_COOKIE);
+new_skinned_page('referent.tpl',AUTH_COOKIE, true);
 
 $nb_max_resultats_total = 100;
 $nb_max_resultats_par_page = 10;
@@ -98,7 +98,7 @@ if(isset($_REQUEST['Chercher'])){
  
     $sql = "SELECT $champ_select $clause_from $clause_where
             GROUP BY uid ORDER BY RAND({$_SESSION['uid']})";
-    echo "requete : ".htmlentities($sql)."<br />";
+    //echo "requete : ".htmlentities($sql)."<br />";
     $res = mysql_query($sql);
     //  echo mysql_error()."<br/>";
     if(mysql_num_rows($res) == 0){

@@ -99,11 +99,12 @@ $result = mysql_query("SELECT gp.pays
                        WHERE uid = $user_id");
 $nb_pays = mysql_num_rows($result);
 $i = 1;
-while(list($pays[$i]) = mysql_fetch_row($result))
+while(list($pays[$i]) = mysql_fetch_row($result)){
   $i++;
+}
 unset($pays[$i]);
 mysql_free_result($result);
-$page->assign('nb_pays', $nb_secteurs);
+$page->assign('nb_pays', $nb_pays);
 $page->assign_by_ref('pays', $pays);
 
 $page->run();

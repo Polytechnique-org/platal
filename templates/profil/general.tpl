@@ -1,4 +1,4 @@
-{* $Id: general.tpl,v 1.3 2004-07-17 12:20:23 x2000habouzit Exp $ *}
+{* $Id: general.tpl,v 1.4 2004-08-07 11:26:47 x2000coic Exp $ *}
 
 {include file="applis.js.tpl"}
 <div class="blocunite_tab">
@@ -123,7 +123,7 @@
               Voilà la photo qui apparaîtra sur la fiche de ton profil (si tu viens
               de changer ta photo, la photo affichée peut correspondre à ton ancien
               profil : c'est le cas si elle n'a pas encore été validée par un administrateur du site !
-              <a href="javascript:x()" onclick="popWin('x.php?x={$smarty.session.username}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
+              <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}&amp;modif=new','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">nouvelle photo</a>).
             </td>
             <td class="dcolg">
               <img src="getphoto.php?x={$smarty.session.uid}{*{if $smarty.cookies|@count == 0}&amp;{php}echo SID;{/php}{/if}*}" alt=" [ PHOTO ] ">

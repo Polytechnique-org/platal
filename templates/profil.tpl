@@ -1,4 +1,4 @@
-{* $Id: profil.tpl,v 1.3 2004-07-24 18:22:43 x2000habouzit Exp $ *}
+{* $Id: profil.tpl,v 1.4 2004-08-07 11:26:45 x2000coic Exp $ *}
 
 {config_load file="profil.conf"}
 {literal}
@@ -36,6 +36,8 @@
 <div class="erreur">
   {$profil_error}
 </div>
+{else}
+<p>Tu peux consulter <a href="javascript:x()" onclick="popWin('fiche.php?user={$smarty.session.username}','_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=620,height=370')">l'état actuel de ta fiche</a> tel qu'elle apparaîtra pour un camarade.</p>
 {/if}
 {* dessin des onglets *}
 

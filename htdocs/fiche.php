@@ -1,7 +1,7 @@
 <?php
 
 require("auto.prepend.inc.php");
-new_simple_page('fiche.tpl',AUTH_COOKIE, false, 'add_fiche_css.tpl');
+new_simple_page('fiche.tpl',AUTH_COOKIE, true, 'add_fiche_css.tpl');
 
 require_once('applis.func.inc.php');
 
@@ -74,7 +74,7 @@ $page->assign('is_contact', $is_contact);
 // photo
 
 $photo="getphoto.php?x=".$user_id.(SID == '' ? '' : '&amp;'.SID).($new ? '&amp;modif=new' : '');
-if(!isset($size_y) and !isset($size_x)) list($size_x, $size_y) = getimagesize("none.png");
+if(!isset($size_y) and !isset($size_x)) list($size_x, $size_y) = getimagesize("images/none.png");
 if(!isset($size_y) or $size_y < 1) $size_y=1;
 if(!isset($size_x) or $size_x < 1) $size_x=1;
 if($size_y > 300){

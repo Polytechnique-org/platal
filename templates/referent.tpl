@@ -1,4 +1,4 @@
-{* $Id: referent.tpl,v 1.2 2004-07-17 11:23:09 x2000habouzit Exp $ *}
+{* $Id: referent.tpl,v 1.3 2004-08-07 11:26:45 x2000coic Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -40,10 +40,10 @@ d'être plus précis.
         <span class="rechdiplo">X{$personnes[resultat].promo}</span>
       </td>
       <td class="rechdetails" style="width:15%">
-        <a style="font-size: smaller;" href="javascript:x()"  onclick="popWin('x.php?x={$personnes[resultat].username}')">voir sa fiche</a>
+        <a style="font-size: smaller;" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].username}')">voir sa fiche</a>
       </td>
       <td class="rechdetails" style="width:25%">
-        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?x={$personnes[resultat].username}')">voir sa fiche référent</a>
+        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].username}')">voir sa fiche référent</a>
       </td>
     </tr>
     <tr>

@@ -1,9 +1,9 @@
 {dynamic}
 <div class="boite">
-  <div class="item" style="text-align:center;padding-left: 20px;padding-right: 20px;">
+  <div class="item" style="text-align:center;padding-left: 20px;padding-right: 20px; max-width: 250px;">
   <strong>{$prenom|htmlentities} {$nom|htmlentities}</strong><br />
-  <span>X {$promo|htmlentities}</span><br />
-  <span>Fiche mise à jour le {$date|date_format:"%d/%m/%Y"}</span><br />
+  <span>X {$promo|htmlentities}&nbsp;-&nbsp;{$applis}</span><br />
+  <span style="font-size: small;">(Fiche mise à jour le {$date|date_format:"%d/%m/%Y"})</span><br />
   <span><a href="vcard.php/{$username}.vcf?x={$username}"><img src="images/vcard.png" alt="Afficher la carte de visite" /></a>&nbsp;
   {if !$is_contact}
   <a href="javascript:x()"  onclick="popWin('mescontacts.php?action=ajouter&amp;user={$username}')"><img src="images/ajouter.gif" alt="Ajouter parmi mes contacts" /></a>&nbsp;
@@ -12,8 +12,9 @@
   <a href="mailto:{$username}@polytechnique.org">{$username}@polytechnique.org</a><br />
   <span><em>Section</em> : {$section|htmlentities}</span><br />
   <span><em>Binet(s)</em> : {$binets|htmlentities}</span><br />
-  <span><em>Groupe(s) X</em> : {$groupes|htmlentities}</span><br />
+  <span><em>Groupe(s) X</em> : {$groupes}</span><br />
   {if $mobile}<br /><span><em>Mobile</em> : {$mobile|htmlentities}</span><br />{/if}
+  {if $web}<br /><span><em>Site Web</em> :</span><br /><span><a target="_blank" href="{$web|htmlentities}">{$web|htmlentities}</a></span><br />{/if}
   {if $libre}<br /><span><em>Commentaires</em> :</span><br /><span>{$libre|htmlentities|nl2br}</span>{/if}
   </div>
   <div class="item">
