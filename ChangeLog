@@ -7,12 +7,14 @@ Changes :
 		- Creation of the Plugin class.										-MC
 		- First instance of the plugin class : class Trombi.  (FS#135)		-MC
 		- Now only use iso3166 countries, no more `nationalites`.			-MC
+		- A photo change now updates the last time the `fiche` was edited.	-MC
 
 	* Contacts :
 		- Trombino of the contacts is available !  (FS#138)					-MC
 
 	* Lists :
 		- Refusal message is shown on mail moderation page.  (FS#138)		-MC
+		- Now supports non-X natively.										-MC
 
 	* Search :
 		- Hide SoundEX search when neither name nor second name selected.	-MC

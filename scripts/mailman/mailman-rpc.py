@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.68 2004-10-31 14:42:37 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.69 2004-11-02 09:03:42 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -125,6 +125,22 @@ def quote(s,is_header=False):
     else:
         h = s
     return Utils.uquote(h.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
+
+def to_forlife(email):
+    try:
+        mbox,fqdn = email.split('@')
+    except:
+        mbox = email
+        fqdn = 'polytechnique.org'
+    if ( fqdn == 'm4x.org' ) or (fqdn == 'polytechnique.org' ):
+        mysql.execute ("""SELECT  CONCAT(f.alias,'@polytechnique.org'), CONCAT(u.prenom,' ',u.nom)
+                            FROM  auth_user_md5 AS u
+                      INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
+                      INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
+                           LIMIT  1""" %( mbox ) )
+        if int(mysql.rowcount) is 1:
+            return mysql.fetchone()
+    return (email,mbox)
 
 #-------------------------------------------------------------------------------
 # helpers on lists
@@ -325,18 +341,12 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
         added = []
         mlist.Lock()
         for user in users:
-            mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom), f.alias
-                                FROM  auth_user_md5 AS u
-                          INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
-                          INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
-                               LIMIT  1""" %( user ) )
-            if int(mysql.rowcount) is 1:
-                name, forlife = mysql.fetchone()
-                if forlife+'@polytechnique.org' in members:
-                    continue
-                userd = UserDesc(forlife+'@polytechnique.org', name, None, 0)
-                mlist.ApprovedAddMember(userd)
-                added.append( (quote(userd.fullname), userd.address) )
+            email, name = to_forlife(user)
+            if email in members:
+                continue
+            userd = UserDesc(email, name, None, 0)
+            mlist.ApprovedAddMember(userd)
+            added.append( (quote(userd.fullname), userd.address) )
         mlist.Save()
     except:
         pass
@@ -353,7 +363,7 @@ def mass_unsubscribe((userdesc,perms),vhost,listname,users):
             return 0
         
         mlist.Lock()
-        map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org'), users)
+        map(lambda user: mlist.ApprovedDeleteMember(user), users)
         mlist.Save()
     except:
         pass
@@ -368,17 +378,11 @@ def add_owner((userdesc,perms),vhost,listname,user):
     try:
         if not is_admin_on(userdesc, perms, mlist):
             return 0
-        mysql.execute ("""SELECT  f.alias
-                            FROM  aliases       AS f
-                      INNER JOIN  aliases       AS a ON (a.id=f.id AND a.alias='%s' AND a.type!='homonyme')
-                           WHERE  f.type='a_vie'
-                           LIMIT  1""" %( user ) )
-        if int(mysql.rowcount) is 1:
-            forlife = mysql.fetchone()[0]
-            if forlife+'@polytechnique.org' not in mlist.owner:
-                mlist.Lock()
-                mlist.owner.append(forlife+'@polytechnique.org')
-                mlist.Save()
+        email = to_forlife(user)[0]
+        if email not in mlist.owner:
+            mlist.Lock()
+            mlist.owner.append(email)
+            mlist.Save()
     except:
         pass
     mlist.Unlock()
@@ -395,7 +399,7 @@ def del_owner((userdesc,perms),vhost,listname,user):
         if len(mlist.owner) < 2:
             return 0
         mlist.Lock()
-        mlist.owner.remove(user+'@polytechnique.org')
+        mlist.owner.remove(user)
         mlist.Save()
     except:
         pass
@@ -709,7 +713,8 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         oldmask = os.umask(002)
         pw = sha.new('foobar').hexdigest()
         try:
-            mlist.Create(name, owners[0]+'@polytechnique.org', pw)
+            email = to_forlife(owners[0])[0]
+            mlist.Create(name, email, pw)
         finally:
             os.umask(oldmask)
 
@@ -723,7 +728,7 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.subscribe_policy = 2 * (int(inslevel) is 1)
         mlist.admin_notify_mchanges = (mlist.subscribe_policy or mlist.generic_nonmember_action or mlist.default_member_moderation or not mlist.advertised)
         
-        mlist.owner = map(lambda a: a+'@polytechnique.org', owners)
+        mlist.owner = map(lambda a: to_forlife(a)[0], owners)
         
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0

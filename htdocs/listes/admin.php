@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.9 2004-10-31 14:42:36 x2000habouzit Exp $
+        $Id: admin.php,v 1.10 2004-11-02 09:03:42 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -59,9 +59,9 @@ if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
     foreach($mem as $member) {
 	if(preg_match('/^([^.]*\.([^.]*)\.\d\d\d\d)@polytechnique.org$/', $member[1], $matches)) {
 	    $key = strtoupper($matches[2]{0});
-	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1]);
+	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1], 'a' => $member[1]);
 	} else {
-	    $membres[0][] = Array('l' => $member[1]);
+	    $membres[0][] = Array('l' => $member[1], 'a' => $member[1]);
 	}
     }
     foreach($membres as $key=>$val) ksort($membres[$key]);
@@ -75,9 +75,9 @@ if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
 			        INNER JOIN  aliases AS a ON u.user_id = a.id
 				     WHERE  a.alias = '$m'");
 	if(list($nom, $promo) = mysql_fetch_row($res)) {
-	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m);
+	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m, 'a'=>$owner);
 	} else {
-	    $moderos[0][] = Array('l' => $owner);
+	    $moderos[0][] = Array('l' => $owner, 'a' => $owner);
 	}
 	mysql_free_result($res);
     }
