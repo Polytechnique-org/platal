@@ -38,7 +38,7 @@
   il te suffit de cliquer sur l'icône <img src="{"images/ajouter.gif"|url}" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>  
 
-{if $nb_contacts || $trombi}
+{if $citer->total()}
 <p>
   Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" class='popup'><strong>Triée par promo</strong></a>]
@@ -70,9 +70,9 @@ Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous 
 <br />
 
 <div class="contact-list">
-{foreach item=contact from=$contacts}
+{iterate from=citer item=contact}
 {include file=include/minifiche.tpl c=$contact show_action="retirer"}
-{/foreach}
+{/iterate}
 </div>
 
 {/if}

@@ -17,63 +17,45 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ **************************************************************************/
 
-// {{{ function block_dynamic()
+// {{{ class XOrgIterator
 
-/**
- * block function used to delimit non-cached blocks.
- */
-function block_dynamic($param, $content, &$smarty)
+class XOrgIterator
 {
-    return $content;
-}
-
-// }}}
-// {{{ function escape_html ()
-
-/**
- * default smarty plugin, used to auto-escape dangerous html.
- * 
- * < --> &lt;
- * > --> &gt;
- * " --> &quot;
- * & not followed by some entity --> &amp;
- */
-function escape_html($string)
-{
-    if(is_string($string)) {
-	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;');
-	return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,4};)/", "&amp;" , strtr($string, $transtbl));
-    } else {
-	return $string;
+    // {{{ function next
+    
+    function &next()
+    {
+        return null;
     }
-}
 
-// }}}
-// {{{ function at_to_globals()
+    // }}}
+    // {{{ function first
 
-/**
- * helper
- */
-
-function _to_globals($s) {
-    global $globals;
-    $t = explode('.',$s);
-    if (count($t) == 1) {
-        return var_export($globals->$t[0],true);
-    } else {
-        return var_export($globals->$t[0]->$t[1],true);
+    function first()
+    {
+        return false;
     }
-}
 
-/**
- * compilation plugin used to import $globals confing through #globals.foo.bar# directives
- */
+    // }}}
+    // {{{ function last
 
-function at_to_globals($tpl_source, &$smarty)
-{
-    return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
+    function last()
+    {
+        return false;
+    }
+
+    // }}}
+    // {{{ function total
+
+    function total()
+    {
+        return 0;
+    }
+
+    // }}}
+    
 }
 
 // }}}

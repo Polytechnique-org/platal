@@ -19,8 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("diogenes.core.globals.inc.php");
-require_once("diogenes.database.inc.php");
+require_once('diogenes.core.globals.inc.php');
 
 // {{{ class XorgGlobals
 
@@ -32,7 +31,7 @@ class XorgGlobals extends DiogenesCoreGlobals
     var $hook;
 
     /** The x.org version */
-    var $version = "@VERSION@";
+    var $version = '@VERSION@';
     var $debug   = false;
 
     /** db params */
@@ -47,19 +46,19 @@ class XorgGlobals extends DiogenesCoreGlobals
     var $table_log_events   = 'logger.events';
 
     /** logger */
-    var $tauth  = array('native'=>"auth_user_md5");
-    var $tlabel = array('native'=>"X.Org");
+    var $tauth  = array('native'=>'auth_user_md5');
+    var $tlabel = array('native'=>'X.Org');
 
     /** paths */
-    var $baseurl   = "http://localhost/xorg";
-    var $spoolroot = "/var/spool/xorg";
+    var $baseurl   = 'http://localhost/xorg';
+    var $spoolroot = '/var/spool/xorg';
     var $root      = null;
 
     function init()
     {
         global $globals;
-        require_once("xorg/hook.inc.php");
-        require_once("xorg/menu.inc.php");
+        require_once('xorg/hook.inc.php');
+        require_once('xorg/menu.inc.php');
 
         $globals       = new XorgGlobals;
         $globals->root = dirname(dirname(__FILE__));
@@ -90,6 +89,12 @@ class XorgGlobals extends DiogenesCoreGlobals
         if ($globals->debug) {
             $globals->db->trace_on();
         }
+    }
+
+    function dbconnect()
+    {
+        parent::dbconnect();
+        $this->xdb =& new XOrgDB($this->db);
     }
 }
 

@@ -43,9 +43,11 @@ define('NO_SKIN', 1);
 // }}}
 // {{{ globals + session init
 
-require_once("xorg.globals.inc.php");
-require_once('xorg/session.inc.php');
 require_once('xorg/env.inc.php');
+require_once('xorg/iterator.inc.php');
+require_once('xorg/database.inc.php');
+require_once('xorg.globals.inc.php');
+require_once('xorg/session.inc.php');
 XorgGlobals::init();
 XorgSession::init();
 

@@ -19,63 +19,43 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function block_dynamic()
-
-/**
- * block function used to delimit non-cached blocks.
- */
-function block_dynamic($param, $content, &$smarty)
-{
-    return $content;
+function iterate_end($tag_attrs, &$compiler) {
+    return 'endwhile;';
 }
 
-// }}}
-// {{{ function escape_html ()
-
-/**
- * default smarty plugin, used to auto-escape dangerous html.
- * 
- * < --> &lt;
- * > --> &gt;
- * " --> &quot;
- * & not followed by some entity --> &amp;
- */
-function escape_html($string)
+function smarty_compiler_iterate($tag_attrs, &$compiler)
 {
-    if(is_string($string)) {
-	$transtbl = Array('<' => '&lt;', '>' => '&gt;', '"' => '&quot;');
-	return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,4};)/", "&amp;" , strtr($string, $transtbl));
-    } else {
-	return $string;
+    static $reg = false;
+    if (!$reg) {
+        $reg = true;
+        $compiler->register_compiler_function("/iterate", 'iterate_end');
     }
-}
 
-// }}}
-// {{{ function at_to_globals()
+    $_params = $compiler->_parse_attrs($tag_attrs);
 
-/**
- * helper
- */
-
-function _to_globals($s) {
-    global $globals;
-    $t = explode('.',$s);
-    if (count($t) == 1) {
-        return var_export($globals->$t[0],true);
-    } else {
-        return var_export($globals->$t[0]->$t[1],true);
+    if (!isset($_params['from'])) {
+        $compiler->_syntax_error("iterate: missing 'from' parameter", E_USER_ERROR, __FILE__, __LINE__);
+        return;
     }
+
+    if (empty($_params['item'])) {
+        $compiler->_syntax_error("iterate: missing 'item' attribute", E_USER_ERROR, __FILE__, __LINE__);
+        return;
+    }
+
+    $_from = $compiler->_dequote($_params['from']);
+    $_item = $compiler->_dequote($_params['item']);
+
+    if (!is_subclass_of($compiler->_tpl_vars[$_from], 'XOrgIterator')) {
+        $compiler->_syntax_error("iterate: 'from' parameter has to be a instance of an XOrgIterator Object",
+                E_USER_ERROR, __FILE__, __LINE__);
+        return;
+    }
+
+
+    return "while ((\$this->_tpl_vars['$_item'] =& \$this->_tpl_vars['$_from']->next()) !== null):";
 }
 
-/**
- * compilation plugin used to import $globals confing through #globals.foo.bar# directives
- */
+/* vim: set expandtab: */
 
-function at_to_globals($tpl_source, &$smarty)
-{
-    return preg_replace('/#globals\.([a-zA-Z0-9_.]+?)#/e', '_to_globals(\'\\1\')', $tpl_source);
-}
-
-// }}}
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

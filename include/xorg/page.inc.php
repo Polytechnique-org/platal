@@ -57,14 +57,14 @@ class XorgPage extends DiogenesCorePage
         $this->cache_dir     = $globals->spoolroot."/cache/";
 	$this->use_sub_dirs  = false;
 
-
         $this->config_overwrite  = false;
         $this->compile_check     = !empty($globals->debug);
         $this->caching	         = ($type == SKINNED);
-	if ($type == SKINNED) {
-	    $this->register_modifier('escape_html', 'escape_html');
-	    $this->default_modifiers = Array('escape_html');
-	}
+
+        if ($type == SKINNED) {
+            $this->register_modifier('escape_html', 'escape_html');
+            $this->default_modifiers[] = '@escape_html';
+        }
 
         $this->_page_type = $type;
         $this->_tpl       = $tpl;
@@ -90,7 +90,7 @@ class XorgPage extends DiogenesCorePage
         $this->caching	  = ($type == SKINNED);
 	if ($type == SKINNED) {
 	    $this->register_modifier('escape_html', 'escape_html');
-	    $this->default_modifiers = Array('escape_html');
+	    $this->default_modifiers = Array('@escape_html');
 	}
 
         $this->_page_type = $type;
