@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.44 2004-11-04 13:54:50 x2000habouzit Exp $
+        $Id: search.php,v 1.45 2004-11-04 14:54:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -63,7 +63,7 @@ if (array_key_exists('quick', $_REQUEST)) {
                 WHERE  '.$fields->get_where_statement().'
              ORDER BY  '.(logged() && !empty($_REQUEST['mod_date_sort']) ? 'date DESC,' :'')
 		        .implode(',',array_filter(array($fields->get_order_statement(),'u.promo DESC,NomSortKey,prenom'))).'
-                LIMIT  '.(isset($_REQUEST['lucky']) ? "1" : $offset->value.','.$globals->search_results_per_page);
+                LIMIT  '.$offset->value.','.$globals->search_results_per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');
     

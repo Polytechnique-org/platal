@@ -17,10 +17,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.quick.form.tpl,v 1.1 2004-11-04 13:50:45 x2000habouzit Exp $
+        $Id: search.quick.form.tpl,v 1.2 2004-11-04 14:54:41 x2000habouzit Exp $
  ***************************************************************************}
 
-<h1>Recherche simple</h1>
+<h1>Recherche simple dans l'annuaire</h1>
 
 {if $error}<p class="error">{$error}</p>{/if}
 
@@ -29,11 +29,11 @@
     <tr>
       <td class='center' style="width: 78%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 100%" /><br />
-        <input type="submit" value="Recherche Annuaire" /><input type="submit" name='lucky' value="J'ai de la chance" />
       </td>
       <td>
+        <input type="submit" value="Chercher" />
         {min_auth level="cookie"}
-        &nbsp;<a class='smaller' href="advanced_search.php">Recherche&nbsp;avancée</a>
+        <br /><a class='smaller' href="advanced_search.php">Recherche&nbsp;avancée</a>
         {/min_auth}
       </td>
     </tr>
