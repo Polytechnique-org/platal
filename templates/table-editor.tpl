@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: table-editor.tpl,v 1.8 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: table-editor.tpl,v 1.9 2004-10-08 11:30:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,6 +28,7 @@
 </div>
 
 {if !$doedit}
+{if !$readonly}
 
 {literal}
 <script type="text/javascript">
@@ -49,6 +50,7 @@
   // -->
 </script>
 {/literal}
+{/if}
 
 <form method="post" action="{$smarty.server.PHP_SELF}" id="operations">
   <div>
@@ -59,21 +61,25 @@
 
 <table class="bicol">
 <tr>
-  <th>id</th>
+  {if $idsum}<th>id</th>{/if}
   {foreach from=$vars item=myval}
   {if $myval.sum}<th>{$myval.desc}</th>{/if}
   {/foreach}
+  {if !$hideactions}
   <th>action</th>
+  {/if}
 </tr>
+{if !$readonly}
 <tr class="impair">
   <td colspan="{$ncols}"><strong>nouvelle entrée</strong></td>
   <td class="action">
     <a href="javascript:edit('');">create</a>
   </td>
 </tr>
+{/if}
 {foreach from=$rows item=myrow}{assign var="myarr" value=$myrow[2]}
 <tr class="{cycle values="pair,impair"}">
-  <td>{$myrow[1]}</td>
+  {if $idsum}<td>{$myrow[1]}</td>{/if}
 {foreach from=$vars key=mykey item=myval}
 {if $myval.sum}
   <td>
@@ -89,13 +95,17 @@
   </td>
 {/if}
 {/foreach}
+  {if !$hideactions}
   <td class="action">
+    {if !$readonly}
     <a href="javascript:edit('{$myrow[1]}');">edit</a>
     <a href="javascript:del('{$myrow[1]}');">delete</a>
-{foreach from=$myrow[3] item=myaction}
+    {/if}
+    {foreach from=$myrow[3] item=myaction}
     {a lnk=$myaction}
-{/foreach}
+    {/foreach}
   </td>
+  {/if}
 </tr>
 {/foreach}
 
@@ -109,7 +119,6 @@
       <th colspan="2">
         <input type="hidden" name="action" value="update" />
         {if $id!=''}
-        <input type="hidden" name="{$prefix}id" value="{$id}"/>
         modification de l'entrée 
         {else}
         nouvelle entrée
@@ -117,7 +126,6 @@
       </th>
     </tr>
     {foreach from=$vars key=mykey item=myval}
-    {if $mykey != $idfield}
     <tr class="{cycle values="pair,impair"}">
       <td>
         <strong>{$myval.desc}</strong>
@@ -143,7 +151,6 @@
         {/if}
       </td>
     </tr>
-    {/if}
     {/foreach}
   </table>
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: auto.prepend.inc.php,v 1.24 2004-09-24 14:47:43 x2000habouzit Exp $
+        $Id: auto.prepend.inc.php,v 1.25 2004-10-08 11:30:10 x2000habouzit Exp $
  ***************************************************************************/
 
 function microtime_float() 
@@ -72,11 +72,11 @@ function new_admin_page($tpl_name, $popup=false, $tpl_head="") {
     _new_page(SKINNED, $tpl_name, $tpl_head, AUTH_MDP, $popup, true);
 }
 
-function new_admin_table_editor($table,$idfield) {
+function new_admin_table_editor($table,$idfield,$idedit=false) {
     global $editor;
     new_admin_page('table-editor.tpl');
     require_once('xorg.table-editor.inc.php');
-    $editor = new XOrgAdminTableEditor($table,$idfield);
+    $editor = new XOrgAdminTableEditor($table,$idfield,$idedit);
 }
 
 ?>

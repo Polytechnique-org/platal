@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.table-editor.inc.php,v 1.3 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: xorg.table-editor.inc.php,v 1.4 2004-10-08 11:30:10 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.table-editor.inc.php');
 
 class XOrgAdminTableEditor extends DiogenesTableEditor {
-    function XOrgTableEditor($table,$idfield) {
-        $this->DiogenesTableEditor($table,$idfield);
+    function XOrgTableEditor($table,$idfield,$editid=false) {
+        $this->DiogenesTableEditor($table,$idfield,$editid);
     }
 
     function assign($var_name, $contenu) {
