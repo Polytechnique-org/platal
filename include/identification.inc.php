@@ -203,7 +203,7 @@ if ( $homonyme ) {
 	    "Lorsque cet alias sera désactivé, l'adresse :\n".
 	    "    $mailorg@polytechnique.org\n".
 	    "renverra vers un robot qui indique qu'il y a plusieurs personnes portant le même nom ; cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
-	    "Pour te connecter au site, tu pourras utiliser comme 'login' soit ton adresse à vie '$forlife', ".
+	    "Pour te connecter au site, tu pourras utiliser comme identifiant : soit ton adresse à vie '$forlife', ".
 	    "soit l'alias '$newbestalias'. Par ailleurs, commence dès aujourd'hui à communiquer à tes correspondants ".
 	    "ton adresse :\n".
 	    "    $newbestalias@polytechnique.org\n\n".
