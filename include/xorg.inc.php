@@ -54,7 +54,7 @@ XorgSession::init();
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)
 {
     global $page,$globals;
-    require_once("xorg.page.inc.php");
+    require_once("xorg/page.inc.php");
     if (!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
     } else switch($min_auth) {
