@@ -28,16 +28,19 @@ New :
 
 Bug/Wish :
 
+	* Admin :
+		- #186 : Users are reachable by melix, redirects, aliases...		-MC
+
 	* Bestalias :
 		- #206 : Use only the bestalias and the forlife in vcard and fiche.	-MC
 		- #207 : Enable for the user the choice of his prefered alias.		-MC
 
 	* Core :
 		- #183,185 : Implement perms levels : 'pending'+'disabled'.			-MC
-	
+
 	* Fiche :
 		- #83,208,222 : New fiche.											-MC
-	
+
 	* Lists :
 		- #184 : Owners can now delete their lists.							-MC
 		- #231 : Add a link to the user's fiche on moderation page.			-MC

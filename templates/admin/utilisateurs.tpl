@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.24 2004-11-22 17:28:15 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.25 2004-11-27 20:45:31 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -54,6 +54,13 @@ Attention, déjà en SUID !!!
         Administrer
       </th>
     </tr>
+    {if !$smarty.request.login && !$mr.forlife}
+    <tr class="pair">
+      <td class="center">
+        Il est possible d'entrer ici n'importe quelle adresse mail : redirection, melix, ou alias.
+      </td>
+    </tr>
+    {/if}
     <tr>
       <td class="center">
         <input type="text" name="login" size="40" maxlength="255" value="{$smarty.request.login|default:$mr.forlife}" />

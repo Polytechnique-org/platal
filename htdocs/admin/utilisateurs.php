@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.33 2004-11-22 20:04:36 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.34 2004-11-27 20:45:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -55,8 +55,45 @@ if(isset($_REQUEST['suid_button']) and isset($_REQUEST['login']) and !isset($_SE
  * LE RESTE
  */
 
+$errors = Array();
+
 if (!empty($_REQUEST['login'])) {
-    $login = $_REQUEST['login'];
+    $needle = strtolower($_REQUEST['login']);
+
+    if (strstr($needle, '@')!==false) {
+        list($mbox, $fqdn) = split('@', $needle);
+        if ($fqdn=='polytechnique.org' || $fqdn=='m4x.org') {
+            $login = $mbox;
+        } elseif ($fqdn =='melix.net' || $fqdn=='melix.org') {
+            $res = $globals->db->query("SELECT  redirect
+                                          FROM  virtual_redirect
+                                    INNER JOIN  virtual USING(vid)
+                                         WHERE  alias='$mbox@melix.net'");
+            list($redir) = mysql_fetch_row($res);
+            list($login) = split('@', $redir);
+            mysql_free_result($res);
+        } else {
+            $res = $globals->db->query("SELECT  alias
+                                          FROM  aliases AS a
+                                    INNER JOIN  emails  AS e ON e.uid=a.id
+                                         WHERE  e.email='$needle' AND a.type='a_vie'");
+            if (($i=mysql_num_rows($res))!=1) {
+                if ($i) {
+                    $aliases = Array();
+                    while (list($a) = mysql_fetch_row($res)) $aliases[] = $a;
+                    $errors[] = "Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases) ;
+                } else {
+                    $errors[] = "il n'y a pas d'utilisateur avec cette adresse mail";
+                }
+            } else {
+                list($login) = mysql_fetch_row($res);
+            }
+            mysql_free_result($res);
+        }
+    } else {
+        $login = $needle;
+    }
+
     $r=$globals->db->query("SELECT  *
 			      FROM  auth_user_md5 AS u
 			INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
@@ -74,8 +111,6 @@ if (!empty($_REQUEST['user_id'])) {
 
 if(isset($mr)) {
     $redirect = new Redirect($mr['user_id']);
-
-    $errors = Array();
 
     if(isset($_REQUEST['password']))  $pass_clair = $_REQUEST['password'];
 
@@ -203,8 +238,8 @@ if(isset($mr)) {
     $page->assign_by_ref('xorgmails', $xorgmails);
     $page->assign_by_ref('email_panne', $email_panne);    
     $page->assign('emails',$redirect->emails);
-    $page->assign('errors',$errors);
 }
 
+$page->assign('errors',$errors);
 $page->run();
 ?>
