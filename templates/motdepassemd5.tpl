@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: motdepassemd5.tpl,v 1.7 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: motdepassemd5.tpl,v 1.8 2004-10-11 07:12:07 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -34,7 +34,8 @@
   stocké crypté irréversiblement sur nos serveurs.
 </p>
 <br />
-<form action="{dynamic}{$smarty.server.REQUEST_URI}{/dynamic}" method="post" id="changepass">
+{dynamic}
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
   <table class="tinybicol" cellpadding="3" cellspacing="0"
     summary="Formulaire de mot de passe">
     <tr>
@@ -70,5 +71,6 @@
 <input type="hidden" name="response2"  value="" />
 </p>
 </form>
+{/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
