@@ -26,6 +26,19 @@ de la compléter sur un sujet en rapport avec le site si tu estimes
 que des informations manquent.
 </p>
 <hr />
+<h2>Problèmes de connexion</h2>
+<ul>
+  <li> 
+  <a href="#config">Quels sont les paramètres et la configuration nécessaires 
+    pour se connecter correctement ?</a>
+  </li>
+  <li>
+  <a href="#passe">J'ai perdu mon mot de passe, que faire ?</a>
+  </li>
+  <li>
+  <a href="#acces">Je n'arrive pas à me connecter ! Que faut-il essayer ?</a>
+  </li>
+</ul>
 <h2>Questions générales</h2>
 <ul>
   <li> 
@@ -58,19 +71,6 @@ que des informations manquent.
   <a href="#cv">Faut-il remplir le CV et comment ?</a>
   </li>
 </ul>
-<h2>Problèmes de connexion</h2>
-<ul>
-  <li> 
-  <a href="#config">Quels sont les paramètres et la configuration nécessaires 
-    pour se connecter correctement ?</a>
-  </li>
-  <li>
-  <a href="#passe">J'ai perdu mon mot de passe, que faire ?</a>
-  </li>
-  <li>
-  <a href="#acces">Je n'arrive pas à me connecter ! Que faut-il essayer ?</a>
-  </li>
-</ul>
 <h2>Utilisation post-connexion</h2>
 <ul>
   <li>
@@ -91,6 +91,76 @@ que des informations manquent.
   </li>
 </ul>
 <br /><br />
+<hr />
+<a id="connect"></a>
+<h1>Problèmes de connexion</h1>
+<a id="config"></a>
+<h2>
+  Quels sont les paramètres et la configuration nécessaires pour se connecter 
+  correctement ?
+</h2>
+<div class="explication">
+  <p>
+  Il faut un navigateur qui exécute le javascript. 
+  Ce point est absolument nécessaire pour accéder au site sans problème. 
+  Il y a de grandes chances que ton problème vienne de là, nous te conseillons de 
+  vérifier déjà que ce paramètre est bien activé avant de continuer.
+  </p>
+</div>    
+<a id="passe"></a>
+<h2>
+  J'ai perdu mon mot de passe, que faire ?
+</h2>
+<div class="explication">
+  <p>
+  Rends toi sur la page "me connecter", là où tu aurais tapé ton mot de passe 
+  si tu t'en souvenais. Il y a un lien "j'ai perdu mon mot de passe". Clique 
+  dessus. Il te sera alors proposé une procédure de récupération automatique 
+  de ton mot de passe !
+  </p>
+</div>
+<a id="acces"></a>
+<h2>
+  Je n'arrive pas à me connecter ! Que faut-il essayer ?
+</h2>
+<div class="explication">
+  <p>
+  Bon, il y a beaucoup de possibilités, on va les prendre dans l'ordre.
+  </p>
+  <p>
+  As-tu déjà accédé au site ?
+  </p>
+  <p>
+  Si oui, vérifie que tu rentres correctement ton login (début de ton adresse 
+  en polytechnique.org sans @polytechnique.org) et ton mot de passe. Un 
+  copier/coller avec un espace de trop est vite fait, un clavier qwerty au lieu 
+  d'azerty ou l'inverse aussi, et la touche "CAPS LOCK" enfoncée n'arrange pas 
+  non plus les choses.
+  </p>
+  <p>
+  Une fois que tu es sûr de ton mot de passe et de ton login, vérifie que ton 
+  browser exécute correctement le javascript. Par exemple, la date est-elle 
+  correctement affichée en haut de la page ? Le javascript est complètement 
+  nécessaire, car ton mot de passe doit être crypté localement pour ne pas 
+  passer en clair sur Internet. C'est à ça qu'il sert notamment pour la 
+  connexion.
+  </p>
+  <p>
+  Sinon, tu n'es peut-être pas inscrit (en es-tu vraiment sûr ?). Pour
+  le savoir, vérifie que ton adresse en polytechnique.org répond. Si c'est le 
+  cas, tu es inscrit, sinon rends-toi sur la page d'inscription : pour une 
+  raison quelconque, ton inscription n'existe pas dans notre base. Tu viens de 
+  t'inscrire et l'accès ne marche pas ? Attention, tu n'as pas dû confirmer ta 
+  pré-inscription. Une inscription ce n'est pas juste un formulaire à remplir 
+  et puis voilà. C'est un échange de mails ensuite, et enfin la visite d'une 
+  page web bien précise reçue par e-mail. Si tu n'as rien reçu par e-mail, tu 
+  t'es trompé dans ton adresse e-mail ou alors elle était en panne au moment 
+  où le serveur t'a envoyé l'e-mail de demande de confirmation. Vérifie que tu 
+  as reçu une confirmation par mail et que tu l'as bien effectuée. Ton login/mot 
+  de passe n'est actif qu'après. Dans le cas contraire, refais une inscription, 
+  de toute façon, les doublons ne peuvent pas exister.
+  </p>
+</div>
 <hr />
 <h1>Questions générales</h1>
 <a id="pop"></a>
@@ -309,76 +379,6 @@ que des informations manquent.
   </div>
 </div>
 <hr />
-<a id="connect"></a>
-<h1>Problèmes de connexion</h1>
-<a id="config"></a>
-<h2>
-  Quels sont les paramètres et la configuration nécessaires pour se connecter 
-  correctement ?
-</h2>
-<div class="explication">
-  <p>
-  Il faut un navigateur qui exécute le javascript. 
-  Ce point est absolument nécessaire pour accéder au site sans problème. 
-  Il y a de grandes chances que ton problème vienne de là, nous te conseillons de 
-  vérifier déjà que ce paramètre est bien activé avant de continuer.
-  </p>
-</div>    
-<a id="passe"></a>
-<h2>
-  J'ai perdu mon mot de passe, que faire ?
-</h2>
-<div class="explication">
-  <p>
-  Rends toi sur la page "me connecter", là où tu aurais tapé ton mot de passe 
-  si tu t'en souvenais. Il y a un lien "j'ai perdu mon mot de passe". Clique 
-  dessus. Il te sera alors proposé une procédure de récupération automatique 
-  de ton mot de passe !
-  </p>
-</div>
-<a id="acces"></a>
-<h2>
-  Je n'arrive pas à me connecter ! Que faut-il essayer ?
-</h2>
-<div class="explication">
-  <p>
-  Bon, il y a beaucoup de possibilités, on va les prendre dans l'ordre.
-  </p>
-  <p>
-  As-tu déjà accédé au site ?
-  </p>
-  <p>
-  Si oui, vérifie que tu rentres correctement ton login (début de ton adresse 
-  en polytechnique.org sans @polytechnique.org) et ton mot de passe. Un 
-  copier/coller avec un espace de trop est vite fait, un clavier qwerty au lieu 
-  d'azerty ou l'inverse aussi, et la touche "CAPS LOCK" enfoncée n'arrange pas 
-  non plus les choses.
-  </p>
-  <p>
-  Une fois que tu es sûr de ton mot de passe et de ton login, vérifie que ton 
-  browser exécute correctement le javascript. Par exemple, la date est-elle 
-  correctement affichée en haut de la page ? Le javascript est complètement 
-  nécessaire, car ton mot de passe doit être crypté localement pour ne pas 
-  passer en clair sur Internet. C'est à ça qu'il sert notamment pour la 
-  connexion.
-  </p>
-  <p>
-  Sinon, tu n'es peut-être pas inscrit (en es-tu vraiment sûr ?). Pour
-  le savoir, vérifie que ton adresse en polytechnique.org répond. Si c'est le 
-  cas, tu es inscrit, sinon rends-toi sur la page d'inscription : pour une 
-  raison quelconque, ton inscription n'existe pas dans notre base. Tu viens de 
-  t'inscrire et l'accès ne marche pas ? Attention, tu n'as pas dû confirmer ta 
-  pré-inscription. Une inscription ce n'est pas juste un formulaire à remplir 
-  et puis voilà. C'est un échange de mails ensuite, et enfin la visite d'une 
-  page web bien précise reçue par e-mail. Si tu n'as rien reçu par e-mail, tu 
-  t'es trompé dans ton adresse e-mail ou alors elle était en panne au moment 
-  où le serveur t'a envoyé l'e-mail de demande de confirmation. Vérifie que tu 
-  as reçu une confirmation par mail et que tu l'as bien effectuée. Ton login/mot 
-  de passe n'est actif qu'après. Dans le cas contraire, refais une inscription, 
-  de toute façon, les doublons ne peuvent pas exister.
-  </p>
-</div>
-<hr />
 <h1>Utilisation post-connexion</h1>
 <a id="ethique"></a>
 <h2>
@@ -484,9 +484,7 @@ que des informations manquent.
   de figure sont rares et ont toujours été prévus et prévenus (maintenance régulière). 
   Tous les développeurs de polytechnique.org ne peuvent plus se passer de leur adresse 
   sur ce site, et nous recevons tous largement une cinquantaine de mails par jour, donc 
-  un jour d'arrêt vaut au moins 100 mails le suivant, sans compter les mails d'insulte 
-  même si le problème ne nous est pas imputable (panne chez notre fournisseur
-  d'accès à Internet par exemple...)
+  un jour d'arrêt vaut au moins 100 mails le suivant.
   </p>
 </div>
 
