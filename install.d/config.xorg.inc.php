@@ -18,36 +18,38 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: config.xorg.inc.php,v 1.5 2004-08-31 22:01:32 x2000habouzit Exp $
+    $Id: config.xorg.inc.php,v 1.6 2004-11-21 23:36:56 x2000habouzit Exp $
  ***************************************************************************/
 
-/* $Id: config.xorg.inc.php,v 1.5 2004-08-31 22:01:32 x2000habouzit Exp $ */
+// {{{ BDD
+
+/** BDD overrides */
+#$globals->dbhost='djali.polytechnique.org';
+$globals->debug  = true;
+$globals->dbuser = '***';
+$globals->dbpwd  = '***';
+// }}}
+// {{{ Paths
 
 /* URL de la racine pour les mails contenant des URL (pas de slash final!) */
-if (!isset($baseurl)) $baseurl="http://dev.m4x.org";
+$globals->baseurl   = "http://dev.m4x.org/~x2000habouzit";
+$globals->root      = "/home/x2000habouzit/dev/public/";
+$globals->spoolroot = "/home/x2000habouzit/dev/public/";
 
-/* les parametres pour se connecter à la BDD */
-$globals->dbhost='localhost';
-$globals->dbdb = 'x4dat';
-$globals->dbuser = 'web';
-$globals->dbpwd="*******";
-$globals->root="...";
-$globals->libroot="...";
+// }}}
+// {{{ Extra
+
+# JPF
+$globals->econfiance = '***';
 
 /* les parametres pour se connecter au serveur NNTP */
 if (!isset($news_server)) $news_server="localhost";
 if (!isset($news_port)) $news_port=119;
 if (!isset($news_auth_pass)) $news_auth_pass="***";
+$news_web_user = '***';
+$news_web_pass = '***';
 
-/* définir sur le site de dev */
-if (!isset($site_dev)) $site_dev=true;
+// }}}
 
-$globals->spoolroot="***";
-
-// legacy
-$dbhost = $globals->dbhost;  // recherche.php : 303
-$dbuser = $globals->dbuser;
-$dbpwd = $globals->dbpwd;
-$xdat = $globals->dbdb;
-
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
