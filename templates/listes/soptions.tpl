@@ -28,18 +28,7 @@
 
 {else}
 
-<p>
-[<a href='index.php'>listes</a>] »
-[<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
-[<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
-[<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
-[<a href='admin.php?liste={$smarty.get.liste}'>membres</a>]
-[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
-{perms level=admin} »
-[Soptions]
-[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
-{/perms}
-</p>
+{include file="listes/header_listes.tpl"}
 
 <h1>
   Changer les options de la liste {$details.addr}

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.17 2004-10-30 14:05:49 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.18 2004-11-07 14:22:49 x2000chevalier Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,18 +28,7 @@
 
 {else}
 
-<p>
-[<a href='index.php'>listes</a>] »
-[<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
-[<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
-[modération]
-[<a href='admin.php?liste={$smarty.get.liste}'>membres</a>]
-[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
-{perms level=admin} »
-[<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
-[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
-{/perms}
-</p>
+{include file="listes/header_listes.tpl"}
 
 <h1>
   Inscriptions en attente de modération

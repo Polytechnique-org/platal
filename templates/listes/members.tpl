@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.tpl,v 1.10 2004-10-24 14:41:13 x2000habouzit Exp $
+        $Id: members.tpl,v 1.11 2004-11-07 14:22:49 x2000chevalier Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,21 +28,7 @@
 
 {else}
 
-<p>
-[<a href='index.php'>listes</a>] »
-[{$smarty.request.liste}]
-[<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>]
-{if $details.own || $smarty.session.perms eq admin}
-»
-[<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
-[<a href='admin.php?liste={$smarty.get.liste}'>membres</a>]
-[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
-{/if}
-{perms level=admin} »
-[<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
-[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
-{/perms}
-</p>
+{include file="listes/header_listes.tpl"}
 
 <h1>
   Liste {$smarty.request.liste}

@@ -17,43 +17,30 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id : admin.tpl,v 1.4 2004/09/23 18:47:00 x2000habouzit Exp $
+        $Id: header_listes.tpl,v 1.1 2004-11-07 14:22:49 x2000chevalier Exp $
  ***************************************************************************}
 
 {dynamic}
-
-{if $no_list || $smarty.session.perms neq admin }
-
-<p class='erreur'>La liste n'existe pas ou tu n'as pas le droit de l'administrer</p>
-
-{else}
-
-{include file="listes/header_listes.tpl"}
-
-{if $options|@count}
-<table class='bicol' cellpadding='2' cellspacing='0'>
-  <tr><th colspan='3'>Options incorrectes pour {$details.addr}</th></tr>
-  <tr><th>champs</th><th>devrait être:</th><th>est ...</th></tr>
-  {foreach from=$options key=k item=o}
-  <tr>
-    <td class='titre'>{$k}</td>
-    <td>{if $o[0] === false}False{elseif $o[0] === true}True{elseif $o[0] === ''}" "{else}{$o[0]}{/if}</td>
-    <td>{if $o[1] === false}False{elseif $o[1] === true}True{elseif $o[1] === ''}" "{else}{$o[1]}{/if}</td>
-  </tr>
-  {/foreach}
-</table>
-<form action='{$smarty.server.REQUEST_URI}' method='post'>
-  <div class='center'>
-    <br />
-    <input type='submit' name='correct' value='Corriger les valeurs !' />
-  </div>
-</form>
-{else}
-<p>Liste correcte !</p>
+<p>
+[<a href='index.php'>Voir toutes les listes</a>]
+<br />
+<strong>Liste {$smarty.request.liste} : </strong>
+[<a href='members.php?liste={$smarty.request.liste}'>liste des membres</a>]
+[<a href='trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
+<br />
+{if $details.own || $smarty.session.perms eq admin}
+<strong>Administration de la liste {$smarty.request.liste} : </strong>
+[<a href='moderate.php?liste={$smarty.get.liste}'>modération des messages en attente</a>]
+[<a href='admin.php?liste={$smarty.get.liste}'>ajout/retrait de membres</a>]
+[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
 {/if}
-
-{/if}
-
+{perms level=admin}
+<br />
+<strong>Administrateurs du site : </strong>
+[<a href='soptions.php?liste={$smarty.get.liste}'>options avancées</a>]
+[<a href='check.php?liste={$smarty.get.liste}'>vérifications</a>]
+{/perms}
+</p>
 {/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

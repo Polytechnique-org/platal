@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.tpl,v 1.16 2004-11-02 09:03:43 x2000habouzit Exp $
+        $Id: admin.tpl,v 1.17 2004-11-07 14:22:49 x2000chevalier Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -34,18 +34,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </p>
 {/if}
 
-<p>
-[<a href='index.php'>listes</a>] »
-[<a href='members.php?liste={$smarty.request.liste}'>{$smarty.request.liste}</a>]
-[<a href='trombi.php?liste={$smarty.request.liste}'>trombino</a>] »
-[<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
-[membres]
-[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
-{perms level=admin} »
-[<a href='soptions.php?liste={$smarty.get.liste}'>Soptions</a>]
-[<a href='check.php?liste={$smarty.get.liste}'>check</a>]
-{/perms}
-</p>
+{include file="listes/header_listes.tpl"}
 
 <p>
 Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
