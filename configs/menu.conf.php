@@ -12,7 +12,7 @@ if(logged()) {
         ),
         'Services' => Array (
             'Envoyer un mail' => 'sendmail.php' ,
-            'Forums &amp; PA' => 'banana/' ,
+            'Forums & PA' => 'banana/' ,
             'Listes de diffusion' => '###url###' ,
             'Micropaiements' => 'paiement/' ,
             'Patte cassée' => 'pattecassee.php' ,
