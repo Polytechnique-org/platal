@@ -27,15 +27,15 @@ echo .
 
 ###########################################################
 echo -n "now drop x4dat.emploi_naf"
-echo 'drop table x4dat.emploi_naf;' | mysql -u root x4dat &>/dev/null
+echo 'drop table x4dat.emploi_naf;' | mysql -u root x4dat &>/dev/null || echo -n ": FAILED"
 echo .
 
 ###########################################################
 echo -n "updating newsletter tables"
-mysql -u root x4dat < newsleter.sql &>/dev/null
-mysql -u root x4dat < newsleter_art.sql &>/dev/null
-mysql -u root x4dat < newsleter_cat.sql &>/dev/null
-mysql -u root x4dat < newsleter_ins.sql &>/dev/null
+mysql -u root x4dat < newsleter.sql &>/dev/null	    || echo 'newsletter.sql FAILED'
+mysql -u root x4dat < newsleter_art.sql &>/dev/null || echo 'newsletter_art.sql FAILED'
+mysql -u root x4dat < newsleter_cat.sql &>/dev/null || echo 'newsletter_cat.sql FAILED'
+mysql -u root x4dat < newsleter_ins.sql &>/dev/null || echo 'newsletter_ins.sql FAILED'
 echo '.'
 
 ###########################################################
