@@ -125,7 +125,7 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
     $sql  .= _select_notifs_base('watch_nonins', $mail, $where);
 
     if ($iterator) {
-        return $globals->xdb->iterator($sql . ' ORDER BY cid, promo, nom', $last, $uid, $last, $uid, $last, $uid);
+        return $globals->xdb->iterator($sql . ' ORDER BY cid, promo, date DESC, nom', $last, $uid, $last, $uid, $last, $uid);
     } else {
         return $globals->xdb->query($sql, $last, $uid, $last, $uid, $last, $uid);
     }
