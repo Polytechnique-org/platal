@@ -5,8 +5,9 @@ function smarty_modifier_url($string)
 	return $string;
     $chemins = Array('', '../', '../../');
     foreach ($chemins as $ch) {
-	if (file_exists($ch.'../htdocs/'))
+	if (file_exists($ch.'../htdocs/')) {
 	    return $ch.$string;
+	}
     }
     return '';
 }

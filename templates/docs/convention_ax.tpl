@@ -1,4 +1,4 @@
-{* $Id: convention_ax.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
+{* $Id: convention_ax.tpl,v 1.4 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
 Le rapprochement de l'AX et de Polytechnique.org
@@ -27,7 +27,7 @@ l'article premier de ses statuts. L'AX a ainsi pour but :
   <li>de tout mettre en oeuvre pour que l'Ecole polytechnique reste en tête du haut enseignement scientifique et pour maintenir la renommée de la formation qu'elle dispense.</li>
   </ul>
   Les activités de l'AX comprennent notamment la publication de l'annuaire
-  papier, spécifique à l'AX, l'édition de la revue <u>La Jaune et la Rouge</u>
+  papier, spécifique à l'AX, l'édition de la revue <em>La Jaune et la Rouge</em>
   et le fonctionnement de la Caisse de Secours. L'AX dispose également d'un
   <a href="http://www.polytechniciens.com/" onclick="return popup(this)">site
     web</a>, distinct des deux précédents.

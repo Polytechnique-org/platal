@@ -1,4 +1,4 @@
-{* $Id: alias.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: alias.tpl,v 1.7 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 {if $success}
   <p>
@@ -43,7 +43,7 @@
   {/dynamic}
 
   <br />
-  <form action="{$smarty.server.PHP_SELF}" method="post" name="alias_dem">
+  <form action="{$smarty.server.PHP_SELF}" method="post">
     <table class="tinybicol" cellpadding="4" summary="Demande d'alias">
       <tr>
         <th colspan="2">Demande d'alias</th>

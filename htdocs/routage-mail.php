@@ -1,6 +1,6 @@
 <?php
 require("auto.prepend.inc.php");
-new_skinned_page('routage-mail.tpl',AUTH_COOKIE);
+new_skinned_page('routage-mail.tpl',AUTH_MDP);
 require("email.classes.inc.php");
 
 $redirect = new Redirect();

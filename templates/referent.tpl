@@ -1,4 +1,4 @@
-{* $Id: referent.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: referent.tpl,v 1.7 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 {literal}
 <script language="JavaScript" type="text/javascript">
@@ -40,7 +40,7 @@ d'être plus précis.
         <span class="rechdiplo">X{$personnes[resultat].promo}</span>
       </td>
       <td class="rechdetails" style="width:15%">
-        <a style="font-size: smaller;" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].username}')">voir sa fiche</a>
+        <a class="smaller" href="javascript:x()"  onclick="popWin('fiche.php?user={$personnes[resultat].username}')">voir sa fiche</a>
       </td>
       <td class="rechdetails" style="width:25%">
         <a class="smaller" href="javascript:x()"  onclick="popWin('fiche_referent.php?user={$personnes[resultat].username}')">voir sa fiche référent</a>
@@ -58,15 +58,16 @@ d'être plus précis.
     {/section}
   </table>
   <br />
-  <span style="font-size: normal;">Pages&nbsp;:&nbsp;
+  <p>
+    Pages&nbsp;:&nbsp;
     {section name="page_number" start=1 loop=$nb_pages_total+1}
     {if $smarty.section.page_number.index == $page_courante}
     {$page_courante} {else}
     <a href="javascript:showPage({$smarty.section.page_number.index})">{$smarty.section.page_number.index} </a> 
     {/if}
     {/section}
-  </span>
-</FORM>
+  </p>
+</form>
 {/if}
 {if $show_formulaire}
 <span class="erreur">
@@ -121,7 +122,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
 <form action="{$smarty.server.REQUEST_URI}" method="post" name="form_ref">
   <table cellpadding="0" cellspacing="0" summary="Formulaire de recherche de referents" class="bicol">
     <tr class="impair">
-      <td class="bicoltitre">
+      <td class="titre">
         Secteur de compétence <br /> du référent
       </td>
       <td >
@@ -131,7 +132,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
     </tr>
     <tr class="pair">
-      <td class="bicoltitre">
+      <td class="titre">
         Sous-Secteur
       </td>
       <td >
@@ -141,7 +142,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
     </tr>
     <tr class="impair">
-      <td class="bicoltitre">
+      <td class="titre">
         Pays bien connu du référent
       </td>
       <td >
@@ -156,7 +157,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
     </tr>
     <tr class="impair">
-      <td class="bicoltitre">
+      <td class="titre">
         Expertise (rentre un ou plusieurs mots clés)
       </td>
       <td >
@@ -164,7 +165,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
     </tr>
   </table>
-  <div style="text-align: center; margin-top: 1em;">
+  <div class="center" style="margin-top: 1em;">
     <input type="submit" value="Chercher" name="Chercher" />
   </div>
 </form>

@@ -1,4 +1,4 @@
-{* $Id: inscrire.form_id.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: inscrire.form_id.tpl,v 1.4 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -29,7 +29,7 @@
         l'inscription pour les promotions jusqu'à 1995 incluse.
       </td>
       <td>
-        <span class="bicoltitre">Matricule X : </span>&nbsp;&nbsp;
+        <strong>Matricule X :</strong>&nbsp;&nbsp;
         <input type="text" size="6" maxlength="6" name="matricule" value="{$smarty.request.matricule}" />
         <br />
         6 chiffres terminant par le numéro d'entrée<br />

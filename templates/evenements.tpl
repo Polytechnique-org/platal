@@ -1,4 +1,4 @@
-{* $Id: evenements.tpl,v 1.3 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: evenements.tpl,v 1.4 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposition d'information événementielle
@@ -12,7 +12,7 @@
 Voici ton annonce :
 </p>
 
-<table class="bicol" width="98%">
+<table class="bicol">
   <tr>
     <th>{$titre|nl2br}</th>
   </tr>

@@ -1,4 +1,4 @@
-{* $Id: doc_nn.tpl,v 1.6 2004-08-26 14:44:44 x2000habouzit Exp $ *}
+{* $Id: doc_nn.tpl,v 1.7 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 <p>
     [<a href="{"docs/doc_nn.php?doc=smtp"|url}">Configuration du smtp</a>]
@@ -56,10 +56,10 @@
     Utiliser le SMTP sécurisé
 </div>
 
-<table summary="Première étape" cellpadding="5" style="width:604px">
+<table summary="Première étape" cellpadding="5">
 <tr> 
   <td colspan="3">
-    <img src="{"images/docs_confnetscape0.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_confnetscape0.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
@@ -80,10 +80,10 @@
 
 <hr />
 
-<table summary="Deuxième étape" cellpadding="5" style="width:604px">
+<table summary="Deuxième étape" cellpadding="5">
 <tr>
   <td colspan="3">
-    <img src="{"images/docs_confnetscape1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_confnetscape1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
@@ -123,8 +123,7 @@
     </p>
   </td>
   <td>
-    <img src="{"images/docs_confnetscape2.png"|url}" style="width:382px"
-			height="179" alt=" [ CAPTURE D'ECRAN ] " />
+    <img src="{"images/docs_confnetscape2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 </table>
@@ -155,10 +154,10 @@ Et maintenant quelques remarques :
     Utiliser le NNTP sécurisé
 </div>
 
-<table summary="Première étape" cellpadding="5" style="width:603px">
+<table summary="Première étape" cellpadding="5">
 <tr> 
   <td colspan="3">
-    <img src="{"images/docs_nntp_nn1.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
@@ -181,7 +180,7 @@ Et maintenant quelques remarques :
 
 <hr />
 
-<table summary="Deuxième étape" cellpadding="5" style="width:604px">
+<table summary="Deuxième étape" cellpadding="5">
 <tr>
   <td>
       1. Dans ton client apparait maintenant une nouvelle ligne de serveur de forums appellée
@@ -197,7 +196,7 @@ Et maintenant quelques remarques :
       <em>prenom.nom</em>, puis valide.
   </td>
   <td>
-    <img src="{"images/docs_nntp_nn2.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>
@@ -206,17 +205,17 @@ Et maintenant quelques remarques :
       indiqué lors de <a href="{"smtp_acces.php"|url}">l'activation de ton compte</a>.
   </td>
   <td>
-    <img src="{"images/docs_nntp_nn3.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn3.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 </table>
 
 <hr />
 
-<table summary="Troisième étape" cellpadding="5" style="width:668px">
+<table summary="Troisième étape" cellpadding="5">
 <tr> 
   <td>
-    <img src="{"images/docs_nntp_nn4.png"|url}" alt=" [ CAPTURE D'ECRAN ] ">
+    <img src="{"images/docs_nntp_nn4.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
   </td>
 </tr>
 <tr>

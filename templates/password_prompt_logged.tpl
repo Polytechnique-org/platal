@@ -1,23 +1,23 @@
-{* $Id: password_prompt_logged.tpl,v 1.12 2004-08-29 14:58:54 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.13 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 <div class="center">
-  <table summary="Accès sécurisé" style="width: 90%;">
+  <table>
     <tr>
       <td>
         <img src="{"images/cadenas_rouge.png"|url}" alt=" [ CADENAS ROUGE ] " />
       </td>
       <td>
-        <div class="smaller">
+        <span class="smaller">
           <strong>
             Pour des raisons de sécurité, il est obligatoire de taper ton mot de passe, même
             avec l'accès permanent, pour certaines opérations sensibles.
           </strong>
-        </div>
+        </span>
       </td>
     </tr>
   </table>
 </div>
-<br /><br />
+
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
     <tr>

@@ -1,4 +1,4 @@
-{* $Id: antispam.tpl,v 1.6 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: antispam.tpl,v 1.7 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Ton filtre anti-spam
@@ -13,6 +13,7 @@ par une personne que tu ne connais pas.<br />
 Notre logiciel antispam tente de déterminer, parmi les courriers électroniques
 que tu reçois, lesquels sont des spams, et lesquels n'en sont pas.
 Trois réglages sont possibles :
+</p>
 <ul>
   <li>soit le logiciel est coupé et <strong>ne filtre pas du tout</strong> tes courriels,</li>
   <li>soit les spams détectés portent la mention [spam probable] dans leur
@@ -22,8 +23,7 @@ Trois réglages sont possibles :
   logiciel pense que ce sont des spams.
   </li>
 </ul>
-</p>
-<form action="{$smarty.server.PHP_SELF}" method="post" name="filtre">
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <table class="tinybicol" summary="filtre anti-spam">
     <tr>
       <td>
@@ -93,10 +93,10 @@ un spam.
 </p>
 <p>
 Le marquage est fait de deux manières :
+</p>
 <ul>
   <li>la chaîne "[spam probable]" est ajoutée au début du sujet pour permettre une reconnaissance visuelle facile des spams,</li>
   <li>un en-tête "X-Spam-Flag: YES" est ajouté au message pour permettre l'ajout d'un filtre dans ton lecteur de mail pour trier le spam dans une boîte indépendante, ce qui facilite la vérification que les spams marqués sont bien des spams.</li>
 </ul>
-</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

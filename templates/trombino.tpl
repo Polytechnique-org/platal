@@ -1,4 +1,4 @@
-{* $Id: trombino.tpl,v 1.2 2004-08-26 14:44:43 x2000habouzit Exp $ *}
+{* $Id: trombino.tpl,v 1.3 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -20,7 +20,7 @@ La photo par défaut est donc gardée.
 <form enctype="multipart/form-data" action="{$smarty.server.REQUEST_URI}" method="post">
   <table class="flags" cellspacing="0" summary="Flags">
     <tr>
-      <td class="rouge"><input type="radio" checked>
+      <td class="rouge"><input type="radio" checked="checked" />
       </td>
       <td class="texte">privé
       </td>
@@ -48,13 +48,12 @@ La photo par défaut est donc gardée.
       <td class="center">
         <img src="{"getphoto.php"|url}?x={$smarty.session.uid}" width=110 alt=" [ PHOTO ] " />
       </td>
-      <td class="center" style="width: 50%">
+      <td class="center half">
         {if $submited}
         <img src="{"getphoto.php"|url}?x={$smarty.session.uid}&amp;req=true" width=110 alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}
-        
       </td>
     </tr>
     <tr>
@@ -109,7 +108,7 @@ La photo par défaut est donc gardée.
     </tr>
     <tr>
       <td class="bouton">
-        <input type="submit" value="  OK  " name="ordi">
+        <input type="submit" value="  OK  " name="ordi" />
       </td>
     </tr>
     <tr>
@@ -125,7 +124,7 @@ La photo par défaut est donc gardée.
     </tr>
     <tr>
       <td class="center">
-        <input type="submit" value="  OK  " name="web">
+        <input type="submit" value="  OK  " name="web" />
       </td>
     </tr>
   </table>

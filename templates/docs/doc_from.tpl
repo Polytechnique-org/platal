@@ -1,4 +1,4 @@
-{* $Id: doc_from.tpl,v 1.3 2004-08-26 14:44:44 x2000habouzit Exp $ *}
+{* $Id: doc_from.tpl,v 1.4 2004-08-30 12:18:40 x2000habouzit Exp $ *}
 
 <div class="texte">
   <div class="rubrique">
@@ -36,7 +36,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from1.png"|url}" width="480" height="248" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from1.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -58,7 +58,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from2.png"|url}" width="640" height="308" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from2.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -83,7 +83,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from3.png"|url}" width="503" height="385" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from3.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -116,7 +116,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from4.png"|url}" width="503" height="385" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from4.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -156,7 +156,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from5.png"|url}" width="503" height="385" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from5.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -199,7 +199,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from6.png"|url}" width="503" height="308" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from6.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -231,7 +231,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from7.png"|url}" width="416" height="445" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from7.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
@@ -251,7 +251,7 @@
         </p>
       </td>
       <td>
-        <img src="{"images/docs_from8.png"|url}" width="452" height="338" alt=" [ CAPTURE D'ECRAN ] " />
+        <img src="{"images/docs_from8.png"|url}" alt=" [ CAPTURE D'ECRAN ] " />
       </td>
     </tr>
   </table>
