@@ -14,7 +14,7 @@
 {min_auth level="cookie"}
 <p class="normal">
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
-Si tu n'es pas {insert name="getName" script="misc.password_prompt.inc.php"}, change le login ci-dessous, ou rends-toi sur
+Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change le login ci-dessous, ou rends-toi sur
 <a href="{"inscrire.php"|url}">la page d'inscription</a>.
 </p>
 {/min_auth}
@@ -51,7 +51,7 @@ Si tu n'es pas {insert name="getName" script="misc.password_prompt.inc.php"}, ch
       </td>
       <td>
         <input type="text" name="username"size=20 maxlength=50
-          value="{insert name="getUserName" script="misc.password_prompt.inc.php"}">
+          value="{insert name="getUserName" script="insert.password.inc.php"}">
       </td>
     </tr>
     <tr>
