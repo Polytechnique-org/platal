@@ -90,7 +90,6 @@
           <div class='menu_item'><a href="{$mi.url|url}">{$mi.text}</a></div>
           {/foreach}
           {/foreach}
-          {include_php file=menu.conf.php}
           {perms level=admin}
           <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
             <tr><th>Valid</th></tr>
