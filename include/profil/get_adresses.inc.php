@@ -18,9 +18,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil_adresses.inc.php,v 1.4 2004-08-31 14:48:57 x2000habouzit Exp $
+        $Id: get_adresses.inc.php,v 1.1 2004-08-31 18:31:34 x2000habouzit Exp $
  ***************************************************************************/
-
 
 require_once('geoloc.inc.php');
 
@@ -39,6 +38,7 @@ function is_adr_empty($adrid){
 }
 
 function delete_address($adrid, $in_request_array = false){
+    global $globals;
     $globals->db->query("DELETE FROM adresses WHERE uid = ".$_SESSION["uid"]." AND adrid = '$adrid'");
     if($in_request_array == true){
       unset($_REQUEST['adrid'][$adrid]);
@@ -65,8 +65,6 @@ while(list($adrids[$i]) = mysql_fetch_row($res)){
   $adresses[$adrids[$i]]['adrid'] = $adrids[$i];
   $i++;
 }
-
-$page->assign('adresses', $adresses);
 
 //recuperation des donnees de la bd
 $res = $globals->db->query(
