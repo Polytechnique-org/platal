@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.4 2004-11-04 19:57:46 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.5 2004-11-05 13:41:31 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -96,13 +96,13 @@ Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à t
 <table class='tinybicol' cellpadding="0" cellspacing="0">
   <tr>
     <td>
-      {if !$nonins|@count}
+      {if $notifs->nonins|@count eq 0}
       <p>Tu ne surveilles actuellement aucun non-inscrit.</p>
-      {elseif $promos|@count}
-      <p>Tu surveilles {if $promos|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
+      {elseif $notifs->nonins|@count}
+      <p>Tu surveilles {if $notifs->nonins|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
       <ul>
-        {foreach from=$nonins item=p}
-        <li>{$p}</li>
+        {foreach from=$notifs->nonins item=p}
+        <li>{$p.prenom} {$p.nom} ({$p.promo})</li>
         {/foreach}
       </ul>
       {/if}

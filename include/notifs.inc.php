@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.inc.php,v 1.2 2004-11-04 20:19:36 x2000habouzit Exp $
+        $Id: notifs.inc.php,v 1.3 2004-11-05 13:41:31 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once('diogenes.flagset.inc.php');
@@ -49,10 +49,10 @@ class Notifs {
 	$this->flags = new FlagSet($flags);
 	
 	$res = $globals->db->query("SELECT  type,arg,prenom,nom,promo
-				      FROM  watch
-				INNER JOIN  auth_user_md5 USING(user_id)
-				     WHERE  watch.user_id = '$uid'
-				  ORDER BY  arg");
+				      FROM  watch         AS w
+				 LEFT JOIN  auth_user_md5 AS u ON(u.user_id = w.arg)
+				     WHERE  w.user_id = '$uid'
+				  ORDER BY  promo,nom,arg");
 	while(list($type, $arg, $prenom, $nom, $promo) = mysql_fetch_row($res)) {
 	    if($type=='promo') {
 		$this->promos[$arg] = $arg;
