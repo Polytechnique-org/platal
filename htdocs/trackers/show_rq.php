@@ -7,7 +7,7 @@ $tracker = new Tracker($_GET['tr_id']);
 
 if(isset($_POST['n_sub']) && $tracker->post_perms_ok()) {
     $sql = "UPDATE trackers.requests
-            SET    pri='{$_POST['n_pri']}',admin_id='{$_POST['n_admin']}'
+            SET    pri='{$_POST['n_pri']}',admin_id='{$_POST['n_admin']}',st_id='{$_POST['n_state']}'
             WHERE  tr_id='{$_GET['tr_id']}' AND rq_id='{$_GET['rq_id']}'";
     $globals->db->query($sql);
 }
@@ -33,6 +33,11 @@ $sql = "SELECT    user_id,username
         WHERE     perms='admin'
         ORDER BY  username";
 $page->mysql_assign($sql, 'admins');
+
+$sql = "SELECT    st_id,texte
+        FROM      trackers.states
+        ORDER BY  texte";
+$page->mysql_assign($sql, 'states');
 
 $sql = "SELECT *, username
         FROM      trackers.followups 

@@ -1,4 +1,4 @@
-{* $Id: show_rq.tpl,v 1.2 2004-04-26 14:17:19 x2000habouzit Exp $ *}
+{* $Id: show_rq.tpl,v 1.3 2004-04-26 14:24:08 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -59,12 +59,16 @@
         <select name="n_admin">
           <option value="">-</option>
           {foreach item=a from=$admins}
-          <option value="{$a.user_id}" {if $a.username eq $request.admin}selected="selected"{/if}>{$a.username}</option>
+          <option value="{$a.user_id}" {if $a.user_id eq $request.admin_id}selected="selected"{/if}>{$a.username}</option>
           {/foreach}
         </select>
       </td>
       <td class="center">
-        {$request.state}
+        <select name="n_state">
+          {foreach item=s from=$states}
+          <option value="{$s.st_id}" {if $s.st_id eq $request.st_id}selected="selected"{/if}>{$s.texte}</option>
+          {/foreach}
+        </select>
       </td>
     </tr>
     <tr>
