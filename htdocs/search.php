@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.42 2004-11-04 13:50:44 x2000habouzit Exp $
+        $Id: search.php,v 1.43 2004-11-04 13:52:39 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -35,8 +35,6 @@ require_once("geoloc.inc.php");
 
 if (array_key_exists('quick', $_REQUEST)) {
     $page->assign('formulaire',0);
-
-    $with_soundex = !empty($_REQUEST['with_soundex']);
 
     $qSearch = new QuickSearch('quick');
     $fields = new SFieldGroup(true,array($qSearch));
@@ -57,7 +55,7 @@ if (array_key_exists('quick', $_REQUEST)) {
                        a.alias AS forlife,
                        '.$globals->search_result_fields.'
                        c.uid AS contact
-                 FROM  '.($with_soundex?'recherche_soundex':'auth_user_md5').'      AS r
+                 FROM  auth_user_md5  AS r
             LEFT JOIN  auth_user_md5  AS u   ON (u.matricule=r.matricule)
             LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
             LEFT JOIN  contacts       AS c   ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
@@ -72,7 +70,6 @@ if (array_key_exists('quick', $_REQUEST)) {
     $nbpages = ($page->get_template_vars('nb_resultats_total')-1)/$globals->search_results_per_page;
     $page->assign('offsets',range(0,$nbpages));
     $page->assign('url_args',$fields->get_url());
-    $page->assign('with_soundex',$with_soundex);
     $page->assign('mod_date_sort',!empty($_REQUEST['mod_date_sort']));
     $page->assign('offset',$offset->value);
     $page->assign('perpage',$globals->search_results_per_page);
