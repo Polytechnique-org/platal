@@ -59,9 +59,9 @@ class NLReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  L'annonce que tu avais proposée ({$this->title}) vient d'être validée.";
+            return '  L\'article que tu avais proposée ('.$this->art->title().') vient d\'être validé.';
         } else {
-            return "  L'annonce que tu avais proposée ({$this->title}) a été refusée.";
+            return '  L\'article que tu avais proposée ('.$this->art->title().') a été refusé.';
         }
     }
 
