@@ -6,7 +6,7 @@ $public_directory = ((isset($_REQUEST['public_directory']) && $_REQUEST['public_
 if ($public_directory)
     new_skinned_page('search.tpl', AUTH_PUBLIC);
 else
-    new_skinned_page('search.tpl', AUTH_COOKIE);
+    new_skinned_page('search.tpl', AUTH_COOKIE,true);
 $page->assign('advanced',0);
 $page->assign('public_directory',$public_directory);
 require_once("applis.func.inc.php");

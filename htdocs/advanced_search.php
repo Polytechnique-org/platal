@@ -1,7 +1,7 @@
 <?php
 require("auto.prepend.inc.php");
 require("search.classes.inc.php");
-new_skinned_page('search.tpl', AUTH_COOKIE);
+new_skinned_page('search.tpl', AUTH_COOKIE,true);
 $page->assign('advanced',1);
 $page->assign('public_directory',0);
 require_once("applis.func.inc.php");
@@ -14,17 +14,34 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $firstnameField = new StringSField('firstname',array('u.prenom'),'');
     $promo1Field = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('u.promo'),'');
-    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
+   
+    $townField = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
+    $countryField = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
+    $regionField = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
+   
+    $entrepriseField = new RefSField('enteprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid');
+    $posteField = new RefSField('poste',array('ep.fonction'),'entreprises','ep','u.user_id=ep.uid');
+    $secteurField = new RefSField('secteur',array('es.secteur'),'entreprises','es','u.user_id=es.uid');
+    $cvField = new StringSField('cv',array('u.cv'),'');
+   
+    $nationaliteField = new RefSField('nationalite',array('u.nationalite'),'','','');
+    $binetField = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
+    $groupexField = new RefSField('groupex',array('g.gid'),'groupesx_ins','g','u.user_id=g.guid');
+    $sectionField = new RefSField('section',array('u.section'),'','','');
+    $schoolField = new RefSField('school',array('as.aid'),'applis_ins','as','u.user_id=as.uid');
+    $diplomaField = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
+   
+    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,
+    $townField,$countryField,$regionField,
+    $entrepriseField,$posteField,$secteurField,$cvField,
+    $nationaliteField,$binetField,$groupexField,$sectionField,$schoolField,$diplomaField));
     
-    if ($nameField->length()<2 && $firstnameField->length()<2 && 
-        ($public_directory || !$promo1Field->is_a_single_promo()))
-    {
-	new ThrowError('Recherche trop générale.');
-    }
     $offset = new NumericSField('offset');
-    
+   
+    $where = $fields->get_where_statement();
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
                        u.matricule,i.matricule_ax,
+                       1 AS inscrit,
                        u.nom,
                        u.epouse,
                        u.prenom,
@@ -35,14 +52,14 @@ if (array_key_exists('rechercher', $_REQUEST)) {
                        ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                        ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                        c.uid AS contact
-                 FROM  auth_user_md5  AS u
+                 FROM  auth_user_md5  AS u '.$fields->get_select_statement().'
            INNER JOIN  identification AS i ON (i.matricule=u.matricule)
             LEFT JOIN  contacts       AS c ON (c.uid='.((array_key_exists('uid',$_SESSION))?$_SESSION['uid']:0).' AND c.contact=u.user_id)
             LEFT  JOIN applis_ins     AS ai0 ON (u.user_id = ai0.uid AND ai0.ordre = 0)
             LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
             LEFT  JOIN applis_ins     AS ai1 ON (u.user_id = ai1.uid AND ai1.ordre = 1)
             LEFT  JOIN applis_def     AS ad1 ON (ad1.id = ai1.aid)
-                WHERE  '.$fields->get_where_statement().'
+                '.(($where!='')?('WHERE '.$where):'').'
              ORDER BY  '.implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
 

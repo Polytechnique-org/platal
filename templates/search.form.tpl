@@ -92,7 +92,7 @@
         <td>Poste</td>
         <td>
           <select name="poste">
-            <option value=""></option>
+            <option value="0"></option>
             {section name=poste loop=$choix_postes}
             <option value="{$choix_postes[poste].id}" {if $smarty.request.poste eq $choix_postes[poste].id}selected{/if}>
               {$choix_postes[poste].fonction_fr}
@@ -105,7 +105,7 @@
         <td>Secteur</td>
         <td>
           <select name="secteur">
-            <option value=""></option>
+            <option value="0"></option>
             {section name=secteur loop=$choix_secteurs}
             <option value="{$choix_secteurs[secteur].id}" {if $smarty.request.secteur eq $choix_secteurs[secteur].id}selected{/if}>
               {$choix_secteurs[secteur].label}
@@ -175,7 +175,7 @@
         <td>Formation</td>
         <td>
           <select name="school" onChange="javascript:document.recherche.submit();">
-            <option value=""></option>
+            <option value="0"></option>
             {section name=school loop=$choix_schools}
             <option value="{$choix_schools[school].id}" {if $smarty.request.school eq $choix_schools[school].id}selected{/if}>
               {$choix_schools[school].text}
@@ -188,7 +188,7 @@
         <td></td>
         <td>
           <select name="diploma">
-            <option value=""></option>
+            <option value="0"></option>
             {section name=diploma loop=$choix_diplomas}
             <option value="{$choix_diplomas[diploma]}" {if $smarty.request.diploma eq $choix_diplomas[diploma]}selected{/if}>
               {$choix_diplomas[diploma]}

@@ -51,14 +51,19 @@ class SField {
      * à chacun d'entre eux une clause spécifique
      * la clause totale et la disjonction de ces clauses spécifiques */
     function get_where_statement() {
-        return ($this->value!='')?
-        '('.implode(' OR ',array_map(array($this,'get_single_where_statement'),$this->fieldDbName)).')'
-        :false;
+        if ($this->value=='')
+            return false;
+        $res = implode(' OR ',array_filter(array_map(array($this,'get_single_where_statement'),$this->fieldDbName)));
+        return ($res!='')?('('.$res.')'):'';
     }
 
     /** récupérer la clause correspondant au champ dans la clause ORDER BY de la requête
      * utilisé par exemple pour placer d'abord le nom égal à la requête avant les approximations */
     function get_order_statement() {
+        return false;
+    }
+
+    function get_select_statement() {
         return false;
     }
 
@@ -89,6 +94,49 @@ class NumericSField extends SField {
             $this->value = 0;
         if (!preg_match("/^[0-9]+$/", $this->value))
             new ThrowError('Un champ numérique contient des caractères alphanumériques.<br>');
+    }
+}
+
+class RefSField extends SField {
+    var $refTable;
+    var $refAlias;
+    var $refCondition;
+    var $exact=true;
+
+    function RefSField($_fieldFormName,$_fieldDbName='',$_refTable,$_refAlias,$_refCondition,$_exact=true) {
+        $this->fieldFormName = $_fieldFormName;
+        $this->fieldDbName = $_fieldDbName;
+        $this->refTable = $_refTable;
+        $this->refAlias = $_refAlias;
+        $this->refCondition = $_refCondition;
+        $this->exact = $_exact;
+        $this->get_request();
+    }
+    
+    function get_request() {
+        parent::get_request();
+        if ($this->value=='00' || $this->value=='0')
+            $this->value='';
+    }
+
+    function compare() {
+        if ($this->exact)
+            return "='".$this->value."'";
+        else
+            return "LIKE '%".$this->value."%'";
+    }
+
+    function get_single_where_statement($field) {
+        if ($this->refTable=='')
+            return $field.$this->compare();
+        return false;
+    }
+
+    function get_select_statement() {
+        if ($this->value=='' || $this->refTable=='')
+            return false;
+        return 'INNER JOIN '.$this->refTable.' AS '.$this->refAlias.
+        ' ON('.$this->refCondition.' AND '.$this->fieldDbName[0].$this->compare().")";
     }
 }
 
@@ -202,6 +250,10 @@ class SFieldGroup {
         $this->and = $_and;
     }
 
+    function field_get_select($f) {
+        return $f->get_select_statement();
+    }
+
     /** récupérer la clause WHERE d'un objet champ de recherche */
     function field_get_where($f) {
         return $f->get_where_statement();
@@ -217,11 +269,16 @@ class SFieldGroup {
         return $f->get_url();
     }
 
+    function get_select_statement() {
+        return implode(' ',array_filter(array_map(array($this,'field_get_select'),$this->fields)));
+    }
+
     /** récupérer la clause WHERE du groupe de champs = conjonction (ET) ou disjonction (OU) de
      * clauses des champs élémentaires */
     function get_where_statement() {
         $joinText=($this->and)?' AND ':' OR ';
-        return '('.implode($joinText,array_filter(array_map(array($this,'field_get_where'),$this->fields))).')';
+        $res = implode($joinText,array_filter(array_map(array($this,'field_get_where'),$this->fields)));
+        return ($res!='')?('('.$res.')'):'';
     }
 
     /** récupérer la clause ORDER BY du groupe de champs = conjonction (ET) ou disjonction (OU) de

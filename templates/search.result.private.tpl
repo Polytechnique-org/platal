@@ -1,6 +1,6 @@
 <div class="bits">
   {if $result.inscrit==1}
-    <a href="javascript:x()" onclick="popWin('x.php?x={$result.username}')">
+    <a href="javascript:x()" onclick="popWin('fiche.php?user={$result.username}')">
       <img src="images/loupe.gif" alt="Afficher les détails" />
     </a>
     <a href="vcard.php/{$result.username}.vcf?x={$result.username}">
