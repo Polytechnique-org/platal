@@ -20,7 +20,7 @@
   </p>
 {/if}
 <div class="center">
-  <form action="{$smarty.server.PHP_SELF}" method="post" name="recherche">
+  <form action="{$smarty.server.PHP_SELF}" method="post" id="recherche">
     <table class="tinybicol" cellpadding="3" summary="Recherche">
       <tr>
         <td>Nom</td>
