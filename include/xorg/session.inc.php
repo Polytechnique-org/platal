@@ -48,6 +48,15 @@ class XorgSession extends DiogenesCoreSession
     }
     
     // }}}
+    // {{{ function destroy()
+    
+    function destroy() {
+        @session_destroy();
+        unset($_SESSION);
+        XorgSession::init();
+    }
+    
+    // }}}
     // {{{ function doAuth()
 
     /** Try to do an authentication.

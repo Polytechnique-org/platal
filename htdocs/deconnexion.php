@@ -28,8 +28,7 @@ if (isset($_SESSION['log'])) {
     $_SESSION['log']->log('deconnexion',$ref);
 }
 
-session_destroy();
-$_SESSION = array();
+XorgSession::destroy();
 if(isset($_COOKIE['ORGaccess']) && isset($_COOKIE['ORGuid'])) {
     header('Location: login.php');
 }
