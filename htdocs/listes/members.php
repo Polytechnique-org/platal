@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: members.php,v 1.4 2004-10-15 07:30:40 x2000habouzit Exp $
+        $Id: members.php,v 1.5 2004-10-15 09:40:31 web Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -40,12 +40,17 @@ $tri_promo = empty($_REQUEST['alpha']);
 if(list($det,$mem,$own) = $members) {
     $membres = Array();
     foreach($mem as $member) {
-	if(preg_match('/^([^.]*.([^.]*).(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
-	    $key = $tri_promo ? $matches[3] : strtoupper($matches[2]{0});
-	    $membres[$key][$matches[2]] = Array('n' => $member[0], 'l' => $matches[1]);
-	} else {
-	    $membres[0][] = Array('l' => $member[1]);
-	}
+        list($m) = split('@',$member[1]);
+        $res = $globals->db->query("SELECT  IF(epouse='', CONCAT(prenom, ' ', nom), CONCAT(prenom, ' ', epouse)), promo
+                                      FROM  auth_user_md5 AS u
+                                INNER JOIN  aliases AS a ON u.user_id = a.id
+                                     WHERE  a.alias = '$m'");
+        if(list($nom, $promo) = mysql_fetch_row($res)) {
+            $membres[$promo][] = Array('n' => $nom, 'l' => $m);
+        } else {
+            $membres[0][] = Array('l' => $member[0]);
+        }
+        mysql_free_result($res);
     }
     ksort($membres);
     foreach($membres as $key=>$val) ksort($membres[$key]);
@@ -53,7 +58,7 @@ if(list($det,$mem,$own) = $members) {
     $moderos = Array();
     foreach($own as $owner) {
 	list($m) = split('@',$owner);
-	$res = $globals->db->query("SELECT  CONCAT(prenom, ' ', nom), promo
+	$res = $globals->db->query("SELECT  IF(epouse='', CONCAT(prenom, ' ', nom), CONCAT(prenom, ' ', epouse)), promo
 				      FROM  auth_user_md5 AS u
 			        INNER JOIN  aliases AS a ON u.user_id = a.id
 				     WHERE  a.alias = '$m'");
