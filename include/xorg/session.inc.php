@@ -18,28 +18,38 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.41 2004-11-21 20:56:26 x2000habouzit Exp $
+        $Id: session.inc.php,v 1.1 2004-11-21 21:36:04 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
 require("diogenes.misc.inc.php");
 
-class XorgSession extends DiogenesCoreSession {
+// {{{ class XorgSession
+
+class XorgSession extends DiogenesCoreSession
+{
+    // {{{ function XorgSession()
+    
     function XorgSession()
     {
 	$this->DiogenesCoreSession();
-	if(empty($_SESSION['uid']))
+	if (empty($_SESSION['uid'])) {
 	    try_cookie();
+        }
 	set_skin();
     }
+
+    // }}}
+    // {{{ function doAuth()
 
     /** Try to do an authentication.
      *
      * @param page the calling page (by reference)
      */
-    function doAuth(&$page,$new_name=false) {
+    function doAuth(&$page,$new_name=false)
+    {
 	global $globals;
-	if(identified()) { // ok, c'est bon, on n'a rien à faire
+	if (identified()) { // ok, c'est bon, on n'a rien à faire
 	    return;
 	}
 
@@ -53,29 +63,32 @@ class XorgSession extends DiogenesCoreSession {
 					    FROM  auth_user_md5 AS u
          			      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
 				           WHERE  a.$field='{$_REQUEST['username']}' AND u.perms IN('admin','user')");
-	    if(@mysql_num_rows($res) != 0) {
+	    if (@mysql_num_rows($res) != 0) {
 		list($uid,$password)=mysql_fetch_row($res);
 		mysql_free_result($res);
 		$expected_response=md5("{$_REQUEST['username']}:$password:{$_SESSION['session']->challenge}");
-		if($_REQUEST['response'] == $expected_response) {
+		if ($_REQUEST['response'] == $expected_response) {
 		    unset($_SESSION['session']->challenge);
 		    // on logge la réussite pour les gens avec cookie
-		    if(isset($_SESSION['log']))
+		    if (isset($_SESSION['log'])) {
 			$_SESSION['log']->log("auth_ok");
+                    }
 		    start_connexion($uid, true);
 		    return true;
 		} else {
 		    // mot de passe incorrect pour le login existant
 		    // on logge l'échec pour les gens avec cookie
-		    if(isset($_SESSION['log']))
+		    if (isset($_SESSION['log'])) {
 			$_SESSION['log']->log("auth_fail","bad password");
+                    }
 		    $this->doLogin($page,$new_name);
 		}
 	    } else {
 		// login inexistant dans la base de donnees
 		// on logge l'échec pour les gens avec cookie
-		if(isset($_SESSION['log']))
+		if (isset($_SESSION['log'])) {
 		    $_SESSION['log']->log("auth_fail","bad login");
+                }
 		$this->doLogin($page,$new_name);
 	    }
 	} else {
@@ -84,30 +97,40 @@ class XorgSession extends DiogenesCoreSession {
 	}
     }
 
+    // }}}
+    // {{{ function doAuthCookie()
 
     /** Try to do a cookie-based authentication.
      *
      * @param page the calling page (by reference)
      */
-    function doAuthCookie(&$page) {
+    function doAuthCookie(&$page)
+    {
 	global $failed_ORGaccess;
 	// si on est deja connecté, c'est bon, rien à faire
-	if(logged())
+	if (logged()) {
 	    return;
+        }
 
 	// on vient de recevoir une demande d'auth, on passe la main a doAuth
-	if (isset($_REQUEST['username']) and isset($_REQUEST['response']))
+	if (isset($_REQUEST['username']) and isset($_REQUEST['response'])) {
 	    return $this->doAuth($page);
+        }
 
 	// sinon, on vérifie que les bons cookies existent
-	if($r = try_cookie())
+	if ($r = try_cookie()) {
 	    return $this->doAuth($page,($r>0));
+        }
     }
+
+    // }}}
+    // {{{ function doLogin()
 
     /** Display login screen.
      */
-    function doLogin(&$page, $new_name=false) {
-	if(isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGuid']) and !$new_name) {
+    function doLogin(&$page, $new_name=false)
+    {
+	if (isset($_COOKIE['ORGaccess']) and isset($_COOKIE['ORGuid']) and !$new_name) {
 	    $page->changeTpl('password_prompt_logged.tpl');
 	    $page->caching = false;
 	    $page->assign("xorg_head", "password_prompt_logged.head.tpl");
@@ -122,8 +145,12 @@ class XorgSession extends DiogenesCoreSession {
 	}
 	exit;
     }
+
+    // }}}
+    // {{{ function getUserId()
     
-    function getUserId($auth,$username) {
+    function getUserId($auth,$username)
+    {
 	global $globals;
 
 	$res = $globals->db->query("SELECT id FROM aliases WHERE alias='$username'");
@@ -132,8 +159,11 @@ class XorgSession extends DiogenesCoreSession {
 	return $uid;
     }
 
+    // }}}
+    // {{{ function getUsername()
 
-    function getUsername($auth,$uid) {
+    function getUsername($auth,$uid)
+    {
 	global $globals;
 
 	$res = $globals->db->query("SELECT alias FROM aliases WHERE id='$uid' AND type='a_vie'");
@@ -141,13 +171,19 @@ class XorgSession extends DiogenesCoreSession {
 	mysql_free_result($res);
 	return $username;
     }
+
+    // }}}
 }
+
+// }}}
+// {{{ funcion check_perms()
 
 /** verifie si un utilisateur a les droits pour voir une page
  ** si ce n'est pas le cas, on affiche une erreur
  * @return void
  */
-function check_perms() {
+function check_perms()
+{
     global $page;
     if (!has_perms()) {
 	require_once("diogenes.core.logger.inc.php");
@@ -156,29 +192,37 @@ function check_perms() {
     }
 }
 
+// }}}
+// {{{ funcion has_perms()
+
 /** verifie si un utilisateur a les droits pour voir une page
  ** soit parce qu'il est admin, soit il est dans une liste
  ** supplementaire de personnes utilisées
  * @return BOOL
  */
     
-function has_perms($auth_array=array()) {
+function has_perms($auth_array=array())
+{
     return logged()
 	&& ( (!empty($auth_array) && in_array($_SESSION['uid'], $auth_array))
 		|| ($_SESSION['perms']==PERMS_ADMIN) );
 }
 
+// }}}
+// {{{ funcion logged()
 
 /** renvoie true si la session existe et qu'on est loggué correctement
  * false sinon
  * @return bool vrai si loggué
  * @see header2.inc.php
  */
-function logged () {
+function logged ()
+{
     return(isset($_SESSION['auth']) and ($_SESSION['auth']>=AUTH_COOKIE));
 }
 
-
+// }}}
+// {{{ funcion identified()
 
 /** renvoie true si la session existe et qu'on est loggué correctement
  * et qu'on a été identifié par un mot de passe depuis le début de la session
@@ -186,38 +230,50 @@ function logged () {
  * @return bool vrai si loggué
  * @see header2.inc.php
  */
-function identified () {
+function identified ()
+{
     return(isset($_SESSION['auth']) and $_SESSION['auth']>=AUTH_MDP);
 }
+
+// }}}
+// {{{ funcion try_cookie()
 
 /** réalise la récupération de $_SESSION pour qqn avec cookie
  * @return  int     0 if all OK, -1 if no cookie, 1 if cookie with bad hash,
  *                  -2 should not happen
  */
-function try_cookie() {
+function try_cookie()
+{
     global $globals;
-    if(!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGuid']))
+    if (!isset($_COOKIE['ORGaccess']) or $_COOKIE['ORGaccess'] == '' or !isset($_COOKIE['ORGuid'])) {
 	return -1;
+    }
 
     $res = @$globals->db->query( "SELECT user_id,password FROM auth_user_md5 WHERE user_id='{$_COOKIE['ORGuid']}' AND perms IN('admin','user')");
-    if(@mysql_num_rows($res) != 0) {
+    if (@mysql_num_rows($res) != 0) {
 	list($uid,$password)=mysql_fetch_row($res);
 	mysql_free_result($res);
 	$expected_value=md5($password);
-	if($expected_value == $_COOKIE['ORGaccess']) {
+	if ($expected_value == $_COOKIE['ORGaccess']) {
 	    start_connexion($uid, false);
 	    return 0;
-	} else return 1;
+	} else {
+            return 1;
+        }
     }
     return -2;
 }
+
+// }}}
+// {{{ funcion start_connexion()
 
 /** place les variables de session dépendants de auth_user_md5
  * et met à jour les dates de dernière connexion si nécessaire
  * @return void
  * @see controlpermanent.inc.php controlauthentication.inc.php
  */
-function start_connexion ($uid, $identified) {
+function start_connexion ($uid, $identified)
+{
     global $globals;
     $result=$globals->db->query("
 	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias,
@@ -231,27 +287,30 @@ function start_connexion ($uid, $identified) {
          WHERE  u.user_id=$uid AND u.perms IN('admin','user')
       ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
-	 $lastnewslogin, $watch_last,
-	 $bestalias, $password, $femme) = mysql_fetch_row($result);
+            $lastnewslogin, $watch_last,
+            $bestalias, $password, $femme) = mysql_fetch_row($result);
     mysql_free_result($result);
    
     // on garde le logger si il existe (pour ne pas casser les sessions lors d'une
     // authentification avec le cookie
     // on vérifie que c'est bien un logger de l'utilisateur en question
-    if(isset($_SESSION['log']) && $_SESSION['log']->uid==$uid)
+    if (isset($_SESSION['log']) && $_SESSION['log']->uid==$uid) {
 	$logger = $_SESSION['log'];
+    }
 
     // on vide la session pour effacer les valeurs précédentes (notamment de skin)
     // qui peuvent être celles de quelqu'un d'autre ou celle par defaut
     $suid = isset($_SESSION['suid']) ? $_SESSION['suid'] : null;
-    if($suid) {
+    if ($suid) {
 	$logger = new DiogenesCoreLogger($uid,$suid);
 	$logger->log("suid_start","{$_SESSION['forlife']} by {$_SESSION['suid']}");
 	$_SESSION = Array('suid'=>$_SESSION['suid'], 'slog'=>$_SESSION['slog'], 'log'=>$logger);
     } else {
 	$_SESSION = Array();
 	$_SESSION['log'] = (isset($logger) ? $logger : new DiogenesCoreLogger($uid));
-	if(empty($logger)) $_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
+	if (empty($logger)) {
+            $_SESSION['log']->log("connexion",$_SERVER['PHP_SELF']);
+        }
 	setcookie('ORGuid',$uid,(time()+25920000),'/','',0);
     }
 
@@ -275,6 +334,9 @@ function start_connexion ($uid, $identified) {
     set_skin();
 }
 
+// }}}
+// {{{ funcion set_skin()
+
 function set_skin()
 {
     global $globals;
@@ -297,4 +359,7 @@ function set_skin()
   
 }
 
+// }}}
+
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
