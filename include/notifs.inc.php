@@ -51,7 +51,7 @@ function getNbNotifs() {
         return 0;
     }
     $uid       = Session::getInt('uid', -1);
-    $watchlast = Session::getInt('watch_last');
+    $watchlast = Session::get('watch_last');
 
     $res = $globals->db->query("
     (
