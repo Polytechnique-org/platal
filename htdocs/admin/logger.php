@@ -23,7 +23,9 @@ require_once("xorg.inc.php");
 new_admin_page('logger-view.tpl');
 require_once('diogenes.logger-view.inc.php');
 
-if(empty($_REQUEST['logauth'])) $_REQUEST['logauth']='native';
+if (!Env::has('logauth')) {
+    $_REQUEST['logauth'] = 'native';
+}
 
 $logview = new DiogenesLoggerView;
 $logview->run($page);

@@ -23,11 +23,11 @@ require_once("xorg.inc.php");
 require_once("validations.inc.php");
 new_admin_page('admin/valider.tpl');
 
-if(isset($_REQUEST["uid"]) and isset($_REQUEST["type"])
-        and isset($_REQUEST["stamp"])) {
-    $req = Validate::get_request($_REQUEST["uid"],$_REQUEST['type'],$_REQUEST["stamp"]);
-    if($req)
+if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
+    $req = Validate::get_request(Env::get('uid'), Env::get('type'), Env::get('stamp'));
+    if($req) {
         $page->assign('mail', $req->handle_formu());
+    }
 }
 
 $it = new ValidateIterator ();

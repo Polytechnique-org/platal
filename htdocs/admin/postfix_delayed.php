@@ -23,12 +23,14 @@ require_once('xorg.inc.php');
 new_admin_page('admin/postfix_delayed.tpl');
 
 
-if (isset($_REQUEST["del"])) {
-    mysql_query("UPDATE postfix_mailseen SET release = 'del' WHERE crc = '".$_REQUEST["crc"]."'");
-    $page->assign('res', $_REQUEST["crc"]." verra tous ses mails supprimés !");
-} else if (isset($_REQUEST["ok"])) {
-    mysql_query("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = '".$_REQUEST["crc"]."'");
-    $page->assign('res', $_REQUEST["crc"]." a le droit de passer !");
+if (Env::has('del')) {
+    $crc = Env::get('crc');
+    mysql_query("UPDATE postfix_mailseen SET release = 'del' WHERE crc = '$crc'");
+    $page->assign('res', $crc." verra tous ses mails supprimés !");
+} elseif (Env::has('ok')) {
+    $crc = Env::get('crc');
+    mysql_query("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = '$crc'");
+    $page->assign('res', $crc." a le droit de passer !");
 }
 
 $sql = "SELECT  crc, nb, update_time, create_time,

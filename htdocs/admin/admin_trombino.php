@@ -22,14 +22,14 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/admin_trombino.tpl');
 
-$q = $globals->db->query("SELECT  a.alias,promo
-			    FROM  auth_user_md5 AS u
-		      INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
-			   WHERE  user_id = '{$_REQUEST['uid']}'");
+$uid = Env::getInt('uid');
+$q   = $globals->db->query("SELECT  a.alias,promo
+                              FROM  auth_user_md5 AS u
+                        INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
+                             WHERE  user_id = $uid");
 list($forlife, $promo) = mysql_fetch_row($q);
 
-if (isset($_REQUEST["action"])) {
-    switch ($_REQUEST["action"]) {
+switch (Env::get('action')) {
 
     case "ecole":
         header("Content-type: image/jpeg");
@@ -38,24 +38,18 @@ if (isset($_REQUEST["action"])) {
 	break;
 
     case "valider":
-        $handle = fopen ($_FILES['userfile']['tmp_name'], "r");
-	$data = fread ($handle, filesize ($_FILES['userfile']['tmp_name']));
-	fclose ($handle);
+        $data = file_get_contents($_FILES['userfile']['tmp_name']);
 	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
 	$mimetype = substr($_FILES['userfile']['type'], 6);
 	unlink($_FILES['userfile']['tmp_name']);
-        $globals->db->query(
-	  "REPLACE INTO photo
-	   SET uid='".$_REQUEST["uid"]."',
-	   attachmime = '".$mimetype."',
-	   attach='".addslashes($data)."',
-	   x='".$x."', y='".$y."'");
+        $globals->db->query("REPLACE INTO  photo
+                                      SET  uid=$uid,  attachmime = '$mimetype',
+                                           attach='".addslashes($data)."', x=$x, y=$y");
     	break;
 
     case "supprimer":
-        $globals->db->query("DELETE FROM photo WHERE uid = '".$_REQUEST["uid"]."'");
+        $globals->db->query("DELETE FROM photo WHERE uid = $uid");
         break;
-    }
 }
 
 $page->assign('forlife', $forlife);

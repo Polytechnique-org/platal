@@ -23,11 +23,11 @@ require_once("xorg.inc.php");
 new_admin_page('admin/newsletter.tpl');
 require_once("newsletter.inc.php");
 
-if(isset($_GET['new'])) {
+if(Get::has('new')) {
    insert_new_nl();
    header("Location: newsletter.php");
 }
 
-$page->assign_by_ref('nl_list',get_nl_slist());
+$page->assign_by_ref('nl_list', get_nl_slist());
 $page->run();
 ?>

@@ -24,24 +24,24 @@ new_admin_page('admin/utilisateurs.tpl');
 require_once("emails.inc.php");
 require_once("user.func.inc.php");
 
-if (isset($_SESSION['suid'])) {
+if (Session::has('suid')) {
     $page->kill("déjà en SUID !!!");
 }
 
-if (!empty($_REQUEST['user_id'])) {
-    $login = get_user_login($_REQUEST['user_id']);
-} elseif (isset($_REQUEST['login'])) {
-    $login = get_user_login($_REQUEST['login']);
+if (Env::has('user_id')) {
+    $login = get_user_login(Env::getInt('user_id'));
+} elseif (Env::has('login')) {
+    $login = get_user_login(Env::get('login'));
 } else {
     $login = false;
 }
 
-if(isset($_REQUEST['logs_button']) && $login) {
+if(Env::has('logs_button') && $login) {
     header("Location: logger.php?loguser=$login&year=".date('Y')."&month=".date('m'));
 }
 
-if(isset($_REQUEST['suid_button']) and $login and !isset($_SESSION['suid'])) {
-    $_SESSION['log']->log("suid_start", "login by ".$_SESSION['forlife']);
+if(Env::has('suid_button') && $login) {
+    $_SESSION['log']->log("suid_start", "login by ".Session::get('forlife'));
     $_SESSION['suid'] = $_SESSION;
     $r = $globals->db->query("SELECT id FROM aliases WHERE alias='$login'");
     if(list($uid) = mysql_fetch_row($r)) {
@@ -64,7 +64,7 @@ if ($login) {
     foreach($_POST as $key => $val) {
 	switch ($key) {
 	    case "add_fwd":
-		$email = trim($_REQUEST['email']);
+		$email = trim(Env::get('email'));
 		if (!isvalid_email_redirection($email)) {
                     $page->trig("invalid email $email");
 		} else {
@@ -81,40 +81,47 @@ if ($login) {
 
 	    case "del_alias":
 		if (!empty($val)) {
-                    $globals->db->query("DELETE FROM aliases WHERE id='{$_REQUEST['user_id']}' AND alias='$val'
+                    $globals->db->query("DELETE FROM aliases WHERE id='{$mr['user_id']}' AND alias='$val'
                             AND type!='a_vie' AND type!='homonyme'");
-                    fix_bestalias($_REQUEST['user_id']);
+                    fix_bestalias($nr['user_id']);
                     $page->trig($val." a été supprimé");
                 }
 		break;
 
 	    case "add_alias":
 		$globals->db->query("INSERT INTO aliases (id,alias,type)
-				     VALUES ('{$_REQUEST['user_id']}','{$_REQUEST['email']}','alias')");
+				     VALUES ('{$mr['user_id']}','".Env::get('email')."','alias')");
 		break;
 
 	    case "best":
-		$globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id='{$_REQUEST['user_id']}'");
-		$globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id='{$_REQUEST['user_id']}'");
+		$globals->db->query("UPDATE  aliases SET flags='' WHERE flags='bestalias' AND id='{$mr['user_id']}'");
+		$globals->db->query("UPDATE  aliases SET flags='epouse' WHERE flags='epouse,bestalias' AND id='{$mr['user_id']}'");
 		$globals->db->query("UPDATE  aliases
 					SET  flags=CONCAT(flags,',','bestalias')
-				      WHERE  id='{$_REQUEST['user_id']}' AND alias='$val'");
+				      WHERE  id='{$mr['user_id']}' AND alias='$val'");
 		break;
 
 
 	    // Editer un profil
 	    case "u_edit":
-		$pass_md5B = $_REQUEST['newpass_clair'] != "********" ? md5($_REQUEST['newpass_clair']) : $_REQUEST['passw'];
+		$pass_md5B = Env::get('newpass_clair') != "********" ? md5(Env::get('newpass_clair')) : Env::get('passw');
+                $naiss = Env::get('naissanceN');
+                $perms = Env::get('permsN');
+                $prenm = Env::get('prenomN');
+                $nom   = Env::get('nomN');
+                $promo = Env::getInt('promo');
+                $nom   = Env::get('nomN');
+                $comm  = Env::get('commentN');
 
 		$query = "UPDATE auth_user_md5 SET
-			    naissance='{$_REQUEST['naissanceN']}',
-			    password='$pass_md5B',
-			    perms='{$_REQUEST['permsN']}',
-			    prenom='{$_REQUEST['prenomN']}',
-			    nom='{$_REQUEST['nomN']}',
-			    promo='{$_REQUEST['promoN']}',
-			    comment='{$_REQUEST['commentN']}'
-			  WHERE user_id='{$_REQUEST['user_id']}'";
+			    naissance = '$naiss',
+			    password  = '$pass_md5B',
+			    perms     = '$perms',
+			    prenom    = '$prenm',
+			    nom       = '$nom',
+			    promo     = $promo,
+			    comment   = '$comm'
+			  WHERE user_id = '{$mr['user_id']}'";
 		if ($globals->db->query($query)) {
                     // FIXME: recherche
                     system('echo 1 > /tmp/flag_recherche');
@@ -123,7 +130,7 @@ if ($login) {
                     $mailer = new HermesMailer();
                     $mailer->setFrom("webmaster@polytechnique.org");
                     $mailer->addTo("web@polytechnique.org");
-                    $mailer->setSubject("INTERVENTION ADMIN ({$_SESSION['forlife']})");
+                    $mailer->setSubject("INTERVENTION ADMIN (".Session::get('forlife']).")");
                     $mailer->setTxtBody(preg_replace("/[ \t]+/", ' ', $query));
                     $mailer->send();
 
@@ -132,20 +139,20 @@ if ($login) {
 		$r  = $globals->db->query("SELECT  *, a.alias AS forlife
                                              FROM  auth_user_md5 AS u
                                        INNER JOIN  aliases       AS a ON (u.user_id=a.id)
-                                            WHERE  user_id = {$_REQUEST['user_id']}");
+                                            WHERE  user_id = {$mr['user_id']}");
                 $mr = mysql_fetch_assoc($r);
 		mysql_free_result($r);
 		break;
 
             // DELETE FROM auth_user_md5
 	    case "u_kill":
-		user_clear_all_subs($_REQUEST['user_id']);
-                $page->trig("'{$_REQUEST['user_id']}' a été désinscrit !");
+		user_clear_all_subs($mr['user_id']);
+                $page->trig("'{$mr['user_id']}' a été désinscrit !");
 		require_once("diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
 		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION ADMIN ({$_SESSION['forlife']})");
+		$mailer->setSubject("INTERVENTION ADMIN (".Session::get('forlife']).")");
 		$mailer->setTxtBody("\nUtilisateur $login effacé");
 		$mailer->send();
 		break;

@@ -23,16 +23,15 @@ require_once("xorg.inc.php");
 new_admin_page('admin/homonymes.tpl');
 require_once("diogenes.hermes.inc.php");
 
-$op =  isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list';
+$op     = Env::get('op', 'list');
+$target = Env::getInt('target');
 
-
-$target = isset($_REQUEST['target']) ? $_REQUEST['target'] : 0;
 if ($target) {
     $res = $globals->db->query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
                                   FROM  auth_user_md5 AS u
 			    INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
 			    INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
-			         WHERE  user_id='$target'");
+			         WHERE  user_id = $target");
     if (! list($prenom,$nom,$forlife,$loginbis) = mysql_fetch_row($res)) {
         $target=0;
     } else {
@@ -61,7 +60,7 @@ if ($target) {
   	    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
   	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
   	    $mymail->addCc($cc);
-            $mymail->setTxtBody(stripslashes($_REQUEST['mailbody']));
+            $mymail->setTxtBody(stripslashes(Env::get('mailbody')));
             $mymail->send();
             $op = 'list';
             break;
@@ -73,7 +72,7 @@ if ($target) {
   	    $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
   	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
   	    $mymail->addCc($cc);
-            $mymail->setTxtBody(stripslashes($_REQUEST['mailbody']));
+            $mymail->setTxtBody(stripslashes(Env::get('mailbody')));
             $mymail->send();
 	    $op = 'list';
 	    break;

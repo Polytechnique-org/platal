@@ -22,18 +22,16 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/evenements.tpl');
 
-$arch = isset($_REQUEST['arch']) ? $_REQUEST['arch'] : 0;
-
+$arch = Env::get('arch', 0);
+$evid = Post::getInt('evt_id');
 $page->assign('arch', $arch);
 
-$action = isset($_POST['action']) ? $_POST['action'] : "";
-
-switch($action) {
+switch(Post::get('action')) {
     case "Proposer":
 	$req = "UPDATE  evenements
-	           SET  titre='{$_POST['titre']}', texte='{$_POST['texte']}', peremption='{$_POST['peremption']}',
-		        promo_min = {$_POST['promo_min']}, promo_max = {$_POST['promo_max']}
-                 WHERE  id = {$_POST['evt_id']}
+	           SET  titre='".Post::get('titre')."', texte='".Post::get('texte')."', peremption='".Post::get('peremption')."',
+		        promo_min = ".Post::get('promo_min').", promo_max = ".Post::get('promo_max')."
+                 WHERE  id = $evid
                  LIMIT  1";
         $result = $globals->db->query ($req);
         break;
@@ -42,9 +40,9 @@ switch($action) {
 	// le 'creation_date = creation_date' est indispensable pour que 
 	// creation_date conserve sa valeur.
 	$req="UPDATE  evenements
-                 SET  creation_date = creation_date, validation_user_id ='{$_SESSION['uid']}',
+                 SET  creation_date = creation_date, validation_user_id = ".Session::getInt('uid').",
                       validation_date = NULL, flags = CONCAT(flags,',valide')
-               WHERE  id ='{$_POST['evt_id']}'
+               WHERE  id = $evid
                LIMIT  1";
         $result = $globals->db->query ($req);
         break;
@@ -53,30 +51,30 @@ switch($action) {
 	// le 'creation_date = creation_date' est indispensable pour que 
 	// creation_date conserve sa valeur.
 	$req="UPDATE  evenements
-                 SET  creation_date = creation_date, validation_user_id = ".$_SESSION['uid'].",
+                 SET  creation_date = creation_date, validation_user_id = ".Session::getInt('uid').",
                       validation_date = NULL, flags = REPLACE(flags, 'valide','')
-               WHERE  id = ".$_POST['evt_id']."
+               WHERE  id = $evid
                LIMIT  1";
         $result = $globals->db->query ($req);
         break;
 
     case "Supprimer":
-	$req="DELETE from evenements WHERE id = ".$_POST['evt_id']." LIMIT 1";
+	$req="DELETE from evenements WHERE id = $evid LIMIT 1";
         $result = $globals->db->query ($req);
         break;
 
     case "Archiver":
-	$req="UPDATE evenements SET flags = CONCAT(flags,',archive')WHERE id = ".$_POST['evt_id']." LIMIT 1";
+	$req="UPDATE evenements SET flags = CONCAT(flags,',archive') WHERE id = $evid LIMIT 1";
         $result = $globals->db->query ($req);
         break;
 
     case "Desarchiver":
-	$req="UPDATE evenements SET flags = REPLACE(flags,'archive','')WHERE id = ".$_POST['evt_id']." LIMIT 1";
+	$req="UPDATE evenements SET flags = REPLACE(flags,'archive','') WHERE id = $evid LIMIT 1";
         $result = $globals->db->query ($req);
         break;
 
     case "Editer":
-	$evt_req = $globals->db->query("SELECT titre, texte, peremption, promo_min, promo_max, validation_message FROM evenements WHERE id=".$_POST["evt_id"]);
+	$evt_req = $globals->db->query("SELECT titre, texte, peremption, promo_min, promo_max, validation_message FROM evenements WHERE id= $evid");
         list($titre, $texte, $peremption, $promo_min, $promo_max, $validation_message) = mysql_fetch_row($evt_req) ;
         $page->assign('mode', 'edit');
         $page->assign('titre',$titre);

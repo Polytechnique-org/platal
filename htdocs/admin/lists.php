@@ -22,12 +22,9 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/lists.tpl');
 require_once('xml-rpc-client.inc.php');
+require_once('lists.inc.php');
 
-$res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
-list($pass) = mysql_fetch_row($res);
-mysql_free_result($res);
-
-$client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949/polytechnique.org");
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 $listes = $client->get_all_lists();
 $page->assign_by_ref('listes',$listes);
 $page->run();

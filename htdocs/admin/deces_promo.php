@@ -22,22 +22,23 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/deces_promo.tpl');
 
-$promo = ( isset($_REQUEST["promo"]) ? $_REQUEST["promo"] : 0 );
-if(isset($_REQUEST['sub10']))   $promo -= 10;
-if(isset($_REQUEST['sub01']))   $promo --;
-if(isset($_REQUEST['add01']))   $promo ++;
-if(isset($_REQUEST['add10']))   $promo += 10;
+$promo = Env::getInt('promo');
+if (Env::has('sub10')) $promo -= 10;
+if (Env::has('sub01')) $promo -=  1;
+if (Env::has('add01')) $promo +=  1;
+if (Env::has('add10')) $promo += 10;
 
 $page->assign('promo',$promo);
 
-if (isset($_REQUEST["valider"]) && $_REQUEST["valider"] == "Valider") {
+if (Env::get('valider') == "Valider") {
     $res = $globals->db->query("SELECT user_id,matricule,deces FROM auth_user_md5 WHERE promo = $promo");
     while (list($uid,$mat,$deces) = mysql_fetch_row($res)) {
-	if($_REQUEST[$mat] == $deces) continue;
-	$globals->db->query("UPDATE auth_user_md5 SET deces='{$_REQUEST[$mat]}' WHERE matricule = '$mat'");
+        $val = Env::get($mat);
+	if($val == $deces) continue;
+	$globals->db->query("UPDATE auth_user_md5 SET deces='$val' WHERE matricule = '$mat'");
 	if($deces=='0000-00-00' or empty($deces)) {
 	    require_once('notifs.inc.php');
-	    register_watch_op($uid,WATCH_DEATH,$_REQUEST[$mat]);
+	    register_watch_op($uid, WATCH_DEATH, $val);
 	    require_once('user.func.inc.php');
 	    user_clear_all_subs($uid, false);	// by default, dead ppl do not loose their email
 	}

@@ -23,36 +23,35 @@ require_once("xorg.inc.php");
 new_admin_page('admin/newsletter_edit.tpl', 'newsletter/head.tpl');
 require_once("newsletter.inc.php");
 
-$nid = empty($_GET['nid']) ? 'last' : $_GET['nid'];
-$nl = new NewsLetter($nid);
-if(isset($_GET['del_aid'])) {
-    $nl->delArticle($_GET['del_aid']);
+$nid = Get::get('nid', 'last');
+$nl  = new NewsLetter($nid);
+
+if(Get::has('del_aid')) {
+    $nl->delArticle(Get::get('del_aid'));
     header("Location: ?nid=$nid");
 }
 
-if(isset($_POST['update'])) {
-    $nl->_title = $_POST['title'];
-    $nl->_date = $_POST['date'];
-    $nl->_head = $_POST['head'];
+if(Post::get('update')) {
+    $nl->_title = Post::get('title');
+    $nl->_date  = Post::get('date');
+    $nl->_head  = Post::get('head');
     $nl->save();
 }
 
-if(isset($_POST['save'])) {
-    $eaid = $_GET['edit_aid'];
-    $art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append'], $eaid, $_POST['cid'], $_POST['pos']);
+if(Post::get('save')) {
+    $art  = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'),
+            Get::get('edit_aid'), Post::get('cid'), Post::get('pos'));
     $nl->saveArticle($art);
     header("Location: ?nid=$nid");
 }
 
-if(isset($_GET['edit_aid'])) {
-    $eaid = $_GET['edit_aid'];
-    if(isset($_POST['aid'])) {
-	$art = new NLArticle($_POST['title'], $_POST['body'], $_POST['append'],
-		$eaid, $_POST['cid'], $_POST['pos']);
-    } elseif($eaid<0) {
-	$art = new NLArticle();
+if(Get::has('edit_aid')) {
+    $eaid = Get::get('edit_aid');
+    if(Post::has('aid')) {
+        $art  = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'),
+                $eaid, Post::get('cid'), Post::get('pos'));
     } else {
-	$art = $nl->getArt($_GET['edit_aid']);
+	$art = $eaid<0 ? new NLArticle() : $nl->getArt($eaid);
     }
     $page->assign('art', $art);
 }
