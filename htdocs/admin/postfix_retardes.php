@@ -1,5 +1,5 @@
 <?php
-require("auto.append.inc.php");
+require("auto.prepend.inc.php");
 new_admin_page('admin/postfix.common.tpl');
 
 if (isset($_REQUEST["del"]) && !empty($_REQUEST["del"])) {
@@ -10,9 +10,9 @@ if (isset($_REQUEST["del"]) && !empty($_REQUEST["del"])) {
 $retard = Array();
 $fd = fopen ("/etc/postfix/spamdefer", "r");
 
-while (!feof ($fd)) {
+while ($fd && !feof ($fd)) {
     $buffer = fgets($fd, 4096);
-    if ($buffer[0]!='#' && (strlen($buffer)>1) { # FIXME $string[i] is deprecated
+    if ($buffer[0]!='#' && (strlen($buffer)>1)) { # FIXME $string[i] is deprecated
         $retard[] = $buffer;
     }
 }

@@ -1,4 +1,4 @@
-{* $Id: pattecassee.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: pattecassee.tpl,v 1.2 2004-02-04 23:22:05 x2000habouzit Exp $ *}
 
 {dynamic on="0$erreur"}
 <p class="erreur">{$erreur}</p>
@@ -27,7 +27,7 @@
     Nous t'invitons à prendre contact avec lui autrement que par email,
     l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée...!
   </p>
-{else}
+{elseif $email}
 <p class="erreur">
   Désolé mais plus personne n'utilise l'adresse {$email} comme adresse de redirection.
   Nous ne pouvons donc malheureusement te fournir aucune information...

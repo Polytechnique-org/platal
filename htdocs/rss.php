@@ -9,7 +9,7 @@ if (isset($_REQUEST["promo"])) {
 }
 
 $requete.=" ORDER BY (e.promo_min != 0 AND e.promo_max != 0) DESC,  e.peremption";
-$page->msyql_assign($requete,'rss');
+mysql_assign($page,$requete,'rss');
 
 header("Content-Type: text/xml");
 $page->display('rss.tpl');

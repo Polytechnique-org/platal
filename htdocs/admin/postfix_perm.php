@@ -1,5 +1,5 @@
 <?php
-require("auto.append.inc.php");
+require("auto.prepend.inc.php");
 new_admin_page('admin/postfix.common.tpl');
 
 if(isset($_REQUEST['nomligne'])) {
@@ -16,9 +16,9 @@ if(isset($_REQUEST['nomligne'])) {
 
 $permis = Array();
 $fd = fopen ("/etc/postfix/spampermis", "r");
-while (!feof ($fd)) {
+while ($fd && !feof ($fd)) {
     $buffer = fgets($fd, 4096);
-    if ($buffer[0]!='#' && (strlen($buffer)>1) { # FIXME $string[i] is deprecated
+    if ($buffer[0]!='#' && (strlen($buffer)>1)) { # FIXME $string[i] is deprecated
         $permis[] = $buffer;
     }
 }

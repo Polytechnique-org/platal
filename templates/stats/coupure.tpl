@@ -1,16 +1,14 @@
-{* $Id: coupure.tpl,v 1.1 2004-02-04 19:47:48 x2000habouzit Exp $ *}
+{* $Id: coupure.tpl,v 1.2 2004-02-04 23:22:05 x2000habouzit Exp $ *}
 
 {dynamic}
-
 {if $cp}
-
 <table class="bicol" summary="Ruptures de service">
   <tr>
     <th colspan="2">détails de l'interruption de service<th>
   </tr>
   <tr>
     <td class="titre">début</td>
-    <td>{$cp.debut|date_forma:"%d/%m/%Y, %Hh%M"}</td>
+    <td>{$cp.debut|date_format:"%d/%m/%Y, %Hh%M"}</td>
   </tr>
   <tr>
     <td class="titre">durée</td>
@@ -75,7 +73,7 @@
   </tr>
 {/foreach}
 </table>
-
+{/if}
 {/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

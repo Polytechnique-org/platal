@@ -50,7 +50,7 @@ L'équipe d'administration <support@polytechnique.org>";
 	$mail->send();
         $page->assign('erreur', "Mail envoyé ! :o)");
     }
-} else if (array_key_exists('email', $_POST)) {
+} elseif (array_key_exists('email', $_POST)) {
     $email = valide_email($_POST['email']);
     $page->assign('email',$email);
     $sel = mysql_query("SELECT e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo"
@@ -61,8 +61,8 @@ L'équipe d'administration <support@polytechnique.org>";
         ." GROUP BY e1.uid");
     if ($x = mysql_fetch_assoc($sel)) {
         // on écrit dans la base que l'adresse est cassée
-	if (!$x['panne'])
-	    mysql_query("UPDATE emails SET panne='".date("Y-m-d")."' WHERE email =  '".$email."'");
+        if (!$x['panne'])
+            mysql_query("UPDATE emails SET panne='".date("Y-m-d")."' WHERE email =  '".$email."'");
         $page->assign_by_ref('x',$x);
     }
 }

@@ -139,31 +139,28 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-------------------------------------------+----------------
 @@@	  | groupex/donne-chall.php					  | -
 @@@	  | groupex/export-econfiance.php			  | -
-x	  | admin/graph_promo.php					  | stats/graph_promo.php
-x	  | admin/index.php							  | -
-x	  | admin/postfix_blacklist.php				  | -
-x	  | admin/postfix_perm.php					  | -
-x	  | admin/postfix_retardes.php				  | -
-x	  | admin/stats_promo.php					  | stats/stats_promo.php
-x	  | coupure.php								  | stats/coupure.php
+x	  | coupure.php								  | stats/coupure.php -> encore un pb (afficher deux coupures d'affilée)
 x	  | domaineperso.php						  | -
-x	  | dons.php								  | -
 x	  | epouse.php								  | -
 x	  | groupex.php								  | groupex/index.php 
-x	  | nbpromo2.php							  | stats/nb_by_promo.php
 x	  | parselog.php							  | stats/...
-x	  | pattecassee.php							  | -
-x	  | rss.php									  | -
+x	  | pattecassee.php							  | - -> encore buggué
 x	  | sendmail.php							  | -
 x	  | trackers/index.php						  | -
 x	  | trackers/tracker_admin.php				  | -
 xx	  | AccesPermanentOff.php					  | cookie_off.php
 xx	  | AccesPermanentOn.php					  | cookie_on.php
-xx	  | acces_wap.php							  | -
-xx	  | admin/deces_promo.php					  | -
 xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
+xx	  | acces_wap.php							  | -
 xx	  | admin/ax-xorg.php						  | -
+xx	  | admin/deces_promo.php					  | -
+xx	  | admin/graph_promo.php					  | stats/graph_promo.php
+xx	  | admin/index.php							  | -
+xx	  | admin/postfix_blacklist.php				  | -
+xx	  | admin/postfix_perm.php					  | -
+xx	  | admin/postfix_retardes.php				  | -
+xx	  | admin/stats_promo.php					  | stats/stats_promo.php
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
 xx	  | antispam.php							  | -
@@ -186,6 +183,7 @@ xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
 xx	  | docs/index.php							  | -
+xx	  | dons.php								  | -
 xx	  | ethique.php								  | docs/ethique.php
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
@@ -193,7 +191,9 @@ xx	  | getphoto.php							  | -
 xx	  | index.php								  | -
 xx	  | login.php								  | -
 xx	  | motdepassemd5.php						  | -
+xx	  | nbpromo2.php							  | stats/nb_by_promo.php
 xx	  | preferences.php							  | -
+xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -

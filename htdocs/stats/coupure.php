@@ -1,13 +1,13 @@
 <?php
 require("auto.prepend.inc.php");
-new_skinned_page('stats/coupure.tpl',
+new_skinned_page('stats/coupure.tpl',AUTH_PUBLIC);
 
 if (isset($_REQUEST['cp_id'])) 
     $res=mysql_query("select UNIX_TIMESTAMP(debut) AS debut, TIME_FORMAT(duree,'%kh%i') AS duree, resume, description, services from coupures where id='{$_REQUEST['cp_id']}'");
 else
     $res="";
 
-if(($res)&&($cp == mysql_fetch_assoc($res))) {
+if(($res)&&($cp = mysql_fetch_assoc($res))) {
     $page->assign_by_ref('cp',$cp);
 } else {
     $beginning_date = date("Ymd", time() - 3600*24*21) . "000000";
