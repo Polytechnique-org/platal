@@ -28,52 +28,7 @@ class SondageReq extends Validate {
         return parent::get_request($uid,'sondage',$stamp);
     }
 
-    function formu() {
-        global $baseurl; 
-        $url = "$baseurl/sondage/questionnaire.php?SID=".$this->sid;
-        return <<<________EOF
-        <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}" />
-        <input type="hidden" name="type" value="{$this->type}" />
-        <input type="hidden" name="stamp" value="{$this->stamp}" />
-        <table class="bicol" cellpadding="4" summary="Sondage">
-        <tr>
-            <td>Demandeur&nbsp;:
-            </td>
-            <td><a href="javascript:x()" onclick="popWin('/x.php?x={$this->username}')">
-                {$this->prenom} {$this->nom}</a>
-                <?php if(isset($this->old)) echo "({$this->old})";?>
-            </td>
-        </tr>
-	    <tr>
-            <td>Titre du sondage&nbsp;:</td>
-            <td>{$this->titre}</td>
-        </tr>
-        <tr>
-            <td>Prévisualisation du sondage&nbsp;:</td>
-            <td><a href="$url" target="_blank">{$this->titre}</a>
-            </td>
-        </tr>
-        <tr>
-            <td>Alias du sondage&nbsp;:</td>
-            <td><input type="text" name="alias" value="{$this->alias}" />&nbsp;(ne doit
-            pas contenir le caractère ')</td>
-        </tr>
-        <tr>
-            <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter" />
-                <br /><br />
-                <input type="submit" name="submit" value="Refuser" />
-            </td>
-            <td>
-                <p>Raison du refus:</p>
-                <textarea rows="5" cols="74" name=motif></textarea>
-            </td>
-        </tr>
-        </table>
-        </form>
-________EOF;
-    }
+    function formu() { return 'include/form.valid.sondages.tpl'; }
 
     function handle_formu () {
         global $no_update_bd,$baseurl;
@@ -86,64 +41,42 @@ ________EOF;
         if ($_REQUEST['submit']!="Refuser") {
             $alias = stripslashes($_REQUEST['alias']);
             if ($alias=="") {
-                echo "<br />Il faut entrer un alias pour valider ce sondage.";
-                return false;
+                return '<p class="erreur">Il faut entrer un alias pour valider ce sondage.</p>';
             }
             else {
                 if (strlen($alias)>15) {
-                    echo "<br />L'alias est trop long.";
-                    return false;
+                    return "<p class='erreur'>L'alias est trop long.</p>";
                 }
                 else if (strpos($alias,"'")) {
-                    echo "<br />L'alias ne doit pas contenir le caractère '";
-                    return false;
+                    return "<p class='erreur'>L'alias ne doit pas contenir le caractère '</p>";
                 }
                 else {//on vérifie que l'alias n'existe pas déjà
                     $resultat = mysql_query("select alias from sondage.description_generale ".
                     "where alias='$alias'");
                     if (mysql_num_rows($resultat)>0) {
-                        echo "<br />Cet alias est déjà utilisé.";
-                        return false;
+                        return "<p class='erreur'>Cet alias est déjà utilisé.</p>";
                     }
                 }
             }
             $this->alias=$alias;
         }
 
-        require_once("diogenes.mailer.inc.php");
+        require_once("tpl.mailer.inc.php");
     
         $lien = "$baseurl/sondage/questionnaire.php?alias=".urlencode($this->alias);
-	    $titre = '"'.str_replace('&#039;',"'",$this->titre).'"';
-
-        $mymail = new DiogenesMailer('Equipe Polytechnique.org <validation+sondage@polytechnique.org>', 
-                $this->username."@polytechnique.org",
-                "[Polytechnique.org/SONDAGE] Demande de validation du sondage $titre par ".$this->username,
-                false, "validation+sondage@m4x.org");
-
-        $message =
-            "Cher(e) camarade,\n".
-            "\n";
+        
+        $mymail = new TplMailer('valid.sondages.tpl');
+        $mymail->assign('username', $this->username);
+        $mymail->assign('alias', $this->alias);
+        $mymail->assign('titre', '"'.str_replace('&#039;',"'",$this->titre).'"');
 
         if($_REQUEST['submit']=="Accepter") {
             $this->commit();
-            $message .=
-                "  Le sondage $titre que tu as composé vient d'être validé.\n".
-		"Il ne te reste plus qu'à transmettre aux sondés l'adresse".
-                " où ils pourront voter. Cette adresse est : $lien.\n";
+            $mymail->assign('answer','yes');
         } else {
-            $message .=
-                "Le sondage $titre que tu avais proposé a été refusé.\n";
-            if (!empty($_REQUEST["motif"]))
-                $message .= "\nLa raison de ce refus est : \n".
-                    stripslashes($_REQUEST["motif"])."\n";
+            $mymail->assign('answer','no');
         }
 
-        $message .=
-            "\n".
-            "Cordialement,\n".
-            "L'équipe X.org";
-        $message = wordwrap($message,78);  
-        $mymail->setBody($message);
         $mymail->send();
         //Suppression de la demande
         $this->clean();
