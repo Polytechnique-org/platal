@@ -16,8 +16,6 @@
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ admin ]---------------------------------+----------------
-	  | admin/FormatePrenomNOM.php				  | scripts/
-	  | admin/FormatePrenomNOM2.php				  | scripts/
 	  | admin/admin_faqs.php					  | 
 	  | admin/admin_trombino.php				  | 
 	  | admin/comptesPOP.php					  | 
@@ -145,6 +143,8 @@ xx	  | acces_smtp.php							  | -
 xx	  | acces_wap.php							  | -
 xx	  | admin/ax-xorg.php						  | -
 xx	  | admin/deces_promo.php					  | -
+xx	  | admin/FormatePrenomNOM2.php				  | scripts/
+xx	  | admin/FormatePrenomNOM.php				  | scripts/
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
 xx	  | admin/index.php							  | -
 xx	  | admin/postfix_blacklist.php				  | -
