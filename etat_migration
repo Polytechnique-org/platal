@@ -23,7 +23,7 @@ x	  | routage-mail.php						  |
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
-;	  | recherche.php							  | 
+x	  | recherche.php							  | 
 ------+-[ listes ]--------------------------------+----------------
  ;	  | listes/creation.php						  | \
  ;	  | listes/gere_listes.php					  |  |
