@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.21 2004-10-12 18:18:19 x2000habouzit Exp $
+        $Id: search.php,v 1.22 2004-10-12 19:54:35 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -59,7 +59,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 	new ThrowError('Recherche trop générale.');
     }
     $offset = new NumericSField('offset');
-    
+   
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
                        r.matricule,i.matricule_ax,
                        u.nom!="" AS inscrit,
@@ -92,7 +92,8 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 	    LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
 	    LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
                 WHERE  '.$fields->get_where_statement().'
-             ORDER BY  '.implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
+             ORDER BY  '.(logged() && !empty($_POST['mod_date_sort']) ? 'date DESC,' :'')
+		        .implode(',',array_filter(array($fields->get_order_statement(),'promo DESC,nom,prenom'))).'
                 LIMIT  '.$offset->value.','.$globals->search_results_per_page;
 
     $page->mysql_assign($sql, 'resultats', 'nb_resultats','nb_resultats_total');

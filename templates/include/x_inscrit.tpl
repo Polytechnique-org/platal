@@ -17,11 +17,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.12 2004-10-12 18:20:22 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.13 2004-10-12 19:54:36 x2000habouzit Exp $
  ***************************************************************************}
 
 
-<div class="contact">
+<div class="contact" title="fiche mise à jour le {$c.date|date_format:"%d %b %Y"}">
   <div class="nom">
     {if $c.epouse}{$c.epouse} {$c.prenom}<br />({$c.nom} {$c.prenom}){else}{$c.nom} {$c.prenom}{/if}
     {if $c.dcd}(décédé){/if}
@@ -50,7 +50,6 @@
     {perms level='admin'}
     <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}" onclick="return popup(this)">AX</a>
     {/perms}
-    <span class="smaller"><strong>{$c.date|date_format:"%d-%m-%Y"}</strong></span>
   </div>
   <div class="long">
     <table cellspacing="0" cellpadding="0">

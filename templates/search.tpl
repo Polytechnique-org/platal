@@ -17,14 +17,22 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.13 2004-10-09 18:18:58 x2000habouzit Exp $
+        $Id: search.tpl,v 1.14 2004-10-12 19:54:36 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
 
-{if $nb_resultats_total >= 600}{assign var='error' value="Recherche trop générale."}{/if}
+{if $nb_resultats_total >= 800}{assign var='error' value="Recherche trop générale."}{/if}
  
 {if $formulaire==0 and !$error}
+  {min_auth level='cookie'}
+  <div class="rubrique">
+    Astuce
+  </div>
+  <p>
+  Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
+  </p>
+  {/min_auth}
   <div class="rubrique">
     Résultats
   </div>
@@ -35,23 +43,24 @@
       </td>
       <td class="right titre">
         {if $with_soundex==0}
-        <a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}">
-          Recherche par proximité sonore</a>&nbsp;
+        [<a href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;rechercher=1&amp;{$url_args}">
+          Recherche par proximité sonore</a>]&nbsp;
         {/if}
-        <a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>
+        [<a href="{$smarty.server.PHP_SELF}">Nouvelle recherche</a>]
       </td>
     </tr>
   </table>
   <div class="contact-list" style="clear:both">
     {section name=resultat loop=$resultats}
-    <div class="contact">
-    <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
-      {include file="search.result.public.tpl" result=$resultats[resultat]}
-      {min_auth level="cookie"}
-	{include file="search.result.private.tpl" result=$resultats[resultat]}
-      {/min_auth}
-      <div class="long"></div>
-    </div>
+    <div class="contact"
+      {min_auth level='cookie'}title="fiche mise à jour le {$resultats[resultat].date|date_format:"%d %b %Y"}"{/min_auth}>
+      <div class="{if $resultats[resultat].inscrit==1}pri3{else}pri1{/if}">
+        {include file="search.result.public.tpl" result=$resultats[resultat]}
+        {min_auth level="cookie"}
+        {include file="search.result.private.tpl" result=$resultats[resultat]}
+        {/min_auth}
+        <div class="long"></div>
+      </div>
     </div>
     {/section}
   </div>

@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.17 2004-10-12 06:07:28 x2000bedo Exp $
+        $Id: search.form.tpl,v 1.18 2004-10-12 19:54:36 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -245,9 +245,14 @@
     </tr>
 {/if}
   </table>
-  <p class="center">
+  <div class="center">
+    <br />
+    {min_auth level='cookie'}
+    <input type='checkbox' name='mod_date_sort' {if $smarty.request.mod_date_sort}checked='checked'{/if} />
+    mettre les fiches modifiées récement en premier <br />
+    {/min_auth}
     <input type="submit" name="rechercher" value="Chercher" />
-  </p>
+    </div>
 </form>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.

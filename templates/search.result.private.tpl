@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.13 2004-10-12 18:20:22 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.14 2004-10-12 19:54:36 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="bits">
@@ -37,7 +37,6 @@
     AX
   </a>
   {/perms}
-  <span class="smaller"><strong>{$result.date|date_format:"%d-%m-%Y"}</strong></span>
 </div>
 {if $result.inscrit!=1}
 {if $result.decede != 1}

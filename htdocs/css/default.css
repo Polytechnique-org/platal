@@ -228,11 +228,6 @@ div.contact div.bits {
     float: left;
 }
 
-div.bits .smaller { display: none; }
-/*
-div.contact:hover div.bits .smaller { display: inline; }
-*/
-
 div.contact div.long {
     width: 100%;
     clear: both;
@@ -582,4 +577,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.47 2004-10-09 14:04:47 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.48 2004-10-12 19:54:36 x2000habouzit Exp $ */
