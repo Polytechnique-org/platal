@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.tpl,v 1.14 2004-10-12 19:54:36 x2000habouzit Exp $
+        $Id: search.tpl,v 1.15 2004-10-12 21:55:42 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -32,6 +32,11 @@
   <p>
   Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !
   </p>
+  {if $advanced eq "1"}
+  <p>
+  La recherche avancée ne porte que sur les inscrits à Polytechnique.org !
+  </p>
+  {/if}
   {/min_auth}
   <div class="rubrique">
     Résultats
