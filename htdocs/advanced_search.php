@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.5 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.6 2004-08-31 21:02:10 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -43,6 +43,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     }
     $promo1Field = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('u.promo'),'');
+    $womanField = new RefSField('woman',array('FIND_IN_SET(i.flags,\'femme\')+1'),'','','');
    
     $townField = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
     $countryField = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
@@ -60,7 +61,8 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $schoolField = new RefSField('school',array('as.aid'),'applis_ins','as','u.user_id=as.uid');
     $diplomaField = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
    
-    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,
+    $fields = new
+    SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField,
     $townField,$countryField,$regionField,
     $entrepriseField,$posteField,$secteurField,$cvField,
     $nationaliteField,$binetField,$groupexField,$sectionField,$schoolField,$diplomaField));

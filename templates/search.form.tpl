@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.11 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.12 2004-08-31 21:02:12 x2000bedo Exp $
  ***************************************************************************}
 
 <div class="rubrique">
@@ -71,6 +71,14 @@
         </td>
       </tr>
 {if $advanced eq "1"}
+      <tr>
+        <td>Sexe</td>
+        <td>
+          <input type="radio" name="woman" value="0" checked="checked" />Homme ou femme&nbsp;
+          <input type="radio" name="woman" value="1" />Homme&nbsp;
+          <input type="radio" name="woman" value="2" />Femme
+        </td>
+      </tr>
       <tr>
         <th colspan="2">Géographie</th>
       </tr>
