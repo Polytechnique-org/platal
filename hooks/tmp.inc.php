@@ -57,7 +57,8 @@ function tmp_prefs()
             Array(
                 'url'    => 'preferences.php?mail_fmt='.$fmt,
                 'title'  => 'Recevoir les mails en format '.$fmt2,
-                'text'   => 'Les mails envoyés par le site (lettre mensuelle, carnet, ...) le sont de préférence en format '.Session::get('mail_fmt', 'html'),
+                'text'   => 'Tu recois es mails envoyés par le site (lettre mensuelle, carnet, ...) de préférence <strong>sous forme de '
+                            .Session::get('mail_fmt', 'html').'</strong>',
                 'weight' => 30
             )
         );
