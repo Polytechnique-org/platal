@@ -32,6 +32,7 @@ function chgMainWinLoc( strPage ) {
       <div class="civilite">
         {if $x.sexe}&bull;{/if}
         {$x.prenom} {if $x.epouse eq ""}{$x.nom}{else}{$x.epouse} ({$x.nom}){/if}
+        {min_auth level="cookie"}
         {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
         <a href="vcard.php/{$x.forlife}.vcf?x={$x.forlife}">
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
@@ -50,12 +51,17 @@ function chgMainWinLoc( strPage ) {
           <img src="images/admin.png" alt='admin' title="administrer user" />
         </a>
         {/perms}
+        {/min_auth}
       </div>
+      {min_auth level="cookie"}
       <div class='maj'>
         Fiche mise à jour<br />
         le {$x.date|date_format}
       </div>
+      {/min_auth}
+      {if $logged || $c.mobile}
       <div class="contact">
+        {min_auth level="cookie"}
         <div class='email'>
           {if $x.dcd}
           Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
@@ -71,26 +77,32 @@ function chgMainWinLoc( strPage ) {
           {/if}
           {/if}
         </div>
+        {/min_auth}
         <div class="mob">
           {if $x.mobile}<em class="intitule">Mobile : </em>{$x.mobile}<br />{/if}
         </div>
         <div class='spacer'></div>
       </div>
+      {/if}
       <div class='formation'>
         {if $x.iso3166}
         <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='14' title='{$x.nationalite}' />&nbsp;
         {/if}
-        X {$x.promo}{if $x.applis_join}&nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}{/if}
+        X {$x.promo}{if $x.applis_join}&nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults} {/if}
+        {min_auth level="cookie"}
         {if $x.is_referent}
         [<a href="fiche_referent.php?user={$x.forlife}" class='popup2'>Ma fiche référent</a>]
         {/if}
+        {/min_auth}
       </div>
     </td>
     <td rowspan="4" id='photo'>
+      {min_auth level="cookie"}
       <img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />
       {if $x.section}<em class="intitule">Section : </em><span>{$x.section}</span><br />{/if}
       {if $x.binets_join}<em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span><br />{/if}
       {if $x.gpxs_join}<em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span><br />{/if}
+      {/min_auth}
       {if $x.web}<em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a>{/if}
       {if $x.freetext}<br /><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br}</span>{/if}
     </td>
@@ -148,6 +160,7 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
+  {min_auth level="cookie"}
   {if $x.medals}
   <tr>
     <td>
@@ -177,6 +190,7 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
+  {/min_auth}
 </table>
 
 

@@ -21,7 +21,7 @@
 
 
 require_once("xorg.inc.php");
-new_simple_page('fiche.tpl',AUTH_COOKIE);
+new_simple_page('fiche.tpl', AUTH_PUBLIC);
 require_once('user.func.inc.php');
 
 if (!Env::has('user') && !Env::has('mat')) {
@@ -74,6 +74,67 @@ if($user['x'] < 160){
     $user['x'] = 160;
 }
 $page->assign('photo_url', $photo);
+
+// manage the public fiche
+$page->assign('logged', logged());
+if (!logged()) {
+    if ($user['mobile_pub'] != 'public') $user['mobile'] = '';
+    if ($user['web_pub'] != 'public') $user['web'] = '';
+    if ($user['freetext_pub'] !=  'public') $user['freetext'] = '';
+    foreach ($user['adr'] as $i=>$adr) {
+        if ($adr['pub'] != 'public' && $adr['tel_pub'] != 'public')
+            unset($user['adr'][$i]);
+        elseif ($adr['pub'] != 'public') {
+            $user['adr'][$i]['adr1'] = '';
+            $user['adr'][$i]['adr2'] = '';
+            $user['adr'][$i]['adr3'] = '';
+            $user['adr'][$i]['ville'] = '';
+            $user['adr'][$i]['cp'] = '';
+            $user['adr'][$i]['region'] = '';
+            $user['adr'][$i]['pays'] = '';
+        }
+        elseif ($adr['tel_pub'] != 'public') {
+            $user['adr'][$i]['tel'] = '';
+            $user['adr'][$i]['fax'] = '';
+        }
+    }
+    foreach ($user['adr_pro'] as $i=>$adr) {
+        if ($adr['pub'] != 'public' && $adr['tel_pub'] != 'public' && $adr['adr_pub'] != 'public')
+            unset($user['adr_pro'][$i]);
+        else {
+            if ($adr['adr_pub'] != 'public') {
+                $user['adr_pro'][$i]['adr1'] = '';
+                $user['adr_pro'][$i]['adr2'] = '';
+                $user['adr_pro'][$i]['adr3'] = '';
+                $user['adr_pro'][$i]['ville'] = '';
+                $user['adr_pro'][$i]['cp'] = '';
+                $user['adr_pro'][$i]['region'] = '';
+                $user['adr_pro'][$i]['pays'] = '';
+            }
+            if ($adr['pub'] != 'public') {
+                $user['adr_pro'][$i]['entreprise'] = '';
+                $user['adr_pro'][$i]['secteur'] = '';
+                $user['adr_pro'][$i]['fonction'] = '';
+                $user['adr_pro'][$i]['poste'] = '';
+            }
+            if ($adr['tel_pub'] != 'public') {
+                $user['adr_pro'][$i]['tel'] = '';
+                $user['adr_pro'][$i]['fax'] = '';
+                $user['adr_pro'][$i]['mobile'] = '';
+            }
+        }
+    }
+}
+foreach($user['adr_pro'] as $i=>$pro) {
+    if ($pro['entreprise'] == '' && $pro['fonction'] == ''
+        && $pro['secteur'] == '' && $pro['poste'] == ''
+        && $pro['adr1'] == '' && $pro['adr2'] == '' && $pro['adr3'] == ''
+        && $pro['cp'] == '' && $pro['ville'] == '' && $pro['pays'] == ''
+        && $pro['tel'] == '' && $pro['fax'] == '' && $pro['mobile'] == '')
+        unset($user['adr_pro'][$i]);
+}
+if (count($user['adr_pro']) == 0) unset($user['adr_pro']);
+if (count($user['adr']) == 0) unset($user['adr']);
 $page->assign_by_ref('x', $user);
 
 // alias virtual
@@ -90,4 +151,5 @@ $page->assign('virtualalias', $res->fetchOneCell());
 $page->addJsLink('javascript/close_on_esc.js');
 $page->run();
 
+// vim:set et sws=4 sw=4 sts=4:
 ?>

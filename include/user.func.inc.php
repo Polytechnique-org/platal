@@ -158,6 +158,7 @@ function &get_user_details($login, $from_uid = '')
     $reqsql = "SELECT  u.user_id, u.promo, u.prenom, u.nom, u.epouse, u.date, u.cv,
                        u.perms IN ('admin','user') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_mobile AS mobile, q.profile_web AS web, q.profile_freetext AS freetext,
+                       q.profile_mobile_pub AS mobile_pub, q.profile_web_pub AS web_pub, q.profile_freetext_pub AS freetext_pub,
                        IF(gp.nat='',gp.pays,gp.nat) AS nationalite, gp.a2 AS iso3166,
                        a.alias AS forlife, a2.alias AS bestalias,
                        c.uid IS NOT NULL AS is_contact,
@@ -180,7 +181,8 @@ function &get_user_details($login, $from_uid = '')
 
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
                      e.poste, e.adr1, e.adr2, e.adr3, e.cp, e.ville,
-                     gp.pays, gr.name, e.tel, e.fax, e.mobile, e.entrid
+                     gp.pays, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
+                     e.pub, e.tel_pub
                FROM  entreprises AS e
           LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
           LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
@@ -195,7 +197,8 @@ function &get_user_details($login, $from_uid = '')
     $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.cp,a.ville,
                      gp.pays,gr.name AS region,a.tel,a.fax,
                      FIND_IN_SET('active', a.statut) AS active, a.adrid,
-                     FIND_IN_SET('res-secondaire', a.statut) AS secondaire
+                     FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
+                     a.pub, a.tel_pub
                FROM  adresses AS a
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.pays)
           LEFT JOIN  geoloc_region AS gr ON (gr.a2=a.pays and gr.region=a.region)

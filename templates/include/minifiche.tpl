@@ -27,10 +27,11 @@
     {min_auth level="cookie"}
     {if !$c.dcd && $c.inscrit}<a href="{"fiche.php"|url}?user={$c.forlife}" class="popup2">{/if}
     {/min_auth}
+    {only_public}
+    {if !$c.dcd && $c.inscrit}<a href="{"fiche.php"|url}?user={$c.user_id}" class="popup2">{/if}
+    {/only_public}
     {if $c.epouse}{$c.epouse} {$c.prenom}<br />(née {$c.nom}){else}{$c.nom} {$c.prenom}{/if}
-    {min_auth level="cookie"}
     {if !$c.dcd && $c.inscrit}</a>{/if}
-    {/min_auth}
   </div>
 
   <div class="appli">
