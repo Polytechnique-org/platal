@@ -1,43 +1,7 @@
 <?
 /*** Validation des offres d'emploi ***/
 
-function from_mail_valid_emploi() {
-    global $globals ;
-    return "Equipe Polytechnique.org <".$globals->addr_mail_valid_emploi.">" ; 
-}
-
-function subject_mail_valid_emploi ($nomEntreprise) {
-    global $globals ;
-    return "[Polytechnique.org/EMPLOI] Annonce emploi : ".$nomEntreprise ;
-}
-
-function cc_mail_valid_emploi() {
-    global $globals ;
-    return $globals->addr_mail_valid_emploi ;
-}
-
-function msg_valid_emploi_OK ($titre) {
-    $msg =  "Bonjour,\n".
-            "\n".
-            "L'annonce << {$titre} >> ".
-            "a été acceptée par les modérateurs. Elle apparaîtra ".
-            "dans le forum emploi du site\n\n".
-            "Nous vous remercions d'avoir proposé cette annonce.\n";
-            "\n".
-            "Cordialement,\n".
-            "L'équipe X.org" ;
-    return $msg ;
-}
-
 function msg_valid_emploi_NON ($titre) {
-    $msg =  "Bonjour,\n".
-            "\n".
-            "L'annonce << {$titre} >> ".
-            "a été refusée par les modérateurs.\n".
-            "\n".
-            "Cordialement,\n".
-            "L'équipe X.org" ;
-    return $msg ;
 }
 
 function from_post_emploi() {

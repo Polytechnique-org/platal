@@ -60,17 +60,15 @@ ________EOF;
 
     function handle_formu() {
         if (isset($_POST['submit'])) {
-            require("diogenes.mailer.inc.php");
-            $mymail = new DiogenesMailer(
-                from_mail_valid_emploi(),
-                $this->mail,
-                subject_mail_valid_emploi($this->entreprise),
-                false,
-                cc_mail_valid_emploi());
+            require("tpl.mailer.inc.php");
+            $mymail = new TplMailer('valid.emploi.tpl');
+            $mymail->assign('entreprise', $this->entreprise);
+            $mymail->assign('titre', $this->titre);
+            $mymail->_to = $this->mail;
 
             if($_REQUEST['submit']=="Accepter") {
-                require("nntp.inc.php");
-                require("poster.inc.php");
+                require("nntp.inc.php");   # FIXME
+                require("poster.inc.php"); # FIXME : old includes
                 $post = new poster(
                     from_post_emploi(),
                     to_post_emploi(),
@@ -84,13 +82,10 @@ ________EOF;
 
                 $post->setbody( msg_post_emploi($this) ) ;
                 $post->post();
-                $message = msg_valid_emploi_OK( $this->titre ) ;
+                $mymail->assign('answer','yes');
             } else {
-                $message = msg_valid_emploi_NON( $this->titre ) ;
+                $mymail->assign('answer','no');
             }
-
-            $message = wordwrap($message,78);  
-            $mymail->setBody($message);
             $mymail->send();
             $this->clean();
             return "Mail envoyé";
