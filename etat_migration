@@ -83,7 +83,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | emploi_public.php						  | 
 	  | evenements.php							  | 
 	  | index.coupure.php						  | 
-	  | mescontacts.php							  | 
 	  | mescontacts_pdf.php						  | 
 	  | pg.confirm.php							  | 
 	  | pg.php									  | 
@@ -182,6 +181,7 @@ xx	  | getphoto.php							  | -
 xx	  | groupex.php								  | groupex/index.php 
 xx	  | index.php								  | -
 xx	  | login.php								  | -
+xx	  | mescontacts.php							  | -
 xx	  | motdepassemd5.php						  | -
 xx	  | nbpromo2.php							  | stats/nb_by_promo.php
 xx	  | newsletter.php							  | -

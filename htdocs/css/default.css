@@ -5,7 +5,8 @@
 I.   Styles par défauts.                balises sans attributs ou classes sans contexte
 II.  Styles <p>, <div>, <span> ...      <p>, <div>, <span>, <li>, ...
 III. Tableaux bicolores                 Tableaux à lignes alternées, en taille normale, ou tiny
-IV.  Tableau de u choix de skins
+IV.  Tableau de choix de skins
+V.   contacts
 
 ..:: Appendices ::..
 Choix de la skin
@@ -28,6 +29,8 @@ hr    { width: 90%; text-align: center }
 .center { text-align: center; }
 .right  { text-align: right; }
 .middle { vertical-align: middle; }
+.smaller { font-size: smaller; font-style: italic; }
+
 
 /**: II. :**/
 
@@ -89,11 +92,6 @@ li.spaced {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     text-align: justify;
-}
-
-p.smaller, div.smaller {
-    font-size: smaller;
-    font-style: italic;
 }
 
 td.half { width: 50%; padding: 4px; }
@@ -165,6 +163,53 @@ table.tinybicol td.info, table.bicol td.info {
     width: 100%;
 }
 #skin td.skidroite { padding: 0; }
+
+/**: V. :**/
+div.contact-list {
+    width: 98%;
+    margin-left: 1%;
+}
+
+div.contact-list div.contact {
+    width: 100%;
+    text-align: left;
+    border-top: 1px solid #003399;
+    background: #F4D09C;
+    color: inherit;
+}
+
+div.contact div.nom {
+    font-weight: bold;
+    width: 35%;
+    float: left;
+}
+
+div.contact div.appli {
+    width: 50%;
+    float: left;
+}
+
+div.contact div.bits {
+    text-align: right;
+    width: 15%;
+    float: left;
+}
+
+div.bits .smaller { display: none; }
+div.contact:hover div.bits .smaller { display: inline; }
+
+div.contact div.long {
+    width: 100%;
+    clear: both;
+    background: white;
+    color: inherit;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+div.long table { width: 100%; }
+div.long td.lt { width: 35%; }
+div.long td.rt { width: 65%; }
 
 /*************************/
 /*  ..:: Apendices ::..  */
@@ -275,4 +320,4 @@ table.tinybicol td.info, table.bicol td.info {
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.19 2004-02-15 15:45:29 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.20 2004-02-16 11:06:49 x2000habouzit Exp $ */

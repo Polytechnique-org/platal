@@ -6,7 +6,22 @@ function block_dynamic($param, $content, &$smarty) {
         return $content;
 }
 
-function function_dyn($params) { return stripslashes(htmlentities(implode(' ',$params))); }
+function function_implode($params) {
+    $sep = ' ';
+    if(isset($params['sep'])) {
+        $sep = $params['sep'];
+        unset($params['sep']);
+    }
+    foreach($params as $key=>$val)
+        if(empty($params[$key]))
+            unset($params[$key]);
+
+    return stripslashes(htmlentities(implode($sep,$params)));
+}
+
+function function_dyn($params) {
+    return stripslashes(htmlentities(implode(' ',$params)));
+}
 
 class XorgPage extends DiogenesCorePage {
   var $_page_type;
@@ -31,6 +46,7 @@ class XorgPage extends DiogenesCorePage {
     $this->DiogenesCorePage();
     $this->register_block('dynamic', 'block_dynamic', false);
     $this->register_function('dyn', 'function_dyn', false);
+    $this->register_function('implode', 'function_implode');
 
     // if necessary, construct new session
     if (empty($_SESSION['session']))

@@ -44,17 +44,13 @@ mysql_free_result($req);
  * On y ajoute les infos d'adresses
  */
 $req = mysql_query(
-       "SELECT c.contact AS id, adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax,
-               FIND_IN_SET('courrier', a.statut) AS courrier
+       "SELECT c.contact AS id, adr1, adr2, adr3, cp, ville, gp.pays, gr.name, tel, fax
         FROM       contacts      AS c
-        INNER JOIN adresses      AS a  ON (a.uid = c.contact)
+        INNER JOIN adresses      AS a  ON (a.uid = c.contact AND FIND_IN_SET('active', a.statut))
         LEFT  JOIN geoloc_pays   AS gp ON (a.pays = gp.a2)
         LEFT  JOIN geoloc_region AS gr ON (a.pays = gr.a2 AND a.region = gr.region)
-        WHERE c.uid = {$_SESSION['uid']} AND FIND_IN_SET('active', a.statut)
-            AND NOT FIND_IN_SET('res-secondaire', a.statut)
-        ORDER BY c.contact
-        "
-);
+        WHERE c.uid = {$_SESSION['uid']}
+        ORDER BY c.contact");
 echo mysql_error();
 while($line = mysql_fetch_assoc($req))
     $contacts[$line['id']]['home'] = ensure_adr($line);
