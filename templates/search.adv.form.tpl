@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.adv.form.tpl,v 1.4 2004-11-27 15:54:00 x2000bedo Exp $
+        $Id: search.adv.form.tpl,v 1.5 2004-11-27 16:44:36 x2000bedo Exp $
  ***************************************************************************}
 
 <h1>Recherche avancée</h1>
@@ -76,6 +76,22 @@
         <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />Homme ou femme&nbsp;
         <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} />Homme&nbsp;
         <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} />Femme
+      </td>
+    </tr>
+    <tr>
+      <td>Sur polytechnique.org</td>
+      <td>
+        <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} />Inscrit ou non&nbsp;
+        <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} />Inscrit&nbsp;
+        <input type="radio" name="subscriber" value="2" {if $smarty.request.subscriber eq 2}checked="checked"{/if} />Non inscrit
+      </td>
+    </tr>
+    <tr>
+      <td>Décès</td>
+      <td>
+        <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} />Vivant ou décédé&nbsp;
+        <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} />Vivant&nbsp;
+        <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} />Décédé
       </td>
     </tr>
     <tr>
@@ -242,6 +258,10 @@
           {/section}
         </select>
       </td>
+    </tr>
+    <tr>
+      <td>Commentaire contient</td>
+      <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
   </table>
   <div class="center">

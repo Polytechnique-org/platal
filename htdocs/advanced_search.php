@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.35 2004-11-27 15:41:00 x2000bedo Exp $
+        $Id: advanced_search.php,v 1.36 2004-11-27 16:44:33 x2000bedo Exp $
  ***************************************************************************/
 
 require_once("xorg.inc.php");
@@ -80,6 +80,8 @@ else {
     $promo1Field = new PromoSField('promo1','egal1',array('u.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('u.promo'),'');
     $womanField = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
+    $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
+    $aliveField = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
    
     $townField = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
     $countryField = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
@@ -96,12 +98,15 @@ else {
     $sectionField = new RefSField('section',array('u.section'),'','','');
     $schoolField = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
     $diplomaField = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
-   
+  
+    $freeField = new RefSField('free',array('u.libre'),'','','',false);
+  
     $fields = new
-    SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField,
+    SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField,$subscriberField,$aliveField,
     $townField,$countryField,$regionField,
     $entrepriseField,$posteField,$secteurField,$cvField,
-    $nationaliteField,$binetField,$groupexField,$sectionField,$schoolField,$diplomaField));
+    $nationaliteField,$binetField,$groupexField,$sectionField,$schoolField,$diplomaField,
+    $freeField));
     
     if ($fields->too_large())
     {
