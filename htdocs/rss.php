@@ -31,7 +31,7 @@ if (Env::has('promo')) {
 }
 
 $requete.=' ORDER BY (e.promo_min != 0 AND e.promo_max != 0) DESC,  e.peremption';
-$page->mysql_assign($requete, 'rss');
+$page->assign('rss', $globals->xdb->iterator($requete));
 
 header('Content-Type: text/xml');
 $page->run();

@@ -72,10 +72,10 @@ $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS
     INNER JOIN  auth_user_md5 AS a ON e.user_id=a.user_id
     INNER JOIN  aliases       AS l ON ( a.user_id=l.id AND l.type='a_vie' )
          WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
-		AND (e.promo_min = 0 || e.promo_min <= $promo)
-		AND (e.promo_max = 0 || e.promo_max >= $promo)
+		AND (e.promo_min = 0 || e.promo_min <= {?})
+		AND (e.promo_max = 0 || e.promo_max >= {?})
       ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
-$page->mysql_assign($sql, 'evenement');
+$page->assign('evenement', $globals->xdb->iterator($sql, $promo, $promo));
 
 $page->assign('toto',"");
 $page->assign('tata',"1");

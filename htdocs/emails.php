@@ -33,14 +33,14 @@ if (Post::has('best')) {
 // on regarde si on a affaire à un homonyme
 $sql = "SELECT  alias, (type='a_vie') AS a_vie, FIND_IN_SET('bestalias',flags) AS best, expire
           FROM  aliases
-         WHERE  id=$uid AND type!='homonyme'
+         WHERE  id = {?} AND type!='homonyme'
       ORDER BY  LENGTH(alias)";
-$page->mysql_assign($sql, 'aliases');
+$page->assign('aliases', $globals->xdb->iterator($sql, $uid));
 
 $sql = "SELECT email
         FROM emails
-        WHERE uid = $uid AND FIND_IN_SET('active', flags)";
-$page->mysql_assign($sql, 'mails', 'nb_mails');
+        WHERE uid = {?} AND FIND_IN_SET('active', flags)";
+$page->assign('mails', $globals->xdb->iterator($sql, $uid));
 
 
 // on regarde si l'utilisateur a un alias et si oui on l'affiche !

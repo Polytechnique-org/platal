@@ -30,12 +30,12 @@
 <description>L'actualité polytechnicienne...{if $promo} Promotion {$promo}{/if}</description>
 <language>fr</language>
 
-{foreach item=line from=$rss}
+{iterate item=line from=$rss}
 <item>
 <title>{$line.titre|strip_tags}</title>
 <link>http://{$smarty.server.SERVER_NAME}/login.php#newsid{$line.id}</link>
 </item>
-{/foreach}
+{/iterate}
 
 </channel>
 </rss>

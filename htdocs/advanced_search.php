@@ -34,13 +34,13 @@ function form_prepare()
 {
     global $page,$globals;
     $page->assign('formulaire',1);
-    $page->mysql_assign('SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text FROM geoloc_pays ORDER BY text', 'choix_nationalites');
-    $page->mysql_assign('SELECT id,fonction_fr FROM fonctions_def ORDER BY fonction_fr', 'choix_postes');
-    $page->mysql_assign('SELECT id,text FROM binets_def ORDER BY text',       'choix_binets');
-    $page->mysql_assign('SELECT id,text FROM groupesx_def ORDER BY text',     'choix_groupesx');
-    $page->mysql_assign('SELECT id,text FROM sections ORDER BY text',         'choix_sections');
-    $page->mysql_assign('SELECT id,text FROM applis_def ORDER BY text',       'choix_schools');
-    $page->mysql_assign('SELECT id,label FROM emploi_secteur ORDER BY label', 'choix_secteurs');
+    $page->assign('choix_nats',     $globals->xdb->iterator('SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text FROM geoloc_pays ORDER BY text'));
+    $page->assign('choix_postes',   $globals->xdb->iterator('SELECT id,fonction_fr FROM fonctions_def ORDER BY fonction_fr'));
+    $page->assign('choix_binets',   $globals->xdb->iterator('SELECT id,text FROM binets_def ORDER BY text'));
+    $page->assign('choix_groupesx', $globals->xdb->iterator('SELECT id,text FROM groupesx_def ORDER BY text'));
+    $page->assign('choix_sections', $globals->xdb->iterator('SELECT id,text FROM sections ORDER BY text'));
+    $page->assign('choix_schools',  $globals->xdb->iterator('SELECT id,text FROM applis_def ORDER BY text'));
+    $page->assign('choix_secteurs', $globals->xdb->iterator('SELECT id,label FROM emploi_secteur ORDER BY label'));
 
     if (Env::has('school')) {
         $sql = 'SELECT type FROM applis_def WHERE id='.Env::getInt('school');

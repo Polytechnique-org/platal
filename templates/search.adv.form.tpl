@@ -167,11 +167,11 @@
       <td>
         <select name="poste">
           <option value="0"></option>
-          {section name=poste loop=$choix_postes}
-          <option value="{$choix_postes[poste].id}" {if $smarty.request.poste eq $choix_postes[poste].id}selected{/if}>
-            {$choix_postes[poste].fonction_fr}
+          {iterate from=$choix_postes item=cp}
+          <option value="{$cp.id}" {if $smarty.request.poste eq $cp.id}selected{/if}>
+            {$cp.fonction_fr}
           </option>
-          {/section}
+          {/iterate}
         </select>
       </td>
     </tr>
@@ -180,11 +180,11 @@
       <td>
         <select name="secteur">
           <option value="0"></option>
-          {section name=secteur loop=$choix_secteurs}
-          <option value="{$choix_secteurs[secteur].id}" {if $smarty.request.secteur eq $choix_secteurs[secteur].id}selected{/if}>
-            {$choix_secteurs[secteur].label}
+          {iterate item=cs from=$choix_secteurs}
+          <option value="{$cs.id}" {if $smarty.request.secteur eq $cs.id}selected{/if}>
+            {$cs.label}
           </option>
-          {/section}
+          {/iterate}
         </select>
       </td>
     </tr>
@@ -205,12 +205,11 @@
       <td>Nationalité</td>
       <td>
         <select name="nationalite">
-        {section name=nationalite loop=$choix_nationalites}
-          <option value="{$choix_nationalites[nationalite].id}" {if $smarty.request.nationalite eq
-          $choix_nationalites[nationalite].id}selected="selected"{/if}>
-            {$choix_nationalites[nationalite].text}
+          {iterate from=$choix_nats item=cn}
+          <option value="{$cn.id}" {if $smarty.request.nationalite eq $cn.id}selected="selected"{/if}>
+            {$cn.text}
           </option>
-        {/section}
+          {/iterate}
         </select>
       </td>
     </tr>
@@ -219,12 +218,11 @@
       <td>
         <select name="binet">
         <option value="0"></option>
-        {section name=binet loop=$choix_binets}
-          <option value="{$choix_binets[binet].id}" {if $smarty.request.binet eq
-          $choix_binets[binet].id}selected="selected"{/if}>
-            {$choix_binets[binet].text}
+        {iterate item=cb from=$choix_binets}
+          <option value="{$cb.id}" {if $smarty.request.binet eq $cb.id}selected="selected"{/if}>
+            {$cb.text}
           </option>
-        {/section}
+        {/iterate}
         </select>
       </td>
     </tr>
@@ -233,12 +231,11 @@
       <td>
         <select name="groupex">
         <option value="0"></option>
-        {section name=groupex loop=$choix_groupesx}
-          <option value="{$choix_groupesx[groupex].id}" {if $smarty.request.groupex eq
-          $choix_groupesx[groupex].id}selected="selected"{/if}>
-            {$choix_groupesx[groupex].text}
+        {iterate item=cg from=$choix_groupesx}
+          <option value="{$cg.id}" {if $smarty.request.groupex eq $cg.id}selected="selected"{/if}>
+            {$cg.text}
           </option>
-        {/section}
+        {/iterate}
         </select>
       </td>
     </tr>
@@ -246,12 +243,11 @@
       <td>Section</td>
       <td>
         <select name="section">
-        {section name=section loop=$choix_sections}
-          <option value="{$choix_sections[section].id}" {if $smarty.request.section eq
-          $choix_sections[section].id}selected="selected"{/if}>
-            {$choix_sections[section].text}
+          {iterate item=cs from=$choix_sections}
+          <option value="{$cs.id}" {if $smarty.request.section eq $cs.id}selected="selected"{/if}>
+            {$cs.text}
           </option>
-        {/section}
+          {/iterate}
         </select>
       </td>
     </tr>
@@ -260,12 +256,11 @@
       <td>
         <select name="school" onchange="javascript:document.forms.recherche.submit();">
           <option value="0"></option>
-          {section name=school loop=$choix_schools}
-          <option value="{$choix_schools[school].id}" {if $smarty.request.school eq
-          $choix_schools[school].id}selected="selected"{/if}>
-            {$choix_schools[school].text}
+          {iterate item=cs from=$choix_schools}
+          <option value="{$cs.id}" {if $smarty.request.school eq $cs.id}selected="selected"{/if}>
+            {$cs.text}
           </option>
-          {/section}
+          {/iterate}
         </select>
       </td>
     </tr>

@@ -80,13 +80,10 @@ $page->assign('mon_sel',   $mon_sel);
 
 $page->assign('from_solde', solde_until($from_date));
 $page->assign('to_solde',   solde_until($to_date));
-$page->assign_by_ref('month_arr', $mois_fr);
-
-$sql = "SELECT  id,date,label,credit,debit 
-          FROM  money_trezo
-         WHERE  date >= '$from_date' AND date <= '$to_date' 
-      ORDER BY  date";
-$page->mysql_assign($sql, 'ops');
+$page->assign('month_arr',  $mois_fr);
+$page->assign('ops', $globals->xdb->iterator(
+            "SELECT id,date,label,credit,debit FROM money_trezo WHERE date >= {?} and date <= {?} ORDER BY date",
+            $from_date, $to_date));
 
 $page->run();
 ?>

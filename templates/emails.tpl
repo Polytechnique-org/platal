@@ -33,12 +33,12 @@
       Tes adresses polytechniciennes sont :<br /><br />
       <form method='post' action='{$smarty.server.PHP_SELF}'>
         <div>
-          {foreach from=$aliases item=a}
+          {iterate from=$aliases item=a}
           <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='this.form.submit()' />
           {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
           {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
           <br />
-          {/foreach}
+          {/iterate}
         </div>
       </form>
       <br />
@@ -70,11 +70,11 @@ homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.no
   <tr class="pair">
     <td>
       Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
-      {if $nb_mails eq 1} à l'adresse {else} aux adresses {/if}
+      {if $mails->total() eq 1} à l'adresse {else} aux adresses {/if}
       <ul>
-        {section name=mail loop=$mails}
-        <li><strong>{$mails[mail].email}</strong>{if $smarty.section.mail.last}.{else}, {/if}</li>
-        {/section}
+        {iterate from=$mails item=m}
+        <li><strong>{$m.email}</strong></li>
+        {/iterate}
       </ul>
       Si tu souhaites <strong>modifier ce reroutage de ton courrier,</strong>
       <a href="{rel}/emails/redirect.php">il te suffit de te rendre ici !</a>

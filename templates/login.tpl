@@ -76,7 +76,7 @@
     </tr>
   </table>
 
-  {foreach item=ev from=$evenement}
+  {iterate item=ev from=$evenement}
   <br />
 
   <table class="bicol">
@@ -102,7 +102,7 @@
       </td>
     </tr>
   </table>
-  {/foreach}
+  {/iterate}
 
   <p class="smaller">
   Nota Bene : les informations présentées ici n'engagent que leurs auteurs

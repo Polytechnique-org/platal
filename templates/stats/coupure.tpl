@@ -71,7 +71,7 @@
     <th>résumé</th>
     <th>services affectés</th>
   </tr>
-{foreach item=cp from=$coupures}
+{iterate item=cp from=$coupures}
   <tr class="{cycle values="pair,impair"}">
     <td>
       <span class="smaller">
@@ -89,7 +89,7 @@
       </span>
     </td>
   </tr>
-{/foreach}
+{/iterate}
 </table>
 {/if}
 

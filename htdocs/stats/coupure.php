@@ -48,9 +48,8 @@ if($cp) {
     $page->assign_by_ref('cp',$cp);
 } else {
     $beginning_date = date("Ymd", time() - 3600*24*21) . "000000";
-    $sql = "select id, UNIX_TIMESTAMP(debut) as debut, resume, services from coupures where debut > '" . $beginning_date
-        .  "' order by debut desc";
-    $page->mysql_assign($sql, 'coupures');
+    $sql = "select id, UNIX_TIMESTAMP(debut) as debut, resume, services from coupures where debut > '$beginning_date' order by debut desc";
+    $page->assign('coupures', $globals->xdb->iterator($sql));
 }
 
 $page->run();

@@ -117,7 +117,7 @@
       </form>
     </td>
   </tr>
-{foreach item=op from=$ops}
+{iterate item=op from=$ops}
   <tr class="{cycle values="pair,impair"}">
     <td>{$op.id}</td>
     <td>{$op.date|date_format}</td>
@@ -136,7 +136,7 @@
       </form>
     </td>
   </tr>
-{/foreach}
+{/iterate}
 </table>
 
 <br />

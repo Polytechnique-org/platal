@@ -21,7 +21,7 @@
 
 require_once("xorg.inc.php");
 require_once("money/trezo.inc.php");
-new_admin_page('trezo/index.tpl');
+new_skinned_page('trezo/index.tpl', AUTH_COOKIE);
 
 //Table operations :
 //+--------+---------------+------+-----+------------+----------------+
@@ -49,10 +49,9 @@ $page->assign('mois_sel', $mois_sel);
 $page->assign('mon_sel', $mon_sel);
 $page->assign_by_ref('month_arr', $trim_fr);
 
-$sql = "SELECT date,label,credit,debit FROM money_trezo 
-        WHERE date >= '$from_date' and date <= '$to_date'
-        ORDER BY date";
-$page->mysql_assign($sql,'ops');
+$page->assign('ops', $globals->xdb->iterator(
+            "SELECT date,label,credit,debit FROM money_trezo  WHERE date >= {?} and date <= {?} ORDER BY date",
+            $from_date, $to_date));
 
 $page->run();
 ?>
