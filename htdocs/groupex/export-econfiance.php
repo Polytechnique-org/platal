@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: export-econfiance.php,v 1.3 2004-08-31 10:03:30 x2000habouzit Exp $
+        $Id: export-econfiance.php,v 1.4 2004-09-02 19:03:19 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -32,7 +32,12 @@ if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md
 
 require("db_connect.inc.php");
 
-$all = $globals->db->query("SELECT prenom,nom,username FROM auth_user_md5 as u,listes_ins as i WHERE i.idu=u.user_id AND i.idl=174 AND i.idu != 0 ORDER BY nom");
+$all = $globals->db->query("SELECT  u.prenom,u.nom,a.alias
+			      FROM  auth_user_md5 AS u,
+				    listes_ins    AS i
+                        INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type='a_vie' )
+			     WHERE  i.idu=u.user_id AND i.idl=174 AND i.idu != 0
+			  ORDER BY  nom");
 
 $res = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<membres>\n\n";
 

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: graph_promo.php,v 1.3 2004-08-31 10:03:31 x2000habouzit Exp $
+        $Id: graph_promo.php,v 1.4 2004-09-02 19:03:19 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -35,7 +35,7 @@ define('DUREEJOUR',24*3600);
 
 //recupere le nombre d'inscriptions par jour sur la plage concernée
 $donnees=$globals->db->query("SELECT if(date_ins>DATE_SUB(NOW(),INTERVAL $JOURS DAY), TO_DAYS(date_ins)-TO_DAYS(NOW()), ".(-($JOURS+1)).") AS jour,
-                             count(username) AS nb
+                             count(user_id) AS nb
                       FROM auth_user_md5 WHERE promo = $promo GROUP BY jour");
 
 //genere des donnees compatibles avec GNUPLOT

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.21 2004-09-02 18:46:49 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.22 2004-09-02 19:03:19 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -118,6 +118,25 @@ class XorgSession extends DiogenesCoreSession {
 	}
 	exit;
     }
+    
+    function getUserId($auth,$username) {
+	global $globals;
+
+	$res = $globals->db->query("SELECT id FROM aliases WHERE alias='$username'");
+	list($uid) = mysql_fetch_row($res);
+	mysql_free_result($res);
+	return $uid;
+    }
+
+
+    function getUsername($auth,$uid) {
+	global $globals;
+
+	$res = $globals->db->query("SELECT alias FROM aliases WHERE id='$uid' AND type='a_vie'");
+	list($username) = mysql_fetch_row($res);
+	mysql_free_result($res);
+	return $username;
+    }
 }
 
 /** verifie si un utilisateur a les droits pour voir une page
@@ -182,7 +201,7 @@ function try_cookie() {
 	mysql_free_result($res);
 	$expected_value=md5($password);
 	if($expected_value == $_COOKIE['ORGaccess']) {
-	    start_connexion($_COOKIE['ORGuid'], $uid, false);
+	    start_connexion($uid, false);
 	    return 0;
 	} else return 1;
     }
@@ -259,25 +278,6 @@ function set_skin() {
 	$_SESSION['skin_id'] = SKIN_COMPATIBLE_ID;
     }
   
-    
-    function getUserId($auth,$username) {
-	global $globals;
-
-	$res = $globals->db->query("SELECT id FROM aliases WHERE alias='$username'");
-	list($uid) = mysql_fetch_row($res);
-	mysql_free_result($res);
-	return $uid;
-    }
-
-
-    function getUsername($auth,$uid) {
-	global $globals;
-
-	$res = $globals->db->query("SELECT alias FROM aliases WHERE id='$uid' AND type='a_vie'");
-	list($username) = mysql_fetch_row($res);
-	mysql_free_result($res);
-	return $username;
-    }
 }
 
 ?>
