@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step2.tpl,v 1.1 2004-09-05 22:01:11 x2000habouzit Exp $
+        $Id: step2.tpl,v 1.2 2004-09-05 22:25:45 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,7 +31,7 @@
 
 <p class="erreur">{$erreur|smarty:nodefaults|nl2br}</p>
 
-<form action="{$gotourl|default:"step3.php"}" method="post">
+<form action="{"inscription/step3.php"|url}" method="post">
   {if $homonyme}
   <p>
   Ton adresse sera : <strong>{$forlife}@polytechnique.org</strong>
@@ -150,6 +150,7 @@
     </tr>
     <tr>
       <td colspan="2" class="center">
+        <input type="envoidirect" value="{$envoidirect|default:$smarty.request.envoidirect}" name="nom" />
         <input type="hidden" value="{$smarty.request.nom}" name="nom" />
         <input type="hidden" value="{$smarty.request.prenom}" name="prenom" />
         <input type="hidden" value="{$smarty.request.promo}" name="promo" />

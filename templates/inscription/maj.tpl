@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -18,38 +17,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: maj.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
- ***************************************************************************/
+        $Id: maj.tpl,v 1.1 2004-09-05 22:25:45 x2000habouzit Exp $
+ ***************************************************************************}
 
-require("auto.prepend.inc.php");
 
-$erreur = Array();
+<p>
+Cette page n'existe pas ou plus. Tu as peut-être déjà cliqué une fois, l'adresse
+envoyée par e-mail n'est valable qu'une seule fois. Le plus simple est d'aller à
+la page d'enregistrement <a href="inscrire.php"><strong>en cliquant sur ce lien.</strong></a>
+</p>
+<p>
+A la fin de l'enregistrement, tu obtiendras <strong>login et mot de passe</strong> pour
+modifier ta fiche dans l'annuaire on-line.
+</p>
 
-if (isset($_REQUEST['n'])) {
-    $sql = "SELECT * FROM envoidirect WHERE uid='".$_REQUEST["n"]."'";
-    $result = $globals->db->query($sql);
-    $ligne = mysql_fetch_array($result); 
-}
-
-if (isset($ligne) && $ligne) {
-    // il faut remettre le matricule dans son format de saisie
-    $_REQUEST['matricule'] = strlen($ligne['matricule']>6) ?
-	substr($ligne['matricule'],2) : $ligne['matricule'];
-    $_REQUEST['promo'] = $ligne['promo'];
-    $_REQUEST['nom'] = $ligne['nom'];
-    $_REQUEST['prenom'] = $ligne['prenom'];
-    $_REQUEST['email'] = $ligne['email'];
-
-    // on veut basculer sur inscrire.php
-
-    require("identification.inc.php");
-
-    new_skinned_page('inscrire.form_data.tpl', AUTH_PUBLIC, true);
-    $page->assign('gotourl', $gotourl);
-    $gotourl = "inscrire.php";
-    $page->run();
-}
-
-new_skinned_page('maj.tpl', AUTH_PUBLIC);
-$page->run();
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

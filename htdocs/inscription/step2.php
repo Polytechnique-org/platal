@@ -1,4 +1,5 @@
-{***************************************************************************
+<?php
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,18 +18,21 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: maj.tpl,v 1.3 2004-08-31 11:25:39 x2000habouzit Exp $
- ***************************************************************************}
+        $Id: step2.php,v 1.1 2004-09-05 22:25:44 x2000habouzit Exp $
+ ***************************************************************************/
 
+require("auto.prepend.inc.php");
+require("identification.inc.php");
 
-<p>
-Cette page n'existe pas ou plus. Tu as peut-être déjà cliqué une fois, l'adresse
-envoyée par e-mail n'est valable qu'une seule fois. Le plus simple est d'aller à
-la page d'enregistrement <a href="inscrire.php"><strong>en cliquant sur ce lien.</strong></a>
-</p>
-<p>
-A la fin de l'enregistrement, tu obtiendras <strong>login et mot de passe</strong> pour
-modifier ta fiche dans l'annuaire on-line.
-</p>
+new_skinned_page('inscription/step2.tpl', AUTH_PUBLIC, true);
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+require("applis.func.inc.php");
+
+$page->assign('homonyme', $homonyme);
+$page->assign('forlife',  $forlife);
+$page->assign('mailorg',  $mailorg);
+$page->assign('prenom',   $prenom);
+$page->assign('nom',      $nom);
+
+$page->run();
+?>

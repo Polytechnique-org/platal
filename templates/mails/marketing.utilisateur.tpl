@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: marketing.utilisateur.tpl,v 1.2 2004-08-31 11:25:41 x2000habouzit Exp $
+        $Id: marketing.utilisateur.tpl,v 1.3 2004-09-05 22:25:46 x2000habouzit Exp $
  ***************************************************************************}
 
 {subject text="Annuaire en ligne des Polytechniciens"}
@@ -32,7 +32,7 @@ Chèr camarade,
 a fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :
 
 ==========================================================
-{$baseurl}/maj.php?n={$user_id}
+{$baseurl}/inscription/maj.php?n={$user_id}
 ==========================================================
 
 Il ne te faut que 5 minutes sur http://www.polytechnique.org/ pour rejoindre les {$num_users} camarades branchés grâce au système de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prénom... et de bénéficier pour la vie d'une adresse prestigieuse {$mailorg}@polytechnique.org et son alias discret {$mailorg}@m4x.org (m4x = mail for X).
