@@ -27,7 +27,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
 ;	  | fiche_referent.php						  | 
-;	  | index.coupure.php						  | 
 ;	  | mescontacts_pdf.php						  | 
 ;	  | recherche.php							  | 
 ;	  | trombino.php							  | 
@@ -152,6 +151,7 @@ xx	  | getphoto.php							  | -
 xx!	  | groupex/donne-chall.php					  | -
 xx!	  | groupex/export-econfiance.php			  | -
 xx	  | groupex.php								  | groupex/index.php 
+xx	  | index.coupure.php						  | 
 xx	  | index.php								  | -
 xx	  | inscrire.php							  | 
 xx	  | login.php								  | -
