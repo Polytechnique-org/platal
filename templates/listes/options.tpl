@@ -57,7 +57,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>une courte phrase pour décrire la liste.</span>
       </td>
       <td>
-        <input type='text' size='40' name='description' value='{$options.description}' />
+        <input type='text' size='40' name='description' value="{$options.description}" />
       </td>
     </tr>
     <tr class='impair'>
@@ -98,7 +98,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>Un préfixe ajouté dans le sujet de chaque mail envoyé sur la liste.</span>
       </td>
       <td>
-        <input type='text' name='subject_prefix' size='40' value='{$options.subject_prefix}' />
+        <input type='text' name='subject_prefix' size='40' value="{$options.subject_prefix}" />
       </td>
     </tr>
     <tr class='impair'>
@@ -125,7 +125,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 
   <div class='center'>
     <br />
-    <input type='submit' name='submit' value='Valider les modifications' />
+    <input type='submit' name='submit' value="Valider les modifications" />
   </div>
 </form>
 
