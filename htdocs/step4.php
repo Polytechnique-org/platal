@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: step4.php,v 1.4 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: step4.php,v 1.5 2004-09-01 20:56:26 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -70,6 +70,24 @@ if (!empty($_REQUEST['ref'])) {
     }
     // ok, pas d'erreur, on continue
     $uid=$globals->db->insert_id();
+
+    /* insertion des alias dans la table de courrier */
+    if (empty($loginbis)) {
+	$globals->db->query("INSERT INTO aliases VALUES ('$username', 'alias', $uid)");
+	// le suivant n'est pas formellement un login, mais c'est celui qu'on utilise
+	// lorsque l'on envoit des mails à la personne (prenom.nom.promo) afin qu'elle
+	// comprenne que c'est là sa vraie adresse à vie
+	$globals->db->query("INSERT INTO aliases VALUES ('$username.$promo', 'login', $uid)");
+	$globals->db->query("INSERT INTO aliases VALUES ('$username.".($promo%100)."', 'alias', $uid)");
+    } else {
+	$globals->db->query("INSERT INTO aliases VALUES ('$username', 'alias', $uid)");
+	// le suivant n'est pas formellement un login, mais c'est celui qu'on utilise
+	// lorsque l'on envoit des mails à la personne (prenom.nom.promo) afin qu'elle
+	// comprenne que c'est là sa vraie adresse à vie
+	$globals->db->query("INSERT INTO aliases VALUES ('$loginbis.$promo', 'login', $uid)");
+	$globals->db->query("INSERT INTO aliases VALUES ('$loginbis.".($promo%100)."', 'alias', $uid)");
+    }
+	
 
     // on cree un objet logger et on log l'evenement
     $logger = new DiogenesCoreLogger($uid);
