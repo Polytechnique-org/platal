@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: contacts.tpl,v 1.12 2004-11-13 14:43:23 x2002bobillot Exp $
+        $Id: contacts.tpl,v 1.13 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -193,7 +193,7 @@ de contacter l'Amicale des X à l'adresse <strong>{mailto address='info@amicale.p
 </p>
 <p>
 Pour toute demande qui concerne le recrutement de polytechniciens, vous pouvez consulter
-<a onclick="return popup(this);" href="http://www.manageurs.com/?langue=fr"><strong>le site Manageurs.com, dédié aux problématique d'emploi et de gestion de carrière.</strong></a>
+<a href="http://www.manageurs.com/?langue=fr"><strong>le site Manageurs.com, dédié aux problématique d'emploi et de gestion de carrière.</strong></a>
 </p>
 <p>
 Pour toute question n'ayant aucun rapport avec l'utilisation du site, vous pouvez nous contacter à

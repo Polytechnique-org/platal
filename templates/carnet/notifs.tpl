@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: notifs.tpl,v 1.15 2004-11-07 20:56:27 x2000habouzit Exp $
+        $Id: notifs.tpl,v 1.16 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -99,7 +99,7 @@ Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à t
 </p>
 
 <p>
-Pour surveiller des membres non-inscrits, il faut passer par la <a href="{"search.php"|url}" onclick='return popup(this)'>recherche</a>
+Pour surveiller des membres non-inscrits, il faut passer par la <a href="{"search.php"|url}" class='popup'>recherche</a>
 et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" /> pour les ajouter à cette liste
 </p>
 

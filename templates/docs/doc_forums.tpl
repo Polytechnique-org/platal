@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_forums.tpl,v 1.8 2004-10-24 14:58:27 x2000habouzit Exp $
+        $Id: doc_forums.tpl,v 1.9 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -31,7 +31,7 @@
 <p>
   Bien que nous n'ayons pas vocation à avoir un rayonnement aussi large que
   Usenet, l'ensemble des règles relatives à Usenet (la netiquette), consultables
-  <a href="http://www.usenet-fr.net/fr-chartes/rfc1855.html" onclick="return popup(this)">
+  <a href="http://www.usenet-fr.net/fr-chartes/rfc1855.html">
     sur la page de usenet france</a>, sont applicables sur les forums de
   Polytechnique.org.
 </p>

@@ -18,29 +18,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-var popup=null;
-function popupWin(theURL,theSize) {
-    if (theURL.indexOf('?')==-1)
-        a = '?';
-    else
-        a = '&';
-    theURL += <?php echo (isset($_COOKIE[session_name()]) ? "\"\"" : "a +\"".SID."\"");?>;
-    window.open(theURL,'_blank',theSize);
-    window.name="main";
-    if(popup != null) {
-        popup.location=popupURL;
-        if(navigator.appName.substring(0,8)=="Netscape") {
-            popup.location=popupURL;
-            popup.opener=self;
-        }
-        if(navigator.appName=="Netscape" ) {
-            popup.window.focus();
-        }
-        self.name="main";
+function auto_links() {
+    nodes = document.getElementsByTagName('a');
+    fqdn = document.URL;
+    fqdn = fqdn.replace(/^https?:\/\/([^\/]*)\/.*$/,'$1');
+    for(var i=0; i<nodes.length; i++) {
+	node = nodes[i];
+	if(!node.href || node.className == 'xdx') continue;
+	if(node.href.indexOf(fqdn)<0 || node.className == 'popup') {
+	    node.title='foo';
+	    node.onclick = function () { window.open(this.href); return false; };
+	}
     }
 }
-function popWin(theURL) {
-    popupWin(theURL,'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=900,height=700');
-}
-function x() { return; }
-

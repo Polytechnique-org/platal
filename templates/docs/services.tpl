@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: services.tpl,v 1.7 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: services.tpl,v 1.8 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -67,7 +67,7 @@ ou encore *} <a href="{"paiement/"|url}">le système de télépaiement</a> qui sert
 
 <p>
 Enfin Polytechnique.org favorise le développement d'activités associatives. Le
-site <a href="http://www.polytechnique.net/" onclick="return popup(this)">www.polytechnique.net</a> te
+site <a href="http://www.polytechnique.net/">www.polytechnique.net</a> te
 présente ainsi des groupes existants et la <a href="{"newsletter.php"|url}">newsletter
   mensuelle</a> te met au courant des dernières actualités de la communauté.
 </p>

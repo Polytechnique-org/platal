@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: en-cours.tpl,v 1.6 2004-10-24 14:58:28 x2000habouzit Exp $
+        $Id: en-cours.tpl,v 1.7 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -80,7 +80,7 @@ de redirection, et enfin les contacts.
 <h2>Services aux groupes X</h2>
 
 <p>
-Le site <a href="http://www.polytechnique.net/" onclick="return popup(this)">www.polytechnique.net</a>
+Le site <a href="http://www.polytechnique.net/">www.polytechnique.net</a>
 va regrouper rapidement l'ensemble des services aux groupes X.  Ainsi l'ensemble
 des services plutôt orientés vers l'individu seront accessibles depuis le
 présent site "X.org", alors que les services aux groupes seront concentrés sur

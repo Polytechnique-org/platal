@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.1 2004-11-04 15:33:28 x2000habouzit Exp $
+        $Id: mescontacts.tpl,v 1.2 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -44,8 +44,8 @@
 {if $nb_contacts || $trombi}
 <p>
   Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" onclick="return popup(this)"><strong>Triée par promo</strong></a>]
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf" onclick="return popup(this)"><strong>Triée par noms</strong></a>]
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" class='popup'><strong>Triée par promo</strong></a>]
+  [<a href="mescontacts_pdf.php/mes_contacts.pdf" class='popup'><strong>Triée par noms</strong></a>]
 </p>
 
 {if $trombi}

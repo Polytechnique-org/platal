@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs_edit.tpl,v 1.6 2004-10-24 14:41:14 x2000habouzit Exp $
+        $Id: utilisateurs_edit.tpl,v 1.7 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -77,7 +77,7 @@ modifiée !! (aucune vérification n'est faite)
       </tr>
       <tr>
         <td colspan="2">
-          <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$row.matricule_ax}" onclick="return popup(this)">Voir sa fiche sur le site de l'AX</a>
+          <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$row.matricule_ax}">Voir sa fiche sur le site de l'AX</a>
         </td>
       </tr>
       <tr>

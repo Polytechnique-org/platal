@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.8 2004-10-24 14:41:15 x2000habouzit Exp $
+        $Id: index.tpl,v 1.9 2004-11-13 15:25:01 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -51,7 +51,7 @@
           {select_db_table table="paiement.paiements" valeur=$ref where=" WHERE FIND_IN_SET('old',flags)=0"}
         </select>
         {if $ref_url}
-        <a href="{$ref_url}" onclick="return popup(this)">plus d'informations</a>
+        <a href="{$ref_url}">plus d'informations</a>
         {/if}
       </td>
     </tr>

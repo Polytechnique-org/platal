@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: convention_ax.tpl,v 1.6 2004-10-24 14:41:12 x2000habouzit Exp $
+        $Id: convention_ax.tpl,v 1.7 2004-11-13 15:25:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -50,13 +50,12 @@ l'article premier de ses statuts. L'AX a ainsi pour but :
   Les activités de l'AX comprennent notamment la publication de l'annuaire
   papier, spécifique à l'AX, l'édition de la revue <em>La Jaune et la Rouge</em>
   et le fonctionnement de la Caisse de Secours. L'AX dispose également d'un
-  <a href="http://www.polytechniciens.com/" onclick="return popup(this)">site
-    web</a>, distinct des deux précédents.
+  <a href="http://www.polytechniciens.com/">site web</a>, distinct des deux précédents.
 <p>
   Les deux associations ont décidé conjointement d'un rapprochement,
 concrétisé par la mise en place, l'animation et le développement du réseau
 baptisé RETIX. Cette coopération fait l'objet d'une
-<a href="http://x-org.polytechnique.org/convention-ax/" onclick="return popup(this)">convention</a>
+<a href="http://x-org.polytechnique.org/convention-ax/">convention</a>
 entre l'AX et Polytechnique.org, signée en janvier 2004.
 </p>
 <p>
