@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.24 2004-10-24 18:28:53 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.25 2004-10-25 19:28:34 x2000habouzit Exp $
  ***************************************************************************/
 
 define('FEMME', 1);
@@ -220,23 +220,25 @@ class NewsLetter {
     <style type="text/css">
       div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
       div.title { margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; font-size: 140%; text-align: center;
-		  color: #ff4040; background: #ffffb0; border: 2px #ff4040 solid; }
+		  font-weight: bold; border-bottom: 3px red solid; border-top: 3px red solid; }
       
-      a         { text-decoration: none; }
-      a:hover   { text-decoration: underline; }
+      a[href]       { text-decoration: none; }
+      a[href]:hover { text-decoration: underline; }
       
       div.lnk   { margin: 2ex 0ex 2ex 0ex; padding: 0ex 2ex 0ex 2ex; }
       div.lnk a { display: block; }
       
-      h1 { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%; border-bottom: 1px #ff4040 solid; }
+      h1 { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%;
+	    border-bottom: 3px red solid; border-top: 3px red solid; }
       h2 { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
-      h1 span { color: #ff4040; background: #ffffb0; text-decoration: none; font-size: 140%; padding: 2px 1ex 2px 1ex; border: 1px #ff4040 solid; }
-      h2 span { color: blue; background: #eeeeee; text-decoration: none; padding: 2px 4px 2px 4px; border: 1px #cccccc solid; }
+      h1 span { font-size: 140%; padding: 2px 1ex 2px 1ex; border-bottom: 3px red solid; }
+      h2 span { padding: 2px 4px 2px 4px; border-bottom: 2px yellow solid; }
       
-      div.art   { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 1px #cccccc solid; }
+      div.art   { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 2px yellow solid; }
       div.app   { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
       div.intro { padding: 2ex; }
-      div.foot  { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit; text-align: center; }
+      div.foot  { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit;
+		  text-align: center; width: 100% }
     </style>
   </head>
   <body>
