@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.37 2004-10-31 16:02:44 x2000chevalier Exp $
+        $Id: search.php,v 1.38 2004-11-01 09:17:44 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -63,7 +63,7 @@ if (array_key_exists('rechercher', $_REQUEST)) {
    
     $sql = 'SELECT SQL_CALC_FOUND_ROWS
                        DISTINCT r.matricule,u.matricule_ax,
-                       u.nom!="" AS inscrit,
+                       u.perms!="non-inscrit" AS inscrit,
                        UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
                        IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
                        u.promo AS promo,
