@@ -39,4 +39,11 @@ mysql -u root x4dat < newsleter_ins.sql &>/dev/null || echo 'newsletter_ins.sql 
 echo '.'
 
 ###########################################################
-echo "ALL IS OK."
+echo "ALL IS OK.
+
+don't forget to kill current mailman-rpc.py
+you shoul be able to run the new one only with :
+
+    ./mailman-rpc.py -f
+
+fork problems + SIGHUP handling have been solved."
