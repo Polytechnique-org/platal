@@ -19,7 +19,7 @@ New :
 Bug/Wish :
 
 	* Core :
-		- #279, #281: permanent connexion explanations.					 -MD/Car
+		- #279, #281: permanent connexion explanations.					 -MC/Car
 
 	* Misc :
 		- #282, #285: small text modifications in docs and index page.		-Car
@@ -29,6 +29,9 @@ Bug/Wish :
 		- #270: Private/public flags are now used for search.				-Car
 
 Fixes (from 0.9.4 branch) :
+
+	* Lists :
+		- Owner can now delete their list.									-MC
 
 ================================================================================
 VERSION 0.9.4														 24 Jan 2004
