@@ -38,7 +38,7 @@ $nl = new NewsLetter($id);
 $nl->setSent();
 
 while(true) {
-    $res = $globals->dbx->iterRow(
+    $res = $globals->xdb->iterRow(
             "SELECT  ni.user_id, a.alias,
                      u.prenom, IF(u.epouse='', u.nom, u.epouse),
                      FIND_IN_SET('femme', u.flags),
