@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.46 2004-10-14 22:32:02 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.47 2004-10-15 07:06:14 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -128,11 +128,6 @@ class XorgPage extends DiogenesCorePage {
         if($this->_page_type == NO_SKIN)
             $this->display($this->_tpl);
         else {
-	    if (strpos($_SERVER['HTTP_ACCEPT'], 'application/xhtml+xml')!==false) {
-		header('Content-Type: application/xhtml+xml; charset=iso8859-1');
-	    } else {
-		header('Content-Type: text/html; charset=iso8859-1');
-	    }
             if(isset($_SESSION['suid'])) $this->caching=false;
             $id = $this->make_id($append_to_id);
             if($site_dev) {
