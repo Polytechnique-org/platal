@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.9 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.10 2004-09-01 18:02:00 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -26,7 +26,7 @@ new_admin_page('admin/utilisateurs.tpl', true, 'admin/utilisateurs.head.tpl');
 require("xorg.misc.inc.php");
 
 $assignates = Array(
-	'add_email', 'email', 'fwd', 'alias', 'hashpass', 'homonyme', 'login', 'loginbis',
+	'add_email', 'email', 'fwd', 'alias', 'hashpass', 'homonyme', 'login',
 	'matricule', 'naissanceN', 'newpass_clair', 'nomN', 'num', 'oldlogin', 'olduid',
 	'passw', 'password1', 'perms', 'permsN', 'prenomN', 'promoN', 'remove_email',
 	'select', 'suid_button', 'user_id', 'u_edit', 'u_kill', 'u_kill_conf'
@@ -121,7 +121,6 @@ foreach($_POST as $key => $val) {
                         naissance=$naissanceN,
                         password='$pass_md5B',
                         perms='$permsN',
-                        loginbis='$loginbis',
                         prenom='$prenomN',
                         nom='$nomN',
                         promo=$promoN,

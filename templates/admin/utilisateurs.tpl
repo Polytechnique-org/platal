@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.6 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.7 2004-09-01 18:02:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -101,26 +101,6 @@ depuis <strong>{$mr.host}</strong>
           <option value="admin" {if $mr.perms eq "admin"}selected="selected"{/if}>admin</option>
         </select>
       </td>
-    </tr>
-    <tr> 
-      <td class="loginr"> 
-        if (login!=prenom.nom)&nbsp;
-      </td>
-      <td class="login"> 
-        <select name="homonyme">
-          {if $mr.loginbis && ($mr.loginbis neq $mr.username)}
-          <option value="1" selected="selected"> OUI </option>
-          <option value="0"> NON </option>
-          {else}
-          <option value="1"> OUI </option>
-          <option value="0" selected="selected"> NON </option>
-          {/if}
-        </select>
-        /* pour homonymes */
-      </td>
-      <th class="action">
-        &nbsp;
-      </th>
     </tr>
     <tr> 
       <td class="loginr">
