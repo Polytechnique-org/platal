@@ -1,4 +1,4 @@
-{* $Id: form_naissance.tpl,v 1.4 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: form_naissance.tpl,v 1.1 2004-02-07 15:50:36 x2000habouzit Exp $ *}
 <div class="rubrique">
   Date de naissance
 </div>

@@ -1,4 +1,4 @@
-{* $Id: login.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: login.tpl,v 1.4 2004-02-07 15:50:35 x2000habouzit Exp $ *}
 
 {if $date}
   <div class="rubrique">
@@ -15,7 +15,7 @@
     <a href="profil.php">Clique ici pour continuer.</a>
   </p>
 {elseif $naissance}
-{include file=form_naissance.tpl}
+{include file='include/form_naissance.tpl'}
 {else}
 
 <div class="rubrique">Bienvenue {dyn s=$smarty.session.prenom} :o)
