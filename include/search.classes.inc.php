@@ -1,4 +1,12 @@
 <?php
+class ThrowError {
+    function ThrowError($explain) {
+        global $page;
+        $page->assign('error','Erreur : '.$explain);
+        $page->run();
+    }
+}
+
 class SField {
     var $fieldFormName;
     var $fieldDbName;
@@ -15,12 +23,6 @@ class SField {
     function get_request() {
         $this->value =
         (isset($_REQUEST[$this->fieldFormName]))?trim(stripslashes($_REQUEST[$this->fieldFormName])):'';
-    }
-
-    function error($explain) {
-        global $page;
-        $page->assign('error',$explain);
-        $page->run();
     }
 
     function get_where_statement() {
@@ -52,7 +54,7 @@ class NumericSField extends SField {
         if ($this->value=='')
             $this->value = 0;
         if (!preg_match("/^[0-9]+$/", $this->value))
-            $this->error('Un champ numérique contient des caractères alphanumériques.<br>');
+            new ThrowError('Un champ numérique contient des caractères alphanumériques.<br>');
     }
 }
 
@@ -60,13 +62,14 @@ class StringSField extends SField {
     function get_request() {
         parent::get_request();
         if (preg_match(":[][<>{}~/§_`|%$^=+]|\*\*:", $this->value))
-            $this->error('Un champ contient un caractère interdit rendant la recherche'
+            new ThrowError('Un champ contient un caractère interdit rendant la recherche'
             .' impossible.<br>');
     }
 
     function length() {
+        global $lc_accent,$uc_accent;
         return
-        length($this->value)-length(ereg_replace('[a-z]'.$CARACTERES_ACCENTUES,'',strtolower($this->value)));
+        strlen($this->value)-strlen(ereg_replace('[a-z'.$lc_accent.$uc_accent.']','',strtolower($this->value)));
     }
 
     function get_single_where_statement($field) {
@@ -96,7 +99,7 @@ class PromoSField extends SField {
     function get_request() {
         parent::get_request();
         if (!(empty($this->value) or preg_match("/^[0-9]{4}$/", $this->value)))
-            $this->error('La promotion est une année à quatre chiffres.<br>');
+            new ThrowError('La promotion est une année à quatre chiffres.<br>');
     }
 
     function is_a_single_promo() {
