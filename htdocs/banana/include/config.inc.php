@@ -1,5 +1,14 @@
 <?php
 
+switch (basename($_SERVER['SCRIPT_NAME'])) {
+    case 'index.php':
+        if (Get::get('banana') == 'updateall') {
+            $globals->xdb->execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), Session::getInt('uid'));
+            $_SESSION['banana_last'] = time();
+        }
+}
+
+
 function hook_banana(&$banana) {
     global $globals;
 
