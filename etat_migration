@@ -16,8 +16,6 @@
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
 ------+-[ admin ]---------------------------------+----------------
-;	  | admin/admin_trombino.php				  | 
-;	  | admin/correction_adr.php				  | 
 ;	  | admin/evenements.php					  | 
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
@@ -93,6 +91,7 @@ xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
 xx	  | acces_wap.php							  | -
+xx	  | admin/admin_trombino.php				  | 
 xx	  | admin/ax-xorg.php						  | -
 xx	  | admin/deces_promo.php					  | -
 xx	  | admin/envoidirect.php					  | marketing/envoidirect.php
@@ -184,6 +183,7 @@ xx	  | trezo/gere_operations.php				  | -
 xx	  | trezo/index.php							  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
+x!!	  | admin/correction_adr.php				  | 
 x!!	  | admin/logger_events.php					  | géré par logger.php
 x!!	  | admin/logger_user.php					  | géré par logger.php
 x!!	  | admin/newsletter_form.inc.php			  | -
