@@ -57,7 +57,7 @@
     <tr>
       <td>
         <img src="{"images/pi.png"|url}" alt=" [ ? ] " />
-        <a href="{rel}/recovery.php">Mote passe perdu ?</a>
+        <a href="{rel}/recovery.php">Mot de passe perdu ?</a>
       </td>
       <td class="right">
         <input  type="submit" name="submitbtn" value="Envoyer" />
