@@ -1,4 +1,4 @@
-{* $Id: evenements.tpl,v 1.1 2004-07-19 11:12:50 x2000habouzit Exp $ *}
+{* $Id: evenements.tpl,v 1.2 2004-07-19 12:09:32 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -116,7 +116,7 @@
     <th>
       <form action="{$smarty.server.PHP_SELF}" method="post" name="modif">
         <input type="hidden" name="evt_id" value="{$ev.id}" />
-        <input type="hidden" name="arch" value="{$ev.arch}>" />
+        <input type="hidden" name="arch" value="{$ev.arch}" />
         {if $ev.farch}
         <input type="submit" name="action" value="Desarchiver" />
         {else}

@@ -20,9 +20,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | admin/utilisateurs_marketing.php		  | marketing/
 ------+-[ docs ]----------------------------------+----------------
 ;	  | docs/FROM.php							  | docs/from.php
-;	  | en-cours.php							  | docs/en-cours.php
-;	  | plan.php								  | ? docs/plan.php
-;	  | services.php							  | docs/services.php
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
@@ -147,6 +144,7 @@ xx	  | docs/index.php							  | -
 xx	  | domaineperso.php						  | -
 xx	  | dons.php								  | -
 xx	  | emails.php								  | -
+xx	  | en-cours.php							  | docs/en-cours.php
 xx	  | ethique.php								  | docs/ethique.php
 xx	  | exit.php								  | -
 xx	  | faq.php									  | docs/faq.php
@@ -168,6 +166,7 @@ xx	  | paiement/cyberpaiement.inc.php			  | dans include/
 xx	  | paiement/cyberpaiement_retour.php		  | -
 xx	  | paiement/index.php						  | -
 xx	  | pattecassee.php							  | -
+xx	  | plan.php								  | ? docs/plan.php
 xx	  | preferences.php							  | -
 xx	  | profil.php								  | TODO : reste 2-3 trucs comme popWin() a changer
 xx	  | recovery.php							  | 
@@ -177,6 +176,7 @@ xx	  | referent.php							  | TODO : utilise la css de recherche qui n'est pas e
 xx	  | rss.php									  | -
 xx	  | secu.php								  | docs/secu.php
 xx	  | sendmail.php							  | -
+xx	  | services.php							  | docs/services.php
 xx	  | skins.php								  | -
 xx	  | trezo/gere_operations.php				  | -
 xx	  | trezo/index.php							  | -
