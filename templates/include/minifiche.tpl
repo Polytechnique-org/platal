@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: minifiche.tpl,v 1.19 2004-11-18 15:28:17 x2000habouzit Exp $
+        $Id: minifiche.tpl,v 1.20 2004-11-27 18:22:36 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -43,7 +43,7 @@
     {/if}
     (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
     {/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
-    {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format:"%d %B %Y"}{/if}
+    {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format:"%d %b. %Y"}{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && !$c.wasinscrit}
     <a href="{"marketing/public.php"|url}?num={$c.matricule}" class='popup'>clique ici si tu connais son adresse email !</a>
