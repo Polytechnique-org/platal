@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.result.private.tpl,v 1.11 2004-10-12 17:23:02 x2000habouzit Exp $
+        $Id: search.result.private.tpl,v 1.12 2004-10-12 18:18:20 x2000habouzit Exp $
  ***************************************************************************}
 
 <div class="bits">
@@ -46,39 +46,41 @@
     clique ici si tu connais son adresse email !
   </a>
 </div>
+<div class="long"></div>
 {/if}
+{else}
+<div class="long">
+  <table cellspacing="0" cellpadding="0">
+    {if $result.nat}
+    <tr>
+      <td class="lt">Nationalité:</td>
+      <td class="rt">{$result.nat}</td>
+    </tr>
+    {/if}
+    {if $result.web}
+    <tr>
+      <td class="lt">Page web:</td>
+      <td class="rt"><a href="{$result.web}">{$result.web}</a></td>
+    </tr>
+    {/if}
+    {if $result.pays || $result.ville || $result.pays}
+    <tr>
+      <td class="lt">Géographie:</td>
+      <td class="rt">{implode sep=", " s1=$result.ville s2=$result.region s3=$result.pays}</td>
+    </tr>
+    {/if}
+    {if $result.entreprise}
+    <tr>
+      <td class="lt">Profession:</td>
+      <td class="rt">
+        {$result.entreprise}
+        {if $result.secteur}( {$result.secteur} ){/if}
+        {if $result.fonction}<br />{$result.fonction} ){/if}
+      </td>
+    </tr>
+    {/if}
+  </table>
+</div>
 {/if}
-  <div class="long">
-    <table cellspacing="0" cellpadding="0">
-      {if $result.nat}
-      <tr>
-        <td class="lt">Nationalité:</td>
-        <td class="rt">{$result.nat}</td>
-      </tr>
-      {/if}
-      {if $result.web}
-      <tr>
-        <td class="lt">Page web:</td>
-        <td class="rt"><a href="{$result.web}">{$result.web}</a></td>
-      </tr>
-      {/if}
-      {if $result.pays || $result.ville || $result.pays}
-      <tr>
-        <td class="lt">Géographie:</td>
-        <td class="rt">{implode sep=", " s1=$result.ville s2=$result.region s3=$result.pays}</td>
-      </tr>
-      {/if}
-      {if $result.entreprise}
-      <tr>
-        <td class="lt">Profession:</td>
-        <td class="rt">
-          {$result.entreprise}
-          {if $result.secteur}( {$result.secteur} ){/if}
-          {if $result.fonction}<br />{$result.fonction} ){/if}
-        </td>
-      </tr>
-      {/if}
-    </table>
-  </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
