@@ -22,17 +22,19 @@
 require_once('xorg.inc.php');
 new_nonhtml_page('rss.tpl', AUTH_PUBLIC);
 
-$requete = 'SELECT e.id,e.titre,e.texte FROM evenements AS e WHERE FIND_IN_SET(flags, "valide") AND peremption >= NOW()';
+if (!Env::has('promo')) { exit; }
+require_once('rss.inc.php');
 
-if (Env::has('promo')) {
-    $promo    = Env::getInt('promo');
-    $requete .= " AND (e.promo_min = 0 || e.promo_min <= $promo) AND (e.promo_max = 0 || e.promo_max >= $promo)";
-    $page->assign('promo', $promo);
-}
+$rss = $globals->xdb->iterator(
+        'SELECT  e.id, e.titre, e.texte, e.creation_date
+           FROM  evenements AS e
+          WHERE  FIND_IN_SET(flags, "valide") AND peremption >= NOW()
+                 AND (e.promo_min = 0 || e.promo_min <= {?})
+                 AND (e.promo_max = 0 || e.promo_max >= {?})
+       ORDER BY  (e.promo_min != 0 AND e.promo_max != 0) DESC, e.peremption',
+       Env::getInt('promo'), Env::getInt('promo'));
+$page->assign('rss', $rss);
 
-$requete.=' ORDER BY (e.promo_min != 0 AND e.promo_max != 0) DESC,  e.peremption';
-$page->assign('rss', $globals->xdb->iterator($requete));
-
-header('Content-Type: text/xml');
+header('Content-Type: text/xml; charset=utf-8');
 $page->run();
 ?> 

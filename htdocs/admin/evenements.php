@@ -29,7 +29,7 @@ $page->assign('arch', $arch);
 switch(Post::get('action')) {
     case "Proposer":
         $globals->xdb->execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
-                Post::get('titre'), Post::get('texte'), Post::get('peremption'), Post::get('promo_min'), Post::get('promo_max'));
+                Post::get('titre'), Post::get('texte'), Post::get('peremption'), Post::get('promo_min'), Post::get('promo_max'), $evid);
         break;
 
     case "Valider":

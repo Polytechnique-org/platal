@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 {***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -18,25 +18,29 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
-
-<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
- "http://my.netscape.com/publish/formats/rss-0.91.dtd">
-
-<rss version="0.91">
-
-<channel>
-<title>Polytechnique.org :: News</title>
-<link>http://{$smarty.server.SERVER_NAME}/</link>
-<description>L'actualité polytechnicienne...{if $promo} Promotion {$promo}{/if}</description>
-<language>fr</language>
-
-{iterate item=line from=$rss}
-<item>
-<title>{$line.titre|strip_tags}</title>
-<link>http://{$smarty.server.SERVER_NAME}/login.php#newsid{$line.id}</link>
-</item>
-{/iterate}
-
-</channel>
+<rss version="2.0">
+  <channel>
+    <title>Polytechnique.org :: News</title>
+    <language>fr</language>
+    <link>{#globals.baseurl#}/</link>
+    <description>L'actualit&eacute; polytechnicienne...</description>
+    <image>
+      <title>Polytechnique.org</title>
+      <url>{#globals.baseurl#}/images/logo.png</url>
+      <link>{#globals.baseurl#}/</link>
+    </image>
+    {iterate item=line from=$rss}
+    <item>
+      <title>{$line.titre|strip_tags}</title>
+      <link>{#globals.baseurl#}/login.php#newsid{$line.id}</link>
+      <description><![CDATA[{$line.texte|nl2br}]]></description>
+      <image>
+        <title>Polytechnique.org</title>
+        <url>{#globals.baseurl#}/images/logo.png</url>
+        <link>{#globals.baseurl#}/</link>
+      </image>
+    </item>
+    {/iterate}
+  </channel>
 </rss>
 {* vim:set et sw=2 sts=2 sws=2: *}

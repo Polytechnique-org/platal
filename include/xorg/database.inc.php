@@ -122,7 +122,7 @@ class XOrgDBResult
     function XOrgDBResult($query)
     {
         global $globals;
-        if (strpos("SQL_CALC_FOUND_ROWS", $query) === false) {
+        if (strpos($query, 'SQL_CALC_FOUND_ROWS') === false) {
             $this->_res = $globals->db->query($query);
         } else {
             $this->_res = mysql_query($query);
