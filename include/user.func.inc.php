@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: user.func.inc.php,v 1.3 2004-11-18 15:35:36 x2000habouzit Exp $
+        $Id: user.func.inc.php,v 1.4 2004-11-18 17:39:10 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -26,7 +26,7 @@
  * we still keep his birthdate, adresses, and personnal stuff
  * kills the entreprises, mentor, emails and lists subscription stuff
  */
-function user_clear_all_subs($user_id, $del_emails=true) {
+function user_clear_all_subs($user_id, $really_del=true) {
     // keep datas in : aliases, adresses, applis_ins, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
     // delete in     : auth_user_md5, auth_user_quick, competences_ins, emails, entreprises, langues_ins, mentor,
     //                 mentor_pays, mentor_secteurs, newsletter_ins, perte_pass, requests, user_changes, virtual_redirect, watch_sub
@@ -37,7 +37,11 @@ function user_clear_all_subs($user_id, $del_emails=true) {
     $res = $globals->db->query("select alias from aliases where type='a_vie' AND id=$uid");
     list($alias) = mysql_fetch_row($res);
     mysql_free_result($res);
-    if($del_emails) $globals->db->query("delete from emails where uid=$uid");
+
+    if($really_del) {
+	$globals->db->query("delete from emails where uid=$uid");
+	$globals->db->query("delete from newsletter_ins where user_id=$uid");
+    }
 
     $globals->db->query("delete from virtual_redirect where redirect ='$alias@m4x.org'");
     $globals->db->query("delete from virtual_redirect where redirect ='$alias@polytechnique.org'");
@@ -51,7 +55,6 @@ function user_clear_all_subs($user_id, $del_emails=true) {
     $globals->db->query("delete from mentor_pays    where uid=$user_id");
     $globals->db->query("delete from mentor_secteur where uid=$user_id");
     $globals->db->query("delete from mentor         where uid=$user_id");
-    $globals->db->query("delete from newsletter_ins where user_id=$uid");
     $globals->db->query("delete from perte_pass where uid=$uid");
     $globals->db->query("delete from requests where user_id=$uid");
     $globals->db->query("delete from user_changes where user_id=$uid");
@@ -59,7 +62,7 @@ function user_clear_all_subs($user_id, $del_emails=true) {
     
     require_once('xml-rpc-client.inc.php');
     $client = new xmlrpc_client("http://{$_SESSION['uid']}:{$_SESSION['password']}@localhost:4949/polytechnique.org");
-    $client->kill($alias);
+    $client->kill($alias, $really_del);
 }
  
 /** inscrit l'uid donnée au forum promo 

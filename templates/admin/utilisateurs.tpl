@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.22 2004-11-18 13:45:49 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.23 2004-11-18 17:39:11 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -191,7 +191,10 @@ function del_fwd(fwd) {
     </tr>
   </table>
 </form>
-
+<p>
+Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
+Pour ceci changer ses permissions en 'disabled'.
+</p>
 <form id="alias" method="post" action="{$smarty.server.PHP_SELF}">
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>

@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.80 2004-11-18 14:16:44 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.81 2004-11-18 17:39:11 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -788,8 +788,12 @@ def create_list(userdesc,perms,vhost,listname,desc,advertise,modlevel,inslevel,o
         return 0
     return 1
 
-def kill(userdesc,perms,vhost,alias):
+def kill(userdesc,perms,vhost,alias,del_from_promo):
+    exclude = []
+    if not del_from_promo:
+        exclude.append('polytechnique.org'+VHOST_SEP+'promo'+alias[-4:])
     for list in Utils.list_names():
+        if list in exclude: continue
         try:
             mlist = MailList.MailList(list,lock=0)
         except:
