@@ -74,10 +74,13 @@ class Exalead{
   }
 
   //a appeller pour faire la premiere requete
-  function first_query($query){
+  function first_query($query, $offset = 0){
     if(empty($this->base_cgi)) return false;
     
     $query_exa = $this->base_cgi."?_q=".urlencode($query)."&_f=xml2";
+    if($offset > 0){
+      $query_exa .= "&_s=".$offset;
+    }
 
     $xml_response = file_get_contents($query_exa);
     $this->parse($xml_response);
@@ -87,7 +90,9 @@ class Exalead{
     if(empty($this->base_cgi)) return false;
     if(empty($_GET['_C'])) return false;// _C est le contexte Exalead
     $query_exa = $this->base_cgi.'/_C='.str_replace(' ', '%20', $_GET['_C']).'&_f=xml2';
-
+    if(!empty($_GET['_s'])){
+      $query_exa .= "&_s=".$_GET['_s'];
+    }
     $xml_response = file_get_contents($query_exa);
     $this->parse($xml_response);
   }
