@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.7 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.8 2004-01-31 19:56:19 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -90,7 +90,7 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 
 <!-- Set up the form with the challenge value and an empty reply value //-->
 <form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
-  <input type="hidden" name="challenge" value="{$smarty.session.session.challenge}" />
+  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
   <input type="hidden" name="response"  value="" />
   <input type="hidden" name="username"  value="" />
 </form>
