@@ -59,13 +59,10 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/utilisateurs_identification.php	  | 
 	  | admin/utilisateurs_marketing.php		  | 
 	  | admin/utilisateurs.php					  | 
-	  | aide.php								  | 
-	  | antispam.php							  | 
 	  | auth-groupex.php						  | 
 	  | auth-redirect.php						  | 
 	  | charte.php								  | docs/charte.php
 	  | confbanana.php							  | 
-	  | contacts.php							  | 
 	  | coupure.php								  | stats/coupure.php
 	  | docs/FROM.php							  | docs/from.php
 	  | domaineperso.php						  | 
@@ -79,7 +76,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | ethique.php								  | docs/ethique.php
 	  | evenements.php							  | 
 	  | exit.php								  | 
-	  | faq.php									  | docs/faq.php
 	  | groupex/donne-chall.php					  | 
 	  | groupex/export-econfiance.php			  | 
 	  | groupex.php								  | 
@@ -163,8 +159,10 @@ xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
 xx	  | admin/valider.php						  | -
 xx	  | alias.php								  | -
+xx	  | antispam.php							  | -
 xx	  | apropos.php								  | docs/apropos.php
 xx	  | cacert.php								  | -
+xx	  | contacts.php							  | docs/contacts.php
 xx	  | deconnexion.php							  | -
 xx	  | docs/doc_carva.php						  | -
 xx	  | docs/doc_emails.php						  | -
@@ -178,6 +176,7 @@ xx	  | docs/doc_patte_cassee.php				  | -
 xx	  | docs/doc_smtp.php						  | -
 xx	  | docs/doc_ssl.php						  | -
 xx	  | docs/index.php							  | -
+xx	  | faq.php									  | docs/faq.php
 xx	  | getphoto.php							  | -
 xx	  | index.php								  | -
 xx	  | login.php								  | -
@@ -187,5 +186,6 @@ xx	  | preferences.php							  | -
 xx	  | skins.php								  | -
 xx	  | vcard.php								  | -
 ------+-------------------------------------------+----------------
+---	  | aide.php								  | 
 ---	  | auth-wiki.php							  | 
 ------+-------------------------------------------+----------------

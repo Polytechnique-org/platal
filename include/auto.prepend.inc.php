@@ -29,6 +29,7 @@ function _new_page($type, $tpl_name, $tpl_head, $min_auth, $popup=false, $admin=
     if($popup)
         $page->assign('popup_enable', true);
 
+    $page->config_overwrite=false;
     $page->compile_check=true;
     $page->caching=true;
 }

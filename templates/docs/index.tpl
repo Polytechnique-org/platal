@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.1 2004-01-27 16:34:50 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.2 2004-01-29 13:57:56 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Documentations et Aides diverses
@@ -129,5 +129,7 @@
 </table>
 </center>
 <br />
+
+{include file="docs/faq.tpl"}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
