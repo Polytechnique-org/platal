@@ -1,4 +1,4 @@
-{* $Id: password_prompt.tpl,v 1.8 2004-01-31 19:56:19 x2000habouzit Exp $ *}
+{* $Id: password_prompt.tpl,v 1.9 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 <noscript>
   <span class="erreur">
     Ton navigateur n'accepte pas le javaScript !!
@@ -30,7 +30,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
   nous t'avons envoyé (expéditeur pre-inscription@polytechnique.org).
   </li>
   <li>
-  Si tu n'es jamais venu sur le site, <span style="warning">il faut
+  Si tu n'es jamais venu sur le site, <span class="warning">il faut
     t'enregistrer auprès de nous</span> pour obtenir un accès. Polytechnique.org
   c'est l'e-mail des X, l'annuaire en ligne, plus un tas d'autres services.
   Nous te fournirons un accès le plus rapidement possible.<strong><a
@@ -52,7 +52,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
       </td>
       <td>
         <input type="text" name="username"size=20 maxlength=50
-          value="{insert name="getUserName" script="insert.password.inc.php"}">
+          value="{insert name="getUserName" script="insert.password.inc.php"}" />
       </td>
     </tr>
     <tr>
@@ -60,7 +60,7 @@ Si tu n'es pas {insert name="getName" script="insert.password.inc.php"}, change 
         Mot de passe:
       </td>
       <td>
-        <input type="password" name="password" size=10 maxlength=10>
+        <input type="password" name="password" size=10 maxlength=10 />
       </td>
     </tr>
     <tr>
@@ -90,7 +90,7 @@ Problème de connexion ? <a href="{"faq.php#connect"|url}">La réponse est là.</a>
 
 <!-- Set up the form with the challenge value and an empty reply value //-->
 <form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
-  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
+  <input type="hidden" name="challenge" value="{$smarty.session.session- />challenge}" />
   <input type="hidden" name="response"  value="" />
   <input type="hidden" name="username"  value="" />
 </form>

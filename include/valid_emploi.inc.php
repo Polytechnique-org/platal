@@ -25,9 +25,9 @@ class EmploiReq extends Validate {
         $texte = wordwrap($this->text, 80);
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}" />
-        <input type="hidden" name="type" value="{$this->type}" />
-        <input type="hidden" name="stamp" value="{$this->stamp}" />
+        <input type="hidden" name="uid" value="{$this- />uid}" />
+        <input type="hidden" name="type" value="{$this- />type}" />
+        <input type="hidden" name="stamp" value="{$this- />stamp}" />
         <table class="bicol" cellpadding="4" summary="Annonce emploi">
           <thead>
           <tr>

@@ -57,9 +57,9 @@ class PhotoReq extends Validate {
         $url_app = isset($_COOKIE[session_name()]) ?  "" : "&amp;".SID;
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}">
-        <input type="hidden" name="type" value="{$this->type}">
-        <input type="hidden" name="stamp" value="{$this->stamp}">
+        <input type="hidden" name="uid" value="{$this- />uid}" />
+        <input type="hidden" name="type" value="{$this- />type}" />
+        <input type="hidden" name="stamp" value="{$this- />stamp}" />
         <table class="bicol" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:</td>
@@ -76,9 +76,9 @@ class PhotoReq extends Validate {
         </tr>
         <tr>
             <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter">
+                <input type="submit" name="submit" value="Accepter" />
                 <br /><br />
-                <input type="submit" name="submit" value="Refuser">
+                <input type="submit" name="submit" value="Refuser" />
             </td>
             <td>
                 <p>Raison du refus:</p>

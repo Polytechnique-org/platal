@@ -1,4 +1,4 @@
-{* $Id: antispam.tpl,v 1.1 2004-01-29 13:57:56 x2000habouzit Exp $ *}
+{* $Id: antispam.tpl,v 1.2 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Ton filtre anti-spam
@@ -9,7 +9,7 @@
 <p class="normal">
 Un spam est un courrier électronique <strong>non sollicité</strong>. Ce peut-être un
 message de publicité, une proposition commerciale, etc... qui t'est envoyé
-par une personne que tu ne connais pas.<br>
+par une personne que tu ne connais pas.<br />
 Notre logiciel antispam tente de déterminer, parmi les courriers électroniques
 que tu reçois, lesquels sont des spams, et lesquels n'en sont pas.
 Trois réglages sont possibles :
@@ -27,7 +27,7 @@ Trois réglages sont possibles :
   <table class="tinybicol" width="90%" summary="filtre anti-spam">
     <tr>
       <td>
-        <strong>Choisis ton propre réglage :</strong><br>
+        <strong>Choisis ton propre réglage :</strong><br />
         {dynamic}
         <input type='radio' name='statut_filtre' value='0' {if $smarty.session.filtre eq 0}checked="checked"{/if} />
         (1) le filtre anti-spam est coupé<br />
@@ -40,7 +40,7 @@ Trois réglages sont possibles :
     </tr>
     <tr>
       <td class="center">
-        <input type="submit" name="filtre" value="Valider le filtre anti-spam">
+        <input type="submit" name="filtre" value="Valider le filtre anti-spam" />
       </td>
     </tr>
   </table>
@@ -54,7 +54,7 @@ recevoir.
 Aussi, <em>nous te conseillons, au moins dans un premier temps, d'utiliser
   l'option (2)</em>, qui elle n'efface aucun message, et te donne juste une
 indication visuelle des messages qui semblent être des spams.
-<br>
+<br />
 Si après quelques temps d'utilisation de l'option (2), tu en es satisfait,
 tu peux envisager d'opter pour l'option (3).
 </p>
@@ -66,10 +66,10 @@ tu peux envisager d'opter pour l'option (3).
 Pour que le logiciel fonctionne bien, il est préférable de lui indiquer,
 lorsqu'il s'est trompé, qu'il a fait une erreur ! Il est plutôt intelligent,
 et en tirera une leçon si on lui signale ses fautes, pour moins se tromper
-par la suite. L'aide de tous est donc la bienvenue.<br>
+par la suite. L'aide de tous est donc la bienvenue.<br />
 Si un courriel qui est un spam n'est pas détecté comme tel, réexpédie-le
 à l'adresse <a href="mailto:spam@polytechnique.org">spam@polytechnique.org</a>
-<strong>sous forme de pièce jointe</strong>.<br>
+<strong>sous forme de pièce jointe</strong>.<br />
 Inversement, si un message est considéré comme un spam alors que ce n'en est
 pas un, il faut le réexpédier à l'adresse
 <a href="mailto:nonspam@polytechnique.org">nonspam@polytechnique.org</a>

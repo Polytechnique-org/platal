@@ -30,9 +30,9 @@ class AliasReq extends Validate {
         $raison = nl2br(stripslashes(htmlentities($this->raison)));
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}">
-        <input type="hidden" name="type" value="{$this->type}">
-        <input type="hidden" name="stamp" value="{$this->stamp}">
+        <input type="hidden" name="uid" value="{$this- />uid}" />
+        <input type="hidden" name="type" value="{$this- />type}" />
+        <input type="hidden" name="stamp" value="{$this- />stamp}" />
         <table class="bicol" cellpadding="4" summary="Demande d'alias">
         <tr>
             <td>Demandeur&nbsp;:
@@ -53,9 +53,9 @@ class AliasReq extends Validate {
         </tr>
         <tr>
             <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter">
+                <input type="submit" name="submit" value="Accepter" />
                 <br /><br />
-                <input type="submit" name="submit" value="Refuser">
+                <input type="submit" name="submit" value="Refuser" />
             </td>
             <td>
                 <p>Raison du refus:</p>

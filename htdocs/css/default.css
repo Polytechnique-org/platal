@@ -22,7 +22,7 @@ body {
 a:link, a:visited, a:active, a:hover { color: #003399; background: inherit; }
 a img { border: 0px; }
 td    { vertical-align: top; }
-li    { padding-left: 3px; padding-right: 3px; }
+li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
 hr    { width: 90%; text-align: center }
 
 .center { text-align: center; }
@@ -238,4 +238,4 @@ table.tinybicol td.info, table.bicol td.info {
     font-size: 95%;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.11 2004-01-31 10:20:15 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.12 2004-02-02 11:48:34 x2000habouzit Exp $ */

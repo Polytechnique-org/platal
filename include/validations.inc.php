@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.2 2004-01-27 09:08:56 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $
  *
  */
 
@@ -51,13 +51,13 @@ class Validate {
      *
      * XXX fonction "statique" XXX
      * XXX à dériver XXX
-     * à utiliser uniquement pour récupérer un objet <br>unique</br>
+     * à utiliser uniquement pour récupérer un objet <strong>unique</strong>
      */
     function get_unique_request($uid,$type) {
         $sql = mysql_query("SELECT data,stamp FROM requests WHERE user_id='$uid' and type='$type'");
         if(list($result,$stamp) = mysql_fetch_row($sql)) {
             $result = unserialize($result);
-            // on ne fait <b>jamais</b> confiance au timestamp de l'objet,
+            // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
             $result->stamp = $stamp;
             if(!$result->unique) // on vérifie que c'est tout de même bien un objet unique
                 $result = false;
@@ -82,7 +82,7 @@ class Validate {
             ." WHERE user_id='$uid' and type = '$type' and stamp='$stamp'");
         if(list($result,$stamp) = mysql_fetch_row($sql)) {
             $result = unserialize($result);
-            // on ne fait <b>jamais</b> confiance au timestamp de l'objet,
+            // on ne fait <strong>jamais</strong> confiance au timestamp de l'objet,
             $result->stamp = $stamp;
         } else
             $result = false;

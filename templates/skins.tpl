@@ -1,4 +1,4 @@
-{* $Id: skins.tpl,v 1.2 2004-01-28 17:19:47 x2000habouzit Exp $ *}
+{* $Id: skins.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Skins Polytechnique.org
@@ -22,7 +22,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 
 <form action="{$smarty.server.REQUEST_URI}" method="POST">
   <div style="text-align:center; margin: 1em;">
-    <input type="submit" value="Enregistrer" name="submit">
+    <input type="submit" value="Enregistrer" name="submit" />
   </div>
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
 {dynamic}
@@ -48,7 +48,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 {/dynamic}
   </table>
   <div style="text-align:center; margin: 1em;">
-    <input type="submit" value="Enregistrer" name="submit">
+    <input type="submit" value="Enregistrer" name="submit" />
   </div>
 
 </form>

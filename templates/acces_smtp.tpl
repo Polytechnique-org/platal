@@ -1,4 +1,4 @@
-{* $Id: acces_smtp.tpl,v 1.1 2004-01-27 11:04:55 x2000habouzit Exp $ *}
+{* $Id: acces_smtp.tpl,v 1.2 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <p class="erreur">
@@ -62,7 +62,7 @@
         Mot de passe :
       </td>
       <td>
-        <input type="password" size=15 maxlength=15 name="smtppass1">
+        <input type="password" size=15 maxlength=15 name="smtppass1" />
       </td>
     </tr>
     <tr>
@@ -70,15 +70,15 @@
         Retape-le une fois (pour vérification):
       </td>
       <td>
-        <input type="password" size=15 maxlength=15 name="smtppass2">
+        <input type="password" size=15 maxlength=15 name="smtppass2" />
       </td>
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="hidden" name="op" value="">
-        <input type="submit" value="Valider" onClick="CheckResponse(); return false;">
+        <input type="hidden" name="op" value="" />
+        <input type="submit" value="Valider" onClick="CheckResponse(); return false;" />
 {if $actif}
-        &nbsp;&nbsp;<input type="submit" value="Supprimer" onClick="SupprimerMdp();">
+        &nbsp;&nbsp;<input type="submit" value="Supprimer" onClick="SupprimerMdp();" />
 {/if}
       </td>
     </tr>

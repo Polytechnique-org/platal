@@ -1,4 +1,4 @@
-{* $Id: alias.tpl,v 1.3 2004-01-29 16:21:53 x2000habouzit Exp $ *}
+{* $Id: alias.tpl,v 1.4 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
 {if $success}
   <p class="normal">
@@ -52,7 +52,7 @@
         <td>Alias demandé :</td>
       </tr>
       <tr>
-        <td><input type="text" name="alias" value="{dyn s=$r_alias}">@melix.net et @melix.org</td>
+        <td><input type="text" name="alias" value="{dyn s=$r_alias}" />@melix.net et @melix.org</td>
       </tr>
       <tr>
         <td>Brève explication :</td>
@@ -61,8 +61,7 @@
         <td><textarea rows="5" cols="50" name="raison">{dyn s=$r_raison}</textarea></td>
       </tr>
       <tr>
-        <td><input type="submit" name="submit"
-          value="Envoyer"></td>
+        <td><input type="submit" name="submit" value="Envoyer" /></td>
       </tr>
     </table>
   </form>

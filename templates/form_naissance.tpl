@@ -1,4 +1,4 @@
-{* $Id: form_naissance.tpl,v 1.2 2004-01-29 16:21:53 x2000habouzit Exp $ *}
+{* $Id: form_naissance.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 <div class="rubrique">
   Date de naissance
 </div>
@@ -24,12 +24,12 @@
         <strong>Date</strong> (JJMMAAAA)
       </td>
       <td>
-        <input type="text" size="8" maxlength="8" name="birth">
+        <input type="text" size="8" maxlength="8" name="birth" />
       </td>
     </tr>
     <tr>
       <td class="center" colspan="2">
-        <input type="submit" value="Enregistrer" name="submit">
+        <input type="submit" value="Enregistrer" name="submit" />
       </td>
     </tr>
   </table>

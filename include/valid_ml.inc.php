@@ -63,9 +63,9 @@ class MListReq extends Validate {
 
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}">
-        <input type="hidden" name="type" value="{$this->type}">
-        <input type="hidden" name="stamp" value="{$this->stamp}">
+        <input type="hidden" name="uid" value="{$this- />uid}" />
+        <input type="hidden" name="type" value="{$this- />type}" />
+        <input type="hidden" name="stamp" value="{$this- />stamp}" />
         <table class="bicol">
         <tr>
             <td>Demandeur&nbsp;:</td>
@@ -84,12 +84,12 @@ class MListReq extends Validate {
                 Alias :
             </td>
             <td style="border-top:1px dotted inherit">
-                <input type="text" name="alias" value="{$this->alias}" />@polytechnique.org
+                <input type="text" name="alias" value="{$this- />alias}" />@polytechnique.org
             </td>
         </tr>
         <tr>
             <td>Topic :</td>
-            <td><input type="text" name="topic" size="60" value="{$this->topic}" />
+            <td><input type="text" name="topic" size="60" value="{$this- />topic}" />
             </td>
         </tr>
         <tr>
@@ -111,9 +111,9 @@ class MListReq extends Validate {
         </tr>
         <tr>
             <td style="border-top:1px dotted inherit; vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter">
+                <input type="submit" name="submit" value="Accepter" />
                 <br /><br />
-                <input type="submit" name="submit" value="Refuser">
+                <input type="submit" name="submit" value="Refuser" />
             </td>
             <td style="border-top:1px dotted inherit">
                 <p>Explication complémentaire (refus ou changement de config, ...)</p>

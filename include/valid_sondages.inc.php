@@ -33,9 +33,9 @@ class SondageReq extends Validate {
         $url = "$baseurl/sondage/questionnaire.php?SID=".$this->sid;
         return <<<________EOF
         <form action="{$_SERVER['PHP_SELF']}" method="POST">
-        <input type="hidden" name="uid" value="{$this->uid}">
-        <input type="hidden" name="type" value="{$this->type}">
-        <input type="hidden" name="stamp" value="{$this->stamp}">
+        <input type="hidden" name="uid" value="{$this- />uid}" />
+        <input type="hidden" name="type" value="{$this- />type}" />
+        <input type="hidden" name="stamp" value="{$this- />stamp}" />
         <table class="bicol" cellpadding="4" summary="Sondage">
         <tr>
             <td>Demandeur&nbsp;:
@@ -56,14 +56,14 @@ class SondageReq extends Validate {
         </tr>
         <tr>
             <td>Alias du sondage&nbsp;:</td>
-            <td><input type="text" name="alias" value="{$this->alias}">&nbsp;(ne doit
+            <td><input type="text" name="alias" value="{$this- />alias}" />&nbsp;(ne doit
             pas contenir le caractère ')</td>
         </tr>
         <tr>
             <td style="vertical-align: middle;">
-                <input type="submit" name="submit" value="Accepter">
+                <input type="submit" name="submit" value="Accepter" />
                 <br /><br />
-                <input type="submit" name="submit" value="Refuser">
+                <input type="submit" name="submit" value="Refuser" />
             </td>
             <td>
                 <p>Raison du refus:</p>
@@ -86,23 +86,23 @@ ________EOF;
         if ($_REQUEST['submit']!="Refuser") {
             $alias = stripslashes($_REQUEST['alias']);
             if ($alias=="") {
-                echo "<br>Il faut entrer un alias pour valider ce sondage.";
+                echo "<br />Il faut entrer un alias pour valider ce sondage.";
                 return false;
             }
             else {
                 if (strlen($alias)>15) {
-                    echo "<br>L'alias est trop long.";
+                    echo "<br />L'alias est trop long.";
                     return false;
                 }
                 else if (strpos($alias,"'")) {
-                    echo "<br>L'alias ne doit pas contenir le caractère '";
+                    echo "<br />L'alias ne doit pas contenir le caractère '";
                     return false;
                 }
                 else {//on vérifie que l'alias n'existe pas déjà
                     $resultat = mysql_query("select alias from sondage.description_generale ".
                     "where alias='$alias'");
                     if (mysql_num_rows($resultat)>0) {
-                        echo "<br>Cet alias est déjà utilisé.";
+                        echo "<br />Cet alias est déjà utilisé.";
                         return false;
                     }
                 }

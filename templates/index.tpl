@@ -1,4 +1,4 @@
-{* $Id: index.tpl,v 1.2 2004-01-26 12:36:32 x2000habouzit Exp $ *}
+{* $Id: index.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Bienvenue sur le portail des élèves et anciens élèves de l'X !
@@ -22,7 +22,7 @@
   <strong>Dans tous les cas,</strong> vous pouvez :
   <ul>
    <li class="spaced"><strong><a href="recherche.php?annuaire_public=1">rechercher un ancien élève ou un élève</a></strong> dans l'annuaire en ligne,</li>
-   <li style="text-align: justify;" class="spaced"><strong><a href="http://asso.polytechnique.org/">accéder à la liste des sites en rapport avec l'École</a></strong> - les sites officiels de l'École sont <a href="http://www.polytechnique.fr">polytechnique.fr</a> et <a href="http://www.polytechnique.edu">polytechnique.edu</a>, le portail des X sur le web est <a href="http://www.polytechnique.org/">polytechnique.org</a>, et le site de l'amicale des Anciens est <a href="http://www.polytechniciens.com/">polytechniciens.com</a>.</li>
+   <li class="spaced"><strong><a href="http://asso.polytechnique.org/">accéder à la liste des sites en rapport avec l'École</a></strong> - les sites officiels de l'École sont <a href="http://www.polytechnique.fr">polytechnique.fr</a> et <a href="http://www.polytechnique.edu">polytechnique.edu</a>, le portail des X sur le web est <a href="http://www.polytechnique.org/">polytechnique.org</a>, et le site de l'amicale des Anciens est <a href="http://www.polytechniciens.com/">polytechniciens.com</a>.</li>
   </ul>
  
 <p class="normal">

@@ -1,4 +1,4 @@
-{* $Id: carva_redirect.tpl,v 1.2 2004-01-29 16:21:53 x2000habouzit Exp $ *}
+{* $Id: carva_redirect.tpl,v 1.3 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <div class="rubrique">
@@ -77,20 +77,20 @@
     <tr>
       <td colspan="2" class="center">
         <strong>http://</strong>&nbsp;<input size=50 maxlength=255 name="url"
-        value="{$smarty.post.url|default:$carva}">
+        value="{$smarty.post.url|default:$carva}" />
       </td>
     </tr>
     <tr>
 {if $carva}
       <td class="center">
-        <input type="submit" value="Modifier" name="submit">
+        <input type="submit" value="Modifier" name="submit" />
       </td>
       <td class="center">
-        <input type="submit" value="Supprimer" name="submit">
+        <input type="submit" value="Supprimer" name="submit" />
       </td>
 {else}
       <td colspan="2" class="center">
-        <input type="submit" value="Valider" name="submit">
+        <input type="submit" value="Valider" name="submit" />
       </td>
 {/if}
     </tr>

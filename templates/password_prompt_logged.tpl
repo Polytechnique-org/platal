@@ -1,6 +1,6 @@
-{* $Id: password_prompt_logged.tpl,v 1.6 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: password_prompt_logged.tpl,v 1.7 2004-02-02 11:48:35 x2000habouzit Exp $ *}
 
-<div style="text-align:center">
+<div class="center">
   <table width="90%" summary="Accès sécurisé">
     <tr>
       <td>
@@ -25,7 +25,7 @@
         Mot de passe:
       </td>
       <td>
-        <input type="password" name="password" size=10 maxlength=10>
+        <input type="password" name="password" size=10 maxlength=10 />
       </td>
     </tr>
     <tr>
@@ -34,7 +34,7 @@
         <a href="{"recovery.php"|url}">J'ai perdu mon mot de passe</a>
       </td>
       <td style="text-align:right">
-        <input  type="submit" name="submitbtn" value="Envoyer">
+        <input  type="submit" name="submitbtn" value="Envoyer" />
       </td>
     </tr>
   </table>
@@ -49,9 +49,9 @@
 
 <!-- Set up the form with the challenge value and an empty reply value -->
 <form action="{$smarty.server.REQUEST_URI}" method=post name="loginsub">
-  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}">
-  <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}">
-  <input type="hidden" name="response"  value="">
+  <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
+  <input type="hidden" name="username"  value="{$smarty.cookies.ORGlogin}" />
+  <input type="hidden" name="response"  value="" />
 </form>
 
 {literal}
