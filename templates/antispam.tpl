@@ -1,4 +1,4 @@
-{* $Id: antispam.tpl,v 1.3 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: antispam.tpl,v 1.4 2004-08-24 20:13:22 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Ton filtre anti-spam
@@ -29,11 +29,11 @@ Trois réglages sont possibles :
       <td>
         <strong>Choisis ton propre réglage :</strong><br />
         {dynamic}
-        <input type='radio' name='statut_filtre' value='0' {if $smarty.session.filtre eq 0}checked="checked"{/if} />
+        <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} />
         (1) le filtre anti-spam est coupé<br />
-        <input type='radio' name='statut_filtre' value='1' {if $smarty.session.filtre eq 1}checked="checked"{/if} />
+        <input type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} />
         (2) le filtre anti-spam est activé, et marque les mails<br />
-        <input type='radio' name='statut_filtre' value='2' {if $smarty.session.filtre eq 2}checked="checked"{/if} />
+        <input type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} />
         (3) le filtre anti-spam est activé, et élimine les mails détectés comme spams<br />
         {/dynamic}
       </td>

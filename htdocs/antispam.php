@@ -35,9 +35,13 @@ if (isset($_REQUEST['filtre']) and isset($_REQUEST['statut_filtre'])
     }
 }
 
-$result = $globals->db->query("select find_in_set('drop', flags) from emails where uid = {$_SESSION['uid']} and num = 0 and find_in_set('active', flags)");
-list($filtre) = mysql_num_rows($result) + intval(mysql_fetch_row($result));
+$result = $globals->db->query("SELECT FIND_IN_SET('drop', flags)
+				 FROM emails
+				 WHERE uid = {$_SESSION['uid']} AND num = 0 AND find_in_set('active', flags)");
+list($filtre) = mysql_fetch_row($result);
+$filtre += mysql_num_rows($result);
 mysql_free_result($result);
+
 $page->assign('filtre',$filtre);
 
 $page->run();
