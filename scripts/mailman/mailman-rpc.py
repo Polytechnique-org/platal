@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.28 2004-09-22 12:39:38 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.29 2004-09-23 11:03:20 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -343,6 +343,7 @@ def get_pending_ops((userdesc,perms),listname):
                     'subj'  : Utils.oneline(subject,'utf8'),
                     'stamp' : ptime
                     })
+        mlist.save();
     except:
         mlist.Unlock()
         return 0
