@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.20 2004-11-13 14:16:15 x2000habouzit Exp $
+        $Id: fiche.php,v 1.21 2004-11-17 10:12:44 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -49,12 +49,12 @@ $reqsql = "SELECT  u.prenom, u.nom, u.epouse, IF(gp.nat='',gp.pays,gp.nat) AS te
 		   u.libre, u.promo, c.uid IS NOT NULL, p.x, p.y
 	     FROM  auth_user_md5  AS u
        INNER JOIN  aliases        AS a  ON (u.user_id=a.id AND a.type='a_vie')
-       INNER JOIN  aliases        AS a2 ON (u.user_id=a2.id AND (a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
+       INNER JOIN  aliases        AS a2 ON (u.user_id=a2.id AND a2.type='alias' AND a2.alias LIKE '%.%')
         LEFT JOIN  contacts       AS c  ON (c.uid = {$_SESSION['uid']} and c.contact = u.user_id)
         LEFT JOIN  geoloc_pays    AS gp ON (gp.a2 = u.nationalite)
        INNER JOIN  sections             ON(sections.id = u.section)
         LEFT JOIN  photo as p ON(p.uid = u.user_id)".$where_clause."
-	 ORDER BY  a2.type != 'epouse', LENGTH(a2.alias) LIMIT 1";
+	 ORDER BY  !FIND_IN_SET('epouse',a2.flags), LENGTH(a2.alias) LIMIT 1";
 
 $result = $globals->db->query($reqsql);
 

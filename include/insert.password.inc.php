@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: insert.password.inc.php,v 1.5 2004-10-10 09:09:34 x2000chevalier Exp $
+        $Id: insert.password.inc.php,v 1.6 2004-11-17 10:12:45 x2000habouzit Exp $
  ***************************************************************************/
 
 function smarty_insert_getName() {
@@ -37,7 +37,10 @@ function smarty_insert_getUsername() {
     if(isset($_COOKIE['ORGuid'])) $id = $_COOKIE['ORGuid'];
     if(isset($_SESSION['uid'])) $id = $_SESSION['uid'];
     if(empty($id)) return "";
-    $res = $globals->db->query("SELECT alias FROM aliases WHERE id='$id' AND (type='a_vie' OR type='alias' OR type='epouse') ORDER BY type!='epouse', LENGTH(alias) LIMIT 1");
+    $res = $globals->db->query("SELECT  alias
+                                  FROM  aliases
+				 WHERE  id='$id' AND (type='a_vie' OR type='alias')
+			      ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias) LIMIT 1");
     if(list($uname) = mysql_fetch_row($res)) {
 	mysql_free_result($res);
 	return $uname;

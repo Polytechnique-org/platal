@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.28 2004-11-16 21:13:31 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.29 2004-11-17 10:12:44 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -159,7 +159,7 @@ if(isset($mr)) {
 		$globals->db->query("delete from photo where uid=$user_id");
 		$globals->db->query("delete from perte_pass where uid=$user_id");
 		$globals->db->query("delete from user_changes where user_id=$user_id");
-		$globals->db->query("delete from aliases where id=$user_id and type in ('a_vie','epouse','alias')");
+		$globals->db->query("delete from aliases where id=$user_id and type in ('a_vie','alias')");
 		$globals->db->query("delete from listes_ins where idu=$user_id");
 		$globals->db->query("delete from listes_mod where idu=$user_id");
 		$globals->db->query("delete from applis_ins where uid=$user_id");

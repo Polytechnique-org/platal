@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: routage-mail.php,v 1.10 2004-11-07 20:17:22 x2000habouzit Exp $
+        $Id: routage-mail.php,v 1.11 2004-11-17 10:12:44 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -52,7 +52,10 @@ list($grx) = mysql_fetch_row($res);
 $page->assign('grx',$grx);
 $page->assign('domaine',substr($grx,0,-3));
 
-$page->mysql_assign("SELECT alias,expire FROM aliases WHERE id='{$_SESSION['uid']}' AND (type='a_vie' OR type='alias' OR type='epouse') ORDER BY type!='epouse', LENGTH(alias)", 'alias');
+$page->mysql_assign("SELECT  alias,expire
+                       FROM  aliases
+		      WHERE  id='{$_SESSION['uid']}' AND (type='a_vie' OR type='alias')
+		   ORDER BY  !FIND_IN_SET('epouse',flags), LENGTH(alias)", 'alias');
 $page->assign('emails',$redirect->emails);
 
 $page->run();

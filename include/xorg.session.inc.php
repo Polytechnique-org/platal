@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.session.inc.php,v 1.37 2004-11-06 18:18:44 x2000habouzit Exp $
+        $Id: xorg.session.inc.php,v 1.38 2004-11-17 10:12:45 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.session.inc.php");
@@ -222,14 +222,14 @@ function start_connexion ($uid, $identified) {
     $result=$globals->db->query("
 	SELECT  prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias,
 		UNIX_TIMESTAMP(q.lastnewslogin), q.watch_last,
-		a2.alias, password, FIND_IN_SET('femme', flags)
+		a2.alias, password, FIND_IN_SET('femme', u.flags)
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN	aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
-    INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias' OR a2.type='epouse') AND a2.alias LIKE '%.%')
+    INNER JOIN  aliases		AS a2 ON (u.user_id = a2.id AND (a2.type='a_vie' OR a2.type='alias') AND a2.alias LIKE '%.%')
      LEFT JOIN  logger.sessions AS s ON (s.uid=u.user_id AND s.suid=0)
          WHERE  u.user_id=$uid
-      ORDER BY  s.start DESC, a2.type != 'epouse', length(a2.alias)
+      ORDER BY  s.start DESC, !FIND_IN_SET('epouse', a2.flags), length(a2.alias)
          LIMIT  1");
     list($prenom, $nom, $perms, $promo, $matricule, $lastlogin, $host, $forlife, 
 	 $lastnewslogin, $watch_last,
