@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.7 2004-09-09 09:25:51 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.8 2004-09-09 09:28:34 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -139,13 +139,13 @@ def members(userdesc,listname):
         return None
     members = mlist.getRegularMemberKeys()
     if ( userdesc.perms == 'admin' ) or ( mlist.advertised ):
-        return (members,mlist.owners)
+        return (members,mlist.owner)
     for member in members:
         if member == userdesc.address:
-            return (members,mlist.owners)
+            return (members,mlist.owner)
     for member in mlist.owner:
         if member == userdesc.address:
-            return (members,mlist.owners)
+            return (members,mlist.owner)
 
 def subscribe(userdesc,listname):
     try:
