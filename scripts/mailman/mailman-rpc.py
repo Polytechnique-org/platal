@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.6 2004-09-08 19:00:49 x2000palatin Exp $
+#       $Id: mailman-rpc.py,v 1.7 2004-09-09 09:25:51 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -48,6 +48,9 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     This request handler is used to provide BASIC HTTP user authentication.
     It first overloads the do_POST() function, authenticates the user, then
     calls the super.do_POST().
+
+    Moreover, we override _dispatch, so that we call functions with as first
+    argument a UserDesc taken from the database, containing name, email and perms
     """
 
     def _dispatch(self,method,params):
@@ -73,33 +76,14 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.send_response(401)
             self.end_headers()
 
-    def connectDB(self):
-        try:
-            connection=MySQLdb.connect(
-		    passwd='***************',
-                    db='x4dat',
-                    user='***',
-                    host='localhost')
-            connection.ping()
-            self.mysql = connection.cursor()
-        except:
-            selc.mysql = None
-
     def getUserDesc(self, uid, md5):
-	try:
-	    if self.mysql is None:
-		pass
-	except:
-            self.connectDB()
-        if self.mysql is None:
-            return None
-	self.mysql.execute ("""SELECT  u.prenom,u.nom,a.alias,u.perms
-				 FROM  auth_user_md5 AS u
-			   INNER JOIN  aliases       AS a ON a.id=u.user_id
-				WHERE  u.user_id = '%s' AND u.password = '%s'
-				LIMIT  1""" %( uid, md5 ))
-        if int(self.mysql.rowcount) is 1:
-            user = self.mysql.fetchone()
+        mysql.execute ("""SELECT  u.prenom,u.nom,a.alias,u.perms
+                           FROM  auth_user_md5 AS u
+                     INNER JOIN  aliases       AS a ON a.id=u.user_id
+                          WHERE  u.user_id = '%s' AND u.password = '%s'
+                          LIMIT  1""" %( uid, md5 ) )
+        if int(mysql.rowcount) is 1:
+            user = mysql.fetchone()
             userdesc = UserDesc()
             userdesc.fullname = user[0]+' '+user[1]
             userdesc.address = user[2]+'@polytechnique.org'
@@ -113,17 +97,55 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 # Procedures
 #
 
-def lists_names(user):
+def connectDB():
+    try:
+        db = MySQLdb.connect(
+                db='x4dat',
+                user=mm_cfg.MYSQL_USER,
+                passwd=mm_cfg.MYSQL_PASS,
+                unix_socket='/var/run/mysqld/mysqld.sock')
+        db.ping()
+        return db.cursor()
+    except:
+        return None
+
+def lists_names(userdesc):
     names = Utils.list_names()
     names.sort()
-    return names
+    result = []
+    for name in names:
+        try:
+            mlist = MailList.MailList(name, lock=0)
+        except Errors.MMListError:
+            continue
+        is_member = False
+        is_owner = False
+        for member in mlist.getRegularMemberKeys():
+            if userdesc.address == member:
+                is_member = True
+                break
+        for owner in mlist.owner:
+            if userdesc.address == owner:
+                is_owner = True
+                break
+        if ( mlist.advertised ) or ( userdesc.perms == 'admin' ) or is_member or is_owner:
+            result.append( (name,mlist.advertised,is_member,is_owner) )
+    return result
 
 def members(userdesc,listname):
     try:
         mlist = MailList.MailList(listname, lock=False)
     except Errors.MMListError, e:
         return None
-    return mlist.getRegularMemberKeys()
+    members = mlist.getRegularMemberKeys()
+    if ( userdesc.perms == 'admin' ) or ( mlist.advertised ):
+        return (members,mlist.owners)
+    for member in members:
+        if member == userdesc.address:
+            return (members,mlist.owners)
+    for member in mlist.owner:
+        if member == userdesc.address:
+            return (members,mlist.owners)
 
 def subscribe(userdesc,listname):
     try:
@@ -131,15 +153,28 @@ def subscribe(userdesc,listname):
     except Errors.MMListError, e:
         return 0
     try:
-        mlist.ApprovedAddMember(userdesc)
-        mlist.Save()
+        approved = ( mlist.subscribe_policy in (0,1) ) or ( userdesc.perms == 'admin' )
+        if approved is False :
+            for owner in mlist.owner:
+                if owner == userdesc.address:
+                    approved = True
+                    break
+        if approved:
+            result = 2
+            mlist.ApprovedAddMember(userdesc)
+            mlist.Save()
+        else:
+            result = 1
+            mlist.AddMember(userdesc,'xml-rpc iface')
     except Exception, e:
         mlist.Unlock()
         return 0
     mlist.Unlock()
-    return 1
+    return result
 
 def unsubscribe(userdesc,listname):
+    # here : no rights to verify, because if we can delete us ...
+    #        it's that we are in there, else we delete nobody, so no harm
     try:
         mlist = MailList.MailList(listname, lock=True)
     except Errors.MMListError, e:
@@ -157,6 +192,7 @@ def unsubscribe(userdesc,listname):
 # server
 #
 
+mysql = connectDB()
 server = SimpleXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 server.register_function(lists_names)
 server.register_function(members)
@@ -165,3 +201,4 @@ server.register_function(unsubscribe)
 #server.register_introspection_functions()
 server.serve_forever()
 
+# vim:set et:

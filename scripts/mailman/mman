@@ -1,0 +1,23 @@
+    - possibilité de les lister les listes, avec :
+[X]   o listes publiques listes publiques (tout le monde peut les lister)
+[X]   o listes privées (on ne peut les lister que si on y appartient)
+[ ]   o listes admin (on ne peut les lister que si on est admin)
+
+    - pour le gestionnaire, possibilité de :
+[ ]   o ajouter un utilisateur
+[ ]   o supprimer un utilisateur
+[ ]   o ajouter/supprimer un autre gestionnaire
+[ ]   o ajouter supprimer un moderateur
+[ ]   o possibilité de changer le message de bienvenue sur la liste
+[ ]   o possiblité de modérer des messages via _notre_ interface
+
+    - pour les modérateurs
+[ ]   o possiblité de modérer des messages via _notre_ interface
+
+    - les inscrits lamdas :
+[X]   o possibilité de s'inscrire tout seul si la ML est en inscription libre
+[X]   o possibilité de se desinscrire tt seul pour toutes les ML
+[-]   o possibilité de faire une demande d'inscription pour les listes publiques mais non libres d'inscription
+[X]   o possiblité de lister les membres d'une ML publique (inscrit ou pas inscrit) ou dont on fait partie
+[X]   o possiblité d'afficher le nom du proprio de la liste (mmes choses que ligne précédente)
+[ ]   o possibilité d'activer l'option digest
