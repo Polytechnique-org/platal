@@ -3,10 +3,10 @@
 ,---------------------.
 | NB Etats :          |
 | ;   -> rien de fait |
+| ;!  -> postponned   |
 | x   -> à tester     |
 | xx  -> en templates |
 | xxx -> anonyme      |
-| ;!  -> postponned   |
 | x!! -> supprimée    |
 | xx! -> non modifiée |
 `---------------------'
@@ -23,7 +23,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | admin/envoidirect.php					  | 
 ;	  | admin/evenements.php					  | 
 ;	  | admin/homonymes.php						  | 
-;	  | admin/ins_confirmees.php				  | 
 ;	  | admin/pg.php							  | 
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/marketing.php						  | marketing/
@@ -92,7 +91,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | trombino.php							  | 
 ;	  | trombipromo.php							  | 
 ;	  | x.php									  | 
-------+-[ admin ]---------------------------------+----------------
 ------+-[ news ]----------------------------------+----------------
 ;!	  | news/abonnements.php					  | \
 ;!	  | news/article.php						  |  |
@@ -133,6 +131,7 @@ xx	  | admin/gerer_paiement.php				  | -
 xx	  | admin/gerer_skins.php					  | -
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
 xx	  | admin/index.php							  | -
+xx	  | admin/ins_confirmees.php				  | -
 xx	  | admin/logger_actions.php				  | -
 xx	  | admin/logger.php						  | -
 xx	  | admin/newsletter_archi.php				  | -
