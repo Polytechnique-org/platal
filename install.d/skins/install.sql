@@ -1,4 +1,4 @@
-alter table auth_user_quick drop column skin;
+alter table auth_user_quick add column skin tinyint not null;
 insert into admin_a values(5, 'Skins', 'admin/gerer_skins.php', 30);
 
 --
