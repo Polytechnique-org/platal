@@ -15,8 +15,6 @@
 
 ------+-------------------------------------------+----------------
 Etat  | Ancien nom								  | Nouveau nom
-------+-[ admin ]---------------------------------+----------------
-;	  | admin/evenements.php					  | 
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/utilisateurs_identification.php	  | marketing/
 ;	  | admin/utilisateurs_marketing.php		  | marketing/
@@ -95,6 +93,7 @@ xx	  | admin/admin_trombino.php				  |
 xx	  | admin/ax-xorg.php						  | -
 xx	  | admin/deces_promo.php					  | -
 xx	  | admin/envoidirect.php					  | marketing/envoidirect.php
+xx	  | admin/evenements.php					  | 
 xx	  | admin/FormatePrenomNOM2.php				  | scripts/
 xx	  | admin/FormatePrenomNOM.php				  | scripts/
 xx	  | admin/gerer_applis.php					  | -
