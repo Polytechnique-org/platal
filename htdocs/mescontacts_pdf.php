@@ -18,11 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts_pdf.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: mescontacts_pdf.php,v 1.3 2004-10-09 13:52:01 x2000habouzit Exp $
  ***************************************************************************/
 
 #
-# $Id: mescontacts_pdf.php,v 1.2 2004-08-31 10:03:28 x2000habouzit Exp $
+# $Id: mescontacts_pdf.php,v 1.3 2004-10-09 13:52:01 x2000habouzit Exp $
 #
 
 require("auto.prepend.inc.php");
@@ -30,18 +30,19 @@ new_skinned_page('index.tpl', AUTH_COOKIE);
 require("texify.inc.php");
 require("applis.func.inc.php");
 
+$sql = "SELECT  a.*,c.*,e.alias as epouse
+	  FROM  auth_user_md5 AS a
+    INNER JOIN  contacts      AS c ON ( a.user_id = c.contact )
+    LEFT  JOIN  aliases       AS e ON ( a.user_id = e.id and type='epouse' )
+         WHERE  c.uid = {$_SESSION['uid']}";
 // choix de l'ordre des réponses (par promo ou par noms)
 if(isset($_GET['order']) && $_GET['order']=="promo") {
-    $req = $globals->db->query("SELECT * FROM auth_user_md5 as a, contacts as c"
-			." WHERE a.user_id = c.contact AND c.uid = {$_SESSION['uid']} "
-			." ORDER BY a.promo, a.nom, a.prenom"
-	    	);
+    $sql .= " ORDER BY  a.promo, a.nom, a.prenom";
 } else {
-    $req = $globals->db->query("SELECT * FROM auth_user_md5 as a, contacts as c "
-			." WHERE a.user_id = c.contact AND c.uid = {$_SESSION['uid']} "
-			." ORDER BY a.nom, a.prenom, a.promo"
-	    	);
+    $sql .= " ORDER BY a.nom, a.prenom, a.promo";
 }
+    
+$req = $globals->db->query($sql);
 
 // génération des en-têtes
 $texsrc = contacts_headers();
