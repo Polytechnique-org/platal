@@ -19,18 +19,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: cron_validations.php,v 1.2 2004-10-02 15:34:53 x2000habouzit Exp $
+        $Id: cron_validations.php,v 1.3 2004-10-09 15:16:27 x2000habouzit Exp $
  ***************************************************************************/
 /* vim: set sw=4 ts=4 sts=4 tw=100:
  * vérifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
  * 
- * $Id: cron_validations.php,v 1.2 2004-10-02 15:34:53 x2000habouzit Exp $
+ * $Id: cron_validations.php,v 1.3 2004-10-09 15:16:27 x2000habouzit Exp $
 */ 
 
 $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
 $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 
-require("../../../diogenes/lib/diogenes.mailer.inc.php");
+require("/usr/share/php/diogenes/diogenes.mailer.inc.php");
 require('./connect.db.inc.php');
 
 $sql = mysql_query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
