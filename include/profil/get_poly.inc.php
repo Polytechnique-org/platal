@@ -18,17 +18,17 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_poly.inc.php,v 1.1 2004-08-31 19:09:19 x2000habouzit Exp $
+        $Id: get_poly.inc.php,v 1.2 2004-09-01 21:55:32 x2000habouzit Exp $
  ***************************************************************************/
 
 
 //declaration des fonctions msarty pour les binets et groupex
 
-$sql = "SELECT u.nom, u.prenom".
-    ", u.promo, epouse, i.flags, section".
-    " FROM auth_user_md5 AS u".
-    " LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
-    " WHERE user_id=".$_SESSION['uid'];
+$sql = "SELECT  u.nom, u.prenom, u.promo, a.alias as epouse, i.flags, section
+          FROM  auth_user_md5  AS u
+     LEFT JOIN  identification AS i ON(u.matricule = i.matricule)
+     LEFT JOIN  aliases	       AS a ON(u.user_id = a.id AND type='epouse')
+         WHERE  user_id=".$_SESSION['uid'];
 
 $result = $globals->db->query($sql);
 list($nom, $prenom, $promo, $epouse, $flags, $section) = mysql_fetch_row($result);

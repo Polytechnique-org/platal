@@ -18,19 +18,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: get_general.inc.php,v 1.1 2004-08-31 15:03:33 x2000habouzit Exp $
+        $Id: get_general.inc.php,v 1.2 2004-09-01 21:55:32 x2000habouzit Exp $
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
 $sql = "SELECT u.nom, u.prenom".
-        ", u.promo, epouse, FIND_IN_SET('femme',i.flags), nationalite".
+        ", u.promo, a.alias as epouse, FIND_IN_SET('femme',i.flags), nationalite".
 	", mobile".
 	", web".
         ", libre".
-	", alias".
+	", u.alias".
 	", a1.aid, a1.type".
 	", a2.aid, a2.type".
 	" FROM auth_user_md5 AS u".
+	" LEFT  JOIN aliases    AS a ON(u.user_id = a.id AND a.type='epouse')" .
 	" LEFT  JOIN applis_ins AS a1 ON(a1.uid = u.user_id and a1.ordre = 0)".
 	" LEFT  JOIN applis_ins AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)".
 	" LEFT  JOIN identification AS i ON(u.matricule = i.matricule) ".
