@@ -190,7 +190,7 @@ class Notifs {
     var $_cats = Array();
     var $_data = Array();
     
-    function Notifs($uid,$up=false) {
+    function Notifs($uid, $up=false) {
 	global $globals;
 	$this->_uid = $uid;
 	

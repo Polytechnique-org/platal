@@ -61,6 +61,9 @@
       </h3>
       <div class="explication">
         Affichage de tous les évenements de camarades/promos
+        {if $smarty.session.core_rss_hash}
+        <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+        {/if}
       </div>
     </td>
     <td class='half'>

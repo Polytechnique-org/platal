@@ -21,15 +21,11 @@
 
 require_once('xorg.inc.php');
 require_once('rss.inc.php');
+require_once('notifs.inc.php');
 
-$uid = init_rss('rss.tpl');
-
-$rss = $globals->xdb->iterator(
-        'SELECT  e.id, e.titre, e.texte, e.creation_date
-           FROM  auth_user_md5   AS u
-     INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo) AND (e.promo_max = 0 || e.promo_max >= u.promo) )
-          WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide") AND peremption >= NOW()', $uid);
-$page->assign('rss', $rss);
+$uid    = init_rss('carnet/rss.tpl');
+$notifs = new Notifs($uid, false);
+$page->assign('notifs', $notifs);
 
 $page->run();
 ?> 

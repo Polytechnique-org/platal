@@ -34,11 +34,6 @@
       <title>{$line.titre|strip_tags}</title>
       <link>{#globals.baseurl#}/login.php#newsid{$line.id}</link>
       <description><![CDATA[{$line.texte|nl2br}]]></description>
-      <image>
-        <title>Polytechnique.org</title>
-        <url>{#globals.baseurl#}/images/logo.png</url>
-        <link>{#globals.baseurl#}/</link>
-      </image>
     </item>
     {/iterate}
   </channel>

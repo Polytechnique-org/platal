@@ -35,6 +35,11 @@ Tu peux choisir plus finement les données affichées sur cette page.
 Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration des notifications</a>.
 </p>
 
+<div class="right">
+{if $smarty.session.core_rss_hash}
+<a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+{/if}
+</div>
 
 {foreach from=$notifs->_data item=c key=cid}
 <h2>{if ($c|@count) > 1}
