@@ -45,6 +45,9 @@ Bug/Wish :
 	* Events :
 		- #238: Links and Mailto are now active.							-Car
 
+	* Fiche :
+		- #218 : Quit fiche using Escape key.								-Car
+
 	* Marketing :
 		- #256: Mail are now correctly sent.								-MC
 
@@ -117,7 +120,6 @@ Bug/Wish :
 
 	* Fiche :
 		- #83,208,222 : New fiche.											-MC
-		- #218 : Quit fiche using Escape key.								-Car
 
 	* Lists :
 		- #86 : Yet another old old wish : lists archives are online !		-MC
