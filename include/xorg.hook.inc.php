@@ -41,7 +41,7 @@ require_once("PEAR.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Pierre Habouzit <pierre.habouzit@polytechnique.org>
- * @version  $Id: xorg.hook.inc.php,v 1.6 2004-11-21 14:43:57 x2000habouzit Exp $
+ * @version  $Id: xorg.hook.inc.php,v 1.7 2004-11-21 15:19:00 x2000habouzit Exp $
  * @access   public
  * @link     http://doc.polytechnique.org/XOrgModule/#hook
  * @since    Classe available since 0.9.3
@@ -97,18 +97,22 @@ class XOrgHook extends PEAR
      * @param  callback $function   the name of the function called
      * @param  array    $arguments  the array of the arguments
      * @param  mixed    $return     a reference to place the result of the called function
-     * @retuns bool  returns true if the called function exists (we allways do so here)
+     * @retuns mixed    returns the folded value
+     *                  f1(arg_1,...,arg_n-1, f2(arg1,...,arg_n-1, ... f_k(arg1,...arg_n))...)
      * @see overload
      */
     function __call($function, $arguments, &$return)
     {
-        $return = true;
-
+        if ( ($i = count($argument) - 1) < 0) {
+            $this->raiseError("In the Hook « {$this->_name} » the function « $function » expects at least 1 argument");
+        }
         foreach ($this->_mods as $mod) {
             if (!function_exists($mod.'_'.$function)) continue;
-            $return &= ( call_user_func_array($mod.'_'.$function,$argument) !== false );
+            $argument[$i] =& call_user_func_array($mod.'_'.$function,$argument);
         }
 
+        $return =& $argument[$i];
+        
         return true;
     }
 
