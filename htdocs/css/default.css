@@ -20,7 +20,7 @@ p.normal {
 	text-align: justify;
 }
 
-p.erreur, span.erreur {
+p.error, span.error, p.erreur, span.erreur {
 	font-weight: bold;
 	background-color: inherit;
 	color: #ff0000;

@@ -4,6 +4,16 @@ require("validations.inc.php");
 
 new_skinned_page('alias.tpl', AUTH_MDP);
 
+$page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
+
+//Récupération des alias éventuellement existants
+$sql = "SELECT domain from groupex.aliases WHERE id=12 AND email like '".$_SESSION['username']."'";
+if($result = mysql_query($sql)) {
+    list($aliases) = mysql_fetch_row($result);
+    mysql_free_result($result);
+    $page->assign('actuel',$aliases);
+}
+
 //Si l'utilisateur vient de faire une damande
 if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
     $alias = $_REQUEST['alias'];
@@ -44,17 +54,7 @@ if (isset($_REQUEST['alias']) and isset($_REQUEST['raison'])) {
         $page->assign('success',$alias);
         $page->display('succes');
     }
-} else {
-    $page->assign('demande', AliasReq::get_unique_request($_SESSION['uid']));
-
-    //Récupération des alias éventuellement existants
-    $sql = "SELECT domain from groupex.aliases WHERE id=12 AND email like '".$_SESSION['username']."'";
-    if($result = mysql_query($sql)) {
-        list($aliases) = mysql_fetch_row($result);
-        mysql_free_result($result);
-        $page->assign('actuel',$aliases);
-    }
-    $page->display();
 }
 
+$page->display();
 ?>
