@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.48 2004-10-09 08:58:49 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.49 2004-10-09 11:42:15 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
@@ -188,7 +188,6 @@ def set_options((userdesc,perms),vhost,listname,opts,vals):
         return 1
     except:
         mlist.Unlock()
-        raise
         return 0
 
 def quote(s):
@@ -313,9 +312,10 @@ def mass_subscribe((userdesc,perms),vhost,listname,users):
                 mlist.ApprovedAddMember(userd)
                 added.append( (userd.fullname, userd.address) )
         mlist.Save()
-    finally:
-        mlist.Unlock()
-        return added
+    except:
+        pass
+    mlist.Unlock()
+    return added
 
 def mass_unsubscribe((userdesc,perms),vhost,listname,users):
     try:
@@ -328,9 +328,10 @@ def mass_unsubscribe((userdesc,perms),vhost,listname,users):
     
         map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org'), users)
         mlist.Save()
-    finally:
-        mlist.Unlock()
-        return users
+    except:
+        pass
+    mlist.Unlock()
+    return users
 
 def add_owner((userdesc,perms),vhost,listname,user):
     try:
@@ -350,9 +351,10 @@ def add_owner((userdesc,perms),vhost,listname,user):
             if forlife+'@polytechnique.org' not in mlist.owner:
                 mlist.owner.append(forlife+'@polytechnique.org')
                 mlist.Save()
-    finally:
-        mlist.Unlock()
-        return True
+    except:
+        pass
+    mlist.Unlock()
+    return True
 
 def del_owner((userdesc,perms),vhost,listname,user):
     try:
@@ -366,9 +368,10 @@ def del_owner((userdesc,perms),vhost,listname,user):
             return 0
         mlist.owner.remove(user+'@polytechnique.org')
         mlist.Save()
-    finally:
-        mlist.Unlock()
-        return True
+    except:
+        pass
+    mlist.Unlock()
+    return True
 
 #-------------------------------------------------------------------------------
 # owners procedures [ admin.php ]
@@ -416,7 +419,6 @@ def get_pending_ops((userdesc,perms),vhost,listname):
         if dosave: mlist.save()
     except:
         mlist.Unlock()
-        raise
         return 0
     mlist.Unlock()
     return (subs,helds)
@@ -426,7 +428,6 @@ def handle_request((userdesc,perms),vhost,listname,id,value,comment):
     try:
         mlist = MailList.MailList(vhost+'-'+listname)
     except:
-        raise
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
@@ -655,7 +656,6 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         check_options((userdesc,perms),vhost,listname,True)
         mass_subscribe((userdesc,perms),vhost,listname,members)
     except:
-        raise
         return 0
     return 1
     
