@@ -51,7 +51,7 @@ function webredirect_prefs()
                 'url'    => 'webredirect.php',
                 'title'  => 'Ma redirection de page WEB',
                 'text'   => $text,
-                'weight' => 80
+                'weight' => 60
             )
         );
 }

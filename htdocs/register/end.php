@@ -116,7 +116,7 @@ while (list($salias, $snom, $sprenom) = $res->next()) {
 
 $globals->xdb->execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
 
-#header('Location: success.php');
+header('Location: success.php');
 $page->assign('uid', $uid);
 $page->run();
 

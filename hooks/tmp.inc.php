@@ -59,13 +59,13 @@ function tmp_prefs()
                 'title'  => 'Recevoir les mails en format '.$fmt2,
                 'text'   => 'Tu recois les mails envoyés par le site (lettre mensuelle, carnet, ...) de préférence <strong>sous forme de '
                             .Session::get('mail_fmt', 'html').'</strong>',
-                'weight' => 30
+                'weight' => 80
             ),
             Array(
                 'url'    => 'preferences.php?rss='.(intval(Session::get('core_rss_hash')=='')),
                 'title'  => (Session::get('core_rss_hash') ? 'désactiver' : 'activer').' les fils rss',
                 'text'   => 'Ceci te permet d\'utiliser les fils rss du site. Attention, désactiver puis réactiver les fils en change les URL !',
-                'weight' => 40
+                'weight' => 90
             )
         );
 }
