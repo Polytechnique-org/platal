@@ -1,5 +1,7 @@
+#!/usr/bin/php
 <?php
-    foreach($argv as $file) {
+    foreach($argv as $i=>$file) {
+	if($i == 0) continue;
 	$fp = fopen($file,'r');
 	$fc = fread($fp,filesize($file));
 	fclose($fp);
