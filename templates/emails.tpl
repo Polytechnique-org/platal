@@ -118,8 +118,7 @@ homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.no
   <tr class="impair">
     <td>
       {if $melix}
-      Tu disposes à l'heure actuelle des adresses <strong>{$melix}@{#globals.mail.alias_dom#}</strong>
-      et <strong>{$melix}@{#globals.mail.alias_dom2#}</strong>.
+      Tu disposes à l'heure actuelle de l'alias <strong>{$melix}</strong>
       Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
       <a href="alias.php">il te suffit de te rendre ici</a>
       {else}
