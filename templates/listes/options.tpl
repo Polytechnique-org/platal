@@ -99,6 +99,22 @@ Tu n'es pas administrateur de la liste, mais du site.
     </tr>
     <tr class='impair'>
       <td>
+        <strong>diffusion :</strong>
+      </td>
+      <td>
+        <input type='radio' name='moderate' value='0'
+        {if !$options.generic_nonmember_action && !$options.default_member_moderation}
+        checked='checked'{/if} />libre<br />
+        <input type='radio' name='moderate' value='1'
+        {if $options.generic_nonmember_action && !$options.default_member_moderation}
+        checked='checked'{/if} />modérée aux extérieurs<br />
+        <input type='radio' name='moderate' value='2'
+        {if $options.generic_nonmember_action && $options.default_member_moderation}
+        checked='checked'{/if} />modérée
+      </td>
+    </tr>
+    <tr class='impair'>
+      <td>
         <strong>inscription libre ou modérée :</strong><br />
         <span class='smaller'>détermine si les inscriptions à la liste sont modérées ou non.</span>
       </td>

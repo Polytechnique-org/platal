@@ -61,22 +61,6 @@
         publique
       </td>
     </tr>
-    <tr class='impair'>
-      <td>
-        <strong>diffusion :</strong>
-      </td>
-      <td>
-        <input type='radio' name='moderate' value='0'
-        {if !$options.generic_nonmember_action && !$options.default_member_moderation}
-        checked='checked'{/if} />libre<br />
-        <input type='radio' name='moderate' value='1'
-        {if $options.generic_nonmember_action && !$options.default_member_moderation}
-        checked='checked'{/if} />modérée aux extérieurs<br />
-        <input type='radio' name='moderate' value='2'
-        {if $options.generic_nonmember_action && $options.default_member_moderation}
-        checked='checked'{/if} />modérée
-      </td>
-    </tr>
     <tr class='pair'>
       <td>
         <strong>archive :</strong><br />
@@ -87,7 +71,7 @@
         liste archivée
       </td>
     </tr>
-    <tr class='pair'>
+    <tr class='impair'>
       <td>
         <strong>max_message_size :</strong><br />
         <span class='smaller'>Taille maximale des posts en Ko:</span>

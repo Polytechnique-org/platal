@@ -569,8 +569,9 @@ def get_pending_mail(userdesc,perms,vhost,listname,id,raw=0):
 #
 
 owner_opts = ['accept_these_nonmembers', 'admin_notify_mchanges', 'description', \
-        'info', 'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', \
-        'subscribe_policy', 'welcome_msg']
+        'default_member_moderation', 'generic_nonmember_action', 'info', \
+        'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', 'subscribe_policy', \
+        'welcome_msg']
 
 def get_owner_options(userdesc,perms,vhost,listname):
     return get_options(userdesc,perms,vhost,listname.lower(),owner_opts)
@@ -657,8 +658,8 @@ def set_bogo_level(userdesc,perms,vhost,listname,level):
 # admin procedures [ soptions.php ]
 #
 
-admin_opts = [ 'advertised', 'archive', 'default_member_moderation', \
-        'generic_nonmember_action', 'max_message_size', 'msg_footer', 'msg_header']
+admin_opts = [ 'advertised', 'archive', \
+        'max_message_size', 'msg_footer', 'msg_header']
 
 def get_admin_options(userdesc,perms,vhost,listname):
     if perms != 'admin':

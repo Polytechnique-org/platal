@@ -19,10 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once("xorg.inc.php");
 if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
-require_once("xorg.inc.php");
 new_admin_page('listes/soptions.tpl');
 require_once('lists.inc.php');
 
@@ -31,21 +31,6 @@ $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 if(Post::has('submit')) {
     $values = array_map('stripslashes', $_POST);
     unset($values['submit']);
-    switch($values['moderate']) {
-	case '0':
-	    $values['generic_nonmember_action'] = 0;
-	    $values['default_member_moderation'] = 0;
-	    break;
-	case '1':
-	    $values['generic_nonmember_action'] = 1;
-	    $values['default_member_moderation'] = 0;
-	    break;
-	case '2':
-	    $values['generic_nonmember_action'] = 1;
-	    $values['default_member_moderation'] = 1;
-	    break;
-    }
-    unset($values['moderate']);
     $values['advertised'] = empty($values['advertised']) ? false : true;
     $values['archive'] = empty($values['archive']) ? false : true;
     $client->set_admin_options($liste, $values);

@@ -19,30 +19,43 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once("xorg.inc.php");
 if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
-require_once("xorg.inc.php");
 new_skinned_page('listes/options.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
-if(Post::has('submit')) {
+if (Post::has('submit')) {
     $values = array_map('stripslashes',$_POST);
     $client->set_bogo_level($liste, intval($values['bogo_level']));
-    unset($values['submit']);
-    unset($values['bogo_level']);
-    $values['send_goodbye_msg'] = empty($values['send_goodbye_msg']) ? false : true;
-    $values['admin_notify_mchanges'] = empty($values['admin_notify_mchanges']) ? false : true;
-    $values['subscribe_policy'] = empty($values['subscribe_policy']) ? 0 : 2;
-    if(isset($values['subject_prefix'])) {
+    switch($values['moderate']) {
+	case '0':
+	    $values['generic_nonmember_action']  = 0;
+	    $values['default_member_moderation'] = 0;
+	    break;
+	case '1':
+	    $values['generic_nonmember_action']  = 1;
+	    $values['default_member_moderation'] = 0;
+	    break;
+	case '2':
+	    $values['generic_nonmember_action']  = 1;
+	    $values['default_member_moderation'] = 1;
+	    break;
+    }
+    unset($values['submit'], $values['bogo_level'], $values['moderate']);
+    $values['send_goodbye_msg']      = !empty($values['send_goodbye_msg']);
+    $values['admin_notify_mchanges'] = !empty($values['admin_notify_mchanges']);
+    $values['subscribe_policy']      = empty($values['subscribe_policy']) ? 0 : 2;
+    if (isset($values['subject_prefix'])) {
 	$values['subject_prefix'] = trim($values['subject_prefix']).' ';
     }
     $client->set_owner_options($liste, $values);
-} elseif(isvalid_email(Post::get('atn_add')) {
+} elseif (isvalid_email(Post::get('atn_add'))) {
     $client->add_to_wl($liste, Post::get('atn_add'));
-} elseif(Get::has('atn_del')) {
+} elseif (Get::has('atn_del')) {
     $client->del_from_wl($liste, Get::get('atn_del'));
     header("Location: ?liste=$liste");
 }

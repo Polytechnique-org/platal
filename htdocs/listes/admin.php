@@ -19,10 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once("xorg.inc.php");
 if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
-require_once("xorg.inc.php");
 new_skinned_page('listes/admin.tpl', AUTH_MDP);
 require_once('lists.inc.php');
 
