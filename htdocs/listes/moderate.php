@@ -61,14 +61,14 @@ if(Env::has('mid')) {
 	$reason  = stripslashes(Post::get('reason'));
         $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
                 .  $reason;
-    } elseif (Env:has('mdel')) {
+    } elseif (Env::has('mdel')) {
         $action  = 3; /** 3 = DISCARD **/
         $sbuject = "Message supprimé";
         $append  = "a été supprimé par $prenom $nom.\n\n"
                 .  "Rappel: il ne faut utiliser cette opération que dans le cas de spams ou de virus !\n";
     }
    
-    if (isset($action) && $client->handle_request($liste,$mid,$action,$reason) {
+    if (isset($action) && $client->handle_request($liste, $mid, $action, $reason)) {
         $texte = "le message suivant :\n\n"
                 ."    Auteur: {$mail['sender']}\n"
                 ."    Sujet : « {$mail['subj']} »\n"

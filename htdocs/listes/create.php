@@ -25,7 +25,7 @@ new_skinned_page('listes/create.tpl', AUTH_MDP);
 $owners  = preg_split("/[\r\n]+/",Post::get('owners'));
 $members = preg_split("/[\r\n]+/",Post::get('members'));
 
-if (Post::has('add_owner_sub') && Post::has('add_owner'])) {
+if (Post::has('add_owner_sub') && Post::has('add_owner')) {
     require_once('user.func.inc.php');
     if (($forlife = get_user_forlife(Post::get('add_owner'))) !== false) {
         $owners [] = $forlife;

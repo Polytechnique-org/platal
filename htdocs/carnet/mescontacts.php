@@ -29,7 +29,7 @@ $user = Env::get('user');
 switch (Env::get('action')) {
     case 'retirer':
 	if (preg_match('/^\d+$/', $user)) {
-	    if ($globals->db->query("DELETE FROM contacts WHERE uid = $uid' AND contact='{$user}'"))
+	    if ($globals->db->query("DELETE FROM contacts WHERE uid = $uid' AND contact='$user'"))
             {
 		$page->trig("Contact retiré !");
             }
@@ -64,6 +64,7 @@ if(Get::has('trombi')) {
     require_once('trombi.inc.php');
     function getList($offset,$limit) {
 	global $globals;
+        $uid = Session::getInt('uid');
 	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = $uid");
 	list($total) = mysql_fetch_row($res);
 	mysql_free_result($res);

@@ -30,7 +30,7 @@ $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if (Env::has('add_member')) {
     require_once('user.func.inc.php');
-    if (($login = get_user_forlife(Env::get('add_member')) === false) {;
+    if (($login = get_user_forlife(Env::get('add_member'))) === false) {;
         $login = Env::get('add_member');
     }
 
@@ -47,7 +47,7 @@ if (Env::has('del_member')) {
     header("Location: ?liste=$liste");
 }
 
-if (Env::has(['add_owner'])) {
+if (Env::has('add_owner')) {
     require_once('user.func.inc.php');
     if (($login = get_user_forlife(Env::get('add_owner'))) === false) {;
         $login = Env::get('add_owner');

@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-if (Env::has('liste')) header('Location: index.php');
+if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
 new_admin_page('listes/check.tpl');
