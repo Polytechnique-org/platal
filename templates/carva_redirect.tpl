@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.tpl,v 1.10 2004-10-10 11:52:26 x2000chevalier Exp $
+        $Id: carva_redirect.tpl,v 1.11 2004-10-12 18:50:59 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -25,7 +25,7 @@
 <div class="rubrique">
   Mise à jour de la redirection
 </div>
-{$message}
+{$message|smarty:nodefaults}
 {/dynamic}
 
 <div class="rubrique">
