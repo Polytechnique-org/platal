@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.23 2004-09-25 21:48:32 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.24 2004-10-11 18:56:02 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -122,6 +122,11 @@ if(isset($mr)) {
 			    promo='{$_REQUEST['promoN']}'
 			  WHERE user_id='{$_REQUEST['user_id']}'";
 		$globals->db->query($query);
+		$r=$globals->db->query("SELECT  *
+					  FROM  auth_user_md5 AS u
+				    INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias='$login' AND type!='homonyme' )");
+		if($tmp = mysql_fetch_assoc($r)) $mr=$tmp;
+		mysql_free_result($r);
 
 		// FIXME: recherche
 		$f = fopen("/tmp/flag_recherche","w");
