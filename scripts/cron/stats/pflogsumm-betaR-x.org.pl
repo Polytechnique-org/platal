@@ -342,6 +342,10 @@ while(<>) {
 		push(@{$msgDetail{$qid}}, $addr) if($opts{'e'});
 	    } elsif($status eq 'deferred') {
 		my ($deferredReas) = /, status=deferred \(([^\)]+)/o;
+		if (!defined($deferredReas)) 
+			{
+			$deferredReas = "---[0.0.0.0] connect to 0.0.0.0";
+			}
 		unless(defined($opts{'verbMsgDetail'})) {
 		    $deferredReas = said_string_trimmer($deferredReas, 65);
 		    $deferredReas =~ s/^[0-9]{3} //o;
