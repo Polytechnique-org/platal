@@ -408,5 +408,9 @@ margin-right : 2px;
     font-size: 95%;
     vertical-align: top;
 }
+
+#content input {
+    font-size: 95%
+}
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.25 2004-03-26 21:23:44 x2000coic Exp $ */
+/* $Id: default.css,v 1.26 2004-04-26 14:17:19 x2000habouzit Exp $ */

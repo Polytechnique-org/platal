@@ -40,7 +40,7 @@ if(logged()) {
         $menu['***'] = Array (
             'Marketing' => '###url###',
             'Administration' => '###url###',
-            'Trackers' => '###url###',
+            'Trackers' => 'trackers/',
             'Clear cache' => 'clear_all_cache.php'
         );
     }
