@@ -54,12 +54,9 @@ class XorgPage extends DiogenesCorePage
     {
         global $globals;
 
-	setlocale(LC_MESSAGES, 'fr_FR');
-	setlocale(LC_TIME, 'fr_FR');
-
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/templates_c/";
-        $this->plugins_dir[] = $globals->spoolroot."/plugins/";
+        array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
         $this->config_dir    = $globals->spoolroot."/configs/";
 
         $this->compile_check = !empty($globals->debug);

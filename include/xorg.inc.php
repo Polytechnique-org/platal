@@ -25,7 +25,7 @@ function microtime_float()
     return ((float)$usec + (float)$sec); 
 } 
 $TIME_BEGIN = microtime_float();
- 
+
 // {{{ defines
 
 $i=0;
@@ -39,6 +39,9 @@ define("PERMS_ADMIN", "admin");
 
 define('SKINNED', 0);
 define('NO_SKIN', 1);
+
+setlocale(LC_MESSAGES, 'fr_FR');
+setlocale(LC_TIME, 'fr_FR');
 
 // }}}
 // {{{ globals + session init
