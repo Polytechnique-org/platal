@@ -53,22 +53,23 @@ class CyberPayment
         $e = $_SESSION['sexe'] ? 'e' : '';
         
         return <<<EOF
-<form method="post" action="https://ecom.cimetz.com/telepaie/cgishell.exe/epaie01.exe">
-  <table class="bicol">
-    <tr>
-      <th colspan="2">Paiement via CyberP@iement</th>
-    </tr>
-    <tr>
-      <td><b>Transaction</b></td>
-      <td>{$pay->text}</td>
-    </tr>
-    <tr>
-      <td><b>Montant (euros)</b></td>
-      <td>{$this->val}</td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td>
+<table class="bicol">
+  <tr>
+    <th colspan="2">Paiement via CyberP@iement</th>
+  </tr>
+  <tr>
+    <td><b>Transaction</b></td>
+    <td>{$pay->text}</td>
+  </tr>
+  <tr>
+    <td><b>Montant (euros)</b></td>
+    <td>{$this->val}</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>
+      <form method="post" action="https://ecom.cimetz.com/telepaie/cgishell.exe/epaie01.exe">
+      <div>
 	<!-- infos commercant -->
 	<input type="hidden" name="CHAMP000" value="510879" />
 	<input type="hidden" name="CHAMP001" value="5965" />
@@ -97,10 +98,11 @@ class CyberPayment
 	<!-- infos divers -->
 	<input type="hidden" name="CHAMP900" value="01" />
 	<input type="submit" value="Valider" />
-      </td>
-    </tr>
-  </table>
-</form>
+      </div>
+      </form>
+    </td>
+  </tr>
+</table>
 
 <p>
 En cliquant sur "Valider", tu seras redirigé$e vers le site de la BP Lorraine Champagne, où il te
