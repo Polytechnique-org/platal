@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.39 2004-11-02 07:28:34 x2000habouzit Exp $
+        $Id: search.php,v 1.40 2004-11-02 07:30:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -58,6 +58,11 @@ if (array_key_exists('rechercher', $_REQUEST)) {
 	&& !$_REQUEST['woman'])
     {
 	new ThrowError('Recherche trop générale.');
+    }
+    
+    if (!logged() && empty($_REQUEST['prenom']) && empty($_REQUEST['nom']))
+    {
+	new ThrowError('Il faut au moins entrer un nom ou un prenom.');
     }
     $offset = new NumericSField('offset');
    
