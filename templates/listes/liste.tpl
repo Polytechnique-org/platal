@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.tpl,v 1.3 2004-09-10 22:45:43 x2000habouzit Exp $
+        $Id: liste.tpl,v 1.4 2004-09-10 22:47:19 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -146,8 +146,8 @@ Un message est adressé automatiquement à toute personne ajoutée à la liste de di
 message actuellement envoyé : il est modifiable à volonté !
 </p>
 <p>
-L'objet du mail est "Bienvenue sur la liste de diffusion absurde@polytechnique.org !", et si la
-personne fait "répondre à", le message arrive aux modérateurs de la liste.
+L'objet du mail est "Bienvenue sur la liste de diffusion {$details.name} !"<br />
+Et si la personne fait "répondre à", le message arrive aux modérateurs de la liste.
 </p>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
