@@ -22,6 +22,7 @@ bzdist: clean pkg-bzdist
 
 clean:
 	rm -rf locale include/xorg.globals.inc.php
+	rm -f htdocs/banana/banana.css htdocs/valid.html include/banana htdocs/banana/img htdocs/banana/xface.php
 
 %: %.in Makefile
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
@@ -35,14 +36,17 @@ templates_c:
 htdocs/valid.html:
 	ln -sf ../templates_c/valid.html htdocs/valid.html
 
-include/banana:
-	ln -sf ../../banana/include ./include/banana
+include/banana: ../banana/banana
+	ln -sf ../$< $@
 
-htdocs/banana/banana.css:
-	ln -s ../../../banana/css/style.css htdocs/banana/banana.css
+htdocs/banana/banana.css: ../banana/css/style.css
+	ln -sf ../../$< $@
 
-htdocs/banana/%: ../banana/%
-	ln -s ../../$< $@
+htdocs/banana/xface.php: ../banana/examples/xface.php
+	ln -sf ../../$< $@
+
+htdocs/banana/img: ../banana/img
+	ln -sf ../../$< $@
 
 devel: build templates_c htdocs/valid.html include/banana \
 	htdocs/banana/xface.php htdocs/banana/img htdocs/banana/banana.css
