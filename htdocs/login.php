@@ -6,12 +6,6 @@ $param=mysql_query("SELECT date,naissance FROM auth_user_md5 WHERE user_id={$_SE
 list($date,$naissance) = mysql_fetch_row($param);
 mysql_free_result($param);
 
-if ($date=="1999-12-31")  {
-    $page->assign('date', $date);
-    $page->display('non-inscrit');
-    exit;
-}
-
 if ($naissance==0)  {
     $page->assign('ask_naissance', true);
     $page->display('ask-naissance');
