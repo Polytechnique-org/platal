@@ -7,11 +7,7 @@
  * Copyright: See COPYING files that comes with this distribution
  ********************************************************************************/
 
-$sname = $_SERVER['SCRIPT_NAME'];
-$array = explode('/',$sname);
-$sname = array_pop($array);
-unset($array);
-switch ($sname) {
+switch (basename($_SERVER['SCRIPT_NAME'])) {
     case 'thread.php':
         if (!Session::has('bananapostok')) {
             $_SESSION['bananapostok'] = true;
