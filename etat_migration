@@ -30,7 +30,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
-;	  | maj.php									  | 
 ;	  | step4.php								  | 
 ;	  | tmpPWD.php								  | 
 ------+-[ bordel ]--------------------------------+----------------
@@ -160,6 +159,7 @@ xx	  | groupex.php								  | groupex/index.php
 xx	  | index.php								  | -
 xx	  | inscrire.php							  | 
 xx	  | login.php								  | -
+xx	  | maj.php									  | 
 xx	  | marketing.php							  | marketing/public.php
 xx	  | mescontacts.php							  | -
 xx	  | motdepassemd5.php						  | -
