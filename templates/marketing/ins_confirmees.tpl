@@ -1,4 +1,4 @@
-{* $Id: ins_confirmees.tpl,v 1.1 2004-02-20 03:37:15 x2000habouzit Exp $ *}
+{* $Id: ins_confirmees.tpl,v 1.1 2004-07-17 13:42:50 x2000habouzit Exp $ *}
 
 {dynamic}
 

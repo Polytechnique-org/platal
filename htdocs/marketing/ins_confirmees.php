@@ -1,6 +1,6 @@
 <?php
 require("auto.prepend.inc.php");
-new_admin_page('admin/ins_confirmees.tpl',true);
+new_admin_page('marketing/ins_confirmees.tpl',true);
 
 if (!isset($_GET["sort"]) || $_GET["sort"] != "promo") $_GET["sort"] = "date_ins";
 
