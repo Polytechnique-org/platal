@@ -18,42 +18,58 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: export-econfiance.php,v 1.4 2004-09-02 19:03:19 x2000habouzit Exp $
+        $Id: export-econfiance.php,v 1.5 2004-10-12 17:03:09 x2000habouzit Exp $
  ***************************************************************************/
 
 
 /* Script permettant l'export de la liste des membres de la mailing list eConfiance, pour intégration par J-P Figer dans la liste des membres de X-Informatique */
 
-session_start();
+require("config.xorg.inc.php") ;
+require_once("xorg.common.inc.php");
+require_once("xml-rpc-client.inc.php");
 
 $cle = "186357043dcbe666ba6cb8.04581835";
 
 if (isset($_SESSION["chall"]) && $_SESSION["chall"] != "" && $_GET["PASS"] == md5($_SESSION["chall"].$cle)) {
 
-require("db_connect.inc.php");
+    $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
+    list($pass) = mysql_fetch_row($res);
+    mysql_free_result($res);
 
-$all = $globals->db->query("SELECT  u.prenom,u.nom,a.alias
-			      FROM  auth_user_md5 AS u,
-				    listes_ins    AS i
-                        INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type='a_vie' )
-			     WHERE  i.idu=u.user_id AND i.idl=174 AND i.idu != 0
-			  ORDER BY  nom");
 
-$res = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<membres>\n\n";
+    $client = new xmlrpc_client("http://10154:$pass@localhost:4949");
+    $members = $client->get_members('polytechnique.org', 'x-eConfiance');
+    if(is_array($members)) {
+	$membres = Array();
+	foreach($members[1] as $member) {
+	    if(preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
+		$membres[] = "a.alias='{$matches[1]}'";
+	    }
+	}
+    }
 
-while (list ($prenom1,$nom1,$email1) = mysql_fetch_row($all)) {
-        $res .= "<membre>\n";
-	$res .= "\t<nom>".$nom1."</nom>\n";
-	$res .= "\t<prenom>".$prenom1."</prenom>\n";
-	$res .= "\t<email>".$email1."</email>\n";
-	$res .= "</membre>\n\n";
-}
-mysql_free_result($all);
+    $where = join(' OR ',$membres);
 
-$res .= "</membres>\n\n";
+    $all = $globals->db->query("SELECT  u.prenom,u.nom,a.alias
+				  FROM  auth_user_md5 AS u
+			    INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type!='homonyme' )
+				 WHERE  $where
+			      ORDER BY  nom");
 
-echo $res;
+    $res = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<membres>\n\n";
 
+    while (list ($prenom1,$nom1,$email1) = mysql_fetch_row($all)) {
+	    $res .= "<membre>\n";
+	    $res .= "\t<nom>".$nom1."</nom>\n";
+	    $res .= "\t<prenom>".$prenom1."</prenom>\n";
+	    $res .= "\t<email>".$email1."</email>\n";
+	    $res .= "</membre>\n\n";
+    }
+    mysql_free_result($all);
+
+    $res .= "</membres>\n\n";
+
+    echo $res;
 }
 
 ?>
