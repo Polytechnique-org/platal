@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.10 2004-09-01 18:02:00 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.11 2004-09-01 21:15:00 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -207,17 +207,18 @@ if (!empty($_REQUEST['select'])) {
                 WHERE num != 0 AND uid = {$mr['user_id']} order by num";
         $result=$globals->db->query($sql);
         $xorgmails = Array();
-        $email_panne = "";
+        $email_panne = Array();
         while($l = mysql_fetch_assoc($result)) {
             $xorgmails[] = $l;
             if($l['panne']!="0000-00-00")
-                $email_panne .= "Adresse {$l['email']} signalée comme HS le {$l['panne']}<br />";
+                $email_panne[] = "Adresse {$l['email']} signalée comme HS le {$l['panne']}";
             $next_num = $l['num']+1;
         }
         mysql_free_result($result);
-        
+       
+	$page->mysql_assign("SELECT alias FROM aliases WHERE id = {$mr["user_id"]}", 'aliases');
         $page->assign_by_ref('xorgmails', $xorgmails);
-        $page->assign('email_panne', $email_panne);
+        $page->assign_by_ref('email_panne', $email_panne);
         $page->assign('next_num', $next_num);
     } // if(mysql_fetch_row)
 }

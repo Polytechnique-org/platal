@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.9 2004-09-01 18:46:21 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.10 2004-09-01 21:15:00 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -168,17 +168,18 @@ depuis <strong>{$mr.host}</strong>
         <a href="admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
       </td>
     </tr>
-    <tr> 
-      <th class="alias">
-        Alias e-mail
+    <tr>
+      <th class="alias" colspan="2">
+        Adresses e-mail
       </th>
-      <td class="alias"> 
-        <input type="text" name="alias" size="20" maxlength="255" value="{$mr.alias}" />@m4x.org
-      </td>
-      <td class="action">
-        &nbsp;
-      </td>
+      <td class="action">&nbsp;</td>
     </tr>
+    {foreach from=$aliases item=a}
+    <tr>
+      <td class="alias" colspan="2">{$a.alias}@polytechnique.org</td>
+      <td class="action">&nbsp;</td>
+    </tr>
+    {/foreach}
     {foreach item=mail from=$xorgmails}
     <tr> 
       <th class="detail"> 
@@ -214,7 +215,9 @@ depuis <strong>{$mr.host}</strong>
   </table>
 </form>
 <p class="erreur">
-{$email_panne}
+{foreach from=$email_panne item=e}
+{$p}<br />
+{/foreach}
 </p>
 {/dynamic}
 {* vim:set et sw=2 sts=2 sws=2: *}
