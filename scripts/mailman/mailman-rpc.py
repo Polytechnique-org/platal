@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.65 2004-10-24 12:53:44 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.66 2004-10-27 09:54:29 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -714,6 +714,7 @@ def create_list((userdesc,perms),vhost,listname,desc,advertise,modlevel,inslevel
         mlist.default_member_moderation = int(modlevel) is 2
         mlist.generic_nonmember_action = int(modlevel) > 0
         mlist.subscribe_policy = 2 * (int(inslevel) is 1)
+        mlist.admin_notify_mchanges = (mlist.subscribe_policy or mlist.generic_nonmember_action or mlist.default_member_moderation or not mlist.advertised)
         
         mlist.owner = map(lambda a: a+'@polytechnique.org', owners)
         
