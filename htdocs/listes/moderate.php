@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.php,v 1.4 2004-09-23 18:46:58 x2000habouzit Exp $
+        $Id: moderate.php,v 1.5 2004-09-24 14:35:12 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
@@ -93,8 +93,6 @@ if(isset($_REQUEST['sid'])) {
 } else
     $page->assign('no_list', true);
 
-function tolatin1($s) { return iconv('utf-8', 'iso-8859-1', $s); }
-$page->register_modifier('tl1','tolatin1');
 $page->register_modifier('qpd','quoted_printable_decode');
 $page->run();
 ?>

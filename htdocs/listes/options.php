@@ -18,14 +18,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: admin.php,v 1.3 2004-09-24 14:35:12 x2000habouzit Exp $
+        $Id: options.php,v 1.1 2004-09-24 14:35:12 x2000habouzit Exp $
  ***************************************************************************/
 
 if(empty($_REQUEST['liste'])) header('Location: index.php');
 $liste = strtolower($_REQUEST['liste']);
 
 require("auto.prepend.inc.php");
-new_skinned_page('listes/admin.tpl', AUTH_MDP, true);
+new_skinned_page('listes/options.tpl', AUTH_MDP, true);
 include('xml-rpc-client.inc.php');
 
 $res = $globals->db->query("SELECT password FROM auth_user_md5 WHERE user_id={$_SESSION['uid']}");
@@ -34,57 +34,28 @@ mysql_free_result($res);
 
 $client = new xmlrpc_client("http://{$_SESSION['uid']}:$pass@localhost:4949");
 
-if(isset($_REQUEST['add_member'])) {
-    $client->mass_subscribe('polytechnique.org', $liste, Array($_REQUEST['add_member']));
-}
-
-if(isset($_REQUEST['del_member'])) {
-    $client->mass_unsubscribe('polytechnique.org', $liste, Array($_REQUEST['del_member']));
+if(isset($_POST['submit'])) {
+    $values = $_POST;
+    unset($values['submit']);
+    $values['send_goodbye_msg'] = empty($values['send_goodbye_msg']) ? false : true;
+    $values['admin_notify_mchanges'] = empty($values['admin_notify_mchanges']) ? false : true;
+    $values['subscribe_policy'] = empty($values['subscribe_policy']) ? 0 : 2;
+    if(isset($values['subject_prefix'])) {
+	$values['subject_prefix'] = trim($values['subject_prefix']).' ';
+    }
+    $client->set_owner_options('polytechnique.org', $liste, $values);
+} elseif(isset($_POST['atn_add']) && isvalid_email($_POST['atn_add'])) {
+    $client->add_to_wl('polytechnique.org', $liste, $_POST['atn_add']);
+} elseif(isset($_GET['atn_del'])) {
+    $client->del_from_wl('polytechnique.org', $liste, $_GET['atn_del']);
     header("Location: ?liste=$liste");
 }
 
-if(isset($_REQUEST['add_owner'])) {
-    $client->add_owner('polytechnique.org', $liste, $_REQUEST['add_owner']);
-}
-
-if(isset($_REQUEST['del_owner'])) {
-    $client->del_owner('polytechnique.org', $liste, $_REQUEST['del_owner']);
-    header("Location: ?liste=$liste");
-}
-
-if(list($det,$mem,$own) = $client->get_members('polytechnique.org', $liste)) {
-    $membres = Array();
-    foreach($mem as $member) {
-	if(preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/', $member[1], $matches)) {
-	    $membres[$matches[2]][] = Array('n' => $member[0], 'l' => $matches[1]);
-	} else {
-	    $membres[0][] = Array('l' => $member[1]);
-	}
-    }
-    ksort($membres);
-
-    $moderos = Array();
-    foreach($own as $owner) {
-	list($m) = split('@',$owner);
-	$res = $globals->db->query("SELECT  CONCAT(prenom, ' ', nom), promo
-				      FROM  auth_user_md5 AS u
-			        INNER JOIN  aliases AS a ON u.user_id = a.id
-				     WHERE  a.alias = '$m'");
-	if(list($nom, $promo) = mysql_fetch_row($res)) {
-	    $moderos[$promo][] = Array('n' => $nom, 'l' => $m);
-	} else {
-	    $moderos[0][] = Array('l' => $owner);
-	}
-	mysql_free_result($res);
-    }
-    ksort($moderos);
-
-    $page->assign_by_ref('details', $det);
-    $page->assign_by_ref('members', $membres);
-    $page->assign_by_ref('owners',  $moderos);
-
+if(list($details,$options) = $client->get_owner_options('polytechnique.org', $liste)) {
+    $page->assign_by_ref('details', $details);
+    $page->assign_by_ref('options', $options);
 } else
-    $page->assign('no_list',true);
+    $page->assign('no_list', true);
 
 $page->run();
 ?>

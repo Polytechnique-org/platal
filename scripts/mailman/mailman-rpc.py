@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.32 2004-09-23 18:46:59 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.33 2004-09-24 14:35:13 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters
@@ -115,6 +115,69 @@ def is_owner(userdesc,perms,mlist):
 def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
 
+def get_list_info((userdesc,perms),mlist):
+    members    = mlist.getRegularMemberKeys()
+    is_member  = userdesc.address in members
+    is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
+    is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
+    if mlist.advertised or is_member or is_owner:
+        is_pending = False
+        for id in mlist.GetSubscriptionIds():
+            if userdesc.address == mlist.GetRecord(id)[1]:
+                is_pending = True
+                break
+        chunks = mlist.internal_name().split('-')
+        details = {
+                'list' : mlist.real_name,
+                'addr' : str('-').join(chunks[1:]) + '@' + chunks[0],
+                'host' : chunks[0],
+                'desc' : mlist.description,
+                'diff' : (mlist.default_member_moderation>0) + (mlist.generic_nonmember_action>0),
+                'ins'  : mlist.subscribe_policy > 1,
+                'priv' : (1-mlist.advertised)+2*is_admin,
+                'sub'  : is_pending + 2*is_member,
+                'own'  : is_owner
+                }
+        return (details,members)
+    return 0
+
+def get_options((userdesc,perms),vhost,listname,opts):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        options = { }
+        for (k,v) in mlist.__dict__.iteritems():
+            if k in opts:
+                options[k] = v
+        details = get_list_info((userdesc,perms),mlist)[0]
+        mlist.Unlock()
+        return (details,options)
+    except:
+        mlist.Unlock()
+        return 0
+
+def set_options((userdesc,perms),vhost,listname,opts,vals):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        for (k,v) in vals.iteritems():
+            if k in opts:
+                mlist.__dict__[k] = v
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
 #-------------------------------------------------------------------------------
 # users procedures for [ index.php ]
 #
@@ -131,25 +194,11 @@ def get_lists((userdesc,perms),vhost):
             mlist = MailList.MailList(name)
         except:
             continue
-        is_member  = userdesc.address in mlist.getRegularMemberKeys()
-        is_admin   = mm_cfg.ADMIN_ML_OWNER in mlist.owner
-        is_owner   = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
-        is_pending = False
-        for id in mlist.GetSubscriptionIds():
-            if userdesc.address == mlist.GetRecord(id)[1]:
-                is_pending = True
-                break
-        if mlist.advertised or is_member or is_owner:
-            result.append( {
-                    'list' : str('-').join(name.split('-')[1:]),
-                    'desc' : mlist.description,
-                    'diff' : mlist.generic_nonmember_action,
-                    'ins'  : mlist.subscribe_policy > 1,
-                    'priv' : (1-mlist.advertised)+2*is_admin,
-                    'sub'  : is_pending + 2*is_member,
-                    'own'  : is_owner
-                    } )
-        mlist.Unlock()
+        try:
+            details = get_list_info((userdesc,perms),mlist)[0]
+            result.append(details)
+        finally:
+            mlist.Unlock()
     return result
 
 def subscribe((userdesc,perms),vhost,listname):
@@ -196,30 +245,15 @@ def get_members((userdesc,perms),vhost,listname):
         mlist = MailList.MailList(vhost+'-'+listname)
     except:
         return 0
-    members   = mlist.getRegularMemberKeys()
-    is_member = userdesc.address in members
-    is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
-    is_owner  = ( perms == 'admin' and is_admin ) or ( userdesc.address in mlist.owner )
-    is_pending = False
-    for id in mlist.GetSubscriptionIds():
-        if userdesc.address == mlist.GetRecord(id)[1]:
-            is_pending = True
-            break
-    if mlist.advertised or is_member or is_owner or ( perms == 'admin' ):
+    try:
+        details,members = get_list_info((userdesc,perms),mlist)
         members.sort()
-        details = { 'addr' : listname+'@polytechnique.org',
-                    'desc' : mlist.description,
-                    'diff' : mlist.generic_nonmember_action,
-                    'ins'  : mlist.subscribe_policy > 1,
-                    'priv' : (1-mlist.advertised)+2*is_admin,
-                    'sub'  : is_pending + 2*is_member,
-                    'own'  : is_owner
-                  }
-        members = map(lambda member: (mlist.getMemberName(member) or '', member), members)
+        members = map(lambda member: (Utils.uquote(mlist.getMemberName(member)) or '', member), members)
         mlist.Unlock()
         return (details,members,mlist.owner)
-    mlist.Unlock()
-    return 0
+    except:
+        mlist.Unlock()
+        return 0
 
 #-------------------------------------------------------------------------------
 # users procedures for [ trombi.php ]
@@ -357,9 +391,9 @@ def get_pending_ops((userdesc,perms),vhost,listname):
                 continue
             helds.append({
                     'id'    : id,
-                    'sender': Utils.oneline(sender,'utf8'),
+                    'sender': Utils.uquote(sender),
                     'size'  : size,
-                    'subj'  : Utils.oneline(subject,'utf8'),
+                    'subj'  : Utils.uquote(subject),
                     'stamp' : ptime
                     })
         if dosave: mlist.save()
@@ -410,14 +444,81 @@ def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
         for part in typed_subpart_iterator(msg,'text','plain'):
             results.append (part.get_payload())
         return {'id'    : id,
-                'sender': Utils.oneline(sender,'utf8'),
+                'sender': Utils.uquote(sender),
                 'size'  : size,
-                'subj'  : Utils.oneline(subject,'utf8'),
+                'subj'  : Utils.uquote(subject),
                 'stamp' : ptime,
                 'parts' : results }
     except:
         mlist.Unlock()
         return 0
+
+#-------------------------------------------------------------------------------
+# owner options [ options.php ]
+#
+
+def get_owner_options((userdesc,perms),vhost,listname):
+    opts = 'accept_these_nonmembers', 'admin_notify_mchanges', 'description', \
+        'info', 'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', \
+        'subscribe_policy', 'welcome_msg'
+    return get_options((userdesc,perms),vhost,listname,opts)
+
+def set_owner_options((userdesc,perms),vhost,listname,values):
+    opts = 'accept_these_nonmembers', 'admin_notify_mchanges', 'description', \
+        'info', 'subject_prefix', 'goodbye_msg', 'send_goodbye_msg', \
+        'subscribe_policy', 'welcome_msg'
+    return set_options((userdesc,perms),vhost,listname,opts,values)
+
+def add_to_wl((userdesc,perms),vhost,listname,addr):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        mlist.accept_these_nonmembers.append(addr)
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
+def del_from_wl((userdesc,perms),vhost,listname,addr):
+    try:
+        mlist = MailList.MailList(vhost+'-'+listname)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+        mlist.accept_these_nonmembers.remove(addr)
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        mlist.Unlock()
+        return 0
+
+#-------------------------------------------------------------------------------
+# admin procedures [ ?????.php ]
+#
+
+def get_admin_options((userdesc,perms),vhost,listname):
+    if perms != 'admin':
+        return 0
+    opts = 'advertised', 'archive', 'ban_list', 'default_member_moderation', \
+        'generic_nonmember_action', 'hold_these_nonmembers', 'max_message_size', \
+        'max_num_recipients', 'member_moderation_action', 'msg_footer', 'msg_header', \
+        'new_member_options', 'reject_these_nonmembers'
+    return get_options((userdesc,perms),vhost,listname,opts)
+
+#-------------------------------------------------------------------------------
+# server
+#
+class FastXMLRPCServer(SimpleXMLRPCServer):
+    allow_reuse_address = True
 
 ################################################################################
 #
@@ -443,13 +544,11 @@ for o, a in opts:
     if o == '-f' and os.fork():
         sys.exit(0)
 
+mysql = connectDB()
+
 #-------------------------------------------------------------------------------
 # server
 #
-class FastXMLRPCServer(SimpleXMLRPCServer):
-    allow_reuse_address = True
-
-mysql = connectDB()
 server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 
 # index.php
@@ -469,6 +568,13 @@ server.register_function(del_owner)
 server.register_function(get_pending_ops)
 server.register_function(handle_request)
 server.register_function(get_pending_mail)
+# options.php
+server.register_function(get_owner_options)
+server.register_function(set_owner_options)
+server.register_function(add_to_wl)
+server.register_function(del_from_wl)
+#
+server.register_function(get_admin_options)
 
 server.serve_forever()
 

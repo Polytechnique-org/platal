@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: moderate.tpl,v 1.5 2004-09-22 11:39:51 x2000habouzit Exp $
+        $Id: moderate.tpl,v 1.6 2004-09-24 14:35:13 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -28,9 +28,20 @@
 
 {else}
 
+<div class='rubrique'>
+  Modérer la liste {$smarty.get.liste}@polytechnique.org
+</div>
+{if !$details.own}
+<p class='erreur'>
+Tu n'es pas administrateur de la liste, mais du site.
+</p>
+{/if}
+
 <p>
-[<a href='admin.php?liste={$smarty.request.liste}'>page de la liste</a>]
-[<a href='index.php'>retour</a>]
+[<a href='index.php'>listes</a>] &gt;
+[modération]
+[<a href='admin.php?liste={$smarty.get.liste}'>abonnés</a>]
+[<a href='options.php?liste={$smarty.get.liste}'>options</a>]
 </p>
 
 <div class='rubrique'>
@@ -74,8 +85,8 @@
   </tr>
   {foreach from=$mails item=m}
   <tr class='{cycle values="pair,impair"}'>
-    <td>{$m.sender|tl1}</td>
-    <td>{$m.subj|tl1}</td>
+    <td>{$m.sender}</td>
+    <td>{$m.subj}</td>
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%H:%M:%S<br />%d %b %Y"}</td>
     <td class='action'>
