@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.27 2004-10-29 01:24:20 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.28 2004-10-31 17:45:15 x2000chevalier Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -28,8 +28,8 @@ require_once("xorg.misc.inc.php");
  */
 $globals->search_result_fields = '
                 u.epouse,u.date,u.web,u.mobile,
-                i.deces!=0 AS dcd,i.deces,
-		FIND_IN_SET(\'femme\', i.flags) AS sexe,
+                u.deces!=0 AS dcd,u.deces,
+		FIND_IN_SET(\'femme\', u.flags) AS sexe,
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                 e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
