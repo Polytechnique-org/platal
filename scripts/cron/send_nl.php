@@ -19,7 +19,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: send_nl.php,v 1.1 2004-10-20 19:31:17 x2000habouzit Exp $
+        $Id: send_nl.php,v 1.2 2004-10-31 16:20:25 x2000chevalier Exp $
  ***************************************************************************/
 
 require('./connect.db.inc.php');
@@ -47,10 +47,9 @@ $nl = new NewsLetter($id);
 $nl->setSent();
 
 while(true) {
-    $sql = mysql_query("SELECT  ni.user_id,ni.pref, a.alias, u.prenom,u.nom, FIND_IN_SET(i.flags, 'femme')
+    $sql = mysql_query("SELECT  ni.user_id,ni.pref, a.alias, u.prenom,u.nom, FIND_IN_SET(u.flags, 'femme')
 			  FROM  newsletter_ins AS ni
 		    INNER JOIN  auth_user_md5  AS u  USING(user_id)
-		    INNER JOIN  identification AS i  USING(matricule)
 		    INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND a.type='a_vie')
 		         WHERE  ni.last<$id
 			 LIMIT  60");
