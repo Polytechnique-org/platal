@@ -11,7 +11,7 @@ New :
 		- Drop good old mysql_assign, iterators are nicer.					-MC
 		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC
 		- Drop cache algorithm (was complex for no gain).					-MC
-		- Enhancements wrt COOKIE.										-MC -Car
+		- Enhancements wrt COOKIE.										-MC/Car
 		- More homogenous date formating (use %x / %X everywhere).			-MC
 		- No more .head.tpl. (thanks to JM for the tip).					-MC
 		- Strip unnecessary spaces from templates at compile time.			-MC
@@ -42,13 +42,14 @@ Bug/Wish :
 		- #229: Possibility to show our melix address.						-Car
 
 	* Misc :
-		- #65: broken links.												-MC
+		- #65: Broken links.												-MC
 	
 	* Search :
-		- #249, #251, #253 : some tweaks to be more accurate.				-MC
+		- #249, #251, #253 : Some tweaks to be more accurate.				-MC
 
 	* Validations :
-		- #137: now possible to add comments without any action.			-MC
+		- #137: Now possible to add comments without any action.			-MC
+		- #256: Marketing now uses the validation process.					-MC
 
 ================================================================================
 VERSION 0.9.3														 27 Dec 2004
