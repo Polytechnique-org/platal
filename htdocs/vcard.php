@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: vcard.php,v 1.10 2004-09-05 12:54:18 x2000habouzit Exp $
+        $Id: vcard.php,v 1.11 2004-09-24 21:51:42 x2002marichez Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -28,7 +28,7 @@ function quoted_printable_encode($input, $line_max = 76) {
     $hex = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
     $lines = preg_split("/(?:\r\n|\r|\n)/", $input);
     $eol = "\r\n";
-    $linebreak = "\n";
+    $linebreak = "=0A";
     $escape = "=";
     $output = "";
 
