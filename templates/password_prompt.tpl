@@ -35,7 +35,7 @@
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
 Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi sur
-<a href="{rel}/inscription/">la page d'inscription</a>.
+<a href="{rel}/register/">la page d'inscription</a>.
 </p>
 {/min_auth}
 
@@ -52,7 +52,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
     nous</strong> pour obtenir un accès. Polytechnique.org c'est l'e-mail des X,
   l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
-  rapidement possible. <strong> <a href="{rel}inscription/">Clique ici pour nous demander tes
+  rapidement possible. <strong> <a href="{rel}/register/">Clique ici pour nous demander tes
       paramètres personnels.</a></strong>
   </li>
 </ul>

@@ -29,11 +29,11 @@ Ton inscription sur Polytechnique.org est presque terminée, un clic sur le lien 
 Après activation, tes paramètres seront :
 
 login        : {$mailorg}
-mot de passe : {$pass_clair}
+mot de passe : {$pass}
 
 Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
 
-{$baseurl}/inscription/step4.php?ref={$ins_id}
+{$baseurl}/register/end.php?hash={$hash}
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
 

@@ -19,19 +19,26 @@
  ***************************************************************************}
 
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
-  <h1>
-    Conditions générales
-  </h1>
-  <p>
-  L'enregistrement se déroule <strong>en deux étapes</strong>. La pré-inscription te prendra moins
-  de 5 minutes. La seconde étape est une phase de validation où c'est nous qui te
-  recontactons pour te fournir un mot de passe et te demander de le changer.
-  </p>
-  {include file="docs/charte.tpl"}
+<h1>Conditions générales</h1>
+
+<p>
+L'enregistrement se déroule <strong>en deux étapes</strong> :
+</p>
+<ul>
+  <li>
+  la pré-inscription quit te prendra moins de 5 minutes ;
+  </li>
+  <li>
+  suivi d'un envoi d'un mail de notre part (immédiat !) qui te permettra
+  de te connecter au site !
+  </li>
+</ul>
+
+{include file="docs/charte.tpl"}
+
+<form action="?" method="post">
   <div class="center">
-    <input type='hidden' name='charte' value='OK' />
-    <input type="submit" value="J'accepte ces conditions" name="submit" />
+    <input type="submit" value="J'accepte ces conditions" name="step1" />
   </div>
 </form>
 

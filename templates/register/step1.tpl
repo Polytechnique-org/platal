@@ -18,15 +18,30 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+<h1>Identification</h1>
 
-<p>
-Cette page n'existe pas ou plus. Tu as peut-être déjà cliqué une fois, l'adresse
-envoyée par e-mail n'est valable qu'une seule fois. Le plus simple est d'aller à
-la page d'enregistrement <a href="/inscription/"><strong>en cliquant sur ce lien.</strong></a>
-</p>
-<p>
-A la fin de l'enregistrement, tu obtiendras <strong>login et mot de passe</strong> pour
-modifier ta fiche dans l'annuaire on-line.
-</p>
+<form action="?" method="post">
+  <p>
+    Avant toute chose, il te faut nous donner ta promotion :
+  </p>
+  <table class="tinybicol">
+    <tr>
+      <th>
+        Promotion
+      </th>
+    </tr>
+    <tr>
+      <td>
+        Donne ta promotion sur 4 chiffres : 
+        <input type="text" size="4" maxlength="4" name="promo" value="{$smarty.post.promo}" />
+      </td>
+    </tr>
+    <tr>
+      <td class="center">
+        <input type="submit" value="Valider" />
+      </td>
+    </tr>
+  </table>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

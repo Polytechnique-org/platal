@@ -30,7 +30,7 @@ Cher camarade,
 Ta fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :
 
 ==========================================================
-{$baseurl}/inscription/maj.php?n={$user_id}
+{$baseurl}/register/maj.php?n={$user_id}
 ==========================================================
 
 Il ne te faut que 5 minutes sur http://www.polytechnique.org/ pour rejoindre les {$num_users} camarades branchés grâce au système de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prénom... et de bénéficier pour la vie d'une adresse prestigieuse {$mailorg}@polytechnique.org et son alias discret {$mailorg}@m4x.org (m4x = mail for X).

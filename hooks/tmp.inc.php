@@ -25,7 +25,7 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_ADMIN,    20, 'Clear cache',         'clear_all_cache.php');
 
     $globals->menu->addPublicEntry(XOM_US,    00, 'Me connecter !',         'login.php');
-    $globals->menu->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'inscription/');
+    $globals->menu->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'register/');
     $globals->menu->addPublicEntry(XOM_US,    20, 'Pourquoi m\'inscrire ?', 'docs/services.php');
 
     $globals->menu->addPublicEntry(XOM_EXT,   10, 'Associations X',         'http://www.polytechnique.net/');

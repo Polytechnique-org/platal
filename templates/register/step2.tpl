@@ -18,40 +18,37 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+<h1>Identification</h1>
 
-<form action="{"inscription/step2.php"|url}" method="post" id='idf'>
-  <h1>
-    Identification
-  </h1>
-  <p>
-    Renseigne tes nom, prénom et promotion, et si tu es d'une promotion
-    postérieure à la 1996, ton numéro de matricule.
-  </p>
+<p>
+<a href="?back=1">retour</a>
+</p>
+
+<form action="?" method="post">
   <table class="bicol" summary="Identification" cellpadding="3">
+    {if $smarty.session.sub_state.promo >= 1996}
     <tr>
-      <th>
-        Promo &lt; 1996
-      </th>
-      <th>
-        Promo depuis 1996
-      </th>
+      <th colspan="2">matricule</th>
     </tr>
     <tr>
-      <td>
-        Le numéro d'identification n'est pas nécessaire pour 
-        l'inscription pour les promotions jusqu'à 1995 incluse.
+      <td class="titre">
+        Matricule X :
       </td>
       <td>
-        <strong>Matricule X :</strong>&nbsp;&nbsp;
-        <input type="text" size="6" maxlength="6" name="matricule" value="{$smarty.request.matricule}" />
-        <br />
-        6 chiffres terminant par le numéro d'entrée<br />
-        (ex: 960532 ou 100532)<br />
+        <input type="text" size="6" maxlength="6" name="mat" 
+          value="{$smarty.request.matricule|default:$smarty.session.sub_state.mat}" />
+      </td>
+    </tr>
+    <tr class="pair">
+      <td></td>
+      <td>
+        6 chiffres terminant par le numéro d'entrée (ex: 960532 ou 101532)<br />
         Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
         Pour les élèves étrangers voie 2, il est du type :<br />
         Promotion: 1995, Matricule: 960XXX - Promotion: 2001, Matricule 102XXX.
       </td>
     </tr>
+    {/if}
     <tr>
       <th colspan="2">
         Identification
@@ -79,7 +76,7 @@
         Promotion
       </td>
       <td>
-        <input type="text" size="4" maxlength="4" name="promo" value="{$smarty.request.promo}" />
+        <input type="text" size="4" readonly="readonly" value="{$smarty.session.sub_state.promo}" />
       </td>
     </tr>
     <tr>
