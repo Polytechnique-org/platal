@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.31 2004-11-13 11:02:47 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.32 2004-11-13 11:54:28 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -49,6 +49,14 @@ $globals->search_result_where_statement = '
                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
                 LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)';
 
+function display_lines($text) {
+    $n = 0;
+    $i=-1;
+    while(($i=strpos($text,'<tr>',$i+1))!==false) $n++;
+    $i=-1;
+    while(($i=strpos($text,'<div class="nom">',$i+1))!==false) $n++;
+    return $n;
+}
 
 /** classe qui gère les erreurs dans les requêtes des utilisateurs finaux
  * passe le message d'erreur au template de page et exécute le template

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.28 2004-11-13 11:46:31 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.29 2004-11-13 11:54:28 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -145,16 +145,6 @@ else {
     
 }
 
-function display_lines($text) {
-    $n = 0;
-    $i=-1;
-    while(($i=strpos($text,'<tr>',$i+1))!==false) $n++;
-    $i=-1;
-    while(($i=strpos($text,'<div class="nom">',$i+1))!==false) $n++;
-    return $n;
-}
-
 $page->register_modifier('display_lines', 'display_lines');
-
 $page->run();
 ?>
