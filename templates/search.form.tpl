@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.form.tpl,v 1.24 2004-11-02 06:56:04 x2000habouzit Exp $
+        $Id: search.form.tpl,v 1.25 2004-11-03 22:15:22 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>
@@ -69,6 +69,7 @@
         <input type="text" name="promo2" size="4" maxlength="4" value="{$smarty.request.promo2}" />
       </td>
     </tr>
+{if $advanced eq "1"}
     <tr>
       <td>Sexe</td>
       <td>
@@ -77,7 +78,6 @@
         <input type="radio" name="woman" value="2" {if $smarty.request.woman eq 2}checked="checked"{/if} />Femme
       </td>
     </tr>
-{if $advanced eq "1"}
     <tr>
       <th colspan="2">Géographie</th>
     </tr>

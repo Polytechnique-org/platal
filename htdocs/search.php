@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.php,v 1.40 2004-11-02 07:30:47 x2000habouzit Exp $
+        $Id: search.php,v 1.41 2004-11-03 22:15:21 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -50,12 +50,10 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     }
     $promo1Field = new PromoSField('promo1','egal1',array('r.promo'),'');
     $promo2Field = new PromoSField('promo2','egal2',array('r.promo'),'');
-    $womanField = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
-    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field,$womanField));
+    $fields = new SFieldGroup(true,array($nameField,$firstnameField,$promo1Field,$promo2Field));
     
     if (!$nameField->length() && !$firstnameField->length()
-	&& empty($_REQUEST['promo1']) && empty($_REQUEST['promo2'])
-	&& !$_REQUEST['woman'])
+	&& empty($_REQUEST['promo1']) && empty($_REQUEST['promo2']))
     {
 	new ThrowError('Recherche trop générale.');
     }
