@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.quick.tpl,v 1.2 2004-11-17 18:11:46 x2000habouzit Exp $
+        $Id: search.quick.tpl,v 1.3 2004-11-23 10:07:28 x2000habouzit Exp $
  ***************************************************************************}
 
 {include file="search.quick.form.tpl"}
@@ -37,8 +37,8 @@ mais elle accepte de plus la syntaxe suivante pour les <strong>promos</strong> :
   <li>&gt;1990 : signifie promos supérieures ou égales à 1990</li>
 </ul>
 <p>
-Ainsi, rechercher tous les "Pierre" sur les promos 1980 à 1990 et sur la promo 2000 se fait avec la recherche :
-[ Pierre 1980-1990 2000 ]
+Ainsi, rechercher tous les "Dupont" sur les promos 1980 à 1990 et sur la promo 2000 se fait avec la recherche :
+[ Dupont 1980-1990 2000 ]
 </p>
 
 <h2>Astuce pour les noms ...</h2>

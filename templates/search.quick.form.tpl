@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.quick.form.tpl,v 1.3 2004-11-13 12:17:55 x2000habouzit Exp $
+        $Id: search.quick.form.tpl,v 1.4 2004-11-23 10:07:28 x2000habouzit Exp $
  ***************************************************************************}
 
 <h1>Recherche simple dans l'annuaire</h1>
@@ -27,8 +27,12 @@
 <form action="{"search.php"|url}" method="get">
   <table class="bicol" cellspacing="0" cellpadding="4">
     <tr>
-      <td class='center' style="width: 78%">
+      <td style="width: 78%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 100%" /><br />
+        {min_auth level='cookie'}
+        <input type='checkbox' name='mod_date_sort' {if $smarty.request.mod_date_sort}checked='checked'{/if} />
+        mettre les fiches modifiées récemment en premier
+        {/min_auth}
       </td>
       <td>
         <input type="submit" value="Chercher" />
