@@ -17,32 +17,18 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.tpl,v 1.11 2004-10-28 20:28:42 x2000habouzit Exp $
+        $Id: mescontacts.tpl,v 1.12 2004-10-29 02:04:23 x2000habouzit Exp $
  ***************************************************************************}
 
 
 {dynamic}
 <p class="erreur">{$erreur}</p>
 
-{if $trombi}
-
-<h1>
-  Mon trombino de contacts
-</h1>
-
-<p>
-[<a href="{$smarty.server.PHP_SELF}">vue classique</a>]
-</p>
-
-{$trombi->show()|smarty:nodefaults}
-
-{else}
-
 <h1>
   Ma liste personnelle de contacts
 </h1>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
 <p>
   Ajouter la personne suivante à ma liste de contacts (prenom.nom) :
   <input type="hidden" name="action" value="ajouter" />
@@ -55,12 +41,30 @@
   il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>  
 
-{if $nb_contacts}
+{if $nb_contacts || $trombi}
 <p>
   Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" onclick="return popup(this)"><strong>Triée par promo</strong></a>]
   [<a href="mescontacts_pdf.php/mes_contacts.pdf" onclick="return popup(this)"><strong>Triée par noms</strong></a>]
 </p>
+
+{if $trombi}
+
+<h1>
+  Mon trombino de contacts
+</h1>
+
+<p>
+Pour afficher la liste détaillée de tes contacts: [<a href="{$smarty.server.PHP_SELF}"><strong>vue classique</strong></a>]
+</p>
+
+{$trombi->show()|smarty:nodefaults}
+
+{else}
+
+<h1>
+  Vue classique des contacts
+</h1>
 
 <p>
 Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous forme de trombi</strong></a>]
@@ -74,12 +78,12 @@ Pour afficher le trombi de tes contacts : [<a href="?trombi=1"><strong>vue sous 
 {/foreach}
 </div>
 
+{/if}
+
 {else}
 <p>Actuellement ta liste de contacts est vide...</p>
 {/if}
 
-
-{/if}
 {/dynamic}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

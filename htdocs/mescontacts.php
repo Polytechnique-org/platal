@@ -18,42 +18,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.20 2004-10-29 01:24:20 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.21 2004-10-29 02:04:23 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page("mescontacts.tpl",AUTH_COOKIE,true);
 require("applis.func.inc.php");
-
-
-if(isset($_GET['trombi'])) {
-    require_once('trombi.inc.php');
-    function getList($offset,$limit) {
-	global $globals;
-	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = {$_SESSION['uid']}");
-	list($total) = mysql_fetch_row($res);
-	mysql_free_result($res);
-
-	$res = $globals->db->query("
-	    	SELECT  u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, u.promo
-		  FROM  contacts       AS c
-	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
-	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
-		 WHERE  c.uid = {$_SESSION['uid']}
-	      ORDER BY  nom
-		 LIMIT  ".$offset*$limit.",$limit");
-	$list = Array();
-	while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
-	mysql_free_result($res);
-
-	return Array($total, $list);
-    }
-    
-    $trombi = new Trombi('getList');
-    $trombi->setNbRows(4);
-    $page->assign_by_ref('trombi',$trombi);
-    $page->run();
-}
 
 // si l'utilisateur demande le retrait de qqun de sa liste
 if (isset($_REQUEST['action'])) {
@@ -87,33 +57,61 @@ if (isset($_REQUEST['action'])) {
     }
 }
 
-$sql = "SELECT contact AS id,
-               a.*, l.alias AS forlife,
-               i.deces != 0 AS dcd, i.deces, i.matricule_ax, FIND_IN_SET('femme', i.flags) AS sexe,
-               e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
-               IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
-               ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
-               ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-               adr.ville, gp.a2, gp.pays, gr.name AS region,
-	       IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
-        FROM       contacts       AS c
-        INNER JOIN auth_user_md5  AS a   ON (a.user_id = c.contact)
-        INNER JOIN identification AS i   ON (a.matricule = i.matricule)
-	INNER JOIN aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')
-        LEFT  JOIN entreprises    AS e   ON (e.entrid = 0 AND e.uid = a.user_id)
-        LEFT  JOIN emploi_secteur AS es  ON (e.secteur = es.id)
-        LEFT  JOIN fonctions_def  AS ef  ON (e.fonction = ef.id)
-        LEFT  JOIN geoloc_pays    AS n   ON (a.nationalite = n.a2)
-        LEFT  JOIN applis_ins     AS ai0 ON (a.user_id = ai0.uid AND ai0.ordre = 0)
-        LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
-        LEFT  JOIN applis_ins     AS ai1 ON (a.user_id = ai1.uid AND ai1.ordre = 1)
-        LEFT  JOIN applis_def     AS ad1 ON (ad1.id = ai1.aid)
-        LEFT  JOIN adresses       AS adr ON (a.user_id = adr.uid AND FIND_IN_SET('active', adr.statut))
-        LEFT  JOIN geoloc_pays    AS gp  ON (adr.pays = gp.a2)
-        LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
-        WHERE c.uid = {$_SESSION['uid']}
-        ORDER BY sortkey, a.prenom";
-$page->mysql_assign($sql,'contacts','nb_contacts');
+if(isset($_GET['trombi'])) {
+    require_once('trombi.inc.php');
+    function getList($offset,$limit) {
+	global $globals;
+	$res = $globals->db->query("SELECT COUNT(*) FROM contacts WHERE uid = {$_SESSION['uid']}");
+	list($total) = mysql_fetch_row($res);
+	mysql_free_result($res);
+
+	$res = $globals->db->query("
+	    	SELECT  u.prenom, IF(u.epouse='',u.nom,u.epouse) AS nom, a.alias AS forlife, u.promo
+		  FROM  contacts       AS c
+	    INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
+	    INNER JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type='a_vie')
+		 WHERE  c.uid = {$_SESSION['uid']}
+	      ORDER BY  nom
+		 LIMIT  ".$offset*$limit.",$limit");
+	$list = Array();
+	while($tmp = mysql_fetch_assoc($res)) $list[] = $tmp;
+	mysql_free_result($res);
+
+	return Array($total, $list);
+    }
+    
+    $trombi = new Trombi('getList');
+    $trombi->setNbRows(4);
+    $page->assign_by_ref('trombi',$trombi);
+} else {
+    $sql = "SELECT contact AS id,
+		   a.*, l.alias AS forlife,
+		   i.deces != 0 AS dcd, i.deces, i.matricule_ax, FIND_IN_SET('femme', i.flags) AS sexe,
+		   e.entreprise, es.label AS secteur, ef.fonction_fr AS fonction,
+		   IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
+		   ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
+		   ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
+		   adr.ville, gp.a2, gp.pays, gr.name AS region,
+		   IF(a.epouse<>'',a.epouse,a.nom) AS sortkey
+	    FROM       contacts       AS c
+	    INNER JOIN auth_user_md5  AS a   ON (a.user_id = c.contact)
+	    INNER JOIN identification AS i   ON (a.matricule = i.matricule)
+	    INNER JOIN aliases        AS l   ON (a.user_id = l.id AND l.type='a_vie')
+	    LEFT  JOIN entreprises    AS e   ON (e.entrid = 0 AND e.uid = a.user_id)
+	    LEFT  JOIN emploi_secteur AS es  ON (e.secteur = es.id)
+	    LEFT  JOIN fonctions_def  AS ef  ON (e.fonction = ef.id)
+	    LEFT  JOIN geoloc_pays    AS n   ON (a.nationalite = n.a2)
+	    LEFT  JOIN applis_ins     AS ai0 ON (a.user_id = ai0.uid AND ai0.ordre = 0)
+	    LEFT  JOIN applis_def     AS ad0 ON (ad0.id = ai0.aid)
+	    LEFT  JOIN applis_ins     AS ai1 ON (a.user_id = ai1.uid AND ai1.ordre = 1)
+	    LEFT  JOIN applis_def     AS ad1 ON (ad1.id = ai1.aid)
+	    LEFT  JOIN adresses       AS adr ON (a.user_id = adr.uid AND FIND_IN_SET('active', adr.statut))
+	    LEFT  JOIN geoloc_pays    AS gp  ON (adr.pays = gp.a2)
+	    LEFT  JOIN geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
+	    WHERE c.uid = {$_SESSION['uid']}
+	    ORDER BY sortkey, a.prenom";
+    $page->mysql_assign($sql,'contacts','nb_contacts');
+}
 
 $page->run();
 ?>
