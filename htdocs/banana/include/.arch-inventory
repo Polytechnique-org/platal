@@ -1,1 +1,1 @@
-precious ^(encoding.inc.php|groups.inc.php|NetNNTP.inc.php|post.inc.php|spool.inc.php|wrapper.inc.php)
+precious ^(misc.inc.php|groups.inc.php|NetNNTP.inc.php|post.inc.php|spool.inc.php)
