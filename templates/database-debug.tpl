@@ -20,24 +20,14 @@
 </table>
 <table class="bicol" style="width: 75%; font-family: fixed; margin-left: 2px; margin-bottom: 3px; margin-top: -1px;">
   <tr>
-    <th>table</th>
-    <th>type</th>
-    <th>possible_keys</th>
-    <th>key</th>
-    <th>key_len</th>
-    <th>ref</th>
-    <th>rows</th>
-    <th>extra</th>
+    {foreach key=key item=item from=$query.explain}
+    <th>{$key}</th>
+    {/foreach}
   </tr>
   <tr class="impair">
-    <td class="center">{$query.explain.table}</td>
-    <td class="center">{$query.explain.type}</td>
-    <td class="center">{$query.explain.possible_keys}</td>
-    <td class="center">{$query.explain.key}</td>
-    <td class="center">{$query.explain.key_len}</td>
-    <td class="center">{$query.explain.ref}</td>
-    <td class="center">{$query.explain.rows}</td>
-    <td class="center">{$query.explain.Extra}</td>
+    {foreach item=item from=$query.explain}
+    <td class="center">{$item}</td>
+    {/foreach}
   </tr>
 </table>
 {/foreach}
