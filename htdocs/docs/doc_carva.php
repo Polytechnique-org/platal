@@ -21,5 +21,5 @@
 
 require_once("xorg.inc.php");
 new_skinned_page("docs/doc_carva.tpl",AUTH_COOKIE);
-$page->run(isset($_SESSION['alias']) ? 'alias' : '');
+$page->run(Session::get('alias'));
 ?>
