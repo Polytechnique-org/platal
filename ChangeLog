@@ -19,7 +19,9 @@ New :
 		- Generate xorg.config.inc.php using "make".						-SHK
 		- Add a basic README file.											-SHK
 
-	* Mails : Use HermesMailer.												-MC
+	* Mails :
+		- Use HermesMailer.													-MC
+		- Create a script to treats NL bounces.								-MC
 
 	* Money : standalone module.											-MC
 
