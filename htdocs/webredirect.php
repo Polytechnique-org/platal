@@ -20,11 +20,11 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('carva_redirect.tpl', AUTH_MDP);
+new_skinned_page('webredirect.tpl', AUTH_MDP);
 
 if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUEST['submit'] == "Modifier") and isset($_REQUEST['url'])) {
     // on change la redirection (attention à http://)
-    $globals->db->query("update auth_user_md5 set redirecturl = '{$_REQUEST['url']}'"
+    $globals->db->query("update auth_user_quick set redirecturl = '{$_REQUEST['url']}'"
               ." where user_id = '{$_SESSION['uid']}'");
     if (mysql_errno($conn) == 0) {
         $_SESSION['log']->log("carva_add","http://".$_REQUEST['url']);
@@ -35,7 +35,7 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
     }
 } elseif (isset($_REQUEST['submit']) and $_REQUEST['submit'] == "Supprimer") {
     // on supprime la redirection
-    $globals->db->query("update auth_user_md5 set redirecturl = '' where user_id = {$_SESSION['uid']}");
+    $globals->db->query("update auth_user_quick set redirecturl = '' where user_id = {$_SESSION['uid']}");
     if (mysql_errno($conn) == 0) {
         $_SESSION['log']->log("carva_del",$_REQUEST['url']);
         $_POST['url'] = '';
@@ -46,7 +46,7 @@ if (isset($_REQUEST['submit']) and ($_REQUEST['submit'] == "Valider" or $_REQUES
 }
 
 
-$result = $globals->db->query("select redirecturl from auth_user_md5 where user_id={$_SESSION['uid']}");
+$result = $globals->db->query("select redirecturl from auth_user_quick where user_id={$_SESSION['uid']}");
 list($carva) = mysql_fetch_row($result);
 mysql_free_result($result);
 $page->assign('carva', $carva);

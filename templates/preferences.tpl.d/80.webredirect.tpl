@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-<h3><a href="{rel}/carva_redirect.php">Ma redirection de page WEB</a></h3>
+<h3><a href="{rel}/webredirect.php">Ma redirection de page WEB</a></h3>
 <div class='explication'>
   Tu peux configurer tes redirections WEB
   http://www.carva.org/{dyn s=$smarty.session.bestalias}

@@ -1,0 +1,6 @@
+htdocs/webredirect.php
+include/conf.d/webredirect.globals.inc.php
+scripts/webredirect_error.php
+scripts/webredirect.php
+templates/webredirect.tpl
+templates/preferences.tpl.d/80.webredirect.tpl

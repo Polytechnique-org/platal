@@ -27,7 +27,7 @@ require("../../include/xorg.inc.php");
 // REQUEST_URI = /prenom.nom(/path/fichier.hmtl)?
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
 
-$result = mysql_query("SELECT redirecturl FROM auth_user_md5 AS a INNER JOIN aliases AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias' OR al.type='epouse')) where al.alias= '$username'");
+$result = mysql_query("SELECT redirecturl FROM auth_user_quick AS a INNER JOIN aliases AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias' OR al.type='epouse')) where al.alias= '$username'");
 if ($result and list($url) = mysql_fetch_row($result) and $url != '') {
 	// on envoie un redirect (PHP met automatiquement le code de retour 302
 	if (!empty($path)) {

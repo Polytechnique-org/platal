@@ -54,7 +54,7 @@ $globals = new XorgGlobals;
 
 function _new_page($type, $tpl_name, $tpl_head, $min_auth, $admin=false)
 {
-    global $page;
+    global $page,$globals;
     require_once("xorg.page.inc.php");
     if (!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
@@ -88,7 +88,7 @@ function new_skinned_page($tpl_name, $min_auth, $tpl_head="")
 
 function new_simple_page($tpl_name, $min_auth, $tpl_head="")
 {
-    global $page;
+    global $page,$globals;
     _new_page(SKINNED, $tpl_name, $tpl_head, $min_auth);
     $page->assign('simple', true);
 }
