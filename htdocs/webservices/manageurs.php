@@ -18,18 +18,28 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: manageurs.php,v 1.1 2004-11-09 21:10:45 x2000chevalier Exp $
+        $Id: manageurs.php,v 1.2 2004-11-09 21:42:34 x2000chevalier Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 
+
 $error_msg = "You didn't provide me with a valid matricule number...";
 
 function get_annuaire_infos($method, $params) { 
+    $cipher_key = "super toto !";
     if (!empty($params[0])) { 
         $res = mysql_query("SELECT nom AS nom, epouse AS nom_patro, prenom AS prenom, promo AS prenom, deces=0 AS decede, mobile AS cell FROM auth_user_md5 WHERE matricule = '".addslashes($params[0])."'");
-	if ($reply = mysql_fetch_array($res)) {
-	    // then it's perfectly fine !
+	if ($array = mysql_fetch_array($res)) {
+	    // then it's perfectly fine ! we just have to use a good cypher...
+	    $td = mcrypt_module_open('tripledes', '', 'ecb', '');
+	    $iv = mcrypt_create_iv (mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+	    mcrypt_generic_init($td, $cipher_key.$params[0], $iv);
+	    foreach ( $array as $key => $value ) { 
+	        $reply[base64_encode(mcrypt_generic($td, $key)] = base64_encode(mcrypt_generic($td, $value));
+	    } 
+	    mcrypt_generic_deinit($td);
+	    mcrypt_module_close($td);
 	} else {
             $args = array("faultCode" => 1, "faultString" => $error_msg);
 	    $reply = xmlrpc_encode_request(NULL,$args);
