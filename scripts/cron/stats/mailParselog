@@ -1,0 +1,10 @@
+#!/bin/ash
+
+SCRIPTSDIR=`dirname $0`
+STATSDIR=/home/web/stats
+
+$SCRIPTSDIR/genereParselogCat | $SCRIPTSDIR/pflogsumm-1.1.0-x.org.pl -h 20 -u 20 --smtpd_stats > $STATSDIR/lastParselog.tpl
+
+$SCRIPTSDIR/genereParselogCat | $SCRIPTSDIR/pflogsumm-betaD-x.org.pl > $STATSDIR/lastParselogD.tpl
+$SCRIPTSDIR/genereParselogCat | $SCRIPTSDIR/pflogsumm-betaN-x.org.pl > $STATSDIR/lastParselogN.tpl
+$SCRIPTSDIR/genereParselogCat | $SCRIPTSDIR/pflogsumm-betaR-x.org.pl > $STATSDIR/lastParselogR.tpl

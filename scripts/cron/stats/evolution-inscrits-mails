@@ -3,13 +3,13 @@
 SCRIPTSDIR=`dirname $0`
 STATSDIR=/home/web/stats
 
-#MAILLOG=/var/log/mail.log.1.gz
-MAILLOG=/var/log/maillog.1.gz
+MAILLOG=/var/log/mail.log.1.gz
+#MAILLOG=/var/log/maillog.1.gz
 STATINSCRITS=$STATSDIR/nbinscrits
 STATMAILS=$STATSDIR/nbmails
 DATE=`date "+%D"`
 
-COUNT=`mysql x4dat -B --skip-column-names -e "select count(*) from auth_user_md5 where perms in ('user','admin')"`
+COUNT=`mysql x4dat -B --skip-column-names -e "select count(*) from auth_user_md5 where perms in ('user','admin') and deces=0"`
 if [ $? -ne 0 ]; then
 	echo "statistiques nombre inscrits: erreur dans l'exécution de mysql" 2>&1
 else
