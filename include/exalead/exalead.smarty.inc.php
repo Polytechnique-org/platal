@@ -127,9 +127,69 @@ function _exa_navigation_droite($params, &$smarty){
   return $res;
 }
 
+/**
+* This function is used to resume database content for given group (template argument 'groupe')
+*/
+function _display_resume_groupe($params, &$smarty){
+  if(!empty($params['exalead_data'])){
+    $exalead_data = &$GLOBALS[$params['exalead_data']];
+  }
+  else{
+    $exalead_data = &$GLOBALS['exalead_data'];
+  }
+  if(empty($params['groupe'])){
+    return '';
+  }
+  $groupe = $params['groupe'];
+  foreach($exalead_data->groups as $group){
+    if($group->title == $groupe){
+      $array = & $group->categories;
+      $result = "<div class=\"exa_resume\"><div class=\"titre\">$groupe</div><ul>";
+      foreach($array as $categorie){
+        if($categorie->display != ''){
+	  if($categorie->is_normal()){
+            $result .= "<li>
+	                  <div class=\"categ\">
+			    <a style=\"text-decoration: none;\"
+	                       href=\"?_C=".$exalead_data->query->context.'/'.$categorie->refine_href."&amp;_f=xml2\"
+		               title=\"Parcourir seulement cette catégorie\"
+	                    >".(empty($categorie->display)?$categorie->name:$categorie->display).(empty($categorie->count)?'':' ('.$categorie->count.')')."</a>
+			    <a href=\"?_C=".$exalead_data->query->context.'/'.$categorie->exclude_href."?>&amp;_f=xml2\"
+                               title=\"Ne pas afficher cette catégorie\">[-]</a>
+			  </div>
+		        </li>";
+	  }
+	  elseif($categorie->is_excluded()){
+            $result .= "<li>
+	                  <div class=\"categ\">
+			      <a style=\"text-decoration: line-through;\"
+	                         href=\"?_C=".$exalead_data->query->context.'/'.$categorie->reset_href."&amp;_f=xml2\"
+		                 title=\"Afficher de nouveau cette catégorie\"
+	                       >".(empty($categorie->display)?$categorie->name:$categorie->display)." [+]</a>
+	                  </div>
+			</li>";
+	  }
+	  else{
+            $result .= "<li>
+	                  <div class=\"categ\">
+			      <strong><a style=\"text-decoration: none;\"
+	                         href=\"?_C=".$exalead_data->query->context.'/'.$categorie->reset_href."&amp;_f=xml2\"
+		                 title=\"Voir les autres catégories\"
+	                       >".(empty($categorie->display)?$categorie->name:$categorie->display)." [-]</a></strong>
+	                  </div>
+			</li>";
+          }
+	}
+      }
+      $result .= "</ul></div>";
+      return $result;
+    }
+  }
+}
 
 function register_smarty_exalead(&$page){
   $page->register_function('exa_display_groupes', '_display_groupes');
+  $page->register_function('exa_display_resume_groupe', '_display_resume_groupe');
   $page->register_function('exa_display_keywords', '_display_keywords');
   $page->register_function('exa_navigation_gauche', '_exa_navigation_gauche');
   $page->register_function('exa_navigation_droite', '_exa_navigation_droite');
