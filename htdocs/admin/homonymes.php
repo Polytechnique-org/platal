@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: homonymes.php,v 1.2 2004-08-31 10:03:29 x2000habouzit Exp $
+        $Id: homonymes.php,v 1.3 2004-09-01 17:59:07 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -60,7 +60,7 @@ if ($target) {
           $op = 'list';
           break;
       case 'correct':
-          $globals->db->query("update auth_user_md5 set alias='' where user_id=$target");
+          $globals->db->query("REPLACE INTO aliases VALUES ('$loginbis', 'homonyme', 0)");
           $mymail = new DiogenesMailer($cc,$username,"Mise en place du robot $loginbis@polytechnique.org",false,$cc);
           $mymail->addHeader($FROM);
           $mymail->setBody(stripslashes($_REQUEST['mailbody']));

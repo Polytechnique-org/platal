@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: identification.inc.php,v 1.2 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: identification.inc.php,v 1.3 2004-09-01 17:59:08 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -193,7 +193,7 @@ if ( mysql_num_rows($result) > 0 ) {
 	// un homonyme est déjà enregistré, le prévenir
 	// (la promo ne peut pas être pareille, cas déjà testé)
 	mysql_free_result($result);
-	$newlogin = sprintf("%s%02d",$loginbis,$mypromo%100);
+	$newlogin = $loginbis.".".(($mypromo >= 2000) ? $mypromo : ($mypromo%100)));
 	$sql = "UPDATE auth_user_md5 SET loginbis='$loginbis', username = '$newlogin', alias='$loginbis', date_mise_alias_temp = NOW() WHERE user_id = $uid";
 	$globals->db->query($sql);
 	if ( mysql_affected_rows() == 0 ) {
