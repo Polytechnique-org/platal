@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import base64
+import base64, MySQLdb
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
@@ -12,6 +12,18 @@ from Mailman import Errors
 from Mailman.i18n import _
 
 class UserDesc: pass
+
+class AuthFailed(Exception): pass
+
+from MySQLdb.constants import FIELD_TYPE
+_type_conv = { FIELD_TYPE.TINY: int,
+               FIELD_TYPE.SHORT: int,
+               FIELD_TYPE.LONG: long,
+               FIELD_TYPE.FLOAT: float,
+               FIELD_TYPE.DOUBLE: float,
+               FIELD_TYPE.LONGLONG: long,
+               FIELD_TYPE.INT24: int,
+               FIELD_TYPE.YEAR: int }
 
 #------------------------------------------------
 # Manage Basic authentication
@@ -25,46 +37,86 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     calls the super.do_POST().
     """
 
-    def do_POST(self):
-	headers = self.headers
-	if not headers.has_key("authorization"):
-	    self.send_response(401)
-	    self.end_headers()
-	try:
-	    auth = headers["authorization"]
-	    _, auth = auth.split()
-	    user, passwd = base64.decodestring(auth).strip().split(':')
-	    # Call super.do_POST() to do the actual work
-	    SimpleXMLRPCRequestHandler.do_POST(self)
-	except:
-	    self.send_response(401)
-	    self.end_headers()
+    def _dispatch(self,method,params):
+        # TODO: subclass in SimpleXMLRPCDispatcher and not here.
+        new_params = list(params)
+        new_params.insert(0,self.userdesc)
+        return self.server._dispatch(method,new_params)
 
+    def do_POST(self):
+        headers = self.headers
+        try:
+            if not headers.has_key("authorization"):
+                raise AuthFailed
+            auth = headers["authorization"]
+            _, auth = auth.split()
+            uid, md5 = base64.decodestring(auth).strip().split(':')
+            self.userdesc = self.getUserDesc(uid,md5)
+            if self.userdesc is None:
+                raise AuthFailed
+            # Call super.do_POST() to do the actual work
+            SimpleXMLRPCRequestHandler.do_POST(self)
+        except:
+            self.send_response(401)
+            self.end_headers()
+
+    def connectDB(self):
+        try:
+            connection=MySQLdb.connect(
+		    passwd='***************',
+                    db='x4dat',
+                    user='***',
+                    host='localhost')
+            connection.ping()
+            self.mysql = connection.cursor()
+        except:
+            selc.mysql = None
+
+    def getUserDesc(self, uid, md5):
+	try:
+	    if self.mysql is None:
+		pass
+	except:
+            self.connectDB()
+        if self.mysql is None:
+            return None
+	self.mysql.execute ("""SELECT  u.prenom,u.nom,a.alias,u.perms
+				 FROM  auth_user_md5 AS u
+			   INNER JOIN  aliases       AS a ON a.id=u.user_id
+				WHERE  u.user_id = '%s' AND u.password = '%s'
+				LIMIT  1""" %( uid, md5 ))
+        if int(self.mysql.rowcount) is 1:
+            user = self.mysql.fetchone()
+            userdesc = UserDesc()
+            userdesc.fullname = user[0]+' '+user[1]
+            userdesc.address = user[2]+'@polytechnique.org'
+            userdesc.digest = 0
+            userdesc.perms = user[3]
+            return userdesc
+        else:
+            return None
 
 #------------------------------------------------
 # Procedures
 #
 
-def lists_names():
+def lists_names(user):
     names = Utils.list_names()
     names.sort()
     return names
-   
-def members(listname):
+
+def members(userdesc,listname):
     try:
         mlist = MailList.MailList(listname, lock=False)
     except Errors.MMListError, e:
         return None
     return mlist.getRegularMemberKeys()
 
-def subscribe(listname,name,mail):
+def subscribe(userdesc,listname):
     try:
         mlist = MailList.MailList(listname, lock=True)
     except Errors.MMListError, e:
         return 0
-    userdesc = UserDesc()
-    userdesc.fullname, userdesc.address = (name,mail)
-    userdesc.digest = 0
     try:
         mlist.ApprovedAddMember(userdesc)
         mlist.Save()
@@ -74,13 +126,13 @@ def subscribe(listname,name,mail):
     mlist.Unlock()
     return 1
 
-def unsubscribe(listname,mail):
+def unsubscribe(userdesc,listname):
     try:
         mlist = MailList.MailList(listname, lock=True)
     except Errors.MMListError, e:
         return 0
     try:
-        mlist.ApprovedDeleteMember(mail, 'xml-rpc iface', False, False);
+        mlist.ApprovedDeleteMember(userdesc.address, 'xml-rpc iface', False, False);
         mlist.Save()
     except Exception, e:
         mlist.Unlock()
@@ -97,6 +149,6 @@ server.register_function(lists_names)
 server.register_function(members)
 server.register_function(subscribe)
 server.register_function(unsubscribe)
-server.register_introspection_functions()
+#server.register_introspection_functions()
 server.serve_forever()
 
