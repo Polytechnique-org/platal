@@ -29,7 +29,7 @@ body {
     background: #ffffff;
 }
 
-a:link, a:visited, a:active, a:hover { color: #003399; background: inherit; }
+a:link, a:visited, a:active, a:hover { color: #003399; background: none; }
 a img { border: 0px; }
 td    { vertical-align: top; }
 li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
@@ -577,4 +577,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.48 2004-10-12 19:54:36 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.49 2004-10-14 18:58:22 x2000habouzit Exp $ */
