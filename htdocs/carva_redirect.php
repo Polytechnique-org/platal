@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: carva_redirect.php,v 1.5 2004-10-09 14:44:05 x2000habouzit Exp $
+    $Id: carva_redirect.php,v 1.6 2004-11-22 22:35:24 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
