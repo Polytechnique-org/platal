@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: liste.tpl,v 1.1 2004-09-10 21:28:53 x2000habouzit Exp $
+        $Id: liste.tpl,v 1.2 2004-09-10 22:28:39 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -71,9 +71,9 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a>
+      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
       {else}
-      {$x.l}
+      {$x.l}<br />
       {/if}
       {/foreach}
     </td>
@@ -92,9 +92,9 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a>
+      <a href="javascript:x()" onclick="popWin('{"fiche.php"|url}?user={$x.l}')">{$x.n}</a><br />
       {else}
-      {$x.l}
+      {$x.l}<br />
       {/if}
       {/foreach}
     </td>
@@ -106,6 +106,52 @@
 <div class='rubrique'>
   Administrer la liste
 </div>
+
+<p>
+Pour entrer un utilisateur, il faut remplir les champs prévus à cet effet par son login,
+c'est-à-dire "prenom.nom" ou "prenom.nom.promo"
+</p>
+
+<form method='post' action='{$smarty.server.REQUEST_URI}'>
+  <table class='tinybicol'>
+    <tr>
+      <th>modifier les abonnés</th>
+      <th>modifier les modérateurs</th>
+    </tr>
+    <tr>
+      <td>
+        <input type='text' name='member' />
+      </td>
+      <td>
+        <input type='text' name='owner' />
+      </td>
+    </tr>
+    <tr class='center'>
+      <td>
+        <input type='submit' name='add_member' value='ajouter' />
+        &nbsp;
+        <input type='submit' name='del_member' value='supprimer' />
+      </td>
+      <td>
+        <input type='submit' name='add_owner' value='ajouter' />
+        &nbsp;
+        <input type='submit' name='del_owner' value='supprimer' />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<p>
+Un message est adressé automatiquement à toute personne ajoutée à la liste de diffusion.  Voici le
+message actuellement envoyé : il est modifiable à volonté !
+</p>
+
+<form method='post' action='{$smarty.server.REQUEST_URI}'>
+  <div class='center'>
+    <textarea cols='50' rows='8' name='info'>{$details.info}</textarea><br />
+    <input type='submit' name='update' value='mettre à jour' />
+  </div>
+</form>
 
 {/if}
 

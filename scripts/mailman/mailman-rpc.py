@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #***************************************************************************
-#*  Copyright (C) 2004 Polytechnique.org                                   *
+#*  Copyright (C) 2namelytechnique.org                                   *
 #*  http://opensource.polytechnique.org/                                   *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.15 2004-09-10 21:28:53 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.16 2004-09-10 22:28:39 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -77,15 +77,15 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5):
-        mysql.execute ("""SELECT  u.prenom,u.nom,a.alias,u.perms
+        mysql.execute ("""SELECT CONCAT(u.prenom, ' ',u.nom),a.alias,u.perms
                            FROM  auth_user_md5 AS u
                      INNER JOIN  aliases       AS a ON a.id=u.user_id
                           WHERE  u.user_id = '%s' AND u.password = '%s'
                           LIMIT  1""" %( uid, md5 ) )
         if int(mysql.rowcount) is 1:
-            user = mysql.fetchone()
-            userdesc = UserDesc(user[2]+'@polytechnique.org', user[0]+' '+user[1], None, 0)
-            return (userdesc,user[3])
+            name,forlife,perms = mysql.fetchone()
+            userdesc = UserDesc(forlife+'@polytechnique.org', name, None, 0)
+            return (userdesc,perms)
         else:
             return None
 
@@ -204,20 +204,21 @@ def mass_subscribe((userdesc,perms),listname,users):
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
-            return None
+            return 0
         
         members = mlist.getRegularMemberKeys()
         added = []
         for user in users:
-            if user+'@polytechnique.org' in members:
-                continue
-            mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom)
+            mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom), f.alias
                                 FROM  auth_user_md5 AS u
-                          INNER JOIN  aliases       AS a ON (a.id=u.user_id AND alias='%s')
+                          INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
+                          INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s')
                                LIMIT  1""" %( user ) )
             if int(mysql.rowcount) is 1:
-                row = mysql.fetchone()
-                userd = UserDesc(user+'@polytechnique.org', row[0], None, 0)
+                name, forlife = mysql.fetchone()
+                if forlife+'@polytechnique.org' in members:
+                    continue
+                userd = UserDesc(forlife+'@polytechnique.org', name, None, 0)
                 mlist.ApprovedAddMember(userd)
                 added.append( (userd.fullname, userd.address) )
         mlist.Save()
@@ -225,14 +226,14 @@ def mass_subscribe((userdesc,perms),listname,users):
         mlist.Unlock()
         return added
 
-def mass_unsubscribe((userdesc,prems),listname,users):
+def mass_unsubscribe((userdesc,perms),listname,users):
     try:
         mlist = MailList.MailList(listname)
     except:
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
-            return None
+            return 0
     
         map(lambda user: mlist.ApprovedDeleteMember(user+'@polytechnique.org', None, 0, 0), users)
         mlist.Save()
@@ -247,11 +248,17 @@ def add_owner((userdesc,perms),listname,user):
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
-            return None
-        addr = user+'@polytechnique.org'
-        if addr not in mlist.owner:
-            mlist.owner.append(addr)
-        mlist.Save()
+            return 0
+        mysql.execute ("""SELECT  f.alias
+                            FROM  aliases       AS f
+                      INNER JOIN  aliases       AS a ON (a.id=f.id AND a.alias='%s')
+                           WHERE  f.type='a_vie'
+                           LIMIT  1""" %( user ) )
+        if int(mysql.rowcount) is 1:
+            forlife = mysql.fetchone()[0]
+            if forlife+'@polytechnique.org' not in mlist.owner:
+                mlist.owner.append(forlife+'@polytechnique.org')
+                mlist.Save()
     finally:
         mlist.Unlock()
         return True
@@ -263,7 +270,9 @@ def del_owner((userdesc,perms),listname,user):
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
-            return None
+            return 0
+        if len(mlist.owner) < 2:
+            return 0
         mlist.owner.remove(user+'@polytechnique.org')
         mlist.Save()
     finally:
@@ -277,7 +286,7 @@ def set_welcome((userdesc,perms),listname,info):
         return 0
     try:
         if not is_admin_on(userdesc, perms, mlist):
-            return None
+            return 0
         mlist.info = info
         mlist.Save()
     finally:
