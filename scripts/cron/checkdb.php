@@ -19,21 +19,15 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.2 2004-10-02 15:28:11 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.3 2004-10-02 15:34:53 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.2 2004-10-02 15:28:11 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.3 2004-10-02 15:34:53 x2000habouzit Exp $
 */ 
 
-ini_set("include_path","/usr/share/php");
-
-require("../../include/xorg.misc.inc.php");
-require("../../include/config.xorg.inc.php");
-mysql_connect($globals->dbhost,$globals->dbuser,$globals->dbpwd);
-mysql_select_db($globals->dbdb);
-
+require('./connect.db.inc.php');
 require("Console/Getopt.php");
 
 function check($sql, $commentaire='') {

@@ -19,14 +19,10 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recherche.php,v 1.3 2004-10-02 15:02:06 x2000habouzit Exp $
+        $Id: recherche.php,v 1.4 2004-10-02 15:34:53 x2000habouzit Exp $
  ***************************************************************************/
 
-require("../../include/xorg.misc.inc.php");
-require("../../include/config.xorg.inc.php");
-
-mysql_connect($globals->dbhost,$globals->dbuser,$globals->dbpwd);
-mysql_select_db($globals->dbdb);
+require('./connect.db.inc.php');
 
 $result = mysql_query("SELECT matricule,nom1,nom2,nom3,prenom1,prenom2,promo FROM recherche");
 
