@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: advanced_search.php,v 1.9 2004-10-09 18:18:58 x2000habouzit Exp $
+        $Id: advanced_search.php,v 1.10 2004-10-10 23:51:19 x2000bedo Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -29,7 +29,36 @@ $page->assign('public_directory',0);
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
-if (array_key_exists('rechercher', $_REQUEST)) {
+function form_prepare() {
+    global $page,$globals;
+    $page->assign('formulaire',1);
+    $sql = 'SELECT id,text FROM nationalites ORDER BY text';
+    $page->mysql_assign($sql,'choix_nationalites');
+    $sql = 'SELECT id,text FROM binets_def ORDER BY text';
+    $page->mysql_assign($sql,'choix_binets');
+    $sql = 'SELECT id,text FROM groupesx_def ORDER BY text';
+    $page->mysql_assign($sql,'choix_groupesx');
+    $sql = 'SELECT id,text FROM sections ORDER BY text';
+    $page->mysql_assign($sql,'choix_sections');
+    $sql = 'SELECT id,text FROM applis_def ORDER BY text';
+    $page->mysql_assign($sql,'choix_schools');
+    if (isset($_REQUEST['school'])) {
+        $sql = 'SELECT type FROM applis_def WHERE id='.$_REQUEST['school'];
+        $result = $globals->db->query($sql);
+        list($types) = mysql_fetch_row($result);
+        $page->assign('choix_diplomas',explode(',',$types));
+    }
+    $sql = 'SELECT id,label FROM emploi_secteur ORDER BY label';
+    $page->mysql_assign($sql,'choix_secteurs');
+    $sql = 'SELECT id,fonction_fr FROM fonctions_def ORDER BY fonction_fr';
+    $page->mysql_assign($sql,'choix_postes');
+}
+
+
+if (!array_key_exists('rechercher', $_REQUEST)) {
+    form_prepare();
+} 
+else {
     $page->assign('formulaire',0);
 
     $with_soundex = ((isset($_REQUEST['with_soundex']) && $_REQUEST['with_soundex']==1));
@@ -67,6 +96,11 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $entrepriseField,$posteField,$secteurField,$cvField,
     $nationaliteField,$binetField,$groupexField,$sectionField,$schoolField,$diplomaField));
     
+    if ($fields->too_large())
+    {
+        form_prepare();
+        new ThrowError('Recherche trop générale.');
+    }
     $offset = new NumericSField('offset');
    
     $where = $fields->get_where_statement();
@@ -106,28 +140,6 @@ if (array_key_exists('rechercher', $_REQUEST)) {
     $page->assign('perpage',$globals->search_results_per_page);
     $page->assign('is_admin',has_perms());
 }
-else {
-    $page->assign('formulaire',1);
-    $sql = 'SELECT id,text FROM nationalites ORDER BY text';
-    $page->mysql_assign($sql,'choix_nationalites');
-    $sql = 'SELECT id,text FROM binets_def ORDER BY text';
-    $page->mysql_assign($sql,'choix_binets');
-    $sql = 'SELECT id,text FROM groupesx_def ORDER BY text';
-    $page->mysql_assign($sql,'choix_groupesx');
-    $sql = 'SELECT id,text FROM sections ORDER BY text';
-    $page->mysql_assign($sql,'choix_sections');
-    $sql = 'SELECT id,text FROM applis_def ORDER BY text';
-    $page->mysql_assign($sql,'choix_schools');
-    if (isset($_REQUEST['school'])) {
-        $sql = 'SELECT type FROM applis_def WHERE id='.$_REQUEST['school'];
-        $result = $globals->db->query($sql);
-        list($types) = mysql_fetch_row($result);
-        $page->assign('choix_diplomas',explode(',',$types));
-    }
-    $sql = 'SELECT id,label FROM emploi_secteur ORDER BY label';
-    $page->mysql_assign($sql,'choix_secteurs');
-    $sql = 'SELECT id,fonction_fr FROM fonctions_def ORDER BY fonction_fr';
-    $page->mysql_assign($sql,'choix_postes');
-}
+
 $page->run();
 ?>

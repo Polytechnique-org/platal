@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.12 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.13 2004-10-10 23:51:21 x2000bedo Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -141,6 +141,10 @@ class RefSField extends SField {
             $this->value='';
     }
 
+    function too_large() {
+        return ($this->value=='');
+    }
+
     function compare() {
         if ($this->exact)
             return "='".$this->value."'";
@@ -194,6 +198,10 @@ class StringSField extends SField {
         global $lc_accent,$uc_accent;
         return
         strlen($this->value)-strlen(ereg_replace('[a-z'.$lc_accent.$uc_accent.']','',strtolower($this->value)));
+    }
+
+    function too_large() {
+        return ($this->length()<2);
     }
 
     /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
@@ -257,6 +265,10 @@ class PromoSField extends SField {
         return ($this->compareField->value=='=' && $this->value!='');
     }
 
+    function too_large() {
+        return (!$this->is_a_single_promo());
+    }
+
     /** clause WHERE correspondant à ce champ */
     function get_single_where_statement($field) {
         return $field.$this->compareField->value.$this->value;
@@ -283,6 +295,13 @@ class SFieldGroup {
     function SFieldGroup($_and,$_fields) {
         $this->fields = $_fields;
         $this->and = $_and;
+    }
+
+    function too_large() {
+        $b = true;
+        for ($i=0;$i<count($this->fields);$i++)
+            $b = $b && $this->fields[$i]->too_large();
+        return $b;
     }
 
     function field_get_select($f) {
