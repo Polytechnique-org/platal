@@ -17,14 +17,14 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: doc_ssl.tpl,v 1.9 2004-10-24 14:58:28 x2000habouzit Exp $
+        $Id: doc_ssl.tpl,v 1.10 2004-10-24 19:19:32 x2000habouzit Exp $
  ***************************************************************************}
 
 
 <h1><a id="ssl"></a>Le certificat SSL de Polytechnique.org</h1>
 <h2>Pourquoi un certificat ?</h2>
 <p>
-  En plus du serveur web sécurisé, Polytechnique.org met à ta diposition
+  En plus du serveur web sécurisé, Polytechnique.org met à ta disposition
   d'autres services sécurisés comme le <a href="doc_smtp.php">
   serveur SMTP</a> ou le <a href="doc_nntp.php">serveur de news</a>.
   A ces services sont associées des clés de chiffrement et pour garantir
