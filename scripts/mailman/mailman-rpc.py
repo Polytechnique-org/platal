@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.64 2004-10-24 08:53:31 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.65 2004-10-24 12:53:44 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha, signal
@@ -119,8 +119,12 @@ def is_admin_on(userdesc,perms,mlist):
     return ( perms == 'admin' ) or ( userdesc.address in mlist.owner )
 
 
-def quote(s):
-    return Utils.uquote(s.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
+def quote(s,is_header=False):
+    if is_header:
+        h = Utils.oneline(s,'iso-8859-1')
+    else:
+        h = s
+    return Utils.uquote(h.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
 
 #-------------------------------------------------------------------------------
 # helpers on lists
@@ -428,9 +432,9 @@ def get_pending_ops((userdesc,perms),vhost,listname):
                 continue
             helds.append({
                     'id'    : id,
-                    'sender': quote(sender),
+                    'sender': quote(sender, True),
                     'size'  : size,
-                    'subj'  : quote(subject),
+                    'subj'  : quote(subject, True),
                     'stamp' : ptime
                     })
         if dosave: mlist.Save()
@@ -482,9 +486,9 @@ def get_pending_mail((userdesc,perms),vhost,listname,id,raw=0):
             if c is not None: results.append (c)
         results = map(lambda x: quote(x), results)
         return {'id'    : id,
-                'sender': quote(sender),
+                'sender': quote(sender, True),
                 'size'  : size,
-                'subj'  : quote(subject),
+                'subj'  : quote(subject, True),
                 'stamp' : ptime,
                 'parts' : results }
     except:
