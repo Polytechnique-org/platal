@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: mescontacts.php,v 1.6 2004-08-31 10:03:28 x2000habouzit Exp $
+        $Id: mescontacts.php,v 1.7 2004-09-02 19:51:22 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -29,16 +29,14 @@ require("applis.func.inc.php");
 if (isset($_REQUEST['action'])) {
     if($_REQUEST['action']=='retirer') {
 
-        if (($res = $globals->db->query("SELECT user_id FROM auth_user_md5 WHERE username='{$_REQUEST['user']}'")) && mysql_num_rows($res)==1) {
-            list($cont_user_id) = mysql_fetch_row($res);
-            if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='$cont_user_id'"))
-                $page->assign('erreur', "Contact {$_REQUEST['user']} retiré !\n");
-        }
+	list($cont_user_id) = mysql_fetch_row($res);
+	if ($globals->db->query("DELETE FROM contacts WHERE uid = '{$_SESSION['uid']}' AND contact='{$_REQUEST['user']}'"))
+	    $page->assign('erreur', "Contact retiré !\n");
 
         // si l'utilisateur demande l'ajout de qqun à sa liste
     } elseif ($_REQUEST["action"]=="ajouter") {
 
-        if (($res = $globals->db->query("SELECT user_id FROM auth_user_md5 WHERE username='".$_REQUEST["user"]."'")) && mysql_num_rows($res)==1) {
+        if (($res = $globals->db->query("SELECT id FROM aliases WHERE alias='{$_REQUEST['user']}'")) && mysql_num_rows($res)==1) {
             list($cont_user_id) = mysql_fetch_row($res);
             if ($globals->db->query("INSERT INTO contacts set uid = '{$_SESSION['uid']}', contact = '$cont_user_id'")) {
                 $page->assign('erreur', 'Contact ajouté !');

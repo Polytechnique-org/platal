@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: x_inscrit.tpl,v 1.6 2004-08-31 11:25:40 x2000habouzit Exp $
+        $Id: x_inscrit.tpl,v 1.7 2004-09-02 19:51:23 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -39,13 +39,13 @@
     {/strip}
   </div>
   <div class="bits">
-    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.username}')">
+    <a href="javascript:x()" onclick="popWin('fiche.php?user={$c.user_id}')">
       <img src="images/loupe.gif" alt="Afficher les détails" />
     </a>
-    <a href="vcard.php/{$c.username}.vcf?x={$c.username}">
+    <a href="vcard.php/{$c.prenom}{$c.nom}..{$c.promo}.vcf?x={$c.user_id}">
       <img src="images/vcard.png" alt="Afficher la carte de visite" />
     </a>
-    <a href="mescontacts.php?action={$show_action}&amp;user={$c.username}">
+    <a href="mescontacts.php?action={$show_action}&amp;user={$c.user_id}">
       <img src="images/{$show_action}.gif" alt="{$show_action} aux/des contacts" />
     </a>
     {perms level='admin'}
