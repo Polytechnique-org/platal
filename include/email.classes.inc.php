@@ -56,7 +56,7 @@ function check_mtic($email)
 function fix_bestalias($uid)
 {
     global $globals;
-    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE id='$uid' AND FIND_IN_SET('bestalias',flags)");
+    $res = $globals->db->query("SELECT COUNT(*) FROM aliases WHERE id='$uid' AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'");
     list($n) = mysql_fetch_row($res);
     mysql_free_result($res);
     if ($n) {
