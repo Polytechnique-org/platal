@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: search.classes.inc.php,v 1.30 2004-11-04 13:50:45 x2000habouzit Exp $
+        $Id: search.classes.inc.php,v 1.31 2004-11-13 11:02:47 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("xorg.misc.inc.php");
@@ -160,7 +160,10 @@ class QuickSearch extends SField {
 
     function get_where_statement() {
 	$where = Array();
-	foreach($this->strings as $s) {
+	if(count($this->strings) == 1) {
+	    $s = $this->strings[0];
+	    $where[] = "(r.nom LIKE '%$s%' OR r.epouse LIKE '%$s%')";
+	} else foreach($this->strings as $s) {
 	    $where[] = "(r.nom LIKE '%$s%' OR r.epouse LIKE '%$s%' OR r.prenom LIKE '%$s%')";
 	}
 	
