@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.php,v 1.16 2004-09-02 19:39:20 x2000habouzit Exp $
+        $Id: utilisateurs.php,v 1.17 2004-09-02 23:06:11 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -163,6 +163,10 @@ if (!empty($_REQUEST['user_id'])) {
 }
     
 if(isset($mr)) {
+    $r=$globals->db->query("SELECT alias FROM aliases WHERE ( id = {$mr['user_id']} AND tpe='a_vie' )");
+    list($forlife) = mysql_fetch_row($r);
+    mysql_free_result($r);
+    $mr['forlife'] = $forlife;
     $page->assign('mr',$mr);
 
     $result=$globals->db->query("SELECT  UNIX_TIMESTAMP(s.start), s.host
