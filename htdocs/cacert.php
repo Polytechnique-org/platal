@@ -19,10 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-  $fp=fopen("/etc/ssl/xorgCA/cacert.pem","r");
-  $data=fread($fp,10000);
-  fclose($fp);
-  Header("Content-Type: application/x-x509-ca-cert");
-  Header("Content-Length: ".strlen($data));
-  echo $data;
+$data = file_get_contents("/etc/ssl/xorgCA/cacert.pem","r");
+Header("Content-Type: application/x-x509-ca-cert");
+Header("Content-Length: ".strlen($data));
+echo $data;
 ?>
