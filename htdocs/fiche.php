@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: fiche.php,v 1.14 2004-10-10 08:57:55 x2000chevalier Exp $
+        $Id: fiche.php,v 1.15 2004-10-27 18:02:29 x2000coic Exp $
  ***************************************************************************/
 
 
@@ -99,7 +99,7 @@ $page->assign('is_contact', $is_contact);
 
 // photo
 
-$photo="getphoto.php?x=".$user_id.(SID == '' ? '' : '&amp;'.SID).($new ? '&amp;modif=new' : '');
+$photo="getphoto.php?x=".$forlife.(SID == '' ? '' : '&amp;'.SID).($new ? '&amp;modif=new' : '');
 if(!isset($size_y) and !isset($size_x)) list($size_x, $size_y) = getimagesize("images/none.png");
 if(!isset($size_y) or $size_y < 1) $size_y=1;
 if(!isset($size_x) or $size_x < 1) $size_x=1;
