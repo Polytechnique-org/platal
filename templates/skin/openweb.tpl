@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: openweb.tpl,v 1.4 2004-11-22 10:42:53 x2000habouzit Exp $
+        $Id: openweb.tpl,v 1.5 2004-11-22 11:00:53 x2000habouzit Exp $
  ***************************************************************************}
 
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -25,7 +25,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     {include file=skin/common.header.tpl}
-    <link rel="stylesheet" type="text/css" href="{"css/openweb.css"|url}" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{rel}/css/openweb.css" media="screen" />
     {if $xorg_head}
     {include file=$xorg_head}
     {/if}
@@ -41,7 +41,7 @@
           {dynamic}
           {$smarty.session.suid} ({$smarty.session.forlife})
           {/dynamic}
-          [<a href="{"exit.php"|url}">exit</a>]
+          [<a href="{rel}/exit.php">exit</a>]
         </td>
       </tr>
     </table>
@@ -60,10 +60,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{"login.php"|url}"><img src="{"images/sk_default_headlogo.jpg"|url}" alt="[ LOGO ]" /></a>
+          <a href="{rel}/login.php"><img src="{rel}/images/sk_default_headlogo.jpg" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{"login.php"|url}"><img src="{"images/sk_default_ban.jpg"|url}" alt="[ Polytechnique.org ]" /></a>
+          <a href="{rel}/login.php"><img src="{rel}/images/sk_default_ban.jpg" alt="[ Polytechnique.org ]" /></a>
           <table>
             <tr>
               <td class="date-heure">
@@ -95,7 +95,7 @@
           <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
             <tr><th>Valid</th></tr>
             <tr class="impair">
-              <td><a href="{"admin/valider.php"|url}">{insert name="mkStats"}</a></td>
+              <td><a href="{rel}/admin/valider.php">{insert name="mkStats"}</a></td>
             </tr>
           </table>
           {/perms}
