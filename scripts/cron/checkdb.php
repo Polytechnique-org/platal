@@ -19,12 +19,12 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: checkdb.php,v 1.8 2004-10-17 19:47:02 x2000habouzit Exp $
+        $Id: checkdb.php,v 1.9 2004-10-17 20:15:42 x2000habouzit Exp $
  ***************************************************************************/
 /*
  * verifie qu'il n'y a pas d'incoherences dans les tables de jointures
  * 
- * $Id: checkdb.php,v 1.8 2004-10-17 19:47:02 x2000habouzit Exp $
+ * $Id: checkdb.php,v 1.9 2004-10-17 20:15:42 x2000habouzit Exp $
 */ 
 
 require('./connect.db.inc.php');
@@ -128,11 +128,17 @@ check("select a.promo as promo_ok,i.promo as promo_bad,a.matricule,a.nom,a.preno
 info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on e.matricule = a.matricule order by promo,nom;");
 
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
-info("SELECT  a1.alias, a2.alias, e1.email
-        FROM  emails  AS e1
-  INNER JOIN  emails  AS e2 ON(e1.email = e2.email AND e1.uid < e2.uid)
-  INNER JOIN  aliases AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
-  INNER JOIN  aliases AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')",
+info("SELECT  a1.alias, a2.alias, e1.email, e2.flags
+        FROM  emails        AS e1
+  INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
+				     (e1.uid<e2.uid  OR  NOT FIND_IN_SET(e2.flags,'active'))
+				    )
+  INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
+  INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
+  INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
+  INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+       WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.epouse AND u2.nom!=u1.epouse
+    ORDER BY  a1.alias",
 "donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes");
 
 /* vérif que tous les inscrits ont bien au moins un email actif */
