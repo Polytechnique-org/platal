@@ -5,7 +5,6 @@ require('tracker.inc.php');
 
 $tracker = new Tracker($_GET['tr_id']);
 
-
 $res = $globals->db->query("SELECT r.*, a.username, b.username AS admin, s.texte AS state
                             FROM trackers.requests    AS r
                             LEFT JOIN trackers.states AS s USING(st_id)

@@ -1,4 +1,4 @@
-{* $Id: show.tpl,v 1.3 2004-02-23 21:50:38 x2000habouzit Exp $ *}
+{* $Id: show.tpl,v 1.4 2004-02-25 12:43:33 x2000habouzit Exp $ *}
 
 {literal}
 <script type="text/javascript">
@@ -44,7 +44,7 @@
 {/foreach}
 <tr><th colspan="3"></th></tr>
 {foreach item=rq from=$close}
-  <tr class="pri{$rq.pri}">
+  <tr>
     <td>{$rq.date|date_format:"%m&nbsp;%Y"}</td>
     <td><a href="show_rq.php?tr_id={$smarty.get.tr_id}&amp;rq_id={$rq.rq_id}">{$rq.summary}</a></td>
     <td class="action"><a href="javascript:del({$rq.rq_id})">delete</a></td>

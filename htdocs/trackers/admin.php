@@ -2,7 +2,6 @@
 require('auto.prepend.inc.php');
 require('tracker.inc.php');
 
-
 if(isset($_POST['action'])) {
     switch($_POST['action']) {
     // insertion ou création du tracker dans le formulaire
