@@ -6,9 +6,12 @@ Polytechnique.org TEAM :
     Jean Sébastien Bedo     <jean-sebastien.bedo@m4x.org>
     Jeremy Lainé            <jeremy.laine@m4x.org>
     Sophie Charbonnier      <sophie.charbonnier@m4x.org>
-    Vincent Palatin	    <vicent.palatin@m4x.org>
+    Vincent Palatin         <vicent.palatin@m4x.org>
     Yann Chevalier          <yann.chevalier@m4x.org>
 
 include/xml-rpc.inc.php :
-    Dan Libby		    <dan@libby.com>		    http://xmlrpc-epi.sourceforge.net/
+    Dan Libby               <dan@libby.com>                 http://xmlrpc-epi.sourceforge.net/
+
+include/xml-rpc-client.inc.php:
+    Marc Boeren             <mboeren@php.net>               http://fr2.php.net/xml-rpc
 
