@@ -45,7 +45,7 @@ if (Env::has('hash')) {
 
         $globals->xdb->execute(
                 "REPLACE INTO  register_mstats (uid,sender,success)
-                       SELECT  m.uid, m.sender, NOW()
+                       SELECT  m.uid, m.sender, 0
                          FROM  register_marketing AS m
                         WHERE  m.hash", $sub_state['hash']);
     }

@@ -239,7 +239,6 @@ function finish_ins($sub_state)
             "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
             $uid, $forlife, $bestalias, $mailorg2, $pass_md5, $email, $naissance, $hash);
-            echo mysql_error();
 
     require_once('xorg.mailer.inc.php');
     $mymail = new XOrgMailer('inscrire.mail.tpl');

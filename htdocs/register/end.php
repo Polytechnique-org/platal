@@ -95,13 +95,14 @@ $res = $globals->xdb->iterRow(
      INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
      INNER JOIN  aliases            AS sa ON ( sa.id = m.sender AND FIND_IN_SET('bestalias', sa.flags) )
           WHERE  m.uid = {?}", $uid);
+$globals->xdb->execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
 while (list($salias, $snom, $sprenom) = $res->next()) {
     require_once('diogenes/diogenes.hermes.inc.php');
     $mymail = new HermesMailer();
     $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
     $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
-    $mymail->addTo("\"$sprenom $snom\" <$alias@{$globals->mail->domain}");
+    $mymail->addTo("\"$sprenom $snom\" <$alias@{$globals->mail->domain}>");
     $msg = "Cher $sprenom,\n\n"
          . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
          . "que tu avais incité à s'inscrire à Polytechnique.org, "
@@ -113,9 +114,9 @@ while (list($salias, $snom, $sprenom) = $res->next()) {
     $mymail->send();
 }
 
-$globals->xdb->execute("DELETE FROM register_mstats WHERE uid = {?}", $uid);
+$globals->xdb->execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
 
-header('Location: success.php');
+#header('Location: success.php');
 $page->assign('uid', $uid);
 $page->run();
 
