@@ -835,7 +835,8 @@ def delete_list(userdesc,perms,vhost,listname,del_archives=0):
     except:
         return 0
     try:
-        if perms != 'admin': return 0
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
         # remove the list
         REMOVABLES = [ os.path.join('lists', lname), ]
         # remove stalled locks
