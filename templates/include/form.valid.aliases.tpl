@@ -1,5 +1,5 @@
-{* $Id: form.valid.aliases.tpl,v 1.1 2004-02-07 16:57:59 x2000habouzit Exp $ *}
-{assign var="newAlias" value=""}
+{* $Id: form.valid.aliases.tpl,v 1.2 2004-02-07 17:18:16 x2000habouzit Exp $ *}
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="uid" value="{$valid->uid}" />
 <input type="hidden" name="type" value="{$valid->type}" />

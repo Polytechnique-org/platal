@@ -1,0 +1,35 @@
+{* $Id: form.valid.emploi.tpl,v 1.1 2004-02-07 17:18:16 x2000habouzit Exp $ *}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="uid" value="{$valid->uid}" />
+<input type="hidden" name="type" value="{$valid->type}" />
+<input type="hidden" name="stamp" value="{$valid->stamp}" />
+<table class="bicol" cellpadding="4" summary="Annonce emploi">
+  <thead>
+  <tr>
+    <th colspan="2">Offre d'emploi</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Demandeur</td>
+      <td>{$valid->entreprise|escape:"html"} ({$valid->mail|escape:"html"})</td>
+    </tr>
+    <tr>
+      <td>Titre du post</td>
+      <td>{$valid->titre|escape:"html"}</td>
+    </tr>
+    <tr>
+      <td colspan="2"><pre>{$valid->text|escape:"html"}</pre></td>
+    </tr>
+    <tr>
+      <td class="center" colspan="2">
+        <input type="submit" name="submit" value="Accepter" />
+        <input type="submit" name="submit" value="Refuser" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+</form>
+
+{* vim:set et sw=2 sts=2 sws=2: *}

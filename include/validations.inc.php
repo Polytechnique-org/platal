@@ -1,6 +1,6 @@
 <?php
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=100:
- * $Id: validations.inc.php,v 1.5 2004-02-07 16:57:58 x2000habouzit Exp $
+ * $Id: validations.inc.php,v 1.6 2004-02-07 17:18:15 x2000habouzit Exp $
  *
  */
 
@@ -36,8 +36,6 @@ class ValidateIterator {
  * Par contre, à la sortie de toute fonction il faut que le stamp soit valide !!! XXX
  */
 class Validate {
-    /** nom du template qui contient le formulaire */
-    var $tpl_form = null;
     /** l'uid de la personne faisant la requête */
     var $uid;
     /** le time stamp de la requête */
@@ -141,6 +139,8 @@ class Validate {
                 .($this->unique ? "" : " AND stamp='".$this->stamp."'"));
     }
     
+    /** nom du template qui contient le formulaire */
+    function formu() { return null; }
     /** fonction à réaliser en cas de valistion du formulaire
      * XXX la fonction est "virtuelle" XXX
      */

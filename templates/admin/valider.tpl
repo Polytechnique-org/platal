@@ -1,10 +1,10 @@
-{* $Id: valider.tpl,v 1.2 2004-02-07 16:57:58 x2000habouzit Exp $ *}
+{* $Id: valider.tpl,v 1.3 2004-02-07 17:18:15 x2000habouzit Exp $ *}
 
 {dynamic}
 {$mail}
 {foreach item=valid from=$valids}
 <br />
-{include file=$valid->tpl_form valid=$valid}
+{include file=$valid->formu() valid=$valid}
 {/foreach}
 {/dynamic}
 

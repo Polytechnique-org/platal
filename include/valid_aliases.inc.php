@@ -1,6 +1,5 @@
 <?php
 class AliasReq extends Validate {
-    var $tpl_form='include/form.valid.aliases.tpl';
     var $alias;
     var $raison;
 
@@ -24,6 +23,8 @@ class AliasReq extends Validate {
     function get_unique_request($uid) {
         return parent::get_unique_request($uid,'alias');
     }
+
+    function formu() { return 'include/form.valid.aliases.tpl'; }
 
     function handle_formu () {
         global $no_update_bd;
