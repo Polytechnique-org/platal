@@ -31,7 +31,8 @@ ALTER TABLE x4dat.auth_user_md5 DROP COLUMN prenom_soundex;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN epouse_soundex;
 -- drop des anciens alias --> aliases
 alter table x4dat.aliases add column expire date;
-ALTER TABLE x4dat.aliases CHANGE `type` `type` ENUM( 'a_vie', 'epouse', 'alias', 'homonyme', 'liste' ) DEFAULT 'alias' NOT NULL
+delete from x4dat.aliases where `type` LIKE 'liste-%';
+ALTER TABLE x4dat.aliases CHANGE `type` `type` ENUM( 'a_vie', 'epouse', 'alias', 'homonyme', 'liste' ) DEFAULT 'alias' NOT NULL;
 delete from x4dat.aliases where type='';
 
 -- auth_user_md5
@@ -39,7 +40,7 @@ update x4dat.aliases as a inner join x4dat.auth_user_md5 as u ON(u.loginbis=a.al
     set a.expire=ADDDATE(u.date_mise_alias_temp,INTERVAL 1 MONTH)
     WHERE u.date_mise_alias_temp!='' AND u.date_mise_alias_temp!='0000-00-00';
 update x4dat.aliases as a inner join x4dat.auth_user_md5 as u ON(u.loginbis=a.alias) set a.id=u.user_id;
-insert into homonymes select a.id,u.user_id from aliases as a inner join auth_user_md5 as u ON(u.loginbis=a.alias)
+insert into homonymes select a.id,u.user_id from aliases as a inner join auth_user_md5 as u ON(u.loginbis=a.alias);
 -- drop des colones inutiles
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN date_mise_alias_temp;
 ALTER TABLE x4dat.auth_user_md5 DROP COLUMN loginbis;
@@ -56,7 +57,7 @@ update groupex.aliases       AS gx
     inner join x4dat.aliases AS a ON (gx.email = a.alias)
     inner join x4dat.aliases AS b ON (a.id=b.id AND b.type='a_vie')
     set gx.email = b.alias
-    where gx.id = 12
+    where gx.id = 12;
 
 --------------------------------------------------------------------------------
 -- DROP des LISTES
