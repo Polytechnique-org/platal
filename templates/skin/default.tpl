@@ -1,4 +1,4 @@
-{* $Id: default.tpl,v 1.6 2004-02-04 22:47:45 x2000habouzit Exp $ *}
+{* $Id: default.tpl,v 1.7 2004-02-11 20:00:39 x2000habouzit Exp $ *}
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -16,8 +16,12 @@
 {if $smarty.session.suid}
     <table id="suid" cellpadding="0" cellspacing="0">
     <tr>
-      <td>{$smarty.session.suid}</strong></td>
-      <td><a href="#####exit.php######">exit</a></td>
+      <td>
+        {dynamic}
+        {$smarty.session.suid} ({$smarty.session.username})
+        {/dynamic}
+        [<a href="{"exit.php"|url}">exit</a>]
+      </td>
     </tr>
     </table>
 {/if}

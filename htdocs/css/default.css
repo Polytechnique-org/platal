@@ -171,10 +171,13 @@ table.tinybicol td.info, table.bicol td.info {
 /*************************/
 
 #suid {
-    color: white;
-    background: red;
+    color: red;
+    background: pink;
     width: 100%;
+    font-weight: bold;
 }
+#suid td { padding: 2px; }
+#suid a { color: red; }
 
 #body {
     width: 740px;
@@ -245,4 +248,4 @@ table.tinybicol td.info, table.bicol td.info {
     vertical-align: top;
 }
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.14 2004-02-11 15:35:32 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.15 2004-02-11 20:00:37 x2000habouzit Exp $ */

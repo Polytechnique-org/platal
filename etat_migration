@@ -24,14 +24,16 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | admin/evenements.php					  | 
 	  | admin/homonymes.php						  | 
 	  | admin/ins_confirmees.php				  | 
-	  | admin/marketing.php						  | 
-	  | admin/marketing_promo.php				  | 
-	  | admin/marketing_volontaire.php			  | 
 	  | admin/pg.php							  | 
-	  | admin/relance.php						  | 
 	  | admin/utilisateurs.php					  | 
-	  | admin/utilisateurs_identification.php	  | 
-	  | admin/utilisateurs_marketing.php		  | 
+------+-[ marketing ]-----------------------------+----------------
+	  | admin/marketing.php						  | marketing/
+	  | admin/marketing_promo.php				  | marketing/
+	  | admin/marketing_volontaire.php			  | marketing/
+	  | admin/relance.php						  | marketing/ 
+	  | admin/utilisateurs_identification.php	  | marketing/
+	  | admin/utilisateurs_marketing.php		  | marketing/
+	  | marketing.php							  | marketing/index
 ------+-[ docs ]----------------------------------+----------------
 	  | docs/FROM.php							  | docs/from.php
 	  | en-cours.php							  | docs/en-cours.php
@@ -81,7 +83,6 @@ Etat  | Ancien nom								  | Nouveau nom
 	  | emploi_public.php						  | 
 	  | evenements.php							  | 
 	  | index.coupure.php						  | 
-	  | marketing.php							  | 
 	  | mescontacts.php							  | 
 	  | mescontacts_pdf.php						  | 
 	  | pg.confirm.php							  | 

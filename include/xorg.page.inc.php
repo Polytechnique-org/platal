@@ -44,6 +44,8 @@ class XorgPage extends DiogenesCorePage {
   }
 
   function display($append_to_id="") {
+      if(isset($_SESSION['suid']))
+          $this->caching=false;
       $id = $this->make_id($append_to_id);
       if($this->_page_type == POPUP)
           parent::display('skin/'.$_SESSION['skin_popup'], $id);

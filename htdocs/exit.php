@@ -1,10 +1,5 @@
 <?php
-require("auto.prepend.inc.php")
-
-# 
-# TODO : CODE à vérifier : je ne sais pas si la page va bien s'afficher au final, c'est pas sur du tout...
-# 
-
+require("auto.prepend.inc.php");
 new_skinned_page('index.tpl',AUTH_MDP);
 
 if (isset($_SESSION['suid'])) {
@@ -29,5 +24,5 @@ if (isset($_SESSION['suid'])) {
     }
 }
 
-$page->display();
+header("Location: login.php");
 ?>

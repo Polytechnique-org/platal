@@ -1,7 +1,8 @@
 <?php
 function nb_trk($pri,$tr) {
+    global $conn;
     $req = mysql_query("select count(rq_id) from trackers.requests left join trackers.states as st using(st_id)
-            where tr_id='$tr' and admin_id<=0 and pri='$pri' and st.texte!='fermé'");
+            where tr_id='$tr' and admin_id<=0 and pri='$pri' and st.texte!='fermé'", $conn);
     list($res) = mysql_fetch_row($req);
     mysql_free_result($req);
     return ($res?$res:"-");
@@ -27,7 +28,8 @@ function url()
  */
 function smarty_insert_mkStats($params, &$smarty)
 {
-    $req = mysql_query("select count(*) from requests");
+    global $conn;
+    $req = mysql_query("select count(*) from requests",$conn);
     list($stats_req) = mysql_fetch_row($req);
     mysql_free_result($req);
     $stats_req = ($stats_req ? $stats_req : "-");
