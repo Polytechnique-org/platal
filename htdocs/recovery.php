@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: recovery.php,v 1.6 2004-11-16 20:36:10 x2000habouzit Exp $
+        $Id: recovery.php,v 1.7 2004-11-18 14:46:24 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -40,7 +40,7 @@ if (isset($_REQUEST['login']) and isset($_REQUEST['birth']))  {
     $sql="SELECT  user_id, naissance
 	    FROM  auth_user_md5 AS u
       INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
-	    WHERE a.alias='$mailorg'";
+	    WHERE a.alias='$mailorg' AND u.perms IN ('admin','user')";
     $result=$globals->db->query($sql);
     if (list($uid,$naissance)=mysql_fetch_array($result)) {
         if((strlen($naissance))<5) {

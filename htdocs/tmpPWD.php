@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: tmpPWD.php,v 1.3 2004-11-13 14:16:16 x2000habouzit Exp $
+        $Id: tmpPWD.php,v 1.4 2004-11-18 14:46:24 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -35,7 +35,7 @@ if ($ligne = mysql_fetch_array($result))  {
     if (!empty($_POST['response2']))  {             // la variable $response existe-t-elle ?
     // OUI, alors changeons le mot de passe
         $password = $_POST['response2'];
-        $sql = "UPDATE auth_user_md5 SET password='$password' WHERE user_id=".$uid;
+        $sql = "UPDATE auth_user_md5 SET password='$password' WHERE user_id='$uid' AND perms IN('admin','user')";
         $globals->db->query($sql);
         $logger = new DiogenesCoreLogger($uid);
         $logger->log("passwd","");
