@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: newsletter.inc.php,v 1.19 2004-10-20 15:09:58 x2000habouzit Exp $
+        $Id: newsletter.inc.php,v 1.20 2004-10-20 15:26:26 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -69,6 +69,11 @@ class NewsLetter {
 	    $this->_arts[$cid]["a$aid"] = new NLArticle($title,$body,$append,$aid,$cid,$pos);
 	}
 	mysql_free_result($res);
+    }
+
+    function setSent() {
+	global $globals;
+	$globals->db->query("UPDATE  newsletter SET bits='sent' WHERE id='{$this->_id}'");
     }
 
     function save() {
