@@ -44,13 +44,26 @@ class XorgPage extends DiogenesCorePage {
   }
 
   function display($append_to_id="") {
+      global $baseurl, $site_dev;
       if(isset($_SESSION['suid']))
           $this->caching=false;
       $id = $this->make_id($append_to_id);
-      if($this->_page_type == POPUP)
-          parent::display('skin/'.$_SESSION['skin_popup'], $id);
-      else
-          parent::display('skin/'.$_SESSION['skin'], $id);
+      if($site_dev) {
+          $this->assign('validate', "http://validator.w3.org/check?uri=".urlencode($baseurl.'/valid.html'));
+          if($this->_page_type == POPUP)
+              $result = $this->fetch('skin/'.$_SESSION['skin_popup'], $id);
+          else
+              $result = $this->fetch('skin/'.$_SESSION['skin'], $id);
+          $fd = fopen($this->cache_dir."valid.html","w");
+          fwrite($fd, $result);
+          fclose($fd);
+          echo $result;
+      } else {
+          if($this->_page_type == POPUP)
+              parent::display('skin/'.$_SESSION['skin_popup'], $id);
+          else
+              parent::display('skin/'.$_SESSION['skin'], $id);
+      }
       exit;
   }
 
