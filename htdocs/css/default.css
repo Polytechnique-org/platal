@@ -112,7 +112,7 @@ h3 {
     margin: 0em;
     font-weight: bold;
     padding: 0.25em;
-    font-size: inherit;
+    font-size: 100%;
 }
 
 p.explication, div.explication {
@@ -548,4 +548,4 @@ div.adresse {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.69 2004-11-24 09:47:08 x2000habouzit Exp $ */
+/* $Id: default.css,v 1.70 2004-11-24 10:16:51 x2000habouzit Exp $ */
