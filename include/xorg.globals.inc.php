@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.globals.inc.php,v 1.4 2004-08-31 21:57:50 x2000habouzit Exp $
+        $Id: xorg.globals.inc.php,v 1.5 2004-11-02 07:16:30 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.globals.inc.php");
@@ -39,6 +39,6 @@ class XorgGlobals extends DiogenesCoreGlobals {
   
   /** recherche */
   var $public_max_search_results = 25;
-  var $search_results_per_page = 10;
+  var $search_results_per_page = 20;
 }
 ?>
