@@ -10,7 +10,6 @@ require('tpl.mailer.inc.php');
 define("ERROR_REF", 1);
 define("ERROR_ALREADY_SUBSCRIBED", 2);
 define("ERROR_DB", 3);
-$lastnewslogin = '20030908010000'; //valeur par défaut
 
 if (!empty($_REQUEST['ref'])) {
     $sql = "SELECT username,loginbis,matricule,promo,password".
@@ -24,6 +23,7 @@ if (!empty($_REQUEST['ref'])) {
         $page->assign('error',ERROR_REF);
         $page->run();
     }
+    $page->assign('username',$username);
     
     // vérifions qu'il n'y a pas déjà une inscription dans le passé
     // ce qui est courant car les double-clic...
@@ -38,7 +38,7 @@ if (!empty($_REQUEST['ref'])) {
     $prenom = stripslashes($prenom);
     $sql = "INSERT INTO auth_user_md5 SET username='$username',loginbis='$loginbis',matricule='$matricule',promo=$promo,
             password='$password',nom='".addslashes($nom)."',prenom='".addslashes($prenom)."',nationalite=$nationalite,
-            date='$date',naissance=$naissance, date_ins = NULL, lastnewslogin='$lastnewslogin'";
+            date='$date',naissance=$naissance, date_ins = NULL";
     $globals->db->query($sql);
 
     // on vérifie qu'il n'y a pas eu d'erreur
@@ -53,7 +53,6 @@ if (!empty($_REQUEST['ref'])) {
     // on cree un objet logger et on log l'evenement
     $logger = new DiogenesCoreLogger($uid);
     $logger->log("inscription",$email);
-    $page->assign('username',$username);
 
     /****************** insertion de l'email dans la table emails ***/
     require("mtic.inc.php");

@@ -1,4 +1,5 @@
-{if !isset($error)}
+{dynamic}
+{if $error}
   <div class="rubrique">
     Dernière étape
   </div>
@@ -57,3 +58,4 @@
     </li>
   </ol>
 {/if}
+{/dynamic}

@@ -91,6 +91,7 @@ if(isset($_REQUEST["charte"])) { // ok la variable $_REQUEST["charte"] existe
         require("tpl.mailer.inc.php");
         $mymail = new TplMailer('inscrire.mail.tpl');
         $mymail->assign('mailorg',$mailorg);
+        $mymail->assign('le_mail',$_REQUEST['email']);
         $mymail->assign('pass_clair',$pass_clair);
         $mymail->assign('baseurl',$baseurl);
         $mymail->assign('ins_id',$ins_id);
