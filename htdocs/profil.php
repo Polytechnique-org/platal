@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: profil.php,v 1.10 2004-09-04 21:04:25 x2000habouzit Exp $
+        $Id: profil.php,v 1.11 2004-11-04 20:19:35 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -97,14 +97,14 @@ if (isset($_REQUEST['modifier']) || isset($_REQUEST['suivant'])) {
     if ($web_public) $bits_reply .= 'web_public,';
     if ($libre_public) $bits_reply .= 'libre_public,';
     if (!empty($bits_reply)) $bits_reply = substr($bits_reply, 0, -1);
-    $sql = "UPDATE auth_user_md5 set bits = '$bits_reply'";
-    // si on est en suid on ne met pas à jour la date
-    if(isset($_SESSION['suid'])) {
-        $sql = $sql." WHERE user_id={$_SESSION['uid']}";
-    } else {
-        $sql = $sql.",date='$date' WHERE user_id={$_SESSION['uid']}";
-    }
+    $sql = "UPDATE auth_user_md5 set bits = '$bits_reply' WHERE user_id={$_SESSION['uid']}";
     $globals->db->query($sql);
+    
+    if(empty($_SESSION['suid'])) {
+        $sql = $sql.",date='$date' WHERE user_id={$_SESSION['uid']}";
+	require_once('notifs.inc.php');
+	register_watch_op($this->uid,'fiche');
+    }
 
     // mise a jour des champs relatifs au tab ouvert
     require_once("profil/update_{$opened_tab}.inc.php");

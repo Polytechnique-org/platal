@@ -9,6 +9,6 @@ create table watch (
 
 create table watch_ops (
     user_id smallint not null,
-    op enum('fiche','death','photo','ins') not null,
+    op enum('fiche','death','ins') not null,
     primary key (user_id,op)
 );

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: deces_promo.php,v 1.5 2004-10-31 16:39:04 x2000chevalier Exp $
+        $Id: deces_promo.php,v 1.6 2004-11-04 20:19:36 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -33,9 +33,14 @@ if(isset($_REQUEST['add10']))   $promo += 10;
 $page->assign('promo',$promo);
 
 if (isset($_REQUEST["valider"]) && $_REQUEST["valider"] == "Valider") {
-    $res = $globals->db->query("SELECT matricule FROM auth_user_md5 WHERE promo = $promo");
-    while (list($mat) = mysql_fetch_row($res)) {
-        $globals->db->query("UPDATE auth_user_md5 SET deces='".$_REQUEST[$mat]."' WHERE matricule = '".$mat."'");
+    $res = $globals->db->query("SELECT user_id,matricule,deces FROM auth_user_md5 WHERE promo = $promo");
+    while (list($uid,$mat,$deces) = mysql_fetch_row($res)) {
+	if($_REQUEST[$mat] == $deces) continue;
+	$globals->db->query("UPDATE auth_user_md5 SET deces='".$_REQUEST[$mat]."' WHERE matricule = '".$mat."'");
+	if($deces=='0000-00-00' or empty($deces)) {
+	    require_once('notifs.inc.php');
+	    register_watch_op($uid,'death');
+	}
     }
 }
 
