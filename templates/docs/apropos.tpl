@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: apropos.tpl,v 1.6 2004-08-31 11:25:39 x2000habouzit Exp $
+        $Id: apropos.tpl,v 1.7 2004-10-09 05:59:58 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -143,6 +143,7 @@
     <td>
       <strong>Maxime Austruy</strong> (X98) <br />
       <strong>Yann Buril</strong> (X96) <br />
+      <strong>David Bachelart</strong> (X99) <br />
       <strong>Norbert Lataille</strong> (X97) <br />
       <strong>Grégory Massal</strong> (X96) <br />
       <strong>Joan Moreau</strong> (X94) <br />
