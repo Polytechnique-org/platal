@@ -102,15 +102,9 @@ function soundex_fr($sIn)
 }
 
 function make_forlife($prenom,$nom,$promo) {
-    /* on traite le prenom */
-    $prenomUS=replace_accent(trim($prenom));
-    $prenomUS=stripslashes($prenomUS);
+    $prenomUS = replace_accent(trim($prenom));
+    $nomUS    = replace_accent(trim($nom));
 
-    /* on traite le nom */
-    $nomUS=replace_accent(trim($nom));
-    $nomUS=stripslashes($nomUS);
-
-    // calcul du login
     $forlife = strtolower($prenomUS.".".$nomUS.".".$promo);
     $forlife = str_replace(" ","-",$forlife);
     $forlife = str_replace("'","",$forlife);

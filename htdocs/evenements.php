@@ -22,8 +22,8 @@
 require_once("xorg.inc.php");
 new_skinned_page('evenements.tpl', AUTH_MDP);
 
-$titre              = stripslashes(Post::get('titre'));
-$texte              = stripslashes(Post::get('texte'));
+$titre              = Post::get('titre');
+$texte              = Post::get('texte');
 $promo_min          = Post::getInt('promo_min');
 $promo_max          = Post::getInt('promo_max');
 $peremption         = Post::getInt('peremption');

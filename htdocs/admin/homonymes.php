@@ -60,7 +60,7 @@ if ($target) {
   	    $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
   	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
   	    $mymail->addCc($cc);
-            $mymail->setTxtBody(stripslashes(Env::get('mailbody')));
+            $mymail->setTxtBody(Env::get('mailbody'));
             $mymail->send();
             $op = 'list';
             break;
@@ -72,7 +72,7 @@ if ($target) {
   	    $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
   	    $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
   	    $mymail->addCc($cc);
-            $mymail->setTxtBody(stripslashes(Env::get('mailbody')));
+            $mymail->setTxtBody(Env::get('mailbody'));
             $mymail->send();
 	    $op = 'list';
 	    break;

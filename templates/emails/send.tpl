@@ -58,7 +58,7 @@
       <td>
         <input type='hidden' name='signature' value='1' />
         <input type='text' name='from' size='60' value='{if $smarty.request.from}
-{$smarty.request.from|stripslashes}
+{$smarty.request.from}
 {else}
 "{$smarty.session.prenom} {$smarty.session.nom}" &lt;{$smarty.session.bestalias}@{#globals.mail.domain#}&gt;
 {/if}' />
@@ -67,19 +67,19 @@
     <tr> 
       <td class="titre">à&nbsp;:</td>
       <td>
-        <input type='text' name='to' size='60' value="{$smarty.request.to|stripslashes}" />
+        <input type='text' name='to' size='60' value="{$smarty.request.to}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie&nbsp;:</td>
       <td>
-        <input type='text' name='cc' size='60' value="{$smarty.request.cc|stripslashes}" />
+        <input type='text' name='cc' size='60' value="{$smarty.request.cc}" />
       </td>
     </tr>
     <tr> 
       <td class="titre">copie cachée&nbsp;:</td>
       <td>
-        <input type='text' name='bcc' size='60' value="{$smarty.request.bcc|stripslashes}" />
+        <input type='text' name='bcc' size='60' value="{$smarty.request.bcc}" />
       </td>
     </tr>
   </table>
@@ -130,7 +130,7 @@
     </tr>
     <tr> 
       <td class="center"> 
-        <input type='text' name='sujet' size='75' value="{$smarty.request.sujet|stripslashes}" />
+        <input type='text' name='sujet' size='75' value="{$smarty.request.sujet}" />
       </td>
     </tr>
     <tr> 
@@ -141,7 +141,7 @@
     <tr> 
       <td class="center">
         <textarea name='contenu' rows="30" cols="75">
-{$smarty.request.contenu|stripslashes}
+{$smarty.request.contenu}
 {if !$smarty.request.contenu}
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}

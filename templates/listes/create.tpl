@@ -44,13 +44,13 @@ liste :
     <tr>
       <td class='titre'>Addresse&nbsp;souhaitée&nbsp;:</td>
       <td>
-        <input type='text' name='liste' value='{$smarty.post.liste|stripslashes}' />@polytechnique.org
+        <input type='text' name='liste' value='{$smarty.post.liste}' />@polytechnique.org
       </td>
     </tr>
     <tr>
       <td class='titre'>Sujet (bref) :</td>
       <td>
-        <input type='text' name='desc' size='50' value="{$smarty.post.desc|stripslashes}" />
+        <input type='text' name='desc' size='50' value="{$smarty.post.desc}" />
       </td>
     </tr>
     <tr>

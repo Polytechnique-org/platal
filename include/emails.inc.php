@@ -263,7 +263,7 @@ class Redirect
     function add_email($email)
     {
         global $globals;
-        $email_stripped = strtolower(stripslashes(trim($email)));
+        $email_stripped = strtolower(trim($email));
         if (!isvalid_email($email_stripped)) {
             return ERROR_INVALID_EMAIL;
         }

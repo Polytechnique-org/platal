@@ -39,7 +39,7 @@ if(Env::has('sadd')) {
 }
 
 if(Post::has('sdel')) {
-    $client->handle_request($liste,Post::get('sdel'),2,stripslashes(Post::get('reason'))); /* 2 = REJECT */
+    $client->handle_request($liste,Post::get('sdel'),2,Post::get('reason')); /* 2 = REJECT */
 }
 
 if(Env::has('mid')) {
@@ -58,7 +58,7 @@ if(Env::has('mid')) {
     } elseif (Env::has('mno')) {
         $action  = 2; /** 2 = REJECT **/
         $subject = "Message refusé";
-	$reason  = stripslashes(Post::get('reason'));
+	$reason  = Post::get('reason');
         $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
                 .  $reason;
     } elseif (Env::has('mdel')) {

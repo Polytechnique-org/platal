@@ -63,7 +63,7 @@ $str_error = $str_error."Le champ 'Entreprise $j' contient un caractère interdit
 }
 
 //validité du poste
-if (strlen(strtok(stripslashes($poste[$i]),"<>{}~?!§*`|%$^=+")) < strlen(stripslashes($poste[$i])))
+if (strlen(strtok($poste[$i],"<>{}~?!§*`|%$^=+")) < strlen($poste[$i]))
 {
 $str_error = $str_error."Le champ 'Poste $j' contient un caractère interdit.<BR />";
 }
@@ -74,23 +74,23 @@ if (strlen(strtok($cv,"<>{}~§`")) < strlen($cv))
   $str_error = $str_error."Le champ 'Curriculum vitae' contient un caractère interdit.<BR />";
 }
 
-if (strlen(strtok(stripslashes($adrpro1[$i]),"<>{}@~?!§*`|%$^=+")) < strlen(stripslashes($adrpro1[$i])))
+if (strlen(strtok($adrpro1[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro1[$i]))
     {
       $str_error = $str_error."Le champ 'Adresse professionnelle $j - Ligne 1' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok(stripslashes($adrpro2[$i]),"<>{}@~?!§*`|%$^=+")) < strlen(stripslashes($adrpro2[$i])))
+  if (strlen(strtok($adrpro2[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro2[$i]))
     {
       $str_error = $str_error."Le champ 'Adresse professionnelle $j - Ligne 2' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok(stripslashes($adrpro3[$i]),"<>{}@~?!§*`|%$^=+")) < strlen(stripslashes($adrpro3[$i])))
+  if (strlen(strtok($adrpro3[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro3[$i]))
     {
       $str_error = $str_error."Le champ 'Adresse professionnelle $j - Ligne 3' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok(stripslashes($cppro[$i]),"<>{}@~?!§*`|%$^=+")) < strlen(stripslashes($cppro[$i])))
+  if (strlen(strtok($cppro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($cppro[$i]))
     {
       $str_error = $str_error."Le champ 'Code Postal professionnel $j' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok(stripslashes($villepro[$i]),"<>{}@~?!§*`|%$^=+")) < strlen(stripslashes($villepro[$i])))
+  if (strlen(strtok($villepro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($villepro[$i]))
     {
       $str_error = $str_error."Le champ 'Ville professionnelle $j' contient un caractère interdit.<BR />";
     }

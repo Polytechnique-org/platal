@@ -44,7 +44,7 @@ function generate_new_adrid(){
 
 function replace_ifset_adr($varname, $i){
    if (isset($_REQUEST[$varname][$i]))
-       $GLOBALS['adresses'][$i][$varname] = stripslashes($_REQUEST[$varname][$i]);
+       $GLOBALS['adresses'][$i][$varname] = $_REQUEST[$varname][$i];
 }
 
 function set_flag_adr($varname,$i){

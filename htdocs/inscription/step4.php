@@ -61,8 +61,6 @@ if (mysql_num_rows($res))  {
             mot de passe.");
 }
 
-$nom = stripslashes($nom);
-$prenom = stripslashes($prenom);
 $sql = "UPDATE auth_user_md5 SET password='$password', nationalite='$nationalite', perms='user',
         date='$date', naissance='$naissance', date_ins = NULL WHERE matricule='$matricule'";
 $globals->db->query($sql);

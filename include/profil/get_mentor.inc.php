@@ -58,7 +58,7 @@ if(isset($_POST['mentor_pays_op']) && ($_POST['mentor_pays_op'] == 'ajouter') &&
 	$globals->db->query("INSERT INTO mentor_pays(uid, pid) VALUES('{$_SESSION['uid']}', '$id_ajoutee')");
 	$nb_mentor_pays++;
 	$mentor_pid[$nb_mentor_pays] = $id_ajoutee;
-	$mentor_pays[$nb_mentor_pays] = stripslashes($_POST['mentor_pays_name']);
+	$mentor_pays[$nb_mentor_pays] = $_POST['mentor_pays_name'];
     }
 }
 
@@ -96,9 +96,9 @@ if(isset($_POST['mentor_secteur_op']) && ($_POST['mentor_secteur_op'] == 'ajoute
 				    VALUES('{$_SESSION['uid']}', '$sid_ajoutee',".( ($ssid_ajoutee == '')?'NULL':"'$ssid_ajoutee'" ).")");
 	$nb_mentor_secteurs++;
 	$mentor_sid[$nb_mentor_secteurs] = $sid_ajoutee;
-	$mentor_secteur[$nb_mentor_secteurs] = stripslashes($_POST['mentor_secteur_name']);
+	$mentor_secteur[$nb_mentor_secteurs] = $_POST['mentor_secteur_name'];
 	$mentor_ssid[$nb_mentor_secteurs] = $ssid_ajoutee;
-	$mentor_ss_secteur[$nb_mentor_secteurs] = stripslashes($_POST['mentor_ss_secteur_name']);
+	$mentor_ss_secteur[$nb_mentor_secteurs] = $_POST['mentor_ss_secteur_name'];
     }
 } elseif(isset($_POST['mentor_secteur_id_new'])){
     $mentor_secteur_id_new = $_POST['mentor_secteur_id_new'];

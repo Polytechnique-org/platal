@@ -25,13 +25,13 @@ new_skinned_page('emails/send.tpl',AUTH_MDP);
 // action si on recoit un formulaire
 if (Env::get('submit') == 'Envoyer')
 {
-    $to2  = stripslashes(join(', ', Env::getMixed('contacts', Array())));
-    $txt  = str_replace('^M', '', stripslashes(Env::get('contenu')));
-    $to   = stripslashes(Env::get('to'));
-    $subj = stripslashes(Env::get('sujet'));
-    $from = stripslashes(Env::get('from'));
-    $cc   = stripslashes(Env::get('cc'));
-    $bcc  = stripslashes(Env::get('bcc'));
+    $to2  = join(', ', Env::getMixed('contacts', Array()));
+    $txt  = str_replace('^M', '', Env::get('contenu'));
+    $to   = Env::get('to');
+    $subj = Env::get('sujet');
+    $from = Env::get('from');
+    $cc   = Env::get('cc');
+    $bcc  = Env::get('bcc');
 
     if (empty($to) && empty($cc) && empty($to2)) {
         $page->trig("Indique au moins un destinataire.");

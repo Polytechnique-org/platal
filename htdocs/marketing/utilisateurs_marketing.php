@@ -51,7 +51,7 @@ switch ($_REQUEST["submit"]) {
   	if ($myrow = mysql_fetch_assoc($result))
             exit_error("Le matricule existe d&eacute;j&agrave; dans la table auth_user_md5.");
 			
-	if (!isvalid_email_redirection(stripslashes($_REQUEST["mail"])))
+	if (!isvalid_email_redirection($_REQUEST["mail"]))
             exit_error("L'email n'est pas valide.");
 		
 	$result=$globals->db->query("SELECT prenom,nom,promo,FIND_IN_SET('femme', flags)
@@ -101,7 +101,7 @@ switch ($_REQUEST["submit"]) {
 	$mymail = new XOrgMailer('marketing.utilisateur.tpl');
 
 	$mymail->assign('from', $_REQUEST["from"]);
-	$mymail->assign('to', stripslashes($_REQUEST["mail"]));
+	$mymail->assign('to', $_REQUEST["mail"]);
 	$mymail->assign('femme', $femme);
 	$mymail->assign('baseurl', $globals->baseurl);
 	$mymail->assign('user_id', $user_id);

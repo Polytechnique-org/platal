@@ -49,7 +49,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
         /* on verifie qu'on n'a pas demandé une
            variable inexistante ! */
         if (isset($_SESSION[$val])) {
-            $tohash .= stripslashes($_SESSION[$val]);
+            $tohash .= $_SESSION[$val];
         } else if ($val == 'username') {
 	    $sql = "SELECT  alias
 	              FROM  aliases       AS al
@@ -58,7 +58,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
 		  ORDER BY  LENGTH(alias)";
 	    $res = mysql_query($sql);
 	    list($min_username) = mysql_fetch_array($res);
-            $tohash .= stripslashes($min_username);
+            $tohash .= $min_username;
 	}
     }
     $tohash .= "1";

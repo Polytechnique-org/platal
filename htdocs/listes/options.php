@@ -29,7 +29,7 @@ require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if (Post::has('submit')) {
-    $values = array_map('stripslashes',$_POST);
+    $values = $_POST;
     $client->set_bogo_level($liste, intval($values['bogo_level']));
     switch($values['moderate']) {
 	case '0':

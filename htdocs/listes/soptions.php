@@ -29,7 +29,7 @@ require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if(Post::has('submit')) {
-    $values = array_map('stripslashes', $_POST);
+    $values = $_POST;
     unset($values['submit']);
     $values['advertised'] = empty($values['advertised']) ? false : true;
     $values['archive'] = empty($values['archive']) ? false : true;

@@ -104,13 +104,13 @@ class NewsLetter
     // {{{ function title()
 
     function title()
-    { return stripslashes($this->_title); }
+    { return $this->_title; }
 
     // }}}
     // {{{ function head()
     
     function head()
-    { return stripslashes($this->_head); }
+    { return $this->_head; }
 
     // }}}
     // {{{ function getArt()
@@ -365,19 +365,19 @@ class NLArticle
     // {{{ function title()
 
     function title()
-    { return stripslashes(trim($this->_title)); }
+    { return trim($this->_title); }
 
     // }}}
     // {{{ function body()
     
     function body()
-    { return stripslashes(trim($this->_body)); }
+    { return trim($this->_body); }
     
     // }}}
     // {{{ function append()
     
     function append()
-    { return stripslashes(trim($this->_append)); }
+    { return trim($this->_append); }
 
     // }}}
     // {{{ function toText()
@@ -519,7 +519,7 @@ function justify($text,$n)
 
 function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
 {
-    $text = stripslashes(trim($input));
+    $text = trim($input);
     if ($html) {
 	$text = htmlspecialchars($text);
 	$text = str_replace('[b]','<strong>', $text);

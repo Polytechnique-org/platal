@@ -24,25 +24,25 @@ require_once('applis.func.inc.php');
 
 function replace_ifset(&$var,$req) {
     if (Env::has($req)){
-        $var = stripslashes(Env::get($req));
+        $var = Env::get($req);
     }
 }
 
 function replace_ifset_i(&$var,$req,$i) {
     if (isset($_REQUEST[$req][$i])){
-        $var[$i] = stripslashes($_REQUEST[$req][$i]);
+        $var[$i] = $_REQUEST[$req][$i];
     }
 }
 
 function replace_ifset_i_j(&$var,$req,$i,$j) {
     if (isset($_REQUEST[$req][$j])){
-        $var[$i] = stripslashes($_REQUEST[$req][$j]);
+        $var[$i] = $_REQUEST[$req][$j];
     }
 }
 
 //pour rentrer qqchose dans la base
 function put_in_db($string){
-    return trim(addslashes($string));
+    return trim($string);
 }
 
 ?>
