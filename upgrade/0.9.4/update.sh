@@ -17,3 +17,11 @@ done
 
 ###########################################################
 
+echo "
+You now have to :
+
+(*) install FPDF (pdflatex and tetex are not required anymore)
+    apt-get install php-fpdf
+
+(*) ...
+"
