@@ -47,7 +47,7 @@ switch (Env::get('action')) {
 
     case "ajouter":
         require_once('user.func.inc.php');
-        if (($login = get_user_login($user) !== false) {
+        if ($login = get_user_login($user) !== false) {
             if ($globals->db->query("INSERT INTO  contacts (uid, contact)
                                           SELECT  $uid, id
                                             FROM  aliases

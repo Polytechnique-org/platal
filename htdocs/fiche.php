@@ -35,7 +35,7 @@ if (Env::has('user')) {
     }
 }
 
-if (Enf::has('mat')) {
+if (Env::has('mat')) {
     $res = $globals->db->query("SELECT  alias 
                                   FROM  aliases       AS a
                             INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
