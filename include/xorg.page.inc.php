@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: xorg.page.inc.php,v 1.38 2004-08-31 11:16:48 x2000habouzit Exp $
+        $Id: xorg.page.inc.php,v 1.39 2004-08-31 21:57:50 x2000habouzit Exp $
  ***************************************************************************/
 
 require("diogenes.core.page.inc.php");
@@ -59,7 +59,7 @@ class XorgPage extends DiogenesCorePage {
     var $_tpl;
 
     function XorgPage($tpl, $type=SKINNED) {
-        global $site_dev,$marketing_admin,$globals;
+        global $site_dev,$globals;
 
         $this->template_dir = $globals->spoolroot."/templates/";
         $this->compile_dir  = $globals->spoolroot."/templates_c/";
