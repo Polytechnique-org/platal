@@ -26,15 +26,15 @@ if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig') &
             && Post::has('bananamail') && Post::has('bananaupdate') && Post::get('action')=="OK" ))
 {
     $req = $globals->xdb->query("
-	SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
-		IF(FIND_IN_SET('automaj',flags),'1','0') 
-	  FROM  forums.profils
-	 WHERE  uid = {?}", Session::getInt('uid'));
+        SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
+                IF(FIND_IN_SET('automaj',flags),'1','0') 
+          FROM  forums.profils
+         WHERE  uid = {?}", Session::getInt('uid'));
     if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
-	$nom  = Session::get('prenom').' '.Session::get('nom');
-	$mail = Session::get('forlife').'@'.$globals->mail->domain;
-	$sig  = $nom.' ('.Session::getInt('promo').')';
-	$disp = 0;
+        $nom  = Session::get('prenom').' '.Session::get('nom');
+        $mail = Session::get('forlife').'@'.$globals->mail->domain;
+        $sig  = $nom.' ('.Session::getInt('promo').')';
+        $disp = 0;
         $maj  = 0;
     }
     $page->assign('nom' , $nom);
