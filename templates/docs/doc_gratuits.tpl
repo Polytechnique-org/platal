@@ -1,4 +1,4 @@
-{* $Id: doc_gratuits.tpl,v 1.3 2004-01-31 10:20:16 x2000habouzit Exp $ *}
+{* $Id: doc_gratuits.tpl,v 1.4 2004-02-09 17:47:06 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Pourquoi et comment choisir un e-mail gratuit
@@ -136,7 +136,7 @@
       </th>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         à éviter impérativement
       </td>
       <td>
@@ -144,7 +144,7 @@
       </td>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         mauvaise
       </td>
       <td>
@@ -153,7 +153,7 @@
       </td>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         moyenne
       </td>
       <td>
@@ -163,7 +163,7 @@
       </td>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         bonne ou satisfaisante
       </td>
       <td>

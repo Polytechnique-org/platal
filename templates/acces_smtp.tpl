@@ -1,4 +1,4 @@
-{* $Id: acces_smtp.tpl,v 1.3 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: acces_smtp.tpl,v 1.4 2004-02-09 17:47:06 x2000habouzit Exp $ *}
 
 {dynamic on="0$message"}
 <p class="erreur">
@@ -58,7 +58,7 @@
       </th>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         Mot de passe :
       </td>
       <td>
@@ -66,7 +66,7 @@
       </td>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         Retape-le une fois (pour vérification):
       </td>
       <td>

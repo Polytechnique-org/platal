@@ -1,4 +1,4 @@
-{* $Id: newsletter_req.tpl,v 1.1 2004-02-09 17:36:44 x2000habouzit Exp $ *}
+{* $Id: newsletter_req.tpl,v 1.2 2004-02-09 17:47:06 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Proposer un article pour la newsletter
@@ -95,7 +95,7 @@
     </thead>
     <tbody>
       <tr class="pair">
-        <td class="bicoltitre">
+        <td class="titre">
           Titre
         </td>
       </tr>
@@ -105,7 +105,7 @@
         </td>
       </tr>
       <tr class="impair">
-        <td class="bicoltitre">
+        <td class="titre">
           Article :
         </td>
       </tr>
@@ -115,7 +115,7 @@
         </td>
       </tr>
       <tr class="pair">
-        <td class="bicoltitre">
+        <td class="titre">
           Adresses, url, mail, contact, téléphone, etc. :
         </td>
       </tr>

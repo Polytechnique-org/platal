@@ -1,4 +1,4 @@
-{* $Id: motdepassemd5.tpl,v 1.2 2004-02-02 11:48:35 x2000habouzit Exp $ *}
+{* $Id: motdepassemd5.tpl,v 1.3 2004-02-09 17:47:06 x2000habouzit Exp $ *}
 
 <div class="rubrique">
   Changer de mot de passe
@@ -22,7 +22,7 @@
       </th>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         Nouveau mot de passe :
       </td>
       <td>
@@ -30,7 +30,7 @@
       </td>
     </tr>
     <tr>
-      <td class="bicoltitre">
+      <td class="titre">
         Retape-le une fois :
       </td>
       <td>

@@ -1,10 +1,10 @@
-{* $Id: form.valid.evts.tpl,v 1.1 2004-02-08 12:21:33 x2000habouzit Exp $ *}
+{* $Id: form.valid.evts.tpl,v 1.2 2004-02-09 17:47:07 x2000habouzit Exp $ *}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" name="modif">
   <input type="hidden" name="uid" value="{$valid->uid}" />
   <input type="hidden" name="type" value="{$valid->type}" />
   <input type="hidden" name="stamp" value="{$valid->stamp}" />
-  <table class="bicol" width="98%">
+  <table class="bicol">
     <thead>
       <tr>
         <th colspan="2">Événement</th>

@@ -1,4 +1,4 @@
-{* $Id: sendmail.tpl,v 1.1 2004-02-04 19:47:47 x2000habouzit Exp $ *}
+{* $Id: sendmail.tpl,v 1.2 2004-02-09 17:47:06 x2000habouzit Exp $ *}
 
 {dynamic}
 
@@ -33,7 +33,7 @@
         <input type='text' name='from' size=45 value="{if $smarty.request.from}
 {$smarty.request.from|escape:"html"}
 {else}
-{"\"`$smarty.session.prenom` `$smarty.session.nom`\" <`$smarty.session.username`@polytechnique.org>"|escape:"html"}
+{"\"`$smarty.session.prenom` `$smarty.session.nom`\" &lt;`$smarty.session.username`@polytechnique.org&gt;"|escape:"html"}
 {/if}" />
       </td>
     </tr>
@@ -78,7 +78,8 @@
   <tr class="{cycle values="impair,pair"}">
 {/if}
     <td>
-      <input type="checkbox" name="contacts[{$contact.username}]" value="{"`$contact.prenom` `$contact.nom` <`$contact.username`@polytechnique.org>"|escape:"html"}"
+      <input type="checkbox" name="contacts[{$contact.username}]"
+      value="{"`$contact.prenom` `$contact.nom` &lt;`$contact.username`@polytechnique.org&gt;"|escape:"html"}"
         {if $smarty.request.contacts && $smarty.request.contacts.username}checked="checked"{/if} />
       <a href="javascript:x()" onclick="popWin('x.php?x={$contact.username}')">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>
