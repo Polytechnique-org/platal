@@ -27,7 +27,7 @@ function getprofile() {
         global $globals;
 	$req = mysql_query("SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
 				    IF(FIND_IN_SET('automaj',flags),'1','0') 
-			      FROM  forums.profils
+			      FROM  {$globals->banana->table_prefix}profils
 			     WHERE  uid='{$_SESSION['uid']}'");
 	if (!(list($nom,$mail,$sig,$disp,$maj)=mysql_fetch_row($req))) {
 	    $nom = $_SESSION['prenom']." ".$_SESSION['nom'];
@@ -49,8 +49,8 @@ function getprofile() {
 		.gmdate("YmdHis")."' WHERE user_id='{$_SESSION['uid']}'");
 	}
 	$req=mysql_query("SELECT  nom
-	                    FROM  forums.abos
-		       LEFT JOIN  forums.list ON list.fid=abos.fid
+	                    FROM  {$globals->banana->table_prefix}abos
+		       LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
 		           WHERE  uid={$_SESSION['uid']};");
 	$array['subscribe']=array();
 	while (list($fnom)=mysql_fetch_array($req)) {

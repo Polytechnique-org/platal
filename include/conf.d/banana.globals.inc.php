@@ -18,18 +18,20 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: banana.globals.inc.php,v 1.1 2004-11-24 14:18:40 x2000habouzit Exp $
+    $Id: banana.globals.inc.php,v 1.2 2004-12-01 14:25:44 x2000habouzit Exp $
  ***************************************************************************/
 
 // {{{ class SkinConfig
 
 class BananaConfig
 {
-    var $server   = 'localhost';
-    var $port     = 119;
-    var $password = '***';
-    var $web_user = '***';
-    var $web_pass = '***';
+    var $server       = 'localhost';
+    var $port         = 119;
+    var $password     = '***';
+    var $web_user     = '***';
+    var $web_pass     = '***';
+
+    var $table_prefix = 'banana_';
 }
 
 // }}}
