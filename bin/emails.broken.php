@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-ini_set('include_path', '../include:/usr/share/php/diogenes:/usr/share/php');
+ini_set('include_path', '../include:/usr/share/php');
  
 require_once('../include/xorg.inc.php');
 require_once('../include/emails.inc.php');
@@ -86,7 +86,7 @@ d'accéder au site, rends toi sur la page
 elle te permettra de créer un nouveau mot de passe après avoir rentré ton
 login ({$x['alias']}) et ta date de naissance !";
 
-            require_once("diogenes.hermes.inc.php");
+            require_once("diogenes/diogenes.hermes.inc.php");
             $mail = new HermesMailer();
             $mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
             $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@polytechnique.org>");

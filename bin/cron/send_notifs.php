@@ -22,8 +22,8 @@
 
 require_once('./connect.db.inc.php');
 require_once("../../include/notifs.inc.php");
-require_once("diogenes.hermes.inc.php");
-require_once("diogenes.misc.inc.php");
+require_once("diogenes/diogenes.hermes.inc.php");
+require_once("diogenes/diogenes.misc.inc.php");
 
 $all = new AllNotifs();
 

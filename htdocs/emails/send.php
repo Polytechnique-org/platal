@@ -36,7 +36,7 @@ if (Env::get('submit') == 'Envoyer')
     if (empty($to) && empty($cc) && empty($to2)) {
         $page->trig("Indique au moins un destinataire.");
     } else {
-        require_once("diogenes.hermes.inc.php");
+        require_once("diogenes/diogenes.hermes.inc.php");
 
         $mymail = new HermesMailer();
 	$mymail->setFrom($from);

@@ -74,7 +74,7 @@ if(Env::has('mid')) {
                 ."    Sujet : « {$mail['subj']} »\n"
                 ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
                 .$append;
-        require_once('diogenes.hermes.inc.php');
+        require_once('diogenes/diogenes.hermes.inc.php');
         $mailer = new HermesMailer();
         $mailer->addTo("$liste-owner@{$globals->mail->domain}");
         $mailer->setFrom("$liste-bounces@{$globals->mail->domain}");

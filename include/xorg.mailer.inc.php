@@ -19,8 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("diogenes.hermes.inc.php");
-require_once("Smarty.class.php");
+require_once('diogenes/diogenes.hermes.inc.php');
+require_once('Smarty.class.php');
 
 // {{{ class XOrgMailer
 

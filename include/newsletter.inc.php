@@ -22,7 +22,7 @@
 // {{{ requires + defines
 
 require_once("xorg.misc.inc.php");
-require_once("diogenes.misc.inc.php");
+require_once("diogenes/diogenes.misc.inc.php");
 
 define('FEMME', 1);
 define('HOMME', 0);
@@ -315,7 +315,7 @@ EOF;
     function sendTo($prenom, $nom, $login, $sex, $html)
     {
         global $globals;
-	require_once('diogenes.hermes.inc.php');
+	require_once('diogenes/diogenes.hermes.inc.php');
 
 	$mailer = new HermesMailer();
 	$mailer->setFrom($globals->newsletter->from);

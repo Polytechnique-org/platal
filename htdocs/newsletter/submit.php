@@ -31,7 +31,7 @@ if (Post::has('see')) {
     $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
     $nl->saveArticle($art);
 
-    require_once("diogenes.hermes.inc.php");
+    require_once("diogenes/diogenes.hermes.inc.php");
     $from = sprintf('"%s %s (%s)" <%s@%s>', Session::get('prenom'), Session::get('nom'),
             Session::get('promo'), Session::get('bestalias'), $globals->mail->domain);
     $mailer = new HermesMailer();

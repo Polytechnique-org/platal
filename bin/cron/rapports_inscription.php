@@ -55,7 +55,7 @@ if ($c = $res->total()) {
 
 $MESSAGE=$MESSAGE."\n\n";
 
-require_once('diogenes.hermes.inc.php');
+require_once('diogenes/diogenes.hermes.inc.php');
 $mailer = new HermesMailer();
 $mailer->setSubject("$a confirmées, $b en attente et $c sollicitées");
 $mailer->setFrom('register@polytechnique.org');

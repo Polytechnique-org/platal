@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('diogenes.core.page.inc.php');
+require_once('diogenes/diogenes.core.page.inc.php');
 require_once('xorg/errors.inc.php');
 require_once('xorg/smarty.plugins.inc.php');
 

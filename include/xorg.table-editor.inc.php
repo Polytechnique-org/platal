@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('diogenes.table-editor.inc.php');
+require_once('diogenes/diogenes.table-editor.inc.php');
 
 class XOrgAdminTableEditor extends DiogenesTableEditor {
     function XOrgTableEditor($table,$idfield,$editid=false) {

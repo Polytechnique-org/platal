@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-ini_set('include_path','/usr/share/php/diogenes:/usr/share/php:../include:../../include');
+ini_set('include_path','/usr/share/php:../include:../../include');
 
 require('xorg.inc.php');
 require('xorg.misc.inc.php');

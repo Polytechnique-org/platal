@@ -21,7 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/homonymes.tpl');
-require_once("diogenes.hermes.inc.php");
+require_once("diogenes/diogenes.hermes.inc.php");
 
 $op     = Env::get('op', 'list');
 $target = Env::getInt('target');

@@ -124,7 +124,7 @@ if ($login) {
                     // FIXME: recherche
                     system('echo 1 > /tmp/flag_recherche');
 
-                    require_once("diogenes.hermes.inc.php");
+                    require_once("diogenes/diogenes.hermes.inc.php");
                     $mailer = new HermesMailer();
                     $mailer->setFrom("webmaster@polytechnique.org");
                     $mailer->addTo("web@polytechnique.org");
@@ -145,7 +145,7 @@ if ($login) {
 	    case "u_kill":
 		user_clear_all_subs($mr['user_id']);
                 $page->trig("'{$mr['user_id']}' a été désinscrit !");
-		require_once("diogenes.hermes.inc.php");
+		require_once("diogenes/diogenes.hermes.inc.php");
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
 		$mailer->addTo("web@polytechnique.org");

@@ -54,7 +54,7 @@ consulter la page <{$globals->baseurl}/emails/broken.php>.
 A bientôt sur Polytechnique.org !
 L'équipe d'administration <support@polytechnique.org>";
 
-	require_once("diogenes.hermes.inc.php");
+	require_once("diogenes/diogenes.hermes.inc.php");
 	$mail = new HermesMailer();
 	$mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
 	$mail->addTo("$dest@polytechnique.org");

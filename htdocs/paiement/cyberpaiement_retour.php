@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-require_once("diogenes.hermes.inc.php");
+require_once("diogenes/diogenes.hermes.inc.php");
 
 /* sort en affichant une erreur */
 function erreur($text) {

@@ -199,7 +199,7 @@ class Validate
     function sendmail($isok)
     {
         global $globals;
-        require_once('diogenes.hermes.inc.php');
+        require_once('diogenes/diogenes.hermes.inc.php');
         $mailer = new HermesMailer;
         $mailer->setSubject($this->_mail_subj());
         $mailer->setFrom("validations+{$this->type}@{$globals->mail->domain}");
