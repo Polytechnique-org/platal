@@ -56,7 +56,7 @@ while(true) {
     $sent = Array();
     while(list($uid,$fmt,$bestalias,$prenom,$nom,$sexe) = mysql_fetch_row($sql)) {
 	$sent[] = "user_id='$uid'";
-	$nl->sendTo($prenom,$nom,$bestalias,$sexe,$html=='html');
+	$nl->sendTo($prenom,$nom,$bestalias,$sexe,$fmt=='html');
     }
     mysql_free_result($sql);
     mysql_query("UPDATE newsletter_ins SET last=$id WHERE ".implode(' OR ',$sent));
