@@ -40,18 +40,6 @@ div.rubrique {
         [ Tableaux à lignes alternées, en taille normale, ou tiny ]
 *******************************************************************************/
 
-table.tinybicol, table.bicol {
-    background: #ccddff;
-    border: 1px solid #0067fe;
-    border-collapse: collapse;
-}
-
-table.tinybicol tr, table.bicol tr { }
-table.tinybicol tr.pair, table.bicol tr.pair      { background: #ddffcc; }
-table.tinybicol th, table.bicol th {
-    background-color: #0067fe;
-}
-
 /*******************************************************************************
     4   Tableau de choix de skins
         [ Styles pour les tableaux de types de ceux des skins ]
@@ -61,6 +49,10 @@ table.tinybicol th, table.bicol th {
     5   Contacts
         [ Styles liés à l'affichage de contacts ]
 *******************************************************************************/
+
+div.contact-list div.contact {
+    background-color: #d0d0ff;
+}
 
 /*******************************************************************************
     6   Profil
@@ -83,7 +75,7 @@ table.tinybicol th, table.bicol th {
 }
 
 #body-top {
-    border-bottom: none;
+    border-bottom: 2px solid #777777;
 }
 
 #body-menu {
@@ -98,4 +90,4 @@ table.tinybicol th, table.bicol th {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: linux.css,v 1.2 2004-10-03 17:35:34 x2003cortot Exp $ */
+/* $Id: linux.css,v 1.3 2004-10-04 22:27:55 x2003bruneau Exp $ */
