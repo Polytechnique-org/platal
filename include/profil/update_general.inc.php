@@ -41,7 +41,7 @@ $globals->xdb->execute(
             profile_nick={?},
             profile_mobile={?}, profile_mobile_pub={?},
             profile_web={?}, profile_web_pub={?},
-            profile_freetext={?} profile_freetext_pub={?}
+            profile_freetext={?}, profile_freetext_pub={?}
         WHERE user_id = {?}",
             $nickname,
             $mobile, $mobile_pub,
