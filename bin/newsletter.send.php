@@ -39,12 +39,14 @@ $nl->setSent();
 
 while(true) {
     $res = $globals->dbx->iterRow(
-            "SELECT  ni.user_id, ni.pref, a.alias,
+            "SELECT  ni.user_id, a.alias,
                      u.prenom, IF(u.epouse='', u.nom, u.epouse),
-                     FIND_IN_SET('femme', u.flags)
-               FROM  newsletter_ins AS ni
-         INNER JOIN  auth_user_md5  AS u  USING(user_id)
-         INNER JOIN  aliases        AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+                     FIND_IN_SET('femme', u.flags),
+		     q.core_mail_fmt AS pref
+               FROM  newsletter_ins  AS ni
+         INNER JOIN  auth_user_md5   AS u  USING(user_id)
+	 INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
+         INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
               WHERE  ni.last<{?}
               LIMIT  60", $id);
     if (!$res->numRows()) { exit; }

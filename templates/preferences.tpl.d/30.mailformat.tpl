@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,44 +16,15 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
 
-// {{{ config HOOK
+{if $smarty.session.mail_fmt eq 'texte'}
+<h3><a href="?mail_fmt=html">Recevoir les mails en format HTML</a></h3>
+{else}
+<h3><a href="?mail_fmt=texte">Recevoir les mails en format texte</a></h3>
+{/if}
+<div class='explication'>
+  La lettre mensuelle et les mails de notification du carnet te sont actuellement envoyé en format {$smarty.session.mail_fmt} si tu t'y es inscrit.
+</div>
 
-// {{{ class SkinConfig
-
-class NLConfig
-{
-    var $from    = "Lettre Mensuelle <null@example.org>";
-    var $replyto = "";
-}
-
-// }}}
-
-function newsletter_config() {
-    global $globals;
-    $globals->newsletter = new NLConfig;
-}
-
-// }}}
-// {{{ menu HOOK
-
-function newsletter_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
-}
-
-// }}}
-// {{{ subscribe HOOK
-
-function newsletter_subscribe($forlife, $uid, $promo, $password)
-{
-    require_once('newsletter.inc.php');
-    subscribe_nl($uid);
-}
-
-// }}}
- 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

@@ -39,5 +39,16 @@ if (Env::has('forget')) {
     header('Location: preferences.php');
 }
 
+if (Env::has('mail_fmt')) {
+    $fmt=Env::get('mail_fmt');
+    if ($fmt != 'texte') $fmt = 'html';
+    $globals->xdb->execute("REPLACE INTO auth_user_quick
+                                     SET core_mail_fmt = '$fmt'
+                                   WHERE user_id = {?}", Session::get('uid'));
+    $_SESSION['mail_fmt'] = $fmt;
+}
+
 $page->run($has_cookie);
+
+// vim:set et sw=4 sts=4 sws=4:
 ?>

@@ -454,7 +454,7 @@ function get_nl_list()
 function get_nl_state()
 {
     global $globals;
-    $res = $globals->xdb->query('SELECT pref FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
+    $res = $globals->xdb->query('SELECT 1 FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
     return $res->fetchOneCell();
 }
  
@@ -464,13 +464,12 @@ function unsubscribe_nl()
     $globals->xdb->execute('DELETE FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
 }
  
-function subscribe_nl($html=true, $uid=-1)
+function subscribe_nl($uid=-1)
 {
     global $globals;
     $user = ($uid == -1) ? Session::getInt('uid') : $uid;
-    $format = $html ? 'html' : 'text';
-    $globals->xdb->execute('REPLACE INTO  newsletter_ins (user_id,last,pref)
-			          SELECT  {?}, MAX(id), {?} FROM newsletter WHERE bits!="new"', $user, $format);
+    $globals->xdb->execute('REPLACE INTO  newsletter_ins (user_id,last)
+			          VALUES  ({?}, 0)', $user);
 }
  
 function justify($text,$n)
@@ -548,4 +547,5 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
 
 // }}}
 
+// vim:set et sw=4 sts=4 sws=4:
 ?>

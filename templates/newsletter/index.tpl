@@ -30,44 +30,19 @@ utilise <a href='submit.php'>le formulaire dédié !</a>
 
 <h2>Ton statut</h2>
 
-{if $nls eq html}
+{if $nls}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format HTML !
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='../preferences.php'>des préférences</a>)
 </p>
-{elseif $nls eq text}
-<p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org dans sont format texte !
-</p>
+<div class='center'>
+  [<a href='?out=1'>me désinscrire de la lettre mensuelle</a>]
+</div>
 {else}
 <p>
 Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
 </p>
-{/if}
-
-{if $nls neq "text"}
-<p>
-Pour recevoir la version texte suis le lien :
-</p>
 <div class='center'>
-  [<a href='?in=text'>m'inscrire pour le format texte</a>]
-</div>
-{/if}
-
-{if $nls neq "html"}
-<p>
-Pour recevoir la version HTML suis le lien :
-</p>
-<div class='center'>
-  [<a href='?in=html'>m'inscrire pour le format HTML</a>]
-</div>
-{/if}
-
-{if $nls}
-<p>
-Pour te désinscrire suis le lien :
-</p>
-<div class='center'>
-  [<a href='?out=1'>me désinscrire</a>]
+  [<a href='?in=1'>m'inscrire à la lettre mensuelle</a>]
 </div>
 {/if}
 

@@ -326,7 +326,7 @@ function start_connexion ($uid, $identified)
 {
     global $globals;
     $res  = $globals->xdb->query("
-	SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host,
+	SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, q.core_mail_fmt AS mail_fmt,
                 a.alias AS forlife, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last,
 		a2.alias AS bestalias, password, FIND_IN_SET('femme', u.flags) AS femme
           FROM  auth_user_md5   AS u

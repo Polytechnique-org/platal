@@ -24,7 +24,7 @@ new_skinned_page('newsletter/index.tpl', AUTH_COOKIE);
 require_once("newsletter.inc.php");
 
 if(Get::has('out')) { unsubscribe_nl(); }
-if(Get::has('in'))  { subscribe_nl(Get::get('in')=='html'); }
+if(Get::has('in'))  { subscribe_nl(); }
 
 $page->assign('nls',get_nl_state());
 $page->assign_by_ref('nl_list',get_nl_list());
