@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: utilisateurs.tpl,v 1.13 2004-09-02 23:06:11 x2000habouzit Exp $
+        $Id: utilisateurs.tpl,v 1.14 2004-09-04 20:14:31 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -225,16 +225,17 @@ function del_fwd(fwd) {
         Redirections
       </th>
     </tr>
-    {foreach item=mail from=$xorgmails}
+    {foreach item=mail from=$emails}
     <tr>
       <td class="titre">
-        n°{$mail.num} ({$mail.flags})
+        {if $mail->active}active{/if}
+        {if $mail->mtic}(mtic){/if}
       </td>
       <td>
-        {$mail.email}
+        {$mail->email}
       </td>
       <td class="action">
-        <a href="javascript:del_fwd('{$mail.email}')">delete</a>
+        <a href="javascript:del_fwd('{$mail->email}')">delete</a>
       </td>
     </tr>
     {/foreach}
@@ -248,18 +249,19 @@ function del_fwd(fwd) {
       <td class="action">
         <input type="hidden" name="user_id" value="{$mr.user_id}" />
         <input type="hidden" name="del_fwd" value="" />
-        <input type="hidden" name="num" value="{$next_num}" />
         <input type="submit" name="add_fwd" value="Ajouter" />
       </td>
     </tr>
   </table>
 </form>
 
+{foreach from=$emails item=mail}
+{if $email->panne && $email->panne neq "0000-00-00"}
 <p class="erreur">
-{foreach from=$email_panne item=e}
-{$p}<br />
-{/foreach}
+Panne pour l'email "{$mail->email}" le {$mail->panne|date_format:"%d %b %Y"}
 </p>
+{/if}
+{/foreach}
 {/if}
 {/if}
 

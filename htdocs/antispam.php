@@ -18,13 +18,11 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: antispam.php,v 1.8 2004-09-04 14:40:02 x2000habouzit Exp $
+        $Id: antispam.php,v 1.9 2004-09-04 20:14:30 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 new_skinned_page('antispam.tpl', AUTH_MDP);
-
-require("mtic.inc.php");
 
 if (isset($_REQUEST['filtre']) and isset($_REQUEST['statut_filtre'])) {
     

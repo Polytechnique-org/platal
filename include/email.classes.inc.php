@@ -18,24 +18,40 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: email.classes.inc.php,v 1.4 2004-09-04 14:40:03 x2000habouzit Exp $
+        $Id: email.classes.inc.php,v 1.5 2004-09-04 20:14:30 x2000habouzit Exp $
  ***************************************************************************/
 
-require("xorg.misc.inc.php");
-require("mtic.inc.php");
+require_once("xorg.misc.inc.php");
 define("SUCCESS", 1);
 define("ERROR_INACTIVE_REDIRECTION", 2);
 define("ERROR_INVALID_EMAIL", 3);
 define("ERROR_LOOP_EMAIL", 4);
+
+define("MTIC_DOMAINS", "/etc/postfix/forward-domaines.conf");
+
+function check_mtic($email) {
+    list($local,$domain) = explode("@",$email);
+    // lecture du fichier de configuration
+    $tab = file(MTIC_DOMAINS);
+    foreach ($tab as $ligne) {
+	if ($ligne{0} == '#') continue;           // on saute les commentaires
+	// pour chaque ligne, on regarde si la première partie qui correspond au domaine du destinataire
+	// matche le domaine de l'email donnée
+	list($regexp) = explode(':',$ligne);
+	if (eregi($regexp,$domain)) return true;  // c'est le cas, on revoie true
+    }
+    return false;
+}
 
 class Email {
     var $email;
     var $active;
     var $rewrite;
     var $mtic;
+    var $panne;
 
     function Email($row) {
-        list($this->email,$this->active,$this->rewrite,$this->mtic)
+        list($this->email,$this->active,$this->rewrite,$this->mtic,$this->panne)
         = $row;
     }
 
@@ -80,7 +96,7 @@ class Redirect {
         global $globals;
 	$this->uid=$_uid;
         $result = $globals->db->query("
-	    SELECT email, FIND_IN_SET('active',flags), rewrite, FIND_IN_SET('mtic',flags) 
+	    SELECT email, FIND_IN_SET('active',flags), rewrite, FIND_IN_SET('mtic',flags),panne
 	      FROM emails WHERE uid = $_uid AND NOT FIND_IN_SET('filter',flags)");
         while ($row = mysql_fetch_row($result)) {
 	    $this->emails[] = new Email($row);
@@ -129,7 +145,7 @@ class Redirect {
 	foreach($this->emails as $mail) {
 	    if($mail->email == $email_stripped) return SUCCESS;
 	}
-        $this->emails[] = new Email(array($email,1,'',$mtic));
+        $this->emails[] = new Email(array($email,1,'',$mtic,'0000-00-00'));
         return SUCCESS;
     }
 
