@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: index.tpl,v 1.7 2004-09-25 16:30:26 x2000habouzit Exp $
+        $Id: index.tpl,v 1.8 2004-10-08 12:04:05 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -28,8 +28,8 @@
   <tr class="impair"><td>
       <strong>Postfix : </strong>
       <a href="postfix_blacklist.php">Blacklist</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="postfix_perm.php">Permissions</a> &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="postfix_retardes.php">Retards</a>
+      <a href="postfix_whitelist.php">Whitelist masspam</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="postfix_delayed.php">Retardés par masspam</a>
   </td></tr>
   <tr class="pair"><td>
       <strong>Statistiques : </strong>
