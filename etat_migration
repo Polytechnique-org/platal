@@ -20,8 +20,7 @@ Etat  | Ancien nom								  | Nouveau nom
 ;!	  | admin/comptesPOP.php					  | ???
 ;	  | admin/correction_adr.php				  | 
 ;	  | admin/evenements.php					  | 
-;	  | admin/homonymes.php						  | 
-;	  | admin/pg.php							  | 
+;!	  | admin/pg.php							  | 
 ------+-[ marketing ]-----------------------------+----------------
 ;	  | admin/marketing.php						  | marketing/
 ;	  | admin/envoidirect.php					  | 
@@ -37,11 +36,6 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | info-groupesx.php						  | docs/info-groupesx.php
 ;	  | plan.php								  | ? docs/plan.php
 ;	  | services.php							  | docs/services.php
-------+-[ stats ]---------------------------------+----------------
-;	  | parselogD.php							  | stats/...
-;	  | parselogN.php							  | stats/...
-;	  | parselogR.php							  | stats/...
-;	  | stats.php								  | stats/index.php
 ------+-[ emails ... ]----------------------------+----------------
 ;	  | routage-mail.php						  | 
 ------+-[ inscription + mdp ]---------------------+----------------
@@ -70,6 +64,11 @@ Etat  | Ancien nom								  | Nouveau nom
 ;	  | listes/liste.php						  |  |
 ;	  | listes/mailtoins.inc.php				  |  |
 ;	  | listes/trombiliste.php					  | /
+------+-[ stats ]---------------------------------+----------------
+;!	  | parselogD.php							  | stats/...
+;!	  | parselogN.php							  | stats/...
+;!	  | parselogR.php							  | stats/...
+;!	  | stats.php								  | stats/index.php
 ------+-[ sondages ]------------------------------+----------------
 ;!	  | admin/gerer_sondages.php				  | \
 ;!	  | sondage/accueil.php						  |  |
@@ -100,9 +99,6 @@ x	  | admin/utilisateurs.php					  | - y'a encore du boulot pour que ca valide !
 x	  | epouse.php								  | - non testé (flemme de faire des su ...)
 x	  | parselog.php							  | stats/... (non testé, pas de logs sous la main)
 xx	  | AccesPermanentOff.php					  | cookie_off.php
-xx	  | paiement/cyberpaiement.inc.php			  | dans include/
-xx	  | paiement/cyberpaiement_retour.php		  | -
-xx	  | paiement/index.php						  | -
 xx	  | AccesPermanentOn.php					  | cookie_on.php
 xx	  | acces_redirect.php						  | carva_redirect.php
 xx	  | acces_smtp.php							  | -
@@ -120,6 +116,7 @@ xx	  | admin/gerer_listes.php					  | -
 xx	  | admin/gerer_paiement.php				  | -
 xx	  | admin/gerer_skins.php					  | -
 xx	  | admin/graph_promo.php					  | stats/graph_promo.php
+xx	  | admin/homonymes.php						  | 
 xx	  | admin/index.php							  | -
 xx	  | admin/ins_confirmees.php				  | -
 xx	  | admin/logger_actions.php				  | -
@@ -171,6 +168,9 @@ xx	  | motdepassemd5.php						  | -
 xx	  | nbpromo2.php							  | stats/nb_by_promo.php
 xx	  | newsletter.php							  | -
 xx	  | newsletter_req.php						  | -
+xx	  | paiement/cyberpaiement.inc.php			  | dans include/
+xx	  | paiement/cyberpaiement_retour.php		  | -
+xx	  | paiement/index.php						  | -
 xx	  | pattecassee.php							  | -
 xx	  | preferences.php							  | -
 xx	  | profil.php								  | TODO : reste 2-3 trucs comme popWin() a changer
