@@ -82,9 +82,8 @@ class MarkReq extends Validate
     function commit()
     {
         global $globals;
-        $hash = rand_url_id(12);
-        $globals->xdb->execute('UPDATE register_marketing SET nb=1,hash={?} WHERE uid={?} AND email={?}', $hash, $this->m_id, $this->m_email);
-        // TODO HERE SEND A MARKETING MAIL
+        require_once('marketing.inc.php');
+        mark_send_mail();
         return true;
     }
 
