@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.14 2004-09-10 11:52:37 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.15 2004-09-10 21:28:53 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -141,9 +141,21 @@ def get_members((userdesc,perms),listname):
         mlist = MailList.MailList(listname, lock=0)
     except:
         return 0
-    members = mlist.getRegularMemberKeys()
     if ( mlist.advertised ) or ( is_admin_on(userdesc, perms, mlist) ) or ( userdesc.address in members ):
-        return (members,mlist.owner)
+        members = mlist.getRegularMemberKeys()
+        members.sort()
+        is_member = userdesc.address in members
+        is_owner  = userdesc.address in mlist.owner
+        details = { 'addr' : listname+'@polytechnique.org',
+                    'desc' : mlist.description,
+                    'diff' : mlist.generic_nonmember_action,
+                    'ins'  : mlist.subscribe_policy > 0,
+                    'priv' : (1-mlist.advertised)+2*(mm_cfg.ADMIN_ML_OWNER in mlist.owner),
+                    'info' : mlist.info,
+                    'you'  : is_member + 2*is_owner
+                  }
+        members = map(lambda member: (mlist.getMemberName(member) or '', member), members)
+        return (details,members,mlist.owner)
     return 0
 
 def subscribe((userdesc,perms),listname):
@@ -194,8 +206,11 @@ def mass_subscribe((userdesc,perms),listname,users):
         if not is_admin_on(userdesc, perms, mlist):
             return None
         
+        members = mlist.getRegularMemberKeys()
         added = []
         for user in users:
+            if user+'@polytechnique.org' in members:
+                continue
             mysql.execute ("""SELECT  CONCAT(u.prenom,' ',u.nom)
                                 FROM  auth_user_md5 AS u
                           INNER JOIN  aliases       AS a ON (a.id=u.user_id AND alias='%s')
@@ -255,15 +270,6 @@ def del_owner((userdesc,perms),listname,user):
         mlist.Unlock()
         return True
 
-def get_welcome((userdesc,perms),listname):
-    try:
-        mlist = MailList.MailList(listname, lock=0)
-    except:
-        return 0
-    if not is_admin_on(userdesc, perms, mlist):
-        return 0
-    return mlist.info
-
 def set_welcome((userdesc,perms),listname,info):
     try:
         mlist = MailList.MailList(listname)
@@ -301,7 +307,6 @@ server.register_function(mass_subscribe)
 server.register_function(mass_unsubscribe)
 server.register_function(add_owner)
 server.register_function(del_owner)
-server.register_function(get_welcome)
 server.register_function(set_welcome)
 
 server.serve_forever()
