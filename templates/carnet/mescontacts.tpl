@@ -63,12 +63,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 Pour afficher la liste détaillée de tes contacts: [<a href="{$smarty.server.PHP_SELF}?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
 </p>
 
-<p>
-Trier par :
-[<a href='?order=nom&trombi=1{if ($order eq 'nom') and not ($inv)}&inv=1'>nom inversé{else}'>nom{/if}</a>]
-[<a href='?order=promo&trombi=1{if ($order eq 'promo') and ($inv)}'>promo croissante{else}&inv=1'>promo{/if}</a>]
-[<a href='?order=last&trombi=1{if ($order eq 'last') and ($inv)}'>dernière modification inversée{else}&inv=1'>dernière modification{/if}</a>]
-</p>
+{include file=carnet/tricontacts.tpl order=$order}
 
 {$trombi->show()|smarty:nodefaults}
 
@@ -82,12 +77,7 @@ Trier par :
 Pour afficher le trombi de tes contacts : [<a href="?trombi=1&order={$order}&inv={$inv}"><strong>vue sous forme de trombi</strong></a>]
 </p>
 
-<p>
-Trier par :
-[<a href='?order=nom{if ($order eq 'nom') and not ($inv)}&inv=1'>nom inversé{else}'>nom{/if}</a>]
-[<a href='?order=promo{if ($order eq 'promo') and ($inv)}'>promo croissante{else}&inv=1'>promo{/if}</a>]
-[<a href='?order=last{if ($order eq 'last') and ($inv)}'>dernière modification inversée{else}&inv=1'>dernière modification{/if}</a>]
-</p>
+{include file=carnet/tricontacts.tpl order=$order}
 
 <br />
 
