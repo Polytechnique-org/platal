@@ -19,9 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-define("WATCH_FICHE", 1);
-define("WATCH_INSCR", 2);
-define("WATCH_DEATH", 3);
+define('WATCH_FICHE', 1);
+define('WATCH_INSCR', 2);
+define('WATCH_DEATH', 3);
+define('WATCH_BIRTH', 4);
 
 // {{{ function inscription_notifs_base
 
@@ -64,7 +65,7 @@ function _select_notifs_base($table, $mail, $where)
                 'contact_sql' => '1'
             ),
             'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
-                'freq_sql' => ' AND wc.frequent=0',
+                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (w.promo <= u.promo+1 AND w.promo >= u.promo-1) )',
                 'contact_sql' => 'NOT (c.contact IS NULL)'
             ),
             'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,
