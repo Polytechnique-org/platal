@@ -63,6 +63,20 @@ table.tinybicol th, table.bicol th {
         [ Styles pour les tableaux de types de ceux des skins ]
 *******************************************************************************/
 
+#skin {
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #800080;
+}
+
+#skin td {
+    border-top: 1px solid #800080;
+    border-bottom: 1px solid #800080;
+}
+
+#skin td.skigauche {
+    background-color: #efddff;
+}
+                        
 /*******************************************************************************
     5   Contacts
         [ Styles liés à l'affichage de contacts ]
@@ -127,4 +141,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: nbviolet.css,v 1.1 2004-10-06 18:41:12 x2003bruneau Exp $ */
+/* $Id: nbviolet.css,v 1.2 2004-10-09 12:03:23 x2003bruneau Exp $ */
