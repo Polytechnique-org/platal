@@ -13,7 +13,7 @@ if(logged()) {
         'Services' => Array (
             'Envoyer un mail' => 'sendmail.php' ,
             'Forums & PA' => 'banana/' ,
-            'Listes de diffusion' => '###url###' ,
+            'Listes de diffusion' => 'listes/' ,
             'Micropaiements' => 'paiement/' ,
             'Patte cassée' => 'pattecassee.php' ,
         ),

@@ -150,6 +150,7 @@ table.tinybicol td, table.bicol td {
     background: inherit;
 }
 
+table.tinybicol td, table.bicol td { padding-left: 4px; padding-right: 4px; }
 
 td.half { width: 50%; padding: 4px; }
 td.titre {
@@ -581,4 +582,4 @@ div.spacer { clear: both; }
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: default.css,v 1.41 2004-09-06 06:25:07 x2000coic Exp $ */
+/* $Id: default.css,v 1.42 2004-09-10 11:52:36 x2000habouzit Exp $ */

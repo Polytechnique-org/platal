@@ -18,7 +18,7 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#       $Id: mailman-rpc.py,v 1.13 2004-09-10 07:02:02 x2000habouzit Exp $
+#       $Id: mailman-rpc.py,v 1.14 2004-09-10 11:52:37 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb
@@ -126,7 +126,14 @@ def get_lists((userdesc,perms)):
         is_owner  = userdesc.address in mlist.owner
         is_admin  = mm_cfg.ADMIN_ML_OWNER in mlist.owner
         if ( mlist.advertised ) or ( perms == 'admin' and is_admin ) or is_member or is_owner:
-            result.append( (name,1-mlist.advertised+is_admin,is_member,is_owner) )
+            result.append( {
+                    'list' : name,
+                    'desc' : mlist.description,
+                    'diff' : mlist.generic_nonmember_action,
+                    'ins'  : mlist.subscribe_policy > 0,
+                    'priv' : (1-mlist.advertised)+2*is_admin,
+                    'you'  : is_member + 2*is_owner
+                    } )
     return result
 
 def get_members((userdesc,perms),listname):
