@@ -30,7 +30,9 @@
 <form action="{"inscription/step3.php"|url}" method="post">
   {if $homonyme}
   <p>
-  Ton adresse sera : <strong>{$forlife}@polytechnique.org</strong>
+  Tu as déjà un homonyme inscrit dans notre base de données mais dans une autre promotion, nous allons
+  donc te donner l'adresse <strong>{$mailorg}@polytechnique.org</strong>, en plus
+  de ton adresse à vie <strong>{$forlife}@polytechnique.org</strong>.
   </p>
   {else}
   <p>
@@ -46,7 +48,7 @@
   Elle pointera sur les e-mails de ton choix, indique-s-en un pour commencer
   (tu pourras indiquer les autres une fois l'inscription terminée).
   Attention, il doit <strong>impérativement être correct</strong> pour que nous puissions 
-  te recontacter.
+  t'envoyer ton mot de passe.
   </p>
   <table class="bicol" cellpadding="3" cellspacing="0" summary="Préinscription">
     <tr>

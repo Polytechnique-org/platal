@@ -26,16 +26,16 @@ require_once("user.func.inc.php");
 require_once('xorg.mailer.inc.php');
 
 if (Env::has('ref')) {
-    $sql = "SELECT  username,loginbis,matricule,promo,password,
+    $sql = "SELECT  username,homonyme,loginbis,matricule,promo,password,
 	            nom,prenom,nationalite,email,naissance,date,
 	            appli_id1,appli_type1,appli_id2,appli_type2
-	      FROM  en_cours WHERE ins_id=".Env::getInt('ref');
+	      FROM  en_cours WHERE ins_id='".Env::get('ref')."'";
     $res = $globals->db->query($sql);
 }
 
-//vérifions que la référence de l'utilisateur est 
-if (!Env::has('ref')) ||
-        !list( $forlife, $alias, $matricule, $promo, $password, $nom, $prenom,$nationalite, 
+// vérifions que la référence de l'utilisateur est une référence existante dans "en_cours"
+if ( !Env::has('ref') ||
+        !list( $forlife, $homonyme, $alias, $matricule, $promo, $password, $nom, $prenom,$nationalite, 
         $email, $naissance,$date,$appli_id1,$appli_type1,$appli_id2,$appli_type2) = mysql_fetch_row($res))
 {
         $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
@@ -63,7 +63,7 @@ if (mysql_num_rows($res))  {
 
 $nom = stripslashes($nom);
 $prenom = stripslashes($prenom);
-$sql = "UPDATE auth_user_md5 SET password='$password', nationalite=$nationalite, perms='user',
+$sql = "UPDATE auth_user_md5 SET password='$password', nationalite='$nationalite', perms='user',
         date='$date', naissance='$naissance', date_ins = NULL WHERE matricule='$matricule'";
 $globals->db->query($sql);
 $sql = "REPLACE INTO  auth_user_quick (user_id)
@@ -90,12 +90,17 @@ if ((list($uid) = mysql_fetch_row($resbis)) === false) {
 
 $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$forlife','a_vie')");
 if($alias) {
+    // Les alias supplémentaires sont prenom.nom.NN et, si pas d'homonymie, prenom.nom.NN
     $p2 = sprintf("%02u",($promo%100));
+    // Vérification d'homonymie
+    if(!$homonyme) {
+      // si homonyme, on a déjà calculé l'unique alias possible : prenom.nom.NN, qui se trouve dans $alias
+      $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias.$p2','alias')");
+    }
     $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias','alias')");
-    $globals->db->query("INSERT INTO aliases (id,alias,type) VALUES ($uid,'$alias.$p2','alias')");
 }
 
-// on cree un objet logger et on log l'
+// on cree un objet logger et on log l'inscription
 $logger = new DiogenesCoreLogger($uid);
 $logger->log("inscription",$email);
 
@@ -134,7 +139,7 @@ inscription_notifs_base($uid);
 
 // insérer une ligne dans user_changes pour que les coordonnées complètes
 // soient envoyées a l'AX
-$globals->db->query("insert into user_changes ($uid)");
+$globals->db->query("insert into user_changes values ($uid)");
 
 // envoi du mail à l'inscrit
 $mymail = new XOrgMailer('inscription.reussie.tpl');

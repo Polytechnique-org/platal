@@ -28,7 +28,7 @@ Ton inscription sur Polytechnique.org est presque terminée, un clic sur le lien 
 
 Après activation, tes paramètres seront :
 
-login        : {$forlife}
+login        : {$mailorg}
 mot de passe : {$pass_clair}
 
 Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :

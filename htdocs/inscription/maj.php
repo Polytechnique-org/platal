@@ -22,7 +22,7 @@
 require_once("xorg.inc.php");
 
 if (Env::has('n')) {
-    $sql    = "SELECT * FROM envoidirect WHERE uid=".Env::getInt('n');
+    $sql    = "SELECT * FROM envoidirect WHERE uid='".Env::get('n')."'";
     $result = $globals->db->query($sql);
     if ($ligne  = mysql_fetch_assoc($result)) {
 
@@ -57,7 +57,7 @@ if (Env::has('n')) {
         $page->assign('prenom',   $prenom);
         $page->assign('nom',      $nom);
 
-        $page->assign('envoidirect', Env::getInt('n'));
+        $page->assign('envoidirect', Env::get('n'));
         $page->run();
     }
 }

@@ -176,6 +176,8 @@ $result = $globals->db->query("SELECT id,type,expire FROM aliases WHERE alias='$
 $homonyme = mysql_num_rows($result) > 0;
 
 if ( $homonyme ) {
+    $newbestalias = $mailorg . "." . sprintf("%02u",($promo%100));
+    
     list($h_id,$h_type,$expire) = mysql_fetch_row($result);
     mysql_free_result($result);
 
@@ -197,18 +199,23 @@ if ( $homonyme ) {
 	$mailer->addCc('"Support Polytechnique.org" <support@polytechnique.org>');
 	$msg =
 	    "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$mailorg'.\n\n".
-	    "Tu gardes tout de même l'usage de cet alias pour 1 mois encore à compter de ce jour.\n\n".
+	    "Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.\n\n".
 	    "Lorsque cet alias sera désactivé, l'adresse :\n".
 	    "    $mailorg@polytechnique.org\n".
 	    "renverra vers un robot qui indique qu'il y a plusieurs personnes portant le même nom ; cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
-	    "Cordialement\n\n".
+	    "Pour te connecter au site, tu pourras utiliser comme 'login' soit ton adresse à vie '$forlife', ".
+	    "soit l'alias '$newbestalias'. Par ailleurs, commence dès aujourd'hui à communiquer à tes correspondants ".
+	    "ton adresse :\n".
+	    "    $newbestalias@polytechnique.org\n\n".
+	    "En nous excusant pour le désagrément occasionné,\n".
+	    "cordialement\n\n".
 	    "-- \n".
-	    "Polytechnique.org\n".
+	    "L'équipe de Polytechnique.org\n".
 	    "\"Le portail des élèves & anciens élèves de l'X\"";
 	$mailer->SetTxtBody(wordwrap($msg,72));
 	$mailer->send();
     }
-    unset($mailorg);
+    $mailorg = $newbestalias;
 }
 
 ?>

@@ -36,7 +36,7 @@ if (!Env::has("xmat") || !Env::has("submit")) {
 	$chaine2 = strtok(" -'");
         $chaine  = ( strlen($chaine2) > strlen($chaine1) ) ? $chaine2 : $chaine1;
 
-        $rq = strlen(Env::get("promoR")==4 ? "AND promo=".Env::getInt("promoR") : "");
+        $rq = strlen(Env::get("promoR"))==4 ? "AND promo=".Env::getInt("promoR") : "";
 
 	$where = "prenom LIKE '%$prenom%' AND nom LIKE '%$chaine%' $rq ORDER BY promo,nom";
     }

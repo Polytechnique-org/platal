@@ -23,7 +23,6 @@ require_once("xorg.inc.php");
 new_skinned_page('inscription/step3.tpl', AUTH_PUBLIC);
 require_once("identification.inc.php");
 
-$page->assign('mailorg', $mailorg);
 $page->assign('forlife', $forlife);
 
 if (!isvalid_email(Env::get('email'))) {
@@ -44,7 +43,7 @@ if($page->nb_errs()) {
     $page->changeTpl('inscription/step2.tpl');
     require_once("applis.func.inc.php");
     $page->assign('homonyme', $homonyme);
-    $page->assign('loginbis', isset($loginbis) ? $loginbis : '');
+    $page->assign('mailorg', $mailorg);
     
     $page->assign('prenom', $prenom);
     $page->assign('nom', $nom);
@@ -57,8 +56,6 @@ $pass_clair = rand_pass();
 $password   = md5($pass_clair);
 $date       = date("Y-m-j");
 
-if (!isset($loginbis)) $loginbis="";
-
 $birth = sprintf("%s-%s-%s", substr(Env::get('naissance'),4,4),
         substr(Env::get('naissance'),2,2), substr(Env::get('naissance'),0,2));
 
@@ -69,23 +66,25 @@ $sql="REPLACE INTO  en_cours
 	            naissance='$birth', date='$date', nationalite='".Env::get('nationalite')."',
                     appli_id1='".Env::get('appli_id1')."', appli_type1='".Env::get('appli_type1')."',
                     appli_id2='".Env::get('appli_id2')."', appli_type2='".Env::get('appli_type2')."',
-                    loginbis='$mailorg', username='$forlife'";
+                    loginbis='$mailorg', username='$forlife', homonyme='$homonyme'";
 $globals->db->query($sql);
 
 $globals->db->query("UPDATE auth_user_md5 SET last_known_email='".Env::get('email')."' WHERE matricule = $matricule");
 // si on venait de la page maj.php, on met a jour la table envoidirect
 if (Env::has('envoidirect')) {
-    $globals->db->query("UPDATE envoidirect SET date_succes=NOW() WHERE uid=".Env::getInt('envoidirect'));
+  if (Env::get('envoidirect')) {
+    $globals->db->query("UPDATE envoidirect SET date_succes=NOW() WHERE uid='".Env::get('envoidirect')."'");
+  }
 }
 
 require_once('xorg.mailer.inc.php');
 $mymail = new XOrgMailer('inscrire.mail.tpl');
-$mymail->assign('forlife', $forlife);
+$mymail->assign('mailorg', $mailorg);
 $mymail->assign('lemail', Env::get('email'));
 $mymail->assign('pass_clair', $pass_clair);
 $mymail->assign('baseurl', $globals->baseurl);
 $mymail->assign('ins_id', $ins_id);
-$mymail->assign('subj', $forlife."@polytechnique.org");
+$mymail->assign('subj', $mailorg."@polytechnique.org");
 $mymail->send();
 
 $page->run();
