@@ -71,16 +71,16 @@ table.tinybicol th, table.bicol th {
         [ Styles liés à l'affichage de contacts ]
 *******************************************************************************/
 
-/*div.contact-list div.contact {
+div.contact-list div.contact {
     border-top: 1px solid #305070;
-    background: #80a0c0;
+    background: #ccddff;
     color: inherit;
 }
 
 div.contact div.long {
-    background: #99b9d0;
+    background: #ffffff;
     color: inherit;
-}*/
+}
 
 /*******************************************************************************
     6   Profil
@@ -131,4 +131,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: espace.css,v 1.1 2004-10-03 13:29:45 x2003bruneau Exp $ */
+/* $Id: espace.css,v 1.2 2004-10-03 15:27:06 x2003bruneau Exp $ */

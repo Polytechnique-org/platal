@@ -23,10 +23,11 @@
         [ balises sans attributs ou classes sans contexte ]
 *******************************************************************************/
 
-/*body {
-    background: #99afc1;
-    color: #000000;
-}*/
+body {
+    background-image: url("../images/sk_humlinux_background.jpg");
+    background-repeat: repeat-y;
+    background-position: top;
+}
 
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
@@ -34,28 +35,16 @@
 *******************************************************************************/
 
 div.rubrique {
-    color: #eeeeee;
-    background-color: #444444;
-    background-image: url( "../images/sk_spectral_titre.jpg");
-    background-repeat: repeat-x;
+    color: #000000;
+    background-color: #dddddd;
+    background-image: url( "../images/sk_humlinux_titre.jpg");
+    background-repeat: no-repeat;
 }
 
 /*******************************************************************************
     3   Tableaux bicolores + classes utiles
         [ Tableaux à lignes alternées, en taille normale, ou tiny ]
 *******************************************************************************/
-
-table.tinybicol, table.bicol {
-    background: #ccddff;
-    border: 1px solid #0067fe;
-    border-collapse: collapse;
-}
-
-table.tinybicol tr, table.bicol tr { }
-table.tinybicol tr.pair, table.bicol tr.pair      { background: #ddffcc; }
-table.tinybicol th, table.bicol th {
-    background-color: #0067fe;
-}
 
 /*******************************************************************************
     4   Tableau de choix de skins
@@ -68,13 +57,13 @@ table.tinybicol th, table.bicol th {
 *******************************************************************************/
 
 div.contact-list div.contact {
-    border-top: 1px solid #305070;
-    background: #ccddff;
+    border-top: 1px solid #000000;
+    background: #eeeeee;
     color: inherit;
 }
 
 div.contact div.long {
-    background: #0067fe;
+    background: #dddddd;
     color: inherit;
 }
 
@@ -94,36 +83,35 @@ div.contact div.long {
 *******************************************************************************/
 
 #body-logo {
-    border-bottom: 1px solid #003399;
-    border-right: 1px solid #305070;
-    border-left: none;
     border-top: none;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
 }
 
 #body-top {
-    border-bottom: 1px solid #003399;
+    border-bottom: 2px solid #777777;
 }
 
 #body-bottom {
-    border-top: 1px solid #003399;
+    border-top: 1px solid #777777;
 }
 
 #body-menu {
-    border-right: 1px solid #003399;
+    border-right: none;
 }
 
 #body-menu .menu_title {
-    color : #000000;
-    background-color: #ffffff;
-    background-image: url("../images/sk_spectral_menu.jpg");
-    border-top: 1px solid #003399;
-    border-bottom: 1px solid #003399;
+    color : #ffffff;
+    background-color: #dddddd;
+    background-image: url("../images/sk_humlinux_menu.jpg");
+    border-top: none;
+    border-bottom: none;
 }
 
 #body-menu .menu_item {
-    padding-left: 0px;
-    text-align: left;
+    border-right: none;
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: spectral.css,v 1.2 2004-10-03 15:27:06 x2003bruneau Exp $ */
+/* $Id: humlinux.css,v 1.1 2004-10-03 15:27:06 x2003bruneau Exp $ */
