@@ -316,15 +316,15 @@ class XOrgWikiToText
 
     // {{{ function _render
     
-    function _render($AST, $idt, $list, $first)
+    function _render($AST, $idt, $list, $fst)
     {
         $res = '';
-        if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false && !$first) {
+        if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false && !$fst) {
             $res .= "\n$idt";
         }
         if ($AST->type == 'ol' || $AST->type == 'ul') {
             if ($list) {
-                $res .= "$idt";
+                $res .= $idt;
             } else {
                 $list = true;
             }
@@ -343,15 +343,10 @@ class XOrgWikiToText
             return "[{$AST->attrs['src']}]";
         }
         foreach ($AST->childs as $val) {
-            $first = false;
-            if (is_string($val)) {
-                $res .= $val;
-            } else {
-                $res .= $this->_render($val, $idt, $list, $first);
-            }
+            $fst  = false;
+            $res .= is_string($val) ?  $val : $this->_render($val, $idt, $list, $fst);
         }
-        if (strpos('|br|div|p|pre|h1|h2|h3|li|', "|{$AST->type}|")!==false) {
-        } elseif ($AST->type == 'u') {
+        if ($AST->type == 'u') {
             $res .= '_';
         } elseif ($AST->type == 'em') {
             $res .= '/';
