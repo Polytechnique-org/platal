@@ -79,7 +79,7 @@ function chgMainWinLoc( strPage ) {
         {/if}
         X {$x.promo}{if $x.applis_join}&nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}{/if}
         {if $x.is_referent}
-        [<a href="fiche_referent.php?user={$x.forlife}" class='popup'>Ma fiche référent</a>]
+        [<a href="fiche_referent.php?user={$x.forlife}" class='popup2'>Ma fiche référent</a>]
         {/if}
       </div>
     </td>

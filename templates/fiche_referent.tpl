@@ -26,7 +26,7 @@
     <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
   </div>
 
-  {if $expertise != '' || ($nb_secteurs > 0)  || ($nb_pays > 0) }
+  {if $expertise != '' || $secteurs|count || $pays|count }
 
   <h2>Informations de référent :</h2>
   
@@ -37,7 +37,7 @@
       <span>{$expertise|nl2br}</span>
     </div>
     {/if}
-    {if $nb_secteurs > 0}
+    {if $secteurs|count}
     <div class="rubrique_referent">
       <em>Secteurs :</em><br />
       <ul>
@@ -47,7 +47,7 @@
       </ul>
     </div>
     {/if}
-    {if $nb_pays > 0}
+    {if $pays|count}
     <div class="rubrique_referent">
       <em>Pays :</em>
       <ul>
