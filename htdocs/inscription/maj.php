@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: maj.php,v 1.2 2004-09-05 22:58:46 x2000habouzit Exp $
+        $Id: maj.php,v 1.3 2004-09-30 15:13:08 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
@@ -36,7 +36,16 @@ if (isset($ligne) && $ligne) {
     }
 
     // il faut remettre le matricule dans son format de saisie
-    $_REQUEST['matricule'] = strlen($ligne['matricule']>6) ? substr($ligne['matricule'],2) : $ligne['matricule'];
+    
+    $year = intval(substr($ligne['matricule'],0,4));
+    $rang = intval(substr($ligne['matricule'],4,4));
+    if($year<1996) {
+	$_REQUEST['matricule'] = '';
+    } elseif($year<2000) {
+	$_REQUEST['matricule'] = sprintf('%02u0%03u',$year % 100,$rang);
+    } elseif($year<2100) {
+	$_REQUEST['matricule'] = sprintf('1%02u%03u',$year % 100,$rang);
+    }
     $_REQUEST['promo'] = $ligne['promo'];
     $_REQUEST['nom'] = $ligne['nom'];
     $_REQUEST['prenom'] = $ligne['prenom'];
