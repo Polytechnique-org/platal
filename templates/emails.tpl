@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: emails.tpl,v 1.5 2004-09-05 12:54:20 x2000habouzit Exp $
+        $Id: emails.tpl,v 1.6 2004-10-09 20:47:59 x2000chevalier Exp $
  ***************************************************************************}
 
 
@@ -37,11 +37,7 @@ Gestion de mes courriers électroniques
       <ul>
         {foreach from=$aliases item=a}
         <li>
-        {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@polytechnique.org
-        {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
-        </li>
-        <li>
-        {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@m4x.org
+        {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@polytechnique.org et @m4x.org 
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format:"%d %b %Y"})</span>{/if}
         </li>
         {/foreach}
