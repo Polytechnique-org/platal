@@ -33,6 +33,15 @@
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
+div.rubrique a:link, div.rubrique a:visited, div.rubrique a:active {
+    color: #999999;
+    background: inherit;
+}
+
+div.rubrique a:hover {
+    color: #cccccc;
+}
+            
 div.rubrique {
     color: #eeeeee;
     background-color: #444444;
@@ -127,4 +136,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: spectral.css,v 1.5 2004-10-09 11:56:28 x2003bruneau Exp $ */
+/* $Id: spectral.css,v 1.6 2004-10-17 12:23:02 x2003bruneau Exp $ */

@@ -33,6 +33,16 @@ a:hover   { color: #800080;}
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
+div.rubrique a:link, div.rubrique a:visited, div.rubrique a:active {
+    color: #e000e0;
+    background: inherit;
+}
+
+div.rubrique a:hover {
+    color: #ff00ff;
+    background: inherit;
+}
+
 div.rubrique {
     color: #ff0000;
     background-color: #800080;
@@ -155,4 +165,4 @@ div.conteneur_tab {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: nbviolet.css,v 1.3 2004-10-16 23:10:54 x2003bruneau Exp $ */
+/* $Id: nbviolet.css,v 1.4 2004-10-17 12:23:02 x2003bruneau Exp $ */

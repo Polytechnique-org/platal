@@ -33,6 +33,16 @@
         [ styles classiques d'effets de texte ]
 *******************************************************************************/
 
+div.rubrique a:link, div.rubrique a:active, div.rubrique a:visited {
+    color: #70ff00;
+    background: inherit;
+}
+
+div.rubrique a:hover {
+    color: #c0ff00;
+    background: inherit;
+}
+
 div.rubrique {
     color: #ffff00;
     background-color: #0005c0;
@@ -126,4 +136,4 @@ div.contact div.long {
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
-/* $Id: oldtimes.css,v 1.1 2004-10-04 22:08:48 x2003bruneau Exp $ */
+/* $Id: oldtimes.css,v 1.2 2004-10-17 12:23:02 x2003bruneau Exp $ */
