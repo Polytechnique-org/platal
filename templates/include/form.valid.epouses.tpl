@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: form.valid.epouses.tpl,v 1.8 2004-09-02 21:09:32 x2000habouzit Exp $
+        $Id: form.valid.epouses.tpl,v 1.9 2004-10-19 22:05:09 x2000habouzit Exp $
  ***************************************************************************}
 
 
@@ -38,7 +38,7 @@
     </tr>
     <tr>
       <td>Nouvel&nbsp;alias&nbsp;:</td>
-      <td>{$valid->alias|default:"<span class='erreur'>suppression</span>}</td>
+      <td>{$valid->alias|default:"<span class='erreur'>suppression</span>"}</td>
     </tr>
     {if $valid->homonyme}
     <tr>

@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: valid_epouses.inc.php,v 1.16 2004-09-02 21:09:32 x2000habouzit Exp $
+        $Id: valid_epouses.inc.php,v 1.17 2004-10-19 22:05:09 x2000habouzit Exp $
  ***************************************************************************/
 
 
@@ -41,13 +41,14 @@ class EpouseReq extends Validate {
         $this->forlife = $_forlife;
         
         list($prenom) = explode('.',$_forlife);
-        $this->alias = make_forlife($prenom,$this->epouse);
+        $this->alias = make_username($prenom,$this->epouse);
         if(empty($_epouse)) $this->alias = "";
         
         $sql = $globals->db->query("
-	    SELECT  u.alias, u.epouse, u.prenom, u.nom, a.id
+	    SELECT  e.alias, u.epouse, u.prenom, u.nom, a.id
 	      FROM  auth_user_md5 as u
-	 LEFT JOIN  aliases       as a ON(a.alias = '{$this->alias}' and a.id != u.user_id)
+	 LEFT JOIN  aliases       as e ON(e.type='epouse' AND e.id = u.user_id)
+	 LEFT JOIN  aliases       as a ON(a.alias = '{$this->alias}' AND a.id != u.user_id)
 	     WHERE  u.user_id = ".$this->uid);
         list($this->oldalias, $this->oldepouse, $this->prenom, $this->nom, $this->homonyme) = mysql_fetch_row($sql);
         mysql_free_result($sql);
@@ -89,7 +90,7 @@ class EpouseReq extends Validate {
     function commit () {
         global $globals;
         
-        $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."',alias='".$this->alias."' WHERE user_id=".$this->uid);
+        $globals->db->query("UPDATE auth_user_md5 set epouse='".$this->epouse."' WHERE user_id=".$this->uid);
 	$globals->db->query("DELETE FROM aliases WHERE type='epouse' AND id=".$this->uid);
 	$globals->db->query("INSERT INTO aliases VALUES('".$this->alias."', 'epouse', ".$this->uid.")");
         $f = fopen("/tmp/flag_recherche","w");

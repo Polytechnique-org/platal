@@ -18,21 +18,27 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: epouse.php,v 1.8 2004-09-03 00:15:46 x2000bedo Exp $
+        $Id: epouse.php,v 1.9 2004-10-19 22:05:09 x2000habouzit Exp $
  ***************************************************************************/
 
 require("auto.prepend.inc.php");
 require("validations.inc.php");
+require("xorg.misc.inc.php");
 
 new_skinned_page('epouse.tpl', AUTH_MDP);
 
-$res = $globals->db->query("select u.nom,u.epouse,i.flags from auth_user_md5 as u
-                    left join identification as i using(matricule)
-                    where user_id=".$_SESSION['uid']);
+$res = $globals->db->query(
+    "SELECT  u.nom,u.epouse,i.flags,e.alias
+       FROM  auth_user_md5  AS u
+  LEFT JOIN  identification AS i USING(matricule)
+  LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
+      WHERE  user_id=".$_SESSION['uid']);
 
-list($nom,$epouse_old,$flags) = mysql_fetch_row($res);
+list($nom,$epouse_old,$flags,$alias_old) = mysql_fetch_row($res);
 $flags=new flagset($flags);
 $page->assign('is_femme',$flags->hasflag("femme"));
+$page->assign('epouse_old',$epouse_old);
+$page->assign('alias_old',$alias_old);
 
 $epouse = replace_accent(trim(clean_request('epouse'))); 
 $epouse = strtoupper($epouse);
@@ -45,12 +51,7 @@ if (!empty($_REQUEST['submit']) && ($epouse != $epouse_old)) {
     } else { // le nom de mariage est distinct du nom à l'X
         // on calcule l'alias pour l'afficher
         $myepouse = new EpouseReq($_SESSION['uid'], $_SESSION['forlife'], $epouse);
-        list($prenom_forlife,$nom_forlife,$promo) = explode('.',$_SESSION['forlife']);
-        $alias_old=make_forlife($prenom_forlife,$epouse_old,$promo);
         $myepouse->submit();
-
-        $page->assign('epouse_old',$epouse_old);
-        $page->assign('alias_old',$alias_old);
         $page->assign('myepouse',$myepouse);
     }
 }
