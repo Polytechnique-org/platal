@@ -8,8 +8,6 @@
 -- Table structure for table `skins`
 --
 
-use x4dat;
-
 DROP TABLE IF EXISTS skins;
 CREATE TABLE skins (
   id tinyint(1) unsigned NOT NULL default '0',
@@ -35,9 +33,11 @@ INSERT INTO skins VALUES (6,'HumLinux','2000-03-29','Une skin sexy inspirée d\'u
 INSERT INTO skins VALUES (7,'Trapped','2002-12-21','La légende continue...','Thierry Bonnefous','trapped.tpl','png');
 INSERT INTO skins VALUES (8,'NewXorg','2001-06-02','Skin avec le logo officiel de l\'association','Equipe X.org','newxorg.tpl','png');
 INSERT INTO skins VALUES (9,'OldTimes','2000-03-08','La skin historique','Equipe X.org','oldtimes.tpl','png');
+INSERT INTO skins VALUES (10,'NBviolet','2000-03-08','Purple Rain en noir et blanc','Equipe X.org','nbviolet.tpl','png');
 
 update auth_user_md5 set skin=skin+100;
 
+update auth_user_md5 set skin=10 where skin=110;
 update auth_user_md5 set skin=9 where skin=101;
 update auth_user_md5 set skin=8 where skin=106;
 update auth_user_md5 set skin=7 where skin=112;
