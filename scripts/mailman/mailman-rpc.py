@@ -18,10 +18,13 @@
 #*  Foundation, Inc.,                                                      *
 #*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
 #***************************************************************************
-#   $Id: mailman-rpc.py,v 1.60 2004-10-15 20:52:31 x2000habouzit Exp $
+#   $Id: mailman-rpc.py,v 1.61 2004-10-15 22:27:29 x2000habouzit Exp $
 #***************************************************************************
 
 import base64, MySQLdb, os, getopt, sys, MySQLdb.converters, sha
+
+sys.path.append('/usr/lib/mailman/bin')
+
 from pwd import getpwnam
 from grp import getgrnam
 
