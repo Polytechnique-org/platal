@@ -18,7 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-    $Id: xorg.page.inc.php,v 1.49 2004-11-21 17:05:40 x2000habouzit Exp $
+    $Id: xorg.page.inc.php,v 1.50 2004-11-21 17:31:25 x2000habouzit Exp $
  ***************************************************************************/
 
 require_once("diogenes.core.page.inc.php");
@@ -31,7 +31,7 @@ require_once("diogenes.core.page.inc.php");
  * @category XOrgCore
  * @package  XOrgCore
  * @author   Jeremy Lainé <jeremy.laine@polytechnique.org>
- * @version  $Id: xorg.page.inc.php,v 1.49 2004-11-21 17:05:40 x2000habouzit Exp $
+ * @version  $Id: xorg.page.inc.php,v 1.50 2004-11-21 17:31:25 x2000habouzit Exp $
  * @access   public
  * @see      DiogenesCorePage
  */
@@ -262,7 +262,14 @@ class XorgPage extends DiogenesCorePage
     }
 
     // }}}
+    // {{{ function loadModule()
+    
+    function loadModule($modname)
+    {
+        require_once("$modname.inc.php");
+    }
 
+    // }}}
 }
 
 // }}}
