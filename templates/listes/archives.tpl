@@ -17,7 +17,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************
-        $Id: archives.tpl,v 1.3 2004-11-30 09:34:55 x2000habouzit Exp $
+        $Id: archives.tpl,v 1.4 2004-12-01 11:15:12 x2000habouzit Exp $
  ***************************************************************************}
 
 {dynamic}
@@ -44,17 +44,17 @@
     </th>
   </tr>
   {foreach from=$archs item=m key=y}
-  <tr class="center">
+  <tr class="center {if $y is odd}pair{else}impair{/if}">
     <td class="titre" rowspan="2">{$y}</td>
     {foreach from=$range item=i}
     <td>
       {if $m[$i]}
-      [<a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%b"}</a>]
+      <a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%B"}</a>
       {else}
-      [&nbsp;&nbsp;&nbsp;]
+      &nbsp;
       {/if}
     </td>
-    {if $i eq 6}</tr><tr class="center">{/if}
+    {if $i eq 6}</tr><tr class="center {if $y is odd}pair{else}impair{/if}">{/if}
     {/foreach}
   </tr>
   {/foreach}
@@ -70,17 +70,17 @@
     </th>
   </tr>
   {foreach from=$archs item=m key=y}
-  <tr class="center">
+  <tr class="center {if $y is odd}pair{else}impair{/if}">
     <td class="titre" rowspan="2">{$y}</td>
     {foreach from=$range item=i}
     <td>
       {if $m[$i]}
-      [<a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%b"}</a>]
+      <a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%B"}</a>
       {else}
-      [&nbsp;&nbsp;&nbsp;]
+      &nbsp;
       {/if}
     </td>
-    {if $i eq 6}</tr><tr class="center">{/if}
+    {if $i eq 6}</tr><tr class="center {if $y is odd}pair{else}impair{/if}">{/if}
     {/foreach}
   </tr>
   {/foreach}
