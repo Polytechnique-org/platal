@@ -34,17 +34,24 @@ class VarStream
 
     function stream_open($path, $mode, $options, &$opened_path)
     {
-        $url = parse_url($path);
-        $this->varname = $url['host'];
-        if(!isset($GLOBALS[$this->varname]))
+        $url            = parse_url($path);
+        $this->varname  = $url['host'];
+        $this->position = 0;
+        if (!isset($GLOBALS[$this->varname]))
         {
             trigger_error('Global variable '.$this->varname.' does not exist', E_USER_WARNING);
             return false;
         }
-        $this->position = 0;
         return true;
     }
 
+    // }}}
+    // {{{ stream_close
+
+    function stream_close()
+    {
+    }
+    
     // }}}
     // {{{ stream_read
 
@@ -56,6 +63,20 @@ class VarStream
     }
 
     // }}}
+    // {{{ stream_write
+
+    function stream_write($data)
+    {
+        $len = strlen($data);
+        if ($len > $this->position + strlen($GLOBALS[$this->varname])) {
+            str_pad($GLOBALS[$this->varname], $len);
+        }
+
+        $GLOBALS[$this->varname] = substr_replace($GLOBALS[$this->varname], $data, $this->position, $len);
+        $this->position += $len;
+    }
+    
+    // }}}
     // {{{ stream_eof
 
     function stream_eof()
@@ -63,6 +84,47 @@ class VarStream
         return $this->position >= strlen($GLOBALS[$this->varname]);
     }
 
+    // }}}
+    // {{{ stream_tell
+
+    function stream_tell()
+    {
+        return $this->position;
+    }
+
+    // }}}
+    // {{{ stream_seek
+
+    function stream_seek($offs, $whence)
+    {
+        switch ($whence) {
+            case SEEK_SET:
+                $final = $offs;
+                break;
+
+            case SEEK_CUR:
+                $final += $offs;
+                break;
+
+            case SEEK_END:
+                $final = strlen($GLOBALS[$this->varname]) + $offs;
+                break;
+        }
+
+        if ($final < 0) {
+            return -1;
+        }
+        $this->position = $final;
+        return 0;
+    }
+
+    // }}}
+    // {{{ stream_flush
+
+    function stream_flush()
+    {
+    }
+    
     // }}}
 }
 
