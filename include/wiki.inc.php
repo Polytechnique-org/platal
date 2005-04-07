@@ -116,13 +116,6 @@ class XOrgWikiAST
 
 class XOrgWikiParser
 {
-    // {{{ properties
-
-    var $max_title_level = 3;
-    var $enable_img      = true;
-    var $enable_hr       = true;
-
-    // }}}
     // {{{ constructor
     
     function XOrgWikiParser()
@@ -151,23 +144,11 @@ class XOrgWikiParser
     function _analyse(&$line)
     {
         $types = Array();
-        $modes = Array( '>'=>'blockquote', '.'=>'pre', '-'=>'ul', '#'=>'ol');
+        $modes = Array( '>'=>'blockquote', '.'=>'pre', '-'=>'ul', '#'=>'ol', '!!' => 'h2', '!' => 'h1');
 
-        for ($i = 1; $i <= $this->max_title_level; $i++) {
-            $modes[str_pad('!', $i, '!')] = "h$i";
-        }
-
-        /* non - nesting blocks */
-        $hre = $this->max_title_level ? str_pad('!', $this->max_title_level * 2 - 1, '!?') : '';
-        
-        if (preg_match("/^($hre|[.>])/", $line, $m)) {
+        if (preg_match("/^(!!?|[.>])/", $line, $m)) {
             $types[] = $modes[$m[1]];
             return Array($types, substr($line, strlen($m[1])));
-        }
-
-        /* hr */
-        if ($this->enable_hr && $line == '----') {
-            return Array(Array('hr'), '');
         }
 
         /* nesting blocks */
@@ -252,7 +233,7 @@ class XOrgWikiParser
 
                 case '\\':
                     if ($i + 1 < $len) {
-                        if (strpos('*/_{}[()', $d = $line{$i+1}) !== false) {
+                        if (strpos('*/_{}[', $d = $line{$i+1}) !== false) {
                             $cur .= $d;
                             $i += 2;
                             break;
@@ -289,19 +270,10 @@ class XOrgWikiParser
                     $i ++;
                     break;
 
-                case '(':
-                    if (!$this->enable_img) {
-                        break;
-                    }
                 case '[':
-                    $re = ( $c=='[' ? ',^\[([^|]*)\|([^]]*)\],' : ',^\(([^|]*)\|([^)]*)\),' );
-                    if (preg_match($re, substr($line, $i), $m)) {
+                    if (preg_match(',^\[([^|]*)\|([^]]*)\],', substr($line, $i), $m)) {
                         $lexm[] = $cur;
-                        if ($c == '[') {
-                            $lexm[] = new XOrgWikiAST('a', Array($m[1]), Array('href'=>$m[2]));
-                        } else {
-                            $lexm[] = new XOrgWikiAST('img', Array($m[1]), Array('src'=>$m[2]));
-                        }
+                        $lexm[] = new XOrgWikiAST('a', Array($m[1]), Array('href'=>$m[2]));
                         $cur    = '';
                         $i     += strlen($m[0]);
                         break;
