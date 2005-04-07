@@ -34,7 +34,7 @@ templates_c:
 	chmod o+w templates_c
 
 htdocs/valid.html:
-	touch ../templates_c/valid.html
+	touch templates_c/valid.html
 	ln -sf ../templates_c/valid.html htdocs/valid.html
 
 devel: build templates_c htdocs/valid.html
