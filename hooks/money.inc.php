@@ -29,8 +29,8 @@ class MoneyConfig
     var $mpay_def_id   = 0;
     var $mpay_def_meth = 0;
     var $mpay_tprefix  = 'paiement.';
-    var $paypal_site = '';
-    var $paypal_comte = '';
+    var $paypal_site   = '';
+    var $paypal_compte = '';
 }
 
 // }}}
@@ -49,7 +49,7 @@ function money_menu()
 {
     global $globals;
     if ($globals->money->mpay_enable) {
-        $globals->menu->addPrivateEntry(XOM_SERVICES, 30, 'Micropaiments', 'paiement/');
+        $globals->menu->addPrivateEntry(XOM_SERVICES, 30, 'Micropaiements', 'paiement/');
     }
 }
 
