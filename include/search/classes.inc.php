@@ -239,9 +239,9 @@ class QuickSearch extends SField
 	parent::get_request();
 	$s = replace_accent(trim($this->value));
 	$s = preg_replace('!\d+!', ' ', $s);
-	$s = preg_replace('! - !', '', $s);
+	$s = preg_replace('![\'\-]!', '', $s);
         $s = str_replace('*','%',$s);
-	$this->strings = preg_split("![^a-zA-Z\-%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
+	$this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
 
 	$s = trim($this->value);
 	$s = preg_replace('! *- *!', '-', $s);
@@ -261,10 +261,10 @@ class QuickSearch extends SField
     function get_where_statement()
     {
 	$where = Array();
-	foreach ($this->strings as $s) {
-	    $t = '%'.str_replace('*', '%', $s).'%';
+	foreach ($this->strings as $i => $s) {
+	    $t = str_replace('*', '%', $s).'%';
 	    $t = str_replace('%%', '%', $t);
-	    $where[] = "(u.nom LIKE '$t' OR u.nom_usage LIKE '$t' OR u.prenom LIKE '$t')";
+	    $where[] = "sn$i.token LIKE '$t'";
 	}
 	
 	$wherep = Array();
@@ -288,30 +288,33 @@ class QuickSearch extends SField
     }
 
     // }}}
-    // {{{ function get_mark_statement()
-    
-    function get_mark_statement()
+    // {{{ get_select_statement
+    function get_select_statement()
     {
-	if (empty($this->strings)) {
-            return "10 AS mark";
+        $join = "";
+	foreach ($this->strings as $i => $s) {
+            $join .= "INNER JOIN search_name AS sn$i ON (u.user_id = sn$i.uid)\n";
         }
-	$order = "0";
-        $sep   = "[ \\'\\-]";
-	foreach ($this->strings as $s) {
-	    $order .= " + ( (u.nom='$s' OR u.nom_usage='$s') + (CONCAT(' ',u.nom,' ',u.nom_usage,' ') RLIKE '$sep{$s}$sep') )*1000
-                        + ( CONCAT(' ',u.nom,' ',u.nom_usage,' ') RLIKE '$sep{$s}' )*100
-                        + ( (u.prenom = '$s') + (CONCAT(' ',u.prenom,' ') RLIKE '$sep{$s}$sep') )*10
-                        + ( u.prenom RLIKE '(^|$sep){$s}' )";
-	}
-        return $order.' AS mark';
+        return $join;
     }
-
     // }}}
     // {{{ function get_order_statement()
     
     function get_order_statement()
     {
-        return 'mark DESC';
+        return false;
+    }
+
+    // }}}
+    // {{{ function get_score_statement
+    
+    function get_score_statement()
+    {
+        $sum = array('0');
+	foreach ($this->strings as $i => $s) {
+            $sum[] .= "SUM(sn$i.score)";
+        }
+        return join('+', $sum).' AS score';
     }
 
     // }}}

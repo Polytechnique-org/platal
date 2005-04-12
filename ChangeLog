@@ -1,10 +1,23 @@
 ================================================================================
+VERSION 0.9.6														 -- May 2004
+
+New :
+
+	* Search :
+		- Last improvements (clean code for search now !).					-MC
+
+Bug/Wish :
+
+
+Fixes (from 0.9.5 branch) :
+
+================================================================================
 VERSION 0.9.5														 07 Apr 2004
 
 New :
 
 	* Core :
-		- Improve login/exit wrt cookie.									 -MC
+		- Improve login/exit wrt cookie.									-MC
 
 	* Docs :
 		- use of secure SMTP on a pocket PC.								-Car

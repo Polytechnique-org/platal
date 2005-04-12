@@ -43,22 +43,22 @@ if (Env::has('quick')) {
             new ThrowError('Recherche trop générale.');
         }
        
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS  DISTINCT 
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS
                            UPPER(IF(u.nom!="",u.nom,u.nom_ini)) AS nom,
                            IF(u.prenom!="",u.prenom,u.prenom_ini) AS prenom,
                            '.$globals->search->result_fields.'
                            c.uid AS contact,
                            w.ni_id AS watch,
-                           '.$qSearch->get_mark_statement().'
-
+                           '.$qSearch->get_score_statement().'
                      FROM  auth_user_md5  AS u
-                LEFT JOIN  auth_user_quick AS q  USING(user_id)
+                '.$fields->get_select_statement().'
+                LEFT JOIN  auth_user_quick AS q  ON (u.user_id = q.user_id)
                 LEFT JOIN  aliases        AS a   ON (u.user_id = a.id AND a.type="a_vie")
                 LEFT JOIN  contacts       AS c   ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
                 LEFT JOIN  watch_nonins   AS w   ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
                 '.$globals->search->result_where_statement.'
                     WHERE  '.$fields->get_where_statement().(logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '').'
-                   HAVING  mark>0
+                 GROUP BY  u.user_id
                  ORDER BY '.($order?($order.', '):'')
                             .implode(',',array_filter(array($fields->get_order_statement(), 'u.promo DESC, NomSortKey, prenom'))).'
                     LIMIT  '.$offset * $globals->search->per_page.','.$globals->search->per_page;
@@ -72,7 +72,7 @@ if (Env::has('quick')) {
 
     $search = new XOrgSearch(get_list);
     $search->setNbLines($globals->search->per_page);
-    $search->addOrder('mark', 'mark', false, 'pertinence', AUTH_PUBLIC, true);
+    $search->addOrder('score', 'score', false, 'pertinence', AUTH_PUBLIC, true);
     
     $nb_tot = $search->show();
     

@@ -34,8 +34,7 @@ class XOrgDB
 
     function _prepare($args) {
         $query    = array_map(Array($this, '_db_escape'), $args);
-        $query[0] = str_replace('%',   '%%', $args[0]);
-        $query[0] = str_replace('{?}', '%s', $query[0]);
+        $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
     }
     
@@ -44,8 +43,7 @@ class XOrgDB
 
     function &query()
     {
-        $query = $this->_prepare(func_get_args());
-        return new XOrgDBResult($query);
+        return new XOrgDBResult($this->_prepare(func_get_args()));
     }
 
     // }}}
@@ -53,8 +51,7 @@ class XOrgDB
 
     function execute() {
         global $globals;
-        $query = $this->_prepare(func_get_args());
-        return $globals->db->query($query);
+        return $globals->db->query($this->_prepare(func_get_args()));
     }
     
     // }}}
@@ -62,8 +59,7 @@ class XOrgDB
 
     function &iterator()
     {
-        $query = $this->_prepare(func_get_args());
-        return new XOrgDBIterator($query);
+        return new XOrgDBIterator($this->_prepare(func_get_args()));
     }
     
     // }}}
@@ -71,8 +67,7 @@ class XOrgDB
 
     function &iterRow()
     {
-        $query = $this->_prepare(func_get_args());
-        return new XOrgDBIterator($query, MYSQL_NUM);
+        return new XOrgDBIterator($this->_prepare(func_get_args()), MYSQL_NUM);
     }
     
     // }}}

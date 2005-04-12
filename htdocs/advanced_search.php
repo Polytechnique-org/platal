@@ -118,6 +118,9 @@ if (!Env::has('rechercher')) {
         global $globals;
     
         $where = $fields->get_where_statement();
+        if ($where) {
+            $where = "WHERE  $where";
+        }
         $sql = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
                            u.nom, u.prenom,
                            '.$globals->search->result_fields.'
@@ -126,15 +129,13 @@ if (!Env::has('rechercher')) {
                      FROM  auth_user_md5   AS u 
                LEFT JOIN  auth_user_quick AS q USING(user_id)
                 '.$fields->get_select_statement().'
-                '.(Env::has('only_referent') ?
-                    ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' :
-                    '').'
+                '.(Env::has('only_referent') ? ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' : '').'
                 LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
                 LEFT JOIN  contacts       AS c ON (c.uid='.Session::getInt('uid').' AND c.contact=u.user_id)
                 LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id AND w.uid='.Session::getInt('uid').')
-                '.$globals->search->result_where_statement.'
-                '.(empty($where) ? '' : "WHERE  $where").'
-                 ORDER BY  '.($order?($order.', '):'')
+                '.$globals->search->result_where_statement."
+                    $where
+                 ORDER BY  ".($order?($order.', '):'')
 		        .implode(',',array_filter(array($fields->get_order_statement(), 'promo DESC, NomSortKey, prenom'))).'
                     LIMIT  '.($offset * $limit).','.$limit;
         $liste   = $globals->xdb->iterator($sql);

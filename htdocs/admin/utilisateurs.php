@@ -126,8 +126,7 @@ if ($login) {
 			    comment   = '".addslashes($comm)."'
 			  WHERE user_id = '{$mr['user_id']}'";
 		if ($globals->xdb->execute($query)) {
-                    // FIXME: recherche
-                    system('echo 1 > /tmp/flag_recherche');
+                    user_reindex($mr['user_id']);
 
                     require_once("diogenes/diogenes.hermes.inc.php");
                     $mailer = new HermesMailer();

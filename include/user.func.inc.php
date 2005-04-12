@@ -253,6 +253,36 @@ function &get_user_details($login, $from_uid = '')
 }
 
 // }}}
+// {{{ function _user_reindex
 
+function _user_reindex($uid, $keys) {
+    global $globals;
+    foreach ($keys as $key) {
+        if ($key == '') {
+            continue;
+        }
+        $toks  = preg_split('/[ \'\-]+/', $key);
+        $token = "";
+        $first = 5;
+        while ($toks) {
+            $token = strtolower(replace_accent(array_pop($toks) . $token));
+            $score = ($toks ? 0 : 10 + $first);
+            mysql_query("REPLACE INTO search_name (token, uid, score) VALUES('$token',$uid,$score)");
+            $first = 0;
+        }
+    }
+}
+
+// }}}
+// {{{ function user_reindex
+
+function user_reindex($uid) {
+    global $globals;
+    $globals->xdb->execute("DELETE FROM search_name WHERE uid={?}", $uid);
+    $res = $globals->xdb->query("SELECT prenom, nom, nom_usage FROM auth_user_md5 WHERE user_id = {?}", $uid);
+    _user_reindex($uid, $res->fetchOneRow());
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -20,9 +20,6 @@ WD=/home/web/prod/platal/bin/cron
 # validations
 0 */3 * * *	web	cd $WD; ./cron_validations.php
 
-# search
-0 */3 * * *	web	cd $WD; ./recherche.pl 0
-
 # homonymes
 0 0 4 * * *	web	cd $WD; ./homonymes.php
 # vim:set noet syntax=crontab ts=8 sw=8 sts=8:
