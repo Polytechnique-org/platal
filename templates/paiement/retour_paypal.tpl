@@ -24,7 +24,9 @@
 {if $erreur}
 <p>Aucun paiement n'a été effectué.</p>
 {else}
-<p>Merci de nous avoir fait confiance pour ton paiement</p>
+<p>Merci de nous avoir fait confiance pour ton paiement. La transaction
+est terminée et s'est déroulée correctement. Tu vas recevoir un email accusant
+réception de ton paiement.</p>
 
 <p>{$texte|nl2br}</p>
 {/if}
