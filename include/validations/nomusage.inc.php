@@ -120,9 +120,8 @@ class UsageReq extends Validate
         if ($r->fetchOneCell() == "") {
             $globals->xdb->execute("UPDATE aliases SET flags = 1 | flags WHERE id = {?} LIMIT 1", $this->uid);
         }
-        $f = fopen("/tmp/flag_recherche","w");
-        fputs($f,"1");
-        fclose($f);
+        require_once 'user.func.inc.php';
+        user_reindex($this->uid);
         return true;
     }
 
