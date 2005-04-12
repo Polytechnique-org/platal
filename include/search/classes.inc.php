@@ -239,7 +239,6 @@ class QuickSearch extends SField
 	parent::get_request();
 	$s = replace_accent(trim($this->value));
 	$s = preg_replace('!\d+!', ' ', $s);
-	$s = preg_replace('![\'\-]!', '', $s);
         $s = str_replace('*','%',$s);
 	$this->strings = preg_split("![^a-zA-Z%]+!",$s, -1, PREG_SPLIT_NO_EMPTY);
 
