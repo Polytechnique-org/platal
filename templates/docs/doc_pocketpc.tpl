@@ -30,26 +30,17 @@
 <h2>Prérequis</h2>
 
 <p>
-  Comme pour toute aide à la configuration, la première étape consiste
-  souvent à mettre à jour ses logiciels installés. Cette documentation a été écrite pour Windows CE 4.20.0.
+  Cette documentation a été écrite pour Windows CE 4.20.0.
 </p>
 
 <p>
   Cependant, les principes de cette configuration sont toujours les mêmes
   dans les autres versions du logiciel et il est simple de leur transposer
   cette explication.
-  Clique <a href="http://windowsupdate.microsoft.com/">ici</a> pour faire
-  la mise à jour à partir du site de Microsoft.
 </p>
 
 <p>
-  Tous les services de polytechnique.org sont sécurisés, il faut donc
-  commencer par ajouter les certificats de sécurité de polytechnique.org au
-  panier des certificats de Windows. Pour ce faire, suis les instructions de
-  la <a href="{"docs/doc_ssl.php"|url}">documentation ssl</a>.
-</p>
-<p>
-  Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a>.
+  Il faut ensuite activer <a href="{"acces_smtp.php"|url}">ton compte SMTP/NNTP</a> dans Polytechnique.org.
   Par la suite, ton <strong>login</strong> désigne l'identifiant que tu utilises pour te connecter au site,
   et <strong>le mot de passe</strong> celui que tu as indiqué lors de
   l'<a href="{"acces_smtp.php"|url}">activation de ton compte SMTP/NNTP</a>.
@@ -60,7 +51,7 @@
   Le serveur SMTP est la machine sur laquelle ton client de courrier électronique se
   connecte pour envoyer des mails. En général, ton fournisseur d'accès
   internet t'en propose un. Mais il arrive souvent que ces serveurs aient des
-  limitations (notament sur l'adresse mail que tu veux mettre dans le champ
+  limitations (notamment sur l'adresse mail que tu veux mettre dans le champ
   expéditeur). Pour tous ses inscrits, Polytechnique.org propose un serveur
   sécurisé, accessible depuis tout internet.
 </p>
@@ -83,7 +74,7 @@
       Dans le menu démarrer, choisis la <strong>&quot;Boîte de Réception&quot;</strong>. Puis dans le menu <strong>Comptes</strong>, choisis <strong>&quot;Nouveau compte...&quot;</strong>.
     </p>
     <p>
-      La procédure de création du compte se déroule en cinq étapes plus trois étapes d'otpions (nécessaires pour ce qui nous concerne).
+      La procédure de création du compte se déroule en cinq étapes plus trois étapes d'options (nécessaires pour ce qui nous concerne).
     </p>
   </td>
   <td>
@@ -149,7 +140,10 @@
       4. L'étape quatre te permet de choisir le type de compte POP3 ou IMAP4. Tu peux choisir le type en fonction de ton hébergeur de mail : il s'agit d'un paramètre de réception et non d'envoi. Si tu ne sais pas quoi choisir, la plupart du temps il faut mettre POP3.
     </p>
     <p>
-      Le nom du compte, n'apparaitra nulle part dans les communications mais te permet simplement d'identifier ces paramètres sur ton PDA par rapport à d'autres comptes.
+      Le nom du compte, n'apparaîtra nulle part dans les communications mais te permet simplement d'identifier ces paramètres sur ton PDA par rapport à d'autres comptes.
+    </p>
+    <p>
+      Remarque : tu peux configurer plusieurs comptes mail sur ton PDA, mais tu ne peux te connecter qu'à un seul à la fois. Pour changer de compte, il faut d'abord se déconnecter du compte en cours.
     </p>
   </td>
   <td>
@@ -164,10 +158,10 @@
 <tr> 
   <td class="middle">
     <p>
-      5. Le serveur de courrier entrant, correspond à ton hébergeur de mail. Par contre le serveur sortant doit être <strong>ssl.polytechnique.org</strong>.
+      5. Le serveur de courrier entrant correspond à ton hébergeur de mail. Par contre le serveur sortant doit être <strong>ssl.polytechnique.org</strong>.
     </p>
     <p>
-      Pour continuer, clique sur Options pour paramétrer les paramètres de sécurité.
+      Clique maintenant sur Options pour paramétrer les paramètres de sécurité.
     </p>
   </td>
   <td>
@@ -182,7 +176,7 @@
 <tr> 
   <td>
     <p>
-      Nous te déconseillons de récupérer automatiquement les mails, notamment parce qu'il essaiera de se connecter au Wi-Fi ce qui peut être désagréable.
+      Nous te déconseillons de récupérer automatiquement les mails, notamment parce que ton PDA essaiera alors très régulièremet de se connecter à Internet, même si tu n'as pas démarré ta boîte de réception, ce qui peut est très désagréable.
     </p>
   </td>
   <td>
@@ -196,7 +190,7 @@
   <td class="middle">
     <p>
       Ces deux cases sont importantes à cocher. La <strong>connexion SSL</strong> établira un dialogue sécurisé entre le PDA et notre serveur pour ne pas envoyer ton mot de passe en clair.
-      Comme pour le login la méthode de connexion est commune au courier entrant et sortant. Mais dans le cas d'un PDA, il est important de récupérer ses mails de manière crypté également.
+      Comme pour le login la méthode de connexion est commune au courrier entrant et sortant. Mais dans le cas d'un PDA, il est important de récupérer ses mails de manière crypté également.
     </p>
     <p>
       Coche également la case pour l'<strong>authentification</strong>.
@@ -212,7 +206,7 @@
 <tr>
   <td class="middle">
     <p>
-      Enfin, pour terminer tu peux choisir de ne récupérer que les en-têtes des mails que tu reçois. Ce qui évite de surgarger ton PDA.
+      Enfin, pour terminer tu peux choisir de ne récupérer que les en-têtes des mails que tu reçois. Ce qui évite de surcharger ton PDA. Tu pourras ensuite, au cas par cas, choisir de récupérer la totalité des messages qui t'intéressent.
     </p>
   </td>
   <td>
