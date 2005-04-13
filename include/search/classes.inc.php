@@ -311,7 +311,7 @@ class QuickSearch extends SField
     {
         $sum = array('0');
 	foreach ($this->strings as $i => $s) {
-            $sum[] .= "SUM(sn$i.score)";
+            $sum[] .= "SUM(sn$i.score + IF('$s'=sn$i.token,5,0))";
         }
         return join('+', $sum).' AS score';
     }
