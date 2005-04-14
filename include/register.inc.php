@@ -181,7 +181,7 @@ function create_aliases (&$sub)
             "envoie un mail à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> en expliquant ta situation.";
     }
     
-    $res      = $globals->xdb->query('SELECT id, type, expire FROM aliases WHERE alias={?}', $forlife);
+    $res      = $globals->xdb->query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
 
     if ( $res->numRows() ) {
 
