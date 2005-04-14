@@ -47,7 +47,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
     foreach($members as $mem) {
         list($m, $dom) = split('@',$mem);
         if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-            $res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="", nom, nom_udage), promo
+            $res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="", nom, nom_usage), promo
                                            FROM  auth_user_md5 AS u
                                      INNER JOIN  aliases AS a ON u.user_id = a.id
                                           WHERE  a.alias = {?}', $m);
