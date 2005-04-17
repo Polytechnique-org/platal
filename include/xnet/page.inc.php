@@ -44,6 +44,14 @@ class XnetPage extends PlatalPage
     }
 
     // }}}
+    // {{{ function setType
+
+    function setType($type)
+    {
+        $this->assign('xnet_type', $type);
+    }
+
+    // }}}
 }
 
 // }}}

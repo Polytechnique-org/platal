@@ -52,16 +52,16 @@
     {include file=skin/common.bandeau.tpl}
 
     <table id="layout" cellspacing="0" cellpadding="0">
-      {if $type}
+      {if $xnet_type}
       <tr>
         <td>
           <a href="{rel}/index.php"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
         </td>
         <td>
-          <img src="{rel}/images/logo_{$type}.png" alt="Logo {$type}" width="106" height="96" />
+          <img src="{rel}/images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
         </td>
         <td colspan="2">
-          <img src="{rel}/images/texte_{$type}.jpg" alt="{$type}" width="490" height="96" />
+          <img src="{rel}/images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="490" height="96" />
         </td>
       </tr>
       {else}

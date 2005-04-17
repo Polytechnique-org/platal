@@ -39,6 +39,7 @@ a, a:link, a:visited     { text-decoration: none ; color: #5c81aa; }
 
 a img { border: none; }
 img   { vertical-align: middle; }
+td    { vertical-align: top; }
 
 /***************************************************************************
  * DEBUG
@@ -73,17 +74,12 @@ td#credits {
     font-weight: bold;
 }
 
-td#perso {
-    vertical-align: top;
-}
-
 td#perso ul {
     font-weight: bold;
     font-size: 90%;
 }
 
 td#search {
-    vertical-align: top;
     text-align: right;
 }
 
@@ -114,6 +110,46 @@ table.links a {
     background: url('../images/puce.png') no-repeat center left;
     padding-left: 15px;
     font-weight: bold;
+}
+
+td.oval {
+    color: #d0c198;
+    background: url("../images/oval.png") no-repeat top center;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle !important;
+    font-weight: bold;
+    width: 200px;
+}
+td.oval a { color: #d0c198; }
+
+
+/***************************************************************************
+ * Special pages
+ ***************************************************************************/
+
+
+table#liste td.listec a {
+    display: block;
+    text-align: center;
+}
+
+table#liste td.liste a {
+    display: block;
+    text-align: right;
+}
+
+table#liste td.liste a.cat {
+    background: #d0c198;
+    margin: 15px 0px 10px 0px;
+    padding: 3px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 90%;
+}
+
+table#liste td.liste a:hover, table#liste td.listec a:hover {
+    background: #d0c198;
 }
 
 /***************************************************************************
@@ -155,16 +191,6 @@ td.pres {
     text-align: center;
     width: 210px;
 }
-td.presautres {
-    background-repeat: no-repeat;
-    background-image: url("images/oval.png");
-    background-position: top center;
-    font-size: 90%;
-    height: 50px;
-    text-align: center;
-    width: 200px;
-}
-
 td.pres2 {
     background-repeat: no-repeat;
     background-image: url("images/oval2.png");
@@ -188,16 +214,8 @@ td.choix1actif {
     text-decoration: none;
 }
 
-td.choix2 {
-    height: 20px;
-    background-color: #D0C198;
-    font-size: 85%;
-}
 td.choix2actif {
     height: 20px;
     background-color: #5C81AA;
     color:#D0C198;
-}
-div.choix2 {
-    text-align: center;
 }
