@@ -19,98 +19,41 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal/page.inc.php');
+require_once('diogenes/diogenes.core.session.inc.php');
+require_once('diogenes/diogenes.misc.inc.php');
 
-// {{{ class XorgPage
+// {{{ class XorgSession
 
-class XorgPage extends PlatalPage
+class XnetSession extends DiogenesCoreSession
 {
-    // {{{ function XorgPage()
+    // {{{ function XorgSession()
 
-    function XorgPage($tpl, $type=SKINNED)
+    function XorgSession()
     {
-        $this->PlatalPage($tpl, $type);
-    }
-
-    // }}}
-    // {{{ function run()
-
-    function run()
-    {
-        if ($this->_page_type != NO_SKIN) {
-            $this->assign('menu', $globals->menu->menu());
+	$this->DiogenesCoreSession();
+	if (!Session::has('uid')) {
+	    try_cookie();
         }
-        $this->_run('skin/'.Session::get('skin'));
+	set_skin();
     }
 
     // }}}
-}
-
-// }}}
-// {{{ class XOrgAuth
-
-/** Une classe pour les pages nécessitant l'authentification.
- * (equivalent de controlauthentification.inc.php)
- */
-class XorgAuth extends XorgPage
-{
-    // {{{ function XorgAuth()
-
-    function XorgAuth($tpl, $type=SKINNED)
-    {
-        $this->XorgPage($tpl, $type);
-    }
-
-    // }}}
-    // {{{ function doAuth()
-
-    function doAuth()
-    {
-        $_SESSION['session']->doAuth($this);
+    // {{{ function init
+    
+    function init() {
+        @session_start();
+        if (!Session::has('session')) {
+            $_SESSION['session'] = new XorgSession;
+        }
     }
     
     // }}}
-}
-
-// }}}
-// {{{ class XorgCookie
-
-/** Une classe pour les pages nécessitant l'authentification permanente.
- * (equivalent de controlpermanent.inc.php)
- */
-class XorgCookie extends XorgPage
-{
-    // {{{ function XorgCookie()
+    // {{{ function destroy()
     
-    function XorgCookie($tpl, $type=SKINNED)
-    {
-        $this->XorgPage($tpl, $type);
-    }
-    
-    // }}}
-    // {{{ function doAuth()
-
-    function doAuth()
-    {
-        $_SESSION['session']->doAuthCookie($this);
-    }
-    
-    // }}}
-}
-
-// }}}
-// {{{ class XorgAdmin
-
-/** Une classe pour les pages réservées aux admins (authentifiés!).
- */
-class XorgAdmin extends XorgAuth
-{
-    // {{{ function XorgAdmin()
-    
-    function XorgAdmin($tpl, $type=SKINNED)
-    {
-        $this->XorgAuth($tpl, $type);
-        check_perms();
+    function destroy() {
+        @session_destroy();
+        unset($_SESSION);
+        XorgSession::init();
     }
     
     // }}}

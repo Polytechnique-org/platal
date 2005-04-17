@@ -98,8 +98,6 @@ class PlatalPage extends DiogenesCorePage
             exit;
         }
         
-        $this->assign('menu', $globals->menu->menu());
-
         if ($globals->debug) {
 
             if ($globals->debug & 1) {
