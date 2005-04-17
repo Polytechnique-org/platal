@@ -28,7 +28,7 @@
        Il a vocation à favoriser la communication entre les groupes X, et leur promotion à
        l'extérieur de la communauté polytechnicienne.
        </p>
-       <p>
+       <p class="descr">
        <a href="https://www.polytechnique.org/apropos.php">L'équipe</a> tient à remercier
        <strong>David Bachelart (X99) et Sylvain Joyeux (X2000)</strong> qui ont participé à l'élaboration de
        la charte graphique du site, ainsi que <strong>Laurent El Kaim (X1984)</strong>, qui a protégé le
