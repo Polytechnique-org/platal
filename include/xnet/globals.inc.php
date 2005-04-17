@@ -33,35 +33,17 @@ class XnetGlobals extends PlatalGlobals
     function init()
     {
         global $globals;
-#        require_once('xorg/hook.inc.php');
-#        require_once('xorg/menu.inc.php');
+        require_once('xorg/hook.inc.php');
 
         $globals       = new XnetGlobals;
         $globals->core = new CoreConfig;
         $globals->root = dirname(dirname(dirname(__FILE__)));
-#        $globals->hook = new XOrgHook();
-#        $globals->menu = new XOrgMenu();
+        $globals->hook = new XOrgHook();
 
-#        $globals->hook->config(null);
+        $globals->hook->config(null);
 
-        $array = parse_ini_file($globals->root.'/configs/platal.conf', true);
-        if (!is_array($array)) {
-            return;
-        }
-
-        foreach ($array as $cat=>$conf) {
-            $c = strtolower($cat);
-            foreach ($conf as $key=>$val) {
-                if ($c == 'core' && isset($globals->$key)) {
-                    $globals->$key=$val;
-                } else {
-                    $globals->$c->$key = $val;
-                }
-            }
-        }
+        $globals->read_config();
         
-#        $globals->hook->menu(null);
-
         $globals->dbconnect();
         if ($globals->debug & 1) {
             $globals->db->trace_on();

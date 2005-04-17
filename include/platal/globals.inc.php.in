@@ -70,6 +70,25 @@ class PlatalGlobals extends DiogenesCoreGlobals
     {
         $this->session = $sess;
     }
+
+    function read_config()
+    {
+        $array = parse_ini_file($this->root.'/configs/platal.conf', true);
+        if (!is_array($array)) {
+            return;
+        }
+
+        foreach ($array as $cat=>$conf) {
+            $c = strtolower($cat);
+            foreach ($conf as $key=>$val) {
+                if ($c == 'core' && isset($this->$key)) {
+                    $this->$key=$val;
+                } else {
+                    $this->$c->$key = $val;
+                }
+            }
+        }
+    }
 }
 
 // }}}

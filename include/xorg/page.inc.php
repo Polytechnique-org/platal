@@ -37,6 +37,7 @@ class XorgPage extends PlatalPage
 
     function run()
     {
+        global $globals;
         if ($this->_page_type != NO_SKIN) {
             $this->assign('menu', $globals->menu->menu());
         }

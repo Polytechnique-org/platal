@@ -44,22 +44,8 @@ class XorgGlobals extends PlatalGlobals
 
         $globals->hook->config(null);
 
-        $array = parse_ini_file($globals->root.'/configs/platal.conf', true);
-        if (!is_array($array)) {
-            return;
-        }
+        $globals->read_config();
 
-        foreach ($array as $cat=>$conf) {
-            $c = strtolower($cat);
-            foreach ($conf as $key=>$val) {
-                if ($c == 'core' && isset($globals->$key)) {
-                    $globals->$key=$val;
-                } else {
-                    $globals->$c->$key = $val;
-                }
-            }
-        }
-        
         $globals->hook->menu(null);
 
         $globals->dbconnect();
