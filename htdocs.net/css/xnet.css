@@ -39,7 +39,7 @@ a, a:link, a:visited     { text-decoration: none ; color: #5c81aa; }
 
 a img { border: none; }
 img   { vertical-align: middle; }
-td    { vertical-align: top; }
+td    { vertical-align: middle; }
 
 /***************************************************************************
  * DEBUG
@@ -87,10 +87,13 @@ td#search {
  * CLASSES
  ***************************************************************************/
 
+#content {
+    width: 100%;
+}
+
 .descr {
     text-align: justify;
     font-size: 85%;
-    font-weight: bold;
 }
 p.descr {
     padding-left: 7px;
@@ -128,6 +131,10 @@ td.oval a { color: #d0c198; }
  * Special pages
  ***************************************************************************/
 
+table#liste td.fourth {
+    vertical-align: top;
+    width: 25%;
+}
 
 table#liste td.listec a {
     display: block;

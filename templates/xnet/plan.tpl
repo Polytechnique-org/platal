@@ -20,7 +20,7 @@
 
 <table id="liste">
   <tr>
-    <td style="width: 25%">
+    <td class="fourth">
       <table>
         <tr>
           <td class="oval"><a href="groupes.php?cat=GroupesX">Groupes X</a></td>
@@ -38,7 +38,7 @@
       </table>
     </td>
 
-    <td style="width: 25%">
+    <td class="fourth">
       <table>
         <tr>
           <td class="oval"><a href="groupes.php?cat=Binets">Binets</a></td>
@@ -56,7 +56,7 @@
       </table>
     </td>
 
-    <td style="width: 25%">
+    <td class="fourth">
       <table>
         <tr>
           <td class="oval"><a href="groupes.php?cat=Promotions">Promotions</a></td>
@@ -71,7 +71,7 @@
       </table>
     </td>
 
-    <td style="width: 25%">
+    <td class="fourth">
       <table>
         <tr>
           <td class="oval"><a href="groupes.php?cat=Institutions">Institutions</a></td>
