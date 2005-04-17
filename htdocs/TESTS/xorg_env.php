@@ -1,6 +1,6 @@
 <?php
 require_once("__init__.php");
-require_once('include/xorg/env.inc.php');
+require_once('include/platal/env.inc.php');
 
 class TestOfEnv extends UnitTestCase {
     function TestOfEnv() {

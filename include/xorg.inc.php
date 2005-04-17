@@ -19,67 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function microtime_float() 
-{ 
-    list($usec, $sec) = explode(" ", microtime()); 
-    return ((float)$usec + (float)$sec); 
-} 
-$TIME_BEGIN = microtime_float();
-
-// {{{ defines
-
-$i=0;
-define("AUTH_PUBLIC", $i++);
-define("AUTH_COOKIE", $i++);
-define("AUTH_MDP", $i++);
-
-define("PERMS_EXT", "ext");
-define("PERMS_USER", "user");
-define("PERMS_ADMIN", "admin");
-
-define('SKINNED', 0);
-define('NO_SKIN', 1);
-
-// }}}
-// {{{ globals + session init
-
-require_once('xorg/env.inc.php');
+require_once('platal.inc.php');
 require_once('xorg.globals.inc.php');
 require_once('xorg/session.inc.php');
 XorgGlobals::init();
 XorgSession::init();
 
-setlocale(LC_MESSAGES, $globals->core->locale);
-setlocale(LC_TIME,     $globals->core->locale);
-setlocale(LC_CTYPE,    $globals->core->locale);
-
-// }}}
-// {{{ fix magic quotes
-
-function fix_gpc_magic(&$item, $key) {
-    if (is_array($item)) {
-        array_walk($item, 'fix_gpc_magic');
-    } else {
-        $item = stripslashes($item);
-    }
-}
-
-function unfix_gpc_magic(&$item, $key) {
-    if (is_array($item)) {
-        array_walk($item, 'fix_gpc_magic');
-    } else {
-        $item = addslashes($item);
-    }
-}
-
-if (ini_get("magic_quotes_gpc")) {
-    array_walk($_GET, 'fix_gpc_magic');
-    array_walk($_POST, 'fix_gpc_magic');
-    array_walk($_COOKIE, 'fix_gpc_magic');
-    array_walk($_REQUEST, 'fix_gpc_magic');
-}
-
-// }}}
 // {{{ function _new_page()
 
 function _new_page($type, $tpl_name, $min_auth, $admin=false)

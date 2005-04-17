@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg/xml-rpc.inc.php');
+require_once('platal/xml-rpc.inc.php');
 
 /* taken from : http://fr2.php.net/xml-rpc
  * Author mboeren@php.net

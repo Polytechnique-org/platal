@@ -21,13 +21,13 @@
 
 require_once('platal/page.inc.php');
 
-// {{{ class XorgPage
+// {{{ class XnetPage
 
-class XorgPage extends PlatalPage
+class XnetPage extends PlatalPage
 {
-    // {{{ function XorgPage()
+    // {{{ function XnetPage()
 
-    function XorgPage($tpl, $type=SKINNED)
+    function XnetPage($tpl, $type=SKINNED)
     {
         $this->PlatalPage($tpl, $type);
     }
@@ -37,79 +37,9 @@ class XorgPage extends PlatalPage
 
     function run()
     {
-        $this->_run('skin/'.Session::get('skin'));
+        $this->_run('xnet/skin.tpl');
     }
 
-    // }}}
-}
-
-// }}}
-// {{{ class XOrgAuth
-
-/** Une classe pour les pages nécessitant l'authentification.
- * (equivalent de controlauthentification.inc.php)
- */
-class XorgAuth extends XorgPage
-{
-    // {{{ function XorgAuth()
-
-    function XorgAuth($tpl, $type=SKINNED)
-    {
-        $this->XorgPage($tpl, $type);
-    }
-
-    // }}}
-    // {{{ function doAuth()
-
-    function doAuth()
-    {
-        $_SESSION['session']->doAuth($this);
-    }
-    
-    // }}}
-}
-
-// }}}
-// {{{ class XorgCookie
-
-/** Une classe pour les pages nécessitant l'authentification permanente.
- * (equivalent de controlpermanent.inc.php)
- */
-class XorgCookie extends XorgPage
-{
-    // {{{ function XorgCookie()
-    
-    function XorgCookie($tpl, $type=SKINNED)
-    {
-        $this->XorgPage($tpl, $type);
-    }
-    
-    // }}}
-    // {{{ function doAuth()
-
-    function doAuth()
-    {
-        $_SESSION['session']->doAuthCookie($this);
-    }
-    
-    // }}}
-}
-
-// }}}
-// {{{ class XorgAdmin
-
-/** Une classe pour les pages réservées aux admins (authentifiés!).
- */
-class XorgAdmin extends XorgAuth
-{
-    // {{{ function XorgAdmin()
-    
-    function XorgAdmin($tpl, $type=SKINNED)
-    {
-        $this->XorgAuth($tpl, $type);
-        check_perms();
-    }
-    
     // }}}
 }
 

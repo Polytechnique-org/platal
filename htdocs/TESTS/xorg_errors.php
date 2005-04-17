@@ -1,6 +1,6 @@
 <?php
 require_once("__init__.php");
-require_once('include/xorg/errors.inc.php');
+require_once('include/platal/errors.inc.php');
 
 class TestOfXOrgErrors extends UnitTestCase {
     function TestOfXOrgErrors() {

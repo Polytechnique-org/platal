@@ -1,0 +1,216 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+body {
+    background-color: #F2E9D0;
+    margin-left: 0;
+    margin-top: 0;
+    color: #505050;
+    font-family: "Bitstream vera sans","Verdana",sans-serif;
+    font-size: 10pt;
+    border-top: 1px;
+}
+
+table {
+    font-size: 10pt;
+    font-family: "Bitstream vera sans","Verdana",sans-serif;
+}
+
+input,textarea,select,option,tt,pre {
+    font-size: 10pt;
+}
+
+a img {
+    border: none;
+}
+
+/***************************************************************************
+ * DEBUG
+ ***************************************************************************/
+
+#dev {
+    width: 100%;
+    text-align: center;
+    padding: 1px;
+
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+#db-trace div.hide       { display: none; }
+#db-trace:hover div.hide { display: block }
+#db-trace h1 { margin: 0px; }
+
+/***************************************************************************
+ * LAYOUT
+ ***************************************************************************/
+
+table#layout {
+    width: 765px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td#credits {
+    text-align: center;
+    font-size: 90%;
+    font-weight: bold;
+}
+
+td#search {
+    text-align: right;
+}
+
+img { vertical-align: middle; }
+
+a:link {
+    color: #5C81AA;
+}
+a:visited {
+    color:  #5C81AA;
+}
+
+a.s:link {
+    text-decoration: none ;
+    color: #9F81AD;
+}
+a.s:visited {
+    text-decoration: none ;
+    color: #9F81AD;
+}
+
+table.tableprincipale {
+    width: 765px;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+table.menu { width: 150px; }
+
+th.menu {
+    padding: 0.5em 0em 0.6em 0em;
+    font-size: 95%;
+    text-align: left;
+    font-family: "Arial",sans-serif;
+    vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
+    background: url('images/barre.png') bottom left no-repeat;
+}
+
+td.menu {
+    padding: 0.2em 0em 0.2em 0em;
+    font-size: 95%;
+    text-align: left;
+    font-family: "Arial",sans-serif;
+    vertical-align: middle;
+}
+
+td.infos {
+    height: 30px;
+    text-align: center;
+    font-family: "Bitstream Vera Sans","Arial",sans-serif;
+    color: #505050;
+}
+
+td.pres {
+    background-repeat: no-repeat;
+    background-image: url("images/oval.png");
+    background-position: center center;
+    height: 50px;
+    text-align: center;
+    width: 210px;
+}
+td.presautres {
+    background-repeat: no-repeat;
+    background-image: url("images/oval.png");
+    background-position: top center;
+    font-size: 90%;
+    height: 50px;
+    text-align: center;
+    width: 200px;
+}
+
+td.pres2 {
+    background-repeat: no-repeat;
+    background-image: url("images/oval2.png");
+    height: 50px;
+    text-align: center;
+    width: 202px;
+}
+
+td.choix1 {
+    height: 30px;
+    background-color: #D0C198;
+    font-size: 100%;
+    color: #5C81AA;
+}
+DIV.choix1 {
+    text-align: center;
+}
+td.choix1actif {
+    height: 30px;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+td.choix2 {
+    height: 20px;
+    background-color: #D0C198;
+    font-size: 80%;
+}
+td.choix2actif {
+    height: 20px;
+    background-color: #5C81AA;
+    color:#D0C198;
+}
+DIV.choix2 {
+    text-align: center;
+}
+
+td.liens-puce {
+    width: 15px;
+    vertical-align: center;
+    padding-left: 0.25em;
+}
+
+td.liens {
+    vertical-align: center;
+    padding-left: 0.5em;
+    text-align: left;
+}
+
+td.tdliens {
+    padding: 0.4em 0em 0.4em 0em;
+}
+
+P.descr {
+    text-align: justify;
+    font-size: 90%;
+    font-weight: bold;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+ul.descr {
+    text-align: justify;
+    font-size: 80%;
+    font-weight: bold;
+}

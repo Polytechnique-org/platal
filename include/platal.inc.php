@@ -1,4 +1,5 @@
-{***************************************************************************
+<?php
+/***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -16,29 +17,37 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************}
+ ***************************************************************************/
 
-{if !$smarty.server.HTTP_USER_AGENT|regex_replace:"/^Mozilla\/(3|4\.[^0]).*$/":""}
-<h1>ATTENTION !</h1>
+function microtime_float() 
+{ 
+    list($usec, $sec) = explode(" ", microtime()); 
+    return ((float)$usec + (float)$sec); 
+} 
+$TIME_BEGIN = microtime_float();
 
-<p class="erreur">
-Netscape 4 et certains autres navigateurs très anciens ne sont pas supportés par ce site !!!
-</p>
-<p>
-En effet, ils ne comprenent qu'une trop faible partie des standards du web.
-Il faut donc s'attendre à ce que nombre des fonctionnalités de ce site soient de ce fait indisponnibles.
-</p>
-<p>
-Nous conseillons très vivement d'utiliser des navigateurs récents, tels
-<a href="http://www.mozilla.org/products/firefox/">Firefox</a>
-</p>
-<br />
-{/if}
+// {{{ defines
 
-{foreach from=$xorg_error->errs|smarty:nodefaults item=err}
-<div class="erreur">{$err|smarty:nodefaults}</div>
-{/foreach}
+$i=0;
+define("AUTH_PUBLIC", $i++);
+define("AUTH_COOKIE", $i++);
+define("AUTH_MDP", $i++);
 
-{if !$xorg_error->failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+define("PERMS_EXT", "ext");
+define("PERMS_USER", "user");
+define("PERMS_ADMIN", "admin");
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+define('SKINNED', 0);
+define('NO_SKIN', 1);
+
+// }}}
+// {{{ globals
+
+require_once('platal/env.inc.php');
+setlocale(LC_MESSAGES, $globals->core->locale);
+setlocale(LC_TIME,     $globals->core->locale);
+setlocale(LC_CTYPE,    $globals->core->locale);
+
+// }}}
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+?>

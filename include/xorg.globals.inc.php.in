@@ -21,8 +21,8 @@
 
 require_once('diogenes/diogenes.core.globals.inc.php');
 require_once('diogenes/diogenes.database.inc.php');
-require_once('xorg/iterator.inc.php');
-require_once('xorg/database.inc.php');
+require_once('platal/iterator.inc.php');
+require_once('platal/database.inc.php');
 
 // {{{ class CoreConfig
 

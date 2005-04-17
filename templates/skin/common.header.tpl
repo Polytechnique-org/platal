@@ -24,10 +24,10 @@
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
     
-    <link rel="index" href="{"index.php"|url}" />
-    <link rel="author" href="{"docs/faq.php"|url}" />
-    <link rel="search" href="{"search.php"|url}" />
-    <link rel="help" href="{"docs/faq.php"|url}" />
+    <link rel="index" href="{rel}/index.php" />
+    <link rel="author" href="{rel}/docs/faq.php" />
+    <link rel="search" href="{rel}/search.php" />
+    <link rel="help" href="{rel}/docs/faq.php" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />

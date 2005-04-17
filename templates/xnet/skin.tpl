@@ -1,0 +1,117 @@
+{***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************}
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+    <title>Les associations polytechniciennes</title>
+    <meta name="description" content="Les associations polytechniciennes" />
+    <meta name="keywords" content="Ecole polytechnique, associations polytechniciennes, groupes X, binets" />
+    <link rel="stylesheet" type="text/css" href="{rel}/css/xnet.css" media="screen" />
+    <link rel="icon" type="image/png" href="{rel}/images/favicon.png" />
+
+    <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
+    <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
+    <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />
+    <link rel="bookmark" href="http://www.polytechniciens.com/"     title="| AX" />
+    <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
+    <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
+
+    {foreach from=$xorg_css item=css}
+    <link rel="stylesheet" type="text/css" href="{rel}/{$css}" />
+    {/foreach}
+    {foreach from=$xorg_js item=js}
+    <script type="text/javascript" src="{rel}/{$js}"></script>
+    {/foreach}
+    <script type="text/javascript" src="{rel}/javascript/overlib.js"></script>
+    
+    {include file=skin/common.bandeau.head.tpl}
+  </head>
+  <body onload='pa_onload()'>
+    {include file=skin/common.devel.tpl}
+    {include file=skin/common.bandeau.tpl}
+
+{assign var=type value=plan}
+    <table id="layout" cellspacing="0" cellpadding="0">
+      <tr>
+        <td>
+          <a href="{rel}/index.php"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
+        </td>
+        <td>
+          <img src="{rel}/images/logo_{$type}.png" alt="Logo {$type}" width="106" height="96" />
+        </td>
+        <td>
+          <img src="{rel}/images/texte_{$type}.jpg" alt="{$type}" width="490" height="96" />
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="3">
+          {include file="skin/common.content.tpl"}
+        </td>
+      </tr>
+
+      <tr><td colspan="3"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+
+      <tr>
+        <td colspan="3">
+<strong>IF LOGGED PRINT LIST OF ASSOCES</strong> OR <strong>TODO : IF NOT LOGGED PRINT LOGIN</strong>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="3" id="search">
+          <form method="get" action="{rel}/recherche.php">
+            <div>
+              <a href="{rel}/agenda.php" title="Informations"><img src="{rel}/images/infos.png" alt="infos" /></a>
+              <a href="{rel}/manuel.php" title="Manuel d'aide en ligne"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
+              <input type="text" name="query" value="echo ((isset($exalead_data))?($exalead_data->query->query)" size="25" maxlength="60" />
+              <input type="image" src="{rel}/images/recherche.png" title="Chercher" value="submit" />
+
+              <br />
+              <strong><a href="http://www.exalead.com/">Powered by</a></strong>
+              <a href="http://www.exalead.com/"><img src="{rel}/images/Exalead-logo-Carved-100.gif" alt="exalead" /></a>
+            </div>
+          </form>
+        </td>
+      </tr>
+
+      <tr><td colspan="3"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+
+      <tr>
+        <td colspan="3" id="credits">
+          <a href="{rel}/index.php">page d'accueil</a> -
+          <a href="{rel}/plan.php">liste des associations</a> -
+          <a href="{rel}/services.php">services proposés</a> -
+          <a href="{rel}/apropos.php">à propos de ce site</a> -
+          <a href="https://www.polytechnique.org/">polytechnique.org</a> -
+          {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
+          <br />
+          © Copyright 2000-2004 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+        </td>
+      </tr>
+
+    </table>
+  </body>
+</html>
+{* vim:set et sw=2 sts=2 sws=2: *}
