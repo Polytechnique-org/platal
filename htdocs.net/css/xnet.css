@@ -23,12 +23,10 @@ body {
     margin-left: 0;
     margin-top: 0;
     color: #505050;
-    font-family: "Bitstream vera sans","Verdana",sans-serif;
-    font-size: 10pt;
     border-top: 1px;
 }
 
-table {
+table, body {
     font-size: 10pt;
     font-family: "Bitstream vera sans","Verdana",sans-serif;
 }
@@ -37,9 +35,10 @@ input,textarea,select,option,tt,pre {
     font-size: 10pt;
 }
 
-a img {
-    border: none;
-}
+a, a:link, a:visited     { text-decoration: none ; color: #5c81aa; }
+
+a img { border: none; }
+img   { vertical-align: middle; }
 
 /***************************************************************************
  * DEBUG
@@ -89,32 +88,36 @@ td#search {
 }
 
 /***************************************************************************
+ * CLASSES
  ***************************************************************************/
 
-img { vertical-align: middle; }
-
-a:link {
-    color: #5C81AA;
+.descr {
+    text-align: justify;
+    font-size: 85%;
+    font-weight: bold;
 }
-a:visited {
-    color:  #5C81AA;
-}
-
-a.s:link {
-    text-decoration: none ;
-    color: #9F81AD;
-}
-a.s:visited {
-    text-decoration: none ;
-    color: #9F81AD;
+p.descr {
+    padding-left: 7px;
+    padding-right: 7px;
 }
 
-table.tableprincipale {
-    width: 765px;
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
+table.links {
+    width: 100%;
+    margin: 0.4em 0em;
 }
+
+table.links td {
+    padding: 0em 0.5em;
+}
+
+table.links a {
+    background: url('../images/puce.png') no-repeat center left;
+    padding-left: 15px;
+    font-weight: bold;
+}
+
+/***************************************************************************
+ ***************************************************************************/
 
 table.menu { width: 150px; }
 
@@ -188,42 +191,13 @@ td.choix1actif {
 td.choix2 {
     height: 20px;
     background-color: #D0C198;
-    font-size: 80%;
+    font-size: 85%;
 }
 td.choix2actif {
     height: 20px;
     background-color: #5C81AA;
     color:#D0C198;
 }
-DIV.choix2 {
+div.choix2 {
     text-align: center;
-}
-
-td.liens-puce {
-    width: 15px;
-    vertical-align: center;
-    padding-left: 0.25em;
-}
-
-td.liens {
-    vertical-align: center;
-    padding-left: 0.5em;
-    text-align: left;
-}
-
-td.tdliens {
-    padding: 0.4em 0em 0.4em 0em;
-}
-
-P.descr {
-    text-align: justify;
-    font-size: 90%;
-    font-weight: bold;
-    padding-left: 7px;
-    padding-right: 7px;
-}
-ul.descr {
-    text-align: justify;
-    font-size: 80%;
-    font-weight: bold;
 }

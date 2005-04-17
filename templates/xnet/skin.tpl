@@ -51,8 +51,8 @@
     {include file=skin/common.devel.tpl}
     {include file=skin/common.bandeau.tpl}
 
-{assign var=type value=plan}
     <table id="layout" cellspacing="0" cellpadding="0">
+      {if $type}
       <tr>
         <td>
           <a href="{rel}/index.php"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
@@ -64,6 +64,18 @@
           <img src="{rel}/images/texte_{$type}.jpg" alt="{$type}" width="490" height="96" />
         </td>
       </tr>
+      {else}
+      <tr>
+        <td>
+          <img src="images/logo.png" alt="LOGO Assos" />
+        </td>
+        <td colspan="3" style="text-align: right">
+          <a href="https://www.polytechnique.org/"><img src="images/logo-xorg.png" alt="LOGO X.Org" /></a>
+          <img src="images/asso2.png" alt="titre_du_site" />
+        </td>
+      </tr>
+      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      {/if}
 
       <tr>
         <td colspan="4">
@@ -79,7 +91,7 @@
           <strong>Se connecter en tant que:</strong>
           <ul>
             <li><a href="{$smarty.session.session->loginX}">polytechnicien</a></li>
-            <li><a href="">extérieur</a></li>
+            <li><a href="login.php">extérieur</a></li>
           </ul>
           {/only_public}
         </td>
