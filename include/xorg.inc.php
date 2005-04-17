@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once('platal.inc.php');
-require_once('xorg.globals.inc.php');
+require_once('xorg/globals.inc.php');
 require_once('xorg/session.inc.php');
 XorgGlobals::init();
 XorgSession::init();

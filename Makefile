@@ -21,7 +21,7 @@ dist: clean pkg-dist
 bzdist: clean pkg-bzdist
 
 clean:
-	rm -rf locale include/xorg.globals.inc.php
+	rm -rf include/platal/globals.inc.php
 	rm -f htdocs/banana/banana.css htdocs/valid.html include/banana htdocs/banana/img htdocs/banana/xface.php
 
 %: %.in Makefile
@@ -43,7 +43,7 @@ devel: build templates_c htdocs/valid.html
 ################################################################################
 # diogenes package targets
 
-pkg-build: include/xorg.globals.inc.php
+pkg-build: include/platal/globals.inc.php
 
 $(PKG_DIST): pkg-build
 	mkdir $(PKG_DIST)
