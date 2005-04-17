@@ -279,7 +279,6 @@ function start_connexion ($uid, $identified)
       ORDER BY  s.start DESC
          LIMIT  1", $uid);
     $sess = $res->fetchOneAssoc();
-    echo mysql_error();
     $suid = Session::getMixed('suid');
     
     if ($suid) {

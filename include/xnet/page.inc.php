@@ -30,6 +30,9 @@ class XnetPage extends PlatalPage
     function XnetPage($tpl, $type=SKINNED)
     {
         $this->PlatalPage($tpl, $type);
+        if (Get::has('auth')) {
+            $_SESSION['session']->doAuthX($this);
+        }
     }
 
     // }}}
@@ -40,6 +43,32 @@ class XnetPage extends PlatalPage
         $this->_run('xnet/skin.tpl');
     }
 
+    // }}}
+}
+
+// }}}
+// {{{ class XnetAuth
+
+/** Une classe pour les pages nécessitant l'authentification.
+ * (equivalent de controlauthentification.inc.php)
+ */
+class XnetAuth extends XnetPage
+{
+    // {{{ function XnetAuth()
+
+    function XnetAuth($tpl, $type=SKINNED)
+    {
+        $this->XnetPage($tpl, $type);
+    }
+
+    // }}}
+    // {{{ function doAuth()
+
+    function doAuth()
+    {
+        $_SESSION['session']->doAuth($this);
+    }
+    
     // }}}
 }
 

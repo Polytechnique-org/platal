@@ -60,27 +60,30 @@
         <td>
           <img src="{rel}/images/logo_{$type}.png" alt="Logo {$type}" width="106" height="96" />
         </td>
-        <td>
+        <td colspan="2">
           <img src="{rel}/images/texte_{$type}.jpg" alt="{$type}" width="490" height="96" />
         </td>
       </tr>
 
       <tr>
-        <td colspan="3">
+        <td colspan="4">
           {include file="skin/common.content.tpl"}
         </td>
       </tr>
 
-      <tr><td colspan="3"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="3">
-<strong>IF LOGGED PRINT LIST OF ASSOCES</strong> OR <strong>TODO : IF NOT LOGGED PRINT LOGIN</strong>
+        <td colspan="3" id="perso">
+          {only_public}
+          <strong>Se connecter en tant que:</strong>
+          <ul>
+            <li><a href="{$smarty.session.session->loginX}">polytechnicien</a></li>
+            <li><a href="">extérieur</a></li>
+          </ul>
+          {/only_public}
         </td>
-      </tr>
-
-      <tr>
-        <td colspan="3" id="search">
+        <td id="search">
           <form method="get" action="{rel}/recherche.php">
             <div>
               <a href="{rel}/agenda.php" title="Informations"><img src="{rel}/images/infos.png" alt="infos" /></a>
@@ -96,10 +99,10 @@
         </td>
       </tr>
 
-      <tr><td colspan="3"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="3" id="credits">
+        <td colspan="4" id="credits">
           <a href="{rel}/index.php">page d'accueil</a> -
           <a href="{rel}/plan.php">liste des associations</a> -
           <a href="{rel}/services.php">services proposés</a> -

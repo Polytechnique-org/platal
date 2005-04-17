@@ -25,23 +25,31 @@ require_once('platal/session.inc.php');
 
 class XnetSession extends DiogenesCoreSession
 {
-    // {{{ function XorgSession()
+    // {{{ function XnetSession()
 
     function XnetSession()
     {
 	$this->DiogenesCoreSession();
-	if (!Session::has('uid')) {
-	    try_cookie();
-        }
     }
 
     // }}}
     // {{{ function init
     
     function init() {
+        global $globals;
+
         @session_start();
         if (!Session::has('session')) {
             $_SESSION['session'] = new XnetSession;
+        }
+        if (!logged()) {
+            $returl = "http://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
+            $url  = "https://www.polytechnique.org/auth-groupex.php";
+            $url .= "?session=" . session_id();
+            $url .= "&challenge=" . $_SESSION['session']->challenge;
+            $url .= "&pass=" . md5($_SESSION['session']->challenge . $globals->xnet->secret);
+            $url .= "&url=".urlencode($returl);
+            $_SESSION['session']->loginX = $url;
         }
     }
     
@@ -54,6 +62,74 @@ class XnetSession extends DiogenesCoreSession
         XnetSession::init();
     }
     
+    // }}}
+    // {{{ function doAuth()
+
+    /** Try to do an authentication.
+     *
+     * @param page the calling page (by reference)
+     */
+    function doAuth(&$page)
+    {
+	global $globals;
+	if (identified()) { // ok, c'est bon, on n'a rien à faire
+	    return true;
+	}
+
+        if (Get::has('auth')) {
+            return $this->doAuthX($page);
+        } elseif (Post::has('challenge') && Post::has('username') && Post::has('response')) {
+            return $this->doAuthOther($page);
+        } else {
+            $this->doLogin($page);
+        }
+    }
+
+    // }}}
+    // {{{ doAuthX
+
+    function doAuthX(&$page) {
+        global $globals;
+
+        if (md5('1'.$this->challenge.$globals->xnet->secret.Get::getInt('uid').'1') != Get::get('auth')) {
+            $page->kill("Erreur d'authentification avec polytechnique.org !");
+        }
+
+        $res  = $globals->xdb->query("
+            SELECT  u.user_id AS uid, prenom, nom, perms, promo, password, FIND_IN_SET('femme', u.flags) AS femme,
+                    a.alias AS forlife, a2.alias AS bestalias, q.core_mail_fmt AS mail_fmt, q.core_rss_hash
+              FROM  auth_user_md5   AS u
+        INNER JOIN  auth_user_quick AS q  USING(user_id)
+        INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
+        INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
+             WHERE  u.user_id = {?} AND u.perms IN('admin','user')
+             LIMIT  1", Get::getInt('uid'));
+        $_SESSION = array_merge($_SESSION, $res->fetchOneAssoc());
+        $_SESSION['auth'] = AUTH_MDP;
+        unset($this->challenge);
+        unset($this->loginX);
+    }
+
+    // }}}
+    // {{{ doAuthOther
+
+    function doAuthOther(&$page) {
+        if (Post::has('challenge') && Post::has('username') && Post::has('response')) {
+            $username = Post::get('username');
+        }
+        $this->doLogin($page);
+    }
+
+    // }}}
+    // {{{ doLogin
+
+    function doLogin(&$page) {
+        $page->addJsLink('javascript/md5.js');
+        $page->addJsLink('javascript/do_challenge_response.js');
+        $page->assign("xorg_tpl", "xnet/login.tpl");
+        $page->run();
+    }
+
     // }}}
 }
 

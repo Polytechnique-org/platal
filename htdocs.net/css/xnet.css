@@ -74,9 +74,22 @@ td#credits {
     font-weight: bold;
 }
 
+td#perso {
+    vertical-align: top;
+}
+
+td#perso ul {
+    font-weight: bold;
+    font-size: 90%;
+}
+
 td#search {
+    vertical-align: top;
     text-align: right;
 }
+
+/***************************************************************************
+ ***************************************************************************/
 
 img { vertical-align: middle; }
 

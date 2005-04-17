@@ -25,5 +25,34 @@ require_once('xnet/session.inc.php');
 XnetGlobals::init();
 XnetSession::init();
 
+// {{{ function _new_page()
+
+function _new_page($type, $tpl_name, $min_auth, $admin=false)
+{
+    global $page,$globals;
+    require_once("xorg/page.inc.php");
+    if (!empty($admin)) {
+        $page = new XnetAdmin($tpl_name, $type);
+    } else switch($min_auth) {
+        case AUTH_PUBLIC:
+            $page = new XnetPage($tpl_name, $type);
+            break;
+
+        case AUTH_MDP:
+            $page = new XnetAuth($tpl_name, $type);
+    }
+
+    $page->assign('xorg_tpl', $tpl_name);
+}
+
+// }}}
+// {{{ function new_skinned_page()
+
+function new_skinned_page($tpl_name, $min_auth)
+{
+    _new_page(SKINNED, $tpl_name, $min_auth);
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
