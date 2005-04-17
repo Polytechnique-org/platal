@@ -18,7 +18,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-<table style="width: 100%" cellpadding="0" cellspacing="0">
+<table id="content" cellpadding="0" cellspacing="0">
   <tr>
     <td>
       <img src="images/parfait.jpg" width="459" height="200" alt="Logo des groupes" />

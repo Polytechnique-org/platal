@@ -72,7 +72,7 @@
       </p>
 
       <p class="descr">
-      <a id='creation'>Certains</a> groupes pourront souhaiter acquérir le statut de "Groupe X
+      <a id='creation'></a>Certains groupes pourront souhaiter acquérir le statut de "Groupe X
       reconnu par l'AX", ce qui leur confère certains avantages décrits dans les articles 12 et 16
       mentionnés ci-dessous:
       </p>
@@ -90,7 +90,7 @@
 
 
       <p class="descr">
-      <a id='loi1901'>D'autres</a>, notamment quand ils ont à gérer des fonds (cotisations,
+      <a id='loi1901'></a>D'autres, notamment quand ils ont à gérer des fonds (cotisations,
       financement d'opérations, ...), peuvent avoir besoin de créer une "personne morale", qui prend
       souvent la forme, en France, d'une association de loi 1901. Si tu désires obtenir des
       informations plus générales sur les associations, tu peux te rendre sur les sites suivants.
