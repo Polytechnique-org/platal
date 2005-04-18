@@ -23,7 +23,7 @@ function smarty_modifier_date_format($string, $format = '%x', $default_date=null
 {
     $d = empty($string) ? $default_date : $string;
     if (empty($format) || preg_match('/^[ 0\-]*$/', $d)) return;
-    $f = str_replace('%X', '%T', str_replace('%x', '%d %B %Y', $format));
+    $f = str_replace('%X', '%T', str_replace('%x', '%e %B %Y', $format));
 
     if (preg_match('/^\d{14}$/', $d)) {
         $t = mktime(substr($d,8,2), substr($d,10,2), substr($d,12,2), substr($d,4,2), substr($d,6,2), substr($d,0,4));
