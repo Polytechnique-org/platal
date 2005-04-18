@@ -30,7 +30,7 @@ XnetSession::init();
 function _new_page($type, $tpl_name, $min_auth, $admin=false)
 {
     global $page,$globals;
-    require_once("xorg/page.inc.php");
+    require_once("xnet/page.inc.php");
     if (!empty($admin)) {
         $page = new XnetAdmin($tpl_name, $type);
     } else switch($min_auth) {

@@ -1,6 +1,5 @@
 <?php
     require 'xnet.inc.php';
-    require 'xnet/page.inc.php';
 
     new_skinned_page('xnet/plan.tpl', AUTH_PUBLIC);
     $page->setType('plan');

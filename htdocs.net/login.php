@@ -1,6 +1,5 @@
 <?php
     require 'xnet.inc.php';
-    require 'xnet/page.inc.php';
 
     if (logged()) {
         header("Location: index.php");

@@ -1,6 +1,5 @@
 <?php
     require 'xnet.inc.php';
-    require 'xnet/page.inc.php';
 
     if (!($cat = Get::get('cat'))) {
         header("Location:index.php");

@@ -20,7 +20,7 @@
 
 <table id="content" cellpadding="0" cellspacing="0">
   <tr>
-    <td>
+    <td style="vertical-align: middle;">
       <img src="images/parfait.jpg" width="459" height="200" alt="Logo des groupes" />
     </td>
 

@@ -50,6 +50,28 @@ class XnetGlobals extends PlatalGlobals
         }
         $globals->xdb =& new XOrgDB;
     }
+
+    function asso($key=null)
+    {
+        static $aid = null;
+        if ($aid === null) {
+            $gp  = basename(dirname($_SERVER['PHP_SELF']));
+            $res = $this->xdb->query('SELECT  a.*, d.nom AS domnom
+                                        FROM  groupex.asso AS a
+                                   LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
+                                       WHERE  diminutif = {?}', $gp);
+            if (!($aid = $res->fetchOneAssoc())) {
+                $aid = array();
+            }
+        }
+        if (empty($key)) {
+            return $aid;
+        } elseif ( isset($aid[$key]) ) {
+            return $aid[$key];
+        } else {
+            return null;
+        }
+    }
 }
 
 // }}}

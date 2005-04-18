@@ -39,7 +39,7 @@ a, a:link, a:visited     { text-decoration: none ; color: #5c81aa; }
 
 a img { border: none; }
 img   { vertical-align: middle; }
-td    { vertical-align: middle; }
+td    { vertical-align: top; }
 
 h1    { font-size: 150%; }
 h2    { font-size: 135%; }
@@ -69,6 +69,10 @@ table#layout {
     width: 765px;
     margin-left: auto;
     margin-right: auto;
+}
+
+tr#top td {
+    vertical-align: middle;
 }
 
 td#credits {
@@ -158,7 +162,6 @@ table.links a {
  ***************************************************************************/
 
 table#liste td.fourth {
-    vertical-align: top;
     width: 25%;
 }
 
@@ -190,12 +193,12 @@ table#liste td.liste a:hover, table#liste td.listec a:hover {
 
 div.cat {
     background: #d0c198;
-    width: 180px;
-    padding: 2px;
-    margin: 6px 0px;
     text-align: center;
     font-weight: bold;
     font-size: 90%;
+    padding: 2px;
+    width: 180px;
+    margin: 4px 0px;
 }
 
 div.sel { background-color: #5c81aa; color: #d0c198; }

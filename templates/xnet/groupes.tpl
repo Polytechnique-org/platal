@@ -43,7 +43,7 @@
             {if $gps}
             {iterate from=$gps item=g}
             <table style="float: left;" cellspacing="2" cellpadding="0">
-              <tr><td class="oval{if $hasdom}2{/if}"><a href="...">{$g.nom}</a></td></tr>
+              <tr><td class="oval{if $hasdom}2{/if}"><a href="{rel}/{$g.diminutif}/asso.php">{$g.nom}</a></td></tr>
             </table>
             {/iterate}
             {else}

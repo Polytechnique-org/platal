@@ -53,7 +53,7 @@
 
     <table id="layout" cellspacing="0" cellpadding="0">
       {if $xnet_type}
-      <tr>
+      <tr id="top">
         <td>
           <a href="{rel}/index.php"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
         </td>
@@ -65,7 +65,7 @@
         </td>
       </tr>
       {else}
-      <tr>
+      <tr id="top">
         <td>
           <img src="images/logo.png" alt="LOGO Assos" />
         </td>
