@@ -11,6 +11,7 @@
 
     $res = $globals->xdb->iterator("SELECT id,nom FROM groupex.dom WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
     $page->assign('doms', $res);
+    $page->assign('hasdom', $res->total()!=0);
     
     if (!$res->total()) {
         $res = $globals->xdb->iterator("SELECT diminutif, nom FROM groupex.asso WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);

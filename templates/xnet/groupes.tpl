@@ -25,13 +25,12 @@
     <td>
       <table cellspacing="0" cellpadding="4">
         <tr>
-          <td colspan="2">
+          <td{if $hasdom} colspan="2"{/if}>
             {include file="xnet/include/descr.tpl" cat=$smarty.get.cat}
           </td>
         </tr>
-
         <tr>
-          <!-- Enumération de tous les domaines existants dans la catégorie concernées -->
+          {if $hasdom}
           <td style="vertical-align: top">
             {iterate from=$doms item=g}
             <div class="cat {if $g.id eq $smarty.get.dom}sel{/if}">
@@ -39,13 +38,12 @@
             </div>
             {/iterate}
           </td>
-          <td>
+          {/if}
+          <td style="text-align:right;">
             {if $gps}
             {iterate from=$gps item=g}
             <table style="float: left;" cellspacing="2" cellpadding="0">
-              <tr>
-                <td class="oval"><a href="...">{$g.nom}</a></td>
-              </tr>
+              <tr><td class="oval{if $hasdom}2{/if}"><a href="...">{$g.nom}</a></td></tr>
             </table>
             {/iterate}
             {else}

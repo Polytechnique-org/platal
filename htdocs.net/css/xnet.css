@@ -189,19 +189,28 @@ div.cat {
 div.sel { background-color: #5c81aa; color: #d0c198; }
 div.sel a { color: #d0c198; }
 
-td.oval {
+td.oval, td.oval2 {
     color: #d0c198;
-    background: url("../images/oval.png") no-repeat top center;
     height: 50px;
     text-align: center;
     vertical-align: middle !important;
     font-weight: bold;
+}
+td.oval {
+    background: url("../images/oval.png") no-repeat top center;
     width: 130px;
     padding: 4px 12px;
 }
-.oval a { color: #d0c198; }
+td.oval2 {
+    background: url("../images/oval2.png") no-repeat top center;
+    width: 160px;
+    padding: 4px 10px;
 
-#content td.oval {
+}
+
+.oval a, .oval2 a { color: #d0c198; }
+
+#content td.oval, #content td.oval2 {
     font-size: 90%;
     font-family: "Trebuchet MS", sans-serif;
     letter-spacing: -0.5px;
@@ -215,36 +224,5 @@ td.infos {
     text-align: center;
     font-family: "Bitstream Vera Sans","Arial",sans-serif;
     color: #505050;
-}
-
-td.pres {
-    background-repeat: no-repeat;
-    background-image: url("images/oval.png");
-    background-position: center center;
-    height: 50px;
-    text-align: center;
-    width: 210px;
-}
-td.pres2 {
-    background-repeat: no-repeat;
-    background-image: url("images/oval2.png");
-    height: 50px;
-    text-align: center;
-    width: 202px;
-}
-
-td.choix1 {
-    height: 30px;
-    background-color: #D0C198;
-    font-size: 100%;
-    color: #5C81AA;
-}
-DIV.choix1 {
-    text-align: center;
-}
-td.choix1actif {
-    height: 30px;
-    vertical-align: middle;
-    text-decoration: none;
 }
 
