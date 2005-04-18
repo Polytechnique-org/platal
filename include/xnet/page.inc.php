@@ -54,7 +54,52 @@ class XnetPage extends PlatalPage
 
     function useMenu()
     {
-        $this->assign('menu', true);
+        global $globals;
+
+        $menu = array();
+
+        $sub = array();
+        $sub['accueil']           = 'index.php';
+        $sub['liste des groupes'] = 'plan.php';
+        if (logged()) {
+            $sub['déconnexion']   = 'deconnexion.php';
+        }
+        $menu["Menu Principal"]   = $sub;
+
+        if (logged() && (is_member() || may_update())) {
+            $sub = array();
+            $dim = $globals->asso('diminutif');
+            $sub['accueil'] = "$dim/asso.php";
+            $sub['annuaire du groupe'] = "$dim/annuaire.php";
+            if ($globals->asso('mail_domain')) {
+                $sub['listes de diffusion'] = "$dim/listes.php";
+            }
+            $sub['evenement'] = "$dim/evenement.php";
+            $sub['carnet'] = "$dim/carnet.php";
+            $sub['telepaiement'] = "$dim/telepaiement.php";
+
+            $menu[$globals->asso('nom')] = $sub;
+        } else {
+            $sub = array();
+            $sub['Groupes X']    = "groupes.php?cat=groupesx";
+            $sub['Binets']       = "groupes.php?cat=binets";
+            $sub['Promotions']   = "groupes.php?cat=promotions";
+            $sub['Institutions'] = "groupes.php?cat=institutions";
+
+            $menu['Navigation']  = $sub;
+        }
+
+        if (logged() && may_update()) {
+            $sub = array();
+            $sub['modifier l\'acceuil'] = "$dim/editer.php";
+            $sub['envoyer un mail']     = "$dim/mail.php";
+            $sub['créer une liste']     = "$dim/listes-create.php";
+            $sub['créer un alias']      = "$dim/alias-create.php";
+
+            $menu['Administrer Groupe'] = $sub;
+        }
+
+        $this->assign('menu', $menu);
     }
 
     // }}}
@@ -64,7 +109,7 @@ class XnetPage extends PlatalPage
     {
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
         $this->assign('it_is_xnet', true);
-        if (Get::has('auth')) {
+        if (!logged() && Get::has('auth')) {
             $_SESSION['session']->doAuthX($this);
         }
     }

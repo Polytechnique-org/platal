@@ -18,11 +18,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+<h1> déconnexion de Polytechnique.net </h1>
 
-<div id="content">
-  Au revoir  !
-  <br />
-  Tu as bien été déconnecté du site Polytechnique.net.
-</div>
+<p class="descr">
+Au revoir  !
+<br />
+Tu as bien été déconnecté du site Polytechnique.net.
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

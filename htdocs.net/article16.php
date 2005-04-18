@@ -1,6 +1,7 @@
 <?php
     require 'xnet.inc.php';
 
-    new_skinned_page('xnet/article16.tpl', AUTH_PUBLIC);
+    new_page('xnet/article16.tpl', AUTH_PUBLIC);
+    $page->useMenu();
     $page->run();
 ?>

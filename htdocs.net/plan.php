@@ -1,7 +1,7 @@
 <?php
     require 'xnet.inc.php';
 
-    new_skinned_page('xnet/plan.tpl', AUTH_PUBLIC);
+    new_page('xnet/plan.tpl', AUTH_PUBLIC);
     $page->setType('plan');
 
     $res = $globals->xdb->iterator(

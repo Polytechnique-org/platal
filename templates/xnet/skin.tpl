@@ -80,7 +80,17 @@
       {if $menu}
       <tr>
         <td id="menu">
-          Place du menu
+          {foreach from=$menu key=title item=submenu}
+          <h1>{$title}</h1>
+          {foreach from=$submenu key=tit item=url}
+          <a href="{rel}/{$url}">{$tit}</a>
+          {/foreach}
+          {/foreach}
+          {only_public}
+          <h1>me connecter</h1>
+          <a href="{$smarty.session.session->loginX}">polytechnicien</a>
+          <a href="{rel}/login.php">extérieur</a>
+          {/only_public}
         </td>
         <td colspan="3">
           {include file="skin/common.content.tpl"}
@@ -99,11 +109,11 @@
         <td colspan="4">
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
-              <td> <a href="groupes.php?cat=groupesx">groupes X</a> </td>
-              <td> <a href="groupes.php?cat=binets">binets</a> </td>
-              <td> <a href="groupes.php?cat=promotions">promotions</a> </td>
-              <td> <a href="groupes.php?cat=institutions">institutions</a> </td>
-              <td> <a href="plan.php">plan du site</a> </td>
+              <td> <a href="{rel}/plan.php">PLAN DU SITE</a> </td>
+              <td> <a href="{rel}/groupes.php?cat=groupesx">groupes X</a> </td>
+              <td> <a href="{rel}/groupes.php?cat=binets">binets</a> </td>
+              <td> <a href="{rel}/groupes.php?cat=promotions">promotions</a> </td>
+              <td> <a href="{rel}/groupes.php?cat=institutions">institutions</a> </td>
             </tr>
           </table>
         </td>
@@ -114,13 +124,6 @@
 
       <tr>
         <td colspan="3" id="perso">
-          {only_public}
-          <strong>Se connecter en tant que:</strong>
-          <ul>
-            <li><a href="{$smarty.session.session->loginX}">polytechnicien</a></li>
-            <li><a href="login.php">extérieur</a></li>
-          </ul>
-          {/only_public}
           {list_all_my_groups}
         </td>
         <td id="search">
