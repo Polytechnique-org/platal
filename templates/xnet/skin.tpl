@@ -94,6 +94,7 @@
             <li><a href="login.php">extérieur</a></li>
           </ul>
           {/only_public}
+          {list_all_my_groups}
         </td>
         <td id="search">
           <form method="get" action="{rel}/recherche.php">

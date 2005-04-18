@@ -19,68 +19,24 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal/page.inc.php');
+// {{{  function list_all_my_groups
 
-// {{{ class XnetPage
-
-class XnetPage extends PlatalPage
+function list_all_my_groups($params)
 {
-    // {{{ function XnetPage()
-
-    function XnetPage($tpl, $type=SKINNED)
-    {
-        global $globals;
-        $this->PlatalPage($tpl, $type);
-        if (Get::has('auth')) {
-            $_SESSION['session']->doAuthX($this);
-        }
-        require_once('xnet/smarty.plugins.inc.php');
-        $this->register_function('list_all_my_groups', 'list_all_my_groups');
+    if (!logged()) {
+        return;
     }
-
-    // }}}
-    // {{{ function run()
-
-    function run()
-    {
-        $this->_run('xnet/skin.tpl');
+    global $globals;
+    $res = $globals->xdb->iterRow(
+            "SELECT  a.nom, a.diminutif
+               FROM  groupex.asso    AS a
+         INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
+              WHERE  m.uid={?}", Session::getInt('uid'));
+    $html = '';
+    while (list($nom, $mini) = $res->next()) {
+        $html .= "<a class='gp' href='$mini'>&bull; $nom</a>";
     }
-
-    // }}}
-    // {{{ function setType
-
-    function setType($type)
-    {
-        $this->assign('xnet_type', $type);
-    }
-
-    // }}}
-}
-
-// }}}
-// {{{ class XnetAuth
-
-/** Une classe pour les pages nécessitant l'authentification.
- * (equivalent de controlauthentification.inc.php)
- */
-class XnetAuth extends XnetPage
-{
-    // {{{ function XnetAuth()
-
-    function XnetAuth($tpl, $type=SKINNED)
-    {
-        $this->XnetPage($tpl, $type);
-    }
-
-    // }}}
-    // {{{ function doAuth()
-
-    function doAuth()
-    {
-        $_SESSION['session']->doAuth($this);
-    }
-    
-    // }}}
+    return $html;
 }
 
 // }}}

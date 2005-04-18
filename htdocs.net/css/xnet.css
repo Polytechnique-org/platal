@@ -82,13 +82,19 @@ td#perso ul {
     font-size: 90%;
 }
 
-td#search {
-    text-align: right;
+td#perso a.gp {
+    display: block;
+    margin: 2px 1em;
+    font-weight: bold;
+    font-size: 85%;
+    float: left;
+    text-align: center;
 }
 
-/***************************************************************************
- * CLASSES
- ***************************************************************************/
+td#search {
+    text-align: right;
+    width: 300px;
+}
 
 #content {
     width: 100%;
@@ -115,6 +121,13 @@ td#menu { width: 150px; }
     vertical-align: middle;
 }
 
+/***************************************************************************
+ * CLASSES
+ ***************************************************************************/
+
+.erreur { color: red; }
+.error  { color: red; }
+
 
 .descr {
     text-align: justify;
@@ -139,7 +152,6 @@ table.links a {
     padding-left: 15px;
     font-weight: bold;
 }
-
 
 /***************************************************************************
  * Special pages
