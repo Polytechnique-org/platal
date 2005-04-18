@@ -19,16 +19,18 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-if (!Env::has('liste')) header('Location: index.php');
-$liste = strtolower(Env::get('liste'));
+if (!$page) {
+    require_once("xorg.inc.php");
+    if (!Env::has('liste')) header('Location: index.php');
+    $liste = strtolower(Env::get('liste'));
 
-new_skinned_page('listes/archives.tpl', AUTH_COOKIE);
+    new_skinned_page('listes/archives.tpl', AUTH_COOKIE);
+    require_once('lists.inc.php');
+
+    $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
+}
+
 $page->addCssLink('css/lists.archives.css');
-require_once('lists.inc.php');
-
-$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
-
 if (list($det) = $client->get_members($liste)) {
     if ( substr($liste,0,5) != 'promo' && ( $det['ins'] || $det['priv'] ) && !$det['own'] && ($det['sub']<2) ) {
         $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");

@@ -23,12 +23,12 @@ require_once 'xnet.inc.php';
 if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
-new_admin_page('listes/check.tpl');
+new_skinned_page('listes/archives.tpl', AUTH_COOKIE);
 $page->setType($globals->asso('cat'));
 $page->useMenu();
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
-require(dirname(dirname(dirname(__FILE__))).'/htdocs/listes/check.php');
+require(dirname(dirname(dirname(__FILE__))).'/htdocs/listes/archives.php');
 
 ?>
