@@ -23,7 +23,7 @@ require_once('diogenes/diogenes.core.page.inc.php');
 require_once('platal/errors.inc.php');
 require_once('platal/smarty.plugins.inc.php');
 
-// {{{ class XorgPage
+// {{{ class PlatalPage
 
 class PlatalPage extends DiogenesCorePage
 {
@@ -39,7 +39,7 @@ class PlatalPage extends DiogenesCorePage
     var $use_sub_dirs     = false;
 
     // }}}
-    // {{{ function XorgPage()
+    // {{{ function PlatalPage()
 
     function PlatalPage($tpl, $type=SKINNED)
     {

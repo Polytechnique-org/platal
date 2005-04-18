@@ -67,11 +67,11 @@
       {else}
       <tr id="top">
         <td>
-          <img src="images/logo.png" alt="LOGO Assos" />
+          <img src="{rel}/images/logo.png" alt="LOGO Assos" />
         </td>
         <td colspan="3" style="text-align: right">
-          <a href="https://www.polytechnique.org/"><img src="images/logo-xorg.png" alt="LOGO X.Org" /></a>
-          <img src="images/asso2.png" alt="titre_du_site" />
+          <a href="https://www.polytechnique.org/"><img src="{rel}/images/logo-xorg.png" alt="LOGO X.Org" /></a>
+          <img src="{rel}/images/asso2.png" alt="titre_du_site" />
         </td>
       </tr>
       <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>

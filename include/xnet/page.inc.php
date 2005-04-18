@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once('platal/page.inc.php');
+require_once('xnet/smarty.plugins.inc.php');
 
 // {{{ class XnetPage
 
@@ -29,13 +30,11 @@ class XnetPage extends PlatalPage
 
     function XnetPage($tpl, $type=SKINNED)
     {
-        global $globals;
         $this->PlatalPage($tpl, $type);
+        $this->register_function('list_all_my_groups', 'list_all_my_groups');
         if (Get::has('auth')) {
             $_SESSION['session']->doAuthX($this);
         }
-        require_once('xnet/smarty.plugins.inc.php');
-        $this->register_function('list_all_my_groups', 'list_all_my_groups');
     }
 
     // }}}
@@ -85,7 +84,26 @@ class XnetAuth extends XnetPage
 
     function doAuth()
     {
+        $this->register_function('list_all_my_groups', 'list_all_my_groups');
         $_SESSION['session']->doAuth($this);
+    }
+    
+    // }}}
+}
+
+// }}}
+// {{{ class XnetAdmin
+
+/** Une classe pour les pages réservées aux admins (authentifiés!).
+ */
+class XnetAdmin extends XnetAuth
+{
+    // {{{ function XnetAdmin()
+    
+    function XnetAdmin($tpl, $type=SKINNED)
+    {
+        $this->XnetAuth($tpl, $type);
+        check_perms();
     }
     
     // }}}

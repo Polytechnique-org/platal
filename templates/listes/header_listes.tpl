@@ -1,6 +1,6 @@
 {***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
- *  http ://opensource.polytechnique.org/                                   *
+ *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -22,7 +22,7 @@
 <table>
   <tr>
     <td colspan='2'>
-      [<a href='index.php'>Voir toutes les listes</a>]
+      [<a href='{$ml_index|default:"index.php"}'>Voir toutes les listes</a>]
     </td>
   </tr>
   <tr>
