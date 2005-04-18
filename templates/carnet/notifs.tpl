@@ -41,7 +41,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
     {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}<br />
     {/foreach}
     <span class='smaller'><sup>*</sup>: ne concerne pas les promos (évènements très fréquents)</span><br />
-    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$smarty.session.promo+1} que tu surveilles</span>
+    <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles</span>
   </fieldset>
   <div class='center'>
     <input type='submit' name='subs' value='valider' />

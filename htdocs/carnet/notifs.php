@@ -25,6 +25,10 @@ require_once('notifs.inc.php');
 
 $watch = new Watch(Session::getInt('uid'));
 
+$res = $globals->xdb->query("SELECT promo_sortie FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid', -1));
+$promo_sortie = $res->fetchOneCell();
+$page->assign('promo_sortie', $promo_sortie);
+
 if(Env::has('promo')) {
     if(preg_match('!^ *(\d{4}) *$!', Env::get('promo'), $matches)) {
 	$p = intval($matches[1]);

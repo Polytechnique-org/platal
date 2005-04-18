@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,32 +16,44 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
 
-$page->assign('mobile_pub',$mobile_pub);
-$page->assign('web_pub',$web_pub);
-$page->assign('freetext_pub',$freetext_pub);
 
-$page->assign('nom', $nom);
-$page->assign('prenom', $prenom);
-$page->assign('promo', $promo);
-$page->assign('promo_sortie', $promo_sortie);
-$page->assign('nom_usage', $nom_usage);
+<h1>
+  Année de sortie
+</h1>
 
-$page->assign('nationalite',$nationalite);
+{if $myorange}
+  
+  <p>
+    Tu recevras un mail dès que les changements demandés auront été effectués. 
+    Encore merci de nous faire confiance pour tes e-mails !
+  </p>
 
-$page->assign('mobile',$mobile);
+{else}
 
-$page->assign('web',$web);
+  <p>
+  Afin de pouvoir être considéré(e) à la fois dans ta promotion d'origine et ta
+  ou tes promotions d'adoption tu peux entrer ici ton année de sortie de l'école.
+  Plus précisément, il s'agit de l'année d'entrée en quatrième année ou année d'application. Pour tes cocons d'origine (X{$promo}) il s'agit de l'année {math equation="a + b" a=$promo b=3}.
+  </p>
 
-$page->assign('freetext',$freetext);
+  <br />
 
-$page->assign('appli_id1',$appli_id1);
-$page->assign('appli_id2',$appli_id2);
-$page->assign('appli_type1',$appli_type1);
-$page->assign('appli_type2',$appli_type2);
+  <form action="{$smarty.server.PHP_SELF}" method="post">
+    <table class="bicol" cellpadding="4" summary="Année de sortie">
+      <tr>
+        <th>Année de sortie</th>
+      </tr>
+      <tr>
+        <td class="center"><input type="text" name="promo_sortie" value="{$promo_sortie_old}" /></td>
+      </tr>
+      <tr>
+        <td class="center"><input type="submit" name="submit" value="Envoyer" /></td>
+      </tr>
+    </table>
+  </form>
+  {/if}
+<p>[<a href="profil.php">Revenir au profil</a>]</p>
 
-$page->assign('photo_pub',$photo_pub);
-$page->assign('nouvellephoto', $nouvellephoto);
-$page->assign('nickname', $nickname);
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

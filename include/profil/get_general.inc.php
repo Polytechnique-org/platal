@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 // on ramène les données du profil connecté (uid paramètre de session)
-$sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.nom_usage, u.nationalite,
+$sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
 		q.profile_mobile, q.profile_mobile_pub, q.profile_web, q.profile_web_pub, q.profile_freetext, q.profile_freetext_pub, q.profile_nick,
                 a1.aid, a1.type, a2.aid, a2.type
           FROM  auth_user_md5   AS u
@@ -30,7 +30,7 @@ $sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.nom_usage, 
 	 WHERE  u.user_id = {?}";
 
 $result = $globals->xdb->query($sql, Session::getInt('uid', -1));
-list($nom, $prenom, $nom_ini, $prenom_ini, $promo, $nom_usage, $nationalite,
+list($nom, $prenom, $nom_ini, $prenom_ini, $promo, $promo_sortie, $nom_usage, $nationalite,
 	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 

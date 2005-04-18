@@ -19,30 +19,38 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$page->assign('mobile_pub',$mobile_pub);
-$page->assign('web_pub',$web_pub);
-$page->assign('freetext_pub',$freetext_pub);
+require_once("xorg.inc.php");
+require_once("validations.inc.php");
+require_once("xorg.misc.inc.php");
 
-$page->assign('nom', $nom);
-$page->assign('prenom', $prenom);
-$page->assign('promo', $promo);
-$page->assign('promo_sortie', $promo_sortie);
-$page->assign('nom_usage', $nom_usage);
+new_skinned_page('orange.tpl', AUTH_MDP);
 
-$page->assign('nationalite',$nationalite);
+$res = $globals->xdb->query(
+        "SELECT  u.promo,u.promo_sortie
+           FROM  auth_user_md5  AS u
+          WHERE  user_id={?}", Session::getInt('uid'));
 
-$page->assign('mobile',$mobile);
+list($promo,$promo_sortie_old) = $res->fetchOneRow();
+$page->assign('promo_sortie_old', $promo_sortie_old);
+$page->assign('promo',  $promo);
 
-$page->assign('web',$web);
+$promo_sortie = Env::get('promo_sortie');
 
-$page->assign('freetext',$freetext);
+if ($promo_sortie) {
+	$sortie_req = false;
+	if (!is_numeric($promo_sortie) || $promo_sortie < 1000 || $promo_sortie > 9999)
+	$page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
+	elseif ($promo_sortie < $promo + 3)
+	$page->trig('Trop tôt');
+	else 
+	$page->assign('promo_sortie', $sortie_req = $promo_sortie);
 
-$page->assign('appli_id1',$appli_id1);
-$page->assign('appli_id2',$appli_id2);
-$page->assign('appli_type1',$appli_type1);
-$page->assign('appli_type2',$appli_type2);
+	if (Env::has('submit') && $sortie_req && ($promo_sortie_old != $sortie_req)) {
+		$myorange = new OrangeReq(Session::getInt('uid'), $sortie_req);
+		$myorange->submit();
+		$page->assign('myorange', $myorange);
+	}
+}
 
-$page->assign('photo_pub',$photo_pub);
-$page->assign('nouvellephoto', $nouvellephoto);
-$page->assign('nickname', $nickname);
+$page->run();
 ?>

@@ -65,7 +65,7 @@ function _select_notifs_base($table, $mail, $where)
                 'contact_sql' => '1'
             ),
             'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
-                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (w.promo <= v.promo+1 AND w.promo >= v.promo-1) )',
+                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (u.promo <= v.promo_sortie-2 AND u.promo_sortie >= v.promo+2) )',
                 'contact_sql' => 'NOT (c.contact IS NULL)'
             ),
             'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,

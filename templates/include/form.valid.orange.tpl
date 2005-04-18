@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,32 +16,16 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
 
-$page->assign('mobile_pub',$mobile_pub);
-$page->assign('web_pub',$web_pub);
-$page->assign('freetext_pub',$freetext_pub);
 
-$page->assign('nom', $nom);
-$page->assign('prenom', $prenom);
-$page->assign('promo', $promo);
-$page->assign('promo_sortie', $promo_sortie);
-$page->assign('nom_usage', $nom_usage);
+<tr class="impair">
+  <td class="titre">Promotion&nbsp;:</td>
+  <td>{$valid->promo}</td>
+</tr>
+<tr class="impair">
+  <td class="titre">Année de sortie&nbsp;:</td>
+  <td>{$valid->promo_sortie} au lieu de {math equation="a + b" a=$valid->promo b=3}</td>
+</tr>
 
-$page->assign('nationalite',$nationalite);
-
-$page->assign('mobile',$mobile);
-
-$page->assign('web',$web);
-
-$page->assign('freetext',$freetext);
-
-$page->assign('appli_id1',$appli_id1);
-$page->assign('appli_id2',$appli_id2);
-$page->assign('appli_type1',$appli_type1);
-$page->assign('appli_type2',$appli_type2);
-
-$page->assign('photo_pub',$photo_pub);
-$page->assign('nouvellephoto', $nouvellephoto);
-$page->assign('nickname', $nickname);
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

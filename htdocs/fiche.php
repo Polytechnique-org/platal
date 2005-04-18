@@ -77,6 +77,8 @@ if($user['x'] < 160){
 // manage the public fiche
 $page->assign('logged', logged());
 if (!logged()) {
+    // hide the orange status
+    $user['promo_sortie'] = $user['promo'] + 3;
     if ($user['mobile_pub'] != 'public') $user['mobile'] = '';
     if ($user['web_pub'] != 'public') $user['web'] = '';
     if ($user['freetext_pub'] !=  'public') $user['freetext'] = '';

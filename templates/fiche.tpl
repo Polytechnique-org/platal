@@ -88,7 +88,13 @@ function chgMainWinLoc( strPage ) {
         {if $x.iso3166}
         <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='14' title='{$x.nationalite}' />&nbsp;
         {/if}
-        X {$x.promo}{if $x.applis_join}&nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults} {/if}
+        X {$x.promo}
+        {if ($x.promo_sortie-3 > $x.promo)}
+          - X {math equation="a-b" a=$x.promo_sortie b=3}
+        {/if}
+        {if $x.applis_join}
+          &nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}
+        {/if}
         {min_auth level="cookie"}
         {if $x.is_referent}
         [<a href="fiche_referent.php?user={$x.forlife}" class='popup2'>Ma fiche référent</a>]
