@@ -41,6 +41,10 @@ a img { border: none; }
 img   { vertical-align: middle; }
 td    { vertical-align: middle; }
 
+h1 {
+    font-size: 150%;
+}
+
 /***************************************************************************
  * DEBUG
  ***************************************************************************/
@@ -93,7 +97,7 @@ td#search {
 
 .descr {
     text-align: justify;
-    font-size: 85%;
+    font-size: 90%;
 }
 p.descr {
     padding-left: 7px;
