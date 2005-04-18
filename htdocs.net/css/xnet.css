@@ -41,9 +41,8 @@ a img { border: none; }
 img   { vertical-align: middle; }
 td    { vertical-align: middle; }
 
-h1 {
-    font-size: 150%;
-}
+h1    { font-size: 150%; }
+h2    { font-size: 135%; }
 
 /***************************************************************************
  * DEBUG
