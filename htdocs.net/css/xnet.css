@@ -94,6 +94,28 @@ td#search {
     width: 100%;
 }
 
+td#menu { width: 150px; }
+
+#menu th {
+    padding: 0.5em 0em 0.6em 0em;
+    font-size: 95%;
+    text-align: left;
+    font-family: "Arial",sans-serif;
+    vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
+    background: url('images/barre.png') bottom left no-repeat;
+}
+
+#menu td {
+    padding: 0.2em 0em 0.2em 0em;
+    font-size: 95%;
+    text-align: left;
+    font-family: "Arial",sans-serif;
+    vertical-align: middle;
+}
+
+
 .descr {
     text-align: justify;
     font-size: 90%;
@@ -117,17 +139,6 @@ table.links a {
     padding-left: 15px;
     font-weight: bold;
 }
-
-td.oval {
-    color: #d0c198;
-    background: url("../images/oval.png") no-repeat top center;
-    height: 50px;
-    text-align: center;
-    vertical-align: middle !important;
-    font-weight: bold;
-    width: 200px;
-}
-td.oval a { color: #d0c198; }
 
 
 /***************************************************************************
@@ -165,26 +176,39 @@ table#liste td.liste a:hover, table#liste td.listec a:hover {
 /***************************************************************************
  ***************************************************************************/
 
-table.menu { width: 150px; }
-
-th.menu {
-    padding: 0.5em 0em 0.6em 0em;
-    font-size: 95%;
-    text-align: left;
-    font-family: "Arial",sans-serif;
-    vertical-align: middle;
+div.cat {
+    background: #d0c198;
+    width: 180px;
+    padding: 2px;
+    margin: 6px 0px;
     text-align: center;
     font-weight: bold;
-    background: url('images/barre.png') bottom left no-repeat;
+    font-size: 90%;
 }
 
-td.menu {
-    padding: 0.2em 0em 0.2em 0em;
-    font-size: 95%;
-    text-align: left;
-    font-family: "Arial",sans-serif;
-    vertical-align: middle;
+div.sel { background-color: #5c81aa; color: #d0c198; }
+div.sel a { color: #d0c198; }
+
+td.oval {
+    color: #d0c198;
+    background: url("../images/oval.png") no-repeat top center;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle !important;
+    font-weight: bold;
+    width: 130px;
+    padding: 4px 12px;
 }
+.oval a { color: #d0c198; }
+
+#content td.oval {
+    font-size: 90%;
+    font-family: "Trebuchet MS", sans-serif;
+    letter-spacing: -0.5px;
+}
+
+/***************************************************************************
+ ***************************************************************************/
 
 td.infos {
     height: 30px;
@@ -224,8 +248,3 @@ td.choix1actif {
     text-decoration: none;
 }
 
-td.choix2actif {
-    height: 20px;
-    background-color: #5C81AA;
-    color:#D0C198;
-}

@@ -134,21 +134,8 @@
     </td>
   </tr>
 
-  <tr><td><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+  {include file="xnet/include/nav.tpl"}
 
-  <tr>
-    <td>
-      <table class="links" summary="liens" cellspacing="0" cellpadding="0">
-        <tr>
-          <td> <a href="groupes.php?cat=GroupesX">groupes X</a> </td>
-          <td> <a href="groupes.php?cat=Binets">binets</a> </td>
-          <td> <a href="autres.php?cat=Promotions">promotions</a> </td>
-          <td> <a href="autres.php?cat=Institutions">institutions</a> </td>
-          <td> <a href="plan.php">plan du site</a> </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

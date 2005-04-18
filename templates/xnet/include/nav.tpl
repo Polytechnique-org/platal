@@ -18,28 +18,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-<table id="content" cellspacing="0" cellpadding="0">
+<tr><td colspan="2"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
 
-  <tr>
-    <td colspan="5">
-      <p class="descr">
-      Polytechnique.net présente les activités associatives des Polytechniciens, élèves et anciens.
-      Ce portail a été conçu par l'équipe qui anime le site <a href="https://www.polytechnique.org/">Polytechnique.org</a>.
-      Il a vocation à favoriser la communication entre les groupes X, et leur promotion à
-      l'extérieur de la communauté polytechnicienne.
-      </p>
-      <p class="descr">
-      <a href="https://www.polytechnique.org/apropos.php">L'équipe</a> tient à remercier
-      <strong>David Bachelart (X99) et Sylvain Joyeux (X2000)</strong> qui ont participé à l'élaboration de
-      la charte graphique du site, ainsi que <strong>Laurent El Kaim (X1984)</strong>, qui a protégé le
-      domaine Polytechnique.net durant plusieurs années, avant d'en faire don début 2004 à
-      l'association.
-      </p>
-    </td>
-  </tr>
-
-  {include file="xnet/include/nav.tpl"}
-
-</table>
+<tr>
+  <td colspan="2">
+    <table class="links" summary="liens" cellspacing="0" cellpadding="0">
+      <tr>
+        <td> <a href="groupes.php?cat=groupesx">groupes X</a> </td>
+        <td> <a href="groupes.php?cat=binets">binets</a> </td>
+        <td> <a href="groupes.php?cat=promotions">promotions</a> </td>
+        <td> <a href="groupes.php?cat=institutions">institutions</a> </td>
+        <td> <a href="plan.php">plan du site</a> </td>
+      </tr>
+    </table>
+  </td>
+</tr>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

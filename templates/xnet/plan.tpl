@@ -23,12 +23,12 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=GroupesX">Groupes X</a></td>
+          <td class="oval"><a href="groupes.php?cat=groupesx">Groupes X</a></td>
         </tr>
         <tr>
           <td class="liste">
             {foreach from=$groupesx key=id item=dom}
-            <a class="cat" href="sommaire.php?cat=GroupesX&amp;dom={$id}">{$dom[0].domnom}</a>
+            <a class="cat" href="sommaire.php?cat=groupesx&amp;dom={$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
             <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
             {/foreach}
@@ -41,12 +41,12 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=Binets">Binets</a></td>
+          <td class="oval"><a href="groupes.php?cat=binets">Binets</a></td>
         </tr>
         <tr>
           <td class="liste">
             {foreach from=$binets key=id item=dom}
-            <a class="cat" href="sommaire.php?cat=BinetsX&amp;dom={$id}">{$dom[0].domnom}</a>
+            <a class="cat" href="sommaire.php?cat=binets&amp;dom={$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
             <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
             {/foreach}
@@ -59,7 +59,7 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=Promotions">Promotions</a></td>
+          <td class="oval"><a href="groupes.php?cat=promotions">Promotions</a></td>
         </tr>
         <tr>
           <td class="listec">
@@ -74,7 +74,7 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=Institutions">Institutions</a></td>
+          <td class="oval"><a href="groupes.php?cat=institutions">Institutions</a></td>
         </tr>
         <tr>
           <td class="listec">
