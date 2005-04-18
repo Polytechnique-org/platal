@@ -31,10 +31,6 @@ class XnetPage extends PlatalPage
     function XnetPage($tpl, $type=SKINNED)
     {
         $this->PlatalPage($tpl, $type);
-        $this->register_function('list_all_my_groups', 'list_all_my_groups');
-        if (Get::has('auth')) {
-            $_SESSION['session']->doAuthX($this);
-        }
     }
 
     // }}}
@@ -62,6 +58,16 @@ class XnetPage extends PlatalPage
     }
 
     // }}}
+    // {{{ function doAuth()
+
+    function doAuth()
+    {
+        $this->register_function('list_all_my_groups', 'list_all_my_groups');
+        $this->assign('it_is_xnet', true);
+        if (Get::has('auth')) {
+            $_SESSION['session']->doAuthX($this);
+        }
+    }
 }
 
 // }}}
@@ -84,7 +90,7 @@ class XnetAuth extends XnetPage
 
     function doAuth()
     {
-        $this->register_function('list_all_my_groups', 'list_all_my_groups');
+        parent::doAuth();
         $_SESSION['session']->doAuth($this);
     }
     

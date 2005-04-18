@@ -30,7 +30,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 <p>
 Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant
 son identifiant, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie.
-L'icône <img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
+L'icône <img src='{rel}/images/retirer.gif' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
 qui y était abonné.
 </p>
 
@@ -50,7 +50,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.l}'><img src='{"images/retirer.gif"|url}' alt='retirer modérateur' title='retirer modérateur' /></a>
+        <a href='?liste={$smarty.get.liste}&amp;del_owner={$x.l}'><img src='{rel}/images/retirer.gif' alt='retirer modérateur' title='retirer modérateur' /></a>
         <br />
         {/foreach}
       </td>
@@ -84,7 +84,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.l}'><img src='{"images/retirer.gif"|url}' alt='retirer membre' title='retirer membre' /></a>
+        <a href='?liste={$smarty.get.liste}&amp;del_member={$x.l}'><img src='{rel}/images/retirer.gif' alt='retirer membre' title='retirer membre' /></a>
         <br />
         {/foreach}
       </td>

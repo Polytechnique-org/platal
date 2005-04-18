@@ -18,28 +18,35 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+{if $it_is_xnet}
+{assign var=index value="listes.php"}
+{assign var=prefix value="listes-"}
+{else}
+{assign var=index value="index.php"}
+{assign var=prefix value=""}
+{/if}
 
 <table>
   <tr>
     <td colspan='2'>
-      [<a href='{$ml_index|default:"index.php"}'>Voir toutes les listes</a>]
+      [<a href='{$index}'>Voir toutes les listes</a>]
     </td>
   </tr>
   <tr>
     <td><strong>Liste {$smarty.request.liste} :</strong></td>
     <td>
       {if $on neq members}
-      [<a href='members.php?liste={$smarty.request.liste}'>liste des membres</a>]
+      [<a href='{$prefix}members.php?liste={$smarty.request.liste}'>liste des membres</a>]
       {else}
       [liste des membres]
       {/if}
       {if $on neq trombi}
-      [<a href='trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
+      [<a href='{$prefix}trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
       {else}
       [trombinoscope]
       {/if}
       {if $on neq archives}
-      [<a href='archives.php?liste={$smarty.request.liste}'>archives</a>]
+      [<a href='{$prefix}archives.php?liste={$smarty.request.liste}'>archives</a>]
       {else}
       [archives]
       {/if}
@@ -50,22 +57,22 @@
     <td><strong>Administrer la liste :</strong></td>
     <td>
       {if $on neq moderate}
-      [<a href='moderate.php?liste={$smarty.get.liste}'>modération</a>]
+      [<a href='{$prefix}moderate.php?liste={$smarty.get.liste}'>modération</a>]
       {else}
       [modération]
       {/if}
       {if $on neq admin}
-      [<a href='admin.php?liste={$smarty.get.liste}'>ajout/retrait de membres</a>]
+      [<a href='{$prefix}admin.php?liste={$smarty.get.liste}'>ajout/retrait de membres</a>]
       {else}
       [ajout/retrait de membres]
       {/if}
       {if $on neq options}
-      [<a href='options.php?liste={$smarty.get.liste}'>options</a>]
+      [<a href='{$prefix}options.php?liste={$smarty.get.liste}'>options</a>]
       {else}
       [options]
       {/if}
       {if $on neq delete}
-      [<a href='delete.php?liste={$smarty.get.liste}'>détruire</a>]
+      [<a href='{$prefix}delete.php?liste={$smarty.get.liste}'>détruire</a>]
       {else}
       [détruire liste]
       {/if}
@@ -77,12 +84,12 @@
     <td><strong>Administrer (avancé) :</strong></td>
     <td>
       {if $on neq soptions}
-      [<a href='soptions.php?liste={$smarty.get.liste}'>options avancées</a>]
+      [<a href='{$prefix}soptions.php?liste={$smarty.get.liste}'>options avancées</a>]
       {else}
       [options avancées]
       {/if}
       {if $on neq check}
-      [<a href='check.php?liste={$smarty.get.liste}'>vérifications</a>]
+      [<a href='{$prefix}check.php?liste={$smarty.get.liste}'>vérifications</a>]
       {else}
       [vérifications]
       {/if}
