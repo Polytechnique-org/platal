@@ -54,5 +54,13 @@ function new_skinned_page($tpl_name, $min_auth)
 }
 
 // }}}
+// {{{ function new_admin_page()
+
+function new_admin_page($tpl_name)
+{
+    _new_page(SKINNED, $tpl_name, AUTH_MDP, true);
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

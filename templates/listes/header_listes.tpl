@@ -40,10 +40,12 @@
       {else}
       [liste des membres]
       {/if}
+      {if !$it_is_xnet}
       {if $on neq trombi}
       [<a href='{$prefix}trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
       {else}
       [trombinoscope]
+      {/if}
       {/if}
       {if $on neq archives}
       [<a href='{$prefix}archives.php?liste={$smarty.request.liste}'>archives</a>]

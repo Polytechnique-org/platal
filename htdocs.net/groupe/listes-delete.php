@@ -19,41 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-if (!$page) {
-    require_once("xorg.inc.php");
-    if (!Env::has('liste')) header('Location: index.php');
-    $liste = strtolower(Env::get('liste'));
+require_once 'xnet.inc.php';
+if (!Env::has('liste')) header('Location: listes.php');
+$liste = strtolower(Env::get('liste'));
 
-    new_skinned_page('listes/members.tpl', AUTH_COOKIE);
-    require_once('lists.inc.php');
+new_skinned_page('listes/delete.tpl', AUTH_MDP);
+$page->setType($globals->asso('cat'));
+$page->useMenu();
 
-    $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
-}
+require_once('lists.inc.php');
+$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
+require(dirname(dirname(dirname(__FILE__))).'/htdocs/listes/delete.php');
 
-if(Get::has('del')) {
-    $client->unsubscribe($liste);
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
-}
-if(Get::has('add')) {
-    $client->subscribe($liste);
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
-}
-$members = $client->get_members($liste);
-
-$tri_promo = !Env::getBool('alpha');
-
-if(list($det,$mem,$own) = $members) {
-    $membres = list_sort_members($mem, $tri_promo);
-    $moderos = list_sort_owners($own, $tri_promo);
-
-    $page->assign_by_ref('details', $det);
-    $page->assign_by_ref('members', $membres);
-    $page->assign_by_ref('owners',  $moderos);
-    $page->assign('nb_m',  count($mem));
-
-} else {
-    $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
-}
-
-$page->run();
 ?>

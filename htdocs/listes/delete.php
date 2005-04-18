@@ -19,15 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-if (!Env::has('liste')) header('Location: index.php');
-$liste = strtolower(Env::get('liste'));
+if (!$page) {
+    require_once("xorg.inc.php");
+    if (!Env::has('liste')) header('Location: index.php');
+    $liste = strtolower(Env::get('liste'));
 
-new_skinned_page('listes/delete.tpl', AUTH_MDP);
-require_once('lists.inc.php');
+    new_skinned_page('listes/delete.tpl', AUTH_MDP);
+    require_once('lists.inc.php');
 
-$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
-
+    $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
+}
 
 if ( Post::get('valid') == 'OUI' && $client->delete_list($liste, Post::getBool('del_archive')) ) {
     $page->assign('deleted', true);

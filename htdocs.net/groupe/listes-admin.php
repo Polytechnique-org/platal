@@ -26,7 +26,6 @@ $liste = strtolower(Env::get('liste'));
 new_skinned_page('listes/admin.tpl', AUTH_MDP);
 $page->setType($globals->asso('cat'));
 $page->useMenu();
-$page->assign('ml_index', 'listes.php');
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));

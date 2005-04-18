@@ -19,18 +19,21 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-if (!Env::has('liste')) header('Location: index.php');
-$liste = strtolower(Env::get('liste'));
+if (!$page) {
+    require_once("xorg.inc.php");
+    if (!Env::has('liste')) header('Location: index.php');
+    $liste = strtolower(Env::get('liste'));
 
-if (preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}_(.*)!", $liste, $matches)) {
-    header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
+    if (preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}_(.*)!", $liste, $matches)) {
+        header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
+    }
+
+    new_skinned_page('listes/moderate.tpl', AUTH_MDP);
+    require_once('lists.inc.php');
+
+    $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 }
 
-new_skinned_page('listes/moderate.tpl', AUTH_MDP);
-require_once('lists.inc.php');
-
-$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 $page->register_modifier('qpd','quoted_printable_decode');
 
 if(Env::has('sadd')) {

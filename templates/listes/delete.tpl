@@ -23,7 +23,7 @@
 
 {if $deleted}
 
-<p>[<a href='index.php'>Voir toutes les listes</a>]</p>
+<p>[<a href='{if $it_is_xnet}listes.php{else}index.php{/if}'>Voir toutes les listes</a>]</p>
 <p class="erreur">La liste a été détruite !</p>
 
 {else}
