@@ -2,7 +2,7 @@
 
 require 'xnet.inc.php';
 
-new_skinned_page('xnet/groupe/asso.tpl', AUTH_PUBLIC);
+new_page('xnet/groupe/asso.tpl', AUTH);
 if (!$globals->asso('id')) {
     header("Location: ../");
 }

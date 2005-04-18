@@ -68,6 +68,8 @@ class XnetPage extends PlatalPage
             $_SESSION['session']->doAuthX($this);
         }
     }
+
+    // }}}
 }
 
 // }}}
@@ -98,6 +100,46 @@ class XnetAuth extends XnetPage
 }
 
 // }}}
+// {{{ class XnetGroupPage
+
+/** Une classe pour les pages réservées aux admins (authentifiés!).
+ */
+class XnetGroupPage extends XnetAuth
+{
+    // {{{ function XnetAdmin()
+    
+    function XnetGroupPage($tpl, $type=SKINNED)
+    {
+        $this->XnetAuth($tpl, $type);
+        if (!is_member() && !has_perms()) {
+            $this->kill("You have not sufficient credentials");
+        }
+    }
+    
+    // }}}
+}
+
+// }}}
+// {{{ class XnetGroupAdmin
+
+/** Une classe pour les pages réservées aux admins (authentifiés!).
+ */
+class XnetGroupAdmin extends XnetAuth
+{
+    // {{{ function XnetAdmin()
+    
+    function XnetGroupAdmin($tpl, $type=SKINNED)
+    {
+        $this->XnetAuth($tpl, $type);
+        if (!may_update()) {
+            $this->kill("You have not sufficient credentials");
+        }
+    }
+    
+    // }}}
+}
+
+// }}}
 // {{{ class XnetAdmin
 
 /** Une classe pour les pages réservées aux admins (authentifiés!).
@@ -116,6 +158,5 @@ class XnetAdmin extends XnetAuth
 }
 
 // }}}
-
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

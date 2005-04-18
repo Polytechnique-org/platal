@@ -20,10 +20,10 @@
  ***************************************************************************/
 
 require_once 'xnet.inc.php';
-if (!Env::has('liste')) header('Location: index.php');
+if (!Env::has('liste')) header('Location: listes.php');
 $liste = strtolower(Env::get('liste'));
 
-new_skinned_page('listes/archives.tpl', AUTH_COOKIE);
+new_page('listes/archives.tpl');
 $page->setType($globals->asso('cat'));
 $page->useMenu();
 

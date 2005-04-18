@@ -134,6 +134,30 @@ class XnetSession extends DiogenesCoreSession
 }
 
 // }}}
+// {{{ may_update
 
+function may_update() {
+    global $globals;
+    if (has_perms()) { return true; }
+    $res = $globals->xdb->query(
+            "SELECT  perms
+               FROM  groupex.membres
+              WHERE  uid={?} AND asso_id={?}", Session::getInt('uid'), $globals->asso('id'));
+    return $res->fetchOneCell() == 'admin';
+}
+
+// }}}
+// {{{ is_member
+
+function is_member() {
+    global $globals;
+    $res = $globals->xdb->query(
+            "SELECT  COUNT(*)
+               FROM  groupex.membres
+              WHERE  uid={?} AND asso_id={?}", Session::getInt('uid'), $globals->asso('id'));
+    return $res->fetchOneCell() == 1;
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

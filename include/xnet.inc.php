@@ -25,32 +25,43 @@ require_once('xnet/session.inc.php');
 XnetGlobals::init();
 XnetSession::init();
 
-// {{{ function _new_page()
+// {{{ function new_skinned_page()
 
-function _new_page($type, $tpl_name, $min_auth, $admin=false)
+function new_page($tpl_name, $min_auth)
 {
     global $page,$globals;
     require_once("xnet/page.inc.php");
-    if (!empty($admin)) {
-        $page = new XnetAdmin($tpl_name, $type);
-    } else switch($min_auth) {
+    switch($min_auth) {
         case AUTH_PUBLIC:
             $page = new XnetPage($tpl_name, $type);
             break;
 
-        case AUTH_MDP:
+        default:
             $page = new XnetAuth($tpl_name, $type);
     }
-
     $page->assign('xorg_tpl', $tpl_name);
 }
 
 // }}}
-// {{{ function new_skinned_page()
+// {{{ function new_group_page()
 
-function new_skinned_page($tpl_name, $min_auth)
+function new_group_page($tpl_name)
 {
-    _new_page(SKINNED, $tpl_name, $min_auth);
+    global $page,$globals;
+    require_once("xnet/page.inc.php");
+    $page = new XnetGroupPage($tpl_name);
+    $page->assign('xorg_tpl', $tpl_name);
+}
+
+// }}}
+// {{{ function new_groupadmin_page()
+
+function new_groupadmin_page($tpl_name)
+{
+    global $page,$globals;
+    require_once("xnet/page.inc.php");
+    $page = new XnetGroupAdmin($tpl_name);
+    $page->assign('xorg_tpl', $tpl_name);
 }
 
 // }}}
@@ -58,7 +69,10 @@ function new_skinned_page($tpl_name, $min_auth)
 
 function new_admin_page($tpl_name)
 {
-    _new_page(SKINNED, $tpl_name, AUTH_MDP, true);
+    global $page,$globals;
+    require_once("xnet/page.inc.php");
+    $page = new XnetAdmin($tpl_name);
+    $page->assign('xorg_tpl', $tpl_name);
 }
 
 // }}}
