@@ -77,11 +77,38 @@
       <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
       {/if}
 
+      {if $menu}
+      <tr>
+        <td id="menu">
+          Place du menu
+        </td>
+        <td colspan="3">
+          {include file="skin/common.content.tpl"}
+        </td>
+      </tr>
+      {else}
       <tr>
         <td colspan="4">
           {include file="skin/common.content.tpl"}
         </td>
       </tr>
+
+      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+
+      <tr>
+        <td colspan="4">
+          <table class="links" summary="liens" cellspacing="0" cellpadding="0">
+            <tr>
+              <td> <a href="groupes.php?cat=groupesx">groupes X</a> </td>
+              <td> <a href="groupes.php?cat=binets">binets</a> </td>
+              <td> <a href="groupes.php?cat=promotions">promotions</a> </td>
+              <td> <a href="groupes.php?cat=institutions">institutions</a> </td>
+              <td> <a href="plan.php">plan du site</a> </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      {/if}
 
       <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
 

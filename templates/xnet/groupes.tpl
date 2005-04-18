@@ -18,40 +18,32 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-<table id="content">
+<table id="content" cellspacing="0" cellpadding="4">
   <tr>
-    <td id="menu">
+    <td{if $hasdom} colspan="2"{/if}>
+      {include file="xnet/include/descr.tpl" cat=$smarty.get.cat}
     </td>
-    <td>
-      <table cellspacing="0" cellpadding="4">
-        <tr>
-          <td{if $hasdom} colspan="2"{/if}>
-            {include file="xnet/include/descr.tpl" cat=$smarty.get.cat}
-          </td>
-        </tr>
-        <tr>
-          {if $hasdom}
-          <td style="vertical-align: top">
-            {iterate from=$doms item=g}
-            <div class="cat {if $g.id eq $smarty.get.dom}sel{/if}">
-              <a href="groupes.php?cat={$smarty.get.cat}&amp;dom={$g.id}">{$g.nom}</a>
-            </div>
-            {/iterate}
-          </td>
-          {/if}
-          <td style="text-align:right;">
-            {if $gps}
-            {iterate from=$gps item=g}
-            <table style="float: left;" cellspacing="2" cellpadding="0">
-              <tr><td class="oval{if $hasdom}2{/if}"><a href="{rel}/{$g.diminutif}/asso.php">{$g.nom}</a></td></tr>
-            </table>
-            {/iterate}
-            {else}
-            <img src="images/carre2.jpg" alt="logos_associations" width="201" height="165" />
-            {/if}
-          </td>
-        </tr>
+  </tr>
+  <tr>
+    {if $hasdom}
+    <td style="vertical-align: top">
+      {iterate from=$doms item=g}
+      <div class="cat {if $g.id eq $smarty.get.dom}sel{/if}">
+        <a href="groupes.php?cat={$smarty.get.cat}&amp;dom={$g.id}">{$g.nom}</a>
+      </div>
+      {/iterate}
+    </td>
+    {/if}
+    <td style="text-align:right;">
+      {if $gps}
+      {iterate from=$gps item=g}
+      <table style="float: left;" cellspacing="2" cellpadding="0">
+        <tr><td class="oval{if $hasdom}2{/if}"><a href="{rel}/{$g.diminutif}/asso.php">{$g.nom}</a></td></tr>
       </table>
+      {/iterate}
+      {else}
+      <img src="images/carre2.jpg" alt="logos_associations" width="201" height="165" />
+      {/if}
     </td>
   </tr>
 </table>

@@ -55,6 +55,14 @@ class XnetPage extends PlatalPage
     }
 
     // }}}
+    // {{{ function useMenu
+
+    function useMenu()
+    {
+        $this->assign('menu', true);
+    }
+
+    // }}}
 }
 
 // }}}

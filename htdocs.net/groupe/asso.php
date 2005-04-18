@@ -6,6 +6,7 @@ new_skinned_page('xnet/groupe/asso.tpl', AUTH_PUBLIC);
 if (!$globals->asso('id')) {
     header("Location: ../");
 }
+$page->useMenu();
 $page->setType(strtolower($globals->asso('cat')));
 $page->assign('asso', $globals->asso());
 

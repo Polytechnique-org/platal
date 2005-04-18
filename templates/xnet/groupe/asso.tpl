@@ -20,74 +20,66 @@
 
 <table id="content" cellpadding="0" cellspacing="0">
   <tr>
-    <td id="menu">
+    <td colspan="2">
+      <h1>
+        <a class="s" href="../groupes.php?cat={$asso.cat}">{$asso.cat}</a>
+        {if $asso.dom}&gt;
+        <a class="s" href="../groupes.php?cat={$asso.cat}&amp;dom={$asso.dom}">{$asso.domnom}</a>
+        {/if}
+        &gt; {$asso.nom} : Accueil
+      </h1>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      {if $asso.site}
+      <a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" /></a>
+      {else}
+      <img src='getlogo.php' alt="LOGO" />
+      {/if}
+
+      {if $asso.site}
+      <p class="descr">
+      <strong>Site Web:</strong> <a href="{$asso.site}">{$asso.site}</a>
+      </p>
+      {/if}
+
+      {if $asso.resp && $asso.mail}
+      <p class="descr">
+      <strong>Contact:</strong> {mailto address=$asso.mail text=$asso.resp encode=javascript}
+      </p>
+      {elseif $asso.resp}
+      <p class="descr">
+      <strong>Contact:</strong> {$asso.resp}
+      </p>
+      {/if}
+
+      {if $asso.forum}
+      <p class="descr">
+      <strong>Forum:</strong>
+      <a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a> ou
+      <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
+      </p>
+      {/if}
+
+      <strong>TODO: INSCRIPTION</strong>
+
+      {if $asso.ax}
+      <p class="descr">
+      <strong>groupe agrée par l'AX</strong>
+      </p>
+      {/if}
+
+      <div>
+        {$asso.descr|smarty:nodefaults}
+      </div>
     </td>
     <td>
-      <table style="width: 100%">
-        <tr>
-          <td colspan="2">
-            <h1>
-              <a class="s" href="../groupes.php?cat={$asso.cat}">{$asso.cat}</a>
-              {if $asso.dom}&gt;
-              <a class="s" href="../groupes.php?cat={$asso.cat}&amp;dom={$asso.dom}">{$asso.domnom}</a>
-              {/if}
-              &gt; {$asso.nom} : Accueil
-            </h1>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            {if $asso.site}
-            <a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" /></a>
-            {else}
-            <img src='getlogo.php' alt="LOGO" />
-            {/if}
-
-            {if $asso.site}
-            <p class="descr">
-            <strong>Site Web:</strong> <a href="{$asso.site}">{$asso.site}</a>
-            </p>
-            {/if}
-
-            {if $asso.resp && $asso.mail}
-            <p class="descr">
-            <strong>Contact:</strong> {mailto address=$asso.mail text=$asso.resp encode=javascript}
-            </p>
-            {elseif $asso.resp}
-            <p class="descr">
-            <strong>Contact:</strong> {$asso.resp}
-            </p>
-            {/if}
-
-            {if $asso.forum}
-            <p class="descr">
-            <strong>Forum:</strong>
-            <a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a> ou
-            <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
-            </p>
-            {/if}
-
-            <strong>TODO: INSCRIPTION</strong>
-
-            {if $asso.ax}
-            <p class="descr">
-            <strong>groupe agrée par l'AX</strong>
-            </p>
-            {/if}
-
-            <div>
-              {$asso.descr|smarty:nodefaults}
-            </div>
-          </td>
-          <td>
-            {iterate from=$gps item=g}
-            <div class="cat">
-              <a href="../{$g.diminutif}/asso.php">{$g.nom}</a>
-            </div>
-            {/iterate}
-          </td>
-        </tr>
-      </table>
+      {iterate from=$gps item=g}
+      <div class="cat">
+        <a href="../{$g.diminutif}/asso.php">{$g.nom}</a>
+      </div>
+      {/iterate}
     </td>
   </tr>
 </table>

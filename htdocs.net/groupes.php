@@ -21,6 +21,7 @@
     }
     $page->assign('gps', $res);
 
+    $page->useMenu();
     $page->setType($cat);
     $page->run();
 ?>
