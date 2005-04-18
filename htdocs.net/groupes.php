@@ -6,7 +6,7 @@
         exit;
     }
 
-    new_skinned_page('xnet/groupes.tpl', AUTH_PUBLIC);
+    new_page('xnet/groupes.tpl', AUTH_PUBLIC);
 
     $res = $globals->xdb->iterator("SELECT id,nom FROM groupex.dom WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
     $page->assign('doms', $res);

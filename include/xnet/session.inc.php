@@ -138,6 +138,7 @@ class XnetSession extends DiogenesCoreSession
 
 function may_update() {
     global $globals;
+    if (!$globals->asso('id')) { return false; }
     if (has_perms()) { return true; }
     $res = $globals->xdb->query(
             "SELECT  perms
@@ -151,6 +152,7 @@ function may_update() {
 
 function is_member() {
     global $globals;
+    if (!$globals->asso('id')) { return false; }
     $res = $globals->xdb->query(
             "SELECT  COUNT(*)
                FROM  groupex.membres
