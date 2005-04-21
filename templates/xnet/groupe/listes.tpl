@@ -18,11 +18,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
-
 {if $smarty.get.del_alias}
 
 <p class="error">Est tu sur de supprimer l'alias {$smarty.get.del_alias} ?</p>
-<form action='<?php echo $_SERVER['PHP_SELF']; ?>' method="post">
+<form action='{$smarty.server.PHP_SELF}' method="post">
   <div class="center">
     <input type='submit' value="Oui, je suis sur" />
     <input type='hidden' name='del_alias' value="{$smarty.get.del_alias}" />
@@ -82,7 +81,6 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   {foreachelse}
   <tr><td colspan='6'>Pas de listes pour ce groupe</td></tr>
   {/foreach}
-  {/if}
 </table>
 
 <p class="descr">
@@ -107,6 +105,8 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>
 {else}
 <p>Aucun alias pour ce groupe</p>
+{/if}
+
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
