@@ -188,7 +188,6 @@ class Validate
             $mailer->setTxtBody(wordwrap($body));
             $mailer->send();
 
-            print_r(array($mailer));
             $this->update();
             $this->trig('commentaire ajouté');
             return true;
