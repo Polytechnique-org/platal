@@ -168,8 +168,27 @@ class Validate
             return true;
         }
 
+        // ajout d'un commentaire
         if (Env::has('hold') && Env::has('comm')) {
             $this->comments[] = Array(Session::get('bestalias'), Env::get('comm'));
+
+            // envoi d'un mail à hotliners
+            global $globals;
+            require_once('diogenes/diogenes.hermes.inc.php');
+            $mailer = new HermesMailer;
+            $mailer->setSubject("Commentaires de validation {$this->type}");
+            $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
+            $mailer->addTo("hotliners@{$globals->mail->domain}");
+
+            $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
+              . Session::get('bestalias')." a ajouté le commentaire :\n\n" 
+              . Env::get('comm')."\n\n"
+              . "cf la discussion sur : ".$globals->baseurl."/admin/valider.php";
+
+            $mailer->setTxtBody(wordwrap($body));
+            $mailer->send();
+
+            print_r(array($mailer));
             $this->update();
             $this->trig('commentaire ajouté');
             return true;

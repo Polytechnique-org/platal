@@ -11,6 +11,9 @@ New :
 
 Bug/Wish :
 
+	* Admin :
+		- #300: notify hotliners for validation comments.					-Car
+
 	* Misc :
 		- #290: date display with no preceding 0.							-Car
 
