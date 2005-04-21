@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,50 +16,24 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
 
-// {{{ config HOOK
-// {{{ class ListsConfig
+<h1> Ajout d'un membre polytechnicien</h1>
+<form method="post" action="{$smarty.server.PHP_SELF}">
+  <p class="descr">
+  Identifiant X.org <small>(prenom.nom)</small> :
+  <input type="text" name="username" value="{$smarty.request.username}" size="40" maxlength="100" />
+  </p>
+  <p class="descr">
+  Permissions sur ce groupe :
+  </p>
+  <select name="is_admin">
+    <option value="0">Membre</option>
+    <option value="1">Administrateur</option>
+  </select>
+  <div class="center">
+    <input type="submit" name="addx" value="Ajouter" />
+  </div>
+</form>
 
-class ListsConfig
-{
-    var $rpchost     = 'localhost';
-    var $rpcport     = 4949;
-    
-    var $spool       = '/var/spool/platal/archives/';
-
-    var $admin_owner = '';
-    var $vhost_sep   = '_';
-}
-
-// }}}
-
-function lists_config()
-{
-    global $globals;
-    $globals->lists = new ListsConfig;
-}
-
-// }}}
-// {{{ menu HOOK
-
-function lists_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
-}
-
-// }}}
-// {{{ subscribe HOOK
-
-function lists_subscribe($forlife, $uid, $promo, $password)
-{
-    require_once('lists.inc.php');
-    $client =& lists_xmlrpc($uid, $password);
-    $client->subscribe("promo$promo");
-}
-
-// }}}
- 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

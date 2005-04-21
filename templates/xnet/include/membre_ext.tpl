@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,50 +16,30 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
 
-// {{{ config HOOK
-// {{{ class ListsConfig
+<h1> Ajout d'un membre ext&eacute;rieur</h1>
+<form method="post" action="{$smarty.server.PHP_SELF}">
+  <table>
+    <tr>
+      <td>Nom :</td>
+      <td><input type="text" name="nom" value="{$smarty.request.nom}" size="40" maxlength="255" /></td>
+    </tr>
+    <tr>
+      <td>Pr&eacute;nom :</td>
+      <td><input type="text" name="prenom" value="{$smarty.request.prenom}" size="40" maxlength="40" /></td>
+    </tr>
+    <tr>
+      <td>Email :</td>
+      <td><input type="text" name="email" value="{$smarty.request.email}" size="40" maxlength="60" /></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center">
+        <input type="submit" name="addext" value="Ajouter" />
+        <input type="hidden" name="id" value="{$smarty.request.id}" />
+      </td>
+    </tr>
+  </table>
+</form>
 
-class ListsConfig
-{
-    var $rpchost     = 'localhost';
-    var $rpcport     = 4949;
-    
-    var $spool       = '/var/spool/platal/archives/';
-
-    var $admin_owner = '';
-    var $vhost_sep   = '_';
-}
-
-// }}}
-
-function lists_config()
-{
-    global $globals;
-    $globals->lists = new ListsConfig;
-}
-
-// }}}
-// {{{ menu HOOK
-
-function lists_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
-}
-
-// }}}
-// {{{ subscribe HOOK
-
-function lists_subscribe($forlife, $uid, $promo, $password)
-{
-    require_once('lists.inc.php');
-    $client =& lists_xmlrpc($uid, $password);
-    $client->subscribe("promo$promo");
-}
-
-// }}}
- 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}
