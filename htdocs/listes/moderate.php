@@ -38,7 +38,7 @@ $page->register_modifier('qpd','quoted_printable_decode');
 
 if(Env::has('sadd')) {
     $client->handle_request($liste,Env::get('sadd'),4,''); /* 4 = SUBSCRIBE */
-    header("Location: moderate.php?liste=$liste");
+    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if(Post::has('sdel')) {

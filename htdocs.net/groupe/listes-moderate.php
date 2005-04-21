@@ -27,7 +27,7 @@ if (preg_match("!(?:[a-z0-9]+\\.)?{".$globals->asso('mail_domain')."}_(.*)!", $l
     header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
 }
 
-new_page('listes/moderate.tpl', AUTH_MDP);
+new_group_page('listes/moderate.tpl');
 $page->setType($globals->asso('cat'));
 $page->useMenu();
 

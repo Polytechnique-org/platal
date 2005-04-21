@@ -42,7 +42,7 @@ img   { vertical-align: middle; }
 td    { vertical-align: top; }
 
 h1    { font-size: 150%; }
-h2    { font-size: 135%; }
+h2    { font-size: 130%; }
 
 /***************************************************************************
  * DEBUG
@@ -132,7 +132,7 @@ td#menu {
 
 .erreur { color: red; }
 .error  { color: red; }
-
+.center { text-align: center; }
 
 .descr {
     text-align: justify;

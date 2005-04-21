@@ -1,5 +1,4 @@
-<?php
-/***************************************************************************
+{***************************************************************************
  *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
@@ -17,18 +16,39 @@
  *  along with this program; if not, write to the Free Software            *
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
- ***************************************************************************/
+ ***************************************************************************}
+ 
+<p>[<a href='listes.php'>retour à la page des listes</a>]</p>
 
-require_once 'xnet.inc.php';
-if (!Env::has('liste')) header('Location: listes.php');
-$liste = strtolower(Env::get('liste'));
+<h1>Membres de {$smarty.request.liste}</h1>
+      
+<table style="width:80%; margin: 0px 10%;">
+  <tr>
+    <th>Membres</th>
+    <td>
+      {if $mem->total()}
+      {iterate from=$mem item=m}
+      {$m.redirect}
+      <a href='?liste={$smarty.request.liste}&amp;del_member={$m.redirect}'>
+        <img src='{rel}/images/del.png' alt='retirer membre' title='retirer membre' />
+      </a>
+      <br />
+      {/iterate}
+      {else}
+      <em>aucun membres ...</em>
+      {/if}
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Ajouter</strong></td>
+    <td>
+      <form method="post" action="{$smarty.server.REQUEST_URI}">
+        <input type='text' name='add_member' />
+        &nbsp;
+        <input type='submit' value='ajouter' />
+      </form>
+    </td>
+  </tr>
+</table>
 
-new_group_page('listes/members.tpl');
-$page->setType($globals->asso('cat'));
-$page->useMenu();
-
-require_once('lists.inc.php');
-$client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
-require(dirname(dirname(dirname(__FILE__))).'/htdocs/listes/members.php');
-
-?>
+{* vim:set et sw=2 sts=2 sws=2: *}

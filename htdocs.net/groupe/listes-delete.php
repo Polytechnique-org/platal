@@ -23,7 +23,7 @@ require_once 'xnet.inc.php';
 if (!Env::has('liste')) header('Location: listes.php');
 $liste = strtolower(Env::get('liste'));
 
-new_page('listes/delete.tpl', AUTH_MDP);
+new_group_page('listes/delete.tpl');
 $page->setType($globals->asso('cat'));
 $page->useMenu();
 
