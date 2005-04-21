@@ -131,7 +131,7 @@
             <div>
               <a href="{rel}/agenda.php" title="Informations"><img src="{rel}/images/infos.png" alt="infos" /></a>
               <a href="{rel}/manuel.php" title="Manuel d'aide en ligne"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
-              <input type="text" name="query" value="echo ((isset($exalead_data))?($exalead_data->query->query)" size="25" maxlength="60" />
+              <input type="text" name="query" value="{$exalead_data->query->query}" size="25" maxlength="60" />
               <input type="image" src="{rel}/images/recherche.png" title="Chercher" value="submit" />
 
               <br />
