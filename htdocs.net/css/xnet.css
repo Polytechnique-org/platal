@@ -81,9 +81,10 @@ td#credits {
     font-weight: bold;
 }
 
-td#perso ul {
+td#perso div {
     font-weight: bold;
     font-size: 90%;
+    padding: 2px 1em;
 }
 
 td#perso a.gp {

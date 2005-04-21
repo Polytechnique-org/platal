@@ -21,6 +21,8 @@
 
 // {{{  function list_all_my_groups
 
+require_once $globals->spoolroot.'/plugins/function.rel.php';
+
 function list_all_my_groups($params)
 {
     if (!logged()) {
@@ -32,9 +34,9 @@ function list_all_my_groups($params)
                FROM  groupex.asso    AS a
          INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
               WHERE  m.uid={?}", Session::getInt('uid'));
-    $html = '';
+    $html = '<div>Mes groupes :</div>';
     while (list($nom, $mini) = $res->next()) {
-        $html .= "<a class='gp' href='$mini'>&bull; $nom</a>";
+        $html .= "<a class='gp' href='".smarty_function_rel()."/$mini/asso.php'>&bull; $nom</a>";
     }
     return $html;
 }
