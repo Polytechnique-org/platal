@@ -8,11 +8,11 @@
 
     new_page('xnet/groupes.tpl', AUTH_PUBLIC);
 
-    $res = $globals->xdb->iterator("SELECT id,nom FROM groupex.dom WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
-    $page->assign('doms', $res);
-    $page->assign('hasdom', $res->total()!=0);
+    $res  = $globals->xdb->query("SELECT id,nom FROM groupex.dom WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
+    $doms = $res->fetchAllAssoc();
+    $page->assign('doms', $doms);
     
-    if (!$res->total()) {
+    if (empty($doms)) {
         $res = $globals->xdb->iterator("SELECT diminutif, nom FROM groupex.asso WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
     } elseif (Get::has('dom')) {
         $res = $globals->xdb->iterator("SELECT diminutif, nom FROM groupex.asso WHERE FIND_IN_SET({?}, cat) AND dom={?} ORDER BY nom", $cat, Get::getInt('dom'));

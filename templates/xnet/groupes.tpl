@@ -20,31 +20,39 @@
 
 <table id="content" cellspacing="0" cellpadding="4">
   <tr>
-    <td{if $hasdom} colspan="2"{/if}>
+    <td colspan="2">
       {include file="xnet/include/descr.tpl" cat=$smarty.get.cat}
     </td>
   </tr>
   <tr>
-    {if $hasdom}
+    {if !$doms || !$gps}
     <td style="vertical-align: top">
-      {iterate from=$doms item=g}
+      <div class="cat {if $smarty.get.cat eq groupesx}sel{/if}"><a href="?cat=groupesx">Groupes X</a></div>
+      <div class="cat {if $smarty.get.cat eq binets}sel{/if}"><a href="?cat=binets">Binets</a></div>
+      <div class="cat {if $smarty.get.cat eq institutions}sel{/if}"><a href="?cat=institutions">Institutions</a></div>
+      <div class="cat {if $smarty.get.cat eq promotions}sel{/if}"><a href="?cat=promotions">Promotions</a></div>
+    </td>
+    {/if}
+    
+    {if $doms}
+    <td style="vertical-align: top">
+      {foreach from=$doms item=g}
       <div class="cat {if $g.id eq $smarty.get.dom}sel{/if}">
-        <a href="groupes.php?cat={$smarty.get.cat}&amp;dom={$g.id}">{$g.nom}</a>
+        <a href="?cat={$smarty.get.cat}&amp;dom={$g.id}">{$g.nom}</a>
       </div>
+      {/foreach}
+    </td>
+    {/if}
+
+    {if $gps}
+    <td style="text-align:right;">
+      {iterate from=$gps item=g}
+      <table style="float: left;" cellspacing="2" cellpadding="0">
+        <tr><td class="oval{if $doms}2{/if}"><a href="{rel}/{$g.diminutif}/asso.php">{$g.nom}</a></td></tr>
+      </table>
       {/iterate}
     </td>
     {/if}
-    <td style="text-align:right;">
-      {if $gps}
-      {iterate from=$gps item=g}
-      <table style="float: left;" cellspacing="2" cellpadding="0">
-        <tr><td class="oval{if $hasdom}2{/if}"><a href="{rel}/{$g.diminutif}/asso.php">{$g.nom}</a></td></tr>
-      </table>
-      {/iterate}
-      {else}
-      <img src="images/carre2.jpg" alt="logos_associations" width="201" height="165" />
-      {/if}
-    </td>
   </tr>
 </table>
 

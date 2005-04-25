@@ -39,25 +39,31 @@ renseignements auprès de <a href='services.php#loi1901'>sites spécialisés</a>.
 
 {elseif $cat eq binets}
 
+<p class="descr">
 Les binets sont les associations des élèves polytechniciens effectuant leur scolarité à l'X (sur le
 plateau). Cette appellation, qui peut sembler étrange, est, pour certains, simplement un diminutif
 de "cabinet". Pour d'autres, elle aurait pour origine un certain général Binet, commandant l'Ecole
 Polytechnique, qui aurait le premier autorisé ces regroupements d'élèves. Les binets présents à
 l'Ecole n'ont pas tous leur site web présenté ici. Vous pouvez voir tous les sites des binets en
 cliquant <a href= "http://www.polytechnique.fr/eleves/acces/binets/">ici</a>.
+</p>
 
 {elseif $cat eq institutions}
 
+<p class="descr">
 De nombreuses organismes officiels sont liés à l'Ecole Polytechnique: le collège de l'Ecole
 Polytechnique, l'amicale des anciens élèves, le site des X sur le web Polytechnique.org, etc...
 Cette liste n'est pas exhaustive. Vous pouvez découvrir chacun de ces organismes en cliquant sur les
 liens correspondants:
+</p>
 
 {elseif $cat eq promotions}
 
+<p class="descr">
 Quelques promotions de polytechniciens ont mis au point leur propre site web, qui permet aux élèves
 de ces promotions d'organiser des repas promos, de faire partager des souvenirs photographiques, de
 se retrouver sur internet... En voici des exemples:
+</p>
 
 {/if}
 

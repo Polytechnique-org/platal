@@ -20,59 +20,46 @@
 
 <h1>{$asso.nom} : Accueil</h1>
 
-<table id="content" cellpadding="0" cellspacing="0">
-  <tr>
-    <td>
-      {if $asso.site}
-      <a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" /></a>
-      {else}
-      <img src='getlogo.php' alt="LOGO" />
-      {/if}
+{if $asso.site}
+<a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" /></a>
+{else}
+<img src='getlogo.php' alt="LOGO" />
+{/if}
 
-      {if $asso.site}
-      <p class="descr">
-      <strong>Site Web:</strong> <a href="{$asso.site}">{$asso.site}</a>
-      </p>
-      {/if}
+{if $asso.site}
+<p class="descr">
+<strong>Site Web:</strong> <a href="{$asso.site}">{$asso.site}</a>
+</p>
+{/if}
 
-      {if $asso.resp && $asso.mail}
-      <p class="descr">
-      <strong>Contact:</strong> {mailto address=$asso.mail text=$asso.resp encode=javascript}
-      </p>
-      {elseif $asso.resp}
-      <p class="descr">
-      <strong>Contact:</strong> {$asso.resp}
-      </p>
-      {/if}
+{if $asso.resp && $asso.mail}
+<p class="descr">
+<strong>Contact:</strong> {mailto address=$asso.mail text=$asso.resp encode=javascript}
+</p>
+{elseif $asso.resp}
+<p class="descr">
+<strong>Contact:</strong> {$asso.resp}
+</p>
+{/if}
 
-      {if $asso.forum}
-      <p class="descr">
-      <strong>Forum:</strong>
-      <a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a> ou
-      <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
-      </p>
-      {/if}
+{if $asso.forum}
+<p class="descr">
+<strong>Forum:</strong>
+<a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a> ou
+<a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
+</p>
+{/if}
 
-      <strong>TODO: INSCRIPTION</strong>
+<strong>TODO: INSCRIPTION</strong>
 
-      {if $asso.ax}
-      <p class="descr">
-      <strong>groupe agrée par l'AX</strong>
-      </p>
-      {/if}
+{if $asso.ax}
+<p class="descr">
+<strong>groupe agrée par l'AX</strong>
+</p>
+{/if}
 
-      <div>
-        {$asso.descr|smarty:nodefaults}
-      </div>
-    </td>
-    <td>
-      {iterate from=$gps item=g}
-      <div class="cat">
-        <a href="../{$g.diminutif}/asso.php">{$g.nom}</a>
-      </div>
-      {/iterate}
-    </td>
-  </tr>
-</table>
+<div>
+  {$asso.descr|smarty:nodefaults}
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

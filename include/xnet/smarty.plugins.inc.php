@@ -42,6 +42,21 @@ function list_all_my_groups($params)
 }
 
 // }}}
+// {{{ cat_pp
+
+function cat_pp($cat)
+{
+    $trans = array(
+        'groupesx' => 'Groupes X' ,
+        'binets'   => 'Binets' ,
+        'institutions' => 'Institutions' ,
+        'promotions' => 'Promotions'
+    );
+
+    return $trans[strtolower($cat)];
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

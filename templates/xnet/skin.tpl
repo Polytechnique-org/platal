@@ -93,6 +93,22 @@
           {/only_public}
         </td>
         <td colspan="3">
+          <div class="breadcrumb">
+            {if $asso}
+            <a href="{rel}/groupes.php?cat={$asso.cat}">{$asso.cat|cat_pp}</a> »
+            {if $asso.dom}
+            <a href="{rel}/groupes.php?cat={$asso.cat}&amp;dom={$asso.dom}">{$asso.domnom}</a> »
+            {/if}
+            {$asso.nom}
+            {elseif $smarty.request.cat}
+            <a href="{rel}/groupes.php?cat={$smarty.request.cat}">{$smarty.request.cat|cat_pp}</a> »
+            {if $smarty.request.dom || !$doms}
+            Choix de l'Asso
+            {else}
+            Choix du domaine
+            {/if}
+            {/if}
+          </div>
           {include file="skin/common.content.tpl"}
         </td>
       </tr>

@@ -79,14 +79,6 @@ class XnetPage extends PlatalPage
             $sub['telepaiement'] = "$dim/telepaiement.php";
 
             $menu[$globals->asso('nom')] = $sub;
-        } else {
-            $sub = array();
-            $sub['Groupes X']    = "groupes.php?cat=groupesx";
-            $sub['Binets']       = "groupes.php?cat=binets";
-            $sub['Promotions']   = "groupes.php?cat=promotions";
-            $sub['Institutions'] = "groupes.php?cat=institutions";
-
-            $menu['Navigation']  = $sub;
         }
 
         if (logged() && may_update()) {
@@ -108,6 +100,7 @@ class XnetPage extends PlatalPage
     function doAuth()
     {
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
+        $this->register_modifier('cat_pp', 'cat_pp');
         $this->assign('it_is_xnet', true);
         if (!logged() && Get::has('auth')) {
             $_SESSION['session']->doAuthX($this);
