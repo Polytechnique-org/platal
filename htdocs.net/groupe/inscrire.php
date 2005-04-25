@@ -1,7 +1,7 @@
 <?php
 require 'xnet.inc.php';
 
-new_page('xnet/groupe/inscrire.tpl', AUTH_PUBLIC);
+new_page('xnet/groupe/inscrire.tpl', AUTH_MDP);
 $page->useMenu();
 $page->setType($globals->asso('cat'));
 $page->assign('asso', $globals->asso());

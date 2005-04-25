@@ -2,8 +2,6 @@
 require 'xnet.inc.php';
 
 new_groupadmin_page('xnet/groupe/alias-admin.tpl');
-$page->useMenu();
-$page->setType($globals->asso('cat'));
 
 if (!Get::has('liste')) {
     header("Location: listes.php");

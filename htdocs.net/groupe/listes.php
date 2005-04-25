@@ -3,9 +3,6 @@
 require_once 'xnet.inc.php';
 
 new_group_page('xnet/groupe/listes.tpl');
-$page->setType($globals->asso('cat'));
-$page->useMenu();
-$page->assign('asso', $globals->asso());
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));

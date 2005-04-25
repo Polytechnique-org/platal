@@ -91,7 +91,7 @@ class XnetPage extends PlatalPage
 
         if (logged() && may_update()) {
             $sub = array();
-            $sub['modifier l\'acceuil'] = "$dim/editer.php";
+            $sub['modifier l\'acceuil'] = "$dim/edit.php";
             $sub['envoyer un mail']     = "$dim/mail.php";
             $sub['créer une liste']     = "$dim/listes-create.php";
             $sub['créer un alias']      = "$dim/alias-create.php";
@@ -145,6 +145,32 @@ class XnetAuth extends XnetPage
 }
 
 // }}}
+// {{{ class XnetAdmin
+
+/** Une classe pour les pages réservées aux admins (authentifiés!).
+ */
+class XnetAdmin extends XnetAuth
+{
+    // {{{ function XnetAdmin()
+    
+    function XnetAdmin($tpl, $type=SKINNED)
+    {
+        global $globals;
+        
+        $this->XnetAuth($tpl, $type);
+        check_perms();
+
+        $this->useMenu();
+        if ($globals->asso('cat')) {
+            $this->assign('asso', $globals->asso());
+            $this->setType($globals->asso('cat'));
+        }
+    }
+    
+    // }}}
+}
+
+// }}}
 // {{{ class XnetGroupPage
 
 /** Une classe pour les pages réservées aux admins (authentifiés!).
@@ -155,10 +181,16 @@ class XnetGroupPage extends XnetAuth
     
     function XnetGroupPage($tpl, $type=SKINNED)
     {
+        global $globals;
+
         $this->XnetAuth($tpl, $type);
         if (!is_member() && !has_perms()) {
             $this->kill("You have not sufficient credentials");
         }
+
+        $this->useMenu();
+        $this->assign('asso', $globals->asso());
+        $this->setType($globals->asso('cat'));
     }
     
     // }}}
@@ -175,28 +207,16 @@ class XnetGroupAdmin extends XnetAuth
     
     function XnetGroupAdmin($tpl, $type=SKINNED)
     {
+        global $globals;
+        
         $this->XnetAuth($tpl, $type);
         if (!may_update()) {
             $this->kill("You have not sufficient credentials");
         }
-    }
-    
-    // }}}
-}
 
-// }}}
-// {{{ class XnetAdmin
-
-/** Une classe pour les pages réservées aux admins (authentifiés!).
- */
-class XnetAdmin extends XnetAuth
-{
-    // {{{ function XnetAdmin()
-    
-    function XnetAdmin($tpl, $type=SKINNED)
-    {
-        $this->XnetAuth($tpl, $type);
-        check_perms();
+        $this->useMenu();
+        $this->assign('asso', $globals->asso());
+        $this->setType($globals->asso('cat'));
     }
     
     // }}}

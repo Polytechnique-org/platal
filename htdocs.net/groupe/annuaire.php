@@ -2,10 +2,7 @@
 require 'xnet.inc.php';
 
 new_group_page('xnet/groupe/annuaire.tpl');
-$page->setType($globals->asso('cat'));
-$page->assign('asso', $globals->asso());
 $page->assign('admin', may_update());
-$page->useMenu();
 
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 $res = $globals->xdb->iterRow(

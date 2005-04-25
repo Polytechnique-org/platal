@@ -3,13 +3,13 @@
 require 'xnet.inc.php';
 
 new_page('xnet/groupe/asso.tpl', AUTH_PUBLIC);
+$page->useMenu();
+$page->setType($globals->asso('cat'));
+
+$page->assign('asso', $globals->asso());
 if (!$globals->asso('id')) {
     header("Location: ../");
 }
-$page->useMenu();
-$page->setType(strtolower($globals->asso('cat')));
-$page->assign('asso', $globals->asso());
-
 // Sélection de toutes les associations ayant la même catégorie et le même domaine que l'activité sélectionnée
 $gps = $globals->xdb->iterator(
         "SELECT  diminutif, nom

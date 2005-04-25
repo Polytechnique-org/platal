@@ -2,9 +2,6 @@
 require 'xnet.inc.php';
 
 new_groupadmin_page('xnet/groupe/listes-create.tpl');
-$page->useMenu();
-$page->setType($globals->asso('cat'));
-$page->assign('asso', $globals->asso());
 
 if (Post::has('submit')) {
     if (!Post::has('liste')) {

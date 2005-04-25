@@ -3,9 +3,6 @@
 require 'xnet.inc.php';
 
 new_group_page('xnet/groupe/telepaiement.tpl');
-$page->setType($globals->asso('cat'));
-$page->useMenu();
-$page->assign('asso', $globals->asso());
 
 $res = $globals->xdb->query("SELECT id, text FROM {$globals->money->mpay_tprefix}paiements WHERE asso_id = {?}", $globals->asso('id'));
 $tit = $res->fetchAllAssoc();

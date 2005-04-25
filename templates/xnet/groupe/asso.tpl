@@ -18,18 +18,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+<h1>{$asso.nom} : Accueil</h1>
+
 <table id="content" cellpadding="0" cellspacing="0">
-  <tr>
-    <td colspan="2">
-      <h1>
-        <a class="s" href="../groupes.php?cat={$asso.cat}">{$asso.cat}</a>
-        {if $asso.dom}&gt;
-        <a class="s" href="../groupes.php?cat={$asso.cat}&amp;dom={$asso.dom}">{$asso.domnom}</a>
-        {/if}
-        &gt; {$asso.nom} : Accueil
-      </h1>
-    </td>
-  </tr>
   <tr>
     <td>
       {if $asso.site}
