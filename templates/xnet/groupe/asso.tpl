@@ -18,45 +18,67 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************}
 
+{if $asso.site}
+<a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" style="float: right;" /></a>
+{else}
+<img src='getlogo.php' alt="LOGO" style="float: right;" />
+{/if}
+
 <h1>{$asso.nom} : Accueil</h1>
 
-{if $asso.site}
-<a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" /></a>
-{else}
-<img src='getlogo.php' alt="LOGO" />
-{/if}
+<table cellpadding="0" cellspacing="0">
+  {if $asso.site}
+  <tr>
+    <td class="titre">
+      Site Web:
+    </td>
+    <td><a href="{$asso.site}">{$asso.site}</a></td>
+  </tr>
+  {/if}
 
-{if $asso.site}
-<p class="descr">
-<strong>Site Web:</strong> <a href="{$asso.site}">{$asso.site}</a>
-</p>
-{/if}
+  {if $asso.resp || $asso.mail}
+  <tr>
+    <td class="titre">
+      Contact:
+    </td>
+    <td>
+      {if $asso.mail}
+      {mailto address=$asso.mail text=$asso.resp encode=javascript}
+      {else}
+      {$asso.resp}
+      {/if}
+    </td>
+  </tr>
+  {/if}
 
-{if $asso.resp && $asso.mail}
-<p class="descr">
-<strong>Contact:</strong> {mailto address=$asso.mail text=$asso.resp encode=javascript}
-</p>
-{elseif $asso.resp}
-<p class="descr">
-<strong>Contact:</strong> {$asso.resp}
-</p>
-{/if}
+  {if $asso.forum}
+  <tr>
+    <td class="titre">
+      Forum:
+    </td>
+    <td>
+      <a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a>
+      ou <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
+    </td>
+  </tr>
+  {/if}
 
-{if $asso.forum}
-<p class="descr">
-<strong>Forum:</strong>
-<a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a> ou
-<a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
-</p>
-{/if}
+  <tr>
+    <td class="titre">
+      <strong>TODO: INSCRIPTION</strong>
+    </td>
+  </tr>
 
-<strong>TODO: INSCRIPTION</strong>
+  {if $asso.ax}
+  <tr>
+    <td class="titre center" colspan="2">
+      groupe agréé par l'AX
+    </td>
+  </tr>
+  {/if}
+</table>
 
-{if $asso.ax}
-<p class="descr">
-<strong>groupe agrée par l'AX</strong>
-</p>
-{/if}
+<br />
 
 <div>
   {$asso.descr|smarty:nodefaults}
