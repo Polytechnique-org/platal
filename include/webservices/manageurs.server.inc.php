@@ -16,7 +16,7 @@ function get_annuaire_infos($method, $params) {
     global $error_mat, $error_key, $globals;
 
     //verif du mdp
-    if(!isset($params[0]) || ($params[0] != $globals->webservice->pass)){return false;}
+    if(!isset($params[0]) || ($params[0] != $globals->manageurs->pass)){return false;}
 
     //si on a adresse == -1 => on ne recupère aucune adresse
     if(isset($params[2]) && ($params[2] == -1)) unset($params[2]);
