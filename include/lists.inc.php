@@ -55,7 +55,13 @@ function list_sort_owners(&$members, $tri_promo = true) {
                 $key = $tri_promo ? $promo : strtoupper($nom{0});
                 $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
             } else {
-                $membres[0][] = Array('l' => $mem);
+                $res = $globals->xdb->query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
+                if (list($prenom, $nom) = $res->fetchOneRow()) {
+                    $key = $tri_promo ? 0 : strtoupper($nom{0});
+                    $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
+                } else {
+                    $membres[0][] = Array('l' => $mem);
+                }
             }
         } else {
             $membres[0][] = Array('l' => $mem);
