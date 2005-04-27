@@ -43,7 +43,7 @@
     </td>
     <td>
       {if $asso.mail}
-      {mailto address=$asso.mail text=$asso.resp encode=javascript}
+      {mailto address=$asso.mail text=$asso.resp|default:"par mail" encode=javascript}
       {else}
       {$asso.resp}
       {/if}

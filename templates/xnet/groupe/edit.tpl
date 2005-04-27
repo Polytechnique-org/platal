@@ -22,68 +22,130 @@
 
 <h1>{$asso.nom} : Éditer l'accueil</h1>
 
-<table cellpadding="0" cellspacing="0">
-  <tr>
-    <td class="titre">
-      Logo:
-    </td>
-    <td>
-      <input type="file" name="logo" />
-    </td>
-  </tr>
+<form method="post" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+  <table cellpadding="0" cellspacing="0">
+    {perms level=admin}
+    <tr>
+      <td class="titre">
+        Nom:
+      </td>
+      <td>
+        <input type="text" size="40" value="{$asso.nom}" name="nom" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">
+        Diminutif:
+      </td>
+      <td>
+        <input type="text" size="40" value="{$asso.diminutif}" name="diminutif" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">
+        Nom de Domaine:
+      </td>
+      <td>
+        <input type="text" size="40" value="{$asso.mail_domain}" name="mail_domain" />
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">
+        Catégorie :
+      </td>
+      <td>
+        <select name="cat">
+          <option value="groupesx" {if $asso.cat eq GroupesX}selected="selected"{/if}>Groupes X</option>
+          <option value="binets" {if $asso.cat eq Binets}selected="selected"{/if}>Binets</option>
+          <option value="promotions" {if $asso.cat eq Promotions}selected="selected"{/if}>Promotions</option>
+          <option value="institutions" {if $asso.cat eq Institutions}selected="selected"{/if}>Institutions</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">
+        Domaine:
+      </td>
+      <td>
+        <select name="dom">
+          <option value=""></option>
+          {iterate from=$dom item=d}
+          <option value="{$d.id}" {if $d.id eq $asso.id}selected="selected"{/if}>{$d.nom} [{$d.cat}]</option>
+          {/iterate}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+    </tr>
+    {/perms}
 
-  <tr>
-    <td class="titre">
-      Site Web:
-    </td>
-    <td>
-      <input type="text" value="{$asso.site}" name="site" />
-    </td>
-  </tr>
+    <tr>
+      <td class="titre">
+        Logo:
+      </td>
+      <td>
+        <input type="file" name="logo" />
+      </td>
+    </tr>
 
-  <tr>
-    <td class="titre">
-      Contact:
-    </td>
-    <td>
-      <input type="text" name="resp" value="{$asso.resp}" />
-    </td>
-  </tr>
+    <tr>
+      <td class="titre">
+        Site Web:
+      </td>
+      <td>
+        <input type="text" size="40" value="{$asso.site}" name="site" />
+      </td>
+    </tr>
 
-  <tr>
-    <td class="titre">
-      Adresse mail:
-    </td>
-    <td>
-      <input type="text" name="mail" value="{$asso.mail}" />
-    </td>
-  </tr>
+    <tr>
+      <td class="titre">
+        Contact:
+      </td>
+      <td>
+        <input type="text" size="40" name="resp" value="{$asso.resp}" />
+      </td>
+    </tr>
 
-  <tr>
-    <td class="titre">
-      Forum:
-    </td>
-    <td>
-      <input type="text" name="forum" value="{$asso.forum}" />
-    </td>
-  </tr>
+    <tr>
+      <td class="titre">
+        Adresse mail:
+      </td>
+      <td>
+        <input type="text" size="40" name="mail" value="{$asso.mail}" />
+      </td>
+    </tr>
 
-  <tr>
-    <td class="titre">
-      <strong>TODO: INSCRIPTION</strong>
-    </td>
-  </tr>
+    <tr>
+      <td class="titre">
+        Forum:
+      </td>
+      <td>
+        <input type="text" size="40" name="forum" value="{$asso.forum}" />
+      </td>
+    </tr>
 
-  <tr>
-    <td class="titre center" colspan="2">
-      <input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
-      groupe agréé par l'AX
-    </td>
-  </tr>
-</table>
+    <tr>
+      <td class="titre">
+        <strong>TODO: INSCRIPTION</strong>
+      </td>
+    </tr>
 
-<br />
+    <tr>
+      <td class="titre center" colspan="2">
+        <input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
+        groupe agréé par l'AX
+      </td>
+    </tr>
+  </table>
 
-<textarea name="descr" cols="70" rows="15" >{$asso.descr}</textarea>
+  <br />
+
+  <textarea name="descr" cols="70" rows="15" >{$asso.descr}</textarea>
+  
+  <div class="center">
+    <input type="submit" name="submit" value="Enregistrer" />
+  </div>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
