@@ -6,7 +6,6 @@ if (empty($matches)) {
     $action = $matches[1];
     $mbox   = $matches[2];
     $fqdn   = strtolower($matches[3]);
-    if ($action == 'members') { $action = 'membres'; }
     if ($fqdn == 'polytechnique.org') {
         header("Location: https://www.polytechnique.org/listes/$action?liste=$mbox");
     } else {
