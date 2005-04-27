@@ -139,6 +139,7 @@ div.breadcrumb {
 .erreur { color: red; }
 .error  { color: red; }
 .center { text-align: center; }
+.right  { text-align: right; }
 
 .descr {
     text-align: justify;

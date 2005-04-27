@@ -33,7 +33,7 @@ Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'i
 Fonctionnalités visibles uniquement par les administrateurs :
 </p>
 <ul class="descr">
-  <li><a href="membresx-edit.php?new=x">Ajouter un membre X</a></li>
+  <li><a href="membres-edit.php?new=x">Ajouter un membre X</a></li>
   <li><a href="membres-edit.php?new=ext">Ajouter un membre extérieur</a></li>
 </ul>
 {/if}
@@ -79,8 +79,8 @@ peux aussi <a href='{$smarty.server.PHP_SELF}'>afficher toute la liste</a>.
     {if $admin}
     <td></td>
     <td>{if $m.admin}&times;{else}&nbsp;{/if}</td>
-    <td><a href="{if $m.x}membresx{else}membres{/if}-edit.php?edit={$m.email}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
-    <td><a href="{if $m.x}membresx{else}membres{/if}-edit.php?del={$m.email}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
+    <td><a href="membres-edit.php?edit={$m.email}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
+    <td><a href="membres-edit.php?del={$m.email}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
     {/if}
   </tr>
   {/iterate}
