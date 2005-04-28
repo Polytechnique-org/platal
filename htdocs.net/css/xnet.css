@@ -174,7 +174,6 @@ table td.titre {
 
 table.tiny,  table.tinybicol { width: 70%; margin-left: 15%; border: 2px solid gray; }
 table.large, table.bicol     { width: 96%; margin-left:  2%; border: 2px solid gray; }
-table.normal td { border: none; }
 
 table.tiny td, table.tinybicol td, table.large td, table.bicol td {
     border: 1px solid gray;
@@ -186,6 +185,8 @@ table.tiny th, table.tinybicol th, table.large th, table.bicol th {
     border-bottom-width: 2px;
     padding: 2px;
 }
+
+table.normal td { border: none; }
 
 th { background: #d0c198; }
 
