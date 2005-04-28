@@ -87,11 +87,7 @@
         <input type='checkbox' name='ml2[{$liste.list}]' {if $liste.sub eq 2}checked="checked"{/if} />
       </td>
       <td>
-        <a href='listes-members.php?liste={$liste.list}'>
-          {$liste.list}
-          {if $liste.priv}&nbsp;<sup>&Dagger;</sup>{/if}
-          {if $liste.own}&nbsp;<sup>*</sup>{/if}
-        </a>
+        <a href='listes-members.php?liste={$liste.list}'>{$liste.list}</a>
       </td>
       <td>{$liste.desc}</td>
       <td class='right'>{$liste.nbsub}</td>

@@ -60,7 +60,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   <tr>
     <td>
       <a href="mailto:{$l.list}@{$asso.mail_domain}"><img src="{rel}/images/mail.png" alt='[mail]' /></a>
-      <a href='listes-members.php?liste={$l.list}'>{$l.list}{if $l.priv}&nbsp;<sup>&Dagger;</sup>{/if}{if $l.own}&nbsp;<sup>*</sup>{/if}</a>
+      <a href='listes-members.php?liste={$l.list}'>{$l.list} {if $l.priv}<sup>#</sup>{/if}{if $l.own}<sup>o</sup>{/if}</a>
     </td>
     <td>{$l.desc}</td>
     <td class='center'>
@@ -84,8 +84,8 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
 </table>
 
 <p class="descr">
-*: tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste<br />
-<sup>&Dagger;</sup>: cette liste est invisible aux non-membres du groupe. S'en désabonner
+<sup>o</sup>: tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste<br />
+<sup>#</sup>: cette liste est invisible aux non-membres du groupe. S'en désabonner
 t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>
         
