@@ -150,6 +150,8 @@ p.descr {
     padding-right: 7px;
 }
 
+table { border-collapse: collapse; }
+
 table.links {
     width: 100%;
     margin: 0.4em 0em;
@@ -167,7 +169,25 @@ table.links a {
 
 table td.titre {
     font-weight: bold;
+    white-space: nowrap;
 }
+
+table.tiny,  table.tinybicol { width: 70%; margin-left: 15%; border: 2px solid gray; }
+table.large, table.bicol     { width: 96%; margin-left:  2%; border: 2px solid gray; }
+table.normal td { border: none; }
+
+table.tiny td, table.tinybicol td, table.large td, table.bicol td {
+    border: 1px solid gray;
+    padding: 2px;
+}
+table.tiny th, table.tinybicol th, table.large th, table.bicol th {
+    border: 1px solid gray;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    padding: 2px;
+}
+
+th { background: #d0c198; }
 
 /***************************************************************************
  * Special pages

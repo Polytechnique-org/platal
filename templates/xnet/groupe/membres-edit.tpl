@@ -31,10 +31,10 @@
 </h2>
 
 <form method="post" action="{$smarty.server.REQUEST_URI}">
-  <table cellpadding="0" cellspacing="0">
+  <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
-        Permissions :
+        Permissions:
       </td>
       <td>
         <select name="is_admin">
@@ -73,7 +73,7 @@
 
   <h2>Abonnement aux listes</h2>
 
-  <table cellpadding="0" cellspacing="0">
+  <table cellpadding="0" cellspacing="0" class='large'>
     <tr>
       <th>&nbsp;</th>
       <th>Liste</th>
@@ -99,7 +99,7 @@
 
   <h2>Abonnement aux alias</h2>
 
-  <table cellpadding="0" cellspacing="0">
+  <table cellpadding="0" cellspacing="0" class='large'>
     <tr>
       <th>&nbsp;</th>
       <th>Alias</th>

@@ -32,7 +32,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</s
 <a href="alias-create.php">un alias</a> qui, lui, est capable de regrouper plusieurs listes.
 </p>
 <form action='{$smarty.server.PHP_SELF}' method='post'>
-  <table>
+  <table class="large">
     <tr>
       <th colspan='2'>Caractéristiques de la Liste</th>
     </tr>
@@ -51,7 +51,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</s
     <tr>
       <td><strong>Propriétés :</strong></td>
       <td>
-        <table style='width: 100%'>
+        <table style='width: 100%' class="normal">
           <tr>
             <td>visibilité :</td>
             <td>

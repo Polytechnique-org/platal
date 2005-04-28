@@ -46,7 +46,7 @@
 
 <h1>Administration des groupes X.net</h1>
 
-<table cellspacing="0" cellpadding="0">
+<table cellspacing="0" cellpadding="0" class='large'>
   {foreach from=$assos item=a key=i name=all}
   {if $i is even}<tr>{/if}
     <td><a href='?del={$a.diminutif}'><img src='{rel}/images/del.png' alt='delete' /></a></td>

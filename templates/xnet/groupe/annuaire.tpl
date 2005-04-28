@@ -45,20 +45,18 @@ Fonctionnalités visibles uniquement par les administrateurs :
 {/foreach}
 </p>
 
-<table summary="membres du groupe" style="width: 100%">
+<table summary="membres du groupe" class="{if $admin}large{else}tiny{/if}">
   <tr>
-    <th>prénom et nom</th>
-    <th>promotion</th>
-    <th>fiche X.org / carte / lui écrire</th>
+    <th>Prénom NOM</th>
+    <th>Promo</th>
+    <th>Infos</th>
     {if $admin}
-    <th></th>
-    <th>admin</th>
-    <th>éditer un profil</th>
-    <th>désinscrire</th>
+    <th>Éditer</th>
+    <th>suppr.</th>
     {/if}
   </tr>
   {iterate from=$ann item=m}
-  <tr>
+  <tr {if $m.admin}style="background:#d0c198;"{/if}>
     <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}</td>
     <td>{$m.promo}</td>
     <td>
@@ -71,8 +69,6 @@ Fonctionnalités visibles uniquement par les administrateurs :
       {/if}
     </td>
     {if $admin}
-    <td></td>
-    <td>{if $m.admin}&times;{else}&nbsp;{/if}</td>
     <td><a href="membres-edit.php?edit={$m.email}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
     <td><a href="membres-edit.php?del={$m.email}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
     {/if}

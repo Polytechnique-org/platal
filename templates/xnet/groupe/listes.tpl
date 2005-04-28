@@ -47,7 +47,7 @@ la liste. Dans le premier cas, une croix rouge te permet de te désabonner. Dans 
 croix verte te permet de t'inscrire, après accord des responsables si l'inscription est modérée.
 </p>
 
-<table cellpadding="0" cellspacing="0" style="width: 100%;">
+<table cellpadding="0" cellspacing="0" class='large'>
   <tr>
     <th>Liste</th>
     <th>Description</th>
@@ -92,17 +92,22 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 <h2>Voici les alias existants pour le groupe {$asso.nom} :</h2>
 
 {if $alias->total()}
-<p>
-{iterate from=$alias item=a}
-{if $may_update}
-<a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /></a>
-<a href="alias-admin.php?liste={$a.alias}">{$a.alias}</a>
-<a href="?del_alias={$a.alias}"><img src='{rel}/images/del.png' alt='[supprimer]' /></a><br />
-{else}
-<a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /> {$a.alias}</a><br />
-{/if}
-{/iterate}
-</p>
+<table cellspacing="0" cellpadding="0" class='large'>
+  <tr>
+    <th{if $may_update} colspan='3'{/if}>Alias</th>
+  </tr>
+  {iterate from=$alias item=a}
+  <tr>
+    {if $may_update}
+    <td class="center"><a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /></a></td>
+    <td><a href="alias-admin.php?liste={$a.alias}">{$a.alias}</a></td>
+    <td class="center"><a href="?del_alias={$a.alias}"><img src='{rel}/images/del.png' alt='[supprimer]' /></a></td>
+    {else}
+    <td><a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /> {$a.alias}</a></td>
+    {/if}
+  </tr>
+  {/iterate}
+</table>
 {else}
 <p>Aucun alias pour ce groupe</p>
 {/if}

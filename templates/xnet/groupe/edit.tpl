@@ -23,8 +23,8 @@
 <h1>{$asso.nom} : Éditer l'accueil</h1>
 
 <form method="post" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-  <table cellpadding="0" cellspacing="0">
-    {perms level=admin}
+  {perms level=admin}
+  <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
         Nom:
@@ -43,7 +43,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Nom de Domaine:
+        Domaine DNS:
       </td>
       <td>
         <input type="text" size="40" value="{$asso.mail_domain}" name="mail_domain" />
@@ -70,16 +70,15 @@
         <select name="dom">
           <option value=""></option>
           {iterate from=$dom item=d}
-          <option value="{$d.id}" {if $d.id eq $asso.id}selected="selected"{/if}>{$d.nom} [{$d.cat}]</option>
+          <option value="{$d.id}" {if $d.id eq $asso.dom}selected="selected"{/if}>{$d.nom} [{$d.cat}]</option>
           {/iterate}
         </select>
       </td>
     </tr>
-    <tr>
-      <td colspan="2">&nbsp;</td>
-    </tr>
-    {/perms}
-
+  </table>
+  <p></p>
+  {/perms}
+  <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
         Logo:
@@ -126,7 +125,7 @@
     </tr>
 
     <tr>
-      <td class="titre">
+      <td class="titre" colspan="2">
         <strong>TODO: INSCRIPTION</strong>
       </td>
     </tr>

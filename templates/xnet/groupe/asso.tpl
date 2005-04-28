@@ -26,7 +26,7 @@
 
 <h1>{$asso.nom} : Accueil</h1>
 
-<table cellpadding="0" cellspacing="0">
+<table cellpadding="0" cellspacing="0" class='tiny'>
   {if $asso.site}
   <tr>
     <td class="titre">
@@ -64,7 +64,7 @@
   {/if}
 
   <tr>
-    <td class="titre">
+    <td class="titre" colspan="2">
       <strong>TODO: INSCRIPTION</strong>
     </td>
   </tr>
