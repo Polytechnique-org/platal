@@ -62,6 +62,9 @@ class XnetPage extends PlatalPage
         $sub['accueil']           = 'index.php';
         $sub['liste des groupes'] = 'plan.php';
         if (logged()) {
+            if (has_perms()) {
+                $sub['admin X.net'] = 'admin.php';
+            }
             $sub['déconnexion']   = 'deconnexion.php';
         }
         $menu["Menu Principal"]   = $sub;
@@ -69,7 +72,7 @@ class XnetPage extends PlatalPage
         if (logged() && (is_member() || may_update())) {
             $sub = array();
             $dim = $globals->asso('diminutif');
-            $sub['accueil'] = "$dim/asso.php";
+            $sub['présentation'] = "$dim/asso.php";
             $sub['annuaire du groupe'] = "$dim/annuaire.php";
             if ($globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/listes.php";
@@ -84,10 +87,11 @@ class XnetPage extends PlatalPage
         if (logged() && may_update()) {
             $sub = array();
             $sub['modifier l\'acceuil'] = "$dim/edit.php";
-            $sub['envoyer un mail']     = "$dim/mail.php";
-            $sub['créer une liste']     = "$dim/listes-create.php";
-            $sub['créer un alias']      = "$dim/alias-create.php";
-
+            if ($globals->asso('mail_domain')) {
+                $sub['envoyer un mail']     = "$dim/mail.php";
+                $sub['créer une liste']     = "$dim/listes-create.php";
+                $sub['créer un alias']      = "$dim/alias-create.php";
+            }
             $menu['Administrer Groupe'] = $sub;
         }
 
