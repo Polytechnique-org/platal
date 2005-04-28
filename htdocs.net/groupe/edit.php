@@ -12,7 +12,9 @@
                   Post::get('nom'), Post::get('diminutif'), Post::get('cat'), Post::getInt('dom'),
                   Post::get('descr'), Post::get('site'), Post::get('mail'), Post::get('resp'),
                   Post::get('forum'), Post::get('mail_domain'), Post::has('ax'), $globals->asso('id'));
-            $globals->xdb->execute('INSERT INTO virtual_domains (domain) VALUES({?})', Post::get('mail_domain'));
+            if (Post::get('mail_domain')) {
+                $globals->xdb->execute('INSERT INTO virtual_domains (domain) VALUES({?})', Post::get('mail_domain'));
+            }
         } else {
             $globals->xdb->execute(
                 "UPDATE  groupex.asso
