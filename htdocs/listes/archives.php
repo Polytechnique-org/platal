@@ -40,7 +40,7 @@ if (list($det) = $client->get_members($liste)) {
         if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $rep)) {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         } else { 
-            $page->assign('url', $globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
+            $page->assign('archives', $globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
         }
     } else {
         $archs = Array();

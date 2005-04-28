@@ -76,9 +76,9 @@
   </tr>
   {/foreach}
 </table>
-{elseif $url}
+{elseif $archives}
 {tidy}
-{include file="$url"}
+{include file="$archives"}
 {/tidy}
 {/if}
 
