@@ -26,7 +26,6 @@
 class XnetConfig
 {
     var $secret       = '';
-    var $exalead      = '';
 }
 
 // }}}
