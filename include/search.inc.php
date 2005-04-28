@@ -113,16 +113,16 @@ class XOrgSearch extends XOrgPlugin
         $page->assign('search_results', $list);
         $page->assign('search_results_nb', $total);
         $page->assign('search_page', $offset);
-        $page->assign('search_pages_nb', $page_max);
+        $page->assign('search_pages_nb', $page_max+1);
         $page->assign('search_pages_link', $links);
-        
+
         $order_links = Array();
         foreach ($this->orders as $key=>$o) if ($o[3]) {
             $order_links[] = Array(
-                "text"=>$o[2],
-                "url" =>$this->make_url(Array('order'    =>$key,'order_inv'=>($o[0] == $order) && ($order_inv != $o[1]))),
-                "asc" =>($o[0] == $order) && $order_inv,
-                "desc"=>($o[0] == $order) && !$order_inv
+                "text" => $o[2],
+                "url"  => $this->make_url(Array('order' => $key, 'order_inv' => ($o[0] == $order) && ($order_inv != $o[1]))),
+                "asc"  => ($o[0] == $order) && $order_inv,
+                "desc" => ($o[0] == $order) && !$order_inv
             );
         }
         $page->assign('search_order_link', $order_links);

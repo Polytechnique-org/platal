@@ -37,8 +37,8 @@
     [<a href='{$tri.url}'>
     {if $tri.asc or $tri.desc}<strong>{/if}
     {$tri.text}
-    {if $tri.desc}<img src='{rel}/images/up.png' />{/if}
-    {if  $tri.asc}<img src='{rel}/images/dn.png' />{/if}
+    {if $tri.desc}<img src='{rel}/images/up.png' alt='tri ascendant' />{/if}
+    {if  $tri.asc}<img src='{rel}/images/dn.png' alt='tri descendant' />{/if}
     {if $tri.asc or $tri.desc}</strong>{/if}
     </a>]
     {/foreach}
