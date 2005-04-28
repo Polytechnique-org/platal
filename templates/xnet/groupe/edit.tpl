@@ -139,11 +139,9 @@
     </tr>
   </table>
 
-  <br />
-
-  <textarea name="descr" cols="70" rows="15" >{$asso.descr}</textarea>
-  
   <div class="center">
+    <br />
+    <textarea name="descr" cols="70" rows="15">{$asso.descr}</textarea>
     <input type="submit" name="submit" value="Enregistrer" />
   </div>
 </form>

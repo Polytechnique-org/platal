@@ -55,7 +55,9 @@ de modération), il est recommandé de créer <a href="listes-create.php">une liste
       </td>
     </tr>
   </table>
-  <center><p><input name='submit' type='submit' value="Créer !" /></p></center>
+  <p class="center">
+  <input name='submit' type='submit' value="Créer !" />
+  </p>
 </form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

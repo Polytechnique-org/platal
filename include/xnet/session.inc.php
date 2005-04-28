@@ -108,6 +108,13 @@ class XnetSession extends DiogenesCoreSession
         $_SESSION['auth'] = AUTH_MDP;
         unset($this->challenge);
         unset($this->loginX);
+        Get::kill('auth');
+        Get::kill('uid');
+        $args = array();
+        foreach($_GET as $key=>$val) {
+            $args[] = urlencode($key).'='.urlencode($val);
+        }
+        header('Location: '.$_SERVER['PHP_SELF'] . '?' . join('&', $args));
     }
 
     // }}}

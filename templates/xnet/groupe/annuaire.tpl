@@ -51,7 +51,7 @@ peux aussi <a href='{$smarty.server.PHP_SELF}'>afficher toute la liste</a>.
 
 
 
-<table summary"membres du groupe" style="width: 100%">
+<table summary="membres du groupe" style="width: 100%">
   <tr>
     <th>prénom et nom</th>
     <th>promotion</th>
