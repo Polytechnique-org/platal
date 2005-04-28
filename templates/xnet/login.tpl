@@ -32,7 +32,7 @@
   </p>
 </noscript>
 
-<table style="width: 100%;">
+<table class='large' cellpadding="4" cellspacing="0">
   <tr>
     <th style="width: 50%;">
       Accès pour les Polytechniciens
@@ -42,13 +42,23 @@
     </th>
   </tr>
   <tr>
-    <td>
+    <td style="padding: 1em">
+      <p class="descr">
       Il suffit de suivre <strong><a href="{$smarty.session.session->loginX}">ce lien</a></strong> qui va te rediriger vers
-      <a href="https://www.polytechnique.org/">Polytechnique.org</a>
+      <a href="https://www.polytechnique.org/">Polytechnique.org</a> brièvement.
+      </p>
+      <p class="descr">
+      Une fois autentifié sur Polytechnique.org, tu seras redirigé sur X.net
+      </p>
+      <div class="center">
+        <strong>
+          <a href="{$smarty.session.session->loginX}">ME CONNECTER</a>
+        </strong>
+      </div>
     </td>
-    <td>
+    <td style="padding: 1em">
       <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
-        <table class="bicol" cellpadding="4" summary="Formulaire de login">
+        <table class="large" cellpadding="4" cellspacing="0" summary="Formulaire de login">
           <tr>
             <th colspan="2">Connexion</th>
               <input type="hidden" name="remember" value="" />
@@ -71,7 +81,7 @@
             </td>
           </tr>
           <tr>
-            <td colspan="2">
+            <td colspan="2" class="center">
               <input type="submit" name="submitbtn" value="Envoyer" />
             </td>
           </tr>
