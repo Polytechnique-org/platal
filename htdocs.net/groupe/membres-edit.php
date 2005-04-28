@@ -35,7 +35,38 @@
         return $user;
     }
 
-    if (Env::has('edit'))
+    if (Env::has('new'))
+    {
+        new_groupadmin_page('xnet/groupe/membres-add.tpl');
+        $x = (Env::get('new') == 'x');
+
+        if (Post::has('email')) {
+            if ($x) {
+                require_once 'user.func.inc.php';
+                if ($forlife = get_user_forlife(Post::get('email'))) {
+                    $globals->xdb->execute(
+                                'INSERT INTO  groupex.membres (uid,asso_id,origine)
+                                      SELECT  user_id,{?},"X"
+                                        FROM  auth_user_md5 AS u
+                                  INNER JOIN  aliases       AS a ON (u.user_id = a.id)
+                                       WHERE  a.alias={?}', $globals->asso('id'), $forlife);
+                    header('Location: ?edit='.$forlife);
+                }
+            } else {
+                $email = Post::get('email');
+                if (isvalid_email($email)) {
+                    $res = $globals->xdb->query('SELECT MAX(uid)+1 FROM groupex.membres');
+                    $uid = max(intval($res->fetchOneCell()), 50001);
+                    $globals->xdb->execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email) VALUES({?},{?},"ext",{?})',
+                            $uid, $globals->asso('id'), $email);
+                    header('Location: ?edit='.$email);
+                } else {
+                    $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
+                }
+            }
+        }
+    }
+    elseif (Env::has('edit'))
     {
         new_groupadmin_page('xnet/groupe/membres-edit.tpl');
 
