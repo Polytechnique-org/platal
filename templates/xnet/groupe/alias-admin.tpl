@@ -22,9 +22,9 @@
 
 <h1>Membres de {$smarty.request.liste}</h1>
       
-<table style="width:80%; margin: 0px 10%;">
+<table class='tiny'>
   <tr>
-    <th>Membres</th>
+    <td class='titre'>Membres</td>
     <td>
       {if $mem->total()}
       {iterate from=$mem item=m}
