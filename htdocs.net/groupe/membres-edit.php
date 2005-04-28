@@ -17,12 +17,12 @@
                     "SELECT  user_id AS uid, u.promo, u.nom, u.prenom, b.alias,
                              CONCAT(b.alias, '@m4x.org') AS email,
                              CONCAT(b.alias, '@polytechnique.org') AS email2,
-                             m.perms='admin', m.origine
+                             m.perms='admin' AS perms, m.origine
                        FROM  auth_user_md5   AS u
                  INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
                  INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
-                 INNER JOIN  groupex.membres AS m ON ( m.uid = u.user_id )
-                      WHERE  a.alias = {?} AND u.user_id < 50000", $mbox);
+                 INNER JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
+                      WHERE  a.alias = {?} AND u.user_id < 50000", $globals->asso('id'), $mbox);
             $user = $res->fetchOneAssoc();
         } else {
             $res = $globals->xdb->query(
@@ -41,15 +41,63 @@
 
         $user = get_infos(Env::get('edit'));
         if (empty($user)) { header("Location: annuaire.php"); }
-        $page->assign('user', $user);
 
         require 'lists.inc.php';
         $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
 
-        if (false) {
-            // TODO : deal with form
+        if (Post::has('change')) {
+
+            if ($user['origine'] != 'X')
+            {
+                $globals->xdb->query('UPDATE groupex.membres SET prenom={?}, nom={?}, email={?} WHERE uid={?} AND asso_id={?}',
+                        Post::get('prenom'), Post::get('nom'), Post::get('email'), $user['uid'], $globals->asso('id'));
+                $user['nom']    = Post::get('nom');
+                $user['prenom'] = Post::get('prenom');
+                $user['email']  = Post::get('email');
+                $user['email2'] = Post::get('email');
+            }
+
+            $perms = Post::getInt('is_admin');
+            if ($user['perms'] != $perms) {
+                $globals->xdb->query('UPDATE groupex.membres SET perms={?} WHERE uid={?} AND asso_id={?}',
+                    $perms ? 'admin' : 'membre', $user['uid'], $globals->asso('id'));
+                $user['perms'] = $perms;
+                $page->trig('permissions modifiées');
+            }
+
+            foreach (Env::getMixed('ml1',array()) as $ml => $state) {
+                $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
+                if ($ask == $state) continue;
+                if ($state == '1') {
+                    $page->trig("{$user['prenom']} {$user['nom']} a actuellement une demande d'inscription en cours sur <strong>$ml@</strong> !!!");
+                } elseif ($ask) {
+                    $client->mass_subscribe($ml, Array($user['email2']));
+                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@");
+                } else {
+                    $client->mass_unsubscribe($ml, Array($user['email2']));
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@");
+                }
+            }
+
+            foreach (Env::getMixed('ml3', array()) as $ml => $state) {
+                $ask = !empty($_REQUEST['ml4'][$ml]);
+                if($state == $ask) continue;
+                if($ask) {
+                    $globals->xdb->query("INSERT INTO  virtual_redirect (vid,redirect)
+                                               SELECT  vid,{?} FROM virtual WHERE alias={?}",
+                                         $user['email'], $ml);
+                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml");
+                } else {
+                    $globals->xdb->query("DELETE FROM  virtual_redirect
+                                                USING  virtual_redirect
+                                           INNER JOIN  virtual USING(vid)
+                                                WHERE  redirect={?} AND alias={?}", $user['email'], $ml);
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
+                }
+            }
         }
         
+        $page->assign('user', $user);
         $listes = $client->get_lists($user['email2']);
         $page->assign('listes', $listes);
 

@@ -24,10 +24,10 @@
   Édition du profil de {$user.prenom} {$user.nom}
   {if $user.origine eq 'X'}
   (X{$user.promo})
-  <a href="https://www.polytechnique.org/fiche.php?user={$user.alias}"><img src="{rel}/images/loupe.gif" alt="Voir la fiche"></a>
+  <a href="https://www.polytechnique.org/fiche.php?user={$user.alias}"><img src="{rel}/images/loupe.gif" alt="Voir la fiche" /></a>
   {/if}
-  <a href="?del={$user.email}"><img src="{rel}/images/del.png" alt="Suppression du compte"></a>
-  <a href="mailto:{$user.email}"><img src="{rel}/images/mail.png" alt="Ecrire un mail"></a>
+  <a href="?del={$user.email}"><img src="{rel}/images/del.png" alt="Suppression du compte" /></a>
+  <a href="mailto:{$user.email}"><img src="{rel}/images/mail.png" alt="Ecrire un mail" /></a>
 </h2>
 
 <form method="post" action="{$smarty.server.REQUEST_URI}">
@@ -37,9 +37,9 @@
         Permissions :
       </td>
       <td>
-        <select name="is_admin">";
-          <option value="0" {if $user.perms neq admin}selected="selected"{/if}>Membre</option>
-          <option value="1" {if $user.perms eq admin}selected="selected"{/if}>Administrateur</option>
+        <select name="is_admin">
+          <option value="0" {if !$user.perms}selected="selected"{/if}>Membre</option>
+          <option value="1" {if $user.perms}selected="selected"{/if}>Administrateur</option>
         </select>
       </td>
     </tr>
@@ -90,7 +90,7 @@
         <a href='listes-members.php?liste={$liste.list}'>
           {$liste.list}
           {if $liste.priv}&nbsp;<sup>&Dagger;</sup>{/if}
-          {if $liste.own}&nbsp;<sup>&Dagger;</sup>{/if}
+          {if $liste.own}&nbsp;<sup>*</sup>{/if}
         </a>
       </td>
       <td>{$liste.desc}</td>
@@ -124,8 +124,8 @@
     {/foreach}
   </table>
 
-  <br />
   <div class="center">
+    <br />
     <input type="submit" name='change' value="Valider ces changements" />
     &nbsp;
     <input type="reset" value="Annuler ces changements" />
