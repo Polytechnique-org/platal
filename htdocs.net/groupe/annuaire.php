@@ -1,27 +1,48 @@
 <?php
 require 'xnet.inc.php';
 
+define('NB_PER_PAGE', 25);
+
 new_group_page('xnet/groupe/annuaire.tpl');
 $page->assign('admin', may_update());
 
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 $res = $globals->xdb->iterRow(
-            'SELECT  SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1), COUNT(IF(m.origine="X",u.nom,m.nom))
+            'SELECT  UPPER(SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1)), COUNT(IF(m.origine="X",u.nom,m.nom))
                FROM  groupex.membres AS m
           LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
               WHERE  asso_id = {?}
-           GROUP BY  SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1)', $globals->asso('id'));
+           GROUP BY  UPPER(SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1))', $globals->asso('id'));
 $alphabet = array();
 $nb_tot = 0;
 while (list($char, $nb) = $res->next()) {
     $alphabet[ord($char)] = $char;
     $nb_tot += $nb;
+    if (Env::has('initiale') && $char == strtoupper(Env::get('initiale'))) {
+        $tot = $nb;
+    }
 }
 $page->assign('alphabet', $alphabet);
 $page->assign('nb_tot',   $nb_tot);
 
-$ini = Env::has('initiale') ? 'AND IF(m.origine="X",u.nom,m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
+$ofs   = Env::getInt('offset');
+$tot   = Env::get('initiale') ? $tot-1 : $nb_tot-1;
+$nbp   = intval(($tot-1)/NB_PER_PAGE);
+$links = array();
+if ($ofs) {
+    $links['précédent'] = $ofs-1;
+}
+for ($i = 0; $i <= $nbp; $i++) {
+    $links[(string)($i+1)] = $i;
+}
+if ($ofs < $nbp) {
+    $links['suivant'] = $ofs+1;
+}
+if (count($links)>1) {
+    $page->assign('links', $links);
+}
 
+$ini = Env::has('initiale') ? 'AND IF(m.origine="X",u.nom,m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
 $ann = $globals->xdb->iterator(
           "SELECT  IF(m.origine='X',IF(u.nom_usage, u.nom_usage, u.nom) ,m.nom) AS nom,
                    IF(m.origine='X',u.prenom,m.prenom) AS prenom,
@@ -34,7 +55,13 @@ $ann = $globals->xdb->iterator(
         LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
         LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
             WHERE  m.asso_id = {?} $ini
-         ORDER BY  $tri", $globals->asso('id'));
+         ORDER BY  $tri
+            LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
+
+$nb = $globals->xdb->query("SELECT  FOUND_ROWS()");
+$nb = $nb->fetchOneCell();
+
+
 $page->assign('ann', $ann);
 
 $page->run();

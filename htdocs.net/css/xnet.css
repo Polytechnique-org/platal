@@ -136,8 +136,8 @@ div.breadcrumb {
     padding: 0.5em 0em;
 }
 
-.erreur { color: red; }
-.error  { color: red; }
+.erreur { color: red !important; }
+.error  { color: red !important; }
 .center { text-align: center; }
 .right  { text-align: right; }
 

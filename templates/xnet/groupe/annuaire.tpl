@@ -38,18 +38,12 @@ Fonctionnalités visibles uniquement par les administrateurs :
 </ul>
 {/if}
 
-<p class="descr">
-Choisis une initiale pour restreindre la liste aux membres dont le nom commence par cette lettre. Tu
-peux aussi <a href='{$smarty.server.PHP_SELF}'>afficher toute la liste</a>.
-</p>
-
 <p class="center">
+[<a href="{$smarty.server.PHP_SELF}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
-[<a href="?initiale={$c}">{$c}</a>]
+[<a href="?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
-
-
 
 <table summary="membres du groupe" style="width: 100%">
   <tr>
@@ -85,5 +79,11 @@ peux aussi <a href='{$smarty.server.PHP_SELF}'>afficher toute la liste</a>.
   </tr>
   {/iterate}
 </table>
+
+<p class="descr">
+{foreach from=$links item=ofs key=txt}
+<a href="?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
+{/foreach}
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
