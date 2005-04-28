@@ -44,7 +44,7 @@ Pour les autres besoins de communications (notament pour un grand nombre de pers
 de modération), il est recommandé de créer <a href="listes-create.php">une liste de diffusion</a>.
 </p>
 <form action='{$smarty.server.PHP_SELF}' method='post'>
-  <table border='1'>
+  <table class='large'>
     <tr>
       <th colspan='2'>Caractéristiques de l'alias</th>
     </tr>
