@@ -28,6 +28,7 @@
 Cette page te permet de voir l'album photo d'une promotion
 donnée.
 </p>
+<p>Pour accéder à la liste des sites web promo, clique <a href="http://www.polytechnique.net/autres.php?cat=Promotions">ici</a>.</p>
 <p>
 Fais attention, si tu as une connexion à internet lente (par
 exemple si tu es sur un vieux modem), la page que tu vas télécharger
