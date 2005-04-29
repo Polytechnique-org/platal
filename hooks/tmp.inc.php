@@ -10,7 +10,7 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',      'motdepassemd5.php');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',       'preferences.php');
 
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi promo',          'trombipromo.php');
+    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',          'trombipromo.php');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',          'referent.php');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',             'http://www.polytechnique.net/plan.php');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   40, 'Web Polytechnicien',    'http://www.polytechnique.net/');
