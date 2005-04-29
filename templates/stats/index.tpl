@@ -31,7 +31,6 @@ Quelques statistiques sur l'utilisation des services de Polytechnique.org ainsi 
 <li><a href="evolution_inscrits.php">Nombre d'inscrits au cours du temps</a></li>
 <li><a href="stats_promo.php">Nombre d'inscrits dans ta promotion</a></li>
 <li><a href="nb_by_promo.php">Nombre d'inscrits par promotion</a></li>
-<li><a href="parselog.php">Statistiques mail</a></li>
 </ul>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

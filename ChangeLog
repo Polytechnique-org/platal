@@ -9,6 +9,9 @@ New :
 	* Search :
 		- Last improvements (clean code for search now !).					-MC
 
+	* Stats :
+		- Drop mail stats pages (buggy and not accurate anymore).			-MC
+
 	* Polytechnique.net in now in plat/al !									-MC
 
 Bug/Wish :
