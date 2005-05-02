@@ -72,9 +72,9 @@
   </td>
 </tr>
 {/if}
-{foreach from=$rows item=myrow}{assign var="myarr" value=$myrow[2]}
+{foreach from=$rows item=myrow}{assign var="myarr" value=$myrow[1]}
 <tr class="{cycle values="pair,impair"}">
-  {if $idsum}<td>{$myrow[1]}</td>{/if}
+  {if $idsum}<td>{$myrow[0]}</td>{/if}
 {foreach from=$vars key=mykey item=myval}
 {if $myval.sum}
   <td>
@@ -93,18 +93,24 @@
   {if !$hideactions}
   <td class="action">
     {if !$readonly}
-    <a href="javascript:edit('{$myrow[1]}');">edit</a>
-    <a href="javascript:del('{$myrow[1]}');">delete</a>
+    <a href="javascript:edit('{$myrow[0]}');">edit</a>
+    <a href="javascript:del('{$myrow[0]}');">delete</a>
     {/if}
-    {foreach from=$myrow[3] item=myaction}
+    {foreach from=$myrow[2] item=myaction}
     {a lnk=$myaction}
     {/foreach}
   </td>
   {/if}
 </tr>
 {/foreach}
-
 </table>
+
+{if ($p_prev > -1) || ($p_next > -1)}
+<p class="pagenavigation">
+{if $p_prev > -1}<a href="?start={$p_prev}">{$msg_previous_page}</a>&nbsp;{/if}
+{if $p_next > -1}<a href="?start={$p_next}">{$msg_next_page}</a>{/if}
+</p>
+{/if}
 
 {else}
 
@@ -128,6 +134,7 @@
         {if $myval.type=="password"}<br /><em>(blank=no change)</em>{/if}
       </td>
       <td>
+        {if $myval.edit}
         {if $myval.type=="textarea"}
         <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value}</textarea>
         {elseif $myval.type=="set"}
@@ -144,6 +151,9 @@
         <input type="password" name="{$prefix}{$mykey}" size="40" />
         {else}
         <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value}" />
+        {/if}
+        {else}
+        {$myval.value|escape}
         {/if}
       </td>
     </tr>
