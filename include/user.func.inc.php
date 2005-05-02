@@ -44,7 +44,7 @@ function user_clear_all_subs($user_id, $really_del=true)
     $globals->xdb->execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain);
     $globals->xdb->execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain2);
 
-    $globals->xdb->execute("UPDATE auth_user_md5   SET passwd='',smtppass='' WHERE user_id={?}", $uid);
+    $globals->xdb->execute("UPDATE auth_user_md5   SET password='',smtppass='' WHERE user_id={?}", $uid);
     $globals->xdb->execute("UPDATE auth_user_quick SET watch_flags='' WHERE user_id={?}", $uid);
 
     $globals->xdb->execute("DELETE FROM competences_ins WHERE uid={?}", $uid);
