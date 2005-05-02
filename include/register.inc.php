@@ -192,7 +192,7 @@ function create_aliases (&$sub)
             $globals->xdb->execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
             $globals->xdb->execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
             $globals->xdb->execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $uid);
-            $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id={?}", $h_id);
+            $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id={?} AND expire IS NULL", $h_id);
             $als = $res->fetchColumn();
 
             require_once('diogenes/diogenes.hermes.inc.php');

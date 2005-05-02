@@ -1,6 +1,5 @@
 templates/admin/homonymes.tpl
 htdocs/admin/homonymes.php
-include/identification.inc.php
 htdocs/inscription/index.php
 htdocs/inscription/maj.php
 htdocs/inscription/step1.php
