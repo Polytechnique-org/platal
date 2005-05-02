@@ -271,12 +271,12 @@ class Exalead{
      $currentCategory->cref = $attrs['CREF'];
      if(isset($attrs['REFINEHREF'])) $currentCategory->refine_href = convert_url($attrs['REFINEHREF']);
      //if(isset($attrs['REFINEHREF'])) $this->currentCategory->refine_href = $attrs['REFINEHREF'];
-     if(isset($attrs['EXCLUDEHREF'])){
-       $currentCategory->exclude_href = $attrs['EXCLUDEHREF'];
-     }
-     else{
+     //if(isset($attrs['EXCLUDEHREF'])){
+     //  $currentCategory->exclude_href = $attrs['EXCLUDEHREF'];
+     //}
+     //else{
        $currentCategory->exclude_href = '_c=-'.$currentCategory->cref;
-     }
+     //}
      if(isset($attrs['RESETHREF'])){
        $currentCategory->reset_href = $attrs['RESETHREF'];
      }
