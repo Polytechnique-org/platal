@@ -58,9 +58,9 @@ d'affiner la recherche sur ces critères, suivant le même fonctionnement que les 
       {else}
       <div id="nb_results">
         {if $exalead_data->estimated}
-        <div class="nb_results">Votre recherche a retourné <strong>environ <?php echo $exalead_data->nmatches;?></strong> résultats.</div>
+        <div class="nb_results">Votre recherche a retourné <strong>environ {$exalead_data->nmatches}</strong> résultats.</div>
         {else}
-        <div class="nb_results">Votre recherche a retourné <strong><?php echo $exalead_data->nmatches;?></strong> résultats.</div>
+        <div class="nb_results">Votre recherche a retourné <strong>{$exalead_data->nmatches}</strong> résultats.</div>
         {/if}
       </div>
       {/if}
@@ -140,25 +140,26 @@ d'affiner la recherche sur ces critères, suivant le même fonctionnement que les 
       {if $exalead_data->start < 9}
       <a href=?_C={$exalead_data->query->context}&_s=0">[1-10]</a>
       {else}
-      <a href="?_C={$exalead_data->query->context}&_s={$exalead_data->start - 10}">[-10]</a>";
+      <a href="?_C={$exalead_data->query->context}&_s={$exalead_data->start-10}">[{$exalead_data->start-9}-{$exalead_data->end-9}]</a>
       {/if}
       {/if}
 
-      <a href="?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2">[Classer par date]</a>
-      <a href="?_C={$exalead_data->query->context}/_sf=relevance&amp;_f=xml2">[Classer par pertinence]</a>
+      Classer
+      <a href="?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2">[par date]</a>
+      <a href="?_C={$exalead_data->query->context}/_sf=relevance&amp;_f=xml2">[par pertinence]</a>
 
-      {if $exalead_data->end < $exalead_data->nhits}
+      {if $exalead_data->end + 1  < $exalead_data->nhits}
       {if $exalead_data->end + 11 > $exalead_data->nhits}
-      <a href="?_C={$exalead_data->query->context}&_s={$exalead_data->nhits-10}">[{$exalead_data->nhits-10}-{$exalead_data->nhits}]</a>
+      <a href="?_C={$exalead_data->query->context}&_s={$exalead_data->start+10}">[{$exalead_data->start+11}-{$exalead_data->nhits}]</a>
       {else}
-      <a href="?_C={$exalead_data->query->context}&_s=$fin_g\">[{$exalead_data->end+2}-{$exalead_data->end+12}]</a>
+      <a href="?_C={$exalead_data->query->context}&_s={$exalead_data->start+10}">[{$exalead_data->start+11}-{$exalead_data->end+11}]</a>
       {/if}
       {/if}
 
       {foreach from=$exalead_data->hits item=hit}
       <div class="exa_result">
         <div class="header">
-          <a href="{$hit->url|regex_replace:"!\?PHPSESSID=.*$!":""}">{$hit->url|regex_replace:"!\?PHPSESSID=.*$!":""}</a>
+          <a href="{$hit->url|regex_replace:"!(\?|\&|&amp;)PHPSESSID=.*$!":""}">{$hit->url|regex_replace:"!(\?|\&|&amp;)PHPSESSID=.*$!":""}</a>
         </div>
         {foreach from=$hit->hitgroups  item=hitgroup}
         <div class="field">
@@ -166,7 +167,7 @@ d'affiner la recherche sur ces critères, suivant le même fonctionnement que les 
           {if $hitgroup->hitcategories[0]->browsehref}
           <a href="?_C={$exalead_data->query->context}/{$hitgroup->hitcategories[0]->browsehref}">{$hitgroup->hitcategories[0]->display}</a>
           {else}
-          echo $hitgroup->hitcategories[0]->display;
+          {$hitgroup->hitcategories[0]->display}
           {/if}
         </div>
         {/foreach}
@@ -177,31 +178,5 @@ d'affiner la recherche sur ces critères, suivant le même fonctionnement que les 
   </tr>
 </table>
 {/if}
-
-
-{*
-
-<div>Debug : </div>
-<div>Nb matches : {$exalead_data->nmatches}</div>
-<div>Nb hits : {$exalead_data->nhits}</div>
-<div>estimated : {$exalead_data->estimated}</div>
-<div>start : {$exalead_data->start}</div>
-<div>end : {$exalead_data->end}</div>
-<div>last : {$exalead_data->last}</div>
-<div>Query :</div>
-<div style="border: 1px solid #228; padding: 10px;">
-<div>query : {$exalead_data->query->query}</div>
-<div>time : {$exalead_data->query->time}</div>
-<div>Terms : </div>
-foreach( $exalead_data->query->query_terms as $key => $term){
-  echo "<div>level : {$term->level} | regexp : {$term->regexp}</div>";
-}
-<div>Parameters : </div>
-foreach($exalead_data->query->query_parameters as  $key=>$parameter){
-  echo "<div>name : {$parameter->name} | value : {$parameter->value}</div>";
-}
-</div>
-
-*}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
