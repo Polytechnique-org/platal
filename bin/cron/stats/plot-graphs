@@ -138,44 +138,6 @@ set yr [0:]
 plot "/tmp/disk.dat" using 1:3 title 'rdwr/s' with lines
 EOF
 
-#[OK] HTTP: GET PUT
-#gnuplot <<EOF   
-#set output "$STATSDIR/graph-http.png"
-#set term png small 
-#set size 640/480
-#set timefmt "%H:%M:%S"
-#set format x "%Hh"
-#set xdata time
-#set yr [0:]
-#plot "/tmp/access.dat" using 1:3 title 'get' with lines, "/tmp/access.dat" using 1:5 title 'post' with lines
-#EOF
-
-#[OK] nbmails
-gnuplot <<EOF
-set output "$STATSDIR/graph-nbmails.png"
-set term png small 
-set size 640/480
-set xdata time
-set timefmt "%m/%d/%y"
-set format x "%m/%y"
-set yr [0:]  
-set key left
-plot "/tmp/nbmails" using 1:2 title 'recus' with lines, "/tmp/nbmails" using 1:3 title 'envoyes' with lines, "/tmp/nbmails" using 1:7 title 'refuses' with lines
-EOF
-
-#[OK] nbmails par jour
-gnuplot <<EOF
-set output "$STATSDIR/graph-nbmails-day.png"
-set term png small
-set size 640/480
-set xdata time
-set timefmt "%m/%d/%y"
-set format x "%m/%y"
-set yr [0:]
-set key left
-plot "$STATSDIR/nbmails" using 1:2 title 'recus' with lines, "$STATSDIR/nbmails" using 1:3 title 'envoyes' with lines, "$STATSDIR/nbmails" using 1:7 title 'refuses' with lines
-EOF
-
 #[OK] promo
 gnuplot <<EOF
 set output "$STATSDIR/graph-promo.png"

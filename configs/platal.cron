@@ -3,7 +3,7 @@ PATH=/bin:/usr/bin:/usr/local/bin:/home/web/bin
 WD=/home/web/prod/platal/bin/cron
 
 # stats
-25 0 * * *	web	cd $WD/stats; ./evolution-inscrits-mails ; ./plot-graphs ; ./mailParselog
+25 0 * * *	web	cd $WD/stats; ./evolution-inscrits-mails ; ./plot-graphs
 
 # db
 0  5 * * *	web	cd $WD; ./clean.php
