@@ -22,6 +22,9 @@ Bug/Wish :
 	* Misc :
 		- #290: date display with no preceding 0.							-Car
 
+	* Profile :
+		- #299: Be more specific wrt given name for women.					-MC
+
 Fixes (from 0.9.5 branch) :
 
 	* Search :

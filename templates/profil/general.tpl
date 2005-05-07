@@ -72,7 +72,11 @@
     <tr>
       <td class="colg">
         <span class="titre">Nom d'usage</span><br />
+        {if $smarty.session.sexe}
+        <span class="comm">(Notamment nom d'épouse)</span>
+        {else}
         <span class="comm">(si différent de {$nom} seulement)</span>
+        {/if}
       </td>
       <td class="cold">
         <span class="nom">{$nom_usage|default:"Aucun"}</span>
