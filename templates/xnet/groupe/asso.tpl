@@ -63,11 +63,16 @@
   </tr>
   {/if}
 
+  {if !$is_member}
   <tr>
-    <td class="titre" colspan="2">
-      <strong>TODO: INSCRIPTION</strong>
+    <td class="titre">
+      M'inscrire :
+    </td>
+    <td>
+      <a href="{$asso.sub_url|default:"inscrire.php"}">m'inscrire</a>
     </td>
   </tr>
+  {/if}
 
   {if $asso.ax}
   <tr>

@@ -125,8 +125,12 @@
     </tr>
 
     <tr>
-      <td class="titre" colspan="2">
-        <strong>TODO: INSCRIPTION</strong>
+      <td class="titre">
+        Lien pour l'inscription:<br />
+        <em>laisser vide par défaut</em>
+      </td>
+      <td>
+        <input type="text" size="40" name="sub_url" value="{$asso.sub_url}" />
       </td>
     </tr>
 
