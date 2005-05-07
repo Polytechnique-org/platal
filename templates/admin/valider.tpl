@@ -25,47 +25,61 @@
 
 {iterate item=valid from=$vit|smarty:nodefaults}
 <br />
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class="bicol" {popup caption="Règles de validation" text=$valid->rules}>
-    <tr>
-      <th colspan="2">{$valid->type}</th>
-    </tr>
-    <tr>
-      <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
-      <td>
-        <a href="{rel}/fiche.php?user={$valid->bestalias}" class="popup2">
-          {$valid->prenom} {$valid->nom} (X{$valid->promo})
-        </a>
-      </td>
-    </tr>
-    {include file=$valid->formu()}
-    {if $valid->comments}
-    <tr><th colspan='2'>Commentaires</th></tr>
-    {/if}
-    {foreach from=$valid->comments item=c}
-    <tr class="{cycle values="impair,pair"}">
-      <td class="titre">
-        <a href="{rel}/fiche.php?user={$c[0]}" class="popup2">{$c[0]}</a>
-      </td>
-      <td>{$c[1]}</td>
-    </tr>
-    {/foreach}
-    <tr>
-      <td colspan='2' class='center'>
-        Commentaire:<br />
-        <textarea rows="5" cols="50" name="comm"></textarea><br />
+<table class="bicol">
+  <tr>
+    <th colspan="2">{$valid->type}</th>
+  </tr>
+  <tr>
+    <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
+    <td>
+      <a href="{rel}/fiche.php?user={$valid->bestalias}" class="popup2">
+        {$valid->prenom} {$valid->nom} (X{$valid->promo})
+      </a>
+    </td>
+  </tr>
+  {include file=$valid->formu()}
+  <tr><th colspan='2'>Commentaires</th></tr>
+  {foreach from=$valid->comments item=c}
+  <tr class="{cycle values="impair,pair"}">
+    <td class="titre">
+      <a href="{rel}/fiche.php?user={$c[0]}" class="popup2">{$c[0]}</a>
+    </td>
+    <td>{$c[1]}</td>
+  </tr>
+  {/foreach}
+  <tr id='comment{$valid->uid}'>
+    <td colspan='2' class='center'>
+      <form action="{$smarty.server.PHP_SELF}" method="post">
+        <div>
+          <input type="hidden" name="uid"    value="{$valid->uid}" />
+          <input type="hidden" name="type"   value="{$valid->type}" />
+          <input type="hidden" name="stamp"  value="{$valid->stamp}" />
+          <textarea rows="3" cols="50" name="comm"></textarea>
+          <br />
+          <input type="submit" name="hold"   value="Commenter" />
+        </div>
+      </form>
+    </td>
+  </tr>
+  <tr><th colspan='2'>Réponse</th></tr>
+  <tr>
+    <td colspan='2' class='center' {popup caption="Règles de validation" text=$valid->rules}>
+      <form action="{$smarty.server.PHP_SELF}" method="post">
+        <div>
+          Ajouté dans l'email :<br />
+          <textarea rows="5" cols="50" name="comm"></textarea><br />
 
-        <input type="hidden" name="uid"    value="{$valid->uid}" />
-        <input type="hidden" name="type"   value="{$valid->type}" />
-        <input type="hidden" name="stamp"  value="{$valid->stamp}" />
-        <input type="submit" name="accept" value="Accepter" />
-        <input type="submit" name="hold"   value="Commenter" />
-        {if $valid->refuse}<input type="submit" name="refuse" value="Refuser" />{/if}
-        <input type="submit" name="delete" value="Supprimer" />
-      </td>
-    </tr>
-  </table>
-</form>
+          <input type="hidden" name="uid"    value="{$valid->uid}" />
+          <input type="hidden" name="type"   value="{$valid->type}" />
+          <input type="hidden" name="stamp"  value="{$valid->stamp}" />
+          <input type="submit" name="accept" value="Accepter" />
+          {if $valid->refuse}<input type="submit" name="refuse" value="Refuser" />{/if}
+          <input type="submit" name="delete" value="Supprimer" />
+        </div>
+      </form>
+    </td>
+  </tr>
+</table>
 {/iterate}
 
 {else}

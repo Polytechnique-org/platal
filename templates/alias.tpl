@@ -92,7 +92,7 @@
           <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
             <tr>
               <td class="orange">
-                <input type="checkbox" name="public" {if $r_public}checked{/if}/>
+                <input type="checkbox" name="public" {if $mail_public}checked="checked"{/if}/>
               </td>
               <td class="texte">
                 adresse publique (apparaît sur ta fiche).

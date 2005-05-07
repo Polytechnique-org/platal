@@ -206,10 +206,14 @@ class Validate
         }
 
         if (Env::has('refuse')) {
-            $this->sendmail(false);
-            $this->clean();
-            $this->trig('mail envoyé');
-            return true;
+            if (Env::get('comm')) {
+                $this->sendmail(false);
+                $this->clean();
+                $this->trig('mail envoyé');
+                return true;
+            } else {
+                $this->trig('pas de motivation pour le refus !!!');
+            }
         }
 
         return false;
