@@ -23,12 +23,15 @@ require_once("xorg.inc.php");
 new_skinned_page('index.tpl',AUTH_MDP);
 
 if (Session::has('suid')) {
+    $a4l  = Session::get('forlife');
     $suid = Session::getMixed('suid');
     $log  = Session::getMixed('log');
     $log->log("suid_stop", Session::get('forlife') . " by " . $suid['forlife']);
     $_SESSION = $suid;
     Session::kill('suid');
+    header('Location: '.$globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
+} else {
+    header("Location: login.php");
 }
 
-header("Location: login.php");
 ?>

@@ -17,10 +17,11 @@ New :
 Bug/Wish :
 
 	* Admin :
-		- #300: notify hotliners for validation comments.					-Car
+		- #298: On su exit, go back to SU page on the given account.		-MC
+		- #300: Notify hotliners for validation comments.					-Car
 
 	* Misc :
-		- #290: date display with no preceding 0.							-Car
+		- #290: Date display with no preceding 0.							-Car
 
 	* Profile :
 		- #299: Be more specific wrt given name for women.					-MC
@@ -28,7 +29,7 @@ Bug/Wish :
 Fixes (from 0.9.5 branch) :
 
 	* Search :
-		- #304: next/prev links were missing if #pages was 2.				-MC
+		- #304: Next/Prev links were missing if #pages was 2.				-MC
 
 ================================================================================
 VERSION 0.9.5														 07 Apr 2004
