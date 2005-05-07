@@ -6,6 +6,8 @@
         exit;
     }
 
+    $_GET['cat'] = strtolower($cat);
+
     new_page('xnet/groupes.tpl', AUTH_PUBLIC);
 
     $res  = $globals->xdb->query("SELECT id,nom FROM groupex.dom WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
