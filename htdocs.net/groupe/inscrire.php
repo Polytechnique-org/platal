@@ -81,7 +81,7 @@ if (Env::has('u') && may_update()) {
             . Session::get('prenom').' '.Session::get('nom').' (X'.Session::get('promo').")\n"
             . "Via le site www.polytechnique.net. Tu peux choisir de valider ou\n"
             . "de refuser sa demande d'inscription depuis la page :\n"
-            . "http://www.polytechnique.net/".$globals->asso("diminutif")."/inscrire.php?u=".Session::get('username')."\n"
+            . "http://www.polytechnique.net/".$globals->asso("diminutif")."/inscrire.php?u=".Session::get('forlife')."\n"
             . "\n"
             . "En cas de problème, contacter l'équipe de Polytechnique.org\n"
             . "à l'adresse : support@polytechnique.org\n";
