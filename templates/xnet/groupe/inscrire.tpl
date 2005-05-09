@@ -49,7 +49,7 @@
 <p class="descr">
 Pour t'inscrire à {$asso.nom}, il te faut en demander l'autorisation aux animateurs du groupe via le
 formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, puis clique sur
-"m'inscrire
+[&nbsp;m'inscrire&nbsp;]
 </p>
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <p class="descr">
