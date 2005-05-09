@@ -49,6 +49,10 @@ $globals->xdb->execute(
             $freetext, $freetext_pub,
             Session::getInt('uid', -1));
 
+if ($nickname != $nickname_anc) {
+    require_once('user.func.inc.php');
+    user_reindex(Session::getInt('uid', -1));
+}
 $globals->xdb->execute("UPDATE photo SET pub = {?} WHERE uid = {?}", $photo_pub, Session::getInt('uid', -1));
 // vim:set et sws=4 sts=4 sw=4:
 ?>

@@ -26,11 +26,12 @@ require('user.func.inc.php');
 ini_set('memory_limit', "16M");
 $globals->xdb->execute('DELETE FROM search_name');
 
-$res = $globals->xdb->iterRow('SELECT user_id, nom, prenom, nom_usage FROM auth_user_md5');
+$res = $globals->xdb->iterRow('SELECT auth_user_md5.user_id, nom, prenom, nom_usage, profile_nick FROM auth_user_md5 INNER JOIN auth_user_quick USING(user_id)');
 $i = 0;
+$muls = array(1,1,1,0.2);
 while ($tmp = $res->next()) {
     $uid = array_shift($tmp);
-    _user_reindex($uid, $tmp);
+    _user_reindex($uid, $tmp, $muls);
     printf ("%02.2f %%\n",  ++$i*100/$res->total());
 }
 

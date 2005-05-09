@@ -40,6 +40,7 @@ $photo_pub = $result->fetchOneCell();
 $nom_anc = $nom;
 $prenom_anc = $prenom;
 $nationalite_anc = $nationalite;
+$nickname_anc = $nickname;
 
 replace_ifset($nom,'nom');
 replace_ifset($prenom,'prenom');
