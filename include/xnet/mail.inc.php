@@ -31,8 +31,8 @@ function get_all_redirects($membres, $mls, $alias, &$client)
     
     if ($membres) {
         $res = $globals->xdb->query(
-                    'SELECT  IF(u.nom, u.nom, m.nom) AS nom,
-                             IF(u.prenom, u.prenom, m.prenom) AS prenom,
+                    'SELECT  IF(u.nom <> "", u.nom, m.nom) AS nom,
+                             IF(u.prenom <> "", u.prenom, m.prenom) AS prenom,
                              IF(m.email <> "", m.email, CONCAT(a.alias, "@polytechnique.org")) as email,
                              FIND_IN_SET("femme", u.flags) AS sexe
                        FROM  groupex.membres AS m
@@ -78,7 +78,7 @@ function _send_xnet_mail($user, $body, $mailer)
 {
     $cher = isset($user['sexe']) ? ($user['sexe'] ? 'Chère' : 'Cher') : 'Cher(e)';
     $nom  = isset($user['nom']) ? $user['nom'] : "";
-    $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!', $user['email']);
+    $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!', '', $user['email']);
     $to   = isset($user['prenom']) ? "\"{$user['prenom']} {$user['nom']}\" <{$user['email']}>" : $user['email'];
     
     $text = $body;
