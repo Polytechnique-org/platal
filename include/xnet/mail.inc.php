@@ -33,11 +33,11 @@ function get_all_redirects($membres, $mls, $alias, &$client)
         $res = $globals->xdb->query(
                     'SELECT  IF(u.nom, u.nom, m.nom) AS nom,
                              IF(u.prenom, u.prenom, m.prenom) AS prenom,
-                             IF(m.email, m.email, CONCAT(a.alias, "@polytechnique.org")) as email,
+                             IF(m.email <> "", m.email, CONCAT(a.alias, "@polytechnique.org")) as email,
                              FIND_IN_SET("femme", u.flags) AS sexe
                        FROM  groupex.membres AS m
                   LEFT JOIN  auth_user_md5   AS u ON (m.uid=u.user_id AND m.uid<50000)
-                 INNER JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
+                  LEFT JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
                       WHERE  asso_id = {?}', $globals->asso('id'));
         $tos = $res->fetchAllAssoc();
     }
