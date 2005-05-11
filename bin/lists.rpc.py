@@ -21,6 +21,7 @@
 
 import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil, ConfigParser
 import MySQLdb.converters
+import SocketServer
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -81,7 +82,7 @@ ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
 # Manage Basic authentication
 #
 
-class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
+class BasicAuthXMLRPCRequestHandler(SocketServer.ThreadingMixIn, SimpleXMLRPCRequestHandler):
 
     """XMLRPC Request Handler
     This request handler is used to provide BASIC HTTP user authentication.
