@@ -162,6 +162,7 @@ def quote(s,is_header=False):
         h = Utils.oneline(s,'iso-8859-1')
     else:
         h = s
+    h = str('').join(re.split('[\x00-\x1f]+', s))
     return Utils.uquote(h.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;'))
 
 def to_forlife(email):
