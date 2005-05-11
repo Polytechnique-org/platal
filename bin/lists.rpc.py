@@ -82,7 +82,7 @@ ON_CREATE_CMD  = get_config('Lists', 'on_create', '')
 # Manage Basic authentication
 #
 
-class BasicAuthXMLRPCRequestHandler(SocketServer.ThreadingMixIn, SimpleXMLRPCRequestHandler):
+class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
 
     """XMLRPC Request Handler
     This request handler is used to provide BASIC HTTP user authentication.
@@ -882,7 +882,7 @@ def kill(userdesc,perms,vhost,alias,del_from_promo):
 #-------------------------------------------------------------------------------
 # server
 #
-class FastXMLRPCServer(SimpleXMLRPCServer):
+class FastXMLRPCServer(SocketServer.ThreadingMixIn, SimpleXMLRPCServer):
     allow_reuse_address = True 
 
 ################################################################################
