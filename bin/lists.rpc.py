@@ -21,7 +21,7 @@
 
 import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil, ConfigParser
 import MySQLdb.converters
-import SocketServer, threading
+import SocketServer
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -41,6 +41,7 @@ from Mailman import i18n
 from Mailman.UserDesc import UserDesc
 from Mailman.ListAdmin import readMessage
 from email.Iterators import typed_subpart_iterator
+from threading import Lock
 
 class AuthFailed(Exception): pass
 
