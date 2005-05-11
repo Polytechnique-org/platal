@@ -21,7 +21,7 @@
 
 import base64, MySQLdb, os, getopt, sys, sha, signal, re, shutil, ConfigParser
 import MySQLdb.converters
-import SocketServer
+import SocketServer, threading
 
 sys.path.append('/usr/lib/mailman/bin')
 
@@ -116,19 +116,19 @@ class BasicAuthXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.end_headers()
 
     def getUser(self, uid, md5, vhost):
-        mysql.execute ("""SELECT CONCAT(u.prenom, ' ',u.nom),a.alias,u.perms
-                           FROM  auth_user_md5 AS u
-                     INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
-                          WHERE  u.user_id = '%s' AND u.password = '%s' AND u.perms IN ('admin','user')
-                          LIMIT  1""" %( uid, md5 ) )
-        if int(mysql.rowcount) is 1:
-            name,forlife,perms = mysql.fetchone()
+        res = mysql_fetchone ("""SELECT  CONCAT(u.prenom, ' ',u.nom),a.alias,u.perms
+                                   FROM  auth_user_md5 AS u
+                             INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND a.type='a_vie' )
+                                  WHERE  u.user_id = '%s' AND u.password = '%s' AND u.perms IN ('admin','user')
+                                  LIMIT  1""" %( uid, md5 ) )
+        if res:
+            name,forlife,perms = res
             if vhost != PLATAL_DOMAIN:
-                mysql.execute ("""SELECT  uid
-                                    FROM  groupex.membres AS m
-                              INNER JOIN  groupex.asso    AS a ON (m.asso_id = a.id)
-                                   WHERE  perms='admin' AND uid='%s' AND mail_domain='%s'""" %( uid , vhost ) )
-                if int(mysql.rowcount) is 1: perms= 'admin'
+                res = mysql_fetchone ("""SELECT  uid
+                                          FROM  groupex.membres AS m
+                                    INNER JOIN  groupex.asso    AS a ON (m.asso_id = a.id)
+                                         WHERE  perms='admin' AND uid='%s' AND mail_domain='%s'""" %( uid , vhost ) )
+                if res: perms= 'admin'
             userdesc = UserDesc(forlife+'@'+PLATAL_DOMAIN, name, None, 0)
             return (userdesc,perms,vhost)
         else:
@@ -150,6 +150,17 @@ def connectDB():
             unix_socket='/var/run/mysqld/mysqld.sock')
     db.ping()
     return db.cursor()
+
+def mysql_fetchone(query):
+    ret = None
+    try:
+        lock.acquire()
+        mysql.execute(query)
+        if int(mysql.rowcount) > 0:
+            ret = mysql.fetchone()
+    finally:
+        lock.release()
+    return ret
 
 def is_owner(userdesc,perms,mlist):
     return ( perms == 'admin' and ML_OWNER in mlist.owner ) or ( userdesc.address in mlist.owner )
@@ -173,14 +184,14 @@ def to_forlife(email):
         mbox = email
         fqdn = PLATAL_DOMAIN
     if ( fqdn == PLATAL_DOMAIN ) or ( fqdn == PLATAL_DOMAIN2 ):
-        mysql.execute ("""SELECT  CONCAT(f.alias,'@%s'), CONCAT(u.prenom,' ',u.nom)
-                            FROM  auth_user_md5 AS u
-                      INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
-                      INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
-                           WHERE  u.perms IN ('admin','user')
-                           LIMIT  1""" %( PLATAL_DOMAIN, mbox ) )
-        if int(mysql.rowcount) is 1:
-            return mysql.fetchone()
+        res = mysql_fetchone("""SELECT  CONCAT(f.alias,'@%s'), CONCAT(u.prenom,' ',u.nom)
+                                  FROM  auth_user_md5 AS u
+                            INNER JOIN  aliases       AS f ON (f.id=u.user_id AND f.type='a_vie')
+                            INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.alias='%s' AND a.type!='homonyme')
+                                 WHERE  u.perms IN ('admin','user')
+                                 LIMIT  1""" %( PLATAL_DOMAIN, mbox ) )
+        if res:
+            return res
         else:
             return (None,None)
     return (email,mbox)
@@ -913,6 +924,7 @@ for o, a in opts:
 
 i18n.set_language('fr')
 mysql = connectDB()
+lock = Lock()
 
 #-------------------------------------------------------------------------------
 # server
