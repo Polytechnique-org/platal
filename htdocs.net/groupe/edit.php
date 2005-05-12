@@ -36,6 +36,7 @@
     if (has_perms()) {
         $dom = $globals->xdb->iterator('SELECT * FROM groupex.dom ORDER BY nom');
         $page->assign('dom', $dom);
+        $page->assign('super', true);
     }
     $page->run();
 

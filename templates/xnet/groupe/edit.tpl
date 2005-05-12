@@ -23,7 +23,7 @@
 <h1>{$asso.nom} : Éditer l'accueil</h1>
 
 <form method="post" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-  {perms level=admin}
+  {if $super}
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
@@ -77,7 +77,7 @@
     </tr>
   </table>
   <p></p>
-  {/perms}
+  {/if}
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
