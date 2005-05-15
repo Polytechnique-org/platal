@@ -6,6 +6,11 @@ New :
 	* Search :
 		- Nickname are used in fast search.									-Car
 
+Fixes (from 0.9.6 branch) :
+
+	* Search :
+		- #307: fix bad escaping in advanced search.						-MC
+
 ================================================================================
 VERSION 0.9.6														 07 May 2004
 

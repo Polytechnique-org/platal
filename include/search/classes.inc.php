@@ -403,7 +403,8 @@ class RefSField extends SField
 
     function compare()
     {
-        return $this->exact ? "='{$this->value}'" : " LIKE '%{$this->value}%'";
+        $val = addslashes($this->value);
+        return $this->exact ? "='$val}'" : " LIKE '%$val%'";
     }
 
     // }}}
@@ -498,7 +499,7 @@ class StringSField extends SField
      * @param field nom de champ de la bdd concerné par la clause */
     function get_single_where_statement($field)
     {
-        $regexp = strtr($this->value, '-*', '_%');
+        $regexp = strtr(addslashes($this->value), '-*', '_%');
         return "$field LIKE '$regexp%'";
     }
 
@@ -509,7 +510,7 @@ class StringSField extends SField
     function get_order_statement()
     {
         if ($this->value!='' && $this->fieldResultName!='') {
-            return "{$this->fieldResultName}!='{$this->value}'";
+            return "{$this->fieldResultName}!='".addslashes($this->value)."'";
         } else {
             return false;
         }
@@ -529,7 +530,7 @@ class NameSField extends StringSField
     
     function get_single_where_statement($field)
     {
-        $regexp = strtr($this->value, '-*', '_%');
+        $regexp = strtr(addslashes($this->value), '-*', '_%');
         return "$field LIKE '$regexp%' OR $field LIKE '% $regexp%' OR $field LIKE '%-$regexp%'";
     }
 
@@ -539,7 +540,7 @@ class NameSField extends StringSField
     function get_order_statement()
     {
         if ($this->value!='' && $this->fieldResultName!='') {
-            return "{$this->fieldResultName} NOT LIKE '{$this->value}'";
+            return "{$this->fieldResultName} NOT LIKE '".addslashes($this->value)."'";
         } else {
             return false;
         }
