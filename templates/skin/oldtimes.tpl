@@ -19,6 +19,16 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" type="text/css" href="{"css/default.css"|url}" media="screen" />
+    {include file=skin/common.header.tpl}
+    {include file=skin/common.bandeau.head.tpl}
+  </head>
+  <body onload='pa_onload()'>
+    {include file=skin/common.devel.tpl}
 
     {if $smarty.session.suid}
     <table id="suid" cellpadding="0" cellspacing="0">

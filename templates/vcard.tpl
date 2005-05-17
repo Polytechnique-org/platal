@@ -19,5 +19,56 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-
+BEGIN:VCARD
+VERSION:3.0
+{if $vcard.nom_usage}
+FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom_usage` (`$vcard.nom`)"|qp_enc}
+{else}
+FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
+{/if}
+N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.nom_usage|qp_enc};;
+EMAIL;TYPE=internet:{$vcard.bestalias}@polytechnique.org
+{if $vcard.bestalias neq $vcard.forlife}
+EMAIL;TYPE=internet:{$vcard.forlife}@polytechnique.org
+{/if}
+{if $vcard.virtualalias}
+EMAIL;TYPE=internet:{$vcard.virtualalias}
+{/if}
+{if $vcard.mobile}
+TEL;TYPE=cell;ENCODING=QUOTED-PRINTABLE:{$vcard.mobile|qp_enc}
+{/if}
+{if $vcard.adr_pro}
+{if $vcard.adr_pro[0].entreprise}
+ORG;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].entreprise|qp_enc}
+{/if}
+{if $vcard.adr_pro[0].poste}
+TITLE;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].poste|qp_enc}
+{/if}
+{if $vcard.adr_pro[0].fonction}
+ROLE;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].fonction|qp_enc}
+{/if}
+{if $vcard.adr_pro[0].tel}
+TEL;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].tel|qp_enc}
+{/if}
+{if $vcard.adr_pro[0].fax}
+FAX;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].fax|qp_enc}
+{/if}
+ADR;TYPE=work;ENCODING=QUOTED-PRINTABLE:{format_adr adr=$vcard.adr_pro[0]}
+{/if}
+{foreach item=adr from=$vcard.adr}
+ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr adr=$adr}
+{if $adr.tel}
+TEL;TYPE=home;ENCODING=QUOTED-PRINTABLE:{$adr.tel|qp_enc}
+{/if}
+{if $adr.fax}
+FAX;TYPE=home;ENCODING=QUOTED-PRINTABLE:{$adr.fax|qp_enc}
+{/if}
+{/foreach}
+{if $vcard.web}
+URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}
+{/if}
+NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.libre`"|qp_enc}
+SORT-STRING;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc}
+REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
+END:VCARD
 {* vim:set et sw=2 sts=2 sws=2: *}
