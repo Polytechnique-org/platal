@@ -14,6 +14,9 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 ################################################################################
 # global targets
 
+headers:
+	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header `find templates -name '*.tpl'`
+
 build: pkg-build 
 
 dist: clean pkg-dist
