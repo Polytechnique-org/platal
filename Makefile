@@ -15,7 +15,8 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 # global targets
 
 headers:
-	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header `find templates -name '*.tpl'`
+	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header \
+		`find templates -name '*.tpl' ! -path 'templates/xnet/skin.tpl' ! -path 'templates/skin/*.tpl' ! -name 'vcard.tpl' `
 
 build: pkg-build 
 
