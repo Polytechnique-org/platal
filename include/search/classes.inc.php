@@ -404,7 +404,7 @@ class RefSField extends SField
     function compare()
     {
         $val = addslashes($this->value);
-        return $this->exact ? "='$val}'" : " LIKE '%$val%'";
+        return $this->exact ? "='$val'" : " LIKE '%$val%'";
     }
 
     // }}}
