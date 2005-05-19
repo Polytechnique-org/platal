@@ -107,12 +107,12 @@ function chgMainWinLoc( strPage ) {
     <td rowspan="4" id='photo'>
       {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />{/if}
       {min_auth level="cookie"}
-      {if $x.section}<em class="intitule">Section : </em><span>{$x.section}</span><br />{/if}
-      {if $x.binets_join}<em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span><br />{/if}
-      {if $x.gpxs_join}<em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span><br />{/if}
+      {if $x.section}<div><em class="intitule">Section : </em><span>{$x.section}</span></div>{/if}
+      {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
+      {if $x.gpxs_join}<div><em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
       {/min_auth}
-      {if $x.web}<em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a>{/if}
-      {if $x.freetext}<br /><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br}</span>{/if}
+      {if $x.web}<div><em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
+      {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br}</span></div>{/if}
     </td>
   </tr>
   {if $x.adr}
