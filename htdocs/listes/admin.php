@@ -22,7 +22,8 @@
 if (!$page) {
     require_once("xorg.inc.php");
     if (!Env::has('liste')) header('Location: index.php');
-    $liste = strtolower(Env::get('liste'));
+    $liste  = strtolower(Env::get('liste'));
+    $domain = $globals->mail->domain;
 
     new_skinned_page('listes/admin.tpl', AUTH_MDP);
     require_once('lists.inc.php');
@@ -45,7 +46,7 @@ if (Env::has('add_member')) {
 }
 
 if (Env::has('del_member')) {
-    $client->mass_unsubscribe($liste, Array(Env::get('del_member').'@'.$globals->mail->domain));
+    $client->mass_unsubscribe($liste, Array(Env::get('del_member').'@'.$domain));
     header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
@@ -61,7 +62,7 @@ if (Env::has('add_owner')) {
 }
 
 if (Env::has('del_owner')) {
-    $client->del_owner($liste, Env::get('del_owner').'@'.$globals->mail->domain);
+    $client->del_owner($liste, Env::get('del_owner').'@'.$domain);
     header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 

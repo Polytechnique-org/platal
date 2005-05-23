@@ -23,6 +23,7 @@ if (!$page) {
     require_once("xorg.inc.php");
     if (!Env::has('liste')) header('Location: index.php');
     $liste = strtolower(Env::get('liste'));
+    $domain = $globals->mail->domain;
 
     new_skinned_page('listes/archives.tpl', AUTH_COOKIE);
     require_once('lists.inc.php');
@@ -40,11 +41,11 @@ if (list($det) = $client->get_members($liste)) {
         if(strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $rep)) {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         } else { 
-            $page->assign('archives', $globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
+            $page->assign('archives', $globals->lists->spool."/{$domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
         }
     } else {
         $archs = Array();
-        foreach (glob($globals->lists->spool."/{$globals->mail->domain}{$globals->lists->vhost_sep}$liste/*/*") as $rep) {
+        foreach (glob($globals->lists->spool."/{$domain}{$globals->lists->vhost_sep}$liste/*/*") as $rep) {
             if (preg_match(",/(\d*)/(\d*)$,", $rep, $matches)) {
                 $archs[intval($matches[1])][intval($matches[2])] = true;
             }

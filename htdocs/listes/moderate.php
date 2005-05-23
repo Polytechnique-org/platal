@@ -23,8 +23,9 @@ if (!$page) {
     require_once("xorg.inc.php");
     if (!Env::has('liste')) header('Location: index.php');
     $liste = strtolower(Env::get('liste'));
+    $domain = $globals->mail->domain;
 
-    if (preg_match("!(?:[a-z0-9]+\\.)?{$globals->mail->domain}_(.*)!", $liste, $matches)) {
+    if (preg_match("!(?:[a-z0-9]+\\.)?{$domain}_(.*)!", $liste, $matches)) {
         header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
     }
 
@@ -79,9 +80,9 @@ if(Env::has('mid')) {
                 .$append;
         require_once('diogenes/diogenes.hermes.inc.php');
         $mailer = new HermesMailer();
-        $mailer->addTo("$liste-owner@{$globals->mail->domain}");
-        $mailer->setFrom("$liste-bounces@{$globals->mail->domain}");
-        $mailer->addHeader('Reply-To', "$liste-owner@{$globals->mail->domain}");
+        $mailer->addTo("$liste-owner@{$domain}");
+        $mailer->setFrom("$liste-bounces@{$domain}");
+        $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
         $mailer->setSubject($subject);
         $mailer->setTxtBody(wordwrap($texte,72));
         $mailer->send();
@@ -90,7 +91,7 @@ if(Env::has('mid')) {
 
     if(Get::has('mid') && is_array($mail)) {
 	$msg = file_get_contents('/etc/mailman/fr/refuse.txt');
-	$msg = str_replace("%(adminaddr)s","$liste-owner@{$globals->mail->domain}", $msg);
+	$msg = str_replace("%(adminaddr)s","$liste-owner@{$domain}", $msg);
 	$msg = str_replace("%(request)s","<< SUJET DU MAIL >>", $msg);
 	$msg = str_replace("%(reason)s","<< TON EXPLICATION >>", $msg);
 	$msg = str_replace("%(listname)s","$liste", $msg);

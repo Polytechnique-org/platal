@@ -21,7 +21,8 @@
 
 require_once 'xnet.inc.php';
 if (!Env::has('liste')) header('Location: listes.php');
-$liste = strtolower(Env::get('liste'));
+$liste  = strtolower(Env::get('liste'));
+$domain = $globals->asso('mail_domain');
 
 new_group_page('listes/archives.tpl');
 

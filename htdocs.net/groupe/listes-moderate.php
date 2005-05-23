@@ -21,7 +21,8 @@
 
 require_once 'xnet.inc.php';
 if (!Env::has('liste')) header('Location: listes.php');
-$liste = strtolower(Env::get('liste'));
+$liste  = strtolower(Env::get('liste'));
+$domain = $globals->asso('mail_domain');
 
 if (preg_match("!(?:[a-z0-9]+\\.)?{".$globals->asso('mail_domain')."}_(.*)!", $liste, $matches)) {
     header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
