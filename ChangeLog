@@ -10,10 +10,14 @@ Bug/Wish :
 
 	* Fiche :
 		- #308: organizing layout											-Car
+
 Fixes (from 0.9.6 branch) :
 
 	* Search :
 		- #307: fix bad escaping in advanced search.						-MC
+
+	* Xnet :
+		- Have a connection link even on index page.						-MC
 
 ================================================================================
 VERSION 0.9.6														 07 May 2004

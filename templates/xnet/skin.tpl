@@ -87,11 +87,6 @@
           <a href="{rel}/{$url}">{$tit}</a>
           {/foreach}
           {/foreach}
-          {only_public}
-          <h1>me connecter</h1>
-          <a href="{$smarty.session.session->loginX}">polytechnicien</a>
-          <a href="{rel}/login.php">extérieur</a>
-          {/only_public}
         </td>
         <td colspan="3">
           <div class="breadcrumb">
@@ -142,6 +137,11 @@
       <tr>
         <td colspan="3" id="perso">
           {list_all_my_groups}
+          {only_public}
+          <div>Me connecter :</div>
+          <a class='gp' href="{$smarty.session.session->loginX}">polytechnicien</a>
+          <a class='gp' href="{rel}/login.php">extérieur</a>
+          {/only_public}
         </td>
         <td id="search">
           <form method="get" action="{rel}/recherche.php">
