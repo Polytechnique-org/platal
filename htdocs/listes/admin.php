@@ -32,16 +32,20 @@ if (!$page) {
 }
 
 if (Env::has('add_member')) {
-    require_once('user.func.inc.php');
-    if (($login = get_user_forlife(Env::get('add_member'))) === false) {;
-        $login = Env::get('add_member');
-    }
 
-    $arr = $client->mass_subscribe($liste, Array($login));
+    require_once('user.func.inc.php');
+    $members = explode(' ', Env::get('add_member'));
+    if ($members) foreach ($members as $i => $alias) {
+    	if (($login = get_user_forlife($alias)) !== false) {;
+        	$members[$i] = $login;
+    	}
+    }
+    
+    $arr = $client->mass_subscribe($liste, $members);
     if (is_array($arr)) {
 	foreach($arr as $addr) {
-            $page->trig("{$addr[0]} inscrit.");
-        }
+       	    $page->trig("{$addr[0]} inscrit.");
+       	}
     }
 }
 
@@ -52,12 +56,17 @@ if (Env::has('del_member')) {
 
 if (Env::has('add_owner')) {
     require_once('user.func.inc.php');
-    if (($login = get_user_forlife(Env::get('add_owner'))) === false) {;
-        $login = Env::get('add_owner');
-    }
 
-    if($client->add_owner($liste, $login)) {
-        $page->trig(Env::get('add_owner')." ajouté aux modérateurs.");
+    $owners = explode(' ', Env::get('add_owner'));
+
+    if ($owners) foreach ($owners as $alias) {
+    	if (($login = get_user_forlife($alias)) === false) {;
+        	$login = $alias;
+    	}
+
+    	if($client->add_owner($liste, $login)) {
+        	$page->trig($alias." ajouté aux modérateurs.");
+    	}
     }
 }
 

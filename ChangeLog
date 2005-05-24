@@ -12,8 +12,11 @@ Bug/Wish :
 		- #302: accept spaces in login.										-Car
 		
 	* Fiche :
-		- #308: organizing layout											-Car
+		- #308: organizing layout.											-Car
 
+	* Lists :
+		- #23: multiple inscriptions.										-Car
+		
 Fixes (from 0.9.6 branch) :
 
 	* Search :
