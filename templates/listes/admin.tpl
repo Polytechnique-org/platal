@@ -30,8 +30,8 @@ Tu n'es pas administrateur de la liste, mais du site.
 {include file="listes/header_listes.tpl" on=admin}
 
 <p>
-Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant
-son identifiant, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie.
+Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant un de
+ses identifiants, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie. Pour inscrire plusieurs utilisateurs, les séparer par des espaces.
 L'icône <img src='{rel}/images/retirer.gif' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
 qui y était abonné.
 </p>
@@ -59,9 +59,9 @@ qui y était abonné.
     </tr>
     {/foreach}
     <tr>
-      <td class='titre'>Ajouter ...</td>
+      <td class='titre'>Ajouter ... </td>
       <td>
-        <input type='text' name='add_owner' />
+        <input type='text' size='30' name='add_owner' />
         &nbsp;
         <input type='submit' value='ajouter' />
       </td>
@@ -95,7 +95,7 @@ qui y était abonné.
     <tr>
       <td class='titre'>Ajouter ...</td>
       <td>
-        <input type='text' size='32' name='add_member' />
+        <input type='text' size='40' name='add_member' />
         &nbsp;
         <input type='submit' value='ajouter' />
       </td>
