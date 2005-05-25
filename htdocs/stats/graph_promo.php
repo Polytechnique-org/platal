@@ -27,6 +27,8 @@ $promo = Env::getInt('promo', Session::getInt('promo'));
 //nombre de jours sur le graph
 $JOURS=364;
 define('DUREEJOUR',24*3600);
+$res = $globals->xdb->query("SELECT min(TO_DAYS(date_ins)-TO_DAYS(now())) FROM auth_user_md5 WHERE promo = {?} AND perms IN ('admin', 'user')", $promo);
+$JOURS = -$res->fetchOneCell();
 
 //recupere le nombre d'inscriptions par jour sur la plage concernée
 $res = $globals->xdb->iterRow(
