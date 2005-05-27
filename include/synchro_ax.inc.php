@@ -26,8 +26,7 @@ require_once('user.func.inc.php');
 
 function get_user_ax($uid, $raw=false)
 {
-    require_once('webservices/manageurs.inc.php');
-    require_once('webservices/manageurs.client.inc.php');
+    require_once('webservices/ax/client.inc');
 
     global $globals;
 
@@ -37,93 +36,62 @@ function get_user_ax($uid, $raw=false)
           WHERE u.user_id = {?}", $uid);
     $matricule_ax = $res->fetchOneCell();
 
-    $array = get_annuaire_infos(2, $matricule_ax, 0);
+    $ancien = recupere_infos_ancien($matricule_ax);
 
     $userax = Array();
     $userax['matricule_ax'] = $matricule_ax;
     $userax['uid'] = $uid;
     
-    $ancien = $array['dump']['ancien'];
-    $userax['nom'] = $ancien[0];
-    // ancien1 = ?
-    $userax['nom_usage'] = ($ancien[2] != $ancien[0])?$ancien[2]:"";
-    // ancien3 = ?
-    $userax['prenom'] = $ancien[4];
-    $userax['sexe'] = ($ancien[5] != 'M')?1:0;
-    $userax['promo'] = $ancien[6];
-    // ancien7 = Type de membre à l'AX
-    // ancien8 = dernière année de cotisation
-    $userax['nationalite'] = $ancien[9];
+    $userax['nom'] = $ancien->Nom_patr();
+    $userax['nom_usage'] = $ancien->Nom_usuel();
+    if ($userax['nom_usage'] == $userax['nom']) $userax['nom_usage'] = '';
+    $userax['prenom'] = $ancien->Prenom();
+    $userax['sexe'] = ($ancien->Civilite() != 'M')?1:0;
+    $userax['promo'] = $ancien->Promo();
+    $userax['nationalite'] = $ancien->Nationalite();
     if ($userax['nationalite'] == 'F') $userax['nationalite'] = 'Français';
-    // ancien10 = ?
-    // ancine11 = ?
-    $userax['date'] = substr($ancien[12], 0, 10);
-    $userax['mobile'] = $array['cell'];
-    if ($ancien[13] == 'D' || $ancien[13] == 'Z') {
+    //$userax['date'] = substr($ancien[12], 0, 10);
+    $userax['mobile'] = $ancien->Mobile(0);
+    if ($ancien->Corps() == 'D' || $ancien->Corps() == 'Z') {
         $userax['applis_join'] = "pas un corps";
     } else {
-        $userax['applis_join'] = "Corps ".$ancien[13]." - ".$ancien[14];
+        $userax['applis_join'] = "Corps ".$ancien->Corps()." - ".$ancien->Grade();
     }
-    // ancien15 = login AX
-    // ancien16 = ?
-    // ancien17 = prenom.nom
-
     $userax['adr_pro'] = array();
-    if (is_array($array['dump']['pro'])) {
-        foreach ($array['dump']['pro'] as $job) {
-            // job0 = code identifiant de l'entreprise
-            $jobax['entreprise'] = $job[1];
-            // job2 = comme job1 (peut etre plus court pour les noms longs)
-            // job4 = sigle de l'entreprise
-            // job5 = maj de l'adresse pro
-            $jobax['fonction'] = $job[6];
-            // job7 = ? peut être id de l'adresse dans la base AX
-            // job8 = matricule AX
-            // job9 = type d'adresse PRO = professionelle
-            $jobax['adr1'] = $job[10];
-            $jobax['adr2'] = $job[11];
-            $jobax['adr3'] = $job[12];
-            $jobax['cp']   = $job[13];
-            $jobax['ville'] = $job[14];
-            // job15 = ?
-            // job16 = ?
-            $jobax['pays'] = $job[17];
-            // job18 = ?
-            $jobax['tel']  = $job[19];
-            $jobax['fax']  = $job[20];
-            // job21 = f ?
-            // job22 = ?
-            // job23 = date de mise à jour de l'adresse
-            // job24 = ?
-            $userax['adr_pro'][] = $jobax;
-        }
+    
+    for ($i = 0; $i < $ancien->Num_Activite(); $i++) {
+        $jobax = array();
+        $jobax['entreprise'] = $ancien->Entreprise($i);
+        $jobax['fonction'] = $ancien->Fonction($i);
+        $jobax['adr1'] = $ancien->Adresse_act_adresse1($i);
+        $jobax['adr2'] = $ancien->Adresse_act_adresse2($i);
+        $jobax['adr3'] = $ancien->Adresse_act_adresse3($i);
+        $jobax['cp']   = $ancien->Adresse_act_code_pst($i);
+        $jobax['ville'] = $ancien->Adresse_act_ville($i);
+        $jobax['region'] = $ancien->Adresse_act_etat_region($i);
+        $jobax['pays'] = $ancien->Adresse_act_pays($i);
+        $jobax['tel']  = $ancien->Adresse_act_tel($i);
+        $jobax['fax']  = $ancien->Adresse_act_fax($i);
+        $jobax['mobile'] = $ancien->Adresse_act_mobile($i);
+        $userax['adr_pro'][] = $jobax;
     }
 
     $userax['adr'] = array();
-    if (is_array($array['dump']['adresse'])) {
-        foreach ($array['dump']['adresse'] as $adr) {
-            // adr0 : ?
-            // adr1 = matricule ax
-            // adr2 = type d'adresse P = personnelle
-            $adrax['adr1'] = $adr[3];
-            $adrax['adr2'] = $adr[4];
-            $adrax['adr3'] = $adr[5];
-            $adrax['cp'] = $adr[6];
-            $adrax['ville'] = $adr[7];
-            // adr8 = ?
-            // adr9 = ?
-            $adrax['pays'] = $adr[10];
-            // adr 11 = ?
-            $adrax['tel'] = $adr[12];
-            $adrax['fax'] = $adr[13];
-            // adr 14 = t ?
-            // adr15 = ?
-            // adr 16 = date de mise a jour
-            $userax['adr'][] = $adrax;
-        }
+    foreach ($array['dump']['adresse'] as $adr) {
+        $adrax = array();
+        $adrax['adr1'] = $ancien->Adresse1($i);
+        $adrax['adr2'] = $ancien->Adresse2($i);
+        $adrax['adr3'] = $ancien->Adresse3($i);
+        $adrax['cp'] = $ancien->Code_pst($i);
+        $adrax['ville'] = $ancien->Ville($i);
+        $adrax['region'] = $ancien->Etat_region($i);
+        $adrax['pays'] = $ancien->Pays($i);
+        $adrax['tel'] = $ancien->Tel($i);
+        $adrax['fax'] = $ancien->Fax($i);
+        $userax['adr'][] = $adrax;
     }
     if ($raw) {
-        $userax['raw'] = $array;
+        $userax['raw'] = $ancien;
     }
 
     return $userax;
