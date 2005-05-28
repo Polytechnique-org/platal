@@ -2,9 +2,6 @@ MAILTO=root
 PATH=/bin:/usr/bin:/usr/local/bin:/home/web/bin
 WD=/home/web/prod/platal/bin/cron
 
-# stats
-25 0 * * *	web	cd $WD/stats; ./evolution-inscrits-mails ; ./plot-graphs
-
 # db
 0  5 * * *	web	cd $WD; ./clean.php
 0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "verifications sur la BDD de plat/al"         br@m4x.org
