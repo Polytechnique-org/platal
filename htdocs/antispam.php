@@ -25,7 +25,7 @@ require_once("emails.inc.php");
 
 $bogo = new Bogo(Session::getInt('uid'));
 
-if (Env::has('filtre') and Env::has('statut_filtre')) {
+if (Env::has('statut_filtre')) {
     $bogo->change(Session::getInt('uid'), Env::getInt('statut_filtre'));
 }
 

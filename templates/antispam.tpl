@@ -46,18 +46,13 @@ Trois réglages sont possibles :
     <tr>
       <td>
         <strong>Choisis ton propre réglage :</strong><br />
-                <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} />
+                <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onchange='submit()' />
         (1) le filtre anti-spam est coupé<br />
-        <input type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} />
+        <input type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onchange='submit()' />
         (2) le filtre anti-spam est activé, et marque les mails<br />
-        <input type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} />
+        <input type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onchange='submit()' />
         (3) le filtre anti-spam est activé, et élimine les mails détectés comme spams<br />
               </td>
-    </tr>
-    <tr>
-      <td class="center">
-        <input type="submit" name="filtre" value="Valider le filtre anti-spam" />
-      </td>
     </tr>
   </table>
 </form>
