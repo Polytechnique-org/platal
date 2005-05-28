@@ -9,7 +9,7 @@ New :
 Bug/Wish :
 
 	* Core :
-		- #302: accept spaces in login.										-Car
+		- #78,302: accept spaces in login.									-Car
 		
 	* Fiche :
 		- #308: organizing layout.											-Car
