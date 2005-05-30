@@ -25,9 +25,9 @@ require_once("diogenes/diogenes.hermes.inc.php");
 /* sort en affichant une erreur */
 function erreur($text) {
     $mymail = new HermesMailer();
-    $mymail->addTo("webmaster@polytechnique.org");
+    $mymail->addTo("telepaiement@polytechnique.org");
     $mymail->setFrom("webmaster@polytechnique.org");
-    $mymail->setSubject("erreur lors d'un télépaiement");
+    $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
     exit;
