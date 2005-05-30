@@ -30,7 +30,7 @@ if (Post::has('submit')) {
     $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
     $ret    = $client->create_list($liste, Post::get('desc'), Post::get('advertise'), Post::get('modlevel'), Post::get('inslevel'), array(Session::get('forlife')), array());
 
-    $dom    = strtolower($asso["mail_domain"]);
+    $dom    = strtolower($globals->asso("mail_domain"));
     $red    = $dom.'_'.$liste;
 
     if($ret) {
