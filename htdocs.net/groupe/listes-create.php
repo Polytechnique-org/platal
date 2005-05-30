@@ -34,13 +34,13 @@ if (Post::has('submit')) {
     $red    = $dom.'_'.$liste;
 
     if($ret) {
-        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'@'.$dom, $liste);
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'@'.$dom, 'list');
         $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect) VALUES ({?}, {?})', mysql_insert_id(), "$red+post@listes.polytechnique.org");
-        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-owner@'.$dom, $liste);
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-owner@'.$dom, 'list');
         $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect) VALUES ({?}, {?})', mysql_insert_id(), "$red+owner@listes.polytechnique.org");
-        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-admin@'.$dom, $liste);
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-admin@'.$dom, 'list');
         $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect) VALUES ({?}, {?})', mysql_insert_id(), "$red+admin@listes.polytechnique.org");
-        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-bounces@'.$dom, $liste);
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-bounces@'.$dom, 'list');
         $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect) VALUES ({?}, {?})', mysql_insert_id(), "$red+bounces@listes.polytechnique.org");
         header("Location: listes-admin.php?liste=$liste");
     } else {
