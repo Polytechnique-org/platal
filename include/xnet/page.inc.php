@@ -88,7 +88,7 @@ class XnetPage extends PlatalPage
 
         if (logged() && may_update()) {
             $sub = array();
-            $sub['modifier l\'acceuil'] = "$dim/edit.php";
+            $sub['modifier l\'accueil'] = "$dim/edit.php";
             if ($globals->asso('mail_domain')) {
                 $sub['envoyer un mail']     = "$dim/mail.php";
                 $sub['créer une liste']     = "$dim/listes-create.php";
