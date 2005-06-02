@@ -24,6 +24,7 @@ if (!Env::has('liste')) header('Location: listes.php');
 $liste = strtolower(Env::get('liste'));
 
 new_group_page('listes/members.tpl');
+$page->assign('force_list_super', may_update());
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));

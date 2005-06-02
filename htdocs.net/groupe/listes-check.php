@@ -23,7 +23,8 @@ require_once 'xnet.inc.php';
 if (!Env::has('liste')) header('Location: index.php');
 $liste = strtolower(Env::get('liste'));
 
-new_admin_page('listes/check.tpl');
+new_groupadmin_page('listes/check.tpl');
+$page->assign('force_list_super', may_update());
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));

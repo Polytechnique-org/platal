@@ -25,6 +25,7 @@ $liste  = strtolower(Env::get('liste'));
 $domain = $globals->asso('mail_domain');
 
 new_group_page('listes/archives.tpl');
+$page->assign('force_list_super', may_update());
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));

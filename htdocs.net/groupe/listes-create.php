@@ -2,6 +2,7 @@
 require 'xnet.inc.php';
 
 new_groupadmin_page('xnet/groupe/listes-create.tpl');
+$page->assign('force_list_super', may_update());
 
 if (Post::has('submit')) {
     if (!Post::has('liste')) {

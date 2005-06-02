@@ -29,6 +29,7 @@ if (preg_match("!(?:[a-z0-9]+\\.)?{".$globals->asso('mail_domain')."}_(.*)!", $l
 }
 
 new_group_page('listes/moderate.tpl');
+$page->assign('force_list_super', may_update());
 
 require_once('lists.inc.php');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));

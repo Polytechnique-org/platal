@@ -83,7 +83,7 @@
     </td>
   </tr>
   {/if}
-  {perms level=admin}
+  {if $smarty.session.perms eq admin || $force_list_super}
   <tr>
     <td><strong>Administrer (avancé) :</strong></td>
     <td>
@@ -99,7 +99,7 @@
       {/if}
     </td>
   </tr>
-  {/perms}
+  {/if}
 </table>
 
 
