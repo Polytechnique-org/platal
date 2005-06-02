@@ -3,7 +3,11 @@ require 'xnet.inc.php';
 
 define('NB_PER_PAGE', 25);
 
-new_group_page('xnet/groupe/annuaire.tpl');
+if ($globals->asso('pub') == 'public')
+	new_group_page('xnet/groupe/annuaire.tpl');
+else
+	new_groupadmin_page('xnet/groupe/annuaire.tpl');
+
 $page->assign('admin', may_update());
 
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');

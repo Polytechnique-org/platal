@@ -142,6 +142,12 @@
         groupe agréé par l'AX
       </td>
     </tr>
+
+    <tr>
+      <td class="titre center" colspan="2">
+        <input type="checkbox" value="1" name="pub" {if $asso.pub eq 'private'}checked="checked"{/if} />
+        liste des membres privée
+      </td>
   </table>
 
   <div class="center">

@@ -65,7 +65,7 @@
   </tr>
   {/if}
 
-  {if !$is_member && $logged}
+  {if !$is_member && $logged && $asso.pub eq 'public'}
   <tr>
     <td class="titre">
       M'inscrire :
