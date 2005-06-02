@@ -65,7 +65,7 @@
   </tr>
   {/if}
 
-  {if !$is_member}
+  {if !$is_member && $logged}
   <tr>
     <td class="titre">
       M'inscrire :
