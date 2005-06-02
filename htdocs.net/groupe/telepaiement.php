@@ -13,7 +13,7 @@ if (may_update()) {
     foreach($tit as $foo) {
         $pid = $foo['id'];
         $res = $globals->xdb->query(
-                "SELECT  u.nom, u.prenom, u.promo, a.alias, timestamp, montant
+                "SELECT  IF(u.nom_usage<>'', u.nom_usage, u.nom) as nom, u.prenom, u.promo, a.alias, timestamp, montant
                    FROM  {$globals->money->mpay_tprefix}transactions AS t
              INNER JOIN  auth_user_md5                               AS u ON ( t.uid = u.user_id )
              INNER JOIN  aliases                                     AS a ON ( t.uid = a.id AND a.type='a_vie' )

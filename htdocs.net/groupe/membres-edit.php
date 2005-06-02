@@ -14,7 +14,7 @@
 
         if ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
             $res = $globals->xdb->query(
-                    "SELECT  user_id AS uid, u.promo, u.nom, u.prenom, b.alias,
+                    "SELECT  user_id AS uid, u.promo, IF(u.nom_usage<>'', u.nom_usage, u.nom) as nom, u.prenom, b.alias,
                              CONCAT(b.alias, '@m4x.org') AS email,
                              CONCAT(b.alias, '@polytechnique.org') AS email2,
                              m.perms='admin' AS perms, m.origine

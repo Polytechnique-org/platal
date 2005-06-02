@@ -12,7 +12,7 @@ $page->assign('admin', may_update());
 
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 $res = $globals->xdb->iterRow(
-            'SELECT  UPPER(SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1)), COUNT(IF(m.origine="X",u.nom,m.nom))
+            'SELECT  UPPER(SUBSTRING(IF(m.origine="X",IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom), 1, 1)), COUNT(IF(m.origine="X",u.nom,m.nom))
                FROM  groupex.membres AS m
           LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
               WHERE  asso_id = {?}
@@ -46,9 +46,9 @@ if (count($links)>1) {
     $page->assign('links', $links);
 }
 
-$ini = Env::has('initiale') ? 'AND IF(m.origine="X",u.nom,m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
+$ini = Env::has('initiale') ? 'AND IF(m.origine="X",IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
 $ann = $globals->xdb->iterator(
-          "SELECT  IF(m.origine='X',IF(u.nom_usage, u.nom_usage, u.nom) ,m.nom) AS nom,
+          "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
                    IF(m.origine='X',u.prenom,m.prenom) AS prenom,
                    IF(m.origine='X',u.promo,'extérieur') AS promo,
                    IF(m.origine='X',a.alias,m.email) AS email,
