@@ -16,6 +16,9 @@ Bug/Wish :
 
 	* Lists :
 		- #23: multiple inscriptions.										-Car
+
+	* Xnet :
+		- #311,312: private members list.									-Car
 		
 Fixes (from 0.9.6 branch) :
 
@@ -24,6 +27,7 @@ Fixes (from 0.9.6 branch) :
 
 	* Xnet :
 		- Have a connection link even on index page.						-MC
+		- #314: fix bad links to categories									-Car
 
 ================================================================================
 VERSION 0.9.6														 07 May 2004

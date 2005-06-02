@@ -30,7 +30,7 @@
         <tr>
           <td class="liste">
             {foreach from=$groupesx key=id item=dom}
-            <a class="cat" href="sommaire.php?cat=groupesx&amp;dom={$id}">{$dom[0].domnom}</a>
+            <a class="cat" href="groupes.php?cat=groupesx&amp;dom={$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
             <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
             {/foreach}

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : gestion des memebres</h1>
+<h1>{$asso.nom} : gestion des membres</h1>
 
 <h2>
   Édition du profil de {$user.prenom} {$user.nom}
