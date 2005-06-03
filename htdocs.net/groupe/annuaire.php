@@ -62,9 +62,6 @@ $ann = $globals->xdb->iterator(
          ORDER BY  $tri
             LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
 
-$nb = $globals->xdb->query("SELECT  FOUND_ROWS()");
-$nb = $nb->fetchOneCell();
-
 
 $page->assign('ann', $ann);
 
