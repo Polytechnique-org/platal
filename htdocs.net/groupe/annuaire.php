@@ -26,6 +26,7 @@ while (list($char, $nb) = $res->next()) {
         $tot = $nb;
     }
 }
+ksort($alphabet);
 $page->assign('alphabet', $alphabet);
 $page->assign('nb_tot',   $nb_tot);
 
