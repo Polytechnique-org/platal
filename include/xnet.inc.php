@@ -23,6 +23,7 @@ require_once('platal.inc.php');
 require_once('xnet/globals.inc.php');
 require_once('xnet/session.inc.php');
 XnetGlobals::init();
+XnetGlobals::setlocale();
 XnetSession::init();
 
 // {{{ function new_skinned_page()

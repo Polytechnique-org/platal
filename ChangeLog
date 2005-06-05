@@ -25,6 +25,9 @@ Bug/Wish :
 		
 Fixes (from 0.9.6 branch) :
 
+	* Core :
+		- #316: locale was not set correctly.  dates are in french again.	-MC
+
 	* Search :
 		- #307: fix bad escaping in advanced search.						-MC
 

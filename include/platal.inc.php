@@ -40,14 +40,9 @@ define("PERMS_ADMIN", "admin");
 define('SKINNED', 0);
 define('NO_SKIN', 1);
 
-// }}}
-// {{{ globals
-
 require_once('platal/env.inc.php');
-setlocale(LC_MESSAGES, $globals->core->locale);
-setlocale(LC_TIME,     $globals->core->locale);
-setlocale(LC_CTYPE,    $globals->core->locale);
 
 // }}}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

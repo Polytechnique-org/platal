@@ -23,6 +23,7 @@ require_once('platal.inc.php');
 require_once('xorg/globals.inc.php');
 require_once('xorg/session.inc.php');
 XorgGlobals::init();
+XorgGlobals::setlocale();
 XorgSession::init();
 
 // {{{ function _new_page()
