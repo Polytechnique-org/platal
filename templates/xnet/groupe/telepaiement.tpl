@@ -26,7 +26,7 @@
 Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 </p>
 
-{foreach from=$pitres item=t}
+{foreach from=$titres item=p}
 <a href="https://www.polytechnique.org/paiement/?ref={$p.id}">{$p.text}</a>
 {if $trans[$p.id]}
 <table>
@@ -43,6 +43,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
     <td>{$p.montant}</td>
     {/foreach}
   </tr>
+</table>
 {/if}
 {foreachelse}
 <p class="descr">

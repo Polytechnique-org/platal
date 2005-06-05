@@ -24,9 +24,10 @@
 
 {if $moments}
 <p class="center">
-{iterate from=$moments item=m}
-[<a href="{$smarty.server.PHP_SELF}?eid={$m.eid}&item_id={$m.item_id}" {if $smarty.request.item_id eq $m.item_id || ($m.item_id eq 1 && !$smarty.request.item_id)}class="erreur"{/if}>{$m.titre}</a>]
-{/iterate}
+[<a href="{$smarty.server.PHP_SELF}?eid={$smarty.request.eid}"{if !$smarty.request.item_id}class="erreur"{/if}>tout</a>]
+{foreach from=$moments item=m}
+[<a href="{$smarty.server.PHP_SELF}?eid={$m.eid}&item_id={$m.item_id}" {if $smarty.request.item_id eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
+{/foreach}
 </p>
 {/if}
 
@@ -41,14 +42,24 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 {/foreach}
 </p>
 
-<table summary="participants a l'evenement" class="tiny">
+<table summary="participants a l'evenement" class="{if $tout}large{else}tiny{/if}">
   <tr>
     <th>Prénom NOM</th>
     <th>Promo</th>
     <th>Info</th>
+    {if $tout}
+      {foreach from=$moments item=m}
+        <th>{$m.titre}</th>
+      {/foreach}
+      {if $admin && $money}
+        <th>Montant</th>
+        <th>Payé</th>
+      {/if}
+    {else}
     <th>Nombre</th>
+    {/if}
   </tr>
-  {iterate from=$ann item=m}
+  {foreach from=$ann item=m}
   <tr style="background:#d0c198;">
     <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}</td>
     <td>{$m.promo}</td>
@@ -61,11 +72,21 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
       <a href="mailto:{$m.email}"><img src="{rel}/images/mail.png" alt="mail"></a>
       {/if}
     </td>
+    {if $tout}
+      {foreach from=$moments item=i}
+        <td>{$m[$i.item_id]}</td>
+      {/foreach}
+      {if $admin && $money}
+        <td {if $m.montant > $m.paid}class="erreur"{/if}>{$m.montant}</td>
+        <td>{$m.paid}</td>
+      {/if}
+    {else}
     <td>
       {$m.nb}
     </td>
+    {/if}
   </tr>
-  {/iterate}
+  {/foreach}
 </table>
 
 <p class="descr">
@@ -73,5 +94,37 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 <a href="?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
+
+{if $admin}
+<hr />
+<p class="decr">
+En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des membres du groupe. Donne ici son mail (complet pour les extérieurs, sans @polytechnique.org pour les X), ainsi que le nombre de participants.<br />
+<form action="{$smarty.server.PHP_SELF}" method="post">
+<input type="hidden" name="eid" value="{$smarty.request.eid}" />
+Mail: <input name="mail" size="20" />
+<input type="hidden" name="adm" value="nbs" />
+{if $smarty.request.item_id}
+  <input type="hidden" name="item_id" value="{$smarty.request.item_id}" />
+{$evt.titre}: <input name="nb{$smarty.request.item_id}" size="1" value="1" />
+{else}
+{foreach from=$moments item=m}
+  {$m.titre}: <input name="nb{$m.item_id}" size="1" value="1"/>
+{/foreach}
+{/if}
+<input type="submit" />
+</form>
+</p>
+
+<hr />
+<p class="decr">
+En tant qu'administrateur, tu peux entrer un paiement reçu par une autre source que le télépaiement du site X.org. Ce montant s'ajoutera aux montants déjà entrés. Si tu as fais une erreur, tu peux entrer un montant négatif.
+<form action="{$smarty.server.PHP_SELF}" method="post">
+<input type="hidden" name="eid" value="{$smarty.request.eid}" />
+<input type="hidden" name="adm" value="prix" />
+Mail: <input name="mail" size="20" />
+montant: <input name="montant" size="3" value="0,00" /> &#8364;
+<input type="submit" />
+</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

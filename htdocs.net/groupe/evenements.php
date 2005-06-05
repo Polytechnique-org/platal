@@ -22,7 +22,7 @@ if (may_update() && Post::get('intitule')) {
 		{?},
 		{?}, {?}, {?})",
 		$eid, $globals->asso('id'), Session::get('uid'), Post::get('intitule'),
-		NULL, Post::get('descriptif'),
+		Post::get('paiement')?Post::get('paiement'):NULL, Post::get('descriptif'),
 		Post::get('deb_Year')."-".Post::get('deb_Month')."-".Post::get('deb_Day')." ".Post::get('deb_Hour').":".Post::get('deb_Minute').":00",
 		Post::get('fin_Year')."-".Post::get('fin_Month')."-".Post::get('fin_Day')." ".Post::get('fin_Hour').":".Post::get('fin_Minute').":00",
 		Post::get('membres_only'), Post::get('advertise'), Post::get('show_participants'));
@@ -58,12 +58,18 @@ if (may_update() && Env::has('sup') && $eid) {
 	$globals->xdb->execute("DELETE FROM groupex.evenements_participants WHERE eid = {?}", $eid);
 }
 
-if (may_update() && Env::has('add'))
+if (may_update() && (Env::has('add') || (Env::has('mod') && $eid))) {
 	$page->assign('get_form', true);
+	$res = $globals->xdb->iterator
+		("SELECT id, text FROM {$globals->money->mpay_tprefix}paiements WHERE asso_id = {?}", $globals->asso('id'));
+	$paiements = array();
+	while ($a = $res->next()) $paiements[$a['id']] = $a['text'];
+	$page->assign('paiements', $paiements);
+}
 
 if (may_update() && Env::has('mod') && $eid) {
 	$res = $globals->xdb->query(
-		"SELECT	eid, intitule, descriptif, debut, fin, membres_only, advertise, show_participants
+		"SELECT	eid, intitule, descriptif, debut, fin, membres_only, advertise, show_participants, paiement_id
 		   FROM	groupex.evenements
 		  WHERE eid = {?}", $eid);
 	$evt = $res->fetchOneAssoc();
@@ -78,8 +84,6 @@ if (may_update() && Env::has('mod') && $eid) {
 	$items = array();
 	while ($item = $res->next()) $items[$item['item_id']] = $item;
 	$page->assign('items', $items);
-
-	$page->assign('get_form', true);
 } else {
 
 	$evenements = $globals->xdb->iterator(

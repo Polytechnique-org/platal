@@ -83,6 +83,16 @@
         <input type="radio" name="show_participants" value="0" {if !$evt.show_participants}checked{/if}/> non
       </td>
     </tr>
+    <tr>
+      <td>Référence de paiement :
+      </td>
+      <td>
+      <select name="paiement">
+      	<option value=''>Pas de paiement déclaré</option>
+     	{html_options options=$paiements selected=$evt.paiement_id}
+      </select>
+      </td>
+    </tr>
   </table>
   {foreach from=$moments item=i}
   {assign var='moment' value=$items[$i]}

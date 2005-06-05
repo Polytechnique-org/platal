@@ -22,7 +22,7 @@ for ($i=1; Env::has('item_id'.$i); $i++) {
 	else
 		$globals->xdb->execute(
 	"DELETE FROM groupex.evenements_participants
-		WHERE eid = {?}, uid = {?}, item_id = {?}",
+		WHERE eid = {?} AND uid = {?} AND item_id = {?}",
 	       Env::get("eid"), Session::get("uid"), $j);		
 }
 

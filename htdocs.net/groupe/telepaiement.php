@@ -18,7 +18,7 @@ if (may_update()) {
              INNER JOIN  auth_user_md5                               AS u ON ( t.uid = u.user_id )
              INNER JOIN  aliases                                     AS a ON ( t.uid = a.id AND a.type='a_vie' )
                   WHERE  ref = {?}
-               ORDER BY  timestamp DESC", $id);
+               ORDER BY  timestamp DESC", $pid);
         $trans[$pid] = $res->fetchAllAssoc();
     }
     $page->assign('trans', $trans);
