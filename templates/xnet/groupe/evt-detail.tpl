@@ -33,12 +33,15 @@
 
 <br /><br />
 
+{assign var="montant" value=0}
+
 <table border=1 width='100%'>
 	<input type="hidden" name="eid" value="{$evt.eid}" />
 	<tr><td></td><td>Participation</td></tr>
 	{iterate from=$moments item=m}
+		{assign var="montant" value=$montant+$m.montant*$m.nb}
 		<input type="hidden" name="item_id{counter}" value="{$m.item_id}" />
-	{if $m.titre | $m.montant}
+	{if $m.titre || $m.montant}
 		<tr><td colspan='2'><b>{$m.titre} - {if $m.montant > 0}{$m.montant}{else}gratuit{/if}</b></td></tr>
 	{/if}
        	<tr><td>{$m.details}</td><td>
@@ -49,6 +52,12 @@
     	{/iterate}
 </table>
 <br />
+{if $montant > 0 || $paid > 0}
+<p class="descr">
+	Pour cet événement tu dois payer {$montant|replace:'.':','} &#8364;{if $paid > 0}, et tu as déjà payé {$paid|replace:'.':','} &#8364;{/if}.<br />
+	{if $evt.paiement_id}[<a href="https://www.polytechnique.org/paiement/?ref={$evt.paiement_id}">Effectuer le paiement</a>]{/if}
+</p>
+{/if}
 <center><input type='submit' name='ins' value='valider ma participation'>
 <input type='reset' value='annuler'></center>
 </form>

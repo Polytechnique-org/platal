@@ -45,7 +45,6 @@ if (may_update() && Env::get('adm') == 'nbs' && $member && $eid) {
 	$res = $globals->xdb->query("SELECT paid FROM groupex.evenements_participants WHERE uid = {?} AND eid = {?}", $member, $eid);
 	$paid = $res->fetchOneCell();
 	foreach ($moments as $m) if (Env::has('nb'.$m['item_id'])) {
-		print_r($m);
 		$nb = Env::getInt('nb'.$m['item_id'], 0);
 		if ($nb < 0) $nb = 0;
 		if ($nb) {
@@ -102,13 +101,13 @@ if ($money) $page->assign('money', true);
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 $whereitemid = Env::has('item_id')?('AND ep.item_id = '.Env::getInt('item_id', 1)):'';
 $res = $globals->xdb->iterRow(
-            'SELECT  UPPER(SUBSTRING(IF(m.origine="X",IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom), 1, 1)), COUNT(IF(m.origine="X",u.nom,m.nom))
+            'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>"", u.nom_usage, u.nom)), 1, 1)), COUNT(DISTINCT ep.uid)
                FROM  groupex.evenements_participants AS ep
 	 INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
-	 INNER JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
-          LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+	  LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
+          LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
               WHERE  ep.eid = {?} '.$whereitemid.'
-           GROUP BY  UPPER(SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1))', $eid);
+           GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', $eid);
 
 $alphabet = array();
 $nb_tot = 0;
@@ -119,10 +118,11 @@ while (list($char, $nb) = $res->next()) {
         $tot = $nb;
     }
 }
+ksort($alphabet);
 $page->assign('alphabet', $alphabet);
 
 $ofs   = Env::getInt('offset');
-$tot   = Env::get('initiale') ? $tot-1 : $nb_tot-1;
+$tot   = Env::get('initiale') ? $tot : $nb_tot;
 $nbp   = intval(($tot-1)/NB_PER_PAGE);
 $links = array();
 if ($ofs) {
@@ -138,53 +138,57 @@ if (count($links)>1) {
     $page->assign('links', $links);
 }
 
-$ini = Env::has('initiale') ? 'AND IF(m.origine="X",IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
+$ini = Env::has('initiale') ? 'AND IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>"", u.nom_usage, u.nom)) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
 $ann = $globals->xdb->iterator(
-          "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
-                   IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                   IF(m.origine='X',u.promo,'extérieur') AS promo,
-                   IF(m.origine='X',a.alias,m.email) AS email,
-                   IF(m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
+          "SELECT  IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>'', u.nom_usage, u.nom)) AS nom,
+                   IF(u.nom IS NULL,m.prenom,u.prenom) AS prenom,
+                   IF(u.nom IS NULL,'extérieur',u.promo) AS promo,
+                   IF(u.nom IS NULL,m.email,a.alias) AS email,
+                   IF(u.nom IS NULL,0,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
-                   m.origine='X' AS x,
-		   m.uid, 
-		   ep.nb, ep.item_id, ep.paid
+                   NOT(u.nom IS NULL) AS x,
+		   ep.uid, ep.paid, SUM(nb) AS nb 
                FROM  groupex.evenements_participants AS ep
 	 INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
-	 INNER JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
-          LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
-          LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
+	  LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
+          LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
+          LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
               WHERE  ep.eid = {?} $whereitemid $ini
+	   GROUP BY  ep.uid
 	   ORDER BY  $tri
 	      LIMIT {?}, {?}",
 	   $eid,
            $ofs*NB_PER_PAGE, NB_PER_PAGE);
-
+$globals->xdb->execute("SELECT 1");
 $tab = array();
 $user = 0;
-while ($a = $ann->next()) {
-	if ($user != $a['uid']) {
-		if ($user) $tab[] = $u;
-		$u = $a;
-		$user = $a['uid'];
-		$u['montant'] = 0;
-		if ($money && $evt['paiement_id'] && may_update() && !Env::has('item_id')) {
-			$res = $globals->xdb->query(
+while ($u = $ann->next()) {
+	$u['montant'] = 0;
+	if ($money && $evt['paiement_id'] && may_update() && !Env::has('item_id')) {
+		$res = $globals->xdb->query(
 		"SELECT montant
 		   FROM {$globals->money->mpay_tprefix}transactions AS t
 		  WHERE ref = {?} AND uid = {?}",
-		  	$evt['paiement_id'], $user);
-			$montants = $res->fetchColumn();
-			foreach ($montants as $m) {
-				$p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
-				$u['paid'] += trim($p);
-			}
+		  	$evt['paiement_id'], $u['uid']);
+		$montants = $res->fetchColumn();
+		foreach ($montants as $m) {
+			$p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
+			$u['paid'] += trim($p);
 		}
 	}
-	$u[$a['item_id']] = $a['nb'];
-	$u['montant'] += $moments[$a['item_id']]['montant']*$a['nb'];
+	if (!Env::has('item_id')) {
+		$res = $globals->xdb->iterator(
+		"SELECT nb, item_id
+		   FROM groupex.evenements_participants AS ep
+	          WHERE eid = {?} $whereitemid AND uid = {?}",
+		Env::get('eid'), $u['uid']);
+		while ($i = $res->next()) {
+			$u[$i['item_id']] = $i['nb'];
+			$u['montant'] += $moments[$i['item_id']]['montant']*$i['nb'];
+		}
+	}
+	$tab[] = $u;
 }
-if ($user) $tab[] = $u;
 
 $page->assign('ann', $tab);
 
