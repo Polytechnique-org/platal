@@ -12,21 +12,21 @@ $page->assign('admin', may_update());
 
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 $res = $globals->xdb->iterRow(
-            'SELECT  UPPER(SUBSTRING(IF(m.origine="X",IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom), 1, 1)), COUNT(IF(m.origine="X",u.nom,m.nom))
+            'SELECT  UPPER(SUBSTRING(IF(m.origine="X",IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom), 1, 1)) as letter, COUNT(*)
                FROM  groupex.membres AS m
           LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
               WHERE  asso_id = {?}
-           GROUP BY  UPPER(SUBSTRING(IF(m.origine="X",u.nom,m.nom), 1, 1))', $globals->asso('id'));
+           GROUP BY  letter
+           ORDER BY  letter', $globals->asso('id'));
 $alphabet = array();
 $nb_tot = 0;
 while (list($char, $nb) = $res->next()) {
-    $alphabet[ord($char)] = $char;
+    $alphabet[] = $char;
     $nb_tot += $nb;
     if (Env::has('initiale') && $char == strtoupper(Env::get('initiale'))) {
         $tot = $nb;
     }
 }
-ksort($alphabet);
 $page->assign('alphabet', $alphabet);
 $page->assign('nb_tot',   $nb_tot);
 
