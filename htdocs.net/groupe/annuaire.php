@@ -31,7 +31,7 @@ $page->assign('alphabet', $alphabet);
 $page->assign('nb_tot',   $nb_tot);
 
 $ofs   = Env::getInt('offset');
-$tot   = Env::get('initiale') ? $tot-1 : $nb_tot-1;
+$tot   = Env::get('initiale') ? $tot : $nb_tot;
 $nbp   = intval(($tot-1)/NB_PER_PAGE);
 $links = array();
 if ($ofs) {
