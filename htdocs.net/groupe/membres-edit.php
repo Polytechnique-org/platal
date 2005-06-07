@@ -147,26 +147,29 @@
         $page->assign('user', $user);
 
         if (Post::has('confirm')) {
-            require 'lists.inc.php';
-            $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
-            $listes = $client->get_lists($user['email2']);
+            if ($domain = $globals->asso('mail_domain')) {
+            
+                require 'lists.inc.php';
+                $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $domain);
+                $listes = $client->get_lists($user['email2']);
 
-            foreach ($listes as $liste) {
-                if ($liste['sub'] == 2) {
-                    $client->mass_unsubscribe($liste['list'], Array($user['email2']));
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désinscrit de {$liste['list']}");
-                } elseif ($liste['sub']) {
-                    $page->trig("{$user['prenom']} {$user['nom']} a une demande d'inscription en cours sur la liste {$liste['list']}@ !");
+                foreach ($listes as $liste) {
+                    if ($liste['sub'] == 2) {
+                        $client->mass_unsubscribe($liste['list'], Array($user['email2']));
+                        $page->trig("{$user['prenom']} {$user['nom']} a été désinscrit de {$liste['list']}");
+                    } elseif ($liste['sub']) {
+                        $page->trig("{$user['prenom']} {$user['nom']} a une demande d'inscription en cours sur la liste {$liste['list']}@ !");
+                    }
                 }
-            }
 
-            $globals->xdb->execute(
-                    "DELETE FROM  virtual_redirect
-                           USING  virtual_redirect
-                      INNER JOIN  virtual USING(vid)
-                           WHERE  redirect={?} AND alias LIKE {?}", $user['email'], '%@'.$globals->asso('mail_domain'));
-            if (mysql_affected_rows()) {
-                $page->trig("{$user['prenom']} {$user['nom']} a été désabonné des alias du groupe !");
+                $globals->xdb->execute(
+                        "DELETE FROM  virtual_redirect
+                               USING  virtual_redirect
+                          INNER JOIN  virtual USING(vid)
+                               WHERE  redirect={?} AND alias LIKE {?}", $user['email'], '%@'.$domain);
+                if (mysql_affected_rows()) {
+                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné des alias du groupe !");
+                }
             }
 
             $globals->xdb->execute(
