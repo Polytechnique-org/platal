@@ -149,26 +149,34 @@ function _exa_navigation_barre($params, &$smarty){
     $nb_hits = (int) $exalead_data->nhits;
   }
   $res = '';
-  $nb_numero = 10;//We want 10 links
-  $current_page = (empty($_GET['_s'])?1:1+((int) $_GET['_s'] / $nb_res_per_page));
+  $nb_numero = 5;//We want 10 links
+  $current_page = (empty($_GET['_s'])?1:1+(int) ($_GET['_s'] / $nb_res_per_page));
   $first_number = 1;
   if($nb_hits < ($nb_numero) * $nb_res_per_page){
     $nb_numero =  (int) ($nb_hits / $nb_res_per_page);
   }
   else{
-    if($current_page > ($nb_numero/2))
-      $first_number = 1 + $current_page - ((int)$nb_numero/2);
+    if($current_page > ((int)$nb_numero/2))
+      $first_number = 1 + $current_page - (int)($nb_numero/2);
     if($nb_hits < (($first_number + $nb_numero - 1) * $nb_res_per_page)){
        $first_number = (int) ($nb_hits / $nb_res_per_page) - $nb_numero+2;
     }
   }
   
+  if ($current_page*$nb_res_per_page >$nb_res_per_page)
+  	$res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page)."\">Precedent</a>  ";
   for($i = $first_number; $i <= $nb_numero + $first_number-1; $i++){
-    if($i == $current_page)
-      $res .= "<strong>$i</strong> ";
-    else
-      $res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".(($i-1)*10)."\">$i</a> ";
+    $k=$nb_res_per_page*($i-1);
+    $j=$nb_res_per_page*$i-1;
+    if($i == $current_page){
+	$res .= "<strong>$k-$j</strong> ";
+    }
+    else{
+      	$res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".(($i-1)*$nb_res_per_page)."\">$k-$j</a> ";
+   }
   }
+  if ($current_page*10<$nb_hits)
+  	$res.="<a  href=\"?_C={$exalead_data->query->context}&_s=".(($current_page)*$nb_res_per_page)."\">Suivant</a>";
   return $res;
 }
 
