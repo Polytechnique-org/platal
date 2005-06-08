@@ -149,7 +149,7 @@ function _exa_navigation_barre($params, &$smarty){
     $nb_hits = (int) $exalead_data->nhits;
   }
   $res = '';
-  $nb_numero = 5;//We want 10 links
+  $nb_numero = 5;//We want 5 links
   $current_page = (empty($_GET['_s'])?1:1+(int) ($_GET['_s'] / $nb_res_per_page));
   $first_number = 1;
   if($nb_hits < ($nb_numero) * $nb_res_per_page){
@@ -166,8 +166,8 @@ function _exa_navigation_barre($params, &$smarty){
   if ($current_page*$nb_res_per_page >$nb_res_per_page)
   	$res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page)."\">Precedent</a>  ";
   for($i = $first_number; $i <= $nb_numero + $first_number-1; $i++){
-    $k=$nb_res_per_page*($i-1);
-    $j=$nb_res_per_page*$i-1;
+    $k=$nb_res_per_page*($i-1)+1;
+    $j=$nb_res_per_page*$i;
     if($i == $current_page){
 	$res .= "<strong>$k-$j</strong> ";
     }
