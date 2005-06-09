@@ -59,7 +59,7 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
     <th>Nombre</th>
     {/if}
   </tr>
-  {foreach from=$ann item=m}
+  {foreach from=$participants item=m}
   <tr style="background:#d0c198;">
     <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}</td>
     <td>{$m.promo}</td>
@@ -96,8 +96,11 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 </p>
 
 {if $admin}
+<p class="descr">
+[<a href="evt-csv.php/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv?eid={$smarty.request.eid}&item_id={$smarty.request.item_id}">Télécharger le fichier Excel</a>]
+</p>
 <hr />
-<p class="decr">
+<p class="descr">
 En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des membres du groupe. Donne ici son mail (complet pour les extérieurs, sans @polytechnique.org pour les X), ainsi que le nombre de participants.<br />
 <form action="{$smarty.server.PHP_SELF}" method="post">
 <input type="hidden" name="eid" value="{$smarty.request.eid}" />

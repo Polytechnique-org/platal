@@ -56,6 +56,9 @@ class XnetGlobals extends PlatalGlobals
         static $aid = null;
         if ($aid === null) {
             $gp  = basename(dirname($_SERVER['PHP_SELF']));
+            // for url like /groupex/event.php/file.csv
+            if (substr($gp, -4) == ".php")
+                $gp = basename(dirname(dirname($_SERVER['PHP_SELF'])));
             $res = $this->xdb->query('SELECT  a.*, d.nom AS domnom
                                         FROM  groupex.asso AS a
                                    LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
