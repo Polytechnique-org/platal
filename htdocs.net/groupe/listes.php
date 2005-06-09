@@ -26,12 +26,15 @@ if(Post::has('promo_add')) {
 }
 
 
-if (Post::has('del_alias')) {
+if (Post::has('del_alias') && may_update()) {
+    $alias = Post::get('del_alias');
+    // prevent group admin from erasing aliases from other groups
+    $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
     $globals->xdb->query(
             'DELETE FROM  x4dat.virtual_redirect, x4dat.virtual
                    USING  x4dat.virtual AS v
-	      INNER JOIN  x4dat.virtual_redirect USING(vid)
-	           WHERE  v.alias={?}', Post::get('del_alias'));
+	       LEFT JOIN  x4dat.virtual_redirect USING(vid)
+	           WHERE  v.alias={?}', $alias);
     $page->trig(Post::get('del_alias')." supprimé !");
 }
 
