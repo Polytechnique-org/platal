@@ -124,6 +124,19 @@ recevras une confirmation par email.
   </table>
 </form>
 
+{if $transactions}
+<p class="descr">Tu as déjà effecuté des paiements pour cette transaction :</p>
+<table class="bicol">
+<tr><th>Date</th><th>Montant</th></tr>
+{iterate from=$transactions item=t}
+  <tr class="{cycle values="pair,impair"}">
+    <td>{$t.timestamp|date_format}</td>
+    <td>{$t.montant}</td>
+  </tr>
+{/iterate}
+</table>
+{/if}
+
 {/if}
 
 

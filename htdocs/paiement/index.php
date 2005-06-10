@@ -42,6 +42,10 @@ if (($e = $pay->check($val)) !== true) {
 if ($op=='submit') {
     $pay->init($val, $meth);
     $pay->prepareform($pay);
+} else {
+    $res = $globals->xdb->iterator("SELECT timestamp, montant FROM paiement.transactions WHERE uid = {?} AND ref = {?} ORDER BY timestamp DESC", Session::getInt('uid', -1), Env::getInt('ref', -1));
+    
+    if ($res->total()) $page->assign('transactions', $res);
 }
 
 $page->assign('montant',$val);
