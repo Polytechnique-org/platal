@@ -22,7 +22,7 @@ if (may_update() && Post::get('intitule')) {
 		{?},
 		{?}, {?}, {?})",
 		$eid, $globals->asso('id'), Session::get('uid'), Post::get('intitule'),
-		Post::get('paiement')?Post::get('paiement'):NULL, Post::get('descriptif'),
+		(Post::get('paiement')>0)?Post::get('paiement'):NULL, Post::get('descriptif'),
 		Post::get('deb_Year')."-".Post::get('deb_Month')."-".Post::get('deb_Day')." ".Post::get('deb_Hour').":".Post::get('deb_Minute').":00",
 		Post::get('fin_Year')."-".Post::get('fin_Month')."-".Post::get('fin_Day')." ".Post::get('fin_Hour').":".Post::get('fin_Minute').":00",
 		Post::get('membres_only'), Post::get('advertise'), Post::get('show_participants'));
@@ -31,10 +31,11 @@ if (may_update() && Post::get('intitule')) {
 		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
 		$eid = $res->fetchOneCell();
 	}
-
 	$nb_moments = 0;
+	$money_defaut = 0;
 	foreach ($moments as $i) if (Post::get('titre'.$i)) {
 		$nb_moments++;
+		if (!($money_defaut > 0)) $money_defaut = strtr(Post::get('montant'.$i), ',', '.');
 		$globals->xdb->execute("
 		REPLACE INTO groupex.evenements_items VALUES (
 		{?}, {?},
@@ -43,6 +44,13 @@ if (may_update() && Post::get('intitule')) {
 		Post::get('titre'.$i), Post::get('details'.$i), strtr(Post::get('montant'.$i), ',', '.'));
 	} else {
 		$globals->xdb->execute("DELETE FROM groupex.evenements_items WHERE eid = {?} AND item_id = {?}", $eid, $i);
+	}
+
+	// request for a new payment
+	if (Post::get('paiement') == -1 && $money_defaut >= 0) {
+		require_once ('validations.inc.php');
+		$p = new PayReq(Session::get('uid'), Post::get('intitule')." - ".$globals->asso('nom'), Post::get('site'), $money_defaut, Post::get('confirmation'),0, 999, $globals->asso('id'), $eid);
+		$p->submit();
 	}
 	
 	// events with no sub-event

@@ -20,36 +20,43 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Gestion des télépaiements </h1>
 
-<p class="descr">
-Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
-</p>
-
-{foreach from=$titres item=p}
-<hr />
-<a href="https://www.polytechnique.org/paiement/?ref={$p.id}">{$p.text}</a>
-{if $trans[$p.id]}
-<table>
-  <tr>
-    <th colspan="3">{$p.text} : détails pour les administrateurs</th>
-  </tr>
-  <tr>
-    {foreach from=$trans[$p.id] item=p}
-    <td>{$p.date|date_format}</td>
-    <td>
-      <a href="https://www.polytechnique.org/fiche.php?user={$p.alias}">{$p.nom} {$p.prenom} (X{$promo})</a>
-      (<a href="mailto:{$p.alias}@polytechnique.org">mail</a>)
-    </td>
-    <td>{$p.montant}</td>
-    {/foreach}
-  </tr>
-</table>
+<tr class="pair">
+  <td class="titre">Paiement&nbsp;:</td>
+  <td>{$valid->titre}</td>
+</tr>
+<tr class="pair">
+  <td class="titre">Site web&nbsp;:</td>
+  <td>
+    <a href="{$valid->site}">{$valid->site}</a>
+  </td>
+</tr>
+<tr class="pair">
+  <td class="titre">Montant&nbsp;:</td>
+  <td>
+    {$valid->montant} ({$valid->montant_min} &lt; x &lt; {$valid->montant_max})
+  </td>
+</tr>
+<tr class="pair">
+  <td class="titre">Contact&nbsp;:</td>
+  <td>
+    {$valid->bestalias}@polytechnique.org
+  </td>
+</tr>
+<tr class="pair">
+  <td class="titre">Message de confirmation&nbsp;:</td>
+  <td><pre wrap>{$valid->msg_reponse}</pre></td>
+</tr>
+{if $valid->asso_id}
+<tr class="pair">
+  <td class="titre">Lié à l'asso&nbsp;:</td>
+  <td>{$valid->asso}</td>
+</tr>
+{if $valid->evt}
+<tr class="pair">
+  <td class="titre">événement&nbsp;:</td>
+  <td>{$valid->evt_intitule}</td>
+</tr>
 {/if}
-{foreachelse}
-<p class="descr">
-<em>Pas de micropaiement en cours ...</em>
-</p>
-{/foreach}
-
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

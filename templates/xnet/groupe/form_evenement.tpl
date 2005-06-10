@@ -87,13 +87,28 @@
       <td>Référence de paiement :
       </td>
       <td>
-      <select name="paiement">
-      	<option value=''>Pas de paiement déclaré</option>
+      <select name="paiement" onchange="document.getElementById('new_pay').style.display=(value < 0)?'block':'none'">
+      	<option value=''>Pas de paiement</option>
+	<option value='-1'>- Nouveau paiement -</option>
      	{html_options options=$paiements selected=$evt.paiement_id}
       </select>
       </td>
     </tr>
   </table>
+    <div id="new_pay" style="display:none">
+	Nouveau paiement, message de confirmation&nbsp;:<br />
+	<textarea name="confirmation" rows="12" cols="65"><salutation> <prenom> <nom>,
+	 
+Ton inscription à %%%%% a bien été enregistrée et ton paiement de <montant> a bien été reçu. 
+Nous t'attendons donc le %%%%% à %%%%%. 
+Si tu as des questions eventuelles, tu peux contacter %%%%%
+  
+A très bientot,
+  
+%%%%%</textarea><br />
+	Page internet de l'événement&nbsp;:<br />
+	<input size="40" name="site" value="{$asso.site}" />
+    </div>
   {foreach from=$moments item=i}
   {assign var='moment' value=$items[$i]}
   <hr />
