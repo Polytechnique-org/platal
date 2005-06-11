@@ -85,20 +85,24 @@ function replace_address($i){
   replace_ifset_adr('pub', $i);
   replace_ifset_adr('tel_pub', $i);
   replace_ifset_adr('txt', $i);
-  if ($GLOBALS['adresses'][$i]['txt'] && !Env::get('nochange'.$i, true)) {
+  if ($GLOBALS['adresses'][$i]['txt'] && Env::get('change'.$i, false)) {
   	require_once('geoloc.inc.php');
 	$new = get_address_infos($GLOBALS['adresses'][$i]['txt']);
-	$GLOBALS['adresses'][$i]['adr1'] = '';
-	$GLOBALS['adresses'][$i]['adr2'] = '';
-	$GLOBALS['adresses'][$i]['adr3'] = '';
-	$GLOBALS['adresses'][$i]['postcode'] = '';
-	$GLOBALS['adresses'][$i]['city'] = '';
-	unset($GLOBALS['adresses'][$i]['cityid']);
-	$GLOBALS['adresses'][$i]['country'] = '00';
-	$GLOBALS['adresses'][$i]['region'] = '';
-	$GLOBALS['adresses'][$i] = array_merge($GLOBALS['adresses'][$i], $new);
-	$GLOBALS['adresses'][$i]['txt'] = get_address_text($GLOBALS['adresses'][$i]);
+	// if we found a localisation, erase old address
+	if ($new['sql']) {
+		$GLOBALS['adresses'][$i]['adr1'] = '';
+		$GLOBALS['adresses'][$i]['adr2'] = '';
+		$GLOBALS['adresses'][$i]['adr3'] = '';
+		$GLOBALS['adresses'][$i]['postcode'] = '';
+		$GLOBALS['adresses'][$i]['city'] = '';
+		unset($GLOBALS['adresses'][$i]['cityid']);
+		$GLOBALS['adresses'][$i]['country'] = '00';
+		$GLOBALS['adresses'][$i]['countrytxt'] = '';
+		$GLOBALS['adresses'][$i]['region'] = '';
+		$GLOBALS['adresses'][$i] = array_merge($GLOBALS['adresses'][$i], $new);
+	}
   }
+  $GLOBALS['adresses'][$i]['txt'] = get_address_text($GLOBALS['adresses'][$i]);
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
     $GLOBALS['adresses'][$i]['numero_formulaire'] = $tab[$i];

@@ -76,7 +76,7 @@ function get_address_infos($txt) {
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
     $infos = array();
-    foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = $vals[$i];
+    foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = ($key == 'sql')?$vals[$i]:utf8_decode($vals[$i]);
     global $globals;
     if ($infos['sql'])
        $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
@@ -99,6 +99,11 @@ function get_address_text($adr) {
         if ($adr['city']) $l .= $adr['city'];
     }
     if ($l) $t .= "\n".trim($l);
+    if ($adr['country'] != '00' && !$adr['countrytxt']) {
+        global $globals;
+        $res = $globals->xdb->query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
+        $adr['countrytxt'] = $res->fetchOneCell();
+    }
     if ($adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
     return trim($t);
 }

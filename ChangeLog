@@ -3,6 +3,9 @@ VERSION 0.9.7														 07 May 2004
 
 New :
 
+	* Profile :
+		- Address parser.													-Car
+		
 	* Search :
 		- Nickname are used in fast search.									-Car
 
