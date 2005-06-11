@@ -275,26 +275,29 @@ div.long td.rt { width: 65%; }
         [ onglets des profils ]
 *******************************************************************************/
   
+table.flags {
+    margin: 1em 0em 0em 0em;
+}
+table.flags input { margin: 0px 2px; padding: 0px; }
+
 table.flags td.texte {
     font-size: smaller;
     font-weight: bold;
-    padding-left: 0.5em;
+    padding: 3px;
 }
 table.flags td.vert {
     background: green;
-    width: 1.5em; height: 1.5em;
+    padding: 3px;
     text-align: center;
 }
 table.flags td.orange {
     background: #ff9900;
-    width: 1.5em;
-    height: 1.5em;
+    padding: 3px;
     text-align: center;
 }
 table.flags td.rouge {
     background: red;
-    width: 1.5em;
-    height: 1.5em;
+    padding: 3px;
     text-align: center;
 }
 
