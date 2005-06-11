@@ -56,7 +56,7 @@
       {/if}
     </td>
   </tr>
-  {if $details.own || $smarty.session.perms eq admin}
+  {if $details.own || $smarty.session.perms eq admin || $force_list_super}
   <tr>
     <td><strong>Administrer la liste :</strong></td>
     <td>
