@@ -40,9 +40,9 @@ replace_ifset_i($fonction,"fonction",$i);
 replace_ifset_i($adrpro1,"adrpro1",$i);
 replace_ifset_i($adrpro2,"adrpro2",$i);
 replace_ifset_i($adrpro3,"adrpro3",$i);
-replace_ifset_i($cppro,"cppro",$i);
-replace_ifset_i($villepro,"villepro",$i);
-replace_ifset_i($payspro,"payspro",$i);
+replace_ifset_i($postcodepro,"postcodepro",$i);
+replace_ifset_i($citypro,"citypro",$i);
+replace_ifset_i($countrypro,"countrypro",$i);
 replace_ifset_i($regionpro,"regionpro",$i);
 replace_ifset_i($telpro,"telpro",$i);
 replace_ifset_i($faxpro,"faxpro",$i);
@@ -105,11 +105,11 @@ if (strlen(strtok($adrpro1[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro1[$i]))
     {
       $str_error = $str_error."Le champ 'Adresse professionnelle $j - Ligne 3' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok($cppro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($cppro[$i]))
+  if (strlen(strtok($postcodepro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($postcodepro[$i]))
     {
       $str_error = $str_error."Le champ 'Code Postal professionnel $j' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok($villepro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($villepro[$i]))
+  if (strlen(strtok($citypro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($citypro[$i]))
     {
       $str_error = $str_error."Le champ 'Ville professionnelle $j' contient un caractère interdit.<BR />";
     }

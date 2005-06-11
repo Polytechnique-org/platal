@@ -181,28 +181,28 @@ function &get_user_details($login, $from_uid = '')
     $uid  = $user['user_id'];
 
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
-                     e.poste, e.adr1, e.adr2, e.adr3, e.cp, e.ville,
+                     e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
                      gp.pays, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
                      e.pub, e.tel_pub, e.email, e.email_pub, e.web
                FROM  entreprises AS e
           LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
           LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
           LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
-          LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.pays)
-          LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.pays and gr.region = e.region)
+          LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
+          LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
               WHERE  e.uid = {?}
            ORDER BY  e.entrid";
     $res  = $globals->xdb->query($sql, $uid);
     $user['adr_pro'] = $res->fetchAllAssoc();
 
-    $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.cp,a.ville,
+    $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.postcode,a.city,
                      gp.pays,gr.name AS region,a.tel,a.fax,
                      FIND_IN_SET('active', a.statut) AS active, a.adrid,
                      FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
                      a.pub, a.tel_pub
                FROM  adresses AS a
-          LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.pays)
-          LEFT JOIN  geoloc_region AS gr ON (gr.a2=a.pays and gr.region=a.region)
+          LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)
+          LEFT JOIN  geoloc_region AS gr ON (gr.a2=a.country and gr.region=a.region)
               WHERE  uid= {?} AND NOT FIND_IN_SET('pro',a.statut)
            ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
     $res  = $globals->xdb->query($sql, $uid);

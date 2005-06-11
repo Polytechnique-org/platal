@@ -131,18 +131,18 @@
     </tr>
     <tr>
       <td>Ville</td>
-      <td><input type="text" name="ville" size="32" value="{$smarty.request.ville}" /></td>
+      <td><input type="text" name="city" size="32" value="{$smarty.request.city}" /></td>
     </tr>
     <tr>
       <td>Pays</td>
       <td>
-        <select name="pays" onchange="javascript:document.forms.recherche.submit();">
-        {if $smarty.request.pays}
-          {assign var="pays" value=$smarty.request.pays}
+        <select name="coutry" onchange="javascript:document.forms.recherche.submit();">
+        {if $smarty.request.country}
+          {assign var="country" value=$smarty.request.country}
         {else}
-          {assign var="pays" value=""}
+          {assign var="country" value=""}
         {/if}
-        {geoloc_pays pays=$pays}
+        {geoloc_pays pays=$country}
         </select>
       </td>
     </tr>
@@ -155,8 +155,8 @@
         {else}
           {assign var="region" value=""}
         {/if}
-        {if $smarty.request.pays neq ""}
-        {geoloc_region pays=$smarty.request.pays region=$region}
+        {if $smarty.request.country neq ""}
+        {geoloc_region pays=$smarty.request.country region=$region}
         {else}
         <option value=""></option>
         {/if}

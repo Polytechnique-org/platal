@@ -24,7 +24,7 @@ require_once('secteur.emploi.inc.php');
 require_once('fonction.emploi.inc.php');
 
 $res = $globals->xdb->iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
-	adr1, adr2, adr3, cp, ville, pays, region, tel, fax, mobile,
+	adr1, adr2, adr3, postcode, city, country, region, tel, fax, mobile,
 	pub, adr_pub, tel_pub, email, email_pub, web
         FROM entreprises
         WHERE uid = {?} ORDER BY entrid",Session::getInt('uid', -1));
@@ -32,7 +32,7 @@ $res = $globals->xdb->iterRow("SELECT entrid, entreprise, secteur, ss_secteur, p
 $nb_res = $res->total();
 for($i = 0; $i < $nb_res ; $i++){
 	list($endrid[$i], $entreprise[$i], $secteur[$i], $ss_secteur[$i], $poste[$i], $fonction[$i],
-       	     $adrpro1[$i], $adrpro2[$i], $adrpro3[$i], $cppro[$i], $villepro[$i], $payspro[$i], $regionpro[$i],
+       	     $adrpro1[$i], $adrpro2[$i], $adrpro3[$i], $postcodeppro[$i], $citypro[$i], $countrypro[$i], $regionpro[$i],
              $telpro[$i], $faxpro[$i], $mobilepro[$i], $pubpro[$i], $adr_pubpro[$i],
 	     $tel_pubpro[$i], $emailpro[$i], $email_pubpro[$i], $webpro[$i]) = $res->next();
 }
@@ -47,9 +47,9 @@ for($i = $nb_res; $i < 2 ; $i++){
         $adrpro1[$i] = '';
 	$adrpro2[$i] = '';
 	$adrpro3[$i] = '';
-	$cppro[$i] = '';
-	$villepro[$i] = '';
-	$payspro[$i] = '00';
+	$postcodepro[$i] = '';
+	$citypro[$i] = '';
+	$countrypro[$i] = '00';
 	$regionpro[$i] = '';
         $telpro[$i] = '';
 	$faxpro[$i] = '';

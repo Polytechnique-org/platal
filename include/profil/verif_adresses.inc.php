@@ -75,9 +75,9 @@ function replace_address($i){
   replace_ifset_adr('adr1', $i);
   replace_ifset_adr('adr2', $i);
   replace_ifset_adr('adr3', $i);
-  replace_ifset_adr('cp', $i);
-  replace_ifset_adr('ville', $i);
-  replace_ifset_adr('pays', $i);
+  replace_ifset_adr('postcode', $i);
+  replace_ifset_adr('city', $i);
+  replace_ifset_adr('country', $i);
   replace_ifset_adr('region', $i);
   replace_ifset_adr('tel', $i);
   replace_ifset_adr('fax', $i);
@@ -117,11 +117,11 @@ foreach($adresses as $adrid => $adr) {
     {
       $str_error = $str_error."Le champ '$description - Ligne 3' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok($adr['cp'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['cp']))
+  if (strlen(strtok($adr['postcode'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode']))
     {
       $str_error = $str_error."Le champ '$description - Code Postal' contient un caractère interdit.<BR />";
     }
-  if (strlen(strtok($adr['ville'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['ville']))
+  if (strlen(strtok($adr['city'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode']))
     {
       $str_error = $str_error."Le champ '$description - Ville' contient un caractère interdit.<BR />";
     }
@@ -161,9 +161,9 @@ if (!isset($adresses) || (count($adresses) < $nb_adr_max)){
   $adr['adr1'] = '';
   $adr['adr2'] = '';
   $adr['adr3'] = '';
-  $adr['cp'] = '';
-  $adr['ville'] = '';
-  $adr['pays'] = '00';
+  $adr['postcode'] = '';
+  $adr['city'] = '';
+  $adr['country'] = '00';
   $adr['region'] = '';
   $adr['tel'] = '';
   $adr['fax'] = '';

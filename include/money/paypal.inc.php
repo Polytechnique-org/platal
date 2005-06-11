@@ -74,7 +74,7 @@ class PayPal
 		
 	$res = $globals->xdb->query(
 		"SELECT a.adr1 AS address1, a.adr2 AS address2,
-			a.ville AS city, a.cp AS zip, a.pays AS country,
+			a.city, a.postcode AS zip, a.country,
 			IF(a.tel, a.tel, q.profile_mobile) AS night_phone_b
 		   FROM auth_user_quick AS q
 	      LEFT JOIN adresses	AS a ON (q.user_id = a.uid)

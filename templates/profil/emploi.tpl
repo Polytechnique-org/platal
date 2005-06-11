@@ -111,7 +111,7 @@
         <span class="titre">Code postal</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="cppro[{$i}]" value="{$cppro.$i}" size="8" maxlength="8" />
+        <input type="text" name="postcodepro[{$i}]" value="{$postcodepro.$i}" size="8" maxlength="8" />
       </td>
     </tr>
     <tr>
@@ -119,7 +119,7 @@
         <span class="titre">Ville</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="villepro[{$i}]" value="{$villepro.$i}" size="40" maxlength="50" />
+        <input type="text" name="citypro[{$i}]" value="{$citypro.$i}" size="40" maxlength="50" />
       </td>
     </tr>
     <tr>
@@ -127,8 +127,8 @@
         <span class="titre">Pays</span>
       </td>
       <td class="cold">
-        <select name="payspro[{$i}]" onchange="this.form.submit();">
-          {geoloc_pays pays=$payspro.$i}
+        <select name="countrypro[{$i}]" onchange="this.form.submit();">
+          {geoloc_pays pays=$countrypro.$i}
         </select>
       </td>
     </tr>
@@ -139,7 +139,7 @@
       </td>
       <td class="cold">
         <select name="regionpro[{$i}]">
-          {geoloc_region pays=$payspro.$i region=$regionpro.$i}
+          {geoloc_region pays=$countrypro.$i region=$regionpro.$i}
         </select>
       </td>
     </tr>

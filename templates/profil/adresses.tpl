@@ -117,9 +117,9 @@
         <span class="titre">Code postal / Ville</span><br />
       </td>
       <td class="cold">
-        <input type="text" name="cp[{$adrid}]" value="{$adr.cp}" size="7" maxlength="18" />
+        <input type="text" name="postcode[{$adrid}]" value="{$adr.postcode}" size="7" maxlength="18" />
         &nbsp;
-        <input type="text" name="ville[{$adrid}]" value="{$adr.ville}" size="32" maxlength="78" />
+        <input type="text" name="city[{$adrid}]" value="{$adr.city}" size="32" maxlength="78" />
       </td>
     </tr>
     <tr>
@@ -127,8 +127,8 @@
         <span class="titre">Pays</span>
       </td>
       <td class="cold">
-        <select name="pays[{$adrid}]" onchange="this.form.submit();">
-          {geoloc_pays pays=$adr.pays}
+        <select name="country[{$adrid}]" onchange="this.form.submit();">
+          {geoloc_pays pays=$adr.country}
         </select>
       </td>
     </tr>
@@ -139,7 +139,7 @@
       </td>
       <td class="cold">
         <select name="region[{$adrid}]">
-          {geoloc_region pays=$adr.pays region=$adr.region}
+          {geoloc_region pays=$adr.country region=$adr.region}
         </select>
       </td>
     </tr>

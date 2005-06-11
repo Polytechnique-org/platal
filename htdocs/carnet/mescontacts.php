@@ -126,7 +126,7 @@ if(Get::get('trombi')) {
 		    IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
 		    ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
 		    ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-		    adr.ville, gp.a2, gp.pays, gr.name AS region,
+		    adr.city, gp.a2, gp.pays, gr.name AS region,
 		    IF(a.nom_usage<>'',a.nom_usage,a.nom) AS sortkey
 	      FROM  contacts       AS c
         INNER JOIN  auth_user_md5  AS a   ON (a.user_id = c.contact)
@@ -140,8 +140,8 @@ if(Get::get('trombi')) {
          LEFT JOIN  applis_ins     AS ai1 ON (a.user_id = ai1.uid AND ai1.ordre = 1)
          LEFT JOIN  applis_def     AS ad1 ON (ad1.id = ai1.aid)
          LEFT JOIN  adresses       AS adr ON (a.user_id = adr.uid AND FIND_IN_SET('active', adr.statut))
-         LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
-         LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)
+         LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
+         LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
              WHERE  c.uid = $uid
           ORDER BY  ".$order;
     

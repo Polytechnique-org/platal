@@ -89,10 +89,10 @@ if (!logged()) {
             $user['adr'][$i]['adr1'] = '';
             $user['adr'][$i]['adr2'] = '';
             $user['adr'][$i]['adr3'] = '';
-            $user['adr'][$i]['ville'] = '';
-            $user['adr'][$i]['cp'] = '';
+            $user['adr'][$i]['city'] = '';
+            $user['adr'][$i]['postcode'] = '';
             $user['adr'][$i]['region'] = '';
-            $user['adr'][$i]['pays'] = '';
+            $user['adr'][$i]['country'] = '';
         }
         elseif ($adr['tel_pub'] != 'public') {
             $user['adr'][$i]['tel'] = '';
@@ -107,10 +107,10 @@ if (!logged()) {
                 $user['adr_pro'][$i]['adr1'] = '';
                 $user['adr_pro'][$i]['adr2'] = '';
                 $user['adr_pro'][$i]['adr3'] = '';
-                $user['adr_pro'][$i]['ville'] = '';
-                $user['adr_pro'][$i]['cp'] = '';
+                $user['adr_pro'][$i]['city'] = '';
+                $user['adr_pro'][$i]['postcode'] = '';
                 $user['adr_pro'][$i]['region'] = '';
-                $user['adr_pro'][$i]['pays'] = '';
+                $user['adr_pro'][$i]['country'] = '';
             }
             if ($adr['pub'] != 'public') {
                 $user['adr_pro'][$i]['entreprise'] = '';
@@ -139,7 +139,7 @@ foreach($user['adr_pro'] as $i=>$pro) {
     if ($pro['entreprise'] == '' && $pro['fonction'] == ''
         && $pro['secteur'] == '' && $pro['poste'] == ''
         && $pro['adr1'] == '' && $pro['adr2'] == '' && $pro['adr3'] == ''
-        && $pro['cp'] == '' && $pro['ville'] == '' && $pro['pays'] == ''
+        && $pro['postcode'] == '' && $pro['city'] == '' && $pro['country'] == ''
         && $pro['tel'] == '' && $pro['fax'] == '' && $pro['mobile'] == ''
         && $pro['email'] == '')
         unset($user['adr_pro'][$i]);

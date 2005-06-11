@@ -66,10 +66,10 @@ function get_user_ax($uid, $raw=false)
         $jobax['adr1'] = $ancien->Adresse_act_adresse1($i);
         $jobax['adr2'] = $ancien->Adresse_act_adresse2($i);
         $jobax['adr3'] = $ancien->Adresse_act_adresse3($i);
-        $jobax['cp']   = $ancien->Adresse_act_code_pst($i);
-        $jobax['ville'] = $ancien->Adresse_act_ville($i);
+        $jobax['postcode']   = $ancien->Adresse_act_code_pst($i);
+        $jobax['city'] = $ancien->Adresse_act_ville($i);
         $jobax['region'] = $ancien->Adresse_act_etat_region($i);
-        $jobax['pays'] = $ancien->Adresse_act_pays($i);
+        $jobax['country'] = $ancien->Adresse_act_pays($i);
         $jobax['tel']  = $ancien->Adresse_act_tel($i);
         $jobax['fax']  = $ancien->Adresse_act_fax($i);
         $jobax['mobile'] = $ancien->Adresse_act_mobile($i);
@@ -82,10 +82,10 @@ function get_user_ax($uid, $raw=false)
         $adrax['adr1'] = $ancien->Adresse1($i);
         $adrax['adr2'] = $ancien->Adresse2($i);
         $adrax['adr3'] = $ancien->Adresse3($i);
-        $adrax['cp'] = $ancien->Code_pst($i);
-        $adrax['ville'] = $ancien->Ville($i);
+        $adrax['postcode'] = $ancien->Code_pst($i);
+        $adrax['city'] = $ancien->Ville($i);
         $adrax['region'] = $ancien->Etat_region($i);
-        $adrax['pays'] = $ancien->Pays($i);
+        $adrax['country'] = $ancien->Pays($i);
         $adrax['tel'] = $ancien->Tel($i);
         $adrax['fax'] = $ancien->Fax($i);
         $userax['adr'][] = $adrax;
@@ -145,12 +145,12 @@ function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=n
                 $new_adrid++;
             }
             
-            if ($adr['pays']) {
+            if ($adr['city']) {
             
                 $res = $globals->xdb->query(
                 "SELECT a2 FROM geoloc_pays
                  WHERE pays LIKE {?} OR country LIKE {?}",
-                 $adr['pays'], $adr['pays']);
+                 $adr['country'], $adr['country']);
                  
                 $a2 = $res->fetchOneCell();
             }
@@ -160,15 +160,15 @@ function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=n
                 "INSERT INTO adresses
                          SET uid = {?}, adrid = {?},
                              adr1 = {?}, adr2 = {?}, adr3 = {?},
-                             cp = {?}, ville = {?},
-                         pays = {?},
+                             postcode = {?}, city = {?},
+                         country = {?},
                          tel = {?}, fax = {?},
                          datemaj = NOW(),
                          pub = 'ax',
                          tel_pub = 'ax'",
                 $userax['uid'], $new_adrid,
                 $adr['adr1'], $adr['adr2'], $adr['adr3'],
-                $adr['cp'], $adr['ville'],
+                $adr['postcode'], $adr['city'],
                 $a2,
                 $adr['tel'], $adr['fax']);
         }
@@ -198,11 +198,11 @@ function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=n
                 $new_entrid++;
             }
             
-            if ($pro['pays']) {
+            if ($pro['country']) {
                 $res = $globals->xdb->query(
                     "SELECT a2 FROM geoloc_pays
                       WHERE pays LIKE {?} OR country LIKE {?}",
-                    $pro['pays'], $pro['pays']);
+                    $pro['country'], $pro['country']);
                 $a2 = $res->fetchOneCell();
             }
             if (!$a2) { $a2 = '00'; }
@@ -212,14 +212,14 @@ function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=n
                          SET uid = {?}, entrid = {?},
                          entreprise = {?}, poste = {?},
                          adr1 = {?}, adr2 = {?}, adr3 = {?},
-                         cp = {?}, ville = {?},
-                         pays = {?},
+                         postcode = {?}, city = {?},
+                         country = {?},
                          tel = {?}, fax = {?},
                          pub = 'ax', adr_pub = 'ax', tel_pub = 'ax'",
                 $userax['uid'], $new_entrid,
                 $pro['entreprise'], $pro['fonction'],
                 $pro['adr1'], $pro['adr2'], $pro['adr3'],
-                $pro['cp'], $pro['ville'],
+                $pro['postcode'], $pro['city'],
                 $a2,
                 $pro['tel'], $pro['fax']);
         }

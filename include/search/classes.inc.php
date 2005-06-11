@@ -42,14 +42,14 @@ if (logged())
 		q.profile_web AS web,
 		q.profile_mobile AS mobile,
 		q.profile_freetext AS freetext,
-                adr.ville, gp.pays, gr.name AS region,
+                adr.city, gp.pays, gr.name AS region,
 		e.entreprise,';
 else
 	$globals->search->result_fields .="
 		IF(q.profile_web_pub='public', q.profile_web, '') AS web,
 		IF(q.profile_mobile_pub='public', q.profile_mobile, '') AS mobile,
 		IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
-		IF(adr.pub='public', adr.ville, '') AS ville,
+		IF(adr.pub='public', adr.city, '') AS city,
 		IF(adr.pub='public', gp.pays, '') AS pays,
 		IF(adr.pub='public', gr.name, '') AS region,
 		IF(e.pub='public', e.entreprise, '') AS entreprise,";
@@ -63,8 +63,8 @@ $globals->search->result_where_statement = '
                 LEFT JOIN  fonctions_def  AS ef  ON (e.fonction = ef.id)
                 LEFT JOIN  geoloc_pays    AS n   ON (u.nationalite = n.a2)
                 LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
-                LEFT JOIN  geoloc_pays    AS gp  ON (adr.pays = gp.a2)
-                LEFT JOIN  geoloc_region  AS gr  ON (adr.pays = gr.a2 AND adr.region = gr.region)';
+                LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
+                LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)';
 
 // }}}
 // {{{ function display_lines()

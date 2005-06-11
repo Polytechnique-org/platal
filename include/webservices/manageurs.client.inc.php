@@ -10,7 +10,7 @@ function get_annuaire_infos($amicale, $id_assoce, $adresse){
 
   $url = 'http://www.polytechniciens.org:80/manageurs.php';
     //decommenter pour ajouter un webservice chez l'AX :
-   // return array('adresse' => array(0 => array('adr1' => 'test AX', 'ville' => 'Trou perdu')));
+   // return array('adresse' => array(0 => array('adr1' => 'test AX', 'city' => 'Trou perdu')));
 
   $client = new xmlrpc_client($url);
  

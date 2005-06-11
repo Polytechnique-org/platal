@@ -36,7 +36,7 @@ function get_annuaire_infos($method, $params) {
             $res = $globals->xdb->iterRow(
                  "SELECT     q.profile_mobile AS cell, a.naissance AS age,
                              adr.adr1, adr.adr2, adr.adr3,
-                             adr.cp, adr.ville, adr.pays,
+                             adr.postcode, adr.city, adr.country,
                              adr.tel, adr.fax
                        FROM  auth_user_md5 AS a
                  INNER JOIN  auth_user_quick AS q USING (user_id)
@@ -51,8 +51,8 @@ function get_annuaire_infos($method, $params) {
 
         //traitement des adresss si necessaire
         if (isset($params[2])) {
-            if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
-                        $adr['pays'], $adr['tel'], $adr['fax']) = $res->next())
+            if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['postcode'], $adr['city'],
+                        $adr['country'], $adr['tel'], $adr['fax']) = $res->next())
             {
                 $array['cell']      = $cell;
                 $array['age']       = $age;
@@ -63,8 +63,8 @@ function get_annuaire_infos($method, $params) {
 
                 if ($adresse != 1) { //on ne veut pas la premiere adresse
                     $i = 2;
-                    while(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
-                                $adr['pays'], $adr['tel'], $adr['fax']) = $res->next())
+                    while(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['postcode'], $adr['city'],
+                                $adr['country'], $adr['tel'], $adr['fax']) = $res->next())
                     {
                         if($adresse == $i){//si on veut cette adresse en particulier
                             $array['adresse'][0] = $adr;

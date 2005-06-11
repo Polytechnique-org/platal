@@ -42,7 +42,7 @@
 <form action='{$smarty.request.PHP_SELF}' method='post'>
 {if $x.profile_from_ax}
 <div style="text-align:center;margin:5px;background:green">
-<strong>Cet utilisateur a accpeté la synchronisation</strong>
+<strong>Cet utilisateur a accepeté la synchronisation</strong>
 </div>
 {else}
 <div style="text-align:center;margin:5px;background:red">

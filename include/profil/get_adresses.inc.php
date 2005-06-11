@@ -30,7 +30,7 @@ function is_adr_empty($adrid){
   $adr = &$GLOBALS['adresses'][$adrid];
   return ( 
     ($adr['adr1'] == '') && ($adr['adr2'] == '') && ($adr['adr3'] == '') &&
-    ($adr['cp'] == '') && ($adr['ville'] == '') && ($adr['pays'] == '00') &&
+    ($adr['postcode'] == '') && ($adr['city'] == '') && ($adr['country'] == '00') &&
     ($adr['tel'] == '') && ($adr['fax'] == '')
     );
 }
@@ -66,8 +66,8 @@ $res = $globals->xdb->iterRow(
 	"SELECT
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
-	adr1, adr2, adr3, cp, ville,
-        pays, region, tel, fax, pub, tel_pub
+	adr1, adr2, adr3, postcode, city,
+        country, region, tel, fax, pub, tel_pub
 	FROM adresses
 	WHERE uid = {?} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
 , Session::getInt('uid', -1)
@@ -81,8 +81,8 @@ for ($i = 0; $i < $nb_adr; $i++) {
   list(
        $adresses[$adrid]['secondaire'], $adresses[$adrid]['courrier'],
        $adresses[$adrid]['active'], $adresses[$adrid]['temporaire'],
-       $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['cp'], $adresses[$adrid]['ville'],
-       $adresses[$adrid]['pays'], $adresses[$adrid]['region'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
+       $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['postcode'], $adresses[$adrid]['city'],
+       $adresses[$adrid]['country'], $adresses[$adrid]['region'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
        $adresses[$adrid]['pub'],
        $adresses[$adrid]['tel_pub'],) = $res->next();
   $adresses[$adrid]['nouvelle'] = 'modif';

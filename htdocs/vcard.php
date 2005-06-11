@@ -26,12 +26,12 @@ require_once("user.func.inc.php");
 
 function format_adr($params, &$smarty)
 {
-    // $adr1, $adr2, $adr3, $cp, $ville, $region, $pays
+    // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
     extract($params['adr']);
     $adr = $adr1;
     $adr = trim("$adr\n$adr2");
     $adr = trim("$adr\n$adr3");
-    return quoted_printable_encode(";;$adr;$ville;$region;$cp;$pays");
+    return quoted_printable_encode(";;$adr;$city;$region;$postcode;$country");
 }
 
 $page->register_modifier('qp_enc', 'quoted_printable_encode');

@@ -82,8 +82,8 @@ if (!Env::has('rechercher')) {
         $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
         $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
        
-        $townField       = new RefSField('ville',array('av.ville'),'adresses','av','u.user_id=av.uid',false);
-        $countryField    = new RefSField('pays',array('ap.pays'),'adresses','ap','u.user_id=ap.uid');
+        $townField       = new RefSField('city',array('av.city'),'adresses','av','u.user_id=av.uid',false);
+        $countryField    = new RefSField('country',array('ap.country'),'adresses','ap','u.user_id=ap.uid');
         $regionField     = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
        
         $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);

@@ -175,7 +175,7 @@ class ContactsPDF extends FPDF
         $r = trim("$r\n".$a['adr1']);
         $r = trim("$r\n".$a['adr2']);
         $r = trim("$r\n".$a['adr3']);
-        $r = trim("$r\n".trim($a['cp'].' '.$a['ville']));
+        $r = trim("$r\n".trim($a['postcode'].' '.$a['city']));
 
         $this->TableRow($l, $r);
 
@@ -193,12 +193,12 @@ class ContactsPDF extends FPDF
             $this->TableRow('Entreprise', $a['entreprise']);
         }
         
-        if ($a['adr1'] || $a['adr2'] || $a['adr3'] || $a['cp'] || $a['ville']) {
+        if ($a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) {
             $r = '';
             $r = trim("$r\n".$a['adr1']);
             $r = trim("$r\n".$a['adr2']);
             $r = trim("$r\n".$a['adr3']);
-            $r = trim("$r\n".trim($a['cp'].' '.$a['ville']));
+            $r = trim("$r\n".trim($a['postcode'].' '.$a['city']));
             $this->TableRow('adresse pro', $r);
         }
 
@@ -310,7 +310,7 @@ class ContactsPDF extends FPDF
         
         foreach ($x['adr_pro'] as $a) {
             if ( ! ($a['entreprise'] || $a['tel'] || $a['fax']
-                    || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['cp'] || $a['ville']) )
+                    || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) )
             {
                 continue;
             }
