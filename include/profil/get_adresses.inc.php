@@ -68,7 +68,7 @@ $res = $globals->xdb->iterRow(
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
 	adr1, adr2, adr3, postcode, city, cityid,
         a.country, region, tel, fax, pub, tel_pub,
-	gp.pays
+	gp.pays AS countrytxt
 	FROM adresses AS a INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
 	WHERE uid = {?} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
 , Session::getInt('uid', -1)
@@ -85,7 +85,7 @@ for ($i = 0; $i < $nb_adr; $i++) {
        $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['postcode'], $adresses[$adrid]['city'], $adresses[$adrid]['cityid'],
        $adresses[$adrid]['country'], $adresses[$adrid]['region'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
        $adresses[$adrid]['pub'],
-       $adresses[$adrid]['tel_pub'],$adresses[$adrid]['pays']) = $res->next();
+       $adresses[$adrid]['tel_pub'],$adresses[$adrid]['countrytxt']) = $res->next();
   $adresses[$adrid]['nouvelle'] = 'modif';
   $adresses[$adrid]['numero_formulaire'] = -1;
   require_once('geoloc.inc.php');

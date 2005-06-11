@@ -24,7 +24,7 @@
 /** donne la liste déroulante des pays
  * @param $current pays actuellement selectionné
  */
-function geoloc_pays($current) {
+function geoloc_country($current) {
     global $globals;
     $res  = $globals->xdb->iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
     $html = "";
@@ -35,20 +35,20 @@ function geoloc_pays($current) {
     return $html;
 }
 
-function _geoloc_pays_smarty($params){
-  if(!isset($params['pays']))
+function _geoloc_country_smarty($params){
+  if(!isset($params['country']))
     return;
-  return geoloc_pays($params['pays']);
+  return geoloc_country($params['country']);
 }
-$page->register_function('geoloc_pays', '_geoloc_pays_smarty');
+$page->register_function('geoloc_country', '_geoloc_country_smarty');
 
 /** donne la liste deroulante des regions pour un pays
  * @param $pays le pays dont on veut afficher les regions
  * @param $current la region actuellement selectionnee
  */
-function geoloc_region($pays,$current) {
+function geoloc_region($country,$current) {
     global $globals;
-    $res  = $globals->xdb->iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $pays);
+    $res  = $globals->xdb->iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $country);
     $html = "<option value=\"\"></option>";
     while (list($regid, $regname) = $res->next()) {
 	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
@@ -58,11 +58,11 @@ function geoloc_region($pays,$current) {
 
 }
 function _geoloc_region_smarty($params){
-  if(!isset($params['pays']))
+  if(!isset($params['country']))
     return;
   if(!isset($params['region']))
     return;
-  return geoloc_region($params['pays'], $params['region']);
+  return geoloc_region($params['country'], $params['region']);
 }
 $page->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
@@ -99,7 +99,7 @@ function get_address_text($adr) {
         if ($adr['city']) $l .= $adr['city'];
     }
     if ($l) $t .= "\n".trim($l);
-    if ($adr['pays']) $t .= "\n".$adr['pays'];
+    if ($adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
     return trim($t);
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:

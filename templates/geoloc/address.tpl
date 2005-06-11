@@ -21,11 +21,11 @@
 {**************************************************************************}
 
 
-      {if $address.adr1 || $address.pays || $geoloc_address.city || $address.tel || $address.fax || $address.mobile}
+      {if $address.adr1 || $address.countrytxt || $geoloc_address.city || $address.tel || $address.fax || $address.mobile}
       {if $no_div neq 1}
       <div class="adresse">
       {/if}
-        {if $titre && ($address.adr1 || $address.city || $address.pays)}
+        {if $titre && ($address.adr1 || $address.city || $address.countrytxt)}
           {if $titre_div}
             <div class="titre">
               {$titre}
@@ -38,8 +38,8 @@
         {if $address.adr2}<strong>{$address.adr2}</strong><br />{/if}
         {if $address.adr3}<strong>{$address.adr3}</strong><br />{/if}
         {if $address.city}<strong>{$address.postcode} {$address.city}</strong><br />{/if}
-        {if $address.pays}
-        <strong>{$address.pays}{if $address.region && $address.pays != 'France'} ({$address.region}){/if}</strong>
+        {if $address.countrytxt}
+        <strong>{$address.countrytxt}{if $address.region && $address.countrytxt != 'France'} ({$address.region}){/if}</strong>
         {/if}
         
         {if $address.tel}

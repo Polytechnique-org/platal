@@ -126,7 +126,7 @@ if(Get::get('trombi')) {
 		    IF(n.nat='',n.pays,n.nat) AS nat, n.a2 AS iso3166,
 		    ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
 		    ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
-		    adr.city, gp.a2, gp.pays, gr.name AS region,
+		    adr.city, gp.a2, gp.pays AS countrytxt, gr.name AS region,
 		    IF(a.nom_usage<>'',a.nom_usage,a.nom) AS sortkey
 	      FROM  contacts       AS c
         INNER JOIN  auth_user_md5  AS a   ON (a.user_id = c.contact)

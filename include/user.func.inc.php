@@ -182,7 +182,7 @@ function &get_user_details($login, $from_uid = '')
 
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
                      e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
-                     gp.pays, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
+                     gp.pays AS countrytxt, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
                      e.pub, e.tel_pub, e.email, e.email_pub, e.web
                FROM  entreprises AS e
           LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
@@ -196,7 +196,7 @@ function &get_user_details($login, $from_uid = '')
     $user['adr_pro'] = $res->fetchAllAssoc();
 
     $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.postcode,a.city,
-                     gp.pays,gr.name AS region,a.tel,a.fax,
+                     gp.pays AS countrytxt,gr.name AS region,a.tel,a.fax,
                      FIND_IN_SET('active', a.statut) AS active, a.adrid,
                      FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
                      a.pub, a.tel_pub

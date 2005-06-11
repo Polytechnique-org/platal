@@ -130,7 +130,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
     <tr class="{cycle values="pair,impair"}">
       <td class="colg">
         <select name="mentor_pays_id_new">
-          {geoloc_pays pays='00'}
+          {geoloc_country country='00'}
         </select>
       </td>
       <td class="colm">

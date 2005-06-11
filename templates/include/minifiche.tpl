@@ -86,7 +86,7 @@
 
   <div class="long">
   {if $c.wasinscrit}
-    {if $c.web || $c.mobile || $c.pays || $c.city || $c.region || $c.entreprise || $c.freetext}
+    {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || $c.freetext}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
@@ -94,10 +94,10 @@
         <td class="rt"><a href="{$c.web}">{$c.web}</a></td>
       </tr>
       {/if}
-      {if $c.pays || $c.city}
+      {if $c.countrytxt || $c.city}
       <tr>
         <td class="lt">Géographie:</td>
-        <td class="rt">{$c.city}{if $c.city && $c.pays}, {/if}{$c.pays}</td>
+        <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
       </tr>
       {/if}
       {if $c.mobile}

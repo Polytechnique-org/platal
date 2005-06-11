@@ -128,7 +128,7 @@
       </td>
       <td class="cold">
         <select name="countrypro[{$i}]" onchange="this.form.submit();">
-          {geoloc_pays pays=$countrypro.$i}
+          {geoloc_country country=$countrypro.$i}
         </select>
       </td>
     </tr>
@@ -139,7 +139,7 @@
       </td>
       <td class="cold">
         <select name="regionpro[{$i}]">
-          {geoloc_region pays=$countrypro.$i region=$regionpro.$i}
+          {geoloc_region country=$countrypro.$i region=$regionpro.$i}
         </select>
       </td>
     </tr>

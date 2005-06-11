@@ -42,7 +42,7 @@ if (logged())
 		q.profile_web AS web,
 		q.profile_mobile AS mobile,
 		q.profile_freetext AS freetext,
-                adr.city, gp.pays, gr.name AS region,
+                adr.city, gp.pays AS countrytxt, gr.name AS region,
 		e.entreprise,';
 else
 	$globals->search->result_fields .="
@@ -50,7 +50,7 @@ else
 		IF(q.profile_mobile_pub='public', q.profile_mobile, '') AS mobile,
 		IF(q.profile_freetext_pub='public', q.profile_freetext, '') AS freetext,
 		IF(adr.pub='public', adr.city, '') AS city,
-		IF(adr.pub='public', gp.pays, '') AS pays,
+		IF(adr.pub='public', gp.pays, '') AS countrytxt,
 		IF(adr.pub='public', gr.name, '') AS region,
 		IF(e.pub='public', e.entreprise, '') AS entreprise,";
 $globals->search->result_where_statement = '

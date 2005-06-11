@@ -1,10 +1,9 @@
     <tr>
       <td class="colg">
-        <a name="jump_adr{$adrid}"></a>
         <span class="titre">{$titre}</span>
         {if $adr.nouvelle != 'new' && !$smarty.request.detail[$adrid]}
 	<br />
-          [<a href="{$url}&amp;detail[{$adrid}]=1#jump_adr{$adrid}">corriger</a>]
+          [<a href="{$url}&amp;detail[{$adrid}]=1">corriger</a>]
         {/if}
 	{if $adr.nouvelle != 'new' && !$adr.cityid}
 	<br />
@@ -60,7 +59,7 @@
       </td>
       <td class="cold">
         <select name="country[{$adrid}]" onchange="this.form.submit();">
-          {geoloc_pays pays=$adr.country}
+          {geoloc_country country=$adr.country}
         </select>
       </td>
     </tr>
@@ -71,7 +70,7 @@
       </td>
       <td class="cold">
         <select name="region[{$adrid}]">
-          {geoloc_region pays=$adr.country region=$adr.region}
+          {geoloc_region country=$adr.country region=$adr.region}
         </select>
         {/if}
       </td>

@@ -142,7 +142,7 @@
         {else}
           {assign var="country" value=""}
         {/if}
-        {geoloc_pays pays=$country}
+        {geoloc_country country=$country}
         </select>
       </td>
     </tr>
@@ -156,7 +156,7 @@
           {assign var="region" value=""}
         {/if}
         {if $smarty.request.country neq ""}
-        {geoloc_region pays=$smarty.request.country region=$region}
+        {geoloc_region country=$smarty.request.country region=$region}
         {else}
         <option value=""></option>
         {/if}
