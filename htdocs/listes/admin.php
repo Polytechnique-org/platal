@@ -76,9 +76,6 @@ if (Env::has('del_owner')) {
 }
 
 if(list($det,$mem,$own) = $client->get_members($liste)) {
-    if (!$det['own'] && !has_perms()) {
-        $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
-    }
     
     $membres = list_sort_members($mem, $tri_promo);
     $moderos = list_sort_owners($own, $tri_promo);

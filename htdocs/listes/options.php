@@ -63,9 +63,6 @@ if (Post::has('submit')) {
 }
 
 if(list($details,$options) = $client->get_owner_options($liste)) {
-    if (!$details['own'] && !has_perms()) {
-        $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
-    }
     $page->assign_by_ref('details', $details);
     $page->assign_by_ref('options', $options);
     $page->assign('bogo_level', $client->get_bogo_level($liste));
