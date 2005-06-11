@@ -59,35 +59,7 @@
         <input name="adrid_active" type="radio" value="{$adrid}" {if $adr.active}checked="checked"{/if} />
       </td>
     </tr>
-    <tr>
-      <td colspan="5" class="pflags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="radio" name="pub[{$adrid}]" value="public" {if $adr.pub eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="orange">
-              <input type="radio" name="pub[{$adrid}]" value="ax" {if $adr.pub eq 'ax'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              transmis à l'AX
-            </td>
-            <td class="rouge">
-              <input type="radio" name="pub[{$adrid}]" value="private" {if $adr.pub eq 'private'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-            <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    {include file="include/flags.radio.tpl" name="pub[$adrid]" val=$adr.pub}
     {if $adr.nouvelle != 'new'}
     {assign var="titre" value="Adresse n°`$smarty.section.i.index`&nbsp;:"}
     {else}
@@ -124,35 +96,7 @@
         <input type="checkbox" name="courrier[{$adrid}]" value="1" {if $adr.courrier}checked="checked"{/if} /> on peut m'y envoyer du courrier par la poste
       </td>
     </tr>
-    <tr>
-      <td colspan="2" class="flags">
-        <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="vert">
-              <input type="radio" name="tel_pub[{$adrid}]" value="public" {if $adr.tel_pub eq 'public'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              site public
-            </td>
-            <td class="orange">
-              <input type="radio" name="tel_pub[{$adrid}]" value="ax" {if $adr.tel_pub eq 'ax'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              transmis à l'AX
-            </td>
-            <td class="rouge">
-              <input type="radio" name="tel_pub[{$adrid}]" value="private" {if $adr.tel_pub eq 'private'}checked="checked"{/if} />
-            </td>
-            <td class="texte">
-              privé
-            </td>
-            <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    {include file="include/flags.radio.tpl" name="tel_pub[$adrid]" val=$adr.tel_pub}
     <tr>
       <td class="colg">
         <span class="titre">Téléphone associé</span>

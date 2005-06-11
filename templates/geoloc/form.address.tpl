@@ -15,7 +15,7 @@
         <input type="hidden" name="adr3[{$adrid}]" value="{$adr.adr3}" />
         <input type="hidden" name="postcode[{$adrid}]" value="{$adr.postcode}"/>
         <input type="hidden" name="city[{$adrid}]" value="{$adr.city}" />
-        <input type="hidden" name="region[{$adrid}]" value="{$region.city}" />
+        <input type="hidden" name="region[{$adrid}]" value="{$adr.region}" />
         <input type="hidden" name="country[{$adrid}]" value="{$adr.country}" />
         <textarea name="txt[{$adrid}]" cols="43" rows="3" onclick="form.nochange{$adrid}.value=0;select()">
 {if $adr.adr1}{$adr.adr1}
