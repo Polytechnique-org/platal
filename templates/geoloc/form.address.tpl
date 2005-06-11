@@ -1,11 +1,15 @@
     <tr>
       <td class="colg">
-        <a name="jump_adr{$adrid}" />
+        <a name="jump_adr{$adrid}"></a>
         <span class="titre">{$titre}</span>
-	<br />
         {if $adr.nouvelle != 'new' && !$smarty.request.detail[$adrid]}
-          [<a href="{$url}&detail%5B{$adrid}%5D=1#jump_adr{$adrid}">corriger</a>]
+	<br />
+          [<a href="{$url}&amp;detail[{$adrid}]=1#jump_adr{$adrid}">corriger</a>]
         {/if}
+	{if $adr.nouvelle != 'new' && !$adr.cityid}
+	<br />
+	<span class="erreur">non géolocalisée</span>
+	{/if}
       </td>
       <td class="cold">
         {if $smarty.request.detail[$adrid] neq 1}
@@ -15,25 +19,12 @@
         <input type="hidden" name="adr3[{$adrid}]" value="{$adr.adr3}" />
         <input type="hidden" name="postcode[{$adrid}]" value="{$adr.postcode}"/>
         <input type="hidden" name="city[{$adrid}]" value="{$adr.city}" />
+        <input type="hidden" name="cityid[{$adrid}]" value="{$adr.cityid}" />
         <input type="hidden" name="region[{$adrid}]" value="{$adr.region}" />
         <input type="hidden" name="country[{$adrid}]" value="{$adr.country}" />
-        <textarea name="txt[{$adrid}]" cols="43" rows="3" onclick="form.nochange{$adrid}.value=0;select()">
-{if $adr.adr1}{$adr.adr1}
-{/if}
-{if $adr.adr2}{$adr.adr2}
-{/if}
-{if $adr.adr3}{$adr.adr3}
-{/if}
-{if $adr.postcode || $adr.city}
-{if $adr.country eq 'US' || $adr.country eq 'CA'}
-{assign var='tmp' value="%v,\r\n%r %p"}
-{else}
-{assign var='tmp' value="%p %v"}
-{/if}
-{$tmp|replace:"%p":$adr.postcode|replace:"%v":$adr.city|replace:"%r":$adr.region}
-{/if}
-{if $adr.pays}{$adr.pays}{/if}</textarea>
+        <textarea name="txt[{$adrid}]" cols="43" rows="3" onclick="form.nochange{$adrid}.value=0;select()">{$adr.txt}</textarea>
       {else}
+        <input type="hidden" name="cityid[{$adrid}]" value="{$adr.cityid}" />
         <input type="text" name="adr1[{$adrid}]" size="43" maxlength="88" value="{$adr.adr1}" />
       </td>
     </tr>

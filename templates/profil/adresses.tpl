@@ -50,7 +50,7 @@
     <tr>
       <td class="left">
         {if $adr.nouvelle != 'new'}
-        <a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&adrid_del%5B{$adrid}%5D=1"><input type="button" value="La supprimer !" /></a>
+        <a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;adrid_del[{$adrid}]=1"><input type="button" value="La supprimer !" /></a>
         {/if}
         &nbsp;
       </td>
@@ -68,7 +68,7 @@
     {include file="geoloc/form.address.tpl" adr=$adr titre=$titre url="`$smarty.server.PHP_SELF`?old_tab=`$smarty.request.old_tab`"}
     <tr>
       <td class="colg">
-        <span class="titre">Cette adresse est :</span>
+        <span class="titre">Cette adresse est&nbsp;:</span>
       </td>
       <td class="cold">
         <input type="radio" name="temporaire[{$adrid}]" value="0" {if !$adr.temporaire}checked="checked"{/if} />

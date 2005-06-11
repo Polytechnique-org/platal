@@ -67,6 +67,8 @@ function _geoloc_region_smarty($params){
 $page->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
 
+// retrieve the infos on a text address
+// store on the fly the info of the city concerned
 function get_address_infos($txt) {
     $url ="http://www.geoloc.org/adressparser/address.php?txt=".urlencode(utf8_encode($txt));
     if (!($f = @fopen($url, 'r'))) return false;
@@ -75,7 +77,30 @@ function get_address_infos($txt) {
     $vals = explode('|',fgets($f));
     $infos = array();
     foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = $vals[$i];
+    global $globals;
+    if ($infos['sql'])
+       $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
     return $infos;
+}
+
+// make the text of an address that can be read by a mailman
+function get_address_text($adr) {
+    $t = "";
+    if ($adr['adr1']) $t.= $adr['adr1'];
+    if ($adr['adr2']) $t.= "\n".$adr['adr2'];
+    if ($adr['adr3']) $t.= "\n".$adr['adr3'];
+    $l = "";
+    if ($adr['country'] == 'US' || $adr['country'] == 'CA') {
+        if ($adr['city']) $l .= $adr['city'].",\n";
+        if ($adr['region']) $l .= $adr['region']." ";
+        if ($adr['postcode']) $l .= $adr['postcode'];
+    } else {
+        if ($adr['postcode']) $l .= $adr['postcode']." ";
+        if ($adr['city']) $l .= $adr['city'];
+    }
+    if ($l) $t .= "\n".trim($l);
+    if ($adr['pays']) $t .= "\n".$adr['pays'];
+    return trim($t);
 }
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

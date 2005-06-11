@@ -66,7 +66,7 @@ $res = $globals->xdb->iterRow(
 	"SELECT
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
-	adr1, adr2, adr3, postcode, city,
+	adr1, adr2, adr3, postcode, city, cityid,
         a.country, region, tel, fax, pub, tel_pub,
 	gp.pays
 	FROM adresses AS a INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
@@ -82,12 +82,14 @@ for ($i = 0; $i < $nb_adr; $i++) {
   list(
        $adresses[$adrid]['secondaire'], $adresses[$adrid]['courrier'],
        $adresses[$adrid]['active'], $adresses[$adrid]['temporaire'],
-       $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['postcode'], $adresses[$adrid]['city'],
+       $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['postcode'], $adresses[$adrid]['city'], $adresses[$adrid]['cityid'],
        $adresses[$adrid]['country'], $adresses[$adrid]['region'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
        $adresses[$adrid]['pub'],
        $adresses[$adrid]['tel_pub'],$adresses[$adrid]['pays']) = $res->next();
   $adresses[$adrid]['nouvelle'] = 'modif';
   $adresses[$adrid]['numero_formulaire'] = -1;
+  require_once('geoloc.inc.php');
+  $adresses[$adrid]['txt'] = get_address_text($adresses[$adrid]);
 }
 
 ?>

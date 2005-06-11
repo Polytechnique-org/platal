@@ -77,6 +77,7 @@ function replace_address($i){
   replace_ifset_adr('adr3', $i);
   replace_ifset_adr('postcode', $i);
   replace_ifset_adr('city', $i);
+  replace_ifset_adr('cityid', $i);
   replace_ifset_adr('country', $i);
   replace_ifset_adr('region', $i);
   replace_ifset_adr('tel', $i);
@@ -87,7 +88,16 @@ function replace_address($i){
   if ($GLOBALS['adresses'][$i]['txt'] && !Env::get('nochange'.$i, true)) {
   	require_once('geoloc.inc.php');
 	$new = get_address_infos($GLOBALS['adresses'][$i]['txt']);
+	$GLOBALS['adresses'][$i]['adr1'] = '';
+	$GLOBALS['adresses'][$i]['adr2'] = '';
+	$GLOBALS['adresses'][$i]['adr3'] = '';
+	$GLOBALS['adresses'][$i]['postcode'] = '';
+	$GLOBALS['adresses'][$i]['city'] = '';
+	unset($GLOBALS['adresses'][$i]['cityid']);
+	$GLOBALS['adresses'][$i]['country'] = '00';
+	$GLOBALS['adresses'][$i]['region'] = '';
 	$GLOBALS['adresses'][$i] = array_merge($GLOBALS['adresses'][$i], $new);
+	$GLOBALS['adresses'][$i]['txt'] = get_address_text($GLOBALS['adresses'][$i]);
   }
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
