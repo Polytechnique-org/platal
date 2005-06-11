@@ -76,7 +76,7 @@ Pour afficher la liste détaillée de tes contacts: [<a href="{$smarty.server.PHP_
 </h1>
 
 <p>
-Pour afficher le trombi de tes contacts : [<a href="?trombi=1&order={$order}&inv={$inv}"><strong>vue sous forme de trombi</strong></a>]
+Pour afficher le trombi de tes contacts : [<a href="?trombi=1&amp;order={$order}&amp;inv={$inv}"><strong>vue sous forme de trombi</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}
