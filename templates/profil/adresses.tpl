@@ -50,7 +50,7 @@
     <tr>
       <td class="left">
         {if $adr.nouvelle != 'new'}
-        <input type="submit" value="La supprimer !" name="adrid_del[{$adrid}]" />
+        <a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&adrid_del%5B{$adrid}%5D=1"><input type="button" value="La supprimer !" /></a>
         {/if}
         &nbsp;
       </td>
@@ -88,61 +88,12 @@
         </table>
       </td>
     </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">{if $adr.nouvelle != 'new'}Adresse n°{$smarty.section.i.index}{else}Nouvelle adresse{/if}</span><br />
-      </td>
-      <td class="cold">
-        <input type="text" name="adr1[{$adrid}]" size="43" maxlength="88" value="{$adr.adr1}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        &nbsp;
-      </td>
-      <td class="cold">
-        <input type="text" name="adr2[{$adrid}]" size="43" maxlength="88" value="{$adr.adr2}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        &nbsp;
-      </td>
-      <td class="cold">
-        <input type="text" name="adr3[{$adrid}]" size="43" maxlength="88" value="{$adr.adr3}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Code postal / Ville</span><br />
-      </td>
-      <td class="cold">
-        <input type="text" name="postcode[{$adrid}]" value="{$adr.postcode}" size="7" maxlength="18" />
-        &nbsp;
-        <input type="text" name="city[{$adrid}]" value="{$adr.city}" size="32" maxlength="78" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Pays</span>
-      </td>
-      <td class="cold">
-        <select name="country[{$adrid}]" onchange="this.form.submit();">
-          {geoloc_pays pays=$adr.country}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Région ou département</span><br />
-        <span class="comm">(selon pays)</span>
-      </td>
-      <td class="cold">
-        <select name="region[{$adrid}]">
-          {geoloc_region pays=$adr.country region=$adr.region}
-        </select>
-      </td>
-    </tr>
+    {if $adr.nouvelle != 'new'}
+    {assign var="titre" value="Adresse n°`$smarty.section.i.index`&nbsp;:"}
+    {else}
+    {assign var="titre" value="Nouvelle adresse&nbsp;:"}
+    {/if}
+    {include file="geoloc/form.address.tpl" adr=$adr titre=$titre url="`$smarty.server.PHP_SELF`?old_tab=`$smarty.request.old_tab`"}
     <tr>
       <td class="colg">
         <span class="titre">Cette adresse est :</span>

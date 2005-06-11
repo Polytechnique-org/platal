@@ -34,7 +34,6 @@ foreach($adresses as $adrid => $adr){
     if ($adr["temporaire"])    $statut .= 'temporaire,';
     if (! empty($statut)) $statut = substr($statut, 0, -1);
 
-
     if ($adr["nouvelle"] == 'ajout') {
     //nouvelle adresse
       $globals->xdb->execute("INSERT INTO adresses SET

@@ -83,6 +83,12 @@ function replace_address($i){
   replace_ifset_adr('fax', $i);
   replace_ifset_adr('pub', $i);
   replace_ifset_adr('tel_pub', $i);
+  replace_ifset_adr('txt', $i);
+  if ($GLOBALS['adresses'][$i]['txt'] && !Env::get('nochange'.$i, true)) {
+  	require_once('geoloc.inc.php');
+	$new = get_address_infos($GLOBALS['adresses'][$i]['txt']);
+	$GLOBALS['adresses'][$i] = array_merge($GLOBALS['adresses'][$i], $new);
+  }
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
     $GLOBALS['adresses'][$i]['numero_formulaire'] = $tab[$i];
