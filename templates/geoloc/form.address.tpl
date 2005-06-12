@@ -4,13 +4,13 @@
         <input type="hidden" name="change{$adrid}" value="0" />
 	<span class="erreur">La geolocalisation n'a pas marché pour ta nouvelle adresse.</span><br />
 	<div class="adresse">
-        <textarea name="txt[{$adrid}]" cols="23" rows="3" onclick="form.change{$adrid}.value=1;document.getElementById('parsekeep{$adrid}').checked='checked'"
+        <textarea name="txt[{$adrid}]" cols="23" rows="3" onchange="form.change{$adrid}.value=1;document.getElementById('parsekeep{$adrid}').checked='checked'"
 	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
 	>{$adr.txt}</textarea><br />
 	<input type="radio" name="parseretry{$adrid}" value="0" id="parsekeep{$adrid}" checked="checked"/><label for="parsekeep{$adrid}">conserver</label>
 	</div>
 	<div>
-	  <textarea cols="23" rows="3" name="retrytxt[{$adrid}]" style="background:#FAA" onclick="document.getElementById('parseretry{$adrid}').checked='checked'">{$adr.old_txt}</textarea><br />
+	  <textarea cols="23" rows="3" name="retrytxt[{$adrid}]" style="background:#FAA" onchange="document.getElementById('parseretry{$adrid}').checked='checked'">{$adr.old_txt}</textarea><br />
 	<input type="radio" name="parseretry{$adrid}" value="1" id="parseretry{$adrid}" /><label for="parseretry{$adrid}">réessayer</label>
 	</div>
       </td>
