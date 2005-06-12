@@ -21,7 +21,7 @@
         <input type="hidden" name="change{$adrid}" value="0"/>
 	<span class="erreur">La geolocalisation n'a pas donné un résultat certain, vérifie la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span><br />
 	<div class="adresse">
-        <textarea name="txt[{$adrid}]" cols="23" rows="3" onclick="form.change{$adrid}.value=1"
+        <textarea name="txt[{$adrid}]" cols="23" rows="3" onchange="form.change{$adrid}.value=1"
 	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
 	>{$adr.txt}</textarea><br />
 	<input type="radio" name="parsevalid[{$adrid}]" value="0" id="parsekeep[{$adrid}]" checked="checked"/><label for="parsekeep[{$adrid}]">conserver</label>
@@ -36,7 +36,7 @@
     <tr class="center">
       <td class="cold" colspan="2">
         <input type="hidden" name="change{$adrid}" />
-        <textarea name="txt[{$adrid}]" cols="43" rows="3" onclick="form.change{$adrid}.value=1"
+        <textarea name="txt[{$adrid}]" cols="43" rows="3" onchange="form.change{$adrid}.value=1"
 	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
 	>{$adr.txt}</textarea><br />
       </td>
