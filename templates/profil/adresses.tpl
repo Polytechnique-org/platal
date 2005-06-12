@@ -50,7 +50,7 @@
     <tr>
       <td class="left">
         {if $adr.nouvelle != 'new'}
-        <a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;adrid_del[{$adrid}]=1"><input type="button" value="La supprimer !" /></a>
+        [<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;adrid_del[{$adrid}]=1">La supprimer !</a>]
         {/if}
         &nbsp;
       </td>
