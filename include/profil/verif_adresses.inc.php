@@ -49,6 +49,11 @@ function replace_ifset_adr($varname, $i){
        $GLOBALS['adresses'][$i][$varname] = $tab[$i];
 }
 
+function get_adr_arg($varname, $i) {
+  $tab = Env::getMixed($varname, Array());
+  return $tab[$i];
+}
+
 function set_flag_adr($varname,$i){
   $tab = Env::getMixed($varname, Array());
   if (isset($tab[$i])){
@@ -60,18 +65,19 @@ function set_flag_adr($varname,$i){
 
 
 function replace_address($i){
-  if(!isset($GLOBALS['adresses'][$i])){
-    $GLOBALS['adresses'][$i]['nouvelle'] = 'ajout';
-    $GLOBALS['adresses'][$i]['adrid'] = $i;
+  global $page, $adresses;
+  if(!isset($adresses[$i])){
+    $adresses[$i]['nouvelle'] = 'ajout';
+    $adresses[$i]['adrid'] = $i;
   }
   
   replace_ifset_adr('secondaire', $i);
   set_flag_adr('courrier', $i);
   replace_ifset_adr('temporaire', $i);
   if(Env::getInt('adrid_active', $i+1) == $i)
-    $GLOBALS['adresses'][$i]['active'] = 1;
+    $adresses[$i]['active'] = 1;
   else
-    $GLOBALS['adresses'][$i]['active'] = 0;
+    $adresses[$i]['active'] = 0;
   replace_ifset_adr('adr1', $i);
   replace_ifset_adr('adr2', $i);
   replace_ifset_adr('adr3', $i);
@@ -84,30 +90,39 @@ function replace_address($i){
   replace_ifset_adr('fax', $i);
   replace_ifset_adr('pub', $i);
   replace_ifset_adr('tel_pub', $i);
-  replace_ifset_adr('txt', $i);
-  if ($GLOBALS['adresses'][$i]['txt'] && Env::get('change'.$i, false)) {
+  if (!get_adr_arg('parsevalid', $i)) replace_ifset_adr('txt', $i);
+  $change = Env::get('change'.$i);
+  if (Env::get('parseretry'.$i)) {
+  	$adresses[$i]['txt'] = get_adr_arg('retrytxt', $i);
+	$change = true;
+  }	
+  if (get_adr_arg('parsevalid', $i) || ($adresses[$i]['txt'] && $change)) {
   	require_once('geoloc.inc.php');
-	$new = get_address_infos($GLOBALS['adresses'][$i]['txt']);
+	$new = get_address_infos($adresses[$i]['txt']);
 	// if we found a localisation, erase old address
-	if ($new['sql']) {
-		$GLOBALS['adresses'][$i]['adr1'] = '';
-		$GLOBALS['adresses'][$i]['adr2'] = '';
-		$GLOBALS['adresses'][$i]['adr3'] = '';
-		$GLOBALS['adresses'][$i]['postcode'] = '';
-		$GLOBALS['adresses'][$i]['city'] = '';
-		unset($GLOBALS['adresses'][$i]['cityid']);
-		$GLOBALS['adresses'][$i]['country'] = '00';
-		$GLOBALS['adresses'][$i]['countrytxt'] = '';
-		$GLOBALS['adresses'][$i]['region'] = '';
-		$GLOBALS['adresses'][$i] = array_merge($GLOBALS['adresses'][$i], $new);
+	if ($new['sql'] || get_adr_arg('parsevalid', $i)) {
+		$adresses[$i]['adr1'] = '';
+		$adresses[$i]['adr2'] = '';
+		$adresses[$i]['adr3'] = '';
+		$adresses[$i]['postcode'] = '';
+		$adresses[$i]['city'] = '';
+		unset($adresses[$i]['cityid']);
+		$adresses[$i]['country'] = '00';
+		$adresses[$i]['countrytxt'] = '';
+		$adresses[$i]['region'] = '';
+		$adresses[$i] = array_merge($adresses[$i], $new);
+		unset($adresses[$i]['geoloc']);
+	}else {
+		$page->trig("L'adresse n'a pas été reconnue par la geoloc");
+		$adresses[$i]['old_txt'] = $adresses[$i]['txt'];
 	}
   }
-  $GLOBALS['adresses'][$i]['txt'] = get_address_text($GLOBALS['adresses'][$i]);
+  $adresses[$i]['txt'] = get_address_text($adresses[$i]);
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
-    $GLOBALS['adresses'][$i]['numero_formulaire'] = $tab[$i];
+    $adresses[$i]['numero_formulaire'] = $tab[$i];
   else
-    $GLOBALS['adresses'][$i]['numero_formulaire'] = -1;
+    $adresses[$i]['numero_formulaire'] = -1;
 }
 
 

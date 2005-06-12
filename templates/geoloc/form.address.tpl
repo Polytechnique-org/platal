@@ -1,43 +1,57 @@
+    {if $adr.old_txt}
     <tr>
-      <td class="colg">
-        <span class="titre">{$titre}</span>
-        {if !$smarty.request.detail[$adrid]}
-	<br />
-          [<a href="{$url}&amp;detail[{$adrid}]=1">{if $adr.nouvelle != 'new'}corriger{else}préciser{/if}</a>]
-	{/if}
-	{if $adr.nouvelle != 'new' && !$adr.cityid && !$smarty.request.detail[$adrid]}
-	<br />
-	<span class="erreur">non géolocalisée</span>
-	<br />
-	<input type="checkbox" name="change{$adrid}" id="change{$adrid}" />
-	<label for="change{$adrid}">localiser</label>
-	{else}
+      <td class="cold" colspan="2">
         <input type="hidden" name="change{$adrid}" value="0" />
-        {/if}
+	<span class="erreur">La geolocalisation n'a pas marché pour ta nouvelle adresse.</span><br />
+	<div class="adresse">
+        <textarea name="txt[{$adrid}]" cols="23" rows="3" onclick="form.change{$adrid}.value=1;document.getElementById('parsekeep{$adrid}').checked='checked'"
+	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
+	>{$adr.txt}</textarea><br />
+	<input type="radio" name="parseretry{$adrid}" value="0" id="parsekeep{$adrid}" checked="checked"/><label for="parsekeep{$adrid}">conserver</label>
+	</div>
+	<div>
+	  <textarea cols="23" rows="3" name="retrytxt[{$adrid}]" style="background:#FAA" onclick="document.getElementById('parseretry{$adrid}').checked='checked'">{$adr.old_txt}</textarea><br />
+	<input type="radio" name="parseretry{$adrid}" value="1" id="parseretry{$adrid}" /><label for="parseretry{$adrid}">réessayer</label>
+	</div>
       </td>
-      <td class="cold">
-        {if $smarty.request.detail[$adrid] neq 1}
-        <input type="hidden" name="adr1[{$adrid}]" value="{$adr.adr1}" />
-        <input type="hidden" name="adr2[{$adrid}]" value="{$adr.adr2}" />
-        <input type="hidden" name="adr3[{$adrid}]" value="{$adr.adr3}" />
-        <input type="hidden" name="postcode[{$adrid}]" value="{$adr.postcode}"/>
-        <input type="hidden" name="city[{$adrid}]" value="{$adr.city}" />
-        <input type="hidden" name="cityid[{$adrid}]" value="{$adr.cityid}" />
-        <input type="hidden" name="region[{$adrid}]" value="{$adr.region}" />
-        <input type="hidden" name="country[{$adrid}]" value="{$adr.country}" />
-        <textarea name="txt[{$adrid}]" cols="43" rows="3"
-	{if $adr.nouvelle != 'new' && !$adr.cityid && !$smarty.request.detail[$adrid]}
-	onclick="form.change{$adrid}.checked='checked';select()"
-	{else}
-	onclick="form.change{$adrid}.value=1;select()"
-	{/if}
-	>{$adr.txt}</textarea>
-      {else}
+    </tr>
+    {elseif $adr.geoloc && $adr.geoloc neq $adr.txt}
+    <tr>
+      <td class="cold" colspan="2">
+        <input type="hidden" name="change{$adrid}" value="0"/>
+	<span class="erreur">La geolocalisation n'a pas donné un résultat certain, vérifie la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span><br />
+	<div class="adresse">
+        <textarea name="txt[{$adrid}]" cols="23" rows="3" onclick="form.change{$adrid}.value=1"
+	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
+	>{$adr.txt}</textarea><br />
+	<input type="radio" name="parsevalid[{$adrid}]" value="0" id="parsekeep[{$adrid}]" checked="checked"/><label for="parsekeep[{$adrid}]">conserver</label>
+	</div>
+	<div>
+	  <textarea cols="23" rows="3" style="background:#AFA">{$adr.geoloc}</textarea><br />
+	<input type="radio" name="parsevalid[{$adrid}]" value="1" id="parsevalid[{$adrid}]" /><label for="parsevalid[{$adrid}]">valider</label>
+	</div>
+      </td>
+    </tr>
+    {else}
+    <tr class="center">
+      <td class="cold" colspan="2">
+        <input type="hidden" name="change{$adrid}" />
+        <textarea name="txt[{$adrid}]" cols="43" rows="3" onclick="form.change{$adrid}.value=1"
+	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
+	>{$adr.txt}</textarea><br />
+      </td>
+    </tr>
+    {/if}
+    <tr style="display:none">
+      <td class="colg">
+        &nbsp;
+      </td>
+      <td>
         <input type="hidden" name="cityid[{$adrid}]" value="{$adr.cityid}" />
         <input type="text" name="adr1[{$adrid}]" size="43" maxlength="88" value="{$adr.adr1}" />
       </td>
     </tr>
-    <tr>
+    <tr style="display:none">
       <td class="colg">
         &nbsp;
       </td>
@@ -45,7 +59,7 @@
         <input type="text" name="adr2[{$adrid}]" size="43" maxlength="88" value="{$adr.adr2}" />
       </td>
     </tr>
-    <tr>
+    <tr style="display:none">
       <td class="colg">
         &nbsp;
       </td>
@@ -53,7 +67,7 @@
         <input type="text" name="adr3[{$adrid}]" size="43" maxlength="88" value="{$adr.adr3}" />
       </td>
     </tr>
-    <tr>
+    <tr style="display:none">
       <td class="colg">
         <span class="titre">Code postal / Ville</span><br />
       </td>
@@ -63,17 +77,17 @@
         <input type="text" name="city[{$adrid}]" value="{$adr.city}" size="32" maxlength="78" />
       </td>
     </tr>
-    <tr>
+    <tr style="display:none">
       <td class="colg">
         <span class="titre">Pays</span>
       </td>
       <td class="cold">
-        <select name="country[{$adrid}]" onchange="this.form.submit();">
+        <select name="country[{$adrid}]">
           {geoloc_country country=$adr.country}
         </select>
       </td>
     </tr>
-    <tr>
+    <tr style="display:none">
       <td class="colg">
         <span class="titre">Région ou département</span><br />
         <span class="comm">(selon pays)</span>
@@ -82,6 +96,5 @@
         <select name="region[{$adrid}]">
           {geoloc_region country=$adr.country region=$adr.region}
         </select>
-        {/if}
       </td>
     </tr>

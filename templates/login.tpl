@@ -58,6 +58,11 @@ Bienvenue {$smarty.session.prenom}
   </p>
 {/if}
 
+{if $geoloc_incitation > 0}
+  <p>
+    Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser. Clique <a href="{rel}/profil.php?old_tab=adresses">ici</a> pour rectifier.
+  </p>
+{/if}
 <br />
 
   <table class="bicol">

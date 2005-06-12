@@ -61,6 +61,8 @@ $sql_order = '';
 $res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} AND NOT FIND_IN_SET('pro', statut) ".$sql_order, Session::getInt('uid', -1));
 $adrids = $res->fetchColumn();
 
+$non_geoloc = localize_addresses(Session::getInt('uid', -1));
+
 //recuperation des donnees de la bd
 $res = $globals->xdb->iterRow(
 	"SELECT
@@ -90,6 +92,9 @@ for ($i = 0; $i < $nb_adr; $i++) {
   $adresses[$adrid]['numero_formulaire'] = -1;
   require_once('geoloc.inc.php');
   $adresses[$adrid]['txt'] = get_address_text($adresses[$adrid]);
+
+  if (isset($non_geoloc[$adrid]))
+  	$adresses[$adrid]['geoloc'] = get_address_text($non_geoloc[$adrid]);
 }
 
 ?>

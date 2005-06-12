@@ -99,7 +99,7 @@ function get_address_text($adr) {
         if ($adr['city']) $l .= $adr['city'];
     }
     if ($l) $t .= "\n".trim($l);
-    if ($adr['country'] != '00' && !$adr['countrytxt']) {
+    if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == strtoupper($adr['countrytxt']))) {
         global $globals;
         $res = $globals->xdb->query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
         $adr['countrytxt'] = $res->fetchOneCell();
@@ -107,5 +107,55 @@ function get_address_text($adr) {
     if ($adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
     return trim($t);
 }
+
+// compares if two address matches
+// $b should be a complete valid address
+function compare_addresses($a, $b) {
+    if ($a['country'] != '00' && $b['country'] != $a['country']) return false;
+    if ($a['postcode'] && $a['postcode'] != $b['postcode']) return false;
+    if ($a['city'] && strtoupper($a['city']) != strtoupper($b['city'])) return false;
+    if (trim($a['adr1']) != trim($b['adr1'])) return false;
+    if (trim($a['adr2']) != trim($b['adr2'])) return false;
+    if (trim($a['adr3']) != trim($b['adr3']))return false;
+    return true;
+}
+
+function empty_address() {
+    return Array(
+        "adr1" => "",
+        "adr2" => "",
+        "adr3" => "",
+        "city_id" => NULL,
+        "city" => "",
+        "postcode" => "",
+        "region" => "",
+        "country" => "00");
+}
+
+// localize all the address of a user and modify the database
+// if the new address match with the old one
+function localize_addresses($uid) {
+    global $globals;
+    $res = $globals->xdb->iterator("SELECT * FROM adresses WHERE uid = {?} and (cityid IS NULL OR cityid = 0)", $uid);
+    $erreur = Array();
+
+    while ($a = $res->next()) {
+        $new = get_address_infos(get_address_text($a));
+        if ($new['cityid'] && compare_addresses($a, $new)) {
+            $globals->xdb->execute("UPDATE adresses SET
+                adr1 = {?}, adr2 = {?}, adr3 = {?},
+                cityid = {?}, city = {?}, postcode = {?},
+                region = {?}, country = {?}
+                WHERE uid = {?} AND adrid = {?}",
+                $new['adr1'], $new['adr2'], $new['adr3'],
+                $new['cityid'], $new['city'], $new['postcode'],
+                $new['region'], $new['country'],
+                $uid, $a['adrid']);
+        } else $erreur[$a['adrid']] = $new;
+    }
+
+    return $erreur;
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

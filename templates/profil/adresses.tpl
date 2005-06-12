@@ -45,13 +45,14 @@
         {else}
         <input type="hidden" name="numero_formulaire[{$adrid}]" value="{$smarty.section.i.index}" />
         {/if}
+        {if $adr.nouvelle != 'new'}
+        [<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;adrid_del[{$adrid}]=1" style="color:inherit">La supprimer !</a>]
+        {/if}
       </th>
     </tr>
+    {include file="include/flags.radio.tpl" name="pub[$adrid]" val=$adr.pub}
     <tr>
       <td class="left">
-        {if $adr.nouvelle != 'new'}
-        [<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;adrid_del[{$adrid}]=1">La supprimer !</a>]
-        {/if}
         &nbsp;
       </td>
       <td colspan="4" class="right">
@@ -59,7 +60,6 @@
         <input name="adrid_active" type="radio" value="{$adrid}" {if $adr.active}checked="checked"{/if} />
       </td>
     </tr>
-    {include file="include/flags.radio.tpl" name="pub[$adrid]" val=$adr.pub}
     {if $adr.nouvelle != 'new'}
     {assign var="titre" value="Adresse n°`$smarty.section.i.index`&nbsp;:"}
     {else}

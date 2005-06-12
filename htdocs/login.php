@@ -44,6 +44,11 @@ if (substr($naissance, 5) == date("m-d")) {
 $res = $globals->xdb->query('SELECT COUNT(*) FROM photo WHERE uid={?}', Session::getInt('uid'));
 $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
+// Incitation à se géolocaliser
+require_once('geoloc.inc.php');
+$res = localize_addresses(Session::getInt('uid', -1));
+$page->assign('geoloc_incitation', count($res));
+
 // affichage de la boîte avec quelques liens
 
 require_once('login.conf.php') ;
