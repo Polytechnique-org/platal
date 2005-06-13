@@ -2,25 +2,22 @@
     <tr>
       <td class="cold" colspan="2">
         <input type="hidden" name="change{$adrid}" value="0"/>
-	<span class="erreur">La geolocalisation n'a pas donné un résultat certain, vérifie la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span>
-	<div class="adresse">
-        <textarea name="txt[{$adrid}]" cols="23" rows="3" onchange="form.change{$adrid}.value=1"
+	<span class="erreur" wrap>La geolocalisation n'a pas donné un résultat certain, valide la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span><br />
+        <textarea name="txt[{$adrid}]" cols="23" rows="4" onchange="form.change{$adrid}.value=1"
 	{if !$adr.cityid}style="background:#FAA"{/if}
 	>{$adr.txt}</textarea>
-	</div>
-	<div class="adresse">
-	  <pre
-	  style="border:2px inset threedface{if !$adr.geoloc_cityid};background:#FAA{/if}"
-	>{$adr.geoloc}</pre>
+	  <textarea cols="23" rows="4"
+	  style="border:inherit;background:#AFA"
+	  onclick="blur()"
+	>{$adr.geoloc}</textarea>
 	[<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;parsevalid[{$adrid}]=1">Valider</a>]
-	</div>
       </td>
     </tr>
     {else}
     <tr class="center">
       <td class="cold" colspan="2">
         <input type="hidden" name="change{$adrid}" />
-        <textarea name="txt[{$adrid}]" cols="43" rows="3" onchange="form.change{$adrid}.value=1"
+        <textarea name="txt[{$adrid}]" cols="43" rows="4" onchange="form.change{$adrid}.value=1"
 	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
 	>{$adr.txt}</textarea>
       </td>

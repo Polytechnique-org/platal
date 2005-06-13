@@ -111,8 +111,8 @@ function get_address_text($adr) {
 // compares if two address matches
 // $b should be a complete valid address
 function compare_addresses_text($a, $b) {
-    $ta = strtoupper(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"), array(" ", "\n"), $a));
-    $tb = strtoupper(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"), array(" ", "\n"), $b));
+    $ta = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $a));
+    $tb = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $b));
    
     $la = explode("\n", $ta);
     $lb = explode("\n", $tb);
@@ -162,13 +162,12 @@ function localize_addresses($uid) {
                 $new['region'], $new['country'],
                 $uid, $a['adrid']);
                 $new['store'] = true;
-                if (!$new['cityid']) return $erreur[$a['adrid']] = $new;
+                if (!$new['cityid']) $erreur[$a['adrid']] = $new;
         } else {
             $new['store'] = false;
             $erreur[$a['adrid']] = $new;
         }
     }
-
     return $erreur;
 }
 
