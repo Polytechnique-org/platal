@@ -1,34 +1,18 @@
-    {if $adr.old_txt}
-    <tr>
-      <td class="cold" colspan="2">
-        <input type="hidden" name="change{$adrid}" value="0" />
-	<span class="erreur">La geolocalisation n'a pas marché pour ta nouvelle adresse.</span><br />
-	<div class="adresse">
-        <textarea name="txt[{$adrid}]" cols="23" rows="3" onchange="form.change{$adrid}.value=1;document.getElementById('parsekeep{$adrid}').checked='checked'"
-	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
-	>{$adr.txt}</textarea><br />
-	<input type="radio" name="parseretry{$adrid}" value="0" id="parsekeep{$adrid}" checked="checked"/><label for="parsekeep{$adrid}">conserver</label>
-	</div>
-	<div>
-	  <textarea cols="23" rows="3" name="retrytxt[{$adrid}]" style="background:#FAA" onchange="document.getElementById('parseretry{$adrid}').checked='checked'">{$adr.old_txt}</textarea><br />
-	<input type="radio" name="parseretry{$adrid}" value="1" id="parseretry{$adrid}" /><label for="parseretry{$adrid}">réessayer</label>
-	</div>
-      </td>
-    </tr>
-    {elseif $adr.geoloc && $adr.geoloc neq $adr.txt}
+    {if $adr.geoloc}
     <tr>
       <td class="cold" colspan="2">
         <input type="hidden" name="change{$adrid}" value="0"/>
-	<span class="erreur">La geolocalisation n'a pas donné un résultat certain, vérifie la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span><br />
+	<span class="erreur">La geolocalisation n'a pas donné un résultat certain, vérifie la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span>
 	<div class="adresse">
         <textarea name="txt[{$adrid}]" cols="23" rows="3" onchange="form.change{$adrid}.value=1"
-	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
-	>{$adr.txt}</textarea><br />
-	<input type="radio" name="parsevalid[{$adrid}]" value="0" id="parsekeep[{$adrid}]" checked="checked"/><label for="parsekeep[{$adrid}]">conserver</label>
+	{if !$adr.cityid}style="background:#FAA"{/if}
+	>{$adr.txt}</textarea>
 	</div>
-	<div>
-	  <textarea cols="23" rows="3" style="background:#AFA">{$adr.geoloc}</textarea><br />
-	<input type="radio" name="parsevalid[{$adrid}]" value="1" id="parsevalid[{$adrid}]" /><label for="parsevalid[{$adrid}]">valider</label>
+	<div class="adresse">
+	  <pre
+	  style="border:2px inset threedface{if !$adr.geoloc_cityid};background:#FAA{/if}"
+	>{$adr.geoloc}</pre>
+	[<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;parsevalid[{$adrid}]=1">Valider</a>]
 	</div>
       </td>
     </tr>
@@ -38,7 +22,7 @@
         <input type="hidden" name="change{$adrid}" />
         <textarea name="txt[{$adrid}]" cols="43" rows="3" onchange="form.change{$adrid}.value=1"
 	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}
-	>{$adr.txt}</textarea><br />
+	>{$adr.txt}</textarea>
       </td>
     </tr>
     {/if}

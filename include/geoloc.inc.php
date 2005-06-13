@@ -110,13 +110,15 @@ function get_address_text($adr) {
 
 // compares if two address matches
 // $b should be a complete valid address
-function compare_addresses($a, $b) {
-    if ($a['country'] != '00' && $b['country'] != $a['country']) return false;
-    if ($a['postcode'] && $a['postcode'] != $b['postcode']) return false;
-    if ($a['city'] && strtoupper($a['city']) != strtoupper($b['city'])) return false;
-    if (trim($a['adr1']) != trim($b['adr1'])) return false;
-    if (trim($a['adr2']) != trim($b['adr2'])) return false;
-    if (trim($a['adr3']) != trim($b['adr3']))return false;
+function compare_addresses_text($a, $b) {
+    $ta = strtoupper(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"), array(" ", "\n"), $a));
+    $tb = strtoupper(preg_replace(array("/[,\"'#~:;_\-]/", "/\r\n/"), array(" ", "\n"), $b));
+   
+    $la = explode("\n", $ta);
+    $lb = explode("\n", $tb);
+
+    if (count($lb) > count($la) + 1) return false;
+    foreach ($la as $i=>$l) if (levenshtein($l, $lb[$i]) > 3) return false;
     return true;
 }
 
@@ -125,11 +127,19 @@ function empty_address() {
         "adr1" => "",
         "adr2" => "",
         "adr3" => "",
-        "city_id" => NULL,
+        "cityid" => NULL,
         "city" => "",
         "postcode" => "",
         "region" => "",
-        "country" => "00");
+        "country" => "00",
+        "countrytxt" => "");
+}
+
+// create a simple address from a text without geoloc
+function cut_address($txt) {
+    $txt = str_replace("\r\n", "\n", $txt);
+    ereg("^([^\n]*)(\n([^\n]*)(\n(.*))?)?$", trim($txt), $a);
+    return array("adr1" => trim($a[1]), "adr2" => trim($a[3]), "adr3" => trim(str_replace("\n", " ", $a[5])));
 }
 
 // localize all the address of a user and modify the database
@@ -140,8 +150,8 @@ function localize_addresses($uid) {
     $erreur = Array();
 
     while ($a = $res->next()) {
-        $new = get_address_infos(get_address_text($a));
-        if ($new['cityid'] && compare_addresses($a, $new)) {
+        $new = get_address_infos($ta = get_address_text($a));
+        if (compare_addresses_text($ta, get_address_text($new))) {
             $globals->xdb->execute("UPDATE adresses SET
                 adr1 = {?}, adr2 = {?}, adr3 = {?},
                 cityid = {?}, city = {?}, postcode = {?},
@@ -151,7 +161,12 @@ function localize_addresses($uid) {
                 $new['cityid'], $new['city'], $new['postcode'],
                 $new['region'], $new['country'],
                 $uid, $a['adrid']);
-        } else $erreur[$a['adrid']] = $new;
+                $new['store'] = true;
+                if (!$new['cityid']) return $erreur[$a['adrid']] = $new;
+        } else {
+            $new['store'] = false;
+            $erreur[$a['adrid']] = $new;
+        }
     }
 
     return $erreur;

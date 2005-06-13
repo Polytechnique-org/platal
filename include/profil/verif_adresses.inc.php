@@ -65,7 +65,7 @@ function set_flag_adr($varname,$i){
 
 
 function replace_address($i){
-  global $page, $adresses;
+  global $adresses;
   if(!isset($adresses[$i])){
     $adresses[$i]['nouvelle'] = 'ajout';
     $adresses[$i]['adrid'] = $i;
@@ -91,33 +91,6 @@ function replace_address($i){
   replace_ifset_adr('pub', $i);
   replace_ifset_adr('tel_pub', $i);
   if (!get_adr_arg('parsevalid', $i)) replace_ifset_adr('txt', $i);
-  $change = Env::get('change'.$i);
-  if (Env::get('parseretry'.$i)) {
-  	$adresses[$i]['txt'] = get_adr_arg('retrytxt', $i);
-	$change = true;
-  }	
-  if (get_adr_arg('parsevalid', $i) || ($adresses[$i]['txt'] && $change)) {
-  	require_once('geoloc.inc.php');
-	$new = get_address_infos($adresses[$i]['txt']);
-	// if we found a localisation, erase old address
-	if ($new['sql'] || get_adr_arg('parsevalid', $i)) {
-		$adresses[$i]['adr1'] = '';
-		$adresses[$i]['adr2'] = '';
-		$adresses[$i]['adr3'] = '';
-		$adresses[$i]['postcode'] = '';
-		$adresses[$i]['city'] = '';
-		unset($adresses[$i]['cityid']);
-		$adresses[$i]['country'] = '00';
-		$adresses[$i]['countrytxt'] = '';
-		$adresses[$i]['region'] = '';
-		$adresses[$i] = array_merge($adresses[$i], $new);
-		unset($adresses[$i]['geoloc']);
-	}else {
-		$page->trig("L'adresse n'a pas été reconnue par la geoloc");
-		$adresses[$i]['old_txt'] = $adresses[$i]['txt'];
-	}
-  }
-  $adresses[$i]['txt'] = get_address_text($adresses[$i]);
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
     $adresses[$i]['numero_formulaire'] = $tab[$i];
@@ -125,6 +98,25 @@ function replace_address($i){
     $adresses[$i]['numero_formulaire'] = -1;
 }
 
+function geoloc_adresse($i) {
+  global $adresses;
+  $change = Env::get('change'.$i);
+  if (get_adr_arg('parsevalid', $i) || ($adresses[$i]['txt'] && $change) || (!$adresses[$i]['cityid'])) {
+  	require_once('geoloc.inc.php');
+	// erases the previous address (but not the phone or pub)
+	$adresses[$i] = array_merge($adresses[$i], empty_address());
+	// localize new address
+	$new = get_address_infos($adresses[$i]['txt']);
+	if (compare_addresses_text($adresses[$i]['txt'], $geotxt = get_address_text($new)) || get_adr_arg('parsevalid', $i)) 
+		$adresses[$i] = array_merge($adresses[$i], $new);
+	else {
+		$adresses[$i] = array_merge($adresses[$i], cut_address($adresses[$i]['txt']));
+		$adresses[$i]['geoloc'] = $geotxt;
+		$adresses[$i]['geoloc_cityid'] = $new['cityid'];
+	}
+  }
+  $adresses[$i]['txt'] = get_address_text($adresses[$i]);
+}
 
 //remplace par les eventuelles nouvelles valeurs :
 for ($adrid = 1; $adrid <= $nb_adr_max; $adrid++) {
@@ -132,6 +124,8 @@ for ($adrid = 1; $adrid <= $nb_adr_max; $adrid++) {
   if(isset($tab[$adrid])){ //cet adrid etait donc present dans le formulaire
     replace_address($adrid);
   }
+  if (isset($adresses[$adrid]['txt']))
+    geoloc_adresse($adrid);
 }
 
 if(Env::get('old_tab', '') == 'adresses' && Env::has('modifier')){ // on ne valide que qd on vient du formulaire
