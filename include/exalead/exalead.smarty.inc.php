@@ -177,6 +177,18 @@ function _exa_navigation_barre($params, &$smarty){
   }
   if ($current_page*10<$nb_hits)
   	$res.="<a  href=\"?_C={$exalead_data->query->context}&_s=".(($current_page)*$nb_res_per_page)."\">Suivant</a>";
+  $date=false;
+  foreach($exalead_data->query->query_parameters as $parameter){
+	if($parameter->name=="_sf"){
+		if($parameter->value=="-date")
+  			$date=true;
+	}
+  }
+  
+  if($date)
+	$res.=" - <a href=\"?_C={$exalead_data->query->context}/_sf=relevance&amp;_f=xml2\">[Classer par pertinence]</a>";
+  else
+	$res.=" - <a href=\"?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2\">[Classer par date]</a>"; 
   return $res;
 }
 
