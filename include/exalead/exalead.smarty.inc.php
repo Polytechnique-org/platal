@@ -278,9 +278,10 @@ function _display_resume_groupe($params, &$smarty){
     return '';
   }
   $groupe = $params['groupe'];
+  $name = $params['display'];
   foreach($exalead_data->groups as $group){
     if($group->title == $groupe){
-      $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">$groupe</th>";
+      $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">".gettext($name)."</th>";
       $result .= _display_resume_groupe_category($group, $exalead_data->query->context);
       $result .= "</table>";
       return $result;
@@ -302,8 +303,8 @@ function _display_resume_keywords($params, &$smarty){
   
   //if no keywrods, do not display anything
   if(count($exalead_data->keywords) == 0) return '';
-  
-  $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">Mots-Clés</th>";
+  $name=$params['display']; 
+  $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">".gettext($name)."</th>";
   foreach($exalead_data->keywords as $keyword){
      if($keyword->display != ''){
        $title = (empty($keyword->display)?$keyword->name:$keyword->display);
