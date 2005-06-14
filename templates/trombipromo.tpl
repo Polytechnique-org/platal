@@ -58,7 +58,7 @@ chaque page affiche au plus {$limit} photos.
 </form>
 
 <h1>Site web promo</h1>
-<p>Pour accéder à la liste des sites web promo, clique <a href="http://www.polytechnique.net/autres.php?cat=Promotions">ici</a>.</p>
+<p>Pour accéder à la liste des sites web promo, clique <a href="http://www.polytechnique.net/groupes.php?cat=promotions">ici</a>.</p>
 
 {else}
 
