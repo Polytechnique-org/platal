@@ -22,6 +22,12 @@
 
 <h1>{$asso.nom} : <a href='evenements.php'>Evénements</a> </h1>
 
+{if $evt.participant_list}
+<p class="center">
+[<a href="mailto:{$evt.short_name}-participants@polytechnique.org">envoyer un mail à ceux qui viennent</a>] - [<a href="mailto:{$evt.short_name}-absents@polytechnique.org">envoyer un mail aux membres non inscrits</a>]
+</p>
+{/if}
+
 {if $moments}
 <p class="center">
 [<a href="{$smarty.server.PHP_SELF}?eid={$smarty.request.eid}"{if !$smarty.request.item_id}class="erreur"{/if}>tout</a>]

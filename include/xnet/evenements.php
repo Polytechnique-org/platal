@@ -23,12 +23,21 @@
 function get_event_detail($eid, $item_id = false) {
     global $globals;
     $res = $globals->xdb->query(
-        "SELECT	SUM(nb) AS nb_tot, e.intitule, ei.titre, e.show_participants, e.paiement_id
+        "SELECT	SUM(nb) AS nb_tot, e.intitule, ei.titre,
+                debut AS deb, fin, membres_only, descriptif, e.eid,
+                e.show_participants, e.paiement_id, e.short_name,
+                al.vid AS absent_list, pl.vid AS participant_list,
+                a.nom, a.prenom, a.promo
            FROM	groupex.evenements AS e
      INNER JOIN	groupex.evenements_items AS ei ON (e.eid = ei.eid)
       LEFT JOIN	groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
-          WHERE	e.eid = {?} AND ei.item_id = {?} AND e.asso_id = {?}
+      LEFT JOIN virtual AS al ON(al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
+      LEFT JOIN virtual AS pl ON(pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
+      LEFT JOIN auth_user_md5 AS a ON (a.user_id = e.organisateur_uid)
+          WHERE	e.eid = {?} AND ei.item_id = {?} AND e.asso_id = {?} 
        GROUP BY ei.item_id",
+       '-absents@'.$globals->mail->domain,
+       '-participants@'.$globals->mail->domain,
        $eid, $item_id?$item_id:1, $globals->asso('id'));
     $evt = $res->fetchOneAssoc();
     if (!$evt) return false;
@@ -121,5 +130,34 @@ function get_event_participants($eid, $item_id, $where, $tri, $limit, $money, $p
     return $tab;
 }
 // }}}
+
+//  {{{ function subscribe_lists_event()
+function subscribe_lists_event($participate, $uid, $participant_list, $absent_list) {
+    echo "poulpe - $uid - $participant_list";
+    global $globals;
+    
+    $email = Session::get('forlife');
+
+    if ($email) $email .= '@'.$globals->mail->domain;
+    else {
+        $res = $globals->xdb->query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", Session::get('uid'), $globals->asso('id'));
+        $email = $res->fetchOneCell();
+    }
+
+    $subscribe = $participate?$participant_list:(is_member()?$absent_list:0);
+    $unsubscri = $participate?$absent_list:$participant_list;
+
+    if ($subscribe)
+        $globals->xdb->execute(
+            "REPLACE INTO virtual_redirect VALUES({?},{?})",
+		 $subscribe, $email);
+
+    if ($unsubscri)
+        $globals->xdb->execute(
+            "DELETE FROM virtual_redirect WHERE vid = {?} AND redirect = {?}",
+                $unsubscri, $email);
+}
+// }}}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

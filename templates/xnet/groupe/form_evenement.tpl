@@ -43,6 +43,10 @@
       <td><input type="text" name="intitule" value="{$evt.intitule}" size="45" maxlength="100" /></td>
     </tr>
     <tr>
+      <td>Evénement en raccourci (pour les mailings listes) :</td>
+      <td><input type="text" name="short_name" value="{$evt.short_name}" size="20"/></td>
+    </tr>
+    <tr>
       <td>Descriptif :</td>
       <td><textarea name="descriptif" cols="45" rows="6">{$evt.descriptif}</textarea></td>
     </tr>

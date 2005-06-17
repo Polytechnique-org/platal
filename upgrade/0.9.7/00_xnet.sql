@@ -2,4 +2,6 @@ ALTER TABLE groupex.asso ADD `pub` ENUM( 'public', 'private' ) DEFAULT 'public' 
 ALTER TABLE groupex.evenements_participants ADD PRIMARY KEY (eid, item_id, uid);
 ALTER TABLE groupex.evenements ADD `show_participants` TINYINT( 1 ) NOT NULL ;
 ALTER TABLE groupex.evenements_participants ADD paid FLOAT DEFAULT 0 NOT NULL;
+ALTER TABLE virtual CHANGE `type` `type` ENUM('user', 'list', 'dom', 'evt') DEFAULT 'user' NOT NULL;
+ALTER TABLE groupex.evenements ADD `short_name` VARCHAR(30) DEFAULT '' NOT NULL;
 

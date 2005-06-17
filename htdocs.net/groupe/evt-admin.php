@@ -49,16 +49,25 @@ if ($admin && Env::get('adm') == 'prix' && $member) {
 if ($admin && Env::get('adm') == 'nbs' && $member) {
 	$res = $globals->xdb->query("SELECT paid FROM groupex.evenements_participants WHERE uid = {?} AND eid = {?}", $member, Env::get('eid'));
 	$paid = $res->fetchOneCell();
+	$participate = false;
 	foreach ($evt['moments'] as $m) if (Env::has('nb'.$m['item_id'])) {
 		$nb = Env::getInt('nb'.$m['item_id'], 0);
 		if ($nb < 0) $nb = 0;
 		if ($nb) {
+			$participate = true;
 			if (!$paid) $paid = 0;
 			$globals->xdb->execute("REPLACE INTO groupex.evenements_participants VALUES ({?}, {?}, {?}, {?}, {?})",
 			Env::get('eid'), $member, $m['item_id'], $nb, $paid);
 		}
 		else
 		$globals->xdb->execute("DELETE FROM groupex.evenements_participants WHERE uid = {?} AND eid = {?} AND item_id = {?}", $member, Env::get('eid'), $m['item_id']);
+	}
+	if ($participate) 
+		subscribe_lists_event(true, $member, $evt['participant_list'], $evt['absent_list']);
+	else {
+		$res = $globals->xdb->query("SELECT uid FROM groupex.evenements_participants WHERE uid = {?} AND eid = {?}", $member, Env::get('eid'));
+		$u = $res->fetchOneCell();
+		subscribe_lists_event($u, $member, $evt['participant_list'], $evt['absent_list']);
 	}
 }
 

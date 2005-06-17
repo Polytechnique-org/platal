@@ -10,6 +10,7 @@ if (!Env::get("eid"))
 $may_participate = !$members_only || is_member() || may_update(); 
 $page->assign('may_participate', $may_participate);
 
+$participate = false;
 for ($i=1; Env::has('item_id'.$i); $i++) {
 	$res = $globals->xdb->query("SELECT paid FROM groupex.evenements_participants WHERE eid = {?} AND uid = {?}", Env::get("eid"), Session::get("uid"));
 	$paid = $res->fetchOneCell();
@@ -17,11 +18,13 @@ for ($i=1; Env::has('item_id'.$i); $i++) {
 	$j = Env::get('item_id'.$i);
 	$nb = Env::get('item_'.$j);
 	if ($nb == '+') $nb = Env::get('itemnb_'.$j)+1;
-	if ($nb > 0)
+	if ($nb > 0) {
 		$globals->xdb->execute(
 	"REPLACE INTO groupex.evenements_participants
 	       VALUES ({?}, {?}, {?}, {?}, {?})",
 	       Env::get("eid"), Session::get("uid"), $j, $nb, $paid);
+	       $participate = true;
+	}
 	else
 		$globals->xdb->execute(
 	"DELETE FROM groupex.evenements_participants
@@ -29,18 +32,15 @@ for ($i=1; Env::has('item_id'.$i); $i++) {
 	       Env::get("eid"), Session::get("uid"), $j);		
 }
 
+require_once('xnet/evenements.php');
+$evt = get_event_detail(Env::get('eid'));
+
+subscribe_lists_event($participate, Session::get("uid"), $evt['participant_list'], $evt['absent_list']);
+
 // return to the main page after modifying
 if (Env::has("ins"))
 	header("Location: evenements.php");
 
-$res = $globals->xdb->query(
-        "SELECT  e.eid, a.nom, a.prenom, a.promo, intitule, descriptif, debut AS deb,
-	         fin, membres_only, paiement_id
-	   FROM  groupex.evenements AS e
-	  INNER  JOIN x4dat.auth_user_md5 AS a ON a.user_id = e.organisateur_uid
-	  WHERE  e.eid = {?}", Env::get("eid"));
-
-$evt = $res->fetchOneAssoc();
 $page->assign('evt', $evt);
 
 $moments = $globals->xdb->iterator(

@@ -12,6 +12,7 @@ New :
 	* Xnet :
 		- Events management.												-Car
 		- Events using paiements.											-Car
+		- Sending mail to all the participants/absents of an event.			-Car
 
 Bug/Wish :
 
