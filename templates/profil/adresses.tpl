@@ -99,12 +99,17 @@
     {include file="include/flags.radio.tpl" name="tel_pub[$adrid]" val=$adr.tel_pub}
     <tr>
       <td class="colg">
-        <span class="titre">Téléphone associé</span>
+        <span class="titre">Téléphone associé&nbsp;:</span>
       </td>
       <td>
         <input type="text" size="19" maxlength="28" name="tel[{$adrid}]" value="{$adr.tel}" />
-        &nbsp;
-        <span class="titre">Fax</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="colg">
+        <span class="titre">Fax&nbsp;:</span>
+      </td>
+      <td>
         <input type="text" size="19" maxlength="28" name="fax[{$adrid}]" value="{$adr.fax}" />
       </td>
     </tr>
