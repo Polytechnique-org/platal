@@ -133,7 +133,6 @@ function get_event_participants($eid, $item_id, $where, $tri, $limit, $money, $p
 
 //  {{{ function subscribe_lists_event()
 function subscribe_lists_event($participate, $uid, $participant_list, $absent_list) {
-    echo "poulpe - $uid - $participant_list";
     global $globals;
     
     $email = Session::get('forlife');
