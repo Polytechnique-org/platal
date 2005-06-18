@@ -88,7 +88,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 </h1>
 
 <p>
-Si tu te désinscrit de ces listes, tu ne seras plus capable de t'y réinscrire par toi même !
+Si tu te désinscris de ces listes, tu ne seras plus capable de t'y réinscrire par toi-même !
 </p>
 
 {if $smarty.session.perms eq admin}
