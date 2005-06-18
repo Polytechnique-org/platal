@@ -1,16 +1,17 @@
     {if $adr.geoloc}
     <tr>
-      <td class="cold" colspan="2">
+      <td class="cold" colspan="5">
         <input type="hidden" name="change{$adrid}" value="0"/>
 	<span class="erreur" wrap>La geolocalisation n'a pas donné un résultat certain, valide la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span><br />
-        <textarea name="txt[{$adrid}]" cols="23" rows="4" onchange="form.change{$adrid}.value=1"
+        <textarea name="txt[{$adrid}]" cols="30" rows="4" onchange="form.change{$adrid}.value=1"
 	{if !$adr.cityid}style="background:#FAA"{/if}
 	>{$adr.txt}</textarea>
-	  <textarea cols="23" rows="4"
+	  <textarea cols="30" rows="4"
 	  style="border:inherit;background:#AFA"
 	  onclick="blur()"
-	>{$adr.geoloc}</textarea>
+	>{$adr.geoloc}</textarea><p class="right">
 	[<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;parsevalid[{$adrid}]=1">Valider</a>]
+	</p>
       </td>
     </tr>
     {else}
