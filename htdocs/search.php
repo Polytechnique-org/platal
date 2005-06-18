@@ -30,6 +30,8 @@ if (logged()) {
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
+$page->assign('baseurl', $globals->baseurl);
+
 if (Env::has('quick')) {
     $page->assign('formulaire', 0);
 

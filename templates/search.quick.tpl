@@ -50,4 +50,24 @@ En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le
 sans distinction de casse et sans tenir compte des accents.
 </p>
 
+{min_auth level="cookie"}
+<h2>Barre de recherche pour Firefox</h2>
+<script type="text/javascript">
+{literal}
+function addEngine() {
+  if ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function")) {
+   {/literal}
+    window.sidebar.addSearchEngine(
+      "{$baseurl}/xorg.src",
+      "{$baseurl}/images/xorg.png",
+      "Recherche rapide X.org",
+      "Academic");
+  {literal}
+  } else { alert("Impossible d'installer la barre de recherche Firefox"); }
+}
+{/literal}
+</script>
+<p>Tu peux <a href="javascript:addEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
+</p>
+{/min_auth}
 {* vim:set et sw=2 sts=2 sws=2: *}
