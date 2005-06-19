@@ -65,11 +65,11 @@
     {assign var="montant" value=$montant+$m.montant*$m.nb}
     {if $m.titre || $m.montant}
     <tr>
-      <td>
+      <th>
         <input type="hidden" name="item_id{counter}" value="{$m.item_id}" />
         <input type="hidden" name="eid" value="{$evt.eid}" />
         <strong>{$m.titre} - {if $m.montant > 0}{$m.montant}&euro;{else}gratuit{/if}</strong>
-      </td>
+      </th>
     </tr>
     {/if}
     <tr>
