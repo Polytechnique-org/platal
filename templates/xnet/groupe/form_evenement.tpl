@@ -105,13 +105,13 @@
     Nouveau paiement, message de confirmation&nbsp;:<br />
     <textarea name="confirmation" rows="12" cols="65">&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
-      Ton inscription à %%%%% a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
-      Nous t'attendons donc le %%%%% à %%%%%. 
-      Si tu as des questions eventuelles, tu peux contacter %%%%%
+      Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
+      [COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
 
       A très bientot,
 
-      %%%%%</textarea><br />
+      [SIGNE ICI]</textarea><br />
+    Le nouveau paiement n'est pas rajouté automatiquement mais doit être validé par le trésorier de l'association Polytechnique.org, ce qui sera fait sous peu.<br /><br />
     Page internet de l'événement&nbsp;:<br />
     <input size="40" name="site" value="{$asso.site}" />
   </div>
