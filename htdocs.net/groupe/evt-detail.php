@@ -37,6 +37,11 @@ require_once('xnet/evenements.php');
 $evt = get_event_detail(Env::get('eid'));
 if (Env::has('ins')) {
     subscribe_lists_event($participate, Session::get("uid"), $evt['participant_list'], $evt['absent_list']);
+    if ($participate) {
+        $page->trig("tu es maintenant inscrit à l'évenement, suis le lien en bas si tu souhaites procéder à un paiment par le web");
+    } else {
+        $page->trig("tu es maintenant désinscrit de cet évenement");
+    }
 }
 
 $page->assign('evt', $evt);

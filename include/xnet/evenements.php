@@ -159,11 +159,6 @@ function subscribe_lists_event($participate, $uid, $participant_list, $absent_li
                 $unsubscri, $email);
     }
 
-    if ($participate) {
-        $page->trig("tu es maintenant inscrit à l'évenement, suis le lien en bas si tu souhaites procéder à un paiment par le web");
-    } else {
-        $page->trig("tu es maintenant désinscrit de cet évenement");
-    }
 }
 // }}}
 

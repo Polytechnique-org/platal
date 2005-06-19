@@ -67,7 +67,11 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
   </tr>
   {foreach from=$participants item=m}
   <tr style="background:#d0c198;">
-    <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}</td>
+    <td>
+      <a href="" onclick="document.getElementById('montant').mail.value='{$m.email}'; return false">
+        {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}
+      </a>
+    </td>
     <td>{$m.promo}</td>
     <td>
       {if $m.x}
@@ -133,13 +137,18 @@ nombre de participants.
 </form>
 
 <hr />
-<p class="decr">
+
+<p class="descr">
 En tant qu'administrateur, tu peux entrer un paiement reçu par une autre source que le télépaiement
-du site X.org. Ce montant s'ajoutera aux montants déjà entrés. Si tu as fais une erreur, tu peux
+du site X.org. Ce montant s'ajoutera aux montants déjà entrés. Si tu as fait une erreur, tu peux
 entrer un montant négatif.
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<p class="descr">
+Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous
+</p>
+
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="montant">
   <p class="descr">
   <input type="hidden" name="eid" value="{$smarty.request.eid}" />
   <input type="hidden" name="adm" value="prix" />
