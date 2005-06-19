@@ -133,12 +133,13 @@ function get_event_participants($eid, $item_id, $where, $tri, $limit, $money, $p
 
 //  {{{ function subscribe_lists_event()
 function subscribe_lists_event($participate, $uid, $participant_list, $absent_list) {
-    global $globals;
+    global $globals,$page;
     
     $email = Session::get('forlife');
 
-    if ($email) $email .= '@'.$globals->mail->domain;
-    else {
+    if ($email) {
+        $email .= '@'.$globals->mail->domain;
+    } else {
         $res = $globals->xdb->query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", Session::get('uid'), $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
@@ -146,15 +147,23 @@ function subscribe_lists_event($participate, $uid, $participant_list, $absent_li
     $subscribe = $participate?$participant_list:(is_member()?$absent_list:0);
     $unsubscri = $participate?$absent_list:$participant_list;
 
-    if ($subscribe)
+    if ($subscribe) {
         $globals->xdb->execute(
             "REPLACE INTO virtual_redirect VALUES({?},{?})",
 		 $subscribe, $email);
+    }
 
-    if ($unsubscri)
+    if ($unsubscri) {
         $globals->xdb->execute(
             "DELETE FROM virtual_redirect WHERE vid = {?} AND redirect = {?}",
                 $unsubscri, $email);
+    }
+
+    if ($participate) {
+        $page->trig("tu es maintenant inscrit à l'évenement, suis le lien en bas si tu souhaites procéder à un paiment par le web");
+    } else {
+        $page->trig("tu es maintenant désinscrit de cet évenement");
+    }
 }
 // }}}
 

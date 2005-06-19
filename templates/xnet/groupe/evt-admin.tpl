@@ -114,7 +114,7 @@ Donne ici son mail (complet pour les extérieurs, sans @polytechnique.org pour le
 nombre de participants.
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <p class="descr">
   <input type="hidden" name="eid" value="{$smarty.request.eid}" />
   <input type="hidden" name="adm" value="nbs" />
@@ -139,7 +139,7 @@ du site X.org. Ce montant s'ajoutera aux montants déjà entrés. Si tu as fais une
 entrer un montant négatif.
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{$smarty.server.REQUEST_URI}" method="post">
   <p class="descr">
   <input type="hidden" name="eid" value="{$smarty.request.eid}" />
   <input type="hidden" name="adm" value="prix" />

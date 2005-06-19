@@ -24,7 +24,7 @@
 
 <h2>{$evt.intitule}</h2>
 
-<form method='post' action='{$smarty.server.PHP_SELF}'>
+<form method='post' action='{$smarty.server.REQUEST_URI}'>
   <table class="tiny" cellspacing="0" cellpadding="0">
     <tr>
       <td class="titre">Annoncé par</td>
