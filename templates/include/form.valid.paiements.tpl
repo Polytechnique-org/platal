@@ -45,7 +45,7 @@
 </tr>
 <tr class="pair">
   <td class="titre">Message de confirmation&nbsp;:</td>
-  <td><pre wrap>{$valid->msg_reponse}</pre></td>
+  <td><pre>{$valid->msg_reponse|wordwrap:"72"}</pre></td>
 </tr>
 {if $valid->asso_id}
 <tr class="pair">
