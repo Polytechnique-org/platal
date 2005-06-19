@@ -36,8 +36,8 @@ function get_event_detail($eid, $item_id = false) {
       LEFT JOIN auth_user_md5 AS a ON (a.user_id = e.organisateur_uid)
           WHERE	e.eid = {?} AND ei.item_id = {?} AND e.asso_id = {?} 
        GROUP BY ei.item_id",
-       '-absents@'.$globals->mail->domain,
-       '-participants@'.$globals->mail->domain,
+       '-absents@'.$globals->xnet->evts_domain,
+       '-participants@'.$globals->xnet->evts_domain,
        $eid, $item_id?$item_id:1, $globals->asso('id'));
     $evt = $res->fetchOneAssoc();
     if (!$evt) return false;

@@ -9,6 +9,8 @@ $page->assign('admin', may_update());
 $moments = range(1, 4);
 $page->assign('moments', $moments);
 
+$page->assign('eid', Env::get('eid'));
+
 if ($eid = Env::get('eid')) {
 	$res = $globals->xdb->query("SELECT asso_id, short_name FROM groupex.evenements WHERE eid = {?}", $eid);
 	$infos = $res->fetchOneAssoc();
@@ -27,6 +29,7 @@ if (may_update() && Post::get('intitule')) {
 			    et qu'il ne contient que des lettres non accentuées,
 			    des chiffres ou les caractères - et .");
 		$short_name = $infos['short_name'];
+		$page->assign('get_form', true);
 	}
 	//vérifier que l'alias n'est pas déja pris
 	if ($short_name && $short_name != $infos['short_name']) {
@@ -34,13 +37,14 @@ if (may_update() && Post::get('intitule')) {
 		if ($res->fetchOneCell() > 0) {
 			$page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
 			$short_name = $infos['short_name'];
+			$page->assign('get_form', true);
 		}
 	}
 	if ($short_name && $infos['short_name'] && $short_name != $infos['short_name']) {
 		$globals->xdb->execute("UPDATE virtual SET alias = REPLACE(alias, {?}, {?}) WHERE type = 'evt' AND alias LIKE {?}",
 			$infos['short_name'], $short_name, $infos['short_name']."-%");
 	} elseif ($short_name && !$infos['short_name']) {
-		$globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}", $short_name."-participants@".$globals->mail->domain);
+		$globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}", $short_name."-participants@".$globals->xnet->evts_domain);
 		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
 		$globals->xdb->execute("INSERT INTO virtual_redirect (
 			SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
@@ -52,7 +56,7 @@ if (may_update() && Post::get('intitule')) {
 		      GROUP BY ep.uid)",
 			 $res->fetchOneCell(), "@".$globals->mail->domain, $eid);
 
-		$globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}", $short_name."-absents@".$globals->mail->domain);
+		$globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}", $short_name."-absents@".$globals->xnet->evts_domain);
 		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
 		$globals->xdb->execute("INSERT INTO virtual_redirect (
 			SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
@@ -68,17 +72,16 @@ if (may_update() && Post::get('intitule')) {
 			$infos['short_name']."-%");
 	}
 
-	$globals->xdb->execute("REPLACE INTO groupex.evenements VALUES (
-		{?}, {?}, {?}, {?},
-		{?}, {?},
-		{?},
-		{?},
-		{?}, {?}, {?}, {?})",
+	$globals->xdb->execute("REPLACE INTO groupex.evenements 
+		SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
+		paiement_id = {?}, descriptif = {?},
+		debut = {?}, fin = {?},
+		membres_only = {?}, advertise = {?}, show_participants = {?}, short_name = {?}",
 		$eid, $globals->asso('id'), Session::get('uid'), Post::get('intitule'),
 		(Post::get('paiement')>0)?Post::get('paiement'):NULL, Post::get('descriptif'),
 		Post::get('deb_Year')."-".Post::get('deb_Month')."-".Post::get('deb_Day')." ".Post::get('deb_Hour').":".Post::get('deb_Minute').":00",
 		Post::get('fin_Year')."-".Post::get('fin_Month')."-".Post::get('fin_Day')." ".Post::get('fin_Hour').":".Post::get('fin_Minute').":00",
-		Post::get('membres_only'), Post::get('advertise'), Post::get('show_participants'), $short_name);
+		Post::get('membres_only'), Post::get('advertise'), Post::get('show_participants'), $short_name, $eid);
 
 	if (!$eid) {
 		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
@@ -132,14 +135,16 @@ if (may_update() && (Env::has('add') || (Env::has('mod') && $eid))) {
 	$page->assign('paiements', $paiements);
 }
 
-if (may_update() && Env::has('mod') && $eid) {
+if ($eid) {
 	$res = $globals->xdb->query(
 		"SELECT	eid, intitule, descriptif, debut, fin, membres_only, advertise, show_participants, paiement_id, short_name
 		   FROM	groupex.evenements
 		  WHERE eid = {?}", $eid);
 	$evt = $res->fetchOneAssoc();
 	$page->assign('evt', $evt);
-	
+}
+
+if (may_update() && Env::has('mod') && $eid) {
 	$res = $globals->xdb->iterator(
 		"SELECT item_id, titre, details, montant
 		   FROM groupex.evenements_items AS ei
