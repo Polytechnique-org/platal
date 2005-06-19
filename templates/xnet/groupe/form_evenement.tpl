@@ -34,13 +34,16 @@
   pour le premier "moment" (la réunion), et pour combien de personnes réserver le
   restaurant.
 </p>
+
 <form method="post" action="{$smarty.server.PHP_SELF}">
-<input type="hidden" name="eid" value="{$evt.eid}" />
   <hr />
   <table>
     <tr>
       <td>Intitulé de l'événement :</td>
-      <td><input type="text" name="intitule" value="{$evt.intitule}" size="45" maxlength="100" /></td>
+      <td>
+        <input type="hidden" name="eid" value="{$evt.eid}" />
+        <input type="text" name="intitule" value="{$evt.intitule}" size="45" maxlength="100" />
+      </td>
     </tr>
     <tr>
       <td>Evénement en raccourci (pour les mailings listes) :</td>
@@ -54,19 +57,18 @@
       <td>Date de début :</td>
       <td>
         le
-	{html_select_date prefix='deb_' end_year='+5' day_value_format='%02d' field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.debut}
-	à
-	{html_select_time use_24_hours=true display_seconds=false time=$evt.debut prefix='deb_' minute_interval=5}
-	</select>
+        {html_select_date prefix='deb_' end_year='+5' day_value_format='%02d' field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.debut}
+        à
+        {html_select_time use_24_hours=true display_seconds=false time=$evt.debut prefix='deb_' minute_interval=5}
       </td>
     </tr>
     <tr>
       <td>Date de fin :</td>
       <td>
         le
-	{html_select_date prefix='fin_' end_year='+5' day_value_format='%02d' field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.fin}
-	à
-	{html_select_time use_24_hours=true display_seconds=false time=$evt.fin prefix='fin_' minute_interval=5}
+        {html_select_date prefix='fin_' end_year='+5' day_value_format='%02d' field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.fin}
+        à
+        {html_select_time use_24_hours=true display_seconds=false time=$evt.fin prefix='fin_' minute_interval=5}
       </td>
     </tr>
     <tr>
@@ -77,42 +79,43 @@
     </tr>
     <tr>
       <td colspan="2">Annoncer l'événement publiquement sur le site :
-        <input type="radio" name="advertise" value="1" {if $evt.advertise}checked{/if} /> oui
-        <input type="radio" name="advertise" value="0" {if !$evt.advertise}checked{/if} /> non
+        <input type="radio" name="advertise" value="1" {if $evt.advertise}checked="checked"{/if} /> oui
+        <input type="radio" name="advertise" value="0" {if !$evt.advertise}checked="checked"{/if} /> non
       </td>
     </tr>
     <tr>
       <td colspan="2">Montrer la liste des participants à tous les membres :
-        <input type="radio" name="show_participants" value="1" {if $evt.show_participants}checked{/if} /> oui
-        <input type="radio" name="show_participants" value="0" {if !$evt.show_participants}checked{/if}/> non
+        <input type="radio" name="show_participants" value="1" {if $evt.show_participants}checked="checked"{/if} /> oui
+        <input type="radio" name="show_participants" value="0" {if !$evt.show_participants}checked="checked"{/if}/> non
       </td>
     </tr>
     <tr>
       <td>Référence de paiement :
       </td>
       <td>
-      <select name="paiement" onchange="document.getElementById('new_pay').style.display=(value < 0)?'block':'none'">
-      	<option value=''>Pas de paiement</option>
-	<option value='-1'>- Nouveau paiement -</option>
-     	{html_options options=$paiements selected=$evt.paiement_id}
-      </select>
+        <select name="paiement" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'block':'none')">
+          <option value=''>Pas de paiement</option>
+          <option value='-1'>- Nouveau paiement -</option>
+          {html_options options=$paiements selected=$evt.paiement_id}
+        </select>
       </td>
     </tr>
   </table>
-    <div id="new_pay" style="display:none">
-	Nouveau paiement, message de confirmation&nbsp;:<br />
-	<textarea name="confirmation" rows="12" cols="65"><salutation> <prenom> <nom>,
-	 
-Ton inscription à %%%%% a bien été enregistrée et ton paiement de <montant> a bien été reçu. 
-Nous t'attendons donc le %%%%% à %%%%%. 
-Si tu as des questions eventuelles, tu peux contacter %%%%%
+  <div id="new_pay" style="display:none">
+    Nouveau paiement, message de confirmation&nbsp;:<br />
+    <textarea name="confirmation" rows="12" cols="65">&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
+
+      Ton inscription à %%%%% a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
+      Nous t'attendons donc le %%%%% à %%%%%. 
+      Si tu as des questions eventuelles, tu peux contacter %%%%%
+
+      A très bientot,
+
+      %%%%%</textarea><br />
+    Page internet de l'événement&nbsp;:<br />
+    <input size="40" name="site" value="{$asso.site}" />
+  </div>
   
-A très bientot,
-  
-%%%%%</textarea><br />
-	Page internet de l'événement&nbsp;:<br />
-	<input size="40" name="site" value="{$asso.site}" />
-    </div>
   {foreach from=$moments item=i}
   {assign var='moment' value=$items[$i]}
   <hr />
@@ -131,11 +134,13 @@ A très bientot,
       <td><input type="text" name="montant{$i}" value="{if $moment.montant}{$moment.montant|replace:".":","}{else}0,00{/if}" size="7" maxlength="7" /> &#8364;</td>
     </tr>
   </table>
-{/foreach}
-  <center>
+  {/foreach}
+ 
+  <div class="center">
     <input type="submit" name="valid" value="Valider" />
     &nbsp;
     <input type="reset" value="Annuler" />
-  </center>
+  </div>
 
 </form>
+{* vim:set et sw=2 sts=2 sws=2: *}

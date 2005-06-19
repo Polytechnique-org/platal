@@ -27,10 +27,14 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 </p>
 
 {foreach from=$titres item=p}
+
 <hr />
+<h2>
 <a href="https://www.polytechnique.org/paiement/?ref={$p.id}">{$p.text}</a>
+</h2>
+
 {if $trans[$p.id]}
-<table>
+<table cellpadding="0" cellspacing="0" class='bicol'>
   <tr>
     <th colspan="3">{$p.text} : détails pour les administrateurs</th>
   </tr>
@@ -46,10 +50,13 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
   </tr>
 </table>
 {/if}
+
 {foreachelse}
+
 <p class="descr">
 <em>Pas de micropaiement en cours ...</em>
 </p>
+
 {/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

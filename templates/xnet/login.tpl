@@ -62,9 +62,10 @@
       <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
         <table class="large" cellpadding="4" cellspacing="0" summary="Formulaire de login">
           <tr>
-            <th colspan="2">Connexion</th>
+            <th colspan="2">Connexion
               <input type="hidden" name="remember" value="" />
               <input type="hidden" name="domain" value="" />
+            </th>
           </tr>
           <tr>
             <td class="titre">

@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330; Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-Nom;Prénom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach}{if $admin && $money};A payer;Payé{/if}{else};Nombre{/if}
+Nom;Prénom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach}{if $admin && $money};À payer;Payé{/if}{else};Nombre{/if}
 
 {if $participants}
 {foreach from=$participants item=m}
