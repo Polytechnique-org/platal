@@ -22,6 +22,10 @@
 
 <h1>{$asso.nom} : <a href='evenements.php'>Evénements</a> </h1>
 
+<p>
+L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
+</p>
+
 {if $evt.participant_list}
 <p class="center">
 [<a href="mailto:{$evt.short_name}-participants@polytechnique.org">envoyer un mail à ceux qui viennent</a>] - [<a href="mailto:{$evt.short_name}-absents@polytechnique.org">envoyer un mail aux membres non inscrits</a>]
@@ -37,16 +41,57 @@
 </p>
 {/if}
 
-<p class="descr">
-L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
-</p>
-
 <p class="center">
 [<a href="{$url_page}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
 [<a href="{$url_page}&amp;initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
+
+{if $admin}{literal}
+<script type="text/javascript">
+function remplitAuto(mail) {
+  document.getElementById('inscription').mail.value=mail;
+  document.getElementById('montant').mail.value=mail;
+  return false;
+}
+</script>
+{/literal}
+
+{if $oublis}
+<p class="erreur">
+Ils ont payé mais ont oublié de s'inscrire :
+</p>
+
+<table summary="payé mais non inscrits" class="tiny">
+  <tr>
+    <th>Prénom NOM</th>
+    <th>Promo</th>
+    <th>Infos</th>
+    <th>Montant</th>
+  </tr>
+  {iterate from=$oubliinscription item=m}
+  <tr style="background:#d0c198;">
+    <td>
+      <a href="" {if $admin}onclick="return remplitAuto('{$m.email}')"{/if}>
+      {$m.prenom} {$m.nom}
+      </a>
+    </td>
+    <td>{$m.promo}</td>
+    <td>
+      <a href="https://www.polytechnique.org/fiche.php?user={$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
+      <a href="https://www.polytechnique.org/vcard.php/{$m.email}.vcf/?x={$m.email}"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
+      <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
+    </td>
+    <td>{$m.montant}</td>
+  </tr>
+  {/iterate}
+</table>
+
+<hr />
+{/if}
+
+{/if}
 
 <table summary="participants a l'evenement" class="{if $tout}large{else}tiny{/if}">
   <tr>
@@ -68,7 +113,7 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
   {foreach from=$participants item=m}
   <tr style="background:#d0c198;">
     <td>
-      <a href="" onclick="document.getElementById('montant').mail.value='{$m.email}'; return false">
+      <a href="" {if $admin}onclick="return remplitAuto('{$m.email}')"{/if}>
         {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}
       </a>
     </td>
@@ -106,6 +151,7 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 </p>
 
 {if $admin}
+
 <p class="descr">
 [<a href="evt-csv.php/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv?eid={$smarty.request.eid}&amp;item_id={$smarty.request.item_id}">Télécharger le fichier Excel</a>]
 </p>
@@ -118,7 +164,7 @@ Donne ici son mail (complet pour les extérieurs, sans @polytechnique.org pour le
 nombre de participants.
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="inscription">
   <p class="descr">
   <input type="hidden" name="eid" value="{$smarty.request.eid}" />
   <input type="hidden" name="adm" value="nbs" />

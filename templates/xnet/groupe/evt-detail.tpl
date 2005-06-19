@@ -20,6 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $smarty.request.ins && !$no_ins}
+  {if $participate}
+    Tu es maintenant inscrit à l'évenement.
+    {if $evt.paiement_id} Suis le lien en bas si tu souhaites procéder à un paiement par le web.{/if}
+  {else}
+    Tu es maintenant désinscrit de cet évenement.
+  {/if}
+{/if}
+
 <h1>{$asso.nom} : <a href="{$smarty.server.PHP_SELF}">Evénements</a></h1>
 
 <h2>{$evt.intitule}</h2>
@@ -71,9 +80,9 @@
   </table>
   
   {if $montant > 0 || $paid > 0}
-  <p class="erreur">
+  <p {if $montant > $paid}class="erreur"{/if}>
   Pour cet événement tu dois payer {$montant|replace:'.':','}&nbsp;&euro; {if $paid > 0}, et tu as déjà payé {$paid|replace:'.':','}&nbsp;&euro;{/if}
-  {if $evt.paiement_id}[<a href="https://www.polytechnique.org/paiement/?ref={$evt.paiement_id}">Effectuer le paiement</a>]{/if}
+  {if $evt.paiement_id} [<a href="https://www.polytechnique.org/paiement/?ref={$evt.paiement_id}">Effectuer le paiement</a>]{/if}
   </p>
   {/if}
   <div class="center">

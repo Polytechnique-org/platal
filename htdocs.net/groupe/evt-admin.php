@@ -123,6 +123,21 @@ $ini = Env::has('initiale') ? 'AND IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>"", u.
 
 $participants = get_event_participants(Env::get('eid'), Env::get('item_id'), $ini, $tri, "LIMIT ".($ofs*NB_PER_PAGE).", ".NB_PER_PAGE, $evt['money'] && $admin, $evt['paiement_id']);
 
+if ($evt['paiement_id']) {
+	$res = $globals->xdb->iterator(
+        "SELECT IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom, u.prenom,
+		u.promo, a.alias AS email, t.montant
+	   FROM {$globals->money->mpay_tprefix}transactions AS t
+	 INNER JOIN auth_user_md5 AS u ON(t.uid = u.user_id)
+         INNER JOIN aliases AS a ON (a.id = t.uid AND a.type='a_vie' )
+	  LEFT JOIN groupex.evenements_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
+	  WHERE t.ref = {?} AND ep.uid IS NULL",
+	  $evt['eid'], $evt['paiement_id']);
+	$page->assign('oublis', $res->total());
+	$page->assign('oubliinscription', $res);
+}
+
+	
 $page->assign('participants', $participants);
 
 $page->run();
