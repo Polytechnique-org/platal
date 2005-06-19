@@ -1,8 +1,11 @@
 ALTER TABLE virtual CHANGE `type` `type` ENUM('user', 'list', 'dom', 'evt') DEFAULT 'user' NOT NULL;
 
 ALTER TABLE groupex.asso ADD `pub` ENUM( 'public', 'private' ) DEFAULT 'public' NOT NULL AFTER `ax` ;
+INSERT INTO virtual_domains VALUES ('evts.polytechnique.org'); 
 
-DROP TABLE groupex.evenements;
+use groupex;
+
+DROP TABLE IF EXISTS groupex.evenements;
 CREATE TABLE groupex.evenements (
 	`eid` int unsigned NOT NULL auto_increment,
 	`asso_id` int unsigned NOT NULL default '0',
@@ -18,10 +21,9 @@ CREATE TABLE groupex.evenements (
 	`show_participants` tinyint(1) NOT NULL default '0',
 	PRIMARY KEY  (`eid`)
 );
-INSERT INTO virtual_domains VALUES ('evts.polytechnique.org'); 
 
-drop table groupex.evenements_items;
-CREATE TABLE `evenements_items` (
+drop table IF EXISTS evenements_items;
+CREATE TABLE evenements_items (
         `eid` int unsigned NOT NULL default '0',
         `item_id` int unsigned NOT NULL default '0',
         `titre` varchar(100) NOT NULL default '',
@@ -30,8 +32,8 @@ CREATE TABLE `evenements_items` (
         PRIMARY KEY  (`eid`,`item_id`)
 );
 
-drop table evenements_participants;
-CREATE TABLE `evenements_participants` (
+drop table IF EXISTS evenements_participants;
+CREATE TABLE evenements_participants (
         `eid` int unsigned NOT NULL default '0',
         `uid` int unsigned NOT NULL default '0',
         `item_id` int NOT NULL default '0',

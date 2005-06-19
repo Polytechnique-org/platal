@@ -45,7 +45,14 @@
     </tr>
     <tr>
       <td class="titre">Date</td>
-      <td>{$evt.deb}{if $evt.fin} - {$evt.fin}{/if}</td>
+      <td>
+        {if $evt.fin}
+        du {$evt.deb|date_format:"%d %B %Y à %H:%M"}<br />
+        au {$evt.fin|date_format:"%d %B %Y à %H:%M"}
+        {else}
+        le {$evt.deb|date_format:"%d %B %Y à %H:%M"}
+        {/if}
+      </td>
     </tr>
   </table>
 

@@ -67,7 +67,12 @@ Evénements
     <tr>
       <td class="titre">date :</td>
       <td>
-        {$e.debut}{if $e.fin} - {$e.fin}{/if}
+        {if $e.fin}
+        du {$e.debut|date_format:"%d %B %Y à %H:%M"}<br />
+        au {$e.fin|date_format:"%d %B %Y à %H:%M"}
+        {else}
+        le {$e.debut|date_format:"%d %B %Y à %H:%M"}
+        {/if}
       </td>
     </tr>
     <tr>
