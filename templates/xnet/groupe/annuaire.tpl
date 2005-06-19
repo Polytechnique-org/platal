@@ -67,7 +67,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
       <a href="https://www.polytechnique.org/vcard.php/{$m.email}.vcf/?x={$m.email}"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
       <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
       {else}
-      <a href="mailto:{$m.email}"><img src="{rel}/images/mail.png" alt="mail"></a>
+      <a href="mailto:{$m.email}"><img src="{rel}/images/mail.png" alt="mail" /></a>
       {/if}
     </td>
     {if $admin}
