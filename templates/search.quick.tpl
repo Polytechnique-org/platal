@@ -58,8 +58,8 @@ function addEngine() {
   if ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function")) {
    {/literal}
     window.sidebar.addSearchEngine(
-      "{$baseurl}/xorg.src",
-      "{$baseurl}/images/xorg.png",
+      "{$baseurl|replace:"https":"http"}/xorg.src",
+      "{$baseurl|replace:"https":"http"}/images/xorg.png",
       "Recherche rapide X.org",
       "Academic");
   {literal}
