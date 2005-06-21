@@ -29,8 +29,11 @@ $img = imageCreateFromPng("../images/globe.png");
 
 $coul = imagecolorallocate($img, 0, 0, 0);
 
-while ($a = $res->next()) 
-  imagefilledellipse($img, round(($a[1]/100000 + 180 )/360*600), round((90 - $a[0]/100000)/180*300), 5, 5, $coul);
+while ($a = $res->next()) {
+    $x = floor(($a[1]/100000 + 180 )/360*600);
+    $y = floor((90 - $a[0]/100000)/180*300);
+    imagefilledrectangle($img, $x, $y, $x+1, $y+1, $coul);
+}
 
 imagePng($img);
 imagedestroy($img);

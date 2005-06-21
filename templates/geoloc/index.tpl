@@ -31,7 +31,7 @@
 </ul>
 
 <p class="center">
-<img src="globe.php" width="500" alt="Carte du monde des X"/>
+<img src="globe.php" alt="Carte du monde des X"/>
 </p>
 
 <p class="descr">Pour savoir comment ça marche tu peux aller faire un tour sur le <a href="http://www.aaege.org/GeolocDev/">site de développement</a> du projet.</p>
