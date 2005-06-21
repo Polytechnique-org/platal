@@ -86,6 +86,11 @@ if (Env::has('u') && may_update()) {
             . "En cas de problème, contacter l'équipe de Polytechnique.org\n"
             . "à l'adresse : support@polytechnique.org\n";
     
+    if (!$to) {
+    	$to = $globals->asso("mail").", support@polytechnique.org";
+    	$append = "\n-- \nLe groupe ".$globals->asso("nom")." n'a pas d'administrateur, l'équipe de Polytechnique.org a été prévenue et va rapidement résoudre ce problème.\n";
+    }
+    
     require_once 'diogenes/diogenes.hermes.inc.php';
     $mailer = new HermesMailer();
     $mailer->addTo($to);
