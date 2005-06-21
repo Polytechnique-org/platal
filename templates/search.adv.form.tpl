@@ -136,7 +136,7 @@
     <tr>
       <td>Pays</td>
       <td>
-        <select name="coutry" onchange="javascript:document.forms.recherche.submit();">
+        <select name="country" onchange="javascript:document.forms.recherche.submit();">
         {if $smarty.request.country}
           {assign var="country" value=$smarty.request.country}
         {else}
