@@ -92,7 +92,8 @@ if (!logged()) {
             $user['adr'][$i]['city'] = '';
             $user['adr'][$i]['postcode'] = '';
             $user['adr'][$i]['region'] = '';
-            $user['adr'][$i]['country'] = '';
+            $user['adr'][$i]['country'] = '00';
+            $user['adr'][$i]['countrytxt'] = '';
         }
         elseif ($adr['tel_pub'] != 'public') {
             $user['adr'][$i]['tel'] = '';
@@ -110,7 +111,8 @@ if (!logged()) {
                 $user['adr_pro'][$i]['city'] = '';
                 $user['adr_pro'][$i]['postcode'] = '';
                 $user['adr_pro'][$i]['region'] = '';
-                $user['adr_pro'][$i]['country'] = '';
+                $user['adr_pro'][$i]['country'] = '00';
+                $user['adr_pro'][$i]['countrytxt'] = '';
             }
             if ($adr['pub'] != 'public') {
                 $user['adr_pro'][$i]['entreprise'] = '';
