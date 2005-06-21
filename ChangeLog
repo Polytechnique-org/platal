@@ -28,6 +28,7 @@ Bug/Wish :
 
 	* Xnet :
 		- #311,312: private members list.									-Car
+		- Inscription in a group with no admin.								-Car
 		
 Fixes (from 0.9.6 branch) :
 
