@@ -1,5 +1,5 @@
 ================================================================================
-VERSION 0.9.7														 21 Jun 2004
+VERSION 0.9.7														 21 Jun 2005
 
 New :
 
@@ -44,7 +44,7 @@ Fixes (from 0.9.6 branch) :
 		- #314: fix bad links to categories									-Car
 
 ================================================================================
-VERSION 0.9.6														 07 May 2004
+VERSION 0.9.6														 07 May 2005
 
 New :
 
@@ -78,7 +78,7 @@ Fixes (from 0.9.5 branch) :
 		- #304: Next/Prev links were missing if #pages was 2.				-MC
 
 ================================================================================
-VERSION 0.9.5														 07 Apr 2004
+VERSION 0.9.5														 07 Apr 2005
 
 New :
 
@@ -133,7 +133,7 @@ Fixes (from 0.9.4 branch) :
 		- Owner can now delete their list.									-MC
 
 ================================================================================
-VERSION 0.9.4														 24 Jan 2004
+VERSION 0.9.4														 24 Jan 2005
 
 New :
 
