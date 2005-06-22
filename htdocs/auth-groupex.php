@@ -70,12 +70,7 @@ function gpex_make_params($chlg, $privkey, $datafields) {
         if (isset($_SESSION[$val])) {
             $params .= "&$val=".$_SESSION[$val];
         } else if ($val == 'username') {
-            $res = $globals->xdb->query(
-                    "SELECT  alias
-                       FROM  aliases       AS al
-                 INNER JOIN  auth_user_md5 AS a ON (a.user_id = al.id AND al.type IN('a_vie','alias'))
-                      WHERE  a.user_id = {?} AND alias LIKE '%.%'
-                   ORDER BY  LENGTH(alias)", Session::getInt('uid'));
+            $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", Session::getInt('uid'));
             $min_username = $res->fetchOneCell();
             $params      .= "&$val=".$min_username;
 	}
