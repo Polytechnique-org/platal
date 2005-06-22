@@ -22,7 +22,7 @@
 
 <h1>Géolocalisation</h1>
 
-<p class="descr">Aujourd'hui {$localises} de nos camarades sont localisés grâce à leurs adresses personnelles. La géolocalisation permet de :
+<p class="descr">Aujourd'hui {$localises} de nos camarades sont localisés grâce à leurs adresses personnelles. La géolocalisation permet de :
 </p>
 <ul>
 <li>standardiser les adresses</li>

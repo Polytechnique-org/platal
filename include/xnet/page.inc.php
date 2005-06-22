@@ -78,11 +78,11 @@ class XnetPage extends PlatalPage
             if ($globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/listes.php";
             }
-            $sub['évenement'] = "$dim/evenements.php";
+            $sub['événement'] = "$dim/evenements.php";
             if (false) {
                 $sub['carnet'] = "$dim/carnet.php";
             }
-            $sub['telepaiement'] = "$dim/telepaiement.php";
+            $sub['télépaiement'] = "$dim/telepaiement.php";
 
             $menu[$globals->asso('nom')] = $sub;
         }
