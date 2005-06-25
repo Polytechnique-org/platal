@@ -72,7 +72,6 @@ $page->register_function('geoloc_region', '_geoloc_region_smarty');
 function get_address_infos($txt) {
     $url ="http://www.geoloc.org/adressparser/address.php?txt=".urlencode(utf8_encode($txt));
     if (!($f = @fopen($url, 'r'))) return false;
-    fgets($f);
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
     $infos = array();
