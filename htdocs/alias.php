@@ -29,6 +29,17 @@ $forlife = Session::get('forlife');
 
 $page->assign('demande', AliasReq::get_request($uid));
 
+//Suppression d'un alias
+if (Env::get('suppr', false)) {
+    $globals->xdb->execute(
+    	'DELETE virtual, virtual_redirect
+	   FROM virtual
+     INNER JOIN virtual_redirect USING (vid)
+	  WHERE alias LIKE {?} AND (redirect = {?} OR redirect = {?})',
+	  Env::get('suppr'), 
+        $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+}
+
 //Récupération des alias éventuellement existants
 $res = $globals->xdb->query(
         "SELECT  alias, emails_alias_pub

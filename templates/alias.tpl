@@ -114,6 +114,22 @@
       </tr>
     </table>
   </form>
+  {if $actuel}
+  <form action="{$smarty.server.PHP_SELF}" method="post"
+      onsubmit="return confirm('Es-tu sûr de vouloir supprimer {$actuel} ?')">
+    <table class="bicol" cellpadding="4" summary="Suppression d'alias">
+      <tr>
+        <th>Suppression d'alias</th>
+      </tr>
+      <tr>
+        <td class="center">
+          <input type="hidden" name="suppr" value="{$actuel}" />
+          <input type="submit" value="Supprimer l'alias {$actuel}" />
+        </td>
+      </tr>
+    </table>
+  </form>
+  {/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
