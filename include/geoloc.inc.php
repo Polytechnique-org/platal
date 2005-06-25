@@ -67,8 +67,11 @@ function _geoloc_region_smarty($params){
 $page->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
 
-// retrieve the infos on a text address
-// store on the fly the info of the city concerned
+// {{{ get_address_infos($txt)
+/** retrieve the infos on a text address
+ * store on the fly the info of the city concerned
+ * @param $txt the raw text of an address
+ */
 function get_address_infos($txt) {
     $url ="http://www.geoloc.org/adressparser/address.php?txt=".urlencode(utf8_encode($txt));
     if (!($f = @fopen($url, 'r'))) return false;
@@ -81,8 +84,12 @@ function get_address_infos($txt) {
        $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
     return $infos;
 }
+// }}}
 
-// make the text of an address that can be read by a mailman
+// {{{ get_address_text($adr)
+/** make the text of an address that can be read by a mailman
+ * @param $adr an array with all the usual fields
+ */
 function get_address_text($adr) {
     $t = "";
     if ($adr['adr1']) $t.= $adr['adr1'];
@@ -106,9 +113,13 @@ function get_address_text($adr) {
     if ($adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
     return trim($t);
 }
+// }}}
 
-// compares if two address matches
-// $b should be a complete valid address
+// {{{ compare_addresses_text($a, $b)
+/** compares if two address matches
+ * @param $a the raw text of an address
+ * @param $b the raw text of a complete valid address
+ */
 function compare_addresses_text($a, $b) {
     $ta = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $a));
     $tb = strtoupper(preg_replace(array("/[0-9,\"'#~:;_\- ]/", "/\r\n/"), array("", "\n"), $b));
@@ -120,6 +131,8 @@ function compare_addresses_text($a, $b) {
     foreach ($la as $i=>$l) if (levenshtein($l, $lb[$i]) > 3) return false;
     return true;
 }
+
+// }}}
 
 function empty_address() {
     return Array(
@@ -141,8 +154,11 @@ function cut_address($txt) {
     return array("adr1" => trim($a[1]), "adr2" => trim($a[3]), "adr3" => trim(str_replace("\n", " ", $a[5])));
 }
 
-// localize all the address of a user and modify the database
-// if the new address match with the old one
+// {{{ localize_addresses($uid)
+/* localize all the address of a user and modify the database
+ * if the new address match with the old one
+ * @param $uid the id of the user
+ */
 function localize_addresses($uid) {
     global $globals;
     $res = $globals->xdb->iterator("SELECT * FROM adresses WHERE uid = {?} and (cityid IS NULL OR cityid = 0)", $uid);
@@ -169,6 +185,21 @@ function localize_addresses($uid) {
     }
     return $erreur;
 }
+// }}}
+
+// {{{ synchro_city($id)
+/** synchronise the local geoloc_city base to geoloc.org
+ * @param $id the id of the city to synchronize
+ */
+ function synchro_city($id) {
+    $url ="http://www.geoloc.org/adressparser/cityFinder.php?method=id&id=".$id."&out=sql";
+    if (!($f = @fopen($url, 'r'))) return false;
+    $s = fgets($f);
+    global $globals;
+    if ($s)
+        return $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$s) > 0;
+ }
+ // }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
