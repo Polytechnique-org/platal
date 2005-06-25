@@ -95,7 +95,7 @@ Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (
 <h2>Surveiller des non inscrits</h2>
 
 <p>
-Si un non-inscrit que tu surveille s'inscrit, il sera automatiquement ajouté à tes contacts.
+Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté à tes contacts.
 </p>
 
 <p>
