@@ -49,7 +49,7 @@ function chgMainWinLoc( strPage ) {
         </a>
         {/if}
         {perms level=admin}
-        <a href="{rel}/admin/utilisateurs.php?login={$x.forlife}">
+        <a href="javascript:x()" onclick="chgMainWinLoc('{rel}/admin/utilisateurs.php?login={$x.forlife}')">
           <img src="images/admin.png" alt='admin' title="administrer user" />
         </a>
         {/perms}
