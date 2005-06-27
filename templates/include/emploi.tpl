@@ -19,7 +19,8 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-
+{if $address.entreprise || $address.secteur || $address.fonction ||
+  $address.poste || $address.fonction}
       <div class="adresse">
       	<table>
         {if $address.entreprise}
@@ -55,5 +56,6 @@
         {/if}
         </table>
       </div>
+{/if}
 
 {* vim:set et sws=2 sts=2 sw=2: *}
