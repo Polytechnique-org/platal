@@ -1,10 +1,18 @@
 ================================================================================
 VERSION 0.9.8														 21 Jun 2005
 
+New :
+
+	* Admin :
+		- Synchronisations with geoloc.org.									-Car
+
 Bug/Wish :
 
 	* Profile :
 		- User can delete his own melix.									-Car
+
+	* Lists :
+		- #318: Deletion of email with + in aliases.						-Car
 	
 ================================================================================
 VERSION 0.9.7														 21 Jun 2005

@@ -31,7 +31,7 @@
       {if $mem->total()}
       {iterate from=$mem item=m}
       {$m.redirect}
-      <a href='?liste={$smarty.request.liste}&amp;del_member={$m.redirect}'>
+      <a href='?liste={$smarty.request.liste|urlencode}&amp;del_member={$m.redirect|urlencode}'>
         <img src='{rel}/images/del.png' alt='retirer membre' title='retirer membre' />
       </a>
       <br />
@@ -45,9 +45,11 @@
     <td><strong>Ajouter</strong></td>
     <td>
       <form method="post" action="{$smarty.server.REQUEST_URI}">
+        <div>
         <input type='text' name='add_member' />
         &nbsp;
         <input type='submit' value='ajouter' />
+        </div>
       </form>
     </td>
   </tr>
