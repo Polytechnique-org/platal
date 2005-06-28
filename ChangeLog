@@ -10,6 +10,7 @@ Bug/Wish :
 
 	* Admin :
 		- #323: admin link in fiche opens out of the popup.					-Car
+		- #324: admin can modify the usage name.							-Car
 
 	* Profile :
 		- User can delete his own melix.									-Car

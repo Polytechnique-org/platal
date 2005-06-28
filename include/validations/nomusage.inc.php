@@ -107,21 +107,8 @@ class UsageReq extends Validate
 
     function commit()
     {
-        global $globals;
-
-        $globals->xdb->execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$this->nom_usage ,$this->uid);
-        $globals->xdb->execute("DELETE FROM aliases WHERE FIND_IN_SET('usage',flags) AND id={?}", $this->uid);
-        if ($this->alias) {
-            $globals->xdb->execute("UPDATE aliases SET flags=flags & 255-1 WHERE id={?}", $this->uid);
-            $globals->xdb->execute("INSERT INTO aliases VALUES({?}, 'alias', 'usage,bestalias', {?}, null)",
-                $this->alias, $this->uid);
-        }
-        $r = $globals->xdb->query("SELECT alias FROM aliases WHERE FIND_IN_SET('bestalias', flags) AND id = {?}", $this->uid);
-        if ($r->fetchOneCell() == "") {
-            $globals->xdb->execute("UPDATE aliases SET flags = 1 | flags WHERE id = {?} LIMIT 1", $this->uid);
-        }
-        require_once 'user.func.inc.php';
-        user_reindex($this->uid);
+        require_once('nomusage.inc.php');
+        set_new_usage($this->uid, $this->nom_usage, $this->alias);
         return true;
     }
 

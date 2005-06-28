@@ -138,6 +138,10 @@ if ($login) {
 
                     $page->trig("updaté correctement.");
                 }
+                if (Env::get('nomusageN') != $mr['nom_usage']) {
+                    require_once('nomusage.inc.php');
+                    set_new_usage($mr['user_id'], Env::get('nomusageN'), make_username(Env::get('prenomN'), Env::get('nomusageN')));
+                }
 		$r  = $globals->xdb->query("SELECT  *, a.alias AS forlife
                                               FROM  auth_user_md5 AS u
                                         INNER JOIN  aliases       AS a ON (u.user_id=a.id)

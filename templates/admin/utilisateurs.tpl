@@ -133,6 +133,14 @@ function del_fwd(fwd) {
     </tr>
     <tr class="pair">
       <td class="titre">
+        Nom d'usage
+      </td>
+      <td>
+        <input type="text" name="nomusageN" size="20" maxlength="255" value="{$mr.nom_usage}" />
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
         Prénom
       </td>
       <td>
