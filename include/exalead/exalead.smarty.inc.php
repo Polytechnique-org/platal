@@ -226,7 +226,7 @@ function _little_nav_barre($params, &$smarty){
 		$num=$exalead_data->start-1;
 		$res .="<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">Précédent</a>";
 	}
-	$num=$exalead_data->starti+1;
+	$num=$exalead_data->start+1;
 	$res .= "</td>";
 	if($box){
 		$res.="<td class=\"centre\">
