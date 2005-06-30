@@ -192,6 +192,68 @@ function _exa_navigation_barre($params, &$smarty){
   return $res;
 }
 
+
+function _little_nav_barre($params, &$smarty){
+	if(!empty($params['exalead_data'])){
+		$exalead_data = &$GLOBALS[$params['exalead_data']];  
+	}
+	else{    
+		$exalead_data = &$GLOBALS['exalead_data'];  
+	}
+	$box=false;
+	if(!empty($params['where']))
+		if($params['where']=='box')
+			$box=true;
+	$date=false;  
+	foreach($exalead_data->query->query_parameters as $parameter){        
+		if($parameter->name=="_sf"){                
+			if($parameter->value=="-date")                        
+				$date=true;        
+		}  
+	}
+	$dizaine=10*(int)($exalead_data->start/10);	
+	$res="";
+	if ($box)
+		$res .= "<table>";
+	else
+		$res.= "<table class=\"table\">";
+	$res.="<tr>";
+	if($box)
+		$res.="<td class=\"gauche\">";
+	else
+		$res .=" <td width=\"20%\" style=\"text-align: left;\">";
+	if($exalead_data->start != 0){
+		$num=$exalead_data->start-1;
+		$res .="<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">Précédent</a>";
+	}
+	$num=$exalead_data->starti+1;
+	$res .= "</td>";
+	if($box){
+		$res.="<td class=\"centre\">
+		CV : ".$num." / {$exalead_data->nhits}<br />";
+	}
+	else{
+		$res.="<td width=\"60%\" style=\"text-align: center;\">
+		        CV : ".$num." / {$exalead_data->nhits} -";
+	}
+	if($date)	
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
+	else
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-relevance&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
+	$res .="</td>";
+	if($box)
+		$res.="<td class=\"droite\">";
+	else
+		$res .= "<td width=\"20%\" style=\"text-align: right;\">";
+	$num=$exalead_data->start+1;
+	if( $exalead_data->start+1 < $exalead_data->nhits)
+		$res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">Suivant</a>";
+	$res .="</td>
+		</tr>
+		</table>";
+	return $res;
+}
+
 //categorie = true if this line is for a category, false if this is for a keyword
 function _display_3_columns($title, $count, $refine, $exclude, $categorie){
   global $exa_max_length;
@@ -325,6 +387,7 @@ function _display_resume_keywords($params, &$smarty){
 }
 
 function register_smarty_exalead(&$page){
+  $page->register_function('little_nav_barre','_little_nav_barre');
   $page->register_function('exa_display_groupes', '_display_groupes');
   $page->register_function('exa_display_resume_groupe', '_display_resume_groupe');
   $page->register_function('exa_display_resume_keywords', '_display_resume_keywords');
