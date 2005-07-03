@@ -38,6 +38,7 @@
     {assign var='adr' value=$adresses.$adrid}
     <tr>
       <th colspan="5">
+        <a id='adr{$adrid}'></a>
         {if $adr.nouvelle != 'new'}Adresse n°{$smarty.section.i.index}{else}Rentre ici une nouvelle adresse{/if}
         <input type="hidden" name="adrid[{$adrid}]" value="{$adrid}" />
         {if $adr.nouvelle == 'new'}
