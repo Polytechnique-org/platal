@@ -78,7 +78,7 @@ function get_address_infos($txt) {
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
     $infos = array();
-    foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = ($key == 'sql')?$vals[$i]:utf8_decode($vals[$i]);
+    foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = ($key == 'sql')?$vals[$i]:utf8_decode(strtr($vals[$i], array(chr(197).chr(147) => "&oelig;")));
     global $globals;
     if ($infos['sql'])
        $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
