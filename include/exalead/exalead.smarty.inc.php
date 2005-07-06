@@ -256,6 +256,7 @@ function _little_nav_barre($params, &$smarty){
 
 //categorie = true if this line is for a category, false if this is for a keyword
 function _display_3_columns($title, $count, $refine, $exclude, $categorie){
+if ($title!='Inconnu'){
   global $exa_max_length;
   if($categorie) $title_exclude = 'Ne pas afficher cette catégorie';
   else $title_exclude = 'Ne pas afficher ce mot-clé';
@@ -269,7 +270,7 @@ function _display_3_columns($title, $count, $refine, $exclude, $categorie){
 			    <a href=\"?_C=".$exclude."&amp;_f=xml2\"
                                title=\"$title_exclude\">[-]</a></td>
 		        </tr>";
-
+}
 }
 
 //excluded = true if this line is an excluded result, = false if this line is a refined result
