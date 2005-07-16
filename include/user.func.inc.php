@@ -183,7 +183,7 @@ function &get_user_details($login, $from_uid = '')
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
                      e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
                      gp.pays AS countrytxt, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
-                     e.pub, e.tel_pub, e.email, e.email_pub, e.web
+                     e.pub, e.adr_pub, e.tel_pub, e.email, e.email_pub, e.web
                FROM  entreprises AS e
           LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
           LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)

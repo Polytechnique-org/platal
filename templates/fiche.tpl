@@ -34,7 +34,7 @@ function chgMainWinLoc( strPage ) {
       <div class="civilite">
         {if $x.sexe}&bull;{/if}
         {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
-        {min_auth level="cookie"}
+        {if $logged}
         {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
         <a href="vcard.php/{$x.forlife}.vcf?x={$x.forlife}">
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
@@ -53,17 +53,17 @@ function chgMainWinLoc( strPage ) {
           <img src="images/admin.png" alt='admin' title="administrer user" />
         </a>
         {/perms}
-        {/min_auth}
+        {/if}
       </div>
-      {min_auth level="cookie"}
+      {if $logged}
       <div class='maj'>
         Fiche mise à jour<br />
         le {$x.date|date_format}
       </div>
-      {/min_auth}
-      {if $logged || $c.mobile}
+      {/if}
+      {if $logged || $x.mobile}
       <div class="contact">
-        {min_auth level="cookie"}
+        {if $logged}
         <div class='email'>
           {if $x.dcd}
           Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
@@ -79,7 +79,7 @@ function chgMainWinLoc( strPage ) {
           {/if}
           {/if}
         </div>
-        {/min_auth}
+        {/if}
         <div class="mob">
           {if $x.mobile}<em class="intitule">Mobile : </em>{$x.mobile}<br />{/if}
         </div>
@@ -97,20 +97,20 @@ function chgMainWinLoc( strPage ) {
         {if $x.applis_join}
           &nbsp;-&nbsp;Formation&nbsp;: {$x.applis_join|smarty:nodefaults}
         {/if}
-        {min_auth level="cookie"}
+        {if $logged}
         {if $x.is_referent}
         [<a href="fiche_referent.php?user={$x.forlife}" class='popup2'>Ma fiche référent</a>]
         {/if}
-        {/min_auth}
+        {/if}
       </div>
     </td>
     <td rowspan="4" id='photo'>
       {if $photo_url}<img alt="Photo de {$x.forlife}" src="{$photo_url}" width="{$x.x}" height="{$x.y}" />{/if}
-      {min_auth level="cookie"}
+      {if $logged}
       {if $x.section}<div><em class="intitule">Section : </em><span>{$x.section}</span></div>{/if}
       {if $x.binets_join}<div><em class="intitule">Binet(s) : </em><span>{$x.binets_join}</span></div>{/if}
       {if $x.gpxs_join}<div><em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
-      {/min_auth}
+      {/if}
       {if $x.web}<div><em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
       {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br}</span></div>{/if}
     </td>
@@ -165,7 +165,7 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
-  {min_auth level="cookie"}
+  {if $logged}
   {if $x.cv}
   <tr>
     <td>
@@ -174,7 +174,7 @@ function chgMainWinLoc( strPage ) {
     </td>
   </tr>
   {/if}
-  {/min_auth}
+  {/if}
 </table>
 
 

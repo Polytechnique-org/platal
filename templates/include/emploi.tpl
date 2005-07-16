@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 {if $address.entreprise || $address.secteur || $address.fonction ||
-  $address.poste || $address.fonction}
+  $address.poste || $address.fonction || $address.email || $address.web}
       <div class="adresse">
       	<table>
-        {if $address.entreprise}
+        {if $address.entreprise || $address.web}
         <tr>
           <td><em>Ent/Org: </em></td>
           <td><strong>{$address.entreprise}{if $address.web} [<a href='{$address.web}'>site</a>]{/if}</strong></td>

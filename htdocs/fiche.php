@@ -75,8 +75,8 @@ if($user['x'] < 160){
 }
 
 // manage the public fiche
-$page->assign('logged', logged());
-if (!logged()) {
+$page->assign('logged', logged() && !Env::has('public'));
+if (!logged() || Env::has('public')) {
     // hide the orange status
     $user['promo_sortie'] = $user['promo'] + 3;
     if ($user['mobile_pub'] != 'public') $user['mobile'] = '';
@@ -141,7 +141,7 @@ foreach($user['adr_pro'] as $i=>$pro) {
     if ($pro['entreprise'] == '' && $pro['fonction'] == ''
         && $pro['secteur'] == '' && $pro['poste'] == ''
         && $pro['adr1'] == '' && $pro['adr2'] == '' && $pro['adr3'] == ''
-        && $pro['postcode'] == '' && $pro['city'] == '' && $pro['country'] == ''
+        && $pro['postcode'] == '' && $pro['city'] == '' && $pro['country'] == '00'
         && $pro['tel'] == '' && $pro['fax'] == '' && $pro['mobile'] == ''
         && $pro['email'] == '')
         unset($user['adr_pro'][$i]);
