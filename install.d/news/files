@@ -1,0 +1,9 @@
+htdocs/admin/evenements.php
+htdocs/evenements.php
+htdocs/rss.php
+include/validations/evts.inc.php
+templates/admin/evenements.tpl
+templates/evenements.tpl
+templates/include/form.evenement.tpl
+templates/include/form.valid.evts.tpl
+templates/rss.tpl

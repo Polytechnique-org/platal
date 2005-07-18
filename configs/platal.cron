@@ -1,0 +1,22 @@
+MAILTO=root
+PATH=/bin:/usr/bin:/usr/local/bin:/home/web/bin
+WD=/home/web/prod/platal/bin/cron
+
+# db
+0  5 * * *	web	cd $WD; ./clean.php
+0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "verifications sur la BDD de plat/al"         br@m4x.org
+0 21 * * 0	web	cd $WD; ./checkdb.php -v | mail -e -s "verifications verbose sur la BDD de plat/al" br@m4x.org
+
+# inscription report
+0  6 * * 1	web	cd $WD; ./rapports_inscription.php
+
+# notifs
+0  2 * * *	web	cd $WD; ./notifs.birthday.php    
+0  4 * * 6	web	cd $WD; ./notifs.send.php
+
+# validations
+0 */3 * * *	web	cd $WD; ./cron_validations.php
+
+# homonymes
+0 0 4 * * *	web	cd $WD; ./homonymes.php
+# vim:set noet syntax=crontab ts=8 sw=8 sts=8:

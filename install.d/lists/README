@@ -1,0 +1,35 @@
+
+  Notes for the lists module for plat/al
+
+
+CONFIG OPTIONS
+--------------
+
+  All settings of the module are shown here with their default and meaning
+
+  [lists]
+
+  rpchost = "localhost"     ; the host that runs the xml-rpc
+  rpcport = 4949            ; the port for the xml-rpc server
+
+  spool   = "/var/spool/platal/archives/"
+                            ; the directory that holds mhonarc archives
+
+  vhost_sep   = '-'         ; the vhost separator in mailman hack
+  admin_owner = ''          ; the owner that distinguish admin ML's
+
+
+BUGS
+----
+
+  http://trackers.polytechnique.org/index.php?cat=15
+
+
+DEPENDS
+-------
+
+  platal, mail
+  + mailman
+  + python-mysql
+  + mhonarc
+

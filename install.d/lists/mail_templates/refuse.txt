@@ -1,0 +1,13 @@
+Vous avez envoyé un message à la liste de diffusion {{{LIST}}} :
+
+    %(request)s 
+
+Le modérateur n'a pas souhaité diffuser votre message vers les
+abonnés à la liste pour la raison suivante :
+
+    "%(reason)s" 
+
+Toute question ou commentaire doit être adressé aux modérateurs de la
+liste à cette adresse :
+
+    {{{ALIST}}}

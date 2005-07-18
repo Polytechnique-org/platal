@@ -1,0 +1,8 @@
+bin/devel/modules_status
+bin/devel/tplgettext.php
+bin/devel/lists.foreach_template.py
+
+bin/devel/xhtml.classes.pl
+bin/devel/xhtml.validate.pl
+
+templates/database-debug.tpl

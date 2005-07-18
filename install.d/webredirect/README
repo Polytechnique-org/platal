@@ -1,0 +1,26 @@
+
+  Notes for the webredirect module for plat/al
+
+
+CONFIG OPTIONS
+--------------
+
+  All settings of the module are shown here with their default and meaning
+
+  [WebRedirect]
+
+  domain = ''             ; the domain used for web redirections.
+
+
+BUGS
+----
+
+  http://trackers.polytechnique.org/index.php?cat=13
+
+
+DEPENDS
+-------
+
+  platal
+
+

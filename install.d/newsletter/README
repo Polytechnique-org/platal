@@ -1,0 +1,26 @@
+
+  Notes for the newsletter module for plat/al
+
+
+CONFIG OPTIONS
+--------------
+
+  All settings of the module are shown here with their default and meaning
+
+  [NewsLetter]
+
+  from    = "Lettre Mensuelle <null@example.org>"   ; from for NL mails
+  replyto = "null@example.org"                      ; Reply-to for NL mails
+
+
+BUGS
+----
+
+  http://trackers.polytechnique.org/index.php?cat=14
+
+
+DEPENDS
+-------
+
+  platal
+

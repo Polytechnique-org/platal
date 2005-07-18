@@ -1,0 +1,557 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
+
+body {
+    font-family: "Arial", sans-serif;
+    color: #000000;
+    background: #ffffff;
+}
+
+a:link, a:visited, a:active, a:hover { color: #003399; background: none; }
+img   { vertical-align: middle; }
+a img { border: 0px; }
+td    { vertical-align: top; }
+li    { padding-left: 3px; padding-right: 3px; text-align: justify; }
+hr    { width: 90%; text-align: center }
+
+fieldset {
+    border: 1px #336699 solid;
+    background: #eeeeee;
+    color: inherit;
+
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+legend {
+    border: 1px #336699 solid;
+    background: #f4d09c;
+    color: inherit;
+
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.center { text-align: center; }
+.right  { text-align: right; }
+.middle { vertical-align: middle; }
+.smaller { font-size: smaller; font-style: italic; }
+.spacer { clear: both; }
+
+.float2 { float: left; width: 49%; }
+.float3 { float: left; width: 33%; }
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+p {
+    margin-bottom: 0.5em;
+    text-align: justify;
+}
+
+.erreur {
+    font-weight: bold;
+    color: #ff0000;
+    background: inherit;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.erreur a:link, .erreur a:visited, .erreur a:active, .erreur a:hover {
+    color: #ff3333;
+    background: inherit;
+}
+
+h1 {
+    color: #555555;
+    background: url('/images/sk_default_titre.gif');
+    background-repeat: no-repeat;
+
+    text-indent: 0.2em;
+    text-align: left;
+    font-size: 120%;
+    font-family: "helvetica", sans-serif;
+    font-weight: bolder;
+
+    margin: 1em 0em 1em 0em;
+    padding: 0em 0em 0em 0.5em;
+}
+
+h2 {
+    padding: 0.5em 0em 0em 0em;
+    margin: 0em;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+h3 {
+    margin: 0em;
+    font-weight: bold;
+    padding: 0.25em;
+    font-size: 100%;
+}
+
+p.explication, div.explication {
+    font-style: italic;
+    padding: 0em 1ex 1ex 1ex;
+}
+
+li.spaced {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    text-align: justify;
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
+
+table.bicol {
+    color: inherit;
+    background: #eeeeee;
+    border: 1px solid #336699;
+    border-collapse: collapse;
+    width: 98%;
+    margin-left: 1%;
+}
+table.tinybicol {
+    color: inherit;
+    background: #eeeeee;
+    border: 1px solid #336699;
+    border-collapse: collapse;
+    width: 70%;
+    margin-left: 15%;
+}
+
+table.tinybicol tr.impair, table.bicol tr.impair {}
+table.tinybicol tr.pair, table.bicol tr.pair {
+    color: inherit;
+    background: #eeeed0;
+}
+
+table.tinybicol th, table.bicol th {
+    color: #ffffff;
+    background: #336699;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+table.tinybicol td, table.bicol td {
+    color: #000000;
+    background: inherit;
+}
+
+table.tinybicol td, table.bicol td { padding-left: 4px; padding-right: 4px; }
+
+td.half { width: 50%; padding: 4px; }
+td.titre {
+    color: #000000;
+    background: inherit;
+    font-weight: bold;
+}
+td.action {
+    white-space: nowrap;
+    text-align: right;
+    font-weight: bold;
+    vertical-align: middle;
+}
+td.action a { padding: 0px 2px 0px 2px; }
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+#skin {
+    border-bottom: 1px solid #003399;
+    border-top: 1px solid #003399;
+    width: 98%;
+    margin-left: 1%;
+}
+#skin td {
+    border-bottom: 2px solid #003399;
+    border-top: 1px solid #003499;
+    vertical-align: middle;
+}
+#skin td.skigauche {
+    background: #eeeeee;
+    color: inherit;
+    vertical-align: middle;
+}
+#skin td.skimilieu {
+    padding-left: 1em;
+    width: 100%;
+}
+#skin td.skidroite { padding: 0; }
+
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
+div.contact-list {
+    width: 98%;
+    margin-left: 1%;
+}
+
+div.contact-list div.contact {
+    width: 100%;
+    text-align: left;
+    border-top: 1px solid #003399;
+    background: #F4D09C;
+    color: inherit;
+}
+
+div.grayed {
+    color: #444444;
+    font-style: italic;
+}
+
+div.grayed div.contact {
+    background: #eee;
+}
+
+div.contact div.nom {
+    font-weight: bold;
+    width: 35%;
+    float: left;
+}
+
+div.contact div.appli {
+    float: left;
+}
+
+div.contact div.bits {
+    text-align: right;
+    float: right;
+}
+
+div.contact div.long {
+    width: 100%;
+    clear: both;
+    background: white;
+    color: inherit;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+div.long table { width: 100%; }
+div.long td.lt { width: 35%; }
+div.long td.rt { width: 65%; }
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+  
+table.flags {
+    margin: 1em 0em 0em 0em;
+}
+table.flags input { margin: 0px 2px; padding: 0px; }
+
+table.flags td.texte {
+    font-size: smaller;
+    font-weight: bold;
+    padding: 3px;
+}
+table.flags td.vert {
+    background: green;
+    padding: 3px;
+    text-align: center;
+}
+table.flags td.orange {
+    background: #ff9900;
+    padding: 3px;
+    text-align: center;
+}
+table.flags td.rouge {
+    background: red;
+    padding: 3px;
+    text-align: center;
+}
+
+table.cadre_a_onglet{
+    border-width: 0;
+    padding : 0;
+    margin: 0;
+}
+
+div.conteneur_tab {
+    border-width : 1px 2px 2px 1px;
+    border-style : solid;
+    border-color : #999;
+    padding : 4px 0px 0px 4px;
+    background : #eceade;
+}
+
+#onglet {
+    display : block;
+    margin : 0;
+    padding : 0;
+    /*height : 50px;*/
+}
+
+#onglet li {
+    display : block;
+    float : left;
+    padding : 0.4ex;
+    margin : 0 0.3ex -1px 0;
+    background : #D2E0E6  repeat-x 0 100%;
+    border-width : 1px 1px 0px 1px;
+    border-style : solid;
+    border-color : #999;
+    border-bottom-color : #999;
+    width: auto;
+    height: 5ex;
+    text-align: center;
+}
+
+#onglet li:hover { background : #fc3 repeat-x 0 100%; }
+
+#onglet li.actif {
+    background : #eceade;
+    border-bottom-color : #eceade;
+    font-weight: bold;
+}
+
+#onglet li a {
+    /*font-family : Arial,Helvetica,sans-serif;*/
+    font-size: 80%;
+    font-weight : normal;
+    text-decoration : none;
+    color : #000;
+}
+
+#onglet li a:hover { text-decoration: underline; }
+#onglet li img { margin-right : 2px; }
+
+/*******************************************************************************
+    7   fiche.php & fiche_referent.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+#fiche {
+    width: 760px;
+    font-size: 100%;
+    vertical-align: top;
+
+    border: 1px solid #369;
+}
+
+#fiche em { color: purple; }
+
+#fiche h2 {
+    color: #369;
+    padding: 0px 4px;
+    margin: 0.5em 0em;
+    font-weight: bold;
+    border-bottom: 1px dotted #369;
+}
+
+#fiche_identite {
+    padding: 5px;
+    width: 600px;
+}
+
+#photo { padding-left: 1em; }
+
+#fiche_identite div.civilite {
+    text-align: center;
+    font-weight: bold;
+    width: 80%;
+    float: left;
+}
+
+#fiche_identite div.maj {
+    float: left;
+    width: 20%;
+    font-size: 75%;
+    text-align: right;
+    clear: right;
+}
+
+#fiche_identite div.contact {
+    clear: both;
+    margin: 1em;
+    padding: 1ex;
+    background: #fff;
+    border: 1px dotted #69c;
+}
+#fiche_identite div.email {
+    clear: left;
+    float: left;
+}
+#fiche_identite div.mob {
+    float: right;
+    clear: right;
+    text-align: right;
+}
+
+#fiche_identite div.formation {
+    margin: 0em 1em;
+    clear: both;
+}
+
+div.adresse {
+    float: left;
+    width: 46%;
+    padding: 0px;
+    margin: 0px 1% 1ex 1%;
+}
+
+/* only for fiche_referent.php*/
+
+#fiche_referent{
+    padding: 10px;
+    width: 100%;
+}
+
+#fiche_referent div.rubrique_referent{
+    float: left;
+    width: 31%;
+    padding: 0px;
+    margin: 0px 1% 1ex 1%;
+
+}
+
+#fiche_referent em{color: purple;}
+#fiche_referent ul { margin: 0px; padding: 0px 1em; }
+#fiche_referent li { font-weight: bold; margin: 0px; padding: 0px; text-align: left; }
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+#dev {
+    width: 100%;
+    text-align: center;
+    padding: 1px;
+
+    color: #003399;
+    background: #e0ffff;
+
+    font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+#dev a { text-decoration: underline; }
+#dev a:hover { color: #003399; background: #c0e0e0; }
+
+#db-trace div.hide       { display: none; }
+#db-trace:hover div.hide { display: block }
+
+#suid {
+    color: red;
+    background: #ffc0cb;
+    width: 100%;
+    font-weight: bold;
+}
+#suid td { padding: 2px; }
+#suid a { color: red; }
+
+#body {
+    width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#body-logo {
+    width: 140px;
+    border-right: 1px solid gray;
+    text-align: center;
+    font-family: "MS Sans Serif", sans-serif;
+    padding-top: 4px;
+    border-bottom: 1px solid gray;
+}
+
+#body-top {
+    border-bottom: 1px solid gray;
+    text-align: center;
+    font-size: 95%;
+    padding: 4px;
+    padding-bottom: 16px;
+    font-family: "Arial", sans-serif;
+}
+
+#body-top table { width: 100%; padding: 4px; }
+#body-top .date-heure { text-align: left; }
+#body-top .inscrits { text-align: right; }
+
+#body-bottom {
+    border-top: 1px solid gray;
+    text-align: center;
+    padding: 4px;
+    font-size: 75%;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+#body-menu {
+    width: 140px;
+    border-right: 1px solid gray;
+    text-align: center;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 75%;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+#body-menu .menu_item {
+    padding-left: 4px;
+    padding: 2px;
+    text-align: left;
+}
+
+#body-menu .menu_title {
+    color: gray;
+    background: #eeeeee;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    padding: 1px;
+    margin-top: 4px;
+    text-align: center;
+}
+
+#content {
+    width: 600px;
+    padding: 4px 0px 4px 16px;
+    font-size: 95%;
+    vertical-align: top;
+}
+
+div#content {
+    padding: 1em;
+    margin: 0em;
+}
+
+#content input {
+    font-size: 95%;
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */

@@ -1,0 +1,32 @@
+#!/bin/ash
+# vim:set syntax=sh:
+
+export LANG=C
+
+UID="$1"
+ALIAS="$2"
+PASS="$3"
+
+[ -n "$UID" ] || {
+    echo "uid vide"
+    exit 75 # TEMPFAIL
+}
+
+[ -n "$ALIAS" ] || {
+    echo "alias vide"
+    exit 75 # TEMPFAIL
+}
+
+TO=`mysql -u web -h localhost --password="$3" -B -N x4dat -e \
+        "UPDATE emails SET last=NOW() WHERE uid = '$UID' AND FIND_IN_SET('active',flags) AND uid != 0; \
+         SELECT email FROM emails WHERE uid = '$UID' AND FIND_IN_SET('active',flags) AND uid != 0"`
+[ $? -eq 0 ] || {
+    echo "MySQL error for $UID"
+    exit 75 # TEMPFAIL
+}
+[ -n "$TO" ] || {
+    exec cat > /dev/null
+}
+
+OURSENDER=`echo "${ALIAS}__${SENDER}" | sed -e s/@/__/`@bounces.m4x.org
+exec /usr/lib/sendmail -oi -V+= -f "${OURSENDER}" $TO

@@ -1,0 +1,414 @@
+<?php
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+define('WATCH_FICHE', 1);
+define('WATCH_INSCR', 2);
+define('WATCH_DEATH', 3);
+define('WATCH_BIRTH', 4);
+
+// {{{ function inscription_notifs_base
+
+function inscription_notifs_base($uid)
+{
+    global $globals;
+    $globals->xdb->execute('REPLACE INTO  watch_sub (uid,cid) SELECT {?},id FROM watch_cat', $uid);
+}
+
+// }}}
+// {{{ function register_watch_op
+
+function register_watch_op($uid, $cid, $date='', $info='')
+{
+    global $globals;
+    if (empty($date)) {
+        $date = date('Y-m-d');
+    };
+    $globals->xdb->execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
+            $uid, $cid, $date, $info);
+    if($cid == WATCH_FICHE) {
+	$globals->xdb->execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
+    } elseif($cid == WATCH_INSCR) {
+	$globals->xdb->execute('REPLACE INTO  contacts (uid,contact)
+				      SELECT  uid,ni_id
+				        FROM  watch_nonins
+			               WHERE  ni_id={?}', $uid);
+	$globals->xdb->execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
+    }
+}
+
+// }}}
+// {{{ function _select_notifs_base
+
+function _select_notifs_base($table, $mail, $where)
+{
+    $cases = Array(
+            'contacts'     => Array('wfield' => 'contact', 'ufield' => 'user_id', 'need_contact' => false,
+                'freq_sql' => '',
+                'contact_sql' => '1'
+            ),
+            'watch_promo'  => Array('wfield' => 'promo',   'ufield' => 'promo',   'need_contact' => true,
+                'freq_sql' => ' AND ( wc.type = "basic" OR wc.type="near" AND (u.promo <= v.promo_sortie-2 AND u.promo_sortie >= v.promo+2) )',
+                'contact_sql' => 'NOT (c.contact IS NULL)'
+            ),
+            'watch_nonins' => Array('wfield' => 'ni_id',   'ufield' => 'user_id', 'need_contact' => false,
+                'freq_sql' => '',
+                'contact_sql' => '0'
+            )
+    );
+
+    $our   = $cases[$table];
+    $sql = "
+        (
+          SELECT  u.promo, u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom,
+                  a.alias AS bestalias,
+                  wo.*,
+                  {$our['contact_sql']} AS contact,
+                  (u.perms IN('admin','user')) AS inscrit";
+    if ($mail) {
+        $sql.=",
+                  w.uid AS aid, v.prenom AS aprenom, IF(v.nom_usage='',v.nom,v.nom_usage) AS anom,
+                  b.alias AS abestalias, (v.flags='femme') AS sexe, q.core_mail_fmt AS mail_fmt"; 
+    }
+
+    $sql .= "
+            FROM  $table          AS w
+      INNER JOIN  auth_user_md5   AS u  ON(u.{$our['ufield']} = w.{$our['wfield']})
+      INNER JOIN  auth_user_quick AS q  ON(q.user_id = w.uid)
+      INNER JOIN  auth_user_md5   AS v  ON(v.user_id = q.user_id)";
+    if ($mail) {
+        $sql .="
+      INNER JOIN  aliases         AS b  ON(b.id = q.user_id AND FIND_IN_SET('bestalias', b.flags))";
+    }
+    if ($our['need_contact']) {
+        $sql .="
+       LEFT JOIN  contacts        AS c  ON(c.uid = w.uid AND c.contact = u.user_id)";
+    }
+
+    $sql .="
+      INNER JOIN  watch_ops       AS wo ON(wo.uid = u.user_id AND ".($mail ? 'wo.known > q.watch_last' : '( wo.known > {?} OR wo.date=NOW() )').")
+      INNER JOIN  watch_sub       AS ws ON(ws.cid = wo.cid AND ws.uid = w.uid)
+      INNER JOIN  watch_cat       AS wc ON(wc.id = wo.cid{$our['freq_sql']})
+       LEFT JOIN  aliases         AS a  ON(a.id = u.user_id AND FIND_IN_SET('bestalias', a.flags))
+           WHERE  $where
+        )";
+
+    return $sql;
+}
+
+// }}}
+// {{{ function select_notifs
+
+function select_notifs($mail, $uid=null, $last=null, $iterator=true)
+{
+    global $globals;
+    $where = $mail ? 'q.watch_flags=3' : 'w.uid = {?}';
+    $sql   = _select_notifs_base('contacts',     $mail, $where.($mail?'':' AND (q.watch_flags=1 OR q.watch_flags=3)')) . " UNION DISTINCT ";
+    $sql  .= _select_notifs_base('watch_promo',  $mail, $where) .  " UNION DISTINCT ";
+    $sql  .= _select_notifs_base('watch_nonins', $mail, $where);
+
+    if ($iterator) {
+        return $globals->xdb->iterator($sql . ' ORDER BY cid, promo, date DESC, nom', $last, $uid, $last, $uid, $last, $uid);
+    } else {
+        return $globals->xdb->query($sql, $last, $uid, $last, $uid, $last, $uid);
+    }
+}
+
+// }}}
+// {{{ function getNbNotifs
+
+function getNbNotifs() {
+    global $globals;
+    if (!Session::has('uid')) {
+        return 0;
+    }
+    $uid       = Session::getInt('uid', -1);
+    $watchlast = Session::get('watch_last');
+
+    // selectionne les notifs de uid, sans detail sur le watcher, depuis $watchlast, meme ceux sans surveillance, non ordonnés
+    $res = select_notifs(false, $uid, $watchlast, false);
+    $n   = $res->numRows();
+    $res->free();
+    $url = smarty_modifier_url('carnet/panel.php');
+    if($n==0) { return; }
+    if($n==1) { return "<a href='$url'>1 évènement !</a>"; }
+    return "<a href='$url'>$n évènements !</a>";
+}
+
+// }}}
+// {{{ class AllNotifs
+
+class AllNotifs {
+    var $_cats = Array();
+    var $_data = Array();
+
+    function AllNotifs() {
+	global $globals;
+	
+	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	while($tmp = $res->next()) {
+            $this->_cats[$tmp['id']] = $tmp;
+        }
+
+	// recupère tous les watchers, avec détails des watchers, a partir du watch_last de chacun, seulement ceux qui sont surveillés, ordonnés
+	$res = select_notifs(true);
+
+	while($tmp = $res->next()) {
+	    $aid = $tmp['aid'];
+            if (empty($this->_data[$aid])) {
+                $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
+                        'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt']);
+            }
+	    unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['sexe'], $tmp['mail_fmt']);
+	    $this->_data[$aid]['data'][$tmp['cid']][] = $tmp;
+	}
+    }
+}
+
+// }}}
+// {{{ class Notifs
+
+class Notifs {
+    var $_uid;
+    var $_cats = Array();
+    var $_data = Array();
+    
+    function Notifs($uid, $up=false) {
+	global $globals;
+	$this->_uid = $uid;
+	
+	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	while($tmp = $res->next()) {
+            $this->_cats[$tmp['id']] = $tmp;
+        }
+
+	$lastweek = date('YmdHis',mktime() - 7*24*60*60);
+
+	// recupere les notifs du watcher $uid, sans detail sur le watcher, depuis la semaine dernière, meme ceux sans surveillance, ordonnés
+        $res = select_notifs(false, $uid, $lastweek);
+	while($tmp = $res->next()) {
+	    $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
+	}
+
+	if($up) {
+	    $globals->xdb->execute('UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id={?}', $uid);
+	}
+    }
+}
+
+// }}}
+// {{{ class Watch
+
+class Watch {
+    var $_uid;
+    var $_promos;
+    var $_nonins;
+    var $_cats = Array();
+    var $_subs;
+    var $watch_contacts;
+    var $watch_mail;
+    
+    function Watch($uid) {
+	global $globals;
+	$this->_uid = $uid;
+	$this->_promos = new PromoNotifs($uid);
+	$this->_nonins = new NoninsNotifs($uid);
+	$this->_subs = new WatchSub($uid);
+	$res = $globals->xdb->query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
+				       FROM  auth_user_quick
+				      WHERE  user_id={?}", $uid);
+	list($this->watch_contacts,$this->watch_mail) = $res->fetchOneRow();
+	
+	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	while($tmp = $res->next()) {
+            $this->_cats[$tmp['id']] = $tmp;
+        }
+    }
+
+    function saveFlags() {
+	global $globals;
+	$flags = "";
+	if($this->watch_contacts) $flags = "contacts";
+	if($this->watch_mail) $flags .= ($flags ? ',' : '')."mail";
+	$globals->xdb->execute('UPDATE auth_user_quick SET watch_flags={?} WHERE user_id={?}', $flags, $this->_uid);
+	
+    }
+
+    function cats() {
+	return $this->_cats;
+    }
+
+    function subs($i) {
+	return $this->_subs->_data[$i];
+    }
+    
+    function promos() {
+	return $this->_promos->toRanges();
+    }
+    
+    function nonins() {
+	return $this->_nonins->_data;
+    }
+}
+
+// }}}
+// {{{ class WatchSub
+
+class WatchSub {
+    var $_uid;
+    var $_data = Array();
+
+    function WatchSub($uid) {
+	$this->_uid = $uid;
+	global $globals;
+	$res = $globals->xdb->iterRow('SELECT cid FROM watch_sub WHERE uid={?}', $uid);
+	while(list($c) = $res->next()) {
+            $this->_data[$c] = $c;
+        }
+    }
+
+    function update($ind) {
+	global $globals;
+	$this->_data = Array();
+	$globals->xdb->execute('DELETE FROM watch_sub WHERE uid={?}', $this->_uid);
+	foreach(Env::getMixed($ind) as $key=>$val) {
+	    $globals->xdb->query('INSERT INTO watch_sub SELECT {?},id FROM watch_cat WHERE id={?}', $this->_uid, $key);
+	    if(mysql_affected_rows()) {
+                $this->_data[$key] = $key;
+            }
+	}
+    }
+}
+
+// }}}
+// {{{ class PromoNotifs
+
+class PromoNotifs {
+    var $_uid;
+    var $_data = Array();
+
+    function PromoNotifs($uid) {
+	$this->_uid = $uid;
+	global $globals;
+	$res = $globals->xdb->iterRow('SELECT promo FROM watch_promo WHERE uid={?} ORDER BY promo', $uid);
+	while (list($p) = $res->next()) {
+            $this->_data[intval($p)] = intval($p);
+        }
+    }
+
+    function add($p) {
+	global $globals;
+	$promo = intval($p);
+	$globals->xdb->execute('REPLACE INTO watch_promo (uid,promo) VALUES({?},{?})', $this->_uid, $promo);
+	$this->_data[$promo] = $promo;
+	asort($this->_data);
+    }
+    
+    function del($p) {
+	global $globals;
+	$promo = intval($p);
+	$globals->xdb->execute('DELETE FROM watch_promo WHERE uid={?} AND promo={?}', $this->_uid, $promo);
+	unset($this->_data[$promo]);
+    }
+    
+    function addRange($_p1,$_p2) {
+	global $globals;
+	$p1 = intval($_p1);
+	$p2 = intval($_p2);
+	$values = Array();
+	for($i = min($p1,$p2); $i<=max($p1,$p2); $i++) {
+	    $values[] = "('{$this->_uid}',$i)";
+	    $this->_data[$i] = $i;
+	}
+	$globals->xdb->execute('REPLACE INTO watch_promo (uid,promo) VALUES '.join(',',$values));
+	asort($this->_data);
+    }
+
+    function delRange($_p1,$_p2) {
+	global $globals;
+	$p1 = intval($_p1);
+	$p2 = intval($_p2);
+	$where = Array();
+	for($i = min($p1,$p2); $i<=max($p1,$p2); $i++) {
+	    $where[] = "promo=$i";
+	    unset($this->_data[$i]);
+	}
+	$globals->xdb->execute('DELETE FROM watch_promo WHERE uid={?} AND ('.join(' OR ',$where).')', $this->_uid);
+    }
+
+    function toRanges() {
+	$ranges = Array();
+	$I = Array();
+	foreach($this->_data as $promo) {
+	    if(!isset($I[0])) {
+		$I = Array($promo,$promo);
+	    }
+	    elseif($I[1]+1 == $promo) {
+		$I[1] ++;
+	    }
+	    else {
+		$ranges[] = $I;
+		$I = Array($promo,$promo);
+	    }
+	}
+	if(isset($I[0])) $ranges[] = $I;
+	return $ranges;
+    }
+}
+
+// }}}
+// {{{ class NoninsNotifs
+
+class NoninsNotifs {
+    var $_uid;
+    var $_data = Array();
+
+    function NoninsNotifs($uid) {
+	global $globals;
+	$this->_uid = $uid;
+	$res = $globals->xdb->iterator("SELECT  u.prenom,IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, u.promo, u.user_id
+                                          FROM  watch_nonins  AS w
+                                    INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
+                                         WHERE  w.uid = {?}
+				      ORDER BY  promo,nom", $uid);
+	while($tmp = $res->next()) {
+            $this->_data[$tmp['user_id']] = $tmp;
+        }
+    }
+
+    function del($p) {
+	global $globals;
+	unset($this->_data["$p"]);
+	$globals->xdb->execute('DELETE FROM watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
+    }
+
+    function add($p) {
+	global $globals;
+	$globals->xdb->execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
+	$res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
+                                       FROM  auth_user_md5
+                                      WHERE  user_id={?}', $p);
+	$this->_data["$p"] = $res->fetchOneAssoc();
+    }
+}
+ 
+// }}}
+
+?>

@@ -1,0 +1,109 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+
+div.nl {
+    margin: auto;
+    font-family: "Georgia","times new roman",serif;
+    width: 64ex;
+    text-align: justify;
+    font-size: 10pt;
+}
+
+div.nl a { text-decoration: none; }
+div.nl a:hover { text-decoration: underline; }
+
+div.nl div.title {
+    margin: 2ex auto 2ex auto;
+    padding: 1ex;
+    width: 90%;
+    border: 1px black solid;
+    font-size: 140%;
+    text-align: center;
+    color: inherit;
+    color: blue;
+    background: #eeeeee;
+    border: 2px #cccccc solid;
+}
+
+div.nl div.lnk {
+    padding: 0ex 2ex 0ex 2ex;
+    margin: 2ex 0ex 2ex 0ex;
+}
+
+div.nl div.lnk a { display: block; }
+
+div.nl h1 {
+    margin: 6ex 0ex 4ex 0ex;
+    padding: 2px 4ex 2px 0ex;
+    width: 60ex;
+    font-size: 100%;
+}
+
+div.nl h1 span {
+    text-decoration: none;
+    font-size: 140%;
+    padding: 2px 1ex 2px 1ex;
+}
+
+div.nl h2 {
+    width: 100%;
+    margin: 0ex 1ex 0ex 1ex;
+    padding: 2px 0px 2px 0px;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 95%;
+}
+
+div.nl h2 span {
+    color: blue;
+    background: #eeeeee;
+    text-decoration: none;
+    padding: 2px 4px 2px 4px;
+}
+
+div.nl div.art {
+    padding: 2ex;
+    margin: 0ex 1ex 2ex 1ex;
+    width: 58ex;
+    border-top: 1px #cccccc solid;
+}
+
+div.nl div.app {
+    padding: 2ex 3ex 0ex 3ex;
+    width: 100%;
+    margin: 0ex;
+    text-align: left;
+    font-size: 95%;
+}
+
+div.nl div.intro {
+    padding: 2ex;
+}
+
+div.nl div.foot {
+    border-top: 1px #808080 dashed;
+    font-size: 95%;
+    padding: 1ex;
+    color: #808080;
+    background: inherit;
+    text-align: center;
+}
+

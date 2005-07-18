@@ -1,0 +1,58 @@
+<?php
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+require_once("xorg.inc.php");
+new_skinned_page('paiement/index.tpl', AUTH_MDP);
+require_once('profil.func.inc.php');
+require_once('money.inc.php');
+
+// initialisation
+$op   = Env::get('op', 'select');
+$meth = new PayMethod(Env::getInt('methode', -1));
+$pay  = new Payment(Env::getInt('ref', -1));
+
+if($pay->flags->hasflag('old')){
+    $page->trig("La transaction selectionnée est périmée.");
+    $pay = new Payment();
+}
+$val  = ($op=="submit" && Env::has('montant')) ? Env::get('montant') : $pay->montant_def;
+
+if (($e = $pay->check($val)) !== true) {
+    $page->trig($e);
+}
+
+if ($op=='submit') {
+    $pay->init($val, $meth);
+    $pay->prepareform($pay);
+} else {
+    $res = $globals->xdb->iterator("SELECT timestamp, montant FROM paiement.transactions WHERE uid = {?} AND ref = {?} ORDER BY timestamp DESC", Session::getInt('uid', -1), Env::getInt('ref', -1));
+    
+    if ($res->total()) $page->assign('transactions', $res);
+}
+
+$page->assign('montant',$val);
+
+$page->assign('meth', $meth);
+$page->assign('pay',  $pay);
+
+$page->assign('prefix',$globals->money->mpay_tprefix);
+$page->run();
+?>

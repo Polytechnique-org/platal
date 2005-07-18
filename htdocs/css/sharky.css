@@ -1,0 +1,160 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
+
+body {
+    background: #99afc1;
+    color: #000000;
+}
+fieldset {
+    border: 1px #305070 solid;
+    background: #80a0c0;
+    color: inherit;
+}
+legend {
+    border: 1px #305070 solid;
+    background: #99b9d0;
+    color: inherit;
+}
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+h1 {
+    color: #ffffff;
+    background: #657590;
+    border-top: 1px solid #305070;
+    border-bottom: 1px solid #305070;
+    font-family: "Verdana", sans-serif;
+    font-size: 100%;
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
+
+table.tinybicol, table.bicol {
+    background: #80a0c0;
+    border: 1px solid #305070;
+    border-collapse: collapse;
+}
+table.tinybicol tr, table.bicol tr { }
+table.tinybicol tr.impair , table.bicol tr.impair { background: #80a0c0; }
+table.tinybicol tr.pair, table.bicol tr.pair      { background: #99b9d0; }
+table.tinybicol th, table.bicol th {
+    background: #305070;
+    color: #ffffff;
+}
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+#skin {
+    background: #99b9d0;
+    border-top: 1px solid #305070;
+    border-bottom: none;
+}
+
+#skin td {
+    border-top: none;
+    border-bottom: 1px solid #305070;
+    vertical-align: middle;
+}
+
+#skin td.skigauche {
+    background: #99b9d0;
+}
+
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
+div.contact-list div.contact {
+    border-top: 1px solid #305070;
+    background: #80a0c0;
+    color: inherit;
+}
+
+div.contact div.long {
+    background: #99b9d0;
+    color: inherit;
+}
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+
+/*******************************************************************************
+    7   fiche.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+#body-logo {
+    border-top: 1px solid #305070;
+    border-right: 1px solid #305070;
+    border-left: 1px solid #305070;
+    border-bottom: none;
+}
+
+#body-top {
+    border-bottom: 1px solid #305070;
+}
+
+#body-bottom {
+    border-top: 1px solid #305070;
+}
+
+#body-menu {
+    border-left: 1px solid #305070;
+    border-right: 1px solid #305070;
+    background-image: url("/images/sk_sharky_bubbles.png");
+    background-position: 0px 100px;
+    background-repeat: repeat-y;
+}
+
+#body-menu .menu_title {
+    color : #ffffff;
+    background: #657590;
+    border-top: 1px solid #305070;
+    border-bottom: 1px solid #305070;
+}
+
+#body-menu .menu_item {
+    padding-left: 4px;
+    text-align: left;
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */

@@ -1,0 +1,276 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+body {
+    background-color: #F2E9D0;
+    margin-left: 0;
+    margin-top: 0;
+    color: #505050;
+    border-top: 1px;
+}
+
+table, body {
+    font-size: 10pt;
+    font-family: "Bitstream vera sans","Verdana",sans-serif;
+}
+
+input,textarea,select,option,tt,pre {
+    font-size: 10pt;
+}
+
+a, a:link, a:visited     { text-decoration: none ; color: #5c81aa; }
+
+a img { border: none; }
+img   { vertical-align: middle; }
+td    { vertical-align: top; }
+
+h1    { font-size: 150%; }
+h2    { font-size: 130%; }
+
+/***************************************************************************
+ * DEBUG
+ ***************************************************************************/
+
+#dev {
+    width: 100%;
+    text-align: center;
+    padding: 1px;
+
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+#db-trace div.hide       { display: none; }
+#db-trace:hover div.hide { display: block }
+#db-trace h1 { margin: 0px; }
+
+/***************************************************************************
+ * LAYOUT
+ ***************************************************************************/
+
+table#layout {
+    width: 765px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tr#top td {
+    vertical-align: middle;
+}
+
+td#credits {
+    text-align: center;
+    font-size: 90%;
+    font-weight: bold;
+}
+
+td#perso div {
+    font-weight: bold;
+    font-size: 90%;
+    padding: 2px 1em;
+}
+
+td#perso a.gp {
+    display: block;
+    margin: 2px 1em;
+    font-weight: bold;
+    font-size: 85%;
+    float: left;
+    text-align: center;
+}
+
+td#search {
+    text-align: right;
+    width: 300px;
+}
+
+#content {
+    width: 100%;
+}
+
+td#menu {
+    width: 150px;
+    padding-right: 1em;
+    font-family: "Trebuchet MS", "Arial",sans-serif;
+    font-weight: bold;
+}
+
+#menu h1 {
+    padding: 0.5em 0em 0.6em 0em;
+    font-size: 90%;
+    text-align: center;
+    background: url('../images/barre.png') bottom left no-repeat;
+}
+
+#menu a {
+    display: block;
+    padding: 0.2em 0em 0.2em 15px;
+    font-size: 90%;
+    background: url('../images/puce.png') no-repeat center left;
+}
+
+/***************************************************************************
+ * CLASSES
+ ***************************************************************************/
+
+div.breadcrumb {
+    font-weight: bold;
+    font-size: 90%;
+    padding: 0.5em 0em;
+}
+
+.erreur { color: red !important; }
+.error  { color: red !important; }
+.center { text-align: center; }
+.right  { text-align: right; }
+
+.descr {
+    text-align: justify;
+    font-size: 90%;
+}
+p.descr {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+table { border-collapse: collapse; }
+
+table.links {
+    width: 100%;
+    margin: 0.4em 0em;
+}
+
+table.links td {
+    padding: 0em 0.5em;
+}
+
+table.links a {
+    background: url('../images/puce.png') no-repeat center left;
+    padding-left: 15px;
+    font-weight: bold;
+}
+
+table td.titre {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+table.tiny,  table.tinybicol { width: 70%; margin-left: 15%; border: 2px solid gray; }
+table.large, table.bicol     { width: 96%; margin-left:  2%; border: 2px solid gray; }
+
+table.tiny td, table.tinybicol td, table.large td, table.bicol td {
+    border: 1px solid gray;
+    padding: 2px;
+}
+table.tiny th, table.tinybicol th, table.large th, table.bicol th {
+    border: 1px solid gray;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    padding: 2px;
+}
+
+table.normal td { border: none; }
+
+th { background: #d0c198; }
+
+/***************************************************************************
+ * Special pages
+ ***************************************************************************/
+
+table#liste td.fourth {
+    width: 25%;
+}
+
+table#liste td.listec a {
+    display: block;
+    text-align: center;
+}
+
+table#liste td.liste a {
+    display: block;
+    text-align: right;
+}
+
+table#liste td.liste a.cat {
+    background: #d0c198;
+    margin: 15px 0px 10px 0px;
+    padding: 3px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 90%;
+}
+
+table#liste td.liste a:hover, table#liste td.listec a:hover {
+    background: #d0c198;
+}
+
+/***************************************************************************
+ ***************************************************************************/
+
+div.cat {
+    background: #d0c198;
+    text-align: center;
+    font-weight: bold;
+    font-size: 90%;
+    padding: 2px;
+    width: 180px;
+    margin: 4px 0px;
+}
+
+div.sel { background-color: #5c81aa; color: #d0c198; }
+div.sel a { color: #d0c198; }
+
+td.oval, td.oval2 {
+    color: #d0c198;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle !important;
+    font-weight: bold;
+}
+td.oval {
+    background: url("../images/oval.png") no-repeat top center;
+    width: 130px;
+    padding: 4px 12px;
+}
+td.oval2 {
+    background: url("../images/oval2.png") no-repeat top center;
+    width: 160px;
+    padding: 4px 10px;
+
+}
+
+.oval a, .oval2 a { color: #d0c198; }
+
+#content td.oval, #content td.oval2 {
+    font-size: 90%;
+    font-family: "Trebuchet MS", sans-serif;
+    letter-spacing: -0.5px;
+}
+
+/***************************************************************************
+ ***************************************************************************/
+
+td.infos {
+    height: 30px;
+    text-align: center;
+    font-family: "Bitstream Vera Sans","Arial",sans-serif;
+    color: #505050;
+}
+

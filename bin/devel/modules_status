@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+chdir ${1:-.}
+
+dirs=(bin configs htdocs hooks include plugins scripts templates)
+opts=(-type f -not -path '*CVS*' -not -name '.cvsignore' -not -path '*.arch*' -not -path '*TESTS*')
+
+diff -u <(cat install.d/**/files|sort) <(find $dirs $opts|sort) \
+    | grep '^[-+][a-z]' | sed -e 's,^+,Orphaned: ,;s,^-,Missing : ,'

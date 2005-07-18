@@ -1,0 +1,50 @@
+Notes for plat/al, a platform for alumni services
+
+PRESENTATION
+------------
+
+plat/al is the platform used by Polytechnique.org [1], the alumni site of
+Ecole Polytechnique [2], France. This package is a suite of web applications
+geared towards alumni websites. This is used to deliver services to more than
+12.000 registered alumni on Polytechnique.org.
+
+More information can be found on the plat/al project page [3].
+
+[1] Polytechnique.org     http://www.polytechnique.org/
+[2] Ecole Polytechnique   http://www.polytechnique.edu/
+[3] plat/al project       http://opensource.polytechnique.org/platal/
+
+
+REQUIREMENTS
+------------
+
+First of all you will need a webserver. If you do not currently have a
+webserver, you might consider taking a look at the Apache webserver :
+
+  http://httpd.apache/org/
+
+plat/al is written in PHP so you need PHP support for your webserver. You
+can find PHP here :
+
+  http://www.php.net/
+
+plat/al makes use of the Smarty template engine which can be found here :
+
+  http://smarty.php.net/
+
+plat/al also makes heavy use of the Diogenes library, libdiogenes which lives
+here :
+
+  http://opensource.polytechnique.org/libdiogenes/
+
+You will need to have access to a MySQL server. If you do not currently have a
+MySQL server running, you can download it here :
+
+  http://www.mysql.com/
+
+
+BUILDING
+--------
+
+To build plat/al, simply run "make" from the toplevel directory.
+

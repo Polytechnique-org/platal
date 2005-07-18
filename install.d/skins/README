@@ -1,0 +1,29 @@
+
+  Notes for the skin module for plat/al
+
+
+CONFIG OPTIONS
+--------------
+
+  All settings of the module are shown here with their default and meaning
+
+  [Skin]
+
+  enable = 1              ; enable skin choices for the user.
+
+  def_id = 1              ; id (in the skins sql table) of the default skin.
+  def_tpl = "default.tpl" ; template name of the default skin.
+
+
+BUGS
+----
+
+  http://trackers.polytechnique.org/index.php?cat=11
+
+
+DEPENDS
+-------
+
+  platal
+
+
