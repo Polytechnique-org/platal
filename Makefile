@@ -28,7 +28,7 @@ bzdist: clean pkg-bzdist
 
 clean:
 	rm -rf include/platal/globals.inc.php
-	rm -f htdocs/banana/banana.css htdocs/valid.html include/banana htdocs/banana/img htdocs/banana/xface.php
+	rm -f htdocs/banana/banana.css htdocs/valid.html include/banana htdocs/banana/img
 
 %: %.in Makefile
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
