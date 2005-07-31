@@ -7,6 +7,8 @@ $page->setType($globals->asso('cat'));
 $page->assign('asso', $globals->asso());
 $page->assign('admin', may_update());
 
+if (!$globals->asso('inscriptible'))
+	$page->kill("Il n'est pas possible de s'inscire en ligne à ce groupe. Essaie de joindre le contact indiqué sur la page de présentation.");
 
 if (Env::has('u') && may_update()) {
     $u   = Env::get('u');

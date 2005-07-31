@@ -128,6 +128,22 @@
 
     <tr>
       <td class="titre">
+        Inscription possible:
+      </td>
+      <td>
+        <input type="radio" value="1" id="inscr_yes"
+          {if $asso.inscriptible eq 1}checked="checked"{/if}
+          name="inscriptible" />
+        <label for="inscr_yes">oui</label>
+        <input type="radio" value="0" id="inscr_no"
+          {if $asso.inscriptible neq 1}checked="checked"{/if}
+          name="inscriptible" />
+        <label for="inscr_no">non</label>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="titre">
         Lien pour l'inscription:<br />
         <em>laisser vide par défaut</em>
       </td>
