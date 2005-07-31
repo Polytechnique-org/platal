@@ -69,6 +69,7 @@ if ($admin && Env::get('adm') == 'nbs' && $member) {
 		$u = $res->fetchOneCell();
 		subscribe_lists_event($u, $member, $evt['participant_list'], $evt['absent_list']);
 	}
+	$evt = get_event_detail(Env::get('eid'), Env::get('item_id'));
 }
 
 $page->assign('admin', $admin);

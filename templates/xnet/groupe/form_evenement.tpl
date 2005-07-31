@@ -94,6 +94,9 @@
       </td>
       <td>
         <select name="paiement" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'block':'none')">
+          {if $evt.paiement_id eq -2}
+          <option value='-2'>Paiement en attente de validation</option>
+          {/if}
           <option value=''>Pas de paiement</option>
           <option value='-1'>- Nouveau paiement -</option>
           {html_options options=$paiements selected=$evt.paiement_id}

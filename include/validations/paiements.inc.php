@@ -67,16 +67,23 @@ class PayReq extends Validate
     }
 
     // }}}
+  // {{{ function same_event()
+    function same_event($evt, $asso_id)
+    {
+        $wevt = 's:3:"evt";s:'.strlen($evt+"").':"'.$evt.'"';
+        $wassoid = 's:7:"asso_id";s:'.strlen($asso_id + "").':"'.$asso_id.'"';
+        $where = "%".$wassoid."%".$wevt."%";
+        return $where;
+    }
+  // }}}
   // {{{ function submit() 
   // supprime les demandes de paiments pour le meme evenement
     function submit()
     {
         global $globals;
-        $evt = 's:3:"evt";s:'.strlen($this->evt+"").':"'.$this->evt.'"';
-        $assoid = 's:7:"asso_id";s:'.strlen($this->asso_id + "").':"'.$this->asso_id.'"';
         if ($this->evt)
         {
-            $globals->xdb->execute('DELETE FROM requests WHERE type={?} AND data LIKE {?}', 'paiements', "%".$assoid."%".$evt."%");
+            $globals->xdb->execute('DELETE FROM requests WHERE type={?} AND data LIKE {?}', 'paiements', PayReq::same_event($this->evt, $this->asso_id));
         }
         Validate::submit();
     }

@@ -108,7 +108,7 @@ if (may_update() && Post::get('intitule')) {
 		$p = new PayReq(Session::get('uid'), Post::get('intitule')." - ".$globals->asso('nom'), Post::get('site'), $money_defaut, Post::get('confirmation'),0, 999, $globals->asso('id'), $eid);
 		$p->submit();
 	}
-	
+
 	// events with no sub-event
 	if ($nb_moments == 0)
 		$globals->xdb->execute("INSERT INTO groupex.evenements_items VALUES ({?}, {?}, '', '', 0)", $eid, 1);
@@ -124,6 +124,9 @@ if (may_update() && Env::has('sup') && $eid) {
 	// deletes the event mailing aliases
 	if ($infos['short_name'])
 		$globals->xdb->execute("DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}", $infos['short_name']."-%");
+	// delete the requests for payments
+	require_once('validations.inc.php');
+	$globals->xdb->execute("DELETE FROM requests WHERE type = 'paiements' AND data  LIKE {?}", PayReq::same_event($eid, $globals->asso('id')));
 }
 
 if (may_update() && (Env::has('add') || (Env::has('mod') && $eid))) {
@@ -141,6 +144,13 @@ if ($eid) {
 		   FROM	groupex.evenements
 		  WHERE eid = {?}", $eid);
 	$evt = $res->fetchOneAssoc();
+	require_once('validations.inc.php');
+	$res = $globals->xdb->query("SELECT stamp FROM requests WHERE type = 'paiements' AND data LIKE {?}", PayReq::same_event($eid, $globals->asso('id')));
+	$stamp = $res->fetchOneCell();
+	if ($stamp) {
+		$evt['paiement_id'] = -2;
+		$evt['paiement_req'] = $stamp;
+	}
 	$page->assign('evt', $evt);
 }
 
@@ -157,7 +167,7 @@ if (may_update() && Env::has('mod') && $eid) {
 } else {
 
 	$evenements = $globals->xdb->iterator(
-	"SELECT  e.eid, e.intitule, e.descriptif, e.debut, e.fin, e.show_participants, u.nom, u.prenom, u.promo, a.alias, MAX(ep.nb)>=1 AS inscrit,
+	"SELECT  e.eid, e.intitule, e.descriptif, e.debut, e.fin, e.show_participants, u.nom, u.prenom, u.promo, a.alias, MAX(ep.nb) AS inscrit,
 		 e.short_name
 	      FROM  groupex.evenements AS e
 	INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid

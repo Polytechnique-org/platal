@@ -1,6 +1,6 @@
 <?php
 
-require 'xnet.inc.php';
+require_once 'xnet.inc.php';
 
 new_group_page('xnet/groupe/evt-detail.tpl');
 
@@ -49,6 +49,7 @@ require_once('xnet/evenements.php');
 $evt = get_event_detail(Env::get('eid'));
 if (Env::has('ins')) {
     subscribe_lists_event($participate, Session::get("uid"), $evt['participant_list'], $evt['absent_list']);
+    header("Location: evenements.php?backfrom=".Env::get('eid'));
 }
 
 $page->assign('participate', $participate);

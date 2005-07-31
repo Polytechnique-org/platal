@@ -85,11 +85,13 @@ Evénements
       <td class="titre">
         <a href='evt-detail.php?eid={$e.eid}'>Détails...</a> 
       </td>
-      <td>
+      <td {if $smarty.request.backfrom eq $e.eid}class="erreur"{/if}>
         {if $e.inscrit}
-        <small>tu es inscrit à cet événément !</small>
+        <small>tu es inscrit à cet événément.
+          {if $e.inscrit > 1}(avec&nbsp;{$e.inscrit - 1}&nbsp;invité{if $e.inscrit > 2}s{/if}){/if}
+        </small>
         {else}
-        <small>tu n'es pas encore inscrit à cet événément !</small>
+        <small>tu n'es pas inscrit à cet événément.</small>
         {/if}
       </td>
     </tr>

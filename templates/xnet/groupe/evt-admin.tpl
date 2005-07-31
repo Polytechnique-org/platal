@@ -99,9 +99,13 @@ Ils ont payé mais ont oublié de s'inscrire :
     <th>Promo</th>
     <th>Info</th>
     {if $tout}
-      {foreach from=$moments item=m}
-        <th>{$m.titre}</th>
-      {/foreach}
+      {if $moments}
+        {foreach from=$moments item=m}
+          <th>{$m.titre}</th>
+        {/foreach}
+      {else}
+        <th>Nombre</th>
+      {/if}
       {if $admin && $money}
         <th>Montant</th>
         <th>Payé</th>
@@ -128,9 +132,13 @@ Ils ont payé mais ont oublié de s'inscrire :
       {/if}
     </td>
     {if $tout}
-      {foreach from=$moments item=i}
-        <td>{$m[$i.item_id]}</td>
-      {/foreach}
+      {if $moments}
+        {foreach from=$moments item=i}
+          <td>{$m[$i.item_id]}</td>
+        {/foreach}
+      {else}
+        <td>{$m[1]}</td>
+      {/if}
       {if $admin && $money}
         <td {if $m.montant > $m.paid}class="erreur"{/if}>{$m.montant}&euro;</td>
         <td>{$m.paid}&euro;</td>
@@ -174,9 +182,13 @@ nombre de participants.
   <input type="hidden" name="item_id" value="{$smarty.request.item_id}" />
   {$evt.titre}: <input name="nb{$smarty.request.item_id}" size="1" value="1" />
   {else}
-  {foreach from=$moments item=m}
-  {$m.titre}: <input name="nb{$m.item_id}" size="1" value="1"/>
-  {/foreach}
+    {if $moments}
+      {foreach from=$moments item=m}
+        {$m.titre}: <input name="nb{$m.item_id}" size="1" value="1"/>
+      {/foreach}
+    {else}
+      Nombre: <input name="nb1" size="1" value="1" />
+    {/if}
   {/if}
   <input type="submit" />
   </p>
