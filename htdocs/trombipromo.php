@@ -59,6 +59,9 @@ if (Env::has('xpromo')) {
 	$trombi->setAdmin();
 	$page->assign_by_ref('trombi',$trombi);
     }
+} else {
+    $tmp = new Trombi();
+    $page->assign("limit", $tmp->limit);
 }
 
 $page->run();
