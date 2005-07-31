@@ -74,7 +74,14 @@
         <td class="center"><input type="text" name="nom_usage" value="{$usage_old}" /></td>
       </tr>
       <tr>
-        <td class="center"><input type="submit" name="submit" value="Envoyer" /></td>
+        <td class="center">
+          {if !$usage_old}
+            <input type="submit" name="submit" value="Faire la demande" />
+          {else}
+            <input type="submit" name="submit" value="Modifier" />
+            <input type="submit" name="submit" value="Supprimer" onClick="this.form.nom_usage.value=''" />
+          {/if}
+        </td>
       </tr>
     </table>
   </form>

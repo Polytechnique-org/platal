@@ -6,6 +6,11 @@ New :
 	* Xnet :
 		- Groups can be non subscribable.									-Car
 		
+Bug/Wish :
+
+	* Profile :
+		- #330: Interface to delete usage name is clearer.					-Car
+
 ================================================================================
 VERSION 0.9.8														 18 Jul 2005
 
@@ -23,6 +28,7 @@ Bug/Wish :
 	* Profile :
 		- User can delete his own melix.									-Car
 		- #328,329: bug fixes and direct acess to public fiche.				-Car
+		- #331: antispam option didn't work with Safari.					-Car
 
 	* Lists :
 		- #318: Deletion of email with + in aliases.						-Car
