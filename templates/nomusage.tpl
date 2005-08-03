@@ -71,7 +71,26 @@
         <th>Nom d'usage</th>
       </tr>
       <tr>
-        <td class="center"><input type="text" name="nom_usage" value="{$usage_old}" /></td>
+        <td class="center">
+          <input type="text" name="nom_usage" id="nom_usage" value="{$usage_old}" />
+          <script type="text/javascript">
+            document.getElementById("nom_usage").focus();
+          </script>
+        </td>
+      </tr>
+      <tr>
+        <th>Raison du changement de nom</th>
+      </tr>
+      <tr>
+        <td class="rt">
+          <input type="radio" name="reason" checked="checked" value="époux/se" id="reason_ep" onclick="this.form.other_reason.value=''" /><label for="reason_ep">Nom d'épouse / d'époux</label><br />
+          {if $usage_old}
+            <input type="radio" name="reason" value="divorce" id="reason_div" onclick="this.form.other_reason.value=''" /><label for="reason_div">Divorce</label><br />
+          {/if}
+          <input type="radio" name="reason" value="raccourci" id="reason_rac" onclick="this.form.other_reason.value=''" /><label for="reason_rac">Nom d'état civil simplifié, le nom officiel étant trop long</label><br />
+          <input type="radio" name="reason" value="other" id="reason_oth" /><label for="reason_oth">Autre :</label><br />
+          <input type="text" name="other_reason" onfocus="document.getElementById('reason_oth').checked='checked'" size="60" />
+        </td>
       </tr>
       <tr>
         <td class="center">

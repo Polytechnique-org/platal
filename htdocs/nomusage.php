@@ -46,7 +46,10 @@ if (Env::has('submit') && ($nom_usage != $usage_old)) {
         $page->assign('same', true);
     } else { // le nom de mariage est distinct du nom à l'X
         // on calcule l'alias pour l'afficher
-        $myusage = new UsageReq(Session::getInt('uid'), $nom_usage);
+	$reason = Env::get('reason');
+	if ($reason == 'other')
+		$reason = Env::get('other_reason');
+        $myusage = new UsageReq(Session::getInt('uid'), $nom_usage, $reason);
         $myusage->submit();
         $page->assign('myusage', $myusage);
     }

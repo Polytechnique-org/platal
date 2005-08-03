@@ -29,6 +29,10 @@
   <td class="titre">Nouvel&nbsp;alias&nbsp;:</td>
   <td>{$valid->alias|default:"<span class='erreur'>suppression</span>"}</td>
 </tr>
+<tr class="impair">
+  <td class="titre">Raison&nbsp;:</td>
+  <td>{$valid->reason}</td>
+</tr>
 {if $valid->homonyme}
 <tr class="impair">
   <td colspan="2">

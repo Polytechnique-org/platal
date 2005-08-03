@@ -34,6 +34,7 @@ class UsageReq extends Validate
     var $oldalias;
 
     var $homonyme;
+    var $reason;
     
     var $rules = "Refuser 
     tout ce qui n'est visiblement pas un nom de famille (ce qui est 
@@ -43,11 +44,12 @@ class UsageReq extends Validate
     // }}}
     // {{{ constructor
 
-    function UsageReq($_uid, $_usage)
+    function UsageReq($_uid, $_usage, $_reason)
     {
         global $globals;
         $this->Validate($_uid, true, 'usage');
         $this->nom_usage  = $_usage;
+        $this->reason = $_reason;
         $this->alias   = make_username($this->prenom, $this->nom_usage);
         if (!$this->nom_usage) $this->alias = "";
 

@@ -13,6 +13,7 @@ Bug/Wish :
 
 	* Profile :
 		- #330: Interface to delete usage name is clearer.					-Car
+		- #332: User can precise why he asks for a usage name.				-Car
 	
 	* Xnet :
 		- Various bug fixes in events management.							-Car
