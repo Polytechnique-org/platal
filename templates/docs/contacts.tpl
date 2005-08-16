@@ -154,7 +154,7 @@ l'innovation proposée, si elle est retenue, apparaisse sur le site).
 Merci de nous aider à améliorer la qualité du site Polytechnique.org. Ecrivez à
 <strong>{mailto address='support@polytechnique.org' encode='hex'}</strong>
 ou postez un message sur le forum
-<a href="../banana/thread.php?group=xorg.m4x.support">xorg.m4x.support</a>
+<a href="../banana/?group=xorg.m4x.support">xorg.m4x.support</a>
 pour toute idée de développement ou d'amélioration du site.
 </p>
 
