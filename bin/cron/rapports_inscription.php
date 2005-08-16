@@ -23,16 +23,14 @@ if ($a = $res->total()) {
 // ---------------------------------------
 
 $res = $globals->xdb->iterRow(
-        "SELECT  hash, forlife, email, date
+        "SELECT  forlife, email, date
            FROM  register_pending
           WHERE  hash != 'INSCRIT'
        ORDER BY  date");
 if ($b = $res->total()) {
     $MESSAGE.="\n$b INSCRIPTIONS NON CONFIRMEES:\n";
-    while (list($code, $usern, $mail, $quand) = $res->next()) {	
-	$MESSAGE.="$quand, $usern,\n            $mail";
-	$MESSAGE.="\n";
-	$MESSAGE.="https://www.polytechnique.org/register/end.php?hash=$code\n";
+    while (list($usern, $mail, $quand) = $res->next()) {	
+	$MESSAGE.="$quand, $usern,\n            $mail\n";
     }
 }
 
