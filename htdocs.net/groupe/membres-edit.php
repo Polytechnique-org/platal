@@ -43,15 +43,23 @@
         if (Post::has('email')) {
             if ($x) {
                 require_once 'user.func.inc.php';
-                if ($forlife = get_user_forlife(Post::get('email'))) {
-                    $globals->xdb->execute(
+		$emails = explode(" ", Post::get('email'));
+		foreach ($emails as $email)
+		{
+			if ($forlife = get_user_forlife($email)) {
+			    $globals->xdb->execute(
                                 'INSERT INTO  groupex.membres (uid,asso_id,origine)
                                       SELECT  user_id,{?},"X"
                                         FROM  auth_user_md5 AS u
                                   INNER JOIN  aliases       AS a ON (u.user_id = a.id)
                                        WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-                    header('Location: ?edit='.$forlife);
-                }
+			    $forlifes[] = $forlife;
+			}
+			else
+				$page->trig($email." n'est pas un alias polytechnique.org valide");
+		}
+		if (count($forlifes) > 0)
+			header('Location: annuaire.php');
             } else {
                 $email = Post::get('email');
                 if (isvalid_email($email)) {
@@ -126,6 +134,7 @@
                     $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
                 }
             }
+	    header("Location: annuaire.php");
         }
         
         $page->assign('user', $user);

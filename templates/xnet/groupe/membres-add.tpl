@@ -26,7 +26,7 @@
 
 <form method="post" action="{$smarty.server.REQUEST_URI}">
   <p class="descr">
-  Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses adresses mail @polytechnique.org:
+  Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses adresses mail @polytechnique.org. Pour rentrer plusieurs X en une seule fois, sépare les adresses par des espaces :
   </p>
   <div class="center">
     <input type="text" name="email" size="40" value="{$smarty.request.email}" />

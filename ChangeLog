@@ -17,6 +17,7 @@ Bug/Wish :
 	
 	* Xnet :
 		- Various bug fixes in events management.							-Car
+		- #334: Interface improvements.										-Car
 	
 ================================================================================
 VERSION 0.9.8														 18 Jul 2005
