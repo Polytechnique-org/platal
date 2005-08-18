@@ -66,6 +66,10 @@ ou <a href="{rel}/fiche.php?user={$smarty.session.forlife}&amp;public=1" class="
             <td>
               <input type="submit" value="Valider et passer au prochain onglet" name="suivant" />
             </td>
+            {else}
+            <td>
+              <input type="submit" value="Valider et revenir au premier onglet" name="suivant" />
+            </td>
             {/if}
           </tr>
         </table>

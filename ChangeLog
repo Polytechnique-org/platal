@@ -12,7 +12,7 @@ Bug/Wish :
 		- #310: Display the max number of photo in trombipromo.				-Car
 
 	* Profile :
-		- #330: Interface to delete usage name is clearer.					-Car
+		- #330,333: Interface improvements.									-Car
 		- #332: User can precise why he asks for a usage name.				-Car
 	
 	* Xnet :
