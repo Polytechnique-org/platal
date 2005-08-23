@@ -49,8 +49,8 @@ if ($promo_sortie) {
     }
     elseif ($promo_sortie == $promo + 3) {
         $globals->xdb->execute(
-            "UPDATE auth_user_md5 set promo_sortie={?} 
-            WHERE user_id={?}",$promo_sortie,Session::getInt('uid'));
+            "UPDATE  auth_user_md5 set promo_sortie={?} 
+              WHERE  user_id={?}",$promo_sortie,Session::getInt('uid'));
             $page->trig('Ton statut "orange" a été supprimé.');
             $page->assign('promo_sortie_old', $promo_sortie);
     }
