@@ -42,10 +42,20 @@ if ($promo_sortie) {
 	$page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
 	elseif ($promo_sortie < $promo + 3)
 	$page->trig('Trop tôt');
+	elseif ($promo_sortie == $promo_sortie_old)
+	$page->trig('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
+	elseif ($promo_sortie == $promo + 3)
+	{
+	$globals->xdb->execute(
+	"UPDATE auth_user_md5 set promo_sortie={?} 
+	WHERE user_id={?}",$promo_sortie,Session::getInt('uid'));
+	$page->trig('Ton statut "orange" a été supprimé.');
+	$page->assign('promo_sortie_old', $promo_sortie);
+	}
 	else 
 	$page->assign('promo_sortie', $sortie_req = $promo_sortie);
 
-	if (Env::has('submit') && $sortie_req && ($promo_sortie_old != $sortie_req)) {
+	if (Env::has('submit') && $sortie_req && ($promo_sortie_old != $sortie_req && $promo_sortie != $promo + 3)) {
 		$myorange = new OrangeReq(Session::getInt('uid'), $sortie_req);
 		$myorange->submit();
 		$page->assign('myorange', $myorange);
