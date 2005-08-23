@@ -49,7 +49,7 @@ function money_menu()
 {
     global $globals;
     if ($globals->money->mpay_enable) {
-        $globals->menu->addPrivateEntry(XOM_SERVICES, 30, 'Micropaiements', 'paiement/');
+        $globals->menu->addPrivateEntry(XOM_SERVICES, 30, 'Téléopaiements', 'paiement/');
     }
 }
 

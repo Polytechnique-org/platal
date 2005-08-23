@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>Micropaiments</h1>
+<h1>Télépaiements</h1>
 
 {if $smarty.request.op eq "submit" and !$xorg_error->errs|count}
 

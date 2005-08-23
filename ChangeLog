@@ -11,6 +11,9 @@ Bug/Wish :
 	* Core :
 		- #310: Display the max number of photo in trombipromo.				-Car
 
+	* Paiments :
+		- #336 : Micro -> Tele(payments).									-MC
+
 	* Profile :
 		- #330,333: Interface improvements.									-Car
 		- #332: User can precise why he asks for a usage name.				-Car
