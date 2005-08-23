@@ -17,6 +17,7 @@ Bug/Wish :
 	* Profile :
 		- #330,333: Interface improvements.									-Car
 		- #332: User can precise why he asks for a usage name.				-Car
+		- #335: Already assigned promotion don't generate a request			-CAT
 	
 	* Xnet :
 		- Various bug fixes in events management.							-Car
@@ -460,6 +461,7 @@ ACRONYMS :
 	* PoT : Polytechnique.org TEAM (see Authors).
 
 	* Car : Pascal Corpet    (Caribou)  <pascal.corpet@m4x.org>
+	* CAT : Florian El Ahdab (LeChat)   <florian.el-ahdab@m4x.org>
 	* FAL : Raphaël Marichez (Falco)    <raphael.marichez@m4x.org>
 	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
 	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
