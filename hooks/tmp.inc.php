@@ -22,6 +22,8 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_ADMIN,    00, 'Marketing',           'marketing/');
     $globals->menu->addPrivateEntry(XOM_ADMIN,    10, 'Administration',      'admin/');
     $globals->menu->addPrivateEntry(XOM_ADMIN,    20, 'Clear cache',         'clear_all_cache.php');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    30, 'Trackers',            'http://trackers.polytechnique.org');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    40, 'Support',             'http://support.polytechnique.org');
 
     $globals->menu->addPublicEntry(XOM_US,    00, 'Me connecter !',         'login.php');
     $globals->menu->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'register/');
