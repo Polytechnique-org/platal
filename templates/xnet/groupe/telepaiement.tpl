@@ -54,7 +54,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 {foreachelse}
 
 <p class="descr">
-<em>Pas de micropaiement en cours ...</em>
+<em>Pas de télépaiement en cours ...</em>
 </p>
 
 {/foreach}

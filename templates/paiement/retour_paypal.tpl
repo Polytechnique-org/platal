@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>Micropaiments</h1>
+<h1>Télépaiments</h1>
 
 {if $erreur}
 <p>Aucun paiement n'a été effectué.</p>
@@ -32,5 +32,5 @@ réception de ton paiement.</p>
 
 <p>{$texte|nl2br}</p>
 {/if}
-<p>[<a href='index.php'>retour aux micropaiements</a>]</p>
+<p>[<a href='index.php'>retour aux Télépaiements</a>]</p>
 {* vim:set et sw=2 sts=2 sws=2: *}
