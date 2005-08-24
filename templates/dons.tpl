@@ -29,7 +29,7 @@
 Comme tu le sais sans doute, le site Polytechnique.org est géré par 
 l'<a href="http://x-org.polytechnique.org/">association</a> loi 1901 du même
 nom. Le travail effectué sur le site est entièrement bénévole et les outils
-que nous utilisons sont des <a href="http://www.fsf.org/philosophy/free-sw.fr.html">logiciels libres</a>
+que nous utilisons sont des <a href="http://www.gnu.org/philosophy/free-sw.fr.html">logiciels libres</a>
 donc nos frais de fonctionnement restent très modérés,
 mais ils n'en existent pas moins. Parmis ces frais on peut citer l'achat des
 différents noms de domaines du site et l'achat de matériel informatique pour
