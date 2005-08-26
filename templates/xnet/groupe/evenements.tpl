@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <h1>{$asso.nom} :
-{if ($smarty.request.add || $smarty.request.mod) && $admin}
+{if ($smarty.request.add || $smarty.request.mod || $get_form) && $admin}
 <a href='{$smarty.server.PHP_SELF}'>Evénements</a>
 {else}
 Evénements

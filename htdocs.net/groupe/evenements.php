@@ -23,13 +23,17 @@ if ($eid = Env::get('eid')) {
 if (may_update() && Post::get('intitule')) {
 	$short_name = Env::get('short_name');
 	//Quelques vérifications sur l'alias (caractères spéciaux)
-	if ($short_name && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $short_name)) {
+	if ($short_name && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $short_name))
+	{
 		$page->trig("Le raccourci demandé n'est pas valide.
 			    Vérifie qu'il comporte entre 3 et 20 caractères
 			    et qu'il ne contient que des lettres non accentuées,
 			    des chiffres ou les caractères - et .");
 		$short_name = $infos['short_name'];
 		$page->assign('get_form', true);
+		$get_form = true;
+		// set the field to the previously requested field
+		$page->assign('evt', $_REQUEST);
 	}
 	//vérifier que l'alias n'est pas déja pris
 	if ($short_name && $short_name != $infos['short_name']) {
@@ -38,6 +42,9 @@ if (may_update() && Post::get('intitule')) {
 			$page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
 			$short_name = $infos['short_name'];
 			$page->assign('get_form', true);
+			$get_form = true;
+			// set the field to the previously requested field
+			$page->assign('evt', $_REQUEST);
 		}
 	}
 	if ($short_name && $infos['short_name'] && $short_name != $infos['short_name']) {
@@ -78,7 +85,7 @@ if (may_update() && Post::get('intitule')) {
 		debut = {?}, fin = {?},
 		membres_only = {?}, advertise = {?}, show_participants = {?}, short_name = {?}",
 		$eid, $globals->asso('id'), Session::get('uid'), Post::get('intitule'),
-		(Post::get('paiement')>0)?Post::get('paiement'):NULL, Post::get('descriptif'),
+		(Post::get('paiement_id')>0)?Post::get('paiement_id'):NULL, Post::get('descriptif'),
 		Post::get('deb_Year')."-".Post::get('deb_Month')."-".Post::get('deb_Day')." ".Post::get('deb_Hour').":".Post::get('deb_Minute').":00",
 		Post::get('fin_Year')."-".Post::get('fin_Month')."-".Post::get('fin_Day')." ".Post::get('fin_Hour').":".Post::get('fin_Minute').":00",
 		Post::get('membres_only'), Post::get('advertise'), Post::get('show_participants'), $short_name, $eid);
@@ -103,7 +110,7 @@ if (may_update() && Post::get('intitule')) {
 	}
 
 	// request for a new payment
-	if (Post::get('paiement') == -1 && $money_defaut >= 0) {
+	if (Post::get('paiement_id') == -1 && $money_defaut >= 0) {
 		require_once ('validations.inc.php');
 		$p = new PayReq(Session::get('uid'), Post::get('intitule')." - ".$globals->asso('nom'), Post::get('site'), $money_defaut, Post::get('confirmation'),0, 999, $globals->asso('id'), $eid);
 		$p->submit();
@@ -129,7 +136,7 @@ if (may_update() && Env::has('sup') && $eid) {
 	$globals->xdb->execute("DELETE FROM requests WHERE type = 'paiements' AND data  LIKE {?}", PayReq::same_event($eid, $globals->asso('id')));
 }
 
-if (may_update() && (Env::has('add') || (Env::has('mod') && $eid))) {
+if (may_update() && (Env::has('add') || (Env::has('mod') && $eid || $get_form))) {
 	$page->assign('get_form', true);
 	$res = $globals->xdb->iterator
 		("SELECT id, text FROM {$globals->money->mpay_tprefix}paiements WHERE asso_id = {?}", $globals->asso('id'));

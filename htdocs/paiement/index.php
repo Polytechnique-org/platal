@@ -33,7 +33,7 @@ if($pay->flags->hasflag('old')){
     $page->trig("La transaction selectionnée est périmée.");
     $pay = new Payment();
 }
-$val  = ($op=="submit" && Env::has('montant')) ? Env::get('montant') : $pay->montant_def;
+$val  = (Env::has('montant')) ? Env::get('montant') : $pay->montant_def;
 
 if (($e = $pay->check($val)) !== true) {
     $page->trig($e);
@@ -48,10 +48,12 @@ if ($op=='submit') {
     if ($res->total()) $page->assign('transactions', $res);
 }
 
+$val = floor($val).".".substr(floor(($val - floor($val))*100+100),1);
 $page->assign('montant',$val);
 
 $page->assign('meth', $meth);
 $page->assign('pay',  $pay);
+$page->assign('evtlink', $pay->event());
 
 $page->assign('prefix',$globals->money->mpay_tprefix);
 $page->run();

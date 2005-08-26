@@ -39,14 +39,14 @@
   <hr />
   <table>
     <tr>
-      <td>Intitulé de l'événement :</td>
+      <td>Intitulé de l'événement&nbsp;:</td>
       <td>
         <input type="hidden" name="eid" value="{$evt.eid}" />
         <input type="text" name="intitule" value="{$evt.intitule}" size="45" maxlength="100" />
       </td>
     </tr>
     <tr>
-      <td>Evénement en raccourci (pour les mailings listes) :</td>
+      <td>Evénement en raccourci (pour les mailings listes)&nbsp;:</td>
       <td><input type="text" name="short_name" value="{$evt.short_name}" size="20"/></td>
     </tr>
     <tr>
@@ -90,10 +90,10 @@
       </td>
     </tr>
     <tr>
-      <td>Référence de paiement :
+      <td>Référence de paiement&nbsp;:
       </td>
       <td>
-        <select name="paiement" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'block':'none')">
+        <select name="paiement_id" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'block':'none')">
           {if $evt.paiement_id eq -2}
           <option value='-2'>Paiement en attente de validation</option>
           {/if}

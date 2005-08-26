@@ -89,7 +89,7 @@
   {if $montant > 0 || $paid > 0}
   <p {if $montant > $paid}class="erreur"{/if}>
   Pour cet événement tu dois payer {$montant|replace:'.':','}&nbsp;&euro; {if $paid > 0}, et tu as déjà payé {$paid|replace:'.':','}&nbsp;&euro;{/if}
-  {if $evt.paiement_id} [<a href="https://www.polytechnique.org/paiement/?ref={$evt.paiement_id}">Effectuer le paiement</a>]{/if}
+  {if $evt.paiement_id && $montant > $paid} [<a href="https://www.polytechnique.org/paiement/?ref={$evt.paiement_id}&montant={math equation="x - y" x=$montant y=$paid}">Effectuer le paiement</a>]{/if}
   </p>
   {/if}
   <div class="center">

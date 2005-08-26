@@ -45,4 +45,6 @@ $page->assign('appli_type2',$appli_type2);
 $page->assign('photo_pub',$photo_pub);
 $page->assign('nouvellephoto', $nouvellephoto);
 $page->assign('nickname', $nickname);
+
+$page->assign('synchro_ax', $synchro_ax);
 ?>

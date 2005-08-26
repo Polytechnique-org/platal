@@ -21,9 +21,9 @@
 
 
 $tabname_array = Array(
-    "general"  => "Informations\ngénérales",
+    "general"  => "Général",
     "adresses" => "Adresses\npersonnelles",
-    "poly"     => "Informations\npolytechniciennes",
+    "poly"     => "Groupes X\nBinets",
     "deco"     => "Décorations\nMédailles",
     "emploi"   => "Informations\nprofessionnelles",
     "skill"    => "Compétences\ndiverses",

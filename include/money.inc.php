@@ -33,6 +33,7 @@ class Payment
     var $montant_min;
     var $montant_max;
     var $montant_def;
+    var $asso_id;
 
     var $api = null;
 
@@ -43,14 +44,16 @@ class Payment
     {
         global $globals;
         $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
-        $res = $globals->xdb->query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def
+        $res = $globals->xdb->query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def, asso_id
                                        FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
-                $this->montant_min, $this->montant_max, $this->montant_def) = $res->fetchOneRow();
+                $this->montant_min, $this->montant_max, $this->montant_def, $this->asso_id) = $res->fetchOneRow();
         
         $this->montant_min = (float)$this->montant_min;
         $this->montant_max = (float)$this->montant_max;
         $this->flags       = new Flagset($flags);
+
+        return $link;
     }
 
     // }}}
@@ -83,6 +86,17 @@ class Payment
     function prepareform()
     {
         return $this->api->prepareform($this);
+    }
+
+    function event()
+    {
+        global $globals;
+        if ($this->asso_id)
+        {
+            $res = $globals->xdb->query("SELECT eid, a.diminutif FROM groupex.evenements AS e, groupex.asso AS a WHERE e.asso_id = {?} AND a.id = {?}", $this->asso_id, $this->asso_id);
+            return $res->fetchOneAssoc();
+        }
+        return null;
     }
 }
 

@@ -22,6 +22,7 @@
 // on ramène les données du profil connecté (uid paramètre de session)
 $sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
 		q.profile_mobile, q.profile_mobile_pub, q.profile_web, q.profile_web_pub, q.profile_freetext, q.profile_freetext_pub, q.profile_nick,
+                q.profile_from_ax,
                 a1.aid, a1.type, a2.aid, a2.type
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
@@ -32,6 +33,7 @@ $sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.promo_sorti
 $result = $globals->xdb->query($sql, Session::getInt('uid', -1));
 list($nom, $prenom, $nom_ini, $prenom_ini, $promo, $promo_sortie, $nom_usage, $nationalite,
 	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
+        $synchro_ax,
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 
 $result = $globals->xdb->query("SELECT pub FROM photo WHERE uid = {?}", Session::getInt('uid', -1));
@@ -54,11 +56,12 @@ replace_ifset($appli_type1,"appli_type1");
 replace_ifset($appli_type2,"appli_type2");
 replace_ifset($nickname,"nickname");
 
-if(Env::has('modifier') || Env::has('suivant')) {
+if(Env::has('modifier') || Env::has('suivant') && Env::get('old_tab') == 'general') {
     $mobile_pub = Env::get('mobile_pub');
     $web_pub = Env::has('web_pub')?'public':'private';
     $freetext_pub = Env::has('freetext_pub')?'public':'private';
     $photo_pub = Env::has('photo_pub')?'public':'private';
+    $synchro_ax = Env::has("synchro_ax")?1:0;
 }
 
 require_once("xorg.misc.inc.php");

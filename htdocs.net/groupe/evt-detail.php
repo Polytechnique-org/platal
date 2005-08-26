@@ -47,6 +47,10 @@ if (Env::get('ins')) {
 
 require_once('xnet/evenements.php');
 $evt = get_event_detail(Env::get('eid'));
+
+if (!$evt)
+    header("Location: evenements.php");
+    
 if (Env::has('ins')) {
     subscribe_lists_event($participate, Session::get("uid"), $evt['participant_list'], $evt['absent_list']);
     header("Location: evenements.php?backfrom=".Env::get('eid'));

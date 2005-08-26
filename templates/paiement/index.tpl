@@ -75,6 +75,11 @@ recevras une confirmation par email.
 {$pay->api->text}
 </p>
 {/if}
+{if $evtlink}
+<p class="erreur">
+Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='http://www.polytechnique.net/{$evtlink.diminutif}/evt-detail.php?eid={$evtlink.eid}'>inscrire</a>.
+</p>
+{/if}
 
 {else}
 

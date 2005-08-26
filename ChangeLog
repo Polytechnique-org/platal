@@ -13,20 +13,22 @@ Bug/Wish :
 
 	* Paiments :
 		- #336 : Micro -> Tele(payments).									-MC
-		- Fixed little text mistake in Payments menu						-CAT
+		- Fixed little text mistake in Payments menu.						-CAT
+		- Direct link from and to events.									-Car
 
 	* Profile :
 		- #330,333: Interface improvements.									-Car
 		- #332: User can precise why he asks for a usage name.				-Car
-		- #335: Already assigned promotion don't generate a request			-CAT
+		- #335: Already assigned promotion don't generate a request.		-CAT
+		- User can accept/refuse synchronisatio from AX by admin.			-Car
 	
 	* Xnet :
 		- Various bug fixes in events management.							-Car
 		- #334: Interface improvements.										-Car
 	
 	* User Interface:
-		- #337: Added link to trackers and support website for admins		-CAT
-		- #338: Broken FSF link fixed on donation page						-CAT
+		- #337: Added link to trackers and support website for admins.		-CAT
+		- #338: Broken FSF link fixed on donation page.						-CAT
 	
 ================================================================================
 VERSION 0.9.8														 18 Jul 2005

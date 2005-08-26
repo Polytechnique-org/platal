@@ -140,6 +140,36 @@
 </div>
 
 <div class="blocunite">
+  <table class="bicol" cellspacing="0" cellpadding="0" 
+    summary="Profil : Informations générales">
+    <tr>
+      <th>
+        Synchronisation avec l'AX
+      </th>
+    </tr>
+    <tr>
+      <td class"col">
+        Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui envoies. Tu peux choisir ici de récupérer directement ces données pour l'annuaire en ligne.
+      </td>
+    </tr>
+    <tr>
+      <td class="col">
+        <table class="flags" cellspacing="0" summary="Flags">
+          <tr>
+            <td class="orange">
+              <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
+            </td>
+            <td class="texte">
+              Autoriser la synchronisation depuis l'AX.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+    
+<div class="blocunite">
   <table class="bicol" cellspacing="0" cellpadding="0"
     summary="Profil: Trombinoscope">
     <tr>

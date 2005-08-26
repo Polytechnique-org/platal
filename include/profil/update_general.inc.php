@@ -41,12 +41,14 @@ $globals->xdb->execute(
             profile_nick={?},
             profile_mobile={?}, profile_mobile_pub={?},
             profile_web={?}, profile_web_pub={?},
-            profile_freetext={?}, profile_freetext_pub={?}
+            profile_freetext={?}, profile_freetext_pub={?},
+            profile_from_ax = {?}
         WHERE user_id = {?}",
             $nickname,
             $mobile, $mobile_pub,
             $web, $web_pub,
             $freetext, $freetext_pub,
+            $synchro_ax,
             Session::getInt('uid', -1));
 
 if ($nickname != $nickname_anc) {
