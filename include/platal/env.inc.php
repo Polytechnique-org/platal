@@ -350,7 +350,7 @@ function fix_gpc_magic(&$item, $key) {
 
 function unfix_gpc_magic(&$item, $key) {
     if (is_array($item)) {
-        array_walk($item, 'fix_gpc_magic');
+        array_walk($item, 'unfix_gpc_magic');
     } else {
         $item = addslashes($item);
     }

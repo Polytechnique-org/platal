@@ -12,7 +12,7 @@ $pub_tjs = array(
 // Liens apparaissant de façon aléatoire
 $pub_rnd = array(
     "newsletter/show.php?nid=last"		    => "Afficher la dernière newsletter" ,
-    "http://asso.polytechnique.org"		    => "Vers les autres sites polytechniciens" ,
+    "http://www.polytechnique.net"		    => "Vers les autres sites polytechniciens" ,
     "trombipromo.php?xpromo={$_SESSION["promo"]}"   => "Voir le trombi de ma promo" ,
     "banana/"                                       => "Un petit tour du côté des forums !!"
     ) ;

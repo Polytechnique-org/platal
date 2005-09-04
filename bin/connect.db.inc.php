@@ -21,7 +21,7 @@
 
 ini_set('include_path','/usr/share/php:../include:../../include');
 
-require('xorg.inc.php');
-require('xorg.misc.inc.php');
+require_once('xorg.inc.php');
+require_once('xorg.misc.inc.php');
 
 ?>
