@@ -75,8 +75,8 @@
     <li>Utiliser son adresse <strong>@m4x.org</strong> plutot que @polytechnique.org, elle est plus discrète
     </li>
     <li>rendre son adresse mail invalide : par exemple, sur les forums Usenet, il n'est pas rare de
-    rencontrer des adresses mails du type &lt;j.dupont@_NOSPAM_wanadoo.fr&gt;. Tous les humains
-    sauront enlever le <em>_NOSPAM_</em> qui a été ajouté, mais les robots non.
+    rencontrer des adresses mails du type &lt;j.dupont@_PASDESPAM_wanadoo.fr&gt;. Tous les humains
+    sauront enlever le <em>_PASDESPAM_</em> qui a été ajouté, mais les robots non.
     </li>
     <li>Il est aussi possible d'utiliser des services comme ceux de
     <a href="http://marreduspam.com/">http://marreduspam.com/</a> qui reste de loin le moyen le plus

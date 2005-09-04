@@ -33,12 +33,10 @@
 {/if}
 {if $retour == $smarty.const.ERROR_LOOP_EMAIL}
   <p class="erreur">
-  Erreur: {$smarty.session.forlife}@{#globals.mail.domain#} doit renvoyer vers un email
-  existant valide. En particulier, il ne peut pas être renvoyé vers lui-même,
-  ni son équivalent en {#globals.mail.domain2#}.
+  Erreur: {$smarty.session.forlife}@{#globals.mail.domain#} ne doit pas être renvoyé
+  vers lui-même, ni vers son équivalent en {#globals.mail.domain2#} ni vers polytechnique.edu.
   </p>
 {/if}
-<form action="{$smarty.server.PHP_SELF}" method="post">
   <h1>
     Tes adresses de redirection
   </h1>
@@ -74,6 +72,7 @@
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
     <a href="{rel}/docs/doc_smtp.php">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
+<form action="{$smarty.server.PHP_SELF}" method="post">
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
@@ -101,19 +100,32 @@
         <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;email={$e->email}">retirer</a></td>
       </tr>
       {/foreach}
+      <tr class="{cycle values="pair,impair"}"><td colspan="4">
+		&nbsp;<br />
+		Ajouter une adresse email :
+        <input type="text" size="35" maxlength="60" name="email" value="" />
+        &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
+      </td></tr>
     </table>
     <br />
-    <input type="submit" value="Mettre à jour les emails actifs" name="emailop" />
+    <input type="submit" value="Valider les modifications" name="emailop" />
   </div>
 </form>
-  <p>
-    Tu peux ajouter à cette liste une adresse email en la tapant ici et en cliquant sur Ajouter.
-  </p>
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <div>
-    <input type="text" size="35" maxlength="60" name="email" value="" />
-    &nbsp;&nbsp;
-    <input type="submit" value="ajouter" name="emailop" />
-  </div>
-</form>
+
+<h1>Pour les Élèves (non encore diplômés)</h1>
+<p>
+  L'X te fourni aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
+  une redirection vers «login»@poly.polytechnique.fr. <a href="https://mail.polytechnique.edu/">
+  Tu peux modifier cette redirection</a> et la faire pointer vers ton adresse
+  {$smarty.session.forlife}@{#globals.mail.domain#} (attention, cela demande de la concentration).
+</p>
+<p>
+  Si tu utilises le service POP de poly pour récupérer tes mails dans ton logiciel de courrier,
+  l'équipe de Polytechnique.org te conseille de rediriger :
+</p>
+<ul>
+  <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}</li>
+  <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers «login»@poly.polytechnique.fr</li>
+</ul>
+
 {* vim:set et sw=2 sts=2 sws=2: *}

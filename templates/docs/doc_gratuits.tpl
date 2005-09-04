@@ -108,16 +108,16 @@
 <p>
   D'autres questions en vrac que nous nous sommes posées pour classer les
   services : 
-  Existence d'un webmail efficace?
+  Existence d'un webmail efficace ?
   Présence du champ BCC (ou CCI) ?
   Possibilité d'insérer des pièces jointes ?
   Possibilité de mettre en service un répondeur automatique pendant 
-  une absence prolongée?
+  une absence prolongée ?
   Possibilité de filtrer ses e-mails ?
   Possibiliter de rediriger ses e-mails sur une autre boîte e-mail ?
   Nombre de mails pouvant être stockés sur le serveur ?
   Présence d'une petite bannière de publicité en bas de chaque e-mail ?
-  Présence du champ FROM ou Reply-To?...
+  Présence du champ FROM ou Reply-To ?&hellip;
 </p>
 <h2>Benchmarks</h2>
 <p>
@@ -130,61 +130,42 @@
 </p>
 <p>
 <strong>Les forums de discusssion, notament <a href="{rel}/banana/?group=xorg.informatique.divers">xorg.informatique.divers</a>
-  te permettront de recevoir les conseils du moment sur quel fournisseur il vaut mieux choisir</strong>
+  te permettront de recevoir les conseils du moment sur quel fournisseur il
+  vaut mieux choisir</strong>
 </p>
 <br />
 <table class="bicol" cellspacing="0" cellpadding="4" summary="Benchmark">
   <tr>
-    <th>
-      Qualité de service
-    </th>
-    <th>
-      Nom du service
-    </th>
+    <th>Qualité de service</th>
+    <th>Nom du service</th>
   </tr>
   <tr>
-    <td class="titre">
-      à éviter impérativement
-    </td>
-    <td>
-      caramail.com
-    </td>
+    <td class="titre">bonne ou satisfaisante</td>
+    <td>free.fr, gmail.com, laposte.fr, ifrance.com, libertysurf.fr, netcourrier.com</td>
   </tr>
   <tr>
-    <td class="titre">
-      mauvaise
-    </td>
-    <td>
-      mail.com<br />
-      multimania.com
-    </td>
+    <td class="titre">moyenne</td>
+    <td>freesurf.fr, yahoo.fr</td>
   </tr>
   <tr>
-    <td class="titre">
-      moyenne
-    </td>
-    <td>
-      freesurf.fr<br />
-      hotmail.com<br />
-      yahoo.fr
-    </td>
+    <td class="titre">mauvaise</td>
+    <td>mail.com, multimania.com</td>
   </tr>
   <tr>
-    <td class="titre">
-      bonne ou satisfaisante
-    </td>
-    <td>
-      free.fr<br />
-      ifrance.com<br />
-      libertysurf.fr
-    </td>
+    <td class="titre">à éviter impérativement</td>
+    <td>hotmail.com, hotmail.fr, msn.fr, caramail.com, aol.com, aol.fr</td>
   </tr>
 </table> 
 <h2>Commentaires</h2>
 <p>
-  Il convient surtout d'éviter caramail.com dont les performances sont 
-  désespérantes, les logs prouvent que chaque semaine des mails sont 
-  <strong>PERDUS</strong> à destination de caramail. Pour le reste, les services mauvais 
+  Il convient surtout d'éviter hotmail ou msn, qui marquent par défaut tous les
+  mails passant par Polytechnique.org comme spam, ce qui souvent se traduit par une
+  <strong>PERTE</strong> de mails. Par ailleurs, il faut aussi éviter caramail.com
+  dont les performances sont désespérantes, les logs prouvent que chaque semaine des
+  mails sont <strong>PERDUS</strong> à destination de caramail.
+</p>
+<p>
+  Pour le reste, les services mauvais 
   sont ceux qui connaissent des pannes régulières et relativement fréquentes, 
   le plus souvent sans aucune perte de mail mais avec des retards qui peuvent 
   atteindre plusieurs jours. En ce qui concerne les services moyens, on trouve 

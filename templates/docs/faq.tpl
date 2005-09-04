@@ -32,64 +32,64 @@ que des informations manquent.
 <ul>
   <li> 
   <a href="#config">Quels sont les paramètres et la configuration nécessaires 
-    pour se connecter correctement ?</a>
+    pour se connecter correctement ?</a>
   </li>
   <li>
-  <a href="#passe">J'ai perdu mon mot de passe, que faire ?</a>
+  <a href="#passe">J'ai perdu mon mot de passe, que faire ?</a>
   </li>
   <li>
-  <a href="#acces">Je n'arrive pas à me connecter ! Que faut-il essayer ?</a>
+  <a href="#acces">Je n'arrive pas à me connecter ! Que faut-il essayer ?</a>
   </li>
 </ul>
 <h2>Questions générales</h2>
 <ul>
   <li> 
-  <a href="#pop">Comment récupérer mon courrier sur polytechnique.org ?</a>
+  <a href="#pop">Comment récupérer mon courrier sur polytechnique.org ?</a>
   </li>
   <li>
   <a href="#smtp">Comment envoyer mon courrier avec comme champ expéditeur 
-    (From) mon adresse en polytechnique.org ?</a>
+    (From) mon adresse en polytechnique.org ?</a>
   </li>
   <li>
-  <a href="#nntp">Comment lire les forums avec mon logiciel de courrier éléctronique ?</a> 
+  <a href="#nntp">Comment lire les forums avec mon logiciel de courrier éléctronique ?</a> 
   </li>
   <li>
-  <a href="#carva">Quelle est l'origine du nom de domaine carva.org ?</a>
+  <a href="#carva">Quelle est l'origine du nom de domaine carva.org ?</a>
   </li>
 </ul>
 <h2>Remplissage des champs</h2>
 <ul>
   <li> 
   <a href="#mails1">Quelle est la différence entre les mails promo, emploi, 
-    et les autres mails collectifs ?</a>
+    et les autres mails collectifs ?</a>
   </li>
   <li>
-  <a href="#flags">Quelle est la différence entre les cases de visibilité vert ou orange ?</a>
+  <a href="#flags">Quelle est la différence entre les cases de visibilité vert ou orange ?</a>
   </li>
   <li>
-  <a href="#niveau_langue">A quoi correspondent les niveaux de langues ?</a>
+  <a href="#niveau_langue">A quoi correspondent les niveaux de langues ?</a>
   </li>
   <li>
-  <a href="#cv">Faut-il remplir le CV et comment ?</a>
+  <a href="#cv">Faut-il remplir le CV et comment ?</a>
   </li>
 </ul>
 <h2>Utilisation post-connexion</h2>
 <ul>
   <li>
   <a href="#ethique">Quelle est l'éthique que vous privilégiez pour les mails 
-    collectifs ?</a>
+    collectifs ?</a>
   </li>
   <li>
-  <a href="#mails2">Puis-je envoyer un mail à des X et comment ?</a>
+  <a href="#mails2">Puis-je envoyer un mail à des X et comment ?</a>
   </li>
   <li>
-  <a href="#secu">Puis-je utiliser le même mot de passe qu'ailleurs ?</a>
+  <a href="#secu">Puis-je utiliser le même mot de passe qu'ailleurs ?</a>
   </li>
   <li>
-  <a href="#secu2">Quel est le niveau de sécurité de Polytechnique.org ?</a>
+  <a href="#secu2">Quel est le niveau de sécurité de Polytechnique.org ?</a>
   </li>
   <li>
-  <a href="#panne">Vous tombez souvent en panne ?</a>
+  <a href="#panne">Vous tombez souvent en panne ?</a>
   </li>
 </ul>
 <br /><br />
@@ -99,7 +99,7 @@ que des informations manquent.
 <a id="config"></a>
 <h2>
   Quels sont les paramètres et la configuration nécessaires pour se connecter 
-  correctement ?
+  correctement ?
 </h2>
 <div class="explication">
   <p>
@@ -111,7 +111,7 @@ que des informations manquent.
 </div>    
 <a id="passe"></a>
 <h2>
-  J'ai perdu mon mot de passe, que faire ?
+  J'ai perdu mon mot de passe, que faire ?
 </h2>
 <div class="explication">
   <p>
@@ -123,14 +123,14 @@ que des informations manquent.
 </div>
 <a id="acces"></a>
 <h2>
-  Je n'arrive pas à me connecter ! Que faut-il essayer ?
+  Je n'arrive pas à me connecter ! Que faut-il essayer ?
 </h2>
 <div class="explication">
   <p>
   Bon, il y a beaucoup de possibilités, on va les prendre dans l'ordre.
   </p>
   <p>
-  As-tu déjà accédé au site ?
+  As-tu déjà accédé au site ?
   </p>
   <p>
   Si oui, vérifie que tu rentres correctement ton login (début de ton adresse 
@@ -142,17 +142,17 @@ que des informations manquent.
   <p>
   Une fois que tu es sûr de ton mot de passe et de ton login, vérifie que ton 
   browser exécute correctement le javascript. Par exemple, la date est-elle 
-  correctement affichée en haut de la page ? Le javascript est complètement 
+  correctement affichée en haut de la page ? Le javascript est complètement 
   nécessaire, car ton mot de passe doit être crypté localement pour ne pas 
   passer en clair sur Internet. C'est à ça qu'il sert notamment pour la 
   connexion.
   </p>
   <p>
-  Sinon, tu n'es peut-être pas inscrit (en es-tu vraiment sûr ?). Pour
+  Sinon, tu n'es peut-être pas inscrit (en es-tu vraiment sûr ?). Pour
   le savoir, vérifie que ton adresse en polytechnique.org répond. Si c'est le 
   cas, tu es inscrit, sinon rends-toi sur la page d'inscription : pour une 
   raison quelconque, ton inscription n'existe pas dans notre base. Tu viens de 
-  t'inscrire et l'accès ne marche pas ? Attention, tu n'as pas dû confirmer ta 
+  t'inscrire et l'accès ne marche pas ? Attention, tu n'as pas dû confirmer ta 
   pré-inscription. Une inscription ce n'est pas juste un formulaire à remplir 
   et puis voilà. C'est un échange de mails ensuite, et enfin la visite d'une 
   page web bien précise reçue par e-mail. Si tu n'as rien reçu par e-mail, tu 
@@ -166,7 +166,7 @@ que des informations manquent.
 <hr />
 <h1>Questions générales</h1>
 <a id="pop"></a>
-<h2>Comment récupérer mon courrier sur polytechnique.org ?</h2>
+<h2>Comment récupérer mon courrier sur polytechnique.org ?</h2>
 <div class="explication">
   <p>
   Les mails envoyés sur polytechnique.org sont redirigés vers la ou les adresses e-mails 
@@ -178,7 +178,7 @@ que des informations manquent.
 <a id="smtp"></a> 
 <h2>
   Comment envoyer mon courrier avec comme champ expéditeur (From) mon adresse en 
-  polytechnique.org ?
+  polytechnique.org ?
 </h2>
 <div class="explication">
   <p>
@@ -196,7 +196,7 @@ que des informations manquent.
 
 <a id="nntp"></a> 
 <h2>
-  Comment lire les forums avec mon logiciel de courrier électronique ?
+  Comment lire les forums avec mon logiciel de courrier électronique ?
 </h2>
 <div class="explication">
   <p>
@@ -209,7 +209,7 @@ que des informations manquent.
 
 <a id="carva"></a>
 <h2>
-  Quelle est l'origine du nom de domaine carva.org ?
+  Quelle est l'origine du nom de domaine carva.org ?
 </h2>
 <div class="explication">
   <p>
@@ -245,7 +245,7 @@ que des informations manquent.
 <h1>Remplissage des champs</h1>
 <a id="mails1"></a> 
 <h2>
-  Quelle est la différence entre les mails promo, emploi, et les autres mails collectifs ?
+  Quelle est la différence entre les mails promo, emploi, et les autres mails collectifs ?
 </h2>
 <div class="explication">
   <p>
@@ -272,7 +272,7 @@ que des informations manquent.
 </div>
 <a id="flags"></a> 
 <h2>
-  Quelle est la différence entre les cases de visibilité ?
+  Quelle est la différence entre les cases de visibilité ?
 </h2>
 <div class="explication">
   <p>
@@ -290,7 +290,7 @@ que des informations manquent.
 </div>
 <a id="niveau_langue"></a>
 <h2>
-  A quoi correspondent les niveaux de langues ?
+  A quoi correspondent les niveaux de langues ?
 </h2>
 <div class="explication">
   <ul>
@@ -349,7 +349,7 @@ que des informations manquent.
 
 <a id="cv"></a>
 <h2>
-  Faut-il remplir le CV et comment ?
+  Faut-il remplir le CV et comment ?
 </h2>
 <div class="explication">
   <p>
@@ -384,7 +384,7 @@ que des informations manquent.
 <h1>Utilisation post-connexion</h1>
 <a id="ethique"></a>
 <h2>
-  Quelle est l'éthique que vous privilégiez pour les mails collectifs ?
+  Quelle est l'éthique que vous privilégiez pour les mails collectifs ?
 </h2>
 <div class="explication">
   <p>
@@ -396,7 +396,7 @@ que des informations manquent.
 </div>
 <a id="mails2"></a> 
 <h2>
-  Puis-je envoyer un mail à des X et comment ?
+  Puis-je envoyer un mail à des X et comment ?
 </h2>
 <div class="explication">
   <p>
@@ -408,7 +408,7 @@ que des informations manquent.
   Comme le message au login, ou les forums. Evite les mails promo quand tu peux !
   </p>
   <p>
-  Tu veux recruter des X pour des stages ou des embauches ? Il n'y a pas de règle 
+  Tu veux recruter des X pour des stages ou des embauches ? Il n'y a pas de règle 
   générale dans ce domaine, il faut nous contacter pour voir à qui on peut l'envoyer. 
   Si tu es inscrit, tu peux commencer par l'envoyer à une mailing list bien choisie 
   si elle existe déjà... Sinon, s'il faut tirer des profils de la base de données 
@@ -419,7 +419,7 @@ que des informations manquent.
   du service.
   </p>
   <p>
-  Tu as besoin d'envoyer un mail à 50 X assez souvent ? Malheureusement pour ton 
+  Tu as besoin d'envoyer un mail à 50 X assez souvent ? Malheureusement pour ton 
   mail, la configuration actuelle va bloquer au bout du 20ème mail. Ce besoin est 
   exactement celui d'une mailing list. Pour l'instant, coupe ton mail en plusieurs 
   envois.
@@ -427,7 +427,7 @@ que des informations manquent.
 </div>
 <a id="secu"></a>
 <h2>
-  Puis-je utiliser le même mot de passe qu'ailleurs ?
+  Puis-je utiliser le même mot de passe qu'ailleurs ?
 </h2>
 <div class="explication">
   <p>
@@ -450,7 +450,7 @@ que des informations manquent.
 
 <a id="secu2"></a>
 <h2>
-  Quel est le niveau de sécurité de Polytechnique.org ?
+  Quel est le niveau de sécurité de Polytechnique.org ?
 </h2>
 <div class="explication">
   <p>
@@ -465,13 +465,13 @@ que des informations manquent.
   est correct par rapport au type d'information contenu. Il est possible de simuler 
   un accès à partir de la connaissance d'un mot de passe crypté et d'un challenge, 
   mais comme d'un autre côté de nombreuses informations sont publiques, y a-t-il 
-  vraiment intérêt à développer toute cette ingénierie pour si peu ?
+  vraiment intérêt à développer toute cette ingénierie pour si peu ?
   </p>
 </div>
 
 <a id="panne"></a>
 <h2>
-  Vous tombez souvent en panne ?
+  Vous tombez souvent en panne ?
 </h2>
 <div class="explication">
   <p>

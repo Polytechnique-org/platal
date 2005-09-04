@@ -146,7 +146,7 @@
       </div>
     </td>
   </tr>
-  <tr class="impair">
+  <tr class="pair">
     <td class="half">
       <div class="lien">
         <a href="doc_pocketpc.php">Pocket PC</a>
@@ -155,6 +155,8 @@
         Configurer Windows pour utiliser le SMTP sécurisé de
         Polytechnique.org sur un Pocket PC.
       </div>
+    </td>
+    <td>
     </td>
   </tr>
 </table>
