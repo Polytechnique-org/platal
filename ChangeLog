@@ -3,10 +3,16 @@ VERSION 0.9.9														 18 Jul 2005
 
 New :
 
+	* Profile :
+		- User can now accept synchronisatio from AX by admin.				-Car
+		
 	* Xnet :
 		- Groups can be non subscribable.									-Car
 		
 Bug/Wish :
+
+	* Admin :
+		- #337: Add link to trackers and support websites for admins.		-CAT
 
 	* Core :
 		- #310: Display the max number of photo in trombipromo.				-Car
@@ -20,14 +26,12 @@ Bug/Wish :
 		- #330,333: Interface improvements.									-Car
 		- #332: User can precise why he asks for a usage name.				-Car
 		- #335: Already assigned promotion don't generate a request.		-CAT
-		- User can accept/refuse synchronisatio from AX by admin.			-Car
 	
 	* Xnet :
 		- Various bug fixes in events management.							-Car
 		- #334: Interface improvements.										-Car
 	
 	* User Interface:
-		- #337: Added link to trackers and support website for admins.		-CAT
 		- #338: Broken FSF link fixed on donation page.						-CAT
 	
 ================================================================================
