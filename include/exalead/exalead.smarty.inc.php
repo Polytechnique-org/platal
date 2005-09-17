@@ -1,7 +1,7 @@
 <?php
 
 
-$exa_max_length = 15;
+$exa_max_length = 20;
 
 function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_groupe', $img_path = 'images/'){
   $compteur = 0;
@@ -26,7 +26,8 @@ function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_gr
         <a style="text-decoration: none;"
 	    href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->refine_href;?>&amp;_f=xml2"
 		title="Afficher seulement ces résultats"
-	    ><img style="vertical-align: text-bottom;" src="images/select.png" alt="[+]" /><?php echo (empty($categorie->display)?$categorie->name:$categorie->display).(empty($categorie->count)?'':' ('.$categorie->count.')');?></a>
+	    ><img style="vertical-align: text-bottom;" src="images/select.png" alt="[+]" />
+	    <?php echo (empty($categorie->display)?$categorie->name:$categorie->display).(empty($categorie->count)?'':' ('.$categorie->count.')');?></a>
 	<a href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->exclude_href;?>&amp;_f=xml2"
 		title="Ne pas afficher ces résultats"
 	       ><img style="vertical-align: text-bottom;"  src="images/moins.png" alt="[-]"/></a>
@@ -35,7 +36,8 @@ function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_gr
     elseif($categorie->is_excluded()){
 ?>
         <span style="text-decoration: line-through;">
-	  <a href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->reset_href;?>&amp;_f=xml2"><img style="vertical-align: text-bottom;" src="images/select.png" alt="[+]" /> <?php echo $categorie->display;?></a>
+	  <a href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->reset_href;?>&amp;_f=xml2"><img style="vertical-align: text-bottom;" src="images/select.png" alt="[+]" /> 
+	  <?php echo $categorie->display;?></a>
 	</span>
 <?php
     }
