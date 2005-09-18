@@ -17,6 +17,8 @@ $error_key = "You didn't provide me with a valid cipher key...";
 function get_annuaire_infos($method, $params) {
     global $error_mat, $error_key, $globals;
 
+      
+
     //verif du mdp
     if(!isset($params[0]) || ($params[0] != $globals->manageurs->manageurs_pass)){return false;}
     //si on a adresse == -1 => on ne recupère aucune adresse
@@ -50,7 +52,7 @@ function get_annuaire_infos($method, $params) {
 
                     }
 
-        //traitement des adresss si necessaire
+        //traitement des adresses si necessaire
         if (isset($params[2])) {
             if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
                         $adr['pays'], $adr['tel'], $adr['fax']) = $res->next())
@@ -117,8 +119,41 @@ function get_annuaire_infos($method, $params) {
     } else {//le matricule n'etait pas en argument
         $args  = array("erreur" => 1, "erreurstring" => $error_mat);
         $reply = xmlrpc_encode_request(NULL,$args);
-    } 
+    }
+            
     return $reply; 
 } 
+
+function get_nouveau_infos($method, $params) {
+    global $error_mat, $error_key, $globals;
+    //verif du mdp
+    if(!isset($params[0]) || ($params[0] != $globals->manageurs->manageurs_pass)){return false;}
+    if( !empty($params[1]) ){ // on verifie qu'on a bien un matricule
+
+        $res = $globals->xdb->query(
+                "SELECT  a.nom, a.nom_usage,a.prenom,a.flags='femme' as femme ,a.deces!= 0 as decede ,a.naissance,a.promo,al.alias as mail 
+                FROM  auth_user_md5 AS a
+                INNER JOIN aliases as al ON a.user_id=al.id
+                WHERE al.flags='bestalias' and  a.matricule = {?}",$params[1]);
+        $data=$res->fetchOneAssoc();
+        //$data['mail'].='@polytechnique.org';
+
+        
+        //on commence le cryptage des donnees
+        if (manageurs_encrypt_init($params[1]) == 1) {//on a pas trouve la cle pour crypter
+            $args  = array("erreur" => 3, "erreurstring" => $error_key);
+            $reply = xmlrpc_encode_request(NULL,$args);
+        } else {
+            $reply = manageurs_encrypt_array($data);
+            manageurs_encrypt_close();
+        }
+
+    }
+    else{
+    $reply=false;
+    }
+        return $reply;
+
+}
 
 ?>
