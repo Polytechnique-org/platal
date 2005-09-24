@@ -22,6 +22,7 @@
 require_once("xorg.misc.inc.php");
 
 // {{{ function mark_from_mail
+
 function mark_from_mail($uid, $email) {
     global $globals;
     $res = $globals->xdb->query(
@@ -35,8 +36,8 @@ function mark_from_mail($uid, $email) {
     return "\"".$sender['prenom']." ".$sender['nom']."\" <".$sender['alias']."@polytechnique.org>";
     
 }
-// }}}
 
+// }}}
 // {{{ function mark_text_mail
 
 function mark_text_mail($uid, $email)
@@ -75,7 +76,6 @@ function mark_text_mail($uid, $email)
     return array($to, $title, $text);
 }
 // }}}
-
 // {{{ function mark_send_mail()
 
 function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='') 
