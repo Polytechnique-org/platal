@@ -1,487 +1,490 @@
 ================================================================================
-VERSION 0.9.9														 18 Jul 2005
+VERSION 0.9.9                                                        ?? Oct 2005
 
 New :
 
-	* Profile :
-		- User can now accept synchronisatio from AX by admin.				-Car
-		
-	* Xnet :
-		- Groups can be non subscribable.									-Car
-		- Most Wanted Feature : directories syncrhonization with lists.		-MC
-		
+    * Profile :
+        - User can now accept synchronisatio from AX by admin.              -Car
+
+    * Xnet :
+        - Groups can be non subscribable.                                   -Car
+        - Most Wanted Feature : directories syncrhonization with lists.     -MC
+
 Bug/Wish :
 
-	* Admin :
-		- #337: Add link to trackers and support websites for admins.		-CAT
+    * Admin :
+        - #337: Add link to trackers and support websites for admins.       -CAT
 
-	* Core :
-		- #310: Display the max number of photo in trombipromo.				-Car
+    * Core :
+        - #310: Display the max number of photo in trombipromo.             -Car
 
-	* Paiments :
-		- #336 : Micro -> Tele(payments).									-MC
-		- Fixed little text mistake in Payments menu.						-CAT
-		- Direct link from and to events.									-Car
+    * Mails :
+        - #327: broken mail test is more explicit for unaware users.        -MC
 
-	* Profile :
-		- #330,333: Interface improvements.									-Car
-		- #332: User can precise why he asks for a usage name.				-Car
-		- #335: Already assigned promotion don't generate a request.		-CAT
-	
-	* Xnet :
-		- Various bug fixes in events management.							-Car
-		- #334: Interface improvements.										-Car
-	
-	* User Interface:
-		- #338: Broken FSF link fixed on donation page.						-CAT
-	
+    * Paiments :
+        - #336 : Micro -> Tele(payments).                                   -MC
+        - Fixed little text mistake in Payments menu.                       -CAT
+        - Direct link from and to events.                                   -Car
+
+    * Profile :
+        - #330,333: Interface improvements.                                 -Car
+        - #332: User can precise why he asks for a usage name.              -Car
+        - #335: Already assigned promotion don't generate a request.        -CAT
+
+    * Xnet :
+        - Various bug fixes in events management.                           -Car
+        - #334: Interface improvements.                                     -Car
+
+    * User Interface:
+        - #338: Broken FSF link fixed on donation page.                     -CAT
+
 ================================================================================
-VERSION 0.9.8														 18 Jul 2005
+VERSION 0.9.8                                                        18 Jul 2005
 
 New :
 
-	* Admin :
-		- Synchronisations with geoloc.org.									-Car
+    * Admin :
+        - Synchronisations with geoloc.org.                                 -Car
 
 Bug/Wish :
 
-	* Admin :
-		- #323: admin link in fiche opens out of the popup.					-Car
-		- #324: admin can modify the usage name.							-Car
+    * Admin :
+        - #323: admin link in fiche opens out of the popup.                 -Car
+        - #324: admin can modify the usage name.                            -Car
 
-	* Profile :
-		- User can delete his own melix.									-Car
-		- #328,329: bug fixes and direct acess to public fiche.				-Car
-		- #331: antispam option didn't work with Safari.					-Car
+    * Profile :
+        - User can delete his own melix.                                    -Car
+        - #328,329: bug fixes and direct acess to public fiche.             -Car
+        - #331: antispam option didn't work with Safari.                    -Car
 
-	* Lists :
-		- #318: Deletion of email with + in aliases.						-Car
-	
+    * Lists :
+        - #318: Deletion of email with + in aliases.                        -Car
+
 ================================================================================
-VERSION 0.9.7														 21 Jun 2005
+VERSION 0.9.7                                                        21 Jun 2005
 
 New :
 
-	* Profile :
-		- Address parser.													-Car
-		
-	* Search :
-		- Nickname are used in fast search.									-Car
-		- Firefox searchplugin for quick search.							-Car
+    * Profile :
+        - Address parser.                                                   -Car
 
-	* Xnet :
-		- Events management.												-Car
-		- Events using paiements.											-Car
-		- Sending mail to all the participants/absents of an event.			-Car
+    * Search :
+        - Nickname are used in fast search.                                 -Car
+        - Firefox searchplugin for quick search.                            -Car
+
+    * Xnet :
+        - Events management.                                                -Car
+        - Events using paiements.                                           -Car
+        - Sending mail to all the participants/absents of an event.         -Car
 
 Bug/Wish :
 
-	* Core :
-		- #78,302: accept spaces in login.									-Car
-		
-	* Fiche :
-		- #308: organizing layout.											-Car
+    * Core :
+        - #78,302: accept spaces in login.                                  -Car
 
-	* Lists :
-		- #23: multiple inscriptions.										-Car
+    * Fiche :
+        - #308: organizing layout.                                          -Car
 
-	* Xnet :
-		- #311,312: private members list.									-Car
-		- Inscription in a group with no admin.								-Car
-		
+    * Lists :
+        - #23: multiple inscriptions.                                       -Car
+
+    * Xnet :
+        - #311,312: private members list.                                   -Car
+        - Inscription in a group with no admin.                             -Car
+
 Fixes (from 0.9.6 branch) :
 
-	* Core :
-		- #316: locale was not set correctly.  dates are in french again.	-MC
+    * Core :
+        - #316: locale was not set correctly.  dates are in french again.   -MC
 
-	* Search :
-		- #307: fix bad escaping in advanced search.						-MC
+    * Search :
+        - #307: fix bad escaping in advanced search.                        -MC
 
-	* Xnet :
-		- Have a connection link even on index page.						-MC
-		- Deleting and securing deletion of empty aliases.					-Car
-		- #314: fix bad links to categories									-Car
+    * Xnet :
+        - Have a connection link even on index page.                        -MC
+        - Deleting and securing deletion of empty aliases.                  -Car
+        - #314: fix bad links to categories                                 -Car
 
 ================================================================================
-VERSION 0.9.6														 07 May 2005
+VERSION 0.9.6                                                        07 May 2005
 
 New :
 
-	* Profile :
-		- Stayed down students (orange) management.							-Car
-		
-	* Search :
-		- Last improvements (clean code for search now !).					-MC
+    * Profile :
+        - Stayed down students (orange) management.                         -Car
 
-	* Stats :
-		- Drop mail stats pages (buggy and not accurate anymore).			-MC
+    * Search :
+        - Last improvements (clean code for search now !).                  -MC
 
-	* Polytechnique.net in now in plat/al !									-MC
+    * Stats :
+        - Drop mail stats pages (buggy and not accurate anymore).           -MC
+
+    * Polytechnique.net in now in plat/al !                                 -MC
 
 Bug/Wish :
 
-	* Admin :
-		- #298: On su exit, go back to SU page on the given account.		-MC
-		- #300: Notify hotliners for validation comments.					-Car
-		- #301: Some design issues solved for validation.					-MC
+    * Admin :
+        - #298: On su exit, go back to SU page on the given account.        -MC
+        - #300: Notify hotliners for validation comments.                   -Car
+        - #301: Some design issues solved for validation.                   -MC
 
-	* Misc :
-		- #290: Date display with no preceding 0.							-Car
+    * Misc :
+        - #290: Date display with no preceding 0.                           -Car
 
-	* Profile :
-		- #299: Be more specific wrt given name for women.					-MC
+    * Profile :
+        - #299: Be more specific wrt given name for women.                  -MC
 
 Fixes (from 0.9.5 branch) :
 
-	* Search :
-		- #304: Next/Prev links were missing if #pages was 2.				-MC
+    * Search :
+        - #304: Next/Prev links were missing if #pages was 2.               -MC
 
 ================================================================================
-VERSION 0.9.5														 07 Apr 2005
+VERSION 0.9.5                                                        07 Apr 2005
 
 New :
 
-	* Core :
-		- Improve login/exit wrt cookie.									-MC
+    * Core :
+        - Improve login/exit wrt cookie.                                    -MC
 
-	* Docs :
-		- use of secure SMTP on a pocket PC.								-Car
-		
-	* Fiche :
-		- A public fiche is now available for visitors.						-Car
-		
-	* Money :
-		- lighter code and support for a PayPal account.					-Car
-		
-	* Profile :
-		- One can choose precisely which fields appear on his public fiche.	-Car
-		- Accents and special chars in name and first name					-Car
-		- Spouse name extended to usage name.								-Car
+    * Docs :
+        - use of secure SMTP on a pocket PC.                                -Car
 
-	* Register :
-		- Already subscribed members now have a warning.					-MC
-	
-	* Search :
-		- Public searches display more information.							-Car
+    * Fiche :
+        - A public fiche is now available for visitors.                     -Car
+
+    * Money :
+        - lighter code and support for a PayPal account.                    -Car
+
+    * Profile :
+        - One can choose precisely which fields appear on his public fiche. -Car
+        - Accents and special chars in name and first name                  -Car
+        - Spouse name extended to usage name.                               -Car
+
+    * Register :
+        - Already subscribed members now have a warning.                    -MC
+
+    * Search :
+        - Public searches display more information.                         -Car
 
 Bug/Wish :
 
-	* Admin :
-		- #291: change bestalias when alias disappear.						-Car
-		
-	* Core :
-		- #279, #281: permanent connexion explanations.					 -MC/Car
+    * Admin :
+        - #291: change bestalias when alias disappear.                      -Car
 
-	* Fiche :
-		- #289: hide empty photos in public fiche.							-Car
-		
-	* Misc :
-		- #283,285,286,287: text modifications in docs and index page.		-Car
+    * Core :
+        - #279, #281: permanent connexion explanations.                  -MC/Car
 
-	* Profile :
-		- #278: professionnal email and web site.							-Car
+    * Fiche :
+        - #289: hide empty photos in public fiche.                          -Car
 
-	* Search :
-		- #82: Search by fonction and post for jobs.						-Car
-		- #109, 288: Lots of sorting methods for search.					-Car
-		- #270: Private/public flags are now used for search.				-Car
+    * Misc :
+        - #283,285,286,287: text modifications in docs and index page.      -Car
+
+    * Profile :
+        - #278: professionnal email and web site.                           -Car
+
+    * Search :
+        - #82: Search by fonction and post for jobs.                        -Car
+        - #109, 288: Lots of sorting methods for search.                    -Car
+        - #270: Private/public flags are now used for search.               -Car
 
 Fixes (from 0.9.4 branch) :
 
-	* Lists :
-		- Owner can now delete their list.									-MC
+    * Lists :
+        - Owner can now delete their list.                                  -MC
 
 ================================================================================
-VERSION 0.9.4														 24 Jan 2005
+VERSION 0.9.4                                                        24 Jan 2005
 
 New :
 
-	* Banana :
-		- Total rework, it's now a real library, exit from plat/al.			-MC
+    * Banana :
+        - Total rework, it's now a real library, exit from plat/al.         -MC
 
-	* Contacts :
-		- Brand new PDF of the contact list (using FPDF).					-MC
-		- Even include Photos in the PDF (kludgy !).						-MC
+    * Contacts :
+        - Brand new PDF of the contact list (using FPDF).                   -MC
+        - Even include Photos in the PDF (kludgy !).                        -MC
 
-	* Core :
-		- New SQL access API : gain in security and code factorization.		-MC
-		- Drop good old mysql_assign, iterators are nicer.					-MC
-		- Drop magic_quote_gpc (DB API takes care of it itself).			-MC
-		- Drop cache algorithm (was complex for no gain).					-MC
-		- Enhancements wrt COOKIE.										-MC/Car
-		- More homogenous date formating (use %x / %X everywhere).			-MC
-		- No more .head.tpl. (thanks to JM for the tip).					-MC
-		- Strip unnecessary spaces from templates at compile time.			-MC
-		- Allow users to choose email formats globally.						-Car
-		- Crons are now handled from plat/al with a global crontab file.	-MC
+    * Core :
+        - New SQL access API : gain in security and code factorization.     -MC
+        - Drop good old mysql_assign, iterators are nicer.                  -MC
+        - Drop magic_quote_gpc (DB API takes care of it itself).            -MC
+        - Drop cache algorithm (was complex for no gain).                   -MC
+        - Enhancements wrt COOKIE.                                       -MC/Car
+        - More homogenous date formating (use %x / %X everywhere).          -MC
+        - No more .head.tpl. (thanks to JM for the tip).                    -MC
+        - Strip unnecessary spaces from templates at compile time.          -MC
+        - Allow users to choose email formats globally.                     -Car
+        - Crons are now handled from plat/al with a global crontab file.    -MC
 
-	* Notifications :
-		- Use Pascal's work to enable a simple, nicer html mail.			-MC
-		- Use the new RSS engine to provide a feed of the panel.			-MC
+    * Notifications :
+        - Use Pascal's work to enable a simple, nicer html mail.            -MC
+        - Use the new RSS engine to provide a feed of the panel.            -MC
 
-	* Photo Submission :
-		- Rework of the form.												-MC
-		- Photo is resized on the fly, instead of dropping too big images.	-MC
+    * Photo Submission :
+        - Rework of the form.                                               -MC
+        - Photo is resized on the fly, instead of dropping too big images.  -MC
 
-	* Registration :
-		- Brand new.														-MC
+    * Registration :
+        - Brand new.                                                        -MC
 
-	* Skins :
-		- Openweb : update.													-MC
+    * Skins :
+        - Openweb : update.                                                 -MC
 
-	* Validation :
-		- Quite a lot of rewrite, simplifications.							-MC
+    * Validation :
+        - Quite a lot of rewrite, simplifications.                          -MC
 
 Bug/Wish :
 
-	* Contacts :
-		- #180: Change the list order using name, promo or last change date.-Car
-		
-	* Core :
-	    - #153: rework the RSS engine.										-MC
-		- #145: Use melix address to log in.								-Car
-		- #212: Various font-sizes fixed.                                   -Car
-		- #245: Use PEAR::Date to avoid 1970-2038 php limitations.			-MC
-		- #258: Netscape4 Warning.											-MC
+    * Contacts :
+        - #180: Change the list order using name, promo or last change date.-Car
 
-	* Emails :
-		- #229: Possibility to show our melix address.						-Car
+    * Core :
+        - #153: rework the RSS engine.                                      -MC
+        - #145: Use melix address to log in.                                -Car
+        - #212: Various font-sizes fixed.                                   -Car
+        - #245: Use PEAR::Date to avoid 1970-2038 php limitations.          -MC
+        - #258: Netscape4 Warning.                                          -MC
 
-	* Events :
-		- #238: Links and Mailto are now active.							-Car
+    * Emails :
+        - #229: Possibility to show our melix address.                      -Car
 
-	* Fiche :
-		- #218: Quit fiche using Escape key.								-Car
+    * Events :
+        - #238: Links and Mailto are now active.                            -Car
 
-	* Marketing :
-		- #256, #255: Mail are now correctly sent.						-MC/Car
+    * Fiche :
+        - #218: Quit fiche using Escape key.                                -Car
 
-	* Misc :
-		- #65: Broken links.												-MC
+    * Marketing :
+        - #256, #255: Mail are now correctly sent.                       -MC/Car
 
-	* Notifications :
-		- #63: Birthdays are now in the notifications !						-MC
-		- #215: The notifications use singular or plural.                   -Car
-		- #232: Add a link to the fiche.								-MC/Car
-	
-	* Profile :
-		- #65: Add professionnal cellphone.									-Car
-		- #170: Remove region display for french departments.				-Car
-		- #204: Add nicknames (searchable too).								-MC
-		- #210: Add medals and orders.										-MC
+    * Misc :
+        - #65: Broken links.                                                -MC
 
-	* Search :
-		- #249, #251, #253: Some tweaks to be more accurate.				-MC
+    * Notifications :
+        - #63: Birthdays are now in the notifications !                     -MC
+        - #215: The notifications use singular or plural.                   -Car
+        - #232: Add a link to the fiche.                                 -MC/Car
 
-	* Stats :
-		- #261: Stats of registrations over the time.                       -Car
-		
-	* Validations :
-		- #137: Now possible to add comments without any action.			-MC
-		- #191, #256: Marketing now uses the validation process.			-MC
-		- #267: Newsletter uses the validation process too.					-MC
+    * Profile :
+        - #65: Add professionnal cellphone.                                 -Car
+        - #170: Remove region display for french departments.               -Car
+        - #204: Add nicknames (searchable too).                             -MC
+        - #210: Add medals and orders.                                      -MC
+
+    * Search :
+        - #249, #251, #253: Some tweaks to be more accurate.                -MC
+
+    * Stats :
+        - #261: Stats of registrations over the time.                       -Car
+
+    * Validations :
+        - #137: Now possible to add comments without any action.            -MC
+        - #191, #256: Marketing now uses the validation process.            -MC
+        - #267: Newsletter uses the validation process too.                 -MC
 
 ================================================================================
-VERSION 0.9.3														 27 Dec 2004
+VERSION 0.9.3                                                        27 Dec 2004
 
 New :
 
-	* Core :
-		- Members can be disabled. It deletes volatile datas.				-MC
-		- Start the new work on modules (XOrgHook).							-MC
-		- XOrgMenu class to deal with Menu entries.							-MC
-		- Lots of includes renames, rewrites, beautifuling.					-MC
-		- Try to avoid the unreadable {"..."|url} modifier, use {rel}/.		-MC
-		- Use a real .conf file, and no more .php's for configuration.		-MC
-		- Make raw access to POST/GET/... disappear.						-MC
-	
-	* Distribution :
-		- Do not modify PHP include path from auto.prepend.inc.php.			-SHK
-		- Add install.d/apache.conf with a sample Apache config file.		-SHK
-		- Add Makefile to generate distribution tarballs.					-SHK
-		- Generate xorg.config.inc.php using "make".						-SHK
-		- Add a basic README file.											-SHK
-	
-	* Lists :
-		- Moderators are now allowed to change the moderation level.		-MC
+    * Core :
+        - Members can be disabled. It deletes volatile datas.               -MC
+        - Start the new work on modules (XOrgHook).                         -MC
+        - XOrgMenu class to deal with Menu entries.                         -MC
+        - Lots of includes renames, rewrites, beautifuling.                 -MC
+        - Try to avoid the unreadable {"..."|url} modifier, use {rel}/.     -MC
+        - Use a real .conf file, and no more .php's for configuration.      -MC
+        - Make raw access to POST/GET/... disappear.                        -MC
 
-	* Mails :
-		- Use HermesMailer.													-MC
-		- Create a script to treats NL bounces.								-MC
+    * Distribution :
+        - Do not modify PHP include path from auto.prepend.inc.php.         -SHK
+        - Add install.d/apache.conf with a sample Apache config file.       -SHK
+        - Add Makefile to generate distribution tarballs.                   -SHK
+        - Generate xorg.config.inc.php using "make".                        -SHK
+        - Add a basic README file.                                          -SHK
 
-	* Money : standalone module.											-MC
+    * Lists :
+        - Moderators are now allowed to change the moderation level.        -MC
 
-	* Skins :
-		- New skin : openweb.												-MC
-		- No more annoying submit button, onclick is used to submit.		-MC
-		- This is the first autonom module of the site !					-MC
+    * Mails :
+        - Use HermesMailer.                                                 -MC
+        - Create a script to treats NL bounces.                             -MC
 
-	* Stats :
-		- Better y-range for graphs.										-MC
-	
-	* WebRedirect (was: Carva) : now standalone.							-MC
+    * Money : standalone module.                                            -MC
+
+    * Skins :
+        - New skin : openweb.                                               -MC
+        - No more annoying submit button, onclick is used to submit.        -MC
+        - This is the first autonom module of the site !                    -MC
+
+    * Stats :
+        - Better y-range for graphs.                                        -MC
+
+    * WebRedirect (was: Carva) : now standalone.                            -MC
 
 Bug/Wish :
 
-	* Admin :
-		- #186: Users are reachable by melix, redirects, aliases...			-MC
+    * Admin :
+        - #186: Users are reachable by melix, redirects, aliases...         -MC
 
-	* Bestalias :
-		- #206: Use only the bestalias and the forlife in vcard and fiche.	-MC
-		- #207: Enable for the user the choice of his prefered alias.		-MC
+    * Bestalias :
+        - #206: Use only the bestalias and the forlife in vcard and fiche.  -MC
+        - #207: Enable for the user the choice of his prefered alias.       -MC
 
-	* Core :
-		- #183,185: Implement perms levels : 'pending'+'disabled'.			-MC
-		- #154: Birth fields are now of type DATE.							-MC
+    * Core :
+        - #183,185: Implement perms levels : 'pending'+'disabled'.          -MC
+        - #154: Birth fields are now of type DATE.                          -MC
 
-	* Fiche :
-		- #83,208,222: New fiche.											-MC
+    * Fiche :
+        - #83,208,222: New fiche.                                           -MC
 
-	* Lists :
-		- #86: Yet another old old wish : lists archives are online !		-MC
-		- #144: Users can subscribe from members/trombi page too.			-MC
-		- #184: Owners can now delete their lists.							-MC
-		- #231: Add a link to the user's fiche on moderation page.			-MC
+    * Lists :
+        - #86: Yet another old old wish : lists archives are online !       -MC
+        - #144: Users can subscribe from members/trombi page too.           -MC
+        - #184: Owners can now delete their lists.                          -MC
+        - #231: Add a link to the user's fiche on moderation page.          -MC
 
-	* Newsletter :
-		- #242: Newsletter is standalone.									-MC
+    * Newsletter :
+        - #242: Newsletter is standalone.                                   -MC
 
-	* Search :
-		- #56: Search on referent.											-JS
-		- #189: Selection of diplomas depends on schools.					-JS
-		- #195: Better heuristic for google like (thanks OG).				-MC
-		- #203: New fields in search (alive, subscriber, free).				-JS
+    * Search :
+        - #56: Search on referent.                                          -JS
+        - #189: Selection of diplomas depends on schools.                   -JS
+        - #195: Better heuristic for google like (thanks OG).               -MC
+        - #203: New fields in search (alive, subscriber, free).             -JS
 
-	* User Interface :
-		- #211: All imgs in the skins are links to login.php.				-MC
+    * User Interface :
+        - #211: All imgs in the skins are links to login.php.               -MC
 
 
 Fixes (from 0.9.2 branch) :
 
-	* Search :
-		- enable mod_date_sort again.										-MC
+    * Search :
+        - enable mod_date_sort again.                                       -MC
 
 
 ================================================================================
-VERSION 0.9.2														 14 Nov 2004
+VERSION 0.9.2                                                        14 Nov 2004
 
 New :
 
-	* Carnet : Brand new.													-MC
+    * Carnet : Brand new.                                                   -MC
 
-	* Core :
-		- Creation of the Plugin class.										-MC
-		- Now only use iso3166 countries, no more `nationalites`.			-MC
+    * Core :
+        - Creation of the Plugin class.                                     -MC
+        - Now only use iso3166 countries, no more `nationalites`.           -MC
 
-	* Contacts :
-		- Trombino of the contacts is available.							-MC
+    * Contacts :
+        - Trombino of the contacts is available.                            -MC
 
-	* Search+Contacts :
-		- Nicer icons.														-MC
+    * Search+Contacts :
+        - Nicer icons.                                                      -MC
 
-	* Skins :
-		- Various updates.													-FRU
+    * Skins :
+        - Various updates.                                                  -FRU
 
 Bug/Wish :
 
-	* Docs :
-		- #156: Exit Netscape4 (no more supported), Mozilla enters.			-MC
+    * Docs :
+        - #156: Exit Netscape4 (no more supported), Mozilla enters.         -MC
 
-	* Carnet :
-		- #29,147: Possible to watch subscribings, deaths, `fiche` modifs.	-MC
-	
-	* Core :
-		- #135: First instance of the plugin class : class Trombi.			-MC
-		- #158: A photo change updates last `fiche` edition stamp.			-MC
-		- #100,199: Kludge to determine if a link is popup or not.			-MC
+    * Carnet :
+        - #29,147: Possible to watch subscribings, deaths, `fiche` modifs.  -MC
 
-	* Lists :
-		- #138: Refusal message is shown on mail moderation page.			-MC
-		- #161: Now supports non-X natively.								-MC
+    * Core :
+        - #135: First instance of the plugin class : class Trombi.          -MC
+        - #158: A photo change updates last `fiche` edition stamp.          -MC
+        - #100,199: Kludge to determine if a link is popup or not.          -MC
 
-	* Search :
-		- #112,113,126,133,167,171: google like search + some rewrite.		-MC
+    * Lists :
+        - #138: Refusal message is shown on mail moderation page.           -MC
+        - #161: Now supports non-X natively.                                -MC
 
-	* Search+Contacts :
-		- #122: Women now have a &bull; (no more dirty gender icons).		-MC
-		- #124: Homeland is now a flag.										-MC
-		- #164: Married women are now well sorted (by their spouse name).	-MC
+    * Search :
+        - #112,113,126,133,167,171: google like search + some rewrite.      -MC
 
-	* Stats :
-		- #8,134: Return of the stats pages.								-VP
+    * Search+Contacts :
+        - #122: Women now have a &bull; (no more dirty gender icons).       -MC
+        - #124: Homeland is now a flag.                                     -MC
+        - #164: Married women are now well sorted (by their spouse name).   -MC
+
+    * Stats :
+        - #8,134: Return of the stats pages.                                -VP
 
 Fixes (from 0.9.1 branch) :
 
-	* Lists :
-		- Better mails to -owners for reject/discard ops.					-MC
-		- Mailman is case sensitive, goto lowercase.						-MC
+    * Lists :
+        - Better mails to -owners for reject/discard ops.                   -MC
+        - Mailman is case sensitive, goto lowercase.                        -MC
 
 
 ================================================================================
-VERSION 0.9.1														 25 Oct 2004
+VERSION 0.9.1                                                        25 Oct 2004
 
 New :
 
-	* Lists :
-		- Auto-moderate/discard mails detected as SPAM by bogofilter.		-MC
-		- Improve header/subject decoding.									-MC
-		- Alpha-sort on listes/admin.php + msgs for each operations.		-MC
-		- 1-click moderation for accept and reject cases.					-MC
-	
-	* Usability :
-		- #99: All <a><img ... /></a> now have title.						-MC
+    * Lists :
+        - Auto-moderate/discard mails detected as SPAM by bogofilter.       -MC
+        - Improve header/subject decoding.                                  -MC
+        - Alpha-sort on listes/admin.php + msgs for each operations.        -MC
+        - 1-click moderation for accept and reject cases.                   -MC
 
-	* NewsLetter :
-		- Brand New NewsLetter module.										-MC
-		- Convert old archive to new model.									-FAL
+    * Usability :
+        - #99: All <a><img ... /></a> now have title.                       -MC
 
-	* Search+Contacts :
-		- Added gender icons.												-MC
-		- Better things done for married women.								-MC
-		- Deceased members and non-subscribers special treatments.			-MC
-		- Mobile is now printed too.										-MC
-		- People names are clickable.										-MC
-		- Unified template.													-JS
+    * NewsLetter :
+        - Brand New NewsLetter module.                                      -MC
+        - Convert old archive to new model.                                 -FAL
 
-	* Skins:
-		- Liteskin.															-XdX
+    * Search+Contacts :
+        - Added gender icons.                                               -MC
+        - Better things done for married women.                             -MC
+        - Deceased members and non-subscribers special treatments.          -MC
+        - Mobile is now printed too.                                        -MC
+        - People names are clickable.                                       -MC
+        - Unified template.                                                 -JS
+
+    * Skins:
+        - Liteskin.                                                         -XdX
 
 Fixes (from 0.9.0 branch) :
 
-	* Lists :
-		- Corrects problem about mails that have non text/* parts.			-MC
-		- Rpc daemon can live everywhere.									-MC
-		- Moderation : refusing/rejecting a mail informs other moderators.	-MC
-	
-	* Fiche + Search :
-		- Corrects bad handling of firms.									-MC
-		- We used the bad table to search functions names.					-MC
+    * Lists :
+        - Corrects problem about mails that have non text/* parts.          -MC
+        - Rpc daemon can live everywhere.                                   -MC
+        - Moderation : refusing/rejecting a mail informs other moderators.  -MC
 
-	* Skins :
-		- Minor updates.													-FRU
+    * Fiche + Search :
+        - Corrects bad handling of firms.                                   -MC
+        - We used the bad table to search functions names.                  -MC
+
+    * Skins :
+        - Minor updates.                                                    -FRU
 
 ================================================================================
-VERSION 0.9.0													     15 Oct 2004
+VERSION 0.9.0                                                         15 Oct 2004
 
 New :
 
-	* First Public Release.													-PoT
+    * First Public Release.                                                 -PoT
 
 ================================================================================
 ACRONYMS :
 
-	* PoT : Polytechnique.org TEAM (see Authors).
+    * PoT : Polytechnique.org TEAM (see Authors).
 
-	* Car : Pascal Corpet    (Caribou)  <pascal.corpet@m4x.org>
-	* CAT : Florian El Ahdab (LeChat)   <florian.el-ahdab@m4x.org>
-	* FAL : Raphaël Marichez (Falco)    <raphael.marichez@m4x.org>
-	* FRU : Florent Bruneau  (fruneau)  <florent.bruneau@m4x.org>
-	* JS  : Jean Sébastien Bedo         <jean-sebastien.bedo@m4x.org>
-	* MC  : Pierre Habouzit  (MadCoder) <pierre.habouzit@m4x.org>
-	* OG  : Olivier Guillaumin			<olivier.guillaumin@m4x.org>
-	* SHK : Jeremy Lainé     (Sharky)   <jeremy.laine@m4x.org>
-	* VP  : Vincent Palatin             <vincent.palatin@m4x.org>
-	* XdX : Alexandre Hô     (XandreX)  <alexandre.ho@m4x.org>
+    * Car : Pascal Corpet        (Caribou)   <pascal.corpet@m4x.org>
+    * CAT : Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
+    * FAL : Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
+    * FRU : Florent Bruneau      (fruneau)   <florent.bruneau@m4x.org>
+    * JS  : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
+    * MC  : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
+    * OG  : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
+    * SHK : Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
+    * VP  : Vincent Palatin                  <vincent.palatin@m4x.org>
+    * XdX : Alexandre Hô         (XandreX)   <alexandre.ho@m4x.org>
 
 ================================================================================
-vim:noet:ts=4:sw=4:tw=80:
+vim:et:ts=4:sw=4:tw=80:

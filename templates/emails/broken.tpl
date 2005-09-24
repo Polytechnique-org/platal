@@ -24,7 +24,22 @@
 
 <h1>Vérifier une patte cassée</h1>
 
-{if $x && $x.nb_mails}
+{if $neuneu}
+<h2 class='erreur'>Erreur !</h2>
+
+<p>
+Tu as entré une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est invalide.
+</p>
+
+<p>
+En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
+correspondant si tu veux que nous puissions te répondre. Cette
+<a href="{rel}/docs/doc_patte_cassee.php">documentation</a> peut t'aider à trouver cette
+information.
+</p>
+
+<h2>Patte Cassée</h2>
+{elseif $x && $x.nb_mails}
   <p>
     Ton correspondant a à l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
     en dehors de celle que tu nous as communiquée</span>. Cela ne veut pas forcément dire qu'il les avait

@@ -65,20 +65,27 @@ L'équipe d'administration <support@polytechnique.org>";
     }
 } elseif (Post::has('email')) {
     $email = valide_email(Post::get('email'));
-    $page->assign('email',$email);
-    $sel = $globals->xdb->query(
-            "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
-               FROM  emails as e1
-          LEFT JOIN  emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.email != e2.email)
-         INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
-              WHERE  e1.email = {?}
-           GROUP BY  e1.uid", $email);
-    if ($x = $sel->fetchOneAssoc()) {
-        // on écrit dans la base que l'adresse est cassée
-        if (!$x['panne']) {
-            $globals->xdb->execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
+
+    list(,$fqdn) = split('@', $email);
+    $fqdn = strtolower($fqdn);
+    if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' || $fqdn == 'm4x.org' || $fqdn == 'melix.net') {
+        $page->assign('neuneu', true);
+    } else {
+        $page->assign('email',$email);
+        $sel = $globals->xdb->query(
+                "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails, u.nom, u.prenom, u.promo
+                   FROM  emails as e1
+              LEFT JOIN  emails as e2 ON(e1.uid = e2.uid AND FIND_IN_SET('active', e2.flags) AND e1.email != e2.email)
+             INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
+                  WHERE  e1.email = {?}
+               GROUP BY  e1.uid", $email);
+        if ($x = $sel->fetchOneAssoc()) {
+            // on écrit dans la base que l'adresse est cassée
+            if (!$x['panne']) {
+                $globals->xdb->execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
+            }
+            $page->assign_by_ref('x', $x);
         }
-        $page->assign_by_ref('x', $x);
     }
 }
 
