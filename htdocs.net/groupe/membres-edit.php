@@ -40,10 +40,10 @@
         new_groupadmin_page('xnet/groupe/membres-add.tpl');
         $x = (Env::get('new') == 'x');
 
-        if (Post::has('email')) {
+        if (Env::has('email')) {
             if ($x) {
                 require_once 'user.func.inc.php';
-		$emails = explode(" ", Post::get('email'));
+		$emails = explode(" ", Env::get('email'));
 		foreach ($emails as $email)
 		{
 			if ($forlife = get_user_forlife($email)) {
@@ -53,15 +53,13 @@
                                         FROM  auth_user_md5 AS u
                                   INNER JOIN  aliases       AS a ON (u.user_id = a.id)
                                        WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-			    $forlifes[] = $forlife;
-			}
-			else
+                            header('Location: ?edit='.$email);
+			} else {
 				$page->trig($email." n'est pas un alias polytechnique.org valide");
+                        }
 		}
-		if (count($forlifes) > 0)
-			header('Location: annuaire.php');
             } else {
-                $email = Post::get('email');
+                $email = Env::get('email');
                 if (isvalid_email($email)) {
                     $res = $globals->xdb->query('SELECT MAX(uid)+1 FROM groupex.membres');
                     $uid = max(intval($res->fetchOneCell()), 50001);
