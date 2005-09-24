@@ -9,6 +9,7 @@ New :
     * Xnet :
         - Groups can be non subscribable.                                   -Car
         - Most Wanted Feature : directories syncrhonization with lists.     -MC
+        - Various bug fixes in events management.                           -Car
 
 Bug/Wish :
 
@@ -32,8 +33,8 @@ Bug/Wish :
         - #335: Already assigned promotion don't generate a request.        -CAT
 
     * Xnet :
-        - Various bug fixes in events management.                           -Car
         - #334: Interface improvements.                                     -Car
+        - #341: Improve member deletion.                                    -MC
 
     * User Interface:
         - #338: Broken FSF link fixed on donation page.                     -CAT

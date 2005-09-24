@@ -12,7 +12,13 @@
         }
         list($mbox,$dom) = split('@', $email);
 
-        if ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
+        $res = $globals->xdb->query(
+                "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine
+                   FROM  groupex.membres
+                  WHERE  email = {?} AND asso_id = {?}", $email, $globals->asso('id'));
+        if ($res->numRows()) {
+            return $res->fetchOneAssoc();
+        } elseif ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
             $res = $globals->xdb->query(
                     "SELECT  user_id AS uid, u.promo, IF(u.nom_usage<>'', u.nom_usage, u.nom) as nom, u.prenom, b.alias,
                              CONCAT(b.alias, '@m4x.org') AS email,
@@ -23,16 +29,10 @@
                  INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
                  INNER JOIN  groupex.membres AS m ON ( m.uid = u.user_id AND asso_id={?})
                       WHERE  a.alias = {?} AND u.user_id < 50000", $globals->asso('id'), $mbox);
-            $user = $res->fetchOneAssoc();
-        } else {
-            $res = $globals->xdb->query(
-                    "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine
-                       FROM  groupex.membres
-                      WHERE  email = {?} AND asso_id = {?}", $email, $globals->asso('id'));
-            $user = $res->fetchOneAssoc();
+            return $res->fetchOneAssoc();
         }
 
-        return $user;
+        return null;
     }
 
     if (Env::has('new'))
@@ -41,25 +41,29 @@
         $x = (Env::get('new') == 'x');
 
         if (Env::has('email')) {
+            $email = Env::get('email');
+            list(,$fqdn) = split('@', $email);
+            $fqdn = strtolower($fqdn);
+            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||
+                $fqdn == 'm4x.org' || $fqdn == 'melix.net')
+            {
+                $x = true;
+            }
+
             if ($x) {
                 require_once 'user.func.inc.php';
-		$emails = explode(" ", Env::get('email'));
-		foreach ($emails as $email)
-		{
-			if ($forlife = get_user_forlife($email)) {
-			    $globals->xdb->execute(
-                                'INSERT INTO  groupex.membres (uid,asso_id,origine)
-                                      SELECT  user_id,{?},"X"
-                                        FROM  auth_user_md5 AS u
-                                  INNER JOIN  aliases       AS a ON (u.user_id = a.id)
-                                       WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-                            header('Location: ?edit='.$email);
-			} else {
-				$page->trig($email." n'est pas un alias polytechnique.org valide");
-                        }
-		}
+                if ($forlife = get_user_forlife($email)) {
+                    $globals->xdb->execute(
+                        'INSERT INTO  groupex.membres (uid,asso_id,origine)
+                        SELECT  user_id,{?},"X"
+                        FROM  auth_user_md5 AS u
+                        INNER JOIN  aliases       AS a ON (u.user_id = a.id)
+                        WHERE  a.alias={?}', $globals->asso('id'), $forlife);
+                        header('Location: ?edit='.$email);
+                } else {
+                    $page->trig($email." n'est pas un alias polytechnique.org valide");
+                }
             } else {
-                $email = Env::get('email');
                 if (isvalid_email($email)) {
                     $res = $globals->xdb->query('SELECT MAX(uid)+1 FROM groupex.membres');
                     $uid = max(intval($res->fetchOneCell()), 50001);
