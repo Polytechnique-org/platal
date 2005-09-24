@@ -68,21 +68,6 @@ masculin ou féminin, par son prénom, ou son nom.
     </tr>
     {/foreach}
 
-    {* NOT SUPPORTED ATM
-    {foreach from=$alias item=a}
-    {assign var=b value=$a|regex_replace:"!@.*!":""}
-    <tr>
-      <td style='padding-left: 1em' class='titre'>
-        *&nbsp;{$b}
-      </td>
-      <td>
-        <input type="checkbox" name="al[{$b}]" value="1" {if $smarty.request.al[$b]}checked="checked"{/if} />
-        {$a} <a href="alias-admin.php?liste={$b}" class='popup'>(voir composition)</a>
-      </td>
-    </tr>
-    {/foreach}
-    *}
-
     <tr>
       <th colspan="2">Contenu du mail</th>
     </tr>
