@@ -9,7 +9,7 @@ New :
 Bug/Wish :
 
 	* Core :
-		- #345,348: fix to the escape problem : quoted werent escaped correctly			-Mad
+		- #345,348: fix to the escape problem : quoted werent escaped correctly			-MC
 		
 	* Admin :
 		- #323: admin link in fiche opens out of the popup.					-Car
