@@ -141,7 +141,7 @@
   </tr>
   <tr>
     <td class="titre">bonne ou satisfaisante</td>
-    <td>free.fr, gmail.com, laposte.fr, ifrance.com, libertysurf.fr, netcourrier.com</td>
+    <td>free.fr, gmail.com, laposte.fr, libertysurf.fr, netcourrier.com</td>
   </tr>
   <tr>
     <td class="titre">moyenne</td>
@@ -149,11 +149,11 @@
   </tr>
   <tr>
     <td class="titre">mauvaise</td>
-    <td>mail.com, multimania.com</td>
+    <td>mail.com, multimania.com, ifrance.com</td>
   </tr>
   <tr>
     <td class="titre">à éviter impérativement</td>
-    <td>hotmail.com, hotmail.fr, msn.fr, caramail.com, aol.com, aol.fr</td>
+    <td>hotmail.com, hotmail.fr, msn.com, msn.fr, caramail.com, aol.com, aol.fr</td>
   </tr>
 </table> 
 <h2>Commentaires</h2>
