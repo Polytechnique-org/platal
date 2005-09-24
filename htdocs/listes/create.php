@@ -25,13 +25,23 @@ new_skinned_page('listes/create.tpl', AUTH_MDP);
 $owners  = preg_split("/[\r\n]+/",Post::get('owners'), -1, PREG_SPLIT_NO_EMPTY);
 $members = preg_split("/[\r\n]+/",Post::get('members'), -1, PREG_SPLIT_NO_EMPTY);
 
+// click on validate button 'add_owner_sub' or type <enter>
 if (Post::has('add_owner_sub') && Post::has('add_owner')) {
     require_once('user.func.inc.php');
-    if (($forlife = get_user_forlife(Post::get('add_owner'))) !== false) {
-        $owners [] = $forlife;
+    // if we want to add an owner and then type <enter>, then both add_owner_sub and add_owner are filled.
+    if (Post::get('add_owner') != "") {
+      if (($forlife = get_user_forlife(Post::get('add_owner'))) !== false) {
+          $owners [] = $forlife;
+      }
+    // if we want to add a member and then type <enter>, then add_owner_sub is filled, whereas add_owner is empty.
+    } else if (Post::has('add_member')) {
+      if (($forlife = get_user_forlife(Post::get('add_member'))) !== false) {
+          $members[] = $forlife;
+      }
     }
 }
 
+// click on validate button 'add_member_sub'
 if (Post::has('add_member_sub') && Post::has('add_member')) {
     require_once('user.func.inc.php');
     if (($forlife = get_user_forlife(Post::get('add_member'))) !== false) {
