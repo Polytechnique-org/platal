@@ -155,7 +155,7 @@
         <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value}" />
         {/if}
         {else}
-        {$myval.value|escape}
+        {$myval.value}
         {/if}
       </td>
     </tr>

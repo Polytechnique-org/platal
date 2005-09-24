@@ -105,7 +105,7 @@ Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à
     <tr class="impair">
       <td class='titre'>Sujet</td>
       <td>
-        <input size='60' type='text' value='{$smarty.request.title|escape}' name='title' />
+        <input size='60' type='text' value='{$smarty.request.title}' name='title' />
       </td>
     </tr>
     <tr class="pair">
