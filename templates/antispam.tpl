@@ -46,11 +46,11 @@ Trois réglages sont possibles :
     <tr>
       <td>
         <strong>Choisis ton propre réglage :</strong><br />
-                <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onchange='this.form.submit()' />
+                <input type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick='this.form.submit()' />
         (1) le filtre anti-spam est coupé<br />
-        <input type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onchange='this.form.submit()' />
+        <input type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onclick='this.form.submit()' />
         (2) le filtre anti-spam est activé, et marque les mails<br />
-        <input type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onchange='this.form.submit()' />
+        <input type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onclick='this.form.submit()' />
         (3) le filtre anti-spam est activé, et élimine les mails détectés comme spams<br />
               </td>
     </tr>
@@ -82,7 +82,8 @@ Si un courriel qui est un spam n'est pas détecté comme tel, réexpédie-le
 Inversement, si un message est considéré comme un spam alors que ce n'en est
 pas un, il faut le réexpédier à l'adresse
 <a href="mailto:nonspam@polytechnique.org">nonspam@polytechnique.org</a>
-<strong>sous forme de pièce jointe</strong>.
+<strong>sous forme de pièce jointe</strong>.<br />
+Pour aller plus vite, tu peux envoyer plusieurs "spams" ou "nonspams" à la fois, toujours en pièces jointes.<br />
 Ainsi notre base de données de spams restera à jour, et, alors
 que les spammers enverront des spams de plus en plus durs à détecter,
 tous nos camarades bénéficieront d'un filtre anti-spam de meilleure qualité.
