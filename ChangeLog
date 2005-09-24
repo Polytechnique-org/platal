@@ -31,6 +31,7 @@ Bug/Wish :
         - #330,333: Interface improvements.                                 -Car
         - #332: User can precise why he asks for a usage name.              -Car
         - #335: Already assigned promotion don't generate a request.        -CAT
+        - #346: Professional profile code desynch. fixed.                   -MC
 
     * Xnet :
         - #334: Interface improvements.                                     -Car

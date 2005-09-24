@@ -150,6 +150,28 @@ function get_user_forlife($data) {
 }
 
 // }}}
+// {{{ function get_user_details_pro()
+
+function get_user_details_pro($uid)
+{
+    global $globals;
+    $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
+                     e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
+                     gp.pays AS countrytxt, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
+                     e.pub, e.adr_pub, e.tel_pub, e.email, e.email_pub, e.web
+               FROM  entreprises AS e
+          LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
+          LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
+          LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
+          LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
+          LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
+              WHERE  e.uid = {?}
+           ORDER BY  e.entrid";
+    $res  = $globals->xdb->query($sql, $uid);
+    return $res->fetchAllAssoc();
+}
+
+// }}}
 // {{{ function get_user_details()
 
 function &get_user_details($login, $from_uid = '')
@@ -180,20 +202,7 @@ function &get_user_details($login, $from_uid = '')
     $user = $res->fetchOneAssoc();
     $uid  = $user['user_id'];
 
-    $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
-                     e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
-                     gp.pays AS countrytxt, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
-                     e.pub, e.adr_pub, e.tel_pub, e.email, e.email_pub, e.web
-               FROM  entreprises AS e
-          LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
-          LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
-          LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
-          LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
-          LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
-              WHERE  e.uid = {?}
-           ORDER BY  e.entrid";
-    $res  = $globals->xdb->query($sql, $uid);
-    $user['adr_pro'] = $res->fetchAllAssoc();
+    $user['adr_pro'] = get_user_details_pro($uid);
 
     $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.postcode,a.city,
                      gp.pays AS countrytxt,gr.name AS region,a.tel,a.fax,

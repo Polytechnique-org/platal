@@ -22,6 +22,7 @@
 
 require_once("xorg.inc.php");
 new_simple_page('fiche_referent.tpl',AUTH_COOKIE);
+require_once('user.func.inc.php');
 
 if (!Env::has('user')) {
     exit;
@@ -44,22 +45,7 @@ $page->assign('nom', $nom);
 $page->assign('promo', $promo);
 $page->assign('cv', $cv);
 $page->assign('bestalias', $bestalias);
-
-
-//recuperation des infos professionnelles
-$res = $globals->xdb->query(
-        "SELECT  e.entreprise, s.label as secteur , ss.label as ss_secteur , f.fonction_fr as fonction,
-                 e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
-                 gp.pays, gr.name, e.tel, e.fax, e.mobile
-           FROM  entreprises AS e
-      LEFT JOIN  emploi_secteur AS s ON(e.secteur = s.id)
-      LEFT JOIN  emploi_ss_secteur AS ss ON(e.ss_secteur = ss.id AND e.secteur = ss.secteur)
-      LEFT JOIN  fonctions_def AS f ON(e.fonction = f.id)
-      LEFT JOIN  geoloc_pays AS gp ON (gp.a2 = e.country)
-      LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
-          WHERE  e.uid = {?}
-       ORDER BY  e.entrid", $user_id);
-$page->assign('adr_pro', $res->fetchAllAssoc());
+$page->assign('adr_pro', get_user_details_pro($user_id));
 
 /////  recuperations infos referent
 
