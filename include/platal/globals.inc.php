@@ -43,7 +43,7 @@ class PlatalGlobals extends DiogenesCoreGlobals
     var $hook;
 
     /** The x.org version */
-    var $version = '0.9.7';
+    var $version = '0.9.8';
     var $debug   = 0;
 
     /** db params */
