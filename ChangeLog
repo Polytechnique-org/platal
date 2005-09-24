@@ -21,6 +21,7 @@ Bug/Wish :
 
 	* Lists :
 		- #318: Deletion of email with + in aliases.						-Car
+		- #319: Allows to enter new future members by simply hitting <enter>.			-FAL
 	
 ================================================================================
 VERSION 0.9.7														 21 Jun 2005
