@@ -8,6 +8,9 @@ New :
 
 Bug/Wish :
 
+	* Core :
+		- #345,348: fix to the escape problem : quoted werent escaped correctly			-Mad
+		
 	* Admin :
 		- #323: admin link in fiche opens out of the popup.					-Car
 		- #324: admin can modify the usage name.							-Car
