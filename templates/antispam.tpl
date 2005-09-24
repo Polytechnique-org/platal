@@ -82,7 +82,8 @@ Si un courriel qui est un spam n'est pas détecté comme tel, réexpédie-le
 Inversement, si un message est considéré comme un spam alors que ce n'en est
 pas un, il faut le réexpédier à l'adresse
 <a href="mailto:nonspam@polytechnique.org">nonspam@polytechnique.org</a>
-<strong>sous forme de pièce jointe</strong>.
+<strong>sous forme de pièce jointe</strong>.<br />
+Pour aller plus vite, tu peux envoyer plusieurs "spams" ou "nonspams" à la fois, toujours en pièces jointes.<br />
 Ainsi notre base de données de spams restera à jour, et, alors
 que les spammers enverront des spams de plus en plus durs à détecter,
 tous nos camarades bénéficieront d'un filtre anti-spam de meilleure qualité.
