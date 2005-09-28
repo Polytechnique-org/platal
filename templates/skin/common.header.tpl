@@ -49,6 +49,10 @@
     <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{rel}{$xorg_rss.href}" />
     {/if}
 
+    {if $xorg_extra_header}
+    {$xorg_extra_header|smarty:nodefaults}
+    {/if}
+
     <title>{$xorg_title|default:"Anciens eleves Polytechnique, annuaire email, Alumni"}</title>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

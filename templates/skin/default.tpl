@@ -23,7 +23,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <link rel="stylesheet" type="text/css" href="{"css/default.css"|url}" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{rel}/css/default.css" media="screen" />
     {include file=skin/common.header.tpl}
     {include file=skin/common.bandeau.head.tpl}
   </head>
@@ -34,7 +34,7 @@
       <tr>
         <td>
           {$smarty.session.suid} ({$smarty.session.forlife})
-          [<a href="{"exit.php"|url}">exit</a>]
+          [<a href="{rel}/exit.php">exit</a>]
         </td>
       </tr>
     </table>
@@ -53,10 +53,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{"login.php"|url}"><img src="{"images/sk_default_headlogo.jpg"|url}" alt="[ LOGO ]" /></a>
+          <a href="{rel}/login.php"><img src="{rel}/images/sk_default_headlogo.jpg" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{"login.php"|url}"><img src="{"images/sk_default_ban.jpg"|url}" alt="[ Polytechnique.org ]" /></a>
+          <a href="{rel}/login.php"><img src="{rel}/images/sk_default_ban.jpg" alt="[ Polytechnique.org ]" /></a>
           <table>
             <tr>
               <td class="date-heure">
@@ -72,7 +72,7 @@
               </td>
             </tr>
           </table>
-          <a href="{"login.php"|url}"><img src="{"images/sk_default_lesX.gif"|url}" alt="[LES X SUR LE WEB]" /></a>
+          <a href="{rel}/login.php"><img src="{rel}/images/sk_default_lesX.gif" alt="[LES X SUR LE WEB]" /></a>
         </td>
       </tr>
       <tr>
@@ -89,7 +89,7 @@
           <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
             <tr><th>Valid</th></tr>
             <tr class="impair">
-              <td><a href="{"admin/valider.php"|url}">{insert name="mkStats"}</a></td>
+              <td><a href="{rel}/admin/valider.php">{insert name="mkStats"}</a></td>
             </tr>
           </table>
           {/perms}
