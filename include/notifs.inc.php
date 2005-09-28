@@ -146,7 +146,7 @@ function getNbNotifs() {
     $res = select_notifs(false, $uid, $watchlast, false);
     $n   = $res->numRows();
     $res->free();
-    $url = smarty_modifier_url('carnet/panel.php');
+    $url = $globals->baseurl."/carnet/panel.php";
     if($n==0) { return; }
     if($n==1) { return "<a href='$url'>1 évènement !</a>"; }
     return "<a href='$url'>$n évènements !</a>";
