@@ -21,14 +21,9 @@
 
 function smarty_modifier_url($string)
 {
+    global $globals;
     if(strpos($string, "http://")!==false)
 	return $string;
-    $chemins = Array('', '../', '../../');
-    foreach ($chemins as $ch) {
-	if (file_exists($ch.'../htdocs/')) {
-	    return $ch.$string;
-	}
-    }
-    return '';
+    return $globals->baseurl."/".$string;
 }
 ?>
