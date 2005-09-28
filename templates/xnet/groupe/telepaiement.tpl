@@ -38,16 +38,16 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
   <tr>
     <th colspan="3">{$p.text} : détails pour les administrateurs</th>
   </tr>
+  {foreach from=$trans[$p.id] item=p}
   <tr>
-    {foreach from=$trans[$p.id] item=p}
     <td>{$p.date|date_format}</td>
     <td>
       <a href="https://www.polytechnique.org/fiche.php?user={$p.alias}">{$p.nom} {$p.prenom} (X{$promo})</a>
       (<a href="mailto:{$p.alias}@polytechnique.org">mail</a>)
     </td>
     <td>{$p.montant}</td>
-    {/foreach}
   </tr>
+  {/foreach}
 </table>
 {/if}
 
