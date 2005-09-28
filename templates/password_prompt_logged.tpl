@@ -25,7 +25,7 @@
   <table>
     <tr>
       <td>
-        <img src="{"images/cadenas_rouge.png"|url}" alt=" [ CADENAS ROUGE ] " />
+        <img src="{rel}/images/cadenas_rouge.png" alt=" [ CADENAS ROUGE ] " />
       </td>
       <td>
         <span class="smaller">
@@ -58,7 +58,7 @@
     </tr>
     <tr>
       <td>
-        <img src="{"images/pi.png"|url}" alt=" [ ? ] " />
+        <img src="{rel}/images/pi.png" alt=" [ ? ] " />
         <a href="{rel}/recovery.php">Mot de passe perdu ?</a>
       </td>
       <td class="right">
