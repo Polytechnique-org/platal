@@ -25,7 +25,10 @@
 <form action="{$smarty.server.PHP_SELF}" method="get">
   <table class="tinybicol">
     <tr>
-      <td><input type="submit" value="&lt;&lt;" name="sub10" /></td>
+      <td>
+        <input type="submit" value="GO" style="visibility: hidden" />
+        <input type="submit" value="&lt;&lt;" name="sub10" />
+      </td>
       <td><input type="submit" value="&lt;"  name="sub01" /></td>
       <td>
         Promotion :
@@ -33,7 +36,10 @@
         <input type="submit" value="GO" />
       </td>
       <td><input type="submit" value="&gt;"  name="add01" /></td>
-      <td><input type="submit" value="&gt;&gt;" name="add10" /></td>
+      <td>
+        <input type="submit" value="&gt;&gt;" name="add10" />
+        <input type="submit" value="GO" style="visibility: hidden" />
+      </td>
     </tr>
   </table>
 </form>
