@@ -5,6 +5,9 @@
 
     if (Post::has('submit')) {
         if (has_perms()) {
+            if (strstr(Post::get('mail_domain'), '.') === false) {
+                $page->trig_run("le domaine doit être un FQDN (aucune modif effectuée) !!!");
+            }
             $globals->xdb->execute(
                 "UPDATE  groupex.asso
                     SET  nom={?}, diminutif={?}, cat={?}, dom={?}, descr={?}, site={?}, mail={?}, resp={?}, forum={?}, mail_domain={?}, ax={?}, pub={?}, sub_url={?}, inscriptible={?}
