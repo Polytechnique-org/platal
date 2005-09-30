@@ -479,7 +479,7 @@ function subscribe_nl($uid=-1)
  
 function justify($text,$n)
 {
-    $arr = split("\n",wordwrap($text,$n));
+    $arr = explode("\n",wordwrap($text,$n));
     $arr = array_map('trim',$arr);
     $res = '';
     foreach ($arr as $key => $line) {

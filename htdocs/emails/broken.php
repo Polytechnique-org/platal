@@ -66,7 +66,7 @@ L'équipe d'administration <support@polytechnique.org>";
 } elseif (Post::has('email')) {
     $email = valide_email(Post::get('email'));
 
-    list(,$fqdn) = split('@', $email);
+    list(,$fqdn) = explode('@', $email);
     $fqdn = strtolower($fqdn);
     if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' || $fqdn == 'm4x.org' || $fqdn == 'melix.net') {
         $page->assign('neuneu', true);

@@ -45,7 +45,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
     $membres = Array();
     
     foreach($members as $mem) {
-        list($m, $dom) = split('@',$mem);
+        list($m, $dom) = explode('@',$mem);
         if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
             $res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="", nom, nom_usage), promo
                                            FROM  auth_user_md5 AS u

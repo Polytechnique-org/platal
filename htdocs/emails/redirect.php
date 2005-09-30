@@ -49,7 +49,7 @@ $res = $globals->xdb->query(
         $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
 $melix = $res->fetchOneCell();
 if ($melix) {
-    list($melix) = split('@', $melix);
+    list($melix) = explode('@', $melix);
     $page->assign('melix',$melix);
 }
 

@@ -22,7 +22,7 @@
 require_once('xorg.inc.php');
 require_once('webservices/manageurs.server.inc.php');
 
-$ips = array_flip(split(' ',$globals->manageurs->authorized_ips));
+$ips = array_flip(explode(' ',$globals->manageurs->authorized_ips));
 if($ips && isset($ips[$_SERVER['REMOTE_ADDR']])){
   $server = xmlrpc_server_create();
 

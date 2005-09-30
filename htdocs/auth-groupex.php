@@ -43,7 +43,7 @@ if (!isset($_SESSION['suid'])) {
 /* cree le champs "auth" renvoye au Groupe X */
 function gpex_make_auth($chlg, $privkey, $datafields) {
     global $globals;
-    $fieldarr = split(",",$datafields);
+    $fieldarr = explode(",",$datafields);
     $tohash   = "1$chlg$privkey";
 
     while (list(,$val) = each($fieldarr)) {
@@ -65,7 +65,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
 function gpex_make_params($chlg, $privkey, $datafields) {
     global $globals;
     $params   = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
-    $fieldarr = split(",",$datafields);
+    $fieldarr = explode(",",$datafields);
     while (list(,$val) = each($fieldarr)) {
         if (isset($_SESSION[$val])) {
             $params .= "&$val=".$_SESSION[$val];

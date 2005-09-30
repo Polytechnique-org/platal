@@ -12,7 +12,7 @@ $lfull = strtolower(Get::get('liste'));
 if (Env::has('add_member')) {
     $add = Env::get('add_member');
     if(strstr($add, '@')) {
-	list($mbox,$dom) = split('@', strtolower($add));
+	list($mbox,$dom) = explode('@', strtolower($add));
     } else {
 	$mbox = $add;
 	$dom = 'm4x.org';

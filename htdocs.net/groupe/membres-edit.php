@@ -10,7 +10,7 @@
         if (strpos($email, '@') === false) {
             $email .= '@m4x.org';
         }
-        list($mbox,$dom) = split('@', $email);
+        list($mbox,$dom) = explode('@', $email);
 
         $res = $globals->xdb->query(
                 "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine
@@ -42,7 +42,7 @@
 
         if (Env::has('email')) {
             $email = Env::get('email');
-            list(,$fqdn) = split('@', $email);
+            list(,$fqdn) = explode('@', $email);
             $fqdn = strtolower($fqdn);
             if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org' ||
                 $fqdn == 'm4x.org' || $fqdn == 'melix.net')

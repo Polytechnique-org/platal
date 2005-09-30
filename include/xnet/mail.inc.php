@@ -45,7 +45,7 @@ function get_all_redirects($membres, $mls, &$client)
     foreach ($mls as $ml) {
         if (list(,$members) = $client->get_members($ml)) {
             foreach ($members as $mem) {
-                list($m, $dom) = split('@',$mem[1]);
+                list($m, $dom) = explode('@',$mem[1]);
                 if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
                     $res = $globals->xdb->query('SELECT  prenom, nom, FIND_IN_SET("femme", u.flags) AS sexe
                                                    FROM  auth_user_md5 AS u

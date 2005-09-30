@@ -87,7 +87,7 @@ function get_user_login($data, $get_forlife = false) {
         $data = $data.'@'.$globals->mail->domain;
     }
     
-    list($mbox, $fqdn) = split('@', $data);
+    list($mbox, $fqdn) = explode('@', $data);
     if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
 
         $res = $globals->xdb->query("SELECT  a.alias
@@ -108,7 +108,7 @@ function get_user_login($data, $get_forlife = false) {
                                  INNER JOIN  virtual USING(vid)
                                       WHERE  alias={?}", $mbox.'@'.$globals->mail->alias_dom);
         if ($redir = $res->fetchOneCell()) {
-            list($alias) = split('@', $redir);
+            list($alias) = explode('@', $redir);
         } else {
             $page->trig("il n'y a pas d'utilisateur avec cet alias");
             $alias = false;

@@ -31,7 +31,7 @@ if (($opts['i'] && $opts['i'] == '-') || empty($opts['i'])) {
     $file = $opts['i'];
 }
 
-$emails = split("\n", file_get_contents($file));
+$emails = explode("\n", file_get_contents($file));
 foreach ($emails as $_email) {
     $email = valide_email($_email);
     if (empty($email) || $email=='@') {
