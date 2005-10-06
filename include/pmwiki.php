@@ -19,17 +19,23 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-if (Env::has('response'))
- new_skinned_page('wiki.tpl', AUTH_MDP);
-else
- new_skinned_page('wiki.tpl', AUTH_PUBLIC);
+// should be at global level (and not in a function)
+// as we need to include lots of globals vars in the external wiki
+if ($globals->wiki->wikidir)
+{
+ ob_start();
+ require_once($globals->spoolroot.$globals->wiki->wikidir.'/pmwiki.php');
 
-require_once('pmwiki.php');
- 
- $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
- $page->assign('menu-pmwiki', $wikiMenu);
- $page->assign('pmwiki', $wikiTxt);
+ $wikiAll = ob_get_clean();
+ $i = strpos($wikiAll, "<!--/HeaderText-->");
+ $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
 
-$page->run();
+ $wikiHeaders = substr($wikiAll, 0, $i);
+
+ $wikiMenu = substr($wikiAll, $i, $j-$i);
+
+ $wikiTxt = substr($wikiAll, $j);
+
+}
+
 ?>

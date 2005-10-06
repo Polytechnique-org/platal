@@ -10,6 +10,10 @@ Markup("[[~platal", "<[[~", '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e', 'PreserveText("="
 // (:request topic:) then (:if topic top:) will test $_REQUEST['topic'] == 'top'
 Markup("requestVars", "<if", '/\(:request ([a-z_]+)( ([a-z_]+))?:\)/ie', 'RequestToCond("$1", "$3")');
 
+## [[#anchor]] in standard XHTML
+Markup('[[#','<[[','/(?>\\[\\[#([A-Za-z][-.:\\w]*))\\]\\]/e',
+  "Keep(\"<a id='$1'></a>\",'L')");
+  
 function RequestToCond($var, $default)
 {
  global $Conditions;

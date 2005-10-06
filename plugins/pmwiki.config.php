@@ -12,6 +12,7 @@
 ##  $ScriptUrl is your preferred URL for accessing wiki pages
 ##  $PubDirUrl is the URL for the pub directory.
 $ScriptUrl = $globals->baseurl;
+$UploadUrlFmt = $ScriptUrl."/uploads";
 $WorkDir = '../wiki/wiki.d';
 $WikiDir = new PageStore('$FarmD/wiki.d/$FullName');
 $PubDirUrl = $globals->baseurl.'/pubwiki';
