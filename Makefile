@@ -52,11 +52,19 @@ wiki/local/pmwiki.config.php:
 wiki/pub/skins/empty:
 	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
 
-wiki: build-wiki spool/uploads htdocs/uploads htdocs/wikipub
-	@test -d wiki || wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz
+wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wikipub
 
 spool/wiki.d::
 	cd $@ && ln -s ../../install.d/wiki/wiki.d/* .
+
+get-wiki:
+	@if ! test -d wiki; then                                          \
+	    wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
+	    echo "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯"; \
+	    echo "now please untar pmwiki into wiki/ and run make again"; \
+	    echo "_____________________________________________________"; \
+	    exit 1;                                                       \
+	fi
 
 build-wiki: wiki/local/pmwiki.config.php wiki/pub/skins/empty spool/wiki.d
 
