@@ -66,7 +66,7 @@ get-wiki:
 	    exit 1;                                                       \
 	fi
 
-build-wiki: wiki/local/pmwiki.config.php wiki/pub/skins/empty spool/wiki.d
+build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
 
 ################################################################################
 
