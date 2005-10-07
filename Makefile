@@ -22,7 +22,7 @@ headers:
 	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header \
 		`find templates -name '*.tpl' ! -path 'templates/xnet/skin.tpl' ! -path 'templates/skin/*.tpl' ! -name 'vcard.tpl' `
 
-build: templates_c wiki
+build: spool/templates_c wiki
 
 clean:
 	rm -rf include/platal/globals.inc.php
@@ -32,7 +32,7 @@ clean:
 
 ################################################################################
 # targets
-templates_c uploads wiki.d::
+spool/templates_c spool/uploads spool/wiki.d::
 	mkdir -p $@
 	chmod o+w $@
 
@@ -41,7 +41,7 @@ htdocs/valid.html:
 	cd htdocs && ln -sf ../templates_c/valid.html
 
 htdocs/uploads:
-	cd htdocs && ln -sf ../uploads
+	cd htdocs && ln -sf ../spool/uploads
 
 htdocs/wikipub:
 	cd htdocs && ln -sf ../wiki/pub wikipub
@@ -52,13 +52,13 @@ wiki/local/pmwiki.config.php:
 wiki/pub/skins/empty:
 	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
 
-wiki: build-wiki uploads htdocs/uploads htdocs/wikipub
+wiki: build-wiki spool/uploads htdocs/uploads htdocs/wikipub
 	@test -d wiki || wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz
 
-wiki.d::
-	cd $@ && ln -s ../install.d/wiki/wiki.d/* .
+spool/wiki.d::
+	cd $@ && ln -s ../../install.d/wiki/wiki.d/* .
 
-build-wiki: wiki/local/pmwiki.config.php wiki/pub/skins/empty wiki.d
+build-wiki: wiki/local/pmwiki.config.php wiki/pub/skins/empty spool/wiki.d
 
 ################################################################################
 

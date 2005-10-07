@@ -13,8 +13,8 @@
 ##  $PubDirUrl is the URL for the pub directory.
 $ScriptUrl = $globals->baseurl;
 $UploadUrlFmt = $ScriptUrl."/uploads";
-$WorkDir = '../wiki.d';
-$WikiDir = new PageStore('$FarmD/../wiki.d/$FullName');
+$WorkDir = '../spool/wiki.d';
+$WikiDir = new PageStore('$FarmD/../spool/wiki.d/$FullName');
 $PubDirUrl = $globals->baseurl.'/pubwiki';
 $InterMapFiles[] = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
 

@@ -46,7 +46,7 @@ class PlatalPage extends DiogenesCorePage
         global $globals;
 
         $this->template_dir  = $globals->spoolroot."/templates/";
-        $this->compile_dir   = $globals->spoolroot."/templates_c/";
+        $this->compile_dir   = $globals->spoolroot."/spool/templates_c/";
         array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
         $this->config_dir    = $globals->spoolroot."/configs/";
 
