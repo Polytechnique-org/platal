@@ -16,59 +16,46 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 
 all: build
 
+devel: build htdocs/valid.html
+
 headers:
 	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header \
 		`find templates -name '*.tpl' ! -path 'templates/xnet/skin.tpl' ! -path 'templates/skin/*.tpl' ! -name 'vcard.tpl' `
 
-build: pkg-build 
-
-dist: clean pkg-dist
-
-bzdist: clean pkg-bzdist
+build: templates_c wiki
 
 clean:
 	rm -rf include/platal/globals.inc.php
-	rm -f htdocs/banana/banana.css htdocs/valid.html include/banana htdocs/banana/img
 
 %: %.in Makefile
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
 
 ################################################################################
-# devel targets
-templates_c:
-	mkdir templates_c
-	chmod o+w templates_c
+# targets
+templates_c uploads:
+	mkdir -p $@
+	chmod o+w $@
 
 htdocs/valid.html:
 	touch templates_c/valid.html
-	ln -sf ../templates_c/valid.html htdocs/valid.html
+	cd htdocs && ln -sf ../templates_c/valid.html
 
-devel: build templates_c htdocs/valid.html
+htdocs/uploads:
+	cd htdocs && ln -sf ../uploads
 
+htdocs/wikipub:
+	cd htdocs && ln -sf ../wiki/pub wikipub
+
+wiki/local/pmwiki.config.php:
+	cd wiki/local/     && ln -sf ../../plugins/pmwiki.config.php
+
+wiki/pub/skins/empty:
+	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
+
+wiki: uploads htdocs/uploads htdocs/wikipub wiki/local/pmwiki.config.php wiki/pub/skins/empty
+	@test -d wiki || wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz
 
 ################################################################################
-# diogenes package targets
 
-pkg-build: include/platal/globals.inc.php
-
-$(PKG_DIST): pkg-build
-	mkdir $(PKG_DIST)
-	cp -a $(PKG_FILES) $(PKG_DIST)
-	for dir in `find $(PKG_DIRS) -type d $(VCS_FILTER)`; \
-	do \
-          mkdir -p $(PKG_DIST)/$$dir; \
-	  find $$dir -type f -maxdepth 1 -exec cp {} $(PKG_DIST)/$$dir \; ; \
-	done
-
-pkg-dist: $(PKG_DIST)
-	rm -f $(PKG_DIST).tar.gz
-	tar czf $(PKG_DIST).tar.gz $(PKG_DIST)
-	rm -rf $(PKG_DIST)
-
-pkg-bzdist: $(PKG_DIST)
-	rm -f $(PKG_DIST).tar.bz2
-	tar cjf $(PKG_DIST).tar.bz2 $(PKG_DIST)
-	rm -rf $(PKG_DIST)
-
-.PHONY: build dist clean pkg-build pkg-dist
+.PHONY: build dist clean wiki
 
