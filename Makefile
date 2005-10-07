@@ -32,9 +32,16 @@ clean:
 
 ################################################################################
 # targets
-spool/templates_c spool/uploads spool/wiki.d::
+
+spool/templates_c spool/uploads:
 	mkdir -p $@
 	chmod o+w $@
+
+spool/wiki.d:
+	mkdir -p $@
+	chmod o+w $@
+	cd $@ && ln -sf ../../install.d/wiki/wiki.d/* .
+
 
 htdocs/valid.html:
 	touch spool/templates_c/valid.html
@@ -52,11 +59,6 @@ wiki/local/farmconfig.php:
 wiki/pub/skins/empty:
 	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
 
-wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wikipub
-
-spool/wiki.d::
-	cd $@ && ln -sf ../../install.d/wiki/wiki.d/* .
-
 get-wiki:
 	@if ! test -d wiki; then                                          \
 	    wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
@@ -67,6 +69,8 @@ get-wiki:
 	fi
 
 build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
+
+wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wikipub
 
 ################################################################################
 
