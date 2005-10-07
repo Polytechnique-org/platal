@@ -37,8 +37,8 @@ spool/templates_c spool/uploads spool/wiki.d::
 	chmod o+w $@
 
 htdocs/valid.html:
-	touch templates_c/valid.html
-	cd htdocs && ln -sf ../templates_c/valid.html
+	touch spool/templates_c/valid.html
+	cd htdocs && ln -sf ../spool/templates_c/valid.html
 
 htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
@@ -46,8 +46,8 @@ htdocs/uploads:
 htdocs/wikipub:
 	cd htdocs && ln -sf ../wiki/pub wikipub
 
-wiki/local/pmwiki.config.php:
-	cd wiki/local/     && ln -sf ../../plugins/pmwiki.config.php
+wiki/local/farmconfig.php:
+	cd wiki/local/     && ln -sf ../../plugins/pmwiki.config.php farmconfig.php
 
 wiki/pub/skins/empty:
 	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
@@ -55,7 +55,7 @@ wiki/pub/skins/empty:
 wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wikipub
 
 spool/wiki.d::
-	cd $@ && ln -s ../../install.d/wiki/wiki.d/* .
+	cd $@ && ln -sf ../../install.d/wiki/wiki.d/* .
 
 get-wiki:
 	@if ! test -d wiki; then                                          \

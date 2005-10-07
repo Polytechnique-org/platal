@@ -45,6 +45,8 @@ class PlatalPage extends DiogenesCorePage
     {
         global $globals;
 
+        $this->DiogenesCorePage();
+
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/spool/templates_c/";
         array_unshift($this->plugins_dir, $globals->spoolroot."/plugins/");
@@ -61,7 +63,6 @@ class PlatalPage extends DiogenesCorePage
         $this->_tpl       = $tpl;
         $this->_errors    = new XOrgErrors;
 
-        $this->DiogenesCorePage();
         $this->register_prefilter('at_to_globals');
         $this->register_prefilter('trimwhitespace');
         $this->addJsLink('javascript/xorg.js');

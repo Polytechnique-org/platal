@@ -60,7 +60,7 @@ class XOrgMailer extends Smarty
         $this->compile_check=true;
 
         $this->template_dir = $globals->root . "/templates/";
-        $this->compile_dir  = $globals->root . "/templates_c/";
+        $this->compile_dir  = $globals->root . "/spool/templates_c/";
         $this->config_dir   = $globals->root . "/configs/";
 
         $this->register_outputfilter('mail_format');
