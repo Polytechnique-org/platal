@@ -27,9 +27,10 @@ else
 
 require_once('pmwiki.php');
  
- $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
- $page->assign('menu-pmwiki', $wikiMenu);
- $page->assign('pmwiki', $wikiTxt);
+$page->addCssLink('css/wiki.css');
+$page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+$page->assign('menu-pmwiki', $wikiMenu);
+$page->assign('pmwiki', $wikiTxt);
 
 $page->run();
 ?>

@@ -1,0 +1,17 @@
+table.quickref       {
+    margin-top 1em: padding: 0px;
+    border: 1px dotted #aaaaaa;
+    font-size: 95%;
+}
+
+table.quickref tr    {
+    padding 0px;
+    margin: 0px;
+}
+
+table.quickref td    {
+    margin: 0px;
+    padding: 4px;
+    border-top: 1px dotted #aaaaaa;
+}
+

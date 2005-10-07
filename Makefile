@@ -45,6 +45,7 @@ spool/wiki.d:
 
 htdocs/valid.html:
 	touch spool/templates_c/valid.html
+	chmod o+w spool/templates_c/valid.html
 	cd htdocs && ln -sf ../spool/templates_c/valid.html
 
 htdocs/uploads:
