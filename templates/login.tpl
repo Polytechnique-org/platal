@@ -121,6 +121,10 @@ Bienvenue {$smarty.session.prenom}
   <div class="right">
     <a href='{rel}/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
   </div>
+  {else}
+  <div class="right">
+    <a href='{rel}/filrss.php?referer={$refe}'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
+  </div>
   {/if}
 {/if}
 

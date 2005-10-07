@@ -86,6 +86,8 @@ $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS
       ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
 $page->assign('evenement', $globals->xdb->iterator($sql, $promo, $promo));
 
+$page->assign('refe',$_SERVER['PHP_SELF']);
+
 $page->run();
 
 // vim:set et sws=4 sw=4 sts=4:

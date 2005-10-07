@@ -20,14 +20,29 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-new_skinned_page('carnet/index.tpl', AUTH_COOKIE);
+new_skinned_page('filrss.tpl',AUTH_MDP);
 
-if (Session::has('core_rss_hash')) {
-    $page->assign('xorg_rss', Array("title" => "Polytechnique.org :: Carnet", "href" => "/carnet/rss.php/".Session::get('forlife')."/".Session::get('core_rss_hash').".xml"));
+if (Env::has('referer')) {
+    $param = Env::get('referer');
+    $page->assign('goback',$param);
 }
 
-$page->assign('refe',$_SERVER['PHP_SELF']);
+if (Env::has('referer')) {
+    $act = Env::get('act_rss');
+    if ($act == 'Activer'){
+        $page->trig("Ton Fil RSS est activé.");
+        $_SESSION['core_rss_hash'] = rand_url_id(16);
+        $globals->xdb->execute('UPDATE auth_user_quick SET core_rss_hash={?} WHERE user_id={?}',
+                                Session::get('core_rss_hash'), Session::getInt('uid'));
+    }                                
+}
+
+if (Session::get('core_rss_hash') > '')
+{
+    $page->assign('rsshash','oui');
+}
 
 $page->run();
 
+// vim:set et sws=4 sw=4 sts=4:
 ?>

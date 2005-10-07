@@ -20,69 +20,53 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Carnet polytechnicien</h1>
+<h1>Fil RSS</h1>
 
-<table class="bicol">
-  <tr>
-    <th colspan="2">
-      Tes contacts
-    </th>
-  </tr>
-  <tr class="impair">
-    <td class='half'>
-      <h3>
-        <a href="{"carnet/mescontacts.php"|url}">Page de tes contacts</a>
-      </h3>
-      <div class="explication">
-        Tu peux ici lister tes contacts, en ajouter et en retirer.
-      </div>
-    </td>
-    <td class='half'>
-      <h3>
-        <a href="{"carnet/mescontacts.php?trombi=1"|url}">Le trombi de tes contacts</a>
-      </h3>
-      <div class="explication">
-        La même chose que la page de tes contacts... <strong>en images !</strong>
-      </div>
-    </td>
-  </tr>
+{if !$rsshash }
+Tu viens de cliquer sur le lien d'activation des fils RSS. Les fils RSS du site <br/>
+ne sont pas activés dans tes préférences.
+<ul>
+  <li>
+ Tu peux le faire tout de suite en cliquant sur Activer ci-dessous.
+  </li>
+  <li>
+ Qu'est-ce qu'un <a href="http://www.weblogger.ch/blog/archives/2004/06/23/syndication-pas-pas/">fil RSS</a> ?
+  </li>
+  <li>
+ Comment configurer un <a href="http://www.ac-reims.fr/ia52/rss/lire_rss.htm">agregateur RSS</a> ?
+  </li>
+</ul>
+
+<table>
+  <td>
+      <form method="GET" action="filrss.php">
+        <input type="hidden" name="referer" value="{$goback}" />
+        <input type="submit" name="act_rss" value="Activer">
+      </form>
+  </td>
+  <td>
+      <form method="GET" action="{$goback}">
+        <input type="hidden" name="referer" value="{$goback}" />
+        <input type="submit" name="" value="Retour">
+      </form>
+  </td>
 </table>
 
-<br />
-
-<table class="bicol">
-  <tr>
-    <th colspan="2">
-      Notifications
-    </th>
-  </tr>
-  <tr class="pair">
-    <td class='half'>
-      <h3>
-        <a href="{"carnet/panel.php"|url}">Tous les évenements de la semaine</a>
-      </h3>
-      <div class="explication">
-        Affichage de tous les évenements de camarades/promos
-  {if $smarty.session.core_rss_hash}
-  <div class="right">
-    <a href='{rel}/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
-  </div>
-  {else}
-  <div class="right">
-    <a href='{rel}/filrss.php?referer={$refe}'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
-  </div>
-  {/if}
-      </div>
-    </td>
-    <td class='half'>
-      <h3>
-        <a href="{"carnet/notifs.php"|url}">Configurer tes notifications</a>
-      </h3>
-      <div class="explication">
-        Être notifié des inscriptions, décès, changement de fiche, ...
-      </div>
-    </td>
-  </tr>
-</table>
-
+{else}
+En voici l'adresse: <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+<p>
+Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver les fils RSS".
+<p>
+Attention: désactiver, puis réactiver le fil RSS en change l'adresse.
+<p>
+<form method="GET" action="{$goback}">
+  <table>
+    <tr class="center">
+      <td>
+        <input type="submit" name="" value="Retour">
+      </td>
+    </tr>
+  </table>
+</form>
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}
