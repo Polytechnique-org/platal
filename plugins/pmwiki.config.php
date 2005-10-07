@@ -37,8 +37,8 @@ XLSDV('en', array(
 ## See PmWiki.Skins and Cookbook.Skins.
 $Skin = 'empty';
 
-include_once("pmwiki.platalAuth.php");
-include_once("pmwiki.platalSkin.php");
+include_once($globals->spoolroot."/plugins/pmwiki.platalAuth.php");
+include_once($globals->spoolroot."/plugins/pmwiki.platalSkin.php");
 @include_once("$FarmD/cookbook/e-protect.php");
 
 ## You'll probably want to set an administrative password that you
