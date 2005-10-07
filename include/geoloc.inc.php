@@ -40,7 +40,7 @@ function _geoloc_country_smarty($params){
     return;
   return geoloc_country($params['country']);
 }
-$page->register_function('geoloc_country', '_geoloc_country_smarty');
+$GLOBALS['page']->register_function('geoloc_country', '_geoloc_country_smarty');
 
 /** donne la liste deroulante des regions pour un pays
  * @param $pays le pays dont on veut afficher les regions
@@ -64,7 +64,7 @@ function _geoloc_region_smarty($params){
     return;
   return geoloc_region($params['country'], $params['region']);
 }
-$page->register_function('geoloc_region', '_geoloc_region_smarty');
+$GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
 
 // {{{ get_address_infos($txt)
@@ -82,6 +82,8 @@ function get_address_infos($txt) {
     global $globals;
     if ($infos['sql'])
        $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
+    if ($infos['display'])
+       $globals->xdb->execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
     return $infos;
 }
 // }}}
@@ -96,13 +98,26 @@ function get_address_text($adr) {
     if ($adr['adr2']) $t.= "\n".$adr['adr2'];
     if ($adr['adr3']) $t.= "\n".$adr['adr3'];
     $l = "";
-    if ($adr['country'] == 'US' || $adr['country'] == 'CA') {
-        if ($adr['city']) $l .= $adr['city'].",\n";
-        if ($adr['region']) $l .= $adr['region']." ";
-        if ($adr['postcode']) $l .= $adr['postcode'];
-    } else {
-        if ($adr['postcode']) $l .= $adr['postcode']." ";
-        if ($adr['city']) $l .= $adr['city'];
+    if ($adr['display']) {
+        $keys = explode(' ', $adr['display']);
+        foreach ($keys as $key) {
+            if (isset($adr[$key]))
+                $l .= " ".$adr[$key];
+            else
+                $l .= " ".$key;
+        }
+        if ($l) $l = substr($l, 1);
+    }
+    else
+    {
+        if ($adr['country'] == 'US' || $adr['country'] == 'CA' || $adr['country'] == 'GB') {
+            if ($adr['city']) $l .= $adr['city'].",\n";
+            if ($adr['region']) $l .= $adr['region']." ";
+            if ($adr['postcode']) $l .= $adr['postcode'];
+        } else {
+            if ($adr['postcode']) $l .= $adr['postcode']." ";
+            if ($adr['city']) $l .= $adr['city'];
+        }
     }
     if ($l) $t .= "\n".trim($l);
     if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == strtoupper($adr['countrytxt']))) {
@@ -143,6 +158,7 @@ function empty_address() {
         "city" => "",
         "postcode" => "",
         "region" => "",
+        "regiontxt" => "",
         "country" => "00",
         "countrytxt" => "");
 }
@@ -170,11 +186,11 @@ function localize_addresses($uid) {
             $globals->xdb->execute("UPDATE adresses SET
                 adr1 = {?}, adr2 = {?}, adr3 = {?},
                 cityid = {?}, city = {?}, postcode = {?},
-                region = {?}, country = {?}
+                region = {?}, regiontxt = {?}, country = {?}
                 WHERE uid = {?} AND adrid = {?}",
                 $new['adr1'], $new['adr2'], $new['adr3'],
                 $new['cityid'], $new['city'], $new['postcode'],
-                $new['region'], $new['country'],
+                $new['region'], $new['regiontxt'], $new['country'],
                 $uid, $a['adrid']);
                 $new['store'] = true;
                 if (!$new['cityid']) $erreur[$a['adrid']] = $new;

@@ -205,13 +205,12 @@ function &get_user_details($login, $from_uid = '')
     $user['adr_pro'] = get_user_details_pro($uid);
 
     $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.postcode,a.city,
-                     gp.pays AS countrytxt,gr.name AS region,a.tel,a.fax,
+                     gp.pays AS countrytxt,a.region, a.regiontxt, a.tel,a.fax,
                      FIND_IN_SET('active', a.statut) AS active, a.adrid,
                      FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
-                     a.pub, a.tel_pub
+                     a.pub, a.tel_pub, gp.display
                FROM  adresses AS a
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)
-          LEFT JOIN  geoloc_region AS gr ON (gr.a2=a.country and gr.region=a.region)
               WHERE  uid= {?} AND NOT FIND_IN_SET('pro',a.statut)
            ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
     $res  = $globals->xdb->query($sql, $uid);

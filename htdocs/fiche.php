@@ -92,6 +92,7 @@ if (!logged() || Env::has('public')) {
             $user['adr'][$i]['city'] = '';
             $user['adr'][$i]['postcode'] = '';
             $user['adr'][$i]['region'] = '';
+            $user['adr'][$i]['regiontxt'] = '';
             $user['adr'][$i]['country'] = '00';
             $user['adr'][$i]['countrytxt'] = '';
         }
