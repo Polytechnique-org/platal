@@ -1,0 +1,9 @@
+version=pmwiki-2.0.6 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; fr-FR; rv:1.7.12) Gecko/20050919 Firefox/1.0.7
+host=69.109.203.119
+name=Site.GroupAttributes
+passwdattr=*
+passwdedit=*
+passwdread=true:
+rev=1
+time=1127979477

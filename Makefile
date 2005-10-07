@@ -32,7 +32,7 @@ clean:
 
 ################################################################################
 # targets
-templates_c uploads:
+templates_c uploads wiki.d::
 	mkdir -p $@
 	chmod o+w $@
 
@@ -52,10 +52,15 @@ wiki/local/pmwiki.config.php:
 wiki/pub/skins/empty:
 	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
 
-wiki: uploads htdocs/uploads htdocs/wikipub wiki/local/pmwiki.config.php wiki/pub/skins/empty
+wiki: build-wiki uploads htdocs/uploads htdocs/wikipub
 	@test -d wiki || wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz
+
+wiki.d::
+	cd $@ && ln -s ../install.d/wiki/wiki.d/* .
+
+build-wiki: wiki/local/pmwiki.config.php wiki/pub/skins/empty wiki.d
 
 ################################################################################
 
-.PHONY: build dist clean wiki
+.PHONY: build dist clean wiki build-wiki
 
