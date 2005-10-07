@@ -50,8 +50,8 @@ htdocs/valid.html:
 htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
 
-htdocs/wikipub:
-	cd htdocs && ln -sf ../wiki/pub wikipub
+htdocs/wiki:
+	cd htdocs && ln -sf ../wiki/pub wiki
 
 wiki/local/farmconfig.php:
 	cd wiki/local/     && ln -sf ../../plugins/pmwiki.config.php farmconfig.php
@@ -70,7 +70,7 @@ get-wiki:
 
 build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
 
-wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wikipub
+wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wiki
 
 ################################################################################
 

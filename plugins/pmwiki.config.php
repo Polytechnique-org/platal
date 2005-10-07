@@ -15,7 +15,7 @@ $ScriptUrl = $globals->baseurl;
 $UploadUrlFmt = $ScriptUrl."/uploads";
 $WorkDir = '../spool/wiki.d';
 $WikiDir = new PageStore('$FarmD/../spool/wiki.d/$FullName');
-$PubDirUrl = $globals->baseurl.'/pubwiki';
+$PubDirUrl = $globals->baseurl.'/wiki';
 $InterMapFiles[] = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
 
 ##  If you want to use URLs of the form .../pmwiki.php/Group/PageName
