@@ -143,9 +143,13 @@ function check_new_user(&$sub)
     extract($sub);
 
     $prenom  = preg_replace("/[ \t]+/", ' ', trim($prenom));
+    $prenom  = preg_replace("/--+/", '-', $prenom);
+    $prenom  = preg_replace("/''+/", '\'', $prenom);
     $prenom  = make_firstname_case($prenom);
 
     $nom     = preg_replace("/[ \t]+/", ' ', trim($nom));
+    $nom     = preg_replace("/--+/", '-', $nom);
+    $nom     = preg_replace("/''+/", '\'', $nom);
     $nom     = strtoupper(replace_accent($nom));
 
     if ($promo >= 1996) {
