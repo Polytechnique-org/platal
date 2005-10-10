@@ -69,7 +69,7 @@ function _display_groupes($params, &$smarty){
   }
 
   foreach($exalead_data->groups as $group){
-    display_group2($group, $exalead_data);
+    display_group($group, $exalead_data);
   }
 
 }
