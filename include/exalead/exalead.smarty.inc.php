@@ -1,59 +1,63 @@
 <?php
 
-
-$exa_max_length = 20;
+$exa_max_length = 16;
 
 function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_groupe', $img_path = 'images/'){
-  $compteur = 0;
-  $titre = ($keywords)?'Mot-clés':$group->title;
-  $gid = ($keywords)?'k':$group->gid;
-  if($keywords)
-    $array = & $group;
-  else
-    $array = & $group->categories;
-?>
-<div class="exa_groupe">
-  <div class="titre"><?php echo $titre?> :</div>
-  <ul id="exa_group_<?php echo $gid?>">
-<?php
-  foreach($array as $categorie){
-    $compteur++;
-?>
-    <li class="exa_categorie" id="exa_group_<?php echo $gid.'_'.$compteur;?>">
-<?php
-    if($categorie->is_normal()){
-?>
-        <a style="text-decoration: none;"
-	    href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->refine_href;?>&amp;_f=xml2"
-		title="Afficher seulement ces résultats"
-	    ><img style="vertical-align: text-bottom;" src="images/select.png" alt="[+]" />
-	    <?php echo (empty($categorie->display)?$categorie->name:$categorie->display).(empty($categorie->count)?'':' ('.$categorie->count.')');?></a>
-	<a href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->exclude_href;?>&amp;_f=xml2"
-		title="Ne pas afficher ces résultats"
-	       ><img style="vertical-align: text-bottom;"  src="images/moins.png" alt="[-]"/></a>
-<?php
-    }
-    elseif($categorie->is_excluded()){
-?>
-        <span style="text-decoration: line-through;">
-	  <a href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->reset_href;?>&amp;_f=xml2"><img style="vertical-align: text-bottom;" src="images/select.png" alt="[+]" /> 
-	  <?php echo $categorie->display;?></a>
-	</span>
-<?php
-    }
-    else{
-?>
-        <strong><?php echo $categorie->display;?></strong>
-        <a href="?_C=<?php echo $exalead_data->query->context.'/'.$categorie->reset_href;?>&amp;_f=xml2"><img style="vertical-align: text-bottom;"  src="images/moins.png" alt="[-]"/></a>
-<?php
-    }
-    echo '</li>';
-  }
-?>
-  </ul>
-</div>
-<?php
+	$compteur = 0;
+	$titre = ($keywords)?'Mot-clés':$group->title;
+	$gid = ($keywords)?'k':$group->gid;
+	if($keywords){
+		$array = & $group;
+	}
+	else{
+		$array = & $group->categories;
+	}
+	$res="	<div class=\"exa_groupe\"
+		<div class=\"titre\">".$titre.":</div>
+		<ul id=\"exa_group_".$gid."\">";
+	foreach($array as $categorie){
+		$compteur++;
+		$res+="<li class=\"exa_categorie\" id=\"exa_group_".$gid."_".$compteur.";\">";
+		if($categorie->is_normal()){
+			$res+="<a style=\"text-decoration: none;\"
+				href=\"?_C=".$exalead_data->query->context."/".$categorie->refine_href.";?>&amp;_f=xml2\"
+				title=\"Afficher seulement ces résultats\">
+				<img style=\"vertical-align: text-bottom;\" src=\"images/select.png\" alt=\"[+]\" />";
+			if (empty($categorie->display)){
+				$res+=$categorie->name;
+			}
+			else{
+				$res+=$categorie->display;
+			}
+			if(!empty($categorie->count)){
+				$res+=$categorie->count;
+			}
+			$res+="</a>
+				<a href=\"?_C=".$exalead_data->query->context."/".$categorie->exclude_href.";&amp;_f=xml2\"
+				title=\"Ne pas afficher ces résultats\">
+				<img style=\"vertical-align: text-bottom;\"  src=\"images/moins.png\" alt=\"[-]\"/></a>";
+		}
+		elseif($categorie->is_excluded()){
+			$res+="<span style=\"text-decoration: line-through;\">
+				<a href=\"?_C=".$exalead_data->query->context."/".$categorie->reset_href.";&amp;_f=xml2\">
+				<img style=\"vertical-align: text-bottom;\" src=\"images/select.png\" alt=\"[+]\" /> 
+				".$categorie->display.";</a>
+				</span>";
+		}
+		else{
+			$res+="<strong>".$categorie->display.";</strong>
+				<a href=\"?_C=".$exalead_data->query->context."/".$categorie->reset_href.";&amp;_f=xml2\">
+				<img style=\"vertical-align: text-bottom;\"  src=\"images/moins.png\" alt=\"[-]\"/></a>";
+		}
+		$res+="</li>";		
+	}
+	$res+="	</ul>
+		</div>";
+	return $res;
 }
+
+
+
 
 function _display_groupes($params, &$smarty){
 
@@ -65,7 +69,7 @@ function _display_groupes($params, &$smarty){
   }
 
   foreach($exalead_data->groups as $group){
-    display_group($group, $exalead_data);
+    display_group2($group, $exalead_data);
   }
 
 }
