@@ -64,7 +64,7 @@ function tmp_prefs()
             ),
             Array(
                 'url'    => 'preferences.php?rss='.(intval(Session::get('core_rss_hash')=='')),
-                'title'  => (Session::get('core_rss_hash') ? 'désactiver' : 'activer').' les fils rss',
+                'title'  => (Session::get('core_rss_hash') ? 'Désactiver' : 'Activer').' les fils rss',
                 'text'   => 'Ceci te permet d\'utiliser les fils rss du site. Attention, désactiver puis réactiver les fils en change les URL !',
                 'weight' => 90
             )
