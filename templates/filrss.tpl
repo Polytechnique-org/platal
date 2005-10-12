@@ -37,36 +37,25 @@ ne sont pas activés dans tes préférences.
   </li>
 </ul>
 
-<table>
-  <td>
-      <form method="GET" action="filrss.php">
-        <input type="hidden" name="referer" value="{$goback}" />
-        <input type="submit" name="act_rss" value="Activer">
-      </form>
-  </td>
-  <td>
-      <form method="GET" action="{$goback}">
-        <input type="hidden" name="referer" value="{$goback}" />
-        <input type="submit" name="" value="Retour">
-      </form>
-  </td>
-</table>
+<form method="get" action="{$goback}">
+  <div>
+    <input type="hidden" name="referer" value="{$goback}" />
+    <input type="submit" name="" value="Retour" />
+    <input type="submit" name="act_rss" value="Activer" onclick="this.form.action='filrss.php'" />
+  </div>
+</form>
 
 {else}
-En voici l'adresse: <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+En voici l'adresse: <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
 <p>
 Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver les fils RSS".
-<p>
+</p><p>
 Attention: désactiver, puis réactiver le fil RSS en change l'adresse.
-<p>
-<form method="GET" action="{$goback}">
-  <table>
-    <tr class="center">
-      <td>
-        <input type="submit" name="" value="Retour">
-      </td>
-    </tr>
-  </table>
+</p>
+<form method="get" action="{$goback}">
+  <div>
+    <input type="submit" name="" value="Retour" />
+  </div>
 </form>
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}
