@@ -42,6 +42,8 @@ spool/wiki.d:
 	chmod o+w $@
 	cd $@ && ln -sf ../../install.d/wiki/wiki.d/* .
 
+wiki/cookbook/e-protect.php:
+	cd wiki/cookbook && ln -sf ../../install.d/wiki/e-protect.php
 
 htdocs/valid.html:
 	touch spool/templates_c/valid.html
@@ -71,7 +73,7 @@ get-wiki:
 
 build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
 
-wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wiki
+wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wiki wiki/cookbook/e-protect.php
 
 ################################################################################
 

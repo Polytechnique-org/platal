@@ -40,7 +40,7 @@ Tu peux donc aussi te <a href='?forget=1'>deconnecter complètement</a>.
 <p>
 De plus, ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta
 prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
-<a href='?forgetUid=1&forget=1'>supprimer cette information et te déconnecter complètement</a>.
+<a href='?forgetUid=1&amp;forget=1'>supprimer cette information et te déconnecter complètement</a>.
 </p>
 
 {elseif $smarty.cookies.ORGuid}
