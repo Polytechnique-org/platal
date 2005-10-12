@@ -148,7 +148,7 @@
       </th>
     </tr>
     <tr>
-      <td class"col">
+      <td class="col">
         Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui envoies. Tu peux choisir ici de récupérer directement ces données pour l'annuaire en ligne.
       </td>
     </tr>

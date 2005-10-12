@@ -54,6 +54,8 @@ class CyberPayment
         if (Cookie::has(session_name())) {
             $returnurl .= "?".SID;
         }
+	$req = $globals->xdb->query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
+	$name = $req->fetchOneCell();
 
         // on constuit la reference de la transaction
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
@@ -71,7 +73,7 @@ class CyberPayment
 		'CHAMP007' => $globals->baseurl,
 		'CHAMP008' => $pay->mail);
 	$this->infos['client'] = Array(
-		'CHAMP100' => Session::get('nom'),
+		'CHAMP100' => $name,
 		'CHAMP101' => Session::get('prenom'),
 		'CHAMP102' => '.',
 		'CHAMP103' => '.',

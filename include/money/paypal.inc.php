@@ -52,6 +52,8 @@ class PayPal
         global $globals;
 
 	$this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
+	$req = $globals->xdb->query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
+	$name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
             ."/paiement/paypal_retour.php?uid="
@@ -69,7 +71,7 @@ class PayPal
 	
 	$info_client = Array(
 		'first_name' => Session::get('prenom'),
-		'last_name'  => Session::get('nom'),
+		'last_name'  => $name,
 		'email'      => Session::get('bestalias').'@polytechnique.org');
 		
 	$res = $globals->xdb->query(
