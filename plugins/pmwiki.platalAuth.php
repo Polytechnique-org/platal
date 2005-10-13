@@ -23,16 +23,16 @@ function authPerms($pagename,$key,$could=false)
  return $auth;
 }
 
-function TryAllAuths($pagename, $level, $page_read, $group_read, $could = false)
+function TryAllAuths($pagename, $level, $page_read, $group_read)
 {
  global $DefaultPasswords;
  if (isset($page_read['passwd'.$level]) && $page_read['passwd'.$level] != '*')
-  return authPerms($pagename,$page_read['passwd'.$level], $could);
+  return array('page', $page_read['passwd'.$level]);
  if (isset($group_read['passwd'.$level]) && $group_read['passwd'.$level] != '*')
-  return authPerms($pagename,$group_read['passwd'.$level], $could);
+  return array('group', $group_read['passwd'.$level]);
  if (isset($DefaultPasswords[$level]))
-  return authPerms($pagename,$DefaultPasswords[$level], $could);
- return false;
+  return array('site', $DefaultPasswords[$level]);
+ return array('none', '');
 }
 
 function AuthPlatal($pagename, $level, $authprompt, $since)
@@ -45,13 +45,24 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
  $groupattr = FmtPageName('$Group/GroupAttributes', $pagename);
  $group_read = ReadPage($groupattr, $since);
 
- if (!isset($Conditions['canedit']))
- $Conditions['canedit'] = TryAllAuths($pagename, 'edit', $page_read, $group_read, true);
- if (!isset($Conditions['canattr']))
- $Conditions['canattr'] = TryAllAuths($pagename, 'attr', $page_read, $group_read, true);
+ $levels = array('read', 'attr', 'edit', 'upload');
 
- if (TryAllAuths($pagename, $level, $page_read, $group_read))
+ foreach ($levels as $l)
  {
+  list($from, $pass) = TryAllAuths($pagename, $l, $page_read, $group_read);
+  $passwds[$l] = $pass;
+  $pwsources[$l] = $from;
+ }
+ 
+ if (!isset($Conditions['canedit']))
+ $Conditions['canedit'] = authPerms($pagename, $passwds['edit'], true);
+ if (!isset($Conditions['canattr']))
+ $Conditions['canattr'] = authPerms($pagename, $passwds['attr'], true);
+
+ if (authPerms($pagename, $passwds[$level]))
+ {
+   $page_read['=passwd'] = $passwds;
+   $page_read['=pwsource'] = $pwsources;
    return $page_read;
  }
    

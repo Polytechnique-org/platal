@@ -50,6 +50,7 @@ $DefaultPasswords['read'] = 'has_perms: and: identified:';
 $DefaultPasswords['edit'] = 'has_perms: and: identified:';
 $DefaultPasswords['attr'] = 'has_perms: and: identified:';
 $DefaultPasswords['admin'] = 'has_perms: and: identified:';
+$DefaultPasswords['upload'] = 'has_perms: and: identified:';
 
 ##  PmWiki comes with graphical user interface buttons for editing;
 ##  to enable these buttons, set $EnableGUIButtons to 1.  
