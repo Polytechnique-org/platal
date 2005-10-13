@@ -18,32 +18,48 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
-/***************************************************************************
- * MISC
- */
+var is_netscape = (navigator.appName.substring(0,8) == "Netscape");
+var is_IE       = (navigator.appName.substring(0,9) == "Microsoft");
 
 // {{{ function getNow()
 
-/**
- * function used to print the client's computer datetime on the page
- */
 function getNow() {
-    dt=new Date();
-    dy=dt.getDay();
-    mh=dt.getMonth();
-    wd=dt.getDate();
-    yr=dt.getYear();
+    dt = new Date();
+    dy = dt.getDay();
+    mh = dt.getMonth();
+    wd = dt.getDate();
+    yr = dt.getYear();
     if (yr<1000) yr += 1900;
-    hr=dt.getHours();
-    mi=dt.getMinutes();
-    if (mi<10)
-        time=hr+":0"+mi;
-    else
-        time=hr+":"+mi;
-    days=new Array ("Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi");
-    months=new Array ("janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre");
-    return days[dy]+" "+wd+" "+months[mh]+" "+yr+"<br />"+time;
+    hr = dt.getHours();
+    mi = dt.getMinutes();
+    
+    time   = (mi < 10) ? hr +':0'+mi : hr+':'+mi;
+    days   = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+           'août', 'septembre', 'octobre', 'novembre', 'décembre']
+
+    return days[dy]+' '+wd+' '+months[mh]+' '+yr+'<br />'+time;
+}
+
+// }}}
+// {{{ Events
+
+function eventClosure(obj, methodName) {
+    return (function(e) {
+            e = e || window.event;
+            return obj[methodName](e);
+        });
+}
+
+function attachEvent(obj, evt, f, useCapture) {
+    if (!useCapture) useCapture = false;
+
+    if (obj.addEventListener) {
+        obj.addEventListener(evt, f, useCapture);
+        return true;
+    } else if (obj.attachEvent) {
+        return obj.attachEvent("on"+evt, f);
+    }
 }
 
 // }}}
@@ -54,13 +70,6 @@ function getNow() {
 
 // {{{ function popWin()
 
-/**
- * function that pops an anchor
- * 
- * @param theNode anchor    the anchor we are talking about
- * @param w       int       the desired width for the popup
- * @param h       int       the desired height for the popup
- */
 function popWin(theNode,w,h) {
     window.open(theNode.href, '_blank',
 	'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width='+w+',height='+h);
@@ -69,14 +78,6 @@ function popWin(theNode,w,h) {
 // }}}
 // {{{ function auto_links()
 
-/**
- * parses an html file, and update the onclik handlers for anchors that need it.
- *
- * anchors :
- *   - that points to another host are opened in a new window (mimic the target=_new)
- *   - of class popup(2) or popup_###x### create real popups (no url bar, ...)
- * This function is designed to be used in <body onload="javascript:auto_links()">
- */
 function auto_links() {
     nodes = document.getElementsByTagName('a');
     fqdn = document.URL;
@@ -105,9 +106,7 @@ function auto_links() {
 
 // {{{ function pa_onload
 
-function pa_onload() {
-    auto_links();
-}
+attachEvent(document, 'load', auto_links);
 
 // }}}
 

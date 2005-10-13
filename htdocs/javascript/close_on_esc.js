@@ -18,14 +18,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function closePopup() {
-    window.close();
+function closePopup(e) {
+    e = e || window.event;
+    if (e.keyCode == 27) {
+        window.close();
+    }
 }
-if (navigator.appName=="Microsoft Internet Explorer") {
-    function keyboardIE() { if (event.keyCode == 27) closePopup(); };
-    document.onkeydown = keyboardIE;
-} else {
-    function keyboardOther(e) { if (e.keyCode == 27) closePopup(); };
-    document.onkeydown = keyboardOther;
-}
+
+attachEvent(document, 'keydown', closePopup);
 
