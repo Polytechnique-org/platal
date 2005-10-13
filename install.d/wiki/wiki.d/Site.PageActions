@@ -5,7 +5,7 @@ host=69.109.203.119
 name=Site.PageActions
 rev=27
 targets=Site.PageActions,Site.GroupAttributes
-text=(:if canedit:)%0a>>frame float=right padding=10px margin=5px%3c%3c%0a[[{$FullName} | Voir la page ]]\\%0a[[{$FullName}?action=edit | Éditer ]]\\%0a[[{$FullName}?action=diff | Historique ]]\\%0a[[{$FullName}?action=upload | Upload ]]\\%0a(:if canattr:)%0a[[{$FullName}?action=attr | Droits ]]\\%0a[[{$Group}/GroupAttributes?action=attr | Droits du groupe]]\\%0a(:if canedit:)%0a>>%3c%3c%0a(:if:)%0a
+text=(:if canedit:)%0a>>frame float=right padding=10px margin="5px 0px 5px 5px" %3c%3c%0a[[{$FullName} | Voir la page ]]\\%0a[[{$FullName}?action=edit | Éditer ]]\\%0a[[{$FullName}?action=diff | Historique ]]\\%0a[[{$FullName}?action=upload | Upload ]]\\%0a(:if canattr:)%0a[[{$FullName}?action=attr | Droits ]]\\%0a[[{$Group}/GroupAttributes?action=attr | Droits du groupe]]\\%0a(:if canedit:)%0a>>%3c%3c%0a(:if:)%0a
 time=1127980549
 author:1127980549=pascal.corpet.2001|Pascal CORPET
 diff:1127980549:1127980528:=6c6%0a%3c [[{$FullName}?action=upload | Upload ]]\\%0a---%0a> [[{$FullName}?action=upload | Upload ]]%0a9c9%0a%3c [[{$Group}/GroupAttributes?action=attr | Droits du groupe]]\\%0a---%0a> [[{$Group}/GroupAttributes?action=attr | Droits du groupe]]%0a
