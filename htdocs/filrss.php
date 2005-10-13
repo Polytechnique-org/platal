@@ -29,7 +29,7 @@ if (Env::has('referer')) {
 
 if (Env::has('referer')) {
     $act = Env::get('act_rss');
-    if ($act == 'Activer'){
+    if ($act == 'Activer') {
         $page->trig("Ton Fil RSS est activé.");
         $_SESSION['core_rss_hash'] = rand_url_id(16);
         $globals->xdb->execute('UPDATE auth_user_quick SET core_rss_hash={?} WHERE user_id={?}',
@@ -37,8 +37,7 @@ if (Env::has('referer')) {
     }                                
 }
 
-if (Session::get('core_rss_hash') > '')
-{
+if (Session::get('core_rss_hash')) {
     $page->assign('rsshash','oui');
 }
 

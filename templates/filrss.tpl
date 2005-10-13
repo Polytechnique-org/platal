@@ -46,16 +46,23 @@ ne sont pas activés dans tes préférences.
 </form>
 
 {else}
-En voici l'adresse: <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
+En voici les adresses :
+<ul>
+  <li>
+  Anonces sur la page d'entrée :
+  <a href='{rel}/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
+  </li>
+  <li>
+  Ton carnet polytechnicien :
+  <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
+  </li>
+</ul>
 <p>
 Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver les fils RSS".
-</p><p>
+</p>
+<p>
 Attention: désactiver, puis réactiver le fil RSS en change l'adresse.
 </p>
-<form method="get" action="{$goback}">
-  <div>
-    <input type="submit" name="" value="Retour" />
-  </div>
-</form>
+<p>[<a href="{$goback}">retour à la page dont tu venais</a>]</p>
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}
