@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('postfix_blacklist','email',true);
+$page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Blacklist');
 
 $editor->assign('title', 'Blacklist de postfix');
 $editor->hide_id();

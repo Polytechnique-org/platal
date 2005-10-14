@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/deces_promo.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Deces');
 
 $promo = Env::getInt('promo');
 if (Env::has('sub10')) $promo -= 10;

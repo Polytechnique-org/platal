@@ -22,6 +22,7 @@
 require_once("xorg.inc.php");
 new_skinned_page("carnet/mescontacts.tpl",AUTH_COOKIE);
 require_once("applis.func.inc.php");
+$page->assign('xorg_title','Polytechnique.org - Mes contacts');
         
 $uid  = Session::getInt('uid');
 $user = Env::get('user');

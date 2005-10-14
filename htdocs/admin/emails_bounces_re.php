@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_page('admin/emails_bounces_re.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Regexps Bounces');
 
 if (Post::has('submit')) {
     foreach (Env::getMixed('lvl') as $id=>$val) {

@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('logger-view.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
 require_once('diogenes/diogenes.logger-view.inc.php');
 
 if (!Env::has('logauth')) {

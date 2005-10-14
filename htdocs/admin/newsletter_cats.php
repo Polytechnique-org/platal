@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('newsletter_cat','cid');
+$page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
 
 $editor->describe('titre','intitulé',true);
 $editor->describe('pos','position',true);

@@ -22,6 +22,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('referent.tpl',AUTH_COOKIE);
+$page->assign('xorg_title','Polytechnique.org - Conseil Pro');
 
 $nb_max_resultats_total    = 100;
 $nb_max_resultats_par_page = 10;

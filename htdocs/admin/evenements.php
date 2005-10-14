@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/evenements.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
 
 $arch = Env::get('arch', 0);
 $evid = Post::getInt('evt_id');

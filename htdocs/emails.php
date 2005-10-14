@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('emails.tpl',AUTH_COOKIE);
+$page->assign('xorg_title','Polytechnique.org - Mes emails');
 
 $uid = Session::getInt('uid');
 

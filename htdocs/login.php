@@ -22,6 +22,7 @@
 require_once('xorg.inc.php');
 new_skinned_page('login.tpl', AUTH_COOKIE);
 
+
 $res = $globals->xdb->query('SELECT date, naissance FROM auth_user_md5 WHERE user_id={?}', Session::getInt('uid'));
 list($date, $naissance) = $res->fetchOneRow();
 

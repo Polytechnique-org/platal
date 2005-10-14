@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('groupesx_auth','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X'); 
 
 $editor->describe('name','nom',true);
 $editor->describe('privkey','clé privée',false);

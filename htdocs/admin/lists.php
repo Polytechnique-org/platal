@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/lists.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
 require_once('xml-rpc-client.inc.php');
 require_once('lists.inc.php');
 

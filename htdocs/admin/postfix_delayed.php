@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_page('admin/postfix_delayed.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Retardés');
 
 
 if (Env::has('del')) {

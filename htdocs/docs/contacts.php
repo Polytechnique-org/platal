@@ -21,5 +21,6 @@
 
 require_once("xorg.inc.php");
 new_skinned_page("docs/contacts.tpl",AUTH_PUBLIC);
+$page->assign('xorg_title','Polytechnique.org - Nous contacter');
 $page->run(Env::get('topic'));
 ?>

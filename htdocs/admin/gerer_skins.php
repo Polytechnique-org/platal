@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('skins','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Skins');
 $editor->describe('name','nom',true);
 $editor->describe('skin_tpl','nom du template',true);
 $editor->describe('auteur','auteur',false);

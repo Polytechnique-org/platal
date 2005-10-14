@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/utilisateurs.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Edit/Su/Log');
 require_once("emails.inc.php");
 require_once("user.func.inc.php");
 

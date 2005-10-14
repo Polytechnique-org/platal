@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('logger.actions','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Actions');
 $editor->add_join_table('logger.events','action',true);
 
 $editor->describe('text','intitulé',true);

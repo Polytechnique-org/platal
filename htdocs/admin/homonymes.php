@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/homonymes.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Homonymes');
 require_once("homonymes.inc.php");
 
 $op     = Env::get('op', 'list');

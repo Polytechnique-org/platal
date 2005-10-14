@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('profile_medals', 'id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
 
 $editor->describe('type', 'type', true, 'set');
 $editor->describe('text', 'intitulé',  true);

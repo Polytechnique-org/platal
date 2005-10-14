@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('listes/index.tpl', AUTH_MDP);
+$page->assign('xorg_title','Polytechnique.org - Listes de diffusion');
 require_once('lists.inc.php');
 
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));

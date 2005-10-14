@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('newsletter/index.tpl', AUTH_COOKIE);
+$page->assign('xorg_title','Polytechnique.org - Lettres mensuelles');
 require_once("newsletter.inc.php");
 
 if(Get::has('out')) { unsubscribe_nl(); }

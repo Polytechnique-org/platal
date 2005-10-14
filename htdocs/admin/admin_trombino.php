@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/admin_trombino.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
 
 $uid = Env::getInt('uid');
 $q   = $globals->xdb->query(

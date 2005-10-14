@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('marketing/index.tpl');
+$page->assign('xorg_title','Polytechnique.org - Marketing');
 
 # Quelques statistiques
 

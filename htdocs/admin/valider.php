@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/valider.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
 require_once("validations.inc.php");
 
 if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {

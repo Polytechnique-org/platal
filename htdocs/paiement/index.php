@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('paiement/index.tpl', AUTH_MDP);
+$page->assign('xorg_title','Polytechnique.org - Télépaiements');
 require_once('profil.func.inc.php');
 require_once('money.inc.php');
 

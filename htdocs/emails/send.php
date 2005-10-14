@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('emails/send.tpl',AUTH_MDP);
+$page->assign('xorg_title','Polytechnique.org - Envoyer un email');
 
 // action si on recoit un formulaire
 if (Env::get('submit') == 'Envoyer')

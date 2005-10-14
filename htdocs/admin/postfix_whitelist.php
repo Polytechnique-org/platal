@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('postfix_whitelist','email',true);
+$page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Whitelist');
 
 $editor->assign('title', 'Whitelist de postfix');
 $editor->hide_id();

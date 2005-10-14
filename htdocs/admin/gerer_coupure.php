@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('coupures','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Coupures');
 
 $editor->describe('debut','date',true,'timestamp');
 $editor->describe('duree','durée',false);

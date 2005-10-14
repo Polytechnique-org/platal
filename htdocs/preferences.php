@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('preferences.tpl', AUTH_COOKIE);
+$page->assign('xorg_title','Polytechnique.org - Mes préférences');
 
 if (Env::has('mail_fmt')) {
     $fmt=Env::get('mail_fmt');

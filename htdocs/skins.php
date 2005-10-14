@@ -24,6 +24,7 @@ if (!$globals->skin->enable) {
     header('Location: index.php');
 }
 new_skinned_page('skins.tpl', AUTH_COOKIE);
+$page->assign('xorg_title','Polytechnique.org - Skins');
 
 if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
     $globals->xdb->execute('UPDATE auth_user_quick SET skin={?} WHERE user_id={?}', Env::getInt('newskin'), Session::getInt('uid'));

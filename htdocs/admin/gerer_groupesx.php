@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('groupesx_def','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
 $editor->add_join_table('groupesx_ins','gid',true); 
 
 $editor->describe('text','intitulé',true);

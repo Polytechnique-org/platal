@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_skinned_page('emails/broken.tpl',AUTH_COOKIE);
+$page->assign('xorg_title','Polytechnique.org - Patte cassée');
 require_once('emails.inc.php');
 
 if (Get::has('email') && Get::has('action')) {

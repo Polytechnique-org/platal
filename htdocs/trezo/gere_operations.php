@@ -22,6 +22,7 @@
 require_once('xorg.inc.php');
 require_once("money/trezo.inc.php");
 new_admin_page('trezo/gere_operations.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Trezo : gestion');
 
 $action    = clean_request('action');
 $op_id     = clean_request('op_id');

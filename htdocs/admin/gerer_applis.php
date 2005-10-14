@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('applis_def','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Formations');
 $editor->add_join_table('applis_ins','aid',true); 
 
 $editor->describe('text','intitulé',true);

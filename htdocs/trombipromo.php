@@ -22,6 +22,7 @@
 require_once("xorg.inc.php");
 new_skinned_page('trombipromo.tpl', AUTH_COOKIE);
 require_once("trombi.inc.php");
+$page->assign('xorg_title','Polytechnique.org - Trombi Promo');
 
 function getList($offset,$limit) {
     global $globals;

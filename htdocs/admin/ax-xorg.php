@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_page('admin/ax-xorg.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - AX/X.org');
 
 // liste des différences
 $res = $globals->xdb->query(

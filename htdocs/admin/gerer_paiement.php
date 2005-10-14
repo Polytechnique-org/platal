@@ -21,6 +21,7 @@
 
 require_once('xorg.inc.php');
 new_admin_table_editor('paiement.paiements','id');
+$page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
 
 $editor->add_join_table('paiement.transactions','ref',true);
 

@@ -22,6 +22,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/synchro_ax.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Synchro AX');
 
 require_once('user.func.inc.php');
 require_once('synchro_ax.inc.php');

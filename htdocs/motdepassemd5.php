@@ -40,5 +40,6 @@ if (Env::has('response2'))  {
 new_skinned_page('motdepassemd5.tpl', AUTH_MDP);
 $page->addJsLink('javascript/md5.js');
 $page->addJsLink('javascript/motdepassemd5.js');
+$page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
 $page->run();
 ?>

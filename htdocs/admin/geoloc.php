@@ -22,6 +22,7 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/geoloc.tpl');
 require_once("geoloc.inc.php");
+$page->assign('xorg_title','Polytechnique.org - Administration - Geolocalisation');
 
 $nb_synchro = 0;
 

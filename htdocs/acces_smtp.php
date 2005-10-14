@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('acces_smtp.tpl', AUTH_MDP);
+$page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
     
 $uid  = Session::getInt('uid');
 $pass = Env::get('smtppass1');

@@ -22,6 +22,7 @@
 require_once("xorg.inc.php");
 new_skinned_page('profil.tpl',AUTH_MDP);
 $page->addCssLink('css/profil.css');
+$page->assign('xorg_title','Polytechnique.org - Mon Profil');
 
 require_once('tabs.inc.php');
 require_once('profil.func.inc.php');

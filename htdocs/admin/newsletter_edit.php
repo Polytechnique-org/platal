@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/newsletter_edit.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
 require_once("newsletter.inc.php");
 
 $nid = Get::get('nid', 'last');

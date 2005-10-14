@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/newsletter.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : liste');
 require_once("newsletter.inc.php");
 
 if(Get::has('new')) {

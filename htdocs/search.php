@@ -27,6 +27,7 @@ if (logged()) {
     new_skinned_page('search.tpl', AUTH_COOKIE);
 }
 
+$page->assign('xorg_title','Polytechnique.org - Annuaire');
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 

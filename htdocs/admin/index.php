@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_admin_page('admin/index.tpl');
+$page->assign('xorg_title','Polytechnique.org - Administration');
 
 $res = $globals->xdb->iterRow("
             SELECT  h1, h2, texte, url

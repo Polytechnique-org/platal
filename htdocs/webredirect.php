@@ -21,6 +21,7 @@
 
 require_once("xorg.inc.php");
 new_skinned_page('webredirect.tpl', AUTH_MDP);
+$page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
 
 $log =& Session::getMixed('log');
 $url = Env::get('url');
