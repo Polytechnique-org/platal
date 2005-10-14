@@ -48,7 +48,7 @@
     
     {include file=skin/common.bandeau.head.tpl}
   </head>
-  <body onload='pa_onload()'>
+  <body>
     {include file=skin/common.devel.tpl}
     {include file=skin/common.bandeau.tpl}
 
