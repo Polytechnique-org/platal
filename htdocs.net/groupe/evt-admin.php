@@ -76,7 +76,7 @@ $page->assign('evt', $evt);
 $page->assign('url_page', Env::get('PHP_SELF')."?eid=".Env::get('eid').(Env::has('item_id')?("&item_id=".Env::getInt('item_id')):''));
 $page->assign('tout', !Env::has('item_id'));
  
-if (count($evt['moments']) > 1) $page->assign('moments', $evt['moments']);
+if (count($evt['moments'])) $page->assign('moments', $evt['moments']);
 $page->assign('money', $evt['money']);
 
 $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
