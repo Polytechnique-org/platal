@@ -6,7 +6,9 @@ require_once 'xnet/mail.inc.php';
 
 new_groupadmin_page('xnet/groupe/annuaire-admin.tpl');
 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
-$listes = array_map(create_function('$arr', 'return $arr["list"];'), $client->get_lists());
+$lists  = $client->get_lists();
+if (!$lists) $lists = array();
+$listes = array_map(create_function('$arr', 'return $arr["list"];'), $lists);
 
 $subscribers = array();
 
