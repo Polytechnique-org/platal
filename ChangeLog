@@ -47,6 +47,11 @@ Bug/Wish :
         - #339: New RSS links that allow direct and easier RSS activation.  -CAT
         - #130: Each page now shows a different title.                      -CAT
 
+From 0.9.8 Branch :
+
+    * Xnet :
+        - #362: Fix a problem with evenements that only have 1 moment.      -MC
+
 ================================================================================
 VERSION 0.9.8                                                        18 Jul 2005
 
