@@ -65,7 +65,7 @@
   </tr>
   {/if}
 
-  {if !$is_member && $logged && $asso.pub eq 'public'}
+  {if !$is_member && $logged && $asso.pub eq 'public' && $asso.inscriptible && $xnet_type != 'promotions'}
   <tr>
     <td class="titre">
       M'inscrire :
