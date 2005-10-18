@@ -27,10 +27,15 @@
       L'équipe des services aux Polytechniciens
     </td>
     <td>
-      <strong>Jean-Sébastien Bedo</strong> (X2000) <br />
+      <strong>Aymeric Augutin</strong> (X2003) <br />
       <strong>Damien Bobillot</strong> (X2002) <br />
+      <strong>Florent Bruneau</strong> (X2003) <br />
       <strong>Yann Chevalier</strong> (X2000) <br />
       <strong>Jean-Marc Coïc</strong> (X2000) <br />
+      <strong>Pascal Corpet</strong> (X2001) <br />
+      <strong>Nicolas Cortot</strong> (X2003) <br />
+      <strong>Romain Dubessy</strong> (X2003) <br />
+      <strong>Florian El Ahdab</strong> (X2001) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
       <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Pierre Habouzit</strong> (X2000) <br />
@@ -49,12 +54,13 @@
       L'équipe des services aux associations polytechniciennes
     </td>
     <td>
-      <strong>Jean-Sébastien Bedo</strong> (X2000) <br />
-      <strong>Matthieu Bergot</strong> (X89) <br />
       <strong>Damien Bobillot</strong> (X2002) <br />
+      <strong>Florent Bruneau</strong> (X2003) <br />
       <strong>Sophie Charbonnier</strong> (X2000) <br />
       <strong>Yann Chevalier</strong> (X2000) <br />
       <strong>Jean-Marc Coïc</strong> (X2000) <br />
+      <strong>Nicolas Cortot</strong> (X2003) <br />
+      <strong>Romain Dubessy</strong> (X2003) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
       <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Pierre Habouzit</strong> (X2000) <br />
@@ -63,11 +69,6 @@
       <strong>Jeremy Lainé</strong> (X99) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
       <strong>Raphaël Marichez</strong> (X2002) <br />
-      <strong>Alexandre Mege</strong> (X2002) <br />
-      <strong>Vincent Palatin</strong> (X2000) <br />
-      <strong>Bertrand de Singly</strong> (X95) <br />
-      <strong>Cyril Tikhomiroff</strong> (X95) <br />
-      <strong>Quoc-Anh Tran</strong> (X62) <br />
       <strong>Jean-Michel Yolin</strong> (X65) <br /><br />
     </td>
   </tr>
@@ -78,18 +79,20 @@
     <td>
       <strong>Matthieu Bergot</strong> (X89) <br />
       <strong>Damien Bobillot</strong> (X2002) <br />
+      <strong>Florent Bruneau</strong> (X2003) <br />
       <strong>Yann Buril</strong> (X96) <br />
-      <strong>Sophie Charbonnier</strong> (X2000) <br />
       <strong>Yann Chevalier</strong> (X2000) <br />
+      <strong>Jean-Marc Coïc</strong> (X2000) <br />
+      <strong>Romain Dubessy</strong> (X2003) <br />
+      <strong>Dimitri Druelle</strong> (X2002) <br />
       <strong>Olivier Guillaumin</strong> (X80) <br />
       <strong>Eric Gruson</strong> (X2002) <br />
       <strong>Olivier Herz</strong> (X79) <br />
       <strong>Alexandre Hô</strong> (X98) <br />
       <strong>Jeremy Lainé</strong> (X99) <br />
+      <strong>Aurelien Lajoie</strong> (X2000) <br />
       <strong>Cyril Lathuilière</strong> (X2001) <br />
       <strong>Raphaël Marichez</strong> (X2002) <br />
-      <strong>Alexandre Mege</strong> (X2002) <br />
-      <strong>Vincent Palatin</strong> (X2000) <br />
       <strong>Bertrand de Singly</strong> (X95) <br />
       <strong>Quoc-Anh Tran</strong> (X62) <br />
       <strong>Jean-Michel Yolin</strong> (X65) <br /><br />
@@ -97,16 +100,30 @@
   </tr>
   <tr>
     <td style="width: 33%; padding-right:1em;">
+      L'équipe en charge de Manageurs.com
+    </td>
+    <td>
+      <strong>Yann Chevalier</strong> (X2000) <br />
+      <strong>Jean-Marc Coïc</strong> (X2000) <br />
+      <strong>Dimitri Druelle</strong> (X2002) <br />
+      <strong>Aurelien Lajoie</strong> (X2000) <br /><br />
+    </td>
+  </tr>
+  <tr>
+    <td style="width: 33%; padding-right:1em;">
       Le conseil d'administration de l'assocation
     </td>
     <td>
-      <strong>Raphaël Marichez</strong> (X2002) <em>- président</em><br />
+      <strong>Romain Dubessy</strong> (X2003) <em>- président</em><br />
       <strong>Olivier Guillaumin</strong> (X80) <em>- trésorier</em><br />
-      <strong>Cyril Lathuilière</strong> (X2001) <em>- secrétaire</em><br />
+      <strong>Jean-Marc Coïc</strong> (X2000) <em>- secrétaire</em><br />
       <strong>Yann Chevalier</strong> (X2000) <em>- en charge des relations extérieures</em><br />
-      <strong>Pierre Habouzit </strong> (X2000) <em>- responsable services individuels</em><br />
-      <strong>Sophie Charbonnier</strong> (X2000) <em>- responsable services aux associations X</em><br />
-      <strong>Jean-Marc Coïc</strong> (X2000) <em>- responsable du projet Manageurs</em><br /><br />
+      <strong>Pascal Corpet</strong> (X2001) <em>- responsable services individuels</em><br />
+      <strong>Pierre Habouzit</strong> (X2000) <em>- responsable services aux associations X</em><br />
+      <strong>Dimitri Druelle</strong> (X2000) <em>- responsable du projet Manageurs</em><br />
+      <strong>Raphaël Marichez</strong> (X2002) <em>- responsable de l'administration système</em><br />
+      <strong>Cyril Lathuilière</strong> (X2001) <em></em><br />
+      <strong>Florent Bruneau</strong> (X2003) <em></em><br /><br />
     </td>
   </tr>
   <tr>
