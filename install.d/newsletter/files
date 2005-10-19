@@ -10,7 +10,6 @@ htdocs/newsletter/submit.php
 include/newsletter.inc.php
 templates/admin/newsletter_edit.tpl
 templates/admin/newsletter.tpl
-templates/newsletter/head.tpl
 templates/newsletter/index.tpl
 templates/newsletter/show.tpl
 templates/newsletter/submit.tpl

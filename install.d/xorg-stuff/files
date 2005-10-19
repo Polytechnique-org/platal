@@ -93,7 +93,6 @@ templates/docs/ethique.tpl
 templates/docs/faq.tpl
 templates/docs/index.tpl
 templates/docs/plan.tpl
-templates/docs/secu.tpl
 templates/docs/services.tpl
 templates/dons.tpl
 templates/skin/common.bandeau.head.tpl

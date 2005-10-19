@@ -1,5 +1,4 @@
 include/notifs.inc.php
-bin/cron/send_notifs.php
 htdocs/carnet/index.php
 htdocs/carnet/mescontacts_pdf.php
 htdocs/carnet/mescontacts.php
@@ -9,4 +8,3 @@ templates/carnet/index.tpl
 templates/carnet/mescontacts.tpl
 templates/carnet/notifs.tpl
 templates/carnet/panel.tpl
-include/texify.inc.php
