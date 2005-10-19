@@ -23,18 +23,18 @@
 // as we need to include lots of globals vars in the external wiki
 if ($globals->wiki->wikidir)
 {
- ob_start();
- require_once($globals->spoolroot.$globals->wiki->wikidir.'/pmwiki.php');
+    ob_start();
+    require_once($globals->spoolroot.$globals->wiki->wikidir.'/pmwiki.php');
 
- $wikiAll = ob_get_clean();
- $i = strpos($wikiAll, "<!--/HeaderText-->");
- $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
+    $wikiAll = ob_get_clean();
+    $i = strpos($wikiAll, "<!--/HeaderText-->");
+    $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
 
- $wikiHeaders = substr($wikiAll, 0, $i);
+    $wikiHeaders = substr($wikiAll, 0, $i);
 
- $wikiMenu = substr($wikiAll, $i, $j-$i);
+    $wikiMenu = substr($wikiAll, $i, $j-$i);
 
- $wikiTxt = substr($wikiAll, $j);
+    $wikiTxt = substr($wikiAll, $j);
 
 }
 
