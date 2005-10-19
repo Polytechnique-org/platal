@@ -69,7 +69,7 @@ homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.no
   <tr>
     <th>Où est-ce que je reçois le courrier qui m'y est adressé ?</th>
   </tr>
-  <tr class="pair">
+  <tr class="impair">
     <td>
       Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
       {if $mails->total() eq 1} à l'adresse {else} aux adresses {/if}
@@ -111,7 +111,7 @@ homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.no
   <tr>
     <th>Un alias sympatique : {#globals.mail.alias_dom#} !</th>
   </tr>
-  <tr class="pair">
+  <tr class="impair">
     <td>
       Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
       sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).
