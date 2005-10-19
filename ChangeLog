@@ -39,6 +39,7 @@ Bug/Wish :
         - #335: Already assigned promotion don't generate a request.        -CAT
         - #346: Professional profile code desynch. fixed.                   -MC
         - #357: Reindex user for fast search at subscribe time.             -MC
+        - #358: Avoid duplicate email address when bestalias = 4life.       -MC
 
     * Xnet :
         - #334: Interface improvements.                                     -Car

@@ -23,7 +23,11 @@
 {literal}
 <script type="text/javascript">
 function chgMainWinLoc( strPage ) {
-  parent.opener.document.location = strPage;
+  if (parent.opener) {
+    parent.opener.document.location = strPage;
+  } else {
+    document.location = strPage;
+  }
 }
 </script>
 {/literal}
@@ -74,7 +78,7 @@ function chgMainWinLoc( strPage ) {
           <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
           {/if}
           <a href="mailto:{$x.bestalias}@polytechnique.org">{$x.bestalias}@polytechnique.org</a>
-          {if $bestalias neq $x.forlife}<br />
+          {if $x.bestalias neq $x.forlife}<br />
           <a href="mailto:{$x.forlife}@polytechnique.org">{$x.forlife}@polytechnique.org</a>
           {/if}
           {/if}
