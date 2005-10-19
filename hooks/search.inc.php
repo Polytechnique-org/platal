@@ -40,6 +40,13 @@ function search_config()
 }
 
 // }}}
+// {{{ subscribe HOOK
+function search_subscribe($forlife, $uid, $promo, $pass)
+{
+    require_once('user.func.inc.php');
+    user_reindex($uid);
+}
+// }}}
 // {{{ menu HOOK
 
 function search_menu()
