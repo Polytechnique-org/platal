@@ -20,42 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Abonnés à des listes non présents dans l'annuaire</h1>
+{include file='listes/header_listes.tpl' on='sync'}
+<h1>Non abonnés à la liste {$smarty.request.liste}@{$asso.mail_domain}</h1>
 
-<h2>Polytechniciens</h2>
+<form action="{$smarty.server.REQUEST_URI}" method="post">
 
-<ul>
-  {foreach from=$not_in_group_x item=n}
-  <li>{$n} [<a href='membres-edit.php?new=x&email={$n}' class='popup'>l'inscrire</a>]</li>
-  {foreachelse}
-  <li><em>tous les polytechniciens présents sur les listes sont inscrits à l'annuaire du groupe.</em></li>
-  {/foreach}
-</ul>
+  <table cellspacing="2" cellpadding="0" class="tiny">
+    <tr>
+      <th>Membre</th>
+      <th></th>
+    </tr>
+    {foreach from=$not_in_list item=u}
+    <tr>
+      <td>{$u.prenom} {$u.nom}</td>
+      <td><input type="checkbox" name="add[{$u.email}]" /></td>
+    </tr>
+    {/foreach}
+    <tr>
+      <td colspan='2' class="center">
+        <input type='submit' value='forcer inscription' />
+      </td>
+    </tr>
+  </table>
 
-<h2>non Polytechniciens</h2>
-<ul>
-  {foreach from=$not_in_group_ext item=n}
-  <li>{$n} [<a href='membres-edit.php?new=ext&email={$n}' class='popup'>l'inscrire</a>]</li>
-  {foreachelse}
-  <li><em>tous les non-polytechniciens présents sur les listes sont inscrits à l'annuaire du groupe.</em></li>
-  {/foreach}
-</ul>
-
-<h2>Comparer une liste et l'annuaire</h2>
-
-<table cellspacing="2" cellpadding="0" class="tiny">
-  <tr>
-    <th>Liste</th>
-    <th>Description</th>
-    <th></th>
-  </tr>
-  {foreach from=$lists item=l}
-  <tr>
-    <td>{$l.list}</td>
-    <td>{$l.desc}</td>
-    <td><a href="listes-sync.php?liste={$l.list}">synchro</a></td>
-  </tr>
-  {/foreach}
-</table>
+</form>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -7,13 +7,14 @@ New :
         - Documentation now use Wiki                                        -Car
 
     * Profile :
-        - User can now accept synchronisatio from AX by admin.              -Car
+        - User can now accept synchronisation from AX by admin.             -Car
         - Address will try to display as the country standard.              -Car
 
     * Xnet :
         - Groups can be non subscribable.                                   -Car
-        - Most Wanted Feature : directories syncrhonization with lists.     -MC
+        - Most Wanted Feature : directories synchronization with lists.     -MC
         - Various bug fixes in events management.                           -Car
+        - Groups can now synchronize MLs and the directory.                 -MC
 
 Bug/Wish :
 

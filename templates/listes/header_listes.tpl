@@ -100,6 +100,16 @@
     </td>
   </tr>
   {/if}
+  {if $it_is_xnet}
+  <tr>
+    <td><strong>Synchroniser</strong></td>
+    {if $on neq sync}
+    <td>[<a href="listes-sync.php?liste={$smarty.get.liste}">Synchroniser avec l'annuaire</a>]</td>
+    {else}
+    <td>[Synchroniser avec l'annuaire]</td>
+    {/if}
+  </tr>
+  {/if}
 </table>
 
 

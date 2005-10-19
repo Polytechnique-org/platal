@@ -41,6 +41,7 @@ foreach ($subscribers as $mail) {
 
 $page->assign('not_in_group_ext', $not_in_group_ext);
 $page->assign('not_in_group_x', $not_in_group_x);
+$page->assign('lists', $lists);
 $page->run();
 
 ?>
