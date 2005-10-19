@@ -6,7 +6,7 @@ htdocs/trezo/index.php
 include/money/cyberpaiement.inc.php
 include/money.inc.php
 include/money/trezo.inc.php
-templates/paiment/index.tpl
+templates/paiement/index.tpl
 templates/trezo/choix_date.tpl
 templates/trezo/gere_operations.tpl
 templates/trezo/index.tpl

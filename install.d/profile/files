@@ -2,7 +2,6 @@ htdocs/admin/admin_trombino.php
 htdocs/admin/gerer_applis.php
 htdocs/admin/gerer_binets.php
 htdocs/admin/gerer_groupesx.php
-htdocs/epouse.php
 htdocs/fiche.php
 htdocs/getphoto.php
 htdocs/images/vcard.png
@@ -36,19 +35,15 @@ include/profil/verif_general.inc.php
 include/profil/verif_mentor.inc.php
 include/profil/verif_poly.inc.php
 include/profil/verif_skill.inc.php
-include/validations/epouses.inc.php
 include/validations/photos.inc.php
 templates/admin/admin_trombino.tpl
 templates/applis.js.tpl
-templates/epouse.tpl
 templates/fiche.tpl
-templates/include/form.valid.epouses.tpl
 templates/include/form.valid.photos.tpl
 templates/include/minifiche.tpl
 templates/profil/adresses.tpl
 templates/profil/emploi.tpl
 templates/profil/general.tpl
-templates/profil.head.tpl
 templates/profil/mentor.tpl
 templates/profil/naissance.tpl
 templates/profil/poly.tpl

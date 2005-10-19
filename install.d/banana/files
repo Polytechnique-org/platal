@@ -4,6 +4,5 @@ htdocs/banana/index.php
 htdocs/banana/profile.php
 htdocs/banana/xface.php
 include/banana.inc.php
-templates/banana/index.head.tpl
 templates/banana/index.tpl
 templates/banana/profile.tpl
