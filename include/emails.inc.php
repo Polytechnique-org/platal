@@ -69,7 +69,7 @@ class Bogo
     // {{{ properties
     
     var $state;
-    var $_states = Array('let_spams', 'tag_spams', 'drop_spams');
+    var $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
 
     // }}}
     // {{{ constructor
@@ -81,9 +81,9 @@ class Bogo
 	if ($res->numRows()) {
             $this->state = $res->fetchOneCell();
 	} else {
-	    $this->state = 'tag_spams';
+	    $this->state = 'tag_and_drop_spams';
 	    $res = $globals->xdb->query("INSERT INTO emails (uid,email,rewrite,panne,flags)
-					      VALUES ({?},'tag_spams','','0000-00-00','filter')", $uid);
+					      VALUES ({?},'tag_and_drop_spams','','0000-00-00','filter')", $uid);
 	}
     }
 
