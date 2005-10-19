@@ -109,7 +109,7 @@ homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.no
 
 <table class="bicol">
   <tr>
-    <th>Un alias sympatique : {#globals.mail.alias_dom#} !</th>
+    <th>Un alias sympathique : {#globals.mail.alias_dom#} !</th>
   </tr>
   <tr class="impair">
     <td>
