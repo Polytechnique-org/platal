@@ -20,10 +20,19 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>Nom d'usage</h1>
 
-<h1>
-  Nom d'usage
-</h1>
+<p>
+Le nom d'usage est un patronyme qui doit être <strong>reconnu par la
+  loi</strong> (nom du conjoint, d'un de ses parents, ou bien plus
+exceptionnellement sur changement de l'état civil, ...).
+</p>
+
+<p>
+Les surnoms sont <strong>systématiquement refusés</strong>. Pour
+utiliser une adresse personnalisée, il faut se tourner vers
+<a href="{rel}/alias.php">l'alias @melix.net</a>.
+</p>
 
 {if $same}
 <p class="erreur">
