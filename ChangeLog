@@ -9,6 +9,7 @@ New :
     * Profile :
         - User can now accept synchronisation from AX by admin.             -Car
         - Address will try to display as the country standard.              -Car
+        - Warning for common name (no Nickname allowed).                    -MC
 
     * Xnet :
         - Groups can be non subscribable.                                   -Car
