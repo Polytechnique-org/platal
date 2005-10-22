@@ -1,8 +1,14 @@
 <?php
 
-$AuthFunction = "AuthPlatal";
+$AuthFunction = 'AuthPlatal';
 
-function authPerms($pagename,$key,$could=false)
+$Conditions['logged']      = logged();
+$Conditions['identified']  = identified();
+$Conditions['has_perms']   = has_perms();
+$Conditions['public']      = 'true';
+$Conditions['only_public'] = !identified();
+
+function authPerms($pagename, $key, $could=false)
 {
     $words = explode(' ', $key);
     $auth  = false;
@@ -16,10 +22,10 @@ function authPerms($pagename,$key,$could=false)
         $parts = explode(':', $word);
         $cond = $parts[0];
         $param = $parts[1];
-        if ($cond == "identified" && $could) {
-            $cond = "logged";
+        if ($cond == 'identified' && $could) {
+            $cond = 'logged';
         }
-        $iauth = CondText($pagename, "if ".$cond." ".$param, true);
+        $iauth = CondText($pagename, 'if '.$cond.' '.$param, true);
         if ($and) {
             $auth &= $iauth;
         } else {
@@ -86,18 +92,12 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     global $page;
     new_skinned_page('', AUTH_MDP); 
     if (has_perms()) {
-        $page->trig("Erreur : page Wiki inutilisable sur plat/al");
+        $page->trig('Erreur : page Wiki inutilisable sur plat/al');
     } else {
         $page->trig("Tu n'as pas le droit d'accéder à ce service");
     }
     // don't return false or pmwiki will send an exit breaking smarty page
     return 1;
 }
-
-$Conditions['logged'] = 'logged()';
-$Conditions['identified'] = 'identified()';
-$Conditions['has_perms'] = 'has_perms()';
-$Conditions['public'] = 'true';
-$Conditions['only_public'] = '!identified()';
 
 ?>
