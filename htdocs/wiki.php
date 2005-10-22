@@ -20,17 +20,22 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-if (Env::has('response'))
- new_skinned_page('wiki.tpl', AUTH_MDP);
-else
- new_skinned_page('wiki.tpl', AUTH_PUBLIC);
+new_skinned_page('wiki.tpl', Env::has('response') ? AUTH_MDP : AUTH_PUBLIC);
 
-require_once('pmwiki.php');
- 
+if ($globals->wiki->wikidir) {
+    ob_start();
+    require_once(dirname(dirname(__FILE__)).'/'.$globals->wiki->wikidir.'/pmwiki.php');
+
+    $wikiAll = ob_get_clean();
+    $i = strpos($wikiAll, "<!--/HeaderText-->");
+    $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
+
+    $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+    $page->assign('menu-pmwiki', substr($wikiAll, $i, $j-$i));
+    $page->assign('pmwiki', substr($wikiAll, $j));
+}
+
 $page->addCssLink('css/wiki.css');
-$page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
-$page->assign('menu-pmwiki', $wikiMenu);
-$page->assign('pmwiki', $wikiTxt);
 
 $page->run();
 ?>
