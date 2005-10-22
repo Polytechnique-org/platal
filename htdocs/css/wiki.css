@@ -1,3 +1,10 @@
+div.frame {
+    margin: 0px;
+    padding: 8px 2px;
+    float: right;
+    margin: 5px 0px 5px 5px;
+}
+
 table.quickref       {
     margin-top 1em: padding: 0px;
     border: 1px dotted #aaaaaa;
