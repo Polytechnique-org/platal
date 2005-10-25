@@ -37,10 +37,10 @@ Nous conseillons très vivement d'utiliser des navigateurs récents, tels
 <br />
 {/if}
 
-{foreach from=$xorg_error->errs|smarty:nodefaults item=err}
+{foreach from=$xorg_errors item=err}
 <div class="erreur">{$err|smarty:nodefaults}</div>
 {/foreach}
 
-{if !$xorg_error->failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
+{if !$xorg_failure && $xorg_tpl}{include file=$xorg_tpl}{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

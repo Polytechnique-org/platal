@@ -72,7 +72,7 @@ class PlatalPage extends Smarty
     }
 
     // }}}
-    // {{{
+    // {{{ function fakeDiogenes()
     
     function fakeDiogenes()
     {
@@ -116,42 +116,41 @@ class PlatalPage extends Smarty
             $this->display($this->_tpl);
             exit;
         }
-        
-        if ($globals->debug) {
 
-            if ($globals->debug & 1) {
-                $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
-            }
-
-            $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
-            $result = $this->fetch($skin);
-            $ttime  = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
-            $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
-
-            if ($globals->debug & 2) {
-
-                $fd = fopen($this->compile_dir."/valid.html","w");
-                fwrite($fd, $result);
-                fclose($fd);
-	
-                exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$this->compile_dir."/valid.html", $val);
-                foreach ($val as $h) {
-                    if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
-                        $replc = '<span style="color: #080;">HTML OK</span><br />';
-                        if ($m[1]) {
-                            $replc = "<span class='erreur'><a href='http://validator.w3.org/check?uri={$globals->baseurl}"
-                                ."/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />";
-                        }
-                        break;
-                    }
-                }
-            }
-
-            echo str_replace("@HOOK@", $ttime.$replc, $result);
+        if (!$globals->debug) {
+            $this->display($skin);
             exit;
         }
+        
+        if ($globals->debug & 1) {
+            $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
+        }
 
-        $this->display($skin);
+        $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
+        $result = $this->fetch($skin);
+        $ttime  = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
+        $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
+
+        if ($globals->debug & 2) {
+
+            $fd = fopen($this->compile_dir."/valid.html","w");
+            fwrite($fd, $result);
+            fclose($fd);
+    
+            exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$this->compile_dir."/valid.html", $val);
+            foreach ($val as $h) {
+                if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
+                    $replc = '<span style="color: #080;">HTML OK</span><br />';
+                    if ($m[1]) {
+                        $replc = "<span class='erreur'><a href='http://validator.w3.org/check?uri={$globals->baseurl}"
+                            ."/valid.html&amp;ss=1#result'>{$m[1]} ERREUR(S) !!!</a></span><br />";
+                    }
+                    break;
+                }
+            }
+        }
+
+        echo str_replace("@HOOK@", $ttime.$replc, $result);
         exit;
     }
 
