@@ -109,6 +109,7 @@ class ContactsPDF extends FPDF
         $this->SetFont('Vera Sans','I',8);
         $this->SetTextColor(128);
         $this->Cell(0, 10, 'Page '.$this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, '(en date du '.strftime('%d %B %Y').')', 0, 0, 'R');
     }
 
     function ColSetup($col)

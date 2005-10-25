@@ -6,6 +6,10 @@ New :
     * Documentation :
         - Documentation now use Wiki                                        -Car
 
+    * Paiement :
+        - Fixed little text mistake in Payments menu.                       -CAT
+        - Direct link from and to events.                                   -Car
+
     * Profile :
         - User can now accept synchronisation from AX by admin.             -Car
         - Address will try to display as the country standard.              -Car
@@ -22,6 +26,9 @@ Bug/Wish :
     * Admin :
         - #337: Add link to trackers and support websites for admins.       -CAT
 
+    * Contacts :
+        - #352: Enhance PDFs : add the generation date.                     -MC
+
     * Core :
         - #310: Display the max number of photo in trombipromo.             -Car
 
@@ -31,8 +38,6 @@ Bug/Wish :
     * Paiments :
         - #336 : Micro -> Tele(payments).                                   -MC
         - #356 : Payments use usage name instead of last name.              -Car
-        - Fixed little text mistake in Payments menu.                       -CAT
-        - Direct link from and to events.                                   -Car
 
     * Profile :
         - #330,333: Interface improvements.                                 -Car
