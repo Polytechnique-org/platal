@@ -26,12 +26,7 @@
 
   <div class="nom">
     {if $c.sexe}&bull;{/if}
-    {min_auth level="cookie"}
-    {if !$c.dcd && $c.inscrit}<a href="{"fiche.php"|url}?user={$c.forlife}" class="popup2">{/if}
-    {/min_auth}
-    {only_public}
     {if !$c.dcd && $c.inscrit}<a href="{"fiche.php"|url}?user={$c.user_id}" class="popup2">{/if}
-    {/only_public}
     {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
     {if !$c.dcd && $c.inscrit}</a>{/if}
   </div>
@@ -52,7 +47,7 @@
 
   <div class="bits">
     {min_auth level="cookie"}
-    {if !$c.wasinscrit}
+    {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
         <a href="{rel}/carnet/notifs.php?add_nonins={$c.user_id}">{*
         *}<img src="{rel}/images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
@@ -60,27 +55,29 @@
         <a href="{rel}/carnet/notifs.php?del_nonins={$c.user_id}">{*
         *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
       {/if}
-    {elseif !$c.dcd}
+    {elseif $c.wasinscrit}
         <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
         *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+      {if !$c.dcd}
         <a href="{rel}/vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
         *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
         <a href="{rel}/carnet/mescontacts.php?action={$show_action}&amp;user={$c.forlife}">{*
         *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
             title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
+      {/if}
     {/if}
     {/min_auth}
 
     {perms level='admin'}
-      {if !$c.wasinscrit}
-      <a href="{rel}/marketing/private.php?uid={$c.user_id}">{*
-        *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
-      {elseif !$c.dcd}
-      <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*
-        *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
+      {if !$c.wasinscrit && !$c.dcd}
+        <a href="{rel}/marketing/private.php?uid={$c.user_id}">{*
+          *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
+      {elseif $c.wasinscrit}
+        <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*
+          *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
       {/if}
-        <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-        *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
+      <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
+      *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}
   </div>
 
