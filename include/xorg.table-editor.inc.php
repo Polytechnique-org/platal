@@ -33,6 +33,7 @@ class XOrgAdminTableEditor extends DiogenesTableEditor {
     
     function run() {
         global $page;
+        $page->fakeDiogenes();
         parent::run($page);
         $page->run();
     }

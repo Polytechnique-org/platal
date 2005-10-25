@@ -19,13 +19,13 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('diogenes/diogenes.core.page.inc.php');
-require_once('platal/errors.inc.php');
-require_once('platal/smarty.plugins.inc.php');
+require_once 'smarty/libs/Smarty.class.php';
+require_once 'platal/errors.inc.php';
+require_once 'platal/smarty.plugins.inc.php';
 
 // {{{ class PlatalPage
 
-class PlatalPage extends DiogenesCorePage
+class PlatalPage extends Smarty
 {
     // {{{ properties
     
@@ -45,7 +45,7 @@ class PlatalPage extends DiogenesCorePage
     {
         global $globals;
 
-        $this->DiogenesCorePage();
+        $this->Smarty();
 
         $this->template_dir  = $globals->spoolroot."/templates/";
         $this->compile_dir   = $globals->spoolroot."/spool/templates_c/";
@@ -70,6 +70,22 @@ class PlatalPage extends DiogenesCorePage
         $this->doAuth();
     }
 
+    // }}}
+    // {{{
+    
+    function fakeDiogenes()
+    {
+        require_once 'diogenes/diogenes.core.page.inc.php';
+        $this->register_function("extval","diogenes_func_extval");
+        $this->register_function("flags","diogenes_func_flags");
+        $this->register_function("a","diogenes_func_a");
+        $this->register_function("checkbox","diogenes_func_checkbox");
+        $this->register_function("diff","diogenes_func_diff");
+        $this->register_function("menu_item","diogenes_func_menu_item");
+        $this->register_function("tag","diogenes_func_tag");
+        $this->register_function("toolbar","diogenes_func_toolbar");
+    }
+    
     // }}}
     // {{{ function changeTpl()
 

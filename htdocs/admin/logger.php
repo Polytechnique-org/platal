@@ -31,5 +31,6 @@ if (!Env::has('logauth')) {
 $logview = new DiogenesLoggerView;
 $logview->run($page);
 
+$page->fakeDiogenes();
 $page->run();
 ?>
