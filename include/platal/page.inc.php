@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 require_once 'smarty/libs/Smarty.class.php';
-require_once 'platal/errors.inc.php';
 require_once 'platal/smarty.plugins.inc.php';
 
 // {{{ class PlatalPage
@@ -32,6 +31,7 @@ class PlatalPage extends Smarty
     var $_page_type;
     var $_tpl;
     var $_errors;
+    var $_failure;
 
     // defaults
     var $caching          = false;
@@ -61,7 +61,8 @@ class PlatalPage extends Smarty
 
         $this->_page_type = $type;
         $this->_tpl       = $tpl;
-        $this->_errors    = new XOrgErrors;
+        $this->_errors    = array();
+        $this->_failure   = false;
 
         $this->register_prefilter('at_to_globals');
         $this->register_prefilter('trimwhitespace');
@@ -108,7 +109,8 @@ class PlatalPage extends Smarty
     function _run($skin)
     {
         global $globals, $TIME_BEGIN;
-        $this->assign("xorg_error", $this->_errors);
+        $this->assign("xorg_errors", $this->_errors);
+        $this->assign("xorg_failure", $this->_failure);
         
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
@@ -166,7 +168,7 @@ class PlatalPage extends Smarty
 
     function nb_errs()
     {
-        return count($this->_errors->errs);
+        return count($this->_errors);
     }
 
     // }}}
@@ -174,7 +176,7 @@ class PlatalPage extends Smarty
 
     function trig($msg)
     {
-        $this->_errors->trig($msg);
+        $this->_errors[] = $msg;
     }
 
     // }}}
@@ -182,7 +184,7 @@ class PlatalPage extends Smarty
 
     function trig_run($msg)
     {
-        $this->_errors->trig($msg);
+        $this->trig($msg);
         $this->run();
     }
 
@@ -191,7 +193,8 @@ class PlatalPage extends Smarty
 
     function fail($msg)
     {
-        $this->_errors->fail($msg);
+        $this->trig($msg);
+        $this->_failure = true;
     }
 
     // }}}
