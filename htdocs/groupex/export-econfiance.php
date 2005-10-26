@@ -23,7 +23,7 @@
 /* Script permettant l'export de la liste des membres de la mailing list eConfiance, pour intégration par J-P Figer dans la liste des membres de X-Informatique */
 
 require_once('xorg.inc.php');
-require_once('xml-rpc-client.inc.php');
+require_once('platal/xmlrpc-client.inc.php');
 require_once('lists.inc.php');
 
 $cle = $globals->core->econfiance;

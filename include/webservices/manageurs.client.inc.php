@@ -1,8 +1,7 @@
 <?php
 
 require_once('webservices/manageurs.inc.php');
-
-require_once('xml-rpc-client.inc.php');
+require_once('platal/xmlrpc-client.inc.php');
 
 function get_annuaire_infos($amicale, $id_assoce, $adresse){
 

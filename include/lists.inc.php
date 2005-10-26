@@ -21,7 +21,7 @@
 
 // {{{ import class definitions
 
-require_once("xml-rpc-client.inc.php");
+require_once 'platal/xmlrpc-client.inc.php';
 
 // }}}
 // {{{ function lists_xmlrpc

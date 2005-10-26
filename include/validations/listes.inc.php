@@ -86,7 +86,7 @@ class ListeReq extends Validate
     function commit()
     {
         global $globals;
-        require_once('xml-rpc-client.inc.php');
+        require_once('platal/xmlrpc-client.inc.php');
         require_once('lists.inc.php');
 
         $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));

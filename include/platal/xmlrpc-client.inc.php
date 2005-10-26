@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal/xml-rpc.inc.php');
+require_once 'platal/xmlrpc-server.inc.php';
 
 /* taken from : http://fr2.php.net/xml-rpc
  * Author mboeren@php.net
@@ -39,25 +39,25 @@ class xmlrpc_client
     {
         $this->url = $url;
         $this->urlparts = parse_url($this->url);
-        foreach(array('scheme', 'host', 'user', 'pass', 'path', 'query', 'fragment') as $part) {
+        foreach (array('scheme', 'host', 'user', 'pass', 'path', 'query', 'fragment') as $part) {
             if (!isset($this->urlparts[$part])) { 
-                $this->urlparts[$part] = NULL;
+                $this->urlparts[$part] = null;
             }
         }
     }
 
     function __call($function, $arguments, &$return)
     {
-        $requestprms['host'] = $this->urlparts['host'];
-        $requestprms['port'] = $this->urlparts['port'];
-        $requestprms['uri'] = $this->urlparts['path'];
-        $requestprms['method'] = $function;
-        $requestprms['args'] = $arguments;
-        $requestprms['debug'] = 0;
+        $requestprms['host']    = $this->urlparts['host'];
+        $requestprms['port']    = $this->urlparts['port'];
+        $requestprms['uri']     = $this->urlparts['path'];
+        $requestprms['method']  = $function;
+        $requestprms['args']    = $arguments;
+        $requestprms['debug']   = 0;
         $requestprms['timeout'] = 0;
-        $requestprms['user'] = $this->urlparts['user'];
-        $requestprms['pass'] = $this->urlparts['pass'];
-        $requestprms['secure'] = 0;
+        $requestprms['user']    = $this->urlparts['user'];
+        $requestprms['pass']    = $this->urlparts['pass'];
+        $requestprms['secure']  = 0;
 
         $result = xu_rpc_http_concise($requestprms);
         if (is_array($result) && isset($result['faultCode'])) {

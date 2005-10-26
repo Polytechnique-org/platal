@@ -26,7 +26,7 @@ if (Post::has('submit')) {
         $page->trig_run('le sujet est vide');
     }
 
-    require('xml-rpc-client.inc.php');
+    require_once('platal/xmlrpc-client.inc.php');
     require_once('lists.inc.php');
     $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
     $ret    = $client->create_list($liste, Post::get('desc'), Post::get('advertise'), Post::get('modlevel'), Post::get('inslevel'), array(Session::get('forlife')), array());
