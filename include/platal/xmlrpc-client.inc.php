@@ -51,12 +51,11 @@ class xmlrpc_client
         $requestprms['host']    = $this->urlparts['host'];
         $requestprms['port']    = $this->urlparts['port'];
         $requestprms['uri']     = $this->urlparts['path'];
-        $requestprms['method']  = $function;
-        $requestprms['args']    = $arguments;
-        $requestprms['debug']   = 0;
-        $requestprms['timeout'] = 0;
         $requestprms['user']    = $this->urlparts['user'];
         $requestprms['pass']    = $this->urlparts['pass'];
+        $requestprms['method']  = $function;
+        $requestprms['args']    = $arguments;
+        $requestprms['timeout'] = 0;
         $requestprms['secure']  = 0;
 
         $result = xu_rpc_http_concise($requestprms);
