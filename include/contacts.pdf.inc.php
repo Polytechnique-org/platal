@@ -54,17 +54,17 @@ class ContactsPDF extends FPDF
 
     function Rotate($angle,$x=-1,$y=-1)
     {
-        if($x==-1) {
+        if ($x==-1) {
             $x = $this->x;
         }
-        if($y==-1) {
+        if ($y==-1) {
             $y=$this->y;
         }
-        if($this->angle != 0) {
+        if ($this->angle != 0) {
             $this->_out('Q');
         }
         $this->angle = $angle;
-        if($angle != 0)
+        if ($angle != 0)
         {
             $angle*=M_PI/180;
             $c  = cos($angle);
@@ -94,7 +94,7 @@ class ContactsPDF extends FPDF
         $this->SetLineWidth(0.2);
         $this->SetFillColor(245, 248, 252);
         $this->Cell(200, 10, $this->title, 1, 1, 'C', 1);
-        $this->Image(dirname(__FILE__).'/../htdocs/images/logo.png', 5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
+        $this->Image(dirname(dirname(__FILE__)).'/htdocs/images/logo.png', 5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
         
         $this->Ln(10);
         $this->y0 = $this->GetY();
@@ -125,7 +125,9 @@ class ContactsPDF extends FPDF
     function NextCol()
     {
         $this->ColSetup(1 - $this->col);
-        if ($this->col == 0) { $this->AddPage(); }
+        if ($this->col == 0) {
+            $this->AddPage();
+        }
     }
 
     function AcceptPageBreak()
@@ -224,24 +226,18 @@ class ContactsPDF extends FPDF
         $text = '';
         $count = 0;
 
-        foreach ($lines as $line)
-        {
+        foreach ($lines as $line) {
             $words = preg_split('/ +/', $line);
             $width = 0;
 
-            foreach ($words as $word)
-            {
+            foreach ($words as $word) {
                 $wordwidth = $this->GetStringWidth($word);
-                if ($width + $wordwidth <= $maxwidth)
-                {
+                if ($width + $wordwidth <= $maxwidth) {
                     $width += $wordwidth + $space;
                     $text .= $word.' ';
-                }
-                else
-                {
+                } else {
                     $width = $wordwidth + $space;
-                    $text = rtrim($text)."\n".$word.'
-                        ';
+                    $text  = rtrim($text)."\n".$word.' ';
                     $count++;
                 }
             }
