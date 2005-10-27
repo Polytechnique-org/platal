@@ -1,6 +1,6 @@
 <?php
 
-require_once('exalead.class.php');
+require_once(dirname(__FILE__).'/exalead.class.php');
 
 function convert_url($string)
 {
