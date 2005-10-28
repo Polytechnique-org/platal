@@ -85,7 +85,7 @@ if ($login) {
 		if (!empty($val)) {
                     $globals->xdb->execute("DELETE FROM aliases WHERE id={?} AND alias={?}
                             AND type!='a_vie' AND type!='homonyme'", $mr['user_id'], $val);
-                    fix_bestalias($nr['user_id']);
+                    fix_bestalias($mr['user_id']);
                     $page->trig($val." a été supprimé");
                 }
 		break;
