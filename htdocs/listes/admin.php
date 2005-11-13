@@ -50,7 +50,11 @@ if (Env::has('add_member')) {
 }
 
 if (Env::has('del_member')) {
-    $client->mass_unsubscribe($liste, Array(Env::get('del_member').'@'.$globals->mail->domain));
+    if (strstr('@', Env::get('del_member')) === false) {
+        $client->mass_unsubscribe($liste, Array(Env::get('del_member').'@'.$globals->mail->domain));
+    } else {
+        $client->mass_unsubscribe($liste, Array(Env::get('del_member')));
+    }
     header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
@@ -60,18 +64,22 @@ if (Env::has('add_owner')) {
     $owners = explode(' ', Env::get('add_owner'));
 
     if ($owners) foreach ($owners as $alias) {
-    	if (($login = get_user_forlife($alias)) === false) {;
-        	$login = $alias;
-    	}
+        if (($login = get_user_forlife($alias)) === false) {;
+            $login = $alias;
+        }
 
-    	if($client->add_owner($liste, $login)) {
-        	$page->trig($alias." ajouté aux modérateurs.");
-    	}
+        if($client->add_owner($liste, $login)) {
+            $page->trig($alias." ajouté aux modérateurs.");
+        }
     }
 }
 
 if (Env::has('del_owner')) {
-    $client->del_owner($liste, Env::get('del_owner').'@'.$globals->mail->domain);
+    if (strstr('@', Env::get('del_owner')) === false) {
+        $client->del_owner($liste, Env::get('del_owner').'@'.$globals->mail->domain);
+    } else {
+        $client->del_owner($liste, Env::get('del_owner'));
+    }
     header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
