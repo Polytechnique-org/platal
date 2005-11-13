@@ -22,8 +22,8 @@
 require_once("xorg.inc.php");
 new_skinned_page('listes/create.tpl', AUTH_MDP);
 
-$owners  = preg_split("/[\r\n]+/",Post::get('owners'), -1, PREG_SPLIT_NO_EMPTY);
-$members = preg_split("/[\r\n]+/",Post::get('members'), -1, PREG_SPLIT_NO_EMPTY);
+$owners  = preg_split("/[\s]+/",Post::get('owners'), -1, PREG_SPLIT_NO_EMPTY);
+$members = preg_split("/[\s]+/",Post::get('members'), -1, PREG_SPLIT_NO_EMPTY);
 
 // click on validate button 'add_owner_sub' or type <enter>
 if (Post::has('add_owner_sub') && Post::has('add_owner')) {
