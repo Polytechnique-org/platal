@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once 'xnet.inc.php';
-if (!Env::has('liste')) header('Location: listes.php');
+if (!Env::has('liste')) redirect('listes.php');
 $liste  = strtolower(Env::get('liste'));
 $domain = $globals->asso('mail_domain');
 

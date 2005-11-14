@@ -21,7 +21,7 @@
 
 if (!$page) {
     require_once("xorg.inc.php");
-    if (!Env::has('liste')) header('Location: index.php');
+    if (!Env::has('liste')) redirect('index.php');
     $liste = strtolower(Env::get('liste'));
 
     new_skinned_page('listes/options.tpl', AUTH_MDP);
@@ -59,7 +59,7 @@ if (Post::has('submit')) {
     $client->add_to_wl($liste, Post::get('atn_add'));
 } elseif (Get::has('atn_del')) {
     $client->del_from_wl($liste, Get::get('atn_del'));
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
+    redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if(list($details,$options) = $client->get_owner_options($liste)) {

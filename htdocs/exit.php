@@ -29,9 +29,9 @@ if (Session::has('suid')) {
     $log->log("suid_stop", Session::get('forlife') . " by " . $suid['forlife']);
     $_SESSION = $suid;
     Session::kill('suid');
-    header('Location: '.$globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
+    redirect($globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
 } else {
-    header("Location: login.php");
+    redirect("login.php");
 }
 
 ?>

@@ -5,7 +5,7 @@ require_once 'lists.inc.php';
 require_once 'xnet/mail.inc.php';
 
 if (!Env::has('liste')) {
-    header('Location: annuaire-admin.php');
+    redirect('annuaire-admin.php');
 }
 $liste = Env::get('liste');
 

@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once 'xnet.inc.php';
-if (!Env::has('liste')) header('Location: index.php');
+if (!Env::has('liste')) redirect('index.php');
 $liste = strtolower(Env::get('liste'));
 
 new_groupadmin_page('listes/check.tpl');

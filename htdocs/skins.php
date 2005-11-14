@@ -21,7 +21,7 @@
 
 require_once('xorg.inc.php');
 if (!$globals->skin->enable) {
-    header('Location: index.php');
+    redirect('index.php');
 }
 new_skinned_page('skins.tpl', AUTH_COOKIE);
 $page->assign('xorg_title','Polytechnique.org - Skins');

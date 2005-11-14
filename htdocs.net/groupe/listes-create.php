@@ -43,7 +43,7 @@ if (Post::has('submit')) {
         $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect) VALUES ({?}, {?})', mysql_insert_id(), "$red+admin@listes.polytechnique.org");
         $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type) VALUES({?},{?})',              $liste.'-bounces@'.$dom, 'list');
         $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect) VALUES ({?}, {?})', mysql_insert_id(), "$red+bounces@listes.polytechnique.org");
-        header("Location: listes-admin.php?liste=$liste");
+        redirect("listes-admin.php?liste=$liste");
     } else {
         $page->kill("Un problème est survenu, contacter <a href='mailto:support@m4x.org'>support@m4x.org</a>");
     }

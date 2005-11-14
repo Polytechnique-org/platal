@@ -3,6 +3,9 @@ VERSION 0.9.9                                                        ?? Oct 2005
 
 New :
 
+    * Core :
+        - HTTP redirection safe wrt Session (should solve login problems).  -MC
+
     * Documentation :
         - Documentation now use Wiki                                        -Car
 

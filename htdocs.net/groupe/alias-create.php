@@ -20,7 +20,7 @@ if(Post::has('submit')) {
     }
   
     $globals->xdb->query('INSERT INTO x4dat.virtual (alias,type) VALUES({?}, "user")', $new);
-    header("Location: alias-admin.php?liste=$new");
+    redirect("alias-admin.php?liste=$new");
 }
 
 $page->run();

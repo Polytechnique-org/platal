@@ -10,11 +10,11 @@ $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globa
 
 if(Get::has('del')) {
     $client->unsubscribe(Get::get('del'));
-    header('Location: listes.php');
+    redirect('listes.php');
 }
 if(Get::has('add')) {
     $client->subscribe(Get::get('add'));
-    header('Location: listes.php');
+    redirect('listes.php');
 }
 if(Post::has('promo_add')) {
     $promo = Post::getInt('promo_add');

@@ -28,11 +28,11 @@ $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if(Get::has('del')) {
     $client->unsubscribe(Get::get('del'));
-    header('Location: index.php');
+    redirect('index.php');
 }
 if(Get::has('add')) {
     $client->subscribe(Get::get('add'));
-    header('Location: index.php');
+    redirect('index.php');
 }
 if(Post::has('promo_add')) {
     $promo = Post::getInt('promo_add');

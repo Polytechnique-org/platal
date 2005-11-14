@@ -84,13 +84,11 @@ $res = $globals->xdb->iterRow('select privkey,name,datafields from groupesx_auth
 while (list($privkey,$name,$datafields) = $res->next()) {
     if (md5($gpex_challenge.$privkey) == $gpex_pass) {
         $returl = $gpex_url.gpex_make_params($gpex_challenge,$privkey,$datafields);
-        header("Location:$returl");
-        exit(0);
+        redirect($returl);
     }
 }
 
 /* si on n'a pas trouvé, on renvoit sur x.org */
-header("Location:https://www.polytechnique.org/");
-exit(0);
+redirect('https://www.polytechnique.org/');
 
 ?>

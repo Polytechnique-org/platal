@@ -23,6 +23,6 @@ require_once("xorg.inc.php");
 new_skinned_page('index.tpl', AUTH_COOKIE);
 $page->clear_compiled_tpl();
 
-header("Location: " . (empty($_SERVER['HTTP_REFERER']) ? 'index.php' : $_SERVER['HTTP_REFERER']));
+redirect(empty($_SERVER['HTTP_REFERER']) ? 'index.php' : $_SERVER['HTTP_REFERER']);
 
 ?>

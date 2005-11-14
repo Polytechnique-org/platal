@@ -20,6 +20,6 @@
  ***************************************************************************/
 
 require_once('xorg.inc.php');
-header('Location: ../register/end.php?hash='.Env::get('ref'));
+redirect('../register/end.php?hash='.Env::get('ref'));
 
 ?>

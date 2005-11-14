@@ -30,7 +30,7 @@ if (Env::has('mail_fmt')) {
                                      SET core_mail_fmt = '$fmt'
                                    WHERE user_id = {?}", Session::getInt('uid'));
     $_SESSION['mail_fmt'] = $fmt;
-    header('Location: preferences.php');
+    redirect('preferences.php');
 }
 
 if (Env::has('rss')) {
@@ -42,7 +42,7 @@ if (Env::has('rss')) {
         $globals->xdb->execute('UPDATE auth_user_quick SET core_rss_hash="" WHERE user_id={?}', Session::getInt('uid'));
         Session::kill('core_rss_hash');
     }
-    header('Location: preferences.php');
+    redirect('preferences.php');
 }
 
 $page->assign('prefs', $globals->hook->prefs());

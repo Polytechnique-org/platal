@@ -21,12 +21,12 @@
 
 if (!$page) {
     require_once("xorg.inc.php");
-    if (!Env::has('liste')) header('Location: index.php');
+    if (!Env::has('liste')) redirect('index.php');
     $liste = strtolower(Env::get('liste'));
     $domain = $globals->mail->domain;
 
     if (preg_match("!(?:[a-z0-9]+\\.)?{$domain}_(.*)!", $liste, $matches)) {
-        header("Location: {$_SERVER['PHP_SELF']}?liste={$matches[1]}");
+        redirect("{$_SERVER['PHP_SELF']}?liste={$matches[1]}");
     }
 
     new_skinned_page('listes/moderate.tpl', AUTH_MDP);
@@ -39,7 +39,7 @@ $page->register_modifier('qpd','quoted_printable_decode');
 
 if(Env::has('sadd')) {
     $client->handle_request($liste,Env::get('sadd'),4,''); /* 4 = SUBSCRIBE */
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
+    redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if(Post::has('sdel')) {

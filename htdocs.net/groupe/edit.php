@@ -34,7 +34,7 @@
             $globals->xdb->execute('UPDATE groupex.asso SET logo={?}, logo_mime={?} WHERE id={?}', $logo, $mime, $globals->asso('id'));
         }
 
-        header('Location: ../'.Post::get('diminutif', $globals->asso('diminutif')).'/edit.php');
+        redirect('../'.Post::get('diminutif', $globals->asso('diminutif')).'/edit.php');
     }
 
     if (has_perms()) {

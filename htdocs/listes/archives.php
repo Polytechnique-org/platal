@@ -21,7 +21,7 @@
 
 if (!$page) {
     require_once("xorg.inc.php");
-    if (!Env::has('liste')) header('Location: index.php');
+    if (!Env::has('liste')) redirect('index.php');
     $liste = strtolower(Env::get('liste'));
     $domain = $globals->mail->domain;
 

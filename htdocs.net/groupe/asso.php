@@ -10,7 +10,7 @@ $page->assign('logged', logged());
 
 $page->assign('asso', $globals->asso());
 if (!$globals->asso('id')) {
-    header("Location: ../");
+    redirect("../");
 }
 
 $page->run();

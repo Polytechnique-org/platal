@@ -4,7 +4,7 @@ require 'xnet.inc.php';
 new_groupadmin_page('xnet/groupe/alias-admin.tpl');
 
 if (!Get::has('liste')) {
-    header("Location: listes.php");
+    redirect("listes.php");
 }
 
 $lfull = strtolower(Get::get('liste'));
@@ -50,7 +50,7 @@ if (Env::has('del_member')) {
                    USING  x4dat.virtual_redirect
               INNER JOIN  x4dat.virtual USING(vid)
                    WHERE  redirect={?} AND alias={?}", Env::get('del_member'), $lfull);
-    header("Location: ?liste=$lfull");
+    redirect("?liste=$lfull");
 }
 
 $res = $globals->xdb->iterator(

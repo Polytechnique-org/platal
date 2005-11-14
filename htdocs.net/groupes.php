@@ -2,7 +2,7 @@
     require 'xnet.inc.php';
 
     if (!($cat = Get::get('cat'))) {
-        header("Location:index.php");
+        redirect("index.php");
         exit;
     }
 

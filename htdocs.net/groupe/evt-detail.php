@@ -4,8 +4,9 @@ require_once 'xnet.inc.php';
 
 new_group_page('xnet/groupe/evt-detail.tpl');
 
-if (!Env::get("eid"))
-    header("Location: evenements.php");
+if (!Env::get("eid")) {
+    redirect("evenements.php");
+}
 
 $may_participate = !$members_only || is_member() || may_update(); 
 $page->assign('may_participate', $may_participate);
@@ -48,12 +49,13 @@ if (Env::get('ins')) {
 require_once('xnet/evenements.php');
 $evt = get_event_detail(Env::get('eid'));
 
-if (!$evt)
-    header("Location: evenements.php");
+if (!$evt) {
+    redirect("evenements.php");
+}
     
 if (Env::has('ins')) {
     subscribe_lists_event($participate, Session::get("uid"), $evt['participant_list'], $evt['absent_list']);
-    header("Location: evenements.php?backfrom=".Env::get('eid'));
+    redirect("evenements.php?backfrom=".Env::get('eid'));
 }
 
 $page->assign('participate', $participate);

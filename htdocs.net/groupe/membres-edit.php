@@ -59,7 +59,7 @@
                         FROM  auth_user_md5 AS u
                         INNER JOIN  aliases       AS a ON (u.user_id = a.id)
                         WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-                        header('Location: ?edit='.$email);
+                        redirect('?edit='.$email);
                 } else {
                     $page->trig($email." n'est pas un alias polytechnique.org valide");
                 }
@@ -69,7 +69,7 @@
                     $uid = max(intval($res->fetchOneCell()), 50001);
                     $globals->xdb->execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email) VALUES({?},{?},"ext",{?})',
                             $uid, $globals->asso('id'), $email);
-                    header('Location: ?edit='.$email);
+                    redirect('?edit='.$email);
                 } else {
                     $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
                 }
@@ -81,7 +81,7 @@
         new_groupadmin_page('xnet/groupe/membres-edit.tpl');
 
         $user = get_infos(Env::get('edit'));
-        if (empty($user)) { header("Location: annuaire.php"); }
+        if (empty($user)) { redirect("annuaire.php"); }
 
         require 'lists.inc.php';
         $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
@@ -136,7 +136,7 @@
                     $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
                 }
             }
-	    header("Location: annuaire.php");
+	    redirect("annuaire.php");
         }
         
         $page->assign('user', $user);
@@ -154,7 +154,7 @@
     {
         new_groupadmin_page('xnet/groupe/membres-del.tpl');
         $user = get_infos(Env::get('del'));
-        if (empty($user)) { header("Location: annuaire.php"); }
+        if (empty($user)) { redirect("annuaire.php"); }
         $page->assign('user', $user);
 
         if (Post::has('confirm')) {
@@ -189,9 +189,8 @@
             $page->trig("{$user['prenom']} {$user['nom']} a été retiré du groupe !");
         }
     }
-    else
-    {
-        header("Location: annuaire.php");
+    else {
+        redirect("annuaire.php");
     }
 
     $page->run();

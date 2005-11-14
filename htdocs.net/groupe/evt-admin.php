@@ -8,26 +8,28 @@ require_once('xnet/evenements.php');
 $evt = get_event_detail(Env::get('eid'), Env::get('item_id'));
 
 // the event doesn't exist or doesn't belong to this assoif (!$evt)
-if (!$evt)
-	header("Location: evenements.php");
+if (!$evt) {
+	redirect("evenements.php");
+}
 
-if ($evt['show_participants'])
-	new_group_page('xnet/groupe/evt-admin.tpl');
-else
-	new_groupadmin_page('xnet/groupe/evt-admin.tpl');
+if ($evt['show_participants']) {
+    new_group_page('xnet/groupe/evt-admin.tpl');
+} else {
+    new_groupadmin_page('xnet/groupe/evt-admin.tpl');
+}
 
 $admin = may_update();
 
 // select a member from his mail
 if ($admin && Env::get('adm') && Env::get('mail')) {
-	if (strpos(Env::get('mail'), '@') === false)
-	$res = $globals->xdb->query(
-		"SELECT m.uid
-		   FROM groupex.membres AS m
-	     INNER JOIN aliases AS a ON (a.id = m.uid)
-		  WHERE a.alias = {?}",
-		Env::get('mail'));
-	else
+    if (strpos(Env::get('mail'), '@') === false) {
+        $res = $globals->xdb->query(
+                "SELECT m.uid
+                   FROM groupex.membres AS m
+             INNER JOIN aliases AS a ON (a.id = m.uid)
+                  WHERE a.alias = {?}",
+                Env::get('mail'));
+    } else {
 	$res = $globals->xdb->query(
 		"SELECT m.uid
 		   FROM groupex.membres AS m
@@ -35,6 +37,7 @@ if ($admin && Env::get('adm') && Env::get('mail')) {
 		Env::get('mail'), $globals->asso('id'));
 	$member = $res->fetchOneCell();
 	if (!$member) $page->trig("Membre introuvable");
+    }
 }
 
 // change the price paid by a participant

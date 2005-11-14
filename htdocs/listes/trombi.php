@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
-if (!Env::has('liste')) header('Location: index.php');
+if (!Env::has('liste')) redirect('index.php');
 $liste = strtolower(Env::get('liste'));
 
 new_skinned_page('listes/trombi.tpl', AUTH_COOKIE);
@@ -31,11 +31,11 @@ $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
 
 if(Get::has('del')) {
     $client->unsubscribe($liste);
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
+    redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
 }
 if(Get::has('add')) {
     $client->subscribe($liste);
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
+    redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 function getList($offset,$limit)

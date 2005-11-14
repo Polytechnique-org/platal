@@ -118,7 +118,7 @@ class XnetSession extends DiogenesCoreSession
         foreach($_GET as $key=>$val) {
             $args[] = urlencode($key).'='.urlencode($val);
         }
-        header('Location: '.$_SERVER['PHP_SELF'] . '?' . join('&', $args));
+        redirect($_SERVER['PHP_SELF'] . '?' . join('&', $args));
     }
 
     // }}}

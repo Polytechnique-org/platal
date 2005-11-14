@@ -2,7 +2,7 @@
     require 'xnet.inc.php';
 
     if (logged()) {
-        header("Location: index.php");
+        redirect("index.php");
     }
 
     new_page('index.tpl', AUTH_MDP);

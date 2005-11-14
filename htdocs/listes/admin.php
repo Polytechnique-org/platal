@@ -21,7 +21,7 @@
 
 if (!$page) {
     require_once("xorg.inc.php");
-    if (!Env::has('liste')) header('Location: index.php');
+    if (!Env::has('liste')) redirect('index.php');
     $liste  = strtolower(Env::get('liste'));
     $domain = $globals->mail->domain;
 
@@ -55,7 +55,7 @@ if (Env::has('del_member')) {
     } else {
         $client->mass_unsubscribe($liste, Array(Env::get('del_member')));
     }
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
+    redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if (Env::has('add_owner')) {
@@ -80,7 +80,7 @@ if (Env::has('del_owner')) {
     } else {
         $client->del_owner($liste, Env::get('del_owner'));
     }
-    header("Location: {$_SERVER['PHP_SELF']}?liste=$liste");
+    redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
 }
 
 if(list($det,$mem,$own) = $client->get_members($liste)) {

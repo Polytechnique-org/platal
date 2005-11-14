@@ -25,7 +25,7 @@ require_once('notifs.inc.php');
 
 if(Get::has('read')) {
     $_SESSION['watch_last'] = Get::get('read');
-    header("Location: panel.php");
+    redirect("panel.php");
 }
 
 $page->assign('now',date('YmdHis'));

@@ -22,7 +22,7 @@
 require_once("xorg.inc.php");
 new_skinned_page('index.tpl', AUTH_PUBLIC);
 if (logged()) {
-    header("Location: login.php");
+    redirect("login.php");
 }
 $page->run();
 ?>
