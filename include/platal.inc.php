@@ -43,6 +43,18 @@ define('NO_SKIN', 1);
 require_once('platal/env.inc.php');
 
 // }}}
+// {{{ function redirect
+
+function redirect($page)
+{
+    if (count($_SESSION)) {
+        session_write_close();
+    }
+    header("Location: $page");
+    exit;
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
