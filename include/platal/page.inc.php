@@ -109,6 +109,9 @@ class PlatalPage extends Smarty
     function _run($skin)
     {
         global $globals, $TIME_BEGIN;
+
+        session_write_close();
+
         $this->assign("xorg_errors", $this->_errors);
         $this->assign("xorg_failure", $this->_failure);
         
@@ -128,7 +131,7 @@ class PlatalPage extends Smarty
 
         $this->assign('validate', urlencode($globals->baseurl.'/valid.html'));
         $result = $this->fetch($skin);
-        $ttime  = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
+        $ttime .= sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
         $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
 
         if ($globals->debug & 2) {

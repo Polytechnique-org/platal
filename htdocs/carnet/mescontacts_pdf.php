@@ -24,6 +24,8 @@ new_skinned_page('index.tpl', AUTH_COOKIE);
 require_once('contacts.pdf.inc.php');
 require_once('user.func.inc.php');
 
+session_write_close();
+
 $sql = "SELECT  a.alias
           FROM  aliases       AS a
     INNER JOIN  auth_user_md5 AS u ON ( a.id = u.user_id )

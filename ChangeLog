@@ -5,6 +5,7 @@ New :
 
     * Core :
         - HTTP redirection safe wrt Session (should solve login problems).  -MC
+        - Free $_SESSION before the page rendering, to release locks.       -MC
 
     * Documentation :
         - Documentation now use Wiki                                        -Car
