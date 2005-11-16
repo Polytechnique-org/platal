@@ -47,11 +47,11 @@ masculin ou féminin, par son prénom, ou son nom.
     </tr>
     <tr valign="top">
       <td style='padding-left: 1em' class='titre'>
-        *&nbsp;<em>membres</em>
+        *&nbsp;<em>annuaire</em>
       </td>
       <td>
         <input type="checkbox" name="membres" value="1" {if $smarty.request.membres}checked="checked"{/if} />
-        <em>écrit à tous les membres du groupe</em> <a href="annuaire.php" class='popup'>(voir membres)</a>
+        <em>écrit à tout l'annuaire du groupe</em> <a href="annuaire.php" class='popup'>(voir annuaire)</a>
       </td>
     </tr>
 
