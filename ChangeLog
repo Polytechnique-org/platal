@@ -55,8 +55,9 @@ Bug/Wish :
     * Xnet :
         - #334: Interface improvements.                                     -Car
         - #341: Improve member deletion.                                    -MC
+        - #376: Reply-To on the mail form.                                  -MC
 
-    * User Interface:
+    * User Interface :
         - #338: Broken FSF link fixed on donation page.                     -CAT
         - #339: New RSS links that allow direct and easier RSS activation.  -CAT
         - #130: Each page now shows a different title.                      -CAT

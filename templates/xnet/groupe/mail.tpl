@@ -41,6 +41,12 @@ masculin ou féminin, par son prénom, ou son nom.
           value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$smarty.session.prenom} {$smarty.session.nom}&quot; <{$smarty.session.bestalias}@polytechnique.org>{/if}" />
       </td>
     </tr>
+    <tr>
+      <td class="titre">Reply-To :</td>
+      <td>
+        <input type="text" name="replyto" size="55" maxlength="70" value="{$smarty.request.replyto}" />
+      </td>
+    </tr>
 
     <tr>
       <th colspan="2">Destinataires</th>
