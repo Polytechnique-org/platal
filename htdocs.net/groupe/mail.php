@@ -19,7 +19,7 @@
 
         require_once 'xnet/mail.inc.php';
         $tos = get_all_redirects(Post::has('membres'), $mls, $als, $client);
-        send_xnet_mails($from, $sujet, $body, $tos);
+        send_xnet_mails($from, $sujet, $body, $tos, Post::get('replyto'));
         $page->kill("Mail envoyé !");
         $page->assign('sent', true);
     }

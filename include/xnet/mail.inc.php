@@ -74,7 +74,7 @@ function get_all_redirects($membres, $mls, $alias, &$client)
 // }}}
 // {{{ _send_xnet_mail
 
-function _send_xnet_mail($user, $body, $mailer)
+function _send_xnet_mail($user, $body, $mailer, $replyto = null)
 {
     $cher = isset($user['sexe']) ? ($user['sexe'] ? 'Chère' : 'Cher') : 'Cher(e)';
     $nom  = isset($user['nom']) ? $user['nom'] : "";
@@ -87,6 +87,9 @@ function _send_xnet_mail($user, $body, $mailer)
     $text = preg_replace('!<prenom>!i', $pnom, $text);
 
     $mailer->addHeader('To', $to);
+    if ($replyto) {
+        $mailer->addHeader('Reply-To', $replyto);
+    }
     $mailer->setTxtBody(wordwrap($text, 72));
     $mailer->send();
 }
@@ -94,7 +97,7 @@ function _send_xnet_mail($user, $body, $mailer)
 // }}}
 // {{{ send_xnet_mails
 
-function send_xnet_mails($from, $sujet, $body, $tos)
+function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null)
 {
     $sent = array();
 
@@ -104,7 +107,7 @@ function send_xnet_mails($from, $sujet, $body, $tos)
 
     foreach ($tos as $user) {
         if ($sent[$user['email']]) continue;
-        _send_xnet_mail($user, $body, $mailer);
+        _send_xnet_mail($user, $body, $mailer, $replyto);
         $sent[$user['email']] = true;
     }
 }

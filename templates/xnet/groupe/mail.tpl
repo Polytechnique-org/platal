@@ -41,17 +41,23 @@ masculin ou féminin, par son prénom, ou son nom.
           value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$smarty.session.prenom} {$smarty.session.nom}&quot; <{$smarty.session.bestalias}@polytechnique.org>{/if}" />
       </td>
     </tr>
+    <tr>
+      <td class="titre">Reply-To :</td>
+      <td>
+        <input type="text" name="replyto" size="55" maxlength="70" value="{$smarty.request.replyto}" />
+      </td>
+    </tr>
 
     <tr>
       <th colspan="2">Destinataires</th>
     </tr>
     <tr valign="top">
       <td style='padding-left: 1em' class='titre'>
-        *&nbsp;<em>membres</em>
+        *&nbsp;<em>annuaire</em>
       </td>
       <td>
         <input type="checkbox" name="membres" value="1" {if $smarty.request.membres}checked="checked"{/if} />
-        <em>écrit à tous les membres du groupe</em> <a href="annuaire.php" class='popup'>(voir membres)</a>
+        <em>écrit à tout l'annuaire du groupe</em> <a href="annuaire.php" class='popup'>(voir annuaire)</a>
       </td>
     </tr>
 
