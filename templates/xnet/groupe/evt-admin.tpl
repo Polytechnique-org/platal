@@ -28,7 +28,9 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 
 {if $evt.participant_list}
 <p class="center">
-[<a href="mailto:{$evt.short_name}-participants@evts.polytechnique.org">envoyer un mail à ceux qui viennent</a>] - [<a href="mailto:{$evt.short_name}-absents@evts.polytechnique.org">envoyer un mail aux membres non inscrits</a>]
+[<a href="mailto:?bcc={$evt.short_name}-participants@evts.polytechnique.org">envoyer un mail à ceux qui viennent</a>]
+-
+[<a href="mailto:?bcc={$evt.short_name}-absents@evts.polytechnique.org">envoyer un mail aux membres non inscrits</a>]
 </p>
 {/if}
 
