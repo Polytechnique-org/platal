@@ -31,11 +31,13 @@ if (Env::has('add10')) $promo += 10;
 $page->assign('promo',$promo);
 
 if (Env::get('valider') == "Valider") {
-    $res = $globals->xdb->iterRow("SELECT user_id,matricule,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
-    while (list($uid,$mat,$deces) = $res->next()) {
+    $new_deces = array();
+    $res = $globals->xdb->iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
+    while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
         $val = Env::get($mat);
-	if($val == $deces) continue;
+	if($val == $deces || empty($val)) continue;
 	$globals->xdb->execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
+	$new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
 	if($deces=='0000-00-00' or empty($deces)) {
 	    require_once('notifs.inc.php');
 	    register_watch_op($uid, WATCH_DEATH, $val);
@@ -43,6 +45,7 @@ if (Env::get('valider') == "Valider") {
 	    user_clear_all_subs($uid, false);	// by default, dead ppl do not loose their email
 	}
     }
+    $page->assign('new_deces',$new_deces);
 }
 
 $res = $globals->xdb->iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);

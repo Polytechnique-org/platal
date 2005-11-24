@@ -22,6 +22,10 @@
 
 
 
+{foreach from=$new_deces item=i}
+<p class="erreur">Ajout du décès de {$i.name} le {$i.date}.</p>
+{/foreach}
+
 <form action="{$smarty.server.PHP_SELF}" method="get">
   <table class="tinybicol">
     <tr>
