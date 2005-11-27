@@ -129,9 +129,9 @@ class PhotoReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  La demande de changement de photo que tu as demandée vient d'être effectuée.";
+            return "Le changement de photo que tu as demandé vient d'être effectué.";
         } else {
-            return "  La demande de changement de photo que tu avais faite a été refusée.";
+            return "La demande de changement de photo que tu avais faite a été refusée.";
         }
     }
 
