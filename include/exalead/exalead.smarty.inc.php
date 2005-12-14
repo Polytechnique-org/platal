@@ -20,7 +20,7 @@ function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_gr
 		$res+="<li class=\"exa_categorie\" id=\"exa_group_".$gid."_".$compteur.";\">";
 		if($categorie->is_normal()){
 			$res+="<a style=\"text-decoration: none;\"
-				href=\"?_C=".$exalead_data->query->context."/".$categorie->refine_href.";?>&amp;_f=xml2\"
+				href=\"?_C=".$exalead_data->query->context."&".$categorie->refine_href.";?>&amp;_f=xml2\"
 				title=\"Afficher seulement ces résultats\">
 				<img style=\"vertical-align: text-bottom;\" src=\"images/select.png\" alt=\"[+]\" />";
 			if (empty($categorie->display)){
@@ -33,20 +33,20 @@ function display_group(&$group, &$exalead_data, $keywords=false,$class = 'exa_gr
 				$res+=$categorie->count;
 			}
 			$res+="</a>
-				<a href=\"?_C=".$exalead_data->query->context."/".$categorie->exclude_href.";&amp;_f=xml2\"
+				<a href=\"?_C=".$exalead_data->query->context."&".$categorie->exclude_href.";&amp;_f=xml2\"
 				title=\"Ne pas afficher ces résultats\">
 				<img style=\"vertical-align: text-bottom;\"  src=\"images/moins.png\" alt=\"[-]\"/></a>";
 		}
 		elseif($categorie->is_excluded()){
 			$res+="<span style=\"text-decoration: line-through;\">
-				<a href=\"?_C=".$exalead_data->query->context."/".$categorie->reset_href.";&amp;_f=xml2\">
+				<a href=\"?_C=".$exalead_data->query->context."&".$categorie->reset_href.";&amp;_f=xml2\">
 				<img style=\"vertical-align: text-bottom;\" src=\"images/select.png\" alt=\"[+]\" /> 
 				".$categorie->display.";</a>
 				</span>";
 		}
 		else{
 			$res+="<strong>".$categorie->display.";</strong>
-				<a href=\"?_C=".$exalead_data->query->context."/".$categorie->reset_href.";&amp;_f=xml2\">
+				<a href=\"?_C=".$exalead_data->query->context."&".$categorie->reset_href.";&amp;_f=xml2\">
 				<img style=\"vertical-align: text-bottom;\"  src=\"images/moins.png\" alt=\"[-]\"/></a>";
 		}
 		$res+="</li>";		
@@ -230,7 +230,7 @@ function _little_nav_barre($params, &$smarty){
 		$res .=" <td width=\"20%\" style=\"text-align: left;\">";
 	if($exalead_data->start != 0){
 		$num=$exalead_data->start-1;
-		$res .="<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">Précédent</a>";
+		$res .="<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">PrÃ©cÃ©dent</a>";
 	}
 	$num=$exalead_data->start+1;
 	$res .= "</td>";
@@ -243,9 +243,9 @@ function _little_nav_barre($params, &$smarty){
 		        CV : ".$num." / {$exalead_data->nhits} -";
 	}
 	if($date)	
-		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour Ã  la recherche</a>";
 	else
-		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-relevance&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-relevance&amp;_f=xml2&amp;_s=".$dizaine."\">Retour Ã  la recherche</a>";
 	$res .="</td>";
 	if($box)
 		$res.="<td class=\"droite\">";
@@ -264,8 +264,8 @@ function _little_nav_barre($params, &$smarty){
 function _display_3_columns($title, $count, $refine, $exclude, $categorie){
 if ($title!='Inconnu'){
   global $exa_max_length;
-  if($categorie) $title_exclude = 'Ne pas afficher cette catégorie';
-  else $title_exclude = 'Ne pas afficher ce mot-clé';
+  if($categorie) $title_exclude = 'Ne pas afficher cette catÃ©gorie';
+  else $title_exclude = 'Ne pas afficher ce mot-clÃ©';
   $extract = ((strlen($title) > $exa_max_length + 3)?substr($title,0,$exa_max_length).'...':$title);
   return "<tr class=\"categ\">
 	                  <td>
@@ -284,13 +284,13 @@ if ($title!='Inconnu'){
 function _display_2_columns($title, $reset, $excluded, $categorie){
   global $exa_max_length;
   if($excluded){
-    if($categorie) $title_link = 'Afficher de nouveau cette catégorie';
-    else $title_link = 'Afficher de nouveau ce mot-clé';
+    if($categorie) $title_link = 'Afficher de nouveau cette catÃ©gorie';
+    else $title_link = 'Afficher de nouveau ce mot-clÃ©';
     $link = '[+]';
     $style = 'text-decoration: line-through;';
   } else{
-    if($categorie) $title_link = 'Voir les autres catégories';
-    else $title_link = 'Voir les autres mots-clés';
+    if($categorie) $title_link = 'Voir les autres catÃ©gories';
+    else $title_link = 'Voir les autres mots-clÃ©s';
     $link = '[-]';
     $style = 'text-decoration: none; font-weight: bold;';
   }
@@ -313,9 +313,9 @@ function _display_resume_groupe_category(&$group, $context, $padding = ''){
       foreach($group->categories as $categorie){
         $title = (empty($categorie->display)?$categorie->name:$categorie->display);
         $count = (empty($categorie->count)?'':' ('.$categorie->count.')');
-        $refine = $context.'/'.$categorie->refine_href;
-	$exclude = $context.'/'.$categorie->exclude_href;
-	$reset = $context.'/'.$categorie->reset_href;
+        $refine = $context.'&'.$categorie->refine_href;
+	$exclude = $context.'&'.$categorie->exclude_href;
+	$reset = $context.'&'.$categorie->reset_href;
 	
         if($categorie->display != ''){
 	  if($categorie->is_normal()){

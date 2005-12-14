@@ -115,9 +115,15 @@ class Exalead
     {
         if (empty($this->base_cgi)) return false;
         if (empty($_REQUEST['_C'])) return false;// _C est le contexte Exalead
-        $query_exa = $this->base_cgi.'/_C='.str_replace(' ', '%20', $_REQUEST['_C']).'&_f=xml2';
+        $query_exa = $this->base_cgi.'&_C='.str_replace(' ', '%20', $_REQUEST['_C']).'&_f=xml2';
+        if (!empty($_REQUEST['_c'])) {
+            $query_exa .= "&_c=".urlencode($_REQUEST['_c']);
+        }
         if (!empty($_REQUEST['_s'])) {
             $query_exa .= "&_s=".((int) $_REQUEST['_s']);
+        }
+        if (isset($_REQUEST['_z'])) {
+            $query_exa .= "&_z=".$_REQUEST['_z'];
         }
         $xml_response = file_get_contents($query_exa);
         $this->parse($xml_response);
