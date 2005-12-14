@@ -192,9 +192,9 @@ function _exa_navigation_barre($params, &$smarty){
   }
   
   if($date)
-	$res.=" - <a href=\"?_C={$exalead_data->query->context}/_sf=relevance&amp;_f=xml2\">[Classer par pertinence]</a>";
+	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_sf=relevance&amp;_f=xml2\">[Classer par pertinence]</a>";
   else
-	$res.=" - <a href=\"?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2\">[Classer par date]</a>"; 
+	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_sf=-date&amp;_f=xml2\">[Classer par date]</a>"; 
   return $res;
 }
 

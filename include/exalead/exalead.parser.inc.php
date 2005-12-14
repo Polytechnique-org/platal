@@ -125,6 +125,9 @@ class Exalead
         if (isset($_REQUEST['_z'])) {
             $query_exa .= "&_z=".$_REQUEST['_z'];
         }
+        if (isset($_REQUEST['_sf'])) {
+            $query_exa .= "&_sf=".$_REQUEST['_sf'];
+        }
         $xml_response = file_get_contents($query_exa);
         $this->parse($xml_response);
     }
