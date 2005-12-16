@@ -46,11 +46,16 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
     $fieldarr = explode(",",$datafields);
     $tohash   = "1$chlg$privkey";
 
+    $res = $globals->xdb->query("SELECT matricule,matricule_ax,promo,promo_sortie,flags,deces,nom,prenom,nationalite,section,naissance FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid'));
+    $personnal_data = $res->fetchOneAssoc();
+    
     while (list(,$val) = each($fieldarr)) {
         /* on verifie qu'on n'a pas demandé une
            variable inexistante ! */
         if (isset($_SESSION[$val])) {
             $tohash .= $_SESSION[$val];
+        } else if (isset($personnal_data[$val])) {
+            $tohash .= $personnal_data[$val];
         } else if ($val == 'username') {
             $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", Session::getInt('uid'));
             $min_username = $res->fetchOneCell();
@@ -65,10 +70,16 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
 function gpex_make_params($chlg, $privkey, $datafields) {
     global $globals;
     $params   = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
+    
+    $res = $globals->xdb->query("SELECT matricule,matricule_ax,promo,promo_sortie,flags,deces,nom,prenom,nationalite,section,naissance FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid'));
+    $personnal_data = $res->fetchOneAssoc();
+    
     $fieldarr = explode(",",$datafields);
     while (list(,$val) = each($fieldarr)) {
         if (isset($_SESSION[$val])) {
             $params .= "&$val=".$_SESSION[$val];
+        } else if (isset($personnal_data[$val])) {
+            $params .= "&$val=".$personnal_data[$val];
         } else if ($val == 'username') {
             $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", Session::getInt('uid'));
             $min_username = $res->fetchOneCell();
