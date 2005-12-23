@@ -13,7 +13,6 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',          'trombipromo.php');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',          'referent.php');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',             'http://www.polytechnique.net/plan.php');
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   40, 'Web Polytechnicien',    'http://www.polytechnique.net/');
 
     $globals->menu->addPrivateEntry(XOM_INFOS,    10, 'Documentations',        'Docs/');
     $globals->menu->addPrivateEntry(XOM_INFOS,    20, 'Nous contacter',        'Docs/NousContacter');
