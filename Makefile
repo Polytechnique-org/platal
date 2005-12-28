@@ -65,10 +65,9 @@ wiki/pub/skins/empty:
 get-wiki:
 	@if ! test -d wiki; then                                          \
 	    wget http://www.pmwiki.org/pub/pmwiki/pmwiki-latest.tgz;      \
-	    echo "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯"; \
-	    echo "now please untar pmwiki into wiki/ and run make again"; \
-	    echo "_____________________________________________________"; \
-	    exit 1;                                                       \
+	    tar -xzvf pmwiki-latest.tgz;				  \
+	    rm pmwiki-latest.tgz;					  \
+	    mv pmwiki-* wiki;						  \
 	fi
 
 build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d

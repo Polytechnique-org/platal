@@ -20,21 +20,101 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
+
+// this page is to create a smarty template page from a wiki file
+// the wiki engine used is pmwiki.
+// the templates created are stored in wiki.d/cache_wikiword.tpl
+
+// some page can be seen by everybody (public), but to validate a password
+// if we arrive here before setting new access we need to try an auth
 new_skinned_page('wiki.tpl', Env::has('response') ? AUTH_MDP : AUTH_PUBLIC);
 
-if ($globals->wiki->wikidir) {
-    ob_start();
-    require_once(dirname(dirname(__FILE__)).'/'.$globals->wiki->wikidir.'/pmwiki.php');
-
-    $wikiAll = ob_get_clean();
-    $i = strpos($wikiAll, "<!--/HeaderText-->");
-    $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
-
-    $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
-    $page->assign('menu-pmwiki', substr($wikiAll, $i, $j-$i));
-    $page->assign('pmwiki', substr($wikiAll, $j));
+function assign_auth()
+{
+    global $page;
+    $page->assign('logged', logged());
+    $page->assign('identified', identified());
+    $page->assign('has_perms', has_perms());
+    $page->assign('public', true);
+    $page->assign('wiki_admin', has_perms() && identified());
 }
 
+if ($globals->wiki->wikidir) {
+	// the wiki keword is given in the n var
+	if ($n = Env::get('n', false))
+	{
+	  // Get the correcti wiki keywords
+	  $n = str_replace('/', '.', $n);
+	  $keywords = explode('.', $n);
+	  $count = count($keywords);
+	  if ($count == 1)
+	    $n = $keywords[0].".".$keywords[0];
+	  else
+	    $n = $keywords[$count - 2].".".$keywords[$count - 1];
+	  if (($urln = str_replace('.', '/', $n)) != Env::get('n') &&
+	  	$n != Env::get('n'))
+	  {
+	    header("Location: ".$globals->baseurl.'/'.$urln);
+	    die();
+	  }
+	  $_REQUEST['n'] = $n;
+	    
+	  $dir_wiki_tmp = '../spool/wiki.d/';
+	  $short_tpl = $dir_wiki_tmp.'cache_'.$n.'.tpl';
+	  $dir_tpl = $globals->spoolroot.'templates/'.$dir_wiki_tmp;
+	  $tpl = $globals->spoolroot.'templates/'.$short_tpl;
+	  $tmpfile_exists = file_exists($tpl);
+
+	  // don't recreate the tpl if it already exists
+	  if (Env::get('action') || !$tmpfile_exists)
+	  {
+	    // we leave pmwiki do whatever it wants and store everything
+	    ob_start();
+	    require_once(dirname(dirname(__FILE__)).'/'.$globals->wiki->wikidir.'/pmwiki.php');
+
+	    $wikiAll = ob_get_clean();
+	    // the pmwiki skin we are using (almost empty) has these keywords:
+	    $i = strpos($wikiAll, "<!--/HeaderText-->");
+	    $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
+	    
+	  }
+	  if (Env::get('action'))
+	  {
+	    // clean old tmp files (more than one hour)
+	    $dh = opendir($dir_wiki_tmp);
+	    $time = time();
+	    while (($file = readdir($dh)) !== false)
+	    {
+	      if (strpos($file, 'temp_') === 0)
+	      {
+		$created = filectime($dir_wiki_tmp.$file);
+		if ($time-$created > 60 * 60)
+	          unlink($dir_wiki_tmp.$file);
+	      }
+	    }
+	  
+	    $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+	    $tmp_tpl = tempnam($dir_tpl, "temp_");
+	    $f = fopen($tmp_tpl, 'w');
+	    fputs($f, substr($wikiAll, $j));
+	    fclose($f);
+	    new_skinned_page($tmp_tpl, AUTH_PUBLIC);
+	    if ($tmpfile_exists)
+	      unlink($tpl);
+	  } else {
+	    if (!$tmpfile_exists)
+	    {
+	    	$f = fopen($tpl, 'w');
+		fputs($f, substr($wikiAll, $j));
+		fclose($f);
+	    }
+	    new_skinned_page($short_tpl, AUTH_PUBLIC);
+	  } 
+	}
+}
+
+$page->assign('xorg_extra_header', "<script type='text/JavaScript'>\n<!--\nNix={map:null,convert:function(a){Nix.init();var s='';for(i=0;i<a.length;i++){var b=a.charAt(i);s+=((b>='A'&&b<='Z')||(b>='a'&&b<='z')?Nix.map[b]:b);}return s;},init:function(){if(Nix.map!=null)return;var map=new Array();var s='abcdefghijklmnopqrstuvwxyz';for(i=0;i<s.length;i++)map[s.charAt(i)]=s.charAt((i+13)%26);for(i=0;i<s.length;i++)map[s.charAt(i).toUpperCase()]=s.charAt((i+13)%26).toUpperCase();Nix.map=map;},decode:function(a){document.write(Nix.convert(a));}}\n//-->\n</script>\n");
+assign_auth();
 $page->addCssLink('css/wiki.css');
 
 $page->run();

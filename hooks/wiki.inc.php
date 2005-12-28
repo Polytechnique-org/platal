@@ -27,6 +27,7 @@ class WikiConfig
 {
     var $mwiki_enable   = true;
     var $wikidir	= "";
+    var $workdir        = "wiki.d";
 }
 
 // }}}
