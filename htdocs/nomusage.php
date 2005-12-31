@@ -28,8 +28,8 @@ new_skinned_page('nomusage.tpl', AUTH_MDP);
 $res = $globals->xdb->query(
         "SELECT  u.nom,u.nom_usage,u.flags,e.alias
            FROM  auth_user_md5  AS u
-      LEFT JOIN  aliases        AS e ON(u.user_id = e.id)
-          WHERE  user_id={?} AND FIND_IN_SET('usage', e.flags)", Session::getInt('uid'));
+      LEFT JOIN  aliases        AS e ON(u.user_id = e.id AND FIND_IN_SET('usage',e.flags))
+          WHERE  user_id={?}", Session::getInt('uid'));
 
 list($nom,$usage_old,$flags,$alias_old) = $res->fetchOneRow();
 $flags = new flagset($flags);

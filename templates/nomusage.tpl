@@ -22,6 +22,43 @@
 
 <h1>Nom d'usage</h1>
 
+{if $same}
+  <p class="erreur">
+      Si ton nom d'usage est identique à ton nom à l'X, il n'est pas
+      nécessaire de le saisir ici!
+  </p>
+  <p>
+    Pour supprimer ton nom d'usage, fais une demande avec un nom vide et en précisant la raison.
+  </p>
+  <p>
+    [<a href='{$smarty.server.PHP_SELF}'>Refaire une demande</a>] - [<a href='profil.php'>Retour au profil</a>]
+  </p>
+{else}
+  {if $myusage}
+    {if $usage_old}
+      <p>
+        Ta demande de suppression de ton nom d'usage ainsi que de tes
+        alias {$alias_old}@polytechnique.org et
+        {$alias_old}@m4x.org a bien été enregistrée. 
+      </p>
+    {/if}
+
+    {if $myusage->alias}
+      <p>
+        Ta demande d'ajout de ton nom d'usage a bien été enregistrée. Sa
+        validation engendrera la création des alias
+        <strong>{$myusage->alias}@polytechnique.org</strong> et
+        <strong>{$myusage->alias}@m4x.org</strong>.
+      </p>
+    {/if}
+  
+    <p>
+      Tu recevras un mail dès que les changements demandés auront été effectués. 
+      Encore merci de nous faire confiance pour tes e-mails !
+    </p>
+
+  {else}
+
 <p>
 Le nom d'usage est un patronyme qui doit être <strong>reconnu par la
   loi</strong> (nom du conjoint, d'un de ses parents, ou bien plus
@@ -33,37 +70,6 @@ Les surnoms sont <strong>systématiquement refusés</strong>. Pour
 utiliser une adresse personnalisée, il faut se tourner vers
 <a href="{rel}/alias.php">l'alias @melix.net</a>.
 </p>
-
-{if $same}
-<p class="erreur">
-    Si ton nom d'usage est identique à ton nom à l'X, il n'est pas
-    nécessaire de le saisir ici!
-</p>
-{else}
-  {if $myusage}
-  {if $usage_old}
-  <p>
-    Ta demande de suppression de ton nom d'usage ainsi que de tes
-    alias {$alias_old}@polytechnique.org et
-    {$alias_old}@m4x.org a bien été enregistrée. 
-  </p>
-  {/if}
-
-  {if $myusage->alias}
-  <p>
-    Ta demande d'ajout de ton nom d'usage a bien été enregistrée. Sa
-    validation engendrera la création des alias
-    <strong>{$myusage->alias}@polytechnique.org</strong> et
-    <strong>{$myusage->alias}@m4x.org</strong>.
-  </p>
-  {/if}
-  
-  <p>
-    Tu recevras un mail dès que les changements demandés auront été effectués. 
-    Encore merci de nous faire confiance pour tes e-mails !
-  </p>
-
-{else}
 
   <p>
   Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom d'usage, tu peux
