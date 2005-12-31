@@ -111,11 +111,11 @@ Evénements
               {if $m.nb > 1}checked="checked"{/if}/>avec <input size="2" name="personnes{$e.eid}_{$m.item_id}" value="{if $m.nb > 1}{math equation="x - y" x=$m.nb y=1}{else}1{/if}"/> personnes
             {else}
               {if !$m.nb}
-                Tu ne viendras pas.
+                Je ne viendrai pas.
               {elseif $m.nb eq 1}
-                Tu viendras seul.
+                Je viendrai seul.
               {else}
-                Tu viendras avec {$m.nb} personne{if $m.nb > 2}s{/if}
+                Je viendrai avec {$m.nb} personne{if $m.nb > 2}s{/if}
               {/if}
             {/if}
           </td>
