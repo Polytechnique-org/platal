@@ -55,7 +55,9 @@ Bug/Wish :
     * Xnet :
         - #334: Interface improvements.                                     -Car
         - #341: Improve member deletion.                                    -MC
+        - #374: Event interface.                                            -Car
         - #376: Reply-To on the mail form.                                  -MC
+        - #388: Deadline for event inscriptions.                            -Car
 
     * User Interface :
         - #338: Broken FSF link fixed on donation page.                     -CAT
