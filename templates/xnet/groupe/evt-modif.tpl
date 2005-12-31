@@ -72,6 +72,12 @@
       </td>
     </tr>
     <tr>
+      <td>Fin des inscriptions</td>
+      <td>pas de deadline <input type='checkbox' name='deadline' {if !$evt.deadline_inscription}checked='checked'{/if}/>
+        {html_select_date prefix='inscr_' end_year='+5' day_value_format='%02d' field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.deadline_inscription}
+      </td>
+    </tr>
+    <tr>
       <td colspan="2">Ouvert aux membres du groupe uniquement :
         <input type="radio" name="membres_only" value="1" {if $evt.membres_only}checked="checked"{/if} /> oui
         <input type="radio" name="membres_only" value="0" {if !$evt.membres_only}checked="checked"{/if} /> non

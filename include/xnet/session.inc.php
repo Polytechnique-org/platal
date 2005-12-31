@@ -163,12 +163,20 @@ function may_update() {
 
 function is_member() {
     global $globals;
-    if (!$globals->asso('id')) { return false; }
-    $res = $globals->xdb->query(
+    $asso_id = $globals->asso('id');
+    if (!$asso_id) { return false; }
+    static $is_member;
+    if (!$is_member) $is_member = array();
+    if (!isset($is_member[$asso_id])) 
+    {
+        $res = $globals->xdb->query(
             "SELECT  COUNT(*)
                FROM  groupex.membres
-              WHERE  uid={?} AND asso_id={?}", Session::getInt('uid'), $globals->asso('id'));
-    return $res->fetchOneCell() == 1;
+              WHERE  uid={?} AND asso_id={?}",
+                Session::getInt('uid'), $asso_id);
+        $is_member[$asso_id] = $res->fetchOneCell() == 1;
+    }
+    return $is_member[$asso_id];
 }
 
 // }}}

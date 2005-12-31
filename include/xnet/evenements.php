@@ -26,6 +26,7 @@ function get_event_detail($eid, $item_id = false) {
         "SELECT	SUM(nb) AS nb_tot, e.intitule, ei.titre,
                 debut AS deb, fin, membres_only, descriptif, e.eid,
                 e.show_participants, e.paiement_id, e.short_name,
+                e.deadline_inscription, LEFT(NOW(), 10) AS now,
                 al.vid AS absent_list, pl.vid AS participant_list,
                 a.nom, a.prenom, a.promo
            FROM	groupex.evenements AS e

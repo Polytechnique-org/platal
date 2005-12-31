@@ -21,24 +21,18 @@
 {**************************************************************************}
 
 <h1>{$asso.nom} :
-{if ($smarty.request.add || $smarty.request.mod || $get_form) && $admin}
-<a href='{$smarty.server.PHP_SELF}'>Evénements</a>
-{else}
 Evénements
-{/if}
 </h1>
 
 {if !$logged}
   <p class="descr">
      Aucune manifestation publique n'a été saisie par ce groupe pour l'instant...
   </p>
-{elseif $get_form}
-  {include file='xnet/groupe/form_evenement.tpl'}
 {else}
 
   {if $admin}
   <p class="center">
-  [<a href="{$marty.server.PHP_SELF}?add=1">Annoncer un nouvel événement</a>]
+  [<a href="evt-modif.php?add=1">Annoncer un nouvel événement</a>]
   </p>
   {/if}
 
@@ -50,55 +44,118 @@ Evénements
 
   {else}
 
-  {iterate from=$evenements item=e}
+  <form action="{$smarty.server.PHP_SELF}" method="post">
+  {foreach from=$evenements item=e}
   <table class="tiny" cellspacing="0" cellpadding="0">
-    <tr>
+    <tr {popup caption=$e.intitule text=$e.descriptif}>
       <th colspan="2">
         {$e.intitule}
-        {if $admin || $e.show_participants}
-        <a href="evt-admin.php?eid={$e.eid}"><img src="{rel}/images/loupe.gif" title="Liste des participants" alt="Liste des participants" /></a>
-        {/if}
         {if $admin}
-        <a href="{$smarty.session.PHP_SELF}?mod=1&amp;eid={$e.eid}"><img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition de l'événement" /></a>
-        <a href="{$smarty.session.PHP_SELF}?sup=1&amp;eid={$e.eid}"><img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression de {$e.intitule}" /></a>
+        <a href="evt-modif.php?mod=1&amp;eid={$e.eid}"><img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition de l'événement" /></a>
+        <a href="evt-modif.php?sup=1&amp;eid={$e.eid}"><img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression de {$e.intitule}" /></a>
         {/if}
       </th>
     </tr>
-    <tr>
+    <tr {popup caption=$e.intitule text=$e.descriptif}>
       <td class="titre">date :</td>
       <td>
-        {if $e.fin}
-        du {$e.debut|date_format:"%d %B %Y à %H:%M"}<br />
-        au {$e.fin|date_format:"%d %B %Y à %H:%M"}
+        {if $e.fin and $e.fin neq $e.debut}
+          {if $e.debut_day eq $e.fin_day}
+            le {$e.debut|date_format:"%d %B %Y"} de {$e.debut|date_format:"%H:%M"} à {$e.fin|date_format:"%H:%M"}
+          {else}
+            du {$e.debut|date_format:"%d %B %Y à %H:%M"}<br />
+            au {$e.fin|date_format:"%d %B %Y à %H:%M"}
+          {/if}
         {else}
-        le {$e.debut|date_format:"%d %B %Y à %H:%M"}
+          le {$e.debut|date_format:"%d %B %Y à %H:%M"}
         {/if}
       </td>
     </tr>
-    <tr>
+    <tr {popup caption=$e.intitule text=$e.descriptif}>
       <td class="titre">annonceur :</td>
       <td>
         <a href='https://polytechnique.org/fiche.php?user={$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
       </td>
     </tr>
-    <tr>
-      <td class="titre">
-        <a href='evt-detail.php?eid={$e.eid}'>Détails...</a> 
-      </td>
-      <td {if $smarty.request.backfrom eq $e.eid}class="erreur"{/if}>
-        {if $e.inscrit}
-        <small>tu es inscrit à cet événément.
-          {if $e.inscrit > 1}(avec&nbsp;{$e.inscrit - 1}&nbsp;invité{if $e.inscrit > 2}s{/if}){/if}
-        </small>
-        {else}
-        <small>tu n'es pas inscrit à cet événément.</small>
-        {/if}
+    {if $admin || $e.show_participants}
+    <tr {popup caption=$e.intitule text=$e.descriptif}>
+      <td class="titre" colspan="2">
+        <a href="evt-admin.php?eid={$e.eid}">
+          Liste des participants
+          <img src="{rel}/images/loupe.gif" title="Liste des participants" alt="Liste des participants" />
+        </a>
       </td>
     </tr>
+    {/if}
+    {assign var="montant" value=0}
+    {if !$e.membres_only or $is_member or $e.inscrit}
+      {if $e.inscr_open}
+        <tr>
+          <td colspan="2">
+            Je viendrai...
+            <input type="hidden" name="evt_{counter}" value="{$e.eid}" />
+          </td>
+        </tr>
+      {/if}
+      {iterate from=$e.moments item=m}
+        {assign var="montant" value=$montant+$m.montant*$m.nb}
+        <tr {if $m.titre or $m.details or $m.montant}{popup caption="`$m.titre` (`$m.montant` &#x20AC;)"  text=" `$m.details` "}{/if}>
+          <td>{$m.titre}</td>
+          <td>
+            {if $e.inscr_open}
+              <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="0"
+              {if !$m.nb}checked="checked"{/if}/>non
+              <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="1"
+              {if $m.nb eq 1}checked="checked"{/if}/>seul<br />
+              <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="2"
+              {if $m.nb > 1}checked="checked"{/if}/>avec <input size="2" name="personnes{$e.eid}_{$m.item_id}" value="{if $m.nb > 1}{math equation="x - y" x=$m.nb y=1}{else}1{/if}"/> personnes
+            {else}
+              {if !$m.nb}
+                Tu ne viendras pas.
+              {elseif $m.nb eq 1}
+                Tu viendras seul.
+              {else}
+                Tu viendras avec {$m.nb} personne{if $m.nb > 2}s{/if}
+              {/if}
+            {/if}
+          </td>
+        </tr>
+      {/iterate}
+      {if $e.deadline_inscription}
+        <tr>
+          <td colspan="2" class="center">
+            {if $e.inscr_open}
+              dernières inscriptions
+              le {$e.deadline_inscription|date_format:"%d %B %Y"}
+            {else}
+              Inscriptions closes.
+            {/if}
+          </td>
+        </tr>
+      {/if}
+      {if $montant > 0 || $e.paid > 0}
+      <tr>
+        <td colspan="2" {if $montant > $e.paid}class="erreur"{/if}>
+          Tu dois payer {$montant|replace:'.':','}&nbsp;&euro;{if $e.paid > 0}, et tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;{/if}.
+          {if $e.paiement_id && $montant > $e.paid}
+            [<a href="https://www.polytechnique.org/paiement/?ref={$e.paiement_id}&amp;montant={math equation="x - y" x=$montant y=$e.paid}">Payer en ligne</a>]
+          {/if}
+        </td>
+      </tr>
+      {/if}
+    {/if}
   </table>
-  <br />
-  {/iterate}
+  {if (!$e.membres_only or $is_member or $e.inscrit) and $e.inscr_open}
+    <p style="text-align:center">
+      <input type="submit" value="Valider mes inscriptions" />
+    </p>
+  {/if}
+  {/foreach}
 
+  <div>
+    <input type="hidden" name="ins" />
+  </div>
+  </form>
   {/if}
 
 {/if}

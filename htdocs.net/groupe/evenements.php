@@ -1,193 +1,147 @@
 <?php
 require 'xnet.inc.php';
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+/***************************************************************************
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
 
 new_group_page('xnet/groupe/evenements.tpl');
 
+/**** manage inscriptions ****/
+// inscription to events
+if (Env::has('ins')) {
+    for ($i=1; Env::has('evt_'.$i); $i++)
+    {
+        $eid = Env::get('evt_'.$i);
+        $res = $globals->xdb->query("
+            SELECT  deadline_inscription,
+                    LEFT(NOW(), 10) AS now,
+                    membres_only
+            FROM    groupex.evenements
+            WHERE   eid = {?}", $eid);
+        $e = $res->fetchOneAssoc();
+        // impossible to change inscription: either inscription closed or members only
+        if ($e['deadline_inscription'] && $e['deadline_inscription']<$e['now'])
+        {
+            $page->trig("Les inscriptions sont closes");
+            continue;
+        }
+        
+        if ($e['membres_only'] && !is_member())
+        {
+            $page->trig("Les inscriptions à cet événement ne sont pas publiques");
+            continue;
+        }
+       
+        // impossible to unsubscribe if you already paid sthing
+        $total_inscr = 0;
+        $inscriptions = array();
+        for ($i=1; Env::has('moment'.$eid.'_'.$i); $i++)
+        {
+            $inscriptions[$i] = Env::get('moment'.$eid.'_'.$i);
+            // retreive ohter field when more than one person
+            if ($inscriptions[$i] == 2)
+                $inscriptions[$i] = 1 + Env::get('personnes'.$eid.'_'.$i,0);
+            // avoid negative count if other field incorrect
+            if ($inscriptions[$i] < 0)
+                $inscriptions[$i] = 0;
+            // avoid floating count if other field incorrect
+            $inscriptions[$i] = floor($inscriptions[$i]);
+            $total_inscr += $inscriptions[$i];
+        }
+        $unsubscribing = ($total_inscr == 0);
+
+        // retreive the amount already paid for this event in cash
+        $res  = $globals->xdb->query("
+            SELECT  paid
+            FROM    groupex.evenements_participants
+            WHERE   eid = {?} AND uid = {?}
+            LIMIT   1",
+                $eid, Session::get("uid"));
+        $paid = $res->fetchOneCell();
+        if (!$paid) $paid = 0;
+
+        if ($unsubscribing && $paid != 0)
+        {
+	    $page->trig("Impossible de te désinscrire complètement parce que tu as fait un paiement par chèque ou par liquide. Contacte un administrateur du groupe si tu es sûr de ne pas venir");
+            continue;
+        }
+
+        // update actual inscriptions
+        foreach ($inscriptions as $i=>$nb)
+        {
+            if ($nb > 0)
+            {
+		$globals->xdb->execute(
+		    "REPLACE INTO  groupex.evenements_participants
+			   VALUES  ({?}, {?}, {?}, {?}, {?})",
+		    $eid, Session::get("uid"), $i, $nb, $paid);
+            }
+            else
+            {
+		$globals->xdb->execute(
+		    "DELETE FROM  groupex.evenements_participants
+			   WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
+		    $eid, Session::get("uid"), $i);		
+            }
+        }
+    }
+}
+
+/**** retreive all infos about all events ****/
 $page->assign('logged', logged());
 $page->assign('admin', may_update());
 
-$moments = range(1, 4);
-$page->assign('moments', $moments);
+$evenements = $globals->xdb->iterator(
+"SELECT  e.eid, e.intitule, e.descriptif,
+	 e.debut, e.fin,
+	 LEFT(10,e.debut) AS debut_day,
+	 LEFT(10,e.fin) AS fin_day,
+         e.paiement_id, e.membres_only,
+	 e.show_participants, u.nom, u.prenom, u.promo, a.alias, MAX(ep.nb) AS inscrit,
+	 e.short_name,
+         IF(e.deadline_inscription,e.deadline_inscription >= LEFT(NOW(), 10), 1) AS inscr_open, e.deadline_inscription
+      FROM  groupex.evenements AS e
+INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid
+ LEFT JOIN  x4dat.aliases AS a ON (a.type = 'a_vie' AND a.id = u.user_id)
+ LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
+     WHERE  asso_id = {?}
+  GROUP BY  e.eid
+  ORDER BY  debut",Session::get('uid'),$globals->asso('id'));
 
-$page->assign('eid', Env::get('eid'));
-
-if ($eid = Env::get('eid')) {
-	$res = $globals->xdb->query("SELECT asso_id, short_name FROM groupex.evenements WHERE eid = {?}", $eid);
-	$infos = $res->fetchOneAssoc();
-	if ($infos['asso_id'] != $globals->asso('id')) {
-		unset($eid);
-		unset($infos);
-	}
+$evts = array();
+while ($e = $evenements->next())
+{
+   $e['moments'] = $globals->xdb->iterator(
+        "SELECT titre, details, montant, ei.item_id, nb
+           FROM groupex.evenements_items AS ei
+      LEFT JOIN groupex.evenements_participants AS ep ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
+          WHERE ei.eid = {?}",
+            Session::get('uid'), $e['eid']);
+    $e['paid'] = 0;
+    $evts[] = $e;
 }
 
-if (may_update() && Post::get('intitule')) {
-	$short_name = Env::get('short_name');
-	//Quelques vérifications sur l'alias (caractères spéciaux)
-	if ($short_name && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $short_name))
-	{
-		$page->trig("Le raccourci demandé n'est pas valide.
-			    Vérifie qu'il comporte entre 3 et 20 caractères
-			    et qu'il ne contient que des lettres non accentuées,
-			    des chiffres ou les caractères - et .");
-		$short_name = $infos['short_name'];
-		$page->assign('get_form', true);
-		$get_form = true;
-		// set the field to the previously requested field
-		$page->assign('evt', $_REQUEST);
-	}
-	//vérifier que l'alias n'est pas déja pris
-	if ($short_name && $short_name != $infos['short_name']) {
-		$res = $globals->xdb->query('SELECT COUNT(*) FROM virtual WHERE alias LIKE {?}', $short_name."-%");
-		if ($res->fetchOneCell() > 0) {
-			$page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
-			$short_name = $infos['short_name'];
-			$page->assign('get_form', true);
-			$get_form = true;
-			// set the field to the previously requested field
-			$page->assign('evt', $_REQUEST);
-		}
-	}
-	if ($short_name && $infos['short_name'] && $short_name != $infos['short_name']) {
-		$globals->xdb->execute("UPDATE virtual SET alias = REPLACE(alias, {?}, {?}) WHERE type = 'evt' AND alias LIKE {?}",
-			$infos['short_name'], $short_name, $infos['short_name']."-%");
-	} elseif ($short_name && !$infos['short_name']) {
-		$globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}", $short_name."-participants@".$globals->xnet->evts_domain);
-		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
-		$globals->xdb->execute("INSERT INTO virtual_redirect (
-			SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-			  FROM groupex.evenements_participants AS ep
-		     LEFT JOIN groupex.membres AS m ON (ep.uid = m.uid)
-		     LEFT JOIN auth_user_md5 AS u ON (u.user_id = ep.uid)
-		     LEFT JOIN aliases AS a ON (a.id = ep.uid AND a.type = 'a_vie')
-		         WHERE ep.eid = {?}
-		      GROUP BY ep.uid)",
-			 $res->fetchOneCell(), "@".$globals->mail->domain, $eid);
+$page->assign('evenements', $evts);
+$page->assign('is_member', is_member());
 
-		$globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}", $short_name."-absents@".$globals->xnet->evts_domain);
-		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
-		$globals->xdb->execute("INSERT INTO virtual_redirect (
-			SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-		          FROM groupex.membres AS m
-		     LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid)
-		     LEFT JOIN auth_user_md5 AS u ON (u.user_id = m.uid)
-		     LEFT JOIN aliases AS a ON (a.id = m.uid AND a.type = 'a_vie')
-		         WHERE m.asso_id = {?} AND ep.uid IS NULL
-		      GROUP BY m.uid)",
-			 $res->fetchOneCell(), "@".$globals->mail->domain, $globals->asso('id'));
-	} elseif (!$short_name && $infos['short_name']) {
-		$globals->xdb->execute("DELETE virtual, virtual_redirect FROM virtual LEFT JOIN virtual_redirect USING(vid) WHERE virtual.alias LIKE {?}",
-			$infos['short_name']."-%");
-	}
-
-	$globals->xdb->execute("REPLACE INTO groupex.evenements 
-		SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
-		paiement_id = {?}, descriptif = {?},
-		debut = {?}, fin = {?},
-		membres_only = {?}, advertise = {?}, show_participants = {?}, short_name = {?}",
-		$eid, $globals->asso('id'), Session::get('uid'), Post::get('intitule'),
-		(Post::get('paiement_id')>0)?Post::get('paiement_id'):NULL, Post::get('descriptif'),
-		Post::get('deb_Year')."-".Post::get('deb_Month')."-".Post::get('deb_Day')." ".Post::get('deb_Hour').":".Post::get('deb_Minute').":00",
-		Post::get('fin_Year')."-".Post::get('fin_Month')."-".Post::get('fin_Day')." ".Post::get('fin_Hour').":".Post::get('fin_Minute').":00",
-		Post::get('membres_only'), Post::get('advertise'), Post::get('show_participants'), $short_name, $eid);
-
-	if (!$eid) {
-		$res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
-		$eid = $res->fetchOneCell();
-	}
-	$nb_moments = 0;
-	$money_defaut = 0;
-	foreach ($moments as $i) if (Post::get('titre'.$i)) {
-		$nb_moments++;
-		if (!($money_defaut > 0)) $money_defaut = strtr(Post::get('montant'.$i), ',', '.');
-		$globals->xdb->execute("
-		REPLACE INTO groupex.evenements_items VALUES (
-		{?}, {?},
-		{?}, {?}, {?})",
-		$eid, $i,
-		Post::get('titre'.$i), Post::get('details'.$i), strtr(Post::get('montant'.$i), ',', '.'));
-	} else {
-		$globals->xdb->execute("DELETE FROM groupex.evenements_items WHERE eid = {?} AND item_id = {?}", $eid, $i);
-	}
-
-	// request for a new payment
-	if (Post::get('paiement_id') == -1 && $money_defaut >= 0) {
-		require_once ('validations.inc.php');
-		$p = new PayReq(Session::get('uid'), Post::get('intitule')." - ".$globals->asso('nom'), Post::get('site'), $money_defaut, Post::get('confirmation'),0, 999, $globals->asso('id'), $eid);
-		$p->submit();
-	}
-
-	// events with no sub-event
-	if ($nb_moments == 0)
-		$globals->xdb->execute("INSERT INTO groupex.evenements_items VALUES ({?}, {?}, '', '', 0)", $eid, 1);
-}
-
-if (may_update() && Env::has('sup') && $eid) {
-	// deletes the event
-	$globals->xdb->execute("DELETE FROM groupex.evenements WHERE eid = {?} AND asso_id = {?}", $eid, $globals->asso('id'));
-	// deletes the event items
-	$globals->xdb->execute("DELETE FROM groupex.evenements_items WHERE eid = {?}", $eid);
-	// deletes the event participants
-	$globals->xdb->execute("DELETE FROM groupex.evenements_participants WHERE eid = {?}", $eid);
-	// deletes the event mailing aliases
-	if ($infos['short_name'])
-		$globals->xdb->execute("DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}", $infos['short_name']."-%");
-	// delete the requests for payments
-	require_once('validations.inc.php');
-	$globals->xdb->execute("DELETE FROM requests WHERE type = 'paiements' AND data  LIKE {?}", PayReq::same_event($eid, $globals->asso('id')));
-}
-
-if (may_update() && (Env::has('add') || (Env::has('mod') && $eid || $get_form))) {
-	$page->assign('get_form', true);
-	$res = $globals->xdb->iterator
-		("SELECT id, text FROM {$globals->money->mpay_tprefix}paiements WHERE asso_id = {?}", $globals->asso('id'));
-	$paiements = array();
-	while ($a = $res->next()) $paiements[$a['id']] = $a['text'];
-	$page->assign('paiements', $paiements);
-}
-
-if ($eid) {
-	$res = $globals->xdb->query(
-		"SELECT	eid, intitule, descriptif, debut, fin, membres_only, advertise, show_participants, paiement_id, short_name
-		   FROM	groupex.evenements
-		  WHERE eid = {?}", $eid);
-	$evt = $res->fetchOneAssoc();
-	require_once('validations.inc.php');
-	$res = $globals->xdb->query("SELECT stamp FROM requests WHERE type = 'paiements' AND data LIKE {?}", PayReq::same_event($eid, $globals->asso('id')));
-	$stamp = $res->fetchOneCell();
-	if ($stamp) {
-		$evt['paiement_id'] = -2;
-		$evt['paiement_req'] = $stamp;
-	}
-	$page->assign('evt', $evt);
-}
-
-if (may_update() && Env::has('mod') && $eid) {
-	$res = $globals->xdb->iterator(
-		"SELECT item_id, titre, details, montant
-		   FROM groupex.evenements_items AS ei
-	     INNER JOIN groupex.evenements AS e ON(e.eid = ei.eid)
-		  WHERE e.eid = {?}
-	       ORDER BY item_id", $eid);
-	$items = array();
-	while ($item = $res->next()) $items[$item['item_id']] = $item;
-	$page->assign('items', $items);
-} else {
-
-	$evenements = $globals->xdb->iterator(
-	"SELECT  e.eid, e.intitule, e.descriptif, e.debut, e.fin, e.show_participants, u.nom, u.prenom, u.promo, a.alias, MAX(ep.nb) AS inscrit,
-		 e.short_name
-	      FROM  groupex.evenements AS e
-	INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid
-	 LEFT JOIN  x4dat.aliases AS a ON (a.type = 'a_vie' AND a.id = u.user_id)
-	 LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
-	     WHERE  asso_id = {?}
-	  GROUP BY  e.eid
-	  ORDER BY  debut",Session::get('uid'),$globals->asso('id'));
-
-	$page->assign('evenements', $evenements);
-
-	$page->assign('nb_evt', $evenements->total());
-}
+$page->assign('nb_evt', $evenements->total());
 
 $page->run();
 
