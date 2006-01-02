@@ -40,6 +40,14 @@
     </tr>
     <tr>
       <td class='titre'>
+        ID
+      </td>
+      <td>
+        {$nl->_id}
+      </td>
+    </tr>
+    <tr>
+      <td class='titre'>
         Titre
       </td>
       <td>
