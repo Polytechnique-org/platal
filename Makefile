@@ -22,7 +22,7 @@ headers:
 	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header \
 		`find templates -name '*.tpl' ! -path 'templates/xnet/skin.tpl' ! -path 'templates/skin/*.tpl' ! -name 'vcard.tpl' `
 
-build: spool/templates_c wiki
+build: spool/templates_c wiki include/platal/globals.inc.php
 
 clean:
 	rm -rf include/platal/globals.inc.php
