@@ -141,7 +141,7 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     $panel .= ">><<\n";
     $panel .= "{/if}\n";
   
-    if ((identifed() && has_perms()) || authPerms($pagename, $passwds[$level]))
+    if ((identified() && has_perms()) || authPerms($pagename, $passwds[$level]))
     {
         $page_read['=passwd'] = $passwds;
         $page_read['=pwsource'] = $pwsources;
