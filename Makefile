@@ -71,8 +71,6 @@ get-wiki:
 	fi
 
 build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
-	@sed -e 's/^exit;/\/\/exit;/g' wiki/pmwiki.php > wiki/pmwiki.php.new
-	@mv wiki/pmwiki.php.new wiki/pmwiki.php
 
 wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wiki wiki/cookbook/e-protect.php
 

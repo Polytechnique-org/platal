@@ -148,7 +148,7 @@ def connectDB():
             db='x4dat',
             user=MYSQL_USER,
             passwd=MYSQL_PASS,
-            unix_socket='/var/run/mysqld/mysqld.sock')
+            unix_socket='/tmp/mysql.sock')
     db.ping()
     return db.cursor()
 
