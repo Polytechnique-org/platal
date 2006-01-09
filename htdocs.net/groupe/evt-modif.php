@@ -204,7 +204,7 @@ if (Env::has('sup') && $eid) {
 }
 
 if (!$get_form)
-    redirect("Location: evenements.php");
+    redirect("evenements.php");
 
 // get a list of all the payment for this asso
 $res = $globals->xdb->iterator

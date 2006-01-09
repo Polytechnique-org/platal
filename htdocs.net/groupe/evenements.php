@@ -109,7 +109,9 @@ $page->assign('logged', logged());
 $page->assign('admin', may_update());
 
 $evenements = $globals->xdb->iterator(
-"SELECT  e.eid, e.intitule, e.descriptif,
+"SELECT  e.eid, 
+         IF(e.intitule = '', ' ', e.intitule) AS intitule,
+         IF(e.descriptif = '', ' ', e.descriptif) AS descriptif,
 	 e.debut, e.fin,
 	 LEFT(10,e.debut) AS debut_day,
 	 LEFT(10,e.fin) AS fin_day,
