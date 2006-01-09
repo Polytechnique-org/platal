@@ -59,7 +59,7 @@
                         FROM  auth_user_md5 AS u
                         INNER JOIN  aliases       AS a ON (u.user_id = a.id)
                         WHERE  a.alias={?}', $globals->asso('id'), $forlife);
-                        redirect('?edit='.$email);
+                        redirect($_SERVER['PHP_SELF'].'?edit='.$email);
                 } else {
                     $page->trig($email." n'est pas un alias polytechnique.org valide");
                 }
@@ -69,7 +69,7 @@
                     $uid = max(intval($res->fetchOneCell()), 50001);
                     $globals->xdb->execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email) VALUES({?},{?},"ext",{?})',
                             $uid, $globals->asso('id'), $email);
-                    redirect('?edit='.$email);
+                    redirect($_SERVER['PHP_SELF'].'?edit='.$email);
                 } else {
                     $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
                 }
