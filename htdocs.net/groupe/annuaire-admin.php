@@ -34,7 +34,7 @@ foreach ($subscribers as $mail) {
         if (strstr($mail, '@polytechnique.org') === false) {
             $not_in_group_ext[] = $mail;
         } else {
-            $not_in_group_x = $mail;
+            $not_in_group_x[] = $mail;
         }
     }
 }
