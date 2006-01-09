@@ -27,17 +27,17 @@ if ($admin && Env::get('adm') && Env::get('mail')) {
                 "SELECT m.uid
                    FROM groupex.membres AS m
              INNER JOIN aliases AS a ON (a.id = m.uid)
-                  WHERE a.alias = {?}",
-                Env::get('mail'));
+                  WHERE a.alias = {?} AND m.asso_id = {?}",
+                Env::get('mail'), $globals->asso('id'));
     } else {
 	$res = $globals->xdb->query(
 		"SELECT m.uid
 		   FROM groupex.membres AS m
 		  WHERE m.email = {?} AND m.asso_id = {?}",
 		Env::get('mail'), $globals->asso('id'));
-	$member = $res->fetchOneCell();
-	if (!$member) $page->trig("Membre introuvable");
     }
+    $member = $res->fetchOneCell();
+    if (!$member) $page->trig("Membre introuvable");
 }
 
 // change the price paid by a participant
