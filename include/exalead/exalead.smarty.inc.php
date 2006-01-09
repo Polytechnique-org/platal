@@ -170,7 +170,7 @@ function _exa_navigation_barre($params, &$smarty){
   }
   
   if ($current_page*$nb_res_per_page >$nb_res_per_page)
-  	$res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page)."\">Precedent</a>  ";
+  	$res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page)."\">Précédent</a>  ";
   for($i = $first_number; $i <= $nb_numero + $first_number-1; $i++){
     $k=$nb_res_per_page*($i-1)+1;
     $j=$nb_res_per_page*$i;
@@ -230,7 +230,7 @@ function _little_nav_barre($params, &$smarty){
 		$res .=" <td width=\"20%\" style=\"text-align: left;\">";
 	if($exalead_data->start != 0){
 		$num=$exalead_data->start-1;
-		$res .="<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">PrÃ©cÃ©dent</a>";
+		$res .="<a href=\"?_C={$exalead_data->query->context}&_s=".$num."\">Précédent</a>";
 	}
 	$num=$exalead_data->start+1;
 	$res .= "</td>";
@@ -243,9 +243,9 @@ function _little_nav_barre($params, &$smarty){
 		        CV : ".$num." / {$exalead_data->nhits} -";
 	}
 	if($date)	
-		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour Ã  la recherche</a>";
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
 	else
-		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-relevance&amp;_f=xml2&amp;_s=".$dizaine."\">Retour Ã  la recherche</a>";
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-relevance&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
 	$res .="</td>";
 	if($box)
 		$res.="<td class=\"droite\">";
