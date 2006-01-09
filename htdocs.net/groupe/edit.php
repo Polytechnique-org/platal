@@ -5,7 +5,7 @@
 
     if (Post::has('submit')) {
         if (has_perms()) {
-            if (strstr(Post::get('mail_domain'), '.') === false) {
+            if (Post::get('mail_domain') != "" && (strstr(Post::get('mail_domain'), '.') === false)) {
                 $page->trig_run("le domaine doit être un FQDN (aucune modif effectuée) !!!");
             }
             $globals->xdb->execute(
