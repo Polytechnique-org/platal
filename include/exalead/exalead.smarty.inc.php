@@ -192,7 +192,7 @@ function _exa_navigation_barre($params, &$smarty){
   }
   
   if($date)
-	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_sf=relevance&amp;_f=xml2\">[Classer par pertinence]</a>";
+	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_f=xml2\">[Classer par pertinence]</a>";
   else
 	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_sf=-date&amp;_f=xml2\">[Classer par date]</a>"; 
   return $res;
@@ -243,9 +243,9 @@ function _little_nav_barre($params, &$smarty){
 		        CV : ".$num." / {$exalead_data->nhits} -";
 	}
 	if($date)	
-		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}&amp;_sf=-date&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
 	else
-		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}/_sf=-relevance&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
+		$res.="<a href=\"ec_cherche_cv.php?_C={$exalead_data->query->context}&amp;_f=xml2&amp;_s=".$dizaine."\">Retour à la recherche</a>";
 	$res .="</td>";
 	if($box)
 		$res.="<td class=\"droite\">";
