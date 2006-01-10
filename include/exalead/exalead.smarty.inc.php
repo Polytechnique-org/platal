@@ -171,13 +171,13 @@ function _exa_navigation_barre($params, &$smarty){
   
   if ($current_page*$nb_res_per_page >$nb_res_per_page)
   	$res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page)."\">Précédent</a>  ";
-  for($i = $first_number; $i <= $nb_numero + $first_number-1; $i++){
+  for($i = $first_number; $i <= $nb_numero + $first_number; $i++){
     $k=$nb_res_per_page*($i-1)+1;
     $j=$nb_res_per_page*$i;
     if($i == $current_page){
 	$res .= "<strong>$k-$j</strong> ";
     }
-    else{
+    elseif($k<=$nb_hits){
       	$res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".(($i-1)*$nb_res_per_page)."\">$k-$j</a> ";
    }
   }
