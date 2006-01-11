@@ -96,7 +96,7 @@ class Exalead
         //$tmp = parse_url($this->base_cgi);
         //$view_name = substr($tmp['path'], 5);
         //$query_exa = $this->base_cgi."?_q=".urlencode($query)."&_f=xml2&A=-1&_vn=".$view_name;
-        $query_exa = $this->base_cgi."?_q=".urlencode($query)."&_f=xml2";
+        $query_exa = $this->base_cgi."&_q=".urlencode($query)."&_f=xml2";
         if ($offset > 0) {
             $query_exa .= "&_s=".$offset;
         }
