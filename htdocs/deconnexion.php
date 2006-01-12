@@ -44,9 +44,12 @@ if (isset($_SESSION['log'])) {
 
 XorgSession::destroy();
 
-new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);
-
-$page->run();
+if (Get::has('redirect')) {
+    redirect(rawurldecode(Get::get('redirect')));
+} else {
+    new_skinned_page('deconnexion.tpl', AUTH_PUBLIC);
+    $page->run();
+}
 
 // vim:set et sws=4 sts=4 sw=4:
 ?>
