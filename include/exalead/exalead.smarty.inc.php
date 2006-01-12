@@ -154,6 +154,15 @@ function _exa_navigation_barre($params, &$smarty){
   else{
     $nb_hits = (int) $exalead_data->nhits;
   }
+  $date=false;
+  foreach($exalead_data->query->query_parameters as $parameter){
+	if($parameter->name=="_sf"){
+		if($parameter->value=="-date")
+  			$date=true;
+	}
+  }
+ 
+
   $res = '';
   $nb_numero = 5;//We want 5 links
   $current_page = (empty($_GET['_s'])?1:1+(int) ($_GET['_s'] / $nb_res_per_page));
@@ -169,32 +178,32 @@ function _exa_navigation_barre($params, &$smarty){
     }
   }
   
-  if ($current_page*$nb_res_per_page >$nb_res_per_page)
-  	$res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page)."\">Précédent</a>  ";
+  if ($current_page*$nb_res_per_page >$nb_res_per_page){
+      $res.="<a href=\"?_C={$exalead_data->query->context}&_s=".(($current_page-2)*$nb_res_per_page);
+      if($date) $res.="&amp;_sf=-date"; 
+      $res.="\">Précédent</a>  ";
+  }
   for($i = $first_number; $i <= $nb_numero + $first_number; $i++){
-    $k=$nb_res_per_page*($i-1)+1;
-    $j=$nb_res_per_page*$i;
-    if($i == $current_page){
-	$res .= "<strong>$k-$j</strong> ";
-    }
-    elseif($k<=$nb_hits){
-      	$res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".(($i-1)*$nb_res_per_page)."\">$k-$j</a> ";
-   }
+      $k=$nb_res_per_page*($i-1)+1;
+      $j=$nb_res_per_page*$i;
+      if($i == $current_page){
+          $res .= "<strong>$k-$j</strong> ";
+      }
+      elseif($k<=$nb_hits){
+          $res .= "<a href=\"?_C={$exalead_data->query->context}&_s=".(($i-1)*$nb_res_per_page);
+          if($date) $res.="&amp;_sf=-date";
+          $res.="\">$k-$j</a> ";
+      }
   }
-  if ($current_page*10<$nb_hits)
-  	$res.="<a  href=\"?_C={$exalead_data->query->context}&_s=".(($current_page)*$nb_res_per_page)."\">Suivant</a>";
-  $date=false;
-  foreach($exalead_data->query->query_parameters as $parameter){
-	if($parameter->name=="_sf"){
-		if($parameter->value=="-date")
-  			$date=true;
-	}
+  if ($current_page*10<$nb_hits){
+      $res.="<a  href=\"?_C={$exalead_data->query->context}&_s=".(($current_page)*$nb_res_per_page);
+      if($date) $res.="&amp;_sf=-date";
+      $res.="\">Suivant</a>";
   }
-  
   if($date)
-	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_f=xml2\">[Classer par pertinence]</a>";
+      $res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_f=xml2\">[Classer par pertinence]</a>";
   else
-	$res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_sf=-date&amp;_f=xml2\">[Classer par date]</a>"; 
+      $res.=" - <a href=\"?_C={$exalead_data->query->context}&amp;_sf=-date&amp;_f=xml2\">[Classer par date]</a>"; 
   return $res;
 }
 
