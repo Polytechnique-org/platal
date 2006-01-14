@@ -44,7 +44,7 @@
       <tr>
         <td colspan="2">
           <p>En raison d&apos;une op&eacute;ration de maintenance sur nos
-	  serveurs, les services de Polyetchnique.org sont actuellement
+	  serveurs, les services de Polytechnique.org sont actuellement
 	  interrompus.
           </p>
 	  <p>Nous vous remer&ccedil;ions de votre compr&eacute;hension.
