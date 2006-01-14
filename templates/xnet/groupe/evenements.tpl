@@ -47,7 +47,7 @@ Evénements
   <form action="{$smarty.server.PHP_SELF}" method="post">
   {foreach from=$evenements item=e}
   <table class="tiny" cellspacing="0" cellpadding="0">
-    <tr {popup caption=$e.intitule text=$e.descriptif}>
+    <tr {popup caption=$e.intitule" text=$e.descriptif}>
       <th colspan="2">
         {$e.intitule}
         {if $admin}
