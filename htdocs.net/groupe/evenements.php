@@ -117,6 +117,7 @@ $evenements = $globals->xdb->iterator(
 	 LEFT(10,e.fin) AS fin_day,
          e.paiement_id, e.membres_only,
 	 e.show_participants, u.nom, u.prenom, u.promo, a.alias, MAX(ep.nb) AS inscrit,
+         MAX(ep.paid) AS paid,
 	 e.short_name,
          IF(e.deadline_inscription,e.deadline_inscription >= LEFT(NOW(), 10), 1) AS inscr_open, e.deadline_inscription
       FROM  groupex.evenements AS e
@@ -136,7 +137,15 @@ while ($e = $evenements->next())
       LEFT JOIN groupex.evenements_participants AS ep ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
           WHERE ei.eid = {?}",
             Session::get('uid'), $e['eid']);
-    $e['paid'] = 0;
+    $query = $globals->xdb->query(
+        "SELECT montant
+           FROM {$globals->money->mpay_tprefix}transactions AS t
+         WHERE ref = {?} AND uid = {?}", $e['paiement_id'], Session::get('uid'));
+    $montants = $query->fetchColumn();
+    foreach ($montants as $m) {
+        $p = strtr(substr($m, 0, strpos($m, "EUR")), ",", ".");
+        $e['paid'] += trim($p);
+    }
     $evts[] = $e;
 }
 
