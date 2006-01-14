@@ -38,18 +38,18 @@
       </tr>
       <tr>
         <td colspan="2">
-          <h2>Service Web temporairement interrompu</h2>
+          <h2>Services interrompus</h2>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <p>En pr&eacute;vision d'une coupure de courant ind&eacute;pendante de
-          notre volont&eacute;, le service web est interrompu.  Ceci nous permet
-          de garantir l'int&eacute;grit&eacute; des donn&eacute;es
-          stock&eacute;es sur nos serveurs. La continuit&eacute; du service mail
-          est assur&eacute; pendant la dur&eacute;e de la coupure.
+          <p>En raison d&apos;une op&eacute;ration de maintenance sur nos
+	  serveurs, les services de Polyetchnique.org sont actuellement
+	  interrompus.
           </p>
-          <p>Nos excuses pour le d&eacute;rangement occasionn&eacute; et
+	  <p>Nous vous remer&ccedil;ions de votre compr&eacute;hension.
+	  </p>
+          <p>Avec toutes nos excuses pour le d&eacute;rangement occasionn&eacute; et
           &agrave; bient&ocirc;t!</p>
           <p align="right"><b>L'&eacute;quipe de Polytechnique.org</b></p>
         </td>
