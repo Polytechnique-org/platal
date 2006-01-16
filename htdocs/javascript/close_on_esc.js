@@ -25,5 +25,5 @@ function closePopup(e) {
     }
 }
 
-attachEvent(document, 'keydown', closePopup);
+attachEvent(window, 'keydown', closePopup);
 
