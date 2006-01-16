@@ -106,7 +106,7 @@ function auto_links() {
 
 // {{{ function pa_onload
 
-attachEvent(document, 'load', auto_links);
+attachEvent(window, 'load', auto_links);
 
 // }}}
 
