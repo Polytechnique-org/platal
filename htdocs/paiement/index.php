@@ -34,7 +34,7 @@ if($pay->flags->hasflag('old')){
     $page->trig("La transaction selectionnée est périmée.");
     $pay = new Payment();
 }
-$val  = (Env::has('montant')) ? Env::get('montant') : $pay->montant_def;
+$val  = (Env::has('montant') && !Env::has('ref')) ? Env::get('montant') : $pay->montant_def;
 
 if (($e = $pay->check($val)) !== true) {
     $page->trig($e);
