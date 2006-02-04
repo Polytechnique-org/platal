@@ -98,7 +98,7 @@ Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='h
     <tr>
       <td>Transaction</td>
       <td>
-        <select name="ref" onchange="this.form.op.value='select'; this.form.submit();">
+        <select name="ref" onchange="this.form.op.value='select'; this.form.montant.value=0; this.form.submit();">
           {select_db_table table="`$prefix`paiements" valeur=$pay->id where=" WHERE FIND_IN_SET('old',flags)=0"}
         </select>
         {if $pay->url}
