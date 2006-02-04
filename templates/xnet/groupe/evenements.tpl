@@ -149,6 +149,8 @@ Evénements
     <p style="text-align:center">
       <input type="submit" value="Valider mes inscriptions" />
     </p>
+  {else}
+    <p>&nbsp;</p>
   {/if}
   {/foreach}
 
