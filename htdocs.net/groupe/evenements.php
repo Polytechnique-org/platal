@@ -52,18 +52,18 @@ if (Env::has('ins')) {
         // impossible to unsubscribe if you already paid sthing
         $total_inscr = 0;
         $inscriptions = array();
-        for ($i=1; Env::has('moment'.$eid.'_'.$i); $i++)
+        for ($j=1; Env::has('moment'.$eid.'_'.$j); $j++)
         {
-            $inscriptions[$i] = Env::get('moment'.$eid.'_'.$i);
+            $inscriptions[$j] = Env::get('moment'.$eid.'_'.$j);
             // retreive ohter field when more than one person
-            if ($inscriptions[$i] == 2)
-                $inscriptions[$i] = 1 + Env::get('personnes'.$eid.'_'.$i,0);
+            if ($inscriptions[$j] == 2)
+                $inscriptions[$j] = 1 + Env::get('personnes'.$eid.'_'.$j,0);
             // avoid negative count if other field incorrect
-            if ($inscriptions[$i] < 0)
-                $inscriptions[$i] = 0;
+            if ($inscriptions[$j] < 0)
+                $inscriptions[$j] = 0;
             // avoid floating count if other field incorrect
-            $inscriptions[$i] = floor($inscriptions[$i]);
-            $total_inscr += $inscriptions[$i];
+            $inscriptions[$j] = floor($inscriptions[$j]);
+            $total_inscr += $inscriptions[$j];
         }
         $unsubscribing = ($total_inscr == 0);
 
@@ -84,21 +84,21 @@ if (Env::has('ins')) {
         }
 
         // update actual inscriptions
-        foreach ($inscriptions as $i=>$nb)
+        foreach ($inscriptions as $j=>$nb)
         {
             if ($nb > 0)
             {
 		$globals->xdb->execute(
 		    "REPLACE INTO  groupex.evenements_participants
 			   VALUES  ({?}, {?}, {?}, {?}, {?})",
-		    $eid, Session::get("uid"), $i, $nb, $paid);
+		    $eid, Session::get("uid"), $j, $nb, $paid);
             }
             else
             {
 		$globals->xdb->execute(
 		    "DELETE FROM  groupex.evenements_participants
 			   WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
-		    $eid, Session::get("uid"), $i);		
+		    $eid, Session::get("uid"), $j);		
             }
         }
     }
