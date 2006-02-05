@@ -73,7 +73,7 @@ $GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
  * @param $txt the raw text of an address
  */
 function get_address_infos($txt) {
-    $url ="http://www.geoloc.org/adressparser/address.php?txt=".urlencode(utf8_encode($txt));
+    $url ="http://wws.geoloc.org/address.php?txt=".urlencode(utf8_encode($txt));
     if (!($f = @fopen($url, 'r'))) return false;
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
@@ -208,7 +208,7 @@ function localize_addresses($uid) {
  * @param $id the id of the city to synchronize
  */
  function synchro_city($id) {
-    $url ="http://www.geoloc.org/adressparser/cityFinder.php?method=id&id=".$id."&out=sql";
+    $url ="http://wws.geoloc.org/cityFinder.php?method=id&id=".$id."&out=sql";
     if (!($f = @fopen($url, 'r'))) return false;
     $s = fgets($f);
     global $globals;
