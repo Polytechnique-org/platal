@@ -45,7 +45,6 @@
     </a>]
     {/foreach}
   </div>
-  {/if}
 
   <div class="contact-list" style="clear:both">
     {capture name=list}
@@ -70,6 +69,7 @@
     {/if}
     {/foreach}
   </p>
+  {/if}
   {/if}
 
   {min_auth level='cookie'}

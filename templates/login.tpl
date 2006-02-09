@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
 {if $ask_naissance}
 
 {include file='include/form_naissance.tpl'}
