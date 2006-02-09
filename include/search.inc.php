@@ -98,6 +98,8 @@ class XOrgSearch extends XOrgPlugin
         list($list, $total) = call_user_func($this->_callback, $offset, $this->limit, $sql_order);
         
 	$page_max = intval(($total-1)/$this->limit);
+        if(!logged() && $page_max > $globals->search->public_max)
+            $page_max = $globals->search->public_max;
 
 	$links = Array();
 	if ($offset) {
