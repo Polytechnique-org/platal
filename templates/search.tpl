@@ -45,7 +45,9 @@
     </a>]
     {/foreach}
   </div>
+  {/if}
 
+  {if $search_results_nb}
   <div class="contact-list" style="clear:both">
     {capture name=list}
     {iterate item=res from=$search_results}
