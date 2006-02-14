@@ -16,7 +16,7 @@ function tmp_menu()
 
     $globals->menu->addPrivateEntry(XOM_INFOS,    10, 'Documentations',        'Docs/');
     $globals->menu->addPrivateEntry(XOM_INFOS,    20, 'Nous contacter',        'Docs/NousContacter');
-    $globals->menu->addPrivateEntry(XOM_INFOS,    30, 'Emploi',                'http://www.manageurs.com/');
+    $globals->menu->addPrivateEntry(XOM_INFOS,    30, 'Emploi',                'Docs/Emploi');
 
     $globals->menu->addPrivateEntry(XOM_ADMIN,    00, 'Marketing',           'marketing/');
     $globals->menu->addPrivateEntry(XOM_ADMIN,    10, 'Administration',      'admin/');
