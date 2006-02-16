@@ -52,7 +52,7 @@ Evénements
         {$e.intitule}
         {if $admin}
         <a href="evt-modif.php?mod=1&amp;eid={$e.eid}"><img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition de l'événement" /></a>
-        <a href="evt-modif.php?sup=1&amp;eid={$e.eid}"><img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression de {$e.intitule}" /></a>
+        <a href="evt-modif.php?sup=1&amp;eid={$e.eid}" onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')"><img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression de {$e.intitule}" /></a>
         {/if}
       </th>
     </tr>
