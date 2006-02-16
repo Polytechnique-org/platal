@@ -23,7 +23,7 @@
 
 {if $success}
   <p>
-  a demande de création des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
+  La demande de création des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
   <strong>{$success}@{#globals.mail.alias_dom2#}</strong> a bien été enregistrée. Après
     vérification, tu recevras un mail te signalant l'ouverture de ces adresses.
   </p>
