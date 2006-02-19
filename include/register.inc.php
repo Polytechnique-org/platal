@@ -206,17 +206,26 @@ function create_aliases (&$sub)
             $mailer->setSubject("perte de ton alias $mailorg dans un mois !");
             $mailer->addCc('"Support Polytechnique.org" <support@polytechnique.org>');
             $msg =
-                "Un homonyme s'est inscrit, nous ne pouvons donc garder ton alias '$mailorg'.\n\n".
+                "Bonjour,\n\n".
+                
+                "Un homonyme vient de s'inscrire. La politique de Polytechnique.org est de fournir des\n".
+                "adresses mail devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
+                "correspond maintenant à deux personnes.\n\n".
+                
                 "Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.\n\n".
-                "Lorsque cet alias sera désactivé, l'adresse :\n".
-                "    $mailorg@polytechnique.org\n".
-                "renverra vers un robot qui indique qu'il y a plusieurs personnes portant le même nom ;\n".
+                
+                "Lorsque cet alias sera désactivé, l'adresse $mailorg@polytechnique.org renverra vers un \n".
+                "robot qui indiquera qu'il y a plusieurs personnes portant le même nom ;\n".
                 "cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
-                "Pour te connecter au site, tu pourras utiliser comme identifiant n'importe lequel de tes autres alias :\n".
+                
+                "Pour te connecter au site, tu pourras utiliser comme identifiant n'importe lequel de tes\n".
+                "autres alias :\n".
                 "    ".join(', ', $als)."\n";
                 "Commence dès aujourd'hui à communiquer à tes correspondants la nouvelle adresse que tu comptes utiliser !\n\n".
+                
                 "En nous excusant pour le désagrément occasionné,\n".
-                "cordialement,\n".
+                "Cordialement,\n\n".
+                
                 "-- \n".
                 "L'équipe de Polytechnique.org\n".
                 "\"Le portail des élèves & anciens élèves de l'X\"";
