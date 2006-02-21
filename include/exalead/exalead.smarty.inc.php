@@ -322,6 +322,7 @@ function _display_resume_groupe_category(&$group, $context, $padding = ''){
       foreach($group->categories as $categorie){
         $title = (empty($categorie->display)?$categorie->name:$categorie->display);
         $count = (empty($categorie->count)?'':' ('.$categorie->count.')');
+        $categorie->refine_href=str_replace('/_c=', '/&_c=', $categorie->refine_href);//correction d'un bug
         $refine = $context.'&'.$categorie->refine_href;
 	$exclude = $context.'&'.$categorie->exclude_href;
 	$reset = $context.'&'.$categorie->reset_href;
