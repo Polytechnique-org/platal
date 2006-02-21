@@ -33,7 +33,7 @@ if (Post::has('best')) {
 }
 
 // on regarde si on a affaire à un homonyme
-$sql = "SELECT  alias, (type='a_vie') AS a_vie, FIND_IN_SET('bestalias',flags) AS best, expire
+$sql = "SELECT  alias, (type='a_vie') AS a_vie, (alias REGEXP '\\\\.[0-9]{2}$') AS cent_ans, FIND_IN_SET('bestalias',flags) AS best, expire
           FROM  aliases
          WHERE  id = {?} AND type!='homonyme'
       ORDER BY  LENGTH(alias)";

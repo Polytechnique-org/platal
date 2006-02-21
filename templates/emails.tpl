@@ -37,7 +37,7 @@
         <div>
           {iterate from=$aliases item=a}
           <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='this.form.submit()' />
-          {if $a.a_vie}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
+          {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
           {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
           <br />
           {/iterate}
@@ -57,9 +57,15 @@
 </table>
 
 <p class="smaller">
-(*) l'adresse email marquée d'une (*) t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en
-{$smarty.session.promo+100}).  Les autres te sont attribuées a priori à vie, sauf si tu venais à avoir un homonyme X. Dans ce cas, ni ton
-homonyme ni toi-même n'auriez d'autres adresses que celles de la forme prenom.nom.promo@{#globals.mail.domain#}.
+(*) cette adresse email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en
+{$smarty.session.promo+100}).
+</p>
+<p class="smaller">
+(**) cette adresse email t'est réservée à vie.
+</p>
+<p class="smaller">
+Si tu venais à avoir un homonyme X, l'alias prenom.nom@{#globals.mail.domain#} sera désactivé. Si bien que
+ton homonyme et toi-même ne disposeraient plus que des adresses de la forme prenom.nom.promo@{#globals.mail.domain#}.
 </p>
 
 
