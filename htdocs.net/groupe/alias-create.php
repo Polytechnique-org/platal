@@ -8,8 +8,8 @@ if(Post::has('submit')) {
         $page->trig_run('champs «addresse souhaitée» vide');
     }
     $liste = Post::get('liste');
-    if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-        $page->trig_run('le nom de l\'alias ne doit contenir que des lettres, chiffres et tirets');
+    if (!preg_match("/^[a-zA-Z0-9\-\.]*$/", $liste)) {
+        $page->trig_run('le nom de l\'alias ne doit contenir que des lettres, chiffres, tirets et points');
     }
 
     $new = $liste.'@'.$globals->asso('mail_domain');
