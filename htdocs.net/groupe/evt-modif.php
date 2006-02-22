@@ -201,8 +201,7 @@ if (Env::has('sup') && $eid) {
     // delete the requests for payments
     require_once('validations.inc.php');
     $globals->xdb->execute("DELETE FROM requests WHERE type = 'paiements' AND data  LIKE {?}", PayReq::same_event($eid, $globals->asso('id')));
-    header("Location: evenements.php");
-    die();
+    redirect("evenements.php");
 }
 
 if (!$get_form)
