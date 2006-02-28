@@ -78,7 +78,7 @@ if (Env::has('quick')) {
     $search->addOrder('score', 'score', false, 'pertinence', AUTH_PUBLIC, true);
     
     $nb_tot = $search->show();
-    
+
     if (!logged() && $nb_tot > $globals->search->public_max) {
 	new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
     } elseif ($nb_tot > $globals->search->private_max) {
