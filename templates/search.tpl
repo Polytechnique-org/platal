@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{if $formulaire==0 and !$xorg_error->errs|count}
+{if $formulaire==0 and !$xorg_errors|count}
   {if !$advanced}
   {include file='search.quick.form.tpl' show_js=1}
   {else}
