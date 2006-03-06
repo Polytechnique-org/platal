@@ -50,7 +50,7 @@ if (Env::has('add_member')) {
 }
 
 if (Env::has('del_member')) {
-    if (strstr('@', Env::get('del_member')) === false) {
+    if (strpos(Env::get('del_member'), '@') === false) {
         $client->mass_unsubscribe($liste, Array(Env::get('del_member').'@'.$globals->mail->domain));
     } else {
         $client->mass_unsubscribe($liste, Array(Env::get('del_member')));
@@ -75,7 +75,7 @@ if (Env::has('add_owner')) {
 }
 
 if (Env::has('del_owner')) {
-    if (strstr('@', Env::get('del_owner')) === false) {
+    if (strpos(Env::get('del_owner'), '@') === false) {
         $client->del_owner($liste, Env::get('del_owner').'@'.$globals->mail->domain);
     } else {
         $client->del_owner($liste, Env::get('del_owner'));
