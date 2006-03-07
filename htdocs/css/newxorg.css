@@ -85,6 +85,35 @@ div.contact div.long {
         [ cas de la fiche ]
 *******************************************************************************/
 
+#fiche {
+    border: 1px solid #458bb6;
+}
+
+#fiche h2 {
+    color: #ff6600;
+    background-color: #458bb6;
+    background-image: url("/images/sk_newxorg_titre.jpg");
+    background-repeat: repeat-x;
+    border: none;
+}
+
+#fiche em {
+    color: #ff6600;
+}
+
+#photo img {
+    padding-bottom: 1em;
+}
+
+#fiche_identite div.contact {
+    border-color: #458bb6;
+    background-image: url("/images/sk_newxorg_background.jpg");
+}
+
+#fiche_referent em {
+    color: #ff6600;
+}
+
 /*******************************************************************************
     A   SKIN
         [ choix de classes faites par le skinneur
