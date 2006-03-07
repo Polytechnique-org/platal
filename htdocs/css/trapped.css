@@ -142,7 +142,7 @@ div.contact div.long {
 *******************************************************************************/
 
 #fiche {
-    border: 1px solid #47220a;
+    border: 1px solid #200a00;
 }
 
 #fiche em { color: #5a412f; }
@@ -152,10 +152,11 @@ div.contact div.long {
     background-color: #f2e9e2;    
     border-top: 1px solid #ab8b7d;
     border-bottom: 1px solid #ab8b7d; 
+    border-right: 1px solid #ab8b7d;
 }
 
 #fiche_identite {
-    border-right: 1px dotted #ab8b7d;
+    padding: 0em;
 }
 
 #photo {
@@ -166,6 +167,21 @@ div.contact div.long {
     padding-left: 1em;
 }
 
+#fiche_identite div.civilite {
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    background-color: #200a00;
+    color: #fff;
+}
+
+#fiche_identite div.maj {
+    float: right;
+    font-size: 60%;
+    width: 20%
+    text-align: right;
+}
+
 #fiche_identite div.contact {
     background-color: #f2e9e2;
     border: 1px dotted #ab8b7d;
@@ -174,7 +190,6 @@ div.contact div.long {
 /* only for fiche_referent.php*/
 
 #fiche_referent em{color: #5a412f;}
-
                                                                                                             
 /*******************************************************************************
     A   SKIN
