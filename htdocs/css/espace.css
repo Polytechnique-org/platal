@@ -78,6 +78,21 @@ table.tinybicol th, table.bicol th {
         [ Styles pour les tableaux de types de ceux des skins ]
 *******************************************************************************/
 
+#skin {
+    border-top: 1px solid #2f006f;
+    border-bottom: 1px solid #2f006f;
+}
+
+#skin td {
+    border-top: 1px solid #2f006f;
+    border-bottom: 1px solid #2f006f;
+    background-color: #eeeeff;
+}
+
+#skin td.skigauche {
+    background-color: #ddddff;
+}
+
 /*******************************************************************************
     5   Contacts
         [ Styles liés à l'affichage de contacts ]
@@ -99,10 +114,66 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
+#onglet li {
+    background: #ddddff;
+} 
+
 /*******************************************************************************
     7   fiche.php
         [ cas de la fiche ]
 *******************************************************************************/
+
+#fiche {
+    border-color: #2f006f;
+}
+
+#fiche h2 {
+    color: #2f006f;
+}
+
+#fiche em {
+    color: #305070;
+}
+
+#fiche_identite {
+    padding: 0em;
+}
+
+#fiche_identite div.civilite {
+    color: #eeeeee;
+    background-color: #000000;
+    background-image: url( "/images/sk_espace_titre.jpg");
+    background-repeat: no-repeat;
+    width: 100%;
+    text-align: left;
+    padding-left: 0.2em;
+}
+
+#fiche_identite div.maj {
+    float: right;
+    padding-right: 0.2em;
+}
+                
+#fiche_identite div.contact {
+    border-color: #2f006f;
+    background-color: #eeeeff;
+}
+
+#photo {
+    padding-left: 0em;
+}
+
+#photo img {
+    padding-bottom: 1em;
+}
+
+#photo div {
+    padding-left: 1em;
+}
+
+#fiche_referent em {
+    color: #305070;
+}
 
 /*******************************************************************************
     A   SKIN
