@@ -301,7 +301,7 @@ table.cadre_a_onglet{
     margin: 0;
 }
 
-div.conteneur_tab {
+td.conteneur_tab {
     border-width : 1px 2px 2px 1px;
     border-style : solid;
     border-color : #999;
