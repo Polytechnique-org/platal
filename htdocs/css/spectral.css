@@ -77,6 +77,21 @@ table.tinybicol th, table.bicol th {
         [ Styles pour les tableaux de types de ceux des skins ]
 *******************************************************************************/
 
+#skin {
+    border-top: 1px solid #0067fe;
+    border-bottom: 1px solid #0067fe;
+}
+
+#skin td {
+    border-top: 1px solid #0067fe;
+    border-bottom: 1px solid #0067fe;
+    background-color: #ddffcc;
+}
+
+#skin td.skigauche {
+    background-color: #ccddff;
+}                        
+
 /*******************************************************************************
     5   Contacts
         [ Styles liés à l'affichage de contacts ]
@@ -98,10 +113,35 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
+td.conteneur_tab {
+    border-color: #0067fe;
+    background-color: #eeffdd;
+}
+
+#onglet li {
+    border-color: #0067fe;
+    background-color: #ccddff;
+}
+
+#onglet li:hover { 
+    background-color: 
+}
+
+#onglet li.actif {
+    background-color: #eeffdd;
+}
+
+#onglet li a:hover {
+    color: #ff0000;
+    text-decoration: none;
+}
+
 /*******************************************************************************
     7   fiche.php
         [ cas de la fiche ]
 *******************************************************************************/
+
+
 
 /*******************************************************************************
     A   SKIN

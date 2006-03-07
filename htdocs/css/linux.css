@@ -86,6 +86,16 @@ div.contact-list div.contact {
         [ cas de la fiche ]
 *******************************************************************************/
 
+#fiche h2 {
+    color: #000;
+    background-color: #ccc;
+    border: none;
+}
+
+#fiche em, #fiche_referent em {
+    color: #444;
+}
+
 /*******************************************************************************
     A   SKIN
         [ choix de classes faites par le skinneur

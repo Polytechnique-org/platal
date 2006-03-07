@@ -80,6 +80,19 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
+#onglet li:hover {
+    background-color: #458bb6;
+}
+
+#onglet li.actif {
+    background-color: #eceade;
+}
+
+#onglet li a:hover {
+    color: #ff6600;
+    text-decoration: none;
+}
+
 /*******************************************************************************
     7   fiche.php
         [ cas de la fiche ]
