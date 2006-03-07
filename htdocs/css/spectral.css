@@ -141,7 +141,40 @@ td.conteneur_tab {
         [ cas de la fiche ]
 *******************************************************************************/
 
+#fiche {
+    border-color: #0067fe;
+}
 
+#fiche h2 {
+    background-color: #0067fe;
+    color: #fff;
+    border: none;
+}
+
+#fiche_identite div.contact {
+    background-color: #ffff77;
+}
+
+#fiche_identite div.maj {
+    color: #77cc77;
+}
+
+#fiche em, #fiche_referent em {
+    color: #dd0000;
+}
+
+#photo {
+    padding: 0em;
+}
+
+#photo img {
+    padding-bottom: 1em;
+}
+
+#photo div {
+    padding-left: 1em;
+    background-color: #ddffcc;
+}
 
 /*******************************************************************************
     A   SKIN
