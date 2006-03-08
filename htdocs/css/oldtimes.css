@@ -23,11 +23,6 @@
         [ balises sans attributs ou classes sans contexte ]
 *******************************************************************************/
 
-/*body {
-    background: #99afc1;
-    color: #000000;
-}*/
-
 /*******************************************************************************
     2   Styles <p>, <div>, <span>, <li>
         [ styles classiques d'effets de texte ]
@@ -55,18 +50,6 @@ h1 {
         [ Tableaux à lignes alternées, en taille normale, ou tiny ]
 *******************************************************************************/
 
-/*table.tinybicol, table.bicol {
-    background: #ccddff;
-    border: 1px solid #0067fe;
-    border-collapse: collapse;
-}
-
-table.tinybicol tr, table.bicol tr { }
-table.tinybicol tr.pair, table.bicol tr.pair      { background: #ddffcc; }
-table.tinybicol th, table.bicol th {
-    background-color: #0067fe;
-}*/
-
 /*******************************************************************************
     4   Tableau de choix de skins
         [ Styles pour les tableaux de types de ceux des skins ]
@@ -76,17 +59,6 @@ table.tinybicol th, table.bicol th {
     5   Contacts
         [ Styles liés à l'affichage de contacts ]
 *******************************************************************************/
-
-/*div.contact-list div.contact {
-    border-top: 1px solid #305070;
-    background: #ccddff;
-    color: inherit;
-}
-
-div.contact div.long {
-    background: #ddffcc;
-    color: inherit;
-}*/
 
 /*******************************************************************************
     6   Profil

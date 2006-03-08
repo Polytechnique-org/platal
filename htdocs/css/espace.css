@@ -221,14 +221,11 @@ td.conteneur_tab {
     color : #ffffff;
     background-color: #dddddd;
     background-image: url("/images/sk_espace_menu.jpg");
-/*border-top: 1px solid #003399;*/
     border-bottom: none;
 }
 
 #body-menu .menu_item {
     border-right: none;
-/*    padding-left: 0px;
-    text-align: left;*/
 }
 
 /* vim: set et ts=4 sts=4 sw=4: */
