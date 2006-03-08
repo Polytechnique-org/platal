@@ -120,7 +120,7 @@ div.contact div.long {
         [ onglets des profils ]
 *******************************************************************************/
 
-div.conteneur_tab {
+td.conteneur_tab {
     background: #efddff;
     border-color: #800080;
 }
@@ -128,6 +128,15 @@ div.conteneur_tab {
 #onglet li {
     background: #ecd0ff;
     border-color: #800080;
+}
+
+#onglet li:hover {
+    background: #c0c0c0;
+}
+
+#onglet li a:hover {
+    color: #800080;
+    text-decoration: none;
 }
 
 #onglet li.actif {
@@ -138,6 +147,40 @@ div.conteneur_tab {
     7   fiche.php
         [ cas de la fiche ]
 *******************************************************************************/
+
+#fiche {
+    border-color: #800080;
+}
+
+#fiche_identite div.maj, #fiche em, #fiche_referent em {
+    color: #800080;
+}
+
+#fiche h2 {
+    color : #eeeeee;
+    background-color: #404040;
+    background-image: url("/images/sk_nbviolet_menu.jpg");
+    border-top: none;
+    border-bottom: none;
+}
+
+#fiche_identite div.contact {
+    background-color: #e0e0e0;
+    border-color: #800080;
+}
+
+#photo {
+    padding: 0em;
+}
+
+#photo img {
+    padding-bottom: 1em;
+}
+
+#photo div {
+    padding: 0.2em 0em 0.2em 1em;
+    background-color: #efddff;
+}
 
 /*******************************************************************************
     A   SKIN
