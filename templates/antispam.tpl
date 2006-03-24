@@ -30,9 +30,9 @@ message de publicité, une proposition commerciale, etc... qui t'est envoyé
 par une personne que tu ne connais pas.<br />
 Notre logiciel antispam tente de déterminer, parmi les courriers électroniques
 que tu reçois, lesquels sont des spams, et lesquels n'en sont pas.
-Trois réglages sont possibles :
+Quatre réglages sont possibles :
 </p>
-<ul>
+<ol>
   <li>soit le logiciel est coupé et <strong>ne filtre pas du tout</strong> tes courriels,</li>
   <li>soit les spams détectés portent la mention [spam probable] dans leur
   objet, afin que tu puisses les <strong>identifier plus facilement</strong>,
@@ -40,9 +40,12 @@ Trois réglages sont possibles :
   <li>soit comme précédemment nous marquons les mails, et supprimons ceux qui reçoivent des notes
   très fortes (&ge; 0.999999)</li>
   <li>soit nous <strong>supprimons les courriels</strong> que tu reçois dont notre
-  logiciel pense que ce sont des spams.
+  logiciel pense que ce sont des spams. ATTENTION, le filtre antispam n'est pas infaillible&nbsp;: même si c'est
+  extrêmement rare, il est possible qu'un mail légitime soit détecté comme un spam et donc supprimé. C'est
+  pourquoi nous ne conseillons ce réglage que pour les personnes submergées de spam (plus de 100spams/jour) et
+  qui ne peuvent plus se satisfaire du réglage 3.
   </li>
-</ul>
+</ol>
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <fieldset>
     <legend><strong>Choisis ton propre réglage :</strong></legend>

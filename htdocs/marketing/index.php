@@ -27,15 +27,15 @@ $page->assign('xorg_title','Polytechnique.org - Marketing');
 
 $res   = $globals->xdb->query(
           "SELECT COUNT(*) AS vivants,
-                  COUNT(NULLIF(perms!='pending', 0)) AS inscrits,
-                  100*COUNT(NULLIF(perms!='pending', 0))/COUNT(*) AS ins_rate,
+                  COUNT(NULLIF(perms='admin' OR perms='user', 0)) AS inscrits,
+                  100*COUNT(NULLIF(perms='admin' OR perms='user', 0))/COUNT(*) AS ins_rate,
                   COUNT(NULLIF(promo >= 1972, 0)) AS vivants72,
-                  COUNT(NULLIF(promo >= 1972 AND perms!='pending', 0)) AS inscrits72,
-                  100 * COUNT(NULLIF(promo >= 1972 AND perms!='pending', 0)) /
+                  COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) AS inscrits72,
+                  100 * COUNT(NULLIF(promo >= 1972 AND (perms='admin' OR perms='user'), 0)) /
                       COUNT(NULLIF(promo >= 1972, 0)) AS ins72_rate,
                   COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS vivantes,
-                  COUNT(NULLIF(FIND_IN_SET('femme', flags) AND perms!='pending', 0)) AS inscrites,
-                  100 * COUNT(NULLIF(FIND_IN_SET('femme', flags) AND perms!='pending', 0)) /
+                  COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) AS inscrites,
+                  100 * COUNT(NULLIF(FIND_IN_SET('femme', flags) AND (perms='admin' OR perms='user'), 0)) /
                       COUNT(NULLIF(FIND_IN_SET('femme', flags), 0)) AS inse_rate
              FROM auth_user_md5
             WHERE deces = 0");
