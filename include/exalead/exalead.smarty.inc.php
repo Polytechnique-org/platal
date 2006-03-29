@@ -270,21 +270,27 @@ function _little_nav_barre($params, &$smarty){
 }
 
 //categorie = true if this line is for a category, false if this is for a keyword
-function _display_3_columns($title, $count, $refine, $exclude, $categorie){
+function _display_3_columns($title, $count, $refine, $exclude, $categorie,$hide=-1){
 if ($title!='Inconnu'){
   global $exa_max_length;
   if($categorie) $title_exclude = 'Ne pas afficher cette catégorie';
   else $title_exclude = 'Ne pas afficher ce mot-clé';
   $extract = ((strlen($title) > $exa_max_length + 3)?substr($title,0,$exa_max_length).'...':$title);
-  return "<tr class=\"categ\">
-	                  <td>
-			    <a style=\"text-decoration: none;\"
-	                       href=\"?_C=".$refine."&amp;_f=xml2\"
-		               title=\"$title\"
-	                    >$extract</a></td><td width=\"10%\">$count</td><td width=\"10%\">
-			    <a href=\"?_C=".$exclude."&amp;_f=xml2\"
-                               title=\"$title_exclude\">[-]</a></td>
-		        </tr>";
+  $result="<tr class=\"categ\"";
+  if ($hide>0) {
+    $result .= " id=\"cache_$hide\" onclick=\"cacheId('cache_$hide')\"";//Pour pouvoir cacher des catégories 
+  }
+  $result.=">
+      <td>
+      <a style=\"text-decoration: none;\"
+      href=\"?_C=".$refine."&amp;_f=xml2\"
+      title=\"$title\"
+      >$extract</a></td><td width=\"10%\">$count</td><td width=\"10%\">
+      <a href=\"?_C=".$exclude."&amp;_f=xml2\"
+      title=\"$title_exclude\">[-]</a></td>
+      </tr>";
+
+  return $result;
 }
 }
 
@@ -317,29 +323,32 @@ function _display_2_columns($title, $reset, $excluded, $categorie){
             </tr>";
 }
 
-function _display_resume_groupe_category(&$group, $context, $padding = ''){
-     $result = '';
-      foreach($group->categories as $categorie){
+function _display_resume_groupe_category(&$group, $context, $padding = '',$limit=100){
+    $result = '';
+    $cnt=0;
+    foreach($group->categories as $categorie){
+        $cnt ++;
+        if($cnt==$limit) break;
         $title = (empty($categorie->display)?$categorie->name:$categorie->display);
         $count = (empty($categorie->count)?'':' ('.$categorie->count.')');
         $categorie->refine_href=str_replace('/_c=', '/&_c=', $categorie->refine_href);//correction d'un bug
         $refine = $context.'&'.$categorie->refine_href;
-	$exclude = $context.'&'.$categorie->exclude_href;
-	$reset = $context.'&'.$categorie->reset_href;
+        $exclude = $context.'&'.$categorie->exclude_href;
+        $reset = $context.'&'.$categorie->reset_href;
 	
-        if($categorie->display != ''){
-	  if($categorie->is_normal()){
-            $result .= _display_3_columns($padding.$title, $count, $refine, $exclude, true);
-	  }
-	  else{
-            $result .= _display_2_columns($padding.$title, $reset, $categorie->is_excluded(), true);
-	  }
-	}
-	if(count($categorie->categories) > 0){
-          $result .= _display_resume_groupe_category($categorie, $context, $padding.'-');
-	}
-      }
-      return $result;
+        if ($categorie->display != '') {
+            if($categorie->is_normal()){
+                $result .= _display_3_columns($padding.$title, $count, $refine, $exclude, '',$cnt-$limit);
+	        }
+	        else{
+                $result .= _display_2_columns($padding.$title, $reset, $categorie->is_excluded(),'', $cnt-$limit);
+	        }
+	    }
+	    if(count($categorie->categories) > 0){
+            $result .= _display_resume_groupe_category($categorie, $context, $padding.'-',$limit-$cnt);
+	    }
+    }
+    return $result;
 }
 
 /**
@@ -360,8 +369,21 @@ function _display_resume_groupe($params, &$smarty){
   $name = $params['display'];
   foreach($exalead_data->groups as $group){
     if($group->title == $groupe){
-      $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">".gettext($name)."</th>";
-      $result .= _display_resume_groupe_category($group, $exalead_data->query->context);
+      if($groupe=="Zone"){
+          if($_SESSION["show_all"]) {
+              $result = "<table class=\"exa_resume\"><th colspan=\"2\" class=\"titre\">".gettext($name)."</th>
+              <th><a href=\"anciens_cherche_offres_exa.php?hide=1&".$params['url']."\"><img src='images/icons/fww.gif'/></a></th>";
+              
+          }
+          else{
+              $result = "<table class=\"exa_resume\"><th colspan=\"2\" class=\"titre\">".gettext($name)."</th><th><a href=\"anciens_cherche_offres_exa.php?show_all=1&".$params['url']."\"><img src='images/icons/rww.gif'/></a></th>"; 
+          }
+          $result .= _display_resume_groupe_category($group, $exalead_data->query->context,'',$params['limit']);
+      }
+      else{
+          $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">".gettext($name)."</th>";
+          $result .= _display_resume_groupe_category($group, $exalead_data->query->context);
+      }
       $result .= "</table>";
       return $result;
     }
