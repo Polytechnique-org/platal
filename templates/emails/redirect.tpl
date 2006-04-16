@@ -70,7 +70,7 @@
     {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
-    <a href="{rel}/docs/doc_smtp.php">service d'envoi de courrier SMTP sécurisé</a>.
+    <a href="{rel}/Docs/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <div class="center">

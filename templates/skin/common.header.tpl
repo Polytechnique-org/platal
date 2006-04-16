@@ -27,9 +27,9 @@
     <link rel="icon" type="image/png" href="images/favicon.png" />
     
     <link rel="index" href="{rel}/index.php" />
-    <link rel="author" href="{rel}/docs/faq.php" />
+    <link rel="author" href="{rel}/Docs/FAQ" />
     <link rel="search" href="{rel}/search.php" />
-    <link rel="help" href="{rel}/docs/faq.php" />
+    <link rel="help" href="{rel}/Docs/FAQ" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />

@@ -59,7 +59,7 @@
 
   <p>
     Pour de plus amples informations sur ce service, nous t'invitons à consulter
-    <a href="{rel}/docs/doc_melix.php">cette documentation</a> qui répondra
+    <a href="{rel}/Docs/MonAliasMailMelix-net">cette documentation</a> qui répondra
     sans doute à toutes tes questions
   </p>
 

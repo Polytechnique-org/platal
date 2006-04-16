@@ -112,7 +112,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   </table>
 </form>
 <p>
-Problème de connexion ? <a href="{rel}/docs/faq.php#connect">La réponse est là.</a>
+Problème de connexion ? <a href="{rel}/Docs/FAQ#connect">La réponse est là.</a>
 <br />
 (Activer obligatoirement le <strong>javascript</strong>)
 </p>

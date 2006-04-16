@@ -34,7 +34,7 @@ Tu as entré une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est inval
 <p>
 En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
 correspondant si tu veux que nous puissions te répondre. Cette
-<a href="{rel}/docs/doc_patte_cassee.php">documentation</a> peut t'aider à trouver cette
+<a href="{rel}/Docs/PatteCass%E9e">documentation</a> peut t'aider à trouver cette
 information.
 </p>
 
@@ -78,7 +78,7 @@ information.
 </p>
 <p>
     Pour plus d'explications concernant cette page, nous t'invitons à consulter
-    la <a href="{rel}/docs/doc_patte_cassee.php">documentation suivante</a>
+    la <a href="{rel}/Docs/PatteCass%E9e">documentation suivante</a>
 </p>
 <p>
     Rentre dans la zone de saisie ci-dessous l'adresse email à laquelle ton
