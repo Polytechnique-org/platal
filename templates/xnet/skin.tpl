@@ -140,7 +140,7 @@
           {only_public}
           <div>Me connecter :</div>
           <a class='gp' href="{$smarty.session.session->loginX}">polytechnicien</a>
-          <a class='gp' href="{rel}/login.php">extérieur</a>
+          <!--a class='gp' href="{rel}/login.php">extérieur</a-->
           {/only_public}
         </td>
         <td id="search">

@@ -30,7 +30,7 @@ function &lists_xmlrpc($uid, $pass, $fqdn=null)
 {
     global $globals;
 
-    $dom = empty($fqdn) ? $globals->mail->domain : $fqdn;
+    $dom = is_null($fqdn) ? $globals->mail->domain : $fqdn;
     $url = "http://$uid:$pass@{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
     $client = new xmlrpc_client($url);
     return $client;
