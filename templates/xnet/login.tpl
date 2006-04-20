@@ -59,7 +59,7 @@
       </div>
     </td>
     <td style="padding: 1em">
-      <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
+      <!--<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
         <table class="large" cellpadding="4" cellspacing="0" summary="Formulaire de login">
           <tr>
             <th colspan="2">Connexion
@@ -91,7 +91,8 @@
         </table>
       </form>
 
-      (Activer obligatoirement le <strong>javascript</strong>)
+      (Activer obligatoirement le <strong>javascript</strong>) -->
+      <p>(Non disponible)</p>
       {if $smarty.request.response}<!-- failed login code //-->
       <div class="erreur">
         Erreur d'identification. Essaie à nouveau !
