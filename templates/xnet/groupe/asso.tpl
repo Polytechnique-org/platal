@@ -59,7 +59,7 @@
       Forum:
     </td>
     <td>
-      <a href="https://www.polytechnique.org/banana/thread.php?group={$asso.forum}">par le web</a>
+      <a href="https://www.polytechnique.org/banana/?group={$asso.forum}">par le web</a>
       ou <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
     </td>
   </tr>
