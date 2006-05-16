@@ -27,7 +27,7 @@
 </tr>
 <tr class="impair">
   <td class="titre">Texte</td>
-  <td>{$valid->texte}</td>
+  <td>{$valid->texte|nl2br}</td>
 </tr>
 <tr class="impair">
   <td class="titre">Péremption</td>
