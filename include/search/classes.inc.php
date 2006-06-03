@@ -439,6 +439,36 @@ class RefSField extends SField
 }
 
 // }}}
+
+// {{{ class RefSFieldMultipleTable
+class MapSField extends RefSField
+{
+	var $mapId;
+	
+    function MapSField($_fieldFormName, $_fieldDbName='', $_refTable, $_refAlias, $_refCondition, $_mapId=false)
+    {
+    	if ($_mapId === false)
+    		$this->mapId = Env::get($_fieldFormName);
+			else
+				$this->mapId = $_mapId;
+    	$this->RefSField($_fieldFormName, $_fieldDbName, $_refTable, $_refAlias, $_refCondition, true, false);
+    }
+    function get_select_statement()
+    {
+        $res = implode(' OR ', array_filter(array_map(array($this, 'get_single_match_statement'), $this->fieldDbName)));
+        foreach ($this->refTable as $i => $refT)
+            $last = $i;
+        $inner = "";
+        foreach ($this->refTable as $i => $refT)
+            $inner .= " INNER JOIN {$refT} AS {$this->refAlias[$i]} ON ({$this->refCondition[$i]} ".(($i == $last)?"AND ($res) ":"").")";
+        return $inner;
+    }
+    function get_request()
+    {
+    	$this->value = $this->mapId;
+    }
+}
+
 // {{{ class RefWithSoundexSField                       [ ??? ]
 
 class RefWithSoundexSField extends RefSField
@@ -777,4 +807,5 @@ class SFieldGroup
 
 // }}}
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

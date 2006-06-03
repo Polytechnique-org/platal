@@ -73,13 +73,13 @@ $GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
  * @param $txt the raw text of an address
  */
 function get_address_infos($txt) {
-    $url ="http://www.geoloc.org/adressparser/address.php?txt=".urlencode(utf8_encode($txt));
+    global $globals;
+    $url = $globals->geoloc->webservice_url."address.php?txt=".urlencode(utf8_encode($txt)."&precise=1");
     if (!($f = @fopen($url, 'r'))) return false;
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
     $infos = array();
     foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = ($key == 'sql')?$vals[$i]:utf8_decode(strtr($vals[$i], array(chr(197).chr(147) => "&oelig;")));
-    global $globals;
     if ($infos['sql'])
        $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
     if ($infos['display'])
@@ -87,6 +87,44 @@ function get_address_infos($txt) {
     return $infos;
 }
 // }}}
+
+// {{{ get_cities_maps($array)
+/* get all the maps id of the cities contained in an array */
+function get_cities_maps($array)
+{
+    global $globals;
+    implode("\n",$array);
+    $url = $globals->geoloc->webservice_url."findMaps.php?datatext=".urlencode(utf8_encode(implode("\n", $array)));
+    if (!($f = @fopen($url, 'r'))) return false;
+    $maps = array();
+    while (!feof($f))
+    {
+        $l = trim(fgets($f));
+        $tab = explode(';', $l);
+        $i = $tab[0];
+        unset($tab[0]);
+        $maps[$i] = $tab;
+    }
+    return $maps;
+}
+// }}}
+
+// {{{ get_new_maps($url)
+/** set new maps from url **/
+function get_new_maps($url)
+{
+	if (!($f = @fopen($url, 'r'))) return false;
+	global $globals;
+	$globals->xdb->query('TRUNCATE TABLE geoloc_maps');
+	$s = '';
+  while (!feof($f)) {
+  	$l = fgetcsv($f, 1024, ';', '"');
+  	foreach ($l as $i => $val) if ($val != 'NULL') $l[$i] = '\''.addslashes($val).'\'';
+  	$s .= ',('.implode(',',$l).')';
+  }
+	$globals->xdb->execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
+	return true;
+}
 
 // {{{ get_address_text($adr)
 /** make the text of an address that can be read by a mailman
@@ -186,11 +224,13 @@ function localize_addresses($uid) {
             $globals->xdb->execute("UPDATE adresses SET
                 adr1 = {?}, adr2 = {?}, adr3 = {?},
                 cityid = {?}, city = {?}, postcode = {?},
-                region = {?}, regiontxt = {?}, country = {?}
+                region = {?}, regiontxt = {?}, country = {?},
+                glat = {?}, glng = {?}
                 WHERE uid = {?} AND adrid = {?}",
                 $new['adr1'], $new['adr2'], $new['adr3'],
                 $new['cityid'], $new['city'], $new['postcode'],
                 $new['region'], $new['regiontxt'], $new['country'],
+                $new['precise_lat'], $new['precise_lon'],
                 $uid, $a['adrid']);
                 $new['store'] = true;
                 if (!$new['cityid']) $erreur[$a['adrid']] = $new;
@@ -208,14 +248,58 @@ function localize_addresses($uid) {
  * @param $id the id of the city to synchronize
  */
  function synchro_city($id) {
-    $url ="http://www.geoloc.org/adressparser/cityFinder.php?method=id&id=".$id."&out=sql";
+    global $globals;
+    $url = $globals->geoloc->webservice_url."cityFinder.php?method=id&id=".$id."&out=sql";
     if (!($f = @fopen($url, 'r'))) return false;
     $s = fgets($f);
-    global $globals;
     if ($s)
         return $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$s) > 0;
  }
  // }}}
+
+// {{{ function fix_cities_not_on_map($limit)
+function fix_cities_not_on_map($limit=false)
+{
+    global $globals;
+    $missing = $globals->xdb->query("SELECT c.id FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL".($limit?" LIMIT $limit":""));
+    $maps = get_cities_maps($missing->fetchColumn());
+    if ($maps)
+    {
+        $values = "";
+        foreach ($maps as $cityid => $maps_c)
+            foreach ($maps_c as $map_id)
+                $values .= ",($cityid, $map_id, '')";
+        $globals->xdb->execute("REPLACE INTO geoloc_city_in_maps VALUES ".substr($values, 1));
+    }
+    else
+        return false;
+
+    $maxlevelquery = $globals->xdb->query("SELECT MAX(level) FROM geoloc_maps");
+    $maxlevel = $maxlevelquery->fetchOneCell();
+    for ($level = $maxlevel; $level >= 0; $level--)
+        $globals->xdb->query("
+            UPDATE geoloc_city AS gc
+        INNER JOIN geoloc_city_in_maps AS gcim ON(gc.id = gcim.city_id)
+        INNER JOIN geoloc_maps AS gm ON(gm.id = gcim.map_id AND gm.level = {?})
+         LEFT JOIN geoloc_city_in_maps AS gcim2 ON(gc.id = gcim2.city_id AND gcim2.infos = 'smallest')
+               SET gcim.infos = 'smallest'
+             WHERE gcim2.city_id IS NULL", $level);
+
+    return true;
+}
+// }}}
+
+
+function geoloc_to_x($lon, $lat) { return deg2rad(1) * $lon *100; }
+
+function geoloc_to_y($lon, $lat) {
+	if ($lat < -75) return latToY(-75);
+	if ($lat > 75) return latToY(75);
+  return -100 * log(tan(pi()/4 + deg2rad(1)/2*$lat));	
+}
+
+function size_of_city($nb) { $s = round(log($nb + 1)*2,2); if ($s < 1) return 1; return $s; }
+function size_of_territory($nb) { return size_of_city($nb); }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

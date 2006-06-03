@@ -130,6 +130,10 @@
       <th colspan="2">Géographie</th>
     </tr>
     <tr>
+      <td colspan="2">
+      <label for="only_current"><input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont actuellement.</label></td>
+    </tr>
+    <tr>
       <td>Ville</td>
       <td><input type="text" name="city" size="32" value="{$smarty.request.city}" /></td>
     </tr>
@@ -295,15 +299,26 @@
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
   </table>
-  <div class="center">
-    <br />
-    {min_auth level='cookie'}
-    <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
-    mettre les fiches modifiées récemment en premier <br /> <br />
-    {/min_auth}
-    <input type="submit" name="rechercher" value="Chercher" />
-  </div>
+	{min_auth level='cookie'}
+	<p>
+		<input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
+		mettre les fiches modifiées récemment en premier
+	</p>
+	{/min_auth}
+	<input type="hidden" name="rechercher" value="Chercher"/>
+	<input type="submit" style="display:none" value="Chercher" onClick="launch_form('{$smarty.server.PHP_SELF}')"/>
 </form>
+	<p class="center">
+		<script type="text/javascript">{literal}
+		function launch_form(url) {
+			var f = document.getElementById('recherche');
+			f.action = url;
+			f.submit();
+		}
+		{/literal}</script>
+		<input type="button" value="Voir les résultats sur une carte" onClick="launch_form('geoloc/')"/>
+		<input type="button" value="Chercher" onClick="launch_form('{$smarty.server.PHP_SELF}')"/>
+  </p>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
 </p>

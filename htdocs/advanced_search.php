@@ -21,8 +21,10 @@
 
 require_once("xorg.inc.php");
 require_once('search.inc.php');
-new_skinned_page('search.tpl', AUTH_COOKIE);
-
+if (Env::get('display')!='mini')
+    new_skinned_page('search.tpl', AUTH_COOKIE);
+else
+    new_simple_page('search.tpl', AUTH_COOKIE);
 $page->assign('advanced',1);
 $page->assign('public_directory',0);
 require_once("applis.func.inc.php");
@@ -64,59 +66,18 @@ if (!Env::has('rechercher')) {
     form_prepare();
 } else {
 
-    // {{{ function get_list()
+// {{{ function get_list()
 
     function get_list($offset, $limit, $order) {
-        if ($with_soundex = Env::has('with_soundex')) {
-            $nameField      = new RefWithSoundexSField('name',array('rn.nom1_soundex','rn.nom2_soundex','rn.nom3_soundex'),'recherche_soundex','rn','u.matricule = rn.matricule');
-            $firstnameField = new RefWithSoundexSField('firstname',array('rp.prenom1_soundex','rp.prenom2_soundex'),'recherche_soundex','rp','u.matricule = rp.matricule');
-        } else {
-            $nameField      = new NameSField('name',array('u.nom','u.nom_usage'),'');
-            $firstnameField = new StringSField('firstname',array('u.prenom'),'');
-        }
-        $nicknameField   = new StringSField('nickname',array('q.profile_nick'),'');
-        
-        $promo1Field     = new PromoSField('promo1','egal1',array('u.promo'),'');
-        $promo2Field     = new PromoSField('promo2','egal2',array('u.promo'),'');
-        $womanField      = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
-        $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
-        $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
-       
-        $townField       = new RefSField('city',array('av.city'),'adresses','av','u.user_id=av.uid',false);
-        $countryField    = new RefSField('country',array('ap.country'),'adresses','ap','u.user_id=ap.uid');
-        $regionField     = new RefSField('region',array('ar.region'),'adresses','ar','u.user_id=ar.uid');
-       
-        $entrepriseField = new RefSField('entreprise',array('ee.entreprise'),'entreprises','ee','u.user_id=ee.uid',false);
-        $posteField      = new RefSField('poste',array('ep.poste'),'entreprises','ep','u.user_id=ep.uid', false);
-        $fonctionField   = new RefSField('fonction',array('en.fonction'),'entreprises','en','u.user_id=en.uid');
-        $secteurField    = new RefSField('secteur',array('fm.secteur'),'entreprises','fm','u.user_id=fm.uid');
-        $cvField         = new RefSField('cv',array('u.cv'),'','','',false);
-       
-        $natField        = new RefSField('nationalite',array('u.nationalite'),'','','');
-        $binetField      = new RefSField('binet',array('b.binet_id'),'binets_ins','b','u.user_id=b.user_id');
-        $groupexField    = new RefSField('groupex',array('g.gid'),'groupesx_ins','g','u.user_id=g.guid');
-        $sectionField    = new RefSField('section',array('u.section'),'','','');
-        $schoolField     = new RefSField('school',array('as.aid'),'applis_ins','`as`','u.user_id=as.uid');
-        $diplomaField    = new RefSField('diploma',array('ad.type'),'applis_ins','ad','u.user_id=ad.uid');
-      
-        $freeField       = new RefSField('free',array('q.profile_freetext'),'','','',false);
-      
-        $fields          = new SFieldGroup(true, array( 
-                    $nameField, $firstnameField, $nicknameField, $promo1Field,
-                    $promo2Field, $womanField, $subscriberField, $aliveField,
-                    $townField, $countryField, $regionField, $entrepriseField,
-                    $posteField, $secteurField, $cvField, $natField, $binetField,
-                    $groupexField, $sectionField, $schoolField, $diplomaField,
-                    $freeField, $fonctionField)
-                );
-
-    
+        $fields = new SFieldGroup(true, advancedSearchFromInput());
         if ($fields->too_large()) {
             form_prepare();
             new ThrowError('Recherche trop générale.');
         }
-        global $globals;
-    
+        global $globals, $page;
+  
+  			$page->assign('search_vars', $fields->get_url());
+  			
         $where = $fields->get_where_statement();
         if ($where) {
             $where = "WHERE  $where";
@@ -144,7 +105,7 @@ if (!Env::has('rechercher')) {
         return Array($liste, $nb_tot);
     }
 
-    // }}}
+// }}}
 
     $search = new XOrgSearch('get_list');
     $search->setNbLines($globals->search->per_page);

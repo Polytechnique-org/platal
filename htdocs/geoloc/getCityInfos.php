@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2005 Polytechnique.org                              *
+ *  Copyright (C) 2003-2004 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,21 +19,35 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+
 require_once('xorg.inc.php');
-new_skinned_page('geoloc/index.tpl', AUTH_COOKIE);
 
-$res = $globals->xdb->query('SELECT COUNT(DISTINCT uid) FROM adresses WHERE cityid IS NOT NULL');
-$page->assign('localises', $res->fetchOneCell());
+header("Content-type: text/xml");
 
-	require_once('search.inc.php');
-$fields = new SFieldGroup(true, advancedSearchFromInput());
-$search = $fields->get_url().'&amp;';
-if (Env::has('only_current') && Env::get('only_current') != 'on') $search .= '&only_current=';
-$search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
-if ($search)
-	$page->assign('dynamap_vars', $search);
+new_nonhtml_page('geoloc/getCityInfos.tpl', AUTH_COOKIE);
+// to debug sql use the next line
+//new_skinned_page('', AUTH_COOKIE);
+
+require_once('geoloc.inc.php');
+require_once('search.inc.php');
+
+$usual_fields = advancedSearchFromInput();
+$fields = new SFieldGroup(true, $usual_fields);
+$where = $fields->get_where_statement();
+if ($where) $where = "WHERE ".$where;
+
+$users = $globals->xdb->iterator("
+    SELECT u.user_id AS id, u.prenom, u.nom, u.promo
+      FROM adresses AS a 
+INNER JOIN auth_user_md5 AS u ON(u.user_id = a.uid)
+INNER JOIN auth_user_quick AS q ON(q.user_id = a.uid)
+        ".$fields->get_select_statement()."
+        ".$where."
+     GROUP BY u.user_id LIMIT 11",
+        $id);
+
+$page->assign('users', $users);
 
 $page->run();
-
-// vim:set et sws=4 sw=4 sts=4:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

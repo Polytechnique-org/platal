@@ -22,16 +22,24 @@
 
 
 {if $formulaire==0 and !$xorg_errors|count}
-  {if !$advanced}
-  {include file='search.quick.form.tpl' show_js=1}
-  {else}
-  {include file=search.adv.links.tpl do_title=1 with_soundex=$with_soundex}
+  {if !$simple}
+    {if !$advanced}
+    {include file='search.quick.form.tpl' show_js=1}
+    {else}
+    {include file=search.adv.links.tpl do_title=1 with_soundex=$with_soundex}
+    {/if}
   {/if}
 
   <h1 class='right'>
     {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}.
   </h1>
 
+  {if $search_results_nb and $advanced and !$simple}
+  <p>
+  	[<a href='geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
+  </p>
+  {/if}
+  
   {if $search_results_nb > 1}
   <div>
     Trier par :
