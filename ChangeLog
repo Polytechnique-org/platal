@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 0.9.10                                                   ??      2006
 
+New :
+
+    * Geoloc :
+            Dynamic maps using geodesix plugin                              -Car
+
 From 0.9.8 Branch :
 
     * Xnet :
