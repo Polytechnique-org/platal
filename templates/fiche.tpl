@@ -32,6 +32,10 @@ function chgMainWinLoc( strPage ) {
 </script>
 {/literal}
 
+{if $x.forlife eq $smarty.session.forlife}
+[<a href="javascript:x()" onclick="chgMainWinLoc('{rel}/profil.php')">Modifier ma fiche</a>]
+{/if}
+
 <table id="fiche" cellpadding="0" cellspacing="0">
   <tr>
     <td id="fiche_identite">

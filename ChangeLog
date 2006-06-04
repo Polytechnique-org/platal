@@ -14,6 +14,9 @@ Bug/Wish :
     * Core :
         - #411: Count chars in events proposals to make them smaller.       -Car
         
+    * Profile :
+        - #406: Direct link in owner's fiche to edit it.                    -Car
+
     * Newsletter :
         - #410: In Html newsletter add a link to go back to summary.        -Car
 
