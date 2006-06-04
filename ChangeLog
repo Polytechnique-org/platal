@@ -25,6 +25,9 @@ Bug/Wish :
     * RSS :
         - #398: "Add to contact" doesn't appear for deaths.                 -Car
 
+    * Register :
+        - #401: Email for confirmation of inscription for men/women.        -Car
+
     * Search :
         - #412: Error SQL in big referent searches.                         -Car
 

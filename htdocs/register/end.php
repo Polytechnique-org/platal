@@ -25,14 +25,14 @@ require_once('user.func.inc.php');
 
 if (Env::has('hash')) {
     $res = $globals->xdb->query(
-            "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2, r.password, r.email, r.naissance, u.nom, u.prenom, u.promo
+            "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2, r.password, r.email, r.naissance, u.nom, u.prenom, u.promo, u.flags
                FROM  register_pending AS r
          INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
               WHERE  hash={?} AND hash!='INSCRIT'", Env::get('hash'));
 }
 
 if ( !Env::has('hash') ||
-        !list($uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $nom, $prenom, $promo) = $res->fetchOneRow())
+        !list($uid, $forlife, $bestalias, $mailorg2, $password, $email, $naissance, $nom, $prenom, $promo, $femme) = $res->fetchOneRow())
 {
     $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                  <p>Causes probables :</p>
@@ -90,23 +90,23 @@ $_SESSION['auth'] = AUTH_MDP;
 /************* envoi d'un mail au démarcheur ***************/
 /***********************************************************/
 $res = $globals->xdb->iterRow(
-        "SELECT  DISTINCT sa.alias, s.nom, s.prenom
+        "SELECT  DISTINCT sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom, s.prenom, s.flags AS femme
            FROM  register_marketing AS m
      INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
      INNER JOIN  aliases            AS sa ON ( sa.id = m.sender AND FIND_IN_SET('bestalias', sa.flags) )
           WHERE  m.uid = {?}", $uid);
 $globals->xdb->execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
-while (list($salias, $snom, $sprenom) = $res->next()) {
+while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
     require_once('diogenes/diogenes.hermes.inc.php');
     $mymail = new HermesMailer();
     $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
     $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
     $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
-    $msg = "Cher $sprenom,\n\n"
+    $msg = ($sfemme?'Cher':'Chère')." $sprenom,\n\n"
          . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
-         . "que tu avais incité à s'inscrire à Polytechnique.org, "
-         . "vient à l'instant de terminer son inscription !!\n\n"
+         . "que tu avais incité".($femme?'e':'')." à s'inscrire à Polytechnique.org, "
+         . "vient à l'instant de terminer son inscription.\n\n"
          . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
          . "Bien cordialement,\n"
          . "L'équipe Polytechnique.org";
