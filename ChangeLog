@@ -8,6 +8,9 @@ New :
 
 Bug/Wish :
 
+    * Core :
+        - #411: Count chars in events proposals to make them smaller.       -Car
+        
     * Search :
         - #412: Error SQL in big referent searches.                         -Car
 

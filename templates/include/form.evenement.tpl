@@ -34,7 +34,21 @@
     </tr>
     <tr>
       <td><strong>Texte</strong></td>
-      <td><textarea name="texte" rows="10" cols="60">{$texte}</textarea></td>
+      <td><textarea name="texte" rows="10" cols="60" onfocus="update_texte_count(this.form)">{$texte}</textarea></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <script type="text/javascript">
+          var form_propose_texte = false;
+          {literal}
+          function update_texte_count(f) {
+            if (!form_propose_texte && f) form_propose_texte = f;
+            form_propose_texte.texte_count.value=form_propose_texte.texte.value.length;
+            setTimeout("update_texte_count(0)", 100);
+          }
+          {/literal}
+        </script>
+        Essaie de faire un texte court, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.</td>
     </tr>
   </table>
 
