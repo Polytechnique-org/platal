@@ -72,6 +72,15 @@ if (Session::has('core_rss_hash')) {
     $page->assign('xorg_rss', Array("title" => "Polytechnique.org :: News", "href" => "/rss.php/".Session::get('forlife')."/".Session::get('core_rss_hash').".xml"));
 }
 
+// cache les evenements lus et raffiche les evenements a relire
+if (Env::has('lu')){
+  $globals->xdb->execute('DELETE FROM evenements_vus AS ev INNER JOIN evenements AS e ON e.id = ev.evt_id WHERE peremption < NOW)');
+  $globals->xdb->execute('REPLACE INTO evenements_vus VALUES({?},{?})', Env::get('lu'), Session::getInt('uid'));
+}
+if (Env::has('nonlu')){
+  $globals->xdb->execute('DELETE FROM evenements_vus WHERE evt_id = {?} AND user_id = {?}', Env::get('nonlu'), Session::getInt('uid'));
+}
+
 // affichage des evenements
 // annonces promos triées par présence d'une limite sur les promos
 // puis par dates croissantes d'expiration
@@ -80,11 +89,22 @@ $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS
           FROM  evenements    AS e
     INNER JOIN  auth_user_md5 AS a ON e.user_id=a.user_id
     INNER JOIN  aliases       AS l ON ( a.user_id=l.id AND l.type='a_vie' )
+    LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+         WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
+		AND (e.promo_min = 0 || e.promo_min <= {?})
+		AND (e.promo_max = 0 || e.promo_max >= {?})
+		AND ev.user_id IS NULL
+      ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
+$page->assign('evenement', $globals->xdb->iterator($sql, Session::getInt('uid'), $promo, $promo));
+
+$sql = "SELECT  e.id,e.titre, ev.user_id IS NULL AS nonlu
+          FROM  evenements    AS e
+    LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
          WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
 		AND (e.promo_min = 0 || e.promo_min <= {?})
 		AND (e.promo_max = 0 || e.promo_max >= {?})
       ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
-$page->assign('evenement', $globals->xdb->iterator($sql, $promo, $promo));
+$page->assign('evenement_summary', $globals->xdb->iterator($sql, Session::getInt('uid'), $promo, $promo));
 
 $page->assign('refe',$_SERVER['PHP_SELF']);
 

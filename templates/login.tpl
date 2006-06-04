@@ -82,6 +82,8 @@ Bienvenue {$smarty.session.prenom}
   <table class="bicol">
     <tr>
       <th>
+        <a href="?lu={$ev.id}{if $previd}#newsid{$previd}{/if}" style="display:block;float:right"><img alt="Cacher" title="Cacher cet article" src="{rel}/images/retirer.gif"/></a>
+        {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>
 	 {tidy}
 	   {$ev.titre|nl2br}
@@ -94,7 +96,7 @@ Bienvenue {$smarty.session.prenom}
           {$ev.texte|smarty:nodefaults|nl2br}
         {/tidy}
         <br />
-        <p class="smaller">Annonce proposée par
+        <p class="smaller"><a href="#" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="{rel}/images/up.png"/></a>Annonce proposée par
         <a href="{rel}/fiche.php?user={$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
@@ -103,6 +105,30 @@ Bienvenue {$smarty.session.prenom}
     </tr>
   </table>
   {/iterate}
+
+  <br/>
+  
+  <table class="bicol">
+    <tr>
+      <th>
+        Sommaire des informations événementielles
+      </th>
+    </tr>
+    {iterate item=ev from=$evenement_summary}
+    <tr class="{cycle values="impair,pair"}">
+      <td class="half">
+        &bull;
+        <a href="{if !$ev.nonlu}?nonlu={$ev.id}{/if}#newsid{$ev.id}">
+        {if $ev.nonlu}<strong>{/if}
+      	 {tidy}
+      	   {$ev.titre|nl2br}
+      	 {/tidy}
+        {if $ev.nonlu}</strong>{/if}
+        </a>
+      </td>
+    </tr>
+    {/iterate}
+  </table>
 
   <p class="smaller">
   Nota Bene : les informations présentées ici n'engagent que leurs auteurs

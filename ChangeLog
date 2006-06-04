@@ -11,7 +11,9 @@ Bug/Wish :
     * Admin :
         - #408: Admin can change sex of users without root intervention.    -Car
 
-    * Core :
+    * Events :
+        - #268: Hide read events.                                           -Car
+        - #391: Go back to top link at end of each event.                   -Car
         - #411: Count chars in events proposals to make them smaller.       -Car
         
     * Profile :
