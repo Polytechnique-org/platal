@@ -252,6 +252,7 @@ class NewsLetter
         }
 
 	$i = 1;
+	$res .= "<a id='top_lnks'></a>";
 	foreach ($this->_arts as $cid=>$arts) {
 	    $res .= "<div class='lnk'><a href='#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
 	    foreach ($arts as $art) {
@@ -264,7 +265,8 @@ class NewsLetter
 	foreach ($this->_arts as $cid=>$arts) {
 	    $res .= "<h1><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
 	    foreach($arts as $art) {
-		$res .= $art->toHtml();
+    		$res .= $art->toHtml();
+    		$res .= "<p><a href='#top_lnk'>Revenir au sommaire</a></p>";
 	    }
 	}
 

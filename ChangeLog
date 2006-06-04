@@ -11,6 +11,9 @@ Bug/Wish :
     * Core :
         - #411: Count chars in events proposals to make them smaller.       -Car
         
+    * Newsletter :
+        - #410: In Html newsletter add a link to go back to summary.        -Car
+
     * Search :
         - #412: Error SQL in big referent searches.                         -Car
 
