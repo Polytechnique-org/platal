@@ -20,6 +20,9 @@ Bug/Wish :
     * Newsletter :
         - #410: In Html newsletter add a link to go back to summary.        -Car
 
+    * RSS :
+        - #398: "Add to contact" doesn't appear for deaths.                 -Car
+
     * Search :
         - #412: Error SQL in big referent searches.                         -Car
 

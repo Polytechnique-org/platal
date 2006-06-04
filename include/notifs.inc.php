@@ -78,6 +78,7 @@ function _select_notifs_base($table, $mail, $where)
     $sql = "
         (
           SELECT  u.promo, u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom,
+                  u.deces != 0 AS dcd,
                   a.alias AS bestalias,
                   wo.*,
                   {$our['contact_sql']} AS contact,
@@ -174,9 +175,10 @@ class AllNotifs {
 	    $aid = $tmp['aid'];
             if (empty($this->_data[$aid])) {
                 $this->_data[$aid] = Array("prenom" => $tmp['aprenom'], 'nom' => $tmp['anom'],
-                        'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt']);
+                        'bestalias'=>$tmp['abestalias'], 'sexe' => $tmp['sexe'], 'mail_fmt' => $tmp['mail_fmt'],
+                        'dcd'=>$tmp['dcd']);
             }
-	    unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['sexe'], $tmp['mail_fmt']);
+	    unset($tmp['aprenom'], $tmp['anom'], $tmp['abestalias'], $tmp['aid'], $tmp['sexe'], $tmp['mail_fmt'], $tmp['dcd']);
 	    $this->_data[$aid]['data'][$tmp['cid']][] = $tmp;
 	}
     }

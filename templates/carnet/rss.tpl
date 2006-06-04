@@ -60,7 +60,7 @@
       </title>
       <link>{#globals.baseurl#}/fiche.php?user={$x.bestalias}</link>
       <description><![CDATA[
-        {if !$x.contact}
+        {if !$x.contact and !$x.dcd}
         <a href="{#globals.baseurl#}/carnet/mescontacts.php?action=ajouter&amp;user={$x.bestalias}">
           ajouter &agrave; mes contacts
         </a>
