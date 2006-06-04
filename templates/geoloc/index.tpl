@@ -32,7 +32,7 @@ function clickOnCity(id)
 {
 	var f = document.getElementById('search_form');
 	var url = f.action;
-	f.action += '&cityid=' + id; 
+	f.action += unescape('%26')+'cityid=' + id; 
 	f.submit();
 	f.action = url;
 	document.getElementById('search_results').style.height = '250px';
@@ -45,7 +45,7 @@ function goToCountry(id)
 function searchMapId(f)
 {
 	var url = f.action;
-	f.action += '&mapid=' + mapid; 
+	f.action += unescape('%26')+'mapid=' + mapid; 
 	f.submit();
 	f.action = url;
 	document.getElementById('search_results').style.height = '250px';

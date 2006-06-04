@@ -27,7 +27,7 @@ $page->assign('localises', $res->fetchOneCell());
 
 	require_once('search.inc.php');
 $fields = new SFieldGroup(true, advancedSearchFromInput());
-$search = $fields->get_url().'&amp;';
+$search = $fields->get_url();
 if (Env::has('only_current') && Env::get('only_current') != 'on') $search .= '&only_current=';
 $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
 if ($search)

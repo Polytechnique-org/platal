@@ -29,6 +29,7 @@
     <tr>
       <td>Nom</td>
       <td>
+    	<input type="submit" name="rechercher" style="display:none" value="Chercher"/>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
         {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
         <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">
@@ -305,8 +306,6 @@
 		mettre les fiches modifiées récemment en premier
 	</p>
 	{/min_auth}
-	<input type="hidden" name="rechercher" value="Chercher"/>
-	<input type="submit" style="display:none" value="Chercher" onClick="launch_form('{$smarty.server.PHP_SELF}')"/>
 </form>
 	<p class="center">
 		<script type="text/javascript">{literal}
@@ -316,8 +315,8 @@
 			f.submit();
 		}
 		{/literal}</script>
-		<input type="button" value="Voir les résultats sur une carte" onClick="launch_form('geoloc/')"/>
-		<input type="button" value="Chercher" onClick="launch_form('{$smarty.server.PHP_SELF}')"/>
+		<input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
+		<input type="button" value="Chercher" onclick="launch_form('{$smarty.server.PHP_SELF}')"/>
   </p>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
