@@ -121,7 +121,7 @@ if (Env::has('Chercher')) {
             $page->assign_by_ref('personnes',$personnes);
             while( (list($uid, $prenom, $nom, $promo, $bestalias,
                         $expertise_bd, $pays_id, $secteur_id, $ss_secteur_id) = $res->next())
-                    || ($nb_resultats >= $nb_max_resultats_total)){
+                    && ($nb_resultats < $nb_max_resultats_total)){
                 if ($current_uid != $uid) {
                     $current_uid = $uid;
                     $page_correspondante = (int)($nb_resultats / $nb_max_resultats_par_page) +1;
