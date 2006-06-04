@@ -60,7 +60,8 @@ if ($globals->wiki->wikidir) {
 	  $_REQUEST['n'] = $n;
 	    
 	  $dir_wiki_tmp = '../spool/wiki.d/';
-	  $short_tpl = $dir_wiki_tmp.'cache_'.$n.'.tpl';
+	  $tpl_name = 'cache_'.$n.'.tpl';
+	  $short_tpl = $dir_wiki_tmp.$tpl_name;
 	  $dir_tpl = $globals->spoolroot.'templates/'.$dir_wiki_tmp;
 	  $tpl = $globals->spoolroot.'templates/'.$short_tpl;
 	  $tmpfile_exists = file_exists($tpl);
@@ -68,6 +69,14 @@ if ($globals->wiki->wikidir) {
 	  // don't recreate the tpl if it already exists
 	  if (Env::get('action') || !$tmpfile_exists)
 	  {
+	    if ($tmpfile_exists) {
+	      unlink($tpl);
+	      $templates_cache_dir = '../spool/templates_c/';
+          $dh  = opendir($templates_cache_dir);
+          while (false !== ($filename = readdir($dh))) if (strpos($filename, $tpl_name) !== false)
+            unlink($templates_cache_dir.$filename);
+	    }
+
 	    // we leave pmwiki do whatever it wants and store everything
 	    ob_start();
 	    require_once(dirname(dirname(__FILE__)).'/'.$globals->wiki->wikidir.'/pmwiki.php');
@@ -99,14 +108,12 @@ if ($globals->wiki->wikidir) {
 	    fputs($f, substr($wikiAll, $j));
 	    fclose($f);
 	    new_skinned_page($tmp_tpl, AUTH_PUBLIC);
-	    if ($tmpfile_exists)
-	      unlink($tpl);
 	  } else {
 	    if (!$tmpfile_exists)
 	    {
 	    	$f = fopen($tpl, 'w');
-		fputs($f, substr($wikiAll, $j));
-		fclose($f);
+        	fputs($f, substr($wikiAll, $j));
+        	fclose($f);
 	    }
 	    new_skinned_page($short_tpl, AUTH_PUBLIC);
 	  } 

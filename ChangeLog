@@ -23,6 +23,9 @@ Bug/Wish :
     * Search :
         - #412: Error SQL in big referent searches.                         -Car
 
+    * Wiki :
+        - #403: Cache is cleared when editing a page.                       -Car
+
 From 0.9.8 Branch :
 
     * Xnet :
