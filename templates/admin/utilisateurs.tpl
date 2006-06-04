@@ -149,6 +149,15 @@ function del_fwd(fwd) {
     </tr>
     <tr class="pair">
       <td class="titre">
+        Sexe
+      </td>
+      <td>
+        femme <input type="radio" name="sexeN" {if $mr.sexe eq 'femme'}checked="checked"{/if} value='femme'/>
+        <input type="radio" name="sexeN" {if $mr.sexe neq 'femme'}checked="checked"{/if} value=''/> homme
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
         Droits
       </td>
       <td>

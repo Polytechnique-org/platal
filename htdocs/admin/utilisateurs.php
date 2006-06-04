@@ -56,7 +56,7 @@ if(Env::has('suid_button') && $login) {
 }
 
 if ($login) {
-    $r  = $globals->xdb->query("SELECT  *, a.alias AS forlife
+    $r  = $globals->xdb->query("SELECT  *, a.alias AS forlife, u.flags AS sexe
                                   FROM  auth_user_md5 AS u
                             INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
     $mr = $r->fetchOneAssoc();
@@ -114,7 +114,7 @@ if ($login) {
                 $prenm = Env::get('prenomN');
                 $nom   = Env::get('nomN');
                 $promo = Env::getInt('promoN');
-                $nom   = Env::get('nomN');
+                $sexe  = Env::get('sexeN');
                 $comm  = Env::get('commentN');
 
 		$query = "UPDATE auth_user_md5 SET
@@ -123,6 +123,7 @@ if ($login) {
 			    perms     = '$perms',
 			    prenom    = '".addslashes($prenm)."',
 			    nom       = '".addslashes($nom)."',
+			    flags     = '$sexe',
 			    promo     = $promo,
 			    comment   = '".addslashes($comm)."'
 			  WHERE user_id = '{$mr['user_id']}'";
@@ -143,7 +144,7 @@ if ($login) {
                     require_once('nomusage.inc.php');
                     set_new_usage($mr['user_id'], Env::get('nomusageN'), make_username(Env::get('prenomN'), Env::get('nomusageN')));
                 }
-		$r  = $globals->xdb->query("SELECT  *, a.alias AS forlife
+		$r  = $globals->xdb->query("SELECT  *, a.alias AS forlife, u.flags AS sexe
                                               FROM  auth_user_md5 AS u
                                         INNER JOIN  aliases       AS a ON (u.user_id=a.id)
                                              WHERE  user_id = {?}", $mr['user_id']);

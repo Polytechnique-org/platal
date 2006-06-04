@@ -8,6 +8,9 @@ New :
 
 Bug/Wish :
 
+    * Admin :
+        - #408: Admin can change sex of users without root intervention.    -Car
+
     * Core :
         - #411: Count chars in events proposals to make them smaller.       -Car
         
