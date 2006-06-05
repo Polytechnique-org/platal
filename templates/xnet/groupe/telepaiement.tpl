@@ -36,16 +36,30 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 {if $trans[$p.id]}
 <table cellpadding="0" cellspacing="0" class='bicol'>
   <tr>
-    <th colspan="3">{$p.text} : détails pour les administrateurs</th>
+    <th colspan="4">{$p.text} : détails pour les administrateurs</th>
   </tr>
+  <tr>
+    <td class="center">[{if $order eq 'timestamp'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=timestamp'>{/if}Date</a>{if $order eq 'timestamp'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'nom'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=nom'>{/if}Prénom NOM</a>{if $order eq 'nom'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'promo'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=promo'>{/if}Promo</a>{if $order eq 'promo'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'montant'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=montant'>{/if}Montant</a>{if $order eq 'montant'}</strong>{/if}]</td>
+  </tr>
+  {assign var="somme" value=0}
   {foreach from=$trans[$p.id] item=p}
   <tr>
-    <td>{$p.date|date_format}</td>
-    <td>
-      <a href="https://www.polytechnique.org/fiche.php?user={$p.alias}">{$p.nom} {$p.prenom} (X{$promo})</a>
-      (<a href="mailto:{$p.alias}@polytechnique.org">mail</a>)
-    </td>
-    <td>{$p.montant}</td>
+    {if $p.nom neq "somme totale"}
+        <td class="center">{$p.date|date_format:"%d/%m/%y"}</td>
+        <td>
+          {$p.prenom} {$p.nom}
+          <a href="https://www.polytechnique.org/fiche.php?user={$p.alias}"><img alt="[fiche]" title="Voir sa fiche" src="{rel}/images/loupe.gif"/></a>
+          <a href="mailto:{$p.alias}@polytechnique.org"><img alt="[mail]" title="Lui envoyer un mail" src="{rel}/images/mail.png"/></a>
+        </td>
+        <td class="center">X {$p.promo}</td>
+        <td class="right">{$p.montant}</td>
+    {else}
+        <td class="right" colspan="3"><strong>Total </strong></td>
+        <th class="right">{$p.montant}</th>
+    {/if}        
   </tr>
   {/foreach}
 </table>

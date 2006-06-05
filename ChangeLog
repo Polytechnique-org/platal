@@ -34,6 +34,9 @@ Bug/Wish :
     * Wiki :
         - #403: Cache is cleared when editing a page.                       -Car
 
+    * Xnet :
+        - #383: Paiements table relook.                                     -Car
+
 From 0.9.8 Branch :
 
     * Xnet :
