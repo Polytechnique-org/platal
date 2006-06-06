@@ -40,6 +40,7 @@ Bug/Wish :
 
     * Xnet :
         - #383: Paiements table relook.                                     -Car
+        - #413: When creating a new event, datas don't disappear anymore.   -Car
 
 From 0.9.8 Branch :
 

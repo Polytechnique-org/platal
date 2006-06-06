@@ -47,7 +47,7 @@
     </tr>
     <tr>
       <td>Evénement en raccourci (pour les mailings listes)&nbsp;:</td>
-      <td><input type="text" name="short_name" value="{$evt.short_name}" size="20"/></td>
+      <td><input type="text" name="short_name" value="{$evt.short_name|default:$smarty.request.short_name}" size="20"/></td>
     </tr>
     <tr>
       <td>Descriptif :</td>

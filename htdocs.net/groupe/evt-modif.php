@@ -123,6 +123,7 @@ if (Post::get('intitule')) {
     $evt['membres_only'] = Post::get('membres_only');
     $evt['advertise'] = Post::get('advertise');
     $evt['show_participants'] = Post::get('show_participants');
+    if (!$short_name) $short_name = '';
     $evt['short_name'] = $short_name;
     $evt['deadline_inscription'] = (Post::get('deadline', 'off')=='on')?null:(Post::get('inscr_Year')."-".Post::get('inscr_Month')."-".Post::get('inscr_Day'));
 
@@ -169,8 +170,8 @@ if (Post::get('intitule')) {
 
     // request for a new payment
     if (Post::get('paiement_id') == -1 && $money_defaut >= 0) {
-    require_once ('validations.inc.php');
-    $p = new PayReq(
+        require_once ('validations.inc.php');
+        $p = new PayReq(
         Session::get('uid'),
         Post::get('intitule')." - ".$globals->asso('nom'),
         Post::get('site'),
@@ -180,7 +181,7 @@ if (Post::get('intitule')) {
         999,
         $globals->asso('id'),
         $eid);
-    $p->submit();
+        $p->submit();
     }
 
     // events with no sub-event: add a sub-event with no name
