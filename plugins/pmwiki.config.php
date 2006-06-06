@@ -11,6 +11,20 @@ $EnablePathInfo = 1;
 
 $Skin = 'empty';
 
+XLSDV('en', array('EnterAttributes' =>
+    "Entre ici les différents droit pour la page. Les champs laissés en blanc ne seront pas modifiés.
+    Pour enlever une restriction ou une autorisation entre <strong>clear</strong>.
+    Les différentes restrictions possibles sont :
+    <ul>
+        <li><strong>public:</strong> (pour tout le monde)</li>
+        <li><strong>only_public:</strong> (pour les gens non connectés et non identifiés)</li>
+        <li><strong>logged:</strong> (pour ceux qui ont rentré leur mot de passe ou qui ont un cookie permanent)</li>
+        <li><strong>identified:</strong> (exige une identification par mot de passe)</li>
+        <li><strong>has_perms:</strong> (pour les administrateurs de la page)</li>
+    </ul>
+    Le <strong>:</strong> à la fin de chaque mot clef est important. Tu peux également combiner plusieurs mots clefs avec <strong>and:</strong>
+    ou des espaces (qui remplace le <em>ou</em> logique)<br/>"));
+    
 include_once($globals->spoolroot."/plugins/pmwiki.platalAuth.php");
 include_once($globals->spoolroot."/plugins/pmwiki.platalSkin.php");
 @include_once("$FarmD/cookbook/e-protect.php");
