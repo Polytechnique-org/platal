@@ -44,6 +44,13 @@ function new_page($tpl_name, $min_auth)
 }
 
 // }}}
+function new_identification_page()
+{
+    new_page('', AUTH_MDP);
+    global $page;
+    $page->useMenu();
+}
+
 // {{{ function new_group_page()
 
 function new_group_page($tpl_name)

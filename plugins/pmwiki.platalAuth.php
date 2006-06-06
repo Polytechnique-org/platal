@@ -160,11 +160,11 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     // maybe it is because he is not identified
     if ($authprompt && !identified())
     {
-        new_skinned_page('wiki.tpl', AUTH_MDP); 
+        new_identification_page(); 
     }
 
     global $page;
-    new_skinned_page('', AUTH_MDP); 
+    new_identification_page();
     if (has_perms()) {
         $page->trig('Erreur : page Wiki inutilisable sur plat/al');
     } else {

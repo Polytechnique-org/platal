@@ -50,6 +50,10 @@ function _new_page($type, $tpl_name, $min_auth, $admin=false)
 }
 
 // }}}
+function new_identification_page()
+{
+    _new_page(SKINNED, '', AUTH_MDP);
+}
 // {{{ function new_skinned_page()
 
 function new_skinned_page($tpl_name, $min_auth)

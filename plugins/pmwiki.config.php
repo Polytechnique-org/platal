@@ -1,6 +1,6 @@
 <?php if (!defined('PmWiki')) exit();
 
-$ScriptUrl       = $globals->baseurl;
+$ScriptUrl       = $globals->relurl;
 $UploadUrlFmt    = $ScriptUrl."/uploads";
 $WorkDir         = $globals->wiki->workdir;
 $WikiDir         = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
@@ -52,4 +52,7 @@ $GUIButtons['hr'] = array(540, '\\n----\\n', '', '',
 $GUIButtons['table'] = array(600,
                    '||border=1 width=80%\\n||!Hdr ||!Hdr ||!Hdr ||\\n||     ||     ||     ||\\n||     ||     ||     ||\\n', '', '', 
                  '$GUIButtonDirUrlFmt/table.gif"$[Table]"');
+
+if (function_exists('more_wiki_config'))
+    more_wiki_config();
 ?>

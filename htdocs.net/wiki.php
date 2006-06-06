@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
+require_once("xnet.inc.php");
 
 // this page is to create a smarty template page from a wiki file
 // the wiki engine used is pmwiki.
@@ -27,17 +27,28 @@ require_once("xorg.inc.php");
 
 // some page can be seen by everybody (public), but to validate a password
 // if we arrive here before setting new access we need to try an auth
-new_skinned_page('wiki.tpl', Env::has('response') ? AUTH_MDP : AUTH_PUBLIC);
+new_page('wiki.tpl', Env::has('response') ? AUTH_MDP : AUTH_PUBLIC);
 
-if ($globals->wiki->wikidir) {
-    $wikisite = 'xorg';
+if ($globals->wiki->wikidir && $globals->xnet->wiki) {
+    $wikisite = 'xnet';
+    function more_wiki_config() {
+        global $Conditions, $DefaultPasswords;
+        $Conditions['has_perms'] = has_perms() || may_update();
+        $Conditions['is_member'] = is_member();
+        $DefaultPasswords['read'] = 'is_member:';
+    }
     require_once("wiki.inc.php");
-    new_skinned_page($wiki_template, AUTH_PUBLIC);
+    new_page($wiki_template, AUTH_PUBLIC);
+    wiki_assign_auth();
 }
 
+$page->setType($globals->asso('cat'));
 $page->assign('xorg_extra_header', "<script type='text/JavaScript'>\n<!--\nNix={map:null,convert:function(a){Nix.init();var s='';for(i=0;i<a.length;i++){var b=a.charAt(i);s+=((b>='A'&&b<='Z')||(b>='a'&&b<='z')?Nix.map[b]:b);}return s;},init:function(){if(Nix.map!=null)return;var map=new Array();var s='abcdefghijklmnopqrstuvwxyz';for(i=0;i<s.length;i++)map[s.charAt(i)]=s.charAt((i+13)%26);for(i=0;i<s.length;i++)map[s.charAt(i).toUpperCase()]=s.charAt((i+13)%26).toUpperCase();Nix.map=map;},decode:function(a){document.write(Nix.convert(a));}}\n//-->\n</script>\n");
-wiki_assign_auth();
+$page->assign('is_member', is_member());
+$page->assign('has_perms', has_perms() || may_update());
+
 $page->addCssLink('css/wiki.css');
+$page->useMenu();
 
 $page->run();
 ?>
