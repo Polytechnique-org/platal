@@ -34,13 +34,14 @@ function get_annuaire_infos($method, $params) {
                     FROM  auth_user_md5 AS a
                     INNER JOIN auth_user_quick AS q USING (user_id)
                     WHERE  a.matricule = {?}", $params[1]);
+            $array = $res->next();
         }
         else{
             $res = $globals->xdb->iterRow(
                  "SELECT     q.profile_mobile AS cell, a.naissance AS age,
                              adr.adr1, adr.adr2, adr.adr3,
                              adr.postcode, adr.city, adr.country,
-                             adr.tel, adr.fax
+                             adr.uid, adr.adrid
                        FROM  auth_user_md5 AS a
                  INNER JOIN  auth_user_quick AS q USING (user_id)
                   LEFT JOIN  adresses AS adr ON(adr.uid = a.user_id)
@@ -49,17 +50,14 @@ function get_annuaire_infos($method, $params) {
                    ORDER BY  NOT FIND_IN_SET('active', adr.statut),
                              FIND_IN_SET('res-secondaire', adr.statut),
                              NOT FIND_IN_SET('courrier', adr.statut)", $params[1]);
-
-                    }
-
-        //traitement des adresses si necessaire
-        if (isset($params[2])) {
+            //traitement des adresses si necessaire
             if(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
-                        $adr['pays'], $adr['tel'], $adr['fax']) = $res->next())
+                        $adr['pays'], $uid, $adr['adrid']) = $res->next())
             {
                 $array['cell']      = $cell;
                 $array['age']       = $age;
                 $array['adresse'][] = $adr;
+
 
                 //on clamp le numero au nombre d'adresses dispo
                 $adresse = min((int) $params[2], $res->total());
@@ -67,7 +65,7 @@ function get_annuaire_infos($method, $params) {
                 if ($adresse != 1) { //on ne veut pas la premiere adresse
                     $i = 2;
                     while(list($cell, $age, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['cp'], $adr['ville'],
-                                $adr['pays'], $adr['tel'], $adr['fax']) = $res->next())
+                                $adr['pays'], , $adr['adrid']) = $res->next())
                     {
                         if($adresse == $i){//si on veut cette adresse en particulier
                             $array['adresse'][0] = $adr;
@@ -80,15 +78,37 @@ function get_annuaire_infos($method, $params) {
                         $i++;
                     }
                 }
+                
+                // on rajoute les numéros de tél
+                $adrid_index = array();
+                foreach ($array['adresse'] as $i => $a) $adrid_index[$a['adrid']] = $i;
+                // on rajoute les numéros de tels
+                $restel = $globals->xdb->iterator(
+                    "SELECT t.tel, t.tel_type, t.adrid
+                       FROM tels AS t
+                 INNER JOIN adresses AS a ON (t.adrid = a.adrid AND t.uid = a.uid)
+                      WHERE t.uid = {?} AND NOT FIND_IN_SET('pro', a.statut)", $uid);
+                while ($tel = $restel->next()) $array['adresse'][$adrid_index[$tel['adrid']]]['tels'][] = $tel;
+                foreach ($array['adresse'] as $i => $adr) {
+                    unset($lasttel);
+                    foreach($adr['tels'] as $j => $t){
+                        if (!isset($array['adresse'][$i]['tel']) && (strpos($t['tel_type'], 'Tél') === 0)) $array['adresse'][$i]['tel'] = $t['tel']; 
+                        elseif (!isset($array['adresse'][$i]['fax']) && (strpos($t['tel_type'], 'Fax') === 0)) $array['adresse'][$i]['fax'] = $t['tel'];
+                        else $lasttel = $t['tel'];
+                        if (isset($array['adresse'][$i]['tel']) && isset($array['adresse'][$i]['fax'])) break; 
+                    }
+                    if (!isset($array['adresse'][$i]['tel']) && isset($lasttel))
+                        $array['adresse'][$i]['tel'] = $lasttel;
+                    elseif (!isset($array['adresse'][$i]['fax']) && isset($lasttel))
+                        $array['adresse'][$i]['fax'] = $lasttel;
+                    unset($array['adresse'][$i]['adrid']);
+                    unset($array['adresse'][$i]['tels']);
+                }
             }
             else{
                 $array = false;
             }
         }
-        else { //cas où on ne veut pas d'adresse
-            $array = $res->next();
-        }
-        
 
         if ($array) { // on a bien eu un résultat : le matricule etait bon
 

@@ -43,10 +43,34 @@ function generate_new_adrid(){
   return $new_adrid;
 }
 
+function generate_new_telid($adr){
+  $i = 0;
+  $telid_array = Array();
+  foreach($adr['tels'] as $tel){
+    $telid_array[$i] = $tel['telid'];
+    $i++;
+  }
+  sort($telid_array,SORT_NUMERIC); // classe les adrid dans l'ordre croissant
+  $new_telid = 0;
+  foreach($telid_array as $current_telid)
+    if ($current_telid == $new_telid)
+      $new_telid ++;
+    else 
+      return $new_telid;//s'ils sont differents, il y a un trou dans la liste des telid donc new_telid convient
+  //si aucun convient, on retourne le plus grand des telid actuel + 1
+  return $new_telid;
+}
+
 function replace_ifset_adr($varname, $i){
   $tab = Env::getMixed($varname, Array());
   if (isset($tab[$i]))
        $GLOBALS['adresses'][$i][$varname] = $tab[$i];
+}
+
+function replace_ifset_tel($varname, $i, $t){
+  $tab = Env::getMixed($varname.$t, Array());
+  if (isset($tab[$i]))
+       $GLOBALS['adresses'][$i]['tels'][$t][$varname] = $tab[$i];  
 }
 
 function get_adr_arg($varname, $i) {
@@ -63,9 +87,16 @@ function set_flag_adr($varname,$i){
      $GLOBALS['adresses'][$i][$varname] = '0';
 }
 
+function replace_tel($i, $t){
+  replace_ifset_tel('telid', $i, $t);
+  replace_ifset_tel('tel', $i, $t);
+  replace_ifset_tel('tel_pub', $i, $t);
+  replace_ifset_tel('tel_type', $i, $t);
+  replace_ifset_tel('new_tel', $i, $t);
+}
 
 function replace_address($i){
-  global $adresses;
+  global $adresses, $nb_tel_max;
   if(!isset($adresses[$i])){
     $adresses[$i]['nouvelle'] = 'ajout';
     $adresses[$i]['adrid'] = $i;
@@ -86,10 +117,15 @@ function replace_address($i){
   replace_ifset_adr('cityid', $i);
   replace_ifset_adr('country', $i);
   replace_ifset_adr('region', $i);
-  replace_ifset_adr('tel', $i);
-  replace_ifset_adr('fax', $i);
   replace_ifset_adr('pub', $i);
-  replace_ifset_adr('tel_pub', $i);
+  
+  for ($telid = 0; $telid <= $nb_tel_max; $telid++) {
+    $tab = Env::getMixed('telid'.$telid, Array());
+    if(isset($tab[$i])){ //ce telid etait donc present dans le formulaire
+      replace_tel($i, $telid);
+    }
+  }
+ 
   if (!get_adr_arg('parsevalid', $i)) replace_ifset_adr('txt', $i);
   $tab = Env::getMixed('numero_formulaire', Array());
   if($tab[$i])
@@ -136,35 +172,33 @@ foreach($adresses as $adrid => $adr) {
   $description = (($adr['numero_formulaire'] > 0)?"Adresse n°{$adr['numero_formulaire']}":"Nouvelle adresse");
   if (strlen(strtok($adr['adr1'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr1']))
     {
-      $str_error = $str_error."Le champ '$description - Ligne 1' contient un caractère interdit.<BR />";
+      $page->trig("Le champ '$description - Ligne 1' contient un caractère interdit.");
     }
   if (strlen(strtok($adr['adr2'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr2']))
     {
-      $str_error = $str_error."Le champ '$description - Ligne 2' contient un caractère interdit.<BR />";
+      $page->trig("Le champ '$description - Ligne 2' contient un caractère interdit.");
     }
   if (strlen(strtok($adr['adr3'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['adr3']))
     {
-      $str_error = $str_error."Le champ '$description - Ligne 3' contient un caractère interdit.<BR />";
+      $page->trig("Le champ '$description - Ligne 3' contient un caractère interdit.");
     }
   if (strlen(strtok($adr['postcode'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode']))
     {
-      $str_error = $str_error."Le champ '$description - Code Postal' contient un caractère interdit.<BR />";
+      $page->trig("Le champ '$description - Code Postal' contient un caractère interdit.");
     }
   if (strlen(strtok($adr['city'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode']))
     {
-      $str_error = $str_error."Le champ '$description - Ville' contient un caractère interdit.<BR />";
+      $page->trig("Le champ '$description - Ville' contient un caractère interdit.");
     }
-  if (strlen(strtok($adr['tel'],"<>{}@&#~\/:;?,!§*_`[]|%$^=\"")) < strlen($adr['tel']))
-    {
-      $str_error = $str_error."Le champ '$description - Téléphone' contient un caractère interdit.<BR />";
-    }
-  if (strlen(strtok($adr['fax'],"<>{}@&#~\/:;?,!§*_`[]|%$^=\"")) < strlen($adr['fax']))
-    {
-      $str_error = $str_error."Le champ '$description - Fax' contient un caractère interdit.<BR />";
+  foreach ($adr['tels'] as $tel) {
+    if (strlen(strtok($tel['tel'],"<>{}@&#~\/:;?,!§*_`[]|%$^=\"")) < strlen($tel['tel']))
+      {
+        $page->trig("Le champ '$description - ".$tel['tel_type']."' contient un caractère interdit.");
+      }
     }
   if(!$adr['secondaire']){
     if($adresses_principales == 1){ //deja une adresse principale
-      $str_error = $str_error."Tu ne peux avoir qu'une résidence principale.<BR />";
+      $page->trig("Tu ne peux avoir qu'une résidence principale.");
       $adresses_principales++;//pour eviter de repeter le message plusieurs fois
     }
     else $adresses_principales = 1;
@@ -177,79 +211,14 @@ foreach($adresses as $adrid => $adr) {
 if(isset($adresses)){ // s'il y en a
   reset($adresses);
   foreach($adresses as $adrid => $adr){
+    // on vire les tels vides
+    foreach ($adr['tels'] as $telid => $tel) {
+      if ($tel['tel'] == '') unset($adresses[$adrid]['tels'][$telid]);
+    }
     if(is_adr_empty($adrid)){
        delete_address($adrid);
     }
   }
 }
-//on génère une éventuelle nouvelle adresse
-if (!isset($adresses) || (count($adresses) < $nb_adr_max)){
-  $adrid = generate_new_adrid();
-  $adresses[$adrid]['adrid'] = $adrid;
-  $adr = &$adresses[$adrid];
-  $adr['adr1'] = '';
-  $adr['adr2'] = '';
-  $adr['adr3'] = '';
-  $adr['postcode'] = '';
-  $adr['city'] = '';
-  $adr['country'] = '00';
-  $adr['region'] = '';
-  $adr['tel'] = '';
-  $adr['fax'] = '';
-  $adr['secondaire'] = 1;
-  $adr['courrier'] = 0;
-  $adr['active'] = 0;
-  $adr['temporaire'] = 1;
-  $adr['pub'] = 'private';
-  $adr['tel_pub'] = 'private';
-  $adr['nouvelle'] = 'new'; //n'est pas issue d'un formulaire (sert dans update_adresses...)
-}
-
-unset($adr);
-unset($adrid);
-
-//tri des adresses :
-
-reset($adresses);
-$i = 1;
-foreach($adresses as $adrid_ => $adr_){
-  if(($adresses[$adrid_]['active']) && ($adr_['nouvelle'] != 'new')){
-    $ordre_des_adrid[$i] = $adrid_;
-    $i++;
-    $est_attribuee[$adrid_] = 1;
-  }
-  else
-    $est_attribuee[$adrid_] = 0;
-}
-
-reset($adresses);
-foreach($adresses as $adrid_ => $adr_){
-  if(($adresses[$adrid_]['secondaire'] == 0) && ($est_attribuee[$adrid_] == 0) && ($adr_['nouvelle'] != 'new')){ // principale et non attribuee
-    $ordre_des_adrid[$i] = $adrid_;
-    $i++;
-    $est_attribuee[$adrid_] = 1;
-  }
-}
-
-reset($adresses);
-foreach($adresses as $adrid_ => $adr_){
-  if(($adresses[$adrid_]['temporaire'] == 0) && ($est_attribuee[$adrid_] == 0) && ($adr_['nouvelle'] != 'new')){ // permanente et non attribuee
-    $ordre_des_adrid[$i] = $adrid_;
-    $i++;
-    $est_attribuee[$adrid_] = 1;
-  }
-}
-reset($adresses);
-foreach($adresses as $adrid_ => $adr_){
-  if($est_attribuee[$adrid_] == 0){ // non attribuee
-     $ordre_des_adrid[$i] = $adrid_;
-     $i++;
-     $est_attribuee[$adrid_] = 1;
-  }
-}
-
-$nb_adr = $i - 1;
-$page->assign_by_ref('ordre_adrid',$ordre_des_adrid);
-$page->assign('nb_adr',$nb_adr+1);
 
 ?>

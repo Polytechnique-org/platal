@@ -23,7 +23,11 @@
 function smarty_function_display_address($param, &$smarty) {
     require_once('geoloc.inc.php');
     $txtad = get_address_text($param['adr']);
-    if (!$txtad && !$param['adr']['tel'] && !$param['adr']['fax'] && !$param['adr']['mobile']) return "";
+    if (!$txtad &&
+        !$param['adr']['tels'] && !count($param['adr']['tels']) &&
+        !$param['adr']['tel'] &&
+        !$param['adr']['fax'] &&
+        !$param['adr']['mobile']) return "";
 
     $lines = explode("\n",$txtad);
     $txthtml = "";
@@ -44,6 +48,10 @@ function smarty_function_display_address($param, &$smarty) {
     	$txthtml .= "<div>\n<em>Fax : </em>\n<strong>".$param['adr']['fax']."</strong>\n</div>\n";
     if ($param['adr']['mobile'])
     	$txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
+    if ($param['adr']['tels'] && count($param['adr']['tels'])) {
+        foreach ($param['adr']['tels'] as $tel) 
+            $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
+    }
     if (!$params['nodiv'])
     {
     	$txthtml = "<div class='adresse'>\n".$txthtml."</div>\n";

@@ -83,7 +83,11 @@ if (!logged() || Env::has('public')) {
     if ($user['web_pub'] != 'public') $user['web'] = '';
     if ($user['freetext_pub'] !=  'public') $user['freetext'] = '';
     foreach ($user['adr'] as $i=>$adr) {
-        if ($adr['pub'] != 'public' && $adr['tel_pub'] != 'public')
+        foreach ($adr['tels'] as $j=>$tel) {
+            if ($tel['tel_pub'] != 'public')
+                unset($user['adr'][$i]['tels'][$j]);
+        }
+        if (($adr['pub'] != 'public') && (count($user['adr'][$i]['tels']) == 0))
             unset($user['adr'][$i]);
         elseif ($adr['pub'] != 'public') {
             $user['adr'][$i]['adr1'] = '';
@@ -95,10 +99,6 @@ if (!logged() || Env::has('public')) {
             $user['adr'][$i]['regiontxt'] = '';
             $user['adr'][$i]['country'] = '00';
             $user['adr'][$i]['countrytxt'] = '';
-        }
-        elseif ($adr['tel_pub'] != 'public') {
-            $user['adr'][$i]['tel'] = '';
-            $user['adr'][$i]['fax'] = '';
         }
     }
     foreach ($user['adr_pro'] as $i=>$adr) {

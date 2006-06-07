@@ -57,12 +57,11 @@ ADR;TYPE=work;ENCODING=QUOTED-PRINTABLE:{format_adr adr=$vcard.adr_pro[0]}
 {/if}
 {foreach item=adr from=$vcard.adr}
 ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr adr=$adr}
-{if $adr.tel}
-TEL;TYPE=home;ENCODING=QUOTED-PRINTABLE:{$adr.tel|qp_enc}
+{foreach item=tel from=$adr.tels}
+{if $tel.tel}
+{if $tel.tel_type neq 'Fax'}TEL{else}FAX{/if};TYPE=home;ENCODING=QUOTED-PRINTABLE:{$tel.tel|qp_enc}
 {/if}
-{if $adr.fax}
-FAX;TYPE=home;ENCODING=QUOTED-PRINTABLE:{$adr.fax|qp_enc}
-{/if}
+{/foreach}
 {/foreach}
 {if $vcard.web}
 URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}

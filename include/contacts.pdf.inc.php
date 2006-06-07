@@ -182,12 +182,10 @@ class ContactsPDF extends FPDF
 
         $this->TableRow($l, $r);
 
-        if ($a['tel']) {
-            $this->TableRow('Téléphone', $a['tel'], 'Mono');
-        }
-        if ($a['fax']) {
-            $this->TableRow('Fax', $a['fax'], 'Mono');
-        }
+        foreach ($a['tels'] as $tel)
+            if ($tel['tel']) {
+                $this->TableRow($tel['tel_type'], $tel['tel'], 'Mono');
+            }
     }
 
     function AddressPro($a)

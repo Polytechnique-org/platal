@@ -23,6 +23,8 @@ require_once('geoloc.inc.php');
 
 // on limite à 6 adresses personnelles par utilisateur
 $nb_adr_max = 6; // ( = max(adrid possibles)
+// on limite à 4 numéros de téléphone par adresse
+$nb_tel_max = 4; // ( = max(telid possibles)
 
 //les adresses sont stockées dans un tableau global indéxé par adrid;
 
@@ -31,13 +33,14 @@ function is_adr_empty($adrid){
   return ( 
     ($adr['adr1'] == '') && ($adr['adr2'] == '') && ($adr['adr3'] == '') &&
     ($adr['postcode'] == '') && ($adr['city'] == '') && ($adr['country'] == '00') &&
-    ($adr['tel'] == '') && ($adr['fax'] == '')
+    (count($adr['tels']) == 0)
     );
 }
 
 function delete_address($adrid, $in_request_array = false){
     global $globals;
     $globals->xdb->execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
+    $globals->xdb->execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
     if($in_request_array == true){
       unset($_REQUEST['adrid'][$adrid]);
     }
@@ -67,7 +70,7 @@ $res = $globals->xdb->iterRow(
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
 	adr1, adr2, adr3, postcode, city, cityid,
-        a.country, region, regiontxt, tel, fax, pub, tel_pub,
+        a.country, region, regiontxt, pub,
 	gp.pays AS countrytxt, gp.display
 	FROM adresses AS a INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
 	WHERE uid = {?} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
@@ -83,13 +86,28 @@ for ($i = 0; $i < $nb_adr; $i++) {
        $adresses[$adrid]['secondaire'], $adresses[$adrid]['courrier'],
        $adresses[$adrid]['active'], $adresses[$adrid]['temporaire'],
        $adresses[$adrid]['adr1'], $adresses[$adrid]['adr2'], $adresses[$adrid]['adr3'], $adresses[$adrid]['postcode'], $adresses[$adrid]['city'], $adresses[$adrid]['cityid'],
-       $adresses[$adrid]['country'], $adresses[$adrid]['region'], $adresses[$adrid]['regiontxt'], $adresses[$adrid]['tel'], $adresses[$adrid]['fax'],
+       $adresses[$adrid]['country'], $adresses[$adrid]['region'], $adresses[$adrid]['regiontxt'],
        $adresses[$adrid]['pub'],
-       $adresses[$adrid]['tel_pub'],$adresses[$adrid]['countrytxt'],$adresses[$adrid]['display']) = $res->next();
+       $adresses[$adrid]['countrytxt'],$adresses[$adrid]['display']) = $res->next();
   $adresses[$adrid]['nouvelle'] = 'modif';
   $adresses[$adrid]['numero_formulaire'] = -1;
   require_once('geoloc.inc.php');
   $adresses[$adrid]['txt'] = get_address_text($adresses[$adrid]);
 }
 
+$restels = $globals->xdb->iterator(
+    "SELECT
+    t.adrid, telid, tel_type, t.tel_pub, t.tel
+    FROM tels AS t INNER JOIN adresses AS a ON(t.uid = a.uid AND t.adrid = a.adrid)
+    WHERE t.uid = {?} AND NOT FIND_IN_SET('pro',statut) ORDER BY t.adrid, tel_type DESC, telid"
+, Session::getInt('uid', -1)   
+);
+while ($tel = $restels->next()) {
+    $adrid = $tel['adrid'];
+    unset($tel['adrid']);
+    if (!isset($adresses[$adrid]['tels']))
+        $adresses[$adrid]['tels'] = array($tel);
+    else
+        $adresses[$adrid]['tels'][] = $tel;
+}
 ?>

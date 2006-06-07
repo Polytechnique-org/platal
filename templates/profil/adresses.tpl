@@ -69,7 +69,7 @@
     {include file="geoloc/form.address.tpl" adr=$adr titre=$titre url="`$smarty.server.PHP_SELF`?old_tab=`$smarty.request.old_tab`"}
     <tr>
       <td class="colg">
-        <span class="titre">Cette adresse est&nbsp;:</span>
+        <span class="titre">Adresse:</span>
       </td>
       <td class="cold">
         <input type="radio" name="temporaire[{$adrid}]" value="0" {if !$adr.temporaire}checked="checked"{/if} />
@@ -97,23 +97,22 @@
         <input type="checkbox" name="courrier[{$adrid}]" value="1" {if $adr.courrier}checked="checked"{/if} /> on peut m'y envoyer du courrier par la poste
       </td>
     </tr>
-    {include file="include/flags.radio.tpl" name="tel_pub[$adrid]" val=$adr.tel_pub}
-    <tr>
-      <td class="colg">
-        <span class="titre">Téléphone associé&nbsp;:</span>
-      </td>
-      <td>
-        <input type="text" size="19" maxlength="28" name="tel[{$adrid}]" value="{$adr.tel}" />
-      </td>
-    </tr>
-    <tr>
-      <td class="colg">
-        <span class="titre">Fax&nbsp;:</span>
-      </td>
-      <td>
-        <input type="text" size="19" maxlength="28" name="fax[{$adrid}]" value="{$adr.fax}" />
-      </td>
-    </tr>
+    {foreach from=$adr.tels item="tel"}
+      <tr class="flags">
+        <td class="colg">
+          <input type="hidden" name="telid{$tel.telid}[{$adrid}]" value="{$tel.telid}"/>
+          {if $tel.new_tel}
+            <input type="hidden" name="new_tel{$tel.telid}[{$adrid}]" value="1"/>
+          {/if}
+          <span class="titre" onclick="this.style.display='none';var d = document.getElementById('tel_type{$adrid}_{$tel.telid}');d.style.display='inline';d.select();d.focus();">{$tel.tel_type}&nbsp;:</span>
+          <input id="tel_type{$adrid}_{$tel.telid}" style="display:none" type="text" size="5" maxlength="20" name="tel_type{$tel.telid}[{$adrid}]" value="{$tel.tel_type}"/>
+        </td>
+        <td>
+          <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />
+        </td>
+          {include file="include/flags.radio.tpl" name="tel_pub`$tel.telid`[$adrid]" val=$tel.tel_pub display="mini"}
+      </tr>        
+    {/foreach}
     <tr><td colspan="5">&nbsp;</td></tr>
     {/section}
     <tr><td colspan="5">&nbsp;</td></tr>

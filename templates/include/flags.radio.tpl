@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-
+{if $display neq "mini"}
     <tr>
       <td colspan="5" class="pflags">
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
@@ -49,3 +49,14 @@
         </table>
       </td>
     </tr>
+{else}
+            <td class="vert">
+              <input type="radio" name="{$name}" value="public" {if $val eq 'public'}checked="checked"{/if} />
+            </td>
+            <td class="orange">
+              <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
+            </td>
+            <td class="rouge">
+              <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
+            </td>
+{/if}

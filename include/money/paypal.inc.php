@@ -77,9 +77,10 @@ class PayPal
 	$res = $globals->xdb->query(
 		"SELECT a.adr1 AS address1, a.adr2 AS address2,
 			a.city, a.postcode AS zip, a.country,
-			IF(a.tel, a.tel, q.profile_mobile) AS night_phone_b
+			IF(t.tel, t.tel, q.profile_mobile) AS night_phone_b
 		   FROM auth_user_quick AS q
 	      LEFT JOIN adresses	AS a ON (q.user_id = a.uid)
+	      LEFT JOIN tels        AS t ON (t.uid = a.uid AND t.adrid = a.adrid)
 	          WHERE q.user_id = {?} AND FIND_IN_SET('active', a.statut)
 		  LIMIT 1", Session::getInt('uid'));
 	$this->infos['client']=array_merge($info_client, $res->fetchOneAssoc());

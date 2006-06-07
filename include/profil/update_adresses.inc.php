@@ -19,8 +19,26 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
 reset($adresses);
+
+function insert_new_tel($adrid, $tel) {
+  global $globals;
+  if ($tel['tel'] == "") return;
+ $globals->xdb->execute(
+   "INSERT INTO tels SET
+    tel_type = {?},
+    tel_pub = {?},
+    tel = {?},
+    uid = {?},
+    adrid = {?},
+    telid = {?}",
+    $tel['tel_type'],
+    $tel['tel_pub'],
+    $tel['tel'],
+    Session::getInt('uid', -1),
+    $adrid,
+    $tel['telid']);
+}
 
 foreach($adresses as $adrid => $adr){
 
@@ -46,10 +64,7 @@ foreach($adresses as $adrid => $adr){
 			 country = {?},
 			 region = {?},
 			 regiontxt = {?},
-			 tel = {?},
-			 fax = {?},
 			 pub = {?},
-			 tel_pub = {?},
 			 datemaj = NOW(),
 			 statut = {?},
 			 uid = {?}, adrid = {?}",
@@ -62,12 +77,12 @@ foreach($adresses as $adrid => $adr){
 			 $adr['country'],
 			 $adr['region'],
 			 $adr['regiontxt'],
-			 $adr['tel'],
-			 $adr['fax'],
 			 $adr['pub'],
-			 $adr['tel_pub'],
 			 $statut,
 			 Session::getInt('uid', -1), $adrid);
+       $telsvalues = "";  		 
+       foreach ($adr['tels'] as $tel) 
+         insert_new_tel($adrid, $tel);
     }
     
     else{ 
@@ -83,10 +98,7 @@ foreach($adresses as $adrid => $adr){
 				 country = {?},
 				 region = {?},
 				 regiontxt = {?},
-				 tel = {?},
-				 fax = {?},
 				 pub = {?},
-				 tel_pub = {?},
 				 datemaj = NOW(),
 				 statut = {?}
 				 WHERE uid = {?} AND adrid = {?}",
@@ -99,13 +111,41 @@ foreach($adresses as $adrid => $adr){
 				 $adr['country'],
 				 $adr['region'],
 				 $adr['regiontxt'],
-				 $adr['tel'],
-				 $adr['fax'],
 				 $adr['pub'],
-				 $adr['tel_pub'],
 				 $statut,
 				 Session::getInt('uid', -1), $adrid
 		    );
+       foreach ($adr['tels'] as $tel) {
+         if ($tel['new_tel'])
+          insert_new_tel($adrid, $tel);
+        else
+          if ($tel['tel'] != "") {
+          $globals->xdb->execute(
+           "UPDATE tels SET
+            tel_type = {?},
+            tel_pub = {?},
+            tel = {?}
+            WHERE
+            uid = {?} AND
+            adrid = {?} AND
+            telid = {?}",
+            $tel['tel_type'],
+            $tel['tel_pub'],
+            $tel['tel'],
+            Session::getInt('uid', -1),
+            $adrid,
+            $tel['telid']);
+          } else {
+          $globals->xdb->execute(
+           "DELETE FROM tels WHERE
+            uid = {?} AND
+            adrid = {?} AND
+            telid = {?}",
+            Session::getInt('uid', -1),
+            $adrid,
+            $tel['telid']);
+          }
+       }
     }// fin nouvelle / ancienne adresse
   }//fin if nouvellement crée
 }//fin foreach

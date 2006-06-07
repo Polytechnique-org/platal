@@ -117,6 +117,7 @@ function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=n
     }
     if (is_array($del_address)) foreach($del_address as $adrid) {
         $globals->xdb->execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}", $userax['uid'], $adrid);
+        $globals->xdb->execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}", $userax['uid'], $adrid);
     }
 
     if (is_array($del_pro)) foreach($del_pro as $entrid) {
@@ -162,15 +163,25 @@ function import_from_ax($userax, $nom_usage=false, $mobile=false, $del_address=n
                              adr1 = {?}, adr2 = {?}, adr3 = {?},
                              postcode = {?}, city = {?},
                          country = {?},
-                         tel = {?}, fax = {?},
                          datemaj = NOW(),
-                         pub = 'ax',
-                         tel_pub = 'ax'",
+                         pub = 'ax'",
                 $userax['uid'], $new_adrid,
                 $adr['adr1'], $adr['adr2'], $adr['adr3'],
                 $adr['postcode'], $adr['city'],
-                $a2,
-                $adr['tel'], $adr['fax']);
+                $a2);
+            // import tels
+            if ($adr['tel'])
+                $globals->xdb->execute(
+                    "INSERT INTO adresses
+                        SET uid = {?}, adrid = {?}, tel = {?},
+                        telid = 0, tel_type = 'Tel.', tel_pub = 'ax'",
+                    $userax["uid"], $new_adrid, $adr['tel']);
+            if ($adr['fax'])
+                $globals->xdb->execute(
+                    "INSERT INTO adresses
+                        SET uid = {?}, adrid = {?}, tel = {?},
+                        telid = 1, tel_type = 'Fax', tel_pub = 'ax'",
+                    $userax["uid"], $new_adrid, $adr['fax']);
         }
     }
     

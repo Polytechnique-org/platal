@@ -204,17 +204,35 @@ function &get_user_details($login, $from_uid = '')
 
     $user['adr_pro'] = get_user_details_pro($uid);
 
-    $sql  = "SELECT  a.adr1,a.adr2,a.adr3,a.postcode,a.city,
-                     gp.pays AS countrytxt,a.region, a.regiontxt, a.tel,a.fax,
+    $sql  = "SELECT  a.adrid, a.adr1,a.adr2,a.adr3,a.postcode,a.city,
+                     gp.pays AS countrytxt,a.region, a.regiontxt,
                      FIND_IN_SET('active', a.statut) AS active, a.adrid,
                      FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
-                     a.pub, a.tel_pub, gp.display
+                     a.pub, gp.display
                FROM  adresses AS a
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)
               WHERE  uid= {?} AND NOT FIND_IN_SET('pro',a.statut)
            ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
     $res  = $globals->xdb->query($sql, $uid);
     $user['adr'] = $res->fetchAllAssoc();
+    $adrid_index = array();
+    foreach ($user['adr'] as $i => $adr) 
+        $adrid_index[$adr['adrid']] = $i;
+    
+    $sql = "SELECT  t.adrid, t.tel_pub, t.tel_type, t.tel
+              FROM  tels AS t
+        INNER JOIN  adresses AS a ON (a.uid = t.uid) AND (a.adrid = t.adrid)
+             WHERE  t.uid = {?} AND NOT FIND_IN_SET('pro',a.statut)
+          ORDER BY  t.adrid, t.tel_type DESC, t.telid";
+    $restel = $globals->xdb->iterator($sql, $uid);
+    while ($nexttel = $restel->next()) {
+        $adrid = $nexttel['adrid'];
+        unset($nexttel['adrid']);
+        if (!isset($user['adr'][$adrid_index[$adrid]]['tels'])) 
+            $user['adr'][$adrid_index[$adrid]]['tels'] = array($nexttel);
+        else
+            $user['adr'][$adrid_index[$adrid]]['tels'][] = $nexttel;
+    }
 
     $sql  = "SELECT  text
                FROM  binets_ins
