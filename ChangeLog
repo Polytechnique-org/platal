@@ -4,11 +4,11 @@ VERSION 0.9.10                                                   ??      2006
 New :
 
     * Geoloc :
-            Dynamic maps using geodesix plugin                              -Car
+        - Dynamic maps using geodesix plugin.                               -Car
 
     * Xnet :
-            Use wiki from Xnet.                                             -Car
-            Use wiki for group pages.                                       -Car
+        - Use wiki from Xnet.                                               -Car
+        - Use wiki for group pages.                                         -Car
 
 Bug/Wish :
 
@@ -21,6 +21,7 @@ Bug/Wish :
         - #411: Count chars in events proposals to make them smaller.       -Car
         
     * Profile :
+        - #400: Several phones for each address.                            -Car
         - #406: Direct link in owner's fiche to edit it.                    -Car
 
     * Newsletter :
