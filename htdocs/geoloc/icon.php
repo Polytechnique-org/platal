@@ -26,6 +26,7 @@ new_nonhtml_page('', AUTH_COOKIE);
 
 header("Content-type: application/x-shockwave-flash");
 
-readfile("../../plugins/geoloc/icon.swf");
+if ($globals->geoloc->use_map())
+	readfile($globals->geoloc->icon_path);
 
 ?>

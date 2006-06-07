@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -26,6 +26,12 @@
 class GeolocConfig
 {
     var $webservice_url = '';
+    var $dynamap_path = false;
+    var $icon_path = false;
+
+    function use_map() {
+        return $this->dynamap_path != false;
+    }
 }
 
 // }}}

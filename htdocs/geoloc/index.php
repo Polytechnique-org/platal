@@ -33,6 +33,7 @@ $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
 if ($search)
 	$page->assign('dynamap_vars', $search);
 
+$page->assign('use_map', $globals->geoloc->use_map());
 $page->run();
 
 // vim:set et sws=4 sw=4 sts=4:

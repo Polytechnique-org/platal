@@ -122,6 +122,8 @@ if (!Env::has('rechercher')) {
     
 }
 
+$page->assign('use_map', $globals->geoloc->use_map());
+
 $page->register_modifier('display_lines', 'display_lines');
 $page->run();
 

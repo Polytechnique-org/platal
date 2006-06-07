@@ -38,6 +38,7 @@ if (urlencode(Env::get('initfile')) != $initfile)
 
 header("Content-type: application/x-shockwave-flash");
 
-readfile("../../plugins/geoloc/dynamap.swf");
+if ($globals->geoloc->use_map())
+	readfile($globals->geoloc->dynamap_path);
 
 ?>

@@ -34,7 +34,7 @@
     {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}.
   </h1>
 
-  {if $search_results_nb and $advanced and !$simple}
+  {if $search_results_nb and $advanced and !$simple and $use_map}
   <p>
   	[<a href='geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
   </p>
