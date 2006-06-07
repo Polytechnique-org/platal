@@ -3,6 +3,9 @@ VERSION 0.9.10                                                   ??      2006
 
 New :
 
+    * Documentation :
+        - Display ChangeLog in site.                                        -Car
+
     * Geoloc :
         - Dynamic maps using geodesix plugin.                               -Car
 
