@@ -64,8 +64,8 @@ Aujourd'hui {$localises} de nos camarades sont localisés grâce à leurs adresses 
 <param name="allowScriptAccess" value="sameDomain" />
 <param name="quality" value="high" />
 <param name="bgcolor" value="#ffffff" />
-<param name="movie" value="dynamap{$dynamap_vars|default:"only_current=on"}.swf" />
-<embed src="dynamap{$dynamap_vars|default:"only_current=on"}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+<param name="movie" value="dynamap_{$dynamap_vars|default:"only_current=on"}.swf" />
+<embed src="dynamap_{$dynamap_vars|default:"only_current=on"}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
 </object>
 <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>
 </p>

@@ -30,7 +30,10 @@ class GeolocConfig
     var $icon_path = false;
 
     function use_map() {
-        return $this->dynamap_path != false;
+        static $use_map;
+        if (!isset($use_map))
+            $use_map = $this->dynamap_path != false && is_file($this->dynamap_path) && is_file($this->icon_path);
+        return $use_map;
     }
 }
 
