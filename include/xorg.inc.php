@@ -31,6 +31,8 @@ function _new_page($type, $tpl_name, $min_auth, $admin=false)
 {
     global $page,$globals;
     require_once("xorg/page.inc.php");
+    if ($min_auth == AUTH_PUBLIC && Env::get('force_login') == '1')
+        $min_auth = AUTH_COOKIE;
     if (!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
     } else switch($min_auth) {

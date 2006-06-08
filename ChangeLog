@@ -18,6 +18,9 @@ Bug/Wish :
     * Admin :
         - #408: Admin can change sex of users without root intervention.    -Car
 
+    * Carnet :
+        - #414: Link to users' fiche go to private fiche and not public.    -Car 
+ 
     * Events :
         - #268: Hide read events.                                           -Car
         - #391: Go back to top link at end of each event.                   -Car

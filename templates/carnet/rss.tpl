@@ -58,7 +58,7 @@
       <title>
         [{$notifs->_cats[$cid].short}] {$x.prenom} {$x.nom} ({$x.promo}) - le {$x.date|date_format|utf8_encode}
       </title>
-      <link>{#globals.baseurl#}/fiche.php?user={$x.bestalias}</link>
+      <link>{#globals.baseurl#}/fiche.php?user={$x.bestalias}&force_login=1</link>
       <description><![CDATA[
         {if !$x.contact and !$x.dcd}
         <a href="{#globals.baseurl#}/carnet/mescontacts.php?action=ajouter&amp;user={$x.bestalias}">
