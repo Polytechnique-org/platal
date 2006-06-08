@@ -46,7 +46,7 @@ Bug/Wish :
         - #403: Cache is cleared when editing a page.                       -Car
 
     * Xnet :
-        - #383: Paiements table relook.                                     -Car
+        - #379, #383: Paiements table relook.                               -Car
         - #413: When creating a new event, datas don't disappear anymore.   -Car
 
 From 0.9.8 Branch :

@@ -4,7 +4,10 @@ require 'xnet.inc.php';
 
 new_group_page('xnet/groupe/telepaiement.tpl');
 
-$res = $globals->xdb->query("SELECT id, text FROM {$globals->money->mpay_tprefix}paiements WHERE asso_id = {?}", $globals->asso('id'));
+$res = $globals->xdb->query("SELECT id, text FROM {$globals->money->mpay_tprefix}paiements
+    WHERE asso_id = {?} AND NOT FIND_IN_SET(flags, 'old')
+    ORDER BY id DESC",
+    $globals->asso('id'));
 $tit = $res->fetchAllAssoc();
 $page->assign('titres', $tit);
 
