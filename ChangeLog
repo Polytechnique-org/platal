@@ -46,6 +46,8 @@ Bug/Wish :
         - #403: Cache is cleared when editing a page.                       -Car
 
     * Xnet :
+        - #377: Possibility to edit or del an ext user if email used twice. -Car
+        - #378: Display group directory order by promo.                     -Car
         - #379, #383: Paiements table relook.                               -Car
         - #413: When creating a new event, datas don't disappear anymore.   -Car
 
