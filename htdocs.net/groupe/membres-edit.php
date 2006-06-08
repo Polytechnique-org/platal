@@ -5,17 +5,22 @@
     function get_infos($email)
     {
         global $globals;
+        // look for uid instead of email if numeric
+        $field = is_numeric($email)?'uid':'email';
 
-        $email = strtolower($email);
-        if (strpos($email, '@') === false) {
-            $email .= '@m4x.org';
+        if ($field == 'email') {
+            $email = strtolower($email);
+            if (strpos($email, '@') === false) {
+                $email .= '@m4x.org';
+            }
+            list($mbox,$dom) = explode('@', $email);
         }
-        list($mbox,$dom) = explode('@', $email);
 
         $res = $globals->xdb->query(
                 "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine
                    FROM  groupex.membres
-                  WHERE  email = {?} AND asso_id = {?}", $email, $globals->asso('id'));
+                  WHERE  $field = {?} AND asso_id = {?}", $email, $globals->asso('id'));
+
         if ($res->numRows()) {
             return $res->fetchOneAssoc();
         } elseif ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
@@ -158,7 +163,15 @@
         $page->assign('user', $user);
 
         if (Post::has('confirm')) {
-            if ($domain = $globals->asso('mail_domain')) {
+
+            $globals->xdb->execute(
+                    "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
+                    $user['uid'], $globals->asso('id'));
+
+            // don't unsubscribe email from list if other user use same email
+            $user_same_email = get_infos($user['email']);
+            
+            if (($domain = $globals->asso('mail_domain')) && empty($user_same_email)) {
             
                 require 'lists.inc.php';
                 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $domain);
@@ -183,9 +196,6 @@
                 }
             }
 
-            $globals->xdb->execute(
-                    "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
-                    $user['uid'], $globals->asso('id'));
             $page->trig("{$user['prenom']} {$user['nom']} a été retiré du groupe !");
         }
     }

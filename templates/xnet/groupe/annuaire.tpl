@@ -42,16 +42,16 @@ Fonctionnalités visibles uniquement par les administrateurs :
 {/if}
 
 <p class="center">
-[<a href="{$smarty.server.PHP_SELF}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
+[<a href="{$smarty.server.PHP_SELF}" {if !$request_group}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
-[<a href="?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="?{$group}={$c}&amp;order={$smarty.request.order}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
 <table summary="membres du groupe" class="{if $admin}large{else}tiny{/if}">
   <tr>
-    <th>Prénom NOM</th>
-    <th>Promo</th>
+    <th><a href="?order=alpha{if $smarty.request.order neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">Prénom NOM</a></th>
+    <th><a href="?order=promo{if $smarty.request.order eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">Promo</a></th>
     <th>Infos</th>
     {if $admin}
     <th>Éditer</th>
@@ -60,7 +60,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
   </tr>
   {iterate from=$ann item=m}
   <tr {if $m.admin}style="background:#d0c198;"{/if}>
-    <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}</td>
+    <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}</td>
     <td>{$m.promo}</td>
     <td>
       {if $m.x}
@@ -72,8 +72,8 @@ Fonctionnalités visibles uniquement par les administrateurs :
       {/if}
     </td>
     {if $admin}
-    <td><a href="membres-edit.php?edit={$m.email}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
-    <td><a href="membres-edit.php?del={$m.email}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
+    <td><a href="membres-edit.php?edit={if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
+    <td><a href="membres-edit.php?del={if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
     {/if}
   </tr>
   {/iterate}
