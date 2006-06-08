@@ -96,6 +96,12 @@
       </td>
     </tr>
     <tr>
+      <td colspan="2">Autoriser les invités :
+        <input type="radio" name="noinvite" value="0" {if !$evt.noinvite}checked="checked"{/if} /> oui
+        <input type="radio" name="noinvite" value="1" {if $evt.noinvite}checked="checked"{/if}/> non
+      </td>
+    </tr>
+    <tr>
       <td>Référence de paiement&nbsp;:
       </td>
       <td>

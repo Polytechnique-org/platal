@@ -32,6 +32,7 @@ if (Env::has('ins')) {
         $res = $globals->xdb->query("
             SELECT  deadline_inscription,
                     LEFT(NOW(), 10) AS now,
+                    noinvite,
                     membres_only
             FROM    groupex.evenements
             WHERE   eid = {?}", $eid);
@@ -63,6 +64,9 @@ if (Env::has('ins')) {
                 $inscriptions[$j] = 0;
             // avoid floating count if other field incorrect
             $inscriptions[$j] = floor($inscriptions[$j]);
+            // avoid invite if no invite allowed
+            if ($inscriptions[$j] > 1 && $e['noinvite'])
+                $inscriptions[$j] = 1;
             $total_inscr += $inscriptions[$j];
         }
         $unsubscribing = ($total_inscr == 0);
@@ -115,7 +119,7 @@ $evenements = $globals->xdb->iterator(
 	 e.debut, e.fin,
 	 LEFT(10,e.debut) AS debut_day,
 	 LEFT(10,e.fin) AS fin_day,
-         e.paiement_id, e.membres_only,
+         e.paiement_id, e.membres_only, e.noinvite,
 	 e.show_participants, u.nom, u.prenom, u.promo, a.alias, MAX(ep.nb) AS inscrit,
          MAX(ep.paid) AS paid,
 	 e.short_name,

@@ -49,6 +49,7 @@ Bug/Wish :
         - #377: Possibility to edit or del an ext user if email used twice. -Car
         - #378: Display group directory order by promo.                     -Car
         - #379, #383: Paiements table relook.                               -Car
+        - #399: Event can accept guests or not.                             -Car     
         - #413: When creating a new event, datas don't disappear anymore.   -Car
 
 From 0.9.8 Branch :

@@ -123,6 +123,7 @@ if (Post::get('intitule')) {
     $evt['membres_only'] = Post::get('membres_only');
     $evt['advertise'] = Post::get('advertise');
     $evt['show_participants'] = Post::get('show_participants');
+    $evt['noinvite'] = Post::get('noinvite');
     if (!$short_name) $short_name = '';
     $evt['short_name'] = $short_name;
     $evt['deadline_inscription'] = (Post::get('deadline', 'off')=='on')?null:(Post::get('inscr_Year')."-".Post::get('inscr_Month')."-".Post::get('inscr_Day'));
@@ -133,12 +134,12 @@ if (Post::get('intitule')) {
             paiement_id = {?}, descriptif = {?},
             debut = {?}, fin = {?},
             membres_only = {?}, advertise = {?}, show_participants = {?}, 
-            short_name = {?}, deadline_inscription = {?}",
+            short_name = {?}, deadline_inscription = {?}, noinvite = {?}",
             $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'], $evt['intitule']
             , $evt['paiement_id'], $evt['descriptif'],
             $evt['debut'], $evt['fin'],
             $evt['membres_only'], $evt['advertise'], $evt['show_participants'],
-            $evt['short_name'], $evt['deadline_inscription']);
+            $evt['short_name'], $evt['deadline_inscription'], $evt['noinvite']);
 
     // if new event, get its id
     if (!$eid) {
@@ -218,7 +219,7 @@ while ($a = $res->next()) $paiements[$a['id']] = $a['text'];
 // when modifying an old event retreive the old datas
 if ($eid) {
     $res = $globals->xdb->query(
-            "SELECT	eid, intitule, descriptif, debut, fin, membres_only, advertise, show_participants, paiement_id, short_name, deadline_inscription
+            "SELECT	eid, intitule, descriptif, debut, fin, membres_only, advertise, show_participants, paiement_id, short_name, deadline_inscription, noinvite
                FROM	groupex.evenements
               WHERE eid = {?}", $eid);
     $evt = $res->fetchOneAssoc();

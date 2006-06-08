@@ -105,15 +105,20 @@ Evénements
             {if $e.inscr_open}
               <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="0"
               {if !$m.nb}checked="checked"{/if}/>non
-              <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="1"
-              {if $m.nb eq 1}checked="checked"{/if}/>seul<br />
-              <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="2"
-              {if $m.nb > 1}checked="checked"{/if}/>avec <input size="2" name="personnes{$e.eid}_{$m.item_id}" value="{if $m.nb > 1}{math equation="x - y" x=$m.nb y=1}{else}1{/if}"/> personnes
+              {if $e.noinvite}
+                  <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="1"
+                  {if $m.nb eq 1}checked="checked"{/if}/>oui
+              {else}
+                  <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="1"
+                  {if $m.nb eq 1}checked="checked"{/if}/>seul<br />
+                  <input type="radio" name="moment{$e.eid}_{$m.item_id}" value="2"
+                  {if $m.nb > 1}checked="checked"{/if}/>avec <input size="2" name="personnes{$e.eid}_{$m.item_id}" value="{if $m.nb > 1}{math equation="x - y" x=$m.nb y=1}{else}1{/if}"/> personnes
+              {/if}
             {else}
               {if !$m.nb}
                 Je ne viendrai pas.
               {elseif $m.nb eq 1}
-                Je viendrai seul.
+                Je viendrai{if !$e.noinvite} seul{/if}.
               {else}
                 Je viendrai avec {$m.nb} personne{if $m.nb > 2}s{/if}
               {/if}
