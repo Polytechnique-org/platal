@@ -21,7 +21,13 @@
 
 
 require_once("xorg.inc.php");
-new_simple_page('fiche.tpl', AUTH_PUBLIC);
+
+// manage the public fiche or ax fiche
+$view = 'private';
+if (!logged() || Env::get('view') == 'public') $view = 'public';
+if (logged() && Env::get('view') == 'ax') $view = 'ax';
+
+new_simple_page('fiche.tpl', ($view == 'public')?AUTH_PUBLIC:AUTH_COOKIE);
 require_once('user.func.inc.php');
 
 if (!Env::has('user') && !Env::has('mat')) {
@@ -48,7 +54,7 @@ if (Env::has('mat')) {
 }
 
 $new   = Env::get('modif') == 'new';
-$user  = get_user_details($login, Session::getInt('uid'));
+$user  = get_user_details($login, Session::getInt('uid'), $view);
 $title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
 $page->assign('xorg_title', $title);
 
@@ -74,83 +80,12 @@ if($user['x'] < 160){
     $user['x'] = 160;
 }
 
-// manage the public fiche
-$page->assign('logged', logged() && !Env::has('public'));
-if (!logged() || Env::has('public')) {
-    // hide the orange status
-    $user['promo_sortie'] = $user['promo'] + 3;
-    if ($user['mobile_pub'] != 'public') $user['mobile'] = '';
-    if ($user['web_pub'] != 'public') $user['web'] = '';
-    if ($user['freetext_pub'] !=  'public') $user['freetext'] = '';
-    foreach ($user['adr'] as $i=>$adr) {
-        foreach ($adr['tels'] as $j=>$tel) {
-            if ($tel['tel_pub'] != 'public')
-                unset($user['adr'][$i]['tels'][$j]);
-        }
-        if (($adr['pub'] != 'public') && (count($user['adr'][$i]['tels']) == 0))
-            unset($user['adr'][$i]);
-        elseif ($adr['pub'] != 'public') {
-            $user['adr'][$i]['adr1'] = '';
-            $user['adr'][$i]['adr2'] = '';
-            $user['adr'][$i]['adr3'] = '';
-            $user['adr'][$i]['city'] = '';
-            $user['adr'][$i]['postcode'] = '';
-            $user['adr'][$i]['region'] = '';
-            $user['adr'][$i]['regiontxt'] = '';
-            $user['adr'][$i]['country'] = '00';
-            $user['adr'][$i]['countrytxt'] = '';
-        }
-    }
-    foreach ($user['adr_pro'] as $i=>$adr) {
-        if ($adr['pub'] != 'public' && $adr['tel_pub'] != 'public' && $adr['adr_pub'] != 'public' && $adr['email_pub'] != 'public')
-            unset($user['adr_pro'][$i]);
-        else {
-            if ($adr['adr_pub'] != 'public') {
-                $user['adr_pro'][$i]['adr1'] = '';
-                $user['adr_pro'][$i]['adr2'] = '';
-                $user['adr_pro'][$i]['adr3'] = '';
-                $user['adr_pro'][$i]['city'] = '';
-                $user['adr_pro'][$i]['postcode'] = '';
-                $user['adr_pro'][$i]['region'] = '';
-                $user['adr_pro'][$i]['country'] = '00';
-                $user['adr_pro'][$i]['countrytxt'] = '';
-            }
-            if ($adr['pub'] != 'public') {
-                $user['adr_pro'][$i]['entreprise'] = '';
-                $user['adr_pro'][$i]['secteur'] = '';
-                $user['adr_pro'][$i]['fonction'] = '';
-                $user['adr_pro'][$i]['poste'] = '';
-            }
-            if ($adr['tel_pub'] != 'public') {
-                $user['adr_pro'][$i]['tel'] = '';
-                $user['adr_pro'][$i]['fax'] = '';
-                $user['adr_pro'][$i]['mobile'] = '';
-            }
-            if ($adr['email_pub'] != 'public') {
-                $user['adr_pro'][$i]['email'] = '';
-            }
-        }
-    }
-    if ($user['medals_pub'] != 'public') {
-        unset($user['medals']);
-    }
-    if ($user['photo_pub'] != 'public') {
-        $photo = "";
-    }
+$page->assign('logged', has_user_right('private', $view));
+if (!has_user_right($user['photo_pub'], $view)) {
+    $photo = "";
 }
-foreach($user['adr_pro'] as $i=>$pro) {
-    if ($pro['entreprise'] == '' && $pro['fonction'] == ''
-        && $pro['secteur'] == '' && $pro['poste'] == ''
-        && $pro['adr1'] == '' && $pro['adr2'] == '' && $pro['adr3'] == ''
-        && $pro['postcode'] == '' && $pro['city'] == '' && $pro['country'] == '00'
-        && $pro['tel'] == '' && $pro['fax'] == '' && $pro['mobile'] == ''
-        && $pro['email'] == '')
-        unset($user['adr_pro'][$i]);
-}
-if (count($user['adr_pro']) == 0) unset($user['adr_pro']);
-if (count($user['adr']) == 0) unset($user['adr']);
-$page->assign_by_ref('x', $user);
 
+$page->assign_by_ref('x', $user);
 $page->assign('photo_url', $photo);
 // alias virtual
 $res = $globals->xdb->query(

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -150,9 +150,20 @@ function get_user_forlife($data) {
 }
 
 // }}}
+// {{{ function has_user_right()
+function has_user_right($pub, $view = 'private') {
+    if ($pub == $view) return true;
+    // all infos available for private 
+    if ($view == 'private') return true;
+    // public infos available for all 
+    if ($pub == 'public') return true;
+    // here we have view = ax or public, and pub = ax or private, and pub != view
+    return false;    
+}
+// }}}
 // {{{ function get_user_details_pro()
 
-function get_user_details_pro($uid)
+function get_user_details_pro($uid, $view = 'private')
 {
     global $globals;
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
@@ -168,13 +179,95 @@ function get_user_details_pro($uid)
               WHERE  e.uid = {?}
            ORDER BY  e.entrid";
     $res  = $globals->xdb->query($sql, $uid);
-    return $res->fetchAllAssoc();
+    $all_pro = $res->fetchAllAssoc();
+    foreach ($all_pro as $i => $pro) {
+        if (!has_user_right($pro['pub'], $view))
+            unset($all_pro[$i]);
+        else {
+            if (!has_user_right($pro['adr_pub'], $view)) {
+                $all_pro[$i]['adr1'] = '';
+                $all_pro[$i]['adr2'] = '';
+                $all_pro[$i]['adr3'] = '';
+                $all_pro[$i]['postcode'] = '';
+                $all_pro[$i]['city'] = '';
+                $all_pro[$i]['countrytxt'] = '';
+                $all_pro[$i]['region'] = '';
+            }
+            if (!has_user_right($pro['tel_pub'], $view)) {
+                $all_pro[$i]['tel'] = '';
+                $all_pro[$i]['fax'] = '';
+                $all_pro[$i]['mobile'] = '';
+            }
+            if (!has_user_right($pro['email_pub'], $view)) {
+                $all_pro[$i]['email'] = '';
+            }
+            if ($all_pro[$i]['adr1'] == '' &&
+                $all_pro[$i]['adr2'] == '' &&
+                $all_pro[$i]['adr3'] == '' &&
+                $all_pro[$i]['postcode'] == '' &&
+                $all_pro[$i]['city'] == '' &&
+                $all_pro[$i]['countrytxt'] == '' &&
+                $all_pro[$i]['region'] == '' &&
+                $all_pro[$i]['entreprise'] == '' &&
+                $all_pro[$i]['fonction'] == '' &&
+                $all_pro[$i]['secteur'] == '' &&
+                $all_pro[$i]['poste'] == '' &&
+                $all_pro[$i]['tel'] == '' &&
+                $all_pro[$i]['fax'] == '' &&
+                $all_pro[$i]['mobile'] == '' &&
+                $all_pro[$i]['email'] == '')
+                unset($all_pro[$i]);
+        }
+    }
+    if (!count($all_pro)) return false;
+    return $all_pro;
 }
 
 // }}}
+function get_user_details_adr($uid, $view = 'private') {
+    global $globals;
+    $sql  = "SELECT  a.adrid, a.adr1,a.adr2,a.adr3,a.postcode,a.city,
+                     gp.pays AS countrytxt,a.region, a.regiontxt,
+                     FIND_IN_SET('active', a.statut) AS active, a.adrid,
+                     FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
+                     a.pub, gp.display
+               FROM  adresses AS a
+          LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)
+              WHERE  uid= {?} AND NOT FIND_IN_SET('pro',a.statut)
+           ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
+    $res  = $globals->xdb->query($sql, $uid);
+    $all_adr = $res->fetchAllAssoc();
+    $adrid_index = array();
+    foreach ($all_adr as $i => $adr) {
+        if (!has_user_right($adr['pub'], $view))
+            unset($all_adr[$i]);
+        else
+            $adrid_index[$adr['adrid']] = $i;
+    }
+    
+    $sql = "SELECT  t.adrid, t.tel_pub, t.tel_type, t.tel, t.telid
+              FROM  tels AS t
+        INNER JOIN  adresses AS a ON (a.uid = t.uid) AND (a.adrid = t.adrid)
+             WHERE  t.uid = {?} AND NOT FIND_IN_SET('pro',a.statut)
+          ORDER BY  t.adrid, t.tel_type DESC, t.telid";
+    $restel = $globals->xdb->iterator($sql, $uid);
+    while ($nexttel = $restel->next()) {
+        if (has_user_right($nexttel['tel_pub'], $view)) {
+            $adrid = $nexttel['adrid'];
+            unset($nexttel['adrid']);
+            if (isset($adrid_index[$adrid])) {
+                if (!isset($all_adr[$adrid_index[$adrid]]['tels'])) 
+                    $all_adr[$adrid_index[$adrid]]['tels'] = array($nexttel);
+                else
+                    $all_adr[$adrid_index[$adrid]]['tels'][] = $nexttel;
+            }
+        }
+    }
+    return $all_adr;
+}
 // {{{ function get_user_details()
 
-function &get_user_details($login, $from_uid = '')
+function &get_user_details($login, $from_uid = '', $view = 'private')
 {
     global $globals;
     $reqsql = "SELECT  u.user_id, u.promo, u.promo_sortie, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
@@ -201,56 +294,42 @@ function &get_user_details($login, $from_uid = '')
     $res  = $globals->xdb->query($reqsql, $from_uid, $login);
     $user = $res->fetchOneAssoc();
     $uid  = $user['user_id'];
-
-    $user['adr_pro'] = get_user_details_pro($uid);
-
-    $sql  = "SELECT  a.adrid, a.adr1,a.adr2,a.adr3,a.postcode,a.city,
-                     gp.pays AS countrytxt,a.region, a.regiontxt,
-                     FIND_IN_SET('active', a.statut) AS active, a.adrid,
-                     FIND_IN_SET('res-secondaire', a.statut) AS secondaire,
-                     a.pub, gp.display
-               FROM  adresses AS a
-          LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)
-              WHERE  uid= {?} AND NOT FIND_IN_SET('pro',a.statut)
-           ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
-    $res  = $globals->xdb->query($sql, $uid);
-    $user['adr'] = $res->fetchAllAssoc();
-    $adrid_index = array();
-    foreach ($user['adr'] as $i => $adr) 
-        $adrid_index[$adr['adrid']] = $i;
-    
-    $sql = "SELECT  t.adrid, t.tel_pub, t.tel_type, t.tel
-              FROM  tels AS t
-        INNER JOIN  adresses AS a ON (a.uid = t.uid) AND (a.adrid = t.adrid)
-             WHERE  t.uid = {?} AND NOT FIND_IN_SET('pro',a.statut)
-          ORDER BY  t.adrid, t.tel_type DESC, t.telid";
-    $restel = $globals->xdb->iterator($sql, $uid);
-    while ($nexttel = $restel->next()) {
-        $adrid = $nexttel['adrid'];
-        unset($nexttel['adrid']);
-        if (!isset($user['adr'][$adrid_index[$adrid]]['tels'])) 
-            $user['adr'][$adrid_index[$adrid]]['tels'] = array($nexttel);
-        else
-            $user['adr'][$adrid_index[$adrid]]['tels'][] = $nexttel;
+    // hide orange status, cv, nickname, section
+    if (!has_user_right('private', $view)) {
+        $user['promo_sortie'] = $user['promo'] + 3;
+        $user['cv'] = '';
+        $user['nickname'] = '';
+        $user['section'] = '';
     }
+    // hide mobile
+    if (!has_user_right($user['mobile_pub'], $view)) $user['mobile'] = '';
+    // hide web
+    if (!has_user_right($user['web_pub'], $view)) $user['web'] = '';
+    // hide freetext
+    if (!has_user_right($user['freetext_pub'], $view)) $user['freetext'] = '';
 
-    $sql  = "SELECT  text
-               FROM  binets_ins
-          LEFT JOIN  binets_def ON binets_ins.binet_id = binets_def.id
-              WHERE  user_id = {?}";
-    $res  = $globals->xdb->query($sql, $uid);
-    $user['binets']      = $res->fetchColumn();
-    $user['binets_join'] = join(', ', $user['binets']);
+    $user['adr_pro'] = get_user_details_pro($uid, $view);
+    $user['adr']     = get_user_details_adr($uid, $view);
 
-    $res  = $globals->xdb->iterRow("SELECT  text, url
-                                      FROM  groupesx_ins
-                                 LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
-                                     WHERE  guid = {?}", $uid);
-    $user['gpxs'] = Array();
-    while (list($gxt, $gxu) = $res->next()) {
-        $user['gpxs'][] = $gxu ? "<a href=\"$gxu\">$gxt</a>" : $gxt;
-    } 
-    $user['gpxs_join'] = join(', ', $user['gpxs']);
+    if (has_user_right('private', $view)) {
+        $sql  = "SELECT  text
+                   FROM  binets_ins
+              LEFT JOIN  binets_def ON binets_ins.binet_id = binets_def.id
+                  WHERE  user_id = {?}";
+        $res  = $globals->xdb->query($sql, $uid);
+        $user['binets']      = $res->fetchColumn();
+        $user['binets_join'] = join(', ', $user['binets']);
+    
+        $res  = $globals->xdb->iterRow("SELECT  text, url
+                                          FROM  groupesx_ins
+                                     LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
+                                         WHERE  guid = {?}", $uid);
+        $user['gpxs'] = Array();
+        while (list($gxt, $gxu) = $res->next()) {
+            $user['gpxs'][] = $gxu ? "<a href=\"$gxu\">$gxt</a>" : $gxt;
+        } 
+        $user['gpxs_join'] = join(', ', $user['gpxs']);
+    }
 
     $res = $globals->xdb->iterRow("SELECT  applis_def.text, applis_def.url, applis_ins.type
                                      FROM  applis_ins
@@ -265,14 +344,16 @@ function &get_user_details($login, $from_uid = '')
     }
     $user['applis_join'] = join(', ', $user['applis_fmt']);
 
-    $res = $globals->xdb->iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
-                                      FROM  profile_medals_sub    AS s
-                                INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
-                                LEFT  JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )
-                                     WHERE  s.uid = {?}", $uid);
-    $user['medals'] = Array();
-    while ($tmp = $res->next()) {
-        $user['medals'][] = $tmp;
+    if (has_user_right($user['medals_pub'], $view)) {
+        $res = $globals->xdb->iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
+                                          FROM  profile_medals_sub    AS s
+                                    INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
+                                    LEFT  JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )
+                                         WHERE  s.uid = {?}", $uid);
+        $user['medals'] = Array();
+        while ($tmp = $res->next()) {
+            $user['medals'][] = $tmp;
+        }
     }
 
     return $user;

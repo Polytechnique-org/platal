@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2004 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -31,7 +31,7 @@
 
 <p>Tu peux consulter <a href="{rel}/fiche.php?user={$smarty.session.forlife}" class="popup2">l'état actuel de ta fiche</a>
 telle qu'elle apparaîtra pour un camarade,
-ou <a href="{rel}/fiche.php?user={$smarty.session.forlife}&amp;public=1" class="popup2">telle</a> qu'elle apparaîtra à tout le monde.</p>
+ou telle qu'elle apparaîtra dans l'annuaire de l'<a href="{rel}/fiche.php?user={$smarty.session.forlife}&amp;view=ax" class="popup2">AX</a> ou à <a href="{rel}/fiche.php?user={$smarty.session.forlife}&amp;view=public" class="popup2">tout le monde</a>.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" style="width: 98%; margin-left:1%;">

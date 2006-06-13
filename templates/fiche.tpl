@@ -32,7 +32,7 @@ function chgMainWinLoc( strPage ) {
 </script>
 {/literal}
 
-{if $x.forlife eq $smarty.session.forlife}
+{if $logged and $x.forlife eq $smarty.session.forlife}
 [<a href="javascript:x()" onclick="chgMainWinLoc('{rel}/profil.php')">Modifier ma fiche</a>]
 {/if}
 
