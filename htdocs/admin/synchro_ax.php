@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -44,58 +44,18 @@ if (Env::has('mat')) {
 }
 
 if ($login) {
-    $new   = Env::get('modif') == 'new';
-    $user  = get_user_details($login, Session::getInt('uid'));
-    $userax= get_user_ax($user['user_id']);
-
-    if (Env::has('importe')) {
-
-        $adr_dels = array();
-        foreach ($user['adr'] as $adr) {
-            if (Env::has('del_address'.$adr['adrid'])) {
-                $adr_dels[] = $adr['adrid'];
-            }
-        }
-
-        $adr_adds = array();
-        foreach ($userax['adr'] as $i => $adr) {
-            if (Env::has('add_address'.$i)) {
-                $adr_adds[] = $i;
-            }
-        }
-
-        $pro_dels = array();
-        foreach ($user['adr_pro'] as $pro) {
-            if (Env::has('del_pro'.$pro['entrid'])) {
-                $pro_dels[] = $pro['entrid'];
-            }
-        }
-
-        $pro_adds = array();
-        foreach ($userax['adr_pro'] as $i => $pro) {
-            if (Env::has('add_pro'.$i)) {
-                $pro_adds[] = $i;
-            }
-        }
-
-        import_from_ax($userax, Env::has('nom_usage'), Env::has('mobile'), $adr_dels, $adr_adds, $pro_dels, $pro_adds, Env::has('nationalite'));
-
-    }
-
-    $user  = get_user_details($login, Session::getInt('uid'));
     
-    if ($userax) {
-        $user['matricule_ax'] = $userax['matricule_ax'];
-        unset($userax['matricule_ax']);
-        $user['nom'] = ucwords(strtolower($user['nom']));
-        $user['nom_usage'] = ucwords(strtolower($user['nom_usage']));
+    if (Env::has('importe')) {
+        ax_synchronize($login, Session::getInt('uid'));
     }
-
-    $page->assign('watch_champs',array('nom', 'nom_usage', 'prenom', 'nationalite', 'mobile'));
-    $page->assign('modifiables', array(0,1,0,1,1));
+    // get details from user, but looking only info that can be seen by ax
+    $user  = get_user_details($login, Session::getInt('uid'), 'ax');
+    $userax= get_user_ax($user['matricule_ax']);
+    require_once 'profil.func.inc.php';
+    $diff = diff_user_details($userax, $user, 'ax');
 
     $page->assign('x', $user);
-    $page->assign('ax', $userax); 
+    $page->assign('diff', $diff);
 }
 $page->run();
 

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -47,4 +47,5 @@ $page->assign('nouvellephoto', $nouvellephoto);
 $page->assign('nickname', $nickname);
 
 $page->assign('synchro_ax', $synchro_ax);
+$page->assign('matricule_ax', $matricule_ax);
 ?>

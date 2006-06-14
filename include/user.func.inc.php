@@ -26,7 +26,7 @@
  */
 function user_clear_all_subs($user_id, $really_del=true)
 {
-    // keep datas in : aliases, adresses, applis_ins, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
+    // keep datas in : aliases, adresses, tels, applis_ins, binets_ins, contacts, groupesx_ins, homonymes, identification_ax, photo
     // delete in     : auth_user_md5, auth_user_quick, competences_ins, emails, entreprises, langues_ins, mentor,
     //                 mentor_pays, mentor_secteurs, newsletter_ins, perte_pass, requests, user_changes, virtual_redirect, watch_sub
     // + delete maillists
@@ -167,7 +167,7 @@ function get_user_details_pro($uid, $view = 'private')
 {
     global $globals;
     $sql  = "SELECT  e.entreprise, s.label as secteur , ss.label as sous_secteur , f.fonction_fr as fonction,
-                     e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city,
+                     e.poste, e.adr1, e.adr2, e.adr3, e.postcode, e.city, e.entrid,
                      gp.pays AS countrytxt, gr.name AS region, e.tel, e.fax, e.mobile, e.entrid,
                      e.pub, e.adr_pub, e.tel_pub, e.email, e.email_pub, e.web
                FROM  entreprises AS e
@@ -185,21 +185,41 @@ function get_user_details_pro($uid, $view = 'private')
             unset($all_pro[$i]);
         else {
             if (!has_user_right($pro['adr_pub'], $view)) {
-                $all_pro[$i]['adr1'] = '';
-                $all_pro[$i]['adr2'] = '';
-                $all_pro[$i]['adr3'] = '';
-                $all_pro[$i]['postcode'] = '';
-                $all_pro[$i]['city'] = '';
-                $all_pro[$i]['countrytxt'] = '';
-                $all_pro[$i]['region'] = '';
+                if ($pro['adr1'] == '' &&
+                    $pro['adr2'] == '' &&
+                    $pro['adr3'] == '' &&
+                    $pro['postcode'] == '' &&
+                    $pro['city'] == '' &&
+                    $pro['countrytxt'] == '' &&
+                    $pro['region'] == '') {
+                    $all_pro[$i]['adr_pub'] = $view;
+                } else {
+                    $all_pro[$i]['adr1'] = '';
+                    $all_pro[$i]['adr2'] = '';
+                    $all_pro[$i]['adr3'] = '';
+                    $all_pro[$i]['postcode'] = '';
+                    $all_pro[$i]['city'] = '';
+                    $all_pro[$i]['countrytxt'] = '';
+                    $all_pro[$i]['region'] = '';
+                }
             }
             if (!has_user_right($pro['tel_pub'], $view)) {
-                $all_pro[$i]['tel'] = '';
-                $all_pro[$i]['fax'] = '';
-                $all_pro[$i]['mobile'] = '';
+                // if no tel was defined, then the viewer will be able to write it
+                if ($pro['tel'] == '' && 
+                    $pro['fax'] == '' &&
+                    $pro['mobile'] == '') {
+                    $all_pro[$i]['tel_pub'] = $view;
+                } else {
+                    $all_pro[$i]['tel'] = '';
+                    $all_pro[$i]['fax'] = '';
+                    $all_pro[$i]['mobile'] = '';
+                }
             }
             if (!has_user_right($pro['email_pub'], $view)) {
-                $all_pro[$i]['email'] = '';
+                if ($pro['email'] == '')
+                    $all_pro[$i]['email_pub'] = $view;
+                else
+                    $all_pro[$i]['email'] = '';
             }
             if ($all_pro[$i]['adr1'] == '' &&
                 $all_pro[$i]['adr2'] == '' &&
@@ -279,6 +299,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        a.alias AS forlife, a2.alias AS bestalias,
                        c.uid IS NOT NULL AS is_contact,
                        s.text AS section, p.x, p.y, p.pub AS photo_pub,
+                       u.matricule_ax,
                        m.expertise != '' AS is_referent
                        
                  FROM  auth_user_md5   AS u
@@ -302,11 +323,26 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['section'] = '';
     }
     // hide mobile
-    if (!has_user_right($user['mobile_pub'], $view)) $user['mobile'] = '';
+    if (!has_user_right($user['mobile_pub'], $view)) {
+        if ($user['mobile'] == '')
+            $user['mobile_pub'] = $view;
+        else
+            $user['mobile'] = '';
+    }
     // hide web
-    if (!has_user_right($user['web_pub'], $view)) $user['web'] = '';
+    if (!has_user_right($user['web_pub'], $view)) {
+        if ($user['web'] == '')
+            $user['web_pub'] = $view;
+        else
+            $user['web'] = '';
+    }
     // hide freetext
-    if (!has_user_right($user['freetext_pub'], $view)) $user['freetext'] = '';
+    if (!has_user_right($user['freetext_pub'], $view)) {
+        if ($user['freetext'] == '')
+            $user['freetext_pub'] = $view;
+        else
+            $user['freetext'] = '';
+    }
 
     $user['adr_pro'] = get_user_details_pro($uid, $view);
     $user['adr']     = get_user_details_adr($uid, $view);
@@ -338,7 +374,9 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                                  ORDER BY  ordre", $uid);
     
     $user['applis_fmt'] = Array();
+    $user['formation'] = Array();
     while (list($txt, $url, $type) = $res->next()) {
+        $user['formation'][] = $txt." ".$type;
         require_once('applis.func.inc.php');
         $user['applis_fmt'][] = applis_fmt($type, $txt, $url);
     }
@@ -358,7 +396,254 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
 
     return $user;
 }
+// }}}
+// {{{ function add_user_address()
+function add_user_address($uid, $adrid, $adr) {
+    global $globals;
+    $globals->xdb->execute(
+        "INSERT INTO adresses (`uid`, `adrid`, `adr1`, `adr2`, `adr3`, `postcode`, `city`, `country`, `datemaj`, `pub`) (
+        SELECT u.user_id, {?}, {?}, {?}, {?}, {?}, {?}, gp.a2, NOW(), {?}
+            FROM auth_user_md5 AS u
+            LEFT JOIN geoloc_pays AS gp ON (gp.pays LIKE {?} OR gp.country LIKE {?} OR gp.a2 LIKE {?})
+            WHERE u.user_id = {?}
+            LIMIT 1)",
+        $adrid, $adr['adr1'], $adr['adr2'], $adr['adr3'], $adr['postcode'], $adr['city'], $adr['pub'], $adr['countrytxt'], $adr['countrytxt'], $adr['countrytxt'], $uid);
+    if (isset($adr['tels']) && is_array($adr['tels'])) {
+        $telid = 0;
+        foreach ($adr['tels'] as $tel) if ($tel['tel']) {
+            add_user_tel($uid, $adrid, $telid, $tel);
+            $telid ++;
+        }
+    }
+}
+// }}}
+// {{{ function update_user_address()
+function update_user_address($uid, $adrid, $adr) {
+    global $globals;
+    // update address
+    $globals->xdb->execute(
+        "UPDATE adresses AS a LEFT JOIN geoloc_pays AS gp ON (gp.pays = {?}) 
+        SET `adr1` = {?}, `adr2` = {?}, `adr3` = {?},
+        `postcode` = {?}, `city` = {?}, a.`country` = gp.a2, `datemaj` = NOW(), `pub` = {?}
+        WHERE adrid = {?} AND uid = {?}",
+        $adr['country_txt'],
+        $adr['adr1'], $adr['adr2'], $adr['adr3'],
+        $adr['postcode'], $adr['city'], $adr['pub'], $adrid, $uid);
+    if (isset($adr['tels']) && is_array($adr['tels'])) {
+        $res = $globals->xdb->query("SELECT telid FROM tels WHERE uid = {?} AND adrid = {?} ORDER BY telid", $uid, $adrid);
+        $telids = $res->fetchColumn();
+        foreach ($adr['tels'] as $tel) {
+            if (isset($tel['telid']) && isset($tel['remove']) && $tel['remove']) {
+                remove_user_tel($uid, $adrid, $tel['telid']);
+                if (isset($telids[$tel['telid']])) unset($telids[$tel['telid']]);
+            } else if (isset($tel['telid'])) {
+                update_user_tel($uid, $adrid, $tel['telid'], $tel);
+            } else {
+                for ($telid = 0; isset($telids[$telid]) && ($telids[$telid] == $telid); $telid++);
+                add_user_tel($uid, $adrid, $telid, $tel);
+            }
+        }
+    }
+}
+// }}}
+// {{{ function remove_user_address()
+function remove_user_address($uid, $adrid) {
+    global $globals;
+    $globals->xdb->execute("DELETE FROM adresses WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
+    $globals->xdb->execute("DELETE FROM tels WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
+}
+// }}}
+// {{{ function add_user_tel()
+function add_user_tel($uid, $adrid, $telid, $tel) {
+    global $globals;
+    $globals->xdb->execute(
+        "INSERT INTO tels SET uid = {?}, adrid = {?}, telid = {?}, tel = {?}, tel_type = {?}, tel_pub = {?}",
+        $uid, $adrid, $telid, $tel['tel'], $tel['tel_type'], $tel['tel_pub']);
+}
+// }}}
+// {{{ function update_user_tel()
+function update_user_tel($uid, $adrid, $telid, $tel) {
+    global $globals;
+    $globals->xdb->execute(
+        "UPDATE tels SET tel = {?}, tel_type = {?}, tel_pub = {?}
+        WHERE telid = {?} AND adrid = {?} AND uid = {?}",
+        $tel['tel'], $tel['tel_type'], $tel['tel_pub'],
+        $telid, $adrid, $uid);
+}
+// }}}
+// {{{ function remove_user_tel()
+function remove_user_tel($uid, $adrid, $telid) {
+    global $globals;
+    $globals->xdb->execute("DELETE FROM tels WHERE telid = {?} AND adrid = {?} AND uid = {?}", $telid, $adrid, $uid);
+}
+// }}}
+// {{{ function add_user_pro()
+function add_user_pro($uid, $entrid, $pro) {
+    global $globals;
+    $globals->xdb->execute(
+        "INSERT INTO entreprises (`uid`, `entrid`, `entreprise`, `poste`, `secteur`, `ss_secteur`, `fonction`,
+            `adr1`, `adr2`, `adr3`, `postcode`, `city`, `country`, `region`, `tel`, `fax`, `mobile`, `email`, `web`, `pub`, `adr_pub`, `tel_pub`, `email_pub`)
+        SELECT u.user_id, {?}, {?}, {?}, s.id, ss.id, f.id,
+        {?}, {?}, {?}, {?}, {?}, gp.a2, gr.region, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}
+        FROM auth_user_md5 AS u
+            LEFT JOIN  emploi_secteur AS s ON(s.label LIKE {?})
+            LEFT JOIN  emploi_ss_secteur AS ss ON(s.id = ss.secteur AND ss.label LIKE {?})
+            LEFT JOIN  fonctions_def AS f ON(f.fonction_fr LIKE {?} OR f.fonction_en LIKE {?})
+            LEFT JOIN  geoloc_pays AS gp ON (gp.country LIKE {?} OR gp.pays LIKE {?})
+            LEFT JOIN  geoloc_region AS gr ON (gr.a2 = gp.a2 AND gr.name LIKE {?})
+        WHERE u.user_id = {?}
+        LIMIT 1",
+        $entrid, $pro['entreprise'], $pro['poste'],
+        $pro['adr1'], $pro['adr2'], $pro['adr3'], $pro['postcode'], $pro['city'], $pro['tel'], $pro['fax'], $pro['mobile'], $pro['email'], $pro['web'], $pro['pub'], $pro['adr_pub'], $pro['tel_pub'], $pro['email_pub'],
+        $pro['secteur'], $pro['sous_secteur'], $pro['fonction'], $pro['fonction'],
+        $pro['countrytxt'], $pro['countrytxt'], $pro['region'],
+        $uid);
+}
+// }}}
+// {{{ function update_user_pro()
+function update_user_pro($uid, $entrid, $pro) {
+    global $globals;
+    $join = "";
+    $set = "";
+    $args_join = array();
+    $args_set = array();
+    
+    $join .= "LEFT JOIN  emploi_secteur AS s ON(s.label LIKE {?})
+            LEFT JOIN  emploi_ss_secteur AS ss ON(s.id = ss.secteur AND ss.label LIKE {?})
+            LEFT JOIN  fonctions_def AS f ON(f.fonction_fr LIKE {?} OR f.fonction_en LIKE {?})";
+    $args_join[] = $pro['secteur'];
+    $args_join[] = $pro['sous_secteur'];
+    $args_join[] = $pro['fonction'];
+    $args_join[] = $pro['fonction'];
+    $set .= ", e.`entreprise` = {?}, e.`secteur` = s.id, e.`ss_secteur` = ss.id, e.`fonction` = f.id, e.`poste`= {?}, e.`web` = {?}, e.`pub` = {?}";
+    $args_set[] = $pro['entreprise'];
+    $args_set[] = $pro['poste'];
+    $args_set[] = $pro['web'];
+    $args_set[] = $pro['pub'];
+    
+    if (isset($pro['adr1'])) {
+        $join .= "LEFT JOIN  geoloc_pays AS gp ON (gp.country LIKE {?} OR gp.pays LIKE {?})
+                LEFT JOIN  geoloc_region AS gr ON (gr.a2 = gp.a2 AND gr.name LIKE {?})";
+        $args_join[] = $pro['countrytxt'];
+        $args_join[] = $pro['countrytxt'];
+        $args_join[] = $pro['region'];
+        $set .= ", e.`adr1` = {?}, e.`adr2` = {?}, e.`adr3` = {?}, e.`postcode` = {?}, e.`city` = {?}, e.`country` = gp.a2, e.`region` = gr.region, e.`adr_pub` = {?}";
+        $args_set[] = $pro['adr1'];
+        $args_set[] = $pro['adr2'];
+        $args_set[] = $pro['adr3'];
+        $args_set[] = $pro['postcode'];
+        $args_set[] = $pro['city'];
+        $args_set[] = $pro['adr_pub'];
+    }
+    
+    if (isset($pro['tel'])) {
+        $set .= ", e.`tel` = {?}, e.`fax` = {?}, e.`mobile` = {?}, e.tel_pub = {?}";
+        $args_set[] = $pro['tel'];
+        $args_set[] = $pro['fax'];
+        $args_set[] = $pro['mobile'];
+        $args_set[] = $pro['tel_pub'];
+    }
+    if (isset($pro['email'])) {
+        $set .= ", e.`email` = {?}, e.`email_pub` = {?}";
+        $args_set[] = $pro['email'];
+        $args_set[] = $pro['email_pub'];
+    }    
+    $query = "UPDATE entreprises AS e ".$join." SET ".substr($set,1)." WHERE e.uid = {?} AND e.entrid = {?}";
+    $args_where = array($uid, $entrid);
+    $args = array_merge(array($query), $args_join, $args_set, $args_where);
+    $globals->db->query($globals->xdb->_prepare($args));
+}
+// }}}
+// {{{ function remove_user_pro()
+function remove_user_pro($uid, $entrid) {
+    global $globals;
+    $globals->xdb->execute("DELETE FROM entreprises WHERE entrid = {?} AND uid = {?}", $entrid, $uid);
+}
+// }}}
+// {{{ function set_user_details()
+function set_user_details_addresses($uid, $adrs) {
+    global $globals;
+    $res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} AND adrid >= 1 ORDER BY adrid", $uid);
+    $adrids = $res->fetchColumn();
+    foreach ($adrs as $adr) {
+        if (isset($adr['adrid']) && isset($adr['remove']) && $adr['remove']) {
+            remove_user_address($uid, $adr['adrid']);
+            if (isset($adrids[$adr['adrid']])) unset($adrids[$adr['adrid']]);
+        } else if (isset($adr['adrid'])) {
+            update_user_address($uid, $adr['adrid'], $adr);
+        } else {
+            for ($adrid = 1; isset($adrids[$adrid-1]) && ($adrids[$adrid-1] == $adrid); $adrid++);
+            add_user_address($uid, $adrid, $adr);
+            $adrids[$adrid-1] = $adrid;
+        }
+    }
+    require_once 'geoloc.inc.php';
+    localize_addresses($uid);
+}
+// }}}
+// {{{ function set_user_details_pro()
 
+function set_user_details_pro($uid, $pros)
+{
+    global $globals;
+    $res = $globals->xdb->query("SELECT entrid FROM entreprises WHERE uid = {?} ORDER BY entrid", $uid);
+    $entrids = $res->fetchColumn();
+    foreach ($pros as $pro) {
+        if (isset($pro['entrid']) && isset($pro['remove']) && $pro['remove']) {
+            remove_user_pro($uid, $pro['entrid']);
+            if (isset($entrids[$pro['entrid']])) unset($entrids[$pro['entrid']]);
+        } else if (isset($pro['entrid'])) {
+            update_user_pro($uid, $pro['entrid'], $pro);
+        } else {
+            for ($entrid = 0; isset($entrids[$entrid]) && ($entrids[$entrid] == $entrid); $entrid++);
+            add_user_pro($uid, $entrid, $pro);
+        }
+    }
+}
+
+// }}}
+// {{{ function set_user_details()
+function set_user_details($uid, $details) {
+    global $globals;
+    if (isset($details['nom_usage'])) {
+        $globals->xdb->execute("UPDATE auth_user_md5 SET nom_usage = {?} WHERE user_id = {?}", strtoupper($details['nom_usage']), $uid);
+    }
+    if (isset($details['mobile'])) {
+        $globals->xdb->execute("UPDATE auth_user_quick SET profile_mobile = {?} WHERE user_id = {?}", $details['mobile'], $uid);
+    }
+    if (isset($details['nationalite'])) {
+        $globals->xdb->execute(
+            "UPDATE auth_user_md5 AS u
+                INNER JOIN geoloc_pays     AS gp
+            SET u.nationalite = gp.a2
+            WHERE (gp.a2 = {?} OR gp.nat = {?})
+                AND u.user_id = {?}",  $details['nationalite'], $details['nationalite'], $uid);
+    }
+    if (isset($details['adr']) && is_array($details['adr']))
+        set_user_details_addresses($uid, $details['adr']);
+    if (isset($details['adr_pro']) && is_array($details['adr_pro']))
+        set_user_details_pro($uid, $details['adr_pro']);
+    if (isset($details['binets']) && is_array($details['binets'])) {
+        $globals->xdb->execute("DELETE FROM binets_ins WHERE user_id = {?}", $uid);
+        foreach ($details['binets'] as $binet)
+            $globals->xdb->execute(
+            "INSERT INTO binets_ins (`user_id`, `binet_id`)
+                SELECT {?}, id FROM binets_def WHERE text = {?} LIMIT 1",
+                $uid, $binet);                
+    }
+    if (isset($details['gpxs']) && is_array($details['gpxs'])) {
+        $globals->xdb->execute("DELETE FROM groupesx_ins WHERE user_id = {?}", $uid);
+        foreach ($details['gpxs'] as $groupex) {
+            if (preg_match('/<a href="[^"]*">([^<]+)</a>/', $groupex, $a)) $groupex = $a[1];
+            $globals->xdb->execute(
+            "INSERT INTO groupesx_ins (`user_id`, `binet_id`)
+                SELECT {?}, id FROM groupesx_def WHERE text = {?} LIMIT 1",
+                $uid, $groupex);
+        }                
+    }
+    // applis
+    // medals
+}
 // }}}
 // {{{ function _user_reindex
 

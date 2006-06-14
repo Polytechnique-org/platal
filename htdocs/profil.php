@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -29,8 +29,12 @@ require_once('profil.func.inc.php');
 
 if (Post::has('register_from_ax_question')) {
     $globals->xdb->query('UPDATE auth_user_quick SET profile_from_ax = 1 WHERE user_id = {?}', Session::getInt('uid'));
+}
+
+if (Env::get('synchro_ax') == 'confirm') {
     require_once('synchro_ax.inc.php');
-    copy_from_ax(Session::getInt('uid'));
+    ax_synchronize(Session::get('bestalias'), Session::getInt('uid'));
+    $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
 }
 
 //on met a jour $opened_tab et $new_tab qui sont le tab du POST et le tab demande

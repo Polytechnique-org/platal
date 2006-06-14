@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2004 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -49,175 +49,95 @@
 <strong>ATTENTION !  Cet utilisateur n'a pas accepté la synchronisation</strong>
 </div>
 {/if}
+<div>Les fiches de cet utilisateur :
+<ul>
+<li><a href='{rel}/fiche.php?user={$x.user_id}' class='popup2'>polytechnique.org</a></li>
+<li><a href='http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a></li>
+</ul>
+</div>
+{if $diff}
 <table class="bicol" cellpadding="0" cellspacing="0" border="1">
-  <tr>
-    <th>champ</th>
-    <th style='width:50%'>x.org</th>
-    <th>importer</th>
-    <th style='width:50%'>AX</th>
-  </tr>
-  <tr class="impair">
-    <td>fiche</td>
-    <td>
-      <a href='{rel}/fiche.php?user={$x.user_id}' class='popup2'>polytechnique.org</a>
-    </td>
-    <td>
-    </td>
-    <td>
-      <a href='http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a>
-    </td>
-  </tr>
-{foreach from=$watch_champs item='i'}
-  {if $x[$i] or $ax[$i]}
-    <tr class="{if ($x[$i] eq $ax[$i]) or !$ax[$i]}im{/if}pair">
+{foreach from=$diff key='k' item='i'}
+{if ($k neq 'adr') and ($k neq 'adr_pro')}
+    <tr class="pair">
+      <td>
+        {$k}
+      </td>
+      <td>
+        {$x[$k]}
+      </td>
+      <td class='center'>
+      </td>
       <td>
         {$i}
       </td>
-      <td>
-        {$x[$i]}
-      </td>
-      <td class='center'>
-        {if $x[$i] eq $ax[$i]}
-          ==
-        {else}
-          {if $ax[$i]}
-            <input style='flat:right' type='checkbox' name='{$i}' />
-          {/if}
-        {/if}
-      </td>
-      <td>
-        {$ax[$i]}
-      </td>
     </tr>
-  {/if}
+{/if}
 {/foreach}
-</table>
 
-<table>
-<tr>
-<td>
-{if $ax.adr[0]}
-{if $x.adr}
-<div>
-  Supprimer les adresses suivantes :
-</div>
-<table>
-    {foreach from=$x.adr item='adr'}
-      <tr style="padding:5px">
-        <td>
-          <input type='checkbox' name='del_address{$adr.adrid}' />
-        </td>
-        <td>
-          {include file='geoloc/address.tpl' address=$adr no_div=1}
-        </td>
-      </tr>
-    {/foreach}
-</table>
-<div>
-  et les remplacer par les adresses suivantes de l'AX :
-</div>
+{if $diff.adr}
+<tr><th>
+Adresses
+</th></tr>
+{foreach from=$diff.adr item='adr'}
+<tr><td>
+{if $adr.remove}
+    Effacer l'adresse {$adr.adrid}.
 {else}
-<div>
-  Importer les adresses AX suivantes :
-</div>
+    {if $adr.adrid}Modifier l'adresse {$adr.adrid} :{else}Ajouter l'adresse :{/if}
+  {include file='geoloc/address.tpl' address=$adr no_div=1}
 {/if}
-<table>
-    {foreach from=$ax.adr item='adr' key='adrid'}
-      <tr style='padding:5px'>
-        <td>
-          <input type='checkbox' name='add_address{$adrid}' />
-        </td>
-        <td>
-          {include file='geoloc/address.tpl' address=$adr no_div=1}
-        </td>
-      </tr>
-    {/foreach}
-</table>
+</td></tr>
+{/foreach}
 {/if}
-</td>
 
-<td>
-{if $ax.adr_pro[0].entreprise}
-{if $x.adr_pro}
-<div>
-  Supprimer les emplois suivants :
-</div>
-<table>
-    {foreach from=$x.adr_pro item='pro'}
-    {if ($pro.poste) or ($pro.fonction) or ($pro.entreprise)}
-      <tr style='padding:5px'>
-        <td>
-          <input type='checkbox' name='del_pro{$pro.entrid}' />
-        </td>
-        <td>
-        {if $pro.entreprise}
-        <div>
-          <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
-        </div>
-        {/if}
-        {if $pro.secteur}
-        <div>
-          <em>Secteur : </em>
-          <strong>{$pro.secteur}{if $pro.ss_secteur} ({$pro.ss_secteur}){/if}</strong>
-        </div>
-        {/if}
-        {if $pro.fonction}
-        <div>
-          <em>Fonction : </em> <strong>{$pro.fonction}</strong>
-        </div>
-        {/if}
-        {if $pro.poste}
-        <div>
-          <em>Poste : </em> <strong>{$pro.poste}</strong>
-        </div>
-        {/if}
-        {include file='geoloc/address.tpl' address=$pro no_div=1}
-        </td>
-      </tr>
-    {/if}
-    {/foreach}
-</table>
-
-<div>
-  et les remplacer par les emplois suivants de l'AX :
-</div>
+{if $diff.adr_pro}
+<tr><th>
+Emplois
+</th></tr>
+{foreach from=$diff.adr_pro item='pro'}
+<tr><td>
+{if $pro.remove}
+    Effacer l'emploi {$pro.entrid}.
 {else}
-<div>
-  Importer les emplois suivants depuis l'AX :
-</div>
-{/if}
-<table>
-    {foreach from=$ax.adr_pro item='pro' key='proid'}
-    {if ($pro.poste) or ($pro.fonction) or ($pro.entreprise)}
-      <tr style='padding:5px'>
-        <td>
-          <input type='checkbox' name='add_pro{$proid}' />
-        </td>
-        <td>
-        {if $pro.entreprise}
-        <div>
-          <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
-        </div>
-        {/if}
-        {if $pro.fonction}
-        <div>
-          <em>Fonction : </em> <strong>{$pro.fonction}</strong>
-        </div>
-        {/if}
-        {include file='geoloc/address.tpl' address=$pro no_div=1}
-        </td>
-      </tr>
+    {if $pro.entrid || $pro.entrid === 0}Modifier l'emploi {$pro.entrid} :{else}Ajouter l'emploi :{/if}
+    {if $pro.entreprise}
+    <div>
+      <em>Entreprise/Organisme : </em> <strong>{$pro.entreprise}</strong>
+    </div>
     {/if}
-    {/foreach}
-</table>
+    {if $pro.secteur}
+    <div>
+      <em>Secteur : </em>
+      <strong>{$pro.secteur}{if $pro.ss_secteur} ({$pro.ss_secteur}){/if}</strong>
+    </div>
+    {/if}
+    {if $pro.fonction}
+    <div>
+      <em>Fonction : </em> <strong>{$pro.fonction}</strong>
+    </div>
+    {/if}
+    {if $pro.poste}
+    <div>
+      <em>Poste : </em> <strong>{$pro.poste}</strong>
+    </div>
+    {/if}
+  {include file='geoloc/address.tpl' address=$pro no_div=1}
 {/if}
-</td>
-</tr>
+</td></tr>
+{/foreach}
+{/if}
 </table>
 <div class='center'>
-  <input type='hidden' name='user' value='{$ax.uid}' />
+  <input type='hidden' name='user' value='{$smarty.request.user}' />
   <input type='submit' name='importe' value='Importer' />
 </div>
+{else}
+<div class='center'>
+    Le profil actuel est synchronisé avec les données de l'AX.
+</div>
+{/if}
+
 </form>
 {/if}
 

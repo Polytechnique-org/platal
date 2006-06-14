@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2004 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -148,8 +148,16 @@
       </th>
     </tr>
     <tr>
-      <td class="col">
-        Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui envoies. Tu peux choisir ici de récupérer directement ces données pour l'annuaire en ligne.
+      <td>
+        <p>
+          Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met à jour l'annuaire papier à partir des informations que tu lui envoies. Tu peux choisir ici de récupérer directement ces données pour l'annuaire en ligne.
+        </p>
+        <p>
+          La synchro prend en compte toutes les informations que tu as signalés à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations selon ce qu'elle trouve sur ta <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
+        </p>
+        <p class="center">
+          <a href="?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
+        </p>
       </td>
     </tr>
     <tr>
@@ -160,7 +168,7 @@
               <input type="checkbox" name="synchro_ax" {if $synchro_ax}checked="checked" {/if}/>
             </td>
             <td class="texte">
-              Autoriser la synchronisation depuis l'AX.
+              Autoriser la synchronisation depuis l'AX par des administrateurs ou des scripts automatiques.
             </td>
           </tr>
         </table>
