@@ -8,6 +8,7 @@ New :
 
     * Geoloc :
         - Dynamic maps using geodesix plugin.                               -Car
+        - Link to local maps for all addresses.                             -Car
 
     * Profile :
         - See fiche send to AX.                                             -Car

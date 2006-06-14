@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -31,30 +31,31 @@ function smarty_function_display_address($param, &$smarty) {
 
     $lines = explode("\n",$txtad);
     $txthtml = "";
+    $map = "<a href=\"http://maps.google.com/?q=".urlencode(implode(", ", $lines))."\"><img src=\"".smarty_function_rel()."/images/loupe.gif\" alt=\"Carte\" title=\"Carte\"/></a>";
     if ($param['titre'])
     {
-    	if ($param['titre_div'])
-	   $txthtml .= "<div class='titre'>".$param['titre']."</div>\n";
-	else
-           $txthtml .= "<em>".$param['titre']."</em><br />\n";
+        if ($param['titre_div'])
+            $txthtml .= "<div class='titre'>".$param['titre'].$map."</div>\n";
+    else
+           $txthtml .= "<em>".$param['titre']."</em>".$map."<br />\n";
     }
     foreach ($lines as $line)
     {
-	$txthtml .= "<strong>".$line."</strong><br/>\n";
+        $txthtml .= "<strong>".$line."</strong><br/>\n";
     }
     if ($param['adr']['tel'])
-    	$txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['tel']."</strong>\n</div>\n";
+        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['tel']."</strong>\n</div>\n";
     if ($param['adr']['fax'])
-    	$txthtml .= "<div>\n<em>Fax : </em>\n<strong>".$param['adr']['fax']."</strong>\n</div>\n";
+        $txthtml .= "<div>\n<em>Fax : </em>\n<strong>".$param['adr']['fax']."</strong>\n</div>\n";
     if ($param['adr']['mobile'])
-    	$txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
+        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
     if ($param['adr']['tels'] && count($param['adr']['tels'])) {
         foreach ($param['adr']['tels'] as $tel) 
             $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
     }
     if (!$params['nodiv'])
     {
-    	$txthtml = "<div class='adresse'>\n".$txthtml."</div>\n";
+        $txthtml = "<div class='adresse'>\n".$txthtml."</div>\n";
     }
     return $txthtml;
 }
