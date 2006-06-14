@@ -10,8 +10,11 @@ New :
         - Dynamic maps using geodesix plugin.                               -Car
         - Link to local maps for all addresses.                             -Car
 
+    * Notifications :
+        - iCal calendar for birthdays.                                      -Car
+
     * Profile :
-        - See fiche send to AX.                                             -Car
+        - See fiche sent to AX.                                             -Car
 
     * Skin :
         - Common file for header above title.                               -Car

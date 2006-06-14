@@ -54,6 +54,19 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="mescontacts_pdf.php/mes_contacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
 </ul>
+{if $smarty.session.core_rss_hash}
+<p>
+  Tu peux récupérer un calendrier iCal avec l'anniversaire de tes contacts.
+</p>
+  <div class="right">
+    <a href='{rel}/carnet/calendar/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.ics'><img src='{rel}/images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
+  </div>
+{else}
+<p>
+  Pour récupérer un calendrier iCal avec l'anniversaire de tes contacts, active les flux RSS dans <a href="{rel}/preferences.php">Mes préférences</a>.
+</p>
+{/if}
+
 
 {if $trombi}
 
@@ -76,7 +89,7 @@ Pour afficher la liste détaillée de tes contacts: [<a href="{$smarty.server.PHP_
 </h1>
 
 <p>
-Pour afficher le trombi de tes contacts : [<a href="?trombi=1&amp;order={$order}&amp;inv={$inv}"><strong>vue sous forme de trombi</strong></a>]
+[<a href="?trombi=1&amp;order={$order}&amp;inv={$inv}"><strong>Afficher le trombi de tes contacts</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}
