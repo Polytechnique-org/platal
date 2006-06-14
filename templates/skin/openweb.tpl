@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2004 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -58,21 +58,7 @@
         </td>
         <td id="body-top">
           <a href="{rel}/login.php"><img src="{rel}/images/sk_default_ban.jpg" alt="[ Polytechnique.org ]" /></a>
-          <table>
-            <tr>
-              <td class="date-heure">
-                <script type="text/javascript">
-                  <!--
-                  document.write(getNow());
-                  //-->
-                </script>
-              </td>
-              <td class="inscrits">
-                {insert name="getNbIns"} polytechniciens sur le web<br />
-                {insert name="getNbNotifs"}
-              </td>
-            </tr>
-          </table>
+          {include file="skin/common.title.header.tpl"}
         </td>
       </tr>
       <tr>

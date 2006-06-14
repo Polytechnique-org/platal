@@ -13,6 +13,10 @@ New :
     * Profile :
         - See fiche send to AX.                                             -Car
 
+    * Skin :
+        - Common file for header above title.                               -Car
+        - Add a quick search form in this common header.                    -Car
+
     * Xnet :
         - Use wiki from Xnet.                                               -Car
         - Use wiki for group pages.                                         -Car
