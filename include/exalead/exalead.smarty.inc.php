@@ -273,12 +273,12 @@ function _little_nav_barre($params, &$smarty){
 function _display_3_columns($title, $count, $refine, $exclude, $categorie,$hide=-1){
 if ($title!='Inconnu'){
   global $exa_max_length;
-  if($categorie) $title_exclude = 'Ne pas afficher cette catÃ©gorie';
-  else $title_exclude = 'Ne pas afficher ce mot-clÃ©';
+  if($categorie) $title_exclude = 'Ne pas afficher cette catégorie';
+  else $title_exclude = 'Ne pas afficher ce mot-clé';
   $extract = ((strlen($title) > $exa_max_length + 3)?substr($title,0,$exa_max_length).'...':$title);
   $result="<tr class=\"categ\"";
   if ($hide>0) {
-    $result .= " id=\"cache_$hide\" onclick=\"cacheId('cache_$hide')\"";//Pour pouvoir cacher des catÃ©gories 
+    $result .= " id=\"cache_$hide\" onclick=\"cacheId('cache_$hide')\"";//Pour pouvoir cacher des catégories 
   }
   $result.=">
       <td>
@@ -299,13 +299,13 @@ if ($title!='Inconnu'){
 function _display_2_columns($title, $reset, $excluded, $categorie){
   global $exa_max_length;
   if($excluded){
-    if($categorie) $title_link = 'Afficher de nouveau cette catÃ©gorie';
-    else $title_link = 'Afficher de nouveau ce mot-clÃ©';
+    if($categorie) $title_link = 'Afficher de nouveau cette catégorie';
+    else $title_link = 'Afficher de nouveau ce mot-clé';
     $link = '[+]';
     $style = 'text-decoration: line-through;';
   } else{
-    if($categorie) $title_link = 'Voir les autres catÃ©gories';
-    else $title_link = 'Voir les autres mots-clÃ©s';
+    if($categorie) $title_link = 'Voir les autres catégories';
+    else $title_link = 'Voir les autres mots-clés';
     $link = '[-]';
     $style = 'text-decoration: none; font-weight: bold;';
   }
@@ -344,8 +344,8 @@ function _display_resume_groupe_category(&$group, $context, $padding = '',$limit
                 $result .= _display_2_columns($padding.$title, $reset, $categorie->is_excluded(),'', $cnt-$limit);
 	        }
 	    }
-	    if(count($categorie->categories) > 0){
-            $result .= _display_resume_groupe_category($categorie, $context, $padding.'-',$limit-$cnt);
+	    if(count($categorie->categories) > 0 && ($_SESSION['show_all']||$title=="france"||!$categorie->is_normal()) ){
+            $result .= _display_resume_groupe_category($categorie, $context, $pagging.'-',$limit-$cnt);
 	    }
     }
     return $result;
@@ -382,7 +382,14 @@ function _display_resume_groupe($params, &$smarty){
       }
       else{
           $result = "<table class=\"exa_resume\"><th colspan=\"3\" class=\"titre\">".gettext($name)."</th>";
-          $result .= _display_resume_groupe_category($group, $exalead_data->query->context);
+          if (isset($params['limit']) && $params['limit']>0)
+          {
+            $result .= _display_resume_groupe_category($group, $exalead_data->query->context,'',$params['limit']);
+          
+          }else
+          {
+            $result .= _display_resume_groupe_category($group, $exalead_data->query->context);
+          }
       }
       $result .= "</table>";
       return $result;
