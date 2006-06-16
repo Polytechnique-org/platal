@@ -1,0 +1,1 @@
+find ./ -type f | grep -v svn | xargs sed -i 's/Copyright (C) 2003-2006/Copyright (C) 2003-2006/'
