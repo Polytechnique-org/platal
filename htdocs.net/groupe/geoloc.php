@@ -19,36 +19,16 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once 'xnet.inc.php';
 
-require_once('xorg.inc.php');
-
-// to debug sql use the next line
-if (Env::has('debug'))
-	new_simple_page('geoloc/getData.tpl', AUTH_COOKIE);
+if ($globals->asso('pub') == 'public')
+	new_group_page('geoloc/index.tpl');
 else
-{
-	header("Content-type: text/xml");
-	new_nonhtml_page('geoloc/getData.tpl', AUTH_COOKIE);
-}
+	new_groupadmin_page('geoloc/index.tpl');
 
-require_once('geoloc.inc.php');
-require_once('search.inc.php');
-
-$querystring = "";
-foreach ($_GET as $v => $a)
-	if ($v != 'mapid')
-		$querystring .= urlencode($v).'='.urlencode($a).'&amp;';
-$page->assign('searchvars', $querystring);
-if (Env::has('mapid'))
-    $mapid = Env::getInt('mapid', -2);
-else
-    $mapid = false;
-    
-list($countries, $cities) = geoloc_getData_subcountries($mapid, advancedSearchFromInput(), 10);
-
-$page->assign('countries', $countries);
-$page->assign('cities', $cities);
-
+$page->assign('use_map', $globals->geoloc->use_map());
+$page->assign('no_annu', true);
+$page->assign('dynamap_vars', 'none');
 $page->run();
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+
 ?>

@@ -23,6 +23,9 @@ require_once('xorg.plugin.inc.php');
 require_once("search/classes.inc.php");
 
 // {{{ function advancedSearchFromInput
+function getadr_join($table) {
+    return 'u.user_id='.$table.'.uid'.(Env::get('only_current',false)?' AND FIND_IN_SET(\'active\','.$table.'.statut)':'');
+}
 function advancedSearchFromInput()
 {
     if ($with_soundex = Env::has('with_soundex')) {
@@ -39,10 +42,6 @@ function advancedSearchFromInput()
     $womanField      = new RefSField('woman',array('FIND_IN_SET(u.flags,\'femme\')+1'),'','','');
     $subscriberField = new RefSField('subscriber',array('!(u.perms IN (\'admin\',\'user\'))+1'),'','','');
     $aliveField      = new RefSField('alive',array('(u.deces!=0)+1'),'','','');
-
-    function getadr_join($table) {
-        return 'u.user_id='.$table.'.uid'.(Env::get('only_current',false)?' AND FIND_IN_SET(\'active\','.$table.'.statut)':'');
-    }
 
     $townField      = new RefSField('city',array('ac.city'),'adresses','ac',getadr_join('ac'),false);
     $cityIdField    = new RefSField('cityid',array('av.cityid'),'adresses','av',getadr_join('av'));

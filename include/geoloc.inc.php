@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -301,5 +301,121 @@ function geoloc_to_y($lon, $lat) {
 function size_of_city($nb) { $s = round(log($nb + 1)*2,2); if ($s < 1) return 1; return $s; }
 function size_of_territory($nb) { return size_of_city($nb); }
 
+function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true) {
+    global $globals;
+    for ($i_mapfield=0; $i_mapfield < count($SFields) ; $i_mapfield++) if ($SFields[$i_mapfield]->fieldFormName == 'mapid') break;
+    $SFields[$i_mapfield] = new MapSField('mapid', array('gcim.map_id'), array('adresses','geoloc_city_in_maps'), array('am','gcim'), array(getadr_join('am'), 'am.cityid = gcim.city_id'), $mapid);
+    
+    $fields = new SFieldGroup(true, $SFields);
+    $where = $fields->get_where_statement();
+    if ($where) $where = " AND ".$where;
+
+    $cityres = $globals->xdb->iterator("
+        SELECT  gc.id,
+                gc.lon / 100000 AS x, gc.lat/100000 AS y,
+                gc.name,
+                COUNT(u.user_id) AS pop,
+                SUM(u.promo % 2) AS yellow
+          FROM auth_user_md5 AS u
+    INNER JOIN auth_user_quick AS q ON(u.user_id = q.user_id)
+            ".$fields->get_select_statement()."
+				 LEFT JOIN geoloc_city AS gc ON(gcim.city_id = gc.id)
+         WHERE ".($direct?"gcim.infos = 'smallest'":"1")."
+         $where
+      GROUP BY gc.id,gc.alias ORDER BY pop DESC");
+    while ($c = $cityres->next())
+        if ($c['pop'] > 0)
+        {
+            $city = $c;
+            $city['x'] = geoloc_to_x($c['x'], $c['y']);
+            $city['y'] = geoloc_to_y($c['x'], $c['y']);
+            $city['size'] = size_of_city($c['pop']);
+            $cities[$c['id']] = $city;
+        }
+}
+
+function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
+    global $globals;
+    $countries = array();
+    $cities = array();
+    
+    if ($mapid === false)
+    	$wheremapid = "WHERE gm.parent IS NULL";
+    else
+    	$wheremapid = "WHERE   gm.parent = {?}";
+    $submapres = $globals->xdb->iterator(
+        "SELECT  gm.map_id AS id, gm.name, gm.x, gm.y, gm.xclip, gm.yclip, 
+                gm.width, gm.height, gm.scale, 1 AS rat
+        FROM    geoloc_maps AS gm
+        ".$wheremapid, Env::get('mapid',''));
+
+    while ($c = $submapres->next())
+    {
+        $country = $c;
+        $country['name'] = utf8_decode($country['name']);
+        $country['color'] = 0xFFFFFF;
+        $country['swf'] = $globals->geoloc->webservice_url."maps/mercator/map_".$c['id'].".swf";
+        $countries[$c['id']] = $country;
+    }
+    
+    if ($mapid === false) return array($countries, $cities);
+
+	geoloc_getData_subcities(Env::getInt('mapid'), $SFields, $cities);
+	$nbcities = count($cities);
+	$nocity = $nbcities == 0;
+
+    for ($i_mapfield=0; $i_mapfield < count($SFields) ; $i_mapfield++) if ($SFields[$i_mapfield]->fieldFormName == 'mapid') break;
+	$SFields[$i_mapfield] = new MapSField('mapid', array('map.parent'), array('adresses','geoloc_city_in_maps','geoloc_maps'), array('am','gcim','map'), array(getadr_join('am'), 'am.cityid = gcim.city_id', 'map.map_id = gcim.map_id'));
+
+	$fields = new SFieldGroup(true, $SFields);
+	$where = $fields->get_where_statement();
+	if ($where) $where = " WHERE ".$where;
+		
+	$countryres = $globals->xdb->iterator("
+	    SELECT  map.map_id AS id,
+	            COUNT(u.user_id) AS nbPop,
+	            SUM(u.promo % 2) AS yellow,
+	            COUNT(DISTINCT gcim.city_id) AS nbCities,
+	            SUM(IF(u.user_id IS NULL,0,am.glng)) AS lonPop,
+	            SUM(IF(u.user_id IS NULL, 0,am.glat)) AS latPop
+	      FROM  auth_user_md5 AS u
+	INNER JOIN  auth_user_quick AS q ON(u.user_id = q.user_id)
+	            ".$fields->get_select_statement()."
+	     $where
+	  GROUP BY  map.map_id ORDER BY NULL", $hierarchy);
+	
+	$maxpop = 0;
+	$nbentities = $nbcities + $countryres->total();
+	while ($c = $countryres->next())
+	{
+	    $c['latPop'] /= $c['nbPop'];
+	    $c['lonPop'] /= $c['nbPop'];
+	    $c['rad'] = size_of_territory($c['nbPop']);
+	    if ($maxpop < $c['nbPop']) $maxpop = $c['nbPop'];
+	    $c['xPop'] = geoloc_to_x($c['lonPop'], $c['latPop']);
+	    $c['yPop'] = geoloc_to_y($c['lonPop'], $c['latPop']);
+	    $countries[$c['id']] = array_merge($countries[$c['id']], $c);
+	
+	    $nbcities += $c['nbCities'];
+	}
+	
+	if ($nocity && $nbcities < $minentities)
+	{
+	    foreach($countries as $i => $c)
+	    {
+	        $countries[$i]['nbPop'] = 0;
+	        if ($c['nbCities'] > 0)
+	            geoloc_getData_subcities($c['id'], $SFields, $cities, false);
+	    }   
+	}
+	
+	foreach ($countries as $i => $c) if ($c['nbPop'] > 0)
+	{
+	    $lambda = pow($c['nbPop'] / $maxpop,0.3);
+	    $countries[$i]['color'] = 0x0000FF + round((1-$lambda) * 0xFF)*0x010100;
+	}
+	
+    return array($countries, $cities);   
+} 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

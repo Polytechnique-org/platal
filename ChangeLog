@@ -22,8 +22,9 @@ New :
         - Add a quick search form in this common header.                    -Car
 
     * Xnet :
-        - Use wiki from Xnet.                                               -Car
+        - Use wiki from Xorg.                                               -Car
         - Use wiki for group pages.                                         -Car
+        - Dynamic maps using geodesix plugin.                               -Car
 
 Bug/Wish :
 

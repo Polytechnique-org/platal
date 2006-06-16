@@ -1,6 +1,6 @@
 <?php
 /***************************************************************************
- *  Copyright (C) 2003-2004 Polytechnique.org                              *
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
  *                                                                         *
  *  This program is free software; you can redistribute it and/or modify   *
@@ -73,8 +73,11 @@ class XnetPage extends PlatalPage
             $sub = array();
             $dim = $globals->asso('diminutif');
             $sub['présentation'] = "$dim/asso.php";
-            if (may_update() || $globals->asso('pub') == 'public')
+            if (may_update() || $globals->asso('pub') == 'public') {
                 $sub['annuaire du groupe'] = "$dim/annuaire.php";
+                if ($globals->xnet->geoloc)
+                    $sub['carte'] = "$dim/geoloc.php";
+            }
             if ($globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/listes.php";
             }

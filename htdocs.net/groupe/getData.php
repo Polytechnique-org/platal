@@ -19,17 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require 'xnet.inc.php';
 
-require_once('xorg.inc.php');
+new_nonhtml_page('geoloc/getData.tpl');
+$nodata = ($globals->asso('pub') != 'public') && !has_perms();
 
-// to debug sql use the next line
-if (Env::has('debug'))
-	new_simple_page('geoloc/getData.tpl', AUTH_COOKIE);
-else
-{
-	header("Content-type: text/xml");
-	new_nonhtml_page('geoloc/getData.tpl', AUTH_COOKIE);
-}
+header("Content-type: text/xml");
 
 require_once('geoloc.inc.php');
 require_once('search.inc.php');
@@ -43,11 +38,16 @@ if (Env::has('mapid'))
     $mapid = Env::getInt('mapid', -2);
 else
     $mapid = false;
-    
-list($countries, $cities) = geoloc_getData_subcountries($mapid, advancedSearchFromInput(), 10);
 
-$page->assign('countries', $countries);
-$page->assign('cities', $cities);
+$_REQUEST['asso_id'] = $globals->asso('id');
+$_REQUEST['only_current'] = 1;
+$assoField   = new RefSField('asso_id',array('gxm.asso_id'),'groupex.membres','gxm','u.user_id=gxm.uid');
+
+if (!$nodata) {
+    list($countries, $cities) = geoloc_getData_subcountries($mapid, array($assoField), 10);
+    $page->assign('countries', $countries);
+    $page->assign('cities', $cities);
+}
 
 $page->run();
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:

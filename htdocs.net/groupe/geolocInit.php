@@ -1,4 +1,4 @@
-<?php
+<?php 
 /***************************************************************************
  *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -19,36 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once('xnet.inc.php');
 
-require_once('xorg.inc.php');
-
-// to debug sql use the next line
-if (Env::has('debug'))
-	new_simple_page('geoloc/getData.tpl', AUTH_COOKIE);
-else
-{
-	header("Content-type: text/xml");
-	new_nonhtml_page('geoloc/getData.tpl', AUTH_COOKIE);
-}
-
-require_once('geoloc.inc.php');
-require_once('search.inc.php');
-
-$querystring = "";
-foreach ($_GET as $v => $a)
-	if ($v != 'mapid')
-		$querystring .= urlencode($v).'='.urlencode($a).'&amp;';
-$page->assign('searchvars', $querystring);
-if (Env::has('mapid'))
-    $mapid = Env::getInt('mapid', -2);
-else
-    $mapid = false;
-    
-list($countries, $cities) = geoloc_getData_subcountries($mapid, advancedSearchFromInput(), 10);
-
-$page->assign('countries', $countries);
-$page->assign('cities', $cities);
+header("Content-type: text/xml");
+new_nonhtml_page('geoloc/geolocInit.tpl');
 
 $page->run();
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
