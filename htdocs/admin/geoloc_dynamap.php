@@ -27,6 +27,8 @@ if (Env::get('fix') == 'cities_not_on_map')
     require_once('geoloc.inc.php');
     if (!fix_cities_not_on_map(100))
         $page->trig("Impossible d'accéder au webservice");
+    else
+        $refresh = true;
 }
 
 if (Env::has('new_maps'))
@@ -37,7 +39,11 @@ if (Env::has('new_maps'))
 }
 
 $countMissing = $globals->xdb->query("SELECT COUNT(*) FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL");
-$page->assign("nb_cities_not_on_map", $countMissing->fetchOneCell());
+$missing = $countMissing->fetchOneCell();
+
+if (isset($refresh) && $missing)
+    header('Refresh: 3');
+$page->assign("nb_cities_not_on_map", $missing);
 
 $page->run();
 

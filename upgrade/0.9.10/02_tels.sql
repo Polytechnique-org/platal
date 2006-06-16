@@ -10,3 +10,4 @@ CREATE TABLE `tels` (
 INSERT INTO tels SELECT uid, adrid, 0, 'Tél.', tel_pub, tel FROM adresses;
 INSERT INTO tels SELECT uid, adrid, 1, 'Fax', tel_pub, fax FROM adresses;
 DELETE FROM tels WHERE tel = "";
+ALTER TABLE `adresses` DROP `tel`, DROP `tel_pub`;
