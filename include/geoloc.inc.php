@@ -273,18 +273,23 @@ function fix_cities_not_on_map($limit=false)
     }
     else
         return false;
+    return true;
+}
 
-    $maxlevelquery = $globals->xdb->query("SELECT MAX(level) FROM geoloc_maps");
-    $maxlevel = $maxlevelquery->fetchOneCell();
-    for ($level = $maxlevel; $level >= 0; $level--)
-        $globals->xdb->query("
-            UPDATE geoloc_city AS gc
-        INNER JOIN geoloc_city_in_maps AS gcim ON(gc.id = gcim.city_id)
-        INNER JOIN geoloc_maps AS gm ON(gm.id = gcim.map_id AND gm.level = {?})
-         LEFT JOIN geoloc_city_in_maps AS gcim2 ON(gc.id = gcim2.city_id AND gcim2.infos = 'smallest')
-               SET gcim.infos = 'smallest'
-             WHERE gcim2.city_id IS NULL", $level);
-
+function set_smallest_levels() {
+    global $globals;
+    $maxlengths = $globals->xdb->iterRow("SELECT MAX(LENGTH(gm.path)), gcim.city_id
+        FROM geoloc_city_in_maps AS gcim
+        INNER JOIN geoloc_maps AS gm
+        USING ( map_id )
+        GROUP BY gcim.city_id
+        ");
+    while (list($length, $id) = $maxlengths->next()) {
+        $globals->xdb->execute("UPDATE geoloc_city_in_maps AS gcim
+            INNER JOIN geoloc_maps AS gm USING(map_id)
+            SET gcim.infos = IF(LENGTH(gm.path) = {?}, 'smallest', '')
+            WHERE gcim.city_id = {?}", $length, $id);
+    }
     return true;
 }
 // }}}

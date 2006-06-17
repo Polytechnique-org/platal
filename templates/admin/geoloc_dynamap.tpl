@@ -45,5 +45,10 @@
 {else}
   <p> Toutes les villes de la base sont placées dans des cartes. </p>
 {/if}
+{if $no_smallest}
+  <p>
+    Il faut <a href='?fix=smallest_maps'>définir la plus petite carte</a> pour chaque ville (à ne faire qu'une fois quand on a placé toutes les villes).
+  </p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

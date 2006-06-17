@@ -22,28 +22,36 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/geoloc_dynamap.tpl');
 
-if (Env::get('fix') == 'cities_not_on_map')
-{
+if (Env::get('fix') == 'cities_not_on_map') {
     require_once('geoloc.inc.php');
-    if (!fix_cities_not_on_map(100))
+    if (!fix_cities_not_on_map(20))
         $page->trig("Impossible d'accéder au webservice");
     else
         $refresh = true;
 }
 
-if (Env::has('new_maps'))
-{
-	require_once('geoloc.inc.php');
-	if (!get_new_maps(Env::get('url')))
-		$page->trig("Impossible d'accéder aux nouvelles cartes");
+if (Env::get('fix') == 'smallest_maps') {
+    require_once('geoloc.inc.php');
+    set_smallest_levels();
+}
+
+if (Env::has('new_maps')) {
+    require_once('geoloc.inc.php');
+    if (!get_new_maps(Env::get('url')))
+        $page->trig("Impossible d'accéder aux nouvelles cartes");
 }
 
 $countMissing = $globals->xdb->query("SELECT COUNT(*) FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL");
 $missing = $countMissing->fetchOneCell();
 
-if (isset($refresh) && $missing)
-    header('Refresh: 3');
+$countNoSmallest = $globals->xdb->query("SELECT SUM(IF(infos = 'smallest',1,0)) AS n FROM geoloc_city_in_maps GROUP BY city_id ORDER BY n");
+$noSmallest = $countNoSmallest->fetchOneCell() == 0;
+
+if (isset($refresh) && $missing) {
+	$page->assign("xorg_extra_header", "<meta http-equiv='Refresh' content='3'/>");
+}
 $page->assign("nb_cities_not_on_map", $missing);
+$page->assign("no_smallest", $noSmallest);
 
 $page->run();
 
