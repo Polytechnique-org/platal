@@ -32,7 +32,7 @@
                 {insert name="getNbIns"} polytechniciens sur le web
                 <form action="{rel}/search.php" method="get">
                     <div>
-                        <input type="text" size="30" name="quick" id="quick_search" value="{$smarty.request.quick|default:"recherche dans l'annuaire"}" onfocus="this.select()"/>                        
+                        <input type="text" size="30" name="quick" id="quick_search" value="{$smarty.request.quick|default:"recherche dans l'annuaire"}" onfocus="if (this.value == '{$smarty.request.quick|default:"recherche dans l'annuaire"|escape:javascript}') this.value=''" onblur="if (this.value == '') this.value='{$smarty.request.quick|default:"recherche dans l'annuaire"|escape:javascript}'"/>                        
                     </div>
                 </form>
                 {insert name="getNbNotifs"}
