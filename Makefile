@@ -2,7 +2,7 @@
 ################################################################################
 # definitions
 
-VERSION := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/\t.*//")
+VERSION := $(shell grep VERSION ChangeLog | head -1 | sed -e "s/VERSION //;s/\t.*//;s/ .*//")
 
 PKG_NAME = platal
 PKG_DIST = $(PKG_NAME)-$(VERSION)
