@@ -46,6 +46,10 @@
     {/foreach}
     <script type="text/javascript" src="{rel}/javascript/overlib.js"></script>
     
+    {if $xorg_extra_header}
+    {$xorg_extra_header|smarty:nodefaults}
+    {/if}
+
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>

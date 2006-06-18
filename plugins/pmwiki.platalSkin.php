@@ -3,6 +3,12 @@
 // set default author
 $Author = $_SESSION['forlife']."|".$_SESSION['prenom']." ".$_SESSION['nom'];
 
+$InputTags['e_form'] = array(
+  ':html' => "<form action='{\$PageUrl}?action=edit' method='post'><div><input 
+    type='hidden' name='action' value='edit' /><input 
+    type='hidden' name='n' value='{\$FullName}' /><input 
+    type='hidden' name='basetime' value='\$EditBaseTime' /></div>");
+    
 // set profiles to point to plat/al fiche
 Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e',
     'PreserveText("=", \'<a href="'.$globals->baseurl
