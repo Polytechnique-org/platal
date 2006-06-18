@@ -169,7 +169,7 @@
           <a href="https://www.polytechnique.org/">polytechnique.org</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           <br />
-          © Copyright 2000-2005 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          © Copyright 2000-2006 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
       </tr>
 
