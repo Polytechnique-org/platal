@@ -24,8 +24,14 @@ require_once("xorg.inc.php");
 new_admin_page('admin/synchro_ax.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Synchro AX');
 
-require_once('user.func.inc.php');
 require_once('synchro_ax.inc.php');
+
+if (is_ax_key_missing()) {
+    $page->assign('no_private_key', true);
+    $page->run();
+}
+
+require_once('user.func.inc.php');
 
 if (Env::has('user')) {
     $login = get_user_forlife(Env::get('user'));

@@ -31,8 +31,11 @@ if (Post::has('register_from_ax_question')) {
     $globals->xdb->query('UPDATE auth_user_quick SET profile_from_ax = 1 WHERE user_id = {?}', Session::getInt('uid'));
 }
 
-if (Env::get('synchro_ax') == 'confirm') {
-    require_once('synchro_ax.inc.php');
+require_once('synchro_ax.inc.php');
+if (is_ax_key_missing())
+    $page->assign('no_private_key', true);
+
+if (Env::get('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
     ax_synchronize(Session::get('bestalias'), Session::getInt('uid'));
     $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
 }

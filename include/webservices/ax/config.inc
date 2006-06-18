@@ -2,7 +2,7 @@
 	
 	global $globals;
         //chemin de stockage de la clé privée  A MODIFIER
-        $chemin_cle_privee = $globals->spoolroot."/configs/cle_privee_ax.pem";
+        $chemin_cle_privee = $globals->webservice->private_key_ax;
         //phrase cryptant la clé privée
         $phrase = $globals->webservice->pass_ax;
 //	"Cryptage de la cle pour polytechnique.org";

@@ -24,6 +24,11 @@
   Synchronisation depuis l'AX
 </h1>
 
+{if $no_private_key}
+<p>
+  Impossible d'utiliser ce service, il manque la clef privée AX dans la configuration de plat/al.
+</p>
+{else}
 <form action='{$smarty.request.PHP_SELF}' method='get'>
 <table class="tinybicol">
 <tr>
@@ -37,8 +42,9 @@
 </tr>
 </table>
 </form>
+{/if}
 
-{if $x}
+{if $x and !no_private_key}
 <form action='{$smarty.request.PHP_SELF}' method='post'>
 {if $x.profile_from_ax}
 <div style="text-align:center;margin:5px;background:green">

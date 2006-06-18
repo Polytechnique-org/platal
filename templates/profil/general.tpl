@@ -139,6 +139,7 @@
   </table>
 </div>
 
+{if !$no_private_key}
 <div class="blocunite">
   <table class="bicol" cellspacing="0" cellpadding="0" 
     summary="Profil : Informations générales">
@@ -176,6 +177,7 @@
     </tr>
   </table>
 </div>
+{/if}
     
 <div class="blocunite">
   <table class="bicol" cellspacing="0" cellpadding="0"
