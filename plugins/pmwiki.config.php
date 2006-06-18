@@ -7,6 +7,9 @@ $WikiDir         = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
 $PubDirUrl       = $globals->baseurl.'/wiki';
 $InterMapFiles[] = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
 
+# Authorize group name to start with a number (for promo groups)
+$GroupPattern = '[[:upper:]0-9][\\w]*(?:-\\w+)*';
+
 $EnablePathInfo = 1;
 
 $Skin = 'empty';
