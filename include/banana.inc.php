@@ -40,8 +40,9 @@ function hook_checkcancel($_headers) {
 
 class PlatalBanana extends Banana
 {
-    var $profile   = Array( 'name' => '', 'sig'  => '', 'org'  => 'Utilisateur de Polytechnique.org',
+    var $profile    = Array( 'name' => '', 'sig'  => '', 'org'  => 'Utilisateur de Polytechnique.org',
             'customhdr' =>'', 'display' => 0, 'lastnews' => 0, 'locale'  => 'fr_FR', 'subscribe' => array());
+    var $can_attach = false;
 
     function PlatalBanana()
     {
