@@ -63,6 +63,7 @@ class PlatalGlobals extends DiogenesCoreGlobals
 
     /** paths */
     var $baseurl   = 'http://localhost/xorg';
+    var $relurl   = '/xorg';
     var $spoolroot = '/var/spool/xorg';
     var $root      = null;
 
