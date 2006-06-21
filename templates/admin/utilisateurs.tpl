@@ -98,6 +98,13 @@ function del_fwd(fwd) {
   document.forms.fwds.del_fwd.value = fwd;
   document.forms.fwds.submit();
 }
+function act_fwd(fwd, activate) {
+  if (activate)
+    document.forms.fwds.activate_fwd.value = fwd;
+  else
+    document.forms.fwds.deactivate_fwd.value = fwd;
+  document.forms.fwds.submit();
+}
 // ]]>
 </script>
 {/literal}
@@ -255,10 +262,10 @@ Pour ceci changer ses permissions en 'disabled'.
 <strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
 </p>
 
-<form id="fwds" method="post" action="{$smarty.server.PHP_SELF}">
+<form id="fwds" method="post" action="{$smarty.server.PHP_SELF}#fwds">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
-      <th colspan="3">
+      <th colspan="4">
         Redirections
       </th>
     </tr>
@@ -266,6 +273,9 @@ Pour ceci changer ses permissions en 'disabled'.
     <tr>
       <td class="titre">
         {if $mail->active}active{/if}
+      </td>
+      <td>
+        <span class="smaller"><a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">{if $mail->active}des{/if}activer</a></span>
       </td>
       <td>
         {$mail->email}
@@ -276,7 +286,7 @@ Pour ceci changer ses permissions en 'disabled'.
     </tr>
     {/foreach}
     <tr>
-      <td class="titre">
+      <td class="titre" colspan="2">
         Ajouter un email
       </td>
       <td>
@@ -285,6 +295,8 @@ Pour ceci changer ses permissions en 'disabled'.
       <td class="action">
         <input type="hidden" name="user_id" value="{$mr.user_id}" />
         <input type="hidden" name="del_fwd" value="" />
+        <input type="hidden" name="activate_fwd" value="" />
+        <input type="hidden" name="deactivate_fwd" value="" />
         <input type="submit" name="add_fwd" value="Ajouter" />
       </td>
     </tr>

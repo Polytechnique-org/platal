@@ -90,7 +90,16 @@ if ($login) {
                     $page->trig($val." a été supprimé");
                 }
 		break;
-
+        case "activate_fwd":
+        if (!empty($val)) {
+            $redirect->modify_one_email($val, true);
+        }
+        break;
+        case "deactivate_fwd":
+        if (!empty($val)) {
+            $redirect->modify_one_email($val, false);
+        }
+        break;
 	    case "add_alias":
 		$globals->xdb->execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
                         $mr['user_id'], Env::get('email'));

@@ -128,7 +128,7 @@ Tu n'es pas administrateur de la liste, mais du site.
         <span class='smaller'>détermine la politique de l'antispam sur cette liste.</span>
       </td>
       <td>
-        <em>que faire des mails marqués « [spam probable] » ?</em><br />
+        <em><a name='antispam' id='antispam'></a>que faire des mails marqués « [spam probable] » ?</em><br />
         <input type='radio' name='bogo_level' value='0' {if !$bogo_level}checked='checked'{/if} /> les laisser passer<br />
         <input type='radio' name='bogo_level' value='1' {if $bogo_level eq 1}checked='checked'{/if} /> les envoyer aux modérateurs pour approbation<br />
         <input type='radio' name='bogo_level' value='2' {if $bogo_level eq 2}checked='checked'{/if} /> les supprimer

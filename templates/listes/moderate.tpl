@@ -69,7 +69,9 @@
   </li>
   <li>
   <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
-  N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables.
+  N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
+  S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
+  <a href="listes-options.php?liste={$smarty.request.liste}#antispam">jeter directement</a> et non de les modérer. 
   </li>
 </ul>
 
@@ -88,9 +90,8 @@
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
     <td class='action'>
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a>
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a><br />
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mdel=1'>détruire</a></td>
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a><br/>
+      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mdel=1'>détruire</a></td>
   </tr>
   {/foreach}
 </table>

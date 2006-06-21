@@ -274,6 +274,17 @@ class Redirect
         }
     }
 
+    function modify_one_email($email, $activate) {
+        foreach ($this->emails as $i=>$mail) {
+            if ($mail->email == $email) {
+                if ($activate)
+                    $this->emails[$i]->activate($this->uid);
+                else
+                    $this->emails[$i]->deactivate($this->uid);
+            }
+        }
+    }
+
     // }}}
 }
 

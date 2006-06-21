@@ -12,6 +12,7 @@ New :
 
     * Lists:
         - Remove ugly hack for admin lists (staff left to a X.net group)    -MC
+
     * Notifications :
         - iCal calendar for birthdays.                                      -Car
 
@@ -32,6 +33,7 @@ Bug/Wish :
 
     * Admin :
         - #408: Admin can change sex of users without root intervention.    -Car
+        - #417: Activate or unactivate emails directly from admin page.     -Car
 
     * Carnet :
         - #414: Link to users' fiche go to private fiche and not public.    -Car
@@ -40,6 +42,9 @@ Bug/Wish :
         - #268: Hide read events.                                           -Car
         - #391: Go back to top link at end of each event.                   -Car
         - #411: Count chars in events proposals to make them smaller.       -Car
+
+    * Lists :
+        - #396, #416: Making moderating ML messages easier.                 -Car
 
     * Profile :
         - #400: Several phones for each address.                            -Car
