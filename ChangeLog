@@ -10,6 +10,8 @@ New :
         - Dynamic maps using geodesix plugin.                               -Car
         - Link to local maps for all addresses.                             -Car
 
+    * Lists:
+        - Remove ugly hack for admin lists (staff left to a X.net group)    -MC
     * Notifications :
         - iCal calendar for birthdays.                                      -Car
 
@@ -32,13 +34,13 @@ Bug/Wish :
         - #408: Admin can change sex of users without root intervention.    -Car
 
     * Carnet :
-        - #414: Link to users' fiche go to private fiche and not public.    -Car 
- 
+        - #414: Link to users' fiche go to private fiche and not public.    -Car
+
     * Events :
         - #268: Hide read events.                                           -Car
         - #391: Go back to top link at end of each event.                   -Car
         - #411: Count chars in events proposals to make them smaller.       -Car
-        
+
     * Profile :
         - #400: Several phones for each address.                            -Car
         - #406: Direct link in owner's fiche to edit it.                    -Car
@@ -62,7 +64,7 @@ Bug/Wish :
         - #377: Possibility to edit or del an ext user if email used twice. -Car
         - #378: Display group directory order by promo.                     -Car
         - #379, #383: Paiements table relook.                               -Car
-        - #399: Event can accept guests or not.                             -Car     
+        - #399: Event can accept guests or not.                             -Car
         - #413: When creating a new event, datas don't disappear anymore.   -Car
 
 From 0.9.8 Branch :

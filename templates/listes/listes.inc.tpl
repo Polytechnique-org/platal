@@ -30,7 +30,7 @@
     <th></th>
   </tr>
   {foreach from=$listes item=liste}
-  {if $liste.priv >= $min && $liste.priv <= $max|default:$min}
+  {if $liste.priv eq $priv}
   <tr class='{cycle values="impair,pair"}'>
     <td>
       <a href='members.php?liste={$liste.list}'>{$liste.list}{if $liste.own}&nbsp;*{/if}</a> 

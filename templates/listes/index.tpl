@@ -81,7 +81,7 @@ Tu peux demander <a href='create.php'>la création</a> d'une liste de diffusion s
 Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
 </p>
 
-{include file='listes/listes.inc.tpl' min=0}
+{include file='listes/listes.inc.tpl' priv=0}
 
 <h1>
   Listes de diffusion privées (et de promo)
@@ -91,11 +91,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 Si tu te désinscris de ces listes, tu ne seras plus capable de t'y réinscrire par toi-même !
 </p>
 
-{if $smarty.session.perms eq admin}
-{include file='listes/listes.inc.tpl' min=1}
-{else}
-{include file='listes/listes.inc.tpl' min=1 max=4}
-{/if}
+{include file='listes/listes.inc.tpl' priv=1}
 
 <br />
 
@@ -114,15 +110,5 @@ Si tu te désinscris de ces listes, tu ne seras plus capable de t'y réinscrire pa
     </tr>
   </table>
 </form>
-
-{perms level=admin}
-<h1>
-  Listes d'administration
-</h1>
-
-{include file='listes/listes.inc.tpl' min=2 max=4}
-
-{/perms}
-
 
 {* vim:set et sw=2 sts=2 sws=2: *}
