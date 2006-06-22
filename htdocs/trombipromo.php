@@ -38,7 +38,7 @@ function getList($offset,$limit) {
     $pnb = $res->fetchOneCell();
 
     $res = $globals->xdb->query(
-            "SELECT  promo,user_id,a.alias AS forlife,nom,prenom
+            "SELECT  promo,user_id,a.alias AS forlife,IF(nom_usage='', nom, nom_usage) AS nom,prenom
                FROM  photo         AS p
          INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
          INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )

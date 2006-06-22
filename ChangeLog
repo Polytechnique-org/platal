@@ -49,12 +49,12 @@ Bug/Wish :
     * Lists :
         - #396, #416: Making moderating ML messages easier.                 -Car
 
+    * Newsletter :
+        - #410: In Html newsletter add a link to go back to summary.        -Car
+
     * Profile :
         - #400: Several phones for each address.                            -Car
         - #406: Direct link in owner's fiche to edit it.                    -Car
-
-    * Newsletter :
-        - #410: In Html newsletter add a link to go back to summary.        -Car
 
     * RSS :
         - #398: "Add to contact" doesn't appear for deaths.                 -Car
@@ -64,6 +64,9 @@ Bug/Wish :
 
     * Search :
         - #412: Error SQL in big referent searches.                         -Car
+
+    * Trombi :
+        - #420: Promo trombi shows usage name.                              -Car
 
     * Wiki :
         - #403: Cache is cleared when editing a page.                       -Car
