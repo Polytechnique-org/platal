@@ -127,9 +127,11 @@ function relance($uid, $nbx = -1)
         return false;
     }
 
+    require_once('secure_hash.inc.php');
+    
     $hash     = rand_url_id(12);
     $pass     = rand_pass();
-    $pass_md5 = md5($pass);
+    $pass_encrypted = hash_encrypt($pass);
     $fdate    = strftime('%d %B %Y', strtotime($date));
     
     $mymail = new XOrgMailer('marketing.relance.tpl');
@@ -142,7 +144,7 @@ function relance($uid, $nbx = -1)
     $mymail->assign('lemail',     $email);
     $mymail->assign('subj',       $alias.'@'.$globals->mail->domain);
     $mymail->send();
-    $globals->xdb->execute('UPDATE register_pending SET hash={?}, password={?}, relance=NOW() WHERE uid={?}', $hash, $pass_md5, $uid);
+    $globals->xdb->execute('UPDATE register_pending SET hash={?}, password={?}, relance=NOW() WHERE uid={?}', $hash, $pass_encrypted, $uid);
 
     return "$prenom $nom ($promo)";
 }

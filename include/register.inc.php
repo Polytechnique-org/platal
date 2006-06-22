@@ -252,9 +252,10 @@ function finish_ins($sub_state)
 {
     global $globals;
     extract($sub_state);
+    require_once('secure_hash.inc.php');
 
     $pass     = rand_pass();
-    $pass_md5 = md5($pass_clair);
+    $pass_encrypted = hash_encrypt($pass_clair);
     $hash     = rand_url_id(12);
   
     $globals->xdb->execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
@@ -262,7 +263,7 @@ function finish_ins($sub_state)
     $globals->xdb->execute(
             "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
-            $uid, $forlife, $bestalias, $mailorg2, $pass_md5, $email, $naissance, $hash);
+            $uid, $forlife, $bestalias, $mailorg2, $pass_encrypted, $email, $naissance, $hash);
 
     require_once('xorg.mailer.inc.php');
     $mymail = new XOrgMailer('inscrire.mail.tpl');

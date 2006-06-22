@@ -254,7 +254,7 @@ htdocs/index.php
 htdocs/javascript/do_challenge_response.js
 htdocs/javascript/md5.js
 htdocs/javascript/xorg.js
-htdocs/motdepassemd5.php
+htdocs/motdepasse.php
 htdocs/preferences.php
 htdocs/recovery.php
 htdocs/tmpPWD.php
@@ -295,8 +295,8 @@ templates/cookie_on.tpl
 templates/deconnexion.tpl
 templates/index.tpl
 templates/logger-view.tpl
-templates/motdepassemd5.success.tpl
-templates/motdepassemd5.tpl
+templates/motdepasse.success.tpl
+templates/motdepasse.tpl
 templates/password_prompt_logged.tpl
 templates/password_prompt.tpl
 templates/preferences.tpl

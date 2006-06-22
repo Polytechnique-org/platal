@@ -5,7 +5,7 @@ $pub_nbCol = 2 ;
 
 // Liens apparaissant toujours
 $pub_tjs = array(
-    "motdepassemd5.php" => "Changer mon mot de passe" ,
+    "motdepasse.php" => "Changer mon mot de passe" ,
     "dons.php"          => "Faire un don à l'association Polytechnique.org"
     ) ;
 

@@ -22,6 +22,7 @@
 require_once('xorg.inc.php');
 
 if (Env::has('response2'))  {
+    require_once('secure_hash.inc.php');
     $_SESSION['password'] = $password = Post::get('response2');
     
     $globals->xdb->execute('UPDATE auth_user_md5 SET password={?} WHERE user_id={?}', $password, Session::getInt('uid'));
@@ -30,16 +31,15 @@ if (Env::has('response2'))  {
     $log->log('passwd', '');
 
     if (Cookie::get('ORGaccess')) {
-        setcookie('ORGaccess', md5($password), (time()+25920000), '/', '' ,0);
+        setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
     }
 
-    new_skinned_page('motdepassemd5.success.tpl', AUTH_MDP);
+    new_skinned_page('motdepasse.success.tpl', AUTH_MDP);
     $page->run();
 }
 
-new_skinned_page('motdepassemd5.tpl', AUTH_MDP);
-$page->addJsLink('javascript/md5.js');
-$page->addJsLink('javascript/motdepassemd5.js');
+new_skinned_page('motdepasse.tpl', AUTH_MDP);
+$page->addJsLink('javascript/motdepasse.js');
 $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
 $page->run();
 ?>

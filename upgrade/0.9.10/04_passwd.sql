@@ -1,0 +1,1 @@
+ALTER TABLE `auth_user_md5` CHANGE `password` `password` VARCHAR( 40 ) NOT NULL;

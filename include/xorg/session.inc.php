@@ -64,19 +64,19 @@ class XorgSession extends DiogenesCoreSession
      */
     function doAuth(&$page,$new_name=false)
     {
-	global $globals;
-	if (identified()) { // ok, c'est bon, on n'a rien à faire
-	    return true;
-	}
+    	global $globals;
+    	if (identified()) { // ok, c'est bon, on n'a rien à faire
+    	    return true;
+    	}
 
         if (Session::has('session')) {
             $session =& Session::getMixed('session');
         }
 
         if (Env::has('username') && Env::has('response') && isset($session->challenge))
-	{
-	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
-	    // ou passwordpromptscreenlogged.tpl
+    	{
+    	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
+    	    // ou passwordpromptscreenlogged.tpl
             $uname = Env::get('username');
             
             if (Env::get('domain') == "alias") {
@@ -95,19 +95,27 @@ class XorgSession extends DiogenesCoreSession
             } else {
                 $login = $uname;
             }
-
-	    $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
-	    $res   = $globals->xdb->query(
-                    "SELECT  u.user_id, u.password
-                       FROM  auth_user_md5 AS u
-                 INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-                      WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
-
+    
+    	    $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
+    	    $res   = $globals->xdb->query(
+                        "SELECT  u.user_id, u.password
+                           FROM  auth_user_md5 AS u
+                     INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
+                          WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
+    
             $logger =& Session::getMixed('log');
-
-	    if (list($uid, $password) = $res->fetchOneRow()) {
-		$expected_response=md5("$uname:$password:{$session->challenge}");
-		if (Env::get('response') == $expected_response) {
+    	    if (list($uid, $password) = $res->fetchOneRow()) {
+        	    require_once('secure_hash.inc.php');
+        		$expected_response=hash_encrypt("$uname:$password:{$session->challenge}");
+        		// le password de la base est peut-être encore encodé en md5
+        		if (Env::get('response') != $expected_response) {
+        		  $new_password = hash_xor(Env::get('xorpass'), $password);
+        		  $expected_response = hash_encrypt("$uname:$new_password:{$session->challenge}");
+        		  if (Env::get('response') == $expected_response) {
+        		      $globals->xdb->execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
+        		  }
+        		}
+        		if (Env::get('response') == $expected_response) {
                     if (Env::has('domain')) {
                         if (($domain = Env::get('domain', 'login')) == 'alias') {
                             setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
@@ -117,14 +125,14 @@ class XorgSession extends DiogenesCoreSession
                         // pour que la modification soit effective dans le reste de la page
                         $_COOKIE['ORGdomain'] = $domain;
                     }
-
-		    unset($session->challenge);
-		    if ($logger) {
-			$logger->log('auth_ok');
+    
+        		    unset($session->challenge);
+        		    if ($logger) {
+            			$logger->log('auth_ok');
                     }
-		    start_connexion($uid, true);
+        		    start_connexion($uid, true);
                     if (Env::get('remember', 'false') == 'true') {
-                        $cookie = md5(Session::get('password'));
+                        $cookie = hash_encrypt(Session::get('password'));
                         setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
                         if ($logger) {
                             $logger->log("cookie_on");
@@ -136,14 +144,14 @@ class XorgSession extends DiogenesCoreSession
                             $logger->log("cookie_off");
                         }
                     }
-		    return true;
-		} elseif ($logger) {
+        		    return true;
+        		} elseif ($logger) {
                     $logger->log('auth_fail','bad password');
                 }
-	    } elseif ($logger) {
-                $logger->log('auth_fail','bad login');
+            } elseif ($logger) {
+                    $logger->log('auth_fail','bad login');
             }
-	}
+    	}
         $this->doLogin($page,$new_name);
     }
 
@@ -176,7 +184,7 @@ class XorgSession extends DiogenesCoreSession
      */
     function doLogin(&$page, $new_name=false)
     {
-        $page->addJsLink('javascript/md5.js');
+        $page->addJsLink('javascript/secure_hash.js');
 	if (logged() and !$new_name) {
 	    $page->changeTpl('password_prompt_logged.tpl');
             $page->addJsLink('javascript/do_challenge_response_logged.js');
@@ -243,7 +251,8 @@ function try_cookie()
     );
     if ($res->numRows() != 0) {
 	list($uid, $password) = $res->fetchOneRow();
-	$expected_value       = md5($password);
+	require_once('secure_hash.inc.php');
+	$expected_value       = hash_encrypt($password);
 	if ($expected_value == Cookie::get('ORGaccess')) {
 	    start_connexion($uid, false);
 	    return 0;

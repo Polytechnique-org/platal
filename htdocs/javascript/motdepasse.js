@@ -18,6 +18,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+document.write('<script language="javascript" src="javascript/secure_hash.js"></script>');
+
 function EnCryptedResponse() {
     pw1 = document.forms.changepass.nouveau.value;
     pw2 = document.forms.changepass.nouveau2.value;
@@ -31,7 +33,7 @@ function EnCryptedResponse() {
             return false;
         exit;
     }
-    str = MD5(document.forms.changepass.nouveau.value);
+    str = hash_encrypt(document.forms.changepass.nouveau.value);
     document.forms.changepass2.response2.value = str;
     alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
     document.forms.changepass2.submit();

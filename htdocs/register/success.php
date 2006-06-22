@@ -31,14 +31,14 @@ if (Env::has('response2'))  {
     $log->log('passwd', '');
 
     if (Cookie::get('ORGaccess')) {
-        setcookie('ORGaccess', md5($password), (time()+25920000), '/', '' ,0);
+        require_once('secure_hash.inc.php');
+        setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
     }
 
     $page->assign('mdpok', true);
 }
 
-$page->addJsLink('javascript/md5.js');
-$page->addJsLink('javascript/motdepassemd5.js');
+$page->addJsLink('javascript/motdepasse.js');
 
 $page->run();
 ?>

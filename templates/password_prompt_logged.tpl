@@ -79,6 +79,7 @@
   <div>
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
     <input type="hidden" name="username"  value="{$smarty.cookies.ORGuid}" />
+    <input type="hidden" name="xorpass"  value="" />
     <input type="hidden" name="remember"  value="" />
     <input type="hidden" name="response"  value="" />
   </div>

@@ -38,6 +38,9 @@ Bug/Wish :
     * Carnet :
         - #414: Link to users' fiche go to private fiche and not public.    -Car
 
+    * Core :
+        - #375: Use SHA1 instead of MD5 for password encryption.            -Car
+
     * Events :
         - #268: Hide read events.                                           -Car
         - #391: Go back to top link at end of each event.                   -Car

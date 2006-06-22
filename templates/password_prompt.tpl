@@ -129,6 +129,7 @@ Problème de connexion ? <a href="{rel}/Docs/FAQ#connect">La réponse est là.</a>
   <div>
     <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
     <input type="hidden" name="response"  value="" />
+    <input type="hidden" name="xorpass"  value="" />
     <input type="hidden" name="username"  value="" />
     <input type="hidden" name="remember"  value="" />
     <input type="hidden" name="domain"    value="" />

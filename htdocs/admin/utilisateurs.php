@@ -117,26 +117,27 @@ if ($login) {
 
 	    // Editer un profil
 	    case "u_edit":
-		$pass_md5B = Env::get('newpass_clair') != "********" ? md5(Env::get('newpass_clair')) : Env::get('passw');
-                $naiss = Env::get('naissanceN');
-                $perms = Env::get('permsN');
-                $prenm = Env::get('prenomN');
-                $nom   = Env::get('nomN');
-                $promo = Env::getInt('promoN');
-                $sexe  = Env::get('sexeN');
-                $comm  = Env::get('commentN');
+            require_once('secure_hash.inc.php');
+            $pass_encrypted = Env::get('newpass_clair') != "********" ? hash_encrypt(Env::get('newpass_clair')) : Env::get('passw');
+            $naiss = Env::get('naissanceN');
+            $perms = Env::get('permsN');
+            $prenm = Env::get('prenomN');
+            $nom   = Env::get('nomN');
+            $promo = Env::getInt('promoN');
+            $sexe  = Env::get('sexeN');
+            $comm  = Env::get('commentN');
 
-		$query = "UPDATE auth_user_md5 SET
-			    naissance = '$naiss',
-			    password  = '$pass_md5B',
-			    perms     = '$perms',
-			    prenom    = '".addslashes($prenm)."',
-			    nom       = '".addslashes($nom)."',
-			    flags     = '$sexe',
-			    promo     = $promo,
-			    comment   = '".addslashes($comm)."'
-			  WHERE user_id = '{$mr['user_id']}'";
-		if ($globals->xdb->execute($query)) {
+            $query = "UPDATE auth_user_md5 SET
+                    naissance = '$naiss',
+                    password  = '$pass_encrypted',
+                    perms     = '$perms',
+                    prenom    = '".addslashes($prenm)."',
+                    nom       = '".addslashes($nom)."',
+                    flags     = '$sexe',
+                    promo     = $promo,
+                    comment   = '".addslashes($comm)."'
+                WHERE user_id = '{$mr['user_id']}'";
+            if ($globals->xdb->execute($query)) {
                     user_reindex($mr['user_id']);
 
                     require_once("diogenes/diogenes.hermes.inc.php");
@@ -153,12 +154,12 @@ if ($login) {
                     require_once('nomusage.inc.php');
                     set_new_usage($mr['user_id'], Env::get('nomusageN'), make_username(Env::get('prenomN'), Env::get('nomusageN')));
                 }
-		$r  = $globals->xdb->query("SELECT  *, a.alias AS forlife, u.flags AS sexe
+                $r  = $globals->xdb->query("SELECT  *, a.alias AS forlife, u.flags AS sexe
                                               FROM  auth_user_md5 AS u
                                         INNER JOIN  aliases       AS a ON (u.user_id=a.id)
                                              WHERE  user_id = {?}", $mr['user_id']);
                 $mr = $r->fetchOneAssoc();
-		break;
+                break;
 
             // DELETE FROM auth_user_md5
 	    case "u_kill":

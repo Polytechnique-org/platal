@@ -104,7 +104,7 @@
     Que tu aimes les pingouins ou que tu préfères le site sous une apparence plus traditionnelle url=tu trouvera de quoi mettre le site Polytechnique.org à ton gout !
     {/page}
 
-    {page title="Changer mon mot de passe pour le site" url="motdepassemd5.php"|url}
+    {page title="Changer mon mot de passe pour le site" url="motdepasse.php"|url}
     Grâce à cette page, tu peux changer le mot de passe qui te permet d'accéder au site
     Polytechnique.org ainsi que les groupes X associés.
     {/page}

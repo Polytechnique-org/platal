@@ -31,7 +31,7 @@
   qui comporte exactement les mêmes adresses que le domaine polytechnique.org.
 </p>
 <p>
-<strong><a href="{#globals.baseurl#}/motdepassemd5.php">Clique ici pour changer ton mot de passe.</a></strong>
+<strong><a href="{#globals.baseurl#}/motdepasse.php">Clique ici pour changer ton mot de passe.</a></strong>
 </p>
 <p>
   N'oublie pas : si tu perds ton mot de passe, nous n'avons aucun engagement, en

@@ -18,6 +18,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+document.write('<script language="javascript" src="javascript/secure_hash.js"></script>');
+
 function correctUserName() {
     var u = document.forms.login.username;
     // login with no space
@@ -43,11 +45,15 @@ function doChallengeResponse() {
 
     if (!correctUserName()) return false;
 
+    var new_pass = hash_encrypt(document.forms.login.password.value);
+    var old_pass = MD5(document.forms.login.password.value);
+    
     str = document.forms.login.username.value + ":" +
-        MD5(document.forms.login.password.value) + ":" +
+        new_pass + ":" +
         document.forms.loginsub.challenge.value;
 
-    document.forms.loginsub.response.value = MD5(str);
+    document.forms.loginsub.response.value = hash_encrypt(str);
+    document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
     document.forms.loginsub.username.value = document.forms.login.username.value;
     document.forms.loginsub.remember.value = document.forms.login.remember.checked;
     document.forms.loginsub.domain.value = document.forms.login.domain.value;

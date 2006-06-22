@@ -84,7 +84,7 @@ depuis <strong>{$host}</strong>
 <script type="text/javascript">
 //<![CDATA[
 function doEditUser() {
-  document.forms.auth.hashpass.value = MD5(document.forms.edit.password.value);
+  document.forms.auth.hashpass.value = hash_encrypt(document.forms.edit.password.value);
   document.forms.auth.password.value = "";
   document.forms.auth.submit();
 }
