@@ -3,6 +3,9 @@ VERSION 0.9.10                                                         Juin 2006
 
 New :
 
+    * Core :
+        - Tighten security when changing password.                          -Car
+
     * Documentation :
         - Display ChangeLog in site.                                        -Car
         - Bounty: link bug reports from Changelog.                          -MC
