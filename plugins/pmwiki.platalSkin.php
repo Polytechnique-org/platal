@@ -14,6 +14,10 @@ Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e',
     'PreserveText("=", \'<a href="'.$globals->baseurl
     .'/fiche.php?user=$1" class="popup2">$2</a>\', "")');
 
+// prevent restorelinks before block apply (otherwise [[Sécurité]] will give
+//  .../S<span class='e9curit'>e9'>Sécurité</a>
+Markup('restorelinks','<%%',"//", '');
+
 ## [[#anchor]] in standard XHTML
 Markup('[[#','<[[','/(?>\\[\\[#([A-Za-z][-.:\\w]*))\\]\\]/e',
   "Keep(\"<a id='$1'></a>\",'L')");
