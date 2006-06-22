@@ -19,9 +19,25 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
  
- require_once 'xorg.inc.php';
- 
- new_skinned_page('changeLog.tpl', AUTH_PUBLIC);
- $page->assign('ChangeLog', file_get_contents($globals->spoolroot.'/ChangeLog'));
- $page->run();
- ?>
+require_once 'xorg.inc.php';
+
+new_skinned_page('changeLog.tpl', AUTH_PUBLIC);
+
+function bugize($list)
+{
+    $list = split(',', $list);
+    $ans  = array();
+    
+    foreach ($list as $bug) {
+        $clean = str_replace('#', '', $bug);
+        $ans[] = "<a href='http://trackers.polytechnique.org/task/$clean'>$bug</a>";
+    }
+
+    return join(',', $ans);
+}
+
+$clog = htmlentities(file_get_contents($globals->spoolroot.'/ChangeLog'));
+$clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
+$page->assign('ChangeLog', $clog);
+$page->run();
+?>

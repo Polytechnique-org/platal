@@ -5,6 +5,7 @@ New :
 
     * Documentation :
         - Display ChangeLog in site.                                        -Car
+        - Bounty: link bug reports from Changelog.                          -MC
 
     * Geoloc :
         - Dynamic maps using geodesix plugin.                               -Car
