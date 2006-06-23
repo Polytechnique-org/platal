@@ -27,6 +27,7 @@ else
     new_simple_page('search.tpl', AUTH_COOKIE);
 $page->assign('advanced',1);
 $page->assign('public_directory',0);
+$page->assign('use_map', $globals->geoloc->use_map());
 require_once("applis.func.inc.php");
 require_once("geoloc.inc.php");
 
@@ -121,8 +122,6 @@ if (!Env::has('rechercher')) {
     }
     
 }
-
-$page->assign('use_map', $globals->geoloc->use_map());
 
 $page->register_modifier('display_lines', 'display_lines');
 $page->run();
