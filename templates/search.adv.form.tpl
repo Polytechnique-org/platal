@@ -29,7 +29,8 @@
     <tr>
       <td>Nom</td>
       <td>
-    	<input type="submit" name="rechercher" style="display:none" value="Chercher"/>
+    	<input type="hidden" name="rechercher" value="Chercher"/>
+    	<input type="submit" style="display:none"/>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
         {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
         <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">
