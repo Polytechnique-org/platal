@@ -9,7 +9,7 @@
 
 require_once('xorg.inc.php');
 new_skinned_page('banana/index.tpl', AUTH_COOKIE);
-$page->addCssLink('banana/css/style.css');
+$page->addCssLink('css/banana/style.css');
 $page->assign('xorg_title','Polytechnique.org - Forums & PA');
 require_once('banana.inc.php');
 

@@ -76,7 +76,7 @@ function searchMapId(f)
   {if !$no_annu}
     <form id="search_form" action="{#globals.baseurl#}/advanced_search.php?{$dynamap_vars|default:"only_current=on"}&amp;rechercher=1" method="post">
     <p>
-    	<input type="button" value="Lister les camarades de la carte" onclick="searchMapId(this.form)"/>
+    	<input type="button" value="Lister les camarades de la carte ci-dessus" onclick="searchMapId(this.form)"/>
     </p>
     </form>
   {/if}
