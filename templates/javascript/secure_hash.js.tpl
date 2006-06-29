@@ -18,9 +18,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-document.write('<script language="javascript" src="javascript/md5.js"></script>');
-document.write('<script language="javascript" src="javascript/sha1.js"></script>');
+document.write('<script language="javascript" src="{rel}/javascript/md5.js"></script>');
+document.write('<script language="javascript" src="{rel}/javascript/sha1.js"></script>');
 
+{literal}
 function hash_encrypt(a) {
     return hex_sha1(a);
 }
@@ -51,3 +52,4 @@ function hash_xor(a, b) {
         c += a.charAt(k);
     return c;
 }
+{/literal}

@@ -135,8 +135,8 @@ class XnetSession extends DiogenesCoreSession
     // {{{ doLogin
 
     function doLogin(&$page) {
-        $page->addJsLink('javascript/md5.js');
-        $page->addJsLink('javascript/do_challenge_response.js');
+        // login for non-x has been disabled, so don't need this js anymore
+        //$page->addJsLink('javascript/do_challenge_response.js.php');
         $page->assign("xorg_tpl", "xnet/login.tpl");
         $page->run();
     }

@@ -72,7 +72,6 @@ class XorgSession extends DiogenesCoreSession
         if (Session::has('session')) {
             $session =& Session::getMixed('session');
         }
-
         if (Env::has('username') && Env::has('response') && isset($session->challenge))
     	{
     	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
@@ -184,16 +183,15 @@ class XorgSession extends DiogenesCoreSession
      */
     function doLogin(&$page, $new_name=false)
     {
-        $page->addJsLink('javascript/secure_hash.js');
-	if (logged() and !$new_name) {
-	    $page->changeTpl('password_prompt_logged.tpl');
-            $page->addJsLink('javascript/do_challenge_response_logged.js');
-	    $page->assign("xorg_tpl", "password_prompt_logged.tpl");
-	    $page->run();
-	} else {
-	    $page->changeTpl('password_prompt.tpl');
-            $page->addJsLink('javascript/do_challenge_response.js');
-	    $page->assign("xorg_tpl", "password_prompt.tpl");
+        if (logged() and !$new_name) {
+            $page->changeTpl('password_prompt_logged.tpl');
+            $page->addJsLink('javascript/do_challenge_response_logged.js.php');
+            $page->assign("xorg_tpl", "password_prompt_logged.tpl");
+            $page->run();
+        } else {
+            $page->changeTpl('password_prompt.tpl');
+            $page->addJsLink('javascript/do_challenge_response.js.php');
+            $page->assign("xorg_tpl", "password_prompt.tpl");
             
             global $globals;
             if ($globals->mail->alias_dom) {
@@ -204,8 +202,8 @@ class XorgSession extends DiogenesCoreSession
                 $page->assign("r_domain", Cookie::get('ORGdomain', 'login'));
             }
 	    $page->run();
-	}
-	exit;
+    	}
+    	exit;
     }
 
     // }}}

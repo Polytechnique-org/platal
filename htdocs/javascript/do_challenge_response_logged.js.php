@@ -1,3 +1,4 @@
+<?php
 /***************************************************************************
  *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -17,34 +18,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-
-document.write('<script language="javascript" src="javascript/secure_hash.js"></script>');
-
-function readCookie(name)
-{
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++)
-    {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-}
-
-
-function doChallengeResponse() {
-    var new_pass = hash_encrypt(document.forms.login.password.value);
-    var old_pass = MD5(document.forms.login.password.value);
-    
-    str = readCookie('ORGuid') + ":" +
-        hash_encrypt(document.forms.login.password.value) + ":" +
-        document.forms.loginsub.challenge.value;
-
-    document.forms.loginsub.response.value = hash_encrypt(str);
-    document.forms.loginsub.xorpass.value = hash_xor(new_pass, old_pass);
-    document.forms.loginsub.remember.value = document.forms.login.remember.checked;
-    document.forms.login.password.value = "";
-    document.forms.loginsub.submit();
-}
+require_once("xorg.inc.php");
+new_nonhtml_page('javascript/do_challenge_response_logged.js.tpl', AUTH_PUBLIC);
+header("Content-type: text/javascript");
+$page->run();
+?>

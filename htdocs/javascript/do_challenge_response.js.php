@@ -18,36 +18,8 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-
-require_once('xorg.inc.php');
-
-if (Post::has('response2'))  {
-    require_once('secure_hash.inc.php');
-    if (hash_encrypt($_SESSION['password'].":".$_SESSION['session']->challenge) != Post::get('response')) {
-        new_skinned_page('motdepasse.tpl', AUTH_MDP);
-        $page->addJsLink('javascript/motdepasse.js.php');
-        $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
-        $page->trig('Ancien mot de passe erronné');
-        $page->run();
-    }
-    $password = hash_xor(Post::get('response2'), $_SESSION['password']);
-    $_SESSION['password'] = $password;
-    
-    $globals->xdb->execute('UPDATE auth_user_md5 SET password={?} WHERE user_id={?}', $password, Session::getInt('uid'));
-    
-    $log =& Session::getMixed('log');
-    $log->log('passwd', '');
-
-    if (Cookie::get('ORGaccess')) {
-        setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
-    }
-
-    new_skinned_page('motdepasse.success.tpl', AUTH_MDP);
-    $page->run();
-}
-
-new_skinned_page('motdepasse.tpl', AUTH_MDP);
-$page->addJsLink('javascript/motdepasse.js.php');
-$page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
+require_once("xorg.inc.php");
+new_nonhtml_page('javascript/do_challenge_response.js.tpl', AUTH_PUBLIC);
+header("Content-type: text/javascript");
 $page->run();
 ?>

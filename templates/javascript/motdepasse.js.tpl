@@ -1,4 +1,3 @@
-<?php
 /***************************************************************************
  *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -19,35 +18,34 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.inc.php');
+document.write('<script language="javascript" src="{rel}/javascript/secure_hash.js.php"></script>');
 
-if (Post::has('response2'))  {
-    require_once('secure_hash.inc.php');
-    if (hash_encrypt($_SESSION['password'].":".$_SESSION['session']->challenge) != Post::get('response')) {
-        new_skinned_page('motdepasse.tpl', AUTH_MDP);
-        $page->addJsLink('javascript/motdepasse.js.php');
-        $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
-        $page->trig('Ancien mot de passe erronné');
-        $page->run();
+{literal}
+function EnCryptedResponse() {
+    pw1 = document.forms.changepass.nouveau.value;
+    pw2 = document.forms.changepass.nouveau2.value;
+    if (pw1 != pw2) {
+        alert ("\nErreur : les deux champs ne sont pas identiques !")
+            return false;
+        exit;
     }
-    $password = hash_xor(Post::get('response2'), $_SESSION['password']);
-    $_SESSION['password'] = $password;
-    
-    $globals->xdb->execute('UPDATE auth_user_md5 SET password={?} WHERE user_id={?}', $password, Session::getInt('uid'));
-    
-    $log =& Session::getMixed('log');
-    $log->log('passwd', '');
-
-    if (Cookie::get('ORGaccess')) {
-        setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+    if (pw1.length < 6) {
+        alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !")
+            return false;
+        exit;
     }
+    
+    old_pass = hash_encrypt(document.forms.changepass.ancien.value);
+    
+    str = old_pass + ":" +
+        document.forms.changepass.challenge.value;
+    document.forms.changepass2.response.value = hash_encrypt(str);
 
-    new_skinned_page('motdepasse.success.tpl', AUTH_MDP);
-    $page->run();
+    str = hash_xor(hash_encrypt(document.forms.changepass.nouveau.value), old_pass);
+    document.forms.changepass2.response2.value = str;
+    
+    alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    document.forms.changepass2.submit();
+    return true;
 }
-
-new_skinned_page('motdepasse.tpl', AUTH_MDP);
-$page->addJsLink('javascript/motdepasse.js.php');
-$page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
-$page->run();
-?>
+{/literal}
