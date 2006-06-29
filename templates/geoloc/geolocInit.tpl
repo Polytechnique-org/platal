@@ -33,11 +33,14 @@ aimTween="5"
 transition="2"
 textLookInCity="Rechercher les x dans cette ville"
 textZoomIn="Zoom"
-textGoTo="Va a "
-textZoomBackTo="Reviens a "
+textGoTo="Va à "
+textZoomBackTo="Revient à "
 textLoading="Chargement"
 textYouAreIn="Tu es dans "
 textSeeMapOfCity="Voir la carte de "
-textYouHaveSelected="Tu as selectionne "
-textCopyright="Les regles de l'annuaire s'appliquent aussi a cette application"
+textYouHaveSelected="Tu as sélectionné "
+{if $background}
+background="{$background}"
+{/if} 
+textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
 scriptInfosArea="getData.php?{$querystring}"/>

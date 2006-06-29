@@ -24,5 +24,6 @@ require_once('xnet.inc.php');
 header("Content-type: text/xml");
 new_nonhtml_page('geoloc/geolocInit.tpl');
 
+$page->assign('background', '#F4FAD4');
 $page->run();
 ?>
