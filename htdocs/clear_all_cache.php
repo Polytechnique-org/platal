@@ -20,8 +20,10 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
+require_once("wiki.inc.php");
 new_skinned_page('index.tpl', AUTH_COOKIE);
 $page->clear_compiled_tpl();
+wiki_clear_all_cache();
 
 redirect(empty($_SERVER['HTTP_REFERER']) ? 'index.php' : $_SERVER['HTTP_REFERER']);
 

@@ -61,6 +61,11 @@ function wiki_clear_cache($n) {
     $wikisite = $oldwikisite;
 }
 
+function wiki_clear_all_cache()
+{
+    system("rm -f ".wiki_work_dir()."/cache_*");
+}
+
 // editing pages are not static but used templates too, so we used
 // temp template files containing result from wiki
 function wiki_create_tmp($content) {
