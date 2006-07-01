@@ -74,7 +74,7 @@ $GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
  */
 function get_address_infos($txt) {
     global $globals;
-    $url = $globals->geoloc->webservice_url."address.php?txt=".urlencode(utf8_encode($txt)."&precise=1");
+    $url = $globals->geoloc->webservice_url."address.php?precise=1&txt=".urlencode(utf8_encode($txt));
     if (!($f = @fopen($url, 'r'))) return false;
     $keys = explode('|',fgets($f));
     $vals = explode('|',fgets($f));
