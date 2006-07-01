@@ -35,6 +35,10 @@ if (Env::get('fix') == 'smallest_maps') {
     set_smallest_levels();
 }
 
+if (Env::get('fix') == 'precise_coordinates') {
+    $globals->xdb->execute("UPDATE adresses AS a INNER JOIN geoloc_city AS c ON(a.cityid = c.id) SET a.glat = c.lat / 100000, a.glng = c.lon / 100000");
+}
+
 if (Env::has('new_maps')) {
     require_once('geoloc.inc.php');
     if (!get_new_maps(Env::get('url')))
@@ -47,11 +51,15 @@ $missing = $countMissing->fetchOneCell();
 $countNoSmallest = $globals->xdb->query("SELECT SUM(IF(infos = 'smallest',1,0)) AS n FROM geoloc_city_in_maps GROUP BY city_id ORDER BY n");
 $noSmallest = $countNoSmallest->fetchOneCell() == 0;
 
+$countNoCoordinates = $globals->xdb->query("SELECT COUNT(*) FROM adresses WHERE cityid IS NOT NULL AND glat = 0 AND glng = 0");
+$noCoordinates = $countNoCoordinates->fetchOneCell();
+
 if (isset($refresh) && $missing) {
-	$page->assign("xorg_extra_header", "<meta http-equiv='Refresh' content='3'/>");
+    $page->assign("xorg_extra_header", "<meta http-equiv='Refresh' content='3'/>");
 }
 $page->assign("nb_cities_not_on_map", $missing);
 $page->assign("no_smallest", $noSmallest);
+$page->assign("no_coordinates", $noCoordinates);
 
 $page->run();
 

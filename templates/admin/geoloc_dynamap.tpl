@@ -50,5 +50,12 @@
     Il faut <a href='?fix=smallest_maps'>définir la plus petite carte</a> pour chaque ville (à ne faire qu'une fois quand on a placé toutes les villes).
   </p>
 {/if}
-
+{if $no_coordinates}
+<h2>
+  Placement précis des adresses
+</h2>
+<p>
+  {$no_coordinates} adresses n'ont pas été bien reconnues précisément. [<a href='?fix=precise_coordinates'>Mettre les coordonnées du centre de la ville</a>]
+</p>
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}
