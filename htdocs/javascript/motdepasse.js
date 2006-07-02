@@ -31,16 +31,10 @@ function EnCryptedResponse() {
             return false;
         exit;
     }
-    
-    old_pass = hash_encrypt(document.forms.changepass.ancien.value);
-    
-    str = old_pass + ":" +
-        document.forms.changepass.challenge.value;
-    document.forms.changepass2.response.value = hash_encrypt(str);
 
-    str = hash_xor(hash_encrypt(document.forms.changepass.nouveau.value), old_pass);
+    str = hash_encrypt(document.forms.changepass.nouveau.value);
     document.forms.changepass2.response2.value = str;
-    
+
     alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
     document.forms.changepass2.submit();
     return true;
