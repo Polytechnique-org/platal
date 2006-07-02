@@ -38,7 +38,7 @@ if ($ligne = $res->fetchOneAssoc())  {
         $page->run();
     } else {
         new_skinned_page('motdepasse.tpl', AUTH_PUBLIC);
-        $page->addJsLink('javascript/motdepasse.js.php');
+        $page->addJsLink('javascript/motdepasse.js');
         $page->run();
     }
 } else {

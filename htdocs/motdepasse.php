@@ -23,14 +23,7 @@ require_once('xorg.inc.php');
 
 if (Post::has('response2'))  {
     require_once('secure_hash.inc.php');
-    if (hash_encrypt($_SESSION['password'].":".$_SESSION['session']->challenge) != Post::get('response')) {
-        new_skinned_page('motdepasse.tpl', AUTH_MDP);
-        $page->addJsLink('javascript/motdepasse.js.php');
-        $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
-        $page->trig('Ancien mot de passe erronné');
-        $page->run();
-    }
-    $password = hash_xor(Post::get('response2'), $_SESSION['password']);
+    $password = Post::get('response2');
     $_SESSION['password'] = $password;
     
     $globals->xdb->execute('UPDATE auth_user_md5 SET password={?} WHERE user_id={?}', $password, Session::getInt('uid'));
@@ -47,7 +40,7 @@ if (Post::has('response2'))  {
 }
 
 new_skinned_page('motdepasse.tpl', AUTH_MDP);
-$page->addJsLink('javascript/motdepasse.js.php');
+$page->addJsLink('javascript/motdepasse.js');
 $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
 $page->run();
 ?>

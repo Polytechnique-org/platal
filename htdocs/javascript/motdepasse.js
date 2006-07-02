@@ -1,4 +1,3 @@
-<?php
 /***************************************************************************
  *  Copyright (C) 2003-2006 Polytechnique.org                              *
  *  http://opensource.polytechnique.org/                                   *
@@ -18,8 +17,25 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-require_once("xorg.inc.php");
-new_nonhtml_page('javascript/do_challenge_response_logged.js.tpl', AUTH_PUBLIC);
-header("Content-type: text/javascript");
-$page->run();
-?>
+
+function EnCryptedResponse() {
+    pw1 = document.forms.changepass.nouveau.value;
+    pw2 = document.forms.changepass.nouveau2.value;
+    if (pw1 != pw2) {
+        alert ("\nErreur : les deux champs ne sont pas identiques !")
+            return false;
+        exit;
+    }
+    if (pw1.length < 6) {
+        alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !")
+            return false;
+        exit;
+    }
+
+    str = hash_encrypt(document.forms.changepass.nouveau.value);
+    document.forms.changepass2.response2.value = str;
+
+    alert ("Le mot de passe que tu as rentré va être chiffré avant de nous parvenir par Internet ! Ainsi il ne circulera pas en clair.");
+    document.forms.changepass2.submit();
+    return true;
+}

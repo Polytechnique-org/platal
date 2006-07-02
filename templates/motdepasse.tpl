@@ -44,15 +44,6 @@
     </tr>
     <tr>
       <td class="titre">
-        Ancien mot de passe :
-      </td>
-      <td>
-        <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
-        <input type="password" size="10" maxlength="10" name="ancien" />
-      </td>
-    </tr>
-    <tr>
-      <td class="titre">
         Nouveau mot de passe :
       </td>
       <td>
@@ -76,7 +67,6 @@
 </form>
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass2">
 <p>
-<input type="hidden" name="response"  value="" />
 <input type="hidden" name="response2"  value="" />
 </p>
 </form>
