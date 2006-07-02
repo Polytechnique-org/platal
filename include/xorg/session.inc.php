@@ -185,12 +185,12 @@ class XorgSession extends DiogenesCoreSession
     {
         if (logged() and !$new_name) {
             $page->changeTpl('password_prompt_logged.tpl');
-            $page->addJsLink('javascript/do_challenge_response_logged.js.php');
+            $page->addJsLink('javascript/do_challenge_response_logged.js');
             $page->assign("xorg_tpl", "password_prompt_logged.tpl");
             $page->run();
         } else {
             $page->changeTpl('password_prompt.tpl');
-            $page->addJsLink('javascript/do_challenge_response.js.php');
+            $page->addJsLink('javascript/do_challenge_response.js');
             $page->assign("xorg_tpl", "password_prompt.tpl");
             
             global $globals;

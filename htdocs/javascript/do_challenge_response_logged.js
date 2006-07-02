@@ -18,9 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-document.write('<script language="javascript" src="{rel}/javascript/secure_hash.js.php"></script>');
-
-{literal}
 function readCookie(name)
 {
     var nameEQ = name + "=";
@@ -49,4 +46,3 @@ function doChallengeResponse() {
     document.forms.login.password.value = "";
     document.forms.loginsub.submit();
 }
-{/literal}

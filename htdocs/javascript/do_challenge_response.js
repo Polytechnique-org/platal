@@ -18,9 +18,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-document.write('<script language="javascript" src="{rel}/javascript/secure_hash.js.php"></script>');
-
-{literal}
 function correctUserName() {
     var u = document.forms.login.username;
     // login with no space
@@ -62,4 +59,3 @@ function doChallengeResponse() {
     document.forms.loginsub.submit();
 
 }
-{/literal}
