@@ -67,7 +67,7 @@ class Platal
     {
         $p = $this->path;
 
-        while ($path) {
+        while ($p) {
             if (array_key_exists($p, $this->__hooks))
                 break;
 

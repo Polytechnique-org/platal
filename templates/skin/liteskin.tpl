@@ -36,7 +36,7 @@
       <tr>
         <td>
           {$smarty.session.suid} ({$smarty.session.forlife})
-          [<a href="{"exit.php"|url}">exit</a>]
+          [<a href="{rel}/exit">exit</a>]
         </td>
       </tr>
     </table>

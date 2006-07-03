@@ -31,11 +31,11 @@ class PLModule
     function handlers()     { die("implement me"); }
     function menu_entries() { die("implement me"); }
 
-    function make_hook($fun, $auth, $perms, $type = SKINNED)
+    function make_hook($fun, $auth, $perms = '', $type = SKINNED)
     {
-        return array('hook'  => array($this, $fun),
+        return array('hook'  => array($this, 'handler_'.$fun),
                      'auth'  => $auth,
-                     'perms' => split('[ ,|]', $perms),
+                     'perms' => $perms,
                      'type'  => $type);
     }
 

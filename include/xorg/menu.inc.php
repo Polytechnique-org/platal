@@ -93,9 +93,9 @@ class XOrgMenu
     {
         $res = logged() ? $this->_int : $this->_ext;
         if (identified()) {
-            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion', 'url' => 'deconnexion.php');
+            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion', 'url' => 'exit');
         } elseif (Cookie::has('ORGaccess')) {
-            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion totale', 'url' => 'deconnexion.php?forget=1');
+            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion totale', 'url' => 'exit/forget');
         }
         if (!has_perms()) {
             unset($res[XOM_ADMIN]);
