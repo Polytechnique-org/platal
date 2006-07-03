@@ -51,7 +51,7 @@ function check_perms()
     
 function has_perms()
 {
-    return logged() && Session::get('perms')==PERMS_ADMIN;
+    return logged() && Session::get('perms') == PERMS_ADMIN;
 }
 
 // }}}
