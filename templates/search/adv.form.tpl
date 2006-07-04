@@ -24,7 +24,7 @@
 
 <p>[<a href="{rel}/search">Recherche simple</a>]</p>
 
-<form id="recherche" action="{$smarty.server.PHP_SELF}" method="get">
+<form id="recherche" action="{rel}/search/adv" method="get">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <td>Nom</td>

@@ -211,7 +211,7 @@ class SearchModule extends PLModule
             $this->form_prepare();
         } else {
 
-            $search = new XOrgSearch('get_list');
+            $search = new XOrgSearch(array($this, 'get_advanced'));
             $search->setNbLines($globals->search->per_page);
 
             $page->assign('url_search_form', $search->make_url(Array('rechercher'=>0)));
