@@ -1,0 +1,393 @@
+<?php
+/***************************************************************************
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+class EmailModule extends PLModule
+{
+    function menu_entries()
+    {
+        return array();
+    }
+
+    function handlers()
+    {
+        return array(
+            'emails' => $this->make_hook('emails', AUTH_COOKIE),
+            'emails/alias'    => $this->make_hook('alias', AUTH_MDP),
+            'emails/antispam' => $this->make_hook('antispam', AUTH_MDP),
+            'emails/broken'   => $this->make_hook('broken', AUTH_COOKIE),
+            'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
+            'emails/send'     => $this->make_hook('send', AUTH_MDP),
+        );
+    }
+
+    function handler_emails(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('emails/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Mes emails');
+
+        $uid = Session::getInt('uid');
+
+        if (Post::has('best')) {
+            // bestalias is the first bit : 1
+            // there will be maximum 8 bits in flags : 255
+            $globals->xdb->execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
+            $globals->xdb->execute("UPDATE  aliases SET flags=flags | 1 WHERE id={?} AND alias={?}",
+                                   $uid, Post::get('best'));
+        }
+
+        // on regarde si on a affaire à un homonyme
+        $sql = "SELECT  alias, (type='a_vie') AS a_vie,
+                        (alias REGEXP '\\\\.[0-9]{2}$') AS cent_ans,
+                        FIND_IN_SET('bestalias',flags) AS best, expire
+                  FROM  aliases
+                 WHERE  id = {?} AND type!='homonyme'
+              ORDER BY  LENGTH(alias)";
+        $page->assign('aliases', $globals->xdb->iterator($sql, $uid));
+
+        $sql = "SELECT email
+                FROM emails
+                WHERE uid = {?} AND FIND_IN_SET('active', flags)";
+        $page->assign('mails', $globals->xdb->iterator($sql, $uid));
+
+
+        // on regarde si l'utilisateur a un alias et si oui on l'affiche !
+        $forlife = Session::get('forlife');
+        $res = $globals->xdb->query(
+                "SELECT  alias
+                   FROM  virtual          AS v
+             INNER JOIN  virtual_redirect AS vr USING(vid)
+                  WHERE  (redirect={?} OR redirect={?}) 
+                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
+                $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+        $page->assign('melix', $res->fetchOneCell());
+        return PL_OK;
+    }
+
+    function handler_alias(&$page, $action = null, $value = null)
+    {
+        require_once 'validations.inc.php';
+
+        global $globals;
+
+        $page->changeTpl('emails/alias.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Alias melix.net');
+
+        $uid     = Session::getInt('uid');
+        $forlife = Session::get('forlife');
+
+        $page->assign('demande', AliasReq::get_request($uid));
+
+        if ($action == 'suppr' && $value) {
+            //Suppression d'un alias
+            $globals->xdb->execute(
+                'DELETE virtual, virtual_redirect
+                   FROM virtual
+             INNER JOIN virtual_redirect USING (vid)
+                  WHERE alias = {?} AND (redirect = {?} OR redirect = {?})', $value,
+                $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+        }
+
+        //Récupération des alias éventuellement existants
+        $res = $globals->xdb->query(
+                "SELECT  alias, emails_alias_pub
+                   FROM  auth_user_quick, virtual
+             INNER JOIN  virtual_redirect USING(vid)
+                   WHERE ( redirect={?} OR redirect= {?} )
+                         AND alias LIKE '%@{$globals->mail->alias_dom}' AND user_id = {?}", 
+                $forlife.'@'.$globals->mail->domain,
+                $forlife.'@'.$globals->mail->domain2, Session::getInt('uid'));
+        list($alias, $visibility) = $res->fetchOneRow();
+        $page->assign('actuel', $alias);
+
+        if ($action == 'ask' && Env::has('alias') and Env::has('raison')) {
+            //Si l'utilisateur vient de faire une damande
+
+            $alias  = Env::get('alias');
+            $raison = Env::get('raison');
+            $public = (Env::get('public', 'off') == 'on')?"public":"private";
+
+            $page->assign('r_alias', $alias);
+            $page->assign('r_raison', $raison);
+            if ($public == 'public') {
+                $page->assign('r_public', true);
+            }
+
+            //Quelques vérifications sur l'alias (caractères spéciaux)
+            if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
+                $page->trig("L'adresse demandée n'est pas valide.
+                            Vérifie qu'elle comporte entre 3 et 20 caractères
+                            et qu'elle ne contient que des lettres non accentuées,
+                            des chiffres ou les caractères - et .");
+                return PL_OK;
+            } else {
+                //vérifier que l'alias n'est pas déja pris
+                $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
+                                            $alias.'@'.$globals->mail->alias_dom);
+                if ($res->fetchOneCell() > 0) {
+                    $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
+                                Tu ne peux donc pas l'obtenir.");
+                    return PL_OK;
+                }
+
+                //vérifier que l'alias n'est pas déja en demande
+                $it = new ValidateIterator ();
+                while($req = $it->next()) {
+                    if ($req->type == "alias" and $req->alias == $alias) {
+                        $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
+                                    Tu ne peux donc pas l'obtenir pour l'instant.");
+                        return PL_OK;
+                    }
+                }
+
+                //Insertion de la demande dans la base, écrase les requêtes précédente
+                $myalias = new AliasReq($uid, $alias, $raison, $public);
+                $myalias->submit();
+                $page->assign('success',$alias);
+                return PL_OK;
+            }
+        }
+        elseif ($action == 'set'
+            && ($value == 'public' || $value == 'private'))
+        {
+            if ($value == 'public') {
+                $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = 'public'
+                                         WHERE user_id = {?}", Session::getInt('uid'));
+            } else {
+                $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = 'private'
+                                         WHERE user_id = {?}", Session::getInt('uid'));
+            }
+
+            $visibility = $value;
+        }
+
+        $page->assign('mail_public', ($visibility == 'public'));
+
+        return PL_OK;
+    }
+
+    function handler_redirect(&$page, $action = null, $email = null)
+    {
+        global $globals;
+
+        require_once 'emails.inc.php';
+
+        $page->changeTpl('emails/redirect.tpl');
+
+        $uid     = Session::getInt('uid');
+        $forlife = Session::get('forlife');
+
+        $redirect = new Redirect(Session::getInt('uid'));
+
+        if ($action == 'remove' && $email) {
+            $page->assign('retour', $redirect->delete_email($email));
+        }
+
+        if (Env::has('emailop')) {
+            $actifs = Env::getMixed('emails_actifs', Array());
+            if (Env::get('emailop') == "ajouter" && Env::has('email')) {
+                $page->assign('retour', $redirect->add_email(Env::get('email')));
+            } elseif (empty($actifs)) {
+                $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
+            } elseif (is_array($actifs)) {
+                $page->assign('retour', $redirect->modify_email($actifs,
+                    Env::getMixed('emails_rewrite',Array())));
+            }
+        }
+
+        $res = $globals->xdb->query(
+                "SELECT  alias
+                   FROM  virtual
+             INNER JOIN  virtual_redirect USING(vid)
+                  WHERE  (redirect={?} OR redirect={?})
+                         AND alias LIKE '%@{$globals->mail->alias_dom}'", 
+                $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
+        $melix = $res->fetchOneCell();
+        if ($melix) {
+            list($melix) = explode('@', $melix);
+            $page->assign('melix',$melix);
+        }
+
+        $res = $globals->xdb->query(
+                "SELECT  alias,expire
+                   FROM  aliases
+                  WHERE  id={?} AND (type='a_vie' OR type='alias')
+               ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $uid);
+        $page->assign('alias', $res->fetchAllAssoc());
+        $page->assign('emails',$redirect->emails);
+
+        return PL_OK;
+    }
+
+    function handler_antispam(&$page)
+    {
+        require_once 'emails.inc.php';
+
+        $page->changeTpl('emails/antispam.tpl');
+
+        $bogo = new Bogo(Session::getInt('uid'));
+        if (Env::has('statut_filtre')) {
+            $bogo->change(Session::getInt('uid'), Env::getInt('statut_filtre'));
+        }
+        $page->assign('filtre',$bogo->level());
+
+        return PL_OK;
+    }
+
+    function handler_send(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('emails/send.tpl');
+
+        $page->assign('xorg_title','Polytechnique.org - Envoyer un email');
+
+        // action si on recoit un formulaire
+        if (Env::get('submit') == 'Envoyer')
+        {
+            $to2  = join(', ', Env::getMixed('contacts', Array()));
+            $txt  = str_replace('^M', '', Env::get('contenu'));
+            $to   = Env::get('to');
+            $subj = Env::get('sujet');
+            $from = Env::get('from');
+            $cc   = Env::get('cc');
+            $bcc  = Env::get('bcc');
+
+            if (empty($to) && empty($cc) && empty($to2)) {
+                $page->trig("Indique au moins un destinataire.");
+            } else {
+                require_once("diogenes/diogenes.hermes.inc.php");
+
+                $mymail = new HermesMailer();
+                $mymail->setFrom($from);
+                $mymail->setSubject($subj);
+                if (!empty($to))  { $mymail->addTo($to); }
+                if (!empty($cc))  { $mymail->addCc($cc); }
+                if (!empty($bcc)) { $mymail->addBcc($bcc); }
+                if (!empty($to2)) { $mymail->addTo($to2); }
+                $mymail->setTxtBody(wordwrap($txt,72,"\n"));
+                if ($mymail->send()) {
+                    $page->trig("Ton mail a bien été envoyé.");
+                    $_REQUEST = array('bcc' => Session::get('bestalias').'@'.$globals->mail->domain);
+                } else {
+                    $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                }
+            }
+        } else {
+            $_REQUEST['bcc'] = Session::get('bestalias').'@'.$globals->mail->domain;
+        }
+
+        $res = $globals->xdb->query(
+                "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
+                   FROM  auth_user_md5 AS u
+             INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
+             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+                  WHERE  c.uid = {?}
+                 ORDER BY u.nom, u.prenom", Session::getInt('uid'));
+        $page->assign('contacts', $res->fetchAllAssoc());
+
+        return PL_OK;
+    }
+
+    function handler_broken(&$page, $warn = null, $email = null)
+    {
+        require_once 'emails.inc.php';
+
+        global $globals;
+
+        $page->changeTpl('emails/broken.tpl');
+
+        if ($warn == 'warn' && $email) {
+            $email = valide_email($email);
+            // vérifications d'usage
+            $sel = $globals->xdb->query(
+                    "SELECT  e.uid, a.alias
+                       FROM  emails        AS e
+                 INNER JOIN  auth_user_md5 AS u ON e.uid = u.user_id
+                 INNER JOIN  aliases       AS a ON (e.uid = a.id AND type!='homonyme'
+                                                    AND FIND_IN_SET('bestalias',a.flags))
+                      WHERE  e.email={?}", $email);
+
+            if (list($uid, $dest) = $sel->fetchOneRow()) {
+                // envoi du mail
+                $message = "Bonjour !
+
+Ce mail a été généré automatiquement par le service de patte cassée de
+Polytechnique.org car un autre utilisateur, ".Session::get('prenom').' '.Session::get('nom').",
+nous a signalé qu'en t'envoyant un mail, il avait reçu un message d'erreur
+indiquant que ton adresse de redirection $email
+ne fonctionnait plus !
+
+Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
+à jour sur le site <{$globals->baseurl}/emails.php> tes adresses
+de redirection...
+
+Pour plus de rensignements sur le service de patte cassée, n'hésites pas à
+consulter la page <{$globals->baseurl}/emails/broken.php>.
+
+
+A bientôt sur Polytechnique.org !
+L'équipe d'administration <support@polytechnique.org>";
+
+                require_once("diogenes/diogenes.hermes.inc.php");
+                $mail = new HermesMailer();
+                $mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
+                $mail->addTo("$dest@polytechnique.org");
+                $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
+                $mail->setTxtBody($message);
+                $mail->send();
+                $page->trig("Mail envoyé ! :o)");
+            }
+        } elseif (Post::has('email')) {
+            $email = valide_email(Post::get('email'));
+
+            list(,$fqdn) = explode('@', $email);
+            $fqdn = strtolower($fqdn);
+            if ($fqdn == 'polytechnique.org' || $fqdn == 'melix.org'
+            ||  $fqdn == 'm4x.org' || $fqdn == 'melix.net')
+            {
+                $page->assign('neuneu', true);
+            } else {
+                $page->assign('email',$email);
+                $sel = $globals->xdb->query(
+                        "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
+                                 u.nom, u.prenom, u.promo
+                           FROM  emails as e1
+                      LEFT JOIN  emails as e2 ON(e1.uid = e2.uid 
+                                                 AND FIND_IN_SET('active', e2.flags)
+                                                 AND e1.email != e2.email)
+                     INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
+                          WHERE  e1.email = {?}
+                       GROUP BY  e1.uid", $email);
+                if ($x = $sel->fetchOneAssoc()) {
+                    // on écrit dans la base que l'adresse est cassée
+                    if (!$x['panne']) {
+                        $globals->xdb->execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
+                    }
+                    $page->assign_by_ref('x', $x);
+                }
+            }
+        }
+    }
+}
+
+?>

@@ -38,7 +38,7 @@
     ces adresses personnalisées auront pour suffixe <strong>@melix.net</strong> et <strong>@melix.org</strong>. Ces
     domaines sont aussi gérés par nos serveurs, et tous les mails que tu recevras à cette adresse
     seront immédiatement redirigés sur tes adresses de renvoi habituelles définies sur
-    <a href="{"emails.php"|url}">cette page</a>.
+    <a href="{rel}/emails}">cette page</a>.
 </p>
 <p>
   <strong>A combien d'alias @melix.net ai-je droit ?</strong>

@@ -20,8 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
 <h1>Vérifier une patte cassée</h1>
 
 {if $neuneu}
@@ -48,7 +46,7 @@ information.
   <p>
     Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
     Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
-    <a href="?email={$email}&amp;action=mail">clique sur ce lien</a>.
+    <a href="{rel}/warn/{$email}">clique sur ce lien</a>.
   </p>
 {elseif $x}
   <p>
@@ -88,7 +86,7 @@ information.
 </p>
 <br />
 <div class="center">
-  <form action="{$smarty.server.PHP_SELF}" method="post">
+  <form action="{rel}/emails/broken" method="post">
   <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
     <tr>
       <th>Adresse email défectueuse</th>

@@ -72,7 +72,7 @@
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
     <a href="{rel}/Docs/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/emails/redirect" method="post">
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
@@ -97,7 +97,7 @@
             {/foreach}
           </select>
         </td>
-        <td><a href="{$smarty.server.PHP_SELF}?emailop=retirer&amp;email={$e->email}">retirer</a></td>
+        <td><a href="{rel}/emails/redirect/remove/{$e->email}">retirer</a></td>
       </tr>
       {/foreach}
       <tr class="{cycle values="pair,impair"}"><td colspan="4">

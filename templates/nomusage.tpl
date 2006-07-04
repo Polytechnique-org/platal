@@ -68,7 +68,7 @@ exceptionnellement sur changement de l'état civil, ...).
 <p>
 Les surnoms sont <strong>systématiquement refusés</strong>. Pour
 utiliser une adresse personnalisée, il faut se tourner vers
-<a href="{rel}/alias.php">l'alias @melix.net</a>.
+<a href="{rel}/emails/alias">l'alias @melix.net</a>.
 </p>
 
   <p>

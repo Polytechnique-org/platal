@@ -190,7 +190,7 @@ que des informations manquent.
   les champs contenant une adresse @ifrance.com). Dans ce cas, tu peux utiliser
   <a href="{"docs/doc_smtp.php"|url}">le serveur SMTP de polytechnique.org</a>. 
   Quand tu n'as pas accès au un logiciel de courrier électronique, tu peux aussi 
-  utiliser <a href="{rel}/emails/send.php">cette page</a> pour envoyer un petit courriel.
+  utiliser <a href="{rel}/emails/send">cette page</a> pour envoyer un petit courriel.
   </p>
 </div>
 

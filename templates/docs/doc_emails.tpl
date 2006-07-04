@@ -37,7 +37,7 @@
     <strong>{$smarty.session.forlife}@m4x.org</strong>.
 </p>
 <p>
-    L'utilisation de ce service est très simple. Sur <a href="{"emails.php"|url}">cette
+    L'utilisation de ce service est très simple. Sur <a href="{rel}/emails}">cette
     page</a>, tu trouveras un formulaire pour ajouter de nouvelles adresses de redirection. Tous
     les courries envoyés sur tes adresses @polytechnique.org et @m4x.org seront redirigés vers
     <strong>toutes</strong> les boites de redirection que tu auras spécifiées <strong>et</strong>

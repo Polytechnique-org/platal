@@ -36,7 +36,7 @@
   </h1>
 
 {if $actuel}
-<form action="?visible={if $mail_public}private{else}public{/if}" method='post'>
+<form action="{rel}/emails/alias/set/{if $mail_public}private{else}public{/if}" method='post'>
   <table class="flags">
     <tr>
       <td class="orange">
@@ -78,7 +78,7 @@
   {/if}
 
   <br />
-  <form action="{$smarty.server.PHP_SELF}" method="post">
+  <form action="{rel}/emails/alias/ask" method="post">
     <table class="bicol" cellpadding="4" summary="Demande d'alias">
       <tr>
         <th>Demande d'alias</th>
@@ -115,7 +115,7 @@
     </table>
   </form>
   {if $actuel}
-  <form action="{$smarty.server.PHP_SELF}" method="post"
+  <form action="{rel}/emails/alias/delete/{$actuel}" method="post"
       onsubmit="return confirm('Es-tu sûr de vouloir supprimer {$actuel} ?')">
     <table class="bicol" cellpadding="4" summary="Suppression d'alias">
       <tr>
@@ -123,7 +123,6 @@
       </tr>
       <tr>
         <td class="center">
-          <input type="hidden" name="suppr" value="{$actuel}" />
           <input type="submit" value="Supprimer l'alias {$actuel}" />
         </td>
       </tr>

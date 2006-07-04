@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
-<h1>
-  Envoyer un mail
-</h1>
+<h1>Envoyer un mail</h1>
 
 <ul>
   <li>
@@ -49,7 +45,7 @@
 //]]>
 </script>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" onsubmit="return check(this);">
+<form action="{rel}/emails/send" method="post" onsubmit="return check(this);">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr> 
       <th colspan="2">Destinataires</th>

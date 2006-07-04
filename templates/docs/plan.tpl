@@ -85,12 +85,12 @@
 
   <li>
   <ul>
-    {page title="Mes adresses de redirection" url="emails.php"|url}
+    {page title="Mes adresses de redirection" url="emails"|url}
     Cette page te permet de configurer les adresses mails sur lesquelles pointent tes adresses
     Polytechnique.org.
     {/page}
 
-    {page title="Mon alias mail @melix.net/.org" url="alias.php"|url}
+    {page title="Mon alias mail @melix.net/.org" url="emails/alias"|url}
     Tu peux bénéficier d'adresses mail conviviales @melix.net ou @melix.org, pour cela il te
     suffit de faire une demande sur cette page.
     {/page}
@@ -135,7 +135,7 @@
 </h1>
 
 <ul>
-  {page title="Envoyer un mail" url="emqils/send.php"|url}
+  {page title="Envoyer un mail" url="emails/send"|url}
   Tu peux rédiger tes mails directement par le site web de Polytechnique.org.
   {/page}
 

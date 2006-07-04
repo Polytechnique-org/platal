@@ -36,7 +36,7 @@ aussi avec les anciens d'autres grandes écoles, et des extérieurs.
 Service toujours le plus important : <a href="doc_emails.php">l'adresse email à vie</a>.
 Polytechnique.org t'offre une adresse email sur le domaine @polytechnique.org
 (et @m4x.org) que tu gardes à vie (sauf si tu as un homonyme et qu'il s'inscrit).
-Cette adresse email est protégée par un antivirus et un <a href="{"antispam.php"|url}">
+Cette adresse email est protégée par un antivirus et un <a href="{rel}/emails/antispam">
 antispam</a>.
 </p>
 
@@ -50,7 +50,7 @@ consulter le trombinoscope</a> des promotions.
 </p>
 
 <p>
-Le site te permet <a href="{rel}/emails/send.php">d'envoyer des mails</a>,
+Le site te permet <a href="{rel}/emails/send">d'envoyer des mails</a>,
 de consulter <a href="{"banana/"|url}">des forums de
   discussions</a>, aux sujets variés, de <a href="{"listes/"|url}">t'inscrire sur des
   listes de diffusion</a> dédiées à une thème particulier.

@@ -6,6 +6,9 @@ New:
     * Core:
         - Work hard to add nice URI's into Platal.                          -MC
 
+    * Emails:
+        - Switch to the new URI scheme, into email module.                  -MC
+
 ================================================================================
 VERSION 0.9.10                                                      29 Juin 2006
 

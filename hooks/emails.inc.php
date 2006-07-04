@@ -56,13 +56,13 @@ function emails_config()
 function emails_menu()
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',          'emails.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',          'emails');
 
     if ($globals->mail->send_form) {
-        $globals->menu->addPrivateEntry(XOM_SERVICES, 00, 'Envoyer un mail', 'emails/send.php');
+        $globals->menu->addPrivateEntry(XOM_SERVICES, 00, 'Envoyer un mail', 'emails/send');
     }
 
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',        'emails/broken.php');
+    $globals->menu->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',        'emails/broken');
     
 }
 
@@ -74,7 +74,7 @@ function emails_prefs()
     global $globals;
     
     $res[] = Array(
-            'url'    => 'emails.php',
+            'url'    => 'emails',
             'title'  => 'Mes adresses de redirection',
             'text'   => 'Tu peux configurer tes différentes redirections de mails ici.',
             'weight' => 10
@@ -82,7 +82,7 @@ function emails_prefs()
 
     if ($globals->mail->alias_dom) {
         $res [] = Array(
-                'url'    => 'alias.php',
+                'url'    => 'emails/alias',
                 'title'  => 'Mon alias mail @'.$globals->mail->alias_dom,
                 'text'   => "Pour choisir un alias @{$globals->mail->alias_dom}/{$globals->mail->alias_dom2} (en choisir un nouveau annule l'ancien).",
                 'weight' => 20
