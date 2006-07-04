@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
-<h1>
-  Marketing Polytechnique.org
-</h1>
+<h1>Marketing Polytechnique.org</h1>
 
 <table class="bicol" cellpadding="3" summary="Système">
   <tr>
@@ -34,9 +30,9 @@
     <td>
       <a href="{rel}/search?nonins=1">Chercher un non inscrit</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="promo.php">Marketing promo</a>
+      <a href="{rel}/marketing/promo">Marketing promo</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="volontaire.php">Addresses données par les inscrits</a>
+      <a href="{rel}/marketing/volontaire">Addresses données par les inscrits</a>
     </td>
   </tr>
 </table>
@@ -63,8 +59,8 @@ Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
 </p>
 
 <p>
-Nombre d'<a href="this_week.php">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
-Nombre d'<a href="relance.php">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
+Nombre d'<a href="{rel}/marketing/this_week">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
+Nombre d'<a href="{rel}/marketing/relance">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
 Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsMarket}<br />
 Nombre d'envois marketing ayant abouti cette semaine : {$nbInsMarkOK}
 </p>

@@ -40,7 +40,7 @@
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && !$c.wasinscrit}
-    <a href="{rel}/marketing/public.php?num={$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
+    <a href="{rel}/marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
     {/if}
     {/min_auth}
   </div>
@@ -70,7 +70,7 @@
 
     {perms level='admin'}
       {if !$c.wasinscrit && !$c.dcd}
-        <a href="{rel}/marketing/private.php?uid={$c.user_id}">{*
+        <a href="{rel}/marketing/private/{$c.user_id}">{*
           *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
       {elseif $c.wasinscrit}
         <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*

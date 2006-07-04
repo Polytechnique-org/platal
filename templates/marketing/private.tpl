@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
 <h1>Marketing de {$prenom} {$nom}</h1>
 
 <h2>Matricules</h2>
@@ -46,13 +45,13 @@ sa dernière relance date du {$relance|date_format}
 {/if}
 </p>
 
-<p>[<a href='?uid={$smarty.request.uid}relance=1'>le relancer</a>]</p>
+<p>[<a href='{rel}/{$smarty.request.p}?relance=1'>le relancer</a>]</p>
 
 {/if}
 
 <h2>Adresses connues</h2>
 
-<form action="{$smarty.request.PHP_SELF}" method="post">
+<form action="{rel}/{$smarty.request.uid}" method="post">
 <table class="bicol" cellpadding="0" cellspacing="0">
   <tr>
     <th>Adresse</th>
@@ -70,8 +69,8 @@ sa dernière relance date du {$relance|date_format}
     <td>{$a.last|date_format|default:'-'}</td>
     <td class='center'>{$a.nb|default:"-"}</td>
     <td class='action'>
-      <a href='?uid={$smarty.request.uid}&amp;del={$a.email}'>del</a><br />
-      <a href='?uid={$smarty.request.uid}&amp;rel={$a.email}'>relance</a>
+      <a href='{rel}/{$smarty.request.p}?del={$a.email}'>del</a><br />
+      <a href='{rel}/{$smarty.request.p}?rel={$a.email}'>relance</a>
     </td>
   </tr>
   {/iterate}
@@ -90,7 +89,6 @@ sa dernière relance date du {$relance|date_format}
       </select>
     </td>
     <td class='action'>
-      <input type='hidden' name='uid' value='{$smarty.request.uid}' />
       <input type='submit' name='action' value='ajouter' />
     </td>
   </tr>
@@ -98,7 +96,7 @@ sa dernière relance date du {$relance|date_format}
 </form>
 
 {if $rel_to}
-<form action="{$smarty.request.PHP_SELF}" method="post">
+<form action="{rel}/{$smarty.reqeust.p}" method="post">
   <table class="bicol">
     <tr class="pair">
       <th colspan="2">Edition du mail de relance</th>
@@ -129,7 +127,6 @@ sa dernière relance date du {$relance|date_format}
     </tr>
   </table>
   <div class="center">
-    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
     <input type="hidden" name="email" value="{$smarty.request.rel}" />
     <input type="reset" value="Recommencer" />
     <input type="submit" name="valider" value="Envoyer" />

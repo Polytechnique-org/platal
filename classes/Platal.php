@@ -68,10 +68,15 @@ class Platal
             return PL_NOT_FOUND;
         }
 
+        $hook = $this->__hooks[$p];
+
+        if (!is_callable($hook['hook'])) {
+            return PL_NOT_FOUND;
+        }
+
         $args = array_merge(array(&$page),
             explode('/', substr($this->path, strlen($p) + 1)));
 
-        $hook = $this->__hooks[$p];
         if ($hook['auth'] > Session::get('auth', AUTH_PUBLIC)) {
             $_SESSION['session']->doAuth($page);
         }

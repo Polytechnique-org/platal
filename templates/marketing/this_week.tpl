@@ -28,8 +28,8 @@
 </p>
 
 <div class="right">
-  [<a href="{$smarty.server.PHP_SELF}?sort=date_ins">par date</a>]
-  [<a href="{$smarty.server.PHP_SELF}?sort=promo">par promo</a>]
+  [<a href="{rel}/marketing/this_week?sort=date_ins">par date</a>]
+  [<a href="{rel}/marketing/this_week?sort=promo">par promo</a>]
 </div>
 
 <table class="tinybicol">
@@ -42,7 +42,7 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="center">{$in.date_ins|date_format:"%x %X"}</td>
     <td class="center">
-      <a href="promo.php?promo={$in.promo}">{$in.promo}</a>
+      <a href="{rel}/marketing/promo/{$in.promo}">{$in.promo}</a>
     </td>
     <td>
       <a href="{"fiche.php"|url}?user={$in.forlife}" class="popup2">
@@ -53,8 +53,8 @@
 </table>
 
 <div class="right">
-  [<a href="{$smarty.server.PHP_SELF}?sort=date_ins">par date</a>]
-  [<a href="{$smarty.server.PHP_SELF}?sort=promo">par promo</a>]
+  [<a href="{rel}/marketing/this_week?sort=date_ins">par date</a>]
+  [<a href="{rel}/marketing/this_week?sort=promo">par promo</a>]
 </div>
 
 

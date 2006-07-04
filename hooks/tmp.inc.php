@@ -23,27 +23,27 @@ function tmp_menu()
 {
     global $globals;
 
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',            'profil.php');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',          'carnet/mescontacts.php');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',            'carnet/');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',      'motdepasse.php');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',       'preferences.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',         'profil.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',       'carnet/mescontacts.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',         'carnet/');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'motdepasse.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'preferences.php');
 
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',          'trombipromo.php');
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',          'referent.php');
+    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',  'trombipromo.php');
+    $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',       'referent.php');
     if ($globals->geoloc->use_map())
-        $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Planisphère',          'geoloc/');
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',             'http://www.polytechnique.net/plan.php');
+        $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Planisphère',    'geoloc/');
+    $globals->menu->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',          'http://www.polytechnique.net/plan.php');
 
-    $globals->menu->addPrivateEntry(XOM_INFOS,    10, 'Documentations',        'Docs/');
-    $globals->menu->addPrivateEntry(XOM_INFOS,    20, 'Nous contacter',        'Docs/NousContacter');
-    $globals->menu->addPrivateEntry(XOM_INFOS,    30, 'Carrières',                'Docs/Emploi');
+    $globals->menu->addPrivateEntry(XOM_INFOS,    10, 'Documentations',     'Docs/');
+    $globals->menu->addPrivateEntry(XOM_INFOS,    20, 'Nous contacter',     'Docs/NousContacter');
+    $globals->menu->addPrivateEntry(XOM_INFOS,    30, 'Carrières',          'Docs/Emploi');
 
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    00, 'Marketing',           'marketing/');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    10, 'Administration',      'admin/');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    20, 'Clear cache',         'clear_all_cache.php');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    30, 'Trackers',            'http://trackers.polytechnique.org');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    40, 'Support',             'http://support.polytechnique.org');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    00, 'Marketing',          'marketing');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    10, 'Administration',     'admin/');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    20, 'Clear cache',        'clear_all_cache.php');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    30, 'Trackers',           'http://trackers.polytechnique.org');
+    $globals->menu->addPrivateEntry(XOM_ADMIN,    40, 'Support',            'http://support.polytechnique.org');
 
     $globals->menu->addPublicEntry(XOM_US,    00, 'Me connecter !',         'login.php');
     $globals->menu->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'register/');

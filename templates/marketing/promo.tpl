@@ -20,12 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
 <table style="margin-left: auto; margin-right: auto">
   <tr>
     <td>
-      <form action="?" method="get">
+      <form action="{rel}/marketing/promo" method="get">
         <div>
           <input type="hidden" name="promo" value="{$promo-10}" />
           <input type="submit" value="&lt;&lt;" />
@@ -33,7 +31,7 @@
       </form>
     </td>
     <td>
-      <form action="?" method="get">
+      <form action="{rel}/marketing/promo" method="get">
         <div>
           <input type="hidden" name="promo" value="{$promo-1}" />
           <input type="submit" value="&lt;" />
@@ -41,7 +39,7 @@
       </form>
     </td>
     <td>
-      <form action="?" method="get">
+      <form action="{rel}/marketing/promo" method="get">
         <div>
           Promotion : <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
           <input type="submit" value="GO" />
@@ -49,7 +47,7 @@
       </form>
     </td>
     <td>
-      <form action="?" method="get">
+      <form action="{rel}/marketing/promo" method="get">
         <div>
           <input type="hidden" name="promo" value="{$promo+1}" />
           <input type="submit" value="&gt;" />
@@ -57,7 +55,7 @@
       </form>
     </td>
     <td>
-      <form action="?" method="get">
+      <form action="{rel}/marketing/promo" method="get">
         <div>
           <input type="hidden" name="promo" value="{$promo+10}" />
           <input type="submit" value="&gt;&gt;" />
@@ -75,7 +73,7 @@
   </a>
 </div>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/marketing/promo" method="post">
   <table class="bicol" summary="liste des inscriptions non confirmées">
     <tr>
       <th>Nom</th>
@@ -97,7 +95,7 @@
         {/if}
       </td>
       <td class="center">
-        <a href="private.php?uid={$it.user_id}">{*
+        <a href="{rel}/marketing/private/{$it.user_id}">{*
           *}<img src="{rel}/images/admin.png" alt='Marketing' title="Marketing" /></a>
         <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
           *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>

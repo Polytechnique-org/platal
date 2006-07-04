@@ -1,11 +1,1 @@
-htdocs/marketing/index.php
-htdocs/marketing/promo.php
-htdocs/marketing/public.php
-htdocs/marketing/relance.php
-htdocs/marketing/volontaire.php
 templates/mails/marketing.relance.tpl
-templates/marketing/index.tpl
-templates/marketing/promo.tpl
-templates/marketing/public.tpl
-templates/marketing/relance.tpl
-templates/marketing/volontaire.tpl
