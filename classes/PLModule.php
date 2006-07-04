@@ -29,7 +29,6 @@ class PLModule
     }
 
     function handlers()     { die("implement me"); }
-    function menu_entries() { die("implement me"); }
 
     function make_hook($fun, $auth, $perms = '', $type = SKINNED)
     {

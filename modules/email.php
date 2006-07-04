@@ -21,11 +21,6 @@
 
 class EmailModule extends PLModule
 {
-    function menu_entries()
-    {
-        return array();
-    }
-
     function handlers()
     {
         return array(

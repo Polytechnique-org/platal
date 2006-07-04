@@ -30,7 +30,6 @@ class Platal
     var $__hooks;
 
     var $path;
-    var $menu;
     var $auth;
 
     function Platal()
@@ -39,28 +38,20 @@ class Platal
 
         $this->__mods  = array();
         $this->__hooks = array();
-        $this->menu    = array();
 
         foreach (glob(dirname(__FILE__).'/../modules/*.php') as $module) {
             $module = basename($module, '.php');
             $m =& PLModule::factory($this, $module);
             $this->__mods[$module] =& $m;
             $this->__hooks += $m->handlers();
-            $this->menu = array_merge($this->menu, $m->menu_entries());
         }
 
         krsort($this->__hooks);
-        usort($this->menu, array($this, '_menu_cmp'));
     }
 
     function load_class($cls)
     {
         require_once dirname(__FILE__).'/../classes/'.$cls.'.php';
-    }
-
-    function _menu_cmp($a, $b)
-    {
-        return strcasecmp($a['path'], $b['path']);
     }
 
     function call_hook(&$page)
