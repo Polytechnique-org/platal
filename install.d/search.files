@@ -1,7 +1,2 @@
 include/search.inc.php
 bin/cron/recherche.php
-templates/search.adv.form.tpl
-templates/search.adv.links.tpl
-templates/search.quick.form.tpl
-templates/search.quick.tpl
-templates/search.tpl
