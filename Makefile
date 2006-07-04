@@ -53,6 +53,9 @@ htdocs/valid.html:
 htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
 
+htdocs/img:
+	cd htdocs && ln -sf /usr/share/banana/img
+
 htdocs/wiki:
 	cd htdocs && ln -sf ../wiki/pub wiki
 
