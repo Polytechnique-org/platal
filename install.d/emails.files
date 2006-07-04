@@ -1,16 +1,4 @@
 bin/emails.broken.php
-htdocs/alias.php
-htdocs/antispam.php
-htdocs/emails/broken.php
-htdocs/emails.php
-htdocs/emails/redirect.php
-htdocs/emails/send.php
 include/emails.inc.php
 include/validations/aliases.inc.php
-templates/alias.tpl
-templates/antispam.tpl
-templates/emails/broken.tpl
-templates/emails/redirect.tpl
-templates/emails/send.tpl
-templates/emails.tpl
 templates/include/form.valid.aliases.tpl
