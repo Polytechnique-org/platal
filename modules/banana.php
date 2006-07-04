@@ -26,14 +26,13 @@ class BananaModule extends PLModule
         return array(
             'banana' => $this->make_hook('banana', AUTH_COOKIE),
             'banana/profile' => $this->make_hook('profile', AUTH_MDP),
-            'banana/xface'   => $this->make_hook('xface', AUTH_PUBLIC),
         );
     }
 
     function handler_banana(&$page)
     {
         $page->changeTpl('banana/index.tpl');
-        $page->addCssLink('css/banana/style.css');
+        $page->addCssLink('css/banana.css');
         $page->assign('xorg_title','Polytechnique.org - Forums & PA');
 
         require_once 'banana.inc.php';
@@ -82,14 +81,6 @@ class BananaModule extends PLModule
         }
 
         return PL_OK;
-    }
-
-    function handler_xface(&$page)
-    {
-        header('Content-Type: image/jpeg');
-        passthru('echo '.escapeshellarg(base64_decode($_REQUEST['face'])).
-                 '|uncompface -X |convert xbm:- jpg:-');
-        exit;
     }
 }
 
