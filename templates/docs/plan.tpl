@@ -146,7 +146,7 @@
 
   <li>
   <ul>
-    {page title="Configuration de Banana" url="confbanana.php"|url}
+    {page title="Configuration de Banana" url="banana/profile"|url}
     Pour configurer les paramètres de l'interface web Banana de lecture de forums.
     {/page}
 

@@ -25,7 +25,7 @@
 {if !$banana->profile.autoup}
 [<a href="?banana=updateall">Mettre à jour</a>]
 {/if}
-[<a href="profile.php">Profil</a>]
+[<a href="{rel}/banana/profile">Profil</a>]
 
 <br />
 

@@ -39,10 +39,10 @@
   n'afficher que les fils de discussion contenant des messages lus.
 </p>
 <p class="normal">
-Retour aux <a href="{rel}/banana/">forums</a>
+Retour aux <a href="{rel}/banana">forums</a>
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/banana/profile" method="post">
   <table class="bicol" cellpadding="3" cellspacing="0" summary="Configuration de Banana">
     <tr>
       <th colspan="2">
@@ -112,7 +112,7 @@ Retour aux <a href="{rel}/banana/">forums</a>
   Ton profil est enregistré !!!
 </p>
 <p class="normal">
-Retour aux <a href="{rel}/banana/">forums</a>
+Retour aux <a href="{rel}/banana">forums</a>
 </p>
 {/if}
 

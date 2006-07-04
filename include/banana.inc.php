@@ -71,8 +71,8 @@ class PlatalBanana extends Banana
             $globals->xdb->execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}", gmdate("YmdHis"), $uid);
         }
 
-        $req = $globals->xdb->query(
-                "SELECT  nom
+        $req = $globals->xdb->query("
+                 SELECT  nom
                    FROM  {$globals->banana->table_prefix}abos
               LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
                   WHERE  uid={?}", $uid);
