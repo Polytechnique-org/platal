@@ -338,11 +338,11 @@ indiquant que ton adresse de redirection $email
 ne fonctionnait plus !
 
 Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
-à jour sur le site <{$globals->baseurl}/emails.php> tes adresses
+à jour sur le site <{$globals->baseurl}/emails> tes adresses
 de redirection...
 
 Pour plus de rensignements sur le service de patte cassée, n'hésites pas à
-consulter la page <{$globals->baseurl}/emails/broken.php>.
+consulter la page <{$globals->baseurl}/emails/broken>.
 
 
 A bientôt sur Polytechnique.org !
