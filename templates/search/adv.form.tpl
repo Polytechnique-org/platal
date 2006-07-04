@@ -22,7 +22,7 @@
 
 <h1>Recherche avancée</h1>
 
-<p>[<a href="search.php">Recherche simple</a>]</p>
+<p>[<a href="{rel}/search">Recherche simple</a>]</p>
 
 <form id="recherche" action="{$smarty.server.PHP_SELF}" method="get">
   <table class="bicol" cellpadding="3" summary="Recherche">

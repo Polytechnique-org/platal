@@ -28,7 +28,7 @@
     
     <link rel="index" href="{rel}/index.php" />
     <link rel="author" href="{rel}/Docs/FAQ" />
-    <link rel="search" href="{rel}/search.php" />
+    <link rel="search" href="{rel}/search" />
     <link rel="help" href="{rel}/Docs/FAQ" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />

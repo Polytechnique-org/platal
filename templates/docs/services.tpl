@@ -41,7 +41,7 @@ antispam</a>.
 </p>
 
 <p>
-Le site héberge également un <a href="{"search.php"|url}">annuaire complet</a> que
+Le site héberge également un <a href="{rel}/search">annuaire complet</a> que
 tu peux consulter pour obtenir des renseignements sur un camarade, sur tes
 cocons. Il te permet aussi <a href="{"profil.php"|url}">d'enrichir et de compléter</a>
 ta fiche personnelle. Cet annuaire a une vocation professionnelle puisque

@@ -7,7 +7,11 @@ New:
         - Work hard to add nice URI's into Platal.                          -MC
 
     * Emails:
-        - Switch to the new URI scheme, into email module.                  -MC
+        - Switch to the new URI scheme.                                     -MC
+
+    * Search:
+        - Switch to the new URI scheme.                                     -MC
+
 
 ================================================================================
 VERSION 0.9.10                                                      29 Juin 2006

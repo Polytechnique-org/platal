@@ -22,7 +22,7 @@
 
 <h1>Recherche simple dans l'annuaire</h1>
 
-<form action="{"search.php"|url}" method="get"{if $show_js} id="quick_form"{/if}>
+<form action="{rel}/search" method="get"{if $show_js} id="quick_form"{/if}>
   <table class="bicol" cellspacing="0" cellpadding="4">
     <tr>
       <td style="width: 78%">
@@ -38,7 +38,7 @@
       <td>
         <input type="submit" value="Chercher" />
         {min_auth level="cookie"}
-        <br /><a class='smaller' href="advanced_search.php">Recherche&nbsp;avancée</a>
+        <br /><a class='smaller' href="{rel}/search/adv">Recherche&nbsp;avancée</a>
         {/min_auth}
       </td>
     </tr>

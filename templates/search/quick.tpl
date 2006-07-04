@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="search.quick.form.tpl" show_js=1}
+{include file=search/quick.form.tpl show_js=1}
 <h1>Comment faire une recherche ?</h1>
 
 <h2>Nom, Prenom, Promo ...</h2>

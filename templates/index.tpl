@@ -46,7 +46,7 @@
    <br />
   <strong>Dans tous les cas,</strong> vous pouvez :
   <ul>
-   <li class="spaced"><strong><a href="search.php">rechercher un ancien élève ou un élève</a></strong> dans l'annuaire en ligne,</li>
+   <li class="spaced"><strong><a href="{rel}/search">rechercher un ancien élève ou un élève</a></strong> dans l'annuaire en ligne,</li>
    <li class="spaced"><strong><a href="http://asso.polytechnique.org/">accéder à la liste des sites en rapport avec l'École</a></strong> - les sites officiels de l'École sont <a href="http://www.polytechnique.fr">polytechnique.fr</a> et <a href="http://www.polytechnique.edu">polytechnique.edu</a>, le portail des X sur le web est <a href="http://www.polytechnique.org/">polytechnique.org</a>, et le site de l'amicale des Anciens Eleves (AX) est <a href="http://www.polytechniciens.com/">polytechniciens.com</a>.</li>
   </ul>
  

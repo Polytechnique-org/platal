@@ -99,7 +99,7 @@ Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté à 
 </p>
 
 <p>
-Pour surveiller des membres non-inscrits, il faut passer par la <a href="{"search.php"|url}" class='popup'>recherche</a>
+Pour surveiller des membres non-inscrits, il faut passer par la <a href="{rel}/search" class='popup'>recherche</a>
 et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" /> pour les ajouter à cette liste
 </p>
 

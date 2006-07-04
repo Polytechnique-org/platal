@@ -32,7 +32,7 @@
   </tr>
   <tr class="impair">
     <td>
-      <a href="{rel}/search.php?nonins=1">Chercher un non inscrit</a>
+      <a href="{rel}/search?nonins=1">Chercher un non inscrit</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="promo.php">Marketing promo</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;

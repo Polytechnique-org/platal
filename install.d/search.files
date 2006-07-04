@@ -1,5 +1,3 @@
-htdocs/advanced_search.php
-htdocs/search.php
 include/search.inc.php
 bin/cron/recherche.php
 templates/search.adv.form.tpl

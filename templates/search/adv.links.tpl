@@ -40,7 +40,7 @@
   </li>
   
   <li>Effectuer une nouvelle <strong>
-    <a href="{"search.php"|url}">recherche simple</a>
+    <a href="{rel}/search">recherche simple</a>
   </strong>
   </li>
 </ul>

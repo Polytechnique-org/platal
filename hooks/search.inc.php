@@ -52,8 +52,8 @@ function search_subscribe($forlife, $uid, $promo, $pass)
 function search_menu()
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_GROUPS, 00, 'Annuaire',         'search.php');
-    $globals->menu->addPublicEntry(XOM_EXT,     00, 'Annuaire de l\'X', 'search.php');
+    $globals->menu->addPrivateEntry(XOM_GROUPS, 00, 'Annuaire',         'search');
+    $globals->menu->addPublicEntry(XOM_EXT,     00, 'Annuaire de l\'X', 'search');
 }
 
 // }}}

@@ -24,9 +24,9 @@
 {if $formulaire==0 and !$xorg_errors|count}
   {if !$simple}
     {if !$advanced}
-    {include file='search.quick.form.tpl' show_js=1}
+    {include file=search/quick.form.tpl show_js=1}
     {else}
-    {include file=search.adv.links.tpl do_title=1 with_soundex=$with_soundex}
+    {include file=search/adv.links.tpl do_title=1 with_soundex=$with_soundex}
     {/if}
   {/if}
 
@@ -86,9 +86,9 @@
   <br />
   {if $smarty.capture.list|smarty:nodefaults|display_lines > 20}
   {if $advanced}
-  {include file=search.adv.links.tpl do_title=1}
+  {include file=search/adv.links.tpl do_title=1}
   {else}
-  {include file='search.quick.form.tpl'}
+  {include file=search/quick.form.tpl}
   {/if}
   {/if}
   
@@ -98,9 +98,9 @@
   {/min_auth}
 {else}
   {if $advanced}
-  {include file="search.adv.form.tpl"}
+  {include file=search/adv.form.tpl}
   {else}
-  {include file="search.quick.tpl"}
+  {include file=search/quick.tpl}
   {/if}
 {/if}
 
