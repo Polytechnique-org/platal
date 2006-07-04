@@ -22,7 +22,7 @@ headers:
 	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header \
 		`find templates -name '*.tpl' ! -path 'templates/xnet/skin.tpl' ! -path 'templates/skin/*.tpl' ! -name 'vcard.tpl' `
 
-build: spool/templates_c wiki include/platal/globals.inc.php htdocs/img
+build: spool/templates_c wiki include/platal/globals.inc.php banana
 
 clean:
 	rm -rf include/platal/globals.inc.php
@@ -53,9 +53,6 @@ htdocs/valid.html:
 htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
 
-htdocs/img:
-	cd htdocs && ln -sf /usr/share/banana/img
-
 htdocs/wiki:
 	cd htdocs && ln -sf ../wiki/pub wiki
 
@@ -73,11 +70,18 @@ get-wiki:
 	    mv pmwiki-* wiki;						  \
 	fi
 
+banana: htdocs/img htdocs/css/banana.css
+htdocs/img:
+	cd $(@D) && ln -sf /usr/share/banana/img
+
+htdocs/css/banana.css:
+	cd $(@D) && ln -sf /usr/share/banana/css/style.css $(@F)
+
 build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
 
 wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wiki wiki/cookbook/e-protect.php
 
 ################################################################################
 
-.PHONY: build dist clean wiki build-wiki
+.PHONY: build dist clean wiki build-wiki banana
 
