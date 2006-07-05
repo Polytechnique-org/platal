@@ -29,12 +29,7 @@ require_once('Smarty.class.php');
 class XOrgMailer extends Smarty
 {
     // {{{ properties
-    
-    /** Directory used to store mails_templates.
-     * Smarty::template_dir subdir used to sotre the mails templates.
-     * The body of the message is taken from a tsmarty template
-     */
-    var $mail_dir = "mails";
+
     /** stores the mail template name */
     var $_tpl;
 
@@ -78,7 +73,7 @@ class XOrgMailer extends Smarty
     {
         // do not try to optimize, in the templates, some function can modify our object, then we
         // have to fetch in the first time, and only then send the mail.
-        $body = $this->fetch($this->mail_dir."/".$this->_tpl);
+        $body = $this->fetch($this->_tpl);
         $mailer = new HermesMailer();
 	$mailer->setFrom($this->_from);
 	$mailer->addTo(implode(',',$this->_to));
