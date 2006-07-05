@@ -79,7 +79,8 @@ class MarketingModule extends PLModule
         return PL_OK;
     }
 
-    function handler_private(&$page, $uid = null)
+    function handler_private(&$page, $uid = null,
+                             $action = null, $value = null)
     {
         global $globals;
 
@@ -88,6 +89,8 @@ class MarketingModule extends PLModule
         if (is_null($uid)) {
             return PL_NOT_FOUND;
         }
+
+        $page->assign('path', 'marketing/private/'.$uid);
 
         $res = $globals->xdb->query("SELECT nom, prenom, promo, matricule
                                        FROM auth_user_md5
@@ -105,44 +108,45 @@ class MarketingModule extends PLModule
             $page->kill('uid invalide');
         }
 
-        if (Env::has('del')) {
+        if ($action == 'del') {
             $globals->xdb->execute('DELETE FROM register_marketing WHERE uid={?} AND email={?}',
-                                   $uid, Env::get('del'));
+                                   $uid, $value);
         }
 
-        if (Env::has('rel') && !Env::has('valider')) {
+        if ($action == 'rel') {
             require_once('marketing.inc.php');
-            list($to, $title, $text) = mark_text_mail($uid, Env::get('rel'));
-            $from = mark_from_mail($uid, Env::get('rel'));
+            list($to, $title, $text) = mark_text_mail($uid, $value);
+            $from = mark_from_mail($uid, $value);
             $page->assign('rel_from_user', $from);
             $page->assign('rel_from_staff',
                           "\"Equipe Polytechnique.org\" <register@polytechnique.org>");
             $page->assign('rel_to', $to);
             $page->assign('rel_title', $title);
             $page->assign('rel_text', $text);
+            $page->assign('rel_email', $value);
         }
 
-        if (Env::get('valider') == 'Envoyer') {
+        if ($action == 'relforce') {
             require_once('marketing.inc.php');
-            mark_send_mail($uid, Env::get('rel'), Env::get('from'),
+            mark_send_mail($uid, $value, Env::get('from'),
                            Env::get('to'), Env::get('title'),
                            Env::get('message'));
             $page->trig("Mail envoyé");
         }
 
-        if (Env::has('relance')) {
+        if ($action == 'insrel') {
             require_once('marketing.inc.php');
             if (relance($uid)) {
                 $page->trig('relance faite');
             }
         }
 
-        if (Env::get('action') == 'ajouter') {
+        if ($action == 'add' && Post::has('email') && Post::has('type')) {
             $globals->xdb->execute(
                 "INSERT INTO register_marketing
                          SET uid = {?}, sender = {?}, email = {?},
                              date = NOW(), type = {?}",
-                $uid, Session::get('uid'), Env::get('email'), Env::get('type')); 
+                $uid, Session::get('uid'), Post::get('email'), Post::get('type')); 
         }
 
         $res = $globals->xdb->iterator(

@@ -45,58 +45,58 @@ sa dernière relance date du {$relance|date_format}
 {/if}
 </p>
 
-<p>[<a href='{rel}/{$smarty.request.p}?relance=1'>le relancer</a>]</p>
+<p>[<a href='{rel}/{$path}/insrel'>le relancer</a>]</p>
 
 {/if}
 
 <h2>Adresses connues</h2>
 
-<form action="{rel}/{$smarty.request.uid}" method="post">
-<table class="bicol" cellpadding="0" cellspacing="0">
-  <tr>
-    <th>Adresse</th>
-    <th>Marketeur</th>
-    <th>Date</th>
-    <th>Envois</th>
-    <th>Nb.</th>
-    <th>&nbsp;</th>
-  </tr>
-  {iterate from=$addr item=a}
-  <tr class="{cycle values='impair,pair'}">
-    <td>{$a.email}</td>
-    <td><a href="{rel}/fiche.php?user={$a.alias}" class="popup2">{$a.alias}</a> {if $a.type eq user}(*){/if}</td>
-    <td>{$a.date|date_format|default:'-'}</td>
-    <td>{$a.last|date_format|default:'-'}</td>
-    <td class='center'>{$a.nb|default:"-"}</td>
-    <td class='action'>
-      <a href='{rel}/{$smarty.request.p}?del={$a.email}'>del</a><br />
-      <a href='{rel}/{$smarty.request.p}?rel={$a.email}'>relance</a>
-    </td>
-  </tr>
-  {/iterate}
-  <tr>
-    <td></td>
-    <td colspan='5' class='smaller'>(*): mail perso</td>
-  </tr>
-  <tr>
-    <td>
-      <input type='text' name='email' />
-    </td>
-    <td colspan="4">
-      <select name="type">
-        <option value="staff">staff</option>
-        <option value="user">user</option>
-      </select>
-    </td>
-    <td class='action'>
-      <input type='submit' name='action' value='ajouter' />
-    </td>
-  </tr>
-</table>
+<form action="{rel}/{$path}/add" method="post">
+  <table class="bicol" cellpadding="0" cellspacing="0">
+    <tr>
+      <th>Adresse</th>
+      <th>Marketeur</th>
+      <th>Date</th>
+      <th>Envois</th>
+      <th>Nb.</th>
+      <th>&nbsp;</th>
+    </tr>
+    {iterate from=$addr item=a}
+    <tr class="{cycle values='impair,pair'}">
+      <td>{$a.email}</td>
+      <td><a href="{rel}/fiche.php?user={$a.alias}" class="popup2">{$a.alias}</a> {if $a.type eq user}(*){/if}</td>
+      <td>{$a.date|date_format|default:'-'}</td>
+      <td>{$a.last|date_format|default:'-'}</td>
+      <td class='center'>{$a.nb|default:"-"}</td>
+      <td class='action'>
+        <a href='{rel}/{$path}/del/{$a.email}'>del</a><br />
+        <a href='{rel}/{$path}/rel/{$a.email}'>relance</a>
+      </td>
+    </tr>
+    {/iterate}
+    <tr>
+      <td></td>
+      <td colspan='5' class='smaller'>(*): mail perso</td>
+    </tr>
+    <tr>
+      <td>
+        <input type='text' name='email' />
+      </td>
+      <td colspan="4">
+        <select name="type">
+          <option value="staff">staff</option>
+          <option value="user">user</option>
+        </select>
+      </td>
+      <td class='action'>
+        <input type='submit' value='ajouter' />
+      </td>
+    </tr>
+  </table>
 </form>
 
 {if $rel_to}
-<form action="{rel}/{$smarty.request.p}" method="post">
+<form action="{rel}/{$path}/relforce/{$email}" method="post">
   <table class="bicol">
     <tr class="pair">
       <th colspan="2">Edition du mail de relance</th>
@@ -127,7 +127,6 @@ sa dernière relance date du {$relance|date_format}
     </tr>
   </table>
   <div class="center">
-    <input type="hidden" name="email" value="{$smarty.request.rel}" />
     <input type="reset" value="Recommencer" />
     <input type="submit" name="valider" value="Envoyer" />
   </div>
