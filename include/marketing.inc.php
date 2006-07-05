@@ -134,7 +134,7 @@ function relance($uid, $nbx = -1)
     $pass_encrypted = hash_encrypt($pass);
     $fdate    = strftime('%d %B %Y', strtotime($date));
     
-    $mymail = new XOrgMailer('marketing.relance.tpl');
+    $mymail = new XOrgMailer('marketing/mail.relance.tpl');
     $mymail->assign('nbdix',      $nbx);
     $mymail->assign('fdate',      $fdate);
     $mymail->assign('lusername',  $alias);

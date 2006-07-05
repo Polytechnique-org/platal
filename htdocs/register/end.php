@@ -78,7 +78,7 @@ $globals->xdb->execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}
 $globals->hook->subscribe($forlife, $uid, $promo, $password);
 
 require_once('xorg.mailer.inc.php');
-$mymail = new XOrgMailer('inscription.reussie.tpl');
+$mymail = new XOrgMailer('mails/inscription.reussie.tpl');
 $mymail->assign('forlife', $forlife);
 $mymail->assign('prenom', $prenom);
 $mymail->send();

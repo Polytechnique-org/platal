@@ -266,7 +266,7 @@ function finish_ins($sub_state)
             $uid, $forlife, $bestalias, $mailorg2, $pass_encrypted, $email, $naissance, $hash);
 
     require_once('xorg.mailer.inc.php');
-    $mymail = new XOrgMailer('inscrire.mail.tpl');
+    $mymail = new XOrgMailer('mails/inscrire.mail.tpl');
     $mymail->assign('mailorg', $bestalias);
     $mymail->assign('lemail',  $email);
     $mymail->assign('pass',    $pass);

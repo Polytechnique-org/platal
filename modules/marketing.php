@@ -134,7 +134,7 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'insrel') {
-            require_once('marketing.inc.php');
+            require_once 'marketing.inc.php';
             if (relance($uid)) {
                 $page->trig('relance faite');
             }
@@ -289,6 +289,8 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/relance.tpl');
 
         if (Post::has('relancer')) {
+            require_once 'marketing.inc.php';
+
             $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
             $nbdix = $res->fetchOneCell();
 

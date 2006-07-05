@@ -71,7 +71,7 @@ function banana_subscribe($forlife, $uid, $promo, $password)
 	list($effau, $effid) = $res->fetchOneRow();
 	if (5*$effau>$effid) { // + de 20% d'inscrits
 	    require_once("xorg.mailer.inc.php");
-	    $mymail = new XOrgMailer('forums.promo.tpl');
+	    $mymail = new XOrgMailer('mails/forums.promo.tpl');
 	    $mymail->assign('promo', $promo);
 	    $mymail->send();
 	}
