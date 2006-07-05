@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once("xorg.inc.php");
+require_once('marketing.inc.php');
 new_admin_page('marketing/relance.tpl');
 
 /* une relance a été demandée - on envoit les mails correspondants */
