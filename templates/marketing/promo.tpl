@@ -20,50 +20,19 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<table style="margin-left: auto; margin-right: auto">
-  <tr>
-    <td>
-      <form action="{rel}/marketing/promo" method="get">
-        <div>
-          <input type="hidden" name="promo" value="{$promo-10}" />
-          <input type="submit" value="&lt;&lt;" />
-        </div>
-      </form>
-    </td>
-    <td>
-      <form action="{rel}/marketing/promo" method="get">
-        <div>
-          <input type="hidden" name="promo" value="{$promo-1}" />
-          <input type="submit" value="&lt;" />
-        </div>
-      </form>
-    </td>
-    <td>
-      <form action="{rel}/marketing/promo" method="get">
-        <div>
-          Promotion : <input type="text" name="promo" value="{$promo}" size="4" maxlength="4" />
-          <input type="submit" value="GO" />
-        </div>
-      </form>
-    </td>
-    <td>
-      <form action="{rel}/marketing/promo" method="get">
-        <div>
-          <input type="hidden" name="promo" value="{$promo+1}" />
-          <input type="submit" value="&gt;" />
-        </div>
-      </form>
-    </td>
-    <td>
-      <form action="{rel}/marketing/promo" method="get">
-        <div>
-          <input type="hidden" name="promo" value="{$promo+10}" />
-          <input type="submit" value="&gt;&gt;" />
-        </div>
-      </form> 
-    </td>
-  </tr>
-</table>
+<form action="{rel}/marketing/promo/" method="post" onsubmit="this.action += this.promo.value">
+  <div class="center">
+    <a href="{rel}/marketing/promo/{$promo-10}" title="-10"><img src="{rel}/images/24/first-page.png" alt="[&lt;&lt;]" /></a>
+    <a href="{rel}/marketing/promo/{$promo-1}" title="-1"><img src="{rel}/images/24/previous.png" alt="[&lt;]" /></a>
+
+    &nbsp;
+    Promo:<input type="text" name="promo" value="{$promo}" size="4" maxlength="4" /><input type="submit" value="GO" />
+    &nbsp;
+
+    <a href="{rel}/marketing/promo/{$promo+1}" title="+1"><img src="{rel}/images/24/next.png" alt="[&gt;]" /></a>
+    <a href="{rel}/marketing/promo/{$promo+10}" title="+10"><img src="{rel}/images/24/last-page.png" alt="[&gt;&gt;]" /></a>
+  </div>
+</form>
 
 <br />
 
@@ -72,6 +41,8 @@
     Voir l'évolution des inscriptions de la promotion
   </a>
 </div>
+
+<br />
 
 <form action="{rel}/marketing/promo" method="post">
   <table class="bicol" summary="liste des inscriptions non confirmées">

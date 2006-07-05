@@ -96,7 +96,7 @@ sa dernière relance date du {$relance|date_format}
 </form>
 
 {if $rel_to}
-<form action="{rel}/{$smarty.reqeust.p}" method="post">
+<form action="{rel}/{$smarty.request.p}" method="post">
   <table class="bicol">
     <tr class="pair">
       <th colspan="2">Edition du mail de relance</th>

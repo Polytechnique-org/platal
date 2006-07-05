@@ -96,10 +96,10 @@ class MarketingModule extends PLModule
         if (list($nom, $prenom, $promo, $matricule) = $res->fetchOneRow()) {
             require_once('register.inc.php');
             $matricule_X = get_X_mat($matricule);
-            $page->gassign('nom');
-            $page->gassign('prenom');
-            $page->gassign('promo');
-            $page->gassign('matricule');
+            $page->assign('nom', $nom);
+            $page->assign('prenom', $prenom);
+            $page->assign('promo', $promo);
+            $page->assign('matricule', $matricule);
             $page->assign('matricule_X',$matricule_X);
         } else {
             $page->kill('uid invalide');
@@ -156,8 +156,8 @@ class MarketingModule extends PLModule
         $res = $globals->xdb->query("SELECT date, relance FROM register_pending
                                       WHERE uid = {?}", $uid);
         if (list($pending, $relance) = $res->fetchOneCell()) {
-            $page->gassign('pending');
-            $page->gassign('relance');
+            $page->assign('pending', $pending);
+            $page->assign('relance', $relance);
         }
 
         return PL_OK;
@@ -169,8 +169,8 @@ class MarketingModule extends PLModule
 
         $page->changeTpl('marketing/promo.tpl');
 
-        if (!$promo) {
-            $promo = Env::has('promo') ? Env::getInt('promo') : Session::getInt('promo');
+        if (is_null($promo)) {
+            $promo = Session::getInt('promo');
         }
         $page->assign('promo', $promo);
 

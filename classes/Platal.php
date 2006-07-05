@@ -34,7 +34,7 @@ class Platal
 
     function Platal()
     {
-        $this->path = Get::_get('p', null);
+        $this->path = trim(Get::_get('p', null), '/');
 
         $this->__mods  = array();
         $this->__hooks = array();
@@ -74,8 +74,12 @@ class Platal
             return PL_NOT_FOUND;
         }
 
-        $args = array_merge(array(&$page),
-            explode('/', substr($this->path, strlen($p) + 1)));
+        $args = explode('/', substr($this->path, strlen($p) + 1));
+        if ($args[0] != '') {
+            array_unshift($args, &$page);
+        } else {
+            $args = array(&$page);
+        }
 
         if ($hook['auth'] > Session::get('auth', AUTH_PUBLIC)) {
             $_SESSION['session']->doAuth($page);
