@@ -73,7 +73,7 @@ peut sans aucun doute l'aider à se décider !
   {$nom} inscrit, nous t'enverrons un email pour te prévenir que son inscription a réussi.
 </p>
 
-<form method="post" action="{rel}/{$smarty.request.p}">
+<form method="post" action="{rel}/{$platal->path}">
   <table class="bicol" summary="Fiche camarade">
     <tr class="impair"><td>Nom :</td><td>{$nom}</td></tr>
     <tr class="pair"><td>Prénom :</td><td>{$prenom}</td></tr>

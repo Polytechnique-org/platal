@@ -30,7 +30,7 @@ class Platal
     var $__hooks;
 
     var $path;
-    var $auth;
+    var $args;
 
     function Platal()
     {
@@ -74,8 +74,10 @@ class Platal
             return PL_NOT_FOUND;
         }
 
-        $args    = explode('/', substr($this->path, strlen($p)));
-        $args[0] = &$page;
+        $args       = explode('/', substr($this->path, strlen($p)));
+        $args[0]    = $p;
+        $this->argv = $args;
+        $args[0]    = &$page;
 
         if ($hook['auth'] > Session::get('auth', AUTH_PUBLIC)) {
             $_SESSION['session']->doAuth($page);
@@ -102,6 +104,7 @@ class Platal
             $this->__mods['core']->handler_404($page);
             break;
         }
+        $page->assign_by_ref('platal', $this);
         $page->run();
     }
 }

@@ -34,7 +34,7 @@ Choix de la promo :
 
 {if $addr}
 
-<p>[<a href="{rel}/marketing/promo/{$smarty.get.promo}">Marketing promo pour la promo {$smarty.get.promo}</a>]</p>
+<p>[<a href="{rel}/marketing/promo/{$platal->argv[1]}">Marketing promo pour la promo {$platal->argv[1]}</a>]</p>
 
 {if $addr->total()}
 <h2>Marketing volontaire</h2>
