@@ -128,9 +128,8 @@ class MarketingModule extends PLModule
 
         if ($action == 'relforce') {
             require_once('marketing.inc.php');
-            mark_send_mail($uid, $value, Env::get('from'),
-                           Env::get('to'), Env::get('title'),
-                           Env::get('message'));
+            mark_send_mail($uid, $value, Post::get('from'), Post::get('to'),
+                           Post::get('title'), Post::get('message'));
             $page->trig("Mail envoyé");
         }
 
@@ -209,10 +208,10 @@ class MarketingModule extends PLModule
             $page->assign('nom', $nom);
             $page->assign('promo', $promo);
 
-            if (Env::has('valide')) {
+            if (Post::has('valide')) {
                 require_once('xorg.misc.inc.php');
 
-                $email = trim(Env::get('mail'));
+                $email = trim(Post::get('mail'));
                 $res   = $globals->xdb->query('SELECT COUNT(*) FROM register_marketing
                                                 WHERE uid={?} AND email={?}', $uid, $email);
 
@@ -225,10 +224,10 @@ class MarketingModule extends PLModule
                     $globals->xdb->execute(
                             "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
-                            $uid, Session::getInt('uid'), $email, Env::get('origine'));
+                            $uid, Session::getInt('uid'), $email, Post::get('origine'));
                     require_once('validations.inc.php');
                     $req = new MarkReq(Session::getInt('uid'), $uid, $email,
-                                       Env::get('origine')=='user');
+                                       Post::get('origine')=='user');
                     $req->submit();
                 }
             }
@@ -237,13 +236,13 @@ class MarketingModule extends PLModule
         return PL_OK;
     }
 
-    function handler_week(&$page)
+    function handler_week(&$page, $sorting = 'per_promo')
     {
         global $globals;
 
         $page->changeTpl('marketing/this_week.tpl');
 
-        $sort = Get::get('sort') == 'promo' ? 'promo' : 'date_ins';
+        $sort = $sorting == 'per_promo' ? 'promo' : 'date_ins';
 
         $sql = "SELECT  a.alias AS forlife, u.date_ins, u.promo, u.nom, u.prenom
                   FROM  auth_user_md5  AS u
@@ -255,7 +254,7 @@ class MarketingModule extends PLModule
         return PL_OK;
     }
 
-    function handler_volontaire(&$page)
+    function handler_volontaire(&$page, $promo = null)
     {
         global $globals;
 
@@ -270,14 +269,14 @@ class MarketingModule extends PLModule
         $page->assign('promos', $res->fetchColumn());
 
 
-        if (Env::has('promo')) {
+        if (!is_null($promo)) {
             $sql = "SELECT  a.nom, a.prenom, a.user_id,
                             m.email, sa.alias AS forlife
                       FROM  register_marketing AS m
                 INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid AND a.promo = {?}
                 INNER JOIN  aliases            AS sa ON (m.sender = sa.id AND sa.type='a_vie')
                   ORDER BY  a.nom";
-            $page->assign('addr', $globals->xdb->iterator($sql, Env::get('promo')));
+            $page->assign('addr', $globals->xdb->iterator($sql, $promo));
         }
 
         return PL_OK;

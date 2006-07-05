@@ -74,12 +74,8 @@ class Platal
             return PL_NOT_FOUND;
         }
 
-        $args = explode('/', substr($this->path, strlen($p) + 1));
-        if ($args[0] != '') {
-            array_unshift($args, &$page);
-        } else {
-            $args = array(&$page);
-        }
+        $args    = explode('/', substr($this->path, strlen($p)));
+        $args[0] = &$page;
 
         if ($hook['auth'] > Session::get('auth', AUTH_PUBLIC)) {
             $_SESSION['session']->doAuth($page);

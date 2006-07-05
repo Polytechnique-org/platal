@@ -53,8 +53,8 @@
 </table>
 
 <div class="right">
-  [<a href="{rel}/marketing/this_week?sort=date_ins">par date</a>]
-  [<a href="{rel}/marketing/this_week?sort=promo">par promo</a>]
+  [<a href="{rel}/marketing/this_week/per_date">par date</a>]
+  [<a href="{rel}/marketing/this_week/per_promo">par promo</a>]
 </div>
 
 

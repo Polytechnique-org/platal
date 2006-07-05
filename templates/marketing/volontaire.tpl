@@ -27,7 +27,7 @@ Choix de la promo :
 </p>
 <p>
 {foreach from=$promos item=p}
-<a href="{rel}/marketing/volontaire?promo={$p}">{$p}</a>
+<a href="{rel}/marketing/volontaire/{$p}">{$p}</a>
 {cycle values=",,,,,,,,,,,,,,<br />"}
 {/foreach}
 </p>
