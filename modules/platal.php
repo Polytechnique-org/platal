@@ -25,6 +25,7 @@ class PlatalModule extends PLModule
     {
         return array(
             'preferences' => $this->make_hook('prefs', AUTH_COOKIE),
+            'skin'        => $this->make_hook('skin', AUTH_COOKIE),
         );
     }
 
@@ -64,6 +65,33 @@ class PlatalModule extends PLModule
 
         $page->assign('prefs', $globals->hook->prefs());
 
+        return PL_OK;
+    }
+
+    function handler_skin(&$page)
+    {
+        global $globals;
+
+        if (!$globals->skin->enable) {
+            redirect('index.php');
+        }
+        new_skinned_page('skins.tpl', AUTH_COOKIE);
+        $page->assign('xorg_title','Polytechnique.org - Skins');
+
+        if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
+            $globals->xdb->execute('UPDATE auth_user_quick
+                                       SET skin={?} WHERE user_id={?}',
+                                    Env::getInt('newskin'),
+                                    Session::getInt('uid'));
+            set_skin();
+        }
+
+        $sql = "SELECT s.*,auteur,count(*) AS nb
+                  FROM skins AS s
+             LEFT JOIN auth_user_quick AS a ON s.id=a.skin
+                 WHERE skin_tpl != '' AND ext != ''
+              GROUP BY id ORDER BY s.date DESC";
+        $page->assign_by_ref('skins', $globals->xdb->iterator($sql));
         return PL_OK;
     }
 }

@@ -49,7 +49,7 @@ function skin_prefs()
     }
     return Array(
             Array(
-                'url'    => 'skins.php',
+                'url'    => 'skin',
                 'title'  => 'Apparence du site (skins)',
                 'text'   => 'Tu peux changer les couleurs et les images du site.',
                 'weight' => 70
