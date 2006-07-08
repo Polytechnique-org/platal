@@ -63,7 +63,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   </div>
 {else}
 <p>
-  Pour récupérer un calendrier iCal avec l'anniversaire de tes contacts, active les flux RSS dans <a href="{rel}/preferences.php">Mes préférences</a>.
+  Pour récupérer un calendrier iCal avec l'anniversaire de tes contacts, active les flux RSS dans <a href="{rel}/preferences">Mes préférences</a>.
 </p>
 {/if}
 

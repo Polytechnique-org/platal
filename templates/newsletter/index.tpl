@@ -34,7 +34,7 @@ utilise <a href='submit.php'>le formulaire dédié !</a>
 
 {if $nls}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='../preferences.php'>des préférences</a>)
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='{rel}/preferences'>des préférences</a>)
 </p>
 <div class='center'>
   [<a href='?out=1'>me désinscrire de la lettre mensuelle</a>]

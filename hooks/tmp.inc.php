@@ -27,7 +27,7 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',       'carnet/mescontacts.php');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',         'carnet/');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'motdepasse.php');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'preferences.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'preferences');
 
     $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',  'trombipromo.php');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',       'referent.php');
@@ -76,14 +76,14 @@ function tmp_prefs()
     $fmt2 = Session::get('mail_fmt', 'html') == 'html' ? 'texte' : 'HTML';
     return Array(
             Array(
-                'url'    => 'preferences.php?mail_fmt='.$fmt,
+                'url'    => 'preferences?mail_fmt='.$fmt,
                 'title'  => 'Recevoir les mails en format '.$fmt2,
                 'text'   => 'Tu recois les mails envoyés par le site (lettre mensuelle, carnet, ...) de préférence <strong>sous forme de '
                             .Session::get('mail_fmt', 'html').'</strong>',
                 'weight' => 80
             ),
             Array(
-                'url'    => 'preferences.php?rss='.(intval(Session::get('core_rss_hash')=='')),
+                'url'    => 'preferences?rss='.(intval(Session::get('core_rss_hash')=='')),
                 'title'  => (Session::get('core_rss_hash') ? 'Désactiver' : 'Activer').' les fils rss',
                 'text'   => 'Ceci te permet d\'utiliser les fils rss du site. Attention, désactiver puis réactiver les fils en change les URL !',
                 'weight' => 90
