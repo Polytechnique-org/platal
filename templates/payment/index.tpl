@@ -83,7 +83,19 @@ Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='h
 
 {else}
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<script type='text/javascript'>
+{literal}
+function payment_submit(form)
+{
+    form.op.value = 'select';
+    form.montant.value = 0;
+    form.action = form.action + '/' + form.ref.value;
+    form.submit();
+}
+{/literal}
+</script>
+
+<form method="post" action="{rel}/payment">
   <p> Si tu ne souhaites pas utiliser notre interface de
   télépaiement, tu peux virer directement la somme de ton choix sur notre compte
   30004 00314 00010016782 60. Nous veillerons à ce que ton paiement parvienne à
@@ -98,7 +110,7 @@ Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='h
     <tr>
       <td>Transaction</td>
       <td>
-        <select name="ref" onchange="this.form.op.value='select'; this.form.montant.value=0; this.form.submit();">
+        <select name="ref" onchange="payment_submit(this.form)">
           {select_db_table table="`$prefix`paiements" valeur=$pay->id where=" WHERE FIND_IN_SET('old',flags)=0"}
         </select>
         {if $pay->url}
@@ -111,7 +123,7 @@ Si tu n'es pas encore inscrit à cet événement, n'oublie pas d'aller t'<a href='h
       <td>Méthode</td>
       <td>
         <select name="methode">
-          {select_db_table table="paiement.methodes" valeur=$methode}
+          {select_db_table table="paiement.methodes" valeur=$smarty.request.methode}
         </select>
       </td>
     </tr>

@@ -63,6 +63,8 @@ class PlatalModule extends PLModule
         }
 
         $page->assign('prefs', $globals->hook->prefs());
+
+        return PL_OK;
     }
 }
 

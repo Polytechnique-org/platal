@@ -56,8 +56,7 @@ class PayPal
 	$name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/paiement/paypal_retour.php?uid="
-            .Session::getInt('uid');
+            ."/payment/paypal_return/".Session::getInt('uid');
 
 	$this->infos = Array();
 	

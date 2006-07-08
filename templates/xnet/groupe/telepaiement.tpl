@@ -30,7 +30,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 
 <hr />
 <h2>
-<a href="https://www.polytechnique.org/paiement/?ref={$p.id}">{$p.text}</a>
+<a href="https://www.polytechnique.org/payment/{$p.id}">{$p.text}</a>
 </h2>
 
 {if $trans[$p.id]}

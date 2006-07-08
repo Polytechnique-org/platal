@@ -32,5 +32,5 @@ réception de ton paiement.</p>
 
 <p>{$texte|nl2br}</p>
 {/if}
-<p>[<a href='index.php'>retour aux Télépaiements</a>]</p>
+<p>[<a href='{rel}/payment'>retour aux Télépaiements</a>]</p>
 {* vim:set et sw=2 sts=2 sws=2: *}

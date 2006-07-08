@@ -143,7 +143,7 @@ Evénements
         <td colspan="2" {if $montant > $e.paid}class="erreur"{/if}>
           Tu dois payer {$montant|replace:'.':','}&nbsp;&euro;{if $e.paid > 0}, et tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;{/if}.
           {if $e.paiement_id && $montant > $e.paid}
-            [<a href="https://www.polytechnique.org/paiement/?ref={$e.paiement_id}&amp;montant={math equation="x - y" x=$montant y=$e.paid}">Payer en ligne</a>]
+            [<a href="https://www.polytechnique.org/payment/{$e.paiement_id}?montant={math equation="x - y" x=$montant y=$e.paid}">Payer en ligne</a>]
           {/if}
         </td>
       </tr>
