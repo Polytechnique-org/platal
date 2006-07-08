@@ -24,9 +24,10 @@ class CoreModule extends PLModule
     function handlers()
     {
         return array(
-            '403'  => $this->make_hook('403', AUTH_PUBLIC),
-            '404'  => $this->make_hook('404', AUTH_PUBLIC),
-            'exit' => $this->make_hook('exit', AUTH_PUBLIC),
+            '403'         => $this->make_hook('403', AUTH_PUBLIC),
+            '404'         => $this->make_hook('404', AUTH_PUBLIC),
+            'exit'        => $this->make_hook('exit', AUTH_PUBLIC),
+            'cacert.pem'  => $this->make_hook('cacert', AUTH_PUBLIC),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin')
         );
     }
@@ -38,6 +39,15 @@ class CoreModule extends PLModule
         }
 
         return PL_OK;
+    }
+
+    function handler_cacert(&$page)
+    {
+        $data = file_get_contents('/etc/ssl/xorgCA/cacert.pem');
+        header('Content-Type: application/x-x509-ca-cert');
+        header('Content-Length: '.strlen($data));
+        echo $data;
+        exit;
     }
 
     function handler_exit(&$page, $level = null)
