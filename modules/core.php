@@ -19,6 +19,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+function bugize($list)
+{
+    $list = split(',', $list);
+    $ans  = array();
+
+    foreach ($list as $bug) {
+        $clean = str_replace('#', '', $bug);
+        $ans[] = "<a href='http://trackers.polytechnique.org/task/$clean'>$bug</a>";
+    }
+
+    return join(',', $ans);
+}
+
+
 class CoreModule extends PLModule
 {
     function handlers()
@@ -28,6 +42,7 @@ class CoreModule extends PLModule
             '404'         => $this->make_hook('404', AUTH_PUBLIC),
             'exit'        => $this->make_hook('exit', AUTH_PUBLIC),
             'cacert.pem'  => $this->make_hook('cacert', AUTH_PUBLIC),
+            'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin')
         );
     }
@@ -48,6 +63,15 @@ class CoreModule extends PLModule
         header('Content-Length: '.strlen($data));
         echo $data;
         exit;
+    }
+
+    function handler_changelog(&$page)
+    {
+        $page->changeTpl('changeLog.tpl');
+
+        $clog = htmlentities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
+        $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
+        $page->assign('ChangeLog', $clog);
     }
 
     function handler_exit(&$page, $level = null)
