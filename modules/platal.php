@@ -73,9 +73,10 @@ class PlatalModule extends PLModule
         global $globals;
 
         if (!$globals->skin->enable) {
-            redirect('index.php');
+            redirect('./');
         }
-        new_skinned_page('skins.tpl', AUTH_COOKIE);
+
+        $page->changeTpl('skins.tpl');
         $page->assign('xorg_title','Polytechnique.org - Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
