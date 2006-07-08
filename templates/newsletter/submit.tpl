@@ -22,7 +22,7 @@
 
 
 <h1>
-  Proposer un article à sur la prochaine Lettre mensuelle
+  Proposer un article pour la prochaine Lettre mensuelle
 </h1>
 
 
@@ -44,8 +44,8 @@ renseignements à te demander à son sujet !
 
 {if !$art->check()}
 <p class='erreur'>
-article trop long !<br />
-il faut te limiter à 8 lignes de 68 caractères.
+L'article est trop long !<br />
+La limite est de 8 lignes de 68 caractères.
 </p>
 {/if}
 
