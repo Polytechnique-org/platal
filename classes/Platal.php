@@ -92,9 +92,8 @@ class Platal
         new_skinned_page('index.tpl', AUTH_PUBLIC);
 
         if (empty($this->path)) {
-            $page->run();
-        }
-
+            $this->__mods['core']->handler_index($page);
+        } else
         switch ($this->call_hook($page)) {
           case PL_FORBIDDEN:
             $this->__mods['core']->handler_403($page);

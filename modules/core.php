@@ -27,7 +27,17 @@ class CoreModule extends PLModule
             '403'  => $this->make_hook('403', AUTH_PUBLIC),
             '404'  => $this->make_hook('404', AUTH_PUBLIC),
             'exit' => $this->make_hook('exit', AUTH_PUBLIC),
+            'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin')
         );
+    }
+
+    function handler_index(&$page)
+    {
+        if (logged()) {
+            redirect("login.php");
+        }
+
+        return PL_OK;
     }
 
     function handler_exit(&$page, $level = null)
@@ -87,6 +97,16 @@ class CoreModule extends PLModule
         header('HTTP/1.0 404 Not Found');
         $page->changeTpl('404.tpl');
         return PL_OK;
+    }
+
+    function handler_purge_cache(&$page)
+    {
+        require_once 'wiki.inc.php';
+
+        $page->clear_compiled_tpl();
+        wiki_clear_all_cache();
+
+        redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
     }
 }
 
