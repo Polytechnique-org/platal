@@ -31,8 +31,8 @@
   <a href="{rel}/Docs/Ethique">Services et Ethique</a>
   | <a href="{rel}/Docs/Charte">Charte</a>
 {min_auth level=cookie}
-  | <a href="{rel}/stats/coupure.php">Disponibilité</a>
-  | <a href="{rel}/stats/">Statistiques</a>
+  | <a href="{rel}/stats/coupures">Disponibilité</a>
+  | <a href="{rel}/stats">Statistiques</a>
 {/min_auth}
 </div>
 

@@ -20,35 +20,32 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Evolution du nombre d'inscrits au site polytechnique.org
-</h1>
+<h1>Evolution du nombre d'inscrits au site polytechnique.org</h1>
 
 <div class="center">
-{if $smarty.request.jours eq 1826}
+{if $jours eq 1825}
 [<strong>depuis 5 ans</strong>]
 {else}
-[<a href="?jours=1826">depuis 5 ans</a>]
+[<a href="{rel}/stats/evolution/1825">depuis 5 ans</a>]
 {/if}
-{if $smarty.request.jours eq 731}
+{if $jours eq 730}
 [<strong>depuis 2 ans</strong>]
 {else}
-[<a href="?jours=731">depuis 2 ans</a>]
+[<a href="{rel}/stats/evolution/730">depuis 2 ans</a>]
 {/if}
-{if (!$smarty.request.jours) or ($smarty.request.jours eq 364)}
+{if $jours eq 365}
 [<strong>depuis un an</strong>]
 {else}
-[<a href="?jours=364">depuis un an</a>]
+[<a href="{rel}/stats/evolution/365">depuis un an</a>]
 {/if}
-{if $smarty.request.jours eq 30}
+{if $jours eq 30}
 [<strong>depuis un mois</strong>]
 {else}
-[<a href="?jours=30">depuis 1 mois</a>]
+[<a href="{rel}/stats/evolution/30">depuis 1 mois</a>]
 {/if}
 </div>
 <div class="center">
-  <img src="{"stats/graph_evolution.php?jours="|url}{$smarty.request.jours}" alt=" [ INSCRITS ] " />
+  <img src="{rel}/stats/graph/evolution/{$jours}" alt=" [ INSCRITS ] " />
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

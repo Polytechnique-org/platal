@@ -101,14 +101,14 @@ class PlatalModule extends PLModule
         if (Env::get('submit') == 'Valider' and Env::has('url')) {
             $globals->xdb->execute('UPDATE auth_user_quick
                                        SET redirecturl = {?} WHERE user_id = {?}',
-                                   $url, Session::getInt('uid')))
+                                   $url, Session::getInt('uid'));
             $log->log('carva_add', 'http://'.Env::get('url'));
             $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::get('submit') == "Supprimer") {
             $globals->xdb->execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
                                      WHERE user_id = {?}",
-                                   Session::getInt('uid')))
+                                   Session::getInt('uid'));
             $log->log("carva_del", $url);
             Post::kill('url');
             $page->trig('Redirection supprimée');

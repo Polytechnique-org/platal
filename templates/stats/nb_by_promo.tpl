@@ -20,10 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Inscrits par promo
-</h1>
+<h1>Inscrits par promo</h1>
 
 <p>
 Voici le nombre d'inscrits par promo :
@@ -40,10 +37,10 @@ Voici le nombre d'inscrits par promo :
     <th>{$lustre}-</th>
     {foreach item=nb from=$nb10}
     <td class="center">
-      {if $nb && $nb.promo eq $smarty.request.promo}
+      {if $nb && $nb.promo eq $promo}
       <span class='erreur'>{$nb.nb}</span>
       {elseif $nb}
-      <a href="?promo={$nb.promo}">{$nb.nb}</a>
+      <a href="{rel}/stats/promos/{$nb.promo}">{$nb.nb}</a>
       {else}
       -
       {/if}
@@ -53,16 +50,16 @@ Voici le nombre d'inscrits par promo :
   {/foreach}
 </table>
 
-{if $smarty.request.promo}
+{if $promo}
 
 <p class='center'>
-[<a href="{$smarty.server.PHP_SELF}">répartition des inscrits par promo</a>]
+[<a href="{rel}/stats/promos">répartition des inscrits par promo</a>]
 </p>
 
-<h1>Courbe d'inscription de la promo {$smarty.request.promo}</h1>
+<h1>Courbe d'inscription de la promo {$promo}</h1>
 
 <div class="center">
-  <img src="{"stats/graph_promo.php"|url}?promo={$smarty.request.promo}" alt=" [ INSCRITS ] " />
+  <img src="{rel}/stats/graph/{$promo}" alt=" [ INSCRITS ] " />
 </div>
 
 {else}
@@ -70,7 +67,7 @@ Voici le nombre d'inscrits par promo :
 <h1>Inscrits par promo en (%)</h1>
 
 <div class="center">
-  <img src="{"stats/graph_by_promo.php"|url}" alt="[graphe du nombre d'inscrits par promo]" />
+  <img src="{rel}/stats/graph/all" alt="[graphe du nombre d'inscrits par promo]" />
 </div>
 
 {/if}
