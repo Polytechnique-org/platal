@@ -25,13 +25,14 @@ class PlatalModule extends PLModule
     {
         return array(
             // Preferences thingies
-            'prefs'       => $this->make_hook('prefs',     AUTH_COOKIE),
-            'prefs/rss'   => $this->make_hook('prefs_rss', AUTH_COOKIE),
-            'skin'        => $this->make_hook('skin',      AUTH_COOKIE),
+            'prefs'     => $this->make_hook('prefs',     AUTH_COOKIE),
+            'prefs/rss' => $this->make_hook('prefs_rss', AUTH_COOKIE),
+            'skin'      => $this->make_hook('skin',      AUTH_COOKIE),
 
             // password related thingies
-            'password'    => $this->make_hook('password',  AUTH_MDP),
-            'tmpPWD'      => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
+            'password'      => $this->make_hook('password',  AUTH_MDP),
+            'tmpPWD'        => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
+            'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
 
             // happenings related thingies
             'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
@@ -127,6 +128,39 @@ class PlatalModule extends PLModule
         $page->changeTpl('motdepasse.tpl');
         $page->addJsLink('javascript/motdepasse.js');
         $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
+
+        return PL_OK;
+    }
+
+    function handler_smtppass(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('acces_smtp.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
+
+        $uid  = Session::getInt('uid');
+        $pass = Env::get('smtppass1');
+        $log  = Session::getMixed('log');
+
+        if (Env::get('op') == "Valider" && strlen($pass) >= 6 
+        &&  Env::get('smtppass1') == Env::get('smtppass2')) 
+        {
+            $globals->xdb->execute('UPDATE auth_user_md5 SET smtppass = {?}
+                                     WHERE user_id = {?}', $pass, $uid);
+            $page->trig('Mot de passe enregistré');
+            $log->log("passwd_ssl");
+        } elseif (Env::get('op') == "Supprimer") {
+            $globals->xdb->execute('UPDATE auth_user_md5 SET smtppass = ""
+                                     WHERE user_id = {?}', $uid);
+            $page->trig('Compte SMTP et NNTP supprimé');
+            $log->log("passwd_del");
+        }
+
+        $res = $globals->xdb->query("SELECT IF(smtppass != '', 'actif', '') 
+                                       FROM auth_user_md5
+                                      WHERE user_id = {?}", $uid);
+        $page->assign('actif', $res->fetchOneCell());
 
         return PL_OK;
     }

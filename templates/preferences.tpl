@@ -63,7 +63,7 @@
   </tr>
   <tr class="pair">
     <td>
-      <h3><a href="{"acces_smtp.php"|url}">Activer l'accès SMTP et NNTP</a></h3>
+      <h3><a href="{rel}/password/smtp">Activer l'accès SMTP et NNTP</a></h3>
       <div class='explication'>
         Pour activer ton compte sur le serveur SMTP et NNTP de Polytechnique.org.
         Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter
