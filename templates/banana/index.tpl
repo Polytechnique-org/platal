@@ -23,7 +23,7 @@
 <h1>Options</h1>
 
 {if !$banana->profile.autoup}
-[<a href="?banana=updateall">Mettre à jour</a>]
+[<a href="{rel}/banana/updateall">Mettre à jour</a>]
 {/if}
 [<a href="{rel}/banana/profile">Profil</a>]
 

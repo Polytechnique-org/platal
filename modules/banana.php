@@ -24,27 +24,35 @@ class BananaModule extends PLModule
     function handlers()
     {
         return array(
-            'banana' => $this->make_hook('banana', AUTH_COOKIE),
-            'banana/profile' => $this->make_hook('profile', AUTH_MDP),
-        );
+            'banana'              => $this->make_hook('banana', AUTH_COOKIE),
+            'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
+			'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
+			'banana/updateall'    => $this->make_hook('updateall', AUTH_COOKIE),
+		);
     }
 
-    function handler_banana(&$page)
+    function handler_banana(&$page, $group = null, $action = null, $artid = null)
     {
-        $page->changeTpl('banana/index.tpl');
-        $page->addCssLink('css/banana.css');
-        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
-
-        require_once 'banana.inc.php';
-
-        $res = PlatalBanana::run();
-        $page->assign_by_ref('banana', $banana);
-        $page->assign('banana_res', $res);
-
-        return PL_OK;
+		$get = Array();
+		if (!is_null($group)) {
+			$get['group'] = $group;
+		}
+		if (!is_null($action)) {
+			if ($action == 'new') {
+				$get['action'] = 'new';
+			} elseif (($action == 'reply' || $action == 'cancel') && !is_null($artid)) {
+				$get['action'] = $action;
+				$get['artid']  = $artid;
+			} elseif ($action == 'from' && !is_null($artid)) {
+				$get['first'] = $artid;
+			} elseif ($action == 'read' && !is_null($artid)) {
+				$get['artid'] = $artid;
+			}
+		}
+		return BananaModule::run_banana($page, $get);
     }
 
-    function handler_profile(&$page)
+    function handler_profile(&$page, $action = null)
     {
         global $globals;
 
@@ -82,6 +90,31 @@ class BananaModule extends PLModule
 
         return PL_OK;
     }
+
+	function handler_updateall(&$page)
+	{
+		return BananaModule::run_banana($page, Array('banana' => 'updateall'));
+	}
+
+	function handler_subscription(&$page)
+	{
+		return $this->run_banana($page, Array('subscribe' => 1));
+	}
+
+	function run_banana(&$page, $params = null)
+	{
+        $page->changeTpl('banana/index.tpl');
+        $page->addCssLink('css/banana.css');
+        $page->assign('xorg_title','Polytechnique.org - Forums & PA');
+
+        require_once('banana.inc.php');
+
+        $res = PlatalBanana::run($params);
+        $page->assign_by_ref('banana', $banana);
+        $page->assign('banana_res', $res);
+
+        return PL_OK;
+	}	
 }
 
 ?>
