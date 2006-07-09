@@ -24,11 +24,30 @@ class PlatalModule extends PLModule
     function handlers()
     {
         return array(
-            'preferences' => $this->make_hook('prefs', AUTH_COOKIE),
+            'prefs'       => $this->make_hook('prefs', AUTH_COOKIE),
+            'prefs/rss'   => $this->make_hook('rss', AUTH_COOKIE),
             'password'    => $this->make_hook('password', AUTH_MDP),
             'tmpPWD'      => $this->make_hook('tmpPWD', AUTH_PUBLIC),
             'skin'        => $this->make_hook('skin', AUTH_COOKIE),
         );
+    }
+
+    function __set_rss_state($state)
+    {
+        global $globals;
+
+        if ($state) {
+            $_SESSION['core_rss_hash'] = rand_url_id(16);
+            $globals->xdb->execute('UPDATE  auth_user_quick
+                                   SET  core_rss_hash={?} WHERE user_id={?}',
+                                   Session::get('core_rss_hash'),
+                                   Session::getInt('uid'));
+        } else {
+            $globals->xdb->execute('UPDATE  auth_user_quick
+                                   SET  core_rss_hash="" WHERE user_id={?}',
+                                   Session::getInt('uid'));
+            Session::kill('core_rss_hash');
+        }
     }
 
     function handler_prefs(&$page)
@@ -50,22 +69,26 @@ class PlatalModule extends PLModule
         }
 
         if (Env::has('rss')) {
-            if (Env::getBool('rss')) {
-                $_SESSION['core_rss_hash'] = rand_url_id(16);
-                $globals->xdb->execute('UPDATE  auth_user_quick
-                                           SET  core_rss_hash={?} WHERE user_id={?}',
-                                       Session::get('core_rss_hash'),
-                                       Session::getInt('uid'));
-            } else {
-                $globals->xdb->execute('UPDATE  auth_user_quick
-                                           SET  core_rss_hash="" WHERE user_id={?}',
-                                       Session::getInt('uid'));
-                Session::kill('core_rss_hash');
-            }
-            redirect('preferences');
+            $this->__set_rss_state(Env::getBool('rss'));
         }
 
         $page->assign('prefs', $globals->hook->prefs());
+
+        return PL_OK;
+    }
+
+    function handler_rss(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('filrss.tpl');
+
+        $page->assign('goback', Env::get('referer', 'login'));
+
+        if (Env::get('act_rss') == 'Activer') {
+            $this->__set_rss_state(true);
+            $page->trig("Ton Fil RSS est activé.");
+        }
 
         return PL_OK;
     }

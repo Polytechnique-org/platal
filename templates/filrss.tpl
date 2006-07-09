@@ -22,7 +22,7 @@
 
 <h1>Fil RSS</h1>
 
-{if !$rsshash }
+{if !$smarty.session.core_rss_hash}
 Tu viens de cliquer sur le lien d'activation des fils RSS. Les fils RSS du site <br/>
 ne sont pas activés dans tes préférences.
 <ul>
@@ -37,11 +37,11 @@ ne sont pas activés dans tes préférences.
   </li>
 </ul>
 
-<form method="get" action="{$goback}">
+<form method="get" action="{rel}/{$goback}">
   <div>
     <input type="hidden" name="referer" value="{$goback}" />
-    <input type="submit" name="" value="Retour" />
-    <input type="submit" name="act_rss" value="Activer" onclick="this.form.action='filrss.php'" />
+    <input type="submit" value="Retour" />
+    <input type="submit" name="act_rss" value="Activer" onclick="this.form.action='{rel}/prefs/rss'" />
   </div>
 </form>
 
@@ -63,6 +63,6 @@ Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver 
 <p>
 Attention: désactiver, puis réactiver le fil RSS en change l'adresse.
 </p>
-<p>[<a href="{$goback}">retour à la page dont tu venais</a>]</p>
+<p>[<a href="{rel}/{$goback}">retour à la page dont tu venais</a>]</p>
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}
