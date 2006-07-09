@@ -23,9 +23,11 @@ require_once('xorg.inc.php');
 require_once('rss.inc.php');
 require_once('notifs.inc.php');
 
-$uid    = init_rss('carnet/rss.tpl');
-$notifs = new Notifs($uid, false);
-$page->assign('notifs', $notifs);
+if (preg_match(',^/([^/]+)/([^/]+)\.xml$,', $_SERVER['PATH_INFO'], $m)) {
+    $uid    = init_rss('carnet/rss.tpl', $m[1], $m[2]);
+    $notifs = new Notifs($uid, false);
+    $page->assign('notifs', $notifs);
 
-$page->run();
+    $page->run();
+}
 ?> 

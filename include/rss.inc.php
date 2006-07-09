@@ -37,24 +37,23 @@ function to_rss ($s)
     }
 }
 
-function init_rss($template)
+function init_rss($template, $alias, $hash)
 {
     global $page, $globals;
     new_nonhtml_page($template, AUTH_PUBLIC);
     $page->register_modifier('rss_date', '_rss_encode_date');
     $page->default_modifiers = Array('@to_rss');
 
-    if (preg_match(',^/([^/]+)/([^/]+)\.xml$,', $_SERVER['PATH_INFO'], $m)) {
-        $alias = $m[1];
-        $hash  = $m[2];
-        $res = $globals->xdb->query(
-            'SELECT  a.id
-               FROM  aliases         AS a
-         INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND q.core_rss_hash = {?} )
-              WHERE  a.alias = {?} AND a.type != "homonyme"', $hash, $alias);
-        $uid = $res->fetchOneCell();
+    $res = $globals->xdb->query(
+        'SELECT  a.id
+           FROM  aliases         AS a
+     INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND q.core_rss_hash = {?} )
+          WHERE  a.alias = {?} AND a.type != "homonyme"', $hash, $alias);
+    $uid = $res->fetchOneCell();
+
+    if (empty($uid)) {
+        exit;
     }
-    if (empty($uid)) { exit; }
 
     header('Content-Type: application/rss+xml; charset=utf8');
     return $uid;

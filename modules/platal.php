@@ -24,11 +24,17 @@ class PlatalModule extends PLModule
     function handlers()
     {
         return array(
-            'prefs'       => $this->make_hook('prefs', AUTH_COOKIE),
-            'prefs/rss'   => $this->make_hook('rss', AUTH_COOKIE),
-            'password'    => $this->make_hook('password', AUTH_MDP),
-            'tmpPWD'      => $this->make_hook('tmpPWD', AUTH_PUBLIC),
-            'skin'        => $this->make_hook('skin', AUTH_COOKIE),
+            // Preferences thingies
+            'prefs'       => $this->make_hook('prefs',     AUTH_COOKIE),
+            'prefs/rss'   => $this->make_hook('prefs_rss', AUTH_COOKIE),
+            'skin'        => $this->make_hook('skin',      AUTH_COOKIE),
+
+            // password related thingies
+            'password'    => $this->make_hook('password',  AUTH_MDP),
+            'tmpPWD'      => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
+
+            // happenings related thingies
+            'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
         );
     }
 
@@ -77,7 +83,7 @@ class PlatalModule extends PLModule
         return PL_OK;
     }
 
-    function handler_rss(&$page)
+    function handler_prefs_rss(&$page)
     {
         global $globals;
 
@@ -182,6 +188,26 @@ class PlatalModule extends PLModule
                  WHERE skin_tpl != '' AND ext != ''
               GROUP BY id ORDER BY s.date DESC";
         $page->assign_by_ref('skins', $globals->xdb->iterator($sql));
+        return PL_OK;
+    }
+
+    function handler_rss(&$page, $user = null, $hash = null)
+    {
+        global $globals;
+
+        require_once 'rss.inc.php';
+
+        $uid = init_rss('rss.tpl', $user, $hash);
+
+        $rss = $globals->xdb->iterator(
+                'SELECT  e.id, e.titre, e.texte, e.creation_date
+                   FROM  auth_user_md5   AS u
+             INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo)
+                                                   AND (e.promo_max = 0 || e.promo_max >= u.promo) )
+                  WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
+                                         AND peremption >= NOW()', $uid);
+        $page->assign('rss', $rss);
+
         return PL_OK;
     }
 }

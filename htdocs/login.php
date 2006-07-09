@@ -69,7 +69,9 @@ $page->assign_by_ref('publicite', $publicite);
 // ajout du lien RSS
 
 if (Session::has('core_rss_hash')) {
-    $page->assign('xorg_rss', Array("title" => "Polytechnique.org :: News", "href" => "/rss.php/".Session::get('forlife')."/".Session::get('core_rss_hash').".xml"));
+    $page->assign('xorg_rss',
+                  array("title" => "Polytechnique.org :: News",
+                        "href" => "/rss/".Session::get('forlife')."/".Session::get('core_rss_hash')."/rss.xml"));
 }
 
 // cache les evenements lus et raffiche les evenements a relire
