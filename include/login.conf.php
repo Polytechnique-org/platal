@@ -5,15 +5,15 @@ $pub_nbCol = 2 ;
 
 // Liens apparaissant toujours
 $pub_tjs = array(
-    "motdepasse.php" => "Changer mon mot de passe" ,
-    "Docs/Dons"      => "Faire un don à l'association Polytechnique.org"
+    'password'   => 'Changer mon mot de passe' ,
+    'Docs/Dons'  => 'Faire un don à l\'association Polytechnique.org'
     ) ;
 
 // Liens apparaissant de façon aléatoire
 $pub_rnd = array(
-    "newsletter/show.php?nid=last"		    => "Afficher la dernière newsletter" ,
-    "http://www.polytechnique.net"		    => "Vers les autres sites polytechniciens" ,
+    'newsletter/show.php?nid=last'		    => 'Afficher la dernière newsletter' ,
+    'http://www.polytechnique.net'		    => 'Vers les autres sites polytechniciens' ,
     "trombipromo.php?xpromo={$_SESSION["promo"]}"   => "Voir le trombi de ma promo" ,
-    "banana/"                                       => "Un petit tour du côté des forums !!"
+    'banana/'                                       => 'Un petit tour du côté des forums !!'
     ) ;
 ?>

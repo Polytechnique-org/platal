@@ -25,6 +25,7 @@ class PlatalModule extends PLModule
     {
         return array(
             'preferences' => $this->make_hook('prefs', AUTH_COOKIE),
+            'password'    => $this->make_hook('password', AUTH_MDP),
             'skin'        => $this->make_hook('skin', AUTH_COOKIE),
         );
     }
@@ -64,6 +65,38 @@ class PlatalModule extends PLModule
         }
 
         $page->assign('prefs', $globals->hook->prefs());
+
+        return PL_OK;
+    }
+
+    function handler_password(&$page)
+    {
+        global $globals;
+
+        if (Post::has('response2'))  {
+            require_once 'secure_hash.inc.php';
+
+            $_SESSION['password'] = $password = Post::get('response2');
+
+            $globals->xdb->execute('UPDATE  auth_user_md5 
+                                       SET  password={?}
+                                     WHERE  user_id={?}', $password,
+                                     Session::getInt('uid'));
+
+            $log =& Session::getMixed('log');
+            $log->log('passwd', '');
+
+            if (Cookie::get('ORGaccess')) {
+                setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
+            }
+
+            $page->changeTpl('motdepasse.success.tpl');
+            $page->run();
+        }
+
+        $page->changeTpl('motdepasse.tpl');
+        $page->addJsLink('javascript/motdepasse.js');
+        $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
 
         return PL_OK;
     }

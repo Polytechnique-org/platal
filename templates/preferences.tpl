@@ -55,7 +55,7 @@
   </tr>
   <tr class="impair">
     <td>
-      <h3><a href="{"motdepasse.php"|url}">Changer mon mot de passe pour le site</a></h3>
+      <h3><a href="{rel}/password">Changer mon mot de passe pour le site</a></h3>
       <div class='explication'>
         permet de changer ton mot de passe pour accéder au site Polytechnique.org
       </div>

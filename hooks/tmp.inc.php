@@ -26,7 +26,7 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',         'profil.php');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',       'carnet/mescontacts.php');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',         'carnet/');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'motdepasse.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'password');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'preferences');
 
     $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',  'trombipromo.php');
