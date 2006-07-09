@@ -22,8 +22,10 @@
 require_once('banana/banana.inc.php');
 
 function hook_formatDisplayHeader($_header,$_text) {
+    global $globals;
     if ($_header == 'x-org-id') {
-        return "$_text [<a href=\"../fiche.php?user=$_text\" class='popup2'>fiche</a>]";
+		return $_text . ' [<a href="' . $globals->baseurl . '/fiche.php?user=' 
+			 . $_text . '" class="popup2">fiche</a>]';
     }
 }
 
