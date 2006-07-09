@@ -250,14 +250,10 @@ htdocs/images/sk_default_headlogo.jpg
 htdocs/images/sk_default_lesX.gif
 htdocs/images/sk_default_snapshot.png
 htdocs/images/sk_default_titre.gif
-htdocs/index.php
 htdocs/javascript/do_challenge_response.js
 htdocs/javascript/md5.js
 htdocs/javascript/xorg.js
-htdocs/motdepasse.php
-htdocs/preferences.php
 htdocs/recovery.php
-htdocs/tmpPWD.php
 include/validations.inc.php
 include/xml-rpc-client.inc.php
 include/platal/database.inc.php

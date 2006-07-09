@@ -26,6 +26,7 @@ class PlatalModule extends PLModule
         return array(
             'preferences' => $this->make_hook('prefs', AUTH_COOKIE),
             'password'    => $this->make_hook('password', AUTH_MDP),
+            'tmpPWD'      => $this->make_hook('tmpPWD', AUTH_PUBLIC),
             'skin'        => $this->make_hook('skin', AUTH_COOKIE),
         );
     }
@@ -97,6 +98,38 @@ class PlatalModule extends PLModule
         $page->changeTpl('motdepasse.tpl');
         $page->addJsLink('javascript/motdepasse.js');
         $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
+
+        return PL_OK;
+    }
+
+    function handler_tmpPWD(&$page, $certif = null)
+    {
+        global $globals;
+
+        $globals->xdb->execute('DELETE FROM perte_pass
+                                      WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
+
+        $res   = $globals->xdb->query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
+        $ligne = $res->fetchOneAssoc();
+        if (!$ligne) {
+            $page->changeTpl('index.tpl');
+            $page->kill("Cette adresse n'existe pas ou n'existe plus sur le serveur.");
+        }
+
+        $uid = $ligne["uid"];
+        if (Post::has('response2')) {
+            $password = Post::get('response2');
+            $logger   = new DiogenesCoreLogger($uid);
+            $globals->xdb->query('UPDATE  auth_user_md5 SET password={?}
+                                   WHERE  user_id={?} AND perms IN("admin","user")',
+                                 $password, $uid);
+            $globals->xdb->query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
+            $logger->log("passwd","");
+            $page->changeTpl('tmpPWD.success.tpl');
+        } else {
+            $page->changeTpl('motdepasse.tpl');
+            $page->addJsLink('javascript/motdepasse.js');
+        }
 
         return PL_OK;
     }

@@ -54,7 +54,7 @@ if (Env::has('login') and Env::has('birth'))  {
 	$mymail->addTo($mails);
 	$mymail->setSubject('Ton certificat d\'authentification');
         $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
-{$globals->baseurl}/tmpPWD.php?certificat=$url
+{$globals->baseurl}/tmpPWD/$url
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
 
