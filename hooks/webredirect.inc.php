@@ -48,7 +48,7 @@ function webredirect_prefs()
 
     return Array(
             Array(
-                'url'    => 'webredirect.php',
+                'url'    => 'prefs/webredirect',
                 'title'  => 'Ma redirection de page WEB',
                 'text'   => $text,
                 'weight' => 60

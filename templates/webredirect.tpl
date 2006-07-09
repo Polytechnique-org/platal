@@ -58,7 +58,7 @@
 </p>
 
 <p>
-  Pour modifier cette redirection remplis le champ suivant et clique sur <strong>Modifier</strong>.
+  Pour modifier cette redirection remplis le champ suivant et clique sur <strong>Valider</strong>.
 {if $carva}
   Si tu veux annuler ta redirection, clique sur <strong>Supprimer</strong>.
 {/if}
@@ -80,18 +80,12 @@
       </td>
     </tr>
     <tr>
-{if $carva}
-      <td class="center">
-        <input type="submit" value="Modifier" name="submit" />
-      </td>
-      <td class="center">
-        <input type="submit" value="Supprimer" name="submit" />
-      </td>
-{else}
       <td colspan="2" class="center">
         <input type="submit" value="Valider" name="submit" />
-      </td>
+{if $carva}
+        <input type="submit" value="Supprimer" name="submit" />
 {/if}
+      </td>
     </tr>
   </table>
 </form>

@@ -27,6 +27,8 @@ class PlatalModule extends PLModule
             // Preferences thingies
             'prefs'     => $this->make_hook('prefs',     AUTH_COOKIE),
             'prefs/rss' => $this->make_hook('prefs_rss', AUTH_COOKIE),
+            'prefs/webredirect'
+                        => $this->make_hook('webredir',  AUTH_MDP),
             'skin'      => $this->make_hook('skin',      AUTH_COOKIE),
 
             // password related thingies
@@ -81,6 +83,42 @@ class PlatalModule extends PLModule
         }
 
         $page->assign('prefs', $globals->hook->prefs());
+
+        return PL_OK;
+    }
+
+    function handler_webredir(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('webredirect.tpl');
+
+        $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
+
+        $log =& Session::getMixed('log');
+        $url = Env::get('url');
+
+        if (Env::get('submit') == 'Valider' and Env::has('url')) {
+            $globals->xdb->execute('UPDATE auth_user_quick
+                                       SET redirecturl = {?} WHERE user_id = {?}',
+                                   $url, Session::getInt('uid')))
+            $log->log('carva_add', 'http://'.Env::get('url'));
+            $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
+        } elseif (Env::get('submit') == "Supprimer") {
+            $globals->xdb->execute("UPDATE auth_user_quick
+                                       SET redirecturl = ''
+                                     WHERE user_id = {?}",
+                                   Session::getInt('uid')))
+            $log->log("carva_del", $url);
+            Post::kill('url');
+            $page->trig('Redirection supprimée');
+        }
+
+        $res = $globals->xdb->query('SELECT redirecturl
+                                       FROM auth_user_quick
+                                      WHERE user_id = {?}',
+                                    Session::getInt('uid'));
+        $page->assign('carva', $res->fetchOneCell());
 
         return PL_OK;
     }
