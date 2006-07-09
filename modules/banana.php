@@ -26,30 +26,30 @@ class BananaModule extends PLModule
         return array(
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
             'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
-			'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
-			'banana/updateall'    => $this->make_hook('updateall', AUTH_COOKIE),
-		);
+            'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
+            'banana/updateall'    => $this->make_hook('updateall', AUTH_COOKIE),
+        );
     }
 
     function handler_banana(&$page, $group = null, $action = null, $artid = null)
     {
-		$get = Array();
-		if (!is_null($group)) {
-			$get['group'] = $group;
-		}
-		if (!is_null($action)) {
-			if ($action == 'new') {
-				$get['action'] = 'new';
-			} elseif (($action == 'reply' || $action == 'cancel') && !is_null($artid)) {
-				$get['action'] = $action;
-				$get['artid']  = $artid;
-			} elseif ($action == 'from' && !is_null($artid)) {
-				$get['first'] = $artid;
-			} elseif ($action == 'read' && !is_null($artid)) {
-				$get['artid'] = $artid;
-			}
-		}
-		return BananaModule::run_banana($page, $get);
+        $get = Array();
+        if (!is_null($group)) {
+            $get['group'] = $group;
+        }
+        if (!is_null($action)) {
+            if ($action == 'new') {
+                $get['action'] = 'new';
+            } elseif (($action == 'reply' || $action == 'cancel') && !is_null($artid)) {
+                $get['action'] = $action;
+                $get['artid']  = $artid;
+            } elseif ($action == 'from' && !is_null($artid)) {
+                $get['first'] = $artid;
+            } elseif ($action == 'read' && !is_null($artid)) {
+                $get['artid'] = $artid;
+            }
+        }
+        return BananaModule::run_banana($page, $get);
     }
 
     function handler_profile(&$page, $action = null)
@@ -83,26 +83,28 @@ class BananaModule extends PLModule
             $globals->xdb->execute(
                 'REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
                        VALUES  ({?},{?},{?},{?},{?})',
-                       Session::getInt('uid'), Post::get('bananasig'), Post::get('bananamail'), Post::get('banananame'),
-                       (Post::getBool('bananadisplay') ? 'threads,' : '') . (Post::getBool('bananaupdate') ? 'automaj' : '')
+                Session::getInt('uid'), Post::get('bananasig'),
+                Post::get('bananamail'), Post::get('banananame'),
+                (Post::getBool('bananadisplay') ? 'threads,' : '') .
+                (Post::getBool('bananaupdate') ? 'automaj' : '')
             );
         }
 
         return PL_OK;
     }
 
-	function handler_updateall(&$page)
-	{
-		return BananaModule::run_banana($page, Array('banana' => 'updateall'));
-	}
+    function handler_updateall(&$page)
+    {
+        return BananaModule::run_banana($page, Array('banana' => 'updateall'));
+    }
 
-	function handler_subscription(&$page)
-	{
-		return $this->run_banana($page, Array('subscribe' => 1));
-	}
+    function handler_subscription(&$page)
+    {
+        return $this->run_banana($page, Array('subscribe' => 1));
+    }
 
-	function run_banana(&$page, $params = null)
-	{
+    function run_banana(&$page, $params = null)
+    {
         $page->changeTpl('banana/index.tpl');
         $page->addCssLink('css/banana.css');
         $page->assign('xorg_title','Polytechnique.org - Forums & PA');
@@ -114,7 +116,7 @@ class BananaModule extends PLModule
         $page->assign('banana_res', $res);
 
         return PL_OK;
-	}	
+    }
 }
 
 ?>
