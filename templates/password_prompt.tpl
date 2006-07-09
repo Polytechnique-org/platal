@@ -101,7 +101,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       <table width="100%"><tr>
       <td>
         <img src="{rel}/images/pi.png" alt=" [ ? ] " />
-        <a href="{rel}/recovery.php">mot de passe perdu ?</a>
+        <a href="{rel}/recovery">mot de passe perdu ?</a>
       </td>
       <td class="right">
         <input type="submit" name="submitbtn" value="Envoyer" />

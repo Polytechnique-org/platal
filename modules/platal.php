@@ -33,6 +33,7 @@ class PlatalModule extends PLModule
             'password'      => $this->make_hook('password',  AUTH_MDP),
             'tmpPWD'        => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
             'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
+            'recovery'      => $this->make_hook('recovery',  AUTH_PUBLIC),
 
             // happenings related thingies
             'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
@@ -161,6 +162,71 @@ class PlatalModule extends PLModule
                                        FROM auth_user_md5
                                       WHERE user_id = {?}", $uid);
         $page->assign('actif', $res->fetchOneCell());
+
+        return PL_OK;
+    }
+
+    function handler_recovery(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('recovery.tpl');
+
+        if (!Env::has('login') || !Env::has('birth')) {
+            return PL_OK;
+        }
+
+        if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
+            $page->trig_run('Date de naissance incorrecte ou incohérente');
+        }
+        $birth   = sprintf('%s-%s-%s', substr(Env::get('birth'),4,4), substr(Env::get('birth'),2,2), substr(Env::get('birth'),0,2));
+
+        $mailorg = strtok(Env::get('login'), '@');
+
+        // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
+        // avec celle fournie ici en espérant que c'est la bonne
+
+        $res = $globals->xdb->query(
+                "SELECT  user_id, naissance
+                   FROM  auth_user_md5 AS u
+             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
+                  WHERE  a.alias={?} AND u.perms IN ('admin','user') AND u.deces=0", $mailorg);
+        list($uid, $naissance) = $res->fetchOneRow();
+
+        if ($naissance == $birth) {
+            $page->assign('ok', true);
+
+            $url   = rand_url_id(); 
+            $globals->xdb->execute('INSERT INTO perte_pass (certificat,uid,created) VALUES ({?},{?},NOW())', $url, $uid);
+            $res   = $globals->xdb->query('SELECT email FROM emails WHERE uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
+            $mails = implode(', ', $res->fetchColumn());
+
+            require_once "diogenes/diogenes.hermes.inc.php";
+            $mymail = new HermesMailer();
+            $mymail->setFrom('"Gestion des mots de passe" <support+password@polytechnique.org>');
+            $mymail->addTo($mails);
+            $mymail->setSubject('Ton certificat d\'authentification');
+            $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
+{$globals->baseurl}/tmpPWD/$url
+
+Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
+
+-- 
+Polytechnique.org
+\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::get('email') ? "
+
+Adresse de secours :
+    ".Post::get('email') : "")."
+
+Mail envoyé à ".Env::get('login'));
+            $mymail->send();
+
+            // on cree un objet logger et on log l'evenement
+            $logger = $_SESSION['log'] = new DiogenesCoreLogger($uid);
+            $logger->log('recovery', $emails);
+        } else {
+            $page->trig('Pas de résultat correspondant aux champs entrés dans notre base de données.');
+        }
 
         return PL_OK;
     }

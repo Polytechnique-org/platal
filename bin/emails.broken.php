@@ -70,7 +70,7 @@ d'une panne temporaire.  Si tu souhaites changer la liste des adresses sur
 lesquelles tu reçois le courrier qui t'es envoyé à ton adresse
 polytechnicienne, il te suffit de te rendre sur la page :
 
-    {$globals->baseurl}/emails/redirect.php
+    {$globals->baseurl}/emails/redirect
 
 
   A bientôt sur Polytechnique.org !
@@ -81,7 +81,7 @@ polytechnicienne, il te suffit de te rendre sur la page :
   PS : si jamais tu ne disposes plus du mot de passe te permettant
 d'accéder au site, rends toi sur la page
 
-    {$globals->baseurl}/recovery.php
+    {$globals->baseurl}/recovery
 
 elle te permettra de créer un nouveau mot de passe après avoir rentré ton
 login ({$x['alias']}) et ta date de naissance !";
