@@ -96,7 +96,7 @@ function chgMainWinLoc( strPage ) {
       {/if}
       <div class='formation'>
         {if $x.iso3166}
-        <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='14' title='{$x.nationalite}' />&nbsp;
+        <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='11' title='{$x.nationalite}' />&nbsp;
         {/if}
         X {$x.promo}
         {if ($x.promo_sortie-3 > $x.promo)}

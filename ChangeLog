@@ -5,6 +5,7 @@ New:
 
     * Core:
         - Work hard to add nice URI's into Platal.                          -MC
+        - Use fancy icons from http://www.famfamfam.com/ for flags.         -MC
 
     * Banana:
         - Switch to the new URI scheme.                                 -MC/FRU

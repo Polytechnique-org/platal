@@ -301,26 +301,26 @@
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
   </table>
-	{min_auth level='cookie'}
-	<p>
-		<input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
-		mettre les fiches modifiées récemment en premier
-	</p>
-	{/min_auth}
-</form>
-	<p class="center">
-		<script type="text/javascript">{literal}
-		function launch_form(url) {
-			var f = document.getElementById('recherche');
-			f.action = url;
-			f.submit();
-		}
-		{/literal}</script>
-		{if $use_map}
-		  <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
-		{/if}
-		<input type="button" value="Chercher" onclick="launch_form('{$smarty.server.PHP_SELF}')"/>
+  {min_auth level='cookie'}
+  <p>
+    <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
+    mettre les fiches modifiées récemment en premier
   </p>
+  {/min_auth}
+</form>
+<p class="center">
+  <script type="text/javascript">{literal}
+    function launch_form(url) {
+      var f = document.getElementById('recherche');
+      f.action = url;
+      f.submit();
+    }
+  {/literal}</script>
+  {if $use_map}
+    <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('{rel}/geoloc/')"/>
+  {/if}
+  <input type="button" value="Chercher" onclick="launch_form('{rel}/search/adv')"/>
+</p>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
 </p>
