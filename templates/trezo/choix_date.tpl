@@ -20,8 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="{rel}/{$platal->path}">
   <div class="center">
     <input type="hidden" name="action" value="lister" />
     Afficher la période suivante :

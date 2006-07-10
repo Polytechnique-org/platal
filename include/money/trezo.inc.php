@@ -42,13 +42,10 @@ $trim_fr = array('01'=>'Janvier-Mars',
 
 function isDate($date)
 {
-  list($d, $m, $y) = split('[/.-]', $date);
-  $dummy = date("d/m/Y", mktime (0,0,0,$m,$d,$y));
-  $date = ereg_replace('-', '/', $date);
-  if ($dummy != $date)
-    return false;
-  else
-    return true;
+    list($d, $m, $y) = split('[/.-]', $date);
+    $dummy = date("d/m/Y", mktime (0,0,0,$m,$d,$y));
+    $date = ereg_replace('-', '/', $date);
+    return ($dummy == $date);
 }
 
 
