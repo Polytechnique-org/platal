@@ -20,14 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
 {if $smarty.request.action eq "edit"}
 <h1>
   Gestion des opérations de trésorerie
 </h1>
 
-<form method="post" action="{$smarty.server.PHP_SEL}">
+<form method="post" action="{rel}/{$platal->path}">
   <table class="bicol">
     <tr>
       <th colspan="2">
@@ -41,7 +39,7 @@
     <tr>
       <td>Date (DD/MM/YYYY)</td>
       <td><input type="text" name="op_date" size="40"
-        value="{$op_date|date_format}" /></td>
+        value="{$op_date|date_format:"%d/%m/%Y"}" /></td>
     </tr>
     <tr>
       <td>Description libre</td>
@@ -67,7 +65,7 @@
   </table>
 </form>
 
-<a href="{$smarty.server.PHP_SELF}">retour</a>
+<a href="{rel}/{$platal->path}">retour</a>
 {elseif $smarty.request.action eq "update" && $op_id}
 <strong>modification de l'opération</strong>
 {elseif $smarty.request.action eq "update"}
@@ -108,7 +106,7 @@
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>
-      <form method="post" action="{$smarty.server.PHP_SELF}">
+      <form method="post" action="{rel}/{$platal->path}">
         <div>
           <input type="hidden" name="op_id" value="0" />
           <input type="hidden" name="action" value="edit" />
@@ -127,7 +125,7 @@
     <td class="right">{$op.debit}</td>
     <td class="right">{$op.credit}</td>
     <td>
-      <form method="post" action="{$smarty.server.PHP_SELF}">
+      <form method="post" action="{rel}/{$platal->path}">
         <div>
           <input type="hidden" name="op_id" value="{$op.id}" />
           <input type="hidden" name="annee" value="{$annee_sel}" />

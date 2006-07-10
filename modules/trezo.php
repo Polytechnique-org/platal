@@ -71,7 +71,7 @@ class TrezoModule extends PLModule
         return PL_OK;
     }
 
-    function handler_op(&$page)
+    function handler_operation(&$page)
     {
         global $globals;
 
