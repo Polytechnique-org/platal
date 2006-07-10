@@ -70,9 +70,9 @@ get-wiki:
 	    mv pmwiki-* wiki;						  \
 	fi
 
-banana: htdocs/img htdocs/css/banana.css
-htdocs/img:
-	cd $(@D) && ln -sf /usr/share/banana/img
+banana: htdocs/images/banana htdocs/css/banana.css
+htdocs/images/banana:
+	cd $(@D) && ln -sf /usr/share/banana/img $(@F)
 
 htdocs/css/banana.css:
 	cd $(@D) && ln -sf /usr/share/banana/css/style.css $(@F)
