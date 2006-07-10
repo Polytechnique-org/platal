@@ -71,7 +71,7 @@ function hook_makeLink($params) {
 	return $base;
 }
 
-function hook_makeImg($img, $alt, $width)
+function hook_makeImg($img, $alt, $height, $width)
 {
     global $globals;
     $url = $globals->baseurl . '/images/banana/' . $img . '.gif';
@@ -79,8 +79,11 @@ function hook_makeImg($img, $alt, $width)
     if (!is_null($width)) {
         $width = ' width="' . $width . '"';
     }
+    if (!is_null($height)) {
+        $height = ' height="' . $height . '"';
+    }
     
-    return '<img src="' . $url . '"' . $width . ' alt="' . $alt . '" />';
+    return '<img src="' . $url . '"' . $height . $width . ' alt="' . $alt . '" />';
 }
 
 class PlatalBanana extends Banana
