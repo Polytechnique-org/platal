@@ -30,7 +30,7 @@ class Platal
     var $__hooks;
 
     var $path;
-    var $args;
+    var $argv;
 
     function Platal()
     {

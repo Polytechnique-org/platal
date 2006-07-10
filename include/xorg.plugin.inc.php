@@ -35,15 +35,15 @@
 class XOrgPlugin
 {
     // {{{ properties
-    
+
     /** have to override, contents the fields names used to drive the plugin */
-    var $_get_vars = Array();
+    var $_get_vars = array();
     /** some polymorphism at low cost, may be used, or not */
     var $_callback;
 
     // }}}
     // {{{ function XOrgPlugin()
-   
+
     /** constructor.
      * the constructor override $_get_vars settings by prefixing the names with $prefix
      */
@@ -58,7 +58,7 @@ class XOrgPlugin
 
     // }}}
     // {{{ function get_value()
-    
+
     /** transparent access to $_GET, wrt the right $prefix
      */
     function get_value($key)
@@ -68,7 +68,7 @@ class XOrgPlugin
 
     // }}}
     // {{{ function make_url()
-    
+
     /** construct an url with the given parameters to drive the plugin.
      * leave all other GET params alone
      */
@@ -78,22 +78,21 @@ class XOrgPlugin
 	$args = isset($params) ? $params : Array();
 
 	if (!is_array($args)) {
-	    if (count($this->_get_vars)!=1) {
-		return "<p class='erreur'>params should be an array</p>";
-	    } else {
-		$args = Array($this->_get_vars[0]=>$params);
-	    }
+            $args = array($this->_get_vars[0]=>$params);
 	}
 
 	foreach ($_GET as $key=>$val) {
-	    if (in_array($key,$this->_get_vars) && array_key_exists($key,$args)) {
+            if ($key == 'p') {
+                continue;
+            }
+	    if (in_array($key, $this->_get_vars) && array_key_exists($key, $args)) {
                 continue;
             }
 	    $get[] = urlencode($key) . '=' . urlencode($val);
 	}
 
 	foreach ($this->_get_vars as $key) {
-	    if (array_key_exists($key,$args)) {
+	    if (array_key_exists($key, $args)) {
 		if ($args[$key]) {
                     $get[] = urlencode($key) . '=' . urlencode($args[$key]);
                 }
@@ -102,7 +101,7 @@ class XOrgPlugin
 	    }
 	}
 
-	return $_SERVER['PHP_SELF'] . '?' . join('&amp;',$get);
+	return '?' . join('&amp;', $get);
     }
 
     // }}}

@@ -26,33 +26,33 @@ require_once('xorg.plugin.inc.php');
 class Trombi extends XOrgPlugin
 {
     // {{{ properties
-    
-    var $_get_vars = Array('offset');
+
+    var $_get_vars = array('offset');
     var $limit = 24;
     var $admin = false;
     var $showpromo = true;
 
     // }}}
     // {{{ function setNbRows()
-    
+
     function setNbRows($row)
     { $this->limit = $row*3; }
 
     // }}}
     // {{{ function setAdmin()
-    
+
     function setAdmin()
     { $this->admin = true; }
 
     // }}}
     // {{{ function hidePromo()
-    
+
     function hidePromo()
     { $this->showpromo = false; }
 
     // }}}
     // {{{ function show()
-    
+
     function show()
     {
 	/* this point is nasty...  but since show() is called from the template ...
@@ -81,7 +81,7 @@ class Trombi extends XOrgPlugin
 	$page->assign('trombi_admin', $this->admin);
 	return $page->fetch('include/trombi.tpl');
     }
-    
+
     // }}}
 }
 

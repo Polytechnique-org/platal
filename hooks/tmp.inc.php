@@ -29,7 +29,7 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'password');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'prefs');
 
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi/Site promo',  'trombipromo.php');
+    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi promo',       'trombi');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',       'referent.php');
     if ($globals->geoloc->use_map())
         $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Planisphère',    'geoloc/');

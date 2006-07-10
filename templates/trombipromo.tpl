@@ -20,9 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-
-{if !$smarty.request.xpromo || $error}
 <h1>
   Trombinoscope promo
 </h1>
@@ -33,12 +30,10 @@ donnée.
 <p>
 Fais attention, si tu as une connexion à internet lente (par
 exemple si tu es sur un vieux modem), la page que tu vas télécharger
-en validant peut être longue à afficher. Pour te donner une
-idée de la taille, chaque photo est limitée à 30 ko, et
-chaque page affiche au plus {$limit} photos.
+en validant peut être longue à afficher.
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method="get">
+<form action="{rel}/trombi/" method="post">
   <table class="tinybicol" cellpadding="3" summary="Saisie promo" style="width: 30%; margin-left:35%">
     <tr>
       <th colspan="2">
@@ -51,29 +46,26 @@ chaque page affiche au plus {$limit} photos.
       </td>
       <td>
         <input type="text" name="xpromo" size="4" maxlength="4" />
-        <input type="hidden" name="offset" value="0" />&nbsp;<input type="submit" value="Ok" />
+        <input type="submit" value="Ok"
+          onclick='this.form.action = this.form.action + this.form.xpromo.value' />
       </td>
     </tr>
   </table>
 </form>
 
-<h1>Site web promo</h1>
-<p>Pour accéder à la liste des sites web promo, clique <a href="http://www.polytechnique.net/groupes.php?cat=promotions">ici</a>.</p>
-
-{else}
+{if $trombi}
 
 <h1>
-  {if $smarty.request.xpromo eq 'all'}
-  Album photo Polytechnique.org
+  Album photo
+  {if $platal->argv[1] eq -1}
+  Polytechnique.org
   {else}
-  Album photo promotion {$smarty.request.xpromo}
+  promotion {$platal->argv[1]}
   {/if}
 </h1>
 
 {$trombi->show()|smarty:nodefaults}
 
 {/if}
-
-
 
 {* vim:set et sw=2 sts=2 sws=2: *}
