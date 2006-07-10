@@ -44,8 +44,8 @@ renseignements à te demander à son sujet !
 
 {if !$art->check()}
 <p class='erreur'>
-L'article est trop long !<br />
-La limite est de 8 lignes de 68 caractères.
+L'article que tu as proposé est trop long !<br />
+Il te faut te limiter à 8 lignes de 68 caractères.
 </p>
 {/if}
 
