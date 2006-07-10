@@ -26,6 +26,7 @@ class RegisterModule extends PLModule
         return array(
             'register'         => $this->make_hook('register', AUTH_PUBLIC),
             'register/end'     => $this->make_hook('end',      AUTH_PUBLIC),
+            'register/end.php' => $this->make_hook('end_old',  AUTH_PUBLIC),
             'register/success' => $this->make_hook('success',  AUTH_MDP),
         );
     }
@@ -40,6 +41,11 @@ class RegisterModule extends PLModule
         }
         if (Get::has('back') && Get::getInt('back') < $sub_state['step']) {
             $sub_state['step'] = max(0,Get::getInt('back'));
+        }
+
+        // Compatibility with old sources, keep it atm
+        if (!$hash && Env::has('hash')) {
+            $hash = Env::get('hash');
         }
 
         if ($hash) {
@@ -149,6 +155,11 @@ class RegisterModule extends PLModule
         }
 
         return PL_OK;
+    }
+
+    function handler_end_old(&$page)
+    {
+        return $this->handler_end($page, Env::get('hash'));
     }
 
     function handler_end(&$page, $hash = null)
