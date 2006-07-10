@@ -71,6 +71,18 @@ function hook_makeLink($params) {
 	return $base;
 }
 
+function hook_makeImg($img, $alt, $width)
+{
+    global $globals;
+    $url = $globals->baseurl . '/images/banana/' . $img . '.gif';
+
+    if (!is_null($width)) {
+        $width = ' width="' . $width . '"';
+    }
+    
+    return '<img src="' . $url . '"' . $width . ' alt="' . $alt . '" />';
+}
+
 class PlatalBanana extends Banana
 {
     var $profile    = Array( 'name' => '', 'sig'  => '', 'org'  => 'Utilisateur de Polytechnique.org',
