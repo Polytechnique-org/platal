@@ -28,6 +28,7 @@ class BananaModule extends PLModule
             'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
             'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
             'banana/updateall'    => $this->make_hook('updateall', AUTH_COOKIE),
+            'banana/xface'        => $this->make_hook('xface', AUTH_COOKIE),
         );
     }
 
@@ -101,6 +102,15 @@ class BananaModule extends PLModule
     function handler_subscription(&$page)
     {
         return $this->run_banana($page, Array('subscribe' => 1));
+    }
+
+    function handler_xface(&$page, $face = null)
+    {
+        header('Content-Type: image/jpeg');
+        passthru('echo ' . escapeshellarg(base64_decode($face))
+                . '| uncompface -X '
+                . '| convert xbm:- jpg:-');
+        return PL_OK;
     }
 
     function run_banana(&$page, $params = null)

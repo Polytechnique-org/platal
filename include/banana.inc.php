@@ -24,8 +24,8 @@ require_once('banana/banana.inc.php');
 function hook_formatDisplayHeader($_header,$_text) {
     global $globals;
     if ($_header == 'x-org-id') {
-		return $_text . ' [<a href="' . $globals->baseurl . '/fiche.php?user=' 
-			 . $_text . '" class="popup2">fiche</a>]';
+        return $_text . ' [<a href="' . $globals->baseurl . '/fiche.php?user=' 
+             . $_text . '" class="popup2">fiche</a>]';
     }
 }
 
@@ -40,35 +40,38 @@ function hook_checkcancel($_headers) {
 }
 
 function hook_makeLink($params) {
-	global $globals;
-	$base = $globals->baseurl . '/banana'; 
-	if ($params['subscribe'] == 1) {
-		return $base . '/subscription';
-	}
+    global $globals;
+    $base = $globals->baseurl . '/banana'; 
+    if ($params['subscribe'] == 1) {
+        return $base . '/subscription';
+    }
+    if (isset($params['xface'])) {
+        return $base . '/xface/' . $params['xface'];
+    }
 
-	if (!isset($params['group'])) {
-		return $base;
-	}
-	$base .= '/' . $params['group'];
+    if (!isset($params['group'])) {
+        return $base;
+    }
+    $base .= '/' . $params['group'];
 
-	if (isset($params['first'])) {
-		return $base . '/from/' . $params['first'];
-	}
-	if (isset($params['artid'])) {
-		if ($params['action'] == 'new') {
-			$base .= '/reply';
-		} elseif ($params['action'] == 'cancel') {
-			$base .= '/cancel';
-		} else {
-			$base .= '/read';
-		}
-		return $base . '/' . $params['artid'];
-	}
-	
-	if ($params['action'] == 'new') {
-		return $base . '/new';
-	}
-	return $base;
+    if (isset($params['first'])) {
+        return $base . '/from/' . $params['first'];
+    }
+    if (isset($params['artid'])) {
+        if ($params['action'] == 'new') {
+            $base .= '/reply';
+        } elseif ($params['action'] == 'cancel') {
+            $base .= '/cancel';
+        } else {
+            $base .= '/read';
+        }
+        return $base . '/' . $params['artid'];
+    }
+    
+    if ($params['action'] == 'new') {
+        return $base . '/new';
+    }
+    return $base;
 }
 
 function hook_makeImg($img, $alt, $height, $width)
@@ -140,7 +143,7 @@ class PlatalBanana extends Banana
         global $banana, $globals;
 
         if (Get::get('banana') == 'updateall'
-				|| (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
+                || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
             $globals->xdb->execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), Session::getInt('uid'));
             $_SESSION['banana_last'] = time();
         }
