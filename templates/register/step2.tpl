@@ -23,10 +23,10 @@
 <h1>Identification</h1>
 
 <p>
-<a href="?back=1">retour</a>
+<a href="{rel}/register?back=1">retour</a>
 </p>
 
-<form action="?" method="post">
+<form action="{rel}/register" method="post">
   <table class="bicol" summary="Identification" cellpadding="3">
     {if $smarty.session.sub_state.promo >= 1996}
     <tr>

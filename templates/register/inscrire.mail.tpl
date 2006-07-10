@@ -35,7 +35,7 @@ mot de passe : {$pass}
 
 Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
 
-{$baseurl}/register/end.php?hash={$hash}
+{$baseurl}/register/end/{$hash}
 
 Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
 

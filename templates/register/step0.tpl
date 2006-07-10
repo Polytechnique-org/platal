@@ -38,7 +38,7 @@ L'enregistrement se déroule <strong>en deux étapes</strong> :
 
 {include file="docs/charte.tpl"}
 
-<form action="?" method="post">
+<form action="{rel}/register" method="post">
   <div class="center">
     <input type="submit" value="J'accepte ces conditions" name="step1" />
   </div>

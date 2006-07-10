@@ -46,7 +46,7 @@ ton mot de passe a bien été mis à jour !
 Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici :
 </p>
 
-<form action="{$smarty.server.PHP_REQUEST}" method="post" id="changepass">
+<form action="{rel}/register/success" method="post" id="changepass">
   <table class="tinybicol" cellpadding="3" cellspacing="0">
     <tr>
       <th colspan="2">
@@ -77,7 +77,7 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le fa
   </table>
 </form>
 
-<form action="{$smarty.server.PHP_REQUEST}" method="post" id="changepass2">
+<form action="{rel}/register/success" method="post" id="changepass2">
 <div><input type="hidden" name="response2"  value="" /></div>
 </form>
 
