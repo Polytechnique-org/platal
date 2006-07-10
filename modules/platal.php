@@ -75,7 +75,7 @@ class PlatalModule extends PLModule
                                      WHERE user_id = {?}",
                                      Session::getInt('uid'));
             $_SESSION['mail_fmt'] = $fmt;
-            redirect('preferences');
+            redirect($globals->baseurl.'/preferences');
         }
 
         if (Env::has('rss')) {

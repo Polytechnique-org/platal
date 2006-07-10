@@ -59,7 +59,7 @@ function mark_text_mail($uid, $email)
     $text  = "   ".($u['flags']?"Chère":"Cher")." camarade,\n\n";
     $text .= "   Ta fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :\n\n";
     $text .= "==========================================================\n";
-    $text .= $globals->baseurl."/register/?hash=%%hash%%\n";
+    $text .= $globals->baseurl."/register/%%hash%%\n";
     $text .= "==========================================================\n\n";
     $text .= "Il ne te faut que 5 minutes sur http://www.polytechnique.org/ pour rejoindre les $num_users camarades branchés grâce au système de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prénom... et de bénéficier pour la vie d'une adresse prestigieuse $mailorg@polytechnique.org et son alias discret $mailorg@m4x.org (m4x = mail for X).\n\n";
     $text .= "Pas de nouvelle boîte aux lettres à relever, il suffit de la rerouter vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer tous les jours si tu veux sans imposer à tes correspondants de modifier leur carnet d'adresses...\n\n";

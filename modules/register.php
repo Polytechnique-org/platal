@@ -24,13 +24,13 @@ class RegisterModule extends PLModule
     function handlers()
     {
         return array(
-            'register'         => $this->make_hook('register', AUTH_PUB),
-            'register/end'     => $this->make_hook('end',      AUTH_PUB),
+            'register'         => $this->make_hook('register', AUTH_PUBLIC),
+            'register/end'     => $this->make_hook('end',      AUTH_PUBLIC),
             'register/success' => $this->make_hook('success',  AUTH_MDP),
         );
     }
 
-    function handler_register(&$page)
+    function handler_register(&$page, $hash = null)
     {
         global $globals;
 
@@ -42,15 +42,15 @@ class RegisterModule extends PLModule
             $sub_state['step'] = max(0,Get::getInt('back'));
         }
 
-        if (Env::has('hash')) {
+        if ($hash) {
             $res = $globals->xdb->query(
                     "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule
                        FROM  register_marketing AS m
                  INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
-                      WHERE  m.hash={?}", Env::get('hash'));
+                      WHERE  m.hash={?}", $hash);
             if (list($uid, $promo, $nom, $prenom, $ourmat) = $res->fetchOneRow()) {
                 $sub_state['uid']    = $uid;
-                $sub_state['hash']   = Env::get('hash');
+                $sub_state['hash']   = $hash;
                 $sub_state['promo']  = $promo;
                 $sub_state['nom']    = $nom;
                 $sub_state['prenom'] = $prenom;
@@ -117,7 +117,7 @@ class RegisterModule extends PLModule
                         $err[] = "Le champ 'E-mail' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::get('email'))) {
                         $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
-                            "valide, en particulier, il ne peut pas Ãªtre renvoyÃ© vers lui-mÃªme.";
+                            "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
                     }
                     if (!preg_match('/^[0-3][0-9][01][0-9][12][90][0-9][0-9]$/',
                                     Post::get('naissance')))
@@ -143,6 +143,7 @@ class RegisterModule extends PLModule
 
         $_SESSION['sub_state'] = $sub_state;
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
+        $page->assign('simple', true);
         if (isset($err)) {
             $page->trig($err);
         }
@@ -165,7 +166,7 @@ class RegisterModule extends PLModule
                              u.promo, u.flags
                        FROM  register_pending AS r
                  INNER JOIN  auth_user_md5    AS u ON r.uid = u.user_id
-                      WHERE  hash={?} AND hash!='INSCRIT'", Env::get('hash'));
+                      WHERE  hash={?} AND hash!='INSCRIT'", $hash);
         }
 
         if (!$hash || !list($uid, $forlife, $bestalias, $mailorg2, $password, $email,
@@ -174,14 +175,14 @@ class RegisterModule extends PLModule
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                          <p>Causes probables :</p>
                          <ol>
-                           <li>VÃ©rifie que tu visites l'adresse du dernier
-                               e-mail reÃ§u s'il y en a eu plusieurs.</li>
-                           <li>Tu as peut-Ãªtre mal copiÃ© l'adresse reÃ§ue par
-                               mail, vÃ©rifie-la Ã  la main.</li>
-                           <li>Tu as peut-Ãªtre attendu trop longtemps pour
-                               confirmer.  Les prÃ©-inscriptions sont annulÃ©es
+                           <li>Vérifie que tu visites l'adresse du dernier
+                               e-mail reçu s'il y en a eu plusieurs.</li>
+                           <li>Tu as peut-être mal copié l'adresse reçue par
+                               mail, vérifie-la à la main.</li>
+                           <li>Tu as peut-être attendu trop longtemps pour
+                               confirmer.  Les pré-inscriptions sont annulées
                                tous les 30 jours.</li>
-                           <li>Tu es en fait dÃ©jÃ  inscrit.</li>
+                           <li>Tu es en fait déjà inscrit.</li>
                         </ol>");
         }
 
@@ -230,7 +231,7 @@ class RegisterModule extends PLModule
         $_SESSION['auth'] = AUTH_MDP;
 
         /***********************************************************/
-        /************* envoi d'un mail au dÃ©marcheur ***************/
+        /************* envoi d'un mail au démarcheur ***************/
         /***********************************************************/
         $res = $globals->xdb->iterRow(
                 "SELECT  DISTINCT sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
@@ -245,23 +246,23 @@ class RegisterModule extends PLModule
         while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
             require_once('diogenes/diogenes.hermes.inc.php');
             $mymail = new HermesMailer();
-            $mymail->setSubject("$prenom $nom s'est inscrit Ã  Polytechnique.org !");
+            $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
             $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
             $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
-            $msg = ($sfemme?'Cher':'ChÃ¨re')." $sprenom,\n\n"
-                 . "Nous t'Ã©crivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
-                 . "que tu avais incitÃ©".($femme?'e':'')." Ã  s'inscrire Ã  Polytechnique.org, "
-                 . "vient Ã  l'instant de terminer son inscription.\n\n"
-                 . "Merci de ta participation active Ã  la reconnaissance de ce site !!!\n\n"
+            $msg = ($sfemme?'Cher':'Chère')." $sprenom,\n\n"
+                 . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
+                 . "que tu avais incité".($femme?'e':'')." à s'inscrire à Polytechnique.org, "
+                 . "vient à l'instant de terminer son inscription.\n\n"
+                 . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
                  . "Bien cordialement,\n"
-                 . "L'Ã©quipe Polytechnique.org";
+                 . "L'équipe Polytechnique.org";
             $mymail->setTxtBody(wordwrap($msg, 72));
             $mymail->send();
         }
 
         $globals->xdb->execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
 
-        redirect('success.php');
+        redirect($globals->baseurl.'/register/success');
         $page->assign('uid', $uid);
 
         return PL_OK;
