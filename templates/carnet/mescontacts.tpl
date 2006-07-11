@@ -59,7 +59,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   Tu peux récupérer un calendrier iCal avec l'anniversaire de tes contacts.
 </p>
   <div class="right">
-    <a href='{rel}/carnet/calendar/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.ics'><img src='{rel}/images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
+    <a href='{rel}/carnet/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/cal.ics'><img src='{rel}/images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
   </div>
 {else}
 <p>
