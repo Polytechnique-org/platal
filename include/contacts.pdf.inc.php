@@ -38,9 +38,9 @@ class ContactsPDF extends FPDF
         $this->AddFont('Vera Sans', '',  'Vera.php');
         $this->AddFont('Vera Sans', 'I', 'VeraIt.php');
         $this->AddFont('Vera Sans', 'B', 'VeraBd.php');
-        
+
         $this->AddFont('Vera Mono', '',  'VeraMono.php');
-        
+
         $this->SetTitle($this->title);
         $this->SetCreator('Site Polytechnique.org');
         $this->AddPage();
@@ -74,7 +74,7 @@ class ContactsPDF extends FPDF
             $this->_out(sprintf('q %.5f %.5f %.5f %.5f %.2f %.2f cm 1 0 0 1 %.2f %.2f cm',$c,$s,-$s,$c,$cx,$cy,-$cx,-$cy));
         }
     }
-    
+
     function Header()
     {
 
@@ -84,7 +84,7 @@ class ContactsPDF extends FPDF
         $this->Text(55,190,"informations limitées à un usage");
         $this->Text(40,210,"strictement personnel et non commercial");
         $this->Rotate(0);
-        
+
         $this->setLeftMargin(5);
         $this->setRightMargin(5);
         $this->SetFont('Vera Sans', 'B', 16);
@@ -95,7 +95,7 @@ class ContactsPDF extends FPDF
         $this->SetFillColor(245, 248, 252);
         $this->Cell(200, 10, $this->title, 1, 1, 'C', 1);
         $this->Image(dirname(dirname(__FILE__)).'/htdocs/images/logo.png', 5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
-        
+
         $this->Ln(10);
         $this->y0 = $this->GetY();
         $this->ColSetup(false);
@@ -155,10 +155,10 @@ class ContactsPDF extends FPDF
         $this->SetFont('Vera '.$font, '', 8);
         $this->setY($y);
         $first = 1;
-        
+
         $this->setX($x+25);
         $this->MultiCell(65, 4, $r, '', 1);
-       
+
         $this->setY(max($y1, $this->getY())+0.5);
         $this->setX($x);
     }
@@ -193,7 +193,7 @@ class ContactsPDF extends FPDF
         if ($a['entreprise']) {
             $this->TableRow('Entreprise', $a['entreprise']);
         }
-        
+
         if ($a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) {
             $r = '';
             $r = trim("$r\n".$a['adr1']);
@@ -272,12 +272,12 @@ class ContactsPDF extends FPDF
                 $photo = $res->fetchOneAssoc();
                 $width = $photo['x'] * 20/$photo['y'];
                 $GLOBALS["p{$x['user_id']}"] = $photo['attach'];
-               
+
                 $_x = $this->getX();
                 $_y = $this->getY();
                 $this->Cell(0, 20, '', '', 0, '', 1);
                 $this->Image("var://p{$x['user_id']}", $_x, $_y, $width, 20, $photo['attachmime']);
-                
+
                 if ($this->error) {
                     $this = $old2;
                 } else {
@@ -292,7 +292,7 @@ class ContactsPDF extends FPDF
         if (!$ok) {
             $this->MultiCell(0, 6, $nom, "T", 'C', 1);
         }
-        
+
         if ($x['mobile']) {
             $this->Space();
             $this->TableRow('mobile', $x['mobile'], 'Mono');
@@ -302,7 +302,7 @@ class ContactsPDF extends FPDF
             $this->Space();
             $this->Address($a);
         }
-        
+
         foreach ($x['adr_pro'] as $a) {
             if ( ! ($a['entreprise'] || $a['tel'] || $a['fax']
                     || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) )

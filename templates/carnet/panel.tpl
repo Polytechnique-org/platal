@@ -34,7 +34,7 @@ Tu peux les <a href="?read={$now}">marquer comme vus</a> sans te déconnecter.
 
 <p>
 Tu peux choisir plus finement les données affichées sur cette page.
-Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration des notifications</a>.
+Il faut pour celà se rendre sur la page de <a href='{rel}/carnet/notifs'>configuration des notifications</a>.
 </p>
 
 <div class="right">
@@ -69,7 +69,7 @@ Il faut pour celà se rendre sur la page de <a href='notifs.php'>configuration de
         {$promo[row].prenom} {$promo[row].nom}
       </a>
       {if !$promo[row].contact}
-      <a href="{"carnet/mescontacts.php"|url}?action=ajouter&amp;user={$promo[row].bestalias}">{*
+      <a href="{rel}/carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}">{*
         *}<img src="{"images/ajouter.gif"|url}" alt="ajouter à mes contacts" />{*
       *}</a>
       {/if}

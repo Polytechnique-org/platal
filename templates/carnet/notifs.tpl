@@ -21,12 +21,12 @@
 {**************************************************************************}
 
 
-<h1 id='top'>Notifications automatiques</h1>
+<h1>Notifications automatiques</h1>
 
 <p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
 S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
-<form action="#top" method="post">
+<form action="{rel}/carnet/notifs" method="post">
   <fieldset>
     <legend>Mail</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
@@ -35,7 +35,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   </fieldset>
 </form>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/carnet/notifs" method="post">
   <fieldset>
     <legend>Événements à surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
@@ -54,7 +54,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
 <h2>Surveiller ses contacts</h2>
 
-<form action="#middle" method="post">
+<form action="{rel}/carnet/notifs#middle" method="post">
   <fieldset>
     <legend>Contacts</legend>
     <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
@@ -70,14 +70,16 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (par exemple les changements de fiche).
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/carnet/notifs/" method="post">
   <fieldset>
     <legend>Ajouter une promo</legend>
     Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
     ou des plages de promos (par ex. 1990-1992) : <br />
     <input type='text' name='promo' />
-    <input type='submit' name='add_promo' value='ajouter' />
-    <input type='submit' name='del_promo' value='retirer' />
+    <input type='submit' name='add_promo' value='ajouter'
+      onclick="this.form.action += 'add_promo/' + this.form.promo.value;" />
+    <input type='submit' name='del_promo' value='retirer'
+      onclick="this.form.action += 'del_promo/' + this.form.promo.value;" />
     <br />
     {if $watch->promos()|@count eq 0}
     <p>Tu ne surveilles actuellement aucune promo.</p>
@@ -113,7 +115,7 @@ et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" />
       <ul>
         {foreach from=$watch->nonins() item=p}
         <li>
-        {$p.prenom} {$p.nom} ({$p.promo}) <a href="?del_nonins={$p.user_id}"><img src="{"images/retirer.gif"|url}" alt="retirer" /></a>
+        {$p.prenom} {$p.nom} ({$p.promo}) <a href="{rel}/carnet/notifs/del_nonins/{$p.user_id}"><img src="{"images/retirer.gif"|url}" alt="retirer" /></a>
         </li>
         {/foreach}
       </ul>

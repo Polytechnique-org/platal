@@ -31,7 +31,7 @@
   <tr class="impair">
     <td class='half'>
       <h3>
-        <a href="{"carnet/mescontacts.php"|url}">Page de tes contacts</a>
+        <a href="{rel}/carnet/contacts">Page de tes contacts</a>
       </h3>
       <div class="explication">
         Tu peux ici lister tes contacts, en ajouter et en retirer.
@@ -39,7 +39,7 @@
     </td>
     <td class='half'>
       <h3>
-        <a href="{"carnet/mescontacts.php?trombi=1"|url}">Le trombi de tes contacts</a>
+        <a href="{rel}/carnet/contacts/trombi">Le trombi de tes contacts</a>
       </h3>
       <div class="explication">
         La même chose que la page de tes contacts... <strong>en images !</strong>
@@ -69,14 +69,14 @@
   </div>
   {else}
   <div class="right">
-    <a href='{rel}/prefs/rss/?referer=carnet/index.php'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
+    <a href='{rel}/prefs/rss/?referer=carnet'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
   </div>
   {/if}
       </div>
     </td>
     <td class='half'>
       <h3>
-        <a href="{"carnet/notifs.php"|url}">Configurer tes notifications</a>
+        <a href="{rel}/carnet/notifs">Configurer tes notifications</a>
       </h3>
       <div class="explication">
         Être notifié des inscriptions, décès, changement de fiche, ...

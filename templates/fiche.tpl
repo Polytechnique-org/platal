@@ -48,11 +48,11 @@ function chgMainWinLoc( strPage ) {
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
         </a>
         {if !$x.is_contact}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/mescontacts.php?action=ajouter&amp;user={$x.forlife}')">
+        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
           <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
         </a>
         {else}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/mescontacts.php?action=retirer&amp;user={$x.forlife}')">
+        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/contacts?action=retirer&amp;user={$x.forlife}')">
           <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
         </a>
         {/if}

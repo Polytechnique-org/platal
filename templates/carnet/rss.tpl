@@ -61,7 +61,7 @@
       <link>{#globals.baseurl#}/fiche.php?user={$x.bestalias}&force_login=1</link>
       <description><![CDATA[
         {if !$x.contact and !$x.dcd}
-        <a href="{#globals.baseurl#}/carnet/mescontacts.php?action=ajouter&amp;user={$x.bestalias}">
+        <a href="{#globals.baseurl#}/carnet/contacts?action=ajouter&amp;user={$x.bestalias}">
           ajouter &agrave; mes contacts
         </a>
         {/if}

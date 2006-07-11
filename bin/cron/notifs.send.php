@@ -67,7 +67,7 @@ EOF;
            . "Tu recois ce mail car tu as activé la notification automatique \n"
            . "par mail des évènements que tu surveilles.\n\n"
            . "Tu peux changer cette option sur :\n"
-           . "    {$globals->baseurl}/carnet/notifs.php";
+           . "    {$globals->baseurl}/carnet/notifs";
     $html .= <<<EOF
     <hr />
     <p>L'équipe de Polytechnique.org</p>
@@ -75,7 +75,7 @@ EOF;
     <p>
     Tu recois ce mail car tu as activé la notification automatique par mail des évènements que tu surveilles.
     </p>
-    <p>Tu peux changer cette option sur la <a href="{$globals->baseurl}/carnet/notifs.php">page
+    <p>Tu peux changer cette option sur la <a href="{$globals->baseurl}/carnet/notifs">page
     de configuration des notifications</a>
     </p>
   </body>

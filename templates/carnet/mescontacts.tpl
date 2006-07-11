@@ -46,12 +46,12 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 </p>
 <ul>
   <li>avec les photos :
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo&amp;photo" class='popup'><strong>tri par promo</strong></a>]
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?photo" class='popup'><strong>tri par noms</strong></a>]
+  [<a href="{rel}/carnet/contacts/pdf/promo/photos/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="{rel}/carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
   <li>sans les photos :
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf?order=promo" class='popup'><strong>tri par promo</strong></a>]
-  [<a href="mescontacts_pdf.php/mes_contacts.pdf" class='popup'><strong>tri par noms</strong></a>]
+  [<a href="{rel}/carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="{rel}/carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
 </ul>
 {if $smarty.session.core_rss_hash}
@@ -70,12 +70,10 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 
 {if $trombi}
 
-<h1>
-  Mon trombino de contacts
-</h1>
+<h1>Mon trombino de contacts</h1>
 
 <p>
-Pour afficher la liste détaillée de tes contacts: [<a href="{$smarty.server.PHP_SELF}?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
+Pour afficher la liste détaillée de tes contacts: [<a href="{rel}/carnet/contacts?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}
@@ -89,7 +87,7 @@ Pour afficher la liste détaillée de tes contacts: [<a href="{$smarty.server.PHP_
 </h1>
 
 <p>
-[<a href="?trombi=1&amp;order={$order}&amp;inv={$inv}"><strong>Afficher le trombi de tes contacts</strong></a>]
+[<a href="{rel}/carnet/contacts/trombi?order={$order}&amp;inv={$inv}"><strong>Afficher le trombi de tes contacts</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}

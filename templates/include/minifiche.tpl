@@ -49,10 +49,10 @@
     {min_auth level="cookie"}
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
-        <a href="{rel}/carnet/notifs.php?add_nonins={$c.user_id}">{*
+        <a href="{rel}/carnet/notifs/add_nonins/{$c.user_id}">{*
         *}<img src="{rel}/images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
       {else}
-        <a href="{rel}/carnet/notifs.php?del_nonins={$c.user_id}">{*
+        <a href="{rel}/carnet/notifs/del_nonins/{$c.user_id}">{*
         *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
       {/if}
     {elseif $c.wasinscrit}
@@ -61,7 +61,7 @@
       {if !$c.dcd}
         <a href="{rel}/vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
         *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
-        <a href="{rel}/carnet/mescontacts.php?action={$show_action}&amp;user={$c.forlife}">{*
+        <a href="{rel}/carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
         *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
             title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
       {/if}
