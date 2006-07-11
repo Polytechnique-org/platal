@@ -74,7 +74,7 @@ Evénements
     <tr {popup caption=$e.intitule text=$e.descriptif}>
       <td class="titre">annonceur :</td>
       <td>
-        <a href='https://polytechnique.org/fiche.php?user={$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
+        <a href='https://polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
       </td>
     </tr>
     {if $admin || $e.show_participants}

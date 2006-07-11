@@ -26,7 +26,7 @@
 
 <h2>
   Demande de la part de : {$prenom} {$nom} (X{$promo})
-  <a href="https://www.polytechnique.org/fiche.php?user={$smarty.request.u}">Voir sa fiche</a>
+  <a href="https://www.polytechnique.org/profile/{$smarty.request.u}">Voir sa fiche</a>
 </h2>
 <form action="{$smarty.server.PHP_SELF}" method="post">
   <input type="hidden" name="u" value="{$smarty.request.u}" />
@@ -71,7 +71,7 @@ Bien cordialement,
 
 --
 Ma fiche sur Polytechnique.org :
-https://www.polytechnique.org/fiche.php?user={$smarty.session.forlife}
+https://www.polytechnique.org/profile/{$smarty.session.forlife}
 </textarea>
   <div class="center">
     <input type="submit" name="inscrire" value="M'inscrire !" />

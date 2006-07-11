@@ -44,21 +44,21 @@ function chgMainWinLoc( strPage ) {
         {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
         {if $logged}
         {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
-        <a href="vcard/{$x.forlife}.vcf">
-          <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
+        <a href="{rel}/vcard/{$x.forlife}.vcf">
+          <img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
         </a>
         {if !$x.is_contact}
         <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
-          <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
+          <img src="{rel}/images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
         </a>
         {else}
         <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/contacts?action=retirer&amp;user={$x.forlife}')">
-          <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
+          <img src="{rel}/images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
         </a>
         {/if}
         {perms level=admin}
         <a href="javascript:x()" onclick="chgMainWinLoc('{rel}/admin/utilisateurs.php?login={$x.forlife}')">
-          <img src="images/admin.png" alt='admin' title="administrer user" />
+          <img src="{rel}/images/admin.png" alt='admin' title="administrer user" />
         </a>
         {/perms}
         {/if}

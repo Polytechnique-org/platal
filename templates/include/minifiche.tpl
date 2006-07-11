@@ -26,7 +26,7 @@
 
   <div class="nom">
     {if $c.sexe}&bull;{/if}
-    {if !$c.dcd && $c.inscrit}<a href="{"fiche.php"|url}?user={$c.user_id}" class="popup2">{/if}
+    {if !$c.dcd && $c.inscrit}<a href="{rel}/profile/{$c.forlife}" class="popup2">{/if}
     {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
     {if !$c.dcd && $c.inscrit}</a>{/if}
   </div>
@@ -56,7 +56,7 @@
         *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
       {/if}
     {elseif $c.wasinscrit}
-        <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
+        <a href="{rel}/profile/{$c.forlife}" class="popup2">{*
         *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
       {if !$c.dcd}
         <a href="{rel}/vcard/{$c.forlife}.vcf">{*

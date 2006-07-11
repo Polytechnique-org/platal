@@ -62,7 +62,7 @@
     </td>
     <td>{$user.expire|date_format}</td>
     <td>
-      <a href="{"fiche.php"|url}?user={$user.forlife}" class='popup2'>fiche</a>
+      <a href="{rel}/profile/{$user.forlife}" class='popup2'>fiche</a>
       <a href="utilisateurs.php?login={$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
       <a href="?op=mail-conf&amp;target={$user.user_id}">mailer</a>

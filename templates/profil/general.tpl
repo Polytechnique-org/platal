@@ -217,7 +217,7 @@
               Voilà la photo qui apparaîtra sur la fiche de ton profil{if $nouvellephoto} (tu viens
               de changer ta photo, celle-ci correspond à ton ancien
               profil car la nouvelle n'a pas encore été validée par un administrateur du site !
-              <a href="{"fiche.php"|url}?user={$smarty.session.forlife}&amp;modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
+              <a href="{rel}/profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
               {/if}.
             </td>
             <td class="dcolg">

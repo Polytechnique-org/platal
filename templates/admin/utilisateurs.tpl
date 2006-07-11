@@ -202,7 +202,7 @@ function act_fwd(fwd, activate) {
     </tr>
     <tr class="center">
       <td>
-        <a href="{"fiche.php"|url}?user={$mr.forlife}" class="popup2">[Voir fiche]</a>
+        <a href="{rel}/profile/{$mr.forlife}" class="popup2">[Voir fiche]</a>
       </td>
       <td>
         <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />

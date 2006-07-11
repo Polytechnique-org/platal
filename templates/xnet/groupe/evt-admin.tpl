@@ -81,7 +81,7 @@ Ils ont payé mais ont oublié de s'inscrire :
     </td>
     <td>{$m.promo}</td>
     <td>
-      <a href="https://www.polytechnique.org/fiche.php?user={$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
+      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
       <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
     </td>
@@ -126,7 +126,7 @@ Ils ont payé mais ont oublié de s'inscrire :
     <td>{$m.promo}</td>
     <td>
       {if $m.x}
-      <a href="https://www.polytechnique.org/fiche.php?user={$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
+      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
       <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
       {else}

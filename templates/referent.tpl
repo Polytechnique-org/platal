@@ -61,7 +61,7 @@ d'être plus précis.
       </div>
       <div class="bits" style="width: 40%;">
         <span class='smaller'>
-        <a href="{"fiche.php"|url}?user={$personnes[resultat].bestalias}" class="popup2">
+        <a href="{rel}/profile/{$personnes[resultat].bestalias}" class="popup2">
           <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
           <a href="{rel}/profile/referent/{$personnes[resultat].bestalias}" class="popup2">Voir sa fiche référent</a>
         </span>

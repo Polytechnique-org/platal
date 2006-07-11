@@ -26,7 +26,7 @@
 {literal}
 function ficheXorg(id)
 {
-  window.open('../fiche.php?user='+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
+  window.open('{rel}/profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
 }
 {/literal}
 {if !$no_annu}

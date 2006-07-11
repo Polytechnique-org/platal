@@ -43,7 +43,7 @@ Bienvenue {$smarty.session.prenom}
   
 {if $fiche_incitation}
   <p>La dernière mise à jour de ta
-  <a href="{rel}/fiche.php?user={$smarty.session.forlife}" class="popup2">fiche</a>
+  <a href="{rel}/profile/{$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format}.
   Il est possible qu'elle ne soit pas à jour.
   Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
@@ -97,7 +97,7 @@ Bienvenue {$smarty.session.prenom}
         {/tidy}
         <br />
         <p class="smaller"><a href="#" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="{rel}/images/up.png"/></a>Annonce proposée par
-        <a href="{rel}/fiche.php?user={$ev.forlife}" class="popup2">
+        <a href="{rel}/profile/{$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
         </p>

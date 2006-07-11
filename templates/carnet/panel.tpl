@@ -65,7 +65,7 @@ Il faut pour celà se rendre sur la page de <a href='{rel}/carnet/notifs'>configu
     <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
     <td>
       {if $promo[row].inscrit}
-      <a href="{"fiche.php"|url}?user={$promo[row].bestalias}" class="popup2">
+      <a href="{rel}/profile/{$promo[row].bestalias}" class="popup2">
         {$promo[row].prenom} {$promo[row].nom}
       </a>
       {if !$promo[row].contact}

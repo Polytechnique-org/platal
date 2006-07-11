@@ -48,7 +48,7 @@ qui y était abonné.
       <td>
         {foreach from=$xs item=x}
         {if $promo}
-        <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">{$x.n}</a>
+        <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a>
         {else}
         {$x.l}
         {/if}
@@ -82,7 +82,7 @@ qui y était abonné.
       <td>
         {foreach from=$xs item=x}
         {if $promo}
-        <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">{$x.n}</a>
+        <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a>
         {else}
         {$x.l}
         {/if}

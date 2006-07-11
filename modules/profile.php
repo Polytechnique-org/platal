@@ -27,6 +27,8 @@ class ProfileModule extends PLModule
             'photo'        => $this->make_hook('photo',        AUTH_PUBLIC),
             'photo/change' => $this->make_hook('photo_change', AUTH_MDP),
 
+            'fiche.php'        => $this->make_hook('fiche',      AUTH_PUBLIC),
+            'profile'          => $this->make_hook('profile',    AUTH_PUBLIC),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/referent' => $this->make_hook('p_referent', AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
@@ -36,6 +38,13 @@ class ProfileModule extends PLModule
             'vcard'   => $this->make_hook('vcard',  AUTH_COOKIE),
         );
     }
+
+    /* XXX COMPAT */
+    function handler_fiche(&$page)
+    {
+        return $this->handler_profile($page, Env::get('user'));
+    }
+
 
     function _trombi_getlist($offset, $limit)
     {
@@ -142,6 +151,89 @@ class ProfileModule extends PLModule
                                     Session::getInt('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
+
+        return PL_OK;
+    }
+
+    function handler_profile(&$page, $x = null)
+    {
+        if (is_null($x)) {
+            return PL_NOT_FOUND;
+        }
+
+        global $globals;
+        require_once 'user.func.inc.php';
+
+        $page->changeTpl('fiche.tpl');
+        $page->assign('simple', true);
+
+        $view = 'private';
+        if (!logged() || Env::get('view') == 'public') $view = 'public';
+        if (logged() && Env::get('view') == 'ax')      $view = 'ax';
+
+        if (is_numeric($x)) {
+            $res = $globals->xdb->query(
+                    "SELECT  alias 
+                       FROM  aliases       AS a
+                 INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
+                      WHERE  matricule={?}", $x);
+            $login = $res->fetchOneCell();
+        } else {
+            $login = get_user_forlife($x);
+        }
+
+        if (empty($login)) {
+            return PL_NOT_FOUND;
+        }
+
+        $new   = Env::get('modif') == 'new';
+        $user  = get_user_details($login, Session::getInt('uid'), $view);
+        $title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
+        $page->assign('xorg_title', $title);
+
+        // photo
+
+        $photo = $globals->baseurl.'/photo/'.$user['forlife'].($new ? '/req' : '');
+
+        if(!isset($user['y']) and !isset($user['x'])) {
+            list($user['x'], $user['y']) = getimagesize("images/none.png");
+        }
+        if(!isset($user['y']) or $user['y'] < 1) $user['y']=1;
+        if(!isset($user['x']) or $user['x'] < 1) $user['x']=1;
+        if($user['x'] > 240){
+            $user['y'] = (integer)($user['y']*240/$user['x']);
+            $user['x'] = 240;
+        }
+        if($user['y'] > 300){
+            $user['x'] = (integer)($user['x']*300/$user['y']);
+            $user['y'] = 300;
+        }
+        if($user['x'] < 160){
+            $user['y'] = (integer)($user['y']*160/$user['x']);
+            $user['x'] = 160;
+        }
+
+        $page->assign('logged', has_user_right('private', $view));
+        if (!has_user_right($user['photo_pub'], $view)) {
+            $photo = "";
+        }
+
+        $page->assign_by_ref('x', $user);
+        $page->assign('photo_url', $photo);
+        // alias virtual
+        $res = $globals->xdb->query(
+                "SELECT alias
+                   FROM virtual
+             INNER JOIN virtual_redirect USING(vid)
+             INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
+                  WHERE ( redirect={?} OR redirect={?} )
+                        AND alias LIKE '%@{$globals->mail->alias_dom}'",
+                Session::getInt('uid'),
+                $user['forlife'].'@'.$globals->mail->domain,
+                $user['forlife'].'@'.$globals->mail->domain2);
+        $page->assign('virtualalias', $res->fetchOneCell());
+
+        $page->addJsLink('javascript/close_on_esc.js');
 
         return PL_OK;
     }

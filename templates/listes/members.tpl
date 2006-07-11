@@ -91,7 +91,7 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">{$x.n}</a><br />
+      <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a><br />
       {else}
       {$x.l}<br />
       {/if}

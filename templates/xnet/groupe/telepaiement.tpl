@@ -51,7 +51,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
         <td class="center">{$p.date|date_format:"%d/%m/%y"}</td>
         <td>
           {$p.prenom} {$p.nom}
-          <a href="https://www.polytechnique.org/fiche.php?user={$p.alias}"><img alt="[fiche]" title="Voir sa fiche" src="{rel}/images/loupe.gif"/></a>
+          <a href="https://www.polytechnique.org/profile/{$p.alias}"><img alt="[fiche]" title="Voir sa fiche" src="{rel}/images/loupe.gif"/></a>
           <a href="mailto:{$p.alias}@polytechnique.org"><img alt="[mail]" title="Lui envoyer un mail" src="{rel}/images/mail.png"/></a>
         </td>
         <td class="center">X {$p.promo}</td>

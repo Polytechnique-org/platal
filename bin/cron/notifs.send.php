@@ -54,8 +54,8 @@ EOF;
             require_once('../../plugins/modifier.date_format.php');
             $date  = smarty_modifier_date_format($x['date'], '%d %b %Y');
             $text .= "    - (X{$x['promo']}) {$x['prenom']} {$x['nom']} le $date\n";
-            $text .= "      {$globals->baseurl}/fiche.php?user={$x['bestalias']}&force_login=1\n\n";
-            $html .= "<li>(X{$x['promo']}) <a href='{$globals->baseurl}/fiche.php?user={$x['bestalias']}&force_login=1'>{$x['prenom']} {$x['nom']}</a> le $date</li>\n";
+            $text .= "      {$globals->baseurl}/profile/{$x['bestalias']}&force_login=1\n\n";
+            $html .= "<li>(X{$x['promo']}) <a href='{$globals->baseurl}/profile/{$x['bestalias']}&force_login=1'>{$x['prenom']} {$x['nom']}</a> le $date</li>\n";
         }
         $text .= "\n";
         $html .= "</ul>\n";

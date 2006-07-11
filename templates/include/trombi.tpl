@@ -28,7 +28,7 @@
   <tr>
   {/if}
     <td class="center">
-      <a href="{"fiche.php"|url}?user={$p.forlife}" class="popup2">
+      <a href="{rel}/profile/{$p.forlife}" class="popup2">
         <img src="{rel}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_admin && $smarty.session.perms eq 'admin'}
@@ -37,7 +37,7 @@
       </a>
       {/if}
       <br />
-      <a href="{"fiche.php"|url}?user={$p.forlife}" class="popup2">
+      <a href="{rel}/profile/{$p.forlife}" class="popup2">
         {$p.prenom} {$p.nom}{if $trombi_show_promo} ({$p.promo}){/if}
       </a>
     </td>

@@ -79,7 +79,7 @@
         <td class='center'>
           <img src="{rel}/photo/{$x.l}" width="110" alt=" [ PHOTO ] " />
           <br />
-          <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">
+          <a href="{rel}/profile/{$x.l}" class="popup2">
             {$x.n} ({$promo})
           </a>
         </td>

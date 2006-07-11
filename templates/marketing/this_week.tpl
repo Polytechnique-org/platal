@@ -45,7 +45,7 @@
       <a href="{rel}/marketing/promo/{$in.promo}">{$in.promo}</a>
     </td>
     <td>
-      <a href="{"fiche.php"|url}?user={$in.forlife}" class="popup2">
+      <a href="{rel}/profile/{$in.forlife}" class="popup2">
         {$in.nom} {$in.prenom}</a>
     </td>
   </tr>

@@ -37,7 +37,7 @@
   {foreach from=$subs item=s}
   <tr class='{cycle values="pair,impair"}'>
     <td>{$s.name}{if $s.login}
-      <a href="{rel}/fiche.php?user={$s.login}" class="popup2">{*
+      <a href="{rel}/profile/{$s.login}" class="popup2">{*
         *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
       {/if}
     </td>
