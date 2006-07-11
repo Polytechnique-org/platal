@@ -50,7 +50,7 @@ class CoreModule extends PLModule
     function handler_index(&$page)
     {
         if (logged()) {
-            redirect("login.php");
+            redirect("events");
         }
 
         return PL_OK;
@@ -86,7 +86,7 @@ class CoreModule extends PLModule
                 Session::kill('suid');
                 redirect($globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
             } else {
-                redirect("login.php");
+                redirect("events");
             }
         }
 

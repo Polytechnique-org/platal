@@ -148,7 +148,7 @@ Bienvenue {$smarty.session.prenom}
   </div>
   {else}
   <div class="right">
-    <a href='{rel}/prefs/rss?referer=login.php'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
+    <a href='{rel}/prefs/rss?referer=events'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
   </div>
   {/if}
 {/if}

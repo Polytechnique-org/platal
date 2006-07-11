@@ -55,10 +55,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{"login.php"|url}"><img src="{"images/sk_humlinux_logo.gif"|url}" alt="[ LOGO ]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_humlinux_logo.gif"|url}" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{"login.php"|url}"><img src="{"images/sk_humlinux_lesX.gif"|url}" alt="[LES X SUR LE WEB]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_humlinux_lesX.gif"|url}" alt="[LES X SUR LE WEB]" /></a>
           {include file="skin/common.title.header.tpl"}
         </td>
       </tr>

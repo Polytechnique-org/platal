@@ -55,10 +55,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{"login.php"|url}"><img src="{"images/sk_liteskin_logo.png"|url}" alt="[ LOGO ]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_liteskin_logo.png"|url}" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{"login.php"|url}"><img src="{"images/sk_liteskin_titre.png"|url}" alt="[ Polytechnique.org ]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_liteskin_titre.png"|url}" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
         </td>
       </tr>

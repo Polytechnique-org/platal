@@ -73,7 +73,7 @@ Ta proposition a bien été enregistrée, un administrateur va se charger de la val
 Merci pour ta contribution à la vie du site!
 </p>
 <p>
-<a href="{rel}/login.php">Retour à la page d'accueil</a>
+<a href="{rel}/events">Retour à la page d'accueil</a>
 </p>
 {else}
 <p class="erreur">

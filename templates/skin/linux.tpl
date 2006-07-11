@@ -55,12 +55,12 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{"login.php"|url}"><img src="{"images/sk_linux_logo.jpg"|url}" alt="[ LOGO ]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_linux_logo.jpg"|url}" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{"login.php"|url}"><img src="{"images/sk_linux_ban.jpg"|url}" alt="[ Polytechnique.org ]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_linux_ban.jpg"|url}" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
-          <a href="{"login.php"|url}"><img src="{"images/sk_linux_lesX.jpg"|url}" alt="[LES X SUR LE WEB]" /></a>
+          <a href="{rel}/events"><img src="{"images/sk_linux_lesX.jpg"|url}" alt="[LES X SUR LE WEB]" /></a>
         </td>
       </tr>
       <tr>

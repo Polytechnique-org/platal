@@ -39,7 +39,7 @@
   <strong>Si vous êtes polytechnicien,</strong>
   <ul>
    <li class="spaced">vous pouvez <strong><a href="{rel}/register">vous inscrire à Polytechnique.org</a></strong> si ce n'est pas encore fait,</li>
-   <li class="spaced">ou <strong><a href="login.php">vous connecter</a></strong> si vous êtes inscrit !</li>
+   <li class="spaced">ou <strong><a href="{rel}/events">vous connecter</a></strong> si vous êtes inscrit !</li>
   </ul>
    Vous pouvez <strong><a href="docs/services.php">consulter la liste de ce que vous apporte Polytechnique.org</a></strong> si vous hésitez à vous inscrire !
    <br />

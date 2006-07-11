@@ -45,7 +45,7 @@ function tmp_menu()
     $globals->menu->addPrivateEntry(XOM_ADMIN,    30, 'Trackers',           'http://trackers.polytechnique.org');
     $globals->menu->addPrivateEntry(XOM_ADMIN,    40, 'Support',            'http://support.polytechnique.org');
 
-    $globals->menu->addPublicEntry(XOM_US,    00, 'Me connecter !',         'login.php');
+    $globals->menu->addPublicEntry(XOM_US,    00, 'Me connecter !',         'events');
     $globals->menu->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'register/');
     $globals->menu->addPublicEntry(XOM_US,    20, 'Pourquoi m\'inscrire ?', 'Docs/PourquoiM\'Inscrire');
 
