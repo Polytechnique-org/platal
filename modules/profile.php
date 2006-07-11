@@ -24,8 +24,9 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
-            'photo'  => $this->make_hook('photo',  AUTH_PUBLIC),
-            'trombi' => $this->make_hook('trombi', AUTH_COOKIE),
+            'photo'           => $this->make_hook('photo',        AUTH_PUBLIC),
+            'photo/change'    => $this->make_hook('photo_change', AUTH_MDP),
+            'trombi'          => $this->make_hook('trombi',       AUTH_COOKIE),
         );
     }
 
@@ -82,10 +83,60 @@ class ProfileModule extends PLModule
                 echo $data;
             } else {
                 Header('Content-type: image/png');
-                echo file_get_contents(dirname(__FILE__).'../htdocs/images/none.png');
+                echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
             }
         }
         exit;
+    }
+
+    function handler_photo_change(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('trombino.tpl');
+
+        require_once('validations.inc.php');
+
+        $trombi_x = '/home/web/trombino/photos'.Session::get('promo')
+                    .'/'.Session::get('forlife').'.jpg';
+
+        if (Env::has('upload')) {
+            $file = isset($_FILES['userfile']['tmp_name'])
+                    ? $_FILES['userfile']['tmp_name']
+                    : Env::get('photo');
+            if ($data = file_get_contents($file)) {
+                if ($myphoto = new PhotoReq(Session::getInt('uid'), $data)) {
+                    $myphoto->submit();
+                }
+            } else {
+                $page->trig('Fichier inexistant ou vide');
+            }
+        } elseif (Env::has('trombi')) {
+            $myphoto = new PhotoReq(Session::getInt('uid'),
+                                    file_get_contents($trombi_x));
+            if ($myphoto) {
+                $myphoto->commit();
+                $myphoto->clean();
+            }
+        } elseif (Env::get('suppr')) {
+            $globals->xdb->execute('DELETE FROM photo WHERE uid = {?}',
+                                   Session::getInt('uid'));
+            $globals->xdb->execute('DELETE FROM requests
+                                     WHERE user_id = {?} AND type="photo"',
+                                   Session::getInt('uid'));
+        } elseif (Env::get('cancel')) {
+            $sql = $globals->xdb->query('DELETE FROM requests 
+                                        WHERE user_id={?} AND type="photo"',
+                                        Session::getInt('uid'));
+        }
+
+        $sql = $globals->xdb->query('SELECT COUNT(*) FROM requests
+                                      WHERE user_id={?} AND type="photo"',
+                                    Session::getInt('uid'));
+        $page->assign('submited', $sql->fetchOneCell());
+        $page->assign('has_trombi_x', file_exists($trombi_x));
+
+        return PL_OK;
     }
 
     function handler_trombi(&$page, $promo = null)

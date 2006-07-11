@@ -53,7 +53,7 @@ Bienvenue {$smarty.session.prenom}
 {if $photo_incitation}
   <p>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
-    Clique <a href="{rel}/trombino.php">ici</a> si tu souhaites en ajouter une.
+    Clique <a href="{rel}/photo/change">ici</a> si tu souhaites en ajouter une.
   </p>
 {/if}
 

@@ -23,7 +23,7 @@
 
 <h1>Trombinoscope</h1>
 
-<form enctype="multipart/form-data" action="{$smarty.server.REQUEST_URI}" method="post">
+<form enctype="multipart/form-data" action="{rel}/photo/change" method="post">
   <table class="flags" cellspacing="0" summary="Flags">
     <tr>
       <td class="rouge"><input type="radio" checked="checked" /></td>

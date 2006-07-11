@@ -194,7 +194,7 @@
         d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
         <div class="center">
           <span class="lien">
-            <a href="trombino.php">Éditer ta photo</a>
+            <a href="{rel}/photo/change">Éditer ta photo</a>
           </span>
         </div>
       </td>
