@@ -24,9 +24,45 @@ class CarnetModule extends PLModule
     function handlers()
     {
         return array(
-            'carnet/rss'  => $this->make_hook('rss', AUTH_PUBLIC),
-            'carnet/ical' => $this->make_hook('ical', AUTH_PUBLIC),
+            'carnet/panel'  => $this->make_hook('panel', AUTH_COOKIE),
+
+            'carnet/rss'    => $this->make_hook('rss',   AUTH_PUBLIC),
+            'carnet/ical'   => $this->make_hook('ical',  AUTH_PUBLIC),
         );
+    }
+
+    function _add_rss_link(&$page)
+    {
+        if (!Session::has('core_rss_hash'))
+            return;
+        $page->assign('xorg_rss',
+                      array('title' => 'Polytechnique.org :: Carnet',
+                            'href'  => '/carnet/rss/'.Session::get('forlife')
+                                      .'/'.Session::get('core_rss_hash').'/rss.xml')
+                      );
+    }
+
+    function handler_panel(&$page)
+    {
+        $page->changeTpl('carnet/panel.tpl');
+
+        if (Get::has('read')) {
+            global $globals;
+
+            $_SESSION['watch_last'] = Get::get('read');
+            redirect($globals->baseurl.'/carnet/panel');
+        }
+
+        require_once 'notifs.inc.php';
+
+        $page->assign('now',date('YmdHis'));
+        $notifs = new Notifs(Session::getInt('uid'), true);
+
+        $page->assign('notifs', $notifs);
+        $page->assign('today', date('Y-m-d'));
+        $this->_add_rss_link($page);
+
+        return PL_OK;
     }
 
     function handler_rss(&$page, $user = null, $hash = null)

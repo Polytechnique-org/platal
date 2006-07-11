@@ -59,7 +59,7 @@
   <tr class="pair">
     <td class='half'>
       <h3>
-        <a href="{"carnet/panel.php"|url}">Tous les évenements de la semaine</a>
+        <a href="{rel}/carnet/panel">Tous les évenements de la semaine</a>
       </h3>
       <div class="explication">
         Affichage de tous les évenements de camarades/promos

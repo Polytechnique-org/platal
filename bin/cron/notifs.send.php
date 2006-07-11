@@ -33,7 +33,7 @@ foreach($all->_data as $u) {
           .  "  Voici les évènements survenus dans la semaine écoulée,\n"
           .  "et depuis ta dernière visite sur le site.\n\n"
           .  "Tu trouveras les mêmes informations sur la page :\n"
-          .  "    {$globals->baseurl}/carnet/panel.php\n\n"
+          .  "    {$globals->baseurl}/carnet/panel\n\n"
           .  "------------------------------------------------------------------------\n\n";
 
     $html  = <<<EOF
@@ -43,7 +43,7 @@ foreach($all->_data as $u) {
   </head>
   <body>
     <p>Voici les évènements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
-    <p>Tu trouveras les mêmes informations sur <a href='{$globals->baseurl}/carnet/panel.php'>cette page</a></p>
+    <p>Tu trouveras les mêmes informations sur <a href='{$globals->baseurl}/carnet/panel'>cette page</a></p>
 EOF;
 
     foreach($u['data'] as $cid=>$d) {

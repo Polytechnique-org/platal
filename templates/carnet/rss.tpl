@@ -44,7 +44,7 @@
   <channel>
     <title>Polytechnique.org :: Carnet</title>
     <language>fr</language>
-    <link>{#globals.baseurl#}/carnet/panel.php</link>
+    <link>{#globals.baseurl#}/carnet/panel</link>
     <description>Ton carnet polytechnicien...</description>
     <image>
       <title>Polytechnique.org</title>
