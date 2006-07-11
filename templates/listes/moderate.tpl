@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
 {include file="listes/header_listes.tpl" on=moderate}
 
 <h1>
@@ -71,7 +70,12 @@
   <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
   S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
-  <a href="options.php?liste={$smarty.request.liste}#antispam">jeter directement</a> et non de les modérer. 
+  {if $it_is_xnet}
+  {assign var=prefix value="listes-"}
+  {else}
+  {assign var=prefix value=""}
+  {/if}
+  <a href="{$prefix}options.php?liste={$smarty.request.liste}#antispam">jeter directement</a> et non de les modérer. 
   </li>
 </ul>
 
