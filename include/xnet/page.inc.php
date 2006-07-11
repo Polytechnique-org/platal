@@ -163,7 +163,6 @@ class XnetAdmin extends XnetAuth
         global $globals;
         
         $this->XnetAuth($tpl, $type);
-        check_perms();
 
         $this->useMenu();
         if ($globals->asso('cat')) {

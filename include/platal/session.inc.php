@@ -36,7 +36,7 @@ function check_perms()
             require_once('diogenes/diogenes.core.logger.inc.php');
             $_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
         }
-	$page->kill("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
+        $page->kill("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
     }
 }
 

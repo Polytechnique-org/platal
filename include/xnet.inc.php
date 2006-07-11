@@ -80,6 +80,7 @@ function new_admin_page($tpl_name)
     global $page,$globals;
     require_once("xnet/page.inc.php");
     $page = new XnetAdmin($tpl_name);
+    check_perms();
     $page->assign('xorg_tpl', $tpl_name);
 }
 

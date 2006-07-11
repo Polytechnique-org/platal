@@ -111,7 +111,6 @@ class XorgAdmin extends XorgAuth
     function XorgAdmin($tpl, $type=SKINNED)
     {
         $this->XorgAuth($tpl, $type);
-        check_perms();
     }
     
     // }}}

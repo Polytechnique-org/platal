@@ -35,6 +35,7 @@ function _new_page($type, $tpl_name, $min_auth, $admin=false)
         $min_auth = AUTH_COOKIE;
     if (!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
+        check_perms();
     } else switch($min_auth) {
         case AUTH_PUBLIC:
             $page = new XorgPage($tpl_name, $type);
