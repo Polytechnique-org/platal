@@ -24,14 +24,15 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
-            'photo'         => $this->make_hook('photo',        AUTH_PUBLIC),
-            'photo/change'  => $this->make_hook('photo_change', AUTH_MDP),
+            'photo'          => $this->make_hook('photo',        AUTH_PUBLIC),
+            'photo/change'   => $this->make_hook('photo_change', AUTH_MDP),
 
-            'profile/usage' => $this->make_hook('p_usage',      AUTH_MDP),
+            'profile/orange' => $this->make_hook('p_orange',     AUTH_MDP),
+            'profile/usage'  => $this->make_hook('p_usage',      AUTH_MDP),
 
-            'trombi'        => $this->make_hook('trombi',       AUTH_COOKIE),
+            'trombi'         => $this->make_hook('trombi',       AUTH_COOKIE),
 
-            'vcard'         => $this->make_hook('vcard',        AUTH_COOKIE),
+            'vcard'          => $this->make_hook('vcard',        AUTH_COOKIE),
         );
     }
 
@@ -144,6 +145,60 @@ class ProfileModule extends PLModule
         return PL_OK;
     }
 
+    function handler_p_orange(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('orange.tpl');
+
+        require_once 'validations.inc.php';
+        require_once 'xorg.misc.inc.php';
+
+        $res = $globals->xdb->query(
+                "SELECT  u.promo,u.promo_sortie
+                   FROM  auth_user_md5  AS u
+                  WHERE  user_id={?}", Session::getInt('uid'));
+
+        list($promo,$promo_sortie_old) = $res->fetchOneRow();
+        $page->assign('promo_sortie_old', $promo_sortie_old);
+        $page->assign('promo',  $promo);
+
+        if (!Env::has('promo_sortie')) {
+            return PL_OK;
+        }
+
+        $promo_sortie = Env::getInt('promo_sortie');
+
+        if ($promo_sortie < 1000 || $promo_sortie > 9999) {
+            $page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
+        }
+        elseif ($promo_sortie < $promo + 3) {
+            $page->trig('Trop tôt');
+        }
+        elseif ($promo_sortie == $promo_sortie_old) {
+            $page->trig('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
+        }
+        elseif ($promo_sortie == $promo + 3) {
+            $globals->xdb->execute(
+                "UPDATE  auth_user_md5 set promo_sortie={?} 
+                  WHERE  user_id={?}",$promo_sortie,Session::getInt('uid'));
+                $page->trig('Ton statut "orange" a été supprimé.');
+                $page->assign('promo_sortie_old', $promo_sortie);
+        }
+        else {
+            $page->assign('promo_sortie', $promo_sortie);
+
+            if (Env::has('submit')) {
+                $myorange = new OrangeReq(Session::getInt('uid'),
+                                          $promo_sortie);
+                $myorange->submit();
+                $page->assign('myorange', $myorange);
+            }
+        }
+
+        return PL_OK;
+    }
+
     function handler_p_usage(&$page)
     {
         global $globals;
@@ -172,7 +227,7 @@ class ProfileModule extends PLModule
             // on vient de recevoir une requete, differente de l'ancien nom d'usage
             if ($nom_usage == $nom) {
                 $page->assign('same', true);
-            } else { // le nom de mariage est distinct du nom Ã  l'X
+            } else { // le nom de mariage est distinct du nom à l'X
                 // on calcule l'alias pour l'afficher
                 $reason = Env::get('reason');
                 if ($reason == 'other') {

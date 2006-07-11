@@ -68,7 +68,7 @@
       </td>
       <td class="cold">
         <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
-        <span class="lien"><a href="orange.php">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
+        <span class="lien"><a href="{rel}/profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
       </td>
     </tr>     
     <tr>
