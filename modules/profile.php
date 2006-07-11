@@ -24,15 +24,16 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
-            'photo'          => $this->make_hook('photo',        AUTH_PUBLIC),
-            'photo/change'   => $this->make_hook('photo_change', AUTH_MDP),
+            'photo'        => $this->make_hook('photo',        AUTH_PUBLIC),
+            'photo/change' => $this->make_hook('photo_change', AUTH_MDP),
 
-            'profile/orange' => $this->make_hook('p_orange',     AUTH_MDP),
-            'profile/usage'  => $this->make_hook('p_usage',      AUTH_MDP),
+            'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
+            'profile/referent' => $this->make_hook('p_referent', AUTH_MDP),
+            'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
 
-            'trombi'         => $this->make_hook('trombi',       AUTH_COOKIE),
+            'trombi'  => $this->make_hook('trombi', AUTH_COOKIE),
 
-            'vcard'          => $this->make_hook('vcard',        AUTH_COOKIE),
+            'vcard'   => $this->make_hook('vcard',  AUTH_COOKIE),
         );
     }
 
@@ -196,6 +197,73 @@ class ProfileModule extends PLModule
             }
         }
 
+        return PL_OK;
+    }
+
+    function handler_p_referent(&$page, $x = null)
+    {
+        global $globals;
+
+        require_once 'user.func.inc.php';
+
+        if (is_null($x)) {
+            return PL_NOT_FOUND;
+        }
+
+        $page->changeTpl('fiche_referent.tpl');
+        $page->assign('simple', true);
+
+        $res = $globals->xdb->query(
+                "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
+                  FROM  auth_user_md5 AS u
+            INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+            INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id
+                                                AND a1.alias = {?}
+                                                AND a1.type!='homonyme')", $x);
+
+        if ($res->numRows() != 1) {
+            return PL_NOT_FOUND;
+        }
+
+        list($prenom, $nom, $user_id, $promo, $cv, $bestalias) = $res->fetchOneRow();
+
+        $page->assign('prenom', $prenom);
+        $page->assign('nom',    $nom);
+        $page->assign('promo',  $promo);
+        $page->assign('cv',     $cv);
+        $page->assign('bestalias', $bestalias);
+        $page->assign('adr_pro', get_user_details_pro($user_id));
+
+        /////  recuperations infos referent
+
+        //expertise
+        $res = $globals->xdb->query("SELECT expertise FROM mentor WHERE uid = {?}", $user_id);
+        $page->assign('expertise', $res->fetchOneCell());
+
+        //secteurs
+        $secteurs = $ss_secteurs = Array();
+        $res = $globals->xdb->iterRow(
+                "SELECT  s.label, ss.label
+                   FROM  mentor_secteurs AS m
+              LEFT JOIN  emploi_secteur AS s ON(m.secteur = s.id)
+              LEFT JOIN  emploi_ss_secteur AS ss ON(m.secteur = ss.secteur AND m.ss_secteur = ss.id)
+                  WHERE  uid = {?}", $user_id);
+        while (list($sec, $ssec) = $res->next()) {
+            $secteurs[]    = $sec;
+            $ss_secteurs[] = $ssec;
+        }
+        $page->assign_by_ref('secteurs', $secteurs);
+        $page->assign_by_ref('ss_secteurs', $ss_secteurs);
+
+        //pays
+        $res = $globals->xdb->query(
+                "SELECT  gp.pays
+                   FROM  mentor_pays AS m
+              LEFT JOIN  geoloc_pays AS gp ON(m.pid = gp.a2)
+                  WHERE  uid = {?}", $user_id);
+        $page->assign('pays', $res->fetchColumn());
+
+        $page->addJsLink('javascript/close_on_esc.js');
         return PL_OK;
     }
 

@@ -107,7 +107,7 @@ function chgMainWinLoc( strPage ) {
         {/if}
         {if $logged}
         {if $x.is_referent}
-        [<a href="fiche_referent.php?user={$x.forlife}" class='popup2'>Ma fiche référent</a>]
+        [<a href="{rel}/profile/referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
         {/if}
         {/if}
       </div>
