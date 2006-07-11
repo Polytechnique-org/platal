@@ -71,7 +71,7 @@
   <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
   S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
-  <a href="listes-options.php?liste={$smarty.request.liste}#antispam">jeter directement</a> et non de les modérer. 
+  <a href="options.php?liste={$smarty.request.liste}#antispam">jeter directement</a> et non de les modérer. 
   </li>
 </ul>
 
