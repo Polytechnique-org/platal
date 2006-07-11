@@ -27,8 +27,8 @@
 {if !$art}
 
 <p>
-[<a href="{"admin/newsletter.php"|url}">liste</a>]
-[<a href="{"newsletter/show.php"|url}?nid={$nl->_id}">visualiser</a>]
+[<a href="{rel}/admin/newsletter.php">liste</a>]
+[<a href="{rel}/nl/show/{$nl->_id}">visualiser</a>]
 </p>
 
 <form action='{$smarty.server.PHP_SELF}?nid={$nl->_id}' method='post'>

@@ -25,6 +25,8 @@ class EventsModule extends PLModule
     {
         return array(
             'events/submit'  => $this->make_hook('submit', AUTH_MDP),
+
+            'nl/show'        => $this->make_hook('nl',     AUTH_COOKIE),
         );
     }
 
@@ -76,6 +78,24 @@ class EventsModule extends PLModule
             $select .= "> $day / $month / $year</option>\n";
         }
         $page->assign('select',$select);
+
+        return PL_OK;
+    }
+
+    function handler_nl(&$page, $nid = 'last')
+    {
+        $page->changeTpl('newsletter/show.tpl');
+
+        require_once 'newsletter.inc.php';
+
+        $nl  = new NewsLetter($nid);
+        $page->assign_by_ref('nl', $nl);
+
+        if (Post::has('send')) {
+            $nl->sendTo(Session::get('prenom'), Session::get('nom'),
+                        Session::get('bestalias'), Session::get('femme'),
+                        Session::get('mail_fmt') != 'text');
+        }
 
         return PL_OK;
     }

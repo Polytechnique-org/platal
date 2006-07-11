@@ -59,7 +59,7 @@ Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
   <tr class="{cycle values="impair,pair"}">
     <td>{$nl.date|date_format}</td>
     <td>
-      <a href="{"newsletter/show.php"|url}?nid={$nl.id}">{$nl.titre}</a>
+      <a href="{rel}/nl/show/{$nl.id}">{$nl.titre}</a>
     </td>
   </tr>
   {/foreach}

@@ -32,11 +32,11 @@
 [<a href='?nid={$nl->_id}&amp;text=1'>version Texte</a>]
 {/if}
 {perms level='admin'}
-[<a href='{"admin/newsletter_edit.php"|url}?nid={$nl->_id}'>Editer</a>]
+[<a href='{rel}/admin/newsletter_edit.php?nid={$nl->_id}'>Editer</a>]
 {/perms}
 </p>
 
-<form method="post" action="{$smarty.server.PHP_SELF}?nid={$nl->_id}">
+<form method="post" action="{rel}/{$platal->path}">
   <div class='center'>
     <input type='submit' value="me l'envoyer" name='send' />
   </div>
