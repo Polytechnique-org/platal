@@ -29,7 +29,7 @@
 Photo actuelle de {$forlife}
 </p>
 
-<img src="../getphoto.php?x={$forlife}" alt="[ PHOTO ]" />
+<img src="{rel}/photo/{$forlife}" alt="[ PHOTO ]" />
 <br />
 
 <p>

@@ -221,7 +221,7 @@
               {/if}.
             </td>
             <td class="dcolg">
-              <img src="getphoto.php?x={$smarty.session.forlife}" alt=" [ PHOTO ] " />
+              <img src="{rel}/photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " />
             </td>
           </tr>
         </table>

@@ -24,6 +24,7 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
+            'photo'  => $this->make_hook('photo',  AUTH_PUBLIC),
             'trombi' => $this->make_hook('trombi', AUTH_COOKIE),
         );
     }
@@ -50,6 +51,41 @@ class ProfileModule extends PLModule
                ORDER BY  promo,nom,prenom LIMIT {?}, {?}", $offset*$limit, $limit);
 
         return array($pnb, $res->fetchAllAssoc());
+    }
+
+    function handler_photo(&$page, $x = null, $req = null)
+    {
+        if (is_null($x)) {
+            return PL_NOT_FOUND;
+        }
+
+        global $globals;
+
+        $res = $globals->xdb->query("SELECT id, pub FROM aliases
+                                  LEFT JOIN photo ON(id = uid)
+                                      WHERE alias = {?}", $x);
+        list($uid, $photo_pub) = $res->fetchOneRow();
+
+        if ($req && logged()) {
+            include 'validations.inc.php';
+            $myphoto = PhotoReq::get_request($uid);
+            Header('Content-type: image/'.$myphoto->mimetype);
+            echo $myphoto->data;
+        } else {
+            $res = $globals->xdb->query(
+                    "SELECT  attachmime, attach
+                       FROM  photo
+                      WHERE  uid={?}", $uid);
+
+            if ((list($type,$data) = $res->fetchOneRow()) && ($photo_pub == 'public' || logged())) {
+                Header("Content-type: image/$type");
+                echo $data;
+            } else {
+                Header('Content-type: image/png');
+                echo file_get_contents(dirname(__FILE__).'../htdocs/images/none.png');
+            }
+        }
+        exit;
     }
 
     function handler_trombi(&$page, $promo = null)

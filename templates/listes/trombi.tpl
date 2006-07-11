@@ -77,7 +77,7 @@
       {cycle values="1,2,3" assign="loop"}
       {if $loop eq "1"}<tr>{/if}
         <td class='center'>
-          <img src="{"getphoto.php"|url}?x={$x.l}" width="110" alt=" [ PHOTO ] " />
+          <img src="{rel}/photo/{$x.l}" width="110" alt=" [ PHOTO ] " />
           <br />
           <a href="{"fiche.php"|url}?user={$x.l}" class="popup2">
             {$x.n} ({$promo})

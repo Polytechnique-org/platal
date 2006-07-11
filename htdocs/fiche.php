@@ -60,7 +60,7 @@ $page->assign('xorg_title', $title);
 
 // photo
 
-$photo = 'getphoto.php?x='.$user['forlife'].($new ? '&amp;req=true' : '');
+$photo = 'photo/'.$user['forlife'].($new ? '/req' : '');
 
 if(!isset($user['y']) and !isset($user['x'])) {
     list($user['x'], $user['y']) = getimagesize("images/none.png");
