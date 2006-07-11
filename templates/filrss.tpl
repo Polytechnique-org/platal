@@ -54,7 +54,7 @@ En voici les adresses :
   </li>
   <li>
   Ton carnet polytechnicien :
-  <a href='{rel}/carnet/rss.php/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
+  <a href='{rel}/carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
   </li>
 </ul>
 <p>

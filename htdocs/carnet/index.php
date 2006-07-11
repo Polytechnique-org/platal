@@ -24,7 +24,9 @@ new_skinned_page('carnet/index.tpl', AUTH_COOKIE);
 $page->assign('xorg_title','Polytechnique.org - Mon carnet');
 
 if (Session::has('core_rss_hash')) {
-    $page->assign('xorg_rss', Array("title" => "Polytechnique.org :: Carnet", "href" => "/carnet/rss.php/".Session::get('forlife')."/".Session::get('core_rss_hash').".xml"));
+    $page->assign('xorg_rss',
+                  array("title" => "Polytechnique.org :: Carnet",
+                        "href" => "/carnet/rss/".Session::get('forlife')."/".Session::get('core_rss_hash')."/rss..xml"));
 }
 
 $page->assign('refe',$_SERVER['PHP_SELF']);

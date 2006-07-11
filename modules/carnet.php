@@ -19,15 +19,26 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.inc.php');
-require_once('rss.inc.php');
-require_once('notifs.inc.php');
+class CarnetModule extends PLModule
+{
+    function handlers()
+    {
+        return array(
+            'carnet/rss' => $this->make_hook('rss', AUTH_PUBLIC),
+        );
+    }
 
-if (preg_match(',^/([^/]+)/([^/]+)\.xml$,', $_SERVER['PATH_INFO'], $m)) {
-    $uid    = init_rss('carnet/rss.tpl', $m[1], $m[2]);
-    $notifs = new Notifs($uid, false);
-    $page->assign('notifs', $notifs);
+    function handler_rss(&$page, $user = null, $hash = null)
+    {
+        require_once 'rss.inc.php';
+        require_once 'notifs.inc.php';
 
-    $page->run();
+        $uid    = init_rss('carnet/rss.tpl', $user, $hash);
+        $notifs = new Notifs($uid, false);
+        $page->assign('notifs', $notifs);
+
+        return PL_OK;
+    }
 }
-?> 
+
+?>
