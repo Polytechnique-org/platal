@@ -24,9 +24,11 @@ class EventsModule extends PLModule
     function handlers()
     {
         return array(
-            'events/submit'  => $this->make_hook('submit', AUTH_MDP),
+            'events/submit'  => $this->make_hook('submit',    AUTH_MDP),
 
-            'nl/show'        => $this->make_hook('nl',     AUTH_COOKIE),
+            'nl'             => $this->make_hook('nl',        AUTH_COOKIE),
+            'nl/show'        => $this->make_hook('nl_show',   AUTH_COOKIE),
+            'nl/submit'      => $this->make_hook('nl_submit', AUTH_COOKIE),
         );
     }
 
@@ -82,7 +84,26 @@ class EventsModule extends PLModule
         return PL_OK;
     }
 
-    function handler_nl(&$page, $nid = 'last')
+    function handler_nl(&$page, $action = null)
+    {
+        require_once 'newsletter.inc.php';
+
+        $page->changeTpl('newsletter/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Lettres mensuelles');
+
+        switch ($action) {
+          case 'out': unsubscribe_nl(); break;
+          case 'in':  subscribe_nl(); break;
+          default: ;
+        }
+
+        $page->assign('nls', get_nl_state());
+        $page->assign_by_ref('nl_list', get_nl_list());
+
+        return PL_OK;
+    }
+
+    function handler_nl_show(&$page, $nid = 'last')
     {
         $page->changeTpl('newsletter/show.tpl');
 
@@ -95,6 +116,26 @@ class EventsModule extends PLModule
             $nl->sendTo(Session::get('prenom'), Session::get('nom'),
                         Session::get('bestalias'), Session::get('femme'),
                         Session::get('mail_fmt') != 'text');
+        }
+
+        return PL_OK;
+    }
+
+    function handler_nl_submit(&$page)
+    {
+        $page->changeTpl('newsletter/submit.tpl');
+
+        require_once 'newsletter.inc.php';
+
+        if (Post::has('see')) {
+            $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
+            $page->assign('art', $art);
+        } elseif (Post::has('valid')) {
+            require_once('validations.inc.php');
+            $art = new NLReq(Session::getInt('uid'), Post::get('title'),
+                             Post::get('body'), Post::get('append'));
+            $art->submit();
+            $page->assign('submited', true);
         }
 
         return PL_OK;

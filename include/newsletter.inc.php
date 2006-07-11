@@ -175,18 +175,18 @@ class NewsLetter
 	if ($html) {
 	    return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
 	    .  '<div class="foot">'
-	    .  "[<a href=\"$url/newsletter/\">archives</a>&nbsp;|&nbsp;"
-	    .  "<a href=\"$url/newsletter/submit.php\">écrire dans la NL</a>&nbsp;|&nbsp;"
-	    .  "<a href=\"$url/newsletter/?out=1\">ne plus recevoir</a>]"
+	    .  "[<a href=\"$url/nl\">archives</a>&nbsp;|&nbsp;"
+	    .  "<a href=\"$url/nl/submit\">écrire dans la NL</a>&nbsp;|&nbsp;"
+	    .  "<a href=\"$url/nl/out\">ne plus recevoir</a>]"
 	    .  '</div>';
 	} else {
 	    return "\n\n--------------------------------------------------------------------\n"
 	         . "Cette lettre est envoyée à tous les Polytechniciens sur Internet par\n"
 	         . "l'intermédiaire de Polytechnique.org.\n"
 		 . "\n"
-		 . "archives : [$url/newsletter/]\n"
-		 . "écrire   : [$url/newsletter/submit.php]\n"
-		 . "ne plus recevoir: [$url/newsletter/?out=1]\n";
+		 . "archives : [$url/nl]\n"
+		 . "écrire   : [$url/nl/submit]\n"
+		 . "ne plus recevoir: [$url/nl/out]\n";
 	}
     }
 

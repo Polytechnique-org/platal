@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Proposer un article pour la prochaine Lettre mensuelle
-</h1>
-
+<h1>Proposer un article pour la prochaine Lettre mensuelle</h1>
 
 {if $submited}
 
@@ -49,7 +45,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 </p>
 {/if}
 
-<form action="{$smarty.server.PHP_SELF}" method='post'>
+<form action="{rel}/nl/submit" method='post'>
   <table class='tinybicol'>
     <tr><th>Version texte</th></tr>
     <tr id='text'>
@@ -97,7 +93,7 @@ Il faut absolument que ton article fasse moins de 8 lignes (non vides) de 68 car
 Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à placer dans la case "Ajouts"
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method='post'>
+<form action="{rel}/nl/submit" method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
     <tr>
       <th colspan='2'>proposer un article</th>
