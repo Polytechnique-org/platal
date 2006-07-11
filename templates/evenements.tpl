@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Proposition d'information événementielle
-</h1>
-
+<h1>Proposition d'information événementielle</h1>
 
 {if $action eq "proposer"}
 
@@ -33,12 +29,8 @@ Voici ton annonce :
 </p>
 
 <table class="bicol">
-  <tr>
-    <th>{$titre|nl2br}</th>
-  </tr>
-  <tr>
-    <td>{$texte|nl2br}</td>
-  </tr>
+  <tr><th>{$titre|nl2br}</th></tr>
+  <tr><td>{$texte|nl2br}</td></tr>
 </table>
 
 <p>
@@ -51,22 +43,22 @@ de toutes les promotions
 et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format}
 </p>
 
-{if $validation_message}
+{if $valid_mesg}
 <p>
-Tu as ajouté le message suivant à l'intention du validateur : {$validation_message|nl2br}
+Tu as ajouté le message suivant à l'intention du validateur : {$valid_mesg|nl2br}
 </p>
 {/if}
 
-<form action="{$smarty.request.PHP_SELF}" method="post">
+<form action="{rel}/events/submit" method="post">
   <div>
-    <input type="hidden" name="titre" value="{$titre}" />
-    <input type="hidden" name="texte" value="{$texte}" />
-    <input type="hidden" name="promo_min" value="{$promo_min}" />
-    <input type="hidden" name="promo_max" value="{$promo_max}" />
+    <input type="hidden" name="titre"      value="{$titre}" />
+    <input type="hidden" name="texte"      value="{$texte}" />
+    <input type="hidden" name="promo_min"  value="{$promo_min}" />
+    <input type="hidden" name="promo_max"  value="{$promo_max}" />
     <input type="hidden" name="peremption" value="{$peremption}" />
-    <input type="hidden" name="validation_message" value="{$validation_message}" />
-    <input type="submit" name="action" value="Confirmer" />
-    <input type="submit" name="action" value="Modifier" />
+    <input type="hidden" name="valid_mesg" value="{$valid_mesg}" />
+    <input type="submit" name="action"     value="Confirmer" />
+    <input type="submit" name="action"     value="Modifier" />
   </div>
 </form>
 
@@ -81,11 +73,12 @@ Ta proposition a bien été enregistrée, un administrateur va se charger de la val
 Merci pour ta contribution à la vie du site!
 </p>
 <p>
-<a href="login.php">Retour à la page d'accueil</a>
+<a href="{rel}/login.php">Retour à la page d'accueil</a>
 </p>
 {else}
 <p class="erreur">
-Une erreur s'est produite pendant l'enregistrement de ta proposition.  Merci de nous <a href="contacts.php">contacter</a>!
+Une erreur s'est produite pendant l'enregistrement de ta proposition.
+Merci de nous <a href="{rel}/Docs/NousContacter">contacter</a>!
 </p>
 {/if}
 

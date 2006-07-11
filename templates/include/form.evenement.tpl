@@ -20,8 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/{$platal->path}" method="post">
   <table class="bicol">
     <tr>
       <th colspan="2">Contenu du message</th>

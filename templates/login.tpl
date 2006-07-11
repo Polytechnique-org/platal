@@ -140,7 +140,7 @@ Bienvenue {$smarty.session.prenom}
   </p>
 
   <p>
-  <a href="evenements.php">Proposer une information événementielle</a>
+  <a href="{rel}/events/submit">Proposer une information événementielle</a>
   </p>
   {if $smarty.session.core_rss_hash}
   <div class="right">
