@@ -24,9 +24,12 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
-            'photo'           => $this->make_hook('photo',        AUTH_PUBLIC),
-            'photo/change'    => $this->make_hook('photo_change', AUTH_MDP),
-            'trombi'          => $this->make_hook('trombi',       AUTH_COOKIE),
+            'photo'        => $this->make_hook('photo',        AUTH_PUBLIC),
+            'photo/change' => $this->make_hook('photo_change', AUTH_MDP),
+
+            'trombi'       => $this->make_hook('trombi',       AUTH_COOKIE),
+
+            'vcard'        => $this->make_hook('vcard',        AUTH_COOKIE),
         );
     }
 
@@ -162,6 +165,62 @@ class ProfileModule extends PLModule
         } else {
             $page->trig('Promotion incorrecte (saisir au format YYYY). Recommence.');
         }
+
+        return PL_OK;
+    }
+
+    function format_adr($params, &$smarty)
+    {
+        // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
+        extract($params['adr']);
+        $adr = $adr1;
+        $adr = trim("$adr\n$adr2");
+        $adr = trim("$adr\n$adr3");
+        return quoted_printable_encode(";;$adr;$city;$region;$postcode;$country");
+    }
+
+    function handler_vcard(&$page, $x = null)
+    {
+        if (is_null($x)) {
+            return PL_NOT_FOUND;
+        }
+
+        global $globals;
+
+        if (substr($x, -4) == '.vcf') {
+            $x = substr($x, 0, strlen($x) - 4);
+        }
+
+        new_nonhtml_page('vcard.tpl', AUTH_COOKIE);
+        require_once 'xorg.misc.inc.php';
+        require_once 'user.func.inc.php';
+
+        $page->register_modifier('qp_enc', 'quoted_printable_encode');
+        $page->register_function('format_adr', array($this, 'format_adr'));
+
+        $login = get_user_forlife($x);
+        $user  = get_user_details($login);
+
+        // alias virtual
+        $res = $globals->xdb->query(
+                "SELECT alias
+                   FROM virtual
+             INNER JOIN virtual_redirect USING(vid)
+             INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
+                  WHERE ( redirect={?} OR redirect={?} )
+                        AND alias LIKE '%@{$globals->mail->alias_dom}'",
+                Session::getInt('uid'),
+                $user['forlife'].'@'.$globals->mail->domain,
+                $user['forlife'].'@'.$globals->mail->domain2);
+
+        $user['virtualalias'] = $res->fetchOneCell();
+
+        $page->assign_by_ref('vcard', $user);
+
+        header("Pragma: ");
+        header("Cache-Control: ");
+        header("Content-type: text/x-vcard\n");
+        header("Content-Transfer-Encoding: Quoted-Printable\n");
 
         return PL_OK;
     }

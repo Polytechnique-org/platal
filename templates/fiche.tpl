@@ -44,7 +44,7 @@ function chgMainWinLoc( strPage ) {
         {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
         {if $logged}
         {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
-        <a href="vcard.php/{$x.forlife}.vcf?x={$x.forlife}">
+        <a href="vcard/{$x.forlife}.vcf">
           <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
         </a>
         {if !$x.is_contact}

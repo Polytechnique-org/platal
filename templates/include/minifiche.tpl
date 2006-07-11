@@ -59,7 +59,7 @@
         <a href="{rel}/fiche.php?user={$c.forlife}" class="popup2">{*
         *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
       {if !$c.dcd}
-        <a href="{rel}/vcard.php/{$c.forlife}.vcf?x={$c.forlife}">{*
+        <a href="{rel}/vcard/{$c.forlife}.vcf">{*
         *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
         <a href="{rel}/carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
         *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
