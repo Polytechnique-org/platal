@@ -252,7 +252,7 @@ class NewsLetter
         }
 
 	$i = 1;
-	$res .= "<a id='top_lnks'></a>";
+	$res .= "<a id='top_lnk'></a>";
 	foreach ($this->_arts as $cid=>$arts) {
 	    $res .= "<div class='lnk'><a href='#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
 	    foreach ($arts as $art) {
