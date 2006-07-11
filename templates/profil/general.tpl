@@ -82,7 +82,7 @@
       </td>
       <td class="cold">
         <span class="nom">{$nom_usage|default:"Aucun"}</span>
-        <span class="lien"><a href="nomusage.php">modifier</a></span>
+        <span class="lien"><a href="{rel}/profile/usage">modifier</a></span>
       </td>
     </tr>
     <tr>

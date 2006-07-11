@@ -24,12 +24,14 @@ class ProfileModule extends PLModule
     function handlers()
     {
         return array(
-            'photo'        => $this->make_hook('photo',        AUTH_PUBLIC),
-            'photo/change' => $this->make_hook('photo_change', AUTH_MDP),
+            'photo'         => $this->make_hook('photo',        AUTH_PUBLIC),
+            'photo/change'  => $this->make_hook('photo_change', AUTH_MDP),
 
-            'trombi'       => $this->make_hook('trombi',       AUTH_COOKIE),
+            'profile/usage' => $this->make_hook('p_usage',      AUTH_MDP),
 
-            'vcard'        => $this->make_hook('vcard',        AUTH_COOKIE),
+            'trombi'        => $this->make_hook('trombi',       AUTH_COOKIE),
+
+            'vcard'         => $this->make_hook('vcard',        AUTH_COOKIE),
         );
     }
 
@@ -138,6 +140,49 @@ class ProfileModule extends PLModule
                                     Session::getInt('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
+
+        return PL_OK;
+    }
+
+    function handler_p_usage(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('nomusage.tpl');
+
+        require_once 'validations.inc.php';
+        require_once 'xorg.misc.inc.php';
+
+        $res = $globals->xdb->query(
+                "SELECT  u.nom,u.nom_usage,u.flags,e.alias
+                   FROM  auth_user_md5  AS u
+              LEFT JOIN  aliases        AS e ON(u.user_id = e.id AND FIND_IN_SET('usage',e.flags))
+                  WHERE  user_id={?}", Session::getInt('uid'));
+
+        list($nom,$usage_old,$flags,$alias_old) = $res->fetchOneRow();
+        $flags = new flagset($flags);
+        $page->assign('usage_old', $usage_old);
+        $page->assign('alias_old',  $alias_old);
+
+        $nom_usage = replace_accent(trim(Env::get('nom_usage'))); 
+        $nom_usage = strtoupper($nom_usage);
+        $page->assign('usage_req', $nom_usage);
+
+        if (Env::has('submit') && ($nom_usage != $usage_old)) {
+            // on vient de recevoir une requete, differente de l'ancien nom d'usage
+            if ($nom_usage == $nom) {
+                $page->assign('same', true);
+            } else { // le nom de mariage est distinct du nom à l'X
+                // on calcule l'alias pour l'afficher
+                $reason = Env::get('reason');
+                if ($reason == 'other') {
+                    $reason = Env::get('other_reason');
+                }
+                $myusage = new UsageReq(Session::getInt('uid'), $nom_usage, $reason);
+                $myusage->submit();
+                $page->assign('myusage', $myusage);
+            }
+        }
 
         return PL_OK;
     }

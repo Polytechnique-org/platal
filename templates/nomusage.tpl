@@ -80,7 +80,7 @@ utiliser une adresse personnalisée, il faut se tourner vers
 
   <br />
 
-  <form action="{$smarty.server.PHP_SELF}" method="post">
+  <form action="{rel}/profile/usage" method="post">
     <table class="bicol" cellpadding="4" summary="Nom d'usage">
       <tr>
         <th>Nom d'usage</th>
