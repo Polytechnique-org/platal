@@ -88,6 +88,20 @@ table.tinybicol th, table.bicol th {
     background-color: #291602;  
 }
 
+table.tinybicol th a:link,
+table.tinybicol th a:visited,
+table.tinybicol th a:active,
+table.bicol th a:link,
+table.bicol th a:visited,
+table.bicol th a:active {
+    color: #eeeeee;
+}
+
+table tinybicol th a:hover,
+table.bicol th a:hover {
+    color: #e2d9c2;
+}
+
 table.tinybicol td, table.bicol td { color: #000000; }
 table
 
