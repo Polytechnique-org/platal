@@ -89,6 +89,20 @@ function hook_makeImg($img, $alt, $height, $width)
     return '<img src="' . $url . '"' . $height . $width . ' alt="' . $alt . '" />';
 }
 
+function hook_getSubject(&$subject)
+{
+    if (preg_match('!(.*\S)\s*\[=> ([^\]\s]+)\]!', $subject, $matches)) {
+        $subject = $matches[1];
+        global $banana;
+        if ($banana->state['group'] == $matches[2]) {
+            return ' [=> ' . $matches[2] . ']';
+        } else {
+            return ' [=> ' . makeHREF(Array('group' => $matches[2]), $matches[2]) . ']';
+        }
+    }
+    return null;
+}
+
 class PlatalBanana extends Banana
 {
     var $profile    = Array( 'name' => '', 'sig'  => '', 'org'  => 'Utilisateur de Polytechnique.org',
