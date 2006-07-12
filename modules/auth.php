@@ -24,9 +24,72 @@ class AuthModule extends PLModule
     function handlers()
     {
         return array(
+            'groupex/done-chall.php'        => $this->make_hook('chall', AUTH_PUBLIC),
+            'groupex/export-econfiance.php' => $this->make_hook('econf', AUTH_PUBLIC),
+
             'auth-redirect.php' => $this->make_hook('redirect', AUTH_COOKIE),
             'auth-groupex.php'  => $this->make_hook('groupex',  AUTH_COOKIE),
         );
+    }
+
+    function chall(&$page)
+    {
+        $_SESSION["chall"] = uniqid(rand(), 1);
+        echo $_SESSION["chall"] . "\n" . session_id();
+        exit;
+    }
+
+    function econf(&$page)
+    {
+        global $globals;
+
+        require_once 'platal/xmlrpc-client.inc.php';
+        require_once 'lists.inc.php';
+
+        $cle = $globals->core->econfiance;
+
+        if (Session::get('chall') && $_GET['PASS'] == md5(Session::get('chall').$cle)) {
+
+            $res  = $globals->xdb->query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
+            $pass = $res->fetchOneCell();
+
+            $client =& lists_xmlrpc(10154, $pass, "x-econfiance.polytechnique.org");
+            $members = $client->get_members('membres');
+            if (is_array($members)) {
+                $membres = Array();
+                foreach($members[1] as $member) {
+                    if (preg_match('/^([^.]*.[^.]*.(\d\d\d\d))@polytechnique.org$/',
+                                   $member[1], $matches))
+                    {
+                        $membres[] = "a.alias='{$matches[1]}'";
+                    }
+                }
+            }
+
+            $where = join(' OR ',$membres);
+
+            $all = $globals->xdb->iterRow(
+                    "SELECT  u.prenom,u.nom,a.alias
+                       FROM  auth_user_md5 AS u
+                 INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type!='homonyme' )
+                      WHERE  $where
+                   ORDER BY  nom");
+
+            $res = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<membres>\n\n";
+
+            while (list ($prenom1,$nom1,$email1) = $all->next()) {
+                    $res .= "<membre>\n";
+                    $res .= "\t<nom>$nom1</nom>\n";
+                    $res .= "\t<prenom>$prenom1</prenom>\n";
+                    $res .= "\t<email>$email1</email>\n";
+                    $res .= "</membre>\n\n";
+            }
+
+            $res .= "</membres>\n\n";
+
+            echo $res;
+        }
+        exit;
     }
 
     function handler_redirect(&$page)
