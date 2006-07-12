@@ -21,17 +21,15 @@
 
 require_once('banana/banana.inc.php');
 
-function hook_formatDisplayHeader($_header,$_text) {
-    global $globals;
-    if ($_header == 'x-org-id') {
-        return $_text . ' [<a href="' . $globals->baseurl . '/profile/' 
-             . $_text . '" class="popup2">fiche</a>]';
-    }
-}
-
-function hook_headerTranslate($hdr) {
-    if ($hdr == 'x-org-id') {
-        return 'Identité';
+function hook_formatDisplayHeader($_header, $_text) {
+    global $globals, $banana;
+    if ($_header == 'from') {
+        $id = $banana->post->headers['x-org-id'];
+        $_text = formatFrom($_text);
+        return $_text . ' <a href="' . $globals->baseurl . '/profile/' 
+             . $id . '" class="popup2" title="' . $id . '">'
+             . '<img src="' . $globals->baseurl . '/images/loupe.gif" alt="fiche" title="fiche" />'
+             . '</a>';
     }
 }
 
@@ -143,7 +141,7 @@ class PlatalBanana extends Banana
                   WHERE  uid={?}", $uid);
         $this->profile['subscribe'] = $req->fetchColumn();
 
-        array_splice($this->show_hdr,  count($this->show_hdr)  - 2, 0, 'x-org-id');
+        array_splice($this->show_hdr,  count($this->show_hdr)  - 2, 0);
         array_splice($this->parse_hdr, count($this->parse_hdr) - 2, 0, 'x-org-id');
 
         $this->host = 'news://web_'.Session::get('forlife')
