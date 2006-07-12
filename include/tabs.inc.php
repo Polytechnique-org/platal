@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 
-$tabname_array = Array(
+$GLOBALS['tabname_array'] = Array(
     "general"  => "Général",
     "adresses" => "Adresses\npersonnelles",
     "poly"     => "Groupes X\nBinets",
@@ -29,35 +29,25 @@ $tabname_array = Array(
     "skill"    => "Compétences\ndiverses",
     "mentor"   => "Mentoring"
 );
-    
-$opened_tab = 'general';
 
-$page->assign("onglets",$tabname_array);
-$page->assign("onglet_last",'mentor');
+$page->assign('onglets', $GLOBALS['tabname_array']);
 
-function get_last_tab(){
-    end($GLOBALS['tabname_array']);
-    return key($GLOBALS['tabname_array']);
-}
+function get_next_tab($tabname) {
+    $tabname_array = $GLOBALS['tabname_array'];
 
-function get_next_tab($tabname){
-    global $tabname_array;
-    reset($tabname_array);
-    $marker = false;
-    while(list($current_tab,$current_tab_desc) = each($tabname_array)){
-        if($current_tab == $tabname){
+    reset ($tabname_array);
+    while (list($current_tab, ) = each($tabname_array)) {
+        if ($current_tab == $tabname){
             $res = key($tabname_array);// each() sets key to the next element
-            if($res != NULL)// if it was the last call of each(), key == NULL => we return the first key
-                return $res;
-            else{
+            if (is_null($res)) {
                 reset($tabname_array);
                 return key($tabname_array);
             }
+            return $res;
         }
     }
-    // We should not arrive to this point, but at least, we return the first key
-    reset($tabname_array);
-    return key($tabname_array);
+
+    return null;
 }
 
 ?>

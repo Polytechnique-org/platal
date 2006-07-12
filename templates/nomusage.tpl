@@ -31,7 +31,7 @@
     Pour supprimer ton nom d'usage, fais une demande avec un nom vide et en précisant la raison.
   </p>
   <p>
-    [<a href='{$smarty.server.PHP_SELF}'>Refaire une demande</a>] - [<a href='profil.php'>Retour au profil</a>]
+    [<a href='{$smarty.server.PHP_SELF}'>Refaire une demande</a>] - [<a href='{rel}/profile/edit'>Retour au profil</a>]
   </p>
 {else}
   {if $myusage}

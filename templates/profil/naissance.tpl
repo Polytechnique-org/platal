@@ -31,7 +31,7 @@
 
 <h1>Date de naissance</h1>
 
-<form action="profil.php" method="post">
+<form action="{rel}/profile/edit" method="post">
   <p>
   Avant d'accéder à ton profil pour la première fois, tu dois donner ta date de naissance au format JJMMAAAA.
   Elle ne sera plus demandée par la suite et ne pourra être changée.

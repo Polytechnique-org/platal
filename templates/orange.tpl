@@ -56,6 +56,6 @@
 
 {/if}
 
-<p>[<a href="profil.php">Revenir au profil</a>]</p>
+<p>[<a href="{rel}/profile/edit">Revenir au profil</a>]</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

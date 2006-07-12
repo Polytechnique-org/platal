@@ -24,8 +24,8 @@
 {literal}
 <script type="text/javascript">
   <!-- Begin
-  function showPage( pNumber ) {
-    document.forms.form_result.page_courante.value = pNumber;
+  function showPage(pNumber) {
+    document.forms.form_result.curpage.value = pNumber;
     document.forms.form_result.submit();
   }
   // End -->
@@ -39,62 +39,62 @@
 <p>
 Les critères de recherche que tu as rentrés n'ont pas produit de résultats,
 sans doute car ta requête était trop générale. Nous t'invitons à
-<a href="referent.php">procéder à une nouvelle recherche</a>, en essayant
+<a href="{rel}/referent/search">procéder à une nouvelle recherche</a>, en essayant
 d'être plus précis.
 </p>
-{elseif $resultats}
-<form action="{$smarty.server.PHP_SELF}" method="post" id="form_result">
-  <div class="contact-list" style="clear:both" >
-  <input type="hidden" name="pays" value="{$pays_selectionne}" />
-  <input type="hidden" name="expertise" value="{$expertise_champ}" />
-  <input type="hidden" name="secteur" value="{$secteur_selectionne}" />
-  <input type="hidden" name="ss_secteur" value="{$ss_secteur_selectionne}" />
-  <input type="hidden" name="page_courante" value="1" />
-  <input type="hidden" name="Chercher" value="1" />
-  {section name="resultat" loop=$personnes}
-    <div class="contact">
-      <div class="nom">
-        {$personnes[resultat].nom} {$personnes[resultat].prenom}
-      </div>
-      <div class="appli">
-        X{$personnes[resultat].promo}
-      </div>
-      <div class="bits" style="width: 40%;">
-        <span class='smaller'>
-        <a href="{rel}/profile/{$personnes[resultat].bestalias}" class="popup2">
-          <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
-          <a href="{rel}/profile/referent/{$personnes[resultat].bestalias}" class="popup2">Voir sa fiche référent</a>
-        </span>
-      </div>
-      <div class="long">
-       <table cellspacing="0" cellpadding="0">
-        <tr>
-          <td class="lt">Expertise :</td>
-          <td class="rt" colspan="2">{$personnes[resultat].expertise|nl2br}</td>
-        </tr>
-       </table>
-      </div>
+{elseif $personnes}
+<div class="contact-list" style="clear:both" >
+{foreach from=$personnes item=p}
+  <div class="contact">
+    <div class="nom">
+      {$p.nom} {$p.prenom}
     </div>
-  {/section}
+    <div class="appli">
+      X{$p.promo}
+    </div>
+    <div class="bits" style="width: 40%;">
+      <span class='smaller'>
+      <a href="{rel}/profile/{$p.bestalias}" class="popup2">
+        <img src="{rel}/images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
+        <a href="{rel}/referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a>
+      </span>
+    </div>
+    <div class="long">
+     <table cellspacing="0" cellpadding="0">
+      <tr>
+        <td class="lt">Expertise :</td>
+        <td class="rt" colspan="2">{$p.expertise|nl2br}</td>
+      </tr>
+     </table>
+    </div>
   </div>
+{/foreach}
+</div>
+<form action="{rel}/referent/search" method="post" id="form_result">
   <p>
+    <input type="hidden" name="secteur"    value="{$secteur_sel}" />
+    <input type="hidden" name="ss_secteur" value="{$ss_secteur_sel}" />
+    <input type="hidden" name="pays"       value="{$pays_sel}" />
+    <input type="hidden" name="expertise"  value="{$expertise_champ}" />
+    <input type="hidden" name="curpage"    value="{$curpage}" />
+    <input type="hidden" name="Chercher"   value="1" />
+
     Pages&nbsp;:&nbsp;
     {section name="page_number" start=1 loop=$nb_pages_total+1}
-    {if $smarty.section.page_number.index == $page_courante}
-    {$page_courante} {else}
+    {if $smarty.section.page_number.index == $curpage}
+    {$curpage} {else}
     <a href="javascript:showPage({$smarty.section.page_number.index})">{$smarty.section.page_number.index} </a> 
     {/if}
     {/section}
   </p>
 </form>
-{/if}
-{if $show_formulaire}
+{else}
 <span class="erreur">
   Si tu utilises ce service pour la première fois, lis attentivement le texte
   qui suit.
 </span>
 <p>
-En <a href="profil.php">renseignant sa fiche dans l'annuaire</a>, chacun
+En <a href="{rel}/profile/edit">renseignant sa fiche dans l'annuaire</a>, chacun
 d'entre nous a la possibilité de renseigner, dans la section "Mentoring",
 s'il accepte de recevoir des messages de la part de camarades qui pourraient
 souhaiter lui poser quelques questions et recevoir quelques conseils.<br />
@@ -146,7 +146,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
       <td >
         <select name="secteur" onchange="javascript:submit()">
-          {html_options options=$secteurs selected=$secteur_selectionne}
+          {html_options options=$secteurs selected=$secteur_sel}
         </select>
       </td>
     </tr>
@@ -156,7 +156,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
       <td >
         <select name="ss_secteur">
-          {html_options options=$ss_secteurs selected=$ss_secteur_selectionne}
+          {html_options options=$ss_secteurs selected=$ss_secteur_sel}
         </select>
       </td>
     </tr>
@@ -166,7 +166,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polyte
       </td>
       <td >
         <select name="pays">
-          {html_options options=$pays selected=$pays_selectionne}
+          {html_options options=$pays selected=$pays_sel}
         </select>
       </td>
     </tr>

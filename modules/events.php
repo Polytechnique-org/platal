@@ -118,10 +118,10 @@ class EventsModule extends PLModule
         // puis par dates croissantes d'expiration
         $promo = Session::getInt('promo');
         $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
-                  FROM  evenements    AS e
-            INNER JOIN  auth_user_md5 AS a ON e.user_id=a.user_id
-            INNER JOIN  aliases       AS l ON ( a.user_id=l.id AND l.type='a_vie' )
-            LEFT JOIN   evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
+                  FROM  evenements     AS e
+            INNER JOIN  auth_user_md5  AS a ON e.user_id=a.user_id
+            INNER JOIN  aliases        AS l ON ( a.user_id=l.id AND l.type='a_vie' )
+             LEFT JOIN  evenements_vus AS ev ON (e.id = ev.evt_id AND ev.user_id = {?})
                  WHERE  FIND_IN_SET(e.flags, 'valide') AND peremption >= NOW()
                         AND (e.promo_min = 0 || e.promo_min <= {?})
                         AND (e.promo_max = 0 || e.promo_max >= {?})

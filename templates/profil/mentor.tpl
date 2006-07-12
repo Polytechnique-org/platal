@@ -75,7 +75,7 @@ te contactent afin de te demander conseil, dans les domaines que tu connais
 bien, et pour lesquels tu pourrais les aider, remplis cette rubrique.<br />
 Tu peux mentionner ici les domaines de compétences, les expériences 
 notamment internationales sur la base desquels tu seras identifiable depuis
-<a href="referent.php">la page de recherche d'un conseil professionnel</a>.
+<a href="{rel}/referent">la page de recherche d'un conseil professionnel</a>.
 </p>
 
 <div class="blocunite_tab">

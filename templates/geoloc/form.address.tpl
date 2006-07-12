@@ -33,7 +33,7 @@
 	  style="border:inherit;background:#AFA"
 	  onclick="blur()"
 	>{$adr.geoloc}</textarea><p class="right">
-	[<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;parsevalid[{$adrid}]=1&amp;modifier=1">Valider</a>]
+	[<a href="{rel}/profile/edit/{$onglet}?parsevalid[{$adrid}]=1&amp;modifier=1">Valider</a>]
 	</p>
     {else}
     <tr class="center">

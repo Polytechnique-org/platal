@@ -164,7 +164,7 @@ for ($adrid = 1; $adrid <= $nb_adr_max; $adrid++) {
     geoloc_adresse($adrid);
 }
 
-if(Env::get('old_tab', '') == 'adresses' && Env::has('modifier')){ // on ne valide que qd on vient du formulaire
+if ($opened_tab == 'adresses' && Env::has('modifier')){ // on ne valide que qd on vient du formulaire
 $adresses_principales = 0;
 reset($adresses);
 foreach($adresses as $adrid => $adr) {

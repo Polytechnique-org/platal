@@ -23,14 +23,14 @@ function tmp_menu()
 {
     global $globals;
 
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',         'profil.php');
+    $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',         'profile/edit');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',       'carnet/contacts');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',         'carnet/');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'password');
     $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'prefs');
 
     $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi promo',       'trombi');
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',       'referent.php');
+    $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',       'referent');
     if ($globals->geoloc->use_map())
         $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Planisphère',    'geoloc/');
     $globals->menu->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',          'http://www.polytechnique.net/plan.php');

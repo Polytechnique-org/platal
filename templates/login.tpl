@@ -46,7 +46,7 @@ Bienvenue {$smarty.session.prenom}
   <a href="{rel}/profile/{$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format}.
   Il est possible qu'elle ne soit pas à jour.
-  Si tu souhaites la modifier, <a href="profil.php">clique ici !</a>
+  Si tu souhaites la modifier, <a href="{rel}/profile/edit">clique ici !</a>
   </p>
 {/if}
 
@@ -59,7 +59,8 @@ Bienvenue {$smarty.session.prenom}
 
 {if $geoloc_incitation > 0}
   <p>
-    Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser. Clique <a href="{rel}/profil.php?old_tab=adresses">ici</a> pour rectifier.
+    Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser.
+    Clique <a href="{rel}/profile/edit/adresses">ici</a> pour rectifier.
   </p>
 {/if}
 <br />

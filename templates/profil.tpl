@@ -35,7 +35,7 @@ telle qu'elle apparaîtra pour un camarade, ou telle qu'elle apparaîtra dans l'an
 l'<a href="{rel}/profile/{$smarty.session.forlife}?view=ax" class="popup2">AX</a>
 ou à <a href="{rel}/profile/{$smarty.session.forlife}?view=public" class="popup2">tout le monde</a>.</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post" id="prof_annu">
+<form action="{rel}/profile/edit/{$onglet}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" style="width: 98%; margin-left:1%;">
     <tr>
       <td>
@@ -44,11 +44,10 @@ ou à <a href="{rel}/profile/{$smarty.session.forlife}?view=public" class="popup2
           {if $o eq $onglet}
           <li class="actif">{$i|nl2br}</li>
           {else}
-          <li><a href="{$smarty.server.PHP_SELF}?old_tab={$o}">{$i|nl2br}</a></li>
+          <li><a href="{rel}/profile/edit/{$o}">{$i|nl2br}</a></li>
           {/if}
           {/foreach}
         </ul>
-        <input type="hidden" value="{$onglet}" name="old_tab" />
         <input type="hidden" value="" name="adresse_flag" />
       </td>
     </tr>
@@ -64,15 +63,9 @@ ou à <a href="{rel}/profile/{$smarty.session.forlife}?view=public" class="popup2
             <td>
               <input type="submit" value="Valider ces modifications" name="modifier" />
             </td>
-            {if $onglet != $onglet_last}
             <td>
               <input type="submit" value="Valider et passer au prochain onglet" name="suivant" />
             </td>
-            {else}
-            <td>
-              <input type="submit" value="Valider et revenir au premier onglet" name="suivant" />
-            </td>
-            {/if}
           </tr>
         </table>
       </td>

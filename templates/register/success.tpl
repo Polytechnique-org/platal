@@ -92,7 +92,7 @@ traitées avec la priorité minimale.
 
 <h2>Rejoindre la communauté</h2>
 
-<form action='{rel}/profil.php' method='post'>
+<form action='{rel}/profile/edit' method='post'>
   <p>
   Pour rejoindre la communauté des X sur le web, nous te convions le plus vivement à remplir ton profil !!!
   </p>

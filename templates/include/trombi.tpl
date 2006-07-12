@@ -32,8 +32,8 @@
         <img src="{rel}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_admin && $smarty.session.perms eq 'admin'}
-      <a href="{"admin/admin_trombino.php"|url}?uid={$p.user_id}">
-        <img src="{"images/admin.png"}" alt="[admin]" title="[admin]" />
+      <a href="{rel}/admin/admin_trombino.php?uid={$p.user_id}">
+        <img src="{rel}/images/admin.png" alt="[admin]" title="[admin]" />
       </a>
       {/if}
       <br />

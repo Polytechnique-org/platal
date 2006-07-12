@@ -29,9 +29,12 @@ class ProfileModule extends PLModule
 
             'fiche.php'        => $this->make_hook('fiche',      AUTH_PUBLIC),
             'profile'          => $this->make_hook('profile',    AUTH_PUBLIC),
+            'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
-            'profile/referent' => $this->make_hook('p_referent', AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
+
+            'referent'         => $this->make_hook('referent',   AUTH_COOKIE),
+            'referent/search'  => $this->make_hook('ref_search', AUTH_COOKIE),
 
             'trombi'  => $this->make_hook('trombi', AUTH_COOKIE),
 
@@ -60,12 +63,13 @@ class ProfileModule extends PLModule
         $pnb = $res->fetchOneCell();
 
         $res = $globals->xdb->query(
-                "SELECT  promo,user_id,a.alias AS forlife,IF(nom_usage='', nom, nom_usage) AS nom,prenom
+                "SELECT  promo, user_id, a.alias AS forlife,
+                         IF (nom_usage='', nom, nom_usage) AS nom, prenom
                    FROM  photo         AS p
              INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
              INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
                   $where
-               ORDER BY  promo,nom,prenom LIMIT {?}, {?}", $offset*$limit, $limit);
+               ORDER BY  promo, nom, prenom LIMIT {?}, {?}", $offset*$limit, $limit);
 
         return array($pnb, $res->fetchAllAssoc());
     }
@@ -94,7 +98,8 @@ class ProfileModule extends PLModule
                        FROM  photo
                       WHERE  uid={?}", $uid);
 
-            if ((list($type,$data) = $res->fetchOneRow()) && ($photo_pub == 'public' || logged())) {
+            if ((list($type, $data) = $res->fetchOneRow())
+            &&  ($photo_pub == 'public' || logged())) {
                 Header("Content-type: image/$type");
                 echo $data;
             } else {
@@ -195,20 +200,20 @@ class ProfileModule extends PLModule
 
         $photo = $globals->baseurl.'/photo/'.$user['forlife'].($new ? '/req' : '');
 
-        if(!isset($user['y']) and !isset($user['x'])) {
+        if (!isset($user['y']) and !isset($user['x'])) {
             list($user['x'], $user['y']) = getimagesize("images/none.png");
         }
-        if(!isset($user['y']) or $user['y'] < 1) $user['y']=1;
-        if(!isset($user['x']) or $user['x'] < 1) $user['x']=1;
-        if($user['x'] > 240){
+        if (!isset($user['y']) or $user['y'] < 1) $user['y']=1;
+        if (!isset($user['x']) or $user['x'] < 1) $user['x']=1;
+        if ($user['x'] > 240) {
             $user['y'] = (integer)($user['y']*240/$user['x']);
             $user['x'] = 240;
         }
-        if($user['y'] > 300){
+        if ($user['y'] > 300) {
             $user['x'] = (integer)($user['x']*300/$user['y']);
             $user['y'] = 300;
         }
-        if($user['x'] < 160){
+        if ($user['x'] < 160) {
             $user['y'] = (integer)($user['y']*160/$user['x']);
             $user['x'] = 160;
         }
@@ -238,6 +243,119 @@ class ProfileModule extends PLModule
         return PL_OK;
     }
 
+    function handler_p_edit(&$page, $opened_tab = 'general')
+    {
+        global $globals;
+
+        $page->changeTpl('profil.tpl');
+
+        $page->addCssLink('css/profil.css');
+        $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
+
+        require_once 'tabs.inc.php';
+        require_once 'profil.func.inc.php';
+        require_once 'synchro_ax.inc.php';
+
+        if (Post::has('register_from_ax_question')) {
+            $globals->xdb->query('UPDATE auth_user_quick
+                                     SET profile_from_ax = 1
+                                   WHERE user_id = {?}',
+                                 Session::getInt('uid'));
+        }
+
+        if (is_ax_key_missing()) {
+            $page->assign('no_private_key', true);
+        }
+
+        if (Env::get('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
+            ax_synchronize(Session::get('bestalias'), Session::getInt('uid'));
+            $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
+        }
+
+        // pour tous les tabs, la date de naissance pour verifier
+        // quelle est bien rentree et la date.
+        $res = $globals->xdb->query(
+                "SELECT  naissance, DATE_FORMAT(date, '%d.%m.%Y')
+                   FROM  auth_user_md5
+                  WHERE  user_id={?}", Session::getInt('uid'));
+        list($naissance, $date_modif_profil) = $res->fetchOneRow();
+
+        // lorsqu'on n'a pas la date de naissance en base de données
+        if (!$naissance)  {
+            // la date de naissance n'existait pas et vient d'être soumise dans la variable
+            if (Env::has('birth')) {
+                //en cas d'erreur :
+                if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
+                    $page->assign('etat_naissance', 'query');
+                    $page->trig('Date de naissance incorrecte ou incohérente.');
+                    return PL_OK;
+                }
+
+                //sinon
+                $birth = sprintf("%s-%s-%s", substr(Env::get('birth'), 4, 4),
+                                 substr(Env::get('birth'), 2, 2),
+                                 substr(Env::get('birth'), 0, 2));
+                $globals->xdb->execute("UPDATE auth_user_md5
+                                           SET naissance={?}
+                                         WHERE user_id={?}", $birth,
+                                       Session::getInt('uid'));
+                $page->assign('etat_naissance', 'ok');
+                return PL_OK;
+            }
+
+            $page->assign('etat_naissance', 'query');
+            return PL_OK; // on affiche le formulaire pour naissance
+        }
+
+        //doit-on faire un update ?
+        if (Env::has('modifier') || Env::has('suivant')) {
+            require_once "profil/get_{$opened_tab}.inc.php";
+            require_once "profil/verif_{$opened_tab}.inc.php";
+
+            if($page->nb_errs()) {
+                require_once "profil/assign_{$opened_tab}.inc.php";
+                $page->assign('onglet', $opened_tab);
+                $page->assign('onglet_tpl', "profil/$opened_tab.tpl");
+                return PL_OK;
+            }
+
+            $date=date("Y-m-j");//nouvelle date de mise a jour
+
+            //On sauvegarde l'uid pour l'AX
+            /* on sauvegarde les changements dans user_changes :
+            * on a juste besoin d'insérer le user_id de la personne dans la table
+            */
+            $globals->xdb->execute('REPLACE INTO user_changes SET user_id={?}',
+                                   Session::getInt('uid'));
+
+            if (!Session::has('suid')) {
+                require_once 'notifs.inc.php';
+                register_watch_op(Session::getInt('uid'), WATCH_FICHE);
+            }
+
+            // mise a jour des champs relatifs au tab ouvert
+            require_once "profil/update_{$opened_tab}.inc.php";
+
+            $log =& Session::getMixed('log');
+            $log->log('profil', $opened_tab);
+            $page->assign('etat_update', 'ok');
+        }
+
+        if (Env::has('suivant')) {
+            redirect($globals->baseurl . '/profile/edit/' .
+                     get_next_tab($opened_tab));
+        }
+
+        require_once "profil/get_{$opened_tab}.inc.php";
+        require_once "profil/verif_{$opened_tab}.inc.php";
+        require_once "profil/assign_{$opened_tab}.inc.php";
+
+        $page->assign('onglet', $opened_tab);
+        $page->assign('onglet_tpl', "profil/$opened_tab.tpl");
+
+        return PL_OK;
+    }
+
     function handler_p_orange(&$page)
     {
         global $globals;
@@ -248,11 +366,11 @@ class ProfileModule extends PLModule
         require_once 'xorg.misc.inc.php';
 
         $res = $globals->xdb->query(
-                "SELECT  u.promo,u.promo_sortie
+                "SELECT  u.promo, u.promo_sortie
                    FROM  auth_user_md5  AS u
                   WHERE  user_id={?}", Session::getInt('uid'));
 
-        list($promo,$promo_sortie_old) = $res->fetchOneRow();
+        list($promo, $promo_sortie_old) = $res->fetchOneRow();
         $page->assign('promo_sortie_old', $promo_sortie_old);
         $page->assign('promo',  $promo);
 
@@ -274,7 +392,7 @@ class ProfileModule extends PLModule
         elseif ($promo_sortie == $promo + 3) {
             $globals->xdb->execute(
                 "UPDATE  auth_user_md5 set promo_sortie={?} 
-                  WHERE  user_id={?}",$promo_sortie,Session::getInt('uid'));
+                  WHERE  user_id={?}", $promo_sortie, Session::getInt('uid'));
                 $page->trig('Ton statut "orange" a été supprimé.');
                 $page->assign('promo_sortie_old', $promo_sortie);
         }
@@ -292,7 +410,7 @@ class ProfileModule extends PLModule
         return PL_OK;
     }
 
-    function handler_p_referent(&$page, $x = null)
+    function handler_referent(&$page, $x = null)
     {
         global $globals;
 
@@ -308,7 +426,8 @@ class ProfileModule extends PLModule
         $res = $globals->xdb->query(
                 "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
                   FROM  auth_user_md5 AS u
-            INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+            INNER JOIN  aliases       AS a ON (u.user_id=a.id
+                                               AND FIND_IN_SET('bestalias', a.flags))
             INNER JOIN  aliases       AS a1 ON (u.user_id=a1.id
                                                 AND a1.alias = {?}
                                                 AND a1.type!='homonyme')", $x);
@@ -359,6 +478,122 @@ class ProfileModule extends PLModule
         return PL_OK;
     }
 
+    function handler_ref_search(&$page)
+    {
+        global $globals;
+
+        $page->changeTpl('referent.tpl');
+
+        $page->assign('xorg_title', 'Polytechnique.org - Conseil Pro');
+
+        $secteur_sel     = Post::get('secteur');
+        $ss_secteur_sel  = Post::get('ss_secteur');
+        $pays_sel        = Post::get('pays', '00');
+        $expertise_champ = Post::get('expertise');
+
+        $page->assign('pays_sel', $pays_sel);
+        $page->assign('expertise_champ', $expertise_champ);
+        $page->assign('secteur_sel', $secteur_sel);
+        $page->assign('ss_secteur_sel', $ss_secteur_sel);
+
+        //recuperation des noms de secteurs
+        $res = $globals->xdb->iterRow("SELECT id, label FROM emploi_secteur");
+        $secteurs[''] = '';
+        while (list($tmp_id, $tmp_label) = $res->next()) {
+            $secteurs[$tmp_id] = $tmp_label;
+        }
+        $page->assign_by_ref('secteurs', $secteurs);
+
+        //on recupere les sous-secteurs si necessaire
+        $ss_secteurs[''] = '';
+        if (!empty($secteur_sel)) {
+            $res = $globals->xdb->iterRow("SELECT id, label FROM emploi_ss_secteur
+                                          WHERE secteur = {?}", $secteur_sel);
+            while (list($tmp_id, $tmp_label) = $res->next()) {
+                $ss_secteurs[$tmp_id] = $tmp_label;
+            }
+        }
+        $page->assign_by_ref('ss_secteurs', $ss_secteurs);
+
+        //recuperation des noms de pays
+        $res = $globals->xdb->iterRow("SELECT a2, pays FROM geoloc_pays
+                                      WHERE pays <> '' ORDER BY pays");
+        $pays['00'] = '';
+        while (list($tmp_id, $tmp_label) = $res->next()) {
+            $pays[$tmp_id] = $tmp_label;
+        }
+        $page->assign_by_ref('pays', $pays);
+
+        // nb de mentors
+        $res = $globals->xdb->query("SELECT count(*) FROM mentor");
+        $page->assign('mentors_number', $res->fetchOneCell());
+
+        if (!Env::has('Chercher')) {
+            return PL_OK;
+        }
+
+        // On vient d'un formulaire
+        $where = array();
+
+        if ($pays_sel != '00') {
+            $where[] = "mp.pid = '".addslashes($pays_sel)."'";
+        }
+        if ($secteur_sel) {
+            $where[] = "ms.secteur = '".addslashes($secteur_sel)."'";
+            if ($ss_secteur_sel) {
+                $where[] = "ms.ss_secteur = '".addslashes($ss_secteur_sel)."'";
+            }
+        }
+        if ($expertise_champ) {
+            $where[] = "MATCH(m.expertise) AGAINST('".addslashes($expertise_champ)."')";
+        }
+
+        if ($where) {
+            $where = join(' AND ', $where);
+
+            $sql = "SELECT  m.uid, a.prenom, a.nom, a.promo,
+                            l.alias AS bestalias, m.expertise, mp.pid,
+                            ms.secteur, ms.ss_secteur
+                      FROM  mentor        AS m
+                 LEFT JOIN  auth_user_md5 AS a ON(m.uid = a.user_id)
+                INNER JOIN  aliases       AS l ON (a.user_id=l.id AND
+                                                   FIND_IN_SET('bestalias', l.flags))
+                 LEFT JOIN  mentor_pays   AS mp ON(m.uid = mp.uid)
+                 LEFT JOIN  mentor_secteurs AS ms ON(m.uid = ms.uid)
+                     WHERE  $where
+                  GROUP BY  uid
+                  ORDER BY  RAND({?})";
+            $res = $globals->xdb->iterator($sql, Session::getInt('uid'));
+
+            if ($res->total() == 0) {
+                $page->assign('recherche_trop_large', true);
+                return PL_OK;
+            }
+
+            $nb_max_res_total = 100;
+            $nb_max_res_ppage = 10;
+
+            $curpage   = Env::getInt('curpage', 1);
+            $personnes = array();
+            $i         = 0;
+
+            while (($pers = $res->next()) && count($personnes) < $nb_max_res_total) {
+                $the_page = intval($i / $nb_max_res_ppage) + 1;
+                if ($the_page == $curpage) {
+                    $personnes[] = $pers;
+                }
+                $i ++;
+            }
+
+            $page->assign('personnes', $personnes);
+            $page->assign('curpage',   $curpage);
+            $page->assign('nb_pages_total',
+                          intval($res->total() / $nb_max_res_ppage) + 1);
+        }
+
+        return PL_OK;
+    }
+
     function handler_p_usage(&$page)
     {
         global $globals;
@@ -369,12 +604,13 @@ class ProfileModule extends PLModule
         require_once 'xorg.misc.inc.php';
 
         $res = $globals->xdb->query(
-                "SELECT  u.nom,u.nom_usage,u.flags,e.alias
+                "SELECT  u.nom, u.nom_usage, u.flags, e.alias
                    FROM  auth_user_md5  AS u
-              LEFT JOIN  aliases        AS e ON(u.user_id = e.id AND FIND_IN_SET('usage',e.flags))
+              LEFT JOIN  aliases        AS e ON(u.user_id = e.id
+                                                AND FIND_IN_SET('usage', e.flags))
                   WHERE  user_id={?}", Session::getInt('uid'));
 
-        list($nom,$usage_old,$flags,$alias_old) = $res->fetchOneRow();
+        list($nom, $usage_old, $flags, $alias_old) = $res->fetchOneRow();
         $flags = new flagset($flags);
         $page->assign('usage_old', $usage_old);
         $page->assign('alias_old',  $alias_old);
@@ -407,7 +643,7 @@ class ProfileModule extends PLModule
         require_once 'trombi.inc.php';
 
         $page->changeTpl('trombipromo.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Trombi Promo');
+        $page->assign('xorg_title', 'Polytechnique.org - Trombi Promo');
 
         if (is_null($promo)) {
             return PL_OK;

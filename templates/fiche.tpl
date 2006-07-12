@@ -33,7 +33,7 @@ function chgMainWinLoc( strPage ) {
 {/literal}
 
 {if $logged and $x.forlife eq $smarty.session.forlife}
-[<a href="javascript:x()" onclick="chgMainWinLoc('{rel}/profil.php')">Modifier ma fiche</a>]
+[<a href="javascript:x()" onclick="chgMainWinLoc('{rel}/profile/edit')">Modifier ma fiche</a>]
 {/if}
 
 <table id="fiche" cellpadding="0" cellspacing="0">
@@ -107,7 +107,7 @@ function chgMainWinLoc( strPage ) {
         {/if}
         {if $logged}
         {if $x.is_referent}
-        [<a href="{rel}/profile/referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
+        [<a href="{rel}/referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
         {/if}
         {/if}
       </div>

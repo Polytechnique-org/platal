@@ -47,7 +47,7 @@
         <input type="hidden" name="numero_formulaire[{$adrid}]" value="{$smarty.section.i.index}" />
         {/if}
         {if $adr.nouvelle != 'new'}
-        [<a href="{$smarty.server.PHP_SELF}?old_tab={$smarty.request.old_tab}&amp;adrid_del[{$adrid}]=1" style="color:inherit">La supprimer !</a>]
+        [<a href="{rel}/profile/edit/{$onglet}?adrid_del[{$adrid}]=1" style="color:inherit">La supprimer !</a>]
         {/if}
       </th>
     </tr>
@@ -66,7 +66,7 @@
     {else}
     {assign var="titre" value="Nouvelle adresse&nbsp;:"}
     {/if}
-    {include file="geoloc/form.address.tpl" adr=$adr titre=$titre url="`$smarty.server.PHP_SELF`?old_tab=`$smarty.request.old_tab`"}
+    {include file="geoloc/form.address.tpl" adr=$adr titre=$titre url="profile/edit/`$onglet`"|url}
     <tr>
       <td class="colg">
         <span class="titre">Adresse:</span>
