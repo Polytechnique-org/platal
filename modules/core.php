@@ -43,8 +43,16 @@ class CoreModule extends PLModule
             'exit'        => $this->make_hook('exit', AUTH_PUBLIC),
             'cacert.pem'  => $this->make_hook('cacert', AUTH_PUBLIC),
             'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
-            'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin')
+            'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
+
+            'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
         );
+    }
+
+    function handler_valid(&$page)
+    {
+        readfile($page->compile_dir.'/valid.html');
+        exit;
     }
 
     function handler_index(&$page)

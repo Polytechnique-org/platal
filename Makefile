@@ -16,12 +16,6 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 
 all: build
 
-devel: build htdocs/valid.html
-
-headers:
-	headache -c install.d/platal-dev/templates/header.conf -h install.d/platal-dev/templates/header \
-		`find templates -name '*.tpl' ! -path 'templates/xnet/skin.tpl' ! -path 'templates/skin/*.tpl' ! -name 'vcard.tpl' `
-
 build: spool/templates_c wiki include/platal/globals.inc.php banana
 
 clean:
@@ -44,11 +38,6 @@ spool/wiki.d:
 
 wiki/cookbook/e-protect.php:
 	cd wiki/cookbook && ln -sf ../../install.d/wiki/e-protect.php
-
-htdocs/valid.html:
-	touch spool/templates_c/valid.html
-	chmod o+w spool/templates_c/valid.html
-	cd htdocs && ln -sf ../spool/templates_c/valid.html
 
 htdocs/uploads:
 	cd htdocs && ln -sf ../spool/uploads
