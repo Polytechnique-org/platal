@@ -24,11 +24,16 @@ class AuthModule extends PLModule
     function handlers()
     {
         return array(
-            'groupex/done-chall.php'        => $this->make_hook('chall', AUTH_PUBLIC),
-            'groupex/export-econfiance.php' => $this->make_hook('econf', AUTH_PUBLIC),
+            'groupex/done-chall.php'
+                                => $this->make_hook('chall',      AUTH_PUBLIC),
+            'groupex/export-econfiance.php'
+                                => $this->make_hook('econf',      AUTH_PUBLIC),
 
-            'auth-redirect.php' => $this->make_hook('redirect', AUTH_COOKIE),
-            'auth-groupex.php'  => $this->make_hook('groupex',  AUTH_COOKIE),
+            'webservices/manageurs.php'
+                                => $this->make_hook('manageurs',  AUTH_PUBLIC),
+
+            'auth-redirect.php' => $this->make_hook('redirect',   AUTH_COOKIE),
+            'auth-groupex.php'  => $this->make_hook('groupex',    AUTH_COOKIE),
         );
     }
 
@@ -90,6 +95,27 @@ class AuthModule extends PLModule
             echo $res;
         }
         exit;
+    }
+
+    function manageurs(&$page)
+    {
+        global $globals;
+
+        require_once 'webservices/manageurs.server.inc.php';
+
+        $ips = array_flip(explode(' ',$globals->manageurs->authorized_ips));
+        if ($ips && isset($ips[$_SERVER['REMOTE_ADDR']])) {
+            $server = xmlrpc_server_create();
+
+            xmlrpc_server_register_method($server, 'get_annuaire_infos', 'get_annuaire_infos');
+            xmlrpc_server_register_method($server, 'get_nouveau_infos', 'get_nouveau_infos');
+
+            $request  = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $response = xmlrpc_server_call_method($server, $request, null);
+            header('Content-Type: text/xml');
+            print $response;
+            xmlrpc_server_destroy($server);
+        }
     }
 
     function handler_redirect(&$page)
