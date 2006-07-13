@@ -25,7 +25,7 @@
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
 
-    <link rel="index"  href="{rel}/">
+    <link rel="index"  href="{rel}/" />
     <link rel="author" href="{rel}/changelog" />
     <link rel="search" href="{rel}/search" />
     <link rel="help"   href="{rel}/Docs/FAQ" />
