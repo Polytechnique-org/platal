@@ -104,8 +104,11 @@ class BananaModule extends PLModule
         return $this->run_banana($page, Array('subscribe' => 1));
     }
 
-    function handler_xface(&$page, $face = null)
+    function handler_xface()
     {
+        $args = func_get_args();
+        array_shift($args);
+        $face = join('/', $args);
         header('Content-Type: image/jpeg');
         passthru('echo ' . escapeshellarg(base64_decode($face))
                 . '| uncompface -X '
