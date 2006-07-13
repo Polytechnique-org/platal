@@ -80,7 +80,7 @@ class XnetModule extends PLModule
         return PL_OK;
     }
 
-    function handler_creategpx(&$page)
+    function handler_services(&$page)
     {
         $page->changeTpl('xnet/services.tpl');
         $page->useMenu();
