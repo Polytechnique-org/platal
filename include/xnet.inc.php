@@ -28,31 +28,27 @@ XnetSession::init();
 
 // {{{ function new_skinned_page()
 
-function new_page($tpl_name, $min_auth)
+function new_page($tpl_name, $type = SKINNED)
 {
-    global $page,$globals;
+    global $page, $globals;
     require_once("xnet/page.inc.php");
-    switch($min_auth) {
-        case AUTH_PUBLIC:
-            $page = new XnetPage($tpl_name, $type);
-            break;
-
-        default:
-            $page = new XnetAuth($tpl_name, $type);
-    }
+    $page = new XnetPage($tpl_name, $type);
     $page->assign('xorg_tpl', $tpl_name);
 }
 
-function new_skinned_page($tpl_name, $min_auth)
+function new_skinned_page($tpl_name)
 {
-    return new_page($tpl_name, $min_auth);
+    return new_page($tpl_name);
 }
 
 // }}}
+
 function new_identification_page()
 {
-    new_page('', AUTH_MDP);
     global $page;
+
+    new_page('');
+    $page->doAuth(true);
     $page->useMenu();
 }
 
@@ -60,10 +56,18 @@ function new_identification_page()
 
 function new_group_page($tpl_name)
 {
-    global $page,$globals;
-    require_once("xnet/page.inc.php");
-    $page = new XnetGroupPage($tpl_name);
-    $page->assign('xorg_tpl', $tpl_name);
+    global $page, $globals;
+
+    new_page($tpl_name);
+
+    $page->doAuth(true);
+    if (!is_member() && !has_perms()) {
+        $page->kill("You have not sufficient credentials");
+    }
+
+    $page->useMenu();
+    $page->assign('asso', $globals->asso());
+    $page->setType($globals->asso('cat'));
 }
 
 // }}}
@@ -71,10 +75,17 @@ function new_group_page($tpl_name)
 
 function new_groupadmin_page($tpl_name)
 {
-    global $page,$globals;
-    require_once("xnet/page.inc.php");
-    $page = new XnetGroupAdmin($tpl_name);
-    $page->assign('xorg_tpl', $tpl_name);
+    global $page, $globals;
+
+    new_page($tpl_name);
+
+    if (!may_update()) {
+        $page->kill("You have not sufficient credentials");
+    }
+
+    $page->useMenu();
+    $page->assign('asso', $globals->asso());
+    $page->setType($globals->asso('cat'));
 }
 
 // }}}
@@ -82,10 +93,17 @@ function new_groupadmin_page($tpl_name)
 
 function new_admin_page($tpl_name)
 {
-    global $page,$globals;
-    require_once("xnet/page.inc.php");
-    $page = new XnetAdmin($tpl_name);
-    $page->assign('xorg_tpl', $tpl_name);
+    global $page, $globals;
+
+    new_page($tpl_name);
+
+    check_perms();
+
+    $page->useMenu();
+    if ($globals->asso('cat')) {
+        $page->assign('asso', $globals->asso());
+        $page->setType($globals->asso('cat'));
+    }
 }
 
 // }}}
@@ -94,9 +112,17 @@ function new_admin_page($tpl_name)
 function new_nonhtml_page($tpl_name)
 {
     global $page, $globals;
-    require_once("xnet/page.inc.php");
-    $page = new XnetGroupPage($tpl_name, NO_SKIN);
-    $page->assign('xorg_tpl', $tpl_name);
+
+    new_page($tpl_name, NO_SKIN);
+
+    $page->doAuth(true);
+    if (!is_member() && !has_perms()) {
+        $page->kill("You have not sufficient credentials");
+    }
+
+    $page->useMenu();
+    $page->assign('asso', $globals->asso());
+    $page->setType($globals->asso('cat'));
 }
 
 // }}}

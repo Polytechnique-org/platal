@@ -109,121 +109,19 @@ class XnetPage extends PlatalPage
     // }}}
     // {{{ function doAuth()
 
-    function doAuth()
+    function doAuth($force = false)
     {
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
         $this->register_modifier('cat_pp', 'cat_pp');
         $this->assign('it_is_xnet', true);
+        if (!logged() && $force) {
+            $_SESSION['session']->doLogin($this);
+        }
         if (!logged() && Get::has('auth')) {
             $_SESSION['session']->doAuthX($this);
         }
     }
 
-    // }}}
-}
-
-// }}}
-// {{{ class XnetAuth
-
-/** Une classe pour les pages nécessitant l'authentification.
- * (equivalent de controlauthentification.inc.php)
- */
-class XnetAuth extends XnetPage
-{
-    // {{{ function XnetAuth()
-
-    function XnetAuth($tpl, $type=SKINNED)
-    {
-        $this->XnetPage($tpl, $type);
-    }
-
-    // }}}
-    // {{{ function doAuth()
-
-    function doAuth()
-    {
-        parent::doAuth();
-        $_SESSION['session']->doAuth($this);
-    }
-    
-    // }}}
-}
-
-// }}}
-// {{{ class XnetAdmin
-
-/** Une classe pour les pages réservées aux admins (authentifiés!).
- */
-class XnetAdmin extends XnetAuth
-{
-    // {{{ function XnetAdmin()
-    
-    function XnetAdmin($tpl, $type=SKINNED)
-    {
-        global $globals;
-        
-        $this->XnetAuth($tpl, $type);
-        check_perms();
-
-        $this->useMenu();
-        if ($globals->asso('cat')) {
-            $this->assign('asso', $globals->asso());
-            $this->setType($globals->asso('cat'));
-        }
-    }
-    
-    // }}}
-}
-
-// }}}
-// {{{ class XnetGroupPage
-
-/** Une classe pour les pages réservées aux admins (authentifiés!).
- */
-class XnetGroupPage extends XnetAuth
-{
-    // {{{ function XnetAdmin()
-    
-    function XnetGroupPage($tpl, $type=SKINNED)
-    {
-        global $globals;
-
-        $this->XnetAuth($tpl, $type);
-        if (!is_member() && !has_perms()) {
-            $this->kill("You have not sufficient credentials");
-        }
-
-        $this->useMenu();
-        $this->assign('asso', $globals->asso());
-        $this->setType($globals->asso('cat'));
-    }
-    
-    // }}}
-}
-
-// }}}
-// {{{ class XnetGroupAdmin
-
-/** Une classe pour les pages réservées aux admins (authentifiés!).
- */
-class XnetGroupAdmin extends XnetAuth
-{
-    // {{{ function XnetAdmin()
-    
-    function XnetGroupAdmin($tpl, $type=SKINNED)
-    {
-        global $globals;
-        
-        $this->XnetAuth($tpl, $type);
-        if (!may_update()) {
-            $this->kill("You have not sufficient credentials");
-        }
-
-        $this->useMenu();
-        $this->assign('asso', $globals->asso());
-        $this->setType($globals->asso('cat'));
-    }
-    
     // }}}
 }
 

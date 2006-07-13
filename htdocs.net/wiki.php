@@ -25,9 +25,7 @@ require_once("xnet.inc.php");
 // the wiki engine used is pmwiki.
 // the templates created are stored in wiki.d/cache_wikiword.tpl
 
-// some page can be seen by everybody (public), but to validate a password
-// if we arrive here before setting new access we need to try an auth
-new_page('wiki.tpl', Env::has('response') ? AUTH_MDP : AUTH_PUBLIC);
+new_page('wiki.tpl'));
 
 if ($globals->wiki->wikidir && $globals->xnet->wiki) {
     $wikisite = 'xnet';
@@ -45,8 +43,10 @@ if ($globals->wiki->wikidir && $globals->xnet->wiki) {
     wiki_assign_auth();
 }
 
-if (!Env::get('action'))
-    $page->assign('xorg_extra_header', "<script type='text/JavaScript'>\n<!--\nNix={map:null,convert:function(a){Nix.init();var s='';for(i=0;i<a.length;i++){var b=a.charAt(i);s+=((b>='A'&&b<='Z')||(b>='a'&&b<='z')?Nix.map[b]:b);}return s;},init:function(){if(Nix.map!=null)return;var map=new Array();var s='abcdefghijklmnopqrstuvwxyz';for(i=0;i<s.length;i++)map[s.charAt(i)]=s.charAt((i+13)%26);for(i=0;i<s.length;i++)map[s.charAt(i).toUpperCase()]=s.charAt((i+13)%26).toUpperCase();Nix.map=map;},decode:function(a){document.write(Nix.convert(a));}}\n//-->\n</script>\n");
+if (!Env::get('action')) {
+    $page->addJsLink('javascript/wiki.js');
+}
+
 $page->assign('is_member', is_member());
 $page->assign('has_perms', has_perms() || may_update());
 
