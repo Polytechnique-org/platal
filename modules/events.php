@@ -143,8 +143,6 @@ class EventsModule extends PLModule
                       $globals->xdb->iterator($sql, Session::getInt('uid'),
                                               $promo, $promo)
                      );
-
-        return PL_OK;
     }
 
     function handler_ev_submit(&$page)
@@ -195,8 +193,6 @@ class EventsModule extends PLModule
             $select .= "> $day / $month / $year</option>\n";
         }
         $page->assign('select',$select);
-
-        return PL_OK;
     }
 
     function handler_nl(&$page, $action = null)
@@ -214,8 +210,6 @@ class EventsModule extends PLModule
 
         $page->assign('nls', get_nl_state());
         $page->assign_by_ref('nl_list', get_nl_list());
-
-        return PL_OK;
     }
 
     function handler_nl_show(&$page, $nid = 'last')
@@ -232,8 +226,6 @@ class EventsModule extends PLModule
                         Session::get('bestalias'), Session::get('femme'),
                         Session::get('mail_fmt') != 'text');
         }
-
-        return PL_OK;
     }
 
     function handler_nl_submit(&$page)
@@ -252,8 +244,6 @@ class EventsModule extends PLModule
             $art->submit();
             $page->assign('submited', true);
         }
-
-        return PL_OK;
     }
 }
 

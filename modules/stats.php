@@ -50,14 +50,12 @@ class StatsModule extends PLModule
     function handler_stats(&$page)
     {
         $page->changeTpl('stats/index.tpl');
-        return PL_OK;
     }
 
     function handler_evolution(&$page, $jours = 365)
     {
         $page->changeTpl('stats/evolution_inscrits.tpl');
         $page->assign('jours', $jours);
-        return PL_OK;
     }
 
     function handler_graph_evo(&$page, $jours = 365)
@@ -274,8 +272,6 @@ EOF2;
         $page->assign('min', $min-$min % 10);
         $page->assign('max', $max+10-$max%10);
         $page->assign('promo', $promo);
-
-        return PL_OK;
     }
 
     function handler_coupures(&$page, $cp_id = null)
@@ -302,8 +298,6 @@ EOF2;
                       FROM  coupures where debut > '$beginning_date' order by debut desc";
             $page->assign('coupures', $globals->xdb->iterator($sql));
         }
-
-        return PL_OK;
     }
 }
 

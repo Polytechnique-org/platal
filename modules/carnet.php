@@ -38,8 +38,9 @@ class CarnetModule extends PLModule
 
     function _add_rss_link(&$page)
     {
-        if (!Session::has('core_rss_hash'))
+        if (!Session::has('core_rss_hash')) {
             return;
+        }
         $page->assign('xorg_rss',
                       array('title' => 'Polytechnique.org :: Carnet',
                             'href'  => '/carnet/rss/'.Session::get('forlife')
@@ -52,8 +53,6 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mon carnet');
         $this->_add_rss_link($page);
-
-        return PL_OK;
     }
 
     function handler_panel(&$page)
@@ -75,8 +74,6 @@ class CarnetModule extends PLModule
         $page->assign('notifs', $notifs);
         $page->assign('today', date('Y-m-d'));
         $this->_add_rss_link($page);
-
-        return PL_OK;
     }
 
     function _handler_notifs_promos(&$page, &$watch, $action, $arg)
@@ -154,8 +151,6 @@ class CarnetModule extends PLModule
         }
 
         $page->assign_by_ref('watch', $watch);
-
-        return PL_OK;
     }
 
     function _get_list($offset, $limit) {
@@ -296,8 +291,6 @@ class CarnetModule extends PLModule
 
             $page->assign_by_ref('citer', $globals->xdb->iterator($sql));
         }
-
-        return PL_OK;
     }
 
     function handler_pdf(&$page, $arg0 = null, $arg1 = null)
@@ -340,8 +333,6 @@ class CarnetModule extends PLModule
         $uid    = init_rss('carnet/rss.tpl', $user, $hash);
         $notifs = new Notifs($uid, false);
         $page->assign('notifs', $notifs);
-
-        return PL_OK;
     }
 
     function handler_ical(&$page, $user = null, $hash = null, $all = null)
@@ -388,8 +379,6 @@ class CarnetModule extends PLModule
         }
 
         header('Content-Type: text/calendar; charset=utf-8');
-
-        return PL_OK;
     }
 }
 

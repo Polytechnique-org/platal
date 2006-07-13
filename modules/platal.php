@@ -66,8 +66,6 @@ class PlatalModule extends PLModule
         if (logged()) {
             redirect("events");
         }
-
-        return PL_OK;
     }
 
     function handler_cacert(&$page)
@@ -129,8 +127,6 @@ class PlatalModule extends PLModule
         }
 
         $page->assign('prefs', $globals->hook->prefs());
-
-        return PL_OK;
     }
 
     function handler_webredir(&$page)
@@ -165,8 +161,6 @@ class PlatalModule extends PLModule
                                       WHERE user_id = {?}',
                                     Session::getInt('uid'));
         $page->assign('carva', $res->fetchOneCell());
-
-        return PL_OK;
     }
 
     function handler_prefs_rss(&$page)
@@ -181,8 +175,6 @@ class PlatalModule extends PLModule
             $this->__set_rss_state(true);
             $page->trig("Ton Fil RSS est activé.");
         }
-
-        return PL_OK;
     }
 
     function handler_password(&$page)
@@ -213,8 +205,6 @@ class PlatalModule extends PLModule
         $page->changeTpl('motdepasse.tpl');
         $page->addJsLink('javascript/motdepasse.js');
         $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
-
-        return PL_OK;
     }
 
     function handler_smtppass(&$page)
@@ -246,8 +236,6 @@ class PlatalModule extends PLModule
                                        FROM auth_user_md5
                                       WHERE user_id = {?}", $uid);
         $page->assign('actif', $res->fetchOneCell());
-
-        return PL_OK;
     }
 
     function handler_recovery(&$page)
@@ -257,7 +245,7 @@ class PlatalModule extends PLModule
         $page->changeTpl('recovery.tpl');
 
         if (!Env::has('login') || !Env::has('birth')) {
-            return PL_OK;
+            return;
         }
 
         if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
@@ -311,8 +299,6 @@ Mail envoyé à ".Env::get('login'));
         } else {
             $page->trig('Pas de résultat correspondant aux champs entrés dans notre base de données.');
         }
-
-        return PL_OK;
     }
 
     function handler_tmpPWD(&$page, $certif = null)
@@ -343,8 +329,6 @@ Mail envoyé à ".Env::get('login'));
             $page->changeTpl('motdepasse.tpl');
             $page->addJsLink('javascript/motdepasse.js');
         }
-
-        return PL_OK;
     }
 
     function handler_skin(&$page)
@@ -372,7 +356,6 @@ Mail envoyé à ".Env::get('login'));
                  WHERE skin_tpl != '' AND ext != ''
               GROUP BY id ORDER BY s.date DESC";
         $page->assign_by_ref('skins', $globals->xdb->iterator($sql));
-        return PL_OK;
     }
 
     function handler_exit(&$page, $level = null)
@@ -417,7 +400,6 @@ Mail envoyé à ".Env::get('login'));
         } else {
             $page->changeTpl('exit.tpl');
         }
-        return PL_OK;
     }
 
     function handler_rss(&$page, $user = null, $hash = null)
@@ -436,8 +418,6 @@ Mail envoyé à ".Env::get('login'));
                   WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
                                          AND peremption >= NOW()', $uid);
         $page->assign('rss', $rss);
-
-        return PL_OK;
     }
 }
 

@@ -67,8 +67,6 @@ class TrezoModule extends PLModule
                 "SELECT date, label, credit, debit
                    FROM money_trezo  WHERE date >= {?} and date <= {?} order by date", 
                 $from_date, $to_date));
-
-        return PL_OK;
     }
 
     function handler_operation(&$page)
@@ -143,8 +141,6 @@ class TrezoModule extends PLModule
                     "SELECT id, date, label, credit, debit FROM money_trezo
                       WHERE date >= {?} and date <= {?} ORDER BY date", 
                     $from_date, $to_date));
-
-        return PL_OK;
     }
 }
 

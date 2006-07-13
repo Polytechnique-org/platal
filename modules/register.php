@@ -153,8 +153,6 @@ class RegisterModule extends PLModule
         if (isset($err)) {
             $page->trig($err);
         }
-
-        return PL_OK;
     }
 
     function handler_end_old(&$page)
@@ -275,8 +273,6 @@ class RegisterModule extends PLModule
 
         redirect($globals->baseurl.'/register/success');
         $page->assign('uid', $uid);
-
-        return PL_OK;
     }
 
     function handler_success(&$page)
@@ -304,8 +300,6 @@ class RegisterModule extends PLModule
         }
 
         $page->addJsLink('javascript/motdepasse.js');
-
-        return PL_OK;
     }
 }
 

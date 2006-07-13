@@ -156,8 +156,6 @@ class ProfileModule extends PLModule
                                     Session::getInt('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
-
-        return PL_OK;
     }
 
     function handler_profile(&$page, $x = null)
@@ -239,8 +237,6 @@ class ProfileModule extends PLModule
         $page->assign('virtualalias', $res->fetchOneCell());
 
         $page->addJsLink('javascript/close_on_esc.js');
-
-        return PL_OK;
     }
 
     function handler_p_edit(&$page, $opened_tab = 'general')
@@ -288,7 +284,7 @@ class ProfileModule extends PLModule
                 if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
                     $page->assign('etat_naissance', 'query');
                     $page->trig('Date de naissance incorrecte ou incohérente.');
-                    return PL_OK;
+                    return;
                 }
 
                 //sinon
@@ -300,11 +296,11 @@ class ProfileModule extends PLModule
                                          WHERE user_id={?}", $birth,
                                        Session::getInt('uid'));
                 $page->assign('etat_naissance', 'ok');
-                return PL_OK;
+                return;
             }
 
             $page->assign('etat_naissance', 'query');
-            return PL_OK; // on affiche le formulaire pour naissance
+            return; // on affiche le formulaire pour naissance
         }
 
         //doit-on faire un update ?
@@ -316,7 +312,7 @@ class ProfileModule extends PLModule
                 require_once "profil/assign_{$opened_tab}.inc.php";
                 $page->assign('onglet', $opened_tab);
                 $page->assign('onglet_tpl', "profil/$opened_tab.tpl");
-                return PL_OK;
+                return;
             }
 
             $date=date("Y-m-j");//nouvelle date de mise a jour
@@ -353,7 +349,7 @@ class ProfileModule extends PLModule
         $page->assign('onglet', $opened_tab);
         $page->assign('onglet_tpl', "profil/$opened_tab.tpl");
 
-        return PL_OK;
+        return;
     }
 
     function handler_p_orange(&$page)
@@ -375,7 +371,7 @@ class ProfileModule extends PLModule
         $page->assign('promo',  $promo);
 
         if (!Env::has('promo_sortie')) {
-            return PL_OK;
+            return;
         }
 
         $promo_sortie = Env::getInt('promo_sortie');
@@ -406,8 +402,6 @@ class ProfileModule extends PLModule
                 $page->assign('myorange', $myorange);
             }
         }
-
-        return PL_OK;
     }
 
     function handler_referent(&$page, $x = null)
@@ -475,7 +469,6 @@ class ProfileModule extends PLModule
         $page->assign('pays', $res->fetchColumn());
 
         $page->addJsLink('javascript/close_on_esc.js');
-        return PL_OK;
     }
 
     function handler_ref_search(&$page)
@@ -529,7 +522,7 @@ class ProfileModule extends PLModule
         $page->assign('mentors_number', $res->fetchOneCell());
 
         if (!Env::has('Chercher')) {
-            return PL_OK;
+            return;
         }
 
         // On vient d'un formulaire
@@ -567,7 +560,7 @@ class ProfileModule extends PLModule
 
             if ($res->total() == 0) {
                 $page->assign('recherche_trop_large', true);
-                return PL_OK;
+                return;
             }
 
             $nb_max_res_total = 100;
@@ -590,8 +583,6 @@ class ProfileModule extends PLModule
             $page->assign('nb_pages_total',
                           intval($res->total() / $nb_max_res_ppage) + 1);
         }
-
-        return PL_OK;
     }
 
     function handler_p_usage(&$page)
@@ -634,8 +625,6 @@ class ProfileModule extends PLModule
                 $page->assign('myusage', $myusage);
             }
         }
-
-        return PL_OK;
     }
 
     function handler_trombi(&$page, $promo = null)
@@ -646,7 +635,7 @@ class ProfileModule extends PLModule
         $page->assign('xorg_title', 'Polytechnique.org - Trombi Promo');
 
         if (is_null($promo)) {
-            return PL_OK;
+            return;
         }
 
         $this->promo = $promo = intval($promo);
@@ -661,8 +650,6 @@ class ProfileModule extends PLModule
         } else {
             $page->trig('Promotion incorrecte (saisir au format YYYY). Recommence.');
         }
-
-        return PL_OK;
     }
 
     function format_adr($params, &$smarty)
@@ -717,8 +704,6 @@ class ProfileModule extends PLModule
         header("Cache-Control: ");
         header("Content-type: text/x-vcard\n");
         header("Content-Transfer-Encoding: Quoted-Printable\n");
-
-        return PL_OK;
     }
 }
 

@@ -128,8 +128,6 @@ class PaymentModule extends PLModule
         $page->assign('evtlink', $pay->event());
 
         $page->assign('prefix',$globals->money->mpay_tprefix);
-
-        return PL_OK;
     }
 
     function handler_cyber_return(&$page, $uid = null)
@@ -317,8 +315,6 @@ class PaymentModule extends PLModule
 
         $page->assign('texte', $conf_text);
         $page->assign('erreur', $erreur);
-
-        return PL_OK;
     }
 }
 

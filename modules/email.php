@@ -75,7 +75,6 @@ class EmailModule extends PLModule
                          AND alias LIKE '%@{$globals->mail->alias_dom}'",
                 $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
         $page->assign('melix', $res->fetchOneCell());
-        return PL_OK;
     }
 
     function handler_alias(&$page, $action = null, $value = null)
@@ -133,7 +132,7 @@ class EmailModule extends PLModule
                             Vérifie qu'elle comporte entre 3 et 20 caractères
                             et qu'elle ne contient que des lettres non accentuées,
                             des chiffres ou les caractères - et .");
-                return PL_OK;
+                return;
             } else {
                 //vérifier que l'alias n'est pas déja pris
                 $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
@@ -141,7 +140,7 @@ class EmailModule extends PLModule
                 if ($res->fetchOneCell() > 0) {
                     $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
                                 Tu ne peux donc pas l'obtenir.");
-                    return PL_OK;
+                    return;
                 }
 
                 //vérifier que l'alias n'est pas déja en demande
@@ -150,7 +149,7 @@ class EmailModule extends PLModule
                     if ($req->type == "alias" and $req->alias == $alias) {
                         $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
-                        return PL_OK;
+                        return ;
                     }
                 }
 
@@ -158,7 +157,7 @@ class EmailModule extends PLModule
                 $myalias = new AliasReq($uid, $alias, $raison, $public);
                 $myalias->submit();
                 $page->assign('success',$alias);
-                return PL_OK;
+                return;
             }
         }
         elseif ($action == 'set'
@@ -176,8 +175,6 @@ class EmailModule extends PLModule
         }
 
         $page->assign('mail_public', ($visibility == 'public'));
-
-        return PL_OK;
     }
 
     function handler_redirect(&$page, $action = null, $email = null)
@@ -229,8 +226,6 @@ class EmailModule extends PLModule
                ORDER BY  !FIND_IN_SET('usage',flags), LENGTH(alias)", $uid);
         $page->assign('alias', $res->fetchAllAssoc());
         $page->assign('emails',$redirect->emails);
-
-        return PL_OK;
     }
 
     function handler_antispam(&$page)
@@ -244,8 +239,6 @@ class EmailModule extends PLModule
             $bogo->change(Session::getInt('uid'), Env::getInt('statut_filtre'));
         }
         $page->assign('filtre',$bogo->level());
-
-        return PL_OK;
     }
 
     function handler_send(&$page)
@@ -299,8 +292,6 @@ class EmailModule extends PLModule
                   WHERE  c.uid = {?}
                  ORDER BY u.nom, u.prenom", Session::getInt('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
-
-        return PL_OK;
     }
 
     function handler_broken(&$page, $warn = null, $email = null)

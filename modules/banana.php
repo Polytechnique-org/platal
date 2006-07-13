@@ -95,8 +95,6 @@ class BananaModule extends PLModule
                 (Post::getBool('bananaupdate') ? 'automaj' : '')
             );
         }
-
-        return PL_OK;
     }
 
     function handler_subscription(&$page)
@@ -110,7 +108,6 @@ class BananaModule extends PLModule
         passthru('echo ' . escapeshellarg(base64_decode(strtr($face, '.:', '+/')))
                 . '| uncompface -X '
                 . '| convert -transparent white xbm:- gif:-');
-        return PL_OK;
     }
 
     function run_banana(&$page, $params = null)
@@ -124,8 +121,6 @@ class BananaModule extends PLModule
         $res = PlatalBanana::run($params);
         $page->assign_by_ref('banana', $banana);
         $page->assign('banana_res', $res);
-
-        return PL_OK;
     }
 }
 

@@ -42,14 +42,12 @@ class CoreModule extends PLModule
     {
         header('HTTP/1.0 403 Forbidden');
         $page->changeTpl('403.tpl');
-        return PL_OK;
     }
 
     function handler_404(&$page)
     {
         header('HTTP/1.0 404 Not Found');
         $page->changeTpl('404.tpl');
-        return PL_OK;
     }
 
     function handler_purge_cache(&$page)

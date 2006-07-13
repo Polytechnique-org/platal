@@ -75,8 +75,6 @@ class MarketingModule extends PLModule
         $res = $globals->xdb->query("SELECT count(*) FROM register_mstats
                                       WHERE TO_DAYS(NOW()) - TO_DAYS(success) <= 7");
         $page->assign('nbInsMarkOK', $res->fetchOneCell());
-
-        return PL_OK;
     }
 
     function handler_private(&$page, $uid = null,
@@ -162,8 +160,6 @@ class MarketingModule extends PLModule
             $page->assign('pending', $pending);
             $page->assign('relance', $relance);
         }
-
-        return PL_OK;
     }
 
     function handler_promo(&$page, $promo = null)
@@ -186,8 +182,6 @@ class MarketingModule extends PLModule
               GROUP BY  u.user_id
               ORDER BY  nom, prenom";
         $page->assign('nonins', $globals->xdb->iterator($sql, $promo));
-
-        return PL_OK;
     }
 
     function handler_public(&$page, $uid = null)
@@ -232,8 +226,6 @@ class MarketingModule extends PLModule
                 }
             }
         }
-
-        return PL_OK;
     }
 
     function handler_week(&$page, $sorting = 'per_promo')
@@ -250,8 +242,6 @@ class MarketingModule extends PLModule
                  WHERE  u.date_ins > ".date("Ymd000000", strtotime ('1 week ago'))."
               ORDER BY  u.$sort DESC";
         $page->assign('ins', $globals->xdb->iterator($sql));
-
-        return PL_OK;
     }
 
     function handler_volontaire(&$page, $promo = null)
@@ -278,8 +268,6 @@ class MarketingModule extends PLModule
                   ORDER BY  a.nom";
             $page->assign('addr', $globals->xdb->iterator($sql, $promo));
         }
-
-        return PL_OK;
     }
 
     function handler_relance(&$page)
@@ -309,8 +297,6 @@ class MarketingModule extends PLModule
                  WHERE  hash!='INSCRIT'
               ORDER BY  date DESC";
         $page->assign('relance', $globals->xdb->iterator($sql));
-
-        return PL_OK;
     }
 }
 

@@ -69,8 +69,6 @@ class GeolocModule extends PLModule
         }
 
         $page->assign('use_map', $globals->geoloc->use_map());
-
-        return PL_OK;
     }
 
     function handler_icon(&$page)
@@ -117,8 +115,6 @@ class GeolocModule extends PLModule
 
         header('Content-type: text/xml');
         $page->assign('querystring', $this->_make_qs());
-
-        return PL_OK;
     }
 
     function handler_city(&$page)
@@ -149,8 +145,6 @@ class GeolocModule extends PLModule
              GROUP BY u.user_id LIMIT 11", $id);
 
         $page->assign('users', $users);
-
-        return PL_OK;
     }
 
     function handler_data(&$page)
@@ -178,8 +172,6 @@ class GeolocModule extends PLModule
 
         $page->assign('countries', $countries);
         $page->assign('cities', $cities);
-
-        return PL_OK;
     }
 }
 

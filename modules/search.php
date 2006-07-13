@@ -184,8 +184,6 @@ class SearchModule extends PLModule
         }
 
         $page->register_modifier('display_lines', 'display_lines');
-
-        return PL_OK;
     }
 
     function handler_advanced(&$page, $mode = null)
@@ -229,8 +227,6 @@ class SearchModule extends PLModule
         }
 
         $page->register_modifier('display_lines', 'display_lines');
-
-        return PL_OK;
     }
 }
 

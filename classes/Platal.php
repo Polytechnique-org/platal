@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-define('PL_OK', 0);
-define('PL_NEEDLOGIN', 1);
 define('PL_FORBIDDEN', 403);
 define('PL_NOT_FOUND', 404);
 

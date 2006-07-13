@@ -41,7 +41,6 @@ class XnetModule extends PLModule
     function handler_index(&$page)
     {
         $page->changeTpl('xnet/index.tpl');
-        return PL_OK;
     }
 
     function handler_exit(&$page)
@@ -49,49 +48,42 @@ class XnetModule extends PLModule
         XnetSession::destroy();
         $page->changeTpl('xnet/deconnexion.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_about(&$page)
     {
         $page->changeTpl('xnet/apropos.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_article12(&$page)
     {
         $page->changeTpl('xnet/article12.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_article16(&$page)
     {
         $page->changeTpl('xnet/article16.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_creategpx(&$page)
     {
         $page->changeTpl('xnet/creation-groupex.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_services(&$page)
     {
         $page->changeTpl('xnet/services.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_manuel(&$page)
     {
         $page->changeTpl('xnet/manuel.tpl');
         $page->useMenu();
-        return PL_OK;
     }
 
     function handler_plan(&$page)
@@ -135,8 +127,6 @@ class XnetModule extends PLModule
                   WHERE  FIND_IN_SET("Institutions", cat)
                ORDER BY  diminutif');
         $page->assign('inst', $res);
-
-        return PL_OK;
     }
 }
 
