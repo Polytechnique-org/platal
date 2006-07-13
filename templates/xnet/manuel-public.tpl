@@ -161,7 +161,7 @@ groupe
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="plan">Le plan du site</a></h3>
-<a href="http://www.polytechnique.net/plan.php">Lien vers le plan</a>
+<a href="http://www.polytechnique.net/plan">Lien vers le plan</a>
 <br />
 <img src="images/plan.jpg" />
 
