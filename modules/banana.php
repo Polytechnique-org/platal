@@ -27,7 +27,6 @@ class BananaModule extends PLModule
             'banana'              => $this->make_hook('banana', AUTH_COOKIE),
             'banana/profile'      => $this->make_hook('profile', AUTH_MDP),
             'banana/subscription' => $this->make_hook('subscription', AUTH_COOKIE),
-            'banana/updateall'    => $this->make_hook('updateall', AUTH_COOKIE),
             'banana/xface'        => $this->make_hook('xface', AUTH_COOKIE),
         );
     }
@@ -37,6 +36,9 @@ class BananaModule extends PLModule
         $get = Array();
         if (!is_null($group)) {
             $get['group'] = $group;
+        }
+        if (Post::has('updateall')) {
+            $get['banana'] = 'updateall';
         }
         if (!is_null($action)) {
             if ($action == 'new') {
@@ -94,25 +96,17 @@ class BananaModule extends PLModule
         return PL_OK;
     }
 
-    function handler_updateall(&$page)
-    {
-        return BananaModule::run_banana($page, Array('banana' => 'updateall'));
-    }
-
     function handler_subscription(&$page)
     {
         return $this->run_banana($page, Array('subscribe' => 1));
     }
 
-    function handler_xface()
+    function handler_xface(&$page, $face = null)
     {
-        $args = func_get_args();
-        array_shift($args);
-        $face = join('/', $args);
         header('Content-Type: image/jpeg');
-        passthru('echo ' . escapeshellarg(base64_decode($face))
+        passthru('echo ' . escapeshellarg(base64_decode(strtr($face, '.:', '+/')))
                 . '| uncompface -X '
-                . '| convert xbm:- jpg:-');
+                . '| convert -transparent white xbm:- gif:-');
         return PL_OK;
     }
 

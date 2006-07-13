@@ -44,7 +44,7 @@ function hook_makeLink($params) {
         return $base . '/subscription';
     }
     if (isset($params['xface'])) {
-        return $base . '/xface/' . $params['xface'];
+        return $base . '/xface/' . strtr(base64_encode($params['xface']), '+/', '.:');
     }
 
     if (!isset($params['group'])) {

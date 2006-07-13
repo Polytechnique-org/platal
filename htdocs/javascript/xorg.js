@@ -63,6 +63,30 @@ function attachEvent(obj, evt, f, useCapture) {
 }
 
 // }}}
+// {{{ dynpost()
+
+function dynpost(action, values)
+{
+    var body = document.getElementsByTagName('body')[0];
+
+    var form = document.createElement('form');
+    form.action = action;
+    form.method = 'post';
+
+    body.appendChild(form);
+
+    for (var k in values) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = k;
+        input.value = values[k];
+        form.appendChild(input);
+    }
+
+    form.submit();
+}
+
+// }}}
 
 /***************************************************************************
  * POPUP THINGS
