@@ -34,6 +34,7 @@ class XnetModule extends PLModule
             'services'  => $this->make_hook('services',  AUTH_PUBLIC),
             'manuel'    => $this->make_hook('manuel',    AUTH_PUBLIC),
 
+            'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),
             'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
         );
     }
@@ -84,6 +85,59 @@ class XnetModule extends PLModule
     {
         $page->changeTpl('xnet/manuel.tpl');
         $page->useMenu();
+    }
+
+    function handler_admin(&$page)
+    {
+        global $globals;
+
+        new_admin_page('xnet/admin.tpl');
+        $page->useMenu();
+
+        if (Get::has('del')) {
+            $res = $globals->xdb->query('SELECT id, nom, mail_domain
+                                           FROM groupex.asso WHERE diminutif={?}',
+                                        Get::get('del'));
+            list($id, $nom, $domain) = $res->fetchOneRow();
+            $page->assign('nom', $nom);
+            if ($id && Post::has('del')) {
+                $globals->xdb->query('DELETE FROM groupex.membres WHERE asso_id={?}', $id);
+                $page->trig('membres supprimés');
+
+                if ($domain) {
+                    $globals->xdb->query('DELETE FROM  virtual_domains WHERE domain={?}', $domain);
+                    $globals->xdb->query('DELETE FROM  virtual, virtual_redirect
+                                                USING  virtual INNER JOIN virtual_redirect USING (vid)
+                                                WHERE  alias LIKE {?}', '%@'.$domain);
+                    $page->trig('suppression des alias mails');
+
+                    require_once('lists.inc.php');
+                    $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $domain);
+                    if ($listes = $client->get_lists()) {
+                        foreach ($listes as $l) {
+                            $client->delete_list($l['list'], true);
+                        }
+                        $page->trig('mail lists surpprimées');
+                    }
+                }
+
+                $globals->xdb->query('DELETE FROM groupex.asso WHERE id={?}', $id);
+                $page->trig("Groupe $nom supprimé");
+                Get::kill('del');
+            }
+            if (!$id) {
+                Get::kill('del');
+            }
+        }
+
+        if (Post::has('diminutif')) {
+            $globals->xdb->query('INSERT INTO groupex.asso (id,diminutif)
+                                 VALUES(NULL,{?})', Post::get('diminutif'));
+            redirect(Post::get('diminutif').'/edit.php');
+        }
+
+        $res = $globals->xdb->query('SELECT nom,diminutif FROM groupex.asso ORDER by NOM');
+        $page->assign('assos', $res->fetchAllAssoc());
     }
 
     function handler_plan(&$page)

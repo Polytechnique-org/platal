@@ -63,7 +63,7 @@ class XnetPage extends PlatalPage
         $sub['liste des groupes'] = 'plan';
         if (logged()) {
             if (has_perms()) {
-                $sub['admin X.net'] = 'admin.php';
+                $sub['admin X.net'] = 'admin';
             }
             $sub['déconnexion']   = 'exit';
         }
