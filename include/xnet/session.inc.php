@@ -44,7 +44,7 @@ class XnetSession extends DiogenesCoreSession
         }
         if (!logged()) {
             // prevent connexion to be linked to deconnexion
-            if (($i = strpos($_SERVER['REQUEST_URI'], 'deconnexion.php')) !== false)
+            if (($i = strpos($_SERVER['REQUEST_URI'], 'exit')) !== false)
                 $returl = "http://{$_SERVER['SERVER_NAME']}".substr($_SERVER['REQUEST_URI'], 0, $i);
             else
                 $returl = "http://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";

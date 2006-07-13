@@ -47,7 +47,7 @@
   retirés de cette liste. Ce retrait vaut retrait de l'agrément.
   </p>
   <p class="descr">
-  <a href="services.php">Revenir à la page décrivant les services...</a>
+  <a href="{rel}/services">Revenir à la page décrivant les services...</a>
   </p>
 </div>
 

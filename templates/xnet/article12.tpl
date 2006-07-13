@@ -48,7 +48,7 @@
   l'assemblée générale qui se prononce en dernier ressort.
   </p>
   <p class="descr">
-  <a href="services.php">Revenir à la page décrivant les services...</a>
+  <a href="{rel}/services">Revenir à la page décrivant les services...</a>
   </p>
 </div> 
 {* vim:set et sw=2 sts=2 sws=2: *}

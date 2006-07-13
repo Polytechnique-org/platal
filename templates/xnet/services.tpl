@@ -77,13 +77,13 @@
   </p>
   <ul class="descr">
     <li>
-    <a href="creation-groupex.php">sur la création d'un groupe X</a>;
+    <a href="{rel}/creategpx">sur la création d'un groupe X</a>;
     </li>
     <li>
-    <a href="article12.php">l'article 12 des statuts de l'AX</a>;
+    <a href="{rel}/article12">l'article 12 des statuts de l'AX</a>;
     </li>
     <li>
-    <a href="article16.php">l'article 16 du réglement intérieur de l'AX</a>.
+    <a href="{rel}/article16">l'article 16 du réglement intérieur de l'AX</a>.
     </li>
   </ul>
 

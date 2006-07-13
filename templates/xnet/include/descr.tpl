@@ -25,18 +25,18 @@
 <p class="descr">
 Les groupes X rassemblent des polytechniciens partageant les mêmes centres d'intérêt,
 autour de sujets très différents. Certains de ces groupes sont  des associations
-dépendant de l'Amicale des Anciens, définis par <a href='article12.php'>l'article 12</a>
+dépendant de l'Amicale des Anciens, définis par <a href='{rel}/article12'>l'article 12</a>
 des statuts de l'AX. Les groupes déclarés auprès de l'AX sont indiqués par une petite
 note en bas de la page qui leur est dédiée sur ce site.
 </p>
 <p class="descr">
 Pour créer un nouveau Groupe X agréé par l'AX au titre de
-<a href='article12.php'>l'article 12</a> des statuts, tu peux te référer
-<a href='services.php#creation'> aux documents de l'AX</a>.
+<a href='{rel}/article12'>l'article 12</a> des statuts, tu peux te référer
+<a href='{rel}/services#creation'> aux documents de l'AX</a>.
 </p>
 <p class="descr">
 Si tu souhaites obtenir le statut d'association loi de 1901, tu peux obtenir des
-renseignements auprès de <a href='services.php#loi1901'>sites spécialisés</a>.
+renseignements auprès de <a href='{rel}/services#loi1901'>sites spécialisés</a>.
 </p>
 
 {elseif $cat eq binets}

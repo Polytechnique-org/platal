@@ -125,7 +125,7 @@
         <td colspan="4">
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
-              <td> <a href="{rel}/plan.php">PLAN DU SITE</a> </td>
+              <td> <a href="{rel}/plan">PLAN DU SITE</a> </td>
               <td> <a href="{rel}/groupes.php?cat=groupesx">groupes X</a> </td>
               <td> <a href="{rel}/groupes.php?cat=binets">binets</a> </td>
               <td> <a href="{rel}/groupes.php?cat=promotions">promotions</a> </td>
@@ -149,7 +149,7 @@
         <td id="search">
           <form method="get" action="{rel}/recherche.php">
             <div>
-              <a href="{rel}/manuel.php" title="Manuel d'aide en ligne"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
+              <a href="{rel}/manuel" title="Manuel d'aide en ligne"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
               <input type="text" name="query" value="{$exalead_data->query->query}" size="25" maxlength="60" />
               <input type="image" src="{rel}/images/recherche.png" title="Chercher" value="submit" />
 
@@ -166,8 +166,8 @@
       <tr>
         <td colspan="4" id="credits">
           <a href="{rel}/">page d'accueil</a> -
-          <a href="{rel}/plan.php">liste des associations</a> -
-          <a href="{rel}/services.php">services proposés</a> -
+          <a href="{rel}/plan">liste des associations</a> -
+          <a href="{rel}/services">services proposés</a> -
           <a href="{rel}/about">à propos de ce site</a> -
           <a href="https://www.polytechnique.org/">polytechnique.org</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
