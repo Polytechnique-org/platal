@@ -31,13 +31,14 @@ new_skinned_page('wiki.tpl', Env::has('response') ? AUTH_MDP : AUTH_PUBLIC);
 
 if ($globals->wiki->wikidir) {
     $wikisite = 'xorg';
-    require_once("wiki.inc.php");
+    require_once 'wiki.inc.php';
     $page->changeTpl($wiki_template);
 }
 
-if (!Env::get('action'))
-    $page->assign('xorg_extra_header', "<script type='text/JavaScript'>\n<!--\nNix={map:null,convert:function(a){Nix.init();var s='';for(i=0;i<a.length;i++){var b=a.charAt(i);s+=((b>='A'&&b<='Z')||(b>='a'&&b<='z')?Nix.map[b]:b);}return s;},init:function(){if(Nix.map!=null)return;var map=new Array();var s='abcdefghijklmnopqrstuvwxyz';for(i=0;i<s.length;i++)map[s.charAt(i)]=s.charAt((i+13)%26);for(i=0;i<s.length;i++)map[s.charAt(i).toUpperCase()]=s.charAt((i+13)%26).toUpperCase();Nix.map=map;},decode:function(a){document.write(Nix.convert(a));}}\n//-->\n</script>\n");
-    
+if (!Env::get('action')) {
+    $page->addJsLink('javascript/wiki.js');
+}
+
 wiki_assign_auth();
 $page->addCssLink('css/wiki.css');
 
