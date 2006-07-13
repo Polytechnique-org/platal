@@ -95,14 +95,14 @@
         <td colspan="3">
           <div class="breadcrumb">
             {if $asso}
-            <a href="{rel}/groupes.php?cat={$asso.cat}">{$asso.cat|cat_pp}</a> »
+            <a href="{rel}/groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
             {if $asso.dom}
-            <a href="{rel}/groupes.php?cat={$asso.cat}&amp;dom={$asso.dom}">{$asso.domnom}</a> »
+            <a href="{rel}/groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
             {/if}
             {$asso.nom}
-            {elseif $smarty.request.cat}
-            <a href="{rel}/groupes.php?cat={$smarty.request.cat}">{$smarty.request.cat|cat_pp}</a> »
-            {if $smarty.request.dom || !$doms}
+            {elseif $cat}
+            <a href="{rel}/groups/{$cat}">{$cat|cat_pp}</a> »
+            {if $dom || !$doms}
             Choix de l'Asso
             {else}
             Choix du domaine
@@ -126,10 +126,10 @@
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
               <td> <a href="{rel}/plan">PLAN DU SITE</a> </td>
-              <td> <a href="{rel}/groupes.php?cat=groupesx">groupes X</a> </td>
-              <td> <a href="{rel}/groupes.php?cat=binets">binets</a> </td>
-              <td> <a href="{rel}/groupes.php?cat=promotions">promotions</a> </td>
-              <td> <a href="{rel}/groupes.php?cat=institutions">institutions</a> </td>
+              <td> <a href="{rel}/groups/groupesx">groupes X</a> </td>
+              <td> <a href="{rel}/groups/binets">binets</a> </td>
+              <td> <a href="{rel}/groups/promotions">promotions</a> </td>
+              <td> <a href="{rel}/groups/institutions">institutions</a> </td>
             </tr>
           </table>
         </td>

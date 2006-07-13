@@ -35,6 +35,8 @@ class XnetModule extends PLModule
             'manuel'    => $this->make_hook('manuel',    AUTH_PUBLIC),
 
             'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),
+            'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
+            'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
             'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
         );
     }
@@ -181,6 +183,46 @@ class XnetModule extends PLModule
                   WHERE  FIND_IN_SET("Institutions", cat)
                ORDER BY  diminutif');
         $page->assign('inst', $res);
+    }
+
+    function handler_groups2(&$page)
+    {
+        $this->handler_groups(&$page, Get::get('cat'), Get::get('dom'));
+    }
+
+    function handler_groups(&$page, $cat = null, $dom = null)
+    {
+        global $globals;
+
+        if (!$cat) {
+            $this->handler_index(&$page);
+        }
+
+        $cat = strtolower($cat);
+
+        $page->changeTpl('xnet/groupes.tpl');
+        $page->assign('cat', $cat);
+        $page->assign('dom', $dom);
+
+        $res  = $globals->xdb->query("SELECT id,nom FROM groupex.dom
+                                       WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
+        $doms = $res->fetchAllAssoc();
+        $page->assign('doms', $doms);
+
+        if (empty($doms)) {
+            $res = $globals->xdb->iterator("SELECT diminutif, nom FROM groupex.asso
+                                             WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
+        } elseif (!is_null($dom)) {
+            $res = $globals->xdb->iterator("SELECT diminutif, nom FROM groupex.asso
+                                             WHERE FIND_IN_SET({?}, cat) AND dom={?}
+                                          ORDER BY nom", $cat, $dom);
+        } else {
+            $res = null;
+        }
+        $page->assign('gps', $res);
+
+        $page->useMenu();
+        $page->setType($cat);
     }
 }
 

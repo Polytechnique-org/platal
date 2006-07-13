@@ -63,10 +63,10 @@ associations, en cliquant sur <i>plan du site</i>.
 Chacune des 4 catégories dispose d'une page descriptive. L'adresse de cette page varie
 suivant la catégorie représentée :
 <ul>
-<li><a href="http://www.polytechnique.net/groupes.php?cat=GroupesX">pour les Groupes X</a></li>
-<li><a href="http://www.polytechnique.net/groupes.php?cat=Binets">pour les Binets</a></li>
-<li><a href="http://www.polytechnique.net/autres.php?cat=Institutions">pour les Institutions</a></li>
-<li><a href="http://www.polytechnique.net/autres.php?cat=Promotions">Pour les promotions</a></li>
+<li><a href="http://www.polytechnique.net/groups/GroupesX">pour les Groupes X</a></li>
+<li><a href="http://www.polytechnique.net/groups/Binets">pour les Binets</a></li>
+<li><a href="http://www.polytechnique.net/groups/Institutions">pour les Institutions</a></li>
+<li><a href="http://www.polytechnique.net/groups/Promotions">Pour les promotions</a></li>
 </ul>
 
 

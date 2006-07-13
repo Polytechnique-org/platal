@@ -25,12 +25,12 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=groupesx">Groupes X</a></td>
+          <td class="oval"><a href="{rel}/groups/groupesx">Groupes X</a></td>
         </tr>
         <tr>
           <td class="liste">
             {foreach from=$groupesx key=id item=dom}
-            <a class="cat" href="groupes.php?cat=groupesx&amp;dom={$id}">{$dom[0].domnom}</a>
+            <a class="cat" href="{rel}/groups/groupesx/{$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
             <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
             {/foreach}
@@ -43,7 +43,7 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=binets">Binets</a></td>
+          <td class="oval"><a href="{rel}/groups/binets">Binets</a></td>
         </tr>
         <tr>
           <td class="liste">
@@ -61,7 +61,7 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=promotions">Promotions</a></td>
+          <td class="oval"><a href="{rel}/groups/promotions">Promotions</a></td>
         </tr>
         <tr>
           <td class="listec">
@@ -76,7 +76,7 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="groupes.php?cat=institutions">Institutions</a></td>
+          <td class="oval"><a href="{rel}/groups/institutions">Institutions</a></td>
         </tr>
         <tr>
           <td class="listec">

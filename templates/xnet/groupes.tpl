@@ -23,24 +23,24 @@
 <table id="content" cellspacing="0" cellpadding="4">
   <tr>
     <td colspan="2">
-      {include file="xnet/include/descr.tpl" cat=$smarty.get.cat}
+      {include file="xnet/include/descr.tpl"}
     </td>
   </tr>
   <tr>
     {if !$doms || !$gps}
     <td style="vertical-align: top">
-      <div class="cat {if $smarty.get.cat eq groupesx}sel{/if}"><a href="?cat=groupesx">Groupes X</a></div>
-      <div class="cat {if $smarty.get.cat eq binets}sel{/if}"><a href="?cat=binets">Binets</a></div>
-      <div class="cat {if $smarty.get.cat eq institutions}sel{/if}"><a href="?cat=institutions">Institutions</a></div>
-      <div class="cat {if $smarty.get.cat eq promotions}sel{/if}"><a href="?cat=promotions">Promotions</a></div>
+      <div class="cat {if $cat eq groupesx}sel{/if}"><a href="{rel}/groups/groupesx">Groupes X</a></div>
+      <div class="cat {if $cat eq binets}sel{/if}"><a href="{rel}/groups/binets">Binets</a></div>
+      <div class="cat {if $cat eq institutions}sel{/if}"><a href="{rel}/groups/institutions">Institutions</a></div>
+      <div class="cat {if $cat eq promotions}sel{/if}"><a href="{rel}/groups/promotions">Promotions</a></div>
     </td>
     {/if}
     
     {if $doms}
     <td style="vertical-align: top">
       {foreach from=$doms item=g}
-      <div class="cat {if $g.id eq $smarty.get.dom}sel{/if}">
-        <a href="?cat={$smarty.get.cat}&amp;dom={$g.id}">{$g.nom}</a>
+      <div class="cat {if $g.id eq $dom}sel{/if}">
+        <a href="{rel}/groups/{$cat}/{$g.id}">{$g.nom}</a>
       </div>
       {/foreach}
     </td>
