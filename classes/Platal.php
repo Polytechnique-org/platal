@@ -45,16 +45,9 @@ class Platal
             $this->__mods[$module] =& $m;
             $this->__hooks += $m->handlers();
         }
-
-        krsort($this->__hooks);
     }
 
-    function load_class($cls)
-    {
-        require_once dirname(__FILE__).'/../classes/'.$cls.'.php';
-    }
-
-    function call_hook(&$page)
+    function find_hook()
     {
         $p = $this->path;
 
@@ -64,24 +57,38 @@ class Platal
 
             $p = substr($p, 0, strrpos($p, '/'));
         }
+
         if (empty($this->__hooks[$p])) {
-            return PL_NOT_FOUND;
+            return null;
         }
 
         $hook = $this->__hooks[$p];
 
         if (!is_callable($hook['hook'])) {
+            return null;
+        }
+
+        $this->argv    = explode('/', substr($this->path, strlen($p)));
+        $this->argv[0] = $p;
+
+        return $hook;
+    }
+
+    function call_hook(&$page)
+    {
+        $hook = $this->find_hook();
+
+        if (is_null($hook)) {
             return PL_NOT_FOUND;
         }
 
-        $args       = explode('/', substr($this->path, strlen($p)));
-        $args[0]    = $p;
-        $this->argv = $args;
-        $args[0]    = &$page;
+        $args    = $this->argv;
+        $args[0] = &$page;
 
         if ($hook['auth'] > Session::get('auth', AUTH_PUBLIC)) {
             $_SESSION['session']->doAuth($page);
         }
+
         return call_user_func_array($hook['hook'], $args);
     }
 
