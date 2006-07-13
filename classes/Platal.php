@@ -48,11 +48,6 @@ class Platal
         }
     }
 
-    function set_index_module($mod)
-    {
-        $this->__idx = $mod;
-    }
-
     function find_hook()
     {
         $p = $this->path;
