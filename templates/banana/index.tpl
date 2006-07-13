@@ -20,12 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Options</h1>
-
 {if !$banana->profile.autoup}
 [<a href='javascript:dynpost("{rel}/{$platal->path}", {ldelim}"updateall": 1{rdelim})'>Mettre à jour</a>]
 {/if}
-[<a href="{rel}/banana/profile">Profil</a>]
 
 <br />
 

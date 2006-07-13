@@ -37,6 +37,12 @@ function hook_checkcancel($_headers) {
     return ($_headers['x-org-id'] == Session::get('forlife') or has_perms());
 }
 
+function hook_shortcuts()
+{
+    global $globals;
+    return '<a href="' . $globals->baseurl . '/banana/profile">Préférences</a>';
+}
+
 function hook_makeLink($params) {
     global $globals;
     $base = $globals->baseurl . '/banana'; 
@@ -75,7 +81,7 @@ function hook_makeLink($params) {
 function hook_makeImg($img, $alt, $height, $width)
 {
     global $globals;
-    $url = $globals->baseurl . '/images/banana/' . $img . '.gif';
+    $url = $globals->baseurl . '/images/banana/' . $img;
 
     if (!is_null($width)) {
         $width = ' width="' . $width . '"';

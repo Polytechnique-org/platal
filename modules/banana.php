@@ -43,7 +43,10 @@ class BananaModule extends PLModule
         if (!is_null($action)) {
             if ($action == 'new') {
                 $get['action'] = 'new';
-            } elseif (($action == 'reply' || $action == 'cancel') && !is_null($artid)) {
+            } elseif ($action == 'reply' && !is_null($artid)) {
+                $get['action'] = 'new';
+                $get['artid']  = $artid;
+            } elseif ($action == 'cancel' && !is_null($artid)) {
                 $get['action'] = $action;
                 $get['artid']  = $artid;
             } elseif ($action == 'from' && !is_null($artid)) {
