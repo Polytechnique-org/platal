@@ -103,7 +103,7 @@ class BananaModule extends PLModule
 
     function handler_xface(&$page, $face = null)
     {
-        header('Content-Type: image/jpeg');
+        header('Content-Type: image/gif');
         passthru('echo ' . escapeshellarg(base64_decode(strtr($face, '.:', '+/')))
                 . '| uncompface -X '
                 . '| convert -transparent white xbm:- gif:-');
