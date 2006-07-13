@@ -43,6 +43,11 @@ function new_page($tpl_name, $min_auth)
     $page->assign('xorg_tpl', $tpl_name);
 }
 
+function new_skinned_page($tpl_name, $min_auth)
+{
+    return new_page($tpl_name, $min_auth);
+}
+
 // }}}
 function new_identification_page()
 {

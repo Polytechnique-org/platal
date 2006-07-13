@@ -1,0 +1,13 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+RewriteBase /~x2000habouzit
+
+# wiki
+
+RewriteRule ^([A-Z].*) wiki.php?n=$1 [L,QSA]
+
+# Rewrite URLs of the form 'index.php?q=x':
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?p=$1 [L,QSA]

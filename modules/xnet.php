@@ -19,12 +19,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require 'xnet.inc.php';
+class XnetModule extends PLModule
+{
+    function handlers()
+    {
+        return array(
+            'index' => $this->make_hook('index', AUTH_PUBLIC),
+        );
+    }
 
-require_once dirname(__FILE__).'/../classes/Platal.php';
-require_once dirname(__FILE__).'/../classes/PLModule.php';
-
-$platal = new Platal('xnet');
-$platal->run();
+    function handler_index(&$page)
+    {
+        $page->changeTpl('xnet/index.tpl');
+        return PL_OK;
+    }
+}
 
 ?>
