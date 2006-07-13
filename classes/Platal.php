@@ -48,6 +48,11 @@ class Platal
         }
     }
 
+    function set_index_module($mod)
+    {
+        $this->__idx = $mod;
+    }
+
     function find_hook()
     {
         $p = $this->path;
@@ -100,8 +105,9 @@ class Platal
         new_skinned_page('index.tpl', AUTH_PUBLIC);
 
         if (empty($this->path)) {
-            $this->__mods['core']->handler_index($page);
-        } else
+            $this->path = 'index';
+        }
+
         switch ($this->call_hook($page)) {
           case PL_FORBIDDEN:
             $this->__mods['core']->handler_403($page);

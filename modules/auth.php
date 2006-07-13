@@ -37,14 +37,14 @@ class AuthModule extends PLModule
         );
     }
 
-    function chall(&$page)
+    function handler_chall(&$page)
     {
         $_SESSION["chall"] = uniqid(rand(), 1);
         echo $_SESSION["chall"] . "\n" . session_id();
         exit;
     }
 
-    function econf(&$page)
+    function handler_econf(&$page)
     {
         global $globals;
 
@@ -97,7 +97,7 @@ class AuthModule extends PLModule
         exit;
     }
 
-    function manageurs(&$page)
+    function handler_manageurs(&$page)
     {
         global $globals;
 

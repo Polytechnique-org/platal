@@ -38,7 +38,8 @@ class PlatalModule extends PLModule
     function handlers()
     {
         return array(
-            'cacert.pem'  => $this->make_hook('cacert', AUTH_PUBLIC),
+            'index'       => $this->make_hook('index',     AUTH_PUBLIC),
+            'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
             'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
 
             // Preferences thingies
@@ -58,6 +59,15 @@ class PlatalModule extends PLModule
             // happenings related thingies
             'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
         );
+    }
+
+    function handler_index(&$page)
+    {
+        if (logged()) {
+            redirect("events");
+        }
+
+        return PL_OK;
     }
 
     function handler_cacert(&$page)

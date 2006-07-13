@@ -38,15 +38,6 @@ class CoreModule extends PLModule
         exit;
     }
 
-    function handler_index(&$page)
-    {
-        if (logged()) {
-            redirect("events");
-        }
-
-        return PL_OK;
-    }
-
     function handler_403(&$page)
     {
         header('HTTP/1.0 403 Forbidden');
