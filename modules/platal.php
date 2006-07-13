@@ -19,11 +19,28 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+function bugize($list)
+{
+    $list = split(',', $list);
+    $ans  = array();
+
+    foreach ($list as $bug) {
+        $clean = str_replace('#', '', $bug);
+        $ans[] = "<a href='http://trackers.polytechnique.org/task/$clean'>$bug</a>";
+    }
+
+    return join(',', $ans);
+}
+
+
 class PlatalModule extends PLModule
 {
     function handlers()
     {
         return array(
+            'cacert.pem'  => $this->make_hook('cacert', AUTH_PUBLIC),
+            'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
+
             // Preferences thingies
             'prefs'     => $this->make_hook('prefs',     AUTH_COOKIE),
             'prefs/rss' => $this->make_hook('prefs_rss', AUTH_COOKIE),
@@ -36,10 +53,29 @@ class PlatalModule extends PLModule
             'tmpPWD'        => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
             'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
             'recovery'      => $this->make_hook('recovery',  AUTH_PUBLIC),
+            'exit'          => $this->make_hook('exit', AUTH_PUBLIC),
 
             // happenings related thingies
             'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
         );
+    }
+
+    function handler_cacert(&$page)
+    {
+        $data = file_get_contents('/etc/ssl/xorgCA/cacert.pem');
+        header('Content-Type: application/x-x509-ca-cert');
+        header('Content-Length: '.strlen($data));
+        echo $data;
+        exit;
+    }
+
+    function handler_changelog(&$page)
+    {
+        $page->changeTpl('changeLog.tpl');
+
+        $clog = htmlentities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
+        $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
+        $page->assign('ChangeLog', $clog);
     }
 
     function __set_rss_state($state)
@@ -326,6 +362,51 @@ Mail envoyé à ".Env::get('login'));
                  WHERE skin_tpl != '' AND ext != ''
               GROUP BY id ORDER BY s.date DESC";
         $page->assign_by_ref('skins', $globals->xdb->iterator($sql));
+        return PL_OK;
+    }
+
+    function handler_exit(&$page, $level = null)
+    {
+        if (Session::has('suid')) {
+            if (Session::has('suid')) {
+                $a4l  = Session::get('forlife');
+                $suid = Session::getMixed('suid');
+                $log  = Session::getMixed('log');
+                $log->log("suid_stop", Session::get('forlife') . " by " . $suid['forlife']);
+                $_SESSION = $suid;
+                Session::kill('suid');
+                redirect($globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
+            } else {
+                redirect("events");
+            }
+        }
+
+        if ($level == 'forget' || $level == 'forgetall') {
+            setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+            Cookie::kill('ORGaccess');
+            if (isset($_SESSION['log']))
+                $_SESSION['log']->log("cookie_off");
+        }
+
+        if ($level == 'forgetuid' || $level == 'forgetall') {
+            setcookie('ORGuid', '', time() - 3600, '/', '', 0);
+            Cookie::kill('ORGuid');
+            setcookie('ORGdomain', '', time() - 3600, '/', '', 0);
+            Cookie::kill('ORGdomain');
+        }
+
+        if (isset($_SESSION['log'])) {
+            $ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+            $_SESSION['log']->log('deconnexion',$ref);
+        }
+
+        XorgSession::destroy();
+
+        if (Get::has('redirect')) {
+            redirect(rawurldecode(Get::get('redirect')));
+        } else {
+            $page->changeTpl('exit.tpl');
+        }
         return PL_OK;
     }
 

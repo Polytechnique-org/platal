@@ -28,7 +28,9 @@ class Platal
 {
     var $__mods;
     var $__hooks;
+    var $__usens;
 
+    var $ns;
     var $path;
     var $argv;
 
@@ -39,12 +41,19 @@ class Platal
 
         $this->__mods  = array();
         $this->__hooks = array();
+        $this->__usens = false;
+        $this->ns      = '';
 
+        array_unshift($modules, 'core');
         foreach ($modules as $module) {
-            $m =& PLModule::factory($this, $module);
-            $this->__mods[$module] =& $m;
+            $this->__mods[$module] = $m = PLModule::factory($this, $module);
             $this->__hooks += $m->handlers();
         }
+    }
+
+    function use_namespace()
+    {
+        $this->__usens = true;
     }
 
     function find_hook()
@@ -79,6 +88,13 @@ class Platal
         $hook = $this->find_hook();
 
         if (is_null($hook)) {
+            if ($this->__usens) {
+                $i = strpos($this->path, '/');
+                if ($i) {
+                    $this->ns   = $this->path;
+                    $this->path = 'index';
+                }
+            }
             return PL_NOT_FOUND;
         }
 
