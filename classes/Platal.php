@@ -34,13 +34,13 @@ class Platal
 
     function Platal()
     {
+        $modules    = func_get_args();
         $this->path = trim(Get::_get('p', null), '/');
 
         $this->__mods  = array();
         $this->__hooks = array();
 
-        foreach (glob(dirname(__FILE__).'/../modules/*.php') as $module) {
-            $module = basename($module, '.php');
+        foreach ($modules as $module) {
             $m =& PLModule::factory($this, $module);
             $this->__mods[$module] =& $m;
             $this->__hooks += $m->handlers();
