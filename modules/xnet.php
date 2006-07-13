@@ -24,7 +24,8 @@ class XnetModule extends PLModule
     function handlers()
     {
         return array(
-            'index' => $this->make_hook('index', AUTH_PUBLIC),
+            'index'   => $this->make_hook('index', AUTH_PUBLIC),
+            'about'   => $this->make_hook('about', AUTH_PUBLIC),
         );
     }
 
@@ -32,6 +33,12 @@ class XnetModule extends PLModule
     {
         $page->changeTpl('xnet/index.tpl');
         return PL_OK;
+    }
+
+    function handler_about(&$page)
+    {
+        $page->changeTpl('xnet/apropos.tpl');
+        $page->useMenu();
     }
 }
 

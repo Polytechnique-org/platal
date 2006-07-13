@@ -25,7 +25,7 @@
 </h1>
 
 <p>
-[<a href='index.php'>liste des lettres</a>]
+[<a href='{rel}/nl'>liste des lettres</a>]
 {if $smarty.get.text}
 [<a href='?nid={$nl->_id}'>version HTML</a>]
 {else}

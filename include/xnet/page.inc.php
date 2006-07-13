@@ -59,7 +59,7 @@ class XnetPage extends PlatalPage
         $menu = array();
 
         $sub = array();
-        $sub['accueil']           = 'index.php';
+        $sub['accueil']           = '';
         $sub['liste des groupes'] = 'plan.php';
         if (logged()) {
             if (has_perms()) {

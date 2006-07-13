@@ -45,7 +45,7 @@ objectif la présentation du site public, ouvert aux X, et aux non-X.
 
 <h3><a name="accueil">Accueil</a></h3>
 
-<a href="http://www.polytechnique.net/index.php">Voir l'accueil du site</a>
+<a href="http://www.polytechnique.net/">Voir l'accueil du site</a>
 
 
 Depuis la page d'accueil, les visiteurs choisissent un des 4 types d'associations

@@ -43,7 +43,7 @@ function newsletter_config() {
 function newsletter_menu()
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'newsletter/');
+    $globals->menu->addPrivateEntry(XOM_INFOS, 0, 'Lettres mensuelles', 'nl');
 }
 
 // }}}

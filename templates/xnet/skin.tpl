@@ -60,7 +60,7 @@
       {if $xnet_type}
       <tr id="top">
         <td>
-          <a href="{rel}/index.php"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
+          <a href="{rel}/"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
         </td>
         <td>
           <img src="{rel}/images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
@@ -165,10 +165,10 @@
 
       <tr>
         <td colspan="4" id="credits">
-          <a href="{rel}/index.php">page d'accueil</a> -
+          <a href="{rel}/">page d'accueil</a> -
           <a href="{rel}/plan.php">liste des associations</a> -
           <a href="{rel}/services.php">services proposés</a> -
-          <a href="{rel}/apropos.php">à propos de ce site</a> -
+          <a href="{rel}/about">à propos de ce site</a> -
           <a href="https://www.polytechnique.org/">polytechnique.org</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           <br />
