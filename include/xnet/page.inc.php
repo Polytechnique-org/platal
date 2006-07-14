@@ -85,7 +85,7 @@ class XnetPage extends PlatalPage
             if (false) {
                 $sub['carnet'] = "$dim/carnet.php";
             }
-            $sub['télépaiement'] = "$dim/telepaiement.php";
+            $sub['télépaiement'] = "$dim/paiement";
 
             $menu[$globals->asso('nom')] = $sub;
         }
