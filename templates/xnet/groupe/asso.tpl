@@ -21,9 +21,9 @@
 {**************************************************************************}
 
 {if $asso.site}
-<a href="{$asso.site}"><img src='{rel}/{$platal->ns}getlogo.php' alt="LOGO" style="float: right;" /></a>
+<a href="{$asso.site}"><img src='{rel}/{$platal->ns}logo' alt="LOGO" style="float: right;" /></a>
 {else}
-<img src='{rel}/{$platal->ns}getlogo.php' alt="LOGO" style="float: right;" />
+<img src='{rel}/{$platal->ns}logo' alt="LOGO" style="float: right;" />
 {/if}
 
 <h1>{$asso.nom} : Accueil</h1>

@@ -24,7 +24,9 @@ class XnetGrpModule extends PLModule
     function handlers()
     {
         return array(
-            'grp' => $this->make_hook('index', AUTH_PUBLIC),
+            'grp'             => $this->make_hook('index', AUTH_PUBLIC),
+            'grp/asso.php'    => $this->make_hook('index', AUTH_PUBLIC),
+            'grp/logo'        => $this->make_hook('logo',  AUTH_PUBLIC),
         );
     }
 
@@ -43,6 +45,34 @@ class XnetGrpModule extends PLModule
         $page->assign('logged', logged());
 
         $page->assign('asso', $globals->asso());
+    }
+
+    function handler_logo(&$page)
+    {
+        global $globals;
+
+        $res = $globals->xdb->query("SELECT logo, logo_mime
+                                       FROM groupex.asso WHERE id = {?}",
+                                    $globals->asso('id'));
+        list($logo, $logo_mime) = $res->fetchOneRow();
+
+        if (!empty($logo)) {
+            header("Content-type: $mime");
+            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+            header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
+            header('Cache-Control: no-cache, must-revalidate');
+            header('Pragma: no-cache');
+            echo $logo;
+        } else {
+            header('Content-type: image/jpeg');
+            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+            header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
+            header('Cache-Control: no-cache, must-revalidate');
+            header('Pragma: no-cache');
+            readfile(dirname(__FILE__).'/../htdocs.net/images/dflt_carre.jpg');
+        }
+
+        exit;
     }
 }
 

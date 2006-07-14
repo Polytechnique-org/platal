@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<img src='getlogo.php' alt="LOGO" style="float: right;" />
+<img src='{rel}/{$platal->ns}logo' alt="LOGO" style="float: right;" />
 
 <h1>{$asso.nom} : Éditer l'accueil</h1>
 
