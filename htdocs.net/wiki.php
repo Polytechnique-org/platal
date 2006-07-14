@@ -25,7 +25,7 @@ require_once("xnet.inc.php");
 // the wiki engine used is pmwiki.
 // the templates created are stored in wiki.d/cache_wikiword.tpl
 
-new_page('wiki.tpl'));
+new_page('wiki.tpl');
 
 if ($globals->wiki->wikidir && $globals->xnet->wiki) {
     $wikisite = 'xnet';
