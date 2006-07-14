@@ -71,7 +71,7 @@
       M'inscrire :
     </td>
     <td>
-      <a href="{rel}/{$platal->ns}inscrire.php">m'inscrire</a>
+      <a href="{rel}/{$platal->ns}subscribe">m'inscrire</a>
     </td>
   </tr>
   {/if}

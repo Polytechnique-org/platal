@@ -275,6 +275,8 @@ class XnetGrpModule extends PLModule
 
     function handler_subscribe(&$page, $u = null)
     {
+        global $globals;
+
         $page->changeTpl('xnet/groupe/inscrire.tpl');
 
         $page->useMenu();
