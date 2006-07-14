@@ -37,7 +37,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
 <ul class="descr">
   <li><a href="membres-edit.php?new=x">Ajouter un membre X</a></li>
   <li><a href="membres-edit.php?new=ext">Ajouter un membre extérieur</a></li>
-  <li><a href="annuaire-admin.php">Synchroniser annuaire et Listes de diffusion</a></li>
+  <li><a href="{rel}/{$platal->ns}admin/annuaire">Synchroniser annuaire et Listes de diffusion</a></li>
 </ul>
 {/if}
 
