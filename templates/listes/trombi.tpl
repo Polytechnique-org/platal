@@ -24,7 +24,7 @@
 {include file="listes/header_listes.tpl" on=trombi}
 
 <h1>
-  Liste {$smarty.request.liste}
+  Liste {$platal->argv[1]}
 </h1>
 
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
@@ -54,13 +54,13 @@
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire :
-      <a href='?liste={$smarty.request.liste}&amp;del=1'><img src="{rel}/images/retirer.gif" alt="[me désinsiscrire]" /></a>
+      <a href='{rel}/{$platal->ns}trombi/{$platal->argv[1]}?del=1'><img src="{rel}/images/retirer.gif" alt="[me désinsiscrire]" /></a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
       Tu n'es pas inscrit.<br />
       Demander ton inscription :
-      <a href="?liste={$smarty.request.liste}&amp;add=1"><img src="{rel}/images/ajouter.gif" alt="[demander mon inscription]" /></a>
+      <a href="{rel}/{$platal->ns}trombi/{$platal->argv[1]}?add=1"><img src="{rel}/images/ajouter.gif" alt="[demander mon inscription]" /></a>
       {/if}
     </td>
   </tr>

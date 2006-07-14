@@ -42,8 +42,8 @@
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='?liste={$smarty.request.liste}&amp;sadd={$s.id}'>ajouter</a>
-      <a href='?liste={$smarty.request.liste}&amp;sid={$s.id}'>refuser</a>
+      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?sadd={$s.id}'>ajouter</a>
+      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?sid={$s.id}'>refuser</a>
     </td>
   </tr>
   {/foreach}
@@ -70,12 +70,7 @@
   <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
   S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
-  {if $it_is_xnet}
-  {assign var=prefix value="listes-"}
-  {else}
-  {assign var=prefix value=""}
-  {/if}
-  <a href="{$prefix}options.php?liste={$smarty.request.liste}#antispam">jeter directement</a> et non de les modérer. 
+  <a href="{rel}/{$platal->ns}lists/options/{$platal->argv[1]}#antispam">jeter directement</a> et non de les modérer. 
   </li>
 </ul>
 
@@ -94,8 +89,8 @@
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
     <td class='action'>
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}'>voir</a><br/>
-      <a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='?liste={$smarty.request.liste}&amp;mid={$m.id}&amp;mdel=1'>détruire</a></td>
+      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}'>voir</a><br/>
+      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mdel=1'>détruire</a></td>
   </tr>
   {/foreach}
 </table>

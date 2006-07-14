@@ -47,7 +47,7 @@ function lists_config()
 function lists_menu()
 {
     global $globals;
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'listes/');
+    $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'lists');
 }
 
 // }}}

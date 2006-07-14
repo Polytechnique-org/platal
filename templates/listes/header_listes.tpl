@@ -20,37 +20,29 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $it_is_xnet}
-{assign var=index value="listes.php"}
-{assign var=prefix value="listes-"}
-{else}
-{assign var=index value="index.php"}
-{assign var=prefix value=""}
-{/if}
-
 <table>
   <tr>
     <td colspan='2'>
-      [<a href='{$index}'>Voir toutes les listes</a>]
+      [<a href='{rel}/{$platal->ns}lists'>Voir toutes les listes</a>]
     </td>
   </tr>
   <tr>
-    <td><strong>Liste {$smarty.request.liste} :</strong></td>
+    <td><strong>Liste {$platal->argv[1]} :</strong></td>
     <td>
       {if $on neq members}
-      [<a href='{$prefix}members.php?liste={$smarty.request.liste}'>liste des membres</a>]
+      [<a href='{rel}/{$platal->ns}lists/members/{$platal->argv[1]}'>liste des membres</a>]
       {else}
       [liste des membres]
       {/if}
       {if !$it_is_xnet}
       {if $on neq trombi}
-      [<a href='{$prefix}trombi.php?liste={$smarty.request.liste}'>trombinoscope</a>]
+      [<a href='{rel}/{$platal->ns}lists/trombi/{$platal->argv[1]}'>trombinoscope</a>]
       {else}
       [trombinoscope]
       {/if}
       {/if}
       {if $on neq archives}
-      [<a href='{$prefix}archives.php?liste={$smarty.request.liste}'>archives</a>]
+      [<a href='{rel}/{$platal->ns}lists/archives/{$platal->argv[1]}'>archives</a>]
       {else}
       [archives]
       {/if}
@@ -61,22 +53,22 @@
     <td><strong>Administrer la liste :</strong></td>
     <td>
       {if $on neq moderate}
-      [<a href='{$prefix}moderate.php?liste={$smarty.get.liste}'>modération</a>]
+      [<a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}'>modération</a>]
       {else}
       [modération]
       {/if}
       {if $on neq admin}
-      [<a href='{$prefix}admin.php?liste={$smarty.get.liste}'>ajout/retrait de membres</a>]
+      [<a href='{rel}/{$platal->ns}lists/admin/{$platal->argv[1]}'>ajout/retrait de membres</a>]
       {else}
       [ajout/retrait de membres]
       {/if}
       {if $on neq options}
-      [<a href='{$prefix}options.php?liste={$smarty.get.liste}'>options</a>]
+      [<a href='{rel}/{$platal->ns}lists/options/{$platal->argv[1]}'>options</a>]
       {else}
       [options]
       {/if}
       {if $on neq delete}
-      [<a href='{$prefix}delete.php?liste={$smarty.get.liste}'>détruire</a>]
+      [<a href='{rel}/{$platal->ns}lists/delete/{$platal->argv[1]}'>détruire</a>]
       {else}
       [détruire liste]
       {/if}
@@ -88,12 +80,12 @@
     <td><strong>Administrer (avancé) :</strong></td>
     <td>
       {if $on neq soptions}
-      [<a href='{$prefix}soptions.php?liste={$smarty.get.liste}'>options avancées</a>]
+      [<a href='{rel}/{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancées</a>]
       {else}
       [options avancées]
       {/if}
       {if $on neq check}
-      [<a href='{$prefix}check.php?liste={$smarty.get.liste}'>vérifications</a>]
+      [<a href='{rel}/{$platal->ns}lists/check/{$platal->argv[1]}'>vérifications</a>]
       {else}
       [vérifications]
       {/if}
@@ -104,7 +96,7 @@
   <tr>
     <td><strong>Synchroniser</strong></td>
     {if $on neq sync}
-    <td>[<a href="listes-sync.php?liste={$smarty.get.liste}">Synchroniser avec l'annuaire</a>]</td>
+    <td>[<a href="{rel}/{$platal->ns}lists/sync/{$platal->argv[1]}">Synchroniser avec l'annuaire</a>]</td>
     {else}
     <td>[Synchroniser avec l'annuaire]</td>
     {/if}

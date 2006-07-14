@@ -37,7 +37,7 @@ moins 4 polytechniciens inscrits sur le site, et de fournir les informations sui
 liste :
 </p>
 
-<form action='{$smarty.server.PHP_SELF}' method='post'>
+<form action='{rel}/lists/create' method='post'>
   <table class='bicol' cellspacing='0' cellpadding='2'>
     <tr>
       <th colspan='2'>Caractéristiques de la Liste</th>

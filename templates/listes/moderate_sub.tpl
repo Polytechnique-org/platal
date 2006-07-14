@@ -25,7 +25,7 @@
   Refuser l'inscription d'un utilisateur
 </h1>
 
-<form method='post' action='?liste={$smarty.request.liste}'>
+<form method='post' action='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     <tr>
       <th class='titre'>refuser l'inscription de :</th>

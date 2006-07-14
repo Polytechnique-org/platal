@@ -25,7 +25,7 @@
 
 
 {if $archs}
-<h1>Archives de la liste {$smarty.request.liste}</h1>
+<h1>Archives de la liste {$platal->argv[1]}</h1>
 
 <h2>Triés par fils de discussion</h2>
 
@@ -42,7 +42,7 @@
     {foreach from=$range item=i}
     <td>
       {if $m[$i]}
-      <a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%B"}</a>
+      <a href="{rel}/{$platal->ns}lists/archives/{$platal->argv[1]}?rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%B"}</a>
       {else}
       &nbsp;
       {/if}
@@ -68,7 +68,7 @@
     {foreach from=$range item=i}
     <td>
       {if $m[$i]}
-      <a href="?liste={$smarty.request.liste}&amp;rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%B"}</a>
+      <a href="{rel}/{$platal->ns}lists/archives/{$platal->argv[1]}?rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%B"}</a>
       {else}
       &nbsp;
       {/if}

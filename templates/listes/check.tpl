@@ -35,7 +35,7 @@
   </tr>
   {/foreach}
 </table>
-<form action='{$smarty.server.REQUEST_URI}' method='post'>
+<form action='{rel}/{$platal->ns}lists/check/{$platal->argv[1]}' method='post'>
   <div class='center'>
     <br />
     <input type='submit' name='correct' value='Corriger les valeurs !' />

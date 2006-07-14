@@ -7,12 +7,12 @@ if (empty($matches)) {
     $mbox   = $matches[2];
     $fqdn   = strtolower($matches[3]);
     if ($fqdn == 'polytechnique.org') {
-        header("Location: https://www.polytechnique.org/listes/$action.php?liste=$mbox");
+        header("Location: https://www.polytechnique.org/lists/$action/$mbox");
     } else {
         require("../include/xorg.inc.php");
         $res = $globals->xdb->query("select diminutif from groupex.asso where mail_domain = {?}", $fqdn);
         if ($gpx = $res->fetchOneCell()) {
-            header("Location: http://www.polytechnique.net/$gpx/listes-$action.php?liste=$mbox");
+            header("Location: http://www.polytechnique.net/$gpx/lists/$action/$mbox");
         }
     }
 }
