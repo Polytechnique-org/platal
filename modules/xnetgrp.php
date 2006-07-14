@@ -28,6 +28,7 @@ class XnetGrpModule extends PLModule
             'grp/asso.php'   => $this->make_hook('index',    AUTH_PUBLIC),
             'grp/logo'       => $this->make_hook('logo',     AUTH_PUBLIC),
             'grp/edit'       => $this->make_hook('edit',     AUTH_MDP),
+            'grp/mail'       => $this->make_hook('mail',     AUTH_MDP),
             'grp/annuaire'   => $this->make_hook('annuaire', AUTH_MDP),
         );
     }
@@ -136,6 +137,33 @@ class XnetGrpModule extends PLModule
             $dom = $globals->xdb->iterator('SELECT * FROM groupex.dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
+        }
+    }
+
+    function handler_mail(&$page)
+    {
+        global $globals;
+
+        require_once 'lists.inc.php';
+
+        new_groupadmin_page('xnet/groupe/mail.tpl');
+        $client =& lists_xmlrpc(Session::getInt('uid'),
+                                Session::get('password'),
+                                $globals->asso('mail_domain'));
+        $page->assign('listes', $client->get_lists());
+
+        if (Post::has('send')) {
+            $from  = Post::get('from');
+            $sujet = Post::get('sujet');
+            $body  = Post::get('body');
+
+            $mls = array_keys(Env::getMixed('ml', array()));
+
+            require_once 'xnet/mail.inc.php';
+            $tos = get_all_redirects(Post::has('membres'), $mls, $client);
+            send_xnet_mails($from, $sujet, $body, $tos, Post::get('replyto'));
+            $page->kill("Mail envoyé !");
+            $page->assign('sent', true);
         }
     }
 
