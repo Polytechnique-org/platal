@@ -43,7 +43,7 @@ class XnetGlobals extends PlatalGlobals
         $globals->hook->config(null);
 
         $globals->read_config();
-        
+
         $globals->dbconnect();
         if ($globals->debug & 1) {
             $globals->db->trace_on();
@@ -54,12 +54,12 @@ class XnetGlobals extends PlatalGlobals
     function asso($key=null)
     {
         static $aid = null;
-        if ($aid === null) {
-            $gp  = basename(dirname($_SERVER['PHP_SELF']));
-            // for url like /groupex/event.php/file.csv
-            if (substr($gp, -4) == ".php")
-                $gp = basename(dirname(dirname($_SERVER['PHP_SELF'])));
-            if (strlen($gp) != 0) {
+
+        if (is_null($aid)) {
+            $gp = Get::get('p');
+            $gp = substr($gp, 0, strpos($gp, '/'));
+
+            if ($gp) {
                 $res = $this->xdb->query('SELECT  a.*, d.nom AS domnom
                                             FROM  groupex.asso AS a
                                        LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
