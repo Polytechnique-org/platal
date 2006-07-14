@@ -23,7 +23,8 @@ function smarty_function_rel()
 {
     static $rel;
     if (empty($rel)) {
-        global $globals;
+        global $globals, $platal;
+
         $url = parse_url($globals->baseurl);
         return ($rel = $url['path']);
     }

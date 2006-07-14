@@ -84,7 +84,7 @@ Professionnels) qui permettent un repérage plus facile sur le site.
 
 Après avoir sélectionné l'association
 polytechnicienne de ton choix, tu arrives sur la page qui lui est dédiée.
-<a href="http://www.polytechnique.net/X-Israel/asso.php"> L'exemple d'X-Israël</a
+<a href="http://www.polytechnique.net/X-Israel/"> L'exemple d'X-Israël</a
 La page de chaque association comporte ainsi :
 
 <ul style='margin-top:0cm' type=disc>

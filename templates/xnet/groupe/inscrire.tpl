@@ -44,7 +44,7 @@
 <p class="descr">
 <strong>Ta demande d'inscription a bien été envoyée !</strong> Tu seras averti par email de la suite qui lui sera donnée.
 <p>
-<p class="descr">[<a href="asso.php">Retour à la page d'accueil de {$asso.nom}</a>]</p>
+<p class="descr">[<a href="{rel}/{$platal->ns}">Retour à la page d'accueil de {$asso.nom}</a>]</p>
 
 {else}
 

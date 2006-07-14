@@ -32,7 +32,7 @@
             {foreach from=$groupesx key=id item=dom}
             <a class="cat" href="{rel}/groups/groupesx/{$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
-            <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
+            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
             {/foreach}
             {/foreach}
           </td>
@@ -50,7 +50,7 @@
             {foreach from=$binets key=id item=dom}
             <a class="cat" href="sommaire.php?cat=binets&amp;dom={$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
-            <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
+            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
             {/foreach}
             {/foreach}
           </td>
@@ -66,7 +66,7 @@
         <tr>
           <td class="listec">
             {iterate from=$promos item=g}
-            <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
+            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
             {/iterate}
           </td>
         </tr>
@@ -81,7 +81,7 @@
         <tr>
           <td class="listec">
             {iterate from=$inst item=g}
-            <a href="{$g.diminutif}/asso.php">{$g.nom}</a>
+            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
             {/iterate}
           </td>
         </tr>

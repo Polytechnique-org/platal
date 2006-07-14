@@ -19,44 +19,26 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{  function list_all_my_groups
+require_once dirname(__FILE__).'/Platal.php';
 
-require_once $globals->spoolroot.'/plugins/function.rel.php';
-
-function list_all_my_groups($params)
+class Xnet extends Platal
 {
-    if (!logged()) {
-        return;
+    function Xnet()
+    {
+        $modules = func_get_args();
+        call_user_func_array(array(&$this, 'Platal'), $modules);
+
+        global $globals;
+        if ($globals->asso()) {
+            if ($p = strpos($this->path, '/')) {
+                $this->ns   = substr($this->path, 0, $p);
+                $this->path = 'grp'.substr($this->path, $p);
+            } else {
+                $this->ns   = $this->path.'/';
+                $this->path = 'grp';
+            }
+        }
     }
-    global $globals;
-    $res = $globals->xdb->iterRow(
-            "SELECT  a.nom, a.diminutif
-               FROM  groupex.asso    AS a
-         INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
-              WHERE  m.uid={?}", Session::getInt('uid'));
-    $html = '<div>Mes groupes :</div>';
-    while (list($nom, $mini) = $res->next()) {
-        $html .= "<a class='gp' href='".smarty_function_rel()."/$mini'>&bull; $nom</a>";
-    }
-    return $html;
 }
 
-// }}}
-// {{{ cat_pp
-
-function cat_pp($cat)
-{
-    $trans = array(
-        'groupesx' => 'Groupes X' ,
-        'binets'   => 'Binets' ,
-        'institutions' => 'Institutions' ,
-        'promotions' => 'Promotions'
-    );
-
-    return $trans[strtolower($cat)];
-}
-
-// }}}
-
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

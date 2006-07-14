@@ -19,44 +19,31 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{  function list_all_my_groups
-
-require_once $globals->spoolroot.'/plugins/function.rel.php';
-
-function list_all_my_groups($params)
+class XnetGrpModule extends PLModule
 {
-    if (!logged()) {
-        return;
+    function handlers()
+    {
+        return array(
+            'grp' => $this->make_hook('index', AUTH_PUBLIC),
+        );
     }
-    global $globals;
-    $res = $globals->xdb->iterRow(
-            "SELECT  a.nom, a.diminutif
-               FROM  groupex.asso    AS a
-         INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
-              WHERE  m.uid={?}", Session::getInt('uid'));
-    $html = '<div>Mes groupes :</div>';
-    while (list($nom, $mini) = $res->next()) {
-        $html .= "<a class='gp' href='".smarty_function_rel()."/$mini'>&bull; $nom</a>";
+
+    function handler_index(&$page)
+    {
+        global $globals;
+
+        if (!$globals->asso('id')) {
+            return PL_NOT_FOUND;
+        }
+
+        $page->changeTpl('xnet/groupe/asso.tpl');
+        $page->useMenu();
+        $page->setType($globals->asso('cat'));
+        $page->assign('is_member', is_member());
+        $page->assign('logged', logged());
+
+        $page->assign('asso', $globals->asso());
     }
-    return $html;
 }
 
-// }}}
-// {{{ cat_pp
-
-function cat_pp($cat)
-{
-    $trans = array(
-        'groupesx' => 'Groupes X' ,
-        'binets'   => 'Binets' ,
-        'institutions' => 'Institutions' ,
-        'promotions' => 'Promotions'
-    );
-
-    return $trans[strtolower($cat)];
-}
-
-// }}}
-
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

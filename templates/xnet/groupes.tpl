@@ -50,7 +50,7 @@
     <td style="text-align:right;">
       {iterate from=$gps item=g}
       <table style="float: left;" cellspacing="2" cellpadding="0">
-        <tr><td class="oval{if $doms}2{/if}"><a href="{rel}/{$g.diminutif}/asso.php">{$g.nom}</a></td></tr>
+        <tr><td class="oval{if $doms}2{/if}"><a href="{rel}/{$g.diminutif}/">{$g.nom}</a></td></tr>
       </table>
       {/iterate}
     </td>

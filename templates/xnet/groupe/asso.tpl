@@ -21,9 +21,9 @@
 {**************************************************************************}
 
 {if $asso.site}
-<a href="{$asso.site}"><img src='getlogo.php' alt="LOGO" style="float: right;" /></a>
+<a href="{$asso.site}"><img src='{rel}/{$platal->ns}getlogo.php' alt="LOGO" style="float: right;" /></a>
 {else}
-<img src='getlogo.php' alt="LOGO" style="float: right;" />
+<img src='{rel}/{$platal->ns}getlogo.php' alt="LOGO" style="float: right;" />
 {/if}
 
 <h1>{$asso.nom} : Accueil</h1>
@@ -59,7 +59,7 @@
       Forum:
     </td>
     <td>
-      <a href="https://www.polytechnique.org/banana/?group={$asso.forum}">par le web</a>
+      <a href="https://www.polytechnique.org/banana/{$asso.forum}">par le web</a>
       ou <a href="news://ssl.polytechnique.org/{$asso.forum}">par nntp</a>
     </td>
   </tr>
@@ -71,7 +71,7 @@
       M'inscrire :
     </td>
     <td>
-      <a href="{$asso.sub_url|default:"inscrire.php"}">m'inscrire</a>
+      <a href="{rel}/{$platal->ns}inscrire.php">m'inscrire</a>
     </td>
   </tr>
   {/if}

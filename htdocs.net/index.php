@@ -21,10 +21,10 @@
 
 require 'xnet.inc.php';
 
-require_once dirname(__FILE__).'/../classes/Platal.php';
+require_once dirname(__FILE__).'/../classes/Xnet.php';
 require_once dirname(__FILE__).'/../classes/PLModule.php';
 
-$platal = new Platal('xnet');
+$platal = new Xnet('xnet', 'xnetgrp');
 $platal->run();
 
 ?>
