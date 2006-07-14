@@ -22,14 +22,13 @@
 
 <h1>Demande d'inscription à {$asso.nom}</h1>
 
-{if $smarty.request.u && $admin && $show_form}
+{if $u && $admin && $show_form}
 
 <h2>
   Demande de la part de : {$prenom} {$nom} (X{$promo})
-  <a href="https://www.polytechnique.org/profile/{$smarty.request.u}">Voir sa fiche</a>
+  <a href="https://www.polytechnique.org/profile/{$u}">Voir sa fiche</a>
 </h2>
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <input type="hidden" name="u" value="{$smarty.request.u}" />
+<form action="{rel}/{$platal->ns}subscribe/{$u}" method="post">
   <input type="submit" value="Accepter" name="accept" />
   <br />
   ou bien
@@ -53,7 +52,7 @@ Pour t'inscrire à {$asso.nom}, il te faut en demander l'autorisation aux animate
 formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, puis clique sur
 [&nbsp;m'inscrire&nbsp;]
 </p>
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/{$platal->ns}subscribe" method="post">
   <p class="descr">
   <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}</strong>
   </p>
