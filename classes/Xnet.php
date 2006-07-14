@@ -31,7 +31,7 @@ class Xnet extends Platal
         global $globals;
         if ($globals->asso()) {
             if ($p = strpos($this->path, '/')) {
-                $this->ns   = substr($this->path, 0, $p);
+                $this->ns   = substr($this->path, 0, $p).'/';
                 $this->path = 'grp'.substr($this->path, $p);
             } else {
                 $this->ns   = $this->path.'/';

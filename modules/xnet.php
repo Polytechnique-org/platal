@@ -135,7 +135,7 @@ class XnetModule extends PLModule
         if (Post::has('diminutif')) {
             $globals->xdb->query('INSERT INTO groupex.asso (id,diminutif)
                                  VALUES(NULL,{?})', Post::get('diminutif'));
-            redirect(Post::get('diminutif').'/edit.php');
+            redirect(Post::get('diminutif').'/edit');
         }
 
         $res = $globals->xdb->query('SELECT nom,diminutif FROM groupex.asso ORDER by NOM');

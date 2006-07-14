@@ -24,7 +24,7 @@
 
 <h1>{$asso.nom} : Éditer l'accueil</h1>
 
-<form method="post" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<form method="post" action="{rel}/{$platal->ns}edit" enctype="multipart/form-data">
   {if $super}
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>

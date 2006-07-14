@@ -36,7 +36,7 @@ function list_all_my_groups($params)
               WHERE  m.uid={?}", Session::getInt('uid'));
     $html = '<div>Mes groupes :</div>';
     while (list($nom, $mini) = $res->next()) {
-        $html .= "<a class='gp' href='".smarty_function_rel()."/$mini'>&bull; $nom</a>";
+        $html .= "<a class='gp' href='".smarty_function_rel()."/$mini/'>&bull; $nom</a>";
     }
     return $html;
 }

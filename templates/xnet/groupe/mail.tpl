@@ -57,7 +57,7 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
       <td>
         <input type="checkbox" name="membres" value="1" {if $smarty.request.membres}checked="checked"{/if} />
-        <em>écrit à tout l'annuaire du groupe</em> <a href="annuaire.php" class='popup'>(voir annuaire)</a>
+        <em>écrit à tout l'annuaire du groupe</em> <a href="{rel}/{$platal->ns}annuaire" class='popup'>(voir annuaire)</a>
       </td>
     </tr>
 

@@ -86,7 +86,9 @@
         new_groupadmin_page('xnet/groupe/membres-edit.tpl');
 
         $user = get_infos(Env::get('edit'));
-        if (empty($user)) { redirect("annuaire.php"); }
+        if (empty($user)) {
+            redirect('annuaire');
+        }
 
         require 'lists.inc.php';
         $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $globals->asso('mail_domain'));
@@ -141,9 +143,9 @@
                     $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
                 }
             }
-	    redirect("annuaire.php");
+	    redirect('annuaire');
         }
-        
+
         $page->assign('user', $user);
         $listes = $client->get_lists($user['email2']);
         $page->assign('listes', $listes);
@@ -159,7 +161,9 @@
     {
         new_groupadmin_page('xnet/groupe/membres-del.tpl');
         $user = get_infos(Env::get('del'));
-        if (empty($user)) { redirect("annuaire.php"); }
+        if (empty($user)) {
+            redirect('annuaire');
+        }
         $page->assign('user', $user);
 
         if (Post::has('confirm')) {
@@ -170,9 +174,9 @@
 
             // don't unsubscribe email from list if other user use same email
             $user_same_email = get_infos($user['email']);
-            
+
             if (($domain = $globals->asso('mail_domain')) && empty($user_same_email)) {
-            
+
                 require 'lists.inc.php';
                 $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $domain);
                 $listes = $client->get_lists($user['email2']);
@@ -200,7 +204,7 @@
         }
     }
     else {
-        redirect("annuaire.php");
+        redirect('annuaire');
     }
 
     $page->run();

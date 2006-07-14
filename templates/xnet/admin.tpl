@@ -34,7 +34,7 @@
 
 <h1>Ajouter un groupe</h1>
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{rel}/admin" method="post">
   <p class="descr">
   Pour ajouter un groupe, choisir ici le diminutif qu'il va utiliser,
   tu seras ensuite redirigé vers une page te permettant d'éditer le groupe :
@@ -52,7 +52,7 @@
   {foreach from=$assos item=a key=i name=all}
   {if $i is even}<tr>{/if}
     <td><a href='?del={$a.diminutif}'><img src='{rel}/images/del.png' alt='delete' /></a></td>
-    <td><a href='{rel}/{$a.diminutif}/edit.php'>{$a.nom}</a></td>
+    <td><a href='{rel}/{$a.diminutif}/edit'>{$a.nom}</a></td>
     {if $i is odd || $smarty.foreach.all.last}</tr>{/if}
   {/foreach}
 </table>

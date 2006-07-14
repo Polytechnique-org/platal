@@ -23,7 +23,7 @@
 {if $smarty.post.confirm}
 
 <p class="descr">
-<a href="annuaire.php">retour à l'annuaire</a>
+<a href="{rel}/{$platal->ns}annuaire">retour à l'annuaire</a>
 </p>
 
 {else}
@@ -43,7 +43,7 @@
     et le désabonner de toutes les listes de diffusion du groupe ?
     </p>
     <input type='submit' name='confirm' value='Oui, je le désinscris complètement du groupe !' />
-  </div>                                                                      
+  </div>
 </form>
 
 {/if}

@@ -24,17 +24,19 @@ class XnetGrpModule extends PLModule
     function handlers()
     {
         return array(
-            'grp'             => $this->make_hook('index', AUTH_PUBLIC),
-            'grp/asso.php'    => $this->make_hook('index', AUTH_PUBLIC),
-            'grp/logo'        => $this->make_hook('logo',  AUTH_PUBLIC),
+            'grp'            => $this->make_hook('index',    AUTH_PUBLIC),
+            'grp/asso.php'   => $this->make_hook('index',    AUTH_PUBLIC),
+            'grp/logo'       => $this->make_hook('logo',     AUTH_PUBLIC),
+            'grp/edit'       => $this->make_hook('edit',     AUTH_MDP),
+            'grp/annuaire'   => $this->make_hook('annuaire', AUTH_MDP),
         );
     }
 
-    function handler_index(&$page)
+    function handler_index(&$page, $arg = null)
     {
         global $globals;
 
-        if (!$globals->asso('id')) {
+        if (!is_null($arg)) {
             return PL_NOT_FOUND;
         }
 
@@ -73,6 +75,170 @@ class XnetGrpModule extends PLModule
         }
 
         exit;
+    }
+
+    function handler_edit(&$page)
+    {
+        global $globals;
+
+        new_groupadmin_page('xnet/groupe/edit.tpl');
+
+        if (Post::has('submit')) {
+            if (has_perms()) {
+                if (Post::get('mail_domain') && (strstr(Post::get('mail_domain'), '.') === false)) {
+                    $page->trig_run("le domaine doit être un FQDN (aucune modif effectuée) !!!");
+                }
+                $globals->xdb->execute(
+                    "UPDATE  groupex.asso
+                        SET  nom={?}, diminutif={?}, cat={?}, dom={?},
+                             descr={?}, site={?}, mail={?}, resp={?},
+                             forum={?}, mail_domain={?}, ax={?}, pub={?},
+                             sub_url={?}, inscriptible={?}
+                      WHERE  id={?}",
+                      Post::get('nom'), Post::get('diminutif'),
+                      Post::get('cat'), Post::getInt('dom'),
+                      Post::get('descr'), Post::get('site'),
+                      Post::get('mail'), Post::get('resp'),
+                      Post::get('forum'), Post::get('mail_domain'),
+                      Post::has('ax'), Post::has('pub')?'private':'public',
+                      Post::get('sub_url'), Post::get('inscriptible'),
+                      $globals->asso('id'));
+                if (Post::get('mail_domain')) {
+                    $globals->xdb->execute('INSERT INTO virtual_domains (domain) VALUES({?})',
+                                           Post::get('mail_domain'));
+                }
+            } else {
+                $globals->xdb->execute(
+                    "UPDATE  groupex.asso
+                        SET  descr={?}, site={?}, mail={?}, resp={?},
+                             forum={?}, ax={?}, pub= {?}, sub_url={?}
+                      WHERE  id={?}",
+                      Post::get('descr'), Post::get('site'),
+                      Post::get('mail'), Post::get('resp'),
+                      Post::get('forum'), Post::has('ax'),
+                      Post::has('pub')?'private':'public',
+                      Post::get('sub_url'), $globals->asso('id'));
+            }
+
+            if ($_FILES['logo']['name']) {
+                $logo = file_get_contents($_FILES['logo']['tmp_name']);
+                $mime = $_FILES['logo']['type'];
+                $globals->xdb->execute('UPDATE groupex.asso
+                                           SET logo={?}, logo_mime={?}
+                                         WHERE id={?}', $logo, $mime,
+                                        $globals->asso('id'));
+            }
+
+            redirect('../'.Post::get('diminutif', $globals->asso('diminutif')).'/edit');
+        }
+
+        if (has_perms()) {
+            $dom = $globals->xdb->iterator('SELECT * FROM groupex.dom ORDER BY nom');
+            $page->assign('dom', $dom);
+            $page->assign('super', true);
+        }
+    }
+
+    function handler_annuaire(&$page)
+    {
+        global $globals;
+
+        define('NB_PER_PAGE', 25);
+
+        if ($globals->asso('pub') == 'public') {
+            new_group_page('xnet/groupe/annuaire.tpl');
+        } else {
+            new_groupadmin_page('xnet/groupe/annuaire.tpl');
+        }
+
+        $page->assign('admin', may_update());
+
+        switch (Env::get('order')) {
+            case 'promo'    : $group = 'promo';    $tri = 'promo_o DESC, nom, prenom'; break;
+            case 'promo_inv': $group = 'promo';    $tri = 'promo_o, nom, prenom'; break;
+            case 'alpha_inv': $group = 'initiale'; $tri = 'nom DESC, prenom DESC, promo'; break;
+            default         : $group = 'initiale'; $tri = 'nom, prenom, promo';
+        }
+
+        if ($group == 'initiale')
+            $res = $globals->xdb->iterRow(
+                        'SELECT  UPPER(SUBSTRING(
+                                     IF(m.origine="X", IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom),
+                                     1, 1)) as letter, COUNT(*)
+                           FROM  groupex.membres AS m
+                      LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+                          WHERE  asso_id = {?}
+                       GROUP BY  letter
+                       ORDER BY  letter', $globals->asso('id'));
+        else
+            $res = $globals->xdb->iterRow(
+                        'SELECT  IF(m.origine="X",u.promo,"extérieur") AS promo,
+                                 COUNT(*), IF(m.origine="X",u.promo,"") AS promo_o
+                           FROM  groupex.membres AS m
+                      LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+                          WHERE  asso_id = {?}
+                       GROUP BY  promo
+                       ORDER BY  promo_o DESC', $globals->asso('id'));
+
+        $alphabet = array();
+        $nb_tot = 0;
+        while (list($char, $nb) = $res->next()) {
+            $alphabet[] = $char;
+            $nb_tot += $nb;
+            if (Env::has($group) && $char == strtoupper(Env::get($group))) {
+                $tot = $nb;
+            }
+        }
+        $page->assign('group', $group);
+        $page->assign('request_group', Env::get($group));
+        $page->assign('alphabet', $alphabet);
+        $page->assign('nb_tot',   $nb_tot);
+
+        $ofs   = Env::getInt('offset');
+        $tot   = Env::get($group) ? $tot : $nb_tot;
+        $nbp   = intval(($tot-1)/NB_PER_PAGE);
+        $links = array();
+        if ($ofs) {
+            $links['précédent'] = $ofs-1;
+        }
+        for ($i = 0; $i <= $nbp; $i++) {
+            $links[(string)($i+1)] = $i;
+        }
+        if ($ofs < $nbp) {
+            $links['suivant'] = $ofs+1;
+        }
+        if (count($links)>1) {
+            $page->assign('links', $links);
+        }
+
+        $ini = '';
+        if (Env::has('initiale')) {
+            $ini = 'AND IF(m.origine="X",
+                           IF(u.nom_usage<>"", u.nom_usage, u.nom),
+                           m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"';
+        } elseif (Env::has('promo')) {
+            $ini = 'AND IF(m.origine="X", u.promo, "extérieur") = "'
+                 .addslashes(Env::get('promo')).'"';
+        }
+
+        $ann = $globals->xdb->iterator(
+                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
+                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
+                           IF(m.origine='X',u.promo,'extérieur') AS promo,
+                           IF(m.origine='X',u.promo,'') AS promo_o,
+                           IF(m.origine='X',a.alias,m.email) AS email,
+                           IF(m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
+                           m.perms='admin' AS admin,
+                           m.origine='X' AS x,
+                           m.uid
+                     FROM  groupex.membres AS m
+                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
+                    WHERE  m.asso_id = {?} $ini
+                 ORDER BY  $tri
+                    LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
+
+        $page->assign('ann', $ann);
     }
 }
 

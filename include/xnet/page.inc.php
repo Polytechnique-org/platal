@@ -74,7 +74,7 @@ class XnetPage extends PlatalPage
             $dim = $globals->asso('diminutif');
             $sub['présentation'] = "$dim/";
             if (may_update() || $globals->asso('pub') == 'public') {
-                $sub['annuaire du groupe'] = "$dim/annuaire.php";
+                $sub['annuaire du groupe'] = "$dim/annuaire";
                 if ($globals->xnet->geoloc)
                     $sub['carte'] = "$dim/geoloc.php";
             }
@@ -92,7 +92,7 @@ class XnetPage extends PlatalPage
 
         if (logged() && may_update()) {
             $sub = array();
-            $sub['modifier l\'accueil'] = "$dim/edit.php";
+            $sub['modifier l\'accueil'] = "$dim/edit";
             if ($globals->wiki->wikidir && $globals->xnet->wiki)
                 $sub['wiki'] = "$dim/Accueil";
             if ($globals->asso('mail_domain')) {
