@@ -43,7 +43,7 @@ class ListsModule extends PLModule
         );
     }
 
-    function prepare_client()
+    function prepare_client(&$page)
     {
         require_once 'lists.inc.php';
 
@@ -54,7 +54,7 @@ class ListsModule extends PLModule
     {
         global $globals;
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Listes de diffusion');
@@ -171,7 +171,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/members.tpl');
 
@@ -232,7 +232,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/trombi.tpl');
 
@@ -269,7 +269,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/archives.tpl');
 
@@ -313,7 +313,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/moderate.tpl');
 
@@ -414,7 +414,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/admin.tpl');
 
@@ -494,7 +494,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/options.tpl');
 
@@ -547,7 +547,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/delete.tpl');
 
@@ -577,7 +577,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/soptions.tpl');
 
@@ -605,7 +605,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client();
+        $this->prepare_client($page);
 
         $page->changeTpl('listes/check.tpl');
 
