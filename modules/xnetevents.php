@@ -538,14 +538,14 @@ class XnetEventsModule extends PLModule
 
         $page->assign('admin', may_update());
         $page->assign('evt', $evt);
-        $page->assign('tout', !Env::has('item_id'));
+        $page->assign('tout', is_null($item_id));
 
         if (count($evt['moments'])) {
             $page->assign('moments', $evt['moments']);
         }
 
         $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
-        $whereitemid = Env::has('item_id')?('AND ep.item_id = '.Env::getInt('item_id', 1)):'';
+        $whereitemid = is_null($item_id) ? '' : "AND ep.item_id = $item_id";
         $res = $globals->xdb->iterRow(
                     'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL, m.nom,
                                                 IF(u.nom_usage<>"", u.nom_usage, u.nom)), 1, 1)),
