@@ -35,7 +35,7 @@
 </h2>
 
 
-<form method="post" action="{$smarty.server.REQUEST_URI}">
+<form method="post" action="{rel}/{$platal->ns}member/del/{$platal->argv[1]}">
   <div class="center">
     <p class="descr">
     Etes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,

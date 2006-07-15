@@ -20,35 +20,27 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $smarty.request.new eq x}
+<h1>{$asso.nom} : Ajout d'un membre</h1>
 
-<h1>{$asso.nom} : Ajout d'un membre X</h1>
-
-<form method="post" action="{$smarty.server.REQUEST_URI}">
+<form method="post" action="{rel}/{$platal->ns}member/new/">
   <p class="descr">
-  Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses adresses mail @polytechnique.org. Pour rentrer plusieurs X en une seule fois, sépare les adresses par des espaces :
+  <ul class='descr'>
+    <li>
+      Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
+      adresses mail @polytechnique.org.
+    </li>
+    <li>
+      Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
+      adresse mail, tu seras ensuite redirigé vers une page te permettant
+      d'éditer son profil (nom, prenom, ...)
+    </li>
+  </ul>
   </p>
   <div class="center">
-    <input type="text" name="email" size="40" value="{$smarty.request.email}" />
-    <input type='submit' value='Ajouter' />
-  </div>                                                                      
+    <input type="text" name="email" size="40" value="{$platal->argv[1]}" />
+    <input type='submit' value='Ajouter'
+      onclick='this.form.action += this.form.email.value' />
+  </div>
 </form>
-
-{else}
-
-<h1>{$asso.nom} : Ajout d'un membre extérieur</h1>
-
-<form method="post" action="{$smarty.server.REQUEST_URI}">
-  <p class="descr">
-  Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son adresse mail,
-  tu seras ensuite redirigé vers une page te permettant d'éditer son profil (nom, prenom, ...) :
-  </p>
-  <div class="center">
-    <input type="text" name="email" size="40" value="{$smarty.request.email}" />
-    <input type='submit' value='Ajouter' />
-  </div>                                                                      
-</form>
-
-{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

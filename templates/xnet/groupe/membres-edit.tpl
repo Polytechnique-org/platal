@@ -22,17 +22,21 @@
 
 <h1>{$asso.nom} : gestion des membres</h1>
 
+<p>
+[<a href='{rel}/{$platal->ns}annuaire'>Retour à l'annuaire</a>]
+</p>
+
 <h2>
   Édition du profil de {$user.prenom} {$user.nom}
   {if $user.origine eq 'X'}
   (X{$user.promo})
   <a href="https://www.polytechnique.org/profile/{$user.alias}"><img src="{rel}/images/loupe.gif" alt="Voir la fiche" /></a>
   {/if}
-  <a href="?del={$user.email}"><img src="{rel}/images/del.png" alt="Suppression du compte" /></a>
+  <a href="{rel}/{$platal->ns}member/del/{$user.email}"><img src="{rel}/images/del.png" alt="Suppression du compte" /></a>
   <a href="mailto:{$user.email}"><img src="{rel}/images/mail.png" alt="Ecrire un mail" /></a>
 </h2>
 
-<form method="post" action="{$smarty.server.REQUEST_URI}">
+<form method="post" action="{rel}/{$platal->ns}member/{$platal->argv[1]}">
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>
       <td class="titre">
@@ -89,7 +93,7 @@
         <input type='checkbox' name='ml2[{$liste.list}]' {if $liste.sub eq 2}checked="checked"{/if} />
       </td>
       <td>
-        <a href='listes-members.php?liste={$liste.list}'>{$liste.list}</a>
+        <a href='{rel}/{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a>
       </td>
       <td>{$liste.desc}</td>
       <td class='right'>{$liste.nbsub}</td>

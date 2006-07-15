@@ -35,8 +35,7 @@ Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'i
 Fonctionnalités visibles uniquement par les administrateurs :
 </p>
 <ul class="descr">
-  <li><a href="membres-edit.php?new=x">Ajouter un membre X</a></li>
-  <li><a href="membres-edit.php?new=ext">Ajouter un membre extérieur</a></li>
+  <li><a href="{rel}/{$platal->ns}member/new">Ajouter un membre</a></li>
   <li><a href="{rel}/{$platal->ns}admin/annuaire">Synchroniser annuaire et Listes de diffusion</a></li>
 </ul>
 {/if}
@@ -72,8 +71,8 @@ Fonctionnalités visibles uniquement par les administrateurs :
       {/if}
     </td>
     {if $admin}
-    <td><a href="membres-edit.php?edit={if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
-    <td><a href="membres-edit.php?del={if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
+    <td><a href="{rel}/{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
+    <td><a href="{rel}/{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
     {/if}
   </tr>
   {/iterate}
