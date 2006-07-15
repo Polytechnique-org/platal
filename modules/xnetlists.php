@@ -89,7 +89,7 @@ class XnetListsModule extends ListsModule
                            USING  x4dat.virtual AS v
                        LEFT JOIN  x4dat.virtual_redirect USING(vid)
                            WHERE  v.alias={?}', $alias);
-            $page->trig(Post::get('del_alias')." supprimÃ© !");
+            $page->trig(Post::get('del_alias')." supprimé !");
         }
 
         $listes = $this->client->get_lists();
@@ -128,7 +128,7 @@ class XnetListsModule extends ListsModule
         $ann = $globals->xdb->iterator(
                   "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
                            IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                           IF(m.origine='X',u.promo,'extÃ©rieur') AS promo,
+                           IF(m.origine='X',u.promo,'extérieur') AS promo,
                            IF(m.origine='X',CONCAT(a.alias, '@polytechnique.org'),m.email) AS email,
                            IF(m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
                            m.perms='admin' AS admin,
