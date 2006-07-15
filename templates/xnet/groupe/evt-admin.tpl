@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : <a href='evenements.php'>Evénements</a> </h1>
+<h1>{$asso.nom} : <a href='{rel}/{$platal->ns}events'>Evénements</a> </h1>
 
 <p>
 L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
@@ -163,7 +163,7 @@ Ils ont payé mais ont oublié de s'inscrire :
 {if $admin}
 
 <p class="descr">
-[<a href="evt-csv.php/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv?eid={$smarty.request.eid}&amp;item_id={$smarty.request.item_id}">Télécharger le fichier Excel</a>]
+[<a href="{rel}/{$platal->ns}events/csv/{$smarty.request.eid}/{$smarty.request.item_id}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv?">Télécharger le fichier Excel</a>]
 </p>
 
 <hr />

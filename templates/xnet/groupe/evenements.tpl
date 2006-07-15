@@ -44,7 +44,7 @@ Evénements
 
   {else}
 
-  <form action="{$smarty.server.PHP_SELF}" method="post">
+  <form action="{rel}/{$platal->ns}events" method="post">
   {foreach from=$evenements item=e}
   <table class="tiny" cellspacing="0" cellpadding="0">
     <tr {popup caption=$e.intitule" text=$e.descriptif}>
