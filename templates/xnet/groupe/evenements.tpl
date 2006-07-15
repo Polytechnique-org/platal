@@ -30,29 +30,29 @@ Evénements
   </p>
 {else}
 
-  {if $admin}
-  <p class="center">
-  [<a href="evt-modif.php?add=1">Annoncer un nouvel événement</a>]
-  </p>
-  {/if}
+{if $admin}
+<p class="center">
+[<a href="{rel}/{$platal->ns}events/edit">Annoncer un nouvel événement</a>]
+</p>
+{/if}
 
-  {if $nb_evt eq 0}
+{if !$evenements}
 
-  <p class="descr">
-    Aucun événement n'a été référencé par les animateurs du groupe.
-  </p>
+<p class="descr">
+  Aucun événement n'a été référencé par les animateurs du groupe.
+</p>
 
-  {else}
+{else}
 
-  <form action="{rel}/{$platal->ns}events" method="post">
+<form action="{rel}/{$platal->ns}events" method="post">
   {foreach from=$evenements item=e}
-  <table class="tiny" cellspacing="0" cellpadding="0">
+  <table class="bicol" cellspacing="0" cellpadding="0">
     <tr {popup caption=$e.intitule" text=$e.descriptif}>
       <th colspan="2">
         {$e.intitule}
         {if $admin}
-        <a href="evt-modif.php?mod=1&amp;eid={$e.eid}"><img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition de l'événement" /></a>
-        <a href="evt-modif.php?sup=1&amp;eid={$e.eid}" onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')"><img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression de {$e.intitule}" /></a>
+        <a href="{rel}/{$platal->ns}events/edit/{$e.eid}?mod=1"><img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition de l'événement" /></a>
+        <a href="{rel}/{$platal->ns}events/edit/{$e.eid}?sup=1" onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')"><img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression de {$e.intitule}" /></a>
         {/if}
       </th>
     </tr>
@@ -80,7 +80,7 @@ Evénements
     {if $admin || $e.show_participants}
     <tr {popup caption=$e.intitule text=$e.descriptif}>
       <td class="titre" colspan="2">
-        <a href="evt-admin.php?eid={$e.eid}">
+        <a href="{rel}/{$platal->ns}events/admin/{$e.eid}">
           Liste des participants
           <img src="{rel}/images/loupe.gif" title="Liste des participants" alt="Liste des participants" />
         </a>
@@ -162,8 +162,8 @@ Evénements
   <div>
     <input type="hidden" name="ins" />
   </div>
-  </form>
-  {/if}
+</form>
+{/if}
 
 {/if}
 

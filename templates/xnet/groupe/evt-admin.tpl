@@ -36,9 +36,9 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 
 {if $moments}
 <p class="center">
-[<a href="{$smarty.server.PHP_SELF}?eid={$smarty.request.eid}"{if !$smarty.request.item_id}class="erreur"{/if}>tout</a>]
+[<a href="{rel}/{$platal->ns}events/admin/{$page->argv[1]}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
 {foreach from=$moments item=m}
-[<a href="{$smarty.server.PHP_SELF}?eid={$m.eid}&amp;item_id={$m.item_id}" {if $smarty.request.item_id eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
+[<a href="{rel}/{$platal->ns}events/admin/{$page->argv[1]}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
 {/foreach}
 </p>
 {/if}
@@ -46,7 +46,7 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 <p class="center">
 [<a href="{$url_page}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
-[<a href="{$url_page}&amp;initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="{$url_page}?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
@@ -156,14 +156,14 @@ Ils ont payé mais ont oublié de s'inscrire :
 
 <p class="descr">
 {foreach from=$links item=ofs key=txt}
-<a href="{$url_page}&amp;offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
+<a href="{$url_page}?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
 
 {if $admin}
 
 <p class="descr">
-[<a href="{rel}/{$platal->ns}events/csv/{$smarty.request.eid}/{$smarty.request.item_id}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv?">Télécharger le fichier Excel</a>]
+[<a href="{rel}/{$platal->ns}events/csv/{$platal->argv[1]}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]
 </p>
 
 <hr />
@@ -174,15 +174,15 @@ Donne ici son mail (complet pour les extérieurs, sans @polytechnique.org pour le
 nombre de participants.
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="inscription">
+<form action="{rel}/{$platal->ns}events/admin/{$evt.eid}/{$platal->argv[2]}" method="post" id="inscription">
   <p class="descr">
-  <input type="hidden" name="eid" value="{$smarty.request.eid}" />
+  <input type="hidden" name="eid" value="{$platal->argv[1]}" />
   <input type="hidden" name="adm" value="nbs" />
-  
+
   Mail: <input name="mail" size="20" />
-  {if $smarty.request.item_id}
-  <input type="hidden" name="item_id" value="{$smarty.request.item_id}" />
-  {$evt.titre}: <input name="nb{$smarty.request.item_id}" size="1" value="1" />
+  {if $platal->argv[2]}
+  <input type="hidden" name="item_id" value="{$platal->argv[2]}" />
+  {$evt.titre}: <input name="nb{$platal->argv[2]}" size="1" value="1" />
   {else}
     {if $moments}
       {foreach from=$moments item=m}
@@ -210,7 +210,7 @@ Note que tu peux cliquer sur les noms des membres pour remplir automatiquement l
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="montant">
   <p class="descr">
-  <input type="hidden" name="eid" value="{$smarty.request.eid}" />
+  <input type="hidden" name="eid" value="{$platal->argv[1]}" />
   <input type="hidden" name="adm" value="prix" />
   Mail: <input name="mail" size="20" />
   montant: <input name="montant" size="3" value="0,00" /> &euro;

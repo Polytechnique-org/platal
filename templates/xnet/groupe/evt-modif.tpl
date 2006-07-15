@@ -35,7 +35,7 @@
   restaurant.
 </p>
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="{rel}/{$platal->ns}events/edit/{$platal->argv[1]}">
   <hr />
   <table>
     <tr>
