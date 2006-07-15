@@ -219,11 +219,11 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        header('Content-type: text/x-csv');
+        header('Content-type: text/x-csv; encoding=iso-8859-1');
         header('Pragma: ');
         header('Cache-Control: ');
 
-        new_nonhtml_page('xnet/groupe/evt-csv.tpl');
+        new_nonhtml_page('xnetevents/csv.tpl');
 
         $admin = may_update();
 
