@@ -16,10 +16,7 @@ VCS_FILTER = ! -name .arch-ids ! -name CVS
 
 all: build
 
-build: spool/templates_c wiki include/platal/globals.inc.php banana
-
-clean:
-	rm -rf include/platal/globals.inc.php
+build: core banana wiki
 
 %: %.in Makefile
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
@@ -27,29 +24,55 @@ clean:
 ################################################################################
 # targets
 
+##
+## core
+##
+
+core: spool/templates_c include/platal/globals.inc.php
+
 spool/templates_c spool/uploads:
 	mkdir -p $@
 	chmod o+w $@
+
+
+##
+## wiki
+##
+
+WIKI_NEEDS = \
+     wiki/local/farmconfig.php      \
+     wiki/pub/skins/empty           \
+     wiki/cookbook/e-protect.php    \
+     spool/wiki.d                   \
+     htdocs/uploads                 \
+     htdocs/wiki                    \
+
+wiki: get-wiki build-wiki
+
+build-wiki: $(WIKI_NEEDS) | get-wiki
+
+htdocs/uploads: spool/uploads
+	cd htdocs && ln -sf ../spool/uploads
+
+htdocs/wiki:
+	cd htdocs && ln -sf ../wiki/pub wiki
+
 
 spool/wiki.d:
 	mkdir -p $@
 	chmod o+w $@
 	cd $@ && ln -sf ../../install.d/wiki/wiki.d/* .
 
+
 wiki/cookbook/e-protect.php:
 	cd wiki/cookbook && ln -sf ../../install.d/wiki/e-protect.php
-
-htdocs/uploads:
-	cd htdocs && ln -sf ../spool/uploads
-
-htdocs/wiki:
-	cd htdocs && ln -sf ../wiki/pub wiki
 
 wiki/local/farmconfig.php:
 	cd wiki/local/     && ln -sf ../../plugins/pmwiki.config.php farmconfig.php
 
 wiki/pub/skins/empty:
 	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
+
 
 get-wiki:
 	@if ! test -d wiki; then                                          \
@@ -59,16 +82,16 @@ get-wiki:
 	    mv pmwiki-* wiki;						  \
 	fi
 
+##
+## banana
+##
+
 banana: htdocs/images/banana htdocs/css/banana.css
 htdocs/images/banana:
 	cd $(@D) && ln -sf /usr/share/banana/img $(@F)
 
 htdocs/css/banana.css:
 	cd $(@D) && ln -sf /usr/share/banana/css/style.css $(@F)
-
-build-wiki: wiki/local/farmconfig.php wiki/pub/skins/empty spool/wiki.d
-
-wiki: get-wiki build-wiki spool/uploads htdocs/uploads htdocs/wiki wiki/cookbook/e-protect.php
 
 ################################################################################
 
