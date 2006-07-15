@@ -177,7 +177,7 @@ table.large, table.bicol     { width: 96%; margin-left:  2%; border: 2px solid g
 
 table.tiny td, table.tinybicol td, table.large td, table.bicol td {
     border: 1px solid gray;
-    padding: 2px;
+    padding: 2px 4px;
 }
 table.tiny th, table.tinybicol th, table.large th, table.bicol th {
     border: 1px solid gray;

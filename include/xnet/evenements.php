@@ -20,56 +20,82 @@
  ***************************************************************************/
 
 // {{{ function get_event_detail()
-function get_event_detail($eid, $item_id = false) {
+
+function get_event_detail($eid, $item_id = false)
+{
     global $globals;
     $res = $globals->xdb->query(
-        "SELECT	SUM(nb) AS nb_tot, e.intitule, ei.titre,
-                debut AS deb, fin, membres_only, descriptif, e.eid,
-                e.show_participants, e.paiement_id, e.short_name,
-                e.deadline_inscription, LEFT(NOW(), 10) AS now,
+        "SELECT	SUM(nb) AS nb_tot, e.*,
+                IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
+                   1) AS inscr_open,
+                LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,
+                LEFT(NOW(), 10) AS now,
+                ei.titre,
                 al.vid AS absent_list, pl.vid AS participant_list,
-                a.nom, a.prenom, a.promo
-           FROM	groupex.evenements AS e
-     INNER JOIN	groupex.evenements_items AS ei ON (e.eid = ei.eid)
+                a.nom, a.prenom, a.promo, aa.alias
+           FROM	groupex.evenements              AS e
+     INNER JOIN x4dat.auth_user_md5             AS a  ON a.user_id = e.organisateur_uid
+     INNER JOIN x4dat.aliases                   AS aa ON (aa.type = 'a_vie' AND aa.id = a.user_id)
+     INNER JOIN	groupex.evenements_items        AS ei ON (e.eid = ei.eid)
       LEFT JOIN	groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
       LEFT JOIN virtual AS al ON(al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
       LEFT JOIN virtual AS pl ON(pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
-      LEFT JOIN auth_user_md5 AS a ON (a.user_id = e.organisateur_uid)
           WHERE	e.eid = {?} AND ei.item_id = {?} AND e.asso_id = {?} 
        GROUP BY ei.item_id",
        '-absents@'.$globals->xnet->evts_domain,
        '-participants@'.$globals->xnet->evts_domain,
-       $eid, $item_id?$item_id:1, $globals->asso('id'));
+       $eid, $item_id ? $item_id : 1, $globals->asso('id'));
+
     $evt = $res->fetchOneAssoc();
-    if (!$evt) return false;
+
+    if (!$evt) {
+        return null;
+    }
 
     // smart calculation of the total number
     if (!$item_id) {
         $res = $globals->xdb->query(
                "SELECT MAX(nb)
-                  FROM groupex.evenements AS e
-            INNER JOIN groupex.evenements_items AS ei ON (e.eid = ei.eid)
-             LEFT JOIN groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
+                  FROM groupex.evenements              AS e
+            INNER JOIN groupex.evenements_items        AS ei ON (e.eid = ei.eid)
+             LEFT JOIN groupex.evenements_participants AS ep
+                       ON (e.eid = ep.eid AND ei.item_id = ep.item_id)
                  WHERE e.eid = {?}
               GROUP BY ep.uid", $eid);
         $evt['nb_tot'] = array_sum($res->fetchColumn());
         $evt['titre'] = '';
         $evt['item_id'] = 0;
     }
-    
-    $res = $globals->xdb->iterator(
-	"SELECT eid, item_id, titre, montant
-	   FROM groupex.evenements_items
-	  WHERE eid = {?}",
-	$eid);
-    $moments = array(); $evt['money'] = false;
-    while ($m = $res->next()) {
-        $moments[$m['item_id']] = $m;
-        if ($m['montant']  > 0) $evt['money'] = true;
+
+    $res = $globals->xdb->query(
+        "SELECT titre, details, montant, ei.item_id, nb
+           FROM groupex.evenements_items        AS ei
+      LEFT JOIN groupex.evenements_participants AS ep
+                ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
+          WHERE ei.eid = {?}",
+            Session::get('uid'), $evt['eid']);
+    $evt['moments'] = $res->fetchAllAssoc();
+
+    $evt['topay'] = 0;
+    foreach ($evt['moments'] as $m) {
+        $evt['topay'] += $m['nb'] * $m['montant'];
     }
-    $evt['moments'] = $moments;
+
+    $req = $globals->xdb->query(
+        "SELECT montant
+           FROM {$globals->money->mpay_tprefix}transactions AS t
+         WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], Session::get('uid'));
+    $montants = $req->fetchColumn();
+
+    $evt['paid'] = 0;
+    foreach ($montants as $m) {
+        $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
+        $evt['paid'] += trim($p);
+    }
+
     return $evt;
 }
+
 // }}}
 
 // {{{ function get_event_participants()
