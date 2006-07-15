@@ -99,8 +99,21 @@ function get_event_detail($eid, $item_id = false)
 // }}}
 
 // {{{ function get_event_participants()
-function get_event_participants($eid, $item_id, $where, $tri, $limit, $money, $pay_id) {
+function get_event_participants($evt, $item_id, $tri, $limit = '') {
     global $globals;
+
+    if (Env::has('initiale')) {
+        $where = 'AND IF(u.nom IS NULL, m.nom,
+                         IF(u.nom_usage<>"", u.nom_usage, u.nom))
+                  LIKE "'.addslashes(Env::get('initiale')).'%"';
+    } else {
+        $where = '';
+    }
+
+    $eid    = $evt['eid'];
+    $money  = $evt['money'] && may_update();
+    $pay_id = $evt['paiement_id'];
+
     $query =
         "SELECT  IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>'', u.nom_usage, u.nom)) AS nom,
                    IF(u.nom IS NULL,m.prenom,u.prenom) AS prenom,
@@ -119,15 +132,17 @@ function get_event_participants($eid, $item_id, $where, $tri, $limit, $money, $p
                     ".(($item_id)?" AND item_id = $item_id":"")."
                     $where
 	   GROUP BY  ep.uid
-	   ORDER BY  $tri
-	      $limit";
+	   ORDER BY  $tri $limit";
+
     if ($item_id) {
         $res = $globals->xdb->query($query, $eid);
         return $res->fetchAllAssoc();
     }
+
     $res = $globals->xdb->iterator($query, $eid);
     $tab = array();
     $user = 0;
+
     while ($u = $res->next()) {
         $u['montant'] = 0;
 	if ($money && $pay_id) {
@@ -159,9 +174,12 @@ function get_event_participants($eid, $item_id, $where, $tri, $limit, $money, $p
 // }}}
 
 //  {{{ function subscribe_lists_event()
-function subscribe_lists_event($participate, $uid, $participant_list, $absent_list) {
+function subscribe_lists_event($participate, $uid, $evt) {
     global $globals,$page;
-    
+
+    $participant_list = $evt['participant_list'];
+    $absent_list      = $evt['absent_list'];
+
     $email = Session::get('forlife');
 
     if ($email) {
@@ -171,8 +189,8 @@ function subscribe_lists_event($participate, $uid, $participant_list, $absent_li
         $email = $res->fetchOneCell();
     }
 
-    $subscribe = $participate?$participant_list:(is_member()?$absent_list:0);
-    $unsubscri = $participate?$absent_list:$participant_list;
+    $subscribe = $participate ? $participant_list : (is_member()?$absent_list:0);
+    $unsubscri = $participate ? $absent_list : $participant_list;
 
     if ($subscribe) {
         $globals->xdb->execute(

@@ -19,6 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+define('NB_PER_PAGE', 25);
+
 class XnetEventsModule extends PLModule
 {
     function handlers()
@@ -138,7 +140,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        require_once('xnet/evenements.php');
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.php';
 
         new_group_page('xnetevents/subscribe.tpl');
 
@@ -206,7 +208,7 @@ class XnetEventsModule extends PLModule
 
     function handler_csv(&$page, $eid = null, $item_id = null)
     {
-        require_once('xnet/evenements.php');
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.php';
 
         if (!is_numeric($item_id)) {
             $item_id = null;
@@ -227,19 +229,9 @@ class XnetEventsModule extends PLModule
 
         $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 
-        if (Env::has('initiale')) {
-            $ini = 'AND IF(u.nom IS NULL, m.nom,
-                           IF(u.nom_usage<>"", u.nom_usage, u.nom))
-                    LIKE "'.addslashes(Env::get('initiale')).'%"';
-        } else {
-            $ini = '';
-        }
+        $page->assign('participants',
+                      get_event_participants($evt, $item_id, $tri));
 
-        $participants = get_event_participants($eid, $item_id, $ini, $tri, "",
-                                               $evt['money'] && $admin,
-                                               $evt['paiement_id']);
-
-        $page->assign('participants', $participants);
         $page->assign('admin', $admin);
         $page->assign('moments', $evt['moments']);
         $page->assign('money', $evt['money']);
@@ -477,100 +469,93 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        define('NB_PER_PAGE', 25);
-
-        require_once('xnet/evenements.php');
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.php';
 
         $evt = get_event_detail($eid, $item_id);
-
-        // the event doesn't exist or doesn't belong to this assoif (!$evt)
         if (!$evt) {
             return PL_NOT_FOUND;
         }
 
         if ($evt['show_participants']) {
-            new_group_page('xnet/groupe/evt-admin.tpl');
+            new_group_page('xnetevents/admin.tpl');
         } else {
-            new_groupadmin_page('xnet/groupe/evt-admin.tpl');
+            new_groupadmin_page('xnetevents/admin.tpl');
         }
 
-        $admin = may_update();
-
-        // select a member from his mail
-        if ($admin && Env::get('adm') && Env::get('mail')) {
-            if (strpos(Env::get('mail'), '@') === false) {
-                $res = $globals->xdb->query(
-                        "SELECT m.uid
-                           FROM groupex.membres AS m
-                     INNER JOIN aliases AS a ON (a.id = m.uid)
-                          WHERE a.alias = {?} AND m.asso_id = {?}",
-                        Env::get('mail'), $globals->asso('id'));
-            } else {
-                $res = $globals->xdb->query(
-                        "SELECT m.uid
-                           FROM groupex.membres AS m
-                          WHERE m.email = {?} AND m.asso_id = {?}",
-                        Env::get('mail'), $globals->asso('id'));
+        if (may_update() && Post::get('adm')) {
+            $member = get_infos(Post::get('mail'));
+            if (!$member) {
+                $page->trig("Membre introuvable");
             }
-            $member = $res->fetchOneCell();
-            if (!$member) $page->trig("Membre introuvable");
-        }
 
-        // change the price paid by a participant
-        if ($admin && Env::get('adm') == 'prix' && $member) {
-                $globals->xdb->execute("UPDATE groupex.evenements_participants SET paid = IF(paid + {?} > 0, paid + {?}, 0) WHERE uid = {?} AND eid = {?}",
+            // change the price paid by a participant
+            if (Env::get('adm') == 'prix' && $member) {
+                $globals->xdb->execute("UPDATE groupex.evenements_participants
+                                           SET paid = IF(paid + {?} > 0, paid + {?}, 0)
+                                         WHERE uid = {?} AND eid = {?}",
                         strtr(Env::get('montant'), ',', '.'),
                         strtr(Env::get('montant'), ',', '.'),
-                        $member, Env::get('eid'));
-        }
+                        $member['uid'], $eid);
+            }
 
-        // change the number of personns coming with a participant
-        if ($admin && Env::get('adm') == 'nbs' && $member) {
-            $res = $globals->xdb->query("SELECT paid FROM groupex.evenements_participants WHERE uid = {?} AND eid = {?}", $member, Env::get('eid'));
-            $paid = $res->fetchOneCell();
-            $participate = false;
-            foreach ($evt['moments'] as $m) if (Env::has('nb'.$m['item_id'])) {
-                $nb = Env::getInt('nb'.$m['item_id'], 0);
-                if ($nb < 0) $nb = 0;
-                if ($nb) {
-                    $participate = true;
-                    if (!$paid) $paid = 0;
-                    $globals->xdb->execute("REPLACE INTO groupex.evenements_participants VALUES ({?}, {?}, {?}, {?}, {?})",
-                    Env::get('eid'), $member, $m['item_id'], $nb, $paid);
-                } else {
-                    $globals->xdb->execute("DELETE FROM groupex.evenements_participants WHERE uid = {?} AND eid = {?} AND item_id = {?}", $member, Env::get('eid'), $m['item_id']);
+            // change the number of personns coming with a participant
+            if (Env::get('adm') == 'nbs' && $member) {
+                $res = $globals->xdb->query("SELECT paid
+                                               FROM groupex.evenements_participants
+                                              WHERE uid = {?} AND eid = {?}",
+                                            $member['uid'], $eid);
+
+                $paid = intval($res->fetchOneCell());
+                $nbs  = Post::getMixed('nb', array());
+
+                foreach ($nbs as $id => $nb) {
+                    $nb = intval($nb);
+
+                    if ($nb < 0) {
+                        $nb = 0;
+                    }
+
+                    if ($nb) {
+                        $globals->xdb->execute("REPLACE INTO groupex.evenements_participants
+                                               VALUES ({?}, {?}, {?}, {?}, {?})",
+                                               $eid, $member['uid'], $id, $nb, $paid);
+                    } else {
+                        $globals->xdb->execute("DELETE FROM groupex.evenements_participants
+                                               WHERE uid = {?} AND eid = {?} AND item_id = {?}",
+                                               $member['uid'], $eid, $id);
+                    }
                 }
-            }
-            if ($participate)  {
-                    subscribe_lists_event(true, $member, $evt['participant_list'], $evt['absent_list']);
-            } else {
-                $res = $globals->xdb->query(
-                    "SELECT uid FROM groupex.evenements_participants
-                    WHERE uid = {?} AND eid = {?}", $member, $eid);
+
+                $res = $globals->xdb->query("SELECT uid FROM groupex.evenements_participants
+                                            WHERE uid = {?} AND eid = {?}",
+                                            $member['uid'], $eid);
                 $u = $res->fetchOneCell();
-                subscribe_lists_event($u, $member, $evt['participant_list'], $evt['absent_list']);
+                subscribe_lists_event($u, $member['uid'], $evt);
             }
+
             $evt = get_event_detail($eid, $item_id);
         }
 
-        $page->assign('admin', $admin);
+        $page->assign('admin', may_update());
         $page->assign('evt', $evt);
-        $page->assign('url_page', Env::get('PHP_SELF')."?eid=".Env::get('eid').(Env::has('item_id')?("&item_id=".Env::getInt('item_id')):''));
         $page->assign('tout', !Env::has('item_id'));
 
-        if (count($evt['moments'])) $page->assign('moments', $evt['moments']);
-        $page->assign('money', $evt['money']);
+        if (count($evt['moments'])) {
+            $page->assign('moments', $evt['moments']);
+        }
 
         $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
         $whereitemid = Env::has('item_id')?('AND ep.item_id = '.Env::getInt('item_id', 1)):'';
         $res = $globals->xdb->iterRow(
-                    'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>"", u.nom_usage, u.nom)), 1, 1)), COUNT(DISTINCT ep.uid)
+                    'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL, m.nom,
+                                                IF(u.nom_usage<>"", u.nom_usage, u.nom)), 1, 1)),
+                             COUNT(DISTINCT ep.uid)
                        FROM  groupex.evenements_participants AS ep
                  INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
                   LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
                   LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
                       WHERE  ep.eid = {?} '.$whereitemid.'
-                   GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', Env::get('eid'));
+                   GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', $eid);
 
         $alphabet = array();
         $nb_tot = 0;
@@ -601,12 +586,8 @@ class XnetEventsModule extends PLModule
             $page->assign('links', $links);
         }
 
-        $ini = Env::has('initiale') ? 'AND IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>"", u.nom_usage, u.nom)) LIKE "'.addslashes(Env::get('initiale')).'%"' : '';
-
-        $participants = get_event_participants(Env::get('eid'), Env::get('item_id'), $ini, $tri, "LIMIT ".($ofs*NB_PER_PAGE).", ".NB_PER_PAGE, $evt['money'] && $admin, $evt['paiement_id']);
-
         if ($evt['paiement_id']) {
-                $res = $globals->xdb->iterator(
+            $res = $globals->xdb->iterator(
                 "SELECT IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom, u.prenom,
                         u.promo, a.alias AS email, t.montant
                    FROM {$globals->money->mpay_tprefix}transactions AS t
@@ -615,11 +596,13 @@ class XnetEventsModule extends PLModule
                   LEFT JOIN groupex.evenements_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
                   WHERE t.ref = {?} AND ep.uid IS NULL",
                   $evt['eid'], $evt['paiement_id']);
-                $page->assign('oublis', $res->total());
-                $page->assign('oubliinscription', $res);
+            $page->assign('oublis', $res->total());
+            $page->assign('oubliinscription', $res);
         }
 
-        $page->assign('participants', $participants);
+        $page->assign('participants', 
+                      get_event_participants($evt, $item_id, $tri,
+                                             "LIMIT ".($ofs*NB_PER_PAGE).", ".NB_PER_PAGE));
     }
 }
 

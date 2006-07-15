@@ -23,7 +23,7 @@ function get_infos($email)
 {
     global $globals;
     // look for uid instead of email if numeric
-    $field = is_numeric($email)?'uid':'email';
+    $field = is_numeric($email) ? 'uid' : 'email';
 
     if ($field == 'email') {
         $email = strtolower($email);
@@ -588,10 +588,10 @@ class XnetGrpModule extends PLModule
             if ($forlife = get_user_forlife($email)) {
                 $globals->xdb->execute(
                     'INSERT INTO  groupex.membres (uid,asso_id,origine)
-                    SELECT  user_id,{?},"X"
-                    FROM  auth_user_md5 AS u
-                    INNER JOIN  aliases       AS a ON (u.user_id = a.id)
-                    WHERE  a.alias={?}', $globals->asso('id'), $forlife);
+                          SELECT  user_id,{?},"X"
+                            FROM  auth_user_md5 AS u
+                      INNER JOIN  aliases       AS a ON (u.user_id = a.id)
+                           WHERE  a.alias={?}', $globals->asso('id'), $forlife);
                 global $platal;
                 redirect(smarty_function_rel()."/{$platal->ns}member/$email");
             } else {
