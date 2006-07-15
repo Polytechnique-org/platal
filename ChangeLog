@@ -173,7 +173,7 @@ New:
 
     * Xnet:
         - Groups can be non subscribable.                                   -Car
-        - Most Wanted Feature: directories synchronization with lists.     -MC
+        - Most Wanted Feature: directories synchronization with lists.      -MC
         - Various bug fixes in events management.                           -Car
         - Groups can now synchronize MLs and the directory.                 -MC
 
@@ -183,7 +183,7 @@ Bug/Wish:
         - #337: Add link to trackers and support websites for admins.       -CAT
 
     * Contacts:
-        - #352: Enhance PDFs: add the generation date.                     -MC
+        - #352: Enhance PDFs: add the generation date.                      -MC
 
     * Core:
         - #310: Display the max number of photo in trombipromo.             -Car
@@ -192,8 +192,8 @@ Bug/Wish:
         - #327: broken mail test is more explicit for unaware users.        -MC
 
     * Paiments:
-        - #336: Micro -> Tele(payments).                                   -MC
-        - #356: Payments use usage name instead of last name.              -Car
+        - #336: Micro -> Tele(payments).                                    -MC
+        - #356: Payments use usage name instead of last name.               -Car
 
     * Profile:
         - #330,333: Interface improvements.                                 -Car
@@ -390,7 +390,7 @@ New:
         - Even include Photos in the PDF (kludgy !).                        -MC
 
     * Core:
-        - New SQL access API: gain in security and code factorization.     -MC
+        - New SQL access API: gain in security and code factorization.      -MC
         - Drop good old mysql_assign, iterators are nicer.                  -MC
         - Drop magic_quote_gpc (DB API takes care of it itself).            -MC
         - Drop cache algorithm (was complex for no gain).                   -MC
@@ -413,7 +413,7 @@ New:
         - Brand new.                                                        -MC
 
     * Skins:
-        - Openweb: update.                                                 -MC
+        - Openweb: update.                                                  -MC
 
     * Validation:
         - Quite a lot of rewrite, simplifications.                          -MC
@@ -495,17 +495,17 @@ New:
         - Use HermesMailer.                                                 -MC
         - Create a script to treats NL bounces.                             -MC
 
-    * Money: standalone module.                                            -MC
+    * Money: standalone module.                                             -MC
 
     * Skins:
-        - New skin: openweb.                                               -MC
+        - New skin: openweb.                                                -MC
         - No more annoying submit button, onclick is used to submit.        -MC
         - This is the first autonom module of the site !                    -MC
 
     * Stats:
         - Better y-range for graphs.                                        -MC
 
-    * WebRedirect (was: Carva): now standalone.                            -MC
+    * WebRedirect (was: Carva): now standalone.                             -MC
 
 Bug/Wish:
 
@@ -517,14 +517,14 @@ Bug/Wish:
         - #207: Enable for the user the choice of his prefered alias.       -MC
 
     * Core:
-        - #183,185: Implement perms levels: 'pending'+'disabled'.          -MC
+        - #183,185: Implement perms levels: 'pending'+'disabled'.           -MC
         - #154: Birth fields are now of type DATE.                          -MC
 
     * Fiche:
         - #83,208,222: New fiche.                                           -MC
 
     * Lists:
-        - #86: Yet another old old wish: lists archives are online !       -MC
+        - #86: Yet another old old wish: lists archives are online !        -MC
         - #144: Users can subscribe from members/trombi page too.           -MC
         - #184: Owners can now delete their lists.                          -MC
         - #231: Add a link to the user's fiche on moderation page.          -MC
@@ -553,7 +553,7 @@ VERSION 0.9.2                                                        14 Nov 2004
 
 New:
 
-    * Carnet: Brand new.                                                   -MC
+    * Carnet: Brand new.                                                    -MC
 
     * Core:
         - Creation of the Plugin class.                                     -MC
@@ -577,7 +577,7 @@ Bug/Wish:
         - #29,147: Possible to watch subscribings, deaths, `fiche` modifs.  -MC
 
     * Core:
-        - #135: First instance of the plugin class: class Trombi.          -MC
+        - #135: First instance of the plugin class: class Trombi.           -MC
         - #158: A photo change updates last `fiche` edition stamp.          -MC
         - #100,199: Kludge to determine if a link is popup or not.          -MC
 
@@ -637,7 +637,7 @@ Fixes (from 0.9.0 branch):
     * Lists:
         - Corrects problem about mails that have non text/* parts.          -MC
         - Rpc daemon can live everywhere.                                   -MC
-        - Moderation: refusing/rejecting a mail informs other moderators.  -MC
+        - Moderation: refusing/rejecting a mail informs other moderators.   -MC
 
     * Fiche + Search:
         - Corrects bad handling of firms.                                   -MC
