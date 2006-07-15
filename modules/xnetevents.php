@@ -38,6 +38,51 @@ class XnetEventsModule extends PLModule
 
         new_group_page('xnetevents/index.tpl');
 
+        if (Post::has('del')) {
+            if (!may_update()) {
+                return PL_NOT_ALLOWED;
+            }
+
+            $eid = Post::get('del');
+
+            $res = $globals->xdb->query("SELECT asso_id, short_name FROM groupex.evenements
+                                        WHERE eid = {?} AND asso_id = {?}",
+                                        $eid, $globals->asso('id'));
+
+            $tmp = $res->fetchOneRow();
+            if (!$tmp) {
+                return PL_NOT_ALLOWED;
+            }
+
+            // deletes the event mailing aliases
+            if ($tmp[1]) {
+                $globals->xdb->execute(
+                    "DELETE FROM virtual WHERE type = 'evt' AND alias = {?}",
+                    $tmp[1].'-absents');
+                $globals->xdb->execute(
+                    "DELETE FROM virtual WHERE type = 'evt' AND alias = {?}",
+                    $tmp[1].'-participants');
+            }
+
+            // deletes the event items
+            $globals->xdb->execute("DELETE FROM groupex.evenements_items WHERE eid = {?}", $eid);
+
+            // deletes the event participants
+            $globals->xdb->execute("DELETE FROM groupex.evenements_participants
+                                    WHERE eid = {?}", $eid);
+
+            // deletes the event
+            $globals->xdb->execute("DELETE FROM groupex.evenements
+                                    WHERE eid = {?} AND asso_id = {?}",
+                                   $eid, $globals->asso('id'));
+
+            // delete the requests for payments
+            require_once 'validations.inc.php';
+            $globals->xdb->execute("DELETE FROM requests
+                                    WHERE type = 'paiements' AND data LIKE {?}",
+                                   PayReq::same_event($eid, $globals->asso('id')));
+        }
+
         $page->assign('admin', may_update());
 
         $evenements = $globals->xdb->iterator(
@@ -377,34 +422,6 @@ class XnetEventsModule extends PLModule
                 $globals->xdb->execute("INSERT INTO groupex.evenements_items
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
-        }
-
-        if (Env::has('sup') && $eid) {
-            // deletes the event
-            $globals->xdb->execute("DELETE FROM groupex.evenements
-                                    WHERE eid = {?} AND asso_id = {?}",
-                                   $eid, $globals->asso('id'));
-
-            // deletes the event items
-            $globals->xdb->execute("DELETE FROM groupex.evenements_items WHERE eid = {?}", $eid);
-
-            // deletes the event participants
-            $globals->xdb->execute("DELETE FROM groupex.evenements_participants
-                                    WHERE eid = {?}", $eid);
-
-            // deletes the event mailing aliases
-            if ($infos['short_name']) {
-                $globals->xdb->execute("DELETE FROM virtual
-                                        WHERE type = 'evt' AND alias LIKE {?}",
-                                       $infos['short_name']."-%");
-            }
-
-            // delete the requests for payments
-            require_once 'validations.inc.php';
-            $globals->xdb->execute("DELETE FROM requests
-                                    WHERE type = 'paiements' AND data  LIKE {?}",
-                                   PayReq::same_event($eid, $globals->asso('id')));
-            redirect("evenements.php");
         }
 
         if (!$get_form) {
