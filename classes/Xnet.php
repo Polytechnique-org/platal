@@ -39,6 +39,15 @@ class Xnet extends Platal
             }
         }
     }
+
+    function find_hook()
+    {
+        $ans = parent::find_hook();
+        if ($ans && $this->ns) {
+            $this->path = $this->ns . substr($this->path, 4);
+        }
+        return $ans;
+    }
 }
 
 ?>
