@@ -21,9 +21,9 @@
 {**************************************************************************}
 
 {include file='listes/header_listes.tpl' on='sync'}
-<h1>Non abonnés à la liste {$smarty.request.liste}@{$asso.mail_domain}</h1>
+<h1>Non abonnés à la liste {$platal->argv[1]}@{$asso.mail_domain}</h1>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<form action="{rel}/{$platal->ns}lists/sync/{$platal->argv[1]}" method="post">
 
   <table cellspacing="2" cellpadding="0" class="tiny">
     <tr>

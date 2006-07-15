@@ -32,7 +32,6 @@ class XnetListsModule extends ListsModule
             'grp/lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             'grp/lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
-            'grp/lists/trombi'    => $this->make_hook('trombi',    AUTH_COOKIE),
             'grp/lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
 
             'grp/lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
@@ -42,6 +41,7 @@ class XnetListsModule extends ListsModule
 
             'grp/lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
             'grp/lists/check'     => $this->make_hook('check',     AUTH_MDP),
+            'grp/lists/sync'      => $this->make_hook('sync',      AUTH_MDP),
 
             /* hack: lists uses that */
             'profile' => $this->make_hook('profile', AUTH_PUBLIC),
@@ -61,6 +61,92 @@ class XnetListsModule extends ListsModule
         $page->useMenu();
         $page->assign('asso', $globals->asso());
         $page->setType($globals->asso('cat'));
+    }
+
+    function handler_lists(&$page)
+    {
+        global $globals;
+
+        $this->prepare_client($page);
+
+        $page->changeTpl('xnet/groupe/listes.tpl');
+
+        if (Get::has('del')) {
+            $this->client->unsubscribe(Get::get('del'));
+            redirect('lists');
+        }
+        if (Get::has('add')) {
+            $this->client->subscribe(Get::get('add'));
+            redirect('lists');
+        }
+
+        if (Post::has('del_alias') && may_update()) {
+            $alias = Post::get('del_alias');
+            // prevent group admin from erasing aliases from other groups
+            $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
+            $globals->xdb->query(
+                    'DELETE FROM  x4dat.virtual_redirect, x4dat.virtual
+                           USING  x4dat.virtual AS v
+                       LEFT JOIN  x4dat.virtual_redirect USING(vid)
+                           WHERE  v.alias={?}', $alias);
+            $page->trig(Post::get('del_alias')." supprimé !");
+        }
+
+        $listes = $this->client->get_lists();
+        $page->assign('listes',$listes);
+
+        $alias  = $globals->xdb->iterator(
+                'SELECT  alias,type
+                   FROM  x4dat.virtual
+                  WHERE  alias
+                   LIKE  {?} AND type="user"
+               ORDER BY  alias', '%@'.$globals->asso('mail_domain'));
+        $page->assign('alias', $alias);
+
+        $page->assign('may_update', may_update());
+    }
+
+    function handler_sync(&$page, $liste = null)
+    {
+        global $globals;
+
+        $this->prepare_client($page);
+
+        $page->changeTpl('xnet/groupe/listes-sync.tpl');
+
+        if (Env::has('add')) {
+            $this->client->mass_subscribe($liste, array_keys(Env::getMixed('add')));
+        }
+
+        list(,$members) = $this->client->get_members($liste);
+        $mails = array_map(create_function('$arr', 'return $arr[1];'), $members);
+        $subscribers = array_unique(array_merge($subscribers, $mails));
+
+        $not_in_group_x = array();
+        $not_in_group_ext = array();
+
+        $ann = $globals->xdb->iterator(
+                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
+                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
+                           IF(m.origine='X',u.promo,'extérieur') AS promo,
+                           IF(m.origine='X',CONCAT(a.alias, '@polytechnique.org'),m.email) AS email,
+                           IF(m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
+                           m.perms='admin' AS admin,
+                           m.origine='X' AS x
+                     FROM  groupex.membres AS m
+                LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
+                LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
+                    WHERE  m.asso_id = {?}", $globals->asso('id'));
+
+        $not_in_list = array();
+
+        while ($tmp = $ann->next()) {
+            if (!in_array($tmp['email'], $subscribers)) {
+                $not_in_list[] = $tmp;
+            }
+        }
+
+        $page->assign('not_in_list', $not_in_list);
     }
 
     function handler_profile(&$page, $user = null)
