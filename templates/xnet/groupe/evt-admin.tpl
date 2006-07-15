@@ -36,9 +36,9 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera {$evt.n
 
 {if $moments}
 <p class="center">
-[<a href="{rel}/{$platal->ns}events/admin/{$page->argv[1]}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
+[<a href="{rel}/{$platal->ns}events/admin/{$platal->argv[1]}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
 {foreach from=$moments item=m}
-[<a href="{rel}/{$platal->ns}events/admin/{$page->argv[1]}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
+[<a href="{rel}/{$platal->ns}events/admin/{$platal->argv[1]}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
 {/foreach}
 </p>
 {/if}
