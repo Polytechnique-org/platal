@@ -3,14 +3,29 @@ VERSION 0.9.11                                                      ?? ???? 2006
 
 New:
 
-    * Core:
-        - Work hard to add nice URI's into Platal.                          -MC
-        - Use fancy icons from http://www.famfamfam.com/ for flags.         -MC
+    * Auth:
+        - Switch to the new URI scheme.                                     -MC
 
     * Banana:
         - Switch to the new URI scheme.                                 -MC/FRU
 
+    * Carnet:
+        - Switch to the new URI scheme.                                     -MC
+
+    * Core:
+        - Work hard to add nice URI's into Platal.                          -MC
+        - Use fancy icons from http://www.famfamfam.com/ for flags.         -MC
+
     * Emails:
+        - Switch to the new URI scheme.                                     -MC
+
+    * Events:
+        - Switch to the new URI scheme.                                     -MC
+
+    * Geoloc:
+        - Switch to the new URI scheme.                                     -MC
+
+    * Lists:
         - Switch to the new URI scheme.                                     -MC
 
     * Marketing:
@@ -22,6 +37,12 @@ New:
     * Platal:
         - Create module.                                                    -MC
 
+    * Profile:
+        - Switch to the new URI scheme.                                     -MC
+
+    * Register:
+        - Switch to the new URI scheme.                                     -MC
+
     * Search:
         - Switch to the new URI scheme.                                     -MC
 
@@ -30,6 +51,14 @@ New:
 
     * Trezo:
         - Migrate to new URI scheme.                                        -MC
+
+    * Xnet:
+        - Migrate to the new URI scheme.                                    -MC
+        - Split Xnet in 4 modules: xnet, lists, events, group.              -MC
+
+    * Xnet/Events:
+        - Split event list and subscription again.                          -MC
+        - Extensively debug events module.                                  -MC
 
 
 ================================================================================
