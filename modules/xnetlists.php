@@ -43,6 +43,9 @@ class XnetListsModule extends ListsModule
             'grp/lists/check'     => $this->make_hook('check',     AUTH_MDP),
             'grp/lists/sync'      => $this->make_hook('sync',      AUTH_MDP),
 
+            'grp/alias/admin'     => $this->make_hook('aadmin',    AUTH_MDP),
+            'grp/alias/create'    => $this->make_hook('acreate',   AUTH_MDP),
+
             /* hack: lists uses that */
             'profile' => $this->make_hook('profile', AUTH_PUBLIC),
         );
@@ -221,6 +224,104 @@ class XnetListsModule extends ListsModule
         }
 
         $page->assign('not_in_list', $not_in_list);
+    }
+
+    function handler_aadmin(&$page, $lfull = null)
+    {
+        global $globals;
+
+        if (is_null($lfull)) {
+            return PL_NOT_FOUND;
+        }
+
+        new_groupadmin_page('xnet/groupe/alias-admin.tpl');
+
+        if (Env::has('add_member')) {
+            $add = Env::get('add_member');
+            if (strstr($add, '@')) {
+                list($mbox,$dom) = explode('@', strtolower($add));
+            } else {
+                $mbox = $add;
+                $dom = 'm4x.org';
+            }
+            if($dom == 'polytechnique.org' || $dom == 'm4x.org') {
+                $res = $globals->xdb->query(
+                        "SELECT  a.alias, b.alias
+                           FROM  x4dat.aliases AS a
+                      LEFT JOIN  x4dat.aliases AS b ON (a.id=b.id AND b.type = 'a_vie')
+                          WHERE  a.alias={?} AND a.type!='homonyme'", $mbox);
+                if (list($alias, $blias) = $res->fetchOneRow()) {
+                    $alias = empty($blias) ? $alias : $blias;
+                    $globals->xdb->query(
+                        "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
+                              SELECT  vid, {?}
+                                FROM  x4dat.virtual
+                               WHERE  alias={?}", "$alias@m4x.org", $lfull);
+                   $page->trig("$alias@m4x.org ajouté");
+                } else {
+                    $page->trig("$mbox@polytechnique.org n'existe pas.");
+                }
+            } else {
+                $globals->xdb->query(
+                        "INSERT INTO  x4dat.virtual_redirect (vid,redirect)
+                              SELECT  vid,{?}
+                                FROM  x4dat.virtual
+                               WHERE  alias={?}", "$mbox@$dom", $lfull);
+                $page->trig("$mbox@$dom ajouté");
+            }
+        }
+
+        if (Env::has('del_member')) {
+            $globals->xdb->query(
+                    "DELETE FROM  x4dat.virtual_redirect
+                           USING  x4dat.virtual_redirect
+                      INNER JOIN  x4dat.virtual USING(vid)
+                           WHERE  redirect={?} AND alias={?}", Env::get('del_member'), $lfull);
+            redirect("?liste=$lfull");
+        }
+
+        $res = $globals->xdb->iterator(
+                "SELECT  redirect
+                   FROM  x4dat.virtual_redirect AS vr
+             INNER JOIN  x4dat.virtual          AS v  USING(vid)
+                  WHERE  v.alias={?}
+               ORDER BY  redirect", $lfull);
+        $page->assign('mem', $res);
+    }
+
+    function handler_acreate(&$page)
+    {
+        global $globals;
+
+        new_groupadmin_page('xnet/groupe/alias-create.tpl');
+
+        if (!Post::has('submit')) {
+            return;
+        }
+
+        if (!Post::has('liste')) {
+            $page->trig('champs «addresse souhaitée» vide');
+            return;
+        }
+        $liste = Post::get('liste');
+        if (!preg_match("/^[a-zA-Z0-9\-\.]*$/", $liste)) {
+            $page->trig('le nom de l\'alias ne doit contenir que des lettres,'
+                        .' chiffres, tirets et points');
+            return;
+        }
+
+        $new = $liste.'@'.$globals->asso('mail_domain');
+        $res = $globals->xdb->query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+        $n   = $res->fetchOneCell();
+        if($n) {
+            $page->trig('cet alias est déjà pris');
+            return;
+        }
+
+        $globals->xdb->query('INSERT INTO x4dat.virtual (alias,type) VALUES({?}, "user")', $new);
+
+        global $platal;
+        redirect(smarty_function_rel()."/{$platal->ns}alias/admin/$new");
     }
 
     function handler_profile(&$page, $user = null)

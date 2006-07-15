@@ -26,12 +26,12 @@
 <strong>Note :</strong> Les listes de diffusion sont un outil particulièrement adapté pour des
 échanges entre 6 personnes, ou plus (newsletter, débat interne au groupe ...). En revanche, elles
 s'avèrent peu praticables pour des discussions plus restreintes.  Il est alors préférable
-d'utiliser <a href="alias-create.php">un alias</a>, à la gestion beaucoup plus souple.
+d'utiliser <a href="{rel}/{$platal->ns}alias/create">un alias</a>, à la gestion beaucoup plus souple.
 </p>
 <p class="descr">
 D'autre part, il est impossible d'inscrire une liste de diffusion à une autre liste de diffusion.
 Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</strong> utiliser
-<a href="alias-create.php">un alias</a> qui, lui, est capable de regrouper plusieurs listes.
+<a href="{rel}/{$platal->ns}alias/create">un alias</a> qui, lui, est capable de regrouper plusieurs listes.
 </p>
 <form action='{rel}/{$platal->ns}lists/create' method='post'>
   <table class="large">

@@ -114,7 +114,7 @@
         <input type='checkbox' name='ml4[{$a.alias}]' {if $a.sub}checked="checked"{/if} />
       </td>
       <td>
-        <a href='alias-admin.php?liste={$a.alias}'>{$a.alias}</a>
+        <a href='{rel}/{$platal->ns}alias/admin/{$a.alias}'>{$a.alias}</a>
       </td>
     </tr>
     {foreachelse}

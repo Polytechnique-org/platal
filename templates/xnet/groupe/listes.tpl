@@ -102,7 +102,7 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
   <tr>
     {if $may_update}
     <td class="center"><a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /></a></td>
-    <td><a href="alias-admin.php?liste={$a.alias}">{$a.alias}</a></td>
+    <td><a href="{rel}/{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
     <td class="center"><a href="{rel}/{$platal->ns}lists?del_alias={$a.alias}"><img src='{rel}/images/del.png' alt='[supprimer]' /></a></td>
     {else}
     <td><a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /> {$a.alias}</a></td>

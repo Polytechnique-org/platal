@@ -20,9 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<p>[<a href='listes.php'>retour à la page des listes</a>]</p>
+<p>[<a href='{rel}/{$platal->ns}lists'>retour à la page des listes</a>]</p>
 
-<h1>Membres de {$smarty.request.liste}</h1>
+<h1>Membres de {$platal->argv[1]}</h1>
       
 <table class='tiny'>
   <tr>
@@ -31,7 +31,7 @@
       {if $mem->total()}
       {iterate from=$mem item=m}
       {$m.redirect}
-      <a href='?liste={$smarty.request.liste|urlencode}&amp;del_member={$m.redirect|urlencode}'>
+      <a href='{rel}/{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
         <img src='{rel}/images/del.png' alt='retirer membre' title='retirer membre' />
       </a>
       <br />
@@ -44,7 +44,7 @@
   <tr>
     <td><strong>Ajouter</strong></td>
     <td>
-      <form method="post" action="{$smarty.server.REQUEST_URI}">
+      <form method="post" action="{rel}/{$platal->ns}alias/admin/{$platal->argv[1]}">
         <div>
         <input type='text' name='add_member' />
         &nbsp;

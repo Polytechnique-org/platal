@@ -53,7 +53,7 @@
   <tr>
     <td>{$l.list}</td>
     <td>{$l.desc}</td>
-    <td><a href="listes-sync.php?liste={$l.list}">synchro</a></td>
+    <td><a href="{rel}/{$platal->ns}lists/sync/{$l.list}">synchro</a></td>
   </tr>
   {/foreach}
 </table>

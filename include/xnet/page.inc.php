@@ -98,7 +98,7 @@ class XnetPage extends PlatalPage
             if ($globals->asso('mail_domain')) {
                 $sub['envoyer un mail']     = "$dim/mail";
                 $sub['créer une liste']     = "$dim/lists/create";
-                $sub['créer un alias']      = "$dim/alias-create.php";
+                $sub['créer un alias']      = "$dim/alias/create";
             }
             $menu['Administrer Groupe'] = $sub;
         }
