@@ -127,7 +127,7 @@ class AuthModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/auth/methods.inc.php';
+        require_once dirname(__FILE__).'/auth/auth.inc.php';
 
         $gpex_pass = $_GET["pass"];
         $gpex_url  = urldecode($_GET["url"]);

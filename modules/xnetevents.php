@@ -140,7 +140,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.php';
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
 
         new_group_page('xnetevents/subscribe.tpl');
 
@@ -208,7 +208,7 @@ class XnetEventsModule extends PLModule
 
     function handler_csv(&$page, $eid = null, $item_id = null)
     {
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.php';
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
 
         if (!is_numeric($item_id)) {
             $item_id = null;
@@ -469,7 +469,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        require_once dirname(__FILE__).'/xnetevents/xnetevents.php';
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
 
         $evt = get_event_detail($eid, $item_id);
         if (!$evt) {
