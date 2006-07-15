@@ -139,13 +139,18 @@
       <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="3" id="perso">
+        <td colspan="4" id="perso">
           {list_all_my_groups}
           {only_public}
           <div>Me connecter :</div>
           <a class='gp' href="{$smarty.session.session->loginX}">polytechnicien</a>
           {/only_public}
+
+          <a href="{rel}/manuel" title="Manuel d'aide en ligne" style="float: right"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
         </td>
+        <!--
+        NOBODY UNDERSTANDS EXALEAD< JUST DROP IT !
+
         <td id="search">
           <form method="get" action="{rel}/recherche.php">
             <div>
@@ -159,17 +164,16 @@
             </div>
           </form>
         </td>
+        -->
       </tr>
 
       <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
         <td colspan="4" id="credits">
-          <a href="{rel}/">page d'accueil</a> -
           <a href="{rel}/plan">liste des associations</a> -
           <a href="{rel}/services">services proposés</a> -
           <a href="{rel}/about">à propos de ce site</a> -
-          <a href="https://www.polytechnique.org/">polytechnique.org</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           <br />
           © Copyright 2000-2006 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
