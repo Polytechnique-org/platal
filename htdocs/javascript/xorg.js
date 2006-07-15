@@ -86,6 +86,11 @@ function dynpost(action, values)
     form.submit();
 }
 
+function dynpostkv(action, k, v)
+{
+    dynpost(action, {k: v});
+}
+
 // }}}
 
 /***************************************************************************
