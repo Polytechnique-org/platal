@@ -34,7 +34,7 @@ if ( Post::get('valid') == 'OUI' && $client->delete_list($liste, Post::getBool('
     foreach (array('', '-owner', '-admin', '-bounces') as $app) {
         $globals->xdb->execute("DELETE FROM  aliases
                                       WHERE  type='liste' AND alias='{?}'",
-                               $ml.$app);
+                               $liste.$app);
     }
     $page->assign('deleted', true);
 } elseif (list($details,$options) = $client->get_owner_options($liste)) {
