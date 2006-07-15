@@ -93,8 +93,6 @@ class XnetPage extends PlatalPage
         if (logged() && may_update()) {
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
-            if ($globals->wiki->wikidir && $globals->xnet->wiki)
-                $sub['wiki'] = "$dim/Accueil";
             if ($globals->asso('mail_domain')) {
                 $sub['envoyer un mail']     = "$dim/mail";
                 $sub['créer une liste']     = "$dim/lists/create";

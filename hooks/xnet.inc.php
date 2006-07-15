@@ -27,7 +27,6 @@ class XnetConfig
 {
     var $secret       = '';
     var $evts_domain  = '';
-    var $wiki         = false;
 }
 
 // }}}
