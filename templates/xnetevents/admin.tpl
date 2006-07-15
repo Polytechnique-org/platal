@@ -55,7 +55,9 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
 <script type="text/javascript">
 function remplitAuto(mail) {
   document.getElementById('inscription').mail.value=mail;
-  document.getElementById('montant').mail.value=mail;
+  var f = document.getElementById('montant');
+  if (f)
+      f.mail.value=mail;
   return false;
 }
 </script>
