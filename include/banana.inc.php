@@ -40,7 +40,8 @@ function hook_checkcancel($_headers) {
 function hook_shortcuts()
 {
     global $globals;
-    return '<a href="' . $globals->baseurl . '/banana/profile">Préférences</a>';
+    return Array('profile' => Array('<a href="' . $globals->baseurl . '/banana/profile">Préférences</a>',
+                                    'Préférences'));
 }
 
 function hook_makeLink($params) {
