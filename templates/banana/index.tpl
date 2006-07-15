@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {if !$banana->profile.autoup}
-[<a href='javascript:dynpost("{rel}/{$platal->path}", {ldelim}"updateall": 1{rdelim})'>Mettre à jour</a>]
+[<a href='javascript:dynpostkv("{rel}/{$platal->path}", "updateall", 1)'>Mettre à jour</a>]
 {/if}
 
 <br />
