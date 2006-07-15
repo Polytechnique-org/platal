@@ -33,7 +33,7 @@ D'autre part, il est impossible d'inscrire une liste de diffusion à une autre li
 Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</strong> utiliser
 <a href="alias-create.php">un alias</a> qui, lui, est capable de regrouper plusieurs listes.
 </p>
-<form action='{$smarty.server.PHP_SELF}' method='post'>
+<form action='{rel}/{$platal->ns}lists/create' method='post'>
   <table class="large">
     <tr>
       <th colspan='2'>Caractéristiques de la Liste</th>

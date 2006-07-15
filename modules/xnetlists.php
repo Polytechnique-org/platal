@@ -106,6 +106,80 @@ class XnetListsModule extends ListsModule
         $page->assign('may_update', may_update());
     }
 
+    function handler_create(&$page)
+    {
+        global $globals;
+
+        $this->prepare_client($page);
+
+        $page->changeTpl('xnet/groupe/listes-create.tpl');
+        $page->assign('force_list_super', may_update());
+
+        if (!Post::has('submit')) {
+            return;
+        }
+
+        if (!Post::has('liste')) {
+            $page->trig_run('champs «addresse souhaitée» vide');
+        }
+
+        $liste = Post::get('liste');
+
+        if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
+            $page->trig_run('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+        }
+
+        $new = $liste.'@'.$globals->asso('mail_domain');
+        $res = $globals->xdb->query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
+        $n   = $res->fetchOneCell();
+
+        if($n) {
+            $page->trig_run('cet alias est déjà pris');
+        }
+        if(!Post::get('desc')) {
+            $page->trig_run('le sujet est vide');
+        }
+
+        require_once('platal/xmlrpc-client.inc.php');
+        require_once('lists.inc.php');
+        $ret = $this->client->create_list(
+                    $liste, Post::get('desc'), Post::get('advertise'),
+                    Post::get('modlevel'), Post::get('inslevel'),
+                    array(Session::get('forlife')), array());
+
+        $dom = strtolower($globals->asso("mail_domain"));
+        $red = $dom.'_'.$liste;
+
+        if (!$ret) {
+            $page->kill("Un problème est survenu, contacter "
+                        ."<a href='mailto:support@m4x.org'>support@m4x.org</a>");
+            return;
+        }
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type)
+                                VALUES({?},{?})', $liste.'@'.$dom, 'list');
+        $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                VALUES ({?}, {?})', mysql_insert_id(),
+                               "$red+post@listes.polytechnique.org");
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type)
+                                VALUES({?},{?})', $liste.'-owner@'.$dom, 'list');
+        $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                VALUES ({?}, {?})', mysql_insert_id(),
+                               "$red+owner@listes.polytechnique.org");
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type)
+                                VALUES({?},{?})', $liste.'-admin@'.$dom, 'list');
+        $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                VALUES ({?}, {?})', mysql_insert_id(),
+                               "$red+admin@listes.polytechnique.org");
+        $globals->xdb->execute('INSERT INTO x4dat.virtual (alias,type)
+                                VALUES({?},{?})', $liste.'-bounces@'.$dom, 'list');
+        $globals->xdb->execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
+                                VALUES ({?}, {?})', mysql_insert_id(),
+                                "$red+bounces@listes.polytechnique.org");
+
+        global $platal;
+        redirect(smarty_function_rel().'/'.$platal->ns.'lists/admin/'.$liste);
+    }
+
     function handler_sync(&$page, $liste = null)
     {
         global $globals;

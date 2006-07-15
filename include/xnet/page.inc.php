@@ -79,7 +79,7 @@ class XnetPage extends PlatalPage
                     $sub['carte'] = "$dim/geoloc.php";
             }
             if ($globals->asso('mail_domain')) {
-                $sub['listes de diffusion'] = "$dim/listes.php";
+                $sub['listes de diffusion'] = "$dim/lists";
             }
             $sub['événement'] = "$dim/evenements.php";
             if (false) {
@@ -97,7 +97,7 @@ class XnetPage extends PlatalPage
                 $sub['wiki'] = "$dim/Accueil";
             if ($globals->asso('mail_domain')) {
                 $sub['envoyer un mail']     = "$dim/mail";
-                $sub['créer une liste']     = "$dim/listes-create.php";
+                $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias-create.php";
             }
             $menu['Administrer Groupe'] = $sub;

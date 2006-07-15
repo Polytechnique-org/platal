@@ -557,7 +557,7 @@ class ListsModule extends PLModule
             foreach (array('', '-owner', '-admin', '-bounces') as $app) {
                 $globals->xdb->execute("DELETE FROM  aliases
                                               WHERE  type='liste' AND alias='{?}'",
-                                       $ml.$app);
+                                       $liste.$app);
             }
             $page->assign('deleted', true);
         } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
