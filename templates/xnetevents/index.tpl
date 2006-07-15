@@ -72,7 +72,7 @@
   <tr>
     <td class="titre">annonceur :</td>
     <td>
-      <a href='https://polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
+      <a href='https://www.polytechnique.org/profile/{$e.alias}' class='popup2'>{$e.prenom} {$e.nom} ({$e.promo})</a>
     </td>
   </tr>
 
