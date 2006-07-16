@@ -40,9 +40,9 @@ class ListeReq extends Validate
     // }}}
     // {{{ constructor
     
-    function ListeReq($_uid, $_liste, $_desc, $_advertise, $_modlevel, $_inslevel, $_owners, $_members, $_stamp=0)
+    function ListeReq($_uid, $_liste, $_desc, $_advertise, $_modlevel,
+                      $_inslevel, $_owners, $_members, $_stamp=0)
     {
-        global $globals;
         $this->Validate($_uid, true, 'liste', $_stamp);
         
         $this->liste     = $_liste;
@@ -85,7 +85,6 @@ class ListeReq extends Validate
     
     function commit()
     {
-        global $globals;
         require_once('platal/xmlrpc-client.inc.php');
         require_once('lists.inc.php');
 

@@ -33,7 +33,6 @@ define("ERROR_LOOP_EMAIL", 4);
 
 function fix_bestalias($uid)
 {
-    global $globals;
     $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE id={?} AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'", $uid);
     if ($n = $res->fetchOneCell()) {
         return;
@@ -50,15 +49,17 @@ function fix_bestalias($uid)
 
 function valide_email($str)
 {
-   $em = trim(rtrim($str));
-   $em = str_replace('<', '', $em);
-   $em = str_replace('>', '', $em);
-   list($ident, $dom) = explode('@', $em);
-   if ($dom == $globals->mail->domain or $dom == $globals->mail->domain2) {
-       list($ident1) = explode('_', $ident);
-       list($ident) = explode('+', $ident1);
-   }
-   return $ident . '@' . $dom;
+    global $globals;
+
+    $em = trim(rtrim($str));
+    $em = str_replace('<', '', $em);
+    $em = str_replace('>', '', $em);
+    list($ident, $dom) = explode('@', $em);
+    if ($dom == $globals->mail->domain or $dom == $globals->mail->domain2) {
+        list($ident1) = explode('_', $ident);
+        list($ident) = explode('+', $ident1);
+    }
+    return $ident . '@' . $dom;
 }
 
 // }}}
@@ -67,16 +68,15 @@ function valide_email($str)
 class Bogo
 {
     // {{{ properties
-    
+
     var $state;
     var $_states = Array('let_spams', 'tag_spams', 'tag_and_drop_spams', 'drop_spams');
 
     // }}}
     // {{{ constructor
-    
+
     function Bogo($uid)
     {
-	global $globals;
 	$res = XDB::query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
 	if ($res->numRows()) {
             $this->state = $res->fetchOneCell();
@@ -92,9 +92,9 @@ class Bogo
 
     function change($uid, $state)
     {
-	global $globals;
 	$this->state = is_int($state) ? $this->_states[$state] : $state;
-	XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"', $this->state, $uid);
+	XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"',
+                     $this->state, $uid);
     }
 
     // }}}
@@ -131,7 +131,6 @@ class Email
 
     function activate($uid)
     {
-        global $globals;
         if (!$this->active) {
             XDB::execute("UPDATE  emails SET flags = 'active'
                                      WHERE  uid={?} AND email={?}", $uid, $this->email);
@@ -145,7 +144,6 @@ class Email
 
     function deactivate($uid)
     {
-        global $globals;
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
 				     WHERE  uid={?} AND email={?}", $uid, $this->email);
@@ -159,7 +157,6 @@ class Email
 
     function rewrite($rew, $uid)
     {
-        global $globals;
 	if ($this->rewrite == $rew) {
             return;
         }
@@ -188,7 +185,6 @@ class Redirect
 
     function Redirect($_uid)
     {
-        global $globals;
 	$this->uid=$_uid;
         $res = XDB::iterRow("
 	    SELECT email, flags='active', rewrite, panne
@@ -218,7 +214,6 @@ class Redirect
 
     function delete_email($email)
     {
-        global $globals;
         if (!$this->other_active($email)) {
             return ERROR_INACTIVE_REDIRECTION;
         }
@@ -237,7 +232,6 @@ class Redirect
     
     function add_email($email)
     {
-        global $globals;
         $email_stripped = strtolower(trim($email));
         if (!isvalid_email($email_stripped)) {
             return ERROR_INVALID_EMAIL;
@@ -263,7 +257,6 @@ class Redirect
 
     function modify_email($emails_actifs,$emails_rewrite)
     {
-        global $globals;
 	foreach ($this->emails as $i=>$mail) {
             if (in_array($mail->email,$emails_actifs)) {
                 $this->emails[$i]->activate($this->uid);

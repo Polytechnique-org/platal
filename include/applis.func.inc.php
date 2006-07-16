@@ -22,7 +22,6 @@
 global $page;
 
 function applis_options($current=0) {
-    global $globals;
     $html = '<option value="-1"></option>';
     $res  = XDB::iterator("select * from applis_def order by text");
     while ($arr_appli = $res->next()) { 
@@ -45,7 +44,6 @@ $page->register_function('applis_options','_applis_options_smarty');
 /** affiche un Array javascript contenant les types de chaque appli
  */
 function applis_type(){
-    global $globals;
     $html = "";
     $res=XDB::iterRow("select type from applis_def order by text");
     if (list($appli_type) = $res->next()) {
@@ -61,7 +59,6 @@ $page->register_function('applis_type','applis_type');
 /** affiche tous les types possibles d'applis
  */
 function applis_type_all(){
-    global $globals;
     $res = XDB::query("show columns from applis_def like 'type'");
     $arr_appli = $res->fetchOneAssoc();
     return str_replace(")","",str_replace("set(","",$arr_appli["Type"]));

@@ -90,7 +90,6 @@ class Validate
      */
     function Validate($_uid, $_unique, $_type)
     {
-        global $globals;
         $this->uid    = $_uid;
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
@@ -112,7 +111,6 @@ class Validate
      */
     function submit ()
     {
-        global $globals;
         if ($this->unique) {
             XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
         }
@@ -129,7 +127,6 @@ class Validate
 
     function update ()
     {
-        global $globals;
         XDB::execute('UPDATE requests SET data={?}, stamp=stamp
                                  WHERE user_id={?} AND type={?} AND stamp={?}',
                                  $this, $this->uid, $this->type, $this->stamp);
@@ -145,7 +142,6 @@ class Validate
      */
     function clean ()
     {
-        global $globals;
         if ($this->unique) {
             return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
                     $this->uid, $this->type);
@@ -262,7 +258,6 @@ class Validate
      */
     function get_request($uid, $type, $stamp = -1)
     {
-        global $globals;
         if ($stamp == -1) {
             $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
         } else {

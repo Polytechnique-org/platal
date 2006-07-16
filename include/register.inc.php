@@ -70,7 +70,6 @@ function get_X_mat($ourmat)
 
 function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
 {
-    global $globals;
     if (!preg_match('/^[0-9][0-9][0-9][0-9][0-9][0-9]$/', $mat)) {
         return "Le matricule doit comporter 6 chiffres.";
     }
@@ -105,8 +104,6 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
 
 function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
 {
-    global $globals;
-
     $res = XDB::iterRow(
             'SELECT  user_id, nom, prenom, matricule
                FROM  auth_user_md5
@@ -139,7 +136,6 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
 
 function check_new_user(&$sub)
 {
-    global $globals;
     extract($sub);
 
     $prenom  = preg_replace("/[ \t]+/", ' ', trim($prenom));
@@ -172,7 +168,6 @@ function check_new_user(&$sub)
 
 function create_aliases (&$sub)
 {
-    global $globals;
     extract ($sub);
 
     $mailorg  = make_username($prenom, $nom);

@@ -56,18 +56,16 @@ class XOrgMenu
 
     function XOrgMenu()
     {
-        global $globals;
-        
-        $this->_int[XOM_NO]       = Array();
-        $this->_int[XOM_CUSTOM]   = Array();
-        $this->_int[XOM_SERVICES] = Array();
-        $this->_int[XOM_GROUPS]   = Array();
-        $this->_int[XOM_INFOS]    = Array();
-        $this->_int[XOM_ADMIN]    = Array();
+        $this->_int[XOM_NO]       = array();
+        $this->_int[XOM_CUSTOM]   = array();
+        $this->_int[XOM_SERVICES] = array();
+        $this->_int[XOM_GROUPS]   = array();
+        $this->_int[XOM_INFOS]    = array();
+        $this->_int[XOM_ADMIN]    = array();
 
-        $this->_ext[XOM_US]       = Array();
-        $this->_ext[XOM_EXT]      = Array();
-        $this->_ext[XOM_INFOS]    = Array();
+        $this->_ext[XOM_US]       = array();
+        $this->_ext[XOM_EXT]      = array();
+        $this->_ext[XOM_INFOS]    = array();
     }
 
     // }}}

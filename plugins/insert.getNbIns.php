@@ -30,7 +30,6 @@
  */
 function smarty_insert_getNbIns($params, &$smarty)
 {
-    global $globals;
     $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin','user') AND deces=0");
     $cnt = $res->fetchOneCell();
     return number_format($cnt, 0, ",", ".");

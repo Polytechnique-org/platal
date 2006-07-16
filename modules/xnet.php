@@ -91,8 +91,6 @@ class XnetModule extends PLModule
 
     function handler_admin(&$page)
     {
-        global $globals;
-
         new_admin_page('xnet/admin.tpl');
         $page->useMenu();
 
@@ -144,8 +142,6 @@ class XnetModule extends PLModule
 
     function handler_plan(&$page)
     {
-        global $globals;
-
         $page->changeTpl('xnet/plan.tpl');
 
         $page->setType('plan');
@@ -192,8 +188,6 @@ class XnetModule extends PLModule
 
     function handler_groups(&$page, $cat = null, $dom = null)
     {
-        global $globals;
-
         if (!$cat) {
             $this->handler_index(&$page);
         }

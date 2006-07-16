@@ -21,7 +21,6 @@
 
 
 function select_secteur($secteur){
-    global $globals;
     if ($secteur == '') {
         $secteur = -1;
     }
@@ -34,7 +33,6 @@ function select_secteur($secteur){
 }
 
 function select_ss_secteur($secteur,$ss_secteur){
-    global $globals;
     if ($secteur) {
 	$html = "<option value=\"\">&nbsp;</option>\n";
 	$res  = XDB::iterRow("SELECT id, label FROM emploi_ss_secteur WHERE secteur = {?}", $secteur);

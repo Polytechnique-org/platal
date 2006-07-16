@@ -31,8 +31,6 @@ class TrezoModule extends PLModule
 
     function handler_default(&$page)
     {
-        global $globals;
-
         $page->changeTpl('trezo/index.tpl');
 
         require_once 'money/trezo.inc.php';
@@ -71,8 +69,6 @@ class TrezoModule extends PLModule
 
     function handler_operation(&$page)
     {
-        global $globals;
-
         $page->changeTpl('trezo/gere_operations.tpl');
 
         require_once 'money/trezo.inc.php';

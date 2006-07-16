@@ -41,7 +41,6 @@ class MarkReq extends Validate
     // {{{ constructor
 
     function MarkReq($sender, $mark_id, $email, $perso = false) {
-        global $globals;
         $this->Validate($sender, false, 'marketing');
         $this->m_id    = $mark_id;
         $this->m_email = $email;
@@ -85,7 +84,6 @@ class MarkReq extends Validate
 
     function commit()
     {
-        global $globals;
         require_once('marketing.inc.php');
         mark_send_mail($this->m_id, $this->m_email,(!$this->perso)?"staff":"user");
         return true;

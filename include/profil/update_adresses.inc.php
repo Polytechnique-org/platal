@@ -22,131 +22,86 @@
 reset($adresses);
 
 function insert_new_tel($adrid, $tel) {
-  global $globals;
-  if ($tel['tel'] == "") return;
- XDB::execute(
-   "INSERT INTO tels SET
-    tel_type = {?},
-    tel_pub = {?},
-    tel = {?},
-    uid = {?},
-    adrid = {?},
-    telid = {?}",
-    $tel['tel_type'],
-    $tel['tel_pub'],
-    $tel['tel'],
-    Session::getInt('uid', -1),
-    $adrid,
-    $tel['telid']);
+    if ($tel['tel'] == "")
+        return;
+    XDB::execute( "INSERT INTO tels SET tel_type = {?}, tel_pub = {?},
+                  tel = {?}, uid = {?}, adrid = {?}, telid = {?}",
+                  $tel['tel_type'], $tel['tel_pub'], $tel['tel'],
+                  Session::getInt('uid', -1), $adrid, $tel['telid']);
 }
 
-foreach($adresses as $adrid => $adr){
+foreach ($adresses as $adrid => $adr) {
 
-  if($adr['nouvelle'] != 'new'){ // test si on vient de creer cette adresse dans verif_adresse.inc.php
-  
-    //construction des bits
-    $statut = "";
-    if ($adr["secondaire"])    $statut .= 'res-secondaire,';
-    if ($adr["courrier"])      $statut .= 'courrier,';
-    if ($adr["active"])        $statut .= 'active,';
-    if ($adr["temporaire"])    $statut .= 'temporaire,';
-    if (! empty($statut)) $statut = substr($statut, 0, -1);
+    if ($adr['nouvelle'] != 'new') {
+        // test si on vient de creer cette adresse dans verif_adresse.inc.php
 
-    if ($adr["nouvelle"] == 'ajout') {
-    //nouvelle adresse
-      XDB::execute("INSERT INTO adresses SET
-			 adr1 = {?},
-			 adr2 = {?},
-			 adr3 = {?},
-			 postcode = {?},
-			 city = {?},
-			 cityid = {?},
-			 country = {?},
-			 region = {?},
-			 regiontxt = {?},
-			 pub = {?},
-			 datemaj = NOW(),
-			 statut = {?},
-			 uid = {?}, adrid = {?}",
-			 $adr['adr1'],
-			 $adr['adr2'],
-			 $adr['adr3'],
-			 $adr['postcode'],
-			 $adr['city'],
-			 $adr['cityid'],
-			 $adr['country'],
-			 $adr['region'],
-			 $adr['regiontxt'],
-			 $adr['pub'],
-			 $statut,
-			 Session::getInt('uid', -1), $adrid);
-       $telsvalues = "";  		 
-       foreach ($adr['tels'] as $tel) 
-         insert_new_tel($adrid, $tel);
-    }
-    
-    else{ 
-      //c'est une mise à jour
-      XDB::execute(
-		    "UPDATE adresses SET
-				 adr1 = {?},
-				 adr2 = {?},
-				 adr3 = {?},
-				 postcode = {?},
-				 city = {?},
-				 cityid = {?},
-				 country = {?},
-				 region = {?},
-				 regiontxt = {?},
-				 pub = {?},
-				 datemaj = NOW(),
-				 statut = {?}
-				 WHERE uid = {?} AND adrid = {?}",
-				 $adr['adr1'],
-				 $adr['adr2'],
-				 $adr['adr3'],
-				 $adr['postcode'],
-				 $adr['city'],
-				 $adr['cityid'],
-				 $adr['country'],
-				 $adr['region'],
-				 $adr['regiontxt'],
-				 $adr['pub'],
-				 $statut,
-				 Session::getInt('uid', -1), $adrid
-		    );
-       foreach ($adr['tels'] as $tel) {
-         if ($tel['new_tel'])
-          insert_new_tel($adrid, $tel);
-        else
-          if ($tel['tel'] != "") {
-          XDB::execute(
-           "UPDATE tels SET
-            tel_type = {?},
-            tel_pub = {?},
-            tel = {?}
-            WHERE
-            uid = {?} AND
-            adrid = {?} AND
-            telid = {?}",
-            $tel['tel_type'],
-            $tel['tel_pub'],
-            $tel['tel'],
-            Session::getInt('uid', -1),
-            $adrid,
-            $tel['telid']);
-          } else {
-          XDB::execute(
-           "DELETE FROM tels WHERE
-            uid = {?} AND
-            adrid = {?} AND
-            telid = {?}",
-            Session::getInt('uid', -1),
-            $adrid,
-            $tel['telid']);
-          }
-       }
-    }// fin nouvelle / ancienne adresse
-  }//fin if nouvellement crée
+        //construction des bits
+        $statut = "";
+        if ($adr["secondaire"])    $statut .= 'res-secondaire,';
+        if ($adr["courrier"])      $statut .= 'courrier,';
+        if ($adr["active"])        $statut .= 'active,';
+        if ($adr["temporaire"])    $statut .= 'temporaire,';
+        if (! empty($statut)) $statut = substr($statut, 0, -1);
+
+        if ($adr["nouvelle"] == 'ajout') {
+            //nouvelle adresse
+            XDB::execute("INSERT INTO adresses SET adr1 = {?}, adr2 = {?},
+                         adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
+                         country = {?}, region = {?}, regiontxt = {?},
+                         pub = {?}, datemaj = NOW(), statut = {?}, uid = {?},
+                         adrid = {?}", $adr['adr1'], $adr['adr2'],
+                         $adr['adr3'], $adr['postcode'], $adr['city'],
+                         $adr['cityid'], $adr['country'], $adr['region'],
+                         $adr['regiontxt'], $adr['pub'], $statut,
+                         Session::getInt('uid', -1), $adrid);
+            $telsvalues = "";  		 
+            foreach ($adr['tels'] as $tel) {
+                insert_new_tel($adrid, $tel);
+            }
+        } else { 
+            //c'est une mise à jour
+            XDB::execute("UPDATE adresses SET adr1 = {?}, adr2 = {?},
+                         adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
+                         country = {?}, region = {?}, regiontxt = {?},
+                         pub = {?}, datemaj = NOW(), statut = {?}
+                         WHERE uid = {?} AND adrid = {?}", $adr['adr1'],
+                         $adr['adr2'], $adr['adr3'], $adr['postcode'],
+                         $adr['city'], $adr['cityid'], $adr['country'],
+                         $adr['region'], $adr['regiontxt'], $adr['pub'],
+                         $statut, Session::getInt('uid', -1), $adrid);
+            foreach ($adr['tels'] as $tel) {
+                if ($tel['new_tel']) {
+                    insert_new_tel($adrid, $tel);
+                } else {
+                    if ($tel['tel'] != "") {
+                        XDB::execute(
+                            "UPDATE tels SET
+                            tel_type = {?},
+                            tel_pub = {?},
+                            tel = {?}
+                            WHERE
+                            uid = {?} AND
+                            adrid = {?} AND
+                            telid = {?}",
+                            $tel['tel_type'],
+                            $tel['tel_pub'],
+                            $tel['tel'],
+                            Session::getInt('uid', -1),
+                            $adrid,
+                            $tel['telid']);
+                    } else {
+                        XDB::execute(
+                            "DELETE FROM tels WHERE
+                            uid = {?} AND
+                            adrid = {?} AND
+                            telid = {?}",
+                            Session::getInt('uid', -1),
+                            $adrid,
+                            $tel['telid']);
+                    }
+                }
+            }
+        }// fin nouvelle / ancienne adresse
+    }//fin if nouvellement crée
 }//fin foreach
 ?>

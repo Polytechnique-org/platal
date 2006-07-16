@@ -27,7 +27,7 @@ require_once 'platal/smarty.plugins.inc.php';
 class PlatalPage extends Smarty
 {
     // {{{ properties
-    
+
     var $_page_type;
     var $_tpl;
     var $_errors;
@@ -73,7 +73,7 @@ class PlatalPage extends Smarty
 
     // }}}
     // {{{ function fakeDiogenes()
-    
+
     function fakeDiogenes()
     {
         require_once 'diogenes/diogenes.core.page.inc.php';
@@ -86,7 +86,7 @@ class PlatalPage extends Smarty
         $this->register_function("tag","diogenes_func_tag");
         $this->register_function("toolbar","diogenes_func_toolbar");
     }
-    
+
     // }}}
     // {{{ function changeTpl()
 
@@ -114,7 +114,7 @@ class PlatalPage extends Smarty
 
         $this->assign("xorg_errors", $this->_errors);
         $this->assign("xorg_failure", $this->_failure);
-        
+
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
             exit;
@@ -124,7 +124,7 @@ class PlatalPage extends Smarty
             $this->display($skin);
             exit;
         }
-        
+
         if ($globals->debug & 1) {
             $this->assign('db_trace', $globals->db->trace_format($this, 'database-debug.tpl'));
         }
@@ -139,7 +139,7 @@ class PlatalPage extends Smarty
             $fd = fopen($this->compile_dir."/valid.html","w");
             fwrite($fd, $result);
             fclose($fd);
-    
+
             exec($globals->spoolroot."/bin/devel/xhtml.validate.pl ".$this->compile_dir."/valid.html", $val);
             foreach ($val as $h) {
                 if (preg_match("/^X-W3C-Validator-Errors: (\d+)$/", $h, $m)) {
@@ -212,10 +212,10 @@ class PlatalPage extends Smarty
     // {{{ function doAuth()
 
     function doAuth() { }
-    
+
     // }}}
     // {{{ function loadModule()
-    
+
     function loadModule($modname)
     {
         require_once("$modname.inc.php");
@@ -239,7 +239,7 @@ class PlatalPage extends Smarty
 
     // }}}
     // {{{ function gassign
-    
+
     function gassign($varname)
     {
         global $$varname;

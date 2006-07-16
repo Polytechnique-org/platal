@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 function select_if_homonyme($uid) {
-    global $globals;
     $res = XDB::query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
                                    FROM  auth_user_md5 AS u
                              INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
@@ -56,7 +55,6 @@ function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
 }
 
 function switch_bestalias($uid, $loginbis) {
-    global $globals;
     // check if loginbis was the bestalias
     $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", $uid);
     $bestalias = $res->fetchOneCell();

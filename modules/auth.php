@@ -125,8 +125,6 @@ class AuthModule extends PLModule
 
     function handler_groupex(&$page)
     {
-        global $globals;
-
         require_once dirname(__FILE__).'/auth/auth.inc.php';
 
         $gpex_pass = $_GET["pass"];

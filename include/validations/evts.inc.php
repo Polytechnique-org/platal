@@ -37,7 +37,6 @@ class EvtReq extends Validate
     // {{{ constructor
 
     function EvtReq($_titre, $_texte, $_pmin, $_pmax, $_peremption, $_comment, $_uid) {
-        global $globals;
         $this->Validate($_uid, false, 'evts');
         $this->titre      = $_titre;
         $this->texte      = $_texte;
@@ -78,7 +77,6 @@ class EvtReq extends Validate
 
     function commit()
     {
-        global $globals;
         return XDB::execute(
                 "INSERT INTO  evenements
                          SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},

@@ -52,8 +52,6 @@ class ListsModule extends PLModule
 
     function handler_lists(&$page)
     {
-        global $globals;
-
         $this->prepare_client($page);
 
         $page->changeTpl('listes/index.tpl');
@@ -82,7 +80,6 @@ class ListsModule extends PLModule
 
     function handler_create(&$page)
     {
-        global $globals;
         $page->changeTpl('listes/create.tpl');
 
         $owners  = preg_split("/[\s]+/", Post::get('owners'), -1, PREG_SPLIT_NO_EMPTY);
@@ -165,8 +162,6 @@ class ListsModule extends PLModule
 
     function handler_members(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
@@ -204,7 +199,7 @@ class ListsModule extends PLModule
 
     function _get_list($offset, $limit)
     {
-        global $globals, $platal;
+        global $platal;
         list($total, $members) = $this->client->get_members_limit($platal->argv[1], $offset, $limit);
 
         $membres = Array();
@@ -226,8 +221,6 @@ class ListsModule extends PLModule
 
     function handler_trombi(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
@@ -307,8 +300,6 @@ class ListsModule extends PLModule
 
     function handler_moderate(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
@@ -488,8 +479,6 @@ class ListsModule extends PLModule
 
     function handler_options(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
@@ -541,8 +530,6 @@ class ListsModule extends PLModule
 
     function handler_delete(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
@@ -571,8 +558,6 @@ class ListsModule extends PLModule
 
     function handler_soptions(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
@@ -599,8 +584,6 @@ class ListsModule extends PLModule
 
     function handler_check(&$page, $liste = null)
     {
-        global $globals;
-
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }

@@ -38,23 +38,23 @@ function is_adr_empty($adrid){
 }
 
 function delete_address($adrid, $in_request_array = false){
-    global $globals;
-    XDB::execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
-    XDB::execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
-    if($in_request_array == true){
-      unset($_REQUEST['adrid'][$adrid]);
-    }
-    else{
-      unset($GLOBALS['adresses'][$adrid]);
+    XDB::execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",
+                 Session::getInt('uid', -1), $adrid);
+    XDB::execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}",
+                 Session::getInt('uid', -1), $adrid);
+    if ($in_request_array == true){
+        unset($_REQUEST['adrid'][$adrid]);
+    } else{
+        unset($GLOBALS['adresses'][$adrid]);
     }
 }
 
 //on verifie si on nous a demande une suppression
 $req_adrid_del = Env::getMixed('adrid_del', Array());
-for($i = 1; $i <= $nb_adr_max; $i++){
-  if( isset( $req_adrid_del[$i] ) ) {
-    delete_address($i,true);
-  }
+for ($i = 1; $i <= $nb_adr_max; $i++) {
+    if (isset($req_adrid_del[$i])) {
+        delete_address($i,true);
+    }
 }
 
 //$sql_order = "ORDER BY (NOT FIND_IN_SET('active', statut)), FIND_IN_SET('temporaire', statut)";

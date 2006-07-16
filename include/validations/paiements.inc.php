@@ -41,12 +41,13 @@ class PayReq extends Validate
     var $rules = "Laisser la validation à un trésorier";
     // }}}
     // {{{ constructor
-    
-    function PayReq($_uid, $_intitule, $_site, $_montant, $_msg, $_montantmin=0, $_montantmax=999, $_asso_id = 0, $_evt = 0, $_stamp=0)
+
+    function PayReq($_uid, $_intitule, $_site, $_montant, $_msg,
+                    $_montantmin=0, $_montantmax=999, $_asso_id = 0,
+                    $_evt = 0, $_stamp=0)
     {
-        global $globals;
         $this->Validate($_uid, false, 'paiements', $_stamp);
-       
+
         $this->titre        = $_intitule;
         $this->site         = $_site;
         $this->msg_reponse  = $_msg;
@@ -80,7 +81,6 @@ class PayReq extends Validate
   // supprime les demandes de paiments pour le meme evenement
     function submit()
     {
-        global $globals;
         if ($this->evt)
         {
             XDB::execute('DELETE FROM requests WHERE type={?} AND data LIKE {?}', 'paiements', PayReq::same_event($this->evt, $this->asso_id));

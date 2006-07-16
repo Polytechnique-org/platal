@@ -138,8 +138,6 @@ class XnetEventsModule extends PLModule
 
     function handler_sub(&$page, $eid = null)
     {
-        global $globals;
-
         require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
 
         new_group_page('xnetevents/subscribe.tpl');

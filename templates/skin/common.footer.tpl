@@ -22,7 +22,7 @@
 
 
 <div>
-  Plat/al <a href="{rel}/changelog">{version}</a> - Copyright © 1999-2006 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
+  Plat/al <a href="{rel}/changelog">{#globals.version#}</a> - Copyright © 1999-2006 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
   <a href="{rel}/Docs/ConventionAX">Lien avec l'AX</a>
   &nbsp;-&nbsp;

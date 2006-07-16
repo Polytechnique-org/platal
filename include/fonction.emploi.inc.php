@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 function select_fonction($fonction){
-    global $globals;
     $html = "<option value='' ". (($fonction == '0')?"selected='selected'":"") .">&nbsp;</option>\n";
 
     $res = XDB::iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");

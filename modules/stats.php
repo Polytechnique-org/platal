@@ -60,8 +60,6 @@ class StatsModule extends PLModule
 
     function handler_graph_evo(&$page, $jours = 365)
     {
-        global $globals;
-
         define('DUREEJOUR',24*3600);
 
         //recupere le nombre d'inscriptions par jour sur la plage concernée
@@ -125,8 +123,6 @@ EOF2;
 
     function handler_graph(&$page, $promo = null)
     {
-        global $globals;
-
         if ($promo == 'all') {
             // date de départ
             $depart = 1920;
@@ -248,8 +244,6 @@ EOF2;
 
     function handler_promos(&$page, $promo = null)
     {
-        global $globals;
-
         $page->changeTpl('stats/nb_by_promo.tpl');
 
         $res = XDB::iterRow(
@@ -276,8 +270,6 @@ EOF2;
 
     function handler_coupures(&$page, $cp_id = null)
     {
-        global $globals;
-
         $page->changeTpl('stats/coupure.tpl');
 
         if (!is_null($cp_id)) {

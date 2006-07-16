@@ -20,8 +20,6 @@
  ***************************************************************************/
 
 function set_new_usage($uid, $usage, $alias=false) { 
-    global $globals;
-
     XDB::execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$usage ,$uid);
     XDB::execute("DELETE FROM aliases WHERE FIND_IN_SET('usage',flags) AND id={?}", $uid);
     if ($alias && $usage) {

@@ -33,8 +33,6 @@ function get_user_ax($matricule_ax, $raw=false)
 {
     require_once('webservices/ax/client.inc');
 
-    global $globals;
-
     $ancien = recupere_infos_ancien($matricule_ax);
 
     $userax = Array();

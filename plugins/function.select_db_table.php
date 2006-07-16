@@ -21,7 +21,6 @@
 
 
 function select_options($table,$valeur,$champ="text",$pad=false,$where="") {
-    global $globals;
     $sql = "SELECT id,$champ FROM $table $where ORDER BY $champ";
     $res = XDB::iterRow($sql);
     $sel = ' selected="selected"';
@@ -32,7 +31,8 @@ function select_options($table,$valeur,$champ="text",$pad=false,$where="") {
 	$html.= '<option value="0"'.($valeur==0?$sel:"")."></option>\n";
     }
     while (list($my_id,$my_text) = $res->next()) {
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",$my_id,($valeur==$my_id?$sel:""),$my_text);
+	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n", 
+                         $my_id, ($valeur==$my_id?$sel:""), $my_text);
     }
     return $html;
 }
@@ -48,7 +48,8 @@ function smarty_function_select_db_table($params, &$smarty) {
 	$pad = true;
     if(empty($params['where']))
 	$params['where'] = '';
-    return select_options($params['table'], $params['valeur'], $params['champ'], $pad, $params['where']);
+    return select_options($params['table'], $params['valeur'],
+                          $params['champ'], $pad, $params['where']);
 }
 
 ?>

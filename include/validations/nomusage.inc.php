@@ -46,7 +46,6 @@ class UsageReq extends Validate
 
     function UsageReq($_uid, $_usage, $_reason)
     {
-        global $globals;
         $this->Validate($_uid, true, 'usage');
         $this->nom_usage  = $_usage;
         $this->reason = $_reason;

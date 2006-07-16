@@ -51,7 +51,6 @@ function isDate($date)
 
 function solde_until($date='')
 {
-    global $globals;
     $sql = "SELECT SUM(credit)-SUM(debit) FROM money_trezo";
     if (empty($date)) {
         $res = XDB::query($sql);

@@ -44,7 +44,7 @@ class PhotoReq extends Validate
    
     function PhotoReq($_uid, $_data, $_stamp=0)
     {
-        global $globals, $page;
+        global $page;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
         
@@ -140,8 +140,6 @@ class PhotoReq extends Validate
     
     function commit()
     {
-        global $globals;
-        
         XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
                                       VALUES  ({?},{?},{?},{?},{?})',
                                       $this->uid, $this->mimetype, $this->data, $this->x, $this->y);

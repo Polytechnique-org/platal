@@ -90,9 +90,7 @@ class Payment
 
     function event()
     {
-        global $globals;
-        if ($this->asso_id)
-        {
+        if ($this->asso_id) {
             $res = XDB::query("SELECT eid, a.diminutif FROM groupex.evenements AS e, groupex.asso AS a WHERE e.asso_id = {?} AND a.id = {?}", $this->asso_id, $this->asso_id);
             return $res->fetchOneAssoc();
         }

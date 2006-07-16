@@ -37,8 +37,6 @@ class MarketingModule extends PLModule
 
     function handler_marketing(&$page)
     {
-        global $globals;
-
         $page->changeTpl('marketing/index.tpl');
 
         $page->assign('xorg_title','Polytechnique.org - Marketing');
@@ -80,8 +78,6 @@ class MarketingModule extends PLModule
     function handler_private(&$page, $uid = null,
                              $action = null, $value = null)
     {
-        global $globals;
-
         $page->changeTpl('marketing/private.tpl');
 
         if (is_null($uid)) {
@@ -164,8 +160,6 @@ class MarketingModule extends PLModule
 
     function handler_promo(&$page, $promo = null)
     {
-        global $globals;
-
         $page->changeTpl('marketing/promo.tpl');
 
         if (is_null($promo)) {
@@ -186,8 +180,6 @@ class MarketingModule extends PLModule
 
     function handler_public(&$page, $uid = null)
     {
-        global $globals;
-
         $page->changeTpl('marketing/public.tpl');
 
         if (is_null($uid)) {
@@ -230,8 +222,6 @@ class MarketingModule extends PLModule
 
     function handler_week(&$page, $sorting = 'per_promo')
     {
-        global $globals;
-
         $page->changeTpl('marketing/this_week.tpl');
 
         $sort = $sorting == 'per_promo' ? 'promo' : 'date_ins';
@@ -246,8 +236,6 @@ class MarketingModule extends PLModule
 
     function handler_volontaire(&$page, $promo = null)
     {
-        global $globals;
-
         $page->changeTpl('marketing/volontaire.tpl');
 
         $res = XDB::query(
@@ -272,8 +260,6 @@ class MarketingModule extends PLModule
 
     function handler_relance(&$page)
     {
-        global $globals;
-
         $page->changeTpl('marketing/relance.tpl');
 
         if (Post::has('relancer')) {

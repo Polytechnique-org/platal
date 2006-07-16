@@ -221,7 +221,6 @@ class XorgSession
  */
 function try_cookie()
 {
-    global $globals;
     if (Cookie::get('ORGaccess') == '' or !Cookie::has('ORGuid')) {
 	return -1;
     }
@@ -255,7 +254,6 @@ function try_cookie()
  */
 function start_connexion ($uid, $identified)
 {
-    global $globals;
     $res  = XDB::query("
 	SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                 UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias AS forlife, a2.alias AS bestalias,

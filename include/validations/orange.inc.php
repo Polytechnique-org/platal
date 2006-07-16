@@ -39,7 +39,6 @@ class OrangeReq extends Validate
 
     function OrangeReq($_uid, $_sortie)
     {
-        global $globals;
         $this->Validate($_uid, true, 'orange');
         $this->promo_sortie  = $_sortie;
         $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
@@ -73,7 +72,6 @@ class OrangeReq extends Validate
 
     function _mail_body($isok)
     {
-        global $globals;
         if ($isok) {
             $res = "  La demande de changement de promo de sortie que tu as demandée vient d'être effectuée.";
             return $res;
@@ -87,8 +85,6 @@ class OrangeReq extends Validate
 
     function commit()
     {
-        global $globals;
-        
         XDB::execute("UPDATE auth_user_md5 set promo_sortie={?} WHERE user_id={?}",$this->promo_sortie ,$this->uid);
         return true;
     }

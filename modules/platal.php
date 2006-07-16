@@ -88,8 +88,6 @@ class PlatalModule extends PLModule
 
     function __set_rss_state($state)
     {
-        global $globals;
-
         if ($state) {
             $_SESSION['core_rss_hash'] = rand_url_id(16);
             XDB::execute('UPDATE  auth_user_quick
@@ -131,8 +129,6 @@ class PlatalModule extends PLModule
 
     function handler_webredir(&$page)
     {
-        global $globals;
-
         $page->changeTpl('webredirect.tpl');
 
         $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
@@ -165,8 +161,6 @@ class PlatalModule extends PLModule
 
     function handler_prefs_rss(&$page)
     {
-        global $globals;
-
         $page->changeTpl('filrss.tpl');
 
         $page->assign('goback', Env::get('referer', 'login'));
@@ -179,8 +173,6 @@ class PlatalModule extends PLModule
 
     function handler_password(&$page)
     {
-        global $globals;
-
         if (Post::has('response2'))  {
             require_once 'secure_hash.inc.php';
 
@@ -209,8 +201,6 @@ class PlatalModule extends PLModule
 
     function handler_smtppass(&$page)
     {
-        global $globals;
-
         $page->changeTpl('acces_smtp.tpl');
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
 
@@ -303,8 +293,6 @@ Mail envoyé à ".Env::get('login'));
 
     function handler_tmpPWD(&$page, $certif = null)
     {
-        global $globals;
-
         XDB::execute('DELETE FROM perte_pass
                                       WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
@@ -404,8 +392,6 @@ Mail envoyé à ".Env::get('login'));
 
     function handler_rss(&$page, $user = null, $hash = null)
     {
-        global $globals;
-
         require_once 'rss.inc.php';
 
         $uid = init_rss('rss.tpl', $user, $hash);

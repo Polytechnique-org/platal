@@ -159,7 +159,7 @@ class PlatalBanana extends Banana
 
     function run($params = null)
     {
-        global $banana, $globals;
+        global $banana;
 
         if (Get::get('banana') == 'updateall'
                 || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {

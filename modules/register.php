@@ -33,8 +33,6 @@ class RegisterModule extends PLModule
 
     function handler_register(&$page, $hash = null)
     {
-        global $globals;
-
         $sub_state = Session::getMixed('sub_state', Array());
         if (!isset($sub_state['step'])) {
             $sub_state['step'] = 0;
@@ -277,8 +275,6 @@ class RegisterModule extends PLModule
 
     function handler_success(&$page)
     {
-        global $globals;
-
         $page->changeTpl('register/success.tpl');
 
         if (Env::has('response2'))  {

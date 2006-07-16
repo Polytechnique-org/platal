@@ -56,11 +56,9 @@ function banana_menu()
 
 function banana_subscribe($forlife, $uid, $promo, $password)
 {
-    global $globals;
-    
     $cible = array('xorg.general','xorg.pa.emploi','xorg.pa.divers','xorg.pa.logements');
     $p_for = "xorg.promo.x$promo";
-    
+
     // récupération de l'id du forum promo
     $res = XDB::query("SELECT fid FROM forums.list WHERE nom={?}", $p_for);
     if ($res->numRows()) {

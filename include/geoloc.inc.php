@@ -25,7 +25,6 @@
  * @param $current pays actuellement selectionné
  */
 function geoloc_country($current) {
-    global $globals;
     $res  = XDB::iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
     $html = "";
     while (list($my_id, $my_pays) = $res->next()) {
@@ -47,7 +46,6 @@ $GLOBALS['page']->register_function('geoloc_country', '_geoloc_country_smarty');
  * @param $current la region actuellement selectionnee
  */
 function geoloc_region($country,$current) {
-    global $globals;
     $res  = XDB::iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $country);
     $html = "<option value=\"\"></option>";
     while (list($regid, $regname) = $res->next()) {
@@ -113,17 +111,22 @@ function get_cities_maps($array)
 /** set new maps from url **/
 function get_new_maps($url)
 {
-	if (!($f = @fopen($url, 'r'))) return false;
-	global $globals;
-	XDB::query('TRUNCATE TABLE geoloc_maps');
-	$s = '';
-  while (!feof($f)) {
-  	$l = fgetcsv($f, 1024, ';', '"');
-  	foreach ($l as $i => $val) if ($val != 'NULL') $l[$i] = '\''.addslashes($val).'\'';
-  	$s .= ',('.implode(',',$l).')';
-  }
-	XDB::execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
-	return true;
+    if (!($f = @fopen($url, 'r'))) {
+        return false;
+    }
+    XDB::query('TRUNCATE TABLE geoloc_maps');
+    $s = '';
+    while (!feof($f)) {
+        $l = fgetcsv($f, 1024, ';', '"');
+        foreach ($l as $i => $val) {
+            if ($val != 'NULL') {
+                $l[$i] = '\''.addslashes($val).'\'';
+            }
+        }
+        $s .= ',('.implode(',',$l).')';
+    }
+    XDB::execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
+    return true;
 }
 
 // {{{ get_address_text($adr)
@@ -159,7 +162,6 @@ function get_address_text($adr) {
     }
     if ($l) $t .= "\n".trim($l);
     if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == strtoupper($adr['countrytxt']))) {
-        global $globals;
         $res = XDB::query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
         $adr['countrytxt'] = $res->fetchOneCell();
     }
@@ -214,7 +216,6 @@ function cut_address($txt) {
  * @param $uid the id of the user
  */
 function localize_addresses($uid) {
-    global $globals;
     $res = XDB::iterator("SELECT * FROM adresses WHERE uid = {?} and (cityid IS NULL OR cityid = 0)", $uid);
     $erreur = Array();
 
@@ -260,7 +261,6 @@ function localize_addresses($uid) {
 // {{{ function fix_cities_not_on_map($limit)
 function fix_cities_not_on_map($limit=false)
 {
-    global $globals;
     $missing = XDB::query("SELECT c.id FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL".($limit?" LIMIT $limit":""));
     $maps = get_cities_maps($missing->fetchColumn());
     if ($maps)
@@ -277,7 +277,6 @@ function fix_cities_not_on_map($limit=false)
 }
 
 function set_smallest_levels() {
-    global $globals;
     $maxlengths = XDB::iterRow("SELECT MAX(LENGTH(gm.path)), gcim.city_id
         FROM geoloc_city_in_maps AS gcim
         INNER JOIN geoloc_maps AS gm
@@ -307,7 +306,6 @@ function size_of_city($nb) { $s = round(log($nb + 1)*2,2); if ($s < 1) return 1;
 function size_of_territory($nb) { return size_of_city($nb); }
 
 function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true) {
-    global $globals;
     for ($i_mapfield=0; $i_mapfield < count($SFields) ; $i_mapfield++) if ($SFields[$i_mapfield]->fieldFormName == 'mapid') break;
     $SFields[$i_mapfield] = new MapSField('mapid', array('gcim.map_id'), array('adresses','geoloc_city_in_maps'), array('am','gcim'), array(getadr_join('am'), 'am.cityid = gcim.city_id'), $mapid);
     
@@ -340,7 +338,6 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true) {
 }
 
 function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
-    global $globals;
     $countries = array();
     $cities = array();
     

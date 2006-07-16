@@ -77,7 +77,6 @@ class XnetSession
      */
     function doAuth(&$page)
     {
-	global $globals;
 	if (identified()) { // ok, c'est bon, on n'a rien à faire
 	    return true;
 	}

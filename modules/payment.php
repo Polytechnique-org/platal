@@ -127,7 +127,7 @@ class PaymentModule extends PLModule
         $page->assign('pay',  $pay);
         $page->assign('evtlink', $pay->event());
 
-        $page->assign('prefix',$globals->money->mpay_tprefix);
+        $page->assign('prefix', $globals->money->mpay_tprefix);
     }
 
     function handler_cyber_return(&$page, $uid = null)
@@ -226,8 +226,6 @@ class PaymentModule extends PLModule
 
     function handler_paypal_return(&$page, $uid = null)
     {
-        global $globals;
-
         $page->changeTpl('payment/retour_paypal.tpl');
         require_once 'diogenes/diogenes.hermes.inc.php';
 

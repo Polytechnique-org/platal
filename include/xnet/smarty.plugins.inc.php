@@ -28,7 +28,6 @@ function list_all_my_groups($params)
     if (!logged()) {
         return;
     }
-    global $globals;
     $res = XDB::iterRow(
             "SELECT  a.nom, a.diminutif
                FROM  groupex.asso    AS a

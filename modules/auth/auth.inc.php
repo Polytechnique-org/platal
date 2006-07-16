@@ -21,7 +21,6 @@
 
 /* cree le champs "auth" renvoye au Groupe X */
 function gpex_make_auth($chlg, $privkey, $datafields) {
-    global $globals;
     $fieldarr = explode(",",$datafields);
     $tohash   = "1$chlg$privkey";
 
@@ -53,7 +52,6 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
 
 /* cree les parametres de l'URL de retour avec les champs demandes */
 function gpex_make_params($chlg, $privkey, $datafields) {
-    global $globals;
     $params   = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
 
     $res = XDB::query("SELECT matricule, matricule_ax, promo,

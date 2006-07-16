@@ -35,8 +35,6 @@ class EventsModule extends PLModule
 
     function handler_ev(&$page)
     {
-        global $globals;
-
         $page->changeTpl('login.tpl');
 
         $res = XDB::query('SELECT date, naissance FROM auth_user_md5
@@ -147,7 +145,6 @@ class EventsModule extends PLModule
 
     function handler_ev_submit(&$page)
     {
-        global $globals;
         $page->changeTpl('evenements.tpl');
 
         $titre      = Post::get('titre');

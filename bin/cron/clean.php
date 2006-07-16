@@ -23,7 +23,6 @@
 require('./connect.db.inc.php');
 
 function query ($sql) {
-    global $globals;
     XDB::execute($sql);
     if (mysql_errno() != 0) {
 	echo "error in \"$sql\" :\n", mysql_error(),"\n";

@@ -50,8 +50,6 @@ class NewsLetter
     
     function NewsLetter($id=null)
     {
-	global $globals;
-
 	if (isset($id)) {
 	    if ($id == 'last') {
 		$res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
@@ -90,7 +88,6 @@ class NewsLetter
 
     function setSent()
     {
-	global $globals;
 	XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
     }
 
@@ -99,9 +96,8 @@ class NewsLetter
 
     function save()
     {
-	global $globals;
 	XDB::execute('UPDATE newsletter SET date={?},titre={?},head={?} WHERE id={?}',
-                $this->_date, $this->_title, $this->_head, $this->_id);
+                     $this->_date, $this->_title, $this->_head, $this->_id);
     }
 
     // }}}
@@ -134,7 +130,6 @@ class NewsLetter
 
     function saveArticle(&$a)
     {
-	global $globals;
 	if ($a->_aid>=0) {
 	    XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
                                           VALUES  ({?},{?},{?},{?},{?},{?},{?})',
@@ -157,7 +152,6 @@ class NewsLetter
     
     function delArticle($aid)
     {
-	global $globals;
 	XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
 	foreach ($this->_arts as $key=>$art) {
 	    unset($this->_arts[$key]["a$aid"]);
@@ -440,43 +434,37 @@ class NLArticle
 
 function insert_new_nl()
 {
-    global $globals;
     XDB::execute("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued'");
 }
 
 function get_nl_slist()
 {
-    global $globals;
     $res = XDB::query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");
     return $res->fetchAllAssoc();
 }
 
 function get_nl_list()
 {
-    global $globals;
     $res = XDB::query("SELECT id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
     return $res->fetchAllAssoc();
 }
 
 function get_nl_state()
 {
-    global $globals;
     $res = XDB::query('SELECT 1 FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
     return $res->fetchOneCell();
 }
  
 function unsubscribe_nl()
 {
-    global $globals;
     XDB::execute('DELETE FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
 }
  
 function subscribe_nl($uid=-1)
 {
-    global $globals;
     $user = ($uid == -1) ? Session::getInt('uid') : $uid;
     XDB::execute('REPLACE INTO  newsletter_ins (user_id,last)
-			          VALUES  ({?}, 0)', $user);
+                        VALUES  ({?}, 0)', $user);
 }
  
 function justify($text,$n)

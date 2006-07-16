@@ -129,7 +129,6 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     
     function commit()
     {
-        global $globals;
         require_once('homonymes.inc.php');
 
         switch_bestalias($this->uid, $this->loginbis);

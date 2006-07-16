@@ -51,8 +51,6 @@ class ProfileModule extends PLModule
 
     function _trombi_getlist($offset, $limit)
     {
-        global $globals;
-
         $where  = ( $this->promo > 0 ? "WHERE promo='{$this->promo}'" : "" );
 
         $res = XDB::query(
@@ -79,8 +77,6 @@ class ProfileModule extends PLModule
         if (is_null($x)) {
             return PL_NOT_FOUND;
         }
-
-        global $globals;
 
         $res = XDB::query("SELECT id, pub FROM aliases
                                   LEFT JOIN photo ON(id = uid)
@@ -112,8 +108,6 @@ class ProfileModule extends PLModule
 
     function handler_photo_change(&$page)
     {
-        global $globals;
-
         $page->changeTpl('trombino.tpl');
 
         require_once('validations.inc.php');
@@ -354,8 +348,6 @@ class ProfileModule extends PLModule
 
     function handler_p_orange(&$page)
     {
-        global $globals;
-
         $page->changeTpl('orange.tpl');
 
         require_once 'validations.inc.php';
@@ -406,8 +398,6 @@ class ProfileModule extends PLModule
 
     function handler_referent(&$page, $x = null)
     {
-        global $globals;
-
         require_once 'user.func.inc.php';
 
         if (is_null($x)) {
@@ -473,8 +463,6 @@ class ProfileModule extends PLModule
 
     function handler_ref_search(&$page)
     {
-        global $globals;
-
         $page->changeTpl('referent.tpl');
 
         $page->assign('xorg_title', 'Polytechnique.org - Conseil Pro');
@@ -587,8 +575,6 @@ class ProfileModule extends PLModule
 
     function handler_p_usage(&$page)
     {
-        global $globals;
-
         $page->changeTpl('nomusage.tpl');
 
         require_once 'validations.inc.php';

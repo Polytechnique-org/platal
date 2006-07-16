@@ -24,7 +24,6 @@ require_once("xorg.misc.inc.php");
 // {{{ function mark_from_mail
 
 function mark_from_mail($uid, $email) {
-    global $globals;
     $res = XDB::query(
         "SELECT u.nom, u.prenom, a.alias
            FROM register_marketing  AS r
@@ -34,7 +33,6 @@ function mark_from_mail($uid, $email) {
         $uid, $email);
     $sender = $res->fetchOneAssoc();
     return "\"".$sender['prenom']." ".$sender['nom']."\" <".$sender['alias']."@polytechnique.org>";
-    
 }
 
 // }}}
@@ -81,7 +79,6 @@ function mark_text_mail($uid, $email)
 function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='') 
 {
     require_once("diogenes/diogenes.hermes.inc.php");
-    global $globals;
 
     $hash = rand_url_id(12);
     XDB::execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $uid, $email);

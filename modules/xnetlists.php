@@ -228,8 +228,6 @@ class XnetListsModule extends ListsModule
 
     function handler_aadmin(&$page, $lfull = null)
     {
-        global $globals;
-
         if (is_null($lfull)) {
             return PL_NOT_FOUND;
         }

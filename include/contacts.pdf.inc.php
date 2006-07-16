@@ -248,7 +248,6 @@ class ContactsPDF extends FPDF
 
     function AddContact($x, $wp = true)
     {
-        global $globals;
         /* infamous hack :
            1- we store the current state.
            2- at the end, we find out if we triggered the page break,

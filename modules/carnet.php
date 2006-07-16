@@ -110,8 +110,6 @@ class CarnetModule extends PLModule
 
     function handler_notifs(&$page, $action = null, $arg = null)
     {
-        global $globals;
-
         $page->changeTpl('carnet/notifs.tpl');
 
         require_once 'notifs.inc.php';
@@ -154,7 +152,6 @@ class CarnetModule extends PLModule
     }
 
     function _get_list($offset, $limit) {
-        global $globals;
         $uid   = Session::getInt('uid');
         $res   = XDB::query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
         $total = $res->fetchOneCell();
@@ -185,8 +182,6 @@ class CarnetModule extends PLModule
 
     function handler_contacts(&$page, $action = null)
     {
-        global $globals;
-
         $page->changeTpl('carnet/mescontacts.tpl');
         require_once("applis.func.inc.php");
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
@@ -295,8 +290,6 @@ class CarnetModule extends PLModule
 
     function handler_pdf(&$page, $arg0 = null, $arg1 = null)
     {
-        global $globals;
-
         require_once 'contacts.pdf.inc.php';
         require_once 'user.func.inc.php';
 
@@ -337,8 +330,6 @@ class CarnetModule extends PLModule
 
     function handler_ical(&$page, $user = null, $hash = null, $all = null)
     {
-        global $globals;
-
         new_nonhtml_page('carnet/calendar.tpl', AUTH_PUBLIC);
 
         if ($alias && $hash) {
