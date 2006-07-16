@@ -54,8 +54,8 @@ if ($target) {
             break;
         case 'correct':
 	    switch_bestalias($target, $loginbis);
-            $globals->xdb->execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
-            $globals->xdb->execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
+            XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
+            XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
 	    send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
             $op = 'list';
             break;
@@ -63,7 +63,7 @@ if ($target) {
 }
 
 if ($op == 'list') {
-    $res = $globals->xdb->iterator(
+    $res = XDB::iterator(
             "SELECT  a.alias AS homonyme,s.id AS user_id,s.alias AS forlife,
                      promo,prenom,nom,
                      IF(h.homonyme_id=s.id, a.expire, NULL) AS expire,

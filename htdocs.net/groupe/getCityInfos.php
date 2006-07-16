@@ -38,7 +38,7 @@ $fields = new SFieldGroup(true, array($assoField, $cityIdField));
 $where = $fields->get_where_statement();
 if ($where) $where = "WHERE ".$where;
 
-$users = $globals->xdb->iterator("
+$users = XDB::iterator("
     SELECT u.user_id AS id, u.prenom, u.nom, u.promo
       FROM adresses AS a 
 INNER JOIN auth_user_md5 AS u ON(u.user_id = a.uid)

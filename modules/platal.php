@@ -92,12 +92,12 @@ class PlatalModule extends PLModule
 
         if ($state) {
             $_SESSION['core_rss_hash'] = rand_url_id(16);
-            $globals->xdb->execute('UPDATE  auth_user_quick
+            XDB::execute('UPDATE  auth_user_quick
                                    SET  core_rss_hash={?} WHERE user_id={?}',
                                    Session::get('core_rss_hash'),
                                    Session::getInt('uid'));
         } else {
-            $globals->xdb->execute('UPDATE  auth_user_quick
+            XDB::execute('UPDATE  auth_user_quick
                                    SET  core_rss_hash="" WHERE user_id={?}',
                                    Session::getInt('uid'));
             Session::kill('core_rss_hash');
@@ -114,7 +114,7 @@ class PlatalModule extends PLModule
         if (Env::has('mail_fmt')) {
             $fmt = Env::get('mail_fmt');
             if ($fmt != 'texte') $fmt = 'html';
-            $globals->xdb->execute("UPDATE auth_user_quick
+            XDB::execute("UPDATE auth_user_quick
                                        SET core_mail_fmt = '$fmt'
                                      WHERE user_id = {?}",
                                      Session::getInt('uid'));
@@ -141,13 +141,13 @@ class PlatalModule extends PLModule
         $url = Env::get('url');
 
         if (Env::get('submit') == 'Valider' and Env::has('url')) {
-            $globals->xdb->execute('UPDATE auth_user_quick
+            XDB::execute('UPDATE auth_user_quick
                                        SET redirecturl = {?} WHERE user_id = {?}',
                                    $url, Session::getInt('uid'));
             $log->log('carva_add', 'http://'.Env::get('url'));
             $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::get('submit') == "Supprimer") {
-            $globals->xdb->execute("UPDATE auth_user_quick
+            XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
                                      WHERE user_id = {?}",
                                    Session::getInt('uid'));
@@ -156,7 +156,7 @@ class PlatalModule extends PLModule
             $page->trig('Redirection supprimée');
         }
 
-        $res = $globals->xdb->query('SELECT redirecturl
+        $res = XDB::query('SELECT redirecturl
                                        FROM auth_user_quick
                                       WHERE user_id = {?}',
                                     Session::getInt('uid'));
@@ -186,7 +186,7 @@ class PlatalModule extends PLModule
 
             $_SESSION['password'] = $password = Post::get('response2');
 
-            $globals->xdb->execute('UPDATE  auth_user_md5 
+            XDB::execute('UPDATE  auth_user_md5 
                                        SET  password={?}
                                      WHERE  user_id={?}', $password,
                                      Session::getInt('uid'));
@@ -221,18 +221,18 @@ class PlatalModule extends PLModule
         if (Env::get('op') == "Valider" && strlen($pass) >= 6 
         &&  Env::get('smtppass1') == Env::get('smtppass2')) 
         {
-            $globals->xdb->execute('UPDATE auth_user_md5 SET smtppass = {?}
+            XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
             $page->trig('Mot de passe enregistré');
             $log->log("passwd_ssl");
         } elseif (Env::get('op') == "Supprimer") {
-            $globals->xdb->execute('UPDATE auth_user_md5 SET smtppass = ""
+            XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
                                      WHERE user_id = {?}', $uid);
             $page->trig('Compte SMTP et NNTP supprimé');
             $log->log("passwd_del");
         }
 
-        $res = $globals->xdb->query("SELECT IF(smtppass != '', 'actif', '') 
+        $res = XDB::query("SELECT IF(smtppass != '', 'actif', '') 
                                        FROM auth_user_md5
                                       WHERE user_id = {?}", $uid);
         $page->assign('actif', $res->fetchOneCell());
@@ -258,7 +258,7 @@ class PlatalModule extends PLModule
         // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
         // avec celle fournie ici en espérant que c'est la bonne
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  user_id, naissance
                    FROM  auth_user_md5 AS u
              INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
@@ -269,8 +269,8 @@ class PlatalModule extends PLModule
             $page->assign('ok', true);
 
             $url   = rand_url_id(); 
-            $globals->xdb->execute('INSERT INTO perte_pass (certificat,uid,created) VALUES ({?},{?},NOW())', $url, $uid);
-            $res   = $globals->xdb->query('SELECT email FROM emails WHERE uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
+            XDB::execute('INSERT INTO perte_pass (certificat,uid,created) VALUES ({?},{?},NOW())', $url, $uid);
+            $res   = XDB::query('SELECT email FROM emails WHERE uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
             $mails = implode(', ', $res->fetchColumn());
 
             require_once "diogenes/diogenes.hermes.inc.php";
@@ -305,10 +305,10 @@ Mail envoyé à ".Env::get('login'));
     {
         global $globals;
 
-        $globals->xdb->execute('DELETE FROM perte_pass
+        XDB::execute('DELETE FROM perte_pass
                                       WHERE DATE_SUB(NOW(), INTERVAL 380 MINUTE) > created');
 
-        $res   = $globals->xdb->query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
+        $res   = XDB::query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
         $ligne = $res->fetchOneAssoc();
         if (!$ligne) {
             $page->changeTpl('index.tpl');
@@ -319,10 +319,10 @@ Mail envoyé à ".Env::get('login'));
         if (Post::has('response2')) {
             $password = Post::get('response2');
             $logger   = new DiogenesCoreLogger($uid);
-            $globals->xdb->query('UPDATE  auth_user_md5 SET password={?}
+            XDB::query('UPDATE  auth_user_md5 SET password={?}
                                    WHERE  user_id={?} AND perms IN("admin","user")',
                                  $password, $uid);
-            $globals->xdb->query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
+            XDB::query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
             $logger->log("passwd","");
             $page->changeTpl('tmpPWD.success.tpl');
         } else {
@@ -343,7 +343,7 @@ Mail envoyé à ".Env::get('login'));
         $page->assign('xorg_title','Polytechnique.org - Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
-            $globals->xdb->execute('UPDATE auth_user_quick
+            XDB::execute('UPDATE auth_user_quick
                                        SET skin={?} WHERE user_id={?}',
                                     Env::getInt('newskin'),
                                     Session::getInt('uid'));
@@ -355,7 +355,7 @@ Mail envoyé à ".Env::get('login'));
              LEFT JOIN auth_user_quick AS a ON s.id=a.skin
                  WHERE skin_tpl != '' AND ext != ''
               GROUP BY id ORDER BY s.date DESC";
-        $page->assign_by_ref('skins', $globals->xdb->iterator($sql));
+        $page->assign_by_ref('skins', XDB::iterator($sql));
     }
 
     function handler_exit(&$page, $level = null)
@@ -410,7 +410,7 @@ Mail envoyé à ".Env::get('login'));
 
         $uid = init_rss('rss.tpl', $user, $hash);
 
-        $rss = $globals->xdb->iterator(
+        $rss = XDB::iterator(
                 'SELECT  e.id, e.titre, e.texte, e.creation_date
                    FROM  auth_user_md5   AS u
              INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo)

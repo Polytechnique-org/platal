@@ -63,8 +63,8 @@ class SearchModule extends PLModule
                                                 'u.promo DESC, NomSortKey, prenom'))).'
                     LIMIT  '.$offset * $globals->search->per_page.','
                 .$globals->search->per_page;
-        $list    = $globals->xdb->iterator($sql);
-        $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
+        $list    = XDB::iterator($sql);
+        $res     = XDB::query("SELECT  FOUND_ROWS()");
         $nb_tot  = $res->fetchOneCell();
         return array($list, $nb_tot);
     }
@@ -75,21 +75,21 @@ class SearchModule extends PLModule
 
         $page->assign('formulaire',1);
         $page->assign('choix_nats',
-                      $globals->xdb->iterator('SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text
+                      XDB::iterator('SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text
                                                  FROM geoloc_pays ORDER BY text'));
         $page->assign('choix_postes',
-                      $globals->xdb->iterator('SELECT id,fonction_fr FROM fonctions_def
+                      XDB::iterator('SELECT id,fonction_fr FROM fonctions_def
                                              ORDER BY fonction_fr'));
         $page->assign('choix_binets',
-                      $globals->xdb->iterator('SELECT id,text FROM binets_def ORDER BY text'));
+                      XDB::iterator('SELECT id,text FROM binets_def ORDER BY text'));
         $page->assign('choix_groupesx',
-                      $globals->xdb->iterator('SELECT id,text FROM groupesx_def ORDER BY text'));
+                      XDB::iterator('SELECT id,text FROM groupesx_def ORDER BY text'));
         $page->assign('choix_sections',
-                      $globals->xdb->iterator('SELECT id,text FROM sections ORDER BY text'));
+                      XDB::iterator('SELECT id,text FROM sections ORDER BY text'));
         $page->assign('choix_schools',
-                      $globals->xdb->iterator('SELECT id,text FROM applis_def ORDER BY text'));
+                      XDB::iterator('SELECT id,text FROM applis_def ORDER BY text'));
         $page->assign('choix_secteurs',
-                      $globals->xdb->iterator('SELECT id,label FROM emploi_secteur ORDER BY label'));
+                      XDB::iterator('SELECT id,label FROM emploi_secteur ORDER BY label'));
 
         if (Env::has('school')) {
             $sql = 'SELECT type FROM applis_def WHERE id='.Env::getInt('school');
@@ -97,7 +97,7 @@ class SearchModule extends PLModule
             $sql = 'DESCRIBE applis_def type';
         }
 
-        $res = $globals->xdb->query($sql);
+        $res = XDB::query($sql);
         $row = $res->fetchOneRow();
         if (Env::has('school')) {
             $types = $row[0];
@@ -143,8 +143,8 @@ class SearchModule extends PLModule
                 .implode(',',array_filter(array($fields->get_order_statement(),
                                                 'promo DESC, NomSortKey, prenom'))).'
                     LIMIT  '.($offset * $limit).','.$limit;
-        $liste   = $globals->xdb->iterator($sql);
-        $res     = $globals->xdb->query("SELECT  FOUND_ROWS()");
+        $liste   = XDB::iterator($sql);
+        $res     = XDB::query("SELECT  FOUND_ROWS()");
         $nb_tot  = $res->fetchOneCell();
         return Array($liste, $nb_tot);
     }

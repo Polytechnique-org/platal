@@ -101,7 +101,7 @@ class XnetSession
             $page->kill("Erreur d'authentification avec polytechnique.org !");
         }
 
-        $res  = $globals->xdb->query("
+        $res  = XDB::query("
             SELECT  u.user_id AS uid, prenom, nom, perms, promo, password, FIND_IN_SET('femme', u.flags) AS femme,
                     a.alias AS forlife, a2.alias AS bestalias, q.core_mail_fmt AS mail_fmt, q.core_rss_hash
               FROM  auth_user_md5   AS u
@@ -150,7 +150,7 @@ function may_update() {
     global $globals;
     if (!$globals->asso('id')) { return false; }
     if (has_perms()) { return true; }
-    $res = $globals->xdb->query(
+    $res = XDB::query(
             "SELECT  perms
                FROM  groupex.membres
               WHERE  uid={?} AND asso_id={?}", Session::getInt('uid'), $globals->asso('id'));
@@ -168,7 +168,7 @@ function is_member() {
     if (!$is_member) $is_member = array();
     if (!isset($is_member[$asso_id])) 
     {
-        $res = $globals->xdb->query(
+        $res = XDB::query(
             "SELECT  COUNT(*)
                FROM  groupex.membres
               WHERE  uid={?} AND asso_id={?}",

@@ -19,21 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  **************************************************************************/
 
-// {{{ class XOrgDB
-
-class XOrgDB
+class XDB
 {
-    // {{{ constructor
-
-    function XOrgDB()
-    {
-    }
-
-    // }}}
     // {{{ function _prepare
 
     function _prepare($args) {
-        $query    = array_map(Array($this, '_db_escape'), $args);
+        $query    = array_map(Array('XDB', '_db_escape'), $args);
         $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
     }
@@ -43,7 +34,7 @@ class XOrgDB
 
     function &query()
     {
-        return new XOrgDBResult($this->_prepare(func_get_args()));
+        return new XOrgDBResult(XDB::_prepare(func_get_args()));
     }
 
     // }}}
@@ -51,7 +42,7 @@ class XOrgDB
 
     function execute() {
         global $globals;
-        return $globals->db->query($this->_prepare(func_get_args()));
+        return $globals->db->query(XDB::_prepare(func_get_args()));
     }
 
     // }}}
@@ -59,7 +50,7 @@ class XOrgDB
 
     function &iterator()
     {
-        return new XOrgDBIterator($this->_prepare(func_get_args()));
+        return new XOrgDBIterator(XDB::_prepare(func_get_args()));
     }
 
     // }}}
@@ -67,7 +58,7 @@ class XOrgDB
 
     function &iterRow()
     {
-        return new XOrgDBIterator($this->_prepare(func_get_args()), MYSQL_NUM);
+        return new XOrgDBIterator(XDB::_prepare(func_get_args()), MYSQL_NUM);
     }
 
     // }}}
@@ -109,9 +100,6 @@ class XOrgDB
 
     // }}}
 }
-
-// }}}
-// {{{ class XOrgDBResult
 
 class XOrgDBResult
 {
@@ -241,9 +229,6 @@ class XOrgDBResult
     // }}}
 }
 
-// }}}
-// {{{ class XOrgDBIterator
-
 class XOrgDBIterator extends XOrgIterator
 {
     // {{{ properties
@@ -304,8 +289,6 @@ class XOrgDBIterator extends XOrgIterator
 
     // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

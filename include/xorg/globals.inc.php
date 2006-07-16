@@ -52,7 +52,6 @@ class XorgGlobals extends PlatalGlobals
         if ($globals->debug & 1) {
             $globals->db->trace_on();
         }
-        $globals->xdb =& new XOrgDB;
     }
 }
 

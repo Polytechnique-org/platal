@@ -52,7 +52,7 @@ class CyberPayment
         if (Cookie::has(session_name())) {
             $returnurl .= "?".SID;
         }
-	$req = $globals->xdb->query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
+	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
 	$name = $req->fetchOneCell();
 
         // on constuit la reference de la transaction

@@ -29,7 +29,7 @@ function get_annuaire_infos($method, $params) {
 
         //on ne recupere pas les adresses inutilement
         if(!isset($params[2])){
-            $res = $globals->xdb->iterRow(
+            $res = XDB::iterRow(
                     "SELECT  q.profile_mobile AS cell, a.naissance AS age
                     FROM  auth_user_md5 AS a
                     INNER JOIN auth_user_quick AS q USING (user_id)
@@ -37,7 +37,7 @@ function get_annuaire_infos($method, $params) {
             $array = $res->next();
         }
         else{
-            $res = $globals->xdb->iterRow(
+            $res = XDB::iterRow(
                  "SELECT     q.profile_mobile AS cell, a.naissance AS age,
                              adr.adr1, adr.adr2, adr.adr3,
                              adr.postcode, adr.city, adr.country,
@@ -83,7 +83,7 @@ function get_annuaire_infos($method, $params) {
                 $adrid_index = array();
                 foreach ($array['adresse'] as $i => $a) $adrid_index[$a['adrid']] = $i;
                 // on rajoute les numéros de tels
-                $restel = $globals->xdb->iterator(
+                $restel = XDB::iterator(
                     "SELECT t.tel, t.tel_type, t.adrid
                        FROM tels AS t
                  INNER JOIN adresses AS a ON (t.adrid = a.adrid AND t.uid = a.uid)
@@ -150,7 +150,7 @@ function get_nouveau_infos($method, $params) {
     if(!isset($params[0]) || ($params[0] != $globals->manageurs->manageurs_pass)){return false;}
     if( !empty($params[1]) ){ // on verifie qu'on a bien un matricule
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  a.nom, a.nom_usage,a.prenom,a.flags='femme' as femme ,a.deces!= 0 as decede ,a.naissance,a.promo,al.alias as mail 
                 FROM  auth_user_md5 AS a
                 INNER JOIN aliases as al ON a.user_id=al.id

@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$globals->xdb->execute("UPDATE auth_user_quick SET profile_medals_pub = {?} WHERE user_id = {?}", $medals_pub, Session::getInt('uid', -1));
+XDB::execute("UPDATE auth_user_quick SET profile_medals_pub = {?} WHERE user_id = {?}", $medals_pub, Session::getInt('uid', -1));
 
 // vim:set et sws=4 sw=4 sts=4:
 ?>

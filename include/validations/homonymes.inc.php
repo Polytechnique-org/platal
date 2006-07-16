@@ -134,8 +134,8 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
 
         switch_bestalias($this->uid, $this->loginbis);
         if (!$this->warning) {
-            $globals->xdb->execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $this->loginbis);
-            $globals->xdb->execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $this->uid, $this->uid);
+            XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $this->loginbis);
+            XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $this->uid, $this->uid);
         }
         
         return true;

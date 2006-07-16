@@ -52,7 +52,7 @@ class PayPal
         global $globals;
 
 	$this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
-	$req = $globals->xdb->query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
+	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
 	$name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
@@ -73,7 +73,7 @@ class PayPal
 		'last_name'  => $name,
 		'email'      => Session::get('bestalias').'@polytechnique.org');
 		
-	$res = $globals->xdb->query(
+	$res = XDB::query(
 		"SELECT a.adr1 AS address1, a.adr2 AS address2,
 			a.city, a.postcode AS zip, a.country,
 			IF(t.tel, t.tel, q.profile_mobile) AS night_phone_b

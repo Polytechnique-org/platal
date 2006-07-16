@@ -45,8 +45,8 @@ class EmailModule extends PLModule
         if (Post::has('best')) {
             // bestalias is the first bit : 1
             // there will be maximum 8 bits in flags : 255
-            $globals->xdb->execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
-            $globals->xdb->execute("UPDATE  aliases SET flags=flags | 1 WHERE id={?} AND alias={?}",
+            XDB::execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
+            XDB::execute("UPDATE  aliases SET flags=flags | 1 WHERE id={?} AND alias={?}",
                                    $uid, Post::get('best'));
         }
 
@@ -57,17 +57,17 @@ class EmailModule extends PLModule
                   FROM  aliases
                  WHERE  id = {?} AND type!='homonyme'
               ORDER BY  LENGTH(alias)";
-        $page->assign('aliases', $globals->xdb->iterator($sql, $uid));
+        $page->assign('aliases', XDB::iterator($sql, $uid));
 
         $sql = "SELECT email
                 FROM emails
                 WHERE uid = {?} AND FIND_IN_SET('active', flags)";
-        $page->assign('mails', $globals->xdb->iterator($sql, $uid));
+        $page->assign('mails', XDB::iterator($sql, $uid));
 
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
         $forlife = Session::get('forlife');
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  alias
                    FROM  virtual          AS v
              INNER JOIN  virtual_redirect AS vr USING(vid)
@@ -93,7 +93,7 @@ class EmailModule extends PLModule
 
         if ($action == 'suppr' && $value) {
             //Suppression d'un alias
-            $globals->xdb->execute(
+            XDB::execute(
                 'DELETE virtual, virtual_redirect
                    FROM virtual
              INNER JOIN virtual_redirect USING (vid)
@@ -102,7 +102,7 @@ class EmailModule extends PLModule
         }
 
         //Récupération des alias éventuellement existants
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  alias, emails_alias_pub
                    FROM  auth_user_quick, virtual
              INNER JOIN  virtual_redirect USING(vid)
@@ -135,7 +135,7 @@ class EmailModule extends PLModule
                 return;
             } else {
                 //vérifier que l'alias n'est pas déja pris
-                $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
+                $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
                                             $alias.'@'.$globals->mail->alias_dom);
                 if ($res->fetchOneCell() > 0) {
                     $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
@@ -164,10 +164,10 @@ class EmailModule extends PLModule
             && ($value == 'public' || $value == 'private'))
         {
             if ($value == 'public') {
-                $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = 'public'
+                XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'public'
                                          WHERE user_id = {?}", Session::getInt('uid'));
             } else {
-                $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = 'private'
+                XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'private'
                                          WHERE user_id = {?}", Session::getInt('uid'));
             }
 
@@ -206,7 +206,7 @@ class EmailModule extends PLModule
             }
         }
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  alias
                    FROM  virtual
              INNER JOIN  virtual_redirect USING(vid)
@@ -219,7 +219,7 @@ class EmailModule extends PLModule
             $page->assign('melix',$melix);
         }
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  alias,expire
                    FROM  aliases
                   WHERE  id={?} AND (type='a_vie' OR type='alias')
@@ -284,7 +284,7 @@ class EmailModule extends PLModule
             $_REQUEST['bcc'] = Session::get('bestalias').'@'.$globals->mail->domain;
         }
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  u.prenom, u.nom, u.promo, a.alias as forlife
                    FROM  auth_user_md5 AS u
              INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
@@ -305,7 +305,7 @@ class EmailModule extends PLModule
         if ($warn == 'warn' && $email) {
             $email = valide_email($email);
             // vérifications d'usage
-            $sel = $globals->xdb->query(
+            $sel = XDB::query(
                     "SELECT  e.uid, a.alias
                        FROM  emails        AS e
                  INNER JOIN  auth_user_md5 AS u ON e.uid = u.user_id
@@ -354,7 +354,7 @@ L'équipe d'administration <support@polytechnique.org>";
                 $page->assign('neuneu', true);
             } else {
                 $page->assign('email',$email);
-                $sel = $globals->xdb->query(
+                $sel = XDB::query(
                         "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
                                  u.nom, u.prenom, u.promo
                            FROM  emails as e1
@@ -367,7 +367,7 @@ L'équipe d'administration <support@polytechnique.org>";
                 if ($x = $sel->fetchOneAssoc()) {
                     // on écrit dans la base que l'adresse est cassée
                     if (!$x['panne']) {
-                        $globals->xdb->execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
+                        XDB::execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
                     }
                     $page->assign_by_ref('x', $x);
                 }

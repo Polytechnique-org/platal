@@ -5,7 +5,7 @@ $MESSAGE = '';
 
 // ---------------------------------------
 
-$res = $globals->xdb->iterRow(
+$res = XDB::iterRow(
         "SELECT  a.alias, u.promo, email
            FROM  auth_user_md5  AS u
       LEFT JOIN  aliases        AS a ON( u.user_id=a.id AND a.type='a_vie' )
@@ -22,7 +22,7 @@ if ($a = $res->total()) {
 
 // ---------------------------------------
 
-$res = $globals->xdb->iterRow(
+$res = XDB::iterRow(
         "SELECT  forlife, email, date
            FROM  register_pending
           WHERE  hash != 'INSCRIT'
@@ -36,7 +36,7 @@ if ($b = $res->total()) {
 
 // ---------------------------------------
 
-$res = $globals->xdb->query('SELECT COUNT(DISTINCT uid), COUNT(*) FROM register_marketing');
+$res = XDB::query('SELECT COUNT(DISTINCT uid), COUNT(*) FROM register_marketing');
 list($a, $b) = $res->fetchOneRow();
 $MESSAGE .= "\n$c INSCRIPTIONS SOLICITÉES :\n";
 $MESSAGE .= "    $a utilisateurs\n    $b adresses mails\n";

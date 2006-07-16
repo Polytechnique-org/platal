@@ -24,7 +24,7 @@
 function get_event_detail($eid, $item_id = false)
 {
     global $globals;
-    $res = $globals->xdb->query(
+    $res = XDB::query(
         "SELECT	SUM(nb) AS nb_tot, e.*,
                 IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                    1) AS inscr_open,
@@ -54,7 +54,7 @@ function get_event_detail($eid, $item_id = false)
 
     // smart calculation of the total number
     if (!$item_id) {
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                "SELECT MAX(nb)
                   FROM groupex.evenements              AS e
             INNER JOIN groupex.evenements_items        AS ei ON (e.eid = ei.eid)
@@ -67,7 +67,7 @@ function get_event_detail($eid, $item_id = false)
         $evt['item_id'] = 0;
     }
 
-    $res = $globals->xdb->query(
+    $res = XDB::query(
         "SELECT titre, details, montant, ei.item_id, nb
            FROM groupex.evenements_items        AS ei
       LEFT JOIN groupex.evenements_participants AS ep
@@ -81,7 +81,7 @@ function get_event_detail($eid, $item_id = false)
         $evt['topay'] += $m['nb'] * $m['montant'];
     }
 
-    $req = $globals->xdb->query(
+    $req = XDB::query(
         "SELECT montant
            FROM {$globals->money->mpay_tprefix}transactions AS t
          WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], Session::get('uid'));
@@ -135,18 +135,18 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
 	   ORDER BY  $tri $limit";
 
     if ($item_id) {
-        $res = $globals->xdb->query($query, $eid);
+        $res = XDB::query($query, $eid);
         return $res->fetchAllAssoc();
     }
 
-    $res = $globals->xdb->iterator($query, $eid);
+    $res = XDB::iterator($query, $eid);
     $tab = array();
     $user = 0;
 
     while ($u = $res->next()) {
         $u['montant'] = 0;
 	if ($money && $pay_id) {
-            $res_ = $globals->xdb->query(
+            $res_ = XDB::query(
                 "SELECT montant
                    FROM {$globals->money->mpay_tprefix}transactions AS t
                   WHERE ref = {?} AND uid = {?}",
@@ -157,7 +157,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
                     $u['paid'] += trim($p);
             }
 	}
-        $res_ = $globals->xdb->iterator(
+        $res_ = XDB::iterator(
             "SELECT ep.nb, ep.item_id, ei.montant
                FROM groupex.evenements_participants AS ep
          INNER JOIN groupex.evenements_items AS ei ON (ei.eid = ep.eid AND ei.item_id = ep.item_id)
@@ -185,7 +185,7 @@ function subscribe_lists_event($participate, $uid, $evt) {
     if ($email) {
         $email .= '@'.$globals->mail->domain;
     } else {
-        $res = $globals->xdb->query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", Session::get('uid'), $globals->asso('id'));
+        $res = XDB::query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", Session::get('uid'), $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
 
@@ -193,13 +193,13 @@ function subscribe_lists_event($participate, $uid, $evt) {
     $unsubscri = $participate ? $absent_list : $participant_list;
 
     if ($subscribe) {
-        $globals->xdb->execute(
+        XDB::execute(
             "REPLACE INTO virtual_redirect VALUES({?},{?})",
 		 $subscribe, $email);
     }
 
     if ($unsubscri) {
-        $globals->xdb->execute(
+        XDB::execute(
             "DELETE FROM virtual_redirect WHERE vid = {?} AND redirect = {?}",
                 $unsubscri, $email);
     }
@@ -222,7 +222,7 @@ function event_change_shortname(&$page, $old, $new)
 
     //vérifier que l'alias n'est pas déja pris
     if ($new && $old != $new) {
-        $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual
+        $res = XDB::query('SELECT COUNT(*) FROM virtual
                                     WHERE alias LIKE {?}',
                                     $new.'-absents@%');
         if ($res->fetchOneCell() > 0) {
@@ -239,7 +239,7 @@ function event_change_shortname(&$page, $old, $new)
         // if had a previous shortname change the old lists
         foreach (array('-absents@', '-participants@') as $v) {
             $v .= $globals->xnet->evts_domain;
-            $globals->xdb->execute("UPDATE virtual SET alias = {?}
+            XDB::execute("UPDATE virtual SET alias = {?}
                                      WHERE type = 'evt' AND alias = {?}",
                                      $new.$v, $old.$v);
         }
@@ -250,11 +250,11 @@ function event_change_shortname(&$page, $old, $new)
     if (!$old && $new) {
         // if we have a first new short_name create the lists
 
-        $globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
+        XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
                 $new.'-participants@'.$globals->xnet->evts_domain);
 
         $lastid = mysql_insert_id();
-        $globals->xdb->execute(
+        XDB::execute(
           "INSERT INTO virtual_redirect (
                 SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
                   FROM groupex.evenements_participants AS ep
@@ -265,11 +265,11 @@ function event_change_shortname(&$page, $old, $new)
               GROUP BY ep.uid)",
               $lastid, '@'.$globals->mail->domain, $eid);
 
-        $globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
+        XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
                 $new.'-absents@'.$globals->xnet->evts_domain);
 
         $lastid = mysql_insert_id();
-        $globals->xdb->execute("INSERT INTO virtual_redirect (
+        XDB::execute("INSERT INTO virtual_redirect (
             SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
                   FROM groupex.membres AS m
              LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid)
@@ -286,7 +286,7 @@ function event_change_shortname(&$page, $old, $new)
         // if we delete the old short name, delete the lists
         foreach (array('-absents@', '-participants@') as $v) {
             $v .= $globals->xnet->evts_domain;
-            $globals->xdb->execute("DELETE virtual, virtual_redirect FROM virtual
+            XDB::execute("DELETE virtual, virtual_redirect FROM virtual
                                  LEFT JOIN virtual_redirect USING(vid)
                                      WHERE virtual.alias = {?}",
                                    $infos['short_name'].$v);

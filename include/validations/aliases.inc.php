@@ -47,7 +47,7 @@ class AliasReq extends Validate
         $this->raison = $_raison;
         $this->public = $_public;
 
-        $res = $globals->xdb->query("
+        $res = XDB::query("
                 SELECT  v.alias
                   FROM  virtual_redirect AS vr
             INNER JOIN  virtual          AS v  ON (v.vid=vr.vid AND v.alias LIKE '%@{$globals->mail->alias_dom}')
@@ -98,15 +98,15 @@ class AliasReq extends Validate
     {
         global $globals;
         
-        $globals->xdb->execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}", $this->public, $this->uid);
+        XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}", $this->public, $this->uid);
 
         if ($this->old) {
-            return $globals->xdb->execute('UPDATE virtual SET alias={?} WHERE alias={?}', $this->alias, $this->old);
+            return XDB::execute('UPDATE virtual SET alias={?} WHERE alias={?}', $this->alias, $this->old);
         } else {
-            $globals->xdb->execute('INSERT INTO virtual SET alias={?},type="user"', $this->alias);
+            XDB::execute('INSERT INTO virtual SET alias={?},type="user"', $this->alias);
             $vid = mysql_insert_id();
             $dom = $globals->mail->shorter_domain();
-            return $globals->xdb->query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})', $vid, $this->forlife.'@'.$dom);
+            return XDB::query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})', $vid, $this->forlife.'@'.$dom);
         }
     }
 

@@ -63,7 +63,7 @@ class TrezoModule extends PLModule
         $page->assign('mon_sel', $mon_sel);
         $page->assign_by_ref('month_arr', $trim_fr);
 
-        $page->assign('ops', $globals->xdb->iterator(
+        $page->assign('ops', XDB::iterator(
                 "SELECT date, label, credit, debit
                    FROM money_trezo  WHERE date >= {?} and date <= {?} order by date", 
                 $from_date, $to_date));
@@ -96,7 +96,7 @@ class TrezoModule extends PLModule
         switch($action) {
             case "edit":
                 if ($op_id) {
-                    $res = $globals->xdb->query("SELECT date,label,credit,debit FROM money_trezo WHERE id={?}", $op_id);
+                    $res = XDB::query("SELECT date,label,credit,debit FROM money_trezo WHERE id={?}", $op_id);
                     list($op_date,$op_label,$op_credit,$op_debit) = $res->fetchOneRow();
                 }
                 break;
@@ -115,12 +115,12 @@ class TrezoModule extends PLModule
                 if ($op_debit)  { $sql .= ',debit='.$op_debit;   }
                 if ($op_id)     { $sql .= ",id='$op_id'";        }
 
-                $globals->xdb->execute($sql);
+                XDB::execute($sql);
                 break;
 
             case "del":
                 if ($op_id) {
-                    $globals->xdb->execute("DELETE FROM money_trezo WHERE id={?}", $op_id);
+                    XDB::execute("DELETE FROM money_trezo WHERE id={?}", $op_id);
                 }
                 break;
         }
@@ -137,7 +137,7 @@ class TrezoModule extends PLModule
         $page->assign('from_solde', solde_until($from_date));
         $page->assign('to_solde',   solde_until($to_date));
         $page->assign('month_arr',  $mois_fr);
-        $page->assign('ops', $globals->xdb->iterator(
+        $page->assign('ops', XDB::iterator(
                     "SELECT id, date, label, credit, debit FROM money_trezo
                       WHERE date >= {?} and date <= {?} ORDER BY date", 
                     $from_date, $to_date));

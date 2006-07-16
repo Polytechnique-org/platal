@@ -30,7 +30,7 @@ function get_all_redirects($membres, $mls, &$client)
     $tos = array();
     
     if ($membres) {
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                     'SELECT  IF(u.nom <> "", u.nom, m.nom) AS nom,
                              IF(u.prenom <> "", u.prenom, m.prenom) AS prenom,
                              IF(m.email <> "", m.email, CONCAT(a.alias, "@polytechnique.org")) as email,
@@ -47,7 +47,7 @@ function get_all_redirects($membres, $mls, &$client)
             foreach ($members as $mem) {
                 list($m, $dom) = explode('@',$mem[1]);
                 if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-                    $res = $globals->xdb->query('SELECT  prenom, nom, FIND_IN_SET("femme", u.flags) AS sexe
+                    $res = XDB::query('SELECT  prenom, nom, FIND_IN_SET("femme", u.flags) AS sexe
                                                    FROM  auth_user_md5 AS u
                                              INNER JOIN  aliases AS a ON u.user_id = a.id
                                                   WHERE  a.alias = {?}', $m);
@@ -56,7 +56,7 @@ function get_all_redirects($membres, $mls, &$client)
                         $tos[] = $person;
                     }
                 } else {
-                    $res = $globals->xdb->query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
+                    $res = XDB::query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
                     if ($person = $res->fetchOneAssoc()) {
                         $person['email'] = $mem[1];
                         $tos[] = $person;

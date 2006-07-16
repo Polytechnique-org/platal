@@ -31,14 +31,14 @@ if (Env::has('id') && is_numeric(Env::get('id'))) {
 }
 
 if (Env::has('missinglat')) {
-    $res = $globals->xdb->iterRow("SELECT id FROM geoloc_city WHERE lat = 0 AND lon = 0");
+    $res = XDB::iterRow("SELECT id FROM geoloc_city WHERE lat = 0 AND lon = 0");
     while ($a = $res->next()) if (synchro_city($a[0])) $nb_synchro++;
 }
 
 if ($nb_synchro) 
     $page->trig(($nb_synchro > 1)?($nb_synchro." villes ont été synchronisées"):"Une ville a été synchronisée");
 
-$res = $globals->xdb->query("SELECT COUNT(*) FROM geoloc_city WHERE lat = 0 AND lon = 0");
+$res = XDB::query("SELECT COUNT(*) FROM geoloc_city WHERE lat = 0 AND lon = 0");
 $page->assign("nb_missinglat", $res->fetchOneCell());
 
 $page->run();

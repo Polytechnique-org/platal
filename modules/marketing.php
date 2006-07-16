@@ -45,7 +45,7 @@ class MarketingModule extends PLModule
 
         // Quelques statistiques
 
-        $res   = $globals->xdb->query(
+        $res   = XDB::query(
                   "SELECT COUNT(*) AS vivants,
                           COUNT(NULLIF(perms='admin' OR perms='user', 0)) AS inscrits,
                           100*COUNT(NULLIF(perms='admin' OR perms='user', 0))/COUNT(*) AS ins_rate,
@@ -62,17 +62,17 @@ class MarketingModule extends PLModule
         $stats = $res->fetchOneAssoc();
         $page->assign('stats', $stats);
 
-        $res   = $globals->xdb->query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".
+        $res   = XDB::query("SELECT count(*) FROM auth_user_md5 WHERE date_ins > ".
                                       date('Ymd000000', strtotime('1 week ago')));
         $page->assign('nbInsSem', $res->fetchOneCell());
 
-        $res = $globals->xdb->query("SELECT count(*) FROM register_pending WHERE hash != 'INSCRIT'");
+        $res = XDB::query("SELECT count(*) FROM register_pending WHERE hash != 'INSCRIT'");
         $page->assign('nbInsEnCours', $res->fetchOneCell());
 
-        $res = $globals->xdb->query("SELECT count(*) FROM register_marketing");
+        $res = XDB::query("SELECT count(*) FROM register_marketing");
         $page->assign('nbInsMarket', $res->fetchOneCell());
 
-        $res = $globals->xdb->query("SELECT count(*) FROM register_mstats
+        $res = XDB::query("SELECT count(*) FROM register_mstats
                                       WHERE TO_DAYS(NOW()) - TO_DAYS(success) <= 7");
         $page->assign('nbInsMarkOK', $res->fetchOneCell());
     }
@@ -90,7 +90,7 @@ class MarketingModule extends PLModule
 
         $page->assign('path', 'marketing/private/'.$uid);
 
-        $res = $globals->xdb->query("SELECT nom, prenom, promo, matricule
+        $res = XDB::query("SELECT nom, prenom, promo, matricule
                                        FROM auth_user_md5
                                       WHERE user_id={?} AND perms='pending'", $uid);
 
@@ -107,7 +107,7 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'del') {
-            $globals->xdb->execute('DELETE FROM register_marketing WHERE uid={?} AND email={?}',
+            XDB::execute('DELETE FROM register_marketing WHERE uid={?} AND email={?}',
                                    $uid, $value);
         }
 
@@ -139,14 +139,14 @@ class MarketingModule extends PLModule
         }
 
         if ($action == 'add' && Post::has('email') && Post::has('type')) {
-            $globals->xdb->execute(
+            XDB::execute(
                 "INSERT INTO register_marketing
                          SET uid = {?}, sender = {?}, email = {?},
                              date = NOW(), type = {?}",
                 $uid, Session::get('uid'), Post::get('email'), Post::get('type')); 
         }
 
-        $res = $globals->xdb->iterator(
+        $res = XDB::iterator(
                 "SELECT  r.*, a.alias
                    FROM  register_marketing AS r
              INNER JOIN  aliases            AS a ON (r.sender=a.id AND a.type = 'a_vie')
@@ -154,7 +154,7 @@ class MarketingModule extends PLModule
                ORDER BY  date", $uid);
         $page->assign('addr', $res);
 
-        $res = $globals->xdb->query("SELECT date, relance FROM register_pending
+        $res = XDB::query("SELECT date, relance FROM register_pending
                                       WHERE uid = {?}", $uid);
         if (list($pending, $relance) = $res->fetchOneCell()) {
             $page->assign('pending', $pending);
@@ -181,7 +181,7 @@ class MarketingModule extends PLModule
                  WHERE  u.promo = {?} AND u.deces = 0 AND u.perms='pending'
               GROUP BY  u.user_id
               ORDER BY  nom, prenom";
-        $page->assign('nonins', $globals->xdb->iterator($sql, $promo));
+        $page->assign('nonins', XDB::iterator($sql, $promo));
     }
 
     function handler_public(&$page, $uid = null)
@@ -194,7 +194,7 @@ class MarketingModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $res = $globals->xdb->query("SELECT nom, prenom, promo FROM auth_user_md5
+        $res = XDB::query("SELECT nom, prenom, promo FROM auth_user_md5
                                       WHERE user_id={?} AND perms='pending'", $uid);
 
         if (list($nom, $prenom, $promo) = $res->fetchOneRow()) {
@@ -206,7 +206,7 @@ class MarketingModule extends PLModule
                 require_once('xorg.misc.inc.php');
 
                 $email = trim(Post::get('mail'));
-                $res   = $globals->xdb->query('SELECT COUNT(*) FROM register_marketing
+                $res   = XDB::query('SELECT COUNT(*) FROM register_marketing
                                                 WHERE uid={?} AND email={?}', $uid, $email);
 
                 if (!isvalid_email_redirection($email)) {
@@ -215,7 +215,7 @@ class MarketingModule extends PLModule
                     $page->assign('already', true);
                 } else {
                     $page->assign('ok', true);
-                    $globals->xdb->execute(
+                    XDB::execute(
                             "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
                             $uid, Session::getInt('uid'), $email, Post::get('origine'));
@@ -241,7 +241,7 @@ class MarketingModule extends PLModule
             INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
                  WHERE  u.date_ins > ".date("Ymd000000", strtotime ('1 week ago'))."
               ORDER BY  u.$sort DESC";
-        $page->assign('ins', $globals->xdb->iterator($sql));
+        $page->assign('ins', XDB::iterator($sql));
     }
 
     function handler_volontaire(&$page, $promo = null)
@@ -250,7 +250,7 @@ class MarketingModule extends PLModule
 
         $page->changeTpl('marketing/volontaire.tpl');
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT
                DISTINCT  a.promo
                    FROM  register_marketing AS m
@@ -266,7 +266,7 @@ class MarketingModule extends PLModule
                 INNER JOIN  auth_user_md5      AS a  ON a.user_id = m.uid AND a.promo = {?}
                 INNER JOIN  aliases            AS sa ON (m.sender = sa.id AND sa.type='a_vie')
                   ORDER BY  a.nom";
-            $page->assign('addr', $globals->xdb->iterator($sql, $promo));
+            $page->assign('addr', XDB::iterator($sql, $promo));
         }
     }
 
@@ -279,7 +279,7 @@ class MarketingModule extends PLModule
         if (Post::has('relancer')) {
             require_once 'marketing.inc.php';
 
-            $res   = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
+            $res   = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
             $nbdix = $res->fetchOneCell();
 
             $sent  = Array();
@@ -296,7 +296,7 @@ class MarketingModule extends PLModule
             INNER JOIN  auth_user_md5    AS u ON r. uid = u.user_id
                  WHERE  hash!='INSCRIT'
               ORDER BY  date DESC";
-        $page->assign('relance', $globals->xdb->iterator($sql));
+        $page->assign('relance', XDB::iterator($sql));
     }
 }
 

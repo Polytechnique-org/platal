@@ -33,11 +33,11 @@ $page->assign('promo',$promo);
 
 if (Env::get('valider') == "Valider") {
     $new_deces = array();
-    $res = $globals->xdb->iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
+    $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
     while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
         $val = Env::get($mat);
 	if($val == $deces || empty($val)) continue;
-	$globals->xdb->execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
+	XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
 	$new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
 	if($deces=='0000-00-00' or empty($deces)) {
 	    require_once('notifs.inc.php');
@@ -49,7 +49,7 @@ if (Env::get('valider') == "Valider") {
     $page->assign('new_deces',$new_deces);
 }
 
-$res = $globals->xdb->iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
+$res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
 $page->assign('decedes', $res);
 
 $page->run();

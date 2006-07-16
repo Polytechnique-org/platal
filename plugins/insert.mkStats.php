@@ -32,7 +32,7 @@
 function smarty_insert_mkStats($params, &$smarty)
 {
     global $globals;
-    $res = $globals->xdb->query('select count(*) from requests');
+    $res = XDB::query('select count(*) from requests');
     $cnt = $res->fetchOneCell();
     return ($cnt ? $cnt : '-');
 }

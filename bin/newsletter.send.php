@@ -38,7 +38,7 @@ $nl = new NewsLetter($id);
 $nl->setSent();
 
 while(true) {
-    $res = $globals->xdb->iterRow(
+    $res = XDB::iterRow(
             "SELECT  ni.user_id, a.alias,
                      u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
                      FIND_IN_SET('femme', u.flags),
@@ -56,7 +56,7 @@ while(true) {
 	$sent[] = "user_id='$uid'";
 	$nl->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html');
     }
-    $globals->xdb->execute('UPDATE newsletter_ins SET last={?} WHERE '.implode(' OR ', $sent), $id);
+    XDB::execute('UPDATE newsletter_ins SET last={?} WHERE '.implode(' OR ', $sent), $id);
     sleep(60);
 }
 

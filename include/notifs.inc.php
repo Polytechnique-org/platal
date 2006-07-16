@@ -29,7 +29,7 @@ define('WATCH_BIRTH', 4);
 function inscription_notifs_base($uid)
 {
     global $globals;
-    $globals->xdb->execute('REPLACE INTO  watch_sub (uid,cid) SELECT {?},id FROM watch_cat', $uid);
+    XDB::execute('REPLACE INTO  watch_sub (uid,cid) SELECT {?},id FROM watch_cat', $uid);
 }
 
 // }}}
@@ -41,16 +41,16 @@ function register_watch_op($uid, $cid, $date='', $info='')
     if (empty($date)) {
         $date = date('Y-m-d');
     };
-    $globals->xdb->execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
+    XDB::execute('REPLACE INTO watch_ops (uid,cid,known,date,info) VALUES({?},{?},NOW(),{?},{?})',
             $uid, $cid, $date, $info);
     if($cid == WATCH_FICHE) {
-	$globals->xdb->execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
+	XDB::execute('UPDATE auth_user_md5 SET DATE=NOW() WHERE user_id={?}', $uid);
     } elseif($cid == WATCH_INSCR) {
-	$globals->xdb->execute('REPLACE INTO  contacts (uid,contact)
+	XDB::execute('REPLACE INTO  contacts (uid,contact)
 				      SELECT  uid,ni_id
 				        FROM  watch_nonins
 			               WHERE  ni_id={?}', $uid);
-	$globals->xdb->execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
+	XDB::execute('DELETE FROM watch_nonins WHERE ni_id={?}', $uid);
     }
 }
 
@@ -126,9 +126,9 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
     $sql  .= _select_notifs_base('watch_nonins', $mail, $where);
 
     if ($iterator) {
-        return $globals->xdb->iterator($sql . ' ORDER BY cid, promo, date DESC, nom', $last, $uid, $last, $uid, $last, $uid);
+        return XDB::iterator($sql . ' ORDER BY cid, promo, date DESC, nom', $last, $uid, $last, $uid, $last, $uid);
     } else {
-        return $globals->xdb->query($sql, $last, $uid, $last, $uid, $last, $uid);
+        return XDB::query($sql, $last, $uid, $last, $uid, $last, $uid);
     }
 }
 
@@ -163,7 +163,7 @@ class AllNotifs {
     function AllNotifs() {
 	global $globals;
 	
-	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	$res = XDB::iterator("SELECT * FROM watch_cat");
 	while($tmp = $res->next()) {
             $this->_cats[$tmp['id']] = $tmp;
         }
@@ -196,7 +196,7 @@ class Notifs {
 	global $globals;
 	$this->_uid = $uid;
 	
-	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	$res = XDB::iterator("SELECT * FROM watch_cat");
 	while($tmp = $res->next()) {
             $this->_cats[$tmp['id']] = $tmp;
         }
@@ -210,7 +210,7 @@ class Notifs {
 	}
 
 	if($up) {
-	    $globals->xdb->execute('UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id={?}', $uid);
+	    XDB::execute('UPDATE auth_user_quick SET watch_last=NOW() WHERE user_id={?}', $uid);
 	}
     }
 }
@@ -233,12 +233,12 @@ class Watch {
 	$this->_promos = new PromoNotifs($uid);
 	$this->_nonins = new NoninsNotifs($uid);
 	$this->_subs = new WatchSub($uid);
-	$res = $globals->xdb->query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
+	$res = XDB::query("SELECT  FIND_IN_SET('contacts',watch_flags),FIND_IN_SET('mail',watch_flags)
 				       FROM  auth_user_quick
 				      WHERE  user_id={?}", $uid);
 	list($this->watch_contacts,$this->watch_mail) = $res->fetchOneRow();
 	
-	$res = $globals->xdb->iterator("SELECT * FROM watch_cat");
+	$res = XDB::iterator("SELECT * FROM watch_cat");
 	while($tmp = $res->next()) {
             $this->_cats[$tmp['id']] = $tmp;
         }
@@ -249,7 +249,7 @@ class Watch {
 	$flags = "";
 	if($this->watch_contacts) $flags = "contacts";
 	if($this->watch_mail) $flags .= ($flags ? ',' : '')."mail";
-	$globals->xdb->execute('UPDATE auth_user_quick SET watch_flags={?} WHERE user_id={?}', $flags, $this->_uid);
+	XDB::execute('UPDATE auth_user_quick SET watch_flags={?} WHERE user_id={?}', $flags, $this->_uid);
 	
     }
 
@@ -280,7 +280,7 @@ class WatchSub {
     function WatchSub($uid) {
 	$this->_uid = $uid;
 	global $globals;
-	$res = $globals->xdb->iterRow('SELECT cid FROM watch_sub WHERE uid={?}', $uid);
+	$res = XDB::iterRow('SELECT cid FROM watch_sub WHERE uid={?}', $uid);
 	while(list($c) = $res->next()) {
             $this->_data[$c] = $c;
         }
@@ -289,9 +289,9 @@ class WatchSub {
     function update($ind) {
 	global $globals;
 	$this->_data = Array();
-	$globals->xdb->execute('DELETE FROM watch_sub WHERE uid={?}', $this->_uid);
+	XDB::execute('DELETE FROM watch_sub WHERE uid={?}', $this->_uid);
 	foreach(Env::getMixed($ind) as $key=>$val) {
-	    $globals->xdb->query('INSERT INTO watch_sub SELECT {?},id FROM watch_cat WHERE id={?}', $this->_uid, $key);
+	    XDB::query('INSERT INTO watch_sub SELECT {?},id FROM watch_cat WHERE id={?}', $this->_uid, $key);
 	    if(mysql_affected_rows()) {
                 $this->_data[$key] = $key;
             }
@@ -309,7 +309,7 @@ class PromoNotifs {
     function PromoNotifs($uid) {
 	$this->_uid = $uid;
 	global $globals;
-	$res = $globals->xdb->iterRow('SELECT promo FROM watch_promo WHERE uid={?} ORDER BY promo', $uid);
+	$res = XDB::iterRow('SELECT promo FROM watch_promo WHERE uid={?} ORDER BY promo', $uid);
 	while (list($p) = $res->next()) {
             $this->_data[intval($p)] = intval($p);
         }
@@ -318,7 +318,7 @@ class PromoNotifs {
     function add($p) {
 	global $globals;
 	$promo = intval($p);
-	$globals->xdb->execute('REPLACE INTO watch_promo (uid,promo) VALUES({?},{?})', $this->_uid, $promo);
+	XDB::execute('REPLACE INTO watch_promo (uid,promo) VALUES({?},{?})', $this->_uid, $promo);
 	$this->_data[$promo] = $promo;
 	asort($this->_data);
     }
@@ -326,7 +326,7 @@ class PromoNotifs {
     function del($p) {
 	global $globals;
 	$promo = intval($p);
-	$globals->xdb->execute('DELETE FROM watch_promo WHERE uid={?} AND promo={?}', $this->_uid, $promo);
+	XDB::execute('DELETE FROM watch_promo WHERE uid={?} AND promo={?}', $this->_uid, $promo);
 	unset($this->_data[$promo]);
     }
     
@@ -339,7 +339,7 @@ class PromoNotifs {
 	    $values[] = "('{$this->_uid}',$i)";
 	    $this->_data[$i] = $i;
 	}
-	$globals->xdb->execute('REPLACE INTO watch_promo (uid,promo) VALUES '.join(',',$values));
+	XDB::execute('REPLACE INTO watch_promo (uid,promo) VALUES '.join(',',$values));
 	asort($this->_data);
     }
 
@@ -352,7 +352,7 @@ class PromoNotifs {
 	    $where[] = "promo=$i";
 	    unset($this->_data[$i]);
 	}
-	$globals->xdb->execute('DELETE FROM watch_promo WHERE uid={?} AND ('.join(' OR ',$where).')', $this->_uid);
+	XDB::execute('DELETE FROM watch_promo WHERE uid={?} AND ('.join(' OR ',$where).')', $this->_uid);
     }
 
     function toRanges() {
@@ -385,7 +385,7 @@ class NoninsNotifs {
     function NoninsNotifs($uid) {
 	global $globals;
 	$this->_uid = $uid;
-	$res = $globals->xdb->iterator("SELECT  u.prenom,IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, u.promo, u.user_id
+	$res = XDB::iterator("SELECT  u.prenom,IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, u.promo, u.user_id
                                           FROM  watch_nonins  AS w
                                     INNER JOIN  auth_user_md5 AS u ON (u.user_id = w.ni_id)
                                          WHERE  w.uid = {?}
@@ -398,13 +398,13 @@ class NoninsNotifs {
     function del($p) {
 	global $globals;
 	unset($this->_data["$p"]);
-	$globals->xdb->execute('DELETE FROM watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
+	XDB::execute('DELETE FROM watch_nonins WHERE uid={?} AND ni_id={?}', $this->_uid, $p);
     }
 
     function add($p) {
 	global $globals;
-	$globals->xdb->execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
-	$res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
+	XDB::execute('INSERT INTO watch_nonins (uid,ni_id) VALUES({?},{?})', $this->_uid, $p);
+	$res = XDB::query('SELECT  prenom,IF(nom_usage="",nom,nom_usage) AS nom,promo,user_id
                                        FROM  auth_user_md5
                                       WHERE  user_id={?}', $p);
 	$this->_data["$p"] = $res->fetchOneAssoc();

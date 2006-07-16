@@ -24,7 +24,7 @@ new_admin_page('admin/admin_trombino.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
 
 $uid = Env::getInt('uid');
-$q   = $globals->xdb->query(
+$q   = XDB::query(
         "SELECT  a.alias,promo
           FROM  auth_user_md5 AS u
     INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
@@ -44,13 +44,13 @@ switch (Env::get('action')) {
 	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
 	$mimetype = substr($_FILES['userfile']['type'], 6);
 	unlink($_FILES['userfile']['tmp_name']);
-        $globals->xdb->execute(
+        XDB::execute(
                 "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
                 $uid, $mimetype, $data, $x, $y);
     	break;
 
     case "supprimer":
-        $globals->xdb->execute('DELETE FROM photo WHERE uid = {?}', $uid);
+        XDB::execute('DELETE FROM photo WHERE uid = {?}', $uid);
         break;
 }
 

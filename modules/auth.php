@@ -55,7 +55,7 @@ class AuthModule extends PLModule
 
         if (Session::get('chall') && $_GET['PASS'] == md5(Session::get('chall').$cle)) {
 
-            $res  = $globals->xdb->query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
+            $res  = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
             $pass = $res->fetchOneCell();
 
             $client =& lists_xmlrpc(10154, $pass, "x-econfiance.polytechnique.org");
@@ -73,7 +73,7 @@ class AuthModule extends PLModule
 
             $where = join(' OR ',$membres);
 
-            $all = $globals->xdb->iterRow(
+            $all = XDB::iterRow(
                     "SELECT  u.prenom,u.nom,a.alias
                        FROM  auth_user_md5 AS u
                  INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND a.type!='homonyme' )
@@ -151,7 +151,7 @@ class AuthModule extends PLModule
         }
 
         /* on parcourt les entrees de groupes_auth */
-        $res = $globals->xdb->iterRow('select privkey,name,datafields from groupesx_auth');
+        $res = XDB::iterRow('select privkey,name,datafields from groupesx_auth');
 
         while (list($privkey,$name,$datafields) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {

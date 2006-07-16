@@ -55,14 +55,14 @@ class ProfileModule extends PLModule
 
         $where  = ( $this->promo > 0 ? "WHERE promo='{$this->promo}'" : "" );
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  COUNT(*)
                    FROM  auth_user_md5 AS u
              RIGHT JOIN  photo         AS p ON u.user_id=p.uid
              $where");
         $pnb = $res->fetchOneCell();
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  promo, user_id, a.alias AS forlife,
                          IF (nom_usage='', nom, nom_usage) AS nom, prenom
                    FROM  photo         AS p
@@ -82,7 +82,7 @@ class ProfileModule extends PLModule
 
         global $globals;
 
-        $res = $globals->xdb->query("SELECT id, pub FROM aliases
+        $res = XDB::query("SELECT id, pub FROM aliases
                                   LEFT JOIN photo ON(id = uid)
                                       WHERE alias = {?}", $x);
         list($uid, $photo_pub) = $res->fetchOneRow();
@@ -93,7 +93,7 @@ class ProfileModule extends PLModule
             Header('Content-type: image/'.$myphoto->mimetype);
             echo $myphoto->data;
         } else {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                     "SELECT  attachmime, attach
                        FROM  photo
                       WHERE  uid={?}", $uid);
@@ -140,18 +140,18 @@ class ProfileModule extends PLModule
                 $myphoto->clean();
             }
         } elseif (Env::get('suppr')) {
-            $globals->xdb->execute('DELETE FROM photo WHERE uid = {?}',
+            XDB::execute('DELETE FROM photo WHERE uid = {?}',
                                    Session::getInt('uid'));
-            $globals->xdb->execute('DELETE FROM requests
+            XDB::execute('DELETE FROM requests
                                      WHERE user_id = {?} AND type="photo"',
                                    Session::getInt('uid'));
         } elseif (Env::get('cancel')) {
-            $sql = $globals->xdb->query('DELETE FROM requests 
+            $sql = XDB::query('DELETE FROM requests 
                                         WHERE user_id={?} AND type="photo"',
                                         Session::getInt('uid'));
         }
 
-        $sql = $globals->xdb->query('SELECT COUNT(*) FROM requests
+        $sql = XDB::query('SELECT COUNT(*) FROM requests
                                       WHERE user_id={?} AND type="photo"',
                                     Session::getInt('uid'));
         $page->assign('submited', $sql->fetchOneCell());
@@ -175,7 +175,7 @@ class ProfileModule extends PLModule
         if (logged() && Env::get('view') == 'ax')      $view = 'ax';
 
         if (is_numeric($x)) {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                     "SELECT  alias 
                        FROM  aliases       AS a
                  INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
@@ -224,7 +224,7 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('x', $user);
         $page->assign('photo_url', $photo);
         // alias virtual
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT alias
                    FROM virtual
              INNER JOIN virtual_redirect USING(vid)
@@ -253,7 +253,7 @@ class ProfileModule extends PLModule
         require_once 'synchro_ax.inc.php';
 
         if (Post::has('register_from_ax_question')) {
-            $globals->xdb->query('UPDATE auth_user_quick
+            XDB::query('UPDATE auth_user_quick
                                      SET profile_from_ax = 1
                                    WHERE user_id = {?}',
                                  Session::getInt('uid'));
@@ -270,7 +270,7 @@ class ProfileModule extends PLModule
 
         // pour tous les tabs, la date de naissance pour verifier
         // quelle est bien rentree et la date.
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  naissance, DATE_FORMAT(date, '%d.%m.%Y')
                    FROM  auth_user_md5
                   WHERE  user_id={?}", Session::getInt('uid'));
@@ -291,7 +291,7 @@ class ProfileModule extends PLModule
                 $birth = sprintf("%s-%s-%s", substr(Env::get('birth'), 4, 4),
                                  substr(Env::get('birth'), 2, 2),
                                  substr(Env::get('birth'), 0, 2));
-                $globals->xdb->execute("UPDATE auth_user_md5
+                XDB::execute("UPDATE auth_user_md5
                                            SET naissance={?}
                                          WHERE user_id={?}", $birth,
                                        Session::getInt('uid'));
@@ -321,7 +321,7 @@ class ProfileModule extends PLModule
             /* on sauvegarde les changements dans user_changes :
             * on a juste besoin d'insérer le user_id de la personne dans la table
             */
-            $globals->xdb->execute('REPLACE INTO user_changes SET user_id={?}',
+            XDB::execute('REPLACE INTO user_changes SET user_id={?}',
                                    Session::getInt('uid'));
 
             if (!Session::has('suid')) {
@@ -361,7 +361,7 @@ class ProfileModule extends PLModule
         require_once 'validations.inc.php';
         require_once 'xorg.misc.inc.php';
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  u.promo, u.promo_sortie
                    FROM  auth_user_md5  AS u
                   WHERE  user_id={?}", Session::getInt('uid'));
@@ -386,7 +386,7 @@ class ProfileModule extends PLModule
             $page->trig('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
         }
         elseif ($promo_sortie == $promo + 3) {
-            $globals->xdb->execute(
+            XDB::execute(
                 "UPDATE  auth_user_md5 set promo_sortie={?} 
                   WHERE  user_id={?}", $promo_sortie, Session::getInt('uid'));
                 $page->trig('Ton statut "orange" a été supprimé.');
@@ -417,7 +417,7 @@ class ProfileModule extends PLModule
         $page->changeTpl('fiche_referent.tpl');
         $page->assign('simple', true);
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
                   FROM  auth_user_md5 AS u
             INNER JOIN  aliases       AS a ON (u.user_id=a.id
@@ -442,12 +442,12 @@ class ProfileModule extends PLModule
         /////  recuperations infos referent
 
         //expertise
-        $res = $globals->xdb->query("SELECT expertise FROM mentor WHERE uid = {?}", $user_id);
+        $res = XDB::query("SELECT expertise FROM mentor WHERE uid = {?}", $user_id);
         $page->assign('expertise', $res->fetchOneCell());
 
         //secteurs
         $secteurs = $ss_secteurs = Array();
-        $res = $globals->xdb->iterRow(
+        $res = XDB::iterRow(
                 "SELECT  s.label, ss.label
                    FROM  mentor_secteurs AS m
               LEFT JOIN  emploi_secteur AS s ON(m.secteur = s.id)
@@ -461,7 +461,7 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
         //pays
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  gp.pays
                    FROM  mentor_pays AS m
               LEFT JOIN  geoloc_pays AS gp ON(m.pid = gp.a2)
@@ -490,7 +490,7 @@ class ProfileModule extends PLModule
         $page->assign('ss_secteur_sel', $ss_secteur_sel);
 
         //recuperation des noms de secteurs
-        $res = $globals->xdb->iterRow("SELECT id, label FROM emploi_secteur");
+        $res = XDB::iterRow("SELECT id, label FROM emploi_secteur");
         $secteurs[''] = '';
         while (list($tmp_id, $tmp_label) = $res->next()) {
             $secteurs[$tmp_id] = $tmp_label;
@@ -500,7 +500,7 @@ class ProfileModule extends PLModule
         //on recupere les sous-secteurs si necessaire
         $ss_secteurs[''] = '';
         if (!empty($secteur_sel)) {
-            $res = $globals->xdb->iterRow("SELECT id, label FROM emploi_ss_secteur
+            $res = XDB::iterRow("SELECT id, label FROM emploi_ss_secteur
                                           WHERE secteur = {?}", $secteur_sel);
             while (list($tmp_id, $tmp_label) = $res->next()) {
                 $ss_secteurs[$tmp_id] = $tmp_label;
@@ -509,7 +509,7 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('ss_secteurs', $ss_secteurs);
 
         //recuperation des noms de pays
-        $res = $globals->xdb->iterRow("SELECT a2, pays FROM geoloc_pays
+        $res = XDB::iterRow("SELECT a2, pays FROM geoloc_pays
                                       WHERE pays <> '' ORDER BY pays");
         $pays['00'] = '';
         while (list($tmp_id, $tmp_label) = $res->next()) {
@@ -518,7 +518,7 @@ class ProfileModule extends PLModule
         $page->assign_by_ref('pays', $pays);
 
         // nb de mentors
-        $res = $globals->xdb->query("SELECT count(*) FROM mentor");
+        $res = XDB::query("SELECT count(*) FROM mentor");
         $page->assign('mentors_number', $res->fetchOneCell());
 
         if (!Env::has('Chercher')) {
@@ -556,7 +556,7 @@ class ProfileModule extends PLModule
                      WHERE  $where
                   GROUP BY  uid
                   ORDER BY  RAND({?})";
-            $res = $globals->xdb->iterator($sql, Session::getInt('uid'));
+            $res = XDB::iterator($sql, Session::getInt('uid'));
 
             if ($res->total() == 0) {
                 $page->assign('recherche_trop_large', true);
@@ -594,7 +594,7 @@ class ProfileModule extends PLModule
         require_once 'validations.inc.php';
         require_once 'xorg.misc.inc.php';
 
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  u.nom, u.nom_usage, u.flags, e.alias
                    FROM  auth_user_md5  AS u
               LEFT JOIN  aliases        AS e ON(u.user_id = e.id
@@ -685,7 +685,7 @@ class ProfileModule extends PLModule
         $user  = get_user_details($login);
 
         // alias virtual
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT alias
                    FROM virtual
              INNER JOIN virtual_redirect USING(vid)

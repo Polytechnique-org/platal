@@ -26,7 +26,7 @@ require("../include/xorg.inc.php");
 // la config d'apache impose la forme suivante pour REQUEST_URI :
 // REQUEST_URI = /prenom.nom(/path/fichier.hmtl)?
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
-$res = $globals->xdb->query(
+$res = XDB::query(
         "SELECT  redirecturl
            FROM  auth_user_quick AS a
      INNER JOIN  aliases         AS al ON (al.id = a.user_id AND (al.type='a_vie' OR al.type='alias'))

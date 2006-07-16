@@ -25,7 +25,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
     $fieldarr = explode(",",$datafields);
     $tohash   = "1$chlg$privkey";
 
-    $res = $globals->xdb->query("SELECT matricule, matricule_ax, promo,
+    $res = XDB::query("SELECT matricule, matricule_ax, promo,
                                         promo_sortie, flags, deces, nom,
                                         prenom, nationalite, section,
                                         naissance
@@ -40,7 +40,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
         } else if (isset($personnal_data[$val])) {
             $tohash .= $personnal_data[$val];
         } else if ($val == 'username') {
-            $res = $globals->xdb->query("SELECT alias FROM aliases
+            $res = XDB::query("SELECT alias FROM aliases
                                           WHERE id = {?} AND FIND_IN_SET('bestalias', flags)",
                                         Session::getInt('uid'));
             $min_username = $res->fetchOneCell();
@@ -56,7 +56,7 @@ function gpex_make_params($chlg, $privkey, $datafields) {
     global $globals;
     $params   = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
 
-    $res = $globals->xdb->query("SELECT matricule, matricule_ax, promo,
+    $res = XDB::query("SELECT matricule, matricule_ax, promo,
                                         promo_sortie, flags, deces, nom,
                                         prenom, nationalite, section,
                                         naissance
@@ -72,7 +72,7 @@ function gpex_make_params($chlg, $privkey, $datafields) {
         } else if (isset($personnal_data[$val])) {
             $params .= "&$val=".$personnal_data[$val];
         } else if ($val == 'username') {
-            $res = $globals->xdb->query("SELECT alias FROM aliases 
+            $res = XDB::query("SELECT alias FROM aliases 
                                           WHERE id = {?} AND FIND_IN_SET('bestalias', flags)",
                                         Session::getInt('uid'));
             $min_username = $res->fetchOneCell();

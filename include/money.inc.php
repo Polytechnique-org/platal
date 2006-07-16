@@ -44,7 +44,7 @@ class Payment
     {
         global $globals;
         $r   = $ref==-1 ? $globals->money->mpay_def_id : $ref;
-        $res = $globals->xdb->query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def, asso_id
+        $res = XDB::query("SELECT  id, text, url, flags, mail, montant_min, montant_max, montant_def, asso_id
                                        FROM  {$globals->money->mpay_tprefix}paiements WHERE id={?}", $r);
         list($this->id, $this->text, $this->url, $flags, $this->mail,
                 $this->montant_min, $this->montant_max, $this->montant_def, $this->asso_id) = $res->fetchOneRow();
@@ -93,7 +93,7 @@ class Payment
         global $globals;
         if ($this->asso_id)
         {
-            $res = $globals->xdb->query("SELECT eid, a.diminutif FROM groupex.evenements AS e, groupex.asso AS a WHERE e.asso_id = {?} AND a.id = {?}", $this->asso_id, $this->asso_id);
+            $res = XDB::query("SELECT eid, a.diminutif FROM groupex.evenements AS e, groupex.asso AS a WHERE e.asso_id = {?} AND a.id = {?}", $this->asso_id, $this->asso_id);
             return $res->fetchOneAssoc();
         }
         return null;
@@ -118,7 +118,7 @@ class PayMethod
     {
         global $globals;
         $i   = $id==-1 ? $globals->money->mpay_def_meth : $id;
-        $res = $globals->xdb->query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id={?}", $i);
+        $res = XDB::query("SELECT id,text,include FROM {$globals->money->mpay_tprefix}methodes WHERE id={?}", $i);
         list($this->id, $this->text, $this->inc) = $res->fetchOneRow();
     } 
 

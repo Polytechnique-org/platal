@@ -23,7 +23,7 @@
 function select_options($table,$valeur,$champ="text",$pad=false,$where="") {
     global $globals;
     $sql = "SELECT id,$champ FROM $table $where ORDER BY $champ";
-    $res = $globals->xdb->iterRow($sql);
+    $res = XDB::iterRow($sql);
     $sel = ' selected="selected"';
 
     // on ajoute une entree vide si $pad est vrai

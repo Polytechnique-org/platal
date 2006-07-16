@@ -23,7 +23,7 @@ function select_fonction($fonction){
     global $globals;
     $html = "<option value='' ". (($fonction == '0')?"selected='selected'":"") .">&nbsp;</option>\n";
 
-    $res = $globals->xdb->iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
+    $res = XDB::iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) from fonctions_def ORDER BY id");
     while(list($fid, $flabel, $ftitre) = $res->next()){
 	if($ftitre)
 	    $html.= "<option value='$fid' " . (($fonction == $fid)?"selected='selected'":"") . ">$flabel</option>\n";

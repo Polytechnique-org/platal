@@ -42,7 +42,7 @@ class OrangeReq extends Validate
         global $globals;
         $this->Validate($_uid, true, 'orange');
         $this->promo_sortie  = $_sortie;
-        $res = $globals->xdb->query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
+        $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
         $this->promo = $res->fetchOneCell(); 
     }
 
@@ -89,7 +89,7 @@ class OrangeReq extends Validate
     {
         global $globals;
         
-        $globals->xdb->execute("UPDATE auth_user_md5 set promo_sortie={?} WHERE user_id={?}",$this->promo_sortie ,$this->uid);
+        XDB::execute("UPDATE auth_user_md5 set promo_sortie={?} WHERE user_id={?}",$this->promo_sortie ,$this->uid);
         return true;
     }
 

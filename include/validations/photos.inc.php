@@ -142,7 +142,7 @@ class PhotoReq extends Validate
     {
         global $globals;
         
-        $globals->xdb->execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
+        XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
                                       VALUES  ({?},{?},{?},{?},{?})',
                                       $this->uid, $this->mimetype, $this->data, $this->x, $this->y);
 	require_once('notifs.inc.php');

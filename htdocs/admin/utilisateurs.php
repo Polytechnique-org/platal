@@ -48,7 +48,7 @@ if (Env::has('ax_button') && $login) {
 if(Env::has('suid_button') && $login) {
     $_SESSION['log']->log("suid_start", "login by ".Session::get('forlife'));
     $_SESSION['suid'] = $_SESSION;
-    $r = $globals->xdb->query("SELECT id FROM aliases WHERE alias={?}", $login);
+    $r = XDB::query("SELECT id FROM aliases WHERE alias={?}", $login);
     if($uid = $r->fetchOneCell()) {
 	start_connexion($uid,true);
 	redirect("../");
@@ -56,7 +56,7 @@ if(Env::has('suid_button') && $login) {
 }
 
 if ($login) {
-    $r  = $globals->xdb->query("SELECT  *, a.alias AS forlife, u.flags AS sexe
+    $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
                                   FROM  auth_user_md5 AS u
                             INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
     $mr = $r->fetchOneAssoc();
@@ -84,7 +84,7 @@ if ($login) {
 
 	    case "del_alias":
 		if (!empty($val)) {
-                    $globals->xdb->execute("DELETE FROM aliases WHERE id={?} AND alias={?}
+                    XDB::execute("DELETE FROM aliases WHERE id={?} AND alias={?}
                             AND type!='a_vie' AND type!='homonyme'", $mr['user_id'], $val);
                     fix_bestalias($mr['user_id']);
                     $page->trig($val." a été supprimé");
@@ -101,15 +101,15 @@ if ($login) {
         }
         break;
 	    case "add_alias":
-		$globals->xdb->execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
+		XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
                         $mr['user_id'], Env::get('email'));
 		break;
 
 	    case "best":
                 // 'bestalias' is the first bit of the set : 1
                 // 255 is the max for flags (8 sets max)
-		$globals->xdb->execute("UPDATE  aliases SET flags= flags & (255 - 1) WHERE id={?}", $mr['user_id']);
-		$globals->xdb->execute("UPDATE  aliases
+		XDB::execute("UPDATE  aliases SET flags= flags & (255 - 1) WHERE id={?}", $mr['user_id']);
+		XDB::execute("UPDATE  aliases
                                            SET  flags= flags | 1
                                         WHERE  id={?} AND alias={?}", $mr['user_id'], $val);
 		break;
@@ -137,7 +137,7 @@ if ($login) {
                     promo     = $promo,
                     comment   = '".addslashes($comm)."'
                 WHERE user_id = '{$mr['user_id']}'";
-            if ($globals->xdb->execute($query)) {
+            if (XDB::execute($query)) {
                     user_reindex($mr['user_id']);
 
                     require_once("diogenes/diogenes.hermes.inc.php");
@@ -154,7 +154,7 @@ if ($login) {
                     require_once('nomusage.inc.php');
                     set_new_usage($mr['user_id'], Env::get('nomusageN'), make_username(Env::get('prenomN'), Env::get('nomusageN')));
                 }
-                $r  = $globals->xdb->query("SELECT  *, a.alias AS forlife, u.flags AS sexe
+                $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
                                               FROM  auth_user_md5 AS u
                                         INNER JOIN  aliases       AS a ON (u.user_id=a.id)
                                              WHERE  user_id = {?}", $mr['user_id']);
@@ -176,7 +176,7 @@ if ($login) {
 	}
     }
 
-    $res = $globals->xdb->query("SELECT  UNIX_TIMESTAMP(start), host
+    $res = XDB::query("SELECT  UNIX_TIMESTAMP(start), host
 			           FROM  logger.sessions
 				  WHERE  uid={?} AND suid=0
 			       ORDER BY  start DESC
@@ -185,7 +185,7 @@ if ($login) {
     $page->assign('lastlogin', $lastlogin);
     $page->assign('host', $host);
 
-    $page->assign('aliases', $globals->xdb->iterator(
+    $page->assign('aliases', XDB::iterator(
                 "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
                    FROM  aliases
                   WHERE  id = {?} AND type!='homonyme'

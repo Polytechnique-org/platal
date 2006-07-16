@@ -68,7 +68,7 @@ class BananaModule extends PLModule
         && Post::has('bananadisplay') && Post::has('bananamail')
         && Post::has('bananaupdate') && Post::get('action')=="OK" ))
         {
-            $req = $globals->xdb->query("
+            $req = XDB::query("
                 SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
                         IF(FIND_IN_SET('automaj',flags),'1','0') 
                   FROM  forums.profils
@@ -86,7 +86,7 @@ class BananaModule extends PLModule
             $page->assign('disp', $disp);
             $page->assign('maj' , $maj);
         } else {
-            $globals->xdb->execute(
+            XDB::execute(
                 'REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
                        VALUES  ({?},{?},{?},{?},{?})',
                 Session::getInt('uid'), Post::get('bananasig'),

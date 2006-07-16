@@ -26,7 +26,7 @@ function smarty_insert_getName()
     if ($uid < 0) {
         return "";
     }
-    $res = $globals->xdb->query("SELECT prenom FROM auth_user_md5 WHERE user_id={?}", $uid);
+    $res = XDB::query("SELECT prenom FROM auth_user_md5 WHERE user_id={?}", $uid);
     return $res->fetchOneCell();
 }
 

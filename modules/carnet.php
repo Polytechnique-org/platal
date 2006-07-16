@@ -118,7 +118,7 @@ class CarnetModule extends PLModule
 
         $watch = new Watch(Session::getInt('uid'));
 
-        $res = $globals->xdb->query("SELECT promo_sortie
+        $res = XDB::query("SELECT promo_sortie
                                        FROM auth_user_md5
                                       WHERE user_id = {?}",
                                     Session::getInt('uid', -1));
@@ -156,7 +156,7 @@ class CarnetModule extends PLModule
     function _get_list($offset, $limit) {
         global $globals;
         $uid   = Session::getInt('uid');
-        $res   = $globals->xdb->query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
+        $res   = XDB::query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
         $total = $res->fetchOneCell();
 
         $order = Get::get('order');
@@ -170,7 +170,7 @@ class CarnetModule extends PLModule
         if (Get::get('inv') == '')
             $order = str_replace(" DESC,", ",", $order);
 
-        $res   = $globals->xdb->query("
+        $res   = XDB::query("
                 SELECT  u.prenom, IF(u.nom_usage='',u.nom,u.nom_usage) AS nom, a.alias AS forlife, u.promo
                   FROM  contacts       AS c
             INNER JOIN  auth_user_md5  AS u   ON (u.user_id = c.contact)
@@ -197,14 +197,14 @@ class CarnetModule extends PLModule
         switch (Env::get('action')) {
             case 'retirer':
                 if (is_numeric($user)) {
-                    if ($globals->xdb->execute('DELETE FROM contacts
+                    if (XDB::execute('DELETE FROM contacts
                                                       WHERE uid = {?} AND contact = {?}',
                                                $uid, $user))
                     {
                         $page->trig("Contact retiré !");
                     }
                 } else {
-                    if ($globals->xdb->execute(
+                    if (XDB::execute(
                                 'DELETE FROM  contacts
                                        USING  contacts AS c
                                   INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!="homonyme")
@@ -218,7 +218,7 @@ class CarnetModule extends PLModule
             case 'ajouter':
                 require_once('user.func.inc.php');
                 if (($login = get_user_login($user)) !== false) {
-                    if ($globals->xdb->execute(
+                    if (XDB::execute(
                                 'INSERT INTO  contacts (uid, contact)
                                       SELECT  {?}, id
                                         FROM  aliases
@@ -289,7 +289,7 @@ class CarnetModule extends PLModule
                      WHERE  c.uid = $uid
                   ORDER BY  ".$order;
 
-            $page->assign_by_ref('citer', $globals->xdb->iterator($sql));
+            $page->assign_by_ref('citer', XDB::iterator($sql));
         }
     }
 
@@ -313,7 +313,7 @@ class CarnetModule extends PLModule
             $sql .= ' ORDER BY  u.nom, u.prenom, u.promo';
         }
 
-        $citer = $globals->xdb->iterRow($sql, Session::getInt('uid'));
+        $citer = XDB::iterRow($sql, Session::getInt('uid'));
         $pdf   = new ContactsPDF();
 
         while (list($alias) = $citer->next()) {
@@ -342,7 +342,7 @@ class CarnetModule extends PLModule
         new_nonhtml_page('carnet/calendar.tpl', AUTH_PUBLIC);
 
         if ($alias && $hash) {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                 'SELECT  a.id
                    FROM  aliases         AS a
              INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND q.core_rss_hash = {?} )

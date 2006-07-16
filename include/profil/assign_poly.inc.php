@@ -21,13 +21,13 @@
 
 $uid = Session::getInt('uid');
  
-$res = $globals->xdb->query(
+$res = XDB::query(
         "SELECT  text,id
            FROM  binets_ins, binets_def
           WHERE  binets_def.id=binets_ins.binet_id AND user_id={?}", $uid);
 $page->assign('binets', $res->fetchAllAssoc());
 
-$res = $globals->xdb->query(
+$res = XDB::query(
         "SELECT  text,id
            FROM  groupesx_ins, groupesx_def
           WHERE  groupesx_def.id=groupesx_ins.gid AND guid={?}", $uid);

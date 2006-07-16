@@ -29,7 +29,7 @@ function list_all_my_groups($params)
         return;
     }
     global $globals;
-    $res = $globals->xdb->iterRow(
+    $res = XDB::iterRow(
             "SELECT  a.nom, a.diminutif
                FROM  groupex.asso    AS a
          INNER JOIN  groupex.membres AS m ON m.asso_id = a.id

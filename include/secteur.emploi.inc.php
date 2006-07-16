@@ -26,7 +26,7 @@ function select_secteur($secteur){
         $secteur = -1;
     }
     $html = "<option value=\"\" ". (($secteur == '')?"selected='selected'":"") .">&nbsp;</option>\n";
-    $res  = $globals->xdb->iterRow("SELECT id, label FROM emploi_secteur");
+    $res  = XDB::iterRow("SELECT id, label FROM emploi_secteur");
     while (list($tmp_id, $tmp_label) = $res->next()) {
 	$html .= "<option value=\"$tmp_id\" " . (($secteur == $tmp_id)?"selected='selected'":"") . ">$tmp_label</option>\n";
     }
@@ -37,7 +37,7 @@ function select_ss_secteur($secteur,$ss_secteur){
     global $globals;
     if ($secteur) {
 	$html = "<option value=\"\">&nbsp;</option>\n";
-	$res  = $globals->xdb->iterRow("SELECT id, label FROM emploi_ss_secteur WHERE secteur = {?}", $secteur);
+	$res  = XDB::iterRow("SELECT id, label FROM emploi_ss_secteur WHERE secteur = {?}", $secteur);
 	while (list($tmp_id, $tmp_label) = $res->next()){
 	    $html .= "<option value=\"$tmp_id\" ". (($ss_secteur == $tmp_id)?"selected='selected'":"") .">$tmp_label</option>\n";
 	}

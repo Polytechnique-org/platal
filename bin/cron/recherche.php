@@ -22,10 +22,10 @@
 
 require('./connect.db.inc.php');
 
-$res = $globals->xdb->iterRow('SELECT matricule,nom1,nom2,nom3,prenom1,prenom2,promo FROM recherche');
+$res = XDB::iterRow('SELECT matricule,nom1,nom2,nom3,prenom1,prenom2,promo FROM recherche');
 
 while (list($matricule,$nom1,$nom2,$nom3,$prenom1,$prenom2,$promo) = $res->next()) {
-    $globals->xdb->execute(
+    XDB::execute(
             "INSERT INTO  recherche_soundex (matricule,nom1_soundex,nom2_soundex,nom3_soundex,prenom1_soundex,prenom2_soundex,promo)
                   VALUES  ({?},{?},{?},{?},{?},{?},{?})",
             $matricule, soundex_fr($nom1), soundex_fr($nom2), soundex_fr($nom3), soundex_fr($prenom1), soundex_fr($prenom2), $promo);

@@ -21,7 +21,7 @@
 
 function select_if_homonyme($uid) {
     global $globals;
-    $res = $globals->xdb->query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
+    $res = XDB::query("SELECT  prenom,nom,a.alias AS forlife,h.alias AS loginbis
                                    FROM  auth_user_md5 AS u
                              INNER JOIN  aliases       AS a ON (a.id=u.user_id AND a.type='a_vie')
                              INNER JOIN  aliases       AS h ON (h.id=u.user_id AND h.expire!='')
@@ -58,15 +58,15 @@ function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
 function switch_bestalias($uid, $loginbis) {
     global $globals;
     // check if loginbis was the bestalias
-    $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", $uid);
+    $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND FIND_IN_SET('bestalias', flags)", $uid);
     $bestalias = $res->fetchOneCell();
     if ($bestalias && $bestalias != $loginbis) return false;
     
     // select the shortest alias still alive
-    $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND alias != {?} AND expire IS NULL ORDER BY LENGTH(alias) LIMIT 1", $uid, $loginbis);
+    $res = XDB::query("SELECT alias FROM aliases WHERE id = {?} AND alias != {?} AND expire IS NULL ORDER BY LENGTH(alias) LIMIT 1", $uid, $loginbis);
     $newbest = $res->fetchOneCell();
     // change the bestalias flag
-    $globals->xdb->execute("UPDATE aliases SET flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0) WHERE id = {?}", $newbest, $uid);
+    XDB::execute("UPDATE aliases SET flags = (flags & (255 - 1)) | IF(alias = {?}, 1, 0) WHERE id = {?}", $newbest, $uid);
 
     return $newbest;
 }

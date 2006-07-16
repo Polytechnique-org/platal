@@ -65,7 +65,7 @@ class StatsModule extends PLModule
         define('DUREEJOUR',24*3600);
 
         //recupere le nombre d'inscriptions par jour sur la plage concernée
-        $res = $globals->xdb->iterRow(
+        $res = XDB::iterRow(
                 "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
                              TO_DAYS(date_ins)-TO_DAYS(NOW()),
                             ".(-($jours+1)).") AS jour,
@@ -132,7 +132,7 @@ EOF2;
             $depart = 1920;
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = $globals->xdb->iterRow(
+            $res = XDB::iterRow(
                     "SELECT  promo, SUM(perms IN ('admin', 'user')) / COUNT(*) * 100
                        FROM  auth_user_md5
                       WHERE  promo >= $depart AND deces = 0
@@ -179,7 +179,7 @@ EOF2;
             //nombre de jours sur le graph
             $jours = 365;
             define('DUREEJOUR',24*3600);
-            $res = $globals->xdb->query("SELECT min(TO_DAYS(date_ins)-TO_DAYS(now()))
+            $res = XDB::query("SELECT min(TO_DAYS(date_ins)-TO_DAYS(now()))
                                            FROM auth_user_md5
                                           WHERE promo = {?}
                                                 AND perms IN ('admin', 'user')",
@@ -187,7 +187,7 @@ EOF2;
             $jours = -$res->fetchOneCell();
 
             //recupere le nombre d'inscriptions par jour sur la plage concernée
-            $res = $globals->xdb->iterRow(
+            $res = XDB::iterRow(
                     "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
                                  TO_DAYS(date_ins)-TO_DAYS(NOW()),
                                 ".(-($jours+1)).") AS jour,
@@ -252,7 +252,7 @@ EOF2;
 
         $page->changeTpl('stats/nb_by_promo.tpl');
 
-        $res = $globals->xdb->iterRow(
+        $res = XDB::iterRow(
                 "SELECT  promo,COUNT(*)
                    FROM  auth_user_md5
                   WHERE  promo > 1900 AND perms IN ('admin','user')
@@ -281,7 +281,7 @@ EOF2;
         $page->changeTpl('stats/coupure.tpl');
 
         if (!is_null($cp_id)) {
-            $res = $globals->xdb->query("SELECT  UNIX_TIMESTAMP(debut) AS debut,
+            $res = XDB::query("SELECT  UNIX_TIMESTAMP(debut) AS debut,
                                                  TIME_FORMAT(duree,'%kh%i') AS duree,
                                                  resume, description, services
                                            FROM  coupures
@@ -296,7 +296,7 @@ EOF2;
             $beginning_date = date("Ymd", time() - 3600*24*21) . "000000";
             $sql = "SELECT  id, UNIX_TIMESTAMP(debut) AS debut, resume, services
                       FROM  coupures where debut > '$beginning_date' order by debut desc";
-            $page->assign('coupures', $globals->xdb->iterator($sql));
+            $page->assign('coupures', XDB::iterator($sql));
         }
     }
 }

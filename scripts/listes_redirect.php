@@ -10,7 +10,7 @@ if (empty($matches)) {
         header("Location: https://www.polytechnique.org/lists/$action/$mbox");
     } else {
         require("../include/xorg.inc.php");
-        $res = $globals->xdb->query("select diminutif from groupex.asso where mail_domain = {?}", $fqdn);
+        $res = XDB::query("select diminutif from groupex.asso where mail_domain = {?}", $fqdn);
         if ($gpx = $res->fetchOneCell()) {
             header("Location: http://www.polytechnique.net/$gpx/lists/$action/$mbox");
         }

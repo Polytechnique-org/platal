@@ -47,7 +47,7 @@ class XnetEventsModule extends PLModule
 
             $eid = Post::get('del');
 
-            $res = $globals->xdb->query("SELECT asso_id, short_name FROM groupex.evenements
+            $res = XDB::query("SELECT asso_id, short_name FROM groupex.evenements
                                         WHERE eid = {?} AND asso_id = {?}",
                                         $eid, $globals->asso('id'));
 
@@ -58,36 +58,36 @@ class XnetEventsModule extends PLModule
 
             // deletes the event mailing aliases
             if ($tmp[1]) {
-                $globals->xdb->execute(
+                XDB::execute(
                     "DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}",
                     $tmp[1].'-absents@%');
-                $globals->xdb->execute(
+                XDB::execute(
                     "DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}",
                     $tmp[1].'-participants@%');
             }
 
             // deletes the event items
-            $globals->xdb->execute("DELETE FROM groupex.evenements_items WHERE eid = {?}", $eid);
+            XDB::execute("DELETE FROM groupex.evenements_items WHERE eid = {?}", $eid);
 
             // deletes the event participants
-            $globals->xdb->execute("DELETE FROM groupex.evenements_participants
+            XDB::execute("DELETE FROM groupex.evenements_participants
                                     WHERE eid = {?}", $eid);
 
             // deletes the event
-            $globals->xdb->execute("DELETE FROM groupex.evenements
+            XDB::execute("DELETE FROM groupex.evenements
                                     WHERE eid = {?} AND asso_id = {?}",
                                    $eid, $globals->asso('id'));
 
             // delete the requests for payments
             require_once 'validations.inc.php';
-            $globals->xdb->execute("DELETE FROM requests
+            XDB::execute("DELETE FROM requests
                                     WHERE type = 'paiements' AND data LIKE {?}",
                                    PayReq::same_event($eid, $globals->asso('id')));
         }
 
         $page->assign('admin', may_update());
 
-        $evenements = $globals->xdb->iterator(
+        $evenements = XDB::iterator(
                 "SELECT  e.*, LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,
                          IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                             1) AS inscr_open, e.deadline_inscription,
@@ -104,7 +104,7 @@ class XnetEventsModule extends PLModule
         $evts = array();
 
         while ($e = $evenements->next()) {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                 "SELECT titre, details, montant, ei.item_id, nb
                    FROM groupex.evenements_items AS ei
               LEFT JOIN groupex.evenements_participants AS ep
@@ -118,7 +118,7 @@ class XnetEventsModule extends PLModule
                 $e['topay'] += $m['nb'] * $m['montant'];
             }
 
-            $query = $globals->xdb->query(
+            $query = XDB::query(
                 "SELECT montant
                    FROM {$globals->money->mpay_tprefix}transactions AS t
                  WHERE ref = {?} AND uid = {?}", $e['paiement_id'], Session::get('uid'));
@@ -191,13 +191,13 @@ class XnetEventsModule extends PLModule
         // update actual inscriptions
         foreach ($subs as $j => $nb) {
             if ($nb > 0) {
-                $globals->xdb->execute(
+                XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?})",
                     $eid, Session::getInt('uid'), $j, $nb, $evt['paid']);
                 $page->assign('updated', true);
             } else {
-                $globals->xdb->execute(
+                XDB::execute(
                     "DELETE FROM  groupex.evenements_participants
                            WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
                     $eid, Session::getInt("uid"), $j);		
@@ -246,7 +246,7 @@ class XnetEventsModule extends PLModule
 
         // check the event is in our group
         if (!is_null($eid)) {
-            $res = $globals->xdb->query("SELECT short_name, asso_id
+            $res = XDB::query("SELECT short_name, asso_id
                                            FROM groupex.evenements
                                           WHERE eid = {?}", $eid);
             $infos = $res->fetchOneAssoc();
@@ -294,7 +294,7 @@ class XnetEventsModule extends PLModule
             }
 
             // Store the modifications in the database
-            $globals->xdb->execute('REPLACE INTO groupex.evenements
+            XDB::execute('REPLACE INTO groupex.evenements
                 SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
                     paiement_id = {?}, descriptif = {?}, debut = {?},
                     fin = {?}, show_participants = {?}, short_name = {?},
@@ -319,13 +319,13 @@ class XnetEventsModule extends PLModule
 
                     $montant = strtr(Post::get('montant'.$i), ',', '.');
                     $money_defaut += (float)$montant;
-                    $globals->xdb->execute("
+                    XDB::execute("
                         REPLACE INTO groupex.evenements_items
                         VALUES ({?}, {?}, {?}, {?}, {?})",
                         $eid, $i, Post::get('titre'.$i),
                         Post::get('details'.$i), $montant);
                 } else {
-                    $globals->xdb->execute("DELETE FROM groupex.evenements_items 
+                    XDB::execute("DELETE FROM groupex.evenements_items 
                                             WHERE eid = {?} AND item_id = {?}", $eid, $i);
                 }
             }
@@ -343,7 +343,7 @@ class XnetEventsModule extends PLModule
 
             // events with no sub-event: add a sub-event with no name
             if ($nb_moments == 0) {
-                $globals->xdb->execute("INSERT INTO groupex.evenements_items
+                XDB::execute("INSERT INTO groupex.evenements_items
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
@@ -354,7 +354,7 @@ class XnetEventsModule extends PLModule
         }
 
         // get a list of all the payment for this asso
-        $res = $globals->xdb->iterator("SELECT id, text
+        $res = XDB::iterator("SELECT id, text
                                         FROM {$globals->money->mpay_tprefix}paiements
                                         WHERE asso_id = {?}", $globals->asso('id'));
         $paiements = array();
@@ -364,7 +364,7 @@ class XnetEventsModule extends PLModule
 
         // when modifying an old event retreive the old datas
         if ($eid) {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                     "SELECT	eid, intitule, descriptif, debut, fin,
                                 show_participants, paiement_id, short_name,
                                 deadline_inscription, noinvite
@@ -373,7 +373,7 @@ class XnetEventsModule extends PLModule
             $evt = $res->fetchOneAssoc();
             // find out if there is already a request for a payment for this event
             require_once 'validations.inc.php';
-            $res = $globals->xdb->query("SELECT stamp FROM requests
+            $res = XDB::query("SELECT stamp FROM requests
                                          WHERE type = 'paiements' AND data LIKE {?}",
                                         PayReq::same_event($eid, $globals->asso('id')));
             $stamp = $res->fetchOneCell();
@@ -383,7 +383,7 @@ class XnetEventsModule extends PLModule
             }
             $page->assign('evt', $evt);
             // get all the different moments infos
-            $res = $globals->xdb->iterator(
+            $res = XDB::iterator(
                     "SELECT item_id, titre, details, montant
                        FROM groupex.evenements_items AS ei
                  INNER JOIN groupex.evenements AS e ON(e.eid = ei.eid)
@@ -422,7 +422,7 @@ class XnetEventsModule extends PLModule
 
             // change the price paid by a participant
             if (Env::get('adm') == 'prix' && $member) {
-                $globals->xdb->execute("UPDATE groupex.evenements_participants
+                XDB::execute("UPDATE groupex.evenements_participants
                                            SET paid = IF(paid + {?} > 0, paid + {?}, 0)
                                          WHERE uid = {?} AND eid = {?}",
                         strtr(Env::get('montant'), ',', '.'),
@@ -432,7 +432,7 @@ class XnetEventsModule extends PLModule
 
             // change the number of personns coming with a participant
             if (Env::get('adm') == 'nbs' && $member) {
-                $res = $globals->xdb->query("SELECT paid
+                $res = XDB::query("SELECT paid
                                                FROM groupex.evenements_participants
                                               WHERE uid = {?} AND eid = {?}",
                                             $member['uid'], $eid);
@@ -444,17 +444,17 @@ class XnetEventsModule extends PLModule
                     $nb = max(intval($nb), 0);
 
                     if ($nb) {
-                        $globals->xdb->execute("REPLACE INTO groupex.evenements_participants
+                        XDB::execute("REPLACE INTO groupex.evenements_participants
                                                VALUES ({?}, {?}, {?}, {?}, {?})",
                                                $eid, $member['uid'], $id, $nb, $paid);
                     } else {
-                        $globals->xdb->execute("DELETE FROM groupex.evenements_participants
+                        XDB::execute("DELETE FROM groupex.evenements_participants
                                                WHERE uid = {?} AND eid = {?} AND item_id = {?}",
                                                $member['uid'], $eid, $id);
                     }
                 }
 
-                $res = $globals->xdb->query("SELECT uid FROM groupex.evenements_participants
+                $res = XDB::query("SELECT uid FROM groupex.evenements_participants
                                             WHERE uid = {?} AND eid = {?}",
                                             $member['uid'], $eid);
                 $u = $res->fetchOneCell();
@@ -474,7 +474,7 @@ class XnetEventsModule extends PLModule
 
         $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
         $whereitemid = is_null($item_id) ? '' : "AND ep.item_id = $item_id";
-        $res = $globals->xdb->iterRow(
+        $res = XDB::iterRow(
                     'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL, m.nom,
                                                 IF(u.nom_usage<>"", u.nom_usage, u.nom)), 1, 1)),
                              COUNT(DISTINCT ep.uid)
@@ -515,7 +515,7 @@ class XnetEventsModule extends PLModule
         }
 
         if ($evt['paiement_id']) {
-            $res = $globals->xdb->iterator(
+            $res = XDB::iterator(
                 "SELECT IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom, u.prenom,
                         u.promo, a.alias AS email, t.montant
                    FROM {$globals->money->mpay_tprefix}transactions AS t

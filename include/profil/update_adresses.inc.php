@@ -24,7 +24,7 @@ reset($adresses);
 function insert_new_tel($adrid, $tel) {
   global $globals;
   if ($tel['tel'] == "") return;
- $globals->xdb->execute(
+ XDB::execute(
    "INSERT INTO tels SET
     tel_type = {?},
     tel_pub = {?},
@@ -54,7 +54,7 @@ foreach($adresses as $adrid => $adr){
 
     if ($adr["nouvelle"] == 'ajout') {
     //nouvelle adresse
-      $globals->xdb->execute("INSERT INTO adresses SET
+      XDB::execute("INSERT INTO adresses SET
 			 adr1 = {?},
 			 adr2 = {?},
 			 adr3 = {?},
@@ -87,7 +87,7 @@ foreach($adresses as $adrid => $adr){
     
     else{ 
       //c'est une mise à jour
-      $globals->xdb->execute(
+      XDB::execute(
 		    "UPDATE adresses SET
 				 adr1 = {?},
 				 adr2 = {?},
@@ -120,7 +120,7 @@ foreach($adresses as $adrid => $adr){
           insert_new_tel($adrid, $tel);
         else
           if ($tel['tel'] != "") {
-          $globals->xdb->execute(
+          XDB::execute(
            "UPDATE tels SET
             tel_type = {?},
             tel_pub = {?},
@@ -136,7 +136,7 @@ foreach($adresses as $adrid => $adr){
             $adrid,
             $tel['telid']);
           } else {
-          $globals->xdb->execute(
+          XDB::execute(
            "DELETE FROM tels WHERE
             uid = {?} AND
             adrid = {?} AND

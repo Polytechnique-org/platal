@@ -25,7 +25,7 @@ require_once("xorg.misc.inc.php");
 
 function mark_from_mail($uid, $email) {
     global $globals;
-    $res = $globals->xdb->query(
+    $res = XDB::query(
         "SELECT u.nom, u.prenom, a.alias
            FROM register_marketing  AS r
      INNER JOIN auth_user_md5       AS u ON (r.sender = u.user_id)
@@ -45,10 +45,10 @@ function mark_text_mail($uid, $email)
     global $globals;
     $title = "Annuaire en ligne des Polytechniciens";
 
-    $res = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin', 'user') and deces = 0");
+    $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE perms IN ('admin', 'user') and deces = 0");
     $num_users = $res->fetchOneCell();
 
-    $res = $globals->xdb->query("SELECT flags, nom, prenom, promo FROM auth_user_md5 WHERE user_id = {?}", $uid);
+    $res = XDB::query("SELECT flags, nom, prenom, promo FROM auth_user_md5 WHERE user_id = {?}", $uid);
     $u = $res->fetchOneAssoc();
 
     $mailorg = make_forlife($u['prenom'],$u['nom'],$u['promo']);
@@ -84,7 +84,7 @@ function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='')
     global $globals;
 
     $hash = rand_url_id(12);
-    $globals->xdb->execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $uid, $email);
+    XDB::execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $uid, $email);
  
     if ($to == '')
         list($to, $title, $text) = mark_text_mail($uid, $email);
@@ -114,11 +114,11 @@ function relance($uid, $nbx = -1)
     global $globals;
 
     if ($nbx < 0) {
-        $res = $globals->xdb->query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
+        $res = XDB::query("SELECT COUNT(*) FROM auth_user_md5 WHERE deces=0");
         $nbx = $res->fetchOneCell();
     }
 
-    $res = $globals->xdb->query(
+    $res = XDB::query(
             "SELECT  r.date, u.promo, u.nom, u.prenom, r.email, r.bestalias
                FROM  register_pending AS r
          INNER JOIN  auth_user_md5    AS u ON u.user_id = r.uid
@@ -144,7 +144,7 @@ function relance($uid, $nbx = -1)
     $mymail->assign('lemail',     $email);
     $mymail->assign('subj',       $alias.'@'.$globals->mail->domain);
     $mymail->send();
-    $globals->xdb->execute('UPDATE register_pending SET hash={?}, password={?}, relance=NOW() WHERE uid={?}', $hash, $pass_encrypted, $uid);
+    XDB::execute('UPDATE register_pending SET hash={?}, password={?}, relance=NOW() WHERE uid={?}', $hash, $pass_encrypted, $uid);
 
     return "$prenom $nom ($promo)";
 }

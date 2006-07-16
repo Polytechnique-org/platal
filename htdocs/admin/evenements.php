@@ -29,32 +29,32 @@ $page->assign('arch', $arch);
 
 switch(Post::get('action')) {
     case "Proposer":
-        $globals->xdb->execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
+        XDB::execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
                 Post::get('titre'), Post::get('texte'), Post::get('peremption'), Post::get('promo_min'), Post::get('promo_max'), $evid);
         break;
 
     case "Valider":
-        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",valide") WHERE id = {?}', $evid);
+        XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",valide") WHERE id = {?}', $evid);
         break;
 
     case "Invalider":
-        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"valide", "") WHERE id = {?}', $evid);
+        XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"valide", "") WHERE id = {?}', $evid);
         break;
 
     case "Supprimer":
-        $globals->xdb->execute('DELETE from evenements WHERE id = {?}', $evid);
+        XDB::execute('DELETE from evenements WHERE id = {?}', $evid);
         break;
 
     case "Archiver":
-        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",archive") WHERE id = {?}', $evid);
+        XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",archive") WHERE id = {?}', $evid);
         break;
 
     case "Desarchiver":
-        $globals->xdb->execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"archive","") WHERE id = {?}', $evid);
+        XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"archive","") WHERE id = {?}', $evid);
         break;
 
     case "Editer":
-        $res = $globals->xdb->query('SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id={?}', $evid);
+        $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id={?}', $evid);
         list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
         $page->assign('mode', 'edit');
         $page->assign('titre',$titre);
@@ -91,7 +91,7 @@ if ($action != "Editer") {
         INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
              WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
           ORDER BY  FIND_IN_SET('valide',e.flags), peremption";
-    $page->assign('evs', $globals->xdb->iterator($sql));
+    $page->assign('evs', XDB::iterator($sql));
 }
 
 $page->run();

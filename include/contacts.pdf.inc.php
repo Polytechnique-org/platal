@@ -266,7 +266,7 @@ class ContactsPDF extends FPDF
         $ok  = false;
 
         if ($wp) {
-            $res = $globals->xdb->query("SELECT * FROM photo WHERE attachmime IN ('jpeg','png') AND uid={?}", $x['user_id']);
+            $res = XDB::query("SELECT * FROM photo WHERE attachmime IN ('jpeg','png') AND uid={?}", $x['user_id']);
             if ($i = $res->numRows()) {
                 $old2  = $this;
                 $photo = $res->fetchOneAssoc();

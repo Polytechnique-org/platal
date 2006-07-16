@@ -23,7 +23,7 @@ require_once("xorg.inc.php");
 new_admin_page('admin/index.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration');
 
-$res = $globals->xdb->iterRow("
+$res = XDB::iterRow("
             SELECT  h1, h2, texte, url
               FROM  admin_a  AS a
         INNER JOIN  admin_h2 AS h2 USING(h2id)

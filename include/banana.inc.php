@@ -119,7 +119,7 @@ class PlatalBanana extends Banana
         global $globals;
     
         $uid = Session::getInt('uid');
-        $req = $globals->xdb->query(
+        $req = XDB::query(
                 "SELECT  nom, mail, sig, FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags)
                    FROM  {$globals->banana->table_prefix}profils
                   WHERE  uid={?}", $uid);
@@ -138,10 +138,10 @@ class PlatalBanana extends Banana
         $this->profile['lastnews']  = Session::get('banana_last');
         
         if ($maj) {
-            $globals->xdb->execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}", gmdate("YmdHis"), $uid);
+            XDB::execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}", gmdate("YmdHis"), $uid);
         }
 
-        $req = $globals->xdb->query("
+        $req = XDB::query("
                  SELECT  nom
                    FROM  {$globals->banana->table_prefix}abos
               LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
@@ -163,7 +163,7 @@ class PlatalBanana extends Banana
 
         if (Get::get('banana') == 'updateall'
                 || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
-            $globals->xdb->execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), Session::getInt('uid'));
+            XDB::execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), Session::getInt('uid'));
             $_SESSION['banana_last'] = time();
         }
         return Banana::run('PlatalBanana', $params);
@@ -175,12 +175,12 @@ class PlatalBanana extends Banana
         $uid = Session::getInt('uid');
 
         $this->profile['subscribe'] = Array();
-        $globals->xdb->execute("DELETE FROM {$globals->banana->table_prefix}abos WHERE uid={?}", $uid);
+        XDB::execute("DELETE FROM {$globals->banana->table_prefix}abos WHERE uid={?}", $uid);
         if (!count($_POST['subscribe'])) {
             return true;
         }
         
-        $req  = $globals->xdb->iterRow("SELECT fid,nom FROM {$globals->banana->table_prefix}list");
+        $req  = XDB::iterRow("SELECT fid,nom FROM {$globals->banana->table_prefix}list");
         $fids = array();
         while (list($fid,$fnom) = $req->next()) {
             $fids[$fnom] = $fid;
@@ -188,12 +188,12 @@ class PlatalBanana extends Banana
 
         $diff = array_diff($_POST['subscribe'], array_keys($fids));
         foreach ($diff as $g) {
-            $globals->xdb->execute("INSERT INTO {$globals->banana->table_prefix}list (nom) VALUES ({?})", $g);
+            XDB::execute("INSERT INTO {$globals->banana->table_prefix}list (nom) VALUES ({?})", $g);
             $fids[$g] = mysql_insert_id();
         }
 
         foreach ($_POST['subscribe'] as $g) {
-            $globals->xdb->execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})", $fids[$g], $uid);
+            XDB::execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})", $fids[$g], $uid);
             $this->profile['subscribe'][] = $g;
         }
     }

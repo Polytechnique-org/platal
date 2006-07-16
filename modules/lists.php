@@ -133,7 +133,7 @@ class ListsModule extends PLModule
             $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
         }
 
-        $res = $globals->xdb->query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
+        $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE alias={?}", $liste);
         $n   = $res->fetchOneCell();
 
         if ($n) {
@@ -210,7 +210,7 @@ class ListsModule extends PLModule
         $membres = Array();
         foreach ($members as $member) {
             list($m) = explode('@',$member[1]);
-            $res = $globals->xdb->query("SELECT  prenom,if (nom_usage='', nom, nom_usage) AS nom,
+            $res = XDB::query("SELECT  prenom,if (nom_usage='', nom, nom_usage) AS nom,
                                                  promo, a.alias AS forlife
                                            FROM  auth_user_md5 AS u
                                      INNER JOIN  aliases AS a ON u.user_id = a.id
@@ -555,7 +555,7 @@ class ListsModule extends PLModule
         && $this->client->delete_list($liste, Post::getBool('del_archive')))
         {
             foreach (array('', '-owner', '-admin', '-bounces') as $app) {
-                $globals->xdb->execute("DELETE FROM  aliases
+                XDB::execute("DELETE FROM  aliases
                                               WHERE  type='liste' AND alias='{?}'",
                                        $liste.$app);
             }

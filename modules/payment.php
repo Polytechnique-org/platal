@@ -111,7 +111,7 @@ class PaymentModule extends PLModule
             $pay->init($val, $meth);
             $pay->prepareform($pay);
         } else {
-            $res = $globals->xdb->iterator("SELECT  timestamp, montant
+            $res = XDB::iterator("SELECT  timestamp, montant
                                               FROM  paiement.transactions
                                              WHERE  uid = {?} AND ref = {?}
                                           ORDER BY  timestamp DESC",
@@ -151,7 +151,7 @@ class PaymentModule extends PLModule
         $montant = "$champ201 $champ202";
 
         /* on extrait les informations sur l'utilisateur */
-        $res = $globals->xdb->query("
+        $res = XDB::query("
             SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(a.flags,'femme')
               FROM  auth_user_md5 AS a
         INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
@@ -167,7 +167,7 @@ class PaymentModule extends PLModule
         }
 
         echo ($ref = $matches[1]);
-        $res = $globals->xdb->query("SELECT mail,text,confirmation
+        $res = XDB::query("SELECT mail,text,confirmation
                                        FROM paiement.paiements WHERE id={?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
             cb_erreur("référence de commande inconnue");
@@ -175,7 +175,7 @@ class PaymentModule extends PLModule
 
         /* on extrait le code de retour */
         if ($champ906 != "0000") {
-            $res = $globals->xdb->query("SELECT  rcb.text,c.id,c.text
+            $res = XDB::query("SELECT  rcb.text,c.id,c.text
                                            FROM  paiement.codeRCB AS rcb
                                       LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
                                           WHERE  rcb.id='$champ906'");
@@ -187,7 +187,7 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        $globals->xdb->execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
+        XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
                                      VALUES  ({?},{?},{?},{?},{?},{?})",
                                 $champ901, $uid, $ref, $champ200, $montant, $champ905);
 
@@ -256,7 +256,7 @@ class PaymentModule extends PLModule
         }
 
         /* on extrait les informations sur l'utilisateur */
-        $res = $globals->xdb->query("
+        $res = XDB::query("
             SELECT  a.prenom,a.nom,a.promo,l.alias,FIND_IN_SET(a.flags,'femme')
               FROM  auth_user_md5 AS a
         INNER JOIN  aliases       AS l ON (a.user_id=l.id AND type!='homonyme')
@@ -271,14 +271,14 @@ class PaymentModule extends PLModule
         }
 
         $ref = $matches[1];
-        $res = $globals->xdb->query("SELECT  mail,text,confirmation
+        $res = XDB::query("SELECT  mail,text,confirmation
                                        FROM  paiement.paiements WHERE id={?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
             paypal_erreur("référence de commande inconnue");
         }
 
         /* on fait l'insertion en base de donnees */
-        $globals->xdb->execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
+        XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
                                      VALUES  ({?},{?},{?},{?},{?},{?})",
                                 $no_transaction, $uid, $ref, $fullref, $montant, $clef);
 

@@ -49,7 +49,7 @@ class RegisterModule extends PLModule
         }
 
         if ($hash) {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                     "SELECT  m.uid, u.promo, u.nom, u.prenom, u.matricule
                        FROM  register_marketing AS m
                  INNER JOIN  auth_user_md5      AS u ON u.user_id = m.uid
@@ -62,7 +62,7 @@ class RegisterModule extends PLModule
                 $sub_state['prenom'] = $prenom;
                 $sub_state['ourmat'] = $ourmat;
 
-                $globals->xdb->execute(
+                XDB::execute(
                         "REPLACE INTO  register_mstats (uid,sender,success)
                                SELECT  m.uid, m.sender, 0
                                  FROM  register_marketing AS m
@@ -169,7 +169,7 @@ class RegisterModule extends PLModule
         require_once('user.func.inc.php');
 
         if ($hash) {
-            $res = $globals->xdb->query(
+            $res = XDB::query(
                     "SELECT  r.uid, r.forlife, r.bestalias, r.mailorg2,
                              r.password, r.email, r.naissance, u.nom, u.prenom,
                              u.promo, u.flags
@@ -201,19 +201,19 @@ class RegisterModule extends PLModule
         /****************** REALLY CREATE ACCOUNT ******************/
         /***********************************************************/
 
-        $globals->xdb->execute('UPDATE  auth_user_md5
+        XDB::execute('UPDATE  auth_user_md5
                                    SET  password={?}, perms="user",
                                         date=NOW(), naissance={?}, date_ins = NOW()
                                  WHERE  user_id={?}', $password, $naissance, $uid);
-        $globals->xdb->execute('REPLACE INTO auth_user_quick (user_id) VALUES ({?})', $uid);
-        $globals->xdb->execute('INSERT INTO aliases (id,alias,type)
+        XDB::execute('REPLACE INTO auth_user_quick (user_id) VALUES ({?})', $uid);
+        XDB::execute('INSERT INTO aliases (id,alias,type)
                                      VALUES ({?}, {?}, "a_vie")', $uid,
                                      $forlife);
-        $globals->xdb->execute('INSERT INTO aliases (id,alias,type,flags)
+        XDB::execute('INSERT INTO aliases (id,alias,type,flags)
                                      VALUES ({?}, {?}, "alias", "bestalias")',
                                      $uid, $bestalias);
         if ($mailorg2) {
-            $globals->xdb->execute('INSERT INTO aliases (id,alias,type)
+            XDB::execute('INSERT INTO aliases (id,alias,type)
                                          VALUES ({?}, {?}, "alias")', $uid,
                                          $mailorg2);
         }
@@ -226,7 +226,7 @@ class RegisterModule extends PLModule
         $logger = new DiogenesCoreLogger($uid);
         $logger->log('inscription', $email);
 
-        $globals->xdb->execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
+        XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
 
         $globals->hook->subscribe($forlife, $uid, $promo, $password);
 
@@ -242,7 +242,7 @@ class RegisterModule extends PLModule
         /***********************************************************/
         /************* envoi d'un mail au démarcheur ***************/
         /***********************************************************/
-        $res = $globals->xdb->iterRow(
+        $res = XDB::iterRow(
                 "SELECT  DISTINCT sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
                          s.prenom, s.flags AS femme
                    FROM  register_marketing AS m
@@ -250,7 +250,7 @@ class RegisterModule extends PLModule
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
                                                        AND FIND_IN_SET('bestalias', sa.flags) )
                   WHERE  m.uid = {?}", $uid);
-        $globals->xdb->execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
+        XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
         while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
             require_once('diogenes/diogenes.hermes.inc.php');
@@ -269,7 +269,7 @@ class RegisterModule extends PLModule
             $mymail->send();
         }
 
-        $globals->xdb->execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
+        XDB::execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
 
         redirect($globals->baseurl.'/register/success');
         $page->assign('uid', $uid);
@@ -284,7 +284,7 @@ class RegisterModule extends PLModule
         if (Env::has('response2'))  {
             $_SESSION['password'] = $password = Post::get('response2');
 
-            $globals->xdb->execute('UPDATE auth_user_md5 SET password={?}
+            XDB::execute('UPDATE auth_user_md5 SET password={?}
                                      WHERE user_id={?}', $password,
                                    Session::getInt('uid'));
 

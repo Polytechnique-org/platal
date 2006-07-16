@@ -62,11 +62,11 @@ function banana_subscribe($forlife, $uid, $promo, $password)
     $p_for = "xorg.promo.x$promo";
     
     // récupération de l'id du forum promo
-    $res = $globals->xdb->query("SELECT fid FROM forums.list WHERE nom={?}", $p_for);
+    $res = XDB::query("SELECT fid FROM forums.list WHERE nom={?}", $p_for);
     if ($res->numRows()) {
         $cible[] = $p_for;
     } else { // pas de forum promo, il faut le créer
-	$res = $globals->xdb->query("SELECT  SUM(perms IN ('admin','user') AND deces=0),COUNT(*)
+	$res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces=0),COUNT(*)
                                        FROM  auth_user_md5 WHERE promo={?}", $promo);
 	list($effau, $effid) = $res->fetchOneRow();
 	if (5*$effau>$effid) { // + de 20% d'inscrits
@@ -78,7 +78,7 @@ function banana_subscribe($forlife, $uid, $promo, $password)
     }
 
     while (list ($key, $val) = each ($cible)) {
-        $globals->xdb->execute("INSERT INTO  forums.abos (fid,uid)
+        XDB::execute("INSERT INTO  forums.abos (fid,uid)
                                      SELECT  fid,{?} FROM forums.list WHERE nom={?}", $uid, $val);
     }
 }

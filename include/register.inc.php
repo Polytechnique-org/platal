@@ -84,7 +84,7 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
         $ourmat = sprintf('%04u%04u', 1900+$year, $rang);
     }
 
-    $res = $globals->xdb->query(
+    $res = XDB::query(
             'SELECT  user_id, promo, perms IN ("admin","user"), nom, prenom 
               FROM  auth_user_md5
              WHERE  matricule={?} and deces = 0', $ourmat);
@@ -107,7 +107,7 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
 {
     global $globals;
 
-    $res = $globals->xdb->iterRow(
+    $res = XDB::iterRow(
             'SELECT  user_id, nom, prenom, matricule
                FROM  auth_user_md5
               WHERE  promo={?} AND deces=0 AND perms="pending"', $promo);
@@ -119,7 +119,7 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
         }
     }
 
-    $res = $globals->xdb->iterRow(
+    $res = XDB::iterRow(
             'SELECT  user_id, nom, prenom, matricule, alias
                FROM  auth_user_md5 AS u
          INNER JOIN  aliases       AS a ON (u.user_id = a.id and FIND_IN_SET("bestalias", a.flags))
@@ -179,13 +179,13 @@ function create_aliases (&$sub)
     $mailorg2 = $mailorg.sprintf(".%02u", ($promo%100));
     $forlife  = make_forlife($prenom, $nom, $promo);
 
-    $res      = $globals->xdb->query('SELECT COUNT(*) FROM aliases WHERE alias={?}', $forlife);
+    $res      = XDB::query('SELECT COUNT(*) FROM aliases WHERE alias={?}', $forlife);
     if ($res->fetchOneCell() > 0) {
         return "Tu as un homonyme dans ta promo, il faut traiter ce cas manuellement.<br />".
             "envoie un mail à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> en expliquant ta situation.";
     }
     
-    $res      = $globals->xdb->query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
+    $res      = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
 
     if ( $res->numRows() ) {
 
@@ -193,10 +193,10 @@ function create_aliases (&$sub)
         $res->free();
 
         if ( $h_type != 'homonyme' and empty($expire) ) {
-            $globals->xdb->execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
-            $globals->xdb->execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
-            $globals->xdb->execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $uid);
-            $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id={?} AND expire IS NULL", $h_id);
+            XDB::execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
+            XDB::execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $h_id);
+            XDB::execute('REPLACE INTO homonymes (homonyme_id,user_id) VALUES ({?},{?})', $h_id, $uid);
+            $res = XDB::query("SELECT alias FROM aliases WHERE id={?} AND expire IS NULL", $h_id);
             $als = $res->fetchColumn();
 
             require_once('diogenes/diogenes.hermes.inc.php');
@@ -258,9 +258,9 @@ function finish_ins($sub_state)
     $pass_encrypted = hash_encrypt($pass_clair);
     $hash     = rand_url_id(12);
   
-    $globals->xdb->execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
+    XDB::execute('UPDATE auth_user_md5 SET last_known_email={?} WHERE matricule = {?}', $email, $mat);
 
-    $globals->xdb->execute(
+    XDB::execute(
             "REPLACE INTO  register_pending (uid, forlife, bestalias, mailorg2, password, email, date, relance, naissance, hash)
                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
             $uid, $forlife, $bestalias, $mailorg2, $pass_encrypted, $email, $naissance, $hash);

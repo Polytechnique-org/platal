@@ -20,13 +20,13 @@
  ***************************************************************************/
 
 
-$res    = $globals->xdb->iterator("SELECT * FROM profile_medals_grades ORDER BY mid, pos");
+$res    = XDB::iterator("SELECT * FROM profile_medals_grades ORDER BY mid, pos");
 $grades = Array();
 while ($tmp = $res->next()) {
     $grades[$tmp['mid']][] = $tmp;
 }
 
-$res    = $globals->xdb->iterator("SELECT * FROM profile_medals ORDER BY type, text");
+$res    = XDB::iterator("SELECT * FROM profile_medals ORDER BY type, text");
 $mlist  = Array();
 while ($tmp = $res->next()) {
     $mlist[$tmp['type']][] = $tmp;

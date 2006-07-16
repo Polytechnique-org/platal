@@ -47,7 +47,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
     foreach($members as $mem) {
         list($m, $dom) = explode('@',$mem);
         if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
-            $res = $globals->xdb->query('SELECT  prenom,IF(nom_usage="", nom, nom_usage), promo
+            $res = XDB::query('SELECT  prenom,IF(nom_usage="", nom, nom_usage), promo
                                            FROM  auth_user_md5 AS u
                                      INNER JOIN  aliases AS a ON u.user_id = a.id
                                           WHERE  a.alias = {?}', $m);
@@ -58,7 +58,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
                 $membres[0][] = Array('l' => $mem);
             }
         } else {
-            $res = $globals->xdb->query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
+            $res = XDB::query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
             if (list($prenom, $nom) = $res->fetchOneRow()) {
                 $key = $tri_promo ? 0 : strtoupper($nom{0});
                 $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem);

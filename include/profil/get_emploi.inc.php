@@ -23,7 +23,7 @@ require_once('geoloc.inc.php');
 require_once('secteur.emploi.inc.php');
 require_once('fonction.emploi.inc.php');
 
-$res = $globals->xdb->iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
+$res = XDB::iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonction,
 	adr1, adr2, adr3, postcode, city, country, region, tel, fax, mobile,
 	pub, adr_pub, tel_pub, email, email_pub, web
         FROM entreprises
@@ -64,14 +64,14 @@ for($i = $nb_res; $i < 2 ; $i++){
 
 //recuperation des donnees sur les secteurs :
 
-$res = $globals->xdb->iterRow("SELECT id, label FROM emploi_secteur");
+$res = XDB::iterRow("SELECT id, label FROM emploi_secteur");
 
 while(list($tmp_secteur_id, $tmp_secteur_label) = $res->next()){
     $secteurs[$tmp_secteur_id] = $tmp_secteur_label;
 }
 
 //recuperation des donnees sur les fonctions :
-$res = $globals->xdb->iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) FROM fonctions_def ORDER BY id");
+$res = XDB::iterRow("SELECT id, fonction_fr, FIND_IN_SET('titre', flags) FROM fonctions_def ORDER BY id");
 
 while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = $res->next()){
     $fonctions[$tmp_fonction_id] = $tmp_fonction_label;
@@ -79,7 +79,7 @@ while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = $res->n
 }
 
 //recuperation du CV
-$res = $globals->xdb->query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid', -1));
+$res = XDB::query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid', -1));
 $cv = $res->fetchOneCell();
 
 ?>

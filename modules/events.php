@@ -39,7 +39,7 @@ class EventsModule extends PLModule
 
         $page->changeTpl('login.tpl');
 
-        $res = $globals->xdb->query('SELECT date, naissance FROM auth_user_md5
+        $res = XDB::query('SELECT date, naissance FROM auth_user_md5
                                       WHERE user_id={?}', Session::getInt('uid'));
         list($date, $naissance) = $res->fetchOneRow();
 
@@ -60,7 +60,7 @@ class EventsModule extends PLModule
 
         // incitation à mettre une photo
 
-        $res = $globals->xdb->query('SELECT COUNT(*) FROM photo
+        $res = XDB::query('SELECT COUNT(*) FROM photo
                                       WHERE uid={?}', Session::getInt('uid'));
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
@@ -100,15 +100,15 @@ class EventsModule extends PLModule
 
         // cache les evenements lus et raffiche les evenements a relire
         if (Env::has('lu')){
-            $globals->xdb->execute('DELETE FROM evenements_vus AS ev 
+            XDB::execute('DELETE FROM evenements_vus AS ev 
                                      INNER JOIN evenements AS e ON e.id = ev.evt_id
                                           WHERE peremption < NOW)');
-            $globals->xdb->execute('REPLACE INTO evenements_vus VALUES({?},{?})',
+            XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
                                    Env::get('lu'), Session::getInt('uid'));
         }
 
         if (Env::has('nonlu')){
-            $globals->xdb->execute('DELETE FROM evenements_vus
+            XDB::execute('DELETE FROM evenements_vus
                                           WHERE evt_id = {?} AND user_id = {?}',
                                    Env::get('nonlu'), Session::getInt('uid'));
         }
@@ -128,7 +128,7 @@ class EventsModule extends PLModule
                         AND ev.user_id IS NULL
               ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
         $page->assign('evenement',
-                      $globals->xdb->iterator($sql, Session::getInt('uid'),
+                      XDB::iterator($sql, Session::getInt('uid'),
                                               $promo, $promo)
                       );
 
@@ -140,7 +140,7 @@ class EventsModule extends PLModule
                         AND (e.promo_max = 0 || e.promo_max >= {?})
               ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
         $page->assign('evenement_summary',
-                      $globals->xdb->iterator($sql, Session::getInt('uid'),
+                      XDB::iterator($sql, Session::getInt('uid'),
                                               $promo, $promo)
                      );
     }

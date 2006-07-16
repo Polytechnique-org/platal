@@ -48,7 +48,6 @@ class XnetGlobals extends PlatalGlobals
         if ($globals->debug & 1) {
             $globals->db->trace_on();
         }
-        $globals->xdb =& new XOrgDB;
     }
 
     function asso($key=null)
@@ -60,10 +59,10 @@ class XnetGlobals extends PlatalGlobals
             $gp = substr($gp, 0, strpos($gp, '/'));
 
             if ($gp) {
-                $res = $this->xdb->query('SELECT  a.*, d.nom AS domnom
-                                            FROM  groupex.asso AS a
-                                       LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
-                                           WHERE  diminutif = {?}', $gp);
+                $res = XDB::query('SELECT  a.*, d.nom AS domnom
+                                     FROM  groupex.asso AS a
+                                LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
+                                    WHERE  diminutif = {?}', $gp);
                 if (!($aid = $res->fetchOneAssoc())) {
                     $aid = array();
                 }

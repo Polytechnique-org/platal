@@ -34,11 +34,11 @@ define("ERROR_LOOP_EMAIL", 4);
 function fix_bestalias($uid)
 {
     global $globals;
-    $res = $globals->xdb->query("SELECT COUNT(*) FROM aliases WHERE id={?} AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'", $uid);
+    $res = XDB::query("SELECT COUNT(*) FROM aliases WHERE id={?} AND FIND_IN_SET('bestalias',flags) AND type!='homonyme'", $uid);
     if ($n = $res->fetchOneCell()) {
         return;
     }
-    $globals->xdb->execute("UPDATE  aliases
+    XDB::execute("UPDATE  aliases
                                SET  flags=CONCAT(flags,',','bestalias')
 			     WHERE  id={?} AND type!='homonyme'
 		          ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
@@ -77,12 +77,12 @@ class Bogo
     function Bogo($uid)
     {
 	global $globals;
-	$res = $globals->xdb->query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
+	$res = XDB::query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
 	if ($res->numRows()) {
             $this->state = $res->fetchOneCell();
 	} else {
 	    $this->state = 'tag_and_drop_spams';
-	    $res = $globals->xdb->query("INSERT INTO emails (uid,email,rewrite,panne,flags)
+	    $res = XDB::query("INSERT INTO emails (uid,email,rewrite,panne,flags)
 					      VALUES ({?},'tag_and_drop_spams','','0000-00-00','filter')", $uid);
 	}
     }
@@ -94,7 +94,7 @@ class Bogo
     {
 	global $globals;
 	$this->state = is_int($state) ? $this->_states[$state] : $state;
-	$globals->xdb->execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"', $this->state, $uid);
+	XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"', $this->state, $uid);
     }
 
     // }}}
@@ -133,7 +133,7 @@ class Email
     {
         global $globals;
         if (!$this->active) {
-            $globals->xdb->execute("UPDATE  emails SET flags = 'active'
+            XDB::execute("UPDATE  emails SET flags = 'active'
                                      WHERE  uid={?} AND email={?}", $uid, $this->email);
 	    $_SESSION['log']->log("email_on", $this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
@@ -147,7 +147,7 @@ class Email
     {
         global $globals;
         if ($this->active) {
-            $globals->xdb->execute("UPDATE  emails SET flags =''
+            XDB::execute("UPDATE  emails SET flags =''
 				     WHERE  uid={?} AND email={?}", $uid, $this->email);
 	    $_SESSION['log']->log("email_off",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
@@ -163,7 +163,7 @@ class Email
 	if ($this->rewrite == $rew) {
             return;
         }
-	$globals->xdb->execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
+	XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
 	$this->rewrite = $rew;
 	return;
     }
@@ -190,7 +190,7 @@ class Redirect
     {
         global $globals;
 	$this->uid=$_uid;
-        $res = $globals->xdb->iterRow("
+        $res = XDB::iterRow("
 	    SELECT email, flags='active', rewrite, panne
 	      FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
 	$this->emails=Array();
@@ -222,7 +222,7 @@ class Redirect
         if (!$this->other_active($email)) {
             return ERROR_INACTIVE_REDIRECTION;
         }
-        $globals->xdb->execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
+        XDB::execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
         $_SESSION['log']->log('email_del',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
 	foreach ($this->emails as $i=>$mail) {
 	    if ($email==$mail->email) {
@@ -245,7 +245,7 @@ class Redirect
         if (!isvalid_email_redirection($email_stripped)) {
             return ERROR_LOOP_EMAIL;
         }
-        $globals->xdb->execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
+        XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
 	if ($logger = Session::getMixed('log', null)) { // may be absent --> step4.php
 	    $logger->log('email_add',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
         }

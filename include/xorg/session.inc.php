@@ -83,7 +83,7 @@ class XorgSession
             
             if (Env::get('domain') == "alias") {
             
-                $res = $globals->xdb->query(
+                $res = XDB::query(
                     "SELECT redirect
                        FROM virtual
                  INNER JOIN virtual_redirect USING(vid)
@@ -99,7 +99,7 @@ class XorgSession
             }
     
     	    $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
-    	    $res   = $globals->xdb->query(
+    	    $res   = XDB::query(
                         "SELECT  u.user_id, u.password
                            FROM  auth_user_md5 AS u
                      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
@@ -114,7 +114,7 @@ class XorgSession
         		  $new_password = hash_xor(Env::get('xorpass'), $password);
         		  $expected_response = hash_encrypt("$uname:$new_password:{$session->challenge}");
         		  if (Env::get('response') == $expected_response) {
-        		      $globals->xdb->execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
+        		      XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
         		  }
         		}
         		if (Env::get('response') == $expected_response) {
@@ -226,7 +226,7 @@ function try_cookie()
 	return -1;
     }
 
-    $res = @$globals->xdb->query(
+    $res = @XDB::query(
             "SELECT user_id,password FROM auth_user_md5 WHERE user_id = {?} AND perms IN('admin','user')",
             Cookie::getInt('ORGuid')
     );
@@ -256,7 +256,7 @@ function try_cookie()
 function start_connexion ($uid, $identified)
 {
     global $globals;
-    $res  = $globals->xdb->query("
+    $res  = XDB::query("
 	SELECT  u.user_id AS uid, prenom, nom, perms, promo, matricule, password, FIND_IN_SET('femme', u.flags) AS femme,
                 UNIX_TIMESTAMP(s.start) AS lastlogin, s.host, a.alias AS forlife, a2.alias AS bestalias,
                 q.core_mail_fmt AS mail_fmt, UNIX_TIMESTAMP(q.banana_last) AS banana_last, q.watch_last, q.core_rss_hash
@@ -295,7 +295,7 @@ function set_skin()
     global $globals;
     if (logged() && $globals->skin->enable) {
         $uid = Session::getInt('uid');
-	$res = $globals->xdb->query("SELECT  skin,skin_tpl
+	$res = XDB::query("SELECT  skin,skin_tpl
 	                               FROM  auth_user_quick AS a
 				 INNER JOIN  skins           AS s ON a.skin=s.id
 			              WHERE  user_id = {?} AND skin_tpl != ''", $uid);

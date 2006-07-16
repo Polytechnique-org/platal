@@ -33,30 +33,30 @@ function user_clear_all_subs($user_id, $really_del=true)
 
     global $globals;
     $uid   = intval($user_id);
-    $res   = $globals->xdb->query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $uid);
+    $res   = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $uid);
     $alias = $res->fetchOneCell();
 
     if ($really_del) {
-	$globals->xdb->execute("DELETE FROM emails WHERE uid={?}", $uid);
-	$globals->xdb->execute("DELETE FROM newsletter_ins WHERE user_id={?}", $uid);
+	XDB::execute("DELETE FROM emails WHERE uid={?}", $uid);
+	XDB::execute("DELETE FROM newsletter_ins WHERE user_id={?}", $uid);
     }
 
-    $globals->xdb->execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain);
-    $globals->xdb->execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain2);
+    XDB::execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain);
+    XDB::execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain2);
 
-    $globals->xdb->execute("UPDATE auth_user_md5   SET password='',smtppass='' WHERE user_id={?}", $uid);
-    $globals->xdb->execute("UPDATE auth_user_quick SET watch_flags='' WHERE user_id={?}", $uid);
+    XDB::execute("UPDATE auth_user_md5   SET password='',smtppass='' WHERE user_id={?}", $uid);
+    XDB::execute("UPDATE auth_user_quick SET watch_flags='' WHERE user_id={?}", $uid);
 
-    $globals->xdb->execute("DELETE FROM competences_ins WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM entreprises     WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM langues_ins     WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM mentor_pays     WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM mentor_secteur  WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM mentor          WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM perte_pass      WHERE uid={?}", $uid);
-    $globals->xdb->execute("DELETE FROM requests        WHERE user_id={?}", $uid);
-    $globals->xdb->execute("DELETE FROM user_changes    WHERE user_id={?}", $uid);
-    $globals->xdb->execute("DELETE FROM watch_sub       WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM competences_ins WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM entreprises     WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM langues_ins     WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM mentor_pays     WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM mentor_secteur  WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM mentor          WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM perte_pass      WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM requests        WHERE user_id={?}", $uid);
+    XDB::execute("DELETE FROM user_changes    WHERE user_id={?}", $uid);
+    XDB::execute("DELETE FROM watch_sub       WHERE uid={?}", $uid);
     
     include_once('lists.inc.php');
     if (function_exists(lists_xmlrpc)) {
@@ -72,7 +72,7 @@ function get_user_login($data, $get_forlife = false) {
     global $globals, $page;
 
     if (preg_match(',^[0-9]*$,', $data)) {
-        $res = $globals->xdb->query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $data);
+        $res = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $data);
         if ($res->numRows()) {
             return $res->fetchOneCell();
         } else {
@@ -90,7 +90,7 @@ function get_user_login($data, $get_forlife = false) {
     list($mbox, $fqdn) = explode('@', $data);
     if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
 
-        $res = $globals->xdb->query("SELECT  a.alias
+        $res = XDB::query("SELECT  a.alias
                                        FROM  aliases AS a
                                  INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
                                       WHERE  a.type = 'a_vie'", $mbox);
@@ -103,7 +103,7 @@ function get_user_login($data, $get_forlife = false) {
 
     } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
     
-        $res = $globals->xdb->query("SELECT  redirect
+        $res = XDB::query("SELECT  redirect
                                        FROM  virtual_redirect
                                  INNER JOIN  virtual USING(vid)
                                       WHERE  alias={?}", $mbox.'@'.$globals->mail->alias_dom);
@@ -117,7 +117,7 @@ function get_user_login($data, $get_forlife = false) {
 
     } else {
 
-        $res = $globals->xdb->query("SELECT  alias
+        $res = XDB::query("SELECT  alias
                                        FROM  aliases AS a
                                  INNER JOIN  emails  AS e ON e.uid=a.id
                                       WHERE  e.email={?} AND a.type='a_vie'", $data);
@@ -178,7 +178,7 @@ function get_user_details_pro($uid, $view = 'private')
           LEFT JOIN  geoloc_region AS gr ON (gr.a2 = e.country and gr.region = e.region)
               WHERE  e.uid = {?}
            ORDER BY  e.entrid";
-    $res  = $globals->xdb->query($sql, $uid);
+    $res  = XDB::query($sql, $uid);
     $all_pro = $res->fetchAllAssoc();
     foreach ($all_pro as $i => $pro) {
         if (!has_user_right($pro['pub'], $view))
@@ -255,7 +255,7 @@ function get_user_details_adr($uid, $view = 'private') {
           LEFT JOIN  geoloc_pays AS gp ON (gp.a2=a.country)
               WHERE  uid= {?} AND NOT FIND_IN_SET('pro',a.statut)
            ORDER BY  NOT FIND_IN_SET('active',a.statut), FIND_IN_SET('temporaire',a.statut), FIND_IN_SET('res-secondaire',a.statut)";
-    $res  = $globals->xdb->query($sql, $uid);
+    $res  = XDB::query($sql, $uid);
     $all_adr = $res->fetchAllAssoc();
     $adrid_index = array();
     foreach ($all_adr as $i => $adr) {
@@ -270,7 +270,7 @@ function get_user_details_adr($uid, $view = 'private') {
         INNER JOIN  adresses AS a ON (a.uid = t.uid) AND (a.adrid = t.adrid)
              WHERE  t.uid = {?} AND NOT FIND_IN_SET('pro',a.statut)
           ORDER BY  t.adrid, t.tel_type DESC, t.telid";
-    $restel = $globals->xdb->iterator($sql, $uid);
+    $restel = XDB::iterator($sql, $uid);
     while ($nexttel = $restel->next()) {
         if (has_user_right($nexttel['tel_pub'], $view)) {
             $adrid = $nexttel['adrid'];
@@ -312,7 +312,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
             LEFT JOIN  photo           AS p  ON (p.uid = u.user_id) 
             LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
                 WHERE  a.alias = {?}";
-    $res  = $globals->xdb->query($reqsql, $from_uid, $login);
+    $res  = XDB::query($reqsql, $from_uid, $login);
     $user = $res->fetchOneAssoc();
     $uid  = $user['user_id'];
     // hide orange status, cv, nickname, section
@@ -352,11 +352,11 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                    FROM  binets_ins
               LEFT JOIN  binets_def ON binets_ins.binet_id = binets_def.id
                   WHERE  user_id = {?}";
-        $res  = $globals->xdb->query($sql, $uid);
+        $res  = XDB::query($sql, $uid);
         $user['binets']      = $res->fetchColumn();
         $user['binets_join'] = join(', ', $user['binets']);
     
-        $res  = $globals->xdb->iterRow("SELECT  text, url
+        $res  = XDB::iterRow("SELECT  text, url
                                           FROM  groupesx_ins
                                      LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
                                          WHERE  guid = {?}", $uid);
@@ -367,7 +367,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['gpxs_join'] = join(', ', $user['gpxs']);
     }
 
-    $res = $globals->xdb->iterRow("SELECT  applis_def.text, applis_def.url, applis_ins.type
+    $res = XDB::iterRow("SELECT  applis_def.text, applis_def.url, applis_ins.type
                                      FROM  applis_ins
                                INNER JOIN  applis_def ON applis_def.id = applis_ins.aid
                                     WHERE  uid={?}
@@ -383,7 +383,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
     $user['applis_join'] = join(', ', $user['applis_fmt']);
 
     if (has_user_right($user['medals_pub'], $view)) {
-        $res = $globals->xdb->iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
+        $res = XDB::iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
                                           FROM  profile_medals_sub    AS s
                                     INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
                                     LEFT  JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )
@@ -400,7 +400,7 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
 // {{{ function add_user_address()
 function add_user_address($uid, $adrid, $adr) {
     global $globals;
-    $globals->xdb->execute(
+    XDB::execute(
         "INSERT INTO adresses (`uid`, `adrid`, `adr1`, `adr2`, `adr3`, `postcode`, `city`, `country`, `datemaj`, `pub`) (
         SELECT u.user_id, {?}, {?}, {?}, {?}, {?}, {?}, gp.a2, NOW(), {?}
             FROM auth_user_md5 AS u
@@ -421,7 +421,7 @@ function add_user_address($uid, $adrid, $adr) {
 function update_user_address($uid, $adrid, $adr) {
     global $globals;
     // update address
-    $globals->xdb->execute(
+    XDB::execute(
         "UPDATE adresses AS a LEFT JOIN geoloc_pays AS gp ON (gp.pays = {?}) 
         SET `adr1` = {?}, `adr2` = {?}, `adr3` = {?},
         `postcode` = {?}, `city` = {?}, a.`country` = gp.a2, `datemaj` = NOW(), `pub` = {?}
@@ -430,7 +430,7 @@ function update_user_address($uid, $adrid, $adr) {
         $adr['adr1'], $adr['adr2'], $adr['adr3'],
         $adr['postcode'], $adr['city'], $adr['pub'], $adrid, $uid);
     if (isset($adr['tels']) && is_array($adr['tels'])) {
-        $res = $globals->xdb->query("SELECT telid FROM tels WHERE uid = {?} AND adrid = {?} ORDER BY telid", $uid, $adrid);
+        $res = XDB::query("SELECT telid FROM tels WHERE uid = {?} AND adrid = {?} ORDER BY telid", $uid, $adrid);
         $telids = $res->fetchColumn();
         foreach ($adr['tels'] as $tel) {
             if (isset($tel['telid']) && isset($tel['remove']) && $tel['remove']) {
@@ -449,14 +449,14 @@ function update_user_address($uid, $adrid, $adr) {
 // {{{ function remove_user_address()
 function remove_user_address($uid, $adrid) {
     global $globals;
-    $globals->xdb->execute("DELETE FROM adresses WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
-    $globals->xdb->execute("DELETE FROM tels WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
+    XDB::execute("DELETE FROM adresses WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
+    XDB::execute("DELETE FROM tels WHERE adrid = {?} AND uid = {?}", $adrid, $uid);
 }
 // }}}
 // {{{ function add_user_tel()
 function add_user_tel($uid, $adrid, $telid, $tel) {
     global $globals;
-    $globals->xdb->execute(
+    XDB::execute(
         "INSERT INTO tels SET uid = {?}, adrid = {?}, telid = {?}, tel = {?}, tel_type = {?}, tel_pub = {?}",
         $uid, $adrid, $telid, $tel['tel'], $tel['tel_type'], $tel['tel_pub']);
 }
@@ -464,7 +464,7 @@ function add_user_tel($uid, $adrid, $telid, $tel) {
 // {{{ function update_user_tel()
 function update_user_tel($uid, $adrid, $telid, $tel) {
     global $globals;
-    $globals->xdb->execute(
+    XDB::execute(
         "UPDATE tels SET tel = {?}, tel_type = {?}, tel_pub = {?}
         WHERE telid = {?} AND adrid = {?} AND uid = {?}",
         $tel['tel'], $tel['tel_type'], $tel['tel_pub'],
@@ -474,13 +474,13 @@ function update_user_tel($uid, $adrid, $telid, $tel) {
 // {{{ function remove_user_tel()
 function remove_user_tel($uid, $adrid, $telid) {
     global $globals;
-    $globals->xdb->execute("DELETE FROM tels WHERE telid = {?} AND adrid = {?} AND uid = {?}", $telid, $adrid, $uid);
+    XDB::execute("DELETE FROM tels WHERE telid = {?} AND adrid = {?} AND uid = {?}", $telid, $adrid, $uid);
 }
 // }}}
 // {{{ function add_user_pro()
 function add_user_pro($uid, $entrid, $pro) {
     global $globals;
-    $globals->xdb->execute(
+    XDB::execute(
         "INSERT INTO entreprises (`uid`, `entrid`, `entreprise`, `poste`, `secteur`, `ss_secteur`, `fonction`,
             `adr1`, `adr2`, `adr3`, `postcode`, `city`, `country`, `region`, `tel`, `fax`, `mobile`, `email`, `web`, `pub`, `adr_pub`, `tel_pub`, `email_pub`)
         SELECT u.user_id, {?}, {?}, {?}, s.id, ss.id, f.id,
@@ -551,19 +551,19 @@ function update_user_pro($uid, $entrid, $pro) {
     $query = "UPDATE entreprises AS e ".$join." SET ".substr($set,1)." WHERE e.uid = {?} AND e.entrid = {?}";
     $args_where = array($uid, $entrid);
     $args = array_merge(array($query), $args_join, $args_set, $args_where);
-    $globals->db->query($globals->xdb->_prepare($args));
+    $globals->db->query(XDB::_prepare($args));
 }
 // }}}
 // {{{ function remove_user_pro()
 function remove_user_pro($uid, $entrid) {
     global $globals;
-    $globals->xdb->execute("DELETE FROM entreprises WHERE entrid = {?} AND uid = {?}", $entrid, $uid);
+    XDB::execute("DELETE FROM entreprises WHERE entrid = {?} AND uid = {?}", $entrid, $uid);
 }
 // }}}
 // {{{ function set_user_details()
 function set_user_details_addresses($uid, $adrs) {
     global $globals;
-    $res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} AND adrid >= 1 ORDER BY adrid", $uid);
+    $res = XDB::query("SELECT adrid FROM adresses WHERE uid = {?} AND adrid >= 1 ORDER BY adrid", $uid);
     $adrids = $res->fetchColumn();
     foreach ($adrs as $adr) {
         if (isset($adr['adrid']) && isset($adr['remove']) && $adr['remove']) {
@@ -586,7 +586,7 @@ function set_user_details_addresses($uid, $adrs) {
 function set_user_details_pro($uid, $pros)
 {
     global $globals;
-    $res = $globals->xdb->query("SELECT entrid FROM entreprises WHERE uid = {?} ORDER BY entrid", $uid);
+    $res = XDB::query("SELECT entrid FROM entreprises WHERE uid = {?} ORDER BY entrid", $uid);
     $entrids = $res->fetchColumn();
     foreach ($pros as $pro) {
         if (isset($pro['entrid']) && isset($pro['remove']) && $pro['remove']) {
@@ -606,13 +606,13 @@ function set_user_details_pro($uid, $pros)
 function set_user_details($uid, $details) {
     global $globals;
     if (isset($details['nom_usage'])) {
-        $globals->xdb->execute("UPDATE auth_user_md5 SET nom_usage = {?} WHERE user_id = {?}", strtoupper($details['nom_usage']), $uid);
+        XDB::execute("UPDATE auth_user_md5 SET nom_usage = {?} WHERE user_id = {?}", strtoupper($details['nom_usage']), $uid);
     }
     if (isset($details['mobile'])) {
-        $globals->xdb->execute("UPDATE auth_user_quick SET profile_mobile = {?} WHERE user_id = {?}", $details['mobile'], $uid);
+        XDB::execute("UPDATE auth_user_quick SET profile_mobile = {?} WHERE user_id = {?}", $details['mobile'], $uid);
     }
     if (isset($details['nationalite'])) {
-        $globals->xdb->execute(
+        XDB::execute(
             "UPDATE auth_user_md5 AS u
                 INNER JOIN geoloc_pays     AS gp
             SET u.nationalite = gp.a2
@@ -624,18 +624,18 @@ function set_user_details($uid, $details) {
     if (isset($details['adr_pro']) && is_array($details['adr_pro']))
         set_user_details_pro($uid, $details['adr_pro']);
     if (isset($details['binets']) && is_array($details['binets'])) {
-        $globals->xdb->execute("DELETE FROM binets_ins WHERE user_id = {?}", $uid);
+        XDB::execute("DELETE FROM binets_ins WHERE user_id = {?}", $uid);
         foreach ($details['binets'] as $binet)
-            $globals->xdb->execute(
+            XDB::execute(
             "INSERT INTO binets_ins (`user_id`, `binet_id`)
                 SELECT {?}, id FROM binets_def WHERE text = {?} LIMIT 1",
                 $uid, $binet);                
     }
     if (isset($details['gpxs']) && is_array($details['gpxs'])) {
-        $globals->xdb->execute("DELETE FROM groupesx_ins WHERE user_id = {?}", $uid);
+        XDB::execute("DELETE FROM groupesx_ins WHERE user_id = {?}", $uid);
         foreach ($details['gpxs'] as $groupex) {
             if (preg_match('/<a href="[^"]*">([^<]+)</a>/', $groupex, $a)) $groupex = $a[1];
-            $globals->xdb->execute(
+            XDB::execute(
             "INSERT INTO groupesx_ins (`user_id`, `binet_id`)
                 SELECT {?}, id FROM groupesx_def WHERE text = {?} LIMIT 1",
                 $uid, $groupex);
@@ -670,8 +670,8 @@ function _user_reindex($uid, $keys, $muls) {
 
 function user_reindex($uid) {
     global $globals;
-    $globals->xdb->execute("DELETE FROM search_name WHERE uid={?}", $uid);
-    $res = $globals->xdb->query("SELECT prenom, nom, nom_usage, profile_nick FROM auth_user_md5 INNER JOIN auth_user_quick USING(user_id) WHERE auth_user_md5.user_id = {?}", $uid);
+    XDB::execute("DELETE FROM search_name WHERE uid={?}", $uid);
+    $res = XDB::query("SELECT prenom, nom, nom_usage, profile_nick FROM auth_user_md5 INNER JOIN auth_user_quick USING(user_id) WHERE auth_user_md5.user_id = {?}", $uid);
     _user_reindex($uid, $res->fetchOneRow(), array(1,1,1,0.2));
 }
 

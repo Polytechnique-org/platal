@@ -21,20 +21,20 @@
 
 if (Env::has('medal_op')) {
     if (Env::get('medal_op')=='retirer' && Env::getInt('medal_id')) {
-        $globals->xdb->execute("DELETE FROM profile_medals_sub WHERE uid = {?} AND mid = {?}", Session::getInt('uid', -1), Env::getInt('medal_id', -1));
+        XDB::execute("DELETE FROM profile_medals_sub WHERE uid = {?} AND mid = {?}", Session::getInt('uid', -1), Env::getInt('medal_id', -1));
     }
 
     if (Env::get('medal_op')=='ajouter' && Env::getInt('medal_id')) {
-        $globals->xdb->execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", Session::getInt('uid', -1), Env::getInt('medal_id'));
+        XDB::execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", Session::getInt('uid', -1), Env::getInt('medal_id'));
     }
 }
 if (Post::has('grade')) {
     foreach (Post::getMixed('grade') as $mid=>$gid) {
-        $globals->xdb->execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, Session::getInt('uid'), $mid);
+        XDB::execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, Session::getInt('uid'), $mid);
     }
 } 
 
-$res    = $globals->xdb->query(
+$res    = XDB::query(
 	"SELECT  m.id, m.text AS medal, m.type, m.img, s.gid
            FROM  profile_medals_sub    AS s
      INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
@@ -42,7 +42,7 @@ $res    = $globals->xdb->query(
 
 $medals = $res->fetchAllAssoc();
 
-$res	= $globals->xdb->query("SELECT profile_medals_pub FROM auth_user_quick WHERE user_id = {?}", Session::getInt('uid', -1));
+$res	= XDB::query("SELECT profile_medals_pub FROM auth_user_quick WHERE user_id = {?}", Session::getInt('uid', -1));
 $medals_pub = $res->fetchOneCell();
 
 if(Env::has('modifier') || Env::has('suivant')) {

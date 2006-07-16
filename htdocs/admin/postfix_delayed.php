@@ -26,15 +26,15 @@ $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Retar
 
 if (Env::has('del')) {
     $crc = Env::get('crc');
-    $globals->xdb->execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
+    XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
     $page->trig($crc." verra tous ses mails supprimés !");
 } elseif (Env::has('ok')) {
     $crc = Env::get('crc');
-    $globals->xdb->execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
+    XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
     $page->trig($crc." a le droit de passer !");
 }
 
-$sql = $globals->xdb->iterator(
+$sql = XDB::iterator(
         "SELECT  crc, nb, update_time, create_time,
                  FIND_IN_SET('del', release) AS del,
                  FIND_IN_SET('ok', release) AS ok

@@ -24,7 +24,7 @@ new_admin_page('admin/ax-xorg.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - AX/X.org');
 
 // liste des différences
-$res = $globals->xdb->query(
+$res = XDB::query(
         'SELECT  u.promo,u.nom AS nom,u.prenom AS prenom,ia.nom AS nomax,ia.prenom AS prenomax,u.matricule AS mat,ia.matricule_ax AS matax
            FROM  auth_user_md5 AS u
      INNER JOIN  identification_ax AS ia ON u.matricule_ax = ia.matricule_ax
@@ -35,7 +35,7 @@ $res = $globals->xdb->query(
 $page->assign('diffs', $res->fetchAllAssoc());
 
 // gens à l'ax mais pas chez nous
-$res = $globals->xdb->query(
+$res = XDB::query(
         'SELECT  ia.promo,ia.nom,ia.nom_patro,ia.prenom
            FROM  identification_ax as ia
       LEFT JOIN  auth_user_md5 AS u ON u.matricule_ax = ia.matricule_ax
@@ -43,7 +43,7 @@ $res = $globals->xdb->query(
 $page->assign('mank', $res->fetchAllAssoc());
 
 // gens chez nous et pas à l'ax
-$res = $globals->xdb->query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
+$res = XDB::query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
 $page->assign('plus', $res->fetchAllAssoc());
 
 

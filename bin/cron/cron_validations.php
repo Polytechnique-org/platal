@@ -29,7 +29,7 @@ $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 require('./connect.db.inc.php');
 require('diogenes/diogenes.hermes.inc.php');
 
-$res = $globals->xdb->query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
+$res = XDB::query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
 list($nb,$nbold,$nbveryold) = $res->fetchOneRow();
 
 if (empty($nb)) {

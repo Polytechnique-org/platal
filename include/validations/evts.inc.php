@@ -79,7 +79,7 @@ class EvtReq extends Validate
     function commit()
     {
         global $globals;
-        return $globals->xdb->execute(
+        return XDB::execute(
                 "INSERT INTO  evenements
                          SET  user_id = {?}, creation_date=NOW(), titre={?}, texte={?},
                               peremption={?}, promo_min={?}, promo_max={?}, flags=CONCAT(flags,',valide')",

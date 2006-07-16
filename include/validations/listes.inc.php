@@ -96,7 +96,7 @@ class ListeReq extends Validate
         $liste = strtolower($this->liste);
         if ($ret) {
             foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces") as $l) {
-                $globals->xdb->execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
+                XDB::execute("INSERT INTO aliases (alias,type) VALUES({?}, 'liste')", $l);
             }
         }
         return $ret;

@@ -95,7 +95,7 @@ class Validate
         $this->stamp  = date('YmdHis');
         $this->unique = $_unique;
         $this->type   = $_type;
-        $res = $globals->xdb->query(
+        $res = XDB::query(
                 "SELECT  u.prenom, u.nom, u.promo, a.alias, b.alias
                    FROM  auth_user_md5 AS u
              INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
@@ -114,11 +114,11 @@ class Validate
     {
         global $globals;
         if ($this->unique) {
-            $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
+            XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}', $this->uid, $this->type);
         }
        
         $this->stamp = date('YmdHis');
-        $globals->xdb->execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
+        XDB::execute('INSERT INTO requests (user_id, type, data, stamp) VALUES ({?}, {?}, {?}, {?})',
                 $this->uid, $this->type, $this, $this->stamp);
 
         return true;
@@ -130,7 +130,7 @@ class Validate
     function update ()
     {
         global $globals;
-        $globals->xdb->execute('UPDATE requests SET data={?}, stamp=stamp
+        XDB::execute('UPDATE requests SET data={?}, stamp=stamp
                                  WHERE user_id={?} AND type={?} AND stamp={?}',
                                  $this, $this->uid, $this->type, $this->stamp);
 
@@ -147,10 +147,10 @@ class Validate
     {
         global $globals;
         if ($this->unique) {
-            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
+            return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?}',
                     $this->uid, $this->type);
         } else {
-            return $globals->xdb->execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
+            return XDB::execute('DELETE FROM requests WHERE user_id={?} AND type={?} AND stamp={?}',
                     $this->uid, $this->type, $this->stamp);
         }
     }
@@ -264,9 +264,9 @@ class Validate
     {
         global $globals;
         if ($stamp == -1) {
-            $res = $globals->xdb->query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+            $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
         } else {
-            $res = $globals->xdb->query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}", $uid, $type, $stamp);
+            $res = XDB::query("SELECT data, stamp FROM requests WHERE user_id={?} AND type={?} and stamp={?}", $uid, $type, $stamp);
         }
         if ($result = $res->fetchOneCell()) {
             $result = unserialize($result);

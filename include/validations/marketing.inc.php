@@ -47,7 +47,7 @@ class MarkReq extends Validate
         $this->m_email = $email;
         $this->perso   = $perso;
 
-        $res = $globals->xdb->query('SELECT nom, prenom, promo FROM auth_user_md5 WHERE user_id = {?}', $mark_id);
+        $res = XDB::query('SELECT nom, prenom, promo FROM auth_user_md5 WHERE user_id = {?}', $mark_id);
         list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow(); 
     }
 

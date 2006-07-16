@@ -26,7 +26,7 @@
  */
 function geoloc_country($current) {
     global $globals;
-    $res  = $globals->xdb->iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
+    $res  = XDB::iterRow('SELECT a2,pays FROM geoloc_pays ORDER BY pays');
     $html = "";
     while (list($my_id, $my_pays) = $res->next()) {
 	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
@@ -48,7 +48,7 @@ $GLOBALS['page']->register_function('geoloc_country', '_geoloc_country_smarty');
  */
 function geoloc_region($country,$current) {
     global $globals;
-    $res  = $globals->xdb->iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $country);
+    $res  = XDB::iterRow('SELECT region,name FROM geoloc_region where a2={?} ORDER BY name', $country);
     $html = "<option value=\"\"></option>";
     while (list($regid, $regname) = $res->next()) {
 	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n",
@@ -81,9 +81,9 @@ function get_address_infos($txt) {
     $infos = array();
     foreach ($keys as $i=>$key) if($vals[$i]) $infos[$key] = ($key == 'sql')?$vals[$i]:utf8_decode(strtr($vals[$i], array(chr(197).chr(147) => "&oelig;")));
     if ($infos['sql'])
-       $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
+       XDB::execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
     if ($infos['display'])
-       $globals->xdb->execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
+       XDB::execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
     return $infos;
 }
 // }}}
@@ -115,14 +115,14 @@ function get_new_maps($url)
 {
 	if (!($f = @fopen($url, 'r'))) return false;
 	global $globals;
-	$globals->xdb->query('TRUNCATE TABLE geoloc_maps');
+	XDB::query('TRUNCATE TABLE geoloc_maps');
 	$s = '';
   while (!feof($f)) {
   	$l = fgetcsv($f, 1024, ';', '"');
   	foreach ($l as $i => $val) if ($val != 'NULL') $l[$i] = '\''.addslashes($val).'\'';
   	$s .= ',('.implode(',',$l).')';
   }
-	$globals->xdb->execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
+	XDB::execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
 	return true;
 }
 
@@ -160,7 +160,7 @@ function get_address_text($adr) {
     if ($l) $t .= "\n".trim($l);
     if ($adr['country'] != '00' && (!$adr['countrytxt'] || $adr['countrytxt'] == strtoupper($adr['countrytxt']))) {
         global $globals;
-        $res = $globals->xdb->query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
+        $res = XDB::query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
         $adr['countrytxt'] = $res->fetchOneCell();
     }
     if ($adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
@@ -215,13 +215,13 @@ function cut_address($txt) {
  */
 function localize_addresses($uid) {
     global $globals;
-    $res = $globals->xdb->iterator("SELECT * FROM adresses WHERE uid = {?} and (cityid IS NULL OR cityid = 0)", $uid);
+    $res = XDB::iterator("SELECT * FROM adresses WHERE uid = {?} and (cityid IS NULL OR cityid = 0)", $uid);
     $erreur = Array();
 
     while ($a = $res->next()) {
         $new = get_address_infos($ta = get_address_text($a));
         if (compare_addresses_text($ta, get_address_text($new))) {
-            $globals->xdb->execute("UPDATE adresses SET
+            XDB::execute("UPDATE adresses SET
                 adr1 = {?}, adr2 = {?}, adr3 = {?},
                 cityid = {?}, city = {?}, postcode = {?},
                 region = {?}, regiontxt = {?}, country = {?},
@@ -253,7 +253,7 @@ function localize_addresses($uid) {
     if (!($f = @fopen($url, 'r'))) return false;
     $s = fgets($f);
     if ($s)
-        return $globals->xdb->execute("REPLACE INTO geoloc_city VALUES ".$s) > 0;
+        return XDB::execute("REPLACE INTO geoloc_city VALUES ".$s) > 0;
  }
  // }}}
 
@@ -261,7 +261,7 @@ function localize_addresses($uid) {
 function fix_cities_not_on_map($limit=false)
 {
     global $globals;
-    $missing = $globals->xdb->query("SELECT c.id FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL".($limit?" LIMIT $limit":""));
+    $missing = XDB::query("SELECT c.id FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL".($limit?" LIMIT $limit":""));
     $maps = get_cities_maps($missing->fetchColumn());
     if ($maps)
     {
@@ -269,7 +269,7 @@ function fix_cities_not_on_map($limit=false)
         foreach ($maps as $cityid => $maps_c)
             foreach ($maps_c as $map_id)
                 $values .= ",($cityid, $map_id, '')";
-        $globals->xdb->execute("REPLACE INTO geoloc_city_in_maps VALUES ".substr($values, 1));
+        XDB::execute("REPLACE INTO geoloc_city_in_maps VALUES ".substr($values, 1));
     }
     else
         return false;
@@ -278,14 +278,14 @@ function fix_cities_not_on_map($limit=false)
 
 function set_smallest_levels() {
     global $globals;
-    $maxlengths = $globals->xdb->iterRow("SELECT MAX(LENGTH(gm.path)), gcim.city_id
+    $maxlengths = XDB::iterRow("SELECT MAX(LENGTH(gm.path)), gcim.city_id
         FROM geoloc_city_in_maps AS gcim
         INNER JOIN geoloc_maps AS gm
         USING ( map_id )
         GROUP BY gcim.city_id
         ");
     while (list($length, $id) = $maxlengths->next()) {
-        $globals->xdb->execute("UPDATE geoloc_city_in_maps AS gcim
+        XDB::execute("UPDATE geoloc_city_in_maps AS gcim
             INNER JOIN geoloc_maps AS gm USING(map_id)
             SET gcim.infos = IF(LENGTH(gm.path) = {?}, 'smallest', '')
             WHERE gcim.city_id = {?}", $length, $id);
@@ -315,7 +315,7 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true) {
     $where = $fields->get_where_statement();
     if ($where) $where = " AND ".$where;
 
-    $cityres = $globals->xdb->iterator("
+    $cityres = XDB::iterator("
         SELECT  gc.id,
                 gc.lon / 100000 AS x, gc.lat/100000 AS y,
                 gc.name,
@@ -348,7 +348,7 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
     	$wheremapid = "WHERE gm.parent IS NULL";
     else
     	$wheremapid = "WHERE   gm.parent = {?}";
-    $submapres = $globals->xdb->iterator(
+    $submapres = XDB::iterator(
         "SELECT  gm.map_id AS id, gm.name, gm.x, gm.y, gm.xclip, gm.yclip, 
                 gm.width, gm.height, gm.scale, 1 AS rat
         FROM    geoloc_maps AS gm
@@ -376,7 +376,7 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
 	$where = $fields->get_where_statement();
 	if ($where) $where = " WHERE ".$where;
 		
-	$countryres = $globals->xdb->iterator("
+	$countryres = XDB::iterator("
 	    SELECT  map.map_id AS id,
 	            COUNT(u.user_id) AS nbPop,
 	            SUM(u.promo % 2) AS yellow,

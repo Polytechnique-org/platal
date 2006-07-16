@@ -25,14 +25,14 @@ $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Regex
 
 if (Post::has('submit')) {
     foreach (Env::getMixed('lvl') as $id=>$val) {
-        $globals->xdb->query(
+        XDB::query(
                 "REPLACE INTO emails_bounces_re (id,pos,lvl,re,text) VALUES ({?}, {?}, {?}, {?}, {?})",
                 $id, $_POST['pos'][$id], $_POST['lvl'][$id], $_POST['re'][$id], $_POST['text'][$id]
         );
     }
 }
 
-$page->assign('bre', $globals->xdb->iterator("SELECT * FROM emails_bounces_re ORDER BY pos"));
+$page->assign('bre', XDB::iterator("SELECT * FROM emails_bounces_re ORDER BY pos"));
 
 $page->run();
 ?>

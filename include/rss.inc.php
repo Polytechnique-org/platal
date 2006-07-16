@@ -44,7 +44,7 @@ function init_rss($template, $alias, $hash)
     $page->register_modifier('rss_date', '_rss_encode_date');
     $page->default_modifiers = Array('@to_rss');
 
-    $res = $globals->xdb->query(
+    $res = XDB::query(
         'SELECT  a.id
            FROM  aliases         AS a
      INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND q.core_rss_hash = {?} )

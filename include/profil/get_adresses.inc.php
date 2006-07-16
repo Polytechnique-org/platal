@@ -39,8 +39,8 @@ function is_adr_empty($adrid){
 
 function delete_address($adrid, $in_request_array = false){
     global $globals;
-    $globals->xdb->execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
-    $globals->xdb->execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
+    XDB::execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
+    XDB::execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}",Session::getInt('uid', -1), $adrid);
     if($in_request_array == true){
       unset($_REQUEST['adrid'][$adrid]);
     }
@@ -61,11 +61,11 @@ for($i = 1; $i <= $nb_adr_max; $i++){
 $sql_order = '';
 
 //recuperation des adrid
-$res = $globals->xdb->query("SELECT adrid FROM adresses WHERE uid = {?} AND NOT FIND_IN_SET('pro', statut) ".$sql_order, Session::getInt('uid', -1));
+$res = XDB::query("SELECT adrid FROM adresses WHERE uid = {?} AND NOT FIND_IN_SET('pro', statut) ".$sql_order, Session::getInt('uid', -1));
 $adrids = $res->fetchColumn();
 
 //recuperation des donnees de la bd
-$res = $globals->xdb->iterRow(
+$res = XDB::iterRow(
 	"SELECT
 	FIND_IN_SET('res-secondaire', statut), FIND_IN_SET('courrier', statut),
 	FIND_IN_SET('active', statut), FIND_IN_SET('temporaire', statut),
@@ -95,7 +95,7 @@ for ($i = 0; $i < $nb_adr; $i++) {
   $adresses[$adrid]['txt'] = get_address_text($adresses[$adrid]);
 }
 
-$restels = $globals->xdb->iterator(
+$restels = XDB::iterator(
     "SELECT
     t.adrid, telid, tel_type, t.tel_pub, t.tel
     FROM tels AS t INNER JOIN adresses AS a ON(t.uid = a.uid AND t.adrid = a.adrid)

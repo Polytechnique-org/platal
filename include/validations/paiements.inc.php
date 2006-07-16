@@ -57,11 +57,11 @@ class PayReq extends Validate
         $this->montant_max  = $_montantmax;
 
         if ($_asso_id) {
-            $res = $globals->xdb->query("SELECT nom FROM groupex.asso WHERE id = {?}", $_asso_id);
+            $res = XDB::query("SELECT nom FROM groupex.asso WHERE id = {?}", $_asso_id);
             $this->asso = $res->fetchOneCell();
         }
         if ($_asso_id && $_evt) {
-            $res = $globals->xdb->query("SELECT intitule FROM groupex.evenements WHERE asso_id = {?} AND eid = {?}", $_asso_id, $_evt);
+            $res = XDB::query("SELECT intitule FROM groupex.evenements WHERE asso_id = {?} AND eid = {?}", $_asso_id, $_evt);
             $this->evt_intitule = $res->fetchOneCell();
         }
     }
@@ -83,7 +83,7 @@ class PayReq extends Validate
         global $globals;
         if ($this->evt)
         {
-            $globals->xdb->execute('DELETE FROM requests WHERE type={?} AND data LIKE {?}', 'paiements', PayReq::same_event($this->evt, $this->asso_id));
+            XDB::execute('DELETE FROM requests WHERE type={?} AND data LIKE {?}', 'paiements', PayReq::same_event($this->evt, $this->asso_id));
         }
         Validate::submit();
     }
@@ -119,9 +119,9 @@ class PayReq extends Validate
     function commit()
     {
         global $globals;
-        $res = $globals->xdb->query("SELECT MAX(id) FROM paiement.paiements");
+        $res = XDB::query("SELECT MAX(id) FROM paiement.paiements");
         $id = $res->fetchOneCell()+1;
-        $ret = $globals->xdb->execute("INSERT INTO paiement.paiements VALUES
+        $ret = XDB::execute("INSERT INTO paiement.paiements VALUES
             ( {?}, {?}, {?}, '',
             {?}, {?}, {?},
             {?}, {?}, {?} )
@@ -130,7 +130,7 @@ class PayReq extends Validate
             $this->montant, $this->montant_min, $this->montant_max,
             $this->bestalias."@".$globals->mail->domain, $this->msg_reponse, $this->asso_id);
         if ($this->asso_id && $this->evt) 
-            $ret = $globals->xdb->execute("UPDATE groupex.evenements SET paiement_id = {?} WHERE asso_id = {?} AND eid = {?}", $id, $this->asso_id, $this->evt);
+            $ret = XDB::execute("UPDATE groupex.evenements SET paiement_id = {?} WHERE asso_id = {?} AND eid = {?}", $id, $this->asso_id, $this->evt);
 
         return $ret;
     }

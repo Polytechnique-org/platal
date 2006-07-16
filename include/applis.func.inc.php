@@ -24,7 +24,7 @@ global $page;
 function applis_options($current=0) {
     global $globals;
     $html = '<option value="-1"></option>';
-    $res  = $globals->xdb->iterator("select * from applis_def order by text");
+    $res  = XDB::iterator("select * from applis_def order by text");
     while ($arr_appli = $res->next()) { 
 	$html .= '<option value="'.$arr_appli["id"].'"';
 	if ($arr_appli["id"]==$current) $html .= " selected='selected'";
@@ -47,7 +47,7 @@ $page->register_function('applis_options','_applis_options_smarty');
 function applis_type(){
     global $globals;
     $html = "";
-    $res=$globals->xdb->iterRow("select type from applis_def order by text");
+    $res=XDB::iterRow("select type from applis_def order by text");
     if (list($appli_type) = $res->next()) {
 	$html .= "new Array('".str_replace(",","','",$appli_type)."')";
     }
@@ -62,7 +62,7 @@ $page->register_function('applis_type','applis_type');
  */
 function applis_type_all(){
     global $globals;
-    $res = $globals->xdb->query("show columns from applis_def like 'type'");
+    $res = XDB::query("show columns from applis_def like 'type'");
     $arr_appli = $res->fetchOneAssoc();
     return str_replace(")","",str_replace("set(","",$arr_appli["Type"]));
 }

@@ -35,16 +35,16 @@ if (Post::get('frm_id')) {
     $mid = Post::getInt('frm_id');
 
     if (Post::get('act') == 'del') {
-        $globals->xdb->execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::getInt('gid'));
+        XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::getInt('gid'));
     } elseif (Post::get('act') == 'new') {
-        $globals->xdb->execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
+        XDB::execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
                 $mid, max(array_keys(Post::getMixed('grades', Array(0))))+1);
     } else {
         foreach (Post::getMixed('grades', Array()) as $gid=>$text) {
-            $globals->xdb->execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
+            XDB::execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
         }
     }
-    $res = $globals->xdb->iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
+    $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
     $page->assign('grades', $res);
 }
 

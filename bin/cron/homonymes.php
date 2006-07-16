@@ -28,12 +28,12 @@ $W_PERIOD = "INTERVAL 7 DAY"; // temps d'envoi du warning avant la deadline
 
 require('./connect.db.inc.php');
 
-$resRobot = $globals->xdb->iterator("SELECT id, alias, expire FROM aliases WHERE (expire = NOW() + $W_PERIOD OR expire <= NOW()) AND type = 'alias'");
+$resRobot = XDB::iterator("SELECT id, alias, expire FROM aliases WHERE (expire = NOW() + $W_PERIOD OR expire <= NOW()) AND type = 'alias'");
 
 if ($resRobot->total()) {
     require_once('validations/homonymes.inc.php');
     while ($old = $resRobot->next()) {
-    	$res = $globals->xdb->query("SELECT alias AS forlife FROM homonymes INNER JOIN aliases ON(user_id = id) WHERE homonyme_id = {?} AND type='a_vie'", $old['id']);
+    	$res = XDB::query("SELECT alias AS forlife FROM homonymes INNER JOIN aliases ON(user_id = id) WHERE homonyme_id = {?} AND type='a_vie'", $old['id']);
 	$forlifes = $res->fetchColumn();
 	$req = new HomonymeReq($old['id'], $old['alias'], $forlifes, $old['expire'] > date("Y-m-d"));
 	$req->submit();

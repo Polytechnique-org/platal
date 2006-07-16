@@ -53,7 +53,7 @@ class UsageReq extends Validate
         $this->alias   = make_username($this->prenom, $this->nom_usage);
         if (!$this->nom_usage) $this->alias = "";
 
-        $res = $globals->xdb->query("
+        $res = XDB::query("
                 SELECT  e.alias, u.nom_usage, a.id
                   FROM  auth_user_md5 as u
              LEFT JOIN  aliases       as e ON(e.type='alias' AND FIND_IN_SET('usage',e.flags) AND e.id = u.user_id)

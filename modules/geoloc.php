@@ -54,7 +54,7 @@ class GeolocModule extends PLModule
 
         $page->changeTpl('geoloc/index.tpl');
 
-        $res = $globals->xdb->query('SELECT COUNT(DISTINCT uid)
+        $res = XDB::query('SELECT COUNT(DISTINCT uid)
                                        FROM adresses WHERE cityid IS NOT NULL');
         $page->assign('localises', $res->fetchOneCell());
 
@@ -135,7 +135,7 @@ class GeolocModule extends PLModule
         $where = $fields->get_where_statement();
         if ($where) $where = "WHERE ".$where;
 
-        $users = $globals->xdb->iterator("
+        $users = XDB::iterator("
             SELECT u.user_id AS id, u.prenom, u.nom, u.promo
               FROM adresses AS a 
         INNER JOIN auth_user_md5 AS u ON(u.user_id = a.uid)
