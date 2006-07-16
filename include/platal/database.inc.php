@@ -37,7 +37,7 @@ class XOrgDB
         $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
     }
-    
+
     // }}}
     // {{{ function query
 
@@ -53,7 +53,7 @@ class XOrgDB
         global $globals;
         return $globals->db->query($this->_prepare(func_get_args()));
     }
-    
+
     // }}}
     // {{{ function iterator()
 
@@ -61,7 +61,7 @@ class XOrgDB
     {
         return new XOrgDBIterator($this->_prepare(func_get_args()));
     }
-    
+
     // }}}
     // {{{ function iterRow()
 
@@ -69,33 +69,41 @@ class XOrgDB
     {
         return new XOrgDBIterator($this->_prepare(func_get_args()), MYSQL_NUM);
     }
-    
+
+    // }}}
+    // {{{ function insertId()
+
+    function insertId()
+    {
+        return mysql_insert_id();
+    }
+
     // }}}
     // {{{ function _db_escape
 
     function _db_escape($var)
     {
         switch (gettype($var)) {
-            case 'boolean':
-                return $var ? 1 : 0;
-            
-            case 'integer':
-            case 'double':
-            case 'float':
-                return $var;
+          case 'boolean':
+            return $var ? 1 : 0;
 
-            case 'string':
-                return "'".addslashes($var)."'";
+          case 'integer':
+          case 'double':
+          case 'float':
+            return $var;
 
-            case 'NULL':
-                return 'NULL';
+          case 'string':
+            return "'".addslashes($var)."'";
 
-            case 'object':
-            case 'array':
-                return "'".addslashes(serialize($var))."'";
+          case 'NULL':
+            return 'NULL';
 
-            default:
-                die(var_export($var, true).' is not a valid for a database entry');
+          case 'object':
+          case 'array':
+            return "'".addslashes(serialize($var))."'";
+
+          default:
+            die(var_export($var, true).' is not a valid for a database entry');
         }
     }
 
@@ -224,7 +232,7 @@ class XOrgDBResult
 
     // }}}
     // {{{ function numRows
-    
+
     function numRows()
     {
         return mysql_num_rows($this->_res);
@@ -247,7 +255,7 @@ class XOrgDBIterator extends XOrgIterator
 
     // }}}
     // {{{ constructor
-    
+
     function XOrgDBIterator($query, $mode = MYSQL_ASSOC)
     {
         $this->_result =& new XOrgDBResult($query);
@@ -258,7 +266,7 @@ class XOrgDBIterator extends XOrgIterator
 
     // }}}
     // {{{ function next ()
-    
+
     function next()
     {
         $this->_pos ++;
