@@ -242,7 +242,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        new_groupadmin_page('xnet/groupe/evt-modif.tpl');
+        new_groupadmin_page('xnetevents/edit.tpl');
 
         $page->assign('logged', logged());
         $page->assign('admin', may_update());
@@ -346,29 +346,29 @@ class XnetEventsModule extends PLModule
             $evt['fin']          = Post::get('fin_Year')."-".Post::get('fin_Month')
                                  . "-".Post::get('fin_Day')." ".Post::get('fin_Hour')
                                  . ":".Post::get('fin_Minute').":00";
-            $evt['membres_only'] = Post::get('membres_only');
-            $evt['advertise']    = Post::get('advertise');
             $evt['show_participants'] = Post::get('show_participants');
             $evt['noinvite']     = Post::get('noinvite');
             if (!$short_name) {
                 $short_name = '';
             }
             $evt['short_name']   = $short_name;
-            $evt['deadline_inscription'] = Post::get('deadline', 'off') == 'on' ? null
-                                         : (Post::get('inscr_Year')."-".Post::get('inscr_Month')
-                                            ."-".Post::get('inscr_Day'));
+            $evt['deadline_inscription'] = null;
+            if (Post::get('deadline')) {
+                $evt['deadline_inscription'] = Post::get('inscr_Year')."-"
+                                             . Post::get('inscr_Month')."-"
+                                             . Post::get('inscr_Day');
+            }
 
             // Store the modifications in the database
-            $globals->xdb->execute("REPLACE INTO groupex.evenements 
+            $globals->xdb->execute("REPLACE INTO groupex.evenements
                 SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
                     paiement_id = {?}, descriptif = {?},
-                    debut = {?}, fin = {?},
-                    membres_only = {?}, advertise = {?}, show_participants = {?}, 
+                    debut = {?}, fin = {?}, show_participants = {?},
                     short_name = {?}, deadline_inscription = {?}, noinvite = {?}",
                     $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'], $evt['intitule']
                     , $evt['paiement_id'], $evt['descriptif'],
                     $evt['debut'], $evt['fin'],
-                    $evt['membres_only'], $evt['advertise'], $evt['show_participants'],
+                    $evt['show_participants'],
                     $evt['short_name'], $evt['deadline_inscription'], $evt['noinvite']);
 
             // if new event, get its id
@@ -433,9 +433,8 @@ class XnetEventsModule extends PLModule
         if ($eid) {
             $res = $globals->xdb->query(
                     "SELECT	eid, intitule, descriptif, debut, fin,
-                                membres_only, advertise, show_participants,
-                                paiement_id, short_name, deadline_inscription,
-                                noinvite
+                                show_participants, paiement_id, short_name,
+                                deadline_inscription, noinvite
                        FROM	groupex.evenements
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();

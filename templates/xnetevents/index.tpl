@@ -133,7 +133,7 @@
     </td>
   </tr>
 
-  {if (!$e.membres_only or $is_member or $e.inscrit) and $e.inscr_open}
+  {if $e.inscr_open}
   <tr>
     <td colspan='2' class='center'>
       <strong>
