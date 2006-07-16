@@ -72,7 +72,7 @@ class XnetListsModule extends ListsModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('xnet/groupe/listes.tpl');
+        $page->changeTpl('xnetlists/index.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe(Get::get('del'));
@@ -115,7 +115,7 @@ class XnetListsModule extends ListsModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('xnet/groupe/listes-create.tpl');
+        $page->changeTpl('xnetlists/create.tpl');
         $page->assign('force_list_super', may_update());
 
         if (!Post::has('submit')) {
@@ -189,7 +189,7 @@ class XnetListsModule extends ListsModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('xnet/groupe/listes-sync.tpl');
+        $page->changeTpl('xnetlists/sync.tpl');
 
         if (Env::has('add')) {
             $this->client->mass_subscribe($liste, array_keys(Env::getMixed('add')));
