@@ -22,6 +22,12 @@
 
 <h1>{$asso.nom} : Evénement {$event.intitule}</h1>
 
+{if $updated}
+<p class='error'>
+  La modification de l'inscription a été prise en compte !
+</p>
+{/if}
+
 <p>
   [<a href="{rel}/{$platal->ns}events">Revenir à la liste des événements</a>]
 </p>

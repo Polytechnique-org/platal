@@ -59,11 +59,11 @@ class XnetEventsModule extends PLModule
             // deletes the event mailing aliases
             if ($tmp[1]) {
                 $globals->xdb->execute(
-                    "DELETE FROM virtual WHERE type = 'evt' AND alias = {?}",
-                    $tmp[1].'-absents');
+                    "DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}",
+                    $tmp[1].'-absents@%');
                 $globals->xdb->execute(
-                    "DELETE FROM virtual WHERE type = 'evt' AND alias = {?}",
-                    $tmp[1].'-participants');
+                    "DELETE FROM virtual WHERE type = 'evt' AND alias LIKE {?}",
+                    $tmp[1].'-participants@%');
             }
 
             // deletes the event items
@@ -195,11 +195,13 @@ class XnetEventsModule extends PLModule
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?})",
                     $eid, Session::getInt('uid'), $j, $nb, $evt['paid']);
+                $page->assign('updated', true);
             } else {
                 $globals->xdb->execute(
                     "DELETE FROM  groupex.evenements_participants
                            WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
                     $eid, Session::getInt("uid"), $j);		
+                $page->assign('updated', true);
             }
         }
 
@@ -242,14 +244,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        new_groupadmin_page('xnetevents/edit.tpl');
-
-        $page->assign('logged', logged());
-        $page->assign('admin', may_update());
-
-        $moments = range(1, 4);
-        $page->assign('moments', $moments);
-
+        // check the event is in our group
         if (!is_null($eid)) {
             $res = $globals->xdb->query("SELECT short_name, asso_id
                                            FROM groupex.evenements
@@ -260,138 +255,75 @@ class XnetEventsModule extends PLModule
             }
         }
 
-        $get_form = true;
+        new_groupadmin_page('xnetevents/edit.tpl');
+
+        $moments = range(1, 4);
+        $page->assign('moments', $moments);
 
         if (Post::get('intitule')) {
-            $get_form = false;
-            $short_name = Env::get('short_name');
+            require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+            $short_name = event_change_shortname($page, $infos['short_name'],
+                                                 Env::get('short_name', ''));
 
-            // Quelques vérifications sur l'alias (caractères spéciaux)
-            if ($short_name && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $short_name)) {
-                $page->trig("Le raccourci demandé n'est pas valide.
-                            Vérifie qu'il comporte entre 3 et 20 caractères
-                            et qu'il ne contient que des lettres non accentuées,
-                            des chiffres ou les caractères - et .");
-                $short_name = $infos['short_name'];
-                $get_form = true;
+            $evt = array(
+                'eid'              => $eid,
+                'asso_id'          => $globals->asso('id'),
+                'organisateur_uid' => Session::get('uid'),
+                'paiement_id'      => Post::get('paiement_id') > 0 ? Post::get('paiement_id') : null,
+                'debut'            => Post::get('deb_Year').'-'.Post::get('deb_Month')
+                                      .'-'.Post::get('deb_Day').' '.Post::get('deb_Hour')
+                                      .':'.Post::get('deb_Minute').':00',
+                'fin'              => Post::get('fin_Year').'-'.Post::get('fin_Month')
+                                      .'-'.Post::get('fin_Day').' '.Post::get('fin_Hour')
+                                      .':'.Post::get('fin_Minute').':00',
+                'short_name'       => $short_name,
+            );
+
+            $trivial = array('intitule', 'descriptif', 'noinvite',
+                             'show_participants');
+            foreach ($trivial as $k) {
+                $evt[$k] = Post::get($k);
             }
 
-            //vérifier que l'alias n'est pas déja pris
-            if ($short_name && $short_name != $infos['short_name']) {
-                $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual WHERE alias LIKE {?}', $short_name."-%");
-                if ($res->fetchOneCell() > 0) {
-                    $page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
-                    $short_name = $infos['short_name'];
-                    $get_form = true;
-                }
-            }
-
-            // if had a previous shortname change the old lists
-            if ($short_name && $infos['short_name'] && $short_name != $infos['short_name']) {
-                $globals->xdb->execute("UPDATE virtual
-                                           SET alias = REPLACE(alias, {?}, {?})
-                                         WHERE type = 'evt' AND alias LIKE {?}",
-                                         $infos['short_name'], $short_name,
-                                         $infos['short_name']."-%");
-            }
-            elseif ($short_name && !$infos['short_name']) {
-                // if we have a first new short_name create the lists
-                //
-                $globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
-                        $short_name."-participants@".$globals->xnet->evts_domain);
-
-                $res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
-                $globals->xdb->execute("INSERT INTO virtual_redirect (
-                    SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-                      FROM groupex.evenements_participants AS ep
-                 LEFT JOIN groupex.membres AS m ON (ep.uid = m.uid)
-                 LEFT JOIN auth_user_md5 AS u ON (u.user_id = ep.uid)
-                 LEFT JOIN aliases AS a ON (a.id = ep.uid AND a.type = 'a_vie')
-                     WHERE ep.eid = {?}
-                  GROUP BY ep.uid)",
-                         $res->fetchOneCell(), "@".$globals->mail->domain, $eid);
-
-                $globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
-                        $short_name."-absents@".$globals->xnet->evts_domain);
-
-                $res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
-                $globals->xdb->execute("INSERT INTO virtual_redirect (
-                    SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
-                          FROM groupex.membres AS m
-                     LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid)
-                     LEFT JOIN auth_user_md5 AS u ON (u.user_id = m.uid)
-                     LEFT JOIN aliases AS a ON (a.id = m.uid AND a.type = 'a_vie')
-                         WHERE m.asso_id = {?} AND ep.uid IS NULL
-                      GROUP BY m.uid)",
-                         $res->fetchOneCell(), "@".$globals->mail->domain, $globals->asso('id'));
-            }
-            elseif (!$short_name && $infos['short_name']) {
-                // if we delete the old short name, delete the lists
-                $globals->xdb->execute("DELETE virtual, virtual_redirect FROM virtual
-                                     LEFT JOIN virtual_redirect USING(vid)
-                                         WHERE virtual.alias LIKE {?}",
-                                       $infos['short_name']."-%");
-            }
-
-            $evt = array();
-            $evt['eid']          = $eid;
-            $evt['asso_id']      = $globals->asso('id');
-            $evt['organisateur_uid'] = Session::get('uid');
-            $evt['intitule']     = Post::get('intitule');
-            $evt['paiement_id']  = (Post::get('paiement_id')>0) ? Post::get('paiement_id') : null;
-            $evt['descriptif']   = Post::get('descriptif');
-            $evt['debut']        = Post::get('deb_Year')."-".Post::get('deb_Month')
-                                 . "-".Post::get('deb_Day')." ".Post::get('deb_Hour')
-                                 . ":".Post::get('deb_Minute').":00";
-            $evt['fin']          = Post::get('fin_Year')."-".Post::get('fin_Month')
-                                 . "-".Post::get('fin_Day')." ".Post::get('fin_Hour')
-                                 . ":".Post::get('fin_Minute').":00";
-            $evt['show_participants'] = Post::get('show_participants');
-            $evt['noinvite']     = Post::get('noinvite');
-            if (!$short_name) {
-                $short_name = '';
-            }
-            $evt['short_name']   = $short_name;
-            $evt['deadline_inscription'] = null;
             if (Post::get('deadline')) {
-                $evt['deadline_inscription'] = Post::get('inscr_Year')."-"
-                                             . Post::get('inscr_Month')."-"
+                $evt['deadline_inscription'] = Post::get('inscr_Year').'-'
+                                             . Post::get('inscr_Month').'-'
                                              . Post::get('inscr_Day');
+            } else {
+                $evt['deadline_inscription'] = null;
             }
 
             // Store the modifications in the database
-            $globals->xdb->execute("REPLACE INTO groupex.evenements
+            $globals->xdb->execute('REPLACE INTO groupex.evenements
                 SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
-                    paiement_id = {?}, descriptif = {?},
-                    debut = {?}, fin = {?}, show_participants = {?},
-                    short_name = {?}, deadline_inscription = {?}, noinvite = {?}",
-                    $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'], $evt['intitule']
-                    , $evt['paiement_id'], $evt['descriptif'],
-                    $evt['debut'], $evt['fin'],
-                    $evt['show_participants'],
-                    $evt['short_name'], $evt['deadline_inscription'], $evt['noinvite']);
+                    paiement_id = {?}, descriptif = {?}, debut = {?},
+                    fin = {?}, show_participants = {?}, short_name = {?},
+                    deadline_inscription = {?}, noinvite = {?}',
+                    $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'],
+                    $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
+                    $evt['debut'], $evt['fin'], $evt['show_participants'],
+                    $evt['short_name'], $evt['deadline_inscription'],
+                    $evt['noinvite']);
 
             // if new event, get its id
             if (!$eid) {
-                $res = $globals->xdb->query("SELECT LAST_INSERT_ID()");
-                $eid = $res->fetchOneCell();
-                $evt['eid'] = $eid;
+                $eid = mysql_insert_id();
             }
 
-            $nb_moments = 0;
+            $nb_moments   = 0;
             $money_defaut = 0;
 
             foreach ($moments as $i) {
                 if (Post::get('titre'.$i)) {
                     $nb_moments++;
-                    if (!($money_defaut > 0))
-                        $money_defaut = strtr(Post::get('montant'.$i), ',', '.');
+
+                    $montant = strtr(Post::get('montant'.$i), ',', '.');
+                    $money_defaut += (float)$montant;
                     $globals->xdb->execute("
                         REPLACE INTO groupex.evenements_items
                         VALUES ({?}, {?}, {?}, {?}, {?})",
                         $eid, $i, Post::get('titre'.$i),
-                        Post::get('details'.$i),
-                        strtr(Post::get('montant'.$i), ',', '.'));
+                        Post::get('details'.$i), $montant);
                 } else {
                     $globals->xdb->execute("DELETE FROM groupex.evenements_items 
                                             WHERE eid = {?} AND item_id = {?}", $eid, $i);
@@ -414,10 +346,11 @@ class XnetEventsModule extends PLModule
                 $globals->xdb->execute("INSERT INTO groupex.evenements_items
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
-        }
 
-        if (!$get_form) {
-            redirect("evenements.php");
+            if (is_null($evt['eid'])) {
+                global $platal;
+                redirect(smarty_function_rel().'/'.$platal->path.'/'.$eid);
+            }
         }
 
         // get a list of all the payment for this asso
@@ -508,11 +441,7 @@ class XnetEventsModule extends PLModule
                 $nbs  = Post::getMixed('nb', array());
 
                 foreach ($nbs as $id => $nb) {
-                    $nb = intval($nb);
-
-                    if ($nb < 0) {
-                        $nb = 0;
-                    }
+                    $nb = max(intval($nb), 0);
 
                     if ($nb) {
                         $globals->xdb->execute("REPLACE INTO groupex.evenements_participants

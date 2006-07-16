@@ -39,7 +39,7 @@
       {$e.intitule}
       {if $admin}
       <br />
-      [<a href="{rel}/{$platal->ns}events/edit/{$e.eid}?mod=1">
+      [<a href="{rel}/{$platal->ns}events/edit/{$e.eid}">
         modifier
         <img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition" />
       </a>]

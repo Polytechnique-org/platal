@@ -207,5 +207,96 @@ function subscribe_lists_event($participate, $uid, $evt) {
 }
 // }}}
 
+function event_change_shortname(&$page, $old, $new)
+{
+    global $globals;
+
+    // Quelques vérifications sur l'alias (caractères spéciaux)
+    if ($old && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $old)) {
+        $page->trig("Le raccourci demandé n'est pas valide.
+                    Vérifie qu'il comporte entre 3 et 20 caractères
+                    et qu'il ne contient que des lettres non accentuées,
+                    des chiffres ou les caractères - et .");
+        return $old;
+    }
+
+    //vérifier que l'alias n'est pas déja pris
+    if ($new && $old != $new) {
+        $res = $globals->xdb->query('SELECT COUNT(*) FROM virtual
+                                    WHERE alias LIKE {?}',
+                                    $new.'-absents@%');
+        if ($res->fetchOneCell() > 0) {
+            $page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
+            return $old;
+        }
+    }
+
+    if ($old == $new) {
+        return $new;
+    }
+
+    if ($old && $new) {
+        // if had a previous shortname change the old lists
+        foreach (array('-absents@', '-participants@') as $v) {
+            $v .= $globals->xnet->evts_domain;
+            $globals->xdb->execute("UPDATE virtual SET alias = {?}
+                                     WHERE type = 'evt' AND alias = {?}",
+                                     $new.$v, $old.$v);
+        }
+
+        return $new;
+    }
+
+    if (!$old && $new) {
+        // if we have a first new short_name create the lists
+
+        $globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
+                $new.'-participants@'.$globals->xnet->evts_domain);
+
+        $lastid = mysql_insert_id();
+        $globals->xdb->execute(
+          "INSERT INTO virtual_redirect (
+                SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
+                  FROM groupex.evenements_participants AS ep
+             LEFT JOIN groupex.membres AS m ON (ep.uid = m.uid)
+             LEFT JOIN auth_user_md5   AS u ON (u.user_id = ep.uid)
+             LEFT JOIN aliases         AS a ON (a.id = ep.uid AND a.type = 'a_vie')
+                 WHERE ep.eid = {?}
+              GROUP BY ep.uid)",
+              $lastid, '@'.$globals->mail->domain, $eid);
+
+        $globals->xdb->execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
+                $new.'-absents@'.$globals->xnet->evts_domain);
+
+        $lastid = mysql_insert_id();
+        $globals->xdb->execute("INSERT INTO virtual_redirect (
+            SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
+                  FROM groupex.membres AS m
+             LEFT JOIN groupex.evenements_participants AS ep ON (ep.uid = m.uid)
+             LEFT JOIN auth_user_md5   AS u ON (u.user_id = m.uid)
+             LEFT JOIN aliases         AS a ON (a.id = m.uid AND a.type = 'a_vie')
+                 WHERE m.asso_id = {?} AND ep.uid IS NULL
+              GROUP BY m.uid)",
+             $lastid, "@".$globals->mail->domain, $globals->asso('id'));
+
+        return $new;
+    }
+
+    if ($old && !$new) {
+        // if we delete the old short name, delete the lists
+        foreach (array('-absents@', '-participants@') as $v) {
+            $v .= $globals->xnet->evts_domain;
+            $globals->xdb->execute("DELETE virtual, virtual_redirect FROM virtual
+                                 LEFT JOIN virtual_redirect USING(vid)
+                                     WHERE virtual.alias = {?}",
+                                   $infos['short_name'].$v);
+        }
+        return $new;
+    }
+
+    // cannot happen
+    return $old;
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -38,7 +38,7 @@ function deadlineChange(box)
 {/literal}
 </script>
 
-<h1>{$asso.nom} : {$evt.intitule}</h1>
+<h1>{$asso.nom} : {$evt.intitule|default:"Nouvel événement"}</h1>
 
 <p class="descr">
   Un événement peut être une réunion, un séminaire, une conférence, un voyage promo,
@@ -67,7 +67,6 @@ function deadlineChange(box)
         Intitulé de l'événement&nbsp;:
       </td>
       <td>
-        <input type="hidden" name="eid" value="{$evt.eid}" />
         <input type="text" name="intitule" value="{$evt.intitule}" size="45" maxlength="100" />
       </td>
     </tr>
