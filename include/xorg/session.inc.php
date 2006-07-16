@@ -19,17 +19,20 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal/session.inc.php');
+require_once 'platal/session.inc.php';
 
 // {{{ class XorgSession
 
-class XorgSession extends DiogenesCoreSession
+class XorgSession
 {
+    var $challenge;
+
     // {{{ function XorgSession()
 
     function XorgSession()
     {
-	$this->DiogenesCoreSession();
+        $this->challenge = md5(uniqid(rand(), 1));
+
 	if (!Session::has('uid')) {
 	    try_cookie();
         }
@@ -204,26 +207,6 @@ class XorgSession extends DiogenesCoreSession
 	    $page->run();
     	}
     	exit;
-    }
-
-    // }}}
-    // {{{ function getUserId()
-    
-    function getUserId($auth,$username)
-    {
-	global $globals;
-	$res = $globals->xdb->query("SELECT id FROM aliases WHERE alias = {?}",$username);
-        return $res->fetchOneCell();
-    }
-
-    // }}}
-    // {{{ function getUsername()
-
-    function getUsername($auth,$uid)
-    {
-	global $globals;
-        $res = $globals->xdb->query("SELECT alias FROM aliases WHERE id = {?} AND type='a_vie'", $uid);
-        return $res->fetchOneCell();
     }
 
     // }}}

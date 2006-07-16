@@ -23,13 +23,15 @@ require_once('platal/session.inc.php');
 
 // {{{ class XorgSession
 
-class XnetSession extends DiogenesCoreSession
+class XnetSession
 {
+    var $challenge;
+
     // {{{ function XnetSession()
 
     function XnetSession()
     {
-	$this->DiogenesCoreSession();
+        $this->challenge = md5(uniqid(rand(), 1));
     }
 
     // }}}
