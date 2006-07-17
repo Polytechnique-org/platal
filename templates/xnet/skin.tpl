@@ -148,23 +148,6 @@
 
           <a href="{rel}/manuel" title="Manuel d'aide en ligne" style="float: right"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
         </td>
-        <!--
-        NOBODY UNDERSTANDS EXALEAD< JUST DROP IT !
-
-        <td id="search">
-          <form method="get" action="{rel}/recherche.php">
-            <div>
-              <a href="{rel}/manuel" title="Manuel d'aide en ligne"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
-              <input type="text" name="query" value="{$exalead_data->query->query}" size="25" maxlength="60" />
-              <input type="image" src="{rel}/images/recherche.png" title="Chercher" value="submit" />
-
-              <br />
-              <strong><a href="http://www.exalead.com/">Powered by</a></strong>
-              <a href="http://www.exalead.com/"><img src="{rel}/images/Exalead-logo-Carved-100.gif" alt="exalead" /></a>
-            </div>
-          </form>
-        </td>
-        -->
       </tr>
 
       <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
