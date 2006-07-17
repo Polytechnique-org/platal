@@ -97,7 +97,7 @@
         <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
       </tr>
       {/if}
-      {if $c.mobile}
+      {if $c.mobile && !$c.dcd}
       <tr>
         <td class="lt">Mobile:</td>
         <td class="rt">{$c.mobile}</td>
