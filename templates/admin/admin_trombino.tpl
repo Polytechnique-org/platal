@@ -33,14 +33,14 @@ Photo actuelle de {$forlife}
 <br />
 
 <p>
-<a href="?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
+<a href="{rel}/admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
 </p>
 
 <p>
-<a href="?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="{rel}/admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
 </p>
 
-<form action="{$smarty.server.PHP_SELF}" method="post" enctype="multipart/form-data">
+<form action="{rel}/admin/admin_trombino.php" method="post" enctype="multipart/form-data">
   <div>
     <input type="hidden" name="uid" value="{$smarty.request.uid}" />
     <input type="hidden" name="action" value="valider" />

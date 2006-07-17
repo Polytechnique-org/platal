@@ -26,7 +26,7 @@
   </p>
   <p>
     Cette forme de script web est nécessaire pour l'utilisation du site.
-    Pour en savoir plus, regarde la <a href="faq.php#connect">FAQ</a>.
+    Pour en savoir plus, regarde la <a href="{rel}/Docs/FAQ#connect">FAQ</a>.
   </p>
 </noscript>
 

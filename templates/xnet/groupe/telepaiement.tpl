@@ -39,10 +39,10 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
     <th colspan="4">{$p.text} : détails pour les administrateurs</th>
   </tr>
   <tr>
-    <td class="center">[{if $order eq 'timestamp'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=timestamp'>{/if}Date</a>{if $order eq 'timestamp'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'timestamp'}<strong><a href='{rel}/{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{rel}/{$platal->ns}paiement?order=timestamp'>{/if}Date</a>{if $order eq 'timestamp'}</strong>{/if}]</td>
     <td class="center">[{if $order eq 'nom'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=nom'>{/if}Prénom NOM</a>{if $order eq 'nom'}</strong>{/if}]</td>
-    <td class="center">[{if $order eq 'promo'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=promo'>{/if}Promo</a>{if $order eq 'promo'}</strong>{/if}]</td>
-    <td class="center">[{if $order eq 'montant'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=montant'>{/if}Montant</a>{if $order eq 'montant'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'promo'}<strong><a href='{rel}/{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{rel}/{$platal->ns}paiement?order=promo'>{/if}Promo</a>{if $order eq 'promo'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'montant'}<strong><a href='{rel}/{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{rel}/{$platal->ns}paiement?order=montant'>{/if}Montant</a>{if $order eq 'montant'}</strong>{/if}]</td>
   </tr>
   {assign var="somme" value=0}
   {foreach from=$trans[$p.id] item=p}

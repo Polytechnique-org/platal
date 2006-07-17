@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Gestion des homonymes
-</h1>
-
+<h1>Gestion des homonymes</h1>
 
 {if $op eq 'mail'}
 <p class="erreur">mail envoyé à {$forlife}</p>
@@ -63,10 +59,10 @@
     <td>{$user.expire|date_format}</td>
     <td>
       <a href="{rel}/profile/{$user.forlife}" class='popup2'>fiche</a>
-      <a href="utilisateurs.php?login={$user.forlife}">edit</a>
+      <a href="{rel}/admin/utilisateurs.php?login={$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
-      <a href="?op=mail-conf&amp;target={$user.user_id}">mailer</a>
-      <a href="?op=correct-conf&amp;target={$user.user_id}">corriger</a>
+      <a href="{$smarty.server.PHP_SELF}?op=mail-conf&amp;target={$user.user_id}">mailer</a>
+      <a href="{$smarty.server.PHP_SELF}?op=correct-conf&amp;target={$user.user_id}">corriger</a>
       {/if}
     </td>
   </tr>

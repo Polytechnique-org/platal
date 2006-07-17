@@ -25,7 +25,7 @@
 <h2>Synchroniser des villes avec geoloc.org</h2>
 
 {if $nb_missinglat}
-<p>[<a href='?missinglat=1'>toutes les villes sans coordonnées ({$nb_missinglat})</a>]</p>
+<p>[<a href='{$smarty.server.PHP_SELF}?missinglat=1'>toutes les villes sans coordonnées ({$nb_missinglat})</a>]</p>
 {/if}
 
 <form action='{$smarty.server.PHP_SELF}' method='get'>

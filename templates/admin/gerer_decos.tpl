@@ -45,7 +45,7 @@
 </script>
 {/literal}
 
-<form method="post" action='#form_grade' id='form_grade'>
+<form method="post" action='{$smarty.server.PHP_SELF}#form_grade' id='form_grade'>
   <table class='bicol'>
     <tr>
       <th>id</th>

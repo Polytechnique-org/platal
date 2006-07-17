@@ -36,7 +36,7 @@
 
   {if $search_results_nb and $advanced and !$simple and $use_map}
   <p>
-  	[<a href='geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
+    [<a href='{rel}/geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
   </p>
   {/if}
   

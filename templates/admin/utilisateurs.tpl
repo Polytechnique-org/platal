@@ -210,7 +210,7 @@ function act_fwd(fwd, activate) {
     </tr>
     <tr class="center">
       <td>
-        <a href="admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
+        <a href="{rel}/admin/admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
       </td>
       <td>
         <input type="submit" name="u_kill_conf" value="Désinscrire" />

@@ -24,7 +24,7 @@
 
 <h1>Suppression du groupe {$nom}</h1>
 
-<form action="?del={$smarty.request.del}" method="post">
+<form action="{rel}/admin?del={$smarty.request.del}" method="post">
   <div class="center">
     <input type="submit" name="del" value="Oui, je veux supprimer ce groupe" />
   </div>
@@ -51,7 +51,7 @@
 <table cellspacing="0" cellpadding="0" class='large'>
   {foreach from=$assos item=a key=i name=all}
   {if $i is even}<tr>{/if}
-    <td><a href='?del={$a.diminutif}'><img src='{rel}/images/del.png' alt='delete' /></a></td>
+    <td><a href='{rel}/admin?del={$a.diminutif}'><img src='{rel}/images/del.png' alt='delete' /></a></td>
     <td><a href='{rel}/{$a.diminutif}/edit'>{$a.nom}</a></td>
     {if $i is odd || $smarty.foreach.all.last}</tr>{/if}
   {/foreach}

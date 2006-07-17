@@ -57,7 +57,7 @@ associations, en cliquant sur <i>plan du site</i>.
 
 <h3><a name="general">Les présentations générales</a></h3>
 
-<img src="images/groupeX.jpg" />
+<img src="{rel}/images/groupeX.jpg" />
 
 <br />
 Chacune des 4 catégories dispose d'une page descriptive. L'adresse de cette page varie
@@ -76,7 +76,7 @@ Professionnels) qui permettent un repérage plus facile sur le site.
 
 <br />
 
-<img src="images/gpx_liste.jpg" />
+<img src="{rel}/images/gpx_liste.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -109,7 +109,7 @@ administrateurs du groupe. Tu seras averti par retour de mail, de la suite
 donnée à ta demande.
 </p>
 
-<img src="images/inscription.jpg" />
+<img src="{rel}/images/inscription.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -121,32 +121,13 @@ lui-même, mais sur tous les sites polytechniciens. Pour en profiter, il te
 suffit de cliquer le mot clé de ta recherche dans la boîte à outils présente
 sur toutes les pages.
 <br />
-<img src="images/toolbar.jpg" />
+<img src="{rel}/images/toolbar.jpg" />
 <br />
 En cliquant sur la loupe à droite, tu pourras faire une recherche via le moteur
 d'<a href="http://www.exalead.fr" target="new">Exalead</a>. 
 Le petit carnet à droite te permet de revenir à tout instant à la page des événements. L'ampoule
 te dirige vers le mode d'emploi de Polytechnique.net, destiné à faciliter
 l'usage du site.
-
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
-
-<h3><a name="recherche">La fonction recherche d'Exalead</a></h3>
-<a href="http://www.polytechnique.net/recherche.php">http://www.polytechnique.net/recherche.php</a>
-<br />
-<img src="images/exalead.jpg" />
-<br />
-
-<a href="http://www.exalead.fr">Exalead</a>
-est un moteur de recherche, qui fonctionne comme les moteurs de recherche
-indexant le web. La seule différence est l'étendue de la recherche&nbsp;:
-Exalead effectue depuis X.net des recherches sur Polytechnique.net, et sur les
-sites propres aux activités polytechniciennes recensés sur X.net.
-
-Comme
-indiqué sur la page de recherche, tu peux affiner tes critères si les résultats
-obtenus ne te satisfont pas. Les résultats sont affichés sur la page.
-<img src="images/exalead_res.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -163,7 +144,7 @@ groupe
 <h3><a name="plan">Le plan du site</a></h3>
 <a href="http://www.polytechnique.net/plan">Lien vers le plan</a>
 <br />
-<img src="images/plan.jpg" />
+<img src="{rel}/images/plan.jpg" />
 
 <br />
 Cette

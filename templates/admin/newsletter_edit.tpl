@@ -114,7 +114,7 @@
 {else}
 
 <p>
-[<a href="?nid={$nl->_id}">retour</a>]
+[<a href="{$smarty.server.PHP_SELF}?nid={$nl->_id}">retour</a>]
 </p>
 
 {if !$art->check()}<p class='erreur'>article trop long !</p>{/if}

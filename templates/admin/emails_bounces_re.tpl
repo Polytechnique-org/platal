@@ -61,7 +61,7 @@ Rappel sur les niveaux :
     {else}
     <tr class="impair">
       <td colspan="2" class="right action">
-        <a href="?new=1">nouveau</a>
+        <a href="{$smarty.server.PHP_SELF}?new=1">nouveau</a>
       </td>
     </tr>
     {/if}

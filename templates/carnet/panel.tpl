@@ -29,7 +29,7 @@ Cette page récapitule tous les évènements que tu surveilles de la semaine écoulé
 <p>
 Les lignes en gras sont les événements qui ont été porté à notre connaissance
 depuis ta dernière connexion sur cette page.<br />
-Tu peux les <a href="?read={$now}">marquer comme vus</a> sans te déconnecter.
+Tu peux les <a href="{rel}/carnet/panel?read={$now}">marquer comme vus</a> sans te déconnecter.
 </p>
 
 <p>

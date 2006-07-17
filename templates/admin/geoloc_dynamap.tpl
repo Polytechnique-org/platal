@@ -27,7 +27,7 @@
 <h2>
   Utiliser de nouvelles cartes
 </h2>
-  <form action='' method='post'>
+  <form action='{$smarty.server.PHP_SELF}' method='post'>
     <p>
       <input type='text' name='url' value='{$smarty.request.url|default:"url des données des cartes"}' onfocus='select()' size='40'/>
 	  <br/>
@@ -40,14 +40,16 @@
 </h2>
 {if $nb_cities_not_on_map}
   <p>
-    Il y a {$nb_cities_not_on_map} villes qui ne sont pas placées dans les cartes. [<a href='?fix=cities_not_on_map'>Réparer</a>]
+    Il y a {$nb_cities_not_on_map} villes qui ne sont pas placées dans les cartes.
+    [<a href='{$smarty.server.PHP_SELF}?fix=cities_not_on_map'>Réparer</a>]
   </p>
 {else}
   <p> Toutes les villes de la base sont placées dans des cartes. </p>
 {/if}
 {if $no_smallest}
   <p>
-    Il faut <a href='?fix=smallest_maps'>définir la plus petite carte</a> pour chaque ville (à ne faire qu'une fois quand on a placé toutes les villes).
+    Il faut <a href='{$smarty.server.PHP_SELF}?fix=smallest_maps'>définir la plus petite carte</a>
+    pour chaque ville (à ne faire qu'une fois quand on a placé toutes les villes).
   </p>
 {/if}
 {if $no_coordinates}
@@ -55,7 +57,8 @@
   Placement précis des adresses
 </h2>
 <p>
-  {$no_coordinates} adresses n'ont pas été bien reconnues précisément. [<a href='?fix=precise_coordinates'>Mettre les coordonnées du centre de la ville</a>]
+  {$no_coordinates} adresses n'ont pas été bien reconnues précisément.
+  [<a href='{$smarty.server.PHP_SELF}?fix=precise_coordinates'>Mettre les coordonnées du centre de la ville</a>]
 </p>
 {/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

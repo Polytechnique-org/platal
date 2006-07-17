@@ -27,9 +27,9 @@
 <p>
 [<a href='{rel}/nl'>liste des lettres</a>]
 {if $smarty.get.text}
-[<a href='?nid={$nl->_id}'>version HTML</a>]
+[<a href='{rel}/nl/show/{$nl->_id}'>version HTML</a>]
 {else}
-[<a href='?nid={$nl->_id}&amp;text=1'>version Texte</a>]
+[<a href='{rel}/nl/show/{$nl->_id}?text=1'>version Texte</a>]
 {/if}
 {perms level='admin'}
 [<a href='{rel}/admin/newsletter_edit.php?nid={$nl->_id}'>Editer</a>]

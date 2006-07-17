@@ -31,7 +31,7 @@
     <th>titre</th>
   </tr>
   <tr>
-    <td colspan='2'><a href='?new'>Créer une nouvelle lettre</a></td>
+    <td colspan='2'><a href='{$smarty.server.PHP_SELF}?new'>Créer une nouvelle lettre</a></td>
   </tr>
   {foreach item=nl from=$nl_list}
   <tr class="{cycle values="pair,impair"}">

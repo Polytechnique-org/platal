@@ -69,7 +69,7 @@ function searchMapId(f)
     <param name="quality" value="high" />
     <param name="bgcolor" value="#ffffff" />
     <param name="movie" value="dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" />
-    <embed src="dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+    <embed src="{rel}/geoloc/dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
     </object>
   </p>
   <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>

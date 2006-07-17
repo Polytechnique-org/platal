@@ -34,7 +34,8 @@
 </tr>
 <tr class="impair">
   <td class="titre">{$msg_user}</td>
-  <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if} [<a href="?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
+  <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if}
+  [<a href="{$smarty.request.PHP_SELF}?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
 </tr>
 <tr class="pair">
   <td class="titre">{$msg_host}</td>

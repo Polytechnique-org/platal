@@ -29,15 +29,15 @@
   </p>
   <ul>
     <li>
-      <a href="?type=public">fonctionnalités publiques du site</a>
+      <a href="{rel}/manuel?type=public">fonctionnalités publiques du site</a>
       <a href="{rel}/docs/manuel.pdf">(version PDF)</a>
     </li>
     <li>
-      <a href="?type=auth">fonctionnalités accessibles par les membres des groupes X</a>
+      <a href="{rel}/manuel?type=auth">fonctionnalités accessibles par les membres des groupes X</a>
       <a href="{rel}/docs/manuel.pdf">(version PDF)</a>
     </li>
     <li>
-      <a href="?type=admin">fonctionnalités à disposition des animateurs des groupes X</a>
+      <a href="{rel}/manuel?type=admin">fonctionnalités à disposition des animateurs des groupes X</a>
       <a href="{rel}/docs/manuel-admin.pdf">(version PDF)</a>
     </li>
   </ul>

@@ -157,7 +157,7 @@
           La synchro prend en compte toutes les informations que tu as signalés à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations selon ce qu'elle trouve sur ta <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
         </p>
         <p class="center">
-          <a href="?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
+          <a href="{rel}/profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
         </p>
       </td>
     </tr>

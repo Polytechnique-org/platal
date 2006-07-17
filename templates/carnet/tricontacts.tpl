@@ -24,19 +24,19 @@
 <p>
 Trier par :
 {if ($order eq 'nom') and not($smarty.request.inv)}
-[<a href='?order=nom&amp;trombi={$smarty.request.trombi}&amp;inv=1'><strong>nom <img src='{rel}/images/dn.png' alt='decr.' /></strong></a>]
+[<a href='{rel}/carnet/contact?order=nom&amp;trombi={$smarty.request.trombi}&amp;inv=1'><strong>nom <img src='{rel}/images/dn.png' alt='decr.' /></strong></a>]
 {else}
-[<a href='?order=nom&amp;trombi={$smarty.request.trombi}'>{if ($order eq 'nom')}<strong>nom <img src='{rel}/images/up.png' alt='crois.' /></strong>{else}nom{/if}</a>]
+[<a href='{rel}/carnet/contact?order=nom&amp;trombi={$smarty.request.trombi}'>{if ($order eq 'nom')}<strong>nom <img src='{rel}/images/up.png' alt='crois.' /></strong>{else}nom{/if}</a>]
 {/if}
 {if ($order eq 'promo') and ($smarty.request.inv)}
-[<a href='?order=promo&amp;trombi={$smarty.request.trombi}'><strong>promo <img src='{rel}/images/up.png' alt='decr.' /></strong></a>]
+[<a href='{rel}/carnet/contact?order=promo&amp;trombi={$smarty.request.trombi}'><strong>promo <img src='{rel}/images/up.png' alt='decr.' /></strong></a>]
 {else}
-[<a href='?order=promo&amp;trombi={$smarty.request.trombi}&amp;inv=1'>{if ($order eq 'promo')}<strong>promo <img src='{rel}/images/dn.png' alt='crois.' /></strong>{else}promo{/if}</a>]
+[<a href='{rel}/carnet/contact?order=promo&amp;trombi={$smarty.request.trombi}&amp;inv=1'>{if ($order eq 'promo')}<strong>promo <img src='{rel}/images/dn.png' alt='crois.' /></strong>{else}promo{/if}</a>]
 {/if}
 {if ($order eq 'last') and ($smarty.request.inv)}
-[<a href='?order=last&amp;trombi={$smarty.request.trombi}'><strong>dernière modification <img src='{rel}/images/up.png' alt='decr.' /></strong></a>]
+[<a href='{rel}/carnet/contact?order=last&amp;trombi={$smarty.request.trombi}'><strong>dernière modification <img src='{rel}/images/up.png' alt='decr.' /></strong></a>]
 {else}
-[<a href='?order=last&amp;trombi={$smarty.request.trombi}&amp;inv=1'>{if ($order eq 'last')}<strong>dernière modification <img src='{rel}/images/dn.png'i alt='crois.' /></strong>{else}dernière modification{/if}</a>]
+[<a href='{rel}/carnet/contact?order=last&amp;trombi={$smarty.request.trombi}&amp;inv=1'>{if ($order eq 'last')}<strong>dernière modification <img src='{rel}/images/dn.png'i alt='crois.' /></strong>{else}dernière modification{/if}</a>]
 {/if}
 </p>
 
