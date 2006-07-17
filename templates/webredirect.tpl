@@ -30,7 +30,7 @@
     les adresses <strong>http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}</strong>
   et <strong>http://{#globals.webredirect.domain#}/{$smarty.session.forlife}</strong>
     vers la page WEB de ton choix. Pour de plus amples détails, consulte
-  <a href="{"docs/doc_carva.php"|url}">cette page</a>
+  <a href="{rel}/Docs/MaRedirectionDePageWEB">cette page</a>
 </p>
 
 <h2>Conditions d'usage</h2>
@@ -38,7 +38,7 @@
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas
   atteinte aux droits des tiers
-  (<a href="{"docs/doc_carva.php#charte"|url}">plus de précisions</a>).
+  (<a href="{rel}/Docs/MaRedirectionDePageWEB#charte">plus de précisions</a>).
 </p>
 
 <h1>

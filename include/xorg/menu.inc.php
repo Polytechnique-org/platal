@@ -73,6 +73,10 @@ class XOrgMenu
 
     function addPublicEntry($head, $prio, $text, $url)
     {
+        if (strpos($url, '://') === false) {
+            global $globals;
+            $url = $globals->baseurl.'/'.$url;
+        }
         $this->_ext[$head][] = Array($prio, 'text' => $text, 'url' => $url);
     }
 
@@ -81,6 +85,10 @@ class XOrgMenu
 
     function addPrivateEntry($head, $prio, $text, $url)
     {
+        if (strpos($url, '://') === false) {
+            global $globals;
+            $url = $globals->baseurl.'/'.$url;
+        }
         $this->_int[$head][] = Array($prio, 'text' => $text, 'url' => $url);
     }
 
@@ -91,9 +99,11 @@ class XOrgMenu
     {
         $res = S::logged() ? $this->_int : $this->_ext;
         if (S::identified()) {
-            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion', 'url' => 'exit');
+            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion',
+                                   'url' => $globals->baseurl.'/exit');
         } elseif (Cookie::has('ORGaccess')) {
-            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion totale', 'url' => 'exit/forget');
+            $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion totale',
+                                   'url' => $globals->baseurl.'/exit/forget');
         }
         if (!S::has_perms()) {
             unset($res[XOM_ADMIN]);

@@ -43,7 +43,7 @@
               prive
             </td>
             <td class="texte">
-              <a href="{"docs/faq.php"|url}#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="{rel}/Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>

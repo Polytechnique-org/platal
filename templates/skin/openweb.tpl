@@ -68,7 +68,7 @@
           <div class="menu_title">{$menu_title}</div>
           {/if}
           {foreach item=mi from=$menu_list}
-          <a href="{$mi.url|url}">{$mi.text}</a>
+          <a href="{$mi.url}">{$mi.text}</a>
           {/foreach}
           {/foreach}
           {perms level=admin}

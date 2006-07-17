@@ -55,12 +55,12 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{rel}/events"><img src="{"images/sk_spectral_logo.gif"|url}" alt="[ LOGO ]" /></a>
+          <a href="{rel}/events"><img src="{rel}/images/sk_spectral_logo.gif" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{rel}/events"><img src="{"images/sk_spectral_ban.jpg"|url}" alt="[ Polytechnique.org ]" /></a>
+          <a href="{rel}/events"><img src="{rel}/images/sk_spectral_ban.jpg" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
-          <a href="{rel}/events"><img src="{"images/sk_spectral_lesX.jpg"|url}" alt="[LES X SUR LE WEB]" /></a>
+          <a href="{rel}/events"><img src="{rel}/images/sk_spectral_lesX.jpg" alt="[LES X SUR LE WEB]" /></a>
         </td>
       </tr>
       <tr>
@@ -70,14 +70,14 @@
           <div class="menu_title">{$menu_title}</div>
           {/if}
           {foreach item=mi from=$menu_list}
-          <div class='menu_item'><a href="{$mi.url|url}">{$mi.text}</a></div>
+          <div class='menu_item'><a href="{$mi.url}">{$mi.text}</a></div>
           {/foreach}
           {/foreach}
           {perms level=admin}
           <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
             <tr><th>Valid</th></tr>
             <tr class="impair">
-              <td><a href="{"admin/valider.php"|url}">{insert name="mkStats"}</a></td>
+              <td><a href="{rel}/admin/valider.php">{insert name="mkStats"}</a></td>
             </tr>
           </table>
           {/perms}

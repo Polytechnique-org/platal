@@ -102,7 +102,7 @@ Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté à 
 
 <p>
 Pour surveiller des membres non-inscrits, il faut passer par la <a href="{rel}/search" class='popup'>recherche</a>
-et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" /> pour les ajouter à cette liste
+et cliquer sur les icones <img src="{rel}/images/ajouter.gif" alt="Ajouter" /> pour les ajouter à cette liste
 </p>
 
 <table class='tinybicol' cellpadding="0" cellspacing="0">
@@ -115,7 +115,7 @@ et cliquer sur les icones <img src="{"images/ajouter.gif"|url}" alt="Ajouter" />
       <ul>
         {foreach from=$watch->nonins() item=p}
         <li>
-        {$p.prenom} {$p.nom} ({$p.promo}) <a href="{rel}/carnet/notifs/del_nonins/{$p.user_id}"><img src="{"images/retirer.gif"|url}" alt="retirer" /></a>
+        {$p.prenom} {$p.nom} ({$p.promo}) <a href="{rel}/carnet/notifs/del_nonins/{$p.user_id}"><img src="{rel}/images/retirer.gif" alt="retirer" /></a>
         </li>
         {/foreach}
       </ul>

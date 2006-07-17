@@ -37,7 +37,7 @@
 <br />
 
 <div class="center">
-  <a href="javascript:void(window.open('{"stats/stats_promo.php"|url}?promo={$promo}','','width=800,height=600,toolbar=no'))">
+  <a href="javascript:void(window.open('{rel}/stats/stats_promo.php?promo={$promo}','','width=800,height=600,toolbar=no'))">
     Voir l'évolution des inscriptions de la promotion
   </a>
 </div>

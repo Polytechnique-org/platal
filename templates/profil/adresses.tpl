@@ -66,7 +66,7 @@
     {else}
     {assign var="titre" value="Nouvelle adresse&nbsp;:"}
     {/if}
-    {include file="geoloc/form.address.tpl" adr=$adr titre=$titre url="profile/edit/`$onglet`"|url}
+    {include file="geoloc/form.address.tpl" adr=$adr titre=$titre}
     <tr>
       <td class="colg">
         <span class="titre">Adresse:</span>

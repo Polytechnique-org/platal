@@ -31,7 +31,7 @@
   </tr>
   {foreach from=$listes item=l}
   <tr class='{cycle values="impair,pair"}'>
-    <td><a href='{"listes/soptions.php"|url}?liste={$l}'>{$l}</a></td>
+    <td><a href='{rel}/{$platal->ns}lists/soptions/{$l}'>{$l}</a></td>
   </tr>
   {/foreach}
 </table>

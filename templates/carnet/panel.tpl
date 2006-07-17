@@ -70,7 +70,7 @@ Il faut pour celà se rendre sur la page de <a href='{rel}/carnet/notifs'>configu
       </a>
       {if !$promo[row].contact}
       <a href="{rel}/carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}">{*
-        *}<img src="{"images/ajouter.gif"|url}" alt="ajouter à mes contacts" />{*
+        *}<img src="{rel}/images/ajouter.gif" alt="ajouter à mes contacts" />{*
       *}</a>
       {/if}
       {else}

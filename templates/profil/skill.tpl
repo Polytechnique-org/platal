@@ -169,7 +169,7 @@
         <span class="titre">Niveau</span>
       </td>
       <td class="cold" style="width:15%">
-        <span class="lien"><a href="{"docs/faq.php"|url}#niveau_langue" class="popup_800x600">Quel niveau ?</a></span>
+        <span class="lien"><a href="{rel}/docs/faq.php#niveau_langue" class="popup_800x600">Quel niveau ?</a></span>
       </td>
     </tr>
     {foreach from=$langue_name item=name key=i}
