@@ -11,8 +11,7 @@ $InputTags['e_form'] = array(
     
 // set profiles to point to plat/al fiche
 Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e',
-    'PreserveText("=", \'<a href="'.$globals->baseurl
-    .'/profile/$1" class="popup2">$2</a>\', "")');
+    'PreserveText("=", \'<a href="profile/$1" class="popup2">$2</a>\', "")');
 
 // prevent restorelinks before block apply (otherwise [[Sécurité]] will give
 //  .../S<span class='e9curit'>e9'>Sécurité</a>

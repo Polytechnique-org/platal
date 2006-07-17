@@ -93,7 +93,7 @@ réponse d'un robot qui l'informera que {$loginbis}@polytechnique.org
 est ambigu pour des raisons d'homonymie et signalera ton email exact.
 
 L'équipe Polytechnique.org
-{$baseurl}
+{#globals.baseurl#}
         </textarea>
       </td>
     </tr>
@@ -118,7 +118,7 @@ L'équipe Polytechnique.org
       <td>
         <textarea cols="80" rows="20" name="mailbody">
 {$prenom},
-          
+
 Comme nous t'en avons informé par mail il y a quelques temps,
 nous t'avons retiré de façon définitive l'adresse
 {$loginbis}@polytechnique.org.
@@ -130,7 +130,7 @@ est ambigu pour des raisons d'homonymie et signale ton email exact
 Tu peux faire l'essai toi-même en écrivant à {$loginbis}@polytechnique.org.
 
 L'équipe Polytechnique.org
-{$baseurl}
+{#globals.baseurl#}
         </textarea>
       </td>
     </tr>

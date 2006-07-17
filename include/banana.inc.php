@@ -22,14 +22,12 @@
 require_once('banana/banana.inc.php');
 
 function hook_formatDisplayHeader($_header, $_text) {
-    global $globals, $banana;
+    global $banana;
     if ($_header == 'from') {
         $id = $banana->post->headers['x-org-id'];
         $_text = formatFrom($_text);
-        return $_text . ' <a href="' . $globals->baseurl . '/profile/' 
-             . $id . '" class="popup2" title="' . $id . '">'
-             . '<img src="' . $globals->baseurl . '/images/loupe.gif" alt="fiche" title="fiche" />'
-             . '</a>';
+        return $_text . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
+             . '<img src="images/loupe.gif" alt="fiche" title="fiche" /></a>';
     }
 }
 
@@ -39,14 +37,12 @@ function hook_checkcancel($_headers) {
 
 function hook_shortcuts()
 {
-    global $globals;
-    return Array('profile' => Array('<a href="' . $globals->baseurl . '/banana/profile">Préférences</a>',
+    return Array('profile' => array('<a href="banana/profile">Préférences</a>',
                                     'Préférences'));
 }
 
 function hook_makeLink($params) {
-    global $globals;
-    $base = $globals->baseurl . '/banana'; 
+    $base = 'banana';
     if ($params['subscribe'] == 1) {
         return $base . '/subscription';
     }
@@ -81,8 +77,7 @@ function hook_makeLink($params) {
 
 function hook_makeImg($img, $alt, $height, $width)
 {
-    global $globals;
-    $url = $globals->baseurl . '/images/banana/' . $img;
+    $url = 'images/banana/' . $img;
 
     if (!is_null($width)) {
         $width = ' width="' . $width . '"';
@@ -117,7 +112,7 @@ class PlatalBanana extends Banana
     function PlatalBanana()
     {
         global $globals;
-    
+
         $uid = S::v('uid');
         $req = XDB::query(
                 "SELECT  nom, mail, sig, FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags)

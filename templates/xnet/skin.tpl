@@ -23,6 +23,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <base href="{#globals.baseurl#}" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
     <title>Les associations polytechniciennes</title>
@@ -39,7 +40,7 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {foreach from=$xorg_css item=css}
-    <link rel="stylesheet" type="text/css" href="{rel}/{$css}" />
+    <link rel="stylesheet" type="text/css" href="{rel}/css/{$css}" />
     {/foreach}
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="{rel}/{$js}"></script>

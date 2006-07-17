@@ -36,7 +36,7 @@
   <div id="dev">
     @HOOK@
     Validation:
-    <a href="http://jigsaw.w3.org/css-validator/validator?uri={$validate}">CSS</a>
+    <a href="http://jigsaw.w3.org/css-validator/validator?uri={#globals.baseurl#}/valid.html">CSS</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
     références :
     <a href="http://www.w3schools.com/xhtml/xhtml_reference.asp">XHTML</a>

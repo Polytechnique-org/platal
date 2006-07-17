@@ -33,7 +33,7 @@ function wiki_pagename() {
         $n = $keywords[$count - 2].".".$keywords[$count - 1];
     global $globals;
     if (($urln = str_replace('.', '/', $n)) != Env::get('n') && $n != Env::get('n'))
-        redirect($globals->relurl.'/'.$urln);
+        redirect($globals->baseurl.'/'.$urln);
     $_REQUEST['n'] = $n;
     return $n;
 }

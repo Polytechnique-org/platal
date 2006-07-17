@@ -40,7 +40,6 @@ if ($target) {
 
 $page->assign('op',$op);
 $page->assign('target',$target);
-$page->assign('baseurl',$globals->baseurl);
 
 // on a un $target valide, on prepare les mails
 if ($target) {

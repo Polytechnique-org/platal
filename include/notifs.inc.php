@@ -133,7 +133,6 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 // {{{ function getNbNotifs
 
 function getNbNotifs() {
-    global $globals;
     if (!S::has('uid')) {
         return 0;
     }
@@ -145,10 +144,11 @@ function getNbNotifs() {
     $res = select_notifs(false, $uid, $watchlast, false);
     $n   = $res->numRows();
     $res->free();
-    $url = $globals->baseurl."/carnet/panel";
-    if($n==0) { return; }
-    if($n==1) { return "<a href='$url'>1 évènement !</a>"; }
-    return "<a href='$url'>$n évènements !</a>";
+    if ($n == 0) {
+        return;
+    }
+
+    return "<a href='carnet/panel'>$n évènement".($n > 1 ? 's' : '')." !</a>";
 }
 
 // }}}

@@ -190,7 +190,7 @@ class ProfileModule extends PLModule
 
         // photo
 
-        $photo = $globals->baseurl.'/photo/'.$user['forlife'].($new ? '/req' : '');
+        $photo = 'photo/'.$user['forlife'].($new ? '/req' : '');
 
         if (!isset($user['y']) and !isset($user['x'])) {
             list($user['x'], $user['y']) = getimagesize("images/none.png");

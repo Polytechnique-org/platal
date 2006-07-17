@@ -1,6 +1,6 @@
 <?php if (!defined('PmWiki')) exit();
 
-$ScriptUrl       = $globals->relurl;
+$ScriptUrl       = $globals->baseurl;
 $UploadUrlFmt    = $ScriptUrl."/uploads";
 $WorkDir         = $globals->wiki->workdir;
 $WikiDir         = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
@@ -39,7 +39,7 @@ $DefaultPasswords['admin']  = 'has_perms: and: identified:';
 $DefaultPasswords['upload'] = 'has_perms: and: identified:';
 
 $EnableGUIButtons = 1;
-$EnableUpload = 1;                       
+$EnableUpload = 1;
 $LinkWikiWords = 0;                      # disable WikiWord links
 $EnableIMSCaching = 1;                   # allow browser caching
 
