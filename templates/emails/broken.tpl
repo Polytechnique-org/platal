@@ -32,7 +32,7 @@ Tu as entré une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est inval
 <p>
 En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
 correspondant si tu veux que nous puissions te répondre. Cette
-<a href="{rel}/Docs/PatteCass%E9e">documentation</a> peut t'aider à trouver cette
+<a href="Docs/PatteCass%E9e">documentation</a> peut t'aider à trouver cette
 information.
 </p>
 
@@ -46,7 +46,7 @@ information.
   <p>
     Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
     Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
-    <a href="{rel}/warn/{$email}">clique sur ce lien</a>.
+    <a href="warn/{$email}">clique sur ce lien</a>.
   </p>
 {elseif $x}
   <p>
@@ -76,7 +76,7 @@ information.
 </p>
 <p>
     Pour plus d'explications concernant cette page, nous t'invitons à consulter
-    la <a href="{rel}/Docs/PatteCass%E9e">documentation suivante</a>
+    la <a href="Docs/PatteCass%E9e">documentation suivante</a>
 </p>
 <p>
     Rentre dans la zone de saisie ci-dessous l'adresse email à laquelle ton
@@ -86,7 +86,7 @@ information.
 </p>
 <br />
 <div class="center">
-  <form action="{rel}/emails/broken" method="post">
+  <form action="emails/broken" method="post">
   <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
     <tr>
       <th>Adresse email défectueuse</th>

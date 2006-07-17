@@ -28,8 +28,8 @@
 </p>
 
 <div class="right">
-  [<a href="{rel}/marketing/this_week?sort=date_ins">par date</a>]
-  [<a href="{rel}/marketing/this_week?sort=promo">par promo</a>]
+  [<a href="marketing/this_week?sort=date_ins">par date</a>]
+  [<a href="marketing/this_week?sort=promo">par promo</a>]
 </div>
 
 <table class="tinybicol">
@@ -42,10 +42,10 @@
   <tr class="{cycle values="impair,pair"}">
     <td class="center">{$in.date_ins|date_format:"%x %X"}</td>
     <td class="center">
-      <a href="{rel}/marketing/promo/{$in.promo}">{$in.promo}</a>
+      <a href="marketing/promo/{$in.promo}">{$in.promo}</a>
     </td>
     <td>
-      <a href="{rel}/profile/{$in.forlife}" class="popup2">
+      <a href="profile/{$in.forlife}" class="popup2">
         {$in.nom} {$in.prenom}</a>
     </td>
   </tr>
@@ -53,8 +53,8 @@
 </table>
 
 <div class="right">
-  [<a href="{rel}/marketing/this_week/per_date">par date</a>]
-  [<a href="{rel}/marketing/this_week/per_promo">par promo</a>]
+  [<a href="marketing/this_week/per_date">par date</a>]
+  [<a href="marketing/this_week/per_promo">par promo</a>]
 </div>
 
 

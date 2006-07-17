@@ -50,7 +50,7 @@
 </table>
 
 <p class="center">
-<a href="{rel}/stats/coupures">retour à la liste</a>
+<a href="stats/coupures">retour à la liste</a>
 </p>
 
 {else}
@@ -81,7 +81,7 @@
     </td>
     <td>
       <span class="smaller">
-        <a href="{rel}/stats/coupures/{$cp.id}">{$cp.resume}</a>
+        <a href="stats/coupures/{$cp.id}">{$cp.resume}</a>
       </span>
     </td>
     <td>

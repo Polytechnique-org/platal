@@ -23,7 +23,7 @@
 
 <h1>Trombinoscope</h1>
 
-<form enctype="multipart/form-data" action="{rel}/photo/change" method="post">
+<form enctype="multipart/form-data" action="photo/change" method="post">
   <table class="flags" cellspacing="0" summary="Flags">
     <tr>
       <td class="rouge"><input type="radio" checked="checked" /></td>
@@ -50,11 +50,11 @@
     </tr>
     <tr>
       <td class="center">
-        <img src="{rel}/photo/{$smarty.session.forlife}" width="200" alt=" [ PHOTO ] " />
+        <img src="photo/{$smarty.session.forlife}" width="200" alt=" [ PHOTO ] " />
       </td>
       <td class="center half">
         {if $submited}
-        <img src="{rel}/photo/{$smarty.session.forlife}/req" width="200" alt=" [ PHOTO ] " />
+        <img src="photo/{$smarty.session.forlife}/req" width="200" alt=" [ PHOTO ] " />
         {else}
         Pas d'image soumise
         {/if}

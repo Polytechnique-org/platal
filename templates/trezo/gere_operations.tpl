@@ -25,7 +25,7 @@
   Gestion des opérations de trésorerie
 </h1>
 
-<form method="post" action="{rel}/{$platal->path}">
+<form method="post" action="{$platal->path}">
   <table class="bicol">
     <tr>
       <th colspan="2">
@@ -65,7 +65,7 @@
   </table>
 </form>
 
-<a href="{rel}/{$platal->path}">retour</a>
+<a href="{$platal->path}">retour</a>
 {elseif $smarty.request.action eq "update" && $op_id}
 <strong>modification de l'opération</strong>
 {elseif $smarty.request.action eq "update"}
@@ -106,7 +106,7 @@
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>
-      <form method="post" action="{rel}/{$platal->path}">
+      <form method="post" action="{$platal->path}">
         <div>
           <input type="hidden" name="op_id" value="0" />
           <input type="hidden" name="action" value="edit" />
@@ -125,7 +125,7 @@
     <td class="right">{$op.debit}</td>
     <td class="right">{$op.credit}</td>
     <td>
-      <form method="post" action="{rel}/{$platal->path}">
+      <form method="post" action="{$platal->path}">
         <div>
           <input type="hidden" name="op_id" value="{$op.id}" />
           <input type="hidden" name="annee" value="{$annee_sel}" />

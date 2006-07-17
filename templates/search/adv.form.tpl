@@ -22,9 +22,9 @@
 
 <h1>Recherche avancée</h1>
 
-<p>[<a href="{rel}/search">Recherche simple</a>]</p>
+<p>[<a href="search">Recherche simple</a>]</p>
 
-<form id="recherche" action="{rel}/search/adv" method="get">
+<form id="recherche" action="search/adv" method="get">
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <td>Nom</td>
@@ -317,9 +317,9 @@
     }
   {/literal}</script>
   {if $use_map}
-    <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('{rel}/geoloc/')"/>
+    <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
   {/if}
-  <input type="button" value="Chercher" onclick="launch_form('{rel}/search/adv')"/>
+  <input type="button" value="Chercher" onclick="launch_form('search/adv')"/>
 </p>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.

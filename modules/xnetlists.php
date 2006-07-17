@@ -179,7 +179,7 @@ class XnetListsModule extends ListsModule
                                 "$red+bounces@listes.polytechnique.org");
 
         global $platal;
-        redirect(smarty_function_rel().'/'.$platal->ns.'lists/admin/'.$liste);
+        redirect($globals->baseurl.'/'.$platal->ns.'lists/admin/'.$liste);
     }
 
     function handler_sync(&$page, $liste = null)
@@ -318,7 +318,7 @@ class XnetListsModule extends ListsModule
         XDB::query('INSERT INTO x4dat.virtual (alias,type) VALUES({?}, "user")', $new);
 
         global $platal;
-        redirect(smarty_function_rel()."/{$platal->ns}alias/admin/$new");
+        redirect("{$globals->baseurl}/{$platal->ns}alias/admin/$new");
     }
 
     function handler_profile(&$page, $user = null)

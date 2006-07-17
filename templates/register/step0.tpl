@@ -38,7 +38,7 @@ L'enregistrement se déroule <strong>en deux étapes</strong> :
 
 {include file=../spool/wiki.d/cache_xorg_Docs.Charte.tpl public=1}
 
-<form action="{rel}/register" method="post">
+<form action="register" method="post">
   <div class="center">
     <input type="submit" value="J'accepte ces conditions" name="step1" />
   </div>

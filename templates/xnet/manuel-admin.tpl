@@ -54,7 +54,7 @@ le site (en mode connecté). Suite à sa demande, tu reçois un mail semblable à
 celui-ci :
 
 <br />
-<img src="{rel}/images/mail_inscription.jpg" />
+<img src="images/mail_inscription.jpg" />
 <br />
 
 Le
@@ -84,7 +84,7 @@ groupe, ou à tous les X&nbsp;? Selon les réponses que tu fournis, la diffusion
 de cet événement via les sites polytechniciens est plus ou moins large
 
 <br />
-<img src="{rel}/images/evnt_creation.jpg" />
+<img src="images/evnt_creation.jpg" />
 <br />
 
 La page de création d'événements te permet également de décrire précisément les
@@ -93,7 +93,7 @@ certains des "moments" n'intéressent pas tous les participants, et
 qu'ils souhaitent s'inscrire seulement à certains d'entre eux.
 
 <br />
-<img src="{rel}/images/evnt_moments.jpg" />
+<img src="images/evnt_moments.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -115,7 +115,7 @@ les destinataires et conduit à un meilleur taux de réponse. C'est pourquoi nous 
 l'utiliser autant que possible.
 
 <br />
-<img src="{rel}/images/mail.jpg" />
+<img src="images/mail.jpg" />
 <br />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
@@ -152,7 +152,7 @@ regrouper plusieurs listes de diffusion au sein d'une liste englobante, choisis
 aussi d'utiliser un alias, dont la gestion est plus souple. 
 
 <br />
-<img src="{rel}/images/liste.jpg" />
+<img src="images/liste.jpg" />
 <br />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
@@ -165,6 +165,6 @@ que les listes de diffusion classique (modération de l'inscription et de la
 diffusion notamment). 
 
 <br />
-<img src="{rel}/images/alias.jpg" />
+<img src="images/alias.jpg" />
 <br />
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />

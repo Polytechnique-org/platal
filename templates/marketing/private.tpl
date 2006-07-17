@@ -45,13 +45,13 @@ sa dernière relance date du {$relance|date_format}
 {/if}
 </p>
 
-<p>[<a href='{rel}/{$path}/insrel'>le relancer</a>]</p>
+<p>[<a href='{$path}/insrel'>le relancer</a>]</p>
 
 {/if}
 
 <h2>Adresses connues</h2>
 
-<form action="{rel}/{$path}/add" method="post">
+<form action="{$path}/add" method="post">
   <table class="bicol" cellpadding="0" cellspacing="0">
     <tr>
       <th>Adresse</th>
@@ -64,13 +64,13 @@ sa dernière relance date du {$relance|date_format}
     {iterate from=$addr item=a}
     <tr class="{cycle values='impair,pair'}">
       <td>{$a.email}</td>
-      <td><a href="{rel}/profile/{$a.alias}" class="popup2">{$a.alias}</a> {if $a.type eq user}(*){/if}</td>
+      <td><a href="profile/{$a.alias}" class="popup2">{$a.alias}</a> {if $a.type eq user}(*){/if}</td>
       <td>{$a.date|date_format|default:'-'}</td>
       <td>{$a.last|date_format|default:'-'}</td>
       <td class='center'>{$a.nb|default:"-"}</td>
       <td class='action'>
-        <a href='{rel}/{$path}/del/{$a.email}'>del</a><br />
-        <a href='{rel}/{$path}/rel/{$a.email}'>relance</a>
+        <a href='{$path}/del/{$a.email}'>del</a><br />
+        <a href='{$path}/rel/{$a.email}'>relance</a>
       </td>
     </tr>
     {/iterate}
@@ -96,7 +96,7 @@ sa dernière relance date du {$relance|date_format}
 </form>
 
 {if $rel_to}
-<form action="{rel}/{$path}/relforce/{$email}" method="post">
+<form action="{$path}/relforce/{$email}" method="post">
   <table class="bicol">
     <tr class="pair">
       <th colspan="2">Edition du mail de relance</th>

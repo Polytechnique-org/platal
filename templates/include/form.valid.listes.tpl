@@ -54,7 +54,7 @@
   <td class="titre">Gestionnaires&nbsp;:</td>
   <td>
     {foreach from=$valid->owners item=o}
-    <a href="{rel}/profile/{$o}" class="popup2">{$o}</a>
+    <a href="profile/{$o}" class="popup2">{$o}</a>
     {/foreach}
   </td>
 </tr>
@@ -62,7 +62,7 @@
   <td class="titre">Membres&nbsp;:</td>
   <td>
     {foreach from=$valid->members item=o}
-    <a href="{rel}/profile/{$o}" class="popup2">{$o}</a>
+    <a href="profile/{$o}" class="popup2">{$o}</a>
     {/foreach}
   </td>
 </tr>

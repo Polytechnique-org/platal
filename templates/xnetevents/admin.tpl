@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : <a href='{rel}/{$platal->ns}events'>Evénements</a> </h1>
+<h1>{$asso.nom} : <a href='{$platal->ns}events'>Evénements</a> </h1>
 
 <p>
 L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
@@ -37,17 +37,17 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
 
 {if count($moments) > 1}
 <p class="center">
-[<a href="{rel}/{$platal->ns}events/admin/{$evt.eid}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->ns}events/admin/{$evt.eid}"{if !$platal->argv[2]}class="erreur"{/if}>tout</a>]
 {foreach from=$moments item=m}
-[<a href="{rel}/{$platal->ns}events/admin/{$evt.eid}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
+[<a href="{$platal->ns}events/admin/{$evt.eid}/{$m.item_id}" {if $platal->argv[2] eq $m.item_id}class="erreur"{/if}>{$m.titre}</a>]
 {/foreach}
 </p>
 {/if}
 
 <p class="center">
-[<a href="{rel}/{$platal->path}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->path}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
-[<a href="{rel}/{$platal->path}?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="{$platal->path}?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
@@ -84,9 +84,9 @@ Ils ont payé mais ont oublié de s'inscrire :
     </td>
     <td>{$m.promo}</td>
     <td>
-      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
-      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
-      <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
+      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="images/loupe.gif" alt="[fiche]" /></a>
+      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="images/vcard.png" alt="[vcard]" /></a>
+      <a href="mailto:{$m.email}@polytechnique.org"><img src="images/mail.png" alt="mail" /></a>
     </td>
     <td>{$m.montant}</td>
   </tr>
@@ -129,11 +129,11 @@ Ils ont payé mais ont oublié de s'inscrire :
     <td>{$m.promo}</td>
     <td>
       {if $m.x}
-      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
-      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
-      <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
+      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="images/loupe.gif" alt="[fiche]" /></a>
+      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="images/vcard.png" alt="[vcard]" /></a>
+      <a href="mailto:{$m.email}@polytechnique.org"><img src="images/mail.png" alt="mail" /></a>
       {else}
-      <a href="mailto:{$m.email}"><img src="{rel}/images/mail.png" alt="mail"></a>
+      <a href="mailto:{$m.email}"><img src="images/mail.png" alt="mail"></a>
       {/if}
     </td>
     {if $tout}
@@ -159,14 +159,14 @@ Ils ont payé mais ont oublié de s'inscrire :
 
 <p class="descr">
 {foreach from=$links item=ofs key=txt}
-<a href="{rel}/{$platal->path}?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
+<a href="{$platal->path}?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
 
 {if $admin}
 
 <p class="descr">
-[<a href="{rel}/{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]
+[<a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]
 </p>
 
 <hr />
@@ -176,7 +176,7 @@ En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des 
 Donne ici son mail, ainsi que le nombre de participants.
 </p>
 
-<form action="{rel}/{$platal->path}" method="post" id="inscription">
+<form action="{$platal->path}" method="post" id="inscription">
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
@@ -209,7 +209,7 @@ entrer un montant négatif.
 Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous
 </p>
 
-<form action="{rel}/{$platal->path}" method="post" id="montant">
+<form action="{$platal->path}" method="post" id="montant">
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
   Mail: <input name="mail" size="20" />

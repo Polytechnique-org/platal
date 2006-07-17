@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<p>[<a href='{rel}/{$platal->ns}lists'>retour à la page des listes</a>]</p>
+<p>[<a href='{$platal->ns}lists'>retour à la page des listes</a>]</p>
 
 <h1>Membres de {$platal->argv[1]}</h1>
       
@@ -31,8 +31,8 @@
       {if $mem->total()}
       {iterate from=$mem item=m}
       {$m.redirect}
-      <a href='{rel}/{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
-        <img src='{rel}/images/del.png' alt='retirer membre' title='retirer membre' />
+      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
+        <img src='images/del.png' alt='retirer membre' title='retirer membre' />
       </a>
       <br />
       {/iterate}
@@ -44,7 +44,7 @@
   <tr>
     <td><strong>Ajouter</strong></td>
     <td>
-      <form method="post" action="{rel}/{$platal->ns}alias/admin/{$platal->argv[1]}">
+      <form method="post" action="{$platal->ns}alias/admin/{$platal->argv[1]}">
         <div>
         <input type='text' name='add_member' />
         &nbsp;

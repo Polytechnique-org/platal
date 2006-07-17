@@ -49,7 +49,7 @@ Tu as ajouté le message suivant à l'intention du validateur : {$valid_mesg|nl2br
 </p>
 {/if}
 
-<form action="{rel}/events/submit" method="post">
+<form action="events/submit" method="post">
   <div>
     <input type="hidden" name="titre"      value="{$titre}" />
     <input type="hidden" name="texte"      value="{$texte}" />
@@ -73,12 +73,12 @@ Ta proposition a bien été enregistrée, un administrateur va se charger de la val
 Merci pour ta contribution à la vie du site!
 </p>
 <p>
-<a href="{rel}/events">Retour à la page d'accueil</a>
+<a href="events">Retour à la page d'accueil</a>
 </p>
 {else}
 <p class="erreur">
 Une erreur s'est produite pendant l'enregistrement de ta proposition.
-Merci de nous <a href="{rel}/Docs/NousContacter">contacter</a>!
+Merci de nous <a href="Docs/NousContacter">contacter</a>!
 </p>
 {/if}
 

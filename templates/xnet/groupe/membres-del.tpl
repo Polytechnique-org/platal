@@ -23,7 +23,7 @@
 {if $smarty.post.confirm}
 
 <p class="descr">
-<a href="{rel}/{$platal->ns}annuaire">retour à l'annuaire</a>
+<a href="{$platal->ns}annuaire">retour à l'annuaire</a>
 </p>
 
 {else}
@@ -35,7 +35,7 @@
 </h2>
 
 
-<form method="post" action="{rel}/{$platal->ns}member/del/{$platal->argv[1]}">
+<form method="post" action="{$platal->ns}member/del/{$platal->argv[1]}">
   <div class="center">
     <p class="descr">
     Etes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,

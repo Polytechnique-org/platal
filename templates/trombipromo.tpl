@@ -33,7 +33,7 @@ exemple si tu es sur un vieux modem), la page que tu vas télécharger
 en validant peut être longue à afficher.
 </p>
 
-<form action="{rel}/trombi/" method="post">
+<form action="trombi/" method="post">
   <table class="tinybicol" cellpadding="3" summary="Saisie promo" style="width: 30%; margin-left:35%">
     <tr>
       <th colspan="2">

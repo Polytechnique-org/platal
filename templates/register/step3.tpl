@@ -25,7 +25,7 @@
 
 <h1>Formulaire de pré-inscription</h1>
 
-<form action="{rel}/register" method="post">
+<form action="register" method="post">
   {if $smarty.session.sub_state.mailorg2}
   <p>
   Tu n'as pour le moment aucun homonyme dans notre base de données, nous allons

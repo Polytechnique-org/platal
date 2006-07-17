@@ -57,7 +57,7 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
       <td>
         <input type="checkbox" name="membres" value="1" {if $smarty.request.membres}checked="checked"{/if} />
-        <em>écrit à tout l'annuaire du groupe</em> <a href="{rel}/{$platal->ns}annuaire" class='popup'>(voir annuaire)</a>
+        <em>écrit à tout l'annuaire du groupe</em> <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a>
       </td>
     </tr>
 
@@ -69,7 +69,7 @@ masculin ou féminin, par son prénom, ou son nom.
       <td>
         <input type="checkbox" name="ml[{$l.list}]" value="1" {if $smarty.request.ml[$l.list]}checked="checked"{/if} />
         {$l.addr}
-        <a href="{rel}/{$platal->ns}lists/admin/{$l.list}" class="popup">(voir composition)</a>
+        <a href="{$platal->ns}lists/admin/{$l.list}" class="popup">(voir composition)</a>
       </td>
     </tr>
     {/foreach}

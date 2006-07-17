@@ -31,7 +31,7 @@
   <tr class="impair">
     <td class='half'>
       <h3>
-        <a href="{rel}/carnet/contacts">Page de tes contacts</a>
+        <a href="carnet/contacts">Page de tes contacts</a>
       </h3>
       <div class="explication">
         Tu peux ici lister tes contacts, en ajouter et en retirer.
@@ -39,7 +39,7 @@
     </td>
     <td class='half'>
       <h3>
-        <a href="{rel}/carnet/contacts/trombi">Le trombi de tes contacts</a>
+        <a href="carnet/contacts/trombi">Le trombi de tes contacts</a>
       </h3>
       <div class="explication">
         La même chose que la page de tes contacts... <strong>en images !</strong>
@@ -59,24 +59,24 @@
   <tr class="pair">
     <td class='half'>
       <h3>
-        <a href="{rel}/carnet/panel">Tous les évenements de la semaine</a>
+        <a href="carnet/panel">Tous les évenements de la semaine</a>
       </h3>
       <div class="explication">
         Affichage de tous les évenements de camarades/promos
   {if $smarty.session.core_rss_hash}
   <div class="right">
-    <a href='{rel}/carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+    <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' /></a>
   </div>
   {else}
   <div class="right">
-    <a href='{rel}/prefs/rss/?referer=carnet'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
+    <a href='prefs/rss/?referer=carnet'><img src='images/rssact.gif' alt='fil rss' /></a>
   </div>
   {/if}
       </div>
     </td>
     <td class='half'>
       <h3>
-        <a href="{rel}/carnet/notifs">Configurer tes notifications</a>
+        <a href="carnet/notifs">Configurer tes notifications</a>
       </h3>
       <div class="explication">
         Être notifié des inscriptions, décès, changement de fiche, ...

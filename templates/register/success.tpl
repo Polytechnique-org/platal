@@ -46,7 +46,7 @@ ton mot de passe a bien été mis à jour !
 Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici :
 </p>
 
-<form action="{rel}/register/success" method="post" id="changepass">
+<form action="register/success" method="post" id="changepass">
   <table class="tinybicol" cellpadding="3" cellspacing="0">
     <tr>
       <th colspan="2">
@@ -77,7 +77,7 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le fa
   </table>
 </form>
 
-<form action="{rel}/register/success" method="post" id="changepass2">
+<form action="register/success" method="post" id="changepass2">
 <div><input type="hidden" name="response2"  value="" /></div>
 </form>
 
@@ -92,7 +92,7 @@ traitées avec la priorité minimale.
 
 <h2>Rejoindre la communauté</h2>
 
-<form action='{rel}/profile/edit' method='post'>
+<form action='profile/edit' method='post'>
   <p>
   Pour rejoindre la communauté des X sur le web, nous te convions le plus vivement à remplir ton profil !!!
   </p>

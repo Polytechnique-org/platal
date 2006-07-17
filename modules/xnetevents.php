@@ -347,7 +347,7 @@ class XnetEventsModule extends PLModule
 
             if (is_null($evt['eid'])) {
                 global $platal;
-                redirect(smarty_function_rel().'/'.$platal->path.'/'.$eid);
+                redirect($globals->baseurl.'/'.$platal->path.'/'.$eid);
             }
         }
 

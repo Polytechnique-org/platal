@@ -57,7 +57,7 @@ associations, en cliquant sur <i>plan du site</i>.
 
 <h3><a name="general">Les présentations générales</a></h3>
 
-<img src="{rel}/images/groupeX.jpg" />
+<img src="images/groupeX.jpg" />
 
 <br />
 Chacune des 4 catégories dispose d'une page descriptive. L'adresse de cette page varie
@@ -76,7 +76,7 @@ Professionnels) qui permettent un repérage plus facile sur le site.
 
 <br />
 
-<img src="{rel}/images/gpx_liste.jpg" />
+<img src="images/gpx_liste.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -109,7 +109,7 @@ administrateurs du groupe. Tu seras averti par retour de mail, de la suite
 donnée à ta demande.
 </p>
 
-<img src="{rel}/images/inscription.jpg" />
+<img src="images/inscription.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -121,7 +121,7 @@ lui-même, mais sur tous les sites polytechniciens. Pour en profiter, il te
 suffit de cliquer le mot clé de ta recherche dans la boîte à outils présente
 sur toutes les pages.
 <br />
-<img src="{rel}/images/toolbar.jpg" />
+<img src="images/toolbar.jpg" />
 <br />
 En cliquant sur la loupe à droite, tu pourras faire une recherche via le moteur
 d'<a href="http://www.exalead.fr" target="new">Exalead</a>. 
@@ -144,7 +144,7 @@ groupe
 <h3><a name="plan">Le plan du site</a></h3>
 <a href="http://www.polytechnique.net/plan">Lien vers le plan</a>
 <br />
-<img src="{rel}/images/plan.jpg" />
+<img src="images/plan.jpg" />
 
 <br />
 Cette

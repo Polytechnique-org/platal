@@ -27,24 +27,24 @@
 
 <p>
 <strong>Pour demander l'ajout d'une annonce dans la prochaine lettre mensuelle</strong>,
-utilise <a href='{rel}/nl/submit'>le formulaire dédié !</a>
+utilise <a href='nl/submit'>le formulaire dédié !</a>
 </p>
 
 <h2>Ton statut</h2>
 
 {if $nls}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='{rel}/preferences'>des préférences</a>)
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='preferences'>des préférences</a>)
 </p>
 <div class='center'>
-  [<a href='{rel}/nl/out'>me désinscrire de la lettre mensuelle</a>]
+  [<a href='nl/out'>me désinscrire de la lettre mensuelle</a>]
 </div>
 {else}
 <p>
 Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
 </p>
 <div class='center'>
-  [<a href='{rel}/nl/in'>m'inscrire à la lettre mensuelle</a>]
+  [<a href='nl/in'>m'inscrire à la lettre mensuelle</a>]
 </div>
 {/if}
 
@@ -59,7 +59,7 @@ Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
   <tr class="{cycle values="impair,pair"}">
     <td>{$nl.date|date_format}</td>
     <td>
-      <a href="{rel}/nl/show/{$nl.id}">{$nl.titre}</a>
+      <a href="nl/show/{$nl.id}">{$nl.titre}</a>
     </td>
   </tr>
   {/foreach}

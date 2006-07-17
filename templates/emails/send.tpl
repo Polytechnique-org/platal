@@ -45,7 +45,7 @@
 //]]>
 </script>
 
-<form action="{rel}/emails/send" method="post" onsubmit="return check(this);">
+<form action="emails/send" method="post" onsubmit="return check(this);">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr> 
       <th colspan="2">Destinataires</th>
@@ -99,7 +99,7 @@
       <input type="checkbox" name="contacts[{$contact.forlife}]"
         value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@{#globals.mail.domain#}&gt;"
         {if $smarty.request.contacts && $smarty.request.contacts.forlife}checked="checked"{/if} />
-      <a href="{rel}/profile/{$contact.forlife}" class="popup2">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
+      <a href="profile/{$contact.forlife}" class="popup2">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
     </td>
 {if $key is odd}
   </tr>

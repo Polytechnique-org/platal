@@ -46,7 +46,7 @@ Quatre réglages sont possibles :
   qui ne peuvent plus se satisfaire du réglage 3.
   </li>
 </ol>
-<form action="{rel}/emails/antispam" method="post">
+<form action="emails/antispam" method="post">
   <fieldset>
     <legend><strong>Choisis ton propre réglage :</strong></legend>
     <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick='this.form.submit()' />

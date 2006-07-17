@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<form method="post" action="{rel}/{$platal->path}">
+<form method="post" action="{$platal->path}">
   <div class="center">
     <input type="hidden" name="action" value="lister" />
     Afficher la période suivante :

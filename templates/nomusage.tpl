@@ -31,7 +31,7 @@
     Pour supprimer ton nom d'usage, fais une demande avec un nom vide et en précisant la raison.
   </p>
   <p>
-    [<a href='{$smarty.server.PHP_SELF}'>Refaire une demande</a>] - [<a href='{rel}/profile/edit'>Retour au profil</a>]
+    [<a href='{$smarty.server.PHP_SELF}'>Refaire une demande</a>] - [<a href='profile/edit'>Retour au profil</a>]
   </p>
 {else}
   {if $myusage}
@@ -68,7 +68,7 @@ exceptionnellement sur changement de l'état civil, ...).
 <p>
 Les surnoms sont <strong>systématiquement refusés</strong>. Pour
 utiliser une adresse personnalisée, il faut se tourner vers
-<a href="{rel}/emails/alias">l'alias @melix.net</a>.
+<a href="emails/alias">l'alias @melix.net</a>.
 </p>
 
   <p>
@@ -80,7 +80,7 @@ utiliser une adresse personnalisée, il faut se tourner vers
 
   <br />
 
-  <form action="{rel}/profile/usage" method="post">
+  <form action="profile/usage" method="post">
     <table class="bicol" cellpadding="4" summary="Nom d'usage">
       <tr>
         <th>Nom d'usage</th>

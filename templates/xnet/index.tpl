@@ -23,7 +23,7 @@
 <table id="content" cellpadding="2" cellspacing="0">
   <tr>
     <td style="vertical-align: middle;">
-      <img src="{rel}/images/parfait.jpg" width="459" height="200" alt="Logo des groupes" />
+      <img src="images/parfait.jpg" width="459" height="200" alt="Logo des groupes" />
     </td>
 
     <td>
@@ -36,11 +36,11 @@
       Ce site  vous propose des liens vers les forums de discussions et les sites webs des
       différentes associations, des adresses où les contacter, et tous les renseignements utiles
       pour mieux les connaître. Il offre d'autre part des
-      <a href="{rel}/services"> outils de gestion de groupe</a> à l'intention de leurs responsables.
+      <a href="services"> outils de gestion de groupe</a> à l'intention de leurs responsables.
       </p>
       <p class="descr">
       Si vous recherchez la page d'un groupe particulier, vous pouvez
-      <a href="{rel}/plan">en consulter la liste</a>.
+      <a href="plan">en consulter la liste</a>.
       </p>
     </td>
   </tr>

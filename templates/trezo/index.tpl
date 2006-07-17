@@ -23,7 +23,7 @@
 <h1>Tr&eacute;sorerie pour {$mon_sel}</h1>
 
 {perms level=admin}
-<p>[<a href="{rel}/trezo/ops">éditer les comptes</a>]</p>
+<p>[<a href="trezo/ops">éditer les comptes</a>]</p>
 {/perms}
 
 <table class="bicol">

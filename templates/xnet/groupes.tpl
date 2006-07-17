@@ -29,10 +29,10 @@
   <tr>
     {if !$doms || !$gps}
     <td style="vertical-align: top">
-      <div class="cat {if $cat eq groupesx}sel{/if}"><a href="{rel}/groups/groupesx">Groupes X</a></div>
-      <div class="cat {if $cat eq binets}sel{/if}"><a href="{rel}/groups/binets">Binets</a></div>
-      <div class="cat {if $cat eq institutions}sel{/if}"><a href="{rel}/groups/institutions">Institutions</a></div>
-      <div class="cat {if $cat eq promotions}sel{/if}"><a href="{rel}/groups/promotions">Promotions</a></div>
+      <div class="cat {if $cat eq groupesx}sel{/if}"><a href="groups/groupesx">Groupes X</a></div>
+      <div class="cat {if $cat eq binets}sel{/if}"><a href="groups/binets">Binets</a></div>
+      <div class="cat {if $cat eq institutions}sel{/if}"><a href="groups/institutions">Institutions</a></div>
+      <div class="cat {if $cat eq promotions}sel{/if}"><a href="groups/promotions">Promotions</a></div>
     </td>
     {/if}
     
@@ -40,7 +40,7 @@
     <td style="vertical-align: top">
       {foreach from=$doms item=g}
       <div class="cat {if $g.id eq $dom}sel{/if}">
-        <a href="{rel}/groups/{$cat}/{$g.id}">{$g.nom}</a>
+        <a href="groups/{$cat}/{$g.id}">{$g.nom}</a>
       </div>
       {/foreach}
     </td>
@@ -50,7 +50,7 @@
     <td style="text-align:right;">
       {iterate from=$gps item=g}
       <table style="float: left;" cellspacing="2" cellpadding="0">
-        <tr><td class="oval{if $doms}2{/if}"><a href="{rel}/{$g.diminutif}/">{$g.nom}</a></td></tr>
+        <tr><td class="oval{if $doms}2{/if}"><a href="{$g.diminutif}/">{$g.nom}</a></td></tr>
       </table>
       {/iterate}
     </td>

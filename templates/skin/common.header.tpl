@@ -23,12 +23,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta name="description" content="Le Portail des Polytechniciens" />
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
-    <link rel="icon" type="image/png" href="{rel}/images/favicon.png" />
+    <link rel="icon" type="image/png" href="images/favicon.png" />
 
-    <link rel="index"  href="{rel}/" />
-    <link rel="author" href="{rel}/changelog" />
-    <link rel="search" href="{rel}/search" />
-    <link rel="help"   href="{rel}/Docs/FAQ" />
+    <link rel="index"  href="" />
+    <link rel="author" href="changelog" />
+    <link rel="search" href="search" />
+    <link rel="help"   href="Docs/FAQ" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />
@@ -37,18 +37,18 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {foreach from=$xorg_css item=css}
-    <link rel="stylesheet" type="text/css" href="{rel}/{$css}" />
+    <link rel="stylesheet" type="text/css" href="{$css}" />
     {/foreach}
     {foreach from=$xorg_js item=js}
-    <script type="text/javascript" src="{rel}/{$js}"></script>
+    <script type="text/javascript" src="{$js}"></script>
     {/foreach}
-    <script type="text/javascript" src="{rel}/javascript/overlib.js"></script>
-    <script type="text/javascript" src="{rel}/javascript/md5.js"></script>
-    <script type="text/javascript" src="{rel}/javascript/sha1.js"></script>
-    <script type="text/javascript" src="{rel}/javascript/secure_hash.js"></script>
+    <script type="text/javascript" src="javascript/overlib.js"></script>
+    <script type="text/javascript" src="javascript/md5.js"></script>
+    <script type="text/javascript" src="javascript/sha1.js"></script>
+    <script type="text/javascript" src="javascript/secure_hash.js"></script>
 
     {if $xorg_rss}
-    <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{rel}{$xorg_rss.href}" />
+    <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
     {/if}
 
     {if $xorg_extra_header}

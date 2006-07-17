@@ -58,13 +58,13 @@
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire :
-      <a href='{rel}/{$platal->ns}lists/members/{$platal->argv[1]}?del=1'><img src="{rel}/images/retirer.gif" alt="[me désinsiscrire]" /></a>
+      <a href='{$platal->ns}lists/members/{$platal->argv[1]}?del=1'><img src="images/retirer.gif" alt="[me désinsiscrire]" /></a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
       Tu n'es pas inscrit.<br />
       Demander ton inscription :
-      <a href="{rel}/{$platal->ns}lists/members/{$platal->argv[1]}?add=1"><img src="{rel}/images/ajouter.gif" alt="[demander mon inscription]" /></a>
+      <a href="{$platal->ns}lists/members/{$platal->argv[1]}?add=1"><img src="images/ajouter.gif" alt="[demander mon inscription]" /></a>
       {/if}
     </td>
   </tr>
@@ -91,7 +91,7 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a><br />
+      <a href="profile/{$x.l}" class="popup2">{$x.n}</a><br />
       {else}
       {$x.l}<br />
       {/if}
@@ -105,9 +105,9 @@
 <h1>
   membres de la liste
   {if $smarty.get.alpha}
-  (<a href='{rel}/{$platal->ns}lists/members/{$platal->argv[1]}'>trier par promo</a>)
+  (<a href='{$platal->ns}lists/members/{$platal->argv[1]}'>trier par promo</a>)
   {else}
-  (<a href='{rel}/{$platal->ns}lists/members/{$platal->argv[1]}?alpha=1'>trier par nom</a>)
+  (<a href='{$platal->ns}lists/members/{$platal->argv[1]}?alpha=1'>trier par nom</a>)
   {/if}
 </h1>
 
@@ -119,7 +119,7 @@
     <td>
       {foreach from=$xs item=x}
       {if $promo}
-      <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a><br />
+      <a href="profile/{$x.l}" class="popup2">{$x.n}</a><br />
       {else}
       {$x.l}<br />
       {/if}

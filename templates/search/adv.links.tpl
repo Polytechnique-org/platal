@@ -40,7 +40,7 @@
   </li>
   
   <li>Effectuer une nouvelle <strong>
-    <a href="{rel}/search">recherche simple</a>
+    <a href="search">recherche simple</a>
   </strong>
   </li>
 </ul>

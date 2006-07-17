@@ -54,13 +54,13 @@
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire :
-      <a href='{rel}/{$platal->ns}trombi/{$platal->argv[1]}?del=1'><img src="{rel}/images/retirer.gif" alt="[me désinsiscrire]" /></a>
+      <a href='{$platal->ns}trombi/{$platal->argv[1]}?del=1'><img src="images/retirer.gif" alt="[me désinsiscrire]" /></a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
       Tu n'es pas inscrit.<br />
       Demander ton inscription :
-      <a href="{rel}/{$platal->ns}trombi/{$platal->argv[1]}?add=1"><img src="{rel}/images/ajouter.gif" alt="[demander mon inscription]" /></a>
+      <a href="{$platal->ns}trombi/{$platal->argv[1]}?add=1"><img src="images/ajouter.gif" alt="[demander mon inscription]" /></a>
       {/if}
     </td>
   </tr>
@@ -77,9 +77,9 @@
       {cycle values="1,2,3" assign="loop"}
       {if $loop eq "1"}<tr>{/if}
         <td class='center'>
-          <img src="{rel}/photo/{$x.l}" width="110" alt=" [ PHOTO ] " />
+          <img src="photo/{$x.l}" width="110" alt=" [ PHOTO ] " />
           <br />
-          <a href="{rel}/profile/{$x.l}" class="popup2">
+          <a href="profile/{$x.l}" class="popup2">
             {$x.n} ({$promo})
           </a>
         </td>

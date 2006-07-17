@@ -57,7 +57,7 @@
 {/if}
 <div>Les fiches de cet utilisateur :
 <ul>
-<li><a href='{rel}/profile/{$x.user_id}' class='popup2'>polytechnique.org</a></li>
+<li><a href='profile/{$x.user_id}' class='popup2'>polytechnique.org</a></li>
 <li><a href='http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$x.matricule_ax}'>polytechniciens.com</a></li>
 </ul>
 </div>

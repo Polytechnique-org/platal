@@ -22,7 +22,7 @@
 
 <h1>{$asso.nom} : Ajout d'un membre</h1>
 
-<form method="post" action="{rel}/{$platal->ns}member/new/">
+<form method="post" action="{$platal->ns}member/new/">
   <p class="descr">
   <ul class='descr'>
     <li>

@@ -47,7 +47,7 @@
         <input type="hidden" name="numero_formulaire[{$adrid}]" value="{$smarty.section.i.index}" />
         {/if}
         {if $adr.nouvelle != 'new'}
-        [<a href="{rel}/profile/edit/{$onglet}?adrid_del[{$adrid}]=1" style="color:inherit">La supprimer !</a>]
+        [<a href="profile/edit/{$onglet}?adrid_del[{$adrid}]=1" style="color:inherit">La supprimer !</a>]
         {/if}
       </th>
     </tr>

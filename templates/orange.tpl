@@ -40,7 +40,7 @@
 
 <br />
 
-<form action="{rel}/profile/orange" method="post">
+<form action="profile/orange" method="post">
   <table class="bicol" cellpadding="4" summary="Année de sortie">
     <tr>
       <th>Année de sortie</th>
@@ -56,6 +56,6 @@
 
 {/if}
 
-<p>[<a href="{rel}/profile/edit">Revenir au profil</a>]</p>
+<p>[<a href="profile/edit">Revenir au profil</a>]</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

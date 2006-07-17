@@ -33,7 +33,7 @@ function chgMainWinLoc( strPage ) {
 {/literal}
 
 {if $logged and $x.forlife eq $smarty.session.forlife}
-[<a href="javascript:x()" onclick="chgMainWinLoc('{rel}/profile/edit')">Modifier ma fiche</a>]
+[<a href="javascript:x()" onclick="chgMainWinLoc('profile/edit')">Modifier ma fiche</a>]
 {/if}
 
 <table id="fiche" cellpadding="0" cellspacing="0">
@@ -44,21 +44,21 @@ function chgMainWinLoc( strPage ) {
         {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
         {if $logged}
         {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
-        <a href="{rel}/vcard/{$x.forlife}.vcf">
-          <img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
+        <a href="vcard/{$x.forlife}.vcf">
+          <img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite"/>
         </a>
         {if !$x.is_contact}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
-          <img src="{rel}/images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
+        <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
+          <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
         </a>
         {else}
-        <a href="javascript:x()"  onclick="chgMainWinLoc('{rel}/carnet/contacts?action=retirer&amp;user={$x.forlife}')">
-          <img src="{rel}/images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
+        <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
+          <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
         </a>
         {/if}
         {perms level=admin}
-        <a href="javascript:x()" onclick="chgMainWinLoc('{rel}/admin/utilisateurs.php?login={$x.forlife}')">
-          <img src="{rel}/images/admin.png" alt='admin' title="administrer user" />
+        <a href="javascript:x()" onclick="chgMainWinLoc('admin/utilisateurs.php?login={$x.forlife}')">
+          <img src="images/admin.png" alt='admin' title="administrer user" />
         </a>
         {/perms}
         {/if}
@@ -96,7 +96,7 @@ function chgMainWinLoc( strPage ) {
       {/if}
       <div class='formation'>
         {if $x.iso3166}
-        <img src='{rel}/images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='11' title='{$x.nationalite}' />&nbsp;
+        <img src='images/flags/{$x.iso3166}.gif' alt='{$x.nationalite}' height='11' title='{$x.nationalite}' />&nbsp;
         {/if}
         X {$x.promo}
         {if ($x.promo_sortie-3 > $x.promo)}
@@ -107,7 +107,7 @@ function chgMainWinLoc( strPage ) {
         {/if}
         {if $logged}
         {if $x.is_referent}
-        [<a href="{rel}/referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
+        [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
         {/if}
         {/if}
       </div>
@@ -160,7 +160,7 @@ function chgMainWinLoc( strPage ) {
       <table style="float: left; width: 33%;">
         <tr>
           <td>
-            <img src="{rel}/images/medals/{$m.img}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
+            <img src="images/medals/{$m.img}" width="24" alt="{$m.medal}" title="{$m.medal}" style='float: left;' />
           </td>
           <td>
             <strong>{$m.medal}</strong>

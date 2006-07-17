@@ -25,14 +25,14 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="{rel}/groups/groupesx">Groupes X</a></td>
+          <td class="oval"><a href="groups/groupesx">Groupes X</a></td>
         </tr>
         <tr>
           <td class="liste">
             {foreach from=$groupesx key=id item=dom}
-            <a class="cat" href="{rel}/groups/groupesx/{$id}">{$dom[0].domnom}</a>
+            <a class="cat" href="groups/groupesx/{$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
-            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
+            <a href="{$g.diminutif}/">{$g.nom}</a>
             {/foreach}
             {/foreach}
           </td>
@@ -43,14 +43,14 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="{rel}/groups/binets">Binets</a></td>
+          <td class="oval"><a href="groups/binets">Binets</a></td>
         </tr>
         <tr>
           <td class="liste">
             {foreach from=$binets key=id item=dom}
-            <a class="cat" href="{rel}/groups/binets/{$id}">{$dom[0].domnom}</a>
+            <a class="cat" href="groups/binets/{$id}">{$dom[0].domnom}</a>
             {foreach from=$dom item=g}
-            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
+            <a href="{$g.diminutif}/">{$g.nom}</a>
             {/foreach}
             {/foreach}
           </td>
@@ -61,12 +61,12 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="{rel}/groups/promotions">Promotions</a></td>
+          <td class="oval"><a href="groups/promotions">Promotions</a></td>
         </tr>
         <tr>
           <td class="listec">
             {iterate from=$promos item=g}
-            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
+            <a href="{$g.diminutif}/">{$g.nom}</a>
             {/iterate}
           </td>
         </tr>
@@ -76,12 +76,12 @@
     <td class="fourth">
       <table>
         <tr>
-          <td class="oval"><a href="{rel}/groups/institutions">Institutions</a></td>
+          <td class="oval"><a href="groups/institutions">Institutions</a></td>
         </tr>
         <tr>
           <td class="listec">
             {iterate from=$inst item=g}
-            <a href="{rel}/{$g.diminutif}/">{$g.nom}</a>
+            <a href="{$g.diminutif}/">{$g.nom}</a>
             {/iterate}
           </td>
         </tr>

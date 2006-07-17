@@ -26,7 +26,7 @@
 {literal}
 function ficheXorg(id)
 {
-  window.open('{rel}/profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
+  window.open('profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
 }
 {/literal}
 {if !$no_annu}
@@ -69,12 +69,12 @@ function searchMapId(f)
     <param name="quality" value="high" />
     <param name="bgcolor" value="#ffffff" />
     <param name="movie" value="dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" />
-    <embed src="{rel}/geoloc/dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+    <embed src="geoloc/dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
     </object>
   </p>
   <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>
   {if !$no_annu}
-    <form id="search_form" action="{rel}/search/adv/?{$dynamap_vars|default:"only_current=on"}&amp;rechercher=1" method="post">
+    <form id="search_form" action="search/adv/?{$dynamap_vars|default:"only_current=on"}&amp;rechercher=1" method="post">
     <p>
     	<input type="button" value="Lister les camarades de la carte ci-dessus" onclick="searchMapId(this.form)"/>
     </p>

@@ -24,7 +24,7 @@
 
 {if $admin}
 <p class="center">
-  [<a href="{rel}/{$platal->ns}events/edit">Annoncer un nouvel événement</a>]
+  [<a href="{$platal->ns}events/edit">Annoncer un nouvel événement</a>]
 </p>
 {/if}
 
@@ -39,15 +39,15 @@
       {$e.intitule}
       {if $admin}
       <br />
-      [<a href="{rel}/{$platal->ns}events/edit/{$e.eid}">
+      [<a href="{$platal->ns}events/edit/{$e.eid}">
         modifier
-        <img src="{rel}/images/profil.png" title="Edition de l'événement" alt="Edition" />
+        <img src="images/profil.png" title="Edition de l'événement" alt="Edition" />
       </a>]
       &nbsp;&nbsp;&nbsp;&nbsp;
-      [<a href="javascript:dynpostkv('{rel}/{$platal->ns}events', 'del', {$e.eid})"
+      [<a href="javascript:dynpostkv('{$platal->ns}events', 'del', {$e.eid})"
         onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')">
         supprimer
-        <img src="{rel}/images/del.png" alt="Suppression de {$e.intitule}" title="Suppression" />
+        <img src="images/del.png" alt="Suppression de {$e.intitule}" title="Suppression" />
       </a>]
       {/if}
     </th>
@@ -80,9 +80,9 @@
     <td class="titre">Informations :</td>
     <td class='actions'>
       {if $admin || $e.show_participants}
-      <a href="{rel}/{$platal->ns}events/admin/{$e.eid}">
+      <a href="{$platal->ns}events/admin/{$e.eid}">
         consulter la liste des participants
-        <img src="{rel}/images/loupe.gif" title="Liste des participants" alt="" />
+        <img src="images/loupe.gif" title="Liste des participants" alt="" />
       </a><br />
       {/if}
       {if $e.deadline_inscription}
@@ -137,7 +137,7 @@
   <tr>
     <td colspan='2' class='center'>
       <strong>
-      <a href='{rel}/{$platal->ns}events/sub/{$e.eid}'>
+      <a href='{$platal->ns}events/sub/{$e.eid}'>
         gérer mon inscription
       </a>
       </strong>

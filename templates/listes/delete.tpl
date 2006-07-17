@@ -23,7 +23,7 @@
 
 {if $deleted}
 
-<p>[<a href='{rel}/{$platal->ns}lists'>Voir toutes les listes</a>]</p>
+<p>[<a href='{$platal->ns}lists'>Voir toutes les listes</a>]</p>
 <p class="erreur">La liste a été détruite !</p>
 
 {else}
@@ -40,7 +40,7 @@ Tu n'es pas administrateur de la liste, mais du site.
   Détruire la liste {$details.addr} ?
 </h1>
 
-<form method='post' action='{rel}/{$platal->ns}lists/delete/{$platal->argv[1]}'>
+<form method='post' action='{$platal->ns}lists/delete/{$platal->argv[1]}'>
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr class='impair'>
       <td>

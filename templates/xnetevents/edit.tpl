@@ -57,7 +57,7 @@ function deadlineChange(box)
 
 <hr />
 
-<form method="post" action="{rel}/{$platal->ns}events/edit/{$platal->argv[1]}">
+<form method="post" action="{$platal->ns}events/edit/{$platal->argv[1]}">
   <table class='bicol' cellspacing='0' cellpadding='0'>
     <colgroup>
       <col width='30%' />

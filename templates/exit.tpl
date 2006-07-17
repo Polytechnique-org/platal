@@ -35,12 +35,12 @@ Tu as demandé la connexion permanente donc cette deconnexion ne t'empêche pas d'
 des fonctionnalités de consultation du site.
 </p>
 <p>
-Tu peux donc aussi te <a href='{rel}/exit/forget'>deconnecter complètement</a>.
+Tu peux donc aussi te <a href='exit/forget'>deconnecter complètement</a>.
 </p>
 <p>
 De plus, ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta
 prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
-<a href='{rel}/exit/forgetall'>supprimer cette information et te déconnecter complètement</a>.
+<a href='exit/forgetall'>supprimer cette information et te déconnecter complètement</a>.
 </p>
 
 {elseif $smarty.cookies.ORGuid}
@@ -48,7 +48,7 @@ prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'eff
 <p>
 Ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta prochaine
 connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
-<a href='{rel}/exit/forgetuid'>supprimer cette information</a>.
+<a href='exit/forgetuid'>supprimer cette information</a>.
 </p>
 {/if}
 

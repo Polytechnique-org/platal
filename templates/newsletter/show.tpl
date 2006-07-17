@@ -25,18 +25,18 @@
 </h1>
 
 <p>
-[<a href='{rel}/nl'>liste des lettres</a>]
+[<a href='nl'>liste des lettres</a>]
 {if $smarty.get.text}
-[<a href='{rel}/nl/show/{$nl->_id}'>version HTML</a>]
+[<a href='nl/show/{$nl->_id}'>version HTML</a>]
 {else}
-[<a href='{rel}/nl/show/{$nl->_id}?text=1'>version Texte</a>]
+[<a href='nl/show/{$nl->_id}?text=1'>version Texte</a>]
 {/if}
 {perms level='admin'}
-[<a href='{rel}/admin/newsletter_edit.php?nid={$nl->_id}'>Editer</a>]
+[<a href='admin/newsletter_edit.php?nid={$nl->_id}'>Editer</a>]
 {/perms}
 </p>
 
-<form method="post" action="{rel}/{$platal->path}">
+<form method="post" action="{$platal->path}">
   <div class='center'>
     <input type='submit' value="me l'envoyer" name='send' />
   </div>

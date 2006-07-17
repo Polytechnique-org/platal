@@ -29,17 +29,17 @@ Cette page récapitule tous les évènements que tu surveilles de la semaine écoulé
 <p>
 Les lignes en gras sont les événements qui ont été porté à notre connaissance
 depuis ta dernière connexion sur cette page.<br />
-Tu peux les <a href="{rel}/carnet/panel?read={$now}">marquer comme vus</a> sans te déconnecter.
+Tu peux les <a href="carnet/panel?read={$now}">marquer comme vus</a> sans te déconnecter.
 </p>
 
 <p>
 Tu peux choisir plus finement les données affichées sur cette page.
-Il faut pour celà se rendre sur la page de <a href='{rel}/carnet/notifs'>configuration des notifications</a>.
+Il faut pour celà se rendre sur la page de <a href='carnet/notifs'>configuration des notifications</a>.
 </p>
 
 <div class="right">
 {if $smarty.session.core_rss_hash}
-<a href='{rel}/carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+<a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' /></a>
 {/if}
 </div>
 
@@ -65,12 +65,12 @@ Il faut pour celà se rendre sur la page de <a href='{rel}/carnet/notifs'>configu
     <td class='titre' style="width:15%">{if $smarty.section.row.first}{$p}{/if}</td>
     <td>
       {if $promo[row].inscrit}
-      <a href="{rel}/profile/{$promo[row].bestalias}" class="popup2">
+      <a href="profile/{$promo[row].bestalias}" class="popup2">
         {$promo[row].prenom} {$promo[row].nom}
       </a>
       {if !$promo[row].contact}
-      <a href="{rel}/carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}">{*
-        *}<img src="{rel}/images/ajouter.gif" alt="ajouter à mes contacts" />{*
+      <a href="carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}">{*
+        *}<img src="images/ajouter.gif" alt="ajouter à mes contacts" />{*
       *}</a>
       {/if}
       {else}

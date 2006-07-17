@@ -20,31 +20,31 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<form action="{rel}/marketing/promo/" method="post" onsubmit="this.action += this.promo.value">
+<form action="marketing/promo/" method="post" onsubmit="this.action += this.promo.value">
   <div class="center">
-    <a href="{rel}/marketing/promo/{$promo-10}" title="-10"><img src="{rel}/images/24/first-page.png" alt="[&lt;&lt;]" /></a>
-    <a href="{rel}/marketing/promo/{$promo-1}" title="-1"><img src="{rel}/images/24/previous.png" alt="[&lt;]" /></a>
+    <a href="marketing/promo/{$promo-10}" title="-10"><img src="images/24/first-page.png" alt="[&lt;&lt;]" /></a>
+    <a href="marketing/promo/{$promo-1}" title="-1"><img src="images/24/previous.png" alt="[&lt;]" /></a>
 
     &nbsp;
     Promo:<input type="text" name="promo" value="{$promo}" size="4" maxlength="4" /><input type="submit" value="GO" />
     &nbsp;
 
-    <a href="{rel}/marketing/promo/{$promo+1}" title="+1"><img src="{rel}/images/24/next.png" alt="[&gt;]" /></a>
-    <a href="{rel}/marketing/promo/{$promo+10}" title="+10"><img src="{rel}/images/24/last-page.png" alt="[&gt;&gt;]" /></a>
+    <a href="marketing/promo/{$promo+1}" title="+1"><img src="images/24/next.png" alt="[&gt;]" /></a>
+    <a href="marketing/promo/{$promo+10}" title="+10"><img src="images/24/last-page.png" alt="[&gt;&gt;]" /></a>
   </div>
 </form>
 
 <br />
 
 <div class="center">
-  <a href="javascript:void(window.open('{rel}/stats/stats_promo.php?promo={$promo}','','width=800,height=600,toolbar=no'))">
+  <a href="javascript:void(window.open('stats/stats_promo.php?promo={$promo}','','width=800,height=600,toolbar=no'))">
     Voir l'évolution des inscriptions de la promotion
   </a>
 </div>
 
 <br />
 
-<form action="{rel}/marketing/promo" method="post">
+<form action="marketing/promo" method="post">
   <table class="bicol" summary="liste des inscriptions non confirmées">
     <tr>
       <th>Nom</th>
@@ -66,10 +66,10 @@
         {/if}
       </td>
       <td class="center">
-        <a href="{rel}/marketing/private/{$it.user_id}">{*
-          *}<img src="{rel}/images/admin.png" alt='Marketing' title="Marketing" /></a>
+        <a href="marketing/private/{$it.user_id}">{*
+          *}<img src="images/admin.png" alt='Marketing' title="Marketing" /></a>
         <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
-          *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
+          *}<img src="images/ax.png" alt='AX' title="fiche AX" /></a>
       </td>
     </tr>
     {/iterate}

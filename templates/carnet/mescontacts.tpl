@@ -36,7 +36,7 @@
 </form>
 <p>
   Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
-  il te suffit de cliquer sur l'icône <img src="{rel}/images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
+  il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
 </p>  
 
 {if $trombi || $citer->total()}
@@ -46,12 +46,12 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 </p>
 <ul>
   <li>avec les photos :
-  [<a href="{rel}/carnet/contacts/pdf/promo/photos/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
-  [<a href="{rel}/carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
+  [<a href="carnet/contacts/pdf/promo/photos/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="carnet/contacts/pdf/photos/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
   <li>sans les photos :
-  [<a href="{rel}/carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
-  [<a href="{rel}/carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
+  [<a href="carnet/contacts/pdf/promo/mescontacts.pdf" class='popup'><strong>tri par promo</strong></a>]
+  [<a href="carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
 </ul>
 {if $smarty.session.core_rss_hash}
@@ -59,11 +59,11 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   Tu peux récupérer un calendrier iCal avec l'anniversaire de tes contacts.
 </p>
   <div class="right">
-    <a href='{rel}/carnet/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/cal.ics'><img src='{rel}/images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
+    <a href='carnet/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/cal.ics'><img src='images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
   </div>
 {else}
 <p>
-  Pour récupérer un calendrier iCal avec l'anniversaire de tes contacts, active les flux RSS dans <a href="{rel}/preferences">Mes préférences</a>.
+  Pour récupérer un calendrier iCal avec l'anniversaire de tes contacts, active les flux RSS dans <a href="preferences">Mes préférences</a>.
 </p>
 {/if}
 
@@ -73,7 +73,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 <h1>Mon trombino de contacts</h1>
 
 <p>
-Pour afficher la liste détaillée de tes contacts: [<a href="{rel}/carnet/contacts?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
+Pour afficher la liste détaillée de tes contacts: [<a href="carnet/contacts?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}
@@ -87,7 +87,7 @@ Pour afficher la liste détaillée de tes contacts: [<a href="{rel}/carnet/contact
 </h1>
 
 <p>
-[<a href="{rel}/carnet/contacts/trombi?order={$order}&amp;inv={$inv}"><strong>Afficher le trombi de tes contacts</strong></a>]
+[<a href="carnet/contacts/trombi?order={$order}&amp;inv={$inv}"><strong>Afficher le trombi de tes contacts</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}

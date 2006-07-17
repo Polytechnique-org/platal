@@ -67,7 +67,7 @@
     {foreach from=$medals item=m}
     <tr>
       <td class="colg">
-        <img src='{rel}/images/medals/{$m.img}' width="32" alt="{$m.medal}" title="{$m.medal}" />
+        <img src='images/medals/{$m.img}' width="32" alt="{$m.medal}" title="{$m.medal}" />
       </td>
       <td class="colm">
         <span class="valeur">{$m.medal}</span><br />

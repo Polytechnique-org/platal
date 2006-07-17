@@ -41,7 +41,7 @@
 <table class="bicol">
   <tr>
     <th>
-      Posté par <a href="{rel}/profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
+      Posté par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
     </th>
   </tr>
   <tr class="{if $ev.fvalide}impair{else}pair{/if}">

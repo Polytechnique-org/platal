@@ -32,7 +32,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 <p>
 Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant un de
 ses identifiants, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie. Pour inscrire plusieurs utilisateurs, les séparer par des espaces.
-L'icône <img src='{rel}/images/retirer.gif' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
+L'icône <img src='images/retirer.gif' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
 qui y était abonné.
 </p>
 
@@ -48,11 +48,11 @@ qui y était abonné.
       <td>
         {foreach from=$xs item=x}
         {if $promo}
-        <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a>
+        <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
         {else}
         {$x.l}
         {/if}
-        <a href='{rel}/{$platal->ns}lists/admin/{$platal->argv[1]}?del_owner={$x.l}'><img src='{rel}/images/retirer.gif' alt='retirer modérateur' title='retirer modérateur' /></a>
+        <a href='{$platal->ns}lists/admin/{$platal->argv[1]}?del_owner={$x.l}'><img src='images/retirer.gif' alt='retirer modérateur' title='retirer modérateur' /></a>
         <br />
         {/foreach}
       </td>
@@ -82,11 +82,11 @@ qui y était abonné.
       <td>
         {foreach from=$xs item=x}
         {if $promo}
-        <a href="{rel}/profile/{$x.l}" class="popup2">{$x.n}</a>
+        <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
         {else}
         {$x.l}
         {/if}
-        <a href='{rel}/{$platal->ns}lists/admin/{$platal->argv[1]}?del_member={$x.l}'><img src='{rel}/images/retirer.gif' alt='retirer membre' title='retirer membre' /></a>
+        <a href='{$platal->ns}lists/admin/{$platal->argv[1]}?del_member={$x.l}'><img src='images/retirer.gif' alt='retirer membre' title='retirer membre' /></a>
         <br />
         {/foreach}
       </td>

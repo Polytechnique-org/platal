@@ -35,7 +35,7 @@
   <tr class="{cycle values="impair,pair"}">
     {/if}
     <td class="half">
-      <h3><a href="{rel}/{$pref.url}">{$pref.title}</a></h3>
+      <h3><a href="{$pref.url}">{$pref.title}</a></h3>
       <div class='explication'>{$pref.text|smarty:nodefaults}</div>
     </td>
     {if $id is even && $smarty.foreach.glob.last}
@@ -55,7 +55,7 @@
   </tr>
   <tr class="impair">
     <td>
-      <h3><a href="{rel}/password">Changer mon mot de passe pour le site</a></h3>
+      <h3><a href="password">Changer mon mot de passe pour le site</a></h3>
       <div class='explication'>
         permet de changer ton mot de passe pour accéder au site Polytechnique.org
       </div>
@@ -63,7 +63,7 @@
   </tr>
   <tr class="pair">
     <td>
-      <h3><a href="{rel}/password/smtp">Activer l'accès SMTP et NNTP</a></h3>
+      <h3><a href="password/smtp">Activer l'accès SMTP et NNTP</a></h3>
       <div class='explication'>
         Pour activer ton compte sur le serveur SMTP et NNTP de Polytechnique.org.
         Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter

@@ -30,9 +30,9 @@ Quelques statistiques sur l'utilisation des services de Polytechnique.org ainsi 
 </p>
 
 <ul>
-<li><a href="{rel}/stats/evolution">Nombre d'inscrits au cours du temps</a></li>
-<li><a href="{rel}/stats/promos/{$smarty.session.promo}">Nombre d'inscrits dans ta promotion</a></li>
-<li><a href="{rel}/stats/promos">Nombre d'inscrits par promotion</a></li>
+<li><a href="stats/evolution">Nombre d'inscrits au cours du temps</a></li>
+<li><a href="stats/promos/{$smarty.session.promo}">Nombre d'inscrits dans ta promotion</a></li>
+<li><a href="stats/promos">Nombre d'inscrits par promotion</a></li>
 </ul>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

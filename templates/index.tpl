@@ -50,17 +50,17 @@
 <strong>Si vous êtes polytechnicien,</strong>
 <ul>
   <li class="spaced">
-    vous pouvez <strong><a href="{rel}/register">vous inscrire à
+    vous pouvez <strong><a href="register">vous inscrire à
         Polytechnique.org</a></strong> si ce n'est pas encore fait,
   </li>
   <li class="spaced">
-    ou <strong><a href="{rel}/events">vous connecter</a></strong> si vous êtes
+    ou <strong><a href="events">vous connecter</a></strong> si vous êtes
     inscrit !
   </li>
 </ul>
 
 <p>
-  Vous pouvez <strong><a href="{rel}/Docs/PourquoiMInscrire">consulter la
+  Vous pouvez <strong><a href="Docs/PourquoiMInscrire">consulter la
       liste de ce que vous apporte Polytechnique.org</a></strong> si vous
   hésitez à vous inscrire !
 </p>
@@ -70,7 +70,7 @@
 <p><strong>Dans tous les cas,</strong> vous pouvez :</p>
 <ul>
   <li class="spaced">
-    <strong><a href="{rel}/search"> rechercher un ancien élève ou un
+    <strong><a href="search"> rechercher un ancien élève ou un
         élève</a></strong> dans l'annuaire en ligne,
   </li>
   <li class="spaced">

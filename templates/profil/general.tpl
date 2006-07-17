@@ -68,7 +68,7 @@
       </td>
       <td class="cold">
         <span class="nom">X{$promo}{if ($promo != $promo_sortie - 3)} - X{math equation="a - b" a=$promo_sortie b=3}{/if}</span>
-        <span class="lien"><a href="{rel}/profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
+        <span class="lien"><a href="profile/orange">modifier</a>{if ($promo_sortie -3 == $promo)} pour les oranges{/if}</span>
       </td>
     </tr>     
     <tr>
@@ -82,7 +82,7 @@
       </td>
       <td class="cold">
         <span class="nom">{$nom_usage|default:"Aucun"}</span>
-        <span class="lien"><a href="{rel}/profile/usage">modifier</a></span>
+        <span class="lien"><a href="profile/usage">modifier</a></span>
       </td>
     </tr>
     <tr>
@@ -157,7 +157,7 @@
           La synchro prend en compte toutes les informations que tu as signalés à l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations selon ce qu'elle trouve sur ta <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
         </p>
         <p class="center">
-          <a href="{rel}/profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
+          <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu sûr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
         </p>
       </td>
     </tr>
@@ -194,7 +194,7 @@
         d'identité (dans un fichier au format JPEG, PNG ou GIF).<br />
         <div class="center">
           <span class="lien">
-            <a href="{rel}/photo/change">Éditer ta photo</a>
+            <a href="photo/change">Éditer ta photo</a>
           </span>
         </div>
       </td>
@@ -217,11 +217,11 @@
               Voilà la photo qui apparaîtra sur la fiche de ton profil{if $nouvellephoto} (tu viens
               de changer ta photo, celle-ci correspond à ton ancien
               profil car la nouvelle n'a pas encore été validée par un administrateur du site !
-              <a href="{rel}/profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
+              <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
               {/if}.
             </td>
             <td class="dcolg">
-              <img src="{rel}/photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " />
+              <img src="photo/{$smarty.session.forlife}" alt=" [ PHOTO ] " />
             </td>
           </tr>
         </table>
@@ -282,7 +282,7 @@
               privé
             </td>
             <td class="texte">
-              <a href="{rel}/Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -308,7 +308,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="{rel}/Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -334,7 +334,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="{rel}/Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="Docs/FAQ#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>

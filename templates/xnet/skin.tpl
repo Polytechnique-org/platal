@@ -29,8 +29,8 @@
     <title>Les associations polytechniciennes</title>
     <meta name="description" content="Les associations polytechniciennes" />
     <meta name="keywords" content="Ecole polytechnique, associations polytechniciennes, groupes X, binets" />
-    <link rel="stylesheet" type="text/css" href="{rel}/css/xnet.css" media="screen" />
-    <link rel="icon" type="image/png" href="{rel}/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
+    <link rel="icon" type="image/png" href="images/favicon.png" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -40,12 +40,12 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {foreach from=$xorg_css item=css}
-    <link rel="stylesheet" type="text/css" href="{rel}/css/{$css}" />
+    <link rel="stylesheet" type="text/css" href="css/{$css}" />
     {/foreach}
     {foreach from=$xorg_js item=js}
-    <script type="text/javascript" src="{rel}/{$js}"></script>
+    <script type="text/javascript" src="{$js}"></script>
     {/foreach}
-    <script type="text/javascript" src="{rel}/javascript/overlib.js"></script>
+    <script type="text/javascript" src="javascript/overlib.js"></script>
     
     {if $xorg_extra_header}
     {$xorg_extra_header|smarty:nodefaults}
@@ -61,26 +61,26 @@
       {if $xnet_type}
       <tr id="top">
         <td>
-          <a href="{rel}/"><img src="{rel}/images/asso-montants.png" alt="Logo Assos" /></a>
+          <a href=""><img src="images/asso-montants.png" alt="Logo Assos" /></a>
         </td>
         <td>
-          <img src="{rel}/images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
+          <img src="images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
         </td>
         <td colspan="2">
-          <img src="{rel}/images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="490" height="96" />
+          <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="490" height="96" />
         </td>
       </tr>
       {else}
       <tr id="top">
         <td>
-          <img src="{rel}/images/logo.png" alt="LOGO Assos" />
+          <img src="images/logo.png" alt="LOGO Assos" />
         </td>
         <td colspan="3" style="text-align: right">
-          <a href="https://www.polytechnique.org/"><img src="{rel}/images/logo-xorg.png" alt="LOGO X.Org" /></a>
-          <img src="{rel}/images/asso2.png" alt="titre_du_site" />
+          <a href="https://www.polytechnique.org/"><img src="images/logo-xorg.png" alt="LOGO X.Org" /></a>
+          <img src="images/asso2.png" alt="titre_du_site" />
         </td>
       </tr>
-      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
       {/if}
 
       {if $menu}
@@ -89,20 +89,20 @@
           {foreach from=$menu key=title item=submenu}
           <h1>{$title}</h1>
           {foreach from=$submenu key=tit item=url}
-          <a href="{rel}/{$url}">{$tit}</a>
+          <a href="{$url}">{$tit}</a>
           {/foreach}
           {/foreach}
         </td>
         <td colspan="3">
           <div class="breadcrumb">
             {if $asso}
-            <a href="{rel}/groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
+            <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
             {if $asso.dom}
-            <a href="{rel}/groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
+            <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
             {/if}
             {$asso.nom}
             {elseif $cat}
-            <a href="{rel}/groups/{$cat}">{$cat|cat_pp}</a> »
+            <a href="groups/{$cat}">{$cat|cat_pp}</a> »
             {if $dom || !$doms}
             Choix de l'Asso
             {else}
@@ -120,24 +120,24 @@
         </td>
       </tr>
 
-      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
         <td colspan="4">
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
-              <td> <a href="{rel}/plan">PLAN DU SITE</a> </td>
-              <td> <a href="{rel}/groups/groupesx">groupes X</a> </td>
-              <td> <a href="{rel}/groups/binets">binets</a> </td>
-              <td> <a href="{rel}/groups/promotions">promotions</a> </td>
-              <td> <a href="{rel}/groups/institutions">institutions</a> </td>
+              <td> <a href="plan">PLAN DU SITE</a> </td>
+              <td> <a href="groups/groupesx">groupes X</a> </td>
+              <td> <a href="groups/binets">binets</a> </td>
+              <td> <a href="groups/promotions">promotions</a> </td>
+              <td> <a href="groups/institutions">institutions</a> </td>
             </tr>
           </table>
         </td>
       </tr>
       {/if}
 
-      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
         <td colspan="4" id="perso">
@@ -147,17 +147,17 @@
           <a class='gp' href="{$smarty.session.loginX}">polytechnicien</a>
           {/only_public}
 
-          <a href="{rel}/manuel" title="Manuel d'aide en ligne" style="float: right"><img src="{rel}/images/manuel.png" alt="manuel" /></a>
+          <a href="manuel" title="Manuel d'aide en ligne" style="float: right"><img src="images/manuel.png" alt="manuel" /></a>
         </td>
       </tr>
 
-      <tr><td colspan="4"><img src="{rel}/images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
         <td colspan="4" id="credits">
-          <a href="{rel}/plan">liste des associations</a> -
-          <a href="{rel}/services">services proposés</a> -
-          <a href="{rel}/about">à propos de ce site</a> -
+          <a href="plan">liste des associations</a> -
+          <a href="services">services proposés</a> -
+          <a href="about">à propos de ce site</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           <br />
           © Copyright 2000-2006 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>

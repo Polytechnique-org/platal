@@ -26,7 +26,7 @@
 <p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
 S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
-<form action="{rel}/carnet/notifs" method="post">
+<form action="carnet/notifs" method="post">
   <fieldset>
     <legend>Mail</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
@@ -35,7 +35,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   </fieldset>
 </form>
 
-<form action="{rel}/carnet/notifs" method="post">
+<form action="carnet/notifs" method="post">
   <fieldset>
     <legend>Événements à surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
@@ -54,7 +54,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 
 <h2>Surveiller ses contacts</h2>
 
-<form action="{rel}/carnet/notifs#middle" method="post">
+<form action="carnet/notifs#middle" method="post">
   <fieldset>
     <legend>Contacts</legend>
     <input type='checkbox' name='contacts' onclick="this.form.submit();" {if $watch->watch_contacts}checked="checked"{/if} /> Surveiller mes contacts<br />
@@ -70,7 +70,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (par exemple les changements de fiche).
 </p>
 
-<form action="{rel}/carnet/notifs/" method="post">
+<form action="carnet/notifs/" method="post">
   <fieldset>
     <legend>Ajouter une promo</legend>
     Tu peux surveiller des promos (mettre la promo sur 4 chiffres),
@@ -101,8 +101,8 @@ Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté à 
 </p>
 
 <p>
-Pour surveiller des membres non-inscrits, il faut passer par la <a href="{rel}/search" class='popup'>recherche</a>
-et cliquer sur les icones <img src="{rel}/images/ajouter.gif" alt="Ajouter" /> pour les ajouter à cette liste
+Pour surveiller des membres non-inscrits, il faut passer par la <a href="search" class='popup'>recherche</a>
+et cliquer sur les icones <img src="images/ajouter.gif" alt="Ajouter" /> pour les ajouter à cette liste
 </p>
 
 <table class='tinybicol' cellpadding="0" cellspacing="0">
@@ -115,7 +115,7 @@ et cliquer sur les icones <img src="{rel}/images/ajouter.gif" alt="Ajouter" /> p
       <ul>
         {foreach from=$watch->nonins() item=p}
         <li>
-        {$p.prenom} {$p.nom} ({$p.promo}) <a href="{rel}/carnet/notifs/del_nonins/{$p.user_id}"><img src="{rel}/images/retirer.gif" alt="retirer" /></a>
+        {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}"><img src="images/retirer.gif" alt="retirer" /></a>
         </li>
         {/foreach}
       </ul>

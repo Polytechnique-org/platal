@@ -30,12 +30,12 @@
 {/foreach}
 
 <p>
-Tu peux consulter <a href="{rel}/profile/{$smarty.session.forlife}" class="popup2">l'état actuel de ta fiche</a>
+Tu peux consulter <a href="profile/{$smarty.session.forlife}" class="popup2">l'état actuel de ta fiche</a>
 telle qu'elle apparaîtra pour un camarade, ou telle qu'elle apparaîtra dans l'annuaire de
-l'<a href="{rel}/profile/{$smarty.session.forlife}?view=ax" class="popup2">AX</a>
-ou à <a href="{rel}/profile/{$smarty.session.forlife}?view=public" class="popup2">tout le monde</a>.</p>
+l'<a href="profile/{$smarty.session.forlife}?view=ax" class="popup2">AX</a>
+ou à <a href="profile/{$smarty.session.forlife}?view=public" class="popup2">tout le monde</a>.</p>
 
-<form action="{rel}/profile/edit/{$onglet}" method="post" id="prof_annu">
+<form action="profile/edit/{$onglet}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" style="width: 98%; margin-left:1%;">
     <tr>
       <td>
@@ -44,7 +44,7 @@ ou à <a href="{rel}/profile/{$smarty.session.forlife}?view=public" class="popup2
           {if $o eq $onglet}
           <li class="actif">{$i|nl2br}</li>
           {else}
-          <li><a href="{rel}/profile/edit/{$o}">{$i|nl2br}</a></li>
+          <li><a href="profile/edit/{$o}">{$i|nl2br}</a></li>
           {/if}
           {/foreach}
         </ul>

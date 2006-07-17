@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {if !$banana->profile.autoup}
-[<a href='javascript:dynpost("{rel}/{$platal->path}", {ldelim}"updateall": 1{rdelim})'>Mettre à jour</a>]
+[<a href='javascript:dynpost("{$platal->path}", {ldelim}"updateall": 1{rdelim})'>Mettre à jour</a>]
 {/if}
 
 <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" width="100%">
@@ -29,8 +29,8 @@
     <td>
       <ul id="onglet">
         <li class="actif">Préférences</li>
-        <li><a href="{rel}/banana/subscription">Abonnements</a></li>
-        <li><a href="{rel}/banana">Les Forums</a></li>
+        <li><a href="banana/subscription">Abonnements</a></li>
+        <li><a href="banana">Les Forums</a></li>
       </ul>
     </td>
   </tr>
@@ -52,7 +52,7 @@
         n'afficher que les fils de discussion contenant des messages lus.
       </p>
 
-      <form action="{rel}/banana/profile" method="post">
+      <form action="banana/profile" method="post">
         <table class="bicol" cellpadding="3" cellspacing="0" summary="Configuration de Banana">
           <tr>
             <th colspan="2">

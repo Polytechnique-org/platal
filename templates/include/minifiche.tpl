@@ -26,21 +26,21 @@
 
   <div class="nom">
     {if $c.sexe}&bull;{/if}
-    {if !$c.dcd && $c.inscrit}<a href="{rel}/profile/{$c.forlife}" class="popup2">{/if}
+    {if !$c.dcd && $c.inscrit}<a href="profile/{$c.forlife}" class="popup2">{/if}
     {if $c.nom_usage}{$c.nom_usage} {$c.prenom}<br />({$c.nom}){else}{$c.nom} {$c.prenom}{/if}
     {if !$c.dcd && $c.inscrit}</a>{/if}
   </div>
 
   <div class="appli">
     {if $c.iso3166}
-    <img src='{rel}/images/flags/{$c.iso3166}.gif' alt='{$c.nat}' height='11' title='{$c.nat}' />&nbsp;
+    <img src='images/flags/{$c.iso3166}.gif' alt='{$c.nat}' height='11' title='{$c.nat}' />&nbsp;
     {/if}
     (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
     {/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     {min_auth level="cookie"}
     {if !$c.dcd && !$c.wasinscrit}
-    <a href="{rel}/marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
+    <a href="marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
     {/if}
     {/min_auth}
   </div>
@@ -49,20 +49,20 @@
     {min_auth level="cookie"}
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
-        <a href="{rel}/carnet/notifs/add_nonins/{$c.user_id}">{*
-        *}<img src="{rel}/images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
+        <a href="carnet/notifs/add_nonins/{$c.user_id}">{*
+        *}<img src="images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
       {else}
-        <a href="{rel}/carnet/notifs/del_nonins/{$c.user_id}">{*
-        *}<img src="{rel}/images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
+        <a href="carnet/notifs/del_nonins/{$c.user_id}">{*
+        *}<img src="images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
       {/if}
     {elseif $c.wasinscrit}
-        <a href="{rel}/profile/{$c.forlife}" class="popup2">{*
-        *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+        <a href="profile/{$c.forlife}" class="popup2">{*
+        *}<img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
       {if !$c.dcd}
-        <a href="{rel}/vcard/{$c.forlife}.vcf">{*
-        *}<img src="{rel}/images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
-        <a href="{rel}/carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
-        *}<img src="{rel}/images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
+        <a href="vcard/{$c.forlife}.vcf">{*
+        *}<img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
+        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
+        *}<img src="images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
             title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
       {/if}
     {/if}
@@ -70,14 +70,14 @@
 
     {perms level='admin'}
       {if !$c.wasinscrit && !$c.dcd}
-        <a href="{rel}/marketing/private/{$c.user_id}">{*
-          *}<img src="{rel}/images/admin.png" alt='admin' title="marketter user" /></a>
+        <a href="marketing/private/{$c.user_id}">{*
+          *}<img src="images/admin.png" alt='admin' title="marketter user" /></a>
       {elseif $c.wasinscrit}
-        <a href="{rel}/admin/utilisateurs.php?login={$c.forlife}">{*
-          *}<img src="{rel}/images/admin.png" alt='admin' title="administrer user" /></a>
+        <a href="admin/utilisateurs.php?login={$c.forlife}">{*
+          *}<img src="images/admin.png" alt='admin' title="administrer user" /></a>
       {/if}
       <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
-      *}<img src="{rel}/images/ax.png" alt='AX' title="fiche AX" /></a>
+      *}<img src="images/ax.png" alt='AX' title="fiche AX" /></a>
     {/perms}
   </div>
 

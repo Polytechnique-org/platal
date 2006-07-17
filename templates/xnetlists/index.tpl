@@ -23,13 +23,13 @@
 {if $smarty.get.del_alias}
 
 <p class="error">Est tu sur de supprimer l'alias {$smarty.get.del_alias} ?</p>
-<form action='{rel}/{$platal->ns}lists' method="post">
+<form action='{$platal->ns}lists' method="post">
   <div class="center">
     <input type='submit' value="Oui, je suis sur" />
     <input type='hidden' name='del_alias' value="{$smarty.get.del_alias}" />
   </div>
 </form>
-<p>[<a href='{rel}/{$platal->ns}lists'>retour à la page des listes</a>]</p>
+<p>[<a href='{$platal->ns}lists'>retour à la page des listes</a>]</p>
 
 {else}
 
@@ -61,8 +61,8 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   {foreach from=$listes item=l}
   <tr>
     <td>
-      <a href="mailto:{$l.list}@{$asso.mail_domain}"><img src="{rel}/images/mail.png" alt='[mail]' /></a>
-      <a href='{rel}/{$platal->ns}lists/members/{$l.list}'>{$l.list} {if $l.priv}<sup>#</sup>{/if}{if $l.own}<sup>o</sup>{/if}</a>
+      <a href="mailto:{$l.list}@{$asso.mail_domain}"><img src="images/mail.png" alt='[mail]' /></a>
+      <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list} {if $l.priv}<sup>#</sup>{/if}{if $l.own}<sup>o</sup>{/if}</a>
     </td>
     <td>{$l.desc}</td>
     <td class='center'>
@@ -72,11 +72,11 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
     <td align='right'>{$l.nbsub}</td>
     <td align='right'>
       {if $l.sub eq 2}
-      <a href="{rel}/{$platal->ns}lists?del={$l.list}"><img src="{rel}/images/del.png" alt="[désinscrire]" title="me désinscrire" /></a>
+      <a href="{$platal->ns}lists?del={$l.list}"><img src="images/del.png" alt="[désinscrire]" title="me désinscrire" /></a>
       {elseif $l.sub eq 1}
-      <img src="{rel}/images/flag.png" alt="[en attente]" title="en attente de modération" />
+      <img src="images/flag.png" alt="[en attente]" title="en attente de modération" />
       {else}
-      <a href="{rel}/{$platal->ns}lists?add={$l.list}"><img src="{rel}/images/ajouter.gif" alt="[m'inscrire]" title="m'inscrire" /></a>
+      <a href="{$platal->ns}lists?add={$l.list}"><img src="images/ajouter.gif" alt="[m'inscrire]" title="m'inscrire" /></a>
       {/if}
     </td>
   </tr>
@@ -101,11 +101,11 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
   {iterate from=$alias item=a}
   <tr>
     {if $may_update}
-    <td class="center"><a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /></a></td>
-    <td><a href="{rel}/{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
-    <td class="center"><a href="{rel}/{$platal->ns}lists?del_alias={$a.alias}"><img src='{rel}/images/del.png' alt='[supprimer]' /></a></td>
+    <td class="center"><a href='mailto:{$a.alias}'><img src='images/mail.png' alt='[mail]' /></a></td>
+    <td><a href="{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
+    <td class="center"><a href="{$platal->ns}lists?del_alias={$a.alias}"><img src='images/del.png' alt='[supprimer]' /></a></td>
     {else}
-    <td><a href='mailto:{$a.alias}'><img src='{rel}/images/mail.png' alt='[mail]' /> {$a.alias}</a></td>
+    <td><a href='mailto:{$a.alias}'><img src='images/mail.png' alt='[mail]' /> {$a.alias}</a></td>
     {/if}
   </tr>
   {/iterate}

@@ -70,9 +70,9 @@
     {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
-    <a href="{rel}/Docs/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
+    <a href="Docs/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
-<form action="{rel}/emails/redirect" method="post">
+<form action="emails/redirect" method="post">
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
@@ -97,7 +97,7 @@
             {/foreach}
           </select>
         </td>
-        <td><a href="{rel}/emails/redirect/remove/{$e->email}">retirer</a></td>
+        <td><a href="emails/redirect/remove/{$e->email}">retirer</a></td>
       </tr>
       {/foreach}
       <tr class="{cycle values="pair,impair"}"><td colspan="4">

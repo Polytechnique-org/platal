@@ -25,7 +25,7 @@
   <table>
     <tr>
       <td>
-        <img src="{rel}/images/cadenas_rouge.png" alt=" [ CADENAS ROUGE ] " />
+        <img src="images/cadenas_rouge.png" alt=" [ CADENAS ROUGE ] " />
       </td>
       <td>
         <span class="smaller">
@@ -58,8 +58,8 @@
     </tr>
     <tr>
       <td>
-        <img src="{rel}/images/pi.png" alt=" [ ? ] " />
-        <a href="{rel}/recovery">Mot de passe perdu ?</a>
+        <img src="images/pi.png" alt=" [ ? ] " />
+        <a href="recovery">Mot de passe perdu ?</a>
       </td>
       <td class="right">
         <input  type="submit" name="submitbtn" value="Envoyer" />

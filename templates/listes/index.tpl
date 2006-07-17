@@ -28,19 +28,19 @@
 
 <p>
 Pour t'inscrire à une liste il suffit de cliquer sur l'icone
-<img src="{rel}/images/ajouter.gif" alt="[ inscription ]" /> située en fin de ligne.
+<img src="images/ajouter.gif" alt="[ inscription ]" /> située en fin de ligne.
 </p>
 
 <p>
 Certaines listes sont à inscription modérée, l'inscription n'y est pas
 immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
 (ou éventuellement refuser) ta candidature.  Ces listes apparaissent avec l'icone 
-<img src="{rel}/images/flag.png" alt="[ en cours ]" />.
+<img src="images/flag.png" alt="[ en cours ]" />.
 </p>
 
 <p>
 Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
-<img src="{rel}/images/retirer.gif" alt="[ désinscription ]" />.
+<img src="images/retirer.gif" alt="[ désinscription ]" />.
 </p>
 
 <h2>La diffusion sur une liste de diffusion</h2>
@@ -69,7 +69,7 @@ moyen pratique et efficace de rassembler plusieurs personnes autour d'un projet 
 thématique particulière.
 </p>
 <p>
-Tu peux demander <a href='{rel}/lists/create'>la création</a>
+Tu peux demander <a href='lists/create'>la création</a>
 d'une liste de diffusion sur le thème de ton choix.  
 </p>
 
@@ -96,7 +96,7 @@ Si tu te désinscris de ces listes, tu ne seras plus capable de t'y réinscrire pa
 
 <br />
 
-<form method='post' action='{rel}/lists'>
+<form method='post' action='lists'>
   <table class='tinybicol' cellspacing='0' cellpadding='2'>
     <tr>
       <th colspan='2'>Inscription à une liste de diffusion promo</th>

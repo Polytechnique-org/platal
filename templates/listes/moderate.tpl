@@ -36,14 +36,14 @@
   {foreach from=$subs item=s}
   <tr class='{cycle values="pair,impair"}'>
     <td>{$s.name}{if $s.login}
-      <a href="{rel}/profile/{$s.login}" class="popup2">{*
-        *}<img src="{rel}/images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+      <a href="profile/{$s.login}" class="popup2">{*
+        *}<img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
       {/if}
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?sadd={$s.id}'>ajouter</a>
-      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?sid={$s.id}'>refuser</a>
+      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?sadd={$s.id}'>ajouter</a>
+      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?sid={$s.id}'>refuser</a>
     </td>
   </tr>
   {/foreach}
@@ -70,7 +70,7 @@
   <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
   S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
-  <a href="{rel}/{$platal->ns}lists/options/{$platal->argv[1]}#antispam">jeter directement</a> et non de les modérer. 
+  <a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">jeter directement</a> et non de les modérer. 
   </li>
 </ul>
 
@@ -89,8 +89,8 @@
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
     <td class='action'>
-      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}'>voir</a><br/>
-      <a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mdel=1'>détruire</a></td>
+      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}'>voir</a><br/>
+      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mdel=1'>détruire</a></td>
   </tr>
   {/foreach}
 </table>

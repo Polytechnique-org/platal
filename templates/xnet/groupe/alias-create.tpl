@@ -43,9 +43,9 @@ Les alias sont concus pour répondre aux problèmes suivants :
 
 <p class='descr'>
 Pour les autres besoins de communications (notament pour un grand nombre de personnes, et pour bénéficier des outils
-de modération), il est recommandé de créer <a href="{rel}/{$platal->ns}lists/create">une liste de diffusion</a>.
+de modération), il est recommandé de créer <a href="{$platal->ns}lists/create">une liste de diffusion</a>.
 </p>
-<form action='{rel}/{$platal->ns}alias/create' method='post'>
+<form action='{$platal->ns}alias/create' method='post'>
   <table class='large'>
     <tr>
       <th colspan='2'>Caractéristiques de l'alias</th>

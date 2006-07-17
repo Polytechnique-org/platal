@@ -22,7 +22,7 @@
 
 <h1>Identification</h1>
 
-<form action="{rel}/register" method="post">
+<form action="register" method="post">
   <p>
     Avant toute chose, il te faut nous donner ta promotion :
   </p>

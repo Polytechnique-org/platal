@@ -39,7 +39,7 @@
 <p>
 Les critères de recherche que tu as rentrés n'ont pas produit de résultats,
 sans doute car ta requête était trop générale. Nous t'invitons à
-<a href="{rel}/referent/search">procéder à une nouvelle recherche</a>, en essayant
+<a href="referent/search">procéder à une nouvelle recherche</a>, en essayant
 d'être plus précis.
 </p>
 {elseif $personnes}
@@ -54,9 +54,9 @@ d'être plus précis.
     </div>
     <div class="bits" style="width: 40%;">
       <span class='smaller'>
-      <a href="{rel}/profile/{$p.bestalias}" class="popup2">
-        <img src="{rel}/images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
-        <a href="{rel}/referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a>
+      <a href="profile/{$p.bestalias}" class="popup2">
+        <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
+        <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a>
       </span>
     </div>
     <div class="long">
@@ -70,7 +70,7 @@ d'être plus précis.
   </div>
 {/foreach}
 </div>
-<form action="{rel}/referent/search" method="post" id="form_result">
+<form action="referent/search" method="post" id="form_result">
   <p>
     <input type="hidden" name="secteur"    value="{$secteur_sel}" />
     <input type="hidden" name="ss_secteur" value="{$ss_secteur_sel}" />
@@ -94,7 +94,7 @@ d'être plus précis.
   qui suit.
 </span>
 <p>
-En <a href="{rel}/profile/edit">renseignant sa fiche dans l'annuaire</a>, chacun
+En <a href="profile/edit">renseignant sa fiche dans l'annuaire</a>, chacun
 d'entre nous a la possibilité de renseigner, dans la section "Mentoring",
 s'il accepte de recevoir des messages de la part de camarades qui pourraient
 souhaiter lui poser quelques questions et recevoir quelques conseils.<br />

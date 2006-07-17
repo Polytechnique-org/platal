@@ -217,7 +217,7 @@
       <td class="dcolg">
         <span class="titre">Curriculum vitae</span><br />
         <span class="comm">Le CV n'est <strong>jamais</strong> public.<br />
-          <a href="{rel}/Docs/FAQ#cv" class="popup_800x480">Comment remplir mon CV ?</a></span>
+          <a href="Docs/FAQ#cv" class="popup_800x480">Comment remplir mon CV ?</a></span>
       </td>
       <td class="dcold">
         <textarea name="cv" rows="15" cols="33">{$cv}</textarea>

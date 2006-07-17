@@ -27,14 +27,14 @@ Choix de la promo :
 </p>
 <p>
 {foreach from=$promos item=p}
-<a href="{rel}/marketing/volontaire/{$p}">{$p}</a>
+<a href="marketing/volontaire/{$p}">{$p}</a>
 {cycle values=",,,,,,,,,,,,,,<br />"}
 {/foreach}
 </p>
 
 {if $addr}
 
-<p>[<a href="{rel}/marketing/promo/{$platal->argv[1]}">Marketing promo pour la promo {$platal->argv[1]}</a>]</p>
+<p>[<a href="marketing/promo/{$platal->argv[1]}">Marketing promo pour la promo {$platal->argv[1]}</a>]</p>
 
 {if $addr->total()}
 <h2>Marketing volontaire</h2>
@@ -46,7 +46,7 @@ Choix de la promo :
   </tr>
   {iterate from=$addr item=it}
   <tr class="{cycle values="pair,impair"}">
-    <td><a href="{rel}/marketing/private/{$it.user_id}">{$it.nom} {$it.prenom}</a></td>
+    <td><a href="marketing/private/{$it.user_id}">{$it.nom} {$it.prenom}</a></td>
     <td>{$it.email}</td>
     <td>{$it.forlife}</td>
   </tr>

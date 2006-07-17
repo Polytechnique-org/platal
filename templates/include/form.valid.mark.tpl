@@ -23,7 +23,7 @@
 
 <tr class="pair">
   <td class="titre">Marketing sur</td>
-  <td><a href='{rel}/marketing/private/{valid->m_id}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
+  <td><a href='marketing/private/{valid->m_id}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
 </tr>
 <tr class="pair">
   <td class="titre">Mail deviné</td>

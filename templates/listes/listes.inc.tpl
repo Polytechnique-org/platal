@@ -33,7 +33,7 @@
   {if $liste.priv eq $priv}
   <tr class='{cycle values="impair,pair"}'>
     <td>
-      <a href='{rel}/{$platal->ns}lists/members/{$liste.list}'>{$liste.list}{if $liste.own}&nbsp;*{/if}</a> 
+      <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}{if $liste.own}&nbsp;*{/if}</a> 
     </td>
     <td>{$liste.desc}</td>
     <td class='center'>
@@ -45,14 +45,14 @@
     <td class='right'>{$liste.nbsub}</td>
     <td class='right'>
       {if $liste.sub eq 2}
-      <a href='{rel}/{$platal->ns}lists?del={$liste.list}'>
-        <img src="{rel}/images/retirer.gif" alt="[ désinscription ]" title="me désinscrire de {$liste.list}" />
+      <a href='{$platal->ns}lists?del={$liste.list}'>
+        <img src="images/retirer.gif" alt="[ désinscription ]" title="me désinscrire de {$liste.list}" />
       </a>
       {elseif $liste.sub eq 1}
-      <img src="{rel}/images/flag.png" alt="[ en cours ]" title='inscription en attente de modération' />
+      <img src="images/flag.png" alt="[ en cours ]" title='inscription en attente de modération' />
       {else}
-      <a href='{rel}/{$platal->ns}lists?add={$liste.list}'>
-        <img src="{rel}/images/ajouter.gif" alt="[ inscription ]" title="m'inscrire sur {$liste.list}" />
+      <a href='{$platal->ns}lists?add={$liste.list}'>
+        <img src="images/ajouter.gif" alt="[ inscription ]" title="m'inscrire sur {$liste.list}" />
       </a>
       {/if}
     </td>

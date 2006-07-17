@@ -31,7 +31,7 @@
     <td>
       <strong>{$h2} :</strong>&nbsp;&nbsp;
       {foreach from=$index3 item=ln name=ln}
-      <a href="{rel}/{$ln.url}">{$ln.txt}</a>
+      <a href="{$ln.url}">{$ln.txt}</a>
       {if !$smarty.foreach.ln.last}
       &nbsp;&nbsp;|&nbsp;&nbsp;
       {/if}

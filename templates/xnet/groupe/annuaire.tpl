@@ -35,22 +35,22 @@ Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'i
 Fonctionnalités visibles uniquement par les administrateurs :
 </p>
 <ul class="descr">
-  <li><a href="{rel}/{$platal->ns}member/new">Ajouter un membre</a></li>
-  <li><a href="{rel}/{$platal->ns}admin/annuaire">Synchroniser annuaire et Listes de diffusion</a></li>
+  <li><a href="{$platal->ns}member/new">Ajouter un membre</a></li>
+  <li><a href="{$platal->ns}admin/annuaire">Synchroniser annuaire et Listes de diffusion</a></li>
 </ul>
 {/if}
 
 <p class="center">
 [<a href="{$smarty.server.PHP_SELF}" {if !$request_group}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
-[<a href="{rel}/{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
 <table summary="membres du groupe" class="{if $admin}large{else}tiny{/if}">
   <tr>
-    <th><a href="{rel}/{$platal->ns}annuaire?order=alpha{if $smarty.request.order neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">Prénom NOM</a></th>
-    <th><a href="{rel}/{$platal->ns}annuaire?order=promo{if $smarty.request.order eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">Promo</a></th>
+    <th><a href="{$platal->ns}annuaire?order=alpha{if $smarty.request.order neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">Prénom NOM</a></th>
+    <th><a href="{$platal->ns}annuaire?order=promo{if $smarty.request.order eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">Promo</a></th>
     <th>Infos</th>
     {if $admin}
     <th>Éditer</th>
@@ -63,16 +63,16 @@ Fonctionnalités visibles uniquement par les administrateurs :
     <td>{$m.promo}</td>
     <td>
       {if $m.x}
-      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="{rel}/images/loupe.gif" alt="[fiche]" /></a>
-      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="{rel}/images/vcard.png" alt="[vcard]" /></a>
-      <a href="mailto:{$m.email}@polytechnique.org"><img src="{rel}/images/mail.png" alt="mail" /></a>
+      <a href="https://www.polytechnique.org/profile/{$m.email}"><img src="images/loupe.gif" alt="[fiche]" /></a>
+      <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf"><img src="images/vcard.png" alt="[vcard]" /></a>
+      <a href="mailto:{$m.email}@polytechnique.org"><img src="images/mail.png" alt="mail" /></a>
       {else}
-      <a href="mailto:{$m.email}"><img src="{rel}/images/mail.png" alt="mail" /></a>
+      <a href="mailto:{$m.email}"><img src="images/mail.png" alt="mail" /></a>
       {/if}
     </td>
     {if $admin}
-    <td><a href="{rel}/{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/profil.png" alt="Edition du profil" /></a></td>
-    <td><a href="{rel}/{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="{rel}/images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
+    <td><a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="images/profil.png" alt="Edition du profil" /></a></td>
+    <td><a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
     {/if}
   </tr>
   {/iterate}
@@ -80,7 +80,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
 
 <p class="descr">
 {foreach from=$links item=ofs key=txt}
-<a href="{rel}/{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
+<a href="{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
 

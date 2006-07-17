@@ -55,8 +55,8 @@
 {/literal}
 
 <p>
-  <a href="{rel}/Docs/SMTPSécurisé">Pourquoi et comment</a> utiliser le serveur SMTP de Polytechnique.org.<br />
-  <a href="{rel}/Docs/NNTPSécurisé">Pourquoi et comment</a> utiliser le serveur NNTP de Polytechnique.org.<br />
+  <a href="Docs/SMTPSécurisé">Pourquoi et comment</a> utiliser le serveur SMTP de Polytechnique.org.<br />
+  <a href="Docs/NNTPSécurisé">Pourquoi et comment</a> utiliser le serveur NNTP de Polytechnique.org.<br />
 </p>
 <p>
 {if $actif}
@@ -65,7 +65,7 @@
   Pour activer un compte SMTP/NNTP sur <strong>ssl.polytechnique.org</strong>, tape un mot de passe ci-dessous.
 {/if}
 </p>
-<form action="{rel}/password/smtp" method="post" id="smtppass_form">
+<form action="password/smtp" method="post" id="smtppass_form">
   <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
     <tr>
       <th colspan="2">

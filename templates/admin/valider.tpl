@@ -34,7 +34,7 @@
   <tr>
     <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
     <td>
-      <a href="{rel}/profile/{$valid->bestalias}" class="popup2">
+      <a href="profile/{$valid->bestalias}" class="popup2">
         {$valid->prenom} {$valid->nom} (X{$valid->promo})
       </a>
     </td>
@@ -44,7 +44,7 @@
   {foreach from=$valid->comments item=c}
   <tr class="{cycle values="impair,pair"}">
     <td class="titre">
-      <a href="{rel}/profile/{$c[0]}" class="popup2">{$c[0]}</a>
+      <a href="profile/{$c[0]}" class="popup2">{$c[0]}</a>
     </td>
     <td>{$c[1]}</td>
   </tr>

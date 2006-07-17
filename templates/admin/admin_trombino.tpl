@@ -29,18 +29,18 @@
 Photo actuelle de {$forlife}
 </p>
 
-<img src="{rel}/photo/{$forlife}" alt="[ PHOTO ]" />
+<img src="photo/{$forlife}" alt="[ PHOTO ]" />
 <br />
 
 <p>
-<a href="{rel}/admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
+<a href="admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
 </p>
 
 <p>
-<a href="{rel}/admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
 </p>
 
-<form action="{rel}/admin/admin_trombino.php" method="post" enctype="multipart/form-data">
+<form action="admin/admin_trombino.php" method="post" enctype="multipart/form-data">
   <div>
     <input type="hidden" name="uid" value="{$smarty.request.uid}" />
     <input type="hidden" name="action" value="valider" />

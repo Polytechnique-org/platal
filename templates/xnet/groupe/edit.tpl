@@ -20,11 +20,11 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<img src='{rel}/{$platal->ns}logo' alt="LOGO" style="float: right;" />
+<img src='{$platal->ns}logo' alt="LOGO" style="float: right;" />
 
 <h1>{$asso.nom} : Éditer l'accueil</h1>
 
-<form method="post" action="{rel}/{$platal->ns}edit" enctype="multipart/form-data">
+<form method="post" action="{$platal->ns}edit" enctype="multipart/form-data">
   {if $super}
   <table cellpadding="0" cellspacing="0" class='tiny'>
     <tr>

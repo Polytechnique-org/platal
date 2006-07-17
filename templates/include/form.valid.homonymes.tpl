@@ -30,7 +30,7 @@
   <td class="titre">Homonymes :</td>
   <td>
     {foreach from=$valid->homonymes_forlife item=o}
-    <a href='{rel}/profile/{$o}' class='popup2'>{$o}</a>
+    <a href='profile/{$o}' class='popup2'>{$o}</a>
     {/foreach}
   </td>
 </tr>

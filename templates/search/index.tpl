@@ -36,7 +36,7 @@
 
   {if $search_results_nb and $advanced and !$simple and $use_map}
   <p>
-    [<a href='{rel}/geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
+    [<a href='geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
   </p>
   {/if}
   
@@ -47,8 +47,8 @@
     [<a href='{$tri.url}'>
     {if $tri.asc or $tri.desc}<strong>{/if}
     {$tri.text}
-    {if $tri.desc}<img src='{rel}/images/up.png' alt='tri ascendant' />{/if}
-    {if  $tri.asc}<img src='{rel}/images/dn.png' alt='tri descendant' />{/if}
+    {if $tri.desc}<img src='images/up.png' alt='tri ascendant' />{/if}
+    {if  $tri.asc}<img src='images/dn.png' alt='tri descendant' />{/if}
     {if $tri.asc or $tri.desc}</strong>{/if}
     </a>]
     {/foreach}

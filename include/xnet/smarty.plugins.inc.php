@@ -21,8 +21,6 @@
 
 // {{{  function list_all_my_groups
 
-require_once $globals->spoolroot.'/plugins/function.rel.php';
-
 function list_all_my_groups($params)
 {
     if (!S::logged()) {
@@ -35,7 +33,7 @@ function list_all_my_groups($params)
               WHERE  m.uid={?}", S::v('uid'));
     $html = '<div>Mes groupes :</div>';
     while (list($nom, $mini) = $res->next()) {
-        $html .= "<a class='gp' href='".smarty_function_rel()."/$mini/'>&bull; $nom</a>";
+        $html .= "<a class='gp' href='$mini/'>&bull; $nom</a>";
     }
     return $html;
 }

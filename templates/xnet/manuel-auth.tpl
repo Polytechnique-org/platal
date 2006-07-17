@@ -42,7 +42,7 @@ sein de ton groupe.
 Pour
 bénéficier de tous ces services, tu dois auparavant t'authentifier.
 <br />
-<img src="{rel}/images/identification.jpg" />
+<img src="images/identification.jpg" />
 <br />
 
 Pour
@@ -53,7 +53,7 @@ porte-clés. Après t'être authentifié, tu entres en mode connecté, et tu as
 accès directement aux pages des groupes auxquels tu es inscrit, depuis la page d'accueil.
 
 <br />
-<img src="{rel}/images/index_auth.jpg" />
+<img src="images/index_auth.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -64,10 +64,10 @@ page de ton groupe est désormais complétée et offre des fonctionnalités
 avancées, visibles seulement en mode connecté. Ces fonctionnalités sont listées
 dans le menu de droite.
 <br />
-<img src="{rel}/images/x-internet.jpg" />
+<img src="images/x-internet.jpg" />
 <br />
  
-<img src="{rel}/images/fns_membres.jpg" />
+<img src="images/fns_membres.jpg" />
 
 <br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
 
@@ -75,7 +75,7 @@ dans le menu de droite.
 
 Il liste les membres du groupe, par ordre alphabétique ou par promotions.
 <br />
-<img src="{rel}/images/annuaire.jpg" />
+<img src="images/annuaire.jpg" />
 <br />
 Les
 femmes sont repérées par un point à gauche de leurs noms. Les trois colonnes de

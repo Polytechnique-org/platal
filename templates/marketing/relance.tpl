@@ -27,7 +27,7 @@
 <p>{$l}</p>
 {/foreach}
 
-<form action="{rel}/marketing/relance" method="post">
+<form action="marketing/relance" method="post">
   <table class="bicol" summary="liste des inscriptions non confirmées">
     <tr>
       <th>Date</th>

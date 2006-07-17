@@ -21,9 +21,9 @@
 {**************************************************************************}
 
 {if $asso.site}
-<a href="{$asso.site}"><img src='{rel}/{$platal->ns}logo' alt="LOGO" style="float: right;" /></a>
+<a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" style="float: right;" /></a>
 {else}
-<img src='{rel}/{$platal->ns}logo' alt="LOGO" style="float: right;" />
+<img src='{$platal->ns}logo' alt="LOGO" style="float: right;" />
 {/if}
 
 <h1>{$asso.nom} : Accueil</h1>
@@ -71,7 +71,7 @@
       M'inscrire :
     </td>
     <td>
-      <a href="{rel}/{$platal->ns}subscribe">m'inscrire</a>
+      <a href="{$platal->ns}subscribe">m'inscrire</a>
     </td>
   </tr>
   {/if}

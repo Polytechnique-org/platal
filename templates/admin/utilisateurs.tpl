@@ -202,7 +202,7 @@ function act_fwd(fwd, activate) {
     </tr>
     <tr class="center">
       <td>
-        <a href="{rel}/profile/{$mr.forlife}" class="popup2">[Voir fiche]</a>
+        <a href="profile/{$mr.forlife}" class="popup2">[Voir fiche]</a>
       </td>
       <td>
         <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
@@ -210,7 +210,7 @@ function act_fwd(fwd, activate) {
     </tr>
     <tr class="center">
       <td>
-        <a href="{rel}/admin/admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
+        <a href="admin/admin_trombino.php?uid={$mr.user_id}">[Trombino]</a>
       </td>
       <td>
         <input type="submit" name="u_kill_conf" value="Désinscrire" />

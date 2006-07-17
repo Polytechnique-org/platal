@@ -23,26 +23,26 @@
 <table>
   <tr>
     <td colspan='2'>
-      [<a href='{rel}/{$platal->ns}lists'>Voir toutes les listes</a>]
+      [<a href='{$platal->ns}lists'>Voir toutes les listes</a>]
     </td>
   </tr>
   <tr>
     <td><strong>Liste {$platal->argv[1]} :</strong></td>
     <td>
       {if $on neq members}
-      [<a href='{rel}/{$platal->ns}lists/members/{$platal->argv[1]}'>liste des membres</a>]
+      [<a href='{$platal->ns}lists/members/{$platal->argv[1]}'>liste des membres</a>]
       {else}
       [liste des membres]
       {/if}
       {if !$it_is_xnet}
       {if $on neq trombi}
-      [<a href='{rel}/{$platal->ns}lists/trombi/{$platal->argv[1]}'>trombinoscope</a>]
+      [<a href='{$platal->ns}lists/trombi/{$platal->argv[1]}'>trombinoscope</a>]
       {else}
       [trombinoscope]
       {/if}
       {/if}
       {if $on neq archives}
-      [<a href='{rel}/{$platal->ns}lists/archives/{$platal->argv[1]}'>archives</a>]
+      [<a href='{$platal->ns}lists/archives/{$platal->argv[1]}'>archives</a>]
       {else}
       [archives]
       {/if}
@@ -53,22 +53,22 @@
     <td><strong>Administrer la liste :</strong></td>
     <td>
       {if $on neq moderate}
-      [<a href='{rel}/{$platal->ns}lists/moderate/{$platal->argv[1]}'>modération</a>]
+      [<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}'>modération</a>]
       {else}
       [modération]
       {/if}
       {if $on neq admin}
-      [<a href='{rel}/{$platal->ns}lists/admin/{$platal->argv[1]}'>ajout/retrait de membres</a>]
+      [<a href='{$platal->ns}lists/admin/{$platal->argv[1]}'>ajout/retrait de membres</a>]
       {else}
       [ajout/retrait de membres]
       {/if}
       {if $on neq options}
-      [<a href='{rel}/{$platal->ns}lists/options/{$platal->argv[1]}'>options</a>]
+      [<a href='{$platal->ns}lists/options/{$platal->argv[1]}'>options</a>]
       {else}
       [options]
       {/if}
       {if $on neq delete}
-      [<a href='{rel}/{$platal->ns}lists/delete/{$platal->argv[1]}'>détruire</a>]
+      [<a href='{$platal->ns}lists/delete/{$platal->argv[1]}'>détruire</a>]
       {else}
       [détruire liste]
       {/if}
@@ -80,12 +80,12 @@
     <td><strong>Administrer (avancé) :</strong></td>
     <td>
       {if $on neq soptions}
-      [<a href='{rel}/{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancées</a>]
+      [<a href='{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancées</a>]
       {else}
       [options avancées]
       {/if}
       {if $on neq check}
-      [<a href='{rel}/{$platal->ns}lists/check/{$platal->argv[1]}'>vérifications</a>]
+      [<a href='{$platal->ns}lists/check/{$platal->argv[1]}'>vérifications</a>]
       {else}
       [vérifications]
       {/if}
@@ -96,7 +96,7 @@
   <tr>
     <td><strong>Synchroniser</strong></td>
     {if $on neq sync}
-    <td>[<a href="{rel}/{$platal->ns}lists/sync/{$platal->argv[1]}">Synchroniser avec l'annuaire</a>]</td>
+    <td>[<a href="{$platal->ns}lists/sync/{$platal->argv[1]}">Synchroniser avec l'annuaire</a>]</td>
     {else}
     <td>[Synchroniser avec l'annuaire]</td>
     {/if}

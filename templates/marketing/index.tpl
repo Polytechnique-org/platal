@@ -28,11 +28,11 @@
   </tr>
   <tr class="impair">
     <td>
-      <a href="{rel}/search?nonins=1">Chercher un non inscrit</a>
+      <a href="search?nonins=1">Chercher un non inscrit</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="{rel}/marketing/promo">Marketing promo</a>
+      <a href="marketing/promo">Marketing promo</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="{rel}/marketing/volontaire">Addresses données par les inscrits</a>
+      <a href="marketing/volontaire">Addresses données par les inscrits</a>
     </td>
   </tr>
 </table>
@@ -59,8 +59,8 @@ Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
 </p>
 
 <p>
-Nombre d'<a href="{rel}/marketing/this_week">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
-Nombre d'<a href="{rel}/marketing/relance">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
+Nombre d'<a href="marketing/this_week">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
+Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
 Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsMarket}<br />
 Nombre d'envois marketing ayant abouti cette semaine : {$nbInsMarkOK}
 </p>

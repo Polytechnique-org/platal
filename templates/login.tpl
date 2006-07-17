@@ -43,24 +43,24 @@ Bienvenue {$smarty.session.prenom}
   
 {if $fiche_incitation}
   <p>La dernière mise à jour de ta
-  <a href="{rel}/profile/{$smarty.session.forlife}" class="popup2">fiche</a>
+  <a href="profile/{$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format}.
   Il est possible qu'elle ne soit pas à jour.
-  Si tu souhaites la modifier, <a href="{rel}/profile/edit">clique ici !</a>
+  Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
   </p>
 {/if}
 
 {if $photo_incitation}
   <p>
     Tu n'as pas mis de photo de toi sur ta fiche, c'est dommage.
-    Clique <a href="{rel}/photo/change">ici</a> si tu souhaites en ajouter une.
+    Clique <a href="photo/change">ici</a> si tu souhaites en ajouter une.
   </p>
 {/if}
 
 {if $geoloc_incitation > 0}
   <p>
     Parmi tes adresses, il y en a {$geoloc_incitation} que nous n'avons pas pu localiser.
-    Clique <a href="{rel}/profile/edit/adresses">ici</a> pour rectifier.
+    Clique <a href="profile/edit/adresses">ici</a> pour rectifier.
   </p>
 {/if}
 <br />
@@ -83,7 +83,7 @@ Bienvenue {$smarty.session.prenom}
   <table class="bicol">
     <tr>
       <th>
-        <a href="{rel}/events?lu={$ev.id}{if $previd}#newsid{$previd}{/if}" style="display:block;float:right"><img alt="Cacher" title="Cacher cet article" src="{rel}/images/retirer.gif"/></a>
+        <a href="events?lu={$ev.id}{if $previd}#newsid{$previd}{/if}" style="display:block;float:right"><img alt="Cacher" title="Cacher cet article" src="images/retirer.gif"/></a>
         {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>
 	 {tidy}
@@ -97,8 +97,8 @@ Bienvenue {$smarty.session.prenom}
           {$ev.texte|smarty:nodefaults|nl2br}
         {/tidy}
         <br />
-        <p class="smaller"><a href="#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="{rel}/images/up.png"/></a>Annonce proposée par
-        <a href="{rel}/profile/{$ev.forlife}" class="popup2">
+        <p class="smaller"><a href="#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposée par
+        <a href="profile/{$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
         </p>
@@ -119,7 +119,7 @@ Bienvenue {$smarty.session.prenom}
     <tr class="{cycle values="impair,pair"}">
       <td class="half">
         &bull;
-        <a href="{if !$ev.nonlu}{rel}/events?nonlu={$ev.id}{/if}#newsid{$ev.id}">
+        <a href="{if !$ev.nonlu}events?nonlu={$ev.id}{/if}#newsid{$ev.id}">
         {if $ev.nonlu}<strong>{/if}
       	 {tidy}
       	   {$ev.titre|nl2br}
@@ -141,15 +141,15 @@ Bienvenue {$smarty.session.prenom}
   </p>
 
   <p>
-  <a href="{rel}/events/submit">Proposer une information événementielle</a>
+  <a href="events/submit">Proposer une information événementielle</a>
   </p>
   {if $smarty.session.core_rss_hash}
   <div class="right">
-    <a href='{rel}/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='{rel}/images/rssicon.gif' alt='fil rss' /></a>
+    <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' /></a>
   </div>
   {else}
   <div class="right">
-    <a href='{rel}/prefs/rss?referer=events'><img src='{rel}/images/rssact.gif' alt='fil rss' /></a>
+    <a href='prefs/rss?referer=events'><img src='images/rssact.gif' alt='fil rss' /></a>
   </div>
   {/if}
 {/if}

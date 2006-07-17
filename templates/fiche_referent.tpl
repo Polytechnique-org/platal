@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {literal}
-<script type="text/javascript" src="{rel}/javascript/close_on_esc.js">
+<script type="text/javascript" src="javascript/close_on_esc.js">
 </script>
 {/literal}
 

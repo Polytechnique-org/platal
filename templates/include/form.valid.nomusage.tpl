@@ -37,7 +37,7 @@
 <tr class="impair">
   <td colspan="2">
     <span class="erreur">Probleme d'homonymie !
-      <a href="{rel}/profile/{$valid->homonyme}" class="popup2">{$valid->homonyme}</a>
+      <a href="profile/{$valid->homonyme}" class="popup2">{$valid->homonyme}</a>
     </span>
   </td>
 </tr>

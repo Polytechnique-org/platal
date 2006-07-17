@@ -592,7 +592,7 @@ class XnetGrpModule extends PLModule
                       INNER JOIN  aliases       AS a ON (u.user_id = a.id)
                            WHERE  a.alias={?}', $globals->asso('id'), $forlife);
                 global $platal;
-                redirect(smarty_function_rel()."/{$platal->ns}member/$email");
+                redirect("{$globals->baseurl}/{$platal->ns}member/$email");
             } else {
                 $page->trig($email." n'est pas un alias polytechnique.org valide");
             }
@@ -604,7 +604,7 @@ class XnetGrpModule extends PLModule
                                         VALUES({?},{?},"ext",{?})', $uid,
                                         $globals->asso('id'), $email);
                 global $platal;
-                redirect(smarty_function_rel()."/{$platal->ns}member/$email");
+                redirect("{$globals->baseurl}/{$platal->ns}member/$email");
             } else {
                 $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
             }

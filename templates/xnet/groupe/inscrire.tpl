@@ -28,7 +28,7 @@
   Demande de la part de : {$prenom} {$nom} (X{$promo})
   <a href="https://www.polytechnique.org/profile/{$u}">Voir sa fiche</a>
 </h2>
-<form action="{rel}/{$platal->ns}subscribe/{$u}" method="post">
+<form action="{$platal->ns}subscribe/{$u}" method="post">
   <input type="submit" value="Accepter" name="accept" />
   <br />
   ou bien
@@ -43,7 +43,7 @@
 <p class="descr">
 <strong>Ta demande d'inscription a bien été envoyée !</strong> Tu seras averti par email de la suite qui lui sera donnée.
 <p>
-<p class="descr">[<a href="{rel}/{$platal->ns}">Retour à la page d'accueil de {$asso.nom}</a>]</p>
+<p class="descr">[<a href="{$platal->ns}">Retour à la page d'accueil de {$asso.nom}</a>]</p>
 
 {else}
 
@@ -52,7 +52,7 @@ Pour t'inscrire à {$asso.nom}, il te faut en demander l'autorisation aux animate
 formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, puis clique sur
 [&nbsp;m'inscrire&nbsp;]
 </p>
-<form action="{rel}/{$platal->ns}subscribe" method="post">
+<form action="{$platal->ns}subscribe" method="post">
   <p class="descr">
   <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}</strong>
   </p>

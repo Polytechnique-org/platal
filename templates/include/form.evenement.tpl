@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<form action="{rel}/{$platal->path}" method="post">
+<form action="{$platal->path}" method="post">
   <table class="bicol">
     <tr>
       <th colspan="2">Contenu du message</th>

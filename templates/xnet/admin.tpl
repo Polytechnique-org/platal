@@ -24,7 +24,7 @@
 
 <h1>Suppression du groupe {$nom}</h1>
 
-<form action="{rel}/admin?del={$smarty.request.del}" method="post">
+<form action="admin?del={$smarty.request.del}" method="post">
   <div class="center">
     <input type="submit" name="del" value="Oui, je veux supprimer ce groupe" />
   </div>
@@ -34,7 +34,7 @@
 
 <h1>Ajouter un groupe</h1>
 
-<form action="{rel}/admin" method="post">
+<form action="admin" method="post">
   <p class="descr">
   Pour ajouter un groupe, choisir ici le diminutif qu'il va utiliser,
   tu seras ensuite redirigé vers une page te permettant d'éditer le groupe :
@@ -51,8 +51,8 @@
 <table cellspacing="0" cellpadding="0" class='large'>
   {foreach from=$assos item=a key=i name=all}
   {if $i is even}<tr>{/if}
-    <td><a href='{rel}/admin?del={$a.diminutif}'><img src='{rel}/images/del.png' alt='delete' /></a></td>
-    <td><a href='{rel}/{$a.diminutif}/edit'>{$a.nom}</a></td>
+    <td><a href='admin?del={$a.diminutif}'><img src='images/del.png' alt='delete' /></a></td>
+    <td><a href='{$a.diminutif}/edit'>{$a.nom}</a></td>
     {if $i is odd || $smarty.foreach.all.last}</tr>{/if}
   {/foreach}
 </table>

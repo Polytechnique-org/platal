@@ -29,7 +29,7 @@
 {/if}
 
 <p>
-  [<a href="{rel}/{$platal->ns}events">Revenir à la liste des événements</a>]
+  [<a href="{$platal->ns}events">Revenir à la liste des événements</a>]
 </p>
 
 <p class='descr'>
@@ -59,15 +59,15 @@
 {if $admin || $event.show_participants}
 <p class='descr'>
   Tu peux 
-  <a href="{rel}/{$platal->ns}events/admin/{$event.eid}">
+  <a href="{$platal->ns}events/admin/{$event.eid}">
     consulster liste des participants
-    <img src="{rel}/images/loupe.gif" title="Liste des participants" alt="Liste des participants" />
+    <img src="images/loupe.gif" title="Liste des participants" alt="Liste des participants" />
   </a>
   déjà inscrits.
 </p>
 {/if}
 
-<form action="{rel}/{$platal->ns}events/sub/{$event.eid}" method="post">
+<form action="{$platal->ns}events/sub/{$event.eid}" method="post">
   <table class="tiny" cellspacing="0" cellpadding="0">
     {foreach from=$event.moments item=m}
     <tr><th>{$m.titre} ({$m.montant} &euro;)</th></tr>

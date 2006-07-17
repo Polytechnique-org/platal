@@ -22,17 +22,17 @@
 
 
 <div>
-  Plat/al <a href="{rel}/changelog">{#globals.version#}</a> - Copyright © 1999-2006 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
+  Plat/al <a href="changelog">{#globals.version#}</a> - Copyright © 1999-2006 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
-  <a href="{rel}/Docs/ConventionAX">Lien avec l'AX</a>
+  <a href="Docs/ConventionAX">Lien avec l'AX</a>
   &nbsp;-&nbsp;
-  <a href="{rel}/Docs/APropos">A propos de ce site</a>
+  <a href="Docs/APropos">A propos de ce site</a>
 <br />
-  <a href="{rel}/Docs/Ethique">Services et Ethique</a>
-  | <a href="{rel}/Docs/Charte">Charte</a>
+  <a href="Docs/Ethique">Services et Ethique</a>
+  | <a href="Docs/Charte">Charte</a>
 {min_auth level=cookie}
-  | <a href="{rel}/stats/coupures">Disponibilité</a>
-  | <a href="{rel}/stats">Statistiques</a>
+  | <a href="stats/coupures">Disponibilité</a>
+  | <a href="stats">Statistiques</a>
 {/min_auth}
 </div>
 

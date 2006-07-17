@@ -24,8 +24,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <base href="{#globals.baseurl#}/" />
-    <link rel="stylesheet" type="text/css" href="{rel}/css/default.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="{rel}/css/espace.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/espace.css" media="screen" />
     {include file=skin/common.header.tpl}
     {include file=skin/common.bandeau.head.tpl}
   </head>
@@ -37,7 +37,7 @@
       <tr>
         <td>
           {$smarty.session.suid} ({$smarty.session.forlife})
-          [<a href="{rel}/exit">exit</a>]
+          [<a href="exit">exit</a>]
         </td>
       </tr>
     </table>
@@ -56,12 +56,12 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="{rel}/events"><img src="{rel}/images/sk_espace_logo.gif" alt="[ LOGO ]" /></a>
+          <a href="events"><img src="images/sk_espace_logo.gif" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="{rel}/events"><img src="{rel}/images/sk_espace_ban.jpg" alt="[ Polytechnique.org ]" /></a>
+          <a href="events"><img src="images/sk_espace_ban.jpg" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
-          <a href="{rel}/events"><img src="{rel}/images/sk_espace_lesX.gif" alt="[LES X SUR LE WEB]" /></a>
+          <a href="events"><img src="images/sk_espace_lesX.gif" alt="[LES X SUR LE WEB]" /></a>
         </td>
       </tr>
       <tr>
@@ -78,7 +78,7 @@
           <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
             <tr><th>Valid</th></tr>
             <tr class="impair">
-              <td><a href="{rel}/admin/valider.php">{insert name="mkStats"}</a></td>
+              <td><a href="admin/valider.php">{insert name="mkStats"}</a></td>
             </tr>
           </table>
           {/perms}
