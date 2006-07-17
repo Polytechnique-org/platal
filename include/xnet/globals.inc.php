@@ -37,7 +37,6 @@ class XnetGlobals extends PlatalGlobals
 
         $globals       = new XnetGlobals;
         $globals->core = new CoreConfig;
-        $globals->root = dirname(dirname(dirname(__FILE__)));
         $globals->hook = new XOrgHook();
 
         $globals->hook->config(null);

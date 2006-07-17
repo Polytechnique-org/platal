@@ -38,7 +38,6 @@ class XorgGlobals extends PlatalGlobals
 
         $globals       = new XorgGlobals;
         $globals->core = new CoreConfig;
-        $globals->root = dirname(dirname(dirname(__FILE__)));
         $globals->hook = new XOrgHook();
         $globals->menu = new XOrgMenu();
 

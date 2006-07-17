@@ -67,7 +67,7 @@ class XOrgHook
     {
         global $globals;
 
-        foreach (glob($globals->root."/hooks/*.inc.php") as $file) {
+        foreach (glob($globals->spoolroot."/hooks/*.inc.php") as $file) {
             require_once("$file");
             $this->_mods[] = basename($file, '.inc.php');
         }
