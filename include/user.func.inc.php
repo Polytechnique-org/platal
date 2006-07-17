@@ -60,7 +60,7 @@ function user_clear_all_subs($user_id, $really_del=true)
     
     include_once('lists.inc.php');
     if (function_exists(lists_xmlrpc)) {
-        $client =& lists_xmlrpc(Session::getInt('id'), Session::get('password'));
+        $client =& lists_xmlrpc(S::v('id'), S::v('password'));
         $client->kill($alias, $really_del);
     }
 }
@@ -130,7 +130,7 @@ function get_user_login($data, $get_forlife = false) {
                 return $res->fetchOneCell();
                 
             default:
-                if (has_perms()) {
+                if (S::has_perms()) {
                     $aliases = $res->fetchColumn();
                     $page->trig("Il y a $i utilisateurs avec cette adresse mail : ".join(', ', $aliases));
                 } else {

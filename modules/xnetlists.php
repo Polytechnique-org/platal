@@ -57,8 +57,7 @@ class XnetListsModule extends ListsModule
 
         require_once 'lists.inc.php';
 
-        $this->client =& lists_xmlrpc(Session::getInt('uid'),
-                                      Session::get('password'),
+        $this->client =& lists_xmlrpc(S::v('uid'), S::v('password'),
                                       $globals->asso('mail_domain'));
 
         $page->useMenu();
@@ -148,7 +147,7 @@ class XnetListsModule extends ListsModule
         $ret = $this->client->create_list(
                     $liste, Post::get('desc'), Post::get('advertise'),
                     Post::get('modlevel'), Post::get('inslevel'),
-                    array(Session::get('forlife')), array());
+                    array(S::v('forlife')), array());
 
         $dom = strtolower($globals->asso("mail_domain"));
         $red = $dom.'_'.$liste;

@@ -95,11 +95,11 @@ function wiki_clean_tmp() {
 
 function wiki_assign_auth() {
     global $page, $wiki_auths;
-    $page->assign('logged', logged());
-    $page->assign('identified', identified());
-    $page->assign('has_perms', has_perms());
+    $page->assign('logged', S::logged());
+    $page->assign('identified', S::identified());
+    $page->assign('has_perms', S::has_perms());
     $page->assign('public', true);
-    $page->assign('wiki_admin', has_perms() && identified());
+    $page->assign('wiki_admin', S::has_perms() && S::identified());
 }
 
 // cannot be in a function because pmwiki use all vars as if it was globals

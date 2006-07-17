@@ -451,18 +451,18 @@ function get_nl_list()
 
 function get_nl_state()
 {
-    $res = XDB::query('SELECT 1 FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
+    $res = XDB::query('SELECT 1 FROM newsletter_ins WHERE user_id={?}', S::v('uid'));
     return $res->fetchOneCell();
 }
  
 function unsubscribe_nl()
 {
-    XDB::execute('DELETE FROM newsletter_ins WHERE user_id={?}', Session::getInt('uid'));
+    XDB::execute('DELETE FROM newsletter_ins WHERE user_id={?}', S::v('uid'));
 }
  
 function subscribe_nl($uid=-1)
 {
-    $user = ($uid == -1) ? Session::getInt('uid') : $uid;
+    $user = ($uid == -1) ? S::v('uid') : $uid;
     XDB::execute('REPLACE INTO  newsletter_ins (user_id,last)
                         VALUES  ({?}, 0)', $user);
 }

@@ -73,7 +73,7 @@ function get_event_detail($eid, $item_id = false)
       LEFT JOIN groupex.evenements_participants AS ep
                 ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
           WHERE ei.eid = {?}",
-            Session::get('uid'), $evt['eid']);
+            S::v('uid'), $evt['eid']);
     $evt['moments'] = $res->fetchAllAssoc();
 
     $evt['topay'] = 0;
@@ -84,7 +84,7 @@ function get_event_detail($eid, $item_id = false)
     $req = XDB::query(
         "SELECT montant
            FROM {$globals->money->mpay_tprefix}transactions AS t
-         WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], Session::get('uid'));
+         WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], S::v('uid'));
     $montants = $req->fetchColumn();
 
     $evt['paid'] = 0;
@@ -180,12 +180,12 @@ function subscribe_lists_event($participate, $uid, $evt) {
     $participant_list = $evt['participant_list'];
     $absent_list      = $evt['absent_list'];
 
-    $email = Session::get('forlife');
+    $email = S::v('forlife');
 
     if ($email) {
         $email .= '@'.$globals->mail->domain;
     } else {
-        $res = XDB::query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", Session::get('uid'), $globals->asso('id'));
+        $res = XDB::query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", S::v('uid'), $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
 

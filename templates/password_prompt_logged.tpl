@@ -77,7 +77,7 @@
 <!-- Set up the form with the challenge value and an empty reply value -->
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="loginsub">
   <div>
-    <input type="hidden" name="challenge" value="{$smarty.session.session->challenge}" />
+    <input type="hidden" name="challenge" value="{$smarty.session.challenge}" />
     <input type="hidden" name="username"  value="{$smarty.cookies.ORGuid}" />
     <input type="hidden" name="xorpass"  value="" />
     <input type="hidden" name="remember"  value="" />

@@ -52,11 +52,11 @@ class PayPal
         global $globals;
 
 	$this->urlform = 'https://'.$globals->money->paypal_site.'/cgi-bin/webscr';
-	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
+	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",S::v('uid'));
 	$name = $req->fetchOneCell();
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/payment/paypal_return/".Session::getInt('uid');
+            ."/payment/paypal_return/".S::v('uid');
 
 	$this->infos = Array();
 	
@@ -69,9 +69,9 @@ class PayPal
 		'cbt'         => 'Revenir sur polytechnique.org');
 	
 	$info_client = Array(
-		'first_name' => Session::get('prenom'),
+		'first_name' => S::v('prenom'),
 		'last_name'  => $name,
-		'email'      => Session::get('bestalias').'@polytechnique.org');
+		'email'      => S::v('bestalias').'@polytechnique.org');
 		
 	$res = XDB::query(
 		"SELECT a.adr1 AS address1, a.adr2 AS address2,
@@ -81,7 +81,7 @@ class PayPal
 	      LEFT JOIN adresses	AS a ON (q.user_id = a.uid)
 	      LEFT JOIN tels        AS t ON (t.uid = a.uid AND t.adrid = a.adrid)
 	          WHERE q.user_id = {?} AND FIND_IN_SET('active', a.statut)
-		  LIMIT 1", Session::getInt('uid'));
+		  LIMIT 1", S::v('uid'));
 	$this->infos['client']=array_merge($info_client, $res->fetchOneAssoc());
 
         // on constuit la reference de la transaction

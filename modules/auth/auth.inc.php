@@ -29,19 +29,19 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
                                         prenom, nationalite, section,
                                         naissance
                                    FROM auth_user_md5 WHERE user_id = {?}",
-                                Session::getInt('uid'));
+                                S::v('uid'));
     $personnal_data = $res->fetchOneAssoc();
 
     foreach ($fieldarr as $val) {
         /* on verifie qu'on n'a pas demandé une variable inexistante ! */
-        if (Session::has($val)) {
-            $tohash .= Session::get($val);
+        if (S::has($val)) {
+            $tohash .= S::v($val);
         } else if (isset($personnal_data[$val])) {
             $tohash .= $personnal_data[$val];
         } else if ($val == 'username') {
             $res = XDB::query("SELECT alias FROM aliases
                                           WHERE id = {?} AND FIND_IN_SET('bestalias', flags)",
-                                        Session::getInt('uid'));
+                                        S::v('uid'));
             $min_username = $res->fetchOneCell();
             $tohash      .= $min_username;
         }
@@ -59,20 +59,20 @@ function gpex_make_params($chlg, $privkey, $datafields) {
                                         prenom, nationalite, section,
                                         naissance
                                    FROM auth_user_md5 WHERE user_id = {?}",
-                                Session::getInt('uid'));
+                                S::v('uid'));
     $personnal_data = $res->fetchOneAssoc();
 
     $fieldarr = explode(",",$datafields);
 
     foreach ($fieldarr as $val) {
-        if (Session::has($val)) {
-            $tohash .= Session::get($val);
+        if (S::has($val)) {
+            $tohash .= S::v($val);
         } else if (isset($personnal_data[$val])) {
             $params .= "&$val=".$personnal_data[$val];
         } else if ($val == 'username') {
             $res = XDB::query("SELECT alias FROM aliases 
                                           WHERE id = {?} AND FIND_IN_SET('bestalias', flags)",
-                                        Session::getInt('uid'));
+                                        S::v('uid'));
             $min_username = $res->fetchOneCell();
             $params      .= "&$val=".$min_username;
         }

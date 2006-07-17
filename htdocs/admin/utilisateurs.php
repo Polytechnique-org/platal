@@ -25,7 +25,7 @@ $page->assign('xorg_title','Polytechnique.org - Administration - Edit/Su/Log');
 require_once("emails.inc.php");
 require_once("user.func.inc.php");
 
-if (Session::has('suid')) {
+if (S::has('suid')) {
     $page->kill("déjà en SUID !!!");
 }
 
@@ -46,7 +46,7 @@ if (Env::has('ax_button') && $login) {
 }
 
 if(Env::has('suid_button') && $login) {
-    $_SESSION['log']->log("suid_start", "login by ".Session::get('forlife'));
+    $_SESSION['log']->log("suid_start", "login by ".S::v('forlife'));
     $_SESSION['suid'] = $_SESSION;
     $r = XDB::query("SELECT id FROM aliases WHERE alias={?}", $login);
     if($uid = $r->fetchOneCell()) {
@@ -144,7 +144,7 @@ if ($login) {
                     $mailer = new HermesMailer();
                     $mailer->setFrom("webmaster@polytechnique.org");
                     $mailer->addTo("web@polytechnique.org");
-                    $mailer->setSubject("INTERVENTION de ".Session::get('forlife'));
+                    $mailer->setSubject("INTERVENTION de ".S::v('forlife'));
                     $mailer->setTxtBody(preg_replace("/[ \t]+/", ' ', $query));
                     $mailer->send();
 
@@ -169,7 +169,7 @@ if ($login) {
 		$mailer = new HermesMailer();
 		$mailer->setFrom("webmaster@polytechnique.org");
 		$mailer->addTo("web@polytechnique.org");
-		$mailer->setSubject("INTERVENTION de ".Session::get('forlife'));
+		$mailer->setSubject("INTERVENTION de ".S::v('forlife'));
 		$mailer->setTxtBody("\nUtilisateur $login effacé");
 		$mailer->send();
 		break;

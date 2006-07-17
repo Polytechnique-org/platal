@@ -49,13 +49,13 @@ class SearchModule extends PLModule
                 '.$fields->get_select_statement().'
                 LEFT JOIN  auth_user_quick AS q  ON (u.user_id = q.user_id)
                 LEFT JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type="a_vie")
-                LEFT JOIN  contacts        AS c  ON (c.uid='.Session::getInt('uid').'
+                LEFT JOIN  contacts        AS c  ON (c.uid='.S::v('uid').'
                                                      AND c.contact=u.user_id)
                 LEFT JOIN  watch_nonins    AS w  ON (w.ni_id=u.user_id
-                                                     AND w.uid='.Session::getInt('uid').')
+                                                     AND w.uid='.S::v('uid').')
                 '.$globals->search->result_where_statement.'
                     WHERE  '.$fields->get_where_statement()
-                    .(logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '')
+                    .(S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '')
                 .'
                  GROUP BY  u.user_id
                  ORDER BY  '.($order?($order.', '):'')
@@ -131,10 +131,10 @@ class SearchModule extends PLModule
                 '.$fields->get_select_statement().'
                 '.(Env::has('only_referent') ? ' INNER JOIN mentor AS m ON (m.uid = u.user_id)' : '').'
                 LEFT JOIN  aliases        AS a ON (u.user_id = a.id AND a.type="a_vie")
-                LEFT JOIN  contacts       AS c ON (c.uid='.Session::getInt('uid').'
+                LEFT JOIN  contacts       AS c ON (c.uid='.S::v('uid').'
                                                    AND c.contact=u.user_id)
                 LEFT JOIN  watch_nonins   AS w ON (w.ni_id=u.user_id
-                                                   AND w.uid='.Session::getInt('uid').')
+                                                   AND w.uid='.S::v('uid').')
                 '.$globals->search->result_where_statement."
                     $where
                  ORDER BY  ".($order?($order.', '):'')
@@ -170,7 +170,7 @@ class SearchModule extends PLModule
 
             $nb_tot = $search->show();
 
-            if (!logged() && $nb_tot > $globals->search->public_max) {
+            if (!S::logged() && $nb_tot > $globals->search->public_max) {
                 new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
                 new ThrowError('Recherche trop générale');

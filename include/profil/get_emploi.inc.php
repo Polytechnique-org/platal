@@ -27,7 +27,7 @@ $res = XDB::iterRow("SELECT entrid, entreprise, secteur, ss_secteur, poste, fonc
 	adr1, adr2, adr3, postcode, city, country, region, tel, fax, mobile,
 	pub, adr_pub, tel_pub, email, email_pub, web
         FROM entreprises
-        WHERE uid = {?} ORDER BY entrid",Session::getInt('uid', -1));
+        WHERE uid = {?} ORDER BY entrid",S::v('uid', -1));
 
 $nb_res = $res->total();
 for($i = 0; $i < $nb_res ; $i++){
@@ -79,7 +79,7 @@ while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = $res->n
 }
 
 //recuperation du CV
-$res = XDB::query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", Session::getInt('uid', -1));
+$res = XDB::query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", S::v('uid', -1));
 $cv = $res->fetchOneCell();
 
 ?>

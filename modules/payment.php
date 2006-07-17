@@ -115,7 +115,7 @@ class PaymentModule extends PLModule
                                               FROM  paiement.transactions
                                              WHERE  uid = {?} AND ref = {?}
                                           ORDER BY  timestamp DESC",
-                                            Session::getInt('uid', -1), $ref);
+                                            S::v('uid', -1), $ref);
 
             if ($res->total()) $page->assign('transactions', $res);
         }

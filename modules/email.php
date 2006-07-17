@@ -40,7 +40,7 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes emails');
 
-        $uid = Session::getInt('uid');
+        $uid = S::v('uid');
 
         if (Post::has('best')) {
             // bestalias is the first bit : 1
@@ -66,7 +66,7 @@ class EmailModule extends PLModule
 
 
         // on regarde si l'utilisateur a un alias et si oui on l'affiche !
-        $forlife = Session::get('forlife');
+        $forlife = S::v('forlife');
         $res = XDB::query(
                 "SELECT  alias
                    FROM  virtual          AS v
@@ -86,8 +86,8 @@ class EmailModule extends PLModule
         $page->changeTpl('emails/alias.tpl');
         $page->assign('xorg_title','Polytechnique.org - Alias melix.net');
 
-        $uid     = Session::getInt('uid');
-        $forlife = Session::get('forlife');
+        $uid     = S::v('uid');
+        $forlife = S::v('forlife');
 
         $page->assign('demande', AliasReq::get_request($uid));
 
@@ -109,7 +109,7 @@ class EmailModule extends PLModule
                    WHERE ( redirect={?} OR redirect= {?} )
                          AND alias LIKE '%@{$globals->mail->alias_dom}' AND user_id = {?}", 
                 $forlife.'@'.$globals->mail->domain,
-                $forlife.'@'.$globals->mail->domain2, Session::getInt('uid'));
+                $forlife.'@'.$globals->mail->domain2, S::v('uid'));
         list($alias, $visibility) = $res->fetchOneRow();
         $page->assign('actuel', $alias);
 
@@ -165,10 +165,10 @@ class EmailModule extends PLModule
         {
             if ($value == 'public') {
                 XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'public'
-                                         WHERE user_id = {?}", Session::getInt('uid'));
+                                         WHERE user_id = {?}", S::v('uid'));
             } else {
                 XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = 'private'
-                                         WHERE user_id = {?}", Session::getInt('uid'));
+                                         WHERE user_id = {?}", S::v('uid'));
             }
 
             $visibility = $value;
@@ -185,10 +185,10 @@ class EmailModule extends PLModule
 
         $page->changeTpl('emails/redirect.tpl');
 
-        $uid     = Session::getInt('uid');
-        $forlife = Session::get('forlife');
+        $uid     = S::v('uid');
+        $forlife = S::v('forlife');
 
-        $redirect = new Redirect(Session::getInt('uid'));
+        $redirect = new Redirect(S::v('uid'));
 
         if ($action == 'remove' && $email) {
             $page->assign('retour', $redirect->delete_email($email));
@@ -234,9 +234,9 @@ class EmailModule extends PLModule
 
         $page->changeTpl('emails/antispam.tpl');
 
-        $bogo = new Bogo(Session::getInt('uid'));
+        $bogo = new Bogo(S::v('uid'));
         if (Env::has('statut_filtre')) {
-            $bogo->change(Session::getInt('uid'), Env::getInt('statut_filtre'));
+            $bogo->change(S::v('uid'), Env::getInt('statut_filtre'));
         }
         $page->assign('filtre',$bogo->level());
     }
@@ -275,13 +275,13 @@ class EmailModule extends PLModule
                 $mymail->setTxtBody(wordwrap($txt,72,"\n"));
                 if ($mymail->send()) {
                     $page->trig("Ton mail a bien été envoyé.");
-                    $_REQUEST = array('bcc' => Session::get('bestalias').'@'.$globals->mail->domain);
+                    $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
                 } else {
                     $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
                 }
             }
         } else {
-            $_REQUEST['bcc'] = Session::get('bestalias').'@'.$globals->mail->domain;
+            $_REQUEST['bcc'] = S::v('bestalias').'@'.$globals->mail->domain;
         }
 
         $res = XDB::query(
@@ -290,7 +290,7 @@ class EmailModule extends PLModule
              INNER JOIN  contacts      AS c ON (u.user_id = c.contact)
              INNER JOIN  aliases       AS a ON (u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
                   WHERE  c.uid = {?}
-                 ORDER BY u.nom, u.prenom", Session::getInt('uid'));
+                 ORDER BY u.nom, u.prenom", S::v('uid'));
         $page->assign('contacts', $res->fetchAllAssoc());
     }
 
@@ -318,7 +318,7 @@ class EmailModule extends PLModule
                 $message = "Bonjour !
 
 Ce mail a été généré automatiquement par le service de patte cassée de
-Polytechnique.org car un autre utilisateur, ".Session::get('prenom').' '.Session::get('nom').",
+Polytechnique.org car un autre utilisateur, ".S::v('prenom').' '.S::v('nom').",
 nous a signalé qu'en t'envoyant un mail, il avait reçu un message d'erreur
 indiquant que ton adresse de redirection $email
 ne fonctionnait plus !

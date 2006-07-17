@@ -134,11 +134,11 @@ function select_notifs($mail, $uid=null, $last=null, $iterator=true)
 
 function getNbNotifs() {
     global $globals;
-    if (!Session::has('uid')) {
+    if (!S::has('uid')) {
         return 0;
     }
-    $uid       = Session::getInt('uid', -1);
-    $watchlast = Session::get('watch_last');
+    $uid       = S::v('uid', -1);
+    $watchlast = S::v('watch_last');
 
     // selectionne les notifs de uid, sans detail sur le watcher, depuis
     // $watchlast, meme ceux sans surveillance, non ordonnés

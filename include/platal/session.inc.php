@@ -22,6 +22,8 @@
 require_once 'diogenes/diogenes.misc.inc.php';
 require_once 'diogenes/diogenes.core.logger.inc.php';
 
+require_once dirname(__FILE__).'/../../classes/Session.php';
+
 // {{{ function check_perms()
 
 /** verifie si un utilisateur a les droits pour voir une page
@@ -31,53 +33,12 @@ require_once 'diogenes/diogenes.core.logger.inc.php';
 function check_perms()
 {
     global $page;
-    if (!has_perms()) {
+    if (!S::has_perms()) {
         if ($_SESSION['log']) {
             $_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
         }
 	$page->kill("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
     }
-}
-
-// }}}
-// {{{ function has_perms()
-
-/** verifie si un utilisateur a les droits pour voir une page
- ** soit parce qu'il est admin, soit il est dans une liste
- ** supplementaire de personnes utilisées
- * @return BOOL
- */
-    
-function has_perms()
-{
-    return logged() && Session::get('perms') == PERMS_ADMIN;
-}
-
-// }}}
-// {{{ function logged()
-
-/** renvoie true si la session existe et qu'on est loggué correctement
- * false sinon
- * @return bool vrai si loggué
- * @see header2.inc.php
- */
-function logged ()
-{
-    return Session::get('auth', AUTH_PUBLIC) >= AUTH_COOKIE;
-}
-
-// }}}
-// {{{ function identified()
-
-/** renvoie true si la session existe et qu'on est loggué correctement
- * et qu'on a été identifié par un mot de passe depuis le début de la session
- * false sinon
- * @return bool vrai si loggué
- * @see header2.inc.php
- */
-function identified ()
-{
-    return Session::get('auth', AUTH_PUBLIC) >= AUTH_MDP;
 }
 
 // }}}

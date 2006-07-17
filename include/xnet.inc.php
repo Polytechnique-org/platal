@@ -61,7 +61,7 @@ function new_group_page($tpl_name)
     new_page($tpl_name);
 
     $page->doAuth(true);
-    if (!is_member() && !has_perms()) {
+    if (!is_member() && !S::has_perms()) {
         $page->kill("You have not sufficient credentials");
     }
 
@@ -116,7 +116,7 @@ function new_nonhtml_page($tpl_name)
     new_page($tpl_name, NO_SKIN);
 
     $page->doAuth(true);
-    if (!is_member() && !has_perms()) {
+    if (!is_member() && !S::has_perms()) {
         $page->kill("You have not sufficient credentials");
     }
 

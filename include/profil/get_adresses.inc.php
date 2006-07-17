@@ -39,9 +39,9 @@ function is_adr_empty($adrid){
 
 function delete_address($adrid, $in_request_array = false){
     XDB::execute("DELETE FROM adresses WHERE uid = {?} AND adrid = {?}",
-                 Session::getInt('uid', -1), $adrid);
+                 S::v('uid', -1), $adrid);
     XDB::execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?}",
-                 Session::getInt('uid', -1), $adrid);
+                 S::v('uid', -1), $adrid);
     if ($in_request_array == true){
         unset($_REQUEST['adrid'][$adrid]);
     } else{
@@ -61,7 +61,7 @@ for ($i = 1; $i <= $nb_adr_max; $i++) {
 $sql_order = '';
 
 //recuperation des adrid
-$res = XDB::query("SELECT adrid FROM adresses WHERE uid = {?} AND NOT FIND_IN_SET('pro', statut) ".$sql_order, Session::getInt('uid', -1));
+$res = XDB::query("SELECT adrid FROM adresses WHERE uid = {?} AND NOT FIND_IN_SET('pro', statut) ".$sql_order, S::v('uid', -1));
 $adrids = $res->fetchColumn();
 
 //recuperation des donnees de la bd
@@ -74,7 +74,7 @@ $res = XDB::iterRow(
 	gp.pays AS countrytxt, gp.display
 	FROM adresses AS a INNER JOIN geoloc_pays AS gp ON(gp.a2 = a.country)
 	WHERE uid = {?} AND NOT FIND_IN_SET('pro',statut) ".$sql_order
-, Session::getInt('uid', -1)
+, S::v('uid', -1)
 );
 
 $nb_adr = $res->total();
@@ -100,7 +100,7 @@ $restels = XDB::iterator(
     t.adrid, telid, tel_type, t.tel_pub, t.tel
     FROM tels AS t INNER JOIN adresses AS a ON(t.uid = a.uid AND t.adrid = a.adrid)
     WHERE t.uid = {?} AND NOT FIND_IN_SET('pro',statut) ORDER BY t.adrid, tel_type DESC, telid"
-, Session::getInt('uid', -1)   
+, S::v('uid', -1)   
 );
 while ($tel = $restels->next()) {
     $adrid = $tel['adrid'];

@@ -22,7 +22,7 @@
 //mise a jour d'expertise si nécessaire
 
 if($mentor_expertise != $mentor_expertise_bd) {
-    XDB::execute("REPLACE INTO mentor(uid, expertise) VALUES({?}, {?})", Session::getInt('uid', -1), $mentor_expertise);
+    XDB::execute("REPLACE INTO mentor(uid, expertise) VALUES({?}, {?})", S::v('uid', -1), $mentor_expertise);
 }
 
 

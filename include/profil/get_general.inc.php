@@ -30,13 +30,13 @@ $sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.promo_sorti
     LEFT  JOIN  applis_ins      AS a2 ON(a2.uid = u.user_id and a2.ordre = 1)
 	 WHERE  u.user_id = {?}";
 
-$result = XDB::query($sql, Session::getInt('uid', -1));
+$result = XDB::query($sql, S::v('uid', -1));
 list($nom, $prenom, $nom_ini, $prenom_ini, $promo, $promo_sortie, $nom_usage, $nationalite,
 	$mobile, $mobile_pub, $web, $web_pub, $freetext, $freetext_pub, $nickname, 
         $synchro_ax, $matricule_ax,
         $appli_id1,$appli_type1, $appli_id2,$appli_type2) = $result->fetchOneRow();
 
-$result = XDB::query("SELECT pub FROM photo WHERE uid = {?}", Session::getInt('uid', -1));
+$result = XDB::query("SELECT pub FROM photo WHERE uid = {?}", S::v('uid', -1));
 $photo_pub = $result->fetchOneCell();
 
 $nom_anc = $nom;
@@ -74,7 +74,7 @@ require_once("xorg.misc.inc.php");
     $prenom_anc_comp = replace_accent($prenom_anc);
 
 // Y a-t-il une photo en attente de confirmation ?
-$sql = XDB::query("SELECT COUNT(*) FROM requests WHERE type='photo' AND user_id = {?}", Session::getInt('uid', -1));
+$sql = XDB::query("SELECT COUNT(*) FROM requests WHERE type='photo' AND user_id = {?}", S::v('uid', -1));
 $nouvellephoto=$sql->fetchOneCell();
 
 // vim:set et sws=4 sw=4 sts=4:

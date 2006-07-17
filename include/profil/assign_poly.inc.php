@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-$uid = Session::getInt('uid');
+$uid = S::v('uid');
  
 $res = XDB::query(
         "SELECT  text,id

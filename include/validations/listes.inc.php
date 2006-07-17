@@ -88,7 +88,7 @@ class ListeReq extends Validate
         require_once('platal/xmlrpc-client.inc.php');
         require_once('lists.inc.php');
 
-        $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
+        $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
         $ret = $client->create_list($this->liste, $this->desc,
             $this->advertise, $this->modlevel, $this->inslevel,
             $this->owners, $this->members);

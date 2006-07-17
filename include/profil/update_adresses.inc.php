@@ -27,7 +27,7 @@ function insert_new_tel($adrid, $tel) {
     XDB::execute( "INSERT INTO tels SET tel_type = {?}, tel_pub = {?},
                   tel = {?}, uid = {?}, adrid = {?}, telid = {?}",
                   $tel['tel_type'], $tel['tel_pub'], $tel['tel'],
-                  Session::getInt('uid', -1), $adrid, $tel['telid']);
+                  S::v('uid', -1), $adrid, $tel['telid']);
 }
 
 foreach ($adresses as $adrid => $adr) {
@@ -53,7 +53,7 @@ foreach ($adresses as $adrid => $adr) {
                          $adr['adr3'], $adr['postcode'], $adr['city'],
                          $adr['cityid'], $adr['country'], $adr['region'],
                          $adr['regiontxt'], $adr['pub'], $statut,
-                         Session::getInt('uid', -1), $adrid);
+                         S::v('uid', -1), $adrid);
             $telsvalues = "";  		 
             foreach ($adr['tels'] as $tel) {
                 insert_new_tel($adrid, $tel);
@@ -68,7 +68,7 @@ foreach ($adresses as $adrid => $adr) {
                          $adr['adr2'], $adr['adr3'], $adr['postcode'],
                          $adr['city'], $adr['cityid'], $adr['country'],
                          $adr['region'], $adr['regiontxt'], $adr['pub'],
-                         $statut, Session::getInt('uid', -1), $adrid);
+                         $statut, S::v('uid', -1), $adrid);
             foreach ($adr['tels'] as $tel) {
                 if ($tel['new_tel']) {
                     insert_new_tel($adrid, $tel);
@@ -86,7 +86,7 @@ foreach ($adresses as $adrid => $adr) {
                             $tel['tel_type'],
                             $tel['tel_pub'],
                             $tel['tel'],
-                            Session::getInt('uid', -1),
+                            S::v('uid', -1),
                             $adrid,
                             $tel['telid']);
                     } else {
@@ -95,7 +95,7 @@ foreach ($adresses as $adrid => $adr) {
                             uid = {?} AND
                             adrid = {?} AND
                             telid = {?}",
-                            Session::getInt('uid', -1),
+                            S::v('uid', -1),
                             $adrid,
                             $tel['telid']);
                     }

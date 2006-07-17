@@ -134,7 +134,7 @@ class Email
         if (!$this->active) {
             XDB::execute("UPDATE  emails SET flags = 'active'
                                      WHERE  uid={?} AND email={?}", $uid, $this->email);
-	    $_SESSION['log']->log("email_on", $this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : ""));
+	    $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
         }
     }
@@ -147,7 +147,7 @@ class Email
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
 				     WHERE  uid={?} AND email={?}", $uid, $this->email);
-	    $_SESSION['log']->log("email_off",$this->email.($uid!=Session::getInt('uid') ? "(admin on $uid)" : "") );
+	    $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
         }
     }
@@ -218,7 +218,7 @@ class Redirect
             return ERROR_INACTIVE_REDIRECTION;
         }
         XDB::execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
-        $_SESSION['log']->log('email_del',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
+        $_SESSION['log']->log('email_del',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
 	foreach ($this->emails as $i=>$mail) {
 	    if ($email==$mail->email) {
                 unset($this->emails[$i]);
@@ -240,8 +240,8 @@ class Redirect
             return ERROR_LOOP_EMAIL;
         }
         XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
-	if ($logger = Session::getMixed('log', null)) { // may be absent --> step4.php
-	    $logger->log('email_add',$email.($this->uid!=Session::getInt('uid') ? " (admin on {$this->uid})" : ""));
+	if ($logger = S::v('log', null)) { // may be absent --> step4.php
+	    $logger->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
         }
 	foreach ($this->emails as $mail) {
 	    if ($mail->email == $email_stripped) {

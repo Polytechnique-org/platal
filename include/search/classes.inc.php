@@ -37,7 +37,7 @@ $globals->search->result_fields = '
                 es.label AS secteur, ef.fonction_fr AS fonction,
                 IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,';
 // hide private information if not logged
-if (logged()) 
+if (S::logged()) 
 	$globals->search->result_fields .='
 		q.profile_web AS web,
 		q.profile_mobile AS mobile,

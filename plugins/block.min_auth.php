@@ -33,8 +33,8 @@ function smarty_block_min_auth($params, $content, &$smarty)
     if( empty($content) || empty($params['level'] ))
         return;
     if( ($params['level'] == 'public') ||
-        ($params['level'] == 'cookie' && logged()) ||
-        ($params['level'] == 'auth' && identified()) )
+        ($params['level'] == 'cookie' && S::logged()) ||
+        ($params['level'] == 'auth' && S::identified()) )
         return $content;
 }
 ?>

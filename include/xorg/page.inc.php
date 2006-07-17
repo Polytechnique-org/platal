@@ -41,7 +41,7 @@ class XorgPage extends PlatalPage
         if ($this->_page_type != NO_SKIN) {
             $this->assign('menu', $globals->menu->menu());
         }
-        $this->_run('skin/'.Session::get('skin'));
+        $this->_run('skin/'.S::v('skin'));
     }
 
     // }}}
@@ -67,9 +67,9 @@ class XorgAuth extends XorgPage
 
     function doAuth()
     {
-        $_SESSION['session']->doAuth($this);
+        XorgSession::doAuth($this);
     }
-    
+
     // }}}
 }
 
@@ -82,20 +82,20 @@ class XorgAuth extends XorgPage
 class XorgCookie extends XorgPage
 {
     // {{{ function XorgCookie()
-    
+
     function XorgCookie($tpl, $type=SKINNED)
     {
         $this->XorgPage($tpl, $type);
     }
-    
+
     // }}}
     // {{{ function doAuth()
 
     function doAuth()
     {
-        $_SESSION['session']->doAuthCookie($this);
+        XorgSession::doAuthCookie($this);
     }
-    
+
     // }}}
 }
 
@@ -107,13 +107,13 @@ class XorgCookie extends XorgPage
 class XorgAdmin extends XorgAuth
 {
     // {{{ function XorgAdmin()
-    
+
     function XorgAdmin($tpl, $type=SKINNED)
     {
         $this->XorgAuth($tpl, $type);
         check_perms();
     }
-    
+
     // }}}
 }
 

@@ -2,11 +2,11 @@
 
 $AuthFunction = 'AuthPlatal';
 
-$Conditions['logged']      = logged();
-$Conditions['identified']  = identified();
-$Conditions['has_perms']   = has_perms();
+$Conditions['logged']      = S::logged();
+$Conditions['identified']  = S::identified();
+$Conditions['has_perms']   = S::has_perms();
 $Conditions['public']      = 'true';
-$Conditions['only_public'] = !identified();
+$Conditions['only_public'] = !S::identified();
 
 $HandleAuth['diff'] = 'edit';
 $HandleAuth['source'] = 'edit';
@@ -55,7 +55,7 @@ function authPerms($pagename, $key, $could=false, $smarty=false)
 	      $iauth = false;
 	      switch ($vars[1])
 	      {
-	        case 'session':$iauth = Session::get($vars[2]) == $param; break;
+	        case 'session':$iauth = S::v($vars[2]) == $param; break;
 		case 'request':$iauth = Env::get($vars[2]) == $param; break;
 	      }
 	   }
@@ -141,7 +141,7 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     $panel .= ">><<\n";
     $panel .= "{/if}\n";
   
-    if ((identified() && has_perms()) || authPerms($pagename, $passwds[$level]))
+    if ((S::identified() && S::has_perms()) || authPerms($pagename, $passwds[$level]))
     {
         $page_read['=passwd'] = $passwds;
         $page_read['=pwsource'] = $pwsources;
@@ -158,14 +158,14 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     // if we arrive here, the user doesn't have enough permission to access page
 
     // maybe it is because he is not identified
-    if ($authprompt && !identified())
+    if ($authprompt && !S::identified())
     {
         new_identification_page(); 
     }
 
     global $page;
     new_identification_page();
-    if (has_perms()) {
+    if (S::has_perms()) {
         $page->trig('Erreur : page Wiki inutilisable sur plat/al');
     } else {
         $page->trig("Tu n'as pas le droit d'accéder à ce service");

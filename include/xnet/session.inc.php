@@ -25,26 +25,16 @@ require_once('platal/session.inc.php');
 
 class XnetSession
 {
-    var $challenge;
-
-    // {{{ function XnetSession()
-
-    function XnetSession()
-    {
-        $this->challenge = md5(uniqid(rand(), 1));
-    }
-
-    // }}}
     // {{{ function init
-    
+
     function init() {
         global $globals;
 
-        @session_start();
-        if (!Session::has('session')) {
-            $_SESSION['session'] = new XnetSession;
-        }
-        if (!logged()) {
+        S::init();
+
+        $_SESSION['session'] = new XnetSession;
+
+        if (!S::logged()) {
             // prevent connexion to be linked to deconnexion
             if (($i = strpos($_SERVER['REQUEST_URI'], 'exit')) !== false)
                 $returl = "http://{$_SERVER['SERVER_NAME']}".substr($_SERVER['REQUEST_URI'], 0, $i);
@@ -52,22 +42,21 @@ class XnetSession
                 $returl = "http://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
             $url  = "https://www.polytechnique.org/auth-groupex.php";
             $url .= "?session=" . session_id();
-            $url .= "&challenge=" . $_SESSION['session']->challenge;
-            $url .= "&pass=" . md5($_SESSION['session']->challenge . $globals->xnet->secret);
+            $url .= "&challenge=" . S::v('challenge');
+            $url .= "&pass=" . md5(S::v('challenge') . $globals->xnet->secret);
             $url .= "&url=".urlencode($returl);
-            $_SESSION['session']->loginX = $url;
+            $_SESSION['loginX'] = $url;
         }
     }
-    
+
     // }}}
     // {{{ function destroy()
-    
+
     function destroy() {
-        @session_destroy();
-        unset($_SESSION);
+        S::destroy();
         XnetSession::init();
     }
-    
+
     // }}}
     // {{{ function doAuth()
 
@@ -77,16 +66,14 @@ class XnetSession
      */
     function doAuth(&$page)
     {
-	if (identified()) { // ok, c'est bon, on n'a rien à faire
+	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
 	    return true;
 	}
 
         if (Get::has('auth')) {
-            return $this->doAuthX($page);
-        } elseif (Post::has('challenge') && Post::has('username') && Post::has('response')) {
-            return $this->doAuthOther($page);
+            return XnetSession::doAuthX($page);
         } else {
-            $this->doLogin($page);
+            XnetSession::doLogin($page);
         }
     }
 
@@ -96,7 +83,7 @@ class XnetSession
     function doAuthX(&$page) {
         global $globals;
 
-        if (md5('1'.$this->challenge.$globals->xnet->secret.Get::getInt('uid').'1') != Get::get('auth')) {
+        if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::getInt('uid').'1') != Get::get('auth')) {
             $page->kill("Erreur d'authentification avec polytechnique.org !");
         }
 
@@ -111,8 +98,8 @@ class XnetSession
              LIMIT  1", Get::getInt('uid'));
         $_SESSION = array_merge($_SESSION, $res->fetchOneAssoc());
         $_SESSION['auth'] = AUTH_MDP;
-        unset($this->challenge);
-        unset($this->loginX);
+        S::kill('challenge');
+        S::kill('loginX');
         Get::kill('auth');
         Get::kill('uid');
         $args = array();
@@ -123,20 +110,10 @@ class XnetSession
     }
 
     // }}}
-    // {{{ doAuthOther
-
-    function doAuthOther(&$page) {
-        if (Post::has('challenge') && Post::has('username') && Post::has('response')) {
-            $username = Post::get('username');
-        }
-        $this->doLogin($page);
-    }
-
-    // }}}
     // {{{ doLogin
 
     function doLogin(&$page) {
-        redirect($_SESSION['session']->loginX);
+        redirect(S::v('loginX'));
     }
 
     // }}}
@@ -148,11 +125,11 @@ class XnetSession
 function may_update() {
     global $globals;
     if (!$globals->asso('id')) { return false; }
-    if (has_perms()) { return true; }
+    if (S::has_perms()) { return true; }
     $res = XDB::query(
             "SELECT  perms
                FROM  groupex.membres
-              WHERE  uid={?} AND asso_id={?}", Session::getInt('uid'), $globals->asso('id'));
+              WHERE  uid={?} AND asso_id={?}", S::v('uid'), $globals->asso('id'));
     return $res->fetchOneCell() == 'admin';
 }
 
@@ -165,13 +142,13 @@ function is_member() {
     if (!$asso_id) { return false; }
     static $is_member;
     if (!$is_member) $is_member = array();
-    if (!isset($is_member[$asso_id])) 
+    if (!isset($is_member[$asso_id]))
     {
         $res = XDB::query(
             "SELECT  COUNT(*)
                FROM  groupex.membres
               WHERE  uid={?} AND asso_id={?}",
-                Session::getInt('uid'), $asso_id);
+                S::v('uid'), $asso_id);
         $is_member[$asso_id] = $res->fetchOneCell() == 1;
     }
     return $is_member[$asso_id];

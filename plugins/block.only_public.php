@@ -30,7 +30,7 @@
  */
 function smarty_block_only_public($params, $content, &$smarty)
 {
-    if( empty($content) || logged() )
+    if( empty($content) || S::logged() )
         return;
     return $content;
 }

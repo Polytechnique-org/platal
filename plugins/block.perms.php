@@ -33,7 +33,7 @@ function smarty_block_perms($params, $content, &$smarty)
     if( empty($content) || empty($params['level'] ))
         return;
     if( ($params['level'] == 'public') ||
-        ($params['level'] == 'admin' && has_perms()) )
+        ($params['level'] == 'admin' && S::has_perms()) )
         return $content;
 }
 ?>

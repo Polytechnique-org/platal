@@ -83,7 +83,7 @@ class ProfileModule extends PLModule
                                       WHERE alias = {?}", $x);
         list($uid, $photo_pub) = $res->fetchOneRow();
 
-        if ($req && logged()) {
+        if ($req && S::logged()) {
             include 'validations.inc.php';
             $myphoto = PhotoReq::get_request($uid);
             Header('Content-type: image/'.$myphoto->mimetype);
@@ -95,7 +95,7 @@ class ProfileModule extends PLModule
                       WHERE  uid={?}", $uid);
 
             if ((list($type, $data) = $res->fetchOneRow())
-            &&  ($photo_pub == 'public' || logged())) {
+            &&  ($photo_pub == 'public' || S::logged())) {
                 Header("Content-type: image/$type");
                 echo $data;
             } else {
@@ -112,22 +112,22 @@ class ProfileModule extends PLModule
 
         require_once('validations.inc.php');
 
-        $trombi_x = '/home/web/trombino/photos'.Session::get('promo')
-                    .'/'.Session::get('forlife').'.jpg';
+        $trombi_x = '/home/web/trombino/photos'.S::v('promo')
+                    .'/'.S::v('forlife').'.jpg';
 
         if (Env::has('upload')) {
             $file = isset($_FILES['userfile']['tmp_name'])
                     ? $_FILES['userfile']['tmp_name']
                     : Env::get('photo');
             if ($data = file_get_contents($file)) {
-                if ($myphoto = new PhotoReq(Session::getInt('uid'), $data)) {
+                if ($myphoto = new PhotoReq(S::v('uid'), $data)) {
                     $myphoto->submit();
                 }
             } else {
                 $page->trig('Fichier inexistant ou vide');
             }
         } elseif (Env::has('trombi')) {
-            $myphoto = new PhotoReq(Session::getInt('uid'),
+            $myphoto = new PhotoReq(S::v('uid'),
                                     file_get_contents($trombi_x));
             if ($myphoto) {
                 $myphoto->commit();
@@ -135,19 +135,19 @@ class ProfileModule extends PLModule
             }
         } elseif (Env::get('suppr')) {
             XDB::execute('DELETE FROM photo WHERE uid = {?}',
-                                   Session::getInt('uid'));
+                                   S::v('uid'));
             XDB::execute('DELETE FROM requests
                                      WHERE user_id = {?} AND type="photo"',
-                                   Session::getInt('uid'));
+                                   S::v('uid'));
         } elseif (Env::get('cancel')) {
             $sql = XDB::query('DELETE FROM requests 
                                         WHERE user_id={?} AND type="photo"',
-                                        Session::getInt('uid'));
+                                        S::v('uid'));
         }
 
         $sql = XDB::query('SELECT COUNT(*) FROM requests
                                       WHERE user_id={?} AND type="photo"',
-                                    Session::getInt('uid'));
+                                    S::v('uid'));
         $page->assign('submited', $sql->fetchOneCell());
         $page->assign('has_trombi_x', file_exists($trombi_x));
     }
@@ -165,8 +165,8 @@ class ProfileModule extends PLModule
         $page->assign('simple', true);
 
         $view = 'private';
-        if (!logged() || Env::get('view') == 'public') $view = 'public';
-        if (logged() && Env::get('view') == 'ax')      $view = 'ax';
+        if (!S::logged() || Env::get('view') == 'public') $view = 'public';
+        if (S::logged() && Env::get('view') == 'ax')      $view = 'ax';
 
         if (is_numeric($x)) {
             $res = XDB::query(
@@ -184,7 +184,7 @@ class ProfileModule extends PLModule
         }
 
         $new   = Env::get('modif') == 'new';
-        $user  = get_user_details($login, Session::getInt('uid'), $view);
+        $user  = get_user_details($login, S::v('uid'), $view);
         $title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
         $page->assign('xorg_title', $title);
 
@@ -225,7 +225,7 @@ class ProfileModule extends PLModule
              INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
                   WHERE ( redirect={?} OR redirect={?} )
                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                Session::getInt('uid'),
+                S::v('uid'),
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
         $page->assign('virtualalias', $res->fetchOneCell());
@@ -250,7 +250,7 @@ class ProfileModule extends PLModule
             XDB::query('UPDATE auth_user_quick
                                      SET profile_from_ax = 1
                                    WHERE user_id = {?}',
-                                 Session::getInt('uid'));
+                                 S::v('uid'));
         }
 
         if (is_ax_key_missing()) {
@@ -258,7 +258,7 @@ class ProfileModule extends PLModule
         }
 
         if (Env::get('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
-            ax_synchronize(Session::get('bestalias'), Session::getInt('uid'));
+            ax_synchronize(S::v('bestalias'), S::v('uid'));
             $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
 
@@ -267,7 +267,7 @@ class ProfileModule extends PLModule
         $res = XDB::query(
                 "SELECT  naissance, DATE_FORMAT(date, '%d.%m.%Y')
                    FROM  auth_user_md5
-                  WHERE  user_id={?}", Session::getInt('uid'));
+                  WHERE  user_id={?}", S::v('uid'));
         list($naissance, $date_modif_profil) = $res->fetchOneRow();
 
         // lorsqu'on n'a pas la date de naissance en base de données
@@ -288,7 +288,7 @@ class ProfileModule extends PLModule
                 XDB::execute("UPDATE auth_user_md5
                                            SET naissance={?}
                                          WHERE user_id={?}", $birth,
-                                       Session::getInt('uid'));
+                                       S::v('uid'));
                 $page->assign('etat_naissance', 'ok');
                 return;
             }
@@ -316,17 +316,17 @@ class ProfileModule extends PLModule
             * on a juste besoin d'insérer le user_id de la personne dans la table
             */
             XDB::execute('REPLACE INTO user_changes SET user_id={?}',
-                                   Session::getInt('uid'));
+                                   S::v('uid'));
 
-            if (!Session::has('suid')) {
+            if (!S::has('suid')) {
                 require_once 'notifs.inc.php';
-                register_watch_op(Session::getInt('uid'), WATCH_FICHE);
+                register_watch_op(S::v('uid'), WATCH_FICHE);
             }
 
             // mise a jour des champs relatifs au tab ouvert
             require_once "profil/update_{$opened_tab}.inc.php";
 
-            $log =& Session::getMixed('log');
+            $log =& S::v('log');
             $log->log('profil', $opened_tab);
             $page->assign('etat_update', 'ok');
         }
@@ -356,7 +356,7 @@ class ProfileModule extends PLModule
         $res = XDB::query(
                 "SELECT  u.promo, u.promo_sortie
                    FROM  auth_user_md5  AS u
-                  WHERE  user_id={?}", Session::getInt('uid'));
+                  WHERE  user_id={?}", S::v('uid'));
 
         list($promo, $promo_sortie_old) = $res->fetchOneRow();
         $page->assign('promo_sortie_old', $promo_sortie_old);
@@ -380,7 +380,7 @@ class ProfileModule extends PLModule
         elseif ($promo_sortie == $promo + 3) {
             XDB::execute(
                 "UPDATE  auth_user_md5 set promo_sortie={?} 
-                  WHERE  user_id={?}", $promo_sortie, Session::getInt('uid'));
+                  WHERE  user_id={?}", $promo_sortie, S::v('uid'));
                 $page->trig('Ton statut "orange" a été supprimé.');
                 $page->assign('promo_sortie_old', $promo_sortie);
         }
@@ -388,7 +388,7 @@ class ProfileModule extends PLModule
             $page->assign('promo_sortie', $promo_sortie);
 
             if (Env::has('submit')) {
-                $myorange = new OrangeReq(Session::getInt('uid'),
+                $myorange = new OrangeReq(S::v('uid'),
                                           $promo_sortie);
                 $myorange->submit();
                 $page->assign('myorange', $myorange);
@@ -544,7 +544,7 @@ class ProfileModule extends PLModule
                      WHERE  $where
                   GROUP BY  uid
                   ORDER BY  RAND({?})";
-            $res = XDB::iterator($sql, Session::getInt('uid'));
+            $res = XDB::iterator($sql, S::v('uid'));
 
             if ($res->total() == 0) {
                 $page->assign('recherche_trop_large', true);
@@ -585,7 +585,7 @@ class ProfileModule extends PLModule
                    FROM  auth_user_md5  AS u
               LEFT JOIN  aliases        AS e ON(u.user_id = e.id
                                                 AND FIND_IN_SET('usage', e.flags))
-                  WHERE  user_id={?}", Session::getInt('uid'));
+                  WHERE  user_id={?}", S::v('uid'));
 
         list($nom, $usage_old, $flags, $alias_old) = $res->fetchOneRow();
         $flags = new flagset($flags);
@@ -606,7 +606,7 @@ class ProfileModule extends PLModule
                 if ($reason == 'other') {
                     $reason = Env::get('other_reason');
                 }
-                $myusage = new UsageReq(Session::getInt('uid'), $nom_usage, $reason);
+                $myusage = new UsageReq(S::v('uid'), $nom_usage, $reason);
                 $myusage->submit();
                 $page->assign('myusage', $myusage);
             }
@@ -627,7 +627,7 @@ class ProfileModule extends PLModule
         $this->promo = $promo = intval($promo);
 
         if ($promo >= 1900 && $promo < intval(date('Y'))
-        || ($promo == -1 && has_perms()))
+        || ($promo == -1 && S::has_perms()))
         {
             $trombi = new Trombi(array($this, '_trombi_getlist'));
             $trombi->hidePromo();
@@ -678,7 +678,7 @@ class ProfileModule extends PLModule
              INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
                   WHERE ( redirect={?} OR redirect={?} )
                         AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                Session::getInt('uid'),
+                S::v('uid'),
                 $user['forlife'].'@'.$globals->mail->domain,
                 $user['forlife'].'@'.$globals->mail->domain2);
 

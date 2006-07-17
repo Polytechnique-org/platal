@@ -41,9 +41,9 @@ function webredirect_config()
 
 function webredirect_prefs()
 {
-    $text = "Tu peux configurer tes redirections WEB http://www.carva.org/" . Session::get('bestalias');
-    if (Session::get('forlife') != Session::get('bestalias')) {
-        $text .= ' et http://www.carva.org/'.Session::get('forlife');
+    $text = "Tu peux configurer tes redirections WEB http://www.carva.org/" . S::v('bestalias');
+    if (S::v('forlife') != S::v('bestalias')) {
+        $text .= ' et http://www.carva.org/'.S::v('forlife');
     }
 
     return Array(

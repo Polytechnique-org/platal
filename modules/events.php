@@ -38,7 +38,7 @@ class EventsModule extends PLModule
         $page->changeTpl('login.tpl');
 
         $res = XDB::query('SELECT date, naissance FROM auth_user_md5
-                                      WHERE user_id={?}', Session::getInt('uid'));
+                                      WHERE user_id={?}', S::v('uid'));
         list($date, $naissance) = $res->fetchOneRow();
 
         // incitation à mettre à jour la fiche
@@ -59,12 +59,12 @@ class EventsModule extends PLModule
         // incitation à mettre une photo
 
         $res = XDB::query('SELECT COUNT(*) FROM photo
-                                      WHERE uid={?}', Session::getInt('uid'));
+                                      WHERE uid={?}', S::v('uid'));
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
         // Incitation à se géolocaliser
         require_once 'geoloc.inc.php';
-        $res = localize_addresses(Session::getInt('uid', -1));
+        $res = localize_addresses(S::v('uid', -1));
         $page->assign('geoloc_incitation', count($res));
 
         // affichage de la boîte avec quelques liens
@@ -88,11 +88,11 @@ class EventsModule extends PLModule
 
         // ajout du lien RSS
 
-        if (Session::has('core_rss_hash')) {
+        if (S::has('core_rss_hash')) {
             $page->assign('xorg_rss',
                           array('title' => 'Polytechnique.org :: News',
-                                'href' => '/rss/'.Session::get('forlife')
-                                         .'/'.Session::get('core_rss_hash').'/rss.xml')
+                                'href' => '/rss/'.S::v('forlife')
+                                         .'/'.S::v('core_rss_hash').'/rss.xml')
             );
         }
 
@@ -102,19 +102,19 @@ class EventsModule extends PLModule
                                      INNER JOIN evenements AS e ON e.id = ev.evt_id
                                           WHERE peremption < NOW)');
             XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
-                                   Env::get('lu'), Session::getInt('uid'));
+                                   Env::get('lu'), S::v('uid'));
         }
 
         if (Env::has('nonlu')){
             XDB::execute('DELETE FROM evenements_vus
                                           WHERE evt_id = {?} AND user_id = {?}',
-                                   Env::get('nonlu'), Session::getInt('uid'));
+                                   Env::get('nonlu'), S::v('uid'));
         }
 
         // affichage des evenements
         // annonces promos triées par présence d'une limite sur les promos
         // puis par dates croissantes d'expiration
-        $promo = Session::getInt('promo');
+        $promo = S::v('promo');
         $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
                   FROM  evenements     AS e
             INNER JOIN  auth_user_md5  AS a ON e.user_id=a.user_id
@@ -126,7 +126,7 @@ class EventsModule extends PLModule
                         AND ev.user_id IS NULL
               ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
         $page->assign('evenement',
-                      XDB::iterator($sql, Session::getInt('uid'),
+                      XDB::iterator($sql, S::v('uid'),
                                               $promo, $promo)
                       );
 
@@ -138,7 +138,7 @@ class EventsModule extends PLModule
                         AND (e.promo_max = 0 || e.promo_max >= {?})
               ORDER BY  (e.promo_min != 0 AND  e.promo_max != 0) DESC,  e.peremption";
         $page->assign('evenement_summary',
-                      XDB::iterator($sql, Session::getInt('uid'),
+                      XDB::iterator($sql, S::v('uid'),
                                               $promo, $promo)
                      );
     }
@@ -170,7 +170,7 @@ class EventsModule extends PLModule
                                   '<a href=\"mailto:\\0\">\\0</a>', $texte);
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
-                                 $peremption, $valid_mesg, Session::getInt('uid'));
+                                 $peremption, $valid_mesg, S::v('uid'));
             $evtreq->submit();
             $page->assign('ok', true);
         }
@@ -219,9 +219,9 @@ class EventsModule extends PLModule
         $page->assign_by_ref('nl', $nl);
 
         if (Post::has('send')) {
-            $nl->sendTo(Session::get('prenom'), Session::get('nom'),
-                        Session::get('bestalias'), Session::get('femme'),
-                        Session::get('mail_fmt') != 'text');
+            $nl->sendTo(S::v('prenom'), S::v('nom'),
+                        S::v('bestalias'), S::v('femme'),
+                        S::v('mail_fmt') != 'text');
         }
     }
 
@@ -236,7 +236,7 @@ class EventsModule extends PLModule
             $page->assign('art', $art);
         } elseif (Post::has('valid')) {
             require_once('validations.inc.php');
-            $art = new NLReq(Session::getInt('uid'), Post::get('title'),
+            $art = new NLReq(S::v('uid'), Post::get('title'),
                              Post::get('body'), Post::get('append'));
             $art->submit();
             $page->assign('submited', true);

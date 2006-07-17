@@ -25,14 +25,14 @@ require_once $globals->spoolroot.'/plugins/function.rel.php';
 
 function list_all_my_groups($params)
 {
-    if (!logged()) {
+    if (!S::logged()) {
         return;
     }
     $res = XDB::iterRow(
             "SELECT  a.nom, a.diminutif
                FROM  groupex.asso    AS a
          INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
-              WHERE  m.uid={?}", Session::getInt('uid'));
+              WHERE  m.uid={?}", S::v('uid'));
     $html = '<div>Mes groupes :</div>';
     while (list($nom, $mini) = $res->next()) {
         $html .= "<a class='gp' href='".smarty_function_rel()."/$mini/'>&bull; $nom</a>";

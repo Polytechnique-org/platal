@@ -166,7 +166,7 @@ class Validate
 
         // ajout d'un commentaire
         if (Env::has('hold') && Env::has('comm')) {
-            $this->comments[] = Array(Session::get('bestalias'), Env::get('comm'));
+            $this->comments[] = Array(S::v('bestalias'), Env::get('comm'));
 
             // envoi d'un mail à hotliners
             global $globals;
@@ -177,7 +177,7 @@ class Validate
             $mailer->addTo("hotliners@{$globals->mail->domain}");
 
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
-              . Session::get('bestalias')." a ajouté le commentaire :\n\n" 
+              . S::v('bestalias')." a ajouté le commentaire :\n\n" 
               . Env::get('comm')."\n\n"
               . "cf la discussion sur : ".$globals->baseurl."/admin/valider.php";
 

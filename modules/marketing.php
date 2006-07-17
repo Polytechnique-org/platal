@@ -139,7 +139,7 @@ class MarketingModule extends PLModule
                 "INSERT INTO register_marketing
                          SET uid = {?}, sender = {?}, email = {?},
                              date = NOW(), type = {?}",
-                $uid, Session::get('uid'), Post::get('email'), Post::get('type')); 
+                $uid, S::v('uid'), Post::get('email'), Post::get('type')); 
         }
 
         $res = XDB::iterator(
@@ -163,7 +163,7 @@ class MarketingModule extends PLModule
         $page->changeTpl('marketing/promo.tpl');
 
         if (is_null($promo)) {
-            $promo = Session::getInt('promo');
+            $promo = S::v('promo');
         }
         $page->assign('promo', $promo);
 
@@ -210,9 +210,9 @@ class MarketingModule extends PLModule
                     XDB::execute(
                             "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
-                            $uid, Session::getInt('uid'), $email, Post::get('origine'));
+                            $uid, S::v('uid'), $email, Post::get('origine'));
                     require_once('validations.inc.php');
-                    $req = new MarkReq(Session::getInt('uid'), $uid, $email,
+                    $req = new MarkReq(S::v('uid'), $uid, $email,
                                        Post::get('origine')=='user');
                     $req->submit();
                 }

@@ -22,7 +22,7 @@
 require 'xnet.inc.php';
 
 new_nonhtml_page('geoloc/getData.tpl');
-$nodata = ($globals->asso('pub') != 'public') && !has_perms();
+$nodata = ($globals->asso('pub') != 'public') && !S::has_perms();
 
 header("Content-type: text/xml");
 

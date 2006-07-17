@@ -22,7 +22,7 @@
  
 function smarty_insert_getNbNotifs($params, &$smarty)
 {
-    if(logged()) {
+    if(S::logged()) {
 	require_once('notifs.inc.php');
 	return getNbNotifs();
     }

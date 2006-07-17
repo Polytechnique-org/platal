@@ -98,7 +98,7 @@ class XnetGrpModule extends PLModule
         $page->useMenu();
         $page->setType($globals->asso('cat'));
         $page->assign('is_member', is_member());
-        $page->assign('logged', logged());
+        $page->assign('logged', S::logged());
 
         $page->assign('asso', $globals->asso());
     }
@@ -138,7 +138,7 @@ class XnetGrpModule extends PLModule
         new_groupadmin_page('xnet/groupe/edit.tpl');
 
         if (Post::has('submit')) {
-            if (has_perms()) {
+            if (S::has_perms()) {
                 if (Post::get('mail_domain') && (strstr(Post::get('mail_domain'), '.') === false)) {
                     $page->trig_run("le domaine doit être un FQDN (aucune modif effectuée) !!!");
                 }
@@ -186,7 +186,7 @@ class XnetGrpModule extends PLModule
             redirect('../'.Post::get('diminutif', $globals->asso('diminutif')).'/edit');
         }
 
-        if (has_perms()) {
+        if (S::has_perms()) {
             $dom = XDB::iterator('SELECT * FROM groupex.dom ORDER BY nom');
             $page->assign('dom', $dom);
             $page->assign('super', true);
@@ -200,8 +200,8 @@ class XnetGrpModule extends PLModule
         require_once 'lists.inc.php';
 
         new_groupadmin_page('xnet/groupe/mail.tpl');
-        $client =& lists_xmlrpc(Session::getInt('uid'),
-                                Session::get('password'),
+        $client =& lists_xmlrpc(S::v('uid'),
+                                S::v('password'),
                                 $globals->asso('mail_domain'));
         $page->assign('listes', $client->get_lists());
 
@@ -365,8 +365,8 @@ class XnetGrpModule extends PLModule
                     require_once 'diogenes/diogenes.hermes.inc.php';
                     $mailer = new HermesMailer();
                     $mailer->addTo("$u@polytechnique.org");
-                    $mailer->setFrom('"'.Session::get('prenom').' '.Session::get('nom')
-                                     .'" <'.Session::get('forlife').'@polytechnique.org>');
+                    $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
+                                     .'" <'.S::v('forlife').'@polytechnique.org>');
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
                     $message = "Cher Camarade,\n"
                              . "\n"
@@ -384,8 +384,8 @@ class XnetGrpModule extends PLModule
                     require_once 'diogenes/diogenes.hermes.inc.php';
                     $mailer = new HermesMailer();
                     $mailer->addTo("$u@polytechnique.org");
-                    $mailer->setFrom('"'.Session::get('prenom').' '.Session::get('nom')
-                                     .'" <'.Session::get('forlife').'@polytechnique.org>');
+                    $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
+                                     .'" <'.S::v('forlife').'@polytechnique.org>');
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
                     $mailer->setTxtBody(Env::get('motif'));
                     $mailer->send();
@@ -422,12 +422,12 @@ class XnetGrpModule extends PLModule
             $append = "\n"
                     . "-- \n"
                     . "Ce message a été envoyé suite à la demande d'inscription de\n"
-                    . Session::get('prenom').' '.Session::get('nom').' (X'.Session::get('promo').")\n"
+                    . S::v('prenom').' '.S::v('nom').' (X'.S::v('promo').")\n"
                     . "Via le site www.polytechnique.net. Tu peux choisir de valider ou\n"
                     . "de refuser sa demande d'inscription depuis la page :\n"
                     .
                     "http://www.polytechnique.net/".$globals->asso("diminutif")."/subscribe/"
-                        .Session::get('forlife')."\n"
+                        .S::v('forlife')."\n"
                     . "\n"
                     . "En cas de problème, contacter l'équipe de Polytechnique.org\n"
                     . "à l'adresse : support@polytechnique.org\n";
@@ -443,8 +443,8 @@ class XnetGrpModule extends PLModule
             require_once 'diogenes/diogenes.hermes.inc.php';
             $mailer = new HermesMailer();
             $mailer->addTo($to);
-            $mailer->setFrom('"'.Session::get('prenom').' '.Session::get('nom')
-                             .'" <'.Session::get('forlife').'@polytechnique.org>');
+            $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
+                             .'" <'.S::v('forlife').'@polytechnique.org>');
             $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
             $mailer->setTxtBody(Post::get('message').$append);
             $mailer->send();
@@ -527,8 +527,7 @@ class XnetGrpModule extends PLModule
         require_once 'xnet/mail.inc.php';
 
         new_groupadmin_page('xnet/groupe/annuaire-admin.tpl');
-        $client =& lists_xmlrpc(Session::getInt('uid'),
-                                Session::get('password'),
+        $client =& lists_xmlrpc(S::v('uid'), S::v('password'),
                                 $globals->asso('mail_domain'));
         $lists  = $client->get_lists();
         if (!$lists) $lists = array();
@@ -637,7 +636,7 @@ class XnetGrpModule extends PLModule
         if (($domain = $globals->asso('mail_domain')) && empty($user_same_email)) {
 
             require 'lists.inc.php';
-            $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $domain);
+            $client =& lists_xmlrpc(S::v('uid'), S::v('password'), $domain);
             $listes = $client->get_lists($user['email2']);
 
             foreach ($listes as $liste) {
@@ -677,8 +676,7 @@ class XnetGrpModule extends PLModule
         }
 
         require 'lists.inc.php';
-        $client =& lists_xmlrpc(Session::getInt('uid'),
-                                Session::get('password'),
+        $client =& lists_xmlrpc(S::v('uid'), S::v('password'),
                                 $globals->asso('mail_domain'));
 
         if (Post::has('change')) {

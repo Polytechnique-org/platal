@@ -25,39 +25,25 @@ require_once 'platal/session.inc.php';
 
 class XorgSession
 {
-    var $challenge;
+    // {{{ function init
 
-    // {{{ function XorgSession()
-
-    function XorgSession()
-    {
-        $this->challenge = md5(uniqid(rand(), 1));
-
-	if (!Session::has('uid')) {
+    function init() {
+        S::init();
+	if (!S::has('uid')) {
 	    try_cookie();
         }
 	set_skin();
+        $_SESSION['session'] = new XorgSession;
     }
 
     // }}}
-    // {{{ function init
-    
-    function init() {
-        @session_start();
-        if (!Session::has('session')) {
-            $_SESSION['session'] = new XorgSession;
-        }
-    }
-    
-    // }}}
     // {{{ function destroy()
-    
+
     function destroy() {
-        @session_destroy();
-        unset($_SESSION);
+        S::destroy();
         XorgSession::init();
     }
-    
+
     // }}}
     // {{{ function doAuth()
 
@@ -68,21 +54,18 @@ class XorgSession
     function doAuth(&$page,$new_name=false)
     {
     	global $globals;
-    	if (identified()) { // ok, c'est bon, on n'a rien à faire
+    	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
     	    return true;
     	}
 
-        if (Session::has('session')) {
-            $session =& Session::getMixed('session');
-        }
-        if (Env::has('username') && Env::has('response') && isset($session->challenge))
+        if (Env::has('username') && Env::has('response') && S::has('challenge'))
     	{
     	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
     	    // ou passwordpromptscreenlogged.tpl
             $uname = Env::get('username');
-            
+
             if (Env::get('domain') == "alias") {
-            
+
                 $res = XDB::query(
                     "SELECT redirect
                        FROM virtual
@@ -97,22 +80,22 @@ class XorgSession
             } else {
                 $login = $uname;
             }
-    
+
     	    $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
     	    $res   = XDB::query(
                         "SELECT  u.user_id, u.password
                            FROM  auth_user_md5 AS u
                      INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
                           WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
-    
-            $logger =& Session::getMixed('log');
+
+            $logger =& S::v('log');
     	    if (list($uid, $password) = $res->fetchOneRow()) {
         	    require_once('secure_hash.inc.php');
-        		$expected_response=hash_encrypt("$uname:$password:{$session->challenge}");
+        		$expected_response=hash_encrypt("$uname:$password:".S::v('challenge'));
         		// le password de la base est peut-être encore encodé en md5
         		if (Env::get('response') != $expected_response) {
         		  $new_password = hash_xor(Env::get('xorpass'), $password);
-        		  $expected_response = hash_encrypt("$uname:$new_password:{$session->challenge}");
+        		  $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
         		  if (Env::get('response') == $expected_response) {
         		      XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
         		  }
@@ -127,21 +110,21 @@ class XorgSession
                         // pour que la modification soit effective dans le reste de la page
                         $_COOKIE['ORGdomain'] = $domain;
                     }
-    
-        		    unset($session->challenge);
-        		    if ($logger) {
-            			$logger->log('auth_ok');
+
+                    S::kill('challenge');
+                    if ($logger) {
+                        $logger->log('auth_ok');
                     }
         		    start_connexion($uid, true);
                     if (Env::get('remember', 'false') == 'true') {
-                        $cookie = hash_encrypt(Session::get('password'));
+                        $cookie = hash_encrypt(S::v('password'));
                         setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
                         if ($logger) {
                             $logger->log("cookie_on");
                         }
                     } else {
                         setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
-                        
+
                         if ($logger) {
                             $logger->log("cookie_off");
                         }
@@ -154,7 +137,7 @@ class XorgSession
                     $logger->log('auth_fail','bad login');
             }
     	}
-        $this->doLogin($page,$new_name);
+        XorgSession::doLogin($page,$new_name);
     }
 
     // }}}
@@ -166,16 +149,16 @@ class XorgSession
      */
     function doAuthCookie(&$page)
     {
-	if (logged()) {
+	if (S::logged()) {
 	    return;
         }
 
 	if (Env::has('username') and Env::has('response')) {
-	    return $this->doAuth($page);
+	    return XorgSession::doAuth($page);
         }
 
 	if ($r = try_cookie()) {
-	    return $this->doAuth($page,($r>0));
+	    return XorgSession::doAuth($page,($r>0));
         }
     }
 
@@ -186,7 +169,7 @@ class XorgSession
      */
     function doLogin(&$page, $new_name=false)
     {
-        if (logged() and !$new_name) {
+        if (S::logged() and !$new_name) {
             $page->changeTpl('password_prompt_logged.tpl');
             $page->addJsLink('javascript/do_challenge_response_logged.js');
             $page->assign("xorg_tpl", "password_prompt_logged.tpl");
@@ -195,7 +178,7 @@ class XorgSession
             $page->changeTpl('password_prompt.tpl');
             $page->addJsLink('javascript/do_challenge_response.js');
             $page->assign("xorg_tpl", "password_prompt.tpl");
-            
+
             global $globals;
             if ($globals->mail->alias_dom) {
                 $page->assign("domains", Array(
@@ -267,14 +250,14 @@ function start_connexion ($uid, $identified)
       ORDER BY  s.start DESC
          LIMIT  1", $uid);
     $sess = $res->fetchOneAssoc();
-    $suid = Session::getMixed('suid');
-    
+    $suid = S::v('suid');
+
     if ($suid) {
 	$logger = new DiogenesCoreLogger($uid, $suid);
-	$logger->log("suid_start", Session::get('forlife')." by {$suid['uid']}");
+	$logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
         $sess['suid'] = $suid;
     } else {
-        $logger = Session::getMixed('log', new DiogenesCoreLogger($uid));
+        $logger = S::v('log', new DiogenesCoreLogger($uid));
         $logger->log("connexion", $_SERVER['PHP_SELF']);
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
@@ -291,8 +274,8 @@ function start_connexion ($uid, $identified)
 function set_skin()
 {
     global $globals;
-    if (logged() && $globals->skin->enable) {
-        $uid = Session::getInt('uid');
+    if (S::logged() && $globals->skin->enable) {
+        $uid = S::v('uid');
 	$res = XDB::query("SELECT  skin,skin_tpl
 	                               FROM  auth_user_quick AS a
 				 INNER JOIN  skins           AS s ON a.skin=s.id

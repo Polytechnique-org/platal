@@ -21,6 +21,6 @@
 
 $sql = "UPDATE auth_user_md5 set section= {?} WHERE user_id= {?}";
 
-XDB::execute($sql, $section, Session::getInt('uid', -1));
+XDB::execute($sql, $section, S::v('uid', -1));
 
 ?>

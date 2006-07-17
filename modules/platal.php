@@ -63,7 +63,7 @@ class PlatalModule extends PLModule
 
     function handler_index(&$page)
     {
-        if (logged()) {
+        if (S::logged()) {
             redirect("events");
         }
     }
@@ -92,13 +92,12 @@ class PlatalModule extends PLModule
             $_SESSION['core_rss_hash'] = rand_url_id(16);
             XDB::execute('UPDATE  auth_user_quick
                                    SET  core_rss_hash={?} WHERE user_id={?}',
-                                   Session::get('core_rss_hash'),
-                                   Session::getInt('uid'));
+                                   S::v('core_rss_hash'), S::v('uid'));
         } else {
             XDB::execute('UPDATE  auth_user_quick
                                    SET  core_rss_hash="" WHERE user_id={?}',
-                                   Session::getInt('uid'));
-            Session::kill('core_rss_hash');
+                                   S::v('uid'));
+            S::kill('core_rss_hash');
         }
     }
 
@@ -115,7 +114,7 @@ class PlatalModule extends PLModule
             XDB::execute("UPDATE auth_user_quick
                                        SET core_mail_fmt = '$fmt'
                                      WHERE user_id = {?}",
-                                     Session::getInt('uid'));
+                                     S::v('uid'));
             $_SESSION['mail_fmt'] = $fmt;
             redirect($globals->baseurl.'/preferences');
         }
@@ -133,20 +132,20 @@ class PlatalModule extends PLModule
 
         $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
 
-        $log =& Session::getMixed('log');
+        $log =& S::v('log');
         $url = Env::get('url');
 
         if (Env::get('submit') == 'Valider' and Env::has('url')) {
             XDB::execute('UPDATE auth_user_quick
                                        SET redirecturl = {?} WHERE user_id = {?}',
-                                   $url, Session::getInt('uid'));
+                                   $url, S::v('uid'));
             $log->log('carva_add', 'http://'.Env::get('url'));
             $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
         } elseif (Env::get('submit') == "Supprimer") {
             XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
                                      WHERE user_id = {?}",
-                                   Session::getInt('uid'));
+                                   S::v('uid'));
             $log->log("carva_del", $url);
             Post::kill('url');
             $page->trig('Redirection supprimée');
@@ -155,7 +154,7 @@ class PlatalModule extends PLModule
         $res = XDB::query('SELECT redirecturl
                                        FROM auth_user_quick
                                       WHERE user_id = {?}',
-                                    Session::getInt('uid'));
+                                    S::v('uid'));
         $page->assign('carva', $res->fetchOneCell());
     }
 
@@ -181,9 +180,9 @@ class PlatalModule extends PLModule
             XDB::execute('UPDATE  auth_user_md5 
                                        SET  password={?}
                                      WHERE  user_id={?}', $password,
-                                     Session::getInt('uid'));
+                                     S::v('uid'));
 
-            $log =& Session::getMixed('log');
+            $log =& S::v('log');
             $log->log('passwd', '');
 
             if (Cookie::get('ORGaccess')) {
@@ -204,9 +203,9 @@ class PlatalModule extends PLModule
         $page->changeTpl('acces_smtp.tpl');
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
 
-        $uid  = Session::getInt('uid');
+        $uid  = S::v('uid');
         $pass = Env::get('smtppass1');
-        $log  = Session::getMixed('log');
+        $log  = S::v('log');
 
         if (Env::get('op') == "Valider" && strlen($pass) >= 6 
         &&  Env::get('smtppass1') == Env::get('smtppass2')) 
@@ -334,7 +333,7 @@ Mail envoyé à ".Env::get('login'));
             XDB::execute('UPDATE auth_user_quick
                                        SET skin={?} WHERE user_id={?}',
                                     Env::getInt('newskin'),
-                                    Session::getInt('uid'));
+                                    S::v('uid'));
             set_skin();
         }
 
@@ -348,14 +347,14 @@ Mail envoyé à ".Env::get('login'));
 
     function handler_exit(&$page, $level = null)
     {
-        if (Session::has('suid')) {
-            if (Session::has('suid')) {
-                $a4l  = Session::get('forlife');
-                $suid = Session::getMixed('suid');
-                $log  = Session::getMixed('log');
-                $log->log("suid_stop", Session::get('forlife') . " by " . $suid['forlife']);
+        if (S::has('suid')) {
+            if (S::has('suid')) {
+                $a4l  = S::v('forlife');
+                $suid = S::v('suid');
+                $log  = S::v('log');
+                $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
                 $_SESSION = $suid;
-                Session::kill('suid');
+                S::kill('suid');
                 redirect($globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
             } else {
                 redirect("events");

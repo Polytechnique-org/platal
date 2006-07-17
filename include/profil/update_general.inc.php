@@ -20,21 +20,21 @@
  ***************************************************************************/
 
 if ($appli_id1>0)
-     XDB::execute("REPLACE INTO applis_ins SET uid= {?}, aid = {?}, type = {?}, ordre = 0", Session::getInt('uid', -1), $appli_id1, $appli_type1);
+     XDB::execute("REPLACE INTO applis_ins SET uid= {?}, aid = {?}, type = {?}, ordre = 0", S::v('uid', -1), $appli_id1, $appli_type1);
 else
-     XDB::execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=0", Session::getInt('uid', -1));
+     XDB::execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=0", S::v('uid', -1));
 
 if ($appli_id2>0)
-     XDB::execute("REPLACE INTO applis_ins SET uid= {?}, aid = {?}, type = {?}, ordre = 1", Session::getInt('uid', -1), $appli_id2, $appli_type2);
+     XDB::execute("REPLACE INTO applis_ins SET uid= {?}, aid = {?}, type = {?}, ordre = 1", S::v('uid', -1), $appli_id2, $appli_type2);
 else
-     XDB::execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=1", Session::getInt('uid', -1));
+     XDB::execute("DELETE FROM applis_ins WHERE uid= {?} AND ordre=1", S::v('uid', -1));
 
 if ($nationalite != $nationalite_anc || $nom != $nom_anc || $prenom != $prenom_anc) {
     $sql = "UPDATE auth_user_md5
                SET nationalite= {?},
                    nom = {?},
                    prenom = {?} WHERE user_id= {?}";
-    XDB::execute($sql, $nationalite, $nom, $prenom, Session::getInt('uid', -1));
+    XDB::execute($sql, $nationalite, $nom, $prenom, S::v('uid', -1));
 }
 XDB::execute(
         "UPDATE auth_user_quick SET
@@ -49,12 +49,12 @@ XDB::execute(
             $web, $web_pub,
             $freetext, $freetext_pub,
             $synchro_ax,
-            Session::getInt('uid', -1));
+            S::v('uid', -1));
 
 if ($nickname != $nickname_anc) {
     require_once('user.func.inc.php');
-    user_reindex(Session::getInt('uid', -1));
+    user_reindex(S::v('uid', -1));
 }
-XDB::execute("UPDATE photo SET pub = {?} WHERE uid = {?}", $photo_pub, Session::getInt('uid', -1));
+XDB::execute("UPDATE photo SET pub = {?} WHERE uid = {?}", $photo_pub, S::v('uid', -1));
 // vim:set et sws=4 sts=4 sw=4:
 ?>

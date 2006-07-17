@@ -143,7 +143,7 @@
           {list_all_my_groups}
           {only_public}
           <div>Me connecter :</div>
-          <a class='gp' href="{$smarty.session.session->loginX}">polytechnicien</a>
+          <a class='gp' href="{$smarty.session.loginX}">polytechnicien</a>
           {/only_public}
 
           <a href="{rel}/manuel" title="Manuel d'aide en ligne" style="float: right"><img src="{rel}/images/manuel.png" alt="manuel" /></a>

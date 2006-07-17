@@ -99,7 +99,7 @@ class XnetEventsModule extends PLModule
              LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
                  WHERE  asso_id = {?}
               GROUP BY  e.eid
-              ORDER BY  debut", Session::get('uid'), $globals->asso('id'));
+              ORDER BY  debut", S::v('uid'), $globals->asso('id'));
 
         $evts = array();
 
@@ -110,7 +110,7 @@ class XnetEventsModule extends PLModule
               LEFT JOIN groupex.evenements_participants AS ep
                         ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
                   WHERE ei.eid = {?}",
-                    Session::get('uid'), $e['eid']);
+                    S::v('uid'), $e['eid']);
             $e['moments'] = $res->fetchAllAssoc();
 
             $e['topay'] = 0;
@@ -121,7 +121,7 @@ class XnetEventsModule extends PLModule
             $query = XDB::query(
                 "SELECT montant
                    FROM {$globals->money->mpay_tprefix}transactions AS t
-                 WHERE ref = {?} AND uid = {?}", $e['paiement_id'], Session::get('uid'));
+                 WHERE ref = {?} AND uid = {?}", $e['paiement_id'], S::v('uid'));
             $montants = $query->fetchColumn();
 
             foreach ($montants as $m) {
@@ -192,13 +192,13 @@ class XnetEventsModule extends PLModule
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?})",
-                    $eid, Session::getInt('uid'), $j, $nb, $evt['paid']);
+                    $eid, S::v('uid'), $j, $nb, $evt['paid']);
                 $page->assign('updated', true);
             } else {
                 XDB::execute(
                     "DELETE FROM  groupex.evenements_participants
                            WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
-                    $eid, Session::getInt("uid"), $j);		
+                    $eid, S::v("uid"), $j);		
                 $page->assign('updated', true);
             }
         }
@@ -266,7 +266,7 @@ class XnetEventsModule extends PLModule
             $evt = array(
                 'eid'              => $eid,
                 'asso_id'          => $globals->asso('id'),
-                'organisateur_uid' => Session::get('uid'),
+                'organisateur_uid' => S::v('uid'),
                 'paiement_id'      => Post::get('paiement_id') > 0 ? Post::get('paiement_id') : null,
                 'debut'            => Post::get('deb_Year').'-'.Post::get('deb_Month')
                                       .'-'.Post::get('deb_Day').' '.Post::get('deb_Hour')
@@ -331,7 +331,7 @@ class XnetEventsModule extends PLModule
             // request for a new payment
             if (Post::get('paiement_id') == -1 && $money_defaut >= 0) {
                 require_once 'validations.inc.php';
-                $p = new PayReq(Session::get('uid'),
+                $p = new PayReq(S::v('uid'),
                                 Post::get('intitule')." - ".$globals->asso('nom'),
                                 Post::get('site'), $money_defaut,
                                 Post::get('confirmation'), 0, 999,

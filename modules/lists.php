@@ -47,7 +47,7 @@ class ListsModule extends PLModule
     {
         require_once 'lists.inc.php';
 
-        $this->client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'));
+        $this->client =& lists_xmlrpc(S::v('uid'), S::v('password'));
     }
 
     function handler_lists(&$page)
@@ -152,7 +152,7 @@ class ListsModule extends PLModule
         if (!$page->nb_errs()) {
             $page->assign('created', true);
             require_once 'validations.inc.php';
-            $req = new ListeReq(Session::getInt('uid'), $liste,
+            $req = new ListeReq(S::v('uid'), $liste,
                                 Post::get('desc'), Post::getInt('advertise'),
                                 Post::getInt('modlevel'), Post::getInt('inslevel'),
                                 $owners, $members);
@@ -324,8 +324,8 @@ class ListsModule extends PLModule
             $mail   = $this->client->get_pending_mail($liste, $mid);
             $reason = '';
 
-            $prenom = Session::get('prenom');
-            $nom    = Session::get('nom');
+            $prenom = S::v('prenom');
+            $nom    = S::v('nom');
 
             if (Env::has('mok')) {
                 $action  = 1; /** 2 = ACCEPT **/

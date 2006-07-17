@@ -38,13 +38,13 @@ class CarnetModule extends PLModule
 
     function _add_rss_link(&$page)
     {
-        if (!Session::has('core_rss_hash')) {
+        if (!S::has('core_rss_hash')) {
             return;
         }
         $page->assign('xorg_rss',
                       array('title' => 'Polytechnique.org :: Carnet',
-                            'href'  => '/carnet/rss/'.Session::get('forlife')
-                                      .'/'.Session::get('core_rss_hash').'/rss.xml')
+                            'href'  => '/carnet/rss/'.S::v('forlife')
+                                      .'/'.S::v('core_rss_hash').'/rss.xml')
                       );
     }
 
@@ -69,7 +69,7 @@ class CarnetModule extends PLModule
         require_once 'notifs.inc.php';
 
         $page->assign('now',date('YmdHis'));
-        $notifs = new Notifs(Session::getInt('uid'), true);
+        $notifs = new Notifs(S::v('uid'), true);
 
         $page->assign('notifs', $notifs);
         $page->assign('today', date('Y-m-d'));
@@ -114,12 +114,12 @@ class CarnetModule extends PLModule
 
         require_once 'notifs.inc.php';
 
-        $watch = new Watch(Session::getInt('uid'));
+        $watch = new Watch(S::v('uid'));
 
         $res = XDB::query("SELECT promo_sortie
                                        FROM auth_user_md5
                                       WHERE user_id = {?}",
-                                    Session::getInt('uid', -1));
+                                    S::v('uid', -1));
         $promo_sortie = $res->fetchOneCell();
         $page->assign('promo_sortie', $promo_sortie);
 
@@ -152,7 +152,7 @@ class CarnetModule extends PLModule
     }
 
     function _get_list($offset, $limit) {
-        $uid   = Session::getInt('uid');
+        $uid   = S::v('uid');
         $res   = XDB::query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
         $total = $res->fetchOneCell();
 
@@ -186,7 +186,7 @@ class CarnetModule extends PLModule
         require_once("applis.func.inc.php");
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
 
-        $uid  = Session::getInt('uid');
+        $uid  = S::v('uid');
         $user = Env::get('user');
 
         switch (Env::get('action')) {
@@ -306,7 +306,7 @@ class CarnetModule extends PLModule
             $sql .= ' ORDER BY  u.nom, u.prenom, u.promo';
         }
 
-        $citer = XDB::iterRow($sql, Session::getInt('uid'));
+        $citer = XDB::iterRow($sql, S::v('uid'));
         $pdf   = new ContactsPDF();
 
         while (list($alias) = $citer->next()) {

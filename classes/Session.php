@@ -19,14 +19,56 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once("xorg.inc.php");
-new_admin_page('admin/lists.tpl');
-$page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
-require_once('platal/xmlrpc-client.inc.php');
-require_once('lists.inc.php');
+class Session
+{
+    function init()
+    {
+        @session_start();
+        if (empty($_SESSION['challenge'])) {
+            $_SESSION['challenge'] = sha1(uniqid(rand(), true));
+        }
+    }
 
-$client =& lists_xmlrpc(S::v('uid'), S::v('password'));
-$listes = $client->get_all_lists();
-$page->assign_by_ref('listes',$listes);
-$page->run();
+    function destroy()
+    {
+        @session_destroy();
+        unset($_SESSION);
+    }
+
+
+
+    function has($key)
+    {
+        return isset($_SESSION[$key]);
+    }
+
+    function kill($key)
+    {
+        unset($_SESSION[$key]);
+    }
+
+    function v($key, $default = null)
+    {
+        return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+    }
+
+
+    function has_perms()
+    {
+        return Session::logged() && Session::v('perms') == PERMS_ADMIN;
+    }
+
+    function logged()
+    {
+        return Session::v('auth', AUTH_PUBLIC) >= AUTH_COOKIE;
+    }
+
+    function identified()
+    {
+        return Session::v('auth', AUTH_PUBLIC) >= AUTH_MDP;
+    }
+}
+
+class S extends Session { }
+
 ?>

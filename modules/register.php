@@ -33,7 +33,7 @@ class RegisterModule extends PLModule
 
     function handler_register(&$page, $hash = null)
     {
-        $sub_state = Session::getMixed('sub_state', Array());
+        $sub_state = S::v('sub_state', Array());
         if (!isset($sub_state['step'])) {
             $sub_state['step'] = 0;
         }
@@ -282,9 +282,9 @@ class RegisterModule extends PLModule
 
             XDB::execute('UPDATE auth_user_md5 SET password={?}
                                      WHERE user_id={?}', $password,
-                                   Session::getInt('uid'));
+                                   S::v('uid'));
 
-            $log =& Session::getMixed('log');
+            $log =& S::v('log');
             $log->log('passwd', '');
 
             if (Cookie::get('ORGaccess')) {

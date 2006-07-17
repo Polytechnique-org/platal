@@ -48,7 +48,7 @@ INNER JOIN auth_user_quick AS q ON(q.user_id = a.uid)
      GROUP BY u.user_id LIMIT 11",
         $id);
 
-if ($globals->asso('pub') == 'public' || has_perms())
+if ($globals->asso('pub') == 'public' || S::has_perms())
     $page->assign('users', $users);
 
 $page->run();

@@ -22,19 +22,19 @@
 
 if(Env::has('langue_op')){
     if(Env::get('langue_op', '')=='retirer'){
-        XDB::execute("DELETE FROM langues_ins WHERE uid = {?} AND lid = {?}", Session::getInt('uid', -1), Env::get('langue_id', ''));
+        XDB::execute("DELETE FROM langues_ins WHERE uid = {?} AND lid = {?}", S::v('uid', -1), Env::get('langue_id', ''));
     } elseif(Env::get('langue_op', '') == 'ajouter'){
         if(Env::get('langue_id', '') != '')
-            XDB::execute("INSERT INTO langues_ins (uid,lid,level) VALUES ({?}, {?}, {?})", Session::getInt('uid', -1), Env::get('langue_id', ''), Env::get('langue_level', ''));
+            XDB::execute("INSERT INTO langues_ins (uid,lid,level) VALUES ({?}, {?}, {?})", S::v('uid', -1), Env::get('langue_id', ''), Env::get('langue_level', ''));
     }
 }
 
 if(Env::has('comppros_op')){
     if(Env::get('comppros_op', '')=='retirer'){
-        XDB::execute("DELETE FROM competences_ins WHERE uid = {?} AND cid = {?}", Session::getInt('uid', -1), Env::get('comppros_id', ''));
+        XDB::execute("DELETE FROM competences_ins WHERE uid = {?} AND cid = {?}", S::v('uid', -1), Env::get('comppros_id', ''));
     } elseif(Env::get('comppros_op', '') == 'ajouter') {
         if(Env::get('comppros_id', '') != '')
-	    XDB::execute("INSERT INTO competences_ins (uid,cid,level) VALUES({?}, {?}, {?})", Session::getInt('uid', -1), Env::get('comppros_id', ''), Env::get('comppros_level', ''));
+	    XDB::execute("INSERT INTO competences_ins (uid,cid,level) VALUES({?}, {?}, {?})", S::v('uid', -1), Env::get('comppros_id', ''), Env::get('comppros_level', ''));
     }
 }
 
@@ -44,7 +44,7 @@ $nb_lg_max = 10;
 $nb_cpro_max = 20;
 
 $res = XDB::iterRow("SELECT ld.id, ld.langue_fr, li.level FROM langues_ins AS li, langues_def AS ld "
-               ."WHERE (li.lid=ld.id AND li.uid= {?}) LIMIT $nb_lg_max", Session::getInt('uid', -1));
+               ."WHERE (li.lid=ld.id AND li.uid= {?}) LIMIT $nb_lg_max", S::v('uid', -1));
 
 $nb_lg = $res->total();
 
@@ -53,7 +53,7 @@ for ($i = 1; $i <= $nb_lg; $i++) {
 }
 
 $res = XDB::iterRow("SELECT cd.id, cd.text_fr, ci.level FROM competences_ins AS ci, competences_def AS cd "
-               ."WHERE (ci.cid=cd.id AND ci.uid={?}) LIMIT $nb_cpro_max", Session::getInt('uid', -1));
+               ."WHERE (ci.cid=cd.id AND ci.uid={?}) LIMIT $nb_cpro_max", S::v('uid', -1));
 
 $nb_cpro = $res->total();
 

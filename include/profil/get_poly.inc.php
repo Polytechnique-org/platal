@@ -26,7 +26,7 @@ $sql = "SELECT section".
     " FROM auth_user_md5 AS u".
     " WHERE user_id = {?}";
 
-$result = XDB::query($sql, Session::getInt('uid', -1));
+$result = XDB::query($sql, S::v('uid', -1));
 $section = $result->fetchOneCell();
 
 replace_ifset($section,'section');
@@ -35,22 +35,22 @@ replace_ifset($section,'section');
 if (Env::has('binet_op')) {
     // retrait binet
     if( (Env::get('binet_op', '')=='retirer')&&(Env::getInt('binet_id', 0) != 0)) {
-        XDB::execute("DELETE FROM binets_ins WHERE user_id = {?} AND binet_id = {?}", Session::getInt('uid', -1), Env::getInt('binet_id', -1));
+        XDB::execute("DELETE FROM binets_ins WHERE user_id = {?} AND binet_id = {?}", S::v('uid', -1), Env::getInt('binet_id', -1));
     }
     // ajout binet
     if (Env::get('binet_op')=="ajouter" && (Env::getInt('binet_id', 0) != 0)) {
-        XDB::execute("INSERT INTO binets_ins (user_id,binet_id) VALUES({?}, {?})", Session::getInt('uid', -1), Env::getInt('binet_id', -1));
+        XDB::execute("INSERT INTO binets_ins (user_id,binet_id) VALUES({?}, {?})", S::v('uid', -1), Env::getInt('binet_id', -1));
     }
 }
 /************* gestion des groupes X ************/
 if (Env::has('groupex_op')) {
     // retrait groupe X
     if (Env::get('groupex_op')=="retirer" && (Env::getInt('groupex_id', 0) != 0)) {
-        XDB::execute("DELETE FROM groupesx_ins WHERE guid = {?} AND gid = {?}", Session::getInt('uid', -1), Env::getInt('groupex_id', -1));
+        XDB::execute("DELETE FROM groupesx_ins WHERE guid = {?} AND gid = {?}", S::v('uid', -1), Env::getInt('groupex_id', -1));
     }
     // ajout groupe X
     if (Env::get('groupex_op')=="ajouter" && (Env::getInt('groupex_id', 0) != 0)) {
-        XDB::execute("INSERT INTO groupesx_ins (guid, gid) VALUES ({?}, {?})", Session::getInt('uid', -1), Env::getInt('groupex_id', -1));
+        XDB::execute("INSERT INTO groupesx_ins (guid, gid) VALUES ({?}, {?})", S::v('uid', -1), Env::getInt('groupex_id', -1));
     }
 }
 

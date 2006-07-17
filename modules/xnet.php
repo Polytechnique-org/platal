@@ -112,7 +112,7 @@ class XnetModule extends PLModule
                     $page->trig('suppression des alias mails');
 
                     require_once('lists.inc.php');
-                    $client =& lists_xmlrpc(Session::getInt('uid'), Session::get('password'), $domain);
+                    $client =& lists_xmlrpc(S::v('uid'), S::v('password'), $domain);
                     if ($listes = $client->get_lists()) {
                         foreach ($listes as $l) {
                             $client->delete_list($l['list'], true);

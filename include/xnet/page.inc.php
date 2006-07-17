@@ -61,15 +61,15 @@ class XnetPage extends PlatalPage
         $sub = array();
         $sub['accueil']           = '';
         $sub['liste des groupes'] = 'plan';
-        if (logged()) {
-            if (has_perms()) {
+        if (S::logged()) {
+            if (S::has_perms()) {
                 $sub['admin X.net'] = 'admin';
             }
             $sub['déconnexion']   = 'exit';
         }
         $menu["Menu Principal"]   = $sub;
 
-        if (logged() && (is_member() || may_update())) {
+        if (S::logged() && (is_member() || may_update())) {
             $sub = array();
             $dim = $globals->asso('diminutif');
             $sub['présentation'] = "$dim/";
@@ -90,7 +90,7 @@ class XnetPage extends PlatalPage
             $menu[$globals->asso('nom')] = $sub;
         }
 
-        if (logged() && may_update()) {
+        if (S::logged() && may_update()) {
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
             if ($globals->asso('mail_domain')) {
@@ -112,11 +112,11 @@ class XnetPage extends PlatalPage
         $this->register_function('list_all_my_groups', 'list_all_my_groups');
         $this->register_modifier('cat_pp', 'cat_pp');
         $this->assign('it_is_xnet', true);
-        if (!logged() && $force) {
-            $_SESSION['session']->doLogin($this);
+        if (!S::logged() && $force) {
+            XnetSession::doLogin($this);
         }
-        if (!logged() && Get::has('auth')) {
-            $_SESSION['session']->doAuthX($this);
+        if (!S::logged() && Get::has('auth')) {
+            XnetSession::doAuthX($this);
         }
     }
 

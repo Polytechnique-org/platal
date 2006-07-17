@@ -89,13 +89,13 @@ class XOrgMenu
 
     function menu()
     {
-        $res = logged() ? $this->_int : $this->_ext;
-        if (identified()) {
+        $res = S::logged() ? $this->_int : $this->_ext;
+        if (S::identified()) {
             $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion', 'url' => 'exit');
         } elseif (Cookie::has('ORGaccess')) {
             $res[XOM_NO][] = Array(0, 'text' => 'Déconnexion totale', 'url' => 'exit/forget');
         }
-        if (!has_perms()) {
+        if (!S::has_perms()) {
             unset($res[XOM_ADMIN]);
         }
         foreach (array_keys($res) as $key) {

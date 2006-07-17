@@ -52,10 +52,10 @@ if (Env::has('mat')) {
 if ($login) {
     
     if (Env::has('importe')) {
-        ax_synchronize($login, Session::getInt('uid'));
+        ax_synchronize($login, S::v('uid'));
     }
     // get details from user, but looking only info that can be seen by ax
-    $user  = get_user_details($login, Session::getInt('uid'), 'ax');
+    $user  = get_user_details($login, S::v('uid'), 'ax');
     $userax= get_user_ax($user['matricule_ax']);
     require_once 'profil.func.inc.php';
     $diff = diff_user_details($userax, $user, 'ax');

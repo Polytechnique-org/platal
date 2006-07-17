@@ -84,7 +84,8 @@ class Platal
         $args    = $this->argv;
         $args[0] = &$page;
 
-        if ($hook['auth'] > Session::get('auth', AUTH_PUBLIC)) {
+        if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
+            // FIXME: don't use 'session' object anymore
             $_SESSION['session']->doAuth($page);
         }
 

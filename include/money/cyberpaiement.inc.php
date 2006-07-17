@@ -48,11 +48,11 @@ class CyberPayment
         global $globals;
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/payment/cyber_return/".Session::getInt('uid')."?CHAMPBPX";
+            ."/payment/cyber_return/".S::v('uid')."?CHAMPBPX";
         if (Cookie::has(session_name())) {
             $returnurl .= "?".SID;
         }
-	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",Session::get('uid'));
+	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",S::v('uid'));
 	$name = $req->fetchOneCell();
 
         // on constuit la reference de la transaction
@@ -72,10 +72,10 @@ class CyberPayment
 		'CHAMP008' => $pay->mail);
 	$this->infos['client'] = Array(
 		'CHAMP100' => $name,
-		'CHAMP101' => Session::get('prenom'),
+		'CHAMP101' => S::v('prenom'),
 		'CHAMP102' => '.',
 		'CHAMP103' => '.',
-		'CHAMP104' => Session::get('bestalias').'@polytechnique.org',
+		'CHAMP104' => S::v('bestalias').'@polytechnique.org',
 		'CHAMP106' => '.',
 		'CHAMP107' => '.',
 		'CHAMP108' => '.',

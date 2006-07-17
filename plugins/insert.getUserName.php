@@ -24,7 +24,7 @@ function smarty_insert_getUsername()
     global $globals;
 
     $id = Cookie::getInt('ORGuid', -1);
-    $id = Session::getInt($_SESSION['uid'], $id);
+    $id = S::v($_SESSION['uid'], $id);
     
     if ($id<0) {
         return "";

@@ -72,11 +72,11 @@ class BananaModule extends PLModule
                 SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
                         IF(FIND_IN_SET('automaj',flags),'1','0') 
                   FROM  forums.profils
-                 WHERE  uid = {?}", Session::getInt('uid'));
+                 WHERE  uid = {?}", S::v('uid'));
             if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
-                $nom  = Session::get('prenom').' '.Session::get('nom');
-                $mail = Session::get('forlife').'@'.$globals->mail->domain;
-                $sig  = $nom.' ('.Session::getInt('promo').')';
+                $nom  = S::v('prenom').' '.S::v('nom');
+                $mail = S::v('forlife').'@'.$globals->mail->domain;
+                $sig  = $nom.' ('.S::v('promo').')';
                 $disp = 0;
                 $maj  = 0;
             }
@@ -89,7 +89,7 @@ class BananaModule extends PLModule
             XDB::execute(
                 'REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
                        VALUES  ({?},{?},{?},{?},{?})',
-                Session::getInt('uid'), Post::get('bananasig'),
+                S::v('uid'), Post::get('bananasig'),
                 Post::get('bananamail'), Post::get('banananame'),
                 (Post::getBool('bananadisplay') ? 'threads,' : '') .
                 (Post::getBool('bananaupdate') ? 'automaj' : '')
