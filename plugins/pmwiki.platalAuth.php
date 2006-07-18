@@ -108,7 +108,7 @@ function auth_pmwiki_to_smarty($text, $pass)
 // and translate any auth from the wiki to smarty auth
 function AuthPlatal($pagename, $level, $authprompt, $since)
 {
-    global $Conditions;
+    global $Conditions, $page;
     $authUser = false;
     $authPage = false;
 
@@ -157,14 +157,15 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
 
     // if we arrive here, the user doesn't have enough permission to access page
 
+    // FIXME: seems to be broken, will be better soon
+    new_skinned_page('index.tpl');
     // maybe it is because he is not identified
     if ($authprompt && !S::identified())
     {
-        new_identification_page(); 
+        XorgSession::doAuth($page);
     }
 
-    global $page;
-    new_identification_page();
+    XorgSession::doAuth($page);
     if (S::has_perms()) {
         $page->trig('Erreur : page Wiki inutilisable sur plat/al');
     } else {

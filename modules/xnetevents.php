@@ -223,7 +223,7 @@ class XnetEventsModule extends PLModule
         header('Pragma: ');
         header('Cache-Control: ');
 
-        new_nonhtml_page('xnetevents/csv.tpl');
+        $page->changeTpl('xnetevents/csv.tpl', NO_SKIN);
 
         $admin = may_update();
 

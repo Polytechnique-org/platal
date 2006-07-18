@@ -96,7 +96,7 @@ class Platal
     {
         global $page;
 
-        new_skinned_page('index.tpl', AUTH_PUBLIC);
+        new_skinned_page('index.tpl');
 
         if (empty($this->path)) {
             $this->path = 'index';

@@ -330,7 +330,7 @@ class CarnetModule extends PLModule
 
     function handler_ical(&$page, $user = null, $hash = null, $all = null)
     {
-        new_nonhtml_page('carnet/calendar.tpl', AUTH_PUBLIC);
+        $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
 
         if ($alias && $hash) {
             $res = XDB::query(

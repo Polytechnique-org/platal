@@ -40,7 +40,7 @@ function to_rss ($s)
 function init_rss($template, $alias, $hash)
 {
     global $page;
-    new_nonhtml_page($template, AUTH_PUBLIC);
+    $page->changeTpl($template, NO_SKIN);
     $page->register_modifier('rss_date', '_rss_encode_date');
     $page->default_modifiers = Array('@to_rss');
 

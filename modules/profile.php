@@ -660,7 +660,7 @@ class ProfileModule extends PLModule
             $x = substr($x, 0, strlen($x) - 4);
         }
 
-        new_nonhtml_page('vcard.tpl', AUTH_COOKIE);
+        $page->changeTpl('vcard.tpl', NO_SKIN);
         require_once 'xorg.misc.inc.php';
         require_once 'user.func.inc.php';
 

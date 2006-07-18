@@ -40,7 +40,7 @@ function wiki_pagename() {
 
 function wiki_work_dir() {
     global $globals;
-    return realpath($globals->spoolroot.'htdocs/'.$globals->wiki->workdir);
+    return dirname(__FILE__).'/../htdocs/'.$globals->wiki->workdir;
 }
 
 function wiki_template($n) {

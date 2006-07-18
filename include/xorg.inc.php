@@ -25,60 +25,71 @@ XorgGlobals::init();
 XorgGlobals::setlocale();
 XorgSession::init();
 
-// {{{ function _new_page()
+require_once('platal/page.inc.php');
 
-function _new_page($type, $tpl_name, $min_auth, $admin=false)
+// {{{ class XorgPage
+
+class XorgPage extends PlatalPage
 {
-    global $page, $globals;
-    require_once("xorg/page.inc.php");
-    if ($min_auth == AUTH_PUBLIC && Env::get('force_login') == '1')
-        $min_auth = AUTH_COOKIE;
+    // {{{ function XorgPage()
+
+    function XorgPage($tpl, $type=SKINNED)
+    {
+        $this->PlatalPage($tpl, $type);
+    }
+
+    // }}}
+    // {{{ function run()
+
+    function run()
+    {
+        global $globals;
+        if ($this->_page_type != NO_SKIN) {
+            $this->assign('menu', $globals->menu->menu());
+        }
+        $this->_run('skin/'.S::v('skin'));
+    }
+
+    // }}}
+}
+
+// }}}
+// {{{ class XorgAdmin
+
+/** Une classe pour les pages réservées aux admins (authentifiés!).
+ */
+class XorgAdmin extends XorgPage
+{
+    // {{{ function XorgAdmin()
+
+    function XorgAdmin($tpl, $type=SKINNED)
+    {
+        $this->XorgPage($tpl, $type);
+        check_perms();
+    }
+
+    // }}}
+}
+
+// }}}
+
+function _new_page($type, $tpl_name, $admin=false)
+{
+    global $page;
     if (!empty($admin)) {
         $page = new XorgAdmin($tpl_name, $type);
-    } else switch($min_auth) {
-        case AUTH_PUBLIC:
-            $page = new XorgPage($tpl_name, $type);
-            break;
-
-        case AUTH_COOKIE:
-            $page = new XorgCookie($tpl_name, $type);
-            break;
-
-        case AUTH_MDP:
-            $page = new XorgAuth($tpl_name, $type);
+    } else {
+        $page = new XorgPage($tpl_name, $type);
     }
 
     $page->assign('xorg_tpl', $tpl_name);
 }
 
-// }}}
-function new_identification_page()
-{
-    _new_page(SKINNED, '', AUTH_MDP);
-}
 // {{{ function new_skinned_page()
 
-function new_skinned_page($tpl_name, $min_auth)
+function new_skinned_page($tpl_name)
 {
-    _new_page(SKINNED, $tpl_name, $min_auth);
-}
-
-// }}}
-// {{{ function new_simple_page()
-
-function new_simple_page($tpl_name, $min_auth)
-{
-    global $page;
-    _new_page(SKINNED, $tpl_name, $min_auth);
-    $page->assign('simple', true);
-}
-
-// }}}
-// {{{ function new_nonhtml_page()
-
-function new_nonhtml_page($tpl_name, $min_auth)
-{
-    _new_page(NO_SKIN, $tpl_name, $min_auth, false);
+    _new_page(SKINNED, $tpl_name);
 }
 
 // }}}
@@ -86,7 +97,7 @@ function new_nonhtml_page($tpl_name, $min_auth)
 
 function new_admin_page($tpl_name)
 {
-    _new_page(SKINNED, $tpl_name, AUTH_MDP, true);
+    _new_page(SKINNED, $tpl_name, true);
 }
 
 // }}}
@@ -101,7 +112,7 @@ function new_admin_table_editor($table, $idfield, $idedit=false)
     global $editor;
     new_admin_page('table-editor.tpl');
     require_once('xorg.table-editor.inc.php');
-    $editor = new XOrgAdminTableEditor($table,$idfield,$idedit);
+    $editor = new XOrgAdminTableEditor($table, $idfield, $idedit);
 }
 
 // }}}

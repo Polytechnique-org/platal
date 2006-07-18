@@ -111,7 +111,7 @@ class GeolocModule extends PLModule
     {
         global $globals;
 
-        new_nonhtml_page('geoloc/geolocInit.tpl', AUTH_COOKIE);
+        $page->changeTpl('geoloc/geolocInit.tpl', NO_SKIN);
 
         header('Content-type: text/xml');
         $page->assign('querystring', $this->_make_qs());
@@ -123,9 +123,7 @@ class GeolocModule extends PLModule
 
         header("Content-type: text/xml");
 
-        new_nonhtml_page('geoloc/getCityInfos.tpl', AUTH_COOKIE);
-        // to debug sql use the next line
-        //new_skinned_page('', AUTH_COOKIE);
+        $page->changeTpl('geoloc/getCityInfos.tpl', NO_SKIN);
 
         require_once('geoloc.inc.php');
         require_once('search.inc.php');
@@ -157,7 +155,7 @@ class GeolocModule extends PLModule
             $page->assign('simple', true);
         } else {
             header("Content-type: text/xml");
-            new_nonhtml_page('geoloc/getData.tpl', AUTH_COOKIE);
+            $page->changeTpl('geoloc/getData.tpl', NO_SKIN);
         }
 
         require_once 'geoloc.inc.php';

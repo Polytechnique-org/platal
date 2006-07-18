@@ -54,11 +54,6 @@ class PlatalPage extends Smarty
 
         $this->compile_check = !empty($globals->debug);
 
-        if ($type == SKINNED) {
-            $this->register_modifier('escape_html', 'escape_html');
-            $this->default_modifiers[] = '@escape_html';
-        }
-
         $this->_page_type = $type;
         $this->_tpl       = $tpl;
         $this->_errors    = array();
@@ -94,11 +89,6 @@ class PlatalPage extends Smarty
     {
 	$this->_tpl       = $tpl;
 	$this->_page_type = $type;
-	if ($type == SKINNED) {
-	    $this->register_modifier('escape_html', 'escape_html');
-	    $this->default_modifiers = Array('@escape_html');
-	}
-
         $this->_page_type = $type;
 	$this->assign('xorg_tpl', $tpl);
     }
@@ -118,6 +108,9 @@ class PlatalPage extends Smarty
         if ($this->_page_type == NO_SKIN) {
             $this->display($this->_tpl);
             exit;
+        } else {
+	    $this->register_modifier('escape_html', 'escape_html');
+	    $this->default_modifiers = Array('@escape_html');
         }
 
         if (!$globals->debug) {

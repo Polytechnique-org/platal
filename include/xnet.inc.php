@@ -42,16 +42,6 @@ function new_skinned_page($tpl_name)
 }
 
 // }}}
-
-function new_identification_page()
-{
-    global $page;
-
-    new_page('');
-    $page->doAuth(true);
-    $page->useMenu();
-}
-
 // {{{ function new_group_page()
 
 function new_group_page($tpl_name)
