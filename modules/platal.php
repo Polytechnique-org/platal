@@ -103,10 +103,6 @@ class PlatalModule extends PLModule
 
     function handler_prefs(&$page)
     {
-        global $globals;
-
-        var_export($_POST);
-
         $page->changeTpl('preferences.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes préférences');
 
@@ -123,8 +119,6 @@ class PlatalModule extends PLModule
         if (Post::has('rss')) {
             $this->__set_rss_state(Post::getBool('rss'));
         }
-
-        $page->assign('prefs', $globals->hook->prefs());
     }
 
     function handler_webredir(&$page)

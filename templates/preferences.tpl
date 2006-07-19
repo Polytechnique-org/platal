@@ -30,21 +30,20 @@
     Configuration des différents services du site
     </th>
   </tr>
-  {foreach from=$prefs item=pref key=id name=glob}
-  {if $id is even}
-  <tr class="{cycle values="impair,pair"}">
-    {/if}
+  <tr class="impair">
     <td class="half">
-      <h3><a href="{$pref.url}">{$pref.title}</a></h3>
-      <div class='explication'>{$pref.text|smarty:nodefaults}</div>
+      <h3><a href="emails">Mes adresses de redirection</a></h3>
+      <div class='explication'>
+        Tu peux configurer tes différentes redirections de mails ici.
+      </div>
     </td>
-    {if $id is even && $smarty.foreach.glob.last}
-    <td class="half"></td>
-    {/if}
-  {if $id is odd || $smarty.foreach.glob.last}
+    <td class="half">
+      <h3><a href="emails/alias">Mon alias mail @melix.net</a></h3>
+      <div class='explication'>
+        Pour choisir un alias @melix.net/melix.org (en choisir un nouveau annule l'ancien).
+      </div>
+    </td>
   </tr>
-  {/if}
-  {/foreach}
   <tr class="pair">
     <td class="half">
       <h3><a href="prefs/webredirect">Ma redirection de page WEB</a></h3>
