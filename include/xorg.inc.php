@@ -31,15 +31,10 @@ require_once('platal/page.inc.php');
 
 class XorgPage extends PlatalPage
 {
-    // {{{ function XorgPage()
-
     function XorgPage($tpl, $type=SKINNED)
     {
         $this->PlatalPage($tpl, $type);
     }
-
-    // }}}
-    // {{{ function run()
 
     function run()
     {
@@ -50,7 +45,18 @@ class XorgPage extends PlatalPage
         $this->_run('skin/'.S::v('skin'));
     }
 
-    // }}}
+    function doLogin($new_name = false)
+    {
+        global $page;
+        if (S::logged() and !$new_name) {
+            $page->changeTpl('password_prompt_logged.tpl');
+            $page->addJsLink('javascript/do_challenge_response_logged.js');
+        } else {
+            $page->changeTpl('password_prompt.tpl');
+            $page->addJsLink('javascript/do_challenge_response.js');
+    	}
+        $page->run();
+    }
 }
 
 // }}}

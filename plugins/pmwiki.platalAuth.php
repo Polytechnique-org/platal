@@ -162,10 +162,10 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     // maybe it is because he is not identified
     if ($authprompt && !S::identified())
     {
-        XorgSession::doAuth($page);
+        XorgSession::doAuth();
     }
 
-    XorgSession::doAuth($page);
+    XorgSession::doAuth();
     if (S::has_perms()) {
         $page->trig('Erreur : page Wiki inutilisable sur plat/al');
     } else {

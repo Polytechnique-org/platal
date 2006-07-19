@@ -51,7 +51,7 @@ class XorgSession
      *
      * @param page the calling page (by reference)
      */
-    function doAuth(&$page,$new_name=false)
+    function doAuth($new_name = false)
     {
     	global $globals;
     	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
@@ -137,7 +137,9 @@ class XorgSession
                     $logger->log('auth_fail','bad login');
             }
     	}
-        XorgSession::doLogin($page,$new_name);
+
+        global $page;
+        $page->doLogin($new_name);
     }
 
     // }}}
@@ -154,42 +156,12 @@ class XorgSession
         }
 
 	if (Env::has('username') and Env::has('response')) {
-	    return XorgSession::doAuth($page);
+	    return XorgSession::doAuth();
         }
 
 	if ($r = try_cookie()) {
-	    return XorgSession::doAuth($page,($r>0));
+	    return XorgSession::doAuth(($r > 0));
         }
-    }
-
-    // }}}
-    // {{{ function doLogin()
-
-    /** Display login screen.
-     */
-    function doLogin(&$page, $new_name=false)
-    {
-        if (S::logged() and !$new_name) {
-            $page->changeTpl('password_prompt_logged.tpl');
-            $page->addJsLink('javascript/do_challenge_response_logged.js');
-            $page->assign("xorg_tpl", "password_prompt_logged.tpl");
-            $page->run();
-        } else {
-            $page->changeTpl('password_prompt.tpl');
-            $page->addJsLink('javascript/do_challenge_response.js');
-            $page->assign("xorg_tpl", "password_prompt.tpl");
-
-            global $globals;
-            if ($globals->mail->alias_dom) {
-                $page->assign("domains", Array(
-                    $globals->mail->domain."/".$globals->mail->domain2,
-                    $globals->mail->alias_dom."/".$globals->mail->alias_dom2));
-                $page->assign("domains_value", Array("login", "alias"));
-                $page->assign("r_domain", Cookie::get('ORGdomain', 'login'));
-            }
-	    $page->run();
-    	}
-    	exit;
     }
 
     // }}}

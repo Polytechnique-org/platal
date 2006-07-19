@@ -113,14 +113,19 @@ class XnetPage extends PlatalPage
         $this->register_modifier('cat_pp', 'cat_pp');
         $this->assign('it_is_xnet', true);
         if (!S::logged() && $force) {
-            XnetSession::doLogin($this);
+            XnetSession::doAuth();
         }
         if (!S::logged() && Get::has('auth')) {
-            XnetSession::doAuthX($this);
+            XnetSession::doAuthX();
         }
     }
 
     // }}}
+
+    function doLogin()
+    {
+        redirect(S::v('loginX'));
+    }
 }
 
 // }}}

@@ -21,8 +21,6 @@
 
 require_once('platal/session.inc.php');
 
-// {{{ class XorgSession
-
 class XnetSession
 {
     // {{{ function init
@@ -64,24 +62,26 @@ class XnetSession
      *
      * @param page the calling page (by reference)
      */
-    function doAuth(&$page)
+    function doAuth()
     {
 	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
 	    return true;
 	}
 
         if (Get::has('auth')) {
-            return XnetSession::doAuthX($page);
+            return XnetSession::doAuthX();
         } else {
-            XnetSession::doLogin($page);
+            global $page;
+
+            $page->doLogin();
         }
     }
 
     // }}}
     // {{{ doAuthX
 
-    function doAuthX(&$page) {
-        global $globals;
+    function doAuthX() {
+        global $globals, $page;
 
         if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::getInt('uid').'1') != Get::get('auth')) {
             $page->kill("Erreur d'authentification avec polytechnique.org !");
@@ -103,23 +103,18 @@ class XnetSession
         Get::kill('auth');
         Get::kill('uid');
         $args = array();
-        foreach($_GET as $key=>$val) {
+        $path = Get::get('p');
+        Get::kill('p');
+
+        foreach($_GET as $key => $val) {
             $args[] = urlencode($key).'='.urlencode($val);
         }
-        redirect($_SERVER['PHP_SELF'] . '?' . join('&', $args));
-    }
-
-    // }}}
-    // {{{ doLogin
-
-    function doLogin(&$page) {
-        redirect(S::v('loginX'));
+        redirect($globals->baseurl . '/' . $path . '?' . join('&', $args));
     }
 
     // }}}
 }
 
-// }}}
 // {{{ may_update
 
 function may_update() {

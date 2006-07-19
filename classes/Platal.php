@@ -86,7 +86,7 @@ class Platal
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             // FIXME: don't use 'session' object anymore
-            $_SESSION['session']->doAuth($page);
+            $_SESSION['session']->doAuth();
         }
 
         return call_user_func_array($hook['hook'], $args);
