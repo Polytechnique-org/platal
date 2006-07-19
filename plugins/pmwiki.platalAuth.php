@@ -6,14 +6,12 @@ $Conditions['logged']      = S::logged();
 $Conditions['identified']  = S::identified();
 $Conditions['has_perms']   = S::has_perms();
 $Conditions['public']      = 'true';
-$Conditions['only_public'] = !S::identified();
 
-$HandleAuth['diff'] = 'edit';
-$HandleAuth['source'] = 'edit';
+$HandleAuth['diff']        = 'edit';
+$HandleAuth['source']      = 'edit';
 
-$InputTags['e_textarea'][':html'] =
- "<textarea \$InputFormArgs 
-    onkeydown='if (event.keyCode==27) event.returnValue=false;' 
+$InputTags['e_textarea'][':html'] = "<textarea \$InputFormArgs
+     onkeydown='if (event.keyCode==27) event.returnValue=false;'
     >{literal}\$EditText{/literal}</textarea>";
 
 // impossible to see the diff without the source because of the smarty tags
@@ -33,7 +31,7 @@ function authPerms($pagename, $key, $could=false, $smarty=false)
     $auth  = $smarty?"":false;
     $and   = false;
     foreach ($words as $word) {
-    	if (strpos($word, '@') === 0) $word = substr($word,1);
+        if (strpos($word, '@') === 0) $word = substr($word,1);
         $iauth = false;
         if ($word == 'and:') {
             $and = true;
@@ -45,38 +43,34 @@ function authPerms($pagename, $key, $could=false, $smarty=false)
         if ($cond == 'identified' && $could) {
             $cond = 'logged';
         }
-	if ($smarty)
-	   $iauth = '$'.$cond.($param?(' eq "'.$param.'"'):'');
-	else
-	{
-	   if (strpos($cond, "smarty.") === 0)
-	   {
-	      $vars = explode('.', $cond);
-	      $iauth = false;
-	      switch ($vars[1])
-	      {
-	        case 'session':$iauth = S::v($vars[2]) == $param; break;
-		case 'request':$iauth = Env::get($vars[2]) == $param; break;
-	      }
-	   }
-           else $iauth = CondText($pagename, 'if '.$cond.' '.$param, true);
-	}
+        if ($smarty) {
+            $iauth = '$'.$cond.($param?(' eq "'.$param.'"'):'');
+        } else {
+            if (strpos($cond, "smarty.") === 0) {
+                $vars = explode('.', $cond);
+                $iauth = false;
+                switch ($vars[1])
+                {
+                  case 'session':$iauth = S::v($vars[2]) == $param; break;
+                  case 'request':$iauth = Env::get($vars[2]) == $param; break;
+                }
+            }
+            else $iauth = CondText($pagename, 'if '.$cond.' '.$param, true);
+        }
 
         if ($and) {
-	    if ($smarty)
-	      $auth = ($auth?"($auth) and ":"").$iauth;
-	    else
-              $auth &= $iauth;
+            if ($smarty)
+                $auth = ($auth?"($auth) and ":"").$iauth;
+            else
+                $auth &= $iauth;
         } else {
-	    if ($smarty)
-	      $auth = ($auth?"($auth) or ":"").$iauth;
-	    else
-              $auth |= $iauth;
+            if ($smarty)
+                $auth = ($auth?"($auth) or ":"").$iauth;
+            else
+                $auth |= $iauth;
         }
         $and = false;
     }
-    if ($smarty)
-    	$auth = "($auth) or \$wiki_admin";
     return $auth;
 }
 
@@ -100,28 +94,28 @@ function TryAllAuths($pagename, $level, $page_read, $group_read)
 function auth_pmwiki_to_smarty($text, $pass)
 {
     $ifc = authPerms("", $pass, false, true);
-    if (!$ifc) return "";
-    return "{if $ifc}\n".$text."{/if}";
+    if (!$ifc)
+        return "";
+    return "{if $ifc}\n".$text."\n{else}(:div class='erreur':Droits insuffisants.:){/if}";
 }
 
 // for read pages: will come only once so we have to be careful
 // and translate any auth from the wiki to smarty auth
-function AuthPlatal($pagename, $level, $authprompt, $since)
+function AuthPlatal($pagename, $level, $authprompt)
 {
     global $Conditions, $page;
     $authUser = false;
     $authPage = false;
 
-    $page_read  = ReadPage($pagename, $since);
+    $page_read  = ReadPage($pagename);
     $groupattr  = FmtPageName('$Group/GroupAttributes', $pagename);
-    $group_read = ReadPage($groupattr, $since);
+    $group_read = ReadPage($groupattr);
 
     $levels = array('read', 'attr', 'edit', 'upload');
 
-    foreach ($levels as $l)
-    {
+    foreach ($levels as $l) {
         list($from, $pass) = TryAllAuths($pagename, $l, $page_read, $group_read);
-        $passwds[$l] = $pass;
+        $passwds[$l]   = $pass;
         $pwsources[$l] = $from;
     }
 
@@ -140,40 +134,35 @@ function AuthPlatal($pagename, $level, $authprompt, $since)
     $panel .= "{/if}\n";
     $panel .= ">><<\n";
     $panel .= "{/if}\n";
-  
+
     if ((S::identified() && S::has_perms()) || authPerms($pagename, $passwds[$level]))
     {
-        $page_read['=passwd'] = $passwds;
+        $page_read['=passwd']   = $passwds;
         $page_read['=pwsource'] = $pwsources;
-	// if try to read, add the permission limitation as a smarty if tag
-	if ($level == 'read')
-	{
-	  $page_read['text'] = auth_pmwiki_to_smarty($page_read['text'], $passwds['read']);
-	  $page_read['text'] = $panel.$page_read['text'];
-	}
-//	print_r($page_read); die();
+
+        // if try to read, add the permission limitation as a smarty if tag
+        if ($level == 'read') {
+            $page_read['text'] = auth_pmwiki_to_smarty($page_read['text'], $passwds['read']);
+            $page_read['text'] = $panel.$page_read['text'];
+        }
+
         return $page_read;
     }
 
     // if we arrive here, the user doesn't have enough permission to access page
 
-    // FIXME: seems to be broken, will be better soon
-    new_skinned_page('index.tpl');
     // maybe it is because he is not identified
-    if ($authprompt && !S::identified())
-    {
-        XorgSession::doAuth();
+    if ($authprompt && !S::identified()) {
+        require_once dirname(__FILE__).'/../classes/Platal.php';
+        require_once dirname(__FILE__).'/../classes/PLModule.php';
+        $platal = new Platal();
+        $platal->force_login($page);
     }
 
-    XorgSession::doAuth();
     if (S::has_perms()) {
         $page->trig('Erreur : page Wiki inutilisable sur plat/al');
-    } else {
-        $page->trig("Tu n'as pas le droit d'accéder à ce service");
     }
     $page->run();
-    // don't return false or pmwiki will send an exit breaking smarty page
-    return 1;
 }
 
 ?>

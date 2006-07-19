@@ -39,17 +39,5 @@ function wiki_config()
 }
 
 // }}}
-// {{{ menu HOOK
-
-
-function wiki_menu()
-{
-    global $globals;
-    if ($globals->wiki->wiki_enable) {
-//        $globals->menu->addPrivateEntry(XOM_INFORMATIONS, 40, 'Documentations', 'wiki.php/Docs');
-    }
-}
-
-// }}}
 
 ?>

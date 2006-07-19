@@ -8,7 +8,7 @@ $InputTags['e_form'] = array(
     type='hidden' name='action' value='edit' /><input 
     type='hidden' name='n' value='{\$FullName}' /><input 
     type='hidden' name='basetime' value='\$EditBaseTime' /></div>");
-    
+
 // set profiles to point to plat/al fiche
 Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e',
     'PreserveText("=", \'<a href="profile/$1" class="popup2">$2</a>\', "")');

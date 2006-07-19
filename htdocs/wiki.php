@@ -21,19 +21,13 @@
 
 require_once 'xorg.inc.php';
 
-// this page is to create a smarty template page from a wiki file
-// the wiki engine used is pmwiki.
-// the templates created are stored in wiki.d/cache_wikiword.tpl
-
-// some page can be seen by everybody (public), but to validate a password
-// if we arrive here before setting new access we need to try an auth
-new_skinned_page('wiki.tpl');
-
-if ($globals->wiki->wikidir) {
-    $wikisite = 'xorg';
-    require_once 'wiki.inc.php';
-    $page->changeTpl($wiki_template);
+new_skinned_page('');
+if (!S::identified()) {
+    XorgSession::doAuth();
 }
+
+require_once 'wiki.inc.php';
+$page->changeTpl($wiki_template);
 
 if (!Env::get('action')) {
     $page->addJsLink('javascript/wiki.js');

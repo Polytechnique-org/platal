@@ -1,8 +1,10 @@
 <?php if (!defined('PmWiki')) exit();
 
+require_once 'wiki.inc.php';
+
 $ScriptUrl       = $globals->baseurl;
 $UploadUrlFmt    = $ScriptUrl."/uploads";
-$WorkDir         = $globals->wiki->workdir;
+$WorkDir         = '../spool/wiki.d';
 $WikiDir         = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
 $PubDirUrl       = $globals->baseurl.'/wiki';
 $InterMapFiles[] = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
@@ -20,14 +22,13 @@ XLSDV('en', array('EnterAttributes' =>
     Les différentes restrictions possibles sont :
     <ul>
         <li><strong>public:</strong> (pour tout le monde)</li>
-        <li><strong>only_public:</strong> (pour les gens non connectés et non identifiés)</li>
         <li><strong>logged:</strong> (pour ceux qui ont rentré leur mot de passe ou qui ont un cookie permanent)</li>
         <li><strong>identified:</strong> (exige une identification par mot de passe)</li>
         <li><strong>has_perms:</strong> (pour les administrateurs de la page)</li>
     </ul>
     Le <strong>:</strong> à la fin de chaque mot clef est important. Tu peux également combiner plusieurs mots clefs avec <strong>and:</strong>
     ou des espaces (qui remplace le <em>ou</em> logique)<br/>"));
-    
+
 include_once($globals->spoolroot."/plugins/pmwiki.platalAuth.php");
 include_once($globals->spoolroot."/plugins/pmwiki.platalSkin.php");
 @include_once("$FarmD/cookbook/e-protect.php");
@@ -39,16 +40,9 @@ $DefaultPasswords['admin']  = 'has_perms: and: identified:';
 $DefaultPasswords['upload'] = 'has_perms: and: identified:';
 
 $EnableGUIButtons = 1;
-$EnableUpload = 1;
-$LinkWikiWords = 0;                      # disable WikiWord links
-$EnableIMSCaching = 1;                   # allow browser caching
-
-##  If you want to have to approve links to external sites before they
-##  are turned into links, uncomment the line below.  See PmWiki.UrlApprovals.
-##  Also, setting $UnapprovedLinkCountMax limits the number of unapproved
-##  links that are allowed in a page (useful to control wikispam).
-# include_once('scripts/urlapprove.php');
-# $UnapprovedLinkCountMax = 10;
+$EnableUpload     = 1;
+$LinkWikiWords    = 0;   # disable WikiWord links
+$EnableIMSCaching = 1;   # allow browser caching
 
 ##  The following lines make additional editing buttons appear in the
 ##  edit page for subheadings, lists, tables, etc.
@@ -70,6 +64,4 @@ $GUIButtons['table'] = array(600,
                    '||border=1 width=80%\\n||!Hdr ||!Hdr ||!Hdr ||\\n||     ||     ||     ||\\n||     ||     ||     ||\\n', '', '', 
                  '$GUIButtonDirUrlFmt/table.gif"$[Table]"');
 
-if (function_exists('more_wiki_config'))
-    more_wiki_config();
 ?>

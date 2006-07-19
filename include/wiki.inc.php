@@ -18,50 +18,28 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
-$wikisites = array('xorg','xnet');
 
 function wiki_pagename() {
-    $n = str_replace('/', '.', Env::get('n', false));
-    if (!$n) {
+    if (!Env::get('n')) {
         return null;
     }
-    $keywords = explode('.', $n);
-    $count = count($keywords);
-    if ($count == 1)
-        $n = $keywords[0].".".$keywords[0];
-    else
-        $n = $keywords[$count - 2].".".$keywords[$count - 1];
+
+    $words = explode('/', Env::get('n'));
+    if (count($words) == 2) {
+        return join('.', $words);
+    }
+
+    array_unshift($words, $words[0]);
+    $b = array_pop($words);
+    $a = array_pop($words);
+
     global $globals;
-    if (($urln = str_replace('.', '/', $n)) != Env::get('n') && $n != Env::get('n'))
-        redirect($globals->baseurl.'/'.$urln);
-    $_REQUEST['n'] = $n;
-    return $n;
+    redirect($globals->baseurl.'/'.$a.'/'.$b);
 }
 
 function wiki_work_dir() {
     global $globals;
-    return dirname(__FILE__).'/../htdocs/'.$globals->wiki->workdir;
-}
-
-function wiki_template($n) {
-    global $wikisite;
-    return $tpl = wiki_work_dir().'/cache_'.$wikisite.'_'.$n.'.tpl';
-}
-
-// several files are used for wiki :
-// - spool/wiki.d/PageName                           : the wiki page
-// - spool/wiki.d/cache_PageName.tpl                 : the template cache
-// - spool/templates_c/%%...%%cache_PageName.tpl.php : the PHP from Smarty
-function wiki_clear_cache($n) {
-    global $page, $wikisite, $wikisites;
-    $oldwikisite = $wikisite;
-    foreach ($wikisites as $s) {
-        $wikisite = $s;
-        $tpl = wiki_template($n);
-        @unlink($tpl);
-        $page->clear_compiled_tpl($tpl);
-    }
-    $wikisite = $oldwikisite;
+    return $globals->spoolroot.'/spool/wiki.d';
 }
 
 function wiki_clear_all_cache()
@@ -95,55 +73,47 @@ function wiki_clean_tmp() {
 
 function wiki_assign_auth() {
     global $page, $wiki_auths;
-    $page->assign('logged', S::logged());
+    $page->assign('true',       true);
+    $page->assign('public',     true);
+    $page->assign('logged',     S::logged());
     $page->assign('identified', S::identified());
-    $page->assign('has_perms', S::has_perms());
-    $page->assign('public', true);
-    $page->assign('wiki_admin', S::has_perms() && S::identified());
+    $page->assign('has_perms',  S::has_perms());
 }
 
 // cannot be in a function because pmwiki use all vars as if it was globals
-//function new_wiki_page() {
-    // the wiki keword is given in the n var
-    if ( $n = wiki_pagename() )
-    {
+if ($n = wiki_pagename()) {
+    $wiki_template  = wiki_work_dir().'/cache_'.$n.'.tpl';
+    $tmpfile_exists = file_exists($wiki_template);
 
-        $wiki_template = wiki_template($n);
-        $tmpfile_exists = file_exists($wiki_template);
-
-        // don't recreate the tpl if it already exists
-        if (Env::get('action') || !$tmpfile_exists)
-        {
-            if ($tmpfile_exists) {
-                wiki_clear_cache($n);
-            }
-
-            // we leave pmwiki do whatever it wants and store everything
-            ob_start();
-            require_once($globals->spoolroot.'/'.$globals->wiki->wikidir.'/pmwiki.php');
-
-            $wikiAll = ob_get_clean();
-            // the pmwiki skin we are using (almost empty) has these keywords:
-            $i = strpos($wikiAll, "<!--/HeaderText-->");
-            $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
-
+    if (Env::get('action') || !$tmpfile_exists) {
+        if ($tmpfile_exists) {
+            @unlink($wiki_template);
+            $page->clear_compiled_tpl($wiki_template);
         }
-        if (Env::get('action'))
-        {
-            // clean old tmp files
-            wiki_clean_tmp();
-            $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
-            // create new tmp files with editing page from wiki engine
-            $wiki_template = wiki_create_tmp(substr($wikiAll, $j));
-        } else {
-            if (!$tmpfile_exists)
-            {
-                $f = fopen($wiki_template, 'w');
-                fputs($f, substr($wikiAll, $j));
-                fclose($f);
-            }
-        } 
+
+        // we leave pmwiki do whatever it wants and store everything
+        ob_start();
+        require_once($globals->spoolroot.'/wiki/pmwiki.php');
+
+        $wikiAll = ob_get_clean();
+        // the pmwiki skin we are using (almost empty) has these keywords:
+        $i = strpos($wikiAll, "<!--/HeaderText-->");
+        $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
     }
-   //return $wiki_template;    
-//}
+
+    if (Env::get('action')) {
+        // clean old tmp files
+        wiki_clean_tmp();
+        $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+
+        // create new tmp files with editing page from wiki engine
+        $wiki_template = wiki_create_tmp(substr($wikiAll, $j));
+    } else {
+        if (!$tmpfile_exists) {
+            $f = fopen($wiki_template, 'w');
+            fputs($f, substr($wikiAll, $j));
+            fclose($f);
+        }
+    }
+}
 ?>
