@@ -88,7 +88,9 @@ function dynpost(action, values)
 
 function dynpostkv(action, k, v)
 {
-    dynpost(action, {k: v});
+    var dict = {};
+    dict[k] = v;
+    dynpost(action, dict);
 }
 
 // }}}

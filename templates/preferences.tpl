@@ -45,6 +45,57 @@
   </tr>
   {/if}
   {/foreach}
+  <tr class="pair">
+    <td class="half">
+      <h3><a href="prefs/webredirect">Ma redirection de page WEB</a></h3>
+      <div class='explication'>
+        Tu peux configurer tes redirections WEB
+        http://www.carva.org/{$smarty.session.bestalias}.
+      </div>
+    </td>
+    <td class="half">
+      <h3><a href="prefs/skin">Apparence du site (skins)</a></h3>
+      <div class='explication'>
+        Tu peux changer les couleurs et les images du site.
+      </div>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td class="half">
+      {if $smarty.session.mail_fmt eq html}
+      <h3>
+        <a href="javascript:dynpostkv('prefs', 'mail_fmt', 'texte')">Recevoir les mails en format texte</a>
+      </h3>
+      <div class='explication'>
+        Tu recois tous les mails envoyés par le site
+        (lettre mensuelle, carnet, ...) de préférence
+        <strong>sous forme de html</strong>
+      </div>
+      {else}
+      <h3>
+        <a href="javascript:dynpostkv('prefs', 'mail_fmt', 'html')">Recevoir les mails en HTML</a>
+      </h3>
+      <div class='explication'>
+        Tu recois tous les mails envoyés par le site
+        (lettre mensuelle, carnet, ...) de préférence
+        <strong>sous forme de texte</strong>
+      </div>
+      {/if}
+    </td>
+    <td class="half">
+      <h3>
+        {if $smarty.session.core_rss_hash}
+        <a href="javascript:dynpostkv('prefs', 'rss', 0)">Désactiver les fils rss</a>
+        {else}
+        <a href="javascript:dynpostkv('prefs', 'rss', 1)">Activer les fils rss</a>
+        {/if}
+      </h3>
+      <div class='explication'>
+        Ceci te permet d'utiliser les fils rss du site.
+        Attention, désactiver puis réactiver les fils en change les URL !
+      </div>
+    </td>
+  </tr>
 </table>
 
 <br />

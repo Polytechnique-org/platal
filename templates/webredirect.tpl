@@ -27,8 +27,8 @@
 <p>
   Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
   il est possible de faire pointer
-    les adresses <strong>http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}</strong>
-  et <strong>http://{#globals.webredirect.domain#}/{$smarty.session.forlife}</strong>
+    les adresses <strong>http://www.carva.org/{$smarty.session.bestalias}</strong>
+  et <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
     vers la page WEB de ton choix. Pour de plus amples détails, consulte
   <a href="Docs/MaRedirectionDePageWEB">cette page</a>
 </p>
@@ -47,10 +47,10 @@
 <p>
 {if $carva}
   Actuellement, les adresses
-  <a href="http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}">
-    http://{#globals.webredirect.domain#}/{$smarty.session.bestalias}
-  </a> et <a href="http://{#globals.webredirect.domain#}/{$smarty.session.forlife}">
-    http://{#globals.webredirect.domain#}/{$smarty.session.forlife}
+  <a href="http://www.carva.org/{$smarty.session.bestalias}">
+    http://www.carva.org/{$smarty.session.bestalias}
+  </a> et <a href="http://www.carva.org/{$smarty.session.forlife}">
+    http://www.carva.org/{$smarty.session.forlife}
   </a> sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
 {else}
   La redirection n'est pas utilisée ...

@@ -68,28 +68,4 @@ function tmp_subscribe($forlife, $uid, $promo, $password)
 }
 
 // }}}
-// {{{ prfs hook
-
-function tmp_prefs()
-{
-    $fmt  = S::v('mail_fmt', 'html') == 'html' ? 'texte' : 'html';
-    $fmt2 = S::v('mail_fmt', 'html') == 'html' ? 'texte' : 'HTML';
-    return Array(
-            Array(
-                'url'    => 'prefs?mail_fmt='.$fmt,
-                'title'  => 'Recevoir les mails en format '.$fmt2,
-                'text'   => 'Tu recois les mails envoyés par le site (lettre mensuelle, carnet, ...) de préférence <strong>sous forme de '
-                            .S::v('mail_fmt', 'html').'</strong>',
-                'weight' => 80
-            ),
-            Array(
-                'url'    => 'prefs?rss='.(intval(S::v('core_rss_hash')=='')),
-                'title'  => (S::v('core_rss_hash') ? 'Désactiver' : 'Activer').' les fils rss',
-                'text'   => 'Ceci te permet d\'utiliser les fils rss du site. Attention, désactiver puis réactiver les fils en change les URL !',
-                'weight' => 90
-            )
-        );
-}
-
-// }}}
 ?>

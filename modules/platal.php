@@ -43,11 +43,11 @@ class PlatalModule extends PLModule
             'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
 
             // Preferences thingies
-            'prefs'     => $this->make_hook('prefs',     AUTH_COOKIE),
-            'prefs/rss' => $this->make_hook('prefs_rss', AUTH_COOKIE),
+            'prefs'       => $this->make_hook('prefs',     AUTH_COOKIE),
+            'prefs/rss'   => $this->make_hook('prefs_rss', AUTH_COOKIE),
             'prefs/webredirect'
-                        => $this->make_hook('webredir',  AUTH_MDP),
-            'skin'      => $this->make_hook('skin',      AUTH_COOKIE),
+                          => $this->make_hook('webredir',  AUTH_MDP),
+            'prefs/skin'  => $this->make_hook('skin',      AUTH_COOKIE),
 
             // password related thingies
             'password'      => $this->make_hook('password',  AUTH_MDP),
@@ -105,22 +105,23 @@ class PlatalModule extends PLModule
     {
         global $globals;
 
+        var_export($_POST);
+
         $page->changeTpl('preferences.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes préférences');
 
-        if (Env::has('mail_fmt')) {
-            $fmt = Env::get('mail_fmt');
+        if (Post::has('mail_fmt')) {
+            $fmt = Post::get('mail_fmt');
             if ($fmt != 'texte') $fmt = 'html';
             XDB::execute("UPDATE auth_user_quick
                                        SET core_mail_fmt = '$fmt'
                                      WHERE user_id = {?}",
                                      S::v('uid'));
             $_SESSION['mail_fmt'] = $fmt;
-            redirect($globals->baseurl.'/preferences');
         }
 
-        if (Env::has('rss')) {
-            $this->__set_rss_state(Env::getBool('rss'));
+        if (Post::has('rss')) {
+            $this->__set_rss_state(Post::getBool('rss'));
         }
 
         $page->assign('prefs', $globals->hook->prefs());
