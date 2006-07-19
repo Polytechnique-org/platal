@@ -28,7 +28,6 @@ XLSDV('en', array('EnterAttributes' =>
     ou des espaces (qui remplace le <em>ou</em> logique)<br/>"));
 
 include_once($globals->spoolroot."/plugins/pmwiki.platalAuth.php");
-include_once($globals->spoolroot."/plugins/pmwiki.platalSkin.php");
 @include_once("$FarmD/cookbook/e-protect.php");
 
 $DefaultPasswords['read']   = 'has_perms: and: identified:';
@@ -62,4 +61,40 @@ $GUIButtons['table'] = array(600,
                    '||border=1 width=80%\\n||!Hdr ||!Hdr ||!Hdr ||\\n||     ||     ||     ||\\n||     ||     ||     ||\\n', '', '', 
                  '$GUIButtonDirUrlFmt/table.gif"$[Table]"');
 
+// set default author
+$Author = $_SESSION['forlife']."|".$_SESSION['prenom']." ".$_SESSION['nom'];
+
+$InputTags['e_form'] = array(
+  ':html' => "<form action='{\$PageUrl}?action=edit' method='post'><div><input 
+    type='hidden' name='action' value='edit' /><input 
+    type='hidden' name='n' value='{\$FullName}' /><input 
+    type='hidden' name='basetime' value='\$EditBaseTime' /></div>");
+
+// set profiles to point to plat/al fiche
+Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e',
+    'PreserveText("=", \'<a href="profile/$1" class="popup2">$2</a>\', "")');
+
+// prevent restorelinks before block apply (otherwise [[Sécurité]] will give
+//  .../S<span class='e9curit'>e9'>Sécurité</a>
+Markup('restorelinks','<%%',"//", '');
+
+## [[#anchor]] in standard XHTML
+Markup('[[#','<[[','/(?>\\[\\[#([A-Za-z][-.:\\w]*))\\]\\]/e',
+  "Keep(\"<a id='$1'></a>\",'L')");
+  
+Markup('tablebicol', '<block', '/\(:tablebicol ?([a-z_]+)?:\)/e', 'doBicol("$1")');
+Markup('pairrows', '_end', '/class=\'pair\_pmwiki\_([0-9]+)\'/e', 
+    "($1 == 1)?'':('class=\"'.(($1 % 2 == 0)?'impair':'pair').'\"')");
+Markup('noclassth', '_end', '/<th class=\'[a-z_]+\'/', '<th');
+
+Markup('div', '<links', '/\(:div([^:]*):([^\)]*):\)/i', '<div$1>$2</div>');
+
+function doBicol($column=false)
+{
+    global $TableRowIndexMax, $TableRowAttrFmt, $TableCellAttrFmt;
+    $TableRowAttrFmt = "class='pair_pmwiki_\$TableRowCount'";
+    if ($column) {
+        $TableCellAttrFmt = "class='$column'";
+    }
+}
 ?>
