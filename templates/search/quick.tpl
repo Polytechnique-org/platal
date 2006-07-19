@@ -70,4 +70,10 @@ function addEngine() {
 <p>Tu peux <a href="javascript:addEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
 </p>
 {/min_auth}
+
+<h2>Polytechniciens des promotions 1919 et précédentes</h2>
+<p>Notre base de données ne contient que les polytechniciens depuis la promotion 1920. Pour effectuer des recherches dans les
+promotions précédentes, il faut utiliser l'<a href="http://biblio.polytechnique.fr/F/">annuaire en ligne de la bibliothèque de
+l'École</a>.</p>
+
 {* vim:set et sw=2 sts=2 sws=2: *}
