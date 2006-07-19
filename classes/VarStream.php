@@ -19,12 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class VarStream
- 
 class VarStream
 {
     // {{{ properties
-    
+
     // Stream handler to read from global variables
     var $varname;
     var $position;
@@ -51,7 +49,7 @@ class VarStream
     function stream_close()
     {
     }
-    
+
     // }}}
     // {{{ stream_read
 
@@ -75,7 +73,7 @@ class VarStream
         $GLOBALS[$this->varname] = substr_replace($GLOBALS[$this->varname], $data, $this->position, $len);
         $this->position += $len;
     }
-    
+
     // }}}
     // {{{ stream_eof
 
@@ -124,13 +122,10 @@ class VarStream
     function stream_flush()
     {
     }
-    
+
     // }}}
 }
 
-// }}}
-
 stream_wrapper_register('var','VarStream');
 
-// vim:set et sw=4 sts=4 sws=4:
 ?>

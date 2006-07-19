@@ -32,7 +32,6 @@ class XorgSession
 	if (!S::has('uid')) {
 	    try_cookie();
         }
-	set_skin();
         $_SESSION['session'] = new XorgSession;
     }
 
@@ -47,10 +46,6 @@ class XorgSession
     // }}}
     // {{{ function doAuth()
 
-    /** Try to do an authentication.
-     *
-     * @param page the calling page (by reference)
-     */
     function doAuth($new_name = false)
     {
     	global $globals;
@@ -58,88 +53,90 @@ class XorgSession
     	    return true;
     	}
 
-        if (Env::has('username') && Env::has('response') && S::has('challenge'))
-    	{
-    	    // si on vient de recevoir une identification par passwordpromptscreen.tpl
-    	    // ou passwordpromptscreenlogged.tpl
-            $uname = Env::get('username');
+        if (!Env::has('username') || !Env::has('response')
+        ||  !S::has('challenge'))
+        {
+            return false;
+        }
 
-            if (Env::get('domain') == "alias") {
+        // si on vient de recevoir une identification par passwordpromptscreen.tpl
+        // ou passwordpromptscreenlogged.tpl
+        $uname = Env::get('username');
 
-                $res = XDB::query(
-                    "SELECT redirect
-                       FROM virtual
-                 INNER JOIN virtual_redirect USING(vid)
-                      WHERE alias LIKE {?}", $uname."@".$globals->mail->alias_dom);
-                $redirect = $res->fetchOneCell();
-                if ($redirect) {
-                    $login = substr($redirect, 0, strpos($redirect, '@'));
-                } else {
-                    $login = "";
-                }
+        if (Env::get('domain') == "alias") {
+
+            $res = XDB::query(
+                "SELECT redirect
+                   FROM virtual
+             INNER JOIN virtual_redirect USING(vid)
+                  WHERE alias LIKE {?}", $uname."@".$globals->mail->alias_dom);
+            $redirect = $res->fetchOneCell();
+            if ($redirect) {
+                $login = substr($redirect, 0, strpos($redirect, '@'));
             } else {
-                $login = $uname;
+                $login = "";
             }
+        } else {
+            $login = $uname;
+        }
 
-    	    $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
-    	    $res   = XDB::query(
-                        "SELECT  u.user_id, u.password
-                           FROM  auth_user_md5 AS u
-                     INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
-                          WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
+        $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
+        $res   = XDB::query(
+                    "SELECT  u.user_id, u.password
+                       FROM  auth_user_md5 AS u
+                 INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
+                      WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
 
-            $logger =& S::v('log');
-    	    if (list($uid, $password) = $res->fetchOneRow()) {
-        	    require_once('secure_hash.inc.php');
-        		$expected_response=hash_encrypt("$uname:$password:".S::v('challenge'));
-        		// le password de la base est peut-être encore encodé en md5
-        		if (Env::get('response') != $expected_response) {
-        		  $new_password = hash_xor(Env::get('xorpass'), $password);
-        		  $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
-        		  if (Env::get('response') == $expected_response) {
-        		      XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
-        		  }
-        		}
-        		if (Env::get('response') == $expected_response) {
-                    if (Env::has('domain')) {
-                        if (($domain = Env::get('domain', 'login')) == 'alias') {
-                            setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
-                        } else {
-                            setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
-                        }
-                        // pour que la modification soit effective dans le reste de la page
-                        $_COOKIE['ORGdomain'] = $domain;
+        $logger =& S::v('log');
+        if (list($uid, $password) = $res->fetchOneRow()) {
+                require_once('secure_hash.inc.php');
+                    $expected_response=hash_encrypt("$uname:$password:".S::v('challenge'));
+                    // le password de la base est peut-être encore encodé en md5
+                    if (Env::get('response') != $expected_response) {
+                      $new_password = hash_xor(Env::get('xorpass'), $password);
+                      $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
+                      if (Env::get('response') == $expected_response) {
+                          XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
+                      }
                     }
-
-                    S::kill('challenge');
-                    if ($logger) {
-                        $logger->log('auth_ok');
-                    }
-        		    start_connexion($uid, true);
-                    if (Env::get('remember', 'false') == 'true') {
-                        $cookie = hash_encrypt(S::v('password'));
-                        setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
-                        if ($logger) {
-                            $logger->log("cookie_on");
-                        }
+                    if (Env::get('response') == $expected_response) {
+                if (Env::has('domain')) {
+                    if (($domain = Env::get('domain', 'login')) == 'alias') {
+                        setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
                     } else {
-                        setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
-
-                        if ($logger) {
-                            $logger->log("cookie_off");
-                        }
+                        setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
                     }
-        		    return true;
-        		} elseif ($logger) {
-                    $logger->log('auth_fail','bad password');
+                    // pour que la modification soit effective dans le reste de la page
+                    $_COOKIE['ORGdomain'] = $domain;
                 }
-            } elseif ($logger) {
-                    $logger->log('auth_fail','bad login');
-            }
-    	}
 
-        global $page;
-        $page->doLogin($new_name);
+                S::kill('challenge');
+                if ($logger) {
+                    $logger->log('auth_ok');
+                }
+                        start_connexion($uid, true);
+                if (Env::get('remember', 'false') == 'true') {
+                    $cookie = hash_encrypt(S::v('password'));
+                    setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
+                    if ($logger) {
+                        $logger->log("cookie_on");
+                    }
+                } else {
+                    setcookie('ORGaccess', '', time() - 3600, '/', '', 0);
+
+                    if ($logger) {
+                        $logger->log("cookie_off");
+                    }
+                }
+                        return true;
+                    } elseif ($logger) {
+                $logger->log('auth_fail','bad password');
+            }
+        } elseif ($logger) {
+            $logger->log('auth_fail','bad login');
+        }
+
+        return false;
     }
 
     // }}}
@@ -241,31 +238,21 @@ function start_connexion ($uid, $identified)
 }
 
 // }}}
-// {{{ function set_skin()
 
 function set_skin()
 {
     global $globals;
-    if (S::logged() && $globals->skin->enable) {
+    if (S::logged() && !S::has('skin')) {
         $uid = S::v('uid');
-	$res = XDB::query("SELECT  skin,skin_tpl
-	                               FROM  auth_user_quick AS a
-				 INNER JOIN  skins           AS s ON a.skin=s.id
-			              WHERE  user_id = {?} AND skin_tpl != ''", $uid);
-	if (list($_SESSION['skin_id'], $_SESSION['skin']) = $res->fetchOneRow()) {
+	$res = XDB::query("SELECT  skin_tpl
+                             FROM  auth_user_quick AS a
+                       INNER JOIN  skins           AS s ON a.skin = s.id
+                            WHERE  user_id = {?} AND skin_tpl != ''", $uid);
+	if ($_SESSION['skin'] = $res->fetchOneCell()) {
             return;
         }
     }
-    if ($globals->skin->enable) {
-        $_SESSION['skin'] = $globals->skin->def_tpl;
-        $_SESSION['skin_id'] = $globals->skin->def_id;
-    } else {
-        $_SESSION['skin'] = 'default.tpl';
-        $_SESSION['skin_id'] = -1;
-    }
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

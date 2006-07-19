@@ -21,32 +21,10 @@
 
 // {{{ config HOOK
 
-// {{{ class SkinConfig
-
-class SkinConfig
-{
-    var $enable  = 1;
-    var $def_id  = 1;
-    var $def_tpl = 'default.tpl';
-}
-
-// }}}
-
-function skin_config()
-{
-    global $globals;
-    $globals->skin = new SkinConfig;
-}
-
-// }}}
-// {{{ prefs hook
-
 function skin_prefs()
 {
     global $globals;
-    if (empty($globals->skin->enable)) {
-        return null;
-    }
+
     return Array(
             Array(
                 'url'    => 'skin',
@@ -56,8 +34,6 @@ function skin_prefs()
             )
         );
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

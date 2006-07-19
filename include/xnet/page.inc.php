@@ -22,8 +22,6 @@
 require_once('platal/page.inc.php');
 require_once('xnet/smarty.plugins.inc.php');
 
-// {{{ class XnetPage
-
 class XnetPage extends PlatalPage
 {
     // {{{ function XnetPage()
@@ -31,6 +29,14 @@ class XnetPage extends PlatalPage
     function XnetPage($tpl, $type=SKINNED)
     {
         $this->PlatalPage($tpl, $type);
+
+        $this->register_function('list_all_my_groups', 'list_all_my_groups');
+        $this->register_modifier('cat_pp', 'cat_pp');
+        $this->assign('it_is_xnet', true);
+
+        if (!S::logged() && Get::has('auth')) {
+            XnetSession::doAuthX();
+        }
     }
 
     // }}}
@@ -105,29 +111,7 @@ class XnetPage extends PlatalPage
     }
 
     // }}}
-    // {{{ function doAuth()
-
-    function doAuth($force = false)
-    {
-        $this->register_function('list_all_my_groups', 'list_all_my_groups');
-        $this->register_modifier('cat_pp', 'cat_pp');
-        $this->assign('it_is_xnet', true);
-        if (!S::logged() && $force) {
-            XnetSession::doAuth();
-        }
-        if (!S::logged() && Get::has('auth')) {
-            XnetSession::doAuthX();
-        }
-    }
-
-    // }}}
-
-    function doLogin()
-    {
-        redirect(S::v('loginX'));
-    }
 }
 
-// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

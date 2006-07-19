@@ -86,10 +86,24 @@ class Platal
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             // FIXME: don't use 'session' object anymore
-            $_SESSION['session']->doAuth();
+            if (!$_SESSION['session']->doAuth()) {
+                $this->force_login($page);
+            }
         }
 
         return call_user_func_array($hook['hook'], $args);
+    }
+
+    function force_login(&$page)
+    {
+        if (S::logged() and !$new_name) {
+            $page->changeTpl('password_prompt_logged.tpl');
+            $page->addJsLink('javascript/do_challenge_response_logged.js');
+        } else {
+            $page->changeTpl('password_prompt.tpl');
+            $page->addJsLink('javascript/do_challenge_response.js');
+    	}
+        $page->run();
     }
 
     function run()

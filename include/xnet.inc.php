@@ -50,7 +50,6 @@ function new_group_page($tpl_name)
 
     new_page($tpl_name);
 
-    $page->doAuth(true);
     if (!is_member() && !S::has_perms()) {
         $page->kill("You have not sufficient credentials");
     }
@@ -94,25 +93,6 @@ function new_admin_page($tpl_name)
         $page->assign('asso', $globals->asso());
         $page->setType($globals->asso('cat'));
     }
-}
-
-// }}}
-// {{{ function new_nonhtml_page()
-
-function new_nonhtml_page($tpl_name)
-{
-    global $page, $globals;
-
-    new_page($tpl_name, NO_SKIN);
-
-    $page->doAuth(true);
-    if (!is_member() && !S::has_perms()) {
-        $page->kill("You have not sufficient credentials");
-    }
-
-    $page->useMenu();
-    $page->assign('asso', $globals->asso());
-    $page->setType($globals->asso('cat'));
 }
 
 // }}}

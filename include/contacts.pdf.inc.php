@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 define ('FPDF_FONTPATH', dirname(__FILE__).'/fonts/');
-require_once('/usr/share/fpdf/fpdf.php');
-require_once('xorg.varstream.inc.php');
+require_once '/usr/share/fpdf/fpdf.php';
+require_once dirname(__FILE__).'/../classes/VarStream.php';
 
 class ContactsPDF extends FPDF
 {

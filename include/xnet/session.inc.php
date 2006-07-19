@@ -70,11 +70,9 @@ class XnetSession
 
         if (Get::has('auth')) {
             return XnetSession::doAuthX();
-        } else {
-            global $page;
-
-            $page->doLogin();
         }
+
+        return false;
     }
 
     // }}}
@@ -105,11 +103,14 @@ class XnetSession
         $args = array();
         $path = Get::get('p');
         Get::kill('p');
+        Get::kill('PHPSESSID');
 
         foreach($_GET as $key => $val) {
             $args[] = urlencode($key).'='.urlencode($val);
         }
-        redirect($globals->baseurl . '/' . $path . '?' . join('&', $args));
+
+        redirect($globals->baseurl . '/' . $path
+                 . rtrim('?' . join('&', $args), '?'));
     }
 
     // }}}

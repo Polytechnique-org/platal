@@ -322,18 +322,13 @@ Mail envoyé à ".Env::get('login'));
     {
         global $globals;
 
-        if (!$globals->skin->enable) {
-            redirect('./');
-        }
-
         $page->changeTpl('skins.tpl');
         $page->assign('xorg_title','Polytechnique.org - Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
             XDB::execute('UPDATE auth_user_quick
-                                       SET skin={?} WHERE user_id={?}',
-                                    Env::getInt('newskin'),
-                                    S::v('uid'));
+                             SET skin={?} WHERE user_id={?}',
+                         Env::getInt('newskin'), S::v('uid'));
             set_skin();
         }
 

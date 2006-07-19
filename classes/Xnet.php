@@ -48,6 +48,11 @@ class Xnet extends Platal
         }
         return $ans;
     }
+
+    function force_login(&$page)
+    {
+        redirect(S::v('loginX'));
+    }
 }
 
 ?>

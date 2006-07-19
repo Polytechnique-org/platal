@@ -24,7 +24,7 @@
 class PhotoReq extends Validate
 {
     // {{{ properties
-    
+
     var $mimetype;
     var $data;
     var $x;
@@ -32,24 +32,24 @@ class PhotoReq extends Validate
 
     var $unique = true;
 
-    var $rules = "Refuser les photos copyrightées, de mineurs, ou ayant 
-    un caractère pornographique, violent, etc... Si une photo est mal 
-    cadrée (20% de photo et 80% de blanc par exemple), si c'est un 
-    camarade antique, on lui arrange sinon on lui 
-    refuse en lui expliquant gentiment le problème. Idem si les dimensions de 
+    var $rules = "Refuser les photos copyrightées, de mineurs, ou ayant
+    un caractère pornographique, violent, etc... Si une photo est mal
+    cadrée (20% de photo et 80% de blanc par exemple), si c'est un
+    camarade antique, on lui arrange sinon on lui
+    refuse en lui expliquant gentiment le problème. Idem si les dimensions de
     la photo sont archi trop grandes ou archi trop petites.";
 
     // }}}
     // {{{ constructor
-   
+
     function PhotoReq($_uid, $_data, $_stamp=0)
     {
         global $page;
 
         $this->Validate($_uid, true, 'photo', $_stamp);
-        
+
         // calcul de la taille de l'image
-        require_once('xorg.varstream.inc.php');
+        require_once dirname(__FILE__).'/../../classes/VarStream.php';
         $GLOBALS['photoreq'] = $_data;
         $image_infos = getimagesize('var://photoreq');
         unset ($GLOBALS['photoreq']);
@@ -100,7 +100,7 @@ class PhotoReq extends Validate
         }
         $this->data = $_data;
     }
-    
+
     // }}}
     // {{{ function get_request()
 
@@ -125,7 +125,7 @@ class PhotoReq extends Validate
 
     // }}}
     // {{{ function _mail_body
-    
+
     function _mail_body($isok)
     {
         if ($isok) {
@@ -137,7 +137,7 @@ class PhotoReq extends Validate
 
     // }}}
     // {{{ function commit()
-    
+
     function commit()
     {
         XDB::execute('REPLACE INTO  photo (uid, attachmime, attach, x, y)
