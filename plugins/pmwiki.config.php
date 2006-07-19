@@ -1,7 +1,5 @@
 <?php if (!defined('PmWiki')) exit();
 
-require_once 'wiki.inc.php';
-
 $ScriptUrl       = $globals->baseurl;
 $UploadUrlFmt    = $ScriptUrl."/uploads";
 $WorkDir         = '../spool/wiki.d';
