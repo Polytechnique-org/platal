@@ -51,7 +51,7 @@ class PlatalGlobals extends DiogenesCoreGlobals
     var $dbhost             = 'localhost';
     var $dbuser             = 'x4dat';
     var $dbpwd              = 'x4dat';
-    
+
     var $table_auth         = 'auth_user_md5';
     var $table_log_actions  = 'logger.actions';
     var $table_log_sessions = 'logger.sessions';
@@ -62,19 +62,21 @@ class PlatalGlobals extends DiogenesCoreGlobals
     var $tlabel = array('native'=>'X.Org');
 
     /** paths */
-    var $baseurl   = 'http://localhost/xorg';
-    var $relurl   = '/xorg';
-    var $spoolroot = '/var/spool/xorg';
-    var $root      = null;
+    var $baseurl;
+    var $spoolroot;
 
     function PlatalGlobals($sess)
     {
-        $this->session = $sess;
+        $this->session   = $sess;
+
+        $base = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
+        $this->baseurl   = $base.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']);
+        $this->spoolroot = dirname(dirname(dirname(__FILE__)));
     }
 
     function read_config()
     {
-        $array = parse_ini_file($this->root.'/configs/platal.conf', true);
+        $array = parse_ini_file($this->spoolroot.'/configs/platal.conf', true);
         if (!is_array($array)) {
             return;
         }
