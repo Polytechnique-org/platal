@@ -24,7 +24,7 @@ function wiki_pagename() {
         return null;
     }
 
-    $words = explode('/', Env::get('n'));
+    $words = explode('/', trim(Env::get('n'), '/'));
     if (count($words) == 2) {
         return join('.', $words);
     }
