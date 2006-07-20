@@ -1,18 +1,20 @@
 <?php if (!defined('PmWiki')) exit();
 
-$ScriptUrl       = $globals->baseurl;
-$UploadUrlFmt    = $ScriptUrl."/uploads";
-$WorkDir         = '../spool/wiki.d';
-$WikiDir         = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
-$PubDirUrl       = $globals->baseurl.'/wiki';
-$InterMapFiles[] = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
+$EnablePathInfo   = 1;   # in fact works with apache rewrite, name is misleading
+$EnableGUIButtons = 1;
+$EnableUpload     = 1;
+$LinkWikiWords    = 0;   # disable WikiWord links
+$EnableIMSCaching = 1;   # allow browser caching
 
-# Authorize group name to start with a number (for promo groups)
-$GroupPattern = '[[:upper:]0-9][\\w]*(?:-\\w+)*';
+$ScriptUrl        = '.';          #\
+$UploadUrlFmt     = './uploads';  # } works thanks to the <base /> in skin
+$PubDirUrl        = './wiki';     #/
 
-$EnablePathInfo = 1;
+$WorkDir          = '../spool/wiki.d';
+$WikiDir          = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
+$InterMapFiles[]  = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
 
-$Skin = 'empty';
+$Skin             = 'empty';
 
 XLSDV('en', array('EnterAttributes' =>
     "Entre ici les différents droit pour la page. Les champs laissés en blanc ne seront pas modifiés.
@@ -30,16 +32,13 @@ XLSDV('en', array('EnterAttributes' =>
 include_once($globals->spoolroot."/plugins/pmwiki.platalAuth.php");
 @include_once("$FarmD/cookbook/e-protect.php");
 
-$DefaultPasswords['read']   = 'has_perms: and: identified:';
-$DefaultPasswords['edit']   = 'has_perms: and: identified:';
+$DefaultPasswords['read']   = 'logged:';
+$DefaultPasswords['edit']   = 'has_perms:';
 $DefaultPasswords['attr']   = 'has_perms: and: identified:';
 $DefaultPasswords['admin']  = 'has_perms: and: identified:';
 $DefaultPasswords['upload'] = 'has_perms: and: identified:';
 
-$EnableGUIButtons = 1;
-$EnableUpload     = 1;
-$LinkWikiWords    = 0;   # disable WikiWord links
-$EnableIMSCaching = 1;   # allow browser caching
+// Theme-ing {{{
 
 ##  The following lines make additional editing buttons appear in the
 ##  edit page for subheadings, lists, tables, etc.
@@ -62,7 +61,7 @@ $GUIButtons['table'] = array(600,
                  '$GUIButtonDirUrlFmt/table.gif"$[Table]"');
 
 // set default author
-$Author = $_SESSION['forlife']."|".$_SESSION['prenom']." ".$_SESSION['nom'];
+$Author = $_SESSION['forlife'].'|'.$_SESSION['prenom'].' '.$_SESSION['nom'];
 
 $InputTags['e_form'] = array(
   ':html' => "<form action='{\$PageUrl}?action=edit' method='post'><div><input 
@@ -97,4 +96,6 @@ function doBicol($column=false)
         $TableCellAttrFmt = "class='$column'";
     }
 }
+
+// }}}
 ?>

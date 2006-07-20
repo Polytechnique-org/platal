@@ -38,7 +38,7 @@ function authPerms($pagename, $key, $could=false, $smarty=false)
             continue;
         }
         $parts = explode(':', $word);
-        $cond = $parts[0];
+        $cond  = $parts[0];
         $param = $parts[1];
         if ($cond == 'identified' && $could) {
             $cond = 'logged';
@@ -75,15 +75,12 @@ function authPerms($pagename, $key, $could=false, $smarty=false)
 }
 
 // try to find the best permission for a given page and a given level of auth
-// in order: page > group > site
-function TryAllAuths($pagename, $level, $page_read, $group_read)
+// in order: page > site
+function TryAllAuths($pagename, $level, $page_read)
 {
     global $DefaultPasswords;
     if (isset($page_read['passwd'.$level]) && $page_read['passwd'.$level] != '*') {
         return array('page', $page_read['passwd'.$level]);
-    }
-    if (isset($group_read['passwd'.$level]) && $group_read['passwd'.$level] != '*') {
-        return array('group', $group_read['passwd'.$level]);
     }
     if (isset($DefaultPasswords[$level])) {
         return array('site', $DefaultPasswords[$level]);
@@ -104,17 +101,13 @@ function auth_pmwiki_to_smarty($text, $pass)
 function AuthPlatal($pagename, $level, $authprompt)
 {
     global $Conditions, $page;
-    $authUser = false;
-    $authPage = false;
 
-    $page_read  = ReadPage($pagename);
-    $groupattr  = FmtPageName('$Group/GroupAttributes', $pagename);
-    $group_read = ReadPage($groupattr);
+    $page_read = ReadPage($pagename);
 
     $levels = array('read', 'attr', 'edit', 'upload');
 
     foreach ($levels as $l) {
-        list($from, $pass) = TryAllAuths($pagename, $l, $page_read, $group_read);
+        list($from, $pass) = TryAllAuths($pagename, $l, $page_read);
         $passwds[$l]   = $pass;
         $pwsources[$l] = $from;
     }
@@ -130,7 +123,6 @@ function AuthPlatal($pagename, $level, $authprompt)
     $panel .= "[[{\$FullName}?action=upload |Upload]]\\\\\n";
     $panel .= "{/if}{if ($canattr)}\n";
     $panel .= "[[{\$FullName}?action=attr |Droits]]\\\\\n";
-    $panel .= "[[{\$Group}/GroupAttributes?action=attr|Droits du groupe]]\\\\\n";
     $panel .= "{/if}\n";
     $panel .= ">><<\n";
     $panel .= "{/if}\n";

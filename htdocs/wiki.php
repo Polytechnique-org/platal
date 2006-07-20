@@ -52,7 +52,6 @@ if ($n = wiki_pagename()) {
         // clean old tmp files
         wiki_clean_tmp();
         $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
-        $page->addJsLink('javascript/wiki.js');
 
         // create new tmp files with editing page from wiki engine
         $wiki_template = wiki_create_tmp(substr($wikiAll, $j));
