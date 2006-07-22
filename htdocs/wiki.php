@@ -29,13 +29,11 @@ if (!S::identified()) {
 require_once 'wiki.inc.php';
 
 if ($n = wiki_pagename()) {
-    $wiki_template  = wiki_work_dir().'/cache_'.$n.'.tpl';
-    $tmpfile_exists = file_exists($wiki_template);
+    $wiki_cache   = wiki_work_dir().'/cache_'.$n.'.tpl';
+    $cache_exists = file_exists($wiki_cache);
 
-    if (Env::get('action') || !$tmpfile_exists) {
-        if ($tmpfile_exists) {
-            @unlink($wiki_template);
-        }
+    if (Env::get('action') || !$cache_exists) {
+        @unlink($wiki_cache);
 
         // we leave pmwiki do whatever it wants and store everything
         ob_start();
@@ -48,21 +46,16 @@ if ($n = wiki_pagename()) {
     }
 
     if (Env::get('action')) {
-        // clean old tmp files
-        wiki_clean_tmp();
-
-        // create new tmp files with editing page from wiki engine
         $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
         $wikiAll = substr($wikiAll, $j);
-        $wiki_template = wiki_create_tmp($wikiAll);
     } else {
-        if (!$tmpfile_exists) {
-            $f = fopen($wiki_template, 'w');
+        if (!$cache_exists) {
+            $f = fopen($wiki_cache, 'w');
             $wikiAll = substr($wikiAll, $j);
             fputs($f, $wikiAll);
             fclose($f);
         } else {
-            $wikiAll = file_get_contents($wiki_template);
+            $wikiAll = file_get_contents($wiki_cache);
         }
     }
 
@@ -70,7 +63,7 @@ if ($n = wiki_pagename()) {
 }
 
 $page->assign('pmwiki', $wikiAll);
-wiki_assign_auth();
+$page->assign('has_perms',  S::has_perms());
 $page->addCssLink('css/wiki.css');
 
 $page->run();

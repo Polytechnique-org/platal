@@ -43,40 +43,7 @@ function wiki_work_dir() {
 
 function wiki_clear_all_cache()
 {
-    system("rm -f ".wiki_work_dir()."/cache_*");
-}
-
-// editing pages are not static but used templates too, so we used
-// temp template files containing result from wiki
-function wiki_create_tmp($content) {
-    $tmpfile = tempnam(wiki_work_dir(), "temp_");
-    $f = fopen($tmpfile, 'w');
-    fputs($f, $content);
-    fclose($f);
-    return $tmpfile;
-}
-
-function wiki_clean_tmp() {
-    // clean old tmp files (more than one hour)
-    $wiki_work_dir = wiki_work_dir();
-    $dh = opendir(wiki_work_dir());
-    $time = time();
-    while (($file = readdir($dh)) !== false) {
-        if (strpos($file, 'temp_') === 0) {
-            $created = filectime($wiki_work_dir.'/'.$file);
-            if ($time-$created > 60 * 60)
-                @unlink($wiki_work_dir.'/'.$file);
-        }
-    }
-}
-
-function wiki_assign_auth() {
-    global $page;
-    $page->assign('true',       true);
-    $page->assign('public',     true);
-    $page->assign('logged',     S::logged());
-    $page->assign('identified', S::identified());
-    $page->assign('has_perms',  S::has_perms());
+    system('rm -f '.wiki_work_dir().'/cache_*');
 }
 
 ?>
