@@ -116,14 +116,15 @@ function AuthPlatal($pagename, $level, $authprompt)
     $canattr = authPerms($pagename, $passwds['attr'], true, true);
     $panel  = "{if ($canedit) or ($canattr)}\n";
     $panel .= ">>frame<<\n";
-    $panel .= "[[{\$FullName} |Voir la page]]\\\\\n";
+    $panel .= "[[{\$FullName}|Voir la page]]";
     $panel .= "{if ($canedit)}\n";
-    $panel .= "[[{\$FullName}?action=edit |Editer]]\\\\\n";
-    $panel .= "[[{\$FullName}?action=diff |Historique]]\\\\\n";
-    $panel .= "[[{\$FullName}?action=upload |Upload]]\\\\\n";
+    $panel .= "[[{\$FullName}?action=edit |Editer]]";
+    $panel .= "[[{\$FullName}?action=diff |Historique]]";
+    $panel .= "[[{\$FullName}?action=upload |Upload]]";
     $panel .= "{/if}{if ($canattr)}\n";
-    $panel .= "[[{\$FullName}?action=attr |Droits]]\\\\\n";
+    $panel .= "[[{\$FullName}?action=attr |Droits]]";
     $panel .= "{/if}\n";
+    $panel .= "\\\\\n\n";
     $panel .= ">><<\n";
     $panel .= "{/if}\n";
 
