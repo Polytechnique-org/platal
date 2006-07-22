@@ -151,8 +151,7 @@ class GeolocModule extends PLModule
 
         // to debug sql use the next line
         if (Env::has('debug')) {
-            $page->changeTpl('geoloc/getData.tpl');
-            $page->assign('simple', true);
+            $page->changeTpl('geoloc/getData.tpl', SIMPLE);
         } else {
             header("Content-type: text/xml");
             $page->changeTpl('geoloc/getData.tpl', NO_SKIN);

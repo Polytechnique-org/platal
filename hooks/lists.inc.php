@@ -42,15 +42,6 @@ function lists_config()
 }
 
 // }}}
-// {{{ menu HOOK
-
-function lists_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 20, 'Listes de diffusion',   'lists');
-}
-
-// }}}
 // {{{ subscribe HOOK
 
 function lists_subscribe($forlife, $uid, $promo, $password)

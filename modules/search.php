@@ -193,11 +193,7 @@ class SearchModule extends PLModule
         require_once 'geoloc.inc.php';
 
 
-        $page->changeTpl('search/index.tpl');
-
-        if ($mode == 'mini') {
-            $page->assign('simple', true);
-        }
+        $page->changeTpl('search/index.tpl', $mode == 'mini' ? SIMPLE : SKINNED);
 
         $page->assign('advanced',1);
         $page->assign('public_directory',0);

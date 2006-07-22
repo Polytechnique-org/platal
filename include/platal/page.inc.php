@@ -41,7 +41,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function PlatalPage()
 
-    function PlatalPage($tpl, $type=SKINNED)
+    function PlatalPage($tpl, $type = SKINNED)
     {
         global $globals;
 
@@ -83,7 +83,7 @@ class PlatalPage extends Smarty
     // }}}
     // {{{ function changeTpl()
 
-    function changeTpl($tpl, $type=SKINNED)
+    function changeTpl($tpl, $type = SKINNED)
     {
 	$this->_tpl       = $tpl;
 	$this->_page_type = $type;
@@ -103,10 +103,14 @@ class PlatalPage extends Smarty
         $this->assign("xorg_errors", $this->_errors);
         $this->assign("xorg_failure", $this->_failure);
 
-        if ($this->_page_type == NO_SKIN) {
+        switch ($this->_page_type) {
+          case NO_SKIN:
             $this->display($this->_tpl);
             exit;
-        } else {
+
+          case SIMPLE:
+            $page->assign('simple', true);
+          case SKINNED:
 	    $this->register_modifier('escape_html', 'escape_html');
 	    $this->default_modifiers = Array('@escape_html');
         }

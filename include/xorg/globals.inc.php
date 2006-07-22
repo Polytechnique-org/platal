@@ -34,18 +34,14 @@ class XorgGlobals extends PlatalGlobals
     {
         global $globals;
         require_once('xorg/hook.inc.php');
-        require_once('xorg/menu.inc.php');
 
         $globals       = new XorgGlobals;
         $globals->core = new CoreConfig;
         $globals->hook = new XOrgHook();
-        $globals->menu = new XOrgMenu();
 
         $globals->hook->config(null);
 
         $globals->read_config();
-
-        $globals->hook->menu(null);
 
         $globals->dbconnect();
         if ($globals->debug & 1) {

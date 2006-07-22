@@ -46,7 +46,7 @@
 class XOrgHook
 {
     // {{{ properties
-    
+
     /**
      * list of all the modules names that have implemented some reactions to our triggers
      *
@@ -54,7 +54,7 @@ class XOrgHook
      * @access private
      */
     var $_mods = Array();
-    
+
     // }}}
     // {{{ constructor XOrgHook()
 
@@ -85,17 +85,6 @@ class XOrgHook
     }
 
     // }}}
-    // {{{ function menu
-
-    function menu()
-    {
-        foreach ($this->_mods as $mod) {
-            if (!function_exists($mod.'_menu')) continue;
-            call_user_func($mod.'_menu');
-        }
-    }
-
-    // }}}
     // {{{ function subscribe
 
     function subscribe($forlife, $uid, $promo, $pass)
@@ -104,20 +93,6 @@ class XOrgHook
             if (!function_exists($mod.'_subscribe')) continue;
             call_user_func($mod.'_subscribe', $forlife, $uid, $promo, $pass);
         }
-    }
-
-    // }}}
-    // {{{ function prefs
-
-    function prefs()
-    {
-        $res = Array();
-        foreach ($this->_mods as $mod) {
-            if (!function_exists($mod.'_prefs')) continue;
-            $res = array_merge($res, call_user_func($mod.'_prefs'));
-        }
-        usort($res, create_function('$a, $b', 'return strcmp($a["weight"], $b["weight"]);'));
-        return $res;
     }
 
     // }}}

@@ -161,8 +161,7 @@ class ProfileModule extends PLModule
         global $globals;
         require_once 'user.func.inc.php';
 
-        $page->changeTpl('fiche.tpl');
-        $page->assign('simple', true);
+        $page->changeTpl('fiche.tpl', SIMPLE);
 
         $view = 'private';
         if (!S::logged() || Env::get('view') == 'public') $view = 'public';
@@ -403,8 +402,7 @@ class ProfileModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $page->changeTpl('fiche_referent.tpl');
-        $page->assign('simple', true);
+        $page->changeTpl('fiche_referent.tpl', SIMPLE);
 
         $res = XDB::query(
                 "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias

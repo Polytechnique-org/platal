@@ -35,7 +35,8 @@ define('PERMS_USER',  'user');
 define('PERMS_ADMIN', 'admin');
 
 define('SKINNED', 0);
-define('NO_SKIN', 1);
+define('SIMPLE',  1);
+define('NO_SKIN', 2);
 
 require_once('platal/env.inc.php');
 

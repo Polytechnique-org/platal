@@ -31,8 +31,6 @@ class MailConfig
     var $alias_dom  = '';
     var $alias_dom2 = '';
 
-    var $send_form  = true;
-
     function shorter_domain()
     {
         if (empty($this->domain2) || strlen($this->domain2)>strlen($this->domain)) {
@@ -50,21 +48,5 @@ function emails_config()
     global $globals;
     $globals->mail = new MailConfig;
 }
-// }}}
-// {{{ menu HOOK
-
-function emails_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   00, 'Mes emails',          'emails');
-
-    if ($globals->mail->send_form) {
-        $globals->menu->addPrivateEntry(XOM_SERVICES, 00, 'Envoyer un mail', 'emails/send');
-    }
-
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 40, 'Patte cassée',        'emails/broken');
-    
-}
-
 // }}}
 ?>

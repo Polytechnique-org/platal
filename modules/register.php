@@ -146,8 +146,7 @@ class RegisterModule extends PLModule
         }
 
         $_SESSION['sub_state'] = $sub_state;
-        $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
-        $page->assign('simple', true);
+        $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl', SIMPLE);
         if (isset($err)) {
             $page->trig($err);
         }

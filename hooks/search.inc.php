@@ -47,15 +47,5 @@ function search_subscribe($forlife, $uid, $promo, $pass)
     user_reindex($uid);
 }
 // }}}
-// {{{ menu HOOK
-
-function search_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_GROUPS, 00, 'Annuaire',         'search');
-    $globals->menu->addPublicEntry(XOM_EXT,     00, 'Annuaire de l\'X', 'search');
-}
-
-// }}}
 
 ?>

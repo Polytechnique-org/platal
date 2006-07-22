@@ -43,15 +43,6 @@ function banana_config()
 }
 
 // }}}
-// {{{ menu HOOK
-
-function banana_menu()
-{
-    global $globals;
-    $globals->menu->addPrivateEntry(XOM_SERVICES, 10, 'Forums & PA', 'banana/');
-}
-
-// }}}
 // {{{ subscribe HOOK
 
 function banana_subscribe($forlife, $uid, $promo, $password)

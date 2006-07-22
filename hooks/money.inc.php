@@ -42,17 +42,5 @@ function money_config()
 }
 
 // }}}
-// {{{ menu HOOK
-
-
-function money_menu()
-{
-    global $globals;
-    if ($globals->money->mpay_enable) {
-        $globals->menu->addPrivateEntry(XOM_SERVICES, 30, 'Télépaiements', 'payment');
-    }
-}
-
-// }}}
 
 ?>

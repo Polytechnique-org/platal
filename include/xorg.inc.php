@@ -31,7 +31,7 @@ require_once('platal/page.inc.php');
 
 class XorgPage extends PlatalPage
 {
-    function XorgPage($tpl, $type=SKINNED)
+    function XorgPage($tpl, $type = SKINNED)
     {
         $this->PlatalPage($tpl, $type);
     }
@@ -39,9 +39,7 @@ class XorgPage extends PlatalPage
     function run()
     {
         global $globals;
-        if ($this->_page_type != NO_SKIN) {
-            $this->assign('menu', $globals->menu->menu());
-        }
+        $this->assign('globals', $globals);
         $this->_run('skin/'.S::v('skin', 'default.tpl'));
     }
 }
@@ -55,7 +53,7 @@ class XorgAdmin extends XorgPage
 {
     // {{{ function XorgAdmin()
 
-    function XorgAdmin($tpl, $type=SKINNED)
+    function XorgAdmin($tpl, $type = SKINNED)
     {
         $this->XorgPage($tpl, $type);
         check_perms();

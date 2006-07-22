@@ -66,25 +66,10 @@
       </tr>
       <tr>
         <td id="body-menu">
-          {foreach key=menu_title item=menu_list from=$menu}
-          {if $menu_title}
-          <div class="menu_title">{$menu_title}</div>
-          {/if}
-          {foreach item=mi from=$menu_list}
-          <div class='menu_item'><a href="{$mi.url}">{$mi.text}</a></div>
-          {/foreach}
-          {/foreach}
-          {perms level=admin}
-          <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
-            <tr><th>Valid</th></tr>
-            <tr class="impair">
-              <td><a href="admin/valider.php">{insert name="mkStats"}</a></td>
-            </tr>
-          </table>
-          {/perms}
+        {include file=skin/common.menu.tpl}
         </td>
         <td id="content">
-          {include file="skin/common.content.tpl"}
+        {include file="skin/common.content.tpl"}
         </td>
       </tr>
       <tr>

@@ -19,49 +19,10 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function tmp_menu()
-{
-    global $globals;
-
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   10, 'Mon profil',         'profile/edit');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   20, 'Mes contacts',       'carnet/contacts');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   30, 'Mon carnet',         'carnet/');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   40, 'Mon mot de passe',   'password');
-    $globals->menu->addPrivateEntry(XOM_CUSTOM,   50, 'Mes préférences',    'prefs');
-
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Trombi promo',       'trombi');
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   20, 'Conseil Pro.',       'referent/search');
-    if ($globals->geoloc->use_map())
-        $globals->menu->addPrivateEntry(XOM_GROUPS,   10, 'Planisphère',    'geoloc/');
-    $globals->menu->addPrivateEntry(XOM_GROUPS,   30, 'Groupes X',          'http://www.polytechnique.net/plan');
-
-    $globals->menu->addPrivateEntry(XOM_INFOS,    10, 'Documentations',     'Docs/');
-    $globals->menu->addPrivateEntry(XOM_INFOS,    20, 'Nous contacter',     'Docs/NousContacter');
-    $globals->menu->addPrivateEntry(XOM_INFOS,    30, 'Carrières',          'Docs/Emploi');
-
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    00, 'Marketing',          'marketing');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    10, 'Administration',     'admin/');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    20, 'Clear cache',        'purge_cache');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    30, 'Trackers',           'http://trackers.polytechnique.org');
-    $globals->menu->addPrivateEntry(XOM_ADMIN,    40, 'Support',            'http://support.polytechnique.org');
-
-    $globals->menu->addPublicEntry(XOM_US,    00, 'Me connecter !',         'events');
-    $globals->menu->addPublicEntry(XOM_US,    10, 'M\'inscrire',            'register/');
-    $globals->menu->addPublicEntry(XOM_US,    20, 'Pourquoi m\'inscrire ?', 'Docs/PourquoiM\'Inscrire');
-
-    $globals->menu->addPublicEntry(XOM_EXT,   10, 'Associations X',         'http://www.polytechnique.net/');
-    $globals->menu->addPublicEntry(XOM_EXT,   20, 'Recrutement',            'http://www.manageurs.com/');
-
-    $globals->menu->addPublicEntry(XOM_INFOS, 00, 'A propos du site',       'Docs/APropos');
-    $globals->menu->addPublicEntry(XOM_INFOS, 10, 'Nous contacter',         'Docs/NousContacter');
-    $globals->menu->addPublicEntry(XOM_INFOS, 20, 'FAQ',                    'Docs/FAQ');
-}
-
 // {{{ subscribe HOOK
 
 function tmp_subscribe($forlife, $uid, $promo, $password)
 {
-
     require_once('notifs.inc.php');
     register_watch_op($uid, WATCH_INSCR);
     inscription_notifs_base($uid);
