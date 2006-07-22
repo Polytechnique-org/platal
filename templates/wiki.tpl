@@ -25,32 +25,33 @@
   <tr>
     <td>
       <a href='{$wikipage}'>Voir la page</a>
-      {if $has_perms}
-      <select onchange="dynpostkv('{$wikipage}', 'setrperms', this.value)">
-      {html_options options=$perms_opts selected=$perms[0]}
-      </select>
-      {/if}
     </td>
     {if $canedit}
     <td>
-      <a href='{$wikipage}?action=edit'>Éditer</a>
-      {if $has_perms}
-      <select onchange="dynpostkv('{$wikipage}', 'setwperms', this.value)">
-      {html_options options=$perms_opts selected=$perms[1]}
-      </select>
-      {else}
-      {$perms[0]}
-      {/if}
+      <a href='{$wikipage}?action=edit'>Éditer la page</a>
     </td>
     {/if}
-    {if $has_perms}
+  {if $has_perms}
     <td>
       <a href='{$wikipage}?action=diff'>Historique</a>
     </td>
     <td>
       <a href='{$wikipage}?action=upload'>Upload</a>
     </td>
-    {/if}
+  </tr>
+  <tr>
+    <td>
+      <select onchange="dynpostkv('{$wikipage}', 'setrperms', this.value)">
+      {html_options options=$perms_opts selected=$perms[0]}
+      </select>
+    </td>
+    <td>
+      <select onchange="dynpostkv('{$wikipage}', 'setwperms', this.value)">
+      {html_options options=$perms_opts selected=$perms[1]}
+      </select>
+    </td>
+    <td colspan='2' style='text-align: left'>&lt;-- Droits associés</td>
+  {/if}
   </tr>
 </table>
 {/if}

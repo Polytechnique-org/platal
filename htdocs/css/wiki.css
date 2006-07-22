@@ -7,6 +7,7 @@ table.wiki {
 table.wiki td {
     padding: 2px 1em;
     vertical-align: middle;
+    text-align: center;
 }
 
 table.wiki select {
