@@ -75,11 +75,11 @@ class XnetListsModule extends ListsModule
 
         if (Get::has('del')) {
             $this->client->unsubscribe(Get::get('del'));
-            redirect('lists');
+            pl_redirect('lists');
         }
         if (Get::has('add')) {
             $this->client->subscribe(Get::get('add'));
-            redirect('lists');
+            pl_redirect('lists');
         }
 
         if (Post::has('del_alias') && may_update()) {
@@ -178,8 +178,7 @@ class XnetListsModule extends ListsModule
                                 VALUES ({?}, {?})', mysql_insert_id(),
                                 "$red+bounces@listes.polytechnique.org");
 
-        global $platal;
-        redirect($globals->baseurl.'/'.$platal->ns.'lists/admin/'.$liste);
+        pl_redirect('lists/admin/'.$liste);
     }
 
     function handler_sync(&$page, $liste = null)
@@ -274,7 +273,7 @@ class XnetListsModule extends ListsModule
                            USING  x4dat.virtual_redirect
                       INNER JOIN  x4dat.virtual USING(vid)
                            WHERE  redirect={?} AND alias={?}", Env::get('del_member'), $lfull);
-            redirect("?liste=$lfull");
+            pl_redirect('alias/admin/'.$lfull);
         }
 
         $res = XDB::iterator(
@@ -317,13 +316,12 @@ class XnetListsModule extends ListsModule
 
         XDB::query('INSERT INTO x4dat.virtual (alias,type) VALUES({?}, "user")', $new);
 
-        global $platal;
-        redirect("{$globals->baseurl}/{$platal->ns}alias/admin/$new");
+        pl_redirect("alias/admin/$new");
     }
 
     function handler_profile(&$page, $user = null)
     {
-        redirect('https://www.polytechnique.org/profile/'.$user);
+        http_redirect('https://www.polytechnique.org/profile/'.$user);
     }
 }
 

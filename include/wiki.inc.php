@@ -20,11 +20,11 @@
  ***************************************************************************/
 
 function wiki_pagename() {
-    if (!Env::get('n')) {
+    if (!Get::get('n')) {
         return null;
     }
 
-    $words = explode('/', trim(Env::get('n'), '/'));
+    $words = explode('/', trim(Get::get('n'), '/'));
     if (count($words) == 2) {
         return join('.', $words);
     }
@@ -33,8 +33,7 @@ function wiki_pagename() {
     $b = array_pop($words);
     $a = array_pop($words);
 
-    global $globals;
-    redirect($globals->baseurl.'/'.$a.'/'.$b);
+    pl_redirect($a.'/'.$b);
 }
 
 function wiki_work_dir() {

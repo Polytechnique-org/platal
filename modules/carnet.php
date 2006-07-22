@@ -60,10 +60,8 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/panel.tpl');
 
         if (Get::has('read')) {
-            global $globals;
-
             $_SESSION['watch_last'] = Get::get('read');
-            redirect($globals->baseurl.'/carnet/panel');
+            pl_redirect('carnet/panel');
         }
 
         require_once 'notifs.inc.php';

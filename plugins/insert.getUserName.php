@@ -25,7 +25,7 @@ function smarty_insert_getUsername()
 
     $id = Cookie::getInt('ORGuid', -1);
     $id = S::v($_SESSION['uid'], $id);
-    
+
     if ($id<0) {
         return "";
     }
@@ -48,6 +48,6 @@ function smarty_insert_getUsername()
      }
 
      return $login;
-     
 }
+
 ?>

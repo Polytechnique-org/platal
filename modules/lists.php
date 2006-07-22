@@ -60,11 +60,11 @@ class ListsModule extends PLModule
 
         if (Get::has('del')) {
             $this->client->unsubscribe(Get::get('del'));
-            redirect('lists');
+            pl_redirect('lists');
         }
         if (Get::has('add')) {
             $this->client->subscribe(Get::get('add'));
-            redirect('lists');
+            pl_redirect('lists');
         }
         if (Post::has('promo_add')) {
             $promo = Post::getInt('promo_add');
@@ -172,12 +172,12 @@ class ListsModule extends PLModule
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
-            redirect($liste);
+            pl_redirect('lists/members/'.$liste);
         }
 
         if (Get::has('add')) {
             $this->client->subscribe($liste);
-            redirect($liste);
+            pl_redirect('lists/members/'.$liste);
         }
 
         $members = $this->client->get_members($liste);
@@ -231,11 +231,11 @@ class ListsModule extends PLModule
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
-            redirect($liste);
+            pl_redirect('lists/tromi/'.$liste);
         }
         if (Get::has('add')) {
             $this->client->subscribe($liste);
-            redirect($liste);
+            pl_redirect('lists/tromi/'.$liste);
         }
 
         $owners = $this->client->get_owners($liste);
@@ -312,7 +312,7 @@ class ListsModule extends PLModule
 
         if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
             $this->client->handle_request($liste,Env::get('sadd'),4,'');
-            redirect($liste);
+            pl_redirect('lists/moderate/'.$liste);
         }
 
         if (Post::has('sdel')) { /* 2 = REJECT */
@@ -434,7 +434,7 @@ class ListsModule extends PLModule
             } else {
                 $this->client->mass_unsubscribe($liste, array(Env::get('del_member')));
             }
-            redirect($liste);
+            pl_redirect('lists/admin/'.$liste);
         }
 
         if (Env::has('add_owner')) {
@@ -459,7 +459,7 @@ class ListsModule extends PLModule
             } else {
                 $this->client->del_owner($liste, Env::get('del_owner'));
             }
-            redirect($liste);
+            pl_redirect('lists/admin/'.$liste);
         }
 
         if (list($det,$mem,$own) = $this->client->get_members($liste)) {
@@ -516,7 +516,7 @@ class ListsModule extends PLModule
             $this->client->add_to_wl($liste, Post::get('atn_add'));
         } elseif (Get::has('atn_del')) {
             $this->client->del_from_wl($liste, Get::get('atn_del'));
-            redirect("{$_SERVER['PHP_SELF']}?liste=$liste");
+            pl_redirect('lists/options/'.$liste);
         }
 
         if (list($details,$options) = $this->client->get_owner_options($liste)) {

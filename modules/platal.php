@@ -64,7 +64,7 @@ class PlatalModule extends PLModule
     function handler_index(&$page)
     {
         if (S::logged()) {
-            redirect("events");
+            pl_redirect('events');
         }
     }
 
@@ -345,9 +345,9 @@ Mail envoyé à ".Env::get('login'));
                 $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
                 $_SESSION = $suid;
                 S::kill('suid');
-                redirect($globals->baseurl.'/admin/utilisateurs.php?login='.$a4l);
+                pl_redirect('admin/utilisateurs.php', 'login='.$a4l);
             } else {
-                redirect("events");
+                pl_redirect('events');
             }
         }
 
@@ -373,7 +373,7 @@ Mail envoyé à ".Env::get('login'));
         XorgSession::destroy();
 
         if (Get::has('redirect')) {
-            redirect(rawurldecode(Get::get('redirect')));
+            http_redirect(rawurldecode(Get::get('redirect')));
         } else {
             $page->changeTpl('exit.tpl');
         }

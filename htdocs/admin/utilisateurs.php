@@ -38,11 +38,11 @@ if (Env::has('user_id')) {
 }
 
 if(Env::has('logs_button') && $login) {
-    redirect("logger.php?loguser=$login&year=".date('Y')."&month=".date('m'));
+    http_redirect("logger.php?loguser=$login&year=".date('Y')."&month=".date('m'));
 }
 
 if (Env::has('ax_button') && $login) {
-    redirect("synchro_ax.php?user=$login");
+    http_redirect("synchro_ax.php?user=$login");
 }
 
 if(Env::has('suid_button') && $login) {
@@ -51,7 +51,7 @@ if(Env::has('suid_button') && $login) {
     $r = XDB::query("SELECT id FROM aliases WHERE alias={?}", $login);
     if($uid = $r->fetchOneCell()) {
 	start_connexion($uid,true);
-	redirect("../");
+	http_redirect("../");
     }
 }
 

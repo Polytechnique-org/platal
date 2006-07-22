@@ -269,7 +269,7 @@ class RegisterModule extends PLModule
 
         XDB::execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
 
-        redirect($globals->baseurl.'/register/success');
+        pl_redirect('register/success');
         $page->assign('uid', $uid);
     }
 

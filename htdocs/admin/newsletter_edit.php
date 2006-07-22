@@ -29,7 +29,7 @@ $nl  = new NewsLetter($nid);
 
 if(Get::has('del_aid')) {
     $nl->delArticle(Get::get('del_aid'));
-    redirect("{$_SERVER['PHP_SELF']}?nid=$nid");
+    http_redirect("{$_SERVER['PHP_SELF']}?nid=$nid");
 }
 
 if(Post::get('update')) {
@@ -43,7 +43,7 @@ if(Post::get('save')) {
     $art  = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'),
             Get::get('edit_aid'), Post::get('cid'), Post::get('pos'));
     $nl->saveArticle($art);
-    redirect("{$_SERVER['PHP_SELF']}?nid=$nid");
+    http_redirect("{$_SERVER['PHP_SELF']}?nid=$nid");
 }
 
 if(Get::has('edit_aid')) {

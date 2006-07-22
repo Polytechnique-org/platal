@@ -109,8 +109,7 @@ class XnetSession
             $args[] = urlencode($key).'='.urlencode($val);
         }
 
-        redirect($globals->baseurl . '/' . $path
-                 . rtrim('?' . join('&', $args), '?'));
+        pl_redirect($path, join('&', $args));
     }
 
     // }}}

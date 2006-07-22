@@ -19,42 +19,48 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function microtime_float() 
-{ 
-    list($usec, $sec) = explode(" ", microtime()); 
-    return ((float)$usec + (float)$sec); 
-} 
+function microtime_float()
+{
+    list($usec, $sec) = explode(' ', microtime());
+    return ((float)$usec + (float)$sec);
+}
 $TIME_BEGIN = microtime_float();
 
-// {{{ defines
+define('AUTH_PUBLIC', 0);
+define('AUTH_COOKIE', 1);
+define('AUTH_MDP',    2);
 
-$i=0;
-define("AUTH_PUBLIC", $i++);
-define("AUTH_COOKIE", $i++);
-define("AUTH_MDP", $i++);
-
-define("PERMS_EXT", "ext");
-define("PERMS_USER", "user");
-define("PERMS_ADMIN", "admin");
+define('PERMS_EXT',   'ext');
+define('PERMS_USER',  'user');
+define('PERMS_ADMIN', 'admin');
 
 define('SKINNED', 0);
 define('NO_SKIN', 1);
 
 require_once('platal/env.inc.php');
 
-// }}}
-// {{{ function redirect
+function pl_url($path, $query = null, $fragment = null)
+{
+    global $platal;
 
-function redirect($page)
+    $base = $platal->ns . $path . ($query ? '?'.$query : '');
+    return $fragment ? $base.'#'.$fragment : $base;
+}
+
+function http_redirect($fullurl)
 {
     if (count($_SESSION)) {
         session_write_close();
     }
-    header("Location: $page");
+    header('Location: '.$fullurl);
     exit;
 }
 
-// }}}
+function pl_redirect($path, $query = null, $fragment = null)
+{
+    global $globals;
+    http_redirect($globals->baseurl . '/' . pl_url($path, $query, $fragment));
+}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

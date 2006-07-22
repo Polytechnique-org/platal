@@ -120,7 +120,7 @@ class AuthModule extends PLModule
 
     function handler_redirect(&$page)
     {
-        redirect(Env::get('dest', '/'));
+        http_redirect(Env::get('dest', '/'));
     }
 
     function handler_groupex(&$page)
@@ -154,12 +154,12 @@ class AuthModule extends PLModule
         while (list($privkey,$name,$datafields) = $res->next()) {
             if (md5($gpex_challenge.$privkey) == $gpex_pass) {
                 $returl = $gpex_url.gpex_make_params($gpex_challenge,$privkey,$datafields);
-                redirect($returl);
+                http_redirect($returl);
             }
         }
 
         /* si on n'a pas trouvé, on renvoit sur x.org */
-        redirect('https://www.polytechnique.org/');
+        http_redirect('https://www.polytechnique.org/');
     }
 }
 

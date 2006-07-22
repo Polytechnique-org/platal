@@ -332,8 +332,7 @@ class ProfileModule extends PLModule
         }
 
         if (Env::has('suivant')) {
-            redirect($globals->baseurl . '/profile/edit/' .
-                     get_next_tab($opened_tab));
+            pl_redirect('profile/edit/' . get_next_tab($opened_tab));
         }
 
         require_once "profil/get_{$opened_tab}.inc.php";

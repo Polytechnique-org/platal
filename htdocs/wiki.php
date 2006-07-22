@@ -35,7 +35,6 @@ if ($n = wiki_pagename()) {
     if (Env::get('action') || !$tmpfile_exists) {
         if ($tmpfile_exists) {
             @unlink($wiki_template);
-            $page->clear_compiled_tpl($wiki_template);
         }
 
         // we leave pmwiki do whatever it wants and store everything

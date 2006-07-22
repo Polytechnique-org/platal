@@ -26,7 +26,7 @@ require_once("newsletter.inc.php");
 
 if(Get::has('new')) {
    insert_new_nl();
-   redirect("newsletter.php");
+   http_redirect("newsletter.php");
 }
 
 $page->assign_by_ref('nl_list', get_nl_slist());

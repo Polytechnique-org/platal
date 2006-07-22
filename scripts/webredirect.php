@@ -35,9 +35,9 @@ $res = XDB::query(
 if ($url = $res->fetchOneCell()) {
     $url = preg_replace('@/+$@', '', $url);
     if($path) {
-        redirect("http://$url/$path");
+        http_redirect("http://$url/$path");
     } else {
-        redirect("http://$url");
+        http_redirect("http://$url");
     }
     exit();
 }
