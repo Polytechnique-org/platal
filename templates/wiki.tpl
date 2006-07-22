@@ -20,12 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $canedit || $has_perms}
 <table class='wiki' cellspacing='0' cellpadding='0'>
   <tr>
     <td>
       <a href='{$wikipage}'>Voir la page</a>
       {if $has_perms}
-      <select>
+      <select onchange="dynpostkv('{$wikipage}', 'setrperms', this.value)">
       {html_options options=$perms_opts selected=$perms[0]}
       </select>
       {/if}
@@ -34,7 +35,7 @@
     <td>
       <a href='{$wikipage}?action=edit'>Éditer</a>
       {if $has_perms}
-      <select>
+      <select onchange="dynpostkv('{$wikipage}', 'setwperms', this.value)">
       {html_options options=$perms_opts selected=$perms[1]}
       </select>
       {else}
@@ -52,5 +53,6 @@
     {/if}
   </tr>
 </table>
+{/if}
 
 {$pmwiki|smarty:nodefaults}

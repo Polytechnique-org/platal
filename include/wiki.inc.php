@@ -46,10 +46,10 @@ function wiki_clear_all_cache()
     system('rm -f '.wiki_work_dir().'/cache_*');
 }
 
-function get_perms($n)
+function wiki_get_perms($n)
 {
     $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);
-    $lines = explode("\n", file_get_contents($file));
+    $lines = explode("\n", @file_get_contents($file));
     foreach ($lines as $line) {
         list($k, $v) = explode('=', $line, 2);
         if ($k == 'platal_perms') {
@@ -57,6 +57,36 @@ function get_perms($n)
         }
     }
     return array('logged', 'admin');
+}
+
+function wiki_putfile($f, $s)
+{
+    $fp = fopen($f, 'w');
+    fputs($fp, $s);
+    fclose($fp);
+}
+
+function wiki_set_perms($n, $pr, $pw)
+{
+    $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);
+    if (!file_exists($file))
+        return false;
+
+    $p = $pr . ':' . $pw;
+
+    $lines = explode("\n", file_get_contents($file));
+    foreach ($lines as $i => $line) {
+        list($k, $v) = explode('=', $line, 2);
+        if ($k == 'platal_perms') {
+            $lines[$i] = 'platal_perms='.$p;
+            wiki_putfile($file, join("\n", $lines));
+            return true;
+        }
+    }
+
+    array_splice($lines, 1, 0, array('platal_perms='.$p));
+    wiki_putfile($file, join("\n", $lines));
+    return true;
 }
 
 function wiki_may_have_perms($perm) {
