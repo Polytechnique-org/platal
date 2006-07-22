@@ -372,7 +372,7 @@ class ListsModule extends PLModule
 
                 $page->changeTpl('listes/moderate_mail.tpl');
                 $page->assign_by_ref('mail', $mail);
-                $page->run();
+                return;
             }
 
         } elseif (Env::has('sid')) {
@@ -381,8 +381,8 @@ class ListsModule extends PLModule
                 foreach($subs as $user) {
                     if ($user['id'] == Env::get('sid')) {
                         $page->changeTpl('listes/moderate_sub.tpl');
-                        $page->assign('del_user',$user);
-                        $page->run();
+                        $page->assign('del_user', $user);
+                        return;
                     }
                 }
             }
