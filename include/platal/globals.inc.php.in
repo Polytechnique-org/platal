@@ -70,7 +70,7 @@ class PlatalGlobals extends DiogenesCoreGlobals
         $this->session   = $sess;
 
         $base = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-        $this->baseurl   = $base.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']);
+        $this->baseurl   = trim($base.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
         $this->spoolroot = dirname(dirname(dirname(__FILE__)));
     }
 
