@@ -27,7 +27,7 @@
   Changer les options de la liste {$details.addr}
 </h1>
 
-<form method='post' action='{$platal->ns}lists/soptions/{$platal->argv[1]}'>
+<form method='post' action='{$platal->pl_self(1)}'>
   <table class='bicol' cellpadding='2' cellspacing='0'>
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>

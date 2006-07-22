@@ -46,6 +46,20 @@ class Platal
         }
     }
 
+    function pl_self($n = null)
+    {
+        if (is_null($n))
+            return $this->path;
+
+        if ($n >= 0)
+            return join('/', array_slice($this->argv, 0, $n + 1));
+
+        if ($n <= -count($this->argv))
+            return $this->argv[0];
+
+        return join('/', array_slice($this->argv, 0, $n));
+    }
+
     function find_hook()
     {
         $p = $this->path;

@@ -40,7 +40,7 @@ Tu n'es pas administrateur de la liste, mais du site.
   Détruire la liste {$details.addr} ?
 </h1>
 
-<form method='post' action='{$platal->ns}lists/delete/{$platal->argv[1]}'>
+<form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr class='impair'>
       <td>

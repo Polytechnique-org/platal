@@ -52,7 +52,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->ns}lists/admin/{$platal->argv[1]}?del_owner={$x.l}'><img src='images/retirer.gif' alt='retirer modérateur' title='retirer modérateur' /></a>
+        <a href='{$platal->pl_self(1)}?del_owner={$x.l}'><img src='images/retirer.gif' alt='retirer modérateur' title='retirer modérateur' /></a>
         <br />
         {/foreach}
       </td>
@@ -86,7 +86,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->ns}lists/admin/{$platal->argv[1]}?del_member={$x.l}'><img src='images/retirer.gif' alt='retirer membre' title='retirer membre' /></a>
+        <a href='{$platal->pl_self(1)}?del_member={$x.l}'><img src='images/retirer.gif' alt='retirer membre' title='retirer membre' /></a>
         <br />
         {/foreach}
       </td>

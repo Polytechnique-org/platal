@@ -32,10 +32,10 @@ class Xnet extends Platal
         if ($globals->asso()) {
             if ($p = strpos($this->path, '/')) {
                 $this->ns   = substr($this->path, 0, $p).'/';
-                $this->path = 'grp'.substr($this->path, $p);
+                $this->path = '%grp'.substr($this->path, $p);
             } else {
                 $this->ns   = $this->path.'/';
-                $this->path = 'grp';
+                $this->path = '%grp';
             }
         }
     }
@@ -44,7 +44,8 @@ class Xnet extends Platal
     {
         $ans = parent::find_hook();
         if ($ans && $this->ns) {
-            $this->path = $this->ns . substr($this->path, 4);
+            $this->path    = $this->ns . substr($this->path, 5);
+            $this->argv[0] = $this->ns . substr($this->argv[0], 5);
         }
         return $ans;
     }

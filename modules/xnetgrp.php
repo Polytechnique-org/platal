@@ -65,23 +65,23 @@ class XnetGrpModule extends PLModule
     function handlers()
     {
         return array(
-            'grp'            => $this->make_hook('index',     AUTH_PUBLIC),
-            'grp/asso.php'   => $this->make_hook('index',     AUTH_PUBLIC),
-            'grp/logo'       => $this->make_hook('logo',      AUTH_PUBLIC),
-            'grp/edit'       => $this->make_hook('edit',      AUTH_MDP),
-            'grp/mail'       => $this->make_hook('mail',      AUTH_MDP),
-            'grp/annuaire'   => $this->make_hook('annuaire',  AUTH_MDP),
-            'grp/subscribe'  => $this->make_hook('subscribe', AUTH_MDP),
-            'grp/paiement'   => $this->make_hook('paiement',  AUTH_MDP),
+            '%grp'            => $this->make_hook('index',     AUTH_PUBLIC),
+            '%grp/asso.php'   => $this->make_hook('index',     AUTH_PUBLIC),
+            '%grp/logo'       => $this->make_hook('logo',      AUTH_PUBLIC),
+            '%grp/edit'       => $this->make_hook('edit',      AUTH_MDP),
+            '%grp/mail'       => $this->make_hook('mail',      AUTH_MDP),
+            '%grp/annuaire'   => $this->make_hook('annuaire',  AUTH_MDP),
+            '%grp/subscribe'  => $this->make_hook('subscribe', AUTH_MDP),
+            '%grp/paiement'   => $this->make_hook('paiement',  AUTH_MDP),
 
-            'grp/admin/annuaire'
+            '%grp/admin/annuaire'
                  => $this->make_hook('admin_annuaire', AUTH_MDP),
 
-            'grp/member'
+            '%grp/member'
                  => $this->make_hook('admin_member', AUTH_MDP),
-            'grp/member/new'
+            '%grp/member/new'
                  => $this->make_hook('admin_member_new', AUTH_MDP),
-            'grp/member/del'
+            '%grp/member/del'
                  => $this->make_hook('admin_member_del', AUTH_MDP),
         );
     }

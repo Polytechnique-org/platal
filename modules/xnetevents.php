@@ -26,11 +26,11 @@ class XnetEventsModule extends PLModule
     function handlers()
     {
         return array(
-            'grp/events'       => $this->make_hook('events',  AUTH_MDP),
-            'grp/events/sub'   => $this->make_hook('sub',     AUTH_MDP),
-            'grp/events/csv'   => $this->make_hook('csv',     AUTH_MDP),
-            'grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP),
-            'grp/events/admin' => $this->make_hook('admin',   AUTH_MDP),
+            '%grp/events'       => $this->make_hook('events',  AUTH_MDP),
+            '%grp/events/sub'   => $this->make_hook('sub',     AUTH_MDP),
+            '%grp/events/csv'   => $this->make_hook('csv',     AUTH_MDP),
+            '%grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP),
+            '%grp/events/admin' => $this->make_hook('admin',   AUTH_MDP),
         );
     }
 
@@ -346,8 +346,7 @@ class XnetEventsModule extends PLModule
             }
 
             if (is_null($evt['eid'])) {
-                global $platal;
-                pl_redirect($platal->path.'/'.$eid);
+                pl_redirect(url_self().'/'.$eid);
             }
         }
 

@@ -101,8 +101,7 @@ class XOrgPlugin
 	    }
 	}
 
-        global $platal;
-	return $platal->path . '?' . join('&amp;', $get);
+	return pl_self() . '?' . join('&amp;', $get);
     }
 
     // }}}

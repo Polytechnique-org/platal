@@ -42,7 +42,7 @@
     {foreach from=$range item=i}
     <td>
       {if $m[$i]}
-      <a href="{$platal->ns}lists/archives/{$platal->argv[1]}?rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%B"}</a>
+      <a href="{$platal->pl_self(1)}?rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%B"}</a>
       {else}
       &nbsp;
       {/if}
@@ -68,7 +68,7 @@
     {foreach from=$range item=i}
     <td>
       {if $m[$i]}
-      <a href="{$platal->ns}lists/archives/{$platal->argv[1]}?rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%B"}</a>
+      <a href="{$platal->pl_self(1)}?rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%B"}</a>
       {else}
       &nbsp;
       {/if}

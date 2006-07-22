@@ -35,7 +35,7 @@
   </tr>
   {/foreach}
 </table>
-<form action='{$platal->ns}lists/check/{$platal->argv[1]}' method='post'>
+<form action='{$platal->pl_self(1)}' method='post'>
   <div class='center'>
     <br />
     <input type='submit' name='correct' value='Corriger les valeurs !' />

@@ -33,7 +33,7 @@ Tu n'es pas administrateur de la liste, mais du site.
   Changer les options de la liste {$details.addr}
 </h1>
 
-<form method='post' action='{$platal->ns}lists/options/{$platal->argv[1]}'>
+<form method='post' action='{$platal->pl_self(1)}'>
   <table class='bicol' cellpadding='2' cellspacing='0'>
     <tr><th colspan='2'>Options de la liste {$details.addr}</th></tr>
     <tr class='impair'>
@@ -159,14 +159,14 @@ les X inscrits à la liste doivent ajouter leurs adresses usuelles parmis leurs a
 redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller tout seul.
 </p>
 
-<form method='post' action='{$platal->ns}lists/options/{$platal->argv[1]}'>
+<form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr><th>Addresses non modérées</th></tr>
     <tr>
       <td>
         {if $options.accept_these_nonmembers|@count}
         {foreach from=$options.accept_these_nonmembers item=addr}
-        {$addr}<a href='{$platal->ns}lists/options/{$platal->argv[1]}&amp;atn_del={$addr}'>
+        {$addr}<a href='{$platal->pl_self(1)}&amp;atn_del={$addr}'>
           <img src="images/retirer.gif" alt='retirer de la whitelist' title="retirer {$addr} de la whitelist" />
         </a><br />
         {/foreach}

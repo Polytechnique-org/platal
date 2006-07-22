@@ -28,23 +28,23 @@ class XnetListsModule extends ListsModule
     function handlers()
     {
         return array(
-            'grp/lists'           => $this->make_hook('lists',     AUTH_MDP),
-            'grp/lists/create'    => $this->make_hook('create',    AUTH_MDP),
+            '%grp/lists'           => $this->make_hook('lists',     AUTH_MDP),
+            '%grp/lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
-            'grp/lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
-            'grp/lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
+            '%grp/lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
+            '%grp/lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
 
-            'grp/lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
-            'grp/lists/admin'     => $this->make_hook('admin',     AUTH_MDP),
-            'grp/lists/options'   => $this->make_hook('options',   AUTH_MDP),
-            'grp/lists/delete'    => $this->make_hook('delete',    AUTH_MDP),
+            '%grp/lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
+            '%grp/lists/admin'     => $this->make_hook('admin',     AUTH_MDP),
+            '%grp/lists/options'   => $this->make_hook('options',   AUTH_MDP),
+            '%grp/lists/delete'    => $this->make_hook('delete',    AUTH_MDP),
 
-            'grp/lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
-            'grp/lists/check'     => $this->make_hook('check',     AUTH_MDP),
-            'grp/lists/sync'      => $this->make_hook('sync',      AUTH_MDP),
+            '%grp/lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
+            '%grp/lists/check'     => $this->make_hook('check',     AUTH_MDP),
+            '%grp/lists/sync'      => $this->make_hook('sync',      AUTH_MDP),
 
-            'grp/alias/admin'     => $this->make_hook('aadmin',    AUTH_MDP),
-            'grp/alias/create'    => $this->make_hook('acreate',   AUTH_MDP),
+            '%grp/alias/admin'     => $this->make_hook('aadmin',    AUTH_MDP),
+            '%grp/alias/create'    => $this->make_hook('acreate',   AUTH_MDP),
 
             /* hack: lists uses that */
             'profile' => $this->make_hook('profile', AUTH_PUBLIC),

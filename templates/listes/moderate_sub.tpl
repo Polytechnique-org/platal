@@ -22,7 +22,7 @@
 
 <h1>Refuser l'inscription d'un utilisateur</h1>
 
-<form method='post' action='{$platal->ns}lists/moderate/{$platal->argv[1]}'>
+<form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     <tr>
       <th class='titre'>refuser l'inscription de :</th>

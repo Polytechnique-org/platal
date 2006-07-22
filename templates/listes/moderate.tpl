@@ -42,8 +42,8 @@
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?sadd={$s.id}'>ajouter</a>
-      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?sid={$s.id}'>refuser</a>
+      <a href='{$platal->pl_self(1)}?sadd={$s.id}'>ajouter</a>
+      <a href='{$platal->pl_self(1)}?sid={$s.id}'>refuser</a>
     </td>
   </tr>
   {/foreach}
@@ -89,8 +89,8 @@
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
     <td class='action'>
-      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}'>voir</a><br/>
-      <a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}?mid={$m.id}&amp;mdel=1'>détruire</a></td>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}'>voir</a><br/>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>détruire</a></td>
   </tr>
   {/foreach}
 </table>

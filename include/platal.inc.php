@@ -48,6 +48,11 @@ function pl_url($path, $query = null, $fragment = null)
     return $fragment ? $base.'#'.$fragment : $base;
 }
 
+function pl_self($n = null) {
+    global $platal;
+    return $platal->pl_self($n);
+}
+
 function http_redirect($fullurl)
 {
     if (count($_SESSION)) {
