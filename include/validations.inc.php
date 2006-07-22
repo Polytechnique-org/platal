@@ -19,12 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ DEFINES
-
 define('SIZE_MAX', 32768);
-
-// }}}
-// {{{ class ValidateIterator
 
 /**
  * Iterator class, that lists objects through the database
@@ -32,7 +27,7 @@ define('SIZE_MAX', 32768);
 class ValidateIterator extends XOrgDBIterator
 {
     // {{{ constuctor
-    
+
     function ValidateIterator ()
     {
         parent::XOrgDBIterator('SELECT data,stamp FROM requests ORDER BY stamp', MYSQL_NUM);
@@ -54,9 +49,6 @@ class ValidateIterator extends XOrgDBIterator
 
     // }}}
 }
-
-// }}}
-// {{{ class Validate
 
 /** classe "virtuelle" à dériver pour chaque nouvelle implémentation
  */
@@ -304,14 +296,9 @@ class Validate
     // }}}
 }
 
-// }}}
-// {{{ IMPLEMENTATIONS
-
 foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {
     require_once($file);
 }
-
-// }}}
 
 /* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker: */
 ?>

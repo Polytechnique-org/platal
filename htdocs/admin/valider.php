@@ -29,6 +29,6 @@ if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
     if($req) { $req->handle_formu(); }
 }
 
-$page->assign_by_ref('vit', new ValidateIterator ());
+$page->assign('vit', new ValidateIterator());
 $page->run();
 ?>

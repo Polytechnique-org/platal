@@ -19,7 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class MarkReq
 
 class MarkReq extends Validate
 {
@@ -91,8 +90,6 @@ class MarkReq extends Validate
 
     // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
