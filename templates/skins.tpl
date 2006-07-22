@@ -41,7 +41,7 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
   <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
-    {iterate item=skin from=$skins}    
+    {iterate item=skin from=$skins}
     <tr>
       <td class="skigauche">
         <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if} onclick="this.form.submit();" />

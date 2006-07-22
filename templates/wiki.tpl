@@ -24,22 +24,22 @@
   <tr>
     <td>
       <a href='{$wikipage}'>Voir la page</a>
+      {if $has_perms}
       <select>
-        <option>Public</option>
-        <option>Public</option>
-        <option>Public</option>
-        <option>Public</option>
+      {html_options options=$perms_opts selected=$perms[0]}
       </select>
+      {/if}
     </td>
-    {if true}
+    {if $canedit}
     <td>
       <a href='{$wikipage}?action=edit'>Éditer</a>
+      {if $has_perms}
       <select>
-        <option>Public</option>
-        <option>Public</option>
-        <option>Public</option>
-        <option>Public</option>
+      {html_options options=$perms_opts selected=$perms[1]}
       </select>
+      {else}
+      {$perms[0]}
+      {/if}
     </td>
     {/if}
     {if $has_perms}

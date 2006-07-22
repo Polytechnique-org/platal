@@ -59,6 +59,15 @@ function get_perms($n)
     return array('logged', 'admin');
 }
 
+function wiki_may_have_perms($perm) {
+    switch ($perm) {
+      case 'public': return true;
+      case 'logged': return S::logged();
+      case 'mdp':    return S::logged();
+      default:       return S::has_perms();
+    }
+}
+
 function wiki_apply_perms($perm) {
     global $page, $platal;
 

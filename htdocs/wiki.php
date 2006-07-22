@@ -31,16 +31,15 @@ if (!$n) {
 }
 
 new_skinned_page('wiki.tpl');
+$perms = get_perms($n);
 
 switch (Env::get('action')) {
   case '':
-    list($r) = get_perms($n);
-    wiki_apply_perms($r);
+    wiki_apply_perms($perms[0]);
     break;
 
   case 'edit':
-    list(, $e) = get_perms($n);
-    wiki_apply_perms($e);
+    wiki_apply_perms($perms[1]);
     break;
 
   default:
@@ -78,9 +77,17 @@ if (Env::get('action')) {
     }
 }
 
+$page->assign('perms', $perms);
+$page->assign('perms_opts',
+              array('public' => 'Public', 'logged' => 'Connecté',
+                    'mdp' => 'Authentifié', 'admin' => 'Admin'));
+
+$page->assign('canedit',    wiki_may_have_perms($perms[1]));
+$page->assign('has_perms',  wiki_may_have_perms('admin'));
+
 $page->assign('wikipage', str_replace('.', '/', $n));
-$page->assign('pmwiki', $wikiAll);
-$page->assign('has_perms',  S::has_perms());
+$page->assign('pmwiki',   $wikiAll);
+
 $page->addCssLink('css/wiki.css');
 
 $page->run();
