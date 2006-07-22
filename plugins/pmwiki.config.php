@@ -29,7 +29,6 @@ XLSDV('en', array('EnterAttributes' =>
     Le <strong>:</strong> à la fin de chaque mot clef est important. Tu peux également combiner plusieurs mots clefs avec <strong>and:</strong>
     ou des espaces (qui remplace le <em>ou</em> logique)<br/>"));
 
-include_once($globals->spoolroot."/plugins/pmwiki.platalAuth.php");
 @include_once("$FarmD/cookbook/e-protect.php");
 
 $DefaultPasswords['read']   = 'logged:';
@@ -95,6 +94,52 @@ function doBicol($column=false)
     if ($column) {
         $TableCellAttrFmt = "class='$column'";
     }
+}
+
+// }}}
+// {{{ Auth
+
+$AuthFunction = 'AuthPlatal';
+
+$HandleAuth['diff']        = 'edit';
+$HandleAuth['source']      = 'edit';
+
+// impossible to see the diff without the source because of the smarty tags
+$DiffShow['source'] = 'y';
+$DiffSourceFmt = '';
+
+// for read pages: will come only once so we have to be careful
+// and translate any auth from the wiki to smarty auth
+function AuthPlatal($pagename, $level, $authprompt)
+{
+    global $page;
+
+    $page_read = ReadPage($pagename);
+
+    $levels = array('read', 'attr', 'edit', 'upload');
+
+    if (S::identified() && S::has_perms())
+    {
+        $page_read['=passwd']   = $passwds;
+        $page_read['=pwsource'] = $pwsources;
+
+        return $page_read;
+    }
+
+    // if we arrive here, the user doesn't have enough permission to access page
+
+    // maybe it is because he is not identified
+    if ($authprompt && !S::identified()) {
+        require_once dirname(__FILE__).'/../classes/Platal.php';
+        require_once dirname(__FILE__).'/../classes/PLModule.php';
+        $platal = new Platal();
+        $platal->force_login($page);
+    }
+
+    if (S::has_perms()) {
+        $page->trig('Erreur : page Wiki inutilisable sur plat/al');
+    }
+    $page->run();
 }
 
 // }}}
