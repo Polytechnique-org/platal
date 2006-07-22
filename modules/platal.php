@@ -324,8 +324,12 @@ Mail envoyé à ".Env::get('login'));
             XDB::execute('UPDATE auth_user_quick
                              SET skin={?} WHERE user_id={?}',
                          Env::getInt('newskin'), S::v('uid'));
+            S::kill('skin');
             set_skin();
         }
+
+        $res = XDB::query('SELECT id FROM skins WHERE skin_tpl={?}', S::v('skin'));
+        $page->assign('skin_id', $res->fetchOneCell());
 
         $sql = "SELECT s.*,auteur,count(*) AS nb
                   FROM skins AS s

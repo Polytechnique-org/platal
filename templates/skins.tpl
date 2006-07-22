@@ -39,28 +39,27 @@ Pour toute information complémentaire, n'hésite pas à écrire à
 {mailto address='support@polytechnique.org' subject='navigateurs'}
 </p>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
-  <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
-    {iterate item=skin from=$skins}
-    <tr>
-      <td class="skigauche">
-        <input type="radio" name="newskin" value="{$skin.id}" {if $smarty.session.skin_id eq $skin.id}checked="checked"{/if} onclick="this.form.submit();" />
-      </td>
-      <td class="skimilieu">
-        <strong>{$skin.name}</strong>
-        ajoutée le {$skin.date|date_format}<br />
-        {$skin.comment}
-        <br /><br />
-        Créée par <strong>{$skin.auteur}</strong>
-        <br /><br />
-        Utilisée par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
-      </td>
-      <td class="skidroite">
-        <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] " />
-      </td>
-    </tr>
-    {/iterate}
-  </table>
-</form>
+<table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
+  {iterate item=skin from=$skins}
+  <tr>
+    <td class="skigauche">
+      <input type="radio" name="newskin" value="{$skin.id}" {if $skin_id eq $skin.id}checked="checked"{/if}
+        onclick="dynpostkv('prefs/skin', 'newskin', {$skin.id})" />
+    </td>
+    <td class="skimilieu">
+      <strong>{$skin.name}</strong>
+      ajoutée le {$skin.date|date_format}<br />
+      {$skin.comment}
+      <br /><br />
+      Créée par <strong>{$skin.auteur}</strong>
+      <br /><br />
+      Utilisée par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
+    </td>
+    <td class="skidroite">
+      <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] " />
+    </td>
+  </tr>
+  {/iterate}
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
