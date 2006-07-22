@@ -146,10 +146,10 @@ class XorgSession
      *
      * @param page the calling page (by reference)
      */
-    function doAuthCookie(&$page)
+    function doAuthCookie()
     {
 	if (S::logged()) {
-	    return;
+	    return true;
         }
 
 	if (Env::has('username') and Env::has('response')) {
@@ -159,6 +159,8 @@ class XorgSession
 	if ($r = try_cookie()) {
 	    return XorgSession::doAuth(($r > 0));
         }
+
+        return false;
     }
 
     // }}}

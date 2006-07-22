@@ -46,4 +46,43 @@ function wiki_clear_all_cache()
     system('rm -f '.wiki_work_dir().'/cache_*');
 }
 
+function get_perms($n)
+{
+    $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);
+    $lines = explode("\n", file_get_contents($file));
+    foreach ($lines as $line) {
+        list($k, $v) = explode('=', $line, 2);
+        if ($k == 'platal_perms') {
+            return explode(':', $v);
+        }
+    }
+    return array('logged', 'admin');
+}
+
+function wiki_apply_perms($perm) {
+    global $page, $platal;
+
+    switch ($perm) {
+      case 'public':
+        return;
+
+      case 'logged':
+        if (!XorgSession::doAuthCookie()) {
+            $platal = new Platal();
+            $platal->force_login($page);
+        }
+        return;
+
+      default:
+        if (!XorgSession::doAuth()) {
+            $platal = new Platal();
+            $platal->force_login($page);
+        }
+        if ($perm == 'admin') {
+            check_perms();
+        }
+        return;
+    }
+}
+
 ?>

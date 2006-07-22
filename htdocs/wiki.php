@@ -20,48 +20,65 @@
  ***************************************************************************/
 
 require_once 'xorg.inc.php';
-
-new_skinned_page('wiki.tpl');
-if (!S::identified()) {
-    XorgSession::doAuth();
-}
-
 require_once 'wiki.inc.php';
 
-if ($n = wiki_pagename()) {
-    $wiki_cache   = wiki_work_dir().'/cache_'.$n.'.tpl';
-    $cache_exists = file_exists($wiki_cache);
+require_once dirname(__FILE__).'/../classes/Platal.php';
+require_once dirname(__FILE__).'/../classes/PLModule.php';
 
-    if (Env::get('action') || !$cache_exists) {
-        @unlink($wiki_cache);
-
-        // we leave pmwiki do whatever it wants and store everything
-        ob_start();
-        require_once($globals->spoolroot.'/wiki/pmwiki.php');
-
-        $wikiAll = ob_get_clean();
-        // the pmwiki skin we are using (almost empty) has these keywords:
-        $i = strpos($wikiAll, "<!--/HeaderText-->");
-        $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
-    }
-
-    if (Env::get('action')) {
-        $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
-        $wikiAll = substr($wikiAll, $j);
-    } else {
-        if (!$cache_exists) {
-            $f = fopen($wiki_cache, 'w');
-            $wikiAll = substr($wikiAll, $j);
-            fputs($f, $wikiAll);
-            fclose($f);
-        } else {
-            $wikiAll = file_get_contents($wiki_cache);
-        }
-    }
-
-    $page->assign('wikipage', str_replace('.', '/', $n));
+$n = wiki_pagename();
+if (!$n) {
+    pl_redirect('');
 }
 
+new_skinned_page('wiki.tpl');
+
+switch (Env::get('action')) {
+  case '':
+    list($r) = get_perms($n);
+    wiki_apply_perms($r);
+    break;
+
+  case 'edit':
+    list(, $e) = get_perms($n);
+    wiki_apply_perms($e);
+    break;
+
+  default:
+    wiki_apply_perms('admin');
+    break;
+}
+
+$wiki_cache   = wiki_work_dir().'/cache_'.$n.'.tpl';
+$cache_exists = file_exists($wiki_cache);
+
+if (Env::get('action') || !$cache_exists) {
+    @unlink($wiki_cache);
+
+    // we leave pmwiki do whatever it wants and store everything
+    ob_start();
+    require_once($globals->spoolroot.'/wiki/pmwiki.php');
+
+    $wikiAll = ob_get_clean();
+    // the pmwiki skin we are using (almost empty) has these keywords:
+    $i = strpos($wikiAll, "<!--/HeaderText-->");
+    $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
+}
+
+if (Env::get('action')) {
+    $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+    $wikiAll = substr($wikiAll, $j);
+} else {
+    if (!$cache_exists) {
+        $f = fopen($wiki_cache, 'w');
+        $wikiAll = substr($wikiAll, $j);
+        fputs($f, $wikiAll);
+        fclose($f);
+    } else {
+        $wikiAll = file_get_contents($wiki_cache);
+    }
+}
+
+$page->assign('wikipage', str_replace('.', '/', $n));
 $page->assign('pmwiki', $wikiAll);
 $page->assign('has_perms',  S::has_perms());
 $page->addCssLink('css/wiki.css');
