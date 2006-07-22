@@ -60,6 +60,10 @@ New:
         - Split event list and subscription again.                          -MC
         - Extensively debug events module.                                  -MC
 
+    * Wiki:
+        - Rework pmwiki integration, make it way more simple.               -MC
+        - Rework authentication, don't let pmwiki deal with it.             -MC
+
 
 ================================================================================
 VERSION 0.9.10                                                      29 Juin 2006
