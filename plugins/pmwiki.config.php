@@ -16,26 +16,7 @@ $InterMapFiles[]  = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
 
 $Skin             = 'empty';
 
-XLSDV('en', array('EnterAttributes' =>
-    "Entre ici les différents droit pour la page. Les champs laissés en blanc ne seront pas modifiés.
-    Pour enlever une restriction ou une autorisation entre <strong>clear</strong>.
-    Les différentes restrictions possibles sont :
-    <ul>
-        <li><strong>public:</strong> (pour tout le monde)</li>
-        <li><strong>logged:</strong> (pour ceux qui ont rentré leur mot de passe ou qui ont un cookie permanent)</li>
-        <li><strong>identified:</strong> (exige une identification par mot de passe)</li>
-        <li><strong>has_perms:</strong> (pour les administrateurs de la page)</li>
-    </ul>
-    Le <strong>:</strong> à la fin de chaque mot clef est important. Tu peux également combiner plusieurs mots clefs avec <strong>and:</strong>
-    ou des espaces (qui remplace le <em>ou</em> logique)<br/>"));
-
 @include_once("$FarmD/cookbook/e-protect.php");
-
-$DefaultPasswords['read']   = 'logged:';
-$DefaultPasswords['edit']   = 'has_perms:';
-$DefaultPasswords['attr']   = 'has_perms: and: identified:';
-$DefaultPasswords['admin']  = 'has_perms: and: identified:';
-$DefaultPasswords['upload'] = 'has_perms: and: identified:';
 
 // Theme-ing {{{
 
@@ -97,50 +78,10 @@ function doBicol($column=false)
 }
 
 // }}}
-// {{{ Auth
 
-$AuthFunction = 'AuthPlatal';
+$AuthFunction = 'ReadPage';
 
-$HandleAuth['diff']        = 'edit';
-$HandleAuth['source']      = 'edit';
+$HandleAuth['diff']   = 'edit';
+$HandleAuth['source'] = 'edit';
 
-// impossible to see the diff without the source because of the smarty tags
-$DiffShow['source'] = 'y';
-$DiffSourceFmt = '';
-
-// for read pages: will come only once so we have to be careful
-// and translate any auth from the wiki to smarty auth
-function AuthPlatal($pagename, $level, $authprompt)
-{
-    global $page;
-
-    $page_read = ReadPage($pagename);
-
-    $levels = array('read', 'attr', 'edit', 'upload');
-
-    if (S::identified() && S::has_perms())
-    {
-        $page_read['=passwd']   = $passwds;
-        $page_read['=pwsource'] = $pwsources;
-
-        return $page_read;
-    }
-
-    // if we arrive here, the user doesn't have enough permission to access page
-
-    // maybe it is because he is not identified
-    if ($authprompt && !S::identified()) {
-        require_once dirname(__FILE__).'/../classes/Platal.php';
-        require_once dirname(__FILE__).'/../classes/PLModule.php';
-        $platal = new Platal();
-        $platal->force_login($page);
-    }
-
-    if (S::has_perms()) {
-        $page->trig('Erreur : page Wiki inutilisable sur plat/al');
-    }
-    $page->run();
-}
-
-// }}}
 ?>
