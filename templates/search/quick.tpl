@@ -50,7 +50,7 @@ En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le
 sans distinction de casse et sans tenir compte des accents.
 </p>
 
-{min_auth level="cookie"}
+{if $smarty.session.auth ge AUTH_COOKIE}
 <h2>Barre de recherche pour Firefox</h2>
 <script type="text/javascript">
 {literal}
@@ -69,7 +69,7 @@ function addEngine() {
 </script>
 <p>Tu peux <a href="javascript:addEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
 </p>
-{/min_auth}
+{/if}
 
 <h2>Polytechniciens des promotions 1919 et précédentes</h2>
 <p>Notre base de données ne contient que les polytechniciens depuis la promotion 1920. Pour effectuer des recherches dans les

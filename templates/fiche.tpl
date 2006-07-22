@@ -56,11 +56,11 @@ function chgMainWinLoc( strPage ) {
           <img src="images/retirer.gif" alt="Retirer de mes contacts" title="Retirer de mes contacts" />
         </a>
         {/if}
-        {perms level=admin}
+        {if $smarty.session.perms eq admin}
         <a href="javascript:x()" onclick="chgMainWinLoc('admin/utilisateurs.php?login={$x.forlife}')">
           <img src="images/admin.png" alt='admin' title="administrer user" />
         </a>
-        {/perms}
+        {/if}
         {/if}
       </div>
       {if $logged}

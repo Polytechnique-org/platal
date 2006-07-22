@@ -30,10 +30,10 @@
 <br />
   <a href="Docs/Ethique">Services et Ethique</a>
   | <a href="Docs/Charte">Charte</a>
-{min_auth level=cookie}
+{if $smarty.session.auth ge AUTH_COOKIE}
   | <a href="stats/coupures">Disponibilité</a>
   | <a href="stats">Statistiques</a>
-{/min_auth}
+{/if}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -109,7 +109,7 @@ class PlatalPage extends Smarty
             exit;
 
           case SIMPLE:
-            $page->assign('simple', true);
+            $this->assign('simple', true);
           case SKINNED:
 	    $this->register_modifier('escape_html', 'escape_html');
 	    $this->default_modifiers = Array('@escape_html');

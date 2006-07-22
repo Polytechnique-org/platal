@@ -142,10 +142,10 @@
       <tr>
         <td colspan="4" id="perso">
           {list_all_my_groups}
-          {only_public}
+          {if !$smarty.session.auth}
           <div>Me connecter :</div>
           <a class='gp' href="{$smarty.session.loginX}">polytechnicien</a>
-          {/only_public}
+          {/if}
 
           <a href="manuel" title="Manuel d'aide en ligne" style="float: right"><img src="images/manuel.png" alt="manuel" /></a>
         </td>

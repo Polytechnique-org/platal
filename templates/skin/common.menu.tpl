@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{only_public}
+{if !$smarty.session.auth}
 <div class="menu_title">Polytechniciens</div>
 <div class="menu_item"><a href="events">Me connecter !</a></div>
 <div class="menu_item"><a href="register">M'inscrire</a></div>
@@ -35,8 +35,7 @@
 <div class="menu_item"><a href="Docs/APropos">A propos du site</a></div>
 <div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Docs/FAQ">FAQ</a></div>
-
-{/only_public}
+{/if}
 
 {if $smarty.session.auth == AUTH_MDP}
 <div class="menu_item"><a href="exit">Déconnexion</a></div>
@@ -74,8 +73,7 @@
 <div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
 
-{perms level=admin}
-
+{if $smarty.session.perms eq admin}
 <div class="menu_title">***</div>
 <div class="menu_item"><a href="marketing">Marketing</a></div>
 <div class="menu_item"><a href="admin/">Administration</a></div>
@@ -89,6 +87,6 @@
     <td><a href="admin/valider.php">{insert name="mkStats"}</a></td>
   </tr>
 </table>
-{/perms}
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

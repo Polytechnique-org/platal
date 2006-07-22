@@ -22,7 +22,7 @@
 
 
 {if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
-<div class="contact" {if $c.inscrit}{min_auth level='cookie'}title="fiche mise à jour le {$c.date|date_format}"{/min_auth}{/if}>
+<div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
 
   <div class="nom">
     {if $c.sexe}&bull;{/if}
@@ -38,15 +38,15 @@
     (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
     {/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
     {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
-    {min_auth level="cookie"}
+    {if $smarty.session.auth ge AUTH_COOKIE}
     {if !$c.dcd && !$c.wasinscrit}
     <a href="marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
     {/if}
-    {/min_auth}
+    {/if}
   </div>
 
   <div class="bits">
-    {min_auth level="cookie"}
+    {if $smarty.session.auth ge AUTH_COOKIE}
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
         <a href="carnet/notifs/add_nonins/{$c.user_id}">{*
@@ -66,9 +66,9 @@
             title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
       {/if}
     {/if}
-    {/min_auth}
+    {/if}
 
-    {perms level='admin'}
+    {if $smarty.session.perms eq admin}
       {if !$c.wasinscrit && !$c.dcd}
         <a href="marketing/private/{$c.user_id}">{*
           *}<img src="images/admin.png" alt='admin' title="marketter user" /></a>
@@ -78,7 +78,7 @@
       {/if}
       <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}<img src="images/ax.png" alt='AX' title="fiche AX" /></a>
-    {/perms}
+    {/if}
   </div>
 
   <div class="long">

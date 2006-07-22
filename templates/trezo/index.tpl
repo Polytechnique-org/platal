@@ -22,9 +22,9 @@
 
 <h1>Tr&eacute;sorerie pour {$mon_sel}</h1>
 
-{perms level=admin}
+{if $smarty.session.perms eq admin}
 <p>[<a href="trezo/ops">éditer les comptes</a>]</p>
-{/perms}
+{/if}
 
 <table class="bicol">
 <tr>

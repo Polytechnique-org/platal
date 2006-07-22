@@ -301,12 +301,12 @@
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
   </table>
-  {min_auth level='cookie'}
+  {if $smarty.session.auth ge AUTH_COOKIE}
   <p>
     <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
     mettre les fiches modifiées récemment en premier
   </p>
-  {/min_auth}
+  {/if}
 </form>
 <p class="center">
   <script type="text/javascript">{literal}

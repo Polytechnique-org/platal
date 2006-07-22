@@ -33,15 +33,15 @@
 <h1>
   Accès réservé aux Polytechniciens
 </h1>
-{min_auth level="cookie"}
+{if $smarty.session.auth ge AUTH_COOKIE}
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
 Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi sur
 <a href="register/">la page d'inscription</a>.
 </p>
-{/min_auth}
+{/if}
 
-{only_public}
+{if !$smarty.session.auth}
 <p>
 <strong>Tu ne connais pas ton mot de passe ?</strong>
 </p>
@@ -58,7 +58,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       paramètres personnels.</a></strong>
   </li>
 </ul>
-{/only_public}
+{/if}
 
 <br />
 

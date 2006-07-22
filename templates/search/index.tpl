@@ -82,7 +82,7 @@
   {/if}
   {/if}
 
-  {min_auth level='cookie'}
+  {if $smarty.session.auth ge AUTH_COOKIE}
   <br />
   {if $smarty.capture.list|smarty:nodefaults|display_lines > 20}
   {if $advanced}
@@ -95,7 +95,7 @@
   <p>
   <strong>Astuce:</strong>
   Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
-  {/min_auth}
+  {/if}
 {else}
   {if $advanced}
   {include file=search/adv.form.tpl}

@@ -31,9 +31,9 @@
 {else}
 [<a href='nl/show/{$nl->_id}?text=1'>version Texte</a>]
 {/if}
-{perms level='admin'}
+{if $smarty.session.perms eq admin}
 [<a href='admin/newsletter_edit.php?nid={$nl->_id}'>Editer</a>]
-{/perms}
+{/if}
 </p>
 
 <form method="post" action="{$platal->path}">
