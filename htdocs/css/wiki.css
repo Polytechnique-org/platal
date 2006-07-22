@@ -1,16 +1,16 @@
-div.frame   {
-    border-collapse: collapse;
-    margin: 0px; padding: 0px;
+table.wiki {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px dotted gray;
 }
-div.frame p { padding: 0px; margin: 0px; }
 
-div.frame a {
-    border-collapse: collapse;
-    float: left;
-    display: block;
+table.wiki td {
     padding: 2px 1em;
-    border-top: 1px dotted gray;
-    border-bottom: 1px dotted gray;
+    vertical-align: middle;
+}
+
+table.wiki select {
+    font-size: 80%;
 }
 
 div.frame br {

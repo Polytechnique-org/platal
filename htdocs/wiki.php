@@ -21,7 +21,7 @@
 
 require_once 'xorg.inc.php';
 
-new_skinned_page('');
+new_skinned_page('wiki.tpl');
 if (!S::identified()) {
     XorgSession::doAuth();
 }
@@ -51,20 +51,26 @@ if ($n = wiki_pagename()) {
     if (Env::get('action')) {
         // clean old tmp files
         wiki_clean_tmp();
-        $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
 
         // create new tmp files with editing page from wiki engine
-        $wiki_template = wiki_create_tmp(substr($wikiAll, $j));
+        $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
+        $wikiAll = substr($wikiAll, $j);
+        $wiki_template = wiki_create_tmp($wikiAll);
     } else {
         if (!$tmpfile_exists) {
             $f = fopen($wiki_template, 'w');
-            fputs($f, substr($wikiAll, $j));
+            $wikiAll = substr($wikiAll, $j);
+            fputs($f, $wikiAll);
             fclose($f);
+        } else {
+            $wikiAll = file_get_contents($wiki_template);
         }
     }
-}
-$page->changeTpl($wiki_template);
 
+    $page->assign('wikipage', str_replace('.', '/', $n));
+}
+
+$page->assign('pmwiki', $wikiAll);
 wiki_assign_auth();
 $page->addCssLink('css/wiki.css');
 
