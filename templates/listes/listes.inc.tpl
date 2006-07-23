@@ -49,7 +49,7 @@
         {icon name=cross title="me désinscrire"}
       </a>
       {elseif $liste.sub eq 1}
-      <img src="images/flag.png" alt="[ en cours ]" title='inscription en attente de modération' />
+      {icon name=flag_orange title='inscription en attente de modération'}
       {else}
       <a href='{$platal->ns}lists?add={$liste.list}'>
         {icon name=add title="m'inscrire"}</a>

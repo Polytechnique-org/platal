@@ -35,7 +35,7 @@ Pour t'inscrire à une liste il suffit de cliquer sur l'icone
 Certaines listes sont à inscription modérée, l'inscription n'y est pas
 immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
 (ou éventuellement refuser) ta candidature.  Ces listes apparaissent avec l'icone 
-<img src="images/flag.png" alt="[ en cours ]" />.
+{icon name=flag_orange title="en cours"}.
 </p>
 
 <p>
