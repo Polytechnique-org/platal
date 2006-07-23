@@ -48,7 +48,6 @@ class AuthModule extends PLModule
     {
         global $globals;
 
-        require_once 'platal/xmlrpc-client.inc.php';
         require_once 'lists.inc.php';
 
         $cle = $globals->core->econfiance;

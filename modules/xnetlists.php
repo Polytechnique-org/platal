@@ -146,7 +146,6 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        require_once 'platal/xmlrpc-client.inc.php';
         require_once 'lists.inc.php';
         $ret = $this->client->create_list(
                     $liste, Post::get('desc'), Post::get('advertise'),

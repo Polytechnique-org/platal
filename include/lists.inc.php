@@ -21,7 +21,7 @@
 
 // {{{ import class definitions
 
-require_once 'platal/xmlrpc-client.inc.php';
+require_once dirname(__FILE__).'/../classes/XmlrpcClient.php';
 
 // }}}
 // {{{ function lists_xmlrpc
@@ -32,7 +32,7 @@ function &lists_xmlrpc($uid, $pass, $fqdn=null)
 
     $dom = is_null($fqdn) ? $globals->mail->domain : $fqdn;
     $url = "http://$uid:$pass@{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
-    $client = new xmlrpc_client($url);
+    $client = new XmlrpcClient($url);
     return $client;
 }
 

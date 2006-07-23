@@ -85,8 +85,7 @@ class ListeReq extends Validate
     
     function commit()
     {
-        require_once('platal/xmlrpc-client.inc.php');
-        require_once('lists.inc.php');
+        require_once 'lists.inc.php';
 
         $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
         $ret = $client->create_list($this->liste, $this->desc,
