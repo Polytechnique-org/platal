@@ -42,7 +42,8 @@ function hook_shortcuts()
 }
 
 function hook_makeLink($params) {
-    $base = 'banana';
+    global $globals;
+    $base = $globals->baseurl . '/banana';
     if ($params['subscribe'] == 1) {
         return $base . '/subscription';
     }
