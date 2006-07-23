@@ -8,8 +8,8 @@
  * Copyright: See COPYING files that comes with this distribution
  ********************************************************************************/
 
-require_once('connect.db.inc.php');
-require_once('banana/banana.inc.php');
+require_once 'connect.db.inc.php';
+require_once dirname(__FILE__).'/ ../modules/banana/banana.inc.php';
 
 class MyBanana extends Banana
 {

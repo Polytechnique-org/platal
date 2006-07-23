@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('banana/banana.inc.php');
+require_once 'banana/banana.inc.php';
 
 function hook_formatDisplayHeader($_header, $_text) {
     global $banana;
@@ -68,7 +68,7 @@ function hook_makeLink($params) {
         }
         return $base . '/' . $params['artid'];
     }
-    
+
     if ($params['action'] == 'new') {
         return $base . '/new';
     }
@@ -85,7 +85,7 @@ function hook_makeImg($img, $alt, $height, $width)
     if (!is_null($height)) {
         $height = ' height="' . $height . '"';
     }
-    
+
     return '<img src="' . $url . '"' . $height . $width . ' alt="' . $alt . '" />';
 }
 
@@ -131,7 +131,7 @@ class PlatalBanana extends Banana
         $this->profile['display']   = $disp;
         $this->profile['autoup']    = $maj;
         $this->profile['lastnews']  = S::v('banana_last');
-        
+
         if ($maj) {
             XDB::execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}", gmdate("YmdHis"), $uid);
         }
@@ -174,7 +174,7 @@ class PlatalBanana extends Banana
         if (!count($_POST['subscribe'])) {
             return true;
         }
-        
+
         $req  = XDB::iterRow("SELECT fid,nom FROM {$globals->banana->table_prefix}list");
         $fids = array();
         while (list($fid,$fnom) = $req->next()) {
