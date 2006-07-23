@@ -175,20 +175,12 @@ class PlatalPage extends Smarty
     }
 
     // }}}
-    // {{{ function fail()
-
-    function fail($msg)
-    {
-        $this->trig($msg);
-        $this->_failure = true;
-    }
-
-    // }}}
     // {{{ function kill()
 
     function kill($msg)
     {
-        $this->fail($msg);
+        $this->trig($msg);
+        $this->_failure = true;
         $this->run();
     }
 

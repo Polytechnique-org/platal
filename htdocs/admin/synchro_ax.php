@@ -36,7 +36,7 @@ require_once('user.func.inc.php');
 if (Env::has('user')) {
     $login = get_user_forlife(Env::get('user'));
     if ($login === false) {
-        $page->kill("");
+        exit;
     }
 }
 
@@ -50,7 +50,6 @@ if (Env::has('mat')) {
 }
 
 if ($login) {
-    
     if (Env::has('importe')) {
         ax_synchronize($login, S::v('uid'));
     }
