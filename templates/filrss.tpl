@@ -50,11 +50,11 @@ En voici les adresses :
 <ul>
   <li>
   Anonces sur la page d'entrée :
-  <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
+  <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </li>
   <li>
   Ton carnet polytechnicien :
-  <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' title='fil RSS'/></a>
+  <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </li>
 </ul>
 <p>

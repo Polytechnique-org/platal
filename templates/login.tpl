@@ -145,7 +145,7 @@ Bienvenue {$smarty.session.prenom}
   </p>
   {if $smarty.session.core_rss_hash}
   <div class="right">
-    <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' /></a>
+    <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </div>
   {else}
   <div class="right">

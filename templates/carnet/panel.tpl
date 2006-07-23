@@ -39,7 +39,7 @@ Il faut pour celà se rendre sur la page de <a href='carnet/notifs'>configuration
 
 <div class="right">
 {if $smarty.session.core_rss_hash}
-<a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' /></a>
+<a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
 {/if}
 </div>
 

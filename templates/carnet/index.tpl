@@ -65,7 +65,7 @@
         Affichage de tous les évenements de camarades/promos
   {if $smarty.session.core_rss_hash}
   <div class="right">
-    <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'><img src='images/rssicon.gif' alt='fil rss' /></a>
+    <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </div>
   {else}
   <div class="right">
