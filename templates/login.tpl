@@ -83,7 +83,7 @@ Bienvenue {$smarty.session.prenom}
   <table class="bicol">
     <tr>
       <th>
-        <a href="events?lu={$ev.id}{if $previd}#newsid{$previd}{/if}" style="display:block;float:right"><img alt="Cacher" title="Cacher cet article" src="images/retirer.gif"/></a>
+        <a href="events?lu={$ev.id}{if $previd}#newsid{$previd}{/if}" style="display:block;float:right">{icon name=cross title="Cacher cet article"}</a>
         {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>
 	 {tidy}

@@ -46,7 +46,7 @@
     <td class='right'>
       {if $liste.sub eq 2}
       <a href='{$platal->ns}lists?del={$liste.list}'>
-        <img src="images/retirer.gif" alt="[ désinscription ]" title="me désinscrire de {$liste.list}" />
+        {icon name=cross title="me désinscrire"}
       </a>
       {elseif $liste.sub eq 1}
       <img src="images/flag.png" alt="[ en cours ]" title='inscription en attente de modération' />

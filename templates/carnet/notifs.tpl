@@ -115,7 +115,7 @@ et cliquer sur les icones <img src="images/ajouter.gif" alt="Ajouter" /> pour le
       <ul>
         {foreach from=$watch->nonins() item=p}
         <li>
-        {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}"><img src="images/retirer.gif" alt="retirer" /></a>
+        {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}">{icon name='cross' title='retirer'}</a>
         </li>
         {/foreach}
       </ul>

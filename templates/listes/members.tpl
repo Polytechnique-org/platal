@@ -58,7 +58,7 @@
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
       Te désinscrire :
-      <a href='{$platal->pl_self(1)}?del=1'><img src="images/retirer.gif" alt="[me désinsiscrire]" /></a>
+      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me désinsiscrire"}</a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}

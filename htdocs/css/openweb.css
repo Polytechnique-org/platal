@@ -35,7 +35,7 @@ body {
 a:link, a:visited { color: #f60; background: transparent; }
 a:active, a:hover { color: #369; background: transparent; }
 
-img   { vertical-align: middle; }
+img   { vertical-align: text-top; }
 a img { border: 0px; }
 td    { vertical-align: top; }
 li    { padding: 0em 1em; text-align: justify; }

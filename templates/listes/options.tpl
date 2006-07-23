@@ -167,7 +167,7 @@ redirection en mode 'inactif'. le logiciel de mailing list saura se débrouiller 
         {if $options.accept_these_nonmembers|@count}
         {foreach from=$options.accept_these_nonmembers item=addr}
         {$addr}<a href='{$platal->pl_self(1)}&amp;atn_del={$addr}'>
-          <img src="images/retirer.gif" alt='retirer de la whitelist' title="retirer {$addr} de la whitelist" />
+          {icon name=cross title="retirer de la whitelist"}
         </a><br />
         {/foreach}
         {else}

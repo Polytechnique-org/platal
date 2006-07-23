@@ -53,7 +53,7 @@
         *}<img src="images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
       {else}
         <a href="carnet/notifs/del_nonins/{$c.user_id}">{*
-        *}<img src="images/retirer.gif" alt="Retirer de la liste de mes surveillances" title="Retirer de la liste de mes surveillances" /></a>
+        *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
       {/if}
     {elseif $c.wasinscrit}
         <a href="profile/{$c.forlife}" class="popup2">{*

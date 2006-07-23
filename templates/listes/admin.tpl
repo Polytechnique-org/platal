@@ -32,7 +32,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 <p>
 Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant un de
 ses identifiants, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie. Pour inscrire plusieurs utilisateurs, les séparer par des espaces.
-L'icône <img src='images/retirer.gif' alt='retirer membre' title='retirer membre' /> permet de désinscrire de la liste quelqu'un
+L'icône {icon name=cross title='retirer membre'} permet de désinscrire de la liste quelqu'un
 qui y était abonné.
 </p>
 
@@ -52,7 +52,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_owner={$x.l}'><img src='images/retirer.gif' alt='retirer modérateur' title='retirer modérateur' /></a>
+        <a href='{$platal->pl_self(1)}?del_owner={$x.l}'>{icon name=cross title='retirer modérateur'}</a>
         <br />
         {/foreach}
       </td>
@@ -86,7 +86,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_member={$x.l}'><img src='images/retirer.gif' alt='retirer membre' title='retirer membre' /></a>
+        <a href='{$platal->pl_self(1)}?del_member={$x.l}'>{icon name=cross title='retirer membre'}</a>
         <br />
         {/foreach}
       </td>

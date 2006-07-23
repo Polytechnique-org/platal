@@ -40,7 +40,7 @@ immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
 
 <p>
 Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
-<img src="images/retirer.gif" alt="[ désinscription ]" />.
+{icon name=cross title="désinscription"}.
 </p>
 
 <h2>La diffusion sur une liste de diffusion</h2>
