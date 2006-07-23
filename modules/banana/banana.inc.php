@@ -37,7 +37,7 @@ function hook_checkcancel($_headers) {
 
 function hook_shortcuts()
 {
-    return Array('profile' => array('<a href="banana/profile">Préférences</a>',
+    return array('profile' => array('<a href="banana/profile">Préférences</a>',
                                     'Préférences'));
 }
 
@@ -97,7 +97,7 @@ function hook_getSubject(&$subject)
         if ($banana->state['group'] == $matches[2]) {
             return ' [=> ' . $matches[2] . ']';
         } else {
-            return ' [=> ' . makeHREF(Array('group' => $matches[2]), $matches[2]) . ']';
+            return ' [=> ' . makeHREF(array('group' => $matches[2]), $matches[2]) . ']';
         }
     }
     return null;
@@ -105,8 +105,10 @@ function hook_getSubject(&$subject)
 
 class PlatalBanana extends Banana
 {
-    var $profile    = Array( 'name' => '', 'sig'  => '', 'org'  => 'Utilisateur de Polytechnique.org',
-            'customhdr' =>'', 'display' => 0, 'lastnews' => 0, 'locale'  => 'fr_FR', 'subscribe' => array());
+    var $profile    = array('name' => '', 'sig'  => '',
+                            'org'  => 'Utilisateur de Polytechnique.org',
+                            'customhdr' =>'', 'display' => 0, 'lastnews' => 0, 
+                            'locale'  => 'fr_FR', 'subscribe' => array());
     var $can_attach = false;
 
     function PlatalBanana()
@@ -133,7 +135,8 @@ class PlatalBanana extends Banana
         $this->profile['lastnews']  = S::v('banana_last');
 
         if ($maj) {
-            XDB::execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}", gmdate("YmdHis"), $uid);
+            XDB::execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}",
+                         gmdate("YmdHis"), $uid);
         }
 
         $req = XDB::query("
@@ -157,8 +160,9 @@ class PlatalBanana extends Banana
         global $banana;
 
         if (Get::v('banana') == 'updateall'
-                || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
-            XDB::execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), S::v('uid'));
+        || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
+            XDB::execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}',
+                         gmdate('YmdHis'), S::v('uid'));
             $_SESSION['banana_last'] = time();
         }
         return Banana::run('PlatalBanana', $params);
@@ -169,7 +173,7 @@ class PlatalBanana extends Banana
         global $globals;
         $uid = S::v('uid');
 
-        $this->profile['subscribe'] = Array();
+        $this->profile['subscribe'] = array();
         XDB::execute("DELETE FROM {$globals->banana->table_prefix}abos WHERE uid={?}", $uid);
         if (!count($_POST['subscribe'])) {
             return true;
@@ -188,7 +192,8 @@ class PlatalBanana extends Banana
         }
 
         foreach ($_POST['subscribe'] as $g) {
-            XDB::execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})", $fids[$g], $uid);
+            XDB::execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})",
+                         $fids[$g], $uid);
             $this->profile['subscribe'][] = $g;
         }
     }
