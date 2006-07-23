@@ -69,6 +69,14 @@ class PlatalGlobals extends DiogenesCoreGlobals
 
     function read_config()
     {
+        $array = parse_ini_file($this->spoolroot.'/configs/platal.ini', true);
+        foreach ($array as $cat => $conf) {
+            $c = strtolower($cat);
+            foreach ($conf as $k => $v) {
+                $this->$c->$k = $v;
+            }
+        }
+
         $array = parse_ini_file($this->spoolroot.'/configs/platal.conf', true);
         if (!is_array($array)) {
             return;
