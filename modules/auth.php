@@ -119,7 +119,7 @@ class AuthModule extends PLModule
 
     function handler_redirect(&$page)
     {
-        http_redirect(Env::get('dest', '/'));
+        http_redirect(Env::v('dest', '/'));
     }
 
     function handler_groupex(&$page)

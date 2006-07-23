@@ -23,14 +23,14 @@ function smarty_insert_getUsername()
 {
     global $globals;
 
-    $id = Cookie::getInt('ORGuid', -1);
+    $id = Cookie::i('ORGuid', -1);
     $id = S::v($_SESSION['uid'], $id);
 
     if ($id<0) {
         return "";
     }
 
-    if (Cookie::get('ORGdomain', 'login') != 'alias') {
+    if (Cookie::v('ORGdomain', 'login') != 'alias') {
 	$res = XDB::query("SELECT  alias FROM aliases
 	                              WHERE  id={?} AND (type IN ('a_vie','alias') AND FIND_IN_SET('bestalias', flags))", $id);
 	return $res->fetchOneCell();

@@ -59,15 +59,15 @@ class ListsModule extends PLModule
 
 
         if (Get::has('del')) {
-            $this->client->unsubscribe(Get::get('del'));
+            $this->client->unsubscribe(Get::v('del'));
             pl_redirect('lists');
         }
         if (Get::has('add')) {
-            $this->client->subscribe(Get::get('add'));
+            $this->client->subscribe(Get::v('add'));
             pl_redirect('lists');
         }
         if (Post::has('promo_add')) {
-            $promo = Post::getInt('promo_add');
+            $promo = Post::i('promo_add');
             if ($promo >= 1900 and $promo < 2100) {
                 $this->client->subscribe("promo$promo");
             } else {
@@ -82,22 +82,22 @@ class ListsModule extends PLModule
     {
         $page->changeTpl('listes/create.tpl');
 
-        $owners  = preg_split("/[\s]+/", Post::get('owners'), -1, PREG_SPLIT_NO_EMPTY);
-        $members = preg_split("/[\s]+/", Post::get('members'), -1, PREG_SPLIT_NO_EMPTY);
+        $owners  = preg_split("/[\s]+/", Post::v('owners'), -1, PREG_SPLIT_NO_EMPTY);
+        $members = preg_split("/[\s]+/", Post::v('members'), -1, PREG_SPLIT_NO_EMPTY);
 
         // click on validate button 'add_owner_sub' or type <enter>
         if (Post::has('add_owner_sub') && Post::has('add_owner')) {
             require_once('user.func.inc.php');
             // if we want to add an owner and then type <enter>, then both
             // add_owner_sub and add_owner are filled.
-            if (Post::get('add_owner') != "") {
-                if (($forlife = get_user_forlife(Post::get('add_owner'))) !== false) {
+            if (Post::v('add_owner') != "") {
+                if (($forlife = get_user_forlife(Post::v('add_owner'))) !== false) {
                     $owners [] = $forlife;
                 }
                 // if we want to add a member and then type <enter>, then
                 // add_owner_sub is filled, whereas add_owner is empty.
             } else if (Post::has('add_member')) {
-                if (($forlife = get_user_forlife(Post::get('add_member'))) !== false) {
+                if (($forlife = get_user_forlife(Post::v('add_member'))) !== false) {
                     $members[] = $forlife;
                 }
             }
@@ -106,7 +106,7 @@ class ListsModule extends PLModule
         // click on validate button 'add_member_sub'
         if (Post::has('add_member_sub') && Post::has('add_member')) {
             require_once('user.func.inc.php');
-            if (($forlife = get_user_forlife(Post::get('add_member'))) !== false) {
+            if (($forlife = get_user_forlife(Post::v('add_member'))) !== false) {
                 $members[] = $forlife;
             }
         }
@@ -121,7 +121,7 @@ class ListsModule extends PLModule
             return;
         }
 
-        $liste = Post::get('liste');
+        $liste = Post::v('liste');
 
         if (empty($liste)) {
             $page->trig('champs «addresse souhaitée» vide');
@@ -137,7 +137,7 @@ class ListsModule extends PLModule
             $page->trig('cet alias est déjà pris');
         }
 
-        if (!Post::get(desc)) {
+        if (!Post::v(desc)) {
             $page->trig('le sujet est vide');
         }
 
@@ -153,8 +153,8 @@ class ListsModule extends PLModule
             $page->assign('created', true);
             require_once 'validations.inc.php';
             $req = new ListeReq(S::v('uid'), $liste,
-                                Post::get('desc'), Post::getInt('advertise'),
-                                Post::getInt('modlevel'), Post::getInt('inslevel'),
+                                Post::v('desc'), Post::i('advertise'),
+                                Post::i('modlevel'), Post::i('inslevel'),
                                 $owners, $members);
             $req->submit();
         }
@@ -182,7 +182,7 @@ class ListsModule extends PLModule
 
         $members = $this->client->get_members($liste);
 
-        $tri_promo = !Env::getBool('alpha');
+        $tri_promo = !Env::b('alpha');
 
         if (list($det,$mem,$own) = $members) {
             $membres = list_sort_members($mem, $tri_promo);
@@ -273,8 +273,8 @@ class ListsModule extends PLModule
             {
                 $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
             } elseif (Get::has('file')) {
-                $file = Get::get('file');
-                $rep  = Get::get('rep');
+                $file = Get::v('file');
+                $rep  = Get::v('rep');
                 if (strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $rep)) {
                     $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
                 } else { 
@@ -311,16 +311,16 @@ class ListsModule extends PLModule
         $page->register_modifier('qpd', 'quoted_printable_decode');
 
         if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
-            $this->client->handle_request($liste,Env::get('sadd'),4,'');
+            $this->client->handle_request($liste,Env::v('sadd'),4,'');
             pl_redirect('lists/moderate/'.$liste);
         }
 
         if (Post::has('sdel')) { /* 2 = REJECT */
-            $this->client->handle_request($liste,Post::get('sdel'),2,Post::get('reason'));
+            $this->client->handle_request($liste,Post::v('sdel'),2,Post::v('reason'));
         }
 
         if (Env::has('mid')) {
-            $mid    = Env::get('mid');
+            $mid    = Env::v('mid');
             $mail   = $this->client->get_pending_mail($liste, $mid);
             $reason = '';
 
@@ -334,7 +334,7 @@ class ListsModule extends PLModule
             } elseif (Env::has('mno')) {
                 $action  = 2; /** 2 = REJECT **/
                 $subject = "Message refusé";
-                $reason  = Post::get('reason');
+                $reason  = Post::v('reason');
                 $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
                         .  $reason;
             } elseif (Env::has('mdel')) {
@@ -379,7 +379,7 @@ class ListsModule extends PLModule
 
             if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
                 foreach($subs as $user) {
-                    if ($user['id'] == Env::get('sid')) {
+                    if ($user['id'] == Env::v('sid')) {
                         $page->changeTpl('listes/moderate_sub.tpl');
                         $page->assign('del_user', $user);
                         return;
@@ -412,7 +412,7 @@ class ListsModule extends PLModule
         if (Env::has('add_member')) {
 
             require_once('user.func.inc.php');
-            $members = explode(' ', Env::get('add_member'));
+            $members = explode(' ', Env::v('add_member'));
             if ($members) foreach ($members as $i => $alias) {
                 if (($login = get_user_forlife($alias)) !== false) {;
                         $members[$i] = $login;
@@ -428,11 +428,11 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('del_member')) {
-            if (strpos(Env::get('del_member'), '@') === false) {
+            if (strpos(Env::v('del_member'), '@') === false) {
                 $this->client->mass_unsubscribe(
-                    $liste, array(Env::get('del_member').'@'.$globals->mail->domain));
+                    $liste, array(Env::v('del_member').'@'.$globals->mail->domain));
             } else {
-                $this->client->mass_unsubscribe($liste, array(Env::get('del_member')));
+                $this->client->mass_unsubscribe($liste, array(Env::v('del_member')));
             }
             pl_redirect('lists/admin/'.$liste);
         }
@@ -440,7 +440,7 @@ class ListsModule extends PLModule
         if (Env::has('add_owner')) {
             require_once('user.func.inc.php');
 
-            $owners = explode(' ', Env::get('add_owner'));
+            $owners = explode(' ', Env::v('add_owner'));
 
             if ($owners) foreach ($owners as $alias) {
                 if (($login = get_user_forlife($alias)) === false) {;
@@ -454,10 +454,10 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('del_owner')) {
-            if (strpos(Env::get('del_owner'), '@') === false) {
-                $this->client->del_owner($liste, Env::get('del_owner').'@'.$globals->mail->domain);
+            if (strpos(Env::v('del_owner'), '@') === false) {
+                $this->client->del_owner($liste, Env::v('del_owner').'@'.$globals->mail->domain);
             } else {
-                $this->client->del_owner($liste, Env::get('del_owner'));
+                $this->client->del_owner($liste, Env::v('del_owner'));
             }
             pl_redirect('lists/admin/'.$liste);
         }
@@ -512,10 +512,10 @@ class ListsModule extends PLModule
                 $values['subject_prefix'] = trim($values['subject_prefix']).' ';
             }
             $this->client->set_owner_options($liste, $values);
-        } elseif (isvalid_email(Post::get('atn_add'))) {
-            $this->client->add_to_wl($liste, Post::get('atn_add'));
+        } elseif (isvalid_email(Post::v('atn_add'))) {
+            $this->client->add_to_wl($liste, Post::v('atn_add'));
         } elseif (Get::has('atn_del')) {
-            $this->client->del_from_wl($liste, Get::get('atn_del'));
+            $this->client->del_from_wl($liste, Get::v('atn_del'));
             pl_redirect('lists/options/'.$liste);
         }
 
@@ -538,8 +538,8 @@ class ListsModule extends PLModule
 
         $page->changeTpl('listes/delete.tpl');
 
-        if (Post::get('valid') == 'OUI'
-        && $this->client->delete_list($liste, Post::getBool('del_archive')))
+        if (Post::v('valid') == 'OUI'
+        && $this->client->delete_list($liste, Post::b('del_archive')))
         {
             foreach (array('', '-owner', '-admin', '-bounces') as $app) {
                 XDB::execute("DELETE FROM  aliases

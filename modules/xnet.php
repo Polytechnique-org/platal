@@ -97,7 +97,7 @@ class XnetModule extends PLModule
         if (Get::has('del')) {
             $res = XDB::query('SELECT id, nom, mail_domain
                                            FROM groupex.asso WHERE diminutif={?}',
-                                        Get::get('del'));
+                                        Get::v('del'));
             list($id, $nom, $domain) = $res->fetchOneRow();
             $page->assign('nom', $nom);
             if ($id && Post::has('del')) {
@@ -132,8 +132,8 @@ class XnetModule extends PLModule
 
         if (Post::has('diminutif')) {
             XDB::query('INSERT INTO groupex.asso (id,diminutif)
-                                 VALUES(NULL,{?})', Post::get('diminutif'));
-            pl_redirect('../'.Post::get('diminutif').'/edit');
+                                 VALUES(NULL,{?})', Post::v('diminutif'));
+            pl_redirect('../'.Post::v('diminutif').'/edit');
         }
 
         $res = XDB::query('SELECT nom,diminutif FROM groupex.asso ORDER by NOM');
@@ -183,7 +183,7 @@ class XnetModule extends PLModule
 
     function handler_groups2(&$page)
     {
-        $this->handler_groups(&$page, Get::get('cat'), Get::get('dom'));
+        $this->handler_groups(&$page, Get::v('cat'), Get::v('dom'));
     }
 
     function handler_groups(&$page, $cat = null, $dom = null)

@@ -102,13 +102,13 @@ class EventsModule extends PLModule
                                      INNER JOIN evenements AS e ON e.id = ev.evt_id
                                           WHERE peremption < NOW)');
             XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
-                                   Env::get('lu'), S::v('uid'));
+                                   Env::v('lu'), S::v('uid'));
         }
 
         if (Env::has('nonlu')){
             XDB::execute('DELETE FROM evenements_vus
                                           WHERE evt_id = {?} AND user_id = {?}',
-                                   Env::get('nonlu'), S::v('uid'));
+                                   Env::v('nonlu'), S::v('uid'));
         }
 
         // affichage des evenements
@@ -147,13 +147,13 @@ class EventsModule extends PLModule
     {
         $page->changeTpl('evenements.tpl');
 
-        $titre      = Post::get('titre');
-        $texte      = Post::get('texte');
-        $promo_min  = Post::getInt('promo_min');
-        $promo_max  = Post::getInt('promo_max');
-        $peremption = Post::getInt('peremption');
-        $valid_mesg = Post::get('valid_mesg');
-        $action     = Post::get('action');
+        $titre      = Post::v('titre');
+        $texte      = Post::v('texte');
+        $promo_min  = Post::i('promo_min');
+        $promo_max  = Post::i('promo_max');
+        $peremption = Post::i('peremption');
+        $valid_mesg = Post::v('valid_mesg');
+        $action     = Post::v('action');
 
         $page->assign('titre', $titre);
         $page->assign('texte', $texte);
@@ -232,12 +232,12 @@ class EventsModule extends PLModule
         require_once 'newsletter.inc.php';
 
         if (Post::has('see')) {
-            $art = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'));
+            $art = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
             $page->assign('art', $art);
         } elseif (Post::has('valid')) {
             require_once('validations.inc.php');
-            $art = new NLReq(S::v('uid'), Post::get('title'),
-                             Post::get('body'), Post::get('append'));
+            $art = new NLReq(S::v('uid'), Post::v('title'),
+                             Post::v('body'), Post::v('append'));
             $art->submit();
             $page->assign('submited', true);
         }

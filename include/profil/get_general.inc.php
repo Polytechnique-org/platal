@@ -57,7 +57,7 @@ replace_ifset($appli_type2,"appli_type2");
 replace_ifset($nickname,"nickname");
 
 if(Env::has('modifier') || Env::has('suivant') && $opened_tab == 'general') {
-    $mobile_pub = Env::get('mobile_pub');
+    $mobile_pub = Env::v('mobile_pub');
     $web_pub = Env::has('web_pub')?'public':'private';
     $freetext_pub = Env::has('freetext_pub')?'public':'private';
     $photo_pub = Env::has('photo_pub')?'public':'private';

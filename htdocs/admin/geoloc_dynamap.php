@@ -22,7 +22,7 @@
 require_once("xorg.inc.php");
 new_admin_page('admin/geoloc_dynamap.tpl');
 
-if (Env::get('fix') == 'cities_not_on_map') {
+if (Env::v('fix') == 'cities_not_on_map') {
     require_once('geoloc.inc.php');
     if (!fix_cities_not_on_map(20))
         $page->trig("Impossible d'accéder au webservice");
@@ -30,18 +30,18 @@ if (Env::get('fix') == 'cities_not_on_map') {
         $refresh = true;
 }
 
-if (Env::get('fix') == 'smallest_maps') {
+if (Env::v('fix') == 'smallest_maps') {
     require_once('geoloc.inc.php');
     set_smallest_levels();
 }
 
-if (Env::get('fix') == 'precise_coordinates') {
+if (Env::v('fix') == 'precise_coordinates') {
     XDB::execute("UPDATE adresses AS a INNER JOIN geoloc_city AS c ON(a.cityid = c.id) SET a.glat = c.lat / 100000, a.glng = c.lon / 100000");
 }
 
 if (Env::has('new_maps')) {
     require_once('geoloc.inc.php');
-    if (!get_new_maps(Env::get('url')))
+    if (!get_new_maps(Env::v('url')))
         $page->trig("Impossible d'accéder aux nouvelles cartes");
 }
 

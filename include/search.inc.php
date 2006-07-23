@@ -24,7 +24,7 @@ require_once("search/classes.inc.php");
 
 // {{{ function advancedSearchFromInput
 function getadr_join($table) {
-    return 'u.user_id='.$table.'.uid'.(Env::get('only_current',false)?' AND FIND_IN_SET(\'active\','.$table.'.statut)':'');
+    return 'u.user_id='.$table.'.uid'.(Env::v('only_current',false)?' AND FIND_IN_SET(\'active\','.$table.'.statut)':'');
 }
 function advancedSearchFromInput()
 {

@@ -28,7 +28,7 @@ foreach ($_GET as $v => $a)
 		$querystring .= '&'.urlencode($v).'='.urlencode($a);
 $initfile = urlencode('geolocInit.php?'.$querystring);
 
-if (urlencode(Env::get('initfile')) != $initfile)
+if (urlencode(Env::v('initfile')) != $initfile)
 {
 	header("Location: dynamap.php?initfile=$initfile{$querystring}");
 	die();

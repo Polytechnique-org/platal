@@ -24,33 +24,33 @@ new_admin_page('admin/newsletter_edit.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
 require_once("newsletter.inc.php");
 
-$nid = Get::get('nid', 'last');
+$nid = Get::v('nid', 'last');
 $nl  = new NewsLetter($nid);
 
 if(Get::has('del_aid')) {
-    $nl->delArticle(Get::get('del_aid'));
+    $nl->delArticle(Get::v('del_aid'));
     http_redirect("{$_SERVER['PHP_SELF']}?nid=$nid");
 }
 
-if(Post::get('update')) {
-    $nl->_title = Post::get('title');
-    $nl->_date  = Post::get('date');
-    $nl->_head  = Post::get('head');
+if(Post::v('update')) {
+    $nl->_title = Post::v('title');
+    $nl->_date  = Post::v('date');
+    $nl->_head  = Post::v('head');
     $nl->save();
 }
 
-if(Post::get('save')) {
-    $art  = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'),
-            Get::get('edit_aid'), Post::get('cid'), Post::get('pos'));
+if(Post::v('save')) {
+    $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
+            Get::v('edit_aid'), Post::v('cid'), Post::v('pos'));
     $nl->saveArticle($art);
     http_redirect("{$_SERVER['PHP_SELF']}?nid=$nid");
 }
 
 if(Get::has('edit_aid')) {
-    $eaid = Get::get('edit_aid');
+    $eaid = Get::v('edit_aid');
     if(Post::has('aid')) {
-        $art  = new NLArticle(Post::get('title'), Post::get('body'), Post::get('append'),
-                $eaid, Post::get('cid'), Post::get('pos'));
+        $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
+                $eaid, Post::v('cid'), Post::v('pos'));
     } else {
 	$art = $eaid<0 ? new NLArticle() : $nl->getArt($eaid);
     }

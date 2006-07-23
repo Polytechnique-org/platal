@@ -63,7 +63,7 @@ class XOrgPlugin
      */
     function get_value($key)
     {
-        return Get::get($this->_prefix.$key);
+        return Get::v($this->_prefix.$key);
     }
 
     // }}}
@@ -97,7 +97,7 @@ class XOrgPlugin
                     $get[] = urlencode($key) . '=' . urlencode($args[$key]);
                 }
             } elseif (Get::has('key')) {
-		$get[] = urlencode($key) . '=' . urlencode(Get::get($key));
+		$get[] = urlencode($key) . '=' . urlencode(Get::v($key));
 	    }
 	}
 

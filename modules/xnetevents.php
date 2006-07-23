@@ -45,7 +45,7 @@ class XnetEventsModule extends PLModule
                 return PL_NOT_ALLOWED;
             }
 
-            $eid = Post::get('del');
+            $eid = Post::v('del');
 
             $res = XDB::query("SELECT asso_id, short_name FROM groupex.evenements
                                         WHERE eid = {?} AND asso_id = {?}",
@@ -157,8 +157,8 @@ class XnetEventsModule extends PLModule
             return;
         }
 
-        $moments = Post::getMixed('moment',    array());
-        $pers    = Post::getMixed('personnes', array());
+        $moments = Post::v('moment',    array());
+        $pers    = Post::v('personnes', array());
         $subs    = array();
 
         foreach ($moments as $j => $v) {
@@ -227,7 +227,7 @@ class XnetEventsModule extends PLModule
 
         $admin = may_update();
 
-        $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
+        $tri = (Env::v('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
 
         $page->assign('participants',
                       get_event_participants($evt, $item_id, $tri));
@@ -235,7 +235,7 @@ class XnetEventsModule extends PLModule
         $page->assign('admin', $admin);
         $page->assign('moments', $evt['moments']);
         $page->assign('money', $evt['money']);
-        $page->assign('tout', !Env::get('item_id', false));
+        $page->assign('tout', !Env::v('item_id', false));
     }
 
     function handler_edit(&$page, $eid = null)
@@ -258,35 +258,35 @@ class XnetEventsModule extends PLModule
         $moments = range(1, 4);
         $page->assign('moments', $moments);
 
-        if (Post::get('intitule')) {
+        if (Post::v('intitule')) {
             require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
             $short_name = event_change_shortname($page, $infos['short_name'],
-                                                 Env::get('short_name', ''));
+                                                 Env::v('short_name', ''));
 
             $evt = array(
                 'eid'              => $eid,
                 'asso_id'          => $globals->asso('id'),
                 'organisateur_uid' => S::v('uid'),
-                'paiement_id'      => Post::get('paiement_id') > 0 ? Post::get('paiement_id') : null,
-                'debut'            => Post::get('deb_Year').'-'.Post::get('deb_Month')
-                                      .'-'.Post::get('deb_Day').' '.Post::get('deb_Hour')
-                                      .':'.Post::get('deb_Minute').':00',
-                'fin'              => Post::get('fin_Year').'-'.Post::get('fin_Month')
-                                      .'-'.Post::get('fin_Day').' '.Post::get('fin_Hour')
-                                      .':'.Post::get('fin_Minute').':00',
+                'paiement_id'      => Post::v('paiement_id') > 0 ? Post::v('paiement_id') : null,
+                'debut'            => Post::v('deb_Year').'-'.Post::v('deb_Month')
+                                      .'-'.Post::v('deb_Day').' '.Post::v('deb_Hour')
+                                      .':'.Post::v('deb_Minute').':00',
+                'fin'              => Post::v('fin_Year').'-'.Post::v('fin_Month')
+                                      .'-'.Post::v('fin_Day').' '.Post::v('fin_Hour')
+                                      .':'.Post::v('fin_Minute').':00',
                 'short_name'       => $short_name,
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite',
                              'show_participants');
             foreach ($trivial as $k) {
-                $evt[$k] = Post::get($k);
+                $evt[$k] = Post::v($k);
             }
 
-            if (Post::get('deadline')) {
-                $evt['deadline_inscription'] = Post::get('inscr_Year').'-'
-                                             . Post::get('inscr_Month').'-'
-                                             . Post::get('inscr_Day');
+            if (Post::v('deadline')) {
+                $evt['deadline_inscription'] = Post::v('inscr_Year').'-'
+                                             . Post::v('inscr_Month').'-'
+                                             . Post::v('inscr_Day');
             } else {
                 $evt['deadline_inscription'] = null;
             }
@@ -312,16 +312,16 @@ class XnetEventsModule extends PLModule
             $money_defaut = 0;
 
             foreach ($moments as $i) {
-                if (Post::get('titre'.$i)) {
+                if (Post::v('titre'.$i)) {
                     $nb_moments++;
 
-                    $montant = strtr(Post::get('montant'.$i), ',', '.');
+                    $montant = strtr(Post::v('montant'.$i), ',', '.');
                     $money_defaut += (float)$montant;
                     XDB::execute("
                         REPLACE INTO groupex.evenements_items
                         VALUES ({?}, {?}, {?}, {?}, {?})",
-                        $eid, $i, Post::get('titre'.$i),
-                        Post::get('details'.$i), $montant);
+                        $eid, $i, Post::v('titre'.$i),
+                        Post::v('details'.$i), $montant);
                 } else {
                     XDB::execute("DELETE FROM groupex.evenements_items 
                                             WHERE eid = {?} AND item_id = {?}", $eid, $i);
@@ -329,12 +329,12 @@ class XnetEventsModule extends PLModule
             }
 
             // request for a new payment
-            if (Post::get('paiement_id') == -1 && $money_defaut >= 0) {
+            if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
                 require_once 'validations.inc.php';
                 $p = new PayReq(S::v('uid'),
-                                Post::get('intitule')." - ".$globals->asso('nom'),
-                                Post::get('site'), $money_defaut,
-                                Post::get('confirmation'), 0, 999,
+                                Post::v('intitule')." - ".$globals->asso('nom'),
+                                Post::v('site'), $money_defaut,
+                                Post::v('confirmation'), 0, 999,
                                 $globals->asso('id'), $eid);
                 $p->submit();
             }
@@ -411,31 +411,31 @@ class XnetEventsModule extends PLModule
             new_groupadmin_page('xnetevents/admin.tpl');
         }
 
-        if (may_update() && Post::get('adm')) {
-            $member = get_infos(Post::get('mail'));
+        if (may_update() && Post::v('adm')) {
+            $member = get_infos(Post::v('mail'));
             if (!$member) {
                 $page->trig("Membre introuvable");
             }
 
             // change the price paid by a participant
-            if (Env::get('adm') == 'prix' && $member) {
+            if (Env::v('adm') == 'prix' && $member) {
                 XDB::execute("UPDATE groupex.evenements_participants
                                            SET paid = IF(paid + {?} > 0, paid + {?}, 0)
                                          WHERE uid = {?} AND eid = {?}",
-                        strtr(Env::get('montant'), ',', '.'),
-                        strtr(Env::get('montant'), ',', '.'),
+                        strtr(Env::v('montant'), ',', '.'),
+                        strtr(Env::v('montant'), ',', '.'),
                         $member['uid'], $eid);
             }
 
             // change the number of personns coming with a participant
-            if (Env::get('adm') == 'nbs' && $member) {
+            if (Env::v('adm') == 'nbs' && $member) {
                 $res = XDB::query("SELECT paid
                                                FROM groupex.evenements_participants
                                               WHERE uid = {?} AND eid = {?}",
                                             $member['uid'], $eid);
 
                 $paid = intval($res->fetchOneCell());
-                $nbs  = Post::getMixed('nb', array());
+                $nbs  = Post::v('nb', array());
 
                 foreach ($nbs as $id => $nb) {
                     $nb = max(intval($nb), 0);
@@ -469,7 +469,7 @@ class XnetEventsModule extends PLModule
             $page->assign('moments', $evt['moments']);
         }
 
-        $tri = (Env::get('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
+        $tri = (Env::v('order') == 'alpha' ? 'promo, nom, prenom' : 'nom, prenom, promo');
         $whereitemid = is_null($item_id) ? '' : "AND ep.item_id = $item_id";
         $res = XDB::iterRow(
                     'SELECT  UPPER(SUBSTRING(IF(u.nom IS NULL, m.nom,
@@ -487,15 +487,15 @@ class XnetEventsModule extends PLModule
         while (list($char, $nb) = $res->next()) {
             $alphabet[ord($char)] = $char;
             $nb_tot += $nb;
-            if (Env::has('initiale') && $char == strtoupper(Env::get('initiale'))) {
+            if (Env::has('initiale') && $char == strtoupper(Env::v('initiale'))) {
                 $tot = $nb;
             }
         }
         ksort($alphabet);
         $page->assign('alphabet', $alphabet);
 
-        $ofs   = Env::getInt('offset');
-        $tot   = Env::get('initiale') ? $tot : $nb_tot;
+        $ofs   = Env::i('offset');
+        $tot   = Env::v('initiale') ? $tot : $nb_tot;
         $nbp   = intval(($tot-1)/NB_PER_PAGE);
         $links = array();
         if ($ofs) {

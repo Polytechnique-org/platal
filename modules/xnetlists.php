@@ -74,16 +74,16 @@ class XnetListsModule extends ListsModule
         $page->changeTpl('xnetlists/index.tpl');
 
         if (Get::has('del')) {
-            $this->client->unsubscribe(Get::get('del'));
+            $this->client->unsubscribe(Get::v('del'));
             pl_redirect('lists');
         }
         if (Get::has('add')) {
-            $this->client->subscribe(Get::get('add'));
+            $this->client->subscribe(Get::v('add'));
             pl_redirect('lists');
         }
 
         if (Post::has('del_alias') && may_update()) {
-            $alias = Post::get('del_alias');
+            $alias = Post::v('del_alias');
             // prevent group admin from erasing aliases from other groups
             $alias = substr($alias, 0, strpos($alias, '@')).'@'.$globals->asso('mail_domain');
             XDB::query(
@@ -91,7 +91,7 @@ class XnetListsModule extends ListsModule
                            USING  x4dat.virtual AS v
                        LEFT JOIN  x4dat.virtual_redirect USING(vid)
                            WHERE  v.alias={?}', $alias);
-            $page->trig(Post::get('del_alias')." supprimé !");
+            $page->trig(Post::v('del_alias')." supprimé !");
         }
 
         $listes = $this->client->get_lists();
@@ -126,7 +126,7 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        $liste = Post::get('liste');
+        $liste = Post::v('liste');
 
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
             $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
@@ -141,15 +141,15 @@ class XnetListsModule extends ListsModule
             $page->trig('cet alias est déjà pris');
             return;
         }
-        if (!Post::get('desc')) {
+        if (!Post::v('desc')) {
             $page->trig('le sujet est vide');
             return;
         }
 
         require_once 'lists.inc.php';
         $ret = $this->client->create_list(
-                    $liste, Post::get('desc'), Post::get('advertise'),
-                    Post::get('modlevel'), Post::get('inslevel'),
+                    $liste, Post::v('desc'), Post::v('advertise'),
+                    Post::v('modlevel'), Post::v('inslevel'),
                     array(S::v('forlife')), array());
 
         $dom = strtolower($globals->asso("mail_domain"));
@@ -193,7 +193,7 @@ class XnetListsModule extends ListsModule
         $page->changeTpl('xnetlists/sync.tpl');
 
         if (Env::has('add')) {
-            $this->client->mass_subscribe($liste, array_keys(Env::getMixed('add')));
+            $this->client->mass_subscribe($liste, array_keys(Env::v('add')));
         }
 
         list(,$members) = $this->client->get_members($liste);
@@ -236,7 +236,7 @@ class XnetListsModule extends ListsModule
         new_groupadmin_page('xnet/groupe/alias-admin.tpl');
 
         if (Env::has('add_member')) {
-            $add = Env::get('add_member');
+            $add = Env::v('add_member');
             if (strstr($add, '@')) {
                 list($mbox,$dom) = explode('@', strtolower($add));
             } else {
@@ -275,7 +275,7 @@ class XnetListsModule extends ListsModule
                     "DELETE FROM  x4dat.virtual_redirect
                            USING  x4dat.virtual_redirect
                       INNER JOIN  x4dat.virtual USING(vid)
-                           WHERE  redirect={?} AND alias={?}", Env::get('del_member'), $lfull);
+                           WHERE  redirect={?} AND alias={?}", Env::v('del_member'), $lfull);
             pl_redirect('alias/admin/'.$lfull);
         }
 
@@ -302,7 +302,7 @@ class XnetListsModule extends ListsModule
             $page->trig('champs «addresse souhaitée» vide');
             return;
         }
-        $liste = Post::get('liste');
+        $liste = Post::v('liste');
         if (!preg_match("/^[a-zA-Z0-9\-\.]*$/", $liste)) {
             $page->trig('le nom de l\'alias ne doit contenir que des lettres,'
                         .' chiffres, tirets et points');

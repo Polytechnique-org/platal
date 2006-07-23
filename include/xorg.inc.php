@@ -97,10 +97,6 @@ function new_admin_page($tpl_name)
 
 function new_admin_table_editor($table, $idfield, $idedit=false)
 {
-    array_walk($_GET, 'unfix_gpc_magic');
-    array_walk($_POST, 'unfix_gpc_magic');
-    array_walk($_REQUEST, 'unfix_gpc_magic');
-
     global $editor;
     new_admin_page('table-editor.tpl');
     require_once('xorg.table-editor.inc.php');

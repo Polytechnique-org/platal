@@ -47,7 +47,7 @@ class EmailModule extends PLModule
             // there will be maximum 8 bits in flags : 255
             XDB::execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
             XDB::execute("UPDATE  aliases SET flags=flags | 1 WHERE id={?} AND alias={?}",
-                                   $uid, Post::get('best'));
+                                   $uid, Post::v('best'));
         }
 
         // on regarde si on a affaire à un homonyme
@@ -116,9 +116,9 @@ class EmailModule extends PLModule
         if ($action == 'ask' && Env::has('alias') and Env::has('raison')) {
             //Si l'utilisateur vient de faire une damande
 
-            $alias  = Env::get('alias');
-            $raison = Env::get('raison');
-            $public = (Env::get('public', 'off') == 'on')?"public":"private";
+            $alias  = Env::v('alias');
+            $raison = Env::v('raison');
+            $public = (Env::v('public', 'off') == 'on')?"public":"private";
 
             $page->assign('r_alias', $alias);
             $page->assign('r_raison', $raison);
@@ -195,14 +195,14 @@ class EmailModule extends PLModule
         }
 
         if (Env::has('emailop')) {
-            $actifs = Env::getMixed('emails_actifs', Array());
-            if (Env::get('emailop') == "ajouter" && Env::has('email')) {
-                $page->assign('retour', $redirect->add_email(Env::get('email')));
+            $actifs = Env::v('emails_actifs', Array());
+            if (Env::v('emailop') == "ajouter" && Env::has('email')) {
+                $page->assign('retour', $redirect->add_email(Env::v('email')));
             } elseif (empty($actifs)) {
                 $page->assign('retour', ERROR_INACTIVE_REDIRECTION);
             } elseif (is_array($actifs)) {
                 $page->assign('retour', $redirect->modify_email($actifs,
-                    Env::getMixed('emails_rewrite',Array())));
+                    Env::v('emails_rewrite',Array())));
             }
         }
 
@@ -236,7 +236,7 @@ class EmailModule extends PLModule
 
         $bogo = new Bogo(S::v('uid'));
         if (Env::has('statut_filtre')) {
-            $bogo->change(S::v('uid'), Env::getInt('statut_filtre'));
+            $bogo->change(S::v('uid'), Env::i('statut_filtre'));
         }
         $page->assign('filtre',$bogo->level());
     }
@@ -250,15 +250,15 @@ class EmailModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Envoyer un email');
 
         // action si on recoit un formulaire
-        if (Env::get('submit') == 'Envoyer')
+        if (Env::v('submit') == 'Envoyer')
         {
-            $to2  = join(', ', Env::getMixed('contacts', Array()));
-            $txt  = str_replace('^M', '', Env::get('contenu'));
-            $to   = Env::get('to');
-            $subj = Env::get('sujet');
-            $from = Env::get('from');
-            $cc   = Env::get('cc');
-            $bcc  = Env::get('bcc');
+            $to2  = join(', ', Env::v('contacts', Array()));
+            $txt  = str_replace('^M', '', Env::v('contenu'));
+            $to   = Env::v('to');
+            $subj = Env::v('sujet');
+            $from = Env::v('from');
+            $cc   = Env::v('cc');
+            $bcc  = Env::v('bcc');
 
             if (empty($to) && empty($cc) && empty($to2)) {
                 $page->trig("Indique au moins un destinataire.");
@@ -344,7 +344,7 @@ L'équipe d'administration <support@polytechnique.org>";
                 $page->trig("Mail envoyé ! :o)");
             }
         } elseif (Post::has('email')) {
-            $email = valide_email(Post::get('email'));
+            $email = valide_email(Post::v('email'));
 
             list(,$fqdn) = explode('@', $email);
             $fqdn = strtolower($fqdn);

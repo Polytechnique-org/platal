@@ -50,7 +50,7 @@ function delete_address($adrid, $in_request_array = false){
 }
 
 //on verifie si on nous a demande une suppression
-$req_adrid_del = Env::getMixed('adrid_del', Array());
+$req_adrid_del = Env::v('adrid_del', Array());
 for ($i = 1; $i <= $nb_adr_max; $i++) {
     if (isset($req_adrid_del[$i])) {
         delete_address($i,true);

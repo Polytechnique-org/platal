@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class Env
-
 class Env
 {
     // {{{ function _get
@@ -29,7 +27,7 @@ class Env
     {
         return isset($_REQUEST[$key]) ? $_REQUEST[$key] : $default;
     }
-    
+
     // }}}
     // {{{ function has
 
@@ -37,43 +35,35 @@ class Env
     {
         return isset($_REQUEST[$key]);
     }
-    
+
     // }}}
     // {{{ function kill
-    
+
     function kill($key)
     {
         unset($_REQUEST[$key]);
     }
 
     // }}}
-    // {{{ function get
-    
-    function get($key, $default='')
-    {
-        return (string)Env::_get($key, $default);
-    }
+    // {{{ function v
 
-    // }}}
-    // {{{ function &getMixed
-    
-    function &getMixed($key, $default=null)
+    function v($key, $default = null)
     {
         return Env::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getBool
-    
-    function getBool($key, $default=false)
+    // {{{ function b
+
+    function b($key, $default = false)
     {
         return (bool)Env::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getInt
-    
-    function getInt($key, $default=0)
+    // {{{ function i
+
+    function i($key, $default = 0)
     {
         $i = Env::_get($key, $default);
         return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
@@ -82,8 +72,6 @@ class Env
     // }}}
 }
 
-// }}}
-// {{{ class Post
 
 class Post
 {
@@ -93,7 +81,7 @@ class Post
     {
         return isset($_POST[$key]) ? $_POST[$key] : $default;
     }
-    
+
     // }}}
     // {{{ function has
 
@@ -101,43 +89,35 @@ class Post
     {
         return isset($_POST[$key]);
     }
-    
+
     // }}}
     // {{{ function kill
-    
+
     function kill($key)
     {
         unset($_POST[$key]);
     }
 
     // }}}
-    // {{{ function get
-    
-    function get($key, $default='')
-    {
-        return (string)Post::_get($key, $default);
-    }
+    // {{{ function v
 
-    // }}}
-    // {{{ function &getMixed
-    
-    function &getMixed($key, $default=null)
+    function v($key, $default = null)
     {
         return Post::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getBool
-    
-    function getBool($key, $default=false)
+    // {{{ function b
+
+    function b($key, $default = false)
     {
         return (bool)Post::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getInt
-    
-    function getInt($key, $default=0)
+    // {{{ function i
+
+    function i($key, $default = 0)
     {
         $i = Post::_get($key, $default);
         return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
@@ -145,9 +125,6 @@ class Post
 
     // }}}
 }
-
-// }}}
-// {{{ class Get
 
 class Get
 {
@@ -157,7 +134,7 @@ class Get
     {
         return isset($_GET[$key]) ? $_GET[$key] : $default;
     }
-    
+
     // }}}
     // {{{ function has
 
@@ -165,43 +142,35 @@ class Get
     {
         return isset($_GET[$key]);
     }
-    
+
     // }}}
     // {{{ function kill
-    
+
     function kill($key)
     {
         unset($_GET[$key]);
     }
 
     // }}}
-    // {{{ function get
-    
-    function get($key, $default='')
-    {
-        return (string)Get::_get($key, $default);
-    }
+    // {{{ function v
 
-    // }}}
-    // {{{ function &getMixed
-    
-    function &getMixed($key, $default=null)
+    function v($key, $default = null)
     {
         return Get::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getBool
-    
-    function getBool($key, $default=false)
+    // {{{ function b
+
+    function b($key, $default = false)
     {
         return (bool)Get::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getInt
-    
-    function getInt($key, $default=0)
+    // {{{ function i
+
+    function i($key, $default = 0)
     {
         $i = Get::_get($key, $default);
         return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
@@ -209,9 +178,6 @@ class Get
 
     // }}}
 }
-
-// }}}
-// {{{ class Cookie
 
 class Cookie
 {
@@ -221,7 +187,7 @@ class Cookie
     {
         return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
     }
-    
+
     // }}}
     // {{{ function has
 
@@ -229,43 +195,35 @@ class Cookie
     {
         return isset($_COOKIE[$key]);
     }
-    
+
     // }}}
     // {{{ function kill
-    
+
     function kill($key)
     {
         unset($_COOKIE[$key]);
     }
 
     // }}}
-    // {{{ function get
-    
-    function get($key, $default='')
-    {
-        return (string)Cookie::_get($key, $default);
-    }
+    // {{{ function v
 
-    // }}}
-    // {{{ function &getMixed
-    
-    function &getMixed($key, $default=null)
+    function v($key, $default = null)
     {
         return Cookie::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getBool
-    
-    function getBool($key, $default=false)
+    // {{{ function b
+
+    function b($key, $default = false)
     {
         return (bool)Cookie::_get($key, $default);
     }
 
     // }}}
-    // {{{ function getInt
-    
-    function getInt($key, $default=0)
+    // {{{ function i
+
+    function i($key, $default = 0)
     {
         $i = Cookie::_get($key, $default);
         return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
@@ -273,8 +231,6 @@ class Cookie
 
     // }}}
 }
-
-// }}}
 
 function fix_gpc_magic(&$item, $key) {
     if (is_array($item)) {
@@ -284,15 +240,7 @@ function fix_gpc_magic(&$item, $key) {
     }
 }
 
-function unfix_gpc_magic(&$item, $key) {
-    if (is_array($item)) {
-        array_walk($item, 'unfix_gpc_magic');
-    } else {
-        $item = addslashes($item);
-    }
-}
-
-if (ini_get("magic_quotes_gpc")) {
+if (ini_get('magic_quotes_gpc') && empty($DONT_FIX_GPC)) {
     array_walk($_GET, 'fix_gpc_magic');
     array_walk($_POST, 'fix_gpc_magic');
     array_walk($_COOKIE, 'fix_gpc_magic');

@@ -54,7 +54,7 @@ class XnetGlobals extends PlatalGlobals
         static $aid = null;
 
         if (is_null($aid)) {
-            $gp = Get::get('p');
+            $gp = Get::v('p');
             $gp = substr($gp, 0, strpos($gp, '/'));
 
             if ($gp) {

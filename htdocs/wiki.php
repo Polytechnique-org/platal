@@ -33,7 +33,7 @@ if (!$n) {
 new_skinned_page('wiki.tpl');
 $perms = wiki_get_perms($n);
 
-switch (Env::get('action')) {
+switch (Env::v('action')) {
   case '':
     wiki_apply_perms($perms[0]);
     break;
@@ -47,7 +47,7 @@ switch (Env::get('action')) {
     break;
 }
 
-if ($p = Post::get('setrperms')) {
+if ($p = Post::v('setrperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $p, $perms[1])) {
         $perms = wiki_get_perms($n);
@@ -55,7 +55,7 @@ if ($p = Post::get('setrperms')) {
     }
 }
 
-if ($p = Post::get('setwperms')) {
+if ($p = Post::v('setwperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $perms[0], $p)) {
         $perms = wiki_get_perms($n);
@@ -66,7 +66,7 @@ if ($p = Post::get('setwperms')) {
 $wiki_cache   = wiki_work_dir().'/cache_'.$n.'.tpl';
 $cache_exists = file_exists($wiki_cache);
 
-if (Env::get('action') || !$cache_exists) {
+if (Env::v('action') || !$cache_exists) {
     @unlink($wiki_cache);
 
     // we leave pmwiki do whatever it wants and store everything
@@ -79,7 +79,7 @@ if (Env::get('action') || !$cache_exists) {
     $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
 }
 
-if (Env::get('action')) {
+if (Env::v('action')) {
     $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
     $wikiAll = substr($wikiAll, $j);
 } else {

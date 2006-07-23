@@ -38,7 +38,7 @@ define('SKINNED', 0);
 define('SIMPLE',  1);
 define('NO_SKIN', 2);
 
-require_once('platal/env.inc.php');
+require_once dirname(__FILE__).'/../classes/Env.php';
 
 function pl_url($path, $query = null, $fragment = null)
 {

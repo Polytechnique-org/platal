@@ -30,9 +30,9 @@ if (S::has('suid')) {
 }
 
 if (Env::has('user_id')) {
-    $login = get_user_login(Env::getInt('user_id'));
+    $login = get_user_login(Env::i('user_id'));
 } elseif (Env::has('login')) {
-    $login = get_user_login(Env::get('login'));
+    $login = get_user_login(Env::v('login'));
 } else {
     $login = false;
 }
@@ -67,7 +67,7 @@ if ($login) {
     foreach($_POST as $key => $val) {
 	switch ($key) {
 	    case "add_fwd":
-		$email = trim(Env::get('email'));
+		$email = trim(Env::v('email'));
 		if (!isvalid_email_redirection($email)) {
                     $page->trig("invalid email $email");
 		} else {
@@ -102,7 +102,7 @@ if ($login) {
         break;
 	    case "add_alias":
 		XDB::execute("INSERT INTO  aliases (id,alias,type) VALUES  ({?}, {?}, 'alias')",
-                        $mr['user_id'], Env::get('email'));
+                        $mr['user_id'], Env::v('email'));
 		break;
 
 	    case "best":
@@ -118,14 +118,14 @@ if ($login) {
 	    // Editer un profil
 	    case "u_edit":
             require_once('secure_hash.inc.php');
-            $pass_encrypted = Env::get('newpass_clair') != "********" ? hash_encrypt(Env::get('newpass_clair')) : Env::get('passw');
-            $naiss = Env::get('naissanceN');
-            $perms = Env::get('permsN');
-            $prenm = Env::get('prenomN');
-            $nom   = Env::get('nomN');
-            $promo = Env::getInt('promoN');
-            $sexe  = Env::get('sexeN');
-            $comm  = Env::get('commentN');
+            $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
+            $naiss = Env::v('naissanceN');
+            $perms = Env::v('permsN');
+            $prenm = Env::v('prenomN');
+            $nom   = Env::v('nomN');
+            $promo = Env::i('promoN');
+            $sexe  = Env::v('sexeN');
+            $comm  = Env::v('commentN');
 
             $query = "UPDATE auth_user_md5 SET
                     naissance = '$naiss',
@@ -150,9 +150,9 @@ if ($login) {
 
                     $page->trig("updaté correctement.");
                 }
-                if (Env::get('nomusageN') != $mr['nom_usage']) {
+                if (Env::v('nomusageN') != $mr['nom_usage']) {
                     require_once('nomusage.inc.php');
-                    set_new_usage($mr['user_id'], Env::get('nomusageN'), make_username(Env::get('prenomN'), Env::get('nomusageN')));
+                    set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
                 }
                 $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
                                               FROM  auth_user_md5 AS u

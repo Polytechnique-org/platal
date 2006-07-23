@@ -34,7 +34,7 @@ if (is_ax_key_missing()) {
 require_once('user.func.inc.php');
 
 if (Env::has('user')) {
-    $login = get_user_forlife(Env::get('user'));
+    $login = get_user_forlife(Env::v('user'));
     if ($login === false) {
         exit;
     }
@@ -45,7 +45,7 @@ if (Env::has('mat')) {
             "SELECT  alias 
                FROM  aliases       AS a
          INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
-              WHERE  matricule={?}", Env::getInt('mat'));
+              WHERE  matricule={?}", Env::i('mat'));
     $login = $res->fetchOneCell();
 }
 

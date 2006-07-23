@@ -60,7 +60,7 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/panel.tpl');
 
         if (Get::has('read')) {
-            $_SESSION['watch_last'] = Get::get('read');
+            $_SESSION['watch_last'] = Get::v('read');
             pl_redirect('carnet/panel');
         }
 
@@ -138,11 +138,11 @@ class CarnetModule extends PLModule
 
         if (Env::has('subs'))       $watch->_subs->update('sub');
         if (Env::has('flags_contacts')) {
-            $watch->watch_contacts = Env::getBool('contacts');
+            $watch->watch_contacts = Env::b('contacts');
             $watch->saveFlags();
         }
         if (Env::has('flags_mail')) {
-            $watch->watch_mail     = Env::getBool('mail');
+            $watch->watch_mail     = Env::b('mail');
             $watch->saveFlags();
         }
 
@@ -154,7 +154,7 @@ class CarnetModule extends PLModule
         $res   = XDB::query("SELECT COUNT(*) FROM contacts WHERE uid = {?}", $uid);
         $total = $res->fetchOneCell();
 
-        $order = Get::get('order');
+        $order = Get::v('order');
         $orders = Array(
             'nom'     => 'nom DESC, u.prenom, u.promo',
             'promo'   => 'promo DESC, nom, u.prenom',
@@ -162,7 +162,7 @@ class CarnetModule extends PLModule
         if ($order != 'promo' && $order != 'last')
             $order = 'nom';
         $order = $orders[$order];
-        if (Get::get('inv') == '')
+        if (Get::v('inv') == '')
             $order = str_replace(" DESC,", ",", $order);
 
         $res   = XDB::query("
@@ -185,9 +185,9 @@ class CarnetModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
 
         $uid  = S::v('uid');
-        $user = Env::get('user');
+        $user = Env::v('user');
 
-        switch (Env::get('action')) {
+        switch (Env::v('action')) {
             case 'retirer':
                 if (is_numeric($user)) {
                     if (XDB::execute('DELETE FROM contacts
@@ -231,15 +231,15 @@ class CarnetModule extends PLModule
             $trombi->setNbRows(4);
             $page->assign_by_ref('trombi',$trombi);
 
-            $order = Get::get('order');
+            $order = Get::v('order');
             if ($order != 'promo' && $order != 'last')
                 $order = 'nom';
             $page->assign('order', $order);
-            $page->assign('inv', Get::get('inv'));
+            $page->assign('inv', Get::v('inv'));
 
         } else {
 
-            $order = Get::get('order');
+            $order = Get::v('order');
             $orders = Array(
                 'nom'     => 'sortkey DESC, a.prenom, a.promo',
                 'promo'   => 'promo DESC, sortkey, a.prenom',
@@ -247,9 +247,9 @@ class CarnetModule extends PLModule
             if ($order != 'promo' && $order != 'last')
                 $order = 'nom';
             $page->assign('order', $order);
-            $page->assign('inv', Get::get('inv'));
+            $page->assign('inv', Get::v('inv'));
             $order = $orders[$order];
-            if (Get::get('inv') == '')
+            if (Get::v('inv') == '')
                 $order = str_replace(" DESC,", ",", $order);
 
             $sql = "SELECT  contact AS id,

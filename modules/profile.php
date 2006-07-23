@@ -45,7 +45,7 @@ class ProfileModule extends PLModule
     /* XXX COMPAT */
     function handler_fiche(&$page)
     {
-        return $this->handler_profile($page, Env::get('user'));
+        return $this->handler_profile($page, Env::v('user'));
     }
 
 
@@ -118,7 +118,7 @@ class ProfileModule extends PLModule
         if (Env::has('upload')) {
             $file = isset($_FILES['userfile']['tmp_name'])
                     ? $_FILES['userfile']['tmp_name']
-                    : Env::get('photo');
+                    : Env::v('photo');
             if ($data = file_get_contents($file)) {
                 if ($myphoto = new PhotoReq(S::v('uid'), $data)) {
                     $myphoto->submit();
@@ -133,13 +133,13 @@ class ProfileModule extends PLModule
                 $myphoto->commit();
                 $myphoto->clean();
             }
-        } elseif (Env::get('suppr')) {
+        } elseif (Env::v('suppr')) {
             XDB::execute('DELETE FROM photo WHERE uid = {?}',
                                    S::v('uid'));
             XDB::execute('DELETE FROM requests
                                      WHERE user_id = {?} AND type="photo"',
                                    S::v('uid'));
-        } elseif (Env::get('cancel')) {
+        } elseif (Env::v('cancel')) {
             $sql = XDB::query('DELETE FROM requests 
                                         WHERE user_id={?} AND type="photo"',
                                         S::v('uid'));
@@ -164,8 +164,8 @@ class ProfileModule extends PLModule
         $page->changeTpl('fiche.tpl', SIMPLE);
 
         $view = 'private';
-        if (!S::logged() || Env::get('view') == 'public') $view = 'public';
-        if (S::logged() && Env::get('view') == 'ax')      $view = 'ax';
+        if (!S::logged() || Env::v('view') == 'public') $view = 'public';
+        if (S::logged() && Env::v('view') == 'ax')      $view = 'ax';
 
         if (is_numeric($x)) {
             $res = XDB::query(
@@ -182,7 +182,7 @@ class ProfileModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $new   = Env::get('modif') == 'new';
+        $new   = Env::v('modif') == 'new';
         $user  = get_user_details($login, S::v('uid'), $view);
         $title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
         $page->assign('xorg_title', $title);
@@ -256,7 +256,7 @@ class ProfileModule extends PLModule
             $page->assign('no_private_key', true);
         }
 
-        if (Env::get('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
+        if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
             ax_synchronize(S::v('bestalias'), S::v('uid'));
             $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
         }
@@ -274,16 +274,16 @@ class ProfileModule extends PLModule
             // la date de naissance n'existait pas et vient d'être soumise dans la variable
             if (Env::has('birth')) {
                 //en cas d'erreur :
-                if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
+                if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
                     $page->assign('etat_naissance', 'query');
                     $page->trig('Date de naissance incorrecte ou incohérente.');
                     return;
                 }
 
                 //sinon
-                $birth = sprintf("%s-%s-%s", substr(Env::get('birth'), 4, 4),
-                                 substr(Env::get('birth'), 2, 2),
-                                 substr(Env::get('birth'), 0, 2));
+                $birth = sprintf("%s-%s-%s", substr(Env::v('birth'), 4, 4),
+                                 substr(Env::v('birth'), 2, 2),
+                                 substr(Env::v('birth'), 0, 2));
                 XDB::execute("UPDATE auth_user_md5
                                            SET naissance={?}
                                          WHERE user_id={?}", $birth,
@@ -364,7 +364,7 @@ class ProfileModule extends PLModule
             return;
         }
 
-        $promo_sortie = Env::getInt('promo_sortie');
+        $promo_sortie = Env::i('promo_sortie');
 
         if ($promo_sortie < 1000 || $promo_sortie > 9999) {
             $page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
@@ -464,10 +464,10 @@ class ProfileModule extends PLModule
 
         $page->assign('xorg_title', 'Polytechnique.org - Conseil Pro');
 
-        $secteur_sel     = Post::get('secteur');
-        $ss_secteur_sel  = Post::get('ss_secteur');
-        $pays_sel        = Post::get('pays', '00');
-        $expertise_champ = Post::get('expertise');
+        $secteur_sel     = Post::v('secteur');
+        $ss_secteur_sel  = Post::v('ss_secteur');
+        $pays_sel        = Post::v('pays', '00');
+        $expertise_champ = Post::v('expertise');
 
         $page->assign('pays_sel', $pays_sel);
         $page->assign('expertise_champ', $expertise_champ);
@@ -551,7 +551,7 @@ class ProfileModule extends PLModule
             $nb_max_res_total = 100;
             $nb_max_res_ppage = 10;
 
-            $curpage   = Env::getInt('curpage', 1);
+            $curpage   = Env::i('curpage', 1);
             $personnes = array();
             $i         = 0;
 
@@ -589,7 +589,7 @@ class ProfileModule extends PLModule
         $page->assign('usage_old', $usage_old);
         $page->assign('alias_old',  $alias_old);
 
-        $nom_usage = replace_accent(trim(Env::get('nom_usage'))); 
+        $nom_usage = replace_accent(trim(Env::v('nom_usage'))); 
         $nom_usage = strtoupper($nom_usage);
         $page->assign('usage_req', $nom_usage);
 
@@ -599,9 +599,9 @@ class ProfileModule extends PLModule
                 $page->assign('same', true);
             } else { // le nom de mariage est distinct du nom à l'X
                 // on calcule l'alias pour l'afficher
-                $reason = Env::get('reason');
+                $reason = Env::v('reason');
                 if ($reason == 'other') {
-                    $reason = Env::get('other_reason');
+                    $reason = Env::v('other_reason');
                 }
                 $myusage = new UsageReq(S::v('uid'), $nom_usage, $reason);
                 $myusage->submit();

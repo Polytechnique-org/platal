@@ -20,16 +20,16 @@
  ***************************************************************************/
 
 if (Env::has('medal_op')) {
-    if (Env::get('medal_op')=='retirer' && Env::getInt('medal_id')) {
-        XDB::execute("DELETE FROM profile_medals_sub WHERE uid = {?} AND mid = {?}", S::v('uid', -1), Env::getInt('medal_id', -1));
+    if (Env::v('medal_op')=='retirer' && Env::i('medal_id')) {
+        XDB::execute("DELETE FROM profile_medals_sub WHERE uid = {?} AND mid = {?}", S::v('uid', -1), Env::i('medal_id', -1));
     }
 
-    if (Env::get('medal_op')=='ajouter' && Env::getInt('medal_id')) {
-        XDB::execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", S::v('uid', -1), Env::getInt('medal_id'));
+    if (Env::v('medal_op')=='ajouter' && Env::i('medal_id')) {
+        XDB::execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", S::v('uid', -1), Env::i('medal_id'));
     }
 }
 if (Post::has('grade')) {
-    foreach (Post::getMixed('grade') as $mid=>$gid) {
+    foreach (Post::v('grade') as $mid=>$gid) {
         XDB::execute('UPDATE profile_medals_sub SET gid={?} WHERE uid={?} AND mid={?}', $gid, S::v('uid'), $mid);
     }
 } 

@@ -62,24 +62,24 @@ function generate_new_telid($adr){
 }
 
 function replace_ifset_adr($varname, $i){
-  $tab = Env::getMixed($varname, Array());
+  $tab = Env::v($varname, Array());
   if (isset($tab[$i]))
        $GLOBALS['adresses'][$i][$varname] = $tab[$i];
 }
 
 function replace_ifset_tel($varname, $i, $t){
-  $tab = Env::getMixed($varname.$t, Array());
+  $tab = Env::v($varname.$t, Array());
   if (isset($tab[$i]))
        $GLOBALS['adresses'][$i]['tels'][$t][$varname] = $tab[$i];  
 }
 
 function get_adr_arg($varname, $i) {
-  $tab = Env::getMixed($varname, Array());
+  $tab = Env::v($varname, Array());
   return $tab[$i];
 }
 
 function set_flag_adr($varname,$i){
-  $tab = Env::getMixed($varname, Array());
+  $tab = Env::v($varname, Array());
   if (isset($tab[$i])){
      $GLOBALS['adresses'][$i][$varname] = 1;
   }
@@ -105,7 +105,7 @@ function replace_address($i){
   replace_ifset_adr('secondaire', $i);
   set_flag_adr('courrier', $i);
   replace_ifset_adr('temporaire', $i);
-  if(Env::getInt('adrid_active', $i+1) == $i)
+  if(Env::i('adrid_active', $i+1) == $i)
     $adresses[$i]['active'] = 1;
   else
     $adresses[$i]['active'] = 0;
@@ -120,14 +120,14 @@ function replace_address($i){
   replace_ifset_adr('pub', $i);
   
   for ($telid = 0; $telid <= $nb_tel_max; $telid++) {
-    $tab = Env::getMixed('telid'.$telid, Array());
+    $tab = Env::v('telid'.$telid, Array());
     if(isset($tab[$i])){ //ce telid etait donc present dans le formulaire
       replace_tel($i, $telid);
     }
   }
  
   if (!get_adr_arg('parsevalid', $i)) replace_ifset_adr('txt', $i);
-  $tab = Env::getMixed('numero_formulaire', Array());
+  $tab = Env::v('numero_formulaire', Array());
   if($tab[$i])
     $adresses[$i]['numero_formulaire'] = $tab[$i];
   else
@@ -136,7 +136,7 @@ function replace_address($i){
 
 function geoloc_adresse($i) {
   global $adresses;
-  $change = Env::get('change'.$i);
+  $change = Env::v('change'.$i);
   if (get_adr_arg('parsevalid', $i) || ($adresses[$i]['txt'] && $change) || (!$adresses[$i]['cityid'])) {
   	require_once('geoloc.inc.php');
 	// erases the previous address (but not the phone or pub)
@@ -156,7 +156,7 @@ function geoloc_adresse($i) {
 
 //remplace par les eventuelles nouvelles valeurs :
 for ($adrid = 1; $adrid <= $nb_adr_max; $adrid++) {
-  $tab = Env::getMixed('adrid', Array());
+  $tab = Env::v('adrid', Array());
   if(isset($tab[$adrid])){ //cet adrid etait donc present dans le formulaire
     replace_address($adrid);
   }

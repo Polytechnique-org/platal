@@ -21,20 +21,20 @@
 
 
 if(Env::has('langue_op')){
-    if(Env::get('langue_op', '')=='retirer'){
-        XDB::execute("DELETE FROM langues_ins WHERE uid = {?} AND lid = {?}", S::v('uid', -1), Env::get('langue_id', ''));
-    } elseif(Env::get('langue_op', '') == 'ajouter'){
-        if(Env::get('langue_id', '') != '')
-            XDB::execute("INSERT INTO langues_ins (uid,lid,level) VALUES ({?}, {?}, {?})", S::v('uid', -1), Env::get('langue_id', ''), Env::get('langue_level', ''));
+    if(Env::v('langue_op', '')=='retirer'){
+        XDB::execute("DELETE FROM langues_ins WHERE uid = {?} AND lid = {?}", S::v('uid', -1), Env::v('langue_id', ''));
+    } elseif(Env::v('langue_op', '') == 'ajouter'){
+        if(Env::v('langue_id', '') != '')
+            XDB::execute("INSERT INTO langues_ins (uid,lid,level) VALUES ({?}, {?}, {?})", S::v('uid', -1), Env::v('langue_id', ''), Env::v('langue_level', ''));
     }
 }
 
 if(Env::has('comppros_op')){
-    if(Env::get('comppros_op', '')=='retirer'){
-        XDB::execute("DELETE FROM competences_ins WHERE uid = {?} AND cid = {?}", S::v('uid', -1), Env::get('comppros_id', ''));
-    } elseif(Env::get('comppros_op', '') == 'ajouter') {
-        if(Env::get('comppros_id', '') != '')
-	    XDB::execute("INSERT INTO competences_ins (uid,cid,level) VALUES({?}, {?}, {?})", S::v('uid', -1), Env::get('comppros_id', ''), Env::get('comppros_level', ''));
+    if(Env::v('comppros_op', '')=='retirer'){
+        XDB::execute("DELETE FROM competences_ins WHERE uid = {?} AND cid = {?}", S::v('uid', -1), Env::v('comppros_id', ''));
+    } elseif(Env::v('comppros_op', '') == 'ajouter') {
+        if(Env::v('comppros_id', '') != '')
+	    XDB::execute("INSERT INTO competences_ins (uid,cid,level) VALUES({?}, {?}, {?})", S::v('uid', -1), Env::v('comppros_id', ''), Env::v('comppros_level', ''));
     }
 }
 

@@ -146,7 +146,7 @@ class SField
      * on met une chaîne vide si le champ n'a pas été complété */
     function get_request()
     {
-        $this->value = trim(Env::get($this->fieldFormName));
+        $this->value = trim(Env::v($this->fieldFormName));
     }
 
     // }}}
@@ -449,7 +449,7 @@ class MapSField extends RefSField
     function MapSField($_fieldFormName, $_fieldDbName='', $_refTable, $_refAlias, $_refCondition, $_mapId=false)
     {
         if ($_mapId === false)
-            $this->mapId = Env::get($_fieldFormName, '');
+            $this->mapId = Env::v($_fieldFormName, '');
         else
             $this->mapId = $_mapId;
         $this->RefSField($_fieldFormName, $_fieldDbName, $_refTable, $_refAlias, $_refCondition, true, false);

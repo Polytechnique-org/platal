@@ -21,7 +21,7 @@
 
 function smarty_insert_getName()
 {
-    $uid = Cookie::get('ORGuid', -1);
+    $uid = Cookie::v('ORGuid', -1);
     if ($uid < 0) {
         return "";
     }

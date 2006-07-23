@@ -24,8 +24,8 @@ new_admin_page('admin/homonymes.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Homonymes');
 require_once("homonymes.inc.php");
 
-$op     = Env::get('op', 'list');
-$target = Env::getInt('target');
+$op     = Env::v('op', 'list');
+$target = Env::i('target');
 
 if ($target) {
     if (! list($prenom,$nom,$forlife,$loginbis) = select_if_homonyme($target)) {

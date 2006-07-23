@@ -22,7 +22,7 @@
 include_once('xorg.misc.inc.php');
 
 function set_flag_i(&$var,$var_name,$i){
-  $tab = Env::getMixed($var_name, Array());
+  $tab = Env::v($var_name, array());
   if(isset($tab[$i])){
   	$var[$i] = 1;
   }

@@ -37,7 +37,7 @@ function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
     $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
     $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
     $mymail->addCc($cc);
-    $mymail->setTxtBody(Env::get('mailbody'));
+    $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->send();
 }
 
@@ -50,7 +50,7 @@ function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
     $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
     $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
     $mymail->addCc($cc);
-    $mymail->setTxtBody(Env::get('mailbody'));
+    $mymail->setTxtBody(Env::v('mailbody'));
     $mymail->send();
 }
 

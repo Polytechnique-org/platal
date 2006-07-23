@@ -19,6 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+$DONT_FIX_GPC = 1;
+
 require_once('xorg.inc.php');
 new_admin_table_editor('profile_medals', 'id');
 $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
@@ -29,18 +31,18 @@ $editor->describe('img',  'nom de l\'image', false);
 
 $editor->assign('title',  'Gestion des Distinctions');
 
-if (Post::get('frm_id')) {
+if (Post::v('frm_id')) {
     $page->changeTpl('admin/gerer_decos.tpl');
 
-    $mid = Post::getInt('frm_id');
+    $mid = Post::i('frm_id');
 
-    if (Post::get('act') == 'del') {
-        XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::getInt('gid'));
-    } elseif (Post::get('act') == 'new') {
+    if (Post::v('act') == 'del') {
+        XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::i('gid'));
+    } elseif (Post::v('act') == 'new') {
         XDB::execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
-                $mid, max(array_keys(Post::getMixed('grades', Array(0))))+1);
+                $mid, max(array_keys(Post::v('grades', array(0))))+1);
     } else {
-        foreach (Post::getMixed('grades', Array()) as $gid=>$text) {
+        foreach (Post::v('grades', array()) as $gid=>$text) {
             XDB::execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
         }
     }

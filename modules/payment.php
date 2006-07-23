@@ -93,15 +93,15 @@ class PaymentModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Télépaiements');
 
         // initialisation
-        $op   = Env::get('op', 'select');
-        $meth = new PayMethod(Env::getInt('methode', -1));
+        $op   = Env::v('op', 'select');
+        $meth = new PayMethod(Env::i('methode', -1));
         $pay  = new Payment($ref);
 
         if($pay->flags->hasflag('old')){
             $page->trig("La transaction selectionnée est périmée.");
             $pay = new Payment();
         }
-        $val = Env::get('montant') != 0 ? Env::get('montant') : $pay->montant_def;
+        $val = Env::v('montant') != 0 ? Env::v('montant') : $pay->montant_def;
 
         if (($e = $pay->check($val)) !== true) {
             $page->trig($e);

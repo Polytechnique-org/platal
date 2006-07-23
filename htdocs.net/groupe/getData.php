@@ -35,7 +35,7 @@ foreach ($_GET as $v => $a)
 		$querystring .= urlencode($v).'='.urlencode($a).'&amp;';
 $page->assign('searchvars', $querystring);
 if (Env::has('mapid'))
-    $mapid = Env::getInt('mapid', -2);
+    $mapid = Env::i('mapid', -2);
 else
     $mapid = false;
 

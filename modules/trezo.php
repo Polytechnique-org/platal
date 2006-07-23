@@ -46,8 +46,8 @@ class TrezoModule extends PLModule
         //| debit  | decimal(10,2) |      |     | 0.00       |                |
         //+--------+---------------+------+-----+------------+----------------+
 
-        $annee_sel = Env::get('annee', date('y'));
-        $mois_sel  = Env::get('mois', sprintf('%02u', date('m') - (intval(date('m') - 1) % 3)));
+        $annee_sel = Env::v('annee', date('y'));
+        $mois_sel  = Env::v('mois', sprintf('%02u', date('m') - (intval(date('m') - 1) % 3)));
 
         $mois_sel_fin = sprintf('%02u',$mois_sel + 2);
         $from_date    = "$annee_sel-$mois_sel-01";

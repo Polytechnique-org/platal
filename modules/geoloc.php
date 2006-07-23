@@ -60,7 +60,7 @@ class GeolocModule extends PLModule
 
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         $search = $fields->get_url();
-        if (Env::has('only_current') && Env::get('only_current') != 'on') {
+        if (Env::has('only_current') && Env::v('only_current') != 'on') {
             $search .= '&only_current=';
         }
         $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
@@ -92,7 +92,7 @@ class GeolocModule extends PLModule
         $querystring = $this->_make_qs();
         $initfile    = urlencode('geolocInit.php?'.$querystring);
 
-        if (urlencode(Env::get('initfile')) != $initfile) {
+        if (urlencode(Env::v('initfile')) != $initfile) {
             header("Location: dynamap.php?initfile=$initfile{$querystring}");
             die();
         }
@@ -163,7 +163,7 @@ class GeolocModule extends PLModule
         $querystring = $this->_make_qs();
         $page->assign('searchvars', $querystring);
 
-        $mapid = Env::has('mapid') ? Env::getInt('mapid', -2) : false;
+        $mapid = Env::has('mapid') ? Env::i('mapid', -2) : false;
 
         list($countries, $cities) = geoloc_getData_subcountries($mapid, advancedSearchFromInput(), 10);
 

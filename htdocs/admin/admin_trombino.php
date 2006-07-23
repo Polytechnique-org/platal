@@ -23,7 +23,7 @@ require_once("xorg.inc.php");
 new_admin_page('admin/admin_trombino.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
 
-$uid = Env::getInt('uid');
+$uid = Env::i('uid');
 $q   = XDB::query(
         "SELECT  a.alias,promo
           FROM  auth_user_md5 AS u
@@ -31,7 +31,7 @@ $q   = XDB::query(
          WHERE  user_id = {?}", $uid);
 list($forlife, $promo) = $q->fetchOneRow();
 
-switch (Env::get('action')) {
+switch (Env::v('action')) {
 
     case "ecole":
         header("Content-type: image/jpeg");

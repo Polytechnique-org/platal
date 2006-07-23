@@ -107,7 +107,7 @@ class PlatalModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Mes préférences');
 
         if (Post::has('mail_fmt')) {
-            $fmt = Post::get('mail_fmt');
+            $fmt = Post::v('mail_fmt');
             if ($fmt != 'texte') $fmt = 'html';
             XDB::execute("UPDATE auth_user_quick
                                        SET core_mail_fmt = '$fmt'
@@ -117,7 +117,7 @@ class PlatalModule extends PLModule
         }
 
         if (Post::has('rss')) {
-            $this->__set_rss_state(Post::getBool('rss'));
+            $this->__set_rss_state(Post::b('rss'));
         }
     }
 
@@ -128,15 +128,15 @@ class PlatalModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
 
         $log =& S::v('log');
-        $url = Env::get('url');
+        $url = Env::v('url');
 
-        if (Env::get('submit') == 'Valider' and Env::has('url')) {
+        if (Env::v('submit') == 'Valider' and Env::has('url')) {
             XDB::execute('UPDATE auth_user_quick
                                        SET redirecturl = {?} WHERE user_id = {?}',
                                    $url, S::v('uid'));
-            $log->log('carva_add', 'http://'.Env::get('url'));
+            $log->log('carva_add', 'http://'.Env::v('url'));
             $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
-        } elseif (Env::get('submit') == "Supprimer") {
+        } elseif (Env::v('submit') == "Supprimer") {
             XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
                                      WHERE user_id = {?}",
@@ -157,9 +157,9 @@ class PlatalModule extends PLModule
     {
         $page->changeTpl('filrss.tpl');
 
-        $page->assign('goback', Env::get('referer', 'login'));
+        $page->assign('goback', Env::v('referer', 'login'));
 
-        if (Env::get('act_rss') == 'Activer') {
+        if (Env::v('act_rss') == 'Activer') {
             $this->__set_rss_state(true);
             $page->trig("Ton Fil RSS est activé.");
         }
@@ -170,7 +170,7 @@ class PlatalModule extends PLModule
         if (Post::has('response2'))  {
             require_once 'secure_hash.inc.php';
 
-            $_SESSION['password'] = $password = Post::get('response2');
+            $_SESSION['password'] = $password = Post::v('response2');
 
             XDB::execute('UPDATE  auth_user_md5 
                                        SET  password={?}
@@ -180,7 +180,7 @@ class PlatalModule extends PLModule
             $log =& S::v('log');
             $log->log('passwd', '');
 
-            if (Cookie::get('ORGaccess')) {
+            if (Cookie::v('ORGaccess')) {
                 setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
             }
 
@@ -199,17 +199,17 @@ class PlatalModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
 
         $uid  = S::v('uid');
-        $pass = Env::get('smtppass1');
+        $pass = Env::v('smtppass1');
         $log  = S::v('log');
 
-        if (Env::get('op') == "Valider" && strlen($pass) >= 6 
-        &&  Env::get('smtppass1') == Env::get('smtppass2')) 
+        if (Env::v('op') == "Valider" && strlen($pass) >= 6 
+        &&  Env::v('smtppass1') == Env::v('smtppass2')) 
         {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
             $page->trig('Mot de passe enregistré');
             $log->log("passwd_ssl");
-        } elseif (Env::get('op') == "Supprimer") {
+        } elseif (Env::v('op') == "Supprimer") {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
                                      WHERE user_id = {?}', $uid);
             $page->trig('Compte SMTP et NNTP supprimé');
@@ -232,17 +232,17 @@ class PlatalModule extends PLModule
             return;
         }
 
-        if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
+        if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
             $page->trig('Date de naissance incorrecte ou incohérente');
             return;
         }
 
         $birth   = sprintf('%s-%s-%s',
-                           substr(Env::get('birth'), 4, 4),
-                           substr(Env::get('birth'), 2, 2),
-                           substr(Env::get('birth'), 0, 2));
+                           substr(Env::v('birth'), 4, 4),
+                           substr(Env::v('birth'), 2, 2),
+                           substr(Env::v('birth'), 0, 2));
 
-        $mailorg = strtok(Env::get('login'), '@');
+        $mailorg = strtok(Env::v('login'), '@');
 
         // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
         // avec celle fournie ici en espérant que c'est la bonne
@@ -274,12 +274,12 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la 
 
 -- 
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::get('email') ? "
+\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::v('email') ? "
 
 Adresse de secours :
-    ".Post::get('email') : "")."
+    ".Post::v('email') : "")."
 
-Mail envoyé à ".Env::get('login'));
+Mail envoyé à ".Env::v('login'));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
@@ -304,7 +304,7 @@ Mail envoyé à ".Env::get('login'));
 
         $uid = $ligne["uid"];
         if (Post::has('response2')) {
-            $password = Post::get('response2');
+            $password = Post::v('response2');
             $logger   = new DiogenesCoreLogger($uid);
             XDB::query('UPDATE  auth_user_md5 SET password={?}
                                    WHERE  user_id={?} AND perms IN("admin","user")',
@@ -328,7 +328,7 @@ Mail envoyé à ".Env::get('login'));
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
             XDB::execute('UPDATE auth_user_quick
                              SET skin={?} WHERE user_id={?}',
-                         Env::getInt('newskin'), S::v('uid'));
+                         Env::i('newskin'), S::v('uid'));
             S::kill('skin');
             set_skin();
         }
@@ -382,7 +382,7 @@ Mail envoyé à ".Env::get('login'));
         XorgSession::destroy();
 
         if (Get::has('redirect')) {
-            http_redirect(rawurldecode(Get::get('redirect')));
+            http_redirect(rawurldecode(Get::v('redirect')));
         } else {
             $page->changeTpl('exit.tpl');
         }

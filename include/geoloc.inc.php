@@ -349,7 +349,7 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
         "SELECT  gm.map_id AS id, gm.name, gm.x, gm.y, gm.xclip, gm.yclip, 
                 gm.width, gm.height, gm.scale, 1 AS rat
         FROM    geoloc_maps AS gm
-        ".$wheremapid, Env::get('mapid',''));
+        ".$wheremapid, Env::v('mapid',''));
 
     while ($c = $submapres->next())
     {
@@ -362,7 +362,7 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
     
     if ($mapid === false) return array($countries, $cities);
 
-	geoloc_getData_subcities(Env::getInt('mapid'), $SFields, $cities);
+	geoloc_getData_subcities(Env::i('mapid'), $SFields, $cities);
 	$nbcities = count($cities);
 	$nocity = $nbcities == 0;
 

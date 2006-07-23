@@ -19,6 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+$DONT_FIX_GPC = 1;
+
 require_once('xorg.inc.php');
 new_admin_table_editor('binets_def','id');
 $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');

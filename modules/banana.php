@@ -66,7 +66,7 @@ class BananaModule extends PLModule
 
         if (!(Post::has('action') && Post::has('banananame') && Post::has('bananasig')
         && Post::has('bananadisplay') && Post::has('bananamail')
-        && Post::has('bananaupdate') && Post::get('action')=="OK" ))
+        && Post::has('bananaupdate') && Post::v('action')=="OK" ))
         {
             $req = XDB::query("
                 SELECT  nom,mail,sig,if(FIND_IN_SET('threads',flags),'1','0'),
@@ -89,10 +89,10 @@ class BananaModule extends PLModule
             XDB::execute(
                 'REPLACE INTO  forums.profils (uid,sig,mail,nom,flags)
                        VALUES  ({?},{?},{?},{?},{?})',
-                S::v('uid'), Post::get('bananasig'),
-                Post::get('bananamail'), Post::get('banananame'),
-                (Post::getBool('bananadisplay') ? 'threads,' : '') .
-                (Post::getBool('bananaupdate') ? 'automaj' : '')
+                S::v('uid'), Post::v('bananasig'),
+                Post::v('bananamail'), Post::v('banananame'),
+                (Post::b('bananadisplay') ? 'threads,' : '') .
+                (Post::b('bananaupdate') ? 'automaj' : '')
             );
         }
     }

@@ -90,7 +90,7 @@ class SearchModule extends PLModule
                       XDB::iterator('SELECT id,label FROM emploi_secteur ORDER BY label'));
 
         if (Env::has('school')) {
-            $sql = 'SELECT type FROM applis_def WHERE id='.Env::getInt('school');
+            $sql = 'SELECT type FROM applis_def WHERE id='.Env::i('school');
         } else {
             $sql = 'DESCRIBE applis_def type';
         }

@@ -23,14 +23,14 @@ require_once("xorg.inc.php");
 new_admin_page('admin/evenements.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
 
-$arch = Env::get('arch', 0);
-$evid = Post::getInt('evt_id');
+$arch = Env::v('arch', 0);
+$evid = Post::i('evt_id');
 $page->assign('arch', $arch);
 
-switch(Post::get('action')) {
+switch(Post::v('action')) {
     case "Proposer":
         XDB::execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
-                Post::get('titre'), Post::get('texte'), Post::get('peremption'), Post::get('promo_min'), Post::get('promo_max'), $evid);
+                Post::v('titre'), Post::v('texte'), Post::v('peremption'), Post::v('promo_min'), Post::v('promo_max'), $evid);
         break;
 
     case "Valider":

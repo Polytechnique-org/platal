@@ -37,13 +37,13 @@ class RegisterModule extends PLModule
         if (!isset($sub_state['step'])) {
             $sub_state['step'] = 0;
         }
-        if (Get::has('back') && Get::getInt('back') < $sub_state['step']) {
-            $sub_state['step'] = max(0,Get::getInt('back'));
+        if (Get::has('back') && Get::i('back') < $sub_state['step']) {
+            $sub_state['step'] = max(0,Get::i('back'));
         }
 
         // Compatibility with old sources, keep it atm
         if (!$hash && Env::has('hash')) {
-            $hash = Env::get('hash');
+            $hash = Env::v('hash');
         }
 
         if ($hash) {
@@ -82,7 +82,7 @@ class RegisterModule extends PLModule
 
             case 1:
                 if (Post::has('promo')) {
-                    $promo = Post::getInt('promo');
+                    $promo = Post::i('promo');
                     if ($promo < 1900 || $promo > date('Y')) {
                         $err = "La promotion saisie est incorrecte !";
                     } else {
@@ -100,9 +100,9 @@ class RegisterModule extends PLModule
             case 2:
                 if (count($_POST)) {
                     require_once('register.inc.php');
-                    $sub_state['prenom'] = Post::get('prenom');
-                    $sub_state['nom']    = Post::get('nom');
-                    $sub_state['mat']    = Post::get('mat');
+                    $sub_state['prenom'] = Post::v('prenom');
+                    $sub_state['nom']    = Post::v('nom');
+                    $sub_state['mat']    = Post::v('mat');
                     $err = check_new_user($sub_state);
 
                     if ($err !== true) { break; }
@@ -117,14 +117,14 @@ class RegisterModule extends PLModule
             case 3:
                 if (count($_POST)) {
                     require_once('register.inc.php');
-                    if (!isvalid_email(Post::get('email'))) {
+                    if (!isvalid_email(Post::v('email'))) {
                         $err[] = "Le champ 'E-mail' n'est pas valide.";
-                    } elseif (!isvalid_email_redirection(Post::get('email'))) {
+                    } elseif (!isvalid_email_redirection(Post::v('email'))) {
                         $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
                             "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
                     }
                     if (!preg_match('/^[0-3][0-9][01][0-9][12][90][0-9][0-9]$/',
-                                    Post::get('naissance')))
+                                    Post::v('naissance')))
                     {
                         $err[] = "La 'Date de naissance' n'est pas correcte.";
                     }
@@ -132,12 +132,12 @@ class RegisterModule extends PLModule
                     if (isset($err)) {
                         $err = join('<br />', $err);
                     } else {
-                        $birth = Env::get('naissance');
+                        $birth = Env::v('naissance');
                         $sub_state['naissance'] = sprintf("%s-%s-%s",
                                                           substr($birth,4,4),
                                                           substr($birth,2,2),
                                                           substr($birth,0,2));
-                        $sub_state['email']     = Post::get('email');
+                        $sub_state['email']     = Post::v('email');
                         $sub_state['step']      = 4;
                         finish_ins($sub_state);
                     }
@@ -154,7 +154,7 @@ class RegisterModule extends PLModule
 
     function handler_end_old(&$page)
     {
-        return $this->handler_end($page, Env::get('hash'));
+        return $this->handler_end($page, Env::v('hash'));
     }
 
     function handler_end(&$page, $hash = null)
@@ -277,7 +277,7 @@ class RegisterModule extends PLModule
         $page->changeTpl('register/success.tpl');
 
         if (Env::has('response2'))  {
-            $_SESSION['password'] = $password = Post::get('response2');
+            $_SESSION['password'] = $password = Post::v('response2');
 
             XDB::execute('UPDATE auth_user_md5 SET password={?}
                                      WHERE user_id={?}', $password,
@@ -286,7 +286,7 @@ class RegisterModule extends PLModule
             $log =& S::v('log');
             $log->log('passwd', '');
 
-            if (Cookie::get('ORGaccess')) {
+            if (Cookie::v('ORGaccess')) {
                 require_once('secure_hash.inc.php');
                 setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
             }

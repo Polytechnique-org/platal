@@ -122,8 +122,8 @@ class MarketingModule extends PLModule
 
         if ($action == 'relforce') {
             require_once('marketing.inc.php');
-            mark_send_mail($uid, $value, Post::get('from'), Post::get('to'),
-                           Post::get('title'), Post::get('message'));
+            mark_send_mail($uid, $value, Post::v('from'), Post::v('to'),
+                           Post::v('title'), Post::v('message'));
             $page->trig("Mail envoyé");
         }
 
@@ -139,7 +139,7 @@ class MarketingModule extends PLModule
                 "INSERT INTO register_marketing
                          SET uid = {?}, sender = {?}, email = {?},
                              date = NOW(), type = {?}",
-                $uid, S::v('uid'), Post::get('email'), Post::get('type')); 
+                $uid, S::v('uid'), Post::v('email'), Post::v('type')); 
         }
 
         $res = XDB::iterator(
@@ -197,7 +197,7 @@ class MarketingModule extends PLModule
             if (Post::has('valide')) {
                 require_once('xorg.misc.inc.php');
 
-                $email = trim(Post::get('mail'));
+                $email = trim(Post::v('mail'));
                 $res   = XDB::query('SELECT COUNT(*) FROM register_marketing
                                                 WHERE uid={?} AND email={?}', $uid, $email);
 
@@ -210,10 +210,10 @@ class MarketingModule extends PLModule
                     XDB::execute(
                             "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
-                            $uid, S::v('uid'), $email, Post::get('origine'));
+                            $uid, S::v('uid'), $email, Post::v('origine'));
                     require_once('validations.inc.php');
                     $req = new MarkReq(S::v('uid'), $uid, $email,
-                                       Post::get('origine')=='user');
+                                       Post::v('origine')=='user');
                     $req->submit();
                 }
             }

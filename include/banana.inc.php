@@ -156,7 +156,7 @@ class PlatalBanana extends Banana
     {
         global $banana;
 
-        if (Get::get('banana') == 'updateall'
+        if (Get::v('banana') == 'updateall'
                 || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
             XDB::execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}', gmdate('YmdHis'), S::v('uid'));
             $_SESSION['banana_last'] = time();

@@ -24,7 +24,7 @@ new_admin_page('admin/emails_bounces_re.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Regexps Bounces');
 
 if (Post::has('submit')) {
-    foreach (Env::getMixed('lvl') as $id=>$val) {
+    foreach (Env::v('lvl') as $id=>$val) {
         XDB::query(
                 "REPLACE INTO emails_bounces_re (id,pos,lvl,re,text) VALUES ({?}, {?}, {?}, {?}, {?})",
                 $id, $_POST['pos'][$id], $_POST['lvl'][$id], $_POST['re'][$id], $_POST['text'][$id]

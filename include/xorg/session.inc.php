@@ -61,9 +61,9 @@ class XorgSession
 
         // si on vient de recevoir une identification par passwordpromptscreen.tpl
         // ou passwordpromptscreenlogged.tpl
-        $uname = Env::get('username');
+        $uname = Env::v('username');
 
-        if (Env::get('domain') == "alias") {
+        if (Env::v('domain') == "alias") {
 
             $res = XDB::query(
                 "SELECT redirect
@@ -92,16 +92,16 @@ class XorgSession
                 require_once('secure_hash.inc.php');
                     $expected_response=hash_encrypt("$uname:$password:".S::v('challenge'));
                     // le password de la base est peut-être encore encodé en md5
-                    if (Env::get('response') != $expected_response) {
-                      $new_password = hash_xor(Env::get('xorpass'), $password);
+                    if (Env::v('response') != $expected_response) {
+                      $new_password = hash_xor(Env::v('xorpass'), $password);
                       $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
-                      if (Env::get('response') == $expected_response) {
+                      if (Env::v('response') == $expected_response) {
                           XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
                       }
                     }
-                    if (Env::get('response') == $expected_response) {
+                    if (Env::v('response') == $expected_response) {
                 if (Env::has('domain')) {
-                    if (($domain = Env::get('domain', 'login')) == 'alias') {
+                    if (($domain = Env::v('domain', 'login')) == 'alias') {
                         setcookie('ORGdomain', "alias", (time()+25920000), '/', '', 0);
                     } else {
                         setcookie('ORGdomain', '', (time()-3600), '/', '', 0);
@@ -115,7 +115,7 @@ class XorgSession
                     $logger->log('auth_ok');
                 }
                         start_connexion($uid, true);
-                if (Env::get('remember', 'false') == 'true') {
+                if (Env::v('remember', 'false') == 'true') {
                     $cookie = hash_encrypt(S::v('password'));
                     setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
                     if ($logger) {
@@ -175,19 +175,19 @@ class XorgSession
  */
 function try_cookie()
 {
-    if (Cookie::get('ORGaccess') == '' or !Cookie::has('ORGuid')) {
+    if (Cookie::v('ORGaccess') == '' or !Cookie::has('ORGuid')) {
 	return -1;
     }
 
     $res = @XDB::query(
             "SELECT user_id,password FROM auth_user_md5 WHERE user_id = {?} AND perms IN('admin','user')",
-            Cookie::getInt('ORGuid')
+            Cookie::i('ORGuid')
     );
     if ($res->numRows() != 0) {
 	list($uid, $password) = $res->fetchOneRow();
 	require_once('secure_hash.inc.php');
 	$expected_value       = hash_encrypt($password);
-	if ($expected_value == Cookie::get('ORGaccess')) {
+	if ($expected_value == Cookie::v('ORGaccess')) {
 	    start_connexion($uid, false);
 	    return 0;
 	} else {

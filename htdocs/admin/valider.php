@@ -25,7 +25,7 @@ $page->assign('xorg_title','Polytechnique.org - Administration - Valider une dem
 require_once("validations.inc.php");
 
 if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
-    $req = Validate::get_request(Env::get('uid'), Env::get('type'), Env::get('stamp'));
+    $req = Validate::get_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
     if($req) { $req->handle_formu(); }
 }
 

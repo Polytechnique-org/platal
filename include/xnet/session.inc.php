@@ -81,7 +81,7 @@ class XnetSession
     function doAuthX() {
         global $globals, $page;
 
-        if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::getInt('uid').'1') != Get::get('auth')) {
+        if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::i('uid').'1') != Get::v('auth')) {
             $page->kill("Erreur d'authentification avec polytechnique.org !");
         }
 
@@ -93,7 +93,7 @@ class XnetSession
         INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
         INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
              WHERE  u.user_id = {?} AND u.perms IN('admin','user')
-             LIMIT  1", Get::getInt('uid'));
+             LIMIT  1", Get::i('uid'));
         $_SESSION = array_merge($_SESSION, $res->fetchOneAssoc());
         $_SESSION['auth'] = AUTH_MDP;
         S::kill('challenge');
@@ -101,7 +101,7 @@ class XnetSession
         Get::kill('auth');
         Get::kill('uid');
         $args = array();
-        $path = Get::get('p');
+        $path = Get::v('p');
         Get::kill('p');
         Get::kill('PHPSESSID');
 

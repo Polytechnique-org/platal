@@ -26,8 +26,8 @@ $page->assign('xorg_title','Polytechnique.org - Administration - Geolocalisation
 
 $nb_synchro = 0;
 
-if (Env::has('id') && is_numeric(Env::get('id'))) {
-    if (synchro_city(Env::get('id'))) $nb_synchro ++;
+if (Env::has('id') && is_numeric(Env::v('id'))) {
+    if (synchro_city(Env::v('id'))) $nb_synchro ++;
 }
 
 if (Env::has('missinglat')) {

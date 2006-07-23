@@ -105,7 +105,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     if (Env::has('initiale')) {
         $where = 'AND IF(u.nom IS NULL, m.nom,
                          IF(u.nom_usage<>"", u.nom_usage, u.nom))
-                  LIKE "'.addslashes(Env::get('initiale')).'%"';
+                  LIKE "'.addslashes(Env::v('initiale')).'%"';
     } else {
         $where = '';
     }

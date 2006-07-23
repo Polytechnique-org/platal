@@ -20,11 +20,11 @@
  ***************************************************************************/
 
 function wiki_pagename() {
-    if (!Get::get('n')) {
+    if (!Get::v('n')) {
         return null;
     }
 
-    $words = explode('/', trim(Get::get('n'), '/'));
+    $words = explode('/', trim(Get::v('n'), '/'));
     if (count($words) == 2) {
         return join('.', $words);
     }

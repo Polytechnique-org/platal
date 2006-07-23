@@ -34,23 +34,23 @@ replace_ifset($section,'section');
 /************* gestion des binets ************/
 if (Env::has('binet_op')) {
     // retrait binet
-    if( (Env::get('binet_op', '')=='retirer')&&(Env::getInt('binet_id', 0) != 0)) {
-        XDB::execute("DELETE FROM binets_ins WHERE user_id = {?} AND binet_id = {?}", S::v('uid', -1), Env::getInt('binet_id', -1));
+    if( (Env::v('binet_op', '')=='retirer')&&(Env::i('binet_id', 0) != 0)) {
+        XDB::execute("DELETE FROM binets_ins WHERE user_id = {?} AND binet_id = {?}", S::v('uid', -1), Env::i('binet_id', -1));
     }
     // ajout binet
-    if (Env::get('binet_op')=="ajouter" && (Env::getInt('binet_id', 0) != 0)) {
-        XDB::execute("INSERT INTO binets_ins (user_id,binet_id) VALUES({?}, {?})", S::v('uid', -1), Env::getInt('binet_id', -1));
+    if (Env::v('binet_op')=="ajouter" && (Env::i('binet_id', 0) != 0)) {
+        XDB::execute("INSERT INTO binets_ins (user_id,binet_id) VALUES({?}, {?})", S::v('uid', -1), Env::i('binet_id', -1));
     }
 }
 /************* gestion des groupes X ************/
 if (Env::has('groupex_op')) {
     // retrait groupe X
-    if (Env::get('groupex_op')=="retirer" && (Env::getInt('groupex_id', 0) != 0)) {
-        XDB::execute("DELETE FROM groupesx_ins WHERE guid = {?} AND gid = {?}", S::v('uid', -1), Env::getInt('groupex_id', -1));
+    if (Env::v('groupex_op')=="retirer" && (Env::i('groupex_id', 0) != 0)) {
+        XDB::execute("DELETE FROM groupesx_ins WHERE guid = {?} AND gid = {?}", S::v('uid', -1), Env::i('groupex_id', -1));
     }
     // ajout groupe X
-    if (Env::get('groupex_op')=="ajouter" && (Env::getInt('groupex_id', 0) != 0)) {
-        XDB::execute("INSERT INTO groupesx_ins (guid, gid) VALUES ({?}, {?})", S::v('uid', -1), Env::getInt('groupex_id', -1));
+    if (Env::v('groupex_op')=="ajouter" && (Env::i('groupex_id', 0) != 0)) {
+        XDB::execute("INSERT INTO groupesx_ins (guid, gid) VALUES ({?}, {?})", S::v('uid', -1), Env::i('groupex_id', -1));
     }
 }
 

@@ -23,7 +23,7 @@ require_once("xorg.inc.php");
 new_admin_page('admin/deces_promo.tpl');
 $page->assign('xorg_title','Polytechnique.org - Administration - Deces');
 
-$promo = Env::getInt('promo');
+$promo = Env::i('promo');
 if (Env::has('sub10')) $promo -= 10;
 if (Env::has('sub01')) $promo -=  1;
 if (Env::has('add01')) $promo +=  1;
@@ -31,11 +31,11 @@ if (Env::has('add10')) $promo += 10;
 
 $page->assign('promo',$promo);
 
-if (Env::get('valider') == "Valider") {
+if (Env::v('valider') == "Valider") {
     $new_deces = array();
     $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
     while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
-        $val = Env::get($mat);
+        $val = Env::v($mat);
 	if($val == $deces || empty($val)) continue;
 	XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
 	$new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");

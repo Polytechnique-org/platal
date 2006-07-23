@@ -139,7 +139,7 @@ class XnetGrpModule extends PLModule
 
         if (Post::has('submit')) {
             if (S::has_perms()) {
-                if (Post::get('mail_domain') && (strstr(Post::get('mail_domain'), '.') === false)) {
+                if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
                     $page->trig("le domaine doit être un FQDN (aucune modif effectuée) !!!");
                     return;
                 }
@@ -150,17 +150,17 @@ class XnetGrpModule extends PLModule
                              forum={?}, mail_domain={?}, ax={?}, pub={?},
                              sub_url={?}, inscriptible={?}
                       WHERE  id={?}",
-                      Post::get('nom'), Post::get('diminutif'),
-                      Post::get('cat'), Post::getInt('dom'),
-                      Post::get('descr'), Post::get('site'),
-                      Post::get('mail'), Post::get('resp'),
-                      Post::get('forum'), Post::get('mail_domain'),
+                      Post::v('nom'), Post::v('diminutif'),
+                      Post::v('cat'), Post::i('dom'),
+                      Post::v('descr'), Post::v('site'),
+                      Post::v('mail'), Post::v('resp'),
+                      Post::v('forum'), Post::v('mail_domain'),
                       Post::has('ax'), Post::has('pub')?'private':'public',
-                      Post::get('sub_url'), Post::get('inscriptible'),
+                      Post::v('sub_url'), Post::v('inscriptible'),
                       $globals->asso('id'));
-                if (Post::get('mail_domain')) {
+                if (Post::v('mail_domain')) {
                     XDB::execute('INSERT INTO virtual_domains (domain) VALUES({?})',
-                                           Post::get('mail_domain'));
+                                           Post::v('mail_domain'));
                 }
             } else {
                 XDB::execute(
@@ -168,11 +168,11 @@ class XnetGrpModule extends PLModule
                         SET  descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, ax={?}, pub= {?}, sub_url={?}
                       WHERE  id={?}",
-                      Post::get('descr'), Post::get('site'),
-                      Post::get('mail'), Post::get('resp'),
-                      Post::get('forum'), Post::has('ax'),
+                      Post::v('descr'), Post::v('site'),
+                      Post::v('mail'), Post::v('resp'),
+                      Post::v('forum'), Post::has('ax'),
                       Post::has('pub')?'private':'public',
-                      Post::get('sub_url'), $globals->asso('id'));
+                      Post::v('sub_url'), $globals->asso('id'));
             }
 
             if ($_FILES['logo']['name']) {
@@ -184,7 +184,7 @@ class XnetGrpModule extends PLModule
                                         $globals->asso('id'));
             }
 
-            pl_redirect('../'.Post::get('diminutif', $globals->asso('diminutif')).'/edit');
+            pl_redirect('../'.Post::v('diminutif', $globals->asso('diminutif')).'/edit');
         }
 
         if (S::has_perms()) {
@@ -207,15 +207,15 @@ class XnetGrpModule extends PLModule
         $page->assign('listes', $client->get_lists());
 
         if (Post::has('send')) {
-            $from  = Post::get('from');
-            $sujet = Post::get('sujet');
-            $body  = Post::get('body');
+            $from  = Post::v('from');
+            $sujet = Post::v('sujet');
+            $body  = Post::v('body');
 
-            $mls = array_keys(Env::getMixed('ml', array()));
+            $mls = array_keys(Env::v('ml', array()));
 
             require_once 'xnet/mail.inc.php';
             $tos = get_all_redirects(Post::has('membres'), $mls, $client);
-            send_xnet_mails($from, $sujet, $body, $tos, Post::get('replyto'));
+            send_xnet_mails($from, $sujet, $body, $tos, Post::v('replyto'));
             $page->kill("Mail envoyé !");
             $page->assign('sent', true);
         }
@@ -235,7 +235,7 @@ class XnetGrpModule extends PLModule
 
         $page->assign('admin', may_update());
 
-        switch (Env::get('order')) {
+        switch (Env::v('order')) {
             case 'promo'    : $group = 'promo';    $tri = 'promo_o DESC, nom, prenom'; break;
             case 'promo_inv': $group = 'promo';    $tri = 'promo_o, nom, prenom'; break;
             case 'alpha_inv': $group = 'initiale'; $tri = 'nom DESC, prenom DESC, promo'; break;
@@ -267,17 +267,17 @@ class XnetGrpModule extends PLModule
         while (list($char, $nb) = $res->next()) {
             $alphabet[] = $char;
             $nb_tot += $nb;
-            if (Env::has($group) && $char == strtoupper(Env::get($group))) {
+            if (Env::has($group) && $char == strtoupper(Env::v($group))) {
                 $tot = $nb;
             }
         }
         $page->assign('group', $group);
-        $page->assign('request_group', Env::get($group));
+        $page->assign('request_group', Env::v($group));
         $page->assign('alphabet', $alphabet);
         $page->assign('nb_tot',   $nb_tot);
 
-        $ofs   = Env::getInt('offset');
-        $tot   = Env::get($group) ? $tot : $nb_tot;
+        $ofs   = Env::i('offset');
+        $tot   = Env::v($group) ? $tot : $nb_tot;
         $nbp   = intval(($tot-1)/NB_PER_PAGE);
         $links = array();
         if ($ofs) {
@@ -297,10 +297,10 @@ class XnetGrpModule extends PLModule
         if (Env::has('initiale')) {
             $ini = 'AND IF(m.origine="X",
                            IF(u.nom_usage<>"", u.nom_usage, u.nom),
-                           m.nom) LIKE "'.addslashes(Env::get('initiale')).'%"';
+                           m.nom) LIKE "'.addslashes(Env::v('initiale')).'%"';
         } elseif (Env::has('promo')) {
             $ini = 'AND IF(m.origine="X", u.promo, "extérieur") = "'
-                 .addslashes(Env::get('promo')).'"';
+                 .addslashes(Env::v('promo')).'"';
         }
 
         $ann = XDB::iterator(
@@ -389,7 +389,7 @@ class XnetGrpModule extends PLModule
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                                      .'" <'.S::v('forlife').'@polytechnique.org>');
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
-                    $mailer->setTxtBody(Env::get('motif'));
+                    $mailer->setTxtBody(Env::v('motif'));
                     $mailer->send();
                     $page->kill("la demande $prenom $nom a bien été refusée");
                 } else {
@@ -448,7 +448,7 @@ class XnetGrpModule extends PLModule
             $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                              .'" <'.S::v('forlife').'@polytechnique.org>');
             $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
-            $mailer->setTxtBody(Post::get('message').$append);
+            $mailer->setTxtBody(Post::v('message').$append);
             $mailer->send();
         }
     }
@@ -467,12 +467,12 @@ class XnetGrpModule extends PLModule
         $tit = $res->fetchAllAssoc();
         $page->assign('titres', $tit);
 
-        $order = Env::get('order', 'timestamp');
+        $order = Env::v('order', 'timestamp');
         $orders = array('timestamp', 'nom', 'promo', 'montant');
         if (!in_array($order, $orders)) {
             $order = 'timestamp';
         }
-        $inv_order = Env::get('order_inv', 0);
+        $inv_order = Env::v('order_inv', 0);
         $page->assign('order', $order);
         $page->assign('order_inv', !$inv_order);
 
@@ -686,16 +686,16 @@ class XnetGrpModule extends PLModule
                 XDB::query('UPDATE groupex.membres
                                          SET prenom={?}, nom={?}, email={?}
                                        WHERE uid={?} AND asso_id={?}',
-                                     Post::get('prenom'), Post::get('nom'),
-                                     Post::get('email'), $user['uid'],
+                                     Post::v('prenom'), Post::v('nom'),
+                                     Post::v('email'), $user['uid'],
                                      $globals->asso('id'));
-                $user['nom']    = Post::get('nom');
-                $user['prenom'] = Post::get('prenom');
-                $user['email']  = Post::get('email');
-                $user['email2'] = Post::get('email');
+                $user['nom']    = Post::v('nom');
+                $user['prenom'] = Post::v('prenom');
+                $user['email']  = Post::v('email');
+                $user['email2'] = Post::v('email');
             }
 
-            $perms = Post::getInt('is_admin');
+            $perms = Post::i('is_admin');
             if ($user['perms'] != $perms) {
                 XDB::query('UPDATE groupex.membres SET perms={?}
                                       WHERE uid={?} AND asso_id={?}',
@@ -705,7 +705,7 @@ class XnetGrpModule extends PLModule
                 $page->trig('permissions modifiées');
             }
 
-            foreach (Env::getMixed('ml1', array()) as $ml => $state) {
+            foreach (Env::v('ml1', array()) as $ml => $state) {
                 $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
                 if ($ask == $state) continue;
                 if ($state == '1') {
@@ -721,7 +721,7 @@ class XnetGrpModule extends PLModule
                 }
             }
 
-            foreach (Env::getMixed('ml3', array()) as $ml => $state) {
+            foreach (Env::v('ml3', array()) as $ml => $state) {
                 $ask = !empty($_REQUEST['ml4'][$ml]);
                 if($state == $ask) continue;
                 if($ask) {

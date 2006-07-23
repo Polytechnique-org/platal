@@ -24,7 +24,7 @@ require_once('applis.func.inc.php');
 
 function replace_ifset(&$var,$req) {
     if (Env::has($req)){
-        $var = Env::get($req);
+        $var = Env::v($req);
     }
 }
 

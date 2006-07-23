@@ -158,7 +158,7 @@ class Validate
 
         // ajout d'un commentaire
         if (Env::has('hold') && Env::has('comm')) {
-            $this->comments[] = Array(S::v('bestalias'), Env::get('comm'));
+            $this->comments[] = Array(S::v('bestalias'), Env::v('comm'));
 
             // envoi d'un mail à hotliners
             global $globals;
@@ -170,7 +170,7 @@ class Validate
 
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
               . S::v('bestalias')." a ajouté le commentaire :\n\n" 
-              . Env::get('comm')."\n\n"
+              . Env::v('comm')."\n\n"
               . "cf la discussion sur : ".$globals->baseurl."/admin/valider.php";
 
             $mailer->setTxtBody(wordwrap($body));
@@ -194,7 +194,7 @@ class Validate
         }
 
         if (Env::has('refuse')) {
-            if (Env::get('comm')) {
+            if (Env::v('comm')) {
                 $this->sendmail(false);
                 $this->clean();
                 $this->trig('mail envoyé');
@@ -222,7 +222,7 @@ class Validate
 
         $body = "Cher(e) camarade,\n\n"
               . $this->_mail_body($isok)
-              . (Env::has('comm') ? "\n\n".Env::get('comm') : '')
+              . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
               . "\n\nCordialement,\nL'équipe Polytechnique.org\n";
 
         $mailer->setTxtBody(wordwrap($body));

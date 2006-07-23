@@ -19,6 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+$DONT_FIX_GPC = 1;
+
 require_once('xorg.inc.php');
 new_admin_table_editor('groupesx_auth','id');
 $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X'); 
