@@ -330,42 +330,33 @@ class CarnetModule extends PLModule
     {
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
 
-        if ($alias && $hash) {
-            $res = XDB::query(
-                'SELECT  a.id
-                   FROM  aliases         AS a
-             INNER JOIN  auth_user_quick AS q ON ( a.id = q.user_id AND q.core_rss_hash = {?} )
-                  WHERE  a.alias = {?} AND a.type != "homonyme"', $hash, $alias);
-            $uid = $res->fetchOneCell();
-        }
+        $res = XDB::iterRow(
+                'SELECT u.prenom,
+                        IF(u.nom_usage = \'\',u.nom,u.nom_usage) AS nom,
+                        u.promo,
+                        u.naissance,
+                        DATE_ADD(u.naissance, INTERVAL 1 DAY) AS end,
+                        u.date_ins,
+                        a.alias AS forlife
+                   FROM contacts      AS c
+             INNER JOIN auth_user_md5 AS u ON (u.user_id = c.contact)
+             INNER JOIN aliases       AS a ON (u.user_id = a.id AND a.type = \'a_vie\')
+                  WHERE c.uid = {?}', S::v('uid'));
 
-        require_once 'notifs.inc.php';
-        $notifs = new Notifs($uid, true);
-
-        $annivcat = false;
-        foreach ($notifs->_cats as $cat) {
-            if (preg_match('/anniv/i', $cat['short']))
-                $annivcat = $cat['id'];
+        $annivs = Array();
+        while (list($prenom, $nom, $promo, $naissance, $end, $ts, $forlife) = $res->next()) {
+            $naissance = str_replace('-', '', $naissance);
+            $end       = str_replace('-', '', $end);
+            $annivs[] = array(
+                'timestamp' => strtotime($ts),
+                'date'      => $naissance,
+                'tomorrow'  => $end,
+                'forlife'   => $forlife,
+                'summary'   => 'Anniversaire de '.$prenom
+                                .' '.$nom.' - x '.$promo,
+            );
         }
-
-        if ($annivcat !== false) {
-            $annivs = array();
-            foreach ($notifs->_data[$annivcat] as $promo) {
-                foreach ($promo as $notif) {
-                    if ($all == 'all' || $notif['contact']) {
-                        $annivs[] = array(
-                            'timestamp' => $notif['known'],
-                            'date'      => strtotime($notif['date']),
-                            'tomorrow'  => strtotime("+1 day", strtotime($notif['date'])),
-                            'bestalias' => $notif['bestalias'],
-                            'summary'   => 'Anniversaire de '.$notif['prenom']
-                                           .' '.$notif['nom'].' - x '.$notif['promo'],
-                         );
-                    }
-                }
-            }
-            $page->assign('events', $annivs);
-        }
+        $page->assign('events', $annivs);
 
         header('Content-Type: text/calendar; charset=utf-8');
     }
