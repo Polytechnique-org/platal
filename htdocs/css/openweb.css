@@ -35,9 +35,8 @@ body {
 a:link, a:visited { color: #f60; background: transparent; }
 a:active, a:hover { color: #369; background: transparent; }
 
-img   { vertical-align: text-top; }
+img   { vertical-align: middle; }
 a img { border: 0px; }
-td    { vertical-align: top; }
 li    { padding: 0em 1em; text-align: justify; }
 hr    { width: 90%; margin: 1em 5%; border: 1px dotted #369; border-bottom: none; }
 
@@ -60,7 +59,6 @@ legend {
 
 .center { text-align: center; }
 .right  { text-align: right; }
-.middle { vertical-align: middle; }
 .smaller { font-size: smaller; font-style: italic; }
 .spacer { clear: both; }
 
@@ -162,7 +160,6 @@ table.tinybicol th, table.bicol th {
     background: #d6e1ec;
     font-weight: bold;
     text-align: center;
-    vertical-align: middle;
     padding: 0px 4px;
 }
 table.tinybicol td, table.bicol td {
@@ -182,7 +179,6 @@ td.action {
     white-space: nowrap;
     text-align: right;
     font-weight: bold;
-    vertical-align: middle;
 }
 td.action a { padding: 0px 2px; }
 
@@ -200,12 +196,10 @@ td.action a { padding: 0px 2px; }
 #skin td {
     border-top: 1px solid #a2c2e1;
     border-bottom: 1px solid #a2c2e1;
-    vertical-align: middle;
 }
 #skin td.skigauche {
     background: #d6e1ec;
     color: inherit;
-    vertical-align: middle;
 }
 #skin td.skimilieu {
     padding-left: 1em;
@@ -358,7 +352,7 @@ div#body {
     color: #000;
     background: #fff;
     border: 3px solid #000;
-    
+
     width: 800px;
     margin: 7px;
 }
@@ -504,6 +498,7 @@ table#body {
 #body-bottom { text-align: center;}
 
 #body-menu {
+    vertical-align: top;
     padding: 1em 0em 2em 2em;
     border: 0px;
     width: 140px;

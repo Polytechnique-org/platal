@@ -66,7 +66,7 @@
         <td id="body-menu">
         {include file=skin/common.menu.tpl}
         </td>
-        <td>
+        <td style="vertical-align: top">
           <div id="content">
           {include file="skin/common.content.tpl"}
           </div>
