@@ -52,13 +52,11 @@ function chgMainWinLoc( strPage ) {
           {icon name=add title="Ajouter à mes contacts"}</a>
         {else}
         <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
-          {icon name=cross title="Retirer de mes contacts"}
-        </a>
+          {icon name=cross title="Retirer de mes contacts"}</a>
         {/if}
         {if $smarty.session.perms eq admin}
         <a href="javascript:x()" onclick="chgMainWinLoc('admin/utilisateurs.php?login={$x.forlife}')">
-          <img src="images/admin.png" alt='admin' title="administrer user" />
-        </a>
+          {icon name=wrench title="administrer user"}</a>
         {/if}
         {/if}
       </div>

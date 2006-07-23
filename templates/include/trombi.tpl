@@ -33,8 +33,7 @@
       </a>
       {if $trombi_admin && $smarty.session.perms eq 'admin'}
       <a href="admin/admin_trombino.php?uid={$p.user_id}">
-        <img src="images/admin.png" alt="[admin]" title="[admin]" />
-      </a>
+        {icon name=wrench title="[admin]"}</a>
       {/if}
       <br />
       <a href="profile/{$p.forlife}" class="popup2">

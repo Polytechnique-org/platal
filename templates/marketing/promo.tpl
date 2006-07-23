@@ -66,8 +66,7 @@
         {/if}
       </td>
       <td class="center">
-        <a href="marketing/private/{$it.user_id}">{*
-          *}<img src="images/admin.png" alt='Marketing' title="Marketing" /></a>
+        <a href="marketing/private/{$it.user_id}">{icon name=wrench title="Marketing"}</a>
         <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
           *}<img src="images/ax.png" alt='AX' title="fiche AX" /></a>
       </td>
