@@ -19,6 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once 'diogenes/diogenes.misc.inc.php';
+require_once 'diogenes/diogenes.core.logger.inc.php';
+
 class Session
 {
     function init()
@@ -70,5 +73,24 @@ class Session
 }
 
 class S extends Session { }
+
+// {{{ function check_perms()
+
+/** verifie si un utilisateur a les droits pour voir une page
+ ** si ce n'est pas le cas, on affiche une erreur
+ * @return void
+ */
+function check_perms()
+{
+    global $page;
+    if (!S::has_perms()) {
+        if ($_SESSION['log']) {
+            $_SESSION['log']->log("noperms",$_SERVER['PHP_SELF']);
+        }
+	$page->kill("Tu n'as pas les permissions nécessaires pour accéder à cette page.");
+    }
+}
+
+// }}}
 
 ?>

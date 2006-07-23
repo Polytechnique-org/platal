@@ -18,6 +18,7 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
+
 require_once('platal.inc.php');
 require_once('xorg/globals.inc.php');
 require_once('xorg/session.inc.php');
@@ -25,7 +26,7 @@ XorgGlobals::init();
 XorgGlobals::setlocale();
 XorgSession::init();
 
-require_once('platal/page.inc.php');
+require_once dirname(__FILE__).'/../classes/Page.php';
 
 // {{{ class XorgPage
 

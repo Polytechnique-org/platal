@@ -19,8 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('platal/page.inc.php');
-require_once('xnet/smarty.plugins.inc.php');
+require_once dirname(__FILE__).'/../../classes/Page.php';
 
 class XnetPage extends PlatalPage
 {
@@ -112,6 +111,42 @@ class XnetPage extends PlatalPage
 
     // }}}
 }
+
+// {{{  function list_all_my_groups
+
+function list_all_my_groups($params)
+{
+    if (!S::logged()) {
+        return;
+    }
+    $res = XDB::iterRow(
+            "SELECT  a.nom, a.diminutif
+               FROM  groupex.asso    AS a
+         INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
+              WHERE  m.uid={?}", S::v('uid'));
+    $html = '<div>Mes groupes :</div>';
+    while (list($nom, $mini) = $res->next()) {
+        $html .= "<a class='gp' href='$mini/'>&bull; $nom</a>";
+    }
+    return $html;
+}
+
+// }}}
+// {{{ cat_pp
+
+function cat_pp($cat)
+{
+    $trans = array(
+        'groupesx' => 'Groupes X' ,
+        'binets'   => 'Binets' ,
+        'institutions' => 'Institutions' ,
+        'promotions' => 'Promotions'
+    );
+
+    return $trans[strtolower($cat)];
+}
+
+// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
