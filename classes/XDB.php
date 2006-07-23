@@ -229,7 +229,7 @@ class XOrgDBResult
     // }}}
 }
 
-class XOrgDBIterator extends XOrgIterator
+class XOrgDBIterator
 {
     // {{{ properties
 
