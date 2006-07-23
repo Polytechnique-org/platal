@@ -66,7 +66,7 @@ class Env
     function i($key, $default = 0)
     {
         $i = Env::_get($key, $default);
-        return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
+        return is_numeric($i) ? intval($i) : $default;
     }
 
     // }}}
@@ -120,7 +120,7 @@ class Post
     function i($key, $default = 0)
     {
         $i = Post::_get($key, $default);
-        return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
+        return is_numeric($i) ? intval($i) : $default;
     }
 
     // }}}
@@ -173,7 +173,7 @@ class Get
     function i($key, $default = 0)
     {
         $i = Get::_get($key, $default);
-        return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
+        return is_numeric($i) ? intval($i) : $default;
     }
 
     // }}}
@@ -226,7 +226,7 @@ class Cookie
     function i($key, $default = 0)
     {
         $i = Cookie::_get($key, $default);
-        return preg_match(',^[0-9]+$,', $i) ? intval($i) : $default;
+        return is_numeric($i) ? intval($i) : $default;
     }
 
     // }}}
