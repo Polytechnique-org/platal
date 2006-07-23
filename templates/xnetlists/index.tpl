@@ -72,7 +72,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
     <td align='right'>{$l.nbsub}</td>
     <td align='right'>
       {if $l.sub eq 2}
-      <a href="{$platal->ns}lists?del={$l.list}"><img src="images/del.png" alt="[désinscrire]" title="me désinscrire" /></a>
+      <a href="{$platal->ns}lists?del={$l.list}">{icon name=delete title="me désinscrire"}</a>
       {elseif $l.sub eq 1}
       {icon name=flag_orange title='inscription en attente de modération'}
       {else}
@@ -103,7 +103,7 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
     {if $may_update}
     <td class="center"><a href='mailto:{$a.alias}'>{icon name=email title="mail"}</a></td>
     <td><a href="{$platal->ns}alias/admin/{$a.alias}">{$a.alias}</a></td>
-    <td class="center"><a href="{$platal->ns}lists?del_alias={$a.alias}"><img src='images/del.png' alt='[supprimer]' /></a></td>
+    <td class="center"><a href="{$platal->ns}lists?del_alias={$a.alias}">{icon name=delete title='supprimer'}</a></td>
     {else}
     <td><a href='mailto:{$a.alias}'>{icon name=email title="mail"} {$a.alias}</a></td>
     {/if}

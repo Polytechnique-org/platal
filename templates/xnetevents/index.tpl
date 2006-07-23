@@ -47,8 +47,7 @@
       [<a href="javascript:dynpostkv('{$platal->ns}events', 'del', {$e.eid})"
         onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')">
         supprimer
-        <img src="images/del.png" alt="Suppression de {$e.intitule}" title="Suppression" />
-      </a>]
+      {icon name=delete title='Suppression'}</a>]
       {/if}
     </th>
   </tr>

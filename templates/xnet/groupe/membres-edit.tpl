@@ -32,7 +32,7 @@
   (X{$user.promo})
   <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
   {/if}
-  <a href="{$platal->ns}member/del/{$user.email}"><img src="images/del.png" alt="Suppression du compte" /></a>
+  <a href="{$platal->ns}member/del/{$user.email}">{icon name=delete title="Suppression du compte"}</a>
   <a href="mailto:{$user.email}">{icon name=email title="mail"}</a>
 </h2>
 

@@ -53,8 +53,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
     <th><a href="{$platal->ns}annuaire?order=promo{if $smarty.request.order eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">Promo</a></th>
     <th>Infos</th>
     {if $admin}
-    <th>Éditer</th>
-    <th>suppr.</th>
+    <th>Actions</th>
     {/if}
   </tr>
   {iterate from=$ann item=m}
@@ -71,8 +70,10 @@ Fonctionnalités visibles uniquement par les administrateurs :
       {/if}
     </td>
     {if $admin}
-    <td><a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="images/profil.png" alt="Edition du profil" /></a></td>
-    <td><a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="images/del.png" alt="Suppression de {$m.prenom} {$m.nom}" /></a></td>
+    <td>
+      <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="images/profil.png" alt="Edition du profil" /></a>
+      <a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=delete title="Supprimer de l'annuaire"}</a>
+    </td>
     {/if}
   </tr>
   {/iterate}

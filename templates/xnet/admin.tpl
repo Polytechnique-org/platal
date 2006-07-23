@@ -51,7 +51,7 @@
 <table cellspacing="0" cellpadding="0" class='large'>
   {foreach from=$assos item=a key=i name=all}
   {if $i is even}<tr>{/if}
-    <td><a href='admin?del={$a.diminutif}'><img src='images/del.png' alt='delete' /></a></td>
+    <td><a href='admin?del={$a.diminutif}'>{icon name=delete title='delete'}</a></td>
     <td><a href='{$a.diminutif}/edit'>{$a.nom}</a></td>
     {if $i is odd || $smarty.foreach.all.last}</tr>{/if}
   {/foreach}

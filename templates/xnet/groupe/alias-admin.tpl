@@ -32,7 +32,7 @@
       {iterate from=$mem item=m}
       {$m.redirect}
       <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
-        <img src='images/del.png' alt='retirer membre' title='retirer membre' />
+      {icon name=delete title='retirer membre'}</a>]
       </a>
       <br />
       {/iterate}
