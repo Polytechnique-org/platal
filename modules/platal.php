@@ -233,9 +233,14 @@ class PlatalModule extends PLModule
         }
 
         if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::get('birth'))) {
-            $page->trig_run('Date de naissance incorrecte ou incohérente');
+            $page->trig('Date de naissance incorrecte ou incohérente');
+            return;
         }
-        $birth   = sprintf('%s-%s-%s', substr(Env::get('birth'),4,4), substr(Env::get('birth'),2,2), substr(Env::get('birth'),0,2));
+
+        $birth   = sprintf('%s-%s-%s',
+                           substr(Env::get('birth'), 4, 4),
+                           substr(Env::get('birth'), 2, 2),
+                           substr(Env::get('birth'), 0, 2));
 
         $mailorg = strtok(Env::get('login'), '@');
 

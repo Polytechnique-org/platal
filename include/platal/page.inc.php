@@ -22,8 +22,6 @@
 require_once 'smarty/libs/Smarty.class.php';
 require_once 'platal/smarty.plugins.inc.php';
 
-// {{{ class PlatalPage
-
 class PlatalPage extends Smarty
 {
     // {{{ properties
@@ -177,15 +175,6 @@ class PlatalPage extends Smarty
     }
 
     // }}}
-    // {{{ function trig()
-
-    function trig_run($msg)
-    {
-        $this->trig($msg);
-        $this->run();
-    }
-
-    // }}}
     // {{{ function fail()
 
     function fail($msg)
@@ -228,18 +217,7 @@ class PlatalPage extends Smarty
     }
 
     // }}}
-    // {{{ function gassign
-
-    function gassign($varname)
-    {
-        global $$varname;
-        $this->assign($varname, $$varname);
-    }
-
-    // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

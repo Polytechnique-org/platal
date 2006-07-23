@@ -140,7 +140,8 @@ class XnetGrpModule extends PLModule
         if (Post::has('submit')) {
             if (S::has_perms()) {
                 if (Post::get('mail_domain') && (strstr(Post::get('mail_domain'), '.') === false)) {
-                    $page->trig_run("le domaine doit être un FQDN (aucune modif effectuée) !!!");
+                    $page->trig("le domaine doit être un FQDN (aucune modif effectuée) !!!");
+                    return;
                 }
                 XDB::execute(
                     "UPDATE  groupex.asso
@@ -355,7 +356,8 @@ class XnetGrpModule extends PLModule
                                             $u, $globals->asso('id'));
                 $n   = $res->fetchOneCell();
                 if ($n) {
-                    $page->trig_run("$prenom $nom est déjà membre du groupe !");
+                    $page->trig("$prenom $nom est déjà membre du groupe !");
+                    return;
                 }
                 elseif (Env::has('accept'))
                 {

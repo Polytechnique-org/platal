@@ -100,7 +100,8 @@ class ThrowError
     function ThrowError($explain)
     {
         global $page;
-        $page->trig_run('Erreur : '.$explain);
+        $page->trig('Erreur : '.$explain);
+        $page->run();
     }
 }
 

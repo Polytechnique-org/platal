@@ -35,9 +35,9 @@ while ($tmp = $res->next()) {
 $trad = Array('ordre' => 'Ordres ...', 'croix' => 'Croix ...', 'militaire' => 'Médailles militaires ...',
         'honneur' => 'Médailles d\'honneur', 'resistance' => 'Médailles de la résistance ...', 'prix' => 'Prix ...');
 
-$page->gassign('grades');
-$page->gassign('medals');
-$page->gassign('trad');
+$page->assign('grades', $grades);
+$page->assign('medals', $medals);
+$page->assign('trad',   $trad);
 $page->assign('medals_pub', $medals_pub);
 $page->assign('medal_list', $mlist);
 

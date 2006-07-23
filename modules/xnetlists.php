@@ -122,28 +122,32 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig_run('champs «addresse souhaitée» vide');
+            $page->trig('champs «addresse souhaitée» vide');
+            return;
         }
 
         $liste = Post::get('liste');
 
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
-            $page->trig_run('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+            $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
+            return;
         }
 
         $new = $liste.'@'.$globals->asso('mail_domain');
         $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
         $n   = $res->fetchOneCell();
 
-        if($n) {
-            $page->trig_run('cet alias est déjà pris');
+        if ($n) {
+            $page->trig('cet alias est déjà pris');
+            return;
         }
-        if(!Post::get('desc')) {
-            $page->trig_run('le sujet est vide');
+        if (!Post::get('desc')) {
+            $page->trig('le sujet est vide');
+            return;
         }
 
-        require_once('platal/xmlrpc-client.inc.php');
-        require_once('lists.inc.php');
+        require_once 'platal/xmlrpc-client.inc.php';
+        require_once 'lists.inc.php';
         $ret = $this->client->create_list(
                     $liste, Post::get('desc'), Post::get('advertise'),
                     Post::get('modlevel'), Post::get('inslevel'),
@@ -201,11 +205,11 @@ class XnetListsModule extends ListsModule
         $not_in_group_ext = array();
 
         $ann = XDB::iterator(
-                  "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
-                           IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                           IF(m.origine='X',u.promo,'extérieur') AS promo,
-                           IF(m.origine='X',CONCAT(a.alias, '@polytechnique.org'),m.email) AS email,
-                           IF(m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
+                  "SELECT  if (m.origine='X',if (u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
+                           if (m.origine='X',u.prenom,m.prenom) AS prenom,
+                           if (m.origine='X',u.promo,'extérieur') AS promo,
+                           if (m.origine='X',CONCAT(a.alias, '@polytechnique.org'),m.email) AS email,
+                           if (m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
                            m.perms='admin' AS admin,
                            m.origine='X' AS x
                      FROM  groupex.membres AS m
@@ -240,7 +244,7 @@ class XnetListsModule extends ListsModule
                 $mbox = $add;
                 $dom = 'm4x.org';
             }
-            if($dom == 'polytechnique.org' || $dom == 'm4x.org') {
+            if ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
                 $res = XDB::query(
                         "SELECT  a.alias, b.alias
                            FROM  x4dat.aliases AS a
@@ -309,7 +313,7 @@ class XnetListsModule extends ListsModule
         $new = $liste.'@'.$globals->asso('mail_domain');
         $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
         $n   = $res->fetchOneCell();
-        if($n) {
+        if ($n) {
             $page->trig('cet alias est déjà pris');
             return;
         }
