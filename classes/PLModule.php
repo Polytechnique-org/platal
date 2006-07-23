@@ -21,13 +21,6 @@
 
 class PLModule
 {
-    var $platal;
-
-    function PLModule(&$platal)
-    {
-        $this->platal =& $platal;
-    }
-
     function handlers()     { die("implement me"); }
 
     function make_hook($fun, $auth, $perms = '', $type = SKINNED)
@@ -40,13 +33,13 @@ class PLModule
 
     /* static functions */
 
-    function factory(&$platal, $modname)
+    function factory($modname)
     {
         $mod_path = dirname(__FILE__).'/../modules/'.strtolower($modname).'.php';
         $class    = ucfirst($modname).'Module';
 
         require_once $mod_path;
-        return new $class($site);
+        return new $class();
     }
 }
 

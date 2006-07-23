@@ -41,7 +41,7 @@ class Platal
 
         array_unshift($modules, 'core');
         foreach ($modules as $module) {
-            $this->__mods[$module] = $m = PLModule::factory($this, $module);
+            $this->__mods[$module] = $m = PLModule::factory($module);
             $this->__hooks += $m->handlers();
         }
     }
