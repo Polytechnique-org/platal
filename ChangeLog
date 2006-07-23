@@ -64,6 +64,10 @@ New:
         - Rework pmwiki integration, make it way more simple.               -MC
         - Rework authentication, don't let pmwiki deal with it.             -MC
 
+Bug/Wish:
+
+    * Carnet:
+        - #435: Calendar contains yearly events for all the contacts       -FRU
 
 ================================================================================
 VERSION 0.9.10                                                      29 Juin 2006

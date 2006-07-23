@@ -326,7 +326,7 @@ class CarnetModule extends PLModule
         $page->assign('notifs', $notifs);
     }
 
-    function handler_ical(&$page, $user = null, $hash = null, $all = null)
+    function handler_ical(&$page)
     {
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
 

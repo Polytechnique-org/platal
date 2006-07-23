@@ -54,19 +54,12 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
 </ul>
-{if $smarty.session.core_rss_hash}
 <p>
   Tu peux récupérer un calendrier iCal avec l'anniversaire de tes contacts.
 </p>
-  <div class="right">
-    <a href='carnet/ical/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/cal.ics'><img src='images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
-  </div>
-{else}
-<p>
-  Pour récupérer un calendrier iCal avec l'anniversaire de tes contacts, active les flux RSS dans <a href="preferences">Mes préférences</a>.
-</p>
-{/if}
-
+<div class="right">
+  <a href='carnet/ical/annivs-x.ics'><img src='images/icalicon.gif' alt='fichier ical' title='Anniversaires'/></a>
+</div>
 
 {if $trombi}
 
