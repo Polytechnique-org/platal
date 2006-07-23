@@ -374,7 +374,10 @@ div#body {
     width: 600px;
 }
 
-#photo { padding-left: 1em; }
+#photo {
+    vertical-align: top;
+    padding-left: 1em;
+}
 
 #fiche_identite div.civilite {
     text-align: center;
