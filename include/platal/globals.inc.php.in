@@ -22,18 +22,12 @@
 require_once('diogenes/diogenes.core.globals.inc.php');
 require_once('diogenes/diogenes.database.inc.php');
 require_once('platal/iterator.inc.php');
-require_once('platal/database.inc.php');
-
-// {{{ class CoreConfig
+require_once dirname(__FILE__).'/../../classes/XDB.php';
 
 class CoreConfig
 {
     var $locale = 'fr_FR';
 }
-
-// }}}
-
-// {{{ class XorgGlobals
 
 class PlatalGlobals extends DiogenesCoreGlobals
 {
@@ -101,8 +95,6 @@ class PlatalGlobals extends DiogenesCoreGlobals
         setlocale(LC_CTYPE,    $globals->core->locale);
     }
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
