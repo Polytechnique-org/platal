@@ -52,7 +52,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
         <td>
           {$p.prenom} {$p.nom}
           <a href="https://www.polytechnique.org/profile/{$p.alias}">{icon name=user_suit title="fiche"}</a>
-          <a href="mailto:{$p.alias}@polytechnique.org"><img alt="[mail]" title="Lui envoyer un mail" src="images/mail.png"/></a>
+          <a href="mailto:{$p.alias}@polytechnique.org">{icon name=email title="mail"}</a>
         </td>
         <td class="center">X {$p.promo}</td>
         <td class="right">{$p.montant}</td>

@@ -33,7 +33,7 @@
   <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
   {/if}
   <a href="{$platal->ns}member/del/{$user.email}"><img src="images/del.png" alt="Suppression du compte" /></a>
-  <a href="mailto:{$user.email}"><img src="images/mail.png" alt="Ecrire un mail" /></a>
+  <a href="mailto:{$user.email}">{icon name=email title="mail"}</a>
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
