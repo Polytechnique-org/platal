@@ -71,6 +71,8 @@ class SearchModule extends PLModule
 
     function form_prepare()
     {
+        global $page;
+
         $page->assign('formulaire',1);
         $page->assign('choix_nats',
                       XDB::iterator('SELECT a2 AS id,IF(nat=\'\',pays,nat) AS text
