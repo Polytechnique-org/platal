@@ -41,7 +41,7 @@ class EventsModule extends PLModule
                                       WHERE user_id={?}', S::v('uid'));
         list($date, $naissance) = $res->fetchOneRow();
 
-        // incitation Ã  mettre Ã  jour la fiche
+        // incitation à mettre à jour la fiche
 
         $d2  = mktime(0, 0, 0, substr($date, 5, 2), substr($date, 8, 2),
                       substr($date, 0, 4));
@@ -56,18 +56,18 @@ class EventsModule extends PLModule
             $page->assign('birthday', date('Y') - substr($naissance, 0, 4));
         }
 
-        // incitation Ã  mettre une photo
+        // incitation à mettre une photo
 
         $res = XDB::query('SELECT COUNT(*) FROM photo
                                       WHERE uid={?}', S::v('uid'));
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
-        // Incitation Ã  se gÃ©olocaliser
+        // Incitation à se géolocaliser
         require_once 'geoloc.inc.php';
         $res = localize_addresses(S::v('uid', -1));
         $page->assign('geoloc_incitation', count($res));
 
-        // affichage de la boÃ®te avec quelques liens
+        // affichage de la boîte avec quelques liens
         require_once 'login.conf.php';
         $pub_nbElem = $pub_nbLig * $pub_nbCol ;
         if (count($pub_tjs) <= $pub_nbElem) {
@@ -112,7 +112,7 @@ class EventsModule extends PLModule
         }
 
         // affichage des evenements
-        // annonces promos triÃ©es par prÃ©sence d'une limite sur les promos
+        // annonces promos triées par présence d'une limite sur les promos
         // puis par dates croissantes d'expiration
         $promo = S::v('promo');
         $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife

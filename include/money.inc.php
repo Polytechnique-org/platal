@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class Payment
+require_once 'diogenes/diogenes.flagset.inc.php';
 
 class Payment
 {
@@ -96,9 +96,9 @@ class Payment
         }
         return null;
     }
+    // }}}
 }
 
-// }}}
 // {{{ class PayMethod
 
 class PayMethod

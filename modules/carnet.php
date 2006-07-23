@@ -79,7 +79,7 @@ class CarnetModule extends PLModule
         if(preg_match('!^ *(\d{4}) *$!', $arg, $matches)) {
             $p = intval($matches[1]);
             if($p<1900 || $p>2100) {
-                $page->trig("la promo entrÃ©e est invalide");
+                $page->trig("la promo entrée est invalide");
             } else {
                 if ($action == 'add_promo') {
                     $watch->_promos->add($p);
@@ -91,9 +91,9 @@ class CarnetModule extends PLModule
             $p1 = intval($matches[1]);
             $p2 = intval($matches[2]);
             if($p1<1900 || $p1>2100) {
-                $page->trig('la premiÃ¨re promo de la plage entrÃ©e est invalide');
+                $page->trig('la première promo de la plage entrée est invalide');
             } elseif($p2<1900 || $p2>2100) {
-                $page->trig('la seconde promo de la plage entrÃ©e est invalide');
+                $page->trig('la seconde promo de la plage entrée est invalide');
             } else {
                 if ($action == 'add_promo') {
                     $watch->_promos->addRange($p1, $p2);
@@ -102,7 +102,7 @@ class CarnetModule extends PLModule
                 }
             }
         } else {
-            $page->trig("La promo (ou la plage de promo) entrÃ©e est dans un format incorrect.");
+            $page->trig("La promo (ou la plage de promo) entrée est dans un format incorrect.");
         }
     }
 
@@ -194,7 +194,7 @@ class CarnetModule extends PLModule
                                                       WHERE uid = {?} AND contact = {?}',
                                                $uid, $user))
                     {
-                        $page->trig("Contact retirÃ© !");
+                        $page->trig("Contact retiré !");
                     }
                 } else {
                     if (XDB::execute(
@@ -203,7 +203,7 @@ class CarnetModule extends PLModule
                                   INNER JOIN  aliases  AS a ON (c.contact=a.id and a.type!="homonyme")
                                        WHERE  c.uid = {?} AND a.alias={?}', $uid, $user))
                     {
-                        $page->trig("Contact retirÃ© !");
+                        $page->trig("Contact retiré !");
                     }
                 }
                 break;
@@ -217,9 +217,9 @@ class CarnetModule extends PLModule
                                         FROM  aliases
                                        WHERE  alias = {?}', $uid, $login))
                     {
-                        $page->trig('Contact ajoutÃ© !');
+                        $page->trig('Contact ajouté !');
                     } else {
-                        $page->trig('Contact dÃ©jÃ  dans la liste !');
+                        $page->trig('Contact déjà dans la liste !');
                     }
                 }
         }

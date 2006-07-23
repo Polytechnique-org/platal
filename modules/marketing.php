@@ -124,7 +124,7 @@ class MarketingModule extends PLModule
             require_once('marketing.inc.php');
             mark_send_mail($uid, $value, Post::v('from'), Post::v('to'),
                            Post::v('title'), Post::v('message'));
-            $page->trig("Mail envoyÃ©");
+            $page->trig("Mail envoyé");
         }
 
         if ($action == 'insrel') {
@@ -271,7 +271,7 @@ class MarketingModule extends PLModule
             $sent  = Array();
             foreach (array_keys($_POST['relance']) as $uid) {
                 if ($tmp = relance($uid, $nbdix)) {
-                    $sent[] = $tmp.' a Ã©tÃ© relancÃ©';
+                    $sent[] = $tmp.' a été relancé';
                 }
             }
             $page->assign('sent', $sent);

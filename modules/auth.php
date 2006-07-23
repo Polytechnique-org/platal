@@ -139,7 +139,7 @@ class AuthModule extends PLModule
             $gpex_url = "http://$gpex_url";
         $gpex_challenge = $_GET["challenge"];
 
-        // mise Ã  jour de l'heure et de la machine de dernier login sauf quand on est en suid
+        // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
         if (!isset($_SESSION['suid'])) {
             $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid == $uid)
                       ? $_SESSION['log']
@@ -157,7 +157,7 @@ class AuthModule extends PLModule
             }
         }
 
-        /* si on n'a pas trouvÃ©, on renvoit sur x.org */
+        /* si on n'a pas trouvé, on renvoit sur x.org */
         http_redirect('https://www.polytechnique.org/');
     }
 }

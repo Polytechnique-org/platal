@@ -124,7 +124,7 @@ class ListsModule extends PLModule
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trig('champs Â«addresse souhaitÃ©eÂ» vide');
+            $page->trig('champs «addresse souhaitée» vide');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
             $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
@@ -134,7 +134,7 @@ class ListsModule extends PLModule
         $n   = $res->fetchOneCell();
 
         if ($n) {
-            $page->trig('cet alias est dÃ©jÃ  pris');
+            $page->trig('cet alias est déjà pris');
         }
 
         if (!Post::v(desc)) {
@@ -193,7 +193,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('owners',  $moderos);
             $page->assign('nb_m',  count($mem));
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les dÃ©tails");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
         }
     }
 
@@ -250,7 +250,7 @@ class ListsModule extends PLModule
             $trombi = new Trombi(array(&$this, '_get_list'));
             $page->assign('trombi', $trombi);
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les dÃ©tails");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
         }
     }
 
@@ -329,27 +329,27 @@ class ListsModule extends PLModule
 
             if (Env::has('mok')) {
                 $action  = 1; /** 2 = ACCEPT **/
-                $subject = "Message acceptÃ©";
-                $append .= "a Ã©tÃ© acceptÃ© par $prenom $nom.\n";
+                $subject = "Message accepté";
+                $append .= "a été accepté par $prenom $nom.\n";
             } elseif (Env::has('mno')) {
                 $action  = 2; /** 2 = REJECT **/
-                $subject = "Message refusÃ©";
+                $subject = "Message refusé";
                 $reason  = Post::v('reason');
-                $append  = "a Ã©tÃ© refusÃ© par $prenom $nom avec la raison :\n\n"
+                $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
                         .  $reason;
             } elseif (Env::has('mdel')) {
                 $action  = 3; /** 3 = DISCARD **/
-                $subject = "Message supprimÃ©";
-                $append  = "a Ã©tÃ© supprimÃ© par $prenom $nom.\n\n"
-                        .  "Rappel: il ne faut utiliser cette opÃ©ration "
+                $subject = "Message supprimé";
+                $append  = "a été supprimé par $prenom $nom.\n\n"
+                        .  "Rappel: il ne faut utiliser cette opération "
                         .  "que dans le cas de spams ou de virus !\n";
             }
 
             if (isset($action) && $this->client->handle_request($liste, $mid, $action, $reason)) {
                 $texte = "le message suivant :\n\n"
                         ."    Auteur: {$mail['sender']}\n"
-                        ."    Sujet : Â« {$mail['subj']} Â»\n"
-                        ."    Date  : ".strftime("le %d %b %Y Ã  %H:%M:%S", (int)$mail['stamp'])."\n\n"
+                        ."    Sujet : « {$mail['subj']} »\n"
+                        ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
                         .$append;
                 require_once 'diogenes/diogenes.hermes.inc.php';
                 $mailer = new HermesMailer();
@@ -393,7 +393,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('subs', $subs);
             $page->assign_by_ref('mails', $mails);
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modÃ©rer");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modérer");
         }
     }
 
@@ -448,7 +448,7 @@ class ListsModule extends PLModule
                 }
 
                 if ($this->client->add_owner($liste, $login)) {
-                    $page->trig($alias." ajoutÃ© aux modÃ©rateurs.");
+                    $page->trig($alias." ajouté aux modérateurs.");
                 }
             }
         }

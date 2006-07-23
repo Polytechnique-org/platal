@@ -22,7 +22,7 @@
 function serv_to_str($params) {
     $flags = explode(',',$params);
     $trad = Array('web' => 'site web', 'mail'=> 'redirection mail',
-                  'smtp' => 'serveur sÃ©curisÃ© d\'envoi de mails',
+                  'smtp' => 'serveur sécurisé d\'envoi de mails',
                   'nntp' => 'serveur des forums de discussion');
     $ret = Array();
     foreach ($flags as $flag) {
@@ -62,7 +62,7 @@ class StatsModule extends PLModule
     {
         define('DUREEJOUR',24*3600);
 
-        //recupere le nombre d'inscriptions par jour sur la plage concernÃ©e
+        //recupere le nombre d'inscriptions par jour sur la plage concernée
         $res = XDB::iterRow(
                 "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
                              TO_DAYS(date_ins)-TO_DAYS(NOW()),
@@ -75,7 +75,7 @@ class StatsModule extends PLModule
         //genere des donnees compatibles avec GNUPLOT
         $inscrits='';
 
-        // la premiÃ¨re ligne contient le total des inscrits avant la date de dÃ©part (J - $jours)
+        // la première ligne contient le total des inscrits avant la date de départ (J - $jours)
         list(,$init_nb) = $res->next();
         $total = $init_nb;
 
@@ -92,7 +92,7 @@ class StatsModule extends PLModule
             $inscrits .= date('d/m/y',$i*DUREEJOUR+time())." ".$total."\n";
         }
 
-        //Genere le graphique Ã  la volÃ©e avec GNUPLOT
+        //Genere le graphique à la volée avec GNUPLOT
         header( "Content-type: image/png");
 
         $delt = ($total - $init_nb)/10;
@@ -124,10 +124,10 @@ EOF2;
     function handler_graph(&$page, $promo = null)
     {
         if ($promo == 'all') {
-            // date de dÃ©part
+            // date de départ
             $depart = 1920;
 
-            //recupere le nombre d'inscriptions par jour sur la plage concernÃ©e
+            //recupere le nombre d'inscriptions par jour sur la plage concernée
             $res = XDB::iterRow(
                     "SELECT  promo, SUM(perms IN ('admin', 'user')) / COUNT(*) * 100
                        FROM  auth_user_md5
@@ -137,7 +137,7 @@ EOF2;
             //genere des donnees compatibles avec GNUPLOT
             $inscrits='';
 
-            // la premiÃ¨re ligne contient le total des inscrits avant la date de dÃ©part
+            // la première ligne contient le total des inscrits avant la date de départ
             list($annee, $nb) = $res->next();
 
             for ($i = $depart; $i <= date("Y"); $i++) {
@@ -151,7 +151,7 @@ EOF2;
                     $inscrits .= $i.' '.$nb."\n";
             }
 
-            //Genere le graphique Ã  la volÃ©e avec GNUPLOT
+            //Genere le graphique à la volée avec GNUPLOT
             $fin = $i+2;
 
             $gnuplot = <<<EOF2
@@ -182,7 +182,7 @@ EOF2;
                                         $promo);
             $jours = -$res->fetchOneCell();
 
-            //recupere le nombre d'inscriptions par jour sur la plage concernÃ©e
+            //recupere le nombre d'inscriptions par jour sur la plage concernée
             $res = XDB::iterRow(
                     "SELECT  IF( date_ins>DATE_SUB(NOW(),INTERVAL $jours DAY),
                                  TO_DAYS(date_ins)-TO_DAYS(NOW()),
@@ -195,7 +195,7 @@ EOF2;
             //genere des donnees compatibles avec GNUPLOT
             $inscrits='';
 
-            // la premiÃ¨re ligne contient le total des inscrits avant la date de dÃ©part (J - $jours)
+            // la première ligne contient le total des inscrits avant la date de départ (J - $jours)
             list(,$init_nb) = $res->next();
             $total = $init_nb;
 
@@ -212,7 +212,7 @@ EOF2;
                 $inscrits .= date('d/m/y',$i*DUREEJOUR+time())." ".$total."\n";
             }
 
-            //Genere le graphique Ã  la volÃ©e avec GNUPLOT
+            //Genere le graphique à la volée avec GNUPLOT
             $delt = ($total - $init_nb) / 10;
             $delt += ($delt < 1);
             $ymin = round($init_nb - $delt,0);

@@ -576,6 +576,7 @@ class ProfileModule extends PLModule
 
         require_once 'validations.inc.php';
         require_once 'xorg.misc.inc.php';
+        require_once 'diogenes/diogenes.flagset.inc.php';
 
         $res = XDB::query(
                 "SELECT  u.nom, u.nom_usage, u.flags, e.alias
