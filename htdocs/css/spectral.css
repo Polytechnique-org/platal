@@ -51,7 +51,7 @@ h1 a:hover {
 h1 {
     color: #eeeeee;
     background-color: #444444;
-    background-image: url( "/images/sk_spectral_titre.jpg");
+    background-image: url( "/images/skins/spectral_titre.jpg");
     background-repeat: repeat-x;
 }
 
@@ -203,7 +203,7 @@ td.conteneur_tab {
 #body-menu .menu_title {
     color : #000000;
     background-color: #3601ff;
-    background-image: url("/images/sk_spectral_menu.jpg");
+    background-image: url("/images/skins/spectral_menu.jpg");
     background-repeat: repeat-y;
     border-top: 1px solid #003399;
     border-bottom: 1px solid #003399;

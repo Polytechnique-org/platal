@@ -32,7 +32,7 @@ a:hover { color: #47220a; }
 
 body {
     background-color: #ffffff;
-    background-image: url('/images/sk_trapped_monstre.jpg');
+    background-image: url('/images/skins/trapped_monstre.jpg');
     background-position: left bottom;
     background-repeat: no-repeat;
     font-family: "Arial", sans-serif;
@@ -66,7 +66,7 @@ h1 a:hover { color: #e2d9c2; }
         
 h1 {
     color: #ffffff;
-    background-image: url("/images/sk_trapped_titre.gif");
+    background-image: url("/images/skins/trapped_titre.gif");
     background-repeat: no-repeat;
     background-color: #200a00;
 }
@@ -256,7 +256,7 @@ td.conteneur_tab {
 #body-menu .menu_title {
     color : #7a614f;
     background-color: #F2e9e2;
-    background-image: url("/images/sk_trapped_menu.jpg");
+    background-image: url("/images/skins/trapped_menu.jpg");
     border-top: 1px solid #ab8b7d;
     border-bottom: 1px solid #ab8b7d;
     font-size: smaller;

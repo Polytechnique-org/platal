@@ -56,12 +56,12 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="events"><img src="images/sk_trapped_logo.gif" alt="[ LOGO ]" /></a>
+          <a href="events"><img src="images/skins/trapped_logo.gif" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="events"><img src="images/sk_trapped_ban.jpg" alt="[ Polytechnique.org ]" /></a>
+          <a href="events"><img src="images/skins/trapped_ban.jpg" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
-          <a href="events"><img src="images/sk_trapped_lesX.gif" alt="[LES X SUR LE WEB]" /></a>
+          <a href="events"><img src="images/skins/trapped_lesX.gif" alt="[LES X SUR LE WEB]" /></a>
         </td>
       </tr>
       <tr>

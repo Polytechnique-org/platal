@@ -53,7 +53,7 @@ h1 a:hover {
 h1 {
     color: #eeeeee;
     background-color: #444444;
-    background-image: url( "/images/sk_linux_titre.jpg");
+    background-image: url( "/images/skins/linux_titre.jpg");
     background-repeat: repeat-x;
 }
 
@@ -116,7 +116,7 @@ div.contact-list div.contact {
 
 #body-menu .menu_title {
     color: #000000;
-    background-image: url("/images/sk_linux_menu.jpg");
+    background-image: url("/images/skins/linux_menu.jpg");
     border-top: none;
     border-bottom: none;
 }

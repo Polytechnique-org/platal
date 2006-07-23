@@ -58,7 +58,7 @@ h1 a:hover {
 h1 {
     color: #ff0000;
     background-color: #800080;
-    background-image: url( "/images/sk_nbviolet_titre.jpg");
+    background-image: url( "/images/skins/nbviolet_titre.jpg");
     background-repeat: repeat-x;
 }
 
@@ -159,7 +159,7 @@ td.conteneur_tab {
 #fiche h2 {
     color : #eeeeee;
     background-color: #404040;
-    background-image: url("/images/sk_nbviolet_menu.jpg");
+    background-image: url("/images/skins/nbviolet_menu.jpg");
     border-top: none;
     border-bottom: none;
 }
@@ -209,7 +209,7 @@ td.conteneur_tab {
 #body-menu .menu_title {
     color : #eeeeee;
     background-color: #404040;
-    background-image: url("/images/sk_nbviolet_menu.jpg");
+    background-image: url("/images/skins/nbviolet_menu.jpg");
     border-top: none;
     border-bottom: none;
 }
