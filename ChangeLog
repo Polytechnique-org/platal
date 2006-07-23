@@ -69,6 +69,9 @@ Bug/Wish:
     * Carnet:
         - #435: Calendar contains yearly events for all the contacts       -FRU
 
+    * Emails:
+        - #426: Add an identification header in mails                      -FRU
+
 ================================================================================
 VERSION 0.9.10                                                      29 Juin 2006
 

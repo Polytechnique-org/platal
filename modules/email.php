@@ -272,6 +272,7 @@ class EmailModule extends PLModule
                 if (!empty($cc))  { $mymail->addCc($cc); }
                 if (!empty($bcc)) { $mymail->addBcc($bcc); }
                 if (!empty($to2)) { $mymail->addTo($to2); }
+                $mymail->addHeader('X-XOrg-Login', S::v('bestalias') . '@' . $globals->mail->domain);
                 $mymail->setTxtBody(wordwrap($txt,72,"\n"));
                 if ($mymail->send()) {
                     $page->trig("Ton mail a bien été envoyé.");
