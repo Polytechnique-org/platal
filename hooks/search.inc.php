@@ -19,27 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ config HOOK
-
-// {{{ class SearchConfig
-
-class SearchConfig
-{
-    var $public_max  =  25;
-    var $private_max = 800;
-
-    var $per_page    =  20;
-}
-
-// }}}
-
-function search_config()
-{
-    global $globals;
-    $globals->search = new SearchConfig;
-}
-
-// }}}
 // {{{ subscribe HOOK
 function search_subscribe($forlife, $uid, $promo, $pass)
 {

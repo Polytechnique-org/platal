@@ -19,25 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ config HOOK
-
-// {{{ class SkinConfig
-
-class NLConfig
-{
-    var $from    = "Lettre Mensuelle <null@example.org>";
-    var $replyto = "";
-    var $retpath = "";
-}
-
-// }}}
-
-function newsletter_config() {
-    global $globals;
-    $globals->newsletter = new NLConfig;
-}
-
-// }}}
 // {{{ subscribe HOOK
 
 function newsletter_subscribe($forlife, $uid, $promo, $password)

@@ -21,8 +21,6 @@
 
 require_once('platal/globals.inc.php');
 
-// {{{ class XorgGlobals
-
 class XnetGlobals extends PlatalGlobals
 {
     function XnetGlobals()
@@ -78,8 +76,6 @@ class XnetGlobals extends PlatalGlobals
         }
     }
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

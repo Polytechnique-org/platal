@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 // {{{ config HOOK
-// {{{ class ManageursConfig
 
 class ManageursConfig
 {
@@ -28,8 +27,6 @@ class ManageursConfig
     var $manageurs_cipher_key = '';
     var $manageurs_pass = '';
 }
-
-// }}}
 
 function manageurs_config()
 {

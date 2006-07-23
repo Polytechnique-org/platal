@@ -21,8 +21,6 @@
 
 // {{{ config HOOK
 
-// {{{ class SkinConfig
-
 class MailConfig
 {
     var $domain     = '';
@@ -40,8 +38,6 @@ class MailConfig
         }
     }
 }
-
-// }}}
 
 function emails_config()
 {

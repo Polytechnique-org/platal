@@ -19,30 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ config HOOK
-
-// {{{ class SkinConfig
-
-class BananaConfig
-{
-    var $server       = 'localhost';
-    var $port         = 119;
-    var $password     = '***';
-    var $web_user     = '***';
-    var $web_pass     = '***';
-
-    var $table_prefix = 'banana_';
-}
-
-// }}}
-
-function banana_config()
-{
-    global $globals;
-    $globals->banana = new BananaConfig;
-}
-
-// }}}
 // {{{ subscribe HOOK
 
 function banana_subscribe($forlife, $uid, $promo, $password)

@@ -21,8 +21,6 @@
 
 // {{{ config HOOK
 
-// {{{ class GeolocConfig
-
 class GeolocConfig
 {
     var $webservice_url = '';
@@ -36,8 +34,6 @@ class GeolocConfig
         return $use_map;
     }
 }
-
-// }}}
 
 function geoloc_config()
 {

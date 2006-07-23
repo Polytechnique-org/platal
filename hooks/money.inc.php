@@ -21,8 +21,6 @@
 
 // {{{ config HOOK
 
-// {{{ class MoneyConfig
-
 class MoneyConfig
 {
     var $mpay_enable   = true;
@@ -32,8 +30,6 @@ class MoneyConfig
     var $paypal_site   = '';
     var $paypal_compte = '';
 }
-
-// }}}
 
 function money_config()
 {

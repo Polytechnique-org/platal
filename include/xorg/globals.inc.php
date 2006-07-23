@@ -21,8 +21,6 @@
 
 require_once('platal/globals.inc.php');
 
-// {{{ class XorgGlobals
-
 class XorgGlobals extends PlatalGlobals
 {
     function XorgGlobals()
@@ -49,8 +47,6 @@ class XorgGlobals extends PlatalGlobals
         }
     }
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
