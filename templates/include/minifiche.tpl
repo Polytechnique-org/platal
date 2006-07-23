@@ -50,7 +50,7 @@
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
         <a href="carnet/notifs/add_nonins/{$c.user_id}">{*
-        *}<img src="images/ajouter.gif" alt="Ajouter à la liste de mes surveillances" title="Ajouter à la liste de mes surveillances" /></a>
+        *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
       {else}
         <a href="carnet/notifs/del_nonins/{$c.user_id}">{*
         *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
@@ -61,9 +61,13 @@
       {if !$c.dcd}
         <a href="vcard/{$c.forlife}.vcf">{*
         *}<img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
+      {if $show_action eq ajouter}
         <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
-        *}<img src="images/{$show_action}.gif" alt="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts"
-            title="{if $show_action eq "ajouter"}Ajouter à mes{else}Retirer de mes{/if} contacts" /></a>
+        *}{icon name=add title="Ajouter à mes contacts"}</a>
+      {else}
+        <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
+        *}{icon name=cross title="Retirer de mes contacts"}</a>
+      {/if}
       {/if}
     {/if}
     {/if}

@@ -76,7 +76,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
       {elseif $l.sub eq 1}
       <img src="images/flag.png" alt="[en attente]" title="en attente de modération" />
       {else}
-      <a href="{$platal->ns}lists?add={$l.list}"><img src="images/ajouter.gif" alt="[m'inscrire]" title="m'inscrire" /></a>
+      <a href="{$platal->ns}lists?add={$l.list}">{icon name=add title="m'inscrire"}</a>
       {/if}
     </td>
   </tr>

@@ -28,7 +28,7 @@
 
 <p>
 Pour t'inscrire à une liste il suffit de cliquer sur l'icone
-<img src="images/ajouter.gif" alt="[ inscription ]" /> située en fin de ligne.
+{icon name=add} située en fin de ligne.
 </p>
 
 <p>

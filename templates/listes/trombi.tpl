@@ -60,7 +60,7 @@
       {else}
       Tu n'es pas inscrit.<br />
       Demander ton inscription :
-      <a href="{$platal->pl_self(1)}?add=1"><img src="images/ajouter.gif" alt="[demander mon inscription]" /></a>
+      <a href="{$platal->pl_self(1)}?add=1">{icon name=add title="demander mon inscription"}</a>
       {/if}
     </td>
   </tr>

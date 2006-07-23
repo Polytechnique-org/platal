@@ -102,7 +102,7 @@ Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté à 
 
 <p>
 Pour surveiller des membres non-inscrits, il faut passer par la <a href="search" class='popup'>recherche</a>
-et cliquer sur les icones <img src="images/ajouter.gif" alt="Ajouter" /> pour les ajouter à cette liste
+et cliquer sur les icones {icon name=add} pour les ajouter à cette liste
 </p>
 
 <table class='tinybicol' cellpadding="0" cellspacing="0">

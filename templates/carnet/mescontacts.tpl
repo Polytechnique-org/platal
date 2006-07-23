@@ -36,7 +36,7 @@
 </form>
 <p>
   Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
-  il te suffit de cliquer sur l'icône <img src="images/ajouter.gif" alt="ajout contact" /> en face de son nom dans les résultats !
+  il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
 </p>  
 
 {if $trombi || $citer->total()}

@@ -49,8 +49,7 @@ function chgMainWinLoc( strPage ) {
         </a>
         {if !$x.is_contact}
         <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
-          <img src="images/ajouter.gif" alt="Ajouter à mes contacts" title="Ajouter à mes contacts" />
-        </a>
+          {icon name=add title="Ajouter à mes contacts"}</a>
         {else}
         <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
           {icon name=cross title="Retirer de mes contacts"}

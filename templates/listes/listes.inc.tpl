@@ -52,8 +52,7 @@
       <img src="images/flag.png" alt="[ en cours ]" title='inscription en attente de modération' />
       {else}
       <a href='{$platal->ns}lists?add={$liste.list}'>
-        <img src="images/ajouter.gif" alt="[ inscription ]" title="m'inscrire sur {$liste.list}" />
-      </a>
+        {icon name=add title="m'inscrire"}</a>
       {/if}
     </td>
   </tr>
