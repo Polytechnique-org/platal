@@ -100,7 +100,6 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       <td colspan="2">
       <table width="100%"><tr>
       <td>
-        <img src="images/pi.png" alt=" [ ? ] " />
         <a href="recovery">mot de passe perdu ?</a>
       </td>
       <td class="right">

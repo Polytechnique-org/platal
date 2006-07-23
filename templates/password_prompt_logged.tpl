@@ -58,7 +58,6 @@
     </tr>
     <tr>
       <td>
-        <img src="images/pi.png" alt=" [ ? ] " />
         <a href="recovery">Mot de passe perdu ?</a>
       </td>
       <td class="right">
