@@ -41,8 +41,7 @@
       <br />
       [<a href="{$platal->ns}events/edit/{$e.eid}">
         modifier
-        <img src="images/profil.png" title="Edition de l'événement" alt="Edition" />
-      </a>]
+        {icon name=date_edit title="Edition de l'événement"}</a>]
       &nbsp;&nbsp;&nbsp;&nbsp;
       [<a href="javascript:dynpostkv('{$platal->ns}events', 'del', {$e.eid})"
         onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')">

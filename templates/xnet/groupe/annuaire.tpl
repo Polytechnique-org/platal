@@ -71,7 +71,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
     </td>
     {if $admin}
     <td>
-      <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}"><img src="images/profil.png" alt="Edition du profil" /></a>
+      <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=user_edit title="Edition du profil"}</a>
       <a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=delete title="Supprimer de l'annuaire"}</a>
     </td>
     {/if}
