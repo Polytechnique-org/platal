@@ -26,7 +26,8 @@ new_nonhtml_page('');
 
 header("Content-type: application/x-shockwave-flash");
 
-if ($globals->geoloc->use_map())
-	readfile($globals->geoloc->icon_path);
+if ($globals->geoloc->use_map) {
+    readfile($globals->geoloc->icon_path);
+}
 
 ?>

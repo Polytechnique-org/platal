@@ -199,7 +199,6 @@ class SearchModule extends PLModule
 
         $page->assign('advanced',1);
         $page->assign('public_directory',0);
-        $page->assign('use_map', $globals->geoloc->use_map());
 
         if (!Env::has('rechercher')) {
             $this->form_prepare();

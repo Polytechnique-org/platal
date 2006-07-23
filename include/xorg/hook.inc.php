@@ -72,17 +72,6 @@ class XOrgHook
     }
 
     // }}}
-    // {{{ function config
-
-    function config()
-    {
-        foreach ($this->_mods as $mod) {
-            if (!function_exists($mod.'_config')) continue;
-            call_user_func($mod.'_config');
-        }
-    }
-
-    // }}}
     // {{{ function subscribe
 
     function subscribe($forlife, $uid, $promo, $pass)

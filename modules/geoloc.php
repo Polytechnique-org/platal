@@ -67,8 +67,6 @@ class GeolocModule extends PLModule
         if ($search) {
             $page->assign('dynamap_vars', $search);
         }
-
-        $page->assign('use_map', $globals->geoloc->use_map());
     }
 
     function handler_icon(&$page)
@@ -77,7 +75,7 @@ class GeolocModule extends PLModule
 
         header("Content-type: application/x-shockwave-flash");
 
-        if ($globals->geoloc->use_map()) {
+        if ($globals->geoloc->use_map) {
             readfile($globals->geoloc->icon_path);
             exit;
         }
@@ -99,7 +97,7 @@ class GeolocModule extends PLModule
 
         header("Content-type: application/x-shockwave-flash");
 
-        if ($globals->geoloc->use_map()) {
+        if ($globals->geoloc->use_map) {
             readfile($globals->geoloc->dynamap_path);
             exit;
         }

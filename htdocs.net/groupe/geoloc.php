@@ -21,12 +21,12 @@
 
 require_once 'xnet.inc.php';
 
-if ($globals->asso('pub') == 'public')
-	new_group_page('geoloc/index.tpl');
-else
-	new_groupadmin_page('geoloc/index.tpl');
+if ($globals->asso('pub') == 'public') {
+    new_group_page('geoloc/index.tpl');
+} else {
+    new_groupadmin_page('geoloc/index.tpl');
+}
 
-$page->assign('use_map', $globals->geoloc->use_map());
 $page->assign('no_annu', true);
 $page->assign('dynamap_vars', 'none');
 $page->run();

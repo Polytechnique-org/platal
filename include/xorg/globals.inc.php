@@ -37,8 +37,6 @@ class XorgGlobals extends PlatalGlobals
         $globals->core = new CoreConfig;
         $globals->hook = new XOrgHook();
 
-        $globals->hook->config(null);
-
         $globals->read_config();
 
         $globals->dbconnect();

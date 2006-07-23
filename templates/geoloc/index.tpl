@@ -62,7 +62,7 @@ function searchMapId(f)
     Aujourd'hui {$localises} de nos camarades sont localisés grâce à leurs adresses personnelles.
   </p>
 {/if}
-{if $use_map}
+{if $globals->geoloc->use_map}
   <p class="center">
     <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="600" height="450" id="dynamap" align="middle">
     <param name="allowScriptAccess" value="sameDomain" />

@@ -19,7 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-
 // {{{ liste les pays ou les régions d'un pays
 /** donne la liste déroulante des pays
  * @param $current pays actuellement selectionné
@@ -419,5 +418,7 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
 	
     return array($countries, $cities);   
 } 
+// }}}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

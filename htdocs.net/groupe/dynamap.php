@@ -36,7 +36,7 @@ if (urlencode(Env::v('initfile')) != $initfile)
 
 header("Content-type: application/x-shockwave-flash");
 
-if ($globals->geoloc->use_map())
+if ($globals->geoloc->use_map)
 	readfile($globals->geoloc->dynamap_path);
 
 ?>
