@@ -55,6 +55,11 @@ class Session
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
     }
 
+    function i($key, $default = 0)
+    {
+        $i = Session::v($key, $default);
+        return is_numeric($i) ? intval($i) : $default;
+    }
 
     function has_perms()
     {

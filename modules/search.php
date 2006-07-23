@@ -49,10 +49,10 @@ class SearchModule extends PLModule
                 '.$fields->get_select_statement().'
                 LEFT JOIN  auth_user_quick AS q  ON (u.user_id = q.user_id)
                 LEFT JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type="a_vie")
-                LEFT JOIN  contacts        AS c  ON (c.uid='.S::v('uid').'
+                LEFT JOIN  contacts        AS c  ON (c.uid='.S::i('uid', -1).'
                                                      AND c.contact=u.user_id)
                 LEFT JOIN  watch_nonins    AS w  ON (w.ni_id=u.user_id
-                                                     AND w.uid='.S::v('uid').')
+                                                     AND w.uid='.S::i('uid', -1).')
                 '.$globals->search->result_where_statement.'
                     WHERE  '.$fields->get_where_statement()
                     .(S::logged() && Env::has('nonins') ? ' AND u.perms="pending" AND u.deces=0' : '')

@@ -35,7 +35,8 @@
 <div class="menu_item"><a href="Docs/APropos">A propos du site</a></div>
 <div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Docs/FAQ">FAQ</a></div>
-{/if}
+
+{else}
 
 {if $smarty.session.auth == AUTH_MDP}
 <div class="menu_item"><a href="exit">Déconnexion</a></div>
@@ -87,6 +88,7 @@
     <td><a href="admin/valider.php">{insert name="mkStats"}</a></td>
   </tr>
 </table>
+{/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
