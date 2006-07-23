@@ -40,7 +40,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
   </tr>
   <tr>
     <td class="center">[{if $order eq 'timestamp'}<strong><a href='{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{$platal->ns}paiement?order=timestamp'>{/if}Date</a>{if $order eq 'timestamp'}</strong>{/if}]</td>
-    <td class="center">[{if $order eq 'nom'}<strong><a href='?order={$order}&order_inv={$order_inv}'>{else}<a href='?order=nom'>{/if}Prénom NOM</a>{if $order eq 'nom'}</strong>{/if}]</td>
+    <td class="center">[{if $order eq 'nom'}<strong><a href='{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{$platal->ns}paiement?order=nom'>{/if}Prénom NOM</a>{if $order eq 'nom'}</strong>{/if}]</td>
     <td class="center">[{if $order eq 'promo'}<strong><a href='{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{$platal->ns}paiement?order=promo'>{/if}Promo</a>{if $order eq 'promo'}</strong>{/if}]</td>
     <td class="center">[{if $order eq 'montant'}<strong><a href='{$platal->ns}paiement?order={$order}&order_inv={$order_inv}'>{else}<a href='{$platal->ns}paiement?order=montant'>{/if}Montant</a>{if $order eq 'montant'}</strong>{/if}]</td>
   </tr>
