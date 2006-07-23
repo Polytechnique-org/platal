@@ -9,7 +9,7 @@
  ********************************************************************************/
 
 require_once 'connect.db.inc.php';
-require_once dirname(__FILE__).'/ ../modules/banana/banana.inc.php';
+require_once dirname(__FILE__).'/../modules/banana/banana.inc.php';
 
 class MyBanana extends Banana
 {
