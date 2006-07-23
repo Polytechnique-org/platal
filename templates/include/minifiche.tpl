@@ -57,10 +57,10 @@
       {/if}
     {elseif $c.wasinscrit}
         <a href="profile/{$c.forlife}" class="popup2">{*
-        *}<img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+        *}{icon name=user_suit title="Afficher la fiche"}</a>
       {if !$c.dcd}
         <a href="vcard/{$c.forlife}.vcf">{*
-        *}<img src="images/vcard.png" alt="Afficher la carte de visite" title="Afficher la carte de visite" /></a>
+        *}{icon name=vcard title="Afficher la carte de visite"}</a>
       {if $show_action eq ajouter}
         <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
         *}{icon name=add title="Ajouter à mes contacts"}</a>

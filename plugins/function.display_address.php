@@ -31,7 +31,7 @@ function smarty_function_display_address($param, &$smarty) {
 
     $lines = explode("\n",$txtad);
     $txthtml = "";
-    $map = "<a href=\"http://maps.google.com/?q=".urlencode(implode(", ", $lines))."\"><img src=\"images/loupe.gif\" alt=\"Carte\" title=\"Carte\"/></a>";
+    $map = "<a href=\"http://maps.google.com/?q=".urlencode(implode(", ", $lines))."\"><img src=\"images/icons/user_suit.gif\" title=\"Carte\"/></a>";
     if ($param['titre'])
     {
         if ($param['titre_div'])

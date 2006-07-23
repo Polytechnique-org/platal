@@ -55,7 +55,7 @@ d'être plus précis.
     <div class="bits" style="width: 40%;">
       <span class='smaller'>
       <a href="profile/{$p.bestalias}" class="popup2">
-        <img src="images/loupe.gif" alt="voir sa fiche" title="Voir sa fiche" /></a> - 
+        {icon name=user_suit title="Voir sa fiche"}</a> -
         <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a>
       </span>
     </div>

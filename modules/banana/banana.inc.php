@@ -27,7 +27,7 @@ function hook_formatDisplayHeader($_header, $_text) {
         $id = $banana->post->headers['x-org-id'];
         $_text = formatFrom($_text);
         return $_text . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
-             . '<img src="images/loupe.gif" alt="fiche" title="fiche" /></a>';
+             . '<img src="images/icons/user_suit.gif" title="fiche" /></a>';
     }
 }
 

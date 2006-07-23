@@ -30,7 +30,7 @@
 
 {foreach from=$evenements item=e}
 
-<table class="bicol" cellspacing="0" cellpadding="0" {popup caption=$e.intitule text=$e.descriptif}>
+<table class="bicol" cellspacing="0" cellpadding="0">
   <colgroup>
     <col width='25%' />
   </colgroup>
@@ -82,7 +82,7 @@
       {if $admin || $e.show_participants}
       <a href="{$platal->ns}events/admin/{$e.eid}">
         consulter la liste des participants
-        <img src="images/loupe.gif" title="Liste des participants" alt="" />
+        {icon name=group title="Liste des participants"}
       </a><br />
       {/if}
       {if $e.deadline_inscription}

@@ -30,7 +30,7 @@
   Édition du profil de {$user.prenom} {$user.nom}
   {if $user.origine eq 'X'}
   (X{$user.promo})
-  <a href="https://www.polytechnique.org/profile/{$user.alias}"><img src="images/loupe.gif" alt="Voir la fiche" /></a>
+  <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
   {/if}
   <a href="{$platal->ns}member/del/{$user.email}"><img src="images/del.png" alt="Suppression du compte" /></a>
   <a href="mailto:{$user.email}"><img src="images/mail.png" alt="Ecrire un mail" /></a>

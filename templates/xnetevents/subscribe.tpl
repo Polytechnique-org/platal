@@ -61,8 +61,7 @@
   Tu peux 
   <a href="{$platal->ns}events/admin/{$event.eid}">
     consulster liste des participants
-    <img src="images/loupe.gif" title="Liste des participants" alt="Liste des participants" />
-  </a>
+    {icon name=group title="Liste des participants"}</a>
   déjà inscrits.
 </p>
 {/if}

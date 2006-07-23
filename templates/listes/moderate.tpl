@@ -37,7 +37,7 @@
   <tr class='{cycle values="pair,impair"}'>
     <td>{$s.name}{if $s.login}
       <a href="profile/{$s.login}" class="popup2">{*
-        *}<img src="images/loupe.gif" alt="Afficher la fiche" title="Afficher la fiche" /></a>
+        *}{icon name=user_suit title="Afficher la fiche"}</a>
       {/if}
     </td>
     <td>{$s.addr}</td>
