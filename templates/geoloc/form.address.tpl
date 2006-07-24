@@ -37,7 +37,7 @@
 	</p>
     {else}
     <tr class="center">
-      <td class="cold" colspan="2">
+      <td class="cold" colspan="5">
         <input type="hidden" name="change{$adrid}" />
         <textarea name="txt[{$adrid}]" cols="43" rows="4" onchange="form.change{$adrid}.value=1"
 	{if $adr.nouvelle != 'new' && !$adr.cityid}style="background:#FAA"{/if}

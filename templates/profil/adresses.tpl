@@ -71,7 +71,7 @@
       <td class="colg">
         <span class="titre">Adresse:</span>
       </td>
-      <td class="cold">
+      <td class="cold" colspan="4">
         <input type="radio" name="temporaire[{$adrid}]" value="0" {if !$adr.temporaire}checked="checked"{/if} />
         permanente
         <input type="radio" name="temporaire[{$adrid}]" value="1" {if $adr.temporaire}checked="checked"{/if} />
@@ -82,7 +82,7 @@
       <td class="colg">
         &nbsp;
       </td>
-      <td class="cold">
+      <td class="cold" colspan="4">
         <input type="radio" name="secondaire[{$adrid}]" value="0" {if !$adr.secondaire}checked="checked"{/if} />
         ma résidence principale
         <input type="radio" name="secondaire[{$adrid}]" value="1" {if $adr.secondaire}checked="checked"{/if} />
@@ -93,7 +93,7 @@
       <td class="colg">
         &nbsp;
       </td>
-      <td class="cold">
+      <td class="cold" colspan="4">
         <input type="checkbox" name="courrier[{$adrid}]" value="1" {if $adr.courrier}checked="checked"{/if} /> on peut m'y envoyer du courrier par la poste
       </td>
     </tr>
