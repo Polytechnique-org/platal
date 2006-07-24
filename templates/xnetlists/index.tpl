@@ -51,9 +51,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
 
 <table cellpadding="0" cellspacing="0" class='large'>
   <tr>
-    <th>{icon name=wrench title="Modérateur"}</th>
-    <th>{icon name=weather_cloudy title="Liste privée"}</th>
-    <th>Liste</th>
+    <th colspan="2">Liste</th>
     <th>Description</th>
     <th>Diffusion</th>
     <th>Inscription</th>
@@ -63,17 +61,14 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   {foreach from=$listes item=l}
   <tr>
     <td>
+      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="mail"}</a>
+    </td>
+    <td>
       {if $l.own}
       {icon name=wrench title="Modérateur"}
-      {/if}
-    </td>
-    <td>
-      {if $l.priv}
+      {elseif $l.priv}
       {icon name=weather_cloudy title="Liste privée"}
       {/if}
-    </td>
-    <td>
-      <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="mail"}</a>
       <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list}</a>
     </td>
     <td>{$l.desc}</td>
