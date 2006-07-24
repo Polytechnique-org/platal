@@ -25,6 +25,7 @@ require_once('xorg.inc.php');
 new_nonhtml_page('', AUTH_COOKIE);
 
 header("Content-type: application/x-shockwave-flash");
+header("Pragma:");
 
 if ($globals->geoloc->use_map())
 	readfile($globals->geoloc->icon_path);

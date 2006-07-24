@@ -28,7 +28,8 @@ if (Env::has('debug'))
 else
 {
 	header("Content-type: text/xml");
-	new_nonhtml_page('geoloc/getData.tpl', AUTH_COOKIE);
+        new_nonhtml_page('geoloc/getData.tpl', AUTH_COOKIE);
+        header("Pragma:");
 }
 
 require_once('geoloc.inc.php');

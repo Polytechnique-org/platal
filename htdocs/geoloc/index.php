@@ -22,16 +22,26 @@
 require_once('xorg.inc.php');
 new_skinned_page('geoloc/index.tpl', AUTH_COOKIE);
 
-$res = $globals->xdb->query('SELECT COUNT(DISTINCT uid) FROM adresses WHERE cityid IS NOT NULL');
-$page->assign('localises', $res->fetchOneCell());
-
-	require_once('search.inc.php');
+require_once('search.inc.php');
 $fields = new SFieldGroup(true, advancedSearchFromInput());
 $search = $fields->get_url();
-if (Env::has('only_current') && Env::get('only_current') != 'on') $search .= '&only_current=';
+if (!Env::has('only_current'))
+    $search .= '&only_current=on';
+elseif (Env::get('only_current') != 'on')
+    $search .= '&only_current=';
+// don't limit search to map
 $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
-if ($search)
-	$page->assign('dynamap_vars', $search);
+
+if ($search) $search = '?'.$search;
+$initfile = urlencode('geolocInit.php'.$querystring);
+$page->assign('flashvars', 'initfile='.$initfile);
+
+$page->assign('protocole',substr($globals->baseurl, 0, strpos($globals->baseurl,':')));
+
+if (!$search) {
+    $res = $globals->xdb->query('SELECT COUNT(DISTINCT uid) FROM adresses WHERE cityid IS NOT NULL');
+    $page->assign('localises', $res->fetchOneCell());
+}
 
 $page->assign('use_map', $globals->geoloc->use_map());
 $page->run();

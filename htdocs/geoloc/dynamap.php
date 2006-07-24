@@ -24,21 +24,13 @@ require_once('xorg.inc.php');
 
 new_nonhtml_page('', AUTH_COOKIE);
 
-$querystring = "";
-foreach ($_GET as $v => $a)
-	if ($v != 'initfile')
-		$querystring .= '&'.urlencode($v).'='.urlencode($a);
-$initfile = urlencode('geolocInit.php?'.$querystring);
-
-if (urlencode(Env::get('initfile')) != $initfile)
-{
-	header("Location: dynamap.php?initfile=$initfile{$querystring}");
-	die();
-}
-
 header("Content-type: application/x-shockwave-flash");
 
-if ($globals->geoloc->use_map())
-	readfile($globals->geoloc->dynamap_path);
+if (1 || $globals->geoloc->use_map()) {
+    $s = file_get_contents($globals->geoloc->dynamap_path);
+    header("Content-length: ".strlen($s));
+    header("Pragma:");
+    echo $s;
+}
 
 ?>

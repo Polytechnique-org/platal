@@ -57,20 +57,28 @@ function searchMapId(f)
 {/if}
 
 </script>
-{if !$dynamap_vars and $localises}
+{if $localises}
   <p class="descr">
     Aujourd'hui {$localises} de nos camarades sont localisés grâce à leurs adresses personnelles.
   </p>
 {/if}
 {if $use_map}
   <p class="center">
-    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="600" height="450" id="dynamap" align="middle">
-    <param name="allowScriptAccess" value="sameDomain" />
-    <param name="quality" value="high" />
-    <param name="bgcolor" value="#ffffff" />
-    <param name="movie" value="dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" />
-    <embed src="dynamap{if $dynamap_vars neq 'none'}_{$dynamap_vars|default:"only_current=on"}{/if}.swf" quality="high" bgcolor="#ffffff" width="600" height="450" name="dynamap" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
-    </object>
+<embed
+      src="dynamap.swf"
+      quality="high"
+      bgcolor="#ffffff"
+      width="600"
+      height="450"
+      name="dynamap"
+      id="dynamap"
+      align="middle"
+      flashvars="{$flashvars}"
+      type="application/x-shockwave-flash"
+      menu="false"
+      wmode="opaque"
+      salign="tl"
+      pluginspage="{$protocole}://www.macromedia.com/go/getflashplayer" />
   </p>
   <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>
   {if !$no_annu}
