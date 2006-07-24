@@ -31,7 +31,11 @@ table, body {
     font-family: "Bitstream vera sans","Verdana",sans-serif;
 }
 
-input,textarea,select,option,tt,pre {
+input,textarea,select,option {
+    font-size: 9pt;
+}
+
+tt,pre {
     font-size: 10pt;
 }
 
@@ -41,8 +45,8 @@ a img { border: none; }
 img   { vertical-align: middle; }
 td    { vertical-align: top; }
 
-h1    { font-size: 150%; }
-h2    { font-size: 130%; }
+h1    { font-size: 130%; }
+h2    { font-size: 115%; }
 
 /***************************************************************************
  * DEBUG
@@ -71,8 +75,18 @@ table#layout {
     margin-right: auto;
 }
 
-tr#top td {
+#top {
+    width: 765px;
+}
+
+#top td {
+    padding: 0;
+    margin: 0;
     vertical-align: middle;
+}
+
+#top td.logo {
+    text-align: right;
 }
 
 td#credits {
@@ -106,23 +120,24 @@ td#search {
 }
 
 td#menu {
-    width: 150px;
+    width: 130px;
     padding-right: 1em;
     font-family: "Trebuchet MS", "Arial",sans-serif;
     font-weight: bold;
 }
 
 #menu h1 {
-    padding: 0.5em 0em 0.6em 0em;
-    font-size: 90%;
+    padding: 0.5em 0em 0.8em 0em;
+    font-size: 85%;
     text-align: center;
+    width: 130px;
     background: url('../images/barre.png') bottom left no-repeat;
 }
 
 #menu a {
     display: block;
     padding: 0.2em 0em 0.2em 15px;
-    font-size: 90%;
+    font-size: 85%;
     background: url('../images/puce.png') no-repeat center left;
 }
 
@@ -172,8 +187,18 @@ table td.titre {
     white-space: nowrap;
 }
 
-table.tiny,  table.tinybicol { width: 70%; margin-left: 15%; border: 2px solid gray; }
-table.large, table.bicol     { width: 96%; margin-left:  2%; border: 2px solid gray; }
+table.tiny,  table.tinybicol {
+    width: 70%;
+    margin-left: 15%;
+    border: 2px solid gray;
+    font-size: 85%;
+}
+table.large, table.bicol {
+    width: 96%;
+    margin-left:  2%;
+    border: 2px solid gray;
+    font-size: 85%;
+}
 
 table.tiny td, table.tinybicol td, table.large td, table.bicol td {
     border: 1px solid gray;

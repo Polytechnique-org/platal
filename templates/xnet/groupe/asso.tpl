@@ -20,12 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $asso.site}
-<a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" style="float: right;" /></a>
-{else}
-<img src='{$platal->ns}logo' alt="LOGO" style="float: right;" />
-{/if}
-
 <h1>{$asso.nom} : Accueil</h1>
 
 <table cellpadding="0" cellspacing="0" class='tiny'>

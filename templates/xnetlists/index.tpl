@@ -60,7 +60,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   </tr>
   {foreach from=$listes item=l}
   <tr>
-    <td>
+    <td class='center'>
       <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="mail"}</a>
     </td>
     <td>
@@ -77,7 +77,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
     </td>
     <td class='center'>{if $l.ins}modérée{else}libre{/if}</td>
     <td align='right'>{$l.nbsub}</td>
-    <td align='right'>
+    <td align='center'>
       {if $l.sub eq 2}
       <a href="{$platal->ns}lists?del={$l.list}">{icon name=delete title="me désinscrire"}</a>
       {elseif $l.sub eq 1}

@@ -59,15 +59,36 @@
 
     <table id="layout" cellspacing="0" cellpadding="0">
       {if $xnet_type}
-      <tr id="top">
-        <td>
-          <a href=""><img src="images/asso-montants.png" alt="Logo Assos" /></a>
-        </td>
-        <td>
-          <img src="images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
-        </td>
+      <tr>
         <td colspan="2">
-          <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="490" height="96" />
+        <table cellspacing="0" cellpadding="0" id="top">
+          <tr>
+            <td style="width: 150px">
+              <a href=""><img src="images/asso-montants.png" alt="Logo Assos" /></a>
+            </td>
+            <td style="width: 106px">
+              <img src="images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
+            </td>
+            <td style="width: 44px">
+              <img src="images/fin_logo.jpg" alt="Fin logo" width="44" height="96" />
+            </td>
+            <td style="white-space: nowrap">
+              <img src="images/bandeau.jpg" alt="bandeau" height="96" style="width: 100%" />
+            </td>
+            <td class="logo">
+              <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" height="96" />
+            </td>
+            <td>
+              {if $asso}
+              {if $asso.site}
+                <a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" height="96" /></a>
+              {else}
+                <img src='{$platal->ns}logo' alt="LOGO" height="96"/>
+              {/if}
+              {/if}
+            </td>
+          </tr>
+        </table>
         </td>
       </tr>
       {else}
@@ -75,12 +96,12 @@
         <td>
           <img src="images/logo.png" alt="LOGO Assos" />
         </td>
-        <td colspan="3" style="text-align: right">
+        <td style="text-align: right">
           <a href="https://www.polytechnique.org/"><img src="images/logo-xorg.png" alt="LOGO X.Org" /></a>
           <img src="images/asso2.png" alt="titre_du_site" />
         </td>
       </tr>
-      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
       {/if}
 
       {if $menu}
@@ -93,7 +114,7 @@
           {/foreach}
           {/foreach}
         </td>
-        <td colspan="3">
+        <td>
           <div class="breadcrumb">
             {if $asso}
             <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
@@ -115,15 +136,15 @@
       </tr>
       {else}
       <tr>
-        <td colspan="4">
+        <td colspan="2">
           {include file="skin/common.content.tpl"}
         </td>
       </tr>
 
-      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="4">
+        <td colspan="2">
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
               <td> <a href="plan">PLAN DU SITE</a> </td>
@@ -137,10 +158,10 @@
       </tr>
       {/if}
 
-      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="4" id="perso">
+        <td colspan="2" id="perso">
           {list_all_my_groups}
           {if !$smarty.session.auth}
           <div>Me connecter :</div>
@@ -151,10 +172,10 @@
         </td>
       </tr>
 
-      <tr><td colspan="4"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="4" id="credits">
+        <td colspan="2" id="credits">
           <a href="plan">liste des associations</a> -
           <a href="services">services proposés</a> -
           <a href="about">à propos de ce site</a> -
