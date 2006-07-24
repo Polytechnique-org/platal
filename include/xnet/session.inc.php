@@ -100,16 +100,16 @@ class XnetSession
         S::kill('loginX');
         Get::kill('auth');
         Get::kill('uid');
-        $args = array();
         $path = Get::v('p');
         Get::kill('p');
         Get::kill('PHPSESSID');
 
+        $args = array();
         foreach($_GET as $key => $val) {
             $args[] = urlencode($key).'='.urlencode($val);
         }
 
-        pl_redirect($path, join('&', $args));
+        http_redirect($globals->baseurl . '/' . $path, join('&', $args));
     }
 
     // }}}
