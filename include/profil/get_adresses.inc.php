@@ -21,6 +21,8 @@
 
 require_once('geoloc.inc.php');
 
+global $adresses;
+
 // on limite à 6 adresses personnelles par utilisateur
 $nb_adr_max = 6; // ( = max(adrid possibles)
 // on limite à 4 numéros de téléphone par adresse

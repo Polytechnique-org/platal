@@ -18,6 +18,9 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
+
+global $adresses;
+
 //on génère une éventuelle nouvelle adresse
 if (!isset($adresses) || (count($adresses) < $nb_adr_max)){
   $adrid = generate_new_adrid();

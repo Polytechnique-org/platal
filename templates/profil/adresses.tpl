@@ -98,20 +98,20 @@
       </td>
     </tr>
     {foreach from=$adr.tels item="tel"}
-      <tr class="flags">
-        <td class="colg">
-          <input type="hidden" name="telid{$tel.telid}[{$adrid}]" value="{$tel.telid}"/>
-          {if $tel.new_tel}
-            <input type="hidden" name="new_tel{$tel.telid}[{$adrid}]" value="1"/>
-          {/if}
-          <span class="titre" onclick="this.style.display='none';var d = document.getElementById('tel_type{$adrid}_{$tel.telid}');d.style.display='inline';d.select();d.focus();">{$tel.tel_type}&nbsp;:</span>
-          <input id="tel_type{$adrid}_{$tel.telid}" style="display:none" type="text" size="5" maxlength="20" name="tel_type{$tel.telid}[{$adrid}]" value="{$tel.tel_type}"/>
-        </td>
-        <td>
-          <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />
-        </td>
-          {include file="include/flags.radio.tpl" name="tel_pub`$tel.telid`[$adrid]" val=$tel.tel_pub display="mini"}
-      </tr>        
+    <tr class="flags">
+      <td class="colg">
+        <input type="hidden" name="telid{$tel.telid}[{$adrid}]" value="{$tel.telid}"/>
+        {if $tel.new_tel}
+          <input type="hidden" name="new_tel{$tel.telid}[{$adrid}]" value="1"/>
+        {/if}
+        <span class="titre" onclick="this.style.display='none';var d = document.getElementById('tel_type{$adrid}_{$tel.telid}');d.style.display='inline';d.select();d.focus();">{$tel.tel_type}&nbsp;:</span>
+        <input id="tel_type{$adrid}_{$tel.telid}" style="display:none" type="text" size="5" maxlength="20" name="tel_type{$tel.telid}[{$adrid}]" value="{$tel.tel_type}"/>
+      </td>
+      <td>
+        <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />
+      </td>
+      {include file="include/flags.radio.tpl" name="tel_pub`$tel.telid`[$adrid]" val=$tel.tel_pub display="mini"}
+    </tr>
     {/foreach}
     <tr><td colspan="5">&nbsp;</td></tr>
     {/section}
