@@ -72,21 +72,21 @@
             <td style="width: 44px">
               <img src="images/fin_logo.jpg" alt="Fin logo" width="44" height="96" />
             </td>
-            <td style="white-space: nowrap">
-              <img src="images/bandeau.jpg" alt="bandeau" height="96" style="width: 100%" />
+            <td style="width: auto;">
+              <img src="images/bandeau.jpg" alt="bandeau" height="96" width="100%" />
             </td>
+            <td style="width: 280px">
+              <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" />
+            </td>
+            {if $asso}
             <td class="logo">
-              <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" height="96" />
-            </td>
-            <td>
-              {if $asso}
               {if $asso.site}
                 <a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" height="96" /></a>
               {else}
                 <img src='{$platal->ns}logo' alt="LOGO" height="96"/>
               {/if}
-              {/if}
             </td>
+            {/if}
           </tr>
         </table>
         </td>

@@ -87,6 +87,7 @@ table#layout {
 
 #top td.logo {
     text-align: right;
+    background: url('../images/bandeau.jpg') bottom left repeat-x;
 }
 
 td#credits {
