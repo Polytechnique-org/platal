@@ -279,17 +279,17 @@ table.flags td.texte {
     font-weight: bold;
     padding: 3px;
 }
-table.flags td.vert {
+table.flags td.vert, tr.flags td.vert {
     background: green;
     padding: 3px;
     text-align: center;
 }
-table.flags td.orange {
+table.flags td.orange, tr.flags td.orange {
     background: #ff9900;
     padding: 3px;
     text-align: center;
 }
-table.flags td.rouge {
+table.flags td.rouge, tr.flags td.rouge {
     background: red;
     padding: 3px;
     text-align: center;
