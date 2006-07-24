@@ -33,11 +33,11 @@ indiquées clairement comme telles, et les autres membres ne les voient pas.
 
 
 <br /><br />
-<a href="#annuaire">L'annuaire et les inscriptions</a><br>
-<a href="#evenement">La création d'un événement</a><br>
-<a href="#envoi">L'envoi de mail</a><br>
-<a href="#liste">La création d'une liste de diffusion</a><br>
-<a href="#alias">La création d'un alias</a><br>
+<a href="manuel/admin#annuaire">L'annuaire et les inscriptions</a><br>
+<a href="manuel/admin#evenement">La création d'un événement</a><br>
+<a href="manuel/admin#envoi">L'envoi de mail</a><br>
+<a href="manuel/admin#liste">La création d'une liste de diffusion</a><br>
+<a href="manuel/admin#alias">La création d'un alias</a><br>
 
 
 <h3><a name="annuaire">L'annuaire et les inscriptions</a></h3>
@@ -69,7 +69,7 @@ composant ton groupe depuis cette page d'annuaire. Les trois colonnes de droite
 de l'annuaire sont des colonnes d'administration, visibles seulement par les
 responsables du groupe.
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="evenement">La création d'un événement</a></h3>
 
@@ -95,7 +95,7 @@ qu'ils souhaitent s'inscrire seulement à certains d'entre eux.
 <br />
 <img src="images/evnt_moments.jpg" />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="envoi">L'envoi de mail</a></h3>
 
@@ -118,7 +118,7 @@ l'utiliser autant que possible.
 <img src="images/mail.jpg" />
 <br />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="liste">La création d'une liste de diffusion</a></h3>
 
@@ -155,7 +155,7 @@ aussi d'utiliser un alias, dont la gestion est plus souple.
 <img src="images/liste.jpg" />
 <br />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="alias">La création d'un alias</a></h3>
 Cette
@@ -167,4 +167,4 @@ diffusion notamment).
 <br />
 <img src="images/alias.jpg" />
 <br />
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />

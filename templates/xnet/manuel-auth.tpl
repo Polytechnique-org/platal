@@ -29,14 +29,14 @@ propose des fonctionnalités facilitant la communication et l'information au
 sein de ton groupe.
 
 <br />
-<a href="#accueil">Accueil</a><br>
-<a href="#tongroupe">La page de ton groupe</a><br>
-<a href="#annuaire">L'annuaire</a><br>
-<a href="#listes">Les listes de diffusion</a><br>
-<a href="#agenda">L'agenda privé du groupe</a><br>
-<a href="#carnet">Le carnet</a><br>
-<a href="#evenements">Les événements</a><br>
-<a href="#telepaiement">Le télépaiement</a><br>
+<a href="manuel/auth#accueil">Accueil</a><br>
+<a href="manuel/auth#tongroupe">La page de ton groupe</a><br>
+<a href="manuel/auth#annuaire">L'annuaire</a><br>
+<a href="manuel/auth#listes">Les listes de diffusion</a><br>
+<a href="manuel/auth#agenda">L'agenda privé du groupe</a><br>
+<a href="manuel/auth#carnet">Le carnet</a><br>
+<a href="manuel/auth#evenements">Les événements</a><br>
+<a href="manuel/auth#telepaiement">Le télépaiement</a><br>
 
 <h3><a name="accueil">Accueil</a></h3>
 Pour
@@ -55,7 +55,7 @@ accès directement aux pages des groupes auxquels tu es inscrit, depuis la page d
 <br />
 <img src="images/index_auth.jpg" />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="tongroupe">La page de ton groupe</a></h3>
 
@@ -69,7 +69,7 @@ dans le menu de droite.
  
 <img src="images/fns_membres.jpg" />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="annuaire">L'annuaire</a></h3>
 
@@ -81,23 +81,23 @@ Les
 femmes sont repérées par un point à gauche de leurs noms. Les trois colonnes de
 droite sont destinées aux administrateurs du groupe.
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="listes">Les listes de diffusion</a></h3>
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="agenda">L'agenda privé du groupe</a></h3>
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="carnet">Le carnet</a></h3>
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="evenements">Les événements</a></h3>
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="telepaiement">Le télépaiement</a></h3>
 
@@ -108,4 +108,4 @@ réunions ou des manifestations qui intègrent un repas, voire des voyages
 promotions. Si ton groupe ou ta promo bénéficie de ce service, tu peux te
 connecter sur cette page pour y régler ta participation financière.
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/auth"><i><small>Retour au menu</small></i></a><br />

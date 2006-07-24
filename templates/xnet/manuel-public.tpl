@@ -32,14 +32,14 @@ objectif la présentation du site public, ouvert aux X, et aux non-X.
 </p>
 
 <p>
-<a href="#accueil">Accueil</a><br />
-<a href="#general">Les présentations générales</a><br />
-<a href="#dedie">Les pages dédiées</a><br />
-<a href="#inscription">L'inscription à un groupe X</a><br />
-<a href="#boite">La boîte à outils</a><br />
-<a href="#recherche">La fonction recherche d'Exalead</a><br />
-<a href="#evenements">Les événements</a><br />
-<a href="#plan">Le plan du site</a>
+<a href="manuel/public#accueil">Accueil</a><br />
+<a href="manuel/public#general">Les présentations générales</a><br />
+<a href="manuel/public#dedie">Les pages dédiées</a><br />
+<a href="manuel/public#inscription">L'inscription à un groupe X</a><br />
+<a href="manuel/public#boite">La boîte à outils</a><br />
+<a href="manuel/public#recherche">La fonction recherche d'Exalead</a><br />
+<a href="manuel/public#evenements">Les événements</a><br />
+<a href="manuel/public#plan">Le plan du site</a>
 </p>
 
 
@@ -53,7 +53,7 @@ recensées par Polytechnique.net, en cliquant sur le lien adéquat (ici <i>groupe
 X</i>). Mais ils peuvent également accéder directement à la liste complète des
 associations, en cliquant sur <i>plan du site</i>.
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/public"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="general">Les présentations générales</a></h3>
 
@@ -78,7 +78,7 @@ Professionnels) qui permettent un repérage plus facile sur le site.
 
 <img src="images/gpx_liste.jpg" />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/public"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="dedie">Les pages dédiées</a></h3>
 
@@ -98,7 +98,7 @@ La page de chaque association comporte ainsi :
 
 <br /><br />
 
-<a href="#"><i><small>Retour au menu</small></i></a><br />
+<a href="manuel/public"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="inscription">L'inscription à un groupe X</a></h3>
 
@@ -111,7 +111,7 @@ donnée à ta demande.
 
 <img src="images/inscription.jpg" />
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/public"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="boite">La boîte à outils</a></h3>
 
@@ -129,7 +129,7 @@ Le petit carnet à droite te permet de revenir à tout instant à la page des événe
 te dirige vers le mode d'emploi de Polytechnique.net, destiné à faciliter
 l'usage du site.
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/public"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="evenements">Les événements</a></h3>
 
@@ -139,7 +139,7 @@ groupes X. Elle est accessible depuis l'icône "carnet " de la boîte
 à outils, ou depuis le lien "Manifestations" sur la page d'un
 groupe
 
-<br /><br /><a href="#"><i><small>Retour au menu</small></i></a><br />
+<br /><br /><a href="manuel/public"><i><small>Retour au menu</small></i></a><br />
 
 <h3><a name="plan">Le plan du site</a></h3>
 <a href="http://www.polytechnique.net/plan">Lien vers le plan</a>

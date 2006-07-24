@@ -23,26 +23,26 @@
 <div id="content">
   <h1>Manuel d'utilisation de Polytechnique.net</h1>
 
-  {if !$smarty.get.type}
+  {if !$type}
   <p>
   Nous te proposons divers manuels :
   </p>
   <ul>
     <li>
-      <a href="manuel?type=public">fonctionnalités publiques du site</a>
+      <a href="manuel/public">fonctionnalités publiques du site</a>
       <a href="docs/manuel.pdf">(version PDF)</a>
     </li>
     <li>
-      <a href="manuel?type=auth">fonctionnalités accessibles par les membres des groupes X</a>
+      <a href="manuel/auth">fonctionnalités accessibles par les membres des groupes X</a>
       <a href="docs/manuel.pdf">(version PDF)</a>
     </li>
     <li>
-      <a href="manuel?type=admin">fonctionnalités à disposition des animateurs des groupes X</a>
+      <a href="manuel/admin">fonctionnalités à disposition des animateurs des groupes X</a>
       <a href="docs/manuel-admin.pdf">(version PDF)</a>
     </li>
   </ul>
-  {elseif $smarty.get.type eq public || $smarty.get.type eq auth || $smarty.get.type eq admin}
-  {include file="xnet/manuel-`$smarty.get.type`.tpl"}
+  {elseif $type eq public || $type eq auth || $type eq admin}
+  {include file="xnet/manuel-`$type`.tpl"}
   {/if}
 </div>
 
