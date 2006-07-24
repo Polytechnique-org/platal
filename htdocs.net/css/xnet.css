@@ -120,19 +120,26 @@ td#search {
     width: 100%;
 }
 
+td#body {
+    padding-left: 1em;
+}
+
 td#menu {
     width: 130px;
-    padding-right: 1em;
+    padding-right: 0;
     font-family: "Trebuchet MS", "Arial",sans-serif;
     font-weight: bold;
 }
 
 #menu h1 {
-    padding: 0.5em 0em 0.8em 0em;
+    padding: 0.3em 0em 0.4em 0em;
+    margin-top: 0.7em;
+    margin-bottom: 0.3em;
     font-size: 85%;
     text-align: center;
     width: 130px;
-    background: url('../images/barre.png') bottom left no-repeat;
+    background: url('../images/barre_small.png') bottom left no-repeat;
+    background-color: #d0c198;
 }
 
 #menu a {

@@ -108,13 +108,13 @@
       <tr>
         <td id="menu">
           {foreach from=$menu key=title item=submenu}
-          <h1>{$title}</h1>
+          {if $title neq 'no_title'}<h1>{$title}</h1>{/if}
           {foreach from=$submenu key=tit item=url}
           <a href="{$url}">{$tit}</a>
           {/foreach}
           {/foreach}
         </td>
-        <td>
+        <td id="body">
           <div class="breadcrumb">
             {if $asso}
             <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »

@@ -63,15 +63,15 @@ class XnetPage extends PlatalPage
 
         $menu = array();
 
+        if (S::logged()) {
+            $sub = array();
+            $sub['déconnexion']   = 'exit';
+            $menu['no_title'] = $sub;
+        }
+
         $sub = array();
         $sub['accueil']           = '';
         $sub['liste des groupes'] = 'plan';
-        if (S::logged()) {
-            if (S::has_perms()) {
-                $sub['admin X.net'] = 'admin';
-            }
-            $sub['déconnexion']   = 'exit';
-        }
         $menu["Menu Principal"]   = $sub;
 
         if (S::logged() && (is_member() || may_update())) {
@@ -85,11 +85,9 @@ class XnetPage extends PlatalPage
             }
             if ($globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/lists";
+                $sub['envoyer un mail']     = "$dim/mail";
             }
             $sub['événement'] = "$dim/events";
-            if (false) {
-                $sub['carnet'] = "$dim/carnet.php";
-            }
             $sub['télépaiement'] = "$dim/paiement";
 
             $menu[$globals->asso('nom')] = $sub;
@@ -99,11 +97,13 @@ class XnetPage extends PlatalPage
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
             if ($globals->asso('mail_domain')) {
-                $sub['envoyer un mail']     = "$dim/mail";
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
             }
-            $menu['Administrer Groupe'] = $sub;
+            if (S::has_perms()) {
+                $sub['gérer les groupes'] = 'admin';
+            }
+            $menu['Administrer'] = $sub;
         }
 
         $this->assign('menu', $menu);
