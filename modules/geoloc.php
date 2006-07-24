@@ -25,8 +25,8 @@ class GeolocModule extends PLModule
     {
         return array(
             'geoloc'                  => $this->make_hook('default', AUTH_COOKIE),
-            'geoloc/icon.php'         => $this->make_hook('icon',    AUTH_COOKIE),
-            'geoloc/dynamap.php'      => $this->make_hook('dynamap', AUTH_COOKIE),
+            'geoloc/icon.swf'         => $this->make_hook('icon',    AUTH_COOKIE),
+            'geoloc/dynamap.swf'      => $this->make_hook('dynamap', AUTH_COOKIE),
             'geoloc/geolocInit.php'   => $this->make_hook('init',    AUTH_COOKIE),
             'geoloc/getCityInfos.php' => $this->make_hook('city',    AUTH_COOKIE),
             'geoloc/getData.php'      => $this->make_hook('data',    AUTH_COOKIE),
@@ -74,6 +74,7 @@ class GeolocModule extends PLModule
         global $globals;
 
         header("Content-type: application/x-shockwave-flash");
+        header("Pragma:");
 
         if ($globals->geoloc->use_map) {
             readfile($globals->geoloc->icon_path);
@@ -87,17 +88,10 @@ class GeolocModule extends PLModule
     {
         global $globals;
 
-        $querystring = $this->_make_qs();
-        $initfile    = urlencode('geolocInit.php?'.$querystring);
-
-        if (urlencode(Env::v('initfile')) != $initfile) {
-            header("Location: dynamap.php?initfile=$initfile{$querystring}");
-            die();
-        }
-
         header("Content-type: application/x-shockwave-flash");
 
         if ($globals->geoloc->use_map) {
+            header("Pragma:");
             readfile($globals->geoloc->dynamap_path);
             exit;
         }
@@ -112,6 +106,7 @@ class GeolocModule extends PLModule
         $page->changeTpl('geoloc/geolocInit.tpl', NO_SKIN);
 
         header('Content-type: text/xml');
+        header('Pragma:');
         $page->assign('querystring', $this->_make_qs());
     }
 
@@ -120,6 +115,7 @@ class GeolocModule extends PLModule
         global $globals;
 
         header("Content-type: text/xml");
+        header("Pragma:");
 
         $page->changeTpl('geoloc/getCityInfos.tpl', NO_SKIN);
 
@@ -152,6 +148,7 @@ class GeolocModule extends PLModule
             $page->changeTpl('geoloc/getData.tpl', SIMPLE);
         } else {
             header("Content-type: text/xml");
+            header("Pragma:");
             $page->changeTpl('geoloc/getData.tpl', NO_SKIN);
         }
 
