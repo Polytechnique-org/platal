@@ -26,7 +26,7 @@ new_nonhtml_page('', AUTH_COOKIE);
 
 header("Content-type: application/x-shockwave-flash");
 
-if (1 || $globals->geoloc->use_map()) {
+if ($globals->geoloc->use_map()) {
     $s = file_get_contents($globals->geoloc->dynamap_path);
     header("Content-length: ".strlen($s));
     header("Pragma:");

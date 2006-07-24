@@ -25,6 +25,7 @@ require_once('xorg.inc.php');
 header("Content-type: text/xml");
 
 new_nonhtml_page('geoloc/getCityInfos.tpl', AUTH_COOKIE);
+header("Pragma:");
 // to debug sql use the next line
 //new_skinned_page('', AUTH_COOKIE);
 
