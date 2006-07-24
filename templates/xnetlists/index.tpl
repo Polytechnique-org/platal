@@ -51,6 +51,8 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
 
 <table cellpadding="0" cellspacing="0" class='large'>
   <tr>
+    <th>{icon name=wrench title="Modérateur"}</th>
+    <th>{icon name=weather_cloudy title="Liste privée"}</th>
     <th>Liste</th>
     <th>Description</th>
     <th>Diffusion</th>
@@ -61,8 +63,18 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   {foreach from=$listes item=l}
   <tr>
     <td>
+      {if $l.own}
+      {icon name=wrench title="Modérateur"}
+      {/if}
+    </td>
+    <td>
+      {if $l.priv}
+      {icon name=weather_cloudy title="Liste privée"}
+      {/if}
+    </td>
+    <td>
       <a href="mailto:{$l.list}@{$asso.mail_domain}">{icon name=email title="mail"}</a>
-      <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list} {if $l.priv}<sup>#</sup>{/if}{if $l.own}<sup>o</sup>{/if}</a>
+      <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list}</a>
     </td>
     <td>{$l.desc}</td>
     <td class='center'>
@@ -86,8 +98,8 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
 </table>
 
 <p class="descr">
-<sup>o</sup>: tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste<br />
-<sup>#</sup>: cette liste est invisible aux non-membres de la liste. S'en désabonner
+{icon name=wrench title="Modérateur"} tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste<br />
+{icon name=weather_cloudy title="Liste privée"} cette liste est invisible aux non-membres de la liste. S'en désabonner
 t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 </p>
         

@@ -22,6 +22,7 @@
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
+    <th></th>
     <th>Liste</th>
     <th>Description</th>
     <th>Diff.</th>
@@ -32,8 +33,13 @@
   {foreach from=$listes item=liste}
   {if $liste.priv eq $priv}
   <tr class='{cycle values="impair,pair"}'>
+    <td width="16px">
+      {if $liste.own}
+      {icon name=wrench title="Modérateur"}
+      {/if}
+    </td>
     <td>
-      <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}{if $liste.own}&nbsp;*{/if}</a> 
+      <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a> 
     </td>
     <td>{$liste.desc}</td>
     <td class='center'>
