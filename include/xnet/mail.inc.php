@@ -99,11 +99,13 @@ function _send_xnet_mail($user, $body, $mailer, $replyto = null)
 
 function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null)
 {
+    global $globals;
     $sent = array();
 
     $mailer = new HermesMailer();
     $mailer->setSubject($sujet);
     $mailer->setFrom($from);
+    $mailer->addHeader('X-Xorg-Login', S::v('bestalias') . '@' . $globals->mail->domain);
 
     foreach ($tos as $user) {
         if ($sent[$user['email']]) continue;

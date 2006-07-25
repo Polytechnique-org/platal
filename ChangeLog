@@ -76,6 +76,9 @@ Bug/Wish:
     * Emails:
         - #426: Add an identification header in mails                      -FRU
 
+    * Xnet:
+        - #426: Add an identification header in mails                      -FRU
+
 From 0.9.10 Branch:
 
     * Profile:
