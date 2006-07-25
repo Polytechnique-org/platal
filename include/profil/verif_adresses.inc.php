@@ -207,18 +207,4 @@ foreach($adresses as $adrid => $adr) {
 
 }
 
-//on vire les adresses vides :
-if(isset($adresses)){ // s'il y en a
-  reset($adresses);
-  foreach($adresses as $adrid => $adr){
-    // on vire les tels vides
-    foreach ($adr['tels'] as $telid => $tel) {
-      if ($tel['tel'] == '') unset($adresses[$adrid]['tels'][$telid]);
-    }
-    if(is_adr_empty($adrid)){
-       delete_address($adrid);
-    }
-  }
-}
-
 ?>
