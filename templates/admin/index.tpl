@@ -27,9 +27,9 @@
   <tr class="impair">
     <td>
       <strong>Postfix :</strong>&nbsp;&nbsp;
-      <a href="admin/postfix/blacklist.php">Blacklist</a>
+      <a href="admin_old/postfix_blacklist.php">Blacklist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/postfix/whitelist.php">Whitelist</a>
+      <a href="admin_old/postfix_whitelist.php">Whitelist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/delayed">Retardés</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -41,7 +41,7 @@
       <strong>Sécurité :</strong>&nbsp;&nbsp;
       <a href="admin/logger">Logs des sessions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/logger/actions.php">Actions</a>
+      <a href="admin_old/logger_actions.php">Actions</a>
     </td>
   </tr>
 </table>
@@ -67,7 +67,7 @@
   <tr class="pair">
     <td>
       <strong>Infos dynamiques :</strong>&nbsp;&nbsp;
-      <a href="admin/coupure.php">Coupures</a>
+      <a href="admin_old/gerer_coupure.php">Coupures</a>
     </td>
   </tr>
   <tr class="impair">
@@ -75,13 +75,13 @@
       <strong>Champs profil :</strong>&nbsp;&nbsp;
       <a href="admin/formations.php">Formations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/gerer_binets.php">Binets</a>
+      <a href="admin_old/gerer_binets.php">Binets</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/gerer_groupesx.php">Groupes X</a>
+      <a href="admin_old/gerer_groupesx.php">Groupes X</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/gerer_skins.php">Skins</a>
+      <a href="admin_old/gerer_skins.php">Skins</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/gerer_decos.php">Décorations</a>
+      <a href="admin_old/gerer_decos.php">Décorations</a>
     </td>
   </tr>
   <tr class="pair">
@@ -89,7 +89,7 @@
       <strong>Newsletter :</strong>&nbsp;&nbsp;
       <a href="admin/newsletter">Liste</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/newsletter/categories.php">Catégories</a>      
+      <a href="admin_old/newsletter_cat.php">Catégories</a>      
     </td>
   </tr>
   <tr class="impair">
