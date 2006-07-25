@@ -219,6 +219,14 @@ table.tiny th, table.tinybicol th, table.large th, table.bicol th {
     padding: 2px;
 }
 
+table.tinybicol td, table.bicol td {
+    border: none;
+}
+
+table.tinybicol .pair, table.bicol .pair {
+    background-color: #e9e0aa;
+}
+
 table.normal td { border: none; }
 
 th { background: #d0c198; }
@@ -295,6 +303,20 @@ td.oval2 {
     font-size: 90%;
     font-family: "Trebuchet MS", sans-serif;
     letter-spacing: -0.5px;
+}
+
+div.backtotop {
+    font-size: small;
+    text-align: center;
+    padding-top: 2em;
+}
+
+div.screenshot {
+    text-align: center;
+}
+
+div.screenshot img {
+    border: 1px solid #777;
 }
 
 /***************************************************************************

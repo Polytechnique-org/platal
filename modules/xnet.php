@@ -86,7 +86,6 @@ class XnetModule extends PLModule
     function handler_manuel(&$page, $type = null)
     {
         $page->changeTpl('xnet/manuel.tpl');
-        $page->useMenu();
         $page->assign('type', $type);
     }
 

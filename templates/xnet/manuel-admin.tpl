@@ -20,28 +20,51 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>X.net&nbsp;: Mode d'emploi</h1>
+<h1>Les fonctionnalités pour les animateurs des groupes X</h1>
 
-<h2><u>Polytechnique.net&nbsp;: au service des administrateurs</u></h2>
-
+<p>
 Les fonctions d'administration sont accessibles depuis le menu de gauche sur la
 page du groupe dont tu es le responsable. Certaines fonctions sont isolées car
 ne concernent que les administrateurs, et ne sont vues que par eux. D'autres
 sont accessibles depuis les liens du menu de gauche, visibles par tous les
 membres. Mais dans ce cas, les fonctions réservées aux administrateurs sont
 indiquées clairement comme telles, et les autres membres ne les voient pas.
+</p>
 
-
-<br /><br />
-<a href="manuel/admin#annuaire">L'annuaire et les inscriptions</a><br>
-<a href="manuel/admin#evenement">La création d'un événement</a><br>
-<a href="manuel/admin#envoi">L'envoi de mail</a><br>
-<a href="manuel/admin#liste">La création d'une liste de diffusion</a><br>
-<a href="manuel/admin#alias">La création d'un alias</a><br>
-
+<table class="tinybicol">
+  <tr>
+    <th>Sommaire</th>
+  </tr>
+  <tr class="impair">
+    <td>
+      <a href="manuel/admin#annuaire">L'annuaire et les inscriptions</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td>
+      <a href="manuel/admin#evenement">La création d'un événement</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td>
+      <a href="manuel/admin#envoi">L'envoi de mail</a>
+    </td>
+  </tr>
+  <tr class="pair">
+    <td>
+      <a href="manuel/admin#liste">La création d'une liste de diffusion</a>
+    </td>
+  </tr>
+  <tr class="impair">
+    <td>
+      <a href="manuel/admin#alias">La création d'un alias</a><br>
+    </td>
+  </tr>
+</table>
 
 <h3><a name="annuaire">L'annuaire et les inscriptions</a></h3>
 
+<p>
 La
 page d'annuaire comprend deux liens destinés aux administrateurs : ajout d'un
 membre X, et ajout d'un membre non-X. Ces liens t'emmènent vers une page,
@@ -52,11 +75,11 @@ Un
 Polytechnicien intéressé par ton groupe, peut aussi vouloir s'inscrire depuis
 le site (en mode connecté). Suite à sa demande, tu reçois un mail semblable à
 celui-ci :
+</p>
 
-<br />
-<img src="images/mail_inscription.jpg" />
-<br />
+<div class="screenshot"><img src="images/doc/mail_inscription.jpg" /></div>
 
+<p>
 Le
 mail t'indique la démarche à suivre pour valider ou non cette inscription.
 L'inscription est ensuite automatique&nbsp;: les listes de diffusion, ainsi que
@@ -68,11 +91,13 @@ peux également gérer les désinscriptions, ou éditer les profils des membres
 composant ton groupe depuis cette page d'annuaire. Les trois colonnes de droite
 de l'annuaire sont des colonnes d'administration, visibles seulement par les
 responsables du groupe.
+</p>
 
-<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
+<div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
 <h3><a name="evenement">La création d'un événement</a></h3>
 
+<p>
 L'interface
 d'administration t'offre la possibilité d'ajouter une manifestation à la liste
 des événements du groupe. Depuis la page de création, tu peux décrire la
@@ -82,23 +107,24 @@ membres du groupe, ou accueille-t-elle toutes les personnes intéressées par le
 thème&nbsp;? Souhaites-tu en communiquer l'existence à tous les membres du
 groupe, ou à tous les X&nbsp;? Selon les réponses que tu fournis, la diffusion
 de cet événement via les sites polytechniciens est plus ou moins large
+</p>
 
-<br />
-<img src="images/evnt_creation.jpg" />
-<br />
+<div class="screenshot"><img src="images/doc/evnt_creation.jpg" /></div>
 
+<p>
 La page de création d'événements te permet également de décrire précisément les
 temps forts de la manifestation. Cette distinction peut s'avérer utile si
 certains des "moments" n'intéressent pas tous les participants, et
 qu'ils souhaitent s'inscrire seulement à certains d'entre eux.
+</p>
 
-<br />
-<img src="images/evnt_moments.jpg" />
+<div class="screenshot"><img src="images/doc/evnt_moments.jpg" /></div>
 
-<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
+<div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
 <h3><a name="envoi">L'envoi de mail</a></h3>
 
+<p>
 Depuis
 Polytechnique.net, il t'est possible d'envoyer des mails aux différentes listes
 de diffusion créées pour le groupe. Tu choisis ainsi les destinataires, en
@@ -113,15 +139,15 @@ commençant par "Chère Annie", et un homme dénommé Pierre un mail
 commençant par "Cher Pierre". Cette personnalisation touche plus
 les destinataires et conduit à un meilleur taux de réponse. C'est pourquoi nous te conseillons de
 l'utiliser autant que possible.
+</p>
 
-<br />
-<img src="images/mail.jpg" />
-<br />
+<div class="screenshot"><img src="images/doc/mail.jpg" /></div>
 
-<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
+<div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
 <h3><a name="liste">La création d'une liste de diffusion</a></h3>
 
+<p>
 Un
 groupe X a besoin de plusieurs listes de diffusion internes au groupe, qui
 améliorent la communication et la circulation des informations. Des listes
@@ -129,10 +155,9 @@ améliorent la communication et la circulation des informations. Des listes
 bureau, ou du conseil d'administration. Pour les groupes internationaux à large
 portée (tels les X-Continents), il est également très pratique d'avoir des
 listes spécifiques à chaque pays.
-<br>
+<br />
 Chaque
 liste peut être soumise à modération&nbsp;:
-
 <ul>
  <li><u>Pour l'inscription&nbsp;</u>: par exemple tous les membres d'un groupe ne
      peuvent pas être inscrits sur la liste du bureau.</li>
@@ -142,7 +167,9 @@ liste peut être soumise à modération&nbsp;:
      membres de la liste. Cela évite un encombrement inutile des messageries,
      qui, à terme, brouille la communication.</li>
 </ul>
+</p>
 
+<p>
 La
 page ci-dessous te permet de créer autant de listes de diffusion que tu le
 souhaites. Sache cependant qu'une liste de diffusion, pour son bon
@@ -150,21 +177,22 @@ fonctionnement, doit comporter un nombre minimal d'inscrits (supérieur à 6).
 Pour des listes plus restreintes, opte plutôt pour un alias. Si tu souhaites
 regrouper plusieurs listes de diffusion au sein d'une liste englobante, choisis
 aussi d'utiliser un alias, dont la gestion est plus souple. 
+</p>
 
-<br />
-<img src="images/liste.jpg" />
-<br />
+<div class="screenshot"><img src="images/doc/liste.jpg" /></div>
 
-<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
+<div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
 <h3><a name="alias">La création d'un alias</a></h3>
+
+<p>
 Cette
 page t'indique la procédure à suivre pour créer un alias. Les alias sont des
 listes de diffusion plus souples à gérer, mais offrant moins de fonctionnalités
 que les listes de diffusion classique (modération de l'inscription et de la
 diffusion notamment). 
+</p>
 
-<br />
-<img src="images/alias.jpg" />
-<br />
-<br /><br /><a href="manuel/admin"><i><small>Retour au menu</small></i></a><br />
+<div class="screenshot"><img src="images/doc/alias.jpg" /></div>
+
+<div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>

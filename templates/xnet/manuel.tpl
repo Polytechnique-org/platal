@@ -21,13 +21,27 @@
 {**************************************************************************}
 
 <div id="content">
-  <h1>Manuel d'utilisation de Polytechnique.net</h1>
+  <div class="breadcrumb">
+    {if $type}
+    <a href="manuel">Manuel</a> »
+    {if $type eq public}
+    Public
+    {elseif $type eq auth}
+    Membres
+    {elseif $type eq admin}
+    Administrateurs
+    {/if}
+    {else}
+    Manuel
+    {/if}
+  </div>
 
-  {if !$type}
-  <p>
-  Nous te proposons divers manuels :
-  </p>
-  <ul>
+  {if $type eq public || $type eq auth || $type eq admin}
+  {include file="xnet/manuel-`$type`.tpl"}
+  {/if}
+
+  <h1>Les manuels disponibles</h1>
+  <ul> 
     <li>
       <a href="manuel/public">fonctionnalités publiques du site</a>
       <a href="docs/manuel.pdf">(version PDF)</a>
@@ -41,9 +55,6 @@
       <a href="docs/manuel-admin.pdf">(version PDF)</a>
     </li>
   </ul>
-  {elseif $type eq public || $type eq auth || $type eq admin}
-  {include file="xnet/manuel-`$type`.tpl"}
-  {/if}
 </div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
