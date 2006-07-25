@@ -141,7 +141,7 @@
         </td>
       </tr>
 
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr>
         <td colspan="2">
@@ -158,7 +158,7 @@
       </tr>
       {/if}
 
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr>
         <td colspan="2">
@@ -182,7 +182,7 @@
         </td>
       </tr>
 
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
+      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr>
         <td colspan="2" id="credits">
