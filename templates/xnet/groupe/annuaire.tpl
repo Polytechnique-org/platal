@@ -41,13 +41,13 @@ Fonctionnalités visibles uniquement par les administrateurs :
 {/if}
 
 <p class="center">
-[<a href="{$smarty.server.PHP_SELF}" {if !$request_group}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$request_group}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
 [<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
-<table summary="membres du groupe" class="{if $admin}large{else}tiny{/if}">
+<table summary="membres du groupe" class="tinybicol">
   <tr>
     <th><a href="{$platal->ns}annuaire?order=alpha{if $smarty.request.order neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">Prénom NOM</a></th>
     <th><a href="{$platal->ns}annuaire?order=promo{if $smarty.request.order eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">Promo</a></th>
@@ -57,10 +57,10 @@ Fonctionnalités visibles uniquement par les administrateurs :
     {/if}
   </tr>
   {iterate from=$ann item=m}
-  <tr {if $m.admin}style="background:#d0c198;"{/if}>
-    <td>{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}</td>
-    <td>{$m.promo}</td>
-    <td>
+  <tr>
+    <td>{if $m.admin}<strong>{/if}{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}{if $m.admin}</strong>{/if}</td>
+    <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
+    <td class="center">
       {if $m.x}
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
@@ -70,7 +70,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
       {/if}
     </td>
     {if $admin}
-    <td>
+    <td class="center">
       <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=user_edit title="Edition du profil"}</a>
       <a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=delete title="Supprimer de l'annuaire"}</a>
     </td>
@@ -79,7 +79,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
   {/iterate}
 </table>
 
-<p class="descr">
+<p class="descr" style="text-align: center">
 {foreach from=$links item=ofs key=txt}
 <a href="{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}

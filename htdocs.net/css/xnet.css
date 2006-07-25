@@ -121,6 +121,7 @@ td#search {
 
 td#body {
     padding-left: 1em;
+    padding-bottom: 1em;
 }
 
 td#menu {
@@ -219,7 +220,8 @@ table.tiny th, table.tinybicol th, table.large th, table.bicol th {
 }
 
 table.tinybicol td, table.bicol td {
-    border: none;
+    border-top: none;
+    border-bottom: none;
 }
 
 table.tinybicol .pair, table.bicol .pair {
