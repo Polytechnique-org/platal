@@ -33,7 +33,7 @@ elseif (Env::get('only_current') != 'on')
 $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
 
 if ($search) $search = '?'.$search;
-$initfile = urlencode('geolocInit.php'.$querystring);
+$initfile = urlencode('geolocInit.php'.$search);
 $page->assign('flashvars', 'initfile='.$initfile);
 
 $page->assign('protocole',substr($globals->baseurl, 0, strpos($globals->baseurl,':')));
