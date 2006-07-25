@@ -25,10 +25,10 @@
 <h2>Synchroniser des villes avec geoloc.org</h2>
 
 {if $nb_missinglat}
-<p>[<a href='{$smarty.server.PHP_SELF}?missinglat=1'>toutes les villes sans coordonnées ({$nb_missinglat})</a>]</p>
+<p>[<a href='admin/geoloc/missinglat'>toutes les villes sans coordonnées ({$nb_missinglat})</a>]</p>
 {/if}
 
-<form action='{$smarty.server.PHP_SELF}' method='get'>
+<form action='admin/geoloc' method='post'>
 <p>
 La ville dont l'id est : <input size="6" name="id" />
 </p>

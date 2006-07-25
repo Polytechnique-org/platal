@@ -24,10 +24,10 @@
 
 <h1>
   Gestion des événements :
-  {if $arch}
-  [&nbsp;<a href="{$smarty.server.PHP_SELF}?arch=0">Actualités</a>&nbsp;|&nbsp;Archives&nbsp;]
+  {if $arch eq 'archives'}
+  [&nbsp;<a href="admin/events/actu">Actualités</a>&nbsp;|&nbsp;Archives&nbsp;]
   {else}
-  [&nbsp;Actualités&nbsp;|&nbsp;<a href="{$smarty.server.PHP_SELF}?arch=1">Archives</a>&nbsp;]
+  [&nbsp;Actualités&nbsp;|&nbsp;<a href="admin/events/archives">Archives</a>&nbsp;]
   {/if}
 </h1>
 
@@ -63,10 +63,9 @@
   </tr>
   <tr>
     <th>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="admin/events/{if $ev.arch}archives{else}actu{/if}" method="post">
         <div>
           <input type="hidden" name="evt_id" value="{$ev.id}" />
-          <input type="hidden" name="arch" value="{$ev.arch}" />
           {if $ev.farch}
           <input type="submit" name="action" value="Desarchiver" />
           {else}

@@ -29,7 +29,7 @@
   Impossible d'utiliser ce service, il manque la clef privée AX dans la configuration de plat/al.
 </p>
 {else}
-<form action='{$smarty.request.PHP_SELF}' method='get'>
+<form action='admin/synchro_ax' method='post'>
 <table class="tinybicol">
 <tr>
   <th>Synchroniser un utilisateur</th>
@@ -43,9 +43,8 @@
 </table>
 </form>
 {/if}
-
-{if $x and !no_private_key}
-<form action='{$smarty.request.PHP_SELF}' method='post'>
+{if $x}
+<form action='admin/synchro_ax/{$x.forlife}/import' method='post'>
 {if $x.profile_from_ax}
 <div style="text-align:center;margin:5px;background:green">
 <strong>Cet utilisateur a accepeté la synchronisation</strong>
@@ -135,8 +134,7 @@ Emplois
 {/if}
 </table>
 <div class='center'>
-  <input type='hidden' name='user' value='{$smarty.request.user}' />
-  <input type='submit' name='importe' value='Importer' />
+  <input type='submit' value='Importer' />
 </div>
 {else}
 <div class='center'>

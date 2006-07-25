@@ -59,10 +59,10 @@
     <td>{$user.expire|date_format}</td>
     <td>
       <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
-      <a href="admin/utilisateurs.php?login={$user.forlife}">edit</a>
+      <a href="admin/users/{$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
-      <a href="{$smarty.server.PHP_SELF}?op=mail-conf&amp;target={$user.user_id}">mailer</a>
-      <a href="{$smarty.server.PHP_SELF}?op=correct-conf&amp;target={$user.user_id}">corriger</a>
+      <a href="admin/homonyms/mail-conf/{$user.user_id}">mailer</a>
+      <a href="admin/homonyms/correct-conf/{$user.user_id}">corriger</a>
       {/if}
     </td>
   </tr>
@@ -72,7 +72,7 @@
 
 {elseif $op eq 'mail-conf'}
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="admin/homonyms/mail/{$target}">
   <table class="bicol">
     <tr>
       <th>Envoyer un mail pour prévenir l'utilisateur</th>
@@ -99,8 +99,6 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
-        <input type="hidden" name="target" value="{$target}" />
-        <input type="hidden" name="op" value="mail" />
         <input type="submit" value="Envoyer" />
       </td>
     </tr>
@@ -109,7 +107,7 @@ L'équipe Polytechnique.org
 
 {elseif $op eq 'correct-conf'}
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="admin/homonyms/correct/{$target}">
   <table class="bicol">
     <tr>
       <th>Mettre en place le robot {$loginbis}@polytechnique.org</th>
@@ -136,8 +134,6 @@ L'équipe Polytechnique.org
     </tr>
     <tr>
       <td>
-        <input type="hidden" name="target" value="{$target}" />
-        <input type="hidden" name="op" value="correct" />
         <input type="submit" value="Envoyer et corriger" />
       </td>
     </tr>

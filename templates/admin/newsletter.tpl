@@ -31,13 +31,13 @@
     <th>titre</th>
   </tr>
   <tr>
-    <td colspan='2'><a href='{$smarty.server.PHP_SELF}?new'>Créer une nouvelle lettre</a></td>
+    <td colspan='2'><a href='admin/newsletter/new'>Créer une nouvelle lettre</a></td>
   </tr>
   {foreach item=nl from=$nl_list}
   <tr class="{cycle values="pair,impair"}">
     <td>{$nl.date|date_format}</td>
     <td>
-      <a href="admin/newsletter_edit.php?nid={$nl.id}">{$nl.titre|default:"[no title]"}</a>
+      <a href="admin/newsletter/edit/{$nl.id}">{$nl.titre|default:"[no title]"}</a>
     </td>
   </tr>
   {/foreach}

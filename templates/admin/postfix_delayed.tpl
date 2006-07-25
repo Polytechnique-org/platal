@@ -39,7 +39,7 @@
     <td>{$m.create_time|date_format}</td>
     <td><strong>{if $m.del}Poubelle{elseif $m.ok}Autorisé{else}En attente{/if}</strong></td>
     <td>
-      <form method="post" action="{$smarty.server.PHP_SELF}">
+      <form method="post" action="admin/postfix/delayed">
         <div>
           <input type="hidden" name="crc" value="{$m.crc}" />
           <input type="submit" name="ok"  value="Laisser passer" />

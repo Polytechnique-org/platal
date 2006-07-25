@@ -85,7 +85,7 @@
 <table class="bicol" style="font-weight:normal;text-align:center; border-left:0px; border-right:0px; margin-top:0.5em; width:100%; margin-left: 0; font-size: smaller;">
   <tr><th>Valid</th></tr>
   <tr class="impair">
-    <td><a href="admin/valider.php">{insert name="mkStats"}</a></td>
+    <td><a href="admin/validate">{insert name="mkStats"}</a></td>
   </tr>
 </table>
 {/if}

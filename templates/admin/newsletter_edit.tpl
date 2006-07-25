@@ -27,11 +27,11 @@
 {if !$art}
 
 <p>
-[<a href="admin/newsletter.php">liste</a>]
+[<a href="admin/newsletter">liste</a>]
 [<a href="nl/show/{$nl->_id}">visualiser</a>]
 </p>
 
-<form action='{$smarty.server.PHP_SELF}?nid={$nl->_id}' method='post'>
+<form action='admin/newsletter/edit/{$nl->_id}/update' method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0">
     <tr>
       <th colspan='2'>
@@ -72,7 +72,7 @@
     </tr>
     <tr class='center'>
       <td colspan='2'>
-        <input type='submit' name='update' value='sauver' />
+        <input type='submit' value='sauver' />
       </td>
     </tr>
   </table>
@@ -86,7 +86,7 @@
       Créer un nouvel article ...
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
-      [<a href="{$smarty.server.PHP_SELF}?nid={$nl->_id}&amp;edit_aid=-1#edit">créer</a>]
+      [<a href="admin/newsletter/edit/{$nl->_id}/new#edit">créer</a>]
     </td>
   </tr>
   {foreach from=$nl->_arts item=arts key=cat}
@@ -103,8 +103,8 @@
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
       <strong>Pos: {$art->_pos}</strong><br />
-      [<a href="{$smarty.server.PHP_SELF}?nid={$nl->_id}&amp;edit_aid={$art->_aid}#edit">edit</a>]<br />
-      [<a href="{$smarty.server.PHP_SELF}?nid={$nl->_id}&amp;del_aid={$art->_aid}">delete</a>]
+      [<a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit">edit</a>]<br />
+      [<a href="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/delete">delete</a>]
     </td>
   </tr>
   {/foreach}
@@ -114,7 +114,7 @@
 {else}
 
 <p>
-[<a href="{$smarty.server.PHP_SELF}?nid={$nl->_id}">retour</a>]
+[<a href="admin/newsletter/edit/{$nl->_id}">retour</a>]
 </p>
 
 {if !$art->check()}<p class='erreur'>article trop long !</p>{/if}
@@ -135,12 +135,11 @@
 
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}#edit" method="post">
+<form action="admin/newsletter/edit/{$nl->_id}/{$art->_aid}/edit#edit" method="post">
   <table class='bicol'>
     <tr>
       <th colspan='2'>
         <a id='edit'></a>Editer un article
-        <input type='hidden' name='aid' value='{$smarty.get.edit_aid}' />
       </th>
     </tr>
     <tr class="impair">

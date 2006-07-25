@@ -51,7 +51,7 @@
   {/foreach}
   <tr id='comment{$valid->uid}'>
     <td colspan='2' class='center'>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="admin/validate" method="post">
         <div>
           <input type="hidden" name="uid"    value="{$valid->uid}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
@@ -66,7 +66,7 @@
   <tr><th colspan='2'>Réponse</th></tr>
   <tr>
     <td colspan='2' class='center' {popup caption="Règles de validation" text=$valid->rules}>
-      <form action="{$smarty.server.PHP_SELF}" method="post">
+      <form action="admin/validate" method="post">
         <div>
           Ajouté dans l'email :<br />
           <textarea rows="5" cols="50" name="comm"></textarea><br />

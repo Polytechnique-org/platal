@@ -3,6 +3,9 @@ VERSION 0.9.11                                                      ?? ???? 2006
 
 New:
 
+    * Admin:
+        - Switch to the new URI scheme.                                     -Car
+
     * Auth:
         - Switch to the new URI scheme.                                     -MC
 
@@ -23,7 +26,7 @@ New:
         - Switch to the new URI scheme.                                     -MC
 
     * Geoloc:
-        - Switch to the new URI scheme.                                     -MC
+        - Switch to the new URI scheme.                                 -MC/Car
 
     * Lists:
         - Switch to the new URI scheme.                                     -MC

@@ -33,13 +33,13 @@ Rappel sur les niveaux :
 </ul>
 
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="admin/postfix/regexp_bounces" method="post">
   <table class="bicol" cellpadding='0' cellspacing='0'>
     <tr>
       <th>Position/Niveau</th>
       <th>Regexp/Raison</th>
     </tr>
-    {if $smarty.get.new}
+    {if $new}
     <tr class="impair">
       <td>
         <input type='text' name='pos[NULL]' value='' size='4' maxlength='4' />
@@ -61,7 +61,7 @@ Rappel sur les niveaux :
     {else}
     <tr class="impair">
       <td colspan="2" class="right action">
-        <a href="{$smarty.server.PHP_SELF}?new=1">nouveau</a>
+        <a href="admin/postfix/regexp_bounces/new">nouveau</a>
       </td>
     </tr>
     {/if}

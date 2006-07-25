@@ -26,7 +26,7 @@
 <p class="erreur">Ajout du décès de {$i.name} le {$i.date}.</p>
 {/foreach}
 
-<form action="{$smarty.server.PHP_SELF}" method="get">
+<form action="admin/deaths" method="post">
   <table class="tinybicol">
     <tr>
       <td>
@@ -48,7 +48,7 @@
   </table>
 </form>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<form action="admin/deaths/{$promo}/validate" method="post">
   <table class="bicol" summary="liste des dates de décès">
     <tr>
       <th>Nom</th>
@@ -64,8 +64,7 @@
     {/iterate}
     <tr>
       <td class="center" colspan="2">
-        <input type="hidden" name="promo" value="{$promo}" />
-        <input type="submit" name="valider" value="Valider" />
+        <input type="submit" value="Valider" />
       </td>
     </tr>
   </table>

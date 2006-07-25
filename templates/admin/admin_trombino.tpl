@@ -33,17 +33,15 @@ Photo actuelle de {$forlife}
 <br />
 
 <p>
-<a href="admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=supprimer">Supprimer cette photo</a>
+<a href="admin/trombino/{$uid}/delete">Supprimer cette photo</a>
 </p>
 
 <p>
-<a href="admin/admin_trombino.php?uid={$smarty.request.uid}&amp;action=ecole">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="admin/trombino/{$uid}/original">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
 </p>
 
-<form action="admin/admin_trombino.php" method="post" enctype="multipart/form-data">
+<form action="admin/trombino/{$uid}/new" method="post" enctype="multipart/form-data">
   <div>
-    <input type="hidden" name="uid" value="{$smarty.request.uid}" />
-    <input type="hidden" name="action" value="valider" />
     <input name="userfile" type="file" size="20" maxlength="150" />
     <input type="submit" value="Envoyer" />
   </div>

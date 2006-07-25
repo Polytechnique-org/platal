@@ -26,7 +26,7 @@ require_once dirname(__FILE__).'/../classes/PLModule.php';
 
 $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events', 'geoloc',
                      'lists', 'marketing', 'payment', 'platal', 'profile',
-                     'register', 'search', 'stats', 'trezo');
+                     'register', 'search', 'stats', 'trezo', 'admin');
 $platal->run();
 
 ?>

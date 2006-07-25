@@ -1,0 +1,1 @@
+DROP TABLE admin_a, admin_h1, admin_h2;
