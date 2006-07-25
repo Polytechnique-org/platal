@@ -24,12 +24,12 @@ class GeolocModule extends PLModule
     function handlers()
     {
         return array(
-            'geoloc'                  => $this->make_hook('default', AUTH_COOKIE),
-            'geoloc/icon.swf'         => $this->make_hook('icon',    AUTH_COOKIE),
-            'geoloc/dynamap.swf'      => $this->make_hook('dynamap', AUTH_COOKIE),
-            'geoloc/geolocInit.php'   => $this->make_hook('init',    AUTH_COOKIE),
-            'geoloc/getCityInfos.php' => $this->make_hook('city',    AUTH_COOKIE),
-            'geoloc/getData.php'      => $this->make_hook('data',    AUTH_COOKIE),
+            'geoloc'             => $this->make_hook('default', AUTH_COOKIE),
+            'geoloc/icon.swf'    => $this->make_hook('icon',    AUTH_COOKIE),
+            'geoloc/dynamap.swf' => $this->make_hook('dynamap', AUTH_COOKIE),
+            'geoloc/init'        => $this->make_hook('init',    AUTH_COOKIE),
+            'geoloc/city'        => $this->make_hook('city',    AUTH_COOKIE),
+            'geoloc/country'     => $this->make_hook('country', AUTH_COOKIE),
         );
     }
 
@@ -38,8 +38,8 @@ class GeolocModule extends PLModule
         $querystring = "";
 
         foreach ($_GET as $v => $a) {
-            if ($v != 'initfile') {
-                $querystring .= '&'.urlencode($v).'='.urlencode($a);
+            if ($v != 'initfile' && $v != 'p' && $v != 'mapid') {
+                $querystring .= urlencode($v).'='.urlencode($a).'&amp;';
             }
         }
 
@@ -54,18 +54,25 @@ class GeolocModule extends PLModule
 
         $page->changeTpl('geoloc/index.tpl');
 
-        $res = XDB::query('SELECT COUNT(DISTINCT uid)
-                                       FROM adresses WHERE cityid IS NOT NULL');
-        $page->assign('localises', $res->fetchOneCell());
-
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         $search = $fields->get_url();
-        if (Env::has('only_current') && Env::v('only_current') != 'on') {
+        if (!Env::has('only_current'))
+            $search .= '&only_current=on';
+        elseif (Env::get('only_current') != 'on')
             $search .= '&only_current=';
-        }
+
         $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
-        if ($search) {
-            $page->assign('dynamap_vars', $search);
+        if ($search)
+            $search = '?'.$search;
+        $initfile = urlencode('geoloc/init'.$search);
+        $page->assign('flashvars','initfile='.$initfile);
+
+        $page->assign('protocole', substr($globals->baseurl,0,strpos($globals->baseurl,':')));
+
+        if (!$search) {
+            $res = XDB::query('SELECT COUNT(DISTINCT uid)
+                                   FROM adresses WHERE cityid IS NOT NULL');
+            $page->assign('localises', $res->fetchOneCell());
         }
     }
 
@@ -139,7 +146,7 @@ class GeolocModule extends PLModule
         $page->assign('users', $users);
     }
 
-    function handler_data(&$page)
+    function handler_country(&$page)
     {
         global $globals;
 
