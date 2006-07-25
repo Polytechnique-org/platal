@@ -105,7 +105,7 @@
           <input type="hidden" name="new_tel{$tel.telid}[{$adrid}]" value="1"/>
         {/if}
         <span class="titre" onclick="this.style.display='none';var d = document.getElementById('tel_type{$adrid}_{$tel.telid}');d.style.display='inline';d.select();d.focus();">{$tel.tel_type}&nbsp;:</span>
-        <input id="tel_type{$adrid}_{$tel.telid}" style="display:none" type="text" size="5" maxlength="20" name="tel_type{$tel.telid}[{$adrid}]" value="{$tel.tel_type}"/>
+        <input id="tel_type{$adrid}_{$tel.telid}" style="display:none" type="text" size="5" maxlength="30" name="tel_type{$tel.telid}[{$adrid}]" value="{$tel.tel_type}"/>
       </td>
       <td>
         <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />

@@ -71,13 +71,16 @@ New:
 Bug/Wish:
 
     * Carnet:
-        - #435: Calendar contains yearly events for all the contacts       -FRU
+        - #435: Calendar contains yearly events for all the contacts.      -FRU
 
     * Emails:
-        - #426: Add an identification header in mails                      -FRU
+        - #426: Add an identification header in mails.                     -FRU
+
+    * Profile:
+        - #344: Tels can be bigger (up to 30 chars).                       -Car
 
     * Xnet:
-        - #426: Add an identification header in mails                      -FRU
+        - #426: Add an identification header in mails.                     -FRU
 
 From 0.9.10 Branch:
 
