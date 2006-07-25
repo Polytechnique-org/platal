@@ -59,7 +59,7 @@
     <td>{$user.expire|date_format}</td>
     <td>
       <a href="profile/{$user.forlife}" class='popup2'>fiche</a>
-      <a href="admin/users/{$user.forlife}">edit</a>
+      <a href="admin/user/{$user.forlife}">edit</a>
       {if $user.type eq 'alias'}
       <a href="admin/homonyms/mail-conf/{$user.user_id}">mailer</a>
       <a href="admin/homonyms/correct-conf/{$user.user_id}">corriger</a>

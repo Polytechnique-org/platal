@@ -54,7 +54,7 @@ function chgMainWinLoc( strPage ) {
           {icon name=cross title="Retirer de mes contacts"}</a>
         {/if}
         {if $smarty.session.perms eq admin}
-        <a href="javascript:x()" onclick="chgMainWinLoc('admin/utilisateurs.php?login={$x.forlife}')">
+        <a href="javascript:x()" onclick="chgMainWinLoc('admin/user/{$x.forlife}')">
           {icon name=wrench title="administrer user"}</a>
         {/if}
         {/if}

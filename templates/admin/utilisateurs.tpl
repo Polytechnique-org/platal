@@ -33,7 +33,7 @@ Attention, déjà en SUID !!!
 
 
 {if $smarty.post.u_kill_conf}
-<form method="post" action="admin/users">
+<form method="post" action="admin/user">
   <div class="center">
     <input type="hidden" name="user_id" value="{$smarty.request.user_id}" />
     Confirmer la suppression de {$smarty.request.user_id}&nbsp;&nbsp;
@@ -42,7 +42,7 @@ Attention, déjà en SUID !!!
 </form>
 {else}
 
-<form method="post" action="admin/users">
+<form method="post" action="admin/user">
   <table class="tinybicol" cellspacing="0" cellpadding="2">
     <tr>
       <th>
@@ -109,7 +109,7 @@ function act_fwd(fwd, activate) {
 </script>
 {/literal}
 
-<form id="auth" method="post" action="admin/users">
+<form id="auth" method="post" action="admin/user">
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
       <th>
@@ -222,7 +222,7 @@ function act_fwd(fwd, activate) {
 Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
 Pour ceci changer ses permissions en 'disabled'.
 </p>
-<form id="alias" method="post" action="admin/users">
+<form id="alias" method="post" action="admin/user">
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
       <th class="alias" colspan="2">
@@ -262,7 +262,7 @@ Pour ceci changer ses permissions en 'disabled'.
 <strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
 </p>
 
-<form id="fwds" method="post" action="admin/users#fwds">
+<form id="fwds" method="post" action="admin/user#fwds">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr>
       <th colspan="4">

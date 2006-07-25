@@ -26,7 +26,7 @@
   Ma liste personnelle de contacts
 </h1>
 
-<form action="{$smarty.server.REQUEST_URI}" method="post">
+<form action="carnet/contacts" method="post">
 <p>
   Ajouter la personne suivante à ma liste de contacts (prenom.nom) :<br />
   <input type="hidden" name="action" value="ajouter" />

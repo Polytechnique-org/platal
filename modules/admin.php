@@ -29,7 +29,7 @@ class AdminModule extends PLModule
             'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
             'admin/logger'                 => $this->make_hook('logger', AUTH_MDP, 'admin'),
             'admin/logger/actions'         => $this->make_hook('logger_action', AUTH_MDP, 'admin'),
-            'admin/users'                  => $this->make_hook('user', AUTH_MDP, 'admin'),
+            'admin/user'                  => $this->make_hook('user', AUTH_MDP, 'admin'),
             'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),

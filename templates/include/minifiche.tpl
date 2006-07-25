@@ -77,7 +77,7 @@
         [<a href="marketing/private/{$c.user_id}">{*
           *}{icon name=wrench title="marketter user"}</a>
       {elseif $c.wasinscrit}
-        [<a href="admin/utilisateurs.php?login={$c.forlife}">{*
+        [<a href="admin/user/{$c.forlife}">{*
           *}{icon name=wrench title="administrer user"}</a>
       {/if}
       <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*

@@ -53,7 +53,7 @@
   <tr class="impair">
     <td>
       <strong>Utilisateurs :</strong>&nbsp;&nbsp;
-      <a href="admin/users">Edit/Su/Logs</a>
+      <a href="admin/user">Edit/Su/Logs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/homonyms">Homonymes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
