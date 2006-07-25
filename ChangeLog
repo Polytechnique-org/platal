@@ -76,6 +76,11 @@ Bug/Wish:
     * Emails:
         - #426: Add an identification header in mails                      -FRU
 
+From 0.9.10 Branch:
+
+    * Profile:
+        - #421: Delete tel.                                                -Car
+
 ================================================================================
 VERSION 0.9.10                                                      29 Juin 2006
 
@@ -160,7 +165,7 @@ Bug/Wish:
         - #399: Event can accept guests or not.                             -Car
         - #413: When creating a new event, datas don't disappear anymore.   -Car
 
-From 0.9.8 Branch:
+From 0.9.9 Branch:
 
     * Xnet:
         - #393: Ask for confirmation to remove an event.                    -Car
