@@ -29,8 +29,8 @@ Ton message peut être personnalisé : si tu rentres les mots &lt;cher&gt;, &lt;pr
 masculin ou féminin, par son prénom, ou son nom.
 </p>
  
-<form action="{$smarty.server.PHP_SELF}" method="post">
-  <table class='large'>
+<form action="{$platal->ns}mail" method="post">
+  <table class='bicol'>
     <tr>
       <th colspan="2">Ecrire un mail :</th>
     </tr>
@@ -53,7 +53,7 @@ masculin ou féminin, par son prénom, ou son nom.
     </tr>
     <tr valign="top">
       <td style='padding-left: 1em' class='titre'>
-        *&nbsp;<em>annuaire</em>
+        <em>annuaire</em>
       </td>
       <td>
         <input type="checkbox" name="membres" value="1" {if $smarty.request.membres}checked="checked"{/if} />
@@ -64,7 +64,7 @@ masculin ou féminin, par son prénom, ou son nom.
     {foreach from=$listes item=l}
     <tr>
       <td style='padding-left: 1em' class='titre'>
-        *&nbsp;{$l.list}
+        {$l.list}
       </td>
       <td>
         <input type="checkbox" name="ml[{$l.list}]" value="1" {if $smarty.request.ml[$l.list]}checked="checked"{/if} />
