@@ -179,6 +179,7 @@ class XnetModule extends PLModule
                   WHERE  FIND_IN_SET("Institutions", cat)
                ORDER BY  diminutif');
         $page->assign('inst', $res);
+        $page->useMenu();
     }
 
     function handler_groups2(&$page)

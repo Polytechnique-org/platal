@@ -57,12 +57,12 @@ indiquées clairement comme telles, et les autres membres ne les voient pas.
   </tr>
   <tr class="impair">
     <td>
-      <a href="manuel/admin#alias">La création d'un alias</a><br>
+      <a href="manuel/admin#alias">La création d'un alias</a>
     </td>
   </tr>
 </table>
 
-<h3><a name="annuaire">L'annuaire et les inscriptions</a></h3>
+<h3><a id="annuaire">L'annuaire et les inscriptions</a></h3>
 
 <p>
 La
@@ -77,14 +77,16 @@ le site (en mode connecté). Suite à sa demande, tu reçois un mail semblable à
 celui-ci :
 </p>
 
-<div class="screenshot"><img src="images/doc/mail_inscription.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/mail_inscription.jpg" alt="Demande d'inscription" />
+</div>
 
 <p>
 Le
 mail t'indique la démarche à suivre pour valider ou non cette inscription.
 L'inscription est ensuite automatique&nbsp;: les listes de diffusion, ainsi que
 l'annuaire, sont auto-complétés par le site Polytechnique.net, et la personne
-demandant l'inscription est avertie par mail de la suite donnée à sa requête. <br>
+demandant l'inscription est avertie par mail de la suite donnée à sa requête. <br />
 
 Tu
 peux également gérer les désinscriptions, ou éditer les profils des membres
@@ -95,7 +97,7 @@ responsables du groupe.
 
 <div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
-<h3><a name="evenement">La création d'un événement</a></h3>
+<h3><a id="evenement">La création d'un événement</a></h3>
 
 <p>
 L'interface
@@ -109,7 +111,9 @@ groupe, ou à tous les X&nbsp;? Selon les réponses que tu fournis, la diffusion
 de cet événement via les sites polytechniciens est plus ou moins large
 </p>
 
-<div class="screenshot"><img src="images/doc/evnt_creation.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/evnt_creation.jpg" alt="Création d'événement" />
+</div>
 
 <p>
 La page de création d'événements te permet également de décrire précisément les
@@ -118,11 +122,13 @@ certains des "moments" n'intéressent pas tous les participants, et
 qu'ils souhaitent s'inscrire seulement à certains d'entre eux.
 </p>
 
-<div class="screenshot"><img src="images/doc/evnt_moments.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/evnt_moments.jpg" alt="Description des moments" />
+</div>
 
 <div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
-<h3><a name="envoi">L'envoi de mail</a></h3>
+<h3><a id="envoi">L'envoi de mail</a></h3>
 
 <p>
 Depuis
@@ -141,11 +147,13 @@ les destinataires et conduit à un meilleur taux de réponse. C'est pourquoi nous 
 l'utiliser autant que possible.
 </p>
 
-<div class="screenshot"><img src="images/doc/mail.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/mail.jpg" alt="Envoyer un mail au groupe" />
+</div>
 
 <div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
-<h3><a name="liste">La création d'une liste de diffusion</a></h3>
+<h3><a id="liste">La création d'une liste de diffusion</a></h3>
 
 <p>
 Un
@@ -158,16 +166,16 @@ listes spécifiques à chaque pays.
 <br />
 Chaque
 liste peut être soumise à modération&nbsp;:
+</p>
 <ul>
- <li><u>Pour l'inscription&nbsp;</u>: par exemple tous les membres d'un groupe ne
-     peuvent pas être inscrits sur la liste du bureau.</li>
- <li><u>Pour la
-     modération&nbsp;</u>: si une liste est à large diffusion, il peut être
+ <li><strong>Pour l'inscription&nbsp;</strong>: par exemple tous les membres
+     d'un groupe ne peuvent pas être inscrits sur la liste du bureau.</li>
+ <li><strong>Pour la
+     modération&nbsp;</strong>: si une liste est à large diffusion, il peut être
      commode qu'un administrateur valide les mails avant leur envoi à tous les
      membres de la liste. Cela évite un encombrement inutile des messageries,
      qui, à terme, brouille la communication.</li>
 </ul>
-</p>
 
 <p>
 La
@@ -179,11 +187,13 @@ regrouper plusieurs listes de diffusion au sein d'une liste englobante, choisis
 aussi d'utiliser un alias, dont la gestion est plus souple. 
 </p>
 
-<div class="screenshot"><img src="images/doc/liste.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/liste.jpg" alt="Créer une liste de diffusion" />
+</div>
 
 <div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>
 
-<h3><a name="alias">La création d'un alias</a></h3>
+<h3><a id="alias">La création d'un alias</a></h3>
 
 <p>
 Cette
@@ -193,6 +203,8 @@ que les listes de diffusion classique (modération de l'inscription et de la
 diffusion notamment). 
 </p>
 
-<div class="screenshot"><img src="images/doc/alias.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/alias.jpg" alt="Création d'un alias" />
+</div>
 
 <div class="backtotop"><a href="manuel/admin">Retour au menu</a></div>

@@ -58,7 +58,6 @@
     {include file=skin/common.bandeau.tpl}
 
     <table id="layout" cellspacing="0" cellpadding="0">
-      {if $xnet_type}
       <tr>
         <td colspan="2">
         <table cellspacing="0" cellpadding="0" id="top">
@@ -67,7 +66,11 @@
               <a href=""><img src="images/asso-montants.png" alt="Logo Assos" /></a>
             </td>
             <td style="width: 106px">
+              {if $xnet_type}
               <img src="images/logo_{$xnet_type}.png" alt="Logo {$xnet_type}" width="106" height="96" />
+              {else}
+              <img src="images/logo_institutions.png" alt="Logo {$xnet_type}" width="106" height="96" />
+              {/if}
             </td>
             <td style="width: 44px">
               <img src="images/fin_logo.jpg" alt="Fin logo" width="44" height="96" />
@@ -75,34 +78,31 @@
             <td style="width: auto;">
               <img src="images/bandeau.jpg" alt="bandeau" height="96" width="100%" />
             </td>
+            {if $xnet_type}
             <td style="width: 280px">
               <img src="images/texte_{$xnet_type}.jpg" alt="{$xnet_type}" width="280" height="96" />
             </td>
             {if $asso}
             <td class="logo">
               {if $asso.site}
-                <a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" height="96" /></a>
+                <a href="{$asso.site}"><img src='{$platal->ns}logo' alt="LOGO" height="80" /></a>
               {else}
-                <img src='{$platal->ns}logo' alt="LOGO" height="96"/>
+                <img src='{$platal->ns}logo' alt="LOGO" height="80"/>
               {/if}
+            </td>
+            {/if}
+            {else}
+            <td class="logo">
+              <img src="images/asso.png" alt="Le serveur des activés associative des X" />
+              <a href="http://www.polytechnique.org">
+                <img src="images/logo-xorg.png" alt="Polytechnique.org" height="80" />
+              </a>
             </td>
             {/if}
           </tr>
         </table>
         </td>
       </tr>
-      {else}
-      <tr id="top">
-        <td>
-          <img src="images/logo.png" alt="LOGO Assos" />
-        </td>
-        <td style="text-align: right">
-          <a href="https://www.polytechnique.org/"><img src="images/logo-xorg.png" alt="LOGO X.Org" /></a>
-          <img src="images/asso2.png" alt="titre_du_site" />
-        </td>
-      </tr>
-      <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
-      {/if}
 
       {if $menu}
       <tr>
@@ -147,11 +147,11 @@
         <td colspan="2">
           <table class="links" summary="liens" cellspacing="0" cellpadding="0">
             <tr>
-              <td> <a href="plan">PLAN DU SITE</a> </td>
-              <td> <a href="groups/groupesx">groupes X</a> </td>
-              <td> <a href="groups/binets">binets</a> </td>
-              <td> <a href="groups/promotions">promotions</a> </td>
-              <td> <a href="groups/institutions">institutions</a> </td>
+              <td class="left">   <a href="groups/groupesx">Groupes X</a> </td>
+              <td class="left"> <a href="groups/binets">Binets</a> </td>
+              <td class="center"> <a href="groups/promotions">Promotions</a> </td>
+              <td class="center"> <a href="groups/institutions">Institutions</a> </td>
+              <td class="right">  <a href="plan">Tous</a> </td>
             </tr>
           </table>
         </td>
@@ -161,14 +161,24 @@
       <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="765" /></td></tr>
 
       <tr>
-        <td colspan="2" id="perso">
-          {list_all_my_groups}
-          {if !$smarty.session.auth}
-          <div>Me connecter :</div>
-          <a class='gp' href="{$smarty.session.loginX}">polytechnicien</a>
-          {/if}
-
-          <a href="manuel" title="Manuel d'aide en ligne" style="float: right"><img src="images/manuel.png" alt="manuel" /></a>
+        <td colspan="2">
+        <table style="width: 100%">
+          <tr>
+            <td id="perso">
+              {list_all_my_groups}
+              {if !$smarty.session.auth}
+              <div>Me connecter :</div>
+              <a class='gp' href="{$smarty.session.loginX}">polytechnicien</a>
+              {/if}
+            </td>
+            <td class="right" style="vertical-align: middle">
+              <a href="manuel" title="Manuel d'aide en ligne">
+                Manuel de l'utilisateur
+                {icon name=lightbulb title="Documentation"}
+              </a>
+            </td>
+          </tr>
+        </table>
         </td>
       </tr>
 
@@ -176,7 +186,7 @@
 
       <tr>
         <td colspan="2" id="credits">
-          <a href="plan">liste des associations</a> -
+          <a href="plan">plan du site</a> -
           <a href="services">services proposés</a> -
           <a href="about">à propos de ce site</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}

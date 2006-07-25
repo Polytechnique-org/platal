@@ -76,7 +76,7 @@ objectif la présentation du site public, ouvert aux X, et aux non-X.
 </table>
 
 
-<h3><a name="accueil">Accueil</a></h3>
+<h3><a id="accueil">Accueil</a></h3>
 
 <a href="http://www.polytechnique.net/">Voir l'accueil du site</a>
 
@@ -89,20 +89,22 @@ associations, en cliquant sur <em>plan du site</em>.
 
 <div class="backtotop"><a href="manuel/public">Retour au menu</a></div>
 
-<h3><a name="general">Les présentations générales</a></h3>
+<h3><a id="general">Les présentations générales</a></h3>
 
-<div class="screenshot"><img src="images/doc/groupeX.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/groupeX.jpg" alt="Choix du groupe" />
+</div>
 
 <p>
 Chacune des 4 catégories dispose d'une page descriptive. L'adresse de cette page varie
 suivant la catégorie représentée :
+</p>
 <ul>
   <li><a href="http://www.polytechnique.net/groups/GroupesX">pour les Groupes X</a></li>
   <li><a href="http://www.polytechnique.net/groups/Binets">pour les Binets</a></li>
   <li><a href="http://www.polytechnique.net/groups/Institutions">pour les Institutions</a></li>
   <li><a href="http://www.polytechnique.net/groups/Promotions">Pour les promotions</a></li>
 </ul>
-</p>
 
 <p>
 Les groupes X et les binets représentés sur le site sont nombreux, c'est pourquoi
@@ -110,19 +112,21 @@ ils sont regroupés dans différentes sous-catégories (Internationaux, Loisirs,
 Professionnels) qui permettent un repérage plus facile sur le site.
 </p>
 
-<div class="screenshot"><img src="images/doc/gpx_liste.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/gpx_liste.jpg" alt="Liste de groupes" />
+</div>
 
 <div class="backtotop"><a href="manuel/public">Retour au menu</a></div>
 
-<h3><a name="dedie">Les pages dédiées</a></h3>
+<h3><a id="dedie">Les pages dédiées</a></h3>
 
 <p>
 Après avoir sélectionné l'association
 polytechnicienne de ton choix, tu arrives sur la page qui lui est dédiée.
 <a href="http://www.polytechnique.net/X-Israel/"> L'exemple d'X-Israël</a>
 La page de chaque association comporte ainsi :
-
-<ul style='margin-top:0cm' type=disc>
+</p>
+<ul style='margin-top:0cm'>
  <li style='text-align:justify'>Un menu (à droite), nécessaire à la navigation vers le reste du site</li>
  <li style='text-align:justify'>Des liens, pour revenir vers les autres associations de la même
  catégorie, ou vers les autres catégories (en haut, au milieu)</li>
@@ -130,11 +134,10 @@ La page de chaque association comporte ainsi :
  <li style='text-align:justify'> Des informations utiles pour savoir davantage (à droite). Ce menu
  te permet également de demander ton inscription au groupe si celui-ci t'intéresse.</li>
 </ul>
-</p>
 
 <div class="backtotop"><a href="manuel/public">Retour au menu</a></div>
 
-<h3><a name="inscription">L'inscription à un groupe X</a></h3>
+<h3><a id="inscription">L'inscription à un groupe X</a></h3>
 
 <p>
 Pour t'inscrire à un groupe, clique sur le lien correspondant, depuis la page du
@@ -143,33 +146,13 @@ administrateurs du groupe. Tu seras averti par retour de mail, de la suite
 donnée à ta demande.
 </p>
 
-<div class="screenshot"><img src="images/doc/inscription.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/inscription.jpg" alt="Inscription à un groupe" />
+</div>
 
 <div class="backtotop"><a href="manuel/public">Retour au menu</a></div>
 
-<h3><a name="boite">La boîte à outils</a></h3>
-
-<p>
-Polytechnique.net
-offre la possibilité de faire une recherche avancée, non seulement sur le site
-lui-même, mais sur tous les sites polytechniciens. Pour en profiter, il te
-suffit de cliquer le mot clé de ta recherche dans la boîte à outils présente
-sur toutes les pages.
-</p>
-
-<div class="screenshot"><img src="images/doc/toolbar.jpg" /></div>
-
-<p>
-En cliquant sur la loupe à droite, tu pourras faire une recherche via le moteur
-d'<a href="http://www.exalead.fr" target="new">Exalead</a>. 
-Le petit carnet à droite te permet de revenir à tout instant à la page des événements. L'ampoule
-te dirige vers le mode d'emploi de Polytechnique.net, destiné à faciliter
-l'usage du site.
-</p>
-
-<div class="backtotop"><a href="manuel/public">Retour au menu</a></div>
-
-<h3><a name="evenements">Les événements</a></h3>
+<h3><a id="evenements">Les événements</a></h3>
 
 <p>
 La
@@ -179,15 +162,17 @@ groupes X. Elle est accessible depuis l'icône "carnet " de la boîte
 groupe
 </p>
 
-<div clas="backtotop"><a href="manuel/public">Retour au menu</a></div>
+<div class="backtotop"><a href="manuel/public">Retour au menu</a></div>
 
-<h3><a name="plan">Le plan du site</a></h3>
+<h3><a id="plan">Le plan du site</a></h3>
 
 <p>
 <a href="http://www.polytechnique.net/plan">Lien vers le plan</a>
 </p>
 
-<div class="screenshot"><img src="images/doc/plan.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/plan.jpg" alt="Plan du site" />
+</div>
 
 <p>
 Cette

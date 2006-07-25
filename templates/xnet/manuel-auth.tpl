@@ -76,14 +76,16 @@ sein de ton groupe.
   </tr>
 </table>
 
-<h3><a name="accueil">Accueil</a></h3>
+<h3><a id="accueil">Accueil</a></h3>
 
 <p>
 Pour
 bénéficier de tous ces services, tu dois auparavant t'authentifier.
 </p>
 
-<div class="screenshot"><img src="images/doc/identification.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/identification.jpg" alt="Formulaire d'authentification" />
+</div>
 
 <p>
 Pour
@@ -94,11 +96,13 @@ porte-clés. Après t'être authentifié, tu entres en mode connecté, et tu as
 accès directement aux pages des groupes auxquels tu es inscrit, depuis la page d'accueil.
 </p>
 
-<div class="screenshot"><img src="images/doc/index_auth.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/index_auth.jpg" alt="Accueil authentifié" />
+</div>
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="tongroupe">La page de ton groupe</a></h3>
+<h3><a id="tongroupe">La page de ton groupe</a></h3>
 
 <p>
 La
@@ -108,19 +112,21 @@ dans le menu de droite.
 </p>
 
 <div class="screenshot">
-  <img src="images/doc/x-internet.jpg" />
-  <img src="images/doc/fns_membres.jpg" />
+  <img src="images/doc/x-internet.jpg" alt="La page groupe pour les membres" />
+  <img src="images/doc/fns_membres.jpg" alt="Fonctionnalités des membres" />
 </div>
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="annuaire">L'annuaire</a></h3>
+<h3><a id="annuaire">L'annuaire</a></h3>
 
 <p>
 Il liste les membres du groupe, par ordre alphabétique ou par promotions.
 </p>
 
-<div class="screenshot"><img src="images/doc/annuaire.jpg" /></div>
+<div class="screenshot">
+  <img src="images/doc/annuaire.jpg" alt="L'annuaire du groupe" />
+</div>
 
 <p>
 Les
@@ -130,23 +136,23 @@ droite sont destinées aux administrateurs du groupe.
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="listes">Les listes de diffusion</a></h3>
+<h3><a id="listes">Les listes de diffusion</a></h3>
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="agenda">L'agenda privé du groupe</a></h3>
+<h3><a id="agenda">L'agenda privé du groupe</a></h3>
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="carnet">Le carnet</a></h3>
+<h3><a id="carnet">Le carnet</a></h3>
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="evenements">Les événements</a></h3>
+<h3><a id="evenements">Les événements</a></h3>
 
 <div class="backtotop"><a href="manuel/auth">Retour au menu</a></div>
 
-<h3><a name="telepaiement">Le télépaiement</a></h3>
+<h3><a id="telepaiement">Le télépaiement</a></h3>
 
 <p>
 Le
