@@ -29,7 +29,7 @@
   
   <div class="center">
     <strong>{$prenom} {$nom}</strong><br />
-    <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@polytechnique.org">{$bestalias}@polytechnique.org</a>
+    <span>X{$promo}&nbsp;-&nbsp;</span> <a href="mailto:{$bestalias}@{#globals.mail.domain#}">{$bestalias}@{#globals.mail.domain#}</a>
   </div>
 
   {if $expertise != '' || $secteurs|count || $pays|count }

@@ -58,7 +58,7 @@ en validant peut être longue à afficher.
 <h1>
   Album photo
   {if $platal->argv[1] eq -1}
-  Polytechnique.org
+  {#globals.core.sitename#}
   {else}
   promotion {$platal->argv[1]}
   {/if}

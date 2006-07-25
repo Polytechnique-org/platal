@@ -38,8 +38,8 @@
     {if $usage_old}
       <p>
         Ta demande de suppression de ton nom d'usage ainsi que de tes
-        alias {$alias_old}@polytechnique.org et
-        {$alias_old}@m4x.org a bien été enregistrée. 
+        alias {$alias_old}@{#globals.mail.domain#} et
+        {$alias_old}@{#globals.mail.domain2#} a bien été enregistrée. 
       </p>
     {/if}
 
@@ -47,8 +47,8 @@
       <p>
         Ta demande d'ajout de ton nom d'usage a bien été enregistrée. Sa
         validation engendrera la création des alias
-        <strong>{$myusage->alias}@polytechnique.org</strong> et
-        <strong>{$myusage->alias}@m4x.org</strong>.
+        <strong>{$myusage->alias}@{#globals.mail.domain#}</strong> et
+        <strong>{$myusage->alias}@{#globals.mail.domain2#}</strong>.
       </p>
     {/if}
   
@@ -74,7 +74,7 @@ utiliser une adresse personnalisée, il faut se tourner vers
   <p>
   Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom d'usage, tu peux
   saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
-  des adresses correspondantes @m4x.org et @polytechnique.org, en plus de
+  des adresses correspondantes @{#globals.mail.domain#} et @{#globals.mail.domain2#}, en plus de
   celles que tu possèdes déjà.
   </p>
 

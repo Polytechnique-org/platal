@@ -25,7 +25,7 @@
 
 <h2>Pourquoi une redirection de page WEB ?</h2>
 <p>
-  Dans la lignée du service de redirection d'emails de <strong>Polytechnique.org</strong>,
+  Dans la lignée du service de redirection d'emails de <strong>{#globals.core.sitename#}</strong>,
   il est possible de faire pointer
     les adresses <strong>http://www.carva.org/{$smarty.session.bestalias}</strong>
   et <strong>http://www.carva.org/{$smarty.session.forlife}</strong>

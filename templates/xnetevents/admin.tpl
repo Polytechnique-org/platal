@@ -29,9 +29,9 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
 
 {if $evt.participant_list}
 <p class="center">
-[<a href="mailto:?bcc={$evt.short_name}-participants@evts.polytechnique.org">envoyer un mail à ceux qui viennent</a>]
+[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un mail à ceux qui viennent</a>]
 -
-[<a href="mailto:?bcc={$evt.short_name}-absents@evts.polytechnique.org">envoyer un mail aux membres non inscrits</a>]
+[<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un mail aux membres non inscrits</a>]
 </p>
 {/if}
 
@@ -86,7 +86,7 @@ Ils ont payé mais ont oublié de s'inscrire :
     <td>
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
     </td>
     <td>{$m.montant}</td>
   </tr>
@@ -131,7 +131,7 @@ Ils ont payé mais ont oublié de s'inscrire :
       {if $m.x}
       <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="vcard"}</a>
-      <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
+      <a href="mailto:{$m.email}@{#globals.mail.domain#}">{icon name=email title="mail"}</a>
       {else}
       <a href="mailto:{$m.email}">{icon name=email title="mail"}</a>
       {/if}

@@ -27,9 +27,9 @@ FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom_usage` (`$vcard.nom`)
 FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
 {/if}
 N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.nom_usage|qp_enc};;
-EMAIL;TYPE=internet:{$vcard.bestalias}@polytechnique.org
+EMAIL;TYPE=internet:{$vcard.bestalias}@{#globals.mail.domain#}
 {if $vcard.bestalias neq $vcard.forlife}
-EMAIL;TYPE=internet:{$vcard.forlife}@polytechnique.org
+EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain#}
 {/if}
 {if $vcard.virtualalias}
 EMAIL;TYPE=internet:{$vcard.virtualalias}

@@ -135,7 +135,7 @@ permettant certainement d'avoir une vision des choses plus complète.
 </p>
 
 <p>
-Actuellement, {$mentors_number} mentors et référents se sont déclarés sur Polytechnique.org.
+Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#globals.core.sitename#}.
 </p>
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">

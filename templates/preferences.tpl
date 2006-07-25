@@ -107,7 +107,7 @@
     <td>
       <h3><a href="password">Changer mon mot de passe pour le site</a></h3>
       <div class='explication'>
-        permet de changer ton mot de passe pour accéder au site Polytechnique.org
+        permet de changer ton mot de passe pour accéder au site {#globals.core.sitename#}
       </div>
     </td>
   </tr>
@@ -115,7 +115,7 @@
     <td>
       <h3><a href="password/smtp">Activer l'accès SMTP et NNTP</a></h3>
       <div class='explication'>
-        Pour activer ton compte sur le serveur SMTP et NNTP de Polytechnique.org.
+        Pour activer ton compte sur le serveur SMTP et NNTP de {#globals.core.sitename#}.
         Cela te permet d'envoyer tes mails plus souplement (SMTP), et de consulter
         les forums directement depuis ton logiciel habituel de courrier électronique.
       </div>

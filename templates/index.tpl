@@ -23,7 +23,7 @@
 <h1>Bienvenue sur le portail des élèves et anciens élèves de l'X !</h1>
 
 <p>
-  Polytechnique.org est le site qui connecte la communauté des
+  {#globals.core.sitename#} est le site qui connecte la communauté des
   polytechniciens.  Il comporte une partie publique, et une partie privée
   réservée aux polytechniciens.
 </p>
@@ -36,7 +36,7 @@
     vous avez la possibilité 
     <strong><a href="http://www.manageurs.com/?langue=fr">d'utiliser le site
         Manageurs.com</a></strong> pour rentrer en contact avec les
-    Polytechniciens, mettre en ligne des offres d'emploi, consulter l'annuaire
+    polytechniciens, mettre en ligne des offres d'emploi, consulter l'annuaire
     inter-écoles et consulter la base de données de CV.
   </li>
   <li class="spaced">
@@ -51,7 +51,7 @@
 <ul>
   <li class="spaced">
     vous pouvez <strong><a href="register">vous inscrire à
-        Polytechnique.org</a></strong> si ce n'est pas encore fait,
+        {#globals.core.sitename#}</a></strong> si ce n'est pas encore fait,
   </li>
   <li class="spaced">
     ou <strong><a href="events">vous connecter</a></strong> si vous êtes
@@ -61,7 +61,7 @@
 
 <p>
   Vous pouvez <strong><a href="Docs/PourquoiMInscrire">consulter la
-      liste de ce que vous apporte Polytechnique.org</a></strong> si vous
+      liste de ce que vous apporte {#globals.core.sitename#}</a></strong> si vous
   hésitez à vous inscrire !
 </p>
 
@@ -85,7 +85,7 @@
 
 <p>
   <strong>Bonne visite !</strong>
-  <br /><cite>L'équipe Polytechnique.org</cite>
+  <br /><cite>L'équipe {#globals.core.sitename#}</cite>
 </p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

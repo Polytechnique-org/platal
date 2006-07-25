@@ -28,7 +28,7 @@
 
 <p>
 <strong>Un certificat d'authentification aléatoire</strong> vient de t'être attribué et envoyé à
-ton adresse en polytechnique.org.<span class="erreur"> Il expire dans six heures.</span> Tu dois donc
+ton adresse en {#globals.mail.domain#}.<span class="erreur"> Il expire dans six heures.</span> Tu dois donc
 <strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliqué
 dans le mail pour changer ton mot de passe.
 </p>
@@ -47,9 +47,9 @@ certificat sur cette page.
   nouveau mot de passe.
   </p>
   <p>
-  Après avoir complété les informations suivantes, tu recevras à ton adresse Polytechnique.org un
+  Après avoir complété les informations suivantes, tu recevras à ton adresse {#globals.core.sitename#} un
   courrier électronique te permettant de choisir ce nouveau mot de passe. Si jamais tu n'as plus
-  accès aux boîtes aux lettres vers lesquelles ton adresse Polytechnique.org reroute ton courrier,
+  accès aux boîtes aux lettres vers lesquelles ton adresse {#globals.core.sitename#} reroute ton courrier,
   alors indique nous ci-dessous l'adresse à laquelle tu souhaites recevoir le courrier. Nous t'y
   adresserons le message de création d'un nouveau mot de passe si et seulement si tes anciennes
   boîtes sont réellement inaccessibles.
