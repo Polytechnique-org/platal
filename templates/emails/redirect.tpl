@@ -114,7 +114,7 @@
 
 <h1>Pour les Élèves (non encore diplômés)</h1>
 <p>
-  L'X te fourni aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
+  L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
   une redirection vers «login»@poly.polytechnique.fr. <a href="https://mail.polytechnique.edu/">
   Tu peux modifier cette redirection</a> et la faire pointer vers ton adresse
   {$smarty.session.forlife}@{#globals.mail.domain#} (attention, cela demande de la concentration).
