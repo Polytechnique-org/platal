@@ -65,7 +65,7 @@ function searchMapId(f)
 {if $globals->geoloc->use_map}
   <p class="center">
     <embed
-      src="dynamap.swf"
+      src="geoloc/dynamap.swf"
       quality="high"
       bgcolor="#ffffff"
       width="600"

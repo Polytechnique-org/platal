@@ -43,4 +43,5 @@ textYouHaveSelected="Tu as sélectionné "
 background="{$background}"
 {/if} 
 textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
-scriptInfosArea="getData.php?{$querystring}"/>
+iconSwf="geoloc/icon.swf"
+scriptInfosArea="geoloc/country?{$querystring}"/>

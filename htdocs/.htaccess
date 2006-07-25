@@ -1,7 +1,7 @@
 Options +FollowSymLinks
 RewriteEngine on
 
-RewriteBase /~x2000habouzit
+RewriteBase /~x2001corpet
 
 # wiki
 

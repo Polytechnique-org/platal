@@ -350,6 +350,8 @@ function geoloc_getData_subcountries($mapid, $SFields, $minentities) {
         FROM    geoloc_maps AS gm
         ".$wheremapid, Env::v('mapid',''));
 
+    global $globals;
+
     while ($c = $submapres->next())
     {
         $country = $c;
