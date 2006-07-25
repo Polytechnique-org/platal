@@ -172,6 +172,12 @@
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">
+              {if $smarty.session.perms eq admin}
+              <a href="admin" title="Administration des groupes">
+                Gérer les groupes
+                {icon name=wrench title="Administration"}
+              </a><br />
+              {/if}
               <a href="manuel" title="Manuel d'aide en ligne">
                 Manuel de l'utilisateur
                 {icon name=lightbulb title="Documentation"}

@@ -105,6 +105,10 @@ class XnetPage extends PlatalPage
                 $sub['gérer les groupes'] = 'admin';
             }
             $menu['Administrer'] = $sub;
+        } elseif (S::has_perms()) {
+            $sub = array();
+            $sub['gérer les groupes'] = 'admin';
+            $menu['Administrer'] = $sub;
         }
 
         $this->assign('menu', $menu);
