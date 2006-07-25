@@ -30,6 +30,12 @@ class GeolocModule extends PLModule
             'geoloc/init'        => $this->make_hook('init',    AUTH_COOKIE),
             'geoloc/city'        => $this->make_hook('city',    AUTH_COOKIE),
             'geoloc/country'     => $this->make_hook('country', AUTH_COOKIE),
+            '%grp/geoloc'            => $this->make_hook('default',AUTH_COOKIE),
+            '%grp/geoloc/icon.swf'   => $this->make_hook('icon',   AUTH_COOKIE),
+            '%grp/geoloc/dynamap.swf'=> $this->make_hook('dynamap',AUTH_COOKIE),
+            '%grp/geoloc/init'       => $this->make_hook('init',   AUTH_COOKIE),
+            '%grp/geoloc/city'       => $this->make_hook('city',   AUTH_COOKIE),
+            '%grp/geoloc/country'    => $this->make_hook('country',AUTH_COOKIE),
         );
     }
 
@@ -50,10 +56,18 @@ class GeolocModule extends PLModule
     {
         global $globals;
 
+        if (!is_file(dirname(__FILE__).'/geoloc/dynamap.swf') ||
+             !is_file(dirname(__FILE__).'/geoloc/icon.swf'))
+            $page->assign('request_geodesix', 1);
+
+        if (!empty($GLOBALS['IS_XNET_SITE'])) {
+            $page->useMenu();
+            $page->setType($globals->asso('cat'));
+            $page->assign('no_annu', 1);
+        }
+
         require_once 'search.inc.php';
-
         $page->changeTpl('geoloc/index.tpl');
-
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         $search = $fields->get_url();
         if (!Env::has('only_current'))
@@ -64,8 +78,7 @@ class GeolocModule extends PLModule
         $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
         if ($search)
             $search = '?'.$search;
-        $initfile = urlencode('geoloc/init'.$search);
-        $page->assign('flashvars','initfile='.$initfile);
+        $page->assign('search',$search);
 
         $page->assign('protocole', substr($globals->baseurl,0,strpos($globals->baseurl,':')));
 
@@ -83,10 +96,8 @@ class GeolocModule extends PLModule
         header("Content-type: application/x-shockwave-flash");
         header("Pragma:");
 
-        if ($globals->geoloc->use_map) {
-            readfile($globals->geoloc->icon_path);
-            exit;
-        }
+        readfile(dirname(__FILE__).'/geoloc/icon.swf');
+        exit;
 
         return PL_NOT_FOUND;
     }
@@ -97,11 +108,9 @@ class GeolocModule extends PLModule
 
         header("Content-type: application/x-shockwave-flash");
 
-        if ($globals->geoloc->use_map) {
-            header("Pragma:");
-            readfile($globals->geoloc->dynamap_path);
-            exit;
-        }
+        header("Pragma:");
+        readfile(dirname(__FILE__).'/geoloc/dynamap.swf');
+        exit;
 
         return PL_NOT_FOUND;
     }
@@ -114,6 +123,8 @@ class GeolocModule extends PLModule
 
         header('Content-type: text/xml');
         header('Pragma:');
+        if(!empty($GLOBALS['IS_XNET_SITE']))
+            $page->assign('background', 0xF2E9D0);               
         $page->assign('querystring', $this->_make_qs());
     }
 
@@ -129,8 +140,16 @@ class GeolocModule extends PLModule
         require_once('geoloc.inc.php');
         require_once('search.inc.php');
 
-        $usual_fields = advancedSearchFromInput();
-        $fields = new SFieldGroup(true, $usual_fields);
+        if (empty($GLOBALS['IS_XNET_SITE'])) {
+            $usual_fields = advancedSearchFromInput();
+            $fields = new SFieldGroup(true, $usual_fields);
+        } else {
+            $_REQUEST['asso_id'] = $globals->asso('id');
+            $_REQUEST['only_current'] = 'on';
+            $fields   = new SFieldGroup(true, array(
+                new RefSField('asso_id',array('gxm.asso_id'),'groupex.membres','gxm','u.user_id=gxm.uid'),
+                new RefSField('cityid',array('av.cityid'),'adresses','av',getadr_join('av'))));
+        }
         $where = $fields->get_where_statement();
         if ($where) $where = "WHERE ".$where;
 
@@ -166,8 +185,15 @@ class GeolocModule extends PLModule
         $page->assign('searchvars', $querystring);
 
         $mapid = Env::has('mapid') ? Env::i('mapid', -2) : false;
+        if (empty($GLOBALS['IS_XNET_SITE'])) {
+            $fields = advancedSearchFromInput();
+        } else {
+            $_REQUEST['asso_id'] = $globals->asso('id');
+            $_REQUEST['only_current'] = 'on';
+            $fields   = array(new RefSField('asso_id',array('gxm.asso_id'),'groupex.membres','gxm','u.user_id=gxm.uid'));
+        }
 
-        list($countries, $cities) = geoloc_getData_subcountries($mapid, advancedSearchFromInput(), 10);
+        list($countries, $cities) = geoloc_getData_subcountries($mapid, $fields, 10);
 
         $page->assign('countries', $countries);
         $page->assign('cities', $cities);

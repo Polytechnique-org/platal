@@ -41,7 +41,8 @@ textSeeMapOfCity="Voir la carte de "
 textYouHaveSelected="Tu as sélectionné "
 {if $background}
 background="{$background}"
+zoomBarBackgroundColor="{$background}"
 {/if} 
 textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
-iconSwf="geoloc/icon.swf"
-scriptInfosArea="geoloc/country?{$querystring}"/>
+iconSwf="{$platal->ns}geoloc/icon.swf"
+scriptInfosArea="{$platal->ns}geoloc/country?{$querystring}"/>

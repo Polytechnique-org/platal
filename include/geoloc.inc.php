@@ -127,6 +127,7 @@ function get_new_maps($url)
     XDB::execute('INSERT INTO geoloc_maps VALUES '.substr($s, 1));
     return true;
 }
+// }}}
 
 // {{{ get_address_text($adr)
 /** make the text of an address that can be read by a mailman

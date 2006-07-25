@@ -26,7 +26,7 @@
 {literal}
 function ficheXorg(id)
 {
-  window.open('profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
+  window.open('{/literal}{if $no_annu}https://www.polytechnique.org/{/if}{literal}profile/'+id,'_blank','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=840,height=600');
 }
 {/literal}
 {if !$no_annu}
@@ -62,10 +62,10 @@ function searchMapId(f)
     Aujourd'hui {$localises} de nos camarades sont localisés grâce à leurs adresses personnelles.
   </p>
 {/if}
-{if $globals->geoloc->use_map}
+{if !$request_geodesix}
   <p class="center">
     <embed
-      src="geoloc/dynamap.swf"
+      src="{$platal->ns}geoloc/dynamap.swf"
       quality="high"
       bgcolor="#ffffff"
       width="600"
@@ -73,7 +73,7 @@ function searchMapId(f)
       name="dynamap"
       id="dynamap"
       align="middle"
-      flashvars="{$flashvars}"
+      flashvars="initfile={$platal->ns}geoloc%2Finit{$search}"
       type="application/x-shockwave-flash"
       menu="false"
       wmode="opaque"

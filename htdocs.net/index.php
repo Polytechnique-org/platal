@@ -24,7 +24,8 @@ require 'xnet.inc.php';
 require_once dirname(__FILE__).'/../classes/Xnet.php';
 require_once dirname(__FILE__).'/../classes/PLModule.php';
 
-$platal = new Xnet('xnet', 'xnetgrp', 'xnetlists', 'xnetevents');
+$GLOBALS['IS_XNET_SITE'] = true;
+$platal = new Xnet('xnet', 'xnetgrp', 'xnetlists', 'xnetevents', 'geoloc');
 $platal->run();
 
 ?>
