@@ -219,6 +219,7 @@ class AdminModule extends PLModule
                     require_once('secure_hash.inc.php');
                     $pass_encrypted = Env::v('newpass_clair') != "********" ? hash_encrypt(Env::v('newpass_clair')) : Env::v('passw');
                     $naiss = Env::v('naissanceN');
+                    $deces = Env::v('decesN');
                     $perms = Env::v('permsN');
                     $prenm = Env::v('prenomN');
                     $nom   = Env::v('nomN');
@@ -228,6 +229,7 @@ class AdminModule extends PLModule
 
                     $query = "UPDATE auth_user_md5 SET
                             naissance = '$naiss',
+                            deces     = '$deces',
                             password  = '$pass_encrypted',
                             perms     = '$perms',
                             prenom    = '".addslashes($prenm)."',

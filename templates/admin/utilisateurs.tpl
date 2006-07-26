@@ -186,6 +186,14 @@ function act_fwd(fwd, activate) {
     </tr>
     <tr class="pair">
       <td class="titre">
+        Date de décès
+      </td>
+      <td>
+        <input type="text" name="decesN" size="12" maxlength="10" value="{$mr.deces}" />
+      </td>
+    </tr>
+    <tr class="pair">
+      <td class="titre">
         Promo
       </td>
       <td>
