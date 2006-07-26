@@ -24,14 +24,20 @@ ini_set('include_path', '../include:/usr/share/php');
 require_once('../include/xorg.inc.php');
 require_once('../include/emails.inc.php');
 
-$opts = getopt('i:');
+$opts = getopt('i:o:');
 if (($opts['i'] && $opts['i'] == '-') || empty($opts['i'])) {
     $file = 'php://stdin';
 } else {
     $file = $opts['i'];
 }
+if (($opts['o'] && $opts['o'] == '-') || empty($opts['o'])) {
+    $output = 'php://stdout';
+} else {
+    $output = $opts['o'];
+}
 
 $emails = explode("\n", file_get_contents($file));
+$list   = array();
 foreach ($emails as $_email) {
     $email = valide_email($_email);
     if (empty($email) || $email=='@') {
@@ -95,9 +101,33 @@ login ({$x['alias']}) et ta date de naissance !";
             $mail->send();
             echo "$email : mail envoyé\n";
         }
+
+        if (!isset($list[$x['alias']])) {
+            $list[$x['alias']] = array($email);
+        } else {
+            $list[$x['alias']][] = $email;
+        }
     } else {
         echo "$email : cette addresse n'est pas dans la base\n";
-    } 
+    }
 }
+
+$csv = "nom;prenom;promo;alias;bounce;nbmails\n";
+foreach ($list as $alias=>$mails) {
+    $sel = Xdb::query(
+            "SELECT u.user_id, count(e.email) AS nb_mails, u.nom, u.prenom, u.promo
+               FROM aliases       AS a
+         INNER JOIN auth_user_md5 AS u ON a.id = u.user_id
+         LEFT JOIN emails         AS e ON (e.uid = u.user_id AND FIND_IN_SET('active', e.flags) AND e.panne = 0)
+              WHERE a.alias = {?}
+           GROUP BY u.user_id", $alias);
+    if ($x = $sel->fetchOneAssoc()) {
+        $csv .= $x['nom'].';'.$x['prenom'].';' .$x['promo'].';'.$alias.';' . join(',', $mails) . ';'.$x['nb_mails']."\n";
+    }
+}
+
+$fo = fopen($output, 'w+');
+fwrite($fo, $csv);
+fclose($fo);
 
 ?>
