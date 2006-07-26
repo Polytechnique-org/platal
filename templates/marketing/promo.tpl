@@ -37,7 +37,7 @@
 <br />
 
 <div class="center">
-  <a href="javascript:void(window.open('stats/stats_promo.php?promo={$promo}','','width=800,height=600,toolbar=no'))">
+  <a href="javascript:void(window.open('stats/promos/{$promo}','','width=800,height=600,toolbar=no'))">
     Voir l'évolution des inscriptions de la promotion
   </a>
 </div>
@@ -67,7 +67,7 @@
       </td>
       <td class="center">
         <a href="marketing/private/{$it.user_id}">{icon name=wrench title="Marketing"}</a>
-        <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
+        <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$it.matricule_ax}">{*
           *}{icon name=user_gray title="fiche AX"}</a>
       </td>
     </tr>

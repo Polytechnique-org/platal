@@ -80,7 +80,7 @@
         [<a href="admin/user/{$c.forlife}">{*
           *}{icon name=wrench title="administrer user"}</a>
       {/if}
-      <a href="http://www.polytechniciens.com/index.php?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
+      <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}{icon name=user_gray title="fiche AX"}</a>]
     {/if}
   </div>

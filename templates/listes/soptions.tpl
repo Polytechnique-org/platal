@@ -52,7 +52,7 @@
     <tr class='impair'>
       <td>
         <strong>visibilité :</strong><br />
-        <span class='smaller'>si coché, la liste sera listée dans listes/index.php.
+        <span class='smaller'>si coché, la liste sera listée dans la page de l'ensemble des listes.
           (les listes d'admin doivent être décochées)</span>
       </td>
       <td>

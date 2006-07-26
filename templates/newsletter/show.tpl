@@ -32,7 +32,7 @@
 [<a href='nl/show/{$nl->_id}?text=1'>version Texte</a>]
 {/if}
 {if $smarty.session.perms eq admin}
-[<a href='admin/newsletter_edit.php?nid={$nl->_id}'>Editer</a>]
+[<a href='admin/newsletter/edit/{$nl->_id}'>Editer</a>]
 {/if}
 </p>
 
