@@ -1,7 +1,7 @@
 Options +FollowSymLinks
 RewriteEngine on
 
-RewriteBase /~x2001corpet
+RewriteBase /~x2003bruneau
 
 # Rewrite URLs of the form 'index.php?q=x':
 RewriteCond %{REQUEST_FILENAME} !-f

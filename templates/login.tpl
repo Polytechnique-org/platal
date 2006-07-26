@@ -112,6 +112,15 @@ Bienvenue {$smarty.session.prenom}
   <table class="bicol">
     <tr>
       <th>
+        {if $smarty.session.core_rss_hash}
+        <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
+          {icon name=feed title='fil rss'}
+        </a>
+        {else}
+        <a href='prefs/rss?referer=events'  style="display:block;float:right">
+          {icon name=feed_add title='Activer mon fil rss'}
+        </a>
+       {/if}
         Sommaire des informations événementielles
       </th>
     </tr>
@@ -143,15 +152,6 @@ Bienvenue {$smarty.session.prenom}
   <p>
   <a href="events/submit">Proposer une information événementielle</a>
   </p>
-  {if $smarty.session.core_rss_hash}
-  <div class="right">
-    <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
-  </div>
-  {else}
-  <div class="right">
-    <a href='prefs/rss?referer=events'><img src='images/rssact.gif' alt='fil rss' /></a>
-  </div>
-  {/if}
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

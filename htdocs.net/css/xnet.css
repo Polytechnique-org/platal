@@ -120,6 +120,7 @@ td#search {
 }
 
 td#body {
+    vertical-align: top;
     padding-left: 1em;
     padding-bottom: 1em;
 }

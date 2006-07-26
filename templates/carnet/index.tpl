@@ -53,6 +53,15 @@
 <table class="bicol">
   <tr>
     <th colspan="2">
+      {if $smarty.session.core_rss_hash}
+      <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
+        {icon name=feed title='fil rss'}
+      </a>
+      {else}
+      <a href='prefs/rss/?referer=carnet' style="display:block;float:right">
+        {icon name=feed_add title='Activer mon fil rss'}
+      </a>
+      {/if}
       Notifications
     </th>
   </tr>
@@ -63,15 +72,6 @@
       </h3>
       <div class="explication">
         Affichage de tous les évenements de camarades/promos
-  {if $smarty.session.core_rss_hash}
-  <div class="right">
-    <a href='carnet/rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
-  </div>
-  {else}
-  <div class="right">
-    <a href='prefs/rss/?referer=carnet'><img src='images/rssact.gif' alt='fil rss' /></a>
-  </div>
-  {/if}
       </div>
     </td>
     <td class='half'>
