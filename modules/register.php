@@ -131,6 +131,18 @@ class RegisterModule extends PLModule
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
+
+                            require_once("diogenes/diogenes.hermes.inc.php");
+                            $mailer = new HermesMailer();
+                            $mailer->setFrom("webmaster@polytechnique.org");
+                            $mailer->addTo("hotliners@polytechnique.org");
+                            $mailer->setSubject("ERREUR LORS DE L'INSCRIPTION de "
+                                   . $sub_state['prenom'] . ' ' . $sub_state['nom'] . '(' . $promo . ')');
+                            $mailer->setTxtBody(
+                                    "Date de naissance proposée $birth"
+                                   . "\n\nIndentifiants :\n" . var_export($sub_state, true)
+                                   . "\n\nInformations de connexion :\n" . var_export($_SERVER, true));
+                            $mailer->send();
                         }
                     }
 
