@@ -33,7 +33,7 @@
     	<input type="submit" style="display:none"/>
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
         {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
-        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">
+        <a class='smaller' href="search/adv?with_soundex=1&amp;{$url_args}">
           étendre par proximité sonore
         </a>
         {/if}
@@ -44,7 +44,7 @@
       <td>
         <input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
         {if $smarty.request.firstname && !$with_soundex && $smarty.request.recherche}
-        <a class='smaller' href="{$smarty.server.PHP_SELF}?with_soundex=1&amp;{$url_args}">
+        <a class='smaller' href="search/adv?with_soundex=1&amp;{$url_args}">
           étendre par proximité sonore
         </a>
         {/if}

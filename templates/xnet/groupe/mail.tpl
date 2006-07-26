@@ -84,15 +84,20 @@ masculin ou féminin, par son prénom, ou son nom.
       <td><input type="text" name="sujet" value="{$smarty.request.sujet|default:"remplir le sujet ..."}" size=55 maxlength=70></td>
     </tr>
     <tr>
-      <td colspan="2">
-        <textarea name="body" cols="72" rows="25">{if $smarty.request.body}{$smarty.request.body}{else}  &lt;cher&gt; &lt;prenom&gt;,
+      <td colspan="2" class="center">
+        <textarea name="body" cols="72" rows="25">
+{if $smarty.request.body}
+{$smarty.request.body}
+{else}
+&lt;cher&gt; &lt;prenom&gt;,
           
-  Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
+Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
 
-  (insérer le texte...)
+(insérer le texte...)
 
-  Le bureau du groupe {$asso.nom}.{/if}
-</textarea>
+Le bureau du groupe {$asso.nom}.
+{/if}
+         </textarea>
       </td>
     </tr>
     <tr>

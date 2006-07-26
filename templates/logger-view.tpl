@@ -35,7 +35,7 @@
 <tr class="impair">
   <td class="titre">{$msg_user}</td>
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if}
-  [<a href="{$smarty.request.PHP_SELF}?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
+  [<a href="{$platal->ns}admin/logger?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
 </tr>
 <tr class="pair">
   <td class="titre">{$msg_host}</td>
@@ -66,7 +66,7 @@
 
 {else}
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="{$platal->ns}admin/logger">
 <table class="bicol">
 <tr>
   <th colspan="2">{$msg_filter_by}</th>

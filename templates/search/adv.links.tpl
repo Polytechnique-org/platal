@@ -35,7 +35,7 @@
   </li>
 
   <li>Effectuer une nouvelle <strong>
-    <a href="{$smarty.server.PHP_SELF}">recherche avancée</a>
+    <a href="search/adv">recherche avancée</a>
   </strong>
   </li>
   
