@@ -4,7 +4,8 @@ VERSION 0.9.11                                                      ?? ???? 2006
 New:
 
     * Admin:
-        - Switch to the new URI scheme.                                     -Car
+        - New table editor.                                                -Car
+        - Switch to the new URI scheme.                                    -Car
 
     * Auth:
         - Switch to the new URI scheme.                                     -MC
@@ -69,6 +70,9 @@ New:
         - Rework authentication, don't let pmwiki deal with it.             -MC
 
 Bug/Wish:
+
+    * Admin:
+        - #430: Specify date format on downtime admin page.                -Car
 
     * Carnet:
         - #435: Calendar contains yearly events for all the contacts.      -FRU

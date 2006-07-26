@@ -25,24 +25,34 @@ class AdminModule extends PLModule
     {
         return array(
             'admin'                        => $this->make_hook('default',   AUTH_MDP, 'admin'),
-            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed', AUTH_MDP, 'admin'),
-            'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
-            'admin/logger'                 => $this->make_hook('logger', AUTH_MDP, 'admin'),
-            'admin/logger/actions'         => $this->make_hook('logger_action', AUTH_MDP, 'admin'),
-            'admin/user'                  => $this->make_hook('user', AUTH_MDP, 'admin'),
-            'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
+            'admin/auth-groupes-x'         => $this->make_hook('authgroupesx', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
+            'admin/binets'                 => $this->make_hook('binets', AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
-            'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
+            'admin/medals'                 => $this->make_hook('medals', AUTH_MDP, 'admin'),
+            'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
             'admin/events'                 => $this->make_hook('events', AUTH_MDP, 'admin'),
             'admin/formations'             => $this->make_hook('formations', AUTH_MDP, 'admin'),
-            'admin/newsletter'             => $this->make_hook('newsletter', AUTH_MDP, 'admin'),
-            'admin/newsletter/edit'        => $this->make_hook('newsletter_edit', AUTH_MDP, 'admin'),
-            'admin/lists'                  => $this->make_hook('lists', AUTH_MDP, 'admin'),
-            'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
             'admin/geoloc'                 => $this->make_hook('geoloc', AUTH_MDP, 'admin'),
             'admin/geoloc/dynamap'         => $this->make_hook('geoloc_dynamap', AUTH_MDP, 'admin'),
+            'admin/groupes-x'              => $this->make_hook('groupesx', AUTH_MDP, 'admin'),
+            'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
+            'admin/lists'                  => $this->make_hook('lists', AUTH_MDP, 'admin'),
+            'admin/logger'                 => $this->make_hook('logger', AUTH_MDP, 'admin'),
+            'admin/logger/actions'         => $this->make_hook('logger_actions', AUTH_MDP, 'admin'),
+            'admin/newsletter'             => $this->make_hook('newsletter', AUTH_MDP, 'admin'),
+            'admin/newsletter/categories'  => $this->make_hook('newsletter_cat', AUTH_MDP, 'admin'),
+            'admin/newsletter/edit'        => $this->make_hook('newsletter_edit', AUTH_MDP, 'admin'),
+            'admin/payments'               => $this->make_hook('payments', AUTH_MDP, 'admin'),
+            'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist', AUTH_MDP, 'admin'),
+            'admin/postfix/delayed'        => $this->make_hook('postfix_delayed', AUTH_MDP, 'admin'),
+            'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
+            'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist', AUTH_MDP, 'admin'),
+            'admin/skins'                  => $this->make_hook('skins', AUTH_MDP, 'admin'),
+            'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
             'admin/trombino'               => $this->make_hook('trombino', AUTH_MDP, 'admin'),
+            'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
+            'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
         );
     }
 
@@ -710,7 +720,148 @@ class AdminModule extends PLModule
         
         $page->assign('forlife', $forlife);
     }
-    
+ 
+    function handler_binets(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Binets');
+        $page->assign('title', 'Gestion des binets');
+        $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
+        $table_editor->add_join_table('binets_ins','binet_id',true);
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_formations(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Formations');
+        $page->assign('title', 'Gestion des formations');
+        $table_editor = new PLTableEditor('admin/formations','applis_def','id');
+        $table_editor->add_join_table('applis_ins','aid',true); 
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('url','site web',false);
+        $table_editor->apply($page, $action, $id);
+    } 
+    function handler_groupesx(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
+        $page->assign('title', 'Gestion des Groupes X');
+        $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
+        $table_editor->add_join_table('groupesx_ins','gid',true); 
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('url','site web',false);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_skins(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Skins');
+        $page->assign('title', 'Gestion des skins');
+        $table_editor = new PLTableEditor('admin/skins','skins','id');
+        $table_editor->describe('name','nom',true);
+        $table_editor->describe('skin_tpl','nom du template',true);
+        $table_editor->describe('auteur','auteur',false);
+        $table_editor->describe('comment','commentaire',true);
+        $table_editor->describe('date','date',false);
+        $table_editor->describe('ext','extension du screenshot',false);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_authgroupesx(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
+        $page->assign('title', 'Gestion de l\'authentification centralisée');
+        $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
+        $table_editor->describe('name','nom',true);
+        $table_editor->describe('privkey','clé privée',false);
+        $table_editor->describe('datafields','champs renvoyés',true);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Blacklist');
+        $page->assign('title', 'Blacklist de postfix');
+        $table_editor = new PLTableEditor('admin/postfix/blacklist','postfix_blacklist','email', true);
+        $table_editor->describe('reject_text','Texte de rejet',true);
+        $table_editor->describe('email','email',true);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_postfix_whitelist(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Whitelist');
+        $page->assign('title', 'Whitelist de postfix');
+        $table_editor = new PLTableEditor('admin/postfix/whitelist','postfix_whitelist','email', true);
+        $table_editor->describe('email','email',true);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_logger_actions(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Actions');
+        $page->assign('title', 'Gestion des actions de logger');
+        $table_editor = new PLTableEditor('admin/logger/actions','logger.actions','id');
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('description','description',true);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_downtime(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Coupures');
+        $page->assign('title', 'Gestion des coupures');
+        $table_editor = new PLTableEditor('admin/downtime','coupures','id');
+        $table_editor->describe('debut','date',true);
+        $table_editor->describe('duree','durée',false);
+        $table_editor->describe('resume','résumé',true);
+        $table_editor->describe('services','services affectés',true);
+        $table_editor->describe('description','description',false);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_newsletter_cat(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
+        $page->assign('title', 'Gestion des catégories de la newsletter');
+        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
+        $table_editor->describe('titre','intitulé',true);
+        $table_editor->describe('pos','position',true);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_payments(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
+        $page->assign('title', 'Gestion des télépaiements');
+        $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
+        $table_editor->add_join_table('paiement.transactions','ref',true);
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('url','site web',false);
+        $table_editor->describe('montant_def','montant par défaut',false);
+        $table_editor->describe('montant_min','montant minimum',false);
+        $table_editor->describe('montant_max','montant maximum',false);
+        $table_editor->describe('mail','email contact',true);
+        $table_editor->describe('confirmation','message confirmation',false);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_medals(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
+        $page->assign('title', 'Gestion des Distinctions');
+        $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
+        $table_editor->describe('text', 'intitulé',  true);
+        $table_editor->describe('img',  'nom de l\'image', false);
+        $table_editor->apply($page, $action, $id);
+        if ($id && $action == 'edit') {
+            $page->changeTpl('admin/gerer_decos.tpl');
+        
+            $mid = $id;
+        
+            if (Post::v('act') == 'del') {
+                XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::i('gid'));
+            } elseif (Post::v('act') == 'new') {
+                XDB::execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
+                        $mid, max(array_keys(Post::v('grades', array(0))))+1);
+            } else {
+                foreach (Post::v('grades', array()) as $gid=>$text) {
+                    XDB::execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
+                }
+            }
+            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
+            $page->assign('grades', $res);
+        }
+    }  
 }
 
 ?>

@@ -24,87 +24,50 @@
 
 <h1>{$title}</h1>
 
-{if !$doedit}
-{if !$readonly}
-
-{literal}
-<script type="text/javascript">
-  <!--
-  function del( myid ) {
-    if (confirm ("You are about to delete this entry. Do you want to proceed?")) {
-      document.forms.operations.action.value = "del";
-      document.forms.operations.{/literal}{$prefix}{literal}id.value = myid;
-      document.forms.operations.submit();
-      return true;
-    }
-  }
-  function edit( myid ) {
-    document.forms.operations.action.value = "edit";
-    document.forms.operations.{/literal}{$prefix}{literal}id.value = myid;
-    document.forms.operations.submit();
-    return true;
-  }
-  // -->
-</script>
-{/literal}
-{/if}
-
-<form method="post" action="{$smarty.server.PHP_SELF}" id="operations">
-  <div>
-    <input type="hidden" name="action" value="" />
-    <input type="hidden" name="{$prefix}id" value="" />
-  </div>
-</form>
+{if $list}
 
 <table class="bicol">
 <tr>
-  {if $idsum}<th>id</th>{/if}
-  {foreach from=$vars item=myval}
-  {if $myval.sum}<th>{$myval.desc}</th>{/if}
-  {/foreach}
+  {foreach from=$t->vars item=myval}{if $myval.display}
+    <th>{$myval.desc}</th>
+  {/if}{/foreach}
   {if !$hideactions}
   <th>action</th>
   {/if}
 </tr>
 {if !$readonly}
 <tr class="impair">
-  <td colspan="{$ncols}"><strong>nouvelle entrée</strong></td>
+  <td colspan="{$t->nbfields}"><strong>nouvelle entrée</strong></td>
   <td class="action">
-    <a href="javascript:edit('');">create</a>
+    <a href="{$t->pl}/new">créer{icon name=add title='nouvelle entrée'}</a>
   </td>
 </tr>
 {/if}
-{foreach from=$rows item=myrow}{assign var="myarr" value=$myrow[1]}
+{iterate from=$list item=myrow}
 <tr class="{cycle values="pair,impair"}">
-  {if $idsum}<td>{$myrow[0]}</td>{/if}
-{foreach from=$vars key=mykey item=myval}
-{if $myval.sum}
+{foreach from=$t->vars item=myval}{if $myval.display}
   <td>
-  {if $myval.type=="timestamp"}
-  <span class="smaller">{$myarr.$mykey|date_format:"%x %X"}</span>
-  {elseif $myval.type=="set" and $myval.trans}
-  {$myval.trans[$myval.value]}
-  {elseif $myval.type=="ext"}
-  {extval table=$table field=$mykey value=$myarr.$mykey vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield}
-  {else}
-  {$myarr.$mykey}
-  {/if}
+    {assign var="myfield" value=$myval.Field}
+    {if $myfield eq $t->idfield}
+        {assign var="idval" value=$myrow.$myfield}
+    {/if}
+    {if $myval.Type eq 'timestamp'}
+      <span class="smaller">{$myrow.$myfield|date_format:"%x %X"}</span>
+    {else}
+      {$myrow.$myfield}
+    {/if}
   </td>
-{/if}
-{/foreach}
+{/if}{/foreach}
   {if !$hideactions}
   <td class="action">
     {if !$readonly}
-    <a href="javascript:edit('{$myrow[0]}');">edit</a>
-    <a href="javascript:del('{$myrow[0]}');">delete</a>
+    <a href="{$t->pl}/edit/{$idval}">{icon name=date_edit title='éditer'}</a>
+    <a href="{$t->pl}/delete/{$idval}">{icon name=delete title='supprimer'}</a>
     {/if}
-    {foreach from=$myrow[2] item=myaction}
-    {a lnk=$myaction}
-    {/foreach}
   </td>
   {/if}
 </tr>
-{/foreach}
+{/iterate}
 </table>
 
 {if ($p_prev > -1) || ($p_next > -1)}
@@ -116,50 +79,45 @@
 
 {else}
 
-<form method="post" action="{$smarty.server.PHP_SELF}">
+<form method="post" action="{$t->pl}/update/{$id}">
   <table class="bicol">
     <tr class="impair">
       <th colspan="2">
-        <input type="hidden" name="action" value="update" />
-        {if $id!=''}
-        modification de l'entrée 
-        <input type="hidden" name="{$prefix}id" value="{$id}" />
+        {if $id}
+            modification de l'entrée 
         {else}
-        nouvelle entrée
+            nouvelle entrée
         {/if}
       </th>
     </tr>
-    {foreach from=$vars key=mykey item=myval}
+    {foreach from=$t->vars item=myval}{assign var="myfield" value=$myval.Field}{if ($myfield neq $t->idfield) or ($t->idfield_editable)}
     <tr class="{cycle values="pair,impair"}">
       <td>
         <strong>{$myval.desc}</strong>
-        {if $myval.type=="password"}<br /><em>(blank=no change)</em>{/if}
       </td>
       <td>
-        {if $myval.edit}
-        {if $myval.type=="textarea"}
-        <textarea name="{$prefix}{$mykey}" rows="10" cols="70">{$myval.value}</textarea>
-        {elseif $myval.type=="set"}
-        {if $myval.trans}
-        {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.trans[$myval.value] trans=$myval.trans}
+        {if $myval.Type eq 'set'}
+          <select name="{$myfield}[]" multiple="multiple">
+            {foreach from=$myval.List item=option}
+              <option value="{$option}" {if $entry.$myfield.$option}selected="selected"{/if}>{$option}</option>
+            {/foreach}
+          </select>
+        {elseif $myval.Type eq 'enum'}
+          <select name="{$myfield}">
+            {foreach from=$myval.List item=option}
+              <option value="{$option}" {if $entry.$myfield.$option}selected="selected"{/if}>{$option}</option>
+            {/foreach}
+          </select>
+        {elseif ($myval.Type eq 'textarea') or ($myval.Type eq 'varchar200')}
+          <textarea name="{$myfield}" rows="{if $myval.Type eq 'varchar200'}3{else}10{/if}" cols="70">{$entry.$myfield}</textarea>
         {else}
-        {flags table=$table field=$mykey name="$prefix$mykey" selected=$myval.value}
-        {/if}
-        {elseif $myval.type=="ext"}
-        {extval table=$table field=$mykey name="$prefix$mykey" vtable=$myval.vtable vjoinid=$myval.vjoinid vfield=$myval.vfield selected=$myval.value}
-        {elseif $myval.type=="timestamp"}
-        <input type="text" name="{$prefix}{$mykey}" value="{$myval.value|date_format:"%x %X"}" />
-        {elseif $myval.type=="password"}
-        <input type="password" name="{$prefix}{$mykey}" size="40" />
-        {else}
-        <input type="{$myval.type}" name="{$prefix}{$mykey}" size="40" value="{$myval.value}" />
-        {/if}
-        {else}
-        {$myval.value}
+          <input type="text" name="{$myfield}" value="{$entry.$myfield}" {if $myval.Size}size="{$myval.Size}" maxlength="{$myval.Maxlength}"{/if}/>
+          {if $myval.Type eq 'timestamp'}<em>jj/mm/aaaa hh:mm:ss</em>{/if}
+          {if $myval.Type eq 'time'}<em>hh:mm:ss</em>{/if}
         {/if}
       </td>
     </tr>
-    {/foreach}
+    {/if}{/foreach}
   </table>
 
   <p class="center">
@@ -169,7 +127,7 @@
 </form>
 
 <p>
-<a href="{$smarty.server.PHP_SELF}">back</a>
+<a href="{$t->pl}">back</a>
 </p>
 
 {/if}

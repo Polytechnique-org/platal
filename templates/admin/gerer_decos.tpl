@@ -45,7 +45,7 @@
 </script>
 {/literal}
 
-<form method="post" action='{$smarty.server.PHP_SELF}#form_grade' id='form_grade'>
+<form method="post" action='{$t->pl}/edit/{$id}#form_grade' id='form_grade'>
   <table class='bicol'>
     <tr>
       <th>id</th>
@@ -58,7 +58,7 @@
         Nouveau ...
       </td>
       <td  class='action'>
-        <a href='javascript:new_grade()'>nouveau</a>
+        <a href='javascript:new_grade()'>nouveau{icon name=add title='nouveau grade'}</a>
       </td>
     </tr>
     {iterate from=$grades item=g}
@@ -71,7 +71,7 @@
         <input type='text' maxlength='2' value="{$g.pos}" name="pos[{$g.gid}]" />
       </td>
       <td class='action'>
-        <a href='javascript:del_grade({$g.gid})'>suppr.</a>
+        <a href='javascript:del_grade({$g.gid})'>{icon name=delete title='supprimer grade'}</a>
       </td>
     </tr>
     {/iterate}

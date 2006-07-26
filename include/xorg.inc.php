@@ -93,17 +93,6 @@ function new_admin_page($tpl_name)
 }
 
 // }}}
-// {{{ function new_admin_table_editor()
-
-function new_admin_table_editor($table, $idfield, $idedit=false)
-{
-    global $editor;
-    new_admin_page('table-editor.tpl');
-    require_once('xorg.table-editor.inc.php');
-    $editor = new XOrgAdminTableEditor($table, $idfield, $idedit);
-}
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

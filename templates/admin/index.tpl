@@ -27,9 +27,9 @@
   <tr class="impair">
     <td>
       <strong>Postfix :</strong>&nbsp;&nbsp;
-      <a href="admin_old/postfix_blacklist.php">Blacklist</a>
+      <a href="admin/postfix/blacklist">Blacklist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/postfix_whitelist.php">Whitelist</a>
+      <a href="admin/postfix/whitelist">Whitelist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/delayed">Retardés</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -41,7 +41,7 @@
       <strong>Sécurité :</strong>&nbsp;&nbsp;
       <a href="admin/logger">Logs des sessions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/logger_actions.php">Actions</a>
+      <a href="admin/logger/actions">Actions</a>
     </td>
   </tr>
 </table>
@@ -67,21 +67,21 @@
   <tr class="pair">
     <td>
       <strong>Infos dynamiques :</strong>&nbsp;&nbsp;
-      <a href="admin_old/gerer_coupure.php">Coupures</a>
+      <a href="admin/downtime">Coupures</a>
     </td>
   </tr>
   <tr class="impair">
     <td>
       <strong>Champs profil :</strong>&nbsp;&nbsp;
-      <a href="admin/formations.php">Formations</a>
+      <a href="admin/formations">Formations</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/gerer_binets.php">Binets</a>
+      <a href="admin/binets">Binets</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/gerer_groupesx.php">Groupes X</a>
+      <a href="admin/groupes-x">Groupes X</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/gerer_skins.php">Skins</a>
+      <a href="admin/skins">Skins</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/gerer_decos.php">Décorations</a>
+      <a href="admin/medals">Décorations</a>
     </td>
   </tr>
   <tr class="pair">
@@ -89,13 +89,13 @@
       <strong>Newsletter :</strong>&nbsp;&nbsp;
       <a href="admin/newsletter">Liste</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin_old/newsletter_cat.php">Catégories</a>      
+      <a href="admin/newsletter/categories">Catégories</a>      
     </td>
   </tr>
   <tr class="impair">
     <td>
       <strong>Administrer :</strong>&nbsp;&nbsp;
-      <a href="admin/gerer_auth-groupex.php">Auth Groupes X</a>
+      <a href="admin/auth-groupes-x">Auth Groupes X</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/lists">Listes</a>
     </td>  
@@ -113,7 +113,7 @@
       <strong>Trésorerie :</strong>&nbsp;&nbsp;
       <a href="trezo/gere_operations.php">Comptes</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/gerer_paiement.php">Paiements</a>
+      <a href="admin/payments">Paiements</a>
     </td>
   </tr>
   <tr class="pair">
