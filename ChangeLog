@@ -46,6 +46,7 @@ New:
 
     * Register:
         - Switch to the new URI scheme.                                     -MC
+        - Check birth date coherence with promotion                        -FRU
 
     * Search:
         - Switch to the new URI scheme.                                     -MC

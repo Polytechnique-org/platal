@@ -58,8 +58,7 @@
     </tr>
     <tr>
       <td class="titre"> 
-        Nom<br />
-        <span class="smaller">(Xettes mariées : nom à l'X)</span>
+        Nom <span class="smaller">(à l'X)</span>
       </td>
       <td>
         <input type="text" size="20" maxlength="30" name="nom" value="{$smarty.request.nom}" />
