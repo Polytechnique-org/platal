@@ -71,16 +71,16 @@ class GeolocModule extends PLModule
         require_once 'search.inc.php';
         $page->changeTpl('geoloc/index.tpl');
         $fields = new SFieldGroup(true, advancedSearchFromInput());
-        $search = $fields->get_url();
+        $search = str_replace('&amp;','&',$fields->get_url());
         if (!Env::has('only_current'))
             $search .= '&only_current=on';
-        elseif (Env::get('only_current') != 'on')
+        elseif (Env::i('only_current') != 'on')
             $search .= '&only_current=';
 
-        $search = preg_replace('/(^|&amp;)mapid=([0-9]+)(&amp;|$)/','\1\3', $search);
+        $search = preg_replace('/(^|&)mapid=([0-9]+)(&)/','\1\3', $search);
         if ($search)
             $search = '?'.$search;
-        $page->assign('search',$search);
+        $page->assign('search',urlencode($search));
 
         $page->assign('protocole', substr($globals->baseurl,0,strpos($globals->baseurl,':')));
 
