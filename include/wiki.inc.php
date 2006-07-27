@@ -46,6 +46,11 @@ function wiki_clear_all_cache()
     system('rm -f '.wiki_work_dir().'/cache_*');
 }
 
+function wiki_perms_options() {
+    return array('public' => 'Public', 'logged' => 'Connecté',
+                  'mdp' => 'Authentifié', 'admin' => 'Admin');
+}
+
 function wiki_get_perms($n)
 {
     $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);

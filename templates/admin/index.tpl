@@ -124,6 +124,12 @@
       <a href="admin/geoloc/dynamap">Dynamap</a>
     </td>
   </tr>
+  <tr class="impair">
+    <td>
+      <strong>Wiki :</strong>&nbsp;&nbsp;
+      <a href="admin/wiki">Pages et permissions</a>
+    </td>
+  </tr>
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

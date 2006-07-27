@@ -92,9 +92,7 @@ if (Env::v('action')) {
 }
 
 $page->assign('perms', $perms);
-$page->assign('perms_opts',
-              array('public' => 'Public', 'logged' => 'Connecté',
-                    'mdp' => 'Authentifié', 'admin' => 'Admin'));
+$page->assign('perms_opts', wiki_perms_options());
 
 $page->assign('canedit',    wiki_may_have_perms($perms[1]));
 $page->assign('has_perms',  wiki_may_have_perms('admin'));

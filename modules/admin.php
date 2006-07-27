@@ -53,6 +53,7 @@ class AdminModule extends PLModule
             'admin/trombino'               => $this->make_hook('trombino', AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
             'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
+            'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
         );
     }
 
@@ -864,6 +865,47 @@ class AdminModule extends PLModule
             $page->assign('grades', $res);
         }
     }  
+    function handler_wiki(&$page, $action='list') {
+        require_once 'wiki.inc.php';
+        
+        // update wiki perms
+        if ($action == 'update') {
+            $perms_read = Post::v('read');
+            $perms_edot = Post::v('edit');
+            if ($perms_read || $perms_edit) {
+                foreach ($_POST as $wiki_page => $val) if ($val == 'on') {
+                    $wiki_page = str_replace('_', '/', $wiki_page);
+                    if (!$perms_read || !$perms_edit)
+                        list($perms0, $perms1) = wiki_get_perms($wiki_page);                    
+                    if ($perms_read)
+                        $perms0 = $perms_read;
+                    if ($perms_edit)
+                        $perms1 = $perms_edit;
+                    wiki_set_perms($wiki_page, $perms0, $perms1);
+                }
+            }
+        }
+        
+        $perms = wiki_perms_options();
+        
+        // list wiki pages and their perms
+        $wiki_pages = array();
+        $dir = wiki_work_dir();
+        if (is_dir($dir)) {
+            if ($dh = opendir($dir)) {
+                while (($file = readdir($dh)) !== false) if (substr($file,0,1) >= 'A' && substr($file,0,1) <= 'Z') {
+                    list($read,$edit) = wiki_get_perms($file);
+                    $wiki_pages[$file] = array('read' => $perms[$read], 'edit' => $perms[$edit]);
+                }
+                closedir($dh);
+            }
+        }
+        ksort($wiki_pages);
+        
+        $page->changeTpl('admin/wiki.tpl');
+        $page->assign('wiki_pages', $wiki_pages);        
+        $page->assign('perms_opts', $perms);
+    }
 }
 
 ?>
