@@ -69,6 +69,7 @@ New:
     * Wiki:
         - Rework pmwiki integration, make it way more simple.               -MC
         - Rework authentication, don't let pmwiki deal with it.             -MC
+        - Admin page.                                                      -Car
 
 Bug/Wish:
 
