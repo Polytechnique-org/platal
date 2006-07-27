@@ -105,11 +105,13 @@
   </tr>
   <tr class="impair">
     <td colspan="2" class="titre">Description</td>
-    {if $doublon.edit}
+  {if $doublon.edit}
+  </tr>
+  <tr class="impair">
     <td colspan="2">
       <small>Dernière édition par {$doublon.edit} le {$doublon.last|date_format}</small>
     </td>
-    {/if}
+  {/if}
   </tr>
   <tr class="impair">
     <td colspan="2" class="center">
