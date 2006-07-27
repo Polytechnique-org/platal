@@ -20,12 +20,9 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="xnet/include/descr.tpl"}
+
 <table id="content" cellspacing="0" cellpadding="4">
-  <tr>
-    <td colspan="2">
-      {include file="xnet/include/descr.tpl"}
-    </td>
-  </tr>
   <tr>
     <td style="vertical-align: top">
       <div class="cat {if $cat eq groupesx}sel{/if}"><a href="groups/groupesx">Groupes X</a></div>
