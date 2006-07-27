@@ -50,7 +50,7 @@
     </td>
     <td class="right">
       {foreach from=$doublon.users item=user name=all}
-      <a href="profile/{$user}">{$user}{icon name=user_suit title="Fiche"}</a>
+      <a href="profile/{$user}" class="popup2">{$user}{icon name=user_suit title="Fiche"}</a>
       <a href="admin/user/{$user}">{icon name=wrench title="Administrer}</a>{if !$smarty.foreach.all.last}<br />{/if}
       {/foreach}
     </td>
@@ -66,10 +66,10 @@
 <form method="post" action="admin/emails/duplicated">
 <table class="tinybicol">
   <tr>
-    <th colspan="2"><strong>Commenter le doublon</strong></th>
+    <th colspan="2">Commenter le doublon</th>
   </tr>
   <tr class="impair">
-    <td class="title"><strong>Adresse mail</strong></td>
+    <td class="titre">Adresse mail</td>
   {if $action eq "create"}
     <td><input type="text" name="emailN" /></td>
   {else}
@@ -81,7 +81,7 @@
   {foreach from=$doublon.users key=i name=all item=user}
   {if $i is even}<tr class="impair">{/if}
     <td>
-      <a href="profile/{$user}">{$user}{icon name=user_suit title="Fiche"}</a>
+      <a href="profile/{$user}" class="popup2">{$user}{icon name=user_suit title="Fiche"}</a>
       <a href="admin/user/{$user}">{icon name=wrench title="Administrer}</a>{if !$smarty.foreach.all.last}<br />{/if}
     </td>
     {if $i is even && $smarty.foreach.all.last}<td></td>{/if}
@@ -89,12 +89,12 @@
   {/foreach}
   </tr>
   <tr class="pair">
-    <td class="title"><strong>Date de détection</strong></td>
+    <td class="titre">Date de détection</td>
     <td>{$doublon.detection|date_format}</td>
   {/if}
   </tr>
   <tr class="pair">
-    <td class="title"><strong>Danger</strong></td>
+    <td class="titre">Danger</td>
     <td>
       <select name="stateN">
         {foreach from=$states key=state item=text}
@@ -104,10 +104,12 @@
     </td>
   </tr>
   <tr class="impair">
-    <td colspan="2" class="title">
-      <strong>Description</strong><br/>
-      {if $doublon.edit}<small>Dernière édition par {$doublon.edit} le {$doublon.last|date_format}</small>{/if}
+    <td colspan="2" class="titre">Description</td>
+    {if $doublon.edit}
+    <td colspan="2">
+      <small>Dernière édition par {$doublon.edit} le {$doublon.last|date_format}</small>
     </td>
+    {/if}
   </tr>
   <tr class="impair">
     <td colspan="2" class="center">
