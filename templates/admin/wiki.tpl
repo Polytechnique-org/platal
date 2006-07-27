@@ -22,7 +22,23 @@
 
 <h1>Pages wiki du site</h1>
 
-<form action="admin/wiki/update" method="post">
+{literal}
+<script type="text/javascript">
+// <!--
+  function check_all_boxes(form,action) {
+    var boxes = document.getElementById(form).getElementsByTagName('input');
+    for (var i=0; i<boxes.length; i++) if (boxes[i].type == 'checkbox') {
+      if (action == 'toggle')
+        boxes[i].checked = !boxes[i].checked;
+      else
+        boxes[i].checked = action;
+    }
+    return false;
+  }
+// -->
+</script>
+{/literal}
+<form action="admin/wiki/update" method="post" id="update_pages">
 <table class="bicol">
   <tr>
     <th>
@@ -54,6 +70,13 @@
     </td>
   </tr>
 {/foreach}
+  <tr>
+    <td class="action" colspan="4">
+      <span onclick="check_all_boxes('update_pages', true)">{icon name=tick title='tout cocher'}</span>
+      <span onclick="check_all_boxes('update_pages', false)">{icon name=cross title='tout décocher'}</span>
+      <span onclick="check_all_boxes('update_pages', 'toggle')">{icon name=arrow_refresh title='toggle'}</span>
+    </td>
+  </tr>
   <tr>
     <td>
       Attribue les permissions aux pages cochées :
