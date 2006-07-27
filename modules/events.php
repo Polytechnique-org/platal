@@ -324,7 +324,7 @@ class EventsModule extends PLModule
     }
 
     function handler_admin_nl(&$page, $new = false) {
-        $page->changeTpl('admin/newsletter.tpl');
+        $page->changeTpl('newsletter/admin.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : liste');
         require_once("newsletter.inc.php");
         
@@ -337,7 +337,7 @@ class EventsModule extends PLModule
     }
     
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
-        $page->changeTpl('admin/newsletter_edit.tpl');
+        $page->changeTpl('newsletter/edit.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
         require_once("newsletter.inc.php");
         

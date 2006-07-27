@@ -202,7 +202,7 @@ class GeolocModule extends PLModule
     }
 
     function handler_admin(&$page, $action = false) {
-        $page->changeTpl('admin/geoloc.tpl');
+        $page->changeTpl('geoloc/admin.tpl');
         require_once("geoloc.inc.php");
         $page->assign('xorg_title','Polytechnique.org - Administration - Geolocalisation');
         
@@ -225,7 +225,7 @@ class GeolocModule extends PLModule
     }
     
     function handler_admin_dynamap(&$page, $action = false) {
-        $page->changeTpl('admin/geoloc_dynamap.tpl');
+        $page->changeTpl('geoloc/admin_dynamap.tpl');
         
         if ($action == 'cities_not_on_map') {
             require_once('geoloc.inc.php');

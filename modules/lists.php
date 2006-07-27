@@ -606,7 +606,7 @@ class ListsModule extends PLModule
     }
 
     function handler_admin_all(&$page) {
-        $page->changeTpl('admin/lists.tpl');
+        $page->changeTpl('listes/admin_all.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
         require_once 'lists.inc.php';
         
