@@ -241,6 +241,23 @@ function create_aliases (&$sub)
 }
 
 // }}}
+// {{{ function send_alert_mail
+
+function send_alert_mail($state, $body)
+{
+    require_once("diogenes/diogenes.hermes.inc.php");
+    $mailer = new HermesMailer();
+    $mailer->setFrom("webmaster@polytechnique.org");
+    $mailer->addTo("hotliners@polytechnique.org");
+    $mailer->setSubject("ALERTE LORS DE L'INSCRIPTION de "
+        . $state['prenom'] . ' ' . $state['nom'] . '(' . $promo . ')');
+    $mailer->setTxtBody($body
+        . "\n\nIndentifiants :\n" . var_export($state, true)
+        . "\n\nInformations de connexion :\n" . var_export($_SERVER, true));
+    $mailer->send();
+}
+
+// }}}
 // {{{ function finish_ins
 
 function finish_ins($sub_state)

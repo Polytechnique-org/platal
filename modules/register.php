@@ -115,6 +115,7 @@ class RegisterModule extends PLModule
                 break;
 
             case 3:
+                $alert = null;
                 if (count($_POST)) {
                     require_once('register.inc.php');
                     if (!isvalid_email(Post::v('email'))) {
@@ -131,19 +132,28 @@ class RegisterModule extends PLModule
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
-
-                            require_once("diogenes/diogenes.hermes.inc.php");
-                            $mailer = new HermesMailer();
-                            $mailer->setFrom("webmaster@polytechnique.org");
-                            $mailer->addTo("hotliners@polytechnique.org");
-                            $mailer->setSubject("ERREUR LORS DE L'INSCRIPTION de "
-                                   . $sub_state['prenom'] . ' ' . $sub_state['nom'] . '(' . $promo . ')');
-                            $mailer->setTxtBody(
-                                    "Date de naissance proposée $birth"
-                                   . "\n\nIndentifiants :\n" . var_export($sub_state, true)
-                                   . "\n\nInformations de connexion :\n" . var_export($_SERVER, true));
-                            $mailer->send();
+                            $alert = "Date de naissance proposée $birth\n\n";
                         }
+                    }
+
+                    // Check if the given email is known as dangerous
+                    $res = Xdb::iterRow("SELECT  w.state, w.description, a.alias
+                                           FROM  emails       AS e
+                                     INNER JOIN  emails_watch AS w ON (e.email = w.email AND w.state != 'safe')
+                                     INNER JOIN  aliases      AS a ON (e.uid = a.id AND a.type = 'a_vie')
+                                          WHERE  e.email = {?}
+                                       ORDER BY  a.alias", Post::v('email'));
+                    $aliases = array();
+                    while(list($gstate, $gdescription, $alias) = $res->next()) {
+                        $state       = $gstate;
+                        $description = $gdescription;
+                        $aliases[]   = $alias;
+                    }
+                    if (count($aliases) != 0) {
+                        $alert .= "Email proposé : " . Post::v('email') . "\n"
+                                . "Ce mails est connu avec l'état $state :\n"
+                                . $description . "\n"
+                                . "Pour les alias :\n* " . join("\n* ", $aliases) . "\n\n";
                     }
 
                     if (isset($err)) {
@@ -156,6 +166,9 @@ class RegisterModule extends PLModule
                         $sub_state['email']     = Post::v('email');
                         $sub_state['step']      = 4;
                         finish_ins($sub_state);
+                    }
+                    if (!is_null($alert)) {
+                        send_alert_mail($sub_state, $alert);
                     }
                 }
                 break;
