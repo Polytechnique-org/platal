@@ -4,7 +4,7 @@
 	name="Polytechnique.org"
 	description="Recherche rapide X.org"
 	method="GET"
-	action="http://www.polytechnique.org/search.php"
+	action="http://www.polytechnique.org/search"
 	update="http://www.polytechnique.org/xorg.src"
 	updateCheckDays=30
 	queryEncoding="ISO-8859-15"
