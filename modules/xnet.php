@@ -203,21 +203,22 @@ class XnetModule extends PLModule
         $page->assign('dom', $dom);
 
         $res  = XDB::query("SELECT id,nom FROM groupex.dom
-                                       WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
+                             WHERE FIND_IN_SET({?}, cat)
+                          ORDER BY nom", $cat);
         $doms = $res->fetchAllAssoc();
         $page->assign('doms', $doms);
 
         if (empty($doms)) {
-            $res = XDB::iterator("SELECT diminutif, nom FROM groupex.asso
-                                             WHERE FIND_IN_SET({?}, cat) ORDER BY nom", $cat);
+            $res = XDB::query("SELECT diminutif, nom FROM groupex.asso
+                                   WHERE FIND_IN_SET({?}, cat)
+                                ORDER BY nom", $cat);
+            $page->assign('gps', $res->fetchAllAssoc());
         } elseif (!is_null($dom)) {
-            $res = XDB::iterator("SELECT diminutif, nom FROM groupex.asso
-                                             WHERE FIND_IN_SET({?}, cat) AND dom={?}
-                                          ORDER BY nom", $cat, $dom);
-        } else {
-            $res = null;
+            $res = XDB::query("SELECT diminutif, nom FROM groupex.asso
+                                WHERE FIND_IN_SET({?}, cat) AND dom={?}
+                             ORDER BY nom", $cat, $dom);
+            $page->assign('gps', $res->fetchAllAssoc());
         }
-        $page->assign('gps', $res);
 
         $page->useMenu();
         $page->setType($cat);

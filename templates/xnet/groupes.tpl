@@ -27,14 +27,12 @@
     </td>
   </tr>
   <tr>
-    {if !$doms || !$gps}
     <td style="vertical-align: top">
       <div class="cat {if $cat eq groupesx}sel{/if}"><a href="groups/groupesx">Groupes X</a></div>
       <div class="cat {if $cat eq binets}sel{/if}"><a href="groups/binets">Binets</a></div>
       <div class="cat {if $cat eq institutions}sel{/if}"><a href="groups/institutions">Institutions</a></div>
       <div class="cat {if $cat eq promotions}sel{/if}"><a href="groups/promotions">Promotions</a></div>
     </td>
-    {/if}
     
     {if $doms}
     <td style="vertical-align: top">
@@ -46,15 +44,24 @@
     </td>
     {/if}
 
-    {if $gps}
-    <td style="text-align:right;">
-      {iterate from=$gps item=g}
-      <table style="float: left;" cellspacing="2" cellpadding="0">
-        <tr><td class="oval{if $doms}2{/if}"><a href="{$g.diminutif}/">{$g.nom}</a></td></tr>
+    <td style="text-align:right;{if $doms} width: 180px{/if}">
+      {if $gps}
+      <table style="width: 100%">
+        {foreach from=$gps item=g name=all key=i}
+        {if $doms || $i is even}
+        <tr>
+        {/if}
+          <td class="oval{if $doms}2{/if}">
+            <a href="{$g.diminutif}/">{$g.nom}</a>
+          </td>
+        {if !$doms && $i is even && $smarty.foreach.all.last}<td></td>{/if}
+        {if $doms || $i is odd || $smarty.foreach.all.last}
+        </tr>
+        {/if}
+      {/foreach}
       </table>
-      {/iterate}
+      {/if}
     </td>
-    {/if}
   </tr>
 </table>
 
