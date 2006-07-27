@@ -48,15 +48,15 @@ function get_all_redirects($membres, $mls, &$client)
                 list($m, $dom) = explode('@',$mem[1]);
                 if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
                     $res = XDB::query('SELECT  prenom, nom, FIND_IN_SET("femme", u.flags) AS sexe
-                                                   FROM  auth_user_md5 AS u
-                                             INNER JOIN  aliases AS a ON u.user_id = a.id
-                                                  WHERE  a.alias = {?}', $m);
+                                         FROM  auth_user_md5 AS u
+                                   INNER JOIN  aliases       AS a ON u.user_id = a.id
+                                        WHERE  a.alias = {?}', $m);
                     if ($person = $res->fetchOneAssoc()) {
                         $person['email'] = $mem[1];
                         $tos[] = $person;
                     }
                 } else {
-                    $res = XDB::query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
+                    $res = XDB::query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem[1]);
                     if ($person = $res->fetchOneAssoc()) {
                         $person['email'] = $mem[1];
                         $tos[] = $person;
