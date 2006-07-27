@@ -73,7 +73,7 @@ function searchMapId(f)
       name="dynamap"
       id="dynamap"
       align="middle"
-      flashvars="initfile={$platal->ns}geoloc%2Finit{$search}"
+      flashvars="initfile={$platal->ns}geoloc%2Finit{$search|smarty:nodefaults}"
       type="application/x-shockwave-flash"
       menu="false"
       wmode="opaque"
