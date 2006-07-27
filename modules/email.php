@@ -30,6 +30,8 @@ class EmailModule extends PLModule
             'emails/broken'   => $this->make_hook('broken', AUTH_COOKIE),
             'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
             'emails/send'     => $this->make_hook('send', AUTH_MDP),
+
+            'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin')
         );
     }
 
@@ -373,6 +375,97 @@ L'équipe d'administration <support@polytechnique.org>";
                     $page->assign_by_ref('x', $x);
                 }
             }
+        }
+    }
+
+    function handler_duplicated(&$page, $action = 'list', $email = null)
+    {
+        $page->changeTpl('emails/duplicated.tpl');
+
+        $states = array('pending'   => 'En attente...',
+                        'safe'      => 'Pas d\'inquiétude',
+                        'unsafe'    => 'Recherches en cours',
+                        'dangerous' => 'Usurpations par cette adresse');
+        $page->assign('states', $states);
+
+        switch (Post::v('action')) {
+        case 'create':
+            if (trim(Post::v('emailN')) != '') {
+                Xdb::execute('INSERT IGNORE INTO emails_watch (email, state, detection, last, uid, description)
+                                          VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
+                             trim(Post::v('emailN')), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
+            };
+            break;
+
+        case 'edit':
+            Xdb::execute('UPDATE emails_watch
+                             SET state = {?}, last = NOW(), uid = {?}, description = {?}
+                           WHERE email = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('emailN'));
+            break;
+
+        default:
+            if ($action == 'delete' && !is_null($email)) {
+                Xdb::execute('DELETE FROM emails_watch WHERE email = {?}', $email);
+            }
+        }
+        if ($action != 'create' && $action != 'edit') {
+            $action = 'list';
+        }
+        $page->assign('action', $action);
+
+        if ($action == 'list') {
+            $sql = "SELECT  w.email, w.detection, w.state, a.alias AS forlife
+                      FROM  emails_watch  AS w
+                INNER JOIN  emails        AS e USING(email)
+                INNER JOIN  aliases       AS a ON (a.id = e.uid AND a.type = 'a_vie')
+                  ORDER BY  w.state, w.email, a.alias";
+            $it = Xdb::iterRow($sql);
+
+            $table = array();
+            $props = array();
+            while (list($email, $date, $state, $forlife) = $it->next()) {
+                if (count($props) == 0 || $props['mail'] != $email) {
+                    if (count($props) > 0) {
+                        $table[] = $props;
+                    }
+                    $props = array('mail' => $email,
+                                   'detection' => $date,
+                                   'state' => $state,
+                                   'users' => array($forlife));
+                } else {
+                    $props['users'][] = $forlife;
+                }
+            }
+            if (count($props) > 0) {
+                $table[] = $props;
+            }
+            $page->assign('table', $table);
+        } elseif ($action == 'edit') {
+            $sql = "SELECT  w.detection, w.state, w.last, w.description,
+                            a1.alias AS edit, a2.alias AS forlife
+                      FROM  emails_watch AS w
+                INNER JOIN  emails       AS e  USING(email)
+                 LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
+                INNER JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')
+                     WHERE  w.email = {?}
+                  ORDER BY  a2.alias";
+            $it = Xdb::iterRow($sql, $email);
+
+            $props = array();
+            while (list($detection, $state, $last, $description, $edit, $forlife) = $it->next()) {
+                if (count($props) == 0) {
+                    $props = array('mail'        => $email,
+                                   'detection'   => $detection,
+                                   'state'       => $state,
+                                   'last'        => $last,
+                                   'description' => $description,
+                                   'edit'        => $edit,
+                                   'users'       => array($forlife));
+                } else {
+                    $props['users'][] = $forlife;
+                }
+            }
+            $page->assign('doublon', $props);
         }
     }
 }

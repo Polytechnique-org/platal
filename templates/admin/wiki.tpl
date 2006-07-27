@@ -57,7 +57,7 @@
 {foreach from=$wiki_pages item=perm key=page}
   <tr class="{cycle values="impair,pair"}">
     <td>
-      <a href="{$page|replace:'.':'/'}">{$page}</a> <a href="{$page|replace:'.':'/'}?action=edit" class="indice">{icon name=date_edit title='éditer'}</a>
+      <a href="{$page|replace:'.':'/'}">{$page}</a> <a href="{$page|replace:'.':'/'}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
     </td>
     <td class="center">
       {$perm.read}

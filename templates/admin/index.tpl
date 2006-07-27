@@ -42,6 +42,8 @@
       <a href="admin/logger">Logs des sessions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/logger/actions">Actions</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/emails/duplicated">Doublons</a>
     </td>
   </tr>
 </table>

@@ -61,7 +61,7 @@
   {if !$hideactions}
   <td class="action">
     {if !$readonly}
-    <a href="{$t->pl}/edit/{$idval}">{icon name=date_edit title='éditer'}</a>
+    <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
     <a href="{$t->pl}/delete/{$idval}">{icon name=delete title='supprimer'}</a>
     {/if}
   </td>
