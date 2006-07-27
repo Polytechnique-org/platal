@@ -39,6 +39,12 @@ class ProfileModule extends PLModule
             'trombi'  => $this->make_hook('trombi', AUTH_COOKIE),
 
             'vcard'   => $this->make_hook('vcard',  AUTH_COOKIE),
+            'admin/binets'     => $this->make_hook('admin_binets', AUTH_MDP, 'admin'),
+            'admin/medals'     => $this->make_hook('admin_medals', AUTH_MDP, 'admin'),
+            'admin/formations' => $this->make_hook('admin_formations', AUTH_MDP, 'admin'),
+            'admin/groupes-x'  => $this->make_hook('admin_groupesx', AUTH_MDP, 'admin'),
+            'admin/trombino'   => $this->make_hook('admin_trombino', AUTH_MDP, 'admin'),
+
         );
     }
 
@@ -689,6 +695,100 @@ class ProfileModule extends PLModule
         header("Content-type: text/x-vcard\n");
         header("Content-Transfer-Encoding: Quoted-Printable\n");
     }
+
+    function handler_admin_trombino(&$page, $uid = null, $action = null) {
+        $page->changeTpl('admin/admin_trombino.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
+        $page->assign('uid', $uid);
+        
+        $q   = XDB::query(
+                "SELECT  a.alias,promo
+                  FROM  auth_user_md5 AS u
+            INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
+                 WHERE  user_id = {?}", $uid);
+        list($forlife, $promo) = $q->fetchOneRow();
+        
+        switch ($action) {
+        
+            case "original":
+                header("Content-type: image/jpeg");
+        	readfile("/home/web/trombino/photos".$promo."/".$forlife.".jpg");
+                exit;
+        	break;
+        
+            case "new":
+                $data = file_get_contents($_FILES['userfile']['tmp_name']);
+            	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
+            	$mimetype = substr($_FILES['userfile']['type'], 6);
+            	unlink($_FILES['userfile']['tmp_name']);
+                XDB::execute(
+                        "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
+                        $uid, $mimetype, $data, $x, $y);
+            	break;
+        
+            case "delete":
+                XDB::execute('DELETE FROM photo WHERE uid = {?}', $uid);
+                break;
+        }
+        
+        $page->assign('forlife', $forlife);
+    }
+    function handler_admin_binets(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Binets');
+        $page->assign('title', 'Gestion des binets');
+        $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
+        $table_editor->add_join_table('binets_ins','binet_id',true);
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_admin_formations(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Formations');
+        $page->assign('title', 'Gestion des formations');
+        $table_editor = new PLTableEditor('admin/formations','applis_def','id');
+        $table_editor->add_join_table('applis_ins','aid',true); 
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('url','site web',false);
+        $table_editor->apply($page, $action, $id);
+    } 
+    function handler_admin_groupesx(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
+        $page->assign('title', 'Gestion des Groupes X');
+        $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
+        $table_editor->add_join_table('groupesx_ins','gid',true); 
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('url','site web',false);
+        $table_editor->apply($page, $action, $id);
+    }  
+    function handler_admin_medals(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
+        $page->assign('title', 'Gestion des Distinctions');
+        $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
+        $table_editor->describe('text', 'intitulé',  true);
+        $table_editor->describe('img',  'nom de l\'image', false);
+        $table_editor->apply($page, $action, $id);
+        if ($id && $action == 'edit') {
+            $page->changeTpl('admin/gerer_decos.tpl');
+        
+            $mid = $id;
+        
+            if (Post::v('act') == 'del') {
+                XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::i('gid'));
+            } elseif (Post::v('act') == 'new') {
+                XDB::execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
+                        $mid, max(array_keys(Post::v('grades', array(0))))+1);
+            } else {
+                foreach (Post::v('grades', array()) as $gid=>$text) {
+                    XDB::execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
+                }
+            }
+            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
+            $page->assign('grades', $res);
+        }
+    }   
 }
 
 ?>

@@ -26,10 +26,14 @@ class EventsModule extends PLModule
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
+            'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
             'nl'             => $this->make_hook('nl',        AUTH_COOKIE),
             'nl/show'        => $this->make_hook('nl_show',   AUTH_COOKIE),
             'nl/submit'      => $this->make_hook('nl_submit', AUTH_COOKIE),
+            'admin/newsletter'             => $this->make_hook('admin_nl', AUTH_MDP, 'admin'),
+            'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat', AUTH_MDP, 'admin'),
+            'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP, 'admin'),
         );
     }
 
@@ -242,6 +246,145 @@ class EventsModule extends PLModule
             $page->assign('submited', true);
         }
     }
+
+    function handler_admin_events(&$page, $arch) {
+        $page->changeTpl('admin/evenements.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
+        
+        $arch = $arch == 'archives';
+        $evid = Post::i('evt_id');
+        $page->assign('arch', $arch);
+        
+        switch(Post::v('action')) {
+            case "Proposer":
+                XDB::execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
+                        Post::v('titre'), Post::v('texte'), Post::v('peremption'), Post::v('promo_min'), Post::v('promo_max'), $evid);
+                break;
+        
+            case "Valider":
+                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",valide") WHERE id = {?}', $evid);
+                break;
+        
+            case "Invalider":
+                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"valide", "") WHERE id = {?}', $evid);
+                break;
+        
+            case "Supprimer":
+                XDB::execute('DELETE from evenements WHERE id = {?}', $evid);
+                break;
+        
+            case "Archiver":
+                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",archive") WHERE id = {?}', $evid);
+                break;
+        
+            case "Desarchiver":
+                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"archive","") WHERE id = {?}', $evid);
+                break;
+        
+            case "Editer":
+                $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id={?}', $evid);
+                list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
+                $page->assign('mode', 'edit');
+                $page->assign('titre',$titre);
+                $page->assign('texte',$texte);
+                $page->assign('promo_min',$promo_min);
+                $page->assign('promo_max',$promo_max);
+                $page->assign('peremption',$peremption);
+        
+                $select = "";
+                for ($i = 1 ; $i < 30 ; $i++) {
+                    $p_stamp=date("Ymd",time()+3600*24*$i);
+                    $year=substr($p_stamp,0,4);
+                    $month=substr($p_stamp,4,2);
+                    $day=substr($p_stamp,6,2);
+        
+                    $select .= "<option value=\"$p_stamp\"" . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")."> $day / $month / $year</option>\n";
+                }
+                $page->assign('select',$select);
+        
+                break;
+        }
+        
+        if ($action != "Editer") {
+        
+            $sql = "SELECT  e.id, e.titre, e.texte,
+                            DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
+                            DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
+                            e.promo_min, e.promo_max,
+                            FIND_IN_SET('valide', e.flags) AS fvalide,
+                            FIND_IN_SET('archive', e.flags) AS farch,
+                            u.promo, u.nom, u.prenom, a.alias AS forlife
+                      FROM  evenements    AS e
+                INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
+                INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
+                     WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
+                  ORDER BY  FIND_IN_SET('valide',e.flags), peremption";
+            $page->assign('evs', XDB::iterator($sql));
+        }
+    }
+
+    function handler_admin_nl(&$page, $new = false) {
+        $page->changeTpl('admin/newsletter.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : liste');
+        require_once("newsletter.inc.php");
+        
+        if($new) {
+           insert_new_nl();
+           pl_redirect("admin/newsletter");
+        }
+        
+        $page->assign_by_ref('nl_list', get_nl_slist());
+    }
+    
+    function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
+        $page->changeTpl('admin/newsletter_edit.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
+        require_once("newsletter.inc.php");
+        
+        $nl  = new NewsLetter($nid);
+        
+        if($action == 'delete') {
+            $nl->delArticle($aid);
+            pl_redirect("admin/newsletter/edit/$nid");
+        }
+        
+        if($aid == 'update') {
+            $nl->_title = Post::v('title');
+            $nl->_date  = Post::v('date');
+            $nl->_head  = Post::v('head');
+            $nl->save();
+        }
+        
+        if(Post::v('save')) {
+            $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
+                    $aid, Post::v('cid'), Post::v('pos'));
+            $nl->saveArticle($art);
+            pl_redirect("admin/newsletter/edit/$nid");
+        }
+        
+        if($action == 'edit') {
+            $eaid = $aid;
+            if(Post::has('title')) {
+                $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
+                        $eaid, Post::v('cid'), Post::v('pos'));
+            } else {
+        	   $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
+            }
+            $page->assign('art', $art);
+        }
+        
+        $page->assign_by_ref('nl',$nl);
+    }
+    function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
+        $page->assign('title', 'Gestion des catégories de la newsletter');
+        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
+        $table_editor->describe('titre','intitulé',true);
+        $table_editor->describe('pos','position',true);
+        $table_editor->apply($page, $action, $id);
+    }    
+    
 }
 
 ?>

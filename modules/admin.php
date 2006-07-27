@@ -25,32 +25,18 @@ class AdminModule extends PLModule
     {
         return array(
             'admin'                        => $this->make_hook('default',   AUTH_MDP, 'admin'),
-            'admin/auth-groupes-x'         => $this->make_hook('authgroupesx', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
-            'admin/binets'                 => $this->make_hook('binets', AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
-            'admin/medals'                 => $this->make_hook('medals', AUTH_MDP, 'admin'),
             'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
-            'admin/events'                 => $this->make_hook('events', AUTH_MDP, 'admin'),
-            'admin/formations'             => $this->make_hook('formations', AUTH_MDP, 'admin'),
-            'admin/geoloc'                 => $this->make_hook('geoloc', AUTH_MDP, 'admin'),
-            'admin/geoloc/dynamap'         => $this->make_hook('geoloc_dynamap', AUTH_MDP, 'admin'),
-            'admin/groupes-x'              => $this->make_hook('groupesx', AUTH_MDP, 'admin'),
             'admin/homonyms'               => $this->make_hook('homonyms', AUTH_MDP, 'admin'),
-            'admin/lists'                  => $this->make_hook('lists', AUTH_MDP, 'admin'),
             'admin/logger'                 => $this->make_hook('logger', AUTH_MDP, 'admin'),
             'admin/logger/actions'         => $this->make_hook('logger_actions', AUTH_MDP, 'admin'),
-            'admin/newsletter'             => $this->make_hook('newsletter', AUTH_MDP, 'admin'),
-            'admin/newsletter/categories'  => $this->make_hook('newsletter_cat', AUTH_MDP, 'admin'),
-            'admin/newsletter/edit'        => $this->make_hook('newsletter_edit', AUTH_MDP, 'admin'),
-            'admin/payments'               => $this->make_hook('payments', AUTH_MDP, 'admin'),
             'admin/postfix/blacklist'      => $this->make_hook('postfix_blacklist', AUTH_MDP, 'admin'),
             'admin/postfix/delayed'        => $this->make_hook('postfix_delayed', AUTH_MDP, 'admin'),
             'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
             'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist', AUTH_MDP, 'admin'),
             'admin/skins'                  => $this->make_hook('skins', AUTH_MDP, 'admin'),
             'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
-            'admin/trombino'               => $this->make_hook('trombino', AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
             'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
@@ -468,145 +454,6 @@ class AdminModule extends PLModule
         }
     }
     
-    function handler_events(&$page, $arch) {
-        $page->changeTpl('admin/evenements.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
-        
-        $arch = $arch == 'archives';
-        $evid = Post::i('evt_id');
-        $page->assign('arch', $arch);
-        
-        switch(Post::v('action')) {
-            case "Proposer":
-                XDB::execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
-                        Post::v('titre'), Post::v('texte'), Post::v('peremption'), Post::v('promo_min'), Post::v('promo_max'), $evid);
-                break;
-        
-            case "Valider":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",valide") WHERE id = {?}', $evid);
-                break;
-        
-            case "Invalider":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"valide", "") WHERE id = {?}', $evid);
-                break;
-        
-            case "Supprimer":
-                XDB::execute('DELETE from evenements WHERE id = {?}', $evid);
-                break;
-        
-            case "Archiver":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",archive") WHERE id = {?}', $evid);
-                break;
-        
-            case "Desarchiver":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"archive","") WHERE id = {?}', $evid);
-                break;
-        
-            case "Editer":
-                $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id={?}', $evid);
-                list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
-                $page->assign('mode', 'edit');
-                $page->assign('titre',$titre);
-                $page->assign('texte',$texte);
-                $page->assign('promo_min',$promo_min);
-                $page->assign('promo_max',$promo_max);
-                $page->assign('peremption',$peremption);
-        
-                $select = "";
-                for ($i = 1 ; $i < 30 ; $i++) {
-                    $p_stamp=date("Ymd",time()+3600*24*$i);
-                    $year=substr($p_stamp,0,4);
-                    $month=substr($p_stamp,4,2);
-                    $day=substr($p_stamp,6,2);
-        
-                    $select .= "<option value=\"$p_stamp\"" . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")."> $day / $month / $year</option>\n";
-                }
-                $page->assign('select',$select);
-        
-                break;
-        }
-        
-        if ($action != "Editer") {
-        
-            $sql = "SELECT  e.id, e.titre, e.texte,
-                            DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
-                            DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
-                            e.promo_min, e.promo_max,
-                            FIND_IN_SET('valide', e.flags) AS fvalide,
-                            FIND_IN_SET('archive', e.flags) AS farch,
-                            u.promo, u.nom, u.prenom, a.alias AS forlife
-                      FROM  evenements    AS e
-                INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
-                INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
-                     WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
-                  ORDER BY  FIND_IN_SET('valide',e.flags), peremption";
-            $page->assign('evs', XDB::iterator($sql));
-        }
-    }
-    
-    function handler_newsletter(&$page, $new = false) {
-        $page->changeTpl('admin/newsletter.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : liste');
-        require_once("newsletter.inc.php");
-        
-        if($new) {
-           insert_new_nl();
-           pl_redirect("admin/newsletter");
-        }
-        
-        $page->assign_by_ref('nl_list', get_nl_slist());
-    }
-    
-    function handler_newsletter_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
-        $page->changeTpl('admin/newsletter_edit.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
-        require_once("newsletter.inc.php");
-        
-        $nl  = new NewsLetter($nid);
-        
-        if($action == 'delete') {
-            $nl->delArticle($aid);
-            pl_redirect("admin/newsletter/edit/$nid");
-        }
-        
-        if($aid == 'update') {
-            $nl->_title = Post::v('title');
-            $nl->_date  = Post::v('date');
-            $nl->_head  = Post::v('head');
-            $nl->save();
-        }
-        
-        if(Post::v('save')) {
-            $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
-                    $aid, Post::v('cid'), Post::v('pos'));
-            $nl->saveArticle($art);
-            pl_redirect("admin/newsletter/edit/$nid");
-        }
-        
-        if($action == 'edit') {
-            $eaid = $aid;
-            if(Post::has('title')) {
-                $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
-                        $eaid, Post::v('cid'), Post::v('pos'));
-            } else {
-        	   $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
-            }
-            $page->assign('art', $art);
-        }
-        
-        $page->assign_by_ref('nl',$nl);
-    }
-    
-    function handler_lists(&$page) {
-        $page->changeTpl('admin/lists.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
-        require_once 'lists.inc.php';
-        
-        $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
-        $listes = $client->get_all_lists();
-        $page->assign_by_ref('listes',$listes);
-    }
-    
     function handler_validate(&$page) {
         $page->changeTpl('admin/valider.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
@@ -619,140 +466,6 @@ class AdminModule extends PLModule
         
         $page->assign('vit', new ValidateIterator());
     }
-    
-    function handler_geoloc(&$page, $action = false) {
-        $page->changeTpl('admin/geoloc.tpl');
-        require_once("geoloc.inc.php");
-        $page->assign('xorg_title','Polytechnique.org - Administration - Geolocalisation');
-        
-        $nb_synchro = 0;
-        
-        if (Env::has('id') && is_numeric(Env::v('id'))) {
-            if (synchro_city(Env::v('id'))) $nb_synchro ++;
-        }
-        
-        if ($action == 'missinglat') {
-            $res = XDB::iterRow("SELECT id FROM geoloc_city WHERE lat = 0 AND lon = 0");
-            while ($a = $res->next()) if (synchro_city($a[0])) $nb_synchro++;
-        }
-        
-        if ($nb_synchro) 
-            $page->trig(($nb_synchro > 1)?($nb_synchro." villes ont été synchronisées"):"Une ville a été synchronisée");
-        
-        $res = XDB::query("SELECT COUNT(*) FROM geoloc_city WHERE lat = 0 AND lon = 0");
-        $page->assign("nb_missinglat", $res->fetchOneCell());
-    }
-    
-    function handler_geoloc_dynamap(&$page, $action = false) {
-        $page->changeTpl('admin/geoloc_dynamap.tpl');
-        
-        if ($action == 'cities_not_on_map') {
-            require_once('geoloc.inc.php');
-            if (!fix_cities_not_on_map(20))
-                $page->trig("Impossible d'accéder au webservice");
-            else
-                $refresh = true;
-        }
-        
-        if ($action == 'smallest_maps') {
-            require_once('geoloc.inc.php');
-            set_smallest_levels();
-        }
-        
-        if ($action == 'precise_coordinates') {
-            XDB::execute("UPDATE adresses AS a INNER JOIN geoloc_city AS c ON(a.cityid = c.id) SET a.glat = c.lat / 100000, a.glng = c.lon / 100000");
-        }
-        
-        if ($action == 'newmaps') {
-            require_once('geoloc.inc.php');
-            if (!get_new_maps(Env::v('url')))
-                $page->trig("Impossible d'accéder aux nouvelles cartes");
-        }
-        
-        $countMissing = XDB::query("SELECT COUNT(*) FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL");
-        $missing = $countMissing->fetchOneCell();
-        
-        $countNoSmallest = XDB::query("SELECT SUM(IF(infos = 'smallest',1,0)) AS n FROM geoloc_city_in_maps GROUP BY city_id ORDER BY n");
-        $noSmallest = $countNoSmallest->fetchOneCell() == 0;
-        
-        $countNoCoordinates = XDB::query("SELECT COUNT(*) FROM adresses WHERE cityid IS NOT NULL AND glat = 0 AND glng = 0");
-        $noCoordinates = $countNoCoordinates->fetchOneCell();
-        
-        if (isset($refresh) && $missing) {
-            $page->assign("xorg_extra_header", "<meta http-equiv='Refresh' content='3'/>");
-        }
-        $page->assign("nb_cities_not_on_map", $missing);
-        $page->assign("no_smallest", $noSmallest);
-        $page->assign("no_coordinates", $noCoordinates);
-    }
-    
-    function handler_trombino(&$page, $uid = null, $action = null) {
-        $page->changeTpl('admin/admin_trombino.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
-        $page->assign('uid', $uid);
-        
-        $q   = XDB::query(
-                "SELECT  a.alias,promo
-                  FROM  auth_user_md5 AS u
-            INNER JOIN  aliases       AS a ON ( u.user_id = a.id AND type='a_vie' )
-                 WHERE  user_id = {?}", $uid);
-        list($forlife, $promo) = $q->fetchOneRow();
-        
-        switch ($action) {
-        
-            case "original":
-                header("Content-type: image/jpeg");
-        	readfile("/home/web/trombino/photos".$promo."/".$forlife.".jpg");
-                exit;
-        	break;
-        
-            case "new":
-                $data = file_get_contents($_FILES['userfile']['tmp_name']);
-            	list($x, $y) = getimagesize($_FILES['userfile']['tmp_name']);
-            	$mimetype = substr($_FILES['userfile']['type'], 6);
-            	unlink($_FILES['userfile']['tmp_name']);
-                XDB::execute(
-                        "REPLACE INTO photo SET uid={?}, attachmime = {?}, attach={?}, x={?}, y={?}",
-                        $uid, $mimetype, $data, $x, $y);
-            	break;
-        
-            case "delete":
-                XDB::execute('DELETE FROM photo WHERE uid = {?}', $uid);
-                break;
-        }
-        
-        $page->assign('forlife', $forlife);
-    }
- 
-    function handler_binets(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Binets');
-        $page->assign('title', 'Gestion des binets');
-        $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
-        $table_editor->add_join_table('binets_ins','binet_id',true);
-        $table_editor->describe('text','intitulé',true);
-        $table_editor->apply($page, $action, $id);
-    }
-    function handler_formations(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Formations');
-        $page->assign('title', 'Gestion des formations');
-        $table_editor = new PLTableEditor('admin/formations','applis_def','id');
-        $table_editor->add_join_table('applis_ins','aid',true); 
-        $table_editor->describe('text','intitulé',true);
-        $table_editor->describe('url','site web',false);
-        $table_editor->apply($page, $action, $id);
-    } 
-    function handler_groupesx(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
-        $page->assign('title', 'Gestion des Groupes X');
-        $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
-        $table_editor->add_join_table('groupesx_ins','gid',true); 
-        $table_editor->describe('text','intitulé',true);
-        $table_editor->describe('url','site web',false);
-        $table_editor->apply($page, $action, $id);
-    }  
     function handler_skins(&$page, $action = 'list', $id = null) {
         require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Skins');
@@ -764,16 +477,6 @@ class AdminModule extends PLModule
         $table_editor->describe('comment','commentaire',true);
         $table_editor->describe('date','date',false);
         $table_editor->describe('ext','extension du screenshot',false);
-        $table_editor->apply($page, $action, $id);
-    }  
-    function handler_authgroupesx(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
-        $page->assign('title', 'Gestion de l\'authentification centralisée');
-        $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
-        $table_editor->describe('name','nom',true);
-        $table_editor->describe('privkey','clé privée',false);
-        $table_editor->describe('datafields','champs renvoyés',true);
         $table_editor->apply($page, $action, $id);
     }  
     function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
@@ -813,57 +516,6 @@ class AdminModule extends PLModule
         $table_editor->describe('services','services affectés',true);
         $table_editor->describe('description','description',false);
         $table_editor->apply($page, $action, $id);
-    }  
-    function handler_newsletter_cat(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
-        $page->assign('title', 'Gestion des catégories de la newsletter');
-        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
-        $table_editor->describe('titre','intitulé',true);
-        $table_editor->describe('pos','position',true);
-        $table_editor->apply($page, $action, $id);
-    }  
-    function handler_payments(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
-        $page->assign('title', 'Gestion des télépaiements');
-        $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
-        $table_editor->add_join_table('paiement.transactions','ref',true);
-        $table_editor->describe('text','intitulé',true);
-        $table_editor->describe('url','site web',false);
-        $table_editor->describe('montant_def','montant par défaut',false);
-        $table_editor->describe('montant_min','montant minimum',false);
-        $table_editor->describe('montant_max','montant maximum',false);
-        $table_editor->describe('mail','email contact',true);
-        $table_editor->describe('confirmation','message confirmation',false);
-        $table_editor->apply($page, $action, $id);
-    }  
-    function handler_medals(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
-        $page->assign('title', 'Gestion des Distinctions');
-        $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
-        $table_editor->describe('text', 'intitulé',  true);
-        $table_editor->describe('img',  'nom de l\'image', false);
-        $table_editor->apply($page, $action, $id);
-        if ($id && $action == 'edit') {
-            $page->changeTpl('admin/gerer_decos.tpl');
-        
-            $mid = $id;
-        
-            if (Post::v('act') == 'del') {
-                XDB::execute('DELETE FROM profile_medals_grades WHERE mid={?} AND gid={?}', $mid, Post::i('gid'));
-            } elseif (Post::v('act') == 'new') {
-                XDB::execute('INSERT INTO profile_medals_grades (mid,gid) VALUES({?},{?})',
-                        $mid, max(array_keys(Post::v('grades', array(0))))+1);
-            } else {
-                foreach (Post::v('grades', array()) as $gid=>$text) {
-                    XDB::execute('UPDATE profile_medals_grades SET pos={?}, text={?} WHERE gid={?}', $_POST['pos'][$gid], $text, $gid);
-                }
-            }
-            $res = XDB::iterator('SELECT gid, text, pos FROM profile_medals_grades WHERE mid={?} ORDER BY pos', $mid);
-            $page->assign('grades', $res);
-        }
     }  
     function handler_wiki(&$page, $action='list') {
         require_once 'wiki.inc.php';

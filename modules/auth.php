@@ -34,6 +34,7 @@ class AuthModule extends PLModule
 
             'auth-redirect.php' => $this->make_hook('redirect',   AUTH_COOKIE),
             'auth-groupex.php'  => $this->make_hook('groupex',    AUTH_COOKIE),
+            'admin/auth-groupes-x'         => $this->make_hook('admin_authgroupesx', AUTH_MDP, 'admin'),
         );
     }
 
@@ -160,6 +161,16 @@ class AuthModule extends PLModule
         /* si on n'a pas trouvé, on renvoit sur x.org */
         http_redirect('https://www.polytechnique.org/');
     }
+    function handler_admin_authgroupesx(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
+        $page->assign('title', 'Gestion de l\'authentification centralisée');
+        $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
+        $table_editor->describe('name','nom',true);
+        $table_editor->describe('privkey','clé privée',false);
+        $table_editor->describe('datafields','champs renvoyés',true);
+        $table_editor->apply($page, $action, $id);
+    }  
 }
 
 ?>

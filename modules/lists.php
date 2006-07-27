@@ -40,6 +40,7 @@ class ListsModule extends PLModule
 
             'lists/soptions'  => $this->make_hook('soptions',  AUTH_MDP),
             'lists/check'     => $this->make_hook('check',     AUTH_MDP),
+            'admin/lists'     => $this->make_hook('admin_all',     AUTH_MDP, 'admin'),
         );
     }
 
@@ -603,6 +604,17 @@ class ListsModule extends PLModule
             $page->kill("La liste n'existe pas");
         }
     }
+
+    function handler_admin_all(&$page) {
+        $page->changeTpl('admin/lists.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
+        require_once 'lists.inc.php';
+        
+        $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
+        $listes = $client->get_all_lists();
+        $page->assign_by_ref('listes',$listes);
+    }
+    
 }
 
 ?>

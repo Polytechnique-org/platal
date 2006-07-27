@@ -79,6 +79,7 @@ class PaymentModule extends PLModule
             'payment'               => $this->make_hook('payment', AUTH_MDP),
             'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUB),
             'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUB),
+            'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
         );
     }
 
@@ -314,6 +315,21 @@ class PaymentModule extends PLModule
         $page->assign('texte', $conf_text);
         $page->assign('erreur', $erreur);
     }
+    function handler_admin(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
+        $page->assign('title', 'Gestion des télépaiements');
+        $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
+        $table_editor->add_join_table('paiement.transactions','ref',true);
+        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('url','site web',false);
+        $table_editor->describe('montant_def','montant par défaut',false);
+        $table_editor->describe('montant_min','montant minimum',false);
+        $table_editor->describe('montant_max','montant maximum',false);
+        $table_editor->describe('mail','email contact',true);
+        $table_editor->describe('confirmation','message confirmation',false);
+        $table_editor->apply($page, $action, $id);
+    }  
 }
 
 ?>
