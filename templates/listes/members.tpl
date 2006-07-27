@@ -86,18 +86,27 @@
 {if $owners|@count}
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   {foreach from=$owners item=xs key=promo}
+  {foreach from=$xs item=x name=all}
   <tr>
-    <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-    <td>
-      {foreach from=$xs item=x}
-      {if $promo}
-      <a href="profile/{$x.l}" class="popup2">{$x.n}</a><br />
-      {else}
-      {$x.l}<br />
+    <td class='titre'>
+      {if $smarty.foreach.all.first}
+      {if $promo}{$promo}{else}non-X{/if}
       {/if}
-      {/foreach}
     </td>
+    <td>
+      {if $promo}
+      <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+      {else}
+      {$x.l}
+      {/if}
+    </td>
+    {if $x.p}
+    <td class="right">
+      {$x.p}
+    </td>
+    {/if}
   </tr>
+  {/foreach}
   {/foreach}
 </table>
 {/if}
@@ -114,18 +123,27 @@
 {if $members|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
   {foreach from=$members item=xs key=promo}
+  {foreach from=$xs item=x name=all}
   <tr>
-    <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
-    <td>
-      {foreach from=$xs item=x}
-      {if $promo}
-      <a href="profile/{$x.l}" class="popup2">{$x.n}</a><br />
-      {else}
-      {$x.l}<br />
+    <td class='titre' style="width: 20%">
+      {if $smarty.foreach.all.first}
+      {if $promo}{$promo}{else}non-X{/if}
       {/if}
-      {/foreach}
     </td>
+    <td>
+      {if $promo}
+      <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+      {else}
+      {$x.l}
+      {/if}
+    </td>
+    {if $x.p}
+    <td class="right">
+      {$x.p}
+    </td>
+    {/if}
   </tr>
+  {/foreach}
   {/foreach}
 </table>
 {/if}

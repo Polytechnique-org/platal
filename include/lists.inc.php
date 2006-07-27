@@ -53,7 +53,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
                                           WHERE  a.alias = {?}', $m);
             if(list($prenom, $nom, $promo) = $res->fetchOneRow()) {
                 $key = $tri_promo ? $promo : strtoupper($nom{0});
-                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m);
+                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $m, 'p' => (!$tri_promo ? $promo : null));
             } else {
                 $membres[0][] = Array('l' => $mem);
             }
@@ -61,7 +61,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
             $res = XDB::query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
             if (list($prenom, $nom) = $res->fetchOneRow()) {
                 $key = $tri_promo ? 0 : strtoupper($nom{0});
-                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem);
+                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem, 'p' => (!$tri_promo ? 'non-X' : null));
             } else {
                 $membres[0][] = Array('l' => $mem);
             }

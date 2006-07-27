@@ -84,6 +84,9 @@ Bug/Wish:
     * Emails:
         - #426: Add an identification header in mails.                     -FRU
 
+    * Lists:
+        - #127: Add promo in member list when sorted by name               -FRU
+
     * Profile:
         - #344: Tels can be bigger (up to 30 chars).                       -Car
 
