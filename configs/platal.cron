@@ -6,6 +6,7 @@ WD=/home/web/prod/platal/bin/cron
 0  5 * * *	web	cd $WD; ./clean.php
 0 21 * * 1-6	web	cd $WD; ./checkdb.php    | mail -e -s "verifications sur la BDD de plat/al"         br@m4x.org
 0 21 * * 0	web	cd $WD; ./checkdb.php -v | mail -e -s "verifications verbose sur la BDD de plat/al" br@m4x.org
+0 20 * * *      web     cd $WD; ./emails.check.php | mail -e -s "recherche d'usurpateurs"                   br@m4x.org
 
 # inscription report
 0  6 * * 1	web	cd $WD; ./rapports_inscription.php

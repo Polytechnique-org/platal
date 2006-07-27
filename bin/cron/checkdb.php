@@ -122,11 +122,12 @@ check("SELECT a.uid, a.country, a.region FROM adresses AS a LEFT JOIN geoloc_reg
 info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on (e.matricule = a.matricule and a.perms = 'user') order by promo,nom;");
 
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
-info("SELECT  a1.alias, a2.alias, e1.email, e2.flags
+info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state, w.description
         FROM  emails        AS e1
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET(e2.flags,'active'))
             )
+        INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state != 'safe')
         INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
         INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
         INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
