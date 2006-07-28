@@ -76,21 +76,32 @@
 
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
-    <th>émetteur</th>
-    <th>sujet</th>
-    <th>taille</th>
-    <th>date</th>
     <th></th>
+    <th>Mail</th>
+    <th>Infos</th>
+    <th colspan="2"></th>
   </tr>
   {foreach from=$mails item=m}
   <tr class='{cycle values="pair,impair"}'>
-    <td>{$m.sender}</td>
-    <td>{$m.subj|hdc|default:"[pas de sujet]"}</td>
-    <td class='right'>{$m.size}o</td>
-    <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
+    <td>
+      <strong>De&nbsp;:</strong><br />
+      <strong>Sujet&nbsp;:</strong>
+    </td>
+    <td>
+      {$m.sender}<br />
+      {$m.subj|hdc|default:"[pas de sujet]"}
+    </td>
+    <td class='right'>
+      <small>{$m.stamp|date_format:"le %x à %X"}<br />
+      {$m.size} octets</small>
+    </td>
+    <td class='action'>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>accepter</a>
+    </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>voir</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>accepter</a>&nbsp;<a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>détruire</a></td>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>détruire</a>
+    </td>
   </tr>
   {/foreach}
 </table>
