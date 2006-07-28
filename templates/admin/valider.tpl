@@ -39,6 +39,12 @@
       </a>
     </td>
   </tr>
+  <tr>
+    <td class="titre" style="width: 20%">Date de demande&nbsp;:</td>
+    <td>
+      {$valid->stamp|date_format}
+    </td>
+  </tr>
   {include file=$valid->formu()}
   <tr><th colspan='2'>Commentaires</th></tr>
   {foreach from=$valid->comments item=c}
