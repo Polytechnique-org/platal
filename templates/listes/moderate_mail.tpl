@@ -28,11 +28,11 @@
 <table class='tinybicol' cellpadding='0' cellspacing='0'>
   <tr>
     <td class='titre'>émetteur</td>
-    <td>{$mail.sender}</td>
+    <td>{mailto address=$mail.sender}</td>
   </tr>
   <tr>
     <td class='titre'>sujet</td>
-    <td>{$mail.subj}</td>
+    <td>{$mail.subj|hdc}</td>
   </tr>
   <tr>
     <td class='titre'>taille</td>

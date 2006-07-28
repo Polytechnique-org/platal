@@ -310,6 +310,7 @@ class ListsModule extends PLModule
         $page->changeTpl('listes/moderate.tpl');
 
         $page->register_modifier('qpd', 'quoted_printable_decode');
+        $page->register_modifier('hdc', 'list_header_decode');
 
         if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
             $this->client->handle_request($liste,Env::v('sadd'),4,'');

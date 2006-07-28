@@ -85,7 +85,7 @@
   {foreach from=$mails item=m}
   <tr class='{cycle values="pair,impair"}'>
     <td>{$m.sender}</td>
-    <td>{$m.subj|default:"[pas de sujet]"}</td>
+    <td>{$m.subj|hdc|default:"[pas de sujet]"}</td>
     <td class='right'>{$m.size}o</td>
     <td class='right'>{$m.stamp|date_format:"%X<br />%x"}</td>
     <td class='action'>

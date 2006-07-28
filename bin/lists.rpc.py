@@ -64,7 +64,6 @@ def get_config(sec, val, default=None):
         else:
             return default
 
-BASEURL        = get_config('Core', 'baseurl')
 MYSQL_USER     = get_config('Core', 'dbuser')
 MYSQL_PASS     = get_config('Core', 'dbpwd')
 
@@ -171,8 +170,8 @@ def quote(s, is_header=False):
         h = Utils.oneline(s, 'iso-8859-1')
     else:
         h = s
-    h = str('').join(re.split('[\x00-\x1f]+', s))
-    return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;'))
+    h = str('').join(re.split('[\x00-\x09\x0B\x1f]+', s))
+    return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;')) 
 
 def to_forlife(email):
     try:
