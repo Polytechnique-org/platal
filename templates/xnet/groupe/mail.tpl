@@ -42,7 +42,7 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
     </tr>
     <tr>
-      <td class="titre">Reply-To :</td>
+      <td class="titre">Répondre à :</td>
       <td>
         <input type="text" name="replyto" size="55" maxlength="70" value="{$smarty.request.replyto}" />
       </td>

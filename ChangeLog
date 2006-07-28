@@ -96,6 +96,7 @@ Bug/Wish:
     * Xnet:
         - #426: Add an identification header in mails.                     -FRU
         - #384: substitution of non-X's names in mail from web interface   -FRU
+        - #380: Add sex for non-X                                          -FRU
 
 From 0.9.10 Branch:
 

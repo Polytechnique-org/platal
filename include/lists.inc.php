@@ -82,5 +82,19 @@ function list_sort_members(&$members, $tri_promo = true) {
 }
 
 // }}}
+// {{{ function list_header_decode
+
+function _list_header_decode($charset, $c, $str) {
+    $s = ($c == 'Q' || $c == 'q') ? quoted_printable_decode($str) : base64_decode($str);
+    $s = iconv($charset, 'iso-8859-15', $s);
+    return str_replace('_', ' ', $s);
+}
+
+function list_header_decode($value) {
+    $val = preg_replace('/(=\?[^?]*\?[BQbq]\?[^?]*\?=) (=\?[^?]*\?[BQbq]\?[^?]*\?=)/', '\1\2', $value);
+    return preg_replace('/=\?([^?]*)\?([BQbq])\?([^?]*)\?=/e', '_list_header_decode("\1", "\2", "\3")', $val);
+}
+
+// }}}
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

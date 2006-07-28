@@ -309,7 +309,7 @@ class XnetGrpModule extends PLModule
                            IF(m.origine='X',u.promo,'extérieur') AS promo,
                            IF(m.origine='X',u.promo,'') AS promo_o,
                            IF(m.origine='X',a.alias,m.email) AS email,
-                           IF(m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
+                           IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            m.uid
@@ -682,13 +682,14 @@ class XnetGrpModule extends PLModule
         if (Post::has('change')) {
             if ($user['origine'] != 'X') {
                 XDB::query('UPDATE groupex.membres
-                                         SET prenom={?}, nom={?}, email={?}
-                                       WHERE uid={?} AND asso_id={?}',
-                                     Post::v('prenom'), Post::v('nom'),
-                                     Post::v('email'), $user['uid'],
-                                     $globals->asso('id'));
+                               SET prenom={?}, nom={?}, email={?}, sexe={?}
+                             WHERE uid={?} AND asso_id={?}',
+                           Post::v('prenom'), Post::v('nom'),
+                           Post::v('email'), Post::v('sexe'),
+                           $user['uid'], $globals->asso('id'));
                 $user['nom']    = Post::v('nom');
                 $user['prenom'] = Post::v('prenom');
+                $user['sexe']   = Post::v('sexe');
                 $user['email']  = Post::v('email');
                 $user['email2'] = Post::v('email');
             }
@@ -696,9 +697,9 @@ class XnetGrpModule extends PLModule
             $perms = Post::i('is_admin');
             if ($user['perms'] != $perms) {
                 XDB::query('UPDATE groupex.membres SET perms={?}
-                                      WHERE uid={?} AND asso_id={?}',
-                                      $perms ? 'admin' : 'membre',
-                                      $user['uid'], $globals->asso('id'));
+                             WHERE uid={?} AND asso_id={?}',
+                            $perms ? 'admin' : 'membre',
+                            $user['uid'], $globals->asso('id'));
                 $user['perms'] = $perms;
                 $page->trig('permissions modifiées');
             }

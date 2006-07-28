@@ -37,8 +37,8 @@
 </h2>
 
 <form method="post" action="{$platal->ns}member/{$platal->argv[1]}">
-  <table cellpadding="0" cellspacing="0" class='tiny'>
-    <tr>
+  <table cellpadding="0" cellspacing="0" class='tinybicol'>
+    <tr class="pair">
       <td class="titre">
         Permissions:
       </td>
@@ -50,7 +50,7 @@
       </td>
     </tr>
     {if $user.origine neq X}
-    <tr>
+    <tr class="impair">
       <td class="titre">
         Prénom:
       </td>
@@ -58,7 +58,7 @@
         <input type="text" value="{$user.prenom}" name="prenom" size="40" />
       </td>
     </tr>
-    <tr>
+    <tr class="impair">
       <td class="titre">
         Nom:
       </td>
@@ -66,7 +66,18 @@
         <input type="text" value="{$user.nom}" name="nom" size="40" />
       </td>
     </tr>
-    <tr>
+    <tr class="impair">
+      <td class="titre">
+        Sexe:
+      </td>
+      <td>
+        <select name="sexe">
+          <option value="0"{if $user.sexe eq 0} selected="selected"{/if}>Homme</option>
+          <option value="1"{if $user.sexe eq 1} selected="selected"{/if}>Femme</option>
+        </select>
+      </td>
+    </tr>
+    <tr class="impair">
       <td class="titre">
         Email:
       </td>
