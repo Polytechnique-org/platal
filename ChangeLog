@@ -77,6 +77,7 @@ Bug/Wish:
         - #430: Specify date format on downtime admin page.                -Car
         - #397: Can edit death date in user admin page                     -FRU
         - #429: Tools to administrate duplicated adresses                  -FRU
+        - #390: Add date of request in validation form                     -FRU
 
     * Carnet:
         - #435: Calendar contains yearly events for all the contacts.      -FRU
@@ -89,6 +90,7 @@ Bug/Wish:
 
     * Profile:
         - #344: Tels can be bigger (up to 30 chars).                       -Car
+        - #422: Parasitic strings in vcard                                 -FRU
 
     * Xnet:
         - #426: Add an identification header in mails.                     -FRU

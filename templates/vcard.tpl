@@ -66,7 +66,11 @@ ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr
 {if $vcard.web}
 URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}
 {/if}
+{if strlen(trim($vcard.libre)) == 0}
+NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)"|qp_enc}
+{else}
 NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.libre`"|qp_enc}
+{/if}
 SORT-STRING;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc}
 REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
 END:VCARD
