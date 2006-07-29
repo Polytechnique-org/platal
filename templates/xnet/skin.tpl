@@ -196,6 +196,10 @@
           <a href="services">services proposés</a> -
           <a href="about">à propos de ce site</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
+          {if $smarty.session.auth}
+            - <a href="send_bug" onclick="send_bug();return false">signaler un bug</a>
+            {include file=skin/common.bug.tpl}
+          {/if}
           <br />
           © Copyright 2000-2006 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
