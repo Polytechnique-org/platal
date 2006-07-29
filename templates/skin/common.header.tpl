@@ -36,7 +36,6 @@
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
-		<link rel="stylesheet" type="text/css" href="css/flyspray.css" />
     {foreach from=$xorg_css item=css}
     <link rel="stylesheet" type="text/css" href="{$css}" />
     {/foreach}
@@ -47,9 +46,6 @@
     <script type="text/javascript" src="javascript/md5.js"></script>
     <script type="text/javascript" src="javascript/sha1.js"></script>
     <script type="text/javascript" src="javascript/secure_hash.js"></script>
-    {if $smarty.session.auth}
-    <script type="text/javascript" src="javascript/flyspray.js"></script>
-    {/if}
 
     {if $xorg_rss}
     <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />

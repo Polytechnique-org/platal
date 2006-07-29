@@ -74,6 +74,7 @@
 <div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
 <div class="menu_item"><a href="send_bug" onclick="send_bug();return false">Signaler un bug</a></div>
+{include file=skin/common.bug.tpl}
 
 {if $smarty.session.perms eq admin}
 <div class="menu_title">***</div>
