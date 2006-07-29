@@ -52,7 +52,8 @@
     <th></th>
   </tr>
   {iterate from=$evs item=ev}
-  <tr class="{cycle values="impair,pair"}">
+  {cycle values="impair,pair" assign=class}
+  <tr class="{$class}">
     <td>
       <a id="{$ev.id}"></a>
       {if !$ev.fvalide}<strong>{/if}
@@ -79,8 +80,8 @@
     </td>
   </tr>
   {if $ev.preview}
-  <tr class="{cycle value="impair,pair"}">
-    <td colspan="3">
+  <tr class="{$class}">
+    <td colspan="3" style="border-top: 1px dotted #777">
       {$ev.texte|hde|nl2br}
     </td>
   </tr>
