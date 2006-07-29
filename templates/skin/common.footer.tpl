@@ -31,7 +31,7 @@
 	    <option value="1">Bug</option>
 			<option value="2">Wish</option>
 		</select>
-		<input type="text" name="item_summary" id="flyspray_title" value="sur la page {$smarty.server.SCRIPT_URL}" size="50" maxlength="100"/>
+		<input type="text" name="item_summary" id="flyspray_title" value="sur la page {$smarty.server.REQUEST_URI}" size="50" maxlength="100"/>
 		<input type="hidden" name="productcategory" value="1"/><!-- non trié -->
 		<input type="hidden" name="itemstatus" value="2"/><!-- New -->
 		<input type="hidden" name="assigned_to" value="0"/><!-- No one -->
@@ -45,10 +45,10 @@
 
 ** Explique ici le problème ou l'amélioration proposée **
 		
-Page : {$smarty.server.SCRIPT_URI}
+Page : {#globals.baseurl#}/?{$smarty.server.QUERY_STRING}
 Navigateur : {$smarty.server.HTTP_USER_AGENT}
 Skin : {$smarty.session.skin} 
-Singalé par {$smarty.session.forlife}</textarea>
+Signalé par {$smarty.session.forlife}</textarea>
 		<div id="flyspray_submit">
 			<input type="button" value="Fermer" onclick="close_bug(this.form,false)"/>
 			<input type="button" value="Signaler le bug" onclick="close_bug(this.form,true)"/>
