@@ -3,6 +3,10 @@ RewriteEngine on
 
 RewriteBase /~x2001corpet
 
+# wiki
+
+RewriteRule ^Xnet/([A-Z].*) wiki.php?n=Xnet/$1 [L,QSA]
+
 # Rewrite URLs of the form 'index.php?q=x':
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
