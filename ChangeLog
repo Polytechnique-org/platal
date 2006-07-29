@@ -91,6 +91,7 @@ Bug/Wish:
 
     * Lists:
         - #127: Add promo in member list when sorted by name               -FRU
+        - #423: Allow line breaks in mailing list descriptions             -FRU
 
     * Profile:
         - #344: Tels can be bigger (up to 30 chars).                       -Car
