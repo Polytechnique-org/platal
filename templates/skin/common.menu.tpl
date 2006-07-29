@@ -73,6 +73,7 @@
 <div class="menu_item"><a href="Docs/">Documentations</a></div>
 <div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
+<div class="menu_item"><a href="send_bug" onclick="send_bug();return false">Signaler un bug</a></div>
 
 {if $smarty.session.perms eq admin}
 <div class="menu_title">***</div>
@@ -89,6 +90,7 @@
   </tr>
 </table>
 {/if}
+
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
