@@ -53,8 +53,10 @@
   </tr>
   {iterate from=$evs item=ev}
   <tr class="{cycle values="impair,pair"}">
-    <td>{if !$ev.fvalide}<strong>{/if}
-      <a href="admin/events/preview/{$ev.id}">{$ev.titre}</a><br />
+    <td>
+      <a id="{$ev.id}"></a>
+      {if !$ev.fvalide}<strong>{/if}
+      <a href="admin/events/preview/{$ev.id}#{$ev.id}">{$ev.titre}</a><br />
       {if !$ev.fvalide}</strong>{/if}
       <small>
         Proposée par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>

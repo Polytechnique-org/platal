@@ -79,6 +79,7 @@ Bug/Wish:
         - #397: Can edit death date in user admin page                     -FRU
         - #429: Tools to administrate duplicated adresses                  -FRU
         - #390: Add date of request in validation form                     -FRU
+        - #440: Rewrite events admin page                                  -FRU
 
     * Carnet:
         - #435: Calendar contains yearly events for all the contacts.      -FRU
