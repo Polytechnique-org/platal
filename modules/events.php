@@ -247,67 +247,82 @@ class EventsModule extends PLModule
         }
     }
 
-    function handler_admin_events(&$page, $arch) {
+    function handler_admin_events(&$page, $action = 'list', $eid = null) 
+    {
         $page->changeTpl('admin/evenements.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
-        
-        $arch = $arch == 'archives';
-        $evid = Post::i('evt_id');
-        $page->assign('arch', $arch);
-        
-        switch(Post::v('action')) {
-            case "Proposer":
-                XDB::execute('UPDATE evenements SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?} WHERE id = {?}', 
-                        Post::v('titre'), Post::v('texte'), Post::v('peremption'), Post::v('promo_min'), Post::v('promo_max'), $evid);
-                break;
-        
-            case "Valider":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",valide") WHERE id = {?}', $evid);
-                break;
-        
-            case "Invalider":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"valide", "") WHERE id = {?}', $evid);
-                break;
-        
-            case "Supprimer":
-                XDB::execute('DELETE from evenements WHERE id = {?}', $evid);
-                break;
-        
-            case "Archiver":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = CONCAT(flags,",archive") WHERE id = {?}', $evid);
-                break;
-        
-            case "Desarchiver":
-                XDB::execute('UPDATE evenements SET creation_date = creation_date, flags = REPLACE(flags,"archive","") WHERE id = {?}', $evid);
-                break;
-        
-            case "Editer":
-                $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max FROM evenements WHERE id={?}', $evid);
-                list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
-                $page->assign('mode', 'edit');
-                $page->assign('titre',$titre);
-                $page->assign('texte',$texte);
-                $page->assign('promo_min',$promo_min);
-                $page->assign('promo_max',$promo_max);
-                $page->assign('peremption',$peremption);
-        
-                $select = "";
-                for ($i = 1 ; $i < 30 ; $i++) {
-                    $p_stamp=date("Ymd",time()+3600*24*$i);
-                    $year=substr($p_stamp,0,4);
-                    $month=substr($p_stamp,4,2);
-                    $day=substr($p_stamp,6,2);
-        
-                    $select .= "<option value=\"$p_stamp\"" . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")."> $day / $month / $year</option>\n";
-                }
-                $page->assign('select',$select);
-        
-                break;
+        $page->register_modifier('hde', 'html_entity_decode');
+
+        $arch = $action == 'archives';
+        $page->assign('action', $action);
+ 
+        if (Post::v('action') == "Proposer") {
+            XDB::execute('UPDATE evenements
+                             SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
+                           WHERE id = {?}', 
+                          Post::v('titre'), Post::v('texte'), Post::v('peremption'),
+                          Post::v('promo_min'), Post::v('promo_max'), Post::i('evt_id'));
         }
-        
-        if ($action != "Editer") {
-        
-            $sql = "SELECT  e.id, e.titre, e.texte,
+
+        if ($action == 'edit') {
+            $res = XDB::query('SELECT titre, texte, peremption, promo_min, promo_max
+                                 FROM evenements
+                                WHERE id={?}', $eid);
+            list($titre, $texte, $peremption, $promo_min, $promo_max) = $res->fetchOneRow();
+            $page->assign('titre',$titre);
+            $page->assign('texte',$texte);
+            $page->assign('promo_min',$promo_min);
+            $page->assign('promo_max',$promo_max);
+            $page->assign('peremption',$peremption);
+
+            $select = "";
+            for ($i = 1 ; $i < 30 ; $i++) {
+                $p_stamp=date("Ymd",time()+3600*24*$i);
+                $year=substr($p_stamp,0,4);
+                $month=substr($p_stamp,4,2);
+                $day=substr($p_stamp,6,2);
+
+                $select .= "<option value=\"$p_stamp\"" 
+                        . (($p_stamp == strtr($peremption, array("-" => ""))) ? " selected" : "")
+                        . "> $day / $month / $year</option>\n";
+            }
+            $page->assign('select',$select);
+        } else {
+            switch ($action) {
+                case 'delete':
+                    XDB::execute('DELETE from evenements
+                                   WHERE id = {?}', $eid);
+                    break;
+
+                case "archive":
+                    XDB::execute('UPDATE evenements
+                                     SET creation_date = creation_date, flags = CONCAT(flags,",archive")
+                                   WHERE id = {?}', $eid);
+                    break;
+
+                case "unarchive":
+                    XDB::execute('UPDATE evenements
+                                     SET creation_date = creation_date, flags = REPLACE(flags,"archive","")
+                                   WHERE id = {?}', $eid);
+                    $action = 'archives';
+                    $arch   = true;
+                    break;
+
+                case "valid":
+                    XDB::execute('UPDATE evenements
+                                     SET creation_date = creation_date, flags = CONCAT(flags,",valide")
+                                   WHERE id = {?}', $eid);
+                    break;
+
+                case "unvalid":
+                    XDB::execute('UPDATE evenements
+                                     SET creation_date = creation_date, flags = REPLACE(flags,"valide", "")
+                                   WHERE id = {?}', $eid);
+                    break;
+            }
+
+            $pid = ($eid && $action == 'preview') ? $eid : -1;
+            $sql = "SELECT  e.id, e.titre, e.texte,e.id = $pid AS preview,
                             DATE_FORMAT(e.creation_date,'%d/%m/%Y %T') AS creation_date,
                             DATE_FORMAT(e.peremption,'%d/%m/%Y') AS peremption,
                             e.promo_min, e.promo_max,
@@ -318,9 +333,10 @@ class EventsModule extends PLModule
                 INNER JOIN  auth_user_md5 AS u ON(e.user_id = u.user_id)
                 INNER JOIN  aliases AS a ON (u.user_id = a.id AND a.type='a_vie')
                      WHERE  ".($arch ? "" : "!")."FIND_IN_SET('archive',e.flags)
-                  ORDER BY  FIND_IN_SET('valide',e.flags), peremption";
+                  ORDER BY  FIND_IN_SET('valide',e.flags), e.peremption DESC";
             $page->assign('evs', XDB::iterator($sql));
         }
+        $page->assign('arch', $arch);
     }
 
     function handler_admin_nl(&$page, $new = false) {

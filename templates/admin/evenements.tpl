@@ -24,68 +24,67 @@
 
 <h1>
   Gestion des événements :
-  {if $arch eq 'archives'}
-  [&nbsp;<a href="admin/events/actu">Actualités</a>&nbsp;|&nbsp;Archives&nbsp;]
+  [&nbsp;
+  {if $arch || $action eq 'edit'}
+  <a href="admin/events">Actualités</a>
   {else}
-  [&nbsp;Actualités&nbsp;|&nbsp;<a href="admin/events/archives">Archives</a>&nbsp;]
+  Actualités
   {/if}
+  &nbsp;|&nbsp;
+  {if !$arch || $action eq 'edit'}
+  <a href="admin/events/archives">Archives</a>
+  {else}
+  Archives
+  {/if}
+  &nbsp;]
 </h1>
 
-{if $mode}
+{if $action eq 'edit'}
 
 {include file="include/form.evenement.tpl"}
 
 {else}
 
-{iterate from=$evs item=ev}
 <table class="bicol">
   <tr>
-    <th>
-      Posté par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
-    </th>
+    <th>Titre</th>
+    <th>Péremption</th>
+    <th></th>
   </tr>
-  <tr class="{if $ev.fvalide}impair{else}pair{/if}">
-    <td>
-      <strong>{$ev.titre}</strong>
+  {iterate from=$evs item=ev}
+  <tr class="{cycle values="impair,pair"}">
+    <td>{if !$ev.fvalide}<strong>{/if}
+      <a href="admin/events/preview/{$ev.id}">{$ev.titre}</a><br />
+      {if !$ev.fvalide}</strong>{/if}
+      <small>
+        Proposée par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
+      </small>
+    </td>
+    <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.peremption}{if !$ev.fvalide}</strong>{/if}</td>
+    <td class="right" style="width: 42px">
+      {if $arch}
+        <a href="admin/events/unarchive/{$ev.id}">{icon name=package_delete title="Désarchiver"}</a><br />
+      {else}
+        {if $ev.fvalide}
+        <a href="admin/events/unvalid/{$ev.id}">{icon name=thumb_down title="Invalider"}</a>
+        <a href="admin/events/archive/{$ev.id}">{icon name=package_add title="Archiver"}</a><br />
+        {else}
+        <a href="admin/events/valid/{$ev.id}">{icon name=thumb_up title="Valider"}</a><br />
+        {/if}
+      {/if}
+      <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer"}</a>
+      <a href="admin/events/delete/{$ev.id}">{icon name=delete title="Supprimer"}</a>
     </td>
   </tr>
-  <tr class="{if $ev.fvalide}impair{else}pair{/if}">
-    <td>
-      {tidy}{$ev.texte|nl2br}{/tidy}
+  {if $ev.preview}
+  <tr class="{cycle value="impair,pair"}">
+    <td colspan="3">
+      {$ev.texte|hde|nl2br}
     </td>
   </tr>
-  <tr class="{if $ev.fvalide}impair{else}pair{/if}">
-    <td>
-      Création : {$ev.creation_date}<br />
-      Péremption : {$ev.peremption}<br />
-      Promos : {$ev.promo_min} - {$ev.promo_max}<br />
-    </td>
-  </tr>
-  <tr>
-    <th>
-      <form action="admin/events/{if $ev.arch}archives{else}actu{/if}" method="post">
-        <div>
-          <input type="hidden" name="evt_id" value="{$ev.id}" />
-          {if $ev.farch}
-          <input type="submit" name="action" value="Desarchiver" />
-          {else}
-          <input type="submit" name="action" value="Editer" />
-          {if $ev.fvalide}
-          <input type="submit" name="action" value="Invalider" />
-          <input type="submit" name="action" value="Archiver" />
-          {else}
-          <input type="submit" name="action" value="Valider" />
-          {/if}
-          <input type="submit" name="action" value="Supprimer" />
-          {/if}
-        </div>
-      </form>
-    </th>
-  </tr>
+  {/if}
+  {/iterate}
 </table>
-
-<br />
-{/iterate}
 
 {/if}
 
