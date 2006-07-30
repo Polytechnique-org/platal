@@ -465,6 +465,25 @@ class AdminModule extends PLModule
             if($req) { $req->handle_formu(); }
         }
         
+        $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
+        while (($a = $r->next()) && $a['Field'] != 'category');
+        $page->assign('categories', $categories = explode(',', str_replace("'", '', substr($a['Type'], 5, -1))));
+        
+        $hidden = array();
+        if (Post::has('hide')) {
+            $hide = array(); 
+            foreach ($categories as $cat) 
+                if (!Post::v($cat)) {
+                    $hidden[$cat] = 1;
+                    $hide[] = $cat;
+                }
+            setcookie('hide_requests', join(',',$hide), time()+(count($hide)?25920000:(-3600)), '/', '', 0);
+        } elseif (Env::has('hide_requests'))  {
+            foreach (explode(',',Env::v('hide_requests')) as $hide_type)
+                $hidden[$hide_type] = true;
+        }
+        $page->assign('hide_requests', $hidden);
+        
         $page->assign('vit', new ValidateIterator());
     }
     function handler_validate_answers(&$page, $action = 'list', $id = null) {

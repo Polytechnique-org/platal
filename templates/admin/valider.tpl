@@ -25,7 +25,11 @@
 
 {if $vit->total()}
 
+{counter print=false start=0 assign=hidden}
+
 {iterate item=valid from=$vit|smarty:nodefaults}
+{assign var=type value=$valid->type}
+{if !$hide_requests[$type]}
 <br />
 <table class="bicol">
   <tr>
@@ -98,7 +102,14 @@
     </td>
   </tr>
 </table>
+{else}
+{counter print=false assign=hidden}
+{/if}
 {/iterate}
+
+{if $hidden}
+<p>{$hidden} validation{if $hidden > 1}s ont été masquées{else} a été masquée{/if}.</p>
+{/if}
 
 {else}
 
@@ -106,5 +117,15 @@
 
 {/if}
 
+<p>
+  Afficher seulement les validation suivantes :
+  <form action="admin/validate" method="post">
+    {foreach from=$categories item=type}
+      <div style="float:left;width:33%"><input type="checkbox" name="{$type}" id="hide_{$type}"{if !$hide_requests[$type]} checked="checked"{/if}/>
+      <label for="hide_{$type}">{$type}</label></div>
+    {/foreach}
+    <div class="center" style="clear:left"><input type="submit" name="hide"/></div>
+  </form>
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
