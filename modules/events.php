@@ -43,7 +43,7 @@ class EventsModule extends PLModule
         subscribe_nl($uid);
     }
 
-    function handler_ev(&$page)
+    function handler_ev(&$page, $action = 'list', $eid = null)
     {
         $page->changeTpl('login.tpl');
 
@@ -107,18 +107,18 @@ class EventsModule extends PLModule
         }
 
         // cache les evenements lus et raffiche les evenements a relire
-        if (Env::has('lu')){
+        if ($action == 'read' && $eid) {
             XDB::execute('DELETE FROM evenements_vus AS ev 
                                      INNER JOIN evenements AS e ON e.id = ev.evt_id
                                           WHERE peremption < NOW)');
             XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
-                                   Env::v('lu'), S::v('uid'));
+                                   $eid, S::v('uid'));
         }
 
-        if (Env::has('nonlu')){
+        if ($action == 'unread' && $eid) {
             XDB::execute('DELETE FROM evenements_vus
                                           WHERE evt_id = {?} AND user_id = {?}',
-                                   Env::v('nonlu'), S::v('uid'));
+                                   $eid, S::v('uid'));
         }
 
         // affichage des evenements
