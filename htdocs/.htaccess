@@ -6,4 +6,4 @@ RewriteBase /~x2000habouzit
 # Rewrite URLs of the form 'index.php?q=x':
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?n=$1 [L,QSA]
+RewriteRule ^(.*)$ ?n=$1 [L,QSA]
