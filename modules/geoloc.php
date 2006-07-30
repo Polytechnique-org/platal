@@ -46,7 +46,7 @@ class GeolocModule extends PLModule
         $querystring = "";
 
         foreach ($_GET as $v => $a) {
-            if ($v != 'initfile' && $v != 'p' && $v != 'mapid') {
+            if ($v != 'initfile' && $v != 'n' && $v != 'mapid') {
                 $querystring .= urlencode($v).'='.urlencode($a).'&amp;';
             }
         }

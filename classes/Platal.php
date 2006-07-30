@@ -34,7 +34,7 @@ class Platal
     function Platal()
     {
         $modules    = func_get_args();
-        $this->path = trim(Get::_get('p', null), '/');
+        $this->path = trim(Get::_get('n', null), '/');
 
         $this->__mods  = array();
         $this->__hooks = array();

@@ -100,8 +100,8 @@ class XnetSession
         S::kill('loginX');
         Get::kill('auth');
         Get::kill('uid');
-        $path = Get::v('p');
-        Get::kill('p');
+        $path = Get::v('n');
+        Get::kill('n');
         Get::kill('PHPSESSID');
 
         $args = array();

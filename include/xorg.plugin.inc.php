@@ -82,7 +82,7 @@ class XOrgPlugin
 	}
 
 	foreach ($_GET as $key=>$val) {
-            if ($key == 'p') {
+            if ($key == 'n') {
                 continue;
             }
 	    if (in_array($key, $this->_get_vars) && array_key_exists($key, $args)) {
