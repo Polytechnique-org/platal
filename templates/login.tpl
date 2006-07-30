@@ -83,7 +83,12 @@ Bienvenue {$smarty.session.prenom}
   <table class="bicol">
     <tr>
       <th>
-        <a href="events?lu={$ev.id}{if $previd}#newsid{$previd}{/if}" style="display:block;float:right">{icon name=cross title="Cacher cet article"}</a>
+        <div style="float:right">
+          {if $smarty.session.perms eq 'admin'}
+          <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
+          {/if}
+          <a href="events?lu={$ev.id}{if $previd}#newsid{$previd}{/if}">{icon name=cross title="Cacher cet article"}</a>
+        </div>
         {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>
 	 {tidy}

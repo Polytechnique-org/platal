@@ -82,7 +82,7 @@
   {if $ev.preview}
   <tr class="{$class}">
     <td colspan="3" style="border-top: 1px dotted #777">
-      {$ev.texte|hde|nl2br}
+      {$ev.texte|smarty:nodefaults|nl2br}
     </td>
   </tr>
   {/if}

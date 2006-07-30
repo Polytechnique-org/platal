@@ -25,18 +25,25 @@
     <tr>
       <th colspan="2">Contenu du message</th>
     </tr>
+    {if strlen(trim($texte))}
+    <tr class="pair">
+      <td colspan="2" style="border-bottom: 1px dotted #777">
+        {$texte|smarty:nodefaults|nl2br}
+      </td>
+    </tr>
+    {/if}
     <tr>
-      <td><strong>Titre</strong></td>
+      <td class="titre">Titre</td>
       <td>
         <input type="text" name="titre" size="50" maxlength="200" value="{$titre}" />
       </td>
     </tr>
     <tr>
-      <td><strong>Texte</strong></td>
+      <td class="titre">Texte</td>
       <td><textarea name="texte" rows="10" cols="60" onfocus="update_texte_count(this.form)">{$texte}</textarea></td>
     </tr>
     <tr>
-      <td colspan="2">
+      <td colspan="2" class="smaller">
         <script type="text/javascript">
           var form_propose_texte = false;
           {literal}
@@ -47,34 +54,31 @@
           }
           {/literal}
         </script>
-        Essaie de faire un texte court, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.</td>
+        Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.
+      </td>
+    </tr>
+    <tr>
+      <th colspan="2">Informations complémentaires</th>
     </tr>
   </table>
 
   <table class="bicol">
-    <tr>
-      <th colspan="2">Informations complémentaires</th>
-    </tr>
-    <tr>
+    <tr class="pair">
+      <td class="titre">Promo min*</td>
       <td>
-        <strong>Promo min *</strong> (incluse)
-      </td>
-      <td>
-        <input type="text" name="promo_min" size="4" maxlength="4" value="{$promo_min}" />
-        &nbsp;<em>0 signifie pas de minimum</em>
+        <input type="text" name="promo_min" size="4" maxlength="4" value="{$promo_min}" /> incluse
+        &nbsp;<em>(0 signifie pas de minimum)</em>
       </td>
     </tr>
-    <tr>
+    <tr class="pair">
+      <td class="titre">Promo max*</td>
       <td>
-        <strong>Promo max *</strong> (incluse)
-      </td>
-      <td>
-        <input type="text" name="promo_max" size="4" maxlength="4" value="{$promo_max}" />
-        &nbsp;<em>0 signifie pas de maximum</em>
+        <input type="text" name="promo_max" size="4" maxlength="4" value="{$promo_max}" /> incluse
+        &nbsp;<em>(0 signifie pas de maximum)</em>
       </td>
     </tr>
-    <tr>
-      <td colspan="2">
+    <tr class="pair">
+      <td colspan="2" class="smaller">
         * sert à limiter l'affichage de l'annonce aux camarades appartenant à certaines promos seulement.
       </td>
     </tr>
