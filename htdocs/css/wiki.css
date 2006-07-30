@@ -37,7 +37,9 @@ table.quickref td {
     border-top: 1px dotted #aaaaaa;
 }
 
-#text { width: 800px; }
+#text {
+    width: 800px;
+}
 
 .diffbox {
     border: 1px #999999 solid;

@@ -41,15 +41,6 @@ table.quickref td {
     width: 800px;
 }
 
-#wikitext {
-    text-align: justify;
-    font-size: 90%;
-}
-
-#wikitext p {
-    padding-left: 7px;
-}
-
 .diffbox {
     border: 1px #999999 solid;
     margin-top: 1.33em; 

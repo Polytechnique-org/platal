@@ -264,6 +264,15 @@ table#liste td.liste a:hover, table#liste td.listec a:hover {
     background: #d0c198;
 }
 
+#wikitext {
+    text-align: justify;
+    font-size: 90%;
+}
+
+#wikitext p {
+    padding-left: 7px;
+}
+
 /***************************************************************************
  ***************************************************************************/
 
