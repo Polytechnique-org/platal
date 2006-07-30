@@ -27,12 +27,6 @@ class XnetModule extends PLModule
             'index'     => $this->make_hook('index',     AUTH_PUBLIC),
             'exit'      => $this->make_hook('exit',      AUTH_PUBLIC),
 
-            'about'     => $this->make_hook('about',     AUTH_PUBLIC),
-            'article12' => $this->make_hook('article12', AUTH_PUBLIC),
-            'article16' => $this->make_hook('article16', AUTH_PUBLIC),
-            'creategpx' => $this->make_hook('creategpx', AUTH_PUBLIC),
-            'services'  => $this->make_hook('services',  AUTH_PUBLIC),
-
             'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),
             'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
             'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
@@ -49,36 +43,6 @@ class XnetModule extends PLModule
     {
         XnetSession::destroy();
         $page->changeTpl('xnet/deconnexion.tpl');
-        $page->useMenu();
-    }
-
-    function handler_about(&$page)
-    {
-        $page->changeTpl('xnet/apropos.tpl');
-        $page->useMenu();
-    }
-
-    function handler_article12(&$page)
-    {
-        $page->changeTpl('xnet/article12.tpl');
-        $page->useMenu();
-    }
-
-    function handler_article16(&$page)
-    {
-        $page->changeTpl('xnet/article16.tpl');
-        $page->useMenu();
-    }
-
-    function handler_creategpx(&$page)
-    {
-        $page->changeTpl('xnet/creation-groupex.tpl');
-        $page->useMenu();
-    }
-
-    function handler_services(&$page)
-    {
-        $page->changeTpl('xnet/services.tpl');
         $page->useMenu();
     }
 

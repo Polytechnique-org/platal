@@ -102,6 +102,7 @@ Bug/Wish:
         - #426: Add an identification header in mails.                     -FRU
         - #384: Substitution of non-X's names in mail from web interface.  -FRU
         - #380: Add sex for non-X.                                         -FRU
+        - #439: Move doc to the wiki                                   -Car/FRU
 
 From 0.9.10 Branch:
 

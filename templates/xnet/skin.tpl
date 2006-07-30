@@ -193,8 +193,8 @@
       <tr>
         <td colspan="2" id="credits">
           <a href="plan">plan du site</a> -
-          <a href="services">services proposés</a> -
-          <a href="about">à propos de ce site</a> -
+          <a href="Xnet/Services">services proposés</a> -
+          <a href="Xnet/APropos">à propos de ce site</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           {if $smarty.session.auth}
             - <a href="send_bug" onclick="send_bug();return false">signaler un bug</a>
