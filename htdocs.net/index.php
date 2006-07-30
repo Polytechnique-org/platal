@@ -34,6 +34,8 @@ if ($path = Env::v('n') && substr($path, 0, 4) != 'Xnet') {
     exit;
 }
 
+/*** WIKI CODE ***/
+
 require_once 'wiki.inc.php';
 
 $n = wiki_pagename();

@@ -19,6 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+// $GLOBALS['IS_XNET_SITE'] = true;
+
 require_once 'xorg.inc.php';
 
 require_once dirname(__FILE__).'/../classes/Platal.php';
