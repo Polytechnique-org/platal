@@ -32,7 +32,6 @@ class XnetModule extends PLModule
             'article16' => $this->make_hook('article16', AUTH_PUBLIC),
             'creategpx' => $this->make_hook('creategpx', AUTH_PUBLIC),
             'services'  => $this->make_hook('services',  AUTH_PUBLIC),
-            'manuel'    => $this->make_hook('manuel',    AUTH_PUBLIC),
 
             'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),
             'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
@@ -81,15 +80,6 @@ class XnetModule extends PLModule
     {
         $page->changeTpl('xnet/services.tpl');
         $page->useMenu();
-    }
-
-    function handler_manuel(&$page, $type = null)
-    {
-        $page->changeTpl('xnet/manuel.tpl');
-        if (!$type) {
-            $page->useMenu();
-        }
-        $page->assign('type', $type);
     }
 
     function handler_admin(&$page)

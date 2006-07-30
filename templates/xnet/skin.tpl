@@ -178,7 +178,7 @@
                 {icon name=wrench title="Administration"}
               </a><br />
               {/if}
-              <a href="manuel" title="Manuel d'aide en ligne">
+              <a href="Xnet" title="Manuel d'aide en ligne">
                 Manuel de l'utilisateur
                 {icon name=lightbulb title="Documentation"}
               </a>

@@ -72,7 +72,7 @@ class XnetPage extends PlatalPage
         $sub = array();
         $sub['accueil']           = '';
         $sub['liste des groupes'] = 'plan';
-        $sub['documentation']     = 'manuel';
+        $sub['documentation']     = 'Xnet';
         $menu["Menu Principal"]   = $sub;
 
         if (S::logged() && (is_member() || may_update())) {
