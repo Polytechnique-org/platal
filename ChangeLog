@@ -75,11 +75,12 @@ New:
 Bug/Wish:
 
     * Admin:
+        - #390: Add date of request in validation form.                    -FRU
+        - #397: Can edit death date in user admin page.                    -FRU
+        - #427: Automatic answers for validation.                          -Car
+        - #429: Tools to administrate duplicated adresses.                 -FRU
         - #430: Specify date format on downtime admin page.                -Car
-        - #397: Can edit death date in user admin page                     -FRU
-        - #429: Tools to administrate duplicated adresses                  -FRU
-        - #390: Add date of request in validation form                     -FRU
-        - #440: Rewrite events admin page                                  -FRU
+        - #440: Rewrite events admin page.                                 -FRU
 
     * Carnet:
         - #435: Calendar contains yearly events for all the contacts.      -FRU
@@ -90,17 +91,17 @@ Bug/Wish:
         - #426: Add an identification header in mails.                     -FRU
 
     * Lists:
-        - #127: Add promo in member list when sorted by name               -FRU
-        - #423: Allow line breaks in mailing list descriptions             -FRU
+        - #127: Add promo in member list when sorted by name.              -FRU
+        - #423: Allow line breaks in mailing list descriptions.            -FRU
 
     * Profile:
         - #344: Tels can be bigger (up to 30 chars).                       -Car
-        - #422: Parasitic strings in vcard                                 -FRU
+        - #422: Parasitic strings in vcard.                                -FRU
 
     * Xnet:
         - #426: Add an identification header in mails.                     -FRU
-        - #384: substitution of non-X's names in mail from web interface   -FRU
-        - #380: Add sex for non-X                                          -FRU
+        - #384: Substitution of non-X's names in mail from web interface.  -FRU
+        - #380: Add sex for non-X.                                         -FRU
 
 From 0.9.10 Branch:
 

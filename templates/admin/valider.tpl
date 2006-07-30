@@ -71,9 +71,19 @@
   </tr>
   <tr><th colspan='2'>Réponse</th></tr>
   <tr>
-    <td colspan='2' class='center' {popup caption="Règles de validation" text=$valid->rules}>
+    <td colspan='2' {popup caption="Règles de validation" text=$valid->rules}>
       <form action="admin/validate" method="post">
         <div>
+          Réponse préremplie :
+          <select onchange="this.form.comm.value=this.value">
+            <option value=""></option>
+            {foreach from=$valid->answers() item=automatic_answer}
+              <option value="{$automatic_answer.answer}">{$automatic_answer.title}</option>
+            {/foreach}
+          </select>
+          <a href="admin/validate/answers">{icon name="page_edit" title="Editer les réponses automatiques"}</a>
+        </div>
+        <div class='center'>
           Ajouté dans l'email :<br />
           <textarea rows="5" cols="50" name="comm"></textarea><br />
 

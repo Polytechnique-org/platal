@@ -294,6 +294,19 @@ class Validate
     { return null; }
 
     // }}}
+    // {{{ function answers()
+
+    /** automatic answers table for this type of validation */
+    function answers() {
+        static $answers_table;
+        if (!isset($answers_table[$this->type])) {
+            $r = XDB::query("SELECT id, title, answer FROM requests_answers WHERE category = {?}", $this->type);
+            $answers_table[$this->type] = $r->fetchAllAssoc($r);
+        }
+        return $answers_table[$this->type];
+    }
+
+    // }}}
 }
 
 foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {

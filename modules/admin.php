@@ -39,6 +39,7 @@ class AdminModule extends PLModule
             'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
             'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
+            'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
         );
     }
@@ -465,6 +466,16 @@ class AdminModule extends PLModule
         }
         
         $page->assign('vit', new ValidateIterator());
+    }
+    function handler_validate_answers(&$page, $action = 'list', $id = null) {
+        require_once('../classes/PLTableEditor.php');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Réponses automatiques de validation');
+        $page->assign('title', 'Gestion des réponses automatiques');
+        $table_editor = new PLTableEditor('admin/validate/answers','requests_answers','id');
+        $table_editor->describe('category','catégorie',true);
+        $table_editor->describe('title','titre',true);
+        $table_editor->describe('answer','texte',false);
+        $table_editor->apply($page, $action, $id);
     }
     function handler_skins(&$page, $action = 'list', $id = null) {
         require_once('../classes/PLTableEditor.php');
