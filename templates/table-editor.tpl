@@ -105,7 +105,7 @@
         {elseif $myval.Type eq 'enum'}
           <select name="{$myfield}">
             {foreach from=$myval.List item=option}
-              <option value="{$option}" {if $entry.$myfield.$option}selected="selected"{/if}>{$option}</option>
+              <option value="{$option}" {if $entry.$myfield eq $option}selected="selected"{/if}>{$option}</option>
             {/foreach}
           </select>
         {elseif ($myval.Type eq 'textarea') or ($myval.Type eq 'varchar200')}
