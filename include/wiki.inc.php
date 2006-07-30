@@ -111,16 +111,19 @@ function wiki_apply_perms($perm) {
         return;
 
       case 'logged':
-        if ((empty($GLOBALS['IS_XNET_SITE']) && !XorgSession::doAuthCookie()) ||
-          ($GLOBALS['IS_XNET_SITE'] && !$_SESSION['session']->doAuth())) {
+        if (empty($GLOBALS['IS_XNET_SITE']) && !XorgSession::doAuthCookie()) {
             $platal = new Platal();
+            $platal->force_login($page);
+        }
+        if ($GLOBALS['IS_XNET_SITE'] && !$_SESSION['session']->doAuth()) {
+            $platal = new Xnet();
             $platal->force_login($page);
         }
         return;
 
       default:
         if (!$_SESSION['session']->doAuth()) {
-            $platal = new Platal();
+            $platal = empty($GLOBALS['IS_XNET_SITE']) ? new Platal() : new Xnet();
             $platal->force_login($page);
         }
         if ($perm == 'admin') {
