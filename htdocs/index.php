@@ -26,7 +26,7 @@ require_once 'xorg.inc.php';
 require_once dirname(__FILE__).'/../classes/Platal.php';
 require_once dirname(__FILE__).'/../classes/PLModule.php';
 
-if (($path = Env::v('n')) && ($path{0} < 'A' || $path{0} > 'Z')) {
+if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 
     $platal = new Platal('auth', 'banana', 'carnet', 'email', 'events',
                          'geoloc', 'lists', 'marketing', 'payment', 'platal',
