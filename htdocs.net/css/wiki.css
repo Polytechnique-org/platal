@@ -43,6 +43,11 @@ table.quickref td {
 
 #wikitext {
     text-align: justify;
+    font-size: 90%;
+}
+
+#wikitext p {
+    padding-left: 7px;
 }
 
 .diffbox {
