@@ -142,6 +142,16 @@ class Platal
         $page->assign_by_ref('platal', $this);
         $page->run();
     }
+
+    function on_subscribe($forlife, $uid, $promo, $pass)
+    {
+        $args = func_get_args();
+        foreach ($this->__mods as $mod) {
+            if (!is_callable($mod, 'on_subscribe'))
+                continue;
+            call_user_func_array(array($mod, 'on_subscribe'), $args);
+        }
+    }
 }
 
 ?>

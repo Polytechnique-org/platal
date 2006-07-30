@@ -37,6 +37,12 @@ class EventsModule extends PLModule
         );
     }
 
+    function on_subscribe($forlife, $uid, $promo, $password)
+    {
+        require_once 'newsletter.inc.php';
+        subscribe_nl($uid);
+    }
+
     function handler_ev(&$page)
     {
         $page->changeTpl('login.tpl');

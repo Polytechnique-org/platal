@@ -44,6 +44,12 @@ class ListsModule extends PLModule
         );
     }
 
+    function on_subscribe($forlife, $uid, $promo, $password)
+    {
+        $this->prepare_client(null);
+        $this->client->subscribe("promo$promo");
+    }
+
     function prepare_client(&$page)
     {
         require_once 'lists.inc.php';

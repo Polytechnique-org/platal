@@ -31,11 +31,9 @@ class XorgGlobals extends PlatalGlobals
     function init()
     {
         global $globals;
-        require_once('xorg/hook.inc.php');
 
         $globals       = new XorgGlobals;
         $globals->core = new CoreConfig;
-        $globals->hook = new XOrgHook();
 
         $globals->read_config();
 

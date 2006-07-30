@@ -29,6 +29,12 @@ class SearchModule extends PLModule
         );
     }
 
+    function on_subscribe($forlife, $uid, $promo, $pass)
+    {
+        require_once 'user.func.inc.php';
+        user_reindex($uid);
+    }
+
     function get_quick($offset, $limit, $order)
     {
         global $globals;

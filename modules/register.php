@@ -254,7 +254,8 @@ class RegisterModule extends PLModule
 
         XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);
 
-        $globals->hook->subscribe($forlife, $uid, $promo, $password);
+        global $platal;
+        $platal->on_subscribe($forlife, $uid, $promo, $password);
 
         require_once('xorg.mailer.inc.php');
         $mymail = new XOrgMailer('register/inscription.reussie.tpl');
