@@ -125,7 +125,7 @@ class XnetGrpModule extends PLModule
             header('Last-Modified:' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Cache-Control: no-cache, must-revalidate');
             header('Pragma: no-cache');
-            readfile(dirname(__FILE__).'/../htdocs.net/images/dflt_carre.jpg');
+            readfile(dirname(__FILE__).'/../htdocs/images/dflt_carre.jpg');
         }
 
         exit;
