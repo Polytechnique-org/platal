@@ -3,6 +3,7 @@
 $EnablePathInfo   = 1;   # in fact works with apache rewrite, name is misleading
 $EnableGUIButtons = 1;
 $EnableUpload     = 1;
+$UploadMaxSize    = 500000;
 $LinkWikiWords    = 0;   # disable WikiWord links
 $EnableIMSCaching = 1;   # allow browser caching
 
