@@ -112,10 +112,10 @@ class Platal
     {
         if (S::logged() and !$new_name) {
             $page->changeTpl('password_prompt_logged.tpl');
-            $page->addJsLink('javascript/do_challenge_response_logged.js');
+            $page->addJsLink('do_challenge_response_logged.js');
         } else {
             $page->changeTpl('password_prompt.tpl');
-            $page->addJsLink('javascript/do_challenge_response.js');
+            $page->addJsLink('do_challenge_response.js');
     	}
         $page->run();
     }

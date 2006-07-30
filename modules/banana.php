@@ -140,7 +140,7 @@ class BananaModule extends PLModule
     function run_banana(&$page, $params = null)
     {
         $page->changeTpl('banana/index.tpl');
-        $page->addCssLink('css/banana.css');
+        $page->addCssLink('banana.css');
         $page->assign('xorg_title','Polytechnique.org - Forums & PA');
 
         require_once dirname(__FILE__).'/banana/banana.inc.php';

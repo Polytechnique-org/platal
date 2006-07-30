@@ -113,7 +113,7 @@ $page->assign('wikipage', str_replace('.', '/', $n));
 $page->assign('pmwiki',   $wikiAll);
 
 $page->addCssLink('wiki.css');
-$page->addJsLink('javascript/wiki.js');
+$page->addJsLink('wiki.js');
 
 $page->useMenu();
 $page->run();

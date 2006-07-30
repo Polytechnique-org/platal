@@ -190,7 +190,7 @@ class PlatalModule extends PLModule
         }
 
         $page->changeTpl('motdepasse.tpl');
-        $page->addJsLink('javascript/motdepasse.js');
+        $page->addJsLink('motdepasse.js');
         $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
     }
 
@@ -315,7 +315,7 @@ Mail envoyé à ".Env::v('login'));
             $page->changeTpl('tmpPWD.success.tpl');
         } else {
             $page->changeTpl('motdepasse.tpl');
-            $page->addJsLink('javascript/motdepasse.js');
+            $page->addJsLink('motdepasse.js');
         }
     }
 

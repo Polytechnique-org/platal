@@ -324,7 +324,7 @@ class RegisterModule extends PLModule
             $page->assign('mdpok', true);
         }
 
-        $page->addJsLink('javascript/motdepasse.js');
+        $page->addJsLink('motdepasse.js');
     }
 }
 

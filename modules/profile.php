@@ -235,7 +235,7 @@ class ProfileModule extends PLModule
                 $user['forlife'].'@'.$globals->mail->domain2);
         $page->assign('virtualalias', $res->fetchOneCell());
 
-        $page->addJsLink('javascript/close_on_esc.js');
+        $page->addJsLink('close_on_esc.js');
     }
 
     function handler_p_edit(&$page, $opened_tab = 'general')
@@ -244,7 +244,7 @@ class ProfileModule extends PLModule
 
         $page->changeTpl('profil.tpl');
 
-        $page->addCssLink('css/profil.css');
+        $page->addCssLink('profil.css');
         $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
 
         require_once 'tabs.inc.php';
@@ -461,7 +461,7 @@ class ProfileModule extends PLModule
                   WHERE  uid = {?}", $user_id);
         $page->assign('pays', $res->fetchColumn());
 
-        $page->addJsLink('javascript/close_on_esc.js');
+        $page->addJsLink('close_on_esc.js');
     }
 
     function handler_ref_search(&$page)

@@ -273,7 +273,7 @@ class ListsModule extends PLModule
 
         $page->changeTpl('listes/archives.tpl');
 
-        $page->addCssLink('css/lists.archives.css');
+        $page->addCssLink('lists.archives.css');
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
             && !$det['own'] && ($det['sub'] < 2))

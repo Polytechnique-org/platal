@@ -115,8 +115,8 @@ $page->assign('has_perms',  wiki_may_have_perms('admin'));
 $page->assign('wikipage', str_replace('.', '/', $n));
 $page->assign('pmwiki',   $wikiAll);
 
-$page->addCssLink('css/wiki.css');
-$page->addJsLink('javascript/wiki.js');
+$page->addCssLink('wiki.css');
+$page->addJsLink('wiki.js');
 
 $page->run();
 
