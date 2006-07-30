@@ -52,6 +52,7 @@ class AuthFailed(Exception): pass
 #------------------------------------------------
 
 config = ConfigParser.ConfigParser()
+config.read(os.path.dirname(__file__)+'/../configs/platal.ini')
 config.read(os.path.dirname(__file__)+'/../configs/platal.conf')
 
 def get_config(sec, val, default=None):
