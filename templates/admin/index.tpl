@@ -113,8 +113,6 @@
   <tr class="impair">
     <td>
       <strong>Trésorerie :</strong>&nbsp;&nbsp;
-      <a href="trezo/ops">Comptes</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/payments">Paiements</a>
     </td>
   </tr>
