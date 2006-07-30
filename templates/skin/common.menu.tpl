@@ -61,9 +61,7 @@
 
 <div class="menu_title">Communauté X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
-{if $globals->geoloc->use_map}
 <div class="menu_item"><a href="geoloc">Planisphère</a></div>
-{/if}
 <div class="menu_item"><a href="trombi">Trombi promo</a></div>
 <div class="menu_item"><a href="referent/search">Conseil Pro.</a></div>
 <div class="menu_item"><a href="http://www.polytechnique.net/plan">Groupes X</a></div>

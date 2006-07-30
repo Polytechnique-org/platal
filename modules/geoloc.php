@@ -54,12 +54,17 @@ class GeolocModule extends PLModule
         return $querystring;
     }
 
+    function use_map()
+    {
+        return is_file(dirname(__FILE__).'/geoloc/dynamap.swf') &&
+                is_file(dirname(__FILE__).'/geoloc/icon.swf');
+    }
+
     function handler_default(&$page)
     {
         global $globals;
 
-        if (!is_file(dirname(__FILE__).'/geoloc/dynamap.swf') ||
-             !is_file(dirname(__FILE__).'/geoloc/icon.swf'))
+        if (!$this->use_map())
             $page->assign('request_geodesix', 1);
 
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
@@ -121,7 +126,7 @@ class GeolocModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('geoloc/geolocInit.tpl', NO_SKIN);
+        $page->changeTpl('geoloc/init.tpl', NO_SKIN);
 
         header('Content-type: text/xml');
         header('Pragma:');
@@ -137,7 +142,7 @@ class GeolocModule extends PLModule
         header("Content-type: text/xml");
         header("Pragma:");
 
-        $page->changeTpl('geoloc/getCityInfos.tpl', NO_SKIN);
+        $page->changeTpl('geoloc/city.tpl', NO_SKIN);
 
         require_once('geoloc.inc.php');
         require_once('search.inc.php');
@@ -173,11 +178,11 @@ class GeolocModule extends PLModule
 
         // to debug sql use the next line
         if (Env::has('debug')) {
-            $page->changeTpl('geoloc/getData.tpl', SIMPLE);
+            $page->changeTpl('geoloc/country.tpl', SIMPLE);
         } else {
             header("Content-type: text/xml");
             header("Pragma:");
-            $page->changeTpl('geoloc/getData.tpl', NO_SKIN);
+            $page->changeTpl('geoloc/country.tpl', NO_SKIN);
         }
 
         require_once 'geoloc.inc.php';

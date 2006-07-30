@@ -64,21 +64,33 @@ function searchMapId(f)
 {/if}
 {if !$request_geodesix}
   <p class="center">
-    <embed
-      src="{$platal->ns}geoloc/dynamap.swf"
-      quality="high"
-      bgcolor="#ffffff"
-      width="600"
-      height="450"
-      name="dynamap"
-      id="dynamap"
-      align="middle"
-      flashvars="initfile={$platal->ns}geoloc%2Finit{$search|smarty:nodefaults}"
-      type="application/x-shockwave-flash"
-      menu="false"
-      wmode="opaque"
-      salign="tl"
-      pluginspage="{$protocole}://www.macromedia.com/go/getflashplayer" />
+  <object
+    classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+    codebase="{$protocole}://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+    width="600"
+    height="450"
+    align="middle">
+      <param name="movie" value="$platal->ns}geoloc/dynamap.swf"/>
+      <param name="bgcolor" value="#ffffff"/>
+      <param name="wmode" value="opaque"/>
+      <param name="quality" value="high"/>
+      <param name="flashvars" value="initfile={$platal->ns}geoloc%2Finit{$search|smarty:nodefaults}"/>
+      <embed
+        src="{$platal->ns}geoloc/dynamap.swf"
+        quality="high"
+        bgcolor="#ffffff"
+        width="600"
+        height="450"
+        name="dynamap"
+        id="dynamap"
+        align="middle"
+        flashvars="initfile={$platal->ns}geoloc%2Finit{$search|smarty:nodefaults}"
+        type="application/x-shockwave-flash"
+        menu="false"
+        wmode="opaque"
+        salign="tl"
+        pluginspage="{$protocole}://www.macromedia.com/go/getflashplayer"/>
+    </object>
   </p>
   <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>
   {if !$no_annu}

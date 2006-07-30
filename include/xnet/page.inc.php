@@ -81,8 +81,7 @@ class XnetPage extends PlatalPage
             $sub['présentation'] = "$dim/";
             if (may_update() || $globals->asso('pub') == 'public') {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
-                if ($globals->xnet->geoloc)
-                    $sub['carte'] = "$dim/geoloc";
+                $sub['carte'] = "$dim/geoloc";
             }
             if ($globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/lists";
