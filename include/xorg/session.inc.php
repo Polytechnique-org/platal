@@ -21,8 +21,6 @@
 
 require_once dirname(__FILE__).'/../../classes/Session.php';
 
-// {{{ class XorgSession
-
 class XorgSession
 {
     // {{{ function init
@@ -165,7 +163,6 @@ class XorgSession
     // }}}
 }
 
-// }}}
 // {{{ function try_cookie()
 
 /** réalise la récupération de $_SESSION pour qqn avec cookie

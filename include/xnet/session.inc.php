@@ -74,6 +74,13 @@ class XnetSession
     }
 
     // }}}
+    // {{{ doAuthCookie
+
+    function doAuthCookie() {
+        return XnetSession::doAuth();
+    }
+
+    // }}}
     // {{{ doAuthX
 
     function doAuthX() {
