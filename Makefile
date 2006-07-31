@@ -65,17 +65,17 @@ htdocs/wiki:
 spool/wiki.d:
 	mkdir -p $@
 	chmod o+w $@
-	cd $@ && ln -sf ../../install.d/wiki/wiki.d/* .
+	cd $@ && ln -sf ../../include/wiki/wiki.d/* .
 
 
 wiki/cookbook/e-protect.php:
-	cd wiki/cookbook && ln -sf ../../install.d/wiki/e-protect.php
+	cd wiki/cookbook && ln -sf ../../include/wiki/e-protect.php
 
 wiki/local/farmconfig.php:
-	cd wiki/local/     && ln -sf ../../plugins/pmwiki.config.php farmconfig.php
+	cd wiki/local/ && ln -sf ../../include/wiki/farmconfig.php
 
 wiki/pub/skins/empty:
-	cd wiki/pub/skins/ && ln -sf ../../../install.d/wiki/empty
+	cd wiki/pub/skins/ && ln -sf ../../../include/wiki/empty
 
 
 get-wiki:

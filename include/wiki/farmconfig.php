@@ -13,7 +13,7 @@ $PubDirUrl        = './wiki';     #/
 
 $WorkDir          = '../spool/wiki.d';
 $WikiDir          = new PageStore('$FarmD/'.$WorkDir.'/$FullName');
-$InterMapFiles[]  = $globals->spoolroot.'plugins/pmwiki.intermap.txt';
+$InterMapFiles[]  = $globals->spoolroot.'/configs/pmwiki.intermap.txt';
 
 $Skin             = 'empty';
 
