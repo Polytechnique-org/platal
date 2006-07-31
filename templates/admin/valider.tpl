@@ -66,6 +66,7 @@
           <input type="hidden" name="uid"    value="{$valid->uid}" />
           <input type="hidden" name="type"   value="{$valid->type}" />
           <input type="hidden" name="stamp"  value="{$valid->stamp}" />
+          <input type="hidden" name="formid" value="{0|rand:65535}" />
           <textarea rows="3" cols="50" name="comm"></textarea>
           <br />
           <input type="submit" name="hold"   value="Commenter" />

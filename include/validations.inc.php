@@ -158,7 +158,13 @@ class Validate
 
         // ajout d'un commentaire
         if (Env::has('hold') && Env::has('comm')) {
-            $this->comments[] = Array(S::v('bestalias'), Env::v('comm'));
+            $formid = Env::i('formid');
+            foreach ($this->comments as $comment) {
+                if ($comment[2] === $formid) {
+                    return true;
+                }
+            }
+            $this->comments[] = Array(S::v('bestalias'), Env::v('comm'), $formid);
 
             // envoi d'un mail à hotliners
             global $globals;
