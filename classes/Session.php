@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 require_once 'diogenes/diogenes.misc.inc.php';
-require_once 'diogenes/diogenes.core.logger.inc.php';
 
 class Session
 {

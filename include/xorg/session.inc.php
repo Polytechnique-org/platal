@@ -224,11 +224,11 @@ function start_connexion ($uid, $identified)
     $suid = S::v('suid');
 
     if ($suid) {
-	$logger = new DiogenesCoreLogger($uid, $suid);
+	$logger = new CoreLogger($uid, $suid);
 	$logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
         $sess['suid'] = $suid;
     } else {
-        $logger = S::v('log', new DiogenesCoreLogger($uid));
+        $logger = S::v('log', new CoreLogger($uid));
         $logger->log("connexion", $_SERVER['PHP_SELF']);
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }

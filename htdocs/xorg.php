@@ -21,10 +21,11 @@
 
 // $GLOBALS['IS_XNET_SITE'] = true;
 
-require_once 'xorg.inc.php';
-
 require_once dirname(__FILE__).'/../classes/Platal.php';
 require_once dirname(__FILE__).'/../classes/PLModule.php';
+require_once dirname(__FILE__).'/../classes/CoreLogger.php';
+
+require_once 'xorg.inc.php';
 
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 

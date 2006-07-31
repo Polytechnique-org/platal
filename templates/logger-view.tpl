@@ -20,11 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<h1>
-  Parcours des logs du site
-</h1>
-
+<h1>Parcours des logs du site</h1>
 
 {if $smarty.request.logsess}
 

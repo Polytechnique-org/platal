@@ -21,7 +21,6 @@
 {**************************************************************************}
 
 
-
 <h1>{$title}</h1>
 
 {if $list}
@@ -72,8 +71,8 @@
 
 {if ($p_prev > -1) || ($p_next > -1)}
 <p class="pagenavigation">
-{if $p_prev > -1}<a href="{$smarty.request.PHP_SELF}?start={$p_prev}">{$msg_previous_page}</a>&nbsp;{/if}
-{if $p_next > -1}<a href="{$smarty.request.PHP_SELF}?start={$p_next}">{$msg_next_page}</a>{/if}
+{if $p_prev > -1}<a href="{$platal->path}?start={$p_prev}">{$msg_previous_page}</a>&nbsp;{/if}
+{if $p_next > -1}<a href="{$platal->path}?start={$p_next}">{$msg_next_page}</a>{/if}
 </p>
 {/if}
 

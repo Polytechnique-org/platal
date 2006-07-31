@@ -94,18 +94,17 @@ class AdminModule extends PLModule
     }
 
     function handler_logger(&$page) {
-        $page->changeTpl('logger-view.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
-        require_once('diogenes/diogenes.logger-view.inc.php');
+        require_once dirname(__FILE__).'/../classes/LoggerView.php';
 
         if (!Env::has('logauth')) {
             $_REQUEST['logauth'] = 'native';
         }
 
-        $logview = new DiogenesLoggerView;
+        $logview = new LoggerView;
         $logview->run($page);
 
         $page->fakeDiogenes();
+        $page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
     }
 
     function handler_user(&$page, $login = false) {

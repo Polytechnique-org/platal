@@ -21,10 +21,11 @@
 
 $GLOBALS['IS_XNET_SITE'] = true;
 
-require 'xnet.inc.php';
-
 require_once dirname(__FILE__).'/../classes/Xnet.php';
 require_once dirname(__FILE__).'/../classes/PLModule.php';
+require_once dirname(__FILE__).'/../classes/CoreLogger.php';
+
+require 'xnet.inc.php';
 
 if (!($path = Env::v('n')) || substr($path, 0, 4) != 'Xnet') {
     $platal = new Xnet('xnet', 'xnetgrp', 'xnetlists', 'xnetevents', 'geoloc');

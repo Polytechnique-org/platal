@@ -249,7 +249,7 @@ class RegisterModule extends PLModule
         $redirect->add_email($email);
 
         // on cree un objet logger et on log l'inscription
-        $logger = new DiogenesCoreLogger($uid);
+        $logger = new CoreLogger($uid);
         $logger->log('inscription', $email);
 
         XDB::execute('UPDATE register_pending SET hash="INSCRIT" WHERE uid={?}', $uid);

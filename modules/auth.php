@@ -143,8 +143,7 @@ class AuthModule extends PLModule
         // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
         if (!isset($_SESSION['suid'])) {
             $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid == $uid)
-                      ? $_SESSION['log']
-                      : new DiogenesCoreLogger($uid);
+                      ? $_SESSION['log'] : new CoreLogger($uid);
             $logger->log('connexion_auth_ext', $_SERVER['PHP_SELF']);
         }
 

@@ -284,7 +284,7 @@ Mail envoyé à ".Env::v('login'));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
-            $logger = $_SESSION['log'] = new DiogenesCoreLogger($uid);
+            $logger = $_SESSION['log'] = new CoreLogger($uid);
             $logger->log('recovery', $emails);
         } else {
             $page->trig('Pas de résultat correspondant aux champs entrés dans notre base de données.');
@@ -306,7 +306,7 @@ Mail envoyé à ".Env::v('login'));
         $uid = $ligne["uid"];
         if (Post::has('response2')) {
             $password = Post::v('response2');
-            $logger   = new DiogenesCoreLogger($uid);
+            $logger   = new CoreLogger($uid);
             XDB::query('UPDATE  auth_user_md5 SET password={?}
                                    WHERE  user_id={?} AND perms IN("admin","user")',
                                  $password, $uid);
