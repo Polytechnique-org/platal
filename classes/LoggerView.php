@@ -39,7 +39,7 @@ class LoggerView {
         global $globals;
 
         // give a 'no filter' option
-        $days[0] = __("all");
+        $months[0] = "----";
 
         if ($year && $month) {
             $day_max = Array(-1, 31, checkdate(2, 29, $year) ? 29 : 28 , 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
@@ -82,7 +82,7 @@ class LoggerView {
         global $globals;
 
         // give a 'no filter' option
-        $months[0] = __("all");
+        $months[0] = "----";
 
         if ($year) {
             $res = XDB::query("SELECT YEAR (MAX(start)), YEAR (MIN(start)),
@@ -137,7 +137,7 @@ class LoggerView {
         global $globals;
 
         // give a 'no filter' option
-        $years[0] = __("all");
+        $years[0] = "----";
 
         // retrieve available years
         $res = XDB::query("select YEAR(MAX(start)), YEAR(MIN(start)) FROM {$globals->table_log_sessions}");
@@ -286,22 +286,14 @@ class LoggerView {
                 $res = XDB::iterator($select);
 
                 $sessions = array();
-                $odd = false;
                 while ($mysess = $res->next()) {
                     $mysess['username'] = $this->_getUsername($mysess['auth'], $mysess['uid']);
                     // pretty label for auth method
                     $mysess['lauth'] = $auths[$mysess['auth']];
                     // summary of events
                     $mysess['events'] = array();
-                    // actions
-                    $mysess['actions'] = array(
-                        array(__("view session"), "admin/logger?logsess={$mysess['id']}"),
-                        array(__("user's log"), "admin/logger?logauth={$mysess['auth']}&amp;loguser={$mysess['username']}")
-                        );
 
-                    $mysess['class'] = $odd ? "odd" : "even";
                     $sessions[$mysess['id']] = $mysess;
-                    $odd = !$odd;
                 }
                 array_reverse($sessions);
 
@@ -318,26 +310,9 @@ class LoggerView {
                 }
                 $page->assign_by_ref('sessions', $sessions);
             } else {
-                $page->assign('msg_nofilters', __("Please select a year and/or a user."));
+                $page->assign('msg_nofilters', "Sélectionner une annuée et/ou un utilisateur");
             }
         }
-
-        // translations
-        $page->assign('msg_session_properties', __("session properties"));
-        $page->assign('msg_user', __("user"));
-        $page->assign('msg_host', __("host"));
-        $page->assign('msg_browser', __("browser"));
-        $page->assign('msg_date', __("date"));
-        $page->assign('msg_action', __("action"));
-        $page->assign('msg_data', __("data"));
-        $page->assign('msg_filter_by', __("filter by"));
-        $page->assign('msg_start', __("start"));
-        $page->assign('msg_summary', __("summary"));
-        $page->assign('msg_actions', __("actions"));
-        $page->assign('msg_year', __("year"));
-        $page->assign('msg_month', __("month"));
-        $page->assign('msg_day', __("day"));
-        $page->assign('msg_submit', __("Submit"));
 
         // if requested, assign the content to be displayed
         if (!empty($outputvar)) {

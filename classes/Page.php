@@ -62,22 +62,6 @@ class PlatalPage extends Smarty
     }
 
     // }}}
-    // {{{ function fakeDiogenes()
-
-    function fakeDiogenes()
-    {
-        require_once 'diogenes/diogenes.core.page.inc.php';
-        $this->register_function("extval","diogenes_func_extval");
-        $this->register_function("flags","diogenes_func_flags");
-        $this->register_function("a","diogenes_func_a");
-        $this->register_function("checkbox","diogenes_func_checkbox");
-        $this->register_function("diff","diogenes_func_diff");
-        $this->register_function("menu_item","diogenes_func_menu_item");
-        $this->register_function("tag","diogenes_func_tag");
-        $this->register_function("toolbar","diogenes_func_toolbar");
-    }
-
-    // }}}
     // {{{ function changeTpl()
 
     function changeTpl($tpl, $type = SKINNED)

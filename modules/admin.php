@@ -103,7 +103,6 @@ class AdminModule extends PLModule
         $logview = new LoggerView;
         $logview->run($page);
 
-        $page->fakeDiogenes();
         $page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
     }
 

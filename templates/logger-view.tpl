@@ -26,19 +26,19 @@
 
 <table class="bicol">
 <tr>
-  <th colspan="2">{$msg_session_properties}</th>
+  <th colspan="2">Propriétés de la session</th>
 </tr>
 <tr class="impair">
-  <td class="titre">{$msg_user}</td>
+  <td class="titre">utilisateur</td>
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if}
   [<a href="{$platal->ns}admin/logger?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
 </tr>
 <tr class="pair">
-  <td class="titre">{$msg_host}</td>
+  <td class="titre">Hôte</td>
   <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
 </tr>
 <tr class="impair">
-  <td class="titre">{$msg_browser}</td>
+  <td class="titre">Navigateur</td>
   <td>{$session.browser}</td>
 </tr>
 </table>
@@ -47,9 +47,9 @@
 
 <table class="bicol">
 <tr>
-  <th>{$msg_date}</th>
-  <th>{$msg_action}</th>
-  <th>{$msg_data}</th>
+  <th>date</th>
+  <th>action</th>
+  <th>donnée</th>
 </tr>
 {foreach from=$events item=myevent}
 <tr class="{cycle values="impair,pair"}">
@@ -65,31 +65,28 @@
 <form method="post" action="{$platal->ns}admin/logger">
 <table class="bicol">
 <tr>
-  <th colspan="2">{$msg_filter_by}</th>
-</tr>
-<tr>
   <td><strong>{$msg_date}</strong></td>
   <td>
-    {$msg_year}
+    Année
     <select name="year" onchange="this.form.submit()">
       {html_options options=$years selected=$year}
     </select>
-    &nbsp;{$msg_month}
+    &nbsp;Mois
     <select name="month" onchange="this.form.submit()">
       {html_options options=$months selected=$month}
     </select>
-    &nbsp;{$msg_day}
+    &nbsp;Jour
     <select name="day" onchange="this.form.submit()">
       {html_options options=$days selected=$day}
     </select>
   </td>
 </tr>
 <tr>
-  <td><strong>{$msg_user}</strong></td>
+  <td><strong>Utilisateur</strong></td>
   <td>
     <input type="text" name="loguser" value="{$loguser}" />
     {html_options name="logauth" options=$auths selected=$logauth}
-    <input type="submit" value="{$msg_submit}" />
+    <input type="submit" />
   </td>
 </tr>
 </table>
@@ -100,10 +97,10 @@
 
 <table class="bicol" style="font-size: 90%">
   <tr>
-    <th>{$msg_start}</th>
-    <th>{$msg_user}</th>
-    <th>{$msg_summary}</th>
-    <th>{$msg_actions}</th>
+    <th>début</th>
+    <th>utilisateur</th>
+    <th>résumé</th>
+    <th>actions</th>
   </tr>
 {foreach from=$sessions item=mysess}
   <tr class="{cycle values="impair,pair"}">
@@ -113,9 +110,8 @@
       {foreach from=$mysess.events item=myevent}{$myevent}<br />{/foreach}
     </td>
     <td class="action">
-{foreach from=$mysess.actions item=myaction}
-      {a lnk=$myaction}
-{/foreach}
+      <a href="admin/logger?logsess={$mysess.id}">session</a>
+      <a href="admin/logger?logauth={$mysess.auth}&amp;loguser={$mysess.username}">user's log</a>
     </td>
   </tr>
   {/foreach}
