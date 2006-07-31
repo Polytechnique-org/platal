@@ -21,6 +21,8 @@
 
 class XDB
 {
+    var $_trace_data = array();
+
     // {{{ function _prepare
 
     function _prepare($args) {
@@ -30,6 +32,30 @@ class XDB
     }
 
     // }}}
+
+    function _query($query) {
+        global $globals;
+
+        if ($globals->debug & 1) {
+            $_res = mysql_query("EXPLAIN $query");
+            $explain = array();
+            while ($row = @mysql_fetch_assoc($_res)) {
+                $explain[] = $row;
+            }
+            $trace_data = array('query' => $query, 'explain' => $explain);
+            @mysql_free_result($_res);
+        }
+
+        $res = mysql_query($query);
+
+        if ($globals->debug & 1) {
+            $trace_data['error'] = mysql_error();
+            $GLOBALS['XDB::trace_data'][] = $trace_data;
+        }
+
+        return $res;
+    }
+
     // {{{ function query
 
     function &query()
@@ -40,9 +66,9 @@ class XDB
     // }}}
     // {{{ function execute()
 
-    function execute() {
-        global $globals;
-        return $globals->db->query(XDB::_prepare(func_get_args()));
+    function execute()
+    {
+        return XDB::_query(XDB::_prepare(func_get_args()));
     }
 
     // }}}
@@ -99,6 +125,11 @@ class XDB
     }
 
     // }}}
+
+    function trace_format(&$page, $template = 'database-debug.tpl') {
+        $page->assign('trace_data', $GLOBALS['XDB::trace_data']);
+        return $page->fetch($template);
+    }
 }
 
 class XOrgDBResult
@@ -112,9 +143,8 @@ class XOrgDBResult
 
     function XOrgDBResult($query)
     {
-        global $globals;
         if (strpos($query, 'SQL_CALC_FOUND_ROWS') === false) {
-            $this->_res = $globals->db->query($query);
+            $this->_res = XDB::_query($query);
         } else {
             $this->_res = mysql_query($query);
         }

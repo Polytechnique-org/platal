@@ -38,9 +38,6 @@ class XnetGlobals extends PlatalGlobals
         $globals->read_config();
 
         $globals->dbconnect();
-        if ($globals->debug & 1) {
-            $globals->db->trace_on();
-        }
     }
 
     function asso($key=null)

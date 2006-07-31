@@ -21,6 +21,7 @@
 
 // $GLOBALS['IS_XNET_SITE'] = true;
 
+require_once dirname(__FILE__).'/../classes/XDB.php';
 require_once dirname(__FILE__).'/../classes/Platal.php';
 require_once dirname(__FILE__).'/../classes/PLModule.php';
 require_once dirname(__FILE__).'/../classes/CoreLogger.php';

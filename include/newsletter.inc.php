@@ -22,7 +22,6 @@
 // {{{ requires + defines
 
 require_once("xorg.misc.inc.php");
-require_once("diogenes/diogenes.misc.inc.php");
 
 if (isset($page)) {
     $page->addCssLink('nl.css');

@@ -24,4 +24,6 @@ ini_set('include_path','/usr/share/php:'.dirname(__FILE__).'/../include');
 require_once('xorg.inc.php');
 require_once('xorg.misc.inc.php');
 
+require_once dirname(__FILE__).'/../classes/XDB.php';
+
 ?>

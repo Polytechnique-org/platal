@@ -19,16 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('diogenes/diogenes.core.globals.inc.php');
-require_once('diogenes/diogenes.database.inc.php');
-require_once dirname(__FILE__).'/../../classes/XDB.php';
-
 class CoreConfig
 {
     var $locale = 'fr_FR';
 }
 
-class PlatalGlobals extends DiogenesCoreGlobals
+class PlatalGlobals
 {
     var $page    = 'XorgPage';
     var $session;
@@ -49,6 +45,9 @@ class PlatalGlobals extends DiogenesCoreGlobals
     var $table_log_sessions = 'logger.sessions';
     var $table_log_events   = 'logger.events';
 
+    /** The class to use for session handling. */
+    var $session = 'DiogenesCoreSession';
+
     /** logger */
     var $tauth  = array('native'=>'auth_user_md5');
     var $tlabel = array('native'=>'X.Org');
@@ -64,6 +63,12 @@ class PlatalGlobals extends DiogenesCoreGlobals
         $base = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
         $this->baseurl   = trim($base.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
         $this->spoolroot = dirname(dirname(dirname(__FILE__)));
+    }
+
+    function dbconnect()
+    {
+        @mysql_connect($this->dbhost, $this->dbuser, $this->dbpwd);
+        @mysql_select_db($this->dbdb);
     }
 
     function read_config()

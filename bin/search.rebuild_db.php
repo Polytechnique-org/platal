@@ -28,11 +28,13 @@ XDB::execute('DELETE FROM search_name');
 
 $res = XDB::iterRow('SELECT auth_user_md5.user_id, nom, prenom, nom_usage, profile_nick FROM auth_user_md5 LEFT JOIN auth_user_quick USING(user_id)');
 $i = 0;
-$muls = array(1,1,1,0.2);
+$muls = array(1, 1, 1, 0.2);
 while ($tmp = $res->next()) {
     $uid = array_shift($tmp);
     _user_reindex($uid, $tmp, $muls);
-    printf ("%02.2f %%\n",  ++$i*100/$res->total());
+    printf("\r%u / %u",  ++$i, $res->total());
 }
+
+print "done\n";
 
 ?>
