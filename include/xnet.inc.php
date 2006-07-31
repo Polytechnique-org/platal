@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once('platal.inc.php');
-require_once('platal/globals.inc.php');
+require_once('globals.inc.php');
 require_once('xnet/session.inc.php');
 $globals = new PlatalGlobals('XnetSession');
 XnetSession::init();
