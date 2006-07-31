@@ -19,7 +19,7 @@ function mailman_stop() {
 function mailman_templates() {
     echo -n "copies new mails templates"
     mkdir -p /etc/mailman/xorg
-    cp -f ../../install.d/lists/mail_templates/*.txt /etc/mailman/xorg
+    cp -f ../../modules/lists/mail_templates/*.txt /etc/mailman/xorg
     echo .
 }
 
