@@ -43,7 +43,7 @@ class PlatalGlobals
 
         $base = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
         $this->baseurl   = trim($base.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
-        $this->spoolroot = dirname(dirname(dirname(__FILE__)));
+        $this->spoolroot = dirname(dirname(__FILE__));
 
         $this->read_config();
 

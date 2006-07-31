@@ -99,8 +99,9 @@ class Platal
         $args[0] = &$page;
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
-            // FIXME: don't use 'session' object anymore
-            if (!$_SESSION['session']->doAuth()) {
+            global $globals;
+
+            if (call_user_func(array($globals->session, 'doAuth'))) {
                 $this->force_login($page);
             }
         }

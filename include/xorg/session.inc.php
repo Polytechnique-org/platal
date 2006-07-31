@@ -32,7 +32,6 @@ class XorgSession
 	if (!S::has('uid')) {
 	    try_cookie();
         }
-        $_SESSION['session'] = new XorgSession;
     }
 
     // }}}

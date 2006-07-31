@@ -30,8 +30,6 @@ class XnetSession
 
         S::init();
 
-        $_SESSION['session'] = new XnetSession;
-
         if (!S::logged()) {
             // prevent connexion to be linked to deconnexion
             if (($i = strpos($_SERVER['REQUEST_URI'], 'exit')) !== false)
