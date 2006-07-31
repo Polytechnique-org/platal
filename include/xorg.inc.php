@@ -20,10 +20,9 @@
  ***************************************************************************/
 
 require_once('platal.inc.php');
-require_once('xorg/globals.inc.php');
+require_once('platal/globals.inc.php');
 require_once('xorg/session.inc.php');
-XorgGlobals::init();
-XorgGlobals::setlocale();
+$globals = new PlatalGlobals('XorgSession');
 XorgSession::init();
 
 require_once dirname(__FILE__).'/../classes/Page.php';

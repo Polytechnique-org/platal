@@ -19,17 +19,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-class CoreConfig
-{
-    var $locale = 'fr_FR';
-}
-
 class PlatalGlobals
 {
-    var $page    = 'XorgPage';
     var $session;
-    var $menu;
-    var $hook;
 
     /** The x.org version */
     var $version = '@VERSION@';
@@ -40,9 +32,6 @@ class PlatalGlobals
     var $dbhost             = 'localhost';
     var $dbuser             = 'x4dat';
     var $dbpwd              = 'x4dat';
-
-    /** The class to use for session handling. */
-    var $session = 'DiogenesCoreSession';
 
     /** paths */
     var $baseurl;
@@ -55,12 +44,11 @@ class PlatalGlobals
         $base = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
         $this->baseurl   = trim($base.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']), '/');
         $this->spoolroot = dirname(dirname(dirname(__FILE__)));
-    }
 
-    function dbconnect()
-    {
-        @mysql_connect($this->dbhost, $this->dbuser, $this->dbpwd);
-        @mysql_select_db($this->dbdb);
+        $this->read_config();
+
+        $this->dbconnect();
+        $this->setlocale();
     }
 
     function read_config()
@@ -90,12 +78,47 @@ class PlatalGlobals
         }
     }
 
+    function dbconnect()
+    {
+        @mysql_connect($this->dbhost, $this->dbuser, $this->dbpwd);
+        @mysql_select_db($this->dbdb);
+    }
+
     function setlocale()
     {
         global $globals;
         setlocale(LC_MESSAGES, $globals->core->locale);
         setlocale(LC_TIME,     $globals->core->locale);
         setlocale(LC_CTYPE,    $globals->core->locale);
+    }
+
+    function asso($key=null)
+    {
+        static $aid = null;
+
+        if (is_null($aid)) {
+            $gp = Get::v('n');
+            $gp = substr($gp, 0, strpos($gp, '/'));
+
+            if ($gp) {
+                $res = XDB::query('SELECT  a.*, d.nom AS domnom
+                                     FROM  groupex.asso AS a
+                                LEFT JOIN  groupex.dom  AS d ON d.id = a.dom
+                                    WHERE  diminutif = {?}', $gp);
+                if (!($aid = $res->fetchOneAssoc())) {
+                    $aid = array();
+                }
+            } else {
+                $aid = array();
+            }
+        }
+        if (empty($key)) {
+            return $aid;
+        } elseif ( isset($aid[$key]) ) {
+            return $aid[$key];
+        } else {
+            return null;
+        }
     }
 }
 

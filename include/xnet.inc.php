@@ -20,10 +20,9 @@
  ***************************************************************************/
 
 require_once('platal.inc.php');
-require_once('xnet/globals.inc.php');
+require_once('platal/globals.inc.php');
 require_once('xnet/session.inc.php');
-XnetGlobals::init();
-XnetGlobals::setlocale();
+$globals = new PlatalGlobals('XnetSession');
 XnetSession::init();
 
 // {{{ function new_skinned_page()
