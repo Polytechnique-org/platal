@@ -19,9 +19,6 @@
  */
 
 
-/** class for logging user activity
- *
- */
 class CoreLogger {
     /** user id */
     var $uid;
@@ -42,9 +39,12 @@ class CoreLogger {
         $this->session = $this->writeSession($uid, $suid);
 
         // retrieve available actions
-        $this->actions = $this->readActions();
-    }
+        $res = XDB::iterRow("SELECT id, text FROM logger.actions");
 
+        while (list($action_id, $action_text) = $res->next()) {
+            $this->actions[$action_text] = $action_id;
+        }
+    }
 
     /** Creates a new session entry in database and return its ID.
      * 
@@ -52,33 +52,16 @@ class CoreLogger {
      * @param $suid the id of the administrator who has just su'd to the user
      * @return session the session id
      */
-    function writeSession($uid, $suid) {
+    function writeSession($uid, $suid = null) {
         $ip      = $_SERVER['REMOTE_ADDR'];
         $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
         $browser = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
-        $sql     = "insert into logger.sessions set uid='$uid', host='$host', ip='$ip', browser='$browser'";
-        // optional parameters
-        if ($suid)
-            $sql .= ", suid='$suid'";
 
-        XDB::execute($sql);
+        XDB::execute("INSERT INTO logger.sessions
+                     SET uid={?}, host={?}, ip={?}, browser={?}, suid={?}",
+                     $uid, $Host, $ip, $browser, $suid);
 
         return XDB::insertId();
-    }
-
-
-    /** Reads available actions from database.
-     *
-     * @return actions the available actions
-     */
-    function readActions() {
-        $res = XDB::iterRow("select id, text from logger.actions");
-
-        while (list($action_id, $action_text) = $res->next()) {
-            $actions[$action_text] = $action_id;
-        }
-
-        return $actions;
     }
 
 
@@ -88,10 +71,10 @@ class CoreLogger {
      * @param $data les données (id de liste, etc.)
      * @return VOID
      */
-    function log($action, $data="") {
+    function log($action, $data = null) {
         if (isset($this->actions[$action])) {
-            XDB::execute("insert into logger.events
-                         set session={?}, action={?}, data={?}",
+            XDB::execute("INSERT INTO logger.events
+                         SET session={?}, action={?}, data={?}",
                          $this->session, $this->actions[$action], $data);
         } else {
             echo "unknown action : $action<br />";
