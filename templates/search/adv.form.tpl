@@ -316,9 +316,7 @@
       f.submit();
     }
   {/literal}</script>
-  {if $globals->geoloc->use_map}
-    <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
-  {/if}
+  <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
   <input type="button" value="Chercher" onclick="launch_form('search/adv')"/>
 </p>
 <p>
