@@ -78,26 +78,27 @@ class EventsModule extends PLModule
         $page->assign('geoloc_incitation', count($res));
 
         // affichage de la boîte avec quelques liens
-        require_once 'login.conf.php';
-        $pub_nbElem = $pub_nbLig * $pub_nbCol ;
-        if (count($pub_tjs) <= $pub_nbElem) {
-            $publicite = array_slice($pub_tjs, 0, $pub_nbElem);
-        } else {
-            $publicite = $pub_tjs ;
-        }
+        /* Bandeau de publicité sur la page de login */
+        $publicite = array(
+            'password'   => 'Changer mon mot de passe' ,
+            'Docs/Dons'  => 'Faire un don à l\'association Polytechnique.org'
+            ) ;
 
-        $nbAlea = $pub_nbElem - count($publicite) ;
-        if ($nbAlea > 0) {
-            $choix = array_rand($pub_rnd,$nbAlea) ;
-            foreach ($choix as $url) {
-                $publicite[$url] = $pub_rnd[$url] ;
-            }
+        // Liens apparaissant de façon aléatoire
+        $pub_rnd = array(
+            'nl/show'                      => 'Afficher la dernière newsletter' ,
+            'http://www.polytechnique.net' => 'Vers les autres sites polytechniciens' ,
+            "trombi/{$_SESSION["promo"]}"  => "Voir le trombi de ma promo" ,
+            'banana'                       => 'Un petit tour du côté des forums !!'
+            ) ;
+
+        $choix = array_rand($pub_rnd, 2);
+        foreach ($choix as $url) {
+            $publicite[$url] = $pub_rnd[$url] ;
         }
-        $publicite = array_chunk( $publicite , $pub_nbLig , true ) ;
-        $page->assign_by_ref('publicite', $publicite);
+        $page->assign('publicite', array_chunk($publicite, 2, true));
 
         // ajout du lien RSS
-
         if (S::has('core_rss_hash')) {
             $page->assign('xorg_rss',
                           array('title' => 'Polytechnique.org :: News',
