@@ -93,15 +93,247 @@ class AdminModule extends PLModule
         $page->assign('bre', XDB::iterator("SELECT * FROM emails_bounces_re ORDER BY pos"));
     }
 
-    function handler_logger(&$page) {
-        require_once dirname(__FILE__).'/../classes/LoggerView.php';
+    // {{{ logger view
 
-        if (!Env::has('logauth')) {
-            $_REQUEST['logauth'] = 'native';
+    /** Retrieves the available days for a given year and month.
+     * Obtain a list of days of the given month in the given year
+     * that are within the range of dates that we have log entries for.
+     *
+     * @param integer year
+     * @param integer month
+     * @return array days in that month we have log entries covering.
+     * @private
+     */
+    function _getDays($year, $month)
+    {
+        // give a 'no filter' option
+        $months[0] = "----";
+
+        if ($year && $month) {
+            $day_max = Array(-1, 31, checkdate(2, 29, $year) ? 29 : 28 , 31,
+                             30, 31, 30, 31, 31, 30, 31, 30, 31);
+            $res = XDB::query("SELECT YEAR (MAX(start)), YEAR (MIN(start)),
+                                      MONTH(MAX(start)), MONTH(MIN(start)),
+                                      DAYOFMONTH(MAX(start)),
+                                      DAYOFMONTH(MIN(start))
+                                 FROM logger.sessions");
+            list($ymax, $ymin, $mmax, $mmin, $dmax, $dmin) = $res->fetchOneRow();
+
+            if (($year < $ymin) || ($year == $ymin && $month < $mmin)) {
+                return array();
+            }
+
+            if (($year > $ymax) || ($year == $ymax && $month > $mmax)) {
+                return array();
+            }
+
+            $min = ($year==$ymin && $month==$mmin) ? intval($dmin) : 1;
+            $max = ($year==$ymax && $month==$mmax) ? intval($dmax) : $day_max[$month];
+
+            for($i = $min; $i<=$max; $i++) {
+                $days[$i] = $i;
+            }
+        }
+        return $days;
+    }
+
+
+    /** Retrieves the available months for a given year.
+     * Obtains a list of month numbers that are within the timeframe that
+     * we have log entries for.
+     *
+     * @param integer year
+     * @return array List of month numbers we have log info for.
+     * @private
+     */
+    function _getMonths($year)
+    {
+        // give a 'no filter' option
+        $months[0] = "----";
+
+        if ($year) {
+            $res = XDB::query("SELECT YEAR (MAX(start)), YEAR (MIN(start)),
+                                      MONTH(MAX(start)), MONTH(MIN(start))
+                                 FROM logger.sessions");
+            list($ymax, $ymin, $mmax, $mmin) = $res->fetchOneRow();
+
+            if (($year < $ymin) || ($year > $ymax)) {
+                return array();
+            }
+
+            $min = $year == $ymin ? intval($mmin) : 1;
+            $max = $year == $ymax ? intval($mmax) : 12;
+
+            for($i = $min; $i<=$max; $i++) {
+                $months[$i] = $i;
+            }
+        }
+        return $months;
+    }
+
+
+    /** Retrieves the available years.
+     * Obtains a list of years that we have log entries covering.
+     *
+     * @return array years we have log entries for.
+     * @private
+     */
+    function _getYears()
+    {
+        // give a 'no filter' option
+        $years[0] = "----";
+
+        // retrieve available years
+        $res = XDB::query("select YEAR(MAX(start)), YEAR(MIN(start)) FROM logger.sessions");
+        list($max, $min) = $res->fetchOneRow();
+
+        for($i = intval($min); $i<=$max; $i++) {
+            $years[$i] = $i;
+        }
+        return $years;
+    }
+
+
+    /** Make a where clause to get a user's sessions.
+     * Prepare the where clause request that will retrieve the sessions.
+     *
+     * @param $year INTEGER Only get log entries made during the given year.
+     * @param $month INTEGER Only get log entries made during the given month.
+     * @param $day INTEGER Only get log entries made during the given day.
+     * @param $uid INTEGER Only get log entries referring to the given user ID.
+     *
+     * @return STRING the WHERE clause of a query, including the 'WHERE' keyword
+     * @private
+     */
+    function _makeWhere($year, $month, $day, $uid)
+    {
+        // start constructing the "where" clause
+        $where = array();
+
+        if ($uid)
+            array_push($where, "uid='$uid'");
+
+        // we were given at least a year
+        if ($year) {
+            if ($day) {
+                $dmin = mktime(0, 0, 0, $month, $day, $year);
+                $dmax = mktime(0, 0, 0, $month, $day+1, $year);
+            } elseif ($month) {
+                $dmin = mktime(0, 0, 0, $month, 1, $year);
+                $dmax = mktime(0, 0, 0, $month+1, 1, $year);
+            } else {
+                $dmin = mktime(0, 0, 0, 1, 1, $year);
+                $dmax = mktime(0, 0, 0, 1, 1, $year+1);
+            }
+            $where[] = "start >= " . date("Ymd000000", $dmin);
+            $where[] = "start < " . date("Ymd000000", $dmax);
         }
 
-        $logview = new LoggerView;
-        $logview->run($page);
+        if (!empty($where)) {
+            return ' WHERE ' . implode($where, " AND ");
+        } else {
+            return '';
+        }
+        // WE know it's totally reversed, so better use array_reverse than a SORT BY start DESC
+    }
+
+    // }}}
+
+    function handler_logger(&$page, $action = null, $arg = null) {
+        if ($action == 'session') {
+
+            // we are viewing a session
+            $res = XDB::query("SELECT  ls.*, a.alias AS username, sa.alias AS suer
+                                 FROM  logger.sessions AS ls
+                            LEFT JOIN  aliases         AS a  ON (a.id = ls.uid AND a.type='a_vie')
+                            LEFT JOIN  aliases         AS sa ON (sa.id = ls.suid AND sa.type='a_vie')
+                                WHERE  ls.id = {?}", $arg);
+
+            $page->assign('session', $a = $res->fetchOneAssoc());
+
+            $res = XDB::iterator('SELECT  a.text, e.data, UNIX_TIMESTAMP(e.stamp) AS stamp
+                                    FROM  logger.events  AS e
+                               LEFT JOIN  logger.actions AS a ON e.action=a.id
+                                   WHERE  e.session={?}', $arg);
+            while ($myarr = $res->next()) {
+               $page->append('events', $myarr);
+            }
+
+        } else {
+            $loguser = $action == 'user' ? $arg : Env::v('loguser');
+
+            $res = XDB::query('SELECT id FROM aliases WHERE alias={?}',
+                              $loguser);
+            $loguid  = $res->fetchOneCell();
+
+            if ($loguid) {
+                $year  = Env::i('year');
+                $month = Env::i('month');
+                $day   = Env::i('day');
+            } else {
+                $year  = Env::i('year', intval(date('Y')));
+                $month = Env::i('month', intval(date('m')));
+                $day   = Env::i('day', intval(date('d')));
+            }
+
+            if (!$year)
+                $month = 0;
+            if (!$month)
+                $day = 0;
+
+            // smarty assignments
+            // retrieve available years
+            $page->assign('years', $this->_getYears());
+            $page->assign('year', $year);
+
+            // retrieve available months for the current year
+            $page->assign('months', $this->_getMonths($year));
+            $page->assign('month', $month);
+
+            // retrieve available days for the current year and month
+            $page->assign('days', $this->_getDays($year, $month));
+            $page->assign('day', $day);
+
+            $page->assign('loguser', $loguser);
+            // smarty assignments
+
+            if ($loguid || $year) {
+
+                // get the requested sessions
+                $where  = $this->_makeWhere($year, $month, $day, $loguid);
+                $select = "SELECT  s.id, UNIX_TIMESTAMP(s.start) as start, s.uid,
+                                   a.alias as username
+                             FROM  logger.sessions AS s
+                        LEFT JOIN  aliases         AS a  ON (a.id = s.uid AND a.type='a_vie')
+                    $where
+                    ORDER BY start DESC";
+                $res = XDB::iterator($select);
+
+                $sessions = array();
+                while ($mysess = $res->next()) {
+                    $mysess['events'] = array();
+                    $sessions[$mysess['id']] = $mysess;
+                }
+                array_reverse($sessions);
+
+                // attach events
+                $sql = "SELECT  s.id, a.text
+                          FROM  logger.sessions AS s
+                    LEFT  JOIN  logger.events   AS e ON(e.session=s.id)
+                    INNER JOIN  logger.actions  AS a ON(a.id=e.action)
+                        $where";
+
+                $res = XDB::iterator($sql);
+                while ($event = $res->next()) {
+                    array_push($sessions[$event['id']]['events'], $event['text']);
+                }
+                $page->assign_by_ref('sessions', $sessions);
+            } else {
+                $page->assign('msg_nofilters', "Sélectionner une annuée et/ou un utilisateur");
+            }
+        }
+
+        $page->changeTpl('logger-view.tpl');
 
         $page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
     }

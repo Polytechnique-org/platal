@@ -34,14 +34,12 @@ class CoreLogger {
      *
      * @param $uid the id of the logged user
      * @param $suid the id of the administrator who has just su'd to the user
-     * @param $auth authentication method for the logged user
-     * @param $sauth authentication method for the su'er
      * @return VOID
      */
-    function CoreLogger($uid, $suid='', $auth='', $sauth='') {
+    function CoreLogger($uid, $suid='') {
         // write the session entry
         $this->uid     = $uid;
-        $this->session = $this->writeSession($uid, $suid, $auth, $sauth);
+        $this->session = $this->writeSession($uid, $suid);
 
         // retrieve available actions
         $this->actions = $this->readActions();
@@ -52,11 +50,9 @@ class CoreLogger {
      * 
      * @param $uid the id of the logged user
      * @param $suid the id of the administrator who has just su'd to the user
-     * @param $auth authentication method for the logged user
-     * @param $sauth authentication method for the su'er
      * @return session the session id
      */
-    function writeSession($uid, $suid, $auth, $sauth) {
+    function writeSession($uid, $suid) {
         $ip      = $_SERVER['REMOTE_ADDR'];
         $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
         $browser = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
@@ -64,10 +60,6 @@ class CoreLogger {
         // optional parameters
         if ($suid)
             $sql .= ", suid='$suid'";
-        if ($auth)
-            $sql .= ", auth='$auth'";
-        if ($sauth)
-            $sql .= ", sauth='$sauth'";
 
         XDB::execute($sql);
 

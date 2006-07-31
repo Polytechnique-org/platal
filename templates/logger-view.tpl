@@ -22,7 +22,7 @@
 
 <h1>Parcours des logs du site</h1>
 
-{if $smarty.request.logsess}
+{if $events}
 
 <table class="bicol">
 <tr>
@@ -31,7 +31,7 @@
 <tr class="impair">
   <td class="titre">utilisateur</td>
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if}
-  [<a href="{$platal->ns}admin/logger?loguser={$session.username}">user's log</a>]</td>
+  [<a href="{$platal->ns}admin/logger/user/{$session.username}">user's log</a>]</td>
 </tr>
 <tr class="pair">
   <td class="titre">Hôte</td>
@@ -109,8 +109,8 @@
       {foreach from=$mysess.events item=myevent}{$myevent}<br />{/foreach}
     </td>
     <td class="action">
-      <a href="admin/logger?logsess={$mysess.id}">session</a>
-      <a href="admin/logger?loguser={$mysess.username}">user's log</a>
+      <a href="admin/logger/session/{$mysess.id}">session</a>
+      <a href="admin/logger/user/{$mysess.username}">user's log</a>
     </td>
   </tr>
   {/foreach}
