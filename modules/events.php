@@ -262,12 +262,12 @@ class EventsModule extends PLModule
         $arch = $action == 'archives';
         $page->assign('action', $action);
  
-        if (Post::v('action') == "Proposer") {
+        if (Post::v('action') == "Proposer" && $eid) {
             XDB::execute('UPDATE evenements
                              SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
                            WHERE id = {?}', 
                           Post::v('titre'), Post::v('texte'), Post::v('peremption'),
-                          Post::v('promo_min'), Post::v('promo_max'), Post::i('evt_id'));
+                          Post::v('promo_min'), Post::v('promo_max'), $eid);
         }
 
         if ($action == 'edit') {
