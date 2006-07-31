@@ -295,7 +295,7 @@ class CarnetModule extends PLModule
 
     function handler_pdf(&$page, $arg0 = null, $arg1 = null)
     {
-        require_once dirname(__FILE__).'/contacts/contacts.pdf.inc.php';
+        require_once dirname(__FILE__).'/carnet/contacts.pdf.inc.php';
         require_once 'user.func.inc.php';
 
         session_write_close();

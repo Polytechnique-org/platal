@@ -21,7 +21,7 @@
 
 define ('FPDF_FONTPATH', dirname(__FILE__).'/fonts/');
 require_once '/usr/share/fpdf/fpdf.php';
-require_once dirname(__FILE__).'/../classes/VarStream.php';
+require_once dirname(__FILE__).'/../../classes/VarStream.php';
 
 class ContactsPDF extends FPDF
 {
@@ -94,7 +94,7 @@ class ContactsPDF extends FPDF
         $this->SetLineWidth(0.2);
         $this->SetFillColor(245, 248, 252);
         $this->Cell(200, 10, $this->title, 1, 1, 'C', 1);
-        $this->Image(dirname(dirname(__FILE__)).'/htdocs/images/logo.png', 5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
+        $this->Image(dirname(__FILE__).'/../../htdocs/images/logo.png', 5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
 
         $this->Ln(10);
         $this->y0 = $this->GetY();
