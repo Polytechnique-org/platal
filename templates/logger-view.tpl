@@ -31,7 +31,7 @@
 <tr class="impair">
   <td class="titre">utilisateur</td>
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if}
-  [<a href="{$platal->ns}admin/logger?logauth={$session.auth}&amp;loguser={$session.username}">user's log</a>]</td>
+  [<a href="{$platal->ns}admin/logger?loguser={$session.username}">user's log</a>]</td>
 </tr>
 <tr class="pair">
   <td class="titre">Hôte</td>
@@ -65,7 +65,7 @@
 <form method="post" action="{$platal->ns}admin/logger">
 <table class="bicol">
 <tr>
-  <td><strong>{$msg_date}</strong></td>
+  <td><strong>Date</strong></td>
   <td>
     Année
     <select name="year" onchange="this.form.submit()">
@@ -85,7 +85,6 @@
   <td><strong>Utilisateur</strong></td>
   <td>
     <input type="text" name="loguser" value="{$loguser}" />
-    {html_options name="logauth" options=$auths selected=$logauth}
     <input type="submit" />
   </td>
 </tr>
@@ -105,13 +104,13 @@
 {foreach from=$sessions item=mysess}
   <tr class="{cycle values="impair,pair"}">
     <td>{$mysess.start|date_format:"%x %X"}</td>
-    <td><strong>{$mysess.username}</strong> <span class="smaller">({$mysess.lauth})</span></td>
+    <td><strong>{$mysess.username}</strong></td>
     <td>
       {foreach from=$mysess.events item=myevent}{$myevent}<br />{/foreach}
     </td>
     <td class="action">
       <a href="admin/logger?logsess={$mysess.id}">session</a>
-      <a href="admin/logger?logauth={$mysess.auth}&amp;loguser={$mysess.username}">user's log</a>
+      <a href="admin/logger?loguser={$mysess.username}">user's log</a>
     </td>
   </tr>
   {/foreach}

@@ -18,12 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-/** A class for viewing user activity.
- * Allows the examination of user sessions.  Can produce a list of sessions
- * matching by date, user, or authentication method, and can drill down to
- * a detailed list of actions performed in a session.
- */
 class LoggerView {
     /** Retrieves the available days for a given year and month.
      * Obtain a list of days of the given month in the given year
@@ -36,18 +30,17 @@ class LoggerView {
      */
     function _getDays($year, $month)
     {
-        global $globals;
-
         // give a 'no filter' option
         $months[0] = "----";
 
         if ($year && $month) {
-            $day_max = Array(-1, 31, checkdate(2, 29, $year) ? 29 : 28 , 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+            $day_max = Array(-1, 31, checkdate(2, 29, $year) ? 29 : 28 , 31,
+                             30, 31, 30, 31, 31, 30, 31, 30, 31);
             $res = XDB::query("SELECT YEAR (MAX(start)), YEAR (MIN(start)),
                                       MONTH(MAX(start)), MONTH(MIN(start)),
                                       DAYOFMONTH(MAX(start)),
                                       DAYOFMONTH(MIN(start))
-                                 FROM {$globals->table_log_sessions}");
+                                 FROM logger.sessions");
             list($ymax, $ymin, $mmax, $mmin, $dmax, $dmin) = $res->fetchOneRow();
 
             if (($year < $ymin) || ($year == $ymin && $month < $mmin)) {
@@ -79,15 +72,13 @@ class LoggerView {
      */
     function _getMonths($year)
     {
-        global $globals;
-
         // give a 'no filter' option
         $months[0] = "----";
 
         if ($year) {
             $res = XDB::query("SELECT YEAR (MAX(start)), YEAR (MIN(start)),
                                       MONTH(MAX(start)), MONTH(MIN(start))
-                                 FROM {$globals->table_log_sessions}");
+                                 FROM logger.sessions");
             list($ymax, $ymin, $mmax, $mmin) = $res->fetchOneRow();
 
             if (($year < $ymin) || ($year > $ymax)) {
@@ -112,17 +103,16 @@ class LoggerView {
      * @return the matching username.
      * @private
      */
-    function _getUsername($auth, $uid) {
-        global $globals;
+    function _getUsername($uid) {
         static $cache;
 
-        if (!isset($cache[$auth][$uid])) {
+        if (!isset($cache[$uid])) {
             $res = XDB::query('SELECT  alias FROM aliases
                               WHERE id = {?} AND type="a_vie"', $uid);
-            $cache[$auth][$uid] = $res->fetchOneCell();
+            $cache[$uid] = $res->fetchOneCell();
         }
 
-        return $cache[$auth][$uid];
+        return $cache[$uid];
     }
 
 
@@ -134,13 +124,11 @@ class LoggerView {
      */
     function _getYears()
     {
-        global $globals;
-
         // give a 'no filter' option
         $years[0] = "----";
 
         // retrieve available years
-        $res = XDB::query("select YEAR(MAX(start)), YEAR(MIN(start)) FROM {$globals->table_log_sessions}");
+        $res = XDB::query("select YEAR(MAX(start)), YEAR(MIN(start)) FROM logger.sessions");
         list($max, $min) = $res->fetchOneRow();
 
         for($i = intval($min); $i<=$max; $i++) {
@@ -156,19 +144,15 @@ class LoggerView {
      * @param $year INTEGER Only get log entries made during the given year.
      * @param $month INTEGER Only get log entries made during the given month.
      * @param $day INTEGER Only get log entries made during the given day.
-     * @param $auth INTEGER Only get log entries with the given authentication type.
      * @param $uid INTEGER Only get log entries referring to the given user ID.
      *
      * @return STRING the WHERE clause of a query, including the 'WHERE' keyword
      * @private
      */
-    function _makeWhere($year, $month, $day, $auth, $uid)
+    function _makeWhere($year, $month, $day, $uid)
     {
         // start constructing the "where" clause
         $where = array();
-
-        if ($auth)
-            array_push($where, "auth='$auth'");
 
         if ($uid)
             array_push($where, "uid='$uid'");
@@ -201,31 +185,27 @@ class LoggerView {
     /** Run the log viewer and fill out the Smarty variables for display.
      *
      * @param page      the page that will display the viewer's data
-     * @param outputvar the Smarty variable to which we should assign the output 
-     * @param template  the template to use for display
      */
-    function run(&$page, $outputvar='', $template='')
+    function run(&$page)
     {
-        global $globals;
-
         if (isset($_REQUEST['logsess'])) {
 
             // we are viewing a session
-            $res = XDB::query("SELECT  host, ip, browser, auth, uid, sauth, suid
-                                 FROM  {$globals->table_log_sessions}
+            $res = XDB::query("SELECT  host, ip, browser, uid, suid
+                                 FROM  logger.sessions
                                 WHERE  id =".$_REQUEST['logsess']);
 
             $sarr = $res->fetchOneAssoc();
 
-            $sarr['username'] = $this->_getUsername($sarr['auth'], $sarr['uid']);
+            $sarr['username'] = $this->_getUsername($sarr['uid']);
             if ($sarr['suid']) {
-                $sarr['suer'] = $this->_getUsername($sarr['sauth'], $sarr['suid']);
+                $sarr['suer'] = $this->_getUsername($sarr['suid']);
             }
             $page->assign('session', $sarr);
 
             $res = XDB::iterator("SELECT  a.text, e.data, UNIX_TIMESTAMP(e.stamp) AS stamp
-                                    FROM  {$globals->table_log_events}  AS e
-                               LEFT JOIN  {$globals->table_log_actions} AS a ON e.action=a.id
+                                    FROM  logger.events  AS e
+                               LEFT JOIN  logger.actions AS a ON e.action=a.id
                                    WHERE  e.session='{$_REQUEST['logsess']}'");
             while ($myarr = $res->next()) {
                $page->append('events', $myarr);
@@ -234,7 +214,6 @@ class LoggerView {
         } else {
 
             // we are browsing the available sessions
-            $logauth = isset($_REQUEST['logauth']) ? $_REQUEST['logauth'] : '';
             $loguser = isset($_REQUEST['loguser']) ? $_REQUEST['loguser'] : '';
 
             $res = XDB::query('SELECT id FROM aliases WHERE alias={?}',
@@ -267,41 +246,32 @@ class LoggerView {
             $page->assign('days', $this->_getDays($year, $month));
             $page->assign('day', $day);
 
-            // retrieve available auths
-            $auths = array('all', 'native' => 'X.org');
-            $page->assign('auths', $auths);
-
-            $page->assign('logauth', $logauth);
             $page->assign('loguser', $loguser);
             // smarty assignments
 
             if ($loguid || $year) {
 
                 // get the requested sessions
-                $where  = $this->_makeWhere($year, $month, $day, $logauth, $loguid);
-                $select = "SELECT id, UNIX_TIMESTAMP(start) as start, auth, uid
-                    FROM {$globals->table_log_sessions} AS s
+                $where  = $this->_makeWhere($year, $month, $day, $loguid);
+                $select = "SELECT id, UNIX_TIMESTAMP(start) as start, uid
+                    FROM logger.sessions AS s
                     $where
                     ORDER BY start DESC";
                 $res = XDB::iterator($select);
 
                 $sessions = array();
                 while ($mysess = $res->next()) {
-                    $mysess['username'] = $this->_getUsername($mysess['auth'], $mysess['uid']);
-                    // pretty label for auth method
-                    $mysess['lauth'] = $auths[$mysess['auth']];
-                    // summary of events
+                    $mysess['username'] = $this->_getUsername($mysess['uid']);
                     $mysess['events'] = array();
-
                     $sessions[$mysess['id']] = $mysess;
                 }
                 array_reverse($sessions);
 
                 // attach events
                 $sql = "SELECT  s.id, a.text
-                          FROM  {$globals->table_log_sessions} AS s
-                    LEFT  JOIN  {$globals->table_log_events}   AS e ON(e.session=s.id)
-                    INNER JOIN  {$globals->table_log_actions}  AS a ON(a.id=e.action)
+                          FROM  logger.sessions AS s
+                    LEFT  JOIN  logger.events   AS e ON(e.session=s.id)
+                    INNER JOIN  logger.actions  AS a ON(a.id=e.action)
                         $where";
 
                 $res = XDB::iterator($sql);
@@ -312,11 +282,6 @@ class LoggerView {
             } else {
                 $page->assign('msg_nofilters', "Sélectionner une annuée et/ou un utilisateur");
             }
-        }
-
-        // if requested, assign the content to be displayed
-        if (!empty($outputvar)) {
-            $page->assign($outputvar, $page->fetch($template));
         }
 
         $page->changeTpl('logger-view.tpl');
