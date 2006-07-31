@@ -23,8 +23,6 @@ require_once 'smarty/libs/Smarty.class.php';
 
 class PlatalPage extends Smarty
 {
-    // {{{ properties
-
     var $_page_type;
     var $_tpl;
     var $_errors;
@@ -35,7 +33,6 @@ class PlatalPage extends Smarty
     var $config_overwrite = false;
     var $use_sub_dirs     = false;
 
-    // }}}
     // {{{ function PlatalPage()
 
     function PlatalPage($tpl, $type = SKINNED)
@@ -68,7 +65,6 @@ class PlatalPage extends Smarty
     {
 	$this->_tpl       = $tpl;
 	$this->_page_type = $type;
-        $this->_page_type = $type;
 	$this->assign('xorg_tpl', $tpl);
     }
 
@@ -134,14 +130,6 @@ class PlatalPage extends Smarty
     }
 
     // }}}
-    // {{{ function run()
-
-    function run()
-    {
-        die ("implement me");
-    }
-
-    // }}}
     // {{{ function nb_errs()
 
     function nb_errs()
@@ -165,14 +153,6 @@ class PlatalPage extends Smarty
         $this->trig($msg);
         $this->_failure = true;
         $this->run();
-    }
-
-    // }}}
-    // {{{ function loadModule()
-
-    function loadModule($modname)
-    {
-        require_once("$modname.inc.php");
     }
 
     // }}}
