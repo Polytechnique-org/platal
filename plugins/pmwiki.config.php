@@ -51,8 +51,8 @@ $InputTags['e_form'] = array(
     type='hidden' name='basetime' value='\$EditBaseTime' /></div>");
 
 // set profiles to point to plat/al fiche
-Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)\|([^\]]*)\]\]/e',
-    'PreserveText("=", \'<a href="profile/$1" class="popup2">$2</a>\', "")');
+Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)(?:\|([^\]]*))?\]\]/e',
+    'PreserveText("=", doPlatalLink("$1", "$2"), "")');
 
 // prevent restorelinks before block apply (otherwise [[Sécurité]] will give
 //  .../S<span class='e9curit'>e9'>Sécurité</a>
@@ -76,6 +76,23 @@ function doBicol($column=false)
     if ($column) {
         $TableCellAttrFmt = "class='$column'";
     }
+}
+
+function doPlatalLink($link, $text)
+{
+    if (strlen(trim($text)) == 0) { 
+        $res = XDB::query("SELECT u.nom, u.prenom, u.promo, q.profile_nick AS surnom
+                             FROM auth_user_md5   AS u
+                       INNER JOIN auth_user_quick AS q USING(user_id)
+                       INNER JOIN aliases         AS a ON u.user_id = a.id
+                            WHERE a.alias = {?}", $link);
+        $row = $res->fetchOneAssoc();
+        $text = $row['prenom'] . ' ' . $row['nom'] . ' X' . $row['promo'];
+        if ($row['surnom']) {
+            $text .= ' (aka ' . $row['surnom'] . ')';
+        }
+    }
+    return '<a href="profile/' . $link . '" class="popup2">' . $text . '</a>';
 }
 
 // }}}
