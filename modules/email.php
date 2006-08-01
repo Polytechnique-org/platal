@@ -370,7 +370,15 @@ L'équipe d'administration <support@polytechnique.org>";
                 if ($x = $sel->fetchOneAssoc()) {
                     // on écrit dans la base que l'adresse est cassée
                     if (!$x['panne']) {
-                        XDB::execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
+                        XDB::execute("UPDATE emails
+                                         SET panne=NOW(),
+                                             last=NOW(),
+                                             panne_level = 1
+                                       WHERE email = {?}", $email);
+                    } else {
+                        XDB::execute("UPDATE emails
+                                         SET panne_level = 1
+                                       WHERE email = {?} AND panne_level = 0");
                     }
                     $page->assign_by_ref('x', $x);
                 }
