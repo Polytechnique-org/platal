@@ -33,7 +33,7 @@
   {foreach from=$listes item=liste}
   {if $liste.priv eq $priv}
   <tr class='{cycle values="impair,pair"}'>
-    <td width="16px">
+    <td style="width: 16px">
       {if $liste.own}
       {icon name=wrench title="Modérateur"}
       {/if}

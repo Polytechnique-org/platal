@@ -55,9 +55,9 @@
   {cycle values="impair,pair" assign=class}
   <tr class="{$class}">
     <td>
-      <a id="{$ev.id}"></a>
+      <a id="event{$ev.id}"></a>
       {if !$ev.fvalide}<strong>{/if}
-      <a href="admin/events/preview/{$ev.id}#{$ev.id}">{$ev.titre}</a><br />
+      <a href="admin/events/preview/{$ev.id}#event{$ev.id}">{$ev.titre}</a><br />
       {if !$ev.fvalide}</strong>{/if}
       <small>
         Proposée par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>

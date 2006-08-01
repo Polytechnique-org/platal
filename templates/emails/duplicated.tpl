@@ -30,7 +30,6 @@
     <th>Utilisateurs</th>
     <th></th>
   </tr>
-  <tr>
   <tr class="impair">
     <td colspan="2">
       <strong>Ajouter une entrée manuellement</strong>
@@ -78,16 +77,16 @@
       &nbsp;{$doublon.mail}
       <input type="hidden" name="emailN" value="{$doublon.mail}" />
     </td>
+  </tr>
   {foreach from=$doublon.users key=i name=all item=user}
-  {if $i is even}<tr class="impair">{/if}
+    {if $i is even}<tr class="impair">{/if}
     <td>
       <a href="profile/{$user}" class="popup2">{$user}{icon name=user_suit title="Fiche"}</a>
       <a href="admin/user/{$user}">{icon name=wrench title="Administrer}</a>{if !$smarty.foreach.all.last}<br />{/if}
     </td>
     {if $i is even && $smarty.foreach.all.last}<td></td>{/if}
-  {if $id is odd || $smarty.foreach.all.last}</tr>{/if}
+    {if $i is odd || $smarty.foreach.all.last}</tr>{/if}
   {/foreach}
-  </tr>
   <tr class="pair">
     <td class="titre">Date de détection</td>
     <td>{$doublon.detection|date_format}</td>
