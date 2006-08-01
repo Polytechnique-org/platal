@@ -86,10 +86,9 @@ class PlatalGlobals
 
     function setlocale()
     {
-        global $globals;
-        setlocale(LC_MESSAGES, $globals->core->locale);
-        setlocale(LC_TIME,     $globals->core->locale);
-        setlocale(LC_CTYPE,    $globals->core->locale);
+        setlocale(LC_MESSAGES, $this->core->locale);
+        setlocale(LC_TIME,     $this->core->locale);
+        setlocale(LC_CTYPE,    $this->core->locale);
     }
 
     function asso($key=null)
