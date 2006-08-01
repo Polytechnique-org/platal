@@ -170,7 +170,7 @@ class MarketingModule extends PLModule
         $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, a.alias AS forlife
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases       AS a ON a.id = u.user_id
-                            WHERE  u.user_id = {?}", S::i('uid'));
+                            WHERE  u.user_id = {?}", $uid);
         if (!$res->numRows()) {
             return;
         }
