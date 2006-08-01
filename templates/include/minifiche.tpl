@@ -87,7 +87,7 @@
 
   <div class="long">
   {if $c.wasinscrit}
-    {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || $c.freetext}
+    {if $c.web || $c.mobile || $c.countrytxt || $c.city || $c.region || $c.entreprise || $c.freetext || (!$c.dcd && !$c.actif )}
     <table cellspacing="0" cellpadding="0">
       {if $c.web}
       <tr>
@@ -120,6 +120,16 @@
       <tr>
         <td class="lt">Commentaire:</td>
         <td class="rt">{$c.freetext|nl2br}</td>
+      </tr>
+      {/if}
+      {if !$c.dcd && !$c.actif && $c.wasinscrit}
+      <tr>
+        <td class="smaller" colspan="2">
+          Ce camarade n'a plus d'adresse redirection valide.
+          <a href="marketing/broken/{$c.user_id}">
+            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>
+          </a>
+        </td>
       </tr>
       {/if}
     </table>

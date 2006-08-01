@@ -32,6 +32,7 @@ class MarketingModule extends PLModule
 
             'marketing/private'    => $this->make_hook('private',    AUTH_MDP, 'admin'),
             'marketing/public'     => $this->make_hook('public',     AUTH_COOKIE),
+            'marketing/broken'     => $this->make_hook('broken',     AUTH_COOKIE),
         );
     }
 
@@ -155,6 +156,42 @@ class MarketingModule extends PLModule
         if (list($pending, $relance) = $res->fetchOneCell()) {
             $page->assign('pending', $pending);
             $page->assign('relance', $relance);
+        }
+    }
+
+    function handler_broken(&$page, $uid = null)
+    {
+        $page->changeTpl('marketing/broken.tpl');
+
+        if (is_null($uid)) {
+            return;
+        }
+
+        $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, a.alias AS forlife
+                             FROM  auth_user_md5 AS u
+                       INNER JOIN  aliases       AS a ON a.id = u.user_id
+                            WHERE  u.user_id = {?}", S::i('uid'));
+        if (!$res->numRows()) {
+            return;
+        }
+        $user = $res->fetchOneAssoc();
+        $page->assign('user', $user);
+
+        $email = trim(Post::v('mail'));
+        if (Post::has('valide') && strlen($email) > 0) {
+            require_once('diogenes/diogenes.hermes.inc.php');
+            $mailer = new HermesMailer();
+            $mailer->setFrom(S::v('bestalias') . '@polytechnique.org');
+            $mailer->addTo('resetpass@polytechnique.org');
+            $mailer->setSubject("Proposition d'adresse mail pour " . $user['forlife']);
+
+            $message = S::v('nom') . ' ' . S::v('prenom') . ' (X' . S::v('promo') . ') '
+                     . 'propose l\'adresse suivante pour un camarade qui n\'a plus de '
+                     . 'redirections actives :' . "\n\n"
+                     . '* ' . $user['forlife'] . ' => ' . $email . "\n";
+            $mailer->setTxtBody(wordwrap($message, 78));
+            $mailer->send();
+            $page->assign('sent', true);
         }
     }
 

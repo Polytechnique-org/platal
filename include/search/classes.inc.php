@@ -35,7 +35,8 @@ $globals->search->result_fields = '
                 ad0.text AS app0text, ad0.url AS app0url, ai0.type AS app0type,
                 ad1.text AS app1text, ad1.url AS app1url, ai1.type AS app1type,
                 es.label AS secteur, ef.fonction_fr AS fonction,
-                IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,';
+                IF(n.nat=\'\',n.pays,n.nat) AS nat, n.a2 AS iso3166,
+        COUNT(em.email) > 0 AS actif,';
 // hide private information if not logged
 if (S::logged()) 
 	$globals->search->result_fields .='
@@ -64,7 +65,8 @@ $globals->search->result_where_statement = '
                 LEFT JOIN  geoloc_pays    AS n   ON (u.nationalite = n.a2)
                 LEFT JOIN  adresses       AS adr ON (u.user_id = adr.uid AND FIND_IN_SET(\'active\',adr.statut))
                 LEFT JOIN  geoloc_pays    AS gp  ON (adr.country = gp.a2)
-                LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)';
+                LEFT JOIN  geoloc_region  AS gr  ON (adr.country = gr.a2 AND adr.region = gr.region)
+                LEFT JOIN  emails         AS em  ON (em.uid = u.user_id AND em.flags = \'active\')';
 
 // }}}
 // {{{ function display_lines()
