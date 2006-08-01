@@ -83,7 +83,13 @@
       </tr>
       {foreach from=$emails item=e}
       <tr class="{cycle values="pair,impair"}">
-        <td><strong>{$e->email}</strong></td>
+        <td>
+          <strong>
+            {if $e->broken}<span class="erreur">{/if}
+            {$e->email}
+            {if $e->broken}{icon name=error title="En panne"}</span>{/if}
+          </strong>
+        </td>
         <td>
           <input type="checkbox" name="emails_actifs[]" value="{$e->email}" {if $e->active}checked="checked"{/if} /></td>
         <td>
@@ -111,6 +117,11 @@
     <input type="submit" value="Valider les modifications" name="emailop" />
   </div>
 </form>
+<p class="smaller">
+  Les adresses marquées {icon name=error title="En panne"} sont des adresses qui sont considérées comme étant en panne
+  depuis plusieurs mois. Si tu penses qu'il s'agit d'une erreur, tu peux la réactiver. Si une nouvelle panne était détectée
+  sur cette adresse, elle serait immédiatement redésactivée.
+</p>
 
 <h1>Pour les Élèves (non encore diplômés)</h1>
 <p>

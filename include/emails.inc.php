@@ -115,15 +115,19 @@ class Email
     
     var $email;
     var $active;
+    var $broken;
     var $rewrite;
     var $panne;
+    var $last;
 
     // }}}
     // {{{ constructor
 
     function Email($row)
     {
-        list($this->email, $this->active, $this->rewrite, $this->panne) = $row;
+        list($this->email, $flags, $this->rewrite, $this->panne, $this->last) = $row;
+        $this->active = ($flags == 'active');
+        $this->broken = ($flags == 'panne');
     }
 
     // }}}
@@ -132,10 +136,13 @@ class Email
     function activate($uid)
     {
         if (!$this->active) {
-            XDB::execute("UPDATE  emails SET flags = 'active'
-                                     WHERE  uid={?} AND email={?}", $uid, $this->email);
+            XDB::execute("UPDATE  emails
+                             SET  panne_level = IF(flags = 'panne', panne_level - 1, panne_level),
+                                  flags = 'active'
+                           WHERE  uid={?} AND email={?}", $uid, $this->email);
 	    $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
+            $this->broken = false;
         }
     }
 
@@ -187,7 +194,7 @@ class Redirect
     {
 	$this->uid=$_uid;
         $res = XDB::iterRow("
-	    SELECT email, flags='active', rewrite, panne
+	    SELECT email, flags, rewrite, panne, last
 	      FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
 	$this->emails=Array();
         while ($row = $res->next()) {

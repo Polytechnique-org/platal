@@ -19,10 +19,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-ini_set('include_path', '../include:/usr/share/php');
- 
-require_once('../include/xorg.inc.php');
-require_once('../include/emails.inc.php');
+ini_set('include_path', '.:../include:/usr/share/php');
+
+require_once('connect.db.inc.php');
+require_once('xorg.inc.php');
+require_once('emails.inc.php');
 
 $opts = getopt('i:o:');
 if (($opts['i'] && $opts['i'] == '-') || empty($opts['i'])) {
@@ -38,6 +39,7 @@ if (($opts['o'] && $opts['o'] == '-') || empty($opts['o'])) {
 
 $emails = explode("\n", file_get_contents($file));
 $list   = array();
+
 foreach ($emails as $_email) {
     $email = valide_email($_email);
     if (empty($email) || $email=='@') {
@@ -54,7 +56,17 @@ foreach ($emails as $_email) {
            GROUP BY  e1.uid", $email);
     if ($x = $sel->fetchOneAssoc()) {
         if (!$x['panne']) {
-            XDB::execute("UPDATE emails SET panne=NOW() WHERE email = {?}", $email);
+            XDB::execute("UPDATE emails
+                             SET panne=NOW(), last=NOW()
+                                 panne_level = 1
+                           WHERE email = {?}",
+                          $email);
+        } else {
+            XDB::execute("UPDATE emails
+                             SET last = CURDATE(),
+                                 panne_level = panne_level + 1
+                           WHERE email = {?}
+                                 AND DATE_ADD(last, INTERVAL 15 DAY) < CURDATE()", $email);
         }
 
         if (empty($x['nb_mails'])) {
@@ -111,6 +123,11 @@ login ({$x['alias']}) et ta date de naissance !";
         echo "$email : cette addresse n'est pas dans la base\n";
     }
 }
+
+XDB::execute("UPDATE emails
+                 SET panne_level = panne_level - 1
+               WHERE flags = 'active' AND panne_level > 1
+                     AND last != CURDATE()");
 
 $csv = "nom;prenom;promo;alias;bounce;nbmails\n";
 foreach ($list as $alias=>$mails) {

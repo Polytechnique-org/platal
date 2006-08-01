@@ -73,6 +73,12 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
   </tr>
   <tr class="impair">
     <td>
+      {if $mails->total() eq 0}
+      <p class="erreur">
+        Tu n'as actuellement aucune adressse de redirection. Tout courrier électronique qui t'es adresses
+        ci-dessus génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
+      </p>
+      {else}
       Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
       {if $mails->total() eq 1} à l'adresse {else} aux adresses {/if}
       <ul>
@@ -80,6 +86,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
         <li><strong>{$m.email}</strong></li>
         {/iterate}
       </ul>
+      {/if}
       Si tu souhaites <strong>modifier ce reroutage de ton courrier,</strong>
       <a href="emails/redirect">il te suffit de te rendre ici !</a>
     </td>

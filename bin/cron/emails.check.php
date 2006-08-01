@@ -20,8 +20,15 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+/* Number of consecutive month of bounce before deactivating a redirection
+ */
+$panne_level = 3;
+
 require('./connect.db.inc.php');
 
+/* 
+ * Check duplicated addresses
+ */
 $sql = "SELECT a1.alias, a2.alias, e1.email
           FROM emails        AS e1
     INNER JOIN emails        AS e2 ON (e1.email = e2.email AND e1.uid != e2.uid 
@@ -57,6 +64,33 @@ if (count($conflits) > 0) {
     }
 }
 
+/*
+ * Check dead emails
+ */
+if ($panne_level > 0) {
+    $sql = "SELECT  e.email, a.alias AS forlife
+              FROM  emails  AS e
+        INNER JOIN  aliases AS a ON a.id = e.uid AND a.type = 'a_vie'
+             WHERE  e.panne_level = $panne_level AND e.flags = 'active'
+          ORDER BY  a.alias";
+    $res = Xdb::query($sql);
 
+    if ($res->numRows()) {
+        $result = $res->fetchAllAssoc();
+        echo "Nouvelles adresses en panne détectées :\n";
+        foreach ($result as $assoc) {
+            echo '* ' . $assoc['email'] . ' pour ' . $assoc['forlife'] . "\n";
+        }
+        echo "\n\n";
+
+        Xdb::execute("UPDATE  emails
+                         SET  flags = 'panne'
+                       WHERE  panne_level = 3 AND flags = 'active'");
+    }
+
+    Xdb::execute("UPDATE  emails
+                     SET  panne_level = $panne_level
+                   WHERE  panne_level > $panne_level");
+}
 
 ?>

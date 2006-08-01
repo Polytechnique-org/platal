@@ -283,10 +283,12 @@ Pour ceci changer ses permissions en 'disabled'.
         {if $mail->active}active{/if}
       </td>
       <td>
-        <span class="smaller"><a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">{if $mail->active}des{/if}activer</a></span>
+        <span class="smaller"><a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">{if $mail->active}des{elseif $mail->broken}ré{/if}activer</a></span>
       </td>
       <td>
+        {if $mail->broken}<span style="color: #f00">{/if}
         {$mail->email}
+        {if $mail->broken}<em> (en panne)</em></span>{/if}
       </td>
       <td class="action">
         <a href="javascript:del_fwd('{$mail->email}')">delete</a>
