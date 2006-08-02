@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 require_once('diogenes/diogenes.hermes.inc.php');
-require_once('Smarty.class.php');
+require_once('smarty/libs/Smarty.class.php');
 
 // {{{ class XOrgMailer
 
