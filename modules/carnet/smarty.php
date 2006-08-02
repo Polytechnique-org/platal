@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function smarty_function_display_ical($param, &$smarty) {
+function display_ical($param) {
     $txt = '';
     if (isset($param['name']))
         $txt .= strtoupper($param['name']);
