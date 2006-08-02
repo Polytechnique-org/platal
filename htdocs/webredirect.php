@@ -19,12 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require("../include/xorg.inc.php");
+require_once dirname(__FILE__).'/../include/xorg.inc.php';
 
-// on coupe la chaîne REQUEST_URI selon les / et on ne garde que
-// le premier non vide et éventuellement le second
-// la config d'apache impose la forme suivante pour REQUEST_URI :
-// REQUEST_URI = /prenom.nom(/path/fichier.hmtl)?
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
 $res = XDB::query(
         "SELECT  redirecturl
@@ -34,25 +30,25 @@ $res = XDB::query(
 
 if ($url = $res->fetchOneCell()) {
     $url = preg_replace('@/+$@', '', $url);
-    if($path) {
+    if ($path) {
         http_redirect("http://$url/$path");
     } else {
         http_redirect("http://$url");
     }
-    exit();
 }
 
-// si on est ici, il y a eu un erreur ou on n'a pas trouvé le redirect
 header("HTTP/1.0 404 Not Found");
 
 ?>
-
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html><head>
-<title>404 Not Found</title>
-</head><body>
-<h1>Not Found</h1>
-The requested URL <?php echo $_SERVER['REQUEST_URI'] ?> was not found on this server.<p>
-<hr>
-<address>Apache Server at www.carva.org Port 80</address>
-</body></html>
+<html>
+  <head>
+    <title>404 Not Found</title>
+  </head>
+  <body>
+    <h1>Not Found</h1>
+    The requested URL <?php echo $_SERVER['REQUEST_URI'] ?> was not found on this server.<p>
+    <hr>
+    <address>Apache Server at www.carva.org Port 80</address>
+  </body>
+</html>
