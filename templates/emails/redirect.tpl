@@ -86,8 +86,9 @@
         <td>
           <strong>
             {if $e->broken}<span class="erreur">{/if}
+            {if $e->panne neq '0000-00-00'}{icon name=error title="En panne"}{/if}
             {$e->email}
-            {if $e->broken}{icon name=error title="En panne"}</span>{/if}
+            {if $e->broken}</span>{/if}
           </strong>
         </td>
         <td>
@@ -118,9 +119,20 @@
   </div>
 </form>
 <p class="smaller">
-  Les adresses marquées {icon name=error title="En panne"} sont des adresses qui sont considérées comme étant en panne
-  depuis plusieurs mois. Si tu penses qu'il s'agit d'une erreur, tu peux la réactiver. Si une nouvelle panne était détectée
-  sur cette adresse, elle serait immédiatement redésactivée.
+  <strong>
+    {icon name=error title="En panne"}
+    <a href="Docs/Pannes">Panne&nbsp;:</a>
+  </strong>
+  Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
+  a été détectées. Si le problème persiste la redirection vers ces adresses sera désactivée.
+</p>
+<p class="smaller">
+  <strong>
+    {icon name=error title="En panne"}
+    <a href="Docs/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
+  </strong>
+  Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
+  le problème est résolu tu peux les réactiver, mais l'adresse sera redésactivée si des problèmes persistes.
 </p>
 
 <h1>Pour les Élèves (non encore diplômés)</h1>
