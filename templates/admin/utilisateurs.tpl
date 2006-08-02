@@ -278,7 +278,8 @@ Pour ceci changer ses permissions en 'disabled'.
       </th>
     </tr>
     {foreach item=mail from=$emails}
-    <tr>
+    {cycle assign=class values="impair,pair"}
+    <tr class="{$class}">
       <td class="titre">
         {if $mail->active}active{/if}
       </td>
@@ -294,8 +295,17 @@ Pour ceci changer ses permissions en 'disabled'.
         <a href="javascript:del_fwd('{$mail->email}')">delete</a>
       </td>
     </tr>
+    {if $mail->panne && $mail->panne neq "0000-00-00"}
+    <tr class="{$class}">
+      <td colspan="4" class="smaller" style="color: #f00">
+        {icon name=error title="Panne"}
+        Panne de {$mail->email} le {$mail->panne|date_format}
+        {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
+      </td>
+    </tr>
+    {/if}
     {/foreach}
-    <tr>
+    <tr class="{cycle values="impair,pair"}">
       <td class="titre" colspan="2">
         Ajouter un email
       </td>
@@ -313,13 +323,6 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
-{foreach from=$emails item=mail}
-{if $email->panne && $email->panne neq "0000-00-00"}
-<p class="erreur">
-Panne pour l'email "{$mail->email}" le {$mail->panne|date_format}
-</p>
-{/if}
-{/foreach}
 {/if}
 {/if}
 

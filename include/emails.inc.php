@@ -119,13 +119,14 @@ class Email
     var $rewrite;
     var $panne;
     var $last;
+    var $panne_level;
 
     // }}}
     // {{{ constructor
 
     function Email($row)
     {
-        list($this->email, $flags, $this->rewrite, $this->panne, $this->last) = $row;
+        list($this->email, $flags, $this->rewrite, $this->panne, $this->last, $this->panne_level) = $row;
         $this->active = ($flags == 'active');
         $this->broken = ($flags == 'panne');
     }
@@ -194,7 +195,7 @@ class Redirect
     {
 	$this->uid=$_uid;
         $res = XDB::iterRow("
-	    SELECT email, flags, rewrite, panne, last
+	    SELECT email, flags, rewrite, panne, last, panne_level
 	      FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
 	$this->emails=Array();
         while ($row = $res->next()) {
