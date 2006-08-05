@@ -49,8 +49,10 @@
     </td>
     <td class="right">
       {foreach from=$doublon.users item=user name=all}
+      {if $user}
       <a href="profile/{$user}" class="popup2">{$user}{icon name=user_suit title="Fiche"}</a>
       <a href="admin/user/{$user}">{icon name=wrench title="Administrer}</a>{if !$smarty.foreach.all.last}<br />{/if}
+      {/if}
       {/foreach}
     </td>
     <td class="right">
@@ -79,6 +81,7 @@
     </td>
   </tr>
   {foreach from=$doublon.users key=i name=all item=user}
+    {if $user}
     {if $i is even}<tr class="impair">{/if}
     <td>
       <a href="profile/{$user}" class="popup2">{$user}{icon name=user_suit title="Fiche"}</a>
@@ -86,6 +89,7 @@
     </td>
     {if $i is even && $smarty.foreach.all.last}<td></td>{/if}
     {if $i is odd || $smarty.foreach.all.last}</tr>{/if}
+    {/if}
   {/foreach}
   <tr class="pair">
     <td class="titre">Date de détection</td>

@@ -424,8 +424,8 @@ L'équipe d'administration <support@polytechnique.org>";
         if ($action == 'list') {
             $sql = "SELECT  w.email, w.detection, w.state, a.alias AS forlife
                       FROM  emails_watch  AS w
-                INNER JOIN  emails        AS e USING(email)
-                INNER JOIN  aliases       AS a ON (a.id = e.uid AND a.type = 'a_vie')
+                 LEFT JOIN  emails        AS e USING(email)
+                 LEFT JOIN  aliases       AS a ON (a.id = e.uid AND a.type = 'a_vie')
                   ORDER BY  w.state, w.email, a.alias";
             $it = Xdb::iterRow($sql);
 
@@ -452,9 +452,9 @@ L'équipe d'administration <support@polytechnique.org>";
             $sql = "SELECT  w.detection, w.state, w.last, w.description,
                             a1.alias AS edit, a2.alias AS forlife
                       FROM  emails_watch AS w
-                INNER JOIN  emails       AS e  USING(email)
-                 LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
-                INNER JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')
+                 LEFT JOIN  emails       AS e  USING(email)
+                INNER JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
+                 LEFT JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')
                      WHERE  w.email = {?}
                   ORDER BY  a2.alias";
             $it = Xdb::iterRow($sql, $email);

@@ -155,7 +155,7 @@ class Email
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
 				     WHERE  uid={?} AND email={?}", $uid, $this->email);
-	    $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
+	        $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
         }
     }
@@ -165,12 +165,12 @@ class Email
 
     function rewrite($rew, $uid)
     {
-	if ($this->rewrite == $rew) {
+    	if ($this->rewrite == $rew) {
             return;
         }
-	XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
-	$this->rewrite = $rew;
-	return;
+	    XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
+    	$this->rewrite = $rew;
+	    return;
     }
 
     // }}}
@@ -193,15 +193,15 @@ class Redirect
 
     function Redirect($_uid)
     {
-	$this->uid=$_uid;
+    	$this->uid=$_uid;
         $res = XDB::iterRow("
-	    SELECT email, flags, rewrite, panne, last, panne_level
-	      FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
-	$this->emails=Array();
+	        SELECT email, flags, rewrite, panne, last, panne_level
+	          FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
+    	$this->emails=Array();
         while ($row = $res->next()) {
-	    $this->emails[] = new Email($row);
+	        $this->emails[] = new Email($row);
         }
-	$this->bogo = new Bogo($_uid);
+    	$this->bogo = new Bogo($_uid);
     }
 
     // }}}
@@ -227,11 +227,11 @@ class Redirect
         }
         XDB::execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
         $_SESSION['log']->log('email_del',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
-	foreach ($this->emails as $i=>$mail) {
-	    if ($email==$mail->email) {
+	    foreach ($this->emails as $i=>$mail) {
+	        if ($email==$mail->email) {
                 unset($this->emails[$i]);
             }
-	}
+    	}
         return SUCCESS;
     }
 
@@ -248,15 +248,36 @@ class Redirect
             return ERROR_LOOP_EMAIL;
         }
         XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
-	if ($logger = S::v('log', null)) { // may be absent --> step4.php
-	    $logger->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
+	    if ($logger = S::v('log', null)) { // may be absent --> step4.php
+	        $logger->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
         }
-	foreach ($this->emails as $mail) {
-	    if ($mail->email == $email_stripped) {
+    	foreach ($this->emails as $mail) {
+	        if ($mail->email == $email_stripped) {
                 return SUCCESS;
             }
-	}
+	    }
         $this->emails[] = new Email(array($email,1,'','0000-00-00'));
+
+        // security stuff
+        $res = XDB::query("SELECT state, description
+                             FROM emails_watch
+                            WHERE state != 'safe' AND email = {?}", $email);
+        if ($res->numRows()) {
+            $row = $res->fetchOneAssoc();
+            $message = "L'email $email vient d'être ajouté aux redirections de ". S::v('forlife')
+                     . ". Cette adresse est surveillée avec l'état *" . $row['state']
+                     . "* et la description :\n" . $row['description'];
+            $message = wordwrap($message);
+            require_once("diogenes/diogenes.hermes.inc.php");
+            $mailer = new HermesMailer();
+            $mailer->setFrom("webmaster@polytechnique.org");
+            $mailer->addTo("hotliners@polytechnique.org");
+            $mailer->setSubject("ALERTE LORS DE L'AJOUT DE REDIRECTION de "
+                . S::v('prenom') . ' ' . S::v('nom') . '(' . S::v('promo') . ')');
+            $mailer->setTxtBody($message
+                . "\n\nInformations de connexion :\n" . var_export($_SERVER, true));
+            $mailer->send();
+        } 
         return SUCCESS;
     }
 
@@ -265,13 +286,13 @@ class Redirect
 
     function modify_email($emails_actifs,$emails_rewrite)
     {
-	foreach ($this->emails as $i=>$mail) {
+	    foreach ($this->emails as $i=>$mail) {
             if (in_array($mail->email,$emails_actifs)) {
                 $this->emails[$i]->activate($this->uid);
-	    } else {
+	        } else {
                 $this->emails[$i]->deactivate($this->uid);
-	    }
-	    $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
+	        }
+	        $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
         }
     }
 
