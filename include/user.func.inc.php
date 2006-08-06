@@ -660,5 +660,22 @@ function user_reindex($uid) {
 }
 
 // }}}
+
+function set_new_usage($uid, $usage, $alias=false) { 
+    XDB::execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$usage ,$uid);
+    XDB::execute("DELETE FROM aliases WHERE FIND_IN_SET('usage',flags) AND id={?}", $uid);
+    if ($alias && $usage) {
+        XDB::execute("UPDATE aliases SET flags=flags & 255-1 WHERE id={?}", $uid);
+        XDB::execute("INSERT INTO aliases VALUES({?}, 'alias', 'usage,bestalias', {?}, null)",
+            $alias, $uid);
+    }
+    $r = XDB::query("SELECT alias FROM aliases WHERE FIND_IN_SET('bestalias', flags) AND id = {?}", $uid);
+    if ($r->fetchOneCell() == "") {
+        XDB::execute("UPDATE aliases SET flags = 1 | flags WHERE id = {?} LIMIT 1", $uid);
+    }
+    require_once 'user.func.inc.php';
+    user_reindex($uid);
+}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

@@ -108,7 +108,7 @@ class UsageReq extends Validate
 
     function commit()
     {
-        require_once('nomusage.inc.php');
+        require_once('user.func.inc.php');
         set_new_usage($this->uid, $this->nom_usage, $this->alias);
         return true;
     }

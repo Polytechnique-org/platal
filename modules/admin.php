@@ -470,7 +470,6 @@ class AdminModule extends PLModule
                             $page->trig("updaté correctement.");
                         }
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
-                            require_once('nomusage.inc.php');
                             set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
                         }
                         $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
@@ -510,7 +509,7 @@ class AdminModule extends PLModule
                           WHERE  id = {?} AND type!='homonyme'
                        ORDER BY  type!= 'a_vie'", $mr["user_id"]));
             $page->assign('xorgmails', $xorgmails);
-            $page->assign('email_panne', $email_panne);    
+            $page->assign('email_panne', $email_panne);
             $page->assign('emails',$redirect->emails);
 
             $page->assign('mr',$mr);
@@ -520,7 +519,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/homonymes.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Homonymes');
         require_once("homonymes.inc.php");
-                
+
         if ($target) {
             if (! list($prenom,$nom,$forlife,$loginbis) = select_if_homonyme($target)) {
                 $target=0;
@@ -531,13 +530,13 @@ class AdminModule extends PLModule
                 $page->assign('loginbis',$loginbis);
             }
         }
-        
+
         $page->assign('op',$op);
         $page->assign('target',$target);
-        
+
         // on a un $target valide, on prepare les mails
         if ($target) {
-            
+
             // on examine l'op a effectuer
             switch ($op) {
                 case 'mail':
@@ -554,7 +553,7 @@ class AdminModule extends PLModule
                     break;
             }
         }
-        
+
         if ($op == 'list') {
             $res = XDB::iterator(
                     "SELECT  a.alias AS homonyme,s.id AS user_id,s.alias AS forlife,
@@ -574,11 +573,11 @@ class AdminModule extends PLModule
             $page->assign_by_ref('hnymes',$hnymes);
         }
     }
-    
+
     function handler_ax_xorg(&$page) {
         $page->changeTpl('admin/ax-xorg.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - AX/X.org');
-        
+
         // liste des différences
         $res = XDB::query(
                 'SELECT  u.promo,u.nom AS nom,u.prenom AS prenom,ia.nom AS nomax,ia.prenom AS prenomax,u.matricule AS mat,ia.matricule_ax AS matax
@@ -589,7 +588,7 @@ class AdminModule extends PLModule
                          OR u.prenom != ia.prenom OR (u.promo != ia.promo AND u.promo != ia.promo+1 AND u.promo != ia.promo-1)
                ORDER BY  u.promo,u.nom,u.prenom');
         $page->assign('diffs', $res->fetchAllAssoc());
-        
+
         // gens à l'ax mais pas chez nous
         $res = XDB::query(
                 'SELECT  ia.promo,ia.nom,ia.nom_patro,ia.prenom
@@ -597,25 +596,25 @@ class AdminModule extends PLModule
               LEFT JOIN  auth_user_md5 AS u ON u.matricule_ax = ia.matricule_ax
                   WHERE  u.nom IS NULL');
         $page->assign('mank', $res->fetchAllAssoc());
-        
+
         // gens chez nous et pas à l'ax
         $res = XDB::query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
         $page->assign('plus', $res->fetchAllAssoc());
     }
-    
+
     function handler_deaths(&$page, $promo = 0, $validate = false) {
         $page->changeTpl('admin/deces_promo.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Deces');
-        
+
         if (!$promo)
             $promo = Env::i('promo');
         if (Env::has('sub10')) $promo -= 10;
         if (Env::has('sub01')) $promo -=  1;
         if (Env::has('add01')) $promo +=  1;
         if (Env::has('add10')) $promo += 10;
-        
+
         $page->assign('promo',$promo);
-        
+
         if ($validate) {
             $new_deces = array();
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
@@ -633,22 +632,22 @@ class AdminModule extends PLModule
             }
             $page->assign('new_deces',$new_deces);
         }
-        
+
         $res = XDB::iterator('SELECT matricule, nom, prenom, deces FROM auth_user_md5 WHERE promo = {?} ORDER BY nom,prenom', $promo);
         $page->assign('decedes', $res);
     }
-    
+
     function handler_synchro_ax(&$page, $user = null, $action = null) {
         $page->changeTpl('admin/synchro_ax.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Synchro AX');
-        
+
         require_once('synchro_ax.inc.php');
-        
+
         if (is_ax_key_missing()) {
             $page->assign('no_private_key', true);
             $page->run();
         }
-        
+
         require_once('user.func.inc.php');
 
         if ($user)
@@ -660,16 +659,16 @@ class AdminModule extends PLModule
                 return;
             }
         }
-        
+
         if (Env::has('mat')) {
             $res = XDB::query(
-                    "SELECT  alias 
+                    "SELECT  alias
                        FROM  aliases       AS a
                  INNER JOIN  auth_user_md5 AS u ON (a.id=u.user_id AND a.type='a_vie')
                       WHERE  matricule={?}", Env::i('mat'));
             $login = $res->fetchOneCell();
         }
-        
+
         if ($login) {
             if ($action == 'import') {
                 ax_synchronize($login, S::v('uid'));
@@ -679,30 +678,30 @@ class AdminModule extends PLModule
             $userax= get_user_ax($user['matricule_ax']);
             require_once 'profil.func.inc.php';
             $diff = diff_user_details($userax, $user, 'ax');
-        
+
             $page->assign('x', $user);
             $page->assign('diff', $diff);
         }
     }
-    
+
     function handler_validate(&$page) {
         $page->changeTpl('admin/valider.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
         require_once("validations.inc.php");
-        
+
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
             $req = Validate::get_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
             if($req) { $req->handle_formu(); }
         }
-        
+
         $r = XDB::iterator('SHOW COLUMNS FROM requests_answers');
         while (($a = $r->next()) && $a['Field'] != 'category');
         $page->assign('categories', $categories = explode(',', str_replace("'", '', substr($a['Type'], 5, -1))));
-        
+
         $hidden = array();
         if (Post::has('hide')) {
-            $hide = array(); 
-            foreach ($categories as $cat) 
+            $hide = array();
+            foreach ($categories as $cat)
                 if (!Post::v($cat)) {
                     $hidden[$cat] = 1;
                     $hide[] = $cat;
@@ -713,7 +712,7 @@ class AdminModule extends PLModule
                 $hidden[$hide_type] = true;
         }
         $page->assign('hide_requests', $hidden);
-        
+
         $page->assign('vit', new ValidateIterator());
     }
     function handler_validate_answers(&$page, $action = 'list', $id = null) {
@@ -738,7 +737,7 @@ class AdminModule extends PLModule
         $table_editor->describe('date','date',false);
         $table_editor->describe('ext','extension du screenshot',false);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
     function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
         require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Blacklist');
@@ -747,7 +746,7 @@ class AdminModule extends PLModule
         $table_editor->describe('reject_text','Texte de rejet',true);
         $table_editor->describe('email','email',true);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
     function handler_postfix_whitelist(&$page, $action = 'list', $id = null) {
         require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Whitelist');
@@ -755,7 +754,7 @@ class AdminModule extends PLModule
         $table_editor = new PLTableEditor('admin/postfix/whitelist','postfix_whitelist','email', true);
         $table_editor->describe('email','email',true);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
     function handler_logger_actions(&$page, $action = 'list', $id = null) {
         require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Actions');
@@ -764,7 +763,7 @@ class AdminModule extends PLModule
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('description','description',true);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
     function handler_downtime(&$page, $action = 'list', $id = null) {
         require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Coupures');
@@ -776,10 +775,10 @@ class AdminModule extends PLModule
         $table_editor->describe('services','services affectés',true);
         $table_editor->describe('description','description',false);
         $table_editor->apply($page, $action, $id);
-    }  
+    }
     function handler_wiki(&$page, $action='list') {
         require_once 'wiki.inc.php';
-        
+
         // update wiki perms
         if ($action == 'update') {
             $perms_read = Post::v('read');
@@ -788,7 +787,7 @@ class AdminModule extends PLModule
                 foreach ($_POST as $wiki_page => $val) if ($val == 'on') {
                     $wiki_page = str_replace('_', '/', $wiki_page);
                     if (!$perms_read || !$perms_edit)
-                        list($perms0, $perms1) = wiki_get_perms($wiki_page);                    
+                        list($perms0, $perms1) = wiki_get_perms($wiki_page);
                     if ($perms_read)
                         $perms0 = $perms_read;
                     if ($perms_edit)
@@ -797,9 +796,9 @@ class AdminModule extends PLModule
                 }
             }
         }
-        
+
         $perms = wiki_perms_options();
-        
+
         // list wiki pages and their perms
         $wiki_pages = array();
         $dir = wiki_work_dir();
@@ -813,9 +812,9 @@ class AdminModule extends PLModule
             }
         }
         ksort($wiki_pages);
-        
+
         $page->changeTpl('admin/wiki.tpl');
-        $page->assign('wiki_pages', $wiki_pages);        
+        $page->assign('wiki_pages', $wiki_pages);
         $page->assign('perms_opts', $perms);
     }
 }
