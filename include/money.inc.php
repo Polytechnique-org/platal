@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'diogenes/diogenes.flagset.inc.php';
+require_once dirname(__FILE__).'/../classes/Flagset.php';
 
 class Payment
 {
