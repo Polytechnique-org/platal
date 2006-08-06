@@ -76,7 +76,7 @@ class Payment
 
     function init($val, &$meth)
     {
-        require_once('money/'.$meth->inc);
+        require_once dirname(__FILE__).'/money/'.$meth->inc;
         $this->api = new $api($val);
     }
 
