@@ -88,7 +88,7 @@ class PaymentModule extends PLModule
         global $globals;
 
         require_once 'profil.func.inc.php' ;
-        require_once 'money.inc.php' ;
+        require_once dirname(__FILE__).'/payment/money.inc.php' ;
 
         $page->changeTpl('payment/index.tpl');
         $page->assign('xorg_title','Polytechnique.org - Télépaiements');
