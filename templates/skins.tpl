@@ -36,7 +36,7 @@ nous te conseillons de télécharger une version récente de ton navigateur.
 </p>
 <p>
 Pour toute information complémentaire, n'hésite pas à écrire à
-{mailto address='support@{#globals.mail.domain#}' subject='navigateurs'}
+<a href="mailto:support@{#globals.mail.domain#}?subject=navigateur">support@{#globals.mail.domain#}</a>
 </p>
 
 <table id="skin" cellpadding="0" cellspacing="0" summary="Choix de skins">
