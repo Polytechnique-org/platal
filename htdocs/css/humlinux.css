@@ -85,10 +85,10 @@ div.contact div.long {
         [ choix de classes faites par le skinneur
 *******************************************************************************/
 
-#content {
+#body-content {
     background-image: url("/images/skins/humlinux_background.jpg");
     background-repeat: repeat-y;
-    background-position: top;
+    background-position: top left;
 }
             
 #body-logo {
@@ -99,6 +99,7 @@ div.contact div.long {
 }
 
 #body-top {
+    width: 150px;
     border-bottom: 2px solid #777777;
 }
 
@@ -107,6 +108,7 @@ div.contact div.long {
 }
 
 #body-menu {
+    width: 150px;
     border-right: none;
 }
 

@@ -63,7 +63,7 @@
           {include file="skin/common.title.header.tpl"}
         </td>
       </tr>
-      <tr>
+      <tr id="body-content">
         <td id="body-menu">
         {include file=skin/common.menu.tpl}
         </td>
