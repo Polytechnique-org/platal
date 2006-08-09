@@ -27,7 +27,7 @@
       table.ligne   { background: #e7e7e7; }
       td.ligne      { width: 100%; }
       td.xdx {
-        padding: 0; background: #CCCCCC ; height: 14px; width: auto; font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif;
+        color: #000; padding: 0; background: #CCCCCC ; height: 14px; width: auto; font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif;
       }
       td.xdx img    {border: 0; padding: 0; margin: 0; }
       a.xdx         { vertical-align: bottom; color: #505050; }
