@@ -452,8 +452,8 @@ L'équipe d'administration <support@polytechnique.org>";
             $sql = "SELECT  w.detection, w.state, w.last, w.description,
                             a1.alias AS edit, a2.alias AS forlife
                       FROM  emails_watch AS w
-                 LEFT JOIN  emails       AS e  USING(email)
-                INNER JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')
+                 LEFT JOIN  aliases      AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')     
+                 LEFT JOIN  emails       AS e  ON (w.email = e.email)
                  LEFT JOIN  aliases      AS a2 ON (a2.id = e.uid AND a2.type = 'a_vie')
                      WHERE  w.email = {?}
                   ORDER BY  a2.alias";
