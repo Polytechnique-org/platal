@@ -1,0 +1,470 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2006 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+/*******************************************************************************
+    1   Styles par défauts
+        [ balises sans attributs ou classes sans contexte ]
+*******************************************************************************/
+
+body {
+    font-family: "Arial", sans-serif;
+    background: url('../images/skins/keynote_bg.png') top left repeat-x;
+    background-attachment: fixed;
+    background-color: #525168;
+    color: #fff;
+}
+
+a:link, a:visited, a:active, a:hover {
+    color: #000;
+    background: none;
+}
+
+a:hover {
+    color: #222;
+}
+
+fieldset {
+    border: 1px #336699 solid;
+    background: #eeeeee;
+    color: inherit;
+
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+legend {
+    border: 1px #336699 solid;
+    background: #f4d09c;
+    color: inherit;
+
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/*******************************************************************************
+    2   Styles <p>, <div>, <span>, <li>
+        [ styles classiques d'effets de texte ]
+*******************************************************************************/
+
+p {
+    margin-bottom: 0.5em;
+    text-align: justify;
+}
+
+.erreur {
+    font-weight: bold;
+    color: #ff0000;
+    background: inherit;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.erreur a:link, .erreur a:visited, .erreur a:active, .erreur a:hover {
+    color: #ff3333;
+    background: inherit;
+}
+
+h1 {
+    color: #fff;
+    background: none;
+}
+
+h2 {
+    padding: 0.5em 0em 0em 0em;
+    margin: 0em;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+h3 {
+    margin: 0em;
+    font-weight: bold;
+    padding: 0.25em;
+    font-size: 100%;
+}
+
+p.explication, div.explication {
+    font-style: italic;
+    padding: 0em 1ex 1ex 1ex;
+}
+
+li.spaced {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    text-align: justify;
+}
+
+/*******************************************************************************
+    3   Tableaux bicolores + classes utiles
+        [ Tableaux à lignes alternées, en taille normale, ou tiny ]
+*******************************************************************************/
+table.bicol, table.tinybicol {
+    background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
+    background-attachment: fixed;
+    border: none;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    color: #000;
+}
+
+table.tinybicol tr.pair, table.bicol tr.pair {
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed; 
+}
+
+table.tinybicol th, table.bicol th {
+    color: #ffffff;
+    background: url('../images/skins/keynote_title.gif') top left repeat-x;
+    background-color: #000;
+}
+table.tinybicol td, table.bicol td {
+    color: #000000;
+    background: inherit;
+}
+
+table.tinybicol td, table.bicol td, table.tinybicol tr, table.bicol tr { padding: 4px; }
+
+td.half { width: 50%; padding: 4px; }
+td.titre {
+    color: #000000;
+    background: inherit;
+    font-weight: bold;
+}
+td.action {
+    white-space: nowrap;
+    text-align: right;
+    font-weight: bold;
+    vertical-align: middle;
+}
+td.action a { padding: 0px 2px 0px 2px; }
+
+/*******************************************************************************
+    4   Tableau de choix de skins
+        [ Styles pour les tableaux de types de ceux des skins ]
+*******************************************************************************/
+
+#skin {
+    background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
+    background-attachment: fixed; 
+    color: #000;
+    border-bottom: none;
+    border-top: 1px solid #fff;
+}
+#skin td {
+    border-bottom: 1px solid #fff;
+    border-top: none;
+    vertical-align: middle;
+}
+#skin td.skigauche {
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed;
+}
+
+/*******************************************************************************
+    5   Contacts
+        [ Styles liés à l'affichage de contacts ]
+*******************************************************************************/
+
+div.contact-list div.contact {
+    border-top: 1px solid #fff;
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed;
+    color: #000;
+}
+
+div.grayed {
+    color: #444444;
+    font-style: italic;
+}
+
+div.grayed div.contact {
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed;
+}
+
+div.contact div.nom {
+    font-weight: bold;
+    width: 35%;
+    float: left;
+}
+
+div.contact div.appli {
+    float: left;
+}
+
+div.contact div.bits {
+    text-align: right;
+    float: right;
+}
+
+div.contact div.long {
+    background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
+    background-attachment: fixed;
+}
+
+/*******************************************************************************
+    6   Profil
+        [ onglets des profils ]
+*******************************************************************************/
+  
+table.flags {
+    margin: 1em 0em 0em 0em;
+}
+table.flags input { margin: 0px 2px; padding: 0px; }
+
+table.flags td.texte, tr.flags td.texte {
+    font-size: smaller;
+    font-weight: bold;
+    padding: 3px;
+}
+table.flags td.vert, tr.flags td.vert {
+    background: green;
+    padding: 3px;
+    text-align: center;
+}
+table.flags td.orange, tr.flags td.orange {
+    background: #ff9900;
+    padding: 3px;
+    text-align: center;
+}
+table.flags td.rouge, tr.flags td.rouge {
+    background: red;
+    padding: 3px;
+    text-align: center;
+}
+
+table.cadre_a_onglet{
+    border-width: 0;
+    padding : 0;
+    margin: 0;
+}
+
+td.conteneur_tab {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #9c9c9c;
+    border-left-color: #eee;
+    padding: 8px 4px 4px 4px;
+    background : url('../images/skins/keynote_topborder.png') top repeat-x;
+}
+
+#onglet {
+    display : block;
+    margin : 0;
+    padding : 0;
+}
+
+#onglet li {
+    display : block;
+    float : left;
+    padding : 0.4ex;
+    margin : 0 0.3ex -1px 3px;
+    background : #ddd;
+    border: none;
+    border-bottom: 1px solid #9C9C9C;
+    width: auto;
+    height: 5ex;
+    text-align: center;
+    color: #000;
+}
+
+#onglet li:hover { background : #ccc; }
+
+#onglet li.actif {
+    background : #dedede;
+    border-bottom: 1px solid #dedede;
+}
+
+/*******************************************************************************
+    7   fiche.php & fiche_referent.php
+        [ cas de la fiche ]
+*******************************************************************************/
+
+#fiche {
+    color: #000;
+    border: none;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
+    background-attachment: fixed;
+}
+
+#fiche em {
+    color: #777;
+    font-weight: bolder;
+}
+
+#fiche h2 {
+    background: url('../images/skins/keynote_title.gif') bottom repeat-x;
+    color: #fff;
+    border: none;
+    height: 17px;
+    margin-right: 0;
+}
+
+#photo { padding-left: 0em; }
+
+#fiche_identite div.civilite {
+    text-align: center;
+    font-weight: bold;
+    width: 80%;
+    float: left;
+    color: #fff;
+}
+
+#fiche_identite div.contact {
+    border: none;
+    border-top: 1px dotted #fff;
+    border-left: 1px dotted #fff;
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed;
+}
+
+#fiche_identite div.contact em {
+    color: #aaa;
+}
+
+#fiche_identite div.email {
+    clear: left;
+    float: left;
+}
+#fiche_identite div.mob {
+    float: right;
+    clear: right;
+    text-align: right;
+}
+
+#fiche_identite div.formation {
+    margin: 0em 1em;
+    clear: both;
+}
+
+div.adresse {
+    float: left;
+    width: 46%;
+    padding: 0px;
+    margin: 0px 1% 1ex 1%;
+}
+
+/* only for fiche_referent.php*/
+
+#fiche_referent em {
+    color: #777;
+    font-weight: bolder;
+}
+
+/*******************************************************************************
+    A   SKIN
+        [ choix de classes faites par le skinneur
+*******************************************************************************/
+
+#dev {
+    width: 100%;
+    text-align: center;
+    padding: 1px;
+
+    color: #003399;
+    background: #e0ffff;
+
+    font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+#dev a { text-decoration: underline; }
+#dev a:hover { color: #003399; background: #c0e0e0; }
+
+#db-trace div.hide       { display: none; }
+#db-trace:hover div.hide { display: block }
+
+#suid {
+    color: red;
+    background: #ffc0cb;
+    width: 100%;
+    font-weight: bold;
+}
+#suid td { padding: 2px; }
+#suid a { color: red; }
+
+#body {
+    width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#body-logo {
+    width: 140px;
+    border: none;
+    padding-top: none;
+}
+
+#body-top {
+    padding: none;
+    padding-bottom: 16px;
+}
+
+#body-bottom {
+    border-top: 1px solid #fff;
+}
+
+#body-menu {
+    border-right: 1px solid #fff;
+}
+
+#body-menu a:link, #body-menu a:visited, #body-menu a:active, #body-meny a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+#body-menu .menu_item:hover {
+    background-color: #556;
+}
+
+#body-menu .menu_title {
+    color: #fff;
+    height: 17px;
+    background: url('../images/skins/keynote_title.gif') top repeat-x;
+    border: none;
+    padding: 0;
+    padding-top: 4px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#content {
+    padding-top: 0;
+    vertical-align: top;
+}
+
+#quick_search {
+    color: gray;
+    text-align: right;
+}
+
+div#content {
+    padding: 1em;
+    margin: 0em;
+}
+
+#content input {
+    font-size: 95%;
+}
+
+/* vim: set et ts=4 sts=4 sw=4: */
