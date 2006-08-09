@@ -28,7 +28,7 @@ a:link, a:visited, a:active, a:hover {
 *******************************************************************************/
 
 #body {
-    background-image: url("/images/skins/newxorg_background.jpg");
+    background-image: url("../images/skins/newxorg_background.jpg");
     background-position: top right;
     background-repeat: repeat-y;
 }
@@ -45,7 +45,7 @@ legend {
 h1 {
     color: #ff9900;
     background-color: #458bb6;
-    background-image: url( "/images/skins/newxorg_titre.jpg");
+    background-image: url( "../images/skins/newxorg_titre.jpg");
     background-repeat: repeat-x;
 }
 
@@ -105,7 +105,7 @@ div.contact div.long {
 #fiche h2 {
     color: #ff6600;
     background-color: #458bb6;
-    background-image: url("/images/skins/newxorg_titre.jpg");
+    background-image: url("../images/skins/newxorg_titre.jpg");
     background-repeat: repeat-x;
     border: none;
 }
@@ -120,7 +120,7 @@ div.contact div.long {
 
 #fiche_identite div.contact {
     border-color: #458bb6;
-    background-image: url("/images/skins/newxorg_background.jpg");
+    background-image: url("../images/skins/newxorg_background.jpg");
 }
 
 #fiche_referent em {
@@ -154,7 +154,7 @@ div.contact div.long {
 #body-menu .menu_title {
     color : #ff6600;
     background-color: #ffffff;
-    background-image: url("/images/skins/newxorg_menu.jpg");
+    background-image: url("../images/skins/newxorg_menu.jpg");
     border-top: 1px solid #ffffff;
     border-bottom: 1px solid #ffffff;
 }

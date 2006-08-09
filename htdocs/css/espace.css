@@ -52,7 +52,7 @@ h1 a:link, h1 a:visited, h1 a:active, h1 a:hover {
 h1 {
     color: #eeeeee;
     background-color: #000000;
-    background-image: url( "/images/skins/espace_titre.jpg");
+    background-image: url( "../images/skins/espace_titre.jpg");
     background-repeat: no-repeat;
 }
 
@@ -160,7 +160,7 @@ td.conteneur_tab {
 #fiche_identite div.civilite {
     color: #eeeeee;
     background-color: #000000;
-    background-image: url( "/images/skins/espace_titre.jpg");
+    background-image: url( "../images/skins/espace_titre.jpg");
     background-repeat: no-repeat;
     width: 100%;
     text-align: left;
@@ -220,7 +220,7 @@ td.conteneur_tab {
 #body-menu .menu_title {
     color : #ffffff;
     background-color: #dddddd;
-    background-image: url("/images/skins/espace_menu.jpg");
+    background-image: url("../images/skins/espace_menu.jpg");
     border-bottom: none;
 }
 

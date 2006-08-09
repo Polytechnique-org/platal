@@ -88,7 +88,7 @@ p {
 
 h1 {
     color: #555555;
-    background: url('/images/skins/default_titre.gif');
+    background: url('../images/skins/default_titre.gif');
     background-repeat: no-repeat;
 
     text-indent: 0.2em;

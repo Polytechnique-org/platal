@@ -40,7 +40,7 @@ legend {
 h1 {
     color: #000000;
     background-color: #dddddd;
-    background-image: url( "/images/skins/humlinux_titre.jpg");
+    background-image: url( "../images/skins/humlinux_titre.jpg");
     background-repeat: no-repeat;
 }
 
@@ -86,7 +86,7 @@ div.contact div.long {
 *******************************************************************************/
 
 #body-content {
-    background-image: url("/images/skins/humlinux_background.jpg");
+    background-image: url("../images/skins/humlinux_background.jpg");
     background-repeat: repeat-y;
     background-position: top left;
 }
@@ -115,7 +115,7 @@ div.contact div.long {
 #body-menu .menu_title {
     color : #ffffff;
     background-color: #dddddd;
-    background-image: url("/images/skins/humlinux_menu.jpg");
+    background-image: url("../images/skins/humlinux_menu.jpg");
     border-top: none;
     border-bottom: none;
 }
