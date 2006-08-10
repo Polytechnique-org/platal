@@ -50,6 +50,10 @@ if (!$n) {
 new_skinned_page('wiki.tpl');
 $perms = wiki_get_perms($n);
 
+if (Env::v('display') == 'light') {
+    $page->assign('simple', true);
+}
+
 switch (Env::v('action')) {
   case '':
     wiki_apply_perms($perms[0]);
