@@ -20,9 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$banana->profile.autoup}
-[<a href='javascript:dynpost("{$platal->path}", {ldelim}"updateall": 1{rdelim})'>Mettre à jour</a>]
-{/if}
+<br />
 
 <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" width="100%">
   <tr>

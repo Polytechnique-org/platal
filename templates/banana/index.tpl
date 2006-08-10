@@ -20,12 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$banana->profile.autoup}
-[<a href='javascript:dynpostkv("{$platal->path}", "updateall", 1)'>Mettre à jour</a>]
-{/if}
-
 <br />
-
 {$banana_res|smarty:nodefaults}
  
 {* vim:set et sw=2 sts=2 sws=2: *}

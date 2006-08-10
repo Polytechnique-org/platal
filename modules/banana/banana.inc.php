@@ -41,6 +41,21 @@ function hook_shortcuts()
                                     'Préférences'));
 }
 
+function hook_browsingAction()
+{
+    global $platal, $banana;
+    $page = $banana->state['page'];
+    if ((@$page != 'message' && @$page != 'group' && @$page != 'forums') 
+        || $banana->profile['autoup']) {
+        return null;
+    }
+    return '<p class="center" style="padding: 0; margin: 0 0 1em 0">'
+         . '<a href=\'javascript:dynpost("' . $platal->path . ', {"updateall": 1})\'>'
+         . 'Marquer tous les messages comme lus'
+         . '</a>'
+         . '</p>';
+}
+
 function hook_makeLink($params) {
     global $globals;
     $base = $globals->baseurl . '/banana';
