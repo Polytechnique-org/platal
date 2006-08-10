@@ -29,7 +29,7 @@ body {
     background: url('../images/skins/keynote_bg.png') top left repeat-x;
     
     background-attachment: fixed;
-    background-color: #525168;
+    background-color: #4f4e63;
     color: #fff;
 }
 
@@ -66,7 +66,7 @@ legend {
 *******************************************************************************/
 
 p {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.4em;
     text-align: justify;
 }
 
@@ -85,12 +85,19 @@ p {
 
 h1 {
     color: #fff;
-    background: none;
+    background: url('../images/skins/keynote_titlepuce2.gif') top left no-repeat;
+    height: 24px;
+    margin: 0.5em 0 0 0;
+    padding: 6px 0 0 24px;
+}
+
+h1:hover {
+    background: url('../images/skins/keynote_titlepuce.gif') top left no-repeat;
 }
 
 h2 {
     padding: 0.5em 0em 0em 0em;
-    margin: 0em;
+    margin: 0;
     font-size: 100%;
     font-weight: bold;
 }
@@ -108,8 +115,8 @@ p.explication, div.explication {
 }
 
 li.spaced {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.3em;
     text-align: justify;
 }
 
@@ -120,6 +127,7 @@ li.spaced {
 table.bicol, table.tinybicol {
     background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
     background-attachment: fixed;
+    background-color: #848495;
     border: none;
     border-top: 1px solid #fff;
     border-left: 1px solid #fff;
@@ -127,13 +135,15 @@ table.bicol, table.tinybicol {
 
 table.tinybicol tr.pair, table.bicol tr.pair {
     background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
-    background-attachment: fixed; 
+    background-attachment: fixed;
+    background-color: #bbbbca;
 }
 
 table.tinybicol th, table.bicol th {
     color: #fff;
     background: url('../images/skins/keynote_title.gif') top left repeat-x;
     background-color: #000;
+    height: 17px;
 }
 table.tinybicol td, table.bicol td {
     color: #000000;
@@ -163,7 +173,8 @@ td.action a { padding: 0px 2px 0px 2px; }
 
 #skin {
     background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
-    background-attachment: fixed; 
+    background-attachment: fixed;
+    background-color: #848495;
     color: #000;
     border-bottom: none;
     border-top: 1px solid #fff;
@@ -176,6 +187,7 @@ td.action a { padding: 0px 2px 0px 2px; }
 #skin td.skigauche {
     background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
     background-attachment: fixed;
+    background-color: #bbbbca;
 }
 
 /*******************************************************************************
@@ -187,6 +199,7 @@ div.contact-list div.contact {
     border-top: 1px solid #fff;
     background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
     background-attachment: fixed;
+    background-color: #bbbbca;
     color: #000;
 }
 
@@ -198,6 +211,7 @@ div.grayed {
 div.grayed div.contact {
     background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
     background-attachment: fixed;
+    background-color: #bbbbca;
 }
 
 div.contact div.nom {
@@ -218,6 +232,7 @@ div.contact div.bits {
 div.contact div.long {
     background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
     background-attachment: fixed;
+    background-color: #848495;
 }
 
 /*******************************************************************************
@@ -302,6 +317,7 @@ td.conteneur_tab {
     border-left: 1px solid #fff;
     background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
     background-attachment: fixed;
+    background-color: #848495;
 }
 
 #fiche em {
@@ -332,6 +348,7 @@ td.conteneur_tab {
     border-top: 1px dotted #fff;
     border-left: 1px dotted #fff;
     background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-color: #bbbbca;
     background-attachment: fixed;
 }
 
