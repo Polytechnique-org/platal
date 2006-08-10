@@ -50,7 +50,7 @@ function hook_browsingAction()
         return null;
     }
     return '<p class="center" style="padding: 0; margin: 0 0 1em 0">'
-         . '<a href=\'javascript:dynpost("' . $platal->path . ', {"updateall": 1})\'>'
+         . '<a href=\'javascript:dynpostkv("' . $platal->path . '", "updateall", 1)\'>'
          . 'Marquer tous les messages comme lus'
          . '</a>'
          . '</p>';

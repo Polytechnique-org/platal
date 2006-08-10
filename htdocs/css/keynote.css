@@ -89,6 +89,7 @@ h1 {
     height: 24px;
     margin: 0.5em 0 0 0;
     padding: 6px 0 0 24px;
+    color: #bbf;
 }
 
 h1:hover {
@@ -100,6 +101,7 @@ h2 {
     margin: 0;
     font-size: 100%;
     font-weight: bold;
+    color: #77c;
 }
 
 h3 {
@@ -241,7 +243,8 @@ div.contact div.long {
 *******************************************************************************/
   
 table.flags, tr.flags {
-    margin: 0;
+    margin: 0.5em 0 0 0;
+    padding: 0;
 }
 table.flags input { margin: 0px 2px; padding: 0px; }
 
