@@ -20,26 +20,37 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Recherche simple dans l'annuaire</h1>
+<h1>Recherche dans l'annuaire</h1>
 
 <form action="search" method="get"{if $show_js} id="quick_form"{/if}>
   <table class="bicol" cellspacing="0" cellpadding="4">
+    {if $smarty.session.auth ge AUTH_COOKIE}
+    <tr>
+      <th colspan="2">
+        Recherche simple [<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancée</a>]
+      </th>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
+      </td>
+    </tr>
     <tr>
       <td style="width: 78%">
-        <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 100%" /><br />
-        {if $smarty.session.auth ge AUTH_COOKIE}
         <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
         mettre les fiches modifiées récemment en premier
         {if $smarty.request.nonins}
         <br /><input type='checkbox' name='nonins' readonly="readonly" checked='checked' value='1' /> Chercher uniquement des non inscrits
         {/if}
-        {/if}
       </td>
-      <td>
+    {else}
+    <tr>
+      <td style="width: 78%">
+        <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
+      </td>
+    {/if}
+      <td class="right">
         <input type="submit" value="Chercher" />
-        {if $smarty.session.auth ge AUTH_COOKIE}
-        <br /><a class='smaller' href="search/adv">Recherche&nbsp;avancée</a>
-        {/if}
       </td>
     </tr>
   </table>

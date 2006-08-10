@@ -145,6 +145,7 @@ class SearchModule extends PLModule
                                                    AND w.uid='.S::v('uid').')
                 '.$globals->search->result_where_statement."
                     $where
+                 GROUP BY  u.user_id
                  ORDER BY  ".($order?($order.', '):'')
                 .implode(',',array_filter(array($fields->get_order_statement(),
                                                 'promo DESC, NomSortKey, prenom'))).'

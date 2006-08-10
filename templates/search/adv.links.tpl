@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $do_title}<h1>Recherche avancée</h1>{/if}
+{if $do_title}<h1>Recherche dans l'annuaire</h1>{/if}
 
 <ul>
   {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}

@@ -31,14 +31,11 @@
   {/if}
 
   <h1 class='right'>
-    {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}.
+    {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}
+    {if $search_results_nb and $advanced and !$simple}
+    &nbsp;(<a href='geoloc/?{$search_vars}'>Voir sur une carte</a>)
+    {/if}
   </h1>
-
-  {if $search_results_nb and $advanced and !$simple}
-  <p>
-    [<a href='geoloc/?{$search_vars}'>Voir la recherche sur une carte</a>].
-  </p>
-  {/if}
   
   {if $search_results_nb > 1}
   <div>

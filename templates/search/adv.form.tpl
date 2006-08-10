@@ -20,12 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Recherche avancée</h1>
-
-<p>[<a href="search">Recherche simple</a>]</p>
+<h1>Recherche dans l'annuaire</h1>
 
 <form id="recherche" action="search/adv" method="get">
+  <script type="text/javascript">{literal}
+    function launch_form(url) {
+      var f = document.getElementById('recherche');
+      f.action = url;
+      f.submit();
+    }
+  {/literal}</script>
   <table class="bicol" cellpadding="3" summary="Recherche">
+    <tr>
+      <th colspan="2">
+        Recherche avancée [<a href="search">&lt;&lt;&lt;&nbsp;Recherche simple</a>]
+      </th>
+    </tr>
     <tr>
       <td>Nom</td>
       <td>
@@ -300,24 +310,21 @@
       <td>Commentaire contient</td>
       <td><input type="text" name="free" size="32" value="{$smarty.request.free}" /></td>
     </tr>
+    <tr>
+      <td colspan="2" style="padding-top: 1.5em">
+        <div style="float: right">
+          <input type="button" value="Chercher" onclick="launch_form('search/adv')"/>
+        </div>
+        {if $smarty.session.auth ge AUTH_COOKIE}
+          <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
+          mettre les fiches modifiées récemment en premier
+        {/if}
+      </td>
+    </tr>
   </table>
-  {if $smarty.session.auth ge AUTH_COOKIE}
-  <p>
-    <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
-    mettre les fiches modifiées récemment en premier
-  </p>
-  {/if}
 </form>
 <p class="center">
-  <script type="text/javascript">{literal}
-    function launch_form(url) {
-      var f = document.getElementById('recherche');
-      f.action = url;
-      f.submit();
-    }
-  {/literal}</script>
   <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
-  <input type="button" value="Chercher" onclick="launch_form('search/adv')"/>
 </p>
 <p>
   <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
