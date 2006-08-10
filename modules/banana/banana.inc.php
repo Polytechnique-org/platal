@@ -96,9 +96,9 @@ function hook_getSubject(&$subject)
         $subject = $matches[1];
         global $banana;
         if ($banana->state['group'] == $matches[2]) {
-            return ' [=> ' . $matches[2] . ']';
+            return ' [=>&nbsp;' . $matches[2] . ']';
         } else {
-            return ' [=> ' . makeHREF(array('group' => $matches[2]), $matches[2]) . ']';
+            return ' [=>&nbsp;' . makeHREF(array('group' => $matches[2]), $matches[2]) . ']';
         }
     }
     return null;
