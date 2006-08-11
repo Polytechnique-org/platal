@@ -112,6 +112,7 @@
         {else}
           <input type="text" name="{$myfield}" value="{$entry.$myfield}" {if $myval.Size}size="{$myval.Size}" maxlength="{$myval.Maxlength}"{/if}/>
           {if $myval.Type eq 'timestamp'}<em>jj/mm/aaaa hh:mm:ss</em>{/if}
+          {if $myval.Type eq 'date'}<em>jj/mm/aaaa</em>{/if}
           {if $myval.Type eq 'time'}<em>hh:mm:ss</em>{/if}
         {/if}
       </td>

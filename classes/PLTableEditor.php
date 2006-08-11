@@ -71,7 +71,7 @@ class PLTableEditor {
                 $a['List'] = explode('§',str_replace("','","§",substr($a['Type'], 6, strlen($a['Type']) - 8)));
                 $a['Type'] = 'enum';
             }
-            elseif (substr($a['Type'],0,10) == 'timestamp(') {
+            elseif (substr($a['Type'],0,10) == 'timestamp(' || $a['Type'] == 'datetime') {
                 $a['Type'] = 'timestamp';
             }
 
@@ -93,6 +93,10 @@ class PLTableEditor {
                 // set readable timestamp
                 $date =& $entry[$field];
                 $date = preg_replace('/([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})/', '\3/\2/\1 \4:\5:\6', $date); 
+            }
+            if ($descr['Type'] == 'date') {
+                $date =& $entry[$field];
+                $date = preg_replace('/([0-9]{4})-?([0-9]{2})-?([0-9]{2})/', '\3/\2/\1', $date);
             }
         }
         return $entry;
@@ -148,7 +152,10 @@ class PLTableEditor {
                 } elseif (Post::has($field)) {
                     $val = Post::v($field);                    
                     if ($descr['Type'] == 'timestamp') {
-                        $val = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/', '\3\2\1\4\5\6', $val); 
+                        $val = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/', '\3\2\1\4\5\6', $val); 
+                    }
+                    elseif ($descr['Type'] == 'date') {
+                        $val = preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})/', '\3-\2-\1', $val);
                     }
                     $val = "'".addslashes($val)."'";
                 } else {
