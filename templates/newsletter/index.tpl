@@ -34,7 +34,7 @@ utilise <a href='nl/submit'>le formulaire dédié !</a>
 
 {if $nls}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='preferences'>des préférences</a>)
+Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>)
 </p>
 <div class='center'>
   [<a href='nl/out'>me désinscrire de la lettre mensuelle</a>]

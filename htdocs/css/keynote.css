@@ -86,8 +86,7 @@ p {
 h1 {
     color: #fff;
     background: url('../images/skins/keynote_titlepuce2.gif') top left no-repeat;
-    height: 24px;
-    margin: 0.5em 0 0 0;
+    margin: 0.5em 0 0.5em 0;
     padding: 6px 0 0 24px;
     color: #bbf;
 }
