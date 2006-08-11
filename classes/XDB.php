@@ -143,11 +143,7 @@ class XOrgDBResult
 
     function XOrgDBResult($query)
     {
-        if (strpos($query, 'SQL_CALC_FOUND_ROWS') === false) {
-            $this->_res = XDB::_query($query);
-        } else {
-            $this->_res = mysql_query($query);
-        }
+        $this->_res = XDB::_query($query);
     }
 
     // }}}
