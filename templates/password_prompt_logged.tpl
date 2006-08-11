@@ -25,19 +25,23 @@
   <table>
     <tr>
       <td>
-        <img src="images/cadenas_rouge.png" alt=" [ CADENAS ROUGE ] " />
+        {icon name=error}
       </td>
       <td>
         <span class="smaller">
           <strong>
-            Pour des raisons de sécurité, il est obligatoire de taper ton mot de passe, même
+            Pour des raisons de <span class="erreur">sécurité</span>, il est obligatoire de taper ton mot de passe, même
             avec l'accès permanent, pour certaines opérations sensibles.
           </strong>
         </span>
       </td>
+      <td>
+        {icon name=error}
+      </td>
     </tr>
   </table>
 </div>
+<br />
 
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit='doChallengeResponse(); return false;'>
   <table class="tinybicol" cellpadding="4" summary="Formulaire de login">
@@ -47,21 +51,16 @@
       </td>
       <td>
         <input type="password" name="password" size="10" maxlength="10" />
+        &nbsp;<a href="recovery">Perdu ?</a>
       </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td {popup caption='Connexion permanente' width='300' text="Décoche cette case pour que le site oublie ce navigateur.<br />
-        Il est conseillé de décocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
-        <input type="checkbox" name="remember" checked="checked" /> Garder l'accès aux services après déconnexion
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="recovery">Mot de passe perdu ?</a>
-      </td>
-      <td class="right">
+      <td class="right" rowspan="2" style="vertical-align: middle">
         <input  type="submit" name="submitbtn" value="Envoyer" />
+      </td>
+    </tr>
+    <tr>
+      <td {popup caption='Connexion permanente' width='300' text="Décoche cette case pour que le site oublie ce navigateur.<br />
+        Il est conseillé de décocher la case si cette machine n'est pas <b>strictement</b> personnelle"} colspan="2">
+        <input type="checkbox" name="remember" checked="checked" /> Garder l'accès aux services après déconnexion
       </td>
     </tr>
   </table>
