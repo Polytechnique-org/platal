@@ -43,21 +43,21 @@ a:hover {
 }
 
 fieldset {
-    border: 1px #336699 solid;
-    background: #eeeeee;
-    color: inherit;
-
-    margin-top: 1em;
-    margin-bottom: 1em;
+    border: none;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    background: url('../images/skins/keynote_bg_lighter.png') top left repeat-x;
+    background-attachment: fixed;
+    background-color: #848495;
+    color: #000;
 }
 
 legend {
-    border: 1px #336699 solid;
-    background: #f4d09c;
-    color: inherit;
-
-    padding-left: 4px;
-    padding-right: 4px;
+    border: 1px solid #fff;
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed;
+    background-color: #bbbbaa;
+    color: #000;
 }
 
 /*******************************************************************************
@@ -145,7 +145,6 @@ table.tinybicol th, table.bicol th {
     color: #fff;
     background: url('../images/skins/keynote_title.gif') top left repeat-x;
     background-color: #000;
-    height: 17px;
 }
 table.tinybicol td, table.bicol td {
     color: #000000;
