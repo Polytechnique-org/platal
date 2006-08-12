@@ -38,20 +38,19 @@ class XDB
     {
         $query  = preg_split("/\n\\s*/", $query);
         $length = 0;
-        foreach ($query as $line) {
-            if (preg_match('/^([A-Z]+(?: +(?:JOIN|BY))?) /', $line, $matches)
+        foreach ($query as $key=>$line) {
+            $local = -2;
+            if (preg_match('/^([A-Z]+(?:\s+(?:JOIN|BY))?)\s+(.*)/', $line, $matches)
                 && $matches[1] != 'AND' && $matches[1] != 'OR') {
-                $length = max($length, strlen($matches[1]));
+                $local  = strlen($matches[1]);
+                $line   = $matches[1] . '  ' . $matches[2];
+                $length = max($length, $local);
             }
+            $query[$key] = array($line, $local);
         }
         $res = '';
-        foreach ($query as $line) {
-            $local = -2;
-            if (preg_match('/^([A-Z]+(?: +(?:JOIN|BY))?) +(.*)/', $line, $matches)
-                && $matches[1] != 'AND' && $matches[1] != 'OR') {
-                $local = strlen($matches[1]);
-                $line  = $matches[1] . '  ' . $matches[2];
-            }
+        foreach ($query as $array) {
+            list($line, $local) = $array;
             $local   = $length - $local;
             $res    .= str_repeat(' ', $local) . $line . "\n";
             $length += 2 * (substr_count($line, '(') - substr_count($line, ')'));
