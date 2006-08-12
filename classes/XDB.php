@@ -39,16 +39,16 @@ class XDB
         $query  = preg_split("/\n\\s*/", $query);
         $length = 0;
         foreach ($query as $line) {
-            if (preg_match('/^([A-Z]+( (JOIN|BY))?) /', $line, $matches)
-                && $matches[1] != 'AND' && $matches[2] != 'OR') {
+            if (preg_match('/^([A-Z]+(?: +(?:JOIN|BY))?) /', $line, $matches)
+                && $matches[1] != 'AND' && $matches[1] != 'OR') {
                 $length = max($length, strlen($matches[1]));
             }
         }
         $res = '';
         foreach ($query as $line) {
             $local = -2;
-            if (preg_match('/^([A-Z]+(?: (?:JOIN|BY))?) +(.*)/', $line, $matches)
-                && $matches[1] != 'AND' && $matches[2] != 'OR') {
+            if (preg_match('/^([A-Z]+(?: +(?:JOIN|BY))?) +(.*)/', $line, $matches)
+                && $matches[1] != 'AND' && $matches[1] != 'OR') {
                 $local = strlen($matches[1]);
                 $line  = $matches[1] . '  ' . $matches[2];
             }
