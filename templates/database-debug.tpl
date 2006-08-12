@@ -25,9 +25,9 @@
 <table class="bicol" style="width: 75%; font-family: monospace; font-size: smaller; margin-left:2px; margin-top: 3px;">
   <tr class="impair">
     <td>
-      <strong>QUERY:</strong><br />
-      {$query.query|nl2br}
-      <br />
+      <strong>QUERY:</strong>
+      <pre style="padding: 0; margin: 0;">{$query.query}</pre>
+      <br/>
     </td>
   </tr>
   {if $query.error}

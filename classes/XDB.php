@@ -32,6 +32,35 @@ class XDB
     }
 
     // }}}
+    // {{{ function _reformatQuery
+
+    function _reformatQuery($query)
+    {
+        $query  = preg_split("/\n\\s*/", $query);
+        $length = 0;
+        foreach ($query as $line) {
+            if (preg_match('/^([A-Z]+( (JOIN|BY))?) /', $line, $matches)
+                && $matches[1] != 'AND' && $matches[2] != 'OR') {
+                $length = max($length, strlen($matches[1]));
+            }
+        }
+        $res = '';
+        foreach ($query as $line) {
+            $local = -2;
+            if (preg_match('/^([A-Z]+(?: (?:JOIN|BY))?) +(.*)/', $line, $matches)
+                && $matches[1] != 'AND' && $matches[2] != 'OR') {
+                $local = strlen($matches[1]);
+                $line  = $matches[1] . '  ' . $matches[2];
+            }
+            $local   = $length - $local;
+            $res    .= str_repeat(' ', $local) . $line . "\n";
+            $length += 2 * (substr_count($line, '(') - substr_count($line, ')'));
+        }
+        return $res;
+    }
+
+    // }}}
+    // {{{ function _query
 
     function _query($query) {
         global $globals;
@@ -42,7 +71,7 @@ class XDB
             while ($row = @mysql_fetch_assoc($_res)) {
                 $explain[] = $row;
             }
-            $trace_data = array('query' => $query, 'explain' => $explain);
+            $trace_data = array('query' => XDB::_reformatQuery($query), 'explain' => $explain);
             @mysql_free_result($_res);
         }
 
@@ -56,6 +85,7 @@ class XDB
         return $res;
     }
 
+    // }}}
     // {{{ function query
 
     function &query()
