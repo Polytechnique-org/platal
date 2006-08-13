@@ -40,7 +40,7 @@ class XDB
         $length = 0;
         foreach ($query as $key=>$line) {
             $local = -2;
-            if (preg_match('/^([A-Z]+(?:\s+(?:JOIN|BY))?)\s+(.*)/', $line, $matches)
+            if (preg_match('/^([A-Z]+(?:\s+(?:JOIN|BY|FROM|INTO))?)\s+(.*)/', $line, $matches)
                 && $matches[1] != 'AND' && $matches[1] != 'OR') {
                 $local  = strlen($matches[1]);
                 $line   = $matches[1] . '  ' . $matches[2];
@@ -79,6 +79,9 @@ class XDB
         if ($globals->debug & 1) {
             $trace_data['error'] = mysql_error();
             $GLOBALS['XDB::trace_data'][] = $trace_data;
+            if (mysql_errno()) {
+                $GLOBALS['XDB::error'] = true;
+            }
         }
 
         return $res;
@@ -157,6 +160,7 @@ class XDB
 
     function trace_format(&$page, $template = 'database-debug.tpl') {
         $page->assign('trace_data', $GLOBALS['XDB::trace_data']);
+        $page->assign('db_error', $GLOBALS['XDB::error']);
         return $page->fetch($template);
     }
 }

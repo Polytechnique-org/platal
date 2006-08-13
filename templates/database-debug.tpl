@@ -33,7 +33,7 @@
   {if $query.error}
   <tr>
     <td>
-      <strong>ERROR:</strong><br />
+      <strong style="color: #f00">ERROR:</strong><br />
       {$query.error|nl2br}
     </td>
   </tr>

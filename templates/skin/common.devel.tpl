@@ -24,7 +24,9 @@
 {if $db_trace && $db_trace neq "\n\n"}
   <div id="db-trace">
     <h1>
+      {if $db_error}<span style="color: #f00">{/if}
       Trace de l'exécution de cette page sur mysql (hover me)
+      {if $db_error}</span>{/if}
     </h1>
     <div class="hide">
       {$db_trace|smarty:nodefaults}
