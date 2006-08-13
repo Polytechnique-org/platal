@@ -7,3 +7,4 @@ CREATE TABLE `emails_watch` (
     `description` TEXT NOT NULL,
     PRIMARY KEY(`email`)
 );
+DROP TABLE `emails_broken`;
