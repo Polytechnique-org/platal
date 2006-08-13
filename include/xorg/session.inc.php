@@ -224,8 +224,9 @@ function start_connexion ($uid, $identified)
 	$logger->log("suid_start", S::v('forlife')." by {$suid['uid']}");
         $sess['suid'] = $suid;
     } else {
+        global $platal;
         $logger = S::v('log', new CoreLogger($uid));
-        $logger->log("connexion", $_SERVER['PHP_SELF']);
+        $logger->log("connexion", $platal->path);
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
 
