@@ -118,9 +118,6 @@ check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.ui
 check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.country = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
 check("SELECT a.uid, a.country, a.region FROM adresses AS a LEFT JOIN geoloc_region AS gr ON (a.country = gr.a2 AND a.region = gr.region) WHERE a.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils qui n'ont pas d'entree correspondante dans geoloc_region");
 
-/* donne la liste des gens pour qui on a fait du marketing mais qui se sont inscrits depuis (nettoyage de envoidirect) */
-info("select e.matricule,e.nom,e.prenom,e.promo from envoidirect as e inner join auth_user_md5 as a on (e.matricule = a.matricule and a.perms = 'user') order by promo,nom;");
-
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
 info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state, w.description
         FROM  emails        AS e1
