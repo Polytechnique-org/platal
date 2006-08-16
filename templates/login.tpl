@@ -142,7 +142,13 @@ Bienvenue {$smarty.session.prenom}
         </a>
       </td>
     </tr>
+    {assign var="has_evts" value=true}
     {/iterate}
+    {if !$has_evts}
+    <tr>
+      <td class="half">Aucun article actuellement</td>
+    </tr>
+    {/if}
   </table>
 
   <p class="smaller">
