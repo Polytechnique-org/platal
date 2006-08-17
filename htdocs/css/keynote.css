@@ -291,19 +291,25 @@ td.conteneur_tab {
     padding : 0.4ex;
     margin : 0 0.3ex -1px 3px;
     background : #cecece;
-    border: none;
-    border-bottom: 1px solid #9C9C9C;
+    border-width: 1px 0px 1px 1px;
+    border-style: solid;
+    border-color: #9c9c9c;
     width: auto;
     height: 5ex;
     text-align: center;
     color: #000;
 }
 
-#onglet li:hover { background : #bdbdbd; }
+#onglet li:hover {
+    background : #adadad;
+}
 
 #onglet li.actif {
     background : #dedede;
-    border-bottom: 1px solid #dedede;
+    border-width: 1px 0px 1px 1px;
+    border-style: solid;
+    border-color: #f0f0f0;
+    border-bottom-color: #dedede;
 }
 
 /*******************************************************************************
