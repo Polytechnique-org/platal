@@ -59,7 +59,7 @@ class CoreLogger {
 
         XDB::execute("INSERT INTO logger.sessions
                      SET uid={?}, host={?}, ip={?}, browser={?}, suid={?}",
-                     $uid, $Host, $ip, $browser, $suid);
+                     $uid, $host, $ip, $browser, $suid);
 
         return XDB::insertId();
     }
