@@ -689,6 +689,15 @@ class ProfileModule extends PLModule
 
         $user['virtualalias'] = $res->fetchOneCell();
 
+        // get photo
+        $res = XDB::query(
+                "SELECT attach
+                   FROM photo   AS p
+             INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
+                  WHERE a.alias = {?}", $login);
+        if ($res->numRows()) {
+            $user['photo'] = $res->fetchOneCell();
+        }
         $page->assign_by_ref('vcard', $user);
 
         header("Pragma: ");

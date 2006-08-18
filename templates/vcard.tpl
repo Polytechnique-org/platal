@@ -71,6 +71,9 @@ NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)"|qp_enc}
 {else}
 NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.libre`"|qp_enc}
 {/if}
+{if $vcard.photo}
+PHOTO;BASE64:{$vcard.photo|base64_encode}
+{/if}
 SORT-STRING;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc}
 REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
 END:VCARD
