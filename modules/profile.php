@@ -649,8 +649,15 @@ class ProfileModule extends PLModule
         $adr = trim($adr1);
         $adr = trim("$adr\n$adr2");
         $adr = trim("$adr\n$adr3");
-        $adr = explode("\n", quoted_printable_encode(";;$adr;$city;$region;$postcode;$country"));
-        return implode("\n", array_map('trim', $adr));
+        return $this->quoted_printable_encode(";;$adr;$city;$region;$postcode;$country");
+    }
+
+    function quoted_printable_encode($text)
+    {
+        return implode("\n", 
+                       array_map('trim',
+                                 explode("\n", 
+                                         quoted_printable_encode($text))));
     }
 
     function handler_vcard(&$page, $x = null)
@@ -669,11 +676,15 @@ class ProfileModule extends PLModule
         require_once 'xorg.misc.inc.php';
         require_once 'user.func.inc.php';
 
-        $page->register_modifier('qp_enc', 'quoted_printable_encode');
+        $page->register_modifier('qp_enc', array($this, 'quoted_printable_encode'));
         $page->register_function('format_adr', array($this, 'format_adr'));
 
         $login = get_user_forlife($x);
         $user  = get_user_details($login);
+        
+        if (strlen(trim($user['freetext']))) {
+            $user['freetext'] = html_entity_decode($user['freetext']);
+        }
 
         // alias virtual
         $res = XDB::query(
@@ -688,7 +699,7 @@ class ProfileModule extends PLModule
                 $user['forlife'].'@'.$globals->mail->domain2);
 
         $user['virtualalias'] = $res->fetchOneCell();
-
+        
         // get photo
         $res = XDB::query(
                 "SELECT attach

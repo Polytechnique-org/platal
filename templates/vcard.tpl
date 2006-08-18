@@ -27,6 +27,9 @@ FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom_usage` (`$vcard.nom`)
 FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
 {/if}
 N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.nom_usage|qp_enc};;
+{if $vcard.nickname}
+NICKNAME;ENCODING=QUOTED-PRINTABLE:{$vcard.nickname}
+{/if}
 EMAIL;TYPE=internet:{$vcard.bestalias}@{#globals.mail.domain#}
 {if $vcard.bestalias neq $vcard.forlife}
 EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain#}
@@ -66,10 +69,10 @@ ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr
 {if $vcard.web}
 URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}
 {/if}
-{if strlen(trim($vcard.libre)) == 0}
+{if strlen(trim($vcard.freetext)) == 0}
 NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)"|qp_enc}
 {else}
-NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.libre`"|qp_enc}
+NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.freetext`"|qp_enc}
 {/if}
 {if $vcard.photo}
 PHOTO;BASE64:{$vcard.photo|base64_encode}
