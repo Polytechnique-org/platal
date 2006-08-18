@@ -646,10 +646,11 @@ class ProfileModule extends PLModule
     {
         // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
         extract($params['adr']);
-        $adr = $adr1;
+        $adr = trim($adr1);
         $adr = trim("$adr\n$adr2");
         $adr = trim("$adr\n$adr3");
-        return quoted_printable_encode(";;$adr;$city;$region;$postcode;$country");
+        $adr = explode("\n", quoted_printable_encode(";;$adr;$city;$region;$postcode;$country"));
+        return implode("\n", array_map('trim', $adr));
     }
 
     function handler_vcard(&$page, $x = null)
