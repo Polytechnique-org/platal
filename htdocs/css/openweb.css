@@ -448,7 +448,7 @@ div.adresse div.titre { color: purple; }
 *******************************************************************************/
 
 #dev {
-    width: 100%;
+    width: auto;
     text-align: center;
     padding: 1px;
 
