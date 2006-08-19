@@ -28,6 +28,7 @@ New:
     * Events:
         - Switch to the new URI scheme.                                 -MC/FRU
         - Rework Events administration interface.                          -FRU
+        - Create a new Newsletter if needed                                -FRU
 
     * Geoloc:
         - Switch to the new URI scheme.                                 -MC/Car
@@ -47,6 +48,7 @@ New:
 
     * Profile:
         - Switch to the new URI scheme.                                     -MC
+        - Add photo and nickname in vcard                                  -FRU
 
     * Register:
         - Switch to the new URI scheme.                                     -MC

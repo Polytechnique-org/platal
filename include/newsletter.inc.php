@@ -57,7 +57,11 @@ class NewsLetter
 	    $res = XDB::query("SELECT * FROM newsletter WHERE id={?}", $id);
 	} else {
 	    $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
-	}
+        if (!$res->numRows()) {
+            insert_new_nl();
+        }
+        $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
+    }
 	$nl = $res->fetchOneAssoc();
 
 	$this->_id    = $nl['id'];
@@ -87,7 +91,7 @@ class NewsLetter
 
     function setSent()
     {
-	XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
+	    XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
     }
 
     // }}}
