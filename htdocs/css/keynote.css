@@ -72,7 +72,7 @@ p {
 
 .erreur {
     font-weight: bold;
-    color: #ff0000;
+    color: #d00;
     background: inherit;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -398,20 +398,17 @@ div.adresse {
 *******************************************************************************/
 
 #dev {
-    width: 100%;
+    width: auto;
     text-align: center;
     padding: 1px;
 
-    color: #003399;
-    background: #e0ffff;
-
-    font-family: 'Bauhaus Md BT','Bitstream Vera',sans-serif;
-    font-size: 10pt;
-    font-weight: bold;
+    background: url('../images/skins/keynote_bg_verylighter.png') top left repeat-x;
+    background-attachment: fixed;
+    color: #000;
 }
 
-#dev a { text-decoration: underline; }
-#dev a:hover { color: #003399; background: #c0e0e0; }
+#dev a { text-decoration: none; }
+#dev a:hover { background-color: inherit; }
 
 #db-trace div.hide       { display: none; }
 #db-trace:hover div.hide { display: block }

@@ -447,7 +447,7 @@ div.adresse {
 *******************************************************************************/
 
 #dev {
-    width: 100%;
+    width: auto;
     text-align: center;
     padding: 1px;
 
