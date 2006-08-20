@@ -24,13 +24,13 @@
     <!-- BANDEAU DEBUT -->
     <style type="text/css">
       body          { margin: 0 0 0 0; }
-      table.ligne   { background: #e7e7e7; }
+      table.ligne   { background: #e7e7e7; color: inherit; }
       td.ligne      { width: 100%; }
       td.xdx {
         color: #000; padding: 0; background: #CCCCCC ; height: 14px; width: auto; font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif;
       }
       td.xdx img    {border: 0; padding: 0; margin: 0; }
-      a.xdx         { vertical-align: bottom; color: #505050; }
+      a.xdx         { vertical-align: bottom; color: #505050; background: inherit; }
       a.xdx:link    { text-decoration: none ; }
       a.xdx:visited { text-decoration: none ; }
       a.xdx:hover   { text-decoration: underline; }
