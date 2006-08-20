@@ -235,6 +235,7 @@ div.contact div.nom {
     font-weight: bold;
     width: 35%;
     float: left;
+    padding-left: 2px;
 }
 
 div.contact div.appli {
@@ -251,8 +252,7 @@ div.contact div.long {
     width: 100%;
     clear: both;
     color: inherit;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 1px 0px;
 }
 
 div.long table { width: 100%; }
@@ -506,8 +506,7 @@ div.adresse {
 }
 
 #body-top {
-    padding: 0;
-    padding-bottom: 16px;
+    padding: 0 0 16px 0;
     text-align: center;
     font-size: 85%;
     border-bottom: 1px solid #fff;
