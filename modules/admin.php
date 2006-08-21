@@ -403,6 +403,10 @@ class AdminModule extends PLModule
                         if (!empty($val)) {
                             XDB::execute("DELETE FROM aliases WHERE id={?} AND alias={?}
                                     AND type!='a_vie' AND type!='homonyme'", $mr['user_id'], $val);
+                            XDB::execute("UPDATE emails
+                                             SET rewrite = ''
+                                           WHERE uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
+                                         $mr['user_id'], $val);               
                             fix_bestalias($mr['user_id']);
                             $page->trig($val." a été supprimé");
                         }

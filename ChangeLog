@@ -24,6 +24,7 @@ New:
 
     * Emails:
         - Switch to the new URI scheme.                                     -MC
+        - Work around broken emails (detection, marketing...)              -FRU
 
     * Events:
         - Switch to the new URI scheme.                                 -MC/FRU
