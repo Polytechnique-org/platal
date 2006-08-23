@@ -57,8 +57,8 @@ La diffusion a trois niveaux de modération.  La diffusion peut être :
 </ul>
 
 <p class='smaller'>
-NB : les gestionnaires d'une liste sont aussi ses modérateurs.<br />
-les listes avec une asterisque sont les listes dont tu es le gestionnaire.
+{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste.<br />
+Les modérateurs jouent également le rôle de gestionnaire.
 </p>
 
 <h2>Demander la création d'une liste de diffusion</h2>
