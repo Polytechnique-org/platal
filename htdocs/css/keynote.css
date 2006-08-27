@@ -370,6 +370,7 @@ td.conteneur_tab {
 #fiche h2 {
     background: url('../images/skins/keynote_title.gif') bottom repeat-x;
     background-color: inherit;
+    border-bottom: 1px solid #202020;
     color: #fff;
     height: 17px;
     margin: 0.5em 0;
@@ -552,11 +553,12 @@ div.adresse {
 #body-menu .menu_title {
     color: #fff;
     height: 17px;
-    background: url('../images/skins/keynote_title.gif') top repeat-x;
+    background: url('../images/skins/keynote_title.gif') bottom repeat-x;
     background-color: inherit;
+    border-bottom: 1px solid #202020;
     padding: 4px 0 0 0;
     text-align: center;
-    vertical-align: middle;
+    vertical-align: bottom;
 }
 
 #content {
