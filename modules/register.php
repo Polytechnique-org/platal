@@ -271,7 +271,7 @@ class RegisterModule extends PLModule
         /***********************************************************/
         $res = XDB::iterRow(
                 "SELECT  DISTINCT sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
-                         s.prenom, s.flags AS femme
+                         s.prenom, FIND_IN_SET('femme', s.flags) AS femme
                    FROM  register_marketing AS m
              INNER JOIN  auth_user_md5      AS s  ON ( m.sender = s.user_id )
              INNER JOIN  aliases            AS sa ON ( sa.id = m.sender
@@ -285,7 +285,7 @@ class RegisterModule extends PLModule
             $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
             $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
             $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
-            $msg = ($sfemme?'Cher':'Chère')." $sprenom,\n\n"
+            $msg = ($sfemme?'Chère':'Cher')." $sprenom,\n\n"
                  . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
                  . "que tu avais incité".($femme?'e':'')." à s'inscrire à Polytechnique.org, "
                  . "vient à l'instant de terminer son inscription.\n\n"
