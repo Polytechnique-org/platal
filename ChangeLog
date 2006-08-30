@@ -105,6 +105,9 @@ Bug/Wish:
         - #344: Tels can be bigger (up to 30 chars).                       -Car
         - #422: Parasitic strings in vcard.                                -FRU
 
+    * Skins:
+        - #454: Layout of addresses                                        -FRU
+
     * Xnet:
         - #380: Add sex for non-X.                                         -FRU
         - #384: Substitution of non-X's names in mail from web interface.  -FRU

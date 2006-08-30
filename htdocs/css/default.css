@@ -417,9 +417,13 @@ td.conteneur_tab {
 
 div.adresse {
     float: left;
-    width: 46%;
+    width: 48%;
     padding: 0px;
-    margin: 0px 1% 1ex 1%;
+    margin: 0px 0.5% 1ex 1%;
+}
+
+div.adresse strong {
+    font-size: 90%;
 }
 
 /* only for fiche_referent.php*/
