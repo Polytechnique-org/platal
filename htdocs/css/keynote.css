@@ -158,8 +158,14 @@ table.tinybicol th, table.bicol th {
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
+    background-color: #000;
+}
+
+table.tinybicol tr:first-child th, table.bicol tr:first-child th {
+    color: #fff; 
     background: url('../images/skins/keynote_title.gif') #000 top left repeat-x;
 }
+
 table.tinybicol td, table.bicol td {
     color: #000000;
     background: inherit;
