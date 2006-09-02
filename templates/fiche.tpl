@@ -116,7 +116,7 @@ function chgMainWinLoc( strPage ) {
       {if $x.gpxs_join}<div><em class="intitule">Groupe(s) X : </em><span>{$x.gpxs_join|smarty:nodefaults}</span></div>{/if}
       {/if}
       {if $x.web}<div><em class="intitule">Site Web : </em><a href="{$x.web}" class='popup'>{$x.web}</a></div>{/if}
-      {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br}</span></div>{/if}
+      {if $x.freetext}<div><em class="intitule">Commentaires : </em><br /><span>{$x.freetext|nl2br|smarty:nodefaults}</span></div>{/if}
     </td>
   </tr>
   {if $x.adr}

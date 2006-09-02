@@ -176,10 +176,10 @@ class EventsModule extends PLModule
         $page->assign('action', strtolower($action));
 
         if ($action == 'Confirmer') {
-            $texte = preg_replace('/((http|ftp)+(s)?:\/\/[^<>\s]+)/i',
-                                  '<a href=\"\\0\">\\0</a>', $texte);
-            $texte = preg_replace('/([^,\s]+@[^,\s]+)/i',
-                                  '<a href=\"mailto:\\0\">\\0</a>', $texte);
+            $texte = preg_replace('/((?:https?|ftp):\/\/(?:\.*,*[a-z@0-9~%$£µ&i#\-+=_\/\?])*)/i',
+                                  '<a href="\\0">\\0</a>', $texte);
+            $texte = preg_replace('/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i',
+                                  '<a href="mailto:\\0">\\0</a>', $texte);
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
                                  $peremption, $valid_mesg, S::v('uid'));
