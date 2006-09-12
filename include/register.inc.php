@@ -190,7 +190,6 @@ function create_aliases (&$sub)
     if ( $res->numRows() ) {
 
         list($h_id, $h_type, $expire) = $res->fetchOneRow();
-        $res->free();
 
         if ( $h_type != 'homonyme' and empty($expire) ) {
             $globals->xdb->execute('UPDATE aliases SET expire=ADDDATE(NOW(),INTERVAL 1 MONTH) WHERE alias={?}', $mailorg);
