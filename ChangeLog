@@ -113,6 +113,7 @@ Bug/Wish:
         - #384: Substitution of non-X's names in mail from web interface.  -FRU
         - #426: Add an identification header in mails.                     -FRU
         - #439: Move doc to the wiki                                   -Car/FRU
+        - #453: Add members in promotion groups                            -FRU
 
 From 0.9.10 Branch:
 

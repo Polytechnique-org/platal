@@ -317,6 +317,7 @@ class XnetGrpModule extends PLModule
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
                     WHERE  m.asso_id = {?} $ini
+                           AND (m.origine = 'ext' OR u.perms != 'pending')
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
 

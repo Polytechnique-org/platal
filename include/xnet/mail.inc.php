@@ -38,7 +38,8 @@ function get_all_redirects($membres, $mls, &$client)
                        FROM  groupex.membres AS m
                   LEFT JOIN  auth_user_md5   AS u ON (m.uid=u.user_id AND m.uid<50000)
                   LEFT JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
-                      WHERE  asso_id = {?}', $globals->asso('id'));
+                      WHERE  asso_id = {?}
+                             AND (m.email <> "" OR u.perms <> "pending")', $globals->asso('id'));
         $tos = $res->fetchAllAssoc();
     }
 
