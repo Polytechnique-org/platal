@@ -151,8 +151,8 @@ class PlatalBanana extends Banana
         $this->profile['lastnews']  = S::v('banana_last');
 
         if ($maj) {
-            XDB::execute("UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}",
-                         gmdate("YmdHis"), $uid);
+            XDB::execute("UPDATE auth_user_quick SET banana_last=FROM_UNIXTIME({?}) WHERE user_id={?}",
+                         time(), $uid);
         }
 
         $req = XDB::query("
@@ -177,8 +177,8 @@ class PlatalBanana extends Banana
 
         if (Get::v('banana') == 'updateall'
         || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
-            XDB::execute('UPDATE auth_user_quick SET banana_last={?} WHERE user_id={?}',
-                         gmdate('YmdHis'), S::v('uid'));
+            XDB::execute('UPDATE auth_user_quick SET banana_last=FROM_UNIXTIME({?}) WHERE user_id={?}',
+                         time(), S::v('uid'));
             $_SESSION['banana_last'] = time();
         }
         return Banana::run('PlatalBanana', $params);

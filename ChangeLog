@@ -88,6 +88,9 @@ Bug/Wish:
         - #430: Specify date format on downtime admin page.                -Car
         - #440: Rewrite events admin page.                                 -FRU
 
+    * Banana:
+        - #463: Messages marked as read don't switch back to unread        -FRU
+
     * Carnet:
         - #435: Calendar contains yearly events for all the contacts.      -FRU
 
