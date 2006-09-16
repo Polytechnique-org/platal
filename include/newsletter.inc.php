@@ -234,15 +234,16 @@ class NewsLetter
     // }}}
     // {{{ function toHtml()
     
-    function toHtml($prenom,$nom,$sexe,$body=false)
+    function toHtml($prenom, $nom, $sexe, $body=false, $urlprefix = false)
     {
+        $u    = $urlprefix ? 'nl/show/'.$this->_id : '';
 	$res  = '<div class="title">'.$this->title().'</div>';
 	
 	$head = $this->head();
 	$head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
 	$head = str_replace('<prenom>', $prenom, $head);
 	$head = str_replace('<nom>',    $nom,    $head);
-	$head = enriched_to_text($head,true);
+	$head = enriched_to_text($head, true);
 
 	if($head) {
             $res .= "<div class='intro'>$head</div>";
@@ -251,9 +252,9 @@ class NewsLetter
 	$i = 1;
 	$res .= "<a id='top_lnk'></a>";
 	foreach ($this->_arts as $cid=>$arts) {
-	    $res .= "<div class='lnk'><a href='#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
+	    $res .= "<div class='lnk'><a href='$u#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
 	    foreach ($arts as $art) {
-		$res .= "<a href='#art{$art->_aid}'>&nbsp;&nbsp;- ".htmlentities($art->title())."</a>";
+		$res .= "<a href='$u#art{$art->_aid}'>&nbsp;&nbsp;- ".htmlentities($art->title())."</a>";
 	    }
 	    $res .= '</div>';
 	    $i ++;
@@ -263,7 +264,7 @@ class NewsLetter
 	    $res .= "<h1><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
 	    foreach($arts as $art) {
     		$res .= $art->toHtml();
-    		$res .= "<p><a href='#top_lnk'>Revenir au sommaire</a></p>";
+    		$res .= "<p><a href='$u#top_lnk'>Revenir au sommaire</a></p>";
 	    }
 	}
 

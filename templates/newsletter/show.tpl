@@ -49,10 +49,11 @@
   <tr>
     <td>
       {if $smarty.get.text}
-      <pre>{$nl->toText($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)}</pre>
+      <pre>{$nl->toText($smarty.session.prenom, $smarty.session.nom, $smarty.session.femme)}</pre>
       {else}
       <div class='nl'>
-        {$nl->toHtml($smarty.session.prenom,$smarty.session.nom,$smarty.session.femme)|smarty:nodefaults}
+        {$nl->toHtml($smarty.session.prenom, $smarty.session.nom, $smarty.session.femme,
+                     false, true)|smarty:nodefaults}
       </div>
       {/if}
     </td>
