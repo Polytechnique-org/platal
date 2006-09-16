@@ -299,12 +299,12 @@ td.oval, td.oval2 {
 td.oval {
     background: url("../images/oval.png") no-repeat top center;
     width: 130px;
-    padding: 4px 12px;
+    padding: 0px 35px;
 }
 td.oval2 {
     background: url("../images/oval2.png") no-repeat top center;
     width: 160px;
-    padding: 4px 10px;
+    padding: 0px 12px;
 
 }
 

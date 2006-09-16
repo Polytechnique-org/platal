@@ -36,7 +36,7 @@
       Ce site  vous propose des liens vers les forums de discussions et les sites webs des
       différentes associations, des adresses où les contacter, et tous les renseignements utiles
       pour mieux les connaître. Il offre d'autre part des
-      <a href="services"> outils de gestion de groupe</a> à l'intention de leurs responsables.
+      <a href="Xnet/Services"> outils de gestion de groupe</a> à l'intention de leurs responsables.
       </p>
       <p class="descr">
       Si vous recherchez la page d'un groupe particulier, vous pouvez
