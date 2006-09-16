@@ -98,18 +98,33 @@ traitées avec la priorité minimale.
   </p>
 
   <p>
-  Cette fonctionnalités n'est pas du tout redondante avec l'annuaire de l'AX, car nous pouvons synchroniser pour toi
+  Cette fonctionnalité n'est pas du tout redondante avec l'annuaire de l'AX, car nous pouvons synchroniser pour toi
   les données qu'il contient :
   </p>
 
   <ul>
     <li>
-    tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre à l'AX (et <strong>uniquement</strong> ces données)
-    des parties de ta fiche, au fur et à mesure que tu les modifies.
+    <strong>vers l'AX</strong> : tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre à l'AX des parties de ta fiche, au fur et à mesure que tu les modifies.
+    (Les données transmises seront <strong>uniquement</strong> celles que tu as décidé de transmettre).
     </li>
     <li>
-    de même, nous mettons à jour ta fiche depuis les données de l'annuaire de l'AX si tu le souhaites.
-    (si tu ne le souhaite pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='register_from_ax_question' />)
+    <strong>depuis l'AX</strong> : nous mettons à jour ta fiche depuis les données de l'annuaire de l'AX si tu le souhaites. <br/>
+    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='register_from_ax_question' />)
+    </li>
+  </ul>
+
+  <p>
+  Pour profiter pleinement de ta nouvelle inscription, nous te proposons
+  </p>
+
+  <ul>
+    <li>
+    <strong>lettre mensuelle</strong> : de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.<br/>
+    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_nl' />)
+    </li>
+    <li>
+    <strong>ta promo</strong> : de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.<br />
+    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_promo' />)
     </li>
   </ul>
 

@@ -105,6 +105,9 @@ Bug/Wish:
         - #344: Tels can be bigger (up to 30 chars).                       -Car
         - #422: Parasitic strings in vcard.                                -FRU
 
+    * Register:
+        - #459: Opt-in for newsletter and promo mailing list on register.  -Car
+
     * Skins:
         - #454: Layout of addresses                                        -FRU
 

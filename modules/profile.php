@@ -253,11 +253,26 @@ class ProfileModule extends PLModule
         require_once 'profil.func.inc.php';
         require_once 'synchro_ax.inc.php';
 
-        if (Post::has('register_from_ax_question')) {
-            XDB::query('UPDATE auth_user_quick
+        if (Post::v('register_from_ax_question')) {
+            XDB::execute('UPDATE auth_user_quick
                                      SET profile_from_ax = 1
                                    WHERE user_id = {?}',
                                  S::v('uid'));
+        }
+        if (Post::v('add_to_nl')) {
+            require_once 'newsletter.inc.php';
+            subscribe_nl();
+        }
+        if (Post::v('add_to_promo')) {
+            $r = XDB::query('SELECT id FROM groupex.asso WHERE diminutif = {?}',
+                S::v('promo'));
+            $asso_id = $r->fetchOneCell();
+            XDB::execute('REPLACE INTO groupex.membres (uid,asso_id)
+                                     VALUES ({?}, {?})',
+                                 S::v('uid'), $asso_id);
+            require_once 'lists.inc.php';
+            $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
+            $client->subscribe("promo".S::v('promo'));
         }
 
         if (is_ax_key_missing()) {
