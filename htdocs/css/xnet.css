@@ -136,7 +136,7 @@ td#menu {
     padding: 0.3em 0em 0.4em 0em;
     margin-top: 0.7em;
     margin-bottom: 0.3em;
-    font-size: 85%;
+    font-size: 89%;
     text-align: center;
     width: 130px;
     background: url('../images/barre_small.png') bottom left no-repeat;
@@ -146,7 +146,7 @@ td#menu {
 #menu a {
     display: block;
     padding: 0.2em 0em 0.2em 15px;
-    font-size: 85%;
+    font-size: 89%;
     background: url('../images/puce.png') no-repeat center left;
 }
 
