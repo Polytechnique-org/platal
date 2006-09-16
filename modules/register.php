@@ -70,6 +70,8 @@ class RegisterModule extends PLModule
 
         switch ($sub_state['step']) {
             case 0:
+                require_once('wiki.inc.php');
+                wiki_require_page('Docs.Charte');
                 if (Post::has('step1')) {
                     $sub_state['step'] = 1;
                     if (isset($sub_state['hash'])) {
