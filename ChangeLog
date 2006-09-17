@@ -71,6 +71,7 @@ New:
         - Migrate to the new URI scheme.                                    -MC
         - Split Xnet in 4 modules: xnet, lists, events, group.              -MC
         - More coherent look                                               -FRU
+        - Be logged when you go to X.net from plat/al.                      -MC
 
     * Xnet/Events:
         - Split event list and subscription again.                          -MC
