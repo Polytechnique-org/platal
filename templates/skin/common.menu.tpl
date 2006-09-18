@@ -24,7 +24,7 @@
 <div class="menu_title">Polytechniciens</div>
 <div class="menu_item"><a href="events">Me connecter !</a></div>
 <div class="menu_item"><a href="register">M'inscrire</a></div>
-<div class="menu_item"><a href="Docs/PourquoiM'Inscrire">Pourquoi M'inscrire ?</a></div>
+<div class="menu_item"><a href="Docs/PourquoiMInscrire">Pourquoi M'inscrire ?</a></div>
 
 <div class="menu_title">Visiteurs</div>
 <div class="menu_item"><a href="search">Annuaire de l'X</a></div>
