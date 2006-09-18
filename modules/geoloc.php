@@ -77,7 +77,7 @@ class GeolocModule extends PLModule
         $page->changeTpl('geoloc/index.tpl');
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         $search = str_replace('&amp;','&',$fields->get_url());
-        if (!Env::has('only_current'))
+        if ((!Env::has('only_current') && !Env::has('rechercher')) || Env::i('only_current') == 'on')
             $search .= '&only_current=on';
         elseif (Env::i('only_current') != 'on')
             $search .= '&only_current=';
