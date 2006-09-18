@@ -44,5 +44,6 @@ background="{$background}"
 zoomBarBackgroundColor="{$background}"
 {/if} 
 textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
-iconSwf="{$platal->ns}geoloc/icon.swf"
-scriptInfosArea="{$platal->ns}geoloc/country?{$querystring}"/>
+autofolder="true"
+iconSwf="icon.swf"
+scriptInfosArea="country?{$querystring}"/>

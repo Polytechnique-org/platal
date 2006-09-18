@@ -161,10 +161,11 @@ class GeolocModule extends PLModule
         if ($where) $where = "WHERE ".$where;
 
         $users = XDB::iterator("
-            SELECT u.user_id AS id, u.prenom, u.nom, u.promo
+            SELECT u.user_id AS id, u.prenom, u.nom, u.promo, alias
               FROM adresses AS a 
         INNER JOIN auth_user_md5 AS u ON(u.user_id = a.uid)
         INNER JOIN auth_user_quick AS q ON(q.user_id = a.uid)
+         LEFT JOIN aliases ON(u.user_id = aliases.id AND FIND_IN_SET(aliases.flags,'bestalias'))
                 ".$fields->get_select_statement()."
                 ".$where."
              GROUP BY u.user_id LIMIT 11", $id);
