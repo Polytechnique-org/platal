@@ -43,6 +43,11 @@ foreach ($adresses as $adrid => $adr) {
         if ($adr["active"])        $statut .= 'active,';
         if ($adr["temporaire"])    $statut .= 'temporaire,';
         if (! empty($statut)) $statut = substr($statut, 0, -1);
+        $precise_coords = "";
+        if (isset($adr['precise_lat']) && isset($adr['precise_lon'])) {
+            $precise_coords  = ", glat = '".$adr['precise_lat']."'";
+            $precise_coords .= ", glng = '".$adr['precise_lon']."'";
+        }
 
         if ($adr["nouvelle"] == 'ajout') {
             //nouvelle adresse
@@ -50,7 +55,7 @@ foreach ($adresses as $adrid => $adr) {
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
                          country = {?}, region = {?}, regiontxt = {?},
                          pub = {?}, datemaj = NOW(), statut = {?}, uid = {?},
-                         adrid = {?}", $adr['adr1'], $adr['adr2'],
+                         adrid = {?}".$precise_coords, $adr['adr1'], $adr['adr2'],
                          $adr['adr3'], $adr['postcode'], $adr['city'],
                          $adr['cityid'], $adr['country'], $adr['region'],
                          $adr['regiontxt'], $adr['pub'], $statut,
@@ -61,11 +66,6 @@ foreach ($adresses as $adrid => $adr) {
             }
         } else { 
             //c'est une mise à jour
-            $precise_coords = "";
-            if (isset($adr['precise_lat']) && isset($adr['precise_lon'])) {
-                $precise_coords  = ", glat = '".$adr['precise_lat']."'";
-                $precise_coords .= ", glng = '".$adr['precise_lon']."'";
-            }
             XDB::execute("UPDATE adresses SET adr1 = {?}, adr2 = {?},
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
                          country = {?}, region = {?}, regiontxt = {?},
