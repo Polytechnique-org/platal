@@ -25,7 +25,7 @@
 
 ** Explique ici le problème ou l'amélioration proposée **
 		
-Page : {#globals.baseurl#}/?{$smarty.server.QUERY_STRING}
+Page : {$globals->baseurl}/?{$smarty.server.QUERY_STRING}
 Navigateur : {$smarty.server.HTTP_USER_AGENT}
 Skin : {$smarty.session.skin} 
 Signalé par {$smarty.session.forlife}</textarea>
