@@ -36,8 +36,10 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
         /* on verifie qu'on n'a pas demandé une variable inexistante ! */
         if (S::has($val)) {
             $tohash .= S::v($val);
+            $params .= "&$val=".S::v($val);
         } else if (isset($personnal_data[$val])) {
             $tohash .= $personnal_data[$val];
+            $params .= "&$val=".$personnal_data[$val];
         } else if ($val == 'username') {
             $res = XDB::query("SELECT alias FROM aliases
                                           WHERE id = {?} AND FIND_IN_SET('bestalias', flags)",
@@ -55,11 +57,11 @@ function gpex_make_params($chlg, $privkey, $datafields) {
     $params   = "&auth=".gpex_make_auth($chlg, $privkey, $datafields);
 
     $res = XDB::query("SELECT matricule, matricule_ax, promo,
-                                        promo_sortie, flags, deces, nom,
-                                        prenom, nationalite, section,
-                                        naissance
-                                   FROM auth_user_md5 WHERE user_id = {?}",
-                                S::v('uid'));
+                              promo_sortie, flags, deces, nom,
+                              prenom, nationalite, section,
+                              naissance
+                         FROM auth_user_md5 WHERE user_id = {?}",
+                      S::v('uid'));
     $personnal_data = $res->fetchOneAssoc();
 
     $fieldarr = explode(",",$datafields);
@@ -67,7 +69,9 @@ function gpex_make_params($chlg, $privkey, $datafields) {
     foreach ($fieldarr as $val) {
         if (S::has($val)) {
             $tohash .= S::v($val);
+            $params .= "&$val=".S::v($val);
         } else if (isset($personnal_data[$val])) {
+            $tohash .= $personnal_data[$val];
             $params .= "&$val=".$personnal_data[$val];
         } else if ($val == 'username') {
             $res = XDB::query("SELECT alias FROM aliases 
