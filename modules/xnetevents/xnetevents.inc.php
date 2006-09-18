@@ -79,6 +79,8 @@ function get_event_detail($eid, $item_id = false)
     $evt['topay'] = 0;
     foreach ($evt['moments'] as $m) {
         $evt['topay'] += $m['nb'] * $m['montant'];
+        if ($m['montant'])
+            $evt['money'] = true;
     }
 
     $req = XDB::query(
