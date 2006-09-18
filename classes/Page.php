@@ -79,6 +79,7 @@ class PlatalPage extends Smarty
 
         $this->assign("xorg_errors", $this->_errors);
         $this->assign("xorg_failure", $this->_failure);
+        $this->assign('globals', $globals);
 
         switch ($this->_page_type) {
           case NO_SKIN:
