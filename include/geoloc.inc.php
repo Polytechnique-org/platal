@@ -89,7 +89,8 @@ function get_address_infos($txt) {
     if ($infos['sql'])
        XDB::execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
     if ($infos['display'])
-       XDB::execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
+        XDB::execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
+    fix_cities_not_on_map(1, $infos['cityid']);
     return $infos;
 }
 // }}}
@@ -268,9 +269,9 @@ function localize_addresses($uid) {
  // }}}
 
 // {{{ function fix_cities_not_on_map($limit)
-function fix_cities_not_on_map($limit=false)
+function fix_cities_not_on_map($limit=false, $cityid=false)
 {
-    $missing = XDB::query("SELECT c.id FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL".($limit?" LIMIT $limit":""));
+    $missing = XDB::query("SELECT c.id FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL".($cityid?(" AND c.id = '".$cityid."'"):"").($limit?" LIMIT $limit":""));
     $maps = get_cities_maps($missing->fetchColumn());
     if ($maps)
     {
