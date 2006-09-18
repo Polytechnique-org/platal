@@ -102,7 +102,7 @@ Bienvenue {$smarty.session.prenom}
           {$ev.texte|smarty:nodefaults|nl2br}
         {/tidy}
         <br />
-        <p class="smaller"><a href="#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposée par
+        <p class="smaller"><a href="events#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposée par
         <a href="profile/{$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
