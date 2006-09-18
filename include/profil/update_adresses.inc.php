@@ -61,10 +61,15 @@ foreach ($adresses as $adrid => $adr) {
             }
         } else { 
             //c'est une mise à jour
+            $precise_coords = "";
+            if (isset($adr['precise_lat']) && isset($adr['precise_lon'])) {
+                $precise_coords  = ", glat = '".$adr['precise_lat']."'";
+                $precise_coords .= ", glng = '".$adr['precise_lon']."'";
+            }
             XDB::execute("UPDATE adresses SET adr1 = {?}, adr2 = {?},
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
                          country = {?}, region = {?}, regiontxt = {?},
-                         pub = {?}, datemaj = NOW(), statut = {?}
+                         pub = {?}, datemaj = NOW(), statut = {?}".$precise_coords."
                          WHERE uid = {?} AND adrid = {?}", $adr['adr1'],
                          $adr['adr2'], $adr['adr3'], $adr['postcode'],
                          $adr['city'], $adr['cityid'], $adr['country'],
