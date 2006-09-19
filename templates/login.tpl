@@ -87,7 +87,7 @@ Bienvenue {$smarty.session.prenom}
           {if $smarty.session.perms eq 'admin'}
           <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
           {/if}
-          <a href="events/read/{$ev.id}{if $previd}#newsid{$previd}{/if}">{icon name=cross title="Cacher cet article"}</a>
+          <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}">{icon name=cross title="Cacher cet article"}</a>
         </div>
         {assign var="previd" value=$ev.id}
         <a id="newsid{$ev.id}"></a>
@@ -133,7 +133,7 @@ Bienvenue {$smarty.session.prenom}
     <tr class="{cycle values="impair,pair"}">
       <td class="half">
         &bull;
-        <a href="{if !$ev.nonlu}events/unread/{$ev.id}{/if}#newsid{$ev.id}">
+        <a href="events{if !$ev.nonlu}/unread/{$ev.id}{else}#newsid{$ev.id}{/if}">
         {if $ev.nonlu}<strong>{/if}
       	 {tidy}
       	   {$ev.titre|nl2br}
