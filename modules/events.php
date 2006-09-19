@@ -43,7 +43,7 @@ class EventsModule extends PLModule
         subscribe_nl($uid);
     }
 
-    function handler_ev(&$page, $action = 'list', $eid = null)
+    function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('login.tpl');
 
@@ -114,13 +114,15 @@ class EventsModule extends PLModule
                       INNER JOIN evenements AS e ON e.id = ev.evt_id
                            WHERE peremption < NOW()');
             XDB::execute('REPLACE INTO evenements_vus VALUES({?},{?})',
-                                   $eid, S::v('uid'));
+                $eid, S::v('uid'));
+            pl_redirect('events#'.$pound);
         }
 
         if ($action == 'unread' && $eid) {
             XDB::execute('DELETE FROM evenements_vus
                            WHERE evt_id = {?} AND user_id = {?}',
                                    $eid, S::v('uid'));
+            pl_redirect('events#newsid'.$eid);
         }
 
         // affichage des evenements
