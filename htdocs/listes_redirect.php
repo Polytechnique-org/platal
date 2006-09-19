@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
+require_once dirname(__FILE__).'/../classes/XDB.php';
 
 preg_match('/^\/(moderate|admin|members)\/(.*)_([^_]*)$/', $_SERVER['REQUEST_URI'], $matches);
 
