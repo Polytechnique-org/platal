@@ -1,2 +1,2 @@
-Xorg		http://www.polytechnique.org/
+Xorg		https://www.polytechnique.org/
 Xnet		http://www.polytechnique.net/
