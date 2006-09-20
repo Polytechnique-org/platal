@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="css/{$css}" />
     {/foreach}
     {foreach from=$xorg_js item=js}
-    <script type="text/javascript" src="{$js}"></script>
+    <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
     <script type="text/javascript" src="javascript/overlib.js"></script>
     

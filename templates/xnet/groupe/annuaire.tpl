@@ -62,7 +62,7 @@ Fonctionnalités visibles uniquement par les administrateurs :
     <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
     <td class="center">
       {if $m.x}
-      <a href="https://www.polytechnique.org/profile/{$m.email}">{icon name=user_suit title="fiche"}</a>
+      <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2">{icon name=user_suit title="fiche"}</a>
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
       <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
       {else}
