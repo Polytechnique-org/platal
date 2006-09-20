@@ -40,7 +40,7 @@ certificat sur cette page.
 
 {else}
 
-<form action="{$smarty.server.PHP_SELF}" method="post">
+<form action="{$platal->ns}recovery" method="post">
   <p>
   Il est impossible de récupérer le mot de passe perdu (nous n'avons que le résultat après un
   chiffrement irréversible de ton mot de passe). La procédure suivante va te permettre de choisir un
