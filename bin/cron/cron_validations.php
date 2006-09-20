@@ -46,7 +46,7 @@ $message =
 	.(empty($nbold)?"":"dont $nbold depuis le dernier mail !!!\n")
 	.(empty($nbveryold)?"":"et dont *$nbveryold* sont en retard de plus de 6h !!!")
 	."\n"
-	."https://www.polytechnique.org/admin/valider.php\n";
+	."https://www.polytechnique.org/admin/validate\n";
 
 $message = wordwrap($message,78);  
 $mymail->setTxtBody($message);
