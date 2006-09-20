@@ -64,6 +64,16 @@ function _geoloc_region_smarty($params){
 $GLOBALS['page']->register_function('geoloc_region', '_geoloc_region_smarty');
 // }}}
 
+function geoloc_is_utf8($text)
+{
+    return (iconv('utf-8', 'utf-8', $text) == $text);
+}
+
+function geoloc_utf8_decode($text)
+{
+    return geoloc_is_utf8($text)  ? utf8_decode($text) : $text;
+}
+
 // {{{ get_address_infos($txt)
 /** retrieve the infos on a text address
  * store on the fly the info of the city concerned
@@ -82,7 +92,7 @@ function get_address_infos($txt) {
                 $infos[$key] = $vals[$i];
             } else {
                 $val = strtr($vals[$i], array(chr(197).chr(147) => "&oelig;"));
-                $infos[$key] = (iconv('utf-8', 'utf-8', $val) == $val)  ? utf8_decode($val) : $val;
+                $infos[$key] = geoloc_utf8_decode($val);
             }
         }
     }
@@ -340,6 +350,10 @@ function geoloc_getData_subcities($mapid, $SFields, &$cities, $direct=true) {
         if ($c['pop'] > 0)
         {
             $city = $c;
+            //      $city['name'] = geoloc_utf8_decode($city['name']);
+            if (!geoloc_is_utf8($city['name'])) {
+                $city['name'] = utf8_encode($city['name']);
+            }
             $city['x'] = geoloc_to_x($c['x'], $c['y']);
             $city['y'] = geoloc_to_y($c['x'], $c['y']);
             $city['size'] = size_of_city($c['pop']);
