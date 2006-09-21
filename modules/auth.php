@@ -103,7 +103,7 @@ class AuthModule extends PLModule
 
         require_once 'webservices/manageurs.server.inc.php';
 
-        $ips = array_flip(explode(' ',$globals->manageurs->authorized_ips));
+        $ips = array_flip(explode(' ', $globals->manageurs->authorized_ips));
         if ($ips && isset($ips[$_SERVER['REMOTE_ADDR']])) {
             $server = xmlrpc_server_create();
 
@@ -116,6 +116,8 @@ class AuthModule extends PLModule
             print $response;
             xmlrpc_server_destroy($server);
         }
+
+        exit;
     }
 
     function handler_redirect(&$page)
