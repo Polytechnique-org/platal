@@ -26,7 +26,14 @@ class SearchModule extends PLModule
         return array(
             'search'     => $this->make_hook('quick', AUTH_PUBLIC),
             'search/adv' => $this->make_hook('advanced', AUTH_COOKIE),
+            'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
         );
+    }
+
+    function handler_redir_advanced(&$page, $mode = null)
+    {
+        pl_redirect('search/adv');
+        exit;
     }
 
     function on_subscribe($forlife, $uid, $promo, $pass)
