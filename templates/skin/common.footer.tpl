@@ -25,7 +25,7 @@
   &nbsp;-&nbsp;
   <a href="Docs/ConventionAX">Lien avec l'AX</a>
   &nbsp;-&nbsp;
-  <a href="Docs/APropos">A propos de ce site</a>
+  <a href="Docs/APropos">A propos de ce site et ses équipes</a>
 <br />
   <a href="Docs/Ethique">Services et Ethique</a>
   | <a href="Docs/Charte">Charte</a>
