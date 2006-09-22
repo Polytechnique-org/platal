@@ -55,6 +55,7 @@ class PlatalModule extends PLModule
             'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
             'recovery'      => $this->make_hook('recovery',  AUTH_PUBLIC),
             'exit'          => $this->make_hook('exit', AUTH_PUBLIC),
+            'deconnexion.php' => $this->make_hook('exit', AUTH_PUBLIC),
 
             // happenings related thingies
             'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
