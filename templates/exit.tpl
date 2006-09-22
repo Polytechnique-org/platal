@@ -31,11 +31,11 @@
 {if $smarty.cookies.ORGaccess}
 
 <p>
-Tu as demandé la connexion permanente donc cette deconnexion ne t'empêche pas d'utiliser la plupart
+Tu as demandé la connexion permanente donc cette déconnexion ne t'empêche pas d'utiliser la plupart
 des fonctionnalités de consultation du site.
 </p>
 <p>
-Tu peux donc aussi te <a href='exit/forget'>deconnecter complètement</a>.
+Tu peux donc aussi te <a href='exit/forget'>déconnecter complètement</a>.
 </p>
 <p>
 De plus, ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta
