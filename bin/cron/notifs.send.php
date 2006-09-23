@@ -33,7 +33,7 @@ foreach($all->_data as $u) {
           .  "  Voici les évènements survenus dans la semaine écoulée,\n"
           .  "et depuis ta dernière visite sur le site.\n\n"
           .  "Tu trouveras les mêmes informations sur la page :\n"
-          .  "    {$globals->baseurl}/carnet/panel\n\n"
+          .  "    https://www.polytechnique.org/carnet/panel\n\n"
           .  "------------------------------------------------------------------------\n\n";
 
     $html  = <<<EOF
@@ -43,7 +43,7 @@ foreach($all->_data as $u) {
   </head>
   <body>
     <p>Voici les évènements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
-    <p>Tu trouveras les mêmes informations sur <a href='{$globals->baseurl}/carnet/panel'>cette page</a></p>
+    <p>Tu trouveras les mêmes informations sur <a href='https://www.polytechnique.org/carnet/panel'>cette page</a></p>
 EOF;
 
     foreach($u['data'] as $cid=>$d) {
@@ -54,8 +54,8 @@ EOF;
             require_once('../../plugins/modifier.date_format.php');
             $date  = smarty_modifier_date_format($x['date'], '%d %b %Y');
             $text .= "    - (X{$x['promo']}) {$x['prenom']} {$x['nom']} le $date\n";
-            $text .= "      {$globals->baseurl}/profile/{$x['bestalias']}?force_login=1\n\n";
-            $html .= "<li>(X{$x['promo']}) <a href='{$globals->baseurl}/profile/{$x['bestalias']}?force_login=1'>{$x['prenom']} {$x['nom']}</a> le $date</li>\n";
+            $text .= "      https://www.polytechnique.org/profile/{$x['bestalias']}?force_login=1\n\n";
+            $html .= "<li>(X{$x['promo']}) <a href='https://www.polytechnique.org/profile/{$x['bestalias']}?force_login=1'>{$x['prenom']} {$x['nom']}</a> le $date</li>\n";
         }
         $text .= "\n";
         $html .= "</ul>\n";
@@ -67,7 +67,7 @@ EOF;
            . "Tu recois ce mail car tu as activé la notification automatique \n"
            . "par mail des évènements que tu surveilles.\n\n"
            . "Tu peux changer cette option sur :\n"
-           . "    {$globals->baseurl}/carnet/notifs";
+           . "    https://www.polytechnique.org/carnet/notifs";
     $html .= <<<EOF
     <hr />
     <p>L'équipe de Polytechnique.org</p>
@@ -75,7 +75,7 @@ EOF;
     <p>
     Tu recois ce mail car tu as activé la notification automatique par mail des évènements que tu surveilles.
     </p>
-    <p>Tu peux changer cette option sur la <a href="{$globals->baseurl}/carnet/notifs">page
+    <p>Tu peux changer cette option sur la <a href="https://www.polytechnique.org/carnet/notifs">page
     de configuration des notifications</a>
     </p>
   </body>
