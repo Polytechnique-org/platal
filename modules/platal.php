@@ -38,6 +38,7 @@ class PlatalModule extends PLModule
     function handlers()
     {
         return array(
+            'login.php'   => $this->make_hook('index',     AUTH_PUBLIC),
             'index'       => $this->make_hook('index',     AUTH_PUBLIC),
             'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
             'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
@@ -54,11 +55,13 @@ class PlatalModule extends PLModule
             'tmpPWD'        => $this->make_hook('tmpPWD',    AUTH_PUBLIC),
             'password/smtp' => $this->make_hook('smtppass',  AUTH_MDP),
             'recovery'      => $this->make_hook('recovery',  AUTH_PUBLIC),
+            'recovery.php'  => $this->make_hook('recovery',  AUTH_PUBLIC),
             'exit'          => $this->make_hook('exit', AUTH_PUBLIC),
             'deconnexion.php' => $this->make_hook('exit', AUTH_PUBLIC),
 
             // happenings related thingies
             'rss'         => $this->make_hook('rss',       AUTH_PUBLIC),
+            'rss.php'     => $this->make_hook('rss',       AUTH_PUBLIC),
         );
     }
 

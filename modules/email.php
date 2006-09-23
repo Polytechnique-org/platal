@@ -27,6 +27,7 @@ class EmailModule extends PLModule
             'emails' => $this->make_hook('emails', AUTH_COOKIE),
             'emails/alias'    => $this->make_hook('alias', AUTH_MDP),
             'emails/antispam' => $this->make_hook('antispam', AUTH_MDP),
+            'antispam.php'    => $this->make_hook('antispam', AUTH_MDP),
             'emails/broken'   => $this->make_hook('broken', AUTH_COOKIE),
             'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
             'emails/send'     => $this->make_hook('send', AUTH_MDP),
