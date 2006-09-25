@@ -63,6 +63,8 @@ class XnetListsModule extends ListsModule
         $page->useMenu();
         $page->assign('asso', $globals->asso());
         $page->setType($globals->asso('cat'));
+
+        return $globals->asso('mail_domain');
     }
 
     function handler_lists(&$page)
