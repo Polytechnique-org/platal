@@ -55,6 +55,7 @@ class ListsModule extends PLModule
         require_once 'lists.inc.php';
 
         $this->client =& lists_xmlrpc(S::v('uid'), S::v('password'));
+        return $globals->mail->domain;
     }
 
     function handler_lists(&$page)
@@ -269,7 +270,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $domain = $this->prepare_client($page);
 
         $page->changeTpl('listes/archives.tpl');
 
@@ -311,7 +312,7 @@ class ListsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $domain = $this->prepare_client($page);
 
         $page->changeTpl('listes/moderate.tpl');
 
