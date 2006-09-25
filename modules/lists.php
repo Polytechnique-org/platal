@@ -52,6 +52,8 @@ class ListsModule extends PLModule
 
     function prepare_client(&$page)
     {
+        global $globals;
+
         require_once 'lists.inc.php';
 
         $this->client =& lists_xmlrpc(S::v('uid'), S::v('password'));
