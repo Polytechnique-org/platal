@@ -24,7 +24,7 @@ class AuthModule extends PLModule
     function handlers()
     {
         return array(
-            'groupex/done-chall.php'
+            'groupex/donne-chall.php'
                                 => $this->make_hook('chall',      AUTH_PUBLIC),
             'groupex/export-econfiance.php'
                                 => $this->make_hook('econf',      AUTH_PUBLIC),
