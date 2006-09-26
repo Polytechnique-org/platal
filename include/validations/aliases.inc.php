@@ -98,10 +98,12 @@ class AliasReq extends Validate
     {
         global $globals;
 
-        if (empty($globals->domain2) || strlen($globals->domain2) > strlen($globals->domain)) {
-            return $globals->domain;
+        $mail = $globals->mail;
+
+        if (empty($mail->domain2) || strlen($mail->domain2) > strlen($mail->domain)) {
+            return $mail->domain;
         } else {
-            return $globals->domain2;
+            return $mail->domain2;
         }
     }
 
@@ -110,18 +112,18 @@ class AliasReq extends Validate
 
     function commit ()
     {
-        global $globals;
-
         XDB::execute("UPDATE auth_user_quick SET emails_alias_pub = {?} WHERE user_id = {?}",
                      $this->public, $this->uid);
 
         if ($this->old) {
-            return XDB::execute('UPDATE virtual SET alias={?} WHERE alias={?}', $this->alias, $this->old);
+            return XDB::execute('UPDATE virtual SET alias={?} WHERE alias={?}',
+                                $this->alias, $this->old);
         } else {
             XDB::execute('INSERT INTO virtual SET alias={?},type="user"', $this->alias);
             $vid = mysql_insert_id();
             $dom = $this->shorter_domain();
-            return XDB::query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})', $vid, $this->forlife.'@'.$dom);
+            return XDB::query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})',
+                              $vid, $this->forlife.'@'.$dom);
         }
     }
 
