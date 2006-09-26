@@ -247,7 +247,7 @@ function send_alert_mail($state, $body)
     require_once("diogenes/diogenes.hermes.inc.php");
     $mailer = new HermesMailer();
     $mailer->setFrom("webmaster@polytechnique.org");
-    $mailer->addTo("hotliners@polytechnique.org");
+    $mailer->addTo("hotliners@staff.polytechnique.org");
     $mailer->setSubject("ALERTE LORS DE L'INSCRIPTION de "
         . $state['prenom'] . ' ' . $state['nom'] . '(' . $promo . ')');
     $mailer->setTxtBody($body

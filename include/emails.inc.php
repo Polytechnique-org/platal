@@ -271,7 +271,7 @@ class Redirect
             require_once("diogenes/diogenes.hermes.inc.php");
             $mailer = new HermesMailer();
             $mailer->setFrom("webmaster@polytechnique.org");
-            $mailer->addTo("hotliners@polytechnique.org");
+            $mailer->addTo("hotliners@staff.polytechnique.org");
             $mailer->setSubject("ALERTE LORS DE L'AJOUT DE REDIRECTION de "
                 . S::v('prenom') . ' ' . S::v('nom') . '(' . S::v('promo') . ')');
             $mailer->setTxtBody($message
