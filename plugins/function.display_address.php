@@ -29,9 +29,9 @@ function smarty_function_display_address($param, &$smarty) {
         !$param['adr']['fax'] &&
         !$param['adr']['mobile']) return "";
 
-    $lines = explode("\n",$txtad);
+    $lines = explode("\n", $txtad);
     $txthtml = "";
-    $map = "<a href=\"http://maps.google.fr/?q=".urlencode(implode(", ", $lines))."\"><img src=\"images/icons/map.gif\" title=\"Carte\"/></a>";
+    $map = "<a href=\"http://maps.google.fr/?q=".urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines)))."\"><img src=\"images/icons/map.gif\" title=\"Carte\"/></a>";
     if ($param['titre'])
     {
         if ($param['titre_div'])

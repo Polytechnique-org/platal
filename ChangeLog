@@ -18,6 +18,9 @@ Bug/Wish:
 
 From 0.9.11 branch:
 
+    * Geoloc:
+        - #469: Google Maps link works for the USA                         -FRU
+
     * Payment:
         - #482: fix action in the form.                                     -MC
 
