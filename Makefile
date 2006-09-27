@@ -22,7 +22,7 @@ q:
 	@echo -e "Code statistics\n"
 	@sloccount $(filter-out wiki/ spool/, $(wildcard */)) 2> /dev/null | egrep '^[a-z]*:'
 
-%: %.in Makefile
+%: %.in Makefile ChangeLog
 	sed -e 's,@VERSION@,$(VERSION),g' $< > $@
 
 ################################################################################
