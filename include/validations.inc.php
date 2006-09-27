@@ -331,6 +331,14 @@ class Validate
     }
 
     // }}}
+    // {{{ function id()
+
+    function id()
+    {
+        return $this->uid . '_' . $this->type . '_' . $this->stamp;
+    }
+
+    // }}}
 }
 
 foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {

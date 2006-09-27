@@ -688,10 +688,14 @@ class AdminModule extends PLModule
         }
     }
 
-    function handler_validate(&$page) {
+    function handler_validate(&$page, $action = 'list', $id = null) {
         $page->changeTpl('admin/valider.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Valider une demande');
         require_once("validations.inc.php");
+
+        if ($action == 'edit' and !is_null($id)) {
+            $page->assign('preview_id', $id);
+        }
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
             $req = Validate::get_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));

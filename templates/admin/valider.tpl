@@ -53,7 +53,8 @@
   {if $valid->editor()}
   <tr>
     <td colspan="2" class="center">
-      <form enctype="multipart/form-data" action="admin/validate" method="post">
+      {if $preview_id == $valid->id()}
+      <form enctype="multipart/form-data" action="{$platal->pl_self()}" method="post">
         <div>
           {include file=$valid->editor()}
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -63,6 +64,11 @@
           <input type="submit" name="edit"   value="Editer" />
         </div>
       </form>
+      {else}
+      <small>
+        <a href="admin/validate/edit/{$valid->id()}">Editer cette demande avant validation</a>
+      </small>
+      {/if}
     </td>
   </tr>
   {/if}
