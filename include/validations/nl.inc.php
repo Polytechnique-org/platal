@@ -47,6 +47,25 @@ class NLReq extends Validate
     }
 
     // }}}
+    // {{{ function editor()
+
+    function editor()
+    {
+        return 'include/form.valid.edit-nl.tpl';
+    }
+
+    // }}}
+    // {{{ function handle_editor()
+
+    function handle_editor()
+    {
+        $this->art->_body   = Env::v('nl_body');
+        $this->art->_title  = Env::v('nl_title');
+        $this->art->_append = Env::v('nl_append');
+        return true;
+    }
+
+    // }}}
     // {{{ function _mail_subj
     
     function _mail_subj()

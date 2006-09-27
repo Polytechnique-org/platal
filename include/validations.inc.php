@@ -67,6 +67,7 @@ class Validate
     var $unique;
     // enable the refuse button
     var $refuse = true;
+    
     var $type;
     var $comments = Array();
     // the validations rules : comments for admins
@@ -154,6 +155,16 @@ class Validate
             $this->clean();
             $this->trig('requete supprimée');
             return true;
+        }
+
+        // mise à jour des informations
+        if (Env::has('edit')) {
+            if ($this->handle_editor()) {
+                $this->update();
+                $this->trig('requête mise à jour');
+                return true;
+            }
+            return false;
         }
 
         // ajout d'un commentaire
@@ -297,6 +308,13 @@ class Validate
     
     /** nom du template qui contient le formulaire */
     function formu()
+    { return null; }
+
+    // }}}
+    // {{{ function editor()
+
+    /** nom du formulaire d'édition */
+    function editor()
     { return null; }
 
     // }}}

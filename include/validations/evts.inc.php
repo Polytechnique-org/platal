@@ -53,6 +53,25 @@ class EvtReq extends Validate
     { return 'include/form.valid.evts.tpl'; }
 
     // }}}
+    // {{{ functon editor()
+
+    function editor()
+    { return 'include/form.valid.edit-evts.tpl'; }
+
+    // }}}
+    // {{{ function handle_editor()
+
+    function handle_editor()
+    {
+        $this->titre      = Env::v('titre');
+        $this->texte      = Env::v('texte');
+        $this->pmin       = Env::i('promo_min');
+        $this->pmax       = Env::i('promo_max');
+        $this->peremption = Env::v('peremption');
+        return true;
+    }
+
+    // }}}
     // {{{ function _mail_subj
     
     function _mail_subj()

@@ -20,26 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
-<tr class="pair">
-  <td class="titre">Titre</td>
-  <td>{$valid->titre}</td>
-</tr>
-<tr class="pair">
-  <td class="titre">Texte</td>
-  <td>{$valid->texte|nl2br}</td>
-</tr>
-<tr class="pair">
-  <td class="titre">Péremption</td>
-  <td>{$valid->peremption|date_format}</td>
-</tr>
-<tr class="pair">
-  <td class="titre">Promos</td>
-  <td>{$valid->pmin} - {$valid->pmax}</td>
-</tr>
-<tr class="pair">
-  <td class="titre">Commentaire</td>
-  <td>{$valid->comment}</td>
-</tr>
+<input type="text" name="titre" size="50" maxlength="200" value="{$valid->titre}" />
+<br />
+<textarea rows="10" cols="60" name="texte">{$valid->texte}</textarea>
+<br />
+<strong>Péremption&nbsp;:</strong> <input type="text" name="peremption" size="10" value="{$valid->peremption}" />
+<strong>Promos&nbsp;:&nbsp;</strong>
+min <input type="text" name="promo_min" size="4" maxlength="4" value="{$valid->pmin}" />
+&nbsp;->&nbsp;max <input type="text" name="promo_max" size="4" maxlength="4" value="{$valid->pmax}" />
 
 {* vim:set et sw=2 sts=2 sws=2: *}

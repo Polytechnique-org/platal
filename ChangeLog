@@ -1,7 +1,12 @@
 ================================================================================
-VERSION 0.9.11                                                        ?? ?? 2006
+VERSION 0.9.12                                                        ?? ?? 2006
 
-From 0.9.10 branch:
+Bug/Wish:
+
+    * Admin:
+        - #468: Can edit requests before validation                        -FRU
+
+From 0.9.11 branch:
 
     * Payment:
         - #482: fix action in the form.                                     -MC

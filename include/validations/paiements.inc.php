@@ -94,6 +94,28 @@ class PayReq extends Validate
     { return 'include/form.valid.paiements.tpl'; }
 
     // }}}
+    // {{{ function editor()
+
+    function editor()
+    {
+        return 'include/form.valid.edit-paiements.tpl';
+    }
+
+    // }}}
+    // {{{ function handle_editor()
+
+    function handle_editor()
+    {
+        $this->titre       = Env::v('pay_titre');
+        $this->site        = Env::v('pay_site');
+        $this->montant     = Env::i('pay_montant');
+        $this->montant_min = Env::i('pay_montant_min');
+        $this->montant_max = Env::i('pay_montant_max');
+        $this->msg_reponse = Env::v('pay_msg_reponse');
+        return true;
+    }
+
+    // }}}
     // {{{ function _mail_subj
 
     function _mail_subj()

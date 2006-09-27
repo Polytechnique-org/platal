@@ -50,6 +50,22 @@
     </td>
   </tr>
   {include file=$valid->formu()}
+  {if $valid->editor()}
+  <tr>
+    <td colspan="2" class="center">
+      <form action="admin/validate" method="post">
+        <div>
+          {include file=$valid->editor()}
+          <input type="hidden" name="uid"    value="{$valid->uid}" />
+          <input type="hidden" name="type"   value="{$valid->type}" />
+          <input type="hidden" name="stamp"  value="{$valid->stamp}" />
+          <br />
+          <input type="submit" name="edit"   value="Editer" />
+        </div>
+      </form>
+    </td>
+  </tr>
+  {/if}
   <tr><th colspan='2'>Commentaires</th></tr>
   {foreach from=$valid->comments item=c}
   <tr class="{cycle values="impair,pair"}">
