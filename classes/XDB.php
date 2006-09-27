@@ -51,7 +51,7 @@ class XDB
         $res = '';
         foreach ($query as $array) {
             list($line, $local) = $array;
-            $local   = $length - $local;
+            $local   = max(0, $length - $local);
             $res    .= str_repeat(' ', $local) . $line . "\n";
             $length += 2 * (substr_count($line, '(') - substr_count($line, ')'));
         }
