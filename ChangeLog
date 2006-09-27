@@ -8,6 +8,7 @@ Bug/Wish:
 
     * Core:
         - #473: Use 'événement' instead of 'évènement'                     -FRU
+        - #475: More understandable bug report form                        -FRU
 
 From 0.9.11 branch:
 
