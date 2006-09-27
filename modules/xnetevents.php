@@ -346,7 +346,7 @@ class XnetEventsModule extends PLModule
             }
 
             if (is_null($evt['eid'])) {
-                pl_redirect(url_self().'/'.$eid);
+                pl_redirect('events/'.$eid);
             }
         }
 
