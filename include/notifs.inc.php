@@ -148,7 +148,7 @@ function getNbNotifs() {
         return;
     }
 
-    return "<a href='carnet/panel'>$n évènement".($n > 1 ? 's' : '')." !</a>";
+    return "<a href='carnet/panel'>$n événement".($n > 1 ? 's' : '')." !</a>";
 }
 
 // }}}

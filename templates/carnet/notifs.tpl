@@ -30,7 +30,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
   <fieldset>
     <legend>Mail</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
-    Recevoir un mail hebdomadaire des évènements que je n'ai pas déjà vus sur le site<br />
+    Recevoir un mail hebdomadaire des événements que je n'ai pas déjà vus sur le site<br />
     <input type='hidden' name='flags_mail' value='valider' />
   </fieldset>
 </form>
@@ -42,7 +42,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
     <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
     {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}<br />
     {/foreach}
-    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (évènements très fréquents)</span><br />
+    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents)</span><br />
     <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles</span>
   </fieldset>
   <div class='center'>
@@ -67,7 +67,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <h2>Surveiller des promos</h2>
 
 <p>
-Attention : pour les promos, tu n'es pas notifié des évènements trop fréquents (par exemple les changements de fiche).
+Attention : pour les promos, tu n'es pas notifié des événements trop fréquents (par exemple les changements de fiche).
 </p>
 
 <form action="carnet/notifs/" method="post">

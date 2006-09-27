@@ -30,7 +30,7 @@ foreach($all->_data as $u) {
     $week   = date("W - Y");
 
     $text =  "  ".($u['sexe'] ? 'Chère' : 'Cher')." {$u['prenom']},\n\n"
-          .  "  Voici les évènements survenus dans la semaine écoulée,\n"
+          .  "  Voici les événements survenus dans la semaine écoulée,\n"
           .  "et depuis ta dernière visite sur le site.\n\n"
           .  "Tu trouveras les mêmes informations sur la page :\n"
           .  "    https://www.polytechnique.org/carnet/panel\n\n"
@@ -42,7 +42,7 @@ foreach($all->_data as $u) {
     <title>Notifications de la semaine $week</title>
   </head>
   <body>
-    <p>Voici les évènements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
+    <p>Voici les événements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
     <p>Tu trouveras les mêmes informations sur <a href='https://www.polytechnique.org/carnet/panel'>cette page</a></p>
 EOF;
 
@@ -65,7 +65,7 @@ EOF;
            . "L'équipe de Polytechnique.org\n\n"
            . "------------------------------------------------------------------------\n\n"
            . "Tu recois ce mail car tu as activé la notification automatique \n"
-           . "par mail des évènements que tu surveilles.\n\n"
+           . "par mail des événements que tu surveilles.\n\n"
            . "Tu peux changer cette option sur :\n"
            . "    https://www.polytechnique.org/carnet/notifs";
     $html .= <<<EOF
@@ -73,7 +73,7 @@ EOF;
     <p>L'équipe de Polytechnique.org</p>
     <br />
     <p>
-    Tu recois ce mail car tu as activé la notification automatique par mail des évènements que tu surveilles.
+    Tu recois ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.
     </p>
     <p>Tu peux changer cette option sur la <a href="https://www.polytechnique.org/carnet/notifs">page
     de configuration des notifications</a>

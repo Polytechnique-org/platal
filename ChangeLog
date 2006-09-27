@@ -6,6 +6,9 @@ Bug/Wish:
     * Admin:
         - #468: Can edit requests before validation                        -FRU
 
+    * Core:
+        - #473: Use 'événement' instead of 'évènement'                     -FRU
+
 From 0.9.11 branch:
 
     * Payment:
