@@ -26,6 +26,8 @@ class PLTableEditor {
     var $table;
     // joint tables to delete when deleting an entry
     var $jtables = array();
+    // sorting field
+    var $sort = array();
     // the id field
     var $idfield;
     // possibility to edit the field
@@ -111,6 +113,13 @@ class PLTableEditor {
         if ($joindel)
             $this->jtables[$name] = array("joinid" => $joinid,"joinextra" => $joinextra?(" AND ".$joinextra):"");
     }
+
+    // add a sort key
+    function add_sort_field($key, $desc = false)
+    {
+        $this->sort[] = $key . ($desc ? ' DESC' : '');
+    }
+
     // call when done
     function apply(&$page, $action, $id = false) {
         $page->changeTpl('table-editor.tpl');
@@ -176,7 +185,10 @@ class PLTableEditor {
                 $page->trig("Impossible de mette à jour.");
         }
         if ($list) {
-            $it = XDB::iterator("SELECT * FROM {$this->table}");
+            if (count($this->sort) > 0) {
+                $sort = 'ORDER BY ' . join($this->sort, ',');
+            }
+            $it = XDB::iterator("SELECT * FROM {$this->table} $sort");
             $this->nbfields = 0;
             foreach ($this->vars as $field => $descr)
                 if ($descr['display']) $this->nbfields++;

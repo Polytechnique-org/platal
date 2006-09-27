@@ -1,10 +1,16 @@
 ================================================================================
 VERSION 0.9.12                                                        ?? ?? 2006
 
+New:
+
+    * Admin:
+        - Can add sorting key in Table Editor                              -FRU
+
 Bug/Wish:
 
     * Admin:
         - #468: Can edit requests before validation                        -FRU
+        - #478: Sort payments by flag                                      -FRU
 
     * Core:
         - #473: Use 'événement' instead of 'évènement'                     -FRU

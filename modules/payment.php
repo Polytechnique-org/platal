@@ -321,6 +321,7 @@ class PaymentModule extends PLModule
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
         $table_editor->add_join_table('paiement.transactions','ref',true);
+        $table_editor->add_sort_field('flags');
         $table_editor->describe('text','intitulé',true);
         $table_editor->describe('url','site web',false);
         $table_editor->describe('montant_def','montant par défaut',false);
