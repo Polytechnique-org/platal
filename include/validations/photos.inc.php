@@ -44,9 +44,18 @@ class PhotoReq extends Validate
 
     function PhotoReq($_uid, $_data, $_stamp=0)
     {
-        global $page;
-
         $this->Validate($_uid, true, 'photo', $_stamp);
+        if (!$this->_get_image($_data)) {
+            return ($this = null);
+        }
+    }
+
+    // }}}
+    // {{{ function _get_image()
+
+    function _get_image($_data)
+    {
+        global $page;
 
         // calcul de la taille de l'image
         require_once dirname(__FILE__).'/../../classes/VarStream.php';
@@ -56,7 +65,7 @@ class PhotoReq extends Validate
 
         if (empty($image_infos)) {
             $page->trig("Image invalide");
-            return ($this = null);
+            return false;
         }
         list($this->x, $this->y, $this->mimetype) = $image_infos;
 
@@ -66,14 +75,14 @@ class PhotoReq extends Validate
             case 3: $this->mimetype = "png";    break;
             default:
                 $page->trig("Type d'image invalide");
-                return ($this = null);
+                return false;
         }
 
         if (strlen($_data) > SIZE_MAX)  {
             $img = imagecreatefromstring($_data);
             if (!$img) {
                 $page->trig("image trop grande et impossible à retailler automatiquement");
-                return ($this = null);
+                return false;
             }
 
             $nx = $x = imagesx($img);
@@ -99,6 +108,7 @@ class PhotoReq extends Validate
             unlink($file);
         }
         $this->data = $_data;
+        return true;
     }
 
     // }}}
@@ -114,6 +124,32 @@ class PhotoReq extends Validate
 
     function formu()
     { return 'include/form.valid.photos.tpl'; }
+
+    // }}}
+    // {{{ function editor()
+
+    function editor()
+    {
+        return 'include/form.valid.edit-photo.tpl';
+    }
+
+    // }}}
+    // {{{ function handle_editor()
+
+    function handle_editor()
+    {
+        if (isset($_FILES['userfile']['tmp_name'])) {
+            $file = $_FILES['userfile']['tmp_name'];
+            if ($data = file_get_contents($file)) {
+                if ($this->_get_image($data)) {
+                    return true;
+                }
+            } else {
+                $page->trig('Fichier inexistant ou vide');
+            }
+        }
+        return false; 
+    }
 
     // }}}
     // {{{ function _mail_subj

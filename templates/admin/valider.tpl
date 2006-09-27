@@ -53,7 +53,7 @@
   {if $valid->editor()}
   <tr>
     <td colspan="2" class="center">
-      <form action="admin/validate" method="post">
+      <form enctype="multipart/form-data" action="admin/validate" method="post">
         <div>
           {include file=$valid->editor()}
           <input type="hidden" name="uid"    value="{$valid->uid}" />
