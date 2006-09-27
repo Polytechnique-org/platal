@@ -89,7 +89,7 @@ function payment_submit(form)
 {
     form.op.value = 'select';
     form.montant.value = 0;
-    form.action = form.action + '/' + form.ref.value;
+    form.action = 'payment/' + form.ref.value;
     form.submit();
 }
 {/literal}
