@@ -177,7 +177,7 @@ class Validate
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
               . S::v('bestalias')." a ajouté le commentaire :\n\n" 
               . Env::v('comm')."\n\n"
-              . "cf la discussion sur : ".$globals->baseurl."/admin/valider.php";
+              . "cf la discussion sur : ".$globals->baseurl."/admin/validate";
 
             $mailer->setTxtBody(wordwrap($body));
             $mailer->send();
