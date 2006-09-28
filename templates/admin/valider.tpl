@@ -33,7 +33,7 @@
 <br />
 <table class="bicol">
   <tr>
-    <th colspan="2">{$valid->type}</th>
+    <th colspan="2"><a id="valid{$valid->id()}"></a>{$valid->type}</th>
   </tr>
   <tr>
     <td class="titre" style="width: 20%">Demandeur&nbsp;:</td>
@@ -54,7 +54,7 @@
   <tr>
     <td colspan="2" class="center">
       {if $preview_id == $valid->id()}
-      <form enctype="multipart/form-data" action="{$platal->pl_self()}" method="post">
+      <form enctype="multipart/form-data" action="{$platal->pl_self()}#valid{$valid->id()}" method="post">
         <div>
           {include file=$valid->editor()}
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -66,7 +66,7 @@
       </form>
       {else}
       <small>
-        <a href="admin/validate/edit/{$valid->id()}">Editer cette demande avant validation</a>
+        <a href="admin/validate/edit/{$valid->id()}#valid{$valid->id()}">Editer cette demande avant validation</a>
       </small>
       {/if}
     </td>
