@@ -1,6 +1,6 @@
 <script type="text/javascript" src="javascript/flyspray.js"></script>
 
-<div id="flyspray_report" style="display:none;position:fixed;width:60%;height:470px;top:20%;left:20%;border: solid 1px;background:white;color:black;text-align:left;padding:10px">
+<div id="flyspray_report" style="display:none;position:absolute;width:700px;height:470px;left:20%;border:solid 1px;background:white;color:black;text-align:left;padding:10px">
 <form action="http://trackers.polytechnique.org/" method="post" enctype="multipart/form-data">
 	<h1>Signaler un bug ou demander une amélioration</h1>
 	<div style="margin-left:10%;margin-right:10%">
