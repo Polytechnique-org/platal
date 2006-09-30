@@ -19,8 +19,39 @@
  ***************************************************************************/
 
 function send_bug() {
+        var h = windowHeight();
+        var y = getScrollY();
+        y += (h - 470) /2;
 	document.getElementById('flyspray_report').style.display = 'block';
+        document.getElementById('flyspray_report').style.top = y+'px';
 	return false;
+}
+
+function getScrollY() {
+    var scrOfX = 0, scrOfY = 0;
+    if( typeof( window.pageYOffset ) == 'number' ) {
+        //Netscape compliant
+        scrOfY = window.pageYOffset;
+    } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
+        //DOM compliant
+        scrOfY = document.body.scrollTop;
+    } else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
+        //IE6 standards compliant mode
+        scrOfY = document.documentElement.scrollTop;
+    }
+    return scrOfY;
+}
+function windowHeight() {
+    if( typeof( window.innerWidth ) == 'number' ) {
+        //Non-IE
+        return window.innerHeight;
+    } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+        return document.documentElement.clientHeight;
+    } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+        //IE 4 compatible
+        return document.body.clientHeight;
+    }
+    return 0;
 }
 
 function close_bug(f,send) {
