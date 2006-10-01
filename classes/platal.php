@@ -111,7 +111,7 @@ class Platal
 
     function force_login(&$page)
     {
-        if (S::logged() and !$new_name) {
+        if (S::logged()) {
             $page->changeTpl('password_prompt_logged.tpl');
             $page->addJsLink('do_challenge_response_logged.js');
         } else {

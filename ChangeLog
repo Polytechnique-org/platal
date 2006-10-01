@@ -18,6 +18,9 @@ Bug/Wish:
 
 From 0.9.11 branch:
 
+    * Core:
+        - #472: Fix problem with auth when using the cookie.                -MC
+
     * Geoloc:
         - #469: Google Maps link works for the USA                         -FRU
 

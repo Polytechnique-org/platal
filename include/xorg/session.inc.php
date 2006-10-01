@@ -73,6 +73,7 @@ class XorgSession
             }
         } else {
             $login = $uname;
+            $redirect = false;
         }
 
         $field = (!$redirect && preg_match('/^\d*$/', $uname)) ? 'id' : 'alias';
@@ -85,13 +86,14 @@ class XorgSession
         $logger =& S::v('log');
         if (list($uid, $password) = $res->fetchOneRow()) {
                 require_once('secure_hash.inc.php');
-                    $expected_response=hash_encrypt("$uname:$password:".S::v('challenge'));
+                    $expected_response = hash_encrypt("$uname:$password:".S::v('challenge'));
                     // le password de la base est peut-être encore encodé en md5
                     if (Env::v('response') != $expected_response) {
                       $new_password = hash_xor(Env::v('xorpass'), $password);
                       $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
                       if (Env::v('response') == $expected_response) {
-                          XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}", $new_password, $uid);
+                          XDB::execute("UPDATE auth_user_md5 SET password = {?} WHERE user_id = {?}",
+                                       $new_password, $uid);
                       }
                     }
                     if (Env::v('response') == $expected_response) {
@@ -174,9 +176,10 @@ function try_cookie()
     }
 
     $res = @XDB::query(
-            "SELECT user_id,password FROM auth_user_md5 WHERE user_id = {?} AND perms IN('admin','user')",
-            Cookie::i('ORGuid')
-    );
+            "SELECT user_id,password FROM auth_user_md5
+              WHERE user_id = {?} AND perms IN('admin','user')",
+            Cookie::i('ORGuid'));
+
     if ($res->numRows() != 0) {
 	list($uid, $password) = $res->fetchOneRow();
 	require_once('secure_hash.inc.php');
@@ -228,7 +231,7 @@ function start_connexion ($uid, $identified)
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
 
-    $_SESSION         = $sess;
+    $_SESSION         = array_merge($_SESSION, $sess);
     $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
     set_skin();

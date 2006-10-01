@@ -72,6 +72,16 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
         "</div>";
 }
 
+function pl_dump_env()
+{
+    echo "<div class='phperror'><pre>";
+    echo "\nSESSION: "; var_export($_SESSION);
+    echo "\nPOST:    "; var_export($_POST);
+    echo "\nGET:     "; var_export($_GET);
+    echo "\nCOOKIES: "; var_export($_COOKIES);
+    echo "</pre></div>";
+}
+
 function pl_print_errors()
 {
     print join("\n", $GLOBALS['pl_errors']);
@@ -79,7 +89,7 @@ function pl_print_errors()
 
 set_error_handler('pl_error_handler', E_ALL | E_STRICT);
 register_shutdown_function('pl_print_errors');
-
+register_shutdown_function('pl_dump_env');
 
 function pl_url($path, $query = null, $fragment = null)
 {
