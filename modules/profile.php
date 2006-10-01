@@ -599,7 +599,6 @@ class ProfileModule extends PLModule
 
         require_once 'validations.inc.php';
         require_once 'xorg.misc.inc.php';
-        require_once dirname(__FILE__).'/../classes/Flagset.php';
 
         $res = XDB::query(
                 "SELECT  u.nom, u.nom_usage, u.flags, e.alias
@@ -772,7 +771,6 @@ class ProfileModule extends PLModule
         $page->assign('forlife', $forlife);
     }
     function handler_admin_binets(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Binets');
         $page->assign('title', 'Gestion des binets');
         $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
@@ -781,7 +779,6 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_formations(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Formations');
         $page->assign('title', 'Gestion des formations');
         $table_editor = new PLTableEditor('admin/formations','applis_def','id');
@@ -791,7 +788,6 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
     } 
     function handler_admin_groupesx(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Groupes X');
         $page->assign('title', 'Gestion des Groupes X');
         $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
@@ -801,7 +797,6 @@ class ProfileModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }  
     function handler_admin_medals(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
         $page->assign('title', 'Gestion des Distinctions');
         $table_editor = new PLTableEditor('admin/medals','profile_medals','id');

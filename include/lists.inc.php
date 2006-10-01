@@ -19,11 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ import class definitions
-
-require_once dirname(__FILE__).'/../classes/XmlrpcClient.php';
-
-// }}}
 // {{{ function lists_xmlrpc
 
 function &lists_xmlrpc($uid, $pass, $fqdn=null)
@@ -43,7 +38,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
     global $globals;
 
     $membres = Array();
-    
+
     foreach($members as $mem) {
         list($m, $dom) = explode('@',$mem);
         if ($dom == $globals->mail->domain || $dom == $globals->mail->domain2) {
@@ -67,7 +62,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
             }
         }
     }
-    
+
     ksort($membres);
     foreach($membres as $key=>$val) ksort($membres[$key]);
     return $membres;

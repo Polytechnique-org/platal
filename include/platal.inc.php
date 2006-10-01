@@ -38,7 +38,12 @@ define('SKINNED', 0);
 define('SIMPLE',  1);
 define('NO_SKIN', 2);
 
-require_once dirname(__FILE__).'/../classes/Env.php';
+require dirname(dirname(__FILE__)).'/classes/env.php';
+
+function __autoload($cls)
+{
+    require dirname(dirname(__FILE__)).'/classes/'.strtolower($cls).'.php';
+}
 
 function pl_url($path, $query = null, $fragment = null)
 {

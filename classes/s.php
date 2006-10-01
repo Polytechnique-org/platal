@@ -19,35 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once dirname(__FILE__).'/../include/xorg.inc.php';
+class S extends Session { }
 
-preg_match('/^\/(moderate|admin|members)\/(.*)_([^_]*)$/', $_SERVER['REQUEST_URI'], $matches);
-
-if ($matches) {
-
-    $action = $matches[1];
-    $mbox   = $matches[2];
-    $fqdn   = strtolower($matches[3]);
-
-    if ($fqdn == 'polytechnique.org') {
-        http_redirect("https://www.polytechnique.org/lists/$action/$mbox");
-    }
-
-    $res = XDB::query("select diminutif from groupex.asso where mail_domain = {?}", $fqdn);
-    if ($gpx = $res->fetchOneCell()) {
-        http_redirect("http://www.polytechnique.net/$gpx/lists/$action/$mbox");
-    }
-}
 ?>
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html>
-  <head>
-    <title>404 Not Found</title>
-  </head>
-  <body>
-    <h1>Not Found</h1>
-    The requested URL <?php echo $_SERVER['REQUEST_URI'] ?> was not found on this server.<p>
-    <hr>
-    <address>Apache Server at www.carva.org Port 80</address>
-  </body>
-</html>

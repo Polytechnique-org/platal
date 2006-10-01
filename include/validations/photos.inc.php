@@ -58,7 +58,7 @@ class PhotoReq extends Validate
         global $page;
 
         // calcul de la taille de l'image
-        require_once dirname(__FILE__).'/../../classes/VarStream.php';
+        require_once dirname(__FILE__).'/../../classes/varstream.php';
         $GLOBALS['photoreq'] = $_data;
         $image_infos = getimagesize('var://photoreq');
         unset ($GLOBALS['photoreq']);

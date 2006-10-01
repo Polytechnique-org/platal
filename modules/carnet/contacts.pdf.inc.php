@@ -21,7 +21,7 @@
 
 define ('FPDF_FONTPATH', dirname(__FILE__).'/fonts/');
 require_once '/usr/share/fpdf/fpdf.php';
-require_once dirname(__FILE__).'/../../classes/VarStream.php';
+require_once dirname(__FILE__).'/../../classes/varstream.php';
 
 class ContactsPDF extends FPDF
 {

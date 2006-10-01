@@ -76,8 +76,6 @@ class Session
     }
 }
 
-class S extends Session { }
-
 // {{{ function check_perms()
 
 /** verifie si un utilisateur a les droits pour voir une page

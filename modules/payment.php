@@ -316,7 +316,6 @@ class PaymentModule extends PLModule
         $page->assign('erreur', $erreur);
     }
     function handler_admin(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');
         $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');

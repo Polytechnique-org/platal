@@ -21,11 +21,6 @@
 
 $GLOBALS['IS_XNET_SITE'] = true;
 
-require_once dirname(__FILE__).'/../classes/XDB.php';
-require_once dirname(__FILE__).'/../classes/Xnet.php';
-require_once dirname(__FILE__).'/../classes/PLModule.php';
-require_once dirname(__FILE__).'/../classes/CoreLogger.php';
-
 require_once dirname(__FILE__).'/../include/xnet.inc.php';
 
 if (!($path = Env::v('n')) || substr($path, 0, 4) != 'Xnet') {

@@ -164,7 +164,6 @@ class AuthModule extends PLModule
         http_redirect('https://www.polytechnique.org/');
     }
     function handler_admin_authgroupesx(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
         $page->assign('title', 'Gestion de l\'authentification centralisée');
         $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');

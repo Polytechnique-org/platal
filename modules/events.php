@@ -402,7 +402,6 @@ class EventsModule extends PLModule
         $page->assign_by_ref('nl',$nl);
     }
     function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
         $page->assign('title', 'Gestion des catégories de la newsletter');
         $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');

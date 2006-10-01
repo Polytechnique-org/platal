@@ -724,7 +724,6 @@ class AdminModule extends PLModule
         $page->assign('vit', new ValidateIterator());
     }
     function handler_validate_answers(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Réponses automatiques de validation');
         $page->assign('title', 'Gestion des réponses automatiques');
         $table_editor = new PLTableEditor('admin/validate/answers','requests_answers','id');
@@ -734,7 +733,6 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_skins(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Skins');
         $page->assign('title', 'Gestion des skins');
         $table_editor = new PLTableEditor('admin/skins','skins','id');
@@ -747,7 +745,6 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_postfix_blacklist(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Blacklist');
         $page->assign('title', 'Blacklist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/blacklist','postfix_blacklist','email', true);
@@ -756,7 +753,6 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_postfix_whitelist(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Whitelist');
         $page->assign('title', 'Whitelist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/whitelist','postfix_whitelist','email', true);
@@ -764,7 +760,6 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_logger_actions(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Actions');
         $page->assign('title', 'Gestion des actions de logger');
         $table_editor = new PLTableEditor('admin/logger/actions','logger.actions','id');
@@ -773,7 +768,6 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_downtime(&$page, $action = 'list', $id = null) {
-        require_once('../classes/PLTableEditor.php');
         $page->assign('xorg_title','Polytechnique.org - Administration - Coupures');
         $page->assign('title', 'Gestion des coupures');
         $table_editor = new PLTableEditor('admin/downtime','coupures','id');

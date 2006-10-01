@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
-require_once dirname(__FILE__).'/../classes/XDB.php';
 
 list($username, $path) = preg_split('/\//', $_SERVER["REQUEST_URI"], 2, PREG_SPLIT_NO_EMPTY);
 $res = XDB::query(

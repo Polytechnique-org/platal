@@ -25,7 +25,7 @@ require_once('xorg/session.inc.php');
 $globals = new PlatalGlobals('XorgSession');
 XorgSession::init();
 
-require_once dirname(__FILE__).'/../classes/Page.php';
+require_once dirname(__FILE__).'/../classes/page.php';
 
 // {{{ class XorgPage
 
