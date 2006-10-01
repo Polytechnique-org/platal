@@ -77,8 +77,8 @@ class PaymentModule extends PLModule
     {
         return array(
             'payment'               => $this->make_hook('payment', AUTH_MDP),
-            'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUB),
-            'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUB),
+            'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC),
+            'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUBLIC),
             'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
         );
     }
