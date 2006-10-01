@@ -292,7 +292,7 @@ class CarnetModule extends PLModule
                   GROUP BY  a.user_id
                   ORDER BY  ".$order;
 
-            $page->assign_by_ref('citer', XDB::iterator($sql));
+            $page->assign('citer', XDB::iterator($sql));
         }
     }
 
