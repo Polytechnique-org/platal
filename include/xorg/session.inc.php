@@ -230,7 +230,7 @@ function start_connexion ($uid, $identified)
         setcookie('ORGuid', $uid, (time()+25920000), '/', '', 0);
     }
 
-    $_SESSION         = $sess;
+    $_SESSION         = array_merge($_SESSION, $sess);
     $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
     set_skin();
