@@ -42,7 +42,7 @@ require dirname(dirname(__FILE__)).'/classes/env.php';
 
 function __autoload($cls)
 {
-    require dirname(dirname(__FILE__)).'/classes/'.strtolower($cls).'.php';
+    @include dirname(dirname(__FILE__)).'/classes/'.strtolower($cls).'.php';
 }
 
 function pl_url($path, $query = null, $fragment = null)
