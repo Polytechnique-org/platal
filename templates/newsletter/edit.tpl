@@ -48,6 +48,14 @@
     </tr>
     <tr>
       <td class='titre'>
+        Titre du mail
+      </td>
+      <td>
+        <input type='text' size='60' name='titleMail' value="{$nl->title(true)}" />
+      </td>
+    </tr>
+    <tr>
+      <td class='titre'>
         Titre
       </td>
       <td>
