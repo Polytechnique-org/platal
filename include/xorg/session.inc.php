@@ -21,9 +21,9 @@
 
 class XorgSession
 {
-    // {{{ function init
+    // {{{ public static function init
 
-    function init() {
+    public static function init() {
         S::init();
 	if (!S::has('uid')) {
 	    try_cookie();
@@ -31,17 +31,17 @@ class XorgSession
     }
 
     // }}}
-    // {{{ function destroy()
+    // {{{ public static function destroy()
 
-    function destroy() {
+    public static function destroy() {
         S::destroy();
         XorgSession::init();
     }
 
     // }}}
-    // {{{ function doAuth()
+    // {{{ public static function doAuth()
 
-    function doAuth($new_name = false)
+    public static function doAuth($new_name = false)
     {
     	global $globals;
     	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
@@ -135,13 +135,13 @@ class XorgSession
     }
 
     // }}}
-    // {{{ function doAuthCookie()
+    // {{{ public static function doAuthCookie()
 
     /** Try to do a cookie-based authentication.
      *
      * @param page the calling page (by reference)
      */
-    function doAuthCookie()
+    public static function doAuthCookie()
     {
 	if (S::logged()) {
 	    return true;

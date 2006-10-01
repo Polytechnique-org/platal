@@ -33,7 +33,7 @@ class PLModule
 
     /* static functions */
 
-    function factory($modname)
+    public static function factory($modname)
     {
         $mod_path = dirname(__FILE__).'/../modules/'.strtolower($modname).'.php';
         $class    = ucfirst($modname).'Module';

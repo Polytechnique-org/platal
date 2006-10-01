@@ -23,18 +23,18 @@ class XDB
 {
     var $_trace_data = array();
 
-    // {{{ function _prepare
+    // {{{ public static function _prepare
 
-    function _prepare($args) {
+    public static function _prepare($args) {
         $query    = array_map(Array('XDB', '_db_escape'), $args);
         $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
     }
 
     // }}}
-    // {{{ function _reformatQuery
+    // {{{ public static function _reformatQuery
 
-    function _reformatQuery($query)
+    public static function _reformatQuery($query)
     {
         $query  = preg_split("/\n\\s*/", $query);
         $length = 0;
@@ -59,9 +59,9 @@ class XDB
     }
 
     // }}}
-    // {{{ function _query
+    // {{{ public static function _query
 
-    function _query($query) {
+    public static function _query($query) {
         global $globals;
 
         if ($globals->debug & 1) {
@@ -88,49 +88,49 @@ class XDB
     }
 
     // }}}
-    // {{{ function query
+    // {{{ public static function query
 
-    function &query()
+    public static function query()
     {
         return new XOrgDBResult(XDB::_prepare(func_get_args()));
     }
 
     // }}}
-    // {{{ function execute()
+    // {{{ public static function execute()
 
-    function execute()
+    public static function execute()
     {
         return XDB::_query(XDB::_prepare(func_get_args()));
     }
 
     // }}}
-    // {{{ function iterator()
+    // {{{ public static function iterator()
 
-    function &iterator()
+    public static function iterator()
     {
         return new XOrgDBIterator(XDB::_prepare(func_get_args()));
     }
 
     // }}}
-    // {{{ function iterRow()
+    // {{{ public static function iterRow()
 
-    function &iterRow()
+    public static function iterRow()
     {
         return new XOrgDBIterator(XDB::_prepare(func_get_args()), MYSQL_NUM);
     }
 
     // }}}
-    // {{{ function insertId()
+    // {{{ public static function insertId()
 
-    function insertId()
+    public static function insertId()
     {
         return mysql_insert_id();
     }
 
     // }}}
-    // {{{ function _db_escape
+    // {{{ public static function _db_escape
 
-    function _db_escape($var)
+    public static function _db_escape($var)
     {
         switch (gettype($var)) {
           case 'boolean':
@@ -158,9 +158,9 @@ class XDB
 
     // }}}
 
-    function trace_format(&$page, $template = 'database-debug.tpl') {
-        $page->assign('trace_data', $GLOBALS['XDB::trace_data']);
-        $page->assign('db_error', $GLOBALS['XDB::error']);
+    public static function trace_format(&$page, $template = 'database-debug.tpl') {
+        $page->assign('trace_data', @$GLOBALS['XDB::trace_data']);
+        $page->assign('db_error', @$GLOBALS['XDB::error']);
         return $page->fetch($template);
     }
 }

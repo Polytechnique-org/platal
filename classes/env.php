@@ -21,49 +21,49 @@
 
 class Env
 {
-    // {{{ function _get
+    // {{{ public static function _get
 
-    function _get($key, $default)
+    public static function _get($key, $default)
     {
         return isset($_REQUEST[$key]) ? $_REQUEST[$key] : $default;
     }
 
     // }}}
-    // {{{ function has
+    // {{{ public static function has
 
-    function has($key)
+    public static function has($key)
     {
         return isset($_REQUEST[$key]);
     }
 
     // }}}
-    // {{{ function kill
+    // {{{ public static function kill
 
-    function kill($key)
+    public static function kill($key)
     {
         unset($_REQUEST[$key]);
     }
 
     // }}}
-    // {{{ function v
+    // {{{ public static function v
 
-    function v($key, $default = null)
+    public static function v($key, $default = null)
     {
         return Env::_get($key, $default);
     }
 
     // }}}
-    // {{{ function b
+    // {{{ public static function b
 
-    function b($key, $default = false)
+    public static function b($key, $default = false)
     {
         return (bool)Env::_get($key, $default);
     }
 
     // }}}
-    // {{{ function i
+    // {{{ public static function i
 
-    function i($key, $default = 0)
+    public static function i($key, $default = 0)
     {
         $i = Env::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
@@ -75,49 +75,49 @@ class Env
 
 class Post
 {
-    // {{{ function _get
+    // {{{ public static function _get
 
-    function _get($key, $default)
+    public static function _get($key, $default)
     {
         return isset($_POST[$key]) ? $_POST[$key] : $default;
     }
 
     // }}}
-    // {{{ function has
+    // {{{ public static function has
 
-    function has($key)
+    public static function has($key)
     {
         return isset($_POST[$key]);
     }
 
     // }}}
-    // {{{ function kill
+    // {{{ public static function kill
 
-    function kill($key)
+    public static function kill($key)
     {
         unset($_POST[$key]);
     }
 
     // }}}
-    // {{{ function v
+    // {{{ public static function v
 
-    function v($key, $default = null)
+    public static function v($key, $default = null)
     {
         return Post::_get($key, $default);
     }
 
     // }}}
-    // {{{ function b
+    // {{{ public static function b
 
-    function b($key, $default = false)
+    public static function b($key, $default = false)
     {
         return (bool)Post::_get($key, $default);
     }
 
     // }}}
-    // {{{ function i
+    // {{{ public static function i
 
-    function i($key, $default = 0)
+    public static function i($key, $default = 0)
     {
         $i = Post::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
@@ -128,49 +128,49 @@ class Post
 
 class Get
 {
-    // {{{ function _get
+    // {{{ public static function _get
 
-    function _get($key, $default)
+    public static function _get($key, $default)
     {
         return isset($_GET[$key]) ? $_GET[$key] : $default;
     }
 
     // }}}
-    // {{{ function has
+    // {{{ public static function has
 
-    function has($key)
+    public static function has($key)
     {
         return isset($_GET[$key]);
     }
 
     // }}}
-    // {{{ function kill
+    // {{{ public static function kill
 
-    function kill($key)
+    public static function kill($key)
     {
         unset($_GET[$key]);
     }
 
     // }}}
-    // {{{ function v
+    // {{{ public static function v
 
-    function v($key, $default = null)
+    public static function v($key, $default = null)
     {
         return Get::_get($key, $default);
     }
 
     // }}}
-    // {{{ function b
+    // {{{ public static function b
 
-    function b($key, $default = false)
+    public static function b($key, $default = false)
     {
         return (bool)Get::_get($key, $default);
     }
 
     // }}}
-    // {{{ function i
+    // {{{ public static function i
 
-    function i($key, $default = 0)
+    public static function i($key, $default = 0)
     {
         $i = Get::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;
@@ -181,49 +181,49 @@ class Get
 
 class Cookie
 {
-    // {{{ function _get
+    // {{{ public static function _get
 
-    function _get($key, $default)
+    public static function _get($key, $default)
     {
         return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
     }
 
     // }}}
-    // {{{ function has
+    // {{{ public static function has
 
-    function has($key)
+    public static function has($key)
     {
         return isset($_COOKIE[$key]);
     }
 
     // }}}
-    // {{{ function kill
+    // {{{ public static function kill
 
-    function kill($key)
+    public static function kill($key)
     {
         unset($_COOKIE[$key]);
     }
 
     // }}}
-    // {{{ function v
+    // {{{ public static function v
 
-    function v($key, $default = null)
+    public static function v($key, $default = null)
     {
         return Cookie::_get($key, $default);
     }
 
     // }}}
-    // {{{ function b
+    // {{{ public static function b
 
-    function b($key, $default = false)
+    public static function b($key, $default = false)
     {
         return (bool)Cookie::_get($key, $default);
     }
 
     // }}}
-    // {{{ function i
+    // {{{ public static function i
 
-    function i($key, $default = 0)
+    public static function i($key, $default = 0)
     {
         $i = Cookie::_get($key, $default);
         return is_numeric($i) ? intval($i) : $default;

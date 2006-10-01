@@ -447,6 +447,15 @@ div.adresse div.titre { color: purple; }
         [ choix de classes faites par le skinneur
 *******************************************************************************/
 
+.phperror {
+    color: red;
+    background: white;
+    margin: 2px auto;
+    padding: 4px 2px;
+    border: 1px solid black;
+    width: 80%;
+}
+
 #dev {
     width: auto;
     text-align: center;

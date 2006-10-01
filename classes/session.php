@@ -23,7 +23,7 @@ require_once 'diogenes/diogenes.misc.inc.php';
 
 class Session
 {
-    function init()
+    public static function init()
     {
         @session_start();
         if (empty($_SESSION['challenge'])) {
@@ -31,46 +31,44 @@ class Session
         }
     }
 
-    function destroy()
+    public static function destroy()
     {
         @session_destroy();
         unset($_SESSION);
     }
 
-
-
-    function has($key)
+    public static function has($key)
     {
         return isset($_SESSION[$key]);
     }
 
-    function kill($key)
+    public static function kill($key)
     {
         unset($_SESSION[$key]);
     }
 
-    function v($key, $default = null)
+    public static function v($key, $default = null)
     {
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
     }
 
-    function i($key, $default = 0)
+    public static function i($key, $default = 0)
     {
         $i = Session::v($key, $default);
         return is_numeric($i) ? intval($i) : $default;
     }
 
-    function has_perms()
+    public static function has_perms()
     {
         return Session::logged() && Session::v('perms') == PERMS_ADMIN;
     }
 
-    function logged()
+    public static function logged()
     {
         return Session::v('auth', AUTH_PUBLIC) >= AUTH_COOKIE;
     }
 
-    function identified()
+    public static function identified()
     {
         return Session::v('auth', AUTH_PUBLIC) >= AUTH_MDP;
     }

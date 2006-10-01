@@ -77,12 +77,13 @@ class PlatalPage extends Smarty
 
         session_write_close();
 
-        $this->assign("xorg_errors", $this->_errors);
-        $this->assign("xorg_failure", $this->_failure);
+        $this->assign('xorg_errors', $this->_errors);
+        $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
 
         switch ($this->_page_type) {
           case NO_SKIN:
+            error_reporting(0);
             $this->display($this->_tpl);
             exit;
 
@@ -94,6 +95,7 @@ class PlatalPage extends Smarty
         }
 
         if (!$globals->debug) {
+            error_reporting(0);
             $this->display($skin);
             exit;
         }
@@ -103,8 +105,9 @@ class PlatalPage extends Smarty
         }
 
         $this->assign('validate', true);
+        error_reporting(0);
         $result = $this->fetch($skin);
-        $ttime .= sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
+        $ttime  = sprintf('Temps total: %.02fs<br />', microtime_float() - $TIME_BEGIN);
         $replc  = "<span class='erreur'>VALIDATION HTML INACTIVE</span><br />";
 
         if ($globals->debug & 2) {

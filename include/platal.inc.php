@@ -38,12 +38,48 @@ define('SKINNED', 0);
 define('SIMPLE',  1);
 define('NO_SKIN', 2);
 
-require dirname(dirname(__FILE__)).'/classes/env.php';
-
 function __autoload($cls)
 {
     @include dirname(dirname(__FILE__)).'/classes/'.strtolower($cls).'.php';
 }
+__autoload('Env');
+
+function pl_error_handler($errno, $errstr, $errfile, $errline)
+{
+    if (!error_reporting())
+        return;
+
+    $errortype = array (
+        E_ERROR           => "Error",
+        E_WARNING         => "Warning",
+        E_PARSE           => "Parsing Error",
+        E_NOTICE          => "Notice",
+        E_CORE_ERROR      => "Core Error",
+        E_CORE_WARNING    => "Core Warning",
+        E_COMPILE_ERROR   => "Compile Error",
+        E_COMPILE_WARNING => "Compile Warning",
+        E_USER_ERROR      => "User Error",
+        E_USER_WARNING    => "User Warning",
+        E_USER_NOTICE     => "User Notice",
+        E_STRICT          => "Runtime Notice"
+    );
+
+    $errstr = htmlentities($errstr);
+    $GLOBALS['pl_errors'][] =
+        "<div class='phperror'>".
+        "<strong>{$errortype[$errno]}</strong> <em>$errstr</em><br />".
+        "<tt>$errfile : $errline</tt>".
+        "</div>";
+}
+
+function pl_print_errors()
+{
+    print join("\n", $GLOBALS['pl_errors']);
+}
+
+set_error_handler('pl_error_handler', E_ALL | E_STRICT);
+register_shutdown_function('pl_print_errors');
+
 
 function pl_url($path, $query = null, $fragment = null)
 {

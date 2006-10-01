@@ -23,7 +23,7 @@ class XnetSession
 {
     // {{{ function init
 
-    function init() {
+    public static function init() {
         global $globals;
 
         S::init();
@@ -44,21 +44,21 @@ class XnetSession
     }
 
     // }}}
-    // {{{ function destroy()
+    // {{{ public static function destroy()
 
-    function destroy() {
+    public static function destroy() {
         S::destroy();
         XnetSession::init();
     }
 
     // }}}
-    // {{{ function doAuth()
+    // {{{ public static function doAuth()
 
     /** Try to do an authentication.
      *
      * @param page the calling page (by reference)
      */
-    function doAuth()
+    public static function doAuth()
     {
 	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
 	    return true;
@@ -74,14 +74,14 @@ class XnetSession
     // }}}
     // {{{ doAuthCookie
 
-    function doAuthCookie() {
+    public static function doAuthCookie() {
         return XnetSession::doAuth();
     }
 
     // }}}
     // {{{ doAuthX
 
-    function doAuthX() {
+    public static function doAuthX() {
         global $globals, $page;
 
         if (md5('1'.S::v('challenge').$globals->xnet->secret.Get::i('uid').'1') != Get::v('auth')) {
