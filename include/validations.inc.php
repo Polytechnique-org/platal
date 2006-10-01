@@ -21,6 +21,8 @@
 
 define('SIZE_MAX', 32768);
 
+__autoload('XDB');
+
 /**
  * Iterator class, that lists objects through the database
  */
