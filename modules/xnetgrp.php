@@ -363,7 +363,7 @@ class XnetGrpModule extends PLModule
                 elseif (Env::has('accept'))
                 {
                     XDB::execute("INSERT INTO groupex.membres
-                                            VALUES ({?}, {?}, 'membre', 'X', NULL, NULL, NULL, NULL)",
+                                            VALUES ({?}, {?}, 'membre', 'X', NULL, NULL, NULL, NULL, NULL)",
                                             $globals->asso('id'), $uid);
                     require_once 'diogenes/diogenes.hermes.inc.php';
                     $mailer = new HermesMailer();
