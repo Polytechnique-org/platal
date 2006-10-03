@@ -27,8 +27,8 @@
 
 <table class="bicol">
 <tr>
-  {foreach from=$t->vars item=myval}{if $myval.display}
-    <th>{$myval.desc}</th>
+  {foreach from=$t->vars item=myval key=myvar}{if $myval.display}
+    <th><a href='{$t->pl}/sort{if $t->sortfield eq $myvar}desc{/if}/{$myvar}'>{$myval.desc}</a></th>
   {/if}{/foreach}
   {if !$hideactions}
   <th>action</th>

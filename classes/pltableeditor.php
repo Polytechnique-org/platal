@@ -36,6 +36,8 @@ class PLTableEditor {
     var $vars;
     // number of displayed fields
     var $nbfields;
+    // the field for sorting entries
+    var $sortfield;
     /* table editor for platal
      * $plname : the PLname of the page, ex: admin/payments
      * $table : the table to edit, ex: profile_medals
@@ -46,6 +48,7 @@ class PLTableEditor {
         $this->pl = $plname;
         $this->table = $table;
         $this->idfield = $idfield;
+        $this->sortfield = $idfield;
         $this->idfield_editable = $editid;
         $r = XDB::iterator("SHOW COLUMNS FROM $table");
         $this->vars = array();
@@ -185,6 +188,19 @@ class PLTableEditor {
                 $page->trig("Impossible de mette à jour.");
         }
         if ($list) {
+            // user can sort by field by clicking the title of the column
+            if ($action == 'sort' || $action == 'sortdesc') {
+                if (isset($this->vars[$id])) {
+                    // add this sort order after the others (chosen by dev)
+                    $this->add_sort_field($id, $action == 'sortdesc');
+                    // set as sortfield to reverse sort when clicking again
+                    if ($action == 'sort') {
+                        $this->sortfield = $id;
+                    } else {
+                        $this->sortfield = '';
+                    }
+                } 
+            }
             if (count($this->sort) > 0) {
                 $sort = 'ORDER BY ' . join($this->sort, ',');
             }
