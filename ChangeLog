@@ -4,17 +4,18 @@ VERSION 0.9.12                                                        ?? ?? 2006
 New:
 
     * Admin:
-        - Can add sorting key in Table Editor                              -FRU
+        - Can add sorting key in Table Editor.                             -FRU
 
 Bug/Wish:
 
     * Admin:
-        - #468: Can edit requests before validation                        -FRU
-        - #478: Sort payments by flag                                      -FRU
+        - #468: Can edit requests before validation.                       -FRU
+        - #478: Sort payments by flag.                                     -FRU
+        - #484: Sort Table Editor by clicking on column title.             -Car
 
     * Core:
-        - #473: Use 'événement' instead of 'évènement'                     -FRU
-        - #475: More understandable bug report form                        -FRU
+        - #473: Use 'événement' instead of 'évènement'.                    -FRU
+        - #475: More understandable bug report form.                       -FRU
 
 From 0.9.11 branch:
 
@@ -22,7 +23,7 @@ From 0.9.11 branch:
         - #472: Fix problem with auth when using the cookie.                -MC
 
     * Geoloc:
-        - #469: Google Maps link works for the USA                         -FRU
+        - #469: Google Maps link works for the USA.                        -FRU
 
     * Payment:
         - #482: fix action in the form.                                     -MC
