@@ -37,6 +37,8 @@ class PlatalGlobals
     var $baseurl;
     var $spoolroot;
 
+    var $locale;
+
     function PlatalGlobals($sess)
     {
         $this->session   = $sess;
@@ -51,31 +53,32 @@ class PlatalGlobals
         $this->setlocale();
     }
 
-    function read_config()
+    function read_ini_file($filename)
     {
-        $array = parse_ini_file($this->spoolroot.'/configs/platal.ini', true);
-        foreach ($array as $cat => $conf) {
-            $c = strtolower($cat);
-            foreach ($conf as $k => $v) {
-                $this->$c->$k = $v;
-            }
-        }
-
-        $array = parse_ini_file($this->spoolroot.'/configs/platal.conf', true);
+        $array = parse_ini_file($filename, true);
         if (!is_array($array)) {
             return;
         }
-
-        foreach ($array as $cat=>$conf) {
+        foreach ($array as $cat => $conf) {
             $c = strtolower($cat);
-            foreach ($conf as $key=>$val) {
-                if ($c == 'core' && isset($this->$key)) {
-                    $this->$key=$val;
+            foreach ($conf as $k => $v) {
+                if ($c == 'core' && isset($this->$k)) {
+                    $this->$k=$v;
                 } else {
-                    $this->$c->$key = $val;
+                    if (!isset($this->$c)) {
+                        $this->$c = new stdClass;
+                    }
+                    $this->$c->$k = $v;
                 }
             }
         }
+    }
+
+    function read_config()
+    {
+        $this->read_ini_file($this->spoolroot.'/configs/platal.ini');
+
+        $this->read_ini_file($this->spoolroot.'/configs/platal.conf');
     }
 
     function dbconnect()
@@ -86,9 +89,9 @@ class PlatalGlobals
 
     function setlocale()
     {
-        setlocale(LC_MESSAGES, $this->core->locale);
-        setlocale(LC_TIME,     $this->core->locale);
-        setlocale(LC_CTYPE,    $this->core->locale);
+        setlocale(LC_MESSAGES, $this->locale);
+        setlocale(LC_TIME,     $this->locale);
+        setlocale(LC_CTYPE,    $this->locale);
     }
 
     function asso($key=null)
