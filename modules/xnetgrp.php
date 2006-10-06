@@ -357,7 +357,7 @@ class XnetGrpModule extends PLModule
                                             $u, $globals->asso('id'));
                 $n   = $res->fetchOneCell();
                 if ($n) {
-                    $page->trig("$prenom $nom est déjà membre du groupe !");
+                    $page->kill("$prenom $nom est déjà membre du groupe !");
                     return;
                 }
                 elseif (Env::has('accept'))
