@@ -38,6 +38,10 @@ class PLTableEditor {
     var $nbfields;
     // the field for sorting entries
     var $sortfield;
+    // action to do to delete row:
+	// null => delete effectively, false => no deletion, SQL
+    var $delete_action;
+    var $delete_message;
     /* table editor for platal
      * $plname : the PLname of the page, ex: admin/payments
      * $table : the table to edit, ex: profile_medals
@@ -116,22 +120,41 @@ class PLTableEditor {
         if ($joindel)
             $this->jtables[$name] = array("joinid" => $joinid,"joinextra" => $joinextra?(" AND ".$joinextra):"");
     }
-
     // add a sort key
-    function add_sort_field($key, $desc = false)
+    function add_sort_field($key, $desc = false, $default = false)
     {
-        $this->sort[] = $key . ($desc ? ' DESC' : '');
+    	if ($default) {
+			$this->sortfield = $key . ($desc ? ' DESC' : '');
+		} else {
+        	$this->sort[] = $key . ($desc ? ' DESC' : '');
+        }
     }
-
+    // set an action when trying to delete row
+    function on_delete($action = NULL, $message = NULL)
+    {
+    	$this->delete_action = $action;
+    	$this->delete_message = $message;
+    }
     // call when done
     function apply(&$page, $action, $id = false) {
         $page->changeTpl('table-editor.tpl');
         $list = true;
         if ($action == 'delete') {
-            foreach ($this->jtables as $table => $j)
-                XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
-            XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
-            $page->trig("L'entrée ".$id." a été supprimée.");
+        	if (!isset($this->delete_action)) {
+	            foreach ($this->jtables as $table => $j)
+	                XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
+	            XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
+	            $page->trig("L'entrée ".$id." a été supprimée.");
+	        } else if ($this->delete_action) {
+	        	XDB::execute($this->delete_action, $id);
+	        	if (isset($this->delete_message)) {
+	            	$page->trig($this->delete_message);
+	        	} else {
+	            	$page->trig("L'entrée ".$id." a été supprimée.");
+				}	        	
+	        } else {
+	            $page->trig("Impossible de supprimer l'entrée.");
+	        }
         }
         if ($action == 'edit') {
             $r = XDB::query("SELECT * FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
@@ -187,19 +210,17 @@ class PLTableEditor {
             } else
                 $page->trig("Impossible de mette à jour.");
         }
+        if ($action == 'sort') {
+        	$this->sortfield = $id;
+        }
+        if ($action == 'sortdesc') {
+        	$this->sortfield = $id.' DESC';
+        }
         if ($list) {
             // user can sort by field by clicking the title of the column
-            if ($action == 'sort' || $action == 'sortdesc') {
-                if (isset($this->vars[$id])) {
-                    // add this sort order after the others (chosen by dev)
-                    $this->add_sort_field($id, $action == 'sortdesc');
-                    // set as sortfield to reverse sort when clicking again
-                    if ($action == 'sort') {
-                        $this->sortfield = $id;
-                    } else {
-                        $this->sortfield = '';
-                    }
-                } 
+            if (isset($this->sortfield)) {
+                // add this sort order after the others (chosen by dev)
+                $this->add_sort_field($this->sortfield);
             }
             if (count($this->sort) > 0) {
                 $sort = 'ORDER BY ' . join($this->sort, ',');

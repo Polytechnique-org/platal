@@ -24,11 +24,17 @@
 <h1>{$title}</h1>
 
 {if $list}
-
+<script type="text/javascript">
+	{literal}
+	function redirect(a) {
+		document.location = a;
+	}
+	{/literal}
+</script>
 <table class="bicol">
 <tr>
   {foreach from=$t->vars item=myval key=myvar}{if $myval.display}
-    <th><a href='{$t->pl}/sort{if $t->sortfield eq $myvar}desc{/if}/{$myvar}'>{$myval.desc}</a></th>
+    <th style="cursor:pointer" onclick="redirect('{$t->pl}/sort{if $t->sortfield eq $myvar}desc{/if}/{$myvar}')">{$myval.desc}</th>
   {/if}{/foreach}
   {if !$hideactions}
   <th>action</th>
