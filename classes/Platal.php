@@ -131,7 +131,7 @@ class Platal
             $this->path = 'index';
         }
 
-        $page->assign_by_ref('platal', $this);
+        $page->assign('platal', $this);
         switch ($this->call_hook($page)) {
           case PL_FORBIDDEN:
             $this->__mods['core']->handler_403($page);
@@ -141,6 +141,8 @@ class Platal
             $this->__mods['core']->handler_404($page);
             break;
         }
+
+        $page->assign('platal', $this);
         $page->run();
     }
 

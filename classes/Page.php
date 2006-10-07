@@ -73,14 +73,13 @@ class PlatalPage extends Smarty
 
     function _run($skin)
     {
-        global $globals, $platal, $TIME_BEGIN;
+        global $globals, $TIME_BEGIN;
 
         session_write_close();
 
         $this->assign("xorg_errors", $this->_errors);
         $this->assign("xorg_failure", $this->_failure);
         $this->assign('globals', $globals);
-        $this->assign('platal', $platal);
 
         switch ($this->_page_type) {
           case NO_SKIN:
