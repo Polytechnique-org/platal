@@ -28,6 +28,9 @@ From 0.9.11 branch:
     * Payment:
         - #482: fix action in the form.                                     -MC
 
+    * Profile:
+        - #486: fix force login to see private fiche.                      -Car
+
 ================================================================================
 VERSION 0.9.11                                                 18 Septembre 2006
 
