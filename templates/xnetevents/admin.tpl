@@ -45,9 +45,9 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
 {/if}
 
 <p class="center">
-[<a href="{$platal->path}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->pl_self()}" {if !$smarty.request.initiale}class="erreur"{/if}>tout</a>]
 {foreach from=$alphabet item=c}
-[<a href="{$platal->path}?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="{$platal->pl_self()}?initiale={$c}"{if $smarty.request.initiale eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
@@ -159,7 +159,7 @@ Ils ont payé mais ont oublié de s'inscrire :
 
 <p class="descr">
 {foreach from=$links item=ofs key=txt}
-<a href="{$platal->path}?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
+<a href="{$platal->pl_self()}?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
 
@@ -176,7 +176,7 @@ En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des 
 Donne ici son mail, ainsi que le nombre de participants.
 </p>
 
-<form action="{$platal->path}" method="post" id="inscription">
+<form action="{$platal->pl_self()}" method="post" id="inscription">
   <p class="descr">
     <input type="hidden" name="adm" value="nbs" />
 
@@ -209,7 +209,7 @@ entrer un montant négatif.
 Note que tu peux cliquer sur les noms des membres pour remplir automatiquement la case ci-dessous
 </p>
 
-<form action="{$platal->path}" method="post" id="montant">
+<form action="{$platal->pl_self()}" method="post" id="montant">
   <p class="descr">
   <input type="hidden" name="adm" value="prix" />
   Mail: <input name="mail" size="20" />
