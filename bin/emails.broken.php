@@ -66,7 +66,7 @@ foreach ($emails as $_email) {
                              SET last = CURDATE(),
                                  panne_level = panne_level + 1
                            WHERE email = {?}
-                                 AND DATE_ADD(last, INTERVAL 15 DAY) < CURDATE()", $email);
+                                 AND DATE_ADD(last, INTERVAL 7 DAY) < CURDATE()", $email);
         }
 
         if (empty($x['nb_mails'])) {
