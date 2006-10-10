@@ -46,7 +46,7 @@ information.
   <p>
     Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
     Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
-    <a href="warn/{$email}">clique sur ce lien</a>.
+    <a href="emails/broken/warn/{$email}">clique sur ce lien</a>.
   </p>
 {elseif $x}
   <p>
