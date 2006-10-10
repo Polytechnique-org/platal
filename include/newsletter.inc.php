@@ -261,7 +261,7 @@ class NewsLetter
 	}
 
 	foreach ($this->_arts as $cid=>$arts) {
-	    $res .= "<h1><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
+	    $res .= "<h1 class='xorg_nl'><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
 	    foreach($arts as $art) {
     		$res .= $art->toHtml();
     		$res .= "<p><a href='$u#top_lnk'>Revenir au sommaire</a></p>";
@@ -286,11 +286,11 @@ class NewsLetter
       div.lnk   { margin: 2ex 0ex 2ex 0ex; padding: 0ex 2ex 0ex 2ex; }
       div.lnk a { display: block; }
       
-      h1 { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%;
+      h1.xorg_nl { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%;
 	    border-bottom: 3px red solid; border-top: 3px red solid; }
-      h2 { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
-      h1 span { font-size: 140%; padding: 2px 1ex 2px 1ex; border-bottom: 3px red solid; }
-      h2 span { padding: 2px 4px 2px 4px; border-bottom: 2px yellow solid; }
+      h2.xorg_nl { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
+      h1.xorg_nl span { font-size: 140%; padding: 2px 1ex 2px 1ex; border-bottom: 3px red solid; }
+      h2.xorg_nl span { padding: 2px 4px 2px 4px; border-bottom: 2px yellow solid; }
       
       div.art   { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 2px yellow solid; }
       div.app   { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
@@ -400,7 +400,7 @@ class NLArticle
 
     function toHtml()
     {
-	$title = "<h2><a id='art{$this->_aid}'></a><span>".htmlentities($this->title()).'</span></h2>';
+	$title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a><span>".htmlentities($this->title()).'</span></h2>';
 	$body  = enriched_to_text($this->_body,true);
 	$app   = enriched_to_text($this->_append,true);
 	
