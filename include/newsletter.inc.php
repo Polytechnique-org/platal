@@ -183,7 +183,7 @@ class NewsLetter
     function footer($html)
     {
         global $globals;
-        $url = $globals->baseurl;
+        $url = 'https://www.polytechnique.org';
 
 	if ($html) {
 	    return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
