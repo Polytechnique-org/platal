@@ -65,7 +65,7 @@ class BananaModule extends PLModule
             $get['group'] = $group;
         }
         if (Post::has('updateall')) {
-            $get['banana'] = 'updateall';
+            $get['updateall'] = Post::v('updateall');
         }
         if (!is_null($action)) {
             if ($action == 'new') {

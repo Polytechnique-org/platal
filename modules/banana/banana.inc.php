@@ -50,7 +50,7 @@ function hook_browsingAction()
         return null;
     }
     return '<p class="center" style="padding: 0; margin: 0 0 1em 0">'
-         . '<a href=\'javascript:dynpostkv("' . $platal->path . '", "updateall", 1)\'>'
+         . '<a href=\'javascript:dynpostkv("' . $platal->path . '", "updateall", ' . time() . ')\'>'
          . 'Marquer tous les messages comme lus'
          . '</a>'
          . '</p>';
@@ -175,11 +175,14 @@ class PlatalBanana extends Banana
     {
         global $banana;
 
-        if (Get::v('banana') == 'updateall'
-        || (!is_null($params) && isset($params['banana']) && $params['banana'] == 'updateall')) {
+        $time = null;
+        if (!is_null($params) && isset($params['updateall'])) {
+            $time = (int)$params['updateall'];
+        }
+        if (!is_null($time)) {
             XDB::execute('UPDATE auth_user_quick SET banana_last=FROM_UNIXTIME({?}) WHERE user_id={?}',
-                         time(), S::v('uid'));
-            $_SESSION['banana_last'] = time();
+                         $time, S::v('uid'));
+            $_SESSION['banana_last'] = $time;
         }
         return Banana::run('PlatalBanana', $params);
     }
