@@ -22,6 +22,9 @@ From 0.9.11 branch:
     * Core:
         - #472: Fix problem with auth when using the cookie.                -MC
 
+    * Emails:
+        - #496: Fix link to warn user who has a broken email               -FRU
+
     * Geoloc:
         - #469: Google Maps link works for the USA.                        -FRU
 
