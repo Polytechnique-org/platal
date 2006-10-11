@@ -187,9 +187,9 @@ foreach($adresses as $adrid => $adr) {
     {
       $page->trig("Le champ '$description - Code Postal' contient un caractère interdit.");
     }
-  if (strlen(strtok($adr['city'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['postcode']))
+  if (strlen(strtok($adr['city'],"<>{}@~?!§*`|%$^=+")) < strlen($adr['city']))
     {
-      $page->trig("Le champ '$description - Ville' contient un caractère interdit.");
+        $page->trig("Le champ '$description - Ville' contient un caractère interdit.");
     }
   foreach ($adr['tels'] as $tel) {
     if (strlen(strtok($tel['tel'],"<>{}@&#~\/:;?,!§*_`[]|%$^=\"")) < strlen($tel['tel']))
