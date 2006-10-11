@@ -150,6 +150,29 @@ function get_user_forlife($data) {
 }
 
 // }}}
+// {{{ function get_users_forlife_list()
+
+function get_users_forlife_list($members, $strict = false)
+{
+    if (strlen(trim($members)) == 0) {
+        return null;
+    }
+    $members = explode(' ', $members);
+    if ($members) {
+        $list = array();
+        foreach ($members as $i => $alias) {
+            if (($login = get_user_forlife($alias)) !== false) {
+                $list[$i] = $login;
+            } else if(!$strict) {
+                $list[$i] = $alias;
+            }
+        }
+        return $list;
+    }
+    return null;
+}
+
+// }}}
 // {{{ function has_user_right()
 function has_user_right($pub, $view = 'private') {
     if ($pub == $view) return true;

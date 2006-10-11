@@ -107,6 +107,11 @@ liste :
         <input type='submit' name='add_member_sub' value='Ajouter' />
       </td>
     </tr>
+    <tr>
+      <td colspan="2">
+        <small>Tu peux entrer une liste de membres en entrant plusieurs adresses séparées par des espaces</small>
+      </td>
+    </tr>
   </table>
   <p>
   La création de la liste sera soumise à un contrôle manuel avant d'être validée.  Ce contrôle a

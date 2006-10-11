@@ -100,29 +100,31 @@ class ListsModule extends PLModule
             require_once('user.func.inc.php');
             // if we want to add an owner and then type <enter>, then both
             // add_owner_sub and add_owner are filled.
-            if (Post::v('add_owner') != "") {
-                if (($forlife = get_user_forlife(Post::v('add_owner'))) !== false) {
-                    $owners [] = $forlife;
-                }
-                // if we want to add a member and then type <enter>, then
-                // add_owner_sub is filled, whereas add_owner is empty.
-            } else if (Post::has('add_member')) {
-                if (($forlife = get_user_forlife(Post::v('add_member'))) !== false) {
-                    $members[] = $forlife;
-                }
+            $oforlifes = get_users_forlife_list(Post::v('add_owner'), true);
+            $mforlifes = get_users_forlife_list(Post::v('add_member'), true);
+            if (!is_null($oforlifes)) {
+                $owners = array_merge($owners, $oforlifes);
+            }
+            // if we want to add a member and then type <enter>, then
+            // add_owner_sub is filled, whereas add_owner is empty.
+            if (!is_null($mforlifes)) {
+                $members = array_merge($members, $mforlifes);
             }
         }
 
         // click on validate button 'add_member_sub'
         if (Post::has('add_member_sub') && Post::has('add_member')) {
             require_once('user.func.inc.php');
-            if (($forlife = get_user_forlife(Post::v('add_member'))) !== false) {
-                $members[] = $forlife;
+            $forlifes = get_users_forlife_list(Post::v('add_member'), true);
+            if (!is_null($forlifes)) {
+                $members = array_merge($members, $forlifes);
             }
         }
 
-        ksort($owners);	 array_unique($owners);
-        ksort($members); array_unique($members);
+        ksort($owners);	
+        $owners = array_unique($owners);
+        ksort($members);
+        $members = array_unique($members);
 
         $page->assign('owners', join(' ', $owners));
         $page->assign('members', join(' ', $members));
@@ -421,15 +423,8 @@ class ListsModule extends PLModule
         $page->changeTpl('listes/admin.tpl');
 
         if (Env::has('add_member')) {
-
             require_once('user.func.inc.php');
-            $members = explode(' ', Env::v('add_member'));
-            if ($members) foreach ($members as $i => $alias) {
-                if (($login = get_user_forlife($alias)) !== false) {;
-                        $members[$i] = $login;
-                }
-            }
-
+            $members = get_users_forlife_list(Env::v('add_member'));
             $arr = $this->client->mass_subscribe($liste, $members);
             if (is_array($arr)) {
                 foreach($arr as $addr) {
@@ -450,16 +445,12 @@ class ListsModule extends PLModule
 
         if (Env::has('add_owner')) {
             require_once('user.func.inc.php');
-
-            $owners = explode(' ', Env::v('add_owner'));
-
-            if ($owners) foreach ($owners as $alias) {
-                if (($login = get_user_forlife($alias)) === false) {;
-                    $login = $alias;
-                }
-
-                if ($this->client->add_owner($liste, $login)) {
-                    $page->trig($alias." ajouté aux modérateurs.");
+            $owners = get_users_forlife_list(Env::v('add_owner'));
+            if ($owners) {
+                foreach ($owners as $login) {
+                    if ($this->client->add_owner($liste, $login)) {
+                        $page->trig($alias." ajouté aux modérateurs.");
+                    }
                 }
             }
         }
