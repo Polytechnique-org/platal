@@ -83,7 +83,7 @@ class XorgSession
                  INNER JOIN  aliases       AS a ON ( a.id=u.user_id AND type!='homonyme' )
                       WHERE  a.$field = {?} AND u.perms IN('admin','user')", $login);
 
-        $logger =& S::v('log');
+        $logger = S::v('log');
         if (list($uid, $password) = $res->fetchOneRow()) {
                 require_once('secure_hash.inc.php');
                     $expected_response = hash_encrypt("$uname:$password:".S::v('challenge'));

@@ -38,6 +38,7 @@ class PlatalGlobals
     var $spoolroot;
 
     var $locale;
+    var $timezone;
 
     function PlatalGlobals($sess)
     {
@@ -62,7 +63,7 @@ class PlatalGlobals
         foreach ($array as $cat => $conf) {
             $c = strtolower($cat);
             foreach ($conf as $k => $v) {
-                if ($c == 'core' && isset($this->$k)) {
+                if ($c == 'core' && property_exists($this, $k)) {
                     $this->$k=$v;
                 } else {
                     if (!isset($this->$c)) {
@@ -92,6 +93,7 @@ class PlatalGlobals
         setlocale(LC_MESSAGES, $this->locale);
         setlocale(LC_TIME,     $this->locale);
         setlocale(LC_CTYPE,    $this->locale);
+        date_default_timezone_set($this->timezone);
     }
 
     function asso($key=null)

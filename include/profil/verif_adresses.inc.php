@@ -76,7 +76,7 @@ function replace_ifset_tel($varname, $i, $t){
 
 function get_adr_arg($varname, $i) {
   $tab = Env::v($varname, Array());
-  return $tab[$i];
+  return @$tab[$i];
 }
 
 function set_flag_adr($varname,$i){

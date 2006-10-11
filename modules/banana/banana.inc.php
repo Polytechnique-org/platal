@@ -59,7 +59,7 @@ function hook_browsingAction()
 function hook_makeLink($params) {
     global $globals;
     $base = $globals->baseurl . '/banana';
-    if ($params['subscribe'] == 1) {
+    if (@$params['subscribe'] == 1) {
         return $base . '/subscription';
     }
     if (isset($params['xface'])) {
@@ -75,9 +75,9 @@ function hook_makeLink($params) {
         return $base . '/from/' . $params['first'];
     }
     if (isset($params['artid'])) {
-        if ($params['action'] == 'new') {
+        if (@$params['action'] == 'new') {
             $base .= '/reply';
-        } elseif ($params['action'] == 'cancel') {
+        } elseif (@$params['action'] == 'cancel') {
             $base .= '/cancel';
         } else {
             $base .= '/read';
@@ -85,7 +85,7 @@ function hook_makeLink($params) {
         return $base . '/' . $params['artid'];
     }
 
-    if ($params['action'] == 'new') {
+    if (@$params['action'] == 'new') {
         return $base . '/new';
     }
     return $base;
@@ -171,7 +171,7 @@ class PlatalBanana extends Banana
         parent::Banana();
     }
 
-    function run($params = null)
+    static function run($params = null)
     {
         global $banana;
 
@@ -184,7 +184,7 @@ class PlatalBanana extends Banana
                          $time, S::v('uid'));
             $_SESSION['banana_last'] = $time;
         }
-        return Banana::run('PlatalBanana', $params);
+        return Banana::run_banana('PlatalBanana', $params);
     }
 
     function action_saveSubs()

@@ -50,8 +50,6 @@ class Payment
         $this->montant_min = (float)$this->montant_min;
         $this->montant_max = (float)$this->montant_max;
         $this->flags       = new Flagset($flags);
-
-        return $link;
     }
 
     // }}}

@@ -137,7 +137,7 @@ class XOrgSearch extends XOrgPlugin
 	global $page;
 
         $offset = intval($this->get_value('offset'));
-        $tab    = $this->orders[$this->get_value('order')];
+        $tab    = @$this->orders[$this->get_value('order')];
         if (!$tab || !$tab[3]) {
             $tab = $this->orders[$this->order_defaut];
         }

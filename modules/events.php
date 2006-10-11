@@ -220,7 +220,7 @@ class EventsModule extends PLModule
         }
 
         $page->assign('nls', get_nl_state());
-        $page->assign_by_ref('nl_list', get_nl_list());
+        $page->assign('nl_list', get_nl_list());
     }
 
     function handler_nl_show(&$page, $nid = 'last')
@@ -359,7 +359,7 @@ class EventsModule extends PLModule
            pl_redirect("admin/newsletter");
         }
         
-        $page->assign_by_ref('nl_list', get_nl_slist());
+        $page->assign('nl_list', get_nl_slist());
     }
     
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {

@@ -26,7 +26,7 @@ require_once('user.func.inc.php');
 
 function is_ax_key_missing() {
     global $globals;
-    return !$globals->webservice->private_key_ax || !is_file($globals->webservice->private_key_ax);
+    return !isset($globals->webservice->private_key_ax) || !is_file($globals->webservice->private_key_ax);
 }
 
 function get_user_ax($matricule_ax, $raw=false)

@@ -56,7 +56,7 @@ function wiki_get_perms($n)
     $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);
     $lines = explode("\n", @file_get_contents($file));
     foreach ($lines as $line) {
-        list($k, $v) = explode('=', $line, 2);
+        @list($k, $v) = explode('=', $line, 2);
         if ($k == 'platal_perms') {
             return explode(':', $v);
         }

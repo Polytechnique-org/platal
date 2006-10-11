@@ -512,8 +512,6 @@ class AdminModule extends PLModule
                            FROM  aliases
                           WHERE  id = {?} AND type!='homonyme'
                        ORDER BY  type!= 'a_vie'", $mr["user_id"]));
-            $page->assign('xorgmails', $xorgmails);
-            $page->assign('email_panne', $email_panne);
             $page->assign('emails',$redirect->emails);
 
             $page->assign('mr',$mr);
