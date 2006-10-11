@@ -116,7 +116,8 @@ check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.ui
 
 /* validite des champ pays et region */
 check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.country = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
-check("SELECT a.uid, a.country, a.region FROM adresses AS a LEFT JOIN geoloc_region AS gr ON (a.country = gr.a2 AND a.region = gr.region) WHERE a.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils qui n'ont pas d'entree correspondante dans geoloc_region");
+/* les régions ne sont valides que dans les adresses pros */
+check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
 
 /* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
 info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state, w.description
