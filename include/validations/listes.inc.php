@@ -61,6 +61,25 @@ class ListeReq extends Validate
     { return 'include/form.valid.listes.tpl'; }
 
     // }}}
+    // {{{ function editor()
+
+    function editor()
+    {
+        return 'include/form.valid.edit-listes.tpl';
+    }
+
+    // }}}
+    // {{{ function handle_editor()
+
+    function handle_editor()
+    {
+        if (Env::has('listname')) {
+            $this->liste = trim(Env::v('listname'));
+        }
+        return true;
+    }
+
+    // }}}
     // {{{ function _mail_subj
 
     function _mail_subj()
