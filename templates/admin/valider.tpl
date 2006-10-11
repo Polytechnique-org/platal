@@ -65,9 +65,9 @@
         </div>
       </form>
       {else}
-      <small>
-        <a href="admin/validate/edit/{$valid->id()}#valid{$valid->id()}">Editer cette demande avant validation</a>
-      </small>
+      <span class="smaller">
+        <a href="admin/validate/edit/{$valid->id()}#valid{$valid->id()}">{icon name=page_edit}Editer cette demande avant validation</a>
+      </span>
       {/if}
     </td>
   </tr>

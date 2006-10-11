@@ -171,7 +171,7 @@ class PlatalBanana extends Banana
         parent::Banana();
     }
 
-    static function run($params = null)
+    function run($params = null)
     {
         global $banana;
 
@@ -184,7 +184,7 @@ class PlatalBanana extends Banana
                          $time, S::v('uid'));
             $_SESSION['banana_last'] = $time;
         }
-        return Banana::run_banana('PlatalBanana', $params);
+        return Banana::run('PlatalBanana', $params);
     }
 
     function action_saveSubs()
