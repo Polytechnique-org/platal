@@ -818,6 +818,10 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
 
         mlist.Unlock()
 
+        if ON_CREATE_CMD != '':
+            try:    os.system(ON_CREATE_CMD + ' ' + name)
+            except: pass
+
         check_options(userdesc, perms, vhost, listname.lower(), True)
         mass_subscribe(userdesc, perms, vhost, listname.lower(), members)
 
@@ -826,9 +830,6 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
         mlist._UpdateRecords()
         mlist.Save()
         mlist.Unlock()
-        if ON_CREATE_CMD != '':
-            try:    os.system(ON_CREATE_CMD + ' ' + name)
-            except: pass
     except:
         try:
             mlist.Unlock()
