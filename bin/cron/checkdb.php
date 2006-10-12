@@ -139,7 +139,8 @@ check("SELECT  u.user_id, a.alias
         FROM  auth_user_md5  AS u 
         INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
         LEFT JOIN  emails         AS e ON(u.user_id=e.uid AND FIND_IN_SET('active',e.flags))
-        WHERE  e.uid IS NULL AND u.deces = 0",
+        WHERE  e.uid IS NULL AND u.deces = 0
+        ORDER BY u.promo, u.nom, u.prenom",
         "donne les inscrits qui n'ont pas d'email actif");
 
 /* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
