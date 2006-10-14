@@ -89,7 +89,7 @@ function doPlatalLink($link, $text)
         $row = $res->fetchOneAssoc();
         $text = $row['prenom'] . ' ' . $row['nom'] . ' X' . $row['promo'];
         if ($row['surnom']) {
-            $text .= ' (aka ' . $row['surnom'] . ')';
+            $text .= ' (alias ' . $row['surnom'] . ')';
         }
     }
     return '<a href="profile/' . $link . '" class="popup2">' . $text . '</a>';

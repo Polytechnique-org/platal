@@ -43,7 +43,7 @@ function chgMainWinLoc( strPage ) {
         {if $x.sexe}&bull;{/if}
         {$x.prenom} {if $x.nom_usage eq ""}{$x.nom}{else}{$x.nom_usage} ({$x.nom}){/if}
         {if $logged}
-        {if $x.nickname} (aka {$x.nickname}){/if}&nbsp;
+        {if $x.nickname} (alias {$x.nickname}){/if}&nbsp;
         <a href="vcard/{$x.forlife}.vcf">{*
           *}{icon name=vcard title="Afficher la carte de visite"}</a>
         {if !$x.is_contact}
