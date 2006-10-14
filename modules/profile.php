@@ -29,7 +29,7 @@ class ProfileModule extends PLModule
 
             'fiche.php'        => $this->make_hook('fiche',      AUTH_PUBLIC),
             'profile'          => $this->make_hook('profile',    AUTH_PUBLIC),
-            'profile/private'  => $this->make_hook('profile',    AUTH_MDP),
+            'profile/private'  => $this->make_hook('profile',    AUTH_COOKIE),
             'profile/edit'     => $this->make_hook('p_edit',     AUTH_MDP),
             'profile/orange'   => $this->make_hook('p_orange',   AUTH_MDP),
             'profile/usage'    => $this->make_hook('p_usage',    AUTH_MDP),
