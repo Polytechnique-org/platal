@@ -79,7 +79,7 @@
       <td class="titre">Promotion la plus jeune</td>
       <td>
         <input type="text" name="promo_max" size="4" maxlength="4" value="{$promo_max}" /> incluse
-        &nbsp;<em>(ex : 2000, signifie pas de maximum)</em>
+        &nbsp;<em>(ex : 2000, 0 signifie pas de maximum)</em>
       </td>
     </tr>
     <tr class="pair">
