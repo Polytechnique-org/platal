@@ -36,11 +36,11 @@ Voici ton annonce :
 <p>
 Ce message est à destination
 {if $promo_min || $promo_max}
-des promotions {if $promo_min}X{$promo_min}{/if} {if $promo_max}jusqu'à X{$promo_max}{else}et plus{/if}
+des promotions {if $promo_min}X{$promo_min}{/if} {if $promo_max}jusqu'à X{$promo_max}{else} et plus{/if}
 {else}
 de toutes les promotions
 {/if}
-et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format}
+et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format}.
 </p>
 
 {if $valid_mesg}

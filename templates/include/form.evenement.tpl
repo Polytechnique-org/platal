@@ -64,27 +64,32 @@
 
   <table class="bicol">
     <tr class="pair">
-      <td class="titre">Promo min*</td>
+      <td colspan="2">
+        Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions :
+      </td>
+    </tr>
+    <tr class="impair">
+      <td class="titre">Promotion la plus ancienne</td>
       <td>
         <input type="text" name="promo_min" size="4" maxlength="4" value="{$promo_min}" /> incluse
-        &nbsp;<em>(0 signifie pas de minimum)</em>
+        &nbsp;<em>(ex : 1980, 0 signifie pas de minimum)</em>
       </td>
     </tr>
-    <tr class="pair">
-      <td class="titre">Promo max*</td>
+    <tr class="impair">
+      <td class="titre">Promotion la plus jeune</td>
       <td>
         <input type="text" name="promo_max" size="4" maxlength="4" value="{$promo_max}" /> incluse
-        &nbsp;<em>(0 signifie pas de maximum)</em>
+        &nbsp;<em>(ex : 2000, signifie pas de maximum)</em>
       </td>
     </tr>
     <tr class="pair">
-      <td colspan="2" class="smaller">
-        * sert à limiter l'affichage de l'annonce aux camarades appartenant à certaines promos seulement.
+      <td colspan="2">
+        Choisis la date d'expiration de ton annonce :
       </td>
     </tr>
     <tr>
-      <td>
-        <strong>Dernier jour d'affichage</strong>
+      <td class="titre">
+        Dernier jour d'affichage
       </td>
       <td>
         <select name="peremption">
