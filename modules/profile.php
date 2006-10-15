@@ -647,7 +647,7 @@ class ProfileModule extends PLModule
 
         $this->promo = $promo = intval($promo);
 
-        if ($promo >= 1900 && $promo < intval(date('Y'))
+        if ($promo >= 1900 && ($promo < intval(date('Y')) || ($promo == intval(date('Y')) && intval(date('m')) >= 9))
         || ($promo == -1 && S::has_perms()))
         {
             $trombi = new Trombi(array($this, '_trombi_getlist'));
