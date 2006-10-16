@@ -38,6 +38,7 @@ class PLTableEditor {
     var $nbfields;
     // the field for sorting entries
     var $sortfield;
+    var $sortdesc = false;
     // action to do to delete row:
 	// null => delete effectively, false => no deletion, SQL
     var $delete_action;
@@ -221,6 +222,10 @@ class PLTableEditor {
             if (isset($this->sortfield)) {
                 // add this sort order after the others (chosen by dev)
                 $this->add_sort_field($this->sortfield);
+                if (substr($this->sortfield,-5) == ' DESC') {
+                    $this->sortfield = substr($this->sortfield,0,-5);
+                    $this->sortdesc = true;
+                }
             }
             if (count($this->sort) > 0) {
                 $sort = 'ORDER BY ' . join($this->sort, ',');
