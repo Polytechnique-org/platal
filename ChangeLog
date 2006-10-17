@@ -38,6 +38,9 @@ From 0.9.11 branch:
         - #486: fix force login to see private fiche.                      -Car
         - #509: can access trombi of the current year promotion            -FRU
 
+    * Xnet/Events:
+        - #490: Events can be opened to non-members                        -FRU
+
 ================================================================================
 VERSION 0.9.11                                                 18 Septembre 2006
 

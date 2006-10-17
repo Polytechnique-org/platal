@@ -138,6 +138,11 @@ function deadlineChange(box)
         <input type="radio" name="show_participants" value="0" {if !$evt.show_participants}checked="checked"{/if}/> non
 
         <br />
+        Autoriser les non-membres :
+        <input type="radio" name="accept_nonmembre" value="1" {if $evt.accept_nonmembre}checked="checked"{/if} /> oui
+        <input type="radio" name="accept_nonmembre" value="0" {if !$evt.accept_nonmembre}checked="checked"{/if}/> non
+
+        <br />
         Autoriser les invités :
         <input type="radio" name="noinvite" value="0" {if !$evt.noinvite}checked="checked"{/if} /> oui
         <input type="radio" name="noinvite" value="1" {if $evt.noinvite}checked="checked"{/if}/> non

@@ -41,9 +41,9 @@ function new_skinned_page($tpl_name)
 }
 
 // }}}
-// {{{ function new_group_page()
+// {{{ function new_group_open_page()
 
-function new_group_page($tpl_name)
+function new_group_open_page($tpl_name, $refuse_access = false)
 {
     global $page, $globals;
 
@@ -53,9 +53,17 @@ function new_group_page($tpl_name)
     $page->assign('asso', $globals->asso());
     $page->setType($globals->asso('cat'));
 
-    if (!is_member() && !S::has_perms()) {
+    if ($refuse_access) {
         $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
     }
+}
+
+// }}}
+// {{{ function new_group_page()
+
+function new_group_page($tpl_name)
+{
+    new_group_open_page($tpl_name, !is_member() && !S::has_perms());
 }
 
 // }}}
@@ -63,18 +71,7 @@ function new_group_page($tpl_name)
 
 function new_groupadmin_page($tpl_name)
 {
-    global $page, $globals;
-
-    new_page($tpl_name);
-
-    $page->useMenu();
-    $page->assign('asso', $globals->asso());
-    $page->setType($globals->asso('cat'));
-
-
-    if (!may_update()) {
-        $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
-    }
+    new_group_open_page($tpl_name, !may_update());
 }
 
 // }}}

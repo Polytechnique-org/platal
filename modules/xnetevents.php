@@ -38,7 +38,7 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
-        new_group_page('xnetevents/index.tpl');
+        new_group_open_page('xnetevents/index.tpl');
 
         if (Post::has('del')) {
             if (!may_update()) {
@@ -48,8 +48,8 @@ class XnetEventsModule extends PLModule
             $eid = Post::v('del');
 
             $res = XDB::query("SELECT asso_id, short_name FROM groupex.evenements
-                                        WHERE eid = {?} AND asso_id = {?}",
-                                        $eid, $globals->asso('id'));
+                                WHERE eid = {?} AND asso_id = {?}",
+                              $eid, $globals->asso('id'));
 
             $tmp = $res->fetchOneRow();
             if (!$tmp) {
@@ -97,13 +97,15 @@ class XnetEventsModule extends PLModule
             INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid
             INNER JOIN  x4dat.aliases       AS a ON (a.type = 'a_vie' AND a.id = u.user_id)
              LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
-                 WHERE  asso_id = {?}
-              GROUP BY  e.eid
+                 WHERE  asso_id = {?}"
+            . (is_member() || may_update() ? "" : " AND accept_nonmembre != 0 ")
+              . "GROUP BY  e.eid
               ORDER BY  debut", S::v('uid'), $globals->asso('id'));
 
         $evts = array();
 
         while ($e = $evenements->next()) {
+            $e['show_participants'] = ($e['show_participants'] && (is_member() || may_update()));
             $res = XDB::query(
                 "SELECT titre, details, montant, ei.item_id, nb
                    FROM groupex.evenements_items AS ei
@@ -140,7 +142,7 @@ class XnetEventsModule extends PLModule
     {
         require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
 
-        new_group_page('xnetevents/subscribe.tpl');
+        new_group_open_page('xnetevents/subscribe.tpl');
 
         $evt = get_event_detail($eid);
         if (!$evt) {
@@ -149,6 +151,9 @@ class XnetEventsModule extends PLModule
 
         if (!$evt['inscr_open']) {
             $page->kill('Les inscriptions pour cet événement sont closes');
+        }
+        if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
+            $page->kill('Cet événement est fermé aux non-membres du groupe');
         }
 
         $page->assign('event', $evt);
@@ -278,7 +283,7 @@ class XnetEventsModule extends PLModule
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite',
-                             'show_participants');
+                             'show_participants', 'accept_nonmembre');
             foreach ($trivial as $k) {
                 $evt[$k] = Post::v($k);
             }
@@ -296,12 +301,13 @@ class XnetEventsModule extends PLModule
                 SET eid={?}, asso_id={?}, organisateur_uid={?}, intitule={?},
                     paiement_id = {?}, descriptif = {?}, debut = {?},
                     fin = {?}, show_participants = {?}, short_name = {?},
-                    deadline_inscription = {?}, noinvite = {?}',
+                    deadline_inscription = {?}, noinvite = {?},
+                    accept_nonmembre = {?}',
                     $evt['eid'], $evt['asso_id'], $evt['organisateur_uid'],
                     $evt['intitule'], $evt['paiement_id'], $evt['descriptif'],
                     $evt['debut'], $evt['fin'], $evt['show_participants'],
                     $evt['short_name'], $evt['deadline_inscription'],
-                    $evt['noinvite']);
+                    $evt['noinvite'], $evt['accept_nonmembre']);
 
             // if new event, get its id
             if (!$eid) {
@@ -364,7 +370,7 @@ class XnetEventsModule extends PLModule
             $res = XDB::query(
                     "SELECT	eid, intitule, descriptif, debut, fin,
                                 show_participants, paiement_id, short_name,
-                                deadline_inscription, noinvite
+                                deadline_inscription, noinvite, accept_nonmembre
                        FROM	groupex.evenements
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();

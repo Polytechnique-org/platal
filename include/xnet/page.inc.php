@@ -72,21 +72,22 @@ class XnetPage extends PlatalPage
         $sub['liste des groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
         $menu["Menu Principal"]   = $sub;
-
-        if (S::logged() && (is_member() || may_update())) {
+        
+        if (S::logged()) {
             $sub = array();
             $dim = $globals->asso('diminutif');
             $sub['présentation'] = "$dim/";
-            if (may_update() || $globals->asso('pub') == 'public') {
+            if (may_update() || (is_member()  && $globals->asso('pub') == 'public')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['carte'] = "$dim/geoloc";
             }
-            if ($globals->asso('mail_domain')) {
+            if ((is_member() || may_update()) && $globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/lists";
-                $sub['envoyer un mail']     = "$dim/mail";
             }
             $sub['événement'] = "$dim/events";
-            $sub['télépaiement'] = "$dim/paiement";
+            if (may_update() || is_member()) {
+                $sub['télépaiement'] = "$dim/paiement";
+            }
 
             $menu[$globals->asso('nom')] = $sub;
         }
@@ -95,6 +96,7 @@ class XnetPage extends PlatalPage
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
             if ($globals->asso('mail_domain')) {
+                $sub['envoyer un mail']     = "$dim/mail";
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
             }
