@@ -49,13 +49,13 @@ function new_group_page($tpl_name)
 
     new_page($tpl_name);
 
-    if (!is_member() && !S::has_perms()) {
-        $page->kill("You have not sufficient credentials");
-    }
-
     $page->useMenu();
     $page->assign('asso', $globals->asso());
     $page->setType($globals->asso('cat'));
+
+    if (!is_member() && !S::has_perms()) {
+        $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
+    }
 }
 
 // }}}
@@ -67,13 +67,14 @@ function new_groupadmin_page($tpl_name)
 
     new_page($tpl_name);
 
-    if (!may_update()) {
-        $page->kill("You have not sufficient credentials");
-    }
-
     $page->useMenu();
     $page->assign('asso', $globals->asso());
     $page->setType($globals->asso('cat'));
+
+
+    if (!may_update()) {
+        $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
+    }
 }
 
 // }}}

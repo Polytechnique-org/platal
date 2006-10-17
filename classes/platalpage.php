@@ -154,6 +154,9 @@ class PlatalPage extends Smarty
 
     function kill($msg)
     {
+        global $platal;
+
+        $this->assign('platal', $platal);
         $this->trig($msg);
         $this->_failure = true;
         $this->run();
