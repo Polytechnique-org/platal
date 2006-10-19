@@ -35,8 +35,11 @@
     <col width='25%' />
   </colgroup>
   <tr>
-    <th colspan="2">
+    <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
       {$e.intitule}
+      {if !$e.inscr_open}
+      (<span class="error">Inscriptions closes</span>)
+      {/if}
       {if $admin}
       <br />
       [<a href="{$platal->ns}events/edit/{$e.eid}">
@@ -74,6 +77,7 @@
     </td>
   </tr>
 
+  {if $admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
   <tr>
     <td class="titre">Informations :</td>
     <td class='actions'>
@@ -83,16 +87,13 @@
         {icon name=group title="Liste des participants"}
       </a><br />
       {/if}
-      {if $e.deadline_inscription}
-        {if $e.inscr_open}
-          dernières inscriptions
-          le {$e.deadline_inscription|date_format:"%d %B %Y"}
-        {else}
-          <span class='error'>Inscriptions closes.</span><br />
-        {/if}
+      {if $e.deadline_inscription && $e.inscr_open}
+        dernières inscriptions
+        le {$e.deadline_inscription|date_format:"%d %B %Y"}
       {/if}
     </td>
   </tr>
+  {/if}
 
   <tr>
     <td class="titre">

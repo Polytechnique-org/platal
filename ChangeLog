@@ -20,6 +20,10 @@ Bug/Wish:
     * Profile:
         - #502: Use 'alias' instead of 'aka' to specify the nickname       -FRU
 
+    * Xnet/Events:
+        - #490: Events can be opened to non-members                        -FRU
+        - #514: Improve visibility of open events                          -FRU
+
 From 0.9.11 branch:
 
     * Core:
@@ -37,9 +41,6 @@ From 0.9.11 branch:
     * Profile:
         - #486: fix force login to see private fiche.                      -Car
         - #509: can access trombi of the current year promotion            -FRU
-
-    * Xnet/Events:
-        - #490: Events can be opened to non-members                        -FRU
 
 ================================================================================
 VERSION 0.9.11                                                 18 Septembre 2006

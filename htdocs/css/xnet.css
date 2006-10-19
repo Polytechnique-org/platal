@@ -232,6 +232,10 @@ table.tinybicol .pair, table.bicol .pair {
 table.normal td { border: none; }
 
 th { background: #d0c198; }
+th.grayed {
+    background: #d0cbb0;
+    color: #666;
+}
 
 /***************************************************************************
  * Special pages

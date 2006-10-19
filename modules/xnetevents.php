@@ -100,7 +100,7 @@ class XnetEventsModule extends PLModule
                  WHERE  asso_id = {?}"
             . (is_member() || may_update() ? "" : " AND accept_nonmembre != 0 ")
               . "GROUP BY  e.eid
-              ORDER BY  debut", S::v('uid'), $globals->asso('id'));
+                 ORDER BY  inscr_open DESC, debut DESC", S::v('uid'), $globals->asso('id'));
 
         $evts = array();
 
