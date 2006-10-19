@@ -24,14 +24,11 @@
 {literal}
 function deadlineChange(box)
 {
-    var nd = document.getElementById('no_deadline');
     var dd = document.getElementById('do_deadline');
 
-    if (box.checked) {
-        nd.style.display = 'none';
+    if (box.value == 1) {
         dd.style.display = 'inline';
     } else {
-        nd.style.display = 'inline';
         dd.style.display = 'none';
     }
 }
@@ -56,15 +53,21 @@ function deadlineChange(box)
 </p>
 
 <hr />
+<h2>Description de l'événement</h2>
 
 <form method="post" action="{$platal->ns}events/edit/{$platal->argv[1]}">
   <table class='bicol' cellspacing='0' cellpadding='0'>
     <colgroup>
-      <col width='30%' />
+      <col width='25%' />
     </colgroup>
     <tr>
+      <th colspan="2">
+        Intitulé de l'événement
+      </th>
+    </tr>
+    <tr>
       <td class='titre'>
-        Intitulé de l'événement&nbsp;:
+        Nom complet&nbsp;:
       </td>
       <td>
         <input type="text" name="intitule" value="{$evt.intitule}" size="45" maxlength="100" />
@@ -72,13 +75,13 @@ function deadlineChange(box)
     </tr>
     <tr>
       <td class='titre'>
-        Raccourci&nbsp;:<br />
+        Nom raccourci&nbsp;:<br />
         <small>(pour les mailings listes)</small>
       </td>
       <td>
         <input type="text" name="short_name" size="20" maxlength="20"
           value="{$evt.short_name|default:$smarty.request.short_name}" />
-        <small><br />(n'utiliser que chiffres, lettres, tiret et point. garder court)</small>
+        <small>(n'utiliser que chiffres, lettres, tiret et point. garder court)</small>
       </td>
     </tr>
     <tr>
@@ -90,39 +93,21 @@ function deadlineChange(box)
       </td>
     </tr>
     <tr>
-      <td class='titre'>
-        Date de début :
-      </td>
-      <td>
-        le {html_select_date prefix='deb_' end_year='+5' day_value_format='%02d'
-              field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.debut}
-        à {html_select_time use_24_hours=true display_seconds=false 
-              time=$evt.debut prefix='deb_' minute_interval=5}
-      </td>
-    </tr>
-    <tr>
-      <td class='titre'>
-        Date de fin :
-      </td>
-      <td>
-        le {html_select_date prefix='fin_' end_year='+5' day_value_format='%02d'
-              field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.fin}
-        à {html_select_time use_24_hours=true display_seconds=false
-              time=$evt.fin prefix='fin_' minute_interval=5}
-      </td>
+      <th colspan="2">
+        Inscriptions
+      </th>
     </tr>
     <tr>
       <td class='titre'>
         Fin des inscriptions&nbsp;:
       </td>
       <td>
-        <input type='checkbox' name='deadline' value='1' onchange='deadlineChange(this)'
-          {if $evt.deadline_inscription}checked='checked'{/if} />
-        <span id='no_deadline' {if $evt.deadline_inscription}style='display: none'{/if}>
-          Pas de deadline
-        </span>
+        <select name="deadline" onchange='deadlineChange(this)'>
+          <option value='0' {if !$evt.deadline_inscription}selected='selected'{/if}>Jamais</option>
+          <option value='1' {if $evt.deadline_inscription}selected='selected'{/if}>Le...</option>
+        </select>
         <span  id='do_deadline' {if !$evt.deadline_inscription}style='display: none'{/if}>
-          le {html_select_date prefix='inscr_' end_year='+5' day_value_format='%02d'
+          {html_select_date prefix='inscr_' end_year='+5' day_value_format='%02d'
             field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.deadline_inscription}
           compris.
         </span>
@@ -149,9 +134,9 @@ function deadlineChange(box)
       </td>
     </tr>
     <tr>
-      <td>Référence de paiement&nbsp;:</td>
-      <td>
-        <select name="paiement_id" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'block':'none')">
+      <th colspan="2">
+        Paiement&nbsp;:&nbsp;
+        <select name="paiement_id" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'normal':'none')">
           {if $evt.paiement_id eq -2}
           <option value='-2'>Paiement en attente de validation</option>
           {/if}
@@ -159,18 +144,10 @@ function deadlineChange(box)
           <option value='-1'>- Nouveau paiement -</option>
           {html_options options=$paiements selected=$evt.paiement_id}
         </select>
-      </td>
-    </tr>
-  </table>
-
-  <table class='bicol' cellspacing='0' cellpadding='0' id="new_pay" style="display:none">
-    <tr>
-      <th>
-        Nouveau paiement, message de confirmation&nbsp;:
       </th>
     </tr>
-    <tr>
-      <td>
+    <tr id="new_pay" style="display:none">
+      <td colspan="2">
         <textarea name="confirmation" rows="12" cols="65">&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
     Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
@@ -178,16 +155,8 @@ function deadlineChange(box)
 
     A très bientot,
 
-    [SIGNE ICI]</textarea>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$asso.site}" />
-      </td>
-    </tr>
-    <tr>
-      <td>
+    [SIGNE ICI]</textarea><br />
+        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$asso.site}" /><br />
         Le nouveau paiement n'est pas rajouté automatiquement mais doit être
         validé par le trésorier de l'association Polytechnique.org, ce qui sera
         fait sous peu.
@@ -195,25 +164,55 @@ function deadlineChange(box)
     </tr>
   </table>
 
+  <hr />
+  <h2>Déroulement de l'événement</h2>
+
+  <table class="bicol">
+    <colgroup>
+      <col width='25%' />
+    </colgroup>
+    <tr>
+      <td class='titre'>
+        Début :
+      </td>
+      <td>
+        le {html_select_date prefix='deb_' end_year='+5' day_value_format='%02d'
+              field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.debut}
+        à {html_select_time use_24_hours=true display_seconds=false
+              time=$evt.debut prefix='deb_' minute_interval=5}
+      </td>
+    </tr>
+    <tr>
+      <td class='titre'>
+        Fin :
+      </td>
+      <td>
+        le {html_select_date prefix='fin_' end_year='+5' day_value_format='%02d'
+              field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.fin}
+        à {html_select_time use_24_hours=true display_seconds=false
+              time=$evt.fin prefix='fin_' minute_interval=5}
+      </td>
+    </tr>
+
   {foreach from=$moments item=i}
   {assign var='moment' value=$items[$i]}
-  <hr />
-  <table>
-    <tr><td colspan="2" align="center"><strong>"Moment" {$i}</strong></td></tr>
     <tr>
-      <td>Intitulé :</td>
+      <th colspan="2">Moment {$i}</th>
+    </tr>
+    <tr>
+      <td class="titre">Intitulé :</td>
       <td><input type="text" name="titre{$i}" value="{$moment.titre}" size="45" maxlength="100" /></td>
     </tr>
     <tr>
-      <td>Détails pratiques :</td>
+      <td class="titre">Détails pratiques :</td>
       <td><textarea name="details{$i}" rows="6" cols="45">{$moment.details}</textarea></td>
     </tr>
     <tr>
-      <td>Montant par participant :<br /><small>(0 si gratuit)</small></td>
-      <td><input type="text" name="montant{$i}" value="{if $moment.montant}{$moment.montant|replace:".":","}{else}0,00{/if}" size="7" maxlength="7" /> &#8364;</td>
+      <td class="titre">Tarif :<br /><small>(par participant)</small></td>
+      <td><input type="text" name="montant{$i}" value="{if $moment.montant}{$moment.montant|replace:".":","}{else}0,00{/if}" size="7" maxlength="7" /> &#8364; <small>(0 si gratuit)</small></td>
     </tr>
-  </table>
   {/foreach}
+  </table>
  
   <div class="center">
     <input type="submit" name="valid" value="Valider" />
