@@ -49,8 +49,26 @@ Fonctionnalités visibles uniquement par les administrateurs :
 
 <table summary="membres du groupe" class="tinybicol">
   <tr>
-    <th><a href="{$platal->ns}annuaire?order=alpha{if $smarty.request.order neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">Prénom NOM</a></th>
-    <th><a href="{$platal->ns}annuaire?order=promo{if $smarty.request.order eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">Promo</a></th>
+    <th>
+      <a href="{$platal->ns}annuaire?order=alpha{if $sort neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">
+      {if $sort eq 'alpha'}
+        <img src="{$platal->baseurl}images/dn.png" alt="Tri croissant" title="Tri croissant" />
+      {elseif $sort eq 'alpha_inv'}
+        <img src="{$platal->baseurl}images/up.png" alt="Tri décroissant" title="Tri décroissant" />
+      {/if}
+      Prénom NOM 
+      </a>
+    </th>
+    <th>
+      <a href="{$platal->ns}annuaire?order=promo{if $sort eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">
+      {if $sort eq 'promo_inv'}
+        <img src="{$platal->baseurl}images/dn.png" alt="Tri croissant" title="Tri croissant" />
+      {elseif $sort eq 'promo'}
+        <img src="{$platal->baseurl}images/up.png" alt="Tri décroissant" title="Tri décroissant" />
+      {/if}
+        Promo
+      </a>
+    </th>
     <th>Infos</th>
     {if $admin}
     <th>Actions</th>

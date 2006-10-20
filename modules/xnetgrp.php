@@ -235,12 +235,14 @@ class XnetGrpModule extends PLModule
 
         $page->assign('admin', may_update());
 
+        $sort = Env::v('order');
         switch (Env::v('order')) {
             case 'promo'    : $group = 'promo';    $tri = 'promo_o DESC, nom, prenom'; break;
             case 'promo_inv': $group = 'promo';    $tri = 'promo_o, nom, prenom'; break;
             case 'alpha_inv': $group = 'initiale'; $tri = 'nom DESC, prenom DESC, promo'; break;
-            default         : $group = 'initiale'; $tri = 'nom, prenom, promo';
+            default         : $group = 'initiale'; $tri = 'nom, prenom, promo'; $sort = 'alpha';
         }
+        $page->assign('sort', $sort);
 
         if ($group == 'initiale')
             $res = XDB::iterRow(
