@@ -85,7 +85,6 @@ class XnetPage extends PlatalPage
             }
             if ($globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/lists";
-                $sub['envoyer un mail']     = "$dim/mail";
             }
             $sub['événement'] = "$dim/events";
             $sub['télépaiement'] = "$dim/paiement";
@@ -97,6 +96,7 @@ class XnetPage extends PlatalPage
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
             if ($globals->asso('mail_domain')) {
+                $sub['envoyer un mail']     = "$dim/mail";
                 $sub['créer une liste']     = "$dim/lists/create";
                 $sub['créer un alias']      = "$dim/alias/create";
             }
