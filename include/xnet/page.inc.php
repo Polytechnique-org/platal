@@ -73,7 +73,7 @@ class XnetPage extends PlatalPage
         $sub['documentation']     = 'Xnet';
         $menu["Menu Principal"]   = $sub;
         
-        if (S::logged()) {
+        if (S::logged() && $globals->asso()) {
             $sub = array();
             $dim = $globals->asso('diminutif');
             $sub['présentation'] = "$dim/";
