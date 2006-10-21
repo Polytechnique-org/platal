@@ -17,6 +17,9 @@ Bug/Wish:
         - #473: Use 'événement' instead of 'évènement'.                    -FRU
         - #475: More understandable bug report form.                       -FRU
 
+    * Events:
+        - #517: URL catcher update (www).                                  -Car
+
     * Profile:
         - #502: Use 'alias' instead of 'aka' to specify the nickname       -FRU
 
