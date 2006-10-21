@@ -169,8 +169,12 @@ class EventsModule extends PLModule
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
 
+    	require_once('url_catcher.inc.php');
+		$texte_catch_url = url_catcher($texte);
+		
         $page->assign('titre', $titre);
         $page->assign('texte', $texte);
+        $page->assign('texte_html', $texte_catch_url);
         $page->assign('promo_min', $promo_min);
         $page->assign('promo_max', $promo_max);
         $page->assign('peremption', $peremption);
@@ -178,10 +182,7 @@ class EventsModule extends PLModule
         $page->assign('action', strtolower($action));
 
         if ($action == 'Confirmer') {
-            $texte = preg_replace('/((?:https?|ftp):\/\/(?:\.*,*[a-z@0-9~%$£µ&i#\-+=_\/\?])*)/i',
-                                  '<a href="\\0">\\0</a>', $texte);
-            $texte = preg_replace('/(?:mailto:)?([a-z0-9.\-+_]+@([\-.+_]?[a-z0-9])+)/i',
-                                  '<a href="mailto:\\0">\\0</a>', $texte);
+        	$texte = $texte_catch_url;
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,
                                  $peremption, $valid_mesg, S::v('uid'));

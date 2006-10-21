@@ -30,7 +30,7 @@ Voici ton annonce :
 
 <table class="bicol">
   <tr><th>{$titre|nl2br}</th></tr>
-  <tr><td>{$texte|nl2br}</td></tr>
+  <tr><td>{$texte_html|nl2br|smarty:nodefaults}</td></tr>
 </table>
 
 <p>
