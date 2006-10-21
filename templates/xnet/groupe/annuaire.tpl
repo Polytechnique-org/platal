@@ -52,9 +52,9 @@ Fonctionnalités visibles uniquement par les administrateurs :
     <th>
       <a href="{$platal->ns}annuaire?order=alpha{if $sort neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">
       {if $sort eq 'alpha'}
-        <img src="{$platal->baseurl}images/dn.png" alt="Tri croissant" title="Tri croissant" />
+        <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
       {elseif $sort eq 'alpha_inv'}
-        <img src="{$platal->baseurl}images/up.png" alt="Tri décroissant" title="Tri décroissant" />
+        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
       {/if}
       Prénom NOM 
       </a>
@@ -62,9 +62,9 @@ Fonctionnalités visibles uniquement par les administrateurs :
     <th>
       <a href="{$platal->ns}annuaire?order=promo{if $sort eq "promo"}_inv{/if}{if $request_group and $group eq 'promo'}&amp;promo={$request_group}{/if}">
       {if $sort eq 'promo_inv'}
-        <img src="{$platal->baseurl}images/dn.png" alt="Tri croissant" title="Tri croissant" />
+        <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
       {elseif $sort eq 'promo'}
-        <img src="{$platal->baseurl}images/up.png" alt="Tri décroissant" title="Tri décroissant" />
+        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
       {/if}
         Promo
       </a>

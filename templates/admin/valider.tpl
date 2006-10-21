@@ -81,7 +81,7 @@
     <td>{$c[1]}</td>
   </tr>
   {/foreach}
-  <tr id='comment{$valid->uid}'>
+  <tr>
     <td colspan='2' class='center'>
       <form action="admin/validate" method="post">
         <div>

@@ -162,6 +162,7 @@
         <input type="checkbox" value="1" name="pub" {if $asso.pub eq 'private'}checked="checked"{/if} />
         liste des membres privée
       </td>
+    </tr>
   </table>
 
   <div class="center">
