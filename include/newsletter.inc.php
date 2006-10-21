@@ -49,41 +49,41 @@ class NewsLetter
     
     function NewsLetter($id=null)
     {
-	if (isset($id)) {
-	    if ($id == 'last') {
-		$res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
+    if (isset($id)) {
+        if ($id == 'last') {
+        $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
                 $id  = $res->fetchOneCell();
-	    }
-	    $res = XDB::query("SELECT * FROM newsletter WHERE id={?}", $id);
-	} else {
-	    $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
+        }
+        $res = XDB::query("SELECT * FROM newsletter WHERE id={?}", $id);
+    } else {
+        $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
         if (!$res->numRows()) {
             insert_new_nl();
         }
         $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
     }
-	$nl = $res->fetchOneAssoc();
+    $nl = $res->fetchOneAssoc();
 
-	$this->_id    = $nl['id'];
-	$this->_date  = $nl['date'];
-	$this->_title = $nl['titre'];
-	$this->_head  = $nl['head'];
+    $this->_id    = $nl['id'];
+    $this->_date  = $nl['date'];
+    $this->_title = $nl['titre'];
+    $this->_head  = $nl['head'];
 
-	$res = XDB::iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
-	while (list($cid, $title) = $res->next()) {
-	    $this->_cats[$cid] = $title;
-	}
-	
-	$res = XDB::iterRow(
+    $res = XDB::iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
+    while (list($cid, $title) = $res->next()) {
+        $this->_cats[$cid] = $title;
+    }
+    
+    $res = XDB::iterRow(
                 "SELECT  a.title,a.body,a.append,a.aid,a.cid,a.pos
                    FROM  newsletter_art AS a
              INNER JOIN  newsletter     AS n USING(id)
              LEFT  JOIN  newsletter_cat AS c ON(a.cid=c.cid)
                   WHERE  a.id={?}
                ORDER BY  c.pos,a.pos", $this->_id);
-	while (list($title, $body, $append, $aid, $cid, $pos) = $res->next()) {
-	    $this->_arts[$cid]["a$aid"] = new NLArticle($title, $body, $append, $aid, $cid, $pos);
-	}
+    while (list($title, $body, $append, $aid, $cid, $pos) = $res->next()) {
+        $this->_arts[$cid]["a$aid"] = new NLArticle($title, $body, $append, $aid, $cid, $pos);
+    }
     }
 
     // }}}
@@ -91,7 +91,7 @@ class NewsLetter
 
     function setSent()
     {
-	    XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
+        XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
     }
 
     // }}}
@@ -99,7 +99,7 @@ class NewsLetter
 
     function save()
     {
-	XDB::execute('UPDATE newsletter SET date={?},titre={?},head={?} WHERE id={?}',
+    XDB::execute('UPDATE newsletter SET date={?},titre={?},head={?} WHERE id={?}',
                      $this->_date, $this->_title, $this->_head, $this->_id);
     }
 
@@ -120,12 +120,12 @@ class NewsLetter
     
     function getArt($aid)
     {
-	foreach ($this->_arts as $key=>$artlist) {
-	    if (isset($artlist["a$aid"])) {
+    foreach ($this->_arts as $key=>$artlist) {
+        if (isset($artlist["a$aid"])) {
                 return $artlist["a$aid"];
             }
-	}
-	return null;
+    }
+    return null;
     }
 
     // }}}
@@ -133,21 +133,21 @@ class NewsLetter
 
     function saveArticle(&$a)
     {
-	if ($a->_aid>=0) {
-	    XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
+    if ($a->_aid>=0) {
+        XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
                                           VALUES  ({?},{?},{?},{?},{?},{?},{?})',
                                           $this->_id, $a->_aid, $a->_cid, $a->_pos,
                                           $a->_title, $a->_body, $a->_append);
-	    $this->_arts['a'.$a->_aid] = $a;
-	} else {
-	    XDB::execute(
-		'INSERT INTO  newsletter_art
-		      SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
-			FROM  newsletter_art AS a
-		       WHERE  a.id={?}',
+        $this->_arts['a'.$a->_aid] = $a;
+    } else {
+        XDB::execute(
+        'INSERT INTO  newsletter_art
+              SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
+            FROM  newsletter_art AS a
+               WHERE  a.id={?}',
                        $this->_id, $a->_cid, $a->_title, $a->_body, $a->_append, $this->_id);
-	    $this->_arts['a'.$a->_aid] = $a;
-	}
+        $this->_arts['a'.$a->_aid] = $a;
+    }
     }
 
     // }}}
@@ -155,10 +155,10 @@ class NewsLetter
     
     function delArticle($aid)
     {
-	XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
-	foreach ($this->_arts as $key=>$art) {
-	    unset($this->_arts[$key]["a$aid"]);
-	}
+    XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
+    foreach ($this->_arts as $key=>$art) {
+        unset($this->_arts[$key]["a$aid"]);
+    }
     }
 
     // }}}
@@ -169,22 +169,22 @@ class NewsLetter
         global $globals;
         $url = 'https://www.polytechnique.org';
 
-	if ($html) {
-	    return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
-	    .  '<div class="foot">'
-	    .  "[<a href=\"$url/nl\">archives</a>&nbsp;|&nbsp;"
-	    .  "<a href=\"$url/nl/submit\">écrire dans la NL</a>&nbsp;|&nbsp;"
-	    .  "<a href=\"$url/nl/out\">ne plus recevoir</a>]"
-	    .  '</div>';
-	} else {
-	    return "\n\n--------------------------------------------------------------------\n"
-	         . "Cette lettre est envoyée à tous les Polytechniciens sur Internet par\n"
-	         . "l'intermédiaire de Polytechnique.org.\n"
-		 . "\n"
-		 . "archives : [$url/nl]\n"
-		 . "écrire   : [$url/nl/submit]\n"
-		 . "ne plus recevoir: [$url/nl/out]\n";
-	}
+    if ($html) {
+        return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
+        .  '<div class="foot">'
+        .  "[<a href=\"$url/nl\">archives</a>&nbsp;|&nbsp;"
+        .  "<a href=\"$url/nl/submit\">écrire dans la NL</a>&nbsp;|&nbsp;"
+        .  "<a href=\"$url/nl/out\">ne plus recevoir</a>]"
+        .  '</div>';
+    } else {
+        return "\n\n--------------------------------------------------------------------\n"
+             . "Cette lettre est envoyée à tous les Polytechniciens sur Internet par\n"
+             . "l'intermédiaire de Polytechnique.org.\n"
+         . "\n"
+         . "archives : [$url/nl]\n"
+         . "écrire   : [$url/nl/submit]\n"
+         . "ne plus recevoir: [$url/nl/out]\n";
+    }
     }
 
     // }}}
@@ -192,43 +192,43 @@ class NewsLetter
 
     function toText($prenom,$nom,$sexe)
     {
-	$res  = "====================================================================\n";
-	$res .= ' '.$this->title()."\n";
-	$res .= "====================================================================\n\n";
+    $res  = "====================================================================\n";
+    $res .= ' '.$this->title()."\n";
+    $res .= "====================================================================\n\n";
 
-	$head = $this->head();
-	$head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
-	$head = str_replace('<prenom>', $prenom, $head);
-	$head = str_replace('<nom>',    $nom,    $head);
-	$head = enriched_to_text($head,false,true,2,64);
+    $head = $this->head();
+    $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+    $head = str_replace('<prenom>', $prenom, $head);
+    $head = str_replace('<nom>',    $nom,    $head);
+    $head = enriched_to_text($head,false,true,2,64);
 
-	if ($head) {
+    if ($head) {
             $res .= "\n$head\n\n\n";
         }
 
-	$i = 1;
-	foreach ($this->_arts as $cid=>$arts) {
-	    $res .= "\n$i *{$this->_cats[$cid]}*\n";
-	    foreach ($arts as $art) {
-		$res .= '- '.$art->title()."\n";
-	    }
-	    $i ++;
-	}
-	$res .= "\n\n";
-	    
-	foreach ($this->_arts as $cid=>$arts) {
-	    $res .= "--------------------------------------------------------------------\n";
-	    $res .= "*{$this->_cats[$cid]}*\n";
-	    $res .= "--------------------------------------------------------------------\n\n";
-	    foreach ($arts as $art) {
-		$res .= $art->toText();
-		$res .= "\n\n";
-	    }
-	}
-	
-	$res .= $this->footer(false);
-	
-	return $res;
+    $i = 1;
+    foreach ($this->_arts as $cid=>$arts) {
+        $res .= "\n$i *{$this->_cats[$cid]}*\n";
+        foreach ($arts as $art) {
+        $res .= '- '.$art->title()."\n";
+        }
+        $i ++;
+    }
+    $res .= "\n\n";
+        
+    foreach ($this->_arts as $cid=>$arts) {
+        $res .= "--------------------------------------------------------------------\n";
+        $res .= "*{$this->_cats[$cid]}*\n";
+        $res .= "--------------------------------------------------------------------\n\n";
+        foreach ($arts as $art) {
+        $res .= $art->toText();
+        $res .= "\n\n";
+        }
+    }
+    
+    $res .= $this->footer(false);
+    
+    return $res;
     }
 
     // }}}
@@ -237,48 +237,48 @@ class NewsLetter
     function toHtml($prenom, $nom, $sexe, $body=false, $urlprefix = false)
     {
         $u    = $urlprefix ? 'nl/show/'.$this->_id : '';
-	$res  = '<div class="title">'.$this->title().'</div>';
-	
-	$head = $this->head();
-	$head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
-	$head = str_replace('<prenom>', $prenom, $head);
-	$head = str_replace('<nom>',    $nom,    $head);
-	$head = enriched_to_text($head, true);
+    $res  = '<div class="title">'.$this->title().'</div>';
+    
+    $head = $this->head();
+    $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+    $head = str_replace('<prenom>', $prenom, $head);
+    $head = str_replace('<nom>',    $nom,    $head);
+    $head = enriched_to_text($head, true);
 
-	if($head) {
+    if($head) {
             $res .= "<div class='intro'>$head</div>";
         }
 
-	$i = 1;
-	$res .= "<a id='top_lnk'></a>";
-	foreach ($this->_arts as $cid=>$arts) {
-	    $res .= "<div class='lnk'><a href='$u#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
-	    foreach ($arts as $art) {
-		$res .= "<a href='$u#art{$art->_aid}'>&nbsp;&nbsp;- ".htmlentities($art->title())."</a>";
-	    }
-	    $res .= '</div>';
-	    $i ++;
-	}
+    $i = 1;
+    $res .= "<a id='top_lnk'></a>";
+    foreach ($this->_arts as $cid=>$arts) {
+        $res .= "<div class='lnk'><a href='$u#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
+        foreach ($arts as $art) {
+        $res .= "<a href='$u#art{$art->_aid}'>&nbsp;&nbsp;- ".htmlentities($art->title())."</a>";
+        }
+        $res .= '</div>';
+        $i ++;
+    }
 
-	foreach ($this->_arts as $cid=>$arts) {
-	    $res .= "<h1 class='xorg_nl'><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
-	    foreach($arts as $art) {
-    		$res .= $art->toHtml();
-    		$res .= "<p><a href='$u#top_lnk'>Revenir au sommaire</a></p>";
-	    }
-	}
+    foreach ($this->_arts as $cid=>$arts) {
+        $res .= "<h1 class='xorg_nl'><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
+        foreach($arts as $art) {
+            $res .= $art->toHtml();
+            $res .= "<p><a href='$u#top_lnk'>Revenir au sommaire</a></p>";
+        }
+    }
 
-	$res .= $this->footer(true);
+    $res .= $this->footer(true);
 
-	if ($body) {
-	    $res = <<<EOF
+    if ($body) {
+        $res = <<<EOF
 <html>
   <head>
     <style type="text/css">
     <!--
       div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
       div.title { margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; font-size: 140%; text-align: center;
-		  font-weight: bold; border-bottom: 3px red solid; border-top: 3px red solid; }
+          font-weight: bold; border-bottom: 3px red solid; border-top: 3px red solid; }
       
       a[href]       { text-decoration: none; }
       a[href]:hover { text-decoration: underline; }
@@ -287,7 +287,7 @@ class NewsLetter
       div.lnk a { display: block; }
       
       h1.xorg_nl { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%;
-	    border-bottom: 3px red solid; border-top: 3px red solid; }
+        border-bottom: 3px red solid; border-top: 3px red solid; }
       h2.xorg_nl { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
       h1.xorg_nl span { font-size: 140%; padding: 2px 1ex 2px 1ex; border-bottom: 3px red solid; }
       h2.xorg_nl span { padding: 2px 4px 2px 4px; border-bottom: 2px yellow solid; }
@@ -296,7 +296,7 @@ class NewsLetter
       div.app   { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
       div.intro { padding: 2ex; }
       div.foot  { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit;
-		  text-align: center; width: 100% }
+          text-align: center; width: 100% }
     -->
     </style>
   </head>
@@ -307,8 +307,8 @@ class NewsLetter
   </body>
 </html>
 EOF;
-	}
-	return $res;
+    }
+    return $res;
     }
 
     // }}}
@@ -317,23 +317,23 @@ EOF;
     function sendTo($prenom, $nom, $login, $sex, $html)
     {
         global $globals;
-	require_once('diogenes/diogenes.hermes.inc.php');
+    require_once('diogenes/diogenes.hermes.inc.php');
 
-	$mailer = new HermesMailer();
-	$mailer->setFrom($globals->newsletter->from);
-	$mailer->setSubject($this->title());
-	$mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
+    $mailer = new HermesMailer();
+    $mailer->setFrom($globals->newsletter->from);
+    $mailer->setSubject($this->title());
+    $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
         if (!empty($globals->newsletter->replyto)) {
             $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
         }
         if (!empty($globals->newsletter->retpath)) {
             $mailer->addHeader('Return-Path',$globals->newsletter->retpath);
         }
-	$mailer->setTxtBody($this->toText($prenom,$nom,$sex));
-	if ($html) {
-	    $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
-	}
-	$mailer->send();
+    $mailer->setTxtBody($this->toText($prenom,$nom,$sex));
+    if ($html) {
+        $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
+    }
+    $mailer->send();
     }
 
     // }}}
@@ -358,12 +358,12 @@ class NLArticle
     
     function NLArticle($title='', $body='', $append='', $aid=-1, $cid=0, $pos=0)
     {
-	$this->_body   = $body;
-	$this->_title  = $title;
-	$this->_append = $append;
-	$this->_aid    = $aid;
-	$this->_cid    = $cid;
-	$this->_pos    = $pos;
+    $this->_body   = $body;
+    $this->_title  = $title;
+    $this->_append = $append;
+    $this->_aid    = $aid;
+    $this->_cid    = $cid;
+    $this->_pos    = $pos;
     }
 
     // }}}
@@ -389,10 +389,10 @@ class NLArticle
 
     function toText()
     {
-	$title = '*'.$this->title().'*';
-	$body  = enriched_to_text($this->_body,false,true);
-	$app   = enriched_to_text($this->_append,false,false,4);
-	return trim("$title\n\n$body\n\n$app")."\n";
+    $title = '*'.$this->title().'*';
+    $body  = enriched_to_text($this->_body,false,true);
+    $app   = enriched_to_text($this->_append,false,false,4);
+    return trim("$title\n\n$body\n\n$app")."\n";
     }
 
     // }}}
@@ -400,18 +400,18 @@ class NLArticle
 
     function toHtml()
     {
-	$title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a><span>".htmlentities($this->title()).'</span></h2>';
-	$body  = enriched_to_text($this->_body,true);
-	$app   = enriched_to_text($this->_append,true);
-	
-	$art   = "$title\n";
-	$art  .= "<div class='art'>\n$body\n";
-	if ($app) {
+    $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a><span>".htmlentities($this->title()).'</span></h2>';
+    $body  = enriched_to_text($this->_body,true);
+    $app   = enriched_to_text($this->_append,true);
+    
+    $art   = "$title\n";
+    $art  .= "<div class='art'>\n$body\n";
+    if ($app) {
             $art .= "<div class='app'>$app</div>";
         }
-	$art  .= "</div>\n";
-	
-	return $art;
+    $art  .= "</div>\n";
+    
+    return $art;
     }
 
     // }}}
@@ -419,15 +419,15 @@ class NLArticle
 
     function check()
     {
-	$text = enriched_to_text($this->_body);
-	$arr  = explode("\n",wordwrap($text,68));
-	$c    = 0;
-	foreach ($arr as $line) {
+    $text = enriched_to_text($this->_body);
+    $arr  = explode("\n",wordwrap($text,68));
+    $c    = 0;
+    foreach ($arr as $line) {
             if (trim($line)) {
                 $c++;
             }
         }
-	return $c<9;
+    return $c<9;
     }
 
     // }}}
@@ -477,40 +477,40 @@ function justify($text,$n)
     $arr = array_map('trim',$arr);
     $res = '';
     foreach ($arr as $key => $line) {
-	$nxl       = isset($arr[$key+1]) ? trim($arr[$key+1]) : '';
-	$nxl_split = preg_split('! +!',$nxl);
-	$nxw_len   = count($nxl_split) ? strlen($nxl_split[0]) : 0;
-	$line      = trim($line);
+    $nxl       = isset($arr[$key+1]) ? trim($arr[$key+1]) : '';
+    $nxl_split = preg_split('! +!',$nxl);
+    $nxw_len   = count($nxl_split) ? strlen($nxl_split[0]) : 0;
+    $line      = trim($line);
 
-	if (strlen($line)+1+$nxw_len < $n) {
-	    $res .= "$line\n";
-	    continue;
-	}
-	
-	if (preg_match('![.:;]$!',$line)) {
-	    $res .= "$line\n";
-	    continue;
-	}
+    if (strlen($line)+1+$nxw_len < $n) {
+        $res .= "$line\n";
+        continue;
+    }
+    
+    if (preg_match('![.:;]$!',$line)) {
+        $res .= "$line\n";
+        continue;
+    }
 
-	$tmp   = preg_split('! +!',trim($line));
-	$words = count($tmp);
-	if ($words <= 1) {
-	    $res .= "$line\n";
-	    continue;
-	}
+    $tmp   = preg_split('! +!',trim($line));
+    $words = count($tmp);
+    if ($words <= 1) {
+        $res .= "$line\n";
+        continue;
+    }
 
-	$len   = array_sum(array_map('strlen',$tmp));
-	$empty = $n - $len;
-	$sw    = floatval($empty) / floatval($words-1);
-	
-	$cur = 0;
-	$l   = '';
-	foreach ($tmp as $word) {
-	    $l   .= $word;
-	    $cur += $sw + strlen($word);
-	    $l    = str_pad($l,intval($cur+0.5));
-	}
-	$res .= trim($l)."\n";
+    $len   = array_sum(array_map('strlen',$tmp));
+    $empty = $n - $len;
+    $sw    = floatval($empty) / floatval($words-1);
+    
+    $cur = 0;
+    $l   = '';
+    foreach ($tmp as $word) {
+        $l   .= $word;
+        $cur += $sw + strlen($word);
+        $l    = str_pad($l,intval($cur+0.5));
+    }
+    $res .= trim($l)."\n";
     }
     return trim($res);
 }
@@ -519,28 +519,28 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
 {
     $text = trim($input);
     if ($html) {
-	$text = htmlspecialchars($text);
-	$text = str_replace('[b]','<strong>', $text);
-	$text = str_replace('[/b]','</strong>', $text);
-	$text = str_replace('[i]','<em>', $text);
-	$text = str_replace('[/i]','</em>', $text);
-	$text = str_replace('[u]','<span style="text-decoration: underline">', $text);
-	$text = str_replace('[/u]','</span>', $text);
-	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','<a href="\1">\1</a>', $text);
-	$text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','<a href="mailto:\1">\2</a>', $text);
-	return nl2br($text);
+        $text = htmlspecialchars($text);
+        $text = str_replace('[b]','<strong>', $text);
+        $text = str_replace('[/b]','</strong>', $text);
+        $text = str_replace('[i]','<em>', $text);
+        $text = str_replace('[/i]','</em>', $text);
+        $text = str_replace('[u]','<span style="text-decoration: underline">', $text);
+        $text = str_replace('[/u]','</span>', $text);
+        require_once('url_catcher.inc.php');
+        $text = url_catcher($text);
+        return nl2br($text);
     } else {
-	$text = preg_replace('!\[\/?b\]!','*',$text);
-	$text = preg_replace('!\[\/?u\]!','_',$text);
-	$text = preg_replace('!\[\/?i\]!','/',$text);
-	$text = preg_replace('!((https?|ftp)://[^\r\n\t ]*)!','[\1]', $text);
-	$text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','[mailto:\1]', $text);
-	$text = $just ? justify($text,$width-$indent) : wordwrap($text,$width-$indent);
-	if($indent) {
-	    $ind = str_pad('',$indent);
-	    $text = $ind.str_replace("\n","\n$ind",$text);
-	}
-	return $text;
+        $text = preg_replace('!\[\/?b\]!','*',$text);
+        $text = preg_replace('!\[\/?u\]!','_',$text);
+        $text = preg_replace('!\[\/?i\]!','/',$text);
+        $text = preg_replace('!(((https?|ftp)://|www\.)[^\r\n\t ]*)!','[\1]', $text);
+        $text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','[mailto:\1]', $text);
+        $text = $just ? justify($text,$width-$indent) : wordwrap($text,$width-$indent);
+        if($indent) {
+            $ind = str_pad('',$indent);
+            $text = $ind.str_replace("\n","\n$ind",$text);
+        }
+        return $text;
     }
 }
 
