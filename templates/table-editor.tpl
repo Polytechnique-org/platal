@@ -34,7 +34,7 @@
 <table class="bicol">
 <tr>
   {foreach from=$t->vars item=myval key=myvar}{if $myval.display}
-    <th style="cursor:pointer" onclick="redirect('{$t->pl}/sort{if $t->sortfield eq $myvar && !$t->sortdesc}desc{/if}/{$myvar}')">{$myval.desc}{if $t->sortfield eq $myvar}<img src="images/{if $t->sortdesc}up{else}dn{/if}.png" alt=""/>{/if}</th>
+    <th style="cursor:pointer" onclick="redirect('{$t->pl}/sort{if $t->sortfield eq $myvar && !$t->sortdesc}desc{/if}/{$myvar}')">{$myval.desc}{if $t->sortfield eq $myvar}{if $t->sortdesc}{icon name="bullet_arrow_down"}{else}{icon name="bullet_arrow_up"}{/if}{/if}</th>
   {/if}{/foreach}
   {if !$hideactions}
   <th>action</th>
