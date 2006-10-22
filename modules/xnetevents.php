@@ -34,18 +34,34 @@ class XnetEventsModule extends PLModule
         );
     }
 
-    function handler_events(&$page)
+    function handler_events(&$page, $archive = null)
     {
         global $globals;
 
-        new_group_open_page('xnetevents/index.tpl');
+        if ($archive == 'archive') {
+            $archive = true;
+            new_groupadmin_page('xnetevents/index.tpl');
+        } else {
+            $archive = false;
+            new_group_open_page('xnetevents/index.tpl');
+        }
 
+        $action = null;
         if (Post::has('del')) {
+            $action = 'del';
+            $eid = Post::v('del');
+        } elseif (Post::has('archive')) {
+            $action = 'archive';
+            $eid = Post::v('archive');
+        } elseif (Post::has('unarchive')) {
+            $action = 'unarchive';
+            $eid = Post::v('unarchive');
+        }
+
+        if (!is_null($action)) {
             if (!may_update()) {
                 return PL_NOT_ALLOWED;
             }
-
-            $eid = Post::v('del');
 
             $res = XDB::query("SELECT asso_id, short_name FROM groupex.evenements
                                 WHERE eid = {?} AND asso_id = {?}",
@@ -55,7 +71,9 @@ class XnetEventsModule extends PLModule
             if (!$tmp) {
                 return PL_NOT_ALLOWED;
             }
+        }
 
+        if ($action == 'del') {
             // deletes the event mailing aliases
             if ($tmp[1]) {
                 XDB::execute(
@@ -85,6 +103,21 @@ class XnetEventsModule extends PLModule
                                    PayReq::same_event($eid, $globals->asso('id')));
         }
 
+        if ($action == 'archive') {
+            XDB::execute("UPDATE groupex.evenements
+                             SET archive = 1
+                           WHERE eid = {?} AND asso_id = {?}",
+                         $eid, $globals->asso('id'));
+        }
+
+        if ($action == 'unarchive') {
+            XDB::execute("UPDATE groupex.evenements
+                             SET archive = 0
+                           WHERE eid = {?} AND asso_id = {?}",
+                         $eid, $globals->asso('id'));
+        }
+
+        $page->assign('archive', $archive);
         $page->assign('admin', may_update());
 
         $evenements = XDB::iterator(
@@ -97,7 +130,8 @@ class XnetEventsModule extends PLModule
             INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid
             INNER JOIN  x4dat.aliases       AS a ON (a.type = 'a_vie' AND a.id = u.user_id)
              LEFT JOIN  groupex.evenements_participants AS ep ON (ep.eid = e.eid AND ep.uid = {?})
-                 WHERE  asso_id = {?}"
+                 WHERE  asso_id = {?}
+                   AND  archive = " . ($archive ? "1 " : "0 ")
             . (is_member() || may_update() ? "" : " AND accept_nonmembre != 0 ")
               . "GROUP BY  e.eid
                  ORDER BY  inscr_open DESC, debut DESC", S::v('uid'), $globals->asso('id'));

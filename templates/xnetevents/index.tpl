@@ -20,9 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if !$admin}
 <h1>{$asso.nom} : Evénements</h1>
+{else}
+<h1>
+  {$asso.nom} : 
+  {if $archive}[<a href="{$platal->ns}events">Evénements</a>] {else}Evénements {/if}
+  {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
+</h1>
 
-{if $admin}
 <p class="center">
   [<a href="{$platal->ns}events/edit">Annoncer un nouvel événement</a>]
 </p>
@@ -45,7 +51,16 @@
       [<a href="{$platal->ns}events/edit/{$e.eid}">
         modifier
         {icon name=date_edit title="Edition de l'événement"}</a>]
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;
+      [<a href="javascript:dynpostkv('{$platal->pl_self()}', {if !$archive}'archive'{else}'unarchive'{/if}, {$e.eid})">
+        {if !$archive}
+          archiver
+          {icon name=package_add title="Archivage"}</a>]
+        {else}
+          désarchiver
+          {icon name=package_delete title="Désarchivage"}</a>]
+        {/if}
+      &nbsp;
       [<a href="javascript:dynpostkv('{$platal->ns}events', 'del', {$e.eid})"
         onclick="return confirm('Supprimer l\'événement effacera la liste des inscrits et des paiements.\n Es-tu sûr de vouloir supprimer l\'événement ?')">
         supprimer
