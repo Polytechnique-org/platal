@@ -24,7 +24,8 @@ class AdminModule extends PLModule
     function handlers()
     {
         return array(
-            'admin'                        => $this->make_hook('default',   AUTH_MDP, 'admin'),
+            'phpinfo'                      => $this->make_hook('phpinfo', AUTH_MDP, 'admin'),
+            'admin'                        => $this->make_hook('default', AUTH_MDP, 'admin'),
             'admin/ax-xorg'                => $this->make_hook('ax_xorg', AUTH_MDP, 'admin'),
             'admin/deaths'                 => $this->make_hook('deaths', AUTH_MDP, 'admin'),
             'admin/downtime'               => $this->make_hook('downtime', AUTH_MDP, 'admin'),
@@ -42,6 +43,12 @@ class AdminModule extends PLModule
             'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
         );
+    }
+
+    function handler_phpinfo(&$page)
+    {
+        phpinfo();
+        exit;
     }
 
     function handler_default(&$page)
