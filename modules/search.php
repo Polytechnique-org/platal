@@ -167,7 +167,7 @@ class SearchModule extends PLModule
     {
         global $globals;
 
-        require_once 'search.inc.php';
+        require_once dirname(__FILE__).'/search/search.inc.php';
 
         $page->changeTpl('search/index.tpl');
 
@@ -204,7 +204,7 @@ class SearchModule extends PLModule
     {
         global $globals;
 
-        require_once 'search.inc.php' ;
+        require_once dirname(__FILE__).'/search/search.inc.php';
         require_once 'applis.func.inc.php';
         require_once 'geoloc.inc.php';
 

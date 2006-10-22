@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class XOrgPlugin
-
 /**
  * XOrg Plugins class
  *
@@ -34,15 +32,10 @@
  */
 class XOrgPlugin
 {
-    // {{{ properties
-
     /** have to override, contents the fields names used to drive the plugin */
     var $_get_vars = array();
     /** some polymorphism at low cost, may be used, or not */
     var $_callback;
-
-    // }}}
-    // {{{ function XOrgPlugin()
 
     /** constructor.
      * the constructor override $_get_vars settings by prefixing the names with $prefix
@@ -56,18 +49,12 @@ class XOrgPlugin
         }
     }
 
-    // }}}
-    // {{{ function get_value()
-
     /** transparent access to $_GET, wrt the right $prefix
      */
     function get_value($key)
     {
         return Get::v($this->_prefix.$key);
     }
-
-    // }}}
-    // {{{ function make_url()
 
     /** construct an url with the given parameters to drive the plugin.
      * leave all other GET params alone
@@ -104,17 +91,12 @@ class XOrgPlugin
 	return pl_self() . '?' . join('&amp;', $get);
     }
 
-    // }}}
-    // {{{ function show()
-
     /** need to be overriden.  */
     function show ()
-    { return ''; }
-
-    // }}}
+    {
+        return '';
+    }
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

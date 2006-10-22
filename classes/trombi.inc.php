@@ -19,39 +19,21 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.plugin.inc.php');
-
-// {{{ class Trombi
-
 class Trombi extends XOrgPlugin
 {
-    // {{{ properties
-
     var $_get_vars = array('offset');
     var $limit = 24;
     var $admin = false;
     var $showpromo = true;
 
-    // }}}
-    // {{{ function setNbRows()
-
     function setNbRows($row)
     { $this->limit = $row*3; }
-
-    // }}}
-    // {{{ function setAdmin()
 
     function setAdmin()
     { $this->admin = true; }
 
-    // }}}
-    // {{{ function hidePromo()
-
     function hidePromo()
     { $this->showpromo = false; }
-
-    // }}}
-    // {{{ function show()
 
     function show()
     {
@@ -81,11 +63,7 @@ class Trombi extends XOrgPlugin
 	$page->assign('trombi_admin', $this->admin);
 	return $page->fetch('include/trombi.tpl');
     }
-
-    // }}}
 }
-
-// }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

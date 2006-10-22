@@ -73,7 +73,8 @@ class GeolocModule extends PLModule
             $page->assign('no_annu', 1);
         }
 
-        require_once 'search.inc.php';
+        require_once dirname(__FILE__).'/search/search.inc.php';
+
         $page->changeTpl('geoloc/index.tpl');
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         $search = str_replace('&amp;','&',$fields->get_url());
@@ -144,8 +145,8 @@ class GeolocModule extends PLModule
 
         $page->changeTpl('geoloc/city.tpl', NO_SKIN);
 
+        require_once dirname(__FILE__).'/search/search.inc.php';
         require_once('geoloc.inc.php');
-        require_once('search.inc.php');
 
         if (empty($GLOBALS['IS_XNET_SITE'])) {
             $usual_fields = advancedSearchFromInput();
@@ -186,8 +187,8 @@ class GeolocModule extends PLModule
             $page->changeTpl('geoloc/country.tpl', NO_SKIN);
         }
 
+        require_once dirname(__FILE__).'/search/search.inc.php';
         require_once 'geoloc.inc.php';
-        require_once 'search.inc.php';
 
         $querystring = $this->_make_qs();
         $page->assign('searchvars', $querystring);

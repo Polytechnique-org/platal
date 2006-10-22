@@ -253,7 +253,6 @@ class ListsModule extends PLModule
         $owners = $this->client->get_owners($liste);
 
         if (is_array($owners)) {
-            require_once 'trombi.inc.php';
             $moderos = list_sort_owners($owners[1]);
 
             $page->assign_by_ref('details', $owners[0]);

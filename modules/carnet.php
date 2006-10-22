@@ -233,8 +233,6 @@ class CarnetModule extends PLModule
         }
 
         if ($action == 'trombi') {
-            require_once 'trombi.inc.php';
-
             $trombi = new Trombi(array($this, '_get_list'));
             $trombi->setNbRows(4);
             $page->assign_by_ref('trombi',$trombi);

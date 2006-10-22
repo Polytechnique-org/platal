@@ -635,8 +635,6 @@ class ProfileModule extends PLModule
 
     function handler_trombi(&$page, $promo = null)
     {
-        require_once 'trombi.inc.php';
-
         $page->changeTpl('trombipromo.tpl');
         $page->assign('xorg_title', 'Polytechnique.org - Trombi Promo');
 

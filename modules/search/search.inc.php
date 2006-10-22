@@ -19,8 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once('xorg.plugin.inc.php');
-require_once("search/classes.inc.php");
+require_once dirname(__FILE__).'/classes.inc.php';
 
 // {{{ function advancedSearchFromInput
 function getadr_join($table) {
