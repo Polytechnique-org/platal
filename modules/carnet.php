@@ -320,7 +320,7 @@ class CarnetModule extends PLModule
 
         while (list($alias) = $citer->next()) {
             $user = get_user_details($alias);
-            $pdf->addContact($user, $arg0 == 'photos' || $arg1 == 'photos');
+            $pdf = ContactsPDF::addContact($pdf, $user, $arg0 == 'photos' || $arg1 == 'photos');
         }
         $pdf->Output();
 

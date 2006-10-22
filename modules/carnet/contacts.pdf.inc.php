@@ -32,9 +32,14 @@ class ContactsPDF extends FPDF
     var $broken = false;
     var $error  = false;
 
+    var $report = 0;
+
     function ContactsPDF()
     {
+        $this->report = error_reporting(0);
         parent::FPDF();
+        error_reporting($this->report);
+
         $this->AddFont('Vera Sans', '',  'Vera.php');
         $this->AddFont('Vera Sans', 'I', 'VeraIt.php');
         $this->AddFont('Vera Sans', 'B', 'VeraBd.php');
@@ -46,13 +51,15 @@ class ContactsPDF extends FPDF
         $this->AddPage();
     }
 
-    function Output()
+    function Output($name='mescontacts.pdf', $dest='I')
     {
         Header('Pragma: public');
-        parent::Output();
+        error_reporting(0);
+        parent::Output($name, $dest);
+        error_reporting($this->report);
     }
 
-    function Rotate($angle,$x=-1,$y=-1)
+    function Rotate($angle, $x=-1, $y=-1)
     {
         if ($x==-1) {
             $x = $this->x;
@@ -60,18 +67,18 @@ class ContactsPDF extends FPDF
         if ($y==-1) {
             $y=$this->y;
         }
-        if ($this->angle != 0) {
+        if (!empty($this->angle)) {
             $this->_out('Q');
         }
         $this->angle = $angle;
-        if ($angle != 0)
-        {
+        if ($angle != 0) {
             $angle*=M_PI/180;
             $c  = cos($angle);
             $s  = sin($angle);
             $cx = $x*$this->k;
             $cy = ($this->h-$y)*$this->k;
-            $this->_out(sprintf('q %.5f %.5f %.5f %.5f %.2f %.2f cm 1 0 0 1 %.2f %.2f cm',$c,$s,-$s,$c,$cx,$cy,-$cx,-$cy));
+            $this->_out(sprintf('q %.5f %.5f %.5f %.5f %.2f %.2f cm 1 0 0 1 %.2f %.2f cm',
+                                $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
         }
     }
 
@@ -80,21 +87,22 @@ class ContactsPDF extends FPDF
 
         $this->SetFont('Vera Sans', 'B', 20);
         $this->SetTextColor(230);
-        $this->Rotate(45,55,190);
-        $this->Text(55,190,"informations limitées à un usage");
-        $this->Text(40,210,"strictement personnel et non commercial");
+        $this->Rotate(45, 55, 190);
+        $this->Text(55, 190, "informations limitées à un usage");
+        $this->Text(40, 210, "strictement personnel et non commercial");
         $this->Rotate(0);
 
         $this->setLeftMargin(5);
         $this->setRightMargin(5);
         $this->SetFont('Vera Sans', 'B', 16);
         $this->SetY(5);
-        $this->SetTextColor(51,102,153);
-        $this->SetDrawColor(102,153,204);
+        $this->SetTextColor(51, 102, 153);
+        $this->SetDrawColor(102, 153, 204);
         $this->SetLineWidth(0.2);
         $this->SetFillColor(245, 248, 252);
         $this->Cell(200, 10, $this->title, 1, 1, 'C', 1);
-        $this->Image(dirname(__FILE__).'/../../htdocs/images/logo.png', 5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
+        $this->Image(dirname(__FILE__).'/../../htdocs/images/logo.png',
+                     5, 5, 10, 10, 'png', 'https://www.polytechnique.org/');
 
         $this->Ln(10);
         $this->y0 = $this->GetY();
@@ -106,7 +114,7 @@ class ContactsPDF extends FPDF
         $this->setLeftMargin(5);
         $this->setRightMargin(5);
         $this->SetY(-15);
-        $this->SetFont('Vera Sans','I',8);
+        $this->SetFont('Vera Sans', 'I', 8);
         $this->SetTextColor(128);
         $this->Cell(0, 10, 'Page '.$this->PageNo(), 0, 0, 'C');
         $this->Cell(0, 10, '(en date du '.strftime('%d %B %Y').')', 0, 0, 'R');
@@ -182,10 +190,13 @@ class ContactsPDF extends FPDF
 
         $this->TableRow($l, $r);
 
-        foreach ($a['tels'] as $tel)
-            if ($tel['tel']) {
-                $this->TableRow($tel['tel_type'], $tel['tel'], 'Mono');
+        if (!empty($a['tels'])) {
+            foreach ($a['tels'] as $tel) {
+                if (!empty($tel['tel'])) {
+                    $this->TableRow($tel['tel_type'], $tel['tel'], 'Mono');
+                }
             }
+        }
     }
 
     function AddressPro($a)
@@ -211,7 +222,7 @@ class ContactsPDF extends FPDF
         }
     }
 
-    function Error()
+    function Error($msg)
     {
         $this->error = true;
     }
@@ -246,7 +257,7 @@ class ContactsPDF extends FPDF
         return $count;
     }
 
-    function AddContact($x, $wp = true)
+    static function AddContact($self, $x, $wp = true)
     {
         /* infamous hack :
            1- we store the current state.
@@ -254,71 +265,79 @@ class ContactsPDF extends FPDF
               -> no ? ok
               -> yes ? then we have to create a col, and add the contact again.
         */
-        $old = $this;
+        $old = clone $self;
 
-        $this->SetFont('Vera Sans', '', 10);
-        $this->SetDrawColor(0);
-        $this->SetFillColor(245, 248, 252);
-        $this->SetLineWidth(0.4);
+        $self->SetFont('Vera Sans', '', 10);
+        $self->SetDrawColor(0);
+        $self->SetFillColor(245, 248, 252);
+        $self->SetLineWidth(0.4);
 
-        $nom = $x['prenom'].' '.($x['nom_usage'] ? "{$x['nom_usage']} ({$x['nom']})" : $x['nom'])." ({$x['promo']})";
+        $nom = $x['prenom'].' '
+              .($x['nom_usage'] ? "{$x['nom_usage']} ({$x['nom']})" : $x['nom'])
+              ." ({$x['promo']})";
         $ok  = false;
 
         if ($wp) {
-            $res = XDB::query("SELECT * FROM photo WHERE attachmime IN ('jpeg','png') AND uid={?}", $x['user_id']);
+            $res = XDB::query("SELECT * FROM photo WHERE attachmime IN ('jpeg', 'png') AND uid={?}",
+                              $x['user_id']);
             if ($i = $res->numRows()) {
-                $old2  = $this;
+                $old2  = clone $self;
                 $photo = $res->fetchOneAssoc();
                 $width = $photo['x'] * 20/$photo['y'];
                 $GLOBALS["p{$x['user_id']}"] = $photo['attach'];
 
-                $_x = $this->getX();
-                $_y = $this->getY();
-                $this->Cell(0, 20, '', '', 0, '', 1);
-                $this->Image("var://p{$x['user_id']}", $_x, $_y, $width, 20, $photo['attachmime']);
+                $_x = $self->getX();
+                $_y = $self->getY();
+                $self->Cell(0, 20, '', '', 0, '', 1);
+                error_reporting(0);
+                $self->Image("var://p{$x['user_id']}", $_x, $_y, $width, 20, $photo['attachmime']);
+                error_reporting($self->report);
 
-                if ($this->error) {
-                    $this = $old2;
+                if ($self->error) {
+                    $self = clone $old2;
                 } else {
-                    $this->setX($_x);
-                    $this->Cell($width, 20, '', "T");
-                    $h = 20 / $this->wordwrap($nom, 90-$width);
-                    $this->MultiCell(0, $h, $nom, 'T', 'C');
+                    $self->setX($_x);
+                    $self->Cell($width, 20, '', "T");
+                    $h = 20 / $self->wordwrap($nom, 90-$width);
+                    $self->MultiCell(0, $h, $nom, 'T', 'C');
                     $ok = true;
                 }
             }
         }
         if (!$ok) {
-            $this->MultiCell(0, 6, $nom, "T", 'C', 1);
+            $self->MultiCell(0, 6, $nom, "T", 'C', 1);
         }
 
         if ($x['mobile']) {
-            $this->Space();
-            $this->TableRow('mobile', $x['mobile'], 'Mono');
+            $self->Space();
+            $self->TableRow('mobile', $x['mobile'], 'Mono');
         }
 
         foreach ($x['adr'] as $a) {
-            $this->Space();
-            $this->Address($a);
+            $self->Space();
+            $self->Address($a);
         }
 
-        foreach ($x['adr_pro'] as $a) {
-            if ( ! ($a['entreprise'] || $a['tel'] || $a['fax']
-                    || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) )
-            {
-                continue;
+        if (!empty($x['adr_pro'])) {
+            foreach ($x['adr_pro'] as $a) {
+                if ( ! ($a['entreprise'] || $a['tel'] || $a['fax']
+                        || $a['adr1'] || $a['adr2'] || $a['adr3'] || $a['postcode'] || $a['city']) )
+                {
+                    continue;
+                }
+                $self->Space();
+                $self->AddressPro($a);
             }
-            $this->Space();
-            $this->AddressPro($a);
         }
 
-        $this->Space(0.4, 5);
+        $self->Space(0.4, 5);
 
-        if ($this->broken) {
+        if ($self->broken) {
             $old->NextCol();
-            $old->AddContact($x, $wp);
-            $this = $old;
+            $self = ContactsPDF::AddContact($old, $x, $wp);
         }
+
+        return $self;
     }
 
 }

@@ -26,6 +26,8 @@ function microtime_float()
 }
 $TIME_BEGIN = microtime_float();
 
+date_default_timezone_set('Europe/Paris');
+
 define('AUTH_PUBLIC', 0);
 define('AUTH_COOKIE', 1);
 define('AUTH_MDP',    2);
