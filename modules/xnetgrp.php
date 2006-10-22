@@ -199,13 +199,10 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        require_once 'lists.inc.php';
-
         new_groupadmin_page('xnet/groupe/mail.tpl');
-        $client =& lists_xmlrpc(S::v('uid'),
-                                S::v('password'),
-                                $globals->asso('mail_domain'));
-        $page->assign('listes', $client->get_lists());
+        $mmlist = new MMList(S::v('uid'), S::v('password'),
+                           $globals->asso('mail_domain'));
+        $page->assign('listes', $mmlist->get_lists());
 
         if (Post::has('send')) {
             $from  = Post::v('from');
@@ -215,7 +212,7 @@ class XnetGrpModule extends PLModule
             $mls = array_keys(Env::v('ml', array()));
 
             require_once 'xnet/mail.inc.php';
-            $tos = get_all_redirects(Post::has('membres'), $mls, $client);
+            $tos = get_all_redirects(Post::has('membres'), $mls, $mmlist);
             send_xnet_mails($from, $sujet, $body, $tos, Post::v('replyto'));
             $page->kill("Mail envoyé !");
             $page->assign('sent', true);
@@ -545,20 +542,19 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        require_once 'lists.inc.php';
         require_once 'xnet/mail.inc.php';
 
         new_groupadmin_page('xnet/groupe/annuaire-admin.tpl');
-        $client =& lists_xmlrpc(S::v('uid'), S::v('password'),
-                                $globals->asso('mail_domain'));
-        $lists  = $client->get_lists();
+        $mmlist = new MMList(S::v('uid'), S::v('password'),
+                             $globals->asso('mail_domain'));
+        $lists  = $mmlist->get_lists();
         if (!$lists) $lists = array();
         $listes = array_map(create_function('$arr', 'return $arr["list"];'), $lists);
 
         $subscribers = array();
 
         foreach ($listes as $list) {
-            list(,$members) = $client->get_members($list);
+            list(,$members) = $mmlist->get_members($list);
             $mails = array_map(create_function('$arr', 'return $arr[1];'), $members);
             $subscribers = array_unique(array_merge($subscribers, $mails));
         }
@@ -655,13 +651,12 @@ class XnetGrpModule extends PLModule
 
         if (($domain = $globals->asso('mail_domain')) && empty($user_same_email)) {
 
-            require 'lists.inc.php';
-            $client =& lists_xmlrpc(S::v('uid'), S::v('password'), $domain);
-            $listes = $client->get_lists($user['email2']);
+            $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
+            $listes = $mmlist->get_lists($user['email2']);
 
             foreach ($listes as $liste) {
                 if ($liste['sub'] == 2) {
-                    $client->mass_unsubscribe($liste['list'], Array($user['email2']));
+                    $mmlist->mass_unsubscribe($liste['list'], Array($user['email2']));
                     $page->trig("{$user['prenom']} {$user['nom']} a été"
                                 ." désinscrit de {$liste['list']}");
                 } elseif ($liste['sub']) {
@@ -695,9 +690,8 @@ class XnetGrpModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        require 'lists.inc.php';
-        $client =& lists_xmlrpc(S::v('uid'), S::v('password'),
-                                $globals->asso('mail_domain'));
+        $mmlist = new MMList(S::v('uid'), S::v('password'),
+                             $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
             if ($user['origine'] != 'X') {
@@ -732,10 +726,10 @@ class XnetGrpModule extends PLModule
                                ."actuellement une demande d'inscription en "
                                ."cours sur <strong>$ml@</strong> !!!");
                 } elseif ($ask) {
-                    $client->mass_subscribe($ml, Array($user['email2']));
+                    $mmlist->mass_subscribe($ml, Array($user['email2']));
                     $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@");
                 } else {
-                    $client->mass_unsubscribe($ml, Array($user['email2']));
+                    $mmlist->mass_unsubscribe($ml, Array($user['email2']));
                     $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@");
                 }
             }
@@ -760,7 +754,7 @@ class XnetGrpModule extends PLModule
         }
 
         $page->assign('user', $user);
-        $listes = $client->get_lists($user['email2']);
+        $listes = $mmlist->get_lists($user['email2']);
         $page->assign('listes', $listes);
 
         $res = XDB::query(

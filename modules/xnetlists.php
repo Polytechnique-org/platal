@@ -55,10 +55,10 @@ class XnetListsModule extends ListsModule
     {
         global $globals;
 
-        require_once 'lists.inc.php';
+        require_once dirname(__FILE__).'/lists/lists.inc.php';
 
-        $this->client =& lists_xmlrpc(S::v('uid'), S::v('password'),
-                                      $globals->asso('mail_domain'));
+        $this->client = new MMList(S::v('uid'), S::v('password'),
+                                   $globals->asso('mail_domain'));
 
         $page->useMenu();
         $page->assign('asso', $globals->asso());
@@ -148,7 +148,6 @@ class XnetListsModule extends ListsModule
             return;
         }
 
-        require_once 'lists.inc.php';
         $ret = $this->client->create_list(
                     $liste, Post::v('desc'), Post::v('advertise'),
                     Post::v('modlevel'), Post::v('inslevel'),

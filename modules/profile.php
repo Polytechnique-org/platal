@@ -271,9 +271,8 @@ class ProfileModule extends PLModule
             XDB::execute('REPLACE INTO groupex.membres (uid,asso_id)
                                      VALUES ({?}, {?})',
                                  S::v('uid'), $asso_id);
-            require_once 'lists.inc.php';
-            $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
-            $client->subscribe("promo".S::v('promo'));
+            $mmlist = new MMList(S::v('uid'), S::v('password'));
+            $mmlist->subscribe("promo".S::v('promo'));
         }
 
         if (is_ax_key_missing()) {

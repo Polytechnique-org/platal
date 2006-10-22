@@ -19,19 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ function lists_xmlrpc
-
-function &lists_xmlrpc($uid, $pass, $fqdn=null)
-{
-    global $globals;
-
-    $dom = is_null($fqdn) ? $globals->mail->domain : $fqdn;
-    $url = "http://$uid:$pass@{$globals->lists->rpchost}:{$globals->lists->rpcport}/$dom";
-    $client = new XmlrpcClient($url);
-    return $client;
-}
-
-// }}}
 // {{{ function list_sort_owners
 
 function list_sort_owners(&$members, $tri_promo = true) {
@@ -91,5 +78,4 @@ function list_header_decode($value) {
 }
 
 // }}}
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

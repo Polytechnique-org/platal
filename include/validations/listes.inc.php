@@ -101,15 +101,13 @@ class ListeReq extends Validate
 
     // }}}
     // {{{ function commit()
-    
+
     function commit()
     {
-        require_once 'lists.inc.php';
-
-        $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
-        $ret = $client->create_list($this->liste, $this->desc,
-            $this->advertise, $this->modlevel, $this->inslevel,
-            $this->owners, $this->members);
+        $list = new List(S::v('uid'), S::v('password'));
+        $ret = $list->create_list($this->liste, $this->desc, $this->advertise,
+                                  $this->modlevel, $this->inslevel,
+                                  $this->owners, $this->members);
         $liste = strtolower($this->liste);
         if ($ret) {
             foreach(Array($liste, $liste."-owner", $liste."-admin", $liste."-bounces") as $l) {

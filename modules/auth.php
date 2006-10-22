@@ -49,8 +49,6 @@ class AuthModule extends PLModule
     {
         global $globals;
 
-        require_once 'lists.inc.php';
-
         $cle = $globals->core->econfiance;
 
         if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
@@ -58,8 +56,8 @@ class AuthModule extends PLModule
             $res  = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
             $pass = $res->fetchOneCell();
 
-            $client =& lists_xmlrpc(10154, $pass, "x-econfiance.polytechnique.org");
-            $members = $client->get_members('membres');
+            $list = new MMList(10154, $pass, "x-econfiance.polytechnique.org");
+            $members = $list->get_members('membres');
             if (is_array($members)) {
                 $membres = Array();
                 foreach($members[1] as $member) {

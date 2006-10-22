@@ -54,9 +54,9 @@ class ListsModule extends PLModule
     {
         global $globals;
 
-        require_once 'lists.inc.php';
+        require_once dirname(__FILE__).'/lists/lists.inc.php';
 
-        $this->client =& lists_xmlrpc(S::v('uid'), S::v('password'));
+        $this->client = new MMList(S::v('uid'), S::v('password'));
         return $globals->mail->domain;
     }
 
@@ -465,7 +465,6 @@ class ListsModule extends PLModule
         }
 
         if (list($det,$mem,$own) = $this->client->get_members($liste)) {
-
             $membres = list_sort_members($mem, $tri_promo);
             $moderos = list_sort_owners($own, $tri_promo);
 
@@ -609,13 +608,11 @@ class ListsModule extends PLModule
     function handler_admin_all(&$page) {
         $page->changeTpl('listes/admin_all.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
-        require_once 'lists.inc.php';
-        
-        $client =& lists_xmlrpc(S::v('uid'), S::v('password'));
+
+        $client = new MMList(S::v('uid'), S::v('password'));
         $listes = $client->get_all_lists();
-        $page->assign_by_ref('listes',$listes);
+        $page->assign_by_ref('listes', $listes);
     }
-    
 }
 
 ?>

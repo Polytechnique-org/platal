@@ -74,11 +74,10 @@ class XnetModule extends PLModule
                                                 WHERE  alias LIKE {?}', '%@'.$domain);
                     $page->trig('suppression des alias mails');
 
-                    require_once('lists.inc.php');
-                    $client =& lists_xmlrpc(S::v('uid'), S::v('password'), $domain);
-                    if ($listes = $client->get_lists()) {
+                    $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
+                    if ($listes = $mmlist->get_lists()) {
                         foreach ($listes as $l) {
-                            $client->delete_list($l['list'], true);
+                            $mmlist->delete_list($l['list'], true);
                         }
                         $page->trig('mail lists surpprimées');
                     }

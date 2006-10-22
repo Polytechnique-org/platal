@@ -57,12 +57,9 @@ function user_clear_all_subs($user_id, $really_del=true)
     XDB::execute("DELETE FROM requests        WHERE user_id={?}", $uid);
     XDB::execute("DELETE FROM user_changes    WHERE user_id={?}", $uid);
     XDB::execute("DELETE FROM watch_sub       WHERE uid={?}", $uid);
-    
-    include_once('lists.inc.php');
-    if (function_exists(lists_xmlrpc)) {
-        $client =& lists_xmlrpc(S::v('id'), S::v('password'));
-        $client->kill($alias, $really_del);
-    }
+
+    $mmlist = new MMList(S::v('id'), S::v('password'));
+    $mmlist->kill($alias, $really_del);
 }
 
 // }}}
