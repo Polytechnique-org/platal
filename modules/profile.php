@@ -659,34 +659,6 @@ class ProfileModule extends PLModule
         }
     }
 
-    function vcard_escape($text)
-    {
-        return preg_replace('/[,;]/', '\\\\$0', $text);
-    }
-
-    function format_adr($params, &$smarty)
-    {
-        // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
-        extract($params['adr']);
-        $adr = trim($adr1);
-        $adr = trim("$adr\n$adr2");
-        $adr = trim("$adr\n$adr3");
-        return $this->vcard_text_encode(';;'
-                . $this->vcard_escape($adr) . ';' 
-                . $this->vcard_escape($city) . ';'
-                . $this->vcard_escape($region) . ';'
-                . $this->vcard_escape($postcode) . ';'
-                . $this->vcard_escape($country), false);
-    }
-
-    function vcard_text_encode($text, $escape = true)
-    {
-        if ($escape) {
-            $text = $this->vcard_escape($text);
-        }
-        return str_replace("\n", "\\n", $text); //implode('\n', explode("\n", $text));
-    }
-
     function handler_vcard(&$page, $x = null)
     {
         if (is_null($x)) {
@@ -699,49 +671,9 @@ class ProfileModule extends PLModule
             $x = substr($x, 0, strlen($x) - 4);
         }
 
-        $page->changeTpl('vcard.tpl', NO_SKIN);
-        require_once 'xorg.misc.inc.php';
-        require_once 'user.func.inc.php';
-
-        $page->register_modifier('vcard_enc', array($this, 'vcard_text_encode'));
-        $page->register_function('format_adr', array($this, 'format_adr'));
-
-        $login = get_user_forlife($x);
-        $user  = get_user_details($login);
-        
-        if (strlen(trim($user['freetext']))) {
-            $user['freetext'] = html_entity_decode($user['freetext']);
-        }
-
-        // alias virtual
-        $res = XDB::query(
-                "SELECT alias
-                   FROM virtual
-             INNER JOIN virtual_redirect USING(vid)
-             INNER JOIN auth_user_quick  ON ( user_id = {?} AND emails_alias_pub = 'public' )
-                  WHERE ( redirect={?} OR redirect={?} )
-                        AND alias LIKE '%@{$globals->mail->alias_dom}'",
-                S::v('uid'),
-                $user['forlife'].'@'.$globals->mail->domain,
-                $user['forlife'].'@'.$globals->mail->domain2);
-
-        $user['virtualalias'] = $res->fetchOneCell();
-        
-        // get photo
-        $res = XDB::query(
-                "SELECT attach, attachmime
-                   FROM photo   AS p
-             INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
-                  WHERE a.alias = {?}", $login);
-        if ($res->numRows()) {
-            $user['photo'] = $res->fetchOneAssoc();
-        }
-        $page->assign('users', array($user));
-
-        header("Pragma: ");
-        header("Cache-Control: ");
-        header("Content-type: text/x-vcard; charset=iso-8859-15");
-        header("Content-Transfer-Encoding: 8bit");
+        require_once('vcard.inc.php');
+        $vcard = new VCard($x);
+        $vcard->do_page($page);
     }
 
     function handler_admin_trombino(&$page, $uid = null, $action = null) {

@@ -30,15 +30,31 @@ Le groupe {$asso.nom} compte {$nb_tot} membres.
 Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'inscription 'extérieur' dans la colonne promotion.
 </p>
 
-{if $admin}
 <p class="descr">
-Fonctionnalités visibles uniquement par les administrateurs :
+Tu peux également :
 </p>
 <ul class="descr">
-  <li><a href="{$platal->ns}member/new">Ajouter un membre</a></li>
-  <li><a href="{$platal->ns}admin/annuaire">Synchroniser annuaire et Listes de diffusion</a></li>
+  <li>
+    <a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">
+      {icon name=vcard title="Carte de visite"} 
+      Ajouter les membres à ton carnet d'adresse
+    </a>
+  </li>
+  {if $admin}
+  <li>
+    <a href="{$platal->ns}member/new">
+      {icon name=add title="Ajouter un membre"} 
+      Ajouter un membre
+    </a>
+  </li>
+  <li>
+    <a href="{$platal->ns}admin/annuaire">
+      {icon name=wand title="Synchroniser"} 
+      Synchroniser annuaire et Listes de diffusion
+    </a>
+  </li>
+  {/if}
 </ul>
-{/if}
 
 <p class="center">
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$request_group}class="erreur"{/if}>tout</a>]

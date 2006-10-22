@@ -24,15 +24,16 @@ class CarnetModule extends PLModule
     function handlers()
     {
         return array(
-            'carnet'              => $this->make_hook('index',    AUTH_COOKIE),
-            'carnet/panel'        => $this->make_hook('panel',    AUTH_COOKIE),
-            'carnet/notifs'       => $this->make_hook('notifs',   AUTH_COOKIE),
+            'carnet'                => $this->make_hook('index',    AUTH_COOKIE),
+            'carnet/panel'          => $this->make_hook('panel',    AUTH_COOKIE),
+            'carnet/notifs'         => $this->make_hook('notifs',   AUTH_COOKIE),
 
-            'carnet/contacts'     => $this->make_hook('contacts', AUTH_COOKIE),
-            'carnet/contacts/pdf' => $this->make_hook('pdf',      AUTH_COOKIE),
+            'carnet/contacts'       => $this->make_hook('contacts', AUTH_COOKIE),
+            'carnet/contacts/pdf'   => $this->make_hook('pdf',      AUTH_COOKIE),
+            'carnet/contacts/ical'  => $this->make_hook('ical',     AUTH_COOKIE),
+            'carnet/contacts/vcard' => $this->make_hook('vcard',    AUTH_COOKIE),
 
-            'carnet/rss'          => $this->make_hook('rss',      AUTH_PUBLIC),
-            'carnet/ical'         => $this->make_hook('ical',     AUTH_PUBLIC),
+            'carnet/rss'            => $this->make_hook('rss',      AUTH_PUBLIC),
         );
     }
 
@@ -371,6 +372,16 @@ class CarnetModule extends PLModule
         $page->assign('events', $annivs);
 
         header('Content-Type: text/calendar; charset=utf-8');
+    }
+
+    function handler_vcard(&$page)
+    {
+        $res = XDB::query('SELECT contact
+                             FROM contacts
+                            WHERE uid = {?}', S::v('uid'));
+        require_once('vcard.inc.php');
+        $vcard = new VCard($res->fetchColumn());
+        $vcard->do_page(&$page);
     }
 }
 

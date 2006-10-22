@@ -54,18 +54,24 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   [<a href="carnet/contacts/pdf/mescontacts.pdf" class='popup'><strong>tri par noms</strong></a>]
   </li>
 </ul>
-<table style="width: 100%">
-  <tr>
-    <td>
-      Tu peux récupérer un calendrier iCal avec l'anniversaire de tes contacts.
-    </td>
-    <td class="right">
-      <a href="carnet/ical/anniv-x.ics">
-        {icon name=calendar_view_day title='Anniversaires'}
-      </a>
-    </td>
-  </tr>
-</table>
+
+<p>
+  Tu peux télécharger une de tes contacts :
+</p>
+<ul>
+  <li>
+    {icon name=calendar_view_day title='Anniversaires'} 
+    <a href="carnet/contacts/ical/anniv-x.ics">
+      Le calendrier des anniversaires
+    </a>
+  </li>
+  <li>
+    {icon name=vcard title='Carte de visite'} 
+    <a href="carnet/contacts/vcard/MesContactsXorg.vcf">
+      La carte de visite permettant de les insérer dans ton carnet d'adresse
+    </a>
+  </li>
+</ul>
 
 {if $trombi}
 

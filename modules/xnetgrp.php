@@ -65,14 +65,15 @@ class XnetGrpModule extends PLModule
     function handlers()
     {
         return array(
-            '%grp'            => $this->make_hook('index',     AUTH_PUBLIC),
-            '%grp/asso.php'   => $this->make_hook('index',     AUTH_PUBLIC),
-            '%grp/logo'       => $this->make_hook('logo',      AUTH_PUBLIC),
-            '%grp/edit'       => $this->make_hook('edit',      AUTH_MDP),
-            '%grp/mail'       => $this->make_hook('mail',      AUTH_MDP),
-            '%grp/annuaire'   => $this->make_hook('annuaire',  AUTH_MDP),
-            '%grp/subscribe'  => $this->make_hook('subscribe', AUTH_MDP),
-            '%grp/paiement'   => $this->make_hook('paiement',  AUTH_MDP),
+            '%grp'                => $this->make_hook('index',     AUTH_PUBLIC),
+            '%grp/asso.php'       => $this->make_hook('index',     AUTH_PUBLIC),
+            '%grp/logo'           => $this->make_hook('logo',      AUTH_PUBLIC),
+            '%grp/edit'           => $this->make_hook('edit',      AUTH_MDP),
+            '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP),
+            '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP),
+            '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
+            '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
+            '%grp/paiement'       => $this->make_hook('paiement',  AUTH_MDP),
 
             '%grp/admin/annuaire'
                  => $this->make_hook('admin_annuaire', AUTH_MDP),
@@ -324,6 +325,22 @@ class XnetGrpModule extends PLModule
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
 
         $page->assign('ann', $ann);
+    }
+
+    function handler_vcard(&$page)
+    {
+        global $globals;
+
+        if (($globals->asso('pub') == 'public' && is_member()) || may_update()) {
+            $res = XDB::query('SELECT uid
+                                 FROM groupex.membres
+                                WHERE asso_id = {?}', $globals->asso('id'));
+            require_once('vcard.inc.php');
+            $vcard = new VCard($res->fetchColumn(), 'Membre du groupe ' . $globals->asso('nom'));
+            $vcard->do_page($page);
+        } else {
+            return PL_NOTALLOWED;
+        }
     }
 
     function handler_subscribe(&$page, $u = null)

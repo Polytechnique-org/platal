@@ -80,6 +80,6 @@ PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|base64_enco
 {/if}
 SORT-STRING:{$vcard.nom|vcard_enc}
 REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
-END:VCARD
+END:VCARD{"\n"}
 {/foreach}
 {* vim:set et sw=2 sts=2 sws=2: *}
