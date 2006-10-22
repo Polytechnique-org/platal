@@ -37,8 +37,6 @@ class VCard
         }
     }
 
-    // {{{ text formatting stuff
-
     function escape($text)
     {
         return preg_replace('/[,;:]/', '\\\\$0', $text);
@@ -66,9 +64,6 @@ class VCard
         }
         return preg_replace("/(\r\n|\n|\r)/", '\n', $text);
     }
-
-    // }}}
-    // {{{ function add_user()
 
     function add_user($x, $freetext)
     {
@@ -114,9 +109,6 @@ class VCard
         $this->users[] = $user;
     }
 
-    // }}}
-    // {{{ function do_page()
-
     function do_page(&$page)
     {
         $page->changeTpl('vcard.tpl', NO_SKIN);
@@ -129,8 +121,6 @@ class VCard
         header("Content-type: text/x-vcard; charset=iso-8859-15");
         header("Content-Transfer-Encoding: 8bit");
     }
-
-    // }}}
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
