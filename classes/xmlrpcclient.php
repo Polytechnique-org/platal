@@ -185,7 +185,7 @@ class XmlrpcClient
         }
     }
 
-    function __call($function, $arguments, &$return)
+    function __call($function, $arguments)
     {
         $requestprms['host']    = $this->urlparts['host'];
         $requestprms['port']    = $this->urlparts['port'];
@@ -202,15 +202,12 @@ class XmlrpcClient
             print('Error in xmlrpc call \''.$function.'\''."\n");
             print('  code  : '.$result['faultCode']."\n");
             print('  message: '.$result['faultString']."\n");
-            return false;
+            return null;
         }
-        $return = $result;
-        return true;
+        return $result;
     }
 
 }
-
-overload('XmlrpcClient');
 
 // vim:set et sw=4 sts=4 sws=4:
 ?>
