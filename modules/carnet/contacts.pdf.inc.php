@@ -21,18 +21,20 @@
 
 define ('FPDF_FONTPATH', dirname(__FILE__).'/fonts/');
 require_once '/usr/share/fpdf/fpdf.php';
-require_once dirname(__FILE__).'/../../classes/varstream.php';
+
+VarStream::init();
 
 class ContactsPDF extends FPDF
 {
-    var $col = 0;
-    var $y0;
+    public $title  = "Mes contacts sur Polytechnique.org";
 
-    var $title  = "Mes contacts sur Polytechnique.org";
-    var $broken = false;
-    var $error  = false;
+    private $col = 0;
+    private $y0;
 
-    var $report = 0;
+    private $broken = false;
+    private $error  = false;
+
+    private $report = 0;
 
     function ContactsPDF()
     {
@@ -339,7 +341,6 @@ class ContactsPDF extends FPDF
 
         return $self;
     }
-
 }
 
 ?>

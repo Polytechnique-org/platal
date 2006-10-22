@@ -21,14 +21,9 @@
 
 class VarStream
 {
-    // {{{ properties
-
     // Stream handler to read from global variables
-    var $varname;
-    var $position;
-
-    // }}}
-    // {{{ stream_open
+    private $varname;
+    private $position;
 
     function stream_open($path, $mode, $options, &$opened_path)
     {
@@ -43,15 +38,9 @@ class VarStream
         return true;
     }
 
-    // }}}
-    // {{{ stream_close
-
     function stream_close()
     {
     }
-
-    // }}}
-    // {{{ stream_read
 
     function stream_read($count)
     {
@@ -59,9 +48,6 @@ class VarStream
         $this->position += strlen($ret);
         return $ret;
     }
-
-    // }}}
-    // {{{ stream_write
 
     function stream_write($data)
     {
@@ -74,24 +60,15 @@ class VarStream
         $this->position += $len;
     }
 
-    // }}}
-    // {{{ stream_eof
-
     function stream_eof()
     {
         return $this->position >= strlen($GLOBALS[$this->varname]);
     }
 
-    // }}}
-    // {{{ stream_tell
-
     function stream_tell()
     {
         return $this->position;
     }
-
-    // }}}
-    // {{{ stream_seek
 
     function stream_seek($offs, $whence)
     {
@@ -116,16 +93,14 @@ class VarStream
         return 0;
     }
 
-    // }}}
-    // {{{ stream_flush
-
     function stream_flush()
     {
     }
 
-    // }}}
+    static function init()
+    {
+        stream_wrapper_register('var','VarStream');
+    }
 }
-
-stream_wrapper_register('var','VarStream');
 
 ?>
