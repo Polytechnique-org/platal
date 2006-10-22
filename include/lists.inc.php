@@ -72,8 +72,8 @@ function list_sort_owners(&$members, $tri_promo = true) {
 // {{{ function list_sort_members
 
 function list_sort_members(&$members, $tri_promo = true) {
-    $pi1 = create_function('$arr', 'return $arr[1];');
-    return list_sort_owners(array_map($pi1, $members), $tri_promo);
+    $member_list = array_map(create_function('$arr', 'return $arr[1];'), $members);
+    return list_sort_owners($member_list, $tri_promo);
 }
 
 // }}}
