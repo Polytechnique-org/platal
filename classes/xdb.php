@@ -23,16 +23,11 @@ class XDB
 {
     var $_trace_data = array();
 
-    // {{{ public static function _prepare
-
     public static function _prepare($args) {
         $query    = array_map(Array('XDB', '_db_escape'), $args);
         $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
     }
-
-    // }}}
-    // {{{ public static function _reformatQuery
 
     public static function _reformatQuery($query)
     {
@@ -41,7 +36,8 @@ class XDB
         foreach ($query as $key=>$line) {
             $local = -2;
             if (preg_match('/^([A-Z]+(?:\s+(?:JOIN|BY|FROM|INTO))?)\s+(.*)/', $line, $matches)
-                && $matches[1] != 'AND' && $matches[1] != 'OR') {
+            && $matches[1] != 'AND' && $matches[1] != 'OR')
+            {
                 $local  = strlen($matches[1]);
                 $line   = $matches[1] . '  ' . $matches[2];
                 $length = max($length, $local);
@@ -57,9 +53,6 @@ class XDB
         }
         return $res;
     }
-
-    // }}}
-    // {{{ public static function _query
 
     public static function _query($query) {
         global $globals;
@@ -87,48 +80,30 @@ class XDB
         return $res;
     }
 
-    // }}}
-    // {{{ public static function query
-
     public static function query()
     {
         return new XOrgDBResult(XDB::_prepare(func_get_args()));
     }
-
-    // }}}
-    // {{{ public static function execute()
 
     public static function execute()
     {
         return XDB::_query(XDB::_prepare(func_get_args()));
     }
 
-    // }}}
-    // {{{ public static function iterator()
-
     public static function iterator()
     {
         return new XOrgDBIterator(XDB::_prepare(func_get_args()));
     }
-
-    // }}}
-    // {{{ public static function iterRow()
 
     public static function iterRow()
     {
         return new XOrgDBIterator(XDB::_prepare(func_get_args()), MYSQL_NUM);
     }
 
-    // }}}
-    // {{{ public static function insertId()
-
     public static function insertId()
     {
         return mysql_insert_id();
     }
-
-    // }}}
-    // {{{ public static function _db_escape
 
     public static function _db_escape($var)
     {
@@ -156,8 +131,6 @@ class XDB
         }
     }
 
-    // }}}
-
     public static function trace_format(&$page, $template = 'database-debug.tpl') {
         $page->assign('trace_data', @$GLOBALS['XDB::trace_data']);
         $page->assign('db_error', @$GLOBALS['XDB::error']);
@@ -167,20 +140,13 @@ class XDB
 
 class XOrgDBResult
 {
-    // {{{ properties
 
     var $_res;
-
-    // }}}
-    // {{{ constructor
 
     function XOrgDBResult($query)
     {
         $this->_res = XDB::_query($query);
     }
-
-    // }}}
-    // {{{ destructor
 
     function free()
     {
@@ -188,24 +154,15 @@ class XOrgDBResult
         unset($this);
     }
 
-    // }}}
-    // {{{ function fetchRow
-
     function _fetchRow()
     {
         return mysql_fetch_row($this->_res);
     }
 
-    // }}}
-    // {{{ function fetchAssoc
-
     function _fetchAssoc()
     {
         return mysql_fetch_assoc($this->_res);
     }
-
-    // }}}
-    // {{{ function fetchAllRow
 
     function fetchAllRow()
     {
@@ -216,9 +173,6 @@ class XOrgDBResult
         return $result;
     }
 
-    // }}}
-    // {{{ function fetchAllAssoc
-
     function fetchAllAssoc()
     {
         $result = Array();
@@ -228,18 +182,12 @@ class XOrgDBResult
         return $result;
     }
 
-    // }}}
-    // {{{ function fetchOneAssoc()
-
     function fetchOneAssoc()
     {
         $tmp = $this->_fetchAssoc();
         $this->free();
         return $tmp;
     }
-
-    // }}}
-    // {{{ function fetchOneRow()
 
     function fetchOneRow()
     {
@@ -248,18 +196,12 @@ class XOrgDBResult
         return $tmp;
     }
 
-    // }}}
-    // {{{ function fetchOneCell()
-
     function fetchOneCell()
     {
         $tmp = $this->_fetchRow();
         $this->free();
         return $tmp[0];
     }
-
-    // }}}
-    // {{{ function fetchColumn()
 
     function fetchColumn($key = 0)
     {
@@ -277,39 +219,26 @@ class XOrgDBResult
         return $res;
     }
 
-    // }}}
-    // {{{ function numRows
-
     function numRows()
     {
         return mysql_num_rows($this->_res);
     }
-
-    // }}}
 }
 
 class XOrgDBIterator
 {
-    // {{{ properties
+    private $_result;
+    private $_pos;
+    private $_total;
+    private $_mode = MYSQL_ASSOC;
 
-    var $_result;
-    var $_pos;
-    var $_total;
-    var $_mode = MYSQL_ASSOC;
-
-    // }}}
-    // {{{ constructor
-
-    function XOrgDBIterator($query, $mode = MYSQL_ASSOC)
+    function __construct($query, $mode = MYSQL_ASSOC)
     {
         $this->_result =& new XOrgDBResult($query);
         $this->_pos    = 0;
         $this->_total  = $this->_result->numRows();
         $this->_mode   = $mode;
     }
-
-    // }}}
-    // {{{ function next ()
 
     function next()
     {
@@ -322,31 +251,20 @@ class XOrgDBIterator
         return $this->_mode != MYSQL_ASSOC ? $this->_result->_fetchRow() : $this->_result->_fetchAssoc();
     }
 
-    // }}}
-    // {{{ function first
-
     function first()
     {
         return $this->_pos == 1;
     }
-
-    // }}}
-    // {{{ function last
 
     function last()
     {
         return $this->_last == $this->_total;
     }
 
-    // }}}
-    // {{{ function total()
-
     function total()
     {
         return $this->_total;
     }
-
-    // }}}
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
