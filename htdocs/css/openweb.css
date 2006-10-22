@@ -454,6 +454,7 @@ div.adresse div.titre { color: purple; }
     padding: 4px 2px;
     border: 1px solid black;
     width: 80%;
+    white-space: pre;
 }
 
 #dev {
