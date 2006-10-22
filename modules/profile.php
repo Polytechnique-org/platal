@@ -659,6 +659,11 @@ class ProfileModule extends PLModule
         }
     }
 
+    function vcard_escape($text)
+    {
+        return preg_replace('/[,;]/', '\\\\$0', $text);
+    }
+
     function format_adr($params, &$smarty)
     {
         // $adr1, $adr2, $adr3, $postcode, $city, $region, $country
@@ -666,15 +671,20 @@ class ProfileModule extends PLModule
         $adr = trim($adr1);
         $adr = trim("$adr\n$adr2");
         $adr = trim("$adr\n$adr3");
-        return $this->quoted_printable_encode(";;$adr;$city;$region;$postcode;$country");
+        return $this->vcard_text_encode(';;'
+                . $this->vcard_escape($adr) . ';' 
+                . $this->vcard_escape($city) . ';'
+                . $this->vcard_escape($region) . ';'
+                . $this->vcard_escape($postcode) . ';'
+                . $this->vcard_escape($country), false);
     }
 
-    function quoted_printable_encode($text)
+    function vcard_text_encode($text, $escape = true)
     {
-        return implode("\n", 
-                       array_map('trim',
-                                 explode("\n", 
-                                         quoted_printable_encode($text))));
+        if ($escape) {
+            $text = $this->vcard_escape($text);
+        }
+        return str_replace("\n", "\\n", $text); //implode('\n', explode("\n", $text));
     }
 
     function handler_vcard(&$page, $x = null)
@@ -693,7 +703,7 @@ class ProfileModule extends PLModule
         require_once 'xorg.misc.inc.php';
         require_once 'user.func.inc.php';
 
-        $page->register_modifier('qp_enc', array($this, 'quoted_printable_encode'));
+        $page->register_modifier('vcard_enc', array($this, 'vcard_text_encode'));
         $page->register_function('format_adr', array($this, 'format_adr'));
 
         $login = get_user_forlife($x);
@@ -719,19 +729,19 @@ class ProfileModule extends PLModule
         
         // get photo
         $res = XDB::query(
-                "SELECT attach
+                "SELECT attach, attachmime
                    FROM photo   AS p
              INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
                   WHERE a.alias = {?}", $login);
         if ($res->numRows()) {
-            $user['photo'] = $res->fetchOneCell();
+            $user['photo'] = $res->fetchOneAssoc();
         }
-        $page->assign_by_ref('vcard', $user);
+        $page->assign('users', array($user));
 
         header("Pragma: ");
         header("Cache-Control: ");
-        header("Content-type: text/x-vcard\n");
-        header("Content-Transfer-Encoding: Quoted-Printable\n");
+        header("Content-type: text/x-vcard; charset=iso-8859-15");
+        header("Content-Transfer-Encoding: 8bit");
     }
 
     function handler_admin_trombino(&$page, $uid = null, $action = null) {

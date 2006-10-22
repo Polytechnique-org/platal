@@ -19,18 +19,19 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
+{foreach from="$users" item=vcard}
 BEGIN:VCARD
 VERSION:3.0
 {if $vcard.nom_usage}
-FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom_usage` (`$vcard.nom`)"|qp_enc}
+FN:{$vcard.prenom|vcard_enc} {$vcard.nom_usage|vcard_enc} ({$vcard.nom|vcard_enc})
 {else}
-FN;ENCODING=QUOTED-PRINTABLE:{"`$vcard.prenom` `$vcard.nom`"|qp_enc}
+FN:{$vcard.prenom|vcard_enc} {$vcard.nom|vcard_enc}
 {/if}
-N;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc};{$vcard.prenom|qp_enc};{$vcard.nom_usage|qp_enc};;
+N:{$vcard.nom|vcard_enc};{$vcard.prenom|vcard_enc};{$vcard.nom_usage|vcard_enc};;
 {if $vcard.nickname}
-NICKNAME;ENCODING=QUOTED-PRINTABLE:{$vcard.nickname}
+NICKNAME:{$vcard.nickname|vcard_enc}
 {/if}
-EMAIL;TYPE=internet:{$vcard.bestalias}@{#globals.mail.domain#}
+EMAIL;TYPE=internet,pref:{$vcard.bestalias}@{#globals.mail.domain#}
 {if $vcard.bestalias neq $vcard.forlife}
 EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain#}
 {/if}
@@ -38,46 +39,47 @@ EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain#}
 EMAIL;TYPE=internet:{$vcard.virtualalias}
 {/if}
 {if $vcard.mobile}
-TEL;TYPE=cell;ENCODING=QUOTED-PRINTABLE:{$vcard.mobile|qp_enc}
+TEL;TYPE=cell:{$vcard.mobile|vcard_enc}
 {/if}
 {if $vcard.adr_pro}
 {if $vcard.adr_pro[0].entreprise}
-ORG;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].entreprise|qp_enc}
+ORG:{$vcard.adr_pro[0].entreprise|vcard_enc}
 {/if}
 {if $vcard.adr_pro[0].poste}
-TITLE;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].poste|qp_enc}
+TITLE:{$vcard.adr_pro[0].poste|vcard_enc}
 {/if}
 {if $vcard.adr_pro[0].fonction}
-ROLE;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].fonction|qp_enc}
+ROLE:{$vcard.adr_pro[0].fonction|vcard_enc}
 {/if}
 {if $vcard.adr_pro[0].tel}
-TEL;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].tel|qp_enc}
+TEL;TYPE=work:{$vcard.adr_pro[0].tel|vcard_enc}
 {/if}
 {if $vcard.adr_pro[0].fax}
-FAX;TYPE=work;ENCODING=QUOTED-PRINTABLE:{$vcard.adr_pro[0].fax|qp_enc}
+FAX;TYPE=work:{$vcard.adr_pro[0].fax|vcard_enc}
 {/if}
-ADR;TYPE=work;ENCODING=QUOTED-PRINTABLE:{format_adr adr=$vcard.adr_pro[0]}
+ADR;TYPE=work:{format_adr adr=$vcard.adr_pro[0]}
 {/if}
 {foreach item=adr from=$vcard.adr}
-ADR;TYPE=home{if $adr.courier},postal{/if};ENCODING=QUOTED-PRINTABLE:{format_adr adr=$adr}
+ADR;TYPE=home{if $adr.courier},postal{/if}:{format_adr adr=$adr}
 {foreach item=tel from=$adr.tels}
 {if $tel.tel}
-{if $tel.tel_type neq 'Fax'}TEL{else}FAX{/if};TYPE=home;ENCODING=QUOTED-PRINTABLE:{$tel.tel|qp_enc}
+{if $tel.tel_type neq 'Fax'}TEL{else}FAX{/if};TYPE=home:{$tel.tel}
 {/if}
 {/foreach}
 {/foreach}
 {if $vcard.web}
-URL;ENCODING=QUOTED-PRINTABLE:{$vcard.web|qp_enc}
+URL:{$vcard.web}
 {/if}
 {if strlen(trim($vcard.freetext)) == 0}
-NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)"|qp_enc}
+NOTE:(X{$vcard.promo})
 {else}
-NOTE;ENCODING=QUOTED-PRINTABLE:{"(X`$vcard.promo`)\n`$vcard.freetext`"|qp_enc}
+NOTE:(X{$vcard.promo})\n{$vcard.freetext|vcard_enc}
 {/if}
 {if $vcard.photo}
-PHOTO;BASE64:{$vcard.photo|base64_encode}
+PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|base64_encode}
 {/if}
-SORT-STRING;ENCODING=QUOTED-PRINTABLE:{$vcard.nom|qp_enc}
+SORT-STRING:{$vcard.nom|vcard_enc}
 REV:{$vcard.date|date_format:"%Y%m%dT000000Z"}
 END:VCARD
+{/foreach}
 {* vim:set et sw=2 sts=2 sws=2: *}
