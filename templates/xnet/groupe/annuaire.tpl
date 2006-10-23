@@ -35,10 +35,11 @@ Tu peux également :
 </p>
 <ul class="descr">
   <li>
-    <a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">
+    <a href="{$platal->ns}annuaire/vcard/photos/{$asso.diminutif}.vcf">
       {icon name=vcard title="Carte de visite"} 
       Ajouter les membres à ton carnet d'adresse
     </a>
+    (<a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">sans les photos</a>)
   </li>
   {if $admin}
   <li>

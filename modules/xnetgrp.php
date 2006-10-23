@@ -324,7 +324,7 @@ class XnetGrpModule extends PLModule
         $page->assign('ann', $ann);
     }
 
-    function handler_vcard(&$page)
+    function handler_vcard(&$page, $photos = null)
     {
         global $globals;
 
@@ -333,7 +333,7 @@ class XnetGrpModule extends PLModule
                                  FROM groupex.membres
                                 WHERE asso_id = {?}', $globals->asso('id'));
             require_once('vcard.inc.php');
-            $vcard = new VCard($res->fetchColumn(), 'Membre du groupe ' . $globals->asso('nom'));
+            $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
             $vcard->do_page($page);
         } else {
             return PL_NOTALLOWED;

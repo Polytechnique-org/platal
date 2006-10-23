@@ -104,7 +104,7 @@ class ListeReq extends Validate
 
     function commit()
     {
-        $list = new List(S::v('uid'), S::v('password'));
+        $list = new MMList(S::v('uid'), S::v('password'));
         $ret = $list->create_list($this->liste, $this->desc, $this->advertise,
                                   $this->modlevel, $this->inslevel,
                                   $this->owners, $this->members);

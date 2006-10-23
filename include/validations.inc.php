@@ -32,7 +32,7 @@ class ValidateIterator extends XOrgDBIterator
 
     function ValidateIterator ()
     {
-        parent::XOrgDBIterator('SELECT data,stamp FROM requests ORDER BY stamp', MYSQL_NUM);
+        parent::__construct('SELECT data,stamp FROM requests ORDER BY stamp', MYSQL_NUM);
     }
 
     // }}}

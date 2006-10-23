@@ -372,13 +372,14 @@ class CarnetModule extends PLModule
         header('Content-Type: text/calendar; charset=utf-8');
     }
 
-    function handler_vcard(&$page)
+    function handler_vcard(&$page, $photos = null)
     {
         $res = XDB::query('SELECT contact
                              FROM contacts
                             WHERE uid = {?}', S::v('uid'));
+
         require_once('vcard.inc.php');
-        $vcard = new VCard($res->fetchColumn());
+        $vcard = new VCard($res->fetchColumn(), $photos == 'photos');
         $vcard->do_page(&$page);
     }
 }

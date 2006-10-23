@@ -25,9 +25,11 @@ require_once('user.func.inc.php');
 class VCard
 {
     var $users = array();
+    var $photos;
 
-    function VCard($users, $freetext = null)
+    function VCard($users, $photos = true, $freetext = null)
     {
+        $this->photos = $photos;
         if (is_array($users)) {
             foreach ($users as $user) {
                 $this->add_user($user, $freetext);
@@ -98,13 +100,15 @@ class VCard
         $user['virtualalias'] = $res->fetchOneCell();
 
         // get photo
-        $res = XDB::query(
-                "SELECT attach, attachmime
-                   FROM photo   AS p
-             INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
-                  WHERE a.alias = {?}", $login);
-        if ($res->numRows()) {
-            $user['photo'] = $res->fetchOneAssoc();
+        if ($this->photos) {
+            $res = XDB::query(
+                    "SELECT attach, attachmime
+                       FROM photo   AS p
+                 INNER JOIN aliases AS a ON (a.id = p.uid AND a.type = 'a_vie')
+                      WHERE a.alias = {?}", $login);
+            if ($res->numRows()) {
+                $user['photo'] = $res->fetchOneAssoc();
+            }
         }
         $this->users[] = $user;
     }

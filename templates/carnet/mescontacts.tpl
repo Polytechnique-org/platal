@@ -67,9 +67,8 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   </li>
   <li>
     {icon name=vcard title='Carte de visite'} 
-    <a href="carnet/contacts/vcard/MesContactsXorg.vcf">
-      La carte de visite permettant de les insérer dans ton carnet d'adresse
-    </a>
+    <a href="carnet/contacts/vcard/photos/MesContactsXorg.vcf">La carte de visite électronique</a>
+    (<a href="carnet/contacts/vcard/MesContactsXorg.vcf">sans les photos</a>)
   </li>
 </ul>
 
