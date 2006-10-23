@@ -48,7 +48,7 @@ function get_event_detail($eid, $item_id = false)
 
     $evt = $res->fetchOneAssoc();
 
-    if (!$evt) {
+    if (!$evt || ($evt['accept_nonmembre'] == 0 && !is_member() && !may_update())) {
         return null;
     }
 

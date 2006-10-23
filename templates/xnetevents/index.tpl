@@ -42,7 +42,9 @@
   </colgroup>
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
-      {$e.intitule}
+      <a href="{$platal->ns}events/ical/{$e.eid}/{$e.short_name}.ics">
+        {icon name=calendar_view_day} {$e.intitule}
+      </a>
       {if !$e.inscr_open}
       (<span class="error">Inscriptions closes</span>)
       {/if}

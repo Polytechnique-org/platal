@@ -29,6 +29,7 @@ class XnetEventsModule extends PLModule
             '%grp/events'       => $this->make_hook('events',  AUTH_MDP),
             '%grp/events/sub'   => $this->make_hook('sub',     AUTH_MDP),
             '%grp/events/csv'   => $this->make_hook('csv',     AUTH_MDP),
+            '%grp/events/ical'  => $this->make_hook('ical',    AUTH_MDP),
             '%grp/events/edit'  => $this->make_hook('edit',    AUTH_MDP),
             '%grp/events/admin' => $this->make_hook('admin',   AUTH_MDP),
         );
@@ -275,6 +276,29 @@ class XnetEventsModule extends PLModule
         $page->assign('moments', $evt['moments']);
         $page->assign('money', $evt['money']);
         $page->assign('tout', !Env::v('item_id', false));
+    }
+
+    function handler_ical(&$page, $eid = null)
+    {
+        global $globals;
+
+        require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
+        $evt = get_event_detail($eid);
+        if (!$evt) {
+            return PL_NOT_FOUND;
+        }
+        $evt['debut'] = preg_replace('/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/', "\\1\\2\\3T\\4\\5\\6", $evt['debut']);
+        $evt['fin'] = preg_replace('/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/', "\\1\\2\\3T\\4\\5\\6", $evt['fin']);
+
+        $page->changeTpl('xnetevents/calendar.tpl', NO_SKIN);
+
+        require_once(dirname(__FILE__).'/carnet/smarty.php');
+        $page->assign('asso', $globals->asso());
+        $page->assign('timestamp', time());
+        $page->register_function('display_ical', 'display_ical');
+        $page->assign_by_ref('e', $evt);
+    
+        header('Content-Type: text/calendar; charset=utf-8');
     }
 
     function handler_edit(&$page, $eid = null)

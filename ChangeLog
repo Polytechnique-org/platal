@@ -14,6 +14,7 @@ New:
 
     * Xnet/Events:
         - Events can be archived                                           -FRU
+        - Can get iCal version of the events                               -FRU
 
 Bug/Wish:
 
