@@ -67,7 +67,10 @@
     </tr>
     <tr>
       <td>raison (pour les refus) :
-        <textarea cols='50' rows='10' name='reason'></textarea>
+        <textarea cols='50' rows='10' name='reason'>
+-- 
+{$smarty.session.prenom} {$smarty.session.nom} (X{$smarty.session.promo})
+</textarea>
       </td>
     </tr>
     <tr>
