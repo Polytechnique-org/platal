@@ -74,7 +74,12 @@ class PlatalModule extends PLModule
 
     function handler_cacert(&$page)
     {
-        $data = file_get_contents('/etc/ssl/xorgCA/cacert.pem');
+        if (preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']))
+        {
+            $data = file_get_contents('/etc/ssl/xorgCA/cacert.der');
+        } else {
+            $data = file_get_contents('/etc/ssl/xorgCA/cacert.pem');
+        }
         header('Content-Type: application/x-x509-ca-cert');
         header('Content-Length: '.strlen($data));
         echo $data;
