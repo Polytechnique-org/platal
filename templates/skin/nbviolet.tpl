@@ -24,8 +24,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <base href="{$globals->baseurl}/" />
-    <link rel="stylesheet" type="text/css" href="css/default.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/nbviolet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="css/nbviolet.css" media="all" />
     {include file=skin/common.header.tpl}
     {include file=skin/common.bandeau.head.tpl}
   </head>

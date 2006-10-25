@@ -1,0 +1,4 @@
+#body-menu, #body-top, #body-logo, #body-bottom, #dev, #db-trace, .xdx, .noprint
+{ display:none; }
+
+table#body, img { border:0px; }

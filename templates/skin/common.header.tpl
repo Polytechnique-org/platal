@@ -37,8 +37,9 @@
     <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
 
     {foreach from=$xorg_css item=css}
-    <link rel="stylesheet" type="text/css" href="css/{$css}" />
+    <link rel="stylesheet" type="text/css" href="css/{$css}" media="all"/>
     {/foreach}
+    <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}

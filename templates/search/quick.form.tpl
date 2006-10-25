@@ -27,7 +27,7 @@
     {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <th colspan="2">
-        Recherche simple [<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancée</a>]
+        Recherche simple <span class="noprint">[<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancée</a>]</span>
       </th>
     </tr>
     <tr>
@@ -35,7 +35,7 @@
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
       </td>
     </tr>
-    <tr>
+    <tr class="noprint">
       <td style="width: 78%">
         <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
         mettre les fiches modifiées récemment en premier
@@ -44,7 +44,7 @@
         {/if}
       </td>
     {else}
-    <tr>
+    <tr class="noprint">
       <td style="width: 78%">
         <input type='text' name="quick" value="{$smarty.request.quick}" style="width: 98%" /><br />
       </td>

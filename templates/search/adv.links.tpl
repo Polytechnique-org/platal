@@ -22,7 +22,7 @@
 
 {if $do_title}<h1>Recherche dans l'annuaire</h1>{/if}
 
-<ul>
+<ul class="noprint">
   {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}
   <li>Étendre ta recherche par <strong>
     <a  href="{$with_soundex}">proximité sonore</a>

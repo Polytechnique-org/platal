@@ -30,15 +30,19 @@
     {/if}
   {/if}
 
+  {if $search_results_nb == 0 or ($advanced and !$simple)}
   <h1 class='right'>
     {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}
     {if $search_results_nb and $advanced and !$simple}
+    <span class="noprint">
     &nbsp;(<a href='geoloc/?{$search_vars}'>Voir sur une carte</a>)
+    </span>
     {/if}
   </h1>
+  {/if}
   
   {if $search_results_nb > 1}
-  <div>
+  <div class="noprint">
     Trier par :
     {foreach from=$search_order_link item=tri}
     [<a href='{$tri.url}'>
@@ -82,14 +86,16 @@
   {if $smarty.session.auth ge AUTH_COOKIE}
   <br />
   {if $smarty.capture.list|smarty:nodefaults|display_lines > 20}
+  <div class="noprint">
   {if $advanced}
   {include file=search/adv.links.tpl do_title=1}
   {else}
   {include file=search/quick.form.tpl}
   {/if}
+  </div>
   {/if}
   
-  <p>
+  <p class="noprint">
   <strong>Astuce:</strong>
   Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
   {/if}
