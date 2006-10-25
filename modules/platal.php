@@ -39,7 +39,7 @@ class PlatalModule extends PLModule
     {
         return array(
             'index'       => $this->make_hook('index',     AUTH_PUBLIC),
-            'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
+	    'cacert.pem'  => $this->make_hook('cacert',    AUTH_PUBLIC),
             'changelog'   => $this->make_hook('changelog', AUTH_PUBLIC),
 
             // Preferences thingies
@@ -71,14 +71,13 @@ class PlatalModule extends PLModule
 
     function handler_cacert(&$page)
     {
-        if (preg_match('/MSIE/i', $_SERVER['HTTP_USER_AGENT']))
-        {
-            $data = file_get_contents('/etc/ssl/xorgCA/cacert.der');
-        } else {
-            $data = file_get_contents('/etc/ssl/xorgCA/cacert.pem');
-        }
-        header('Content-Type: application/x-x509-ca-cert');
-        header('Content-Length: '.strlen($data));
+        $data = file_get_contents("/etc/ssl/xorgCA/cacert.pem","r");
+        header("Pragma:");
+	header("Set-Cookie:");
+	header("Cache-Control:");
+	header("Expires:");
+	header("Content-Type: application/x-x509-ca-cert");
+        header("Content-Length: ".strlen($data));
         echo $data;
         exit;
     }
