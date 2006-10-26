@@ -29,9 +29,11 @@
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
 
+{if !$archive}
 <p class="center">
   [<a href="{$platal->ns}events/edit">Annoncer un nouvel événement</a>]
 </p>
+{/if}
 {/if}
 
 {foreach from=$evenements item=e}
@@ -42,9 +44,10 @@
   </colgroup>
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
-      <a href="{$platal->ns}events/ical/{$e.eid}/{$e.short_name}.ics">
-        {icon name=calendar_view_day} {$e.intitule}
+      <a href="{$platal->ns}events/ical/{$e.eid}/{$e.short_name}.ics" style="display: block; float: left;">
+        {icon name=calendar_view_day title="Evénement iCal"}
       </a>
+      {$e.intitule}
       {if !$e.inscr_open}
       (<span class="error">Inscriptions closes</span>)
       {/if}
@@ -167,10 +170,22 @@
 
 {foreachelse}
 
+
 <p class="descr">
+{if $archive}
+  Aucun événement n'a été archivé par les animateurs du groupe.
+{else}
   Aucun événement n'a été référencé par les animateurs du groupe.
+{/if}
 </p>
 
 {/foreach}
+
+{if $evenements}
+<p class="descr">
+  En cliquant sur l'icône {icon name=calendar_view_day title="Evénement iCal"} associée à un événement
+  tu peux télécharger la version iCal de l'événement qui permet de l'ajouter dans ton agenda électronique
+</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

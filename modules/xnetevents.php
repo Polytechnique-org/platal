@@ -290,11 +290,20 @@ class XnetEventsModule extends PLModule
         $evt['debut'] = preg_replace('/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/', "\\1\\2\\3T\\4\\5\\6", $evt['debut']);
         $evt['fin'] = preg_replace('/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/', "\\1\\2\\3T\\4\\5\\6", $evt['fin']);
 
+        foreach ($evt['moments'] as $m) {
+            $evt['descriptif'] .= "\n\n** " . $m['titre'] . " **\n" . $m['details'];
+        }
+
         $page->changeTpl('xnetevents/calendar.tpl', NO_SKIN);
 
-        require_once(dirname(__FILE__).'/carnet/smarty.php');
+        require_once('ical.inc.php');
         $page->assign('asso', $globals->asso());
         $page->assign('timestamp', time());
+        $page->assign('admin', may_update());
+
+        if (may_update()) {
+            $page->assign('participants', get_event_participants($evt, null, 'promo, nom, prenom'));
+        }
         $page->register_function('display_ical', 'display_ical');
         $page->assign_by_ref('e', $evt);
     

@@ -32,7 +32,7 @@ function display_ical($param) {
                     preg_replace("/(\r\n|\r|\n)/", '\n', $param['value'])));
     }
     $length = strlen($txt);
-    $endline = "\r\n";
+    $endline = "\n";
     $maxchars = 75;
     $folded_txt = substr($txt, 0, $maxchars);
     for ($i = $maxchars; $i < $length; $i += $maxchars - 1)

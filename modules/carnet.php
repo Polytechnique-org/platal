@@ -337,7 +337,7 @@ class CarnetModule extends PLModule
 
     function handler_ical(&$page)
     {
-        require_once dirname(__FILE__).'/carnet/smarty.php';
+        require_once 'ical.inc.php';
         $page->changeTpl('carnet/calendar.tpl', NO_SKIN);
         $page->register_function('display_ical', 'display_ical');
 
