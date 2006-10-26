@@ -37,6 +37,7 @@ Bug/Wish:
     * Xnet/Events:
         - #490: Events can be opened to non-members                        -FRU
         - #514: Improve visibility of open events                          -FRU
+        - #523: Organizer does not change when editing an event            -FRU
 
 From 0.9.11 branch:
 

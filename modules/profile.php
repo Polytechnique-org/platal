@@ -191,8 +191,8 @@ class ProfileModule extends PLModule
 
         $new   = Env::v('modif') == 'new';
         $user  = get_user_details($login, S::v('uid'), $view);
-        $user['freetext'] = preg_replace('/((?:https?|ftp):\/\/(?:&amp;|\.*,*[a-z@0-9~%$£µ&i#\-+=_\/\?])*)/i',
-                                         '<a href="\\0">\\0</a>', $user['freetext']);
+        require_once('url_catcher.inc.php');
+        $user['freetext'] = url_catcher($user['freetext'], false);
         $title = $user['prenom'] . ' ' . empty($user['nom_usage']) ? $user['nom'] : $user['nom_usage'];
         $page->assign('xorg_title', $title);
 

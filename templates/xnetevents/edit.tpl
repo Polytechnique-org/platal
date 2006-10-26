@@ -215,6 +215,7 @@ function deadlineChange(box)
   </table>
  
   <div class="center">
+    {if $evt.eid}<input type="hidden" name="organisateur_uid" value="{$evt.organisateur_uid}" />{/if}
     <input type="submit" name="valid" value="Valider" />
     &nbsp;
     <input type="reset" value="Annuler" />

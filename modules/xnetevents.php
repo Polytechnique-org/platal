@@ -338,7 +338,6 @@ class XnetEventsModule extends PLModule
             $evt = array(
                 'eid'              => $eid,
                 'asso_id'          => $globals->asso('id'),
-                'organisateur_uid' => S::v('uid'),
                 'paiement_id'      => Post::v('paiement_id') > 0 ? Post::v('paiement_id') : null,
                 'debut'            => Post::v('deb_Year').'-'.Post::v('deb_Month')
                                       .'-'.Post::v('deb_Day').' '.Post::v('deb_Hour')
@@ -350,9 +349,12 @@ class XnetEventsModule extends PLModule
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite',
-                             'show_participants', 'accept_nonmembre');
+                             'show_participants', 'accept_nonmembre', 'organisateur_uid');
             foreach ($trivial as $k) {
                 $evt[$k] = Post::v($k);
+            }
+            if (!$eid) {
+                $evt['organisateur_uid'] = S::v('uid');
             }
 
             if (Post::v('deadline')) {
@@ -419,7 +421,7 @@ class XnetEventsModule extends PLModule
             }
 
             if (is_null($evt['eid'])) {
-                pl_redirect('events/'.$eid);
+                pl_redirect('events');
             }
         }
 
@@ -435,9 +437,9 @@ class XnetEventsModule extends PLModule
         // when modifying an old event retreive the old datas
         if ($eid) {
             $res = XDB::query(
-                    "SELECT	eid, intitule, descriptif, debut, fin,
-                                show_participants, paiement_id, short_name,
-                                deadline_inscription, noinvite, accept_nonmembre
+                    "SELECT	eid, intitule, descriptif, debut, fin, organisateur_uid,
+                            show_participants, paiement_id, short_name,
+                            deadline_inscription, noinvite, accept_nonmembre
                        FROM	groupex.evenements
                       WHERE eid = {?}", $eid);
             $evt = $res->fetchOneAssoc();
