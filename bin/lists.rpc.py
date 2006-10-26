@@ -808,8 +808,10 @@ def create_list(userdesc, perms, vhost, listname, desc, advertise, modlevel, ins
         mlist.subject_prefix = '['+listname+'] '
         mlist.max_message_size = 0
 
+        inverted_listname = '_'.join(listname.split('_', 1)[-1::-1])
         mlist.msg_footer = "_______________________________________________\n" \
-                         + "Liste de diffusion %(real_name)s\n"
+                         + "Liste de diffusion %(real_name)s\n" \
+                         + "http://listes.polytechnique.org/members/" + inverted_listname
 
         mlist.header_filter_rules = []
         mlist.header_filter_rules.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
