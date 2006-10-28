@@ -60,7 +60,7 @@
 <p class='descr'>
   Tu peux 
   <a href="{$platal->ns}events/admin/{$event.eid}">
-    consulster liste des participants
+    consulter liste des participants
     {icon name=group title="Liste des participants"}</a>
   déjà inscrits.
 </p>
