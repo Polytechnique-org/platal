@@ -48,12 +48,24 @@
   Contenu du mail en attente
 </h1>
 
-{if $mail.parts|@count}
+{if $mail.parts_plain|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$mail.parts item=part key=i}
+  {foreach from=$mail.parts_plain item=part key=i}
   <tr><th>Partie n°{$i}</th></tr>
   <tr class='{cycle values="impair,pair"}'>
     <td><tt>{$part|qpd|nl2br}</tt></td>
+  </tr>
+  {/foreach}
+</table>
+<br />
+{/if}
+
+{if $mail.parts_html|@count}
+<table class='bicol' cellpadding='0' cellspacing='0'>
+  {foreach from=$mail.parts_html item=part key=i}
+  <tr><th>Partie n°{$i}</th></tr>
+  <tr class='{cycle values="impair,pair"}'>
+    <td><tt>{$part|qpd|clean_html|nl2br}</tt></td>
   </tr>
   {/foreach}
 </table>

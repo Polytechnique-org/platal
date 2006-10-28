@@ -60,6 +60,16 @@ class ListsModule extends PLModule
         return $globals->mail->domain;
     }
 
+    function clean_html($res)
+    {
+        $res = html_entity_decode($res);
+        $res = preg_replace('@<a[^>]*href=["\']([^ >]+)["\'][^>]*>([^<]*)</a>@i', "\\2 [\\1]", $res);
+        $res = preg_replace("@<(/br|p|/div)[^>]*>(\\s*\n)?@i", "\n", $res); 
+        $res = trim(strip_tags($res));
+        $res = preg_replace("/\n(\\s*\n)+/", "\n\n", $res);
+        return htmlentities($res);
+    }
+
     function handler_lists(&$page)
     {
         $this->prepare_client($page);
@@ -321,6 +331,7 @@ class ListsModule extends PLModule
 
         $page->register_modifier('qpd', 'quoted_printable_decode');
         $page->register_modifier('hdc', 'list_header_decode');
+        $page->register_modifier('clean_html', array($this, 'clean_html'));
 
         if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
             $this->client->handle_request($liste,Env::v('sadd'),4,'');

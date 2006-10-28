@@ -560,17 +560,23 @@ def get_pending_mail(userdesc, perms, vhost, listname, id, raw=0):
 
         if raw:
             return str(msg)
-        results = []
+        results_plain = []
+        results_html  = []
         for part in typed_subpart_iterator(msg, 'text', 'plain'):
             c = part.get_payload()
-            if c is not None: results.append (c)
-        results = map(lambda x: quote(x), results)
+            if c is not None: results_plain.append (c)
+        results_plain = map(lambda x: quote(x), results_plain)
+        for part in typed_subpart_iterator(msg, 'text', 'html'):
+            c = part.get_payload()
+            if c is not None: results_html.append (c)
+        results_html = map(lambda x: quote(x), results_html)
         return {'id'    : id,
                 'sender': quote(sender, True),
                 'size'  : size,
                 'subj'  : quote(subject, True),
                 'stamp' : ptime,
-                'parts' : results }
+                'parts_plain' : results_plain,
+                'parts_html': results_html }
     except:
         mlist.Unlock()
         return 0
