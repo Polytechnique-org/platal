@@ -63,11 +63,12 @@ class ListsModule extends PLModule
     function clean_html($res)
     {
         $res = html_entity_decode($res);
-        $res = preg_replace('@<a[^>]*href=["\']([^ >]+)["\'][^>]*>([^<]*)</a>@i', "\\2 [\\1]", $res);
+        $res = preg_replace('@<a[^>]*href=["\']([^ >]+)["\'][^>]*>([^<]*)</a>@ie',
+                            "'\\2 [' . htmlentities('\\1') . ']'", $res);
         $res = preg_replace("@<(/br|p|/div)[^>]*>(\\s*\n)?@i", "\n", $res); 
         $res = trim(strip_tags($res));
         $res = preg_replace("/\n(\\s*\n)+/", "\n\n", $res);
-        return htmlentities($res);
+        return $res;
     }
 
     function handler_lists(&$page)
