@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="listes/header_listes.tpl"}
 
 <h1>
   Propriétés du mail en attente
@@ -63,7 +64,7 @@
 {if $mail.parts_html|@count}
 <table class='bicol' cellpadding='0' cellspacing='0'>
   {foreach from=$mail.parts_html item=part key=i}
-  <tr><th>Partie n°{$i}</th></tr>
+  <tr><th>Partie n°{$i} (Le texte original est formaté en HTML)</th></tr>
   <tr class='{cycle values="impair,pair"}'>
     <td><tt>{$part|qpd|clean_html|nl2br}</tt></td>
   </tr>
