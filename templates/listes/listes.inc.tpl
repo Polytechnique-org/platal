@@ -30,39 +30,10 @@
     <th>Nb</th>
     <th></th>
   </tr>
-  {foreach from=$listes item=liste}
-  {if $liste.priv eq $priv}
-  <tr class='{cycle values="impair,pair"}'>
-    <td style="width: 16px">
-      {if $liste.own}
-      {icon name=wrench title="Modérateur"}
-      {/if}
-    </td>
-    <td>
-      <a href='{$platal->ns}lists/members/{$liste.list}'>{$liste.list}</a> 
-    </td>
-    <td>{$liste.desc}</td>
-    <td class='center'>
-      {if $liste.diff eq 2}modérée{elseif $liste.diff}restreinte{else}libre{/if}
-    </td>
-    <td class='center'>
-      {if $liste.ins}modérée{else}libre{/if}
-    </td>
-    <td class='right'>{$liste.nbsub}</td>
-    <td class='right'>
-      {if $liste.sub eq 2}
-      <a href='{$platal->ns}lists?del={$liste.list}'>
-        {icon name=cross title="me désinscrire"}
-      </a>
-      {elseif $liste.sub eq 1}
-      {icon name=flag_orange title='inscription en attente de modération'}
-      {else}
-      <a href='{$platal->ns}lists?add={$liste.list}'>
-        {icon name=add title="m'inscrire"}</a>
-      {/if}
-    </td>
+  {foreach from=$lists item=liste}
+  <tr class='{cycle values="impair,pair"}' id='list_{$liste.list}'>
+  {include file="listes/liste.inc.tpl"}
   </tr>
-  {/if}
   {/foreach}
 </table>
 

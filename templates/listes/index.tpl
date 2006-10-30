@@ -26,21 +26,19 @@
 
 <h2>L'inscription à une liste de diffusion</h2>
 
-<p>
-Pour t'inscrire à une liste il suffit de cliquer sur l'icone
-{icon name=add} située en fin de ligne.
-</p>
+<ul>
+  <li>Pour demander ton inscription à une liste de diffusion, il suffit
+    de cliquer sur l'icône {icon name=add} située en fin de ligne</li>
+  <li>Si la liste est à inscription modérée, l'icône {icon name=flag_orange title="en cours"} 
+    apparaîtra tant que ton inscription n'aura pas été validée par un modérateur</li>
+  <li>Pour te désinscrire d'une liste dont tu es membre, il suffit de cliquer sur la croix
+    {icon name=cross title="désinscription"} située en fin de ligne</li>
+</ul>
 
-<p>
-Certaines listes sont à inscription modérée, l'inscription n'y est pas
-immédiate.  Il faut en effet l'action d'un modérateur de la liste pour valider
-(ou éventuellement refuser) ta candidature.  Ces listes apparaissent avec l'icone 
-{icon name=flag_orange title="en cours"}.
-</p>
-
-<p>
-Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
-{icon name=cross title="désinscription"}.
+<p class="smaller">Attention : Lorsqu'une liste à laquelle tu es abonné est
+  privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne. 
+  Si tu t'en désinscrits, il ne te sera pas possible de t'y abonner de nouveau
+  sans l'action d'un modérateur
 </p>
 
 <h2>La diffusion sur une liste de diffusion</h2>
@@ -48,53 +46,53 @@ Pour se désinscrire, il suffit de la même manière de cliquer sur l'icone
 La diffusion a trois niveaux de modération.  La diffusion peut être :
 </p>
 <ul>
-  <li>libre : tout le monde peut y envoyer des mails, la diffusion y est
+  <li><strong>libre :</strong> tout le monde peut y envoyer des mails, la diffusion y est
   immédiate;</li>
-  <li>restreinte : les membres de la liste peuvent envoyer librement des mails,
+  <li><strong>restreinte :</strong> les membres de la liste peuvent envoyer librement des mails,
   les extérieurs sont modérés;</li>
-  <li>modérée: l'envoi d'un mail à la liste est alors filtré par des
+  <li><strong>modérée:</strong> l'envoi d'un mail à la liste est alors filtré par des
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
 
 <p class='smaller'>
-{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste.<br />
-Les modérateurs jouent également le rôle de gestionnaire.
+{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de gestionnaire.<br />
+{icon name=error title="Modérateur mais non-membre"} indque que tu es modérateur de la liste, mais que tu n'en es pas membre.
 </p>
 
-<h2>Demander la création d'une liste de diffusion</h2>
+<h1>Demander la création d'une liste de diffusion</h1>
 
 <p>
 Nos listes ont pour but de réunir des X autour de thèmes ou centres d'intérêt communs.  C'est un
 moyen pratique et efficace de rassembler plusieurs personnes autour d'un projet commun ou d'une
 thématique particulière.
 </p>
-<p>
+
+<p class="center">
 Tu peux demander <a href='lists/create'>la création</a>
 d'une liste de diffusion sur le thème de ton choix.  
 </p>
 
+{if $owner|@count}
+<h1>Listes dont tu es modérateur</h1>
 
-<h1>
-  Listes de diffusion publiques
-</h1>
+{include file='listes/listes.inc.tpl' lists=$owner}
+{/if}
+{if $member|@count}
+<h1>Listes dont tu es membre</h1>
+
+{include file='listes/listes.inc.tpl' lists=$member}
+{/if}
+<h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
 <p>
 Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
 </p>
 
-{include file='listes/listes.inc.tpl' priv=0}
-
-<h1>
-  Listes de diffusion privées (et de promo)
-</h1>
-
-<p>
-Si tu te désinscris de ces listes, tu ne seras plus capable de t'y réinscrire par toi-même !
-</p>
-
-{include file='listes/listes.inc.tpl' priv=1}
+{if $public|@count}
+{include file='listes/listes.inc.tpl' lists=$public}
 
 <br />
+{/if}
 
 <form method='post' action='lists'>
   <table class='tinybicol' cellspacing='0' cellpadding='2'>
