@@ -27,6 +27,7 @@ class ListsModule extends PLModule
     {
         return array(
             'lists'           => $this->make_hook('lists',     AUTH_MDP),
+            'lists/ajax'      => $this->make_hook('ajax',      AUTH_MDP),
             'lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             'lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
@@ -73,9 +74,20 @@ class ListsModule extends PLModule
 
     function handler_lists(&$page)
     {
+        function filter_owner($list)
+        {
+            return $list['own'];
+        }
+
+        function filter_member($list)
+        {
+            return $list['ins'];
+        }
+
         $this->prepare_client($page);
 
         $page->changeTpl('listes/index.tpl');
+        $page->addJsLink('ajax.js');
         $page->assign('xorg_title','Polytechnique.org - Listes de diffusion');
 
 
@@ -96,7 +108,46 @@ class ListsModule extends PLModule
             }
         }
         $listes = $this->client->get_lists();
-        $page->assign_by_ref('listes', $listes);
+        $owner  = array_filter($listes, 'filter_owner');
+        $listes = array_diff_key($listes, $owner);
+        $member = array_filter($listes, 'filter_member');
+        $listes = array_diff_key($listes, $member);
+        foreach ($owner as $key=>$liste) {
+            list($subs,$mails) = $this->client->get_pending_ops($liste['list']);
+            $owner[$key]['subscriptions'] = $subs;
+            $owner[$key]['mails'] = $mails;
+        }
+        $page->register_modifier('hdc', 'list_header_decode');
+        $page->assign_by_ref('owner',  $owner);
+        $page->assign_by_ref('member', $member);
+        $page->assign_by_ref('public', $listes);
+    }
+
+    function handler_ajax(&$page, $list = null)
+    {
+        $this->prepare_client($page);
+        $page->changeTpl('listes/liste.inc.tpl', NO_SKIN);
+        if (Get::has('unsubscribe')) {
+            $this->client->unsubscribe($list);
+        }
+        if (Get::has('subscribe')) {
+            $this->client->subscribe($list);
+        }
+        if (Get::has('sadd')) { /* 4 = SUBSCRIBE */
+            $this->client->handle_request($list, Get::v('sadd'), 4, '');
+        }
+        if (Get::has('mid')) {
+            $this->moderate_mail($list, Get::i('mid'));
+        }
+
+        list($liste, $members, $owners) = $this->client->get_members($list);
+        if ($liste['own']) {
+            list($subs,$mails) = $this->client->get_pending_ops($list);
+            $liste['subscriptions'] = $subs;
+            $liste['mails'] = $mails;
+        }
+        $page->register_modifier('hdc', 'list_header_decode');
+        $page->assign_by_ref('liste', $liste);
     }
 
     function handler_create(&$page)
@@ -320,6 +371,52 @@ class ListsModule extends PLModule
         }
     }
 
+    function moderate_mail($liste, $mid)
+    {
+        $mail   = $this->client->get_pending_mail($liste, $mid);
+        $reason = '';
+
+        $prenom = S::v('prenom');
+        $nom    = S::v('nom');
+
+        if (Env::has('mok')) {
+            $action  = 1; /** 2 = ACCEPT **/
+            $subject = "Message accepté";
+            $append .= "a été accepté par $prenom $nom.\n";
+        } elseif (Env::has('mno')) {
+            $action  = 2; /** 2 = REJECT **/
+            $subject = "Message refusé";
+            $reason  = Post::v('reason');
+            $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
+                        .  $reason;
+        } elseif (Env::has('mdel')) {
+            $action  = 3; /** 3 = DISCARD **/
+            $subject = "Message supprimé";
+            $append  = "a été supprimé par $prenom $nom.\n\n"
+                        .  "Rappel: il ne faut utiliser cette opération "
+                        .  "que dans le cas de spams ou de virus !\n";
+        }
+
+        if (isset($action) && $this->client->handle_request($liste, $mid, $action, $reason)) {
+            $texte = "le message suivant :\n\n"
+                        ."    Auteur: {$mail['sender']}\n"
+                        ."    Sujet : « {$mail['subj']} »\n"
+                        ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
+                        .$append;
+            require_once 'diogenes/diogenes.hermes.inc.php';
+            $mailer = new HermesMailer();
+            $mailer->addTo("$liste-owner@{$domain}");
+            $mailer->setFrom("$liste-bounces@{$domain}");
+            $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
+            $mailer->setSubject($subject);
+            $mailer->setTxtBody(wordwrap($texte,72));
+            $mailer->send();
+            Get::kill('mid');
+        }
+
+        return $mail;
+    }
+
     function handler_moderate(&$page, $liste = null)
     {
         if (is_null($liste)) {
@@ -344,47 +441,7 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('mid')) {
-            $mid    = Env::v('mid');
-            $mail   = $this->client->get_pending_mail($liste, $mid);
-            $reason = '';
-
-            $prenom = S::v('prenom');
-            $nom    = S::v('nom');
-
-            if (Env::has('mok')) {
-                $action  = 1; /** 2 = ACCEPT **/
-                $subject = "Message accepté";
-                $append .= "a été accepté par $prenom $nom.\n";
-            } elseif (Env::has('mno')) {
-                $action  = 2; /** 2 = REJECT **/
-                $subject = "Message refusé";
-                $reason  = Post::v('reason');
-                $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
-                        .  $reason;
-            } elseif (Env::has('mdel')) {
-                $action  = 3; /** 3 = DISCARD **/
-                $subject = "Message supprimé";
-                $append  = "a été supprimé par $prenom $nom.\n\n"
-                        .  "Rappel: il ne faut utiliser cette opération "
-                        .  "que dans le cas de spams ou de virus !\n";
-            }
-
-            if (isset($action) && $this->client->handle_request($liste, $mid, $action, $reason)) {
-                $texte = "le message suivant :\n\n"
-                        ."    Auteur: {$mail['sender']}\n"
-                        ."    Sujet : « {$mail['subj']} »\n"
-                        ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
-                        .$append;
-                require_once 'diogenes/diogenes.hermes.inc.php';
-                $mailer = new HermesMailer();
-                $mailer->addTo("$liste-owner@{$domain}");
-                $mailer->setFrom("$liste-bounces@{$domain}");
-                $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");
-                $mailer->setSubject($subject);
-                $mailer->setTxtBody(wordwrap($texte,72));
-                $mailer->send();
-                Get::kill('mid');
-            }
+            $mail = $this->moderate_mail($liste, Env::i('mid'));
 
             if (Get::has('mid') && is_array($mail)) {
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');
@@ -392,13 +449,13 @@ class ListsModule extends PLModule
                 $msg = str_replace("%(request)s",   "<< SUJET DU MAIL >>",    $msg);
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
                 $msg = str_replace("%(listname)s",  $liste, $msg);
-                $page->assign('msg', $msg); 
 
+                $page->assign('msg', $msg);
+            
                 $page->changeTpl('listes/moderate_mail.tpl');
                 $page->assign_by_ref('mail', $mail);
                 return;
-            }
-
+            }   
         } elseif (Env::has('sid')) {
 
             if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {

@@ -938,7 +938,6 @@ server = FastXMLRPCServer(("localhost", 4949), BasicAuthXMLRPCRequestHandler)
 
 # index.php
 server.register_function(get_lists)
-server.register_function(get_list_info)
 server.register_function(subscribe)
 server.register_function(unsubscribe)
 # members.php
