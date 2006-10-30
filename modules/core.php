@@ -40,13 +40,13 @@ class CoreModule extends PLModule
 
     function handler_403(&$page)
     {
-        header('HTTP/1.0 403 Forbidden');
+        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         $page->changeTpl('403.tpl');
     }
 
     function handler_404(&$page)
     {
-        header('HTTP/1.0 404 Not Found');
+        header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         $page->changeTpl('404.tpl');
     }
 

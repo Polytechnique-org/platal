@@ -99,10 +99,14 @@ class Platal
         $args[0] = &$page;
 
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
-            global $globals;
-
-            if (!call_user_func(array($globals->session, 'doAuth'))) {
-                $this->force_login($page);
+            if ($hook['type'] == DO_AUTH) {
+                global $globals;
+    
+                if (!call_user_func(array($globals->session, 'doAuth'))) {
+                    $this->force_login($page);
+                }
+            } else {
+                return PL_FORBIDDEN;
             }
         }
 

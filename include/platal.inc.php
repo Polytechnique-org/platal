@@ -40,6 +40,9 @@ define('SKINNED', 0);
 define('SIMPLE',  1);
 define('NO_SKIN', 2);
 
+define('NO_AUTH', 0);
+define('DO_AUTH', 1);
+
 function __autoload($cls)
 {
     @include dirname(dirname(__FILE__)).'/classes/'.strtolower($cls).'.php';

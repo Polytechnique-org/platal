@@ -51,7 +51,9 @@ Ajax = {
             function()
             {
                 if(Ajax.xml_client.readyState == 4) {
-                    document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
+                    if (Ajax.xml_client.status == 200) {
+                        document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
+                    }
                 }
             };
         Ajax.xml_client.open ('GET', src, true);
