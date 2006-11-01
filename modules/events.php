@@ -376,10 +376,16 @@ class EventsModule extends PLModule
         }
         
         if($aid == 'update') {
-            $nl->_title = Post::v('title');
-            $nl->_date  = Post::v('date');
-            $nl->_head  = Post::v('head');
-            $nl->save();
+            $nl->_title     = Post::v('title');
+            $nl->_date      = Post::v('date');
+            $nl->_head      = Post::v('head');
+            $nl->_shortname = strlen(Post::v('shortname')) ? Post::v('shortname') : null;
+            if (preg_match('/^[-a-z0-9]*$/i', $nl->_shortname) && !is_numeric($nl->_shortname)) {
+                $nl->save();
+            } else {
+                $page->trig('Le nom de la NL n\'est pas valide');
+                pl_redirect('admin/newsletter/edit/' . $nl->_id);
+            }
         }
         
         if(Post::v('save')) {
@@ -389,7 +395,7 @@ class EventsModule extends PLModule
             pl_redirect("admin/newsletter/edit/$nid");
         }
         
-        if($action == 'edit') {
+        if($action == 'edit' && $aid != 'update') {
             $eaid = $aid;
             if(Post::has('title')) {
                 $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),

@@ -38,6 +38,7 @@ class NewsLetter
     // {{{ properties
     
     var $_id;
+    var $_shortname;
     var $_date;
     var $_title;
     var $_head;
@@ -49,41 +50,42 @@ class NewsLetter
     
     function NewsLetter($id=null)
     {
-    if (isset($id)) {
-        if ($id == 'last') {
-        $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
+        if (isset($id)) {
+            if ($id == 'last') {
+                $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
                 $id  = $res->fetchOneCell();
+            }
+            $res = XDB::query("SELECT * FROM newsletter WHERE id={?} OR short_name={?} LIMIT 1", $id, $id);
+        } else {
+            $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
+            if (!$res->numRows()) {
+                insert_new_nl();
+            }
+            $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
         }
-        $res = XDB::query("SELECT * FROM newsletter WHERE id={?}", $id);
-    } else {
-        $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
-        if (!$res->numRows()) {
-            insert_new_nl();
+        $nl = $res->fetchOneAssoc();
+
+        $this->_id        = $nl['id'];
+        $this->_shortname = $nl['short_name'];
+        $this->_date      = $nl['date'];
+        $this->_title     = $nl['titre'];
+        $this->_head      = $nl['head'];
+
+        $res = XDB::iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
+        while (list($cid, $title) = $res->next()) {
+            $this->_cats[$cid] = $title;
         }
-        $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
-    }
-    $nl = $res->fetchOneAssoc();
-
-    $this->_id    = $nl['id'];
-    $this->_date  = $nl['date'];
-    $this->_title = $nl['titre'];
-    $this->_head  = $nl['head'];
-
-    $res = XDB::iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
-    while (list($cid, $title) = $res->next()) {
-        $this->_cats[$cid] = $title;
-    }
     
-    $res = XDB::iterRow(
+        $res = XDB::iterRow(
                 "SELECT  a.title,a.body,a.append,a.aid,a.cid,a.pos
                    FROM  newsletter_art AS a
              INNER JOIN  newsletter     AS n USING(id)
              LEFT  JOIN  newsletter_cat AS c ON(a.cid=c.cid)
                   WHERE  a.id={?}
                ORDER BY  c.pos,a.pos", $this->_id);
-    while (list($title, $body, $append, $aid, $cid, $pos) = $res->next()) {
-        $this->_arts[$cid]["a$aid"] = new NLArticle($title, $body, $append, $aid, $cid, $pos);
-    }
+        while (list($title, $body, $append, $aid, $cid, $pos) = $res->next()) {
+            $this->_arts[$cid]["a$aid"] = new NLArticle($title, $body, $append, $aid, $cid, $pos);
+        }
     }
 
     // }}}
@@ -99,8 +101,16 @@ class NewsLetter
 
     function save()
     {
-    XDB::execute('UPDATE newsletter SET date={?},titre={?},head={?} WHERE id={?}',
-                     $this->_date, $this->_title, $this->_head, $this->_id);
+        XDB::execute('UPDATE newsletter SET date={?},titre={?},head={?},short_name={?} WHERE id={?}',
+                     $this->_date, $this->_title, $this->_head, $this->_shortname,$this->_id);
+    }
+
+    // }}}
+    // {{{ function id()
+
+    function id()
+    {
+        return is_null($this->_shortname) ? $this->_id : $this->_shortname;
     }
 
     // }}}
@@ -236,7 +246,7 @@ class NewsLetter
     
     function toHtml($prenom, $nom, $sexe, $body=false, $urlprefix = false)
     {
-        $u    = $urlprefix ? 'nl/show/'.$this->_id : '';
+        $u    = $urlprefix ? 'nl/show/'.$this->id() : '';
     $res  = '<div class="title">'.$this->title().'</div>';
     
     $head = $this->head();
@@ -443,13 +453,13 @@ function insert_new_nl()
 
 function get_nl_slist()
 {
-    $res = XDB::query("SELECT id,date,titre FROM newsletter ORDER BY date DESC");
+    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre FROM newsletter ORDER BY date DESC");
     return $res->fetchAllAssoc();
 }
 
 function get_nl_list()
 {
-    $res = XDB::query("SELECT id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
+    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
     return $res->fetchAllAssoc();
 }
 

@@ -27,12 +27,12 @@
 <p>
 [<a href='nl'>liste des lettres</a>]
 {if $smarty.get.text}
-[<a href='nl/show/{$nl->_id}'>version HTML</a>]
+[<a href='nl/show/{$nl->id()}'>version HTML</a>]
 {else}
-[<a href='nl/show/{$nl->_id}?text=1'>version Texte</a>]
+[<a href='nl/show/{$nl->id()}?text=1'>version Texte</a>]
 {/if}
 {if $smarty.session.perms eq admin}
-[<a href='admin/newsletter/edit/{$nl->_id}'>Editer</a>]
+[<a href='admin/newsletter/edit/{$nl->id()}'>Editer</a>]
 {/if}
 </p>
 

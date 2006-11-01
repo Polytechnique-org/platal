@@ -29,6 +29,7 @@ Bug/Wish:
 
     * Events:
         - #517: URL catcher update (www).                                  -Car
+        - #525: Add a user-friendly id for newsletters                     -FRU
 
     * Lists:
         - #485: Can moderate pure-HTML mails                               -FRU

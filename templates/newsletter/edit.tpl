@@ -28,7 +28,7 @@
 
 <p>
 [<a href="admin/newsletter">liste</a>]
-[<a href="nl/show/{$nl->_id}">visualiser</a>]
+[<a href="nl/show/{$nl->id()}">visualiser</a>]
 </p>
 
 <form action='admin/newsletter/edit/{$nl->_id}/update' method='post'>
@@ -44,6 +44,15 @@
       </td>
       <td>
         {$nl->_id}
+      </td>
+    </tr>
+    <tr>
+      <td class='titre'>
+        Nom
+      </td>
+      <td>
+        <input type='text' size='16' name='shortname' value="{$nl->_shortname}" />
+        <span class="smaller">(Ex : 2006-06 pour la NL de juin 2006)</span>
       </td>
     </tr>
     <tr>
