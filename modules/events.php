@@ -236,7 +236,7 @@ class EventsModule extends PLModule
         if (Post::has('send')) {
             $nl->sendTo(S::v('prenom'), S::v('nom'),
                         S::v('bestalias'), S::v('femme'),
-                        S::v('mail_fmt') != 'text');
+                        S::v('mail_fmt') != 'texte');
         }
     }
 
