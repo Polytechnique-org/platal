@@ -391,6 +391,23 @@ def get_owners(userdesc, perms, vhost, listname):
 # owners procedures [ admin.php ]
 #
 
+def replace_email(userdesc, perms, vhost, listname, from_email, to_email):
+    try:
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
+    except:
+        return 0
+    try:
+        if not is_admin_on(userdesc, perms, mlist):
+            return 0
+
+        mlist.Lock()
+        mlist.ApprovedChangeMemberAddress(from_email, to_email, 0)
+        mlist.Save()
+        mlist.Unlock()
+        return 1
+    except:
+        return 0
+
 def mass_subscribe(userdesc, perms, vhost, listname, users):
     try:
         mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
@@ -946,6 +963,7 @@ server.register_function(get_members)
 server.register_function(get_members_limit)
 server.register_function(get_owners)
 # admin.php
+server.register_function(replace_email)
 server.register_function(mass_subscribe)
 server.register_function(mass_unsubscribe)
 server.register_function(add_owner)

@@ -38,6 +38,9 @@ Bug/Wish:
         - #451: vCard are RFC compliant                                    -FRU
         - #502: Use 'alias' instead of 'aka' to specify the nickname       -FRU
 
+    * Xnet:
+        - #511: Migrate ML subscription when changing email of a non-X     -FRU
+
     * Xnet/Events:
         - #490: Events can be opened to non-members                        -FRU
         - #514: Improve visibility of open events                          -FRU

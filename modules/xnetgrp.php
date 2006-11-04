@@ -694,6 +694,8 @@ class XnetGrpModule extends PLModule
                              $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
+            $email_changed = ($user['origine'] != 'X' && $user['email'] != Post::v('email'));
+            $from_email = $user['email'];
             if ($user['origine'] != 'X') {
                 XDB::query('UPDATE groupex.membres
                                SET prenom={?}, nom={?}, email={?}, sexe={?}
@@ -720,7 +722,13 @@ class XnetGrpModule extends PLModule
 
             foreach (Env::v('ml1', array()) as $ml => $state) {
                 $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
-                if ($ask == $state) continue;
+                if ($ask == $state) {
+                    if ($state) {
+                        $mmlist->replace_email($ml, $from_email, $user['email2']);
+                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour");
+                    }
+                    continue;
+                }
                 if ($state == '1') {
                     $page->trig("{$user['prenom']} {$user['nom']} a "
                                ."actuellement une demande d'inscription en "
@@ -729,7 +737,11 @@ class XnetGrpModule extends PLModule
                     $mmlist->mass_subscribe($ml, Array($user['email2']));
                     $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@");
                 } else {
-                    $mmlist->mass_unsubscribe($ml, Array($user['email2']));
+                    if ($email_changed) {
+                        $mmlist->mass_unsubscribe($ml, Array($from_email));
+                    } else {
+                        $mmlist->mass_unsubscribe($ml, Array($user['email2']));
+                    }
                     $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@");
                 }
             }
