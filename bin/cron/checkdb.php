@@ -119,8 +119,23 @@ check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON
 /* les régions ne sont valides que dans les adresses pros */
 check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
 
-/* donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes */
-info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state, w.description
+/* donne la liste des emails douteux que les administrateurs n'ont pas encore traité */
+check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
+        FROM  emails        AS e1
+        INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
+            (e1.uid<e2.uid  OR  NOT FIND_IN_SET(e2.flags,'active'))
+            )
+        INNER JOIN  emails_watch  AS w  ON(w.email = e1.email AND w.state = 'pending')
+        INNER JOIN  aliases       AS a1 ON(a1.id=e1.uid AND a1.type='a_vie')
+        INNER JOIN  aliases       AS a2 ON(a2.id=e2.uid AND a2.type='a_vie')
+        INNER JOIN  auth_user_md5 AS u1 ON(a1.id=u1.user_id)
+        INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
+        WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
+        ORDER BY  a1.alias",
+        "donne la liste des emails douteux actuellement non traites par les administrateurs");
+
+/* donne la liste des emails dangereux ou douteux*/
+info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
         FROM  emails        AS e1
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
             (e1.uid<e2.uid  OR  NOT FIND_IN_SET(e2.flags,'active'))
@@ -132,10 +147,11 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state, w.description
         INNER JOIN  auth_user_md5 AS u2 ON(a2.id=u2.user_id)
         WHERE  FIND_IN_SET(e1.flags,'active') AND u1.nom!=u2.nom_usage AND u2.nom!=u1.nom_usage
         ORDER BY  a1.alias",
-        "donne la liste des emails qui apparaissent 2 fois dans la table emails pour des personnes différentes");
+        "donne la liste des emails dangereux ou douteux");
+
 
 /* vérif que tous les inscrits ont bien au moins un email actif */
-check("SELECT  u.user_id, a.alias
+info("SELECT  u.user_id, a.alias
         FROM  auth_user_md5  AS u 
         INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
         LEFT JOIN  emails         AS e ON(u.user_id=e.uid AND FIND_IN_SET('active',e.flags))
