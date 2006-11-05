@@ -98,6 +98,10 @@ class Platal
         $args    = $this->argv;
         $args[0] = &$page;
 
+        if (strlen($hook['perms']) && $hook['perms'] != Session::v('perms')) {
+            return PL_FORBIDDEN;
+        }
+
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             global $globals;
 
