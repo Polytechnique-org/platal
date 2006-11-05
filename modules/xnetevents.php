@@ -431,9 +431,7 @@ class XnetEventsModule extends PLModule
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
-#            if (is_null($evt['eid'])) {
-                pl_redirect('events');
-#            }
+            pl_redirect('events');
         }
 
         // get a list of all the payment for this asso
