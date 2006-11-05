@@ -314,11 +314,22 @@ class XnetEventsModule extends PLModule
     {
         global $globals;
 
+        // get eid if the the given one is a short name
+        if (!is_null($eid) && !is_numeric($eid)) {
+            $res = XDB::query("SELECT eid
+                                 FROM groupex.evenements
+                                WHERE asso_id = {?} AND short_name = {?}",
+                              $globals->asso('id'), $eid);
+            if ($res->numRows()) {
+                $eid = (int)$res->fetchOneCell();
+            }
+        }
+
         // check the event is in our group
         if (!is_null($eid)) {
             $res = XDB::query("SELECT short_name, asso_id
-                                           FROM groupex.evenements
-                                          WHERE eid = {?}", $eid);
+                                 FROM groupex.evenements
+                                WHERE eid = {?}", $eid);
             $infos = $res->fetchOneAssoc();
             if ($infos['asso_id'] != $globals->asso('id')) {
                 return PL_NOT_ALLOWED;
@@ -420,15 +431,15 @@ class XnetEventsModule extends PLModule
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
-            if (is_null($evt['eid'])) {
+#            if (is_null($evt['eid'])) {
                 pl_redirect('events');
-            }
+#            }
         }
 
         // get a list of all the payment for this asso
         $res = XDB::iterator("SELECT id, text
-                                        FROM {$globals->money->mpay_tprefix}paiements
-                                        WHERE asso_id = {?}", $globals->asso('id'));
+                                FROM {$globals->money->mpay_tprefix}paiements
+                               WHERE asso_id = {?}", $globals->asso('id'));
         $paiements = array();
         while ($a = $res->next()) $paiements[$a['id']] = $a['text']; {
             $page->assign('paiements', $paiements);
@@ -446,8 +457,8 @@ class XnetEventsModule extends PLModule
             // find out if there is already a request for a payment for this event
             require_once 'validations.inc.php';
             $res = XDB::query("SELECT stamp FROM requests
-                                         WHERE type = 'paiements' AND data LIKE {?}",
-                                        PayReq::same_event($eid, $globals->asso('id')));
+                                WHERE type = 'paiements' AND data LIKE {?}",
+                               PayReq::same_event($eid, $globals->asso('id')));
             $stamp = $res->fetchOneCell();
             if ($stamp) {
                 $evt['paiement_id'] = -2;
@@ -467,6 +478,7 @@ class XnetEventsModule extends PLModule
             }
             $page->assign('items', $items);
         }
+        $page->assign('url_ref', $eid);
     }
 
     function handler_admin(&$page, $eid = null, $item_id = null)

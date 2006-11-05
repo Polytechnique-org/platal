@@ -125,7 +125,7 @@ class ListsModule extends PLModule
 
     function handler_ajax(&$page, $list = null)
     {
-        $this->prepare_client($page);
+        $domain = $this->prepare_client($page);
         $page->changeTpl('listes/liste.inc.tpl', NO_SKIN);
         if (Get::has('unsubscribe')) {
             $this->client->unsubscribe($list);
@@ -137,7 +137,7 @@ class ListsModule extends PLModule
             $this->client->handle_request($list, Get::v('sadd'), 4, '');
         }
         if (Get::has('mid')) {
-            $this->moderate_mail($list, Get::i('mid'));
+            $this->moderate_mail($domain, $list, Get::i('mid'));
         }
 
         list($liste, $members, $owners) = $this->client->get_members($list);
@@ -371,7 +371,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function moderate_mail($liste, $mid)
+    function moderate_mail($domain, $liste, $mid)
     {
         $mail   = $this->client->get_pending_mail($liste, $mid);
         $reason = '';
@@ -441,7 +441,7 @@ class ListsModule extends PLModule
         }
 
         if (Env::has('mid')) {
-            $mail = $this->moderate_mail($liste, Env::i('mid'));
+            $mail = $this->moderate_mail($domain, $liste, Env::i('mid'));
 
             if (Get::has('mid') && is_array($mail)) {
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');

@@ -15,6 +15,7 @@ New:
     * Xnet/Events:
         - Events can be archived                                           -FRU
         - Can get iCal version of the events                               -FRU
+        - Can use short name as an event identifier in the URL             -FRU
 
 Bug/Wish:
 

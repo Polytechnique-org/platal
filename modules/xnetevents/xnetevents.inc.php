@@ -40,11 +40,11 @@ function get_event_detail($eid, $item_id = false)
       LEFT JOIN	groupex.evenements_participants AS ep ON(e.eid = ep.eid AND ei.item_id = ep.item_id)
       LEFT JOIN virtual AS al ON(al.type = 'evt' AND al.alias = CONCAT(short_name, {?}))
       LEFT JOIN virtual AS pl ON(pl.type = 'evt' AND pl.alias = CONCAT(short_name, {?}))
-          WHERE	e.eid = {?} AND ei.item_id = {?} AND e.asso_id = {?} 
+          WHERE	(e.eid = {?} OR e.short_name = {?}) AND ei.item_id = {?} AND e.asso_id = {?} 
        GROUP BY ei.item_id",
        '-absents@'.$globals->xnet->evts_domain,
        '-participants@'.$globals->xnet->evts_domain,
-       $eid, $item_id ? $item_id : 1, $globals->asso('id'));
+       $eid, $eid, $item_id ? $item_id : 1, $globals->asso('id'));
 
     $evt = $res->fetchOneAssoc();
 

@@ -44,7 +44,7 @@
   </colgroup>
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
-      <a href="{$platal->ns}events/ical/{$e.eid}/{$e.short_name}.ics" style="display: block; float: left;">
+      <a href="{$platal->ns}events/ical/{$e.short_name|default:$e.eid}/{$e.short_name}.ics" style="display: block; float: left;">
         {icon name=calendar_view_day title="Evénement iCal"}
       </a>
       {$e.intitule}
@@ -53,7 +53,7 @@
       {/if}
       {if $admin}
       <br />
-      [<a href="{$platal->ns}events/edit/{$e.eid}">
+      [<a href="{$platal->ns}events/edit/{$e.short_name|default:$e.eid}">
         modifier
         {icon name=date_edit title="Edition de l'événement"}</a>]
       &nbsp;
@@ -102,7 +102,7 @@
     <td class="titre">Informations :</td>
     <td class='actions'>
       {if $admin || $e.show_participants}
-      <a href="{$platal->ns}events/admin/{$e.eid}">
+      <a href="{$platal->ns}events/admin/{$e.short_name|default:$e.eid}">
         consulter la liste des participants
         {icon name=group title="Liste des participants"}
       </a><br />
@@ -156,7 +156,7 @@
   <tr>
     <td colspan='2' class='center'>
       <strong>
-      <a href='{$platal->ns}events/sub/{$e.eid}'>
+      <a href='{$platal->ns}events/sub/{$e.short_name|default:$e.eid}'>
         gérer mon inscription
       </a>
       </strong>
