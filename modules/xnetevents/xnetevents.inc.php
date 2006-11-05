@@ -61,7 +61,7 @@ function get_event_detail($eid, $item_id = false)
              LEFT JOIN groupex.evenements_participants AS ep
                        ON (e.eid = ep.eid AND ei.item_id = ep.item_id)
                  WHERE e.eid = {?}
-              GROUP BY ep.uid", $eid);
+              GROUP BY ep.uid", $evt['eid']);
         $evt['nb_tot'] = array_sum($res->fetchColumn());
         $evt['titre'] = '';
         $evt['item_id'] = 0;
