@@ -60,7 +60,6 @@ class XnetListsModule extends ListsModule
         $this->client = new MMList(S::v('uid'), S::v('password'),
                                    $globals->asso('mail_domain'));
 
-        $page->useMenu();
         $page->assign('asso', $globals->asso());
         $page->setType($globals->asso('cat'));
 

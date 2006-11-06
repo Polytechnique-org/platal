@@ -21,6 +21,8 @@
 
 class XnetPage extends PlatalPage
 {
+    var $nomenu = false;
+
     // {{{ function XnetPage()
 
     function XnetPage($tpl, $type=SKINNED)
@@ -41,6 +43,9 @@ class XnetPage extends PlatalPage
 
     function run()
     {
+        if (!$this->nomenu) {
+            $this->useMenu();
+        }
         $this->_run('xnet/skin.tpl');
     }
 

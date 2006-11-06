@@ -49,7 +49,6 @@ function new_group_open_page($tpl_name, $refuse_access = false)
 
     new_page($tpl_name);
 
-    $page->useMenu();
     $page->assign('asso', $globals->asso());
     $page->setType($globals->asso('cat'));
 
@@ -85,7 +84,6 @@ function new_admin_page($tpl_name)
 
     check_perms();
 
-    $page->useMenu();
     if ($globals->asso('cat')) {
         $page->assign('asso', $globals->asso());
         $page->setType($globals->asso('cat'));

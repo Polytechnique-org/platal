@@ -37,6 +37,7 @@ class XnetModule extends PLModule
 
     function handler_index(&$page)
     {
+        $page->nomenu = true;
         $page->changeTpl('xnet/index.tpl');
     }
 
@@ -49,13 +50,11 @@ class XnetModule extends PLModule
     {
         XnetSession::destroy();
         $page->changeTpl('xnet/deconnexion.tpl');
-        $page->useMenu();
     }
 
     function handler_admin(&$page)
     {
         new_admin_page('xnet/admin.tpl');
-        $page->useMenu();
 
         if (Get::has('del')) {
             $res = XDB::query('SELECT id, nom, mail_domain
@@ -141,7 +140,6 @@ class XnetModule extends PLModule
                   WHERE  FIND_IN_SET("Institutions", cat)
                ORDER BY  diminutif');
         $page->assign('inst', $res);
-        $page->useMenu();
     }
 
     function handler_groups2(&$page)
@@ -179,7 +177,6 @@ class XnetModule extends PLModule
             $page->assign('gps', $res->fetchAllAssoc());
         }
 
-        $page->useMenu();
         $page->setType($cat);
     }
 }
