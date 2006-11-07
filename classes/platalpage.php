@@ -179,6 +179,14 @@ class PlatalPage extends Smarty
     }
 
     // }}}
+    // {{{ function setRssLink
+
+    function setRssLink($title, $path)
+    {
+        $this->assign('xorg_rss', array('title' => $title, 'href' => $path));
+    }
+
+    // }}}
 }
 
 // {{{ function escape_html ()

@@ -49,11 +49,8 @@ class CarnetModule extends PLModule
         if (!S::has('core_rss_hash')) {
             return;
         }
-        $page->assign('xorg_rss',
-                      array('title' => 'Polytechnique.org :: Carnet',
-                            'href'  => '/carnet/rss/'.S::v('forlife')
-                                      .'/'.S::v('core_rss_hash').'/rss.xml')
-                      );
+        $page->setRssLink('Polytechnique.org :: Carnet',
+                          '/carnet/rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
     }
 
     function handler_index(&$page)

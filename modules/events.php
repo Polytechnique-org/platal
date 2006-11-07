@@ -100,11 +100,8 @@ class EventsModule extends PLModule
 
         // ajout du lien RSS
         if (S::has('core_rss_hash')) {
-            $page->assign('xorg_rss',
-                          array('title' => 'Polytechnique.org :: News',
-                                'href' => '/rss/'.S::v('forlife')
-                                         .'/'.S::v('core_rss_hash').'/rss.xml')
-            );
+            $page->setRssLink('Polytechnique.org :: News',
+                              '/rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
         }
 
         // cache les evenements lus et raffiche les evenements a relire
