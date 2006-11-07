@@ -84,22 +84,85 @@ class XnetGrpModule extends PLModule
                  => $this->make_hook('admin_member_new', AUTH_MDP),
             '%grp/member/del'
                  => $this->make_hook('admin_member_del', AUTH_MDP),
+
+            '%grp/rss'             => $this->make_hook('rss', AUTH_PUBLIC),         
+            '%grp/announce/new'    => $this->make_hook('edit_announce', AUTH_MDP),
+            '%grp/announce/edit'   => $this->make_hook('edit_announce', AUTH_MDP),
+            '%grp/admin/announces' => $this->make_hook('admin_announce', AUTH_MDP),
         );
     }
 
     function handler_index(&$page, $arg = null)
     {
-        global $globals;
+        global $globals, $platal;
 
         if (!is_null($arg)) {
             return PL_NOT_FOUND;
         }
 
         $page->changeTpl('xnet/groupe/asso.tpl');
-        $page->useMenu();
         $page->setType($globals->asso('cat'));
+        $page->assign('is_admin', may_update());
         $page->assign('is_member', is_member());
         $page->assign('logged', S::logged());
+
+        if (S::logged()) {
+            if (Env::has('read')) {
+                XDB::query('DELETE r.*
+                              FROM groupex.announces_read AS r
+                        INNER JOIN groupex.announces AS a ON a.id = r.announce_id
+                             WHERE peremption < CURRENT_DATE()');       
+                XDB::query('INSERT INTO groupex.announces_read
+                                 VALUES ({?}, {?})',
+                            Env::i('read'), S::i('uid'));
+                pl_redirect("");
+            }
+            if (Env::has('unread')) {
+                XDB::query('DELETE FROM groupex.announces_read
+                                  WHERE announce_id={?} AND user_id={?}',
+                            Env::i('unread'), S::i('uid'));
+                pl_redirect("#art" . Env::i('unread'));
+            }
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife
+                                     FROM groupex.announces AS a
+                               INNER JOIN auth_user_md5 AS u USING(user_id)
+                               INNER JOIN aliases AS l ON (u.user_id = l.id AND l.type = 'a_vie')
+                                LEFT JOIN groupex.announces_read AS r ON (r.user_id = {?} AND r.announce_id = a.id)
+                                    WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
+                                          AND (promo_min = 0 OR promo_min <= {?})
+                                          AND (promo_max = 0 OR promo_max >= {?})
+                                          AND r.announce_id IS NULL
+                                 ORDER BY a.peremption",
+                                   S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
+            $index = XDB::iterator("SELECT a.id, a.titre, r.user_id IS NULL AS nonlu
+                                      FROM groupex.announces AS a
+                                 LEFT JOIN groupex.announces_read AS r ON (a.id = r.announce_id AND r.user_id = {?})
+                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
+                                           AND (promo_min = 0 OR promo_min <= {?})
+                                           AND (promo_max = 0 OR promo_max >= {?})
+                                  ORDER BY a.peremption",
+                                   S::i('uid'), $globals->asso('id'), S::i('promo'), S::i('promo'));
+            $page->assign('article_index', $index);
+        } else {
+            $arts = XDB::iterator("SELECT a.*, u.nom, u.prenom, u.promo
+                                     FROM groupex.announces AS a
+                               INNER JOIN auth_user_md5 AS u USING(user_id)
+                                    WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
+                                          AND FIND_IN_SET(u.flags, 'public')",
+                                  $globals->asso('id'));
+        }
+
+        if (!S::has('core_rss_hash')) {
+            $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News publiques",
+                              "rss/rss.xml");
+        } else {
+            $page->setRssLink("Polytechnique.net :: {$globals->asso("nom")} :: News",
+                              'rss/'.S::v('forlife') .'/'.S::v('core_rss_hash').'/rss.xml');
+        }
+
+        require_once('url_catcher.inc.php');
+        $page->register_modifier('url_catcher', 'url_catcher');
+        $page->assign('articles', $arts);
 
         $page->assign('asso', $globals->asso());
     }
@@ -109,8 +172,8 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         $res = XDB::query("SELECT logo, logo_mime
-                                       FROM groupex.asso WHERE id = {?}",
-                                    $globals->asso('id'));
+                             FROM groupex.asso WHERE id = {?}",
+                          $globals->asso('id'));
         list($logo, $logo_mime) = $res->fetchOneRow();
 
         if (!empty($logo)) {
@@ -346,7 +409,6 @@ class XnetGrpModule extends PLModule
 
         $page->changeTpl('xnet/groupe/inscrire.tpl');
 
-        $page->useMenu();
         $page->setType($globals->asso('cat'));
         $page->assign('asso', $globals->asso());
         $page->assign('admin', may_update());
@@ -776,6 +838,166 @@ class XnetGrpModule extends PLModule
                   WHERE  alias LIKE {?} AND type="user"',
                 $user['email'], '%@'.$globals->asso('mail_domain'));
         $page->assign('alias', $res->fetchAllAssoc());
+    }
+
+    function handler_rss(&$page, $user = null, $hash = null)
+    {
+        global $globals;
+        require_once('rss.inc.php');
+        require_once('url_catcher.inc.php');
+        $uid = init_rss('xnet/groupe/announce-rss.tpl', $user, $hash, false);
+        $page->register_modifier('url_catcher', 'url_catcher');
+
+        if ($uid) {
+            $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.contacts, a.create_date,
+                                         IF(u2.nom_usage != '', u2.nom_usage, u2.nom) AS nom, u2.prenom, u2.promo
+                                   FROM auth_user_md5 AS u
+                             INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
+                                                                  AND (a.promo_max = 0 OR a.promo_max <= u.promo))
+                             INNER JOIN auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
+                                  WHERE u.user_id = {?} AND peremption >= NOW()", $uid);
+        } else {
+            $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.create_date,
+                                         IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom, u.prenom, u.promo
+                                    FROM groupex.announces AS a
+                             INNER JOIN auth_user_md5 AS u USING(user_id)
+                                   WHERE FIND_IN_SET(a.flags, 'public') AND peremption >= NOW()");
+        }
+        $page->assign('asso', $globals->asso());
+        $page->assign('rss', $rss);
+    }
+
+    function handler_edit_announce(&$page, $aid = null)
+    {
+        global $globals, $platal;
+        new_groupadmin_page('xnet/groupe/announce-edit.tpl');
+        $page->assign('new', is_null($aid));
+        $art = array();
+
+        if (Post::v('valid') == 'Visualiser' || Post::v('valid') == 'Enregistrer') {
+            if (!is_null($aid)) {
+                $art['id'] = $aid;
+            }
+            $art['titre']      = Post::v('titre');
+            $art['texte']      = Post::v('texte');
+            $art['contacts']   = Post::v('contacts');
+            $art['promo_min']  = Post::i('promo_min');
+            $art['promo_max']  = Post::i('promo_max');
+            $art['nom']        = S::v('nom');
+            $art['prenom']     = S::v('prenom');
+            $art['promo']      = S::v('promo');
+            $art['forlife']    = S::v('forlife');
+            $art['peremption'] = Post::v('peremption');
+            $art['public']     = Post::has('public');
+            $art['xorg']       = Post::has('xorg');
+            $art['nl']         = Post::has('nl');
+            $art['event']      = Post::v('event');
+
+            $art['contact_html'] = $art['contacts'];
+            if (@$art['event']) {
+                 $art['contact_html'] .= "\n{$globals->baseurl}/{$platal->ns}events/sub/{$art['event']}";
+            }
+        }
+
+        if (Post::v('valid') == 'Enregistrer') {
+            if (is_null($aid)) {
+                XDB::query("INSERT INTO groupex.announces
+                                 (user_id, asso_id, create_date, titre, texte, contacts,
+                                   peremption, promo_min, promo_max, flags)
+                            VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?})",
+                           S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
+                           $art['peremption'], $art['promo_min'], $art['promo_max'], $art['public'] ? 'public' : '');
+                $aid = mysql_insert_id();
+                if ($art['xorg']) {
+                    require_once('validations.inc.php');
+                    require_once('url_catcher.inc.php');
+                    $article = new EvtReq($art['titre'],
+                                    url_catcher($art['texte'] . (!empty($art['contacts']) ? "\n\nContacts :\n" . $art['contacts'] : "")),
+                                    $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
+                    $article->submit();
+                    $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");
+                }
+                if ($art['nl']) {
+                    require_once('validations.inc.php');
+                    $article = new NLReq(S::v('uid'), $art['titre'], $art['texte'], $art['contact_html']);
+                    $article->submit();
+                    $page->trig("La parution dans la Lettre Mensuelle est en attente de validation");
+                }
+            } else {
+                XDB::query("UPDATE groupex.announces
+                               SET titre={?}, texte={?}, contacts={?}, peremption={?},
+                                   promo_min={?}, promo_max={?}, flags={?}
+                             WHERE id={?} AND asso_id={?}",
+                           $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
+                           $art['promo_min'], $art['promo_max'],  $art['public'] ? 'public' : '',
+                           $art['id'], $globals->asso('id'));
+            }
+            pl_redirect("");
+        } 
+
+        if (empty($art) && !is_null($aid)) {
+            $res = XDB::query("SELECT a.*, u.nom, u.prenom, u.promo, l.alias AS forlife,
+                                      FIND_IN_SET(a.flags, 'public') AS public
+                                 FROM groupex.announces AS a
+                           INNER JOIN auth_user_md5 AS u USING(user_id)
+                           INNER JOIN aliases AS l ON (l.id = u.user_id AND l.type = 'a_vie')
+                                WHERE asso_id = {?} AND a.id = {?}",
+                              $globals->asso('id'), $aid);
+            if ($res->numRows()) {
+                $art = $res->fetchOneAssoc();
+                $art['contact_html'] = $art['contacts'];
+            } else {
+                $page->kill("Aucun article correspond à l'identifiant indiqué");
+            }
+        }
+
+        $select = '';
+        for ($i = 1 ; $i < 30 ; $i++) {
+            $time    = time() + 3600 * 24 * $i;
+            $p_stamp = date('Ymd', $time);
+            $year    = date('Y',   $time);
+            $month   = date('m',   $time);
+            $day     = date('d',   $time);
+
+            $select .= "<option value=\"$p_stamp\"";
+            if ($p_stamp == strtr(@$art['peremption'], array("-" => ""))) {
+                $select .= " selected='selected'";
+            }
+            $select .= "> $day / $month / $year</option>\n";
+        }
+        $page->assign('select', $select);
+
+        if (is_null($aid)) {
+            $events = XDB::iterator("SELECT *
+                                      FROM groupex.evenements
+                                     WHERE asso_id = {?} AND archive = 0",
+                                   $globals->asso('id'));
+            if ($events->total()) {
+                $page->assign('events', $events);
+            }
+        } 
+
+        require_once('url_catcher.inc.php');
+        $art['contact_html'] = url_catcher($art['contact_html']);
+        $page->assign('art', $art);
+    }
+
+    function handler_admin_announce(&$page)
+    {
+        global $globals;
+        new_groupadmin_page('xnet/groupe/announce-admin.tpl');
+
+        if (Env::has('del')) {
+            XDB::execute("DELETE FROM groupex.announces
+                                WHERE id = {?} AND asso_id = {?}",
+                         Env::i('del'), $globals->asso('id'));
+        }
+        $res = XDB::iterator("SELECT a.id, a.titre, a.peremption, a.peremption < CURRENT_DATE() AS perime
+                                FROM groupex.announces AS a
+                                WHERE a.asso_id = {?}
+                             ORDER BY a.peremption DESC",
+                             $globals->asso('id'));
+        $page->assign('articles', $res);
     }
 }
 

@@ -81,8 +81,57 @@
 
 <br />
 
-<div>
+<div style="text-align: justify">
   {$asso.descr|smarty:nodefaults}
 </div>
+
+<br />
+
+{if $articles->total()}
+<div>
+{iterate item=art from=$articles}
+{include file="xnet/groupe/form.announce.tpl"}
+<br />
+{/iterate}
+</div>
+{/if}
+
+{if $article_index && $article_index->total()}
+<table class="tinybicol">
+  <tr>
+    <th>
+      {if $smarty.session.core_rss_hash}
+      <a href='{$platal->ns}rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml' style="display:block;float:right">
+        {icon name=feed title='fil rss'}
+      </a>
+      {else}
+      <a href='https://www.polytechnique.org/prefs/rss?referer=events'  style="display:block;float:right">
+        {icon name=feed_add title='Activer mon fil rss'}
+      </a>
+      {/if}
+      Sommaire des annonces du groupe
+    </th>
+  </tr>
+  {iterate item=art from=$article_index}
+  <tr>
+    <td>&bull; 
+    {if $art.nonlu}
+      <a href="{$platal->ns}#art{$art.id}">
+    {else}
+      <a href="{$platal->ns}?unread={$art.id}"><strong>
+    {/if}
+    {tidy}{$art.titre}{/tidy}
+    {if !$art.nonlu}</strong>{/if}</a>
+    </td>
+  </tr>
+  {/iterate}
+</table>
+{/if}
+
+{if $is_admin}
+<div class="center">
+  [<a href="{$platal->ns}announce/new">Ajouter une annonce</a>]
+</div>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

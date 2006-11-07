@@ -14,6 +14,7 @@ New:
 
     * Xnet:
         - Add a vcard of all the members of a group                        -FRU
+        - Add a full announce system                                       -FRU
 
     * Xnet/Events:
         - Events can be archived                                           -FRU

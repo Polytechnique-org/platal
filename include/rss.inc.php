@@ -37,7 +37,7 @@ function to_rss ($s)
     }
 }
 
-function init_rss($template, $alias, $hash)
+function init_rss($template, $alias, $hash, $require_uid = true)
 {
     global $page;
     $page->changeTpl($template, NO_SKIN);
@@ -52,7 +52,11 @@ function init_rss($template, $alias, $hash)
     $uid = $res->fetchOneCell();
 
     if (empty($uid)) {
-        exit;
+        if ($require_uid) {
+            exit;
+        } else {
+            $uid = null;
+        }
     }
 
     header('Content-Type: application/rss+xml; charset=utf8');

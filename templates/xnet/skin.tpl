@@ -46,7 +46,11 @@
     <script type="text/javascript" src="javascript/{$js}"></script>
     {/foreach}
     <script type="text/javascript" src="javascript/overlib.js"></script>
-    
+
+    {if $xorg_rss}
+    <link rel="alternate" type="application/rss+xml" title="{$xorg_rss.title}" href="{$xorg_rss.href}" />
+    {/if}
+
     {if $xorg_extra_header}
     {$xorg_extra_header|smarty:nodefaults}
     {/if}

@@ -88,7 +88,7 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
     </td>
   </tr>
   {foreachelse}
-  <tr><td colspan='6'>Pas de listes pour ce groupe</td></tr>
+  <tr><td colspan='7'>Pas de listes pour ce groupe</td></tr>
   {/foreach}
 </table>
 
