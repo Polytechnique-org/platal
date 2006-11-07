@@ -37,6 +37,7 @@
       <title>{$line.titre|strip_tags}</title>
       <link>{#globals.baseurl#}/events#newsid{$line.id}</link>
       <description><![CDATA[{$line.texte|nl2br}]]></description>
+      <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
       <pubDate>{$line.creation_date|rss_date}</pubDate>
     </item>
     {/iterate}

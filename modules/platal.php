@@ -401,10 +401,12 @@ Mail envoyé à ".Env::v('login'));
         $uid = init_rss('rss.tpl', $user, $hash);
 
         $rss = XDB::iterator(
-                'SELECT  e.id, e.titre, e.texte, e.creation_date
+                'SELECT  e.id, e.titre, e.texte, e.creation_date,
+                         IF(u2.nom_usage = "", u2.nom, u2.nom_usage) AS nom, u2.prenom, u2.promo
                    FROM  auth_user_md5   AS u
              INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo)
-                                                   AND (e.promo_max = 0 || e.promo_max >= u.promo) )
+                                                 AND (e.promo_max = 0 || e.promo_max >= u.promo) )
+             INNER JOIN  auth_user_md5   AS u2 ON (u2.user_id = e.user_id)
                   WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
                                          AND peremption >= NOW()', $uid);
         $page->assign('rss', $rss);
