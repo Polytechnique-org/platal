@@ -288,7 +288,7 @@ function get_user_details_adr($uid, $view = 'private') {
 function &get_user_details($login, $from_uid = '', $view = 'private')
 {
     $reqsql = "SELECT  u.user_id, u.promo, u.promo_sortie, u.prenom, u.nom, u.nom_usage, u.date, u.cv,
-                       u.perms IN ('admin','user') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
+                       u.perms IN ('admin','user','disabled') AS inscrit,  FIND_IN_SET('femme', u.flags) AS sexe, u.deces != 0 AS dcd, u.deces,
                        q.profile_nick AS nickname, q.profile_from_ax, q.profile_mobile AS mobile, q.profile_web AS web, q.profile_freetext AS freetext,
                        q.profile_mobile_pub AS mobile_pub, q.profile_web_pub AS web_pub, q.profile_freetext_pub AS freetext_pub,
                        q.profile_medals_pub AS medals_pub,
