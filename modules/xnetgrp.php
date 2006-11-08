@@ -894,8 +894,8 @@ class XnetGrpModule extends PLModule
             $art['event']      = Post::v('event');
 
             $art['contact_html'] = $art['contacts'];
-            if (@$art['event']) {
-                 $art['contact_html'] .= "\n{$globals->baseurl}/{$platal->ns}events/sub/{$art['event']}";
+            if ($art['event']) {
+                $art['contact_html'] .= "\n{$globals->baseurl}/{$platal->ns}events/sub/{$art['event']}";
             }
 
             if (!$art['public'] &&
@@ -923,7 +923,7 @@ class XnetGrpModule extends PLModule
                     require_once('validations.inc.php');
                     require_once('url_catcher.inc.php');
                     $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'],
-                                    url_catcher($art['texte'] . (!empty($art['contacts']) ? "\n\nContacts :\n" . $art['contacts'] : "")),
+                                    url_catcher($art['texte'] . (!empty($art['contact_html']) ? "\n\nContacts :\n" . $art['contact_html'] : "")),
                                     $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
                     $article->submit();
                     $page->trig("L'affichage sur la page d'accueil de Polytechnique.org est en attente de validation");

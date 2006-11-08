@@ -50,7 +50,11 @@
   <tr class="pair">
     <td style="padding-left: 20px">
       {tidy}
+      {if $art.contact_html}
+      {$art.contact_html|nl2br|smarty:nodefaults}
+      {else}
       {$art.contacts|url_catcher|nl2br|smarty:nodefaults}
+      {/if}
       {/tidy}
     </td>
   </tr>
