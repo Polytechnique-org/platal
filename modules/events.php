@@ -166,6 +166,14 @@ class EventsModule extends PLModule
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
 
+        if ($promo_min > $promo_max ||
+            ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
+            ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
+        {
+            $page->trig("L'intervalle de promotions n'est pas valide");
+            $action = null;
+        }
+
     	require_once('url_catcher.inc.php');
 		$texte_catch_url = url_catcher($texte);
 		
@@ -265,11 +273,21 @@ class EventsModule extends PLModule
         $page->assign('action', $action);
  
         if (Post::v('action') == "Proposer" && $eid) {
-            XDB::execute('UPDATE evenements
-                             SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
-                           WHERE id = {?}', 
-                          Post::v('titre'), Post::v('texte'), Post::v('peremption'),
-                          Post::v('promo_min'), Post::v('promo_max'), $eid);
+            $promo_min = Post::i('promo_min');
+            $promo_max = Post::i('promo_max');
+            if ($promo_min > $promo_max ||
+                ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
+                ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
+            {
+                $page->trig("L'intervalle de promotions $promo_min -> $promo_max n'est pas valide");
+                $action = 'edit';
+            } else {
+                XDB::execute('UPDATE evenements
+                                 SET titre={?}, texte={?}, peremption={?}, promo_min={?}, promo_max={?}
+                               WHERE id = {?}', 
+                              Post::v('titre'), Post::v('texte'), Post::v('peremption'),
+                              Post::v('promo_min'), Post::v('promo_max'), $eid);
+            }    
         }
 
         if ($action == 'edit') {
