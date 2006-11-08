@@ -71,8 +71,12 @@ function chgMainWinLoc( strPage ) {
         <div class='email'>
           {if $x.dcd}
           Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
+          {elseif !$x.actif}
+          Ce camarade n'a plus d'adresse redirection valide,<br />
+          <a href="marketing/broken/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
           {elseif !$x.inscrit}
-          Le compte de cette personne n'est pas actif (personne non inscrite ou exclue).
+          Cette personne n'est pas inscrite à Polytechnique.org,<br />
+          <a href="marketing/public/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
           {else}
           {if $virtualalias}
           <a href="mailto:{$virtualalias}">{$virtualalias}</a><br />
