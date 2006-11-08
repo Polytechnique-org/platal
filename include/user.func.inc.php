@@ -317,8 +317,8 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
                        c.uid IS NOT NULL AS is_contact,
                        s.text AS section, p.x, p.y, p.pub AS photo_pub,
                        u.matricule_ax,
-                       m.expertise != '' AS is_referent
-                       
+                       m.expertise != '' AS is_referent,
+                       COUNT(e.email) > 0 AS actif
                  FROM  auth_user_md5   AS u
            INNER JOIN  auth_user_quick AS q  USING(user_id)
            INNER JOIN  aliases         AS a  ON (u.user_id=a.id AND a.type='a_vie')
@@ -328,7 +328,9 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
            INNER JOIN  sections        AS s  ON (s.id  = u.section)
             LEFT JOIN  photo           AS p  ON (p.uid = u.user_id) 
             LEFT JOIN  mentor          AS m  ON (m.uid = u.user_id)
-                WHERE  a.alias = {?}";
+            LEFT JOIN  emails          AS e  ON (e.uid = u.user_id AND e.flags='active')
+                WHERE  a.alias = {?}
+             GROUP BY  u.user_id";
     $res  = XDB::query($reqsql, $from_uid, $login);
     $user = $res->fetchOneAssoc();
     $uid  = $user['user_id'];

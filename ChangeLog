@@ -68,6 +68,7 @@ From 0.9.11 branch:
     * Profile:
         - #486: fix force login to see private fiche.                      -Car
         - #509: can access trombi of the current year promotion            -FRU
+        - #529: Disabled state is private                                  -FRU
 
 ================================================================================
 VERSION 0.9.11                                                 18 Septembre 2006

@@ -28,7 +28,7 @@ $globals->search->result_fields = '
 		if(u.nom_usage=\'\', u.nom, u.nom_usage) AS NomSortKey,
                 u.nom_usage,u.date,
                 u.deces!=0 AS dcd,u.deces,
-		u.perms IN (\'admin\',\'user\') AS inscrit,
+		u.perms IN (\'admin\',\'user\', \'disabled\') AS inscrit,
 		u.perms != \'pending\' AS wasinscrit,
 		FIND_IN_SET(\'femme\', u.flags) AS sexe,
                 a.alias AS forlife,
