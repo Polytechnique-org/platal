@@ -116,12 +116,12 @@
   <tr>
     <td>&bull; 
     {if $art.nonlu}
-      <a href="{$platal->ns}#art{$art.id}">
+      <a href="{$platal->ns}#art{$art.id}"><strong>
     {else}
-      <a href="{$platal->ns}?unread={$art.id}"><strong>
+      <a href="{$platal->ns}?unread={$art.id}">
     {/if}
     {tidy}{$art.titre}{/tidy}
-    {if !$art.nonlu}</strong>{/if}</a>
+    {if $art.nonlu}</strong>{/if}</a>
     </td>
   </tr>
   {/iterate}

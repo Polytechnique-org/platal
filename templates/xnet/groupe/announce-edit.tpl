@@ -20,6 +20,18 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+{literal}
+function visibilityChange(box)
+{
+    var state = (box.checked ? 'none' : 'normal');
+    document.getElementById('promo_titre').style.display = state;
+    document.getElementById('promo_min').style.display = state;
+    document.getElementById('promo_max').style.display = state;
+    document.getElementById('promo_desc').style.display = state;
+}
+{/literal}
+</script>
 <h1>{$asso.nom} : Edition d'une annonce</h1>
 
 {if $art.texte}
@@ -90,31 +102,6 @@
 
   <table class="tinybicol">
     <tr>
-      <th colspan="2">Promotions cibles</th>
-    </tr>
-    <tr>
-      <td class="titre">Promotion minimale :</td>
-      <td>
-        <input type="text" size="4" maxlength="4" name="promo_min" value="{$art.promo_min|default:0}" />
-        incluse*  (ex : 1980)
-      </td>
-    </tr>
-    <tr>
-      <td class="titre">Promotion minimale :</td>
-      <td>
-        <input type="text" size="4" maxlength="4" name="promo_max" value="{$art.promo_max|default:0}" />
-        incluse*  (ex : 2000)
-      </td>
-    </tr>
-    <tr class="pair">
-      <td colspan="2">
-        <small>* 0 signifie qu'il n'y a pas de limite</small>
-      </td>
-    </tr>
-    <tr>
-      <th colspan="2">Options</th>
-    </tr>
-    <tr>
       <td class="titre">Date de péremption :</td>
       <td>
         <select name="peremption">
@@ -138,11 +125,33 @@
       </td>
     </tr>
     {/if}
-    <tr> 
+    <tr>
       <td class="titre">Visibilité :</td>
       <td>
-        <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} />
+        <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
         Rendre cette annonce publique
+      </td>
+    </tr>
+    <tr id="promo_titre" {if $art.public}style="display: none"{/if}>
+      <th colspan="2">Promotions cibles</th>
+    </tr>
+    <tr id="promo_min"  {if $art.public}style="display: none"{/if}>
+      <td class="titre">Promotion minimale :</td>
+      <td>
+        <input type="text" size="4" maxlength="4" name="promo_min" value="{$art.promo_min|default:0}" />
+        incluse*  (ex : 1980)
+      </td>
+    </tr>
+    <tr id="promo_max"  {if $art.public}style="display: none"{/if}>
+      <td class="titre">Promotion minimale :</td>
+      <td>
+        <input type="text" size="4" maxlength="4" name="promo_max" value="{$art.promo_max|default:0}" />
+        incluse*  (ex : 2000)
+      </td>
+    </tr>
+    <tr class="pair" id="promo_desc"  {if $art.public}style="display: none"{/if}>
+      <td colspan="2">
+        <small>* 0 signifie qu'il n'y a pas de limite</small>
       </td>
     </tr>
     {if $new}

@@ -148,7 +148,7 @@ class XnetGrpModule extends PLModule
                                      FROM groupex.announces AS a
                                INNER JOIN auth_user_md5 AS u USING(user_id)
                                     WHERE asso_id = {?} AND peremption >= CURRENT_DATE()
-                                          AND FIND_IN_SET(u.flags, 'public')",
+                                          AND FIND_IN_SET(a.flags, 'public')",
                                   $globals->asso('id'));
         }
 
@@ -897,21 +897,32 @@ class XnetGrpModule extends PLModule
             if (@$art['event']) {
                  $art['contact_html'] .= "\n{$globals->baseurl}/{$platal->ns}events/sub/{$art['event']}";
             }
+
+            if (!$art['public'] &&
+                ($art['promo_min'] > $art['promo_max'] ||
+                 ($art['promo_min'] != 0 && ($art['promo_min'] <= 1900 || $art['promo_min'] >= 2020)) ||
+                 ($art['promo_max'] != 0 && ($art['promo_max'] <= 1900 || $art['promo_max'] >= 2020))))
+            {
+                $page->trig("L'intervalle de promotions est invalide");
+                Post::kill('valid');
+            }
         }
 
         if (Post::v('valid') == 'Enregistrer') {
+            $promo_min = ($art['public'] ? 0 : $art['promo_min']);
+            $promo_max = ($art['public'] ? 0 : $art['promo_max']);
             if (is_null($aid)) {
                 XDB::query("INSERT INTO groupex.announces
                                  (user_id, asso_id, create_date, titre, texte, contacts,
                                    peremption, promo_min, promo_max, flags)
                             VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
-                           $art['peremption'], $art['promo_min'], $art['promo_max'], $art['public'] ? 'public' : '');
+                           $art['peremption'], $promo_min, $promo_max, $art['public'] ? 'public' : '');
                 $aid = mysql_insert_id();
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     require_once('url_catcher.inc.php');
-                    $article = new EvtReq($art['titre'],
+                    $article = new EvtReq("[{$globals->asso('nom')}] " . $art['titre'],
                                     url_catcher($art['texte'] . (!empty($art['contacts']) ? "\n\nContacts :\n" . $art['contacts'] : "")),
                                     $art['promo_min'], $art['promo_max'], $art['peremption'], "", S::v('uid'));
                     $article->submit();
@@ -919,7 +930,8 @@ class XnetGrpModule extends PLModule
                 }
                 if ($art['nl']) {
                     require_once('validations.inc.php');
-                    $article = new NLReq(S::v('uid'), $art['titre'], $art['texte'], $art['contact_html']);
+                    $article = new NLReq(S::v('uid'), $globals->asso('nom') . " : " .$art['titre'],
+                                         $art['texte'], $art['contact_html']);
                     $article->submit();
                     $page->trig("La parution dans la Lettre Mensuelle est en attente de validation");
                 }
@@ -929,9 +941,11 @@ class XnetGrpModule extends PLModule
                                    promo_min={?}, promo_max={?}, flags={?}
                              WHERE id={?} AND asso_id={?}",
                            $art['titre'], $art['texte'], $art['contacts'], $art['peremption'],
-                           $art['promo_min'], $art['promo_max'],  $art['public'] ? 'public' : '',
+                           $promo_min, $promo_max,  $art['public'] ? 'public' : '',
                            $art['id'], $globals->asso('id'));
             }
+        }
+        if (Post::v('valid') == 'Enregistrer' || Post::v('valid') == 'Annuler') {
             pl_redirect("");
         } 
 
