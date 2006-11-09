@@ -47,8 +47,12 @@ qui y était abonné.
       <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
       <td>
         {foreach from=$xs item=x}
-        {if $promo}
+        {if $promo && strpos($x.l, '@') === false}
         <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+        {elseif $x.x}
+        <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+        {elseif $x.n}
+        {$x.n}
         {else}
         {$x.l}
         {/if}
@@ -81,8 +85,12 @@ qui y était abonné.
       <td class='titre'>{if $promo}{$promo}{else}non-X{/if}</td>
       <td>
         {foreach from=$xs item=x}
-        {if $promo}
+        {if $promo && strpos($x.l, '@') === false}
         <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+        {elseif $x.x}
+        <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
+        {elseif $x.n}
+        {$x.n}
         {else}
         {$x.l}
         {/if}

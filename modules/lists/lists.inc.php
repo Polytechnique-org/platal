@@ -40,10 +40,13 @@ function list_sort_owners(&$members, $tri_promo = true) {
                 $membres[0][] = Array('l' => $mem);
             }
         } else {
-            $res = XDB::query('SELECT prenom, nom FROM groupex.membres WHERE email={?}', $mem);
-            if (list($prenom, $nom) = $res->fetchOneRow()) {
+            $res = XDB::query('SELECT m2.uid, m1.prenom, m1.nom
+                                 FROM groupex.membres AS m1
+                            LEFT JOIN groupex.membres AS m2 ON(m1.email=m2.email AND m2.asso_id={?})
+                                WHERE m1.email={?}', $globals->asso('id'), $mem);
+            if (list($uid, $prenom, $nom) = $res->fetchOneRow()) {
                 $key = $tri_promo ? 0 : strtoupper($nom{0});
-                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem, 'p' => (!$tri_promo ? 'non-X' : null));
+                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem, 'x' => $uid, 'p' => (!$tri_promo ? 'non-X' : null));
             } else {
                 $membres[0][] = Array('l' => $mem, 'p' => (!$tri_promo ? 'non-X' : null));
             }

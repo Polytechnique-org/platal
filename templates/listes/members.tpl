@@ -94,8 +94,10 @@
       {/if}
     </td>
     <td>
-      {if $promo}
+      {if $promo && strpos($x.l, '@') === false}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+      {elseif $x.x}
+      <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
       {elseif $x.n}
       {$x.n}
       {else}
@@ -133,8 +135,10 @@
       {/if}
     </td>
     <td>
-      {if $promo}
+      {if $promo && strpos($x.l, '@') === false}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+      {elseif $x.x}
+      <a href="{$platal->ns}member/{$x.x}">{$x.n}</a>
       {elseif $x.n}
       {$x.n}
       {else}
