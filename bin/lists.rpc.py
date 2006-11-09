@@ -191,7 +191,7 @@ def to_forlife(email):
             return res
         else:
             return (None, None)
-    return (email, mbox)
+    return (email.lower(), mbox)
 
 ##
 # see /usr/lib/mailman/bin/rmlist
@@ -295,7 +295,7 @@ def get_lists(userdesc, perms, vhost, email=None):
     if email is None:
         udesc = userdesc
     else:
-        udesc = UserDesc(email, email, None, 0)
+        udesc = UserDesc(email.lower(), email.lower(), None, 0)
     prefix = vhost.lower()+VHOST_SEP
     names = Utils.list_names()
     names.sort()
@@ -401,7 +401,7 @@ def replace_email(userdesc, perms, vhost, listname, from_email, to_email):
             return 0
 
         mlist.Lock()
-        mlist.ApprovedChangeMemberAddress(from_email, to_email, 0)
+        mlist.ApprovedChangeMemberAddress(from_email.lower(), to_email.lower(), 0)
         mlist.Save()
         mlist.Unlock()
         return 1

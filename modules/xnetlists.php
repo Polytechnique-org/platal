@@ -198,7 +198,7 @@ class XnetListsModule extends ListsModule
 
         list(,$members) = $this->client->get_members($liste);
         $mails = array_map(create_function('$arr', 'return $arr[1];'), $members);
-        $subscribers = array_unique(array_merge($subscribers, $mails));
+        $subscribers = array_unique($mails);
 
         $not_in_group_x = array();
         $not_in_group_ext = array();
@@ -219,7 +219,7 @@ class XnetListsModule extends ListsModule
         $not_in_list = array();
 
         while ($tmp = $ann->next()) {
-            if (!in_array($tmp['email'], $subscribers)) {
+            if (!in_array(strtolower($tmp['email']), $subscribers)) {
                 $not_in_list[] = $tmp;
             }
         }

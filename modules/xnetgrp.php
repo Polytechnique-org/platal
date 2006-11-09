@@ -756,7 +756,7 @@ class XnetGrpModule extends PLModule
                              $globals->asso('mail_domain'));
 
         if (Post::has('change')) {
-            $email_changed = ($user['origine'] != 'X' && $user['email'] != Post::v('email'));
+            $email_changed = ($user['origine'] != 'X' && strtolower($user['email']) != strtolower(Post::v('email')));
             $from_email = $user['email'];
             if ($user['origine'] != 'X') {
                 XDB::query('UPDATE groupex.membres
