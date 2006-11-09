@@ -96,6 +96,8 @@
     <td>
       {if $promo}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+      {elseif $x.n}
+      {$x.n}
       {else}
       {$x.l}
       {/if}
@@ -133,6 +135,8 @@
     <td>
       {if $promo}
       <a href="profile/{$x.l}" class="popup2">{$x.n}</a>
+      {elseif $x.n}
+      {$x.n}
       {else}
       {$x.l}
       {/if}

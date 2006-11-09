@@ -533,8 +533,8 @@ class ListsModule extends PLModule
         }
 
         if (list($det,$mem,$own) = $this->client->get_members($liste)) {
-            $membres = list_sort_members($mem, $tri_promo);
-            $moderos = list_sort_owners($own, $tri_promo);
+            $membres = list_sort_members($mem, @$tri_promo);
+            $moderos = list_sort_owners($own, @$tri_promo);
 
             $page->assign_by_ref('details', $det);
             $page->assign_by_ref('members', $membres);

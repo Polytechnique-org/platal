@@ -45,7 +45,7 @@ function list_sort_owners(&$members, $tri_promo = true) {
                 $key = $tri_promo ? 0 : strtoupper($nom{0});
                 $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem, 'p' => (!$tri_promo ? 'non-X' : null));
             } else {
-                $membres[0][] = Array('l' => $mem);
+                $membres[0][] = Array('l' => $mem, 'p' => (!$tri_promo ? 'non-X' : null));
             }
         }
     }
