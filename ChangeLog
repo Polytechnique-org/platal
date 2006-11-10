@@ -43,6 +43,7 @@ Bug/Wish:
     * Profile:
         - #451: vCard are RFC compliant                                    -FRU
         - #502: Use 'alias' instead of 'aka' to specify the nickname       -FRU
+        - #536: Can use login.promo as a valid user identifier             -FRU
 
     * Xnet:
         - #511: Migrate ML subscription when changing email of a non-X     -FRU

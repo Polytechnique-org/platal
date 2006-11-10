@@ -68,7 +68,7 @@ function user_clear_all_subs($user_id, $really_del=true)
 function get_user_login($data, $get_forlife = false) {
     global $globals, $page;
 
-    if (preg_match(',^[0-9]*$,', $data)) {
+    if (is_numeric($data)) {
         $res = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $data);
         if ($res->numRows()) {
             return $res->fetchOneCell();
@@ -88,22 +88,32 @@ function get_user_login($data, $get_forlife = false) {
     if ($fqdn == $globals->mail->domain || $fqdn == $globals->mail->domain2) {
 
         $res = XDB::query("SELECT  a.alias
-                                       FROM  aliases AS a
-                                 INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
-                                      WHERE  a.type = 'a_vie'", $mbox);
+                             FROM  aliases AS a
+                       INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
+                            WHERE  a.type = 'a_vie'", $mbox);
         if ($res->numRows()) {
             return $get_forlife ? $res->fetchOneCell() : $mbox;
-        } else {
-            $page->trig("il n'y a pas d'utilisateur avec ce login");
-            return false;
         }
+
+        if (preg_match('/^(.*)\.([0-9]{4})$/', $mbox, $matches)) {
+            $res = XDB::query("SELECT  a.alias
+                                 FROM  aliases AS a
+                           INNER JOIN  aliases AS b ON (a.id = b.id AND b.type IN ('alias', 'a_vie') AND b.alias={?})
+                           INNER JOIN  auth_user_md5 AS u ON (a.id = u.user_id AND promo = {?})
+                                WHERE  a.type = 'a_vie'", $matches[1], $matches[2]);
+            if ($res->numRows() == 1) {
+                return $res->fetchOneCell();
+            }
+        }
+        $page->trig("il n'y a pas d'utilisateur avec ce login");
+        return false;
 
     } elseif ($fqdn == $globals->mail->alias_dom || $fqdn == $globals->mail->alias_dom2) {
     
         $res = XDB::query("SELECT  redirect
-                                       FROM  virtual_redirect
-                                 INNER JOIN  virtual USING(vid)
-                                      WHERE  alias={?}", $mbox.'@'.$globals->mail->alias_dom);
+                             FROM  virtual_redirect
+                       INNER JOIN  virtual USING(vid)
+                            WHERE  alias={?}", $mbox.'@'.$globals->mail->alias_dom);
         if ($redir = $res->fetchOneCell()) {
             list($alias) = explode('@', $redir);
         } else {
