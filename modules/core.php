@@ -29,6 +29,7 @@ class CoreModule extends PLModule
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
 
             'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
+            'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
         );
     }
 
@@ -48,6 +49,14 @@ class CoreModule extends PLModule
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         $page->changeTpl('404.tpl');
+    }
+
+    function handler_favicon(&$page)
+    {
+        $data = file_get_contents(dirname(__FILE__).'/../htdocs/images/favicon.png');
+        header('Content-Type: image/png');
+        echo $data;
+        exit;
     }
 
     function handler_purge_cache(&$page)

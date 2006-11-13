@@ -35,6 +35,7 @@
     {iterate item=line from=$rss}
     <item>
       <title>{$line.titre|strip_tags}</title>
+      <guid isPermaLink="false">{$line.id}</guid>
       <link>{#globals.baseurl#}/events#newsid{$line.id}</link>
       <description><![CDATA[{$line.texte|nl2br}]]></description>
       <author>{$line.prenom} {$line.nom} (X{$line.promo})</author>
