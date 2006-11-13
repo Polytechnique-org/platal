@@ -197,7 +197,7 @@ class Notifs {
             $this->_cats[$tmp['id']] = $tmp;
         }
 
-        $lastweek = date('YmdHis',mktime() - 7*24*60*60);
+        $lastweek = date('YmdHis', time() - 7*24*60*60);
 
         // recupere les notifs du watcher $uid, sans detail sur le watcher,
         // depuis la semaine dernière, meme ceux sans surveillance, ordonnés

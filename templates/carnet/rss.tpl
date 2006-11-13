@@ -66,7 +66,7 @@
         </a>
         {/if}
         ]]></description>
-      <pubDate>{$x->known|rss_date}</pubDate>
+      <pubDate>{$x.known|rss_date}</pubDate>
     </item>
     {/foreach}
     {/foreach}

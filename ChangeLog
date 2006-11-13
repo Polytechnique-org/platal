@@ -8,9 +8,10 @@ New:
 
     * Carnet:
         - Add a vcard of all the contacts                                  -FRU
+        - Fix timestamp in RSS feed                                        -FRU
 
     * Events:
-        - Add author in RSS                                                -FRU
+        - Add author and event id in RSS feed                              -FRU
 
     * Xnet:
         - Add a vcard of all the members of a group                        -FRU
