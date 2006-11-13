@@ -152,7 +152,7 @@
     <tr>
       <td>Pays</td>
       <td>
-        <select name="country" onchange="javascript:document.forms.recherche.submit();">
+        <select name="country" onchange="return Ajax.update_html('region', '{$platal->ns}search/ajax/region/' + this.value);">
         {if $smarty.request.country}
           {assign var="country" value=$smarty.request.country}
         {else}
@@ -165,17 +165,13 @@
     <tr>
       <td>Région ou département</td>
       <td>
-        <select name="region">
+        <select name="region" id="region">
         {if $smarty.request.region}
           {assign var="region" value=$smarty.request.region}
         {else}
           {assign var="region" value=""}
         {/if}
-        {if $smarty.request.country neq ""}
-        {geoloc_region country=$smarty.request.country region=$region}
-        {else}
-        <option value=""></option>
-        {/if}
+        {include file="search/adv.region.form.tpl" country=$smarty.request.country}
         </select>
       </td>
     </tr>
@@ -282,7 +278,7 @@
     <tr>
       <td>Formation</td>
       <td>
-        <select name="school" onchange="javascript:document.forms.recherche.submit();">
+        <select name="school" onchange="return Ajax.update_html('grade', '{$platal->ns}search/ajax/grade/' + this.value);">
           <option value="0"></option>
           {iterate item=cs from=$choix_schools}
           <option value="{$cs.id}" {if $smarty.request.school eq $cs.id}selected="selected"{/if}>
@@ -295,14 +291,8 @@
     <tr>
       <td></td>
       <td>
-        <select name="diploma">
-          <option value="0"></option>
-          {section name=diploma loop=$choix_diplomas}
-          <option value="{$choix_diplomas[diploma]}" {if $smarty.request.diploma eq
-          $choix_diplomas[diploma]}selected="selected"{/if}>
-            {$choix_diplomas[diploma]}
-          </option>
-          {/section}
+        <select name="diploma" id="grade">
+          {include file="search/adv.grade.form.tpl" grade=$smarty.request.diploma}
         </select>
       </td>
     </tr>

@@ -26,6 +26,8 @@ class SearchModule extends PLModule
         return array(
             'search'     => $this->make_hook('quick', AUTH_PUBLIC),
             'search/adv' => $this->make_hook('advanced', AUTH_COOKIE),
+            'search/ajax/region'  => $this->make_hook('region', AUTH_COOKIE, '', NO_AUTH),
+            'search/ajax/grade'   => $this->make_hook('grade',  AUTH_COOKIE, '', NO_AUTH),
             'advanced_search.php' => $this->make_hook('redir_advanced', AUTH_PUBLIC),
         );
     }
@@ -103,21 +105,30 @@ class SearchModule extends PLModule
                       XDB::iterator('SELECT id,text FROM applis_def ORDER BY text'));
         $page->assign('choix_secteurs',
                       XDB::iterator('SELECT id,label FROM emploi_secteur ORDER BY label'));
+        $this->get_diplomas();
+    }
 
-        if (Env::has('school')) {
-            $sql = 'SELECT type FROM applis_def WHERE id='.Env::i('school');
+    function get_diplomas($school = null)
+    {
+        if (is_null($school) && Env::has('school')) {
+            $school = Env::i('school');
+        }
+
+        if (!is_null($school)) {
+            $sql = 'SELECT type FROM applis_def WHERE id=' . $school;
         } else {
             $sql = 'DESCRIBE applis_def type';
         }
 
         $res = XDB::query($sql);
         $row = $res->fetchOneRow();
-        if (Env::has('school')) {
+        if (!is_null($school)) {
             $types = $row[0];
         } else {
             $types = explode('(',$row[1]);
             $types = str_replace("'","",substr($types[1],0,-1));
         }
+        global $page;
         $page->assign('choix_diplomas', explode(',',$types));
     }
 
@@ -235,7 +246,23 @@ class SearchModule extends PLModule
 
         }
 
+        $page->addJsLink('ajax.js');
         $page->register_modifier('display_lines', 'display_lines');
+    }
+
+    function handler_region(&$page, $country = null)
+    {
+        require_once("geoloc.inc.php");
+        $page->ChangeTpl('search/adv.region.form.tpl', NO_SKIN);
+        $page->assign('region', "");
+        $page->assign('country', $country);
+    }
+
+    function handler_grade(&$page, $school = null)
+    {
+        $page->ChangeTpl('search/adv.grade.form.tpl', NO_SKIN);
+        $page->assign('grade', '');
+        $this->get_diplomas($school);
     }
 }
 
