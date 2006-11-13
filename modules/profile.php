@@ -186,6 +186,18 @@ class ProfileModule extends PLModule
         }
 
         if (empty($login)) {
+            if (preg_match('/([-a-z]+)\.([-a-z]+)\.([0-9]{4})/i', $x, $matches)) {
+                $matches = str_replace('-', '_', $matches);
+                $res = XDB::query("SELECT user_id
+                                     FROM auth_user_md5
+                                    WHERE prenom LIKE {?} AND nom LIKE {?} AND promo = {?}
+                                          AND perms = 'pending'",
+                                  $matches[1], $matches[2], $matches[3]);
+                if ($res->numRows() == 1) {
+                    $uid = $res->fetchOneCell();
+                    pl_redirect('marketing/public/' . $uid);
+                }
+            }
             return PL_NOT_FOUND;
         }
 
