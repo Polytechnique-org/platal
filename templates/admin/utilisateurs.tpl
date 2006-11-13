@@ -112,11 +112,15 @@ function act_fwd(fwd, activate) {
 <form id="auth" method="post" action="admin/user">
   <table cellspacing="0" cellpadding="2" class="tinybicol">
     <tr>
-      <th>
-        UID et Matricule
-      </th>
-      <th>
-        {$mr.user_id} / {$mr.matricule}
+      <th colspan="2">
+        <div style="float: right; text-align: right">
+          Matricule = {$mr.matricule}<br />
+          Matricule AX = {$mr.matricule_ax}
+        </div>
+        <div style="float: left; text-align: left">
+          UID = {$mr.user_id}<br />
+          Inscription = {$mr.date_ins|date_format}
+        </div>
         <input type="hidden" name="user_id" value="{$mr.user_id}" />
       </th>
     </tr>
@@ -208,6 +212,13 @@ function act_fwd(fwd, activate) {
         <input type="text" name="commentN" size="40" maxlength="64" value="{$mr.comment}" />
       </td>
     </tr>
+    {if $mr.perms eq 'pending'}
+    <tr class="center">
+      <td colspan="2">
+        <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
+      </td>
+    </tr>
+    {else}
     <tr class="center">
       <td>
         <a href="profile/{$mr.forlife}" class="popup2">[Voir fiche]</a>
@@ -224,8 +235,10 @@ function act_fwd(fwd, activate) {
         <input type="submit" name="u_kill_conf" value="Désinscrire" />
       </td>
     </tr>
+    {/if}
   </table>
 </form>
+{if $mr.perms neq 'pending'}
 <p>
 Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
 Pour ceci changer ses permissions en 'disabled'.
@@ -323,6 +336,7 @@ Pour ceci changer ses permissions en 'disabled'.
   </table>
 </form>
 
+{/if}
 {/if}
 {/if}
 

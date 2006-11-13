@@ -345,7 +345,8 @@ class AdminModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
     }
 
-    function handler_user(&$page, $login = false) {
+    function handler_user(&$page, $login = false)
+    {
         $page->changeTpl('admin/utilisateurs.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Edit/Su/Log');
         require_once("emails.inc.php");
@@ -357,6 +358,9 @@ class AdminModule extends PLModule
 
         if (Env::has('user_id')) {
             $login = get_user_login(Env::i('user_id'));
+            if (empty($login)) {
+                $login = Env::i('user_id');
+            }
         } elseif (Env::has('login')) {
             $login = get_user_login(Env::v('login'));
         }
@@ -380,12 +384,21 @@ class AdminModule extends PLModule
         }
 
         if ($login) {
-            $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
-                                          FROM  auth_user_md5 AS u
-                                    INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
+            if (is_numeric($login)) {
+                $r = XDB::query("SELECT *, a.alias AS forlife, u.flags AS sexe
+                                   FROM auth_user_md5 AS u
+                              LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
+                                  WHERE u.user_id = {?}", $login);
+            } else {
+                $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
+                                    FROM  auth_user_md5 AS u
+                              INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
+            }   
             $mr = $r->fetchOneAssoc();
 
-            $redirect = new Redirect($mr['user_id']);
+            if (!is_numeric($login)) { //user has a forlife
+                $redirect = new Redirect($mr['user_id']);
+            }
 
             // Check if there was a submission
             foreach($_POST as $key => $val) {
@@ -408,8 +421,9 @@ class AdminModule extends PLModule
 
                     case "del_alias":
                         if (!empty($val)) {
-                            XDB::execute("DELETE FROM aliases WHERE id={?} AND alias={?}
-                                    AND type!='a_vie' AND type!='homonyme'", $mr['user_id'], $val);
+                            XDB::execute("DELETE FROM aliases
+                                                WHERE id={?} AND alias={?}
+                                                      AND type!='a_vie' AND type!='homonyme'", $mr['user_id'], $val);
                             XDB::execute("UPDATE emails
                                              SET rewrite = ''
                                            WHERE uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
@@ -483,10 +497,10 @@ class AdminModule extends PLModule
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
                             set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
                         }
-                        $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
-                                                      FROM  auth_user_md5 AS u
-                                                INNER JOIN  aliases       AS a ON (u.user_id=a.id)
-                                                     WHERE  user_id = {?}", $mr['user_id']);
+                        $r = XDB::query("SELECT *, a.alias AS forlife, u.flags AS sexe
+                                           FROM auth_user_md5 AS u
+                                      LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
+                                          WHERE u.user_id = {?}", $mr['user_id']);
                         $mr = $r->fetchOneAssoc();
                         break;
 
@@ -519,7 +533,9 @@ class AdminModule extends PLModule
                            FROM  aliases
                           WHERE  id = {?} AND type!='homonyme'
                        ORDER BY  type!= 'a_vie'", $mr["user_id"]));
-            $page->assign('emails',$redirect->emails);
+            if ($mr['perms'] != 'pending') {
+                $page->assign('emails',$redirect->emails);
+            }
 
             $page->assign('mr',$mr);
         }

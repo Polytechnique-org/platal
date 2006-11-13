@@ -5,6 +5,7 @@ New:
 
     * Admin:
         - Can add sorting key in Table Editor.                             -FRU
+        - Can manage not registered users                                  -FRU
 
     * Carnet:
         - Add a vcard of all the contacts                                  -FRU

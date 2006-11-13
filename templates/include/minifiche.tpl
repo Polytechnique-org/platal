@@ -74,13 +74,12 @@
     {/if}
 
     {if $smarty.session.perms eq admin}
-      {if !$c.wasinscrit && !$c.dcd}
-        [<a href="marketing/private/{$c.user_id}">{*
-          *}{icon name=wrench title="marketter user"}</a>
-      {elseif $c.wasinscrit}
-        [<a href="admin/user/{$c.forlife}">{*
-          *}{icon name=wrench title="administrer user"}</a>
+      [{if !$c.wasinscrit && !$c.dcd}
+        <a href="marketing/private/{$c.user_id}">{*
+          *}{icon name=email title="marketter user"}</a>
       {/if}
+      <a href="admin/user/{if $c.wasinscrit}{$c.forlife}{else}{$c.user_id}{/if}">{*
+        *}{icon name=wrench title="administrer user"}</a>
       <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$c.matricule_ax}">{*
       *}{icon name=user_gray title="fiche AX"}</a>]
     {/if}
