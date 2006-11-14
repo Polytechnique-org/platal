@@ -136,7 +136,7 @@ function deadlineChange(box)
     <tr>
       <th colspan="2">
         Paiement&nbsp;:&nbsp;
-        <select name="paiement_id" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'normal':'none')">
+        <select name="paiement_id" onchange="document.getElementById('new_pay').style.display=(value &lt; 0?'':'none')">
           {if $evt.paiement_id eq -2}
           <option value='-2'>Paiement en attente de validation</option>
           {/if}

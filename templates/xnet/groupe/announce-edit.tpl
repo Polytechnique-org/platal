@@ -24,7 +24,7 @@
 {literal}
 function visibilityChange(box)
 {
-    var state = (box.checked ? 'none' : 'normal');
+    var state = (box.checked ? 'none' : '');
     document.getElementById('promo_titre').style.display = state;
     document.getElementById('promo_min').style.display = state;
     document.getElementById('promo_max').style.display = state;

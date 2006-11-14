@@ -117,24 +117,24 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     $pay_id = $evt['paiement_id'];
 
     $query =
-        "SELECT  IF(u.nom IS NULL,m.nom,IF(u.nom_usage<>'', u.nom_usage, u.nom)) AS nom,
-                   IF(u.nom IS NULL,m.prenom,u.prenom) AS prenom,
-                   IF(u.nom IS NULL,'extérieur',u.promo) AS promo,
-                   IF(u.nom IS NULL,m.email,a.alias) AS email,
-                   IF(u.nom IS NULL,0,FIND_IN_SET('femme', u.flags)) AS femme,
+          "SELECT  IF(m.origine != 'X',m.nom,IF(u.nom_usage<>'', u.nom_usage, u.nom)) AS nom,
+                   IF(m.origine != 'X',m.prenom,u.prenom) AS prenom,
+                   IF(m.origine != 'X','extérieur',u.promo) AS promo,
+                   IF(m.origine != 'X' OR u.perms = 'pending',m.email,a.alias) AS email,
+                   IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
-                   NOT(u.nom IS NULL) AS x,
-		   ep.uid, ep.paid, SUM(nb) AS nb 
-               FROM  groupex.evenements_participants AS ep
-	 INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
-	  LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
-          LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
-          LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
-              WHERE  ep.eid = {?}
+                   (m.origine = 'X') AS x,
+		           ep.uid, ep.paid, SUM(nb) AS nb 
+             FROM  groupex.evenements_participants AS ep
+       INNER JOIN  groupex.evenements AS e ON (ep.eid = e.eid)
+	    LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
+        LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
+        LEFT JOIN  aliases         AS a ON ( a.id = ep.uid AND a.type='a_vie' )
+            WHERE  ep.eid = {?}
                     ".(($item_id)?" AND item_id = $item_id":"")."
                     $where
-	   GROUP BY  ep.uid
-	   ORDER BY  $tri $limit";
+         GROUP BY  ep.uid
+         ORDER BY  $tri $limit";
 
     if ($item_id) {
         $res = XDB::query($query, $eid);

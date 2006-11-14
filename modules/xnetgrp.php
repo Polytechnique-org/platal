@@ -34,12 +34,19 @@ function get_infos($email)
     }
 
     $res = XDB::query(
-            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine
+            "SELECT  uid, nom, prenom, email, email AS email2, perms='admin', origine, sexe
                FROM  groupex.membres
               WHERE  $field = {?} AND asso_id = {?}", $email, $globals->asso('id'));
 
     if ($res->numRows()) {
-        return $res->fetchOneAssoc();
+        $user = $res->fetchOneAssoc();
+        if ($user['origine'] == 'X') {
+            $res = XDB::query("SELECT nom, prenom, promo, FIND_IN_SET(flags, 'femme') AS sexe
+                                 FROM auth_user_md5
+                                WHERE user_id = {?}", $user['uid']);
+            $user = array_merge($user, $res->fetchOneAssoc());
+        }
+        return $user;                        
     } elseif ($dom == 'polytechnique.org' || $dom == 'm4x.org') {
         $res = XDB::query(
                 "SELECT  user_id AS uid, u.promo,
@@ -47,7 +54,8 @@ function get_infos($email)
                          u.prenom, b.alias,
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
-                         m.perms='admin' AS perms, m.origine
+                         m.perms='admin' AS perms, m.origine,
+                         FIND_IN_SET(flags, 'femme') AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
              INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
@@ -82,6 +90,8 @@ class XnetGrpModule extends PLModule
                  => $this->make_hook('admin_member', AUTH_MDP),
             '%grp/member/new'
                  => $this->make_hook('admin_member_new', AUTH_MDP),
+            '%grp/member/new/ajax'
+                 => $this->make_hook('admin_member_new_ajax', AUTH_MDP, '', NO_AUTH),         
             '%grp/member/del'
                  => $this->make_hook('admin_member_del', AUTH_MDP),
 
@@ -308,7 +318,7 @@ class XnetGrpModule extends PLModule
         if ($group == 'initiale')
             $res = XDB::iterRow(
                         'SELECT  UPPER(SUBSTRING(
-                                     IF(m.origine="X", IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom),
+                                    IF(m.origine="X", IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom),
                                      1, 1)) as letter, COUNT(*)
                            FROM  groupex.membres AS m
                       LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
@@ -371,16 +381,17 @@ class XnetGrpModule extends PLModule
                            IF(m.origine='X',u.prenom,m.prenom) AS prenom,
                            IF(m.origine='X',u.promo,'extérieur') AS promo,
                            IF(m.origine='X',u.promo,'') AS promo_o,
-                           IF(m.origine='X',a.alias,m.email) AS email,
+                           IF(m.origine='X' AND u.perms != 'pending',a.alias,m.email) AS email,
                            IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
+                           u.perms!='pending' AS inscrit,
                            m.uid
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
                     WHERE  m.asso_id = {?} $ini
-                           AND (m.origine = 'ext' OR u.perms != 'pending')
+                           AND (m.origine = 'ext' OR u.perms != 'pending' OR m.email IS NOT NULL)
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
 
@@ -652,6 +663,7 @@ class XnetGrpModule extends PLModule
         global $globals;
 
         new_groupadmin_page('xnet/groupe/membres-add.tpl');
+        $page->addJsLink('ajax.js');
 
         if (is_null($email)) {
             return;
@@ -677,15 +689,64 @@ class XnetGrpModule extends PLModule
             }
         } else {
             if (isvalid_email($email)) {
-                $res = XDB::query('SELECT MAX(uid)+1 FROM groupex.membres');
-                $uid = max(intval($res->fetchOneCell()), 50001);
-                XDB::execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email)
-                                        VALUES({?},{?},"ext",{?})', $uid,
-                                        $globals->asso('id'), $email);
-                pl_redirect("member/$email");
+                if (Env::v('x') && Env::has('userid') && Env::i('userid')) {
+                    $uid = Env::i('userid');
+                    $res = XDB::query("SELECT *
+                                         FROM auth_user_md5
+                                         WHERE user_id = {?} AND perms = 'pending'", $uid);
+                    if ($res->numRows() == 1) {
+                        XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
+                                           VALUES ({?}, {?}, "X", {?})',
+                                               $uid, $globals->asso('id'), $email);
+                        if (Env::v('market')) {
+                            $res   = XDB::query('SELECT COUNT(*)
+                                                   FROM register_marketing
+                                                  WHERE uid={?} AND email={?}', $uid, $email);
+                            if (!$res->fetchOneCell()) {
+                                XDB::execute("INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
+                                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
+                                             $uid, S::v('uid'), $email, Env::v('market_from')); 
+                                require_once('validations.inc.php');
+                                $req = new MarkReq(S::v('uid'), $uid, $email, Env::v('market_from') == 'user');
+                                $req->submit();
+                            }            
+                        }
+                        pl_redirect("member/$email");
+                    }
+                    $page->trig("Utilisateur invalide");
+                } else {
+                    $res = XDB::query('SELECT MAX(uid)+1 FROM groupex.membres');
+                    $uid = max(intval($res->fetchOneCell()), 50001);
+                    XDB::execute('INSERT INTO  groupex.membres (uid,asso_id,origine,email)
+                                            VALUES({?},{?},"ext",{?})', $uid,
+                                            $globals->asso('id'), $email);
+                    pl_redirect("member/$email");
+                }
             } else {
                 $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
             }
+        }
+    }
+
+    function handler_admin_member_new_ajax(&$page)
+    {
+        $page->changeTpl('xnet/groupe/membres-new-search.tpl', NO_SKIN);
+        list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::v('nom'), Env::v('prenom')));
+        $where = "perms = 'pending'";
+        if (!empty($nom)) {
+            $where .= " AND nom LIKE '%$nom%'";
+        }
+        if (!empty($prenom)) {
+            $where .= " AND prenom LIKE '%$prenom%'";
+        }
+        if (is_numeric(Env::v('promo'))) {
+            $where .= " AND promo = " . Env::i('promo');
+        }
+        $res = XDB::iterator("SELECT user_id, nom, prenom, promo
+                                FROM auth_user_md5
+                               WHERE $where");
+        if ($res->total() < 30) {
+            $page->assign("choix", $res);
         }
     }
 
@@ -813,15 +874,15 @@ class XnetGrpModule extends PLModule
                 if($state == $ask) continue;
                 if($ask) {
                     XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
-                                               SELECT  vid,{?} FROM virtual WHERE alias={?}",
-                                         $user['email'], $ml);
+                                     SELECT  vid,{?} FROM virtual WHERE alias={?}",
+                               $user['email'], $ml);
                     $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml");
                 } else {
                     XDB::query("DELETE FROM  virtual_redirect
-                                                USING  virtual_redirect
-                                           INNER JOIN  virtual USING(vid)
-                                                WHERE  redirect={?} AND alias={?}",
-                                         $user['email'], $ml);
+                                      USING  virtual_redirect
+                                 INNER JOIN  virtual USING(vid)
+                                      WHERE  redirect={?} AND alias={?}",
+                               $user['email'], $ml);
                     $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
                 }
             }

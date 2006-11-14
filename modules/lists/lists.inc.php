@@ -40,13 +40,20 @@ function list_sort_owners(&$members, $tri_promo = true) {
                 $membres[0][] = Array('l' => $mem);
             }
         } else {
-            $res = XDB::query('SELECT m2.uid, m1.prenom, m1.nom
+            $res = XDB::query('SELECT m2.uid,
+                                      IF(m2.origine="X", u.prenom, m1.prenom) AS prenom,
+                                      IF(m2.origine="X", u.nom, m1.nom) AS nom,
+                                      IF(m2.origine="X", u.promo, "non-X") AS promo
                                  FROM groupex.membres AS m1
                             LEFT JOIN groupex.membres AS m2 ON(m1.email=m2.email AND m2.asso_id={?})
+                            LEFT JOIN auth_user_md5   AS u  ON(m2.origine = "X" AND m2.uid = u.user_id)
                                 WHERE m1.email={?}', $globals->asso('id'), $mem);
-            if (list($uid, $prenom, $nom) = $res->fetchOneRow()) {
-                $key = $tri_promo ? 0 : strtoupper($nom{0});
-                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem, 'x' => $uid, 'p' => (!$tri_promo ? 'non-X' : null));
+            if (list($uid, $prenom, $nom, $promo) = $res->fetchOneRow()) {
+                $key = $tri_promo ? ($promo != 'non-X' ? $promo : 0) : strtoupper($nom{0});
+                if ($tri_promo) {
+                    $promo = null;
+                }
+                $membres[$key][$nom.$m] = Array('n' => "$prenom $nom", 'l' => $mem, 'x' => $uid, 'p' => $promo);
             } else {
                 $membres[0][] = Array('l' => $mem, 'p' => (!$tri_promo ? 'non-X' : null));
             }

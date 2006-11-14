@@ -505,19 +505,19 @@ class XnetEventsModule extends PLModule
             // change the price paid by a participant
             if (Env::v('adm') == 'prix' && $member) {
                 XDB::execute("UPDATE groupex.evenements_participants
-                                           SET paid = IF(paid + {?} > 0, paid + {?}, 0)
-                                         WHERE uid = {?} AND eid = {?}",
+                                 SET paid = IF(paid + {?} > 0, paid + {?}, 0)
+                               WHERE uid = {?} AND eid = {?}",
                         strtr(Env::v('montant'), ',', '.'),
                         strtr(Env::v('montant'), ',', '.'),
-                        $member['uid'], $eid);
+                        $member['uid'], $evt['eid']);
             }
 
             // change the number of personns coming with a participant
             if (Env::v('adm') == 'nbs' && $member) {
                 $res = XDB::query("SELECT paid
-                                               FROM groupex.evenements_participants
-                                              WHERE uid = {?} AND eid = {?}",
-                                            $member['uid'], $eid);
+                                     FROM groupex.evenements_participants
+                                    WHERE uid = {?} AND eid = {?}",
+                                  $member['uid'], $evt['eid']);
 
                 $paid = intval($res->fetchOneCell());
                 $nbs  = Post::v('nb', array());
@@ -527,18 +527,19 @@ class XnetEventsModule extends PLModule
 
                     if ($nb) {
                         XDB::execute("REPLACE INTO groupex.evenements_participants
-                                               VALUES ({?}, {?}, {?}, {?}, {?})",
-                                               $eid, $member['uid'], $id, $nb, $paid);
+                                            VALUES ({?}, {?}, {?}, {?}, {?})",
+                                               $evt['eid'], $member['uid'], $id, $nb, $paid);
                     } else {
                         XDB::execute("DELETE FROM groupex.evenements_participants
-                                               WHERE uid = {?} AND eid = {?} AND item_id = {?}",
-                                               $member['uid'], $eid, $id);
+                                            WHERE uid = {?} AND eid = {?} AND item_id = {?}",
+                                               $member['uid'], $evt['eid'], $id);
                     }
                 }
 
-                $res = XDB::query("SELECT uid FROM groupex.evenements_participants
-                                            WHERE uid = {?} AND eid = {?}",
-                                            $member['uid'], $eid);
+                $res = XDB::query("SELECT uid
+                                     FROM groupex.evenements_participants
+                                    WHERE uid = {?} AND eid = {?}",
+                                            $member['uid'], $evt['eid']);
                 $u = $res->fetchOneCell();
                 subscribe_lists_event($u, $member['uid'], $evt);
             }
@@ -565,7 +566,7 @@ class XnetEventsModule extends PLModule
                   LEFT JOIN  groupex.membres AS m ON ( ep.uid = m.uid AND e.asso_id = m.asso_id)
                   LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = ep.uid )
                       WHERE  ep.eid = {?} '.$whereitemid.'
-                   GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', $eid);
+                   GROUP BY  UPPER(SUBSTRING(IF(u.nom IS NULL,m.nom,u.nom), 1, 1))', $evt['eid']);
 
         $alphabet = array();
         $nb_tot = 0;
@@ -601,9 +602,9 @@ class XnetEventsModule extends PLModule
                 "SELECT IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom, u.prenom,
                         u.promo, a.alias AS email, t.montant
                    FROM {$globals->money->mpay_tprefix}transactions AS t
-                 INNER JOIN auth_user_md5 AS u ON(t.uid = u.user_id)
-                 INNER JOIN aliases AS a ON (a.id = t.uid AND a.type='a_vie' )
-                  LEFT JOIN groupex.evenements_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
+             INNER JOIN auth_user_md5 AS u ON(t.uid = u.user_id)
+             INNER JOIN aliases AS a ON (a.id = t.uid AND a.type='a_vie' )
+              LEFT JOIN groupex.evenements_participants AS ep ON(ep.uid = t.uid AND ep.eid = {?})
                   WHERE t.ref = {?} AND ep.uid IS NULL",
                   $evt['eid'], $evt['paiement_id']);
             $page->assign('oublis', $res->total());

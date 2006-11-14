@@ -34,13 +34,6 @@ Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'i
 Tu peux également :
 </p>
 <ul class="descr">
-  <li>
-    <a href="{$platal->ns}annuaire/vcard/photos/{$asso.diminutif}.vcf">
-      {icon name=vcard title="Carte de visite"} 
-      Ajouter les membres à ton carnet d'adresse
-    </a>
-    (<a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">sans les photos</a>)
-  </li>
   {if $admin}
   <li>
     <a href="{$platal->ns}member/new">
@@ -55,6 +48,13 @@ Tu peux également :
     </a>
   </li>
   {/if}
+  <li>
+    <a href="{$platal->ns}annuaire/vcard/photos/{$asso.diminutif}.vcf">
+      {icon name=vcard title="Carte de visite"} 
+      Ajouter les membres à ton carnet d'adresse
+    </a>
+    (<a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">sans les photos</a>)
+  </li>
 </ul>
 
 <p class="center">
@@ -96,8 +96,12 @@ Tu peux également :
     <td>{if $m.admin}<strong>{/if}{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}{if $m.admin}</strong>{/if}</td>
     <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
     <td class="center">
-      {if $m.x}
+      {if $m.inscrit}
       <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2">{icon name=user_suit title="fiche"}</a>
+      {elseif $m.x}
+      <a href="https://www.polytechnique.org/marketing/public/{$m.uid}">{icon name=user_suit title="marketing"}</a>
+      {/if}
+      {if $m.inscrit}
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
       <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
       {else}
