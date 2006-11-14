@@ -296,8 +296,6 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        define('NB_PER_PAGE', 25);
-
         if ($globals->asso('pub') == 'public') {
             new_group_page('xnet/groupe/annuaire.tpl');
         } else {
@@ -346,6 +344,7 @@ class XnetGrpModule extends PLModule
         }
         $page->assign('group', $group);
         $page->assign('request_group', Env::v($group));
+        $page->assign('only_admin', Env::has('admin'));
         $page->assign('alphabet', $alphabet);
         $page->assign('nb_tot',   $nb_tot);
 
@@ -374,6 +373,8 @@ class XnetGrpModule extends PLModule
         } elseif (Env::has('promo')) {
             $ini = 'AND IF(m.origine="X", u.promo, "extérieur") = "'
                  .addslashes(Env::v('promo')).'"';
+        } elseif (Env::has('admin')) {
+            $ini = 'AND m.perms = "admin"';
         }
 
         $ann = XDB::iterator(
@@ -394,7 +395,6 @@ class XnetGrpModule extends PLModule
                            AND (m.origine = 'ext' OR u.perms != 'pending' OR m.email IS NOT NULL)
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
-
         $page->assign('ann', $ann);
     }
 

@@ -58,16 +58,17 @@ Tu peux également :
 </ul>
 
 <p class="center">
-[<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$request_group}class="erreur"{/if}>tout</a>]
+[<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
+[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
 {foreach from=$alphabet item=c}
-[<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
+[<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}{if $only_admin}&amp;admin=1{/if}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
 </p>
 
 <table summary="membres du groupe" class="tinybicol">
   <tr>
     <th>
-      <a href="{$platal->ns}annuaire?order=alpha{if $sort neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}">
+      <a href="{$platal->ns}annuaire?order=alpha{if $sort neq "alpha_inv"}_inv{/if}{if $request_group and $group eq 'initiale'}&amp;initiale={$request_group}{/if}{if $only_admin}&amp;admin=1{/if}">
       {if $sort eq 'alpha'}
         <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
       {elseif $sort eq 'alpha_inv'}
