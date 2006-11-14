@@ -23,12 +23,12 @@
 <div>
   Plat/al <a href="changelog">{#globals.version#}</a> - Copyright © 1999-2006 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
-  <a href="Docs/ConventionAX">Lien avec l'AX</a>
+  <a href="Reference/Convention-AX">Lien avec l'AX</a>
   &nbsp;-&nbsp;
-  <a href="Docs/APropos">A propos de ce site et ses équipes</a>
+  <a href="Equipe/APropos">A propos de ce site et ses équipes</a>
 <br />
   <a href="Docs/Ethique">Services et Ethique</a>
-  | <a href="Docs/Charte">Charte</a>
+  | <a href="Reference/Charte">Charte</a>
 {if $smarty.session.auth ge AUTH_COOKIE}
   | <a href="stats/coupures">Disponibilité</a>
   | <a href="stats">Statistiques</a>
