@@ -59,7 +59,7 @@ Tu peux également :
 
 <p class="center">
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
-[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
+[<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
 {foreach from=$alphabet item=c}
 [<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}{if $only_admin}&amp;admin=1{/if}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
 {/foreach}
@@ -94,14 +94,18 @@ Tu peux également :
   </tr>
   {iterate from=$ann item=m}
   <tr>
-    <td>{if $m.admin}<strong>{/if}{if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}{if $m.admin}</strong>{/if}</td>
+    <td>
+      {if $m.admin}<strong>{/if}
+      {if $m.inscrit}
+      <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2" style="color: #4c618a;">
+      {elseif $m.x}
+      <a href="https://www.polytechnique.org/marketing/public/{$m.uid}" style="color: #4c618a;">
+      {/if}
+      {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}
+      {if $m.x}</a>{/if} 
+      {if $m.admin}</strong>{/if}</td>
     <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
     <td class="center">
-      {if $m.inscrit}
-      <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2">{icon name=user_suit title="fiche"}</a>
-      {elseif $m.x}
-      <a href="https://www.polytechnique.org/marketing/public/{$m.uid}">{icon name=user_suit title="marketing"}</a>
-      {/if}
       {if $m.inscrit}
       <a href="https://www.polytechnique.org/vcard/{$m.email}.vcf">{icon name=vcard title="[vcard]"}</a>
       <a href="mailto:{$m.email}@polytechnique.org">{icon name=email title="mail"}</a>
