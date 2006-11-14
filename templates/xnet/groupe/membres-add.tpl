@@ -82,15 +82,15 @@ function searchX()
     </tr>
     <tr id="xnom" style="display: none">
       <td class="titre">Nom :</td>
-      <td><input type="text" id="nom" name="nom" size="20" value="" onchange="searchX();" /></td>
+      <td><input type="text" id="nom" name="nom" size="20" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xprenom" style="display: none">
       <td class="titre">Prénom :</td>
-      <td><input type="text" id="prenom" name="prenom" size="20" value="" onchange="searchX();" /></td>
+      <td><input type="text" id="prenom" name="prenom" size="20" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xpromo" style="display: none">
       <td class="titre">Promotion :</td>
-      <td><input type="text" id="promo" name="promo" size="4" value="" onchange="searchX();" /></td>
+      <td><input type="text" id="promo" name="promo" size="4" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xsearch" style="display: none" class="pair">
       {include file="xnet/groupe/membres-new-search.tpl"}

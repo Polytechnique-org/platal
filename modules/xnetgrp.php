@@ -739,8 +739,10 @@ class XnetGrpModule extends PLModule
         if (!empty($prenom)) {
             $where .= " AND prenom LIKE '%$prenom%'";
         }
-        if (is_numeric(Env::v('promo'))) {
+        if (preg_match('/^[0-9]{4}$/', Env::v('promo'))) {
             $where .= " AND promo = " . Env::i('promo');
+        } elseif (Env::has('promo')) {
+            return;
         }
         $res = XDB::iterator("SELECT user_id, nom, prenom, promo
                                 FROM auth_user_md5

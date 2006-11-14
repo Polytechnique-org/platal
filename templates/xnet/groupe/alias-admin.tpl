@@ -24,26 +24,45 @@
 
 <h1>Membres de {$platal->argv[1]}</h1>
       
-<table class='tiny'>
+<table class='tinybicol'>
+  {if $mem->total()}
+  {iterate from=$mem item=m}
   <tr>
-    <td class='titre'>Membres</td>
     <td>
-      {if $mem->total()}
-      {iterate from=$mem item=m}
-      {$m.redirect}
-      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
-      {icon name=delete title='retirer membre'}</a>]
-      </a>
-      <br />
-      {/iterate}
+      {if $m.nom}
+      {if $m.admin}<strong>{/if}
+      {if $m.alias}<a href="https://www.polytechnique.org/profile/{$m.alias}" class="popup2">{/if}
+      {$m.prenom} {$m.nom}
+      {if $m.alias}</a>{/if}
+      {if $m.admin}</strong>{/if}
       {else}
-      <em>aucun membres ...</em>
+      {$m.redirect}
       {/if}
     </td>
+    <td class="right">
+      {if $m.admin}<strong>{/if}
+      {$m.promo}
+      {if $m.admin}</strong>{/if}
+    </td>
+    <td class="center">
+      <a href='{$platal->ns}alias/admin/{$platal->argv[1]}?del_member={$m.redirect|urlencode}'>
+      {icon name=delete title='retirer membre'}
+      </a>
+    </td>
+  </tr>
+  {/iterate}
+  {else}
+  <tr>
+    <td colspan="3">
+      <em>aucun membres ...</em>
+    </td>
+  </tr>
+  {/if}
+  <tr>
+    <th colspan="3">Ajouter</th>
   </tr>
   <tr>
-    <td><strong>Ajouter</strong></td>
-    <td>
+    <td colspan="3" class="center">
       <form method="post" action="{$platal->ns}alias/admin/{$platal->argv[1]}">
         <div>
         <input type='text' name='add_member' />
