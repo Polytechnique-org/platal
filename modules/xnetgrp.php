@@ -55,7 +55,7 @@ function get_infos($email)
                          CONCAT(b.alias, '@m4x.org') AS email,
                          CONCAT(b.alias, '@polytechnique.org') AS email2,
                          m.perms='admin' AS perms, m.origine,
-                         FIND_IN_SET(flags, 'femme') AS sexe
+                         FIND_IN_SET(u.flags, 'femme') AS sexe
                    FROM  auth_user_md5   AS u
              INNER JOIN  aliases         AS a ON ( u.user_id = a.id AND a.type != 'homonyme' )
              INNER JOIN  aliases         AS b ON ( u.user_id = b.id AND b.type = 'a_vie' )
