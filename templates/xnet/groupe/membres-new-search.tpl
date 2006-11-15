@@ -20,7 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<td colspan="2">
   {if !$choix}
   Les critères de recherche ne sont pas assez précis
   {elseif !$choix->total()}
@@ -43,6 +42,5 @@
     </select>
   </span>
   {/if}
-</td>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

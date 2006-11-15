@@ -20,11 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<select name="diploma">
 <option value="0"></option>
 {section name=diploma loop=$choix_diplomas}
 <option value="{$choix_diplomas[diploma]}" {if $grade eq $choix_diplomas[diploma]}selected="selected"{/if}>
   {$choix_diplomas[diploma]}
 </option>
 {/section}
+</select>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

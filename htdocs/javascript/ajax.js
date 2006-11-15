@@ -47,12 +47,14 @@ Ajax = {
         if (Ajax.xml_client == null) {
             return true;
         }
-        Ajax.xml_client.onreadystatechange =
-            function()
+        Ajax.xml_client.abort();
+        Ajax.xml_client.onreadystatechange = function()
             {
                 if(Ajax.xml_client.readyState == 4) {
                     if (Ajax.xml_client.status == 200) {
                         document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
+                    } else if (Ajax.xml_client.status == 403) {
+                        window.location.reload();
                     }
                 }
             };

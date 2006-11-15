@@ -44,7 +44,7 @@ function searchX()
     var nom = document.getElementById('nom').value;
     var prenom = document.getElementById('prenom').value;
     var promo = document.getElementById('promo').value;
-    Ajax.update_html('xsearch',
+    Ajax.update_html('search_result',
       '{/literal}{$platal->ns}{literal}member/new/ajax?prenom=' + prenom + '&nom=' + nom + '&promo=' + promo);
 }
 {/literal}
@@ -93,7 +93,9 @@ function searchX()
       <td><input type="text" id="promo" name="promo" size="4" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xsearch" style="display: none" class="pair">
-      {include file="xnet/groupe/membres-new-search.tpl"}
+      <td colspan="2" id="search_result">
+        {include file="xnet/groupe/membres-new-search.tpl"}
+      </td>
     </tr>
   </table>
 </form>

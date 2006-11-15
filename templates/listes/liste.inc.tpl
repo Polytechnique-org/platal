@@ -38,7 +38,7 @@
   <strong>&bull; Demandes d'inscription</strong><br />
   {foreach from=$liste.subscriptions item=s}
     <a href='{$platal->ns}lists/moderate/{$liste.list}?sadd={$s.id}'
-        onclick="return Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?sadd={$s.id}');">
+        onclick="return (navigator.appName == 'Microsoft Internet Explorer' || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?sadd={$s.id}'));">
       {icon name=add title="Accepter"}
     </a>
     <a href='{$platal->ns}lists/moderate/{$liste.list}?sid={$s.id}'>
@@ -56,11 +56,11 @@
   <span class="smaller">
   {foreach from=$liste.mails item=m}
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mok=1'
-        onclick="return Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mok=1');">
+        onclick="return (navigator.appName == 'Microsoft Internet Explorer' || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mok=1'));">
       {icon name=add title="Valider le mail"}
     </a>
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mdel=1'
-        onclick="return Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1');">
+        onclick="return (navigator.appName == 'Microsoft Internet Explorer' || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1'));">
       {icon name=delete title="Détruire"}
     </a>
     De : {$m.sender}<br />
@@ -82,14 +82,14 @@
 <td class='right'>
   {if $liste.sub eq 2}
   <a href='{$platal->ns}lists?del={$liste.list}'
-      onclick="return Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?unsubscribe=1');">
+      onclick="return (navigator.appName == 'Microsoft Internet Explorer' || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?unsubscribe=1'));">
     {icon name=cross title="me désinscrire"}
   </a>
   {elseif $liste.sub eq 1}
   {icon name=flag_orange title='inscription en attente de modération'}
   {else}
   <a href='{$platal->ns}lists?add={$liste.list}'
-      onclick="return Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?subscribe=1');">
+      onclick="return (navigator.appName == 'Microsoft Internet Explorer' || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?subscribe=1'));">
     {icon name=add title="m'inscrire"}
   </a>
   {/if}

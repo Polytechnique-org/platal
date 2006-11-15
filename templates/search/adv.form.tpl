@@ -164,15 +164,13 @@
     </tr>
     <tr>
       <td>Région ou département</td>
-      <td>
-        <select name="region" id="region">
+      <td id="region">
         {if $smarty.request.region}
           {assign var="region" value=$smarty.request.region}
         {else}
           {assign var="region" value=""}
         {/if}
         {include file="search/adv.region.form.tpl" country=$smarty.request.country}
-        </select>
       </td>
     </tr>
     <tr>
@@ -290,10 +288,8 @@
     </tr>
     <tr>
       <td></td>
-      <td>
-        <select name="diploma" id="grade">
-          {include file="search/adv.grade.form.tpl" grade=$smarty.request.diploma}
-        </select>
+      <td id="grade">
+        {include file="search/adv.grade.form.tpl" grade=$smarty.request.diploma}
       </td>
     </tr>
     <tr>

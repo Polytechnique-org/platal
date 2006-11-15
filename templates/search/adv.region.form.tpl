@@ -20,10 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<select name="region">
 {if $country neq ""}
   {geoloc_region country=$country region=$region}
 {else}
   <option value=""></option>
 {/if}
+</select>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
