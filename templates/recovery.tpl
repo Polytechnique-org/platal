@@ -63,7 +63,7 @@ certificat sur cette page.
     <tr>
       <td class="titre">
         Login :<br />
-        <span class="smaller">"prenom.nom"</span>
+        <span class="smaller">"prenom.nom" ou "prenom.nom.promo"</span>
       </td>
       <td>
         <input type="text" size="20" maxlength="50" name="login" />

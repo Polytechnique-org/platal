@@ -256,7 +256,7 @@ class PlatalModule extends PLModule
         $res = XDB::query(
                 "SELECT  user_id, naissance
                    FROM  auth_user_md5 AS u
-             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type!='homonyme')
+             INNER JOIN  aliases       AS a ON (u.user_id=a.id AND type != 'homonyme')
                   WHERE  a.alias={?} AND u.perms IN ('admin','user') AND u.deces=0", $mailorg);
         list($uid, $naissance) = $res->fetchOneRow();
 
@@ -292,7 +292,8 @@ Mail envoyé à ".Env::v('login'));
             $logger = $_SESSION['log'] = new CoreLogger($uid);
             $logger->log('recovery', $emails);
         } else {
-            $page->trig('Pas de résultat correspondant aux champs entrés dans notre base de données.');
+            $page->trig('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
+                        'Si tu as un homonyme, utilise prenom.nom.promo comme login');
         }
     }
 
