@@ -252,6 +252,7 @@ class SearchModule extends PLModule
 
     function handler_region(&$page, $country = null)
     {
+        header('Content-Type: text/html; charset="iso-8859-15"');
         require_once("geoloc.inc.php");
         $page->ChangeTpl('search/adv.region.form.tpl', NO_SKIN);
         $page->assign('region', "");
@@ -260,6 +261,7 @@ class SearchModule extends PLModule
 
     function handler_grade(&$page, $school = null)
     {
+        header('Content-Type: text/html; charset="iso-8859-15"');
         $page->ChangeTpl('search/adv.grade.form.tpl', NO_SKIN);
         $page->assign('grade', '');
         $this->get_diplomas($school);
