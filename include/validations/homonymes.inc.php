@@ -61,14 +61,6 @@ class HomonymeReq extends Validate
     }
 
     // }}}
-    // {{{ function get_request()
-
-    function get_request($uid)
-    {
-        return parent::get_request($uid,$this->title);
-    }
-
-    // }}}
     // {{{ function formu()
 
     function formu()

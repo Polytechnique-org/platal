@@ -62,14 +62,6 @@ class UsageReq extends Validate
     }
 
     // }}}
-    // {{{ function get_request()
-
-    function get_request($uid)
-    {
-        return parent::get_request($uid,'usage');
-    }
-
-    // }}}
     // {{{ function formu()
 
     function formu()

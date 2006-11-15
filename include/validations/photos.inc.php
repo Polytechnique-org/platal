@@ -114,7 +114,7 @@ class PhotoReq extends Validate
 
     function get_request($uid)
     {
-        return parent::get_request($uid,'photo');
+        return parent::get_typed_request($uid,'photo');
     }
 
     // }}}

@@ -62,7 +62,7 @@ class AliasReq extends Validate
 
     function get_request($uid)
     {
-        return parent::get_request($uid,'alias');
+        return parent::get_typed_request($uid,'alias');
     }
 
     // }}}

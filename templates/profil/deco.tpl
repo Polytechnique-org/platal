@@ -27,6 +27,7 @@
   {
     var selid = document.forms.prof_annu.medal_sel.selectedIndex;
     document.forms.prof_annu.medal_id.value = document.forms.prof_annu.medal_sel.options[selid].value;
+    document.forms.prof_annu.grade_id.value = document.forms.prof_annu.grade_sel.value;
     document.forms.prof_annu.medal_op.value = "ajouter";
     document.forms.prof_annu.submit();
   }
@@ -37,13 +38,63 @@
     document.forms.prof_annu.medal_op.value = "retirer";
     document.forms.prof_annu.submit();
   }
-  //]]>
-</script>
-{/literal}
+  var subgrades = new array();
+  function getoption( select_input, j)
+  {
+    if (!document.all)
+    {
+      return select_input.options[j];
+    }
+    else
+    {
+      return j;
+    }
+  }
+  function medal_grades( sel_medal )
+  {
+    var subg = subgrades[sel_medal.selectedIndex];
+    document.getElementById("grade_sel_div").style.display = subg?"inline":"none";
+    if (!subg) return;
+    var select = document.getElementById("grade_sel");
+    while (select.length > 1)
+    {
+      select.remove(1);
+    }
 
+    for (i=0; i < subg.length; i++)
+    {
+      var dmc = document.createElement("option");
+      dmc.text= subg[i][1];
+      dmc.value = subg[i][0];
+      select.add(dmc,getoption(select,i));
+    }
+    select.add(getoption(select,subg.length),getoption(select,0));
+    select.remove(subg.length+1);
+  }
+  //]]>
+{/literal}
+{foreach from=$medal_list key=type item=list}
+  {foreach from=$list item=m}{if $grades[$m.id]|@count}
+    subgrades[{$m.id}] = new array({$grades[$m.id]|@count});
+    i = 0;
+    {foreach from=$grades[$m.id] item=g}
+      subgrades[{$m.id}][i] = [{$g.gid},"{$g.text}"];
+      i++;
+    {/foreach}
+  {/if}{/foreach}
+{/foreach}
+
+</script>
+
+{if $smarty.request.medal_op eq "ajouter"}
+<div class="erreur">
+	Ta demande a bien été prise en compte, elle sera validée prochainement par un administrateur.
+</div>
+{/if}
 <div class="blocunite_tab">
   <input type="hidden" value="" name="medal_op" />
   <input type="hidden" value="" name="medal_id" />
+  <input type="hidden" value="" name="grade_id" />
   <table class="bicol" cellspacing="0" cellpadding="0">
     <tr>
       <th colspan="3">
@@ -72,14 +123,9 @@
       <td class="colm">
         <span class="valeur">{$m.medal}</span><br />
         {if $grades[$m.id]|@count}
-        <select name="grade[{$m.id}]">
-          <option value='0'>-- non précisé --</option>
           {foreach from=$grades[$m.id] item=g}
-          <option value='{$g.gid}' {if $g.gid eq $m.gid}selected='selected'{/if}>{$g.text}</option>
+            {if $g.gid eq $m.gid}{$g.text}{/if}
           {/foreach}
-        </select>
-        {else}
-        -- non précisé --
         {/if}
       </td>
       <td class="cold">
@@ -94,7 +140,7 @@
         &nbsp;
       </td>
       <td class="colm">
-        <select name="medal_sel">
+        <select name="medal_sel" onchange="medal_grades(this)">
           <option value=''></option>
           {foreach from=$medal_list key=type item=list}
           <optgroup label="{$trad[$type]}">
@@ -104,6 +150,11 @@
           </optgroup>
           {/foreach}
         </select>
+        <div id="grade_sel_div" style="display:none"><br/>
+          <select name="grade_sel" id="grade_sel">
+            <option value="0"></option>
+          </select>
+        </div>
       </td>
       <td class="cold">
         <span class="lien">

@@ -257,7 +257,7 @@ class Validate
     }
     
     // }}}
-    // {{{ function get_request()
+    // {{{ function get_typed_request()
 
     /** fonction statique qui renvoie la requête de l'utilisateur d'id $uidau timestamp $t
      * @param   $uid    l'id de l'utilisateur concerné
@@ -265,9 +265,9 @@ class Validate
      * @param   $stamp  le timestamp de la requête
      *
      * XXX fonction "statique" XXX
-     * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_request(...)
+     * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_typed_request(...)
      */
-    function get_request($uid, $type, $stamp = -1)
+    function get_typed_request($uid, $type, $stamp = -1)
     {
         if ($stamp == -1) {
             $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);

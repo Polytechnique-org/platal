@@ -25,7 +25,17 @@ if (Env::has('medal_op')) {
     }
 
     if (Env::v('medal_op')=='ajouter' && Env::i('medal_id')) {
-        XDB::execute("INSERT INTO profile_medals_sub (uid,mid) VALUES ({?}, {?})", S::v('uid', -1), Env::i('medal_id'));
+        require_once('validations.inc.php');
+        $req = new MedalReq(S::v('uid',-1),Env::i('medal_id'), Env::i('grade_id'));
+        if ($req->mid == 20) // defnat
+        {
+        	$req->commit();
+        	unset($_REQUEST['medal_op']); // pour ne pas avoir le message d'attente de validation
+        }
+        else
+        {
+	        $req->submit();
+		}    
     }
 }
 if (Post::has('grade')) {

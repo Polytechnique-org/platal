@@ -719,7 +719,7 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('uid') && Env::has('type') && Env::has('stamp')) {
-            $req = Validate::get_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
+            $req = Validate::get_typed_request(Env::v('uid'), Env::v('type'), Env::v('stamp'));
             if($req) { $req->handle_formu(); }
         }
 

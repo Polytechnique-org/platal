@@ -19,44 +19,39 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// {{{ class OrangeReq
+// {{{ class MedalReq
 
-class OrangeReq extends Validate
+class MedalReq extends Validate
 {
     // {{{ properties
 
-    var $unique = true;
-
-    var $promo;
-    var $promo_sortie;
-    
-    var $rules = "A priori accepter (la validation sert à repousser les
-    petits malins). Refuse si tu connais la personne et que tu es sure 
-    qu'elle n'est pas orange.";
+    var $mid;
+    var $gid;
 
     // }}}
     // {{{ constructor
 
-    function OrangeReq($_uid, $_sortie)
+    function MedalReq ($_uid, $_idmedal, $_subidmedal, $_stamp=0)
     {
-        $this->Validate($_uid, true, 'orange');
-        $this->promo_sortie  = $_sortie;
-        $res = XDB::query("SELECT promo FROM auth_user_md5 WHERE user_id = {?}", $_uid);
-        $this->promo = $res->fetchOneCell(); 
+        $this->Validate($_uid, false, 'medal', $_stamp);
+        $this->mid  = $_idmedal;
+        $this->gid = $_subidmedal;
     }
 
     // }}}
     // {{{ function formu()
 
     function formu()
-    { return 'include/form.valid.orange.tpl'; }
+    { 
+		return 'include/form.valid.medals.tpl';
+	}
 
     // }}}
-    // {{{ function _mail_subj()
+    // {{{ function _mail_subj
 
     function _mail_subj()
     {
-        return "[Polytechnique.org/ORANGE] Changement de nom de promo de sortie";
+        return "[Polytechnique.org/Décoration] Demande de décoration : ".$this->medal_name();
     }
 
     // }}}
@@ -65,24 +60,37 @@ class OrangeReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            $res = "  La demande de changement de promo de sortie que tu as demandée vient d'être effectuée.";
-            return $res;
+            return "  La décoration ".$this->medal_name()." que tu avais demandée vient d'être acceptée.";
         } else {
-            return "  La demande de changement de promo de sortie tu avais faite a été refusée.";
+            return "  La demande que tu avais faite pour la décoration ".$this->medal_name()." a été refusée.";
         }
+    }
+
+    // }}}
+    // {{{ function medal_name
+
+    function medal_name()
+    {
+    	//var_dump($this);
+    	$r = XDB::query("
+			SELECT IF (g.text IS NOT NULL, CONCAT(m.text,' - ', g.text), m.text) 
+			FROM profile_medals AS m
+				LEFT JOIN profile_medals_grades AS g ON(g.mid = m.id AND g.gid = {?})
+			WHERE m.id = {?}", $this->gid, $this->mid);
+		return $r->fetchOneCell(); 
     }
 
     // }}}
     // {{{ function commit()
 
-    function commit()
+    function commit ()
     {
-        XDB::execute("UPDATE auth_user_md5 set promo_sortie={?} WHERE user_id={?}",$this->promo_sortie ,$this->uid);
-        return true;
+    	return XDB::execute('REPLACE INTO profile_medals_sub VALUES({?}, {?}, {?})', $this->uid, $this->mid, $this->gid);
     }
 
     // }}}
 }
+
 // }}}
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
