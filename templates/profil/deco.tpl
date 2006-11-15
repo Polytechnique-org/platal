@@ -68,7 +68,10 @@
       dmc.value = subg[i][0];
       select.add(dmc,getoption(select,i));
     }
-    select.add(getoption(select,subg.length),getoption(select,0));
+    var vide = document.createElement("option");
+    vide.text = "";
+    vide.value = 0;
+    select.add(vide,getoption(select,0));
     select.remove(subg.length+1);
   }
   //]]>
