@@ -162,7 +162,7 @@ function deadlineChange(box)
 
     {$smarty.session.prenom} {$smarty.session.nom}</textarea><br />
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$asso.site|default:$platal->ns}" /><br />
-        Le nouveau paiement sera activé automatiquement après validation par le tresorier de Polytechnique.org,
+        Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
         ce qui sera fait sous peu.
       </td>
     </tr>
