@@ -88,6 +88,7 @@ class PlatalModule extends PLModule
 
         $clog = htmlentities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
         $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
+        $clog = preg_replace('!([-a-z0-9_.]+)@([-a-z0-9_.]+)!i', '\1 AT \2', $clog);
         $clog = preg_replace('!vim:.*$!', '', $clog);
         $page->assign('ChangeLog', $clog);
     }
