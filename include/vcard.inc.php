@@ -61,6 +61,9 @@ class VCard
 
     function text_encode($text, $escape = true)
     {
+        if (is_array($text)) {
+            return implode(',', array_map(array($this, 'text_encode'), $text));
+        }
         if ($escape) {
             $text = $this->escape($text);
         }
@@ -98,7 +101,8 @@ class VCard
                 $user['forlife'].'@'.$globals->mail->domain2);
 
         $user['virtualalias'] = $res->fetchOneCell();
-
+        $user['gpxs_vcardjoin'] = join(',', array_map(array($this, 'text_encode'), $user['gpxs_name']));
+        $user['binets_vcardjoin'] = join(',', array_map(array($this, 'text_encode'), $user['binets']));
         // get photo
         if ($this->photos) {
             $res = XDB::query(

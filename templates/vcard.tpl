@@ -75,6 +75,15 @@ NOTE:(X{$vcard.promo})
 {else}
 NOTE:(X{$vcard.promo})\n{$vcard.freetext|vcard_enc}
 {/if}
+{if $vcard.section}
+X-SECTION:{$vcard.section}
+{/if}
+{if $vcard.binets_vcardjoin}
+X-BINETS:{$vcard.binets_vcardjoin}
+{/if}
+{if $vcard.gpxs_vcardjoin}
+X-GROUPS:{$vcard.gpxs_vcardjoin}
+{/if}
 {if $vcard.photo}
 PHOTO;ENCODING=b;TYPE={$vcard.photo.attachmime}:{$vcard.photo.attach|base64_encode}
 {/if}

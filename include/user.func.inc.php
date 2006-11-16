@@ -386,21 +386,23 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
         $user['binets_join'] = join(', ', $user['binets']);
     
         $res  = XDB::iterRow("SELECT  text, url
-                                          FROM  groupesx_ins
-                                     LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
-                                         WHERE  guid = {?}", $uid);
+                                FROM  groupesx_ins
+                           LEFT JOIN  groupesx_def ON groupesx_ins.gid = groupesx_def.id
+                               WHERE  guid = {?}", $uid);
         $user['gpxs'] = Array();
+        $user['gpxs_name'] = Array();
         while (list($gxt, $gxu) = $res->next()) {
             $user['gpxs'][] = $gxu ? "<a href=\"$gxu\">$gxt</a>" : $gxt;
+            $user['gpxs_name'][] = $gxt;
         } 
         $user['gpxs_join'] = join(', ', $user['gpxs']);
     }
 
     $res = XDB::iterRow("SELECT  applis_def.text, applis_def.url, applis_ins.type
-                                     FROM  applis_ins
-                               INNER JOIN  applis_def ON applis_def.id = applis_ins.aid
-                                    WHERE  uid={?}
-                                 ORDER BY  ordre", $uid);
+                           FROM  applis_ins
+                     INNER JOIN  applis_def ON applis_def.id = applis_ins.aid
+                          WHERE  uid={?}
+                       ORDER BY  ordre", $uid);
     
     $user['applis_fmt'] = Array();
     $user['formation'] = Array();
@@ -413,10 +415,10 @@ function &get_user_details($login, $from_uid = '', $view = 'private')
 
     if (has_user_right($user['medals_pub'], $view)) {
         $res = XDB::iterator("SELECT  m.id, m.text AS medal, m.type, m.img, s.gid, g.text AS grade
-                                          FROM  profile_medals_sub    AS s
-                                    INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
-                                    LEFT  JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )
-                                         WHERE  s.uid = {?}", $uid);
+                                FROM  profile_medals_sub    AS s
+                          INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
+                           LEFT JOIN  profile_medals_grades AS g ON ( s.mid = g.mid AND s.gid = g.gid )
+                               WHERE  s.uid = {?}", $uid);
         $user['medals'] = Array();
         while ($tmp = $res->next()) {
             $user['medals'][] = $tmp;

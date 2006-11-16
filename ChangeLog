@@ -46,6 +46,7 @@ Bug/Wish:
         - #532: Fix case sensitivity issues in emails processing           -FRU
 
     * Profile:
+        - #385: Add section, binets and groupes-X in vCard                 -FRU
         - #451: vCard are RFC compliant                                    -FRU
         - #502: Use 'alias' instead of 'aka' to specify the nickname       -FRU
         - #536: Can use login.promo as a valid user identifier             -FRU
@@ -59,6 +60,7 @@ Bug/Wish:
         - #490: Events can be opened to non-members                        -FRU
         - #514: Improve visibility of open events                          -FRU
         - #523: Organizer does not change when editing an event            -FRU
+        - #546: More understandable new payment form                       -FRU
 
 From 0.9.11 branch:
 
