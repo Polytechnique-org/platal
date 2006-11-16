@@ -148,10 +148,10 @@ function deadlineChange(box)
     </tr>
     <tr id="new_pay" style="display:none">
       <td colspan="2">
-        Il faut que tu définisses le texte qui du mail de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suis :
+        Il faut que tu définisses le texte du mail de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit :
         <ul>
           <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
-          <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les iformations adaptées</li>
+          <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>
         </ul>
         <textarea name="confirmation" rows="12" cols="65">&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
@@ -162,9 +162,8 @@ function deadlineChange(box)
 
     {$smarty.session.prenom} {$smarty.session.nom}</textarea><br />
         Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$asso.site|default:$platal->ns}" /><br />
-        Le nouveau paiement n'est pas rajouté automatiquement mais doit être
-        validé par le trésorier de l'association Polytechnique.org, ce qui sera
-        fait sous peu.
+        Le nouveau paiement sera activé automatiquement après validation par le tresorier de Polytechnique.org,
+        ce qui sera fait sous peu.
       </td>
     </tr>
   </table>
