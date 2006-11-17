@@ -11,6 +11,9 @@ New:
         - Add a vcard of all the contacts                                  -FRU
         - Fix timestamp in RSS feed                                        -FRU
 
+    * Lists:
+        - Add the fourth antispam level (moderate and drop)                -FRU
+
     * Events:
         - Add author and event id in RSS feed                              -FRU
 

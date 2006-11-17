@@ -657,11 +657,15 @@ def get_bogo_level(userdesc, perms, vhost, listname):
             return 0
         if mlist.header_filter_rules == []:
             return 0
-        action = mlist.header_filter_rules[0][1]
-        if action == mm_cfg.HOLD:
-            return 1
-        if action == mm_cfg.DISCARD:
+        try:
+            action = mlist.header_filter_rules[1][1]
             return 2
+        except:
+            action = mlist.header_filter_rules[0][1]
+            if action == mm_cfg.HOLD:
+                return 1
+            if action == mm_cfg.DISCARD:
+                return 3
     except:
         return 0
 
@@ -677,6 +681,9 @@ def set_bogo_level(userdesc, perms, vhost, listname, level):
         if int(level) is 1:
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
         elif int(level) is 2:
+            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter, spamicity=(0\.999999|1\.000000)', mm_cfg.DISCARD, False))
+            hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.HOLD, False))
+        elif int(level) is 3:
             hfr.append(('X-Spam-Flag: Yes, tests=bogofilter', mm_cfg.DISCARD, False))
         if mlist.header_filter_rules != hfr:
             mlist.Lock()
