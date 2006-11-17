@@ -392,6 +392,7 @@ class EventsModule extends PLModule
         
         if($aid == 'update') {
             $nl->_title     = Post::v('title');
+            $nl->_title_mail= Post::v('title_mail');
             $nl->_date      = Post::v('date');
             $nl->_head      = Post::v('head');
             $nl->_shortname = strlen(Post::v('shortname')) ? Post::v('shortname') : null;

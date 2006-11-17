@@ -5,27 +5,27 @@ New:
 
     * Admin:
         - Can add sorting key in Table Editor.                             -FRU
-        - Can manage not registered users                                  -FRU
+        - Can manage not registered users.                                 -FRU
 
     * Carnet:
-        - Add a vcard of all the contacts                                  -FRU
-        - Fix timestamp in RSS feed                                        -FRU
+        - Add a vcard of all the contacts.                                 -FRU
+        - Fix timestamp in RSS feed.                                       -FRU
 
     * Lists:
-        - Add the fourth antispam level (moderate and drop)                -FRU
+        - Add the fourth antispam level (moderate and drop).               -FRU
 
     * Events:
-        - Add author and event id in RSS feed                              -FRU
+        - Add author and event id in RSS feed.                             -FRU
 
     * Xnet:
-        - Add a vcard of all the members of a group                        -FRU
-        - Add a full announce system                                       -FRU
-        - Add a list of the administrators of the group                    -FRU
+        - Add a vcard of all the members of a group.                       -FRU
+        - Add a full announce system.                                      -FRU
+        - Add a list of the administrators of the group.                   -FRU
 
     * Xnet/Events:
-        - Events can be archived                                           -FRU
-        - Can get iCal version of the events                               -FRU
-        - Can use short name as an event identifier in the URL             -FRU
+        - Events can be archived.                                          -FRU
+        - Can get iCal version of the events.                              -FRU
+        - Can use short name as an event identifier in the URL.            -FRU
 
 Bug/Wish:
 
@@ -37,33 +37,33 @@ Bug/Wish:
     * Core:
         - #473: Use 'événement' instead of 'évènement'.                    -FRU
         - #475: More understandable bug report form.                       -FRU
-        - #548: More informations for recovery for homonyms                -FRU
+        - #548: More informations for recovery for homonyms.               -FRU
 
     * Events:
         - #517: URL catcher update (www).                                  -Car
-        - #525: Add a user-friendly id for newsletters                     -FRU
-        - #530: Members can be identified as a unregistered user           -FRU
+        - #525: Add a user-friendly id for newsletters.                    -FRU
+        - #530: Members can be identified as a unregistered user.          -FRU
 
     * Lists:
-        - #485: Can moderate pure-HTML mails                               -FRU
-        - #532: Fix case sensitivity issues in emails processing           -FRU
+        - #485: Can moderate pure-HTML mails.                              -FRU
+        - #532: Fix case sensitivity issues in emails processing.          -FRU
 
     * Profile:
-        - #385: Add section, binets and groupes-X in vCard                 -FRU
-        - #451: vCard are RFC compliant                                    -FRU
-        - #502: Use 'alias' instead of 'aka' to specify the nickname       -FRU
-        - #536: Can use login.promo as a valid user identifier             -FRU
-        - #539: Medals and deco need validation from admin                 -Car
-        - #540: Profile of unregistered user redirects to marketing        -FRU
+        - #385: Add section, binets and groupes-X in vCard.                -FRU
+        - #451: vCard are RFC compliant.                                   -FRU
+        - #502: Use 'alias' instead of 'aka' to specify the nickname.      -FRU
+        - #536: Can use login.promo as a valid user identifier.            -FRU
+        - #539: Medals and deco need validation from admin.                -Car
+        - #540: Profile of unregistered user redirects to marketing.       -FRU
 
     * Xnet:
-        - #511: Migrate ML subscription when changing email of a non-X     -FRU
+        - #511: Migrate ML subscription when changing email of a non-X.    -FRU
 
     * Xnet/Events:
-        - #490: Events can be opened to non-members                        -FRU
-        - #514: Improve visibility of open events                          -FRU
-        - #523: Organizer does not change when editing an event            -FRU
-        - #546: More understandable new payment form                       -FRU
+        - #490: Events can be opened to non-members.                       -FRU
+        - #514: Improve visibility of open events.                         -FRU
+        - #523: Organizer does not change when editing an event.           -FRU
+        - #546: More understandable new payment form.                      -FRU
 
 From 0.9.11 branch:
 
@@ -71,18 +71,21 @@ From 0.9.11 branch:
         - #472: Fix problem with auth when using the cookie.                -MC
 
     * Emails:
-        - #496: Fix link to warn user who has a broken email               -FRU
+        - #496: Fix link to warn user who has a broken email.              -FRU
 
     * Geoloc:
         - #469: Google Maps link works for the USA.                        -FRU
 
+    * Newsletter:
+        - Mail can have different title not to repeat the month or sender. -Car
+
     * Payment:
-        - #482: fix action in the form.                                     -MC
+        - #482: Fix action in the form.                                     -MC
 
     * Profile:
-        - #486: fix force login to see private fiche.                      -Car
-        - #509: can access trombi of the current year promotion            -FRU
-        - #529: Disabled state is private                                  -FRU
+        - #486: Fix force login to see private fiche.                      -Car
+        - #509: Can access trombi of the current year promotion.           -FRU
+        - #529: Disabled state is private.                                 -FRU
 
 ================================================================================
 VERSION 0.9.11                                                 18 Septembre 2006

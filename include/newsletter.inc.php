@@ -41,6 +41,7 @@ class NewsLetter
     var $_shortname;
     var $_date;
     var $_title;
+    var $_title_mail;
     var $_head;
     var $_cats = Array();
     var $_arts = Array();
@@ -69,6 +70,7 @@ class NewsLetter
         $this->_shortname = $nl['short_name'];
         $this->_date      = $nl['date'];
         $this->_title     = $nl['titre'];
+        $this->_title_mail = $nl['titre_mail'];
         $this->_head      = $nl['head'];
 
         $res = XDB::iterRow("SELECT cid,titre FROM newsletter_cat ORDER BY pos");
@@ -101,8 +103,8 @@ class NewsLetter
 
     function save()
     {
-        XDB::execute('UPDATE newsletter SET date={?},titre={?},head={?},short_name={?} WHERE id={?}',
-                     $this->_date, $this->_title, $this->_head, $this->_shortname,$this->_id);
+        XDB::execute('UPDATE newsletter SET date={?},titre={?},titre_mail={?},head={?},short_name={?} WHERE id={?}',
+                     $this->_date, $this->_title, $this->_title_mail, $this->_head, $this->_shortname,$this->_id);
     }
 
     // }}}
@@ -116,8 +118,12 @@ class NewsLetter
     // }}}
     // {{{ function title()
 
-    function title()
-    { return $this->_title; }
+    function title($mail = false) {
+    	if ($mail) {
+    		return $this->_title_mail;
+    	}
+		return $this->_title;
+	}
 
     // }}}
     // {{{ function head()
@@ -331,7 +337,7 @@ EOF;
 
     $mailer = new HermesMailer();
     $mailer->setFrom($globals->newsletter->from);
-    $mailer->setSubject($this->title());
+    $mailer->setSubject($this->title(true));
     $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
         if (!empty($globals->newsletter->replyto)) {
             $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
@@ -448,18 +454,18 @@ class NLArticle
 
 function insert_new_nl()
 {
-    XDB::execute("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued'");
+    XDB::execute("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued',titre_mail='to be continued'");
 }
 
 function get_nl_slist()
 {
-    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre FROM newsletter ORDER BY date DESC");
+    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre_mail AS titre FROM newsletter ORDER BY date DESC");
     return $res->fetchAllAssoc();
 }
 
 function get_nl_list()
 {
-    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
+    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre_mail AS titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
     return $res->fetchAllAssoc();
 }
 
