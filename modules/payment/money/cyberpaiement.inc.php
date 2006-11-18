@@ -48,7 +48,7 @@ class CyberPayment
         global $globals;
 
         $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/payment/cyber_return/".S::v('uid')."?CHAMPBPX";
+            ."/payment/cyber_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'))."&CHAMPBPX";
         if (Cookie::has(session_name())) {
             $returnurl .= "?".SID;
         }

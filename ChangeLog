@@ -49,6 +49,9 @@ Bug/Wish:
         - #520: Can moderate several mails at once                         -FRU
         - #532: Fix case sensitivity issues in emails processing.          -FRU
 
+    * Payment:
+        - #155: Add a free comment for payments.                           -Car
+
     * Profile:
         - #385: Add section, binets and groupes-X in vCard.                -FRU
         - #451: vCard are RFC compliant.                                   -FRU

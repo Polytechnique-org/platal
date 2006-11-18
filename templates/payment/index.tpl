@@ -37,6 +37,12 @@
     <td><b>Montant (euros)</b></td>
     <td>{$montant}</td>
   </tr>
+{if $comment}
+  <tr>
+    <td><b>Commentaire</b>
+    <td>{$comment}</td>
+  </tr>
+{/if}
   <tr>
     <td>&nbsp;</td>
     <td>
@@ -98,7 +104,7 @@ function payment_submit(form)
 <form method="post" action="{$platal->pl_self()}">
   <p> Si tu ne souhaites pas utiliser notre interface de
   télépaiement, tu peux virer directement la somme de ton choix sur notre compte
-  30004 00314 00010016782 60. Nous veillerons à ce que ton paiement parvienne à
+  <strong>30004 00314 00010016782 60</strong>. Nous veillerons à ce que ton paiement parvienne à
   son destinataire.  Pense toutefois à le préciser dans le motif du
   versement.
   <br /><br />
@@ -130,6 +136,10 @@ function payment_submit(form)
     <tr>
       <td>Montant (euros)</td>
       <td><input type="text" name="montant" size="13" class='right' value="{$montant}" /></td>
+    </tr>
+    <tr>
+      <td>Commentaire</td>
+      <td><textarea name="comment" rows="5" cols="30"></textarea></td>
     </tr>
     <tr>
       <td>&nbsp;</td>

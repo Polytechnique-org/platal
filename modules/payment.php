@@ -123,6 +123,7 @@ class PaymentModule extends PLModule
 
         $val = floor($val).".".substr(floor(($val - floor($val))*100+100),1);
         $page->assign('montant',$val);
+        $page->assign('comment',Env::v('comment'));
 
         $page->assign('meth', $meth);
         $page->assign('pay',  $pay);
@@ -188,9 +189,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
-                                     VALUES  ({?},{?},{?},{?},{?},{?})",
-                                $champ901, $uid, $ref, $champ200, $montant, $champ905);
+        XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle,comment)
+                                     VALUES  ({?},{?},{?},{?},{?},{?},{?})",
+                                $champ901, $uid, $ref, $champ200, $montant, $champ905,Env::v('comment'));
 
         /* on genere le mail de confirmation */
         $conf_text = str_replace("<prenom>",$prenom,$conf_text);
@@ -277,9 +278,9 @@ class PaymentModule extends PLModule
         }
 
         /* on fait l'insertion en base de donnees */
-        XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle)
-                                     VALUES  ({?},{?},{?},{?},{?},{?})",
-                                $no_transaction, $uid, $ref, $fullref, $montant, $clef);
+        XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle,comment)
+                                     VALUES  ({?},{?},{?},{?},{?},{?},{?})",
+                                $no_transaction, $uid, $ref, $fullref, $montant, $clef, Env::v('comment'));
 
         /* on genere le mail de confirmation */
         $conf_text = str_replace("<prenom>",$prenom,$conf_text);
