@@ -117,7 +117,7 @@ class XnetEventsModule extends PLModule
                            WHERE eid = {?} AND asso_id = {?}",
                          $eid, $globals->asso('id'));
         }
-
+        
         $page->assign('archive', $archive);
         $page->assign('admin', may_update());
 
@@ -166,9 +166,12 @@ class XnetEventsModule extends PLModule
                 $e['paid'] += trim($p);
             }
 
+            if (Env::has('updated') && $e['eid'] == Env::i('updated')) {
+                $page->assign('updated', $e);
+            }
             $evts[] = $e;
         }
-
+        
         $page->assign('evenements', $evts);
         $page->assign('is_member', is_member());
     }
@@ -227,22 +230,25 @@ class XnetEventsModule extends PLModule
         }
 
         // update actual inscriptions
+        $updated = false;
         foreach ($subs as $j => $nb) {
             if ($nb > 0) {
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?})",
                     $eid, S::v('uid'), $j, $nb, $evt['paid']);
-                $page->assign('updated', true);
+                $updated = $eid;
             } else {
                 XDB::execute(
                     "DELETE FROM  groupex.evenements_participants
                            WHERE  eid = {?} AND uid = {?} AND item_id = {?}",
                     $eid, S::v("uid"), $j);		
-                $page->assign('updated', true);
+                $updated = $eid;
             }
         }
-
+        if ($updated !== false) { 
+        	pl_redirect('events?updated='.$updated);
+        }
         $page->assign('event', get_event_detail($eid));
     }
 

@@ -29,6 +29,22 @@
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
 
+{if $updated}
+<p class='error'>
+  La modification de l'inscription a été prise en compte !
+  {if $updated.topay}
+    <br/>N'oublie pas de payer {$updated.topay|replace:'.':','}&nbsp;&euro;
+    {if $updated.paid > 0}
+    (tu as déjà payé {$updated.paid|replace:'.':','}&nbsp;&euro;)
+    {/if}
+    {if $updated.paiement_id}
+    [<a href="https://www.polytechnique.org/payment/{$updated.paiement_id}?montant={$updated.topay}">
+    Payer en ligne</a>]
+    {/if}
+  {/if}
+</p>
+{/if}
+
 {if !$archive}
 <p class="center">
   [<a href="{$platal->ns}events/edit">Annoncer un nouvel événement</a>]

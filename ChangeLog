@@ -62,6 +62,7 @@ Bug/Wish:
         - #511: Migrate ML subscription when changing email of a non-X.    -FRU
 
     * Xnet/Events:
+        - #374: Modify ergonomy of inscription to events (again).          -Car
         - #490: Events can be opened to non-members.                       -FRU
         - #514: Improve visibility of open events.                         -FRU
         - #523: Organizer does not change when editing an event.           -FRU
