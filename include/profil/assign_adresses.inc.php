@@ -47,7 +47,7 @@ unset($adrid);
 reset($adresses);
 //on génère un éventuel nouveau tel pour chaque adresse
 foreach($adresses as $adrid => $adr){
-  if (!isset($adr['tels'])) {
+  if (!isset($adr['tels'])  || count($adr['tels']) == 0) {
     $adresses[$adrid]['tels'] = array(
       array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Tél.', 'telid' => 0, 'new_tel' => true),
       array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Fax', 'telid' => 1, 'new_tel' => true));

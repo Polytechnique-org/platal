@@ -47,7 +47,7 @@
         <input type="hidden" name="numero_formulaire[{$adrid}]" value="{$smarty.section.i.index}" />
         {/if}
         {if $adr.nouvelle != 'new'}
-        [<a href="profile/edit/{$onglet}?adrid_del[{$adrid}]=1" style="color:inherit">La supprimer !</a>]
+        <a href="profile/edit/{$onglet}?adrid_del[{$adrid}]=1" style="color:inherit">{icon name=cross title="Supprimer cette adresse"}</a>
         {/if}
       </th>
     </tr>
@@ -101,7 +101,7 @@
     <tr class="flags">
       <td class="colg">
         <input type="hidden" name="telid{$tel.telid}[{$adrid}]" value="{$tel.telid}"/>
-        {if $tel.new_tel}
+        {if $tel.new_tel && !$tel.tel}
           <input type="hidden" name="new_tel{$tel.telid}[{$adrid}]" value="1"/>
         {/if}
         <span class="titre" onclick="this.style.display='none';var d = document.getElementById('tel_type{$adrid}_{$tel.telid}');d.style.display='inline';d.select();d.focus();">{$tel.tel_type}&nbsp;:</span>
@@ -109,6 +109,9 @@
       </td>
       <td>
         <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />
+        {if $tel.tel}
+        	<a href="profile/edit/{$onglet}?adrid={$adrid}&telid={$tel.telid}&deltel=1">{icon name=cross title="Supprimer ce tél."}</a>
+    	{/if}
       </td>
       {include file="include/flags.radio.tpl" name="tel_pub`$tel.telid`[$adrid]" val=$tel.tel_pub display="mini"}
     </tr>

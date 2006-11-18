@@ -360,7 +360,7 @@ class ProfileModule extends PLModule
             // mise a jour des champs relatifs au tab ouvert
             require_once "profil/update_{$opened_tab}.inc.php";
 
-            $log =& S::v('log');
+            $log =& $_SESSION['log'];
             $log->log('profil', $opened_tab);
             $page->assign('etat_update', 'ok');
         }

@@ -25,14 +25,16 @@ reset($adresses);
 function insert_new_tel($adrid, $tel) {
     if ($tel['tel'] == "")
         return;
+    $r = XDB::query("SELECT MAX(telid+1) FROM tels WHERE uid = {?} AND adrid = {?}", S::v('uid',-1), $adrid);
+    $newid = $r->fetchOneCell();
+    if (!$newid) $newid = 0;
     XDB::execute( "INSERT INTO tels SET tel_type = {?}, tel_pub = {?},
                   tel = {?}, uid = {?}, adrid = {?}, telid = {?}",
                   $tel['tel_type'], $tel['tel_pub'], $tel['tel'],
-                  S::v('uid', -1), $adrid, $tel['telid']);
+                  S::v('uid', -1), $adrid, $newid);
 }
 
 foreach ($adresses as $adrid => $adr) {
-
     if ($adr['nouvelle'] != 'new') {
         // test si on vient de creer cette adresse dans verif_adresse.inc.php
 
@@ -51,6 +53,11 @@ foreach ($adresses as $adrid => $adr) {
 
         if ($adr["nouvelle"] == 'ajout') {
             //nouvelle adresse
+            if (is_adr_empty($adrid)) {
+                unset($adresses[$adrid]);
+                continue;
+            }
+            echo "Nouveau pas vide";
             XDB::execute("INSERT INTO adresses SET adr1 = {?}, adr2 = {?},
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
                          country = {?}, region = {?}, regiontxt = {?},
@@ -76,8 +83,9 @@ foreach ($adresses as $adrid => $adr) {
                          $adr['region'], $adr['regiontxt'], $adr['pub'],
                          $statut, S::v('uid', -1), $adrid);
             foreach ($adr['tels'] as $tel) {
-                if ($tel['new_tel']) {
-                    insert_new_tel($adrid, $tel);
+                if (isset($tel['new_tel'])) {
+                	if ($tel['new_tel'])
+                    	insert_new_tel($adrid, $tel);
                 } else {
                     if ($tel['tel'] != "") {
                         XDB::execute(

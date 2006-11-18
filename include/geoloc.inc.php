@@ -96,11 +96,12 @@ function get_address_infos($txt) {
             }
         }
     }
-    if ($infos['sql'])
+    if (isset($infos['sql']) && $infos['sql'])
        XDB::execute("REPLACE INTO geoloc_city VALUES ".$infos['sql']);
-    if ($infos['display'])
+    if (isset($infos['display']) && $infos['display'])
         XDB::execute("UPDATE geoloc_pays SET display = {?} WHERE a2 = {?}", $infos['display'], $infos['country']);
-    fix_cities_not_on_map(1, $infos['cityid']);
+    if (isset($infos['cityid']))
+    	fix_cities_not_on_map(1, $infos['cityid']);
     return $infos;
 }
 // }}}
@@ -155,11 +156,11 @@ function get_new_maps($url)
  */
 function get_address_text($adr) {
     $t = "";
-    if ($adr['adr1']) $t.= $adr['adr1'];
-    if ($adr['adr2']) $t.= "\n".$adr['adr2'];
-    if ($adr['adr3']) $t.= "\n".$adr['adr3'];
+    if (isset($adr['adr1']) && $adr['adr1']) $t.= $adr['adr1'];
+    if (isset($adr['adr2']) && $adr['adr2']) $t.= "\n".$adr['adr2'];
+    if (isset($adr['adr3']) && $adr['adr3']) $t.= "\n".$adr['adr3'];
     $l = "";
-    if ($adr['display']) {
+    if (isset($adr['display']) && $adr['display']) {
         $keys = explode(' ', $adr['display']);
         foreach ($keys as $key) {
             if (isset($adr[$key]))
@@ -176,8 +177,8 @@ function get_address_text($adr) {
             if ($adr['region']) $l .= $adr['region']." ";
             if ($adr['postcode']) $l .= $adr['postcode'];
         } else {
-            if ($adr['postcode']) $l .= $adr['postcode']." ";
-            if ($adr['city']) $l .= $adr['city'];
+            if (isset($adr['postcode']) && $adr['postcode']) $l .= $adr['postcode']." ";
+            if (isset($adr['city']) && $adr['city']) $l .= $adr['city'];
         }
     }
     if ($l) $t .= "\n".trim($l);
@@ -185,7 +186,7 @@ function get_address_text($adr) {
         $res = XDB::query("SELECT pays FROM geoloc_pays WHERE a2 = {?}", $adr['country']);
         $adr['countrytxt'] = $res->fetchOneCell();
     }
-    if ($adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
+    if (isset($adr['countrytxt']) && $adr['countrytxt']) $t .= "\n".$adr['countrytxt'];
     return trim($t);
 }
 // }}}

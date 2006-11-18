@@ -51,6 +51,7 @@ Bug/Wish:
     * Profile:
         - #385: Add section, binets and groupes-X in vCard.                -FRU
         - #451: vCard are RFC compliant.                                   -FRU
+        - #466: Fix delete phone number.                                   -Car
         - #502: Use 'alias' instead of 'aka' to specify the nickname.      -FRU
         - #536: Can use login.promo as a valid user identifier.            -FRU
         - #539: Medals and deco need validation from admin.                -Car

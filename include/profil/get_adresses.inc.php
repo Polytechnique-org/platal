@@ -21,7 +21,7 @@
 
 require_once('geoloc.inc.php');
 
-global $adresses;
+global $adresses, $nb_adr_max, $nb_tel_max;
 
 // on limite à 6 adresses personnelles par utilisateur
 $nb_adr_max = 6; // ( = max(adrid possibles)
@@ -32,10 +32,18 @@ $nb_tel_max = 4; // ( = max(telid possibles)
 
 function is_adr_empty($adrid){
   $adr = &$GLOBALS['adresses'][$adrid];
+  $emptytel = count($adr['tels']) == 0;
+  if (!$emptytel) {
+  	$emptytel = true;
+  	foreach ($adr['tels'] as $t) if ($t['tel']) {
+  		$emptytel = false;
+  		break;
+  	}
+  }
   return ( 
     ($adr['adr1'] == '') && ($adr['adr2'] == '') && ($adr['adr3'] == '') &&
     ($adr['postcode'] == '') && ($adr['city'] == '') && ($adr['country'] == '00') &&
-    (count($adr['tels']) == 0)
+    ($emptytel)
     );
 }
 
@@ -57,6 +65,10 @@ for ($i = 1; $i <= $nb_adr_max; $i++) {
     if (isset($req_adrid_del[$i])) {
         delete_address($i,true);
     }
+}
+if (Env::i('deltel')) {
+	XDB::execute("DELETE FROM tels WHERE uid = {?} AND adrid = {?} AND telid = {?}",
+		S::v('uid', -1), Env::i('adrid'), Env::i('telid'));
 }
 
 //$sql_order = "ORDER BY (NOT FIND_IN_SET('active', statut)), FIND_IN_SET('temporaire', statut)";
