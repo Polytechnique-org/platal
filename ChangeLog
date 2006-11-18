@@ -46,6 +46,7 @@ Bug/Wish:
 
     * Lists:
         - #485: Can moderate pure-HTML mails.                              -FRU
+        - #520: Can moderate several mails at once                         -FRU
         - #532: Fix case sensitivity issues in emails processing.          -FRU
 
     * Profile:

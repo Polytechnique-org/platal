@@ -42,8 +42,8 @@
     </td>
     <td>{$s.addr}</td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?sadd={$s.id}'>ajouter</a>
-      <a href='{$platal->pl_self(1)}?sid={$s.id}'>refuser</a>
+      <a href='{$platal->pl_self(1)}?sadd={$s.id}'>{icon name=add title="Valider l'inscription"}</a>
+      <a href='{$platal->pl_self(1)}?sid={$s.id}'>{icon name=delete title="Refuser l'inscription"}</a>
     </td>
   </tr>
   {/foreach}
@@ -59,30 +59,37 @@
 {if $mails|@count}
 <ul>
   <li>
-  <strong>accepter:</strong> le mail est immédiatement libéré, et envoyé à la
+  <strong>{icon name=add}accepter&nbsp;:</strong> le mail est immédiatement libéré, et envoyé à la
   liste.
   </li>
   <li>
-  <strong>refuser:</strong> pour refuser un mail, suivre le lien [voir] et
+  <strong>{icon name=magnifier}refuser&nbsp;:</strong> pour refuser un mail, suivre le lien {icon name=magnifier} et
   remplir le formulaire en bas de page.
   </li>
   <li>
-  <strong>détruire:</strong> le mail est effacé sans autre forme de procès.
+  <strong>{icon name=delete}détruire&nbsp;:</strong> le mail est effacé sans autre forme de procès.
   N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
-  S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
-  <a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">jeter directement</a> et non de les modérer. 
   </li>
 </ul>
+<p>
+  S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
+  jeter directement et non de les modérer en modifant le réglage de
+  l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>. 
+</p>
 
+<form method="post" action="{$platal->pl_self(1)}">
 <table class='bicol' cellpadding='0' cellspacing='0'>
   <tr>
-    <th></th>
+    <th colspan="2"></th>
     <th>Mail</th>
     <th>Infos</th>
     <th colspan="2"></th>
   </tr>
   {foreach from=$mails item=m}
   <tr class='{cycle values="pair,impair"}'>
+    <td>
+      <input type="checkbox" name="select_mails[{$m.id}]" />
+    </td>
     <td>
       <strong>De&nbsp;:</strong><br />
       <strong>Sujet&nbsp;:</strong>
@@ -96,15 +103,21 @@
       {$m.size} octets</small>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>accepter</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mok=1'>{icon name=add title="Accepter le message"}</a>
     </td>
     <td class='action'>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}'>voir</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>détruire</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Détruire le message"}</a>
     </td>
   </tr>
   {/foreach}
 </table>
+<p class="center">
+  <input type="hidden" name="moderate_mails" value="1" />
+  <input type="submit" name="mok" value="Accepter" /> 
+  <input type="submit" name="mdel" value="Détruire" />
+</p>
+</form>
 {else}
 <p>pas de mails en attente de modération</p>
 {/if}
