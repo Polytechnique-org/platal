@@ -69,6 +69,13 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
         E_STRICT          => "Runtime Notice"
     );
 
+    global $globals;
+    if (!$globals->debug) {
+        if (strpos($errortype[$errno], 'Notice') !== false) {
+            return;
+        }
+    }
+
     $errstr = htmlentities($errstr);
     $GLOBALS['pl_errors'][] =
         "<div class='phperror'>".
