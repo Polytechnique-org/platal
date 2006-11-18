@@ -44,7 +44,7 @@
   </colgroup>
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
-      <a href="{$platal->ns}events/ical/{$e.short_name|default:$e.eid}/{$e.short_name}.ics" style="display: block; float: left;">
+      <a href="{$platal->ns}events/ical/{$e.short_name|default:$e.eid}/{$e.short_name|default:$e.eid}.ics" style="display: block; float: left;">
         {icon name=calendar_view_day title="Evénement iCal"}
       </a>
       {$e.intitule}
