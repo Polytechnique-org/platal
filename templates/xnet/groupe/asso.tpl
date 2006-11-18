@@ -87,15 +87,6 @@
 
 <br />
 
-{if $articles->total()}
-<div>
-{iterate item=art from=$articles}
-{include file="xnet/groupe/form.announce.tpl"}
-<br />
-{/iterate}
-</div>
-{/if}
-
 {if $article_index && $article_index->total()}
 <table class="tinybicol">
   <tr>
@@ -126,6 +117,17 @@
   </tr>
   {/iterate}
 </table>
+{/if}
+
+<br />
+
+{if $articles->total()}
+<div>
+{iterate item=art from=$articles}
+{include file="xnet/groupe/form.announce.tpl"}
+<br />
+{/iterate}
+</div>
 {/if}
 
 {if $is_admin}

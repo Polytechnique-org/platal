@@ -77,41 +77,6 @@ Bienvenue {$smarty.session.prenom}
     </tr>
   </table>
 
-  {iterate item=ev from=$evenement}
-  <br />
-
-  <table class="bicol">
-    <tr>
-      <th>
-        <div style="float:right">
-          {if $smarty.session.perms eq 'admin'}
-          <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
-          {/if}
-          <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}">{icon name=cross title="Cacher cet article"}</a>
-        </div>
-        {assign var="previd" value=$ev.id}
-        <a id="newsid{$ev.id}"></a>
-	 {tidy}
-	   {$ev.titre|nl2br}
-	 {/tidy}
-      </th>
-    </tr>
-    <tr class="{cycle values="impair,pair"}">
-      <td class="half">
-        {tidy}
-          {$ev.texte|smarty:nodefaults|nl2br}
-        {/tidy}
-        <br />
-        <p class="smaller"><a href="events#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposée par
-        <a href="profile/{$ev.forlife}" class="popup2">
-          {$ev.prenom} {$ev.nom} X{$ev.promo}
-        </a>
-        </p>
-      </td>
-    </tr>
-  </table>
-  {/iterate}
-
   <br/>
   
   <table class="bicol">
@@ -150,6 +115,41 @@ Bienvenue {$smarty.session.prenom}
     </tr>
     {/if}
   </table>
+
+  {iterate item=ev from=$evenement}
+  <br />
+
+  <table class="bicol">
+    <tr>
+      <th>
+        <div style="float:right">
+          {if $smarty.session.perms eq 'admin'}
+          <a href="admin/events/edit/{$ev.id}">{icon name=page_edit title="Editer cet article"}</a>
+          {/if}
+          <a href="events/read/{$ev.id}{if $previd}/newsid{$previd}{/if}">{icon name=cross title="Cacher cet article"}</a>
+        </div>
+        {assign var="previd" value=$ev.id}
+        <a id="newsid{$ev.id}"></a>
+	 {tidy}
+	   {$ev.titre|nl2br}
+	 {/tidy}
+      </th>
+    </tr>
+    <tr class="{cycle values="impair,pair"}">
+      <td class="half">
+        {tidy}
+          {$ev.texte|smarty:nodefaults|nl2br}
+        {/tidy}
+        <br />
+        <p class="smaller"><a href="events#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposée par
+        <a href="profile/{$ev.forlife}" class="popup2">
+          {$ev.prenom} {$ev.nom} X{$ev.promo}
+        </a>
+        </p>
+      </td>
+    </tr>
+  </table>
+  {/iterate}
 
   <p class="smaller">
   Nota Bene : les informations présentées ici n'engagent que leurs auteurs
