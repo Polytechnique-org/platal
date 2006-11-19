@@ -78,7 +78,7 @@
     <td class="titre">
       <a href="profile/{$c[0]}" class="popup2">{$c[0]}</a>
     </td>
-    <td>{$c[1]}</td>
+    <td>{$c[1]|nl2br}</td>
   </tr>
   {/foreach}
   <tr>
