@@ -138,6 +138,8 @@
             {else}
             Choix du domaine
             {/if}
+            {elseif $wikipage}
+            <a href="Xnet">Documentation</a>
             {/if}
           </div>
           {include file="skin/common.content.tpl"}
