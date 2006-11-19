@@ -313,6 +313,7 @@ td.oval2 {
 }
 
 .oval a, .oval2 a { color: #d0c198; }
+.oval a.has_site { color: white; }
 
 #content td.oval, #content td.oval2 {
     font-size: 90%;

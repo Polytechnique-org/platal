@@ -49,7 +49,7 @@
         <tr>
         {/if}
           <td class="oval{if $doms}2{/if}">
-            <a href="{$g.diminutif}/">{$g.nom}</a>
+            <a href="{$g.diminutif}/" {if $g.site}class="has_site"{/if}>{$g.nom}</a>
           </td>
         {if !$doms && $i is even && $smarty.foreach.all.last}<td></td>{/if}
         {if $doms || $i is odd || $smarty.foreach.all.last}
