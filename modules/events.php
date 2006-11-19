@@ -46,6 +46,9 @@ class EventsModule extends PLModule
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('login.tpl');
+       
+        // donne la derniere date de session
+        $page->assign('lastlogin', strftime("%Y%m%d%H%M%S",S::i('lastlogin')));
 
         $res = XDB::query('SELECT date, naissance FROM auth_user_md5
                                       WHERE user_id={?}', S::v('uid'));
@@ -87,7 +90,7 @@ class EventsModule extends PLModule
         // Liens apparaissant de façon aléatoire
         $pub_rnd = array(
             'nl/show'                      => 'Afficher la dernière newsletter' ,
-            'http://www.polytechnique.net' => 'Vers les autres sites polytechniciens' ,
+            'http://www.polytechnique.net/login' => 'Vers les autres sites polytechniciens' ,
             "trombi/{$_SESSION["promo"]}"  => "Voir le trombi de ma promo" ,
             'banana'                       => 'Un petit tour du côté des forums !!'
             ) ;

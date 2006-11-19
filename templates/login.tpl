@@ -37,7 +37,7 @@ Bienvenue {$smarty.session.prenom}
 
 <div class="smaller">
   Ta connexion précédente date du
-  <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
+  <strong>{$lastlogin|date_format:"%x, %X"}</strong>
   depuis la machine <strong>{$smarty.session.host}</strong>
 </div>
   
