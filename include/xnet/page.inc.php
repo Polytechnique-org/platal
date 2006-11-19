@@ -73,7 +73,6 @@ class XnetPage extends PlatalPage
         }
 
         $sub = array();
-        $sub['accueil']           = '';
         $sub['liste des groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
         $menu["Menu Principal"]   = $sub;

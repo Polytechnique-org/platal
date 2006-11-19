@@ -120,6 +120,7 @@
         </td>
         <td id="body">
           <div class="breadcrumb">
+            <a href=".">X.net</a> »
             {if $asso}
             <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
             {if $asso.dom}
@@ -129,7 +130,11 @@
             {elseif $cat}
             <a href="groups/{$cat}">{$cat|cat_pp}</a> »
             {if $dom || !$doms}
+            {if $cat eq 'promotions'}
+            Choix de la promotion
+            {else}
             Choix de l'Asso
+            {/if}
             {else}
             Choix du domaine
             {/if}
