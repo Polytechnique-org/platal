@@ -436,12 +436,16 @@ class ListsModule extends PLModule
             $this->client->handle_request($liste,Env::v('sadd'),4,'');
             pl_redirect('lists/moderate/'.$liste);
         }
-
         if (Post::has('sdel')) { /* 2 = REJECT */
             $this->client->handle_request($liste,Post::v('sdel'),2,Post::v('reason'));
         }
 
-        if (Env::has('mid')) {
+        if (Post::has('moderate_mails') && Post::has('select_mails')) {
+            $mails = array_keys(Post::v('select_mails'));
+            foreach($mails as $mail) {
+                $this->moderate_mail($domain, $liste, $mail);
+            }
+        } elseif (Env::has('mid')) {
             $mail = $this->moderate_mail($domain, $liste, Env::i('mid'));
 
             if (Get::has('mid') && is_array($mail)) {
@@ -458,7 +462,6 @@ class ListsModule extends PLModule
                 return;
             }   
         } elseif (Env::has('sid')) {
-
             if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
                 foreach($subs as $user) {
                     if ($user['id'] == Env::v('sid')) {
