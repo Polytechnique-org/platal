@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-15"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -114,7 +114,11 @@
           {foreach from=$menu key=title item=submenu}
           {if $title neq 'no_title'}<h1>{$title}</h1>{/if}
           {foreach from=$submenu key=tit item=url}
+          {if is_array($url)}
+          <a href="{$url.link}" onclick="{$url.onclick}">{$tit}</a>
+          {else}
           <a href="{$url}">{$tit}</a>
+          {/if}
           {/foreach}
           {/foreach}
         </td>
