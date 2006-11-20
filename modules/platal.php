@@ -194,6 +194,7 @@ class PlatalModule extends PLModule
             }
 
             $page->changeTpl('motdepasse.success.tpl');
+            $page->assign('now', strftime("%Y%m%d%H%M%S"));
             $page->run();
         }
 
@@ -322,6 +323,7 @@ Mail envoyé à ".Env::v('login'));
             XDB::query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
             $logger->log("passwd","");
             $page->changeTpl('tmpPWD.success.tpl');
+            $page->assign('now', strftime("%Y%m%d%H%M%S"));
         } else {
             $page->changeTpl('motdepasse.tpl');
             $page->addJsLink('motdepasse.js');
