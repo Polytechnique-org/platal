@@ -61,8 +61,15 @@
       <link>{#globals.baseurl#}/profile/private/{$x.bestalias}</link>
       <description><![CDATA[
         {if !$x.contact and !$x.dcd}
+        &bull; 
         <a href="{#globals.baseurl#}/carnet/contacts?action=ajouter&amp;user={$x.bestalias}">
-          ajouter &agrave; mes contacts
+          {icon name=add title="Ajouter"}Ajouter &agrave; mes contacts
+        </a><br />
+        {/if}
+        {if !$x.dcd}
+        &bull; 
+        <a href="{#globals.baseurl#}/vcard/{$x.bestalias}.vcf">
+          T&eacute;l&eacute;charger la carte de visite &eacute;lectronique
         </a>
         {/if}
         ]]></description>
