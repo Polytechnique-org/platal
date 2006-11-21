@@ -75,6 +75,7 @@ class XnetPage extends PlatalPage
         $sub = array();
         $sub['liste des groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
+        $sub['Signaler un bug']   = array('link' => 'send_bug', 'onclick' => 'send_bug();return false'); 
         $menu["Menu Principal"]   = $sub;
         
         if (S::logged() && $globals->asso()) {

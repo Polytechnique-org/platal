@@ -176,36 +176,54 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
 // }}}
 
 //  {{{ function subscribe_lists_event()
-function subscribe_lists_event($participate, $uid, $evt) {
+function subscribe_lists_event($participate, $uid, $evt)
+{
+    require_once('user.func.inc.php');
     global $globals,$page;
 
     $participant_list = $evt['participant_list'];
     $absent_list      = $evt['absent_list'];
 
-    $email = S::v('forlife');
+    $email = get_user_forlife($uid);
 
     if ($email) {
         $email .= '@'.$globals->mail->domain;
     } else {
-        $res = XDB::query("SELECT email FROM groupex.membres WHERE uid = {?} AND asso_id = {?}", S::v('uid'), $globals->asso('id'));
+        $res = XDB::query("SELECT email
+                             FROM groupex.membres
+                            WHERE uid = {?} AND asso_id = {?}",
+                            S::v('uid'), $globals->asso('id'));
         $email = $res->fetchOneCell();
     }
 
-    $subscribe = $participate ? $participant_list : (is_member()?$absent_list:0);
-    $unsubscri = $participate ? $absent_list : $participant_list;
-
-    if ($subscribe) {
-        XDB::execute(
-            "REPLACE INTO virtual_redirect VALUES({?},{?})",
-		 $subscribe, $email);
+    function subscribe($list, $email)
+    {
+        if ($list && $email) {
+            XDB::execute("REPLACE INTO virtual_redirect
+                                VALUES ({?},{?})",
+                         $list, $email);
+        }
     }
 
-    if ($unsubscri) {
-        XDB::execute(
-            "DELETE FROM virtual_redirect WHERE vid = {?} AND redirect = {?}",
-                $unsubscri, $email);
+    function unsubscribe($list, $email)
+    {
+        if ($list && $email) {
+            XDB::execute("DELETE FROM virtual_redirect
+                                WHERE vid = {?} AND redirect = {?}",
+                         $list, $email);
+        }
     }
 
+    if (is_null($participate)) {
+        unsubscribe($participant_list, $email);
+        subscribe($absent_list, $email);
+    } elseif ($participate) {
+        subscribe($participant_list, $email);
+        unsubscribe($absent_list, $email);
+    } else {
+        unsubscribe($participant_list, $email);
+        unsubscribe($absent_list, $email);
+    }
 }
 // }}}
 
@@ -224,9 +242,10 @@ function event_change_shortname(&$page, $old, $new)
 
     //vérifier que l'alias n'est pas déja pris
     if ($new && $old != $new) {
-        $res = XDB::query('SELECT COUNT(*) FROM virtual
-                                    WHERE alias LIKE {?}',
-                                    $new.'-absents@%');
+        $res = XDB::query('SELECT COUNT(*)
+                             FROM groupex.evenements
+                            WHERE short_name = {?}',
+                           $new);
         if ($res->fetchOneCell() > 0) {
             $page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
             return $old;
@@ -242,10 +261,9 @@ function event_change_shortname(&$page, $old, $new)
         foreach (array('-absents@', '-participants@') as $v) {
             $v .= $globals->xnet->evts_domain;
             XDB::execute("UPDATE virtual SET alias = {?}
-                                     WHERE type = 'evt' AND alias = {?}",
-                                     $new.$v, $old.$v);
+                           WHERE type = 'evt' AND alias = {?}",
+                         $new.$v, $old.$v);
         }
-
         return $new;
     }
 

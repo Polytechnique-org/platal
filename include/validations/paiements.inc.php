@@ -69,7 +69,7 @@ class PayReq extends Validate
 
     // }}}
   // {{{ function same_event()
-    function same_event($evt, $asso_id)
+    static function same_event($evt, $asso_id)
     {
         $wevt = 's:3:"evt";s:'.strlen($evt+"").':"'.$evt.'"';
         $wassoid = 's:7:"asso_id";s:'.strlen($asso_id + "").':"'.$asso_id.'"';

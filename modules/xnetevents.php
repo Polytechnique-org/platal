@@ -126,7 +126,7 @@ class XnetEventsModule extends PLModule
                          IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
                             1) AS inscr_open, e.deadline_inscription,
                          u.nom, u.prenom, u.promo, a.alias,
-                         MAX(ep.nb) AS inscrit, MAX(ep.paid) AS paid
+                         MAX(ep.nb) IS NOT NULL AS inscrit, MAX(ep.paid) AS paid
                   FROM  groupex.evenements  AS e
             INNER JOIN  x4dat.auth_user_md5 AS u ON u.user_id = e.organisateur_uid
             INNER JOIN  x4dat.aliases       AS a ON (a.type = 'a_vie' AND a.id = u.user_id)
@@ -231,8 +231,9 @@ class XnetEventsModule extends PLModule
 
         // update actual inscriptions
         $updated = false;
+        $total   = 0;
         foreach ($subs as $j => $nb) {
-            if ($nb > 0) {
+            if ($nb >= 0) {
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?})",
@@ -245,9 +246,10 @@ class XnetEventsModule extends PLModule
                     $eid, S::v("uid"), $j);		
                 $updated = $eid;
             }
+            $total += $nb;
         }
-        if ($updated !== false) { 
-        	pl_redirect('events?updated='.$updated);
+        if ($updated !== false) {
+            subscribe_lists_event($total, S::i('uid'), $evt);
         }
         $page->assign('event', get_event_detail($eid));
     }
@@ -439,7 +441,7 @@ class XnetEventsModule extends PLModule
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
-            pl_redirect('events');
+            //pl_redirect('events');
         }
 
         // get a list of all the payment for this asso
@@ -536,19 +538,17 @@ class XnetEventsModule extends PLModule
                     if ($nb) {
                         XDB::execute("REPLACE INTO groupex.evenements_participants
                                             VALUES ({?}, {?}, {?}, {?}, {?})",
-                                               $evt['eid'], $member['uid'], $id, $nb, $paid);
-                    } else {
-                        XDB::execute("DELETE FROM groupex.evenements_participants
-                                            WHERE uid = {?} AND eid = {?} AND item_id = {?}",
-                                               $member['uid'], $evt['eid'], $id);
+                                      $evt['eid'], $member['uid'], $id, $nb, $paid);
                     }
                 }
 
-                $res = XDB::query("SELECT uid
+                $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb
                                      FROM groupex.evenements_participants
-                                    WHERE uid = {?} AND eid = {?}",
+                                    WHERE uid = {?} AND eid = {?}
+                                 GROUP BY uid",
                                             $member['uid'], $evt['eid']);
-                $u = $res->fetchOneCell();
+                $u = $res->fetchOneAssoc();
+                $u = $u['cnt'] ? null : $u['nb']; 
                 subscribe_lists_event($u, $member['uid'], $evt);
             }
 
