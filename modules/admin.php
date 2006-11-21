@@ -385,12 +385,14 @@ class AdminModule extends PLModule
 
         if ($login) {
             if (is_numeric($login)) {
-                $r = XDB::query("SELECT *, a.alias AS forlife, u.flags AS sexe
+                $r = XDB::query("SELECT *, a.alias AS forlife, u.flags AS sexe,
+                                        (year(naissance) > promo - 15 or year(naissance) < promo - 25) AS naiss_err
                                    FROM auth_user_md5 AS u
                               LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
                                   WHERE u.user_id = {?}", $login);
             } else {
-                $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe
+                $r  = XDB::query("SELECT  *, a.alias AS forlife, u.flags AS sexe,
+                                          (year(naissance) > promo - 15 or year(naissance) < promo - 25) AS naiss_err
                                     FROM  auth_user_md5 AS u
                               INNER JOIN  aliases       AS a ON ( a.id = u.user_id AND a.alias={?} AND type!='homonyme' )", $login);
             }   
