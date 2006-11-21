@@ -125,7 +125,7 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
             $ourid  = $_uid;
             $ourmat = $_mat;
-            return "Tu es vraissemblablement déjà inscrit !";
+            return "Tu es vraisemblablement déjà inscrit !";
         }
     }
     return "erreur: vérifie que tu as bien orthographié ton nom !";
