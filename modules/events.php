@@ -25,6 +25,7 @@ class EventsModule extends PLModule
     {
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
+            'send_bug'       => $this->make_hook('bug', AUTH_COOKIE),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
@@ -41,6 +42,12 @@ class EventsModule extends PLModule
     {
         require_once 'newsletter.inc.php';
         subscribe_nl($uid);
+    }
+
+    function handler_bug(&$page)
+    {
+        $this->handler_ev($page);
+        $page->assign('bug', 1);
     }
 
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)

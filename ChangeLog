@@ -38,6 +38,7 @@ Bug/Wish:
         - #473: Use 'événement' instead of 'évènement'.                    -FRU
         - #475: More understandable bug report form.                       -FRU
         - #548: More informations for recovery for homonyms.               -FRU
+        - #553: Fix right click on send bug link.                          -Car
 
     * Events:
         - #517: URL catcher update (www).                                  -Car

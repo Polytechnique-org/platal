@@ -11,7 +11,7 @@
 	    <option value="1">Bug</option>
 			<option value="2">Wish</option>
 		</select>
-		&nbsp;&nbsp;Sujet : <input type="text" name="item_summary" id="flyspray_title" value="sur la page {$smarty.server.REQUEST_URI}" size="50" maxlength="100"/>
+		&nbsp;&nbsp;Sujet : <input type="text" name="item_summary" id="flyspray_title" value="sur la page {if $bug}{$smarty.server.HTTP_REFERER}{else}{$smarty.server.REQUEST_URI}{/if}" size="50" maxlength="100"/>
 		<input type="hidden" name="productcategory" value="1"/><!-- non trié -->
 		<input type="hidden" name="itemstatus" value="2"/><!-- New -->
 		<input type="hidden" name="assigned_to" value="0"/><!-- No one -->
@@ -25,7 +25,8 @@
 
 ** Explique ici le problème ou l'amélioration proposée **
 		
-Page : {$globals->baseurl}/?{$smarty.server.QUERY_STRING}
+Page : {if $bug}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/?{$smarty.server.QUERY_STRING}{/if}
+
 Navigateur : {$smarty.server.HTTP_USER_AGENT}
 Skin : {$smarty.session.skin} 
 Signalé par {$smarty.session.forlife}</textarea>
@@ -36,3 +37,8 @@ Signalé par {$smarty.session.forlife}</textarea>
 	</div>
 </form>
 </div>
+{if $bug}
+<script type="text/javascript">
+send_bug();
+</script>
+{/if}
