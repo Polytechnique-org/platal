@@ -61,7 +61,7 @@ class XnetEventsModule extends PLModule
 
         if (!is_null($action)) {
             if (!may_update()) {
-                return PL_NOT_ALLOWED;
+                return PL_FORBIDDEN;
             }
 
             $res = XDB::query("SELECT asso_id, short_name FROM groupex.evenements
@@ -70,7 +70,7 @@ class XnetEventsModule extends PLModule
 
             $tmp = $res->fetchOneRow();
             if (!$tmp) {
-                return PL_NOT_ALLOWED;
+                return PL_FORBIDDEN;
             }
         }
 
@@ -291,7 +291,7 @@ class XnetEventsModule extends PLModule
         require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
         $evt = get_event_detail($eid);
         if (!$evt) {
-            return PL_NOT_FOUND;
+            return PL_FORBIDDEN;
         }
         $evt['debut'] = preg_replace('/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/', "\\1\\2\\3T\\4\\5\\6", $evt['debut']);
         $evt['fin'] = preg_replace('/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)/', "\\1\\2\\3T\\4\\5\\6", $evt['fin']);
@@ -333,12 +333,14 @@ class XnetEventsModule extends PLModule
 
         // check the event is in our group
         if (!is_null($eid)) {
-            $res = XDB::query("SELECT short_name, asso_id
+            $res = XDB::query("SELECT short_name
                                  FROM groupex.evenements
-                                WHERE eid = {?}", $eid);
-            $infos = $res->fetchOneAssoc();
-            if ($infos['asso_id'] != $globals->asso('id')) {
-                return PL_NOT_ALLOWED;
+                                WHERE eid = {?} AND asso_id = {?}",
+                              $eid, $globals->asso('id'));
+            if ($res->numRows()) {
+                $infos = $res->fetchOneAssoc();
+            } else {
+                return PL_FORBIDDEN;
             }
         }
 
