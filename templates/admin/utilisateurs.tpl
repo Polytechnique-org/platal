@@ -180,14 +180,19 @@ function act_fwd(fwd, activate) {
         </select>
       </td>
     </tr>
+    {if $mr.perms neq 'pending'}
     <tr class="pair">
       <td class="titre">
+        {if $mr.naiss_err}<span class="erreur">{/if}
         Date de naissance
+        {if $mr.naiss_err}</span>{/if}
       </td>
       <td>
         <input type="text" name="naissanceN" size="12" maxlength="10" value="{$mr.naissance}" />
+        {if $mr.naiss_err}<span class="erreur smaller">({icon name=error}Date de naissance incohérente)</span>{/if}
       </td>
     </tr>
+    {/if}
     <tr class="pair">
       <td class="titre">
         Date de décès
@@ -215,6 +220,7 @@ function act_fwd(fwd, activate) {
     {if $mr.perms eq 'pending'}
     <tr class="center">
       <td colspan="2">
+        <input type="hidden" name="naissanceN" value="{$mr.naissance}" />
         <input onclick="doEditUser(); return true;" type="submit" name="u_edit" value="UPDATE" />
       </td>
     </tr>

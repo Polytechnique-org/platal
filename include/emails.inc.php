@@ -39,9 +39,9 @@ function fix_bestalias($uid)
     }
     XDB::execute("UPDATE  aliases
                                SET  flags=CONCAT(flags,',','bestalias')
-			     WHERE  id={?} AND type!='homonyme'
-		          ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
-		             LIMIT  1", $uid);
+                 WHERE  id={?} AND type!='homonyme'
+                  ORDER BY  !FIND_IN_SET('usage',flags),alias LIKE '%.%', LENGTH(alias)
+                     LIMIT  1", $uid);
 }
 
 // }}}
@@ -77,14 +77,17 @@ class Bogo
 
     function Bogo($uid)
     {
-	$res = XDB::query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
-	if ($res->numRows()) {
-            $this->state = $res->fetchOneCell();
-	} else {
-	    $this->state = 'tag_and_drop_spams';
-	    $res = XDB::query("INSERT INTO emails (uid,email,rewrite,panne,flags)
-					      VALUES ({?},'tag_and_drop_spams','','0000-00-00','filter')", $uid);
-	}
+        if (!$uid) {
+            return;
+        }
+        $res = XDB::query('SELECT email FROM emails WHERE uid={?} AND flags="filter"', $uid);
+        if ($res->numRows()) {
+                $this->state = $res->fetchOneCell();
+        } else {
+            $this->state = 'tag_and_drop_spams';
+            $res = XDB::query("INSERT INTO emails (uid,email,rewrite,panne,flags)
+                                    VALUES ({?},'tag_and_drop_spams','','0000-00-00','filter')", $uid);
+        }
     }
 
     // }}}
@@ -92,8 +95,8 @@ class Bogo
 
     function change($uid, $state)
     {
-	$this->state = is_int($state) ? $this->_states[$state] : $state;
-	XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"',
+    $this->state = is_int($state) ? $this->_states[$state] : $state;
+    XDB::execute('UPDATE emails SET email={?} WHERE uid={?} AND flags = "filter"',
                      $this->state, $uid);
     }
 
@@ -141,7 +144,7 @@ class Email
                              SET  panne_level = IF(flags = 'panne', panne_level - 1, panne_level),
                                   flags = 'active'
                            WHERE  uid={?} AND email={?}", $uid, $this->email);
-	    $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
+        $_SESSION['log']->log("email_on", $this->email.($uid!=S::v('uid') ? "(admin on $uid)" : ""));
             $this->active = true;
             $this->broken = false;
         }
@@ -154,8 +157,8 @@ class Email
     {
         if ($this->active) {
             XDB::execute("UPDATE  emails SET flags =''
-				     WHERE  uid={?} AND email={?}", $uid, $this->email);
-	        $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
+                     WHERE  uid={?} AND email={?}", $uid, $this->email);
+            $_SESSION['log']->log("email_off",$this->email.($uid!=S::v('uid') ? "(admin on $uid)" : "") );
             $this->active = false;
         }
     }
@@ -165,12 +168,12 @@ class Email
 
     function rewrite($rew, $uid)
     {
-    	if ($this->rewrite == $rew) {
+        if ($this->rewrite == $rew) {
             return;
         }
-	    XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
-    	$this->rewrite = $rew;
-	    return;
+        XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
+        $this->rewrite = $rew;
+        return;
     }
 
     // }}}
@@ -193,15 +196,15 @@ class Redirect
 
     function Redirect($_uid)
     {
-    	$this->uid=$_uid;
+        $this->uid=$_uid;
         $res = XDB::iterRow("
-	        SELECT email, flags, rewrite, panne, last, panne_level
-	          FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
-    	$this->emails=Array();
+            SELECT email, flags, rewrite, panne, last, panne_level
+              FROM emails WHERE uid = {?} AND flags != 'filter'", $_uid);
+        $this->emails=Array();
         while ($row = $res->next()) {
-	        $this->emails[] = new Email($row);
+            $this->emails[] = new Email($row);
         }
-    	$this->bogo = new Bogo($_uid);
+        $this->bogo = new Bogo($_uid);
     }
 
     // }}}
@@ -227,11 +230,11 @@ class Redirect
         }
         XDB::execute('DELETE FROM emails WHERE uid={?} AND email={?}', $this->uid, $email);
         $_SESSION['log']->log('email_del',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
-	    foreach ($this->emails as $i=>$mail) {
-	        if ($email==$mail->email) {
+        foreach ($this->emails as $i=>$mail) {
+            if ($email==$mail->email) {
                 unset($this->emails[$i]);
             }
-    	}
+        }
         return SUCCESS;
     }
 
@@ -248,14 +251,14 @@ class Redirect
             return ERROR_LOOP_EMAIL;
         }
         XDB::execute('REPLACE INTO emails (uid,email,flags) VALUES({?},{?},"active")', $this->uid, $email);
-	    if ($logger = S::v('log', null)) { // may be absent --> step4.php
-	        $logger->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
+        if ($logger = S::v('log', null)) { // may be absent --> step4.php
+            $logger->log('email_add',$email.($this->uid!=S::v('uid') ? " (admin on {$this->uid})" : ""));
         }
-    	foreach ($this->emails as $mail) {
-	        if ($mail->email == $email_stripped) {
+        foreach ($this->emails as $mail) {
+            if ($mail->email == $email_stripped) {
                 return SUCCESS;
             }
-	    }
+        }
         $this->emails[] = new Email(array($email,1,'','0000-00-00'));
 
         // security stuff
@@ -286,13 +289,13 @@ class Redirect
 
     function modify_email($emails_actifs,$emails_rewrite)
     {
-	    foreach ($this->emails as $i=>$mail) {
+        foreach ($this->emails as $i=>$mail) {
             if (in_array($mail->email,$emails_actifs)) {
                 $this->emails[$i]->activate($this->uid);
-	        } else {
+            } else {
                 $this->emails[$i]->deactivate($this->uid);
-	        }
-	        $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
+            }
+            $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
         }
     }
 
