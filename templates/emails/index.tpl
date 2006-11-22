@@ -108,7 +108,7 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
     <td class="half">
       De même, un <strong>service antispam évolué</strong> est en place. Tu peux lui demander
       de te débarrasser des spams que tu reçois. Pour en savoir plus, et l'activer,
-      <a href="emails/antispam">c'est très simple, suis ce lien </a>!
+      <a href="emails/antispam">c'est très simple, suis ce lien</a> !
       <br />
     </td>
   </tr>
@@ -131,10 +131,10 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
       {if $melix}
       Tu disposes à l'heure actuelle de l'alias <strong>{$melix}</strong>
       Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
-      <a href="emails/alias">il te suffit de te rendre ici</a>
+      <a href="emails/alias">il te suffit de te rendre ici</a>.
       {else}
       A l'heure actuelle <strong>tu n'as pas activé d'adresse @{#globals.mail.alias_dom#}</strong>.
-      Si tu souhaites le faire, <a href="emails/alias">il te suffit de venir ici</a>
+      Si tu souhaites le faire, <a href="emails/alias">il te suffit de venir ici</a>.
       {/if}
     </td>
   </tr>
