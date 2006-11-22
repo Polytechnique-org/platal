@@ -101,7 +101,7 @@ td#perso div {
     padding: 2px 1em;
 }
 
-td#perso a.gp {
+td#perso .gp {
     display: block;
     margin: 2px 1em;
     font-weight: bold;
@@ -128,6 +128,7 @@ td#body {
 td#menu {
     width: 130px;
     padding-right: 0;
+    padding-top: 0.5em;
     font-family: "Trebuchet MS", "Arial",sans-serif;
     font-weight: bold;
 }

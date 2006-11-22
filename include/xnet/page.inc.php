@@ -66,17 +66,11 @@ class XnetPage extends PlatalPage
 
         $menu = array();
 
-        if (S::logged()) {
-            $sub = array();
-            $sub['déconnexion']   = 'exit';
-            $menu['no_title'] = $sub;
-        }
-
         $sub = array();
         $sub['liste des groupes'] = 'plan';
         $sub['documentation']     = 'Xnet';
         $sub['Signaler un bug']   = array('link' => 'send_bug', 'onclick' => 'send_bug();return false'); 
-        $menu["Menu Principal"]   = $sub;
+        $menu["no_title"]   = $sub;
         
         if (S::logged() && $globals->asso()) {
             $sub = array();
@@ -134,9 +128,9 @@ function list_all_my_groups($params)
                FROM  groupex.asso    AS a
          INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
               WHERE  m.uid={?}", S::v('uid'));
-    $html = '<div>Mes groupes :</div>';
+    $html = '<div>Mes groupes (<a href="exit">déconnexion</a>) :</div>';
     while (list($nom, $mini) = $res->next()) {
-        $html .= "<a class='gp' href='$mini/'>&bull; $nom</a>";
+        $html .= "<span class='gp'>&bull; <a href='$mini/'>$nom</a></span>";
     }
     return $html;
 }
