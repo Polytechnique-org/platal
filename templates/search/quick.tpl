@@ -30,14 +30,14 @@ La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>no
 mais elle accepte de plus la syntaxe suivante pour les <strong>promos</strong> :
 </p>
 <ul>
-  <li>1990 : signifie appartient à la promo 1990</li>
-  <li>1990-2000 : signifie sur la promo 1990 à 2000</li>
-  <li>&lt;1990 : signifie promos inférieures ou égales à 1990</li>
-  <li>&gt;1990 : signifie promos supérieures ou égales à 1990</li>
+  <li><code>1990</code> : signifie appartient à la promo 1990</li>
+  <li><code>1990-2000</code> : signifie sur la promo 1990 à 2000</li>
+  <li><code>&lt;1990</code> : signifie promos inférieures ou égales à 1990</li>
+  <li><code>&gt;1990</code> : signifie promos supérieures ou égales à 1990</li>
 </ul>
 <p>
 Ainsi, rechercher tous les "Dupont" sur les promos 1980 à 1990 et sur la promo 2000 se fait avec la recherche :
-[ Dupont 1980-1990 2000 ]
+<code>Dupont 1980-1990 2000</code>
 </p>
 
 <h2>Astuce pour les noms ...</h2>
@@ -45,7 +45,7 @@ Ainsi, rechercher tous les "Dupont" sur les promos 1980 à 1990 et sur la promo 2
 Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand » ...
 </p>
 <p>
-Pour éviter ce genre d'écueils, il suffit de chercher [ Le Normand ].<br />
+Pour éviter ce genre d'écueils, il suffit de chercher : <code>Le Normand</code><br />
 En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le nom contient 'Le' <strong>et</strong> 'Normand'
 sans distinction de casse et sans tenir compte des accents.
 </p>
