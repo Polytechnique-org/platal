@@ -267,7 +267,7 @@ class Validate
      * XXX fonction "statique" XXX
      * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_typed_request(...)
      */
-    function get_typed_request($uid, $type, $stamp = -1)
+    static function get_typed_request($uid, $type, $stamp = -1)
     {
         if ($stamp == -1) {
             $res = XDB::query('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
