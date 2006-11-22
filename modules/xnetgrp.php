@@ -80,6 +80,7 @@ class XnetGrpModule extends PLModule
             '%grp/mail'           => $this->make_hook('mail',      AUTH_MDP),
             '%grp/annuaire'       => $this->make_hook('annuaire',  AUTH_MDP),
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
+            '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
             '%grp/paiement'       => $this->make_hook('paiement',  AUTH_MDP),
 
@@ -398,6 +399,45 @@ class XnetGrpModule extends PLModule
         $page->assign('ann', $ann);
     }
 
+    function handler_trombi(&$page, $num = 1)
+    {
+        global $globals;
+        $page->changeTpl('xnet/groupe/trombi.tpl');
+        $page->setType($globals->asso('cat'));
+        $page->assign('asso', $globals->asso());
+        $page->assign('admin', may_update());
+        $page->assign('urlmainsite', "https://www.polytechnique.org/");
+        $trombi = new Trombi(array($this, '_trombi_getlist'));
+        $trombi->hidePromo();
+        $trombi->setAdmin();
+        $page->assign_by_ref('trombi', $trombi);
+    }
+
+    function _trombi_getlist($offset, $limit)
+    {
+        global $globals;
+        $where  = "WHERE m.asso_id= '".addslashes($globals->asso('id'))."'";
+
+        $res = XDB::query(
+                "SELECT  COUNT(*)
+                   FROM  auth_user_md5 AS u
+             RIGHT JOIN  photo         AS p ON u.user_id=p.uid
+             INNER JOIN  groupex.membres AS m ON (m.uid = u.user_id)
+             $where");
+        $pnb = $res->fetchOneCell();
+        
+        $res = XDB::query("SELECT  promo, user_id, a.alias AS forlife,
+                         IF (nom_usage='', u.nom, nom_usage) AS nom, u.prenom
+                   FROM  photo         AS p
+             INNER JOIN  auth_user_md5 AS u ON u.user_id=p.uid
+             INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
+             INNER JOIN  groupex.membres AS m ON (m.uid = u.user_id)
+                  $where
+               ORDER BY  promo, u.nom, u.prenom LIMIT {?}, {?}", $offset*$limit, $limit);
+        
+        return array($pnb, $res->fetchAllAssoc());
+    }
+    
     function handler_vcard(&$page, $photos = null)
     {
         global $globals;

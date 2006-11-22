@@ -78,6 +78,7 @@ class XnetPage extends PlatalPage
             $sub['présentation'] = "$dim/";
             if (may_update() || (is_member()  && $globals->asso('pub') == 'public')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
+                $sub['trombinoscope'] = "$dim/trombi";
                 $sub['carte'] = "$dim/geoloc";
             }
             if ((is_member() || may_update()) && $globals->asso('mail_domain')) {
