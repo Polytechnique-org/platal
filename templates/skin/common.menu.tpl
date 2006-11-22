@@ -62,9 +62,8 @@
 <div class="menu_title">Communauté X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
 <div class="menu_item"><a href="geoloc">Planisphère</a></div>
-<div class="menu_item"><a href="trombi">Trombi promo</a></div>
 <div class="menu_item"><a href="referent/search">Conseil Pro.</a></div>
-<div class="menu_item"><a href="http://www.polytechnique.net/login">Groupes X</a></div>
+<div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="nl">Lettres mensuelles</a></div>

@@ -43,7 +43,10 @@ class XnetModule extends PLModule
 
     function handler_login(&$page)
     {
-        pl_redirect('');
+        $allkeys = func_get_args();
+        unset($allkeys[0]);
+        $url = join('/',$allkeys);
+        pl_redirect($url);
     }
 
     function handler_exit(&$page)

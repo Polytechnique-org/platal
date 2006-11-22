@@ -38,6 +38,7 @@ class ProfileModule extends PLModule
             'referent/search'  => $this->make_hook('ref_search', AUTH_COOKIE),
 
             'trombi'  => $this->make_hook('trombi', AUTH_COOKIE),
+            'groupes-x'        => $this->make_hook('xnet',      AUTH_COOKIE),
 
             'vcard'   => $this->make_hook('vcard',  AUTH_COOKIE),
             'admin/binets'     => $this->make_hook('admin_binets', AUTH_MDP, 'admin'),
@@ -668,6 +669,20 @@ class ProfileModule extends PLModule
         }
     }
 
+    function handler_xnet(&$page)
+    {
+        $page->changeTpl('groupesx.tpl');
+        $page->assign('xorg_title', 'Polytechnique.org - Promo, Groupes X, Binets');
+        
+        $req = XDB::query('
+            SELECT m.asso_id, a.nom, diminutif, COUNT(e.eid) AS events, mail_domain AS lists
+            FROM groupex.membres AS m 
+            INNER JOIN groupex.asso AS a ON(m.asso_id = a.id)
+            LEFT JOIN groupex.evenements AS e ON(e.asso_id = m.asso_id)
+            WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
+        $page->assign('assos', $req->fetchAllAssoc());
+    }
+    
     function handler_vcard(&$page, $x = null)
     {
         if (is_null($x)) {

@@ -17,10 +17,14 @@ New:
     * Events:
         - Add author and event id in RSS feed.                             -FRU
 
+    * Profile:
+        - Add "My groupes" page with direct links to Xnet.                 -Car
+
     * Xnet:
         - Add a vcard of all the members of a group.                       -FRU
         - Add a full announce system.                                      -FRU
         - Add a list of the administrators of the group.                   -FRU
+        - Url to force login on any page.                                  -Car
 
     * Xnet/Events:
         - Events can be archived.                                          -FRU
@@ -62,7 +66,6 @@ Bug/Wish:
         - #536: Can use login.promo as a valid user identifier.            -FRU
         - #539: Medals and deco need validation from admin.                -Car
         - #540: Profile of unregistered user redirects to marketing.       -FRU
-        - #556: Auto fill promo for trombi                                 -FRU
 
     * Xnet:
         - #511: Migrate ML subscription when changing email of a non-X.    -FRU
