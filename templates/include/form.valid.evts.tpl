@@ -27,7 +27,7 @@
 </tr>
 <tr class="pair">
   <td class="titre">Texte</td>
-  <td>{$valid->texte|nl2br}</td>
+  <td>{tidy}{$valid->texte|nl2br|smarty:nodefaults}{/tidy}</td>
 </tr>
 <tr class="pair">
   <td class="titre">Péremption</td>

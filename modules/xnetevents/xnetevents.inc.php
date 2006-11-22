@@ -273,7 +273,7 @@ function event_change_shortname(&$page, $old, $new)
         XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
                 $new.'-participants@'.$globals->xnet->evts_domain);
 
-        $lastid = mysql_insert_id();
+        $lastid = XDB::insertId();
         XDB::execute(
           "INSERT INTO virtual_redirect (
                 SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
@@ -288,7 +288,7 @@ function event_change_shortname(&$page, $old, $new)
         XDB::execute("INSERT INTO virtual SET type = 'evt', alias = {?}",
                 $new.'-absents@'.$globals->xnet->evts_domain);
 
-        $lastid = mysql_insert_id();
+        $lastid = XDB::insertId();
         XDB::execute("INSERT INTO virtual_redirect (
             SELECT {?} AS vid, IF(u.nom IS NULL, m.email, CONCAT(a.alias, {?})) AS redirect
                   FROM groupex.membres AS m

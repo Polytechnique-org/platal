@@ -401,7 +401,7 @@ class XnetEventsModule extends PLModule
 
             // if new event, get its id
             if (!$eid) {
-                $eid = mysql_insert_id();
+                $eid = XDB::insertId();
             }
 
             $nb_moments   = 0;

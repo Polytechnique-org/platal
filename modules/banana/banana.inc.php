@@ -207,7 +207,7 @@ class PlatalBanana extends Banana
         $diff = array_diff($_POST['subscribe'], array_keys($fids));
         foreach ($diff as $g) {
             XDB::execute("INSERT INTO {$globals->banana->table_prefix}list (nom) VALUES ({?})", $g);
-            $fids[$g] = mysql_insert_id();
+            $fids[$g] = XDB::insertId();
         }
 
         foreach ($_POST['subscribe'] as $g) {

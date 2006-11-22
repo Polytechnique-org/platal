@@ -163,22 +163,22 @@ class XnetListsModule extends ListsModule
         XDB::execute('INSERT INTO x4dat.virtual (alias,type)
                                 VALUES({?},{?})', $liste.'@'.$dom, 'list');
         XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', mysql_insert_id(),
+                                VALUES ({?}, {?})', XDB::insertId(),
                                "$red+post@listes.polytechnique.org");
         XDB::execute('INSERT INTO x4dat.virtual (alias,type)
                                 VALUES({?},{?})', $liste.'-owner@'.$dom, 'list');
         XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', mysql_insert_id(),
+                                VALUES ({?}, {?})', XDB::insertId(),
                                "$red+owner@listes.polytechnique.org");
         XDB::execute('INSERT INTO x4dat.virtual (alias,type)
                                 VALUES({?},{?})', $liste.'-admin@'.$dom, 'list');
         XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', mysql_insert_id(),
+                                VALUES ({?}, {?})', XDB::insertId(),
                                "$red+admin@listes.polytechnique.org");
         XDB::execute('INSERT INTO x4dat.virtual (alias,type)
                                 VALUES({?},{?})', $liste.'-bounces@'.$dom, 'list');
         XDB::execute('INSERT INTO x4dat.virtual_redirect (vid,redirect)
-                                VALUES ({?}, {?})', mysql_insert_id(),
+                                VALUES ({?}, {?})', XDB::insertId(),
                                 "$red+bounces@listes.polytechnique.org");
 
         pl_redirect('lists/admin/'.$liste);

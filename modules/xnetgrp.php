@@ -982,7 +982,7 @@ class XnetGrpModule extends PLModule
                             VALUES ({?}, {?}, NOW(), {?}, {?}, {?}, {?}, {?}, {?}, {?})",
                            S::i('uid'), $globals->asso('id'), $art['titre'], $art['texte'], $art['contact_html'],
                            $art['peremption'], $promo_min, $promo_max, $art['public'] ? 'public' : '');
-                $aid = mysql_insert_id();
+                $aid = XDB::insertId();
                 if ($art['xorg']) {
                     require_once('validations.inc.php');
                     require_once('url_catcher.inc.php');

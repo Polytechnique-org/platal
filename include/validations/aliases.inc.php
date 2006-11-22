@@ -120,7 +120,7 @@ class AliasReq extends Validate
                                 $this->alias, $this->old);
         } else {
             XDB::execute('INSERT INTO virtual SET alias={?},type="user"', $this->alias);
-            $vid = mysql_insert_id();
+            $vid = XDB::insertId();
             $dom = $this->shorter_domain();
             return XDB::query('INSERT INTO virtual_redirect (vid,redirect) VALUES ({?}, {?})',
                               $vid, $this->forlife.'@'.$dom);
