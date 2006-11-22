@@ -56,7 +56,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 </ul>
 
 <p>
-  Tu peux télécharger une de tes contacts :
+  Tu peux télécharger des informations sur tes contacts :
 </p>
 <ul>
   <li>
