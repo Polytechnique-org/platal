@@ -28,8 +28,13 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
     }
 
     $name = htmlentities(trim($name, '\'"'), ENT_QUOTES);
+    $name = "images/icons/$name.gif";
+    if ($full) {
+        global $globals;
+        $name = $globals->baseurl . '/' . $name;
+    }
 
-    return "?><img src='images/icons/$name.gif' alt='' $title /><?php";
+    return "?><img src='$name' alt='' $title /><?php";
 }
 
 /* vim: set expandtab: */
