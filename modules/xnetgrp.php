@@ -402,10 +402,13 @@ class XnetGrpModule extends PLModule
     function handler_trombi(&$page, $num = 1)
     {
         global $globals;
-        $page->changeTpl('xnet/groupe/trombi.tpl');
-        $page->setType($globals->asso('cat'));
-        $page->assign('asso', $globals->asso());
+        if ($globals->asso('pub') == 'public') {
+            new_group_page('xnet/groupe/trombi.tpl');
+        } else {
+            new_groupadmin_page('xnet/groupe/trombi.tpl');
+        }
         $page->assign('admin', may_update());
+        
         $page->assign('urlmainsite', "https://www.polytechnique.org/");
         $trombi = new Trombi(array($this, '_trombi_getlist'));
         $trombi->hidePromo();
