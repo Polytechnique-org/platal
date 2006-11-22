@@ -90,6 +90,13 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   {foreachelse}
   <tr><td colspan='7'>Pas de listes pour ce groupe</td></tr>
   {/foreach}
+  {if $may_update}
+  <tr><td colspan="7" class="center">
+    <a href="{$platal->ns}lists/create">
+      {icon name=add title="Créer une liste"} Créer une nouvelle liste
+    </a>
+  </td></tr>
+  {/if}
 </table>
 
 <p class="descr">
@@ -100,11 +107,11 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
         
 <h2>Voici les alias existants pour le groupe {$asso.nom} :</h2>
 
-{if $alias->total()}
 <table cellspacing="0" cellpadding="0" class='large'>
   <tr>
     <th{if $may_update} colspan='3'{/if}>Alias</th>
   </tr>
+  {if $alias->total()}
   {iterate from=$alias item=a}
   <tr>
     {if $may_update}
@@ -116,10 +123,19 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
     {/if}
   </tr>
   {/iterate}
+  {else}
+  <tr>
+    <td{if $may_update} colspan='3'{/if}>Aucun alias pour ce groupe</td>
+  </tr>
+  {/if}
+  {if $may_update}
+  <tr><td colspan="3" class="center">
+    <a href="{$platal->ns}alias/create">
+      {icon name=add title="Créer une liste"} Créer un nouvel alias
+    </a>
+  </td></tr>
+  {/if}
 </table>
-{else}
-<p>Aucun alias pour ce groupe</p>
-{/if}
 
 {/if}
 

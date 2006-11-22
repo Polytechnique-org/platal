@@ -70,6 +70,9 @@ class XnetListsModule extends ListsModule
     {
         global $globals;
 
+        if (!$globals->asso('mail_domain')) {
+            return PL_NOT_FOUND;
+        }
         $this->prepare_client($page);
 
         $page->changeTpl('xnetlists/index.tpl');
@@ -113,6 +116,9 @@ class XnetListsModule extends ListsModule
     {
         global $globals;
 
+        if (!$globals->asso('mail_domain')) {
+            return PL_NOT_FOUND;
+        }
         $this->prepare_client($page);
 
         $page->changeTpl('xnetlists/create.tpl');
@@ -188,6 +194,9 @@ class XnetListsModule extends ListsModule
     {
         global $globals;
 
+        if (!$globals->asso('mail_domain')) {
+            return PL_NOT_FOUND;
+        }
         $this->prepare_client($page);
 
         $page->changeTpl('xnetlists/sync.tpl');
@@ -229,7 +238,9 @@ class XnetListsModule extends ListsModule
 
     function handler_aadmin(&$page, $lfull = null)
     {
-        if (is_null($lfull)) {
+        global $globals;
+
+        if (!$globals->asso('mail_domain') || is_null($lfull)) {
             return PL_NOT_FOUND;
         }
 
@@ -305,6 +316,9 @@ class XnetListsModule extends ListsModule
     {
         global $globals;
 
+        if (!$globals->asso('mail_domain')) {
+            return PL_NOT_FOUND;
+        }
         new_groupadmin_page('xnet/groupe/alias-create.tpl');
 
         if (!Post::has('submit')) {
