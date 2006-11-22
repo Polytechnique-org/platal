@@ -105,23 +105,20 @@ Pour surveiller des membres non-inscrits, il faut passer par la <a href="search"
 et cliquer sur les icones {icon name=add} pour les ajouter à cette liste
 </p>
 
-<table class='tinybicol' cellpadding="0" cellspacing="0">
-  <tr>
-    <td>
-      {if $watch->nonins()|@count eq 0}
-      <p>Tu ne surveilles actuellement aucun non-inscrit.</p>
-      {elseif $watch->nonins()|@count}
-      <p>Tu surveilles {if $watch->nonins()|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :</p>
-      <ul>
-        {foreach from=$watch->nonins() item=p}
-        <li>
-        {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}">{icon name='cross' title='retirer'}</a>
-        </li>
-        {/foreach}
-      </ul>
-      {/if}
-    </td>
-  </tr>
-</table>
+<fieldset>
+  <legend>Non-inscrits</legend>
+    {if $watch->nonins()|@count eq 0}
+    Tu ne surveilles actuellement aucun non-inscrit.
+    {elseif $watch->nonins()|@count}
+    Tu surveilles {if $watch->nonins()|@count eq 1}le non-inscrit{else}les non-inscrits{/if} :
+    <ul>
+    {foreach from=$watch->nonins() item=p}
+    <li>
+      {$p.prenom} {$p.nom} ({$p.promo}) <a href="carnet/notifs/del_nonins/{$p.user_id}">{icon name='cross' title='retirer'}/<>
+    </li>
+    {/foreach}
+  </ul>
+  {/if}
+</fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
