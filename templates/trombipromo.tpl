@@ -45,7 +45,7 @@ en validant peut être longue à afficher.
         Promotion
       </td>
       <td>
-        <input type="text" name="xpromo" size="4" maxlength="4" />
+        <input type="text" name="xpromo" size="4" maxlength="4" value="{$smarty.session.promo}" />
         <input type="submit" value="Ok"
           onclick='this.form.action = this.form.action + this.form.xpromo.value' />
       </td>
