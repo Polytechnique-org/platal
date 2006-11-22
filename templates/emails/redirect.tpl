@@ -124,7 +124,7 @@
     <a href="Docs/Pannes">Panne&nbsp;:</a>
   </strong>
   Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
-  a été détectées. Si le problème persiste la redirection vers ces adresses sera désactivée.
+  a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
 </p>
 <p class="smaller">
   <strong>
@@ -132,13 +132,13 @@
     <a href="Docs/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
   </strong>
   Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
-  le problème est résolu tu peux les réactiver, mais l'adresse sera redésactivée si des problèmes persistes.
+  le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.
 </p>
 
 <h1>Pour les Élèves (non encore diplômés)</h1>
 <p>
   L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
-  une redirection vers «login»@poly.polytechnique.fr. <a href="https://mail.polytechnique.edu/">
+  une redirection vers «login»@poly.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
   Tu peux modifier cette redirection</a> et la faire pointer vers ton adresse
   {$smarty.session.forlife}@{#globals.mail.domain#} (attention, cela demande de la concentration).
 </p>
@@ -150,5 +150,9 @@
   <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}</li>
   <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers «login»@poly.polytechnique.fr</li>
 </ul>
+<p>
+  Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient
+  alors perdus, jusqu'à ce que tu règles le problème.
+</p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
