@@ -65,6 +65,7 @@ Bug/Wish:
 
     * Xnet:
         - #511: Migrate ML subscription when changing email of a non-X.    -FRU
+        - #516: Trombino for groups.                                       -Car
         - #554: Move exit link beside "my group" list                      -FRU
 
     * Xnet/Events:
