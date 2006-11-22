@@ -162,6 +162,13 @@ function fix_gpc_magic(&$item, $key) {
         $item = stripslashes($item);
     }
 }
+function fix_encoding(&$item, $key) {
+    if (is_array($item)) {
+        array_walk($item, 'fix_encoding');
+    } elseif (preg_match('/[\x80-\x9f]/', $item)) {
+        $item = iconv('CP1252', 'ISO-8859-15//TRANSLIT', $item);
+    }
+}
 
 if (ini_get('magic_quotes_gpc') && empty($DONT_FIX_GPC)) {
     array_walk($_GET, 'fix_gpc_magic');
@@ -169,6 +176,7 @@ if (ini_get('magic_quotes_gpc') && empty($DONT_FIX_GPC)) {
     array_walk($_COOKIE, 'fix_gpc_magic');
     array_walk($_REQUEST, 'fix_gpc_magic');
 }
+array_walk($_POST, 'fix_encoding');
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>
