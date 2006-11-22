@@ -85,8 +85,8 @@
       <tr class="{cycle values="pair,impair"}">
         <td>
           <strong>
-            {if $e->broken}<span class="erreur">{/if}
-            {if $e->panne neq '0000-00-00'}{icon name=error title="En panne"}{/if}
+            {if $e->broken}<span class="erreur">{assign var="erreur" value="1"}{/if}
+            {if $e->panne neq '0000-00-00'}{assign var="panne" value="1"}{icon name=error title="En panne"}{/if}
             {$e->email}
             {if $e->broken}</span>{/if}
           </strong>
@@ -118,6 +118,7 @@
     <input type="submit" value="Valider les modifications" name="emailop" />
   </div>
 </form>
+{if $panne}
 <p class="smaller">
   <strong>
     {icon name=error title="En panne"}
@@ -126,6 +127,8 @@
   Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
   a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
 </p>
+{/if}
+{if $erreur}
 <p class="smaller">
   <strong>
     {icon name=error title="En panne"}
@@ -134,7 +137,9 @@
   Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
   le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.
 </p>
+{/if}
 
+{if $eleve}
 <h1>Pour les Élèves (non encore diplômés)</h1>
 <p>
   L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
@@ -154,5 +159,6 @@
   Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient
   alors perdus, jusqu'à ce que tu règles le problème.
 </p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

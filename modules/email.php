@@ -190,6 +190,8 @@ class EmailModule extends PLModule
         $uid     = S::v('uid');
         $forlife = S::v('forlife');
 
+        $page->assign('eleve', S::i('promo') >= date("Y") - 5);
+
         $redirect = new Redirect(S::v('uid'));
 
         if ($action == 'remove' && $email) {
