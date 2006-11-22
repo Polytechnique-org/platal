@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
     <meta name="description" content="Le Portail des Polytechniciens" />
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
