@@ -35,12 +35,6 @@
     {icon name=cross title="désinscription"} située en fin de ligne</li>
 </ul>
 
-<p class="smaller">Attention : Lorsqu'une liste à laquelle tu es abonné est
-  privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne. 
-  Si tu t'en désinscrits, il ne te sera pas possible de t'y abonner de nouveau
-  sans l'action d'un modérateur
-</p>
-
 <h2>La diffusion sur une liste de diffusion</h2>
 <p>
 La diffusion a trois niveaux de modération.  La diffusion peut être :
@@ -54,11 +48,6 @@ La diffusion a trois niveaux de modération.  La diffusion peut être :
   modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
 </ul>
 
-<p class='smaller'>
-{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de gestionnaire.<br />
-{icon name=error title="Modérateur mais non-membre"} indque que tu es modérateur de la liste, mais que tu n'en es pas membre.
-</p>
-
 <h1>Demander la création d'une liste de diffusion</h1>
 
 <p>
@@ -68,19 +57,28 @@ thématique particulière.
 </p>
 
 <p class="center">
-Tu peux demander <a href='lists/create'>la création</a>
-d'une liste de diffusion sur le thème de ton choix.  
+{icon name=add title="Nouvelle liste"} <a href='lists/create'>
+  Tu peux demander la création d'une liste de diffusion sur le thème de ton choix.
+</a>
 </p>
 
 {if $owner|@count}
 <h1>Listes dont tu es modérateur</h1>
 
 {include file='listes/listes.inc.tpl' lists=$owner}
+
+<p class='smaller'>
+{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de  seionnaire.<br />
+{icon name=error title="Modérateur mais non-membre"} indque que tu es modérateur de la liste, mais que tu n'en es pas membre.
+</p>
 {/if}
 {if $member|@count}
 <h1>Listes dont tu es membre</h1>
 
+{assign var="has_private" value=false}
 {include file='listes/listes.inc.tpl' lists=$member}
+
+<p class="smaller">Attention : Lorsqu'une liste à laquelle tu es abonné est  privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne.  Si tu t'en désinscrits, il ne te sera pas possible de t'y abonner de nouveau  sans l'action d'un modérateur</p>
 {/if}
 <h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
