@@ -402,7 +402,9 @@ class XnetGrpModule extends PLModule
     function handler_trombi(&$page, $num = 1)
     {
         global $globals;
-        if ($globals->asso('pub') == 'public') {
+        if ($globals->asso('cat') == 'Promotions') {
+            new_group_open_page('xnet/groupe/trombi.tpl');
+        } elseif ($globals->asso('pub') == 'public') {
             new_group_page('xnet/groupe/trombi.tpl');
         } else {
             new_groupadmin_page('xnet/groupe/trombi.tpl');

@@ -80,6 +80,8 @@ class XnetPage extends PlatalPage
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";
                 $sub['carte'] = "$dim/geoloc";
+            } elseif ($globals->asso('cat') == 'Promotions') {
+                $sub['trombinoscope'] = "$dim/trombi";
             }
             if ((is_member() || may_update()) && $globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/lists";
