@@ -75,7 +75,7 @@ class XnetPage extends PlatalPage
         if (S::logged() && $globals->asso()) {
             $sub = array();
             $dim = $globals->asso('diminutif');
-            $sub['présentation'] = "$dim/";
+            $sub['présentation'] = "login/$dim/";
             if (may_update() || (is_member()  && $globals->asso('pub') == 'public')) {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
                 $sub['trombinoscope'] = "$dim/trombi";

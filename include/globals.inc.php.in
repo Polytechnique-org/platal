@@ -102,7 +102,9 @@ class PlatalGlobals
 
         if (is_null($aid)) {
             $gp = Get::v('n');
-            $gp = substr($gp, 0, strpos($gp, '/'));
+            if ($p = strpos($gp, '/')) {
+                $gp = substr($gp, 0, $p);
+            }
 
             if ($gp) {
                 $res = XDB::query('SELECT  a.*, d.nom AS domnom
