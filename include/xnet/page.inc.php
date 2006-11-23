@@ -131,7 +131,7 @@ function list_all_my_groups($params)
               WHERE  m.uid={?}", S::v('uid'));
     $html = '<div>Mes groupes (<a href="exit">déconnexion</a>) :</div>';
     while (list($nom, $mini) = $res->next()) {
-        $html .= "<span class='gp'>&bull; <a href='$mini/'>$nom</a></span>";
+        $html .= "<span class='gp'>&bull; <a href='login/$mini'>$nom</a></span>";
     }
     return $html;
 }
