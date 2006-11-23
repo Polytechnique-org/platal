@@ -103,6 +103,6 @@ function searchMapId(f)
 {else}
   <p>Le moteur de carte n'a pas été installé sur cette version de plat/al. Veuillez contacter <a href="http://www.geodesix.com/">Geodesix</a>.</p>
 {/if} 
-<p class="descr">Pour toute question, problème ou suggestion tu peux envoyer un mail à <a href="mailto:contact+geoloc@polytechnique.org">contact+geoloc@polytechnique.org</a></p>
+<p class="descr">Pour toute question, problème ou suggestion tu peux envoyer un mail à <a href="mailto:geoloc@staff.polytechnique.org">geoloc@staff.polytechnique.org</a></p>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
