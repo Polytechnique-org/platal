@@ -32,9 +32,16 @@ class XnetModule extends PLModule
             'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
             'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
             'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
+            'send_bug'  => $this->make_hook('bug',       AUTH_MDP),
         );
     }
 
+    function handler_bug(&$page)
+    {
+        $this->handler_index(&$page);
+        $page->assign('bug', 1);
+    }
+    
     function handler_index(&$page)
     {
         $page->nomenu = true;
