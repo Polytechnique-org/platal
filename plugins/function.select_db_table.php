@@ -31,7 +31,6 @@ function select_options($table,$valeur,$champ="text",$pad=false,
     } 
     $sql = "SELECT $fields FROM $table AS t $join $where ORDER BY $order";
     $res = XDB::iterRow($sql);
-    echo $sql;
     $sel = ' selected="selected"';
 
     // on ajoute une entree vide si $pad est vrai
