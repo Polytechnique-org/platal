@@ -284,8 +284,8 @@ function hide_emails($source, &$smarty)
     $source = preg_replace("!<a[^>]+href=[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>.*?</a>!is", '&&&ahref&&&', $source);
 
     //prevant replacement in tag attributes
-    preg_match_all("!<[^>]+[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>!is", $source, $misc);
-    $source = preg_replace("!<[^>]+[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>!is", '&&&misc&&&', $source);
+    preg_match_all("!<[^>]+[-a-z0-9_.]+@[-a-z0-9_.]+[^>]+>!is", $source, $misc);
+    $source = preg_replace("!<[^>]+[-a-z0-9_.]+@[-a-z0-9_.]+[^>]+>!is", '&&&misc&&&', $source);
 
     //catch !
     $source = preg_replace('!([-a-z0-9_.]+@[-a-z0-9_.]+)!ie', '_hide_email("\1")', $source); 
