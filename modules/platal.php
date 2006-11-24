@@ -85,7 +85,6 @@ class PlatalModule extends PLModule
     function handler_changelog(&$page)
     {
         $page->changeTpl('changeLog.tpl');
-        $page->addJsLink('wiki.js');
 
         $clog = htmlentities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
         $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
