@@ -280,19 +280,19 @@ function hide_emails($source, &$smarty)
     }
 
     //catch all emails in <a href="mailto:...">
-    preg_match_all("!<a[^>]+href=[\"']mailto:[^>]+>.*?</a>!is", $source, $ahref);
-    $source = preg_replace("!<a[^>]+href=[\"']mailto:[^>]+>.*?</a>!is", '&&&ahref&&&', $source);
+    preg_match_all("!<a[^>]+href=[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>.*?</a>!is", $source, $ahref);
+    $source = preg_replace("!<a[^>]+href=[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>.*?</a>!is", '&&&ahref&&&', $source);
 
     //prevant replacement in tag attributes
-    preg_match_all("!<[^>]+[-a-z0-9_.]+@[-a-z0-9_.]+[^>]+>!is", $source, $misc);
-    $source = preg_replace("!<[^>]+[-a-z0-9_.]+@[-a-z0-9_.]+[^>]+>!is", '&&&misc&&&', $source);
+    preg_match_all("!<[^>]+[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>!is", $source, $misc);
+    $source = preg_replace("!<[^>]+[\"'][^\"']*[-a-z0-9_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>!is", '&&&misc&&&', $source);
 
     //catch !
     $source = preg_replace('!([-a-z0-9_.]+@[-a-z0-9_.]+)!ie', '_hide_email("\1")', $source); 
     $source = preg_replace('!&&&ahref&&&!e', '_hide_email(array_shift($ahref[0]))', $source);
-    $source = preg_replace('!&&&misc&&&!e', '_hide_email(array_shift($misc[0]))', $source);
 
     // restore data
+    $source = preg_replace('!&&&misc&&&!e', 'array_shift($misc[0])', $source);
     foreach ($tags as $tag) {
         $source = preg_replace("!&&&{$tag}&&&!e",  'array_shift(${$tag}[0])', $source);
     }
