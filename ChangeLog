@@ -44,6 +44,7 @@ Bug/Wish:
         - #545: Fix encoding issues with some Windows special chars        -FRU
         - #548: More informations for recovery for homonyms.               -FRU
         - #553: Fix right click on send bug link.                          -Car
+        - #562: Cipher all email adresses                                  -FRU
 
     * Events:
         - #517: URL catcher update (www).                                  -Car

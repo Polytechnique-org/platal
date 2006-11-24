@@ -89,10 +89,13 @@ class PlatalPage extends Smarty
 
           case SIMPLE:
             $this->assign('simple', true);
+
           case SKINNED:
-	    $this->register_modifier('escape_html', 'escape_html');
-	    $this->default_modifiers = Array('@escape_html');
+    	    $this->register_modifier('escape_html', 'escape_html');
+	        $this->default_modifiers = Array('@escape_html');
         }
+        $this->register_outputfilter('hide_emails');
+        $this->addJsLink('wiki.js');
 
         if (!$globals->debug) {
             error_reporting(0);
@@ -256,6 +259,45 @@ function trimwhitespace($source, &$smarty)
     }
 
     return $source; 
+}
+
+// }}}
+// {{{ function hide_emails
+
+function _hide_email($source)
+{
+    return '<script type="text/javascript">Nix.decode("' . addslashes(str_rot13($source)) . '");</script>'; 
+}
+
+function hide_emails($source, &$smarty)
+{
+    //prevent email replacement in <script> and <textarea>
+    $tags = array('script', 'textarea');
+
+    foreach ($tags as $tag) {
+        preg_match_all("!<{$tag}[^>]+>.*?</{$tag}>!is", $source, ${$tag});
+        $source = preg_replace("!<{$tag}[^>]+>.*?</{$tag}>!is", "&&&{$tag}&&&", $source);
+    }
+
+    //catch all emails in <a href="mailto:...">
+    preg_match_all("!<a[^>]+href=[\"']mailto:[^>]+>.*?</a>!is", $source, $ahref);
+    $source = preg_replace("!<a[^>]+href=[\"']mailto:[^>]+>.*?</a>!is", '&&&ahref&&&', $source);
+
+    //prevant replacement in tag attributes
+    preg_match_all("!<[^>]+[-a-z0-9_.]+@[-a-z0-9_.]+[^>]+>!is", $source, $misc);
+    $source = preg_replace("!<[^>]+[-a-z0-9_.]+@[-a-z0-9_.]+[^>]+>!is", '&&&misc&&&', $source);
+
+    //catch !
+//    $source = preg_replace('!([-a-z0-9_.]+@[-a-z0-9_.]+)!ie', '_hide_email("\1")', $source); 
+    $source = preg_replace('!&&&ahref&&&!e', '_hide_email(array_shift($ahref[0]))', $source);
+    $source = preg_replace('!&&&misc&&&!e', '_hide_email(array_shift($misc[0]))', $source);
+
+    // restore data
+    foreach ($tags as $tag) {
+        $source = preg_replace("!&&&{$tag}&&&!e",  'array_shift(${$tag}[0])', $source);
+    }
+
+    return $source;
 }
 
 // }}}
