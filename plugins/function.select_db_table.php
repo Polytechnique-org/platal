@@ -20,36 +20,56 @@
  ***************************************************************************/
 
 
-function select_options($table,$valeur,$champ="text",$pad=false,$where="") {
-    $sql = "SELECT id,$champ FROM $table $where ORDER BY $champ";
+function select_options($table,$valeur,$champ="text",$pad=false,
+                        $where="",$join="",$group="")
+{
+    $fields = 't.id,' . $champ;
+    $order = $champ;
+    if ($group) {
+        $fields .= ',' . $group;
+        $order = $group . ',' . $order; 
+    } 
+    $sql = "SELECT $fields FROM $table AS t $join $where ORDER BY $order";
     $res = XDB::iterRow($sql);
+    echo $sql;
     $sel = ' selected="selected"';
 
     // on ajoute une entree vide si $pad est vrai
     $html = "";
     if ($pad) {
-	$html.= '<option value="0"'.($valeur==0?$sel:"")."></option>\n";
+        $html.= '<option value="0"'.($valeur==0?$sel:"")."></option>\n";
     }
-    while (list($my_id,$my_text) = $res->next()) {
-	$html .= sprintf("<option value=\"%s\" %s>%s</option>\n", 
+    $optgrp = null;
+    while (list($my_id,$my_text,$my_grp) = $res->next()) {
+        if ($my_grp != $optgrp) {
+            if (!is_null($optgrp)) {
+                $html .= '</optgroup>';
+            }
+            $html .= '<optgroup label="' . addslashes(htmlentities($my_grp)) . '">';
+            $optgrp = $my_grp;
+        }
+        $html .= sprintf("<option value=\"%s\" %s>%s</option>\n", 
                          $my_id, ($valeur==$my_id?$sel:""), $my_text);
+    }
+    if (!is_null($optgrp)) {
+        $html .= '</optgroup>';
     }
     return $html;
 }
 
 function smarty_function_select_db_table($params, &$smarty) {
     if(empty($params['table']))
-	return;
+        return;
     if(empty($params['champ']))
-	$params['champ'] = 'text';
+        $params['champ'] = 'text';
     if(empty($params['pad']) || !($params['pad']))
-	$pad = false;
+        $pad = false;
     else
-	$pad = true;
+        $pad = true;
     if(empty($params['where']))
-	$params['where'] = '';
-    return select_options($params['table'], $params['valeur'],
-                          $params['champ'], $pad, $params['where']);
+        $params['where'] = '';
+    return select_options($params['table'], $params['valeur'], $params['champ'], $pad,
+                          $params['where'], $params['join'], $params['group']);
 }
 
 ?>

@@ -113,10 +113,10 @@ class PaymentModule extends PLModule
             $pay->prepareform($pay);
         } else {
             $res = XDB::iterator("SELECT  timestamp, montant
-                                              FROM  paiement.transactions
-                                             WHERE  uid = {?} AND ref = {?}
-                                          ORDER BY  timestamp DESC",
-                                            S::v('uid', -1), $ref);
+                                    FROM  paiement.transactions
+                                   WHERE  uid = {?} AND ref = {?}
+                                ORDER BY  timestamp DESC",
+                                 S::v('uid', -1), $ref);
 
             if ($res->total()) $page->assign('transactions', $res);
         }

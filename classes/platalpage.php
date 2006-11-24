@@ -272,7 +272,7 @@ function _hide_email($source)
 function hide_emails($source, &$smarty)
 {
     //prevent email replacement in <script> and <textarea>
-    $tags = array('script', 'textarea');
+    $tags = array('script', 'textarea', 'select');
 
     foreach ($tags as $tag) {
         preg_match_all("!<{$tag}[^>]+>.*?</{$tag}>!is", $source, ${$tag});

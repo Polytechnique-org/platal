@@ -50,22 +50,22 @@
       <div>
 	<!-- infos commercant -->
         {foreach from=$pay->api->infos.commercant key="name" item="value"}
-	<input type="hidden" name="{$name}" value="{$value}" />
+        <input type="hidden" name="{$name}" value="{$value}" />
         {/foreach}
-	<!-- infos client -->
+        <!-- infos client -->
         {foreach from=$pay->api->infos.client key="name" item="value"}
-	<input type="hidden" name="{$name}" value="{$value}" />
+        <input type="hidden" name="{$name}" value="{$value}" />
         {/foreach}
-	<!-- infos commande -->
+        <!-- infos commande -->
         {foreach from=$pay->api->infos.commande key="name" item="value"}
-	<input type="hidden" name="{$name}" value="{$value}" />
+        <input type="hidden" name="{$name}" value="{$value}" />
         {/foreach}
-	
-	<!-- infos divers -->
+
+        <!-- infos divers -->
         {foreach from=$pay->api->infos.divers key="name" item="value"}
-	<input type="hidden" name="{$name}" value="{$value}" />
+        <input type="hidden" name="{$name}" value="{$value}" />
         {/foreach}
-	<input type="submit" value="Valider" />
+        <input type="submit" value="Valider" />
       </div>
       </form>
     </td>
@@ -117,7 +117,8 @@ function payment_submit(form)
       <td>Transaction</td>
       <td>
         <select name="ref" onchange="payment_submit(this.form)">
-          {select_db_table table="`$prefix`paiements" valeur=$pay->id where=" WHERE FIND_IN_SET('old',flags)=0"}
+          {select_db_table table="`$prefix`paiements" valeur=$pay->id where="WHERE FIND_IN_SET('old',t.flags)=0"
+                           join="LEFT JOIN groupex.asso AS g ON (t.asso_id = g.id)" group="g.nom"}
         </select>
         {if $pay->url}
         <br />
