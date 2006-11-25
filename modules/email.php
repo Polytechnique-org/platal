@@ -61,6 +61,9 @@ class EmailModule extends PLModule
               ORDER BY  LENGTH(alias)";
         $page->assign('aliases', XDB::iterator($sql, $uid));
 
+		$homonyme = XDB::query("SELECT alias FROM aliases INNER JOIN homonymes ON (id = homonyme_id) WHERE user_id = {?} AND type = 'homonyme'", $uid);
+		$page->assign('homonyme', $homonyme->fetchOneCell());
+		
         $sql = "SELECT email
                 FROM emails
                 WHERE uid = {?} AND FIND_IN_SET('active', flags)";
