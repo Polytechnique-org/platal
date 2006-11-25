@@ -45,6 +45,7 @@ class PhotoReq extends Validate
     function PhotoReq($_uid, $_data, $_stamp=0)
     {
         $this->Validate($_uid, true, 'photo', $_stamp);
+        $this->_get_image($_data);
     }
 
     // }}}
