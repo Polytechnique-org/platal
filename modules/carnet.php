@@ -188,6 +188,7 @@ class CarnetModule extends PLModule
         $page->changeTpl('carnet/mescontacts.tpl');
         require_once("applis.func.inc.php");
         $page->assign('xorg_title','Polytechnique.org - Mes contacts');
+        $this->_add_rss_link($page);
 
         $uid  = S::v('uid');
         $user = Env::v('user');
