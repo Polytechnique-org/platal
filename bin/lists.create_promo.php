@@ -1,4 +1,4 @@
-#!/usr/bin/php4 -q
+#!/usr/bin/php5 -q
 <?php
 require_once("xorg.inc.php");
 require_once('validations.inc.php');

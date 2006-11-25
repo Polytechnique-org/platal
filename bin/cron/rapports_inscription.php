@@ -1,4 +1,4 @@
-#!/usr/bin/php4 -q
+#!/usr/bin/php5 -q
 <?php
 require('./connect.db.inc.php');
 $MESSAGE = '';
