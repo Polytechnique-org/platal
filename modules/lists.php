@@ -81,7 +81,7 @@ class ListsModule extends PLModule
 
         function filter_member($list)
         {
-            return $list['ins'];
+            return $list['sub'];
         }
 
         $this->prepare_client($page);

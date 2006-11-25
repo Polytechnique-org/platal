@@ -273,11 +273,11 @@ EOF2;
         $page->changeTpl('stats/coupure.tpl');
 
         if (!is_null($cp_id)) {
-            $res = XDB::query("SELECT  UNIX_TIMESTAMP(debut) AS debut,
-                                                 TIME_FORMAT(duree,'%kh%i') AS duree,
-                                                 resume, description, services
-                                           FROM  coupures
-                                          WHERE  id = {?}", $cp_id);
+            $res = XDB::query("SELECT  debut,
+                                       TIME_FORMAT(duree,'%kh%i') AS duree,
+                                       resume, description, services
+                                 FROM  coupures
+                                WHERE  id = {?}", $cp_id);
             $cp  = $res->fetchOneAssoc();
         }
 
@@ -286,7 +286,7 @@ EOF2;
             $page->assign_by_ref('cp',$cp);
         } else {
             $beginning_date = date("Ymd", time() - 3600*24*21) . "000000";
-            $sql = "SELECT  id, UNIX_TIMESTAMP(debut) AS debut, resume, services
+            $sql = "SELECT  id, debut, resume, services
                       FROM  coupures where debut > '$beginning_date' order by debut desc";
             $page->assign('coupures', XDB::iterator($sql));
         }
