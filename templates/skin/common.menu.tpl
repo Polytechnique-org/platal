@@ -24,7 +24,7 @@
 <div class="menu_title">Polytechniciens</div>
 <div class="menu_item"><a href="events">Me connecter !</a></div>
 <div class="menu_item"><a href="register">M'inscrire</a></div>
-<div class="menu_item"><a href="Docs/PourquoiMInscrire">Pourquoi M'inscrire ?</a></div>
+<div class="menu_item"><a href="Xorg/PourquoiMInscrire">Pourquoi M'inscrire ?</a></div>
 
 <div class="menu_title">Visiteurs</div>
 <div class="menu_item"><a href="search">Annuaire de l'X</a></div>
@@ -32,9 +32,9 @@
 <div class="menu_item"><a href="http://www.manageurs.com/">Recrutement</a></div>
 
 <div class="menu_title">Informations</div>
-<div class="menu_item"><a href="Docs/APropos">A propos du site</a></div>
-<div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
-<div class="menu_item"><a href="Docs/FAQ">FAQ</a></div>
+<div class="menu_item"><a href="Xorg/APropos">A propos du site</a></div>
+<div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
+<div class="menu_item"><a href="Xorg/FAQ">FAQ</a></div>
 
 {else}
 
@@ -67,8 +67,8 @@
 
 <div class="menu_title">Informations</div>
 <div class="menu_item"><a href="nl">Lettres mensuelles</a></div>
-<div class="menu_item"><a href="Docs/">Documentations</a></div>
-<div class="menu_item"><a href="Docs/NousContacter">Nous contacter</a></div>
+<div class="menu_item"><a href="Xorg/">Documentations</a></div>
+<div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
 <div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
 <div class="menu_item"><a href="send_bug" onclick="send_bug();return false">Signaler un bug</a></div>
 {include file=skin/common.bug.tpl}
