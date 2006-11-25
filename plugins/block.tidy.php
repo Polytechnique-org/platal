@@ -52,7 +52,7 @@ unset($tidy_o, $tydy_off);
  */
 function smarty_block_tidy($params, $content, &$smarty)
 {
-    return tidy_repair_string($content);
+    return str_replace('&curren;', '&euro;', tidy_repair_string($content));
 }
 
 ?>
