@@ -21,7 +21,7 @@
 
 define('SIZE_MAX', 32768);
 
-__autoload('XDB');
+require_once dirname(__FILE__) . '/../classes/xdb.php';
 
 /**
  * Iterator class, that lists objects through the database
