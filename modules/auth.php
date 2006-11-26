@@ -108,7 +108,7 @@ class AuthModule extends PLModule
             xmlrpc_server_register_method($server, 'get_annuaire_infos', 'get_annuaire_infos');
             xmlrpc_server_register_method($server, 'get_nouveau_infos', 'get_nouveau_infos');
 
-            $request  = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $request  = file_get_contents('php://input');
             $response = xmlrpc_server_call_method($server, $request, null);
             header('Content-Type: text/xml');
             print $response;
