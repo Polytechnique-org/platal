@@ -47,6 +47,8 @@
 </div>
 {/foreach}
 
+<div class="spacer"></div>
+
 <p class="center">
 [<a href="http://www.polytechnique.net/login">Tous les groupes X</a>]
 </p>
