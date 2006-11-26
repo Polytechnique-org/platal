@@ -223,7 +223,8 @@ class XnetListsModule extends ListsModule
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
-                    WHERE  m.asso_id = {?}", $globals->asso('id'));
+                    WHERE  m.asso_id = {?}
+                 ORDER BY  promo, nom, prenom", $globals->asso('id'));
 
         $not_in_list = array();
 

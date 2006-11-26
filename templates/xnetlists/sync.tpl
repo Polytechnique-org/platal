@@ -27,17 +27,18 @@
 
   <table cellspacing="2" cellpadding="0" class="tiny">
     <tr>
-      <th>Membre</th>
+      <th colspan="2">Membre</th>
       <th></th>
     </tr>
     {foreach from=$not_in_list item=u}
     <tr>
-      <td>{$u.prenom} {$u.nom}</td>
+      <td>{$u.nom|strtoupper} {$u.prenom}</td>
+      <td>{$u.promo}</td>
       <td><input type="checkbox" name="add[{$u.email}]" /></td>
     </tr>
     {/foreach}
     <tr>
-      <td colspan='2' class="center">
+      <td colspan='3' class="center">
         <input type='submit' value='forcer inscription' />
       </td>
     </tr>
