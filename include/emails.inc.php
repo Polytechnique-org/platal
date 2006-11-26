@@ -300,16 +300,36 @@ class Redirect
     }
 
     function modify_one_email($email, $activate) {
+        $allinactive = true;
+        $thisone = false;
         foreach ($this->emails as $i=>$mail) {
             if ($mail->email == $email) {
-                if ($activate)
-                    $this->emails[$i]->activate($this->uid);
-                else
-                    $this->emails[$i]->deactivate($this->uid);
+                $thisone = $i;
             }
+            $allinactive &= !$mail->active || $mail->email == $email;
         }
+        if ($thisone === false) {
+            return ERROR_INVALID_EMAIL;
+        }
+        if ($allinactive || $activate)
+            $this->emails[$thisone]->activate($this->uid);
+        else
+            $this->emails[$thisone]->deactivate($this->uid);
+        if ($allinactive && !$activate) {
+            return ERROR_INACTIVE_REDIRECTION;
+        } else {
+            return SUCCESS;
+        } 
     }
 
+	function modify_one_email_redirect($email, $redirect) {
+		foreach ($this->emails as $i=>$mail) {
+			if ($mail->email == $email) {
+				$this->emails[$i]->rewrite($redirect, $this->uid);
+				return;
+			}
+		}
+	}
     // }}}
 }
 

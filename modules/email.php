@@ -35,7 +35,7 @@ class EmailModule extends PLModule
         );
     }
 
-    function handler_emails(&$page)
+    function handler_emails(&$page, $action = null, $email = null)
     {
         global $globals;
 
@@ -44,12 +44,12 @@ class EmailModule extends PLModule
 
         $uid = S::v('uid');
 
-        if (Post::has('best')) {
+        if ($action == 'best' && $email) {
             // bestalias is the first bit : 1
             // there will be maximum 8 bits in flags : 255
             XDB::execute("UPDATE  aliases SET flags=flags & (255 - 1) WHERE id={?}", $uid);
             XDB::execute("UPDATE  aliases SET flags=flags | 1 WHERE id={?} AND alias={?}",
-                                   $uid, Post::v('best'));
+                                   $uid, $email);
         }
 
         // on regarde si on a affaire à un homonyme
@@ -198,11 +198,26 @@ class EmailModule extends PLModule
         $redirect = new Redirect(S::v('uid'));
 
         if ($action == 'remove' && $email) {
-            $page->assign('retour', $redirect->delete_email($email));
+            $retour = $redirect->delete_email($email);
+            $page->assign('retour', $retour);
         }
-
+		
+		if ($action == 'active' && $email) {
+			$redirect->modify_one_email($email, true);
+		}
+		
+		if ($action == 'inactive' && $email) {
+			$redirect->modify_one_email($email, false);
+		}
+		
+		if ($action == 'rewrite' && $email) {
+			$rewrite = @func_get_arg(3);
+			$redirect->modify_one_email_redirect($email, $rewrite);
+		}
+		
         if (Env::has('emailop')) {
             $actifs = Env::v('emails_actifs', Array());
+            print_r(Env::v('emails_rewrite'));
             if (Env::v('emailop') == "ajouter" && Env::has('email')) {
                 $page->assign('retour', $redirect->add_email(Env::v('email')));
             } elseif (empty($actifs)) {
@@ -235,15 +250,15 @@ class EmailModule extends PLModule
         $page->assign('emails',$redirect->emails);
     }
 
-    function handler_antispam(&$page)
+    function handler_antispam(&$page, $statut_filtre = null)
     {
         require_once 'emails.inc.php';
 
         $page->changeTpl('emails/antispam.tpl');
 
         $bogo = new Bogo(S::v('uid'));
-        if (Env::has('statut_filtre')) {
-            $bogo->change(S::v('uid'), Env::i('statut_filtre'));
+        if (isset($statut_filtre)) {
+            $bogo->change(S::v('uid'), $statut_filtre + 0);
         }
         $page->assign('filtre',$bogo->level());
     }

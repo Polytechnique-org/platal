@@ -46,22 +46,21 @@ Quatre réglages sont possibles :
   qui ne peuvent plus se satisfaire du réglage 3.
   </li>
 </ol>
-<form action="emails/antispam" method="post">
+<script type="text/javascript" src="javascript/ajax.js"></script>
   <fieldset>
     <legend><strong>Choisis ton propre réglage :</strong></legend>
-    <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick='this.form.submit()' />
+    <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
     <label for='s0'>(1) le filtre anti-spam est coupé</label>
     <br />
-    <input id='s1' type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onclick='this.form.submit()' />
+    <input id='s1' type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
     <label for='s1'>(2) le filtre anti-spam est activé, et marque les mails</label>
     <br />
-    <input id='s2' type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onclick='this.form.submit()' />
+    <input id='s2' type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
     <label for='s2'>(3) le filtre anti-spam est activé, marque les mails, et élimine les spams avec des notes les plus hautes</label>
     <br />
-    <input id='s3' type='radio' name='statut_filtre' value='3' {if $filtre eq 3}checked="checked"{/if} onclick='this.form.submit()' />
+    <input id='s3' type='radio' name='statut_filtre' value='3' {if $filtre eq 3}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
     <label for='s3'>(4) le filtre anti-spam est activé, et élimine les mails détectés comme spams</label>
   </fieldset>
-</form>
 
 <p>
 Evidemment, <strong>le système n'étant pas infaillible, il est possible qu'un

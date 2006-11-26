@@ -22,6 +22,8 @@
 
 <h1>Gestion de mes courriers électroniques</h1>
 
+<script type="text/javascript" src="javascript/ajax.js">
+</script>
 <table class="bicol">
   <tr>
     <th>Mes adresses polytechniciennes à vie</th>
@@ -29,16 +31,14 @@
   <tr class="impair">
     <td>
       Tes adresses polytechniciennes sont :<br /><br />
-      <form method='post' action='emails'>
         <div>
           {iterate from=$aliases item=a}
-          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='this.form.submit()' />
+          <input type='radio' {if $a.best}checked="checked"{/if} name='best' value='{$a.alias}' onclick='Ajax.update_html(null,"{$globals->baseurl}/emails/best/{$a.alias}")' />
           {if $a.a_vie}(**){/if}{if $a.cent_ans}(*){/if} <strong>{$a.alias}</strong>@{#globals.mail.domain#} et @{#globals.mail.domain2#}
           {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
           <br />
           {/iterate}
         </div>
-      </form>
       <br />
       L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche, etc...).
       Coche une autre case pour en changer !

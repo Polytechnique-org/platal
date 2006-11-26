@@ -52,7 +52,9 @@ Ajax = {
             {
                 if(Ajax.xml_client.readyState == 4) {
                     if (Ajax.xml_client.status == 200) {
-                        document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
+                    	if (obj != null) {
+                        	document.getElementById(obj).innerHTML = Ajax.xml_client.responseText;
+                        }
                     } else if (Ajax.xml_client.status == 403) {
                         window.location.reload();
                     }

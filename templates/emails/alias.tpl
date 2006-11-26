@@ -36,19 +36,22 @@
   </h1>
 
 {if $actuel}
-<form action="emails/alias/set/{if $mail_public}private{else}public{/if}" method='post'>
+<script type="text/javascript" src="javascript/ajax.js"></script>
   <table class="flags">
     <tr>
       <td class="orange">
-        <input type="checkbox" {if $mail_public}checked="checked"{/if} onclick="this.form.submit()" />
+        <input type="checkbox" {if $mail_public}checked="checked"{/if}
+            onclick="
+                Ajax.update_html(null,'{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private'));
+                document.getElementById('mail_public').innerHTML = (this.checked?'public et apparaît donc sur ta fiche':'privé et n\'apparaît nulle part sur le site') + '.';
+            " />
       </td>
       <td>
         Ton alias est actuellement : <strong>{$actuel}</strong>. Il est pour l'instant
-        {if $mail_public}public et apparaît donc sur ta fiche.{else}privé et n'apparaît nulle part sur le site{/if}
+        <span id="mail_public">{if $mail_public}public et apparaît donc sur ta fiche.{else}privé et n'apparaît nulle part sur le site.{/if}</span>
       </td>
     </tr>
   </table>
-</form>
     
 {else}
   <p>

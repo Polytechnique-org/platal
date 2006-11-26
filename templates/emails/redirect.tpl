@@ -72,7 +72,7 @@
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
     <a href="Docs/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
-<form action="emails/redirect" method="post">
+<script type="text/javascript" src="javascript/ajax.js"></script>
   <div class="center">
     <table class="bicol" summary="Adresses de redirection">
       <tr>
@@ -92,9 +92,9 @@
           </strong>
         </td>
         <td>
-          <input type="checkbox" name="emails_actifs[]" value="{$e->email}" {if $e->active}checked="checked"{/if} /></td>
+          <input type="checkbox" value="{$e->email}" {if $e->active}checked="checked"{/if} onclick="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/'+(this.checked?'':'in')+'active/{$e->email}')"/></td>
         <td>
-          <select name="emails_rewrite[{$e->email}]">
+          <select onchange="Ajax.update_html(null,'{$globals->baseurl}/emails/redirect/rewrite/{$e->email}/'+this.value)">
             <option value=''>--- aucune ---</option>
             {foreach from=$alias item=a}
             <option {if $e->rewrite eq "`$a.alias`@polytechnique.org"}selected='selected'{/if}
@@ -104,20 +104,21 @@
             {/foreach}
           </select>
         </td>
-        <td><a href="emails/redirect/remove/{$e->email}">retirer</a></td>
+        <td><a href="emails/redirect/remove/{$e->email}">{icon name=bin_empty title="retirer"}</a></td>
       </tr>
       {/foreach}
       <tr class="{cycle values="pair,impair"}"><td colspan="4">
-		&nbsp;<br />
-		Ajouter une adresse email :
-        <input type="text" size="35" maxlength="60" name="email" value="" />
-        &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
+        <form action="emails/redirect" method="post">
+        <div>
+    		&nbsp;<br />
+    		Ajouter une adresse email :
+            <input type="text" size="35" maxlength="60" name="email" value="" />
+            &nbsp;&nbsp;<input type="submit" value="ajouter" name="emailop" />
+        </div>
+        </form>
       </td></tr>
     </table>
-    <br />
-    <input type="submit" value="Valider les modifications" name="emailop" />
   </div>
-</form>
 {if $panne}
 <p class="smaller">
   <strong>
@@ -149,7 +150,7 @@
 </p>
 <p>
   Si tu utilises le service POP de poly pour récupérer tes mails dans ton logiciel de courrier,
-  l'équipe de Polytechnique.org te conseille de rediriger :
+  l'équipe de Polytechnique.org te conseille de rediriger :
 </p>
 <ul>
   <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}</li>
