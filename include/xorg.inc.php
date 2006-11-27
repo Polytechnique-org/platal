@@ -36,9 +36,14 @@ class XorgPage extends PlatalPage
 
     function run()
     {
-        global $globals;
+        global $globals, $platal;
         $this->assign('globals', $globals);
-        $this->_run('skin/'.S::v('skin', 'default.tpl'));
+        if ($platal->path == 'register') {
+            $skin = 'register.tpl';
+        } else {
+            $skin = S::v('skin', 'default.tpl');
+        }
+        $this->_run('skin/' . $skin);
     }
 }
 

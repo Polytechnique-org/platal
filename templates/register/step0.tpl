@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="register/breadcrumb.tpl"}
 
 <h1>Conditions générales</h1>
 

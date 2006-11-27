@@ -20,6 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="register/breadcrumb.tpl"}
 
 {if $smarty.session.sub_state.forlife}
 

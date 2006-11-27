@@ -19,17 +19,49 @@
 {*  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
+<?xml version="1.0" encoding="iso-8859-15"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <base href="{$globals->baseurl}/" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" media="all" />
+    {include file=skin/common.header.tpl}
+    {include file=skin/common.bandeau.head.tpl}
+  </head>
+  <body>
+    {include file=skin/common.devel.tpl}
+    {if $smarty.session.suid}
+    <table id="suid" cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          {$smarty.session.suid} ({$smarty.session.forlife})
+          [<a href="exit">exit</a>]
+        </td>
+      </tr>
+    </table>
+    {/if}
 
-{include file="register/breadcrumb.tpl"}
-
-<h1>:'(</h1>
-
-<p class="erreur">
-Une erreur est survenue lors de ton inscription ...
-</p>
-<p>
-Contacte nous au plus vite, en nous indiquant ce nombre : {$uid} sur 
-<a href="mailto:support@m4x.org">support@m4x.org</a>
-</p>
-
+  {if $simple}
+    <div id="content">
+      {include file="skin/common.content.tpl"}
+    </div>
+  {else}
+    {include file=skin/common.bandeau.tpl}
+    <table id="body" cellpadding="0" cellspacing="0">
+      <tr>
+        <td id="body-top">
+          <img src="images/skins/default_headlogo.jpg" alt="[ LOGO ]" style="display: block; float: left;" />
+          <img src="images/skins/default_ban.jpg" alt="[ Polytechnique.org ]" /><br />
+          <img src="images/skins/default_lesX.gif" alt="[LES X SUR LE WEB]" style="padding-top: 0.3em" />
+        </td>
+      </tr>
+      <tr>
+        <td id="content">
+          {include file="skin/common.content.tpl"}
+        </td>
+      </tr>
+    </table>
+  {/if}
+  </body>
+</html>
 {* vim:set et sw=2 sts=2 sws=2: *}

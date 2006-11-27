@@ -85,8 +85,13 @@ class RegisterModule extends PLModule
             case 1:
                 if (Post::has('promo')) {
                     $promo = Post::i('promo');
-                    if ($promo < 1900 || $promo > date('Y')) {
-                        $err = "La promotion saisie est incorrecte !";
+                    $res = XDB::query("SELECT COUNT(*)
+                                         FROM auth_user_md5
+                                        WHERE  perms='pending' AND deces = '0000-00-00'
+                                               AND promo = {?}",
+                                      $promo);
+                    if (!$res->fetchOneCell()) {
+                        $err = "La promotion saisie est incorrecte ou tous les camardes de cette promo sont inscrits !";
                     } else {
                         $sub_state['step']  = 2;
                         $sub_state['promo'] = $promo;
@@ -177,7 +182,7 @@ class RegisterModule extends PLModule
         }
 
         $_SESSION['sub_state'] = $sub_state;
-        $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl', SIMPLE);
+        $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
         if (isset($err)) {
             $page->trig($err);
         }
@@ -193,7 +198,7 @@ class RegisterModule extends PLModule
         global $globals;
 
         $page->changeTpl('register/end.tpl');
-
+        $_SESSION['sub_state'] = array('step' => 5);
         require_once('user.func.inc.php');
 
         if ($hash) {
@@ -308,6 +313,7 @@ class RegisterModule extends PLModule
     {
         $page->changeTpl('register/success.tpl');
 
+        $_SESSION['sub_state'] = array('step' => 5);
         if (Env::has('response2'))  {
             $_SESSION['password'] = $password = Post::v('response2');
 

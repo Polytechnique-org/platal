@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="register/breadcrumb.tpl"}
+
 <h1>Identification</h1>
 
 <form action="register" method="post">

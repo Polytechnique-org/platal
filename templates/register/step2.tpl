@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{include file="register/breadcrumb.tpl"}
+
 <h1>Identification</h1>
 
 <p>
@@ -29,6 +31,7 @@
 <form action="register" method="post">
   <table class="bicol" summary="Identification" cellpadding="3">
     {if $smarty.session.sub_state.promo >= 1996}
+    {assign var="promo" value=$smarty.session.sub_state.promo}
     <tr>
       <th colspan="2">matricule</th>
     </tr>
@@ -44,10 +47,19 @@
     <tr class="pair">
       <td></td>
       <td>
-        6 chiffres terminant par le numéro d'entrée (ex: 960532 ou 101532)<br />
+        6 chiffres terminant par le numéro d'entrée (ex: 
+        {if $promo < 2000}
+        {math equation="promo % 100" promo=$promo}0532)<br />
+        {else}
+        {math equation="(promo % 100) + 100" promo=$promo}532)<br />
+        {/if}
         Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
-        Pour les élèves étrangers voie 2, il est du type :<br />
-        Promotion: 1996, Matricule: 970XXX - Promotion: 2001, Matricule 102XXX.
+        Pour les élèves étrangers voie 2, il est du type :
+        {if $promo < 1999}
+        {math equation="(promo + 1) % 100" promo=$promo}0XXX
+        {else}
+        {math equation="((promo + 1) % 100) + 100" promo=$promo}XXX
+        {/if}
       </td>
     </tr>
     {/if}
