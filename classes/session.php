@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+global $lc_accent, $lc_plain, $uc_accent, $uc_plain;
 require_once 'diogenes/diogenes.misc.inc.php';
 
 class Session
