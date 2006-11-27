@@ -125,7 +125,7 @@ Tu peux également :
 
 <p class="descr" style="text-align: center">
 {foreach from=$links item=ofs key=txt}
-<a href="{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
+<a href="{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}&amp;order={$sort}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
 
