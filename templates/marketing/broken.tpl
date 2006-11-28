@@ -39,7 +39,7 @@
   contacter ce camarade.
 </p>
 <p>
-  Les adresses emails qui tu pourras nous donner ne seront pas ajouter directement aux redirections de {$user.prenom}.
+  Les adresses emails que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
 </p>
 <p>
   Merci de participer à cette recherche.
