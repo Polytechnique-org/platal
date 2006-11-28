@@ -119,8 +119,6 @@ class XnetEventsModule extends PLModule
         }
         
         $page->assign('archive', $archive);
-        $page->assign('admin', may_update());
-
         $evenements = XDB::iterator(
                 "SELECT  e.*, LEFT(10, e.debut) AS debut_day, LEFT(10, e.fin) AS fin_day,
                          IF(e.deadline_inscription, e.deadline_inscription >= LEFT(NOW(), 10),
@@ -173,7 +171,6 @@ class XnetEventsModule extends PLModule
         }
         
         $page->assign('evenements', $evts);
-        $page->assign('is_member', is_member());
     }
 
     function handler_sub(&$page, $eid = null)
@@ -555,7 +552,6 @@ class XnetEventsModule extends PLModule
             $evt = get_event_detail($eid, $item_id);
         }
 
-        $page->assign('admin', may_update());
         $page->assign('evt', $evt);
         $page->assign('tout', is_null($item_id));
 

@@ -111,11 +111,7 @@ class XnetGrpModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $page->changeTpl('xnet/groupe/asso.tpl');
-        $page->setType($globals->asso('cat'));
-        $page->assign('is_admin', may_update());
-        $page->assign('is_member', is_member());
-        $page->assign('logged', S::logged());
+        new_group_open_page('xnet/groupe/asso.tpl');
 
         if (S::logged()) {
             if (Env::has('read')) {
@@ -296,14 +292,7 @@ class XnetGrpModule extends PLModule
     function handler_annuaire(&$page)
     {
         global $globals;
-
-        if ($globals->asso('pub') == 'public') {
-            new_group_page('xnet/groupe/annuaire.tpl');
-        } else {
-            new_groupadmin_page('xnet/groupe/annuaire.tpl');
-        }
-
-        $page->assign('admin', may_update());
+        new_annu_page('xnet/groupe/annuaire.tpl');
 
         $sort = Env::v('order');
         switch (Env::v('order')) {
@@ -402,14 +391,7 @@ class XnetGrpModule extends PLModule
     function handler_trombi(&$page, $num = 1)
     {
         global $globals;
-        if ($globals->asso('cat') == 'Promotions') {
-            new_group_open_page('xnet/groupe/trombi.tpl');
-        } elseif ($globals->asso('pub') == 'public') {
-            new_group_page('xnet/groupe/trombi.tpl');
-        } else {
-            new_groupadmin_page('xnet/groupe/trombi.tpl');
-        }
-        $page->assign('admin', may_update());
+        new_annu_page('xnet/groupe/trombi.tpl');
         
         $page->assign('urlmainsite', "https://www.polytechnique.org/");
         $trombi = new Trombi(array($this, '_trombi_getlist'));
@@ -463,11 +445,7 @@ class XnetGrpModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('xnet/groupe/inscrire.tpl');
-
-        $page->setType($globals->asso('cat'));
-        $page->assign('asso', $globals->asso());
-        $page->assign('admin', may_update());
+        new_group_open_page('xnet/groupe/inscrire.tpl');
 
         if (!$globals->asso('inscriptible'))
                 $page->kill("Il n'est pas possible de s'inscire en ligne à ce "

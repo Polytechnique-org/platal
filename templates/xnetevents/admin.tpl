@@ -51,7 +51,7 @@ L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
 {/foreach}
 </p>
 
-{if $admin}{literal}
+{if $is_admin}{literal}
 <script type="text/javascript">
 function remplitAuto(mail) {
   document.getElementById('inscription').mail.value=mail;
@@ -78,7 +78,7 @@ Ils ont payé mais ont oublié de s'inscrire :
   {iterate from=$oubliinscription item=m}
   <tr style="background:#d0c198;">
     <td>
-      <a href="" {if $admin}onclick="return remplitAuto('{$m.email}')"{/if}>
+      <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
       {$m.prenom} {$m.nom}
       </a>
     </td>
@@ -111,7 +111,7 @@ Ils ont payé mais ont oublié de s'inscrire :
       {else}
         <th>Nombre</th>
       {/if}
-      {if $admin && $evt.money}
+      {if $is_admin && $evt.money}
         <th>Montant</th>
         <th>Payé</th>
       {/if}
@@ -122,7 +122,7 @@ Ils ont payé mais ont oublié de s'inscrire :
   {foreach from=$participants item=m}
   <tr>
     <td>
-      <a href="" {if $admin}onclick="return remplitAuto('{$m.email}')"{/if}>
+      <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
         {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom}
       </a>
     </td>
@@ -144,7 +144,7 @@ Ils ont payé mais ont oublié de s'inscrire :
       {else}
         <td>{$m[1]}</td>
       {/if}
-      {if $admin && $evt.money}
+      {if $is_admin && $evt.money}
         <td {if $m.montant > $m.paid}class="erreur"{/if}>{$m.montant}&euro;</td>
         <td>{$m.paid}&euro;</td>
       {/if}
@@ -163,7 +163,7 @@ Ils ont payé mais ont oublié de s'inscrire :
 {/foreach}
 </p>
 
-{if $admin}
+{if $is_admin}
 
 <p class="descr">
 [<a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]

@@ -34,7 +34,7 @@ Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'i
 Tu peux également :
 </p>
 <ul class="descr">
-  {if $admin}
+  {if $is_admin}
   <li>
     <a href="{$platal->ns}member/new">
       {icon name=add title="Ajouter un membre"} 
@@ -88,7 +88,7 @@ Tu peux également :
       </a>
     </th>
     <th>Infos</th>
-    {if $admin}
+    {if $is_admin}
     <th>Actions</th>
     {/if}
   </tr>
@@ -113,7 +113,7 @@ Tu peux également :
       <a href="mailto:{$m.email}">{icon name=email title="mail"}</a>
       {/if}
     </td>
-    {if $admin}
+    {if $is_admin}
     <td class="center">
       <a href="{$platal->ns}member/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=user_edit title="Edition du profil"}</a>
       <a href="{$platal->ns}member/del/{if $m.x}{$m.email}{else}{$m.uid}{/if}">{icon name=delete title="Supprimer de l'annuaire"}</a>

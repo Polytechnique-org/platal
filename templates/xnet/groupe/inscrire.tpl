@@ -22,7 +22,7 @@
 
 <h1>Demande d'inscription à {$asso.nom}</h1>
 
-{if $u && $admin && $show_form}
+{if $u && $is_admin && $show_form}
 
 <h2>
   Demande de la part de : {$prenom} {$nom} (X{$promo})

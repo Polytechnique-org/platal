@@ -33,6 +33,7 @@ function new_page($tpl_name, $type = SKINNED)
     require_once("xnet/page.inc.php");
     $page = new XnetPage($tpl_name, $type);
     $page->assign('xorg_tpl', $tpl_name);
+    $page->assign('is_logged', S::logged());
 }
 
 function new_skinned_page($tpl_name)
@@ -51,6 +52,8 @@ function new_group_open_page($tpl_name, $refuse_access = false)
 
     $page->assign('asso', $globals->asso());
     $page->setType($globals->asso('cat'));
+    $page->assign('is_admin', may_update());
+    $page->assign('is_member', is_member());
 
     if ($refuse_access) {
         $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
@@ -74,6 +77,17 @@ function new_groupadmin_page($tpl_name)
 }
 
 // }}}
+// {{{ function new_annu_page()
+
+function new_annu_page($tpl_name)
+{
+    new_group_open_page($tpl_name, 
+                            !may_update()
+                            && (!is_member()  || $globals->asso('pub') != 'public')
+                            && $globals->asso('cat') != 'Promotions');
+}
+
+// }}}
 // {{{ function new_admin_page()
 
 function new_admin_page($tpl_name)
@@ -91,5 +105,6 @@ function new_admin_page($tpl_name)
 }
 
 // }}}
+
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

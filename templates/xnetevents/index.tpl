@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if !$admin}
+{if !$is_admin}
 <h1>{$asso.nom} : Evénements</h1>
 {else}
 <h1>
@@ -67,7 +67,7 @@
       {if !$e.inscr_open}
       (<span class="error">Inscriptions closes</span>)
       {/if}
-      {if $admin}
+      {if $is_admin}
       <br />
       [<a href="{$platal->ns}events/edit/{$e.short_name|default:$e.eid}">
         modifier
@@ -113,11 +113,11 @@
     </td>
   </tr>
 
-  {if $admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
+  {if $is_admin || $e.show_participants || ($e.deadline_inscription && $e.inscr_open)}
   <tr>
     <td class="titre">Informations :</td>
     <td class='actions'>
-      {if $admin || $e.show_participants}
+      {if $is_admin || $e.show_participants}
       <a href="{$platal->ns}events/admin/{$e.short_name|default:$e.eid}">
         consulter la liste des participants
         {icon name=group title="Liste des participants"}
