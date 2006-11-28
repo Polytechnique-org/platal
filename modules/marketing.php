@@ -161,18 +161,25 @@ class MarketingModule extends PLModule
 
     function handler_broken(&$page, $uid = null)
     {
+        require_once('user.func.inc.php');
         $page->changeTpl('marketing/broken.tpl');
 
         if (is_null($uid)) {
-            return;
+            return PL_NOT_FOUND;
+        }
+        $forlife = get_user_forlife($uid);
+        if (!$forlife) {
+            return PL_NOT_FOUND;
+        } elseif ($forlife == S::v('forlife')) {
+            pl_redirect('emails/redirect');
         }
 
         $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, a.alias AS forlife
                              FROM  auth_user_md5 AS u
                        INNER JOIN  aliases       AS a ON a.id = u.user_id
-                            WHERE  u.user_id = {?}", $uid);
+                            WHERE  a.alias = {?}", $forlife);
         if (!$res->numRows()) {
-            return;
+            return PL_NOT_FOUND;
         }
         $user = $res->fetchOneAssoc();
         $page->assign('user', $user);
