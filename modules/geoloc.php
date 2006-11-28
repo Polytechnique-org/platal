@@ -68,14 +68,20 @@ class GeolocModule extends PLModule
             $page->assign('request_geodesix', 1);
 
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            $page->useMenu();
-            $page->setType($globals->asso('cat'));
             $page->assign('no_annu', 1);
+            if ($globals->asso('cat') == 'Promotions') {
+                new_group_open_page('geoloc/index.tpl');
+            } elseif ($globals->asso('pub') == 'public') {
+                new_group_page('geoloc/index.tpl');
+            } else {
+                new_groupadmin_page('geoloc/index.tpl');
+            }
+        } else {
+            $page->changeTpl('geoloc/index.tpl');
         }
 
         require_once dirname(__FILE__).'/search/search.inc.php';
 
-        $page->changeTpl('geoloc/index.tpl');
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         $search = str_replace('&amp;','&',$fields->get_url());
         if ((!Env::has('only_current') && !Env::has('rechercher')) || Env::v('only_current') == 'on')

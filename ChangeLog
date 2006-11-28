@@ -6,6 +6,9 @@ Bug/Wish:
     * Register:
         - #277: Improve ergonomy                                           -FRU
 
+    * Xnet:
+        - #570: Fix geoloc skin                                            -FRU
+
 From 0.9.12 branch:
 
     * Search:
