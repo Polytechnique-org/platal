@@ -60,7 +60,7 @@ class MedalReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  La décoration ".$this->medal_name()." que tu avais demandée vient d'être acceptée.";
+            return "  La décoration ".$this->medal_name()." vient d'être ajoutée à ta fiche.";
         } else {
             return "  La demande que tu avais faite pour la décoration ".$this->medal_name()." a été refusée.";
         }
