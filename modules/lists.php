@@ -631,7 +631,7 @@ class ListsModule extends PLModule
             } else {
                 $page->kill('Une erreur est survenue lors de la suppression de la liste.<br />'
                          . 'Contact les administrateurs du site pour régler le problème : '
-                         . '<a href="mailto:support@polytechnique.org">support@staff.polytechnique.org</a>');
+                         . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>');
             }
         } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
             $page->assign_by_ref('details', $details);
