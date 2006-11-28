@@ -603,23 +603,36 @@ class ListsModule extends PLModule
 
     function handler_delete(&$page, $liste = null)
     {
+        global $globals;
         if (is_null($liste)) {
             return PL_NOT_FOUND;
         }
 
-        $this->prepare_client($page);
+        $domain = $this->prepare_client($page);
+        if ($domain == $globals->mail->domain || $domain == $globals->mail->domain2) {
+            $domain = '';
+            $table  = 'aliases';
+            $type   = 'liste';
+        } else {
+            $domain = '@' . $domain;
+            $table  = 'virtual';
+            $type   = 'list';
+        }
 
         $page->changeTpl('listes/delete.tpl');
-
-        if (Post::v('valid') == 'OUI'
-        && $this->client->delete_list($liste, Post::b('del_archive')))
-        {
-            foreach (array('', '-owner', '-admin', '-bounces') as $app) {
-                XDB::execute("DELETE FROM  aliases
-                                              WHERE  type='liste' AND alias='{?}'",
-                                       $liste.$app);
+        if (Post::v('valid') == 'OUI') {
+            if ($this->client->delete_list($liste, Post::b('del_archive'))) {
+                foreach (array('', '-owner', '-admin', '-bounces') as $app) {
+                    XDB::execute("DELETE FROM  $table
+                                        WHERE  type={?} AND alias={?}",
+                                 $type, $liste.$app.$domain);
+                }
+                $page->assign('deleted', true);
+            } else {
+                $page->kill('Une erreur est survenue lors de la suppression de la liste.<br />'
+                         . 'Contact les administrateurs du site pour régler le problème : '
+                         . '<a href="mailto:support@polytechnique.org">support@staff.polytechnique.org</a>');
             }
-            $page->assign('deleted', true);
         } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
             $page->assign_by_ref('details', $details);
             $page->assign_by_ref('options', $options);
