@@ -90,6 +90,7 @@ class AuthModule extends PLModule
 
             $res .= "</membres>\n\n";
 
+			header('Content-Type: text/xml; charset="ISO-8859-1"');
             echo $res;
         }
         exit;
