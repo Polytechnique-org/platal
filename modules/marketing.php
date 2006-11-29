@@ -153,7 +153,7 @@ class MarketingModule extends PLModule
 
         $res = XDB::query("SELECT date, relance FROM register_pending
                                       WHERE uid = {?}", $uid);
-        if (list($pending, $relance) = $res->fetchOneCell()) {
+        if (list($pending, $relance) = $res->fetchOneRow()) {
             $page->assign('pending', $pending);
             $page->assign('relance', $relance);
         }
