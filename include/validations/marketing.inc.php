@@ -31,6 +31,7 @@ class MarkReq extends Validate
     var $m_nom;
     var $m_prenom;
     var $m_promo;
+    var $m_relance;
 
     var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance). Si le 
     demandeur marque sa propre adresse mail, refuser dans tous les cas.
@@ -45,8 +46,14 @@ class MarkReq extends Validate
         $this->m_email = $email;
         $this->perso   = $perso;
 
-        $res = XDB::query('SELECT nom, prenom, promo FROM auth_user_md5 WHERE user_id = {?}', $mark_id);
-        list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow(); 
+        $res = XDB::query('SELECT  u.nom, u.prenom, u.promo,
+                                   IF(MAX(m.last)>p.relance, MAX(m.last), p.relance)
+                             FROM  auth_user_md5      AS u
+                        LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
+                        LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
+                            WHERE  user_id = {?}
+                         GROUP BY  u.user_id', $mark_id);
+        list ($this->m_nom, $this->m_prenom, $this->m_promo, $this->m_relance) = $res->fetchOneRow(); 
     }
 
     // }}}

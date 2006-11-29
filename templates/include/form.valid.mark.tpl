@@ -20,6 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $valid->m_relance neq '0000-00-00'}
+{if $valid->m_relance neq ''} {* provided for backward compatibility, may disappear in the future *}
+  <tr class="pair">
+    <td class="titre">Dernière relance le :</td>
+    <td>{$valid->m_relance}</td>
+  </tr>
+{/if}
+{/if}
 <tr class="pair">
   <td class="titre">Marketing sur</td>
   <td><a href='marketing/private/{$valid->m_id}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
