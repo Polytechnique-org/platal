@@ -366,7 +366,7 @@ class AdminModule extends PLModule
         }
 
         if(Env::has('logs_button') && $login) {
-            pl_redirect("admin/logger?login=$login&year=".date('Y')."&month=".date('m'));
+            pl_redirect("admin/logger?loguser=$login&year=".date('Y')."&month=".date('m'));
         }
 
         if (Env::has('ax_button') && $login) {
