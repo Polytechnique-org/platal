@@ -964,13 +964,15 @@ class XnetGrpModule extends PLModule
                              INNER JOIN groupex.announces AS a ON ( (a.promo_min = 0 OR a.promo_min <= u.promo)
                                                                   AND (a.promo_max = 0 OR a.promo_max <= u.promo))
                              INNER JOIN auth_user_md5 AS u2 ON (u2.user_id = a.user_id)
-                                  WHERE u.user_id = {?} AND peremption >= NOW()", $uid);
+                             WHERE u.user_id = {?} AND peremption >= NOW() AND a.asso_id = {?}",
+                                   $uid, $globals->asso('id'));
         } else {
             $rss = XDB::iterator("SELECT a.id, a.titre, a.texte, a.create_date,
                                          IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom, u.prenom, u.promo
                                     FROM groupex.announces AS a
                              INNER JOIN auth_user_md5 AS u USING(user_id)
-                                   WHERE FIND_IN_SET(a.flags, 'public') AND peremption >= NOW()");
+                             WHERE FIND_IN_SET(a.flags, 'public') AND peremption >= NOW() AND a.asso_id = {?}",
+                                  $globals->asso('id'));
         }
         $page->assign('asso', $globals->asso());
         $page->assign('rss', $rss);
