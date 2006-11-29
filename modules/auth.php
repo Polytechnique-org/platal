@@ -51,7 +51,7 @@ class AuthModule extends PLModule
 
         $cle = $globals->core->econfiance;
 
-//        if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
+        if (S::v('chall') && $_GET['PASS'] == md5(S::v('chall').$cle)) {
 
             $res  = XDB::query("SELECT password FROM auth_user_md5 WHERE user_id=10154");
             $pass = $res->fetchOneCell();
@@ -90,9 +90,9 @@ class AuthModule extends PLModule
 
             $res .= "</membres>\n\n";
 
-			header('Content-Type: text/xml; charset="ISO-8859-1"');
+            header('Content-Type: text/xml; charset="ISO-8859-1"');
             echo $res;
-//        }
+        }
         exit;
     }
 
