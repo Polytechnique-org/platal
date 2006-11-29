@@ -55,6 +55,7 @@ class PlatalPage extends Smarty
 
         $this->register_prefilter('at_to_globals');
         $this->register_prefilter('trimwhitespace');
+        $this->register_prefilter('form_force_encodings');
         $this->addJsLink('xorg.js');
     }
 
@@ -96,6 +97,7 @@ class PlatalPage extends Smarty
         }
         $this->register_outputfilter('hide_emails');
         $this->addJsLink('wiki.js');
+        header("Accept-Charset: iso-8859-15, latin9, us-ascii, ascii");
 
         if (!$globals->debug) {
             error_reporting(0);
@@ -259,6 +261,16 @@ function trimwhitespace($source, &$smarty)
     }
 
     return $source; 
+}
+
+// }}}
+// {{{
+
+function form_force_encodings($source, &$smarty)
+{
+    return preg_replace('/<form[^\w]/',
+                        '\0 accept-charset="iso-8859-15 latin9 us-ascii ascii" ',
+                        $source);
 }
 
 // }}}
