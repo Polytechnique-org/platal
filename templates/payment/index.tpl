@@ -163,7 +163,7 @@ function payment_submit(form)
 {iterate from=$transactions item=t}
   <tr class="{cycle values="pair,impair"}">
     <td>{$t.timestamp|date_format}</td>
-    <td>{$t.montant}</td>
+    <td>{$t.montant|replace:'EUR':'&euro;'}</td>
   </tr>
 {/iterate}
 </table>

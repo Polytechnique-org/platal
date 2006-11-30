@@ -46,7 +46,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
         Tu dois encore payer {math equation="a-b" a=$ev.topay b=$ev.paid}&euro;
       </a>
       {elseif $ev.topay eq $ev.paid}
-      Tu as déjà réglé l'intégralité de ton inscription ({$ev.topay}&euro;)
+      Tu as déjà réglé l'intégralité de ton inscription ({$ev.topay}&euro;).
       {else}
       Tu as réglé {$ev.paid}&euro; alors que tu n'en devais que {$ev.topay}&euro;
       {/if}
@@ -55,7 +55,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
     {/if}
   {else}
     {if !$ev.paid}
-    Tu n'as actuellement rien payé sur ce télépaiement
+    Tu n'as actuellement rien payé sur ce télépaiement.
     {else}
     Tu as déjà payé {$ev.paid}&euro;.
     {/if}
@@ -128,10 +128,6 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
   {/if}
   {/foreach}
 </table>
-{elseif $is_admin}
-Aucun versement n'a actuellement été réalisé sur ce télépaiement
-{else}
-Tu n'as pas payé pour ce télépaiement
 {/if}
 </fieldset>
 
