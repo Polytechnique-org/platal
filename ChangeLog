@@ -19,6 +19,9 @@ From 0.9.12 branch:
     * Search:
         - #566: Fix accent detection                                       -FRU
 
+    * Xnet:
+        - #574: Fix subscription link customization                        -FRU
+
 ================================================================================
 VERSION 0.9.12                                                        25 11 2006
 
