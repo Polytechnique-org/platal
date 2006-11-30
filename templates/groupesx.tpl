@@ -26,6 +26,10 @@
 <div style="width:48%;float:left" >
 <fieldset style="margin:0.6em">
     <legend style="padding:4px"><strong><a href="http://www.polytechnique.net/login/{$asso.diminutif}">{$asso.nom}</a></strong></legend>
+    {if $asso.has_logo}
+    <img alt="[ LOGO ]" src="http://www.polytechnique.net/{$asso.diminutif}/logo"
+         style="width: 30%; display: block; float: right;" />
+    {/if}
     <ul style="padding-top:0px;padding-bottom:0px">
         <li><a href="http://www.polytechnique.net/{$asso.diminutif}/annuaire">annuaire</a></li>
         <li><a href="http://www.polytechnique.net/{$asso.diminutif}/trombi">trombino</a></li>

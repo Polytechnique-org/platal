@@ -675,11 +675,12 @@ class ProfileModule extends PLModule
         $page->assign('xorg_title', 'Polytechnique.org - Promo, Groupes X, Binets');
         
         $req = XDB::query('
-            SELECT m.asso_id, a.nom, diminutif, COUNT(e.eid) AS events, mail_domain AS lists
-            FROM groupex.membres AS m 
-            INNER JOIN groupex.asso AS a ON(m.asso_id = a.id)
-            LEFT JOIN groupex.evenements AS e ON(e.asso_id = m.asso_id)
-            WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
+            SELECT m.asso_id, a.nom, diminutif, a.logo IS NOT NULL AS has_logo, 
+                   COUNT(e.eid) AS events, mail_domain AS lists
+              FROM groupex.membres AS m 
+        INNER JOIN groupex.asso AS a ON(m.asso_id = a.id)
+         LEFT JOIN groupex.evenements AS e ON(e.asso_id = m.asso_id AND e.archive = 0)
+             WHERE uid = {?} GROUP BY m.asso_id ORDER BY a.nom', S::i('uid'));
         $page->assign('assos', $req->fetchAllAssoc());
     }
     
