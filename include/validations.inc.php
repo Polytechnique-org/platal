@@ -62,6 +62,7 @@ class Validate
     var $prenom;
     var $nom;
     var $promo;
+    var $sexe;
     var $bestalias;
     var $forlife;
 
@@ -90,12 +91,12 @@ class Validate
         $this->unique = $_unique;
         $this->type   = $_type;
         $res = XDB::query(
-                "SELECT  u.prenom, u.nom, u.promo, a.alias, b.alias
+                "SELECT  u.prenom, u.nom, u.promo, FIND_IN_SET('femme', u.flags) AS sexe, a.alias, b.alias
                    FROM  auth_user_md5 AS u
              INNER JOIN  aliases       AS a ON ( u.user_id=a.id AND a.type='a_vie' )
              INNER JOIN  aliases       AS b ON ( u.user_id=b.id AND b.type!='homonyme' AND FIND_IN_SET('bestalias', b.flags) )
                   WHERE  u.user_id={?}", $_uid);
-        list($this->prenom, $this->nom, $this->promo, $this->forlife, $this->bestalias) = $res->fetchOneRow();
+        list($this->prenom, $this->nom, $this->promo, $this->sexe, $this->forlife, $this->bestalias) = $res->fetchOneRow();
     }
     
     // }}}
@@ -239,7 +240,7 @@ class Validate
         $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");
         $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
 
-        $body = "Cher(e) camarade,\n\n"
+        $body = ($this->sexe ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
               . "\n\nCordialement,\nL'équipe Polytechnique.org\n";
