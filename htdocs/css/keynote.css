@@ -55,8 +55,7 @@ legend {
     background: url('../images/skins/keynote_bg_verylighter.png') #bbbbaa top left repeat-x fixed;
     color: #000;
 
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 2px 4px;
 }
 
 .center  { text-align: center; }

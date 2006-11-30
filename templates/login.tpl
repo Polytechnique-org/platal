@@ -63,21 +63,8 @@ Bienvenue {$smarty.session.prenom}
     Clique <a href="profile/edit/adresses">ici</a> pour rectifier.
   </p>
 {/if}
-<br />
 
-  <table class="bicol">
-    <tr class="pair">
-{foreach item=links from=$publicite}
-      <td class="half">
-{foreach key=url item=text from=$links}
-        <a href="{$url}">{$text}</a><br />
-{/foreach}
-      </td>
-{/foreach}
-    </tr>
-  </table>
-
-  <br/>
+{include file="include/tips.tpl" full=true}
   
   <table class="bicol">
     <tr>

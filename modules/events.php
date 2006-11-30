@@ -29,6 +29,9 @@ class EventsModule extends PLModule
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
+            'ajax/tips'      => $this->make_hook('tips',      AUTH_COOKIE, '', NO_AUTH),
+            'admin/tips'     => $this->make_hook('admin_tips', AUTH_MDP, 'admin'),
+
             'nl'             => $this->make_hook('nl',        AUTH_COOKIE),
             'nl/show'        => $this->make_hook('nl_show',   AUTH_COOKIE),
             'nl/submit'      => $this->make_hook('nl_submit', AUTH_COOKIE),
@@ -44,6 +47,29 @@ class EventsModule extends PLModule
         subscribe_nl($uid);
     }
 
+    function get_tips($exclude = null)
+    {
+        $exclude  = is_null($exclude) ? '' : ' AND id != ' . $exclude . ' ';
+        $priority = rand(0, 510);
+        do {
+            $priority = (int)($priority/2);
+            $res = XDB::query("SELECT  *
+                                 FROM  tips
+                                WHERE  (peremption = '0000-00-00' OR peremption > CURDATE())
+                                       AND (promo_min = 0 OR promo_min <= {?})
+                                       AND (promo_max = 0 OR promo_max >= {?})
+                                       AND (priorite >= {?})
+                                       $exclude
+                             ORDER BY  RAND()
+                                LIMIT  1",
+                              S::i('promo'), S::i('promo'), $priority);
+        } while ($priority && !$res->numRows());
+        if (!$res->numRows()) {
+            return null;
+        } 
+        return $res->fetchOneAssoc();
+    }
+
     function handler_bug(&$page)
     {
         $this->handler_ev($page);
@@ -53,7 +79,9 @@ class EventsModule extends PLModule
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
         $page->changeTpl('login.tpl');
-       
+        $page->addJsLink('ajax.js');
+        $page->assign('tips', $this->get_tips());
+
         // donne la derniere date de session
         $page->assign('lastlogin', strftime("%Y%m%d%H%M%S",S::i('lastlogin')));
 
@@ -86,27 +114,6 @@ class EventsModule extends PLModule
         require_once 'geoloc.inc.php';
         $res = localize_addresses(S::v('uid', -1));
         $page->assign('geoloc_incitation', count($res));
-
-        // affichage de la boîte avec quelques liens
-        /* Bandeau de publicité sur la page de login */
-        $publicite = array(
-            'password'   => 'Changer mon mot de passe' ,
-            'Docs/Dons'  => 'Faire un don à l\'association Polytechnique.org'
-            ) ;
-
-        // Liens apparaissant de façon aléatoire
-        $pub_rnd = array(
-            'nl/show'                      => 'Afficher la dernière newsletter' ,
-            'http://www.polytechnique.net/login' => 'Vers les autres sites polytechniciens' ,
-            "trombi/{$_SESSION["promo"]}"  => "Voir le trombi de ma promo" ,
-            'banana'                       => 'Un petit tour du côté des forums !!'
-            ) ;
-
-        $choix = array_rand($pub_rnd, 2);
-        foreach ($choix as $url) {
-            $publicite[$url] = $pub_rnd[$url] ;
-        }
-        $page->assign('publicite', array_chunk($publicite, 2, true));
 
         // ajout du lien RSS
         if (S::has('core_rss_hash')) {
@@ -220,6 +227,26 @@ class EventsModule extends PLModule
             $select .= "> $day / $month / $year</option>\n";
         }
         $page->assign('select',$select);
+    }
+
+    function handler_tips(&$page, $tips = null)
+    {
+        $page->changeTpl('include/tips.tpl', NO_SKIN);
+        $page->assign('tips', $this->get_tips($tips));
+    }
+
+    function handler_admin_tips(&$page, $action = 'list', $id = null)
+    {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - Astuces');
+        $page->assign('title', 'Gestion des Astuces');
+        $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
+        $table_editor->describe('peremption', 'date de péremption', true);
+        $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
+        $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
+        $table_editor->describe('titre', 'titre', true);
+        $table_editor->describe('text', 'texte (html) de l\'astuce', false);
+        $table_editor->describe('priorite', 'priorité (0=min, 256=max)', false);
+        $table_editor->apply($page, $action, $id);
     }
 
     function handler_nl(&$page, $action = null)

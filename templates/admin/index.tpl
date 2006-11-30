@@ -70,6 +70,8 @@
     <td>
       <strong>Infos dynamiques :</strong>&nbsp;&nbsp;
       <a href="admin/downtime">Coupures</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/tips">Astuces</a>
     </td>
   </tr>
   <tr class="impair">
