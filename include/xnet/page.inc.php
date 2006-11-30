@@ -87,7 +87,7 @@ class XnetPage extends PlatalPage
             }
             $sub['événement'] = "$dim/events";
             if (may_update() || is_member()) {
-                $sub['télépaiement'] = "$dim/paiement";
+                $sub['télépaiement'] = "$dim/payment";
             }
 
             $menu[$globals->asso('nom')] = $sub;

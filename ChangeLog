@@ -1,6 +1,11 @@
 ================================================================================
 VERSION 0.9.13                                                        ?? ?? 2007
 
+New:
+
+    * Payment:
+        - Directly integrated into Xnet                                    -FRU
+
 Bug/Wish:
 
     * Register:
