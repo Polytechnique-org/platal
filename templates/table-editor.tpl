@@ -58,6 +58,8 @@
     {/if}
     {if $myval.Type eq 'timestamp'}
       <span class="smaller">{$myrow.$myfield|date_format:"%x %X"}</span>
+    {elseif $myval.Type eq 'checkbox'}
+      <input type="checkbox" disabled="disabled"{if $myrow.$myfield} checked="checked"{/if}/>
     {else}
       {$myrow.$myfield}
     {/if}
@@ -115,6 +117,8 @@
           </select>
         {elseif ($myval.Type eq 'textarea') or ($myval.Type eq 'varchar200')}
           <textarea name="{$myfield}" rows="{if $myval.Type eq 'varchar200'}3{else}10{/if}" cols="70">{$entry.$myfield}</textarea>
+        {elseif ($myval.Type eq 'checkbox')}
+          <input type="checkbox" name="{$myfield}" value="{$myval.Value}"{if $entry.$myfield} checked="checked"{/if}/>
         {else}
           <input type="text" name="{$myfield}" value="{$entry.$myfield}" {if $myval.Size}size="{$myval.Size}" maxlength="{$myval.Maxlength}"{/if}/>
           {if $myval.Type eq 'timestamp'}<em>jj/mm/aaaa hh:mm:ss</em>{/if}

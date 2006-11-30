@@ -6,6 +6,7 @@ create table tips (
     peremption date not null default '0000-00-00',
     promo_min smallint(4) unsigned not null default 0,
     promo_max smallint(4) unsigned not null default 0,
+    active set('active') not null default 'active',
 
     primary key (id)
 );

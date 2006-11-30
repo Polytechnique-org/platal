@@ -59,6 +59,7 @@ class EventsModule extends PLModule
                                        AND (promo_min = 0 OR promo_min <= {?})
                                        AND (promo_max = 0 OR promo_max >= {?})
                                        AND (priorite >= {?})
+                                       AND (state = 'active')
                                        $exclude
                              ORDER BY  RAND()
                                 LIMIT  1",
@@ -244,6 +245,7 @@ class EventsModule extends PLModule
         $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
         $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
         $table_editor->describe('titre', 'titre', true);
+        $table_editor->describe('state', 'actif', true);
         $table_editor->describe('text', 'texte (html) de l\'astuce', false);
         $table_editor->describe('priorite', 'priorité (0=min, 256=max)', false);
         $table_editor->apply($page, $action, $id);
