@@ -105,14 +105,18 @@
       <td>
         {if $event.topay}
         <span class="error">
-        Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;
-        {if $event.paid > 0}
-        (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
-        {/if}.
-        {if $event.paiement_id}
-          [<a href="https://www.polytechnique.org/payment/{$event.paiement_id}?montant={$event.topay}}">
+          {if !$event.paid}
+          Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;.
+          {elseif $event.paid < $event.topay}
+          Tu dois encore payer {math equation="a-b" a=$event.topay b=$event.paid|replace:'.':','}&nbsp;&euro;
+          (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
+          {else} 
+          Tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
+          {/if} 
+          {if $event.paiement_id &&  $event.paid < $event.topay}
+          [<a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$event.topay b=$event.paid}">
           Payer en ligne</a>]
-        {/if}
+          {/if}
         </span>
         {else}
         Rien à payer

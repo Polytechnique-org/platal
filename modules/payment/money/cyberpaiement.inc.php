@@ -43,49 +43,48 @@ class CyberPayment
     function prepareform(&$pay)
     {
     	// toute la doc se trouve sur
-	// http://www.cyberpaiement.tm.fr/donnees.htm
+    	// http://www.cyberpaiement.tm.fr/donnees.htm
 
-        global $globals;
+        global $globals, $platal;
 
-        $roboturl = str_replace("https://","http://",$globals->baseurl)
-            ."/payment/cyber_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'))."&CHAMPBPX";
-        if (Cookie::has(session_name())) {
-            $returnurl .= "?".SID;
-        }
-	$req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom FROM auth_user_md5 WHERE user_id = {?}",S::v('uid'));
-	$name = $req->fetchOneCell();
+        $roboturl = str_replace("https://","http://", $globals->baseurl)
+            . '/' . $platal->ns . "payment/cyber_return/".S::v('uid')."?comment=".urlencode(Env::v('comment'))."&CHAMPBPX";
+        $req = XDB::query("SELECT IF(nom_usage!='', nom_usage, nom) AS nom
+                             FROM auth_user_md5
+                            WHERE user_id = {?}",S::v('uid'));
+    	$name = $req->fetchOneCell();
 
         // on constuit la reference de la transaction
         $prefix = ($pay->flags->hasflag('unique')) ? str_pad("",15,"0") : rand_url_id();
         $fullref = substr("$prefix-xorg-{$pay->id}",-15);
 
         $this->urlform = "https://ecom.cimetz.com/telepaie/cgishell.exe/epaie01.exe";
-	$this->infos['commercant'] = Array(
-		'CHAMP000' => 510879,
-		'CHAMP001' => 5965,
-		'CHAMP002' => 5429159012,
-		'CHAMP003' => "I",
-		'CHAMP004' => "Polytechnique.org",
-		'CHAMP005' => $roboturl,
-		'CHAMP006' => "Polytechnique.org",
-		'CHAMP007' => $globals->baseurl,
-		'CHAMP008' => $pay->mail);
-	$this->infos['client'] = Array(
-		'CHAMP100' => $name,
-		'CHAMP101' => S::v('prenom'),
-		'CHAMP102' => '.',
-		'CHAMP103' => '.',
-		'CHAMP104' => S::v('bestalias').'@polytechnique.org',
-		'CHAMP106' => '.',
-		'CHAMP107' => '.',
-		'CHAMP108' => '.',
-		'CHAMP109' => '.',
-		'CHAMP110' => '.');
-	$this->infos['commande'] = Array(
-		'CHAMP200' => $fullref,
-		'CHAMP201' => $this->val,
-		'CHAMP202' => "EUR");
-	$this->infos['divers'] = Array('CHAMP900' => '01');
+    	$this->infos['commercant'] = Array(
+    		'CHAMP000' => 510879,
+    		'CHAMP001' => 5965,
+    		'CHAMP002' => 5429159012,
+    		'CHAMP003' => "I",
+    		'CHAMP004' => "Polytechnique.org",
+    		'CHAMP005' => $roboturl,
+    		'CHAMP006' => "Polytechnique.org",
+    		'CHAMP007' => $globals->baseurl . '/' . $platal->ns,
+    		'CHAMP008' => $pay->mail);
+    	$this->infos['client'] = Array(
+    		'CHAMP100' => $name,
+    		'CHAMP101' => S::v('prenom'),
+    		'CHAMP102' => '.',
+    		'CHAMP103' => '.',
+    		'CHAMP104' => S::v('bestalias').'@polytechnique.org',
+    		'CHAMP106' => '.',
+    		'CHAMP107' => '.',
+    		'CHAMP108' => '.',
+    		'CHAMP109' => '.',
+    		'CHAMP110' => '.');
+    	$this->infos['commande'] = Array(
+    		'CHAMP200' => $fullref,
+    		'CHAMP201' => $this->val,
+    		'CHAMP202' => "EUR");
+    	$this->infos['divers'] = Array('CHAMP900' => '01');
     }
 
     // }}}

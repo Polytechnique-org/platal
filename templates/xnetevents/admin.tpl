@@ -68,7 +68,7 @@ function remplitAuto(mail) {
 Ils ont payé mais ont oublié de s'inscrire :
 </p>
 
-<table summary="payé mais non inscrits" class="tiny">
+<table summary="payé mais non inscrits" class="tinybicol">
   <tr>
     <th>Prénom NOM</th>
     <th>Promo</th>
@@ -76,7 +76,7 @@ Ils ont payé mais ont oublié de s'inscrire :
     <th>Montant</th>
   </tr>
   {iterate from=$oubliinscription item=m}
-  <tr style="background:#d0c198;">
+  <tr class="pair">
     <td>
       <a href="" {if $is_admin}onclick="return remplitAuto('{$m.email}')"{/if}>
       {$m.prenom} {$m.nom}

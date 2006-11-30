@@ -79,7 +79,12 @@ class PaymentModule extends PLModule
             'payment'               => $this->make_hook('payment', AUTH_MDP),
             'payment/cyber_return'  => $this->make_hook('cyber_return',  AUTH_PUBLIC),
             'payment/paypal_return' => $this->make_hook('paypal_return',  AUTH_PUBLIC),
+            '%grp/paiement'              => $this->make_hook('xnet_payment', AUTH_MDP),
+            '%grp/payment'               => $this->make_hook('xnet_payment', AUTH_MDP),
+            '%grp/payment/cyber_return'  => $this->make_hook('cyber_return', AUTH_PUBLIC),
+            '%grp/payment/paypal_return' => $this->make_hook('paypal_return', AUTH_PUBLIC),
             'admin/payments'        => $this->make_hook('admin', AUTH_MDP, 'admin'),
+        
         );
     }
 
@@ -90,8 +95,22 @@ class PaymentModule extends PLModule
         require_once 'profil.func.inc.php' ;
         require_once dirname(__FILE__).'/payment/money.inc.php' ;
 
-        $page->changeTpl('payment/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Télépaiements');
+        if (!empty($GLOBALS['IS_XNET_SITE'])) {
+            if (!$globals->asso('id')) {
+                return PL_NOT_FOUND;
+            }
+            $res = XDB::query("SELECT asso_id
+                                 FROM paiement.paiements
+                                WHERE asso_id = {?} AND id = {?}",
+                              $globals->asso('id'), $ref);
+            if (!$res->numRows()) {
+                return PL_FORBIDDEN;
+            }
+            new_group_page('payment/index.tpl');
+        } else {
+            $page->changeTpl('payment/index.tpl');
+            $page->assign('xorg_title','Polytechnique.org - Télépaiements');
+        }
 
         // initialisation
         $op   = Env::v('op', 'select');
@@ -169,8 +188,9 @@ class PaymentModule extends PLModule
         }
 
         echo ($ref = $matches[1]);
-        $res = XDB::query("SELECT mail,text,confirmation
-                                       FROM paiement.paiements WHERE id={?}", $ref);
+        $res = XDB::query("SELECT  mail,text,confirmation
+                             FROM  paiement.paiements
+                            WHERE  id={?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
             cb_erreur("référence de commande inconnue");
         }
@@ -178,9 +198,9 @@ class PaymentModule extends PLModule
         /* on extrait le code de retour */
         if ($champ906 != "0000") {
             $res = XDB::query("SELECT  rcb.text,c.id,c.text
-                                           FROM  paiement.codeRCB AS rcb
-                                      LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
-                                          WHERE  rcb.id='$champ906'");
+                                 FROM  paiement.codeRCB AS rcb
+                            LEFT JOIN  paiement.codeC   AS c ON rcb.codeC=c.id
+                                WHERE  rcb.id='$champ906'");
             if (list($rcb_text, $c_id, $c_text) = $res->fetchOneRow()) {
                 cb_erreur("erreur lors du paiement : $c_text ($c_id)");
             } else{ 
@@ -190,8 +210,8 @@ class PaymentModule extends PLModule
 
         /* on fait l'insertion en base de donnees */
         XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle,comment)
-                                     VALUES  ({?},{?},{?},{?},{?},{?},{?})",
-                                $champ901, $uid, $ref, $champ200, $montant, $champ905,Env::v('comment'));
+                           VALUES  ({?},{?},{?},{?},{?},{?},{?})",
+                     $champ901, $uid, $ref, $champ200, $montant, $champ905,Env::v('comment'));
 
         /* on genere le mail de confirmation */
         $conf_text = str_replace("<prenom>",$prenom,$conf_text);
@@ -212,7 +232,7 @@ class PaymentModule extends PLModule
         /* on envoie les details de la transaction à telepaiement@ */
         $mymail = new HermesMailer();
         $mymail->setFrom("webmaster@polytechnique.org");
-        $mymail->addTo("telepaiement@polytechnique.org");
+        $mymail->addTo("telepaiement@staff.polytechnique.org");
         $mymail->setSubject($conf_title);
         $msg = "utilisateur : $prenom $nom ($uid)\n".
                "mail : $forlife@polytechnique.org\n\n".
@@ -228,7 +248,11 @@ class PaymentModule extends PLModule
 
     function handler_paypal_return(&$page, $uid = null)
     {
-        $page->changeTpl('payment/retour_paypal.tpl');
+        if (!empty($GLOBALS['IS_XNET_SITE'])) {
+            new_group_open_page('payment/retour_paypal.tpl');
+        } else {
+            $page->changeTpl('payment/retour_paypal.tpl');
+        }
         require_once 'diogenes/diogenes.hermes.inc.php';
 
         /* reference banque (numero de transaction) */
@@ -272,15 +296,16 @@ class PaymentModule extends PLModule
 
         $ref = $matches[1];
         $res = XDB::query("SELECT  mail,text,confirmation
-                                       FROM  paiement.paiements WHERE id={?}", $ref);
+                             FROM  paiement.paiements
+                            WHERE  id={?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
             paypal_erreur("référence de commande inconnue");
         }
 
         /* on fait l'insertion en base de donnees */
         XDB::execute("INSERT INTO  paiement.transactions (id,uid,ref,fullref,montant,cle,comment)
-                                     VALUES  ({?},{?},{?},{?},{?},{?},{?})",
-                                $no_transaction, $uid, $ref, $fullref, $montant, $clef, Env::v('comment'));
+                           VALUES  ({?},{?},{?},{?},{?},{?},{?})",
+                    $no_transaction, $uid, $ref, $fullref, $montant, $clef, Env::v('comment'));
 
         /* on genere le mail de confirmation */
         $conf_text = str_replace("<prenom>",$prenom,$conf_text);
@@ -316,6 +341,108 @@ class PaymentModule extends PLModule
         $page->assign('texte', $conf_text);
         $page->assign('erreur', $erreur);
     }
+
+    function handler_xnet_payment(&$page, $pid = null)
+    {
+        global $globals;
+        
+        if (!is_null($pid)) {
+            return  $this->handler_payment($page, $pid);
+        }
+        new_group_page('payment/xnet.tpl');
+        
+        $res = XDB::query(
+                "SELECT  id, text, url
+                   FROM  {$globals->money->mpay_tprefix}paiements
+                  WHERE  asso_id = {?} AND NOT FIND_IN_SET(flags, 'old')
+               ORDER BY  id DESC", $globals->asso('id'));
+        $tit = $res->fetchAllAssoc();
+        $page->assign('titres', $tit);
+
+        $order = Env::v('order', 'timestamp');
+        $orders = array('timestamp', 'nom', 'promo', 'montant');
+        if (!in_array($order, $orders)) {
+            $order = 'timestamp';
+        }
+        $inv_order = Env::v('order_inv', 0);
+        $page->assign('order', $order);
+        $page->assign('order_inv', !$inv_order);
+
+        if ($order == 'timestamp') {
+            $inv_order = !$inv_order;
+        }
+
+        if ($inv_order) {
+            $inv_order = ' DESC';
+        } else {
+            $inv_order = '';
+        }
+        if ($order == 'montant') {
+            $order = 'LENGTH(montant) '.$inv_order.', montant';
+        }
+
+        $orderby = 'ORDER BY '.$order.$inv_order;
+        if ($order != 'nom') {
+            $orderby .= ', nom'; $inv_order = '';
+        }
+        $orderby .= ', prenom'.$inv_order;
+        if ($order != 'timestamp') {
+            $orderby .= ', timestamp DESC';
+        }
+
+        $trans = array();
+        $event = array();
+        foreach($tit as $foo) {
+            $pid = $foo['id'];
+            if (may_update()) {
+                $res = XDB::query("SELECT  IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom,
+                                           u.prenom, u.promo, a.alias, timestamp AS `date`, montant
+                                     FROM  {$globals->money->mpay_tprefix}transactions AS t
+                               INNER JOIN  auth_user_md5  AS u ON ( t.uid = u.user_id )
+                               INNER JOIN  aliases        AS a ON ( t.uid = a.id AND a.type='a_vie' )
+                                    WHERE  ref = {?} ".$orderby, $pid);
+                    $trans[$pid] = $res->fetchAllAssoc();
+                    $sum = 0;
+                    foreach ($trans[$pid] as $i => $t) {
+                        $sum += strtr(substr($t['montant'], 0, strpos($t['montant'], 'EUR')), ',', '.');
+                        $trans[$pid][$i]['montant'] = str_replace('EUR', '¤', $t['montant']);
+                    }
+                    $trans[$pid][] = array('nom' => 'somme totale',
+                                           'montant' => strtr($sum, '.', ',').' ¤');
+            }
+            $res = XDB::iterRow("SELECT e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
+                                   FROM groupex.evenements AS e
+                              LEFT JOIN groupex.evenements_participants AS ep ON (ep.eid = e.eid AND uid = {?})
+                             INNER JOIN groupex.evenements_items AS ei ON (ep.eid = ei.eid AND ep.item_id = ei.item_id)
+                                  WHERE e.paiement_id = {?}",
+                                 S::v('uid'), $pid);
+            $event[$pid] = array();
+            $event[$pid]['paid'] = 0;
+            if ($res->total()) {
+                $event[$pid]['topay'] = 0;
+                while(list($eid, $shortname, $title, $nb, $montant, $paid) = $res->next()) {
+                    $event[$pid]['topay']     += ($nb * $montant);
+                    $event[$pid]['eid']       = $eid;
+                    $event[$pid]['shortname'] = $shortname;
+                    $event[$pid]['title']     = $title;
+                    $event[$pid]['ins']       = !is_null($nb);
+                    $event[$pid]['paid']      = $paid;
+                }
+            }
+            $res = XDB::query("SELECT montant
+                                 FROM {$globals->money->mpay_tprefix}transactions AS t
+                                WHERE ref = {?} AND uid = {?}", $pid, S::v('uid'));
+            $montants = $res->fetchColumn();
+
+            foreach ($montants as $m) {
+                $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
+                $event[$pid]['paid'] += trim($p);
+            }
+        }
+        $page->assign('trans', $trans);
+        $page->assign('event', $event);
+    }
+    
     function handler_admin(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
         $page->assign('title', 'Gestion des télépaiements');

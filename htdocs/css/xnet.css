@@ -39,6 +39,21 @@ tt,pre {
     font-size: 10pt;
 }
 
+fieldset {
+    border: 1px gray solid;
+
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+legend {
+    border: 1px gray solid;
+    background: #e9e0aa;
+    color: inherit;
+
+    padding: 2px 4px;
+}
+
 a, a:link, a:visited     { text-decoration: none ; color: #5c81aa; }
 
 a img { border: none; }
@@ -236,6 +251,11 @@ th { background: #d0c198; }
 th.grayed {
     background: #d0cbb0;
     color: #666;
+}
+
+a.popup2 {
+    color: #4c618a;
+    background-color: inherit;
 }
 
 /***************************************************************************

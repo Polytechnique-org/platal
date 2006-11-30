@@ -140,7 +140,7 @@ class XnetEventsModule extends PLModule
         while ($e = $evenements->next()) {
             $e['show_participants'] = ($e['show_participants'] && (is_member() || may_update()));
             $res = XDB::query(
-                "SELECT titre, details, montant, ei.item_id, nb
+                "SELECT titre, details, montant, ei.item_id, nb, ep.paid
                    FROM groupex.evenements_items AS ei
               LEFT JOIN groupex.evenements_participants AS ep
                         ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
@@ -149,6 +149,7 @@ class XnetEventsModule extends PLModule
             $e['moments'] = $res->fetchAllAssoc();
 
             $e['topay'] = 0;
+            $e['paid']  = $e['moments'][0]['paid'];
             foreach ($e['moments'] as $m) {
                 $e['topay'] += $m['nb'] * $m['montant'];
             }
@@ -217,7 +218,7 @@ class XnetEventsModule extends PLModule
         }
 
         // impossible to unsubscribe if you already paid sthing
-        if (array_sum($subs) && $evt['paid'] != 0) {
+        if (!array_sum($subs) && $evt['paid'] != 0) {
             $page->trig("Impossible de te désinscrire complètement ".
                         "parce que tu as fait un paiement par ".
                         "chèque ou par liquide. Contacte un ".

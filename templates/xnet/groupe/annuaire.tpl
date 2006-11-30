@@ -97,9 +97,9 @@ Tu peux également :
     <td>
       {if $m.admin}<strong>{/if}
       {if $m.inscrit}
-      <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2" style="color: #4c618a;">
+      <a href="https://www.polytechnique.org/profile/{$m.email}" class="popup2">
       {elseif $m.x}
-      <a href="https://www.polytechnique.org/marketing/public/{$m.uid}" style="color: #4c618a;">
+      <a href="https://www.polytechnique.org/marketing/public/{$m.uid}">
       {/if}
       {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}
       {if $m.x}</a>{/if} 

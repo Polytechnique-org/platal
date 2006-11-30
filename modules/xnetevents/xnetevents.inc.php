@@ -68,7 +68,7 @@ function get_event_detail($eid, $item_id = false)
     }
 
     $res = XDB::query(
-        "SELECT titre, details, montant, ei.item_id, nb
+        "SELECT titre, details, montant, ei.item_id, nb, ep.paid
            FROM groupex.evenements_items        AS ei
       LEFT JOIN groupex.evenements_participants AS ep
                 ON (ep.eid = ei.eid AND ep.item_id = ei.item_id AND uid = {?})
@@ -77,10 +77,13 @@ function get_event_detail($eid, $item_id = false)
     $evt['moments'] = $res->fetchAllAssoc();
 
     $evt['topay'] = 0;
+    $evt['paid'] = 0;
     foreach ($evt['moments'] as $m) {
         $evt['topay'] += $m['nb'] * $m['montant'];
-        if ($m['montant'])
+        if ($m['montant']) {
             $evt['money'] = true;
+        }
+        $evt['paid']  = $m['paid'];
     }
 
     $req = XDB::query(
@@ -89,7 +92,6 @@ function get_event_detail($eid, $item_id = false)
          WHERE ref = {?} AND uid = {?}", $evt['paiement_id'], S::v('uid'));
     $montants = $req->fetchColumn();
 
-    $evt['paid'] = 0;
     foreach ($montants as $m) {
         $p = strtr(substr($m, 0, strpos($m, 'EUR')), ',', '.');
         $evt['paid'] += trim($p);

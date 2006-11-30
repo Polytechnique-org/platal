@@ -34,8 +34,8 @@
     <td>{$pay->text}</td>
   </tr>
   <tr>
-    <td><b>Montant (euros)</b></td>
-    <td>{$montant}</td>
+    <td><b>Montant</b></td>
+    <td>{$montant} &euro;</td>
   </tr>
 {if $comment}
   <tr>
@@ -116,10 +116,14 @@ function payment_submit(form)
     <tr>
       <td>Transaction</td>
       <td>
+        {if $asso}
+        <strong>{$pay->text}</strong><input type="hidden" name="ref" value="{$pay->id}" />
+        {else}
         <select name="ref" onchange="payment_submit(this.form)">
           {select_db_table table="`$prefix`paiements" valeur=$pay->id where="WHERE FIND_IN_SET('old',t.flags)=0"
                            join="LEFT JOIN groupex.asso AS g ON (t.asso_id = g.id)" group="g.nom"}
         </select>
+        {/if}
         {if $pay->url}
         <br />
         <a href="{$pay->url}">plus d'informations</a>
@@ -135,8 +139,8 @@ function payment_submit(form)
       </td>
     </tr>
     <tr>
-      <td>Montant (euros)</td>
-      <td><input type="text" name="montant" size="13" class='right' value="{$montant}" /></td>
+      <td>Montant</td>
+      <td><input type="text" name="montant" size="13" class='right' value="{$montant}" /> &euro;</td>
     </tr>
     <tr>
       <td>Commentaire</td>

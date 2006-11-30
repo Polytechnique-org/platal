@@ -32,13 +32,13 @@
 {if $updated}
 <p class='error'>
   La modification de l'inscription a été prise en compte !
-  {if $updated.topay}
-    <br/>N'oublie pas de payer {$updated.topay|replace:'.':','}&nbsp;&euro;
+  {if $updated.topay > $updated.paid}
+    <br/>N'oublie pas de payer {math equation="a-b" a=$updated.topay b=$updated.paid}&nbsp;&euro;
     {if $updated.paid > 0}
     (tu as déjà payé {$updated.paid|replace:'.':','}&nbsp;&euro;)
     {/if}
     {if $updated.paiement_id}
-    [<a href="https://www.polytechnique.org/payment/{$updated.paiement_id}?montant={$updated.topay}">
+    [<a href="{$platal->ns}payment/{$updated.paiement_id}?montant={math equation="a-b" a=$updated.topay b=$updated.paid}">
     Payer en ligne</a>]
     {/if}
   {/if}
@@ -155,14 +155,18 @@
 
       {if $e.topay}
       <span class="error">
-      Tu dois payer {$e.topay|replace:'.':','}&nbsp;&euro;
-      {if $e.paid > 0}
-      (tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;)
-      {/if}
-      {if $e.paiement_id}
-        [<a href="https://www.polytechnique.org/payment/{$e.paiement_id}?montant={$e.topay}}">
+        {if !$e.paid}
+        Tu dois payer {$e.topay|replace:'.':','}&nbsp;&euro;.
+        {elseif $e.paid < $e.topay}
+        Tu dois encore payer {math equation="a-b" a=$e.topay b=$e.paid|replace:'.':','}&nbsp;&euro;
+        (tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;)
+        {else}
+        Tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
+        {/if}
+        {if $e.paiement_id &&  $e.paid < $e.topay}
+        [<a href="{$platal->ns}payment/{$e.paiement_id}?montant={math equation="a-b" a=$e.topay b=$e.paid}">
         Payer en ligne</a>]
-      {/if}
+        {/if}
       </span>
       {/if}
     </td>
