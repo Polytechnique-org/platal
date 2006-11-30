@@ -49,7 +49,8 @@ class PLTableEditor {
      * $idfield : the field of the table which is the id, ex: id
      * $editid : is the id editable or not (if not, it is considered as an int)
      */
-    function PLTableEditor($plname, $table, $idfield, $editid=false) {
+    function PLTableEditor($plname, $table, $idfield, $editid=false)
+    {
         $this->pl = $plname;
         $this->table = $table;
         $this->idfield = $idfield;
@@ -88,6 +89,15 @@ class PLTableEditor {
             $this->vars[$a['Field']] = $a;
         }
         $this->vars[$idfield]['desc'] = 'id';
+    }
+    // called before creating a new entry
+    function prepare_new()
+    {
+        $entry = array();
+        foreach ($this->vars as $field => $descr) {
+            $entry[$field] = $descr['Default'];
+        }
+        return $this->prepare_edit($entry);
     }
     // called before editing $entry
     function prepare_edit(&$entry) {
@@ -168,6 +178,7 @@ class PLTableEditor {
             if (!$this->idfield_editable) {
                 $r = XDB::query("SELECT MAX({$this->idfield})+1 FROM {$this->table}");
                 $page->assign('id', $r->fetchOneCell());
+                $page->assign('entry', $this->prepare_new());
             }
             $list = false;
         }
