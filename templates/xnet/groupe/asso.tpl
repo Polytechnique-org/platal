@@ -65,7 +65,7 @@
       M'inscrire :
     </td>
     <td>
-      <a href="{$platal->ns}subscribe">m'inscrire</a>
+      <a href="{if $asso.sub_url}{$asso.sub_url}{else}{$platal->ns}subscribe{/if}">m'inscrire</a>
     </td>
   </tr>
   {/if}
