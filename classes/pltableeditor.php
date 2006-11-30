@@ -75,7 +75,12 @@ class PLTableEditor {
             elseif (substr($a['Type'],0,4) == 'set(') {
                 // get the list of options
                 $a['List'] = explode('§',str_replace("','","§",substr($a['Type'], 5, strlen($a['Type']) - 7)));
-                $a['Type'] = 'set';
+                if (count($a['List']) == 1) {
+                    $a['Type'] = 'checkbox';
+                    $a['Value'] = $a['List'][0];
+                } else {
+                    $a['Type'] = 'set';
+                } 
             }
             elseif (substr($a['Type'],0,5) == 'enum(') {
                 // get the list of options
@@ -196,6 +201,8 @@ class PLTableEditor {
                         $val .= $option;
                     }
                     $val = "'".addslashes($val)."'";
+                } elseif ($descr['Type'] == 'checkbox') {
+                    $val = Post::has($field)?"'".addslashes($descr['Value'])."'":"''";
                 } elseif (Post::has($field)) {
                     $val = Post::v($field);
                     if ($descr['Type'] == 'timestamp') {
