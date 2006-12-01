@@ -521,11 +521,11 @@ class AdminModule extends PLModule
                 }
             }
 
-            $res = XDB::query("SELECT  UNIX_TIMESTAMP(start), host
-                                           FROM  logger.sessions
-                                          WHERE  uid={?} AND suid=0
-                                       ORDER BY  start DESC
-                                          LIMIT  1", $mr['user_id']);
+            $res = XDB::query("SELECT  start, host
+                                 FROM  logger.sessions
+                                WHERE  uid={?} AND suid=0
+                             ORDER BY  start DESC
+                                LIMIT  1", $mr['user_id']);
             list($lastlogin,$host) = $res->fetchOneRow();
             $page->assign('lastlogin', $lastlogin);
             $page->assign('host', $host);
@@ -567,15 +567,15 @@ class AdminModule extends PLModule
             // on examine l'op a effectuer
             switch ($op) {
                 case 'mail':
-        	    send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
-        	    switch_bestalias($target, $loginbis);
+                send_warning_homonyme($prenom, $nom, $forlife, $loginbis);
+                switch_bestalias($target, $loginbis);
                     $op = 'list';
                     break;
                 case 'correct':
-        	    switch_bestalias($target, $loginbis);
+                switch_bestalias($target, $loginbis);
                     XDB::execute("UPDATE aliases SET type='homonyme',expire=NOW() WHERE alias={?}", $loginbis);
                     XDB::execute("REPLACE INTO homonymes (homonyme_id,user_id) VALUES({?},{?})", $target, $target);
-        	    send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
+                send_robot_homonyme($prenom, $nom, $forlife, $loginbis);
                     $op = 'list';
                     break;
             }
@@ -647,15 +647,15 @@ class AdminModule extends PLModule
             $res = XDB::iterRow("SELECT user_id,matricule,nom,prenom,deces FROM auth_user_md5 WHERE promo = {?}", $promo);
             while (list($uid,$mat,$nom,$prenom,$deces) = $res->next()) {
                 $val = Env::v($mat);
-        	if($val == $deces || empty($val)) continue;
-        	XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
-        	$new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
-        	if($deces=='0000-00-00' or empty($deces)) {
-        	    require_once('notifs.inc.php');
-        	    register_watch_op($uid, WATCH_DEATH, $val);
-        	    require_once('user.func.inc.php');
-        	    user_clear_all_subs($uid, false);	// by default, dead ppl do not loose their email
-        	}
+            if($val == $deces || empty($val)) continue;
+            XDB::execute('UPDATE auth_user_md5 SET deces={?} WHERE matricule = {?}', $val, $mat);
+            $new_deces[] = array('name' => "$prenom $nom", 'date' => "$val");
+            if($deces=='0000-00-00' or empty($deces)) {
+                require_once('notifs.inc.php');
+                register_watch_op($uid, WATCH_DEATH, $val);
+                require_once('user.func.inc.php');
+                user_clear_all_subs($uid, false);   // by default, dead ppl do not loose their email
+            }
             }
             $page->assign('new_deces',$new_deces);
         }
