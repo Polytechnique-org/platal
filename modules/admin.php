@@ -258,7 +258,7 @@ class AdminModule extends PLModule
 
             $page->assign('session', $a = $res->fetchOneAssoc());
 
-            $res = XDB::iterator('SELECT  a.text, e.data, UNIX_TIMESTAMP(e.stamp) AS stamp
+            $res = XDB::iterator('SELECT  a.text, e.data, e.stamp
                                     FROM  logger.events  AS e
                                LEFT JOIN  logger.actions AS a ON e.action=a.id
                                    WHERE  e.session={?}', $arg);
@@ -308,7 +308,7 @@ class AdminModule extends PLModule
 
                 // get the requested sessions
                 $where  = $this->_makeWhere($year, $month, $day, $loguid);
-                $select = "SELECT  s.id, UNIX_TIMESTAMP(s.start) as start, s.uid,
+                $select = "SELECT  s.id, s.start, s.uid,
                                    a.alias as username
                              FROM  logger.sessions AS s
                         LEFT JOIN  aliases         AS a  ON (a.id = s.uid AND a.type='a_vie')
