@@ -285,16 +285,13 @@ class EmailModule extends PLModule
             if (empty($to) && empty($cc) && empty($to2)) {
                 $page->trig("Indique au moins un destinataire.");
             } else {
-                require_once("diogenes/diogenes.hermes.inc.php");
-
-                $mymail = new HermesMailer();
+                $mymail = new PlMailer();
                 $mymail->setFrom($from);
                 $mymail->setSubject($subj);
                 if (!empty($to))  { $mymail->addTo($to); }
                 if (!empty($cc))  { $mymail->addCc($cc); }
                 if (!empty($bcc)) { $mymail->addBcc($bcc); }
                 if (!empty($to2)) { $mymail->addTo($to2); }
-                $mymail->addHeader('X-XOrg-Login', S::v('bestalias') . '@' . $globals->mail->domain);
                 $mymail->setTxtBody(wordwrap($txt,72,"\n"));
                 if ($mymail->send()) {
                     $page->trig("Ton mail a bien été envoyé.");
@@ -357,8 +354,7 @@ consulter la page <{$globals->baseurl}/emails/broken>.
 A bientôt sur Polytechnique.org !
 L'équipe d'administration <support@polytechnique.org>";
 
-                require_once("diogenes/diogenes.hermes.inc.php");
-                $mail = new HermesMailer();
+                $mail = new PlMailer();
                 $mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
                 $mail->addTo("$dest@polytechnique.org");
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");

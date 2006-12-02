@@ -29,10 +29,9 @@ function select_if_homonyme($uid) {
 }
 
 function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
-    require_once("diogenes/diogenes.hermes.inc.php");
     $cc = "support+homonyme@polytechnique.org";
     $FROM = "\"Support Polytechnique.org\" <$cc>";
-    $mymail = new HermesMailer();
+    $mymail = new PlMailer();
     $mymail->setFrom($FROM);
     $mymail->setSubject("Dans 2 semaines, suppression de $loginbis@polytechnique.org");
     $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");
@@ -42,10 +41,9 @@ function send_warning_homonyme($prenom, $nom, $forlife, $loginbis) {
 }
 
 function send_robot_homonyme($prenom, $nom, $forlife, $loginbis) {
-    require_once("diogenes/diogenes.hermes.inc.php");
     $cc = "support+homonyme@polytechnique.org";
     $FROM = "\"Support Polytechnique.org\" <$cc>";
-    $mymail = new HermesMailer();
+    $mymail = new PlMailer();
     $mymail->setFrom($FROM);
     $mymail->setSubject("Mise en place du robot $loginbis@polytechnique.org");
     $mymail->addTo("$prenom $nom <$forlife@polytechnique.org>");

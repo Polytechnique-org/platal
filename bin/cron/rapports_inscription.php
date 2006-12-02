@@ -45,8 +45,8 @@ $MESSAGE .= "    $a utilisateurs\n    $b adresses mails\n";
 
 $MESSAGE .= "\n\n";
 
-require_once('diogenes/diogenes.hermes.inc.php');
-$mailer = new HermesMailer();
+require_once('../../classes/plmailer.php');
+$mailer = new PlMailer();
 $mailer->setSubject("$a confirmées, $b en attente et $c sollicitées");
 $mailer->setFrom('register@polytechnique.org');
 $mailer->addTo('register@polytechnique.org');

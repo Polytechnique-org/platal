@@ -476,8 +476,7 @@ class XnetGrpModule extends PLModule
                     XDB::execute("INSERT INTO groupex.membres
                                             VALUES ({?}, {?}, 'membre', 'X', NULL, NULL, NULL, NULL, NULL)",
                                             $globals->asso('id'), $uid);
-                    require_once 'diogenes/diogenes.hermes.inc.php';
-                    $mailer = new HermesMailer();
+                    $mailer = new PlMailer();
                     $mailer->addTo("$u@polytechnique.org");
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                                      .'" <'.S::v('forlife').'@polytechnique.org>');
@@ -495,8 +494,7 @@ class XnetGrpModule extends PLModule
                 }
                 elseif (Env::has('refuse'))
                 {
-                    require_once 'diogenes/diogenes.hermes.inc.php';
-                    $mailer = new HermesMailer();
+                    $mailer = new PlMailer();
                     $mailer->addTo("$u@polytechnique.org");
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                                      .'" <'.S::v('forlife').'@polytechnique.org>');
@@ -554,8 +552,7 @@ class XnetGrpModule extends PLModule
                         ." résoudre ce problème.\n";
             }
 
-            require_once 'diogenes/diogenes.hermes.inc.php';
-            $mailer = new HermesMailer();
+            $mailer = new PlMailer();
             $mailer->addTo($to);
             $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                              .'" <'.S::v('forlife').'@polytechnique.org>');

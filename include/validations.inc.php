@@ -182,8 +182,7 @@ class Validate
 
             // envoi d'un mail à hotliners
             global $globals;
-            require_once('diogenes/diogenes.hermes.inc.php');
-            $mailer = new HermesMailer;
+            $mailer = new PlMailer;
             $mailer->setSubject("Commentaires de validation {$this->type}");
             $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
             $mailer->addTo("hotliners@staff.polytechnique.org");
@@ -233,8 +232,7 @@ class Validate
     function sendmail($isok)
     {
         global $globals;
-        require_once('diogenes/diogenes.hermes.inc.php');
-        $mailer = new HermesMailer;
+        $mailer = new PlMailer();
         $mailer->setSubject($this->_mail_subj());
         $mailer->setFrom("validation+{$this->type}@{$globals->mail->domain}");
         $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");

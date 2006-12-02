@@ -269,8 +269,7 @@ class PlatalModule extends PLModule
             $res   = XDB::query('SELECT email FROM emails WHERE uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
             $mails = implode(', ', $res->fetchColumn());
 
-            require_once "diogenes/diogenes.hermes.inc.php";
-            $mymail = new HermesMailer();
+            $mymail = new PlMailer();
             $mymail->setFrom('"Gestion des mots de passe" <support+password@polytechnique.org>');
             $mymail->addTo($mails);
             $mymail->setSubject('Ton certificat d\'authentification');

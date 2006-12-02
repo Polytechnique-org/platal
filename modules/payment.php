@@ -21,7 +21,7 @@
 
 /* sort en affichant une erreur */
 function cb_erreur($text) {
-    $mymail = new HermesMailer();
+    $mymail = new PlMailer();
     $mymail->addTo("telepaiement@polytechnique.org");
     $mymail->setFrom("webmaster@polytechnique.org");
     $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
@@ -37,7 +37,7 @@ function paypal_erreur($text, $send=true) {
     $erreur = $text;
     if (!$send) return;
 
-    $mymail = new HermesMailer();
+    $mymail = new PlMailer();
     $mymail->addTo("telepaiement@polytechnique.org");
     $mymail->setFrom("webmaster@polytechnique.org");
     $mymail->setSubject("erreur lors d'un télépaiement (PayPal)");
@@ -153,8 +153,6 @@ class PaymentModule extends PLModule
 
     function handler_cyber_return(&$page, $uid = null)
     {
-        require_once 'diogenes/diogenes.hermes.inc.php';
-
         /* reference banque (numero de transaction) */
         $champ901 = clean_request('CHAMP901');
         /* cle d'acceptation */
@@ -221,7 +219,7 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
         $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
 
-        $mymail = new HermesMailer();
+        $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
         $mymail->addTo("\"$prenom $nom\" <$forlife@polytechnique.org>");
         $mymail->addCc($conf_mail);
@@ -230,7 +228,7 @@ class PaymentModule extends PLModule
         $mymail->send();
 
         /* on envoie les details de la transaction à telepaiement@ */
-        $mymail = new HermesMailer();
+        $mymail = new PlMailer();
         $mymail->setFrom("webmaster@polytechnique.org");
         $mymail->addTo("telepaiement@staff.polytechnique.org");
         $mymail->setSubject($conf_title);
@@ -253,7 +251,6 @@ class PaymentModule extends PLModule
         } else {
             $page->changeTpl('payment/retour_paypal.tpl');
         }
-        require_once 'diogenes/diogenes.hermes.inc.php';
 
         /* reference banque (numero de transaction) */
         $no_transaction = clean_request('tx');
@@ -315,7 +312,7 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
         $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
 
-        $mymail = new HermesMailer();
+        $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
         $mymail->addTo("\"$prenom $nom\" <$forlife@polytechnique.org>");
         $mymail->addCc($conf_mail);
@@ -324,7 +321,7 @@ class PaymentModule extends PLModule
         $mymail->send();
 
         /* on envoie les details de la transaction à telepaiement@ */
-        $mymail = new HermesMailer();
+        $mymail = new PlMailer();
         $mymail->setFrom("webmaster@polytechnique.org");
         $mymail->addTo("telepaiement@polytechnique.org");
         $mymail->setSubject($conf_title);

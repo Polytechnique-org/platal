@@ -99,8 +99,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     {
         if (!$isok) return false;
         global $globals;
-        require_once('diogenes/diogenes.hermes.inc.php');
-        $mailer = new HermesMailer;
+        $mailer = new PlMailer;
         $cc = "support+homonyme@".$globals->mail->domain;
         $FROM = "\"Support Polytechnique.org\" <$cc>";
         $mailer->setSubject($this->_mail_subj());

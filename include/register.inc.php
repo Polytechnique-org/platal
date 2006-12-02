@@ -193,8 +193,7 @@ function create_aliases (&$sub)
             $res = XDB::query("SELECT alias FROM aliases WHERE id={?} AND expire IS NULL", $h_id);
             $als = $res->fetchColumn();
 
-            require_once('diogenes/diogenes.hermes.inc.php');
-            $mailer = new HermesMailer();
+            $mailer = new PlMailer();
             $mailer->setFrom('"Support Polytechnique.org" <support@polytechnique.org>');
             $mailer->addTo("$mailorg@polytechnique.org");
             $mailer->setSubject("perte de ton alias $mailorg dans un mois !");
@@ -244,8 +243,7 @@ function create_aliases (&$sub)
 
 function send_alert_mail($state, $body)
 {
-    require_once("diogenes/diogenes.hermes.inc.php");
-    $mailer = new HermesMailer();
+    $mailer = new PlMailer();
     $mailer->setFrom("webmaster@polytechnique.org");
     $mailer->addTo("hotliners@staff.polytechnique.org");
     $mailer->setSubject("ALERTE LORS DE L'INSCRIPTION de "
@@ -276,8 +274,7 @@ function finish_ins($sub_state)
                    VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, NOW(), 0, {?}, {?})",
             $uid, $forlife, $bestalias, $mailorg2, $pass_encrypted, $email, $naissance, $hash);
 
-    require_once('xorg.mailer.inc.php');
-    $mymail = new XOrgMailer('register/inscrire.mail.tpl');
+    $mymail = new PlMailer('register/inscrire.mail.tpl');
     $mymail->assign('mailorg', $bestalias);
     $mymail->assign('lemail',  $email);
     $mymail->assign('pass',    $pass);

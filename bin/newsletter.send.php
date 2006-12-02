@@ -20,8 +20,9 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require('./connect.db.inc.php');
-require("newsletter.inc.php");
+require_once('./connect.db.inc.php');
+require_once('../classes/plmailer.php');
+require_once("newsletter.inc.php");
 
 $opt = getopt('i:h');
 

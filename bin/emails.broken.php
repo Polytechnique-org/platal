@@ -104,8 +104,8 @@ d'accéder au site, rends toi sur la page
 elle te permettra de créer un nouveau mot de passe après avoir rentré ton
 login ({$x['alias']}) et ta date de naissance !";
 
-            require_once("diogenes/diogenes.hermes.inc.php");
-            $mail = new HermesMailer();
+            require_once('../classes/plmailer.php');
+            $mail = new PlMailer();
             $mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
             $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@polytechnique.org>");
             $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");

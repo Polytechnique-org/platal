@@ -404,8 +404,7 @@ class ListsModule extends PLModule
                         ."    Sujet : « {$mail['subj']} »\n"
                         ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
                         .$append;
-            require_once 'diogenes/diogenes.hermes.inc.php';
-            $mailer = new HermesMailer();
+            $mailer = new PlMailer();
             $mailer->addTo("$liste-owner@{$domain}");
             $mailer->setFrom("$liste-bounces@{$domain}");
             $mailer->addHeader('Reply-To', "$liste-owner@{$domain}");

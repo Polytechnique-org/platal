@@ -486,8 +486,7 @@ class AdminModule extends PLModule
                     if (XDB::execute($query)) {
                             user_reindex($mr['user_id']);
 
-                            require_once("diogenes/diogenes.hermes.inc.php");
-                            $mailer = new HermesMailer();
+                            $mailer = new PlMailer();
                             $mailer->setFrom("webmaster@polytechnique.org");
                             $mailer->addTo("web@polytechnique.org");
                             $mailer->setSubject("INTERVENTION de ".S::v('forlife'));
@@ -510,8 +509,7 @@ class AdminModule extends PLModule
                     case "u_kill":
                         user_clear_all_subs($mr['user_id']);
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
-                        require_once("diogenes/diogenes.hermes.inc.php");
-                        $mailer = new HermesMailer();
+                        $mailer = new PlMailer();
                         $mailer->setFrom("webmaster@polytechnique.org");
                         $mailer->addTo("web@polytechnique.org");
                         $mailer->setSubject("INTERVENTION de ".S::v('forlife'));

@@ -3,9 +3,13 @@ VERSION 0.9.13                                                        ?? ?? 2007
 
 New:
 
+    * Core:
+        - New mailer                                                       -FRU
+
     * Events:
         - Tips.                                                         -FRU/Car
         - Signal bug send to OTRS and not trackers.                        -Car
+        - Reskin the newsletter                                            -mYk
 
     * Payment:
         - Directly integrated into Xnet.                                   -FRU
@@ -863,9 +867,10 @@ ACRONYMS:
     * Car: Pascal Corpet        (Caribou)   <pascal.corpet@m4x.org>
     * CAT: Florian El Ahdab     (LeChat)    <florian.el-ahdab@m4x.org>
     * FAL: Raphaël Marichez     (Falco)     <raphael.marichez@m4x.org>
-    * FRU: Florent Bruneau      (fruneau)   <florent.bruneau@m4x.org>
+    * FRU: Florent Bruneau      (Fruneau)   <florent.bruneau@m4x.org>
     * JS : Jean Sébastien Bedo              <jean-sebastien.bedo@m4x.org>
     * MC : Pierre Habouzit      (MadCoder)  <pierre.habouzit@m4x.org>
+    * mYk: Aymeric Augusting    (mYk)       <aymeric.augustin@m4x.org>
     * OG : Olivier Guillaumin               <olivier.guillaumin@m4x.org>
     * SHK: Jeremy Lainé         (Sharky)    <jeremy.laine@m4x.org>
     * VP : Vincent Palatin                  <vincent.palatin@m4x.org>

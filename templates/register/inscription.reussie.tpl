@@ -21,6 +21,7 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="inscription"}
+{if !$html_version}
 {from full=#from#}
 {to addr="$forlife@polytechnique.org"}
 {subject text="Bienvenue parmi les X sur le web !"}
@@ -37,4 +38,5 @@ diffusion, aux infos promo, etc. N'oublie pas de mettre ta fiche-annuaire
 --
 Polytechnique.org
 "Le portail des élèves & anciens élèves de l'Ecole polytechnique"
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

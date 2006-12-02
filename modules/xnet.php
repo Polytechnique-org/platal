@@ -42,8 +42,7 @@ class XnetModule extends PLModule
         $page->addJsLink('close_on_esc.js');
         if (Env::has('send')) {
             $page->assign('bug_sent',1);
-            require_once "diogenes/diogenes.hermes.inc.php";
-            $mymail = new HermesMailer();
+            $mymail = new PlMailer();
             $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
             $mymail->addTo('support+platal@polytechnique.org');
             $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));

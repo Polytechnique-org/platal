@@ -264,8 +264,7 @@ class RegisterModule extends PLModule
         global $platal;
         $platal->on_subscribe($forlife, $uid, $promo, $password);
 
-        require_once('xorg.mailer.inc.php');
-        $mymail = new XOrgMailer('register/inscription.reussie.tpl');
+        $mymail = new PlMailer('register/inscription.reussie.tpl');
         $mymail->assign('forlife', $forlife);
         $mymail->assign('prenom', $prenom);
         $mymail->send();
@@ -287,8 +286,7 @@ class RegisterModule extends PLModule
         XDB::execute("UPDATE register_mstats SET success=NOW() WHERE uid={?}", $uid);
 
         while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
-            require_once('diogenes/diogenes.hermes.inc.php');
-            $mymail = new HermesMailer();
+            $mymail = new PlMailer();
             $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
             $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
             $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");

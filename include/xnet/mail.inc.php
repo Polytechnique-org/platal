@@ -19,8 +19,6 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-require_once 'diogenes/diogenes.hermes.inc.php';
-
 // {{{ get_all_redirects
 
 function get_all_redirects($membres, $mls, &$client)
@@ -103,10 +101,9 @@ function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null)
     global $globals;
     $sent = array();
 
-    $mailer = new HermesMailer();
+    $mailer = new PlMailer();
     $mailer->setSubject($sujet);
     $mailer->setFrom($from);
-    $mailer->addHeader('X-Xorg-Login', S::v('bestalias') . '@' . $globals->mail->domain);
 
     foreach ($tos as $user) {
         if ($sent[$user['email']]) continue;

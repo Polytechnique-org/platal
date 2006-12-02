@@ -349,23 +349,22 @@ EOF;
     function sendTo($prenom, $nom, $login, $sex, $html)
     {
         global $globals;
-    require_once('diogenes/diogenes.hermes.inc.php');
 
-    $mailer = new HermesMailer();
-    $mailer->setFrom($globals->newsletter->from);
-    $mailer->setSubject($this->title(true));
-    $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
+        $mailer = new PlMailer();
+        $mailer->setFrom($globals->newsletter->from);
+        $mailer->setSubject($this->title(true));
+        $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
         if (!empty($globals->newsletter->replyto)) {
             $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
         }
         if (!empty($globals->newsletter->retpath)) {
             $mailer->addHeader('Return-Path',$globals->newsletter->retpath);
         }
-    $mailer->setTxtBody($this->toText($prenom,$nom,$sex));
-    if ($html) {
-        $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
-    }
-    $mailer->send();
+        $mailer->setTxtBody($this->toText($prenom,$nom,$sex));
+        if ($html) {
+            $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
+        }
+        $mailer->send();
     }
 
     // }}}

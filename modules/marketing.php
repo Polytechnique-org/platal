@@ -186,8 +186,7 @@ class MarketingModule extends PLModule
 
         $email = trim(Post::v('mail'));
         if (Post::has('valide') && strlen($email) > 0) {
-            require_once('diogenes/diogenes.hermes.inc.php');
-            $mailer = new HermesMailer();
+            $mailer = new PlMailer();
             $mailer->setFrom(S::v('bestalias') . '@polytechnique.org');
             $mailer->addTo('resetpass@polytechnique.org');
             $mailer->setSubject("Proposition d'adresse mail pour " . $user['forlife']);

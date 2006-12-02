@@ -27,7 +27,7 @@ $M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
 $R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
 
 require('./connect.db.inc.php');
-require('diogenes/diogenes.hermes.inc.php');
+require('../classes/plmailer.php');
 
 $res = XDB::query("SELECT count(stamp), sum(stamp < NOW() - $M_PERIOD), sum(stamp < NOW() - $R_PERIOD) FROM x4dat.requests");
 list($nb,$nbold,$nbveryold) = $res->fetchOneRow();
@@ -36,7 +36,7 @@ if (empty($nb)) {
     exit;
 }
 
-$mymail = new HermesMailer();
+$mymail = new PlMailer();
 $mymail->setFrom('validation@polytechnique.org');
 $mymail->addTo("validation@polytechnique.org");
 $mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuées");

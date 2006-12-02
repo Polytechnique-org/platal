@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 require_once('./connect.db.inc.php');
+require_once('../../classes/plmailer.php');
 require_once("../../include/notifs.inc.php");
-require_once("diogenes/diogenes.hermes.inc.php");
 
 $all = new AllNotifs();
 
@@ -82,7 +82,7 @@ EOF;
 </html>
 EOF;
     
-    $mailer = new HermesMailer();
+    $mailer = new PlMailer();
     $mailer->setFrom("Carnet Polytechnicien <support_carnet@polytechnique.org>");
     $mailer->addTo("\"{$u['prenom']} {$u['nom']}\" <{$u['bestalias']}@polytechnique.org>");
     $mailer->setSubject("Notifications de la semaine $week");

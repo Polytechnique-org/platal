@@ -21,6 +21,7 @@
 {**************************************************************************}
 
 {config_load file="mails.conf" section="inscrire"}
+{if !$html_version}
 {subject text="$subj"}
 {from full=#from#}
 {to addr="$lemail"}
@@ -44,5 +45,5 @@ Nous espérons que tu profiteras pleinement des services en ligne de Polytechniqu
 Bien cordialement,
 Polytechnique.org
 "Le portail des élèves & anciens élèves de l'Ecole polytechnique"
-
+{/if}
 {* vim:set et sw=2 sts=2 sws=2: *}

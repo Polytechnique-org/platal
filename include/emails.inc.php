@@ -271,8 +271,7 @@ class Redirect
                      . ". Cette adresse est surveillée avec l'état *" . $row['state']
                      . "* et la description :\n" . $row['description'];
             $message = wordwrap($message);
-            require_once("diogenes/diogenes.hermes.inc.php");
-            $mailer = new HermesMailer();
+            $mailer = new PlMailer();
             $mailer->setFrom("webmaster@polytechnique.org");
             $mailer->addTo("hotliners@staff.polytechnique.org");
             $mailer->setSubject("ALERTE LORS DE L'AJOUT DE REDIRECTION de "

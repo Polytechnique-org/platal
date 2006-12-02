@@ -78,8 +78,6 @@ function mark_text_mail($uid, $email)
 
 function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='') 
 {
-    require_once("diogenes/diogenes.hermes.inc.php");
-
     $hash = rand_url_id(12);
     XDB::execute('UPDATE register_marketing SET nb=nb+1,hash={?},last=NOW() WHERE uid={?} AND email={?}', $hash, $uid, $email);
  
@@ -94,7 +92,7 @@ function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='')
     $sender = substr($from, 1, strpos($from, '"', 2)-1);
     $text = str_replace(array("%%hash%%", "%%sender%%"), array($hash, $sender), $text);
 
-    $mailer = new HermesMailer();
+    $mailer = new PlMailer();
     $mailer->setFrom($from);
     $mailer->addTo($to);
     $mailer->setSubject($title);
@@ -107,7 +105,6 @@ function mark_send_mail($uid, $email, $perso, $to='', $title='', $text='')
 
 function relance($uid, $nbx = -1)
 {
-    require_once('xorg.mailer.inc.php');
     global $globals;
 
     if ($nbx < 0) {
@@ -131,7 +128,7 @@ function relance($uid, $nbx = -1)
     $pass_encrypted = hash_encrypt($pass);
     $fdate    = strftime('%d %B %Y', strtotime($date));
     
-    $mymail = new XOrgMailer('marketing/mail.relance.tpl');
+    $mymail = new PlMailer('marketing/mail.relance.tpl');
     $mymail->assign('nbdix',      $nbx);
     $mymail->assign('fdate',      $fdate);
     $mymail->assign('lusername',  $alias);

@@ -45,8 +45,7 @@ class BananaModule extends PLModule
                                  FROM  auth_user_md5 WHERE promo={?}", $promo);
             list($effau, $effid) = $res->fetchOneRow();
             if (5*$effau>$effid) { // + de 20% d'inscrits
-                require_once("xorg.mailer.inc.php");
-                $mymail = new XOrgMailer('mails/forums.promo.tpl');
+                $mymail = new PlMailer('mails/forums.promo.tpl');
                 $mymail->assign('promo', $promo);
                 $mymail->send();
             }
