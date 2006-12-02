@@ -186,8 +186,8 @@ class NewsLetter
         $url = 'https://www.polytechnique.org';
 
     if ($html) {
-        return '<div class="foot">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
-        .  '<div class="foot">'
+        return '<div class="foot1">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
+        .  '<div class="foot2">'
         .  "[<a href=\"$url/nl\">archives</a>&nbsp;|&nbsp;"
         .  "<a href=\"$url/nl/submit\">écrire dans la NL</a>&nbsp;|&nbsp;"
         .  "<a href=\"$url/nl/out\">ne plus recevoir</a>]"
@@ -277,10 +277,10 @@ class NewsLetter
     }
 
     foreach ($this->_arts as $cid=>$arts) {
-        $res .= "<h1 class='xorg_nl'><a id='cat$cid'></a><span>".$this->_cats[$cid].'</span></h1>';
+        $res .= "<h1 class='xorg_nl'><a id='cat$cid'></a>".$this->_cats[$cid].'</h1>';
         foreach($arts as $art) {
             $res .= $art->toHtml();
-            $res .= "<p><a href='$u#top_lnk'>Revenir au sommaire</a></p>";
+            $res .= "<div class='top_lnk'><a href='$u#top_lnk'>Revenir au sommaire</a></div>";
         }
     }
 
@@ -288,31 +288,47 @@ class NewsLetter
 
     if ($body) {
         $res = <<<EOF
-<html>
+<?xml version="1.0" encoding="iso-8859-15"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title></title>
     <style type="text/css">
     <!--
-      div.nl    { margin: auto; font-family: "Georgia","times new roman",serif; width: 60ex; text-align: justify; font-size: 10pt; }
-      div.title { margin: 2ex 0ex 2ex 0ex; padding: 1ex; width: 100%; font-size: 140%; text-align: center;
-          font-weight: bold; border-bottom: 3px red solid; border-top: 3px red solid; }
-      
-      a[href]       { text-decoration: none; }
-      a[href]:hover { text-decoration: underline; }
-      
-      div.lnk   { margin: 2ex 0ex 2ex 0ex; padding: 0ex 2ex 0ex 2ex; }
-      div.lnk a { display: block; }
-      
-      h1.xorg_nl { margin: 6ex 0ex 4ex 0ex; padding: 2px 4ex 2px 0ex; width: 60ex; font-size: 100%;
-        border-bottom: 3px red solid; border-top: 3px red solid; }
-      h2.xorg_nl { width: 100%; margin: 0ex 1ex 0ex 1ex; padding: 2px 0px 2px 0px; font-weight: bold; font-style: italic; font-size: 95%; }
-      h1.xorg_nl span { font-size: 140%; padding: 2px 1ex 2px 1ex; border-bottom: 3px red solid; }
-      h2.xorg_nl span { padding: 2px 4px 2px 4px; border-bottom: 2px yellow solid; }
-      
-      div.art   { padding: 2ex; margin: 0ex 1ex 2ex 1ex; width: 58ex; border-top: 2px yellow solid; }
-      div.app   { padding: 2ex 3ex 0ex 3ex; width: 100%; margin: 0ex; text-align: left; font-size: 95%; }
-      div.intro { padding: 2ex; }
-      div.foot  { border-top: 1px #808080 dashed; font-size: 95%; padding: 1ex; color: #808080; background: inherit;
-          text-align: center; width: 100% }
+      body      { background-color: #ddd; color: #000; }
+      div.nl    { margin: auto; width: 72ex;
+          font-family: "Georgia", "Times New Roman", serif; font-size: 11pt;
+          text-align: justify;
+          background-color: #fff; color: #000; }
+      a[href]       { text-decoration: none;
+                      background-color: #fff; color: #36c; }
+      a[href]:hover { background-color: #fff; color: #6c0; }
+
+      div.title { margin: 0ex 0ex 3ex 0ex; padding: 5ex 1ex 1ex 15ex;
+          font-size: 130%; font-weight: bold; text-align: right; 
+          background-color: #369; color: #fff;
+          background-image: url(http://carva.org/aymeric.augustin/images/poly_org_nl.png);
+          background-repeat: no-repeat; background-position: 0.5ex 0.5ex; }
+      div.intro { margin: 4ex 3ex; }
+      div.lnk   { margin: 2ex 6ex;}
+      div.lnk a { display: block; font-size: 95%; }
+      div.top_lnk   { margin: 2ex; padding: 0ex; font-size: 85%; text-align: right; }
+      h1.xorg_nl    { margin: 3ex 0ex 2ex 0ex; padding: 1.5ex 2ex 0.5ex 1ex;
+          font-size: 120%; font-weight: bold; text-align: right; 
+          background-color: #369; color: #fff; }
+      h2.xorg_nl    { margin: 2ex 0ex 0ex 0ex; padding: 0.4ex 2ex;
+          font-size: 100%; font-weight: bold; font-style: italic;
+          background-color: #fff; color: #369;
+          border-width: thin 0; border-style: solid; border-color: #369; }
+      div.art   { margin: 2ex 3ex; }
+      div.app   { margin: 2ex 6ex 0ex 3ex; font-size: 95%; text-align: left; }
+      div.foot1 { margin: 8ex 0ex 0ex 0ex; padding: 0.5ex 2ex;
+          font-size: 90%; background-color: #fff; color: #999;
+          border-width: thin 0; border-style: solid; border-color: #ddd;
+          text-align: center; }
+      div.foot2 { padding: 1ex 0ex;
+          font-size: 90%; background-color: #fff; color: #999;
+          text-align: center; }
     -->
     </style>
   </head>
@@ -416,7 +432,7 @@ class NLArticle
 
     function toHtml()
     {
-    $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a><span>".htmlentities($this->title()).'</span></h2>';
+    $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".htmlentities($this->title()).'</h2>';
     $body  = enriched_to_text($this->_body,true);
     $app   = enriched_to_text($this->_append,true);
     

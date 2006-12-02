@@ -20,90 +20,109 @@
 
 
 div.nl {
-    margin: auto;
-    font-family: "Georgia","times new roman",serif;
-    width: 64ex;
-    text-align: justify;
-    font-size: 10pt;
+    margin : auto;
+    width : 72ex;
+    font-family : "Georgia", "Times New Roman", serif;
+    font-size : 11pt;
+    text-align : justify;
+    background-color : #fff;
+    color : #000;
 }
 
-div.nl a { text-decoration: none; }
-div.nl a:hover { text-decoration: underline; }
-
-div.nl div.title {
-    margin: 2ex auto 2ex auto;
-    padding: 1ex;
-    width: 90%;
-    border: 1px black solid;
-    font-size: 140%;
-    text-align: center;
-    color: inherit;
-    color: blue;
-    background: #eeeeee;
-    border: 2px #cccccc solid;
+a[href] {
+    text-decoration : none;
+    background-color : #fff;
+    color : #36c;
 }
 
-div.nl div.lnk {
-    padding: 0ex 2ex 0ex 2ex;
-    margin: 2ex 0ex 2ex 0ex;
+a[href]:hover {
+    background-color : #fff;
+    color : #6c0;
 }
 
-div.nl div.lnk a { display: block; }
-
-div.nl h1 {
-    margin: 6ex 0ex 4ex 0ex;
-    padding: 2px 4ex 2px 0ex;
-    width: 60ex;
-    font-size: 100%;
+div.title {
+    margin : 0 0 3ex;
+    padding : 5ex 1ex 1ex 15ex;
+    font-size : 130%;
+    font-weight : bold;
+    text-align : right;
+    background-color : #369;
+    color : #fff;
+    background-image : url(http://carva.org/aymeric.augustin/images/poly_org_nl.png);
+    background-repeat : no-repeat;
+    background-position : 0.5ex 0.5ex;
 }
 
-div.nl h1 span {
-    text-decoration: none;
-    font-size: 140%;
-    padding: 2px 1ex 2px 1ex;
+div.intro {
+    margin : 4ex 3ex;
 }
 
-div.nl h2 {
-    width: 100%;
-    margin: 0ex 1ex 0ex 1ex;
-    padding: 2px 0px 2px 0px;
-    font-weight: bold;
-    font-style: italic;
-    font-size: 95%;
+div.lnk {
+    margin : 2ex 6ex;
 }
 
-div.nl h2 span {
-    color: blue;
-    background: #eeeeee;
-    text-decoration: none;
-    padding: 2px 4px 2px 4px;
+div.lnk a {
+    display : block;
+    font-size : 95%;
 }
 
-div.nl div.art {
-    padding: 2ex;
-    margin: 0ex 1ex 2ex 1ex;
-    width: 58ex;
-    border-top: 1px #cccccc solid;
+div.top_lnk {
+    margin : 2ex;
+    padding : 0;
+    font-size : 85%;
+    text-align : right;
 }
 
-div.nl div.app {
-    padding: 2ex 3ex 0ex 3ex;
-    width: 100%;
-    margin: 0ex;
-    text-align: left;
-    font-size: 95%;
+h1.xorg_nl {
+    margin : 3ex 0 2ex;
+    padding : 1.5ex 2ex 0.5ex 1ex;
+    font-size : 120%;
+    font-weight : bold;
+    text-align : right;
+    background-color : #369;
+    color : #fff;
 }
 
-div.nl div.intro {
-    padding: 2ex;
+h2.xorg_nl {
+    margin : 2ex 0 0;
+    padding : 0.4ex 2ex;
+    font-size : 100%;
+    font-weight : bold;
+    font-style : italic;
+    background-color : #fff;
+    color : #369;
+    border-width : thin 0;
+    border-style : solid;
+    border-color : #369;
 }
 
-div.nl div.foot {
-    border-top: 1px #808080 dashed;
-    font-size: 95%;
-    padding: 1ex;
-    color: #808080;
-    background: inherit;
-    text-align: center;
+div.art {
+    margin : 2ex 3ex;
+}
+
+div.app {
+    margin : 2ex 6ex 0 3ex;
+    font-size : 95%;
+    text-align : left;
+}
+
+div.foot1 {
+    margin : 8ex 0 0;
+    padding : 0.5ex 2ex;
+    font-size : 90%;
+    background-color : #fff;
+    color : #999;
+    border-width : thin 0;
+    border-style : solid;
+    border-color : #ddd;
+    text-align : center;
+}
+
+div.foot2 {
+    padding : 1ex 0;
+    font-size : 90%;
+    background-color : #fff;
+    color : #999;
+    text-align : center;
 }
 
