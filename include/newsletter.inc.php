@@ -307,7 +307,7 @@ class NewsLetter
       div.title { margin: 0ex 0ex 3ex 0ex; padding: 5ex 1ex 1ex 15ex;
           font-size: 130%; font-weight: bold; text-align: right; 
           background-color: #369; color: #fff;
-          background-image: url(http://carva.org/aymeric.augustin/images/poly_org_nl.png);
+          background-image: url(http://dev.m4x.org/images/logo_xorg_nl.png);
           background-repeat: no-repeat; background-position: 0.5ex 0.5ex; }
       div.intro { margin: 4ex 3ex; }
       div.lnk   { margin: 2ex 6ex;}
