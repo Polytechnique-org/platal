@@ -455,6 +455,7 @@ class ListsModule extends PLModule
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
                 $msg = str_replace("%(listname)s",  $liste, $msg);
 
+                $mail['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
                 $page->assign('msg', $msg);
             
                 $page->changeTpl('listes/moderate_mail.tpl');
@@ -475,6 +476,9 @@ class ListsModule extends PLModule
         }
 
         if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
+            foreach ($mails as $key=>$mail) {
+                $mails[$key]['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
+            }
             $page->assign_by_ref('subs', $subs);
             $page->assign_by_ref('mails', $mails);
         } else {
