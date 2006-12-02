@@ -59,9 +59,12 @@
   </head>
   <body>
     {include file=skin/common.devel.tpl}
-    {include file=skin/common.bandeau.tpl}
+    {if !$simple}
+      {include file=skin/common.bandeau.tpl}
+    {/if}
 
     <table id="layout" cellspacing="0" cellpadding="0">
+    {if !$simple}
       <tr>
         <td colspan="2">
         <table cellspacing="0" cellpadding="0" id="top">
@@ -107,43 +110,44 @@
         </table>
         </td>
       </tr>
+    {/if}{* fin simple *}
 
-      {if $menu}
+      {if $menu && !$simple}
       <tr>
         <td id="menu">
           {foreach from=$menu key=title item=submenu}
-          {if $title neq 'no_title'}<h1>{$title}</h1>{/if}
-          {foreach from=$submenu key=tit item=url}
-          {if is_array($url)}
-          <a href="{$url.link}" onclick="{$url.onclick}">{$tit}</a>
-          {else}
-          <a href="{$url}">{$tit}</a>
-          {/if}
-          {/foreach}
+            {if $title neq 'no_title'}<h1>{$title}</h1>{/if}
+            {foreach from=$submenu key=tit item=url}
+              {if is_array($url)}
+                <a{foreach from=$url key=var item=val} {$var}="{$val}"{/foreach}>{$tit}</a>
+              {else}
+                <a href="{$url}">{$tit}</a>
+              {/if}
+            {/foreach}
           {/foreach}
         </td>
         <td id="body">
           <div class="breadcrumb">
             <a href=".">X.net</a> »
             {if $asso}
-            <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
-            {if $asso.dom}
-            <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
-            {/if}
-            {$asso.nom}
+              <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
+              {if $asso.dom}
+                <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
+              {/if}
+              {$asso.nom}
             {elseif $cat}
-            <a href="groups/{$cat}">{$cat|cat_pp}</a> »
-            {if $dom || !$doms}
-            {if $cat eq 'promotions'}
-            Choix de la promotion
-            {else}
-            Choix de l'Asso
-            {/if}
-            {else}
-            Choix du domaine
-            {/if}
+              <a href="groups/{$cat}">{$cat|cat_pp}</a> »
+              {if $dom || !$doms}
+                {if $cat eq 'promotions'}
+                  Choix de la promotion
+                {else}
+                  Choix de l'Asso
+                {/if}
+              {else}
+                Choix du domaine
+              {/if}
             {elseif $wikipage}
-            <a href="Xnet">Documentation</a>
+              <a href="Xnet">Documentation</a>
             {/if}
           </div>
           {include file="skin/common.content.tpl"}
@@ -155,7 +159,7 @@
           {include file="skin/common.content.tpl"}
         </td>
       </tr>
-
+      {if !$simple}
       <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr>
@@ -172,7 +176,8 @@
         </td>
       </tr>
       {/if}
-
+      {/if}
+    {if !$simple}
       <tr><td colspan="2"><img src="images/barre.png" alt="----------" width="100%" /></td></tr>
 
       <tr>
@@ -212,14 +217,13 @@
           <a href="Xnet/APropos">à propos de ce site</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           {if $smarty.session.auth}
-            - <a href="send_bug" onclick="send_bug();return false">signaler un bug</a>
-            {include file=skin/common.bug.tpl}
+            - <a href="send_bug" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
           © Copyright 2000-2006 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
       </tr>
-
+    {/if}
     </table>
   </body>
 </html>

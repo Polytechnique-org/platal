@@ -77,7 +77,6 @@ class EventsModule extends PLModule
         $page->addJsLink('close_on_esc.js');
         if (Env::has('send')) {
             $page->assign('bug_sent',1);
-            
             require_once "diogenes/diogenes.hermes.inc.php";
             $mymail = new HermesMailer();
             $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
