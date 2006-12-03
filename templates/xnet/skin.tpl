@@ -30,7 +30,7 @@
     <meta name="description" content="Les associations polytechniciennes" />
     <meta name="keywords" content="Ecole polytechnique, associations polytechniciennes, groupes X, binets" />
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
-    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -188,7 +188,7 @@
               {list_all_my_groups}
               {if !$smarty.session.auth}
               <div>Me connecter :</div>
-              <a class='gp' href="{$smarty.session.loginX}">polytechnicien</a>
+              <a class='gp' href="login">polytechnicien</a>
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">
