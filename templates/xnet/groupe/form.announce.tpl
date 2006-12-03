@@ -23,7 +23,7 @@
 <table class="tinybicol" id="art{$art.id}">
   <tr>
     <th>
-      {if $logged && !$admin}
+      {if $is_logged && !$admin}
       <div style="float: right">
         {if $is_admin}
           <a href="{$platal->ns}announce/edit/{$art.id}">{icon name=page_edit title="Editer cet article"}</a>
@@ -43,7 +43,7 @@
       {/tidy}
     </td>
   </tr>
-  {if ($logged || $admin) && $art.contacts}
+  {if ($is_logged || $admin) && $art.contacts}
   <tr class="pair">
     <td class="titre">Contacts :</td>
   </tr>
