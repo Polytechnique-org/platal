@@ -14,6 +14,9 @@ New:
     * Payment:
         - Directly integrated into Xnet.                                   -FRU
 
+    * Xnet:
+        - New member class for immaterial entities                         -FRU
+
 Bug/Wish:
 
     * Register:

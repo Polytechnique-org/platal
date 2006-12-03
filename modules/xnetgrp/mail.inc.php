@@ -21,13 +21,15 @@
 
 // {{{ get_all_redirects
 
-function get_all_redirects($membres, $mls, &$client)
+function get_all_redirects($membres, $exclude, $mls, &$client)
 {
     global $globals;
     
     $tos = array();
     
-    if ($membres) {
+    if (!empty($membres)) {
+        $membres = array_map(create_function('$str', 'return "\"$str\"";'), $membres);
+        $membres = join(',', $membres);
         $res = XDB::query(
                     'SELECT  IF(u.nom <> "", u.nom, m.nom) AS nom,
                              IF(u.prenom <> "", u.prenom, m.prenom) AS prenom,
@@ -37,6 +39,7 @@ function get_all_redirects($membres, $mls, &$client)
                   LEFT JOIN  auth_user_md5   AS u ON (m.uid=u.user_id AND m.uid<50000)
                   LEFT JOIN  aliases         AS a ON (a.id=u.user_id and a.type="a_vie")
                       WHERE  asso_id = {?}
+                             AND m.origine IN (' . $membres . ')
                              AND (m.email <> "" OR u.perms <> "pending")', $globals->asso('id'));
         $tos = $res->fetchAllAssoc();
     }
@@ -90,7 +93,7 @@ function _send_xnet_mail($user, $body, $mailer, $replyto = null)
         $mailer->addHeader('Reply-To', $replyto);
     }
     $mailer->setTxtBody(wordwrap($text, 72));
-    $mailer->send();
+//    $mailer->send();
 }
 
 // }}}

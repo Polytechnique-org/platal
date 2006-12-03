@@ -20,6 +20,17 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<script type="text/javascript">
+  {literal}
+    function showInformations(box)
+    {
+        var state = (box.value == 'ext') ? '' : 'none';
+        document.getElementById('prenom').style.display = state;
+        document.getElementById('sexe').style.display = state;
+    }
+  {/literal}
+</script>
+
 <h1>{$asso.nom} : gestion des membres</h1>
 
 <p>
@@ -52,7 +63,18 @@
     {if $user.origine neq X}
     <tr class="impair">
       <td class="titre">
-        Prénom:
+        Type d'utilisateur :
+      </td>
+      <td>
+        <select name="origine" onchange="showInformations(this); return true">
+          <option value="ext" {if $user.origine eq "ext"}selected="selected"{/if}>Personne physique</option>
+          <option value="groupe" {if $user.origine eq "groupe"}selected="selected"{/if}>Personne morale</option>
+        </select>
+      </td>
+    </tr>
+    <tr id="prenom" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
+      <td class="titre">
+        Prénom :
       </td>
       <td>
         <input type="text" value="{$user.prenom}" name="prenom" size="40" />
@@ -60,15 +82,15 @@
     </tr>
     <tr class="impair">
       <td class="titre">
-        Nom:
+        Nom :
       </td>
       <td>
         <input type="text" value="{$user.nom}" name="nom" size="40" />
       </td>
     </tr>
-    <tr class="impair">
+    <tr id="sexe" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td class="titre">
-        Sexe:
+        Sexe :
       </td>
       <td>
         <select name="sexe">

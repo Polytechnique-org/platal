@@ -279,9 +279,10 @@ class XnetGrpModule extends PLModule
             $body  = Post::v('body');
 
             $mls = array_keys(Env::v('ml', array()));
+            $mbr = array_keys(Env::v('membres', array()));
 
-            require_once 'xnet/mail.inc.php';
-            $tos = get_all_redirects(Post::has('membres'), $mls, $mmlist);
+            require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
+            $tos = get_all_redirects($mbr,  $mls, $mmlist);
             send_xnet_mails($from, $sujet, $body, $tos, Post::v('replyto'));
             $page->kill("Mail envoyé !");
             $page->assign('sent', true);
@@ -302,7 +303,7 @@ class XnetGrpModule extends PLModule
         }
         $page->assign('sort', $sort);
 
-        if ($group == 'initiale')
+        if ($group == 'initiale') {
             $res = XDB::iterRow(
                         'SELECT  UPPER(SUBSTRING(
                                     IF(m.origine="X", IF(u.nom_usage<>"", u.nom_usage, u.nom),m.nom),
@@ -312,16 +313,17 @@ class XnetGrpModule extends PLModule
                           WHERE  asso_id = {?}
                        GROUP BY  letter
                        ORDER BY  letter', $globals->asso('id'));
-        else
+        } else {
             $res = XDB::iterRow(
-                        'SELECT  IF(m.origine="X",u.promo,"extérieur") AS promo,
+                        'SELECT  IF(m.origine="X",u.promo,
+                                    IF(m.origine="ext", "extérieur", "personne morale")) AS promo,
                                  COUNT(*), IF(m.origine="X",u.promo,"") AS promo_o
                            FROM  groupex.membres AS m
                       LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                           WHERE  asso_id = {?}
                        GROUP BY  promo
                        ORDER BY  promo_o DESC', $globals->asso('id'));
-
+        }
         $alphabet = array();
         $nb_tot = 0;
         while (list($char, $nb) = $res->next()) {
@@ -360,7 +362,7 @@ class XnetGrpModule extends PLModule
                            IF(u.nom_usage<>"", u.nom_usage, u.nom),
                            m.nom) LIKE "'.addslashes(Env::v('initiale')).'%"';
         } elseif (Env::has('promo')) {
-            $ini = 'AND IF(m.origine="X", u.promo, "extérieur") = "'
+            $ini = 'AND IF(m.origine="X", u.promo, IF(m.origine="ext", "extérieur", "personne morale")) = "'
                  .addslashes(Env::v('promo')).'"';
         } elseif (Env::has('admin')) {
             $ini = 'AND m.perms = "admin"';
@@ -369,7 +371,7 @@ class XnetGrpModule extends PLModule
         $ann = XDB::iterator(
                   "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
                            IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                           IF(m.origine='X',u.promo,'extérieur') AS promo,
+                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extérieur', 'personne morale')) AS promo,
                            IF(m.origine='X',u.promo,'') AS promo_o,
                            IF(m.origine='X' AND u.perms != 'pending',a.alias,m.email) AS email,
                            IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
@@ -381,7 +383,7 @@ class XnetGrpModule extends PLModule
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
                     WHERE  m.asso_id = {?} $ini
-                           AND (m.origine = 'ext' OR u.perms != 'pending' OR m.email IS NOT NULL)
+                           AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
         $page->assign('ann', $ann);
@@ -644,7 +646,7 @@ class XnetGrpModule extends PLModule
                     $uid = Env::i('userid');
                     $res = XDB::query("SELECT *
                                          FROM auth_user_md5
-                                         WHERE user_id = {?} AND perms = 'pending'", $uid);
+                                        WHERE user_id = {?} AND perms = 'pending'", $uid);
                     if ($res->numRows() == 1) {
                         XDB::execute('INSERT INTO groupex.membres (uid, asso_id, origine, email)
                                            VALUES ({?}, {?}, "X", {?})',
@@ -774,17 +776,18 @@ class XnetGrpModule extends PLModule
             $email_changed = ($user['origine'] != 'X' && strtolower($user['email']) != strtolower(Post::v('email')));
             $from_email = $user['email'];
             if ($user['origine'] != 'X') {
+                $user['nom']     = Post::v('nom');
+                $user['prenom']  = (Post::v('origine') == 'ext') ? Post::v('prenom') : '';
+                $user['sexe']    = (Post::v('origine') == 'ext') ? Post::v('sexe') : 0;
+                $user['origine'] = Post::v('origine');
                 XDB::query('UPDATE groupex.membres
-                               SET prenom={?}, nom={?}, email={?}, sexe={?}
+                               SET prenom={?}, nom={?}, email={?}, sexe={?}, origine={?}
                              WHERE uid={?} AND asso_id={?}',
-                           Post::v('prenom'), Post::v('nom'),
-                           Post::v('email'), Post::v('sexe'),
-                           $user['uid'], $globals->asso('id'));
-                $user['nom']    = Post::v('nom');
-                $user['prenom'] = Post::v('prenom');
-                $user['sexe']   = Post::v('sexe');
-                $user['email']  = Post::v('email');
-                $user['email2'] = Post::v('email');
+                           $user['prenom'], $user['nom'], Post::v('email'),
+                           $user['sexe'], $user['origine'], $user['uid'],
+                           $globals->asso('id'));
+                $user['email']   = Post::v('email');
+                $user['email2']  = Post::v('email');
             }
 
             $perms = Post::i('is_admin');
@@ -800,7 +803,7 @@ class XnetGrpModule extends PLModule
             foreach (Env::v('ml1', array()) as $ml => $state) {
                 $ask = empty($_REQUEST['ml2'][$ml]) ? 0 : 2;
                 if ($ask == $state) {
-                    if ($state) {
+                    if ($state && $email_changed) {
                         $mmlist->replace_email($ml, $from_email, $user['email2']);
                         $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour");
                     }

@@ -56,8 +56,13 @@ masculin ou féminin, par son prénom, ou son nom.
         <em>annuaire</em>
       </td>
       <td>
-        <input type="checkbox" name="membres" value="1" {if $smarty.request.membres}checked="checked"{/if} />
-        <em>écrit à tout l'annuaire du groupe</em> <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a>
+        <input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
+        <em>écrire à tous les X de l'annuaire du groupe</em><br />
+        <input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
+        <em>écrire à tous les extérieurs de l'annuaire du groupe</em><br />
+        <input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
+        <em>écrire à toutes les personnes morales de l'annuaire du groupe</em>
+        <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
       </td>
     </tr>
 
