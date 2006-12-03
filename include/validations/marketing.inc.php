@@ -47,20 +47,28 @@ class MarkReq extends Validate
         $this->perso   = $perso;
 
         $res = XDB::query('SELECT  u.nom, u.prenom, u.promo,
-                                   IF(MAX(m.last)>p.relance, MAX(m.last), p.relance)
                              FROM  auth_user_md5      AS u
                         LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
                         LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
                             WHERE  user_id = {?}
                          GROUP BY  u.user_id', $mark_id);
-        list ($this->m_nom, $this->m_prenom, $this->m_promo, $this->m_relance) = $res->fetchOneRow(); 
+        list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow(); 
     }
 
     // }}}
     // {{{ function formu()
 
     function formu()
-    { return 'include/form.valid.mark.tpl'; }
+    {
+        $res = XDB::query('SELECT  IF(MAX(m.last)>p.relance, MAX(m.last), p.relance)
+                             FROM  auth_user_md5      AS u
+                        LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
+                        LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
+                            WHERE  user_id = {?}',
+                            $this->m_id);
+        $this->m_relance = $res->fetchOneCell();
+        return 'include/form.valid.mark.tpl';
+    }
 
     // }}}
     // {{{ function _mail_subj
