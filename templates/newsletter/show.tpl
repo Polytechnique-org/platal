@@ -42,23 +42,17 @@
   </div>
 </form>
 
-<table class="bicol" cellpadding="3" cellspacing="0">
-  <tr>
-    <th>{$nl->title()}</th>
-  </tr>
-  <tr>
-    <td>
-      {if $smarty.get.text}
-      <pre>{$nl->toText($smarty.session.prenom, $smarty.session.nom, $smarty.session.femme)}</pre>
-      {else}
-      <div class='nl'>
-        {$nl->toHtml($smarty.session.prenom, $smarty.session.nom, $smarty.session.femme,
+<fieldset>
+<legend>{$nl->title(true)}</legend>
+  {if $smarty.get.text}
+  <pre style="width : 72ex; margin: auto">{$nl->toText($smarty.session.prenom, $smarty.session.nom, $smarty.session.femme)}
+  </pre>
+  {else}
+  <div class='nl'>
+    {$nl->toHtml($smarty.session.prenom, $smarty.session.nom, $smarty.session.femme,
                      false, true)|smarty:nodefaults}
-      </div>
-      {/if}
-    </td>
-  </tr>
-</table>
-
+  </div>
+  {/if}
+</fieldset>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
