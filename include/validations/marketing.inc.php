@@ -48,8 +48,6 @@ class MarkReq extends Validate
 
         $res = XDB::query('SELECT  u.nom, u.prenom, u.promo,
                              FROM  auth_user_md5      AS u
-                        LEFT JOIN  register_pending   AS p ON p.uid = u.user_id
-                        LEFT JOIN  register_marketing AS m ON m.uid = u.user_id
                             WHERE  user_id = {?}
                          GROUP BY  u.user_id', $mark_id);
         list ($this->m_nom, $this->m_prenom, $this->m_promo) = $res->fetchOneRow(); 
