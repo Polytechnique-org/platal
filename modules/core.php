@@ -53,8 +53,8 @@ class CoreModule extends PLModule
 
     function handler_favicon(&$page)
     {
-        $data = file_get_contents(dirname(__FILE__).'/../htdocs/images/favicon.png');
-        header('Content-Type: image/png');
+        $data = file_get_contents(dirname(__FILE__).'/../htdocs/images/favicon.ico');
+        header('Content-Type: image/x-icon');
         echo $data;
         exit;
     }
