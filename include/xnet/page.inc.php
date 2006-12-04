@@ -103,8 +103,8 @@ class XnetPage extends PlatalPage
                 $sub['créer un alias']      = "$dim/alias/create";
             }
             if (S::has_perms()) {
-                $sub['gérer les groupes'] = 'admin';
-                $sub['clear cache'] = 'purge_cache';
+                $sub['gérer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');
+                $sub['clear cache'] = array('href' => 'purge_cache', 'style' => 'color: gray;');
             }
             $menu['Administrer'] = $sub;
         } elseif (S::has_perms()) {

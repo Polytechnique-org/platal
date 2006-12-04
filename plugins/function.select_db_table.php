@@ -44,7 +44,7 @@ function select_options($table,$valeur,$champ="text",$pad=false,
             if (!is_null($optgrp)) {
                 $html .= '</optgroup>';
             }
-            $html .= '<optgroup label="' . addslashes(htmlentities($my_grp)) . '">';
+            $html .= '<optgroup label="' . htmlentities($my_grp, ENT_QUOTES) . '">';
             $optgrp = $my_grp;
         }
         $html .= sprintf("<option value=\"%s\" %s>%s</option>\n", 

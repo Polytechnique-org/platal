@@ -357,9 +357,11 @@ class PaymentModule extends PLModule
         $page->assign('titres', $tit);
 
         $order = Env::v('order', 'timestamp');
-        $orders = array('timestamp', 'nom', 'promo', 'montant');
+        $orders = array('timestamp', 'nom', 'promo', 'montant', 'comment');
         if (!in_array($order, $orders)) {
             $order = 'timestamp';
+        } elseif ($order == 'comment') {
+            $order = 't.comment';
         }
         $inv_order = Env::v('order_inv', 0);
         $page->assign('order', $order);
@@ -393,7 +395,7 @@ class PaymentModule extends PLModule
             $pid = $foo['id'];
             if (may_update()) {
                 $res = XDB::query("SELECT  IF(u.nom_usage<>'', u.nom_usage, u.nom) AS nom,
-                                           u.prenom, u.promo, a.alias, timestamp AS `date`, montant
+                                           u.prenom, u.promo, a.alias, timestamp AS `date`, t.comment, montant
                                      FROM  {$globals->money->mpay_tprefix}transactions AS t
                                INNER JOIN  auth_user_md5  AS u ON ( t.uid = u.user_id )
                                INNER JOIN  aliases        AS a ON ( t.uid = a.id AND a.type='a_vie' )

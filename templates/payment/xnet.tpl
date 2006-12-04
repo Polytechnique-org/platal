@@ -65,9 +65,9 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 
 {if $is_admin && $trans[$p.id]}
 <p>Liste des personnes ayant payé (pour les administrateurs uniquement)&nbsp;:</p>
-<table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='tinybicol'>
+<table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='bicol'>
   <tr>
-    <th class="center">
+    <th>
       {if $order eq 'timestamp'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
           <img src="{$platal->baseurl}images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dé{/if}croissant" />
@@ -75,7 +75,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
         <a href='{$platal->ns}payment?order=timestamp'>
       {/if}Date</a>
     </th>
-    <th colspan="2" class="center">
+    <th colspan="2">
       {if $order eq 'nom'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
@@ -83,7 +83,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
         <a href='{$platal->ns}payment?order=nom'>{/if}
       NOM Prénom</a>
     </th>
-    <th class="center">
+    <th>
       {if $order eq 'promo'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
@@ -91,7 +91,15 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
         <a href='{$platal->ns}payment?order=promo'>
       {/if}Promo</a>
     </th>
-    <th class="center">
+    <th>
+      {if $order eq 't.comment'}
+        <a href='{$platal->ns}payment?order=comment&order_inv={$order_inv}'>
+          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
+      {else}
+        <a href='{$platal->ns}payment?order=comment'>
+      {/if}Commentaire</a>
+    </th>
+    <th>
       {if $order eq 'montant'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
           <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
@@ -114,15 +122,16 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
       <a href="mailto:{$p.alias}@polytechnique.org">{icon name=email title="mail"}</a>
     </td>
     <td class="center">{$p.promo}</td>
+    <td>{$p.comment}</td>
     <td class="right">{$p.montant}</td>
   </tr>
   {elseif $smarty.foreach.people.first}
   <tr>
-    <td colspan="5" class="center">Personne n'a encore payé pour ce télépaiement</td>
+    <td colspan="6" class="center">Personne n'a encore payé pour ce télépaiement</td>
   </tr>
   {else}
   <tr class="pair">
-    <td class="right" colspan="4"><strong>Total </strong></td>
+    <td class="right" colspan="5"><strong>Total </strong></td>
     <th class="right">{$p.montant}</th>
   </tr>
   {/if}
