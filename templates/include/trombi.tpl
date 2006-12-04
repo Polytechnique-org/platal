@@ -29,7 +29,7 @@
   {/if}
     <td class="center">
       <a href="{if $urlmainsite}{$urlmainsite}{/if}profile/{$p.forlife}" class="popup2">
-        <img src="{if $urlmainsite}{$globals->baseurl}{/if}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
+        <img src="{$globals->baseurl}/photo/{$p.forlife}" width="110" alt=" [ PHOTO ] " />
       </a>
       {if $trombi_admin && $smarty.session.perms eq 'admin' && !$urlmainsite}
       <a href="admin/trombino/{$p.user_id}">
