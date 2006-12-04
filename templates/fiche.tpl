@@ -183,7 +183,12 @@ function chgMainWinLoc( strPage ) {
   </tr>
   {/if}
   {/if}
-</table>
+{if !$logged}
+<tr><td colspan="2">Cette fiche est publique et visible par tout internaute,
+vous pouvez aussi voir <a href="profile/private/{$x.forlife}">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+</td></tr>
+{/if}
 
+</table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
