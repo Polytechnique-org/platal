@@ -85,10 +85,10 @@
     <th>Infos</th>
     <th colspan="2"></th>
   </tr>
-  {foreach from=$mails item=m}
+  {foreach from=$mails item=m name=mail}
   <tr class='{cycle values="pair,impair"}'>
     <td>
-      <input type="checkbox" name="select_mails[{$m.id}]" />
+      <input type="checkbox" name="select_mails[{$m.id}]" {if $smarty.foreach.mail.total eq 1}checked="checked"{/if}/>
     </td>
     <td>
       <strong>De&nbsp;:</strong><br />
