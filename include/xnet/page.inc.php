@@ -104,11 +104,13 @@ class XnetPage extends PlatalPage
             }
             if (S::has_perms()) {
                 $sub['gérer les groupes'] = 'admin';
+                $sub['clear cache'] = 'purge_cache';
             }
             $menu['Administrer'] = $sub;
         } elseif (S::has_perms()) {
             $sub = array();
             $sub['gérer les groupes'] = 'admin';
+            $sub['clear cache'] = 'purge_cache';
             $menu['Administrer'] = $sub;
         }
 
