@@ -37,8 +37,8 @@ function user_clear_all_subs($user_id, $really_del=true)
     $alias = $res->fetchOneCell();
 
     if ($really_del) {
-	XDB::execute("DELETE FROM emails WHERE uid={?}", $uid);
-	XDB::execute("DELETE FROM newsletter_ins WHERE user_id={?}", $uid);
+    	XDB::execute("DELETE FROM emails WHERE uid={?}", $uid);
+	    XDB::execute("DELETE FROM newsletter_ins WHERE user_id={?}", $uid);
     }
 
     XDB::execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain);
@@ -51,14 +51,14 @@ function user_clear_all_subs($user_id, $really_del=true)
     XDB::execute("DELETE FROM entreprises     WHERE uid={?}", $uid);
     XDB::execute("DELETE FROM langues_ins     WHERE uid={?}", $uid);
     XDB::execute("DELETE FROM mentor_pays     WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM mentor_secteur  WHERE uid={?}", $uid);
+    XDB::execute("DELETE FROM mentor_secteurs WHERE uid={?}", $uid);
     XDB::execute("DELETE FROM mentor          WHERE uid={?}", $uid);
     XDB::execute("DELETE FROM perte_pass      WHERE uid={?}", $uid);
     XDB::execute("DELETE FROM requests        WHERE user_id={?}", $uid);
     XDB::execute("DELETE FROM user_changes    WHERE user_id={?}", $uid);
     XDB::execute("DELETE FROM watch_sub       WHERE uid={?}", $uid);
 
-    $mmlist = new MMList(S::v('id'), S::v('password'));
+    $mmlist = new MMList(S::v('uid'), S::v('password'));
     $mmlist->kill($alias, $really_del);
 }
 

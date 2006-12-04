@@ -499,6 +499,9 @@ class AdminModule extends PLModule
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
                             set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
                         }
+                        if (Env::v('decesN') != $mr['deces']) {
+                            user_clear_all_subs($mr['user_id'], false);
+                        }
                         $r = XDB::query("SELECT *, a.alias AS forlife, u.flags AS sexe
                                            FROM auth_user_md5 AS u
                                       LEFT JOIN aliases       AS a ON (a.id = u.user_id AND type= 'a_vie')
