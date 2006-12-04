@@ -33,7 +33,29 @@ class XnetModule extends PLModule
             'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
             'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
             'send_bug'  => $this->make_hook('bug',       AUTH_MDP),
+            'photo'     => $this->make_hook('photo',     AUTH_MDP),
         );
+    }
+
+    function handler_photo(&$page, $x = null)
+    {
+        if (is_null($x)) {
+            return PL_NOT_FOUND;
+        }
+
+        $res = XDB::query("SELECT attachmime, attach
+                             FROM aliases
+                       INNER JOIN photo ON(id = uid)
+                            WHERE alias = {?}", $x);
+
+        if ((list($type, $data) = $res->fetchOneRow())) {
+            Header("Content-type: image/$type");
+            echo $data;
+        } else {
+            Header('Content-type: image/png');
+            echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
+        }
+        exit;
     }
 
     function handler_bug(&$page)
