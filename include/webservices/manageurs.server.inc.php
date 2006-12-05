@@ -151,10 +151,11 @@ function get_nouveau_infos($method, $params) {
     if( !empty($params[1]) ){ // on verifie qu'on a bien un matricule
 
         $res = XDB::query(
-                "SELECT  a.nom, a.nom_usage,a.prenom,a.flags='femme' as femme ,a.deces!= 0 as decede ,a.naissance,a.promo,al.alias as mail 
-                FROM  auth_user_md5 AS a
-                INNER JOIN aliases as al ON a.user_id=al.id
-                WHERE al.flags='bestalias' and  a.matricule = {?}",$params[1]);
+            "SELECT  a.nom, a.nom_usage,a.prenom,a.flags='femme' as femme ,a.deces!= 0 as decede ,
+            a.naissance, a.promo, concat(al.alias, '@m4x.org') as mail 
+            FROM  auth_user_md5 AS a
+            INNER JOIN aliases as al ON a.user_id=al.id
+            WHERE al.flags='bestalias' and  a.matricule = {?}",$params[1]);
         $data=$res->fetchOneAssoc();
         //$data['mail'].='@polytechnique.org';
 
