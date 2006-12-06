@@ -38,6 +38,26 @@ class Xnet extends Platal
         }
     }
 
+    function find_nearest_key($key, &$array)
+    {
+        global $globals;
+        $k = parent::find_nearest_key($key, $array);
+        if (is_null($k) && in_array('%grp', array_keys($array)) && $globals->asso()) {
+            return '%grp';
+        }
+        return $k;
+    }
+
+    function list_hooks()
+    {
+        $link = parent::list_hooks();
+        if (strpos($link, '%grp') !== false) {
+            global $globals;
+            return str_replace('%grp', $globals->asso('diminutif'), $link);
+        }
+        return $link;
+    }
+
     function find_hook()
     {
         $ans = parent::find_hook();

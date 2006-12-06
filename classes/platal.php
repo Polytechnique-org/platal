@@ -87,11 +87,67 @@ class Platal
         return $hook;
     }
 
+    function find_nearest_key($key, &$array)
+    {
+        $keys = array_keys($array);
+        if (in_array($key, $keys)) {
+            return $key;
+        }
+        foreach ($keys as $k) {
+            if (strpos($key, $k) !== false || strpos($k, $key) !== false) {
+                return $k;
+            }
+        }
+        if (in_array("#final#", $keys)) {
+            return "#final#";
+        }
+        return null;
+    }
+
+    function list_hooks()
+    {
+        $hooks = array();
+        foreach ($this->__hooks as $hook=>$handler) {
+            $parts = split('/', $hook);
+            $place =& $hooks;
+            foreach ($parts as $part) {
+                if (!isset($place[$part])) {
+                    $place[$part] = array();
+                }
+                $place =& $place[$part]; 
+            }
+            $place["#final#"] = array();
+        }
+
+        $p = split('/', $this->path);
+        $place =& $hooks;
+        $link  = '';
+        $ended = false;
+        foreach ($p as $k) {
+            if (!$ended) {
+                $key = $this->find_nearest_key($k, $place);
+            }
+            if ($ended || $key == "#final#") {
+                $key = $k;
+                $ended = true;
+            }
+            if (!is_null($key)) {
+                if (!empty($link)) {
+                    $link .= '/';
+                }
+                $link .= $key;
+                $place =& $place[$key];
+            } else {
+                return null;
+            }
+        }
+        return $link;
+    }
+
     function call_hook(&$page)
     {
         $hook = $this->find_hook();
-
-        if (is_null($hook)) {
+        if (empty($hook)) {
             return PL_NOT_FOUND;
         }
 
@@ -146,6 +202,7 @@ class Platal
             break;
 
           case PL_NOT_FOUND:
+            $page->assign('near', $this->list_hooks());
             $this->__mods['core']->handler_404($page);
             break;
         }

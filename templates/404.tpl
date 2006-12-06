@@ -22,3 +22,8 @@
 
 <h1 class="erreur">Cette page n'existe pas !!!</h1>
 
+{if $near}
+<p>L'adresse suivante semble correspondre à ta demande :<br />
+<a href="{$globals->baseurl}/{$near}">{$globals->baseurl}/{$near}</a>
+</p>
+{/if}
