@@ -93,13 +93,19 @@ class Platal
         if (in_array($key, $keys)) {
             return $key;
         }
+        $val  = null;
+        $best = null;
         foreach ($keys as $k) {
-            if (strpos($key, $k) !== false || strpos($k, $key) !== false) {
-                return $k;
+            $lev = levenshtein($key, $k);
+            if ((is_null($val) || $lev < $val) && $lev < strlen($k)/2) {
+                $val  = $lev;
+                $best = $k;
             }
         }
-        if (in_array("#final#", $keys)) {
+        if (is_null($best) && in_array("#final#", $keys)) {
             return "#final#";
+        } else {
+            return $best;
         }
         return null;
     }
