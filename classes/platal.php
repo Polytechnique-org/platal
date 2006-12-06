@@ -104,7 +104,7 @@ class Platal
         return null;
     }
 
-    function list_hooks()
+    function near_hook()
     {
         $hooks = array();
         foreach ($this->__hooks as $hook=>$handler) {
@@ -126,10 +126,15 @@ class Platal
         foreach ($p as $k) {
             if (!$ended) {
                 $key = $this->find_nearest_key($k, $place);
+            } else {
+                $key = $k;
             }
-            if ($ended || $key == "#final#") {
+            if ($key == "#final#") {
                 $key = $k;
                 $ended = true;
+                if (!array_key_exists($link, $this->__hooks)) {
+                    return null;
+                }
             }
             if (!is_null($key)) {
                 if (!empty($link)) {
@@ -202,7 +207,6 @@ class Platal
             break;
 
           case PL_NOT_FOUND:
-            $page->assign('near', $this->list_hooks());
             $this->__mods['core']->handler_404($page);
             break;
         }

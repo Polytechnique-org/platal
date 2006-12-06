@@ -47,7 +47,9 @@ class CoreModule extends PLModule
 
     function handler_404(&$page)
     {
+        global $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+        $page->assign('near', $platal->near_hook());
         $page->changeTpl('404.tpl');
     }
 

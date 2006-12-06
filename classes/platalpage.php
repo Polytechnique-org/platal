@@ -279,7 +279,9 @@ function form_force_encodings($source, &$smarty)
 function _hide_email($source)
 {
     $source = str_replace("\n", '', $source);
-    return '<script type="text/javascript">Nix.decode("' . addslashes(str_rot13($source)) . '");</script>'; 
+    return '<script type="text/javascript">//<![CDATA[' . "\n" .
+           'Nix.decode("' . addslashes(str_rot13($source)) . '");' . "\n" .
+           '//]]></script>'; 
 }
 
 function hide_emails($source, &$smarty)

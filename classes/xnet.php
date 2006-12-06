@@ -48,9 +48,9 @@ class Xnet extends Platal
         return $k;
     }
 
-    function list_hooks()
+    function near_hook()
     {
-        $link = parent::list_hooks();
+        $link = parent::near_hook();
         if (strpos($link, '%grp') !== false) {
             global $globals;
             return str_replace('%grp', $globals->asso('diminutif'), $link);

@@ -25,6 +25,9 @@ New:
 
 Bug/Wish:
 
+    * Core:
+        - #558: Propose a valid URL when getting a 404 error               -FRU
+
     * Emails:
         - #512: Can attach a file                                          -FRU
 
