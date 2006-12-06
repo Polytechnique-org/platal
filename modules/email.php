@@ -274,7 +274,21 @@ class EmailModule extends PLModule
         // action si on recoit un formulaire
         if (Env::v('submit') == 'Envoyer')
         {
-            $to2  = join(', ', Env::v('contacts', Array()));
+            function getEmails($aliases)
+            {
+                if (!is_array($aliases)) {
+                    return null;
+                }
+                $rel = Env::v('contacts');
+                $ret = array();
+                foreach ($aliases as $alias) {
+                    $ret[$alias] = $rel[$alias];
+                }
+                return join(', ', $ret);
+            }
+
+            $to2  = getEmails(Env::v('to_contacts'));
+            $cc2  = getEmails(Env::v('cc_contacts'));
             $txt  = str_replace('^M', '', Env::v('contenu'));
             $to   = Env::v('to');
             $subj = Env::v('sujet');
@@ -292,6 +306,12 @@ class EmailModule extends PLModule
                 if (!empty($cc))  { $mymail->addCc($cc); }
                 if (!empty($bcc)) { $mymail->addBcc($bcc); }
                 if (!empty($to2)) { $mymail->addTo($to2); }
+                if (!empty($cc2)) { $mymail->addCc($cc2); }
+                if (isset($_FILES['uploaded'])) {
+                    $mymail->addAttachment($_FILES['uploaded']['tmp_name'],
+                                           $_FILES['uploaded']['type'],
+                                           $_FILES['uploaded']['name']);  
+                }
                 $mymail->setTxtBody(wordwrap($txt,72,"\n"));
                 if ($mymail->send()) {
                     $page->trig("Ton mail a bien été envoyé.");

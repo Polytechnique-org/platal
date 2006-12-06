@@ -93,13 +93,13 @@ function _send_xnet_mail($user, $body, $mailer, $replyto = null)
         $mailer->addHeader('Reply-To', $replyto);
     }
     $mailer->setTxtBody(wordwrap($text, 72));
-//    $mailer->send();
+    $mailer->send();
 }
 
 // }}}
 // {{{ send_xnet_mails
 
-function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null)
+function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $attach = null)
 {
     global $globals;
     $sent = array();
@@ -107,6 +107,11 @@ function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null)
     $mailer = new PlMailer();
     $mailer->setSubject($sujet);
     $mailer->setFrom($from);
+    if (isset($attach)) {
+        $mailer->addAttachment($attach['tmp_name'],
+                               $attach['type'],
+                               $attach['name']);
+    }
 
     foreach ($tos as $user) {
         if ($sent[$user['email']]) continue;

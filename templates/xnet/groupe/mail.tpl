@@ -29,7 +29,7 @@ Ton message peut être personnalisé : si tu rentres les mots &lt;cher&gt;, &lt;pr
 masculin ou féminin, par son prénom, ou son nom.
 </p>
  
-<form action="{$platal->ns}mail" method="post">
+<form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
   <table class='bicol'>
     <tr>
       <th colspan="2">Ecrire un mail :</th>
@@ -103,6 +103,14 @@ Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
 Le bureau du groupe {$asso.nom}.
 {/if}
          </textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="titre">
+        Attacher un fichier
+      </td>
+      <td>
+        <input type="file" name="uploaded" />
       </td>
     </tr>
     <tr>

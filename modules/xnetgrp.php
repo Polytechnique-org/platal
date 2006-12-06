@@ -283,7 +283,7 @@ class XnetGrpModule extends PLModule
 
             require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
-            send_xnet_mails($from, $sujet, $body, $tos, Post::v('replyto'));
+            send_xnet_mails($from, $sujet, $body, $tos, Post::v('replyto'), $_FILES['uploaded']);
             $page->kill("Mail envoyé !");
             $page->assign('sent', true);
         }

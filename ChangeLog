@@ -25,6 +25,9 @@ New:
 
 Bug/Wish:
 
+    * Emails:
+        - #512: Can attach a file                                          -FRU
+
     * Lists:
         - #588: Auto-select mail to moderate                               -FRU
 
@@ -33,6 +36,7 @@ Bug/Wish:
 
     * Xnet:
         - #570: Fix geoloc skin.                                           -FRU
+        - #589: Can attach a file when sending an email                    -FRU
 
 From 0.9.12 branch:
 

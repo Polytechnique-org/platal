@@ -22,30 +22,69 @@
 
 <h1>Envoyer un mail</h1>
 
-<ul>
-  <li>
-    Les destinataires sont simplement séparés par des virgules
-  </li>
-  <li>
-    Pense à te mettre en copie cachée du mail sinon tu n'auras aucun moyen de retrouver 
-    le mail que tu envoies par cette page
-  </li>
-</ul>
-
 <script type="text/javascript">//<![CDATA[
   {literal}
+  function _selectAll(id) {
+    var list = document.getElementById(id);
+    for (i = 0 ; i < list.length ; i++) {
+      list.options[i].selected = true;
+    }
+  }
+
   function check(form) {
+    _selectAll('to_contacts');
+    _selectAll('cc_contacts');
     if(form.sujet.value == "") {
       form.sujet.focus();
       return confirm ("Le sujet du mail est vide, veux tu continuer ?");
     }
     return true;
   }
+
+  function _move(idFrom, idTo) {
+    var from = document.getElementById(idFrom);
+    var to   = document.getElementById(idTo);
+
+    var index = new Array();
+    var j = 0;
+    for (i = 0 ; i < from.length ; i++) {
+      if (from.options[i].selected) {
+        var option = document.createElement('option');
+        option.value = from.options[i].value;
+        option.text  = from.options[i].text;
+        try {
+          to.add(option, null);
+        } catch(ex) {
+          to.add(option);
+        }
+        index[j++] = i;
+      }
+    }
+    for (i = index.length - 1 ; i >= 0 ; i--) {
+      from.remove(index[i]);
+    }
+  }
+
+  function addTo() {
+    _move('contacts', 'to_contacts');
+  }
+
+  function removeTo() {
+    _move('to_contacts', 'contacts');
+  }
+
+  function addCc() {
+    _move('contacts', 'cc_contacts');
+  }
+
+  function removeCc() {
+    _move('cc_contacts', 'contacts');
+  }
   {/literal}
 //]]>
 </script>
 
-<form action="emails/send" method="post" onsubmit="return check(this);">
+<form action="emails/send" method="post" enctype="multipart/form-data" onsubmit="return check(this);">
   <table class="bicol" cellpadding="2" cellspacing="0">
     <tr> 
       <th colspan="2">Destinataires</th>
@@ -79,78 +118,88 @@
         <input type='text' name='bcc' size='60' value="{$smarty.request.bcc}" />
       </td>
     </tr>
-  </table>
-
-  {if $contacts|@count}
-  <ul>
-    <li>
-      <p>
-        Tu peux également ajouter certains de tes contacts aux destinataires :
-      </p>
-    </li>
-  </ul>
-
-  <table class="bicol" cellpadding="2" cellspacing="0" summary="Destinataires parmi les contacts">
-{foreach key=key item=contact from=$contacts}
-{if $key is even}
-  <tr class="{cycle values="impair,pair"}">
-{/if}
-    <td>
-      <input type="checkbox" name="contacts[{$contact.forlife}]"
-        value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@{#globals.mail.domain#}&gt;"
-        {if $smarty.request.contacts && $smarty.request.contacts.forlife}checked="checked"{/if} />
-      <a href="profile/{$contact.forlife}" class="popup2">{$contact.prenom} {$contact.nom}</a> (X{$contact.promo})
-    </td>
-{if $key is odd}
-  </tr>
-{/if}
-{/foreach}
-{if $key is even}
-    <td></td>
-  </tr>
-{/if}
-  </table>
-{/if}
-
-  <ul>
-    <li>
-      Ne mets que du texte dans le contenu, pas de tags HTML
-    </li>
-    <li>
-      Il n'est pas possible d'envoyer un fichier en attachement
-    </li>
-  </ul>
-
-  <table class="bicol" cellspacing="0" cellpadding="2" summary="Corps du message">
-    <tr> 
-      <th>sujet</th>
-    </tr>
-    <tr> 
-      <td class="center"> 
-        <input type='text' name='sujet' size='75' value="{$smarty.request.sujet}" />
+    <tr class="pair">
+      <td colspan="2" class="smaller">
+        &bull;&nbsp;Les destinataires sont simplement séparés par des virgules<br />
+        &bull;&nbsp;Pense à te mettre en copie cachée du mail pour en avoir une trace
       </td>
     </tr>
-    <tr> 
-      <th>
-        Corps du mail
+    {if $contacts|@count}
+    <tr>
+      <th colspan="2">
+        Destinataires parmi tes contacts
       </th>
     </tr>
-    <tr> 
-      <td class="center">
-        <textarea name='contenu' rows="30" cols="75">
+    <tr>
+      <td colspan="2" style="padding: 4px">
+        <div style="float: right; width: 40%;">
+          <select id="to_contacts" name="to_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
+          {foreach key=key item=contact from=$contacts}
+          {if in_array($contact.forlife, $smarty.request.to_contacts)}
+          <option value="{$contact.forlife}">
+            {$contact.prenom} {$contact.nom} (X{$contact.promo})
+          </option>
+          {/if}
+          {/foreach}
+          </select><br />
+          <select id="cc_contacts" name="cc_contacts[]" multiple="multiple" style="width: 100%; height: 5em">
+          {foreach key=key item=contact from=$contacts}
+          {if in_array($contact.forlife, $smarty.request.cc_contacts)}
+          <option value="{$contact.forlife}">
+            {$contact.prenom} {$contact.nom} (X{$contact.promo})
+          </option>
+          {/if}
+          {/foreach}
+          </select>
+        </div>
+        <div style="width: 19%; text-align: center; height: 8em; float: right;">
+          <div style="height: 4em">
+              Destinataires<br />
+              <a href="" onclick="addTo(); return false">&gt;&gt; &gt;&gt;</a><br />
+              <a href="" onclick="removeTo(); return false">&lt;&lt; &lt;&lt;</a>
+          </div>
+          <div style="height: 4em">
+              En copie<br />
+              <a href="" onclick="addCc(); return false">&gt;&gt; &gt;&gt;</a><br />
+              <a href="" onclick="removeCc(); return false">&lt;&lt; &lt;&lt;</a>
+          </div>
+        </div>
+        <div style="float: right; width: 40%">
+          <select id="contacts" name="all_contacts[]" multiple="multiple" style="height: 10em; width: 100%">
+            {foreach item=contact from=$contacts}
+            {if !in_array($contact.forlife, $smarty.request.to_contacts) && !in_array($contact.forlife, $smarty.request.cc_contacts)}
+            <option value="{$contact.forlife}">
+              {$contact.prenom} {$contact.nom} (X{$contact.promo})
+            </option>
+            {/if}
+            {/foreach}
+          </select>
+        </div>
+        {foreach item=contact from=$contacts}
+        <input type="hidden" name="contacts[{$contact.forlife}]" value="{$contact.prenom} {$contact.nom} &lt;{$contact.forlife}@{#globals.mail.domain#}&gt;" />
+        {/foreach}
+      </td>
+    </tr>
+    {/if}
+  </table>
+
+  <fieldset>
+    <legend>Sujet&nbsp;:&nbsp;<input type='text' name='sujet' size='60' value="{$smarty.request.sujet}" /></legend>
+    <div class="center">Ne mets que du texte dans le contenu, pas de tags HTML</div>
+    <textarea name='contenu' rows="30" cols="75">
 {$smarty.request.contenu}
 {if !$smarty.request.contenu}
 -- 
 {$smarty.session.prenom} {$smarty.session.nom}
 {/if}</textarea>
-      </td>
-    </tr>
-    <tr> 
-      <td class="center">
-        <input type="submit" name="submit" value="Envoyer" />
-      </td>
-    </tr>
-  </table>
+    <div>
+      <strong>Ajouter une pièce jointe&nbsp;:&nbsp;</strong>
+      <input type="file" name="uploaded" />
+    </div>
+    <div class="center">
+      <input type="submit" name="submit" value="Envoyer" />
+    </div>
+  </fieldset>
 </form>
 
 
