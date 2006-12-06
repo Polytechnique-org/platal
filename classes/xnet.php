@@ -41,21 +41,16 @@ class Xnet extends Platal
     function find_nearest_key($key, &$array)
     {
         global $globals;
-        $k = parent::find_nearest_key($key, $array);
-        if (is_null($k) && in_array('%grp', array_keys($array)) && $globals->asso()) {
+        if (in_array('%grp', array_keys($array)) &&  $key == $globals->asso('diminutif')) {
             return '%grp';
         }
-        return $k;
+        return parent::find_nearest_key($key, $array);
     }
 
     function near_hook()
     {
-        $link = parent::near_hook();
-        if (strpos($link, '%grp') !== false) {
-            global $globals;
-            return str_replace('%grp', $globals->asso('diminutif'), $link);
-        }
-        return $link;
+        global $globals;
+        return str_replace('%grp', $globals->asso('diminutif'), parent::near_hook());
     }
 
     function find_hook()

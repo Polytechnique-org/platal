@@ -89,20 +89,27 @@ class Platal
 
     function find_nearest_key($key, &$array)
     {
-        $keys = array_keys($array);
+        $keys    = array_keys($array);
         if (in_array($key, $keys)) {
             return $key;
         }
-        $val  = null;
-        $best = null;
+
+        $has_end = in_array("#final#", $keys);
+        if (strlen($key) > 24 && $has_end) {
+            return "#final#";
+        }
+
         foreach ($keys as $k) {
+            if ($k == "#final#") {
+                continue;
+            }
             $lev = levenshtein($key, $k);
-            if ((is_null($val) || $lev < $val) && $lev < strlen($k)/2) {
+            if ((!isset($val) || $lev < $val) && $lev <= (strlen($k)*2)/3) {
                 $val  = $lev;
                 $best = $k;
             }
         }
-        if (is_null($best) && in_array("#final#", $keys)) {
+        if (!isset($best) && $has_end) {
             return "#final#";
         } else {
             return $best;
@@ -114,6 +121,9 @@ class Platal
     {
         $hooks = array();
         foreach ($this->__hooks as $hook=>$handler) {
+            if (!empty($handler['perms']) && $handler['perms'] != S::v('perms')) {
+                continue;
+            }
             $parts = split('/', $hook);
             $place =& $hooks;
             foreach ($parts as $part) {
@@ -128,19 +138,18 @@ class Platal
         $p = split('/', $this->path);
         $place =& $hooks;
         $link  = '';
-        $ended = false;
         foreach ($p as $k) {
-            if (!$ended) {
+            if (!isset($ended)) {
                 $key = $this->find_nearest_key($k, $place);
             } else {
                 $key = $k;
             }
             if ($key == "#final#") {
-                $key = $k;
-                $ended = true;
                 if (!array_key_exists($link, $this->__hooks)) {
                     return null;
                 }
+                $key = $k;
+                $ended = true;
             }
             if (!is_null($key)) {
                 if (!empty($link)) {
@@ -165,7 +174,7 @@ class Platal
         $args    = $this->argv;
         $args[0] = &$page;
 
-        if (strlen($hook['perms']) && $hook['perms'] != Session::v('perms')) {
+        if (!empty($hook['perms']) && $hook['perms'] != S::v('perms')) {
             return PL_FORBIDDEN;
         }
 
