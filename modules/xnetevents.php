@@ -534,12 +534,9 @@ class XnetEventsModule extends PLModule
 
                 foreach ($nbs as $id => $nb) {
                     $nb = max(intval($nb), 0);
-
-                    if ($nb) {
-                        XDB::execute("REPLACE INTO groupex.evenements_participants
-                                            VALUES ({?}, {?}, {?}, {?}, {?})",
-                                      $evt['eid'], $member['uid'], $id, $nb, $paid);
-                    }
+                    XDB::execute("REPLACE INTO groupex.evenements_participants
+                                        VALUES ({?}, {?}, {?}, {?}, {?})",
+                                  $evt['eid'], $member['uid'], $id, $nb, $paid);
                 }
 
                 $res = XDB::query("SELECT COUNT(uid) AS cnt, SUM(nb) AS nb
