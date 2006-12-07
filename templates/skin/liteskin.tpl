@@ -31,16 +31,15 @@
   </head>
   <body>
     {include file=skin/common.devel.tpl}
-
+    {if !$simple}
+      {include file=skin/common.bandeau.tpl}
+    {/if}
     {if $smarty.session.suid}
-    <table id="suid" cellpadding="0" cellspacing="0">
-      <tr>
-        <td>
-          {$smarty.session.suid} ({$smarty.session.forlife})
-          [<a href="exit">exit</a>]
-        </td>
-      </tr>
-    </table>
+    <div id="suid">
+      <a href="exit">
+        Quitter le SU sur {$smarty.session.forlife} ({$smarty.session.perms})
+      </a>
+    </div>
     {/if}
 
   {if $simple}
@@ -50,8 +49,6 @@
     </div>
 
   {else}
-
-    {include file=skin/common.bandeau.tpl}
 
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>

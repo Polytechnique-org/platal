@@ -494,12 +494,25 @@ div.adresse {
     background: #ffc0cb;
     width: auto;
     font-weight: bold;
+    text-align: center;
 }
-#suid td { padding: 2px; }
-#suid a { color: red; background: inherit; }
+#suid a {
+    color: red;
+    background: inherit;
+    text-decoration: none;
+    display: block;
+}
+#suid:hover {
+    color: red;
+    background: #ffffcb;
+}
+#suid a:hover {
+    color: #ff7000;
+    background: inherit;
+}
 
 #body {
-    width: 740px;
+    width: 800px;
     margin-left: auto;
     margin-right: auto;
 }

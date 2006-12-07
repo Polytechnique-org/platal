@@ -349,7 +349,7 @@ Mail envoyé à ".Env::v('login'));
              LEFT JOIN auth_user_quick AS a ON s.id=a.skin
                  WHERE skin_tpl != '' AND ext != ''
               GROUP BY id ORDER BY s.date DESC";
-        $page->assign_by_ref('skins', XDB::iterator($sql));
+        $page->assign('skins', XDB::iterator($sql));
     }
 
     function handler_exit(&$page, $level = null)
