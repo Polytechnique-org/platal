@@ -25,12 +25,13 @@
   <head>
     <base href="{$globals->baseurl}/" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
-
-    <title>Les associations polytechniciennes</title>
     <meta name="description" content="Les associations polytechniciennes" />
     <meta name="keywords" content="Ecole polytechnique, associations polytechniciennes, groupes X, binets" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="images/favicon.png" type="image/png" />
+
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
-    <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
 
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
@@ -55,6 +56,7 @@
     {$xorg_extra_header|smarty:nodefaults}
     {/if}
 
+    <title>Les associations polytechniciennes</title>
     {include file=skin/common.bandeau.head.tpl}
   </head>
   <body>

@@ -23,8 +23,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
     <meta name="description" content="Le Portail des Polytechniciens" />
     <meta name="keywords" content="Ecole polytechnique, anciens eleves, portail, alumni, AX, X, routage, reroutage, e-mail, email, mail" />
-    <link rel="icon" type="image/png" href="images/favicon.png" />
-
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="images/favicon.png" type="image/png" />
     <link rel="index"  href="" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
