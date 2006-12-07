@@ -355,17 +355,13 @@ Mail envoyé à ".Env::v('login'));
     function handler_exit(&$page, $level = null)
     {
         if (S::has('suid')) {
-            if (S::has('suid')) {
-                $a4l  = S::v('forlife');
-                $suid = S::v('suid');
-                $log  = S::v('log');
-                $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
-                $_SESSION = $suid;
-                S::kill('suid');
-                pl_redirect('admin/utilisateurs.php', 'login='.$a4l);
-            } else {
-                pl_redirect('events');
-            }
+            $a4l  = S::v('forlife');
+            $suid = S::v('suid');
+            $log  = S::v('log');
+            $log->log("suid_stop", S::v('forlife') . " by " . $suid['forlife']);
+            $_SESSION = $suid;
+            S::kill('suid');
+            pl_redirect('admin/user/' . $a4l);
         }
 
         if ($level == 'forget' || $level == 'forgetall') {

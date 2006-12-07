@@ -78,6 +78,7 @@
 <div class="menu_item"><a href="marketing">Marketing</a></div>
 <div class="menu_item"><a href="admin/">Administration</a></div>
 <div class="menu_item"><a href="purge_cache">Clear cache</a></div>
+<div class="menu_item"><a href="get_rights/user">Quitter les droits d'admin</a></div>
 <div class="menu_item"><a href="http://trackers.polytechnique.org">Trackers</a></div>
 <div class="menu_item"><a href="http://support.polytechnique.org">Support</a></div>
 

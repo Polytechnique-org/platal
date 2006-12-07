@@ -27,6 +27,7 @@ class CoreModule extends PLModule
             '403'         => $this->make_hook('403', AUTH_PUBLIC),
             '404'         => $this->make_hook('404', AUTH_PUBLIC),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
+            'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
 
             'valid.html'  => $this->make_hook('valid', AUTH_PUBLIC),
             'favicon.ico' => $this->make_hook('favicon', AUTH_PUBLIC),
@@ -69,6 +70,21 @@ class CoreModule extends PLModule
         wiki_clear_all_cache();
 
         http_redirect(empty($_SERVER['HTTP_REFERER']) ? './' : $_SERVER['HTTP_REFERER']);
+    }
+
+    function handler_get_rights(&$page, $level)
+    {
+        if (S::has('suid')) {
+            $page->kill('Déjà en SUID');
+        }
+
+        if (isset($_SESSION['log'])) {
+            $_SESSION['log']->log("suid_start", "login by ".S::v('forlife'));
+        }    
+        $_SESSION['suid'] = $_SESSION;
+        $_SESSION['perms'] = $level;
+
+        pl_redirect('/');
     }
 }
 
