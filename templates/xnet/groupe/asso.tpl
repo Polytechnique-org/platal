@@ -68,6 +68,15 @@
       <a href="{if $asso.sub_url}{$asso.sub_url}{else}{$platal->ns}subscribe{/if}">m'inscrire</a>
     </td>
   </tr>
+  {elseif $is_member}
+  <tr>
+    <td class="titre">
+      Me désinscrire :
+    </td>
+    <td>
+      <a href="{if $asso.unsub_url}{$asso.unsub_url}{else}{$platal->ns}unsubscribe{/if}">me désinscrire</a>
+    </td>
+  </tr>
   {/if}
 
   {if $asso.ax}

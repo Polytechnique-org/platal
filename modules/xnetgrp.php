@@ -82,6 +82,7 @@ class XnetGrpModule extends PLModule
             '%grp/annuaire/vcard' => $this->make_hook('vcard',     AUTH_MDP),
             '%grp/trombi'         => $this->make_hook('trombi',    AUTH_MDP),
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
+            '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP),
 
             '%grp/admin/annuaire'
                  => $this->make_hook('admin_annuaire', AUTH_MDP),
@@ -218,7 +219,7 @@ class XnetGrpModule extends PLModule
                         SET  nom={?}, diminutif={?}, cat={?}, dom={?},
                              descr={?}, site={?}, mail={?}, resp={?},
                              forum={?}, mail_domain={?}, ax={?}, pub={?},
-                             sub_url={?}, inscriptible={?}
+                             sub_url={?}, inscriptible={?}, unsub_url={?}
                       WHERE  id={?}",
                       Post::v('nom'), Post::v('diminutif'),
                       Post::v('cat'), Post::i('dom'),
@@ -227,7 +228,7 @@ class XnetGrpModule extends PLModule
                       Post::v('forum'), Post::v('mail_domain'),
                       Post::has('ax'), Post::has('pub')?'private':'public',
                       Post::v('sub_url'), Post::v('inscriptible'),
-                      $globals->asso('id'));
+                      Post::v('unsub_url'),$globals->asso('id'));
                 if (Post::v('mail_domain')) {
                     XDB::execute('INSERT INTO virtual_domains (domain) VALUES({?})',
                                            Post::v('mail_domain'));
@@ -236,13 +237,15 @@ class XnetGrpModule extends PLModule
                 XDB::execute(
                     "UPDATE  groupex.asso
                         SET  descr={?}, site={?}, mail={?}, resp={?},
-                             forum={?}, ax={?}, pub= {?}, sub_url={?}
+                             forum={?}, ax={?}, pub= {?}, sub_url={?},
+                             unsub_url={?}
                       WHERE  id={?}",
                       Post::v('descr'), Post::v('site'),
                       Post::v('mail'), Post::v('resp'),
                       Post::v('forum'), Post::has('ax'),
                       Post::has('pub')?'private':'public',
-                      Post::v('sub_url'), $globals->asso('id'));
+                      Post::v('sub_url'), Post::v('unsub_url'),
+                      $globals->asso('id'));
             }
 
             if ($_FILES['logo']['name']) {
@@ -706,10 +709,72 @@ class XnetGrpModule extends PLModule
         }
     }
 
+    function unsubscribe(&$user)
+    {
+        global $globals, $page;
+        XDB::execute(
+                "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
+                $user['uid'], $globals->asso('id'));
+
+        $user_same_email = get_infos($user['email']);
+        $domain = $globals->asso('mail_domain');
+
+        if (!$domain || !empty($user_same_email)) {
+            return true;
+        }
+
+        $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
+        $listes = $mmlist->get_lists($user['email2']);
+
+        $may_update = may_update();
+        $warning    = false;
+        foreach ($listes as $liste) {
+            if ($liste['sub'] == 2) {
+                if ($may_update) {
+                    $mmlist->mass_unsubscribe($liste['list'], Array($user['email2']));
+                } else {
+                    $mmlist->unsubscribe($liste['list']);
+                }
+            } elseif ($liste['sub']) {
+                $page->trig("{$user['prenom']} {$user['nom']} a une"
+                            ." demande d'inscription en cours sur la"
+                            ." liste {$liste['list']}@ !");
+                $warning = true;
+            }
+        }
+
+        XDB::execute(
+                "DELETE FROM  virtual_redirect
+                       USING  virtual_redirect
+                  INNER JOIN  virtual USING(vid)
+                       WHERE  redirect={?} AND alias LIKE {?}", $user['email'], '%@'.$domain);
+        return !$warning;
+    }
+
+    function handler_unsubscribe(&$page)
+    {
+        new_group_page('xnet/groupe/membres-del.tpl');
+        $user = get_infos(S::v('forlife'));
+        if (empty($user)) {
+            return PL_NOT_FOUND;
+        }
+        $page->assign('self', true);
+        $page->assign('user', $user);
+
+        if (!Post::has('confirm')) {
+            return;
+        }
+
+        if ($this->unsubscribe($user)) {
+            $page->trig('Vous avez été désinscrit du groupe avec succès');
+        } else {
+            $page->trig('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des mailing-lists.');
+        }
+        $page->assign('is_member', false);
+    }
+
     function handler_admin_member_del(&$page, $user = null)
     {
-        global $globals;
-
         new_groupadmin_page('xnet/groupe/membres-del.tpl');
         $user = get_infos($user);
         if (empty($user)) {
@@ -721,41 +786,11 @@ class XnetGrpModule extends PLModule
             return;
         }
 
-        XDB::execute(
-                "DELETE FROM  groupex.membres WHERE uid={?} AND asso_id={?}",
-                $user['uid'], $globals->asso('id'));
-
-        // don't unsubscribe email from list if other user use same email
-        $user_same_email = get_infos($user['email']);
-
-        if (($domain = $globals->asso('mail_domain')) && empty($user_same_email)) {
-
-            $mmlist = new MMList(S::v('uid'), S::v('password'), $domain);
-            $listes = $mmlist->get_lists($user['email2']);
-
-            foreach ($listes as $liste) {
-                if ($liste['sub'] == 2) {
-                    $mmlist->mass_unsubscribe($liste['list'], Array($user['email2']));
-                    $page->trig("{$user['prenom']} {$user['nom']} a été"
-                                ." désinscrit de {$liste['list']}");
-                } elseif ($liste['sub']) {
-                    $page->trig("{$user['prenom']} {$user['nom']} a une"
-                                ." demande d'inscription en cours sur la"
-                                ." liste {$liste['list']}@ !");
-                }
-            }
-
-            XDB::execute(
-                    "DELETE FROM  virtual_redirect
-                           USING  virtual_redirect
-                      INNER JOIN  virtual USING(vid)
-                           WHERE  redirect={?} AND alias LIKE {?}", $user['email'], '%@'.$domain);
-            if (mysql_affected_rows()) {
-                $page->trig("{$user['prenom']} {$user['nom']} a été désabonné des alias du groupe !");
-            }
+        if ($this->unsubscribe($user)) {
+            $page->trig("{$user['prenom']} {$user['nom']} a été désabonné du groupe !");
+        } else {
+            $page->trig("{$user['prenom']} {$user['nom']} a été désabonné du groupe, mais des erreurs subsistent !");
         }
-
-        $page->trig("{$user['prenom']} {$user['nom']} a été retiré du groupe !");
     }
 
     function handler_admin_member(&$page, $user)

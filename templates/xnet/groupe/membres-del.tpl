@@ -23,26 +23,35 @@
 {if $smarty.post.confirm}
 
 <p class="descr">
+{if !$self}
 <a href="{$platal->ns}annuaire">retour à l'annuaire</a>
+{else}
+<a href="">retour à l'accueil</a>
+{/if}
 </p>
 
 {else}
  
-<h1>{$asso.nom} : gestion des memebres</h1>
+<h1>{$asso.nom} : gestion des membres</h1>
 
 <h2>
   Suppression du membre : {$user.prenom} {$user.nom}
 </h2>
 
 
-<form method="post" action="{$platal->ns}member/del/{$platal->argv[1]}">
+<form method="post" action="{$platal->pl_self()}">
   <div class="center">
     <p class="descr">
+    {if $self}
+    Etes-vous sûr de vouloir vous désinscrire du groupe {$asso.nom} et de toutes
+    les listes de diffusion associées ?
+    {else}
     Etes-vous sûr de vouloir supprimer {$user.prenom} {$user.nom} du groupe,
     lui retirer tous les droits associés à son statut de membre,
     et le désabonner de toutes les listes de diffusion du groupe ?
+    {/if}
     </p>
-    <input type='submit' name='confirm' value='Oui, je le désinscris complètement du groupe !' />
+    <input type='submit' name='confirm' value='Oui, je {if $self}me{else}le{/if} désinscris complètement du groupe !' />
   </div>
 </form>
 

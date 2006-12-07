@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<script type="text/javascript">
+<script type="text/javascript">//<![CDATA[
 {literal}
 function xStateChange(box)
 {
@@ -48,7 +48,7 @@ function searchX()
       '{/literal}{$platal->ns}{literal}member/new/ajax?prenom=' + prenom + '&nom=' + nom + '&promo=' + promo);
 }
 {/literal}
-</script>
+//]]></script>
 
 <h1>{$asso.nom} : Ajout d'un membre</h1>
 

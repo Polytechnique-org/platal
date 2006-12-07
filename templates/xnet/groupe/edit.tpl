@@ -151,6 +151,16 @@
     </tr>
 
     <tr>
+      <td class="titre">
+        Lien pour la désinscription:<br/>
+        <em>laisser vide par défaut</em>
+      </td>
+      <td>
+        <input type="text" size="40" name="unsub_url" value="{$asso.unsub_url}" />
+      </td>
+    </tr>
+
+    <tr>
       <td class="titre center" colspan="2">
         <input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
         groupe agréé par l'AX
