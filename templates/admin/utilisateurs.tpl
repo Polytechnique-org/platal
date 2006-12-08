@@ -252,7 +252,7 @@ Pour ceci changer ses permissions en 'disabled'.
 <form id="alias" method="post" action="admin/user">
   <table class="tinybicol" cellpadding="2" cellspacing="0">
     <tr>
-      <th class="alias" colspan="2">
+      <th class="alias" colspan="3">
         Alias e-mail
       </th>
     </tr>
@@ -260,6 +260,8 @@ Pour ceci changer ses permissions en 'disabled'.
     <tr class="{cycle values="impair,pair"}">
       <td>
         <input type="radio" name='best' {if $a.best}checked="checked"{/if} value='{$a.alias}' onclick="this.form.submit()" />
+      </td>
+      <td>
         {if $a.for_life}<strong>{$a.alias}</strong>{else}{$a.alias}{/if}
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       </td>
@@ -272,8 +274,15 @@ Pour ceci changer ses permissions en 'disabled'.
       {/if}
     </tr>
     {/iterate}
+    {if $virtual}
     <tr class="{cycle values="impair,pair"}">
-      <td class="detail">
+      <td></td>
+      <td>{$virtual}</td>
+      <td></td>
+    </tr>
+    {/if}
+    <tr class="{cycle values="impair,pair"}">
+      <td colspan="2" class="detail">
         <input type="text" name="email" size="29" maxlength="60" value="" />
       </td>
       <td class="action">

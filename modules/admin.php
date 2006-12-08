@@ -357,12 +357,12 @@ class AdminModule extends PLModule
         }
 
         if (Env::has('user_id')) {
-            $login = get_user_login(Env::i('user_id'));
+            $login = get_user_forlife(Env::i('user_id'));
             if (empty($login)) {
                 $login = Env::i('user_id');
             }
         } elseif (Env::has('login')) {
-            $login = get_user_login(Env::v('login'));
+            $login = get_user_forlife(Env::v('login'));
         }
 
         if(Env::has('logs_button') && $login) {
@@ -530,6 +530,14 @@ class AdminModule extends PLModule
             list($lastlogin,$host) = $res->fetchOneRow();
             $page->assign('lastlogin', $lastlogin);
             $page->assign('host', $host);
+
+            $res = XDB::query("SELECT  alias
+                                 FROM  virtual
+                           INNER JOIN  virtual_redirect USING(vid)
+                                WHERE  type = 'user' AND redirect LIKE '" . $login . "@%'");
+            if ($res->numRows()) {
+                $page->assign('virtual', $res->fetchOneCell());
+            }
 
             $page->assign('aliases', XDB::iterator(
                         "SELECT  alias, type='a_vie' AS for_life,FIND_IN_SET('bestalias',flags) AS best,expire
