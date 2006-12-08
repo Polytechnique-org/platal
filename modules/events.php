@@ -92,9 +92,6 @@ class EventsModule extends PLModule
         $page->addJsLink('ajax.js');
         $page->assign('tips', $this->get_tips());
 
-        // donne la derniere date de session
-        $page->assign('lastlogin', strftime("%Y%m%d%H%M%S",S::i('lastlogin')));
-
         $res = XDB::query('SELECT date, naissance FROM auth_user_md5
                                       WHERE user_id={?}', S::v('uid'));
         list($date, $naissance) = $res->fetchOneRow();
