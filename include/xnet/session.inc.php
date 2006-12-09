@@ -60,9 +60,9 @@ class XnetSession
      */
     public static function doAuth()
     {
-	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
-	    return true;
-	}
+    	if (S::identified()) { // ok, c'est bon, on n'a rien à faire
+	        return true;
+    	}
 
         if (Get::has('auth')) {
             return XnetSession::doAuthX();
@@ -116,36 +116,41 @@ class XnetSession
     }
 
     // }}}
-}
+    // {{{ doSelfSuid
 
-// {{{ doSelfSuid
-
-function doSelfSuid()
-{
-    if (!S::has('suid')) {
-        $_SESSION['suid'] = $_SESSION;
+    public static function doSelfSuid()
+    {
+        if (!S::has('suid')) {
+            $_SESSION['suid'] = $_SESSION;
+        }
+        $_SESSION['perms'] = 'user';
     }
-    $_SESSION['perms'] = 'user';
+
+    // }}}
+    // {{{ killSuid
+
+    public static function killSuid()
+    {   
+        if (!S::has('suid')) {
+            return;
+        }
+        $suid = S::v('suid');
+        S::kill('suid');
+        S::kill('may_update');
+        S::kill('is_member');
+        $_SESSION['perms'] = $suid['perms'];
+    }
+
+    // }}}
 }
 
 // }}}
-// {{{ killSuid
+// {{{ function may_update
 
-function killSuid()
-{
-    if (!S::has('suid')) {
-        return;
-    }
-    $suid = S::v('suid');
-    S::kill('suid');
-    S::kill('may_update');
-    S::kill('is_member');
-    $_SESSION['perms'] = $suid['perms'];
-}
-
-// }}}
-// {{{ may_update
-
+/** Return administration rights for the current asso
+ * @param force Force administration rights to be read from database
+ * @param lose  Force administration rights to be false
+ */
 function may_update($force = false, $lose = false)
 {
     if (!isset($_SESSION['may_update'])) {
@@ -155,23 +160,29 @@ function may_update($force = false, $lose = false)
 
     global $globals;
     $asso_id = $globals->asso('id');
-    if (!$asso_id) { return false; }
-    if (S::has_perms() && !$lose) { return true; }
-    if ((!isset($may_update[$asso_id]) || $force) && !$lose) {
+    if (!$asso_id) {
+        return false;
+    } elseif ($lose) {
+        $may_update[$asso_id] = false;
+    } elseif (S::has_perms() || (S::has('suid') && $force)) {
+        $may_update[$asso_id] = true;
+    } elseif (!isset($may_update[$asso_id]) || $force) {
         $res = XDB::query("SELECT  perms
                              FROM  groupex.membres
                             WHERE  uid={?} AND asso_id={?}",
-                            S::v('uid'), $globals->asso('id'));
+                          S::v('uid'), $globals->asso('id'));
         $may_update[$asso_id] = ($res->fetchOneCell() == 'admin');
-    } elseif ($lose) {
-        $may_update[$asso_id] = false;
     }
     return $may_update[$asso_id];
 }
 
 // }}}
-// {{{ is_member
+// {{{ function is_member
 
+/** Get membership informations for the current asso
+ * @param force Force membership to be read from database
+ * @param lose  Force membership to be false
+ */ 
 function is_member($force = false, $lose = false)
 {
     if (!isset($_SESSION['is_member'])) {
@@ -181,16 +192,18 @@ function is_member($force = false, $lose = false)
 
     global $globals;
     $asso_id = $globals->asso('id');
-    if (!$asso_id) { return false; }
-    if ((!isset($is_member[$asso_id]) || $force) && !$lose) {
-        $res = XDB::query(
-            "SELECT  COUNT(*)
-               FROM  groupex.membres
-              WHERE  uid={?} AND asso_id={?}",
-                S::v('uid'), $asso_id);
-        $is_member[$asso_id] = $res->fetchOneCell() == 1;
+    if (!$asso_id) {
+        return false;
     } elseif ($lose) {
         $is_member[$asso_id] = false;
+    } elseif (S::has('suid') && $force) {
+        $is_member[$asso_id] = true;
+    } elseif (!isset($is_member[$asso_id]) || $force) {
+        $res = XDB::query("SELECT  COUNT(*)
+                             FROM  groupex.membres
+                            WHERE  uid={?} AND asso_id={?}",
+                S::v('uid'), $asso_id);
+        $is_member[$asso_id] = ($res->fetchOneCell() == 1);
     }
     return $is_member[$asso_id];
 }

@@ -573,21 +573,21 @@ class XnetGrpModule extends PLModule
     {
         if (Env::has('right') && (may_update() || S::has('suid'))) {
             switch (Env::v('right')) {
-              case 'admin':
-                killSuid();
+              case 'admin':              
+                XnetSession::killSuid();
                 break;
               case 'anim':
-                doSelfSuid();
+                XnetSession::doSelfSuid();
                 may_update(true);
                 is_member(true);
                 break;
               case 'member':
-                doSelfSuid();  
+                XnetSession::doSelfSuid();  
                 may_update(false, true);
                 is_member(true);
                 break;
               case 'logged':
-                doSelfSuid();
+                XnetSession::doSelfSuid();
                 may_update(false, true);
                 is_member(false, true);
                 break;

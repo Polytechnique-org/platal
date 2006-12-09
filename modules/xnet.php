@@ -89,9 +89,7 @@ class XnetModule extends PLModule
 
     function handler_exit(&$page)
     {
-        if (S::has('suid')) {
-            killSuid();
-        }
+        XnetSession::killSuid();
         XnetSession::destroy();
         $page->changeTpl('xnet/deconnexion.tpl');
     }

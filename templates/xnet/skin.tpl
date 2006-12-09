@@ -129,6 +129,24 @@
           {/foreach}
         </td>
         <td id="body">
+          {if $asso && ($is_admin || $smarty.session.suid.perms eq 'admin' || $smarty.suid.may_update[$asso.id])}
+          <div style="float: right" class="breadcrumb">
+            <form method="post" action="{$platal->ns}change_rights">
+              <div style="display: inline">
+                <small>voir le site en tant que...
+                <select name="right" onchange="this.form.submit()">
+                  {if $smarty.session.perms eq 'admin' || $smarty.session.suid.perms eq 'admin'}
+                  <option value="admin" {if $smarty.session.perms eq 'admin'}selected="selected"{/if}>Administrateur</option>
+                  {/if}
+                  <option value="anim" {if $is_admin && $smarty.session.perms neq 'admin'}selected="selected"{/if}>Animateur</option>
+                  <option value="member" {if !$is_admin && $is_member}selected="selected"{/if}>Membre</option>
+                  <option value="logged" {if !$is_admin && !$is_member}selected="selected"{/if}>Non-membre</option>
+                </select>
+                </small>
+              </div>
+            </form>
+          </div>
+          {/if}
           <div class="breadcrumb">
             <a href=".">X.net</a> »
             {if $asso}
