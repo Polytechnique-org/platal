@@ -770,7 +770,7 @@ class XnetGrpModule extends PLModule
         } else {
             $page->trig('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des mailing-lists.');
         }
-        $page->assign('is_member', false);
+        $page->assign('is_member', is_member(true));
     }
 
     function handler_admin_member_del(&$page, $user = null)

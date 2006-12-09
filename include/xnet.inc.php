@@ -81,6 +81,7 @@ function new_groupadmin_page($tpl_name)
 
 function new_annu_page($tpl_name)
 {
+    global $globals;
     new_group_open_page($tpl_name, 
                             !may_update()
                             && (!is_member()  || $globals->asso('pub') != 'public')

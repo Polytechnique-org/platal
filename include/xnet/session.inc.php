@@ -134,13 +134,14 @@ function may_update() {
 // }}}
 // {{{ is_member
 
-function is_member() {
+function is_member($force = false)
+{
     global $globals;
     $asso_id = $globals->asso('id');
     if (!$asso_id) { return false; }
     static $is_member;
     if (!$is_member) $is_member = array();
-    if (!isset($is_member[$asso_id]))
+    if (!isset($is_member[$asso_id]) || $force)
     {
         $res = XDB::query(
             "SELECT  COUNT(*)
