@@ -133,11 +133,6 @@ function list_all_my_groups($params)
          INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
               WHERE  m.uid={?}", S::v('uid'));
     $links = '<a href="exit">déconnexion</a>';
-    if (S::has('suid')) {
-        $links = '<a href="exit">reprendre les droits d\'admin</a>';
-    } elseif (S::has_perms()) {
-        $links = '<a href="get_rights/user">perdre les droits d\'admin</a>|' . $links;
-    }
     $html = '<div>Mes groupes (' . $links . ') :</div>';
     while (list($nom, $mini) = $res->next()) {
         $html .= "<span class='gp'>&bull; <a href='login/$mini'>$nom</a></span>";

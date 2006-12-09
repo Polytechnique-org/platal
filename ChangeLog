@@ -44,6 +44,7 @@ Bug/Wish:
         - #570: Fix geoloc skin.                                           -FRU
         - #589: Can attach a file when sending an email                    -FRU
         - #592: Can unsubscribe                                            -FRU
+        - #594: Group admins can view the site without privileges          -FRU
 
 From 0.9.12 branch:
 

@@ -84,6 +84,8 @@ class XnetGrpModule extends PLModule
             '%grp/subscribe'      => $this->make_hook('subscribe', AUTH_MDP),
             '%grp/unsubscribe'    => $this->make_hook('unsubscribe', AUTH_MDP),
 
+            '%grp/change_rights'  => $this->make_hook('change_rights', AUTH_MDP),
+
             '%grp/admin/annuaire'
                  => $this->make_hook('admin_annuaire', AUTH_MDP),
 
@@ -565,6 +567,33 @@ class XnetGrpModule extends PLModule
             $mailer->setTxtBody(Post::v('message').$append);
             $mailer->send();
         }
+    }
+
+    function handler_change_rights(&$page)
+    {
+        if (Env::has('right') && (may_update() || S::has('suid'))) {
+            switch (Env::v('right')) {
+              case 'admin':
+                killSuid();
+                break;
+              case 'anim':
+                doSelfSuid();
+                may_update(true);
+                is_member(true);
+                break;
+              case 'member':
+                doSelfSuid();  
+                may_update(false, true);
+                is_member(true);
+                break;
+              case 'logged':
+                doSelfSuid();
+                may_update(false, true);
+                is_member(false, true);
+                break;
+            }
+        }
+        pl_redirect("");
     }
 
     function handler_admin_annuaire(&$page)

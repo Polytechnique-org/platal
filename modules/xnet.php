@@ -90,14 +90,10 @@ class XnetModule extends PLModule
     function handler_exit(&$page)
     {
         if (S::has('suid')) {
-            $suid = S::v('suid');
-            $_SESSION['perms'] = $suid['perms'];
-            S::kill('suid');
-        } else {
-            XnetSession::destroy();
-            $page->changeTpl('xnet/deconnexion.tpl');
+            killSuid();
         }
-        pl_redirect('/');
+        XnetSession::destroy();
+        $page->changeTpl('xnet/deconnexion.tpl');
     }
 
     function handler_admin(&$page)

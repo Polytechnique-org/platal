@@ -118,37 +118,79 @@ class XnetSession
     // }}}
 }
 
+// {{{ doSelfSuid
+
+function doSelfSuid()
+{
+    if (!S::has('suid')) {
+        $_SESSION['suid'] = $_SESSION;
+    }
+    $_SESSION['perms'] = 'user';
+}
+
+// }}}
+// {{{ killSuid
+
+function killSuid()
+{
+    if (!S::has('suid')) {
+        return;
+    }
+    $suid = S::v('suid');
+    S::kill('suid');
+    S::kill('may_update');
+    S::kill('is_member');
+    $_SESSION['perms'] = $suid['perms'];
+}
+
+// }}}
 // {{{ may_update
 
-function may_update() {
+function may_update($force = false, $lose = false)
+{
+    if (!isset($_SESSION['may_update'])) {
+        $_SESSION['may_update'] = array();
+    }
+    $may_update =& $_SESSION['may_update'];
+
     global $globals;
-    if (!$globals->asso('id')) { return false; }
-    if (S::has_perms()) { return true; }
-    $res = XDB::query(
-            "SELECT  perms
-               FROM  groupex.membres
-              WHERE  uid={?} AND asso_id={?}", S::v('uid'), $globals->asso('id'));
-    return $res->fetchOneCell() == 'admin';
+    $asso_id = $globals->asso('id');
+    if (!$asso_id) { return false; }
+    if (S::has_perms() && !$lose) { return true; }
+    if ((!isset($may_update[$asso_id]) || $force) && !$lose) {
+        $res = XDB::query("SELECT  perms
+                             FROM  groupex.membres
+                            WHERE  uid={?} AND asso_id={?}",
+                            S::v('uid'), $globals->asso('id'));
+        $may_update[$asso_id] = ($res->fetchOneCell() == 'admin');
+    } elseif ($lose) {
+        $may_update[$asso_id] = false;
+    }
+    return $may_update[$asso_id];
 }
 
 // }}}
 // {{{ is_member
 
-function is_member($force = false)
+function is_member($force = false, $lose = false)
 {
+    if (!isset($_SESSION['is_member'])) {
+        $_SESSION['is_member'] = array();
+    }
+    $is_member =& $_SESSION['is_member'];
+
     global $globals;
     $asso_id = $globals->asso('id');
     if (!$asso_id) { return false; }
-    static $is_member;
-    if (!$is_member) $is_member = array();
-    if (!isset($is_member[$asso_id]) || $force)
-    {
+    if ((!isset($is_member[$asso_id]) || $force) && !$lose) {
         $res = XDB::query(
             "SELECT  COUNT(*)
                FROM  groupex.membres
               WHERE  uid={?} AND asso_id={?}",
                 S::v('uid'), $asso_id);
         $is_member[$asso_id] = $res->fetchOneCell() == 1;
+    } elseif ($lose) {
+        $is_member[$asso_id] = false;
     }
     return $is_member[$asso_id];
 }
