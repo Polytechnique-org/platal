@@ -37,6 +37,13 @@
       {$query.error|nl2br}
     </td>
   </tr>
+  {else}
+  <tr>
+    <td>
+      <strong>INFO:</strong><br />
+      {$query.rows} enregistrement{if $query.rows > 1}s{/if} en {$query.exectime}ms
+    </td>
+  </tr>
   {/if}
 </table>
 {if $query.explain}

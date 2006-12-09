@@ -23,7 +23,8 @@ class XDB
 {
     var $_trace_data = array();
 
-    public static function _prepare($args) {
+    public static function _prepare($args)
+    {
         $query    = array_map(Array('XDB', '_db_escape'), $args);
         $query[0] = str_replace('{?}', '%s', str_replace('%',   '%%', $args[0]));
         return call_user_func_array('sprintf', $query);
@@ -54,7 +55,8 @@ class XDB
         return $res;
     }
 
-    public static function _query($query) {
+    public static function _query($query)
+    {
         global $globals;
 
         if ($globals->debug & 1) {
@@ -65,12 +67,18 @@ class XDB
             }
             $trace_data = array('query' => XDB::_reformatQuery($query), 'explain' => $explain);
             @mysql_free_result($_res);
+            $time_start = microtime();
         }
 
         $res = mysql_query($query);
 
         if ($globals->debug & 1) {
+            list($ue, $se) = explode(" ", microtime());
+            list($us, $ss) = explode(" ", $time_start);
+            $time = intval((($ue - $us) + ($se - $ss)) * 1000);            
             $trace_data['error'] = mysql_error();
+            $trace_data['exectime'] = $time;
+            $trace_data['rows'] = @mysql_num_rows() ? mysql_num_rows() : mysql_affected_rows();
             $GLOBALS['XDB::trace_data'][] = $trace_data;
             if (mysql_errno()) {
                 $GLOBALS['XDB::error'] = true;
