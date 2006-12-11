@@ -23,18 +23,34 @@
 {literal}
     <!-- BANDEAU DEBUT -->
     <style type="text/css">
-      body          { margin: 0 0 0 0; }
-      table.ligne   { background: #e7e7e7; color: inherit; }
-      td.ligne      { width: 100%; }
-      td.xdx {
-        color: #000; padding: 0; background: #CCCCCC ; height: 14px; width: auto; font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif;
+      body { margin: 0; }
+      table.xdx {
+        background: #CCCCCC;
+        color: #000;
+        font-size: 10px;
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        width: 100%;
+        height: 14px;
+        border: none;
+        padding: 0;
+        margin: 0;
       }
-      td.xdx img    {border: 0; padding: 0; margin: 0; }
-      a.xdx         { vertical-align: bottom; color: #505050; background: inherit; }
-      a.xdx:link    { text-decoration: none ; }
-      a.xdx:visited { text-decoration: none ; }
-      a.xdx:hover   { text-decoration: underline; }
-      a.xdx:active  { color: #CCCCCC ; background: #505050 ; }
+      .xdx tr {
+        margin: 0;
+        padding: 0;
+      }
+      .xdx td {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }   
+      .xdx img    { vertical-align: middle; border: 0; padding: 0; margin: 0; }
+      .xdx a        { vertical-align: middle; color: #505050; background: inherit; }
+      .xdx a:link    { text-decoration: none ; }
+      .xdx a:visited { text-decoration: none ; }
+      .xdx a:hover   { text-decoration: underline; }
+      .xdx a:active  { color: #CCCCCC ; background: #505050 ; }
     </style>
     <meta name="MSSmartTagsPreventParsing" content="true" />
     <!-- BANDEAU FIN -->
