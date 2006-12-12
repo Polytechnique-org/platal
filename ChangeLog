@@ -25,6 +25,9 @@ New:
 
 Bug/Wish:
 
+    * Auth:
+        - #20: Show who neea auth                                          -FRU
+
     * Admin:
         - #593: Admins can take temporarily user rights                    -FRU
 

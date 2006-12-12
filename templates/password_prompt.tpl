@@ -30,9 +30,19 @@
   </p>
 </noscript>
 
+{if $smarty.server.HTTP_REFERER}
+<h1>
+  Accès restreint
+</h1>
+<p>
+  Bonjour,<br />
+  La page que vous avez demandez (<strong>{$smarty.server.HTTP_REFERER}</strong>) nécessite une authentification
+</p>
+{else}
 <h1>
   Accès réservé aux Polytechniciens
 </h1>
+{/if}
 {if $smarty.session.auth ge AUTH_COOKIE}
 <p>
 <strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
