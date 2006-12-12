@@ -147,8 +147,8 @@ Bienvenue {$smarty.session.prenom}
   interprétée comme polémique par un membre de la communauté polytechnicienne.
   </p>
 
-  <p>
-  <a href="events/submit">Proposer une information événementielle</a>
+  <p class="center">
+  <a href="events/submit">{icon name=add}Proposer une information événementielle</a>
   </p>
 {/if}
 

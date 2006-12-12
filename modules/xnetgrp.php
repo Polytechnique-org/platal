@@ -983,7 +983,7 @@ class XnetGrpModule extends PLModule
             }
 
             if (!$art['public'] &&
-                ($art['promo_min'] > $art['promo_max'] ||
+                (($art['promo_min'] > $art['promo_max'] && $art['promo_max'] != 0) ||
                  ($art['promo_min'] != 0 && ($art['promo_min'] <= 1900 || $art['promo_min'] >= 2020)) ||
                  ($art['promo_max'] != 0 && ($art['promo_max'] <= 1900 || $art['promo_max'] >= 2020))))
             {

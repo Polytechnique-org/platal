@@ -27,6 +27,8 @@ function smarty_modifier_date_format($string, $format = '%x', $default_date=null
 
     if (preg_match('/^\d{14}$/', $d)) {
         $t = mktime(substr($d,8,2), substr($d,10,2), substr($d,12,2), substr($d,4,2), substr($d,6,2), substr($d,0,4));
+    } elseif (preg_match('/^\d{8}$/', $d)) {
+        $t = mktime(0, 0, 0, substr($d,4,2), substr($d,6,2), substr($d,0,4));
     } elseif (is_numeric($d)) {
         $t = intval($d);
     } else {

@@ -25,6 +25,7 @@ class EventsModule extends PLModule
     {
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
+            'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
             'send_bug'       => $this->make_hook('bug', AUTH_COOKIE),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
@@ -178,6 +179,24 @@ class EventsModule extends PLModule
                      );
     }
 
+    function handler_rss(&$page, $user = null, $hash = null)
+    {       
+        require_once 'rss.inc.php';
+            
+        $uid = init_rss('rss.tpl', $user, $hash);
+            
+        $rss = XDB::iterator(
+                'SELECT  e.id, e.titre, e.texte, e.creation_date,
+                         IF(u2.nom_usage = "", u2.nom, u2.nom_usage) AS nom, u2.prenom, u2.promo
+                   FROM  auth_user_md5   AS u
+             INNER JOIN  evenements      AS e ON ( (e.promo_min = 0 || e.promo_min <= u.promo)
+                                                 AND (e.promo_max = 0 || e.promo_max >= u.promo) )
+             INNER JOIN  auth_user_md5   AS u2 ON (u2.user_id = e.user_id)
+                  WHERE  u.user_id = {?} AND FIND_IN_SET(e.flags, "valide")
+                                         AND peremption >= NOW()', $uid);
+        $page->assign('rss', $rss);
+    }   
+
     function handler_ev_submit(&$page)
     {
         $page->changeTpl('evenements.tpl');
@@ -190,7 +209,7 @@ class EventsModule extends PLModule
         $valid_mesg = Post::v('valid_mesg');
         $action     = Post::v('action');
 
-        if ($promo_min > $promo_max ||
+        if (($promo_min > $promo_max && $promo_max != 0)||
             ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
             ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
         {

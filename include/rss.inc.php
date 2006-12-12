@@ -31,7 +31,7 @@ function _rss_encode_date($d) {
 function to_rss ($s)
 {
     if(is_string($s)) {
-        return utf8_encode($s);
+        return iconv('ISO_8859-15', 'UTF8', $s);
     } else {
         return $s;
     }

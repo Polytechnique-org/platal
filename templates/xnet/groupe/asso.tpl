@@ -125,8 +125,14 @@
     </td>
   </tr>
   {/iterate}
+  {if $is_admin}
+  <tr class="pair">
+    <td class="center">
+      <a href="{$platal->ns}announce/new">{icon name=add} Ajouter une annonce</a>
+    </td>
+  </tr>
+  {/if}
 </table>
-{/if}
 
 <br />
 
@@ -137,11 +143,21 @@
 <br />
 {/iterate}
 </div>
-{/if}
 
-{if $is_admin}
+<p style="text-align: justify;">
+<small>
+<em>Nota Bene :</em> les informations présentées ici n'engagent que leurs auteurs
+respectifs et sont publiées à leur initiative. L'association Polytechnique.org
+ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
+sur cet espace d'expression et d'information. Elle se réserve le droit de
+refuser ou de retirer toute information de nature diffamante ou pouvant être
+interprétée comme polémique par un membre de la communauté polytechnicienne.
+</small>
+</p>
+{/if}
+{elseif $is_admin}
 <div class="center">
-  [<a href="{$platal->ns}announce/new">Ajouter une annonce</a>]
+  [<a href="{$platal->ns}announce/new">{icon name=add} Ajouter une annonce</a>]
 </div>
 {/if}
 
