@@ -39,6 +39,7 @@ foreach($tidy_on as $opt) { tidy_setopt($opt, true); }
 foreach($tidy_off as $opt) { tidy_setopt($opt, false); }
 tidy_setopt('alt-text', '[ inserted by TIDY ]');
 tidy_setopt('wrap', '120');
+tidy_set_encoding('latin0');
 unset($tidy_o, $tydy_off);
 
 /*
