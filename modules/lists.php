@@ -549,7 +549,9 @@ class ListsModule extends PLModule
             $page->assign('np_m', count($mem));
 
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de l'administrer.<br />"
+                       ." Si tu penses qu'il s'agit d'une erreur, "
+                       ."<a href='mailto:support@polytechnique.org'>contact le support</a>");
         }
     }
 

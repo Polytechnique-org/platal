@@ -34,7 +34,7 @@ class EventsModule extends PLModule
 
             'nl'             => $this->make_hook('nl',        AUTH_COOKIE),
             'nl/show'        => $this->make_hook('nl_show',   AUTH_COOKIE),
-            'nl/submit'      => $this->make_hook('nl_submit', AUTH_COOKIE),
+            'nl/submit'      => $this->make_hook('nl_submit', AUTH_MDP),
             'admin/newsletter'             => $this->make_hook('admin_nl', AUTH_MDP, 'admin'),
             'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat', AUTH_MDP, 'admin'),
             'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP, 'admin'),
