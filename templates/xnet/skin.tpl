@@ -208,7 +208,7 @@
               {list_all_my_groups}
               {if !$smarty.session.auth}
               <div>Me connecter :</div>
-              <a class='gp' href="login">polytechnicien</a>
+              <a class='gp' href="login/{$platal->pl_self()}">polytechnicien</a>
               {/if}
             </td>
             <td class="right" style="vertical-align: middle">
