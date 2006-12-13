@@ -77,7 +77,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
             </td>
             <td class="texte">
               ne peut être ni public ni transmis à l'AX
@@ -152,7 +152,7 @@
         <table class="flags" summary="Flags" cellpadding="0" cellspacing="0">
           <tr>
             <td class="rouge">
-              <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
             </td>
             <td class="texte">
               ne peut être ni public ni transmis à l'AX
