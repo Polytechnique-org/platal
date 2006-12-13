@@ -207,7 +207,7 @@
               <input type="checkbox" name="accesCV" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              ne peut être ni public ni transmis à l'AX
+              privé
             </td>
           </tr>
         </table>

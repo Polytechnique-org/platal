@@ -96,7 +96,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              ne peut être ni public ni transmis à l'AX
+              privé
             </td>
           </tr>
         </table>
@@ -164,7 +164,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              ne peut être ni public ni transmis à l'AX
+              privé
             </td>
           </tr>
         </table>
@@ -230,7 +230,7 @@ notamment internationales sur la base desquels tu seras identifiable depuis
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              ne peut être ni public ni transmis à l'AX
+              privé
             </td>
           </tr>
         </table>

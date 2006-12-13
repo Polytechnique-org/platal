@@ -40,7 +40,7 @@
               <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
             </td>
             <td class="texte">
-              prive
+              privé
             </td>
             <td class="texte">
               <a href="Docs/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
