@@ -26,7 +26,7 @@ New:
 Bug/Wish:
 
     * Auth:
-        - #20: Show who neea auth                                          -FRU
+        - #20: Show who need auth                                          -FRU
 
     * Admin:
         - #593: Admins can take temporarily user rights                    -FRU
@@ -39,6 +39,7 @@ Bug/Wish:
 
     * Lists:
         - #588: Auto-select mail to moderate                               -FRU
+        - #598: Ask for confirmation                                       -FRU
 
     * Register:
         - #277: Improve ergonomy.                                          -FRU

@@ -80,7 +80,7 @@
     </tr>
     <tr>
       <td>raison (pour les refus) :
-        <textarea cols='50' rows='10' name='reason'>
+        <textarea cols='50' rows='10' name='reason' id='raison'>
 -- 
 {$smarty.session.prenom} {$smarty.session.nom} (X{$smarty.session.promo})
 </textarea>
@@ -89,9 +89,12 @@
     <tr>
       <td class='center'>
         <input type='hidden' name='mid' value='{$smarty.get.mid}' />
-        <input type='submit' name='mok' value='Accepter !' />&nbsp;
-        <input type='submit' name='mno' value='Refuser !' />&nbsp;
-        <input type='submit' name='mdel' value='Détruire !' style='color:red;' />
+        <input type='submit' name='mok' value='Accepter !'
+          onclick="return confirm('Es-tu sûr de vouloir Envoyer ce mail sur la liste ?')"/>&nbsp;
+        <input type='submit' name='mno' value='Refuser !' 
+          onclick="return confirm('Es-tu sûr de vouloir Refuser ce mail ?')"/>&nbsp;
+        <input type='submit' name='mdel' value='Détruire !' style='color:red;'
+          onclick="return confirm('Es-tu sûr de vouloir Détruire ce mail ?')"/>
       </td>
     </tr>
   </table>
