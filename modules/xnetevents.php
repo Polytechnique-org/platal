@@ -346,7 +346,8 @@ class XnetEventsModule extends PLModule
 
         new_groupadmin_page('xnetevents/edit.tpl');
 
-        $moments = range(1, 4);
+        $moments    = range(1, 4);
+        $short_name = '';
         $page->assign('moments', $moments);
 
         if (Post::v('intitule')) {
@@ -364,7 +365,7 @@ class XnetEventsModule extends PLModule
                 'fin'              => Post::v('fin_Year').'-'.Post::v('fin_Month')
                                       .'-'.Post::v('fin_Day').' '.Post::v('fin_Hour')
                                       .':'.Post::v('fin_Minute').':00',
-                'short_name'       => $short_name,
+                'short_name'       => is_null($short_name) ? '' : $short_name,
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite',
@@ -439,7 +440,9 @@ class XnetEventsModule extends PLModule
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
-            pl_redirect('events');
+            if (!is_null($short_name)) {
+                pl_redirect('events');
+            }
         }
 
         // get a list of all the payment for this asso
