@@ -80,7 +80,7 @@ function deadlineChange(box)
       </td>
       <td>
         <input type="text" name="short_name" size="20" maxlength="20"
-          value="{$evt.short_name|default:$smarty.request.short_name}" />
+          value="{$evt.short_name}" />
         <small>(n'utiliser que chiffres, lettres, tiret et point. garder court)</small>
       </td>
     </tr>
