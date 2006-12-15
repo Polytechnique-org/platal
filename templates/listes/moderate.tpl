@@ -112,7 +112,8 @@
   </tr>
   {/foreach}
 </table>
-<p class="center">
+<p class="center desc">
+  Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
   <input type="hidden" name="moderate_mails" value="1" />
   <input type="submit" name="mok" value="Accepter" /> 
   <input type="submit" name="mdel" value="Détruire" />
