@@ -347,14 +347,16 @@ class XnetEventsModule extends PLModule
         new_groupadmin_page('xnetevents/edit.tpl');
 
         $moments    = range(1, 4);
-        $short_name = '';
+        $error      = false;
         $page->assign('moments', $moments);
 
         if (Post::v('intitule')) {
             require_once dirname(__FILE__).'/xnetevents/xnetevents.inc.php';
             $short_name = event_change_shortname($page, $infos['short_name'],
                                                  Env::v('short_name', ''));
-
+            if ($short_name != Env::v('short_name')) {
+                $error = true;
+            }
             $evt = array(
                 'eid'              => $eid,
                 'asso_id'          => $globals->asso('id'),
@@ -365,7 +367,7 @@ class XnetEventsModule extends PLModule
                 'fin'              => Post::v('fin_Year').'-'.Post::v('fin_Month')
                                       .'-'.Post::v('fin_Day').' '.Post::v('fin_Hour')
                                       .':'.Post::v('fin_Minute').':00',
-                'short_name'       => is_null($short_name) ? '' : $short_name,
+                'short_name'       => $short_name,
             );
 
             $trivial = array('intitule', 'descriptif', 'noinvite',
@@ -422,7 +424,6 @@ class XnetEventsModule extends PLModule
                                             WHERE eid = {?} AND item_id = {?}", $eid, $i);
                 }
             }
-
             // request for a new payment
             if (Post::v('paiement_id') == -1 && $money_defaut >= 0) {
                 require_once 'validations.inc.php';
@@ -440,7 +441,7 @@ class XnetEventsModule extends PLModule
                                         VALUES ({?}, {?}, '', '', 0)", $eid, 1);
             }
 
-            if (!is_null($short_name)) {
+            if (!$error) {
                 pl_redirect('events');
             }
         }
@@ -470,7 +471,7 @@ class XnetEventsModule extends PLModule
                                PayReq::same_event($eid, $globals->asso('id')));
             $stamp = $res->fetchOneCell();
             if ($stamp) {
-                $evt['paiement_id'] = -2;
+                $evt['paiement_id']  = -2;
                 $evt['paiement_req'] = $stamp;
             }
             $page->assign('evt', $evt);

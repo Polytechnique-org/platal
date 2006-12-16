@@ -233,6 +233,9 @@ function event_change_shortname(&$page, $old, $new)
 {
     global $globals;
 
+    if (is_null($old)) {
+        $old = '';
+    }
     // Quelques vérifications sur l'alias (caractères spéciaux)
     if ($new && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $new)) {
         $page->trig("Le raccourci demandé n'est pas valide.

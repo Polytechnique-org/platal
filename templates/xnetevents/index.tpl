@@ -161,7 +161,7 @@
         Tu dois encore payer {math equation="a-b" a=$e.topay b=$e.paid|replace:'.':','}&nbsp;&euro;
         (tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro;)
         {else}
-        Tu as déjà payé {$e.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
+        Tu as déjà payé les {$e.paid|replace:'.':','}&nbsp;&euro; de ton inscription.
         {/if}
         {if $e.paiement_id &&  $e.paid < $e.topay}
         [<a href="{$platal->ns}payment/{$e.paiement_id}?montant={math equation="a-b" a=$e.topay b=$e.paid}">
