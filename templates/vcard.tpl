@@ -32,8 +32,10 @@ N:{$vcard.nom|vcard_enc};{$vcard.prenom|vcard_enc};{$vcard.nom_usage|vcard_enc};
 NICKNAME:{$vcard.nickname|vcard_enc}
 {/if}
 EMAIL;TYPE=internet,pref:{$vcard.bestalias}@{#globals.mail.domain#}
+EMAIL;TYPE=internet:{$vcard.bestalias}@{#globals.mail.domain2#}
 {if $vcard.bestalias neq $vcard.forlife}
 EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain#}
+EMAIL;TYPE=internet:{$vcard.forlife}@{#globals.mail.domain2#}
 {/if}
 {if $vcard.virtualalias}
 EMAIL;TYPE=internet:{$vcard.virtualalias}
