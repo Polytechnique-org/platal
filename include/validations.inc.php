@@ -178,6 +178,9 @@ class Validate
                     return true;
                 }
             }
+            if (!strlen(trim(Env::v('comm')))) {
+                return true;
+            }
             $this->comments[] = Array(S::v('bestalias'), Env::v('comm'), $formid);
 
             // envoi d'un mail à hotliners
