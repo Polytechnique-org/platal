@@ -315,7 +315,7 @@ td.conteneur_tab {
     display : block;
     float : left;
     padding : 0.4ex;
-    margin : 0 0.3ex -1px 3px;
+    margin: 0 0.3ex -1px 3px;
     border: 1px solid #9c9c9c;
     border-right: none;
     background: #cecece;
@@ -345,9 +345,9 @@ td.conteneur_tab {
     text-decoration: none;
     color: #000;
     background: inherit;
-}
-#onglet li a:hover {
-    text-decoration: underline;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 #onglet li img { margin-right: 2px; }
 

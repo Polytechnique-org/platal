@@ -170,7 +170,9 @@
               <a href="Xnet">Documentation</a>
             {/if}
           </div>
+          <div style="clear: both">
           {include file="skin/common.content.tpl"}
+          </div>
         </td>
       </tr>
       {else}
