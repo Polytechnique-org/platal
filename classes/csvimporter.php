@@ -35,6 +35,7 @@ class CSVImporter
 
     private $user_functions = array();
     private $field_desc = array();
+    private $field_value = array();
 
     public function CSVImporter($table, $key = 'id', $do_sql = true)
     {
@@ -47,7 +48,7 @@ class CSVImporter
     {
         $array = split($this->separator, $line);
         if (is_null($this->index)) {
-            $this->index = $array;
+            $this->index = array_map('strtolower', $array);
             return true;
         }
 
@@ -205,7 +206,7 @@ class CSVImporter
 
     public function registerFunction($name, $desc, $callback)
     {
-        if (is_callable($callback)) {
+        if (is_callable($callback, false, $ref)) {
             $this->user_functions['func_' . $name] = array('desc' => $desc, 'callback' => $callback);
             return true;
         }
@@ -215,6 +216,11 @@ class CSVImporter
     public function describe($name, $desc)
     {
         $this->field_desc[$name] = $desc;
+    }
+
+    public function forceValue($name, $value)
+    {
+        $this->field_value[$name] = $value;
     }
 
     /** Handle insertion form
@@ -229,6 +235,9 @@ class CSVImporter
         }
         if (is_null($fields)) {
             return false;
+        }
+        foreach ($this->field_value as $key=>$value) {
+            unset($fields[$key]);
         }
 
         $current = Env::v('csv_page');
@@ -271,6 +280,9 @@ class CSVImporter
                     $update[$key] = $insert[$key];
                 }
             }
+            foreach ($this->field_value as $key=>$value) {
+                $insert[$key] = $value;
+            }
             if ($current == 'valid' && Env::has('csv_valid')) {
                 $this->run(Env::v('csv_action'), $insert, $update);
                 $page->assign('csv_done', true);
@@ -283,7 +295,7 @@ class CSVImporter
             }
         }
         $page->assign('csv_index', $this->index);
-        $page->assign('csv_funtions', $this->user_functions);
+        $page->assign('csv_functions', $this->user_functions);
         $page->assign('csv_field_desc', $this->field_desc);
         $page->assign('csv_page', $next);
         $page->assign('csv_path', $url);

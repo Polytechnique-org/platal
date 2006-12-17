@@ -39,6 +39,7 @@ class AdminModule extends PLModule
             'admin/skins'                  => $this->make_hook('skins', AUTH_MDP, 'admin'),
             'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
+            'admin/promo'                  => $this->make_hook('promo', AUTH_MDP, 'admin'),
             'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
             'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
@@ -551,6 +552,55 @@ class AdminModule extends PLModule
             $page->assign('mr',$mr);
         }
     }
+
+    function getMatricule($line, $key)
+    {
+        $mat = $line['matricule'];
+        $year = intval(substr($mat, 0, 3));
+        $rang = intval(substr($mat, 3, 3));
+        if ($year > 200) { $year /= 10; };
+        if ($year < 96) {
+            return null;
+        } else {
+            return sprintf('%04u%04u', 1900+$year, $rang);
+        }
+    }
+
+    function handler_promo(&$page, $action = null, $promo = null)
+    {
+        if (Env::has('promo')) {
+            if(Env::i('promo') > 1900 && Env::i('promo') < 2050) {
+                $action = Env::v('valid_promo') == 'Ajouter des membres' ? 'add' : 'ax'; 
+                pl_redirect('admin/promo/' . $action . '/' . Env::i('promo'));
+            } else {
+                $page->trig('Promo non valide');
+            }
+        }
+
+        $page->changeTpl('admin/promo.tpl');
+        if ($promo > 1900 && $promo < 2050 && ($action == 'add' || $action == 'ax')) {
+            $page->assign('promo', $promo);
+        } else {
+            return;
+        }
+
+        $importer = new CSVImporter('auth_user_md5', 'matricule');
+        $importer->registerFunction('matricule', 'matricle Ecole vers X.org', array($this, 'getMatricule'));
+        switch ($action) {
+          case 'add':
+            $fields = array('nom', 'nom_ini', 'prenom',
+                            'prenom_ini', 'promo', 'promo_sortie', 'flags',
+                            'matricule', 'matricule_ax', 'perms');
+            $importer->forceValue('promo', $promo);
+            $importer->forceValue('promo_sortie', $promo + 3);
+            break;
+          case 'ax':
+            $fields = array('matricule', 'matricule_ax');
+            break;
+        }
+        $importer->apply($page, "admin/promo/$action/$promo", $fields);
+    }
+
     function handler_homonyms(&$page, $op = 'list', $target = null) {
         $page->changeTpl('admin/homonymes.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Homonymes');

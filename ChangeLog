@@ -5,6 +5,7 @@ New:
 
     * Admin:
         - Show last contact date on marketing validation                -Fal/FRU
+        - New page to add users in the database                            -FRU
 
     * Core:
         - New mailer                                                       -FRU

@@ -55,6 +55,8 @@
   <tr class="impair">
     <td>
       <strong>Utilisateurs :</strong>&nbsp;&nbsp;
+      <a href="admin/promo">Ajout</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/user">Edit/Su/Logs</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/homonyms">Homonymes</a>
