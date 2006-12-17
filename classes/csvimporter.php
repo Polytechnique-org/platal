@@ -1,0 +1,272 @@
+<?php
+
+define('CSV_INSERT',  'insert'); // INSERT IGNORE
+define('CSV_REPLACE', 'replace'); // REPLACE
+define('CSV_UPDATE',  'update'); // INSERT and UPDATE on error
+
+class CSVImporter
+{
+    private $table;
+    private $key;
+    private $do_sql;
+
+    private $index;
+    private $separator;
+    private $data = array();
+
+    private $user_functions = array();
+
+    public function CSVImporter($table, $key = 'id', $do_sql = true)
+    {
+        $this->table     = $table;
+        $this->key       = $key;
+        $this->do_sql    = $do_sql;
+    }
+
+    private function processLine($line)
+    {
+        $array = split($this->separator, $line);
+        if (is_null($this->index)) {
+            $this->index = $array;
+            return true;
+        }
+
+        if (count($array) != count($this->index)) {
+            return false;
+        }
+        $assoc = array();
+        $i     = 0;
+        foreach ($this->index as $key) {
+            $assoc[$key] = $array[$i];
+            $i++;
+        }
+        $this->data[] = $assoc;
+        return true;
+    }
+
+    private function makeAssoc($line, $relation)
+    {
+        $ops = array();
+        foreach ($relation as $key=>$ref) {
+            if (@array_key_exists($ref, $line)) {
+                $value = $line[$ref];
+            } elseif (is_callable($ref, false)) {
+                $value = call_user_func($ref, $line, $key);
+            } else {
+                $value = $ref;
+            }
+            if (is_null($value) || $value == 'NULL') {
+                $value = 'NULL';
+            }
+            $ops[$key] = $value; 
+        }
+        return $ops;
+    }
+
+    private function makeRequestArgs($line, $relation)
+    {
+        $ops = array();
+        foreach ($relation as $key=>$ref) {
+            if (@array_key_exists($ref, $line)) {
+                $value = $line[$ref];
+            } elseif (is_callable($ref, false)) {
+                $value = call_user_func($ref, $line, $key);
+            } else {
+                $value = $ref;
+            }
+            if (is_null($value) || $value == 'NULL') {
+                $value = 'NULL';
+            } else {
+                $value = "'" . addslashes($value) . "'";
+            }
+            $ops[$key] = "$key = $value";
+        }
+        return $ops;
+    }
+
+    private function makeRelation()
+    {
+        $relation = array();
+        foreach ($this->index as $title) {
+            $relation[$title] = $title;
+        }
+        return $relation;
+    }
+
+    private function execute($query)
+    {
+        if (!$this->do_sql) {
+            echo "$query;\n";
+            return false;
+        }
+        return XDB::execute($query);
+    }
+
+    private function getFieldList()
+    {
+        $res = XDB::query("SHOW COLUMNS FROM {$this->table}");
+        if ($res->numRows()) {
+            return $res->fetchColumn();
+        }
+        return null;
+    }
+
+    public function setCSV($csv, $index = null, $separator = ';')
+    {
+        $this->index     = null;
+        $this->separator = $separator;
+        $csv   = preg_split("/(\r\n|\r|\n)/", $csv);
+
+        foreach ($csv as $line) {
+            $this->processLine($line);
+        }
+    }
+
+    public function run($action = CSV_UPDATE, $insert_relation = null, $update_relation = null)
+    {
+        if (is_null($insert_relation)) {
+            $insert_relation = $this->makeRelation();
+        }
+        if (is_null($update_relation)) {
+            $update_relation = $insert_relation;
+        }
+        foreach ($this->data as $line) {
+            $set = join(', ', $this->makeRequestArgs($line, $insert_relation));
+            switch ($action) {
+              case CSV_INSERT:
+                $this->execute("INSERT IGNORE INTO {$this->table} SET $set");
+                break;
+              case CSV_REPLACE:
+                $this->execute("REPLACE INTO {$this->table} SET $set");
+                break;
+              case CSV_UPDATE:
+                if (!$this->execute("INSERT INTO {$this->table} SET $set")) {
+                    $ops = $this->makeRequestArgs($line, $update_relation);
+                    $set = join(', ', $ops);
+                    $this->execute("UPDATE {$this->table} SET $set WHERE {$ops[$this->key]}");
+                }
+                break;
+            }
+        }
+    }
+
+    static public function dynamicCond($line, $key)
+    {
+        static $fields, $conds, $values, $thens, $elses;
+
+        if (!isset($fields)) {
+            $fields = Env::v('csv_cond_field');
+            $conds  = Env::v('csv_cond');
+            $values = Env::v('csv_cond_value');
+            $thens  = Env::v('csv_cond_then');
+            $elses  = Env::v('csv_cond_else');
+        }
+        $field = $line[$fields[$key]];
+        $cond  = $conds[$key];
+        $value = $values[$key];
+        if (is_numeric($field) && is_numeric($value)) {
+            $field = floatval($field);
+            $value = floatval($value);
+        }
+        switch ($cond) {
+            case 'defined':          $ok = (!empty($field)); break;
+            case 'equals':           $ok = ($field == $value); break;
+            case 'contains':         $ok = (strpos($field, $value) !== false); break;
+            case 'contained':        $ok = (strpos($value, $field) !== false); break;
+            case 'greater':          $ok = ($field > $value); break;
+            case 'greater_or_equal': $ok ($field >= $value); break;
+            case 'lower':            $ok = ($field < $value); break;
+            case 'lower_or_equal':   $ok = ($field <= $value); break;
+            default:                 $ok = false;
+        }
+        if ($ok) {
+            return $thens[$key];
+        } else {
+            return $elses[$key];
+        }
+    }
+
+    public function registerFunction($name, $desc, $callback)
+    {
+        if (is_callable($callback)) {
+            $this->user_functions['func_' . $name] = array('desc' => $desc, 'callback' => $callback);
+            return true;
+        }
+        return false;
+    }
+
+    /** Handle insertion form
+     * @param $page  PlatalPage to process
+     * @param $url   URI of the page
+     * @param $field Editable fields
+     */
+    public function apply(&$page, $url, $fields = null)
+    {
+        if (is_null($fields)) {
+            $fields = $this->getFieldList();
+        }
+        if (is_null($fields)) {
+            return false;
+        }
+
+        $current = Env::v('csv_page');
+        if (empty($current)) {
+            $current = 'source';
+        }
+        $next = Env::v('csv_next_page');
+        if (empty($next)) {
+            $next = $current;
+        }
+        $csv  = Env::v('csv');
+        if ($current == 'source' && Env::has('csv_valid')) {
+            $csv = Env::v('csv_source');
+            $next = 'values';
+        }
+        if ($csv) {
+            $this->setCSV($csv);
+        }
+        if ($current == 'values' && Env::has('csv_valid')) {
+            $next = 'valid';
+        }    
+        if (empty($csv)) {
+            $next = 'source';
+        }
+        if ($next == 'valid') {
+            $insert   = Env::v('csv_value');
+            $values   = Env::v('csv_user_value');
+            $update   = Env::v('csv_update');
+            foreach ($insert as $key=>$value) {
+                if (empty($value)) {
+                    $insert[$key] = null;
+                } elseif ($value == 'user_value') {
+                    $insert[$key] = $values[$key];
+                } elseif ($value == 'cond_value') {
+                    $insert[$key] = array($this, 'dynamicCond');
+                } elseif (array_key_exists($value, $this->user_functions)) {
+                    $insert[$key] = $this->user_functions[$value]['callback'];
+                }
+                if (isset($update[$key])) {
+                    $update[$key] = $insert[$key];
+                }
+            }
+            if ($current == 'valid' && Env::has('csv_valid')) {
+                $this->run(Env::v('csv_action'), $insert, $update);
+                $page->assign('csv_done', true);
+            } else {
+                $preview = array();
+                foreach ($this->data as $line) {
+                    $preview[] = $this->makeAssoc($line, $insert);
+                }
+                $page->assign('csv_preview', $preview);
+            }
+        }
+        $page->assign('csv_index', $this->index);
+        $page->assign('csv_funtions', $this->user_functions);
+        $page->assign('csv_page', $next);
+        $page->assign('csv_path', $url);
+        $page->assign('csv_fields', $fields);  
+        $page->assign('csv', $csv);
+    }
+}
+
+?>
