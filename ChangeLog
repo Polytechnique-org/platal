@@ -8,6 +8,7 @@ New:
 
     * Core:
         - New mailer                                                       -FRU
+        - New CSV-Importer                                                 -FRU
 
     * Events:
         - Tips.                                                         -FRU/Car
