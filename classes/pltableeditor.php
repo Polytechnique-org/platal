@@ -179,6 +179,19 @@ class PLTableEditor {
             $page->assign('id', $id);
             $list = false;
         }
+        if ($action == 'massadd') {
+            $importer = new CSVImporter($this->table, $this->idfield_editable ? $this->idfield : null);
+            $fields   = array();
+            foreach ($this->vars as $field=>$descr) {
+                if ($this->idfield_editable || $field != $this->idfield) {
+                    $fields[] = $field;
+                    $importer->describe($field, @$descr['desc']);
+                }
+            }
+            $page->assign('massadd', true);
+            $importer->apply($page, $this->pl . '/massadd', $fields);
+            $list = false;
+        }
         if ($action == 'new') {
             if (!$this->idfield_editable) {
                 $r = XDB::query("SELECT MAX({$this->idfield})+1 FROM {$this->table}");

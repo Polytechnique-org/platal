@@ -34,6 +34,7 @@ class CSVImporter
     private $data = array();
 
     private $user_functions = array();
+    private $field_desc = array();
 
     public function CSVImporter($table, $key = 'id', $do_sql = true)
     {
@@ -63,21 +64,26 @@ class CSVImporter
         return true;
     }
 
+    private function getValue($line, $key, $action)
+    {
+        if (@array_key_exists($action, $line)) {
+            $value = $line[$action];
+        } elseif (is_callable($action, false)) {
+            $value = call_user_func($action, $line, $key);
+        } else {
+            $value = $action;
+        }
+        if (is_null($value) || $value == 'NULL') {
+            $value = 'NULL';
+        }
+        return $value;
+    }
+
     private function makeAssoc($line, $relation)
     {
         $ops = array();
         foreach ($relation as $key=>$ref) {
-            if (@array_key_exists($ref, $line)) {
-                $value = $line[$ref];
-            } elseif (is_callable($ref, false)) {
-                $value = call_user_func($ref, $line, $key);
-            } else {
-                $value = $ref;
-            }
-            if (is_null($value) || $value == 'NULL') {
-                $value = 'NULL';
-            }
-            $ops[$key] = $value; 
+            $ops[$key] = $this->getValue($line, $key, $ref);
         }
         return $ops;
     }
@@ -86,16 +92,8 @@ class CSVImporter
     {
         $ops = array();
         foreach ($relation as $key=>$ref) {
-            if (@array_key_exists($ref, $line)) {
-                $value = $line[$ref];
-            } elseif (is_callable($ref, false)) {
-                $value = call_user_func($ref, $line, $key);
-            } else {
-                $value = $ref;
-            }
-            if (is_null($value) || $value == 'NULL') {
-                $value = 'NULL';
-            } else {
+            $value = $this->getValue($line, $key, $ref);
+            if (!is_null($value) && $value != 'NULL') {
                 $value = "'" . addslashes($value) . "'";
             }
             $ops[$key] = "$key = $value";
@@ -214,6 +212,11 @@ class CSVImporter
         return false;
     }
 
+    public function describe($name, $desc)
+    {
+        $this->field_desc[$name] = $desc;
+    }
+
     /** Handle insertion form
      * @param $page  PlatalPage to process
      * @param $url   URI of the page
@@ -221,7 +224,7 @@ class CSVImporter
      */
     public function apply(&$page, $url, $fields = null)
     {
-        if (is_null($fields)) {
+        if (is_null($fields) || empty($fields)) {
             $fields = $this->getFieldList();
         }
         if (is_null($fields)) {
@@ -281,6 +284,7 @@ class CSVImporter
         }
         $page->assign('csv_index', $this->index);
         $page->assign('csv_funtions', $this->user_functions);
+        $page->assign('csv_field_desc', $this->field_desc);
         $page->assign('csv_page', $next);
         $page->assign('csv_path', $url);
         $page->assign('csv_fields', $fields);  

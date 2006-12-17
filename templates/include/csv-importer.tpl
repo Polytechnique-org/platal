@@ -105,9 +105,11 @@ val3_1;val3_2;...</pre>
       <option value="replace" {if $smarty.request.csv_action eq 'replace'}selected="selected"{/if}>
         remplacer par la nouvelle entrée
       </option>
+      {if $csv_key}
       <option value="update" {if $smarty.request.csv_action eq 'update'}selected="selected"{/if}>
         mettre à jour les champs sélectionnés
       </option>
+      {/if}
     </select>
   </div>
   <table class="bicol">
@@ -120,7 +122,7 @@ val3_1;val3_2;...</pre>
     </tr>
     {foreach from=$csv_fields item=f}
     <tr class="{cycle values="pair,impair"}">
-      <td>{$f}</td>
+      <td>{$csv_field_desc[$f]|default:$f}</td>
       <td>
         <select name="csv_value[{$f}]" onchange="showValue('{$f}', this);">
           <option value="" {if !$smarty.request.csv_value[$f]}selected="selected"{/if}>
@@ -205,7 +207,7 @@ val3_1;val3_2;...</pre>
   <table class="bicol">
     <tr>
       {foreach from=$csv_fields item=f}
-      <th>{$f}</th>
+      <th>{$csv_field_desc[$f]|default:$f}</th>
       {/foreach}
     </tr>
     {foreach from=$csv_preview item=assoc}

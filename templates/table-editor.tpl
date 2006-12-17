@@ -42,9 +42,13 @@
 </tr>
 {if !$readonly}
 <tr class="impair">
-  <td colspan="{$t->nbfields}"><strong>nouvelle entrée</strong></td>
-  <td class="action">
-    <a href="{$t->pl}/new">créer{icon name=add title='nouvelle entrée'}</a>
+  <td colspan="{$t->nbfields}">
+    <strong>
+      Nouvelles entrées : <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
+    </strong>
+  </td>
+  <td class="right">
+    <a href="{$t->pl}/new">{icon name=add title='nouvelle entrée'}</a>
   </td>
 </tr>
 {/if}
@@ -83,6 +87,13 @@
 {if $p_next > -1}<a href="{$platal->path}?start={$p_next}">{$msg_next_page}</a>{/if}
 </p>
 {/if}
+
+{elseif $massadd}
+{include file="include/csv-importer.tpl"}
+
+<p>
+<a href="{$t->pl}">back</a>
+</p>
 
 {else}
 
