@@ -139,7 +139,7 @@ class XDB
         }
     }
 
-    public static function trace_format(&$page, $template = 'database-debug.tpl') {
+    public static function trace_format(&$page, $template = 'skin/common.database-debug.tpl') {
         $page->assign('trace_data', @$GLOBALS['XDB::trace_data']);
         $page->assign('db_error', @$GLOBALS['XDB::error']);
         return $page->fetch($template);

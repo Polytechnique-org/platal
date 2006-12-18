@@ -153,7 +153,7 @@ class PLTableEditor {
     }
     // call when done
     function apply(&$page, $action, $id = false) {
-        $page->changeTpl('table-editor.tpl');
+        $page->changeTpl('core/table-editor.tpl');
         $list = true;
         if ($action == 'delete') {
         	if (!isset($this->delete_action)) {

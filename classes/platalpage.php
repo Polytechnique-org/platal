@@ -106,7 +106,7 @@ class PlatalPage extends Smarty
         }
 
         if ($globals->debug & 1) {
-            $this->assign('db_trace', XDB::trace_format($this, 'database-debug.tpl'));
+            $this->assign('db_trace', XDB::trace_format($this, 'skin/common.database-debug.tpl'));
         }
 
         $this->assign('validate', true);

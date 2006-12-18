@@ -116,7 +116,7 @@ class ProfileModule extends PLModule
 
     function handler_photo_change(&$page)
     {
-        $page->changeTpl('trombino.tpl');
+        $page->changeTpl('profile/trombino.tpl');
 
         require_once('validations.inc.php');
 
@@ -169,7 +169,7 @@ class ProfileModule extends PLModule
         global $globals;
         require_once 'user.func.inc.php';
 
-        $page->changeTpl('fiche.tpl', SIMPLE);
+        $page->changeTpl('profile/fiche.tpl', SIMPLE);
 
         $view = 'private';
         if (!S::logged() || Env::v('view') == 'public') $view = 'public';
@@ -258,7 +258,7 @@ class ProfileModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('profil.tpl');
+        $page->changeTpl('profile/edit.tpl');
 
         $page->addCssLink('profil.css');
         $page->assign('xorg_title', 'Polytechnique.org - Mon Profil');
@@ -340,7 +340,7 @@ class ProfileModule extends PLModule
             if($page->nb_errs()) {
                 require_once "profil/assign_{$opened_tab}.inc.php";
                 $page->assign('onglet', $opened_tab);
-                $page->assign('onglet_tpl', "profil/$opened_tab.tpl");
+                $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
                 return;
             }
 
@@ -375,14 +375,14 @@ class ProfileModule extends PLModule
         require_once "profil/assign_{$opened_tab}.inc.php";
 
         $page->assign('onglet', $opened_tab);
-        $page->assign('onglet_tpl', "profil/$opened_tab.tpl");
+        $page->assign('onglet_tpl', "profile/$opened_tab.tpl");
 
         return;
     }
 
     function handler_p_orange(&$page)
     {
-        $page->changeTpl('orange.tpl');
+        $page->changeTpl('profile/orange.tpl');
 
         require_once 'validations.inc.php';
         require_once 'xorg.misc.inc.php';
@@ -438,7 +438,7 @@ class ProfileModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        $page->changeTpl('fiche_referent.tpl', SIMPLE);
+        $page->changeTpl('profile/fiche_referent.tpl', SIMPLE);
 
         $res = XDB::query(
                 "SELECT  prenom, nom, user_id, promo, cv, a.alias AS bestalias
@@ -496,7 +496,7 @@ class ProfileModule extends PLModule
 
     function handler_ref_search(&$page)
     {
-        $page->changeTpl('referent.tpl');
+        $page->changeTpl('profile/referent.tpl');
 
         $page->assign('xorg_title', 'Polytechnique.org - Conseil Pro');
 
@@ -608,7 +608,7 @@ class ProfileModule extends PLModule
 
     function handler_p_usage(&$page)
     {
-        $page->changeTpl('nomusage.tpl');
+        $page->changeTpl('profile/nomusage.tpl');
 
         require_once 'validations.inc.php';
         require_once 'xorg.misc.inc.php';
@@ -648,7 +648,7 @@ class ProfileModule extends PLModule
 
     function handler_trombi(&$page, $promo = null)
     {
-        $page->changeTpl('trombipromo.tpl');
+        $page->changeTpl('profile/trombipromo.tpl');
         $page->assign('xorg_title', 'Polytechnique.org - Trombi Promo');
 
         if (is_null($promo)) {
@@ -671,7 +671,7 @@ class ProfileModule extends PLModule
 
     function handler_xnet(&$page)
     {
-        $page->changeTpl('groupesx.tpl');
+        $page->changeTpl('profile/groupesx.tpl');
         $page->assign('xorg_title', 'Polytechnique.org - Promo, Groupes X, Binets');
         
         $req = XDB::query('
@@ -702,7 +702,7 @@ class ProfileModule extends PLModule
     }
 
     function handler_admin_trombino(&$page, $uid = null, $action = null) {
-        $page->changeTpl('admin/admin_trombino.tpl');
+        $page->changeTpl('profile/admin_trombino.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Trombino');
         $page->assign('uid', $uid);
         
@@ -772,7 +772,7 @@ class ProfileModule extends PLModule
         $table_editor->describe('img',  'nom de l\'image', false);
         $table_editor->apply($page, $action, $id);
         if ($id && $action == 'edit') {
-            $page->changeTpl('admin/gerer_decos.tpl');
+            $page->changeTpl('profile/admin_decos.tpl');
         
             $mid = $id;
         

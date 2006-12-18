@@ -196,10 +196,10 @@ class Platal
     function force_login(&$page)
     {
         if (S::logged()) {
-            $page->changeTpl('password_prompt_logged.tpl');
+            $page->changeTpl('core/password_prompt_logged.tpl');
             $page->addJsLink('do_challenge_response_logged.js');
         } else {
-            $page->changeTpl('password_prompt.tpl');
+            $page->changeTpl('core/password_prompt.tpl');
             $page->addJsLink('do_challenge_response.js');
     	}
         $page->run();
@@ -209,7 +209,7 @@ class Platal
     {
         global $page;
 
-        new_skinned_page('index.tpl');
+        new_skinned_page('platal/index.tpl');
 
         if (empty($this->path)) {
             $this->path = 'index';

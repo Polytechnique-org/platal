@@ -32,7 +32,6 @@ class XnetModule extends PLModule
             'groups'    => $this->make_hook('groups',    AUTH_PUBLIC),
             'groupes.php' => $this->make_hook('groups2', AUTH_PUBLIC),
             'plan'      => $this->make_hook('plan',      AUTH_PUBLIC),
-            'send_bug'  => $this->make_hook('bug',       AUTH_MDP),
             'photo'     => $this->make_hook('photo',     AUTH_MDP),
         );
     }
@@ -56,21 +55,6 @@ class XnetModule extends PLModule
             echo file_get_contents(dirname(__FILE__).'/../htdocs/images/none.png');
         }
         exit;
-    }
-
-    function handler_bug(&$page)
-    {
-        $page->changeTpl('bug.tpl',SIMPLE);
-        $page->addJsLink('close_on_esc.js');
-        if (Env::has('send')) {
-            $page->assign('bug_sent',1);
-            $mymail = new PlMailer();
-            $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
-            $mymail->addTo('support+platal@polytechnique.org');
-            $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
-            $mymail->setTxtBody(Env::v('detailed_desc'));
-            $mymail->send();
-        }
     }
     
     function handler_index(&$page)

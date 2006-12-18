@@ -26,6 +26,7 @@ class CoreModule extends PLModule
         return array(
             '403'         => $this->make_hook('403', AUTH_PUBLIC),
             '404'         => $this->make_hook('404', AUTH_PUBLIC),
+            'send_bug'       => $this->make_hook('bug', AUTH_COOKIE),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
             'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
 
@@ -43,7 +44,7 @@ class CoreModule extends PLModule
     function handler_403(&$page)
     {
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        $page->changeTpl('403.tpl');
+        $page->changeTpl('core/403.tpl');
     }
 
     function handler_404(&$page)
@@ -51,7 +52,7 @@ class CoreModule extends PLModule
         global $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         $page->assign('near', $platal->near_hook());
-        $page->changeTpl('404.tpl');
+        $page->changeTpl('core/404.tpl');
     }
 
     function handler_favicon(&$page)
@@ -85,6 +86,21 @@ class CoreModule extends PLModule
         $_SESSION['perms'] = $level;
 
         pl_redirect('/');
+    }
+
+    function handler_bug(&$page)
+    {
+        $page->changeTpl('core/bug.tpl',SIMPLE);
+        $page->addJsLink('close_on_esc.js');
+        if (Env::has('send')) {
+            $page->assign('bug_sent',1);
+            $mymail = new PlMailer();
+            $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
+            $mymail->addTo('support+platal@polytechnique.org');
+            $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
+            $mymail->setTxtBody(Env::v('detailed_desc'));
+            $mymail->send();
+        }
     }
 }
 

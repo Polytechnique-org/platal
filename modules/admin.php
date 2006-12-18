@@ -341,7 +341,7 @@ class AdminModule extends PLModule
             }
         }
 
-        $page->changeTpl('logger-view.tpl');
+        $page->changeTpl('admin/logger-view.tpl');
 
         $page->assign('xorg_title','Polytechnique.org - Administration - Logs des sessions');
     }

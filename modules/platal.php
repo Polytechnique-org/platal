@@ -81,7 +81,7 @@ class PlatalModule extends PLModule
 
     function handler_changelog(&$page)
     {
-        $page->changeTpl('changeLog.tpl');
+        $page->changeTpl('platal/changeLog.tpl');
 
         $clog = htmlentities(file_get_contents(dirname(__FILE__).'/../ChangeLog'));
         $clog = preg_replace('!(#[0-9]+(,[0-9]+)*)!e', 'bugize("\1")', $clog);
@@ -106,7 +106,7 @@ class PlatalModule extends PLModule
 
     function handler_prefs(&$page)
     {
-        $page->changeTpl('preferences.tpl');
+        $page->changeTpl('platal/preferences.tpl');
         $page->assign('xorg_title','Polytechnique.org - Mes préférences');
 
         if (Post::has('mail_fmt')) {
@@ -126,7 +126,7 @@ class PlatalModule extends PLModule
 
     function handler_webredir(&$page)
     {
-        $page->changeTpl('webredirect.tpl');
+        $page->changeTpl('platal/webredirect.tpl');
 
         $page->assign('xorg_title','Polytechnique.org - Redirection de page WEB');
 
@@ -158,7 +158,7 @@ class PlatalModule extends PLModule
 
     function handler_prefs_rss(&$page)
     {
-        $page->changeTpl('filrss.tpl');
+        $page->changeTpl('platal/filrss.tpl');
 
         $page->assign('goback', Env::v('referer', 'login'));
 
@@ -187,18 +187,18 @@ class PlatalModule extends PLModule
                 setcookie('ORGaccess', hash_encrypt($password), (time()+25920000), '/', '' ,0);
             }
 
-            $page->changeTpl('motdepasse.success.tpl');
+            $page->changeTpl('platal/motdepasse.success.tpl');
             $page->run();
         }
 
-        $page->changeTpl('motdepasse.tpl');
+        $page->changeTpl('platal/motdepasse.tpl');
         $page->addJsLink('motdepasse.js');
         $page->assign('xorg_title','Polytechnique.org - Mon mot de passe');
     }
 
     function handler_smtppass(&$page)
     {
-        $page->changeTpl('acces_smtp.tpl');
+        $page->changeTpl('platal/acces_smtp.tpl');
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
 
         $uid  = S::v('uid');
@@ -229,7 +229,7 @@ class PlatalModule extends PLModule
     {
         global $globals;
 
-        $page->changeTpl('recovery.tpl');
+        $page->changeTpl('platal/recovery.tpl');
 
         if (!Env::has('login') || !Env::has('birth')) {
             return;
@@ -301,7 +301,7 @@ Mail envoyé à ".Env::v('login'));
         $res   = XDB::query('SELECT uid FROM perte_pass WHERE certificat={?}', $certif);
         $ligne = $res->fetchOneAssoc();
         if (!$ligne) {
-            $page->changeTpl('index.tpl');
+            $page->changeTpl('platal/index.tpl');
             $page->kill("Cette adresse n'existe pas ou n'existe plus sur le serveur.");
         }
 
@@ -314,9 +314,9 @@ Mail envoyé à ".Env::v('login'));
                                  $password, $uid);
             XDB::query('DELETE FROM perte_pass WHERE certificat={?}', $certif);
             $logger->log("passwd","");
-            $page->changeTpl('tmpPWD.success.tpl');
+            $page->changeTpl('platal/tmpPWD.success.tpl');
         } else {
-            $page->changeTpl('motdepasse.tpl');
+            $page->changeTpl('platal/motdepasse.tpl');
             $page->addJsLink('motdepasse.js');
         }
     }
@@ -325,7 +325,7 @@ Mail envoyé à ".Env::v('login'));
     {
         global $globals;
 
-        $page->changeTpl('skins.tpl');
+        $page->changeTpl('platal/skins.tpl');
         $page->assign('xorg_title','Polytechnique.org - Skins');
 
         if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
@@ -383,7 +383,7 @@ Mail envoyé à ".Env::v('login'));
         if (Get::has('redirect')) {
             http_redirect(rawurldecode(Get::v('redirect')));
         } else {
-            $page->changeTpl('exit.tpl');
+            $page->changeTpl('platal/exit.tpl');
         }
     }
 }

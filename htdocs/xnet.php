@@ -39,7 +39,7 @@ if (!$n) {
     pl_redirect('');
 }
 
-new_skinned_page('wiki.tpl');
+new_skinned_page('core/wiki.tpl');
 $perms = wiki_get_perms($n);
 
 switch (Env::v('action')) {

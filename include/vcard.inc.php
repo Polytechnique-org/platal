@@ -119,7 +119,7 @@ class VCard
 
     function do_page(&$page)
     {
-        $page->changeTpl('vcard.tpl', NO_SKIN);
+        $page->changeTpl('core/vcard.tpl', NO_SKIN);
         $page->register_modifier('vcard_enc',  array($this, 'text_encode'));
         $page->register_function('format_adr', array($this, 'format_adr'));
         $page->assign_by_ref('users', $this->users);

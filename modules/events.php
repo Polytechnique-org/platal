@@ -26,7 +26,6 @@ class EventsModule extends PLModule
         return array(
             'events'         => $this->make_hook('ev',        AUTH_COOKIE),
             'rss'            => $this->make_hook('rss', AUTH_PUBLIC),
-            'send_bug'       => $this->make_hook('bug', AUTH_COOKIE),
             'events/submit'  => $this->make_hook('ev_submit', AUTH_MDP),
             'admin/events'   => $this->make_hook('admin_events',     AUTH_MDP, 'admin'),
 
@@ -72,24 +71,9 @@ class EventsModule extends PLModule
         return $res->fetchOneAssoc();
     }
 
-    function handler_bug(&$page)
-    {
-        $page->changeTpl('bug.tpl',SIMPLE);
-        $page->addJsLink('close_on_esc.js');
-        if (Env::has('send')) {
-            $page->assign('bug_sent',1);
-            $mymail = new PlMailer();
-            $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
-            $mymail->addTo('support+platal@polytechnique.org');
-            $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
-            $mymail->setTxtBody(Env::v('detailed_desc'));
-            $mymail->send();
-        }
-    }
-
     function handler_ev(&$page, $action = 'list', $eid = null, $pound = null)
     {
-        $page->changeTpl('login.tpl');
+        $page->changeTpl('events/index.tpl');
         $page->addJsLink('ajax.js');
         $page->assign('tips', $this->get_tips());
 
@@ -183,7 +167,7 @@ class EventsModule extends PLModule
     {       
         require_once 'rss.inc.php';
             
-        $uid = init_rss('rss.tpl', $user, $hash);
+        $uid = init_rss('events/rss.tpl', $user, $hash);
             
         $rss = XDB::iterator(
                 'SELECT  e.id, e.titre, e.texte, e.creation_date,
@@ -199,7 +183,7 @@ class EventsModule extends PLModule
 
     function handler_ev_submit(&$page)
     {
-        $page->changeTpl('evenements.tpl');
+        $page->changeTpl('events/submit.tpl');
 
         $titre      = Post::v('titre');
         $texte      = Post::v('texte');
@@ -329,7 +313,7 @@ class EventsModule extends PLModule
 
     function handler_admin_events(&$page, $action = 'list', $eid = null) 
     {
-        $page->changeTpl('admin/evenements.tpl');
+        $page->changeTpl('events/admin_events.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
