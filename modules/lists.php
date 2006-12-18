@@ -86,7 +86,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/index.tpl');
+        $page->changeTpl('lists/index.tpl');
         $page->addJsLink('ajax.js');
         $page->assign('xorg_title','Polytechnique.org - Listes de diffusion');
 
@@ -127,7 +127,7 @@ class ListsModule extends PLModule
     {
         header('Content-Type: text/html; charset="iso-8859-15"');
         $domain = $this->prepare_client($page);
-        $page->changeTpl('listes/liste.inc.tpl', NO_SKIN);
+        $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
         if (Get::has('unsubscribe')) {
             $this->client->unsubscribe($list);
         }
@@ -153,7 +153,7 @@ class ListsModule extends PLModule
 
     function handler_create(&$page)
     {
-        $page->changeTpl('listes/create.tpl');
+        $page->changeTpl('lists/create.tpl');
 
         $owners  = preg_split("/[\s]+/", Post::v('owners'), -1, PREG_SPLIT_NO_EMPTY);
         $members = preg_split("/[\s]+/", Post::v('members'), -1, PREG_SPLIT_NO_EMPTY);
@@ -243,7 +243,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/members.tpl');
+        $page->changeTpl('lists/members.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
@@ -302,7 +302,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/trombi.tpl');
+        $page->changeTpl('lists/trombi.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe($liste);
@@ -338,7 +338,7 @@ class ListsModule extends PLModule
 
         $domain = $this->prepare_client($page);
 
-        $page->changeTpl('listes/archives.tpl');
+        $page->changeTpl('lists/archives.tpl');
 
         $page->addCssLink('lists.archives.css');
         if (list($det) = $this->client->get_members($liste)) {
@@ -425,7 +425,7 @@ class ListsModule extends PLModule
 
         $domain = $this->prepare_client($page);
 
-        $page->changeTpl('listes/moderate.tpl');
+        $page->changeTpl('lists/moderate.tpl');
 
         $page->register_modifier('qpd', 'quoted_printable_decode');
         $page->register_modifier('hdc', 'list_header_decode');
@@ -457,7 +457,7 @@ class ListsModule extends PLModule
                 $mail['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
                 $page->assign('msg', $msg);
             
-                $page->changeTpl('listes/moderate_mail.tpl');
+                $page->changeTpl('lists/moderate_mail.tpl');
                 $page->assign_by_ref('mail', $mail);
                 return;
             }   
@@ -465,7 +465,7 @@ class ListsModule extends PLModule
             if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
                 foreach($subs as $user) {
                     if ($user['id'] == Env::v('sid')) {
-                        $page->changeTpl('listes/moderate_sub.tpl');
+                        $page->changeTpl('lists/moderate_sub.tpl');
                         $page->assign('del_user', $user);
                         return;
                     }
@@ -495,7 +495,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/admin.tpl');
+        $page->changeTpl('lists/admin.tpl');
 
         if (Env::has('add_member')) {
             require_once('user.func.inc.php');
@@ -563,7 +563,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/options.tpl');
+        $page->changeTpl('lists/options.tpl');
 
         if (Post::has('submit')) {
             $values = $_POST;
@@ -624,7 +624,7 @@ class ListsModule extends PLModule
             $type   = 'list';
         }
 
-        $page->changeTpl('listes/delete.tpl');
+        $page->changeTpl('lists/delete.tpl');
         if (Post::v('valid') == 'OUI') {
             if ($this->client->delete_list($liste, Post::b('del_archive'))) {
                 foreach (array('', '-owner', '-admin', '-bounces') as $app) {
@@ -655,7 +655,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/soptions.tpl');
+        $page->changeTpl('lists/soptions.tpl');
 
         if (Post::has('submit')) {
             $values = $_POST;
@@ -681,7 +681,7 @@ class ListsModule extends PLModule
 
         $this->prepare_client($page);
 
-        $page->changeTpl('listes/check.tpl');
+        $page->changeTpl('lists/check.tpl');
 
         if (Post::has('correct')) {
             $this->client->check_options($liste, true);
@@ -696,7 +696,7 @@ class ListsModule extends PLModule
     }
 
     function handler_admin_all(&$page) {
-        $page->changeTpl('listes/admin_all.tpl');
+        $page->changeTpl('lists/admin_all.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Mailing lists');
 
         $client = new MMList(S::v('uid'), S::v('password'));

@@ -245,7 +245,7 @@ class XnetListsModule extends ListsModule
             return PL_NOT_FOUND;
         }
 
-        new_groupadmin_page('xnet/groupe/alias-admin.tpl');
+        new_groupadmin_page('xnetlists/alias-admin.tpl');
 
         if (Env::has('add_member')) {
             $add = Env::v('add_member');
@@ -320,7 +320,7 @@ class XnetListsModule extends ListsModule
         if (!$globals->asso('mail_domain')) {
             return PL_NOT_FOUND;
         }
-        new_groupadmin_page('xnet/groupe/alias-create.tpl');
+        new_groupadmin_page('xnetlists/alias-create.tpl');
 
         if (!Post::has('submit')) {
             return;
