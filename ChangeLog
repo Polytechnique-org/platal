@@ -9,12 +9,15 @@ New:
 
     * Core:
         - New mailer                                                       -FRU
+        - Signal bug send to OTRS and not trackers.                        -Car
         - New CSV-Importer                                                 -FRU
 
     * Events:
         - Tips.                                                         -FRU/Car
-        - Signal bug send to OTRS and not trackers.                        -Car
-        - Reskin the newsletter                                            -mYk
+        - Split Events in 2 modules: events and newsletter                 -FRU
+
+    * Newsletter:
+        - New skin                                                         -mYk
 
     * Payment:
         - Directly integrated into Xnet.                                   -FRU

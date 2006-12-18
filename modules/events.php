@@ -31,20 +31,7 @@ class EventsModule extends PLModule
 
             'ajax/tips'      => $this->make_hook('tips',      AUTH_COOKIE, '', NO_AUTH),
             'admin/tips'     => $this->make_hook('admin_tips', AUTH_MDP, 'admin'),
-
-            'nl'             => $this->make_hook('nl',        AUTH_COOKIE),
-            'nl/show'        => $this->make_hook('nl_show',   AUTH_COOKIE),
-            'nl/submit'      => $this->make_hook('nl_submit', AUTH_MDP),
-            'admin/newsletter'             => $this->make_hook('admin_nl', AUTH_MDP, 'admin'),
-            'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat', AUTH_MDP, 'admin'),
-            'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP, 'admin'),
         );
-    }
-
-    function on_subscribe($forlife, $uid, $promo, $password)
-    {
-        require_once 'newsletter.inc.php';
-        subscribe_nl($uid);
     }
 
     function get_tips($exclude = null)
@@ -260,60 +247,9 @@ class EventsModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
 
-    function handler_nl(&$page, $action = null)
-    {
-        require_once 'newsletter.inc.php';
-
-        $page->changeTpl('newsletter/index.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Lettres mensuelles');
-
-        switch ($action) {
-          case 'out': unsubscribe_nl(); break;
-          case 'in':  subscribe_nl(); break;
-          default: ;
-        }
-
-        $page->assign('nls', get_nl_state());
-        $page->assign('nl_list', get_nl_list());
-    }
-
-    function handler_nl_show(&$page, $nid = 'last')
-    {
-        $page->changeTpl('newsletter/show.tpl');
-
-        require_once 'newsletter.inc.php';
-
-        $nl  = new NewsLetter($nid);
-        $page->assign_by_ref('nl', $nl);
-
-        if (Post::has('send')) {
-            $nl->sendTo(S::v('prenom'), S::v('nom'),
-                        S::v('bestalias'), S::v('femme'),
-                        S::v('mail_fmt') != 'texte');
-        }
-    }
-
-    function handler_nl_submit(&$page)
-    {
-        $page->changeTpl('newsletter/submit.tpl');
-
-        require_once 'newsletter.inc.php';
-
-        if (Post::has('see')) {
-            $art = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'));
-            $page->assign('art', $art);
-        } elseif (Post::has('valid')) {
-            require_once('validations.inc.php');
-            $art = new NLReq(S::v('uid'), Post::v('title'),
-                             Post::v('body'), Post::v('append'));
-            $art->submit();
-            $page->assign('submited', true);
-        }
-    }
-
     function handler_admin_events(&$page, $action = 'list', $eid = null) 
     {
-        $page->changeTpl('events/admin_events.tpl');
+        $page->changeTpl('events/admin.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - Evenements');
         $page->register_modifier('hde', 'html_entity_decode');
 
@@ -411,76 +347,7 @@ class EventsModule extends PLModule
             $page->assign('evs', XDB::iterator($sql));
         }
         $page->assign('arch', $arch);
-    }
-
-    function handler_admin_nl(&$page, $new = false) {
-        $page->changeTpl('newsletter/admin.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : liste');
-        require_once("newsletter.inc.php");
-        
-        if($new) {
-           insert_new_nl();
-           pl_redirect("admin/newsletter");
-        }
-        
-        $page->assign('nl_list', get_nl_slist());
-    }
-    
-    function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {
-        $page->changeTpl('newsletter/edit.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Edition'); 
-        require_once("newsletter.inc.php");
-        
-        $nl  = new NewsLetter($nid);
-        
-        if($action == 'delete') {
-            $nl->delArticle($aid);
-            pl_redirect("admin/newsletter/edit/$nid");
-        }
-        
-        if($aid == 'update') {
-            $nl->_title     = Post::v('title');
-            $nl->_title_mail= Post::v('title_mail');
-            $nl->_date      = Post::v('date');
-            $nl->_head      = Post::v('head');
-            $nl->_shortname = strlen(Post::v('shortname')) ? Post::v('shortname') : null;
-            if (preg_match('/^[-a-z0-9]*$/i', $nl->_shortname) && !is_numeric($nl->_shortname)) {
-                $nl->save();
-            } else {
-                $page->trig('Le nom de la NL n\'est pas valide');
-                pl_redirect('admin/newsletter/edit/' . $nl->_id);
-            }
-        }
-        
-        if(Post::v('save')) {
-            $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
-                    $aid, Post::v('cid'), Post::v('pos'));
-            $nl->saveArticle($art);
-            pl_redirect("admin/newsletter/edit/$nid");
-        }
-        
-        if($action == 'edit' && $aid != 'update') {
-            $eaid = $aid;
-            if(Post::has('title')) {
-                $art  = new NLArticle(Post::v('title'), Post::v('body'), Post::v('append'),
-                        $eaid, Post::v('cid'), Post::v('pos'));
-            } else {
-        	   $art = ($eaid == 'new') ? new NLArticle() : $nl->getArt($eaid);
-            }
-            $page->assign('art', $art);
-        }
-        
-        $page->assign_by_ref('nl',$nl);
-    }
-    function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
-        $page->assign('title', 'Gestion des catégories de la newsletter');
-        $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
-        $table_editor->describe('titre','intitulé',true);
-        $table_editor->describe('pos','position',true);
-        $table_editor->apply($page, $action, $id);
-    }    
-    
+    }   
 }
 
 ?>
