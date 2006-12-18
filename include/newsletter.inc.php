@@ -119,29 +119,52 @@ class NewsLetter
     // {{{ function title()
 
     function title($mail = false) {
-    	if ($mail) {
-    		return $this->_title_mail;
-    	}
-		return $this->_title;
-	}
+        if ($mail) {
+            return $this->_title_mail;
+        }
+        return $this->_title;
+    }
 
     // }}}
     // {{{ function head()
     
-    function head()
-    { return $this->_head; }
+    function head($prenom = null, $nom = null, $sexe = null, $type = 'text')
+    {
+        if (is_null($prenom)) {
+            return $this->_head;
+        } else {
+            $head = $this->_head;
+            $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+            $head = str_replace('<prenom>', $prenom, $head);
+            $head = str_replace('<nom>',    $nom,    $head);
+            if ($type == 'text') {
+                $head = enriched_to_text($head,false,true,2,64);
+            } else {
+                $head = enriched_to_text($head, true);
+            }
+            return $head;
+        }
+    }
+
+    // }}}
+    // {{{ funciton getCss()
+
+    function getCss()
+    {
+        return file_get_contents(dirname(__FILE__) . '/../htdocs/css/nl.css');
+    }
 
     // }}}
     // {{{ function getArt()
     
     function getArt($aid)
     {
-    foreach ($this->_arts as $key=>$artlist) {
-        if (isset($artlist["a$aid"])) {
+        foreach ($this->_arts as $key=>$artlist) {
+            if (isset($artlist["a$aid"])) {
                 return $artlist["a$aid"];
             }
-    }
-    return null;
+        }
+        return null;
     }
 
     // }}}
@@ -149,21 +172,20 @@ class NewsLetter
 
     function saveArticle(&$a)
     {
-    if ($a->_aid>=0) {
-        XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
-                                          VALUES  ({?},{?},{?},{?},{?},{?},{?})',
-                                          $this->_id, $a->_aid, $a->_cid, $a->_pos,
-                                          $a->_title, $a->_body, $a->_append);
-        $this->_arts['a'.$a->_aid] = $a;
-    } else {
-        XDB::execute(
-        'INSERT INTO  newsletter_art
-              SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
-            FROM  newsletter_art AS a
-               WHERE  a.id={?}',
-                       $this->_id, $a->_cid, $a->_title, $a->_body, $a->_append, $this->_id);
-        $this->_arts['a'.$a->_aid] = $a;
-    }
+        if ($a->_aid>=0) {
+            XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
+                                VALUES  ({?},{?},{?},{?},{?},{?},{?})',
+                          $this->_id, $a->_aid, $a->_cid, $a->_pos,
+                          $a->_title, $a->_body, $a->_append);
+                          $this->_arts['a'.$a->_aid] = $a;
+        } else {
+            XDB::execute('INSERT INTO  newsletter_art
+                               SELECT  {?},MAX(aid)+1,{?},'.($a->_pos ? intval($a->_pos) : 'MAX(pos)+1').',{?},{?},{?}
+                                 FROM  newsletter_art AS a
+                                WHERE  a.id={?}',
+                         $this->_id, $a->_cid, $a->_title, $a->_body, $a->_append, $this->_id);
+                         $this->_arts['a'.$a->_aid] = $a;
+        }
     }
 
     // }}}
@@ -171,176 +193,37 @@ class NewsLetter
     
     function delArticle($aid)
     {
-    XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
-    foreach ($this->_arts as $key=>$art) {
-        unset($this->_arts[$key]["a$aid"]);
-    }
-    }
-
-    // }}}
-    // {{{ function footer
-
-    function footer($html)
-    {
-        global $globals;
-        $url = 'https://www.polytechnique.org';
-
-    if ($html) {
-        return '<div class="foot1">Cette lettre est envoyée à tous les Polytechniciens sur Internet par l\'intermédiaire de Polytechnique.org.</div>'
-        .  '<div class="foot2">'
-        .  "[<a href=\"$url/nl\">archives</a>&nbsp;|&nbsp;"
-        .  "<a href=\"$url/nl/submit\">écrire dans la NL</a>&nbsp;|&nbsp;"
-        .  "<a href=\"$url/nl/out\">ne plus recevoir</a>]"
-        .  '</div>';
-    } else {
-        return "\n\n--------------------------------------------------------------------\n"
-             . "Cette lettre est envoyée à tous les Polytechniciens sur Internet par\n"
-             . "l'intermédiaire de Polytechnique.org.\n"
-         . "\n"
-         . "archives : [$url/nl]\n"
-         . "écrire   : [$url/nl/submit]\n"
-         . "ne plus recevoir: [$url/nl/out]\n";
-    }
+        XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
+        foreach ($this->_arts as $key=>$art) {
+            unset($this->_arts[$key]["a$aid"]);
+        }
     }
 
     // }}}
     // {{{ function toText()
 
-    function toText($prenom,$nom,$sexe)
+    function toText(&$page, $prenom,$nom,$sexe)
     {
-    $res  = "====================================================================\n";
-    $res .= ' '.$this->title()."\n";
-    $res .= "====================================================================\n\n";
-
-    $head = $this->head();
-    $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
-    $head = str_replace('<prenom>', $prenom, $head);
-    $head = str_replace('<nom>',    $nom,    $head);
-    $head = enriched_to_text($head,false,true,2,64);
-
-    if ($head) {
-            $res .= "\n$head\n\n\n";
-        }
-
-    $i = 1;
-    foreach ($this->_arts as $cid=>$arts) {
-        $res .= "\n$i *{$this->_cats[$cid]}*\n";
-        foreach ($arts as $art) {
-        $res .= '- '.$art->title()."\n";
-        }
-        $i ++;
-    }
-    $res .= "\n\n";
-        
-    foreach ($this->_arts as $cid=>$arts) {
-        $res .= "--------------------------------------------------------------------\n";
-        $res .= "*{$this->_cats[$cid]}*\n";
-        $res .= "--------------------------------------------------------------------\n\n";
-        foreach ($arts as $art) {
-        $res .= $art->toText();
-        $res .= "\n\n";
-        }
-    }
-    
-    $res .= $this->footer(false);
-    
-    return $res;
+        $page->assign('is_mail', false);
+        $page->assign('html_version', false);
+        $page->assign('prenom', $prenom);
+        $page->assign('nom', $nom);
+        $page->assign('sexe', $sexe);
+        $page->assign_by_ref('nl', $this);
     }
 
     // }}}
     // {{{ function toHtml()
     
-    function toHtml($prenom, $nom, $sexe, $body=false, $urlprefix = false)
+    function toHtml(&$page, $prenom, $nom, $sexe)
     {
-        $u    = $urlprefix ? 'nl/show/'.$this->id() : '';
-    $res  = '<div class="title">'.$this->title().'</div>';
-    
-    $head = $this->head();
-    $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
-    $head = str_replace('<prenom>', $prenom, $head);
-    $head = str_replace('<nom>',    $nom,    $head);
-    $head = enriched_to_text($head, true);
-
-    if($head) {
-            $res .= "<div class='intro'>$head</div>";
-        }
-
-    $i = 1;
-    $res .= "<a id='top_lnk'></a>";
-    foreach ($this->_arts as $cid=>$arts) {
-        $res .= "<div class='lnk'><a href='$u#cat$cid'><strong>$i. {$this->_cats[$cid]}</strong></a>";
-        foreach ($arts as $art) {
-        $res .= "<a href='$u#art{$art->_aid}'>&nbsp;&nbsp;- ".htmlentities($art->title())."</a>";
-        }
-        $res .= '</div>';
-        $i ++;
-    }
-
-    foreach ($this->_arts as $cid=>$arts) {
-        $res .= "<h1 class='xorg_nl'><a id='cat$cid'></a>".$this->_cats[$cid].'</h1>';
-        foreach($arts as $art) {
-            $res .= $art->toHtml();
-            $res .= "<div class='top_lnk'><a href='$u#top_lnk'>Revenir au sommaire</a></div>";
-        }
-    }
-
-    $res .= $this->footer(true);
-
-    if ($body) {
-        $res = <<<EOF
-<?xml version="1.0" encoding="iso-8859-15"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title></title>
-    <style type="text/css">
-    <!--
-      body      { background-color: #ddd; color: #000; }
-      div.nl    { margin: auto; width: 72ex;
-          font-family: "Georgia", "Times New Roman", serif; font-size: 11pt;
-          text-align: justify;
-          background-color: #fff; color: #000; }
-      a[href]       { text-decoration: none;
-                      background-color: #fff; color: #36c; }
-      a[href]:hover { background-color: #fff; color: #6c0; }
-
-      div.title { margin: 0ex 0ex 3ex 0ex; padding: 5ex 1ex 1ex 15ex;
-          font-size: 130%; font-weight: bold; text-align: right; 
-          background-color: #369; color: #fff;
-          background-image: url(http://dev.m4x.org/images/logo_xorg_nl.png);
-          background-repeat: no-repeat; background-position: 0.5ex 0.5ex; }
-      div.intro { margin: 4ex 3ex; }
-      div.lnk   { margin: 2ex 6ex;}
-      div.lnk a { display: block; font-size: 95%; }
-      div.top_lnk   { margin: 2ex; padding: 0ex; font-size: 85%; text-align: right; }
-      h1.xorg_nl    { margin: 3ex 0ex 2ex 0ex; padding: 1.5ex 2ex 0.5ex 1ex;
-          font-size: 120%; font-weight: bold; text-align: right; 
-          background-color: #369; color: #fff; }
-      h2.xorg_nl    { margin: 2ex 0ex 0ex 0ex; padding: 0.4ex 2ex;
-          font-size: 100%; font-weight: bold; font-style: italic;
-          background-color: #fff; color: #369;
-          border-width: thin 0; border-style: solid; border-color: #369; }
-      div.art   { margin: 2ex 3ex; }
-      div.app   { margin: 2ex 6ex 0ex 3ex; font-size: 95%; text-align: left; }
-      div.foot1 { margin: 8ex 0ex 0ex 0ex; padding: 0.5ex 2ex;
-          font-size: 90%; background-color: #fff; color: #999;
-          border-width: thin 0; border-style: solid; border-color: #ddd;
-          text-align: center; }
-      div.foot2 { padding: 1ex 0ex;
-          font-size: 90%; background-color: #fff; color: #999;
-          text-align: center; }
-    -->
-    </style>
-  </head>
-  <body>
-    <div class='nl'>
-    $res
-    </div>
-  </body>
-</html>
-EOF;
-    }
-    return $res;
+        $page->assign('prefix', 'nl/show/' . $this->id());
+        $page->assign('is_mail', false);
+        $page->assign('html_version', true);
+        $page->assign('prenom', $prenom);
+        $page->assign('nom', $nom);
+        $page->assign('sexe', $sexe);
+        $page->assign_by_ref('nl', $this);
     }
 
     // }}}
@@ -350,21 +233,15 @@ EOF;
     {
         global $globals;
 
-        $mailer = new PlMailer();
-        $mailer->setFrom($globals->newsletter->from);
-        $mailer->setSubject($this->title(true));
+        $mailer = new PlMailer('newsletter/nl.tpl');
+        $mailer->assign('is_mail', true);
+        $mailer->assign('prenom', $prenom);
+        $mailer->assign('nom', $nom);
+        $mailer->assign('sexe', $sex);
+        $mailer->assign_by_ref('nl', $this);
+        $mailer->assign('prefix', null);
         $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
-        if (!empty($globals->newsletter->replyto)) {
-            $mailer->addHeader('Reply-To',$globals->newsletter->replyto);
-        }
-        if (!empty($globals->newsletter->retpath)) {
-            $mailer->addHeader('Return-Path',$globals->newsletter->retpath);
-        }
-        $mailer->setTxtBody($this->toText($prenom,$nom,$sex));
-        if ($html) {
-            $mailer->setHTMLBody($this->toHtml($prenom,$nom,$sex,true));
-        }
-        $mailer->send();
+        $mailer->send($html);
     }
 
     // }}}

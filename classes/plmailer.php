@@ -50,6 +50,7 @@ class PlMail extends Smarty
         $this->register_function('cc',      Array($this, 'addCc'));
         $this->register_function('bcc',     Array($this, 'addBcc'));
         $this->register_function('subject', Array($this, 'setSubject'));
+        $this->register_function('add_header', Array($this, 'addHeader'));
     }
 
     // }}}
@@ -141,6 +142,17 @@ class PlMail extends Smarty
     function setSubject($params, &$smarty)
     {
         $smarty->mailer->setSubject($params['text']);
+    }
+
+    // }}}
+    // {{{ function addHeader()
+
+    /** template function : add_header.
+     * {add_header name=... value=...}
+     */
+    function addHeader($params, &$smarty)
+    {
+        $smarty->mailer->addHeader($params['name'], $params['value']);
     }
 
     // }}}
@@ -261,15 +273,47 @@ class PlMailer extends Mail_Mime {
     }
     
     // }}}
+    // {{{ function assign_by_ref()
+    
+    function assign_by_ref($var, &$value)
+    {
+        if (!is_null($this->page)) {
+            $this->page->assign_by_ref($var, $value);
+        }
+    }
+
+    // }}}
+    // {{{ function register_modifier()
+
+    function register_modifier($var, $callback)
+    {
+        if (!is_null($this->page)) {
+            $this->page->register_modifier($var, $callback);
+        }
+    }
+    
+    // }}}
+    // {{{ function register_function()
+
+    function register_function($var, $callback)
+    {
+        if (!is_null($this->page)) {
+            $this->page->register_function($var, $callback);
+        }
+    }
+    
+    // }}}
     // {{{ function processPage()
 
-    private function processPage()
+    private function processPage($with_html = true)
     {
         if (!is_null($this->page)) {
             $this->setTxtBody($this->page->run(false));
-            $html = trim($this->page->run(true));
-            if (!empty($html)) {
-                $this->setHtmlBody($html);
+            if ($with_html) {
+                $html = trim($this->page->run(true));
+                if (!empty($html)) {
+                    $this->setHtmlBody($html);
+                }
             }
         }
     }
@@ -277,9 +321,9 @@ class PlMailer extends Mail_Mime {
     // }}}
     // {{{ function send()
 
-    function send()
+    function send($with_html = true)
     {
-        $this->processPage();
+        $this->processPage($with_html);
         if (S::v('forlife')) {
             $this->addHeader('X-Org-Mail', S::v('forlife') . '@polytechnique.org');
         }

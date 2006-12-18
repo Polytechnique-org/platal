@@ -63,8 +63,11 @@ class NewsletterModule extends PLModule
         require_once 'newsletter.inc.php';
 
         $nl  = new NewsLetter($nid);
-        $page->assign_by_ref('nl', $nl);
-
+        if (Get::has('text')) {
+            $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+        } else {
+            $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+        }
         if (Post::has('send')) {
             $nl->sendTo(S::v('prenom'), S::v('nom'),
                         S::v('bestalias'), S::v('femme'),
