@@ -193,7 +193,7 @@
 {$smarty.session.prenom} {$smarty.session.nom}
 {/if}</textarea>
     <div>
-      <strong>Ajouter une pièce jointe&nbsp;:&nbsp;</strong>
+      <strong>{icon name=email_attach}&nbsp;Ajouter une pièce jointe&nbsp;:&nbsp;</strong>
       <input type="file" name="uploaded" />
     </div>
     <div class="center">

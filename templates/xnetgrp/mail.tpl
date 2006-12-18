@@ -107,7 +107,7 @@ Le bureau du groupe {$asso.nom}.
     </tr>
     <tr>
       <td class="titre">
-        Attacher un fichier
+        {icon name=email_attach} Attacher un fichier
       </td>
       <td>
         <input type="file" name="uploaded" />
