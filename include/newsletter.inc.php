@@ -151,7 +151,8 @@ class NewsLetter
 
     function getCss()
     {
-        return file_get_contents(dirname(__FILE__) . '/../htdocs/css/nl.css');
+        $css = file_get_contents(dirname(__FILE__) . '/../htdocs/css/nl.css');
+        return preg_replace('@/\*.*?\*/@s', '', $css);
     }
 
     // }}}
