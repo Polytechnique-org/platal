@@ -79,7 +79,7 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
       {literal}
       body      { background-color: #ddd; color: #000; }
       {/literal}
-      {$nl->getCss()}
+      {$nl->css()}
     -->
     </style>
   </head>

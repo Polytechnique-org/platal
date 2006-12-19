@@ -23,34 +23,164 @@
 
 require_once("xorg.misc.inc.php");
 
-if (isset($page)) {
-    $page->addCssLink('nl.css');
-}
-
 define('FEMME', 1);
 define('HOMME', 0);
 
 // }}}
+// {{{ class MassMailer
+
+abstract class MassMailer
+{
+    private $_tpl;
+    private $_css;
+    private $_prefix;
+
+    public $_id;
+    public $_shortname;
+    public $_title;
+    public $_title_mail;
+
+    public $_head;
+
+    function __construct($tpl, $css, $prefix)
+    {
+        $this->_tpl    = $tpl;
+        $this->_css    = $css;
+        $this->_prefix = $prefix;
+    }
+
+    public function id()
+    {
+        return is_null($this->_shortname) ? $this->_id : $this->_shortname;
+    }
+
+    public function title($mail = false)
+    {
+        return $mail ? $this->_title_mail : $this->_title;
+    }
+
+    public function head($prenom = null, $nom = null, $sexe = null, $type = 'text')
+    {
+        if (is_null($prenom)) {
+            return $this->_head; 
+        } else {
+            $head = $this->_head;
+            $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+            $head = str_replace('<prenom>', $prenom, $head);
+            $head = str_replace('<nom>',    $nom,    $head);
+            if ($type == 'text') {
+                $head = enriched_to_text($head, false, true, 2, 64);
+            } else {
+                $head = enriched_to_text($head, true);
+            }
+            return $head;
+        }
+    }
+
+    public function css(&$page = null)
+    {
+        if (!is_null($page)) {
+            $page->addCssLink($this->_css);
+            return true;
+        } else {
+            $css = file_get_contents(dirname(__FILE__) . '/../htdocs/css/' . $this->_css);
+            return preg_replace('@/\*.*?\*/@s', '', $css);
+        }
+    }
+
+    public function toText(&$page, $prenom, $nom, $sexe)
+    {
+        $this->css($page);
+        $page->assign('is_mail', false);
+        $page->assign('html_version', false);
+        $page->assign('prenom', $prenom);
+        $page->assign('nom', $nom);
+        $page->assign('sexe', $sexe);
+        $this->assignData($page);
+    }
+
+    public function toHtml(&$page, $prenom, $nom, $sexe)
+    {
+        $this->css($page);
+        $page->assign('prefix', $this->_prefix . '/' . $this->id());
+        $page->assign('is_mail', false);
+        $page->assign('html_version', true);
+        $page->assign('prenom', $prenom);
+        $page->assign('nom', $nom);
+        $page->assign('sexe', $sexe);
+        $this->assignData($page);
+    }
+
+    public function sendTo($prenom, $nom, $login, $sexe, $html)
+    {
+        global $globals;
+
+        $mailer = new PlMailer($this->_tpl);
+        $this->assignData($mailer);
+        $mailer->assign('is_mail', true);
+        $mailer->assign('prenom',  $prenom);
+        $mailer->assign('nom',     $nom);
+        $mailer->assign('sexe',    $sexe);
+        $mailer->assign('prefix',  null);
+        $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
+        $mailer->send($html);
+    }
+
+    public function sendToAll()
+    {
+        $this->setSent();
+        $query = "SELECT  u.user_id, a.alias,
+                          u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
+                          FIND_IN_SET('femme', u.flags),
+                          q.core_mail_fmt AS pref
+                    FROM  {$this->subscriptionTable()}  AS ni
+              INNER JOIN  auth_user_md5   AS u  USING(user_id)
+              INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
+              INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+               LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
+                   WHERE  ({$this->subscriptionWhere()}) AND e.email IS NOT NULL
+                GROUP BY  u.user_id
+                   LIMIT  60";
+        while (true) {
+            $res = XDB::iterRow($query);
+            if (!$res->total()) {
+                exit;
+            }
+            $sent = array();
+            while (list($uid, $bestalias, $prenom, $nom, $sexe, $fmt) = $res->next()) {
+                $sent[] = "user_id='$uid'";
+                $this->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html');
+            }
+            XDB::execute("UPDATE  {$this->subscriptionTable()}
+                             SET  {$this->subscriptionUpdate()}
+                           WHERE " . implode(' OR ', $sent));
+            sleep(60);
+        }
+    }
+
+    abstract protected function assignData(&$smarty);
+    abstract protected function setSent();
+    abstract static public function subscribe($uid = -1);
+    abstract static public function unsubscribe($uid = -1);
+    abstract static public function subscriptionState($uid = -1);
+
+    abstract protected function subscriptionTable();
+    abstract protected function subscriptionWhere();
+    abstract protected function subscriptionUpdate(); 
+}
+
+// }}}
 // {{{ class NewsLetter
 
-class NewsLetter
+class NewsLetter extends MassMailer
 {
-    // {{{ properties
-    
-    var $_id;
-    var $_shortname;
-    var $_date;
-    var $_title;
-    var $_title_mail;
-    var $_head;
-    var $_cats = Array();
-    var $_arts = Array();
+    public $_date;
+    public $_cats = Array();
+    public $_arts = Array();
 
-    // }}}
-    // {{{ constructor
-    
-    function NewsLetter($id=null)
+    function __construct($id = null)
     {
+        parent::__construct('newsletter/nl.tpl', 'nl.css', 'nl/show');
         if (isset($id)) {
             if ($id == 'last') {
                 $res = XDB::query("SELECT MAX(id) FROM newsletter WHERE bits!='new'");
@@ -60,7 +190,7 @@ class NewsLetter
         } else {
             $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
             if (!$res->numRows()) {
-                insert_new_nl();
+                Newsletter::create();
             }
             $res = XDB::query("SELECT * FROM newsletter WHERE bits='new'");
         }
@@ -90,75 +220,13 @@ class NewsLetter
         }
     }
 
-    // }}}
-    // {{{ function setSent()
-
-    function setSent()
-    {
-        XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
-    }
-
-    // }}}
-    // {{{ function save()
-
-    function save()
+    public function save()
     {
         XDB::execute('UPDATE newsletter SET date={?},titre={?},titre_mail={?},head={?},short_name={?} WHERE id={?}',
                      $this->_date, $this->_title, $this->_title_mail, $this->_head, $this->_shortname,$this->_id);
     }
-
-    // }}}
-    // {{{ function id()
-
-    function id()
-    {
-        return is_null($this->_shortname) ? $this->_id : $this->_shortname;
-    }
-
-    // }}}
-    // {{{ function title()
-
-    function title($mail = false) {
-        if ($mail) {
-            return $this->_title_mail;
-        }
-        return $this->_title;
-    }
-
-    // }}}
-    // {{{ function head()
-    
-    function head($prenom = null, $nom = null, $sexe = null, $type = 'text')
-    {
-        if (is_null($prenom)) {
-            return $this->_head;
-        } else {
-            $head = $this->_head;
-            $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
-            $head = str_replace('<prenom>', $prenom, $head);
-            $head = str_replace('<nom>',    $nom,    $head);
-            if ($type == 'text') {
-                $head = enriched_to_text($head,false,true,2,64);
-            } else {
-                $head = enriched_to_text($head, true);
-            }
-            return $head;
-        }
-    }
-
-    // }}}
-    // {{{ funciton getCss()
-
-    function getCss()
-    {
-        $css = file_get_contents(dirname(__FILE__) . '/../htdocs/css/nl.css');
-        return preg_replace('@/\*.*?\*/@s', '', $css);
-    }
-
-    // }}}
-    // {{{ function getArt()
-    
-    function getArt($aid)
+  
+    public function getArt($aid)
     {
         foreach ($this->_arts as $key=>$artlist) {
             if (isset($artlist["a$aid"])) {
@@ -168,10 +236,7 @@ class NewsLetter
         return null;
     }
 
-    // }}}
-    // {{{ function saveArticle()
-
-    function saveArticle(&$a)
+    public function saveArticle(&$a)
     {
         if ($a->_aid>=0) {
             XDB::execute('REPLACE INTO  newsletter_art (id,aid,cid,pos,title,body,append)
@@ -188,11 +253,8 @@ class NewsLetter
                          $this->_arts['a'.$a->_aid] = $a;
         }
     }
-
-    // }}}
-    // {{{ function delArticle()
-    
-    function delArticle($aid)
+   
+    public function delArticle($aid)
     {
         XDB::execute('DELETE FROM newsletter_art WHERE id={?} AND aid={?}', $this->_id, $aid);
         foreach ($this->_arts as $key=>$art) {
@@ -200,52 +262,72 @@ class NewsLetter
         }
     }
 
-    // }}}
-    // {{{ function toText()
-
-    function toText(&$page, $prenom,$nom,$sexe)
+    protected function assignData(&$smarty)
     {
-        $page->assign('is_mail', false);
-        $page->assign('html_version', false);
-        $page->assign('prenom', $prenom);
-        $page->assign('nom', $nom);
-        $page->assign('sexe', $sexe);
-        $page->assign_by_ref('nl', $this);
+        $smarty->assign_by_ref('nl', $this);
     }
 
-    // }}}
-    // {{{ function toHtml()
-    
-    function toHtml(&$page, $prenom, $nom, $sexe)
+    protected function setSent()
     {
-        $page->assign('prefix', 'nl/show/' . $this->id());
-        $page->assign('is_mail', false);
-        $page->assign('html_version', true);
-        $page->assign('prenom', $prenom);
-        $page->assign('nom', $nom);
-        $page->assign('sexe', $sexe);
-        $page->assign_by_ref('nl', $this);
+        XDB::execute("UPDATE  newsletter SET bits='sent' WHERE id={?}", $this->_id);
     }
 
-    // }}}
-    // {{{ function sendTo()
-    
-    function sendTo($prenom, $nom, $login, $sex, $html)
+    protected function subscriptionTable()
     {
-        global $globals;
-
-        $mailer = new PlMailer('newsletter/nl.tpl');
-        $mailer->assign('is_mail', true);
-        $mailer->assign('prenom', $prenom);
-        $mailer->assign('nom', $nom);
-        $mailer->assign('sexe', $sex);
-        $mailer->assign_by_ref('nl', $this);
-        $mailer->assign('prefix', null);
-        $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
-        $mailer->send($html);
+        return 'newsletter_ins';
     }
 
-    // }}}
+    protected function subscriptionWhere()
+    {
+        return 'ni.last<' . $this->_id;
+    }
+
+    protected function subscriptionUpdate()
+    {
+        return 'last=' . $this->_id;
+    }
+
+    static public function subscriptionState($uid = -1)
+    {
+        $user = ($uid == -1) ? S::v('uid') : $uid;
+        $res = XDB::query('SELECT 1 FROM newsletter_ins WHERE user_id={?}', $user);
+        return $res->fetchOneCell();
+    }
+
+    static public function unsubscribe($uid = -1)
+    {
+        $user = ($uid == -1) ? S::v('uid') : $uid;
+        XDB::execute('DELETE FROM newsletter_ins WHERE user_id={?}', $user);
+    }
+
+    static public function subscribe($uid = -1)
+    {
+        $user = ($uid == -1) ? S::v('uid') : $uid;
+        XDB::execute('REPLACE INTO  newsletter_ins (user_id,last) VALUES  ({?}, 0)', $user);
+    }
+
+    static public function create()
+    {
+        XDB::execute("INSERT INTO newsletter
+                              SET bits='new',date=NOW(),titre='to be continued',titre_mail='to be continued'");
+    }
+
+    static public function listSent()
+    {
+        $res = XDB::query("SELECT  IF(short_name IS NULL, id,short_name) as id,date,titre_mail AS titre
+                             FROM  newsletter
+                            WHERE  bits!='new'
+                            ORDER  BY date DESC");
+        return $res->fetchAllAssoc();
+    }
+
+    static public function listAll()
+    {
+        $res = XDB::query("SELECT  IF(short_name IS NULL, id,short_name) as id,date,titre_mail AS titre
+                             FROM  newsletter
+                         ORDER BY  date DESC");
+        return $res->fetchAllAssoc();
+    }
 }
 
 // }}}
@@ -265,78 +347,78 @@ class NLArticle
     // }}}
     // {{{ constructor
     
-    function NLArticle($title='', $body='', $append='', $aid=-1, $cid=0, $pos=0)
+    function __construct($title='', $body='', $append='', $aid=-1, $cid=0, $pos=0)
     {
-    $this->_body   = $body;
-    $this->_title  = $title;
-    $this->_append = $append;
-    $this->_aid    = $aid;
-    $this->_cid    = $cid;
-    $this->_pos    = $pos;
+        $this->_body   = $body;
+        $this->_title  = $title;
+        $this->_append = $append;
+        $this->_aid    = $aid;
+        $this->_cid    = $cid;
+        $this->_pos    = $pos;
     }
 
     // }}}
     // {{{ function title()
 
-    function title()
+    public function title()
     { return trim($this->_title); }
 
     // }}}
     // {{{ function body()
     
-    function body()
+    public function body()
     { return trim($this->_body); }
     
     // }}}
     // {{{ function append()
     
-    function append()
+    public function append()
     { return trim($this->_append); }
 
     // }}}
     // {{{ function toText()
 
-    function toText()
+    public function toText()
     {
-    $title = '*'.$this->title().'*';
-    $body  = enriched_to_text($this->_body,false,true);
-    $app   = enriched_to_text($this->_append,false,false,4);
-    return trim("$title\n\n$body\n\n$app")."\n";
+        $title = '*'.$this->title().'*';
+        $body  = enriched_to_text($this->_body,false,true);
+        $app   = enriched_to_text($this->_append,false,false,4);
+        return trim("$title\n\n$body\n\n$app")."\n";
     }
 
     // }}}
     // {{{ function toHtml()
 
-    function toHtml()
+    public function toHtml()
     {
-    $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".htmlentities($this->title()).'</h2>';
-    $body  = enriched_to_text($this->_body,true);
-    $app   = enriched_to_text($this->_append,true);
+        $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".htmlentities($this->title()).'</h2>';
+        $body  = enriched_to_text($this->_body,true);
+        $app   = enriched_to_text($this->_append,true);
     
-    $art   = "$title\n";
-    $art  .= "<div class='art'>\n$body\n";
-    if ($app) {
+        $art   = "$title\n";
+        $art  .= "<div class='art'>\n$body\n";
+        if ($app) {
             $art .= "<div class='app'>$app</div>";
         }
-    $art  .= "</div>\n";
+        $art  .= "</div>\n";
     
-    return $art;
+        return $art;
     }
 
     // }}}
     // {{{ function check()
 
-    function check()
+    public function check()
     {
-    $text = enriched_to_text($this->_body);
-    $arr  = explode("\n",wordwrap($text,68));
-    $c    = 0;
-    foreach ($arr as $line) {
+        $text = enriched_to_text($this->_body);
+        $arr  = explode("\n",wordwrap($text,68));
+        $c    = 0;
+        foreach ($arr as $line) {
             if (trim($line)) {
                 $c++;
             }
         }
-    return $c<9;
+        return $c<9;
     }
 
     // }}}
@@ -345,41 +427,6 @@ class NLArticle
 // }}}
 // {{{ Functions
 
-function insert_new_nl()
-{
-    XDB::execute("INSERT INTO newsletter SET bits='new',date=NOW(),titre='to be continued',titre_mail='to be continued'");
-}
-
-function get_nl_slist()
-{
-    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre_mail AS titre FROM newsletter ORDER BY date DESC");
-    return $res->fetchAllAssoc();
-}
-
-function get_nl_list()
-{
-    $res = XDB::query("SELECT IF(short_name IS NULL, id,short_name) as id,date,titre_mail AS titre FROM newsletter WHERE bits!='new' ORDER BY date DESC");
-    return $res->fetchAllAssoc();
-}
-
-function get_nl_state()
-{
-    $res = XDB::query('SELECT 1 FROM newsletter_ins WHERE user_id={?}', S::v('uid'));
-    return $res->fetchOneCell();
-}
- 
-function unsubscribe_nl()
-{
-    XDB::execute('DELETE FROM newsletter_ins WHERE user_id={?}', S::v('uid'));
-}
- 
-function subscribe_nl($uid=-1)
-{
-    $user = ($uid == -1) ? S::v('uid') : $uid;
-    XDB::execute('REPLACE INTO  newsletter_ins (user_id,last)
-                        VALUES  ({?}, 0)', $user);
-}
- 
 function justify($text,$n)
 {
     $arr = explode("\n",wordwrap($text,$n));

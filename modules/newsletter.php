@@ -33,12 +33,6 @@ class NewsletterModule extends PLModule
         );
     }
 
-    function on_subscribe($forlife, $uid, $promo, $password)
-    {
-        require_once 'newsletter.inc.php';
-        subscribe_nl($uid);
-    }
-
     function handler_nl(&$page, $action = null)
     {
         require_once 'newsletter.inc.php';
@@ -47,13 +41,13 @@ class NewsletterModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Lettres mensuelles');
 
         switch ($action) {
-          case 'out': unsubscribe_nl(); break;
-          case 'in':  subscribe_nl(); break;
+          case 'out': Newsletter::unsubscribe(); break;
+          case 'in':  Newsletter::subscribe(); break;
           default: ;
         }
 
-        $page->assign('nls', get_nl_state());
-        $page->assign('nl_list', get_nl_list());
+        $page->assign('nls', Newsletter::subscriptionState());
+        $page->assign('nl_list', Newsletter::listSent());
     }
 
     function handler_nl_show(&$page, $nid = 'last')
@@ -99,11 +93,11 @@ class NewsletterModule extends PLModule
         require_once("newsletter.inc.php");
         
         if($new) {
-           insert_new_nl();
-           pl_redirect("admin/newsletter");
+            Newsletter::create();
+            pl_redirect("admin/newsletter");
         }
         
-        $page->assign('nl_list', get_nl_slist());
+        $page->assign('nl_list', Newsletter::listAll());
     }
     
     function handler_admin_nl_edit(&$page, $nid = 'last', $aid = null, $action = 'edit') {

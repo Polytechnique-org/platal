@@ -31,7 +31,7 @@
 [<a href="nl/show/{$nl->id()}">visualiser</a>]
 </p>
 
-<form action='admin/newsletter/edit/{$nl->_id}/update' method='post'>
+<form action='admin/newsletter/edit/{$nl->id(true)}/update' method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0">
     <tr>
       <th colspan='2'>
