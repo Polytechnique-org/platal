@@ -348,6 +348,10 @@ class PlMailer extends Mail_Mime {
                                  'html_charset' => $this->charset,
                                  'head_charset' => $this->charset));
         $hdrs = $this->headers();
+        if (empty($hdrs['From'])) {
+            trigger_error('Empty "From", mail not sent', E_USER_WARNING);
+            return false;
+        }
         return $this->mail->send($dests, $hdrs, $body);
     }
 
