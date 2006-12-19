@@ -28,12 +28,8 @@ if (Env::has('medal_op')) {
 
     if (Env::v('medal_op')=='ajouter' && Env::i('medal_id')) {
         $req = new MedalReq(S::v('uid',-1),Env::i('medal_id'), Env::i('grade_id'));
-//        if ($req->mid == 20) { // defnat
-//        	$req->commit();
-//        	unset($_REQUEST['medal_op']); // pour ne pas avoir le message d'attente de validation
-//        } else {
-	        $req->submit();
-//		}    
+        $req->submit();
+        unset($_REQUEST['medal_op']); // pour ne pas avoir le message d'attente de validation
     }
 
     if (Env::v('medal_op')=='annuler' && Env::i('medal_id')) {
@@ -48,7 +44,7 @@ if (Post::has('grade')) {
 } 
 
 $res    = XDB::query(
-	"SELECT  m.id, m.text AS medal, m.type, m.img, s.gid
+    	"SELECT  m.id, m.text AS medal, m.type, m.img, s.gid
            FROM  profile_medals_sub    AS s
      INNER JOIN  profile_medals        AS m ON ( s.mid = m.id )
           WHERE  s.uid = {?}", S::v('uid', -1));

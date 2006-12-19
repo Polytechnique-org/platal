@@ -770,6 +770,7 @@ class ProfileModule extends PLModule
         $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
         $table_editor->describe('text', 'intitulé',  true);
         $table_editor->describe('img',  'nom de l\'image', false);
+        $table_editor->describe('flags', 'valider', true);
         $table_editor->apply($page, $action, $id);
         if ($id && $action == 'edit') {
             $page->changeTpl('profile/admin_decos.tpl');

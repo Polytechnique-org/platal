@@ -81,6 +81,21 @@ class MedalReq extends Validate
     }
 
     // }}}
+    // {{{ function submit()
+
+    function submit()
+    {
+        $res = XDB::query("SELECT  FIND_IN_SET(flags, 'validation')
+                             FROM  profile_medals
+                            WHERE  id = {?}", $this->mid);
+        if ($res->fetchOneCell()) {
+            parent::submit();
+        } else {
+            $this->commit();
+        }
+    }
+    
+    // }}}
     // {{{ function commit()
 
     function commit ()

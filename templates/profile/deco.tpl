@@ -23,6 +23,7 @@
 
 {literal}
 <script type="text/javascript">//<![CDATA[
+  var valid = new array();
   function medal_add()
   {
     var selid = document.forms.prof_annu.medal_sel.selectedIndex;
