@@ -85,21 +85,15 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 
 {/if}
 
-<p>
-Il faut absolument que ton article fasse moins de 8 lignes (non vides) de 68 caractères.
-</p>
-
-<p>
-Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à placer dans la case "Ajouts"
-</p>
+<h2>Proposer un article</h2>
 
 <form action="nl/submit" method='post'>
-  <table class="bicol" cellpadding="3" cellspacing="0" summary="liste des NL">
+  <table class="bicol" cellpadding="3" cellspacing="0" summary="proposer un article">
     <tr>
-      <th colspan='2'>proposer un article</th>
+      <th colspan='2'>Proposer un article</th>
     </tr>
     <tr class="impair">
-      <td class='titre'>Sujet</td>
+        <td class='titre'>Sujet</td>
       <td>
         <input size='60' type='text' value='{$smarty.request.title}' name='title' />
       </td>
@@ -107,13 +101,13 @@ Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à
     <tr class="pair">
       <td class='titre'>Contenu</td>
       <td>
-        <textarea cols="68" rows="10" name='body'>{if $art}{$art->body()}{/if}</textarea>
+        <textarea cols="68" rows="8" name='body'>{if $art}{$art->body()}{/if}</textarea>
       </td>
     </tr>
     <tr class="impair">
       <td class='titre'>Ajouts (emails, contacts, tarifs, site web, ...)</td>
       <td>
-        <textarea cols="68" rows="6" name='append'>{if $art}{$art->append()}{/if}</textarea>
+        <textarea cols="68" rows="3" name='append'>{if $art}{$art->append()}{/if}</textarea>
       </td>
     </tr>
     <tr class='pair'>
@@ -123,6 +117,59 @@ Les contacts, prix, adresses mail utiles, liens web, ...  sont en sus, et sont à
     </tr>
   </table>
 </form>
+
+<h2>Conseils de rédaction</h2>
+
+<h3>Mise en garde</h3>
+
+<p>
+<em>La lettre mensuelle est envoyée à la quasi-totalité des X inscrits à polytechnique.org.</em> Cela impose la plus grande vigilance sur son contenu. Pour être publiée, une annonce doit concerner clairement et directement la vie de la communauté polytechnicienne ou une majorité des X.
+</p>
+
+<p>
+L'équipe éditoriale relit les articles et les rectifie éventuellement pour préserver l'uniformité de la lettre mensuelle.
+C'est plus simple pour nous si l'article respecte déjà les règles suivantes !
+</p>
+
+<h3>Longueur</h3>
+
+<p>
+Plus un article est court, plus il y a de chances qu'il soit lu !
+Nous fixons une longueur maximale à 8 lignes non vides de 68 caractères.
+</p>
+
+<p>
+S'il y a beaucoup d'informations annexes (programme détaillé, etc.), elles devraient être mises sur une page web, et l'article devrait contenir un lien vers cette page.
+</p>
+
+<p>
+Les contacts, prix, adresses email, liens web, etc. sont à placer dans la case "Ajouts" ; il devraient prendre une à trois lignes.
+</p>
+
+<h3>Mise en forme</h3>
+
+<p>
+Il est possible de mettre du texte <strong>en gras</strong>, <em>en italique</em> ou de
+<span style="text-decoration: underline">le souligner</span> en l'encadrant avec les caractères spéciaux
+*, / et _ respectivement : *en gras*, /en italique/, _souligné_.
+Merci de ne pas abuser du formatage !
+</p>
+
+<h3>Conventions</h3>
+
+<p>
+Voici quelques exemples à respecter pour garantir l'uniformité de la newsletter.
+</p>
+
+<ul>
+<li>Noms : Jean DUPONT (48)</li>
+<li>Date : le 1er avril, le jeudi 14 janvier (il n'est pas utile de préciser l'année)</li>
+<li>Heures : 9h30, 19h00</li>
+<li>Lieux : Maison des X, 12 rue de Poitiers, 75007 Paris</li>
+<li>Site web : http://www.polytechnique.org</li>
+<li>E-mail : utiliser de préférence une adresse @polytechnique.org !</li>
+<li>Numéro de téléphone : 01 23 45 67 89</li>
+</ul>
 
 {/if}
 
