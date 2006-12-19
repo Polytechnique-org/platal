@@ -32,7 +32,7 @@ q:
 ## core
 ##
 
-core: spool/templates_c include/globals.inc.php
+core: spool/templates_c include/globals.inc.php configs/platal.cron
 
 spool/templates_c spool/uploads:
 	mkdir -p $@
