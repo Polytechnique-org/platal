@@ -87,6 +87,9 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 
 <h2>Proposer un article</h2>
 
+<p>
+Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de proposer ton article.
+</p>
 <form action="nl/submit" method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0" summary="proposer un article">
     <tr>
@@ -118,6 +121,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
   </table>
 </form>
 
+<a id='conseils'></a>
 <h2>Conseils de rédaction</h2>
 
 <h3>Mise en garde</h3>
