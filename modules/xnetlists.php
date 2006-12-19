@@ -75,7 +75,7 @@ class XnetListsModule extends ListsModule
         }
         $this->prepare_client($page);
 
-        $page->changeTpl('xnetlists/index.tpl');
+        new_group_page('xnetlists/index.tpl');
 
         if (Get::has('del')) {
             $this->client->unsubscribe(Get::v('del'));
