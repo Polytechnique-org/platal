@@ -24,7 +24,7 @@
 {if $valid->m_relance neq ''} {* provided for backward compatibility, may disappear in the future *}
   <tr class="pair">
     <td class="titre">Dernière relance le :</td>
-    <td>{$valid->m_relance}</td>
+    <td>{$valid->m_relance|date_format}</td>
   </tr>
 {/if}
 {/if}
