@@ -285,6 +285,21 @@ class Validate
     }
 
     // }}}
+    // {{{ function get_typed_requests()
+
+    /** same as get_typed_request() but return an array of objects
+     */
+    static function get_typed_requests($uid, $type)
+    {
+        $res = XDB::iterRow('SELECT data FROM requests WHERE user_id={?} and type={?}', $uid, $type);
+        $array = array();
+        while (list($data) = $res->next()) {
+            $array[] = unserialize($data);
+        }
+        return $array;
+    }
+
+    // }}}
     // {{{ function _mail_body
 
     function _mail_body($isok)
