@@ -38,6 +38,13 @@
     document.forms.prof_annu.medal_op.value = "retirer";
     document.forms.prof_annu.submit();
   }
+
+  function medal_cancel(stamp)
+  {
+    document.forms.prof_annu.medal_id.value = stamp;
+    document.forms.prof_annu.medal_op.value = "annuler";
+    document.forms.prof_annu.submit();
+  }
   var subgrades = new array();
   function getoption( select_input, j)
   {
@@ -136,6 +143,39 @@
           <a href="javascript:medal_del({$m.id});">retirer</a>
         </span>
       </td>
+    </tr>
+    {/foreach}
+    {foreach from=$medals_valid item=v}
+    <tr>
+      <td class="colg">
+        <img
+          {foreach from=$medal_list item=list}
+            {foreach from=$list item=m}
+            {if $m.id eq $v->mid}src="images/medals/{$m.img}"{/if}
+            {/foreach}
+          {/foreach}
+        title="Validation" alt="Validation" width="32" />
+      <td class="colm">
+        <span class="valeur">
+          {foreach from=$medal_list item=list}
+            {foreach from=$list item=m}
+            {if $m.id eq $v->mid}{$m.text}&nbsp;<em>(en attente de validation)</em>{/if}
+            {/foreach}
+          {/foreach}
+        </span><br />
+        {foreach from=$grades key=mid item=grd}
+          {if $mid eq $v->mid}
+          {foreach from=$grd item=g}
+            {if $g.gid eq $v->gid}{$g.text}{/if}
+          {/foreach}
+          {/if}
+        {/foreach}
+      </td>
+      <td class="cold">
+        <span class="lien">
+          <a href="javascript:medal_cancel({$v->stamp});">annuler</a>
+        </span>
+      </tr>
     </tr>
     {/foreach}
     <tr>

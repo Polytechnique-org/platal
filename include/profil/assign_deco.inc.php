@@ -40,5 +40,6 @@ $page->assign('medals', $medals);
 $page->assign('trad',   $trad);
 $page->assign('medals_pub', $medals_pub);
 $page->assign('medal_list', $mlist);
+$page->assign('medals_valid', $medals_valid);
 
 ?>
