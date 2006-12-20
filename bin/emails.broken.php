@@ -57,7 +57,7 @@ foreach ($emails as $_email) {
     if ($x = $sel->fetchOneAssoc()) {
         if (!$x['panne']) {
             XDB::execute("UPDATE emails
-                             SET panne=NOW(), last=NOW()
+                             SET panne=NOW(), last=NOW(),
                                  panne_level = 1
                            WHERE email = {?}",
                           $email);
