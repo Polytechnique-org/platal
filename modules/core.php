@@ -43,16 +43,25 @@ class CoreModule extends PLModule
 
     function handler_403(&$page)
     {
+        global $globals;
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        $page->changeTpl('core/403.tpl');
+        if ($globals->asso()) {
+            new_skinned_page('core/403.tpl');
+        } else {
+            $page->changeTpl('core/403.tpl');
+        }
     }
 
     function handler_404(&$page)
     {
-        global $platal;
+        global $globals, $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+        if ($globals->asso()) {
+            new_group_open_page('core/404.tpl');
+        } else {
+            $page->changeTpl('core/404.tpl');
+        }
         $page->assign('near', $platal->near_hook());
-        $page->changeTpl('core/404.tpl');
     }
 
     function handler_favicon(&$page)

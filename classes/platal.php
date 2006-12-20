@@ -94,6 +94,10 @@ class Platal
             return $key;
         }
 
+        if (($pos = strpos($key, '.php')) !== false) {
+            $key = substr($key, 0, $pos);
+        }
+
         $has_end = in_array("#final#", $keys);
         if (strlen($key) > 24 && $has_end) {
             return "#final#";
@@ -161,7 +165,10 @@ class Platal
                 return null;
             }
         }
-        return $link;
+        if ($link != $this->path) {
+            return $link;
+        }
+        return null;
     }
 
     function call_hook(&$page)
