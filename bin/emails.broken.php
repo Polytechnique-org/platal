@@ -1,3 +1,4 @@
+#!/usr/bin/php5 -q
 <?php
 /***************************************************************************
  *  Copyright (C) 2003-2006 Polytechnique.org                              *
@@ -24,6 +25,7 @@ ini_set('include_path', '.:../include:/usr/share/php');
 require_once('connect.db.inc.php');
 require_once('xorg.inc.php');
 require_once('emails.inc.php');
+require_once('../classes/plmailer.php');
 
 $opts = getopt('i:o:');
 if (($opts['i'] && $opts['i'] == '-') || empty($opts['i'])) {
@@ -57,7 +59,7 @@ foreach ($emails as $_email) {
     if ($x = $sel->fetchOneAssoc()) {
         if (!$x['panne']) {
             XDB::execute("UPDATE emails
-                             SET panne=NOW(), last=NOW()
+                             SET panne=NOW(), last=NOW(),
                                  panne_level = 1
                            WHERE email = {?}",
                           $email);
@@ -72,44 +74,10 @@ foreach ($emails as $_email) {
         if (empty($x['nb_mails'])) {
             echo "$email : seule adresse active de {$x['prenom']} {$x['nom']}\n";
         } else {
-            $message = "  Bonjour !
-	
-  Nous t'écrivons car lors de l'envoi de la lettre d'information mensuelle
-de Polytechnique.org à ton adresse polytechnicienne :
-
-    {$x['alias']}@polytechnique.org,
-
-l'adresse {$email}, sur laquelle tu rediriges ton courrier, ne
-fonctionnait pas.
-
-  Estimant que cette information serait susceptible de t'intéresser, nous
-avons préféré t'en informer. Il n'est pas impossible qu'il ne s'agisse que
-d'une panne temporaire.  Si tu souhaites changer la liste des adresses sur
-lesquelles tu reçois le courrier qui t'es envoyé à ton adresse
-polytechnicienne, il te suffit de te rendre sur la page :
-
-    https://www.polytechnique.org/emails/redirect
-
-
-  A bientôt sur Polytechnique.org !
-  L'équipe d'administration <support@polytechnique.org>
-  
----------------------------------------------------------------------------
-
-  PS : si jamais tu ne disposes plus du mot de passe te permettant
-d'accéder au site, rends toi sur la page
-
-    https://www.polytechnique.org/recovery
-
-elle te permettra de créer un nouveau mot de passe après avoir rentré ton
-login ({$x['alias']}) et ta date de naissance !";
-
-            require_once('../classes/plmailer.php');
-            $mail = new PlMailer();
-            $mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
+            $mail = new PlMailer('emails/broken.mail.tpl');
             $mail->addTo("\"{$x['prenom']} {$x['nom']}\" <{$x['alias']}@polytechnique.org>");
-            $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
-            $mail->setTxtBody($message);
+            $mail->assign('x', $x);
+            $mail->assign('email', $email);
             $mail->send();
             echo "$email : mail envoyé\n";
         }
