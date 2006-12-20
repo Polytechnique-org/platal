@@ -25,8 +25,8 @@
 {config_load file="mails.conf" section="newsletter"}
 {from full=#from#}
 {subject text=$nl->title(true)}
-{if #replyto#}{add_header name='Reply-To' value=#replyto#}{/if}
-{if #retpath#}{add_header name='Return-Path' value=#retpath#}{/if}
+{if isset(#replyto#)}{add_header name='Reply-To' value=#replyto#}{/if}
+{if isset(#retpath#)}{add_header name='Return-Path' value=#retpath#}{/if}
 {else}
 <pre style="width : 72ex; margin: auto">
 {/if}
