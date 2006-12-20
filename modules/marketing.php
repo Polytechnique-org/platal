@@ -92,7 +92,7 @@ class MarketingModule extends PLModule
                                       WHERE user_id={?} AND perms='pending'", $uid);
 
         if (list($nom, $prenom, $promo, $matricule) = $res->fetchOneRow()) {
-            require_once('register.inc.php');
+            require_once('user.func.inc.php');
             $matricule_X = get_X_mat($matricule);
             $page->assign('nom', $nom);
             $page->assign('prenom', $prenom);

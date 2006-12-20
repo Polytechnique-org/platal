@@ -76,7 +76,7 @@ class RegisterModule extends PLModule
                     $sub_state['step'] = 1;
                     if (isset($sub_state['hash'])) {
                         $sub_state['step'] = 3;
-                        require_once('register.inc.php');
+                        require_once(dirname(__FILE__) . '/register/register.inc.php');
                         create_aliases($sub_state);
                     }
                 }
@@ -106,7 +106,7 @@ class RegisterModule extends PLModule
 
             case 2:
                 if (count($_POST)) {
-                    require_once('register.inc.php');
+                    require_once(dirname(__FILE__) . '/register/register.inc.php');
                     $sub_state['prenom'] = Post::v('prenom');
                     $sub_state['nom']    = Post::v('nom');
                     $sub_state['mat']    = Post::v('mat');
@@ -124,7 +124,7 @@ class RegisterModule extends PLModule
             case 3:
                 $alert = null;
                 if (count($_POST)) {
-                    require_once('register.inc.php');
+                    require_once(dirname(__FILE__) . '/register/register.inc.php');
                     if (!isvalid_email(Post::v('email'))) {
                         $err[] = "Le champ 'E-mail' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::v('email'))) {

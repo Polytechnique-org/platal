@@ -273,6 +273,8 @@ function get_user_details_pro($uid, $view = 'private')
 }
 
 // }}}
+// {{{ function get_user_details_adr()
+
 function get_user_details_adr($uid, $view = 'private') {
     $sql  = "SELECT  a.adrid, a.adr1,a.adr2,a.adr3,a.postcode,a.city,
                      gp.pays AS countrytxt,a.region, a.regiontxt,
@@ -313,6 +315,8 @@ function get_user_details_adr($uid, $view = 'private') {
     }
     return $all_adr;
 }
+
+// }}}
 // {{{ function get_user_details()
 
 function &get_user_details($login, $from_uid = '', $view = 'private')
@@ -694,6 +698,7 @@ function user_reindex($uid) {
 }
 
 // }}}
+// {{{ function set_new_usage()
 
 function set_new_usage($uid, $usage, $alias=false) { 
     XDB::execute("UPDATE auth_user_md5 set nom_usage={?} WHERE user_id={?}",$usage ,$uid);
@@ -710,6 +715,31 @@ function set_new_usage($uid, $usage, $alias=false) {
     require_once 'user.func.inc.php';
     user_reindex($uid);
 }
+
+// }}}
+// {{{ function get_X_mat
+function get_X_mat($ourmat)
+{
+    if (!preg_match('/^[0-9]{8}$/', $ourmat)) { 
+        // le matricule de notre base doit comporter 8 chiffres
+        return 0;
+    }   
+    
+    $year = intval(substr($ourmat, 0, 4));
+    $rang = intval(substr($ourmat, 5, 3));
+    if ($year < 1996) {
+        return; 
+    } elseif ($year < 2000) {
+        $year = intval(substr(1900 - $year, 1, 3));
+        return sprintf('%02u0%03u', $year, $rang);
+    } else {
+        $year = intval(substr(1900 - $year, 1, 3));
+        return sprintf('%03u%03u', $year, $rang);
+    }
+}           
+    
+// }}}
+
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
 ?>

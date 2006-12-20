@@ -44,28 +44,6 @@ function user_cmp($prenom, $nom, $_prenom, $_nom)
 }
 
 // }}}
-// {{{ function get_X_mat
-function get_X_mat($ourmat)
-{
-    if (!preg_match('/^[0-9]{8}$/', $ourmat)) {
-    	// le matricule de notre base doit comporter 8 chiffres
-        return 0;
-    }
-
-    $year = intval(substr($ourmat, 0, 4));
-    $rang = intval(substr($ourmat, 5, 3));
-    if ($year < 1996) {
-        return;
-    } elseif ($year < 2000) {
-        $year = intval(substr(1900 - $year, 1, 3));
-        return sprintf('%02u0%03u', $year, $rang);
-    } else {
-        $year = intval(substr(1900 - $year, 1, 3));
-        return sprintf('%03u%03u', $year, $rang);
-    }
-}
-    
-// }}}
 // {{{ function check_mat
 
 function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
