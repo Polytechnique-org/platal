@@ -96,6 +96,10 @@ XDB::execute("UPDATE emails
                  SET panne_level = panne_level - 1
                WHERE flags = 'active' AND panne_level > 1
                      AND last != CURDATE()");
+XDB::execute("UPDATE emails
+                 SET panne_level = 0
+               WHERE flags = 'active' AND panne_level = 1
+                     AND DATE_ADD(last, INTERVAL 1 YEAR) < CURDATE()");
 
 $csv = "nom;prenom;promo;alias;bounce;nbmails\n";
 foreach ($list as $alias=>$mails) {
