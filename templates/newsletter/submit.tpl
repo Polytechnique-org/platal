@@ -124,10 +124,17 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de
 <a id='conseils'></a>
 <h2>Conseils de rédaction</h2>
 
-<h3>Mise en garde</h3>
+<h3>Mises en garde</h3>
 
 <p>
 <em>La lettre mensuelle est envoyée à la quasi-totalité des X inscrits à polytechnique.org.</em> Cela impose la plus grande vigilance sur son contenu. Pour être publiée, une annonce doit concerner clairement et directement la vie de la communauté polytechnicienne ou une majorité des X.
+</p>
+
+<p>
+Quand proposer une annonce ?
+La lettre mensuelle est envoyée dans les premiers jours de chaque mois.
+Nous ne publions pas deux mois de suite des articles annonçant un même événement.
+Réfléchis donc bien au moment le plus opportun pour diffuser ton annonce !
 </p>
 
 <p>
