@@ -54,30 +54,43 @@
       action
     </th>
   </tr>
-{foreach from=$wiki_pages item=perm key=page}
-  <tr class="{cycle values="impair,pair"}">
-    <td>
-      <a href="{$page|replace:'.':'/'}">{$page}</a> <a href="{$page|replace:'.':'/'}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
+{foreach from=$wiki_pages key=cat item=pages}
+  <tr class="pair">
+    <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
+      <img src="images/k2.gif" alt="-" width="9" height="21" />
+      {$cat}
     </td>
-    <td class="center">
+  </tr>
+{foreach from=$pages item=perm key=page name=pages}
+  <tr class="impair" onmouseover="this.className='pair';" onmouseout="this.className='impair';">
+    <td style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
+      {if $smarty.foreach.pages.last}
+      <img src="images/L.gif" alt="L" width="12" height="21" />
+      {else}
+      <img src="images/T.gif" alt="|" style="width: 12px: height: 21px" />
+      {/if}
+      <a href="{$cat}/{$page}">{$page}</a> <a href="{$cat}/{$page}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
+    </td>
+    <td class="center" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {$perm.read}
     </td>
-    <td class="center">
+    <td class="center" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {$perm.edit}
     </td>
-    <td class="action">
-      <input type="checkbox" name="{$page|replace:'.':'/'}"/>
+    <td class="action" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
+      <input type="checkbox" name="{$cat}/{$page}"/>
     </td>
   </tr>
 {/foreach}
-  <tr>
+{/foreach}
+  <tr class="pair">
     <td class="action" colspan="4">
       <span onclick="check_all_boxes('update_pages', true)">{icon name=tick title='tout cocher'}</span>
       <span onclick="check_all_boxes('update_pages', false)">{icon name=cross title='tout décocher'}</span>
       <span onclick="check_all_boxes('update_pages', 'toggle')">{icon name=arrow_refresh title='toggle'}</span>
     </td>
   </tr>
-  <tr>
+  <tr class="pair">
     <td>
       Attribue les permissions aux pages cochées :
     </td>

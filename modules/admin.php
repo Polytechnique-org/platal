@@ -860,7 +860,9 @@ class AdminModule extends PLModule
         $table_editor->describe('description','description',false);
         $table_editor->apply($page, $action, $id);
     }
-    function handler_wiki(&$page, $action='list') {
+
+    function handler_wiki(&$page, $action='list')
+    {
         require_once 'wiki.inc.php';
 
         // update wiki perms
@@ -896,9 +898,19 @@ class AdminModule extends PLModule
             }
         }
         ksort($wiki_pages);
+        $wiki_tree = array();
+        foreach ($wiki_pages as $file => $desc) {
+            list($cat, $name) = explode('.', $file);
+            if (!isset($wiki_tree[$cat])) {
+                $wiki_tree[$cat] = array();
+            }
+            $wiki_tree[$cat][$name] = $desc;
+        }
+
+
 
         $page->changeTpl('admin/wiki.tpl');
-        $page->assign('wiki_pages', $wiki_pages);
+        $page->assign('wiki_pages', $wiki_tree);
         $page->assign('perms_opts', $perms);
     }
 }

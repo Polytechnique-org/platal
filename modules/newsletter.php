@@ -30,6 +30,12 @@ class NewsletterModule extends PLModule
             'admin/newsletter'             => $this->make_hook('admin_nl', AUTH_MDP, 'admin'),
             'admin/newsletter/categories'  => $this->make_hook('admin_nl_cat', AUTH_MDP, 'admin'),
             'admin/newsletter/edit'        => $this->make_hook('admin_nl_edit', AUTH_MDP, 'admin'),
+
+            'ax'             => $this->make_hook('ax',        AUTH_COOKIE),
+            'ax/show'        => $this->make_hook('ax_show',   AUTH_COOKIE),
+            'ax/submit'      => $this->make_hook('ax_submit', AUTH_MDP),
+            'ax/edit'        => $this->make_hook('ax_submit', AUTH_MDP),
+            'admin/axletter/rights'        => $this->make_hook('admin_ax_rights', AUTH_MDP, 'admin'),
         );
     }
 
@@ -154,8 +160,41 @@ class NewsletterModule extends PLModule
         $table_editor->describe('titre','intitulé',true);
         $table_editor->describe('pos','position',true);
         $table_editor->apply($page, $action, $id);
-    }    
-    
+    }
+
+    function handler_ax(&$page, $action = null)
+    {
+        require_once 'newsletter.inc.php';
+
+        $page->changeTpl('newsletter/ax.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Envois de l\'AX');
+
+        switch ($action) {
+          case 'out': AXLetter::unsubscribe(); break;
+          case 'in':  AXLetter::subscribe(); break;
+          default: ;
+        }
+
+        $perm = AXLetter::hasPerms();
+        if ($perm) {
+            $waiting = AXLetter::awaiting();
+            if ($waiting) {
+                $new = new AXLetter($waiting);
+                $page->assign('new', $new);
+            }
+        }
+        $page->assign('axs', AXLetter::subscriptionState());
+        $page->assign('ax_list', AXLetter::listSent());
+        $page->assign('ax_rights', AXLetter::hasPerms());
+    }
+
+    function handler_ax_submit(&$page)
+    {
+        require_once('newsletter.inc.php');
+        if (!AXLetter::hasPerms()) {
+            return PL_FORBIDDEN;
+        }
+    }
 }
 
 ?>
