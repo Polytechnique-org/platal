@@ -758,8 +758,9 @@ check_opts = {
 }
 
 def check_options(userdesc, perms, vhost, listname, correct=False):
+    listname = listname.lower()
     try:
-        mlist = MailList.MailList(vhost+VHOST_SEP+listname.lower(), lock=0)
+        mlist = MailList.MailList(vhost+VHOST_SEP+listname, lock=0)
     except:
         return 0
     try:
