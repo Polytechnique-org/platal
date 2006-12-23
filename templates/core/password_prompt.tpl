@@ -26,7 +26,7 @@
   </p>
   <p>
     Cette forme de script web est nécessaire pour l'utilisation du site.
-    Pour en savoir plus, regarde la <a href="Docs/FAQ#connect">FAQ</a>.
+    Pour en savoir plus, regarde la <a href="Xorg/FAQ#connect">FAQ</a>.
   </p>
 </noscript>
 
@@ -121,7 +121,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
   </table>
 </form>
 <p>
-Problème de connexion ? <a href="Docs/FAQ#connect">La réponse est là.</a>
+Problème de connexion ? <a href="Xorg/FAQ#connect">La réponse est là.</a>
 <br />
 (Activer obligatoirement le <strong>javascript</strong>)
 </p>

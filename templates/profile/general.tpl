@@ -282,7 +282,7 @@
               privé
             </td>
             <td class="texte">
-              <a href="Docs/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -308,7 +308,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="Docs/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>
@@ -334,7 +334,7 @@
               site public
             </td>
             <td class="texte">
-              <a href="Docs/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
+              <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
             </td>
           </tr>
         </table>

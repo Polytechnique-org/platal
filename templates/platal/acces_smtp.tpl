@@ -55,8 +55,8 @@
 {/literal}
 
 <p>
-  <a href="Docs/SMTPSécurisé">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
-  <a href="Docs/NNTPSécurisé">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
+  <a href="Xorg/SMTPSécurisé">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
+  <a href="Xorg/NNTPSécurisé">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
 </p>
 <p>
 {if $actif}

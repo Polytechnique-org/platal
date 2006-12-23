@@ -28,7 +28,7 @@
     <link rel="index"  href="" />
     <link rel="author" href="changelog" />
     <link rel="search" href="search" />
-    <link rel="help"   href="Docs/FAQ" />
+    <link rel="help"   href="Xorg/FAQ" />
     <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />

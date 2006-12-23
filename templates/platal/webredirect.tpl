@@ -30,7 +30,7 @@
     les adresses <strong>http://www.carva.org/{$smarty.session.bestalias}</strong>
   et <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
     vers la page WEB de ton choix. Pour de plus amples détails, consulte
-  <a href="Docs/MaRedirectionDePageWEB">cette page</a>
+  <a href="Xorg/MaRedirectionWeb">cette page</a>
 </p>
 
 <h2>Conditions d'usage</h2>
@@ -38,7 +38,7 @@
   L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité
   avec les lois et règlements en vigueur et d'une manière générale ne porte pas
   atteinte aux droits des tiers
-  (<a href="Docs/MaRedirectionDePageWEB#charte">plus de précisions</a>).
+  (<a href="Xorg/MaRedirectionWeb">plus de précisions</a>).
 </p>
 
 <h1>

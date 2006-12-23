@@ -78,7 +78,7 @@ Merci pour ta contribution à la vie du site!
 {else}
 <p class="erreur">
 Une erreur s'est produite pendant l'enregistrement de ta proposition.
-Merci de nous <a href="Docs/NousContacter">contacter</a>!
+Merci de nous <a href="Xorg/NousContacter">contacter</a>!
 </p>
 {/if}
 

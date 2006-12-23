@@ -62,7 +62,7 @@
 
   <p>
     Pour de plus amples informations sur ce service, nous t'invitons à consulter
-    <a href="Docs/MonAliasMailMelix-net">cette documentation</a> qui répondra
+    <a href="Xorg/AliasMelix">cette documentation</a> qui répondra
     sans doute à toutes tes questions
   </p>
 

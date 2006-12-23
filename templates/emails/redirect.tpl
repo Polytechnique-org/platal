@@ -70,7 +70,7 @@
     {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
     passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
-    <a href="Docs/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
+    <a href="Xorg/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
   </p>
 <script type="text/javascript" src="javascript/ajax.js"></script>
   <div class="center">
@@ -123,7 +123,7 @@
 <p class="smaller">
   <strong>
     {icon name=error title="En panne"}
-    <a href="Docs/Pannes">Panne&nbsp;:</a>
+    <a href="Xorg/Pannes">Panne&nbsp;:</a>
   </strong>
   Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
   a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
@@ -133,7 +133,7 @@
 <p class="smaller">
   <strong>
     {icon name=error title="En panne"}
-    <a href="Docs/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
+    <a href="Xorg/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
   </strong>
   Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
   le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.

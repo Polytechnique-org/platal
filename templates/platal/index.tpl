@@ -60,7 +60,7 @@
 </ul>
 
 <p>
-  Vous pouvez <strong><a href="Docs/PourquoiMInscrire">consulter la
+  Vous pouvez <strong><a href="Xorg/PourquoiMInscrire">consulter la
       liste de ce que vous apporte {#globals.core.sitename#}</a></strong> si vous
   hésitez à vous inscrire !
 </p>
