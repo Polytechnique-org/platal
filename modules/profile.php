@@ -124,15 +124,19 @@ class ProfileModule extends PLModule
                     .'/'.S::v('forlife').'.jpg';
 
         if (Env::has('upload')) {
-            $file = isset($_FILES['userfile']['tmp_name'])
-                    ? $_FILES['userfile']['tmp_name']
-                    : Env::v('photo');
-            if ($data = file_get_contents($file)) {
-                if ($myphoto = new PhotoReq(S::v('uid'), $data)) {
-                    $myphoto->submit();
-                }
+            if (isset($_FILES['userfile']['tmp_name']) 
+                    && !is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+                $page->trig('Une erreur s\'est produite lors du transfert du fichier');
             } else {
-                $page->trig('Fichier inexistant ou vide');
+                $file = is_uploaded_file($_FILES['userfile']['tmp_name'])
+                        ? $_FILES['userfile']['tmp_name']
+                        : Env::v('photo');
+                if ($data = file_get_contents($file)) {
+                    $myphoto = new PhotoReq(S::v('uid'), $data);
+                    $myphoto->submit();
+                } else {
+                    $page->trig('Fichier inexistant ou vide');
+                }
             }
         } elseif (Env::has('trombi')) {
             $myphoto = new PhotoReq(S::v('uid'),

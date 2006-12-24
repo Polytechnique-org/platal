@@ -335,7 +335,7 @@ class EmailModule extends PLModule
                 if (!empty($bcc)) { $mymail->addBcc($bcc); }
                 if (!empty($to2)) { $mymail->addTo($to2); }
                 if (!empty($cc2)) { $mymail->addCc($cc2); }
-                if (isset($_FILES['uploaded'])) {
+                if (is_uploaded_file($_FILES['uploaded']['tmp_name'])) {
                     $mymail->addAttachment($_FILES['uploaded']['tmp_name'],
                                            $_FILES['uploaded']['type'],
                                            $_FILES['uploaded']['name']);  

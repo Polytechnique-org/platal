@@ -107,7 +107,7 @@ function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $attach = 
     $mailer = new PlMailer();
     $mailer->setSubject($sujet);
     $mailer->setFrom($from);
-    if (isset($attach)) {
+    if (is_uploaded_file($attach['tmp_name'])) {
         $mailer->addAttachment($attach['tmp_name'],
                                $attach['type'],
                                $attach['name']);
