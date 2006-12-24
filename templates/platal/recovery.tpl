@@ -27,32 +27,31 @@
 {if $ok}
 
 <p>
-<strong>Un certificat d'authentification aléatoire</strong> vient de t'être attribué et envoyé à
-ton adresse en {#globals.mail.domain#}.<span class="erreur"> Il expire dans six heures.</span> Tu dois donc
-<strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliqué
-dans le mail pour changer ton mot de passe.
+<strong>Un certificat d'authentification</strong> vient de t'être attribué et a été envoyé vers les redirections de
+ton adresse en {#globals.mail.domain#}. Ce certificat te permet d'accéder à un formulaire de changement de mot de passe.
+<span class="erreur"> Il expire dans six heures.</span> Tu dois donc <strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliqué dans le mail pour changer ton mot de passe.
 </p>
 <p>
-Si tu n'accèdes pas à ton mail dans les
-6 heures, sollicite un nouveau
-certificat sur cette page.
+Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certificat sur cette page.
 </p>
 
 {else}
 
 <form action="{$platal->ns}recovery" method="post">
   <p>
-  Il est impossible de récupérer le mot de passe perdu (nous n'avons que le résultat après un
-  chiffrement irréversible de ton mot de passe). La procédure suivante va te permettre de choisir un
+  Il est impossible de récupérer le mot de passe perdu car nous n'avons que le résultat après un
+  chiffrement irréversible de ton mot de passe. La procédure suivante va te permettre de choisir un
   nouveau mot de passe.
   </p>
   <p>
   Après avoir complété les informations suivantes, tu recevras à ton adresse {#globals.core.sitename#} un
-  courrier électronique te permettant de choisir ce nouveau mot de passe. Si jamais tu n'as plus
-  accès aux boîtes aux lettres vers lesquelles ton adresse {#globals.core.sitename#} reroute ton courrier,
-  alors indique nous ci-dessous l'adresse à laquelle tu souhaites recevoir le courrier. Nous t'y
-  adresserons le message de création d'un nouveau mot de passe si et seulement si tes anciennes
-  boîtes sont réellement inaccessibles.
+  courrier électronique te permettant de choisir un nouveau mot de passe. Si tu désires que ce mail soit
+  envoyé vers une de tes redirections en particulier, tu peux renseigner l'adresse de cette redirection dans
+  le champ facultatif.
+  </p>
+  <p>
+  Si tu ne reçois pas ce courrier, n'hésite pas à contacter 
+  <a href="mailto:support@polytechnique.org">le support technique</a>.
   </p>
   <table class="tinybicol" cellpadding="3" cellspacing="0" summary="Récupération du mot de passe">
     <tr>
@@ -71,25 +70,19 @@ certificat sur cette page.
     </tr>
     <tr>
       <td class="titre">
-        Adresse électronique : <span class="smaller">(facultatif)</span>
-      </td>
-      <td>
-        <input type="text" size="20" maxlength="50" name="email" />
-      </td>
-    </tr>
-    <tr>
-      <td class="titre">
-        Date de naissance :
+        Date de naissance :<br />
+        <span class="smaller">format JJMMAAAA soit 01032000<br />pour 1<sup>er</sup> mars 2000</span>
       </td>
       <td>
         <input type="text" size="8" maxlength="8" name="birth" />
       </td>
     </tr>
     <tr>
-      <td colspan="2">
-        <span class="smaller">
-          (format JJMMAAAA soit 01032000 pour 1er mars 2000)
-        </span>
+      <td class="titre">
+        Adresse électronique : <span class="smaller">(facultatif)</span>
+      </td>
+      <td>
+        <input type="text" size="20" maxlength="50" name="email" />
       </td>
     </tr>
     <tr>

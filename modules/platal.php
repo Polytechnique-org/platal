@@ -261,10 +261,20 @@ class PlatalModule extends PLModule
             $page->assign('ok', true);
 
             $url   = rand_url_id(); 
-            XDB::execute('INSERT INTO perte_pass (certificat,uid,created) VALUES ({?},{?},NOW())', $url, $uid);
-            $res   = XDB::query('SELECT email FROM emails WHERE uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
-            $mails = implode(', ', $res->fetchColumn());
-
+            XDB::execute('INSERT INTO  perte_pass (certificat,uid,created) 
+                               VALUES  ({?},{?},NOW())', $url, $uid);
+            $res   = XDB::query('SELECT  email
+                                   FROM  emails
+                                  WHERE  uid = {?} AND email = {?}',
+                                $uid, Post::v('email'));
+            if ($res->numRows()) {
+                $mails = $res->fetchOneCell();
+            } else {
+                $res   = XDB::query('SELECT  email
+                                       FROM  emails
+                                      WHERE  uid = {?} AND NOT FIND_IN_SET("filter", flags)', $uid);
+                $mails = implode(', ', $res->fetchColumn());
+            }
             $mymail = new PlMailer();
             $mymail->setFrom('"Gestion des mots de passe" <support+password@polytechnique.org>');
             $mymail->addTo($mails);
@@ -276,17 +286,15 @@ Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la 
 
 -- 
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"".(Post::v('email') ? "
+\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"
 
-Adresse de secours :
-    ".Post::v('email') : "")."
-
-Mail envoyé à ".Env::v('login'));
+Mail envoyé à ".Env::v('login') . (Post::has('email') ? "
+Adresse de secours : " . Post::v('email') : ""));
             $mymail->send();
 
             // on cree un objet logger et on log l'evenement
             $logger = $_SESSION['log'] = new CoreLogger($uid);
-            $logger->log('recovery', $emails);
+            $logger->log('recovery', $mails);
         } else {
             $page->trig('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
