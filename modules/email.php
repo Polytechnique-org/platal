@@ -30,6 +30,7 @@ class EmailModule extends PLModule
             'emails/broken'   => $this->make_hook('broken', AUTH_COOKIE),
             'emails/redirect' => $this->make_hook('redirect', AUTH_MDP),
             'emails/send'     => $this->make_hook('send', AUTH_MDP),
+            'emails/antispam/submit'  => $this->make_hook('submit', AUTH_COOKIE),
 
             'admin/emails/duplicated' => $this->make_hook('duplicated', AUTH_MDP, 'admin')
         );
@@ -261,6 +262,33 @@ class EmailModule extends PLModule
             $bogo->change(S::v('uid'), $statut_filtre + 0);
         }
         $page->assign('filtre',$bogo->level());
+    }
+
+    function handler_submit(&$page)
+    {
+        $page->changeTpl('emails/submit_spam.tpl');
+
+        if (Post::has('send_email')) {
+            $upload = $_FILES['mail']['tmp_name'];
+            if (!is_uploaded_file($upload)) {
+                $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
+                return;
+            }
+            $mime = mime_content_type($upload);
+            if ($mime != 'text/x-mail' && $mime != 'message/rfc822') {
+                $page->trig('Le fichier ne contient pas un mail complet');
+                return;
+            }
+            global $globals;
+            $box    = Post::v('type') . '@' . $globals->mail->domain;
+            $mailer = new PlMailer();
+            $mailer->addTo($box);
+            $mailer->setFrom('"' . S::v('prenom') . ' ' . S::v('nom') . '" <web@' . $globals->mail->domain . '>');
+            $mailer->setTxtBody(Post::v('type') . ' soumis par ' . S::v('forlife') . ' via le web');
+            $mailer->addAttachment($upload, 'message/rfc822', $_FILES['mail']['name']);
+            $mailer->send();
+            $page->trig('Le message a été transmis à ' . $box);
+        }
     }
 
     function handler_send(&$page)

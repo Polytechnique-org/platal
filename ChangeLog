@@ -12,6 +12,9 @@ New:
         - Signal bug send to OTRS and not trackers.                        -Car
         - New CSV-Importer                                                 -FRU
 
+    * Emails:
+        - New spam submission form                                         -FRU
+
     * Events:
         - Tips.                                                         -FRU/Car
         - Split Events in 2 modules: events and newsletter                 -FRU

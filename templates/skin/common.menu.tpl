@@ -57,6 +57,7 @@
 <div class="menu_item"><a href="banana/">Forums &amp; PA</a></div>
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>
 <div class="menu_item"><a href="payment">Télépaiements</a></div>
+<div class="menu_item"><a href="emails/antispam/submit">Soumettre un spam</a></div>
 <div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
 
 <div class="menu_title">Communauté X</div>
