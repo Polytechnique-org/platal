@@ -173,7 +173,7 @@ class ProfileModule extends PLModule
         global $globals;
         require_once 'user.func.inc.php';
 
-        $page->changeTpl('profile/fiche.tpl', SIMPLE);
+        $page->changeTpl('profile/profile.tpl', SIMPLE);
 
         $view = 'private';
         if (!S::logged() || Env::v('view') == 'public') $view = 'public';
