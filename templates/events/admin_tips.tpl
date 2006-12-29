@@ -20,23 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{if $tips}
-{if $full}
-<fieldset id="tod">
-{/if}
-  <legend>{icon name=lightbulb}Astuce&nbsp;: {$tips.titre}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  {if !$nochange}
-  <a href="" onclick="Ajax.update_html('tod', 'ajax/tips/{$tips.id}'); return false">
-    {icon name=resultset_next title="Astuce suivante"}
-  </a>
-  {/if}
-  </legend>
-  {tidy}
-  {$tips.text|nl2br|smarty:nodefaults}
-  {/tidy} 
-{if $full}
-</fieldset>
-{/if}
-{/if}
+<h1>Aperçu de l'astuce</h1>
+{include file="include/tips.tpl" full=true tips=$entry nochange=true}
+{include file="core/table-editor.tpl"}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
