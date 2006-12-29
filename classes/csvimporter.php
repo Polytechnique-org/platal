@@ -37,7 +37,7 @@ class CSVImporter
     private $field_desc = array();
     private $field_value = array();
 
-    public function CSVImporter($table, $key = 'id', $do_sql = true)
+    public function __construct($table, $key = 'id', $do_sql = true)
     {
         $this->table     = $table;
         $this->key       = $key;
@@ -46,7 +46,7 @@ class CSVImporter
 
     private function processLine($line)
     {
-        $array = split($this->separator, $line);
+        $array = explode($this->separator, $line);
         if (is_null($this->index)) {
             $this->index = array_map('strtolower', $array);
             return true;
@@ -254,7 +254,12 @@ class CSVImporter
             $next = 'values';
         }
         if ($csv) {
-            $this->setCSV($csv);
+            $sep = Env::v('csv_separator');
+            if (empty($sep)) {
+                $sep = ';';
+            }
+            echo $sep;
+            $this->setCSV($csv, null, $sep);
         }
         if ($current == 'values' && Env::has('csv_valid')) {
             $next = 'valid';

@@ -90,11 +90,13 @@
           <td>
     {if $csv_page eq 'source'}
       <textarea name="csv_source" rows="20" cols="80">{$csv|default:$smarty.request.csv_source}</textarea><br />
-      Entrez les données sous la forme :<br />
-      <pre class="center">TITRE1;TITRE2;...
-val1_1;val1_2;...
-val2_1;val2_2;...
-val3_1;val3_2;...</pre>
+      Entrez les données sous la forme suivante (avec
+      <input type="text" name="csv_separator" value="{$smarty.request.csv_separator|default:";"}" maxlength="1" size="1" />
+      comme séparateur) :<br/>
+      <pre class="center">TITRE1{$smarty.request.csv_separator|default:";"}TITRE2{$smarty.request.csv_separator|default:";"}...
+val1_1{$smarty.request.csv_separator|default:";"}val1_2{$smarty.request.csv_separator|default:";"}...
+val2_1{$smarty.request.csv_separator|default:";"}val2_2{$smarty.request.csv_separator|default:";"}...
+val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_separator|default:";"}...</pre>
     {elseif $csv_page eq 'values'}
   <div class="center">
     Action à effectuer si l'entrée existe : 
@@ -231,6 +233,9 @@ val3_1;val3_2;...</pre>
     <input type="hidden" name="csv_page" value="{$csv_page}" />
     <input type="hidden" id="csv_next_page" name="csv_next_page" value="{$csv_page}" />
     <input type="hidden" name="csv" value="{$csv}" />
+    {if $csv_page neq 'source'}
+      <input type="hidden" name="csv_separator" value="{$smarty.request.csv_separator}" />
+    {/if}
     {if $csv_page neq 'values'}
       <input type="hidden" name="csv_action" value="{$smarty.request.csv_action}" />
     {foreach from=$csv_fields item=f}
