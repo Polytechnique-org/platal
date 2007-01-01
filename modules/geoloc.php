@@ -68,8 +68,7 @@ class GeolocModule extends PLModule
             $page->assign('request_geodesix', 1);
 
         if (!empty($GLOBALS['IS_XNET_SITE'])) {
-            $page->useMenu();
-            $page->setType($globals->asso('cat'));
+            new_group_page('geoloc/index.tpl');
             $page->assign('no_annu', 1);
         }
 
