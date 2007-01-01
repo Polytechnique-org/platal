@@ -1,6 +1,6 @@
 {**************************************************************************}
 {*                                                                        *}
-{*  Copyright (C) 2003-2006 Polytechnique.org                             *}
+{*  Copyright (C) 2003-2007 Polytechnique.org                             *}
 {*  http://opensource.polytechnique.org/                                  *}
 {*                                                                        *}
 {*  This program is free software; you can redistribute it and/or modify  *}
@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 <div>
-  Plat/al <a href="changelog">{#globals.version#}</a> - Copyright © 1999-2006 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
+  Plat/al <a href="changelog">{#globals.version#}</a> - Copyright © 1999-2007 <a href="http://x-org.polytechnique.org/">Polytechnique.org</a>
   &nbsp;-&nbsp;
   <a href="Reference/Convention-AX">Lien avec l'AX</a>
   &nbsp;-&nbsp;
