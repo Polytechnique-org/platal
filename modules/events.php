@@ -228,6 +228,7 @@ class EventsModule extends PLModule
 
     function handler_tips(&$page, $tips = null)
     {
+        header('Content-Type: text/html; charset="ISO-8859-15"');
         $page->changeTpl('include/tips.tpl', NO_SKIN);
         $page->assign('tips', $this->get_tips($tips));
     }
