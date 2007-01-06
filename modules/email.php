@@ -97,7 +97,7 @@ class EmailModule extends PLModule
 
         $page->assign('demande', AliasReq::get_request($uid));
 
-        if ($action == 'suppr' && $value) {
+        if ($action == 'delete' && $value) {
             //Suppression d'un alias
             XDB::execute(
                 'DELETE virtual, virtual_redirect
