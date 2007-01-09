@@ -259,7 +259,7 @@ class Redirect
                 return SUCCESS;
             }
         }
-        $this->emails[] = new Email(array($email,1,'','0000-00-00'));
+        $this->emails[] = new Email(array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
 
         // security stuff
         $res = XDB::query("SELECT state, description
