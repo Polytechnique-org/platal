@@ -25,31 +25,28 @@ function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
 {
     switch ($_header) {
       case 'from': case 'to': case 'cc': case 'reply-to':
-        if (in_array($_header, $handled)) {
-            $addresses = preg_split("/ *, */", $_text);
-            $text = '';
-            foreach ($addresses as $address) {
-                $address = BananaMessage::formatFrom(trim($address));
-                if ($_header == 'from') {
-                    if ($id = Banana::$message->getHeaderValue('x-org-id')) {
-                        return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
-                            . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
-                    } elseif ($id = Banana::$message->getHeaderValue('x-org-mail')) {
-                        list($id, $domain) = explode('@', $id);
-                        return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
-                            . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
-                    } else {
-                        return $address;
-                    }    
-                }
-                if (!empty($text)) {
-                    $text .= ', ';
-                }
-                $text .= $address;
+        $addresses = preg_split("/ *, */", $_text);
+        $text = '';
+        foreach ($addresses as $address) {
+            $address = BananaMessage::formatFrom(trim($address));
+            if ($_header == 'from') {
+                if ($id = Banana::$message->getHeaderValue('x-org-id')) {
+                    return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
+                        . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
+                } elseif ($id = Banana::$message->getHeaderValue('x-org-mail')) {
+                    list($id, $domain) = explode('@', $id);
+                    return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
+                        . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
+                } else {
+                    return $address;
+                }    
             }
-            return $text;
+            if (!empty($text)) {
+                $text .= ', ';
+            }
+            $text .= $address;
         }
-        break;
+        return $text;
 
       case 'subject':
         $link = null;
@@ -194,10 +191,6 @@ class PlatalBanana extends Banana
                              SET  banana_last = FROM_UNIXTIME({?})
                            WHERE  user_id={?}",
                          $time, S::i('uid'));
-            if (!is_null(Banana::$group) && !$maj) {
-                $this->loadSpool(Banana::$group);
-                Banana::$spool->markAllAsRead();
-            }
         }
 
         // Register custom Banana links and tabs
