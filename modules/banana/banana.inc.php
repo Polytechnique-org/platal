@@ -21,45 +21,69 @@
 
 require_once 'banana/banana.inc.php';
 
-function hook_formatDisplayHeader($_header, $_text) {
-    global $banana;
-    if ($_header == 'from') {
-        $id = $banana->post->headers['x-org-id'];
-        $_text = formatFrom($_text);
-        return $_text . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
-             . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
+function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
+{
+    switch ($_header) {
+      case 'from': case 'to': case 'cc': case 'reply-to':
+        if (in_array($_header, $handled)) {
+            $addresses = preg_split("/ *, */", $_text);
+            $text = '';
+            foreach ($addresses as $address) {
+                $address = BananaMessage::formatFrom(trim($address));
+                if ($_header == 'from') {
+                    if ($id = Banana::$message->getHeaderValue('x-org-id')) {
+                        return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
+                            . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
+                    } elseif ($id = Banana::$message->getHeaderValue('x-org-mail')) {
+                        list($id, $domain) = explode('@', $id);
+                        return $address . ' <a href="profile/' . $id . '" class="popup2" title="' . $id . '">'
+                            . '<img src="images/icons/user_suit.gif" title="fiche" alt="" /></a>';
+                    } else {
+                        return $address;
+                    }    
+                }
+                if (!empty($text)) {
+                    $text .= ', ';
+                }
+                $text .= $address;
+            }
+            return $text;
+        }
+        break;
+
+      case 'subject':
+        $link = null;
+        $text = stripslashes($_text);
+        if (preg_match('/^(.+?)\s*\[=> (.*?)\]\s*$/u', $text, $matches)) {
+            $text = $matches[1];
+            $group = $matches[2];
+            if (Banana::$group == $group) {
+                $link = ' [=>&nbsp;' . $group . ']';
+            } else {
+                $link = ' [=>&nbsp;' . Banana::$page->makeLink(array('group' => $group, 'text' => $group)) . ']';
+            }
+        }
+        $text = banana_catchFormats($text);
+        if ($in_spool) {
+            return array($text, $link);
+        }
+        return $text . $link;
     }
+    return null;
 }
 
-function hook_checkcancel($_headers) {
+function hook_checkcancel($_headers)
+{
     return ($_headers['x-org-id'] == S::v('forlife') or S::has_perms());
-}
-
-function hook_shortcuts()
-{
-    return array('profile' => array('<a href="banana/profile">Préférences</a>',
-                                    'Préférences'));
-}
-
-function hook_browsingAction()
-{
-    global $platal, $banana;
-    $page = $banana->state['page'];
-    if ((@$page != 'message' && @$page != 'group' && @$page != 'forums') 
-        || $banana->profile['autoup']) {
-        return null;
-    }
-    return '<p class="center" style="padding: 0; margin: 0 0 1em 0">'
-         . '<a href=\'javascript:dynpostkv("' . $platal->path . '", "updateall", ' . time() . ')\'>'
-         . 'Marquer tous les messages comme lus'
-         . '</a>'
-         . '</p>';
 }
 
 function hook_makeLink($params) {
     global $globals;
     $base = $globals->baseurl . '/banana';
-    if (@$params['subscribe'] == 1) {
+    if (isset($params['page'])) {
+        return $base . '/' . $params['page'];
+    } 
+    if (@$params['action'] == 'subscribe') {
         return $base . '/subscription';
     }
     if (isset($params['xface'])) {
@@ -75,14 +99,20 @@ function hook_makeLink($params) {
         return $base . '/from/' . $params['first'];
     }
     if (isset($params['artid'])) {
-        if (@$params['action'] == 'new') {
+        if (@$params['part'] == 'xface') {
+            $base .= '/xface';
+        } elseif (@$params['action'] == 'new') {
             $base .= '/reply';
         } elseif (@$params['action'] == 'cancel') {
             $base .= '/cancel';
         } else {
             $base .= '/read';
         }
-        return $base . '/' . $params['artid'];
+        if (isset($params['part']) && $params['part'] != 'xface') {
+            return $base . '/' . $params['artid'] . '?part=' . urlencode($params['part']);
+        } else {
+            return $base . '/' . $params['artid'];
+        }
     }
 
     if (@$params['action'] == 'new') {
@@ -105,38 +135,34 @@ function hook_makeImg($img, $alt, $height, $width)
     return '<img src="' . $url . '"' . $height . $width . ' alt="' . $alt . '" />';
 }
 
-function hook_getSubject(&$subject)
-{
-    if (preg_match('!(.*\S)\s*\[=> ([^\]\s]+)\]!', $subject, $matches)) {
-        $subject = $matches[1];
-        global $banana;
-        if ($banana->state['group'] == $matches[2]) {
-            return ' [=>&nbsp;' . $matches[2] . ']';
-        } else {
-            return ' [=>&nbsp;' . makeHREF(array('group' => $matches[2]), $matches[2]) . ']';
-        }
-    }
-    return null;
-}
-
 class PlatalBanana extends Banana
 {
-    var $profile    = array('name' => '', 'sig'  => '',
-                            'org'  => 'Utilisateur de Polytechnique.org',
-                            'customhdr' =>'', 'display' => 0, 'lastnews' => 0, 
-                            'locale'  => 'fr_FR', 'subscribe' => array());
-    var $can_attach = false;
-
-    function PlatalBanana()
+    function __construct($params = null)
     {
         global $globals;
+        Banana::$msgedit_canattach = false;
+        array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
+        Banana::$nntp_host = 'news://web_'.S::v('forlife')
+                           . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
+        parent::__construct($params);
+    }
 
-        $uid = S::v('uid');
-        $req = XDB::query(
-                "SELECT  nom, mail, sig, FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags)
-                   FROM  {$globals->banana->table_prefix}profils
-                  WHERE  uid={?}", $uid);
+    public function run()
+    {
+        global $platal, $globals;
 
+        // Update last unread time
+        $time = null;
+        if (!is_null($this->params) && isset($this->params['updateall'])) {
+            $time = intval($this->params['updateall']);
+            $_SESSION['banana_last']     = $time;
+        }
+
+        // Get user profile from SQL
+        $req = XDB::query("SELECT  nom, mail, sig,
+                                   FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags)
+                             FROM  {$globals->banana->table_prefix}profils
+                            WHERE  uid={?}", S::i('uid'));
         if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
             $nom  = S::v('prenom')." ".S::v('nom');
             $mail = S::v('forlife')."@polytechnique.org";
@@ -144,57 +170,57 @@ class PlatalBanana extends Banana
             $disp = 0;
             $maj  = 1;
         }
-        $this->profile['name']      = "$nom <$mail>";
-        $this->profile['sig']       = $sig;
-        $this->profile['display']   = $disp;
-        $this->profile['autoup']    = $maj;
-        $this->profile['lastnews']  = S::v('banana_last');
-
         if ($maj) {
-            XDB::execute("UPDATE auth_user_quick SET banana_last=FROM_UNIXTIME({?}) WHERE user_id={?}",
-                         time(), $uid);
+            $time = time();
         }
 
-        $req = XDB::query("
-                 SELECT  nom
+        // Build user profile
+        $req = XDB::query("      
+                 SELECT  nom     
                    FROM  {$globals->banana->table_prefix}abos
               LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
-                  WHERE  uid={?}", $uid);
-        $this->profile['subscribe'] = $req->fetchColumn();
+                  WHERE  uid={?}", S::i('uid'));
+        Banana::$profile['headers']['From']         = utf8_encode("$nom <$mail>");
+        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
+        Banana::$profile['signature']               = utf8_encode($sig);
+        Banana::$profile['display']                 = $disp;
+        Banana::$profile['autoup']                  = $maj;
+        Banana::$profile['lastnews']                = S::v('banana_last');
+        Banana::$profile['subscribe']               = $req->fetchColumn();
 
-        array_splice($this->show_hdr,  count($this->show_hdr)  - 2, 0);
-        array_splice($this->parse_hdr, count($this->parse_hdr) - 2, 0, 'x-org-id');
-
-        $this->host = 'news://web_'.S::v('forlife')
-            .":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
-
-        parent::Banana();
-    }
-
-    function run($params = null)
-    {
-        global $banana;
-
-        $time = null;
-        if (!is_null($params) && isset($params['updateall'])) {
-            $time = (int)$params['updateall'];
-        }
+        // Update the "unread limit" 
         if (!is_null($time)) {
-            XDB::execute('UPDATE auth_user_quick SET banana_last=FROM_UNIXTIME({?}) WHERE user_id={?}',
-                         $time, S::v('uid'));
-            $_SESSION['banana_last'] = $time;
+            XDB::execute("UPDATE  auth_user_quick
+                             SET  banana_last = FROM_UNIXTIME({?})
+                           WHERE  user_id={?}",
+                         $time, S::i('uid'));
+            if (!is_null(Banana::$group)) {
+                $this->loadSpool(Banana::$group);
+            }
         }
-        return Banana::run('PlatalBanana', $params);
+
+        // Register custom Banana links and tabs
+        if (!Banana::$profile['autoup']) {
+            Banana::$page->registerAction('<a href=\'javascript:dynpostkv("'
+                                . $platal->path . '", "updateall", ' . time() . ')\'>'
+                                . 'Marquer tous les messages comme lus'
+                                . '</a>', array('forums', 'thread', 'message'));
+        }   
+        Banana::$page->registerPage('profile', utf8_encode('Préférences'), null);
+        
+
+        // Run Banana
+        return parent::run();
     }
 
-    function action_saveSubs()
+    protected function action_saveSubs($groups)
     {
         global $globals;
         $uid = S::v('uid');
 
-        $this->profile['subscribe'] = array();
+        Banana::$profile['subscribe'] = array();
         XDB::execute("DELETE FROM {$globals->banana->table_prefix}abos WHERE uid={?}", $uid);
-        if (!count($_POST['subscribe'])) {
+        if (!count($groups)) {
             return true;
         }
 
@@ -204,16 +230,16 @@ class PlatalBanana extends Banana
             $fids[$fnom] = $fid;
         }
 
-        $diff = array_diff($_POST['subscribe'], array_keys($fids));
+        $diff = array_diff($groups, array_keys($fids));
         foreach ($diff as $g) {
             XDB::execute("INSERT INTO {$globals->banana->table_prefix}list (nom) VALUES ({?})", $g);
             $fids[$g] = XDB::insertId();
         }
 
-        foreach ($_POST['subscribe'] as $g) {
+        foreach ($groups as $g) {
             XDB::execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})",
                          $fids[$g], $uid);
-            $this->profile['subscribe'][] = $g;
+            Banana::$profile['subscribe'][] = $g;
         }
     }
 }

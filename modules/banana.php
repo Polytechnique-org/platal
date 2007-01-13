@@ -79,8 +79,15 @@ class BananaModule extends PLModule
                 $get['first'] = $artid;
             } elseif ($action == 'read' && !is_null($artid)) {
                 $get['artid'] = $artid;
+                $get['part']  = @$_GET['part'];
+            } elseif ($action == 'source' && !is_null($artid)) {
+                $get['artid'] = $artid;
+                $get['part'] = 'source';
+            } elseif ($action == 'xface' && !is_null($artid)) {
+                $get['artid'] = $artid;
+                $get['part']  = 'xface';
             }
-        }
+        }    
         return BananaModule::run_banana($page, $get);
     }
 
@@ -125,7 +132,7 @@ class BananaModule extends PLModule
 
     function handler_subscription(&$page)
     {
-        return $this->run_banana($page, Array('subscribe' => 1));
+        return $this->run_banana($page, Array('action' => 'subscribe'));
     }
 
     function handler_xface(&$page, $face = null)
@@ -136,7 +143,7 @@ class BananaModule extends PLModule
                 . '| convert -transparent white xbm:- gif:-');
     }
 
-    function run_banana(&$page, $params = null)
+    static function run_banana(&$page, $params = null)
     {
         $page->changeTpl('banana/index.tpl');
         $page->addCssLink('banana.css');
@@ -144,7 +151,8 @@ class BananaModule extends PLModule
 
         require_once dirname(__FILE__).'/banana/banana.inc.php';
 
-        $res = PlatalBanana::run($params);
+        $banana = new PlatalBanana($params);
+        $res = $banana->run();
         $page->assign_by_ref('banana', $banana);
         $page->assign('banana_res', $res);
     }
