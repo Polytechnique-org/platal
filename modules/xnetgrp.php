@@ -443,7 +443,7 @@ class XnetGrpModule extends PLModule
             $vcard = new VCard($res->fetchColumn(), $photos == 'photos', 'Membre du groupe ' . $globals->asso('nom'));
             $vcard->do_page($page);
         } else {
-            return PL_NOTALLOWED;
+            return PL_FORBIDDEN;
         }
     }
 

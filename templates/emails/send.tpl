@@ -155,13 +155,13 @@
         <div style="width: 19%; text-align: center; height: 8em; float: right;">
           <div style="height: 4em">
               Destinataires<br />
-              <a href="" onclick="addTo(); return false">&gt;&gt; &gt;&gt;</a><br />
-              <a href="" onclick="removeTo(); return false">&lt;&lt; &lt;&lt;</a>
+              <a href="" onclick="addTo(); return false" style="text-decoration: none">&gt;&gt; &gt;&gt;</a><br />
+              <a href="" onclick="removeTo(); return false" style="text-decoration: none">&lt;&lt; &lt;&lt;</a>
           </div>
           <div style="height: 4em">
               En copie<br />
-              <a href="" onclick="addCc(); return false">&gt;&gt; &gt;&gt;</a><br />
-              <a href="" onclick="removeCc(); return false">&lt;&lt; &lt;&lt;</a>
+              <a href="" onclick="addCc(); return false" style="text-decoration: none">&gt;&gt; &gt;&gt;</a><br />
+              <a href="" onclick="removeCc(); return false" style="text-decoration: none">&lt;&lt; &lt;&lt;</a>
           </div>
         </div>
         <div style="float: right; width: 40%">
