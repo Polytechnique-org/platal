@@ -194,8 +194,9 @@ class PlatalBanana extends Banana
                              SET  banana_last = FROM_UNIXTIME({?})
                            WHERE  user_id={?}",
                          $time, S::i('uid'));
-            if (!is_null(Banana::$group)) {
+            if (!is_null(Banana::$group) && !$maj) {
                 $this->loadSpool(Banana::$group);
+                Banana::$spool->markAllAsRead();
             }
         }
 
