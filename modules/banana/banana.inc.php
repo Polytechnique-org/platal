@@ -60,7 +60,7 @@ function hook_formatDisplayHeader($_header, $_text, $in_spool = false)
                 $link = ' [=>&nbsp;' . Banana::$page->makeLink(array('group' => $group, 'text' => $group)) . ']';
             }
         }
-        $text = banana_catchFormats($text);
+        $text = banana_catchFormats(banana_htmlentities($text));
         if ($in_spool) {
             return array($text, $link);
         }
