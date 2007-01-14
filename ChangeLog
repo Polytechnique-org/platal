@@ -19,6 +19,9 @@ New:
         - Tips.                                                         -FRU/Car
         - Split Events in 2 modules: events and newsletter                 -FRU
 
+    * Lists:
+        - Use Banana to power mail moderation                              -FRU
+
     * Newsletter:
         - New skin                                                         -mYk
 
@@ -48,6 +51,7 @@ Bug/Wish:
     * Lists:
         - #588: Auto-select mail to moderate                               -FRU
         - #598: Ask for confirmation                                       -FRU
+        - #616: Fix encoding issues with mail to moderate                  -FRU
 
     * Register:
         - #277: Improve ergonomy.                                          -FRU
