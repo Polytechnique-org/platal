@@ -39,7 +39,7 @@ class MLBanana extends Banana
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
-        
+         
         MLBanana::$listname = $params['listname'];
         MLBanana::$domain   = $params['domain'];
         $params['group'] = $params['listname'] . '@' . $params['domain'];
@@ -50,6 +50,17 @@ class MLBanana extends Banana
     {
         global $platal, $globals;
 
+        $nom  = S::v('prenom') . ' ' . S::v('nom');
+        $mail = S::v('bestalias') . '@' . $globals->mail->domain;
+        $sig  = $nom . ' (' . S::v('promo') . ')';
+        Banana::$msgedit_headers['X-Org-Mail'] = S::v('forlife') . '@' . $globals->mail->domain;
+
+        // Build user profile
+        Banana::$profile['headers']['From']         = utf8_encode("$nom <$mail>");
+        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
+        Banana::$profile['signature']               = utf8_encode($sig);
+        
+        // Page design
         Banana::$page->killPage('forums');
         Banana::$page->killPage('subscribe'); 
 

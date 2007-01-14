@@ -254,7 +254,8 @@ class PlMailer extends Mail_Mime {
     {
         $this->processPage($with_html);
         if (S::v('forlife')) {
-            $this->addHeader('X-Org-Mail', S::v('forlife') . '@polytechnique.org');
+            global $globals;
+            $this->addHeader('X-Org-Mail', S::v('forlife') . '@' . $globals->mail->domain);
         }
         $addrs = Array();
         foreach(Array('To', 'Cc', 'Bcc') as $hdr) {
