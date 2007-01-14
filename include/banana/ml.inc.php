@@ -22,11 +22,6 @@
 require_once 'banana/banana.inc.php';
 require_once 'banana/hooks.inc.php';
 
-function hook_checkcancel($_headers)
-{
-    return ($_headers['x-org-id'] == S::v('forlife') or S::has_perms());
-}
-
 function hook_makeLink($params)
 {
     global $globals, $platal;
@@ -55,60 +50,7 @@ class MLBanana extends Banana
     {
         global $platal, $globals;
 
-/*        // Update last unread time
-        $time = null;
-        if (!is_null($this->params) && isset($this->params['updateall'])) {
-            $time = intval($this->params['updateall']);
-            $_SESSION['banana_last']     = $time;
-        }
-
-        // Get user profile from SQL
-        $req = XDB::query("SELECT  nom, mail, sig,
-                                   FIND_IN_SET('threads',flags), FIND_IN_SET('automaj',flags)
-                             FROM  {$globals->banana->table_prefix}profils
-                            WHERE  uid={?}", S::i('uid'));
-        if (!(list($nom,$mail,$sig,$disp,$maj) = $req->fetchOneRow())) {
-            $nom  = S::v('prenom')." ".S::v('nom');
-            $mail = S::v('forlife')."@polytechnique.org";
-            $sig  = $nom." (".S::v('promo').")";
-            $disp = 0;
-            $maj  = 1;
-        }
-        if ($maj) {
-            $time = time();
-        }
-
-        // Build user profile
-        $req = XDB::query("      
-                 SELECT  nom     
-                   FROM  {$globals->banana->table_prefix}abos
-              LEFT JOIN  {$globals->banana->table_prefix}list ON list.fid=abos.fid
-                  WHERE  uid={?}", S::i('uid'));
-        Banana::$profile['headers']['From']         = utf8_encode("$nom <$mail>");
-        Banana::$profile['headers']['Organization'] = 'Utilisateur de Polytechnique.org';
-        Banana::$profile['signature']               = utf8_encode($sig);
-        Banana::$profile['display']                 = $disp;
-        Banana::$profile['autoup']                  = $maj;
-        Banana::$profile['lastnews']                = S::v('banana_last');
-        Banana::$profile['subscribe']               = $req->fetchColumn();
-
-        // Update the "unread limit" 
-        if (!is_null($time)) {
-            XDB::execute("UPDATE  auth_user_quick
-                             SET  banana_last = FROM_UNIXTIME({?})
-                           WHERE  user_id={?}",
-                         $time, S::i('uid'));
-        }
-
-        // Register custom Banana links and tabs
-        if (!Banana::$profile['autoup']) {
-            Banana::$page->registerAction('<a href=\'javascript:dynpostkv("'
-                                . $platal->path . '", "updateall", ' . time() . ')\'>'
-                                . 'Marquer tous les messages comme lus'
-                                . '</a>', array('forums', 'thread', 'message'));
-        }   
-        Banana::$page->registerPage('profile', utf8_encode('Préférences'), null);
-*/        Banana::$page->killPage('forums');
+        Banana::$page->killPage('forums');
         Banana::$page->killPage('subscribe'); 
 
         // Run Banana
