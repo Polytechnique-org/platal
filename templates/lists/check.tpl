@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{include file="listes/header_listes.tpl" on=check}
+{include file="lists/header_listes.tpl" on=check}
 
 {if $options|@count}
 <table class='bicol' cellpadding='2' cellspacing='0'>

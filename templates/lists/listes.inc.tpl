@@ -32,7 +32,7 @@
   </tr>
   {foreach from=$lists item=liste}
   <tr class='{cycle values="impair,pair"}' id='list_{$liste.list}'>
-  {include file="listes/liste.inc.tpl"}
+  {include file="lists/liste.inc.tpl"}
   </tr>
   {/foreach}
 </table>

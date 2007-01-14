@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{include file="listes/header_listes.tpl" on=trombi}
+{include file="lists/header_listes.tpl" on=trombi}
 
 <h1>
   Liste {$platal->argv[1]}

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file='listes/header_listes.tpl' on='sync'}
+{include file='lists/header_listes.tpl' on='sync'}
 <h1>Non abonnés à la liste {$platal->argv[1]}@{$asso.mail_domain}</h1>
 
 <form action="{$platal->ns}lists/sync/{$platal->argv[1]}" method="post">

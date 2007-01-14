@@ -34,7 +34,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </p>
 {/if}
 
-{include file="listes/header_listes.tpl" on=delete}
+{include file="lists/header_listes.tpl" on=delete}
 
 <h1>
   Détruire la liste {$details.addr} ?

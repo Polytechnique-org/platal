@@ -65,7 +65,7 @@ thématique particulière.
 {if $owner|@count}
 <h1>Listes dont tu es modérateur</h1>
 
-{include file='listes/listes.inc.tpl' lists=$owner}
+{include file='lists/listes.inc.tpl' lists=$owner}
 
 <p class='smaller'>
 {icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de  seionnaire.<br />
@@ -76,7 +76,7 @@ thématique particulière.
 <h1>Listes dont tu es membre</h1>
 
 {assign var="has_private" value=false}
-{include file='listes/listes.inc.tpl' lists=$member}
+{include file='lists/listes.inc.tpl' lists=$member}
 
 <p class="smaller">Attention : Lorsqu'une liste à laquelle tu es abonné est  privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne.  Si tu t'en désinscrits, il ne te sera pas possible de t'y abonner de nouveau  sans l'action d'un modérateur</p>
 {/if}
@@ -87,7 +87,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 </p>
 
 {if $public|@count}
-{include file='listes/listes.inc.tpl' lists=$public}
+{include file='lists/listes.inc.tpl' lists=$public}
 
 <br />
 {/if}

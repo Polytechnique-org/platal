@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{include file="listes/header_listes.tpl" on=members}
+{include file="lists/header_listes.tpl" on=members}
 
 <h1>
   Liste {$platal->argv[1]}

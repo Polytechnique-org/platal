@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{include file="listes/header_listes.tpl" on=archives}
+{include file="lists/header_listes.tpl" on=archives}
 
 
 {if $archs}

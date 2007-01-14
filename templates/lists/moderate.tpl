@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="listes/header_listes.tpl" on=moderate}
+{include file="lists/header_listes.tpl" on=moderate}
 
 <h1>
   Inscriptions en attente de modération

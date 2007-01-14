@@ -27,7 +27,7 @@ Tu n'es pas administrateur de la liste, mais du site.
 </p>
 {/if}
 
-{include file="listes/header_listes.tpl" on=admin}
+{include file="lists/header_listes.tpl" on=admin}
 
 <p>
 Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant un de

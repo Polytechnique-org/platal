@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file="listes/header_listes.tpl"}
+{include file="lists/header_listes.tpl"}
 
 <h1>
   Propriétés du mail en attente

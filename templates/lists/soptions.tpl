@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-{include file="listes/header_listes.tpl" on=soptions}
+{include file="lists/header_listes.tpl" on=soptions}
 
 <h1>
   Changer les options de la liste {$details.addr}
