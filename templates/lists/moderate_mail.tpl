@@ -23,55 +23,10 @@
 {include file="lists/header_listes.tpl"}
 
 <h1>
-  Propriétés du mail en attente
-</h1>
-
-<table class='tinybicol' cellpadding='0' cellspacing='0'>
-  <tr>
-    <td class='titre'>émetteur</td>
-    <td>{mailto address=$mail.sender}</td>
-  </tr>
-  <tr>
-    <td class='titre'>sujet</td>
-    <td>{$mail.subj|hdc}</td>
-  </tr>
-  <tr>
-    <td class='titre'>taille</td>
-    <td>{$mail.size} octets</td>
-  </tr>
-  <tr>
-    <td class='titre'>date</td>
-    <td>{$mail.stamp|date_format:"%X le %x"}</td>
-  </tr>
-</table>
-
-<h1>
   Contenu du mail en attente
 </h1>
 
-{if $mail.parts_plain|@count}
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$mail.parts_plain item=part key=i}
-  <tr><th>Partie n°{$i}</th></tr>
-  <tr class='{cycle values="impair,pair"}'>
-    <td><tt>{$part|qpd|nl2br}</tt></td>
-  </tr>
-  {/foreach}
-</table>
-<br />
-{/if}
-
-{if $mail.parts_html|@count}
-<table class='bicol' cellpadding='0' cellspacing='0'>
-  {foreach from=$mail.parts_html item=part key=i}
-  <tr><th>Partie n°{$i} (Le texte original est formaté en HTML)</th></tr>
-  <tr class='{cycle values="impair,pair"}'>
-    <td><tt>{$part|qpd|clean_html|nl2br}</tt></td>
-  </tr>
-  {/foreach}
-</table>
-<br />
-{/if}
+{$mail|smarty:nodefaults}
 
 <form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>

@@ -149,9 +149,9 @@ class BananaModule extends PLModule
         $page->addCssLink('banana.css');
         $page->assign('xorg_title','Polytechnique.org - Forums & PA');
 
-        require_once dirname(__FILE__).'/banana/banana.inc.php';
+        require_once 'banana/forum.inc.php';
 
-        $banana = new PlatalBanana($params);
+        $banana = new PlatalForums($params);
         $res = $banana->run();
         $page->assign_by_ref('banana', $banana);
         $page->assign('banana_res', $res);
