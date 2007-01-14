@@ -61,17 +61,6 @@ class ListsModule extends PLModule
         return $globals->mail->domain;
     }
 
-    function clean_html($res)
-    {
-        $res = html_entity_decode($res);
-        $res = preg_replace('@<a[^>]*href=["\']([^ >]+)["\'][^>]*>([^<]*)</a>@ie',
-                            "'\\2 [' . htmlentities('\\1') . ']'", $res);
-        $res = preg_replace("@<(/br|p|/div)[^>]*>(\\s*\n)?@i", "\n", $res); 
-        $res = trim(strip_tags($res));
-        $res = preg_replace("/\n(\\s*\n)+/", "\n\n", $res);
-        return $res;
-    }
-
     function handler_lists(&$page)
     {
         function filter_owner($list)
@@ -427,9 +416,7 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/moderate.tpl');
 
-        $page->register_modifier('qpd', 'quoted_printable_decode');
         $page->register_modifier('hdc', 'list_header_decode');
-        $page->register_modifier('clean_html', array($this, 'clean_html'));
 
         if (Env::has('sadd')) { /* 4 = SUBSCRIBE */
             $this->client->handle_request($liste,Env::v('sadd'),4,'');
@@ -445,22 +432,26 @@ class ListsModule extends PLModule
                 $this->moderate_mail($domain, $liste, $mail);
             }
         } elseif (Env::has('mid')) {
-            $mail = $this->moderate_mail($domain, $liste, Env::i('mid'));
+            if (Get::has('mid')) {
+                require_once('banana/moderate.inc.php');
+                $params = array('listname' => $liste, 'domain' => $domain, 'artid' => Get::i('mid'), 'part' => Get::v('part'));
+                $banana = new ModerationBanana($params, $this->client);
+                $res    = $banana->run();
 
-            if (Get::has('mid') && is_array($mail)) {
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');
                 $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);
                 $msg = str_replace("%(request)s",   "<< SUJET DU MAIL >>",    $msg);
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
                 $msg = str_replace("%(listname)s",  $liste, $msg);
-
-                $mail['stamp'] = strftime("%Y%m%d%H%M%S", $mail['stamp']);
                 $page->assign('msg', $msg);
-            
+
+                $page->addCssLink('banana.css');
                 $page->changeTpl('lists/moderate_mail.tpl');
-                $page->assign_by_ref('mail', $mail);
+                $page->assign_by_ref('mail', $res);
                 return;
-            }   
+            }
+
+            $mail = $this->moderate_mail($domain, $liste, Env::i('mid'));
         } elseif (Env::has('sid')) {
             if (list($subs,$mails) = $this->client->get_pending_ops($liste)) {
                 foreach($subs as $user) {
