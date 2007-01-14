@@ -29,40 +29,33 @@ function hook_checkcancel($_headers)
 
 function hook_makeLink($params)
 {
-    global $globals;
-    $base = $globals->baseurl . '/banana';
-    if (isset($params['page'])) {
-        return $base . '/' . $params['page'];
-    }
-    if (@$params['action'] == 'subscribe') {
-        return $base . '/subscription';
-    }
-
-    if (!isset($params['group'])) {
-        return $base;
-    }
-    $base .= '/' . $params['group'];
-
+    global $globals, $platal;
+    $base = $globals->baseurl . $platal->ns . '/lists/archives/' . MLBanana::$listname;
     return $base . hook_platalMessageLink($params);
 }
 
-class ForumsBanana extends Banana
+class MLBanana extends Banana
 {
+    static public $listname;
+    static public $domain;
+
     function __construct($params = null)
     {
-        global $globals;
-        Banana::$msgedit_canattach = false;
+        Banana::$spool_boxlist = false;
+        Banana::$msgedit_canattach = true;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
-        Banana::$nntp_host = 'news://web_'.S::v('forlife')
-                           . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
-        parent::__construct($params);
+        
+        MLBanana::$listname = $params['listname'];
+        MLBanana::$domain   = $params['domain'];
+        $params['group'] = $params['listname'] . '@' . $params['domain'];
+        parent::__construct($params, 'MLArchive');
     }
 
     public function run()
     {
         global $platal, $globals;
 
-        // Update last unread time
+/*        // Update last unread time
         $time = null;
         if (!is_null($this->params) && isset($this->params['updateall'])) {
             $time = intval($this->params['updateall']);
@@ -115,40 +108,34 @@ class ForumsBanana extends Banana
                                 . '</a>', array('forums', 'thread', 'message'));
         }   
         Banana::$page->registerPage('profile', utf8_encode('Préférences'), null);
-        
+*/        Banana::$page->killPage('forums');
+        Banana::$page->killPage('subscribe'); 
 
         // Run Banana
         return parent::run();
     }
+}
 
-    protected function action_saveSubs($groups)
+require_once('banana/mbox.inc.php');
+
+class BananaMLArchive extends BananaMBox
+{
+    public function name()
+    {
+        return 'MLArchives';
+    }
+
+    public function filename()
+    {
+        return MLBanana::$domain . '_' . MLBanana::$listname;
+    }
+
+    protected function getFileName($box)
     {
         global $globals;
-        $uid = S::v('uid');
-
-        Banana::$profile['subscribe'] = array();
-        XDB::execute("DELETE FROM {$globals->banana->table_prefix}abos WHERE uid={?}", $uid);
-        if (!count($groups)) {
-            return true;
-        }
-
-        $req  = XDB::iterRow("SELECT fid,nom FROM {$globals->banana->table_prefix}list");
-        $fids = array();
-        while (list($fid,$fnom) = $req->next()) {
-            $fids[$fnom] = $fid;
-        }
-
-        $diff = array_diff($groups, array_keys($fids));
-        foreach ($diff as $g) {
-            XDB::execute("INSERT INTO {$globals->banana->table_prefix}list (nom) VALUES ({?})", $g);
-            $fids[$g] = XDB::insertId();
-        }
-
-        foreach ($groups as $g) {
-            XDB::execute("INSERT INTO {$globals->banana->table_prefix}abos (fid,uid) VALUES ({?},{?})",
-                         $fids[$g], $uid);
-            Banana::$profile['subscribe'][] = $g;
-        }
+        $base = $globals->lists->spool;
+        $file = MLBanana::$domain . $globals->lists->vhost_sep . MLBanana::$listname . '.mbox';
+        return "$base/$file/$file";
     }
 }
 

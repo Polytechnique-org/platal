@@ -20,69 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-
 {include file="lists/header_listes.tpl" on=archives}
 
+<h1>Archives</h1>
 
-{if $archs}
-<h1>Archives de la liste {$platal->argv[1]}</h1>
-
-<h2>Triés par fils de discussion</h2>
-
-<table class="tinybicol" cellspacing="0" cellpadding="0">
-  <tr>
-    <th>Année</th>
-    <th colspan="6">
-      Mois
-    </th>
-  </tr>
-  {foreach from=$archs item=m key=y}
-  <tr class="center {if $y is odd}pair{else}impair{/if}">
-    <td class="titre" rowspan="2">{$y}</td>
-    {foreach from=$range item=i}
-    <td>
-      {if $m[$i]}
-      <a href="{$platal->pl_self(1)}?rep={$y}/{$i|string_format:"%02u"}&amp;file=threads.html">{"0000-$i-01"|date_format:"%B"}</a>
-      {else}
-      &nbsp;
-      {/if}
-    </td>
-    {if $i eq 6}</tr><tr class="center {if $y is odd}pair{else}impair{/if}">{/if}
-    {/foreach}
-  </tr>
-  {/foreach}
-</table>
-
-<h2>Triés par date</h2>
-
-<table class="tinybicol" cellspacing="0" cellpadding="0">
-  <tr>
-    <th>Année</th>
-    <th colspan="6">
-      Mois
-    </th>
-  </tr>
-  {foreach from=$archs item=m key=y}
-  <tr class="center {if $y is odd}pair{else}impair{/if}">
-    <td class="titre" rowspan="2">{$y}</td>
-    {foreach from=$range item=i}
-    <td>
-      {if $m[$i]}
-      <a href="{$platal->pl_self(1)}?rep={$y}/{$i|string_format:"%02u"}&amp;file=dates.html">{"0000-$i-01"|date_format:"%B"}</a>
-      {else}
-      &nbsp;
-      {/if}
-    </td>
-    {if $i eq 6}</tr><tr class="center {if $y is odd}pair{else}impair{/if}">{/if}
-    {/foreach}
-  </tr>
-  {/foreach}
-</table>
-{elseif $archives}
-{tidy}
-{include file="$archives"}
-{/tidy}
-{/if}
-
+{$banana|smarty:nodefaults}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -69,25 +69,23 @@ class BananaModule extends PLModule
         if (!is_null($action)) {
             if ($action == 'new') {
                 $get['action'] = 'new';
-            } elseif ($action == 'reply' && !is_null($artid)) {
-                $get['action'] = 'new';
-                $get['artid']  = $artid;
-            } elseif ($action == 'cancel' && !is_null($artid)) {
-                $get['action'] = $action;
-                $get['artid']  = $artid;
-            } elseif ($action == 'from' && !is_null($artid)) {
-                $get['first'] = $artid;
-            } elseif ($action == 'read' && !is_null($artid)) {
-                $get['artid'] = $artid;
-                $get['part']  = @$_GET['part'];
-            } elseif ($action == 'source' && !is_null($artid)) {
-                $get['artid'] = $artid;
-                $get['part'] = 'source';
-            } elseif ($action == 'xface' && !is_null($artid)) {
-                $get['artid'] = $artid;
-                $get['part']  = 'xface';
+            } elseif (!is_null($artid)) {
+                $get['artid'] = $artid; 
+                if ($action == 'reply') {
+                    $get['action'] = 'new';
+                } elseif ($action == 'cancel') {
+                    $get['action'] = $action;
+                } elseif ($action == 'from') {
+                    $get['first'] = $artid;
+                } elseif ($action == 'read') {
+                    $get['part']  = @$_GET['part'];
+                } elseif ($action == 'source') {
+                    $get['part'] = 'source';
+                } elseif ($action == 'xface') {
+                    $get['part']  = 'xface';
+                }   
             }
-        }    
+        }   
         return BananaModule::run_banana($page, $get);
     }
 
@@ -151,7 +149,7 @@ class BananaModule extends PLModule
 
         require_once 'banana/forum.inc.php';
 
-        $banana = new PlatalForums($params);
+        $banana = new ForumsBanana($params);
         $res = $banana->run();
         $page->assign_by_ref('banana', $banana);
         $page->assign('banana_res', $res);

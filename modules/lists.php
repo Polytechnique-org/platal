@@ -317,7 +317,7 @@ class ListsModule extends PLModule
         }
     }
 
-    function handler_archives(&$page, $liste = null)
+    function handler_archives(&$page, $liste = null, $action = null, $artid = null)
     {
         global $globals;
 
@@ -329,33 +329,39 @@ class ListsModule extends PLModule
 
         $page->changeTpl('lists/archives.tpl');
 
-        $page->addCssLink('lists.archives.css');
         if (list($det) = $this->client->get_members($liste)) {
             if (substr($liste,0,5) != 'promo' && ($det['ins'] || $det['priv'])
-            && !$det['own'] && ($det['sub'] < 2))
-            {
+                    && !$det['own'] && ($det['sub'] < 2)) {
                 $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
-            } elseif (Get::has('file')) {
-                $file = Get::v('file');
-                $rep  = Get::v('rep');
-                if (strstr('/', $file)!==false || !preg_match(',^\d+/\d+$,', $rep)) {
-                    $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
-                } else { 
-                    $page->assign('archives', $globals->lists->spool
-                                  ."/{$domain}{$globals->lists->vhost_sep}$liste/$rep/$file");
-                }
-            } else {
-                $archs = Array();
-                foreach (glob($globals->lists->spool
-                              ."/{$domain}{$globals->lists->vhost_sep}$liste/*/*") as $rep)
-                {
-                    if (preg_match(",/(\d*)/(\d*)$,", $rep, $matches)) {
-                        $archs[intval($matches[1])][intval($matches[2])] = true;
+            }
+            $get = Array('listname' => $liste, 'domain' => $domain);
+            if (Post::has('updateall')) {
+                $get['updateall'] = Post::v('updateall');
+            }
+            if (!is_null($action)) {
+                if ($action == 'new') {
+                    $get['action'] = 'new';
+                } elseif (!is_null($artid)) {
+                    $get['artid'] = $artid;
+                    if ($action == 'reply') {
+                        $get['action'] = 'new';
+                    } elseif ($action == 'cancel') {
+                        $get['action'] = $action;
+                    } elseif ($action == 'from') {
+                        $get['first'] = $artid;
+                    } elseif ($action == 'read') {
+                        $get['part']  = @$_GET['part'];
+                    } elseif ($action == 'source') {
+                        $get['part'] = 'source';
+                    } elseif ($action == 'xface') {
+                        $get['part']  = 'xface';
                     }
                 }
-                $page->assign('archs', $archs);
-                $page->assign('range', range(1,12));
             }
+            require_once('banana/ml.inc.php');
+            $banana = new MLBanana($get);
+            $page->assign('banana', $banana->run());
+            $page->addCssLink('banana.css');
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
         }
