@@ -254,6 +254,8 @@ class EmailModule extends PLModule
     function handler_antispam(&$page, $statut_filtre = null)
     {
         require_once 'emails.inc.php';
+        require_once('wiki.inc.php');
+        wiki_require_page('Xorg.Antispam');
 
         $page->changeTpl('emails/antispam.tpl');
 
