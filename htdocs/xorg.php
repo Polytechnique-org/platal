@@ -51,7 +51,7 @@ if (Env::v('display') == 'light') {
 }
 
 switch (Env::v('action')) {
-  case '':
+  case '': case 'search':
     wiki_apply_perms($perms[0]);
     break;
 

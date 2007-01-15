@@ -43,7 +43,7 @@ new_skinned_page('core/wiki.tpl');
 $perms = wiki_get_perms($n);
 
 switch (Env::v('action')) {
-  case '':
+  case '': case 'search':
     wiki_apply_perms($perms[0]);
     break;
 
