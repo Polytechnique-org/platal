@@ -78,16 +78,47 @@ class BananaMLArchive extends BananaMBox
         return 'MLArchives';
     }
 
+    public function getBoxList($mode = Banana::BOXES_ALL, $since = 0, $withstats = false)
+    {
+        global $globals;
+        $spool = $globals->lists->spool . '/';
+        $list = glob($spool . '*.mbox', GLOB_ONLYDIR);
+        if ($list === false) {
+            return array();
+        }
+        $groups = array();
+        foreach ($list as $path) {
+            $path = substr($path, strlen($spool));
+            $path = substr($path, 0, -5);
+            list($domain, $listname) = explode($globals->lists->vhost_sep, $path, 2);
+            $group = $listname . '@' . $domain;
+            $groups[$group] = array('desc' => null, 'msgnum' => null, 'unread' => null);
+        }
+        return $groups;
+    }
+
     public function filename()
     {
-        return MLBanana::$domain . '_' . MLBanana::$listname;
+        if (MLBanana::$listname) {
+            $listname = MLBanana::$listname;
+            $domain   = MLBanana::$domain;
+        } else {
+            list($listname, $domain) = explode('@', Banana::$group);
+        }
+        return $domain . '_' . $listname;
     }
 
     protected function getFileName()
     {
         global $globals;
         $base = $globals->lists->spool;
-        $file = MLBanana::$domain . $globals->lists->vhost_sep . MLBanana::$listname . '.mbox';
+        if (MLBanana::$listname) {
+            $listname = MLBanana::$listname;
+            $domain   = MLBanana::$domain;
+        } else {
+            list($listname, $domain) = explode('@', Banana::$group);
+        }
+        $file = $domain . $globals->lists->vhost_sep . $listname . '.mbox';
         return "$base/$file/$file";
     }
 }
