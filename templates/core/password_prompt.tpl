@@ -36,7 +36,7 @@
 </h1>
 <p>
   Bonjour,<br />
-  La page que vous avez demandez (<strong>{$smarty.server.HTTP_REFERER}</strong>) nécessite une authentification
+  La page que vous avez demandé (<strong>{$smarty.server.HTTP_REFERER}</strong>) nécessite une authentification
 </p>
 {else}
 <h1>
