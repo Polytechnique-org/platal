@@ -32,6 +32,7 @@ class XnetListsModule extends ListsModule
             '%grp/lists/create'    => $this->make_hook('create',    AUTH_MDP),
 
             '%grp/lists/members'   => $this->make_hook('members',   AUTH_COOKIE),
+            '%grp/lists/trombi'    => $this->make_hook('trombi',    AUTH_COOKIE),
             '%grp/lists/archives'  => $this->make_hook('archives',  AUTH_COOKIE),
 
             '%grp/lists/moderate'  => $this->make_hook('moderate',  AUTH_MDP),
