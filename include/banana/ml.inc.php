@@ -25,7 +25,7 @@ require_once 'banana/hooks.inc.php';
 function hook_makeLink($params)
 {
     global $globals, $platal;
-    $base = $globals->baseurl . $platal->ns . '/lists/archives/' . MLBanana::$listname;
+    $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives/' . MLBanana::$listname;
     return $base . hook_platalMessageLink($params);
 }
 
@@ -83,7 +83,7 @@ class BananaMLArchive extends BananaMBox
         return MLBanana::$domain . '_' . MLBanana::$listname;
     }
 
-    protected function getFileName($box)
+    protected function getFileName()
     {
         global $globals;
         $base = $globals->lists->spool;

@@ -30,7 +30,7 @@ function hook_checkcancel($_headers)
 function hook_makeLink($params)
 {
     global $platal, $globals;
-    $base = $globals->baseurl . $platal->ns . '/lists/moderate/' . ModerationBanana::$listname . '?';
+    $base = $globals->baseurl . '/' . $platal->ns . 'lists/moderate/' . ModerationBanana::$listname . '?';
     $get = '';
     foreach ($params as $key=>$value) {
         if ($key == 'artid') {

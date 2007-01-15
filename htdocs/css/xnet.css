@@ -366,3 +366,42 @@ td.infos {
     color: #505050;
 }
 
+/***************************************************************************
+ ***************************************************************************/
+
+td.conteneur_tab {
+    border: none;
+    padding-top: 1em;
+}
+
+#onglet {
+    display : block;
+    margin : 0;
+    padding : 0;
+}
+
+#onglet li {
+    display : block;
+    float : left;
+    border: none;
+    background: inherit;
+    width: auto;
+}
+
+#onglet li.actif {
+    font-weight: bold;
+}
+
+#onglet li:before {
+    font-weight: normal;
+    content: '» ';
+    padding-left: 1ex;
+}
+
+#onglet li:first-child:before {
+    content: '';
+}
+
+#onglet li img { margin-right: 2px; }
+
+
