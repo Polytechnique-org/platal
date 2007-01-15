@@ -115,8 +115,12 @@ $page->assign('canedit',    wiki_may_have_perms($perms[1]));
 $page->assign('has_perms',  wiki_may_have_perms('admin'));
 
 $page->assign('wikipage', str_replace('.', '/', $n));
-$page->assign('pmwiki',   $wikiAll);
-
+if ($perms[1] == 'admin' && !Env::v('action')) {
+    $page->assign('pmwiki_cache', $wiki_cache);
+} else {
+    $page->assign('pmwiki',   $wikiAll);
+    $page->assign('text', true);
+}
 $page->addCssLink('wiki.css');
 $page->addJsLink('wiki.js');
 

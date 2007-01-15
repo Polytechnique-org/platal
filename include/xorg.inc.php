@@ -38,7 +38,7 @@ class XorgPage extends PlatalPage
     {
         global $globals, $platal;
         $this->assign('globals', $globals);
-        if ($platal->path == 'register') {
+        if (isset($platal) && $platal->path == 'register') {
             $skin = 'register.tpl';
         } else {
             $skin = S::v('skin', 'default.tpl');
