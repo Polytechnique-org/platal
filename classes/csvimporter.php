@@ -30,7 +30,6 @@ class CSVImporter
     private $do_sql;
 
     private $index;
-    private $separator;
     private $data = array();
 
     private $user_functions = array();
@@ -44,9 +43,8 @@ class CSVImporter
         $this->do_sql    = $do_sql;
     }
 
-    private function processLine($line)
+    private function processLine(array $array)
     {
-        $array = explode($this->separator, $line);
         if (is_null($this->index)) {
             $this->index = array_map('strtolower', $array);
             return true;
@@ -131,12 +129,16 @@ class CSVImporter
 
     public function setCSV($csv, $index = null, $separator = ';')
     {
+        require_once dirname(__FILE__) . '/varstream.php';
+        VarStream::init();
+        global $csv_source;
         $this->index     = null;
-        $this->separator = $separator;
-        $csv   = preg_split("/(\r\n|\r|\n)/", $csv);
+        
+        $csv_source = $csv;
+        $res        = fopen('var://csv_source', 'r');
 
-        foreach ($csv as $line) {
-            $this->processLine($line);
+        while (!feof($res)) {
+            $this->processLine(fgetcsv($res, 0, $separator));
         }
     }
 
@@ -258,7 +260,6 @@ class CSVImporter
             if (empty($sep)) {
                 $sep = ';';
             }
-            echo $sep;
             $this->setCSV($csv, null, $sep);
         }
         if ($current == 'values' && Env::has('csv_valid')) {
