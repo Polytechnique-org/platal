@@ -64,7 +64,7 @@ archives         : [https://www.polytechnique.org/nl]
 écrire           : [https://www.polytechnique.org/nl/submit]
 ne plus recevoir : [https://www.polytechnique.org/nl/out]
 
-{if $is_mail}
+{if !$is_mail}
 </pre>
 {/if}
 {else}
