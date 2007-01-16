@@ -36,27 +36,38 @@ function user_clear_all_subs($user_id, $really_del=true)
     $res   = XDB::query("SELECT alias FROM aliases WHERE type='a_vie' AND id={?}", $uid);
     $alias = $res->fetchOneCell();
 
+    $tables_to_clear = array('uid' => array('competences_ins', 'entreprises', 'langues_ins', 'mentor_pays',
+                                            'mentor_secteurs', 'mentor', 'perte_pass', 'watch_sub'),
+                             'user_id' => array('requests', 'user_changes'));
+
     if ($really_del) {
-    	XDB::execute("DELETE FROM emails WHERE uid={?}", $uid);
-	    XDB::execute("DELETE FROM newsletter_ins WHERE user_id={?}", $uid);
+        array_push($tables_to_clear['uid'], 'emails', 'groupex.membres', 'contacts', 'adresses', 'tels',
+                                            'photo', 'perte_pass', 'langues_ins', 'forums.abos', 'forums.profils');
+        array_push($tables_to_clear['user_id'], 'newsletter_ins', 'auth_user_quick', 'binets_ins');
+        $tables_to_clear['id'] = array('aliases'); 
+        $tables_to_clear['contact'] = array('contacts');
+        $tables_to_clear['guid'] = array('groupesx_ins');
+        XDB::execute("UPDATE auth_user_md5
+                         SET date_ins = 0, promo_sortie = 0, nom_usage = '',  password = '', perms = 'pending',
+                             nationalite = '', cv = '', section = 0, date = 0, smtppass = ''
+                       WHERE user_id = {?}", $uid);
+        XDB::execute("DELETE virtual.* FROM virtual INNER JOIN virtual_redirect AS r USING(vid) WHERE redirect = {?}",
+                     $alias.'@'.$globals->mail->domain);
+        XDB::execute("DELETE virtual.* FROM virtual INNER JOIN virtual_redirect AS r USING(vid) WHERE redirect = {?}",
+                     $alias.'@'.$globals->mail->domain2);
+    } else {
+        XDB::execute("UPDATE auth_user_md5   SET password='',smtppass='' WHERE user_id={?}", $uid);
+        XDB::execute("UPDATE auth_user_quick SET watch_flags='' WHERE user_id={?}", $uid);
     }
 
     XDB::execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain);
     XDB::execute("DELETE FROM virtual_redirect WHERE redirect = {?}", $alias.'@'.$globals->mail->domain2);
 
-    XDB::execute("UPDATE auth_user_md5   SET password='',smtppass='' WHERE user_id={?}", $uid);
-    XDB::execute("UPDATE auth_user_quick SET watch_flags='' WHERE user_id={?}", $uid);
-
-    XDB::execute("DELETE FROM competences_ins WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM entreprises     WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM langues_ins     WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM mentor_pays     WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM mentor_secteurs WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM mentor          WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM perte_pass      WHERE uid={?}", $uid);
-    XDB::execute("DELETE FROM requests        WHERE user_id={?}", $uid);
-    XDB::execute("DELETE FROM user_changes    WHERE user_id={?}", $uid);
-    XDB::execute("DELETE FROM watch_sub       WHERE uid={?}", $uid);
+    foreach ($tables_to_clear as $key=>&$tables) {
+        foreach ($tables as $table) {
+            XDB::execute("DELETE FROM $table WHERE $key={?}", $uid);
+        }
+    }
 
     $mmlist = new MMList(S::v('uid'), S::v('password'));
     $mmlist->kill($alias, $really_del);
