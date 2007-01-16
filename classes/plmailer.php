@@ -21,8 +21,6 @@
 
 require_once('smarty/libs/Smarty.class.php');
 
-// {{{ class PlMail
-
 /** Classe de mail avec corps en templates.
  */
 class PlMail extends Smarty

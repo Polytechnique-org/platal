@@ -184,6 +184,16 @@ class PlatalPage extends Smarty
     }
 
     // }}}
+    // {{{ function addCssInline
+
+    function addCssInline($css)
+    {
+        if (!empty($css)) {
+            $this->append('xorg_inline_css', $css);
+        }    
+    }
+
+    // }}}
     // {{{ function setRssLink
 
     function setRssLink($title, $path)

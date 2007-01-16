@@ -39,6 +39,11 @@
     {foreach from=$xorg_css item=css}
     <link rel="stylesheet" type="text/css" href="css/{$css}" media="all"/>
     {/foreach}
+    {foreach from=$xorg_inline_css item=css}
+    <style type="text/css">
+    {$css|smarty:nodefaults}
+    </style>
+    {/foreach}
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print"/>
     {foreach from=$xorg_js item=js}
     <script type="text/javascript" src="javascript/{$js}"></script>

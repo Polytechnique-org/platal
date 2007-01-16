@@ -66,6 +66,7 @@ class ModerationBanana extends Banana
         Banana::$spool_boxlist = false;
         Banana::$msgshow_withthread = false;
         Banana::$withtabs      = false;
+        Banana::$msgshow_externalimages = false;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         parent::__construct($params, 'MLInterface', 'ModerationPage');
     }
@@ -143,7 +144,7 @@ class BananaMLInterface implements BananaProtocoleInterface
         $message = null;
         $msg = ModerationBanana::$client->get_pending_mail(ModerationBanana::$listname, $id, 1);
         if ($msg) {
-            $message = new BananaMessage($msg);
+            $message = new BananaMessage(html_entity_decode($msg));
         }
         return $message;
     }

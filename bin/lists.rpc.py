@@ -171,7 +171,7 @@ def quote(s, is_header=False):
         h = Utils.oneline(s, 'iso-8859-1')
     else:
         h = s
-    h = str('').join(re.split('[\x00-\x09\x0B-\x1f]+', h))
+    h = str('').join(re.split('[\x00-\x08\x0B-\x1f]+', h))
     return Utils.uquote(h.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;')) 
 
 def to_forlife(email):
@@ -576,7 +576,7 @@ def get_pending_mail(userdesc, perms, vhost, listname, id, raw=0):
         mlist.Unlock()
 
         if raw:
-            return str(msg)
+            return quote(str(msg))
         results_plain = []
         results_html  = []
         for part in typed_subpart_iterator(msg, 'text', 'plain'):

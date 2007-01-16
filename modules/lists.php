@@ -361,6 +361,7 @@ class ListsModule extends PLModule
             require_once('banana/ml.inc.php');
             $banana = new MLBanana($get);
             $page->assign('banana', $banana->run());
+            $page->addCssInline($banana->css());
             $page->addCssLink('banana.css');
         } else {
             $page->kill("La liste n'existe pas ou tu n'as pas le droit de la consulter");
@@ -443,6 +444,7 @@ class ListsModule extends PLModule
                 $params = array('listname' => $liste, 'domain' => $domain, 'artid' => Get::i('mid'), 'part' => Get::v('part'));
                 $banana = new ModerationBanana($params, $this->client);
                 $res    = $banana->run();
+                $page->addCssInline($banana->css());
 
                 $msg = file_get_contents('/etc/mailman/fr/refuse.txt');
                 $msg = str_replace("%(adminaddr)s", "$liste-owner@{$domain}", $msg);

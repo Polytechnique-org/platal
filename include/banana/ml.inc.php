@@ -39,7 +39,7 @@ class MLBanana extends Banana
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
-         
+
         MLBanana::$listname = $params['listname'];
         MLBanana::$domain   = $params['domain'];
         $params['group'] = $params['listname'] . '@' . $params['domain'];
