@@ -22,7 +22,7 @@
 
 <h1>Proposition d'information événementielle</h1>
 
-{if $action eq "proposer"}
+{if $action eq "proposer" && trim($titre) && trim($texte)}
 
 <p>
 Voici ton annonce :

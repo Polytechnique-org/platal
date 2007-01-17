@@ -990,6 +990,11 @@ class XnetGrpModule extends PLModule
                 $page->trig("L'intervalle de promotions est invalide");
                 Post::kill('valid');
             }
+
+            if (!trim($art['titre']) || !trim($art['texte'])) {
+                $page->trig("L'article doit avoir un titre et un contenu");
+                Post::kill('valid');
+            }
         }
 
         if (Post::v('valid') == 'Enregistrer') {

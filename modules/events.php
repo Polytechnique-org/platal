@@ -200,7 +200,9 @@ class EventsModule extends PLModule
         $page->assign('valid_mesg', $valid_mesg);
         $page->assign('action', strtolower($action));
 
-        if ($action == 'Confirmer') {
+        if ($action && (!trim($texte) || !trim($titre))) {
+            $page->trig("L'article doit avoir un titre et un contenu");
+        } elseif ($action == 'Confirmer') {
         	$texte = $texte_catch_url;
             require_once 'validations.inc.php';
             $evtreq = new EvtReq($titre, $texte, $promo_min, $promo_max,

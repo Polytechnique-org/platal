@@ -148,7 +148,9 @@ Bienvenue {$smarty.session.prenom}
   </p>
 
   <p class="center">
-  <a href="events/submit">{icon name=add}Proposer une information événementielle</a>
+    {icon name=page_edit}&nbsp;
+    <a href="events/submit">Proposer une information événementielle</a>&nbsp;&bull;
+    <a href="nl/submit">Proposer un article pour la Lettre mensuelle</a>
   </p>
 {/if}
 

@@ -25,9 +25,9 @@
   Lettre de Polytechnique.org
 </h1>
 
-<p>
-<strong>Pour demander l'ajout d'une annonce dans la prochaine lettre mensuelle</strong>,
-utilise <a href='nl/submit'>le formulaire dédié !</a>
+
+<p class="center">
+  <a href="nl/submit">{icon name=page_edit value="Proposer un article"} Proposer un article pour la lettre mensuelle</a>
 </p>
 
 <h2>Ton statut</h2>
@@ -37,14 +37,14 @@ utilise <a href='nl/submit'>le formulaire dédié !</a>
 Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>)
 </p>
 <div class='center'>
-  [<a href='nl/out'>me désinscrire de la lettre mensuelle</a>]
+  [<a href='nl/out'>{icon name=delete} me désinscrire de la lettre mensuelle</a>]
 </div>
 {else}
 <p>
 Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
 </p>
 <div class='center'>
-  [<a href='nl/in'>m'inscrire à la lettre mensuelle</a>]
+  [<a href='nl/in'>{icon name=add} m'inscrire à la lettre mensuelle</a>]
 </div>
 {/if}
 

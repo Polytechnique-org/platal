@@ -131,7 +131,7 @@ class RegisterModule extends PLModule
                         $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
                             "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
                     }
-                    $birth = Env::v('naissance');
+                    $birth = trim(Env::v('naissance'));
                     if (!preg_match('/^[0-3][0-9][01][0-9][12][90][0-9][0-9]$/', $birth)) {
                         $err[] = "La 'Date de naissance' n'est pas correcte.";
                     } else {

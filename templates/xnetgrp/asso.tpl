@@ -157,7 +157,7 @@ interprétée comme polémique par un membre de la communauté polytechnicienne.
 {/if}
 {elseif $is_admin}
 <div class="center">
-  [<a href="{$platal->ns}announce/new">{icon name=add} Ajouter une annonce</a>]
+  [<a href="{$platal->ns}announce/new">{icon name=page_edit} Ajouter une annonce</a>]
 </div>
 {/if}
 

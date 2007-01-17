@@ -108,7 +108,7 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
       {/foreach}
       {/foreach}
       <div class="foot1">
-        Cette lettre est envoyée à tous les Polytechniciens sur Internet par l'intermédiaire de lytechnique.org.
+        Cette lettre est envoyée à tous les Polytechniciens sur Internet par l'intermédiaire de Polytechnique.org.
       </div>
       <div class="foot2">
         [<a href="https://www.polytechnique.org/nl">archives</a>&nbsp;|
