@@ -54,6 +54,9 @@ Bug/Wish:
         - #598: Ask for confirmation                                       -FRU
         - #616: Fix encoding issues with mail to moderate                  -FRU
 
+    * Profile:
+        - #628: Fix edition link from user's own profile                   -FRU
+
     * Register:
         - #277: Improve ergonomy.                                          -FRU
 

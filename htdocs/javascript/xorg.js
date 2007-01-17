@@ -59,7 +59,8 @@ function attachEvent(obj, evt, f, useCapture) {
         return true;
     } else if (obj.attachEvent) {
         return obj.attachEvent("on"+evt, f);
-    }
+    } 
+    return false;
 }
 
 // }}}
@@ -120,7 +121,7 @@ function auto_links() {
 	    node.onclick = function () { window.open(this.href); return false; };
 	}
 	if(node.className == 'popup2') {
-	    node.onclick = function () { popWin(this,840,600); return false; };
+        node.onclick = function () { popWin(this,840,600); return false; };
 	}
 	if(matches = (/^popup_([0-9]*)x([0-9]*)$/).exec(node.className)) {
 	    var w = matches[1], h = matches[2];
@@ -137,7 +138,9 @@ function auto_links() {
 
 // {{{ function pa_onload
 
-attachEvent(window, 'load', auto_links);
+if (!attachEvent(window, 'load', auto_links)) {
+    window.onload = auto_links;
+}
 
 // }}}
 

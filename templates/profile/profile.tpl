@@ -21,19 +21,23 @@
 {**************************************************************************}
 
 {literal}
-<script type="text/javascript">
-function chgMainWinLoc( strPage ) {
+<script type="text/javascript">//<![CDATA[
+function chgMainWinLoc( strPage , iePage) {
+  if (navigator.appName == 'Microsoft Internet Explorer') {
+    strPage = iePage;
+  }
   if (parent.opener) {
     parent.opener.document.location = strPage;
+    window.close();
   } else {
     document.location = strPage;
   }
 }
-</script>
+//]]></script>
 {/literal}
 
 {if $logged and $x.forlife eq $smarty.session.forlife}
-[<a href="javascript:x()" onclick="chgMainWinLoc('profile/edit')">Modifier ma fiche</a>]
+[<a href="javascript:chgMainWinLoc('profile/edit', 'edit')">Modifier ma fiche</a>]
 {/if}
 
 <table id="fiche" cellpadding="0" cellspacing="0">
