@@ -37,8 +37,9 @@ class PlMail extends Smarty
         $this->compile_check = true;
 
         $this->template_dir  = $globals->spoolroot . "/templates/";
-        $this->compile_dir   = $globals->spoolroot . "/spool/templates_c/";
+        $this->compile_dir   = $globals->spoolroot . "/spool/templates_c/mails/";
         $this->config_dir    = $globals->spoolroot . "/configs/";
+        
 
         $this->register_outputfilter(Array($this, 'mail_format'));
         $this->register_function('from',    Array($this, 'setFrom'));
@@ -237,6 +238,7 @@ class PlMailer extends Mail_Mime {
     
     private function processPage($with_html = true)
     {
+        $level = error_reporting(0);
         if (!is_null($this->page)) {
             $this->setTxtBody($this->page->run(false));
             if ($with_html) {
@@ -246,6 +248,7 @@ class PlMailer extends Mail_Mime {
                 }
             }
         }
+        error_reporting($level);
     }
 
     public function send($with_html = true)
