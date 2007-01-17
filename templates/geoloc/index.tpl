@@ -70,7 +70,7 @@ function searchMapId(f)
     width="600"
     height="450"
     align="middle">
-      <param name="movie" value="$platal->ns}geoloc/dynamap.swf"/>
+      <param name="movie" value="{$platal->ns}geoloc/dynamap.swf"/>
       <param name="bgcolor" value="#ffffff"/>
       <param name="wmode" value="opaque"/>
       <param name="quality" value="high"/>
