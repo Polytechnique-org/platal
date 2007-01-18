@@ -37,7 +37,7 @@ class PlMail extends Smarty
         $this->compile_check = true;
 
         $this->template_dir  = $globals->spoolroot . "/templates/";
-        $this->compile_dir   = $globals->spoolroot . "/spool/templates_c/mails/";
+        $this->compile_dir   = $globals->spoolroot . "/spool/mails_c/";
         $this->config_dir    = $globals->spoolroot . "/configs/";
         
 
