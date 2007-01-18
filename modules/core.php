@@ -45,7 +45,7 @@ class CoreModule extends PLModule
     {
         global $globals;
         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-        if ($globals->asso()) {
+        if ($_GLOBALS['IS_XNET_SITE'] && $globals->asso()) {
             new_skinned_page('core/403.tpl');
         } else {
             $page->changeTpl('core/403.tpl');
@@ -56,7 +56,7 @@ class CoreModule extends PLModule
     {
         global $globals, $platal;
         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-        if ($globals->asso()) {
+        if ($_GLOBALS['IS_XNET_SITE'] && $globals->asso()) {
             new_group_open_page('core/404.tpl');
         } else {
             $page->changeTpl('core/404.tpl');
