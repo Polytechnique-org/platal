@@ -517,7 +517,7 @@ class AdminModule extends PLModule
                         $mailer->setFrom("webmaster@polytechnique.org");
                         $mailer->addTo("web@polytechnique.org");
                         $mailer->setSubject("INTERVENTION de ".S::v('forlife'));
-                        $mailer->setTxtBody("\nUtilisateur $login effacé");
+                        $mailer->setTxtBody("\nUtilisateur $login désinscrit");
                         $mailer->send();
                         break;
                 }
