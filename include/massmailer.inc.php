@@ -141,7 +141,7 @@ abstract class MassMailer
         while (true) {
             $res = XDB::iterRow($query, $this->_id, 60);
             if (!$res->total()) {
-                exit;
+                return;
             }
             $sent = array();
             while (list($uid, $bestalias, $prenom, $nom, $sexe, $fmt, $hash) = $res->next()) {

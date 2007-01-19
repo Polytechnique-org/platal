@@ -20,6 +20,7 @@ CREATE TABLE axletter_ins (
     flag set('femme') default '',
     prenom varchar(32) default NULL,
     nom varchar(255) default NULL,
+    promo smallint(4) default 0,
     last int(11) NOT NULL default 0,
     hash varchar(32) default NULL,
 

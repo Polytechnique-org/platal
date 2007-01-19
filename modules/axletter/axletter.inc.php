@@ -107,7 +107,8 @@ class AXLetter extends MassMailer
              LEFT JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
              LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
              LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
-                 WHERE  ni.last < {?} AND (e.email IS NOT NULL OR ni.user_id = 0)
+                 WHERE  ni.last < {?} AND {$this->subscriptionWhere()}
+                        AND (e.email IS NOT NULL OR ni.user_id = 0)
               GROUP BY  u.user_id";
     }              
 
@@ -163,7 +164,17 @@ class AXLetter extends MassMailer
 
     protected function subscriptionWhere()
     {
-        return 'ni.last';
+        if (!$this->_promo_min && !$this->_promo_max) {
+            return '1';
+        }
+        $where = array();
+        if ($this->_promo_min) {
+            $where[] = "((ni.user_id = 0 AND ni.promo >= {$this->_promo_min}) OR (ni.user_id != 0 AND u.promo >= {$this->_promo_min}))";
+        }
+        if ($this->_promo_max) {
+            $where[] = "((ni.user_id = 0 AND ni.promo <= {$this->_promo_max}) OR (ni.user_id != 0 AND u.promo <= {$this->_promo_max}))";
+        }
+        return implode(' AND ', $where);
     }
 
     static public function awaiting()
