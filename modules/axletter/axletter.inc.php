@@ -73,38 +73,6 @@ class AXLetter extends MassMailer
         return format_text($this->_signature, $format, 10);
     }
 
-    static public function create($subject, $title, $body, $signature, $promo_min, $promo_max, $date, $shortname = null)
-    {
-        $id = AXLetter::awaiting();
-        if ($id) {
-            return new AXLetter($id);
-        }
-        XDB::execute("INSERT INTO  axletter (shortname, echeance,  promo_min, promo_max,
-                                     subject, title, body, signature,
-                                     subject_ini, title_ini, body_ini, signature_ini)
-                           VALUES  ({?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?}, {?})",
-                     $shortname, $date, $promo_min, $promo_max,
-                     $subject, $title, $body, $signature, $subject, $title, $body, $signature);
-        return new AXLetter(XDB::insertId());
-    }
-
-    public function update($subject, $title, $body, $signature, $promo_min, $promo_max, $date, $shortname = null)
-    {
-        $this->_shortname  = $shortname;
-        $this->_title      = $title;
-        $this->_title_mail = $subject;
-        $this->_body       = $body;
-        $this->_signature  = $signature;
-        $this->_promo_min  = $promo_min;
-        $this->_promo_max  = $promo_max;
-        $this->_date       = $date;
-        return XDB::execute("UPDATE  axletter (shortname, subject, title, body, signature, promo_min, promo_max, echeance)
-                                SET  shorname={?}, subject={?}, title={?}, body={?}, signature={?},
-                                     promo_min={?}, promo_max={?}, echeance={?}
-                              WHERE  id = {?}",
-                            $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $date, $this->_id);
-    }
-
     public function valid()
     {
         return XDB::execute("UPDATE  axletter
@@ -126,6 +94,23 @@ class AXLetter extends MassMailer
                        WHERE  id={?}", $this->_id);
     }
 
+    protected function getAllRecipients()
+    {
+        return "SELECT  ni.user_id, IF(ni.user_id = 0, ni.email, a.alias) AS alias,
+                        IF(ni.user_id = 0, ni.prenom, u.prenom) AS prenom,
+                        IF(ni.user_id = 0, ni.nom, IF(u.nom_usage='', u.nom, u.nom_usage)) AS nom,
+                        FIND_IN_SET('femme', IF(ni.user_id = 0, ni.flag, u.flags)) AS sexe,
+                        IF(ni.user_id = 0, 'html', q.core_mail_fmt) AS pref,
+                        IF(ni.user_id = 0, ni.hash, 0) AS hash
+                  FROM  axletter_ins  AS ni
+             LEFT JOIN  auth_user_md5   AS u  USING(user_id)
+             LEFT JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
+             LEFT JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+             LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
+                 WHERE  ni.last < {?} AND (e.email IS NOT NULL OR ni.user_id = 0)
+              GROUP BY  u.user_id";
+    }              
+
     static public function subscriptionState($uid = null)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
@@ -135,11 +120,22 @@ class AXLetter extends MassMailer
         return $res->fetchOneCell();
     }   
     
-    static public function unsubscribe($uid = null)
+    static public function unsubscribe($uid = null, $hash = false)
     {
         $user = is_null($uid) ? S::v('uid') : $uid;
+        $field = !$hash ? 'user_id' : 'hash';
+        if (is_null($uid) && $hash) {
+            return false;
+        }
+        $res = XDB::query("SELECT *
+                             FROM axletter_ins
+                            WHERE $field={?}", $user);
+        if (!$res->numRows()) {
+            return false;
+        }
         XDB::execute("DELETE FROM  axletter_ins
-                            WHERE  user_id={?} OR hash = {?}", $user, $user);
+                            WHERE  $field = {?}", $user);
+        return true;
     }
 
     static public function subscribe($uid = null)
@@ -172,10 +168,24 @@ class AXLetter extends MassMailer
 
     static public function awaiting()
     {
-        $res = XDB::query("SELECT  id
+        $res = XDB::query("SELECT  *
                              FROM  axletter
                             WHERE  FIND_IN_SET('new', bits)");
-        return $res->fetchOneCell();
+        if ($res->numRows()) {
+            return new AXLetter($res->fetchOneRow());
+        }
+        return null;
+    }
+
+    static public function toSend()
+    {
+        $res = XDB::query("SELECT  *
+                             FROM  axletter
+                            WHERE  FIND_IN_SET('new', bits) AND echeance <= NOW() AND echeance != 0");
+        if ($res->numRows()) {
+            return new AXLetter($res->fetchOneRow());
+        }
+        return null;
     }
 
     static public function listSent()

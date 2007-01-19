@@ -100,9 +100,12 @@ abstract class MassMailer
         $this->assignData($page);
     }
 
-    public function sendTo($prenom, $nom, $login, $sexe, $html)
+    public function sendTo($prenom, $nom, $login, $sexe, $html, $hash = 0)
     {
         global $globals;
+        if (strpos($login, '@') === false) {
+            $login = "$login@{$globals->mail->domain}";
+        }
 
         $mailer = new PlMailer($this->_tpl);
         $this->assignData($mailer);
@@ -111,34 +114,39 @@ abstract class MassMailer
         $mailer->assign('nom',     $nom);
         $mailer->assign('sexe',    $sexe);
         $mailer->assign('prefix',  null);
-        $mailer->addTo("\"$prenom $nom\" <$login@{$globals->mail->domain}>");
+        $mailer->assign('hash',    $hash);
+        $mailer->addTo("\"$prenom $nom\" <$login>");
         $mailer->send($html);
+    }
+
+    protected function getAllRecipients()
+    {
+        return  "SELECT  u.user_id, a.alias,
+                         u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
+                         FIND_IN_SET('femme', u.flags),
+                         q.core_mail_fmt AS pref, 0 AS hash
+                   FROM  {$this->subscriptionTable()}  AS ni
+             INNER JOIN  auth_user_md5   AS u  USING(user_id)
+             INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
+             INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
+              LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
+                  WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND e.email IS NOT NULL
+               GROUP BY  u.user_id";
     }
 
     public function sendToAll()
     {
         $this->setSent();
-        $query = "SELECT  u.user_id, a.alias,
-                          u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
-                          FIND_IN_SET('femme', u.flags),
-                          q.core_mail_fmt AS pref
-                    FROM  {$this->subscriptionTable()}  AS ni
-              INNER JOIN  auth_user_md5   AS u  USING(user_id)
-              INNER JOIN  auth_user_quick AS q  ON(q.user_id = u.user_id)
-              INNER JOIN  aliases         AS a  ON(u.user_id=a.id AND FIND_IN_SET('bestalias',a.flags))
-               LEFT JOIN  emails          AS e  ON(e.uid=u.user_id AND e.flags='active')
-                   WHERE  ni.last < {?} AND ({$this->subscriptionWhere()}) AND e.email IS NOT NULL
-                GROUP BY  u.user_id
-                   LIMIT  60";
+        $query = $this->getAllRecipients() . " LIMIT {?}";
         while (true) {
-            $res = XDB::iterRow($query, $this->_id);
+            $res = XDB::iterRow($query, $this->_id, 60);
             if (!$res->total()) {
                 exit;
             }
             $sent = array();
-            while (list($uid, $bestalias, $prenom, $nom, $sexe, $fmt) = $res->next()) {
-                $sent[] = "user_id='$uid'";
-                $this->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html');
+            while (list($uid, $bestalias, $prenom, $nom, $sexe, $fmt, $hash) = $res->next()) {
+                $sent[] = "(user_id='$uid'" . (!$uid ? " AND email='$bestalias')": ')');
+                $this->sendTo($prenom, $nom, $bestalias, $sexe, $fmt=='html', $hash);
             }
             XDB::execute("UPDATE  {$this->subscriptionTable()}
                              SET  last = {?}

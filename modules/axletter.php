@@ -25,6 +25,7 @@ class AXLetterModule extends PLModule
     {
         return array(
             'ax'             => $this->make_hook('index',        AUTH_COOKIE),
+            'ax/out'         => $this->make_hook('out',    AUTH_PUBLIC),
             'ax/show'        => $this->make_hook('show',   AUTH_COOKIE),
             'ax/edit'        => $this->make_hook('submit', AUTH_MDP),
             'ax/edit/cancel' => $this->make_hook('cancel', AUTH_MDP),
@@ -33,7 +34,21 @@ class AXLetterModule extends PLModule
         );
     }
 
-    function handler_index(&$page, $action = null, $hash = null)
+    function handler_out(&$page, $hash)
+    {
+        if (!$hash) {
+            if (!S::logged()) {
+                return PL_DO_AUTH;
+            } else {
+                return $this->handler_index($page, 'out');
+            }
+        }
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $page->changeTpl('axletter/unsubscribe.tpl');
+        $page->assign('success', AXLetter::unsubscribe($hash, true));
+    }
+
+    function handler_index(&$page, $action = null)
     {
         require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
 
@@ -41,18 +56,13 @@ class AXLetterModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Envois de l\'AX');
 
         switch ($action) {
-          case 'out': AXLetter::unsubscribe($hash); break;
           case 'in':  AXLetter::subscribe(); break;
-          default: ;
+          case 'out': AXLetter::unsubscribe(); break;
         }
 
         $perm = AXLetter::hasPerms();
         if ($perm) {
-            $waiting = AXLetter::awaiting();
-            if ($waiting) {
-                $new = new AXLetter($waiting);
-                $page->assign('new', $new);
-            }
+            $page->assign('new', AXLetter::awaiting());
         }
         $page->assign('axs', AXLetter::subscriptionState());
         $page->assign('ax_list', AXLetter::listSent());
@@ -211,12 +221,11 @@ class AXLetterModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        $waiting = AXLetter::awaiting();
-        if (!$waiting) {
+        $al = AXLetter::awaiting();
+        if (!$alg) {
             $page->kill("Aucune lettre en attente");
             return;
         }
-        $al = new AXLetter($waiting);
         if (!$al->invalid()) {
             $page->kill("Une erreur est survenue lors de l'annulation de l'envoi");
             return;
@@ -237,12 +246,11 @@ class AXLetterModule extends PLModule
             return PL_FORBIDDEN;
         }
 
-        $waiting = AXLetter::awaiting();
-        if (!$waiting) {
+        $al = AXLetter::awaiting();
+        if (!$al) {
             $page->kill("Aucune lettre en attente");
             return;
         }
-        $al = new AXLetter($waiting);
         if (!$al->valid()) {
             $page->kill("Une erreur est survenue lors de la validation de l'envoi");
             return;

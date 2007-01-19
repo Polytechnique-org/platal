@@ -242,7 +242,7 @@ class XOrgDBIterator
 
     function __construct($query, $mode = MYSQL_ASSOC)
     {
-        $this->_result =& new XOrgDBResult($query);
+        $this->_result = new XOrgDBResult($query);
         $this->_pos    = 0;
         $this->_total  = $this->_result->numRows();
         $this->_mode   = $mode;

@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+define('PL_DO_AUTH',   300);
 define('PL_FORBIDDEN', 403);
 define('PL_NOT_FOUND', 404);
 
@@ -197,7 +198,15 @@ class Platal
             }
         }
 
-        return call_user_func_array($hook['hook'], $args);
+        $val = call_user_func_array($hook['hook'], $args);
+        if ($val == PL_DO_AUTH) {
+            // The handler need a better auth with the current args
+            if (!call_user_func(array($globals->session, 'doAuth'))) {
+                $this->force_login($page);
+            }
+            $val = call_user_func_array($hook['hook'], $args);
+        }
+        return $val;
     }
 
     function force_login(&$page)
