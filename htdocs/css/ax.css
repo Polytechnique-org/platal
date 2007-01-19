@@ -31,7 +31,7 @@ div.ax_mail {
 
 div.ax_mail a[href] {
     background-color : #fff;
-    color : #a40000;
+    color : #555753;
 }
 
 div.ax_mail a[href]:hover {
@@ -40,12 +40,12 @@ div.ax_mail a[href]:hover {
 }
 
 div.ax_mail div.title {
-    margin : 0 0 3ex;
-    padding : 72px 1ex 1ex 1ex;
+    margin : 0ex;
+    padding : 10ex 1ex 1ex 1ex;
     font-size : 120%;
     font-weight : bold;
     text-align : right;
-    background-color : #ddd;
+    background-color : #fff;
     color : #a40000;
     background-repeat : no-repeat;
     background-position : 0ex 0ex;
@@ -57,31 +57,31 @@ div.ax_mail div.intro {
 }
 
 div.ax_mail div.body {
-    margin : 2ex;
+    margin : 3ex;
 }
 
 div.ax_mail div.body h1 {
-    margin : 4ex 0 2ex 0;
-    padding : 1ex 2ex 1ex 0ex;
-    font-size : 115%;
-    font-weight : bold;
-    text-align : right;
-    background-color: #a40000;
-    color : #fff;
-    border: none;
-}   
-    
-div.ax_mail div.body h2 {
-    margin : 3ex 0 2ex 0;
-    padding : 0.4ex 1ex;
+    margin : 3ex -3ex 2ex -3ex;
+    padding : 0.4ex 2ex;
     font-size : 100%;
     font-weight : bold;
-    font-style : italic;
     background-color : #fff;
     color : #a40000;
     border-width : thin 0;
     border-style : solid;
     border-color : #a40000;
+}
+
+div.ax_mail div.body h2 {
+    margin : 2ex -3ex 1.5ex -3ex;
+    padding : 0.4ex 4ex;
+    font-size : 100%;
+    font-weight : normal;
+    background-color : #fff;
+    color : #a40000;
+    border-width : 0 0 thin 0;
+    border-style : dotted;
+    border-color : #a40000; 
 }
 
 div.ax_mail div.signature {
