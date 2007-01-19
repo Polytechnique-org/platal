@@ -42,15 +42,15 @@ div.nl a[href]:hover {
 
 div.nl div.title {
     margin : 0 0 3ex;
-    padding : 5ex 1ex 1ex 15ex;
+    padding : 5.5ex 1ex 1ex 15ex;
     font-size : 130%;
     font-weight : bold;
     text-align : right;
     background-color : #369;
     color : #fff;
-    background-image : url(http://dev.m4x.org/images/logo_xorg_nl.png);
+    background-image : url(/images/logo_xorg_nl.png);
     background-repeat : no-repeat;
-    background-position : 0.5ex 0.5ex;
+    background-position : 0.5ex 0ex;
 }
 
 div.nl div.intro {
@@ -81,6 +81,7 @@ div.nl h1.xorg_nl {
     text-align : right;
     background-color : #369;
     color : #fff;
+    border: none;
 }
 
 div.nl h2.xorg_nl {

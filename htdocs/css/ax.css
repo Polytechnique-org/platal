@@ -30,26 +30,26 @@ div.ax_mail {
 }
 
 div.ax_mail a[href] {
-    text-decoration : none;
     background-color : #fff;
-    color : #36c;
+    color : #a40000;
 }
 
 div.ax_mail a[href]:hover {
     background-color : #fff;
-    color : #6c0;
+    color : #4e9a06;
 }
 
 div.ax_mail div.title {
     margin : 0 0 3ex;
-    padding : 5ex 1ex 1ex 15ex;
-    font-size : 130%;
+    padding : 72px 1ex 1ex 1ex;
+    font-size : 120%;
     font-weight : bold;
     text-align : right;
-    background-color : #e40;
-    color : #ed0;
+    background-color : #ddd;
+    color : #a40000;
     background-repeat : no-repeat;
-    background-position : 0ex 0.5ex;
+    background-position : 0ex 0ex;
+    background-image : url(http://dev.m4x.org/images/ax_mail_header.png);
 }
 
 div.ax_mail div.intro {
@@ -57,25 +57,31 @@ div.ax_mail div.intro {
 }
 
 div.ax_mail div.body {
-    margin : 2ex 3ex;
+    margin : 2ex;
 }
 
 div.ax_mail div.body h1 {
-    margin : 3ex 0 1ex;
-    padding : 1.5ex 2ex 0.5ex 0ex;
-    font-size : 120%;
+    margin : 4ex 0 2ex 0;
+    padding : 1ex 2ex 1ex 0ex;
+    font-size : 115%;
     font-weight : bold;
-    color : #400;
+    text-align : right;
+    background-color: #a40000;
+    color : #fff;
+    border: none;
 }   
     
 div.ax_mail div.body h2 {
-    margin : 0ex 0 0;
-    padding : 0.4ex 2ex;
+    margin : 3ex 0 2ex 0;
+    padding : 0.4ex 1ex;
     font-size : 100%;
     font-weight : bold;
     font-style : italic;
     background-color : #fff;
-    color : #440;
+    color : #a40000;
+    border-width : thin 0;
+    border-style : solid;
+    border-color : #a40000;
 }
 
 div.ax_mail div.signature {
