@@ -36,7 +36,7 @@ Tu es actuellement inscrit aux envois exceptionnels de l'AX (pour choisir le for
 </div>
 {else}
 <p>
-Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
+Tu n'es actuellement pas inscrit aux envois exceptionnels de l'AX.
 </p>
 <div class='center'>
   [<a href='ax/in'>{icon name=add} m'inscrire</a>]

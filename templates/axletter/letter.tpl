@@ -41,8 +41,7 @@
 {$am->signature('text')}
 
 --------------------------------------------------------------------
-Cette lettre est envoyée à tous les Polytechniciens sur Internet par
-l'intermédiaire de Polytechnique.org.
+Cette lettre est envoyée par l'AX grâce aux outils de Polytechnique.org.
 
 archives         : [https://www.polytechnique.org/ax]
 ne plus recevoir : [https://www.polytechnique.org/ax/out]
