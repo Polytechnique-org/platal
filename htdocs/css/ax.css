@@ -1,0 +1,108 @@
+/***************************************************************************
+ *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+
+div.ax_mail {
+    margin : auto;
+    width : 72ex;
+    font-family : "Georgia", "Times New Roman", serif;
+    font-size : 11pt;
+    text-align : justify;
+    background-color : #fff;
+    color : #000;
+}
+
+div.ax_mail a[href] {
+    text-decoration : none;
+    background-color : #fff;
+    color : #36c;
+}
+
+div.ax_mail a[href]:hover {
+    background-color : #fff;
+    color : #6c0;
+}
+
+div.ax_mail div.title {
+    margin : 0 0 3ex;
+    padding : 5ex 1ex 1ex 15ex;
+    font-size : 130%;
+    font-weight : bold;
+    text-align : right;
+    background-color : #e40;
+    color : #ed0;
+    background-repeat : no-repeat;
+    background-position : 0ex 0.5ex;
+}
+
+div.ax_mail div.intro {
+    margin : 4ex 3ex;
+}
+
+div.ax_mail div.body {
+    margin : 2ex 3ex;
+}
+
+div.ax_mail div.body h1 {
+    margin : 3ex 0 1ex;
+    padding : 1.5ex 2ex 0.5ex 0ex;
+    font-size : 120%;
+    font-weight : bold;
+    color : #400;
+}   
+    
+div.ax_mail div.body h2 {
+    margin : 0ex 0 0;
+    padding : 0.4ex 2ex;
+    font-size : 100%;
+    font-weight : bold;
+    font-style : italic;
+    background-color : #fff;
+    color : #440;
+}
+
+div.ax_mail div.signature {
+    margin : 2ex 2ex 0 0ex;
+    font-size : 80%;
+    font-style: italic;
+    text-align : right;
+
+}
+
+div.ax_mail div.foot1 {
+    margin : 2ex 0 0;
+    padding : 0.5ex 2ex;
+    font-size : 90%;
+    background-color : #fff;
+    color : #999;
+    border-width : thin 0;
+    border-style : solid;
+    border-color : #ddd;
+    text-align : center;
+}
+
+div.ax_mail div.foot2 {
+    padding : 1ex 0;
+    font-size : 90%;
+    background-color : #fff;
+    color : #999;
+    text-align : center;
+}
+

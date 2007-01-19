@@ -1,0 +1,273 @@
+<?php
+/***************************************************************************
+ *  Copyright (C) 2003-2007 Polytechnique.org                              *
+ *  http://opensource.polytechnique.org/                                   *
+ *                                                                         *
+ *  This program is free software; you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation; either version 2 of the License, or      *
+ *  (at your option) any later version.                                    *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program; if not, write to the Free Software            *
+ *  Foundation, Inc.,                                                      *
+ *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
+ ***************************************************************************/
+
+class AXLetterModule extends PLModule
+{
+    function handlers()
+    {
+        return array(
+            'ax'             => $this->make_hook('index',        AUTH_COOKIE),
+            'ax/show'        => $this->make_hook('show',   AUTH_COOKIE),
+            'ax/edit'        => $this->make_hook('submit', AUTH_MDP),
+            'ax/edit/cancel' => $this->make_hook('cancel', AUTH_MDP),
+            'ax/edit/valid'  => $this->make_hook('valid',  AUTH_MDP),
+            'admin/axletter/rights'        => $this->make_hook('admin_rights', AUTH_MDP, 'admin'),
+        );
+    }
+
+    function handler_index(&$page, $action = null, $hash = null)
+    {
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+
+        $page->changeTpl('axletter/index.tpl');
+        $page->assign('xorg_title','Polytechnique.org - Envois de l\'AX');
+
+        switch ($action) {
+          case 'out': AXLetter::unsubscribe($hash); break;
+          case 'in':  AXLetter::subscribe(); break;
+          default: ;
+        }
+
+        $perm = AXLetter::hasPerms();
+        if ($perm) {
+            $waiting = AXLetter::awaiting();
+            if ($waiting) {
+                $new = new AXLetter($waiting);
+                $page->assign('new', $new);
+            }
+        }
+        $page->assign('axs', AXLetter::subscriptionState());
+        $page->assign('ax_list', AXLetter::listSent());
+        $page->assign('ax_rights', $perm);
+    }
+
+    function handler_submit(&$page, $action = null)
+    {
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        if (!AXLetter::hasPerms()) {
+            return PL_FORBIDDEN;
+        }
+
+        $page->changeTpl('axletter/edit.tpl');
+
+        $saved     = Post::i('saved');
+        $new       = false;
+        $id        = Post::i('id');
+        $shortname = trim(Post::v('shortname'));
+        $subject   = trim(Post::v('subject'));
+        $title     = trim(Post::v('title'));
+        $body      = rtrim(Post::v('body'));
+        $signature = trim(Post::v('signature'));
+        $promo_min = Post::i('promo_min');
+        $promo_max = Post::i('promo_max');
+        $echeance  = Post::has('echeance_date') ? Post::v('echeance_date') . ' ' . Post::v('echeance_time')
+                                                : Post::v('echeance');
+        $echeance_date = Post::v('echeance_date');
+        $echeance_time = Post::v('echeance_time');
+
+        if (!$id) {
+            $res = XDB::query("SELECT * FROM axletter WHERE FIND_IN_SET('new', bits)");
+            if ($res->numRows()) {
+                extract($res->fetchOneAssoc(), EXTR_OVERWRITE);
+                $saved = true;
+            } else  {
+                XDB::execute("INSERT INTO axletter SET id = NULL");
+                $id  = XDB::insertId();
+            }
+            if (!$echeance || $echeance == '0000-00-00 00:00:00') {
+                $saved = false;
+                $new   = true;
+            }
+        } elseif (Post::has('valid')) {
+            if (!$subject && $title) {
+                $subject = $title;
+            }
+            if (!$title && $subject) {
+                $title = $subject;
+            }
+            if (!$subject || !$title || !$body) {
+                $page->trig("L'article doit avoir un sujet et un contenu");
+                Post::kill('valid');
+            }
+            if (($promo_min > $promo_max && $promo_max != 0)||
+                ($promo_min != 0 && ($promo_min <= 1900 || $promo_min >= 2020)) ||
+                ($promo_max != 0 && ($promo_max <= 1900 || $promo_max >= 2020)))
+            {
+                $page->trig("L'intervalle de promotions n'est pas valide");
+                Post::kill('valid');
+            }
+            if (empty($shortname)) {
+                $page->trig("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
+                Post::kill('valid');
+            } elseif (!preg_match('/^[a-z][-a-z0-9]*[a-z0-9]$/', $shortname)) {
+                $page->trig("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractères et n'être composé "
+                          . "que de chiffres, lettres et tirets");
+                Post::kill('valid');
+            } elseif ($shortname != Post::v('old_shortname')) {
+                $res = XDB::query("SELECT id FROM axletter WHERE  shortname = {?}", $shortname);
+                if ($res->numRows() && $res->fetchOneCell() != $id) {
+                    $page->trig("Le nom $shortname est déjà utilisé, merci d'en choisir un autre");
+                    $shortname = Post::v('old_shortname');
+                    if (empty($shortname)) {
+                        Post::kill('valid');
+                    }
+                }
+            }
+
+            switch (@Post::v('valid')) {
+              case 'Aperçu':
+                require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+                $al = new AXLetter(array($id, $shortname, $subject, $title, $body, $signature,
+                                         $promo_min, $promo_max, $echeance, 0, 'new'));
+                $al->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+                break;
+
+              case 'Confirmer':
+                XDB::execute("REPLACE INTO  axletter
+                                       SET  id = {?}, shortname = {?}, subject = {?}, title = {?}, body = {?},
+                                            signature = {?}, promo_min = {?}, promo_max = {?}, echeance = {?}",
+                             $id, $shortname, $subject, $title, $body, $signature, $promo_min, $promo_max, $echeance);
+                $saved = true;
+                $echeance_date = null;
+                $echeance_time = null;
+                pl_redirect('ax');
+                break;
+            }
+        }
+        $page->assign('id', $id);
+        $page->assign('shortname', $shortname);
+        $page->assign('subject', $subject);
+        $page->assign('title', $title);
+        $page->assign('body', $body);
+        $page->assign('signature', $signature);
+        $page->assign('promo_min', $promo_min);
+        $page->assign('promo_max', $promo_max);
+        $page->assign('echeance', $echeance);
+        $page->assign('echeance_date', $echeance_date);
+        $page->assign('echeance_time', $echeance_time);
+        $page->assign('saved', $saved);
+        $page->assign('new', $new);
+        $page->assign('is_xorg', S::has_perms());
+
+        if (!$saved) {
+            $select = '';
+            $time   = time() + 3600 * 24 * 2;
+            for ($i = 0 ; $i < 15 ; $i++) {
+                $time    += 3600 * 24;
+                $p_stamp = date('Ymd', $time);
+                $year    = date('Y',   $time);
+                $month   = date('m',   $time);
+                $day     = date('d',   $time);
+                
+                if ($p_stamp == $echeance_date) {
+                    $sel = ' selected="selected"';
+                } else {
+                    $sel = '';
+                }
+                $select .= "<option value=\"$p_stamp\"$sel> $day / $month / $year</option>\n";
+            }
+            $page->assign('echeance_date', $select);
+            $select = '';
+            for ($i = 0 ; $i < 24 ; $i++) {
+                $stamp = sprintf('%02d:00:00', $i);
+                if ($stamp == $echeance_time) {
+                    $sel = ' selected="selected"';
+                } else {
+                    $sel = '';
+                }
+                $select .= "<option value=\"$stamp\"$sel>{$i}h</option>\n";
+            }
+            $page->assign('echeance_time', $select);
+        }    
+    }
+
+    function handler_cancel(&$page, $force = null)
+    {
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        if (!AXLetter::hasPerms()) {
+            return PL_FORBIDDEN;
+        }
+
+        $url = parse_url($_SERVER['HTTP_REFERER']);
+        if ($force != 'force' && trim($url['path'], '/') != 'ax/edit') {
+            return PL_FORBIDDEN;
+        }
+
+        $waiting = AXLetter::awaiting();
+        if (!$waiting) {
+            $page->kill("Aucune lettre en attente");
+            return;
+        }
+        $al = new AXLetter($waiting);
+        if (!$al->invalid()) {
+            $page->kill("Une erreur est survenue lors de l'annulation de l'envoi");
+            return;
+        }
+
+        $page->kill("L'envoi de l'annonce {$al->title()} est annulé");
+    }
+
+    function handler_valid(&$page, $force = null)
+    {
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        if (!AXLetter::hasPerms()) {
+            return PL_FORBIDDEN;
+        }
+
+        $url = parse_url($_SERVER['HTTP_REFERER']);
+        if ($force != 'force' && trim($url['path'], '/') != 'ax/edit') {
+            return PL_FORBIDDEN;
+        }
+
+        $waiting = AXLetter::awaiting();
+        if (!$waiting) {
+            $page->kill("Aucune lettre en attente");
+            return;
+        }
+        $al = new AXLetter($waiting);
+        if (!$al->valid()) {
+            $page->kill("Une erreur est survenue lors de la validation de l'envoi");
+            return;
+        }
+
+        $page->kill("L'envoi de l'annonce aura lieu dans l'heure qui vient.");
+    }
+
+    function handler_show(&$page, $nid = 'last')
+    {
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        $page->changeTpl('axletter/show.tpl');
+
+        $nl  = new AXLetter($nid);
+        if (Get::has('text')) {
+            $nl->toText($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+        } else {
+            $nl->toHtml($page, S::v('prenom'), S::v('nom'), S::v('femme'));
+        }
+        if (Post::has('send')) {
+            $nl->sendTo(S::v('prenom'), S::v('nom'),
+                        S::v('bestalias'), S::v('femme'),
+                        S::v('mail_fmt') != 'texte');
+        }
+    }
+}
+
+?>

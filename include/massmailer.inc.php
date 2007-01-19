@@ -62,12 +62,7 @@ abstract class MassMailer
             $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
             $head = str_replace('<prenom>', $prenom, $head);
             $head = str_replace('<nom>',    $nom,    $head);
-            if ($type == 'text') {
-                $head = enriched_to_text($head, false, true, 2, 64);
-            } else {
-                $head = enriched_to_text($head, true);
-            }
-            return $head;
+            return format_text($head, $type, 2, 64);
         }
     }
 
@@ -206,6 +201,14 @@ function justify($text,$n)
     return trim($res);
 }
 
+function format_text($input, $format, $indent = 0, $width = 68)
+{
+    if ($format == 'text') {
+        return enriched_to_text($input, false, true, $indent, $width);
+    }
+    return enriched_to_text($input, true);
+}
+
 function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
 {
     $text = trim($input);
@@ -217,6 +220,11 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
         $text = str_replace('[/i]','</em>', $text);
         $text = str_replace('[u]','<span style="text-decoration: underline">', $text);
         $text = str_replace('[/u]','</span>', $text);
+        $text = preg_replace("!(\\s*\n)*\[title\]!",'<h1>',$text);
+        $text = preg_replace("!\[\/title\](\\s*\n)*!", '</h1>',$text);
+        $text = preg_replace("!(\\s*\n)*\[subtitle\]!",'<h2>',$text);
+        $text = preg_replace("!\[\/subtitle\](\\s*\n)*!",'</h2>',$text);
+
         require_once('url_catcher.inc.php');
         $text = url_catcher($text);
         return nl2br($text);
@@ -224,6 +232,8 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
         $text = preg_replace('!\[\/?b\]!','*',$text);
         $text = preg_replace('!\[\/?u\]!','_',$text);
         $text = preg_replace('!\[\/?i\]!','/',$text);
+        $text = preg_replace('!\[\/?title\]!','***', $text);
+        $text = preg_replace('!\[\/?subtitle\]!','**', $text);
         $text = preg_replace('!(((https?|ftp)://|www\.)[^\r\n\t ]*)!','[\1]', $text);
         $text = preg_replace('!(([a-zA-Z0-9\-_+.]*@[a-zA-Z0-9\-_+.]*)(?:\?[^\r\n\t ]*)?)!','[mailto:\1]', $text);
         $text = $just ? justify($text,$width-$indent) : wordwrap($text,$width-$indent);
