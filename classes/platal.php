@@ -182,10 +182,6 @@ class Platal
         $args    = $this->argv;
         $args[0] = &$page;
 
-        if (!empty($hook['perms']) && $hook['perms'] != S::v('perms')) {
-            return PL_FORBIDDEN;
-        }
-
         if ($hook['auth'] > S::v('auth', AUTH_PUBLIC)) {
             if ($hook['type'] == DO_AUTH) {
                 global $globals;
@@ -196,6 +192,10 @@ class Platal
             } else {
                 return PL_FORBIDDEN;
             }
+        }
+
+        if (!empty($hook['perms']) && $hook['perms'] != S::v('perms')) {
+            return PL_FORBIDDEN;
         }
 
         $val = call_user_func_array($hook['hook'], $args);
