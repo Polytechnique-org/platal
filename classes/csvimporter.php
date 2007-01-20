@@ -239,7 +239,8 @@ class CSVImporter
             return false;
         }
         foreach ($this->field_value as $key=>$value) {
-            unset($fields[$key]);
+            $search = array_search($key, $fields);
+            unset($fields[$search]);
         }
 
         $current = Env::v('csv_page');
@@ -288,6 +289,7 @@ class CSVImporter
             }
             foreach ($this->field_value as $key=>$value) {
                 $insert[$key] = $value;
+                $fields[]     = $key;
             }
             if ($current == 'valid' && Env::has('csv_valid')) {
                 $this->run(Env::v('csv_action'), $insert, $update);

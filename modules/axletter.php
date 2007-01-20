@@ -318,6 +318,7 @@ class AXLetterModule extends PLModule
     function idFromMail($line, $key)
     {
         static $field;
+        global $globals;
         if (!isset($field)) {
             $field = array('email', 'mail', 'login', 'bestalias', 'forlife', 'flag');
             foreach ($field as $fld) {
@@ -330,23 +331,29 @@ class AXLetterModule extends PLModule
         $email = $line[$field];
         if (strpos($email, '@') === false) {
             $user  = $email;
+            $domain = $globals->mail->domain2;
         } else {
-            global $globals;
             list($user, $domain) = explode('@', $email);    
-            if ($domain != $globals->mail->domain && $domain != $globals->mail->domain2
+        }
+        if ($domain != $globals->mail->domain && $domain != $globals->mail->domain2
                 && $domain != $globals->mail->alias_dom && $domain != $globals->mail->alias_dom2) {
-                return '0';
+            $res = XDB::query("SELECT uid FROM emails WHERE email = {?}", $email);
+            if ($res->numRows() == 1) {
+                return $res->fetchOneCell();
             }
-            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
-                $res = XDB::query("SELECT a.id
-                                     FROM virtual          AS v
-                               INNER JOIN virtual_redirect AS r USING(vid)
-                               INNER JOIN aliases          AS a ON (a.type = 'a_vie'
-                                                                AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}')
-                                    WHERE v.alias = CONCAT({?}, '@{$globals->mail->alias_dom}')", $user);
-                $id = $res->fetchOneCell();
-                return $id ? $id : '0';
-            }
+            return '0';
+        }
+        list($user) = explode('+', $user);
+        list($user) = explode('_', $user);
+        if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
+            $res = XDB::query("SELECT a.id
+                                 FROM virtual          AS v
+                           INNER JOIN virtual_redirect AS r USING(vid)
+                           INNER JOIN aliases          AS a ON (a.type = 'a_vie'
+                                                            AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}'))
+                                WHERE v.alias = CONCAT({?}, '@{$globals->mail->alias_dom}')", $user);
+            $id = $res->fetchOneCell();
+            return $id ? $id : '0';
         }
         $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $user);
         $id = $res->fetchOneCell();
