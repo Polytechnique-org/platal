@@ -131,7 +131,7 @@ function send_warning_mail($title)
 {
     $mailer = new PlMailer();
     $mailer->setFrom("webmaster@polytechnique.org");
-    $mailer->addTo("florent.bruneau@polytechnique.org");
+    $mailer->addTo("hotliners@staff.polytechnique.org");
     $mailer->setSubject($title);
     $mailer->setTxtBody("Identifiants de session :\n" . var_export($_SESSION, true) . "\n\n"
                        ."Identifiants de connexion :\n" . var_export($_SERVER, true));
