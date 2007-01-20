@@ -362,7 +362,7 @@ class AXLetterModule extends PLModule
 
     function createHash($line, $key)
     {
-        $hash = implode(time(), $line);
+        $hash = implode(time(), $line) . rand();
         $hash = md5($hash);
         return $hash;
     }

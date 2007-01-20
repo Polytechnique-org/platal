@@ -19,21 +19,28 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once 'xorg.misc.inc.php';
+
 class XorgSession
 {
     // {{{ public static function init
 
-    public static function init() {
+    public static function init() 
+    {
         S::init();
-    if (!S::has('uid')) {
-        try_cookie();
+        if (!S::has('uid')) {
+            try_cookie();
+        }
+        if (check_ip('dangerous') && S::has('uid')) {
+            $_SESSION['log']->log("view_page", $_SERVER['REQUEST_URI']);
         }
     }
 
     // }}}
     // {{{ public static function destroy()
 
-    public static function destroy() {
+    public static function destroy()
+    {
         S::destroy();
         XorgSession::init();
     }
@@ -116,7 +123,9 @@ class XorgSession
                 if ($logger) {
                     $logger->log('auth_ok');
                 }
-                start_connexion($uid, true);
+                if (!start_connexion($uid, true)) {
+                    return false;
+                }
                 if (Env::v('remember', 'false') == 'true') {
                     $cookie = hash_encrypt(S::v('password'));
                     setcookie('ORGaccess',$cookie,(time()+25920000),'/','',0);
@@ -150,16 +159,16 @@ class XorgSession
      */
     public static function doAuthCookie()
     {
-    if (S::logged()) {
-        return true;
+        if (S::logged()) {
+            return true;
         }
 
-    if (Env::has('username') and Env::has('response')) {
-        return XorgSession::doAuth();
+        if (Env::has('username') and Env::has('response')) {
+            return XorgSession::doAuth();
         }
 
-    if ($r = try_cookie()) {
-        return XorgSession::doAuth(($r > 0));
+        if ($r = try_cookie()) {
+            return XorgSession::doAuth(($r > 0));
         }
 
         return false;
@@ -177,7 +186,7 @@ class XorgSession
 function try_cookie()
 {
     if (Cookie::v('ORGaccess') == '' or !Cookie::has('ORGuid')) {
-    return -1;
+        return -1;
     }
 
     $res = @XDB::query(
@@ -186,13 +195,15 @@ function try_cookie()
             Cookie::i('ORGuid'));
 
     if ($res->numRows() != 0) {
-    list($uid, $password) = $res->fetchOneRow();
-    require_once('secure_hash.inc.php');
-    $expected_value       = hash_encrypt($password);
-    if ($expected_value == Cookie::v('ORGaccess')) {
-        start_connexion($uid, false);
-        return 0;
-    } else {
+        list($uid, $password) = $res->fetchOneRow();
+        require_once('secure_hash.inc.php');
+        $expected_value       = hash_encrypt($password);
+        if ($expected_value == Cookie::v('ORGaccess')) {
+            if (!start_connexion($uid, false)) {
+                return -3;
+            }
+            return 0;
+        } else {
             return 1;
         }
     }
@@ -217,7 +228,7 @@ function start_connexion ($uid, $identified)
           FROM  auth_user_md5   AS u
     INNER JOIN  auth_user_quick AS q  USING(user_id)
     INNER JOIN  aliases         AS a  ON (u.user_id = a.id AND a.type='a_vie')
-    INNER JOIN  aliases     AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
+    INNER JOIN  aliases         AS a2 ON (u.user_id = a2.id AND FIND_IN_SET('bestalias',a2.flags))
      LEFT JOIN  logger.sessions AS s  ON (s.uid=u.user_id AND s.suid=0)
          WHERE  u.user_id = {?} AND u.perms IN('admin','user')
       ORDER BY  s.start DESC
@@ -239,7 +250,19 @@ function start_connexion ($uid, $identified)
     $_SESSION         = array_merge($_SESSION, $sess);
     $_SESSION['log']  = $logger;
     $_SESSION['auth'] = ($identified ? AUTH_MDP : AUTH_COOKIE);
+    if (check_ip('unsafe')) {
+        send_warning_mail("Une IP surveillee a tente de se connecter");
+        if (check_ip('ban')) {
+            $_SESSION = array();
+            global $page;
+            $page->trig("Une erreur est survenue lors de la procédure d'authentification. "
+                       ."Merci de contacter au plus vite "
+                       ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
+            return false;
+        }
+    }
     set_skin();
+    return true;
 }
 
 // }}}

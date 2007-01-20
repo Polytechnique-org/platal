@@ -6,6 +6,7 @@ New:
     * Admin:
         - Show last contact date on marketing validation                -Fal/FRU
         - New page to add users in the database                            -FRU
+        - New IP based security tool                                       -FRU
 
     * AXLetter:
         - New module AXLetter (legal mailer for AX)                        -FRU

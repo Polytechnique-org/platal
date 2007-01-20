@@ -43,6 +43,7 @@ class AdminModule extends PLModule
             'admin/validate'               => $this->make_hook('validate', AUTH_MDP, 'admin'),
             'admin/validate/answers'       => $this->make_hook('validate_answers', AUTH_MDP, 'admin'),
             'admin/wiki'                   => $this->make_hook('wiki', AUTH_MDP, 'admin'),
+            'admin/ipwatch'                => $this->make_hook('ipwatch', AUTH_MDP, 'admin'),
         );
     }
 
@@ -912,6 +913,101 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/wiki.tpl');
         $page->assign('wiki_pages', $wiki_tree);
         $page->assign('perms_opts', $perms);
+    }
+
+    function handler_ipwatch(&$page, $action = 'list', $ip = null)
+    { 
+        $page->changeTpl('admin/ipwatcher.tpl');
+            
+        $states = array('safe'      => 'Ne pas surveiller',
+                        'unsafe'    => 'Surveiller les inscription',
+                        'dangerous' => 'Surveiller tous les accès',
+                        'ban'       => 'Bannir cette adresse');
+        $page->assign('states', $states);
+
+        switch (Post::v('action')) {
+        case 'create':
+            if (trim(Post::v('ipN')) != '') {
+                Xdb::execute('INSERT IGNORE INTO ip_watch (ip, state, detection, last, uid, description)
+                                          VALUES ({?}, {?}, CURDATE(), NOW(), {?}, {?})',
+                             trim(Post::v('ipN')), Post::v('stateN'), S::i('uid'), Post::v('descriptionN'));
+            };      
+            break;  
+                                   
+        case 'edit':               
+            Xdb::execute('UPDATE ip_watch 
+                             SET state = {?}, last = NOW(), uid = {?}, description = {?}
+                           WHERE ip = {?}', Post::v('stateN'), S::i('uid'), Post::v('descriptionN'), Post::v('ipN'));
+            break;
+            
+        default:
+            if ($action == 'delete' && !is_null($ip)) {
+                Xdb::execute('DELETE FROM emails_watch WHERE ip = {?}', $ip);
+            }
+        }
+        if ($action != 'create' && $action != 'edit') {
+            $action = 'list';
+        }
+        $page->assign('action', $action);
+
+        if ($action == 'list') {
+            $sql = "SELECT  w.ip, s.host, w.detection, w.state, a.alias AS forlife
+                      FROM  ip_watch        AS w
+                 LEFT JOIN  logger.sessions AS s USING(ip)
+                 LEFT JOIN  aliases         AS a ON (a.id = s.uid AND a.type = 'a_vie')
+                  GROUP BY  w.ip, a.alias
+                  ORDER BY  w.state, w.ip, a.alias";
+            $it = Xdb::iterRow($sql);
+
+            $table = array();
+            $props = array();
+            while (list($ip, $host, $date, $state, $forlife) = $it->next()) {
+                if (count($props) == 0 || $props['ip'] != $ip) {
+                    if (count($props) > 0) {
+                        $table[] = $props;
+                    }
+                    $props = array('ip'        => $ip,
+                                   'host'      => $host,
+                                   'detection' => $date,
+                                   'state'     => $state,
+                                   'users'     => array($forlife));
+                } else {
+                    $props['users'][] = $forlife;
+                }
+            }
+            if (count($props) > 0) {
+                $table[] = $props;
+            }
+            $page->assign('table', $table);
+        } elseif ($action == 'edit') {
+            $sql = "SELECT  w.detection, w.state, w.last, w.description,
+                            a1.alias AS edit, a2.alias AS forlife, s.host
+                      FROM  ip_watch        AS w
+                 LEFT JOIN  aliases         AS a1 ON (a1.id = w.uid AND a1.type = 'a_vie')     
+                 LEFT JOIN  logger.sessions AS s  ON (w.ip = s.ip)
+                 LEFT JOIN  aliases         AS a2 ON (a2.id = s.uid AND a2.type = 'a_vie')
+                     WHERE  w.ip = {?}
+                  GROUP BY  a2.alias
+                  ORDER BY  a2.alias";
+            $it = Xdb::iterRow($sql, $ip);
+
+            $props = array();
+            while (list($detection, $state, $last, $description, $edit, $forlife, $host) = $it->next()) {
+                if (count($props) == 0) {
+                    $props = array('ip'          => $ip,
+                                   'host'        => $host,
+                                   'detection'   => $detection,
+                                   'state'       => $state,
+                                   'last'        => $last,
+                                   'description' => $description,
+                                   'edit'        => $edit,
+                                   'users'       => array($forlife));
+                } else {
+                    $props['users'][] = $forlife;
+                }
+            }
+            $page->assign('ip', $props);
+        }
     }
 }
 

@@ -33,6 +33,7 @@ class RegisterModule extends PLModule
 
     function handler_register(&$page, $hash = null)
     {
+        $alert     = null;
         $sub_state = S::v('sub_state', Array());
         if (!isset($sub_state['step'])) {
             $sub_state['step'] = 0;
@@ -122,7 +123,6 @@ class RegisterModule extends PLModule
                 break;
 
             case 3:
-                $alert = null;
                 if (count($_POST)) {
                     require_once(dirname(__FILE__) . '/register/register.inc.php');
                     if (!isvalid_email(Post::v('email'))) {
@@ -139,7 +139,7 @@ class RegisterModule extends PLModule
                         $promo = (int)$sub_state['promo'];
                         if ($year > $promo - 15 || $year < $promo - 30) {
                             $err[] = "La 'Date de naissance' n'est pas correcte.";
-                            $alert = "Date de naissance proposée $birth\n\n";
+                            $alert = "Date de naissance incorrecte a l'inscription - ";
                         }
                     }
 
@@ -157,10 +157,11 @@ class RegisterModule extends PLModule
                         $aliases[]   = $alias;
                     }
                     if (count($aliases) != 0) {
-                        $alert .= "Email proposé : " . Post::v('email') . "\n"
-                                . "Ce mails est connu avec l'état $state :\n"
-                                . $description . "\n"
-                                . "Pour les alias :\n* " . join("\n* ", $aliases) . "\n\n";
+                        $alert .= "Email surveille propose a l'inscription - ";
+                    }
+
+                    if (check_ip('unsafe')) {
+                        unset($err);
                     }
 
                     if (isset($err)) {
@@ -171,17 +172,24 @@ class RegisterModule extends PLModule
                                                           substr($birth,2,2),
                                                           substr($birth,0,2));
                         $sub_state['email']     = Post::v('email');
-                        $sub_state['step']      = 4;
-                        finish_ins($sub_state);
-                    }
-                    if (!is_null($alert)) {
-                        send_alert_mail($sub_state, $alert);
+                        if (check_ip('unsafe')) {
+                            $err = "Une erreur s'est produite lors de l'inscription."
+                                 . " Merci de contacter <a href='register@polytechnique.org'>register@polytechnique.org</a>"
+                                 . " pour nous faire part de cette erreur";
+                            $alert .= "Tentative d'inscription depuis une IP surveillee";
+                        } else {
+                            $sub_state['step'] = 4;
+                            finish_ins($sub_state);
+                        }
                     }
                 }
                 break;
         }
 
         $_SESSION['sub_state'] = $sub_state;
+        if ($alert) {
+            send_warning_mail($alert);
+        }
         $page->changeTpl('register/step'.intval($sub_state['step']).'.tpl');
         if (isset($err)) {
             $page->trig($err);
@@ -269,7 +277,9 @@ class RegisterModule extends PLModule
         $mymail->assign('prenom', $prenom);
         $mymail->send();
 
-        start_connexion($uid,false);
+        if (!start_connexion($uid,false)) {
+            return PL_FORBIDDEN;
+        }
         $_SESSION['auth'] = AUTH_MDP;
 
         /***********************************************************/
