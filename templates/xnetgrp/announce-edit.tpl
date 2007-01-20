@@ -143,7 +143,7 @@ function visibilityChange(box)
       </td>
     </tr>
     <tr id="promo_max"  {if $art.public}style="display: none"{/if}>
-      <td class="titre">Promotion minimale :</td>
+      <td class="titre">Promotion maximale :</td>
       <td>
         <input type="text" size="4" maxlength="4" name="promo_max" value="{$art.promo_max|default:0}" />
         incluse*  (ex : 2000)
