@@ -64,13 +64,14 @@
 <div class="menu_item"><a href="search">Annuaire</a></div>
 <div class="menu_item"><a href="geoloc">Planisphère</a></div>
 <div class="menu_item"><a href="referent/search">Conseil Pro.</a></div>
+<div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 
 <div class="menu_title">Informations</div>
-<div class="menu_item"><a href="nl">Lettres mensuelles</a></div>
 <div class="menu_item"><a href="Xorg/">Documentations</a></div>
+<div class="menu_item"><a href="nl">Lettres mensuelles</a></div>
+<div class="menu_item"><a href="ax">Lettres de l'AX</a></div>
 <div class="menu_item"><a href="Xorg/NousContacter">Nous contacter</a></div>
-<div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
 <div class="menu_item"><a href="send_bug" class="popup2">Signaler un bug</a></div>
 
 {if $smarty.session.perms eq admin}
