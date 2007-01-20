@@ -7,6 +7,9 @@ New:
         - Show last contact date on marketing validation                -Fal/FRU
         - New page to add users in the database                            -FRU
 
+    * AXLetter:
+        - New module AXLetter (legal mailer for AX)                        -FRU
+
     * Core:
         - New mailer                                                       -FRU
         - Signal bug send to OTRS and not trackers.                        -Car

@@ -20,6 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
+{if $form_title}
+<h1>{$form_title}</h1>
+{/if}
+
 <script type="text/javascript">//<![CDATA[
 {literal}
   function showValue(key, box)

@@ -134,6 +134,14 @@
       <a href="admin/wiki">Pages et permissions</a>
     </td>
   </tr>
+  <tr class="pair">
+    <td>
+      <strong>AX-Letter :</strong>&nbsp;&nbsp;
+      <a href="ax/edit">Edition</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="admin/axletter">Inscriptions et Permissions</a>
+    </td>
+  </tr>
 </table>
 
 {* vim:set et sw=2 sts=2 sws=2: *}

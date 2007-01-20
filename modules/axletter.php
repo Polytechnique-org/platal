@@ -30,7 +30,7 @@ class AXLetterModule extends PLModule
             'ax/edit'        => $this->make_hook('submit', AUTH_MDP),
             'ax/edit/cancel' => $this->make_hook('cancel', AUTH_MDP),
             'ax/edit/valid'  => $this->make_hook('valid',  AUTH_MDP),
-            'admin/axletter/rights'        => $this->make_hook('admin_rights', AUTH_MDP, 'admin'),
+            'admin/axletter' => $this->make_hook('admin', AUTH_MDP, 'admin'),
         );
     }
 
@@ -275,6 +275,89 @@ class AXLetterModule extends PLModule
                         S::v('bestalias'), S::v('femme'),
                         S::v('mail_fmt') != 'texte');
         }
+    }
+
+    function handler_admin(&$page, $action = null, $uid = null)
+    {
+        require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
+        if (Post::has('action')) {
+            $action = Post::v('action');
+            $uid    = Post::v('uid');
+        }
+        if ($uid) {
+            $uids   = preg_split('/ *[,;\: ] */', $uid);
+            foreach ($uids as $uid) {
+                switch ($action) {
+                  case 'add':
+                    $res = AXLetter::grantPerms($uid);
+                    break;
+                  case 'del';
+                    $res = AXLetter::revokePerms($uid);
+                    break;
+                }
+                if (!$res) {
+                    $page->trig("Personne ne oorrespond à l'identifiant '$uid'");
+                }
+            }
+        }
+
+        $page->changeTpl('axletter/admin.tpl');
+        $res = XDB::iterator("SELECT IF(u.nom_usage != '', u.nom_usage, u.nom) AS nom,
+                                     u.prenom, u.promo, a.alias AS forlife
+                                FROM axletter_rights AS ar
+                          INNER JOIN auth_user_md5   AS u USING(user_id)
+                          INNER JOIN aliases         AS a ON (u.user_id = a.id AND a.type = 'a_vie')");
+        $page->assign('admins', $res);
+        
+        $importer = new CSVImporter('axletter_ins');
+        $importer->registerFunction('user_id', 'email vers Id X.org', array($this, 'idFromMail'));
+        $importer->forceValue('hash', array($this, 'createHash'));
+        $importer->apply($page, "admin/axletter", array('user_id', 'email', 'prenom', 'nom', 'promo', 'hash'));
+    }
+
+    function idFromMail($line, $key)
+    {
+        static $field;
+        if (!isset($field)) {
+            $field = array('email', 'mail', 'login', 'bestalias', 'forlife', 'flag');
+            foreach ($field as $fld) {
+                if (isset($line[$fld])) {
+                    $field = $fld;
+                    break;
+                }
+            }
+        }
+        $email = $line[$field];
+        if (strpos($email, '@') === false) {
+            $user  = $email;
+        } else {
+            global $globals;
+            list($user, $domain) = explode('@', $email);    
+            if ($domain != $globals->mail->domain && $domain != $globals->mail->domain2
+                && $domain != $globals->mail->alias_dom && $domain != $globals->mail->alias_dom2) {
+                return '0';
+            }
+            if ($domain == $globals->mail->alias_dom || $domain == $globals->mail->alias_dom2) {
+                $res = XDB::query("SELECT a.id
+                                     FROM virtual          AS v
+                               INNER JOIN virtual_redirect AS r USING(vid)
+                               INNER JOIN aliases          AS a ON (a.type = 'a_vie'
+                                                                AND r.redirect = CONCAT(a.alias, '@{$globals->mail->domain2}')
+                                    WHERE v.alias = CONCAT({?}, '@{$globals->mail->alias_dom}')", $user);
+                $id = $res->fetchOneCell();
+                return $id ? $id : '0';
+            }
+        }
+        $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $user);
+        $id = $res->fetchOneCell();
+        return $id ? $id : '0';
+    }
+
+    function createHash($line, $key)
+    {
+        $hash = implode(time(), $line);
+        $hash = md5($hash);
+        return $hash;
     }
 }
 

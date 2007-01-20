@@ -157,6 +157,30 @@ class AXLetter extends MassMailer
         return $res->fetchOneCell();
     }
 
+    static public function grantPerms($uid)
+    {
+        if (!is_numeric($uid)) {
+            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
+            $uid = $res->fetchOneCell();
+        }
+        if (!$uid) {
+            return false;
+        }
+        return XDB::execute("INSERT IGNORE INTO axletter_rights SET user_id = {?}", $uid);
+    }
+
+    static public function revokePerms($uid)
+    {
+        if (!is_numeric($uid)) {
+            $res = XDB::query("SELECT id FROM aliases WHERE alias = {?}", $uid);
+            $uid = $res->fetchOneCell();
+        }   
+        if (!$uid) {
+            return false;
+        }
+        return XDB::execute("DELETE FROM axletter_rights WHERE user_id = {?}", $uid);
+    }
+
     protected function subscriptionTable()
     {
         return 'axletter_ins';
