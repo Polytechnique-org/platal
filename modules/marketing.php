@@ -174,30 +174,39 @@ class MarketingModule extends PLModule
             pl_redirect('emails/redirect');
         }
 
-        $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, a.alias AS forlife
+        $res = Xdb::query("SELECT  u.nom, u.prenom, u.promo, FIND_IN_SET('femme', u.flags) AS sexe,
+                                   a.alias AS forlife, b.alias AS bestalias, e.email, e.last
                              FROM  auth_user_md5 AS u
-                       INNER JOIN  aliases       AS a ON a.id = u.user_id
-                            WHERE  a.alias = {?}", $forlife);
+                       INNER JOIN  aliases       AS a ON (a.id = u.user_id AND a.type = 'a_vie')
+                       INNER JOIN  aliases       AS b ON (b.id = u.user_id AND FIND_IN_SET('bestalias', b.flags))
+                        LEFT JOIN  emails        AS e ON (e.flags = 'active' AND e.uid = u.user_id)
+                            WHERE  a.alias = {?}
+                         ORDER BY  e.panne_level, e.last", $forlife);
         if (!$res->numRows()) {
             return PL_NOT_FOUND;
         }
         $user = $res->fetchOneAssoc();
         $page->assign('user', $user);
 
-        $email = trim(Post::v('mail'));
-        if (Post::has('valide') && strlen($email) > 0) {
-            $mailer = new PlMailer();
-            $mailer->setFrom(S::v('bestalias') . '@polytechnique.org');
-            $mailer->addTo('resetpass@polytechnique.org');
-            $mailer->setSubject("Proposition d'adresse mail pour " . $user['forlife']);
-
-            $message = S::v('nom') . ' ' . S::v('prenom') . ' (X' . S::v('promo') . ') '
-                     . 'propose l\'adresse suivante pour un camarade qui n\'a plus de '
-                     . 'redirections actives :' . "\n\n"
-                     . '* ' . $user['forlife'] . ' => ' . $email . "\n";
-            $mailer->setTxtBody(wordwrap($message, 78));
-            $mailer->send();
-            $page->assign('sent', true);
+        $email = null;
+        if (Post::has('mail')) {
+            require_once 'emails.inc.php';
+            $email = valide_email(Post::v('mail'));
+        }
+        if (Post::has('valide') && isvalid_email_redirection($email)) {
+            // security stuff
+            check_email($email, "Proposition d'une adresse surveillee pour " . $user['forlife'] . " par " . S::v('forlife'));
+            if ($user['email'] && !trim(Post::v('comment'))) {
+                $page->trig("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
+                           ."besoin de changer la redirection de " . $user['prenom']);
+            } else {
+                require_once 'validations.inc.php';
+                $valid = new BrokenReq(S::i('uid'), $user, $email, trim(Post::v('comment')));
+                $valid->submit();
+                $page->assign('sent', true);
+            }
+        } elseif ($email) {
+            $page->trig("L'adresse proposée n'est pas une adresse acceptable pour une redirection");
         }
     }
 
@@ -250,6 +259,7 @@ class MarketingModule extends PLModule
                     $page->assign('already', true);
                 } else {
                     $page->assign('ok', true);
+                    check_email($email, "Une adresse surveillée est proposée au marketing par " . S::v('forlife'));
                     XDB::execute(
                             "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",

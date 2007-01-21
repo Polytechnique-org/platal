@@ -262,24 +262,7 @@ class Redirect
         $this->emails[] = new Email(array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
 
         // security stuff
-        $res = XDB::query("SELECT state, description
-                             FROM emails_watch
-                            WHERE state != 'safe' AND email = {?}", $email);
-        if ($res->numRows()) {
-            $row = $res->fetchOneAssoc();
-            $message = "L'email $email vient d'être ajouté aux redirections de ". S::v('forlife')
-                     . ". Cette adresse est surveillée avec l'état *" . $row['state']
-                     . "* et la description :\n" . $row['description'];
-            $message = wordwrap($message);
-            $mailer = new PlMailer();
-            $mailer->setFrom("webmaster@polytechnique.org");
-            $mailer->addTo("hotliners@staff.polytechnique.org");
-            $mailer->setSubject("ALERTE LORS DE L'AJOUT DE REDIRECTION de "
-                . S::v('prenom') . ' ' . S::v('nom') . '(' . S::v('promo') . ')');
-            $mailer->setTxtBody($message
-                . "\n\nInformations de connexion :\n" . var_export($_SERVER, true));
-            $mailer->send();
-        } 
+        check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->uid);
         return SUCCESS;
     }
 

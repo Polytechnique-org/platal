@@ -127,6 +127,18 @@ function check_ip($level)
     return $res->numRows();
 }
 
+function check_email($email, $message)
+{
+    $res = XDB::query("SELECT state, description
+                         FROM emails_watch
+                        WHERE state != 'safe' AND email = {?}", $email);
+    if ($res->numRows()) {
+        send_warning_mail($message);
+        return true;
+    }
+    return false;
+}
+
 function send_warning_mail($title)
 {
     $mailer = new PlMailer();

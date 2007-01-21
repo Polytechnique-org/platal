@@ -33,29 +33,49 @@
   Recherche d'adresses pour {$user.nom} {$user.prenom} (X{$user.promo})
 </h1>
 
+{if !$user.email}
 <p>
   Avec le temps toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
   des erreurs lorsqu'on lui envoie un mail. Nous sommes donc à la recherche d'adresses valides où nous pourrions
   contacter ce camarade.
 </p>
+{elseif $user.last}
+<p>
+  {$user.prenom} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
+  tu es sûre que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle adresse mail à ajouter à ses
+  redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
+</p>
+{else}
+<p>
+  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user.prenom}. Si tu es sûr que
+  son adresse de redirection actuelle est en panne tu peux nous proposer une nouvelle adresse, accompagnée d'un commentaire
+  nous expliquant les raisons exactes de cette proposition.
+</p>
+{/if}
 <p>
   Les adresses emails que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
+  Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir si {if $user.sexe}elle{else}lui{/if}
+  accepte la mise à jour de sa redirection.
 </p>
 <p>
-  Merci de participer à cette recherche.
+  Merci de ta participation active à l'amélioration de notre qualité de service.
 </p>
 
 <form method="post" action="{$platal->path}">
   <table class="bicol" summary="Fiche camarade">
-    <tr class="impair"><td>Nom :</td><td>{$user.nom}</td></tr>
-    <tr class="pair"><td>Prénom :</td><td>{$user.prenom}</td></tr>
-    <tr class="impair"><td>Promo :</td><td>{$user.promo}</td></tr>
+    <tr><th colspan="2">Proposition d'adresse pour<br />{$user.nom} {$user.prenom} (X{$user.promo})</th></tr>
     <tr class="pair">
       <td>Adresse email :</td>
       <td>
-        <input type="text" name="mail" size="30" maxlength="50" />
+        <input type="text" name="mail" size="30" maxlength="50" value="{$smarty.post.mail}" />
       </td>
     </tr>
+    {if $user.email}
+    <tr class="impair">
+      <td>Explication :</td>
+      <td><textarea name="comment" cols="50" rows="4">{$smarty.post.comment}</textarea></td>
+    </tr>
+    {/if}
   </table>
   <div class="center">
     <input type="submit" name="valide" value="Valider" />
