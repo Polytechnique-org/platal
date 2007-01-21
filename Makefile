@@ -1,3 +1,4 @@
+
 # $Id: Makefile,v 1.5 2004/11/25 20:18:39 x99laine Exp $
 ################################################################################
 # definitions
@@ -32,12 +33,16 @@ q:
 ## core
 ##
 
-core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron
+core: spool/templates_c spool/mails_c include/globals.inc.php configs/platal.cron htdocs/.htaccess
 
 spool/templates_c spool/mails_c spool/uploads:
 	mkdir -p $@
 	chmod o+w $@
 
+htdocs/.htaccess: htdocs/.htaccess.in Makefile
+	@REWRITE_BASE="/~$$(id -un)"; \
+	test "$$REWRITE_BASE" = "/~web" && REWRITE_BASE="/"; \
+	sed -e "s,@REWRITE_BASE@,$$REWRITE_BASE,g" $< > $@
 
 ##
 ## wiki
