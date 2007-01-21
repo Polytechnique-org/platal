@@ -22,8 +22,6 @@
 
 <h1>Soumettre un spam</h1>
 
-<p>Ce formulaire permet de soumettre à l'antispam les mails mal filtrés.</p>
-
 <form method="post" action="{$platal->pl_self()}" enctype="multipart/form-data">
   <table class="tinybicol">
     <tr>
@@ -47,5 +45,17 @@
     <input type="submit" name="send_email" value="Envoyer" />
   </p>
 </form>
+
+<p>
+  Pour soumettre un (non-)spam mal détecté par notre <a href="emails/antispam">antispam</a>, il suffit d'enregistrer
+  les sources (regarde dans la documentation de ton client mail dans la liste ci-dessous) du mail en tant que fichier
+  depuis ton client mail, puis de soumettre ce fichier à l'interface ci-dessus en sélectionnant l'action adaptée :
+</p>
+<ul>
+  <li><strong>spam</strong> : pour soumettre un spam mal reconnu</li>
+  <li><strong>nonspam</strong> : pour soumettre un mail légitime mal reconnu</li>
+</ul>
+
+{include file=../spool/wiki.d/cache_Xorg.Mails.tpl part=clients}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
