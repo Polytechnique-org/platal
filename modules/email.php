@@ -268,6 +268,8 @@ class EmailModule extends PLModule
 
     function handler_submit(&$page)
     {
+        require_once('wiki.inc.php');
+        wiki_require_page('Xorg.Mails');
         $page->changeTpl('emails/submit_spam.tpl');
 
         if (Post::has('send_email')) {
@@ -367,6 +369,8 @@ class EmailModule extends PLModule
     function handler_broken(&$page, $warn = null, $email = null)
     {
         require_once 'emails.inc.php';
+        require_once('wiki.inc.php');
+        wiki_require_page('Xorg.PatteCassée');
 
         global $globals;
 
@@ -425,12 +429,13 @@ L'équipe d'administration <support@polytechnique.org>";
                 $page->assign('email',$email);
                 $sel = XDB::query(
                         "SELECT  e1.uid, e1.panne != 0 AS panne, count(e2.uid) AS nb_mails,
-                                 u.nom, u.prenom, u.promo
+                                 u.nom, u.prenom, u.promo, a.alias AS forlife
                            FROM  emails as e1
                       LEFT JOIN  emails as e2 ON(e1.uid = e2.uid 
                                                  AND FIND_IN_SET('active', e2.flags)
                                                  AND e1.email != e2.email)
                      INNER JOIN  auth_user_md5 as u ON(e1.uid = u.user_id)
+                     INNER JOIN  aliases AS a ON (a.id = e1.uid AND a.type = 'a_vie')
                           WHERE  e1.email = {?}
                        GROUP BY  e1.uid", $email);
                 if ($x = $sel->fetchOneAssoc()) {
@@ -444,7 +449,7 @@ L'équipe d'administration <support@polytechnique.org>";
                     } else {
                         XDB::execute("UPDATE emails
                                          SET panne_level = 1
-                                       WHERE email = {?} AND panne_level = 0");
+                                       WHERE email = {?} AND panne_level = 0", $email);
                     }
                     $page->assign_by_ref('x', $x);
                 }

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Vérifier une patte cassée</h1>
+<h1>Indiquer</h1>
 
 {if $neuneu}
 <h2 class='erreur'>Erreur !</h2>
@@ -31,13 +31,10 @@ Tu as entré une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est inval
 
 <p>
 En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
-correspondant si tu veux que nous puissions te répondre. Cette
-<a href="Xorg/PatteCass%E9e">documentation</a> peut t'aider à trouver cette
-information.
+correspondant si tu veux que nous puissions te répondre.
 </p>
-
-<h2>Patte Cassée</h2>
 {elseif $x && $x.nb_mails}
+<h2>Patte Cassée</h2>
   <p>
     Ton correspondant a à l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
     en dehors de celle que tu nous as communiquée</span>. Cela ne veut pas forcément dire qu'il les avait
@@ -49,6 +46,7 @@ information.
     <a href="emails/broken/warn/{$email}">clique sur ce lien</a>.
   </p>
 {elseif $x}
+<h2>Patte Cassée</h2>
   <p>
     Désolé, mais ton correspondant, {$x.prenom} {$x.nom} (X{$x.promo}),
     n'a actuellement <span class="erreur">aucune adresse email de redirection 
@@ -56,34 +54,16 @@ information.
     Nous t'invitons à prendre contact avec lui autrement que par email,
     l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée...!
   </p>
+  <p>
+    Si tu connais une autre adresse email où le contacter, nous pouvez l'inviter à mettre à jour sa redirection
+    Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$x.forlife}">ce fomulaire</a>.
+  </p>
 {elseif $email}
 <p class="erreur">
   Désolé mais plus personne n'utilise l'adresse {$email} comme adresse de redirection.
   Nous ne pouvons donc malheureusement te fournir aucune information...
 </p>
 {/if}
-
-<p>
-  <strong>Qu'est-ce qu'une patte cassée ?</strong>
-</p>
-<p>
-    Cette page sert à <strong>analyser les messages d'erreur</strong> que tu reçois
-    lorsque tu envoies un mail à des utilisateurs de Polytechnique.org. Plus
-    précisément, si après avoir rédigé un email, tu reçois en retour un message
-    t'indiquant que l'un des destinataires n'a pas eu ton message sur l'une de
-    ses adresses de redirections, nous allons pouvoir te dire s'il a reçu ton
-    email sur une autre adresse de redirection...!
-</p>
-<p>
-    Pour plus d'explications concernant cette page, nous t'invitons à consulter
-    la <a href="Xorg/PatteCass%E9e">documentation suivante</a>
-</p>
-<p>
-    Rentre dans la zone de saisie ci-dessous l'adresse email à laquelle ton
-    courrier n'a pas été distribué puis valide. Nous te dirons si le
-    destinataire possède d'autres adresses de redirection grâce auxquelles il a
-    tout de même eu ton message.
-</p>
 <br />
 <div class="center">
   <form action="emails/broken" method="post">
@@ -100,5 +80,7 @@ information.
   </table>
   </form>
 </div>
+
+{include file=../spool/wiki.d/cache_Xorg.PatteCassée.tpl from=form}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
