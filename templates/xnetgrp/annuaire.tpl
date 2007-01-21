@@ -135,8 +135,8 @@ Tu peux également :
 
 {if $broken}
 <p class="smaller">
-  {icon name=error} : Les camarades dont la ligne contient ce symbole n'ont plus d'adresse de redirection et ne peuvent donc
-  plus être contacter via leur adresse Polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
+  {icon name=error} : Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
+  plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>
 {/if}

@@ -35,26 +35,26 @@
 
 {if !$user.email}
 <p>
-  Avec le temps toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
+  Avec le temps, toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
   des erreurs lorsqu'on lui envoie un mail. Nous sommes donc à la recherche d'adresses valides où nous pourrions
   contacter ce camarade.
 </p>
 {elseif $user.last}
 <p>
   {$user.prenom} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
-  tu es sûre que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle adresse mail à ajouter à ses
-  redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
+  tu es sûr{if $smarty.session.femme}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
+  adresse mail à ajouter à ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
 </p>
 {else}
 <p>
-  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user.prenom}. Si tu es sûr que
-  son adresse de redirection actuelle est en panne tu peux nous proposer une nouvelle adresse, accompagnée d'un commentaire
-  nous expliquant les raisons exactes de cette proposition.
+  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user.prenom}. Si tu es 
+  sûr{if $smarty.session.femme}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
+  une nouvelle adresse, accompagnée d'un commentaire nous expliquant les raisons exactes de cette proposition.
 </p>
 {/if}
 <p>
-  Les adresses emails que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
-  Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir si {if $user.sexe}elle{else}lui{/if}
+  Les adresses email que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
+  Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir {if $user.sexe}si elle{else}s'il{/if}
   accepte la mise à jour de sa redirection.
 </p>
 <p>
