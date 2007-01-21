@@ -383,12 +383,14 @@ class XnetGrpModule extends PLModule
                            m.perms='admin' AS admin,
                            m.origine='X' AS x,
                            u.perms!='pending' AS inscrit,
-                           m.uid
+                           m.uid, e.email AS actif
                      FROM  groupex.membres AS m
                 LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
                 LEFT JOIN  aliases         AS a ON ( a.id = m.uid AND a.type='a_vie' )
+                LEFT JOIN  emails          AS e ON ( e.flags = 'active' AND e.uid = m.uid)
                     WHERE  m.asso_id = {?} $ini
                            AND (m.origine != 'X' OR u.perms != 'pending' OR m.email IS NOT NULL)
+                 GROUP BY  m.uid          
                  ORDER BY  $tri
                     LIMIT  {?},{?}", $globals->asso('id'), $ofs*NB_PER_PAGE, NB_PER_PAGE);
         $page->assign('ann', $ann);

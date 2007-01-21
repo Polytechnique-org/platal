@@ -103,7 +103,11 @@ Tu peux également :
       {/if}
       {if $m.femme}&bull;{/if}{$m.prenom} {$m.nom|strtoupper}
       {if $m.x}</a>{/if} 
-      {if $m.admin}</strong>{/if}</td>
+      {if $m.admin}</strong>{/if}
+      {if $m.inscrit && !$m.actif}
+      <a href="https://www.polytechnique.org/marketing/broken/{$m.email}">{icon name=error title="Recherche d'email"}</a>
+      {assign var=broken value=true}
+      {/if}</td>
     <td>{if $m.admin}<strong>{/if}{$m.promo}{if $m.admin}</strong>{/if}</td>
     <td class="center">
       {if $m.inscrit}
@@ -128,5 +132,13 @@ Tu peux également :
 <a href="{$platal->ns}annuaire?offset={$ofs}&amp;initiale={$smarty.request.initiale}&amp;order={$sort}"{if $smarty.request.offset eq $ofs} class="erreur"{/if}>{$txt}</a>
 {/foreach}
 </p>
+
+{if $broken}
+<p class="smaller">
+  {icon name=error} : Les camarades dont la ligne contient ce symbole n'ont plus d'adresse de redirection et ne peuvent donc
+  plus être contacter via leur adresse Polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
+  cliquant sur le symbole.
+</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}
