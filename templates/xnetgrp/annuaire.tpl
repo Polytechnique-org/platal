@@ -61,7 +61,9 @@ Tu peux également :
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}" {if !$only_admin}class="erreur"{/if}>tous les membres</a>]
 [<a href="{$platal->ns}annuaire?order={$smarty.request.order}&amp;admin=1" {if $only_admin}class="erreur"{/if}>administrateurs</a>]<br/>
 {foreach from=$alphabet item=c}
+{if $c}
 [<a href="{$platal->ns}annuaire?{$group}={$c}&amp;order={$smarty.request.order}{if $only_admin}&amp;admin=1{/if}"{if $request_group eq $c} class="erreur"{/if}>{$c}</a>]
+{/if}
 {/foreach}
 </p>
 
