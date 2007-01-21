@@ -133,7 +133,7 @@ class XOrgSearch extends XOrgPlugin
     function show()
     {
         $this->setAuth();
-	global $page;
+    	global $page, $globals;
 
         $offset = intval($this->get_value('offset'));
         $tab    = @$this->orders[$this->get_value('order')];
@@ -149,20 +149,20 @@ class XOrgSearch extends XOrgPlugin
 
         list($list, $total) = call_user_func($this->_callback, $offset, $this->limit, $sql_order);
         
-	$page_max = intval(($total-1)/$this->limit);
+    	$page_max = intval(($total-1)/$this->limit);
         if(!S::logged() && $page_max > $globals->search->public_max)
             $page_max = $globals->search->public_max;
 
-	$links = Array();
-	if ($offset) {
-	    $links[] = Array('u'=> $this->make_url(Array('offset'=>$offset-1)), 'i' => $offset-1,  'text' => 'précédent');
-	}
-	for ($i = 0; $i <= $page_max ; $i++) {
-	    $links[] = Array('u'=>$this->make_url(Array('offset'=>$i)), 'i' => $i, 'text' => $i+1);
+    	$links = Array();
+	    if ($offset) {
+    	    $links[] = Array('u'=> $this->make_url(Array('offset'=>$offset-1)), 'i' => $offset-1,  'text' => 'précédent');
+	    }
+    	for ($i = 0; $i <= $page_max ; $i++) {
+	        $links[] = Array('u'=>$this->make_url(Array('offset'=>$i)), 'i' => $i, 'text' => $i+1);
         }
-	if ($offset < $page_max) {
-	    $links[] = Array ('u' => $this->make_url(Array('offset'=>$offset+1)), 'i' => $offset+1, 'text' => 'suivant');
-	}
+    	if ($offset < $page_max) {
+	        $links[] = Array ('u' => $this->make_url(Array('offset'=>$offset+1)), 'i' => $offset+1, 'text' => 'suivant');
+    	}
         
         $page->assign('search_results', $list);
         $page->assign('search_results_nb', $total);
