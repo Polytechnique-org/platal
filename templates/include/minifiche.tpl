@@ -123,7 +123,7 @@
         <td class="rt">{$c.freetext|nl2br}</td>
       </tr>
       {/if}
-      {if !$c.dcd && !$c.actif && $c.wasinscrit}
+      {if !$c.dcd && !$c.actif && $c.wasinscrit && $smarty.session.auth ge AUTH_COOKIE}
       <tr>
         <td class="smaller" colspan="2">
           Ce camarade n'a plus d'adresse redirection valide.
