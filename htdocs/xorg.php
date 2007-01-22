@@ -38,31 +38,13 @@ if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 
 require_once 'wiki.inc.php';
 
-$n = wiki_pagename();
+$n    = wiki_pagename();
 if (!$n) {
     pl_redirect('');
 }
 
 new_skinned_page('core/wiki.tpl');
 $perms = wiki_get_perms($n);
-
-if (Env::v('display') == 'light') {
-    $page->assign('simple', true);
-}
-
-switch (Env::v('action')) {
-  case '': case 'search':
-    wiki_apply_perms($perms[0]);
-    break;
-
-  case 'edit':
-    wiki_apply_perms($perms[1]);
-    break;
-
-  default:
-    wiki_apply_perms('admin');
-    break;
-}
 
 if ($p = Post::v('setrperms')) {
     wiki_apply_perms('admin');
@@ -80,7 +62,8 @@ if ($p = Post::v('setwperms')) {
     }
 }
 
-$wiki_cache   = wiki_work_dir().'/cache_'.$n.'.tpl';
+// Generate cache even if we don't have access rights
+$wiki_cache   = wiki_work_dir().'/cache_'.wiki_filename($n).'.tpl';
 $cache_exists = file_exists($wiki_cache);
 
 if (Env::v('action') || !$cache_exists) {
@@ -106,6 +89,25 @@ if (Env::v('action')) {
     } else {
         $wikiAll = file_get_contents($wiki_cache);
     }
+}
+
+// Check user perms
+switch (Env::v('action')) {
+  case '': case 'search':
+    wiki_apply_perms($perms[0]);
+    break;
+
+  case 'edit':
+    wiki_apply_perms($perms[1]);
+    break;
+
+  default:
+    wiki_apply_perms('admin');
+    break;
+}
+
+if (Env::v('display') == 'light') {
+    $page->assign('simple', true);
 }
 
 $page->assign('perms', $perms);

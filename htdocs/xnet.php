@@ -42,20 +42,6 @@ if (!$n) {
 new_skinned_page('core/wiki.tpl');
 $perms = wiki_get_perms($n);
 
-switch (Env::v('action')) {
-  case '': case 'search':
-    wiki_apply_perms($perms[0]);
-    break;
-
-  case 'edit':
-    wiki_apply_perms($perms[1]);
-    break;
-
-  default:
-    wiki_apply_perms('admin');
-    break;
-}
-
 if ($p = Post::v('setrperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $p, $perms[1])) {
@@ -72,7 +58,7 @@ if ($p = Post::v('setwperms')) {
     }
 }
 
-$wiki_cache   = wiki_work_dir().'/cache_'.$n.'.tpl';
+$wiki_cache   = wiki_work_dir().'/cache_'.wiki_filename($n).'.tpl';
 $cache_exists = file_exists($wiki_cache);
 
 if (Env::v('action') || !$cache_exists) {
@@ -98,6 +84,20 @@ if (Env::v('action')) {
     } else {
         $wikiAll = file_get_contents($wiki_cache);
     }
+}
+
+switch (Env::v('action')) {
+  case '': case 'search':
+    wiki_apply_perms($perms[0]);
+    break;
+
+  case 'edit':
+    wiki_apply_perms($perms[1]);
+    break;
+
+  default:
+    wiki_apply_perms('admin');
+    break;
 }
 
 $page->assign('perms', $perms);

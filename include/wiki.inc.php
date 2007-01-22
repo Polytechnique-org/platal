@@ -19,7 +19,8 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-function wiki_pagename() {
+function wiki_pagename()
+{
     if (!Get::v('n')) {
         return null;
     }
@@ -36,7 +37,16 @@ function wiki_pagename() {
     pl_redirect($a.'/'.$b);
 }
 
-function wiki_work_dir() {
+function wiki_filename($s)
+{
+    if (@iconv('utf-8', 'utf-8', $s) == $s) {
+        return utf8_decode($s);
+    }
+    return $s;
+}
+
+function wiki_work_dir()
+{
     global $globals;
     return $globals->spoolroot.'/spool/wiki.d';
 }
@@ -53,7 +63,7 @@ function wiki_perms_options() {
 
 function wiki_get_perms($n)
 {
-    $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);
+    $file  = wiki_work_dir().'/'.wiki_filename(str_replace('/', '.', $n));
     $lines = explode("\n", @file_get_contents($file));
     foreach ($lines as $line) {
         @list($k, $v) = explode('=', $line, 2);
@@ -73,9 +83,10 @@ function wiki_putfile($f, $s)
 
 function wiki_set_perms($n, $pr, $pw)
 {
-    $file  = wiki_work_dir().'/'.str_replace('/', '.', $n);
-    if (!file_exists($file))
+    $file  = wiki_work_dir().'/'.wiki_filename(str_replace('/', '.', $n));
+    if (!file_exists($file)) {
         return false;
+    }
 
     $p = $pr . ':' . $pw;
 
