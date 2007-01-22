@@ -106,10 +106,6 @@ switch (Env::v('action')) {
     break;
 }
 
-if (Env::v('display') == 'light') {
-    $page->assign('simple', true);
-}
-
 $page->assign('perms', $perms);
 $page->assign('perms_opts', wiki_perms_options());
 

@@ -64,9 +64,9 @@ class PlatalPage extends Smarty
 
     function changeTpl($tpl, $type = SKINNED)
     {
-	$this->_tpl       = $tpl;
-	$this->_page_type = $type;
-	$this->assign('xorg_tpl', $tpl);
+    	$this->_tpl       = $tpl;
+	    $this->_page_type = $type;
+    	$this->assign('xorg_tpl', $tpl);
     }
 
     // }}}
@@ -81,6 +81,14 @@ class PlatalPage extends Smarty
         $this->assign('xorg_errors', $this->_errors);
         $this->assign('xorg_failure', $this->_failure);
         $this->assign('globals', $globals);
+
+        if (Env::v('display') == 'light') {
+            $this->_page_type = SIMPLE;
+        } elseif (Env::v('display') == 'raw') {
+            $this->_page_type = NO_SKIN;
+        } elseif (Env::v('display') == 'full') {
+            $this->_page_typ = SKINNED;
+        }
 
         switch ($this->_page_type) {
           case NO_SKIN:
