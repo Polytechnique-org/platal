@@ -101,8 +101,9 @@ h1 {
 
 h2 {
     color: #369;
+    font-size: 115%;
     padding: 0px 4px;
-    margin: 0.5em 0em;
+    margin: 1em 0em 0.5em 0em;
     font-size: 110%;
     font-weight: bold;
     border-bottom: 1px dotted #369;
