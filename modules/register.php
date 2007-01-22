@@ -38,8 +38,17 @@ class RegisterModule extends PLModule
         if (!isset($sub_state['step'])) {
             $sub_state['step'] = 0;
         }
+        if (!isset($sub_state['backs'])) {
+            $sub_state['backs'] = array();
+        }
         if (Get::has('back') && Get::i('back') < $sub_state['step']) {
             $sub_state['step'] = max(0,Get::i('back'));
+            $state = $sub_state;
+            unset($state['backs']);
+            $sub_state['backs'][] = $state;
+            if (count($sub_state['backs']) == 3) {
+                $alert .= "Tentative d'inscription tres hesitante - ";
+            }   
         }
 
         // Compatibility with old sources, keep it atm
@@ -179,6 +188,9 @@ class RegisterModule extends PLModule
                             $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
                             $sub_state['step'] = 4;
+                            if ($sub_state['backs'] >= 3) {
+                                $alert .= "Fin d'une inscription hésitante";
+                            }
                             finish_ins($sub_state);
                         }
                     }
