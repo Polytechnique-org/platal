@@ -101,14 +101,22 @@ class CoreModule extends PLModule
     {
         $page->changeTpl('core/bug.tpl',SIMPLE);
         $page->addJsLink('close_on_esc.js');
-        if (Env::has('send')) {
+        if (Env::has('send') && trim(Env::v('detailed_desc'))) {
+            $body = wordwrap(Env::v('detailed_desc'), 78) . "\n\n"
+                  . "----------------------------\n"
+                  . "Page        : " . Env::v('page') . "\n\n"
+                  . "Utilisateur : " . S::v('forlife') . "\n"
+                  . "Navigateur  : " . Env::v('browser') . "\n"
+                  . "Skin        : " . Env::v('skin') . "\n";
             $page->assign('bug_sent',1);
             $mymail = new PlMailer();
             $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
             $mymail->addTo('support+platal@polytechnique.org');
             $mymail->setSubject('Plat/al '.Env::v('task_type').' : '.Env::v('item_summary'));
-            $mymail->setTxtBody(Env::v('detailed_desc'));
+            $mymail->setTxtBody($body);
             $mymail->send();
+        } elseif (Env::has('send')) {
+            $page->trig("Merci de remplir une explication du problème rencontré");
         }
     }
 }
