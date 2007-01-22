@@ -55,10 +55,6 @@
 {/literal}
 
 <p>
-  <a href="Xorg/SMTPSécurisé">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
-  <a href="Xorg/NNTPSécurisé">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
-</p>
-<p>
 {if $actif}
   Clique sur <strong>"Supprimer"</strong> si tu veux supprimer ton compte SMTP/NNTP.
 {else}
@@ -104,5 +100,22 @@
   moins <strong>6 caractères</strong> quelconques. Attention au type de clavier que tu
   utilises (qwerty?) et aux majuscules/minuscules.
 </p>
+
+{if $smarty.request.doc eq "nntp"}
+<p>
+  <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
+</p>
+{include file=../spool/wiki.d/cache_Xorg.NNTPSécurisé.tpl from=form}
+{elseif $smarty.request.doc eq "smtp"}
+<p> 
+  <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
+</p>
+{include file=../spool/wiki.d/cache_Xorg.SMTPSécurisé.tpl from=form}
+{else}
+<p>
+  <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
+  <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.
+</p>
+{/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

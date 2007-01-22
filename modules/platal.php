@@ -200,6 +200,10 @@ class PlatalModule extends PLModule
     {
         $page->changeTpl('platal/acces_smtp.tpl');
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
+        
+        require_once 'wiki.inc.php';
+        wiki_require_page('Xorg.SMTPSécurisé');
+        wiki_require_page('Xorg.NNTPSécurisé');
 
         $uid  = S::v('uid');
         $pass = Env::v('smtppass1');
