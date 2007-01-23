@@ -36,6 +36,7 @@ class AdminModule extends PLModule
             'admin/postfix/delayed'        => $this->make_hook('postfix_delayed', AUTH_MDP, 'admin'),
             'admin/postfix/regexp_bounces' => $this->make_hook('postfix_regexpsbounces', AUTH_MDP, 'admin'),
             'admin/postfix/whitelist'      => $this->make_hook('postfix_whitelist', AUTH_MDP, 'admin'),
+            'admin/mx/broken'              => $this->make_hook('mx_broken', AUTH_MDP, 'admin'),
             'admin/skins'                  => $this->make_hook('skins', AUTH_MDP, 'admin'),
             'admin/synchro_ax'             => $this->make_hook('synchro_ax', AUTH_MDP, 'admin'),
             'admin/user'                   => $this->make_hook('user', AUTH_MDP, 'admin'),
@@ -840,6 +841,15 @@ class AdminModule extends PLModule
         $page->assign('title', 'Whitelist de postfix');
         $table_editor = new PLTableEditor('admin/postfix/whitelist','postfix_whitelist','email', true);
         $table_editor->describe('email','email',true);
+        $table_editor->apply($page, $action, $id);
+    }
+    function handler_mx_broken(&$page, $action = 'list', $id = null) {
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - MX Défaillants');
+        $page->assign('title', 'MX Défaillant');
+        $table_editor = new PLTableEditor('admin/mx/broken', 'mx_watch', 'host', true);
+        $table_editor->describe('host', 'Masque', true);
+        $table_editor->describe('state', 'Niveau', true);
+        $table_editor->describe('text', 'Description du problème', false);
         $table_editor->apply($page, $action, $id);
     }
     function handler_logger_actions(&$page, $action = 'list', $id = null) {

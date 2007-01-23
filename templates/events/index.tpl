@@ -35,11 +35,34 @@ Bienvenue {$smarty.session.prenom}
 {/if}
 </h1>
 
+{if $smarty.session.host}
 <div class="smaller">
   Ta connexion précédente date du
   <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
   depuis la machine <strong>{$smarty.session.host}</strong>
 </div>
+{/if}
+
+{if $smarty.session.no_redirect}
+<p class="erreur">
+  Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
+  inutilisable. Rend-toi au plus vite sur <a href="emails/redirect">la page de 
+  gestion des emails</a> pour corriger ce problème.
+</p>
+{/if}
+
+{if $smarty.session.mx_failures|@count}
+<fieldset>
+  <legend>{icon name=error}Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
+  {foreach from=$smarty.session.mx_failures item=mail}
+  <div>
+    <span class="erreur">{$mail.mail}</span>
+    <div class="explication">{$mail.text}</div>
+  </div>
+{/foreach}
+</fieldset>
+{/if}
+
   
 {if $fiche_incitation}
   <p>La dernière mise à jour de ta

@@ -67,6 +67,9 @@ Bug/Wish:
     * Register:
         - #277: Improve ergonomy.                                          -FRU
 
+    * Stats:
+        - #603: Add informations on mail delivery                          -FRU
+
     * Xnet:
         - #570: Fix geoloc skin.                                           -FRU
         - #589: Can attach a file when sending an email                    -FRU

@@ -20,6 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<h1>Coupures de Polytechnique.org</h1>
+
 {if $cp}
 <table class="bicol" summary="Ruptures de service">
   <tr>
@@ -73,7 +75,7 @@
     <th>services affectés</th>
   </tr>
 {iterate item=cp from=$coupures}
-  <tr class="{cycle values="pair,impair"}">
+  <tr class="{cycle values="impair,pair"}">
     <td>
       <span class="smaller">
         {$cp.debut|date_format}
@@ -92,6 +94,23 @@
   </tr>
 {/iterate}
 </table>
+
+<h1>Problèmes avec les autres fournisseurs de services</h1>
+
+<p>
+  La liste ci-dessous indique quels sont les fournisseurs de mails vers lesquels nous avons
+  actuellement des problèmes de tranmission.
+</p>
+
+<table class="bicol">
+  <tr><th>Liste des disfonctionnements</th></tr>
+  {iterate from=$mxs item=mx}
+  <tr class="{cycle values="impair,pair"}">
+    <td><strong>{$mx.host}</strong><div class="explication">{$mx.text}</div></td>
+  </tr>
+  {/iterate}
+</table>
+
 {/if}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

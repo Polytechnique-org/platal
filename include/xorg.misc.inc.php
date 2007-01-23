@@ -139,6 +139,17 @@ function check_email($email, $message)
     return false;
 }
 
+function check_redirect($red = null)
+{
+    require_once 'emails.inc.php';
+    if (is_null($red)) {
+        $red = new Redirect(S::v('uid'));
+    }    
+    $_SESSION['no_redirect'] = !$red->other_active('');
+    $_SESSION['mx_failures'] = $red->get_broken_mx();
+    
+}
+
 function send_warning_mail($title)
 {
     $mailer = new PlMailer();

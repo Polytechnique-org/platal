@@ -281,7 +281,7 @@ EOF2;
             $cp  = $res->fetchOneAssoc();
         }
 
-        if($cp) {
+        if(@$cp) {
             $cp['lg_services'] = serv_to_str($cp['services']);
             $page->assign_by_ref('cp',$cp);
         } else {
@@ -289,6 +289,10 @@ EOF2;
             $sql = "SELECT  id, debut, resume, services
                       FROM  coupures where debut > '$beginning_date' order by debut desc";
             $page->assign('coupures', XDB::iterator($sql));
+            $res = XDB::iterator("SELECT  host, text
+                                    FROM  mx_watch
+                                   WHERE  state != 'ok'");
+            $page->assign('mxs', $res);
         }
     }
 }

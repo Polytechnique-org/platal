@@ -262,6 +262,7 @@ function start_connexion ($uid, $identified)
         }
     }
     set_skin();
+    check_redirect();
     return true;
 }
 

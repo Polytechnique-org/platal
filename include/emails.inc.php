@@ -235,6 +235,7 @@ class Redirect
                 unset($this->emails[$i]);
             }
         }
+        check_redirect($this);
         return SUCCESS;
     }
 
@@ -263,6 +264,7 @@ class Redirect
 
         // security stuff
         check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->uid);
+        check_redirect($this);
         return SUCCESS;
     }
 
@@ -279,9 +281,11 @@ class Redirect
             }
             $this->emails[$i]->rewrite($emails_rewrite[$mail->email], $this->uid);
         }
+        check_redirect($this);
     }
 
-    function modify_one_email($email, $activate) {
+    function modify_one_email($email, $activate) 
+    {
         $allinactive = true;
         $thisone = false;
         foreach ($this->emails as $i=>$mail) {
@@ -293,10 +297,12 @@ class Redirect
         if ($thisone === false) {
             return ERROR_INVALID_EMAIL;
         }
-        if ($allinactive || $activate)
+        if ($allinactive || $activate) {
             $this->emails[$thisone]->activate($this->uid);
-        else
+        } else {
             $this->emails[$thisone]->deactivate($this->uid);
+        }
+        check_redirect($this);
         if ($allinactive && !$activate) {
             return ERROR_INACTIVE_REDIRECTION;
         } else {
@@ -308,10 +314,54 @@ class Redirect
 		foreach ($this->emails as $i=>$mail) {
 			if ($mail->email == $email) {
 				$this->emails[$i]->rewrite($redirect, $this->uid);
-				return;
+                check_redirect($this);
+                return;
 			}
 		}
 	}
+    // }}}
+    // {{{ function get_broken_mx()
+
+    function get_broken_mx()
+    {
+        $res = XDB::iterRow("SELECT  host, text
+                               FROM  mx_watch
+                              WHERE  state != 'ok'");
+        if (!$res->total()) {
+            return array();
+        }
+        $mxs = array();
+        while (list($host, $text) = $res->next()) {
+            $host = preg_quote($host, '/');
+            $host = str_replace('\*', '.*', $host);
+            $host = str_replace('\?', '.', $host);
+            $mxs[] = array('host' => "/^$host\\.?$/", 'text' => $text);
+        }
+        $mails = array();
+        foreach ($this->emails as &$mail) {
+            if ($mail->active) {
+                list(,$domain) = explode('@', $mail->email);
+                getmxrr($domain, $lcl_mxs);
+                if (empty($lcl_mxs)) {
+                    $lcl_mxs = array($domain);
+                }
+                $broken = false;
+                foreach ($mxs as &$mx) {
+                    foreach ($lcl_mxs as $lcl) {
+                        if (preg_match($mx['host'], $lcl)) {
+                            $broken = $mx['text'];
+                            break;
+                        }
+                    }
+                    if ($broken) {
+                        $mails[] = array('mail' => $mail->email, 'text' => $broken);
+                    }
+                }
+            }
+        }
+        return $mails;
+    }
+
     // }}}
 }
 
