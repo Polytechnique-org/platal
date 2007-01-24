@@ -32,7 +32,7 @@ class XDB
 
     public static function _reformatQuery($query)
     {
-        $query  = preg_split("/\n\\s*/", $query);
+        $query  = preg_split("/\n\\s*/", trim($query));
         $length = 0;
         foreach ($query as $key=>$line) {
             $local = -2;
