@@ -57,7 +57,7 @@ Bug/Wish:
         - #512: Can attach a file                                          -FRU
 
     * Geoloc:
-        - #493: Fix "List map search" button                               -Car
+        - #493: Fix "List map search" button.                              -Car
 
     * Lists:
         - #588: Auto-select mail to moderate                               -FRU
@@ -65,6 +65,7 @@ Bug/Wish:
         - #616: Fix encoding issues with mail to moderate                  -FRU
 
     * Profile:
+        - #535: Tel can use / to specify extension.                        -Car
         - #628: Fix edition link from user's own profile                   -FRU
 
     * Register:
