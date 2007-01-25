@@ -20,15 +20,28 @@
 {*                                                                        *}
 {**************************************************************************}
 
+<!-- Pour récupérer ce bandeau sur votre site :
+	incluez le fichier http://www.polytechnique.org/bandeau dans vos php
+	ou http://www.polytechnique.org/bandeau/login pour profiter du login
+	automatique. Et rajoutez à la liste de css de vos pages
+	http://www.polytechnique.org/bandeau.css. -->
 
-    <!-- BANDEAU DEBUT -->
-    <table cellspacing="0" cellpadding="1" summary="" class="xdx">
-      <tr>
-        <td>
-          <img alt="" src="images/x.png" />&nbsp;&nbsp;<a href="http://www.polytechnique.fr/">L'&Eacute;cole</a>&nbsp;&middot;&nbsp;<a href="http://www.polytechnique.edu/">Institutional site</a>&nbsp;&nbsp;~~&nbsp;&nbsp;<a href="http://www.fondationx.org/">FX</a>&nbsp;&middot;&nbsp;<a href="http://www.polytechniciens.com/">AX</a>&nbsp;&nbsp;~~&nbsp;&nbsp;<a href="http://www.polytechnique.org/">Polytechnique.org</a>&nbsp;&middot;&nbsp;<a href="http://www.polytechnique.net/{if $smarty.session.auth}login{/if}">Associations polytechniciennes</a>&nbsp;&middot;&nbsp;<a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a>&nbsp;&middot;&nbsp;<a href="http://www.manageurs.com/{if $smarty.session.auth}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
-        </td>
-      </tr>
-    </table>
-    <!-- BANDEAU FIN -->
+{if !$login && $smarty.session.auth}
+	{assign var="login" value="true"}
+{/if}
+
+<div id="bandeau-X">
+	<img href="http://www.polytechnique.org/bandeau/icone.png" alt=""/>
+	<a href="http://www.polytechnique.fr/">L'&Eacute;cole</a> &middot;
+	<a href="http://www.polytechnique.edu/">Institutional site</a>
+	&tilde;&tilde;
+	<a href="http://www.fondationx.org/">FX</a> &middot;
+	<a href="http://www.polytechniciens.com/">AX</a>
+	&tilde;&tilde;
+	<a href="http://www.polytechnique.org">Polytechnique.org</a> &middot;
+	<a href="http://www.polytechnique.net{if $login}/login{/if}">Associations polytechniciennes</a> &middot;
+	<a href="http://www.polytechnique.fr/eleves/">&Eacute;l&egrave;ves</a> &middot;
+	<a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
+</div>
 
 {* vim:set et sw=2 sts=2 sws=2: *}
