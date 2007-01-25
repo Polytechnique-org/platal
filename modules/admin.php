@@ -904,6 +904,9 @@ class AdminModule extends PLModule
                 while (($file = readdir($dh)) !== false) if (substr($file,0,1) >= 'A' && substr($file,0,1) <= 'Z') {
                     list($read,$edit) = wiki_get_perms($file);
                     $wiki_pages[$file] = array('read' => $perms[$read], 'edit' => $perms[$edit]);
+                    if (is_file($dir . '/cache_' . wiki_filename($file) . '.tpl')) {
+                        $wiki_pages[$file]['cached'] = true;
+                    }
                 }
                 closedir($dh);
             }

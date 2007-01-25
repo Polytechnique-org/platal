@@ -40,8 +40,7 @@
 {/literal}
 
 <p class="center">
-  {icon name=magnifier"} <a href="Site/RecentChanges">Voir les changements récents</a>
-  (<a href="Site/AllRecentChanges">Version verbeuse</a>)
+  {icon name=magnifier"} <a href="Site/AllRecentChanges">Voir les changements récents</a>
 </p>
 
 <form action="admin/wiki/update" method="post" id="update_pages">
@@ -64,7 +63,7 @@
   <tr class="pair">
     <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       <img src="images/k2.gif" alt="-" width="9" height="21" />
-      {$cat}
+      {$cat} <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
     </td>
   </tr>
 {foreach from=$pages item=perm key=page name=pages}
@@ -75,7 +74,7 @@
       {else}
       <img src="images/T.gif" alt="|" style="width: 12px: height: 21px" />
       {/if}
-      <a href="{$cat}/{$page}">{$page}</a> <a href="{$cat}/{$page}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
+      <a href="{$cat}/{$page}">{$page}</a>{if $perm.cached}*{/if} <a href="{$cat}/{$page}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
     </td>
     <td class="center" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {$perm.read}
@@ -118,4 +117,8 @@
   </tr>
 </table>
 </form>
+
+<p class="smaller">
+  * : les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
+</p>
 {* vim:set et sw=2 sts=2 sws=2: *}
