@@ -38,6 +38,12 @@
 // -->
 </script>
 {/literal}
+
+<p class="center">
+  {icon name=magnifier"} <a href="Site/RecentChanges">Voir les changements récents</a>
+  (<a href="Site/AllRecentChanges">Version verbeuse</a>)
+</p>
+
 <form action="admin/wiki/update" method="post" id="update_pages">
 <table class="bicol">
   <tr>
