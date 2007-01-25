@@ -86,6 +86,7 @@ class GeolocModule extends PLModule
         $search = preg_replace('/(^|&)mapid=([0-9]+)(&)/','\1\3', $search);
         if ($search)
             $search = '?'.$search;
+        $page->assign('search_nourlencode',$search);
         $page->assign('search',urlencode($search));
 
         $page->assign('protocole', substr($globals->baseurl,0,strpos($globals->baseurl,':')));

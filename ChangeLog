@@ -56,6 +56,9 @@ Bug/Wish:
     * Emails:
         - #512: Can attach a file                                          -FRU
 
+    * Geoloc:
+        - #493: Fix "List map search" button                               -Car
+
     * Lists:
         - #588: Auto-select mail to moderate                               -FRU
         - #598: Ask for confirmation                                       -FRU

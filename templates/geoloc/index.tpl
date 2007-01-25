@@ -94,7 +94,7 @@ function searchMapId(f)
   </p>
   <p class="smaller">Carte fournie gracieusement par <a href="http://www.geodesix.com/">Geodesix</a>.</p>
   {if !$no_annu}
-    <form id="search_form" action="search/adv/?{$dynamap_vars|default:"only_current=on"}&amp;rechercher=1" method="post">
+    <form id="search_form" action="search/adv/{$search_nourlencode}&amp;rechercher=1" method="post">
     <p>
     	<input type="button" value="Lister les camarades de la carte ci-dessus" onclick="searchMapId(this.form)"/>
     </p>
