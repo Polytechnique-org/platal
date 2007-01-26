@@ -123,7 +123,7 @@ function wiki_apply_perms($perm) {
 
       case 'logged':
         if (!call_user_func(array($globals->session, 'doAuthCookie'))) {
-            $platal = new Platal();
+            $platal =  empty($GLOBALS['IS_XNET_SITE']) ? new Platal() : new Xnet();
             $platal->force_login($page);
         }
         return;

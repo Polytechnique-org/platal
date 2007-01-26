@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 $GLOBALS['IS_XNET_SITE'] = true;
+global $platal;
 
 require_once dirname(__FILE__).'/../include/xnet.inc.php';
 
@@ -32,93 +33,6 @@ if (!($path = Env::v('n')) || substr($path, 0, 4) != 'Xnet') {
 
 /*** WIKI CODE ***/
 
-require_once 'wiki.inc.php';
-
-$n = wiki_pagename();
-if (!$n) {
-    pl_redirect('');
-}
-
-new_skinned_page('core/wiki.tpl');
-$perms = wiki_get_perms($n);
-
-if ($p = Post::v('setrperms')) {
-    wiki_apply_perms('admin');
-    if (wiki_set_perms($n, $p, $perms[1])) {
-        $perms = wiki_get_perms($n);
-        $page->trig('Permissions mises à jour');
-    }
-}
-
-if ($p = Post::v('setwperms')) {
-    wiki_apply_perms('admin');
-    if (wiki_set_perms($n, $perms[0], $p)) {
-        $perms = wiki_get_perms($n);
-        $page->trig('Permissions mises à jour');
-    }
-}
-
-$wiki_cache   = wiki_work_dir().'/cache_'.wiki_filename($n).'.tpl';
-$cache_exists = file_exists($wiki_cache);
-
-if (Env::v('action') || !$cache_exists) {
-    @unlink($wiki_cache);
-
-    // we leave pmwiki do whatever it wants and store everything
-    ob_start();
-    require_once($globals->spoolroot.'/wiki/pmwiki.php');
-
-    $wikiAll = ob_get_clean();
-    // the pmwiki skin we are using (almost empty) has these keywords:
-    $i = strpos($wikiAll, "<!--/HeaderText-->");
-    $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
-}
-
-if (Env::v('action')) {
-    $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
-    $wikiAll = substr($wikiAll, $j);
-} else {
-    if (!$cache_exists) {
-        $wikiAll = substr($wikiAll, $j);
-        wiki_putfile($wiki_cache, $wikiAll);
-    } else {
-        $wikiAll = file_get_contents($wiki_cache);
-    }
-}
-
-switch (Env::v('action')) {
-  case '': case 'search':
-    wiki_apply_perms($perms[0]);
-    break;
-
-  case 'edit':
-    wiki_apply_perms($perms[1]);
-    break;
-
-  default:
-    wiki_apply_perms('admin');
-    break;
-}
-
-$page->assign('perms', $perms);
-$page->assign('perms_opts', wiki_perms_options());
-
-$page->assign('canedit',    wiki_may_have_perms($perms[1]));
-$page->assign('has_perms',  wiki_may_have_perms('admin'));
-
-$page->assign('wikipage', str_replace('.', '/', $n));
-$page->assign('wikipage', str_replace('.', '/', $n));
-if ($perms[1] == 'admin' && !Env::v('action')) {
-    $page->assign('pmwiki_cache', $wiki_cache);
-} else {
-    $page->assign('pmwiki',   $wikiAll);
-    $page->assign('text', true);
-}
-
-$page->addCssLink('wiki.css');
-$page->addJsLink('wiki.js');
-
-$page->useMenu();
-$page->run();
+include 'wiki/engine.php';
 
 ?>
