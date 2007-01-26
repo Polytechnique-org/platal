@@ -246,7 +246,7 @@ class EventsModule extends PLModule
         $table_editor->describe('titre', 'titre', true);
         $table_editor->describe('state', 'actif', true);
         $table_editor->describe('text', 'texte (html) de l\'astuce', false);
-        $table_editor->describe('priorite', 'priorité (0=min, 256=max)', false);
+        $table_editor->describe('priorite', '0<=priorité<=255', true);
         $table_editor->apply($page, $action, $id);
         if ($action == 'edit' && !is_null($id)) {
             $page->changeTpl('events/admin_tips.tpl');
