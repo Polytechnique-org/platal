@@ -23,7 +23,7 @@
 {literal}
 <script type="text/javascript">//<![CDATA[
 function chgMainWinLoc( strPage , iePage) {
-  if (navigator.appName == 'Microsoft Internet Explorer') {
+  if (is_IE) {
     strPage = iePage;
   }
   if (parent.opener) {
