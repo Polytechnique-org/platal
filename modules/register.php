@@ -322,6 +322,22 @@ class RegisterModule extends PLModule
             $mymail->setTxtBody(wordwrap($msg, 72));
             $mymail->send();
         }
+        if ($globals->register->notif) {
+            $mymail = new PlMailer();
+            $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
+            $mymail->setFrom('"Webmaster Polytechnique.org" <web@polytechnique.org>');
+            $mymail->addTo($globals->register->notif);
+            $msg = "$prenom $nom (X$promo) a terminé son inscription avec les données suivantes :\n"
+                 . " - nom       : $nom\n"
+                 . " - prenom    : $prenom\n"
+                 . " - promo     : $promo\n"
+                 . " - naissance : $naissance\n"
+                 . " - forlife   : $forlife\n"
+                 . " - email     : $email\n"
+                 . " - sexe      : $femme\n"; 
+            $mymail->setTxtBody($msg);
+            $mymail->send(); 
+        }
 
         XDB::execute("DELETE FROM register_marketing WHERE uid = {?}", $uid);
 
