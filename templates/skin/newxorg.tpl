@@ -53,10 +53,10 @@
     <table id="body" cellpadding="0" cellspacing="0">
       <tr>
         <td id="body-logo">
-          <a href="events"><img src="images/skins/newxorg_logo.jpg" alt="[ LOGO ]" /></a>
+          <a href=""><img src="images/skins/newxorg_logo.jpg" alt="[ LOGO ]" /></a>
         </td>
         <td id="body-top">
-          <a href="events"><img src="images/skins/newxorg_ban.png" alt="[ Polytechnique.org ]" /></a>
+          <a href=""><img src="images/skins/newxorg_ban.png" alt="[ Polytechnique.org ]" /></a>
           {include file="skin/common.title.header.tpl"}
         </td>
       </tr>
