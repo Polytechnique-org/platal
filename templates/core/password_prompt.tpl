@@ -30,13 +30,15 @@
   </p>
 </noscript>
 
-{if $smarty.server.HTTP_REFERER}
+{if $referer || $platal->pl_self() neq 'login'}
 <h1>
   Accès restreint
 </h1>
 <p>
   Bonjour,<br />
-  La page que vous avez demandé (<strong>{$smarty.server.HTTP_REFERER}</strong>) nécessite une authentification
+  La page que vous avez demandé
+  (<strong>{if $referer}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
+  nécessite une authentification.
 </p>
 {else}
 <h1>
@@ -75,7 +77,11 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
   <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
-      <th colspan="2">Connexion</th>
+      <th colspan="2">{if $smarty.server.HTTPS}{icon name=lock}{/if} Identification
+      {if !$smarty.server.HTTPS}
+      (<a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">{icon name=lock_add} Passer en connexion sécurisée</a>)
+      {/if}
+      </th>
     </tr>
     <tr style="white-space: nowrap">
       <td class="titre">
@@ -125,6 +131,25 @@ Problème de connexion ? <a href="Xorg/FAQ#connect">La réponse est là.</a>
 <br />
 (Activer obligatoirement le <strong>javascript</strong>)
 </p>
+
+<hr />
+
+<div class="smaller">
+  {if $smarty.server.HTTPS}
+  {icon name=lock} : Vous utilisez actuellement une connexion HTTPS sécurisée. Aucune information ne circule
+  en clair entre chez vous en Polytechnique.org, ce qui permet d'assurer une confidentialité maximale.
+  {else}
+  {icon name=lock_open} : Vous utilisez actuellement une connexion HTTP non sécurisée. Toutes les informations
+  (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez vous et 
+  Polytechnique.org. Il vous est possible d'utiliser une connexion sécurisée en cliquant sur le lien
+  <div class="center">
+  <a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">
+    {icon name=lock_add} Passer en connexion sécurisée</a>
+  </div><br />
+  Plus d'informations sur la connexion sécurisée se trouvent
+  <a href="Xorg/CertificatDeSécurité?display=light" class="popup2">sur cette page</a>.
+  {/if}
+</div>
 
 {if $smarty.request.response}<!-- failed login code //-->
 <br />

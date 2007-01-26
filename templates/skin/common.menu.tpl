@@ -22,7 +22,7 @@
 
 {if !$smarty.session.auth}
 <div class="menu_title">Polytechniciens</div>
-<div class="menu_item"><a href="events">Me connecter !</a></div>
+<div class="menu_item"><a href="login">Me connecter !</a></div>
 <div class="menu_item"><a href="register">M'inscrire</a></div>
 <div class="menu_item"><a href="Xorg/PourquoiMInscrire">Pourquoi m'inscrire ?</a></div>
 

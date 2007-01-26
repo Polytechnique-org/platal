@@ -161,6 +161,15 @@ table.tinybicol th, table.bicol th {
     text-align: center;
     vertical-align: middle;
 }
+
+table.tinybicol th a:link, table.tinybicol th a:visited,
+table.tinybicol th a:active, table.tinybicol th a:hover,
+table.bicol th a:link, table.bicol th a:visited,
+table.bicol th a:active, table.bicol th a:hover {
+    color: #9999FF;
+    background: inherit;
+}
+
 table.tinybicol td, table.bicol td {
     color: #000000;
     background: inherit;

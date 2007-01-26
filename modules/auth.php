@@ -24,6 +24,7 @@ class AuthModule extends PLModule
     function handlers()
     {
         return array(
+            'login'             => $this->make_hook('login',      AUTH_COOKIE),
             'groupex/donne-chall.php'
                                 => $this->make_hook('chall',      AUTH_PUBLIC),
             'groupex/export-econfiance.php'
@@ -37,6 +38,14 @@ class AuthModule extends PLModule
             'admin/auth-groupes-x'         => $this->make_hook('admin_authgroupesx', AUTH_MDP, 'admin'),
         );
     }
+
+    function handler_login(&$page)
+    {
+        $allkeys = func_get_args();
+        unset($allkeys[0]);
+        $url = join('/',$allkeys);
+        pl_redirect($url ? $url : 'events');
+    } 
 
     function handler_chall(&$page)
     {
@@ -127,6 +136,7 @@ class AuthModule extends PLModule
     function handler_groupex(&$page)
     {
         require_once dirname(__FILE__).'/auth/auth.inc.php';
+        $page->assign('referer', true);
 
         $gpex_pass = $_GET["pass"];
         $gpex_url  = urldecode($_GET["url"]);
