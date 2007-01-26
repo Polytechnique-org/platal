@@ -22,7 +22,7 @@
 
 <noscript>
   <p class="erreur">
-    Ton navigateur n'accepte pas le javaScript !!
+    Ton navigateur n'accepte pas le javascript !!
   </p>
   <p>
     Cette forme de script web est nécessaire pour l'utilisation du site.
@@ -42,7 +42,7 @@
 </p>
 {else}
 <h1>
-  Accès réservé aux Polytechniciens
+  Accès réservé aux polytechniciens
 </h1>
 {/if}
 {if $smarty.session.auth ge AUTH_COOKIE}
@@ -107,7 +107,8 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour que le site se souvienne de ce navigateur.<br />
+      <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour être automatiquement reconnu à ta prochaine connexion
+        depuis cet ordinateur.<br />
         Il n'est pas conseillé de cocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
         <input type="checkbox" name="remember" /> Garder l'accès aux services après déconnexion
       </td>
@@ -136,12 +137,12 @@ Problème de connexion ? <a href="Xorg/FAQ#connect">La réponse est là.</a>
 
 <div class="smaller">
   {if $smarty.server.HTTPS}
-  {icon name=lock} : Vous utilisez actuellement une connexion HTTPS sécurisée. Aucune information ne circule
-  en clair entre chez vous en Polytechnique.org, ce qui permet d'assurer une confidentialité maximale.
+  {icon name=lock} : tu utilise actuellement une connexion HTTPS sécurisée. Aucune information ne circule
+  en clair entre chez toi et Polytechnique.org, ce qui assure une confidentialité maximale.
   {else}
-  {icon name=lock_open} : Vous utilisez actuellement une connexion HTTP non sécurisée. Toutes les informations
-  (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez vous et 
-  Polytechnique.org. Il vous est possible d'utiliser une connexion sécurisée en cliquant sur le lien
+  {icon name=lock_open} : tu utilises actuellement une connexion HTTP non sécurisée. Toutes les informations
+  (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et 
+  Polytechnique.org. Tu peux basculer sur une connexion sécurisée en cliquant sur le lien
   <div class="center">
   <a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">
     {icon name=lock_add} Passer en connexion sécurisée</a>
