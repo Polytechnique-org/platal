@@ -69,6 +69,20 @@ if ( PEAR::isError($opts) ) {
     }
 }
 
+/* Validite des flags de transmission */
+check("SELECT  u.user_id, nom, prenom, promo,
+               profile_mobile_pub, emails_alias_pub, profile_web_pub, profile_freetext_pub, profile_medals_pub
+         FROM  auth_user_md5 AS u
+   INNER JOIN  auth_user_quick AS q USING(user_id)
+        WHERE  (profile_mobile_pub != 'private' AND profile_mobile_pub != 'ax' AND profile_mobile_pub != 'public')
+           OR  (emails_alias_pub != 'private' AND emails_alias_pub != 'public')
+           OR  (profile_web_pub != 'private' AND profile_web_pub != 'public')
+           OR  (profile_freetext_pub != 'private' AND profile_freetext_pub != 'public')
+           OR  (profile_medals_pub != 'private' AND profile_medals_pub != 'public')",
+    "Utilisateur n'ayant pas de flag de publicite pour leurs donnees de profil");
+check("select uid from adresses where pub != 'private' and pub !='ax' and pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour une adresse");
+check("select uid from tels where tel_pub != 'private' and tel_pub !='ax' and tel_pub != 'public'", "Utiliseur n'ayant pas de flag de publicite pour un numero de telephone");
+
 /* validite de adresses */
 check("select uid, adrid from adresses where FIND_IN_SET('pro',statut)","Utilisateurs ayant encore une adresse pro dans leurs adresses");
 check("select uid, adrid from adresses group by uid having count(adrid) > 7", "Utilisateurs ayant trop d'adresses");
