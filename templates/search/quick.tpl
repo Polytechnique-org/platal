@@ -52,22 +52,7 @@ sans distinction de casse et sans tenir compte des accents.
 
 {if $smarty.session.auth ge AUTH_COOKIE}
 <h2>Barre de recherche pour Firefox</h2>
-<script type="text/javascript">
-{literal}
-function addEngine() {
-  if ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function")) {
-   {/literal}
-    window.sidebar.addSearchEngine(
-      "{$baseurl|replace:"https":"http"}/xorg.src",
-      "{$baseurl|replace:"https":"http"}/images/xorg.png",
-      "Recherche rapide X.org",
-      "Academic");
-  {literal}
-  } else { alert("Impossible d'installer la barre de recherche Firefox"); }
-}
-{/literal}
-</script>
-<p>Tu peux <a href="javascript:addEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
+<p>Tu peux <a href="javascript:addFirefoxEngine()">installer</a> la barre de recherche rapide directement dans ton navigateur.
 </p>
 {/if}
 

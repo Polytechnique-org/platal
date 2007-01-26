@@ -42,6 +42,20 @@ function getNow() {
 }
 
 // }}}
+// {{{ Firefox
+
+function addFirefoxEngine() {
+  if ((typeof window.sidebar == "object") && (typeof window.sidebar.addSearchEngine == "function")) {
+    window.sidebar.addSearchEngine(
+      "http://www.polytechnique.org/xorg.src",
+      "http://www.polytechnique.org/images/xorg.png",
+      "Recherche rapide X.org",
+      "Academic");
+  } else { alert("Impossible d'installer la barre de recherche Firefox"); }
+}
+
+
+// }}}
 // {{{ Events
 
 function eventClosure(obj, methodName) {
