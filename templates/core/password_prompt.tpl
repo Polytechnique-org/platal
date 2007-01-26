@@ -137,10 +137,10 @@ Problème de connexion ? <a href="Xorg/FAQ#connect">La réponse est là.</a>
 
 <div class="smaller">
   {if $smarty.server.HTTPS}
-  {icon name=lock} : tu utilise actuellement une connexion HTTPS sécurisée. Aucune information ne circule
+  {icon name=lock} Tu utilise actuellement une connexion HTTPS sécurisée. Aucune information ne circule
   en clair entre chez toi et Polytechnique.org, ce qui assure une confidentialité maximale.
   {else}
-  {icon name=lock_open} : tu utilises actuellement une connexion HTTP non sécurisée. Toutes les informations
+  {icon name=lock_open} Tu utilises actuellement une connexion HTTP non sécurisée. Toutes les informations
   (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et 
   Polytechnique.org. Tu peux basculer sur une connexion sécurisée en cliquant sur le lien
   <div class="center">
