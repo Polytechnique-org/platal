@@ -304,6 +304,8 @@ function _hide_email($source)
 
 function hide_emails($source, &$smarty)
 {
+    fix_encoding($source);
+
     //prevent email replacement in <script> and <textarea>
     $tags = array('script', 'textarea', 'select');
 

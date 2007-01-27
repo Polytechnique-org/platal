@@ -162,7 +162,7 @@ function fix_gpc_magic(&$item, $key) {
         $item = stripslashes($item);
     }
 }
-function fix_encoding(&$item, $key) {
+function fix_encoding(&$item, $key = null) {
     if (is_array($item)) {
         array_walk($item, 'fix_encoding');
     } elseif (preg_match('/[\x80-\x9f]/', $item)) {

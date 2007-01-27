@@ -37,7 +37,7 @@ function cleanContent()
 function fillContent()
 {
   var field = document.getElementById('flyspray_detail');
-  if (field.value == '' || field.value.toUpperCase() == field.value) {
+  if (field.value == '' || (field.value.toUpperCase() == field.value && field.value.toLowerCase() == field.value)) {
     field.value = "** Explique ici le problème ou l'amélioration proposée **";
     field.style.color = "gray";
     field.style.textAlign = "center";

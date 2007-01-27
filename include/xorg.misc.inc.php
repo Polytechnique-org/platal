@@ -112,7 +112,10 @@ function make_forlife($prenom,$nom,$promo) {
 }
 
 function check_ip($level)
-{   
+{
+    if (empty($_SERVER['REMOTE_ADDR'])) {
+        return 0;
+    } 
     $test = array();
     switch ($level) {
       case 'unsafe': $test[] = "state = 'unsafe'";

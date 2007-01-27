@@ -53,7 +53,9 @@ class PlMail extends Smarty
     public function run($html)
     {
         $this->assign('html_version', $html);
-        return $this->fetch($this->tpl);
+        $text = $this->fetch($this->tpl);
+        fix_encoding($text);
+        return $text;
     }
 
     /** used to remove the empty lines due to {from ...}, {to ...} ... functions */
