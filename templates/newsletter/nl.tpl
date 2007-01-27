@@ -93,7 +93,7 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
       <div class="lnk">
         <a href="{$prefix}#cat{$cid}"><strong>{$smarty.foreach.cats.iteration}. {$nl->_cats[$cid]}</strong></a><br />
         {foreach from=$arts item=art}
-        <a href="{$prefix}#art{$art->_aid}">&nbsp;&nbsp;- {$art->title()|htmlentities}</a><br />
+        <a href="{$prefix}#art{$art->_aid}">&nbsp;&nbsp;- {$art->title()}</a><br />
         {/foreach}
       </div>
       {/foreach}
