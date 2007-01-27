@@ -230,12 +230,13 @@ class XnetEventsModule extends PLModule
         // update actual inscriptions
         $updated = false;
         $total   = 0;
+        $paid    = $evt['paid'] ? $evt['paid'] : 0;
         foreach ($subs as $j => $nb) {
             if ($nb >= 0) {
                 XDB::execute(
                     "REPLACE INTO  groupex.evenements_participants
                            VALUES  ({?}, {?}, {?}, {?}, {?})",
-                    $eid, S::v('uid'), $j, $nb, $evt['paid']);
+                    $eid, S::v('uid'), $j, $nb, $paid);
                 $updated = $eid;
             } else {
                 XDB::execute(
