@@ -38,6 +38,9 @@ class MLBanana extends Banana
     {
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
+        if (S::has_perms()) {
+            Banana::$msgshow_mimeparts[] = 'source';
+        }    
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
 
         MLBanana::$listname = $params['listname'];

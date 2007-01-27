@@ -55,6 +55,9 @@ class ForumsBanana extends Banana
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         Banana::$nntp_host = 'news://web_'.S::v('forlife')
                            . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
+        if (S::has_perms()) {
+            Banana::$msgshow_mimeparts[] = 'source';
+        }
         parent::__construct($params);
     }
 

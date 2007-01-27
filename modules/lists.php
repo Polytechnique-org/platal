@@ -356,6 +356,8 @@ class ListsModule extends PLModule
                         $get['part'] = 'source';
                     } elseif ($action == 'xface') {
                         $get['part']  = 'xface';
+                    } elseif ($action) {
+                        $get['part'] = str_replace('.', '/', $action);
                     }
                 }
             }

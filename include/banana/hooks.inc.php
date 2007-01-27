@@ -82,14 +82,17 @@ function hook_platalMessageLink($params)
             $base .= '/reply';
         } elseif (@$params['action'] == 'cancel') {
             $base .= '/cancel';
+        } elseif (@$params['part']) {
+            if (strpos($params['part'], '.') !== false) {
+                $params['artid'] .= '?part=' . urlencode($params['part']);
+                $base = '/read';
+            } else {
+                $base .= '/' . str_replace('/', '.', $params['part']);
+            }
         } else {
             $base .= '/read';
         }
-        if (isset($params['part']) && $params['part'] != 'xface') {
-            return $base . '/' . $params['artid'] . '?part=' . urlencode($params['part']);
-        } else {
-            return $base . '/' . $params['artid'];
-        }
+        return $base . '/' . $params['artid'];
     }
 
     if (@$params['action'] == 'new') {
