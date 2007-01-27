@@ -48,7 +48,7 @@ div.nl div.title {
     text-align : right;
     background-color : #369;
     color : #fff;
-    background-image : url(/images/logo_xorg_nl.png);
+    background-image : url(http://www.polytechnique.org/images/logo_xorg_nl.png);
     background-repeat : no-repeat;
     background-position : 0.5ex 0ex;
 }
@@ -62,7 +62,6 @@ div.nl div.lnk {
 }
 
 div.nl div.lnk a {
-    display : block;
     font-size : 95%;
 }
 

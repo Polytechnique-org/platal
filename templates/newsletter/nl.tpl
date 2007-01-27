@@ -91,9 +91,9 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
       <a id="top_lnk"></a>
       {foreach from=$nl->_arts key=cid item=arts name=cats}
       <div class="lnk">
-        <a href="{$prefix}#cat{$cid}"><strong>{$smarty.foreach.cats.iteration}. {$nl->_cats[$cid]}</strong></a>
+        <a href="{$prefix}#cat{$cid}"><strong>{$smarty.foreach.cats.iteration}. {$nl->_cats[$cid]}</strong></a><br />
         {foreach from=$arts item=art}
-        <a href="{$prefix}#art{$art->_aid}">&nbsp;&nbsp;- {$art->title()|htmlentities}</a>
+        <a href="{$prefix}#art{$art->_aid}">&nbsp;&nbsp;- {$art->title()|htmlentities}</a><br />
         {/foreach}
       </div>
       {/foreach}
