@@ -217,7 +217,8 @@ class Platal
         } else {
             $page->changeTpl('core/password_prompt.tpl');
             $page->addJsLink('do_challenge_response.js');
-    	}
+        }
+        $page->assign('platal', $this);
         $page->run();
     }
 

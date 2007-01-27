@@ -20,16 +20,6 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<noscript>
-  <p class="erreur">
-    Ton navigateur n'accepte pas le javascript !!
-  </p>
-  <p>
-    Cette forme de script web est nécessaire pour l'utilisation du site.
-    Pour en savoir plus, regarde la <a href="Xorg/FAQ#connect">FAQ</a>.
-  </p>
-</noscript>
-
 {if $referer || $platal->pl_self() neq 'login'}
 <h1>
   Accès restreint
@@ -74,7 +64,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 
 <br />
 
-<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;">
+<form action="{$smarty.server.REQUEST_URI}" method="post" id="login" onsubmit="doChallengeResponse(); return false;" style="display: none">
   <table class="bicol" cellpadding="4" summary="Formulaire de login">
     <tr>
       <th colspan="2">{if $smarty.server.HTTPS}{icon name=lock}{/if} Identification
@@ -126,12 +116,25 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
       </td>
     </tr>
   </table>
+  <p>     
+    Problème de connexion ? <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
+  </p>
 </form>
-<p>
-Problème de connexion ? <a href="Xorg/FAQ#connect">La réponse est là.</a>
-<br />
-(Activer obligatoirement le <strong>javascript</strong>)
-</p>
+
+<div id="nologin" style="background: #fcc; color: red">
+  Pour assurer la confidentialité de ton mot de passe, il est chiffré sur ta machine
+  avant de nous être transmis. Pour cela, il faut
+  <a href="Xorg/FAQ?display=light#connect" class="popup2">activer javascript</a>
+  dans ton navigateur, ce qui n'est actuellement pas le cas.
+  <div class="center" style="margin-top: 1ex">
+    <strong>Active le javascript et recharge cette page pour pouvoir te connecter.</strong>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.getElementById('login').style.display="";
+  document.getElementById('nologin').style.display="none";
+</script>
 
 <hr />
 
