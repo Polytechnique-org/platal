@@ -349,6 +349,7 @@ class ListsModule extends PLModule
                         $get['action'] = $action;
                     } elseif ($action == 'from') {
                         $get['first'] = $artid;
+                        unset($get['artid']);
                     } elseif ($action == 'read') {
                         $get['part']  = @$_GET['part'];
                     } elseif ($action == 'source') {
