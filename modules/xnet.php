@@ -62,14 +62,6 @@ class XnetModule extends PLModule
         $page->changeTpl('xnet/index.tpl');
     }
 
-    function handler_login(&$page)
-    {
-        $allkeys = func_get_args();
-        unset($allkeys[0]);
-        $url = join('/',$allkeys);
-        pl_redirect($url);
-    }
-
     function handler_exit(&$page)
     {
         XnetSession::killSuid();
