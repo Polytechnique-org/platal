@@ -64,7 +64,9 @@ $wiki_cache   = wiki_work_dir().'/cache_'.wiki_filename($n).'.tpl';
 $cache_exists = file_exists($wiki_cache);
 
 if (Env::v('action') || !$cache_exists) {
-    @unlink($wiki_cache);
+    if ($cache_exists) {
+        unlink($wiki_cache);
+    }
 
     // we leave pmwiki do whatever it wants and store everything
     ob_start();
@@ -76,15 +78,22 @@ if (Env::v('action') || !$cache_exists) {
     $j = strpos($wikiAll, "<!--/PageLeftFmt-->", $i);
 }
 
+$wiki_exists = file_exists(wiki_work_dir() . '/' . wiki_filename($n));
+
 if (Env::v('action')) {
     $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
     $wikiAll = substr($wikiAll, $j);
 } else {
-    if (!$cache_exists) {
+    if (!$cache_exists && $wiki_exists) {
         $wikiAll = substr($wikiAll, $j);
         wiki_putfile($wiki_cache, $wikiAll);
-    } else {
+    } elseif ($cache_exists) {
         $wikiAll = file_get_contents($wiki_cache);
+    } elseif (S::has_perms()) {
+        $wikiAll = "<p>La page de wiki $n n'existe pas. "
+                 . "Il te suffit de <a href='" . str_replace('.', '/', $n) . "?action=edit'>l'éditer</a></p>";
+    } else {
+        $page->changeTpl('core/404.tpl');
     }
 }
 
@@ -98,7 +107,7 @@ $page->assign('canedit',    wiki_may_have_perms($perms[1]));
 $page->assign('has_perms',  wiki_may_have_perms('admin'));
 
 $page->assign('wikipage', str_replace('.', '/', $n));
-if ($perms[1] == 'admin' && !Env::v('action')) {
+if ($perms[1] == 'admin' && !Env::v('action') && $wiki_exists) {
     $page->assign('pmwiki_cache', $wiki_cache);
 } else {
     $page->assign('pmwiki',   $wikiAll);

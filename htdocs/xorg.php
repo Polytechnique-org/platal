@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 require_once dirname(__FILE__).'/../include/xorg.inc.php';
+global $globals, $platal, $page;
 
 if (!($path = Env::v('n')) || ($path{0} < 'A' || $path{0} > 'Z')) {
 
