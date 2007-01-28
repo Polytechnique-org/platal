@@ -26,7 +26,8 @@ class CoreModule extends PLModule
         return array(
             '403'         => $this->make_hook('403', AUTH_PUBLIC),
             '404'         => $this->make_hook('404', AUTH_PUBLIC),
-            'send_bug'       => $this->make_hook('bug', AUTH_COOKIE),
+            'login'       => $this->make_hook('login',      AUTH_COOKIE),
+            'send_bug'    => $this->make_hook('bug', AUTH_COOKIE),
             'purge_cache' => $this->make_hook('purge_cache', AUTH_COOKIE, 'admin'),
             'get_rights'  => $this->make_hook('get_rights', AUTH_MDP, 'admin'),
 
@@ -62,6 +63,14 @@ class CoreModule extends PLModule
             $page->changeTpl('core/404.tpl');
         }
         $page->assign('near', $platal->near_hook());
+    }
+
+    function handler_login(&$page)
+    {
+        $allkeys = func_get_args();
+        unset($allkeys[0]);
+        $url = join('/',$allkeys);
+        pl_redirect($url);
     }
 
     function handler_favicon(&$page)

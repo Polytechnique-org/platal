@@ -22,9 +22,14 @@
 
 
 {foreach item=query from=$trace_data}
-<table class="bicol" style="width: 75%; font-family: monospace; font-size: smaller; margin-left:2px; margin-top: 3px;">
+{if $query.explain}
+{assign var=cols value=$query.explain[0]|@count}
+{else}
+{assign var=cols value=1}
+{/if}
+<table class="bicol" style="width: 75%; font-size: smaller; margin-left:2px; margin-top: 3px;">
   <tr class="impair">
-    <td>
+    <td colspan="{$cols}">
       <strong>QUERY:</strong>
       <pre style="padding: 0; margin: 0;">{$query.query}</pre>
       <br/>
@@ -32,36 +37,34 @@
   </tr>
   {if $query.error}
   <tr>
-    <td>
+    <td colspan="{$cols}">
       <strong style="color: #f00">ERROR:</strong><br />
       {$query.error|nl2br}
     </td>
   </tr>
   {else}
   <tr>
-    <td>
+    <td colspan="{$cols}">
       <strong>INFO:</strong><br />
       {$query.rows} enregistrement{if $query.rows > 1}s{/if} en {$query.exectime}ms
     </td>
   </tr>
   {/if}
-</table>
 {if $query.explain}
-<table class="bicol" style="width: 75%; font-family: monospace; font-size: smaller; margin-left: 2px; margin-bottom: 3px;">
   <tr>
     {foreach key=key item=item from=$query.explain[0]}
-    <th>{$key}</th>
+    <th style="font-size: smaller">{$key}</th>
     {/foreach}
   </tr>
   {foreach item=explain_row from=$query.explain}
   <tr class="impair">
     {foreach item=item from=$explain_row}
-    <td class="center">{$item}</td>
+    <td class="center" style="font-size: smaller">{$item}</td>
     {/foreach}
   </tr>
   {/foreach}
-</table>
 {/if}
+</table>
 {/foreach}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

@@ -25,7 +25,6 @@ class XnetModule extends PLModule
     {
         return array(
             'index'     => $this->make_hook('index',     AUTH_PUBLIC),
-            'login'     => $this->make_hook('login',     AUTH_MDP),
             'exit'      => $this->make_hook('exit',      AUTH_PUBLIC),
 
             'admin'     => $this->make_hook('admin',     AUTH_MDP, 'admin'),

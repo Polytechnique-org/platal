@@ -25,7 +25,7 @@
 
 body {
     font-family: "Arial", sans-serif;
-    font-size: 90%;
+    font-size: 10pt;
     background: url('../images/skins/keynote_bg.png') #4f4e63 top left repeat-x fixed;
     color: #fff;
 }
@@ -545,7 +545,7 @@ div.adresse {
 #body-menu {
     width: 140px;
     text-align: center;
-    font-size: 78%;
+    font-size: 85%;
     font-weight: bold;
     white-space: nowrap;
     border-right: 1px solid #fff;
