@@ -359,6 +359,9 @@ class ListsModule extends PLModule
                     } elseif ($action) {
                         $get['part'] = str_replace('.', '/', $action);
                     }
+                    if (Get::v('action') == 'showext') {
+                        $get['action'] = 'showext';
+                    }   
                 }
             }
             require_once('banana/ml.inc.php');
@@ -442,9 +445,10 @@ class ListsModule extends PLModule
                 $this->moderate_mail($domain, $liste, $mail);
             }
         } elseif (Env::has('mid')) {
-            if (Get::has('mid')) {
+            if (Get::has('mid') && !Env::has('mok') && !Env::has('mdel')) {
                 require_once('banana/moderate.inc.php');
-                $params = array('listname' => $liste, 'domain' => $domain, 'artid' => Get::i('mid'), 'part' => Get::v('part'));
+                $params = array('listname' => $liste, 'domain' => $domain,
+                                'artid' => Get::i('mid'), 'part' => Get::v('part'), 'action' => Get::v('action'));
                 $banana = new ModerationBanana($params, $this->client);
                 $res    = $banana->run();
                 $page->addCssInline($banana->css());

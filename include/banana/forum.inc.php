@@ -42,8 +42,11 @@ function hook_makeLink($params)
         return $base;
     }
     $base .= '/' . $params['group'];
-
-    return $base . hook_platalMessageLink($params);
+    $base = $base . hook_platalMessageLink($params);
+    if (@$params['action'] == 'showext') {
+        $base .= '?action=showext';
+    }
+    return $base;
 }
 
 class ForumsBanana extends Banana

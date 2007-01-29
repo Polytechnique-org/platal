@@ -26,7 +26,11 @@ function hook_makeLink($params)
 {
     global $globals, $platal;
     $base = $globals->baseurl . '/' . $platal->ns . 'lists/archives/' . MLBanana::$listname;
-    return $base . hook_platalMessageLink($params);
+    $base = $base . hook_platalMessageLink($params);
+    if (@$params['action'] == 'showext') {
+        $base .= '?action=showext';
+    }
+    return $base;
 }
 
 class MLBanana extends Banana

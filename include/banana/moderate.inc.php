@@ -39,7 +39,7 @@ function hook_makeLink($params)
         if ($key == 'group') {
             continue;
         }
-        if ($key == 'action') {
+        if ($key == 'action' && $value != 'showext') {
             continue;
         }
         if (!empty($get)) {
