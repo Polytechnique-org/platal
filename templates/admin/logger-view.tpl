@@ -33,10 +33,21 @@
   <td>{$session.username} {if $session.suer}(suid by {$session.suer}){/if}
   [<a href="{$platal->ns}admin/logger/user/{$session.username}">user's log</a>]</td>
 </tr>
+{if $session.forward_ip}
 <tr class="pair">
   <td class="titre">Hôte</td>
+  <td><em>{$session.forward_host}</em> <tt>IP: {$session.forward_ip}</tt></td>
+</tr>
+<tr class="pair">
+  <td class="titre">Proxy</td>
   <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
 </tr>
+{else}
+<tr class="pair">
+  <td class="titre">{if $session.flags}Proxy{else}Hôte{/if}</td>
+  <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
+</tr>
+{/if}
 <tr class="impair">
   <td class="titre">Navigateur</td>
   <td>{$session.browser}</td>

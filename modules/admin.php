@@ -964,9 +964,9 @@ class AdminModule extends PLModule
         $page->assign('action', $action);
 
         if ($action == 'list') {
-            $sql = "SELECT  w.ip, s.host, w.detection, w.state, a.alias AS forlife
+            $sql = "SELECT  w.ip, IF(w.ip = s.ip, s.host, s.forward_host), w.detection, w.state, a.alias AS forlife
                       FROM  ip_watch        AS w
-                 LEFT JOIN  logger.sessions AS s USING(ip)
+                 LEFT JOIN  logger.sessions AS s ON (s.ip = w.ip OR s.forward_ip = w.ip)
                  LEFT JOIN  aliases         AS a ON (a.id = s.uid AND a.type = 'a_vie')
                   GROUP BY  w.ip, a.alias
                   ORDER BY  w.state, w.ip, a.alias";

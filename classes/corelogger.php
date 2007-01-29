@@ -52,14 +52,25 @@ class CoreLogger {
      * @param $suid the id of the administrator who has just su'd to the user
      * @return session the session id
      */
-    function writeSession($uid, $suid = null) {
+    function writeSession($uid, $suid = null)
+    {
         $ip      = $_SERVER['REMOTE_ADDR'];
         $host    = strtolower(gethostbyaddr($_SERVER['REMOTE_ADDR']));
         $browser = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
+        @list($forward_ip,) = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $forward_host = $forward_ip;
+        if ($forward_host) {
+            $forward_host = strtolower(gethostbyaddr($forward_host));
+        }
+        $proxy = '';
+        if ($forward_ip || @$_SERVER['HTTP_VIA']) {
+            $proxy = 'proxy';
+        }
+
         XDB::execute("INSERT INTO logger.sessions
-                     SET uid={?}, host={?}, ip={?}, browser={?}, suid={?}",
-                     $uid, $host, $ip, $browser, $suid);
+                     SET uid={?}, host={?}, ip={?}, forward_ip={?}, forward_host={?}, browser={?}, suid={?}, flags={?}",
+                     $uid, $host, $ip, $forward_ip, $forward_host, $browser, $suid, $proxy);
 
         return XDB::insertId();
     }

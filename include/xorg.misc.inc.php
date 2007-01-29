@@ -114,10 +114,21 @@ function make_forlife($prenom,$nom,$promo) {
 function check_ip($level)
 {
     if (empty($_SERVER['REMOTE_ADDR'])) {
-        return 0;
+        return false;
     }
     if (empty($_SESSION['check_ip'])) {
-        $res = XDB::query('SELECT state FROM ip_watch WHERE ip = {?}', $_SERVER['REMOTE_ADDR']);
+        $ips = array();
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        }
+        $ips[] = $_SERVER['REMOTE_ADDR'];
+        foreach ($ips as &$ip) {
+            $ip = "ip='$ip'";
+        }
+        $res = XDB::query('SELECT state
+                             FROM ip_watch
+                            WHERE ' . implode(' OR ', $ips) . '
+                         ORDER BY state DESC');
         if ($res->numRows()) {
             $_SESSION['check_ip'] = $res->fetchOneCell();
         } else {
