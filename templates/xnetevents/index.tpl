@@ -148,7 +148,7 @@
         {elseif $m.nb eq 1}
         Tu viendras seul
         {else}
-        Tu viendras avec {$m.nb} personne{if $m.nb > 2}s{/if}
+        Tu viendras avec {$m.nb-1} personne{if $m.nb > 2}s{/if}
         {/if} à <em>{$m.titre}</em><br />
         {/foreach}
       {/if}
