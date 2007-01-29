@@ -55,12 +55,9 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
   <head>  
-    <title></title>
+    <title>Lettre d'information de l'AX</title>
     <style type="text/css">
     <!--
-      {literal}
-      body      { background-color: #ddd; color: #000; }
-      {/literal}
       {$am->css()}
     -->
     </style>
@@ -68,6 +65,7 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
   <body>
 {/if}
     <div class='ax_mail'>
+    <div class='ax_text'>
       <div class="title">{$am->title()}</div>
       <div class="intro">{$am->head($prenom, $nom, $sexe, 'html')|smarty:nodefaults}</div>
       <div class="body">{$am->body('html')|smarty:nodefaults}</div>
@@ -79,6 +77,7 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
         [<a href="https://www.polytechnique.org/ax">archives</a>&nbsp;|
         <a href="https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}">ne plus recevoir</a>]
       </div>
+    </div>
     </div>
 {if $is_mail}
   </body>

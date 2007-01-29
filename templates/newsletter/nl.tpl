@@ -73,12 +73,9 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
   <head>  
-    <title></title>
+    <title>Lettre mensuelle de Polytechnique.org</title>
     <style type="text/css">
     <!--
-      {literal}
-      body      { background-color: #ddd; color: #000; }
-      {/literal}
       {$nl->css()}
     -->
     </style>
@@ -86,6 +83,7 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
   <body>
 {/if}
     <div class='nl'>
+    <div class='nl_text'>
       <div class="title">{$nl->title()}</div>
       <div class="intro">{$nl->head($prenom, $nom, $sexe, 'html')|smarty:nodefaults}</div>
       <a id="top_lnk"></a>
@@ -114,6 +112,7 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
         [<a href="https://www.polytechnique.org/nl">archives</a>&nbsp;|
          <a href="https://www.polytechnique.org/nl/submit">écrire dans la NL</a>&nbsp;|
          <a href="https://www.polytechnique.org/nl/out">ne plus recevoir</a>]
+      </div>
       </div>
     </div>
 {if $is_mail}

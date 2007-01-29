@@ -20,10 +20,17 @@
 
 
 div.ax_mail {
+    margin : 0;
+    padding : 1em 0;
+    background-color: #ddd;
+    color: #000;
+}
+
+div.ax_text {
     margin : auto;
     width : 72ex;
     font-family : "Georgia", "Times New Roman", serif;
-    font-size : 11pt;
+    font-size : 10pt;
     text-align : justify;
     background-color : #fff;
     color : #000;
@@ -41,7 +48,7 @@ div.ax_mail a[href]:hover {
 
 div.ax_mail div.title {
     margin : 0ex;
-    padding : 72px 1ex 1ex 1ex;
+    padding : 68px 1ex 1ex 1ex;
     font-size : 120%;
     font-weight : bold;
     text-align : right;
@@ -49,7 +56,7 @@ div.ax_mail div.title {
     color : #a40000;
     background-repeat : no-repeat;
     background-position : 0ex 0ex;
-    background-image : url(http://dev.m4x.org/images/ax_mail_header.png);
+    background-image : url(http://www.polytechnique.org/images/ax_mail_header.jpg);
 }
 
 div.ax_mail div.intro {
@@ -87,7 +94,7 @@ div.ax_mail div.body h2 {
 
 div.ax_mail div.signature {
     margin : 2ex 2ex 0 0ex;
-    font-size : 80%;
+    font-size : 90%;
     font-style: italic;
     text-align : right;
 
