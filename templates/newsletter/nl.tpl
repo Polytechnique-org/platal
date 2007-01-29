@@ -75,15 +75,18 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
   <head>  
     <title>Lettre mensuelle de Polytechnique.org</title>
     <style type="text/css">
+      {literal}
+      body      { background-color: #ddd; color: #000; }
+      {/literal}
     <!--
       {$nl->css()}
     -->
     </style>
   </head>
   <body>
+    <div class='nl_background'>
 {/if}
     <div class='nl'>
-    <div class='nl_text'>
       <div class="title">{$nl->title()}</div>
       <div class="intro">{$nl->head($prenom, $nom, $sexe, 'html')|smarty:nodefaults}</div>
       <a id="top_lnk"></a>
@@ -114,8 +117,8 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
          <a href="https://www.polytechnique.org/nl/out">ne plus recevoir</a>]
       </div>
       </div>
-    </div>
 {if $is_mail}
+    </div>
   </body>
 </html>
 {/if}

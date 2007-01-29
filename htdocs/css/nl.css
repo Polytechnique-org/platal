@@ -18,14 +18,14 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-div.nl {
+div.nl_background {
     margin : 0;
     padding : 1em 0;
     background-color: #ddd;
     color: #000;
 }
 
-div.nl_text {
+div.nl {
     margin : auto;
     width : 72ex;
     font-family : "Verdana", "Arial", "Helvetica", sans-serif;

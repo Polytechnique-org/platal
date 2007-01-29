@@ -57,15 +57,18 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
   <head>  
     <title>Lettre d'information de l'AX</title>
     <style type="text/css">
+      {literal}
+      body      { background-color: #ddd; color: #000; }
+      {/literal}
     <!--
       {$am->css()}
     -->
     </style>
   </head>
   <body>
+    <div class="ax_background">
 {/if}
     <div class='ax_mail'>
-    <div class='ax_text'>
       <div class="title">{$am->title()}</div>
       <div class="intro">{$am->head($prenom, $nom, $sexe, 'html')|smarty:nodefaults}</div>
       <div class="body">{$am->body('html')|smarty:nodefaults}</div>
@@ -78,8 +81,8 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
         <a href="https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}">ne plus recevoir</a>]
       </div>
     </div>
-    </div>
 {if $is_mail}
+    </div>
   </body>
 </html>
 {/if}

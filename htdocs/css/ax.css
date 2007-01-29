@@ -19,14 +19,14 @@
  ***************************************************************************/
 
 
-div.ax_mail {
+div.ax_background {
     margin : 0;
     padding : 1em 0;
     background-color: #ddd;
     color: #000;
 }
 
-div.ax_text {
+div.ax_mail {
     margin : auto;
     width : 72ex;
     font-family : "Georgia", "Times New Roman", serif;
