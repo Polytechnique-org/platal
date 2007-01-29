@@ -115,19 +115,23 @@ function check_ip($level)
 {
     if (empty($_SERVER['REMOTE_ADDR'])) {
         return 0;
-    } 
+    }
+    if (empty($_SESSION['check_ip'])) {
+        $res = XDB::query('SELECT state FROM ip_watch WHERE ip = {?}', $_SERVER['REMOTE_ADDR']);
+        if ($res->numRows()) {
+            $_SESSION['check_ip'] = $res->fetchOneCell();
+        } else {
+            $_SESSION['check_ip'] = 'safe';
+        }
+    }
     $test = array();
     switch ($level) {
-      case 'unsafe': $test[] = "state = 'unsafe'";
-      case 'dangerous': $test[] = "state = 'dangerous'";
-      case 'ban': $test[] = "state = 'ban'"; break;
+      case 'unsafe': $test[] = 'unsafe';
+      case 'dangerous': $test[] = 'dangerous';
+      case 'ban': $test[] = 'ban'; break;
       default: return false;
     }
-    $res = XDB::query("SELECT  state
-                         FROM  ip_watch
-                        WHERE  ip = {?} AND (" . implode(' OR ', $test) . ')',
-                      $_SERVER['REMOTE_ADDR']);
-    return $res->numRows();
+    return in_array($_SESSION['check_ip'], $test);
 }
 
 function check_email($email, $message)
