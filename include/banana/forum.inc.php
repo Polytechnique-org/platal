@@ -55,6 +55,7 @@ class ForumsBanana extends Banana
     {
         global $globals;
         Banana::$msgedit_canattach = false;
+        Banana::$spool_root = $globals->banana->spool_root;
         array_push(Banana::$msgparse_headers, 'x-org-id', 'x-org-mail');
         Banana::$nntp_host = 'news://web_'.S::v('forlife')
                            . ":{$globals->banana->password}@{$globals->banana->server}:{$globals->banana->port}/";
