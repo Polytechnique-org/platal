@@ -72,6 +72,15 @@ table.tinybicol th, table.bicol th {
     background-color: #0067fe;
 }
 
+table.tinybicol th a:link, table.tinybicol th a:visited,
+table.tinybicol th a:active, table.tinybicol th a:hover,
+table.bicol th a:link, table.bicol th a:visited,
+table.bicol th a:active, table.bicol th a:hover {
+    color: #BBF;
+    background: inherit;
+}
+
+
 /*******************************************************************************
     4   Tableau de choix de skins
         [ Styles pour les tableaux de types de ceux des skins ]
