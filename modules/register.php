@@ -188,7 +188,7 @@ class RegisterModule extends PLModule
                             $alert .= "Tentative d'inscription depuis une IP surveillee";
                         } else {
                             $sub_state['step'] = 4;
-                            if ($sub_state['backs'] >= 3) {
+                            if (count($sub_state['backs']) >= 3) {
                                 $alert .= "Fin d'une inscription hésitante";
                             }
                             finish_ins($sub_state);
