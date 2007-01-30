@@ -43,6 +43,9 @@ class PLTableEditor {
 	// null => delete effectively, false => no deletion, SQL
     var $delete_action;
     var $delete_message;
+    // Should "Save" button return to the list view
+    var $auto_return = true;
+
     /* table editor for platal
      * $plname : the PLname of the page, ex: admin/payments
      * $table : the table to edit, ex: profile_medals
@@ -125,6 +128,11 @@ class PLTableEditor {
             }
         }
         return $entry;
+    }
+    // set whether the save button show redirect to list view or edit view
+    function list_on_edit($var)
+    {
+        $this->auto_return = $var;
     }
     // change display of a field
     function describe($name, $desc, $display) {
@@ -237,10 +245,15 @@ class PLTableEditor {
                 XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
                 if ($id !== false)
                     $page->trig("L'entrée ".$id." a été mise à jour.");
-                else
+                else {
                     $page->trig("Une nouvelle entrée a été créée.");
+                    $id = XDB::insertId();
+                }
             } else
                 $page->trig("Impossible de mette à jour.");
+            if (!$this->auto_return) {
+                return $this->apply($page, 'edit', $id);
+            }
         }
         if ($action == 'sort') {
         	$this->sortfield = $id;
