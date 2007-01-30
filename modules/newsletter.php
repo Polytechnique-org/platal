@@ -74,6 +74,8 @@ class NewsletterModule extends PLModule
         $page->changeTpl('newsletter/submit.tpl');
 
         require_once 'newsletter.inc.php';
+        require_once 'wiki.inc.php';
+        wiki_require_page('Xorg.LettreMensuelle');
 
         if (Post::has('see') || (Post::has('valid') && (!trim(Post::v('title')) || !trim(Post::v('body'))))) {
             if (!Post::has('see')) {

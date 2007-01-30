@@ -122,67 +122,8 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de
 </form>
 
 <a id='conseils'></a>
-<h2>Conseils de rédaction</h2>
-
-<h3>Mises en garde</h3>
-
-<p>
-<em>La lettre mensuelle est envoyée à la quasi-totalité des X inscrits à polytechnique.org.</em> Cela impose la plus grande vigilance sur son contenu. Pour être publiée, une annonce doit concerner clairement et directement la vie de la communauté polytechnicienne ou une majorité des X.
-</p>
-
-<p>
-Quand proposer une annonce ?
-La lettre mensuelle est envoyée dans les premiers jours de chaque mois.
-Nous ne publions pas deux mois de suite des articles annonçant un même événement.
-Réfléchis donc bien au moment le plus opportun pour diffuser ton annonce !
-</p>
-
-<p>
-L'équipe éditoriale relit les articles et les rectifie éventuellement pour préserver l'uniformité de la lettre mensuelle.
-C'est plus simple pour nous si l'article respecte déjà les règles suivantes !
-</p>
-
-<h3>Longueur</h3>
-
-<p>
-Plus un article est court, plus il y a de chances qu'il soit lu !
-Nous fixons une longueur maximale à 8 lignes non vides de 68 caractères.
-</p>
-
-<p>
-S'il y a beaucoup d'informations annexes (programme détaillé, etc.), elles devraient être mises sur une page web, et l'article devrait contenir un lien vers cette page.
-</p>
-
-<p>
-Les contacts, prix, adresses email, liens web, etc. sont à placer dans la case "Ajouts" ; il devraient prendre une à trois lignes.
-</p>
-
-<h3>Mise en forme</h3>
-
-<p>
-Il est possible de mettre du texte <strong>en gras</strong>, <em>en italique</em> ou de
-<span style="text-decoration: underline">le souligner</span> en l'encadrant avec les caractères spéciaux
-*, / et _ respectivement : *en gras*, /en italique/, _souligné_.
-Merci de ne pas abuser du formatage !
-</p>
-
-<h3>Conventions</h3>
-
-<p>
-Voici quelques exemples à respecter pour garantir l'uniformité de la newsletter.
-</p>
-
-<ul>
-<li>Noms : Jean DUPONT (48)</li>
-<li>Date : le 1er avril, le jeudi 14 janvier (il n'est pas utile de préciser l'année)</li>
-<li>Heures : 9h30, 19h00</li>
-<li>Lieux : Maison des X, 12 rue de Poitiers, 75007 Paris</li>
-<li>Site web : http://www.polytechnique.org</li>
-<li>E-mail : utiliser de préférence une adresse @polytechnique.org !</li>
-<li>Numéro de téléphone : 01 23 45 67 89</li>
-</ul>
+{include file=../spool/wiki.d/cache_Xorg.LettreMensuelle.tpl public=1}
 
 {/if}
-
 
 {* vim:set et sw=2 sts=2 sws=2: *}
