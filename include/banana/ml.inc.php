@@ -40,6 +40,7 @@ class MLBanana extends Banana
 
     function __construct($params = null)
     {
+		global $globals;
         Banana::$spool_root = $globals->banana->spool_root;
         Banana::$spool_boxlist = false;
         Banana::$msgedit_canattach = true;
