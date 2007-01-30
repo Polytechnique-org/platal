@@ -129,7 +129,7 @@
           {/foreach}
         </td>
         <td id="body">
-          {if $asso && ($is_admin || $smarty.session.suid.perms eq 'admin' || $smarty.suid.may_update[$asso.id])}
+          {if $asso && ($is_admin || $smarty.session.suid.perms eq 'admin' || $smarty.session.suid.may_update[$asso.id])}
           <div style="float: right" class="breadcrumb">
             <form method="post" action="{$platal->ns}change_rights">
               <div style="display: inline">
