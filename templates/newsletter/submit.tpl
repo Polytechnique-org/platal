@@ -122,7 +122,7 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de
 </form>
 
 <a id='conseils'></a>
-{include file=../spool/wiki.d/cache_Xorg.LettreMensuelle.tpl public=1}
+{include file=../spool/wiki.d/cache_Xorg.LettreMensuelle.tpl included=1}
 
 {/if}
 

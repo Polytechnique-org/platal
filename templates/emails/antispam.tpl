@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-{include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=1}
+{include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=1 included=1}
 
 <script type="text/javascript" src="javascript/ajax.js"></script>
   <fieldset>
@@ -38,6 +38,6 @@
     <label for='s3'>(4) le filtre anti-spam est activé, et élimine les mails détectés comme spams</label>
   </fieldset>
 
-{include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=2}
+{include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=2 included=1}
 
 {* vim:set et sw=2 sts=2 sws=2: *}

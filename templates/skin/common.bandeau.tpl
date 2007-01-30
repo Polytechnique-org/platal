@@ -31,7 +31,7 @@
 {/if}
 
 <div id="bandeau-X">
-	<img href="http://www.polytechnique.org/bandeau/icone.png" alt=""/>
+	<img src="http://www.polytechnique.org/bandeau/icone.png" alt=""/>
 	<a href="http://www.polytechnique.fr/">L'&Eacute;cole</a> &middot;
 	<a href="http://www.polytechnique.edu/">Institutional site</a>
 	&tilde;&tilde;
