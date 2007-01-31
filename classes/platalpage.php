@@ -263,20 +263,14 @@ function at_to_globals($tpl_source, &$smarty)
 
 function trimwhitespace($source, &$smarty)
 {
-    $tags = array('script', 'pre', 'textarea');
-
-    foreach ($tags as $tag) {
-        preg_match_all("!<{$tag}[^>]+>.*?</{$tag}>!is", $source, ${$tag});
-        $source = preg_replace("!<{$tag}[^>]+>.*?</{$tag}>!is", "&&&{$tag}&&&", $source);
-    }
+    $tags = '(script|pre|textarea)';
+    preg_match_all("!<$tags.*?>.*?</$tags>!is", $source, $tagsmatches);
+    $source = preg_replace("!<$tags.*?>.*?</$tags>!is", "&&&tags&&&", $source);
 
     // remove all leading spaces, tabs and carriage returns NOT
     // preceeded by a php close tag.
     $source = preg_replace('/((?<!\?>)\n)[\s]+/m', '\1', $source);
-
-    foreach ($tags as $tag) {
-        $source = preg_replace("!&&&{$tag}&&&!e",  'array_shift(${$tag}[0])', $source);
-    }
+    $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
 
     return $source; 
 }
@@ -307,20 +301,17 @@ function hide_emails($source, &$smarty)
     fix_encoding($source);
 
     //prevent email replacement in <script> and <textarea>
-    $tags = array('script', 'textarea', 'select');
-
-    foreach ($tags as $tag) {
-        preg_match_all("!<{$tag}[^>]+>.*?</{$tag}>!is", $source, ${$tag});
-        $source = preg_replace("!<{$tag}[^>]+>.*?</{$tag}>!is", "&&&{$tag}&&&", $source);
-    }
+    $tags = '(script|textarea|select)';
+    preg_match_all("!<$tags.*?>.*?</$tags>!is", $source, $tagsmatches);
+    $source = preg_replace("!<$tags.*?>.*?</$tags>!is", "&&&tags&&&", $source);
 
     //catch all emails in <a href="mailto:...">
-    preg_match_all("!<a[^>]+href=[\"'][^\"']*[-a-z0-9+_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>.*?</a>!is", $source, $ahref);
-    $source = preg_replace("!<a[^>]+href=[\"'][^\"']*[-a-z0-9+_.]+@[-a-z0-9_.]+[^\"']*[\"'][^>]*>.*?</a>!is", '&&&ahref&&&', $source);
+    preg_match_all("!<a[^>]+href=[\"'][^\"']*[-a-z0-9+_.]+@[-a-z0-9_.]+[^\"']*[\"'].*?>.*?</a>!is", $source, $ahref);
+    $source = preg_replace("!<a[^>]+href=[\"'][^\"']*[-a-z0-9+_.]+@[-a-z0-9_.]+[^\"']*[\"'].*?>.*?</a>!is", '&&&ahref&&&', $source);
 
     //prevant replacement in tag attributes
-    preg_match_all("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+[^>]+>!is", $source, $misc);
-    $source = preg_replace("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+[^>]+>!is", '&&&misc&&&', $source);
+    preg_match_all("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!is", $source, $misc);
+    $source = preg_replace("!<[^>]+[-a-z0-9_+.]+@[-a-z0-9_.]+.+?>!is", '&&&misc&&&', $source);
 
     //catch !
     $source = preg_replace('!([-a-z0-9_+.]+@[-a-z0-9_.]+)!ie', '_hide_email("\1")', $source); 
@@ -328,9 +319,7 @@ function hide_emails($source, &$smarty)
 
     // restore data
     $source = preg_replace('!&&&misc&&&!e', 'array_shift($misc[0])', $source);
-    foreach ($tags as $tag) {
-        $source = preg_replace("!&&&{$tag}&&&!e",  'array_shift(${$tag}[0])', $source);
-    }
+    $source = preg_replace("!&&&tags&&&!e",  'array_shift($tagsmatches[0])', $source);
 
     return $source;
 }

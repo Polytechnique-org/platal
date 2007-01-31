@@ -324,10 +324,10 @@ class Redirect
 
     function get_broken_mx()
     {
-        $res = XDB::iterRow("SELECT  host, text
-                               FROM  mx_watch
-                              WHERE  state != 'ok'");
-        if (!$res->total()) {
+        $res = XDB::query("SELECT  host, text
+                             FROM  mx_watch
+                            WHERE  state != 'ok'");
+        if (!$res->numRows()) {
             return array();
         }
         $mxs = $res->fetchAllAssoc();
