@@ -66,6 +66,10 @@ $cache_exists = file_exists($wiki_cache);
 if (Env::v('action') || !$cache_exists) {
     if ($cache_exists) {
         unlink($wiki_cache);
+        $files = glob($globals->spoolroot . '/spool/templates_c/*cache_' . wiki_filename($n) . '.tpl*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
     }
 
     // we leave pmwiki do whatever it wants and store everything
