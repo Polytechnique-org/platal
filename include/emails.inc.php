@@ -330,13 +330,7 @@ class Redirect
         if (!$res->total()) {
             return array();
         }
-        $mxs = array();
-        while (list($host, $text) = $res->next()) {
-            $host = preg_quote($host, '/');
-            $host = str_replace('\*', '.*', $host);
-            $host = str_replace('\?', '.', $host);
-            $mxs[] = array('host' => "/^$host\\.?$/", 'text' => $text);
-        }
+        $mxs = $res->fetchAllAssoc();
         $mails = array();
         foreach ($this->emails as &$mail) {
             if ($mail->active) {
@@ -348,7 +342,7 @@ class Redirect
                 $broken = false;
                 foreach ($mxs as &$mx) {
                     foreach ($lcl_mxs as $lcl) {
-                        if (preg_match($mx['host'], $lcl)) {
+                        if (fnmatch($mx['host'], $lcl)) {
                             $broken = $mx['text'];
                             break;
                         }
