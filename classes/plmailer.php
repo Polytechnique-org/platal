@@ -264,7 +264,10 @@ class PlMailer extends Mail_Mime {
         foreach(Array('To', 'Cc', 'Bcc') as $hdr) {
             if(isset($this->_headers[$hdr])) {
                 require_once 'Mail/RFC822.php';
-                $addrs = array_merge($addrs, @Mail_RFC822::parseAddressList($this->_headers[$hdr]));
+                $parsed = @Mail_RFC822::parseAddressList($this->_headers[$hdr]);
+                if (is_array($parsed)) {
+                    $addrs = array_merge($addrs, $parsed);
+                }
             }
         }
         if(empty($addrs)) {
