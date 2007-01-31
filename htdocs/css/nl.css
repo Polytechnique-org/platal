@@ -64,6 +64,7 @@ div.nl div.intro {
 }
 
 div.nl div.lnk {
+    text-align: left;
     margin : 2ex 6ex;
 }
 
