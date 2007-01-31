@@ -41,7 +41,7 @@ class VCard
 
     function escape($text)
     {
-        return preg_replace('/[,;:]/', '\\\\$0', $text);
+        return preg_replace('/[,;]/', '\\\\$0', $text);
     }
 
     function format_adr($params, &$smarty)
