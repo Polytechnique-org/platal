@@ -140,7 +140,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 
 <div class="smaller">
   {if $smarty.server.HTTPS}
-  {icon name=lock} Tu utilise actuellement une connexion HTTPS sécurisée. Aucune information ne circule
+  {icon name=lock} Tu utilises actuellement une connexion HTTPS sécurisée. Aucune information ne circule
   en clair entre chez toi et Polytechnique.org, ce qui assure une confidentialité maximale.
   {else}
   {icon name=lock_open} Tu utilises actuellement une connexion HTTP non sécurisée. Toutes les informations
