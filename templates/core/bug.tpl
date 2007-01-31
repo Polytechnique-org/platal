@@ -62,9 +62,7 @@ function fillContent()
     </select>
     &nbsp;&nbsp;Sujet : <input type="text" name="item_summary" id="flyspray_title" value="sur la page {$smarty.server.HTTP_REFERER}" size="50" maxlength="100"/>
     <textarea name="detailed_desc" id="flyspray_detail" cols="70" rows="10" style="width:100%;margin-top:10px;margin-bottom:10px;height:400px;display:block;" onFocus="cleanContent()" onBlur="fillContent()"></textarea>
-    <input type="hidden" name="page" value="{$smarty.server.HTTP_REFERER}" />
-    <input type="hidden" name="browser" value="{$smarty.server.HTTP_USER_AGENT}" />
-    <input type="hidden" name="skin" value="{$smarty.session.skin}" />
+    <input type="hidden" name="page" value="{$smarty.server.HTTP_REFERER|default:$smarty.request.page}" />
     <div class="center">
       <input type="button" value="Fermer" onclick="window.close()"/>
       <input type="submit" name="send" value="Signaler le bug"/>

@@ -115,8 +115,8 @@ class CoreModule extends PLModule
                   . "----------------------------\n"
                   . "Page        : " . Env::v('page') . "\n\n"
                   . "Utilisateur : " . S::v('forlife') . "\n"
-                  . "Navigateur  : " . Env::v('browser') . "\n"
-                  . "Skin        : " . Env::v('skin') . "\n";
+                  . "Navigateur  : " . $_SERVER['HTTP_USER_AGENT'] . "\n"
+                  . "Skin        : " . S::v('skin') . "\n";
             $page->assign('bug_sent',1);
             $mymail = new PlMailer();
             $mymail->setFrom('"'.S::v('prenom').' '.S::v('nom').'" <'.S::v('bestalias').'@polytechnique.org>');
