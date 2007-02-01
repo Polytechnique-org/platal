@@ -30,10 +30,10 @@
 {/foreach}
 
 <p>
-Tu peux consulter <a href="profile/{$smarty.session.forlife}" class="popup2">l'état actuel de ta fiche</a>
-telle qu'elle apparaîtra pour un camarade, ou telle qu'elle apparaîtra dans l'annuaire de
+Tu peux consulter <a href="profile/{$smarty.session.forlife}" class="popup2">l'Ã©tat actuel de ta fiche</a>
+telle qu'elle apparaÃ®tra pour un camarade, ou telle qu'elle apparaÃ®tra dans l'annuaire de
 l'<a href="profile/{$smarty.session.forlife}?view=ax" class="popup2">AX</a>
-ou à <a href="profile/{$smarty.session.forlife}?view=public" class="popup2">tout le monde</a>.</p>
+ou Ã  <a href="profile/{$smarty.session.forlife}?view=public" class="popup2">tout le monde</a>.</p>
 
 <form action="profile/edit/{$onglet}" method="post" id="prof_annu">
   <table class="cadre_a_onglet" cellpadding="0" cellspacing="0" style="width: 98%; margin-left:1%;">
@@ -74,4 +74,4 @@ ou à <a href="profile/{$smarty.session.forlife}?view=public" class="popup2">tout
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

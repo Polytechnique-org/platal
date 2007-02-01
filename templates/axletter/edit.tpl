@@ -75,7 +75,7 @@
     </tr>
     {if !$saved}
     <tr>
-      <td class="titre">Echéance d'envoi</td>
+      <td class="titre">EchÃ©ance d'envoi</td>
       <td>
         le <select name="echeance_date">{$echeance_date|smarty:nodefaults}</select>
         vers <select name="echeance_time">{$echeance_time|smarty:nodefaults}</select>
@@ -86,10 +86,10 @@
       <td colspan="2" class="center">
         Envoi au plus tard le {$echeance|date_format:"%x vers %Hh"}<br />
         {if $is_xorg}
-        [<a href="ax/edit/valid" onclick="return confirm('Es-tu sûr de voiloir valider l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/valid" onclick="return confirm('Es-tu sÃ»r de voiloir valider l\'envoi de ce message ?');">{*
           *}{icon name=thumb_up} Valider l'envoi</a>]
         {else}
-        [<a href="ax/edit/cancel" onclick="return confirm('Es-tu sûr de vouloir annuler l\'envoi de ce message ?');">{*
+        [<a href="ax/edit/cancel" onclick="return confirm('Es-tu sÃ»r de vouloir annuler l\'envoi de ce message ?');">{*
           *}{icon name=thumb_down} Annuler l'envoi</a>]
         {/if}
       </td>
@@ -104,11 +104,11 @@
     {if $echeance}
     <input type="hidden" name="echeance" value="{$echeance}" />
     {/if}
-    <input type="submit" name="valid" value="Aperçu" />
+    <input type="submit" name="valid" value="AperÃ§u" />
     {if !$new}
     <input type="submit" name="valid" value="Confirmer" />
     {/if}
   </p>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

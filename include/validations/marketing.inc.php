@@ -82,12 +82,12 @@ class MarkReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  Un mail de marketing vient d'être envoyé "
+            return "  Un mail de marketing vient d'Ãªtre envoyÃ© "
                 .($this->perso ? 'en ton nom' : 'en notre nom')
-                ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour l'encourager à s'inscrire !\n\n"
+                ." Ã  {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour l'encourager Ã  s'inscrire !\n\n"
                 ."Merci de ta participation !\n";
         } else {
-            return "  Nous n'avons pas jugé bon d'envoyer de mail de marketing à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
+            return "  Nous n'avons pas jugÃ© bon d'envoyer de mail de marketing Ã  {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
         }
     }
 
@@ -104,5 +104,5 @@ class MarkReq extends Validate
     // }}}
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

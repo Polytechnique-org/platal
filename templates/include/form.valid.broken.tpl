@@ -21,11 +21,11 @@
 {**************************************************************************}
 
 <tr class="pair">
-  <td class="titre">Récupération de</td>
+  <td class="titre">RÃ©cupÃ©ration de</td>
   <td><a href='admin/user/{$valid->m_forlife}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
 </tr>
 <tr class="pair">
-  <td class="titre">Mail proposé</td>
+  <td class="titre">Mail proposÃ©</td>
   <td>{$valid->m_email}</td>
 </tr>
 {if $valid->m_comment}
@@ -35,4 +35,4 @@
 </tr>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

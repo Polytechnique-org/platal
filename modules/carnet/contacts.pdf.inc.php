@@ -90,7 +90,7 @@ class ContactsPDF extends FPDF
         $this->SetFont('Vera Sans', 'B', 20);
         $this->SetTextColor(230);
         $this->Rotate(45, 55, 190);
-        $this->Text(55, 190, "informations limitées à un usage");
+        $this->Text(55, 190, "informations limitÃ©es Ã  un usage");
         $this->Text(40, 210, "strictement personnel et non commercial");
         $this->Rotate(0);
 
@@ -217,7 +217,7 @@ class ContactsPDF extends FPDF
         }
 
         if ($a['tel']) {
-            $this->TableRow('Téléphone', $a['tel'], 'Mono');
+            $this->TableRow('TÃ©lÃ©phone', $a['tel'], 'Mono');
         }
         if ($a['fax']) {
             $this->TableRow('Fax', $a['fax'], 'Mono');
@@ -343,4 +343,5 @@ class ContactsPDF extends FPDF
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

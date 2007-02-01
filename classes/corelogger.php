@@ -79,7 +79,7 @@ class CoreLogger {
     /** Logs an action and its related data.
      *
      * @param $action le type d'action
-     * @param $data les données (id de liste, etc.)
+     * @param $data les donnÃ©es (id de liste, etc.)
      * @return VOID
      */
     function log($action, $data = null) {
@@ -93,4 +93,5 @@ class CoreLogger {
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -32,7 +32,7 @@
       </div>
       {/if}
       {tidy}
-      {if $admin}Aperçu de : {/if}{$art.titre}
+      {if $admin}AperÃ§u de : {/if}{$art.titre}
       {/tidy}
     </th>
   </tr>
@@ -62,7 +62,7 @@
   <tr class="pair right">
     <td>
       <small>
-        Annonce proposée par
+        Annonce proposÃ©e par
         <a class="popup2" href="https://www.polytechnique.org/profile/{$art.forlife}">
           {$art.prenom} {$art.nom} (X{$art.promo})
         </a>
@@ -71,4 +71,4 @@
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

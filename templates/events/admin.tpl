@@ -23,12 +23,12 @@
 
 
 <h1>
-  Gestion des événements :
+  Gestion des Ã©vÃ©nements :
   [&nbsp;
   {if $arch || $action eq 'edit'}
-  <a href="admin/events">Actualités</a>
+  <a href="admin/events">ActualitÃ©s</a>
   {else}
-  Actualités
+  ActualitÃ©s
   {/if}
   &nbsp;|&nbsp;
   {if !$arch || $action eq 'edit'}
@@ -48,7 +48,7 @@
 <table class="bicol">
   <tr>
     <th>Titre</th>
-    <th>Péremption</th>
+    <th>PÃ©remption</th>
     <th></th>
   </tr>
   {iterate from=$evs item=ev}
@@ -60,13 +60,13 @@
       <a href="admin/events/preview/{$ev.id}#event{$ev.id}">{$ev.titre}</a><br />
       {if !$ev.fvalide}</strong>{/if}
       <small>
-        Proposée par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
+        ProposÃ©e par <a href="profile/{$ev.forlife}" class='popup2'>{$ev.prenom} {$ev.nom} (X{$ev.promo})</a>
       </small>
     </td>
     <td class="right">{if !$ev.fvalide}<strong>{/if}{$ev.peremption}{if !$ev.fvalide}</strong>{/if}</td>
     <td class="right" style="width: 42px">
       {if $arch}
-        <a href="admin/events/unarchive/{$ev.id}">{icon name=package_delete title="Désarchiver"}</a><br />
+        <a href="admin/events/unarchive/{$ev.id}">{icon name=package_delete title="DÃ©sarchiver"}</a><br />
       {else}
         {if $ev.fvalide}
         <a href="admin/events/unvalid/{$ev.id}">{icon name=thumb_down title="Invalider"}</a>
@@ -92,4 +92,4 @@
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

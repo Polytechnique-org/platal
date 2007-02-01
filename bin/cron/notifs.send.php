@@ -29,10 +29,10 @@ $all = new AllNotifs();
 foreach($all->_data as $u) {
     $week   = date("W - Y");
 
-    $text =  "  ".($u['sexe'] ? 'Chère' : 'Cher')." {$u['prenom']},\n\n"
-          .  "  Voici les événements survenus dans la semaine écoulée,\n"
-          .  "et depuis ta dernière visite sur le site.\n\n"
-          .  "Tu trouveras les mêmes informations sur la page :\n"
+    $text =  "  ".($u['sexe'] ? 'ChÃ¨re' : 'Cher')." {$u['prenom']},\n\n"
+          .  "  Voici les Ã©vÃ©nements survenus dans la semaine Ã©coulÃ©e,\n"
+          .  "et depuis ta derniÃ¨re visite sur le site.\n\n"
+          .  "Tu trouveras les mÃªmes informations sur la page :\n"
           .  "    https://www.polytechnique.org/carnet/panel\n\n"
           .  "------------------------------------------------------------------------\n\n";
 
@@ -42,8 +42,8 @@ foreach($all->_data as $u) {
     <title>Notifications de la semaine $week</title>
   </head>
   <body>
-    <p>Voici les événements survenus dans la semaine écoulée, et depuis ta dernière visite sur le site.</p>
-    <p>Tu trouveras les mêmes informations sur <a href='https://www.polytechnique.org/carnet/panel'>cette page</a></p>
+    <p>Voici les Ã©vÃ©nements survenus dans la semaine Ã©coulÃ©e, et depuis ta derniÃ¨re visite sur le site.</p>
+    <p>Tu trouveras les mÃªmes informations sur <a href='https://www.polytechnique.org/carnet/panel'>cette page</a></p>
 EOF;
 
     foreach($u['data'] as $cid=>$d) {
@@ -62,18 +62,18 @@ EOF;
     }
 
     $text .= "-- \n"
-           . "L'équipe de Polytechnique.org\n\n"
+           . "L'Ã©quipe de Polytechnique.org\n\n"
            . "------------------------------------------------------------------------\n\n"
-           . "Tu recois ce mail car tu as activé la notification automatique \n"
-           . "par mail des événements que tu surveilles.\n\n"
+           . "Tu recois ce mail car tu as activÃ© la notification automatique \n"
+           . "par mail des Ã©vÃ©nements que tu surveilles.\n\n"
            . "Tu peux changer cette option sur :\n"
            . "    https://www.polytechnique.org/carnet/notifs";
     $html .= <<<EOF
     <hr />
-    <p>L'équipe de Polytechnique.org</p>
+    <p>L'Ã©quipe de Polytechnique.org</p>
     <br />
     <p>
-    Tu recois ce mail car tu as activé la notification automatique par mail des événements que tu surveilles.
+    Tu recois ce mail car tu as activÃ© la notification automatique par mail des Ã©vÃ©nements que tu surveilles.
     </p>
     <p>Tu peux changer cette option sur la <a href="https://www.polytechnique.org/carnet/notifs">page
     de configuration des notifications</a>
@@ -91,4 +91,5 @@ EOF;
     $mailer->send();
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

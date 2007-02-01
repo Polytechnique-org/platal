@@ -39,4 +39,5 @@ function display_ical($param) {
         $folded_txt .= $endline.' '.substr($txt, $i, $maxchars - 1);
     return $folded_txt;
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -48,4 +48,5 @@ $page->assign('nickname', $nickname);
 
 $page->assign('synchro_ax', $synchro_ax);
 $page->assign('matricule_ax', $matricule_ax);
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

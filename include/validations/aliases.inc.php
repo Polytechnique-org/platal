@@ -34,7 +34,7 @@ class AliasReq extends Validate
     
     var $rules = "Interdire ce qui peut nous servir (virus@, postmaster@, ...),
                   les alias vulgaires, et les prenom.nom (sauf si c'est pour l'utilisateur prenom.nom).
-                  Pas de contrainte pour les tirets ou les points, en revanche le souligné (_) est interdit";
+                  Pas de contrainte pour les tirets ou les points, en revanche le soulignÃ© (_) est interdit";
 
     // }}}
     // {{{ constructor
@@ -85,9 +85,9 @@ class AliasReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  L'adresse mail {$this->alias} que tu avais demandée vient d'être créée, tu peux désormais l'utiliser à ta convenance.".(($this->public == 'public')?" A ta demande, cette adresse apparaît maintenant sur ta fiche.":"");
+            return "  L'adresse mail {$this->alias} que tu avais demandÃ©e vient d'Ãªtre crÃ©Ã©e, tu peux dÃ©sormais l'utiliser Ã  ta convenance.".(($this->public == 'public')?" A ta demande, cette adresse apparaÃ®t maintenant sur ta fiche.":"");
         } else {
-            return "  La demande que tu avais faite pour l'alias {$this->alias} a été refusée.";
+            return "  La demande que tu avais faite pour l'alias {$this->alias} a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -132,5 +132,5 @@ class AliasReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

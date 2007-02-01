@@ -23,18 +23,18 @@
 <h1>Bilan des Notifications</h1>
 
 <p>
-Cette page rÈcapitule tous les ÈvÈnements que tu surveilles de la semaine ÈcoulÈe
+Cette page r√©capitule tous les √©v√©nements que tu surveilles de la semaine √©coul√©e
 </p>
 
 <p>
-Les lignes en gras sont les ÈvÈnements qui ont ÈtÈ portÈ ‡ notre connaissance
-depuis ta derniËre connexion sur cette page.<br />
-Tu peux les <a href="carnet/panel?read={$now}">marquer comme vus</a> sans te dÈconnecter.
+Les lignes en gras sont les √©v√©nements qui ont √©t√© port√© √† notre connaissance
+depuis ta derni√®re connexion sur cette page.<br />
+Tu peux les <a href="carnet/panel?read={$now}">marquer comme vus</a> sans te d√©connecter.
 </p>
 
 <p>
-Tu peux choisir plus finement les donnÈes affichÈes sur cette page.
-Il faut pour cel‡ se rendre sur la page de <a href='carnet/notifs'>configuration des notifications</a>.
+Tu peux choisir plus finement les donn√©es affich√©es sur cette page.
+Il faut pour cel√† se rendre sur la page de <a href='carnet/notifs'>configuration des notifications</a>.
 </p>
 
 <div class="right">
@@ -70,7 +70,7 @@ Il faut pour cel‡ se rendre sur la page de <a href='carnet/notifs'>configuration
       </a>
       {if !$promo[row].contact}
       <a href="carnet/contacts?action=ajouter&amp;user={$promo[row].bestalias}">{*
-        *}{icon name=add title="ajouter ‡ mes contacts"}</a>
+        *}{icon name=add title="ajouter √† mes contacts"}</a>
       {/if}
       {else}
       {$promo[row].prenom} {$promo[row].nom}
@@ -88,4 +88,4 @@ Il faut pour cel‡ se rendre sur la page de <a href='carnet/notifs'>configuration
 {/foreach}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

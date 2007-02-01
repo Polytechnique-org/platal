@@ -22,18 +22,18 @@
 
 
 <h1>
-  Vérifier notre table de correspondance entre l'annuaire de l'AX et le nôtre
+  VÃ©rifier notre table de correspondance entre l'annuaire de l'AX et le nÃ´tre
 </h1>
 
 <h2>
-  Liste des camarades qui n'apparaissent pas sous le même nom dans les deux annuaires
+  Liste des camarades qui n'apparaissent pas sous le mÃªme nom dans les deux annuaires
 </h2>
 
 <table class="bicol" summary="liste des absents de notre annuaire">
   <tr>
     <th>Promo</th>
-    <th>Nom X.org</th>  <th>Prénom X.org</th>   <th>Mat X.org</th>
-    <th>Nom AX</th>     <th>Prénom AX</th>      <th>Mat AX</th>
+    <th>Nom X.org</th>  <th>PrÃ©nom X.org</th>   <th>Mat X.org</th>
+    <th>Nom AX</th>     <th>PrÃ©nom AX</th>      <th>Mat AX</th>
   </tr>
 {foreach item=x from=$diffs}
   <tr class="{cycle values="impair,pair"}">
@@ -45,19 +45,19 @@
 </table>
 
 <p>
-  <strong>{$diffs|@count} camarades ont un état civil différent dans les 2 annuaires.</strong>
+  <strong>{$diffs|@count} camarades ont un Ã©tat civil diffÃ©rent dans les 2 annuaires.</strong>
 </p>
 
 <br />
 <br />
 
 <h2>
-  Liste des camarades de l'annuaire de l'AX qui manquent à notre annuaire
+  Liste des camarades de l'annuaire de l'AX qui manquent Ã  notre annuaire
 </h2>
 
 <table class="bicol" summary="liste des absents de notre annuaire">
   <tr>
-    <th>Promo</th>  <th>Nom</th>  <th>Prénom</th>
+    <th>Promo</th>  <th>Nom</th>  <th>PrÃ©nom</th>
   </tr>
 {foreach item=x from=$mank}
   <tr class="{cycle values="impair,pair"}">
@@ -80,7 +80,7 @@
 
 <table class="bicol" summary="liste des absents de l'AX">
   <tr>
-    <th>Promo</th>        <th>Nom</th>        <th>Prénom</th>
+    <th>Promo</th>        <th>Nom</th>        <th>PrÃ©nom</th>
   </tr>
 {foreach item=x from=$plus}
   <tr class="{cycle values="impair,pair"}">
@@ -93,4 +93,4 @@
   <strong>{$plus|@count} camarades sont absents de l'annuaire de l'AX.</strong>
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

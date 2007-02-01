@@ -38,7 +38,7 @@ class PayReq extends Validate
     var $evt;
     var $evt_intitule;
 
-    var $rules = "Laisser la validation à un trésorier";
+    var $rules = "Laisser la validation Ã  un trÃ©sorier";
     // }}}
     // {{{ constructor
 
@@ -120,7 +120,7 @@ class PayReq extends Validate
 
     function _mail_subj()
     {
-        return "[Polytechnique.org/Paiments] Demande de création de paiement {$this->titre}";
+        return "[Polytechnique.org/Paiments] Demande de crÃ©ation de paiement {$this->titre}";
     }
 
     // }}}
@@ -129,9 +129,9 @@ class PayReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  Le paiement que tu avais demandé pour {$this->titre} vient d'être créé.".($this->evt?" Il a bien été associé à la gestion de l'événement du groupe":"");
+            return "  Le paiement que tu avais demandÃ© pour {$this->titre} vient d'Ãªtre crÃ©Ã©.".($this->evt?" Il a bien Ã©tÃ© associÃ© Ã  la gestion de l'Ã©vÃ©nement du groupe":"");
         } else {
-            return "  La demande que tu avais faite pour le paiement de {$this->intitule} a été refusée.";
+            return "  La demande que tu avais faite pour le paiement de {$this->intitule} a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -162,5 +162,5 @@ class PayReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -26,14 +26,14 @@
 </h1>
 
 <p>
-<strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
+<strong>Mot de passe enregistrÃ© le {$smarty.now|date_format}</strong>
 </p>
 <p>
-  <strong>Attention!</strong> Il est crypté irréversiblement,
-  donc <strong>non récupérable</strong>. Pour retrouver un accès au site
-  consécutivement à une perte de mot de passe, la procédure
+  <strong>Attention!</strong> Il est cryptÃ© irrÃ©versiblement,
+  donc <strong>non rÃ©cupÃ©rable</strong>. Pour retrouver un accÃ¨s au site
+  consÃ©cutivement Ã  une perte de mot de passe, la procÃ©dure
   est longue et laborieuse...
 </p>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

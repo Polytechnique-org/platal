@@ -81,7 +81,7 @@ class XnetModule extends PLModule
             $page->assign('nom', $nom);
             if ($id && Post::has('del')) {
                 XDB::query('DELETE FROM groupex.membres WHERE asso_id={?}', $id);
-                $page->trig('membres supprimés');
+                $page->trig('membres supprimÃ©s');
 
                 if ($domain) {
                     XDB::query('DELETE FROM  virtual_domains WHERE domain={?}', $domain);
@@ -95,12 +95,12 @@ class XnetModule extends PLModule
                         foreach ($listes as $l) {
                             $mmlist->delete_list($l['list'], true);
                         }
-                        $page->trig('mail lists surpprimées');
+                        $page->trig('mail lists surpprimÃ©es');
                     }
                 }
 
                 XDB::query('DELETE FROM groupex.asso WHERE id={?}', $id);
-                $page->trig("Groupe $nom supprimé");
+                $page->trig("Groupe $nom supprimÃ©");
                 Get::kill('del');
             }
             if (!$id) {
@@ -198,4 +198,5 @@ class XnetModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -63,7 +63,6 @@ class PlMail extends Smarty
     {
         $this->assign('html_version', $html);
         $text = $this->fetch($this->tpl);
-        fix_encoding($text);
         return $text;
     }
 
@@ -149,7 +148,7 @@ class PlMailer extends Mail_Mime {
     private $page    = null;
     private $charset;
 
-    function __construct($tpl = null, $charset = "ISO-8859-15")
+    function __construct($tpl = null, $charset = "UTF-8")
     {
         $this->charset = $charset;
         $this->Mail_Mime("\n");
@@ -301,4 +300,5 @@ class PlMailer extends Mail_Mime {
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

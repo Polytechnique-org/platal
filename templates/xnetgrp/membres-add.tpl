@@ -56,14 +56,14 @@ function searchX()
   <ul class='descr'>
     <li>
       Pour ajouter un X dans ton groupe, il suffit d'entrer ici une de ses
-      adresses mail @polytechnique.org. Si il n'est pas inscrit à Polytechnique.org
-      coche la case qui se trouve sous le formulaire et indique ses noms, prénoms et
+      adresses mail @polytechnique.org. Si il n'est pas inscrit Ã  Polytechnique.org
+      coche la case qui se trouve sous le formulaire et indique ses noms, prÃ©noms et
       promotions.
     </li>
     <li>
-      Pour ajouter un extérieur dans ton groupe, il suffit d'entrer ici son
-      adresse mail, tu seras ensuite redirigé vers une page te permettant
-      d'éditer son profil (nom, prenom, ...)
+      Pour ajouter un extÃ©rieur dans ton groupe, il suffit d'entrer ici son
+      adresse mail, tu seras ensuite redirigÃ© vers une page te permettant
+      d'Ã©diter son profil (nom, prenom, ...)
     </li>
   </ul>
   <table class="tinybicol">
@@ -77,7 +77,7 @@ function searchX()
     <tr>
       <td colspan="2">
         <input type="checkbox" name="x" onchange="xStateChange(this);" />
-        Coche cette case si il s'agit d'un X non inscrit à Polytechnique.org
+        Coche cette case si il s'agit d'un X non inscrit Ã  Polytechnique.org
       </td>
     </tr>
     <tr id="xnom" style="display: none">
@@ -85,7 +85,7 @@ function searchX()
       <td><input type="text" id="nom" name="nom" size="20" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xprenom" style="display: none">
-      <td class="titre">Prénom :</td>
+      <td class="titre">PrÃ©nom :</td>
       <td><input type="text" id="prenom" name="prenom" size="20" value="" onkeyup="searchX();" /></td>
     </tr>
     <tr id="xpromo" style="display: none">
@@ -100,4 +100,4 @@ function searchX()
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

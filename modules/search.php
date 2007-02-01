@@ -51,7 +51,7 @@ class SearchModule extends PLModule
         $fields  = new SFieldGroup(true, array($qSearch));
 
         if ($qSearch->isempty()) {
-            new ThrowError('Recherche trop générale.');
+            new ThrowError('Recherche trop gÃ©nÃ©rale.');
         }
 
         $sql = 'SELECT SQL_CALC_FOUND_ROWS
@@ -137,7 +137,7 @@ class SearchModule extends PLModule
         $fields = new SFieldGroup(true, advancedSearchFromInput());
         if ($fields->too_large()) {
             $this->form_prepare();
-            new ThrowError('Recherche trop générale.');
+            new ThrowError('Recherche trop gÃ©nÃ©rale.');
         }
         global $globals, $page;
 
@@ -198,11 +198,11 @@ class SearchModule extends PLModule
             $nb_tot = $search->show();
 
             if (!S::logged() && $nb_tot > $globals->search->public_max) {
-                new ThrowError('Votre recherche a généré trop de résultats pour un affichage public.');
+                new ThrowError('Votre recherche a gÃ©nÃ©rÃ© trop de rÃ©sultats pour un affichage public.');
             } elseif ($nb_tot > $globals->search->private_max) {
-                new ThrowError('Recherche trop générale');
+                new ThrowError('Recherche trop gÃ©nÃ©rale');
             } elseif (empty($nb_tot)) {
-                new ThrowError('il n\'existe personne correspondant à ces critères dans la base !');
+                new ThrowError('il n\'existe personne correspondant Ã  ces critÃ¨res dans la base !');
             }
         } else {
             $page->assign('formulaire',1);
@@ -241,7 +241,7 @@ class SearchModule extends PLModule
 
             if ($nb_tot > $globals->search->private_max) {
                 $this->form_prepare();
-                new ThrowError('Recherche trop générale');
+                new ThrowError('Recherche trop gÃ©nÃ©rale');
             }
 
         }
@@ -268,4 +268,5 @@ class SearchModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

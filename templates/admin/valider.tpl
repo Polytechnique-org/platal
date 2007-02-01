@@ -96,22 +96,22 @@
       </form>
     </td>
   </tr>
-  <tr><th colspan='2'>Réponse</th></tr>
+  <tr><th colspan='2'>RÃ©ponse</th></tr>
   <tr>
-    <td colspan='2' {popup caption="Règles de validation" text=$valid->rules}>
+    <td colspan='2' {popup caption="RÃ¨gles de validation" text=$valid->rules}>
       <form action="admin/validate" method="post">
         <div>
-          Réponse préremplie :
+          RÃ©ponse prÃ©remplie :
           <select onchange="this.form.comm.value=this.value">
             <option value=""></option>
             {foreach from=$valid->answers() item=automatic_answer}
               <option value="{$automatic_answer.answer}">{$automatic_answer.title}</option>
             {/foreach}
           </select>
-          <a href="admin/validate/answers">{icon name="page_edit" title="Editer les réponses automatiques"}</a>
+          <a href="admin/validate/answers">{icon name="page_edit" title="Editer les rÃ©ponses automatiques"}</a>
         </div>
         <div class='center'>
-          Ajouté dans l'email :<br />
+          AjoutÃ© dans l'email :<br />
           <textarea rows="5" cols="50" name="comm"></textarea><br />
 
           <input type="hidden" name="uid"    value="{$valid->uid}" />
@@ -131,12 +131,12 @@
 {/iterate}
 
 {if $hidden}
-<p>{$hidden} validation{if $hidden > 1}s ont été masquées{else} a été masquée{/if}.</p>
+<p>{$hidden} validation{if $hidden > 1}s ont Ã©tÃ© masquÃ©es{else} a Ã©tÃ© masquÃ©e{/if}.</p>
 {/if}
 
 {else}
 
-<p>Rien à valider</p>
+<p>Rien Ã  valider</p>
 
 {/if}
 
@@ -152,4 +152,4 @@
   <div class="center" style="clear:left"><input type="submit" name="hide" value="Valider" /></div>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

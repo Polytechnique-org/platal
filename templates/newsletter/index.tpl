@@ -34,17 +34,17 @@
 
 {if $nls}
 <p>
-Tu es actuellement inscrit à la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des préférences</a>)
+Tu es actuellement inscrit Ã  la lettre mensuelle de Polytechnique.org (pour choisir le format HTML ou texte, rends toi sur la page <a href='prefs'>des prÃ©fÃ©rences</a>)
 </p>
 <div class='center'>
-  [<a href='nl/out'>{icon name=delete} me désinscrire de la lettre mensuelle</a>]
+  [<a href='nl/out'>{icon name=delete} me dÃ©sinscrire de la lettre mensuelle</a>]
 </div>
 {else}
 <p>
-Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
+Tu n'es actuellement pas inscrit Ã  la lettre mensuelle de Polytechnique.org.
 </p>
 <div class='center'>
-  [<a href='nl/in'>{icon name=add} m'inscrire à la lettre mensuelle</a>]
+  [<a href='nl/in'>{icon name=add} m'inscrire Ã  la lettre mensuelle</a>]
 </div>
 {/if}
 
@@ -66,4 +66,4 @@ Tu n'es actuellement pas inscrit à la lettre mensuelle de Polytechnique.org.
 </table>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

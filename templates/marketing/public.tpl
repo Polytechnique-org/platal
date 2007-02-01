@@ -24,27 +24,27 @@
 {if $already}
 
 <p>
-Merci de nous avoir communiqué cette information !
+Merci de nous avoir communiquÃ© cette information !
 </p>
 <p>
-Nous avions déjà connaissance de cette adresse, nous espérons donc comme toi que {$prenom} va s'inscrire au plus vite.
+Nous avions dÃ©jÃ  connaissance de cette adresse, nous espÃ©rons donc comme toi que {$prenom} va s'inscrire au plus vite.
 </p>
 <p>
 Si tu le connais personnellement, un petit mail pour lui expliquer les atouts de Polytechnique.org
-peut sans aucun doute l'aider à se décider !
+peut sans aucun doute l'aider Ã  se dÃ©cider !
 </p>
 
 {elseif $ok}
 
 <p>
-  Merci de nous avoir communiqué cette information !  Un administrateur de Polytechnique.org va
-  envoyer un email de proposition d'inscription à Polytechnique.org à {$prenom} {$nom} dans les
-  toutes prochaines heures (ceci est fait à la main pour vérifier qu'aucun utilisateur malveillant
-  ne fasse mauvais usage de cette fonctionnalité...).
+  Merci de nous avoir communiquÃ© cette information !  Un administrateur de Polytechnique.org va
+  envoyer un email de proposition d'inscription Ã  Polytechnique.org Ã  {$prenom} {$nom} dans les
+  toutes prochaines heures (ceci est fait Ã  la main pour vÃ©rifier qu'aucun utilisateur malveillant
+  ne fasse mauvais usage de cette fonctionnalitÃ©...).
 </p>
 <p>
-  <strong>Merci de ton aide à la reconnaissance de notre site !</strong> Tu seras informé par email de
-  l'inscription de {$prenom} {$nom} si notre camarade accepte de rejoindre la communauté des X sur
+  <strong>Merci de ton aide Ã  la reconnaissance de notre site !</strong> Tu seras informÃ© par email de
+  l'inscription de {$prenom} {$nom} si notre camarade accepte de rejoindre la communautÃ© des X sur
   le web !
 </p>
 
@@ -52,31 +52,31 @@ peut sans aucun doute l'aider à se décider !
 
 {if $prenom}
 <h1>
-  Et si nous proposions à {$prenom} {$nom} de s'inscrire à Polytechnique.org ?
+  Et si nous proposions Ã  {$prenom} {$nom} de s'inscrire Ã  Polytechnique.org ?
 </h1>
 
 <p>
-  En effet notre camarade n'a pour l'instant pas encore rejoint la communauté des X sur le web...
+  En effet notre camarade n'a pour l'instant pas encore rejoint la communautÃ© des X sur le web...
   C'est dommage, et en nous indiquant son adresse email, tu nous permettrais de lui envoyer une
   proposition d'inscription.
 </p>
 <p>
   Si tu es d'accord, merci d'indiquer ci-dessous l'adresse email de {$prenom} {$nom} si tu la
-  connais.  Nous nous permettons d'attirer ton attention sur le fait que nous avons besoin d'être
-  sûrs que cette adresse est bien la sienne, afin que la partie privée du site reste uniquement
+  connais.  Nous nous permettons d'attirer ton attention sur le fait que nous avons besoin d'Ãªtre
+  sÃ»rs que cette adresse est bien la sienne, afin que la partie privÃ©e du site reste uniquement
   accessible aux seuls polytechniciens. Merci donc de ne nous donner ce renseignement uniquement si
-  tu es certain de sa véracité !
+  tu es certain de sa vÃ©racitÃ© !
 </p>
 <p>
-  Nous pouvons au choix lui écrire au nom de l'équipe Polytechnique.org, ou bien, si tu le veux
-  bien, en ton nom. A toi de choisir la solution qui te paraît la plus adaptée !! Une fois {$prenom}
-  {$nom} inscrit, nous t'enverrons un email pour te prévenir que son inscription a réussi.
+  Nous pouvons au choix lui Ã©crire au nom de l'Ã©quipe Polytechnique.org, ou bien, si tu le veux
+  bien, en ton nom. A toi de choisir la solution qui te paraÃ®t la plus adaptÃ©e !! Une fois {$prenom}
+  {$nom} inscrit, nous t'enverrons un email pour te prÃ©venir que son inscription a rÃ©ussi.
 </p>
 
 <form method="post" action="{$platal->path}">
   <table class="bicol" summary="Fiche camarade">
     <tr class="impair"><td>Nom :</td><td>{$nom}</td></tr>
-    <tr class="pair"><td>Prénom :</td><td>{$prenom}</td></tr>
+    <tr class="pair"><td>PrÃ©nom :</td><td>{$prenom}</td></tr>
     <tr class="impair"><td>Promo :</td><td>{$promo}</td></tr>
     <tr class="pair">
       <td>Adresse email :</td>
@@ -85,10 +85,10 @@ peut sans aucun doute l'aider à se décider !
       </td>
     </tr>
     <tr class="impair">
-      <td>Nous lui écrirons :</td>
+      <td>Nous lui Ã©crirons :</td>
       <td>
         <input type="radio" name="origine" value="user" checked="checked" /> en ton nom<br />
-        <input type="radio" name="origine" value="staff" /> au nom de l'équipe Polytechnique.org
+        <input type="radio" name="origine" value="staff" /> au nom de l'Ã©quipe Polytechnique.org
       </td>
     </tr>
   </table>
@@ -102,4 +102,4 @@ peut sans aucun doute l'aider à se décider !
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

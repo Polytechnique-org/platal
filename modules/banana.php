@@ -36,11 +36,11 @@ class BananaModule extends PLModule
         $cible = array('xorg.general', 'xorg.pa.divers', 'xorg.pa.logements');
         $p_for = "xorg.promo.x$promo";
 
-        // récupération de l'id du forum promo
+        // rÃ©cupÃ©ration de l'id du forum promo
         $res = XDB::query("SELECT fid FROM forums.list WHERE nom={?}", $p_for);
         if ($res->numRows()) {
             $cible[] = $p_for;
-        } else { // pas de forum promo, il faut le créer
+        } else { // pas de forum promo, il faut le crÃ©er
             $res = XDB::query("SELECT  SUM(perms IN ('admin','user') AND deces=0),COUNT(*)
                                  FROM  auth_user_md5 WHERE promo={?}", $promo);
             list($effau, $effid) = $res->fetchOneRow();
@@ -160,4 +160,5 @@ class BananaModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

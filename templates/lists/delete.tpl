@@ -24,7 +24,7 @@
 {if $deleted}
 
 <p>[<a href='{$platal->ns}lists'>Voir toutes les listes</a>]</p>
-<p class="erreur">La liste a été détruite !</p>
+<p class="erreur">La liste a Ã©tÃ© dÃ©truite !</p>
 
 {else}
 
@@ -37,27 +37,27 @@ Tu n'es pas administrateur de la liste, mais du site.
 {include file="lists/header_listes.tpl" on=delete}
 
 <h1>
-  Détruire la liste {$details.addr} ?
+  DÃ©truire la liste {$details.addr} ?
 </h1>
 
 <form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='2' cellspacing='0'>
     <tr class='impair'>
       <td>
-        Veux tu réellement détruire la liste {$details.addr} ?<br />
-        Pour valider ton choix, écris en majuscules (sans espace) « OUI » :
+        Veux tu rÃ©ellement dÃ©truire la liste {$details.addr} ?<br />
+        Pour valider ton choix, Ã©cris en majuscules (sans espace) Â« OUI Â» :
         <input type='text' size='3' maxlength='3' name="valid" />
       </td>
     </tr>
     <tr class='pair'>
       <td>
-        Si tu veux préserver les archives de la liste, décoche la case ci-contre.
+        Si tu veux prÃ©server les archives de la liste, dÃ©coche la case ci-contre.
         <input type="checkbox" checked="checked" name="del_archive" />
       </td>
     </tr>
     <tr class='impair'>
       <td class="center">
-        <input type="submit" value="Détruire !" />
+        <input type="submit" value="DÃ©truire !" />
       </td>
     </tr>
   </table>
@@ -66,4 +66,4 @@ Tu n'es pas administrateur de la liste, mais du site.
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

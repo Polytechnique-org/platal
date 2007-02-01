@@ -26,9 +26,10 @@ require_once("../../modules/axletter/axletter.inc.php");
 $al = AXLetter::toSend();
 if ($al) {
     echo "Envoi de la lettre \"{$al->title()}\"\n\n";
-    echo " " . date("H:i:s") . " -> début de l'envoi\n";
+    echo " " . date("H:i:s") . " -> dÃ©but de l'envoi\n";
     $al->sendToAll();
     echo " " . date("H:i:s") . " -> fin de l'envoi\n";
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

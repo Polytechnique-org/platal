@@ -33,12 +33,12 @@
 
     <link rel="stylesheet" type="text/css" href="css/xnet.css" media="screen" />
 
-    <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| École polytechnique" />
+    <link rel="bookmark" href="http://www.polytechnique.fr/"        title="| Ã‰cole polytechnique" />
     <link rel="bookmark" href="http://www.polytechnique.edu/"       title="| Institutionnal site" />
     <link rel="bookmark" href="http://www.fondationx.org/"          title="| FX" />
     <link rel="bookmark" href="http://www.polytechniciens.com/"     title="| AX" />
     <link rel="bookmark" href="http://www.polytechnique.org/"       title="| Polytechnique.org" />
-    <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'élèves" />
+    <link rel="bookmark" href="http://www.polytechnique.fr/eleves/" title="| Site d'Ã©lÃ¨ves" />
 
     {foreach from=$xorg_css item=css}
     <link rel="stylesheet" type="text/css" href="css/{$css}" />
@@ -102,7 +102,7 @@
             {/if}
             {else}
             <td class="logo">
-              <img src="images/asso.png" alt="Le serveur des activés associative des X" />
+              <img src="images/asso.png" alt="Le serveur des activÃ©s associative des X" />
               <a href="http://www.polytechnique.org">
                 <img src="images/logo-xorg.png" alt="Polytechnique.org" height="80" />
               </a>
@@ -148,15 +148,15 @@
           </div>
           {/if}
           <div class="breadcrumb">
-            <a href=".">X.net</a> »
+            <a href=".">X.net</a> Â»
             {if $asso}
-              <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> »
+              <a href="groups/{$asso.cat}">{$asso.cat|cat_pp}</a> Â»
               {if $asso.dom}
-                <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> »
+                <a href="groups/{$asso.cat}/{$asso.dom}">{$asso.domnom}</a> Â»
               {/if}
               {$asso.nom}
             {elseif $cat}
-              <a href="groups/{$cat}">{$cat|cat_pp}</a> »
+              <a href="groups/{$cat}">{$cat|cat_pp}</a> Â»
               {if $dom || !$doms}
                 {if $cat eq 'promotions'}
                   Choix de la promotion
@@ -216,7 +216,7 @@
             <td class="right" style="vertical-align: middle">
               {if $smarty.session.perms eq admin}
               <a href="admin" title="Administration des groupes">
-                Gérer les groupes
+                GÃ©rer les groupes
                 {icon name=wrench title="Administration"}
               </a><br />
               {/if}
@@ -235,18 +235,18 @@
       <tr>
         <td colspan="2" id="credits">
           <a href="plan">plan du site</a> -
-          <a href="Xnet/Services">services proposés</a> -
-          <a href="Xnet/APropos">à propos de ce site</a> -
+          <a href="Xnet/Services">services proposÃ©s</a> -
+          <a href="Xnet/APropos">Ã  propos de ce site</a> -
           {mailto address="contact@polytechnique.org" text="nous contacter" encode="javascript"}
           {if $smarty.session.auth}
             - <a href="send_bug" class="popup_840x600">signaler un bug</a>
           {/if}
           <br />
-          © Copyright 2000-2007 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
+          Â© Copyright 2000-2007 <a href="http://x-org.polytechnique.org/">Association Polytechnique.org</a>
         </td>
       </tr>
     {/if}
     </table>
   </body>
 </html>
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

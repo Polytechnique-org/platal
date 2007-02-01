@@ -33,7 +33,7 @@ function gpex_make_auth($chlg, $privkey, $datafields) {
     $personnal_data = $res->fetchOneAssoc();
 
     foreach ($fieldarr as $val) {
-        /* on verifie qu'on n'a pas demandé une variable inexistante ! */
+        /* on verifie qu'on n'a pas demandÃ© une variable inexistante ! */
         if (S::has($val)) {
             $tohash .= S::v($val);
             $params .= "&$val=".S::v($val);
@@ -84,4 +84,5 @@ function gpex_make_params($chlg, $privkey, $datafields) {
     return $params;
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

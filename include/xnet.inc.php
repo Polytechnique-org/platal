@@ -56,7 +56,7 @@ function new_group_open_page($tpl_name, $refuse_access = false)
     $page->assign('is_member', is_member());
 
     if ($refuse_access) {
-        $page->kill("Vous n'avez pas les droits suffisants pour accéder à cette page");
+        $page->kill("Vous n'avez pas les droits suffisants pour accÃ©der Ã  cette page");
     }
 }
 
@@ -107,5 +107,5 @@ function new_admin_page($tpl_name)
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

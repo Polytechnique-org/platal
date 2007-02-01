@@ -53,7 +53,7 @@ Voici le nombre d'inscrits par promo :
 {if $promo}
 
 <p class='center'>
-[<a href="stats/promos">répartition des inscrits par promo</a>]
+[<a href="stats/promos">rÃ©partition des inscrits par promo</a>]
 </p>
 
 <h1>Courbe d'inscription de la promo {$promo}</h1>
@@ -73,4 +73,4 @@ Voici le nombre d'inscrits par promo :
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

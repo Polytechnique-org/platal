@@ -25,12 +25,12 @@
 </h1>
 <p>
 Cette page te permet de voir l'album photo d'une promotion
-donnée.
+donnÃ©e.
 </p>
 <p>
-Fais attention, si tu as une connexion à internet lente (par
-exemple si tu es sur un vieux modem), la page que tu vas télécharger
-en validant peut être longue à afficher.
+Fais attention, si tu as une connexion Ã  internet lente (par
+exemple si tu es sur un vieux modem), la page que tu vas tÃ©lÃ©charger
+en validant peut Ãªtre longue Ã  afficher.
 </p>
 
 <form action="trombi/" method="post">
@@ -68,4 +68,4 @@ en validant peut être longue à afficher.
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

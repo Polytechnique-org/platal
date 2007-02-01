@@ -20,7 +20,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 /* vim: set sw=4 ts=4 sts=4 tw=100:
- * crée des demandes de validation pour les kill d'alias
+ * crÃ©e des demandes de validation pour les kill d'alias
  * une demande 10 jours avant pour un warning, puis une autre pour le robot
 */ 
 
@@ -40,4 +40,5 @@ if ($resRobot->total()) {
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

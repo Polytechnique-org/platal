@@ -47,14 +47,14 @@
     <tr class="pair">
       <td></td>
       <td>
-        6 chiffres terminant par le numéro d'entrée (ex: 
+        6 chiffres terminant par le numÃ©ro d'entrÃ©e (ex: 
         {if $promo < 2000}
         {math equation="promo % 100" promo=$promo}0532)<br />
         {else}
         {math equation="(promo % 100) + 100" promo=$promo}532)<br />
         {/if}
         Voir sur le GU ou un bulletin de solde pour trouver cette information<br /><br />
-        Pour les élèves étrangers voie 2, il est du type :
+        Pour les Ã©lÃ¨ves Ã©trangers voie 2, il est du type :
         {if $promo < 1999}
         {math equation="(promo + 1) % 100" promo=$promo}0XXX
         {else}
@@ -70,7 +70,7 @@
     </tr>
     <tr>
       <td class="titre"> 
-        Nom <span class="smaller">(à l'X)</span>
+        Nom <span class="smaller">(Ã  l'X)</span>
       </td>
       <td>
         <input type="text" size="20" maxlength="30" name="nom" value="{$smarty.request.nom}" />
@@ -78,7 +78,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Prénom
+        PrÃ©nom
       </td>
       <td>
         <input type="text" size="15" maxlength="20" name="prenom" value="{$smarty.request.prenom}" />
@@ -100,4 +100,4 @@
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

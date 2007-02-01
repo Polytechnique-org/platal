@@ -25,12 +25,12 @@
 <h1>Bravo !!!</h1>
 
 <p>
-Tu as maintenant accès au site !!!
-Ton adresse électronique à vie <strong>{$smarty.session.forlife}@polytechnique.org</strong> est déjà ouverte, essaie-la !
+Tu as maintenant accÃ¨s au site !!!
+Ton adresse Ã©lectronique Ã  vie <strong>{$smarty.session.forlife}@polytechnique.org</strong> est dÃ©jÃ  ouverte, essaie-la !
 </p>
 <p>
   Remarque: m4x.org est un domaine "discret" qui veut dire "mail for X" et
-  qui comporte exactement les mêmes adresses que le domaine polytechnique.org.
+  qui comporte exactement les mÃªmes adresses que le domaine polytechnique.org.
 </p>
 
 
@@ -39,13 +39,13 @@ Ton adresse électronique à vie <strong>{$smarty.session.forlife}@polytechnique.o
 {if $mdpok}
 
 <p class="erreur">
-ton mot de passe a bien été mis à jour !
+ton mot de passe a bien Ã©tÃ© mis Ã  jour !
 </p>
 
 {else}
 
 <p>
-Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le faire ici :
+Tu as recu un mot de passe par dÃ©faut, si tu souhaites en changer, tu peux le faire ici :
 </p>
 
 <form action="register/success" method="post" id="changepass">
@@ -85,33 +85,33 @@ Tu as recu un mot de passe par défaut, si tu souhaites en changer, tu peux le fa
 
 <p>
 N'oublie pas : si tu perds ton mot de passe, nous n'avons aucun engagement, en
-particulier en termes de rapidité, mais pas seulement, à te redonner accès au
+particulier en termes de rapiditÃ©, mais pas seulement, Ã  te redonner accÃ¨s au
 site. Cela peut prendre plusieurs semaines, les pertes de mot de passe sont
-traitées avec la priorité minimale.
+traitÃ©es avec la prioritÃ© minimale.
 </p>
 
 {/if}
 
-<h2>Rejoindre la communauté</h2>
+<h2>Rejoindre la communautÃ©</h2>
 
 <form action='profile/edit' method='post'>
   <p>
-  Pour rejoindre la communauté des X sur le web, nous te convions le plus vivement à remplir ton profil !!!
+  Pour rejoindre la communautÃ© des X sur le web, nous te convions le plus vivement Ã  remplir ton profil !!!
   </p>
 
   <p>
-  Cette fonctionnalité n'est pas du tout redondante avec l'annuaire de l'AX, car nous pouvons synchroniser pour toi
-  les données qu'il contient :
+  Cette fonctionnalitÃ© n'est pas du tout redondante avec l'annuaire de l'AX, car nous pouvons synchroniser pour toi
+  les donnÃ©es qu'il contient :
   </p>
 
   <ul>
     <li>
-    <strong>vers l'AX</strong> : tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre à l'AX des parties de ta fiche, au fur et à mesure que tu les modifies.
-    (Les données transmises seront <strong>uniquement</strong> celles que tu as décidé de transmettre).
+    <strong>vers l'AX</strong> : tu peux choisir dans ton profil sur Polytechnique.org d'automatiquement transmettre Ã  l'AX des parties de ta fiche, au fur et Ã  mesure que tu les modifies.
+    (Les donnÃ©es transmises seront <strong>uniquement</strong> celles que tu as dÃ©cidÃ© de transmettre).
     </li>
     <li>
-    <strong>depuis l'AX</strong> : nous mettons à jour ta fiche depuis les données de l'annuaire de l'AX si tu le souhaites. <br/>
-    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='register_from_ax_question' />)
+    <strong>depuis l'AX</strong> : nous mettons Ã  jour ta fiche depuis les donnÃ©es de l'annuaire de l'AX si tu le souhaites. <br/>
+    (si tu ne le souhaites pas, dÃ©coche la case ci contre : <input type='checkbox' value='1' checked="checked" name='register_from_ax_question' />)
     </li>
   </ul>
 
@@ -121,12 +121,12 @@ traitées avec la priorité minimale.
 
   <ul>
     <li>
-    <strong>lettre mensuelle</strong> : de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activités et nouvelles de la communauté des X.<br/>
-    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_nl' />)
+    <strong>lettre mensuelle</strong> : de recevoir chaque mois la lettre mensuelle de Polytechnique.org contenant les activitÃ©s et nouvelles de la communautÃ© des X.<br/>
+    (si tu ne le souhaites pas, dÃ©coche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_nl' />)
     </li>
     <li>
-    <strong>ta promo</strong> : de recevoir les informations plus spécifiques de ta promotion pour pouvoir participer plus facilement aux événements qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.<br />
-    (si tu ne le souhaites pas, décoche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_promo' />)
+    <strong>ta promo</strong> : de recevoir les informations plus spÃ©cifiques de ta promotion pour pouvoir participer plus facilement aux Ã©vÃ©nements qu'elle organise. Nous t'inscrivons donc dans le groupe de la promotion {$smarty.session.promo}.<br />
+    (si tu ne le souhaites pas, dÃ©coche la case ci contre : <input type='checkbox' value='1' checked="checked" name='add_to_promo' />)
     </li>
   </ul>
 
@@ -135,4 +135,4 @@ traitées avec la priorité minimale.
   </div>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -70,7 +70,7 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
     );
 
     global $globals;
-    if (!$globals->debug) {
+    if (isset($globals) && !$globals->debug) {
         if (strpos($errortype[$errno], 'Notice') !== false) {
             return;
         }
@@ -131,5 +131,5 @@ function pl_redirect($path, $query = null, $fragment = null)
     http_redirect($globals->baseurl . '/' . pl_url($path, $query, $fragment));
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

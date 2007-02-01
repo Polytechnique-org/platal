@@ -23,7 +23,7 @@
 {if $valid->m_relance neq '0000-00-00'}
 {if $valid->m_relance neq ''} {* provided for backward compatibility, may disappear in the future *}
   <tr class="pair">
-    <td class="titre">Dernière relance le :</td>
+    <td class="titre">DerniÃ¨re relance le :</td>
     <td>{$valid->m_relance|date_format}</td>
   </tr>
 {/if}
@@ -33,7 +33,7 @@
   <td><a href='marketing/private/{$valid->m_id}'>{$valid->m_prenom} {$valid->m_nom} ({$valid->m_promo})</a></td>
 </tr>
 <tr class="pair">
-  <td class="titre">Mail deviné</td>
+  <td class="titre">Mail devinÃ©</td>
   <td>{$valid->m_email}</td>
 </tr>
 <tr class="pair">
@@ -41,4 +41,4 @@
   <td>{if $valid->perso}perso{else}par poly.org{/if}</td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

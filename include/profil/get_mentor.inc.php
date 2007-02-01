@@ -99,4 +99,5 @@ if((Post::v('mentor_secteur_op', '')== 'ajouter') && ($nb_mentor_secteurs < $max
 } elseif(Post::has('mentor_secteur_id_new')){
     $mentor_secteur_id_new = Post::v('mentor_secteur_id_new', '');
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

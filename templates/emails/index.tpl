@@ -20,13 +20,13 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Gestion de mes courriers électroniques</h1>
+<h1>Gestion de mes courriers Ã©lectroniques</h1>
 
 <script type="text/javascript" src="javascript/ajax.js">
 </script>
 <table class="bicol">
   <tr>
-    <th>Mes adresses polytechniciennes à vie</th>
+    <th>Mes adresses polytechniciennes Ã  vie</th>
   </tr>
   <tr class="impair">
     <td>
@@ -40,33 +40,33 @@
           {/iterate}
         </div>
       <br />
-      L'adresse cochée est celle que tu utilises le plus (et qui sera donc affichée sur ta carte de visite, ta fiche, etc...).
+      L'adresse cochÃ©e est celle que tu utilises le plus (et qui sera donc affichÃ©e sur ta carte de visite, ta fiche, etc...).
       Coche une autre case pour en changer !
     </td>
   </tr>
   <tr class="pair">
     <td>
-      (M4X signifie <em>mail for X</em>, son intérêt est de te doter d'une adresse à vie
+      (M4X signifie <em>mail for X</em>, son intÃ©rÃªt est de te doter d'une adresse Ã  vie
       moins "voyante" que l'adresse @{#globals.mail.domain#}).
     </td>
   </tr>
 </table>
 
 <p class="smaller">
-(*) cette adresse email t'est réservée pour une période 100 ans après ton entrée à l'X (dans ton cas, jusqu'en
+(*) cette adresse email t'est rÃ©servÃ©e pour une pÃ©riode 100 ans aprÃ¨s ton entrÃ©e Ã  l'X (dans ton cas, jusqu'en
 {$smarty.session.promo+100}).
 </p>
 <p class="smaller">
-(**) cette adresse email t'est réservée à vie.
+(**) cette adresse email t'est rÃ©servÃ©e Ã  vie.
 </p>
 <p class="smaller">
 {if $homonyme}
 Tu as un homonyme X donc tu ne peux pas profiter de l'alias {$homonyme}@{#globals.mail.domain#}. Si quelqu'un essaie
-d'envoyer un mail à cette adresse par mégarde il recevra une réponse d'un robot lui expliquant l'ambiguité et lui
-proposant les adresses des différents homonymes.
+d'envoyer un mail Ã  cette adresse par mÃ©garde il recevra une rÃ©ponse d'un robot lui expliquant l'ambiguitÃ© et lui
+proposant les adresses des diffÃ©rents homonymes.
 {else}
-Si tu venais à avoir un homonyme X, l'alias prenom.nom@{#globals.mail.domain#} sera désactivé. Si bien que
-ton homonyme et toi-même ne disposeraient plus que des adresses de la forme prenom.nom.promo@{#globals.mail.domain#}.
+Si tu venais Ã  avoir un homonyme X, l'alias prenom.nom@{#globals.mail.domain#} sera dÃ©sactivÃ©. Si bien que
+ton homonyme et toi-mÃªme ne disposeraient plus que des adresses de la forme prenom.nom.promo@{#globals.mail.domain#}.
 {/if}
 </p>
 
@@ -74,18 +74,18 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
 
 <table class="bicol">
   <tr>
-    <th>Où est-ce que je reçois le courrier qui m'y est adressé ?</th>
+    <th>OÃ¹ est-ce que je reÃ§ois le courrier qui m'y est adressÃ© ?</th>
   </tr>
   <tr class="impair">
     <td>
       {if $mails->total() eq 0}
       <p class="erreur">
-        Tu n'as actuellement aucune adressse de redirection. Tout courrier électronique qui t'es adresses
-        ci-dessus génère une erreur. Modifie au plus vite ta liste de redirection.<br/>
+        Tu n'as actuellement aucune adressse de redirection. Tout courrier Ã©lectronique qui t'es adresses
+        ci-dessus gÃ©nÃ¨re une erreur. Modifie au plus vite ta liste de redirection.<br/>
       </p>
       {else}
-      Actuellement, tout courrier électronique qui t'y est adressé, est envoyé
-      {if $mails->total() eq 1} à l'adresse {else} aux adresses {/if}
+      Actuellement, tout courrier Ã©lectronique qui t'y est adressÃ©, est envoyÃ©
+      {if $mails->total() eq 1} Ã  l'adresse {else} aux adresses {/if}
       <ul>
         {iterate from=$mails item=m}
         <li><strong>{$m.email}</strong></li>
@@ -106,14 +106,14 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
   </tr>
   <tr class="impair">
     <td class="half">
-      Tous les courriers qui te sont envoyés sur tes adresses polytechniciennes sont
-      <strong>filtrés par un logiciel antivirus</strong> très performant. Il te protège de ces
-      vers très gênants, qui se propagent souvent par le courrier électronique.
+      Tous les courriers qui te sont envoyÃ©s sur tes adresses polytechniciennes sont
+      <strong>filtrÃ©s par un logiciel antivirus</strong> trÃ¨s performant. Il te protÃ¨ge de ces
+      vers trÃ¨s gÃªnants, qui se propagent souvent par le courrier Ã©lectronique.
     </td>
     <td class="half">
-      De même, un <strong>service antispam évolué</strong> est en place. Tu peux lui demander
-      de te débarrasser des spams que tu reçois. Pour en savoir plus, et l'activer,
-      <a href="emails/antispam">c'est très simple, suis ce lien</a> !
+      De mÃªme, un <strong>service antispam Ã©voluÃ©</strong> est en place. Tu peux lui demander
+      de te dÃ©barrasser des spams que tu reÃ§ois. Pour en savoir plus, et l'activer,
+      <a href="emails/antispam">c'est trÃ¨s simple, suis ce lien</a> !
       <br />
     </td>
   </tr>
@@ -127,18 +127,18 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
   </tr>
   <tr class="impair">
     <td>
-      Tu peux ouvrir en supplément une adresse synonyme de ton adresse @{#globals.mail.domain#},
-      sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = Mél X).
+      Tu peux ouvrir en supplÃ©ment une adresse synonyme de ton adresse @{#globals.mail.domain#},
+      sur les domaines @{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#} (melix = MÃ©l X).
     </td>
   </tr>
   <tr class="impair">
     <td>
       {if $melix}
-      Tu disposes à l'heure actuelle de l'alias <strong>{$melix}</strong>
-      Pour <strong>demander à la place un autre alias @{#globals.mail.alias_dom#}</strong>,
+      Tu disposes Ã  l'heure actuelle de l'alias <strong>{$melix}</strong>
+      Pour <strong>demander Ã  la place un autre alias @{#globals.mail.alias_dom#}</strong>,
       <a href="emails/alias">il te suffit de te rendre ici</a>.
       {else}
-      A l'heure actuelle <strong>tu n'as pas activé d'adresse @{#globals.mail.alias_dom#}</strong>.
+      A l'heure actuelle <strong>tu n'as pas activÃ© d'adresse @{#globals.mail.alias_dom#}</strong>.
       Si tu souhaites le faire, <a href="emails/alias">il te suffit de venir ici</a>.
       {/if}
     </td>
@@ -146,4 +146,4 @@ ton homonyme et toi-même ne disposeraient plus que des adresses de la forme pren
 </table>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

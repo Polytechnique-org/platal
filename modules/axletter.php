@@ -128,13 +128,13 @@ class AXLetterModule extends PLModule
                 $page->trig("L'annonce doit avoir un nom raccourci pour simplifier la navigation dans les archives");
                 Post::kill('valid');
             } elseif (!preg_match('/^[a-z][-a-z0-9]*[a-z0-9]$/', $shortname)) {
-                $page->trig("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractères et n'être composé "
+                $page->trig("Le nom raccourci n'est pas valide, il doit comporter au moins 2 caractÃ¨res et n'Ãªtre composÃ© "
                           . "que de chiffres, lettres et tirets");
                 Post::kill('valid');
             } elseif ($shortname != Post::v('old_shortname')) {
                 $res = XDB::query("SELECT id FROM axletter WHERE  shortname = {?}", $shortname);
                 if ($res->numRows() && $res->fetchOneCell() != $id) {
-                    $page->trig("Le nom $shortname est déjà utilisé, merci d'en choisir un autre");
+                    $page->trig("Le nom $shortname est dÃ©jÃ  utilisÃ©, merci d'en choisir un autre");
                     $shortname = Post::v('old_shortname');
                     if (empty($shortname)) {
                         Post::kill('valid');
@@ -143,7 +143,7 @@ class AXLetterModule extends PLModule
             }
 
             switch (@Post::v('valid')) {
-              case 'Aperçu':
+              case 'AperÃ§u':
                 require_once dirname(__FILE__) . '/axletter/axletter.inc.php';
                 $al = new AXLetter(array($id, $shortname, $subject, $title, $body, $signature,
                                          $promo_min, $promo_max, $echeance, 0, 'new'));
@@ -231,7 +231,7 @@ class AXLetterModule extends PLModule
             return;
         }
 
-        $page->kill("L'envoi de l'annonce {$al->title()} est annulé");
+        $page->kill("L'envoi de l'annonce {$al->title()} est annulÃ©");
     }
 
     function handler_valid(&$page, $force = null)
@@ -296,7 +296,7 @@ class AXLetterModule extends PLModule
                     break;
                 }
                 if (!$res) {
-                    $page->trig("Personne ne oorrespond à l'identifiant '$uid'");
+                    $page->trig("Personne ne oorrespond Ã  l'identifiant '$uid'");
                 }
             }
         }
@@ -368,4 +368,5 @@ class AXLetterModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -87,7 +87,7 @@ class XOrgSearch extends XOrgPlugin
     var $orders = array(
             'nom'       =>array('nom,prenom',   true,  'nom',             AUTH_PUBLIC),
             'promo'     =>array('promo,nom',  false, 'promotion',             AUTH_PUBLIC),
-            'date_mod'  =>array('u.date,nom', false, 'derniËre modification', AUTH_COOKIE)
+            'date_mod'  =>array('u.date,nom', false, 'derni√®re modification', AUTH_COOKIE)
         );
 
     // }}}
@@ -155,7 +155,7 @@ class XOrgSearch extends XOrgPlugin
 
     	$links = Array();
 	    if ($offset) {
-    	    $links[] = Array('u'=> $this->make_url(Array('offset'=>$offset-1)), 'i' => $offset-1,  'text' => 'prÈcÈdent');
+    	    $links[] = Array('u'=> $this->make_url(Array('offset'=>$offset-1)), 'i' => $offset-1,  'text' => 'pr√©c√©dent');
 	    }
     	for ($i = 0; $i <= $page_max ; $i++) {
 	        $links[] = Array('u'=>$this->make_url(Array('offset'=>$i)), 'i' => $i, 'text' => $i+1);
@@ -189,5 +189,5 @@ class XOrgSearch extends XOrgPlugin
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

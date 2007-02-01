@@ -46,7 +46,7 @@ class PayPal
     	// toute la doc sur :
     	// https://www.paypal.com/fr_FR/pdf/integration_guide.pdf
     	// attention : le renvoi automatique ne fonctionne que si
-    	// on oblige les gens à créer un compte paypal
+    	// on oblige les gens Ã  crÃ©er un compte paypal
     	// nous ne l'utilisons pas ; il faut donc que l'utilisateur
     	// revienne sur le site
         global $globals, $platal;
@@ -106,4 +106,5 @@ class PayPal
 
 $api = 'PayPal';
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

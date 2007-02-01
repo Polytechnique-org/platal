@@ -50,3 +50,4 @@ CLASS:PRIVATE
 {display_ical name="description" value=$e.descriptif}
 END:VEVENT
 END:VCALENDAR
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -35,4 +35,5 @@ function smarty_insert_mkStats($params, &$smarty)
     $cnt = $res->fetchOneCell();
     return ($cnt ? $cnt : '-');
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

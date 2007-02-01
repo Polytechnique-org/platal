@@ -26,8 +26,8 @@
   <td>{$valid->promo}</td>
 </tr>
 <tr class="impair">
-  <td class="titre">Année de sortie&nbsp;:</td>
+  <td class="titre">AnnÃ©e de sortie&nbsp;:</td>
   <td>{$valid->promo_sortie} au lieu de {math equation="a + b" a=$valid->promo b=3}</td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

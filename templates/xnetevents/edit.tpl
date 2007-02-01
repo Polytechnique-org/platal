@@ -35,25 +35,25 @@ function deadlineChange(box)
 {/literal}
 </script>
 
-<h1>{$asso.nom} : {$evt.intitule|default:"Nouvel événement"}</h1>
+<h1>{$asso.nom} : {$evt.intitule|default:"Nouvel Ã©vÃ©nement"}</h1>
 
 <p class="descr">
-  Un événement peut être une réunion, un séminaire, une conférence, un voyage promo,
-  etc... Pour en organiser un et bénéficier des outils de suivi d'inscription et de
+  Un Ã©vÃ©nement peut Ãªtre une rÃ©union, un sÃ©minaire, une confÃ©rence, un voyage promo,
+  etc... Pour en organiser un et bÃ©nÃ©ficier des outils de suivi d'inscription et de
   paiement offerts, il te faut remplir les quelques champs du formulaire ci-dessous.
 </p>
 <p class="descr">
-  Tu as la possibilité, pour un événement donné, de distinguer plusieurs "moments"
-  distincts. Par exemple, dans le cas d'une réunion suivie d'un dîner, il peut être
-  utile de comptabiliser les présents à la réunion d'une part, et de compter ceux
-  qui s'inscrivent au repas d'autre part (en général certains participants à la réunion
-  ne restent pas pour le dîner...), de sorte que tu sauras combien de chaises prévoir
-  pour le premier "moment" (la réunion), et pour combien de personnes réserver le
+  Tu as la possibilitÃ©, pour un Ã©vÃ©nement donnÃ©, de distinguer plusieurs "moments"
+  distincts. Par exemple, dans le cas d'une rÃ©union suivie d'un dÃ®ner, il peut Ãªtre
+  utile de comptabiliser les prÃ©sents Ã  la rÃ©union d'une part, et de compter ceux
+  qui s'inscrivent au repas d'autre part (en gÃ©nÃ©ral certains participants Ã  la rÃ©union
+  ne restent pas pour le dÃ®ner...), de sorte que tu sauras combien de chaises prÃ©voir
+  pour le premier "moment" (la rÃ©union), et pour combien de personnes rÃ©server le
   restaurant.
 </p>
 
 <hr />
-<h2>Description de l'événement</h2>
+<h2>Description de l'Ã©vÃ©nement</h2>
 
 <form method="post" action="{$platal->ns}events/edit/{$url_ref}">
   <table class='bicol' cellspacing='0' cellpadding='0'>
@@ -62,7 +62,7 @@ function deadlineChange(box)
     </colgroup>
     <tr>
       <th colspan="2">
-        Intitulé de l'événement
+        IntitulÃ© de l'Ã©vÃ©nement
       </th>
     </tr>
     <tr>
@@ -128,7 +128,7 @@ function deadlineChange(box)
         <input type="radio" name="accept_nonmembre" value="0" {if !$evt.accept_nonmembre}checked="checked"{/if}/> non
 
         <br />
-        Autoriser les invités :
+        Autoriser les invitÃ©s :
         <input type="radio" name="noinvite" value="0" {if !$evt.noinvite}checked="checked"{/if} /> oui
         <input type="radio" name="noinvite" value="1" {if $evt.noinvite}checked="checked"{/if}/> non
       </td>
@@ -148,28 +148,28 @@ function deadlineChange(box)
     </tr>
     <tr id="new_pay" style="display:none">
       <td colspan="2">
-        Il faut que tu définisses le texte du mail de confirmation de paiement. Pour ceci, tu peux adapter le modèle qui suit :
+        Il faut que tu dÃ©finisses le texte du mail de confirmation de paiement. Pour ceci, tu peux adapter le modÃ¨le qui suit :
         <ul>
-          <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu désires y voir apparaître</li>
-          <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacés par les informations adaptées</li>
+          <li><strong>Remplace les crochets</strong> ([...]) par le texte que tu dÃ©sires y voir apparaÃ®tre</li>
+          <li>&lt;salutation&gt;, &lt;prenom&gt;, &lt;nom&gt; et &lt;montant&gt; seront <strong>automatiquement</strong> remplacÃ©s par les informations adaptÃ©es</li>
         </ul>
         <textarea name="confirmation" rows="12" cols="65">&lt;salutation&gt; &lt;prenom&gt; &lt;nom&gt;,
 
-    Ton inscription à [METS LE NOM DE L'EVENEMENT ICI] a bien été enregistrée et ton paiement de &lt;montant&gt; a bien été reçu. 
+    Ton inscription Ã  [METS LE NOM DE L'EVENEMENT ICI] a bien Ã©tÃ© enregistrÃ©e et ton paiement de &lt;montant&gt; a bien Ã©tÃ© reÃ§u. 
     [COMPLETE EN PRECISANT LA DATE ET LA PERSONNE A CONTACTER]
 
-    A très bientôt,
+    A trÃ¨s bientÃ´t,
 
     {$smarty.session.prenom} {$smarty.session.nom}</textarea><br />
-        Page internet de l'événement&nbsp;: <input size="40" name="site" value="{$asso.site|default:$platal->ns}" /><br />
-        Le nouveau paiement sera activé automatiquement après validation par le trésorier de Polytechnique.org,
+        Page internet de l'Ã©vÃ©nement&nbsp;: <input size="40" name="site" value="{$asso.site|default:$platal->ns}" /><br />
+        Le nouveau paiement sera activÃ© automatiquement aprÃ¨s validation par le trÃ©sorier de Polytechnique.org,
         ce qui sera fait sous peu.
       </td>
     </tr>
   </table>
 
   <hr />
-  <h2>Déroulement de l'événement</h2>
+  <h2>DÃ©roulement de l'Ã©vÃ©nement</h2>
 
   <table class="bicol">
     <colgroup>
@@ -177,12 +177,12 @@ function deadlineChange(box)
     </colgroup>
     <tr>
       <td class='titre'>
-        Début :
+        DÃ©but :
       </td>
       <td>
         le {html_select_date prefix='deb_' end_year='+5' day_value_format='%02d'
               field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.debut}
-        à {html_select_time use_24_hours=true display_seconds=false
+        Ã  {html_select_time use_24_hours=true display_seconds=false
               time=$evt.debut prefix='deb_' minute_interval=5}
       </td>
     </tr>
@@ -193,7 +193,7 @@ function deadlineChange(box)
       <td>
         le {html_select_date prefix='fin_' end_year='+5' day_value_format='%02d'
               field_order='DMY' field_separator=' / ' month_format='%m' time=$evt.fin}
-        à {html_select_time use_24_hours=true display_seconds=false
+        Ã  {html_select_time use_24_hours=true display_seconds=false
               time=$evt.fin prefix='fin_' minute_interval=5}
       </td>
     </tr>
@@ -204,11 +204,11 @@ function deadlineChange(box)
       <th colspan="2">Moment {$i}</th>
     </tr>
     <tr>
-      <td class="titre">Intitulé :</td>
+      <td class="titre">IntitulÃ© :</td>
       <td><input type="text" name="titre{$i}" value="{$moment.titre}" size="45" maxlength="100" /></td>
     </tr>
     <tr>
-      <td class="titre">Détails pratiques :</td>
+      <td class="titre">DÃ©tails pratiques :</td>
       <td><textarea name="details{$i}" rows="6" cols="45">{$moment.details}</textarea></td>
     </tr>
     <tr>
@@ -226,4 +226,4 @@ function deadlineChange(box)
   </div>
 
 </form>
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

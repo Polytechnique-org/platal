@@ -38,9 +38,9 @@ Choix de la promo :
 
 {if $addr->total()}
 <h2>Marketing volontaire</h2>
-<table class="bicol" cellpadding="3" summary="Adresses déjà utilisées">
+<table class="bicol" cellpadding="3" summary="Adresses dÃ©jÃ  utilisÃ©es">
   <tr>
-    <th>Camarade concerné</th>
+    <th>Camarade concernÃ©</th>
     <th>Adresse email</th>
     <th>"informateur"</th>
   </tr>
@@ -59,4 +59,4 @@ pas d'informations pour les gens de cette promo
 {/if}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

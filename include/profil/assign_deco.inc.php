@@ -32,8 +32,8 @@ while ($tmp = $res->next()) {
     $mlist[$tmp['type']][] = $tmp;
 }
 
-$trad = Array('ordre' => 'Ordres ...', 'croix' => 'Croix ...', 'militaire' => 'Médailles militaires ...',
-        'honneur' => 'Médailles d\'honneur', 'resistance' => 'Médailles de la résistance ...', 'prix' => 'Prix ...');
+$trad = Array('ordre' => 'Ordres ...', 'croix' => 'Croix ...', 'militaire' => 'MÃ©dailles militaires ...',
+        'honneur' => 'MÃ©dailles d\'honneur', 'resistance' => 'MÃ©dailles de la rÃ©sistance ...', 'prix' => 'Prix ...');
 
 $page->assign('grades', $grades);
 $page->assign('medals', $medals);
@@ -42,4 +42,5 @@ $page->assign('medals_pub', $medals_pub);
 $page->assign('medal_list', $mlist);
 $page->assign('medals_valid', $medals_valid);
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

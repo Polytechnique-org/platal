@@ -37,4 +37,5 @@ function _select_fonction_smarty($params){
 }
 
 $page->register_function('select_fonction', '_select_fonction_smarty');
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

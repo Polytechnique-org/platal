@@ -26,41 +26,41 @@
 <h2 class='erreur'>Erreur !</h2>
 
 <p>
-Tu as entré une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est invalide.
+Tu as entrÃ© une adresse @polytechnique.org, @m4x.org ou @melix, ce qui est invalide.
 </p>
 
 <p>
-En effet, il faut nous donner l'adresse qui se cache derrière l'adresse polytechnicienne de ton
-correspondant si tu veux que nous puissions te répondre.
+En effet, il faut nous donner l'adresse qui se cache derriÃ¨re l'adresse polytechnicienne de ton
+correspondant si tu veux que nous puissions te rÃ©pondre.
 </p>
 {elseif $x && $x.nb_mails}
-<h2>Patte Cassée</h2>
+<h2>Patte CassÃ©e</h2>
   <p>
-    Ton correspondant a à l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
-    en dehors de celle que tu nous as communiquée</span>. Cela ne veut pas forcément dire qu'il les avait
-    déjà activées lorsque tu as envoyé ton email, mais c'est fort probable.
+    Ton correspondant a Ã  l'heure actuelle <span class="erreur">{$x.nb_mails} adresse(s) email(s) de redirection active(s)
+    en dehors de celle que tu nous as communiquÃ©e</span>. Cela ne veut pas forcÃ©ment dire qu'il les avait
+    dÃ©jÃ  activÃ©es lorsque tu as envoyÃ© ton email, mais c'est fort probable.
   </p>
   <p>
-    Nous pensons qu'il serait une bonne idée de le prévenir que cette adresse email ne fonctionne plus.
-    Si tu veux que nous lui envoyions un mail automatique de ta part pour le prévenir,
+    Nous pensons qu'il serait une bonne idÃ©e de le prÃ©venir que cette adresse email ne fonctionne plus.
+    Si tu veux que nous lui envoyions un mail automatique de ta part pour le prÃ©venir,
     <a href="emails/broken/warn/{$email}">clique sur ce lien</a>.
   </p>
 {elseif $x}
-<h2>Patte Cassée</h2>
+<h2>Patte CassÃ©e</h2>
   <p>
-    Désolé, mais ton correspondant, {$x.prenom} {$x.nom} (X{$x.promo}),
+    DÃ©solÃ©, mais ton correspondant, {$x.prenom} {$x.nom} (X{$x.promo}),
     n'a actuellement <span class="erreur">aucune adresse email de redirection 
       active autre que celle que tu viens de rentrer.</span>
-    Nous t'invitons à prendre contact avec lui autrement que par email,
-    l'idéal étant de l'informer si possible que sa patte Polytechnique.org est cassée...!
+    Nous t'invitons Ã  prendre contact avec lui autrement que par email,
+    l'idÃ©al Ã©tant de l'informer si possible que sa patte Polytechnique.org est cassÃ©e...!
   </p>
   <p>
-    Si tu connais une autre adresse email où le contacter, nous pouvez l'inviter à mettre à jour sa redirection
+    Si tu connais une autre adresse email oÃ¹ le contacter, nous pouvez l'inviter Ã  mettre Ã  jour sa redirection
     Polytechnique.org. Pour ceci il suffit que tu remplisses <a href="marketing/broken/{$x.forlife}">ce fomulaire</a>.
   </p>
 {elseif $email}
 <p class="erreur">
-  Désolé mais plus personne n'utilise l'adresse {$email} comme adresse de redirection.
+  DÃ©solÃ© mais plus personne n'utilise l'adresse {$email} comme adresse de redirection.
   Nous ne pouvons donc malheureusement te fournir aucune information...
 </p>
 {/if}
@@ -69,7 +69,7 @@ correspondant si tu veux que nous puissions te répondre.
   <form action="emails/broken" method="post">
   <table class="tinybicol" cellpadding="3" summary="Saisie email en panne">
     <tr>
-      <th>Adresse email défectueuse</th>
+      <th>Adresse email dÃ©fectueuse</th>
     </tr>
     <tr>
       <td class='center'><input type="text" name="email" size="60" /></td>
@@ -81,6 +81,6 @@ correspondant si tu veux que nous puissions te répondre.
   </form>
 </div>
 
-{include file=../spool/wiki.d/cache_Xorg.PatteCassée.tpl included=1}
+{include file=../spool/wiki.d/cache_Xorg.PatteCassÃ©e.tpl included=1}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

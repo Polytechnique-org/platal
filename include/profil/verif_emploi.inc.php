@@ -55,37 +55,37 @@ replace_ifset_i($email_pubpro,"email_pubpro",$i);
 replace_ifset_i($webpro,"webpro",$i);
 replace_ifset($cv,"cv");
 
-// validité de l'entreprise
+// validitÃ© de l'entreprise
 $j = $i+1;
-if (strlen(strtok($entreprise[$i],"<>{}#~;!§*`[]|%^=")) < strlen($entreprise[$i]))
+if (strlen(strtok($entreprise[$i],"<>{}#~;!Â§*`[]|%^=")) < strlen($entreprise[$i]))
 {
-    $page->trig("Le champ 'Entreprise $j' contient un caractère interdit.");
+    $page->trig("Le champ 'Entreprise $j' contient un caractÃ¨re interdit.");
 }
 
-//validité du poste
-if (strlen(strtok($poste[$i],"<>{}~?!§*`|%$^=+")) < strlen($poste[$i]))
+//validitÃ© du poste
+if (strlen(strtok($poste[$i],"<>{}~?!Â§*`|%$^=+")) < strlen($poste[$i]))
 {
-    $page->trig("Le champ 'Poste $j' contient un caractère interdit.");
+    $page->trig("Le champ 'Poste $j' contient un caractÃ¨re interdit.");
 }
 
-//validité du CV
-if (strlen(strtok($cv,"<>{}~§`")) < strlen($cv))
+//validitÃ© du CV
+if (strlen(strtok($cv,"<>{}~Â§`")) < strlen($cv))
 {
-    $page->trig("Le champ 'Curriculum vitae' contient un caractère interdit.");
+    $page->trig("Le champ 'Curriculum vitae' contient un caractÃ¨re interdit.");
 }
 
 // correction du champ web si vide
 if ($webpro[$i]=="http://" or $webpro[$i] == '') {
     $webpro[$i]='';
 } elseif (!preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $webpro[$i])) {
-    // validité de l'url donnée dans web
+    // validitÃ© de l'url donnÃ©e dans web
     $page->trig("URL incorrecte dans le champ 'Page web', une url doit commencer par
-                    http:// ou https:// ou ftp:// et ne pas contenir de caractères interdits");
+                    http:// ou https:// ou ftp:// et ne pas contenir de caractÃ¨res interdits");
 } else {
     $webpro[$i] = str_replace('&', '&amp;', $webpro[$i]);
 }
 
-// validité de l'e-mail
+// validitÃ© de l'e-mail
 if ($emailpro[$i]) {
     $emailpro[$i] = strtolower(trim($emailpro[$i]));
     if (!isvalid_email($emailpro[$i])) {
@@ -93,38 +93,39 @@ if ($emailpro[$i]) {
     }
 }
 
-if (strlen(strtok($adrpro1[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro1[$i]))
+if (strlen(strtok($adrpro1[$i],"<>{}@~?!Â§*`|%$^=+")) < strlen($adrpro1[$i]))
     {
-      $page->trig("Le champ 'Adresse professionnelle $j - Ligne 1' contient un caractère interdit.");
+      $page->trig("Le champ 'Adresse professionnelle $j - Ligne 1' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($adrpro2[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro2[$i]))
+  if (strlen(strtok($adrpro2[$i],"<>{}@~?!Â§*`|%$^=+")) < strlen($adrpro2[$i]))
     {
-      $page->trig("Le champ 'Adresse professionnelle $j - Ligne 2' contient un caractère interdit.");
+      $page->trig("Le champ 'Adresse professionnelle $j - Ligne 2' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($adrpro3[$i],"<>{}@~?!§*`|%$^=+")) < strlen($adrpro3[$i]))
+  if (strlen(strtok($adrpro3[$i],"<>{}@~?!Â§*`|%$^=+")) < strlen($adrpro3[$i]))
     {
-      $page->trig("Le champ 'Adresse professionnelle $j - Ligne 3' contient un caractère interdit.");
+      $page->trig("Le champ 'Adresse professionnelle $j - Ligne 3' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($postcodepro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($postcodepro[$i]))
+  if (strlen(strtok($postcodepro[$i],"<>{}@~?!Â§*`|%$^=+")) < strlen($postcodepro[$i]))
     {
-      $page->trig("Le champ 'Code Postal professionnel $j' contient un caractère interdit.");
+      $page->trig("Le champ 'Code Postal professionnel $j' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($citypro[$i],"<>{}@~?!§*`|%$^=+")) < strlen($citypro[$i]))
+  if (strlen(strtok($citypro[$i],"<>{}@~?!Â§*`|%$^=+")) < strlen($citypro[$i]))
     {
-      $page->trig("Le champ 'Ville professionnelle $j' contient un caractère interdit.");
+      $page->trig("Le champ 'Ville professionnelle $j' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($telpro[$i],"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($telpro[$i]))
+  if (strlen(strtok($telpro[$i],"<>{}@&#~\/:;?,!Â§*_`[]|%$^=")) < strlen($telpro[$i]))
     {
-      $page->trig("Le champ 'Téléphone professionnel $j' contient un caractère interdit.");
+      $page->trig("Le champ 'TÃ©lÃ©phone professionnel $j' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($faxpro[$i],"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($faxpro[$i]))
+  if (strlen(strtok($faxpro[$i],"<>{}@&#~\/:;?,!Â§*_`[]|%$^=")) < strlen($faxpro[$i]))
     {
-      $page->trig("Le champ 'Fax professionnel $j' contient un caractère interdit.");
+      $page->trig("Le champ 'Fax professionnel $j' contient un caractÃ¨re interdit.");
     }
-  if (strlen(strtok($mobilepro[$i],"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($mobilepro[$i]))
+  if (strlen(strtok($mobilepro[$i],"<>{}@&#~\/:;?,!Â§*_`[]|%$^=")) < strlen($mobilepro[$i]))
     {
-      $page->trig("Le champ 'Mobile professionnel $j' contient un caractère interdit.");
+      $page->trig("Le champ 'Mobile professionnel $j' contient un caractÃ¨re interdit.");
     }
 
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

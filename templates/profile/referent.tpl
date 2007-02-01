@@ -33,14 +33,14 @@
 {/literal}
 
 <h1>
-  Rechercher un camarade pouvant m'aider à orienter mon parcours professionnel
+  Rechercher un camarade pouvant m'aider Ã  orienter mon parcours professionnel
 </h1>
 {if $recherche_trop_large}
 <p>
-Les critères de recherche que tu as rentrés n'ont pas produit de résultats,
-sans doute car ta requête était trop générale. Nous t'invitons à
-<a href="referent/search">procéder à une nouvelle recherche</a>, en essayant
-d'être plus précis.
+Les critÃ¨res de recherche que tu as rentrÃ©s n'ont pas produit de rÃ©sultats,
+sans doute car ta requÃªte Ã©tait trop gÃ©nÃ©rale. Nous t'invitons Ã 
+<a href="referent/search">procÃ©der Ã  une nouvelle recherche</a>, en essayant
+d'Ãªtre plus prÃ©cis.
 </p>
 {elseif $personnes}
 <div class="contact-list" style="clear:both" >
@@ -56,7 +56,7 @@ d'être plus précis.
       <span class='smaller'>
       <a href="profile/{$p.bestalias}" class="popup2">
         {icon name=user_suit title="Voir sa fiche"}</a> -
-        <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche référent</a>
+        <a href="referent/{$p.bestalias}" class="popup2">Voir sa fiche rÃ©fÃ©rent</a>
       </span>
     </div>
     <div class="long">
@@ -90,59 +90,59 @@ d'être plus précis.
 </form>
 {else}
 <span class="erreur">
-  Si tu utilises ce service pour la première fois, lis attentivement le texte
+  Si tu utilises ce service pour la premiÃ¨re fois, lis attentivement le texte
   qui suit.
 </span>
 <p>
 En <a href="profile/edit">renseignant sa fiche dans l'annuaire</a>, chacun
-d'entre nous a la possibilité de renseigner, dans la section "Mentoring",
+d'entre nous a la possibilitÃ© de renseigner, dans la section "Mentoring",
 s'il accepte de recevoir des messages de la part de camarades qui pourraient
 souhaiter lui poser quelques questions et recevoir quelques conseils.<br />
-Ces informations sont rentrées par chacun sur la base du volontariat et sont
-totalement déclaratives. Chaque X qui complète cette rubrique accepte alors
-de recevoir un courrier électronique des jeunes camarades qui sont en train
-de bâtir leur projet professionnel, mais aussi des moins jeunes qui cherchent
-à réorienter leur carrière. Bien entendu, chacun se réserve le droit de ne
-pas donner suite à une sollicitation !<br />
-Pour que ce système soit profitable, il est nécessaire que dans ta recherche
-de conseils professionnels, tu agisses sagement, en évitant de contacter
-un trop grand nombre de camarades. De même, pense bien que les quelques
-personnes que tu vas éventuellement contacter suite à ta recherche
-accepteront éventuellement de t'aider et de te guider <strong>sur la base du
+Ces informations sont rentrÃ©es par chacun sur la base du volontariat et sont
+totalement dÃ©claratives. Chaque X qui complÃ¨te cette rubrique accepte alors
+de recevoir un courrier Ã©lectronique des jeunes camarades qui sont en train
+de bÃ¢tir leur projet professionnel, mais aussi des moins jeunes qui cherchent
+Ã  rÃ©orienter leur carriÃ¨re. Bien entendu, chacun se rÃ©serve le droit de ne
+pas donner suite Ã  une sollicitation !<br />
+Pour que ce systÃ¨me soit profitable, il est nÃ©cessaire que dans ta recherche
+de conseils professionnels, tu agisses sagement, en Ã©vitant de contacter
+un trop grand nombre de camarades. De mÃªme, pense bien que les quelques
+personnes que tu vas Ã©ventuellement contacter suite Ã  ta recherche
+accepteront Ã©ventuellement de t'aider et de te guider <strong>sur la base du
   volontariat</strong>. Il va de soi que plus ton comportement lors de votre
-contact sera éthique et reconnaissant, plus cette pratique de conseil
-inter-générations sera encouragée et bien perçue par ceux qui la pratiquent.
+contact sera Ã©thique et reconnaissant, plus cette pratique de conseil
+inter-gÃ©nÃ©rations sera encouragÃ©e et bien perÃ§ue par ceux qui la pratiquent.
 <br />
-Nous avons peiné à trouver un nom pour désigner ceux qui sont volontaires
+Nous avons peinÃ© Ã  trouver un nom pour dÃ©signer ceux qui sont volontaires
 pour guider les camarades qui en ressentent le besoin : nous avons finalement
-retenu le terme de <em>mentors</em> pour désigner ceux qui sont prêts à aider de
-manière suivie un camarade plus jeune, à plusieurs moments de sa carrière,
-et avons appelé <em>référents</em> ceux qui s'impliquent plutôt en tant que
-"relai d'informations", dans le sens où ils ont vécu des expériences
-professionnelles susceptibles d'intéresser certains d'entre nous (expérience
-de stage ou d'emploi à l'étranger), sans forcément souhaiter consacrer
-autant de temps à quelqu'un que le ferait un mentor attentionné.
-La recherche proposée ici permet de trouver les deux types d'aide.
+retenu le terme de <em>mentors</em> pour dÃ©signer ceux qui sont prÃªts Ã  aider de
+maniÃ¨re suivie un camarade plus jeune, Ã  plusieurs moments de sa carriÃ¨re,
+et avons appelÃ© <em>rÃ©fÃ©rents</em> ceux qui s'impliquent plutÃ´t en tant que
+"relai d'informations", dans le sens oÃ¹ ils ont vÃ©cu des expÃ©riences
+professionnelles susceptibles d'intÃ©resser certains d'entre nous (expÃ©rience
+de stage ou d'emploi Ã  l'Ã©tranger), sans forcÃ©ment souhaiter consacrer
+autant de temps Ã  quelqu'un que le ferait un mentor attentionnÃ©.
+La recherche proposÃ©e ici permet de trouver les deux types d'aide.
 </p>
 
 <p>
 Dans le formulaire ci-dessous, tu peux rechercher des avis en fonction des
-domaines de compétence recherchés, des cultures professionnelles des pays
-connues par le référent, et enfin une dernière case te permettra de faire
+domaines de compÃ©tence recherchÃ©s, des cultures professionnelles des pays
+connues par le rÃ©fÃ©rent, et enfin une derniÃ¨re case te permettra de faire
 une recherche par mots-clefs.<br />
-Nous t'incitons à prendre plutôt 2 ou 3 contacts qu'un seul, cela te
-permettant certainement d'avoir une vision des choses plus complète.
+Nous t'incitons Ã  prendre plutÃ´t 2 ou 3 contacts qu'un seul, cela te
+permettant certainement d'avoir une vision des choses plus complÃ¨te.
 </p>
 
 <p>
-Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#globals.core.sitename#}.
+Actuellement, {$mentors_number} mentors et rÃ©fÃ©rents se sont dÃ©clarÃ©s sur {#globals.core.sitename#}.
 </p>
 
 <form action="{$smarty.server.REQUEST_URI}" method="post">
   <table cellpadding="0" cellspacing="0" summary="Formulaire de recherche de referents" class="bicol">
     <tr class="impair">
       <td class="titre">
-        Secteur de compétence <br /> du référent
+        Secteur de compÃ©tence <br /> du rÃ©fÃ©rent
       </td>
       <td >
         <select name="secteur" onchange="javascript:submit()">
@@ -162,7 +162,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#glob
     </tr>
     <tr class="impair">
       <td class="titre">
-        Pays bien connu du référent
+        Pays bien connu du rÃ©fÃ©rent
       </td>
       <td >
         <select name="pays">
@@ -177,7 +177,7 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#glob
     </tr>
     <tr class="impair">
       <td class="titre">
-        Expertise (rentre un ou plusieurs mots clés)
+        Expertise (rentre un ou plusieurs mots clÃ©s)
       </td>
       <td >
         <input type="text" name="expertise" size="30" value="{$expertise_champ}" />
@@ -191,4 +191,4 @@ Actuellement, {$mentors_number} mentors et référents se sont déclarés sur {#glob
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

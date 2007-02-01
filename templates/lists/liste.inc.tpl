@@ -22,11 +22,11 @@
 
 <td style="width: 16px">
   {if $liste.own && $liste.sub}
-  {icon name=wrench title="Modérateur"}
+  {icon name=wrench title="ModÃ©rateur"}
   {elseif $liste.own}
-  {icon name=error title="Modérateur mais non-membre"}
+  {icon name=error title="ModÃ©rateur mais non-membre"}
   {elseif $liste.priv}
-  {icon name=weather_cloudy title="Liste privée"}
+  {icon name=weather_cloudy title="Liste privÃ©e"}
   {/if}
 </td>
 <td>
@@ -52,7 +52,7 @@
   {/foreach}
   {/if}
   {if $liste.mails|@count}
-  <strong>&bull; Demandes de modération</strong><br />
+  <strong>&bull; Demandes de modÃ©ration</strong><br />
   <span class="smaller">
   {foreach from=$liste.mails item=m}
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mok=1'
@@ -61,7 +61,7 @@
     </a>
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}&amp;mdel=1'
         onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?mid={$m.id}&amp;mdel=1'));">
-      {icon name=delete title="Détruire"}
+      {icon name=delete title="DÃ©truire"}
     </a>
     De : {$m.sender}<br />
     <a href='{$platal->ns}lists/moderate/{$liste.list}?mid={$m.id}'>
@@ -73,20 +73,20 @@
   {/if}
 </td>
 <td class='center'>
-  {if $liste.diff eq 2}modérée{elseif $liste.diff}restreinte{else}libre{/if}
+  {if $liste.diff eq 2}modÃ©rÃ©e{elseif $liste.diff}restreinte{else}libre{/if}
 </td>
 <td class='center'>
-  {if $liste.ins}modérée{else}libre{/if}
+  {if $liste.ins}modÃ©rÃ©e{else}libre{/if}
 </td>
 <td class='right'>{$liste.nbsub}</td>
 <td class='right'>
   {if $liste.sub eq 2}
   <a href='{$platal->ns}lists?del={$liste.list}'
       onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?unsubscribe=1'));">
-    {icon name=cross title="me désinscrire"}
+    {icon name=cross title="me dÃ©sinscrire"}
   </a>
   {elseif $liste.sub eq 1}
-  {icon name=flag_orange title='inscription en attente de modération'}
+  {icon name=flag_orange title='inscription en attente de modÃ©ration'}
   {else}
   <a href='{$platal->ns}lists?add={$liste.list}'
       onclick="return (is_IE || Ajax.update_html('list_{$liste.list}', '{$platal->ns}lists/ajax/{$liste.list}?subscribe=1'));">
@@ -95,4 +95,4 @@
   {/if}
  </td>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

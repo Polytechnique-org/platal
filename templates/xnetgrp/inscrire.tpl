@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Demande d'inscription à {$asso.nom}</h1>
+<h1>Demande d'inscription Ã  {$asso.nom}</h1>
 
 {if $u && $is_admin && $show_form}
 
@@ -41,27 +41,27 @@
 {elseif $smarty.post.inscrire}
 
 <p class="descr">
-<strong>Ta demande d'inscription a bien été envoyée !</strong> Tu seras averti par email de la suite qui lui sera donnée.
+<strong>Ta demande d'inscription a bien Ã©tÃ© envoyÃ©e !</strong> Tu seras averti par email de la suite qui lui sera donnÃ©e.
 <p>
-<p class="descr">[<a href="{$platal->ns}">Retour à la page d'accueil de {$asso.nom}</a>]</p>
+<p class="descr">[<a href="{$platal->ns}">Retour Ã  la page d'accueil de {$asso.nom}</a>]</p>
 
 {else}
 
 <p class="descr">
-Pour t'inscrire à {$asso.nom}, il te faut en demander l'autorisation aux animateurs du groupe via le
-formulaire ci-dessous. Vérifie et corrige au besoin les différents champs, puis clique sur
+Pour t'inscrire Ã  {$asso.nom}, il te faut en demander l'autorisation aux animateurs du groupe via le
+formulaire ci-dessous. VÃ©rifie et corrige au besoin les diffÃ©rents champs, puis clique sur
 [&nbsp;m'inscrire&nbsp;]
 </p>
 <form action="{$platal->ns}subscribe" method="post">
   <p class="descr">
-  <strong>OUI, je souhaite être inscrit au groupe {$asso.nom}</strong>
+  <strong>OUI, je souhaite Ãªtre inscrit au groupe {$asso.nom}</strong>
   </p>
   <p class="descr">
-  Indique ci-après <strong>tes motivations</strong> qui seront communiquées aux animateurs du groupe :
+  Indique ci-aprÃ¨s <strong>tes motivations</strong> qui seront communiquÃ©es aux animateurs du groupe :
   </p> <textarea cols=80 rows=12 name="message">
 Chers Camarades,
 
-Je souhaite m'inscrire à {$asso.nom}.
+Je souhaite m'inscrire Ã  {$asso.nom}.
 
 Merci d'avance d'avoir la gentillesse de valider mon inscription.
 
@@ -81,4 +81,4 @@ https://www.polytechnique.org/profile/{$smarty.session.forlife}
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

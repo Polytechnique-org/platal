@@ -50,7 +50,7 @@ class XorgPage extends PlatalPage
 // }}}
 // {{{ class XorgAdmin
 
-/** Une classe pour les pages réservées aux admins (authentifiés!).
+/** Une classe pour les pages rÃ©servÃ©es aux admins (authentifiÃ©s!).
  */
 class XorgAdmin extends XorgPage
 {
@@ -96,5 +96,5 @@ function new_admin_page($tpl_name)
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

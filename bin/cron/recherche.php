@@ -31,4 +31,5 @@ while (list($matricule,$nom1,$nom2,$nom3,$prenom1,$prenom2,$promo) = $res->next(
             $matricule, soundex_fr($nom1), soundex_fr($nom2), soundex_fr($nom3), soundex_fr($prenom1), soundex_fr($prenom2), $promo);
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

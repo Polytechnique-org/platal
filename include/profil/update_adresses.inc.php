@@ -72,7 +72,7 @@ foreach ($adresses as $adrid => $adr) {
                 insert_new_tel($adrid, $tel);
             }
         } else { 
-            //c'est une mise à jour
+            //c'est une mise Ã  jour
             XDB::execute("UPDATE adresses SET adr1 = {?}, adr2 = {?},
                          adr3 = {?}, postcode = {?}, city = {?}, cityid = {?},
                          country = {?}, region = {?}, regiontxt = {?},
@@ -116,7 +116,7 @@ foreach ($adresses as $adrid => $adr) {
                 }
             }
         }// fin nouvelle / ancienne adresse
-    }//fin if nouvellement crée
+    }//fin if nouvellement crÃ©e
 }//fin foreach
 
 
@@ -134,4 +134,5 @@ if(isset($adresses)){ // s'il y en a
   }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

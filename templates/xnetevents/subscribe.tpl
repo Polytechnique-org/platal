@@ -20,27 +20,27 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Evénement {$event.intitule}</h1>
+<h1>{$asso.nom} : EvÃ©nement {$event.intitule}</h1>
 
 <p>
-  [<a href="{$platal->ns}events">Revenir à la liste des événements</a>]
+  [<a href="{$platal->ns}events">Revenir Ã  la liste des Ã©vÃ©nements</a>]
 </p>
 
 <p class='descr'>
-  Cet événement a lieu 
+  Cet Ã©vÃ©nement a lieu 
   <strong>
   {if $event.fin and $event.fin neq $event.debut}
     {if $event.debut_day eq $event.fin_day}
-      le {$event.debut|date_format:"%d %B %Y"} de {$event.debut|date_format:"%H:%M"} à {$event.fin|date_format:"%H:%M"}
+      le {$event.debut|date_format:"%d %B %Y"} de {$event.debut|date_format:"%H:%M"} Ã  {$event.fin|date_format:"%H:%M"}
     {else}
-      du {$event.debut|date_format:"%d %B %Y à %H:%M"}<br />
-      au {$event.fin|date_format:"%d %B %Y à %H:%M"}
+      du {$event.debut|date_format:"%d %B %Y Ã  %H:%M"}<br />
+      au {$event.fin|date_format:"%d %B %Y Ã  %H:%M"}
     {/if}
   {else}
-    le {$event.debut|date_format:"%d %B %Y à %H:%M"}
+    le {$event.debut|date_format:"%d %B %Y Ã  %H:%M"}
   {/if}
   </strong>
-  et a été proposé par
+  et a Ã©tÃ© proposÃ© par
   <a href='https://www.polytechnique.org/profile/{$event.alias}' class='popup2'>
     {$event.prenom} {$event.nom} ({$event.promo})
   </a>
@@ -56,7 +56,7 @@
   <a href="{$platal->ns}events/admin/{$event.eid}">
     consulter la liste des participants
     {icon name=group title="Liste des participants"}</a>
-  déjà inscrits.
+  dÃ©jÃ  inscrits.
 </p>
 {/if}
 
@@ -100,7 +100,7 @@
     </tr>
     {/foreach}
 
-    <tr><th>À payer</th></tr>
+    <tr><th>Ã€ payer</th></tr>
     <tr>
       <td>
         {if $event.topay}
@@ -109,9 +109,9 @@
           Tu dois payer {$event.topay|replace:'.':','}&nbsp;&euro;.
           {elseif $event.paid < $event.topay}
           Tu dois encore payer {math equation="a-b" a=$event.topay b=$event.paid|replace:'.':','}&nbsp;&euro;
-          (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
+          (tu as dÃ©jÃ  payÃ© {$event.paid|replace:'.':','}&nbsp;&euro;)
           {else} 
-          Tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
+          Tu as dÃ©jÃ  payÃ© {$event.paid|replace:'.':','}&nbsp;&euro; pour ton inscription.
           {/if} 
           {if $event.paiement_id &&  $event.paid < $event.topay}
           [<a href="{$platal->ns}payment/{$event.paiement_id}?montant={math equation="a-b" a=$event.topay b=$event.paid}">
@@ -119,9 +119,9 @@
           {/if}
         </span>
         {else}
-        Rien à payer
+        Rien Ã  payer
         {if $event.paid > 0}
-        (tu as déjà payé {$event.paid|replace:'.':','}&nbsp;&euro;)
+        (tu as dÃ©jÃ  payÃ© {$event.paid|replace:'.':','}&nbsp;&euro;)
         {/if}.
         {/if}
       </td>
@@ -133,4 +133,4 @@
   </p>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

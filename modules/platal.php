@@ -107,7 +107,7 @@ class PlatalModule extends PLModule
     function handler_prefs(&$page)
     {
         $page->changeTpl('platal/preferences.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Mes préférences');
+        $page->assign('xorg_title','Polytechnique.org - Mes prÃ©fÃ©rences');
 
         if (Post::has('mail_fmt')) {
             $fmt = Post::v('mail_fmt');
@@ -138,7 +138,7 @@ class PlatalModule extends PLModule
                                        SET redirecturl = {?} WHERE user_id = {?}',
                                    $url, S::v('uid'));
             $log->log('carva_add', 'http://'.Env::v('url'));
-            $page->trig("Redirection activée vers <a href='http://$url'>$url</a>");
+            $page->trig("Redirection activÃ©e vers <a href='http://$url'>$url</a>");
         } elseif (Env::v('submit') == "Supprimer") {
             XDB::execute("UPDATE auth_user_quick
                                        SET redirecturl = ''
@@ -146,7 +146,7 @@ class PlatalModule extends PLModule
                                    S::v('uid'));
             $log->log("carva_del", $url);
             Post::kill('url');
-            $page->trig('Redirection supprimée');
+            $page->trig('Redirection supprimÃ©e');
         }
 
         $res = XDB::query('SELECT redirecturl
@@ -164,7 +164,7 @@ class PlatalModule extends PLModule
 
         if (Env::v('act_rss') == 'Activer') {
             $this->__set_rss_state(true);
-            $page->trig("Ton Fil RSS est activé.");
+            $page->trig("Ton Fil RSS est activÃ©.");
         }
     }
 
@@ -202,8 +202,8 @@ class PlatalModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Acces SMTP/NNTP');
         
         require_once 'wiki.inc.php';
-        wiki_require_page('Xorg.SMTPSécurisé');
-        wiki_require_page('Xorg.NNTPSécurisé');
+        wiki_require_page('Xorg.SMTPSÃ©curisÃ©');
+        wiki_require_page('Xorg.NNTPSÃ©curisÃ©');
 
         $uid  = S::v('uid');
         $pass = Env::v('smtppass1');
@@ -214,12 +214,12 @@ class PlatalModule extends PLModule
         {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = {?}
                                      WHERE user_id = {?}', $pass, $uid);
-            $page->trig('Mot de passe enregistré');
+            $page->trig('Mot de passe enregistrÃ©');
             $log->log("passwd_ssl");
         } elseif (Env::v('op') == "Supprimer") {
             XDB::execute('UPDATE auth_user_md5 SET smtppass = ""
                                      WHERE user_id = {?}', $uid);
-            $page->trig('Compte SMTP et NNTP supprimé');
+            $page->trig('Compte SMTP et NNTP supprimÃ©');
             $log->log("passwd_del");
         }
 
@@ -240,7 +240,7 @@ class PlatalModule extends PLModule
         }
 
         if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
-            $page->trig('Date de naissance incorrecte ou incohérente');
+            $page->trig('Date de naissance incorrecte ou incohÃ©rente');
             return;
         }
 
@@ -251,8 +251,8 @@ class PlatalModule extends PLModule
 
         $mailorg = strtok(Env::v('login'), '@');
 
-        // paragraphe rajouté : si la date de naissance dans la base n'existe pas, on l'update
-        // avec celle fournie ici en espérant que c'est la bonne
+        // paragraphe rajoutÃ© : si la date de naissance dans la base n'existe pas, on l'update
+        // avec celle fournie ici en espÃ©rant que c'est la bonne
 
         $res = XDB::query(
                 "SELECT  user_id, naissance
@@ -286,13 +286,13 @@ class PlatalModule extends PLModule
             $mymail->setTxtBody("Visite la page suivante qui expire dans six heures :
 {$globals->baseurl}/tmpPWD/$url
 
-Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
+Si en cliquant dessus tu n'y arrives pas, copie intÃ©gralement l'adresse dans la barre de ton navigateur.
 
 -- 
 Polytechnique.org
-\"Le portail des élèves & anciens élèves de l'Ecole polytechnique\"
+\"Le portail des Ã©lÃ¨ves & anciens Ã©lÃ¨ves de l'Ecole polytechnique\"
 
-Mail envoyé à ".Env::v('login') . (Post::has('email') ? "
+Mail envoyÃ© Ã  ".Env::v('login') . (Post::has('email') ? "
 Adresse de secours : " . Post::v('email') : ""));
             $mymail->send();
 
@@ -300,7 +300,7 @@ Adresse de secours : " . Post::v('email') : ""));
             $logger = $_SESSION['log'] = new CoreLogger($uid);
             $logger->log('recovery', $mails);
         } else {
-            $page->trig('Les informations que tu as rentrées ne permettent pas de récupérer ton mot de passe.<br />'.
+            $page->trig('Les informations que tu as rentrÃ©es ne permettent pas de rÃ©cupÃ©rer ton mot de passe.<br />'.
                         'Si tu as un homonyme, utilise prenom.nom.promo comme login');
         }
     }
@@ -340,7 +340,7 @@ Adresse de secours : " . Post::v('email') : ""));
         $page->changeTpl('platal/skins.tpl');
         $page->assign('xorg_title','Polytechnique.org - Skins');
 
-        if (Env::has('newskin'))  {  // formulaire soumis, traitons les données envoyées
+        if (Env::has('newskin'))  {  // formulaire soumis, traitons les donnÃ©es envoyÃ©es
             XDB::execute('UPDATE auth_user_quick
                              SET skin={?} WHERE user_id={?}',
                          Env::i('newskin'), S::v('uid'));
@@ -400,4 +400,5 @@ Adresse de secours : " . Post::v('email') : ""));
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

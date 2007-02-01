@@ -21,7 +21,7 @@
 {**************************************************************************}
 
   {if !$choix}
-  Les critères de recherche ne sont pas assez précis
+  Les critÃ¨res de recherche ne sont pas assez prÃ©cis
   {elseif !$choix->total()}
   Aucun camarade non-inscrit ne correspond aux informations fournies
   {elseif $choix->total()}
@@ -43,4 +43,4 @@
   </span>
   {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

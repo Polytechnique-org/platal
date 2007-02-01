@@ -20,8 +20,8 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Aperçu de l'astuce</h1>
+<h1>AperÃ§u de l'astuce</h1>
 {include file="include/tips.tpl" full=true tips=$entry nochange=true}
 {include file="core/table-editor.tpl"}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

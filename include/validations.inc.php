@@ -52,7 +52,7 @@ class ValidateIterator extends XOrgDBIterator
     // }}}
 }
 
-/** classe "virtuelle" à dériver pour chaque nouvelle implémentation
+/** classe "virtuelle" Ã  dÃ©river pour chaque nouvelle implÃ©mentation
  */
 class Validate
 {
@@ -74,15 +74,15 @@ class Validate
     var $type;
     var $comments = Array();
     // the validations rules : comments for admins
-    var $rules = "Mieux vaut laisser une demande de validation à un autre admin que de valider une requête illégale ou que de refuser une demande légitime";
+    var $rules = "Mieux vaut laisser une demande de validation Ã  un autre admin que de valider une requÃªte illÃ©gale ou que de refuser une demande lÃ©gitime";
 
     // }}}
     // {{{ constructor
     
     /** constructeur
      * @param       $_uid       user id
-     * @param       $_unique    requête pouvant être multiple ou non
-     * @param       $_type      type de la donnée comme dans le champ type de x4dat.requests
+     * @param       $_unique    requÃªte pouvant Ãªtre multiple ou non
+     * @param       $_type      type de la donnÃ©e comme dans le champ type de x4dat.requests
      */
     function Validate($_uid, $_unique, $_type)
     {
@@ -102,7 +102,7 @@ class Validate
     // }}}
     // {{{ function submit()
 
-    /** fonction à utiliser pour envoyer les données à la modération
+    /** fonction Ã  utiliser pour envoyer les donnÃ©es Ã  la modÃ©ration
      * cette fonction supprimme les doublons sur un couple ($user,$type) si $this->unique est vrai
      */
     function submit ()
@@ -133,8 +133,8 @@ class Validate
     // }}}
     // {{{ function clean()
     
-    /** fonction à utiliser pour nettoyer l'entrée de la requête dans la table requests
-     * attention, tout est supprimé si c'est un unique
+    /** fonction Ã  utiliser pour nettoyer l'entrÃ©e de la requÃªte dans la table requests
+     * attention, tout est supprimÃ© si c'est un unique
      */
     function clean ()
     {
@@ -150,21 +150,21 @@ class Validate
     // }}}
     // {{{ function handle_formu()
     
-    /** fonction à réaliser en cas de valistion du formulaire
+    /** fonction Ã  rÃ©aliser en cas de valistion du formulaire
      */
     function handle_formu()
     {
         if (Env::has('delete')) {
             $this->clean();
-            $this->trig('requete supprimée');
+            $this->trig('requete supprimÃ©e');
             return true;
         }
 
-        // mise à jour des informations
+        // mise Ã  jour des informations
         if (Env::has('edit')) {
             if ($this->handle_editor()) {
                 $this->update();
-                $this->trig('requête mise à jour');
+                $this->trig('requÃªte mise Ã  jour');
                 return true;
             }
             return false;
@@ -183,7 +183,7 @@ class Validate
             }
             $this->comments[] = Array(S::v('bestalias'), Env::v('comm'), $formid);
 
-            // envoi d'un mail à hotliners
+            // envoi d'un mail Ã  hotliners
             global $globals;
             $mailer = new PlMailer;
             $mailer->setSubject("Commentaires de validation {$this->type}");
@@ -191,7 +191,7 @@ class Validate
             $mailer->addTo("hotliners@staff.polytechnique.org");
 
             $body = "Validation {$this->type} pour {$this->prenom} {$this->nom}\n\n"
-              . S::v('bestalias')." a ajouté le commentaire :\n\n" 
+              . S::v('bestalias')." a ajoutÃ© le commentaire :\n\n" 
               . Env::v('comm')."\n\n"
               . "cf la discussion sur : ".$globals->baseurl."/admin/validate";
 
@@ -199,7 +199,7 @@ class Validate
             $mailer->send();
 
             $this->update();
-            $this->trig('commentaire ajouté');
+            $this->trig('commentaire ajoutÃ©');
             return true;
         }
 
@@ -207,7 +207,7 @@ class Validate
             if ($this->commit()) {
                 $this->sendmail(true);
                 $this->clean();
-                $this->trig('mail envoyé');
+                $this->trig('mail envoyÃ©');
                 return true;
             } else {
                 $this->trig('erreur lors de la validation');
@@ -219,7 +219,7 @@ class Validate
             if (Env::v('comm')) {
                 $this->sendmail(false);
                 $this->clean();
-                $this->trig('mail envoyé');
+                $this->trig('mail envoyÃ©');
                 return true;
             } else {
                 $this->trig('pas de motivation pour le refus !!!');
@@ -241,10 +241,10 @@ class Validate
         $mailer->addTo("\"{$this->prenom} {$this->nom}\" <{$this->bestalias}@{$globals->mail->domain}>");
         $mailer->addCc("validation+{$this->type}@{$globals->mail->domain}");
 
-        $body = ($this->sexe ? "Chère camarade,\n\n" : "Cher camarade,\n\n")
+        $body = ($this->sexe ? "ChÃ¨re camarade,\n\n" : "Cher camarade,\n\n")
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
-              . "\n\nCordialement,\nL'équipe Polytechnique.org\n";
+              . "\n\nCordialement,\nL'Ã©quipe Polytechnique.org\n";
 
         $mailer->setTxtBody(wordwrap($body));
         $mailer->send();
@@ -261,13 +261,13 @@ class Validate
     // }}}
     // {{{ function get_typed_request()
 
-    /** fonction statique qui renvoie la requête de l'utilisateur d'id $uidau timestamp $t
-     * @param   $uid    l'id de l'utilisateur concerné
-     * @param   $type   le type de la requête
-     * @param   $stamp  le timestamp de la requête
+    /** fonction statique qui renvoie la requÃªte de l'utilisateur d'id $uidau timestamp $t
+     * @param   $uid    l'id de l'utilisateur concernÃ©
+     * @param   $type   le type de la requÃªte
+     * @param   $stamp  le timestamp de la requÃªte
      *
      * XXX fonction "statique" XXX
-     * à utiliser uniquement pour récupérer un objet dans la BD avec Validate::get_typed_request(...)
+     * Ã  utiliser uniquement pour rÃ©cupÃ©rer un objet dans la BD avec Validate::get_typed_request(...)
      */
     static function get_typed_request($uid, $type, $stamp = -1)
     {
@@ -316,7 +316,7 @@ class Validate
     // }}}
     // {{{ function commit()
     
-    /** fonction à utiliser pour insérer les données dans x4dat
+    /** fonction Ã  utiliser pour insÃ©rer les donnÃ©es dans x4dat
      * XXX la fonction est "virtuelle" XXX
      */
     function commit ()
@@ -332,7 +332,7 @@ class Validate
     // }}}
     // {{{ function editor()
 
-    /** nom du formulaire d'édition */
+    /** nom du formulaire d'Ã©dition */
     function editor()
     { return null; }
 
@@ -350,7 +350,7 @@ class Validate
     }
 
     // }}}
-    // {{{ function id()
+    // {{{Â function id()
 
     function id()
     {
@@ -364,5 +364,5 @@ foreach (glob(dirname(__FILE__).'/validations/*.inc.php') as $file) {
     require_once($file);
 }
 
-/* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker: */
+/* vim: set expandtab shiftwidth=4 tabstop=4 softtabstop=4 foldmethod=marker enc=utf-8: */
 ?>

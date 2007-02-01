@@ -24,10 +24,10 @@
 {include file="profile/applis.js.tpl"}
 <div class="blocunite_tab">
   <table class="bicol" cellspacing="0" cellpadding="0" 
-    summary="Profil : Informations gÈnÈrales">
+    summary="Profil : Informations g√©n√©rales">
     <tr>
       <th colspan="2">
-        Informations gÈnÈrales
+        Informations g√©n√©rales
       </th>
     </tr>
     <tr>
@@ -55,7 +55,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">PrÈnom</span>
+        <span class="titre">Pr√©nom</span>
         <span class="comm"></span>
       </td>
       <td class="cold">
@@ -75,9 +75,9 @@
       <td class="colg">
         <span class="titre">Nom d'usage</span><br />
         {if $smarty.session.sexe}
-        <span class="comm">(Notamment nom d'Èpouse)</span>
+        <span class="comm">(Notamment nom d'√©pouse)</span>
         {else}
-        <span class="comm">(si diffÈrent de {$nom} seulement)</span>
+        <span class="comm">(si diff√©rent de {$nom} seulement)</span>
         {/if}
       </td>
       <td class="cold">
@@ -87,7 +87,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">NationalitÈ</span>
+        <span class="titre">Nationalit√©</span>
       </td>
       <td class="cold">
         <select name="nationalite">
@@ -98,7 +98,7 @@
     <tr>
       <td class="colg">
         <span class="titre">Application</span><br />
-        <span class="comm">(4Ëme annÈe de l'X)</span>
+        <span class="comm">(4√®me ann√©e de l'X)</span>
       </td>
       <td class="cold">
         <select name="appli_id1" onchange="fillType(this.form.appli_type1, this.selectedIndex-1);">  
@@ -142,7 +142,7 @@
 {if !$no_private_key}
 <div class="blocunite">
   <table class="bicol" cellspacing="0" cellpadding="0" 
-    summary="Profil : Informations gÈnÈrales">
+    summary="Profil : Informations g√©n√©rales">
     <tr>
       <th>
         Synchronisation avec l'AX
@@ -151,13 +151,13 @@
     <tr>
       <td>
         <p>
-          Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met ‡ jour l'annuaire papier ‡ partir des informations que tu lui envoies. Tu peux choisir ici de rÈcupÈrer directement ces donnÈes pour l'annuaire en ligne.
+          Le service annuaire de l'<a href='http://www.polytechniciens.com'>AX</a> met √† jour l'annuaire papier √† partir des informations que tu lui envoies. Tu peux choisir ici de r√©cup√©rer directement ces donn√©es pour l'annuaire en ligne.
         </p>
         <p>
-          La synchro prend en compte toutes les informations que tu as signalÈs ‡ l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations selon ce qu'elle trouve sur ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
+          La synchro prend en compte toutes les informations que tu as signal√©s √† l'AX (en orange ou en vert). Elle peut alors effacer, modifier ou rajouter des informations selon ce qu'elle trouve sur ta <a href="http://www.polytechniciens.com/?page=AX_FICHE_ANCIEN&amp;anc_id={$matricule_ax}">fiche AX</a>.
         </p>
         <p class="center">
-          <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu s˚r de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
+          <a href="profile/edit/general?synchro_ax=confirm" onclick="return confirm('Es-tu s√ªr de vouloir lancer la synchronisation ?')"><input type="button" value="Synchroniser"/></a>
         </p>
       </td>
     </tr>
@@ -189,12 +189,12 @@
     </tr>
     <tr>
       <td class="col" colspan="3">
-        Pour profiter de cette fonction intÈressante, tu dois disposer 
+        Pour profiter de cette fonction int√©ressante, tu dois disposer 
         quelque part (sur ton ordinateur ou sur Internet) d'une photo
-        d'identitÈ (dans un fichier au format JPEG, PNG ou GIF).<br />
+        d'identit√© (dans un fichier au format JPEG, PNG ou GIF).<br />
         <div class="center">
           <span class="lien">
-            <a href="photo/change">…diter ta photo</a>
+            <a href="photo/change">√âditer ta photo</a>
           </span>
         </div>
       </td>
@@ -214,9 +214,9 @@
         <table cellspacing="0" cellpadding="0" summary="Trombinoscope">
           <tr>
             <td class="dcold">
-              Voil‡ la photo qui apparaÓtra sur la fiche de ton profil{if $nouvellephoto} (tu viens
-              de changer ta photo, celle-ci correspond ‡ ton ancien
-              profil car la nouvelle n'a pas encore ÈtÈ validÈe par un administrateur du site !
+              Voil√† la photo qui appara√Ætra sur la fiche de ton profil{if $nouvellephoto} (tu viens
+              de changer ta photo, celle-ci correspond √† ton ancien
+              profil car la nouvelle n'a pas encore √©t√© valid√©e par un administrateur du site !
               <a href="profile/{$smarty.session.forlife}?modif=new" class="popup2">Ta fiche avec la nouvelle photo</a>)
               {/if}.
             </td>
@@ -245,7 +245,7 @@
               <input type="checkbox" disabled="disabled" checked="checked" />
             </td>
             <td class="texte">
-              privÈ
+              priv√©
             </td>
           </tr>
         </table>
@@ -273,13 +273,13 @@
               <input type="radio" name="mobile_pub" {if $mobile_pub eq 'ax'}checked="checked"{/if} value='ax' />
             </td>
             <td class="texte">
-              transmis ‡ l'AX
+              transmis √† l'AX
             </td>
             <td class="rouge">
               <input type="radio" name="mobile_pub" {if $mobile_pub eq 'private'}checked="checked"{/if} value='private' />
             </td>
             <td class="texte">
-              privÈ
+              priv√©
             </td>
             <td class="texte">
               <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
@@ -290,7 +290,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">TÈlÈphone mobile</span>
+        <span class="titre">T√©l√©phone mobile</span>
       </td>
       <td class="cold">
         <input type="text" size="18" maxlength="18" name="mobile"
@@ -342,7 +342,7 @@
     </tr>
     <tr>
       <td class="dcolg">
-        <span class="titre">ComplÈment libre</span>
+        <span class="titre">Compl√©ment libre</span>
         <span class="comm">Commentaire? ICQ? etc...</span>
       </td>
       <td class="dcold">
@@ -352,4 +352,4 @@
   </table>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -27,7 +27,7 @@
     {if $smarty.session.auth ge AUTH_COOKIE}
     <tr>
       <th colspan="2">
-        Recherche simple <span class="noprint">[<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancée</a>]</span>
+        Recherche simple <span class="noprint">[<a href="search/adv">&gt;&gt;&gt;&nbsp;Recherche&nbsp;avancÃ©e</a>]</span>
       </th>
     </tr>
     <tr>
@@ -38,7 +38,7 @@
     <tr class="noprint">
       <td style="width: 78%">
         <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
-        mettre les fiches modifiées récemment en premier
+        mettre les fiches modifiÃ©es rÃ©cemment en premier
         {if $smarty.request.nonins}
         <br /><input type='checkbox' name='nonins' readonly="readonly" checked='checked' value='1' /> Chercher uniquement des non inscrits
         {/if}
@@ -68,4 +68,4 @@
 </script>
 {/literal}
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -32,17 +32,17 @@
   </tr>
   <tr class="impair">
     <td colspan="2">
-      <strong>Ajouter une entrée manuellement</strong>
+      <strong>Ajouter une entrÃ©e manuellement</strong>
     </td>
     <td colspan="2" class="right">
-      <strong><a href="admin/emails/duplicated/create">créer{icon name=add}</a></strong>
+      <strong><a href="admin/emails/duplicated/create">crÃ©er{icon name=add}</a></strong>
     </td>
   </tr>
   {foreach from=$table item=doublon}
   <tr class="{cycle values="pair,impair"}">
     <td>
       <strong>{$doublon.mail}</strong><br />
-      Détecté le {$doublon.detection|date_format}
+      DÃ©tectÃ© le {$doublon.detection|date_format}
     </td>
     <td>
       {$doublon.state}
@@ -63,7 +63,7 @@
   {/foreach}
 </table>
 {elseif $action eq "create" || $action eq "edit"}
-[<a href="admin/emails/duplicated">Retour à la liste des doublons</a>]<br /><br />
+[<a href="admin/emails/duplicated">Retour Ã  la liste des doublons</a>]<br /><br />
 <form method="post" action="admin/emails/duplicated">
 <table class="tinybicol">
   <tr>
@@ -92,7 +92,7 @@
     {/if}
   {/foreach}
   <tr class="pair">
-    <td class="titre">Date de détection</td>
+    <td class="titre">Date de dÃ©tection</td>
     <td>{$doublon.detection|date_format}</td>
   {/if}
   </tr>
@@ -112,7 +112,7 @@
   </tr>
   <tr class="impair">
     <td colspan="2">
-      <small>Dernière édition par {$doublon.edit} le {$doublon.last|date_format}</small>
+      <small>DerniÃ¨re Ã©dition par {$doublon.edit} le {$doublon.last|date_format}</small>
     </td>
   {/if}
   </tr>
@@ -131,4 +131,4 @@
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

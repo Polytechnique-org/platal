@@ -110,9 +110,9 @@ class ThrowError
 // }}}
 // {{{ class SField                                     [Base class]
 
-/** classe de base représentant un champ de recherche
- * (correspond à un champ du formulaire mais peut être à plusieurs champs de la bdd)
- * interface étendue pour chaque type de champ particulier
+/** classe de base reprÃ©sentant un champ de recherche
+ * (correspond Ã  un champ du formulaire mais peut Ãªtre Ã  plusieurs champs de la bdd)
+ * interface Ã©tendue pour chaque type de champ particulier
  */
 class SField
 {
@@ -120,19 +120,19 @@ class SField
     
     /** le nom du champ dans le formulaire HTML */
     var $fieldFormName;
-    /** champs de la bdd correspondant à ce champ sous forme d'un tableau */
+    /** champs de la bdd correspondant Ã  ce champ sous forme d'un tableau */
     var $fieldDbName;
-    /** champ résultat dans la requête MySQL correspondant à ce champ
-     * (alias utilisé pour la clause ORDER BY) */
+    /** champ rÃ©sultat dans la requÃªte MySQL correspondant Ã  ce champ
+     * (alias utilisÃ© pour la clause ORDER BY) */
     var $fieldResultName;
-    /** valeur du champ instanciée par l'utilisateur */
+    /** valeur du champ instanciÃ©e par l'utilisateur */
     var $value;
 
     // }}}
     // {{{ constructor
 
     /** constructeur
-     * (récupère la requête de l'utilisateur pour ce champ) */
+     * (rÃ©cupÃ¨re la requÃªte de l'utilisateur pour ce champ) */
     function SField($_fieldFormName, $_fieldDbName='', $_fieldResultName='')
     {
         $this->fieldFormName   = $_fieldFormName;
@@ -144,8 +144,8 @@ class SField
     // }}}
     // {{{ function get_request()
 
-    /** récupérer la requête de l'utilisateur 
-     * on met une chaîne vide si le champ n'a pas été complété */
+    /** rÃ©cupÃ©rer la requÃªte de l'utilisateur 
+     * on met une chaÃ®ne vide si le champ n'a pas Ã©tÃ© complÃ©tÃ© */
     function get_request()
     {
         $this->value = trim(Env::v($this->fieldFormName));
@@ -154,10 +154,10 @@ class SField
     // }}}
     // {{{ function get_where_statement()
     
-    /** récupérer la clause correspondant au champ dans la clause WHERE de la requête
+    /** rÃ©cupÃ©rer la clause correspondant au champ dans la clause WHERE de la requÃªte
      * on parcourt l'ensemble des champs de la bdd de $fieldDbName et on associe 
-     * à chacun d'entre eux une clause spécifique
-     * la clause totale et la disjonction de ces clauses spécifiques */
+     * Ã  chacun d'entre eux une clause spÃ©cifique
+     * la clause totale et la disjonction de ces clauses spÃ©cifiques */
     function get_where_statement()
     {
         if ($this->value=='') {
@@ -170,8 +170,8 @@ class SField
     // }}}
     // {{{ function get_order_statement()
     
-    /** récupérer la clause correspondant au champ dans la clause ORDER BY de la requête
-     * utilisé par exemple pour placer d'abord le nom égal à la requête avant les approximations */
+    /** rÃ©cupÃ©rer la clause correspondant au champ dans la clause ORDER BY de la requÃªte
+     * utilisÃ© par exemple pour placer d'abord le nom Ã©gal Ã  la requÃªte avant les approximations */
     function get_order_statement()
     {
         return false;
@@ -188,8 +188,8 @@ class SField
     // }}}
     // {{{ function get_url()
 
-    /** récupérer le bout d'URL correspondant aux paramètres permettant d'imiter une requête d'un
-     * utilisateur assignant la valeur $this->value à ce champ */
+    /** rÃ©cupÃ©rer le bout d'URL correspondant aux paramÃ¨tres permettant d'imiter une requÃªte d'un
+     * utilisateur assignant la valeur $this->value Ã  ce champ */
     function get_url()
     {
         if (empty($this->value)) {
@@ -221,8 +221,8 @@ class QuickSearch extends SField
     {
         $this->fieldFormName = $_fieldFormName;
         $this->get_request();
-        if (preg_match(":[\]\[{}~/§_`|%$^=+]|\*\*:", $this->value)) {
-            new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
+        if (preg_match(":[\]\[{}~/Â§_`|%$^=+]|\*\*:", $this->value)) {
+            new ThrowError('Un champ contient un caractÃ¨re interdit rendant la recherche impossible.');
         }
     }
 
@@ -325,14 +325,14 @@ class QuickSearch extends SField
 // }}}
 // {{{ class NumericSField                              [Integer fields]
 
-/** classe de champ numérique entier (offset par exemple)
+/** classe de champ numÃ©rique entier (offset par exemple)
  */
 class NumericSField extends SField
 {
     // {{{ constructor
     
     /** constructeur
-     * (récupère la requête de l'utilisateur pour ce champ) */
+     * (rÃ©cupÃ¨re la requÃªte de l'utilisateur pour ce champ) */
     function NumericSField($_fieldFormName)
     {
         $this->fieldFormName = $_fieldFormName;
@@ -342,7 +342,7 @@ class NumericSField extends SField
     // }}}
     // {{{ function get_request()
     
-    /** récupère la requête de l'utilisateur et échoue s'il ne s'agit pas d'un entier */
+    /** rÃ©cupÃ¨re la requÃªte de l'utilisateur et Ã©choue s'il ne s'agit pas d'un entier */
     function get_request()
     {
         parent::get_request();
@@ -350,7 +350,7 @@ class NumericSField extends SField
             $this->value = 0;
         }
         if (!preg_match("/^[0-9]+$/", $this->value)) {
-            new ThrowError('Un champ numérique contient des caractères alphanumériques.');
+            new ThrowError('Un champ numÃ©rique contient des caractÃ¨res alphanumÃ©riques.');
         }
     }
     
@@ -496,22 +496,22 @@ class StringSField extends SField
 {
     // {{{ function get_request()
     
-    /** récupère la requête de l'utilisateur et échoue si la chaîne contient des caractères
+    /** rÃ©cupÃ¨re la requÃªte de l'utilisateur et Ã©choue si la chaÃ®ne contient des caractÃ¨res
      * interdits */
     function get_request()
     {
         parent::get_request();
-        if (preg_match(":[\]\[<>{}~/§_`|%$^=+]|\*\*:", $this->value)) {
-            new ThrowError('Un champ contient un caractère interdit rendant la recherche impossible.');
+        if (preg_match(":[\]\[<>{}~/Â§_`|%$^=+]|\*\*:", $this->value)) {
+            new ThrowError('Un champ contient un caractÃ¨re interdit rendant la recherche impossible.');
         }
     }
 
     // }}}
     // {{{ function length()
 
-    /** donne la longueur de la requête de l'utilisateur
-     * (au sens strict i.e. pas d'* ni d'espace ou de trait d'union -> les contraintes réellement
-     * imposées par l'utilisateur) */
+    /** donne la longueur de la requÃªte de l'utilisateur
+     * (au sens strict i.e. pas d'* ni d'espace ou de trait d'union -> les contraintes rÃ©ellement
+     * imposÃ©es par l'utilisateur) */
     function length()
     {
         global $lc_accent,$uc_accent;
@@ -529,8 +529,8 @@ class StringSField extends SField
     // }}}
     // {{{ function get_single_where_statement()
 
-    /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
-     * @param field nom de champ de la bdd concerné par la clause */
+    /** clause WHERE correspondant Ã  un champ de la bdd et Ã  ce champ de formulaire
+     * @param field nom de champ de la bdd concernÃ© par la clause */
     function get_single_where_statement($field)
     {
         $regexp = strtr(addslashes($this->value), '-*', '_%');
@@ -540,7 +540,7 @@ class StringSField extends SField
     // }}}
     // {{{ function get_order_statement()
 
-    /** clause ORDER BY correspondant à ce champ de formulaire */
+    /** clause ORDER BY correspondant Ã  ce champ de formulaire */
     function get_order_statement()
     {
         if ($this->value!='' && $this->fieldResultName!='') {
@@ -592,8 +592,8 @@ class StringWithSoundexSField extends StringSField
 {
     // {{{ function get_single_where_statement()
 
-    /** clause WHERE correspondant à un champ de la bdd et à ce champ de formulaire
-     * @param field nom de champ de la bdd concerné par la clause */
+    /** clause WHERE correspondant Ã  un champ de la bdd et Ã  ce champ de formulaire
+     * @param field nom de champ de la bdd concernÃ© par la clause */
     function get_single_where_statement($field) {
         return $field.'="'.soundex_fr($this->value).'"';
     }
@@ -609,14 +609,14 @@ class PromoSField extends SField
 {
     // {{{ properties
     
-    /** opérateur de comparaison (<,>,=) de la promo utilisé pour ce champ de formulaire */
+    /** opÃ©rateur de comparaison (<,>,=) de la promo utilisÃ© pour ce champ de formulaire */
     var $compareField;
 
     // }}}
     // {{{ constructor
 
     /** constructeur 
-     * compareField est un champ de formulaire très simple qui ne sert qu'à la construction de la
+     * compareField est un champ de formulaire trÃ¨s simple qui ne sert qu'Ã  la construction de la
      * clause WHERE de la promo */
     function PromoSField($_fieldFormName, $_compareFieldFormName, $_fieldDbName, $_fieldResultName)
     {
@@ -627,8 +627,8 @@ class PromoSField extends SField
     // }}}
     // {{{ function get_request()
 
-    /** récupère la requête utilisateur et échoue si le champ du formulaire ne représente pas une
-     * promotion (nombre à 4 chiffres) */
+    /** rÃ©cupÃ¨re la requÃªte utilisateur et Ã©choue si le champ du formulaire ne reprÃ©sente pas une
+     * promotion (nombre Ã  4 chiffres) */
     function get_request()
     {
         parent::get_request();
@@ -636,15 +636,15 @@ class PromoSField extends SField
             $this->value = intval($this->value) + 1900;
         }
         if (!(empty($this->value) or preg_match('/^[0-9]{4}$/', $this->value))) {
-            new ThrowError('La promotion est une année à quatre chiffres.');
+            new ThrowError('La promotion est une annÃ©e Ã  quatre chiffres.');
         }
     }
 
     // }}}
     // {{{ function is_a_single_promo()
 
-    /** teste si la requête est de la forme =promotion -> contrainte forte imposée -> elle suffit
-     * pour autoriser un affichage des résultats alors que <promotion est insuffisant */
+    /** teste si la requÃªte est de la forme =promotion -> contrainte forte imposÃ©e -> elle suffit
+     * pour autoriser un affichage des rÃ©sultats alors que <promotion est insuffisant */
     function is_a_single_promo()
     {
         return ($this->compareField->value=='=' && $this->value!='');
@@ -661,7 +661,7 @@ class PromoSField extends SField
     // }}}
     // {{{ function get_single_where_statement()
 
-    /** clause WHERE correspondant à ce champ */
+    /** clause WHERE correspondant Ã  ce champ */
     function get_single_where_statement($field)
     {
         return $field.$this->compareField->value.$this->value;
@@ -670,9 +670,9 @@ class PromoSField extends SField
     // }}}
     // {{{ function get_url()
 
-    /** récupérer le bout d'URL correspondant aux paramètres permettant d'imiter une requête
-     * d'un utilisateur assignant la valeur $this->value à ce champ et assignant l'opérateur de
-     * comparaison adéquat */
+    /** rÃ©cupÃ©rer le bout d'URL correspondant aux paramÃ¨tres permettant d'imiter une requÃªte
+     * d'un utilisateur assignant la valeur $this->value Ã  ce champ et assignant l'opÃ©rateur de
+     * comparaison adÃ©quat */
     function get_url()
     {
         if (!($u=parent::get_url())) {
@@ -692,7 +692,7 @@ class SFieldGroup
 {
     // {{{ properties
     
-    /** tableau des classes correspondant aux champs groupés */
+    /** tableau des classes correspondant aux champs groupÃ©s */
     var $fields;
     /** type de groupe : ET ou OU */
     var $and;
@@ -730,7 +730,7 @@ class SFieldGroup
     // }}}
     // {{{ function field_get_where()
 
-    /** récupérer la clause WHERE d'un objet champ de recherche */
+    /** rÃ©cupÃ©rer la clause WHERE d'un objet champ de recherche */
     function field_get_where($f)
     {
         return $f->get_where_statement();
@@ -739,7 +739,7 @@ class SFieldGroup
     // }}}
     // {{{ function field_get_order()
 
-    /** récupérer la clause ORDER BY d'un objet champ de recherche */
+    /** rÃ©cupÃ©rer la clause ORDER BY d'un objet champ de recherche */
     function field_get_order($f)
     {
         return $f->get_order_statement();
@@ -748,7 +748,7 @@ class SFieldGroup
     // }}}
     // {{{ function field_get_url()
 
-    /** récupérer le bout d'URL correspondant à un objet champ de recherche */
+    /** rÃ©cupÃ©rer le bout d'URL correspondant Ã  un objet champ de recherche */
     function field_get_url($f)
     {
         return $f->get_url();
@@ -765,8 +765,8 @@ class SFieldGroup
     // }}}
     // {{{ function get_where_statement()
 
-    /** récupérer la clause WHERE du groupe de champs = conjonction (ET) ou disjonction (OU) de
-     * clauses des champs élémentaires */
+    /** rÃ©cupÃ©rer la clause WHERE du groupe de champs = conjonction (ET) ou disjonction (OU) de
+     * clauses des champs Ã©lÃ©mentaires */
     function get_where_statement()
     {
         $joinText = $this->and ? ' AND ' : ' OR ';
@@ -777,8 +777,8 @@ class SFieldGroup
     // }}}
     // {{{ function get_order_statement()
 
-    /** récupérer la clause ORDER BY du groupe de champs = conjonction (ET) ou disjonction (OU) de
-     * clauses des champs élémentaires */
+    /** rÃ©cupÃ©rer la clause ORDER BY du groupe de champs = conjonction (ET) ou disjonction (OU) de
+     * clauses des champs Ã©lÃ©mentaires */
     function get_order_statement()
     {
         $order = array_filter(array_map(array($this, 'field_get_order'), $this->fields));
@@ -788,8 +788,8 @@ class SFieldGroup
     // }}}
     // {{{ function get_url()
 
-    /** récupérer le bout d'URL correspondant à ce groupe de champs = concaténation des bouts d'URL
-     * des champs élémentaires */
+    /** rÃ©cupÃ©rer le bout d'URL correspondant Ã  ce groupe de champs = concatÃ©nation des bouts d'URL
+     * des champs Ã©lÃ©mentaires */
     function get_url($others=Array())
     {
         $url = array_filter(array_map(array($this, 'field_get_url'), $this->fields));
@@ -811,5 +811,5 @@ class SFieldGroup
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

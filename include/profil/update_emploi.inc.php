@@ -42,4 +42,5 @@ for($i = 0; $i < 2; $i++){
 	      $emailpro[$i], $email_pubpro[$i], $webpro[$i]);
 }
 XDB::execute("UPDATE auth_user_md5 set cv= {?} WHERE user_id = {?}", $cv, S::v('uid', -1));
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

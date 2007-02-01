@@ -51,9 +51,9 @@
     <td><strong>Administrer la liste :</strong></td>
     <td>
       {if $on neq moderate}
-      [<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}'>modération</a>]
+      [<a href='{$platal->ns}lists/moderate/{$platal->argv[1]}'>modÃ©ration</a>]
       {else}
-      [modération]
+      [modÃ©ration]
       {/if}
       {if $on neq admin}
       [<a href='{$platal->ns}lists/admin/{$platal->argv[1]}'>ajout/retrait de membres</a>]
@@ -66,26 +66,26 @@
       [options]
       {/if}
       {if $on neq delete}
-      [<a href='{$platal->ns}lists/delete/{$platal->argv[1]}'>détruire</a>]
+      [<a href='{$platal->ns}lists/delete/{$platal->argv[1]}'>dÃ©truire</a>]
       {else}
-      [détruire liste]
+      [dÃ©truire liste]
       {/if}
     </td>
   </tr>
   {/if}
   {if $smarty.session.perms eq admin || $force_list_super}
   <tr>
-    <td><strong>Administrer (avancé) :</strong></td>
+    <td><strong>Administrer (avancÃ©) :</strong></td>
     <td>
       {if $on neq soptions}
-      [<a href='{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancées</a>]
+      [<a href='{$platal->ns}lists/soptions/{$platal->argv[1]}'>options avancÃ©es</a>]
       {else}
-      [options avancées]
+      [options avancÃ©es]
       {/if}
       {if $on neq check}
-      [<a href='{$platal->ns}lists/check/{$platal->argv[1]}'>vérifications</a>]
+      [<a href='{$platal->ns}lists/check/{$platal->argv[1]}'>vÃ©rifications</a>]
       {else}
-      [vérifications]
+      [vÃ©rifications]
       {/if}
     </td>
   </tr>
@@ -103,4 +103,4 @@
 </table>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

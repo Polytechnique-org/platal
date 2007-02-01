@@ -20,11 +20,11 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 /* vim: set sw=4 ts=4 sts=4 tw=100:
- * vérifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
+ * vÃ©rifie qu'il n'y a pas de validations en cours, et maile si c'est le cas
 */ 
 
-$M_PERIOD = "INTERVAL 3 HOUR"; // période d'envoi des mails de 3h
-$R_PERIOD = "INTERVAL 6 HOUR"; // période de réponse moyenne de 6h
+$M_PERIOD = "INTERVAL 3 HOUR"; // pÃ©riode d'envoi des mails de 3h
+$R_PERIOD = "INTERVAL 6 HOUR"; // pÃ©riode de rÃ©ponse moyenne de 6h
 
 require('./connect.db.inc.php');
 require('plmailer.php');
@@ -39,10 +39,10 @@ if (empty($nb)) {
 $mymail = new PlMailer();
 $mymail->setFrom('validation@polytechnique.org');
 $mymail->addTo("validation@polytechnique.org");
-$mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuées");
+$mymail->setSubject((empty($nbveryold)?"":"[urgent] ")."il y a $nb validations non effectuÃ©es");
 
 $message =
-	"il y a $nb validation à effectuer \n"
+	"il y a $nb validation Ã  effectuer \n"
 	.(empty($nbold)?"":"dont $nbold depuis le dernier mail !!!\n")
 	.(empty($nbveryold)?"":"et dont *$nbveryold* sont en retard de plus de 6h !!!")
 	."\n"
@@ -51,4 +51,5 @@ $message =
 $message = wordwrap($message,78);  
 $mymail->setTxtBody($message);
 $mymail->send();
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

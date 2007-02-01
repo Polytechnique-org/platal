@@ -26,7 +26,7 @@
   <tr>
     <td>
       <ul id="onglet">
-        <li class="actif">Préférences</li>
+        <li class="actif">PrÃ©fÃ©rences</li>
         <li><a href="banana/subscription">Abonnements</a></li>
         <li><a href="banana">Les Forums</a></li>
       </ul>
@@ -38,15 +38,15 @@
 {if !$smarty.post.action}
 
       <p class="normal">
-        Tu peux régler quelques paramètres qui apparaîtront sur les messages lorsque 
-        tu posteras sur les forums. Cela ne te permettra pas d'être anonyme, puisque
-        tout le monde pourra remonter à ton identité en regardant ta fiche. L'objectif
-        est simplement de permettre plus de convivialité.
+        Tu peux rÃ©gler quelques paramÃ¨tres qui apparaÃ®tront sur les messages lorsque 
+        tu posteras sur les forums. Cela ne te permettra pas d'Ãªtre anonyme, puisque
+        tout le monde pourra remonter Ã  ton identitÃ© en regardant ta fiche. L'objectif
+        est simplement de permettre plus de convivialitÃ©.
       </p>
       <p class="normal">
         Tu pourras voir dans les forums les nouveaux messages mis en valeur (en
-        général en gras). Si tu consultes les forums régulièrement, tu peux en avoir
-        assez de voir tout le contenu du forum : la dernière option te permet de
+        gÃ©nÃ©ral en gras). Si tu consultes les forums rÃ©guliÃ¨rement, tu peux en avoir
+        assez de voir tout le contenu du forum : la derniÃ¨re option te permet de
         n'afficher que les fils de discussion contenant des messages lus.
       </p>
 
@@ -67,7 +67,7 @@
           </tr>
           <tr class="impair">
             <td class="bicoltitre">
-              Adresse électronique
+              Adresse Ã©lectronique
             </td>
             <td>
               <input type="text" name="bananamail" value="{$mail}" />
@@ -97,7 +97,7 @@
           </tr>
           <tr class="pair">
             <td class="bicoltitre">
-              Mise à jour des messages non lus
+              Mise Ã  jour des messages non lus
             </td>
             <td>
               <input type="radio" name="bananaupdate" value="1" 
@@ -117,7 +117,7 @@
 
 {else}
       <p class="normal">
-        Ton profil est enregistré !!!
+        Ton profil est enregistrÃ© !!!
       </p>
 {/if}
 
@@ -125,4 +125,4 @@
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

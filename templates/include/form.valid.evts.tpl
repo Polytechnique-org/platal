@@ -30,7 +30,7 @@
   <td>{tidy}{$valid->texte|nl2br|smarty:nodefaults}{/tidy}</td>
 </tr>
 <tr class="pair">
-  <td class="titre">Péremption</td>
+  <td class="titre">PÃ©remption</td>
   <td>{$valid->peremption|date_format}</td>
 </tr>
 <tr class="pair">
@@ -42,4 +42,4 @@
   <td>{$valid->comment}</td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

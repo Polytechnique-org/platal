@@ -23,7 +23,7 @@
 
 
 {foreach from=$new_deces item=i}
-<p class="erreur">Ajout du décès de {$i.name} le {$i.date}.</p>
+<p class="erreur">Ajout du dÃ©cÃ¨s de {$i.name} le {$i.date}.</p>
 {/foreach}
 
 <form action="admin/deaths" method="post">
@@ -49,10 +49,10 @@
 </form>
 
 <form action="admin/deaths/{$promo}/validate" method="post">
-  <table class="bicol" summary="liste des dates de décès">
+  <table class="bicol" summary="liste des dates de dÃ©cÃ¨s">
     <tr>
       <th>Nom</th>
-      <th>Date de décès</th>
+      <th>Date de dÃ©cÃ¨s</th>
     </tr>
     {iterate item=x from=$decedes}
     <tr class="{cycle values="impair,pair"}">
@@ -70,4 +70,4 @@
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

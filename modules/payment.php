@@ -24,7 +24,7 @@ function cb_erreur($text) {
     $mymail = new PlMailer();
     $mymail->addTo("telepaiement@polytechnique.org");
     $mymail->setFrom("webmaster@polytechnique.org");
-    $mymail->setSubject("erreur lors d'un télépaiement (CyberPaiement)");
+    $mymail->setSubject("erreur lors d'un tÃ©lÃ©paiement (CyberPaiement)");
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
     exit;
@@ -40,7 +40,7 @@ function paypal_erreur($text, $send=true) {
     $mymail = new PlMailer();
     $mymail->addTo("telepaiement@polytechnique.org");
     $mymail->setFrom("webmaster@polytechnique.org");
-    $mymail->setSubject("erreur lors d'un télépaiement (PayPal)");
+    $mymail->setSubject("erreur lors d'un tÃ©lÃ©paiement (PayPal)");
     $mymail->setTxtBody("\n\n".var_export($_REQUEST,true));
     $mymail->send();
 
@@ -58,7 +58,7 @@ function luhn($nombre) {
     return $sum % 10;
 }
 
-/* calcule la clé d'acceptation a partir de 5 champs */
+/* calcule la clÃ© d'acceptation a partir de 5 champs */
 function cle_accept($d1,$d2,$d3,$d4,$d5)
 {
     $m1 = luhn($d1.$d5);
@@ -109,7 +109,7 @@ class PaymentModule extends PLModule
             new_group_page('payment/index.tpl');
         } else {
             $page->changeTpl('payment/index.tpl');
-            $page->assign('xorg_title','Polytechnique.org - Télépaiements');
+            $page->assign('xorg_title','Polytechnique.org - TÃ©lÃ©paiements');
         }
 
         // initialisation
@@ -118,7 +118,7 @@ class PaymentModule extends PLModule
         $pay  = new Payment($ref);
 
         if($pay->flags->hasflag('old')){
-            $page->trig("La transaction selectionnée est périmée.");
+            $page->trig("La transaction selectionnÃ©e est pÃ©rimÃ©e.");
             $pay = new Payment();
         }
         $val = Env::v('montant') != 0 ? Env::v('montant') : $pay->montant_def;
@@ -182,7 +182,7 @@ class PaymentModule extends PLModule
 
         /* on extrait la reference de la commande */
         if (!ereg('-xorg-([0-9]+)$',$champ200,$matches)) {
-            cb_erreur("référence de commande invalide");
+            cb_erreur("rÃ©fÃ©rence de commande invalide");
         }
 
         echo ($ref = $matches[1]);
@@ -190,7 +190,7 @@ class PaymentModule extends PLModule
                              FROM  paiement.paiements
                             WHERE  id={?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
-            cb_erreur("référence de commande inconnue");
+            cb_erreur("rÃ©fÃ©rence de commande inconnue");
         }
 
         /* on extrait le code de retour */
@@ -216,8 +216,8 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<nom>",$nom,$conf_text);
         $conf_text = str_replace("<promo>",$promo,$conf_text);
         $conf_text = str_replace("<montant>",$montant,$conf_text);
-        $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
-        $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
+        $conf_text = str_replace("<salutation>",$femme ? "ChÃ¨re" : "Cher",$conf_text);
+        $conf_text = str_replace("<cher>",$femme ? "ChÃ¨re" : "Cher",$conf_text);
 
         $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
@@ -227,7 +227,7 @@ class PaymentModule extends PLModule
         $mymail->setTxtBody($conf_text);
         $mymail->send();
 
-        /* on envoie les details de la transaction à telepaiement@ */
+        /* on envoie les details de la transaction Ã  telepaiement@ */
         $mymail = new PlMailer();
         $mymail->setFrom("webmaster@polytechnique.org");
         $mymail->addTo("telepaiement@staff.polytechnique.org");
@@ -273,7 +273,7 @@ class PaymentModule extends PLModule
             if ($status)
                 paypal_erreur("erreur lors du paiement : $status - $reason");
             else
-                paypal_erreur("Paiement annulé", false);
+                paypal_erreur("Paiement annulÃ©", false);
         }
 
         /* on extrait les informations sur l'utilisateur */
@@ -288,7 +288,7 @@ class PaymentModule extends PLModule
 
         /* on extrait la reference de la commande */
         if (!ereg('-xorg-([0-9]+)$',$fullref,$matches)) {
-            paypal_erreur("référence de commande invalide");
+            paypal_erreur("rÃ©fÃ©rence de commande invalide");
         }
 
         $ref = $matches[1];
@@ -296,7 +296,7 @@ class PaymentModule extends PLModule
                              FROM  paiement.paiements
                             WHERE  id={?}", $ref);
         if (!list($conf_mail,$conf_title,$conf_text) = $res->fetchOneRow()) {
-            paypal_erreur("référence de commande inconnue");
+            paypal_erreur("rÃ©fÃ©rence de commande inconnue");
         }
 
         /* on fait l'insertion en base de donnees */
@@ -309,8 +309,8 @@ class PaymentModule extends PLModule
         $conf_text = str_replace("<nom>",$nom,$conf_text);
         $conf_text = str_replace("<promo>",$promo,$conf_text);
         $conf_text = str_replace("<montant>",$montant,$conf_text);
-        $conf_text = str_replace("<salutation>",$femme ? "Chère" : "Cher",$conf_text);
-        $conf_text = str_replace("<cher>",$femme ? "Chère" : "Cher",$conf_text);
+        $conf_text = str_replace("<salutation>",$femme ? "ChÃ¨re" : "Cher",$conf_text);
+        $conf_text = str_replace("<cher>",$femme ? "ChÃ¨re" : "Cher",$conf_text);
 
         $mymail = new PlMailer();
         $mymail->setFrom($conf_mail);
@@ -320,7 +320,7 @@ class PaymentModule extends PLModule
         $mymail->setTxtBody($conf_text);
         $mymail->send();
 
-        /* on envoie les details de la transaction à telepaiement@ */
+        /* on envoie les details de la transaction Ã  telepaiement@ */
         $mymail = new PlMailer();
         $mymail->setFrom("webmaster@polytechnique.org");
         $mymail->addTo("telepaiement@polytechnique.org");
@@ -404,10 +404,10 @@ class PaymentModule extends PLModule
                     $sum = 0;
                     foreach ($trans[$pid] as $i => $t) {
                         $sum += strtr(substr($t['montant'], 0, strpos($t['montant'], 'EUR')), ',', '.');
-                        $trans[$pid][$i]['montant'] = str_replace('EUR', '¤', $t['montant']);
+                        $trans[$pid][$i]['montant'] = str_replace('EUR', 'â‚¬', $t['montant']);
                     }
                     $trans[$pid][] = array('nom' => 'somme totale',
-                                           'montant' => strtr($sum, '.', ',').' ¤');
+                                           'montant' => strtr($sum, '.', ',').' â‚¬');
             }
             $res = XDB::iterRow("SELECT e.eid, e.short_name, e.intitule, ep.nb, ei.montant, ep.paid
                                    FROM groupex.evenements AS e
@@ -444,15 +444,15 @@ class PaymentModule extends PLModule
     
     function handler_admin(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Paiements');
-        $page->assign('title', 'Gestion des télépaiements');
+        $page->assign('title', 'Gestion des tÃ©lÃ©paiements');
         $table_editor = new PLTableEditor('admin/payments','paiement.paiements','id');
         $table_editor->add_join_table('paiement.transactions','ref',true);
         $table_editor->add_sort_field('flags');
         $table_editor->add_sort_field('id', true, true);
-        $table_editor->on_delete("UPDATE paiement.paiements SET flags = 'old' WHERE id = {?}", "Le paiement a été archivé");
-        $table_editor->describe('text','intitulé',true);
+        $table_editor->on_delete("UPDATE paiement.paiements SET flags = 'old' WHERE id = {?}", "Le paiement a Ã©tÃ© archivÃ©");
+        $table_editor->describe('text','intitulÃ©',true);
         $table_editor->describe('url','site web',false);
-        $table_editor->describe('montant_def','montant par défaut',false);
+        $table_editor->describe('montant_def','montant par dÃ©faut',false);
         $table_editor->describe('montant_min','montant minimum',false);
         $table_editor->describe('montant_max','montant maximum',false);
         $table_editor->describe('mail','email contact',true);
@@ -461,4 +461,5 @@ class PaymentModule extends PLModule
     }  
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

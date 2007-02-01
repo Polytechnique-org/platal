@@ -298,7 +298,7 @@ class ProfileModule extends PLModule
 
         if (Env::v('synchro_ax') == 'confirm' && !is_ax_key_missing()) {
             ax_synchronize(S::v('bestalias'), S::v('uid'));
-            $page->trig('Ton profil a été synchronisé avec celui du site polytechniciens.com');
+            $page->trig('Ton profil a Ã©tÃ© synchronisÃ© avec celui du site polytechniciens.com');
         }
 
         // pour tous les tabs, la date de naissance pour verifier
@@ -309,14 +309,14 @@ class ProfileModule extends PLModule
                   WHERE  user_id={?}", S::v('uid'));
         list($naissance, $date_modif_profil) = $res->fetchOneRow();
 
-        // lorsqu'on n'a pas la date de naissance en base de données
+        // lorsqu'on n'a pas la date de naissance en base de donnÃ©es
         if (!$naissance)  {
-            // la date de naissance n'existait pas et vient d'être soumise dans la variable
+            // la date de naissance n'existait pas et vient d'Ãªtre soumise dans la variable
             if (Env::has('birth')) {
                 //en cas d'erreur :
                 if (!ereg('[0-3][0-9][0-1][0-9][1][9]([0-9]{2})', Env::v('birth'))) {
                     $page->assign('etat_naissance', 'query');
-                    $page->trig('Date de naissance incorrecte ou incohérente.');
+                    $page->trig('Date de naissance incorrecte ou incohÃ©rente.');
                     return;
                 }
 
@@ -352,7 +352,7 @@ class ProfileModule extends PLModule
 
             //On sauvegarde l'uid pour l'AX
             /* on sauvegarde les changements dans user_changes :
-            * on a juste besoin d'insérer le user_id de la personne dans la table
+            * on a juste besoin d'insÃ©rer le user_id de la personne dans la table
             */
             XDB::execute('REPLACE INTO user_changes SET user_id={?}',
                                    S::v('uid'));
@@ -407,19 +407,19 @@ class ProfileModule extends PLModule
         $promo_sortie = Env::i('promo_sortie');
 
         if ($promo_sortie < 1000 || $promo_sortie > 9999) {
-            $page->trig('L\'année de sortie doit être un nombre de quatre chiffres');
+            $page->trig('L\'annÃ©e de sortie doit Ãªtre un nombre de quatre chiffres');
         }
         elseif ($promo_sortie < $promo + 3) {
-            $page->trig('Trop tôt');
+            $page->trig('Trop tÃ´t');
         }
         elseif ($promo_sortie == $promo_sortie_old) {
-            $page->trig('Tu appartiens déjà à la promotion correspondante à cette année de sortie.');
+            $page->trig('Tu appartiens dÃ©jÃ  Ã  la promotion correspondante Ã  cette annÃ©e de sortie.');
         }
         elseif ($promo_sortie == $promo + 3) {
             XDB::execute(
                 "UPDATE  auth_user_md5 set promo_sortie={?} 
                   WHERE  user_id={?}", $promo_sortie, S::v('uid'));
-                $page->trig('Ton statut "orange" a été supprimé.');
+                $page->trig('Ton statut "orange" a Ã©tÃ© supprimÃ©.');
                 $page->assign('promo_sortie_old', $promo_sortie);
         }
         else {
@@ -637,7 +637,7 @@ class ProfileModule extends PLModule
             // on vient de recevoir une requete, differente de l'ancien nom d'usage
             if ($nom_usage == $nom) {
                 $page->assign('same', true);
-            } else { // le nom de mariage est distinct du nom à l'X
+            } else { // le nom de mariage est distinct du nom Ã  l'X
                 // on calcule l'alias pour l'afficher
                 $reason = Env::v('reason');
                 if ($reason == 'other') {
@@ -747,7 +747,7 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des binets');
         $table_editor = new PLTableEditor('admin/binets', 'binets_def', 'id');
         $table_editor->add_join_table('binets_ins','binet_id',true);
-        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('text','intitulÃ©',true);
         $table_editor->apply($page, $action, $id);
     }
     function handler_admin_formations(&$page, $action = 'list', $id = null) {
@@ -755,7 +755,7 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des formations');
         $table_editor = new PLTableEditor('admin/formations','applis_def','id');
         $table_editor->add_join_table('applis_ins','aid',true); 
-        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('text','intitulÃ©',true);
         $table_editor->describe('url','site web',false);
         $table_editor->apply($page, $action, $id);
     } 
@@ -764,7 +764,7 @@ class ProfileModule extends PLModule
         $page->assign('title', 'Gestion des Groupes X');
         $table_editor = new PLTableEditor('admin/groupes-x','groupesx_def','id');
         $table_editor->add_join_table('groupesx_ins','gid',true); 
-        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('text','intitulÃ©',true);
         $table_editor->describe('url','site web',false);
         $table_editor->apply($page, $action, $id);
     }  
@@ -772,7 +772,7 @@ class ProfileModule extends PLModule
         $page->assign('xorg_title','Polytechnique.org - Administration - Distinctions');
         $page->assign('title', 'Gestion des Distinctions');
         $table_editor = new PLTableEditor('admin/medals','profile_medals','id');
-        $table_editor->describe('text', 'intitulé',  true);
+        $table_editor->describe('text', 'intitulÃ©',  true);
         $table_editor->describe('img',  'nom de l\'image', false);
         $table_editor->describe('flags', 'valider', true);
         $table_editor->apply($page, $action, $id);
@@ -797,4 +797,5 @@ class ProfileModule extends PLModule
     }   
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

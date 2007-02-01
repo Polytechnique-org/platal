@@ -38,7 +38,7 @@ function fillContent()
 {
   var field = document.getElementById('flyspray_detail');
   if (field.value == '' || (field.value.toUpperCase() == field.value && field.value.toLowerCase() == field.value)) {
-    field.value = "** Explique ici le problème ou l'amélioration proposée **";
+    field.value = "** Explique ici le problÃ¨me ou l'amÃ©lioration proposÃ©e **";
     field.style.color = "gray";
     field.style.textAlign = "center";
     edited = false;
@@ -54,7 +54,7 @@ function fillContent()
 <script type="text/javascript">window.close();</script>
 {/if}
 <form action="send_bug" method="post" onsubmit="cleanContent()">
-  <h1>Signaler un bug ou demander une amélioration</h1>
+  <h1>Signaler un bug ou demander une amÃ©lioration</h1>
   <div style="margin-left:10%;margin-right:10%">
     <select name="task_type">
 	  <option value="bug">Bug</option>
@@ -74,4 +74,4 @@ function fillContent()
 </script>
 </div>
 
-{* vim:set et sws=2 sts=2 sw=2: *}
+{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

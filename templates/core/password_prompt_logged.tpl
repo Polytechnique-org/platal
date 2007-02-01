@@ -30,8 +30,8 @@
       <td>
         <span class="smaller">
           <strong>
-            Pour des raisons de <span class="erreur">sécurité</span>, il est obligatoire de taper ton mot de passe, même
-            avec l'accès permanent, pour certaines opérations sensibles.
+            Pour des raisons de <span class="erreur">sÃ©curitÃ©</span>, il est obligatoire de taper ton mot de passe, mÃªme
+            avec l'accÃ¨s permanent, pour certaines opÃ©rations sensibles.
           </strong>
         </span>
       </td>
@@ -58,9 +58,9 @@
       </td>
     </tr>
     <tr>
-      <td {popup caption='Connexion permanente' width='300' text="Décoche cette case pour que le site oublie ce navigateur.<br />
-        Il est conseillé de décocher la case si cette machine n'est pas <b>strictement</b> personnelle"} colspan="2">
-        <input type="checkbox" name="remember" checked="checked" /> Garder l'accès aux services après déconnexion
+      <td {popup caption='Connexion permanente' width='300' text="DÃ©coche cette case pour que le site oublie ce navigateur.<br />
+        Il est conseillÃ© de dÃ©cocher la case si cette machine n'est pas <b>strictement</b> personnelle"} colspan="2">
+        <input type="checkbox" name="remember" checked="checked" /> Garder l'accÃ¨s aux services aprÃ¨s dÃ©connexion
       </td>
     </tr>
   </table>
@@ -68,7 +68,7 @@
 <br />
 {if $smarty.request.response}<!-- failed login code -->
 <div class="erreur">
-  Erreur d'identification. Essaie à nouveau !
+  Erreur d'identification. Essaie Ã  nouveau !
 </div>
 {/if}
 
@@ -92,4 +92,4 @@
 </script>
 {/literal}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

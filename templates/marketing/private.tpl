@@ -27,7 +27,7 @@
 Matricule polytechnique.org : {$matricule}
 {if $matricule_X}
 <br />
-Matricule &Eacute;cole (à rentrer lors de l'inscription) : <strong>{$matricule_X}</strong>
+Matricule &Eacute;cole (Ã  rentrer lors de l'inscription) : <strong>{$matricule_X}</strong>
 {/if}
 
 {if $pending}
@@ -39,9 +39,9 @@ Cet utilisateur a une inscription en cours depuis le {$pending|date_format}.
 </p>
 <p>
 {if $relance eq '0000-00-00'}
-il n'a jamais été relancé.
+il n'a jamais Ã©tÃ© relancÃ©.
 {else}
-sa dernière relance date du {$relance|date_format}
+sa derniÃ¨re relance date du {$relance|date_format}
 {/if}
 </p>
 
@@ -133,4 +133,4 @@ sa dernière relance date du {$relance|date_format}
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

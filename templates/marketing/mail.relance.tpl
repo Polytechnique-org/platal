@@ -27,28 +27,28 @@
 {to addr="$lemail"}
 Bonjour,
 
-Il y a quelques temps, le {$fdate}, tu as commencé ton inscription à Polytechnique.org ! Tu n'as toutefois pas tout à fait terminé cette inscription, aussi nous nous permettons de te renvoyer cet email pour te rappeler tes paramètres de connexion, au cas où tu souhaiterais terminer cette inscription, et accéder à l'ensemble des services que nous offrons aux {$nbdix} Polytechniciens déjà inscrits (email à vie, annuaire en ligne, etc...).
+Il y a quelques temps, le {$fdate}, tu as commencÃ© ton inscription Ã  Polytechnique.org ! Tu n'as toutefois pas tout Ã  fait terminÃ© cette inscription, aussi nous nous permettons de te renvoyer cet email pour te rappeler tes paramÃ¨tres de connexion, au cas oÃ¹ tu souhaiterais terminer cette inscription, et accÃ©der Ã  l'ensemble des services que nous offrons aux {$nbdix} Polytechniciens dÃ©jÃ  inscrits (email Ã  vie, annuaire en ligne, etc...).
 
-UN SIMPLE CLIC sur le lien ci-dessous et ton compte sera activé !
+UN SIMPLE CLIC sur le lien ci-dessous et ton compte sera activÃ© !
 
-Après activation, tes paramètres seront :
+AprÃ¨s activation, tes paramÃ¨tres seront :
 
 login        : {$lusername}
 mot de passe : {$nveau_pass}
 
-(ceci annule les paramètres envoyés par le mail initial)
+(ceci annule les paramÃ¨tres envoyÃ©s par le mail initial)
 
-Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
+Rends-toi sur la page web suivante afin d'activer ta prÃ©-inscription, et de changer ton mot de passe en quelque chose de plus facile Ã  mÃ©moriser :
 
 {$baseurl}/register/end/{$lins_id}
 
-Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
+Si en cliquant dessus tu n'y arrives pas, copie intÃ©gralement l'adresse dans la barre de ton navigateur.
 
-En cas de difficulté, nous sommes bien entendu à ton entière disposition !
+En cas de difficultÃ©, nous sommes bien entendu Ã  ton entiÃ¨re disposition !
 
 Bien cordialement,
 Polytechnique.org
-"Le portail des élèves & anciens élèves de l'Ecole polytechnique"
+"Le portail des Ã©lÃ¨ves & anciens Ã©lÃ¨ves de l'Ecole polytechnique"
 
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

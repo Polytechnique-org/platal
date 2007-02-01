@@ -59,7 +59,7 @@ abstract class MassMailer
             return $this->_head; 
         } else {
             $head = $this->_head;
-            $head = str_replace('<cher>',   $sexe ? 'Chère' : 'Cher', $head);
+            $head = str_replace('<cher>',   $sexe ? 'ChÃ¨re' : 'Cher', $head);
             $head = str_replace('<prenom>', $prenom, $head);
             $head = str_replace('<nom>',    $nom,    $head);
             return format_text($head, $type, 2, 64);
@@ -257,5 +257,5 @@ function enriched_to_text($input,$html=false,$just=false,$indent=0,$width=68)
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4:
+// vim:set et sw=4 sts=4 sws=4 enc=utf-8:
 ?>

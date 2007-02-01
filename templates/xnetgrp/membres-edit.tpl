@@ -34,11 +34,11 @@
 <h1>{$asso.nom} : gestion des membres</h1>
 
 <p>
-[<a href='{$platal->ns}annuaire'>Retour à l'annuaire</a>]
+[<a href='{$platal->ns}annuaire'>Retour Ã  l'annuaire</a>]
 </p>
 
 <h2>
-  Édition du profil de {$user.prenom} {$user.nom}
+  Ã‰dition du profil de {$user.prenom} {$user.nom}
   {if $user.origine eq 'X'}
   (X{$user.promo})
   <a href="https://www.polytechnique.org/profile/{$user.alias}">{icon name=user_suit title="fiche"}</a>
@@ -74,7 +74,7 @@
     </tr>
     <tr id="prenom" class="impair" {if $user.origine eq "groupe"}style="display: none"{/if}>
       <td class="titre">
-        Prénom :
+        PrÃ©nom :
       </td>
       <td>
         <input type="text" value="{$user.prenom}" name="prenom" size="40" />
@@ -169,4 +169,4 @@
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -96,7 +96,7 @@ class XnetListsModule extends ListsModule
                            USING  x4dat.virtual AS v
                        LEFT JOIN  x4dat.virtual_redirect USING(vid)
                            WHERE  v.alias={?}', $alias);
-            $page->trig(Post::v('del_alias')." supprimÈ !");
+            $page->trig(Post::v('del_alias')." supprim√© !");
         }
 
         $listes = $this->client->get_lists();
@@ -130,7 +130,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig('champs ´addresse souhaitÈeª vide');
+            $page->trig('champs ¬´addresse souhait√©e¬ª vide');
             return;
         }
 
@@ -146,7 +146,7 @@ class XnetListsModule extends ListsModule
         $n   = $res->fetchOneCell();
 
         if ($n) {
-            $page->trig('cet alias est dÈj‡ pris');
+            $page->trig('cet alias est d√©j√† pris');
             return;
         }
         if (!Post::v('desc')) {
@@ -163,7 +163,7 @@ class XnetListsModule extends ListsModule
         $red = $dom.'_'.$liste;
 
         if (!$ret) {
-            $page->kill("Un problËme est survenu, contacter "
+            $page->kill("Un probl√®me est survenu, contacter "
                         ."<a href='mailto:support@m4x.org'>support@m4x.org</a>");
             return;
         }
@@ -216,7 +216,7 @@ class XnetListsModule extends ListsModule
         $ann = XDB::iterator(
                   "SELECT  if (m.origine='X',if (u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
                            if (m.origine='X',u.prenom,m.prenom) AS prenom,
-                           if (m.origine='X',u.promo,'extÈrieur') AS promo,
+                           if (m.origine='X',u.promo,'ext√©rieur') AS promo,
                            if (m.origine='X',CONCAT(a.alias, '@polytechnique.org'),m.email) AS email,
                            if (m.origine='X',FIND_IN_SET('femme', u.flags),0) AS femme,
                            m.perms='admin' AS admin,
@@ -269,7 +269,7 @@ class XnetListsModule extends ListsModule
                               SELECT  vid, {?}
                                 FROM  x4dat.virtual
                                WHERE  alias={?}", "$alias@m4x.org", $lfull);
-                   $page->trig("$alias@m4x.org ajoutÈ");
+                   $page->trig("$alias@m4x.org ajout√©");
                 } else {
                     $page->trig("$mbox@polytechnique.org n'existe pas.");
                 }
@@ -279,7 +279,7 @@ class XnetListsModule extends ListsModule
                               SELECT  vid,{?}
                                 FROM  x4dat.virtual
                                WHERE  alias={?}", "$mbox@$dom", $lfull);
-                $page->trig("$mbox@$dom ajoutÈ");
+                $page->trig("$mbox@$dom ajout√©");
             }
         }
 
@@ -297,7 +297,7 @@ class XnetListsModule extends ListsModule
                 "SELECT  redirect,
                          IF(u.nom IS NOT NULL, IF(u.nom_usage<>'', u.nom_usage, u.nom), m.nom) AS nom,
                          IF(u.prenom IS NOT NULL, u.prenom, m.prenom) AS prenom,
-                         IF(u.promo IS NOT NULL, u.promo, 'extÈrieur') AS promo,
+                         IF(u.promo IS NOT NULL, u.promo, 'ext√©rieur') AS promo,
                          IF(m2.perms, m2.perms = 'admin', m.perms = 'admin') AS admin,
                          a.alias
                    FROM  x4dat.virtual_redirect AS vr
@@ -328,7 +328,7 @@ class XnetListsModule extends ListsModule
         }
 
         if (!Post::has('liste')) {
-            $page->trig('champs ´addresse souhaitÈeª vide');
+            $page->trig('champs ¬´addresse souhait√©e¬ª vide');
             return;
         }
         $liste = Post::v('liste');
@@ -342,7 +342,7 @@ class XnetListsModule extends ListsModule
         $res = XDB::query('SELECT COUNT(*) FROM x4dat.virtual WHERE alias={?}', $new);
         $n   = $res->fetchOneCell();
         if ($n) {
-            $page->trig('cet alias est dÈj‡ pris');
+            $page->trig('cet alias est d√©j√† pris');
             return;
         }
 
@@ -357,4 +357,5 @@ class XnetListsModule extends ListsModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

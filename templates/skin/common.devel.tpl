@@ -25,7 +25,7 @@
   <div id="db-trace">
     <h1>
       {if $db_error}<span style="color: #f00">{/if}
-      Trace de l'exécution de cette page sur mysql (hover me)
+      Trace de l'exÃ©cution de cette page sur mysql (hover me)
       {if $db_error}</span>{/if}
     </h1>
     <div class="hide">
@@ -40,11 +40,11 @@
     Validation:
     <a href="http://jigsaw.w3.org/css-validator/validator?uri={#globals.baseurl#}/valid.html">CSS</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
-    références :
+    rÃ©fÃ©rences :
     <a href="http://www.w3schools.com/xhtml/xhtml_reference.asp">XHTML</a>
     <a href="http://www.w3schools.com/css/css_reference.asp">CSS2</a>
   </div>
 {/if}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

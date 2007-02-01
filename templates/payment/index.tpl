@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>TÈlÈpaiements</h1>
+<h1>T√©l√©paiements</h1>
 
 {if $smarty.request.op eq "submit" and !$xorg_errors|count}
 
@@ -72,8 +72,8 @@
   </tr>
 </table>
 <p>
-En cliquant sur "Valider", tu seras redirigÈ{if $smarty.session.sexe}e{/if} vers le site de {$pay->api->nomsite}, o˘ il te
-sera demandÈ de saisir ton numÈro de carte bancaire.  Lorsque le paiement aura ÈtÈ effectuÈ, tu
+En cliquant sur "Valider", tu seras redirig√©{if $smarty.session.sexe}e{/if} vers le site de {$pay->api->nomsite}, o√π il te
+sera demand√© de saisir ton num√©ro de carte bancaire.  Lorsque le paiement aura √©t√© effectu√©, tu
 recevras une confirmation par email.
 </p>
 {if $pay->api->text}
@@ -83,7 +83,7 @@ recevras une confirmation par email.
 {/if}
 {if $evtlink}
 <p class="erreur">
-Si tu n'es pas encore inscrit ‡ cet ÈvÈnement, n'oublie pas d'aller t'<a href='http://www.polytechnique.net/{$evtlink.diminutif}/events/sub/{$evtlink.eid}'>inscrire</a>.
+Si tu n'es pas encore inscrit √† cet √©v√©nement, n'oublie pas d'aller t'<a href='http://www.polytechnique.net/{$evtlink.diminutif}/events/sub/{$evtlink.eid}'>inscrire</a>.
 </p>
 {/if}
 
@@ -103,15 +103,15 @@ function payment_submit(form)
 
 <form method="post" action="{$platal->pl_self()}">
   <p> Si tu ne souhaites pas utiliser notre interface de
-  tÈlÈpaiement, tu peux virer directement la somme de ton choix sur notre compte
-  <strong>30004 00314 00010016782 60</strong>. Nous veillerons ‡ ce que ton paiement parvienne ‡
-  son destinataire.  Pense toutefois ‡ le prÈciser dans le motif du
+  t√©l√©paiement, tu peux virer directement la somme de ton choix sur notre compte
+  <strong>30004 00314 00010016782 60</strong>. Nous veillerons √† ce que ton paiement parvienne √†
+  son destinataire.  Pense toutefois √† le pr√©ciser dans le motif du
   versement.
   <br /><br />
   </p>
   <table class="bicol">
     <tr>
-      <th colspan="2">Effectuer un tÈlÈpaiement</th>
+      <th colspan="2">Effectuer un t√©l√©paiement</th>
     </tr>
     <tr>
       <td>Transaction</td>
@@ -131,7 +131,7 @@ function payment_submit(form)
       </td>
     </tr>
     <tr>
-      <td>MÈthode</td>
+      <td>M√©thode</td>
       <td>
         <select name="methode">
           {select_db_table table="paiement.methodes" valeur=$smarty.request.methode}
@@ -157,7 +157,7 @@ function payment_submit(form)
 </form>
 
 {if $transactions}
-<p class="descr">Tu as dÈj‡ effecutÈ des paiements pour cette transaction :</p>
+<p class="descr">Tu as d√©j√† effecut√© des paiements pour cette transaction :</p>
 <table class="bicol">
 <tr><th>Date</th><th>Montant</th></tr>
 {iterate from=$transactions item=t}
@@ -172,4 +172,4 @@ function payment_submit(form)
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

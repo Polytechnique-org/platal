@@ -30,7 +30,7 @@
   <td>{$valid->alias}</td>
 </tr>
 <tr class="pair">
-  <td class="titre">Visibilité :</td>
+  <td class="titre">VisibilitÃ© :</td>
   <td>{$valid->public}</td>
 </tr>
 <tr class="pair">
@@ -38,4 +38,4 @@
   <td>{$valid->raison|nl2br}</td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

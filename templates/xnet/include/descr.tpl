@@ -23,50 +23,50 @@
 {if $cat eq groupesx}
 
 <p class="descr">
-Les groupes X rassemblent des polytechniciens partageant les mêmes centres d'intérêt,
-autour de sujets très différents. Certains de ces groupes sont  des associations
-dépendant de l'Amicale des Anciens, définis par <a href='Xnet/Article12'>l'article 12</a>
-des statuts de l'AX. Les groupes déclarés auprès de l'AX sont indiqués par une petite
-note en bas de la page qui leur est dédiée sur ce site.
+Les groupes X rassemblent des polytechniciens partageant les mÃªmes centres d'intÃ©rÃªt,
+autour de sujets trÃ¨s diffÃ©rents. Certains de ces groupes sont  des associations
+dÃ©pendant de l'Amicale des Anciens, dÃ©finis par <a href='Xnet/Article12'>l'article 12</a>
+des statuts de l'AX. Les groupes dÃ©clarÃ©s auprÃ¨s de l'AX sont indiquÃ©s par une petite
+note en bas de la page qui leur est dÃ©diÃ©e sur ce site.
 </p>
 <p class="descr">
-Pour créer un nouveau Groupe X agréé par l'AX au titre de
-<a href='Xnet/Article12'>l'article 12</a> des statuts, tu peux te référer
+Pour crÃ©er un nouveau Groupe X agrÃ©Ã© par l'AX au titre de
+<a href='Xnet/Article12'>l'article 12</a> des statuts, tu peux te rÃ©fÃ©rer
 <a href='Xnet/Services#creation'> aux documents de l'AX</a>.
 </p>
 <p class="descr">
 Si tu souhaites obtenir le statut d'association loi de 1901, tu peux obtenir des
-renseignements auprès de <a href='Xnet/Services#loi1901'>sites spécialisés</a>.
+renseignements auprÃ¨s de <a href='Xnet/Services#loi1901'>sites spÃ©cialisÃ©s</a>.
 </p>
 
 {elseif $cat eq binets}
 
 <p class="descr">
-Les binets sont les associations des élèves polytechniciens effectuant leur scolarité à l'X (sur le
-plateau). Cette appellation, qui peut sembler étrange, est, pour certains, simplement un diminutif
-de "cabinet". Pour d'autres, elle aurait pour origine un certain général Binet, commandant l'Ecole
-Polytechnique, qui aurait le premier autorisé ces regroupements d'élèves. Les binets présents à
-l'Ecole n'ont pas tous leur site web présenté ici. Vous pouvez voir tous les sites des binets en
+Les binets sont les associations des Ã©lÃ¨ves polytechniciens effectuant leur scolaritÃ© Ã  l'X (sur le
+plateau). Cette appellation, qui peut sembler Ã©trange, est, pour certains, simplement un diminutif
+de "cabinet". Pour d'autres, elle aurait pour origine un certain gÃ©nÃ©ral Binet, commandant l'Ecole
+Polytechnique, qui aurait le premier autorisÃ© ces regroupements d'Ã©lÃ¨ves. Les binets prÃ©sents Ã 
+l'Ecole n'ont pas tous leur site web prÃ©sentÃ© ici. Vous pouvez voir tous les sites des binets en
 cliquant <a href= "http://www.polytechnique.fr/eleves/acces/binets/">ici</a>.
 </p>
 
 {elseif $cat eq institutions}
 
 <p class="descr">
-De nombreuses organismes officiels sont liés à l'Ecole Polytechnique: le collège de l'Ecole
-Polytechnique, l'amicale des anciens élèves, le site des X sur le web Polytechnique.org, etc...
-Cette liste n'est pas exhaustive. Vous pouvez découvrir chacun de ces organismes en cliquant sur les
+De nombreuses organismes officiels sont liÃ©s Ã  l'Ecole Polytechnique: le collÃ¨ge de l'Ecole
+Polytechnique, l'amicale des anciens Ã©lÃ¨ves, le site des X sur le web Polytechnique.org, etc...
+Cette liste n'est pas exhaustive. Vous pouvez dÃ©couvrir chacun de ces organismes en cliquant sur les
 liens correspondants:
 </p>
 
 {elseif $cat eq promotions}
 
 <p class="descr">
-Quelques promotions de polytechniciens ont mis au point leur propre site web, qui permet aux élèves
+Quelques promotions de polytechniciens ont mis au point leur propre site web, qui permet aux Ã©lÃ¨ves
 de ces promotions d'organiser des repas promos, de faire partager des souvenirs photographiques, de
 se retrouver sur internet... En voici des exemples:
 </p>
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

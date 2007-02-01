@@ -63,10 +63,10 @@
 
 <div class="blocunite_tab">
   <table class="bicol"cellspacing="0" cellpadding="0" 
-    summary="Profil: Compétences professionnelles">
+    summary="Profil: CompÃ©tences professionnelles">
     <tr>
       <th colspan="3">
-        Compétences professionnelles
+        CompÃ©tences professionnelles
         <input type="hidden" value="" name="comppros_op" />
         <input type="hidden" value="" name="comppros_id" />
         <input type="hidden" value="" name="comppros_level" />
@@ -80,7 +80,7 @@
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privé
+              privÃ©
             </td>
           </tr>
         </table>
@@ -138,10 +138,10 @@
 
 <div class="blocunite">
   <table class="bicol" cellspacing="0" cellpadding="0" 
-    summary="Profil: Compétences linguistiques">
+    summary="Profil: CompÃ©tences linguistiques">
     <tr>
       <th colspan="3">
-        Compétences linguistiques
+        CompÃ©tences linguistiques
         <input type="hidden" value="" name="langue_op" />
         <input type="hidden" value="" name="langue_id" />
         <input type="hidden" value="" name="langue_level" />
@@ -155,7 +155,7 @@
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privé
+              privÃ©
             </td>
           </tr>
         </table>
@@ -211,4 +211,4 @@
   </table>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

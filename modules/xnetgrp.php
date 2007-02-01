@@ -213,7 +213,7 @@ class XnetGrpModule extends PLModule
         if (Post::has('submit')) {
             if (S::has_perms()) {
                 if (Post::v('mail_domain') && (strstr(Post::v('mail_domain'), '.') === false)) {
-                    $page->trig("le domaine doit être un FQDN (aucune modif effectuée) !!!");
+                    $page->trig("le domaine doit Ãªtre un FQDN (aucune modif effectuÃ©e) !!!");
                     return;
                 }
                 XDB::execute(
@@ -289,7 +289,7 @@ class XnetGrpModule extends PLModule
             require_once dirname(__FILE__) . '/xnetgrp/mail.inc.php';
             $tos = get_all_redirects($mbr,  $mls, $mmlist);
             send_xnet_mails($from, $sujet, $body, $tos, Post::v('replyto'), $_FILES['uploaded']);
-            $page->kill("Mail envoyé !");
+            $page->kill("Mail envoyÃ© !");
             $page->assign('sent', true);
         }
     }
@@ -321,7 +321,7 @@ class XnetGrpModule extends PLModule
         } else {
             $res = XDB::iterRow(
                         'SELECT  IF(m.origine="X",u.promo,
-                                    IF(m.origine="ext", "extérieur", "personne morale")) AS promo,
+                                    IF(m.origine="ext", "extÃ©rieur", "personne morale")) AS promo,
                                  COUNT(*), IF(m.origine="X",u.promo,"") AS promo_o
                            FROM  groupex.membres AS m
                       LEFT JOIN  auth_user_md5   AS u ON ( u.user_id = m.uid )
@@ -349,7 +349,7 @@ class XnetGrpModule extends PLModule
         $nbp   = intval(($tot-1)/NB_PER_PAGE);
         $links = array();
         if ($ofs) {
-            $links['précédent'] = $ofs-1;
+            $links['prÃ©cÃ©dent'] = $ofs-1;
         }
         for ($i = 0; $i <= $nbp; $i++) {
             $links[(string)($i+1)] = $i;
@@ -367,7 +367,7 @@ class XnetGrpModule extends PLModule
                            IF(u.nom_usage<>"", u.nom_usage, u.nom),
                            m.nom) LIKE "'.addslashes(Env::v('initiale')).'%"';
         } elseif (Env::has('promo')) {
-            $ini = 'AND IF(m.origine="X", u.promo, IF(m.origine="ext", "extérieur", "personne morale")) = "'
+            $ini = 'AND IF(m.origine="X", u.promo, IF(m.origine="ext", "extÃ©rieur", "personne morale")) = "'
                  .addslashes(Env::v('promo')).'"';
         } elseif (Env::has('admin')) {
             $ini = 'AND m.perms = "admin"';
@@ -376,7 +376,7 @@ class XnetGrpModule extends PLModule
         $ann = XDB::iterator(
                   "SELECT  IF(m.origine='X',IF(u.nom_usage<>'', u.nom_usage, u.nom) ,m.nom) AS nom,
                            IF(m.origine='X',u.prenom,m.prenom) AS prenom,
-                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extérieur', 'personne morale')) AS promo,
+                           IF(m.origine='X', u.promo, IF(m.origine='ext', 'extÃ©rieur', 'personne morale')) AS promo,
                            IF(m.origine='X',u.promo,'') AS promo_o,
                            IF(m.origine='X' AND u.perms != 'pending',a.alias,m.email) AS email,
                            IF(m.origine='X',FIND_IN_SET('femme', u.flags), m.sexe) AS femme,
@@ -456,9 +456,9 @@ class XnetGrpModule extends PLModule
         new_group_open_page('xnetgrp/inscrire.tpl');
 
         if (!$globals->asso('inscriptible'))
-                $page->kill("Il n'est pas possible de s'inscire en ligne à ce "
-                            ."groupe. Essaie de joindre le contact indiqué "
-                            ."sur la page de présentation.");
+                $page->kill("Il n'est pas possible de s'inscire en ligne Ã  ce "
+                            ."groupe. Essaie de joindre le contact indiquÃ© "
+                            ."sur la page de prÃ©sentation.");
 
         if (!is_null($u) && may_update()) {
             $page->assign('u', $u);
@@ -477,7 +477,7 @@ class XnetGrpModule extends PLModule
                                             $u, $globals->asso('id'));
                 $n   = $res->fetchOneCell();
                 if ($n) {
-                    $page->kill("$prenom $nom est déjà membre du groupe !");
+                    $page->kill("$prenom $nom est dÃ©jÃ  membre du groupe !");
                     return;
                 }
                 elseif (Env::has('accept'))
@@ -492,14 +492,14 @@ class XnetGrpModule extends PLModule
                     $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription');
                     $message = "Cher Camarade,\n"
                              . "\n"
-                             . "  Suite à ta demande d'adhésion à ".$globals->asso('nom').",\n"
-                             . "j'ai le plaisir de t'annoncer que ton inscription a été validée !\n"
+                             . "  Suite Ã  ta demande d'adhÃ©sion Ã  ".$globals->asso('nom').",\n"
+                             . "j'ai le plaisir de t'annoncer que ton inscription a Ã©tÃ© validÃ©e !\n"
                              . "\n"
                              . "Bien cordialement,\n"
                              . "{$_SESSION["prenom"]} {$_SESSION["nom"]}.";
                     $mailer->setTxtBody($message);
                     $mailer->send();
-                    $page->kill("$prenom $nom a bien été inscrit");
+                    $page->kill("$prenom $nom a bien Ã©tÃ© inscrit");
                 }
                 elseif (Env::has('refuse'))
                 {
@@ -507,10 +507,10 @@ class XnetGrpModule extends PLModule
                     $mailer->addTo("$u@polytechnique.org");
                     $mailer->setFrom('"'.S::v('prenom').' '.S::v('nom')
                                      .'" <'.S::v('forlife').'@polytechnique.org>');
-                    $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulée');
+                    $mailer->setSubject('['.$globals->asso('nom').'] Demande d\'inscription annulÃ©e');
                     $mailer->setTxtBody(Env::v('motif'));
                     $mailer->send();
-                    $page->kill("la demande $prenom $nom a bien été refusée");
+                    $page->kill("la demande $prenom $nom a bien Ã©tÃ© refusÃ©e");
                 } else {
                     $page->assign('show_form', true);
                     $page->assign('prenom', $prenom);
@@ -524,7 +524,7 @@ class XnetGrpModule extends PLModule
         }
 
         if (is_member()) {
-            $page->kill("tu es déjà membre !");
+            $page->kill("tu es dÃ©jÃ  membre !");
             return;
         }
 
@@ -542,7 +542,7 @@ class XnetGrpModule extends PLModule
 
             $append = "\n"
                     . "-- \n"
-                    . "Ce message a été envoyé suite à la demande d'inscription de\n"
+                    . "Ce message a Ã©tÃ© envoyÃ© suite Ã  la demande d'inscription de\n"
                     . S::v('prenom').' '.S::v('nom').' (X'.S::v('promo').")\n"
                     . "Via le site www.polytechnique.net. Tu peux choisir de valider ou\n"
                     . "de refuser sa demande d'inscription depuis la page :\n"
@@ -550,15 +550,15 @@ class XnetGrpModule extends PLModule
                     "http://www.polytechnique.net/".$globals->asso("diminutif")."/subscribe/"
                         .S::v('forlife')."\n"
                     . "\n"
-                    . "En cas de problème, contacter l'équipe de Polytechnique.org\n"
-                    . "à l'adresse : support@polytechnique.org\n";
+                    . "En cas de problÃ¨me, contacter l'Ã©quipe de Polytechnique.org\n"
+                    . "Ã  l'adresse : support@polytechnique.org\n";
 
             if (!$to) {
                 $to = $globals->asso("mail").", support@polytechnique.org";
                 $append = "\n-- \nLe groupe ".$globals->asso("nom")
-                        ." n'a pas d'administrateur, l'équipe de"
-                        ." Polytechnique.org a été prévenue et va rapidement"
-                        ." résoudre ce problème.\n";
+                        ." n'a pas d'administrateur, l'Ã©quipe de"
+                        ." Polytechnique.org a Ã©tÃ© prÃ©venue et va rapidement"
+                        ." rÃ©soudre ce problÃ¨me.\n";
             }
 
             $mailer = new PlMailer();
@@ -710,7 +710,7 @@ class XnetGrpModule extends PLModule
                     pl_redirect("member/$email");
                 }
             } else {
-                $page->trig("« <strong>$email</strong> » n'est pas une adresse mail valide");
+                $page->trig("Â« <strong>$email</strong> Â» n'est pas une adresse mail valide");
             }
         }
     }
@@ -797,9 +797,9 @@ class XnetGrpModule extends PLModule
         }
 
         if ($this->unsubscribe($user)) {
-            $page->trig('Vous avez été désinscrit du groupe avec succès');
+            $page->trig('Vous avez Ã©tÃ© dÃ©sinscrit du groupe avec succÃ¨s');
         } else {
-            $page->trig('Vous avez été désinscrit du groupe, mais des erreurs se sont produites lors des désinscriptions des alias et des mailing-lists.');
+            $page->trig('Vous avez Ã©tÃ© dÃ©sinscrit du groupe, mais des erreurs se sont produites lors des dÃ©sinscriptions des alias et des mailing-lists.');
         }
         $page->assign('is_member', is_member(true));
     }
@@ -818,9 +818,9 @@ class XnetGrpModule extends PLModule
         }
 
         if ($this->unsubscribe($user)) {
-            $page->trig("{$user['prenom']} {$user['nom']} a été désabonné du groupe !");
+            $page->trig("{$user['prenom']} {$user['nom']} a Ã©tÃ© dÃ©sabonnÃ© du groupe !");
         } else {
-            $page->trig("{$user['prenom']} {$user['nom']} a été désabonné du groupe, mais des erreurs subsistent !");
+            $page->trig("{$user['prenom']} {$user['nom']} a Ã©tÃ© dÃ©sabonnÃ© du groupe, mais des erreurs subsistent !");
         }
     }
 
@@ -863,7 +863,7 @@ class XnetGrpModule extends PLModule
                             $perms ? 'admin' : 'membre',
                             $user['uid'], $globals->asso('id'));
                 $user['perms'] = $perms;
-                $page->trig('permissions modifiées');
+                $page->trig('permissions modifiÃ©es');
             }
 
             foreach (Env::v('ml1', array()) as $ml => $state) {
@@ -871,7 +871,7 @@ class XnetGrpModule extends PLModule
                 if ($ask == $state) {
                     if ($state && $email_changed) {
                         $mmlist->replace_email($ml, $from_email, $user['email2']);
-                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} à $ml@ a été mis à jour");
+                        $page->trig("L'abonnement de {$user['prenom']} {$user['nom']} Ã  $ml@ a Ã©tÃ© mis Ã  jour");
                     }
                     continue;
                 }
@@ -881,14 +881,14 @@ class XnetGrpModule extends PLModule
                                ."cours sur <strong>$ml@</strong> !!!");
                 } elseif ($ask) {
                     $mmlist->mass_subscribe($ml, Array($user['email2']));
-                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml@");
+                    $page->trig("{$user['prenom']} {$user['nom']} a Ã©tÃ© abonnÃ© Ã  $ml@");
                 } else {
                     if ($email_changed) {
                         $mmlist->mass_unsubscribe($ml, Array($from_email));
                     } else {
                         $mmlist->mass_unsubscribe($ml, Array($user['email2']));
                     }
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml@");
+                    $page->trig("{$user['prenom']} {$user['nom']} a Ã©tÃ© dÃ©sabonnÃ© de $ml@");
                 }
             }
 
@@ -899,14 +899,14 @@ class XnetGrpModule extends PLModule
                     XDB::query("INSERT INTO  virtual_redirect (vid,redirect)
                                      SELECT  vid,{?} FROM virtual WHERE alias={?}",
                                $user['email'], $ml);
-                    $page->trig("{$user['prenom']} {$user['nom']} a été abonné à $ml");
+                    $page->trig("{$user['prenom']} {$user['nom']} a Ã©tÃ© abonnÃ© Ã  $ml");
                 } else {
                     XDB::query("DELETE FROM  virtual_redirect
                                       USING  virtual_redirect
                                  INNER JOIN  virtual USING(vid)
                                       WHERE  redirect={?} AND alias={?}",
                                $user['email'], $ml);
-                    $page->trig("{$user['prenom']} {$user['nom']} a été désabonné de $ml");
+                    $page->trig("{$user['prenom']} {$user['nom']} a Ã©tÃ© dÃ©sabonnÃ© de $ml");
                 }
             }
         }
@@ -1052,7 +1052,7 @@ class XnetGrpModule extends PLModule
                 $art = $res->fetchOneAssoc();
                 $art['contact_html'] = $art['contacts'];
             } else {
-                $page->kill("Aucun article correspond à l'identifiant indiqué");
+                $page->kill("Aucun article correspond Ã  l'identifiant indiquÃ©");
             }
         }
 
@@ -1106,4 +1106,5 @@ class XnetGrpModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

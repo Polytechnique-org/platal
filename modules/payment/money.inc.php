@@ -59,9 +59,9 @@ class Payment
     {
         $v = (float)strtr($value, ',', '.');
         if ($this->montant_min > $v) {
-            return "Montant inférieur au minimum autorisé ({$this->montant_min}).";
+            return "Montant infÃ©rieur au minimum autorisÃ© ({$this->montant_min}).";
         } elseif ($v > $this->montant_max) {
-            return "Montant supérieur au maximum autorisé ({$this->montant_max}).";
+            return "Montant supÃ©rieur au maximum autorisÃ© ({$this->montant_max}).";
         } else {
             return true;
         }
@@ -121,5 +121,5 @@ class PayMethod
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

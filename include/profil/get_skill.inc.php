@@ -38,9 +38,9 @@ if(Env::has('comppros_op')){
     }
 }
 
-// nombre maximum autorisé de langues
+// nombre maximum autorisÃ© de langues
 $nb_lg_max = 10;
-// nombre maximum autorisé de compétences professionnelles
+// nombre maximum autorisÃ© de compÃ©tences professionnelles
 $nb_cpro_max = 20;
 
 $res = XDB::iterRow("SELECT ld.id, ld.langue_fr, li.level FROM langues_ins AS li, langues_def AS ld "
@@ -78,7 +78,7 @@ while(list($tmp_lid, $tmp_lg_fr) = $res->next()){
 }
 
 $comppros_levels = Array(
-    'initié' => 'initié',
+    'initiÃ©' => 'initiÃ©',
     'bonne connaissance' => 'bonne connaissance',
     'expert' => 'expert'
 );
@@ -90,4 +90,5 @@ while(list($tmp_id, $tmp_text_fr, $tmp_title) = $res->next()){
     $comppros_title[$tmp_id] = $tmp_title;
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -23,7 +23,7 @@
 
 {if $smarty.session.suid}
 <p class="erreur">
-Attention, déjà en SUID !!!
+Attention, dÃ©jÃ  en SUID !!!
 </p>
 {/if}
 
@@ -76,7 +76,7 @@ Attention, déjà en SUID !!!
 {if $mr}
 
 <p class="smaller">
-Derniére connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
+DerniÃ©re connexion le <strong>{$lastlogin|date_format:"%d %B %Y, %T"}</strong>
 depuis <strong>{$host}</strong>
 </p>
 
@@ -152,7 +152,7 @@ function act_fwd(fwd, activate) {
     </tr>
     <tr class="pair">
       <td class="titre">
-        Prénom
+        PrÃ©nom
       </td>
       <td>
         <input type="text" name="prenomN" size="20" maxlength="30" value="{$mr.prenom}" />
@@ -189,13 +189,13 @@ function act_fwd(fwd, activate) {
       </td>
       <td>
         <input type="text" name="naissanceN" size="12" maxlength="10" value="{$mr.naissance}" />
-        {if $mr.naiss_err}<span class="erreur smaller">({icon name=error}Date de naissance incohérente)</span>{/if}
+        {if $mr.naiss_err}<span class="erreur smaller">({icon name=error}Date de naissance incohÃ©rente)</span>{/if}
       </td>
     </tr>
     {/if}
     <tr class="pair">
       <td class="titre">
-        Date de décès
+        Date de dÃ©cÃ¨s
       </td>
       <td>
         <input type="text" name="decesN" size="12" maxlength="10" value="{$mr.deces}" />
@@ -238,7 +238,7 @@ function act_fwd(fwd, activate) {
         <a href="admin/trombino/{$mr.user_id}">[Trombino]</a>
       </td>
       <td>
-        <input type="submit" name="u_kill_conf" value="Désinscrire" />
+        <input type="submit" name="u_kill_conf" value="DÃ©sinscrire" />
       </td>
     </tr>
     {/if}
@@ -246,7 +246,7 @@ function act_fwd(fwd, activate) {
 </form>
 {if $mr.perms neq 'pending'}
 <p>
-Ne pas utiliser [Désinscrire] si le but est d'exclure la personne.
+Ne pas utiliser [DÃ©sinscrire] si le but est d'exclure la personne.
 Pour ceci changer ses permissions en 'disabled'.
 </p>
 <form id="alias" method="post" action="admin/user">
@@ -266,7 +266,7 @@ Pour ceci changer ses permissions en 'disabled'.
         {if $a.expire}<span class='erreur'>(expire le {$a.expire|date_format})</span>{/if}
       </td>
       {if $a.for_life}
-      <td>garanti à vie*</td>
+      <td>garanti Ã  vie*</td>
       {else}
       <td class="action">
         <a href="javascript:del_alias('{$a.alias}')">delete</a>
@@ -295,7 +295,7 @@ Pour ceci changer ses permissions en 'disabled'.
 </form>
 
 <p>
-<strong>* à ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
+<strong>* Ã  ne modifier qu'avec l'accord express de l'utilisateur !!!</strong>
 </p>
 
 <form id="fwds" method="post" action="admin/user#fwds">
@@ -312,7 +312,7 @@ Pour ceci changer ses permissions en 'disabled'.
         {if $mail->active}active{/if}
       </td>
       <td>
-        <span class="smaller"><a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">{if $mail->active}des{elseif $mail->broken}ré{/if}activer</a></span>
+        <span class="smaller"><a href="javascript:act_fwd('{$mail->email}',{if $mail->active}false{else}true{/if})">{if $mail->active}des{elseif $mail->broken}rÃ©{/if}activer</a></span>
       </td>
       <td>
         {if $mail->broken}<span style="color: #f00">{/if}
@@ -328,7 +328,7 @@ Pour ceci changer ses permissions en 'disabled'.
       <td colspan="4" class="smaller" style="color: #f00">
         {icon name=error title="Panne"}
         Panne de {$mail->email} le {$mail->panne|date_format}
-        {if $mail->panne neq $mail->last}confirmée le {$mail->last|date_format}{/if}
+        {if $mail->panne neq $mail->last}confirmÃ©e le {$mail->last|date_format}{/if}
       </td>
     </tr>
     {/if}
@@ -355,4 +355,4 @@ Pour ceci changer ses permissions en 'disabled'.
 {/if}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

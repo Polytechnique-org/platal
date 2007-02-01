@@ -57,8 +57,8 @@ function wiki_clear_all_cache()
 }
 
 function wiki_perms_options() {
-    return array('public' => 'Public', 'logged' => 'Connecté',
-                  'mdp' => 'Authentifié', 'admin' => 'Admin');
+    return array('public' => 'Public', 'logged' => 'ConnectÃ©',
+                  'mdp' => 'AuthentifiÃ©', 'admin' => 'Admin');
 }
 
 function wiki_get_perms($n)
@@ -149,4 +149,5 @@ function wiki_require_page($pagename)
     system('wget '.$globals->baseurl.'/'.$pagename_slashes.' -O /dev/null');
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

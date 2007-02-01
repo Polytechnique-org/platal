@@ -32,7 +32,7 @@ class HomonymeReq extends Validate
 
     var $homonymes_forlife;
 
-    var $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traité plus ... manuellement";
+    var $rules = "Accepter, sauf cas particulier d'utilisateur dont l'homonymie est traitÃ© plus ... manuellement";
 
     // }}}
     // {{{ constructor
@@ -57,7 +57,7 @@ class HomonymeReq extends Validate
     // {{{ title()
     
     function title() {
-        return $this->warning?'alerte alias':'robot répondeur';
+        return $this->warning?'alerte alias':'robot rÃ©pondeur';
     }
 
     // }}}
@@ -82,13 +82,13 @@ class HomonymeReq extends Validate
         global $globals;
         return
 "
-Comme nous t'en avons informé par mail il y a quelques temps,
+Comme nous t'en avons informÃ© par mail il y a quelques temps,
 pour respecter nos engagements en terme d'adresses e-mail devinables,
-tu te verras bientôt retirer l'alias ".$this->loginbis."@".$globals->mail->domain." pour
+tu te verras bientÃ´t retirer l'alias ".$this->loginbis."@".$globals->mail->domain." pour
 ne garder que ".$this->forlife."@".$globals->mail->domain.".
 
-Toute personne qui écrira à ".$this->loginbis."@".$globals->mail->domain." recevra la
-réponse d'un robot qui l'informera que ".$this->loginbis."@".$globals->mail->domain."
+Toute personne qui Ã©crira Ã  ".$this->loginbis."@".$globals->mail->domain." recevra la
+rÃ©ponse d'un robot qui l'informera que ".$this->loginbis."@".$globals->mail->domain."
 est ambigu pour des raisons d'homonymie et signalera ton email exact.";
     }
 
@@ -110,7 +110,7 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
         $body = $this->prenom.",\n\n"
               . $this->_mail_body($isok)
               . (Env::has('comm') ? "\n\n".Env::v('comm') : '')
-              . "\n\nCordialement,\nL'équipe Polytechnique.org\n";
+              . "\n\nCordialement,\nL'Ã©quipe Polytechnique.org\n";
 
         $mailer->setTxtBody(wordwrap($body));
         $mailer->send();
@@ -136,5 +136,5 @@ est ambigu pour des raisons d'homonymie et signalera ton email exact.";
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

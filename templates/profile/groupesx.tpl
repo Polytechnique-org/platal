@@ -38,7 +38,7 @@
             <li><a href="http://www.polytechnique.net/{$asso.diminutif}/lists">listes mails</a></li>
         {/if}
         {if $asso.events}
-            <li><a href="http://www.polytechnique.net/{$asso.diminutif}/events">{$asso.events} événement{if $asso.events > 1}s{/if}</a></li>
+            <li><a href="http://www.polytechnique.net/{$asso.diminutif}/events">{$asso.events} Ã©vÃ©nement{if $asso.events > 1}s{/if}</a></li>
         {/if}
         {if !$asso.lists}
             <li style="display:block">&nbsp;</li>
@@ -56,3 +56,4 @@
 <p class="center">
 [<a href="http://www.polytechnique.net/login">Tous les groupes X</a>]
 </p>
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

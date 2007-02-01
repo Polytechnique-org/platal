@@ -35,8 +35,8 @@ class ListeReq extends Validate
     var $owners;
     var $members;
 
-    var $rules = "Refuser les listes de binets si elles ne sont pas datées (oui : apv2002@, non : apv@).
-        Refuser également des listes qui pourraient nous servir (admin, postmaster,...)";
+    var $rules = "Refuser les listes de binets si elles ne sont pas datÃ©es (oui : apv2002@, non : apv@).
+        Refuser Ã©galement des listes qui pourraient nous servir (admin, postmaster,...)";
     // }}}
     // {{{ constructor
     
@@ -93,9 +93,9 @@ class ListeReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  La mailing list {$this->liste} que tu avais demandée vient d'être créée.";
+            return "  La mailing list {$this->liste} que tu avais demandÃ©e vient d'Ãªtre crÃ©Ã©e.";
         } else {
-            return "  La demande que tu avais faite pour la mailing list {$this->liste} a été refusée.";
+            return "  La demande que tu avais faite pour la mailing list {$this->liste} a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -122,5 +122,5 @@ class ListeReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

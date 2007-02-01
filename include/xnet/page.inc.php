@@ -75,7 +75,7 @@ class XnetPage extends PlatalPage
         if (S::logged() && $globals->asso()) {
             $sub = array();
             $dim = $globals->asso('diminutif');
-            $sub['présentation'] = "login/$dim/";
+            $sub['prÃ©sentation'] = "login/$dim/";
             if (may_update() || (is_member()  && $globals->asso('pub') == 'public')
                 || $globals->asso('cat') == 'Promotions') {
                 $sub['annuaire du groupe'] = "$dim/annuaire";
@@ -85,9 +85,9 @@ class XnetPage extends PlatalPage
             if ((is_member() || may_update()) && $globals->asso('mail_domain')) {
                 $sub['listes de diffusion'] = "$dim/lists";
             }
-            $sub['événement'] = "$dim/events";
+            $sub['Ã©vÃ©nement'] = "$dim/events";
             if (may_update() || is_member()) {
-                $sub['télépaiement'] = "$dim/payment";
+                $sub['tÃ©lÃ©paiement'] = "$dim/payment";
             }
 
             $menu[$globals->asso('nom')] = $sub;
@@ -96,20 +96,20 @@ class XnetPage extends PlatalPage
         if (S::logged() && may_update()) {
             $sub = array();
             $sub['modifier l\'accueil'] = "$dim/edit";
-            $sub['gérer les annonces'] = "$dim/admin/announces";
+            $sub['gÃ©rer les annonces'] = "$dim/admin/announces";
             if ($globals->asso('mail_domain')) {
                 $sub['envoyer un mail']     = "$dim/mail";
-                $sub['créer une liste']     = "$dim/lists/create";
-                $sub['créer un alias']      = "$dim/alias/create";
+                $sub['crÃ©er une liste']     = "$dim/lists/create";
+                $sub['crÃ©er un alias']      = "$dim/alias/create";
             }
             if (S::has_perms()) {
-                $sub['gérer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');
+                $sub['gÃ©rer les groupes'] = array('href' => 'admin', 'style' => 'color: gray;');
                 $sub['clear cache'] = array('href' => 'purge_cache', 'style' => 'color: gray;');
             }
             $menu['Administrer'] = $sub;
         } elseif (S::has_perms()) {
             $sub = array();
-            $sub['gérer les groupes'] = 'admin';
+            $sub['gÃ©rer les groupes'] = 'admin';
             $sub['clear cache'] = 'purge_cache';
             $menu['Administrer'] = $sub;
         }
@@ -132,7 +132,7 @@ function list_all_my_groups($params)
                FROM  groupex.asso    AS a
          INNER JOIN  groupex.membres AS m ON m.asso_id = a.id
               WHERE  m.uid={?}", S::v('uid'));
-    $links = '<a href="exit">déconnexion</a>';
+    $links = '<a href="exit">dÃ©connexion</a>';
     $html = '<div>Mes groupes (' . $links . ') :</div>';
     while (list($nom, $mini) = $res->next()) {
         $html .= "<span class='gp'>&bull; <a href='login/$mini'>$nom</a></span>";
@@ -157,5 +157,5 @@ function cat_pp($cat)
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

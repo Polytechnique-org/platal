@@ -30,14 +30,14 @@ Tu n'es pas administrateur de la liste, mais du site.
 {include file="lists/header_listes.tpl" on=admin}
 
 <p>
-Pour inscrire un utilisateur, il faut remplir les champs prévus à cet effet en saisissant un de
-ses identifiants, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie. Pour inscrire plusieurs utilisateurs, les séparer par des espaces.
-L'icône {icon name=cross title='retirer membre'} permet de désinscrire de la liste quelqu'un
-qui y était abonné.
+Pour inscrire un utilisateur, il faut remplir les champs prÃ©vus Ã  cet effet en saisissant un de
+ses identifiants, de la forme "prenom.nom", ou "prenom.nom.promo" en cas d'homonymie. Pour inscrire plusieurs utilisateurs, les sÃ©parer par des espaces.
+L'icÃ´ne {icon name=cross title='retirer membre'} permet de dÃ©sinscrire de la liste quelqu'un
+qui y Ã©tait abonnÃ©.
 </p>
 
 <h1>
-  modérateurs de la liste
+  modÃ©rateurs de la liste
 </h1>
 
 <form method='post' action='{$smarty.server.REQUEST_URI}'>
@@ -56,7 +56,7 @@ qui y était abonné.
         {else}
         {$x.l}
         {/if}
-        <a href='{$platal->pl_self(1)}?del_owner={$x.l}'>{icon name=cross title='retirer modérateur'}</a>
+        <a href='{$platal->pl_self(1)}?del_owner={$x.l}'>{icon name=cross title='retirer modÃ©rateur'}</a>
         <br />
         {/foreach}
       </td>
@@ -112,4 +112,4 @@ qui y était abonné.
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -22,8 +22,8 @@
 
 <h1>Administration Polytechnique.org</h1>
 
-<table class="bicol" cellpadding="3" summary="Système">
-  <tr><th>Système</th></tr>
+<table class="bicol" cellpadding="3" summary="SystÃ¨me">
+  <tr><th>SystÃ¨me</th></tr>
   <tr class="impair">
     <td>
       <strong>Postfix :</strong>&nbsp;&nbsp;
@@ -31,14 +31,14 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/whitelist">Whitelist</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/postfix/delayed">Retardés</a>
+      <a href="admin/postfix/delayed">RetardÃ©s</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/postfix/regexp_bounces">Regexps Bounces</a>
     </td>
   </tr>
   <tr class="pair">
     <td>
-      <strong>Sécurité :</strong>&nbsp;&nbsp;
+      <strong>SÃ©curitÃ© :</strong>&nbsp;&nbsp;
       <a href="admin/logger">Logs des sessions</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/logger/actions">Actions</a>
@@ -52,7 +52,7 @@
 
 <br />
 
-<table class="bicol" cellpadding="3" summary="Système">
+<table class="bicol" cellpadding="3" summary="SystÃ¨me">
   <tr><th>Contenu du site</th></tr>
   <tr class="impair">
     <td>
@@ -65,7 +65,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/ax-xorg">AX/X.org</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;      
-      <a href="admin/deaths">Décès</a>
+      <a href="admin/deaths">DÃ©cÃ¨s</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/synchro_ax">Synchro AX</a>
     </td>
@@ -75,7 +75,7 @@
       <strong>Infos dynamiques :</strong>&nbsp;&nbsp;
       <a href="admin/downtime">Coupures</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/mx/broken">MX défaillants</a>
+      <a href="admin/mx/broken">MX dÃ©faillants</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/tips">Astuces</a>
     </td>
@@ -91,7 +91,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/skins">Skins</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/medals">Décorations</a>
+      <a href="admin/medals">DÃ©corations</a>
     </td>
   </tr>
   <tr class="pair">
@@ -99,7 +99,7 @@
       <strong>Newsletter :</strong>&nbsp;&nbsp;
       <a href="admin/newsletter">Liste</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/newsletter/categories">Catégories</a>      
+      <a href="admin/newsletter/categories">CatÃ©gories</a>      
     </td>
   </tr>
   <tr class="impair">
@@ -115,18 +115,18 @@
       <strong>Valider demandes :</strong>&nbsp;&nbsp;
       <a href="admin/validate">Valider</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="admin/events">Événements</a>
+      <a href="admin/events">Ã‰vÃ©nements</a>
     </td>
   </tr>
   <tr class="impair">
     <td>
-      <strong>Trésorerie :</strong>&nbsp;&nbsp;
+      <strong>TrÃ©sorerie :</strong>&nbsp;&nbsp;
       <a href="admin/payments">Paiements</a>
     </td>
   </tr>
   <tr class="pair">
     <td>
-      <strong>Géoloc :</strong>&nbsp;&nbsp;
+      <strong>GÃ©oloc :</strong>&nbsp;&nbsp;
       <a href="admin/geoloc">Synchro</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="admin/geoloc/dynamap">Dynamap</a>
@@ -148,4 +148,4 @@
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

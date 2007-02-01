@@ -27,23 +27,23 @@
 {to addr="$lemail"}
 Bonjour,
 
-Ton inscription sur Polytechnique.org est presque terminée, un clic sur le lien ci-dessous et c'est fini.
+Ton inscription sur Polytechnique.org est presque terminÃ©e, un clic sur le lien ci-dessous et c'est fini.
 
-Après activation, tes paramètres seront :
+AprÃ¨s activation, tes paramÃ¨tres seront :
 
 login        : {$mailorg}
 mot de passe : {$pass}
 
-Rends-toi sur la page web suivante afin d'activer ta pré-inscription, et de changer ton mot de passe en quelque chose de plus facile à mémoriser :
+Rends-toi sur la page web suivante afin d'activer ta prÃ©-inscription, et de changer ton mot de passe en quelque chose de plus facile Ã  mÃ©moriser :
 
 {$baseurl}/register/end/{$hash}
 
-Si en cliquant dessus tu n'y arrives pas, copie intégralement l'adresse dans la barre de ton navigateur.
+Si en cliquant dessus tu n'y arrives pas, copie intÃ©gralement l'adresse dans la barre de ton navigateur.
 
-Nous espérons que tu profiteras pleinement des services en ligne de Polytechnique.org : s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
+Nous espÃ©rons que tu profiteras pleinement des services en ligne de Polytechnique.org : s'ils te convainquent, n'oublie pas d'en parler aux camarades autour de toi !
 
 Bien cordialement,
 Polytechnique.org
-"Le portail des élèves & anciens élèves de l'Ecole polytechnique"
+"Le portail des Ã©lÃ¨ves & anciens Ã©lÃ¨ves de l'Ecole polytechnique"
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

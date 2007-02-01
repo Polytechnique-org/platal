@@ -47,7 +47,7 @@ if ($p = Post::v('setrperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $p, $perms[1])) {
         $perms = wiki_get_perms($n);
-        $page->trig('Permissions mises à jour');
+        $page->trig('Permissions mises Ã  jour');
     }
 }
 
@@ -55,7 +55,7 @@ if ($p = Post::v('setwperms')) {
     wiki_apply_perms('admin');
     if (wiki_set_perms($n, $perms[0], $p)) {
         $perms = wiki_get_perms($n);
-        $page->trig('Permissions mises à jour');
+        $page->trig('Permissions mises Ã  jour');
     }
 }
 
@@ -95,7 +95,7 @@ if (Env::v('action')) {
         $wikiAll = file_get_contents($wiki_cache);
     } elseif (S::has_perms()) {
         $wikiAll = "<p>La page de wiki $n n'existe pas. "
-                 . "Il te suffit de <a href='" . str_replace('.', '/', $n) . "?action=edit'>l'éditer</a></p>";
+                 . "Il te suffit de <a href='" . str_replace('.', '/', $n) . "?action=edit'>l'Ã©diter</a></p>";
     } else {
         $page->changeTpl('core/404.tpl');
     }
@@ -122,4 +122,5 @@ $page->addJsLink('wiki.js');
 
 $page->run();
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

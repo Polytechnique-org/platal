@@ -20,14 +20,14 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Mails en attente de décision</h1>
+<h1>Mails en attente de dÃ©cision</h1>
 
 <table class="bicol" cellpadding='0' cellspacing='0'>
   <tr>
     <th>Checksum</th>
-    <th>Nb mails reçus</th>
-    <th>Dernier reçu</th>
-    <th>Premier reçu</th>
+    <th>Nb mails reÃ§us</th>
+    <th>Dernier reÃ§u</th>
+    <th>Premier reÃ§u</th>
     <th>Etat</th>
     <th>Actions</th>
   </tr>
@@ -37,7 +37,7 @@
     <td><strong>{$m.nb}</strong></td>
     <td>{$m.update_time|date_format}</td>
     <td>{$m.create_time|date_format}</td>
-    <td><strong>{if $m.del}Poubelle{elseif $m.ok}Autorisé{else}En attente{/if}</strong></td>
+    <td><strong>{if $m.del}Poubelle{elseif $m.ok}AutorisÃ©{else}En attente{/if}</strong></td>
     <td>
       <form method="post" action="admin/postfix/delayed">
         <div>
@@ -51,4 +51,4 @@
   {/iterate}
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -22,7 +22,7 @@
 
 
 {if !$c.inscrit || $c.dcd}<div class='grayed'>{/if}
-<div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise à jour le {$c.date|date_format}"{/if}{/if}>
+<div class="contact" {if $c.inscrit}{if $smarty.session.auth ge AUTH_COOKIE}title="fiche mise Ã  jour le {$c.date|date_format}"{/if}{/if}>
 
   <div class="nom">
     {if $c.sexe}&bull;{/if}
@@ -37,7 +37,7 @@
     {/if}
     (X {$c.promo}{if $c.app0text}, {applis_fmt type=$c.app0type text=$c.app0text url=$c.app0url}
     {/if}{if $c.app1text}, {applis_fmt type=$c.app1type text=$c.app1text url=$c.app1url}{/if})
-    {if $c.dcd}décédé{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
+    {if $c.dcd}dÃ©cÃ©dÃ©{if $c.sexe}e{/if} le {$c.deces|date_format}{/if}
     {if $smarty.session.auth ge AUTH_COOKIE}
     {if !$c.dcd && !$c.wasinscrit}
     <a href="marketing/public/{$c.user_id}" class='popup'>clique ici si tu connais son adresse email !</a>
@@ -51,7 +51,7 @@
     {if !$c.wasinscrit && !$c.dcd}
       {if $show_action eq ajouter}
         <a href="carnet/notifs/add_nonins/{$c.user_id}">{*
-        *}{icon name=add title="Ajouter à la liste de mes surveillances"}</a>
+        *}{icon name=add title="Ajouter Ã  la liste de mes surveillances"}</a>
       {else}
         <a href="carnet/notifs/del_nonins/{$c.user_id}">{*
         *}{icon name=cross title="Retirer de la liste de mes surveillances"}</a>
@@ -64,7 +64,7 @@
         *}{icon name=vcard title="Afficher la carte de visite"}</a>
       {if $show_action eq ajouter}
         <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
-        *}{icon name=add title="Ajouter à mes contacts"}</a>
+        *}{icon name=add title="Ajouter Ã  mes contacts"}</a>
       {else}
         <a href="carnet/contacts?action={$show_action}&amp;user={$c.forlife}">{*
         *}{icon name=cross title="Retirer de mes contacts"}</a>
@@ -98,7 +98,7 @@
       {/if}
       {if $c.countrytxt || $c.city}
       <tr>
-        <td class="lt">Géographie:</td>
+        <td class="lt">GÃ©ographie:</td>
         <td class="rt">{$c.city}{if $c.city && $c.countrytxt}, {/if}{$c.countrytxt}</td>
       </tr>
       {/if}
@@ -128,7 +128,7 @@
         <td class="smaller" colspan="2">
           Ce camarade n'a plus d'adresse redirection valide.
           <a href="marketing/broken/{$c.user_id}">
-            Si tu en connais une, <strong>n'hésite pas à nous la transmettre</strong>
+            Si tu en connais une, <strong>n'hÃ©site pas Ã  nous la transmettre</strong>
           </a>
         </td>
       </tr>
@@ -141,4 +141,4 @@
 </div>
 {if !$c.inscrit || $c.dcd}</div>{/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

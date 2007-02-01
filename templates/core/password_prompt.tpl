@@ -22,22 +22,22 @@
 
 {if $referer || $platal->pl_self() neq 'login'}
 <h1>
-  Accès restreint
+  AccÃ¨s restreint
 </h1>
 <p>
   Bonjour,<br />
-  La page que vous avez demandé
+  La page que vous avez demandÃ©
   (<strong>{if $referer}{$smarty.server.HTTP_REFERER}{else}{$globals->baseurl}/{$platal->pl_self()}{/if}</strong>)
-  nécessite une authentification.
+  nÃ©cessite une authentification.
 </p>
 {else}
 <h1>
-  Accès réservé aux polytechniciens
+  AccÃ¨s rÃ©servÃ© aux polytechniciens
 </h1>
 {/if}
 {if $smarty.session.auth ge AUTH_COOKIE}
 <p>
-<strong>Merci de rentrer ton mot de passe pour démarrer une connexion au site.</strong>
+<strong>Merci de rentrer ton mot de passe pour dÃ©marrer une connexion au site.</strong>
 Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi sur
 <a href="register/">la page d'inscription</a>.
 </p>
@@ -49,15 +49,15 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </p>
 <ul>
   <li>
-  Si tu viens de terminer ta pré-inscription, <strong>il est dans le mail</strong> que
-  nous t'avons envoyé (expéditeur pre-inscription@{#globals.mail.domain#}).
+  Si tu viens de terminer ta prÃ©-inscription, <strong>il est dans le mail</strong> que
+  nous t'avons envoyÃ© (expÃ©diteur pre-inscription@{#globals.mail.domain#}).
   </li>
   <li>
-  Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprès de
-    nous</strong> pour obtenir un accès. {#globals.core.sitename#} c'est l'e-mail des X,
-  l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accès le plus
+  Si tu n'es jamais venu sur le site, <strong>il faut t'enregistrer auprÃ¨s de
+    nous</strong> pour obtenir un accÃ¨s. {#globals.core.sitename#} c'est l'e-mail des X,
+  l'annuaire en ligne, plus un tas d'autres services.  Nous te fournirons un accÃ¨s le plus
   rapidement possible. <strong> <a href="register/">Clique ici pour nous demander tes
-      paramètres personnels.</a></strong>
+      paramÃ¨tres personnels.</a></strong>
   </li>
 </ul>
 {/if}
@@ -69,7 +69,7 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     <tr>
       <th colspan="2">{if $smarty.server.HTTPS}{icon name=lock}{/if} Identification
       {if !$smarty.server.HTTPS}
-      (<a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">{icon name=lock_add} Passer en connexion sécurisée</a>)
+      (<a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">{icon name=lock_add} Passer en connexion sÃ©curisÃ©e</a>)
       {/if}
       </th>
     </tr>
@@ -97,10 +97,10 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
     <tr>
       <td></td>
-      <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour être automatiquement reconnu à ta prochaine connexion
+      <td {popup caption='Connexion permanente' width='300' text="Coche cette case pour Ãªtre automatiquement reconnu Ã  ta prochaine connexion
         depuis cet ordinateur.<br />
-        Il n'est pas conseillé de cocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
-        <input type="checkbox" name="remember" /> Garder l'accès aux services après déconnexion
+        Il n'est pas conseillÃ© de cocher la case si cette machine n'est pas <b>strictement</b> personnelle"}>
+        <input type="checkbox" name="remember" /> Garder l'accÃ¨s aux services aprÃ¨s dÃ©connexion
       </td>
     </tr>
     <tr>
@@ -117,13 +117,13 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
     </tr>
   </table>
   <p>     
-    Problème de connexion ? <a href="Xorg/FAQ?display=light#connect" class="popup2">La réponse est là.</a>
+    ProblÃ¨me de connexion ? <a href="Xorg/FAQ?display=light#connect" class="popup2">La rÃ©ponse est lÃ .</a>
   </p>
 </form>
 
 <div id="nologin" style="background: #fcc; color: red">
-  Pour assurer la confidentialité de ton mot de passe, il est chiffré sur ta machine
-  avant de nous être transmis. Pour cela, il faut
+  Pour assurer la confidentialitÃ© de ton mot de passe, il est chiffrÃ© sur ta machine
+  avant de nous Ãªtre transmis. Pour cela, il faut
   <a href="Xorg/FAQ?display=light#connect" class="popup2">activer javascript</a>
   dans ton navigateur, ce qui n'est actuellement pas le cas.
   <div class="center" style="margin-top: 1ex">
@@ -140,25 +140,25 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 
 <div class="smaller">
   {if $smarty.server.HTTPS}
-  {icon name=lock} Tu utilises actuellement une connexion HTTPS sécurisée. Aucune information ne circule
-  en clair entre chez toi et Polytechnique.org, ce qui assure une confidentialité maximale.
+  {icon name=lock} Tu utilises actuellement une connexion HTTPS sÃ©curisÃ©e. Aucune information ne circule
+  en clair entre chez toi et Polytechnique.org, ce qui assure une confidentialitÃ© maximale.
   {else}
-  {icon name=lock_open} Tu utilises actuellement une connexion HTTP non sécurisée. Toutes les informations
-  (<strong>excepté le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et 
-  Polytechnique.org. Tu peux basculer sur une connexion sécurisée en cliquant sur le lien
+  {icon name=lock_open} Tu utilises actuellement une connexion HTTP non sÃ©curisÃ©e. Toutes les informations
+  (<strong>exceptÃ© le mot de passe de connexion au site</strong>) circulent en clair entre chez toi et 
+  Polytechnique.org. Tu peux basculer sur une connexion sÃ©curisÃ©e en cliquant sur le lien
   <div class="center">
   <a href="{$globals->baseurl|replace:"http":"https"}/{$platal->pl_self()}">
-    {icon name=lock_add} Passer en connexion sécurisée</a>
+    {icon name=lock_add} Passer en connexion sÃ©curisÃ©e</a>
   </div><br />
-  Plus d'informations sur la connexion sécurisée se trouvent
-  <a href="Xorg/CertificatDeSécurité?display=light" class="popup2">sur cette page</a>.
+  Plus d'informations sur la connexion sÃ©curisÃ©e se trouvent
+  <a href="Xorg/CertificatDeSÃ©curitÃ©?display=light" class="popup2">sur cette page</a>.
   {/if}
 </div>
 
 {if $smarty.request.response}<!-- failed login code //-->
 <br />
 <div class="erreur">
-  Erreur d'identification. Essaie à nouveau !
+  Erreur d'identification. Essaie Ã  nouveau !
 </div>
 {/if}
 
@@ -187,4 +187,4 @@ Si tu n'es pas {insert name="getName"}, change le login ci-dessous, ou rends-toi
 </script>
 {/literal}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -1,17 +1,17 @@
 <?php
 
-// renvoie un texte html à partir d'un texte classique
-// en remplacant les url par des liens (éventuellement les mails)
+// renvoie un texte html Ã  partir d'un texte classique
+// en remplacant les url par des liens (Ã©ventuellement les mails)
 function url_catcher($texte, $mails = true) {
     $patterns = array();
     $replacement = array();
 
     // url commencant par http, https ou ftp
-    $patterns[] = '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/i';
+    $patterns[] = '/((?:https?|ftp):\/\/(?:\.*,*[\w@~%$Â£Âµ&i#\-+=_\/\?;])*)/i';
     $replacement[] = '<a href="\\0">\\0</a>';
 
     // url commencant par www.
-    $patterns[] = '/(\s|^)www\.((?:\.*,*[\w@~%$£µ&i#\-+=_\/\?;])*)/i';
+    $patterns[] = '/(\s|^)www\.((?:\.*,*[\w@~%$Â£Âµ&i#\-+=_\/\?;])*)/i';
     $replacement[] = '\\1<a href="http://www.\\2">www.\\2</a>';
 
     if ($mails) {
@@ -21,4 +21,5 @@ function url_catcher($texte, $mails = true) {
 
     return preg_replace($patterns, $replacement, $texte);
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

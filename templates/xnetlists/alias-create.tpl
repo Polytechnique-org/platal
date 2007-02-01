@@ -20,46 +20,46 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Création d'un alias</h1>
+<h1>CrÃ©ation d'un alias</h1>
 <p class='descr'>
-Les alias sont concus pour répondre aux problèmes suivants :
+Les alias sont concus pour rÃ©pondre aux problÃ¨mes suivants :
 </p>
 <ul class='descr'>
   <li>
   redirections pour les postes des gens au sein du groupe : par exemple il est pratique d'avoir un alias
   president@..., ou bien tresorier@... qui pointent tout le temps vers la bonne personne du groupe.
-  Une sorte d'adresse de «redirection à vie».
+  Une sorte d'adresse de Â«redirection Ã  vieÂ».
   </li>
   <li>
   listes de diffusions pour de petits nombres de personnes (bureau@ ...)
   </li>
   <li>
-  listes à vie courte (liste créée pour l'organisation d'un évenement ponctuel par exemple)
+  listes Ã  vie courte (liste crÃ©Ã©e pour l'organisation d'un Ã©venement ponctuel par exemple)
   </li>
   <li>
-  fédérer plusieurs listes/alias sous un même nom (ce que ne peuvent faire les listes de diffusion).
+  fÃ©dÃ©rer plusieurs listes/alias sous un mÃªme nom (ce que ne peuvent faire les listes de diffusion).
   </li>
 </ul>
 
 <p class='descr'>
-Pour les autres besoins de communications (notament pour un grand nombre de personnes, et pour bénéficier des outils
-de modération), il est recommandé de créer <a href="{$platal->ns}lists/create">une liste de diffusion</a>.
+Pour les autres besoins de communications (notament pour un grand nombre de personnes, et pour bÃ©nÃ©ficier des outils
+de modÃ©ration), il est recommandÃ© de crÃ©er <a href="{$platal->ns}lists/create">une liste de diffusion</a>.
 </p>
 <form action='{$platal->ns}alias/create' method='post'>
   <table class='large'>
     <tr>
-      <th colspan='2'>Caractéristiques de l'alias</th>
+      <th colspan='2'>CaractÃ©ristiques de l'alias</th>
     </tr>
     <tr>
-      <td><strong>Addresse&nbsp;souhaitée&nbsp;:</strong></td>
+      <td><strong>Addresse&nbsp;souhaitÃ©e&nbsp;:</strong></td>
       <td>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
       </td>
     </tr>
   </table>
   <p class="center">
-  <input name='submit' type='submit' value="Créer !" />
+  <input name='submit' type='submit' value="CrÃ©er !" />
   </p>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

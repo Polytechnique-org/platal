@@ -142,7 +142,7 @@ class AuthModule extends PLModule
             $gpex_url = "http://$gpex_url";
         $gpex_challenge = $_GET["challenge"];
 
-        // mise à jour de l'heure et de la machine de dernier login sauf quand on est en suid
+        // mise Ã  jour de l'heure et de la machine de dernier login sauf quand on est en suid
         if (!isset($_SESSION['suid'])) {
             $logger = (isset($_SESSION['log']) && $_SESSION['log']->uid == $uid)
                             ? $_SESSION['log'] : new CoreLogger($uid);
@@ -160,18 +160,19 @@ class AuthModule extends PLModule
             }
         }
 
-        /* si on n'a pas trouvé, on renvoit sur x.org */
+        /* si on n'a pas trouvÃ©, on renvoit sur x.org */
         http_redirect('https://www.polytechnique.org/');
     }
     function handler_admin_authgroupesx(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Auth groupes X');
-        $page->assign('title', 'Gestion de l\'authentification centralisée');
+        $page->assign('title', 'Gestion de l\'authentification centralisÃ©e');
         $table_editor = new PLTableEditor('admin/auth-groupes-x','groupesx_auth','id');
         $table_editor->describe('name','nom',true);
-        $table_editor->describe('privkey','clé privée',false);
-        $table_editor->describe('datafields','champs renvoyés',true);
+        $table_editor->describe('privkey','clÃ© privÃ©e',false);
+        $table_editor->describe('datafields','champs renvoyÃ©s',true);
         $table_editor->apply($page, $action, $id);
     }  
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

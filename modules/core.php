@@ -94,7 +94,7 @@ class CoreModule extends PLModule
     function handler_get_rights(&$page, $level)
     {
         if (S::has('suid')) {
-            $page->kill('Déjà en SUID');
+            $page->kill('DÃ©jÃ  en SUID');
         }
 
         if (isset($_SESSION['log'])) {
@@ -125,9 +125,10 @@ class CoreModule extends PLModule
             $mymail->setTxtBody($body);
             $mymail->send();
         } elseif (Env::has('send')) {
-            $page->trig("Merci de remplir une explication du problème rencontré");
+            $page->trig("Merci de remplir une explication du problÃ¨me rencontrÃ©");
         }
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

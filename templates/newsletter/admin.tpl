@@ -31,7 +31,7 @@
     <th>titre</th>
   </tr>
   <tr>
-    <td colspan='2'><a href='admin/newsletter/new'>Créer une nouvelle lettre</a></td>
+    <td colspan='2'><a href='admin/newsletter/new'>CrÃ©er une nouvelle lettre</a></td>
   </tr>
   {foreach item=nl from=$nl_list}
   <tr class="{cycle values="pair,impair"}">
@@ -44,4 +44,4 @@
 </table>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

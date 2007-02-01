@@ -29,14 +29,14 @@ function query ($sql) {
     }
 }
 
-// la table des notifs est nettoyée
+// la table des notifs est nettoyÃ©e
 $eight_days_ago = date("YmdHis",mktime() - 8*24*60*60);
 query("DELETE FROM watch_ops WHERE known<$eight_days_ago");
 
 query("DELETE FROM register_pending WHERE TO_DAYS(NOW()) - TO_DAYS(date) >= 365");
 query("delete from register_pending WHERE hash = 'INSCRIT'");
 
-// quelques tables sont triées pour que la lecture triée soit plus facile
+// quelques tables sont triÃ©es pour que la lecture triÃ©e soit plus facile
 query("alter table applis_def order by text");
 query("alter table binets_def order by text");
 query("alter table groupesx_def order by text");
@@ -44,4 +44,5 @@ query("alter table secteur order by text");
 query("alter table sections order by text");
 
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

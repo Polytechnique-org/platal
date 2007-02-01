@@ -23,19 +23,19 @@
 <h1>Skins {#globals.core.sitename#}</h1>
 
 <p>
-Tu n'aimes pas les couleurs ou l'apparence de {#globals.core.sitename#} ? Normal, les goûts et les
-couleurs, ça ne se discute pas. Certains préfèrent une page sérieuse, d'autres plus
+Tu n'aimes pas les couleurs ou l'apparence de {#globals.core.sitename#} ? Normal, les goÃ»ts et les
+couleurs, Ã§a ne se discute pas. Certains prÃ©fÃ¨rent une page sÃ©rieuse, d'autres plus
 fantaisiste. A toi de voir :)
 </p>
 <p>
-Note aux utilisateurs du navigateur Netscape 4.x ou équivalent.
-La fonctionalité "skins" n'est hélas pas compatible avec ces navigateurs
+Note aux utilisateurs du navigateur Netscape 4.x ou Ã©quivalent.
+La fonctionalitÃ© "skins" n'est hÃ©las pas compatible avec ces navigateurs
 qui ne respectent pas les standards du web. <br />
-Pour profiter de toutes les fonctionnalités de {#globals.core.sitename#},
-nous te conseillons de télécharger une version récente de ton navigateur.
+Pour profiter de toutes les fonctionnalitÃ©s de {#globals.core.sitename#},
+nous te conseillons de tÃ©lÃ©charger une version rÃ©cente de ton navigateur.
 </p>
 <p>
-Pour toute information complémentaire, n'hésite pas à écrire à
+Pour toute information complÃ©mentaire, n'hÃ©site pas Ã  Ã©crire Ã 
 <a href="mailto:support@{#globals.mail.domain#}?subject=navigateur">support@{#globals.mail.domain#}</a>
 </p>
 
@@ -48,12 +48,12 @@ Pour toute information complémentaire, n'hésite pas à écrire à
     </td>
     <td class="skimilieu">
       <strong>{$skin.name}</strong>
-      ajoutée le {$skin.date|date_format}<br />
+      ajoutÃ©e le {$skin.date|date_format}<br />
       {$skin.comment}
       <br /><br />
-      Créée par <strong>{$skin.auteur}</strong>
+      CrÃ©Ã©e par <strong>{$skin.auteur}</strong>
       <br /><br />
-      Utilisée par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
+      UtilisÃ©e par <strong>{$skin.nb}</strong> inscrit{if $skin.nb>1}s{/if}
     </td>
     <td class="skidroite">
       <img src="images/skins/{$skin.name}.{$skin.ext}" style="width:160px; height:160px;" alt=" [ CAPTURE D'ECRAN ] " />
@@ -62,4 +62,4 @@ Pour toute information complémentaire, n'hésite pas à écrire à
   {/iterate}
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

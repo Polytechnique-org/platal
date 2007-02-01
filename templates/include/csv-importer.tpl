@@ -71,18 +71,18 @@
         <li><a href="{$csv_path}" onclick="return gotoPage('source');">1 - Choisir<br />la source</a></li>
         {/if}
         {if $csv_page eq 'values'}
-        <li class="actif">2 - DÈfinir<br />les valeurs</li>
+        <li class="actif">2 - D√©finir<br />les valeurs</li>
         {elseif $csv}
-        <li><a href="{$csv_path}" onclick="return gotoPage('values');">2 - DÈfinir<br />les valeurs</a></li>
+        <li><a href="{$csv_path}" onclick="return gotoPage('values');">2 - D√©finir<br />les valeurs</a></li>
         {else}
-        <li>2 - DÈfinir<br />les valeurs</li>
+        <li>2 - D√©finir<br />les valeurs</li>
         {/if}
         {if $csv_page eq 'valid'}
-        <li class="actif">3 - VÈrifier<br />et valider</li>
+        <li class="actif">3 - V√©rifier<br />et valider</li>
         {elseif $csv_action}
-        <li><a href="{$csv_path}" onclick="return gotoPage('valid');">3 - VÈrifier<br />et valider</a></li>
+        <li><a href="{$csv_path}" onclick="return gotoPage('valid');">3 - V√©rifier<br />et valider</a></li>
         {else}
-        <li>3 - VÈrifier<br />et valider</li>
+        <li>3 - V√©rifier<br />et valider</li>
         {/if}
       </ul>
     </td>
@@ -94,26 +94,26 @@
           <td>
     {if $csv_page eq 'source'}
       <textarea name="csv_source" rows="20" cols="80">{$csv|default:$smarty.request.csv_source}</textarea><br />
-      Entrez les donnÈes sous la forme suivante (avec
+      Entrez les donn√©es sous la forme suivante (avec
       <input type="text" name="csv_separator" value="{$smarty.request.csv_separator|default:";"}" maxlength="1" size="1" />
-      comme sÈparateur) :<br/>
+      comme s√©parateur) :<br/>
       <pre class="center">TITRE1{$smarty.request.csv_separator|default:";"}TITRE2{$smarty.request.csv_separator|default:";"}...
 val1_1{$smarty.request.csv_separator|default:";"}val1_2{$smarty.request.csv_separator|default:";"}...
 val2_1{$smarty.request.csv_separator|default:";"}val2_2{$smarty.request.csv_separator|default:";"}...
 val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_separator|default:";"}...</pre>
     {elseif $csv_page eq 'values'}
   <div class="center">
-    Action ‡ effectuer si l'entrÈe existe : 
+    Action √† effectuer si l'entr√©e existe : 
     <select name="csv_action" onchange="this.form.submit()">
       <option value="insert" {if $smarty.request.csv_action eq 'insert'}selected="selected"{/if}>
         ne rien faire
       </option>
       <option value="replace" {if $smarty.request.csv_action eq 'replace'}selected="selected"{/if}>
-        remplacer par la nouvelle entrÈe
+        remplacer par la nouvelle entr√©e
       </option>
       {if $csv_key}
       <option value="update" {if $smarty.request.csv_action eq 'update'}selected="selected"{/if}>
-        mettre ‡ jour les champs sÈlectionnÈs
+        mettre √† jour les champs s√©lectionn√©s
       </option>
       {/if}
     </select>
@@ -123,7 +123,7 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
       <th>Champ</th>
       <th colspan="2">Valeur</th>
       {if $smarty.request.csv_action eq 'update'}
-      <th>M‡J</th>
+      <th>M√†J</th>
     {/if}
     </tr>
     {foreach from=$csv_fields item=f}
@@ -169,10 +169,10 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
           </select>
           <select name="csv_cond[{$f}]" onchange="showCond('{$f}', this)">
             <option value="defined" {if $smarty.request.csv_cond[$f] eq "defined"}selected="selected"{/if}>
-              dÈfini
+              d√©fini
             </option>
             <option value="equals" {if $smarty.request.csv_cond[$f] eq "equals"}selected="selected"{/if}>
-              est Ègale ‡
+              est √©gale √†
             </option>
             <option value="contains" {if $smarty.request.csv_cond[$f] eq "contains"}selected="selected"{/if}>
               contient
@@ -181,16 +181,16 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
               est contenu dans
             </option>
             <option value="greater" {if $smarty.request.csv_cond[$f] eq "greater"}selected="selected"{/if}>
-              supÈrieur ‡
+              sup√©rieur √†
             </option>
             <option value="greater_or_equal" {if $smarty.request.csv_cond[$f] eq "greater_or_equal"}selected="selected"{/if}>
-              supÈrieur ou Ègal ‡
+              sup√©rieur ou √©gal √†
             </option>
             <option value="lower" {if $smarty.request.csv_cond[$f] eq "lower"}selected="selected"{/if}>
-              infÈrieur ‡
+              inf√©rieur √†
             </option>
             <option value="lower_or_equal" {if $smarty.request.csv_cond[$f] eq "lower_or_equal"}selected="selected"{/if}>
-              infÈrieur ou Ègal ‡
+              inf√©rieur ou √©gal √†
             </option>
           </select>
           <span id="csv_cond_value[{$f}]" {if $smarty.request.csv_cond[$f] eq "defined" || !$smarty.request.csv_cond[$f]}style="display: none"{/if}>
@@ -225,7 +225,7 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
     {/foreach}
   </table>
   {else}
-  Les donnÈes ont ÈtÈ ajoutÈes.
+  Les donn√©es ont √©t√© ajout√©es.
   {/if}
   {/if}
     </td>
@@ -256,7 +256,7 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
     {if $csv_page eq 'source'}
     <input type="submit" name="csv_valid" value="Changer le CSV" />
     {elseif $csv_page eq 'values'}
-    <input type="submit" name="csv_valid" value="AperÁu" />
+    <input type="submit" name="csv_valid" value="Aper√ßu" />
     {elseif $csv_page eq 'valid'}
     <input type="submit" name="csv_valid" value="Valider" />
     {/if}
@@ -269,4 +269,4 @@ val3_1{$smarty.request.csv_separator|default:";"}val3_2{$smarty.request.csv_sepa
 </table>
 </form>
 
-{* vim:set et sws=2 sts=2 sw=2: *}
+{* vim:set et sws=2 sts=2 sw=2 enc=utf-8: *}

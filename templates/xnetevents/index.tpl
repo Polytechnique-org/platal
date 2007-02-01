@@ -21,21 +21,21 @@
 {**************************************************************************}
 
 {if !$is_admin}
-<h1>{$asso.nom} : EvÈnements</h1>
+<h1>{$asso.nom} : Ev√©nements</h1>
 {else}
 <h1>
   {$asso.nom} : 
-  {if $archive}[<a href="{$platal->ns}events">EvÈnements</a>] {else}EvÈnements {/if}
+  {if $archive}[<a href="{$platal->ns}events">Ev√©nements</a>] {else}Ev√©nements {/if}
   {if $archive}Archives {else}[<a href="{$platal->ns}events/archive">Archives</a>] {/if}
 </h1>
 
 {if $updated}
 <p class='error'>
-  La modification de l'inscription a ÈtÈ prise en compte !
+  La modification de l'inscription a √©t√© prise en compte !
   {if $updated.topay > $updated.paid}
     <br/>N'oublie pas de payer {math equation="a-b" a=$updated.topay b=$updated.paid}&nbsp;&euro;
     {if $updated.paid > 0}
-    (tu as dÈj‡ payÈ {$updated.paid|replace:'.':','}&nbsp;&euro;)
+    (tu as d√©j√† pay√© {$updated.paid|replace:'.':','}&nbsp;&euro;)
     {/if}
     {if $updated.paiement_id}
     [<a href="{$platal->ns}payment/{$updated.paiement_id}?montant={math equation="a-b" a=$updated.topay b=$updated.paid}">
@@ -47,7 +47,7 @@
 
 {if !$archive}
 <p class="center">
-  [<a href="{$platal->ns}events/edit">Annoncer un nouvel ÈvÈnement</a>]
+  [<a href="{$platal->ns}events/edit">Annoncer un nouvel √©v√©nement</a>]
 </p>
 {/if}
 {/if}
@@ -61,7 +61,7 @@
   <tr>
     <th colspan="2"{if !$e.inscr_open} class="grayed"{/if}>
       <a href="{$platal->ns}events/ical/{$e.short_name|default:$e.eid}/{$e.short_name|default:$e.eid}.ics" style="display: block; float: left;">
-        {icon name=calendar_view_day title="EvÈnement iCal"}
+        {icon name=calendar_view_day title="Ev√©nement iCal"}
       </a>
       {$e.intitule}
       {if !$e.inscr_open}
@@ -71,19 +71,19 @@
       <br />
       [<a href="{$platal->ns}events/edit/{$e.short_name|default:$e.eid}">
         modifier
-        {icon name=date_edit title="Edition de l'ÈvÈnement"}</a>]
+        {icon name=date_edit title="Edition de l'√©v√©nement"}</a>]
       &nbsp;
       [<a href="javascript:dynpostkv('{$platal->pl_self()}', {if !$archive}'archive'{else}'unarchive'{/if}, {$e.eid})">
         {if !$archive}
           archiver
           {icon name=package_add title="Archivage"}</a>]
         {else}
-          dÈsarchiver
-          {icon name=package_delete title="DÈsarchivage"}</a>]
+          d√©sarchiver
+          {icon name=package_delete title="D√©sarchivage"}</a>]
         {/if}
       &nbsp;
       [<a href="javascript:dynpostkv('{$platal->ns}events', 'del', {$e.eid})"
-        onclick="return confirm('Supprimer l\'ÈvÈnement effacera la liste des inscrits et des paiements.\n Es-tu s˚r de vouloir supprimer l\'ÈvÈnement ?')">
+        onclick="return confirm('Supprimer l\'√©v√©nement effacera la liste des inscrits et des paiements.\n Es-tu s√ªr de vouloir supprimer l\'√©v√©nement ?')">
         supprimer
       {icon name=delete title='Suppression'}</a>]
       {/if}
@@ -95,13 +95,13 @@
     <td>
       {if $e.fin and $e.fin neq $e.debut}
         {if $e.debut_day eq $e.fin_day}
-          le {$e.debut|date_format:"%d %B %Y"} de {$e.debut|date_format:"%H:%M"} ‡ {$e.fin|date_format:"%H:%M"}
+          le {$e.debut|date_format:"%d %B %Y"} de {$e.debut|date_format:"%H:%M"} √† {$e.fin|date_format:"%H:%M"}
         {else}
-          du {$e.debut|date_format:"%d %B %Y ‡ %H:%M"}<br />
-          au {$e.fin|date_format:"%d %B %Y ‡ %H:%M"}
+          du {$e.debut|date_format:"%d %B %Y √† %H:%M"}<br />
+          au {$e.fin|date_format:"%d %B %Y √† %H:%M"}
         {/if}
       {else}
-        le {$e.debut|date_format:"%d %B %Y ‡ %H:%M"}
+        le {$e.debut|date_format:"%d %B %Y √† %H:%M"}
       {/if}
     </td>
   </tr>
@@ -124,7 +124,7 @@
       </a><br />
       {/if}
       {if $e.deadline_inscription && $e.inscr_open}
-        derniËres inscriptions
+        derni√®res inscriptions
         le {$e.deadline_inscription|date_format:"%d %B %Y"}
       {/if}
     </td>
@@ -133,7 +133,7 @@
 
   <tr>
     <td class="titre">
-      …tat inscription
+      √âtat inscription
       {if $e.inscr_open}
         <input type="hidden" name="evt_{counter}" value="{$e.eid}" />
       {/if}
@@ -149,7 +149,7 @@
         Tu viendras seul
         {else}
         Tu viendras avec {$m.nb-1} personne{if $m.nb > 2}s{/if}
-        {/if} ‡ <em>{$m.titre}</em><br />
+        {/if} √† <em>{$m.titre}</em><br />
         {/foreach}
       {/if}
 
@@ -159,9 +159,9 @@
         Tu dois payer {$e.topay|replace:'.':','}&nbsp;&euro;.
         {elseif $e.paid < $e.topay}
         Tu dois encore payer {math equation="a-b" a=$e.topay b=$e.paid|replace:'.':','}&nbsp;&euro;
-        (tu as dÈj‡ payÈ {$e.paid|replace:'.':','}&nbsp;&euro;)
+        (tu as d√©j√† pay√© {$e.paid|replace:'.':','}&nbsp;&euro;)
         {else}
-        Tu as dÈj‡ payÈ les {$e.paid|replace:'.':','}&nbsp;&euro; de ton inscription.
+        Tu as d√©j√† pay√© les {$e.paid|replace:'.':','}&nbsp;&euro; de ton inscription.
         {/if}
         {if $e.paiement_id &&  $e.paid < $e.topay}
         [<a href="{$platal->ns}payment/{$e.paiement_id}?montant={math equation="a-b" a=$e.topay b=$e.paid}">
@@ -177,7 +177,7 @@
     <td colspan='2' class='center'>
       <strong>
       <a href='{$platal->ns}events/sub/{$e.short_name|default:$e.eid}'>
-        gÈrer mon inscription
+        g√©rer mon inscription
       </a>
       </strong>
     </td>
@@ -193,9 +193,9 @@
 
 <p class="descr">
 {if $archive}
-  Aucun ÈvÈnement n'a ÈtÈ archivÈ par les animateurs du groupe.
+  Aucun √©v√©nement n'a √©t√© archiv√© par les animateurs du groupe.
 {else}
-  Aucun ÈvÈnement n'a ÈtÈ rÈfÈrencÈ par les animateurs du groupe.
+  Aucun √©v√©nement n'a √©t√© r√©f√©renc√© par les animateurs du groupe.
 {/if}
 </p>
 
@@ -203,9 +203,9 @@
 
 {if $evenements}
 <p class="descr">
-  En cliquant sur l'icÙne {icon name=calendar_view_day title="EvÈnement iCal"} associÈe ‡ un ÈvÈnement
-  tu peux tÈlÈcharger la version iCal de l'ÈvÈnement qui permet de l'ajouter dans ton agenda Èlectronique
+  En cliquant sur l'ic√¥ne {icon name=calendar_view_day title="Ev√©nement iCal"} associ√©e √† un √©v√©nement
+  tu peux t√©l√©charger la version iCal de l'√©v√©nement qui permet de l'ajouter dans ton agenda √©lectronique
 </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -51,7 +51,7 @@ class XorgSession
     public static function doAuth($new_name = false)
     {
         global $globals;
-        if (S::identified()) { // ok, c'est bon, on n'a rien ‡ faire
+        if (S::identified()) { // ok, c'est bon, on n'a rien √† faire
             return true;
         }
 
@@ -99,7 +99,7 @@ class XorgSession
         if (list($uid, $password) = $res->fetchOneRow()) {
             require_once('secure_hash.inc.php');
             $expected_response = hash_encrypt("$uname:$password:".S::v('challenge'));
-            // le password de la base est peut-Ítre encore encodÈ en md5
+            // le password de la base est peut-√™tre encore encod√© en md5
             if (Env::v('response') != $expected_response) {
                 $new_password = hash_xor(Env::v('xorpass'), $password);
                 $expected_response = hash_encrypt("$uname:$new_password:".S::v('challenge'));
@@ -179,7 +179,7 @@ class XorgSession
 
 // {{{ function try_cookie()
 
-/** rÈalise la rÈcupÈration de $_SESSION pour qqn avec cookie
+/** r√©alise la r√©cup√©ration de $_SESSION pour qqn avec cookie
  * @return  int     0 if all OK, -1 if no cookie, 1 if cookie with bad hash,
  *                  -2 should not happen
  */
@@ -214,8 +214,8 @@ function try_cookie()
 // }}}
 // {{{ function start_connexion()
 
-/** place les variables de session dÈpendants de auth_user_md5
- * et met ‡ jour les dates de derniËre connexion si nÈcessaire
+/** place les variables de session d√©pendants de auth_user_md5
+ * et met √† jour les dates de derni√®re connexion si n√©cessaire
  * @return void
  * @see controlpermanent.inc.php controlauthentication.inc.php
  */
@@ -255,7 +255,7 @@ function start_connexion ($uid, $identified)
         if (check_ip('ban')) {
             $_SESSION = array();
             global $page;
-            $page->trig("Une erreur est survenue lors de la procÈdure d'authentification. "
+            $page->trig("Une erreur est survenue lors de la proc√©dure d'authentification. "
                        ."Merci de contacter au plus vite "
                        ."<a href='mailto:support@polytechnique.org'>support@polytechnique.org</a>");
             return false;
@@ -283,5 +283,5 @@ function set_skin()
     }
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

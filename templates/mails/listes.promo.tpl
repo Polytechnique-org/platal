@@ -24,8 +24,8 @@
 {if !$html_version}
 {from full=#from#}
 {to addr=#to#}
-{subject text="Création de la liste promo $promo"}
+{subject text="CrÃ©ation de la liste promo $promo"}
 
-Création de la liste promo {$promo} à faire !
+CrÃ©ation de la liste promo {$promo} Ã  faire !
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

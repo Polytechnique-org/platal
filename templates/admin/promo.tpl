@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Mise à jour de l'annuaire</h1>
+<h1>Mise Ã  jour de l'annuaire</h1>
 
 <form action="{$platal->pl_self()}" method="post">
 <table class="tinybicol">
@@ -29,7 +29,7 @@
       <strong>Promotion :</strong>
       <input type="text" size="4" name="promo" value="{$promo}" /><br />
       <input type="submit" name="valid_promo" value="Ajouter des membres" />
-      <input type="submit" name="valid_promo" value="Mettre à jour les matricules AX" />
+      <input type="submit" name="valid_promo" value="Mettre Ã  jour les matricules AX" />
     <td>
   </tr>
 </table>
@@ -39,4 +39,4 @@
 {include file="include/csv-importer.tpl"}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

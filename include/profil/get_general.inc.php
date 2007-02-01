@@ -19,7 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-// on ramène les données du profil connecté (uid paramètre de session)
+// on ramÃ¨ne les donnÃ©es du profil connectÃ© (uid paramÃ¨tre de session)
 $sql = "SELECT  u.nom, u.prenom, u.nom_ini, u.prenom_ini, u.promo, u.promo_sortie, u.nom_usage, u.nationalite,
 		q.profile_mobile, q.profile_mobile_pub, q.profile_web, q.profile_web_pub, q.profile_freetext, q.profile_freetext_pub, q.profile_nick,
                 q.profile_from_ax, u.matricule_ax,
@@ -77,5 +77,5 @@ require_once("xorg.misc.inc.php");
 $sql = XDB::query("SELECT COUNT(*) FROM requests WHERE type='photo' AND user_id = {?}", S::v('uid', -1));
 $nouvellephoto=$sql->fetchOneCell();
 
-// vim:set et sws=4 sw=4 sts=4:
+// vim:set et sws=4 sw=4 sts=4 enc=utf-8:
 ?>

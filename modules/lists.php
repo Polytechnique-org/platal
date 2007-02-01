@@ -188,7 +188,7 @@ class ListsModule extends PLModule
         $liste = Post::v('liste');
 
         if (empty($liste)) {
-            $page->trig('champs «addresse souhaitée» vide');
+            $page->trig('champs Â«addresse souhaitÃ©eÂ» vide');
         }
         if (!preg_match("/^[a-zA-Z0-9\-]*$/", $liste)) {
             $page->trig('le nom de la liste ne doit contenir que des lettres, chiffres et tirets');
@@ -198,7 +198,7 @@ class ListsModule extends PLModule
         $n   = $res->fetchOneCell();
 
         if ($n) {
-            $page->trig('cet alias est déjà pris');
+            $page->trig('cet alias est dÃ©jÃ  pris');
         }
 
         if (!Post::v(desc)) {
@@ -267,7 +267,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('owners',  $moderos);
             $page->assign('nb_m',  count($mem));
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les dÃ©tails");
         }
     }
 
@@ -323,7 +323,7 @@ class ListsModule extends PLModule
             $trombi = new Trombi(array(&$this, '_get_list'));
             $page->assign('trombi', $trombi);
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les détails");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit d'en voir les dÃ©tails");
         }
     }
 
@@ -394,27 +394,27 @@ class ListsModule extends PLModule
 
         if (Env::has('mok')) {
             $action  = 1; /** 2 = ACCEPT **/
-            $subject = "Message accepté";
-            $append .= "a été accepté par $prenom $nom.\n";
+            $subject = "Message acceptÃ©";
+            $append .= "a Ã©tÃ© acceptÃ© par $prenom $nom.\n";
         } elseif (Env::has('mno')) {
             $action  = 2; /** 2 = REJECT **/
-            $subject = "Message refusé";
+            $subject = "Message refusÃ©";
             $reason  = Post::v('reason');
-            $append  = "a été refusé par $prenom $nom avec la raison :\n\n"
+            $append  = "a Ã©tÃ© refusÃ© par $prenom $nom avec la raison :\n\n"
                         .  $reason;
         } elseif (Env::has('mdel')) {
             $action  = 3; /** 3 = DISCARD **/
-            $subject = "Message supprimé";
-            $append  = "a été supprimé par $prenom $nom.\n\n"
-                        .  "Rappel: il ne faut utiliser cette opération "
+            $subject = "Message supprimÃ©";
+            $append  = "a Ã©tÃ© supprimÃ© par $prenom $nom.\n\n"
+                        .  "Rappel: il ne faut utiliser cette opÃ©ration "
                         .  "que dans le cas de spams ou de virus !\n";
         }
 
         if (isset($action) && $this->client->handle_request($liste, $mid, $action, $reason)) {
             $texte = "le message suivant :\n\n"
                         ."    Auteur: {$mail['sender']}\n"
-                        ."    Sujet : « {$mail['subj']} »\n"
-                        ."    Date  : ".strftime("le %d %b %Y à %H:%M:%S", (int)$mail['stamp'])."\n\n"
+                        ."    Sujet : Â« {$mail['subj']} Â»\n"
+                        ."    Date  : ".strftime("le %d %b %Y Ã  %H:%M:%S", (int)$mail['stamp'])."\n\n"
                         .$append;
             $mailer = new PlMailer();
             $mailer->addTo("$liste-owner@{$domain}");
@@ -497,7 +497,7 @@ class ListsModule extends PLModule
             $page->assign_by_ref('subs', $subs);
             $page->assign_by_ref('mails', $mails);
         } else {
-            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modérer");
+            $page->kill("La liste n'existe pas ou tu n'as pas le droit de la modÃ©rer");
         }
     }
 
@@ -540,7 +540,7 @@ class ListsModule extends PLModule
             if ($owners) {
                 foreach ($owners as $login) {
                     if ($this->client->add_owner($liste, $login)) {
-                        $page->trig($alias." ajouté aux modérateurs.");
+                        $page->trig($alias." ajoutÃ© aux modÃ©rateurs.");
                     }
                 }
             }
@@ -651,7 +651,7 @@ class ListsModule extends PLModule
                 $page->assign('deleted', true);
             } else {
                 $page->kill('Une erreur est survenue lors de la suppression de la liste.<br />'
-                         . 'Contact les administrateurs du site pour régler le problème : '
+                         . 'Contact les administrateurs du site pour rÃ©gler le problÃ¨me : '
                          . '<a href="mailto:support@polytechnique.org">support@polytechnique.org</a>');
             }
         } elseif (list($details,$options) = $this->client->get_owner_options($liste)) {
@@ -721,4 +721,5 @@ class ListsModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

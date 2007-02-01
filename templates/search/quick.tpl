@@ -26,26 +26,26 @@
 <h2>Nom, Prenom, Promo ...</h2>
 
 <p>
-La ligne de recherche ci-dessus accepte non seulement des mélanges de <strong>noms</strong> et de <strong>prénoms</strong> ...
+La ligne de recherche ci-dessus accepte non seulement des mÃ©langes de <strong>noms</strong> et de <strong>prÃ©noms</strong> ...
 mais elle accepte de plus la syntaxe suivante pour les <strong>promos</strong> :
 </p>
 <ul>
-  <li><code>1990</code> : signifie appartient à la promo 1990</li>
-  <li><code>1990-2000</code> : signifie sur la promo 1990 à 2000</li>
-  <li><code>&lt;1990</code> : signifie promos inférieures ou égales à 1990</li>
-  <li><code>&gt;1990</code> : signifie promos supérieures ou égales à 1990</li>
+  <li><code>1990</code> : signifie appartient Ã  la promo 1990</li>
+  <li><code>1990-2000</code> : signifie sur la promo 1990 Ã  2000</li>
+  <li><code>&lt;1990</code> : signifie promos infÃ©rieures ou Ã©gales Ã  1990</li>
+  <li><code>&gt;1990</code> : signifie promos supÃ©rieures ou Ã©gales Ã  1990</li>
 </ul>
 <p>
-Ainsi, rechercher tous les "Dupont" sur les promos 1980 à 1990 et sur la promo 2000 se fait avec la recherche :
+Ainsi, rechercher tous les "Dupont" sur les promos 1980 Ã  1990 et sur la promo 2000 se fait avec la recherche :
 <code>Dupont 1980-1990 2000</code>
 </p>
 
 <h2>Astuce pour les noms ...</h2>
 <p>
-Parfois on ne sait plus si le nom qu'on recherche s'écrit « Lenormand », « Le Normand » ou « Le-Normand » ...
+Parfois on ne sait plus si le nom qu'on recherche s'Ã©crit Â« Lenormand Â», Â« Le Normand Â» ou Â« Le-Normand Â» ...
 </p>
 <p>
-Pour éviter ce genre d'écueils, il suffit de chercher : <code>Le Normand</code><br />
+Pour Ã©viter ce genre d'Ã©cueils, il suffit de chercher : <code>Le Normand</code><br />
 En effet, le moteur de recherche va alors chercher tous les utilisateurs dont le nom contient 'Le' <strong>et</strong> 'Normand'
 sans distinction de casse et sans tenir compte des accents.
 </p>
@@ -56,9 +56,9 @@ sans distinction de casse et sans tenir compte des accents.
 </p>
 {/if}
 
-<h2>Polytechniciens des promotions 1919 et précédentes</h2>
-<p>Notre base de données ne contient que les polytechniciens depuis la promotion 1920. Pour effectuer des recherches dans les
-promotions précédentes, il faut utiliser l'<a href="http://biblio.polytechnique.fr/F/">annuaire en ligne de la bibliothèque de
-l'École</a>.</p>
+<h2>Polytechniciens des promotions 1919 et prÃ©cÃ©dentes</h2>
+<p>Notre base de donnÃ©es ne contient que les polytechniciens depuis la promotion 1920. Pour effectuer des recherches dans les
+promotions prÃ©cÃ©dentes, il faut utiliser l'<a href="http://biblio.polytechnique.fr/F/">annuaire en ligne de la bibliothÃ¨que de
+l'Ã‰cole</a>.</p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

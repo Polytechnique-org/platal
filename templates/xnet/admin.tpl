@@ -37,7 +37,7 @@
 <form action="admin" method="post">
   <p class="descr">
   Pour ajouter un groupe, choisir ici le diminutif qu'il va utiliser,
-  tu seras ensuite redirigé vers une page te permettant d'éditer le groupe :
+  tu seras ensuite redirigÃ© vers une page te permettant d'Ã©diter le groupe :
   </p>
   <div class="center">
     <input type="text" name="diminutif" value="{$smarty.request.diminutif}" />
@@ -59,4 +59,4 @@
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

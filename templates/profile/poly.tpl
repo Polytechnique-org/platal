@@ -25,8 +25,8 @@
 <script type="text/javascript">//<![CDATA[
   /** defgroup user_profile Gestion du profil utilisateur */
 
-  /** ajout d'un binet au profil de l'utilisateur en base de données
-  * le binet est déterminé par binet_id qui est sélectionné dans un SELECT
+  /** ajout d'un binet au profil de l'utilisateur en base de donnÃ©es
+  * le binet est dÃ©terminÃ© par binet_id qui est sÃ©lectionnÃ© dans un SELECT
   * @ingroup user_profile
   * @return VOID
   */
@@ -40,7 +40,7 @@
 
 
 
-  /** suppression d'un binet du profil de l'utilisateur en base de données
+  /** suppression d'un binet du profil de l'utilisateur en base de donnÃ©es
   * @ingroup user_profile
   * @param id INT id du binet
   * @return VOID
@@ -54,8 +54,8 @@
 
 
 
-  /** ajout d'un groupeX au profil de l'utilisateur en base de données
-  * le groupeX est déterminé par groupex_id qui est sélectionné dans un SELECT
+  /** ajout d'un groupeX au profil de l'utilisateur en base de donnÃ©es
+  * le groupeX est dÃ©terminÃ© par groupex_id qui est sÃ©lectionnÃ© dans un SELECT
   * @ingroup user_profile
   * @return VOID
   */
@@ -67,7 +67,7 @@
     document.forms.prof_annu.submit();
   } // END function groupex_add()
 
-  /** suppression d'un groupeX du profil de l'utilisateur en base de données
+  /** suppression d'un groupeX du profil de l'utilisateur en base de donnÃ©es
   * @ingroup user_profile
   * @param id INT id du groupeX
   * @return VOID
@@ -102,7 +102,7 @@
               <input type="checkbox" name="accesX" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privé
+              privÃ©
             </td>
           </tr>
         </table>
@@ -186,4 +186,4 @@
   </table>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

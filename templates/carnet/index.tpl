@@ -42,7 +42,7 @@
         <a href="carnet/contacts/trombi">Le trombi de tes contacts</a>
       </h3>
       <div class="explication">
-        La même chose que la page de tes contacts... <strong>en images !</strong>
+        La mÃªme chose que la page de tes contacts... <strong>en images !</strong>
       </div>
     </td>
   </tr>
@@ -68,10 +68,10 @@
   <tr class="pair">
     <td class='half'>
       <h3>
-        <a href="carnet/panel">Tous les évenements de la semaine</a>
+        <a href="carnet/panel">Tous les Ã©venements de la semaine</a>
       </h3>
       <div class="explication">
-        Affichage de tous les évenements de camarades/promos
+        Affichage de tous les Ã©venements de camarades/promos
       </div>
     </td>
     <td class='half'>
@@ -79,10 +79,10 @@
         <a href="carnet/notifs">Configurer tes notifications</a>
       </h3>
       <div class="explication">
-        Être notifié des inscriptions, décès, changement de fiche, ...
+        ÃŠtre notifiÃ© des inscriptions, dÃ©cÃ¨s, changement de fiche, ...
       </div>
     </td>
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

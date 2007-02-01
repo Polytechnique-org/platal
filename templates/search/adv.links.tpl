@@ -24,8 +24,8 @@
 
 <ul class="noprint">
   {if $with_soundex && ($smarty.request.firstname || $smarty.request.name)}
-  <li>Étendre ta recherche par <strong>
-    <a  href="{$with_soundex}">proximité sonore</a>
+  <li>Ã‰tendre ta recherche par <strong>
+    <a  href="{$with_soundex}">proximitÃ© sonore</a>
   </strong>
   </li>
   {/if}
@@ -35,7 +35,7 @@
   </li>
 
   <li>Effectuer une nouvelle <strong>
-    <a href="search/adv">recherche avancée</a>
+    <a href="search/adv">recherche avancÃ©e</a>
   </strong>
   </li>
   
@@ -45,4 +45,4 @@
   </li>
 </ul>
   
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

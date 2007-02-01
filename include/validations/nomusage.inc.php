@@ -38,7 +38,7 @@ class UsageReq extends Validate
     
     var $rules = "Refuser 
     tout ce qui n'est visiblement pas un nom de famille (ce qui est 
-    extremement rare car à peu près n'importe quoi peut être un nom de 
+    extremement rare car Ã  peu prÃ¨s n'importe quoi peut Ãªtre un nom de 
     famille...)";
 
     // }}}
@@ -82,16 +82,16 @@ class UsageReq extends Validate
     {
         global $globals;
         if ($isok) {
-            $res = "  La demande de changement de nom d'usage que tu as demandée vient d'être effectuée.";
+            $res = "  La demande de changement de nom d'usage que tu as demandÃ©e vient d'Ãªtre effectuÃ©e.";
             if ($this->oldalias) {
-                $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont été supprimés.";
+                $res .= "\n\n  Les alias {$this->oldalias}@{$globals->mail->domain} et @{$globals->mail->domain2} ont Ã©tÃ© supprimÃ©s.";
             }
             if ($nom_usage) {
-                $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant à ta disposition !";
+                $res .= "\n\n  Les alias {$this->alias}@{$globals->mail->domain} et @{$globals->mail->domain2} sont maintenant Ã  ta disposition !";
             }
             return $res;
         } else {
-            return "  La demande de changement de nom d'usage que tu avais faite a été refusée.";
+            return "  La demande de changement de nom d'usage que tu avais faite a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -109,5 +109,5 @@ class UsageReq extends Validate
 }
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -39,9 +39,9 @@
 {else}
 
 {if $smarty.session.auth == AUTH_MDP}
-<div class="menu_item"><a href="exit">Déconnexion</a></div>
+<div class="menu_item"><a href="exit">DÃ©connexion</a></div>
 {elseif $smarty.cookies.ORGaccess}
-<div class="menu_item"><a href="exit/forget">Déconnexion totale</a></div>
+<div class="menu_item"><a href="exit/forget">DÃ©connexion totale</a></div>
 {/if}
 
 <div class="menu_title">Personnaliser</div>
@@ -50,21 +50,21 @@
 <div class="menu_item"><a href="carnet/contacts">Mes contacts</a></div>
 <div class="menu_item"><a href="carnet">Mon carnet</a></div>
 <div class="menu_item"><a href="password">Mon mot de passe</a></div>
-<div class="menu_item"><a href="prefs">Mes préférences</a></div>
+<div class="menu_item"><a href="prefs">Mes prÃ©fÃ©rences</a></div>
 
 <div class="menu_title">Services</div>
 <div class="menu_item"><a href="emails/send">Envoyer un mail</a></div>
 <div class="menu_item"><a href="banana/">Forums &amp; PA</a></div>
 <div class="menu_item"><a href="lists">Listes de diffusion</a></div>
-<div class="menu_item"><a href="payment">Télépaiements</a></div>
+<div class="menu_item"><a href="payment">TÃ©lÃ©paiements</a></div>
 <div class="menu_item"><a href="emails/antispam/submit">Soumettre un spam</a></div>
-<div class="menu_item"><a href="emails/broken">Patte cassée</a></div>
+<div class="menu_item"><a href="emails/broken">Patte cassÃ©e</a></div>
 
-<div class="menu_title">Communauté X</div>
+<div class="menu_title">CommunautÃ© X</div>
 <div class="menu_item"><a href="search">Annuaire</a></div>
-<div class="menu_item"><a href="geoloc">Planisphère</a></div>
+<div class="menu_item"><a href="geoloc">PlanisphÃ¨re</a></div>
 <div class="menu_item"><a href="referent/search">Conseil Pro.</a></div>
-<div class="menu_item"><a href="Docs/Emploi">Carrières</a></div>
+<div class="menu_item"><a href="Docs/Emploi">CarriÃ¨res</a></div>
 <div class="menu_item"><a href="groupes-x">Mes groupes X</a></div>
 
 <div class="menu_title">Informations</div>
@@ -93,4 +93,4 @@
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

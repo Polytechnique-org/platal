@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Gestion des télépaiements </h1>
+<h1>{$asso.nom} : Gestion des tÃ©lÃ©paiements </h1>
 
 <p class="descr">
 Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
@@ -29,48 +29,48 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 {foreach from=$titres item=p}
 
 <fieldset>
-<legend><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="Télépaiement"}{$p.text}</a></legend>
+<legend><a href="{$platal->ns}payment/{$p.id}">{icon name=money title="TÃ©lÃ©paiement"}{$p.text}</a></legend>
 
 {if $event[$p.id]}
 {assign var='ev' value=$event[$p.id]}
 <p>
   {if $p.url}
-  Plus d'informations sur ce télépaiement sont disponibles sur <a href="{$p.url}">cette page</a>.<br />
+  Plus d'informations sur ce tÃ©lÃ©paiement sont disponibles sur <a href="{$p.url}">cette page</a>.<br />
   {/if}
   {if $ev.eid}
-  Ce paiement est associé à l'événement <a href="{$platal->ns}events">{$ev.title}</a>.<br />
+  Ce paiement est associÃ© Ã  l'Ã©vÃ©nement <a href="{$platal->ns}events">{$ev.title}</a>.<br />
     {if $ev.ins}
-    Tu es inscrit à cet événements.
+    Tu es inscrit Ã  cet Ã©vÃ©nements.
       {if $ev.topay > $ev.paid}
       <a href="{$platal->ns}payment/{$p.id}?montant={math equation="a-b" a=$ev.topay b=$ev.paid}">
         Tu dois encore payer {math equation="a-b" a=$ev.topay b=$ev.paid}&euro;
       </a>
       {elseif $ev.topay eq $ev.paid}
-      Tu as déjà réglé l'intégralité de ton inscription ({$ev.topay}&euro;).
+      Tu as dÃ©jÃ  rÃ©glÃ© l'intÃ©gralitÃ© de ton inscription ({$ev.topay}&euro;).
       {else}
-      Tu as réglé {$ev.paid}&euro; alors que tu n'en devais que {$ev.topay}&euro;
+      Tu as rÃ©glÃ© {$ev.paid}&euro; alors que tu n'en devais que {$ev.topay}&euro;
       {/if}
     {else}
-    <a href="{$platal->ns}events/sub/{$ev.eid}">Tu peux t'inscire à cet événement.</a>
+    <a href="{$platal->ns}events/sub/{$ev.eid}">Tu peux t'inscire Ã  cet Ã©vÃ©nement.</a>
     {/if}
   {else}
     {if !$ev.paid}
-    Tu n'as actuellement rien payé sur ce télépaiement.
+    Tu n'as actuellement rien payÃ© sur ce tÃ©lÃ©paiement.
     {else}
-    Tu as déjà payé {$ev.paid}&euro;.
+    Tu as dÃ©jÃ  payÃ© {$ev.paid}&euro;.
     {/if}
   {/if}
 </p>
 {/if}
 
 {if $is_admin && $trans[$p.id]}
-<p>Liste des personnes ayant payé (pour les administrateurs uniquement)&nbsp;:</p>
+<p>Liste des personnes ayant payÃ© (pour les administrateurs uniquement)&nbsp;:</p>
 <table cellpadding="0" cellspacing="0" id="list_{$p.id}" class='bicol'>
   <tr>
     <th>
       {if $order eq 'timestamp'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
-          <img src="{$platal->baseurl}images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dé{/if}croissant" />
+          <img src="{$platal->baseurl}images/{if !$order_inv}dn{else}up{/if}.png" alt="" title="Tri {if $order_inv}dÃ©{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=timestamp'>
       {/if}Date</a>
@@ -78,15 +78,15 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
     <th colspan="2">
       {if $order eq 'nom'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
+          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dÃ©{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=nom'>{/if}
-      NOM Prénom</a>
+      NOM PrÃ©nom</a>
     </th>
     <th>
       {if $order eq 'promo'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
+          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dÃ©{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=promo'>
       {/if}Promo</a>
@@ -94,7 +94,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
     <th>
       {if $order eq 't.comment'}
         <a href='{$platal->ns}payment?order=comment&order_inv={$order_inv}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}   siant" />
+          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dÃ©{/if}   siant" />
       {else}
         <a href='{$platal->ns}payment?order=comment'>
       {/if}Commentaire</a>
@@ -102,7 +102,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
     <th>
       {if $order eq 'montant'}
         <a href='{$platal->ns}payment?order={$order}&order_inv={$order_inv}'>
-          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dé{/if}croissant" />
+          <img src="{$platal->baseurl}images/{if $order_inv}dn{else}up{/if}.png" alt="" title="Tri {if !$order_inv}dÃ©{/if}croissant" />
       {else}
         <a href='{$platal->ns}payment?order=montant'>
       {/if}Montant</a>
@@ -127,7 +127,7 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
   </tr>
   {elseif $smarty.foreach.people.first}
   <tr>
-    <td colspan="6" class="center">Personne n'a encore payé pour ce télépaiement</td>
+    <td colspan="6" class="center">Personne n'a encore payÃ© pour ce tÃ©lÃ©paiement</td>
   </tr>
   {else}
   <tr class="pair">
@@ -143,9 +143,9 @@ Voici la liste des paiements en ligne possible pour le groupe {$asso.nom}
 {foreachelse}
 
 <p class="descr">
-<em>Pas de télépaiement en cours ...</em>
+<em>Pas de tÃ©lÃ©paiement en cours ...</em>
 </p>
 
 {/foreach}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

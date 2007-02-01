@@ -45,7 +45,7 @@ function get_user_ax($matricule_ax, $raw=false)
     $userax['sexe'] = ($ancien->Civilite() != 'M')?1:0;
     $userax['promo'] = $ancien->Promo();
 /*    $userax['nationalite'] = $ancien->Nationalite();
-    if ($userax['nationalite'] == 'F') $userax['nationalite'] = 'Français'; */
+    if ($userax['nationalite'] == 'F') $userax['nationalite'] = 'FranÃ§ais'; */
     //$userax['date'] = substr($ancien[12], 0, 10);
     $userax['mobile'] = trim($ancien->Mobile(0));
 /*    if ($ancien->Corps() == 'D' || $ancien->Corps() == 'Z') {
@@ -93,7 +93,7 @@ function get_user_ax($matricule_ax, $raw=false)
         if ($ancien->Tel($i) || $ancien->Fax($i)) {
             $adrax['tels'] = array();
             if ($tel = $ancien->Tel($i))
-                $adrax['tels'][] = array('tel' => $tel, 'tel_type' => 'Tél.', 'tel_pub' => 'ax');
+                $adrax['tels'][] = array('tel' => $tel, 'tel_type' => 'TÃ©l.', 'tel_pub' => 'ax');
             if ($tel = $ancien->Fax($i))
                 $adrax['tels'][] = array('tel' => $tel, 'tel_type' => 'Fax', 'tel_pub' => 'ax');
         }
@@ -117,5 +117,5 @@ function ax_synchronize($login, $uid) {
     $diff = diff_user_details($userax, $user, 'ax');
     set_user_details($user['user_id'], $diff);
 }
-// vim:set et sw=4 sts=4 sws=4:
+// vim:set et sw=4 sts=4 sws=4 enc=utf-8:
 ?>

@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Abonnés à des listes non présents dans l'annuaire</h1>
+<h1>AbonnÃ©s Ã  des listes non prÃ©sents dans l'annuaire</h1>
 
 <h2>Polytechniciens</h2>
 
@@ -28,7 +28,7 @@
   {foreach from=$not_in_group_x item=n}
   <li>{$n} [<a href='{$platal->ns}member/new/{$n}' class='popup'>l'inscrire</a>]</li>
   {foreachelse}
-  <li><em>tous les polytechniciens présents sur les listes sont inscrits à l'annuaire du groupe.</em></li>
+  <li><em>tous les polytechniciens prÃ©sents sur les listes sont inscrits Ã  l'annuaire du groupe.</em></li>
   {/foreach}
 </ul>
 
@@ -37,7 +37,7 @@
   {foreach from=$not_in_group_ext item=n}
   <li>{$n} [<a href='{$platal->ns}member/new/{$n}' class='popup'>l'inscrire</a>]</li>
   {foreachelse}
-  <li><em>tous les non-polytechniciens présents sur les listes sont inscrits à l'annuaire du groupe.</em></li>
+  <li><em>tous les non-polytechniciens prÃ©sents sur les listes sont inscrits Ã  l'annuaire du groupe.</em></li>
   {/foreach}
 </ul>
 
@@ -58,4 +58,4 @@
   {/foreach}
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

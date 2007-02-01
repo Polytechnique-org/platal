@@ -24,10 +24,11 @@
 if(Post::has('mentor_expertise')){
   $mentor_expertise = Post::v('mentor_expertise');
   if(!empty($mentor_expertise)){
-      if (strlen(strtok($mentor_expertise,"<>{}~§`|%$^")) < strlen($mentor_expertise)){//TODO: affiner la liste
-	    $page->trig("L'expertise contient un caractère interdit.");
+      if (strlen(strtok($mentor_expertise,"<>{}~Â§`|%$^")) < strlen($mentor_expertise)){//TODO: affiner la liste
+	    $page->trig("L'expertise contient un caractÃ¨re interdit.");
 	}
   }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

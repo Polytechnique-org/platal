@@ -20,10 +20,10 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<!-- Pour récupérer ce bandeau sur votre site :
+<!-- Pour rÃ©cupÃ©rer ce bandeau sur votre site :
 	incluez le fichier http://www.polytechnique.org/bandeau dans vos php
 	ou http://www.polytechnique.org/bandeau/login pour profiter du login
-	automatique. Et rajoutez à la liste de css de vos pages
+	automatique. Et rajoutez Ã  la liste de css de vos pages
 	http://www.polytechnique.org/bandeau.css. -->
 
 {if !$login && $smarty.session.auth}
@@ -44,4 +44,4 @@
 	<a href="http://www.manageurs.com/{if $login}anciens_accueil.php?asso=X.org{/if}">Manageurs</a>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

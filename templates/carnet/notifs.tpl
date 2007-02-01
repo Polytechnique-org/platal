@@ -23,26 +23,26 @@
 
 <h1>Notifications automatiques</h1>
 
-<p>Les mails sont hebdomadaires (pour éviter une trop grosse charge du serveur de mails et de ta boite mail).
-S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
+<p>Les mails sont hebdomadaires (pour Ã©viter une trop grosse charge du serveur de mails et de ta boite mail).
+S'il n'y a rien Ã  te signaler le mail ne t'est pas envoyÃ©.</p>
 
 <form action="carnet/notifs" method="post">
   <fieldset>
     <legend>Mail</legend>
     <input type='checkbox' name='mail' onclick="this.form.submit();" {if $watch->watch_mail}checked="checked"{/if} />
-    Recevoir un mail hebdomadaire des événements que je n'ai pas déjà vus sur le site<br />
+    Recevoir un mail hebdomadaire des Ã©vÃ©nements que je n'ai pas dÃ©jÃ  vus sur le site<br />
     <input type='hidden' name='flags_mail' value='valider' />
   </fieldset>
 </form>
 
 <form action="carnet/notifs" method="post">
   <fieldset>
-    <legend>Événements à surveiller</legend>
+    <legend>Ã‰vÃ©nements Ã  surveiller</legend>
     {foreach from=$watch->cats() item=s key=i}
     <input type='checkbox' name='sub[{$i}]' {if $watch->subs($i)}checked="checked"{/if} />
     {$s.short} {if $s.type eq near}<sup>o</sup>{elseif $s.type eq often}<sup>*</sup>{/if}<br />
     {/foreach}
-    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (événements très fréquents)</span><br />
+    <span class='smaller'><sup>*</sup>: ne concerne pas les promos (Ã©vÃ©nements trÃ¨s frÃ©quents)</span><br />
     <span class='smaller'><sup>o</sup>: ne concerne que les promos entre {$smarty.session.promo-1} et {$promo_sortie-2} que tu surveilles</span>
   </fieldset>
   <div class='center'>
@@ -67,7 +67,7 @@ S'il n'y a rien à te signaler le mail ne t'est pas envoyé.</p>
 <h2>Surveiller des promos</h2>
 
 <p>
-Attention : pour les promos, tu n'es pas notifié des événements trop fréquents (par exemple les changements de fiche).
+Attention : pour les promos, tu n'es pas notifiÃ© des Ã©vÃ©nements trop frÃ©quents (par exemple les changements de fiche).
 </p>
 
 <form action="carnet/notifs/" method="post">
@@ -87,7 +87,7 @@ Attention : pour les promos, tu n'es pas notifié des événements trop fréquents (
     <p>Tu surveilles les promos suivantes :</p>
     <ul>
       {foreach from=$watch->promos() item=p}
-      <li>{if $p.0 eq $p.1}{$p.0}{else}{$p.0} à {$p.1}{/if}</li>
+      <li>{if $p.0 eq $p.1}{$p.0}{else}{$p.0} Ã  {$p.1}{/if}</li>
       {/foreach}
     </ul>
     {/if}
@@ -97,12 +97,12 @@ Attention : pour les promos, tu n'es pas notifié des événements trop fréquents (
 <h2>Surveiller des non inscrits</h2>
 
 <p>
-Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajouté à tes contacts.
+Si un non-inscrit que tu surveilles s'inscrit, il sera automatiquement ajoutÃ© Ã  tes contacts.
 </p>
 
 <p>
 Pour surveiller des membres non-inscrits, il faut passer par la <a href="search" class='popup'>recherche</a>
-et cliquer sur les icones {icon name=add} pour les ajouter à cette liste
+et cliquer sur les icones {icon name=add} pour les ajouter Ã  cette liste
 </p>
 
 <fieldset>
@@ -121,4 +121,4 @@ et cliquer sur les icones {icon name=add} pour les ajouter à cette liste
   {/if}
 </fieldset>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

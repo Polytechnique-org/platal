@@ -281,7 +281,7 @@ function trimwhitespace($source, &$smarty)
 function form_force_encodings($source, &$smarty)
 {
     return preg_replace('/<form[^\w]/',
-                        '\0 accept-charset="iso-8859-15 latin9 us-ascii ascii" ',
+                        '\0 accept-charset="utf-8" ',
                         $source);
 }
 
@@ -298,8 +298,6 @@ function _hide_email($source)
 
 function hide_emails($source, &$smarty)
 {
-    fix_encoding($source);
-
     //prevent email replacement in <script> and <textarea>
     $tags = '(script|textarea|select)';
     preg_match_all("!<$tags.*?>.*?</$tags>!is", $source, $tagsmatches);
@@ -326,5 +324,5 @@ function hide_emails($source, &$smarty)
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -54,8 +54,8 @@ $InputTags['e_form'] = array(
 Markup('[[~platal', '<[[~', '/\[\[~([^|\]]*)(?:\|([^\]]*))?\]\]/e',
     'PreserveText("=", doPlatalLink("$1", "$2"), "")');
 
-// prevent restorelinks before block apply (otherwise [[Sécurité]] will give
-//  .../S<span class='e9curit'>e9'>Sécurité</a>
+// prevent restorelinks before block apply (otherwise [[SÃ©curitÃ©]] will give
+//  .../S<span class='e9curit'>e9'>SÃ©curitÃ©</a>
 Markup('restorelinks','<%%',"//", '');
 
 ## [[#anchor]] in standard XHTML
@@ -102,4 +102,5 @@ $AuthFunction = 'ReadPage';
 $HandleAuth['diff']   = 'edit';
 $HandleAuth['source'] = 'edit';
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

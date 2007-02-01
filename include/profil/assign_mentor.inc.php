@@ -30,4 +30,5 @@ $page->assign('mentor_secteur', $mentor_secteur);
 $page->assign('mentor_ssid', $mentor_ssid);
 $page->assign('mentor_ss_secteur', $mentor_ss_secteur);
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

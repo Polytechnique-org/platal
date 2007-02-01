@@ -56,4 +56,5 @@ function _select_ss_secteur_smarty($params){
 }
 $page->register_function('select_secteur', '_select_secteur_smarty');
 $page->register_function('select_ss_secteur', '_select_ss_secteur_smarty');
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

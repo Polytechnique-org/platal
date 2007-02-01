@@ -20,22 +20,22 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Désinscription des envois de l'AX</h1>
+<h1>DÃ©sinscription des envois de l'AX</h1>
 
 {if $success}
 <p>
-  Votre inscription aux envois exceptionnels de l'AX a été réalisée avec
-  succès. Si vous désirez vous réinscrire, merci de contacter
-  <a href="mailto:info@amicale.polytechnique.org">l'AX</a>. Vous pouvez également
-  le faire en vous <a href="register">inscrivant à Polytechnique.org</a> (pour 
+  Votre inscription aux envois exceptionnels de l'AX a Ã©tÃ© rÃ©alisÃ©e avec
+  succÃ¨s. Si vous dÃ©sirez vous rÃ©inscrire, merci de contacter
+  <a href="mailto:info@amicale.polytechnique.org">l'AX</a>. Vous pouvez Ã©galement
+  le faire en vous <a href="register">inscrivant Ã  Polytechnique.org</a> (pour 
   les X uniquement).
 </p>
 {else}
 <p>
-  Votre inscription aux envois de l'AX n'a pu être résiliée. Merci de contacter
+  Votre inscription aux envois de l'AX n'a pu Ãªtre rÃ©siliÃ©e. Merci de contacter
   au plus vite <a href="mailto:info@amicale.polytechnique.org">l'AX</a> pour faire
-  part de ce problème.
+  part de ce problÃ¨me.
 </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

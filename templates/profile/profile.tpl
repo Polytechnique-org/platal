@@ -52,7 +52,7 @@ function chgMainWinLoc( strPage , iePage) {
           *}{icon name=vcard title="Afficher la carte de visite"}</a>
         {if !$x.is_contact}
         <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=ajouter&amp;user={$x.forlife}')">
-          {icon name=add title="Ajouter à mes contacts"}</a>
+          {icon name=add title="Ajouter Ã  mes contacts"}</a>
         {else}
         <a href="javascript:x()"  onclick="chgMainWinLoc('carnet/contacts?action=retirer&amp;user={$x.forlife}')">
           {icon name=cross title="Retirer de mes contacts"}</a>
@@ -65,7 +65,7 @@ function chgMainWinLoc( strPage , iePage) {
       </div>
       {if $logged}
       <div class='maj'>
-        Fiche mise à jour<br />
+        Fiche mise Ã  jour<br />
         le {$x.date|date_format}
       </div>
       {/if}
@@ -74,12 +74,12 @@ function chgMainWinLoc( strPage , iePage) {
         {if $logged}
         <div class='email'>
           {if $x.dcd}
-          Décédé{if $x.sexe}e{/if} le {$x.deces|date_format}
+          DÃ©cÃ©dÃ©{if $x.sexe}e{/if} le {$x.deces|date_format}
           {elseif !$x.actif}
           Ce camarade n'a plus d'adresse redirection valide,<br />
           <a href="marketing/broken/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
           {elseif !$x.inscrit}
-          Cette personne n'est pas inscrite à Polytechnique.org,<br />
+          Cette personne n'est pas inscrite Ã  Polytechnique.org,<br />
           <a href="marketing/public/{$x.user_id}" class="popup">clique ici si tu connais son adresse email !</a>
           {else}
           {if $virtualalias}
@@ -111,7 +111,7 @@ function chgMainWinLoc( strPage , iePage) {
         {/if}
         {if $logged}
         {if $x.is_referent}
-        [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche référent</a>]
+        [<a href="referent/{$x.forlife}" class='popup2'>Ma fiche rÃ©fÃ©rent</a>]
         {/if}
         {/if}
       </div>
@@ -189,10 +189,10 @@ function chgMainWinLoc( strPage , iePage) {
   {/if}
 {if !$logged}
 <tr><td colspan="2">Cette fiche est publique et visible par tout internaute,
-vous pouvez aussi voir <a href="profile/private/{$x.forlife}">celle&nbsp;réservée&nbsp;aux&nbsp;X</a>.
+vous pouvez aussi voir <a href="profile/private/{$x.forlife}">celle&nbsp;rÃ©servÃ©e&nbsp;aux&nbsp;X</a>.
 </td></tr>
 {/if}
 
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

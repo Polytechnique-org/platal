@@ -24,52 +24,52 @@
   Listes de diffusion de Polytechnique.org
 </h1>
 
-<h2>L'inscription à une liste de diffusion</h2>
+<h2>L'inscription Ã  une liste de diffusion</h2>
 
 <ul>
-  <li>Pour demander ton inscription à une liste de diffusion, il suffit
-    de cliquer sur l'icône {icon name=add} située en fin de ligne</li>
-  <li>Si la liste est à inscription modérée, l'icône {icon name=flag_orange title="en cours"} 
-    apparaîtra tant que ton inscription n'aura pas été validée par un modérateur</li>
-  <li>Pour te désinscrire d'une liste dont tu es membre, il suffit de cliquer sur la croix
-    {icon name=cross title="désinscription"} située en fin de ligne</li>
+  <li>Pour demander ton inscription Ã  une liste de diffusion, il suffit
+    de cliquer sur l'icÃ´ne {icon name=add} situÃ©e en fin de ligne</li>
+  <li>Si la liste est Ã  inscription modÃ©rÃ©e, l'icÃ´ne {icon name=flag_orange title="en cours"} 
+    apparaÃ®tra tant que ton inscription n'aura pas Ã©tÃ© validÃ©e par un modÃ©rateur</li>
+  <li>Pour te dÃ©sinscrire d'une liste dont tu es membre, il suffit de cliquer sur la croix
+    {icon name=cross title="dÃ©sinscription"} situÃ©e en fin de ligne</li>
 </ul>
 
 <h2>La diffusion sur une liste de diffusion</h2>
 <p>
-La diffusion a trois niveaux de modération.  La diffusion peut être :
+La diffusion a trois niveaux de modÃ©ration.  La diffusion peut Ãªtre :
 </p>
 <ul>
   <li><strong>libre :</strong> tout le monde peut y envoyer des mails, la diffusion y est
-  immédiate;</li>
+  immÃ©diate;</li>
   <li><strong>restreinte :</strong> les membres de la liste peuvent envoyer librement des mails,
-  les extérieurs sont modérés;</li>
-  <li><strong>modérée:</strong> l'envoi d'un mail à la liste est alors filtré par des
-  modérateurs, eux seuls peuvent accepter un message envoyé à la liste.</li>
+  les extÃ©rieurs sont modÃ©rÃ©s;</li>
+  <li><strong>modÃ©rÃ©e:</strong> l'envoi d'un mail Ã  la liste est alors filtrÃ© par des
+  modÃ©rateurs, eux seuls peuvent accepter un message envoyÃ© Ã  la liste.</li>
 </ul>
 
-<h1>Demander la création d'une liste de diffusion</h1>
+<h1>Demander la crÃ©ation d'une liste de diffusion</h1>
 
 <p>
-Nos listes ont pour but de réunir des X autour de thèmes ou centres d'intérêt communs.  C'est un
+Nos listes ont pour but de rÃ©unir des X autour de thÃ¨mes ou centres d'intÃ©rÃªt communs.  C'est un
 moyen pratique et efficace de rassembler plusieurs personnes autour d'un projet commun ou d'une
-thématique particulière.
+thÃ©matique particuliÃ¨re.
 </p>
 
 <p class="center">
 {icon name=add title="Nouvelle liste"} <a href='lists/create'>
-  Tu peux demander la création d'une liste de diffusion sur le thème de ton choix.
+  Tu peux demander la crÃ©ation d'une liste de diffusion sur le thÃ¨me de ton choix.
 </a>
 </p>
 
 {if $owner|@count}
-<h1>Listes dont tu es modérateur</h1>
+<h1>Listes dont tu es modÃ©rateur</h1>
 
 {include file='lists/listes.inc.tpl' lists=$owner}
 
 <p class='smaller'>
-{icon name=wrench title="Modérateur"} indique que tu es modérateur de la liste, les modérateurs jouent également le rôle de  seionnaire.<br />
-{icon name=error title="Modérateur mais non-membre"} indque que tu es modérateur de la liste, mais que tu n'en es pas membre.
+{icon name=wrench title="ModÃ©rateur"} indique que tu es modÃ©rateur de la liste, les modÃ©rateurs jouent Ã©galement le rÃ´le de  seionnaire.<br />
+{icon name=error title="ModÃ©rateur mais non-membre"} indque que tu es modÃ©rateur de la liste, mais que tu n'en es pas membre.
 </p>
 {/if}
 {if $member|@count}
@@ -78,12 +78,12 @@ thématique particulière.
 {assign var="has_private" value=false}
 {include file='lists/listes.inc.tpl' lists=$member}
 
-<p class="smaller">Attention : Lorsqu'une liste à laquelle tu es abonné est  privée, l'icône {icon name=weather_cloudy} est affichée en début de ligne.  Si tu t'en désinscrits, il ne te sera pas possible de t'y abonner de nouveau  sans l'action d'un modérateur</p>
+<p class="smaller">Attention : Lorsqu'une liste Ã  laquelle tu es abonnÃ© est  privÃ©e, l'icÃ´ne {icon name=weather_cloudy} est affichÃ©e en dÃ©but de ligne.  Si tu t'en dÃ©sinscrits, il ne te sera pas possible de t'y abonner de nouveau  sans l'action d'un modÃ©rateur</p>
 {/if}
 <h1>Listes de diffusion publiques auxquelles tu peux t'inscrire</h1>
 
 <p>
-Les listes de diffusion publiques sont visibles par tous les X inscrits à Polytechnique.org.
+Les listes de diffusion publiques sont visibles par tous les X inscrits Ã  Polytechnique.org.
 </p>
 
 {if $public|@count}
@@ -95,7 +95,7 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
 <form method='post' action='lists'>
   <table class='tinybicol' cellspacing='0' cellpadding='2'>
     <tr>
-      <th colspan='2'>Inscription à une liste de diffusion promo</th>
+      <th colspan='2'>Inscription Ã  une liste de diffusion promo</th>
     </tr>
     <tr>
       <td class='titre'>Promotion:</td>
@@ -108,4 +108,4 @@ Les listes de diffusion publiques sont visibles par tous les X inscrits à Polyte
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

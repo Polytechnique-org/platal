@@ -19,7 +19,7 @@
 {*  59 Temple Place, Suite 330; Boston, MA  02111-1307  USA               *}
 {*                                                                        *}
 {**************************************************************************}
-Nom;Prénom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach}{if $admin && $money};À payer;Payé{/if}{else};Nombre{/if}
+Nom;PrÃ©nom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach}{if $admin && $money};Ã€ payer;PayÃ©{/if}{else};Nombre{/if}
 
 {if $participants}
 {foreach from=$participants item=m}
@@ -30,3 +30,4 @@ Nom;Prénom;Promotion{if $tout}{foreach from=$moments item=m};{$m.titre}{/foreach
 {/foreach}
 ;
 {/if}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -21,12 +21,12 @@
 
 
 $GLOBALS['tabname_array'] = Array(
-    "general"  => "Général",
+    "general"  => "GÃ©nÃ©ral",
     "adresses" => "Adresses\npersonnelles",
     "poly"     => "Groupes X\nBinets",
-    "deco"     => "Décorations\nMédailles",
+    "deco"     => "DÃ©corations\nMÃ©dailles",
     "emploi"   => "Informations\nprofessionnelles",
-    "skill"    => "Compétences\ndiverses",
+    "skill"    => "CompÃ©tences\ndiverses",
     "mentor"   => "Mentoring"
 );
 
@@ -50,4 +50,5 @@ function get_next_tab($tabname) {
     return null;
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

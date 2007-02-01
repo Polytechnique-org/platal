@@ -51,7 +51,7 @@ function processArgs()
     }
 
     if (!$opts['t'] || empty($opts['t'])) {
-        showHelp('Table non définie');
+        showHelp('Table non dÃ©finie');
         exit;
     }
     $table = $opts['t'];
@@ -76,4 +76,5 @@ $translater = new CSVImporter($table, $key, !$debug);
 $translater->setCSV($source);
 $translater->run($action, $insert_relation, $update_relation);
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

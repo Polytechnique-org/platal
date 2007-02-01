@@ -37,4 +37,4 @@ CLASS:PUBLIC
 {display_ical name="summary" value=$e.summary}
 END:VEVENT
 {/foreach}
-END:VCALENDAR
+END:VCALENDAR{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

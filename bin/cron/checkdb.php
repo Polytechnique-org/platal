@@ -130,10 +130,10 @@ check("select p.* from photo as p left join auth_user_md5 as u on u.user_id=p.ui
 
 /* validite des champ pays et region */
 check("SELECT a.uid, a.country FROM adresses AS a LEFT JOIN geoloc_pays AS gp ON a.country = gp.a2 WHERE gp.pays IS NULL","donne la liste des pays dans les profils qui n'ont pas d'entree correspondante dans geoloc_pays");
-/* les régions ne sont valides que dans les adresses pros */
+/* les rÃ©gions ne sont valides que dans les adresses pros */
 check("SELECT e.uid, e.country, e.region FROM entreprises AS e LEFT JOIN geoloc_region AS gr ON (e.country = gr.a2 AND e.region = gr.region) WHERE e.region != '' AND gr.name IS NULL","donne la liste des regions dans les profils pros qui n'ont pas d'entree correspondante dans geoloc_region");
 
-/* donne la liste des emails douteux que les administrateurs n'ont pas encore traité */
+/* donne la liste des emails douteux que les administrateurs n'ont pas encore traitÃ© */
 check("SELECT  a1.alias, a2.alias, e1.email, e2.flags
         FROM  emails        AS e1
         INNER JOIN  emails        AS e2 ON(e1.email = e2.email AND e1.uid!=e2.uid AND 
@@ -164,7 +164,7 @@ info("SELECT  a1.alias, a2.alias, e1.email, e2.flags, w.state
         "donne la liste des emails dangereux ou douteux");
 
 
-/* vérif que tous les inscrits ont bien au moins un email actif */
+/* vÃ©rif que tous les inscrits ont bien au moins un email actif */
 info("SELECT  u.user_id, a.alias
         FROM  auth_user_md5  AS u 
         INNER JOIN  aliases        AS a ON (u.user_id = a.id AND a.type='a_vie')
@@ -173,12 +173,12 @@ info("SELECT  u.user_id, a.alias
         ORDER BY u.promo, u.nom, u.prenom",
         "donne les inscrits qui n'ont pas d'email actif");
 
-/* donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois */
+/* donne la liste des homonymes qui ont un alias Ã©gal Ã  leur loginbis depuis plus d'un mois */
 check("SELECT  a.alias AS username, b.alias AS loginbis, b.expire
         FROM  aliases AS a
         INNER JOIN  aliases AS b ON ( a.id=b.id AND b.type != 'homonyme' and b.expire < NOW() )
         WHERE  a.type = 'a_vie'",
-        "donne la liste des homonymes qui ont un alias égal à leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
+        "donne la liste des homonymes qui ont un alias Ã©gal Ã  leur loginbis depuis plus d'un mois, il est temps de supprimer leur alias");
 
 /* verifie qu'il n'y a pas de gens qui recrivent sur un alias qu'ils n'ont plus */
 
@@ -193,5 +193,6 @@ check("SELECT  matricule,nom,prenom,matricule_ax,COUNT(matricule_ax) AS c
         FROM  auth_user_md5
         WHERE  matricule_ax != '0'
         GROUP BY  matricule_ax
-        having  c > 1", "à chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
+        having  c > 1", "Ã  chaque personne de l'annuaire de l'AX (identification_ax) doit correspondre AU PLUS UNE personne de notre annuaire (auth_user_md5) -> si ce n'est pas le cas il faut regarder en manuel ce qui ne va pas !");
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -99,7 +99,7 @@
 
 {if $smarty.request.medal_op eq "ajouter"}
 <div class="erreur">
-	Ta demande a bien été prise en compte, elle sera validée prochainement par un administrateur.
+	Ta demande a bien Ã©tÃ© prise en compte, elle sera validÃ©e prochainement par un administrateur.
 </div>
 {/if}
 <div class="blocunite_tab">
@@ -109,7 +109,7 @@
   <table class="bicol" cellspacing="0" cellpadding="0">
     <tr>
       <th colspan="3">
-        Médailles, Décorations, Prix, ...
+        MÃ©dailles, DÃ©corations, Prix, ...
       </th>
     </tr>
     <tr>
@@ -209,4 +209,4 @@
   </table>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -48,7 +48,7 @@ class Trombi extends XOrgPlugin
 
 	$links = Array();
 	if ($offset) {
-	    $links[] = Array('u'=> $this->make_url($offset-1), 'i' => $offset-1,  'text' => 'prÈcÈdent');
+	    $links[] = Array('u'=> $this->make_url($offset-1), 'i' => $offset-1,  'text' => 'pr√©c√©dent');
 	}
 	for ($i = 0; $i <= $page_max ; $i++) {
 	    $links[] = Array('u'=>$this->make_url($i), 'i' => $i, 'text' => $i+1);
@@ -65,5 +65,5 @@ class Trombi extends XOrgPlugin
     }
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

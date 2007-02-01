@@ -25,7 +25,7 @@
 <table class="bicol">
   <tr>
     <th>Titre</th>
-    <th>Péremption</th>
+    <th>PÃ©remption</th>
     <th></th>
   </tr>
   {iterate item=art from=$articles}
@@ -47,4 +47,4 @@
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

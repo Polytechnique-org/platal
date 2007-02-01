@@ -76,7 +76,7 @@ class EvtReq extends Validate
     
     function _mail_subj()
     {
-        return "[Polytechnique.org/EVENEMENTS] Proposition d'événement";
+        return "[Polytechnique.org/EVENEMENTS] Proposition d'Ã©vÃ©nement";
     }
 
     // }}}
@@ -85,9 +85,9 @@ class EvtReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  L'annonce que tu avais proposée ({$this->titre}) vient d'être validée.";
+            return "  L'annonce que tu avais proposÃ©e ({$this->titre}) vient d'Ãªtre validÃ©e.";
         } else {
-            return "  L'annonce que tu avais proposée ({$this->titre}) a été refusée.";
+            return "  L'annonce que tu avais proposÃ©e ({$this->titre}) a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -109,5 +109,5 @@ class EvtReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

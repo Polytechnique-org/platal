@@ -53,7 +53,7 @@ class EmailModule extends PLModule
                                    $uid, $email);
         }
 
-        // on regarde si on a affaire à un homonyme
+        // on regarde si on a affaire Ã  un homonyme
         $sql = "SELECT  alias, (type='a_vie') AS a_vie,
                         (alias REGEXP '\\\\.[0-9]{2}$') AS cent_ans,
                         FIND_IN_SET('bestalias',flags) AS best, expire
@@ -107,7 +107,7 @@ class EmailModule extends PLModule
                 $forlife.'@'.$globals->mail->domain, $forlife.'@'.$globals->mail->domain2);
         }
 
-        //Récupération des alias éventuellement existants
+        //RÃ©cupÃ©ration des alias Ã©ventuellement existants
         $res = XDB::query(
                 "SELECT  alias, emails_alias_pub
                    FROM  auth_user_quick, virtual
@@ -132,34 +132,34 @@ class EmailModule extends PLModule
                 $page->assign('r_public', true);
             }
 
-            //Quelques vérifications sur l'alias (caractères spéciaux)
+            //Quelques vÃ©rifications sur l'alias (caractÃ¨res spÃ©ciaux)
             if (!preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $alias)) {
-                $page->trig("L'adresse demandée n'est pas valide.
-                            Vérifie qu'elle comporte entre 3 et 20 caractères
-                            et qu'elle ne contient que des lettres non accentuées,
-                            des chiffres ou les caractères - et .");
+                $page->trig("L'adresse demandÃ©e n'est pas valide.
+                            VÃ©rifie qu'elle comporte entre 3 et 20 caractÃ¨res
+                            et qu'elle ne contient que des lettres non accentuÃ©es,
+                            des chiffres ou les caractÃ¨res - et .");
                 return;
             } else {
-                //vérifier que l'alias n'est pas déja pris
+                //vÃ©rifier que l'alias n'est pas dÃ©ja pris
                 $res = XDB::query('SELECT COUNT(*) FROM virtual WHERE alias={?}',
                                             $alias.'@'.$globals->mail->alias_dom);
                 if ($res->fetchOneCell() > 0) {
-                    $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été attribué.
+                    $page->trig("L'alias $alias@{$globals->mail->alias_dom} a dÃ©ja Ã©tÃ© attribuÃ©.
                                 Tu ne peux donc pas l'obtenir.");
                     return;
                 }
 
-                //vérifier que l'alias n'est pas déja en demande
+                //vÃ©rifier que l'alias n'est pas dÃ©ja en demande
                 $it = new ValidateIterator ();
                 while($req = $it->next()) {
                     if ($req->type == "alias" and $req->alias == $alias) {
-                        $page->trig("L'alias $alias@{$globals->mail->alias_dom} a déja été demandé.
+                        $page->trig("L'alias $alias@{$globals->mail->alias_dom} a dÃ©ja Ã©tÃ© demandÃ©.
                                     Tu ne peux donc pas l'obtenir pour l'instant.");
                         return ;
                     }
                 }
 
-                //Insertion de la demande dans la base, écrase les requêtes précédente
+                //Insertion de la demande dans la base, Ã©crase les requÃªtes prÃ©cÃ©dente
                 $myalias = new AliasReq($uid, $alias, $raison, $public);
                 $myalias->submit();
                 $page->assign('success',$alias);
@@ -275,7 +275,7 @@ class EmailModule extends PLModule
         if (Post::has('send_email')) {
             $upload = $_FILES['mail']['tmp_name'];
             if (!is_uploaded_file($upload)) {
-                $page->trig('Une erreur a été rencontrée lors du transfert du fichier');
+                $page->trig('Une erreur a Ã©tÃ© rencontrÃ©e lors du transfert du fichier');
                 return;
             }
             $mime = mime_content_type($upload);
@@ -291,7 +291,7 @@ class EmailModule extends PLModule
             $mailer->setTxtBody(Post::v('type') . ' soumis par ' . S::v('forlife') . ' via le web');
             $mailer->addAttachment($upload, 'message/rfc822', $_FILES['mail']['name']);
             $mailer->send();
-            $page->trig('Le message a été transmis à ' . $box);
+            $page->trig('Le message a Ã©tÃ© transmis Ã  ' . $box);
         }
     }
 
@@ -346,10 +346,10 @@ class EmailModule extends PLModule
                 }
                 $mymail->setTxtBody(wordwrap($txt,72,"\n"));
                 if ($mymail->send()) {
-                    $page->trig("Ton mail a bien été envoyé.");
+                    $page->trig("Ton mail a bien Ã©tÃ© envoyÃ©.");
                     $_REQUEST = array('bcc' => S::v('bestalias').'@'.$globals->mail->domain);
                 } else {
-                    $page->trig("Erreur lors de l'envoi du courriel, réessaye.");
+                    $page->trig("Erreur lors de l'envoi du courriel, rÃ©essaye.");
                 }
             }
         } else {
@@ -370,7 +370,7 @@ class EmailModule extends PLModule
     {
         require_once 'emails.inc.php';
         require_once('wiki.inc.php');
-        wiki_require_page('Xorg.PatteCassée');
+        wiki_require_page('Xorg.PatteCassÃ©e');
 
         global $globals;
 
@@ -378,7 +378,7 @@ class EmailModule extends PLModule
 
         if ($warn == 'warn' && $email) {
             $email = valide_email($email);
-            // vérifications d'usage
+            // vÃ©rifications d'usage
             $sel = XDB::query(
                     "SELECT  e.uid, a.alias
                        FROM  emails        AS e
@@ -391,22 +391,22 @@ class EmailModule extends PLModule
                 // envoi du mail
                 $message = "Bonjour !
 
-Ce mail a été généré automatiquement par le service de patte cassée de
+Ce mail a Ã©tÃ© gÃ©nÃ©rÃ© automatiquement par le service de patte cassÃ©e de
 Polytechnique.org car un autre utilisateur, ".S::v('prenom').' '.S::v('nom').",
-nous a signalé qu'en t'envoyant un mail, il avait reçu un message d'erreur
+nous a signalÃ© qu'en t'envoyant un mail, il avait reÃ§u un message d'erreur
 indiquant que ton adresse de redirection $email
 ne fonctionnait plus !
 
-Nous te suggérons de vérifier cette adresse, et le cas échéant de mettre
-à jour sur le site <{$globals->baseurl}/emails> tes adresses
+Nous te suggÃ©rons de vÃ©rifier cette adresse, et le cas Ã©chÃ©ant de mettre
+Ã  jour sur le site <{$globals->baseurl}/emails> tes adresses
 de redirection...
 
-Pour plus de rensignements sur le service de patte cassée, n'hésites pas à
+Pour plus de rensignements sur le service de patte cassÃ©e, n'hÃ©sites pas Ã 
 consulter la page <{$globals->baseurl}/emails/broken>.
 
 
-A bientôt sur Polytechnique.org !
-L'équipe d'administration <support@polytechnique.org>";
+A bientÃ´t sur Polytechnique.org !
+L'Ã©quipe d'administration <support@polytechnique.org>";
 
                 $mail = new PlMailer();
                 $mail->setFrom('"Polytechnique.org" <support@polytechnique.org>');
@@ -414,7 +414,7 @@ L'équipe d'administration <support@polytechnique.org>";
                 $mail->setSubject("Une de tes adresse de redirection Polytechnique.org ne marche plus !!");
                 $mail->setTxtBody($message);
                 $mail->send();
-                $page->trig("Mail envoyé ! :o)");
+                $page->trig("Mail envoyÃ© ! :o)");
             }
         } elseif (Post::has('email')) {
             $email = valide_email(Post::v('email'));
@@ -439,7 +439,7 @@ L'équipe d'administration <support@polytechnique.org>";
                           WHERE  e1.email = {?}
                        GROUP BY  e1.uid", $email);
                 if ($x = $sel->fetchOneAssoc()) {
-                    // on écrit dans la base que l'adresse est cassée
+                    // on Ã©crit dans la base que l'adresse est cassÃ©e
                     if (!$x['panne']) {
                         XDB::execute("UPDATE emails
                                          SET panne=NOW(),
@@ -462,7 +462,7 @@ L'équipe d'administration <support@polytechnique.org>";
         $page->changeTpl('emails/duplicated.tpl');
 
         $states = array('pending'   => 'En attente...',
-                        'safe'      => 'Pas d\'inquiétude',
+                        'safe'      => 'Pas d\'inquiÃ©tude',
                         'unsafe'    => 'Recherches en cours',
                         'dangerous' => 'Usurpations par cette adresse');
         $page->assign('states', $states);
@@ -549,4 +549,5 @@ L'équipe d'administration <support@polytechnique.org>";
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

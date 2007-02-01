@@ -24,7 +24,7 @@
 {if $sent}
 
 <p>
-  Merci de nous avoir communiqué cette information !
+  Merci de nous avoir communiquÃ© cette information !
 </p>
 
 {elseif $user}
@@ -36,29 +36,29 @@
 {if !$user.email}
 <p>
   Avec le temps, toutes les adresses de redirection de notre camarade sont devenues invalides et produisent
-  des erreurs lorsqu'on lui envoie un mail. Nous sommes donc à la recherche d'adresses valides où nous pourrions
+  des erreurs lorsqu'on lui envoie un mail. Nous sommes donc Ã  la recherche d'adresses valides oÃ¹ nous pourrions
   contacter ce camarade.
 </p>
 {elseif $user.last}
 <p>
-  {$user.prenom} a encore des adresses de redirection actives malgré des pannes détectées sur certaines d'entre elles. Si
-  tu es sûr{if $smarty.session.femme}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
-  adresse mail à ajouter à ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
+  {$user.prenom} a encore des adresses de redirection actives malgrÃ© des pannes dÃ©tectÃ©es sur certaines d'entre elles. Si
+  tu es sÃ»r{if $smarty.session.femme}e{/if} que son adresse Polytechnique.org est en panne, tu peux proposer une nouvelle
+  adresse mail Ã  ajouter Ã  ses redirections. Merci d'ajouter un commentaire pour nous indiquer la raison de cette proposition.
 </p>
 {else}
 <p>
-  Nous n'avons actuellement enregistré aucune panne sur les adresses de redirection de {$user.prenom}. Si tu es 
-  sûr{if $smarty.session.femme}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
-  une nouvelle adresse, accompagnée d'un commentaire nous expliquant les raisons exactes de cette proposition.
+  Nous n'avons actuellement enregistrÃ© aucune panne sur les adresses de redirection de {$user.prenom}. Si tu es 
+  sÃ»r{if $smarty.session.femme}e{/if} que son adresse de redirection actuelle est en panne, tu peux nous proposer
+  une nouvelle adresse, accompagnÃ©e d'un commentaire nous expliquant les raisons exactes de cette proposition.
 </p>
 {/if}
 <p>
-  Les adresses email que tu pourras nous donner ne seront pas ajoutées directement aux redirections de {$user.prenom}.
+  Les adresses email que tu pourras nous donner ne seront pas ajoutÃ©es directement aux redirections de {$user.prenom}.
   Nous allons d'abord prendre contact avec {if $user.sexe}elle{else}lui{/if} pour savoir {if $user.sexe}si elle{else}s'il{/if}
-  accepte la mise à jour de sa redirection.
+  accepte la mise Ã  jour de sa redirection.
 </p>
 <p>
-  Merci de ta participation active à l'amélioration de notre qualité de service.
+  Merci de ta participation active Ã  l'amÃ©lioration de notre qualitÃ© de service.
 </p>
 
 <form method="post" action="{$platal->path}">
@@ -84,4 +84,4 @@
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

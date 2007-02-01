@@ -44,11 +44,11 @@
 <tr class="impair">
   <td colspan="{$t->nbfields}">
     <strong>
-      Nouvelles entrées : <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
+      Nouvelles entrÃ©es : <a href="{$t->pl}/new">Manuellement</a> &bull; <a href="{$t->pl}/massadd">Depuis un CSV</a>
     </strong>
   </td>
   <td class="right">
-    <a href="{$t->pl}/new">{icon name=add title='nouvelle entrée'}</a>
+    <a href="{$t->pl}/new">{icon name=add title='nouvelle entrÃ©e'}</a>
   </td>
 </tr>
 {/if}
@@ -72,7 +72,7 @@
   {if !$hideactions}
   <td class="action">
     {if !$readonly}
-    <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='éditer'}</a>
+    <a href="{$t->pl}/edit/{$idval}">{icon name=page_edit title='Ã©diter'}</a>
     <a href="{$t->pl}/delete/{$idval}">{icon name=delete title='supprimer'}</a>
     {/if}
   </td>
@@ -102,9 +102,9 @@
     <tr class="impair">
       <th colspan="2">
         {if $id}
-            modification de l'entrée 
+            modification de l'entrÃ©e 
         {else}
-            nouvelle entrée
+            nouvelle entrÃ©e
         {/if}
       </th>
     </tr>
@@ -154,4 +154,4 @@
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

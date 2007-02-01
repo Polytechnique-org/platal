@@ -32,11 +32,11 @@ class PhotoReq extends Validate
 
     var $unique = true;
 
-    var $rules = "Refuser les photos copyrightées, de mineurs, ou ayant
-    un caractère pornographique, violent, etc... Si une photo est mal
-    cadrée (20% de photo et 80% de blanc par exemple), si c'est un
+    var $rules = "Refuser les photos copyrightÃ©es, de mineurs, ou ayant
+    un caractÃ¨re pornographique, violent, etc... Si une photo est mal
+    cadrÃ©e (20% de photo et 80% de blanc par exemple), si c'est un
     camarade antique, on lui arrange sinon on lui
-    refuse en lui expliquant gentiment le problème. Idem si les dimensions de
+    refuse en lui expliquant gentiment le problÃ¨me. Idem si les dimensions de
     la photo sont archi trop grandes ou archi trop petites.";
 
     // }}}
@@ -80,7 +80,7 @@ class PhotoReq extends Validate
         if (strlen($_data) > SIZE_MAX)  {
             $img = imagecreatefromstring($_data);
             if (!$img) {
-                $page->trig("image trop grande et impossible à retailler automatiquement");
+                $page->trig("image trop grande et impossible Ã  retailler automatiquement");
                 return false;
             }
 
@@ -164,9 +164,9 @@ class PhotoReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "Le changement de photo que tu as demandé vient d'être effectué.";
+            return "Le changement de photo que tu as demandÃ© vient d'Ãªtre effectuÃ©.";
         } else {
-            return "La demande de changement de photo que tu avais faite a été refusée.";
+            return "La demande de changement de photo que tu avais faite a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -188,5 +188,5 @@ class PhotoReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

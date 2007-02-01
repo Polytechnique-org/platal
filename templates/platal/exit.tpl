@@ -22,34 +22,34 @@
 
 
 <h1>
-  Déconnexion {if $smarty.cookies.ORGaccess}partielle {/if}effectuée
+  DÃ©connexion {if $smarty.cookies.ORGaccess}partielle {/if}effectuÃ©e
 </h1>
 <p>
-<strong>Merci et à bientôt !</strong>
+<strong>Merci et Ã  bientÃ´t !</strong>
 </p>
 
 {if $smarty.cookies.ORGaccess}
 
 <p>
-Tu as demandé la connexion permanente donc cette déconnexion ne t'empêche pas d'utiliser la plupart
-des fonctionnalités de consultation du site.
+Tu as demandÃ© la connexion permanente donc cette dÃ©connexion ne t'empÃªche pas d'utiliser la plupart
+des fonctionnalitÃ©s de consultation du site.
 </p>
 <p>
-Tu peux donc aussi te <a href='exit/forget'>déconnecter complètement</a>.
+Tu peux donc aussi te <a href='exit/forget'>dÃ©connecter complÃ¨tement</a>.
 </p>
 <p>
-De plus, ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta
-prochaine connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
-<a href='exit/forgetall'>supprimer cette information et te déconnecter complètement</a>.
+De plus, ton adresse e-mail est toujours en mÃ©moire dans ton navigateur afin de faciliter ta
+prochaine connexion. Si tu utilises un ordinateur public ou que tu dÃ©sires l'effacer, tu peux
+<a href='exit/forgetall'>supprimer cette information et te dÃ©connecter complÃ¨tement</a>.
 </p>
 
 {elseif $smarty.cookies.ORGuid}
 
 <p>
-Ton adresse e-mail est toujours en mémoire dans ton navigateur afin de faciliter ta prochaine
-connexion. Si tu utilises un ordinateur public ou que tu désires l'effacer, tu peux
+Ton adresse e-mail est toujours en mÃ©moire dans ton navigateur afin de faciliter ta prochaine
+connexion. Si tu utilises un ordinateur public ou que tu dÃ©sires l'effacer, tu peux
 <a href='exit/forgetuid'>supprimer cette information</a>.
 </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

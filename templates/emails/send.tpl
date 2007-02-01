@@ -101,7 +101,7 @@
       </td>
     </tr>
     <tr> 
-      <td class="titre">à&nbsp;:</td>
+      <td class="titre">Ã &nbsp;:</td>
       <td>
         <input type='text' name='to' size='60' value="{$smarty.request.to}" />
       </td>
@@ -113,15 +113,15 @@
       </td>
     </tr>
     <tr> 
-      <td class="titre">copie cachée&nbsp;:</td>
+      <td class="titre">copie cachÃ©e&nbsp;:</td>
       <td>
         <input type='text' name='bcc' size='60' value="{$smarty.request.bcc}" />
       </td>
     </tr>
     <tr class="pair">
       <td colspan="2" class="smaller">
-        &bull;&nbsp;Les destinataires sont simplement séparés par des virgules<br />
-        &bull;&nbsp;Pense à te mettre en copie cachée du mail pour en avoir une trace
+        &bull;&nbsp;Les destinataires sont simplement sÃ©parÃ©s par des virgules<br />
+        &bull;&nbsp;Pense Ã  te mettre en copie cachÃ©e du mail pour en avoir une trace
       </td>
     </tr>
     {if $contacts|@count}
@@ -193,7 +193,7 @@
 {$smarty.session.prenom} {$smarty.session.nom}
 {/if}</textarea>
     <div>
-      <strong>{icon name=email_attach}&nbsp;Ajouter une pièce jointe&nbsp;:&nbsp;</strong>
+      <strong>{icon name=email_attach}&nbsp;Ajouter une piÃ¨ce jointe&nbsp;:&nbsp;</strong>
       <input type="file" name="uploaded" />
     </div>
     <div class="center">
@@ -203,4 +203,4 @@
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

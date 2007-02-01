@@ -82,4 +82,5 @@ while(list($tmp_fonction_id, $tmp_fonction_label, $tmp_fonction_titre) = $res->n
 $res = XDB::query("SELECT cv FROM auth_user_md5 WHERE user_id = {?}", S::v('uid', -1));
 $cv = $res->fetchOneCell();
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

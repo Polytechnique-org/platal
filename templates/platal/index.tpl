@@ -20,24 +20,24 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Bienvenue sur le portail des élèves et anciens élèves de l'X !</h1>
+<h1>Bienvenue sur le portail des Ã©lÃ¨ves et anciens Ã©lÃ¨ves de l'X !</h1>
 
 <p>
-  {#globals.core.sitename#} est le site qui connecte la communauté des
-  polytechniciens.  Il comporte une partie publique, et une partie privée
-  réservée aux polytechniciens.
+  {#globals.core.sitename#} est le site qui connecte la communautÃ© des
+  polytechniciens.  Il comporte une partie publique, et une partie privÃ©e
+  rÃ©servÃ©e aux polytechniciens.
 </p>
 
 <br />
 
-<strong>Si vous êtes un recruteur ou une entreprise, / if you are a recruiter or a company,</strong>
+<strong>Si vous Ãªtes un recruteur ou une entreprise, / if you are a recruiter or a company,</strong>
 <ul>
   <li class="spaced">
-    vous avez la possibilité 
+    vous avez la possibilitÃ© 
     <strong><a href="http://www.manageurs.com/?langue=fr">d'utiliser le site
         Manageurs.com</a></strong> pour rentrer en contact avec les
     polytechniciens, mettre en ligne des offres d'emploi, consulter l'annuaire
-    inter-écoles et consulter la base de données de CV.
+    inter-Ã©coles et consulter la base de donnÃ©es de CV.
   </li>
   <li class="spaced">
     you can <strong><a href="http://www.manageurs.com/?langue=en">access
@@ -47,14 +47,14 @@
   </li>
 </ul>
 
-<strong>Si vous êtes polytechnicien,</strong>
+<strong>Si vous Ãªtes polytechnicien,</strong>
 <ul>
   <li class="spaced">
-    vous pouvez <strong><a href="register">vous inscrire à
+    vous pouvez <strong><a href="register">vous inscrire Ã 
         {#globals.core.sitename#}</a></strong> si ce n'est pas encore fait,
   </li>
   <li class="spaced">
-    ou <strong><a href="events">vous connecter</a></strong> si vous êtes
+    ou <strong><a href="events">vous connecter</a></strong> si vous Ãªtes
     inscrit !
   </li>
 </ul>
@@ -62,7 +62,7 @@
 <p>
   Vous pouvez <strong><a href="Xorg/PourquoiMInscrire">consulter la
       liste de ce que vous apporte {#globals.core.sitename#}</a></strong> si vous
-  hésitez à vous inscrire !
+  hÃ©sitez Ã  vous inscrire !
 </p>
 
 <br />
@@ -70,13 +70,13 @@
 <p><strong>Dans tous les cas,</strong> vous pouvez :</p>
 <ul>
   <li class="spaced">
-    <strong><a href="search"> rechercher un ancien élève ou un
-        élève</a></strong> dans l'annuaire en ligne,
+    <strong><a href="search"> rechercher un ancien Ã©lÃ¨ve ou un
+        Ã©lÃ¨ve</a></strong> dans l'annuaire en ligne,
   </li>
   <li class="spaced">
-    <strong><a href="http://www.polytechnique.net/">accéder à la liste des
-        sites en rapport avec l'École</a></strong> - les sites officiels de
-    l'École sont <a href="http://www.polytechnique.fr">polytechnique.fr</a> et
+    <strong><a href="http://www.polytechnique.net/">accÃ©der Ã  la liste des
+        sites en rapport avec l'Ã‰cole</a></strong> - les sites officiels de
+    l'Ã‰cole sont <a href="http://www.polytechnique.fr">polytechnique.fr</a> et
     <a href="http://www.polytechnique.edu">polytechnique.edu</a>, le portail
     des X sur le web est <a href="http://www.polytechnique.org/">polytechnique.org</a>,
     et le site de l'amicale des Anciens Eleves (AX) est
@@ -85,7 +85,7 @@
 
 <p>
   <strong>Bonne visite !</strong>
-  <br /><cite>L'équipe {#globals.core.sitename#}</cite>
+  <br /><cite>L'Ã©quipe {#globals.core.sitename#}</cite>
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

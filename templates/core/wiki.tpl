@@ -28,7 +28,7 @@
     </td>
     {if $canedit}
     <td>
-      <a href='{$wikipage}?action=edit'>Éditer la page</a>
+      <a href='{$wikipage}?action=edit'>Ã‰diter la page</a>
     </td>
     {/if}
   {if $has_perms}
@@ -50,7 +50,7 @@
       {html_options options=$perms_opts selected=$perms[1]}
       </select>
     </td>
-    <td colspan='2' style='text-align: left'>&lt;-- Droits associés</td>
+    <td colspan='2' style='text-align: left'>&lt;-- Droits associÃ©s</td>
   {/if}
   </tr>
 </table>
@@ -61,3 +61,4 @@
 {else}
 {include file=$pmwiki_cache}
 {/if}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

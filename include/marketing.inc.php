@@ -54,21 +54,21 @@ function mark_text_mail($uid, $email)
     $to = "\"".$u['prenom']." ".$u['nom']."\" <".$email.">";
 
     $titre = "Annuaire en ligne des Polytechniciens";
-    $text  = "   ".($u['flags']?"Chère":"Cher")." camarade,\n\n";
-    $text .= "   Ta fiche n'est pas à jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre à jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :\n\n";
+    $text  = "   ".($u['flags']?"ChÃ¨re":"Cher")." camarade,\n\n";
+    $text .= "   Ta fiche n'est pas Ã  jour dans l'annuaire des Polytechniciens sur Internet. Pour la mettre Ã  jour, il te suffit de visiter cette page ou de copier cette adresse dans la barre de ton navigateur :\n\n";
     $text .= "==========================================================\n";
     $text .= $globals->baseurl."/register/%%hash%%\n";
     $text .= "==========================================================\n\n";
-    $text .= "Il ne te faut que 5 minutes sur http://www.polytechnique.org/ pour rejoindre les $num_users camarades branchés grâce au système de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prénom... et de bénéficier pour la vie d'une adresse prestigieuse $mailorg@polytechnique.org et son alias discret $mailorg@m4x.org (m4x = mail for X).\n\n";
-    $text .= "Pas de nouvelle boîte aux lettres à relever, il suffit de la rerouter vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer tous les jours si tu veux sans imposer à tes correspondants de modifier leur carnet d'adresses...\n\n";
-    $text .= "De plus, le site web offre les services d'annuaire (recherche multi-critères), de forums, de mailing-lists. Ce portail est géré par une dizaine de jeunes camarades, avec le soutien et les conseils de nombreux X de toutes promotions, incluant notamment des camarades de la Kès des élèves de l'X et d'autres de l'AX. Les serveurs sont hébergés au sein même de l'Ecole polytechnique, sur une connexion rapide, et les services évoluent en fonction des besoins exprimés par la communauté sur Internet.\n\n";
-    $text .="N'hésite pas à transmettre ce message à tes camarades ou à nous écrire, nous proposer toute amélioration ou suggestion pour les versions prochaines du site.\n\n";
-    $text .= "A bientôt sur http://www.polytechnique.org !\n";
-    $text .= "Bien à toi,\n";
+    $text .= "Il ne te faut que 5 minutes sur http://www.polytechnique.org/ pour rejoindre les $num_users camarades branchÃ©s grÃ¢ce au systÃ¨me de reroutage de l'X et qui permet de joindre un camarade en connaissant seulement son nom et son prÃ©nom... et de bÃ©nÃ©ficier pour la vie d'une adresse prestigieuse $mailorg@polytechnique.org et son alias discret $mailorg@m4x.org (m4x = mail for X).\n\n";
+    $text .= "Pas de nouvelle boÃ®te aux lettres Ã  relever, il suffit de la rerouter vers ton adresse personnelle et/ou professionnelle que tu indiques et que tu peux changer tous les jours si tu veux sans imposer Ã  tes correspondants de modifier leur carnet d'adresses...\n\n";
+    $text .= "De plus, le site web offre les services d'annuaire (recherche multi-critÃ¨res), de forums, de mailing-lists. Ce portail est gÃ©rÃ© par une dizaine de jeunes camarades, avec le soutien et les conseils de nombreux X de toutes promotions, incluant notamment des camarades de la KÃ¨s des Ã©lÃ¨ves de l'X et d'autres de l'AX. Les serveurs sont hÃ©bergÃ©s au sein mÃªme de l'Ecole polytechnique, sur une connexion rapide, et les services Ã©voluent en fonction des besoins exprimÃ©s par la communautÃ© sur Internet.\n\n";
+    $text .="N'hÃ©site pas Ã  transmettre ce message Ã  tes camarades ou Ã  nous Ã©crire, nous proposer toute amÃ©lioration ou suggestion pour les versions prochaines du site.\n\n";
+    $text .= "A bientÃ´t sur http://www.polytechnique.org !\n";
+    $text .= "Bien Ã  toi,\n";
     $text .= "%%sender%%\n\n";
     $text .= "--\n";
     $text .= "Polytechnique.org\n";
-    $text .= "\"Le portail des élèves & anciens élèves de l'X\"\n";
+    $text .= "\"Le portail des Ã©lÃ¨ves & anciens Ã©lÃ¨ves de l'X\"\n";
     $text .= "http://www.polytechnique.org/\n";
     $text .= "http://www.polytechnique.net/\n";
     return array($to, $title, $text);
@@ -145,5 +145,5 @@ function relance($uid, $nbx = -1)
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4:
+// vim:set et sw=4 sts=4 sws=4 enc=utf-8:
 ?>

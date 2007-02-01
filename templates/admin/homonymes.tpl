@@ -23,22 +23,22 @@
 <h1>Gestion des homonymes</h1>
 
 {if $op eq 'mail'}
-<p class="erreur">mail envoyé à {$forlife}</p>
+<p class="erreur">mail envoyÃ© Ã  {$forlife}</p>
 {elseif $op eq 'correct'}
-<p class="erreur">mail envoyé à {$forlife}, alias supprimé</p>
+<p class="erreur">mail envoyÃ© Ã  {$forlife}, alias supprimÃ©</p>
 {/if}
 
 {if $op eq 'list' || $op eq 'mail' || $op eq 'correct'}
 
 <p>
-  Les utilisateurs signalés en rouge sont ceux qui conservent actuellement
-  l'alias prenom.nom et empêchent donc la mise en place du robot détrompeur.
+  Les utilisateurs signalÃ©s en rouge sont ceux qui conservent actuellement
+  l'alias prenom.nom et empÃªchent donc la mise en place du robot dÃ©trompeur.
 </p>
 
 <table class="bicol">
   <tr>
-    <th>alias concerné</th>
-    <th>date de péremption de l'alias</th>
+    <th>alias concernÃ©</th>
+    <th>date de pÃ©remption de l'alias</th>
     <th>op</th>
   </tr>
   {foreach from=$hnymes key=login item=row}
@@ -75,7 +75,7 @@
 <form method="post" action="admin/homonyms/mail/{$target}">
   <table class="bicol">
     <tr>
-      <th>Envoyer un mail pour prévenir l'utilisateur</th>
+      <th>Envoyer un mail pour prÃ©venir l'utilisateur</th>
     </tr>
     <tr>
       <td>
@@ -83,16 +83,16 @@
 {$prenom},
 
 
-Comme nous t'en avons informé par mail il y a quelques temps,
+Comme nous t'en avons informÃ© par mail il y a quelques temps,
 pour respecter nos engagements en terme d'adresses e-mail devinables,
-tu te verras bientôt retirer l'alias {$loginbis}@polytechnique.org pour
+tu te verras bientÃ´t retirer l'alias {$loginbis}@polytechnique.org pour
 ne garder que {$forlife}@polytechnique.org.
 
-Toute personne qui écrira à {$loginbis}@polytechnique.org recevra la
-réponse d'un robot qui l'informera que {$loginbis}@polytechnique.org
+Toute personne qui Ã©crira Ã  {$loginbis}@polytechnique.org recevra la
+rÃ©ponse d'un robot qui l'informera que {$loginbis}@polytechnique.org
 est ambigu pour des raisons d'homonymie et signalera ton email exact.
 
-L'équipe Polytechnique.org
+L'Ã©quipe Polytechnique.org
 {#globals.baseurl#}
         </textarea>
       </td>
@@ -117,17 +117,17 @@ L'équipe Polytechnique.org
         <textarea cols="80" rows="20" name="mailbody">
 {$prenom},
 
-Comme nous t'en avons informé par mail il y a quelques temps,
-nous t'avons retiré de façon définitive l'adresse
+Comme nous t'en avons informÃ© par mail il y a quelques temps,
+nous t'avons retirÃ© de faÃ§on dÃ©finitive l'adresse
 {$loginbis}@polytechnique.org.
 
-Toute personne qui écrit à {$loginbis}@polytechnique.org reçoit la
-réponse d'un robot qui l'informe que {$loginbis}@polytechnique.org
+Toute personne qui Ã©crit Ã  {$loginbis}@polytechnique.org reÃ§oit la
+rÃ©ponse d'un robot qui l'informe que {$loginbis}@polytechnique.org
 est ambigu pour des raisons d'homonymie et signale ton email exact
 
-Tu peux faire l'essai toi-même en écrivant à {$loginbis}@polytechnique.org.
+Tu peux faire l'essai toi-mÃªme en Ã©crivant Ã  {$loginbis}@polytechnique.org.
 
-L'équipe Polytechnique.org
+L'Ã©quipe Polytechnique.org
 {#globals.baseurl#}
         </textarea>
       </td>
@@ -143,4 +143,4 @@ L'équipe Polytechnique.org
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

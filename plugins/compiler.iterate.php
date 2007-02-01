@@ -50,6 +50,6 @@ function smarty_compiler_iterate($tag_attrs, &$compiler)
         .  "while ((\$this->_tpl_vars['$_item'] = \$_iterate_{$_item}->next()) !== null):";
 }
 
-/* vim: set expandtab: */
+/* vim: set expandtab enc=utf-8: */
 
 ?>

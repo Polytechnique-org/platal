@@ -39,7 +39,7 @@
     <tr>
       <th colspan="5">
         <a id='adr{$adrid}'></a>
-        {if $adr.nouvelle != 'new'}Adresse n°{$smarty.section.i.index}{else}Rentre ici une nouvelle adresse{/if}
+        {if $adr.nouvelle != 'new'}Adresse nÂ°{$smarty.section.i.index}{else}Rentre ici une nouvelle adresse{/if}
         <input type="hidden" name="adrid[{$adrid}]" value="{$adrid}" />
         {if $adr.nouvelle == 'new'}
         <input type="hidden" name="numero_formulaire[{$adrid}]" value="0" />
@@ -57,12 +57,12 @@
         &nbsp;
       </td>
       <td colspan="4" class="right">
-        <em>c'est à cette adresse que je suis actuellement</em>
+        <em>c'est Ã  cette adresse que je suis actuellement</em>
         <input name="adrid_active" type="radio" value="{$adrid}" {if $adr.active}checked="checked"{/if} />
       </td>
     </tr>
     {if $adr.nouvelle != 'new'}
-    {assign var="titre" value="Adresse n°`$smarty.section.i.index`&nbsp;:"}
+    {assign var="titre" value="Adresse nÂ°`$smarty.section.i.index`&nbsp;:"}
     {else}
     {assign var="titre" value="Nouvelle adresse&nbsp;:"}
     {/if}
@@ -84,9 +84,9 @@
       </td>
       <td class="cold" colspan="4">
         <input type="radio" name="secondaire[{$adrid}]" value="0" {if !$adr.secondaire}checked="checked"{/if} />
-        ma résidence principale
+        ma rÃ©sidence principale
         <input type="radio" name="secondaire[{$adrid}]" value="1" {if $adr.secondaire}checked="checked"{/if} />
-        une résidence secondaire
+        une rÃ©sidence secondaire
       </td>
     </tr>
     <tr>
@@ -110,7 +110,7 @@
       <td>
         <input type="text" size="19" maxlength="28" name="tel{$tel.telid}[{$adrid}]" value="{$tel.tel}" />
         {if $tel.tel}
-        	<a href="profile/edit/{$onglet}?adrid={$adrid}&telid={$tel.telid}&deltel=1">{icon name=cross title="Supprimer ce tél."}</a>
+        	<a href="profile/edit/{$onglet}?adrid={$adrid}&telid={$tel.telid}&deltel=1">{icon name=cross title="Supprimer ce tÃ©l."}</a>
     	{/if}
       </td>
       {include file="include/flags.radio.tpl" name="tel_pub`$tel.telid`[$adrid]" val=$tel.tel_pub display="mini"}
@@ -122,4 +122,4 @@
   </table>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -22,17 +22,17 @@
 
 
 <h1>
-  Création d'une liste de diffusion
+  CrÃ©ation d'une liste de diffusion
 </h1>
 
 {if $created}
 
-<p class='erreur'>Demande de création envoyée !</p>
+<p class='erreur'>Demande de crÃ©ation envoyÃ©e !</p>
 
 {else}
 
 <p>
-N'importe qui peut faire la demande de création d'une mailing-list, il suffit pour cela d'être au
+N'importe qui peut faire la demande de crÃ©ation d'une mailing-list, il suffit pour cela d'Ãªtre au
 moins 4 polytechniciens inscrits sur le site, et de fournir les informations suivantes concernant la
 liste :
 </p>
@@ -40,10 +40,10 @@ liste :
 <form action='lists/create' method='post'>
   <table class='bicol' cellspacing='0' cellpadding='2'>
     <tr>
-      <th colspan='2'>Caractéristiques de la Liste</th>
+      <th colspan='2'>CaractÃ©ristiques de la Liste</th>
     </tr>
     <tr>
-      <td class='titre'>Addresse&nbsp;souhaitée&nbsp;:</td>
+      <td class='titre'>Addresse&nbsp;souhaitÃ©e&nbsp;:</td>
       <td>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@polytechnique.org
       </td>
@@ -55,15 +55,15 @@ liste :
       </td>
     </tr>
     <tr>
-      <td class='titre'>Propriétés :</td>
+      <td class='titre'>PropriÃ©tÃ©s :</td>
       <td>
         <table style='width: 100%'>
           <tr>
-            <td>visibilité :</td>
+            <td>visibilitÃ© :</td>
             <td><input type='radio' name='advertise' value='0'
               {if $smarty.post.advertise eq 0 && $smarty.post}checked='checked'{/if} />publique</td>
             <td><input type='radio' name='advertise' value='1'
-              {if $smarty.post.advertise neq 0 || !$smarty.post}checked='checked'{/if} />privée</td>
+              {if $smarty.post.advertise neq 0 || !$smarty.post}checked='checked'{/if} />privÃ©e</td>
             <td></td>
           </tr>
           <tr>
@@ -73,14 +73,14 @@ liste :
             <td><input type='radio' name='modlevel' value='1'
               {if $smarty.post.modlevel eq 1}checked='checked'{/if} />restreinte</td>
             <td><input type='radio' name='modlevel' value='2'
-              {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée</td>
+              {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modÃ©rÃ©e</td>
           </tr>
           <tr>
             <td>inscription :</td>
             <td><input type='radio' name='inslevel' value='0'
               {if $smarty.post.inslevel eq 0 && $smarty.post}checked='checked'{/if} />libre</td>
             <td><input type='radio' name='inslevel' value='1'
-              {if $smarty.post.inslevel neq 0 || !$smarty.post}checked='checked'{/if} />modérée</td>
+              {if $smarty.post.inslevel neq 0 || !$smarty.post}checked='checked'{/if} />modÃ©rÃ©e</td>
             <td></td>
           </tr>
         </table>
@@ -109,21 +109,21 @@ liste :
     </tr>
     <tr>
       <td colspan="2">
-        <small>Tu peux entrer une liste de membres en entrant plusieurs adresses séparées par des espaces</small>
+        <small>Tu peux entrer une liste de membres en entrant plusieurs adresses sÃ©parÃ©es par des espaces</small>
       </td>
     </tr>
   </table>
   <p>
-  La création de la liste sera soumise à un contrôle manuel avant d'être validée.  Ce contrôle a
-  pour but notamment de vérifier qu'il n'y aura pas ambiguité entre les membres de la liste et son
-  identité.  Exemple: n'importe qui ne peut pas ouvrir pointgamma@polytechnique.org, il ne suffit
-  pas d'être le premier à le demander :-)
+  La crÃ©ation de la liste sera soumise Ã  un contrÃ´le manuel avant d'Ãªtre validÃ©e.  Ce contrÃ´le a
+  pour but notamment de vÃ©rifier qu'il n'y aura pas ambiguitÃ© entre les membres de la liste et son
+  identitÃ©.  Exemple: n'importe qui ne peut pas ouvrir pointgamma@polytechnique.org, il ne suffit
+  pas d'Ãªtre le premier Ã  le demander :-)
   </p>
   <p>
-  La liste est habituellement créée dans les jours qui suivent la demande sauf exception.  Pour plus
-  d'informations écris-nous à l'adresse {mailto address='listes@polytechnique.org'} en mettant dans
-  le sujet de ton mail le nom de la liste souhaité afin de faciliter les échanges de mails
-  ultérieurs éventuels.
+  La liste est habituellement crÃ©Ã©e dans les jours qui suivent la demande sauf exception.  Pour plus
+  d'informations Ã©cris-nous Ã  l'adresse {mailto address='listes@polytechnique.org'} en mettant dans
+  le sujet de ton mail le nom de la liste souhaitÃ© afin de faciliter les Ã©changes de mails
+  ultÃ©rieurs Ã©ventuels.
   </p>
   <div class='center'>
     <br />
@@ -134,4 +134,4 @@ liste :
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

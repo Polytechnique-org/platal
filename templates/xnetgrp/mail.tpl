@@ -24,9 +24,9 @@
 <h1>{$asso.nom} : Envoyer un mail</h1>
 
 <p class="descr">
-Ton message peut être personnalisé : si tu rentres les mots &lt;cher&gt;, &lt;prenom&gt;,
-&lt;nom&gt;, ces mots seront remplacés, pour chacun des destinataires, par "cher" accordé au
-masculin ou féminin, par son prénom, ou son nom.
+Ton message peut Ãªtre personnalisÃ© : si tu rentres les mots &lt;cher&gt;, &lt;prenom&gt;,
+&lt;nom&gt;, ces mots seront remplacÃ©s, pour chacun des destinataires, par "cher" accordÃ© au
+masculin ou fÃ©minin, par son prÃ©nom, ou son nom.
 </p>
  
 <form action="{$platal->ns}mail" method="post" enctype="multipart/form-data">
@@ -35,14 +35,14 @@ masculin ou féminin, par son prénom, ou son nom.
       <th colspan="2">Ecrire un mail :</th>
     </tr>
     <tr>
-      <td class="titre">Expéditeur :</td>
+      <td class="titre">ExpÃ©diteur :</td>
       <td>
         <input type="text" name="from" size="55" maxlength="70"
           value="{if $smarty.request.from}{$smarty.request.from}{else}&quot;{$smarty.session.prenom} {$smarty.session.nom}&quot; <{$smarty.session.bestalias}@polytechnique.org>{/if}" />
       </td>
     </tr>
     <tr>
-      <td class="titre">Répondre à :</td>
+      <td class="titre">RÃ©pondre Ã  :</td>
       <td>
         <input type="text" name="replyto" size="55" maxlength="70" value="{$smarty.request.replyto}" />
       </td>
@@ -57,11 +57,11 @@ masculin ou féminin, par son prénom, ou son nom.
       </td>
       <td>
         <input type="checkbox" name="membres[X]" value="1"  {if $smarty.request.membres.X}checked="checked"{/if} />
-        <em>écrire à tous les X de l'annuaire du groupe</em><br />
+        <em>Ã©crire Ã  tous les X de l'annuaire du groupe</em><br />
         <input type="checkbox" name="membres[ext]" value="1"  {if $smarty.request.membres.ext}checked="checked"{/if} />
-        <em>écrire à tous les extérieurs de l'annuaire du groupe</em><br />
+        <em>Ã©crire Ã  tous les extÃ©rieurs de l'annuaire du groupe</em><br />
         <input type="checkbox" name="membres[groupe]" value="1"  {if $smarty.request.membres.groupe}checked="checked"{/if} />
-        <em>écrire à toutes les personnes morales de l'annuaire du groupe</em>
+        <em>Ã©crire Ã  toutes les personnes morales de l'annuaire du groupe</em>
         <a href="{$platal->ns}annuaire" class='popup'>(voir annuaire)</a><br />
       </td>
     </tr>
@@ -98,7 +98,7 @@ masculin ou féminin, par son prénom, ou son nom.
           
 Nous avons le plaisir de t'adresser la lettre mensuelle du groupe {$asso.nom}.
 
-(insérer le texte...)
+(insÃ©rer le texte...)
 
 Le bureau du groupe {$asso.nom}.
 {/if}
@@ -119,4 +119,4 @@ Le bureau du groupe {$asso.nom}.
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

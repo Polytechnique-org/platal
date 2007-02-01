@@ -51,7 +51,7 @@ class MedalReq extends Validate
 
     function _mail_subj()
     {
-        return "[Polytechnique.org/Décoration] Demande de décoration : ".$this->medal_name();
+        return "[Polytechnique.org/DÃ©coration] Demande de dÃ©coration : ".$this->medal_name();
     }
 
     // }}}
@@ -60,9 +60,9 @@ class MedalReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  La décoration ".$this->medal_name()." vient d'être ajoutée à ta fiche.";
+            return "  La dÃ©coration ".$this->medal_name()." vient d'Ãªtre ajoutÃ©e Ã  ta fiche.";
         } else {
-            return "  La demande que tu avais faite pour la décoration ".$this->medal_name()." a été refusée.";
+            return "  La demande que tu avais faite pour la dÃ©coration ".$this->medal_name()." a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -108,5 +108,5 @@ class MedalReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

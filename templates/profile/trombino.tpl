@@ -27,14 +27,14 @@
   <table class="flags" cellspacing="0" summary="Flags">
     <tr>
       <td class="rouge"><input type="radio" checked="checked" /></td>
-      <td class="texte">privé</td>
+      <td class="texte">privÃ©</td>
     </tr>
   </table>
 
   {if ($session.promo ge 1995) || ($session.promo le 2002)}
   <p>
   Si tu n'as pas encore fourni de photo, c'est celle du trombinoscope de l'X qui est
-  affichée par défaut dans le profil. Si elle ne te plaît pas, ou si tu n'es quand même
+  affichÃ©e par dÃ©faut dans le profil. Si elle ne te plaÃ®t pas, ou si tu n'es quand mÃªme
   plus un tos, tu peux la remplacer par ta photo en suivant les instructions suivantes.
   </p>
   {/if}
@@ -62,24 +62,24 @@
     </tr>
     <tr>
       <td colspan="2" class="smaller">
-        * Les photos sont soumises à une validation manuelle en raison des législations relatives
-        aux droits d'auteur et à la protection des mineurs. Il faut donc attendre l'intervention
+        * Les photos sont soumises Ã  une validation manuelle en raison des lÃ©gislations relatives
+        aux droits d'auteur et Ã  la protection des mineurs. Il faut donc attendre l'intervention
         d'un administrateur pour que la photo soit prise en compte. Tu recevras un mail lorsque ta
-        photo aura été contrôlée.
+        photo aura Ã©tÃ© contrÃ´lÃ©e.
       </td>
     </tr>
     <tr>
       <th colspan="2">
-        Actions immédiates
+        Actions immÃ©diates
       </th>
     </tr>
     <tr>
       <td {if !$submited}colspan="2"{/if} class="center">
-        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaçant par : <br />
+        Si tu ne souhaites plus montrer cette photo tu peux aussi l'effacer en la remplaÃ§ant par : <br />
         {if $has_trombi_x}
         <input type="submit" value="Trombino de l'X" name="trombi" /><br />
         {/if}
-        <input type="submit" value="Image par défaut" name="suppr" />
+        <input type="submit" value="Image par dÃ©faut" name="suppr" />
       </td>
       {if $submited}
       <td class="center">
@@ -96,13 +96,13 @@
     <tr>
       <td colspan="2">
         <p>
-        Nous te proposons deux possibilités pour mettre à jour ta photo (30 Ko maximum). Tout dépend
-        de savoir où se trouve ta photo. Si elle est sur ton poste de travail local, c'est la première
+        Nous te proposons deux possibilitÃ©s pour mettre Ã  jour ta photo (30 Ko maximum). Tout dÃ©pend
+        de savoir oÃ¹ se trouve ta photo. Si elle est sur ton poste de travail local, c'est la premiÃ¨re
         solution qu'il faut choisir.
         </p>
         <p>
-        Si elle est sur Internet, choisis la seconde solution et nos robots iront la télécharger
-        directement où il faut :-)
+        Si elle est sur Internet, choisis la seconde solution et nos robots iront la tÃ©lÃ©charger
+        directement oÃ¹ il faut :-)
         </p>
       </td>
     </tr>
@@ -136,4 +136,4 @@
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

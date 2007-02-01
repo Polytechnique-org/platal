@@ -71,10 +71,10 @@
   {elseif $is_member}
   <tr>
     <td class="titre">
-      Me désinscrire :
+      Me dÃ©sinscrire :
     </td>
     <td>
-      <a href="{if $asso.unsub_url}{$asso.unsub_url}{else}{$platal->ns}unsubscribe{/if}">me désinscrire</a>
+      <a href="{if $asso.unsub_url}{$asso.unsub_url}{else}{$platal->ns}unsubscribe{/if}">me dÃ©sinscrire</a>
     </td>
   </tr>
   {/if}
@@ -82,7 +82,7 @@
   {if $asso.ax}
   <tr>
     <td class="titre center" colspan="2">
-      groupe agréé par l'AX
+      groupe agrÃ©Ã© par l'AX
     </td>
   </tr>
   {/if}
@@ -146,12 +146,12 @@
 
 <p style="text-align: justify;">
 <small>
-<em>Nota Bene :</em> les informations présentées ici n'engagent que leurs auteurs
-respectifs et sont publiées à leur initiative. L'association Polytechnique.org
-ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
-sur cet espace d'expression et d'information. Elle se réserve le droit de
-refuser ou de retirer toute information de nature diffamante ou pouvant être
-interprétée comme polémique par un membre de la communauté polytechnicienne.
+<em>Nota Bene :</em> les informations prÃ©sentÃ©es ici n'engagent que leurs auteurs
+respectifs et sont publiÃ©es Ã  leur initiative. L'association Polytechnique.org
+ne pourrait en aucun cas Ãªtre tenue responsable de la nature des propos relatÃ©s
+sur cet espace d'expression et d'information. Elle se rÃ©serve le droit de
+refuser ou de retirer toute information de nature diffamante ou pouvant Ãªtre
+interprÃ©tÃ©e comme polÃ©mique par un membre de la communautÃ© polytechnicienne.
 </small>
 </p>
 {/if}
@@ -161,4 +161,4 @@ interprétée comme polémique par un membre de la communauté polytechnicienne.
 </div>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

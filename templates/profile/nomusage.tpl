@@ -24,11 +24,11 @@
 
 {if $same}
   <p class="erreur">
-      Si ton nom d'usage est identique à ton nom à l'X, il n'est pas
-      nécessaire de le saisir ici!
+      Si ton nom d'usage est identique Ã  ton nom Ã  l'X, il n'est pas
+      nÃ©cessaire de le saisir ici!
   </p>
   <p>
-    Pour supprimer ton nom d'usage, fais une demande avec un nom vide et en précisant la raison.
+    Pour supprimer ton nom d'usage, fais une demande avec un nom vide et en prÃ©cisant la raison.
   </p>
   <p>
     [<a href='profile/usage'>Refaire une demande</a>] - [<a href='profile/edit'>Retour au profil</a>]
@@ -39,43 +39,43 @@
       <p>
         Ta demande de suppression de ton nom d'usage ainsi que de tes
         alias {$alias_old}@{#globals.mail.domain#} et
-        {$alias_old}@{#globals.mail.domain2#} a bien été enregistrée. 
+        {$alias_old}@{#globals.mail.domain2#} a bien Ã©tÃ© enregistrÃ©e. 
       </p>
     {/if}
 
     {if $myusage->alias}
       <p>
-        Ta demande d'ajout de ton nom d'usage a bien été enregistrée. Sa
-        validation engendrera la création des alias
+        Ta demande d'ajout de ton nom d'usage a bien Ã©tÃ© enregistrÃ©e. Sa
+        validation engendrera la crÃ©ation des alias
         <strong>{$myusage->alias}@{#globals.mail.domain#}</strong> et
         <strong>{$myusage->alias}@{#globals.mail.domain2#}</strong>.
       </p>
     {/if}
   
     <p>
-      Tu recevras un mail dès que les changements demandés auront été effectués. 
+      Tu recevras un mail dÃ¨s que les changements demandÃ©s auront Ã©tÃ© effectuÃ©s. 
       Encore merci de nous faire confiance pour tes e-mails !
     </p>
 
   {else}
 
 <p>
-Le nom d'usage est un patronyme qui doit être <strong>reconnu par la
+Le nom d'usage est un patronyme qui doit Ãªtre <strong>reconnu par la
   loi</strong> (nom du conjoint, d'un de ses parents, ou bien plus
-exceptionnellement sur changement de l'état civil, ...).
+exceptionnellement sur changement de l'Ã©tat civil, ...).
 </p>
 
 <p>
-Les surnoms sont <strong>systématiquement refusés</strong>. Pour
-utiliser une adresse personnalisée, il faut se tourner vers
+Les surnoms sont <strong>systÃ©matiquement refusÃ©s</strong>. Pour
+utiliser une adresse personnalisÃ©e, il faut se tourner vers
 <a href="emails/alias">l'alias @melix.net</a>.
 </p>
 
   <p>
-  Afin d'être joignable à la fois sous ton nom à l'X et sous ton nom d'usage, tu peux
-  saisir ici ce dernier. Il apparaîtra alors dans l'annuaire et tu disposeras
+  Afin d'Ãªtre joignable Ã  la fois sous ton nom Ã  l'X et sous ton nom d'usage, tu peux
+  saisir ici ce dernier. Il apparaÃ®tra alors dans l'annuaire et tu disposeras
   des adresses correspondantes @{#globals.mail.domain#} et @{#globals.mail.domain2#}, en plus de
-  celles que tu possèdes déjà.
+  celles que tu possÃ¨des dÃ©jÃ .
   </p>
 
   <br />
@@ -98,11 +98,11 @@ utiliser une adresse personnalisée, il faut se tourner vers
       </tr>
       <tr>
         <td class="rt">
-          <input type="radio" name="reason" checked="checked" value="époux/se" id="reason_ep" onclick="this.form.other_reason.value=''" /><label for="reason_ep">Nom d'épouse / d'époux</label><br />
+          <input type="radio" name="reason" checked="checked" value="Ã©poux/se" id="reason_ep" onclick="this.form.other_reason.value=''" /><label for="reason_ep">Nom d'Ã©pouse / d'Ã©poux</label><br />
           {if $usage_old}
             <input type="radio" name="reason" value="divorce" id="reason_div" onclick="this.form.other_reason.value=''" /><label for="reason_div">Divorce</label><br />
           {/if}
-          <input type="radio" name="reason" value="raccourci" id="reason_rac" onclick="this.form.other_reason.value=''" /><label for="reason_rac">Nom d'état civil simplifié, le nom officiel étant trop long</label><br />
+          <input type="radio" name="reason" value="raccourci" id="reason_rac" onclick="this.form.other_reason.value=''" /><label for="reason_rac">Nom d'Ã©tat civil simplifiÃ©, le nom officiel Ã©tant trop long</label><br />
           <input type="radio" name="reason" value="other" id="reason_oth" /><label for="reason_oth">Autre :</label><br />
           <input type="text" name="other_reason" onfocus="document.getElementById('reason_oth').checked='checked'" size="60" />
         </td>
@@ -123,4 +123,4 @@ utiliser une adresse personnalisée, il faut se tourner vers
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

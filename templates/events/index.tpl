@@ -29,7 +29,7 @@
 <h1 id='pagetop'>
 Bienvenue {$smarty.session.prenom}
 {if $birthday}
-  et joyeux anniversaire de {$birthday} ans de la part de toute l'équipe !
+  et joyeux anniversaire de {$birthday} ans de la part de toute l'Ã©quipe !
 {else}
 :o)
 {/if}
@@ -37,7 +37,7 @@ Bienvenue {$smarty.session.prenom}
 
 {if $smarty.session.host}
 <div class="smaller">
-  Ta connexion précédente date du
+  Ta connexion prÃ©cÃ©dente date du
   <strong>{$smarty.session.lastlogin|date_format:"%x, %X"}</strong>
   depuis la machine <strong>{$smarty.session.host}</strong>
 </div>
@@ -47,13 +47,13 @@ Bienvenue {$smarty.session.prenom}
 <p class="erreur">
   Tu n'as plus de redirection valide ce qui rend ton adresse Polytechnique.org
   inutilisable. Rend-toi au plus vite sur <a href="emails/redirect">la page de 
-  gestion des emails</a> pour corriger ce problème.
+  gestion des emails</a> pour corriger ce problÃ¨me.
 </p>
 {/if}
 
 {if $smarty.session.mx_failures|@count}
 <fieldset>
-  <legend>{icon name=error}Des problèmes sont actuellement recontrés sur tes redirections suivantes</legend>
+  <legend>{icon name=error}Des problÃ¨mes sont actuellement recontrÃ©s sur tes redirections suivantes</legend>
   {foreach from=$smarty.session.mx_failures item=mail}
   <div>
     <span class="erreur">{$mail.mail}</span>
@@ -65,10 +65,10 @@ Bienvenue {$smarty.session.prenom}
 
   
 {if $fiche_incitation}
-  <p>La dernière mise à jour de ta
+  <p>La derniÃ¨re mise Ã  jour de ta
   <a href="profile/{$smarty.session.forlife}" class="popup2">fiche</a>
   date du {$fiche_incitation|date_format}.
-  Il est possible qu'elle ne soit pas à jour.
+  Il est possible qu'elle ne soit pas Ã  jour.
   Si tu souhaites la modifier, <a href="profile/edit">clique ici !</a>
   </p>
 {/if}
@@ -101,7 +101,7 @@ Bienvenue {$smarty.session.prenom}
           {icon name=feed_add title='Activer mon fil rss'}
         </a>
        {/if}
-        Sommaire des informations événementielles
+        Sommaire des informations Ã©vÃ©nementielles
       </th>
     </tr>
     {iterate item=ev from=$evenement_summary}
@@ -151,7 +151,7 @@ Bienvenue {$smarty.session.prenom}
           {$ev.texte|smarty:nodefaults|nl2br}
         {/tidy}
         <br />
-        <p class="smaller"><a href="events#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposée par
+        <p class="smaller"><a href="events#pagetop" style="display:block;float:right"><img alt="Sommaire" title="Remonter tout en haut" src="images/up.png"/></a>Annonce proposÃ©e par
         <a href="profile/{$ev.forlife}" class="popup2">
           {$ev.prenom} {$ev.nom} X{$ev.promo}
         </a>
@@ -162,19 +162,19 @@ Bienvenue {$smarty.session.prenom}
   {/iterate}
 
   <p class="smaller">
-  Nota Bene : les informations présentées ici n'engagent que leurs auteurs
-  respectifs et sont publiées à leur initiative. L'association Polytechnique.org
-  ne pourrait en aucun cas être tenue responsable de la nature des propos relatés
-  sur cet espace d'expression et d'information. Elle se réserve le droit de
-  refuser ou de retirer toute information de nature diffamante ou pouvant être
-  interprétée comme polémique par un membre de la communauté polytechnicienne.
+  Nota Bene : les informations prÃ©sentÃ©es ici n'engagent que leurs auteurs
+  respectifs et sont publiÃ©es Ã  leur initiative. L'association Polytechnique.org
+  ne pourrait en aucun cas Ãªtre tenue responsable de la nature des propos relatÃ©s
+  sur cet espace d'expression et d'information. Elle se rÃ©serve le droit de
+  refuser ou de retirer toute information de nature diffamante ou pouvant Ãªtre
+  interprÃ©tÃ©e comme polÃ©mique par un membre de la communautÃ© polytechnicienne.
   </p>
 
   <p class="center">
     {icon name=page_edit}&nbsp;
-    <a href="events/submit">Proposer une information événementielle</a>&nbsp;&bull;
+    <a href="events/submit">Proposer une information Ã©vÃ©nementielle</a>&nbsp;&bull;
     <a href="nl/submit">Proposer un article pour la Lettre mensuelle</a>
   </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -32,20 +32,20 @@
   </td>
 </tr>
 <tr class="pair">
-  <td class="titre">Propriétés&nbsp;:</td>
+  <td class="titre">PropriÃ©tÃ©s&nbsp;:</td>
   <td>
     <table cellpadding='2' cellspacing='0'>
       <tr>
-        <td>visibilité:</td>
-        <td>{if $valid->advertise}publique{else}privée{/if}</td>
+        <td>visibilitÃ©:</td>
+        <td>{if $valid->advertise}publique{else}privÃ©e{/if}</td>
       </tr>
       <tr>
         <td>diffusion:</td>
-        <td>{if $valid->modlevel eq 2}modérée{elseif $valid->modlevel}restreinte{else}libre{/if}</td>
+        <td>{if $valid->modlevel eq 2}modÃ©rÃ©e{elseif $valid->modlevel}restreinte{else}libre{/if}</td>
       </tr>
       <tr>
         <td>inscription:</td>
-        <td>{if $valid->inslevel}modérée{else}libre{/if}</td>
+        <td>{if $valid->inslevel}modÃ©rÃ©e{else}libre{/if}</td>
       </tr>
     </table>
   </td>
@@ -67,4 +67,4 @@
   </td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -37,24 +37,24 @@
     <td>{$details.desc}</td>
   </tr>
   <tr>
-    <td class='titre'> Visibilité </td>
-    <td>{if $details.priv eq 0}publique{elseif $details.priv eq 1}privée{else}admin{/if}</td>
+    <td class='titre'> VisibilitÃ© </td>
+    <td>{if $details.priv eq 0}publique{elseif $details.priv eq 1}privÃ©e{else}admin{/if}</td>
   </tr>
   <tr>
     <td class='titre'> Diffusion </td>
-    <td>{if $details.diff eq 2}modérée{elseif $details.diff}restreinte{else}libre{/if}</td>
+    <td>{if $details.diff eq 2}modÃ©rÃ©e{elseif $details.diff}restreinte{else}libre{/if}</td>
   </tr>
   <tr>
     <td class='titre'> Inscription </td>
-    <td>{if $details.ins}modérée{else}libre{/if}</td>
+    <td>{if $details.ins}modÃ©rÃ©e{else}libre{/if}</td>
   </tr>
   <tr class="pair">
     <td class="titre">Ton statut:</td>
     <td>
       {if $details.sub>1}
       Tu es inscrit sur la liste.<br />
-      Te désinscrire :
-      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me désinscrire"}</a>
+      Te dÃ©sinscrire :
+      <a href='{$platal->pl_self(1)}?del=1'>{icon name=cross title="me dÃ©sinscrire"}</a>
       {elseif $details.sub eq 1}
       Ta demande d'inscription est en cours de validation.
       {else}
@@ -67,7 +67,7 @@
 </table>
 
 <h1>
-  modérateurs de la liste
+  modÃ©rateurs de la liste
 </h1>
 
 <table cellpadding="8" cellspacing="2" style="width:100%;">
@@ -104,4 +104,4 @@
 {$trombi->show()|smarty:nodefaults}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

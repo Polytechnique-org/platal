@@ -23,7 +23,8 @@
 <h1 class="erreur">Cette page n'existe pas !!!</h1>
 
 {if $near}
-<p>L'adresse suivante semble correspondre à ta demande :<br />
+<p>L'adresse suivante semble correspondre Ã  ta demande :<br />
 <a href="{$globals->baseurl}/{$near}">{$globals->baseurl}/{$near}</a>
 </p>
 {/if}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

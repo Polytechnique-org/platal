@@ -31,7 +31,7 @@
 <form method='post' action='{$platal->pl_self(1)}'>
   <table class='tinybicol' cellpadding='0' cellspacing='0'>
     <tr>
-      <th class='titre'>Modérer le mail</th>
+      <th class='titre'>ModÃ©rer le mail</th>
     </tr>
     <tr>
       <td>raison (pour les refus) :
@@ -45,26 +45,26 @@
       <td class='center'>
         <input type='hidden' name='mid' value='{$smarty.get.mid}' />
         <input type='submit' name='mok' value='Accepter !'
-          onclick="return confirm('Es-tu sûr de vouloir Envoyer ce mail sur la liste ?')"/>&nbsp;
+          onclick="return confirm('Es-tu sÃ»r de vouloir Envoyer ce mail sur la liste ?')"/>&nbsp;
         <input type='submit' name='mno' value='Refuser !' 
-          onclick="return confirm('Es-tu sûr de vouloir Refuser ce mail ?')"/>&nbsp;
-        <input type='submit' name='mdel' value='Détruire !' style='color:red;'
-          onclick="return confirm('Es-tu sûr de vouloir Détruire ce mail ?')"/>
+          onclick="return confirm('Es-tu sÃ»r de vouloir Refuser ce mail ?')"/>&nbsp;
+        <input type='submit' name='mdel' value='DÃ©truire !' style='color:red;'
+          onclick="return confirm('Es-tu sÃ»r de vouloir DÃ©truire ce mail ?')"/>
       </td>
     </tr>
   </table>
   <ul>
-    <li>« Refuser » rejette le mail avec un message à son auteur (celui que tu tapes dans le cadre)</li>
+    <li>Â« Refuser Â» rejette le mail avec un message Ã  son auteur (celui que tu tapes dans le cadre)</li>
     <li>
-    Détruire efface le mail sans autre forme de procès, et c'est à utiliser UNIQUEMENT pour les
-    virus et les courriers indésirables
+    DÃ©truire efface le mail sans autre forme de procÃ¨s, et c'est Ã  utiliser UNIQUEMENT pour les
+    virus et les courriers indÃ©sirables
     </li>
   </ul>
 </form>
 <p>
-En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement sera de la forme suivante :
+En cas de refus, le mail envoyÃ© Ã  l'auteur du mail que tu modÃ¨res actuellement sera de la forme suivante :
 </p>
 <pre>{$msg}</pre>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

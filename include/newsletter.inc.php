@@ -276,5 +276,5 @@ class NLArticle
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4:
+// vim:set et sw=4 sts=4 sws=4 enc=utf-8:
 ?>

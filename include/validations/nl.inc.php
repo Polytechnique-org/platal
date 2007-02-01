@@ -79,9 +79,9 @@ class NLReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return '  L\'article que tu avais proposé ('.$this->art->title().') vient d\'être validé.';
+            return '  L\'article que tu avais proposÃ© ('.$this->art->title().') vient d\'Ãªtre validÃ©.';
         } else {
-            return '  L\'article que tu avais proposé ('.$this->art->title().') a été refusé.';
+            return '  L\'article que tu avais proposÃ© ('.$this->art->title().') a Ã©tÃ© refusÃ©.';
         }
     }
 
@@ -100,5 +100,5 @@ class NLReq extends Validate
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

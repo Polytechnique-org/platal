@@ -37,7 +37,7 @@
       return false;
     }
     if (pw1.length < 6) {
-      alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractères !");
+      alert ("\nErreur : le nouveau mot de passe doit faire au moins 6 caractÃ¨res !");
       exit;
       return false;
     }
@@ -62,10 +62,10 @@
 {/if}
 </p>
 <form action="password/smtp" method="post" id="smtppass_form">
-  <table class="tinybicol" cellpadding="3" summary="Définition du mot de passe">
+  <table class="tinybicol" cellpadding="3" summary="DÃ©finition du mot de passe">
     <tr>
       <th colspan="2">
-        Définition du mot de passe
+        DÃ©finition du mot de passe
       </th>
     </tr>
     <tr>
@@ -78,7 +78,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Retape-le une fois (pour vérification):
+        Retape-le une fois (pour vÃ©rification):
       </td>
       <td>
         <input type="password" size="15" maxlength="15" name="smtppass2" />
@@ -96,8 +96,8 @@
   </table>
 </form>
 <p>
-  Ce mot de passe peut être le même que celui d'accès au site. Il doit faire au
-  moins <strong>6 caractères</strong> quelconques. Attention au type de clavier que tu
+  Ce mot de passe peut Ãªtre le mÃªme que celui d'accÃ¨s au site. Il doit faire au
+  moins <strong>6 caractÃ¨res</strong> quelconques. Attention au type de clavier que tu
   utilises (qwerty?) et aux majuscules/minuscules.
 </p>
 
@@ -105,12 +105,12 @@
 <p>
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
 </p>
-{include file=../spool/wiki.d/cache_Xorg.NNTPSécurisé.tpl included=1}
+{include file=../spool/wiki.d/cache_Xorg.NNTPSÃ©curisÃ©.tpl included=1}
 {elseif $smarty.request.doc eq "smtp"}
 <p> 
   <a href="{$platal->pl_self()}?doc=nntp">Pourquoi et comment</a> utiliser le serveur NNTP de {#globals.core.sitename#}.<br />
 </p>
-{include file=../spool/wiki.d/cache_Xorg.SMTPSécurisé.tpl included=1}
+{include file=../spool/wiki.d/cache_Xorg.SMTPSÃ©curisÃ©.tpl included=1}
 {else}
 <p>
   <a href="{$platal->pl_self()}?doc=smtp">Pourquoi et comment</a> utiliser le serveur SMTP de {#globals.core.sitename#}.<br />
@@ -118,4 +118,4 @@
 </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -26,4 +26,4 @@
 <br />
 <textarea rows="3" cols="60" name="nl_append">{$valid->art->_append}</textarea>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

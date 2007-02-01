@@ -40,7 +40,7 @@
 {/literal}
 
 <p class="center">
-  {icon name=magnifier"} <a href="Site/AllRecentChanges">Voir les changements récents</a>
+  {icon name=magnifier"} <a href="Site/AllRecentChanges">Voir les changements rÃ©cents</a>
 </p>
 
 <form action="admin/wiki/update" method="post" id="update_pages">
@@ -53,7 +53,7 @@
       lecture
     </th>
     <th>
-      écriture
+      Ã©criture
     </th>
     <th class="action">
       action
@@ -63,7 +63,7 @@
   <tr class="pair">
     <td colspan="4" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       <img src="images/k2.gif" alt="-" width="9" height="21" />
-      {$cat} <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements récents"}</a>
+      {$cat} <a href="{$cat}/RecentChanges">{icon name=magnifier title="Changements rÃ©cents"}</a>
     </td>
   </tr>
 {foreach from=$pages item=perm key=page name=pages}
@@ -74,7 +74,7 @@
       {else}
       <img src="images/T.gif" alt="|" style="width: 12px: height: 21px" />
       {/if}
-      <a href="{$cat}/{$page}">{$page}</a>{if $perm.cached}*{/if} <a href="{$cat}/{$page}?action=edit" class="indice">{icon name=page_edit title='éditer'}</a>
+      <a href="{$cat}/{$page}">{$page}</a>{if $perm.cached}*{/if} <a href="{$cat}/{$page}?action=edit" class="indice">{icon name=page_edit title='Ã©diter'}</a>
     </td>
     <td class="center" style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; height: 20px">
       {$perm.read}
@@ -91,13 +91,13 @@
   <tr class="pair">
     <td class="action" colspan="4">
       <span onclick="check_all_boxes('update_pages', true)">{icon name=tick title='tout cocher'}</span>
-      <span onclick="check_all_boxes('update_pages', false)">{icon name=cross title='tout décocher'}</span>
+      <span onclick="check_all_boxes('update_pages', false)">{icon name=cross title='tout dÃ©cocher'}</span>
       <span onclick="check_all_boxes('update_pages', 'toggle')">{icon name=arrow_refresh title='toggle'}</span>
     </td>
   </tr>
   <tr class="pair">
     <td>
-      Attribue les permissions aux pages cochées :
+      Attribue les permissions aux pages cochÃ©es :
     </td>
     <td>
       <select name="read">
@@ -119,6 +119,6 @@
 </form>
 
 <p class="smaller">
-  * : les pages marquées d'une astérisque sont actuellement disponibles en cache (accès plus rapide)
+  * : les pages marquÃ©es d'une astÃ©risque sont actuellement disponibles en cache (accÃ¨s plus rapide)
 </p>
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

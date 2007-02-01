@@ -125,7 +125,7 @@ class MarketingModule extends PLModule
             require_once('marketing.inc.php');
             mark_send_mail($uid, $value, Post::v('from'), Post::v('to'),
                            Post::v('title'), Post::v('message'));
-            $page->trig("Mail envoyé");
+            $page->trig("Mail envoyÃ©");
         }
 
         if ($action == 'insrel') {
@@ -197,7 +197,7 @@ class MarketingModule extends PLModule
             // security stuff
             check_email($email, "Proposition d'une adresse surveillee pour " . $user['forlife'] . " par " . S::v('forlife'));
             if ($user['email'] && !trim(Post::v('comment'))) {
-                $page->trig("Il faut que tu ajoutes un commentaire à ta proposition pour justifier le "
+                $page->trig("Il faut que tu ajoutes un commentaire Ã  ta proposition pour justifier le "
                            ."besoin de changer la redirection de " . $user['prenom']);
             } else {
                 require_once 'validations.inc.php';
@@ -206,7 +206,7 @@ class MarketingModule extends PLModule
                 $page->assign('sent', true);
             }
         } elseif ($email) {
-            $page->trig("L'adresse proposée n'est pas une adresse acceptable pour une redirection");
+            $page->trig("L'adresse proposÃ©e n'est pas une adresse acceptable pour une redirection");
         }
     }
 
@@ -259,7 +259,7 @@ class MarketingModule extends PLModule
                     $page->assign('already', true);
                 } else {
                     $page->assign('ok', true);
-                    check_email($email, "Une adresse surveillée est proposée au marketing par " . S::v('forlife'));
+                    check_email($email, "Une adresse surveillÃ©e est proposÃ©e au marketing par " . S::v('forlife'));
                     XDB::execute(
                             "INSERT INTO  register_marketing (uid,sender,email,date,last,nb,type,hash)
                                   VALUES  ({?}, {?}, {?}, NOW(), 0, 0, {?}, '')",
@@ -324,7 +324,7 @@ class MarketingModule extends PLModule
             $sent  = Array();
             foreach (array_keys($_POST['relance']) as $uid) {
                 if ($tmp = relance($uid, $nbdix)) {
-                    $sent[] = $tmp.' a été relancé';
+                    $sent[] = $tmp.' a Ã©tÃ© relancÃ©';
                 }
             }
             $page->assign('sent', $sent);
@@ -339,4 +339,5 @@ class MarketingModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

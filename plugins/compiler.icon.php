@@ -37,6 +37,6 @@ function smarty_compiler_icon($tag_attrs, &$compiler)
     return "?><img src='$name' alt='' $title /><?php";
 }
 
-/* vim: set expandtab: */
+/* vim: set expandtab enc=utf-8: */
 
 ?>

@@ -226,7 +226,7 @@ class GeolocModule extends PLModule
         }
         
         if ($nb_synchro) 
-            $page->trig(($nb_synchro > 1)?($nb_synchro." villes ont été synchronisées"):"Une ville a été synchronisée");
+            $page->trig(($nb_synchro > 1)?($nb_synchro." villes ont Ã©tÃ© synchronisÃ©es"):"Une ville a Ã©tÃ© synchronisÃ©e");
         
         $res = XDB::query("SELECT COUNT(*) FROM geoloc_city WHERE lat = 0 AND lon = 0");
         $page->assign("nb_missinglat", $res->fetchOneCell());
@@ -238,7 +238,7 @@ class GeolocModule extends PLModule
         if ($action == 'cities_not_on_map') {
             require_once('geoloc.inc.php');
             if (!fix_cities_not_on_map(20))
-                $page->trig("Impossible d'accéder au webservice");
+                $page->trig("Impossible d'accÃ©der au webservice");
             else
                 $refresh = true;
         }
@@ -255,7 +255,7 @@ class GeolocModule extends PLModule
         if ($action == 'newmaps') {
             require_once('geoloc.inc.php');
             if (!get_new_maps(Env::v('url')))
-                $page->trig("Impossible d'accéder aux nouvelles cartes");
+                $page->trig("Impossible d'accÃ©der aux nouvelles cartes");
         }
         
         $countMissing = XDB::query("SELECT COUNT(*) FROM geoloc_city AS c LEFT JOIN geoloc_city_in_maps AS m ON(c.id = m.city_id) WHERE m.city_id IS NULL");
@@ -277,4 +277,5 @@ class GeolocModule extends PLModule
     
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

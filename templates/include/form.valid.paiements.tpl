@@ -49,14 +49,14 @@
 </tr>
 {if $valid->asso_id}
 <tr class="pair">
-  <td class="titre">Lié à l'asso&nbsp;:</td>
+  <td class="titre">LiÃ© Ã  l'asso&nbsp;:</td>
   <td>{$valid->asso}</td>
 </tr>
 {if $valid->evt}
 <tr class="pair">
-  <td class="titre">événement&nbsp;:</td>
+  <td class="titre">Ã©vÃ©nement&nbsp;:</td>
   <td>{$valid->evt_intitule}</td>
 </tr>
 {/if}
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

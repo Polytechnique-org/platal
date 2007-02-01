@@ -26,12 +26,12 @@
 </h1>
 
 <p>
-  Ton mot de passe doit faire au moins <strong>6 caractères</strong> quelconques. Attention
+  Ton mot de passe doit faire au moins <strong>6 caractÃ¨res</strong> quelconques. Attention
   au type de clavier que tu utilises (qwerty?) et aux majuscules/minuscules.
 </p>
 <p>
-  Pour une sécurité optimale, ton mot de passe circule de manière cryptée (https) et est
-  stocké crypté irréversiblement sur nos serveurs.
+  Pour une sÃ©curitÃ© optimale, ton mot de passe circule de maniÃ¨re cryptÃ©e (https) et est
+  stockÃ© cryptÃ© irrÃ©versiblement sur nos serveurs.
 </p>
 <br />
 <form action="{$smarty.server.REQUEST_URI}" method="post" id="changepass">
@@ -71,4 +71,4 @@
 </p>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

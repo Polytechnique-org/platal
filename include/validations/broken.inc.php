@@ -36,8 +36,8 @@ class BrokenReq extends Validate
 
     var $rules = "Accepter si l'adresse mail parait correcte, et pas absurde (ou si le marketeur est de confiance).
     Si le demandeur marque sa propre adresse mail, refuser dans tous les cas.
-    Si l'adresse proposée est surveillée, refuser.
-    Si le compte associé est désactivé, étudier le cas en fonction de la raison de la désactivation";
+    Si l'adresse proposÃ©e est surveillÃ©e, refuser.
+    Si le compte associÃ© est dÃ©sactivÃ©, Ã©tudier le cas en fonction de la raison de la dÃ©sactivation";
     // }}}
     // {{{ constructor
 
@@ -68,7 +68,7 @@ class BrokenReq extends Validate
     
     function _mail_subj()
     {
-        return "[Polytechnique.org] Récupération de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
+        return "[Polytechnique.org] RÃ©cupÃ©ration de {$this->m_prenom} {$this->m_nom} ({$this->m_promo})";
     }
 
     // }}}
@@ -77,12 +77,12 @@ class BrokenReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            return "  Un mail de contact vient d'être envoyé "
-                ." à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour confirmer sa volonté de"
-                ." mettre à jour sa redirection Polytechnique.org!\n\n"
+            return "  Un mail de contact vient d'Ãªtre envoyÃ© "
+                ." Ã  {$this->m_prenom} {$this->m_nom} ({$this->m_promo}) pour confirmer sa volontÃ© de"
+                ." mettre Ã  jour sa redirection Polytechnique.org!\n\n"
                 ."Merci de ta participation !\n";
         } else {
-            return "  Nous n'avons pas jugé bon d'envoyer de mail de contact à {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
+            return "  Nous n'avons pas jugÃ© bon d'envoyer de mail de contact Ã  {$this->m_prenom} {$this->m_nom} ({$this->m_promo}).";
         }
     }
 
@@ -95,7 +95,7 @@ class BrokenReq extends Validate
         $email =  $this->m_bestalias . '@' . $globals->mail->domain;
         if ($this->old_email) {
             $subject = "Ton adresse $email semble ne plus fonctionner";
-            $reason  = "Nous avons été informés que ton adresse $email ne fonctionne plus correctement par un camarade";
+            $reason  = "Nous avons Ã©tÃ© informÃ©s que ton adresse $email ne fonctionne plus correctement par un camarade";
         } else {
             $res = XDB::iterRow("SELECT  email
                                    FROM  emails AS e
@@ -116,12 +116,12 @@ class BrokenReq extends Validate
                         . ' sont hors-services depuis plusieurs mois.';
             }
         }
-        $body = ($this->m_sexe ? 'Chère ' : 'Cher ') . $this->m_prenom . ",\n\n"
+        $body = ($this->m_sexe ? 'ChÃ¨re ' : 'Cher ') . $this->m_prenom . ",\n\n"
               . $reason . "\n\n"
-              . "L'adresse {$this->m_email} nous a été communiquée, veux-tu que cette adresse devienne ta nouvelle "
+              . "L'adresse {$this->m_email} nous a Ã©tÃ© communiquÃ©e, veux-tu que cette adresse devienne ta nouvelle "
               . "adresse devienne ta nouvelle adresse de redirection ? Si oui, envoie nous des informations qui "
-              . "nous permettrons de nous assurer de ton identité (par exemple ta date de naissance et ta promotion)\n"
-              . "-- \nTrès Cordialement,\nL'Equipe de Polytechnique.org\n";
+              . "nous permettrons de nous assurer de ton identitÃ© (par exemple ta date de naissance et ta promotion)\n"
+              . "-- \nTrÃ¨s Cordialement,\nL'Equipe de Polytechnique.org\n";
         $body = wordwrap($body, 78);
         $mailer = new PlMailer();
         $mailer->setFrom('"Association Polytechnique.org" <register@polytechnique.org>');
@@ -134,5 +134,5 @@ class BrokenReq extends Validate
     // }}}
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -57,11 +57,11 @@
 {/foreach}
 
 --------------------------------------------------------------------
-Cette lettre est envoyée à tous les Polytechniciens sur Internet par
-l'intermédiaire de Polytechnique.org.
+Cette lettre est envoyÃ©e Ã  tous les Polytechniciens sur Internet par
+l'intermÃ©diaire de Polytechnique.org.
 
 archives         : [https://www.polytechnique.org/nl]
-écrire           : [https://www.polytechnique.org/nl/submit]
+Ã©crire           : [https://www.polytechnique.org/nl/submit]
 ne plus recevoir : [https://www.polytechnique.org/nl/out]
 
 {if !$is_mail}
@@ -109,11 +109,11 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
       {/foreach}
       {/foreach}
       <div class="foot1">
-        Cette lettre est envoyée à tous les Polytechniciens sur Internet par l'intermédiaire de Polytechnique.org.
+        Cette lettre est envoyÃ©e Ã  tous les Polytechniciens sur Internet par l'intermÃ©diaire de Polytechnique.org.
       </div>
       <div class="foot2">
         [<a href="https://www.polytechnique.org/nl">archives</a>&nbsp;|
-         <a href="https://www.polytechnique.org/nl/submit">écrire dans la NL</a>&nbsp;|
+         <a href="https://www.polytechnique.org/nl/submit">Ã©crire dans la NL</a>&nbsp;|
          <a href="https://www.polytechnique.org/nl/out">ne plus recevoir</a>]
       </div>
       </div>
@@ -124,4 +124,4 @@ ne plus recevoir : [https://www.polytechnique.org/nl/out]
 {/if}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

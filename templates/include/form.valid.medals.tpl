@@ -22,8 +22,8 @@
 
 
 <tr class="pair">
-  <td class="titre">Médaille :</td>
+  <td class="titre">MÃ©daille :</td>
   <td>{$valid->medal_name()}</td>
 </tr>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

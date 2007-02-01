@@ -20,30 +20,30 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Année de sortie</h1>
+<h1>AnnÃ©e de sortie</h1>
 
 {if $myorange}
 
 <p>
-  Tu recevras un mail dès que les changements demandés auront été effectués. 
+  Tu recevras un mail dÃ¨s que les changements demandÃ©s auront Ã©tÃ© effectuÃ©s. 
   Encore merci de nous faire confiance pour tes e-mails !
 </p>
 
 {else}
 
 <p>
-  Afin de pouvoir être considéré(e) à la fois dans ta promotion d'origine et ta
-  ou tes promotions d'adoption tu peux entrer ici ton année de sortie de l'école.
-  Plus précisément, il s'agit de l'année d'entrée en quatrième année ou année d'application.
-  Pour tes cocons d'origine (X{$promo}) il s'agit de l'année {math equation="a + b" a=$promo b=3}.
+  Afin de pouvoir Ãªtre considÃ©rÃ©(e) Ã  la fois dans ta promotion d'origine et ta
+  ou tes promotions d'adoption tu peux entrer ici ton annÃ©e de sortie de l'Ã©cole.
+  Plus prÃ©cisÃ©ment, il s'agit de l'annÃ©e d'entrÃ©e en quatriÃ¨me annÃ©e ou annÃ©e d'application.
+  Pour tes cocons d'origine (X{$promo}) il s'agit de l'annÃ©e {math equation="a + b" a=$promo b=3}.
 </p>
 
 <br />
 
 <form action="profile/orange" method="post">
-  <table class="bicol" cellpadding="4" summary="Année de sortie">
+  <table class="bicol" cellpadding="4" summary="AnnÃ©e de sortie">
     <tr>
-      <th>Année de sortie</th>
+      <th>AnnÃ©e de sortie</th>
     </tr>
     <tr>
       <td class="center"><input type="text" name="promo_sortie" value="{$promo_sortie_old}" /></td>
@@ -58,4 +58,4 @@
 
 <p>[<a href="profile/edit">Revenir au profil</a>]</p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

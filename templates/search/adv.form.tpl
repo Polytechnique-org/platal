@@ -33,7 +33,7 @@
   <table class="bicol" cellpadding="3" summary="Recherche">
     <tr>
       <th colspan="2">
-        Recherche avancée [<a href="search">&lt;&lt;&lt;&nbsp;Recherche simple</a>]
+        Recherche avancÃ©e [<a href="search">&lt;&lt;&lt;&nbsp;Recherche simple</a>]
       </th>
     </tr>
     <tr>
@@ -44,18 +44,18 @@
         <input type="text" name="name" size="32" value="{$smarty.request.name}" />
         {if $smarty.request.name && !$with_soundex && $smarty.request.recherche}
         <a class='smaller' href="search/adv?with_soundex=1&amp;{$url_args}">
-          étendre par proximité sonore
+          Ã©tendre par proximitÃ© sonore
         </a>
         {/if}
       </td>
     </tr>
     <tr>
-      <td>Prénom</td>
+      <td>PrÃ©nom</td>
       <td>
         <input type="text" name="firstname" size="32" value="{$smarty.request.firstname}" />
         {if $smarty.request.firstname && !$with_soundex && $smarty.request.recherche}
         <a class='smaller' href="search/adv?with_soundex=1&amp;{$url_args}">
-          étendre par proximité sonore
+          Ã©tendre par proximitÃ© sonore
         </a>
         {/if}
       </td>
@@ -90,7 +90,7 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />Indifférent
+              <input type="radio" name="woman" value="0" {if !$smarty.request.woman}checked="checked"{/if} />IndiffÃ©rent
             </td>
             <td style="width:100px">
               <input type="radio" name="woman" value="1" {if $smarty.request.woman eq 1}checked="checked"{/if} />Homme
@@ -108,7 +108,7 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} />Indifférent
+              <input type="radio" name="subscriber" value="0" {if !$smarty.request.subscriber}checked="checked"{/if} />IndiffÃ©rent
             </td>
             <td style="width:100px">
               <input type="radio" name="subscriber" value="1" {if $smarty.request.subscriber eq 1}checked="checked"{/if} />Inscrit
@@ -126,24 +126,24 @@
         <table>
           <tr>
             <td style="width:100px">
-              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} />Indifférent
+              <input type="radio" name="alive" value="0" {if !$smarty.request.alive}checked="checked"{/if} />IndiffÃ©rent
             </td>
             <td style="width:100px">
               <input type="radio" name="alive" value="1" {if $smarty.request.alive eq 1}checked="checked"{/if} />Vivant
             </td>
             <td style="width:100px">
-              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} />Décédé
+              <input type="radio" name="alive" value="2" {if $smarty.request.alive eq 2}checked="checked"{/if} />DÃ©cÃ©dÃ©
             </td>
           </tr>
         </table>
       </td>
     </tr>
     <tr>
-      <th colspan="2">Géographie</th>
+      <th colspan="2">GÃ©ographie</th>
     </tr>
     <tr>
       <td colspan="2">
-      <label for="only_current"><input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>chercher uniquement les adresses où les camarades sont actuellement.</label></td>
+      <label for="only_current"><input name="only_current" id="only_current" type="checkbox"{if $smarty.request.only_current} checked="checked"{/if}/>chercher uniquement les adresses oÃ¹ les camarades sont actuellement.</label></td>
     </tr>
     <tr>
       <td>Ville</td>
@@ -163,7 +163,7 @@
       </td>
     </tr>
     <tr>
-      <td>Région ou département</td>
+      <td>RÃ©gion ou dÃ©partement</td>
       <td id="region">
         {if $smarty.request.region}
           {assign var="region" value=$smarty.request.region}
@@ -174,7 +174,7 @@
       </td>
     </tr>
     <tr>
-      <th colspan="2">Activité</th>
+      <th colspan="2">ActivitÃ©</th>
     </tr>
     <tr>
       <td>Entreprise</td>
@@ -217,14 +217,14 @@
     <tr>
       <td colspan="2">
         <input type='checkbox' name='only_referent' {if $smarty.request.only_referent}checked='checked'{/if} />
-        chercher uniquement parmi les camarades se proposant comme référents
+        chercher uniquement parmi les camarades se proposant comme rÃ©fÃ©rents
       </td>
     </tr>
     <tr>
       <th colspan="2">Divers</th>
     </tr>
     <tr>
-      <td>Nationalité</td>
+      <td>NationalitÃ©</td>
       <td>
         <select name="nationalite">
           {iterate from=$choix_nats item=cn}
@@ -303,17 +303,17 @@
         </div>
         {if $smarty.session.auth ge AUTH_COOKIE}
           <input type='checkbox' name='order' value='date_mod' {if $smarty.request.order eq "date_mod"}checked='checked'{/if} />
-          mettre les fiches modifiées récemment en premier
+          mettre les fiches modifiÃ©es rÃ©cemment en premier
         {/if}
       </td>
     </tr>
   </table>
 </form>
 <p class="center">
-  <input type="button" value="Voir les résultats sur une carte" onclick="launch_form('geoloc/')"/>
+  <input type="button" value="Voir les rÃ©sultats sur une carte" onclick="launch_form('geoloc/')"/>
 </p>
 <p>
-  <strong>N.B.</strong> Le caractère joker * peut remplacer une ou plusieurs lettres dans les recherches.
+  <strong>N.B.</strong> Le caractÃ¨re joker * peut remplacer une ou plusieurs lettres dans les recherches.
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

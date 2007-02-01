@@ -21,7 +21,7 @@ function get_annuaire_infos($method, $params) {
 
     //verif du mdp
     if(!isset($params[0]) || ($params[0] != $globals->manageurs->manageurs_pass)){return false;}
-    //si on a adresse == -1 => on ne recupère aucune adresse
+    //si on a adresse == -1 => on ne recupÃ¨re aucune adresse
     if(isset($params[2]) && ($params[2] == -1)) unset($params[2]);
 
 
@@ -79,10 +79,10 @@ function get_annuaire_infos($method, $params) {
                     }
                 }
                 
-                // on rajoute les numéros de tél
+                // on rajoute les numÃ©ros de tÃ©l
                 $adrid_index = array();
                 foreach ($array['adresse'] as $i => $a) $adrid_index[$a['adrid']] = $i;
-                // on rajoute les numéros de tels
+                // on rajoute les numÃ©ros de tels
                 $restel = XDB::iterator(
                     "SELECT t.tel, t.tel_type, t.adrid
                        FROM tels AS t
@@ -92,7 +92,7 @@ function get_annuaire_infos($method, $params) {
                 foreach ($array['adresse'] as $i => $adr) {
                     unset($lasttel);
                     foreach($adr['tels'] as $j => $t){
-                        if (!isset($array['adresse'][$i]['tel']) && (strpos($t['tel_type'], 'Tél') === 0)) $array['adresse'][$i]['tel'] = $t['tel']; 
+                        if (!isset($array['adresse'][$i]['tel']) && (strpos($t['tel_type'], 'TÃ©l') === 0)) $array['adresse'][$i]['tel'] = $t['tel']; 
                         elseif (!isset($array['adresse'][$i]['fax']) && (strpos($t['tel_type'], 'Fax') === 0)) $array['adresse'][$i]['fax'] = $t['tel'];
                         else $lasttel = $t['tel'];
                         if (isset($array['adresse'][$i]['tel']) && isset($array['adresse'][$i]['fax'])) break; 
@@ -110,9 +110,9 @@ function get_annuaire_infos($method, $params) {
             }
         }
 
-        if ($array) { // on a bien eu un résultat : le matricule etait bon
+        if ($array) { // on a bien eu un rÃ©sultat : le matricule etait bon
 
-            //on n'envoit que l'age à manageurs le format est YYYY-MM-DD 0123-56-89
+            //on n'envoit que l'age Ã  manageurs le format est YYYY-MM-DD 0123-56-89
             $year  = (int) substr($array['age'],0,4);
             $month = (int) substr($array['age'],5,2);
             $day   = (int) substr($array['age'],8,2);
@@ -177,4 +177,5 @@ function get_nouveau_infos($method, $params) {
 
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

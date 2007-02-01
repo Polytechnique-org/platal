@@ -21,4 +21,5 @@ $req = new ListeReq(0, "promo$promo", "Liste de la promotion $promo",
                     1 /*private*/, 2 /*moderate*/, 0 /*free subscription*/,
                     array($owner), array());
 $req->submit();
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

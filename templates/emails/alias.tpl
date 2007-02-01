@@ -23,16 +23,16 @@
 
 {if $success}
   <p>
-  La demande de crÈation des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
-  <strong>{$success}@{#globals.mail.alias_dom2#}</strong> a bien ÈtÈ enregistrÈe. AprËs
-    vÈrification, tu recevras un mail te signalant l'ouverture de ces adresses.
+  La demande de cr√©ation des alias <strong>{$success}@{#globals.mail.alias_dom#}</strong> et
+  <strong>{$success}@{#globals.mail.alias_dom2#}</strong> a bien √©t√© enregistr√©e. Apr√®s
+    v√©rification, tu recevras un mail te signalant l'ouverture de ces adresses.
   </p>
   <p>
     Encore merci de nous faire confiance pour tes e-mails !
   </p>
 {else}
   <h1>
-    Adresses e-mail personnalisÈes
+    Adresses e-mail personnalis√©es
   </h1>
 
 {if $actuel}
@@ -43,39 +43,39 @@
         <input type="checkbox" {if $mail_public}checked="checked"{/if}
             onclick="
                 Ajax.update_html(null,'{$globals->baseurl}/emails/alias/set/'+(this.checked?'public':'private'));
-                document.getElementById('mail_public').innerHTML = (this.checked?'public et apparaÓt donc sur ta fiche':'privÈ et n\'apparaÓt nulle part sur le site') + '.';
+                document.getElementById('mail_public').innerHTML = (this.checked?'public et appara√Æt donc sur ta fiche':'priv√© et n\'appara√Æt nulle part sur le site') + '.';
             " />
       </td>
       <td>
         Ton alias est actuellement : <strong>{$actuel}</strong>. Il est pour l'instant
-        <span id="mail_public">{if $mail_public}public et apparaÓt donc sur ta fiche.{else}privÈ et n'apparaÓt nulle part sur le site.{/if}</span>
+        <span id="mail_public">{if $mail_public}public et appara√Æt donc sur ta fiche.{else}priv√© et n'appara√Æt nulle part sur le site.{/if}</span>
       </td>
     </tr>
   </table>
     
 {else}
   <p>
-    Pour plus de <strong>convivialitÈ</strong> dans l'utilisation de tes mails, tu peux choisir une adresse
-    e-mail discrËte et personnalisÈe. Ce nouvel e-mail peut par exemple correspondre ‡ ton surnom.
+    Pour plus de <strong>convivialit√©</strong> dans l'utilisation de tes mails, tu peux choisir une adresse
+    e-mail discr√®te et personnalis√©e. Ce nouvel e-mail peut par exemple correspondre √† ton surnom.
   </p>
 {/if}
 
   <p>
-    Pour de plus amples informations sur ce service, nous t'invitons ‡ consulter
-    <a href="Xorg/AliasMelix">cette documentation</a> qui rÈpondra
-    sans doute ‡ toutes tes questions
+    Pour de plus amples informations sur ce service, nous t'invitons √† consulter
+    <a href="Xorg/AliasMelix">cette documentation</a> qui r√©pondra
+    sans doute √† toutes tes questions
   </p>
 
   {if $actuel}
   <p>
-  <strong>Note : tu as dÈj‡ l'alias {$actuel}, or tu ne peux avoir qu'un seul alias ‡ la fois.
-    Si tu effectues une nouvelle demande l'ancien alias sera effacÈ.</strong>
+  <strong>Note : tu as d√©j√† l'alias {$actuel}, or tu ne peux avoir qu'un seul alias √† la fois.
+    Si tu effectues une nouvelle demande l'ancien alias sera effac√©.</strong>
   </p>
   {/if}
 
   {if $demande}
   <p>
-  <strong>Note : tu as dÈj‡ effectuÈ une demande pour {$demande->alias}, dont le traitement est
+  <strong>Note : tu as d√©j√† effectu√© une demande pour {$demande->alias}, dont le traitement est
     en cours. Si tu souhaites modifier ceci refais une demande, sinon ce n'est pas la peine.</strong>
   </p>
   {/if}
@@ -87,7 +87,7 @@
         <th>Demande d'alias</th>
       </tr>
       <tr>
-        <td>Alias demandÈ :</td>
+        <td>Alias demand√© :</td>
       </tr>
       <tr>
         <td><input type="text" name="alias" value="{$r_alias}" />@{#globals.mail.alias_dom#} et @{#globals.mail.alias_dom2#}</td>
@@ -100,14 +100,14 @@
                 <input type="checkbox" name="public" {if $mail_public}checked="checked"{/if}/>
               </td>
               <td class="texte">
-                adresse publique (apparaÓt sur ta fiche).
+                adresse publique (appara√Æt sur ta fiche).
               </td>
              </tr>
           </table>
         </td>
       </tr>
       <tr>
-        <td>BrËve explication :</td>
+        <td>Br√®ve explication :</td>
       </tr>
       <tr>
         <td><textarea rows="5" cols="50" name="raison">{$r_raison}</textarea></td>
@@ -119,7 +119,7 @@
   </form>
   {if $actuel}
   <form action="emails/alias/delete/{$actuel}" method="post"
-      onsubmit="return confirm('Es-tu s˚r de vouloir supprimer {$actuel} ?')">
+      onsubmit="return confirm('Es-tu s√ªr de vouloir supprimer {$actuel} ?')">
     <table class="bicol" cellpadding="4" summary="Suppression d'alias">
       <tr>
         <th>Suppression d'alias</th>
@@ -134,4 +134,4 @@
   {/if}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

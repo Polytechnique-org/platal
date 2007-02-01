@@ -23,4 +23,4 @@ WD=/home/web/prod/platal/bin/cron
 
 # homonymes
 0 0 4 * * *	web	cd $WD; ./homonymes.php
-# vim:set noet syntax=crontab ts=8 sw=8 sts=8:
+# vim:set noet syntax=crontab ts=8 sw=8 sts=8 enc=utf-8:

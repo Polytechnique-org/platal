@@ -22,7 +22,7 @@
 
 <h1>Marketing Polytechnique.org</h1>
 
-<table class="bicol" cellpadding="3" summary="Système">
+<table class="bicol" cellpadding="3" summary="SystÃ¨me">
   <tr>
     <th>actions disponibles</th>
   </tr>
@@ -32,7 +32,7 @@
       &nbsp;&nbsp;|&nbsp;&nbsp;
       <a href="marketing/promo">Marketing promo</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="marketing/volontaire">Addresses données par les inscrits</a>
+      <a href="marketing/volontaire">Addresses donnÃ©es par les inscrits</a>
     </td>
   </tr>
 </table>
@@ -40,15 +40,15 @@
 <br />
 
 <p>
-Nombre d'X vivants d'après notre base de données : {$stats.vivants}<br />
-Nombre d'X vivants inscrits à Polytechnique.org : {$stats.inscrits}<br />
+Nombre d'X vivants d'aprÃ¨s notre base de donnÃ©es : {$stats.vivants}<br />
+Nombre d'X vivants inscrits Ã  Polytechnique.org : {$stats.inscrits}<br />
 Soit un pourcentage d'inscrits de : {$stats.ins_rate} %<br />
 </p>
 
 <p>
 Parmi ceux-ci :<br />
-Nombre d'X vivants depuis 1972 d'après notre base de données : {$stats.vivants72}<br />
-Nombre d'X vivants depuis 1972 inscrits à Polytechnique.org : {$stats.inscrits72}<br />
+Nombre d'X vivants depuis 1972 d'aprÃ¨s notre base de donnÃ©es : {$stats.vivants72}<br />
+Nombre d'X vivants depuis 1972 inscrits Ã  Polytechnique.org : {$stats.inscrits72}<br />
 Soit un pourcentage d'inscrits de : {$stats.ins72_rate} % <br />
 </p>
 
@@ -59,10 +59,10 @@ Soit un pourcentage d'inscrites de : {$stats.inse_rate} % <br />
 </p>
 
 <p>
-Nombre d'<a href="marketing/this_week">inscrits depuis le début de la semaine</a> : {$nbInsSem}<br />
-Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2ème phase non terminée) : {$nbInsEnCours} <br />
-Nombre d'envois marketing effectués n'ayant pas abouti : {$nbInsMarket}<br />
+Nombre d'<a href="marketing/this_week">inscrits depuis le dÃ©but de la semaine</a> : {$nbInsSem}<br />
+Nombre d'<a href="marketing/relance">inscriptions en cours</a> (2Ã¨me phase non terminÃ©e) : {$nbInsEnCours} <br />
+Nombre d'envois marketing effectuÃ©s n'ayant pas abouti : {$nbInsMarket}<br />
 Nombre d'envois marketing ayant abouti cette semaine : {$nbInsMarkOK}
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

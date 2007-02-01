@@ -121,7 +121,7 @@ function get_event_participants($evt, $item_id, $tri, $limit = '') {
     $query =
           "SELECT  IF(m.origine != 'X',m.nom,IF(u.nom_usage<>'', u.nom_usage, u.nom)) AS nom,
                    IF(m.origine != 'X',m.prenom,u.prenom) AS prenom,
-                   IF(m.origine != 'X','extérieur',u.promo) AS promo,
+                   IF(m.origine != 'X','extÃ©rieur',u.promo) AS promo,
                    IF(m.origine != 'X' OR u.perms = 'pending',m.email,a.alias) AS email,
                    IF(m.origine != 'X',m.sexe,FIND_IN_SET('femme', u.flags)) AS femme,
                    m.perms='admin' AS admin,
@@ -236,23 +236,23 @@ function event_change_shortname(&$page, $old, $new)
     if (is_null($old)) {
         $old = '';
     }
-    // Quelques vérifications sur l'alias (caractères spéciaux)
+    // Quelques vÃ©rifications sur l'alias (caractÃ¨res spÃ©ciaux)
     if ($new && !preg_match( "/^[a-zA-Z0-9\-.]{3,20}$/", $new)) {
-        $page->trig("Le raccourci demandé n'est pas valide.
-                    Vérifie qu'il comporte entre 3 et 20 caractères
-                    et qu'il ne contient que des lettres non accentuées,
-                    des chiffres ou les caractères - et .");
+        $page->trig("Le raccourci demandÃ© n'est pas valide.
+                    VÃ©rifie qu'il comporte entre 3 et 20 caractÃ¨res
+                    et qu'il ne contient que des lettres non accentuÃ©es,
+                    des chiffres ou les caractÃ¨res - et .");
         return $old;
     }
 
-    //vérifier que l'alias n'est pas déja pris
+    //vÃ©rifier que l'alias n'est pas dÃ©ja pris
     if ($new && $old != $new) {
         $res = XDB::query('SELECT COUNT(*)
                              FROM groupex.evenements
                             WHERE short_name = {?}',
                            $new);
         if ($res->fetchOneCell() > 0) {
-            $page->trig("Le raccourci demandé est déjà utilisé. Choisis en un autre.");
+            $page->trig("Le raccourci demandÃ© est dÃ©jÃ  utilisÃ©. Choisis en un autre.");
             return $old;
         }
     }
@@ -323,5 +323,5 @@ function event_change_shortname(&$page, $old, $new)
     return $old;
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

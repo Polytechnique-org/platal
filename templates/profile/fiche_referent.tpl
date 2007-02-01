@@ -34,7 +34,7 @@
 
   {if $expertise != '' || $secteurs|count || $pays|count }
 
-  <h2>Informations de référent :</h2>
+  <h2>Informations de rÃ©fÃ©rent :</h2>
   
   <div id="fiche_referent">
     {if $expertise}
@@ -83,4 +83,4 @@
 
   
 </div>
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

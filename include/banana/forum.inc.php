@@ -121,7 +121,7 @@ class ForumsBanana extends Banana
                                 . 'Marquer tous les messages comme lus'
                                 . '</a>', array('forums', 'thread', 'message'));
         }   
-        Banana::$page->registerPage('profile', utf8_encode('Préférences'), null);
+        Banana::$page->registerPage('profile', utf8_encode('PrÃ©fÃ©rences'), null);
         
 
         // Run Banana
@@ -159,4 +159,5 @@ class ForumsBanana extends Banana
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

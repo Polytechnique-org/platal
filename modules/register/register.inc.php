@@ -66,11 +66,11 @@ function check_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
               FROM  auth_user_md5
              WHERE  matricule={?} and deces = 0', $ourmat);
     list ($uid, $_promo, $_already, $_nom, $_prenom) = $res->fetchOneRow();
-    if ($_already) { return "tu es déjà inscrit ou ton matricule est incorrect !"; }
+    if ($_already) { return "tu es dÃ©jÃ  inscrit ou ton matricule est incorrect !"; }
     if ($_promo != $promo) { return "erreur de matricule"; }
 
     if (!user_cmp($prenom, $nom, $_prenom, $_nom)) {
-        return "erreur dans l'identification.  Réessaie, il y a une erreur quelque part !";
+        return "erreur dans l'identification.  RÃ©essaie, il y a une erreur quelque part !";
     }
 
     $ourid = $uid;
@@ -103,10 +103,10 @@ function check_old_mat($promo, $mat, $nom, $prenom, &$ourmat, &$ourid)
         if (user_cmp($prenom, $nom, $_prenom, $_nom)) {
             $ourid  = $_uid;
             $ourmat = $_mat;
-            return "Tu es vraisemblablement déjà inscrit !";
+            return "Tu es vraisemblablement dÃ©jÃ  inscrit !";
         }
     }
-    return "erreur: vérifie que tu as bien orthographié ton nom !";
+    return "erreur: vÃ©rifie que tu as bien orthographiÃ© ton nom !";
 }
 
 // }}}
@@ -155,7 +155,7 @@ function create_aliases (&$sub)
     $res      = XDB::query('SELECT COUNT(*) FROM aliases WHERE alias={?}', $forlife);
     if ($res->fetchOneCell() > 0) {
         return "Tu as un homonyme dans ta promo, il faut traiter ce cas manuellement.<br />".
-            "envoie un mail à <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> en expliquant ta situation.";
+            "envoie un mail Ã  <a href=\"mailto:support@polytechnique.org\">support@polytechnique.org</a> en expliquant ta situation.";
     }
     
     $res      = XDB::query('SELECT id, type, expire FROM aliases WHERE alias={?}', $mailorg);
@@ -181,25 +181,25 @@ function create_aliases (&$sub)
                 
                 "Un homonyme vient de s'inscrire. La politique de Polytechnique.org est de fournir des\n".
                 "adresses mail devinables, nous ne pouvons donc pas conserver ton alias '$mailorg' qui\n".
-                "correspond maintenant à deux personnes.\n\n".
+                "correspond maintenant Ã  deux personnes.\n\n".
                 
-                "Tu gardes tout de même l'usage de cet alias pour un mois encore à compter de ce jour.\n\n".
+                "Tu gardes tout de mÃªme l'usage de cet alias pour un mois encore Ã  compter de ce jour.\n\n".
                 
-                "Lorsque cet alias sera désactivé, l'adresse $mailorg@polytechnique.org renverra vers un \n".
-                "robot qui indiquera qu'il y a plusieurs personnes portant le même nom ;\n".
-                "cela évite que l'un des homonymes reçoive des courriels destinés à l'autre.\n\n".
+                "Lorsque cet alias sera dÃ©sactivÃ©, l'adresse $mailorg@polytechnique.org renverra vers un \n".
+                "robot qui indiquera qu'il y a plusieurs personnes portant le mÃªme nom ;\n".
+                "cela Ã©vite que l'un des homonymes reÃ§oive des courriels destinÃ©s Ã  l'autre.\n\n".
                 
                 "Pour te connecter au site, tu pourras utiliser comme identifiant n'importe lequel de tes\n".
                 "autres alias :\n".
                 "    ".join(', ', $als)."\n";
-                "Commence dès aujourd'hui à communiquer à tes correspondants la nouvelle adresse que tu comptes utiliser !\n\n".
+                "Commence dÃ¨s aujourd'hui Ã  communiquer Ã  tes correspondants la nouvelle adresse que tu comptes utiliser !\n\n".
                 
-                "En nous excusant pour le désagrément occasionné,\n".
+                "En nous excusant pour le dÃ©sagrÃ©ment occasionnÃ©,\n".
                 "Cordialement,\n\n".
                 
                 "-- \n".
-                "L'équipe de Polytechnique.org\n".
-                "\"Le portail des élèves & anciens élèves de l'X\"";
+                "L'Ã©quipe de Polytechnique.org\n".
+                "\"Le portail des Ã©lÃ¨ves & anciens Ã©lÃ¨ves de l'X\"";
             $mailer->SetTxtBody(wordwrap($msg,72));
             $mailer->send();
         }
@@ -247,4 +247,5 @@ function finish_ins($sub_state)
 }
 
 // }}}
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

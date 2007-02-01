@@ -154,13 +154,14 @@ class NewsletterModule extends PLModule
     }
 
     function handler_admin_nl_cat(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : Catégories');
-        $page->assign('title', 'Gestion des catégories de la newsletter');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Newsletter : CatÃ©gories');
+        $page->assign('title', 'Gestion des catÃ©gories de la newsletter');
         $table_editor = new PLTableEditor('admin/newsletter/categories','newsletter_cat','cid');
-        $table_editor->describe('titre','intitulé',true);
+        $table_editor->describe('titre','intitulÃ©',true);
         $table_editor->describe('pos','position',true);
         $table_editor->apply($page, $action, $id);
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

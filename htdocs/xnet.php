@@ -35,4 +35,5 @@ if (!($path = Env::v('n')) || substr($path, 0, 4) != 'Xnet') {
 
 include 'wiki/engine.php';
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

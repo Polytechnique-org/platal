@@ -21,5 +21,5 @@
 
 XDB::execute("UPDATE auth_user_quick SET profile_medals_pub = {?} WHERE user_id = {?}", $medals_pub, S::v('uid', -1));
 
-// vim:set et sws=4 sw=4 sts=4:
+// vim:set et sws=4 sw=4 sts=4 enc=utf-8:
 ?>

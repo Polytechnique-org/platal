@@ -21,16 +21,16 @@
 {**************************************************************************}
 
 
-<h1>Télépaiments</h1>
+<h1>TÃ©lÃ©paiments</h1>
 
 {if $erreur}
-<p>Aucun paiement n'a été effectué.</p>
+<p>Aucun paiement n'a Ã©tÃ© effectuÃ©.</p>
 {else}
 <p>Merci de nous avoir fait confiance pour ton paiement. La transaction
-est terminée et s'est déroulée correctement. Tu vas recevoir un email accusant
-réception de ton paiement.</p>
+est terminÃ©e et s'est dÃ©roulÃ©e correctement. Tu vas recevoir un email accusant
+rÃ©ception de ton paiement.</p>
 
 <p>{$texte|nl2br}</p>
 {/if}
-<p>[<a href='payment'>retour aux Télépaiements</a>]</p>
-{* vim:set et sw=2 sts=2 sws=2: *}
+<p>[<a href='payment'>retour aux TÃ©lÃ©paiements</a>]</p>
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

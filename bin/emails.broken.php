@@ -79,7 +79,7 @@ foreach ($emails as $_email) {
             $mail->assign('x', $x);
             $mail->assign('email', $email);
             $mail->send();
-            echo "$email : mail envoyé\n";
+            echo "$email : mail envoyÃ©\n";
         }
 
         if (!isset($list[$x['alias']])) {
@@ -119,4 +119,5 @@ $fo = fopen($output, 'w+');
 fwrite($fo, $csv);
 fclose($fo);
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

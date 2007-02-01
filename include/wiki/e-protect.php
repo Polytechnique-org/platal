@@ -130,5 +130,5 @@ function eProtectEncode ($pagename,&$page,&$new) {
   $text = preg_replace("/$KeepToken(\\d+)$KeepToken/e",'$KPV[$1]',$text);   // put the [= .. =] back in to the text
   $new['text'] = $text;
 }
-
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

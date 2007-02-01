@@ -41,7 +41,7 @@
 {$am->signature('text')}
 
 --------------------------------------------------------------------
-Cette lettre est envoyÈe par l'AX gr‚ce aux outils de Polytechnique.org.
+Cette lettre est envoy√©e par l'AX gr√¢ce aux outils de Polytechnique.org.
 
 archives         : [https://www.polytechnique.org/ax]
 ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
@@ -74,7 +74,7 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
       <div class="body">{$am->body('html')|smarty:nodefaults}</div>
       <div class="signature">{$am->signature('html')|smarty:nodefaults}</div>
       <div class="foot1">
-        Cette lettre est envoyÈe par l'AX gr‚ce aux outils de Polytechnique.org.
+        Cette lettre est envoy√©e par l'AX gr√¢ce aux outils de Polytechnique.org.
       </div>
       <div class="foot2">
         [<a href="https://www.polytechnique.org/ax">archives</a>&nbsp;|
@@ -88,4 +88,4 @@ ne plus recevoir : [https://www.polytechnique.org/ax/out{if $hash}/{$hash}{/if}]
 {/if}
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

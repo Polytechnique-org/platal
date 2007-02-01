@@ -26,10 +26,10 @@
 
 <div class="blocunite{if !$i}tab{/if}">
 
-  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise n°{$i+1}">
+  <table class="bicol" cellspacing="0" cellpadding="0" summary="Profil: Informations professionnelles - Entreprise nÂ°{$i+1}">
     <tr>
       <th colspan="2">
-        Informations professionnelles - Entreprise n°{$i+1}
+        Informations professionnelles - Entreprise nÂ°{$i+1}
       </th>
     </tr>
     {include file=include/flags.radio.tpl name="pubpro[$i]" val=$pubpro.$i}
@@ -44,7 +44,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">Secteur d'activité</span>
+        <span class="titre">Secteur d'activitÃ©</span>
       </td>
       <td class="cold">
         <select name="secteur[{$i}]" onchange="this.form.submit();">
@@ -54,7 +54,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">Sous-Secteur d'activité</span>
+        <span class="titre">Sous-Secteur d'activitÃ©</span>
       </td>
       <td class="cold">
         <select name="ss_secteur[{$i}]">
@@ -64,7 +64,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">Poste occupé</span>
+        <span class="titre">Poste occupÃ©</span>
       </td>
       <td class="cold">
         <input type="text" size="35" maxlength="120" name="poste[{$i}]"
@@ -73,7 +73,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">Fonction occupée</span>
+        <span class="titre">Fonction occupÃ©e</span>
       </td>
       <td class="cold">
         <select name="fonction[{$i}]">
@@ -134,7 +134,7 @@
     </tr>
     <tr>
       <td class="colg">
-        <span class="titre">Région ou département</span><br />
+        <span class="titre">RÃ©gion ou dÃ©partement</span><br />
         <span class="comm">(selon pays)</span>
       </td>
       <td class="cold">
@@ -146,7 +146,7 @@
     {include file=include/flags.radio.tpl name="tel_pubpro[$i]" val=$tel_pubpro.$i}
     <tr>
       <td class="colg">
-        <span class="titre">Téléphone professionnel</span>
+        <span class="titre">TÃ©lÃ©phone professionnel</span>
       </td>
       <td>
         <input type="text" size="18" maxlength="18" name="telpro[{$i}]" value="{$telpro.$i}" />
@@ -207,7 +207,7 @@
               <input type="checkbox" name="accesCV" checked="checked" disabled="disabled" />
             </td>
             <td class="texte">
-              privé
+              privÃ©
             </td>
           </tr>
         </table>
@@ -226,4 +226,4 @@
   </table>
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

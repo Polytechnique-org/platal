@@ -71,4 +71,5 @@ function smarty_function_select_db_table($params, &$smarty) {
                           $params['where'], $params['join'], $params['group']);
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

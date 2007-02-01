@@ -20,16 +20,16 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : <a href='{$platal->ns}events'>Evénements</a> </h1>
+<h1>{$asso.nom} : <a href='{$platal->ns}events'>EvÃ©nements</a> </h1>
 
 <p>
-L'événement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
+L'Ã©vÃ©nement {$evt.intitule} {if $evt.titre} - {$evt.titre}{/if} comptera
 {$evt.nb_tot} personne{if $evt.nb_tot > 1}s{/if}.
 </p>
 
 {if $evt.participant_list}
 <p class="center">
-[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un mail à ceux qui viennent</a>]
+[<a href="mailto:?bcc={$evt.short_name}-participants@{#globals.xnet.evts_domain#}">envoyer un mail Ã  ceux qui viennent</a>]
 -
 [<a href="mailto:?bcc={$evt.short_name}-absents@{#globals.xnet.evts_domain#}">envoyer un mail aux membres non inscrits</a>]
 </p>
@@ -65,12 +65,12 @@ function remplitAuto(mail) {
 
 {if $oublis}
 <p class="erreur">
-Ils ont payé mais ont oublié de s'inscrire :
+Ils ont payÃ© mais ont oubliÃ© de s'inscrire :
 </p>
 
-<table summary="payé mais non inscrits" class="tinybicol">
+<table summary="payÃ© mais non inscrits" class="tinybicol">
   <tr>
-    <th>Prénom NOM</th>
+    <th>PrÃ©nom NOM</th>
     <th>Promo</th>
     <th>Infos</th>
     <th>Montant</th>
@@ -100,7 +100,7 @@ Ils ont payé mais ont oublié de s'inscrire :
 
 <table summary="participants a l'evenement" class="{if $tout}large{else}tiny{/if}">
   <tr>
-    <th>Prénom NOM</th>
+    <th>PrÃ©nom NOM</th>
     <th>Promo</th>
     <th>Info</th>
     {if $tout}
@@ -113,7 +113,7 @@ Ils ont payé mais ont oublié de s'inscrire :
       {/if}
       {if $is_admin && $evt.money}
         <th>Montant</th>
-        <th>Payé</th>
+        <th>PayÃ©</th>
       {/if}
     {else}
     <th>Nombre</th>
@@ -166,13 +166,13 @@ Ils ont payé mais ont oublié de s'inscrire :
 {if $is_admin}
 
 <p class="descr">
-[<a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">Télécharger le fichier Excel</a>]
+[<a href="{$platal->ns}events/csv/{$evt.eid}/{$platal->argv[2]}/{$evt.intitule}{if $evt.titre}.{$evt.titre}{/if}.csv">TÃ©lÃ©charger le fichier Excel</a>]
 </p>
 
 <hr />
 
 <p class="descr">
-En tant qu'administrateur, tu peux fixer la venue (accompagnée ou pas) d'un des membres du groupe.
+En tant qu'administrateur, tu peux fixer la venue (accompagnÃ©e ou pas) d'un des membres du groupe.
 Donne ici son mail, ainsi que le nombre de participants.
 </p>
 
@@ -200,9 +200,9 @@ Donne ici son mail, ainsi que le nombre de participants.
 <hr />
 
 <p class="descr">
-En tant qu'administrateur, tu peux entrer un paiement reçu par une autre source que le télépaiement
-du site X.org. Ce montant s'ajoutera aux montants déjà entrés. Si tu as fait une erreur, tu peux
-entrer un montant négatif.
+En tant qu'administrateur, tu peux entrer un paiement reÃ§u par une autre source que le tÃ©lÃ©paiement
+du site X.org. Ce montant s'ajoutera aux montants dÃ©jÃ  entrÃ©s. Si tu as fait une erreur, tu peux
+entrer un montant nÃ©gatif.
 </p>
 
 <p class="descr">
@@ -221,4 +221,4 @@ Note que tu peux cliquer sur les noms des membres pour remplir automatiquement l
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -21,7 +21,7 @@
 
 global $adresses;
 
-//on génère une éventuelle nouvelle adresse
+//on gÃ©nÃ¨re une Ã©ventuelle nouvelle adresse
 if (!isset($adresses) || (count($adresses) < $nb_adr_max)){
   $adrid = generate_new_adrid();
   $adresses[$adrid]['adrid'] = $adrid;
@@ -45,11 +45,11 @@ unset($adr);
 unset($adrid);
 
 reset($adresses);
-//on génère un éventuel nouveau tel pour chaque adresse
+//on gÃ©nÃ¨re un Ã©ventuel nouveau tel pour chaque adresse
 foreach($adresses as $adrid => $adr){
   if (!isset($adr['tels'])  || count($adr['tels']) == 0) {
     $adresses[$adrid]['tels'] = array(
-      array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Tél.', 'telid' => 0, 'new_tel' => true),
+      array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'TÃ©l.', 'telid' => 0, 'new_tel' => true),
       array('tel' => '', 'tel_pub' => 'private', 'tel_type' => 'Fax', 'telid' => 1, 'new_tel' => true));
   } elseif (count($adr['tels']) < $nb_tel_max) {
     $adresses[$adrid]['tels'][] = 
@@ -106,4 +106,5 @@ $page->assign('nb_adr',$nb_adr+1);
 
 $page->assign('adresses', $adresses);
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

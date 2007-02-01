@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Proposition d'information événementielle</h1>
+<h1>Proposition d'information Ã©vÃ©nementielle</h1>
 
 {if $action eq "proposer" && trim($titre) && trim($texte)}
 
@@ -34,18 +34,18 @@ Voici ton annonce :
 </table>
 
 <p>
-Ce message est à destination
+Ce message est Ã  destination
 {if $promo_min || $promo_max}
-des promotions {if $promo_min}X{$promo_min}{/if} {if $promo_max}jusqu'à X{$promo_max}{else} et plus{/if}
+des promotions {if $promo_min}X{$promo_min}{/if} {if $promo_max}jusqu'Ã  X{$promo_max}{else} et plus{/if}
 {else}
 de toutes les promotions
 {/if}
-et sera affiché sur la page d'accueil jusqu'au {$peremption|date_format}.
+et sera affichÃ© sur la page d'accueil jusqu'au {$peremption|date_format}.
 </p>
 
 {if $valid_mesg}
 <p>
-Tu as ajouté le message suivant à l'intention du validateur : {$valid_mesg|nl2br}
+Tu as ajoutÃ© le message suivant Ã  l'intention du validateur : {$valid_mesg|nl2br}
 </p>
 {/if}
 
@@ -67,13 +67,13 @@ Tu as ajouté le message suivant à l'intention du validateur : {$valid_mesg|nl2br
 
 {if $ok}
 <p>
-Ta proposition a bien été enregistrée, un administrateur va se charger de la valider aussi rapidement que possible.
+Ta proposition a bien Ã©tÃ© enregistrÃ©e, un administrateur va se charger de la valider aussi rapidement que possible.
 </p>
 <p>
-Merci pour ta contribution à la vie du site!
+Merci pour ta contribution Ã  la vie du site!
 </p>
 <p>
-<a href="events">Retour à la page d'accueil</a>
+<a href="events">Retour Ã  la page d'accueil</a>
 </p>
 {else}
 <p class="erreur">
@@ -89,4 +89,4 @@ Merci de nous <a href="Xorg/NousContacter">contacter</a>!
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -22,22 +22,22 @@
 
 {include file="register/breadcrumb.tpl"}
 
-<h1>Pré-inscription réussie</h1>
+<h1>PrÃ©-inscription rÃ©ussie</h1>
 
 <p>
-La pré-inscription que tu viens de soumettre a été enregistrée.
+La prÃ©-inscription que tu viens de soumettre a Ã©tÃ© enregistrÃ©e.
 </p>
 <p>
 Les instructions te permettant notamment d'activer ton e-mail
 <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>, ainsi que ton mot de passe pour
-accéder au site viennent de t'être envoyés à l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
+accÃ©der au site viennent de t'Ãªtre envoyÃ©s Ã  l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
 </p>
 <p>
-Tu n'as que quelques jours pour suivre ces instructions après quoi la pré-inscription
-est effacée automatiquement de nos bases et il faut tout recommencer.
+Tu n'as que quelques jours pour suivre ces instructions aprÃ¨s quoi la prÃ©-inscription
+est effacÃ©e automatiquement de nos bases et il faut tout recommencer.
 </p>
 <p>
-Si tu ne reçois rien, vérifie bien l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
+Si tu ne reÃ§ois rien, vÃ©rifie bien l'adresse <strong>{$smarty.session.sub_state.email}</strong>.
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

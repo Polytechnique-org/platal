@@ -35,7 +35,7 @@
   <table class="bicol" cellpadding="3" cellspacing="0">
     <tr>
       <th colspan='2'>
-        Propriétés de la newsletter
+        PropriÃ©tÃ©s de la newsletter
       </th>
     </tr>
     <tr>
@@ -100,10 +100,10 @@
 <table class="bicol" cellpadding="3" cellspacing="0">
   <tr>
     <td>
-      Créer un nouvel article ...
+      CrÃ©er un nouvel article ...
     </td>
     <td style='vertical-align:middle; border-left: 1px gray solid'>
-      [<a href="admin/newsletter/edit/{$nl->_id}/new#edit">créer</a>]
+      [<a href="admin/newsletter/edit/{$nl->_id}/new#edit">crÃ©er</a>]
     </td>
   </tr>
   {foreach from=$nl->_arts item=arts key=cat}
@@ -166,7 +166,7 @@
       </td>
     </tr>
     <tr class="impair">
-      <td class='titre'>Catégorie</td>
+      <td class='titre'>CatÃ©gorie</td>
       <td>
         <select name='cid'>
           <option value='0'>-- none --</option>
@@ -206,4 +206,4 @@
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

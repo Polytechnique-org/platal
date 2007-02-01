@@ -36,12 +36,13 @@ function smarty_modifier_date_format($string, $format = '%x', $default_date=null
     }
 
     if ( $t != -1 ) {
-        return strftime($f , $t);
+        return utf8_encode(strftime($f , $t));
     } else {
         require_once('Date.php');
         $date = new Date($d);
-        return $date->format($f);
+        return utf8_encode($date->format($f));
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

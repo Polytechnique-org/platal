@@ -30,7 +30,7 @@ class OrangeReq extends Validate
     var $promo;
     var $promo_sortie;
     
-    var $rules = "A priori accepter (la validation sert à repousser les
+    var $rules = "A priori accepter (la validation sert Ã  repousser les
     petits malins). Refuse si tu connais la personne et que tu es sure 
     qu'elle n'est pas orange.";
 
@@ -65,10 +65,10 @@ class OrangeReq extends Validate
     function _mail_body($isok)
     {
         if ($isok) {
-            $res = "  La demande de changement de promo de sortie que tu as demandée vient d'être effectuée.";
+            $res = "  La demande de changement de promo de sortie que tu as demandÃ©e vient d'Ãªtre effectuÃ©e.";
             return $res;
         } else {
-            return "  La demande de changement de promo de sortie tu avais faite a été refusée.";
+            return "  La demande de changement de promo de sortie tu avais faite a Ã©tÃ© refusÃ©e.";
         }
     }
 
@@ -85,5 +85,5 @@ class OrangeReq extends Validate
 }
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

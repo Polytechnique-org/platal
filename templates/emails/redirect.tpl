@@ -33,15 +33,15 @@
 {/if}
 {if $retour == $smarty.const.ERROR_LOOP_EMAIL}
   <p class="erreur">
-  Erreur: {$smarty.session.forlife}@{#globals.mail.domain#} ne doit pas être renvoyé
-  vers lui-même, ni vers son équivalent en {#globals.mail.domain2#} ni vers polytechnique.edu.
+  Erreur: {$smarty.session.forlife}@{#globals.mail.domain#} ne doit pas Ãªtre renvoyÃ©
+  vers lui-mÃªme, ni vers son Ã©quivalent en {#globals.mail.domain2#} ni vers polytechnique.edu.
   </p>
 {/if}
   <h1>
     Tes adresses de redirection
   </h1>
   <p>
-  Tu configures ici les adresses emails vers lesquelles tes adresses (listées ci-dessous) sont dirigées :
+  Tu configures ici les adresses emails vers lesquelles tes adresses (listÃ©es ci-dessous) sont dirigÃ©es :
   </p>
   <ul>
     {if $melix}
@@ -58,19 +58,19 @@
     {/foreach}
   </ul>
   <p>
-    Le routage est en place pour les adresses dont la case "<strong>Actif</strong>" est cochée.
-    Si tu modifies souvent ton routage, tu as tout intérêt à rentrer toutes les
+    Le routage est en place pour les adresses dont la case "<strong>Actif</strong>" est cochÃ©e.
+    Si tu modifies souvent ton routage, tu as tout intÃ©rÃªt Ã  rentrer toutes les
     adresses qui sont susceptibles de recevoir ton routage, de sorte qu'en
     jouant avec les cases "<strong>Actif</strong>" tu pourras facilement mettre en place les unes
     ou bien les autres.
   </p>
   <p>
-    Enfin, la <strong>réécriture</strong> consiste à substituer à ton adresse email habituelle
+    Enfin, la <strong>rÃ©Ã©criture</strong> consiste Ã  substituer Ã  ton adresse email habituelle
     (adresse wanadoo, yahoo, free, ou autre) ton adresse {#globals.mail.domain#} ou
-    {#globals.mail.domain2#} dans l'adresse d'expédition de tes messages, lorsque le courrier
-    passe par nos serveurs. Ceci arrive lorsque tu écris à un camarade sur son adresse {#globals.mail.domain#} ou
+    {#globals.mail.domain2#} dans l'adresse d'expÃ©dition de tes messages, lorsque le courrier
+    passe par nos serveurs. Ceci arrive lorsque tu Ã©cris Ã  un camarade sur son adresse {#globals.mail.domain#} ou
     {#globals.mail.domain2#}, ou lorsque tu utilises notre
-    <a href="Xorg/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sécurisé</a>.
+    <a href="Xorg/SMTPS%E9curis%E9">service d'envoi de courrier SMTP sÃ©curisÃ©</a>.
   </p>
 <script type="text/javascript" src="javascript/ajax.js"></script>
   <div class="center">
@@ -78,7 +78,7 @@
       <tr>
         <th>Email</th>
         <th>Actif</th>
-        <th>Réécriture</th>
+        <th>RÃ©Ã©criture</th>
         <th>&nbsp;</th>
       </tr>
       {foreach from=$emails item=e}
@@ -125,8 +125,8 @@
     {icon name=error title="En panne"}
     <a href="Xorg/Pannes">Panne&nbsp;:</a>
   </strong>
-  Les adresses marquées de cette icône sont des adresses de redirection pour lesquelles une panne
-  a été détectée. Si le problème persiste, la redirection vers ces adresses sera désactivée.
+  Les adresses marquÃ©es de cette icÃ´ne sont des adresses de redirection pour lesquelles une panne
+  a Ã©tÃ© dÃ©tectÃ©e. Si le problÃ¨me persiste, la redirection vers ces adresses sera dÃ©sactivÃ©e.
 </p>
 {/if}
 {if $erreur}
@@ -135,31 +135,31 @@
     {icon name=error title="En panne"}
     <a href="Xorg/Pannes" style="color: #f00">Panne durable&nbsp;:</a>
   </strong>
-  Les adresses en rouge sont des adresses qui ont été désactivées en raison d'un grand nombre de pannes. Si tu penses que
-  le problème est résolu, tu peux les réactiver, mais l'adresse sera redésactivée si les problèmes persistent.
+  Les adresses en rouge sont des adresses qui ont Ã©tÃ© dÃ©sactivÃ©es en raison d'un grand nombre de pannes. Si tu penses que
+  le problÃ¨me est rÃ©solu, tu peux les rÃ©activer, mais l'adresse sera redÃ©sactivÃ©e si les problÃ¨mes persistent.
 </p>
 {/if}
 
 {if $eleve}
-<h1>Pour les Élèves (non encore diplômés)</h1>
+<h1>Pour les Ã‰lÃ¨ves (non encore diplÃ´mÃ©s)</h1>
 <p>
-  L'X te fournit aussi une adresse à vie en <strong>«prenom.nom»@polytechnique.edu</strong> qui par défaut est
-  une redirection vers «login»@poly.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
+  L'X te fournit aussi une adresse Ã  vie en <strong>Â«prenom.nomÂ»@polytechnique.edu</strong> qui par dÃ©faut est
+  une redirection vers Â«loginÂ»@poly.polytechnique.fr. <a href="https://www.mail.polytechnique.edu/">
   Tu peux modifier cette redirection</a> et la faire pointer vers ton adresse
   {$smarty.session.forlife}@{#globals.mail.domain#} (attention, cela demande de la concentration).
 </p>
 <p>
-  Si tu utilises le service POP de poly pour récupérer tes mails dans ton logiciel de courrier,
-  l'équipe de Polytechnique.org te conseille de rediriger :
+  Si tu utilises le service POP de poly pour rÃ©cupÃ©rer tes mails dans ton logiciel de courrier,
+  l'Ã©quipe de Polytechnique.org te conseille de rediriger :
 </p>
 <ul>
-  <li>«prenom.nom»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}</li>
-  <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers «login»@poly.polytechnique.fr</li>
+  <li>Â«prenom.nomÂ»@polytechnique.edu vers {$smarty.session.forlife}@{#globals.mail.domain#}</li>
+  <li>{$smarty.session.forlife}@{#globals.mail.domain#} vers Â«loginÂ»@poly.polytechnique.fr</li>
 </ul>
 <p>
-  Attention à ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient
-  alors perdus, jusqu'à ce que tu règles le problème.
+  Attention Ã  ne pas faire une boucle quand tu manipules tes redirections ! Tes emails seraient
+  alors perdus, jusqu'Ã  ce que tu rÃ¨gles le problÃ¨me.
 </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

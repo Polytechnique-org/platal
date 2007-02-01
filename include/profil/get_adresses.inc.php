@@ -23,12 +23,12 @@ require_once('geoloc.inc.php');
 
 global $adresses, $nb_adr_max, $nb_tel_max;
 
-// on limite à 6 adresses personnelles par utilisateur
+// on limite Ã  6 adresses personnelles par utilisateur
 $nb_adr_max = 6; // ( = max(adrid possibles)
-// on limite à 4 numéros de téléphone par adresse
+// on limite Ã  4 numÃ©ros de tÃ©lÃ©phone par adresse
 $nb_tel_max = 4; // ( = max(telid possibles)
 
-//les adresses sont stockées dans un tableau global indéxé par adrid;
+//les adresses sont stockÃ©es dans un tableau global indÃ©xÃ© par adrid;
 
 function is_adr_empty($adrid){
   $adr = &$GLOBALS['adresses'][$adrid];
@@ -124,4 +124,5 @@ while ($tel = $restels->next()) {
     else
         $adresses[$adrid]['tels'][] = $tel;
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

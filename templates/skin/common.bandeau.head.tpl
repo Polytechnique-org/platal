@@ -21,3 +21,4 @@
 {**************************************************************************}
 
 	<link rel="stylesheet" media="screen" type="text/css" href="css/bandeau.css"/>
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

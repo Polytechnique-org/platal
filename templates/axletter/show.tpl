@@ -24,7 +24,7 @@
   {if $ax->_date}
   Lettre de l'AX du {$ax->_date|date_format}
   {else}
-  Lettre de l'AX en préparation
+  Lettre de l'AX en prÃ©paration
   {/if}
 </h1>
 
@@ -36,7 +36,7 @@
 [<a href='{$platal->pl_self()}?text=1'>version Texte</a>]
 {/if}
 {if !$ax->_date}
-[<a href='ax/edit'>éditer</a>]
+[<a href='ax/edit'>Ã©diter</a>]
 {/if}
 </p>
 
@@ -51,4 +51,4 @@
   {include file="axletter/letter.tpl"}
 </fieldset>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

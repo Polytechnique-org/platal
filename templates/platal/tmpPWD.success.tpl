@@ -20,15 +20,15 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Récupération de mot de passe</h1>
+<h1>RÃ©cupÃ©ration de mot de passe</h1>
 
 <p>
-<strong>Mot de passe enregistré le {$smarty.now|date_format}</strong>
+<strong>Mot de passe enregistrÃ© le {$smarty.now|date_format}</strong>
 </p>
 <p>
-  Cette procédure n'est pas sécurisée. Ton mot de passe est certes crypté, mais le
-  certificat envoyé par mail permet à toute personne pouvant lire ton mail (qui n'est
-  pas crypté), de changer ton mot de passe. C'est pourquoi, dans ton intérêt, il est
-  préférable que tu ne perdes pas ton mot de passe !!!
+  Cette procÃ©dure n'est pas sÃ©curisÃ©e. Ton mot de passe est certes cryptÃ©, mais le
+  certificat envoyÃ© par mail permet Ã  toute personne pouvant lire ton mail (qui n'est
+  pas cryptÃ©), de changer ton mot de passe. C'est pourquoi, dans ton intÃ©rÃªt, il est
+  prÃ©fÃ©rable que tu ne perdes pas ton mot de passe !!!
 </p>
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

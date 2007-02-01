@@ -68,7 +68,7 @@ class EventsModule extends PLModule
                                       WHERE user_id={?}', S::v('uid'));
         list($date, $naissance) = $res->fetchOneRow();
 
-        // incitation à mettre à jour la fiche
+        // incitation Ã  mettre Ã  jour la fiche
 
         $d2  = mktime(0, 0, 0, substr($date, 5, 2), substr($date, 8, 2),
                       substr($date, 0, 4));
@@ -83,13 +83,13 @@ class EventsModule extends PLModule
             $page->assign('birthday', date('Y') - substr($naissance, 0, 4));
         }
 
-        // incitation à mettre une photo
+        // incitation Ã  mettre une photo
 
         $res = XDB::query('SELECT COUNT(*) FROM photo
                                       WHERE uid={?}', S::v('uid'));
         $page->assign('photo_incitation', $res->fetchOneCell() == 0);
 
-        // Incitation à se géolocaliser
+        // Incitation Ã  se gÃ©olocaliser
         require_once 'geoloc.inc.php';
         $res = localize_addresses(S::v('uid', -1));
         $page->assign('geoloc_incitation', count($res));
@@ -119,7 +119,7 @@ class EventsModule extends PLModule
         }
 
         // affichage des evenements
-        // annonces promos triées par présence d'une limite sur les promos
+        // annonces promos triÃ©es par prÃ©sence d'une limite sur les promos
         // puis par dates croissantes d'expiration
         $promo = S::v('promo');
         $sql = "SELECT  e.id,e.titre,e.texte,a.user_id,a.nom,a.prenom,a.promo,l.alias AS forlife
@@ -240,13 +240,13 @@ class EventsModule extends PLModule
         $page->assign('xorg_title', 'Polytechnique.org - Administration - Astuces');
         $page->assign('title', 'Gestion des Astuces');
         $table_editor = new PLTableEditor('admin/tips', 'tips', 'id');
-        $table_editor->describe('peremption', 'date de péremption', true);
+        $table_editor->describe('peremption', 'date de pÃ©remption', true);
         $table_editor->describe('promo_min', 'promo. min (0 aucune)', false);
         $table_editor->describe('promo_max', 'promo. max (0 aucune)', false);
         $table_editor->describe('titre', 'titre', true);
         $table_editor->describe('state', 'actif', true);
         $table_editor->describe('text', 'texte (html) de l\'astuce', false);
-        $table_editor->describe('priorite', '0<=priorité<=255', true);
+        $table_editor->describe('priorite', '0<=prioritÃ©<=255', true);
         $table_editor->list_on_edit(false);
         $table_editor->apply($page, $action, $id);
         if (($action == 'edit' && !is_null($id)) || $action == 'update') {
@@ -357,4 +357,5 @@ class EventsModule extends PLModule
     }   
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

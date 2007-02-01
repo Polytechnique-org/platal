@@ -186,10 +186,10 @@ class XnetEventsModule extends PLModule
         }
 
         if (!$evt['inscr_open']) {
-            $page->kill('Les inscriptions pour cet événement sont closes');
+            $page->kill('Les inscriptions pour cet Ã©vÃ©nement sont closes');
         }
         if (!$evt['accept_nonmembre'] && !is_member() && !may_update()) {
-            $page->kill('Cet événement est fermé aux non-membres du groupe');
+            $page->kill('Cet Ã©vÃ©nement est fermÃ© aux non-membres du groupe');
         }
 
         $page->assign('event', $evt);
@@ -210,7 +210,7 @@ class XnetEventsModule extends PLModule
                 if (!isset($pers[$j]) || !is_numeric($pers[$j])
                 ||  $pers[$j] < 0)
                 {
-                    $page->trig('Tu dois choisir un nombre d\'invités correct !');
+                    $page->trig('Tu dois choisir un nombre d\'invitÃ©s correct !');
                     return;
                 }
                 $subs[$j] = 1 + $pers[$j];
@@ -219,10 +219,10 @@ class XnetEventsModule extends PLModule
 
         // impossible to unsubscribe if you already paid sthing
         if (!array_sum($subs) && $evt['paid'] != 0) {
-            $page->trig("Impossible de te désinscrire complètement ".
+            $page->trig("Impossible de te dÃ©sinscrire complÃ¨tement ".
                         "parce que tu as fait un paiement par ".
-                        "chèque ou par liquide. Contacte un ".
-                        "administrateur du groupe si tu es sûr de ".
+                        "chÃ¨que ou par liquide. Contacte un ".
+                        "administrateur du groupe si tu es sÃ»r de ".
                         "ne pas venir");
             return;
         }
@@ -592,7 +592,7 @@ class XnetEventsModule extends PLModule
         $nbp   = intval(($tot-1)/NB_PER_PAGE);
         $links = array();
         if ($ofs) {
-            $links['précédent'] = $ofs-1;
+            $links['prÃ©cÃ©dent'] = $ofs-1;
         }
         for ($i = 0; $i <= $nbp; $i++) {
             $links[(string)($i+1)] = $i;
@@ -624,4 +624,5 @@ class XnetEventsModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

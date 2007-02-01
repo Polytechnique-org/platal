@@ -24,7 +24,7 @@
     <tr>
       <td class="cold" colspan="5">
         <input type="hidden" name="change{$adrid}" value="0"/>
-	<span class="erreur">La geolocalisation n'a pas donné un résultat certain, valide la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse être prise en compte.</span><br />
+	<span class="erreur">La geolocalisation n'a pas donnÃ© un rÃ©sultat certain, valide la nouvelle adresse ou modifie l'ancienne pour que ton adresse puisse Ãªtre prise en compte.</span><br />
 	<script type="text/javascript">setTimeout("document.location += '#adr{$adrid}'", 10);</script>
         <textarea name="txt[{$adrid}]" cols="30" rows="4" onchange="form.change{$adrid}.value=1"
 	{if !$adr.cityid}style="background:#FAA"{/if}
@@ -53,3 +53,4 @@
         <input type="hidden" name="region[{$adrid}]" value="{$adr.region}" />
       </td>
     </tr>
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

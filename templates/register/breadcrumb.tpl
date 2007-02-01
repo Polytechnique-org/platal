@@ -22,11 +22,11 @@
 
 {assign var="step" value=$smarty.session.sub_state.step}
 <div class="descr center">
-  <strong>Procédure d'inscription :</strong>
-  {if !$step}<span class="erreur">{/if}Charte{if !$step}</span>{/if} »
-  {if $step eq 1 || $step eq 2}<span class="erreur">{/if}Identification{if $step eq 1 || $step eq 2}</span>{/if} »
-  {if $step eq 4 || $step eq 3}<span class="erreur">{/if}Pré-Inscription{if $step eq 4 || $step eq 3}</span>{/if} »
+  <strong>ProcÃ©dure d'inscription :</strong>
+  {if !$step}<span class="erreur">{/if}Charte{if !$step}</span>{/if} Â»
+  {if $step eq 1 || $step eq 2}<span class="erreur">{/if}Identification{if $step eq 1 || $step eq 2}</span>{/if} Â»
+  {if $step eq 4 || $step eq 3}<span class="erreur">{/if}PrÃ©-Inscription{if $step eq 4 || $step eq 3}</span>{/if} Â»
   {if $step eq 5}<span class="erreur">{/if}Validation{if $step eq 5}</span>{/if}
 </div>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

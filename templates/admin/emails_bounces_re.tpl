@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 
-<h1>Regexps pour les détections de bounces</h1>
+<h1>Regexps pour les dÃ©tections de bounces</h1>
 
 <p>
 Rappel sur les niveaux :
@@ -94,4 +94,4 @@ Rappel sur les niveaux :
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

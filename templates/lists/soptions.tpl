@@ -33,7 +33,7 @@
     <tr class='impair'>
       <td>
         <strong>msg_header :</strong><br />
-        <span class='smaller'>ajouté au début de tous les messages.</span>
+        <span class='smaller'>ajoutÃ© au dÃ©but de tous les messages.</span>
       </td>
       <td>
         <textarea cols='40' rows='8' name='msg_header'>{$options.msg_header}</textarea>
@@ -42,18 +42,18 @@
     <tr class='impair'>
       <td>
         <strong>msg_footer :</strong><br />
-        <span class='smaller'>ajouté à la fin de tous les messages.</span>
+        <span class='smaller'>ajoutÃ© Ã  la fin de tous les messages.</span>
       </td>
       <td>
         <textarea cols='40' rows='8' name='msg_footer'>{$options.msg_footer}</textarea>
       </td>
     </tr>
-    <tr><th colspan='2'>Options avancées de la liste {$details.addr}</th></tr>
+    <tr><th colspan='2'>Options avancÃ©es de la liste {$details.addr}</th></tr>
     <tr class='impair'>
       <td>
-        <strong>visibilité :</strong><br />
-        <span class='smaller'>si coché, la liste sera listée dans la page de l'ensemble des listes.
-          (les listes d'admin doivent être décochées)</span>
+        <strong>visibilitÃ© :</strong><br />
+        <span class='smaller'>si cochÃ©, la liste sera listÃ©e dans la page de l'ensemble des listes.
+          (les listes d'admin doivent Ãªtre dÃ©cochÃ©es)</span>
       </td>
       <td>
         <input type='checkbox' name='advertised' {if $options.advertised}checked='checked'{/if} />
@@ -63,11 +63,11 @@
     <tr class='pair'>
       <td>
         <strong>archive :</strong><br />
-        <span class='smaller'>Liste archivée ?</span>
+        <span class='smaller'>Liste archivÃ©e ?</span>
       </td>
       <td>
         <input type='checkbox' name='archive' {if $options.archive}checked='checked'{/if} />
-        liste archivée
+        liste archivÃ©e
       </td>
     </tr>
     <tr class='impair'>
@@ -88,4 +88,4 @@
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

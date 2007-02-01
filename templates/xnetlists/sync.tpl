@@ -21,7 +21,7 @@
 {**************************************************************************}
 
 {include file='lists/header_listes.tpl' on='sync'}
-<h1>Non abonnés à la liste {$platal->argv[1]}@{$asso.mail_domain}</h1>
+<h1>Non abonnÃ©s Ã  la liste {$platal->argv[1]}@{$asso.mail_domain}</h1>
 
 <form action="{$platal->ns}lists/sync/{$platal->argv[1]}" method="post">
 
@@ -46,4 +46,4 @@
 
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

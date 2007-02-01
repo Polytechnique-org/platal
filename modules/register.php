@@ -138,7 +138,7 @@ class RegisterModule extends PLModule
                         $err[] = "Le champ 'E-mail' n'est pas valide.";
                     } elseif (!isvalid_email_redirection(Post::v('email'))) {
                         $err[] = $sub_state['forlife']." doit renvoyer vers un email existant ".
-                            "valide, en particulier, il ne peut pas être renvoyé vers lui-même.";
+                            "valide, en particulier, il ne peut pas Ãªtre renvoyÃ© vers lui-mÃªme.";
                     }
                     $birth = trim(Env::v('naissance'));
                     if (!preg_match('/^[0-3][0-9][01][0-9][12][90][0-9][0-9]$/', $birth)) {
@@ -189,7 +189,7 @@ class RegisterModule extends PLModule
                         } else {
                             $sub_state['step'] = 4;
                             if (count($sub_state['backs']) >= 3) {
-                                $alert .= "Fin d'une inscription hésitante";
+                                $alert .= "Fin d'une inscription hÃ©sitante";
                             }
                             finish_ins($sub_state);
                         }
@@ -237,14 +237,14 @@ class RegisterModule extends PLModule
             $page->kill("<p>Cette adresse n'existe pas, ou plus, sur le serveur.</p>
                          <p>Causes probables :</p>
                          <ol>
-                           <li>Vérifie que tu visites l'adresse du dernier
-                               e-mail reçu s'il y en a eu plusieurs.</li>
-                           <li>Tu as peut-être mal copié l'adresse reçue par
-                               mail, vérifie-la à la main.</li>
-                           <li>Tu as peut-être attendu trop longtemps pour
-                               confirmer.  Les pré-inscriptions sont annulées
+                           <li>VÃ©rifie que tu visites l'adresse du dernier
+                               e-mail reÃ§u s'il y en a eu plusieurs.</li>
+                           <li>Tu as peut-Ãªtre mal copiÃ© l'adresse reÃ§ue par
+                               mail, vÃ©rifie-la Ã  la main.</li>
+                           <li>Tu as peut-Ãªtre attendu trop longtemps pour
+                               confirmer.  Les prÃ©-inscriptions sont annulÃ©es
                                tous les 30 jours.</li>
-                           <li>Tu es en fait déjà inscrit.</li>
+                           <li>Tu es en fait dÃ©jÃ  inscrit.</li>
                         </ol>");
         }
 
@@ -295,7 +295,7 @@ class RegisterModule extends PLModule
         $_SESSION['auth'] = AUTH_MDP;
 
         /***********************************************************/
-        /************* envoi d'un mail au démarcheur ***************/
+        /************* envoi d'un mail au dÃ©marcheur ***************/
         /***********************************************************/
         $res = XDB::iterRow(
                 "SELECT  DISTINCT sa.alias, IF(s.nom_usage,s.nom_usage,s.nom) AS nom,
@@ -309,16 +309,16 @@ class RegisterModule extends PLModule
 
         while (list($salias, $snom, $sprenom, $sfemme) = $res->next()) {
             $mymail = new PlMailer();
-            $mymail->setSubject("$prenom $nom s'est inscrit à Polytechnique.org !");
+            $mymail->setSubject("$prenom $nom s'est inscrit Ã  Polytechnique.org !");
             $mymail->setFrom('"Marketing Polytechnique.org" <register@polytechnique.org>');
             $mymail->addTo("\"$sprenom $snom\" <$salias@{$globals->mail->domain}>");
-            $msg = ($sfemme?'Chère':'Cher')." $sprenom,\n\n"
-                 . "Nous t'écrivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
-                 . "que tu avais incité".($femme?'e':'')." à s'inscrire à Polytechnique.org, "
-                 . "vient à l'instant de terminer son inscription.\n\n"
-                 . "Merci de ta participation active à la reconnaissance de ce site !!!\n\n"
+            $msg = ($sfemme?'ChÃ¨re':'Cher')." $sprenom,\n\n"
+                 . "Nous t'Ã©crivons pour t'informer que {$prenom} {$nom} (X{$promo}), "
+                 . "que tu avais incitÃ©".($femme?'e':'')." Ã  s'inscrire Ã  Polytechnique.org, "
+                 . "vient Ã  l'instant de terminer son inscription.\n\n"
+                 . "Merci de ta participation active Ã  la reconnaissance de ce site !!!\n\n"
                  . "Bien cordialement,\n"
-                 . "L'équipe Polytechnique.org";
+                 . "L'Ã©quipe Polytechnique.org";
             $mymail->setTxtBody(wordwrap($msg, 72));
             $mymail->send();
         }
@@ -327,7 +327,7 @@ class RegisterModule extends PLModule
             $mymail->setSubject("Inscription de $prenom $nom (X$promo)");
             $mymail->setFrom('"Webmaster Polytechnique.org" <web@polytechnique.org>');
             $mymail->addTo($globals->register->notif);
-            $msg = "$prenom $nom (X$promo) a terminé son inscription avec les données suivantes :\n"
+            $msg = "$prenom $nom (X$promo) a terminÃ© son inscription avec les donnÃ©es suivantes :\n"
                  . " - nom       : $nom\n"
                  . " - prenom    : $prenom\n"
                  . " - promo     : $promo\n"
@@ -372,4 +372,5 @@ class RegisterModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

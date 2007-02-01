@@ -35,4 +35,5 @@ $page->assign_by_ref('comppros_levels',$comppros_levels);
 $page->assign_by_ref('comppros_def',$comppros_def);
 $page->assign_by_ref('comppros_title',$comppros_title);
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

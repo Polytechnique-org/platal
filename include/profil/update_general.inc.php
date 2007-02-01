@@ -56,5 +56,5 @@ if ($nickname != $nickname_anc) {
     user_reindex(S::v('uid', -1));
 }
 XDB::execute("UPDATE photo SET pub = {?} WHERE uid = {?}", $photo_pub, S::v('uid', -1));
-// vim:set et sws=4 sts=4 sw=4:
+// vim:set et sws=4 sts=4 sw=4 enc=utf-8:
 ?>

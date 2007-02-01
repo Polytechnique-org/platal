@@ -19,11 +19,12 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
-//mise a jour d'expertise si nécessaire
+//mise a jour d'expertise si nÃ©cessaire
 
 if($mentor_expertise != $mentor_expertise_bd) {
     XDB::execute("REPLACE INTO mentor(uid, expertise) VALUES({?}, {?})", S::v('uid', -1), $mentor_expertise);
 }
 
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

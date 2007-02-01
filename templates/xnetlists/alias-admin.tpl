@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<p>[<a href='{$platal->ns}lists'>retour à la page des listes</a>]</p>
+<p>[<a href='{$platal->ns}lists'>retour Ã  la page des listes</a>]</p>
 
 <h1>Membres de {$platal->argv[1]}</h1>
       
@@ -74,4 +74,4 @@
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

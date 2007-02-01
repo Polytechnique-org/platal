@@ -27,33 +27,33 @@
 {if $ok}
 
 <p>
-<strong>Un certificat d'authentification</strong> vient de t'être attribué et a été envoyé vers les redirections de
-ton adresse en {#globals.mail.domain#}. Ce certificat te permet d'accéder à un formulaire de changement de mot de passe.
-<span class="erreur"> Il expire dans six heures.</span> Tu dois donc <strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliqué dans le mail pour changer ton mot de passe.
+<strong>Un certificat d'authentification</strong> vient de t'Ãªtre attribuÃ© et a Ã©tÃ© envoyÃ© vers les redirections de
+ton adresse en {#globals.mail.domain#}. Ce certificat te permet d'accÃ©der Ã  un formulaire de changement de mot de passe.
+<span class="erreur"> Il expire dans six heures.</span> Tu dois donc <strong>consulter ton mail avant son expiration</strong> et utiliser le certificat comme expliquÃ© dans le mail pour changer ton mot de passe.
 </p>
 <p>
-Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certificat sur cette page.
+Si tu n'accÃ¨des pas Ã  ton mail dans les 6 heures, sollicite un nouveau certificat sur cette page.
 </p>
 
 {else}
 
 <form action="{$platal->ns}recovery" method="post">
   <p>
-  Il est impossible de récupérer le mot de passe perdu car nous n'avons que le résultat après un
-  chiffrement irréversible de ton mot de passe. La procédure suivante va te permettre de choisir un
+  Il est impossible de rÃ©cupÃ©rer le mot de passe perdu car nous n'avons que le rÃ©sultat aprÃ¨s un
+  chiffrement irrÃ©versible de ton mot de passe. La procÃ©dure suivante va te permettre de choisir un
   nouveau mot de passe.
   </p>
   <p>
-  Après avoir complété les informations suivantes, tu recevras à ton adresse {#globals.core.sitename#} un
-  courrier électronique te permettant de choisir un nouveau mot de passe. Si tu désires que ce mail soit
-  envoyé vers une de tes redirections en particulier, tu peux renseigner l'adresse de cette redirection dans
+  AprÃ¨s avoir complÃ©tÃ© les informations suivantes, tu recevras Ã  ton adresse {#globals.core.sitename#} un
+  courrier Ã©lectronique te permettant de choisir un nouveau mot de passe. Si tu dÃ©sires que ce mail soit
+  envoyÃ© vers une de tes redirections en particulier, tu peux renseigner l'adresse de cette redirection dans
   le champ facultatif.
   </p>
   <p>
-  Si tu ne reçois pas ce courrier, n'hésite pas à contacter 
+  Si tu ne reÃ§ois pas ce courrier, n'hÃ©site pas Ã  contacter 
   <a href="mailto:support@polytechnique.org">le support technique</a>.
   </p>
-  <table class="tinybicol" cellpadding="3" cellspacing="0" summary="Récupération du mot de passe">
+  <table class="tinybicol" cellpadding="3" cellspacing="0" summary="RÃ©cupÃ©ration du mot de passe">
     <tr>
       <th colspan="2">
         Perte de mot de passe
@@ -79,7 +79,7 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifica
     </tr>
     <tr>
       <td class="titre">
-        Adresse électronique : <span class="smaller">(facultatif)</span>
+        Adresse Ã©lectronique : <span class="smaller">(facultatif)</span>
       </td>
       <td>
         <input type="text" size="20" maxlength="50" name="email" />
@@ -94,4 +94,4 @@ Si tu n'accèdes pas à ton mail dans les 6 heures, sollicite un nouveau certifica
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

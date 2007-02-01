@@ -20,26 +20,26 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Création d'une liste de diffusion</h1>
+<h1>{$asso.nom} : CrÃ©ation d'une liste de diffusion</h1>
 
 <p class="descr">
-<strong>Note :</strong> Les listes de diffusion sont un outil particulièrement adapté pour des
-échanges entre 6 personnes, ou plus (newsletter, débat interne au groupe ...). En revanche, elles
-s'avèrent peu praticables pour des discussions plus restreintes.  Il est alors préférable
-d'utiliser <a href="{$platal->ns}alias/create">un alias</a>, à la gestion beaucoup plus souple.
+<strong>Note :</strong> Les listes de diffusion sont un outil particuliÃ¨rement adaptÃ© pour des
+Ã©changes entre 6 personnes, ou plus (newsletter, dÃ©bat interne au groupe ...). En revanche, elles
+s'avÃ¨rent peu praticables pour des discussions plus restreintes.  Il est alors prÃ©fÃ©rable
+d'utiliser <a href="{$platal->ns}alias/create">un alias</a>, Ã  la gestion beaucoup plus souple.
 </p>
 <p class="descr">
-D'autre part, il est impossible d'inscrire une liste de diffusion à une autre liste de diffusion.
-Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</strong> utiliser
+D'autre part, il est impossible d'inscrire une liste de diffusion Ã  une autre liste de diffusion.
+Si tu as besoin de cette fonctionnalitÃ©, il faut alors <strong>impÃ©rativement</strong> utiliser
 <a href="{$platal->ns}alias/create">un alias</a> qui, lui, est capable de regrouper plusieurs listes.
 </p>
 <form action='{$platal->ns}lists/create' method='post'>
   <table class="large">
     <tr>
-      <th colspan='2'>Caractéristiques de la Liste</th>
+      <th colspan='2'>CaractÃ©ristiques de la Liste</th>
     </tr>
     <tr>
-      <td><strong>Addresse&nbsp;souhaitée&nbsp;:</strong></td>
+      <td><strong>Addresse&nbsp;souhaitÃ©e&nbsp;:</strong></td>
       <td>
         <input type='text' name='liste' value='{$smarty.post.liste}' />@{$asso.mail_domain}
       </td>
@@ -51,18 +51,18 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</s
       </td>
     </tr>
     <tr>
-      <td><strong>Propriétés :</strong></td>
+      <td><strong>PropriÃ©tÃ©s :</strong></td>
       <td>
         <table style='width: 100%' class="normal">
           <tr>
-            <td>visibilité :</td>
+            <td>visibilitÃ© :</td>
             <td>
               <input type='radio' name='advertise' value='0'
               {if $smarty.post.advertise && $smarty.post}checked='checked'{/if} />publique
             </td>
             <td>
               <input type='radio' name='advertise' value='1'
-              {if !$smarty.post.advertise || !$smarty.post}checked='checked'{/if} />privée
+              {if !$smarty.post.advertise || !$smarty.post}checked='checked'{/if} />privÃ©e
             </td>
             <td></td>
           </tr>
@@ -77,7 +77,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</s
               {if $smarty.post.modlevel eq 1}checked='checked'{/if} />restreinte
             </td>
             <td><input type='radio' name='modlevel' value='2'
-              {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modérée
+              {if $smarty.post.modlevel eq 2}checked='checked'{/if} />modÃ©rÃ©e
             </td>
           </tr>
           <tr>
@@ -88,7 +88,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</s
             </td>
             <td>
               <input type='radio' name='inslevel' value='1'
-              {if $smarty.post.inslevel || !$smarty.post}checked='checked'{/if} />modérée
+              {if $smarty.post.inslevel || !$smarty.post}checked='checked'{/if} />modÃ©rÃ©e
             </td>
             <td></td>
           </tr>
@@ -96,7 +96,7 @@ Si tu as besoin de cette fonctionnalité, il faut alors <strong>impérativement</s
       </td>
     </tr>
   </table>
-  <p class="center"><input name='submit' type='submit' value="Créer !" /></p>
+  <p class="center"><input name='submit' type='submit' value="CrÃ©er !" /></p>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

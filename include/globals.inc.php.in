@@ -86,6 +86,7 @@ class PlatalGlobals
     {
         @mysql_connect($this->dbhost, $this->dbuser, $this->dbpwd);
         @mysql_select_db($this->dbdb);
+        @mysql_query("SET NAMES 'utf8'");
     }
 
     function setlocale()
@@ -128,5 +129,5 @@ class PlatalGlobals
     }
 }
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

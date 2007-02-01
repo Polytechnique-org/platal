@@ -25,7 +25,7 @@
 <h2>Synchroniser des villes avec geoloc.org</h2>
 
 {if $nb_missinglat}
-<p>[<a href='admin/geoloc/missinglat'>toutes les villes sans coordonnées ({$nb_missinglat})</a>]</p>
+<p>[<a href='admin/geoloc/missinglat'>toutes les villes sans coordonnÃ©es ({$nb_missinglat})</a>]</p>
 {/if}
 
 <form action='admin/geoloc' method='post'>
@@ -33,4 +33,4 @@
 La ville dont l'id est : <input size="6" name="id" />
 </p>
 </form>
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

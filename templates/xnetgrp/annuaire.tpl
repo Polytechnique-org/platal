@@ -27,11 +27,11 @@ Le groupe {$asso.nom} compte {$nb_tot} membres.
 </p>
 
 <p class="descr">
-Les membres extérieurs du groupe sont intégrés à cette liste, et repérés par l'inscription 'extérieur' dans la colonne promotion.
+Les membres extÃ©rieurs du groupe sont intÃ©grÃ©s Ã  cette liste, et repÃ©rÃ©s par l'inscription 'extÃ©rieur' dans la colonne promotion.
 </p>
 
 <p class="descr">
-Tu peux également :
+Tu peux Ã©galement :
 </p>
 <ul class="descr">
   {if $is_admin}
@@ -51,7 +51,7 @@ Tu peux également :
   <li>
     <a href="{$platal->ns}annuaire/vcard/photos/{$asso.diminutif}.vcf">
       {icon name=vcard title="Carte de visite"} 
-      Ajouter les membres à ton carnet d'adresse
+      Ajouter les membres Ã  ton carnet d'adresse
     </a>
     (<a href="{$platal->ns}annuaire/vcard/{$asso.diminutif}.vcf">sans les photos</a>)
   </li>
@@ -74,9 +74,9 @@ Tu peux également :
       {if $sort eq 'alpha'}
         <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
       {elseif $sort eq 'alpha_inv'}
-        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri dÃ©croissant" />
       {/if}
-      Prénom NOM 
+      PrÃ©nom NOM 
       </a>
     </th>
     <th>
@@ -84,7 +84,7 @@ Tu peux également :
       {if $sort eq 'promo_inv'}
         <img src="{$platal->baseurl}images/dn.png" alt="" title="Tri croissant" />
       {elseif $sort eq 'promo'}
-        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri décroissant" />
+        <img src="{$platal->baseurl}images/up.png" alt="" title="Tri dÃ©croissant" />
       {/if}
         Promo
       </a>
@@ -137,10 +137,10 @@ Tu peux également :
 
 {if $broken}
 <p class="smaller">
-  {icon name=error} : Un camarade signalé par ce symbole n'a plus d'adresse de redirection et ne peut donc
-  plus être contacté via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
+  {icon name=error} : Un camarade signalÃ© par ce symbole n'a plus d'adresse de redirection et ne peut donc
+  plus Ãªtre contactÃ© via son adresse polytechnique.org. Si tu connais sa nouvelle adresse, tu peux nous la communiquer en
   cliquant sur le symbole.
 </p>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

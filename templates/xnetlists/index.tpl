@@ -29,7 +29,7 @@
     <input type='hidden' name='del_alias' value="{$smarty.get.del_alias}" />
   </div>
 </form>
-<p>[<a href='{$platal->ns}lists'>retour à la page des listes</a>]</p>
+<p>[<a href='{$platal->ns}lists'>retour Ã  la page des listes</a>]</p>
 
 {else}
 
@@ -38,15 +38,15 @@
 <h2>Listes de diffusion du groupe {$asso.nom} :</h2>
 
 <p class="descr">
-Une liste dont <strong>la diffusion</strong> est modérée est une liste dont les mails sont validés
-par les administrateurs avant d'être transmis aux membres de la liste.  Une liste dont
-<strong>l'inscription</strong> est modérée est une liste pour laquelle l'abonnement est soumis à
-l'accord préalable des responsables du groupe.
+Une liste dont <strong>la diffusion</strong> est modÃ©rÃ©e est une liste dont les mails sont validÃ©s
+par les administrateurs avant d'Ãªtre transmis aux membres de la liste.  Une liste dont
+<strong>l'inscription</strong> est modÃ©rÃ©e est une liste pour laquelle l'abonnement est soumis Ã 
+l'accord prÃ©alable des responsables du groupe.
 </p>
 <p class="descr">
-La dernière colonne du tableau t'indique si tu es inscrit{if $smarty.session.femme}e{/if} ou non à
-la liste. Dans le premier cas, une croix rouge te permet de te désabonner. Dans le second cas, une
-croix verte te permet de t'inscrire, après accord des responsables si l'inscription est modérée.
+La derniÃ¨re colonne du tableau t'indique si tu es inscrit{if $smarty.session.femme}e{/if} ou non Ã 
+la liste. Dans le premier cas, une croix rouge te permet de te dÃ©sabonner. Dans le second cas, une
+croix verte te permet de t'inscrire, aprÃ¨s accord des responsables si l'inscription est modÃ©rÃ©e.
 </p>
 
 <table cellpadding="0" cellspacing="0" class='large'>
@@ -65,23 +65,23 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
     </td>
     <td>
       {if $l.own}
-      {icon name=wrench title="Modérateur"}
+      {icon name=wrench title="ModÃ©rateur"}
       {elseif $l.priv}
-      {icon name=weather_cloudy title="Liste privée"}
+      {icon name=weather_cloudy title="Liste privÃ©e"}
       {/if}
       <a href='{$platal->ns}lists/members/{$l.list}'>{$l.list}</a>
     </td>
     <td>{$l.desc}</td>
     <td class='center'>
-      {if $l.diff eq 2}modérée{elseif $l.diff eq 1}restreinte{else}libre{/if}
+      {if $l.diff eq 2}modÃ©rÃ©e{elseif $l.diff eq 1}restreinte{else}libre{/if}
     </td>
-    <td class='center'>{if $l.ins}modérée{else}libre{/if}</td>
+    <td class='center'>{if $l.ins}modÃ©rÃ©e{else}libre{/if}</td>
     <td align='right'>{$l.nbsub}</td>
     <td align='center'>
       {if $l.sub eq 2}
-      <a href="{$platal->ns}lists?del={$l.list}">{icon name=cross title="me désinscrire"}</a>
+      <a href="{$platal->ns}lists?del={$l.list}">{icon name=cross title="me dÃ©sinscrire"}</a>
       {elseif $l.sub eq 1}
-      {icon name=flag_orange title='inscription en attente de modération'}
+      {icon name=flag_orange title='inscription en attente de modÃ©ration'}
       {else}
       <a href="{$platal->ns}lists?add={$l.list}">{icon name=add title="m'inscrire"}</a>
       {/if}
@@ -93,16 +93,16 @@ croix verte te permet de t'inscrire, après accord des responsables si l'inscript
   {if $may_update}
   <tr><td colspan="7" class="center">
     <a href="{$platal->ns}lists/create">
-      {icon name=add title="Créer une liste"} Créer une nouvelle liste
+      {icon name=add title="CrÃ©er une liste"} CrÃ©er une nouvelle liste
     </a>
   </td></tr>
   {/if}
 </table>
 
 <p class="descr">
-{icon name=wrench title="Modérateur"} tu es {if $smarty.session.femme}modératrice{else}moderateur{/if} sur cette liste<br />
-{icon name=weather_cloudy title="Liste privée"} cette liste est invisible aux non-membres de la liste. S'en désabonner
-t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
+{icon name=wrench title="ModÃ©rateur"} tu es {if $smarty.session.femme}modÃ©ratrice{else}moderateur{/if} sur cette liste<br />
+{icon name=weather_cloudy title="Liste privÃ©e"} cette liste est invisible aux non-membres de la liste. S'en dÃ©sabonner
+t'empÃªcherait de t'y rÃ©abonner par la suite sans l'aide d'un administrateur.
 </p>
         
 <h2>Voici les alias existants pour le groupe {$asso.nom} :</h2>
@@ -131,7 +131,7 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
   {if $may_update}
   <tr><td colspan="3" class="center">
     <a href="{$platal->ns}alias/create">
-      {icon name=add title="Créer une liste"} Créer un nouvel alias
+      {icon name=add title="CrÃ©er une liste"} CrÃ©er un nouvel alias
     </a>
   </td></tr>
   {/if}
@@ -139,4 +139,4 @@ t'empêcherait de t'y réabonner par la suite sans l'aide d'un administrateur.
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -26,7 +26,7 @@
 
 <table class="bicol">
 <tr>
-  <th colspan="2">Propriétés de la session</th>
+  <th colspan="2">PropriÃ©tÃ©s de la session</th>
 </tr>
 <tr class="impair">
   <td class="titre">utilisateur</td>
@@ -35,7 +35,7 @@
 </tr>
 {if $session.forward_ip}
 <tr class="pair">
-  <td class="titre">Hôte</td>
+  <td class="titre">HÃ´te</td>
   <td><em>{$session.forward_host}</em> <tt>IP: {$session.forward_ip}</tt></td>
 </tr>
 <tr class="pair">
@@ -44,7 +44,7 @@
 </tr>
 {else}
 <tr class="pair">
-  <td class="titre">{if $session.flags}Proxy{else}Hôte{/if}</td>
+  <td class="titre">{if $session.flags}Proxy{else}HÃ´te{/if}</td>
   <td><em>{$session.host}</em> <tt>IP: {$session.ip}</tt></td>
 </tr>
 {/if}
@@ -60,7 +60,7 @@
 <tr>
   <th>date</th>
   <th>action</th>
-  <th>donnée</th>
+  <th>donnÃ©e</th>
 </tr>
 {foreach from=$events item=myevent}
 <tr class="{cycle values="impair,pair"}">
@@ -78,7 +78,7 @@
 <tr>
   <td><strong>Date</strong></td>
   <td>
-    Année
+    AnnÃ©e
     <select name="year" onchange="this.form.submit()">
       {html_options options=$years selected=$year}
     </select>
@@ -107,9 +107,9 @@
 
 <table class="bicol" style="font-size: 90%">
   <tr>
-    <th>début</th>
+    <th>dÃ©but</th>
     <th>utilisateur</th>
-    <th>résumé</th>
+    <th>rÃ©sumÃ©</th>
     <th>actions</th>
   </tr>
 {foreach from=$sessions item=mysess}
@@ -134,4 +134,4 @@
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

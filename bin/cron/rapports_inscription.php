@@ -38,7 +38,7 @@ if ($b = $res->total()) {
 
 $res = XDB::query('SELECT COUNT(DISTINCT uid), COUNT(*) FROM register_marketing');
 list($a, $b) = $res->fetchOneRow();
-$MESSAGE .= "\n$c INSCRIPTIONS SOLICITÉES :\n";
+$MESSAGE .= "\n$c INSCRIPTIONS SOLICITÃ‰ES :\n";
 $MESSAGE .= "    $a utilisateurs\n    $b adresses mails\n";
 
 // ---------------------------------------
@@ -47,10 +47,11 @@ $MESSAGE .= "\n\n";
 
 require_once('../../classes/plmailer.php');
 $mailer = new PlMailer();
-$mailer->setSubject("$a confirmées, $b en attente et $c sollicitées");
+$mailer->setSubject("$a confirmÃ©es, $b en attente et $c sollicitÃ©es");
 $mailer->setFrom('register@polytechnique.org');
 $mailer->addTo('register@polytechnique.org');
 $mailer->addCc('jean-michel.yolin+register@polytechnique.org');
 $mailer->setTxtBody($MESSAGE);
 $mailer->send();
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

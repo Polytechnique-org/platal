@@ -39,7 +39,7 @@ foreach($tidy_on as $opt) { tidy_setopt($opt, true); }
 foreach($tidy_off as $opt) { tidy_setopt($opt, false); }
 tidy_setopt('alt-text', '[ inserted by TIDY ]');
 tidy_setopt('wrap', '120');
-tidy_set_encoding('latin0');
+tidy_set_encoding('utf8');
 unset($tidy_o, $tydy_off);
 
 /*
@@ -56,4 +56,5 @@ function smarty_block_tidy($params, $content, &$smarty)
     return tidy_repair_string($content);
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

@@ -34,4 +34,5 @@ function smarty_insert_getNbIns($params, &$smarty)
     $cnt = $res->fetchOneCell();
     return number_format($cnt, 0, ",", ".");
 }
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

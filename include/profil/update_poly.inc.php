@@ -23,4 +23,5 @@ $sql = "UPDATE auth_user_md5 set section= {?} WHERE user_id= {?}";
 
 XDB::execute($sql, $section, S::v('uid', -1));
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

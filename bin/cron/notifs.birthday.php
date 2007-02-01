@@ -32,4 +32,5 @@ XDB::execute("INSERT INTO  watch_ops (uid, cid, known, date)
                     WHERE  naissance LIKE '$like' AND deces=0");
 
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

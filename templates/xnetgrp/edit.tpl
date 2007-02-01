@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>{$asso.nom} : Éditer l'accueil</h1>
+<h1>{$asso.nom} : Ã‰diter l'accueil</h1>
 
 <form method="post" action="{$platal->ns}edit" enctype="multipart/form-data">
   {if $super}
@@ -51,7 +51,7 @@
     </tr>
     <tr>
       <td class="titre">
-        Catégorie :
+        CatÃ©gorie :
       </td>
       <td>
         <select name="cat">
@@ -143,7 +143,7 @@
     <tr>
       <td class="titre">
         Lien pour l'inscription:<br />
-        <em>laisser vide par défaut</em>
+        <em>laisser vide par dÃ©faut</em>
       </td>
       <td>
         <input type="text" size="40" name="sub_url" value="{$asso.sub_url}" />
@@ -152,8 +152,8 @@
 
     <tr>
       <td class="titre">
-        Lien pour la désinscription:<br/>
-        <em>laisser vide par défaut</em>
+        Lien pour la dÃ©sinscription:<br/>
+        <em>laisser vide par dÃ©faut</em>
       </td>
       <td>
         <input type="text" size="40" name="unsub_url" value="{$asso.unsub_url}" />
@@ -163,14 +163,14 @@
     <tr>
       <td class="titre center" colspan="2">
         <input type="checkbox" value="1" name="ax" {if $asso.ax}checked="checked"{/if} />
-        groupe agréé par l'AX
+        groupe agrÃ©Ã© par l'AX
       </td>
     </tr>
 
     <tr>
       <td class="titre center" colspan="2">
         <input type="checkbox" value="1" name="pub" {if $asso.pub eq 'private'}checked="checked"{/if} />
-        liste des membres privée
+        liste des membres privÃ©e
       </td>
     </tr>
   </table>
@@ -182,4 +182,4 @@
   </div>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

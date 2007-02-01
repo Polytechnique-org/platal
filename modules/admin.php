@@ -63,12 +63,12 @@ class AdminModule extends PLModule
     function handler_postfix_delayed(&$page)
     {
         $page->changeTpl('admin/postfix_delayed.tpl');
-        $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : Retardés');
+        $page->assign('xorg_title','Polytechnique.org - Administration - Postfix : RetardÃ©s');
 
         if (Env::has('del')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'del' WHERE crc = {?}", $crc);
-            $page->trig($crc." verra tous ses mails supprimés !");
+            $page->trig($crc." verra tous ses mails supprimÃ©s !");
         } elseif (Env::has('ok')) {
             $crc = Env::v('crc');
             XDB::execute("UPDATE postfix_mailseen SET release = 'ok' WHERE crc = {?}", $crc);
@@ -339,7 +339,7 @@ class AdminModule extends PLModule
                 }
                 $page->assign_by_ref('sessions', $sessions);
             } else {
-                $page->assign('msg_nofilters', "Sélectionner une annuée et/ou un utilisateur");
+                $page->assign('msg_nofilters', "SÃ©lectionner une annuÃ©e et/ou un utilisateur");
             }
         }
 
@@ -356,7 +356,7 @@ class AdminModule extends PLModule
         require_once("user.func.inc.php");
 
         if (S::has('suid')) {
-            $page->kill("déjà en SUID !!!");
+            $page->kill("dÃ©jÃ  en SUID !!!");
         }
 
         if (Env::has('user_id')) {
@@ -414,7 +414,7 @@ class AdminModule extends PLModule
                             $page->trig("invalid email $email");
                         } else {
                             $redirect->add_email($email);
-                            $page->trig("Ajout de $email effectué");
+                            $page->trig("Ajout de $email effectuÃ©");
                         }
                         break;
 
@@ -434,7 +434,7 @@ class AdminModule extends PLModule
                                            WHERE uid = {?} AND rewrite LIKE CONCAT({?}, '@%')",
                                          $mr['user_id'], $val);               
                             fix_bestalias($mr['user_id']);
-                            $page->trig($val." a été supprimé");
+                            $page->trig($val." a Ã©tÃ© supprimÃ©");
                         }
                         break;
                 case "activate_fwd":
@@ -496,7 +496,7 @@ class AdminModule extends PLModule
                             $mailer->setTxtBody(preg_replace("/[ \t]+/", ' ', $query));
                             $mailer->send();
 
-                            $page->trig("updaté correctement.");
+                            $page->trig("updatÃ© correctement.");
                         }
                         if (Env::v('nomusageN') != $mr['nom_usage']) {
                             set_new_usage($mr['user_id'], Env::v('nomusageN'), make_username(Env::v('prenomN'), Env::v('nomusageN')));
@@ -514,12 +514,12 @@ class AdminModule extends PLModule
                     // DELETE FROM auth_user_md5
                     case "u_kill":
                         user_clear_all_subs($mr['user_id']);
-                        $page->trig("'{$mr['user_id']}' a été désinscrit !");
+                        $page->trig("'{$mr['user_id']}' a Ã©tÃ© dÃ©sinscrit !");
                         $mailer = new PlMailer();
                         $mailer->setFrom("webmaster@polytechnique.org");
                         $mailer->addTo("web@polytechnique.org");
                         $mailer->setSubject("INTERVENTION de ".S::v('forlife'));
-                        $mailer->setTxtBody("\nUtilisateur $login désinscrit");
+                        $mailer->setTxtBody("\nUtilisateur $login dÃ©sinscrit");
                         $mailer->send();
                         break;
                 }
@@ -666,7 +666,7 @@ class AdminModule extends PLModule
         $page->changeTpl('admin/ax-xorg.tpl');
         $page->assign('xorg_title','Polytechnique.org - Administration - AX/X.org');
 
-        // liste des différences
+        // liste des diffÃ©rences
         $res = XDB::query(
                 'SELECT  u.promo,u.nom AS nom,u.prenom AS prenom,ia.nom AS nomax,ia.prenom AS prenomax,u.matricule AS mat,ia.matricule_ax AS matax
                    FROM  auth_user_md5 AS u
@@ -677,7 +677,7 @@ class AdminModule extends PLModule
                ORDER BY  u.promo,u.nom,u.prenom');
         $page->assign('diffs', $res->fetchAllAssoc());
 
-        // gens à l'ax mais pas chez nous
+        // gens Ã  l'ax mais pas chez nous
         $res = XDB::query(
                 'SELECT  ia.promo,ia.nom,ia.nom_patro,ia.prenom
                    FROM  identification_ax as ia
@@ -685,7 +685,7 @@ class AdminModule extends PLModule
                   WHERE  u.nom IS NULL');
         $page->assign('mank', $res->fetchAllAssoc());
 
-        // gens chez nous et pas à l'ax
+        // gens chez nous et pas Ã  l'ax
         $res = XDB::query('SELECT promo,nom,prenom FROM auth_user_md5 WHERE matricule_ax IS NULL');
         $page->assign('plus', $res->fetchAllAssoc());
     }
@@ -809,10 +809,10 @@ class AdminModule extends PLModule
         $page->assign('vit', new ValidateIterator());
     }
     function handler_validate_answers(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title','Polytechnique.org - Administration - Réponses automatiques de validation');
-        $page->assign('title', 'Gestion des réponses automatiques');
+        $page->assign('xorg_title','Polytechnique.org - Administration - RÃ©ponses automatiques de validation');
+        $page->assign('title', 'Gestion des rÃ©ponses automatiques');
         $table_editor = new PLTableEditor('admin/validate/answers','requests_answers','id');
-        $table_editor->describe('category','catégorie',true);
+        $table_editor->describe('category','catÃ©gorie',true);
         $table_editor->describe('title','titre',true);
         $table_editor->describe('answer','texte',false);
         $table_editor->apply($page, $action, $id);
@@ -845,19 +845,19 @@ class AdminModule extends PLModule
         $table_editor->apply($page, $action, $id);
     }
     function handler_mx_broken(&$page, $action = 'list', $id = null) {
-        $page->assign('xorg_title', 'Polytechnique.org - Administration - MX Défaillants');
-        $page->assign('title', 'MX Défaillant');
+        $page->assign('xorg_title', 'Polytechnique.org - Administration - MX DÃ©faillants');
+        $page->assign('title', 'MX DÃ©faillant');
         $table_editor = new PLTableEditor('admin/mx/broken', 'mx_watch', 'host', true);
         $table_editor->describe('host', 'Masque', true);
         $table_editor->describe('state', 'Niveau', true);
-        $table_editor->describe('text', 'Description du problème', false);
+        $table_editor->describe('text', 'Description du problÃ¨me', false);
         $table_editor->apply($page, $action, $id);
     }
     function handler_logger_actions(&$page, $action = 'list', $id = null) {
         $page->assign('xorg_title','Polytechnique.org - Administration - Actions');
         $page->assign('title', 'Gestion des actions de logger');
         $table_editor = new PLTableEditor('admin/logger/actions','logger.actions','id');
-        $table_editor->describe('text','intitulé',true);
+        $table_editor->describe('text','intitulÃ©',true);
         $table_editor->describe('description','description',true);
         $table_editor->apply($page, $action, $id);
     }
@@ -866,9 +866,9 @@ class AdminModule extends PLModule
         $page->assign('title', 'Gestion des coupures');
         $table_editor = new PLTableEditor('admin/downtime','coupures','id');
         $table_editor->describe('debut','date',true);
-        $table_editor->describe('duree','durée',false);
-        $table_editor->describe('resume','résumé',true);
-        $table_editor->describe('services','services affectés',true);
+        $table_editor->describe('duree','durÃ©e',false);
+        $table_editor->describe('resume','rÃ©sumÃ©',true);
+        $table_editor->describe('services','services affectÃ©s',true);
         $table_editor->describe('description','description',false);
         $table_editor->apply($page, $action, $id);
     }
@@ -935,7 +935,7 @@ class AdminModule extends PLModule
             
         $states = array('safe'      => 'Ne pas surveiller',
                         'unsafe'    => 'Surveiller les inscription',
-                        'dangerous' => 'Surveiller tous les accès',
+                        'dangerous' => 'Surveiller tous les accÃ¨s',
                         'ban'       => 'Bannir cette adresse');
         $page->assign('states', $states);
 
@@ -1025,4 +1025,5 @@ class AdminModule extends PLModule
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

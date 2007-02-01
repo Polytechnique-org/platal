@@ -50,4 +50,5 @@ if ($matches) {
     <hr>
     <address>Apache Server at www.carva.org Port 80</address>
   </body>
-</html>
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
+?>

@@ -263,7 +263,7 @@ class Redirect
         $this->emails[] = new Email(array($email, 'active', '', '0000-00-00', '0000-00-00', 0));
 
         // security stuff
-        check_email($email, "Ajout d'une adresse surveillée aux redirections de " . $this->uid);
+        check_email($email, "Ajout d'une adresse surveillÃ©e aux redirections de " . $this->uid);
         check_redirect($this);
         return SUCCESS;
     }
@@ -361,5 +361,5 @@ class Redirect
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

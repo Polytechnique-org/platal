@@ -54,18 +54,18 @@
           }
           {/literal}
         </script>
-        Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 800 caractères soit une douzaine de ligne. Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.
+        Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excÃ©der 800 caractÃ¨res soit une douzaine de ligne. Tu en es dÃ©jÃ  Ã  <input type='text' name='texte_count' size="4"/> caractÃ¨res.
       </td>
     </tr>
     <tr>
-      <th colspan="2">Informations complémentaires</th>
+      <th colspan="2">Informations complÃ©mentaires</th>
     </tr>
   </table>
 
   <table class="bicol">
     <tr class="pair">
       <td colspan="2">
-        Tu peux limiter la visibilité de ton annonce aux camarades de certaines promotions :
+        Tu peux limiter la visibilitÃ© de ton annonce aux camarades de certaines promotions :
       </td>
     </tr>
     <tr class="impair">
@@ -106,4 +106,4 @@
 
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -77,7 +77,7 @@ class PLTableEditor {
                 $a['Type'] = 'textarea';
             elseif (substr($a['Type'],0,4) == 'set(') {
                 // get the list of options
-                $a['List'] = explode('§',str_replace("','","§",substr($a['Type'], 5, strlen($a['Type']) - 7)));
+                $a['List'] = explode('Â§',str_replace("','","Â§",substr($a['Type'], 5, strlen($a['Type']) - 7)));
                 if (count($a['List']) == 1) {
                     $a['Type'] = 'checkbox';
                     $a['Value'] = $a['List'][0];
@@ -87,7 +87,7 @@ class PLTableEditor {
             }
             elseif (substr($a['Type'],0,5) == 'enum(') {
                 // get the list of options
-                $a['List'] = explode('§',str_replace("','","§",substr($a['Type'], 6, strlen($a['Type']) - 8)));
+                $a['List'] = explode('Â§',str_replace("','","Â§",substr($a['Type'], 6, strlen($a['Type']) - 8)));
                 $a['Type'] = 'enum';
             }
             elseif (substr($a['Type'],0,10) == 'timestamp(' || $a['Type'] == 'datetime') {
@@ -168,16 +168,16 @@ class PLTableEditor {
 	            foreach ($this->jtables as $table => $j)
 	                XDB::execute("DELETE FROM {$table} WHERE {$j['joinid']} = {?}{$j['joinextra']}", $id);
 	            XDB::execute("DELETE FROM {$this->table} WHERE {$this->idfield} = {?}",$id);
-	            $page->trig("L'entrée ".$id." a été supprimée.");
+	            $page->trig("L'entrÃ©e ".$id." a Ã©tÃ© supprimÃ©e.");
 	        } else if ($this->delete_action) {
 	        	XDB::execute($this->delete_action, $id);
 	        	if (isset($this->delete_message)) {
 	            	$page->trig($this->delete_message);
 	        	} else {
-	            	$page->trig("L'entrée ".$id." a été supprimée.");
+	            	$page->trig("L'entrÃ©e ".$id." a Ã©tÃ© supprimÃ©e.");
 				}	        	
 	        } else {
-	            $page->trig("Impossible de supprimer l'entrée.");
+	            $page->trig("Impossible de supprimer l'entrÃ©e.");
 	        }
         }
         if ($action == 'edit') {
@@ -244,13 +244,13 @@ class PLTableEditor {
                     XDB::execute("UPDATE {$this->table} SET {$this->idfield} = {?} WHERE {$this->idfield} = {?}", Post::v($this->idfield), $id);
                 XDB::execute("REPLACE INTO {$this->table} VALUES ($values)");
                 if ($id !== false)
-                    $page->trig("L'entrée ".$id." a été mise à jour.");
+                    $page->trig("L'entrÃ©e ".$id." a Ã©tÃ© mise Ã  jour.");
                 else {
-                    $page->trig("Une nouvelle entrée a été créée.");
+                    $page->trig("Une nouvelle entrÃ©e a Ã©tÃ© crÃ©Ã©e.");
                     $id = XDB::insertId();
                 }
             } else
-                $page->trig("Impossible de mette à jour.");
+                $page->trig("Impossible de mette Ã  jour.");
             if (!$this->auto_return) {
                 return $this->apply($page, 'edit', $id);
             }
@@ -284,4 +284,5 @@ class PLTableEditor {
     }
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

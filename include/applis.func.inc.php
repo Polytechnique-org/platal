@@ -69,9 +69,9 @@ $page->register_function('applis_type_all','applis_type_all');
  */
 function applis_fmt($type, $text, $url) {
     $txt="";
-    if (($type!="Ingénieur")&&($type!="Diplôme"))
+    if (($type!="IngÃ©nieur")&&($type!="DiplÃ´me"))
 	$txt .= $type;
-    if ($text!="Université") {
+    if ($text!="UniversitÃ©") {
 	if ($txt) $txt .= " ";
 	if ($url) 
 	    $txt .= "<a href=\"$url\" onclick=\"return popup(this)\">$text</a>";
@@ -86,4 +86,5 @@ function _applis_fmt($params, &$smarty) {
 }
 $page->register_function('applis_fmt','_applis_fmt');
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

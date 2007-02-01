@@ -25,20 +25,20 @@
 
 <h2>Pourquoi une redirection de page WEB ?</h2>
 <p>
-  Dans la lignée du service de redirection d'emails de <strong>{#globals.core.sitename#}</strong>,
+  Dans la lignÃ©e du service de redirection d'emails de <strong>{#globals.core.sitename#}</strong>,
   il est possible de faire pointer
     les adresses <strong>http://www.carva.org/{$smarty.session.bestalias}</strong>
   et <strong>http://www.carva.org/{$smarty.session.forlife}</strong>
-    vers la page WEB de ton choix. Pour de plus amples détails, consulte
+    vers la page WEB de ton choix. Pour de plus amples dÃ©tails, consulte
   <a href="Xorg/MaRedirectionWeb">cette page</a>
 </p>
 
 <h2>Conditions d'usage</h2>
 <p>
-  L'utilisateur s'engage à ce que le contenu du site référencé soit en conformité
-  avec les lois et règlements en vigueur et d'une manière générale ne porte pas
+  L'utilisateur s'engage Ã  ce que le contenu du site rÃ©fÃ©rencÃ© soit en conformitÃ©
+  avec les lois et rÃ¨glements en vigueur et d'une maniÃ¨re gÃ©nÃ©rale ne porte pas
   atteinte aux droits des tiers
-  (<a href="Xorg/MaRedirectionWeb">plus de précisions</a>).
+  (<a href="Xorg/MaRedirectionWeb">plus de prÃ©cisions</a>).
 </p>
 
 <h1>
@@ -51,9 +51,9 @@
     http://www.carva.org/{$smarty.session.bestalias}
   </a> et <a href="http://www.carva.org/{$smarty.session.forlife}">
     http://www.carva.org/{$smarty.session.forlife}
-  </a> sont redirigées sur <a href="http://{$carva}">http://{$carva}</a>
+  </a> sont redirigÃ©es sur <a href="http://{$carva}">http://{$carva}</a>
 {else}
-  La redirection n'est pas utilisée ...
+  La redirection n'est pas utilisÃ©e ...
 {/if}
 </p>
 
@@ -90,4 +90,4 @@
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

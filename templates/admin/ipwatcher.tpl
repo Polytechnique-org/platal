@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>Gestion des IPs surveillées</h1>
+<h1>Gestion des IPs surveillÃ©es</h1>
 
 {if $action eq "list"}
 <table class="bicol">
@@ -32,10 +32,10 @@
   </tr>
   <tr class="impair">
     <td colspan="2">
-      <strong>Ajouter une entrée</strong>
+      <strong>Ajouter une entrÃ©e</strong>
     </td>
     <td colspan="2" class="right">
-      <strong><a href="admin/ipwatch/create">créer{icon name=add}</a></strong>
+      <strong><a href="admin/ipwatch/create">crÃ©er{icon name=add}</a></strong>
     </td>
   </tr>
   {foreach from=$table item=ip}
@@ -43,7 +43,7 @@
     <td>
       <strong>{$ip.ip}</strong><br />
       <small>{$ip.host}</small><br />
-      Ajoutée le {$ip.detection|date_format}
+      AjoutÃ©e le {$ip.detection|date_format}
     </td>
     <td>
       {$ip.state}
@@ -65,7 +65,7 @@
   {/foreach}
 </table>
 {elseif $action eq "create" || $action eq "edit"}
-[<a href="admin/ipwatch">Retour à la liste des IPs surveillées</a>]<br /><br />
+[<a href="admin/ipwatch">Retour Ã  la liste des IPs surveillÃ©es</a>]<br /><br />
 <form method="post" action="admin/ipwatch">
 <table class="tinybicol">
   <tr>
@@ -94,7 +94,7 @@
     {/if}
   {/foreach}
   <tr class="pair">
-    <td class="titre">Date de détection</td>
+    <td class="titre">Date de dÃ©tection</td>
     <td>{$ip.detection|date_format}</td>
   {/if}
   </tr>
@@ -114,7 +114,7 @@
   </tr>
   <tr class="impair">
     <td colspan="2">
-      <small>Dernière édition par {$ip.edit} le {$ip.last|date_format}</small>
+      <small>DerniÃ¨re Ã©dition par {$ip.edit} le {$ip.last|date_format}</small>
     </td>
   {/if}
   </tr>
@@ -133,4 +133,4 @@
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

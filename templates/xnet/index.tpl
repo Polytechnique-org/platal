@@ -28,15 +28,15 @@
 
     <td>
       <p class="descr">
-      Polytechnique.net est le site dédié à toutes les activités associatives des polytechniciens,
-      Élèves ou Anciens.  Il décrit aussi les organismes institutionnels relatifs à l'Ecole
-      Polytechnique et les promotions présentes sur le web.
+      Polytechnique.net est le site dÃ©diÃ© Ã  toutes les activitÃ©s associatives des polytechniciens,
+      Ã‰lÃ¨ves ou Anciens.  Il dÃ©crit aussi les organismes institutionnels relatifs Ã  l'Ecole
+      Polytechnique et les promotions prÃ©sentes sur le web.
       </p>
       <p class="descr">
       Ce site  vous propose des liens vers les forums de discussions et les sites webs des
-      différentes associations, des adresses où les contacter, et tous les renseignements utiles
-      pour mieux les connaître. Il offre d'autre part des
-      <a href="Xnet/Services"> outils de gestion de groupe</a> à l'intention de leurs responsables.
+      diffÃ©rentes associations, des adresses oÃ¹ les contacter, et tous les renseignements utiles
+      pour mieux les connaÃ®tre. Il offre d'autre part des
+      <a href="Xnet/Services"> outils de gestion de groupe</a> Ã  l'intention de leurs responsables.
       </p>
       <p class="descr">
       Si vous recherchez la page d'un groupe particulier, vous pouvez
@@ -46,4 +46,4 @@
   </tr>
 </table>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

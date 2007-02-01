@@ -14,4 +14,5 @@ require_once dirname(__FILE__).'/../include/banana/ml.inc.php';
 Banana::$nntp_host = "news://{$globals->banana->web_user}:{$globals->banana->web_pass}@{$globals->banana->server}:{$globals->banana->port}/";
 Banana::createAllSpool(array('NNTP', 'MLArchive'));
 system("chown -R www-data:www-data /var/spool/banana");
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

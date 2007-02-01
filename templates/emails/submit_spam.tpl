@@ -31,7 +31,7 @@
           <option value="spam" {if $smarty.request.type neq 'spam'}selected="selected"{/if}>spam</option>
           <option value="nonspam" {if $smarty.request.type eq 'nonspam'}selected="selected"{/if}>non-spam</option>
         </select>
-        mal filtré.
+        mal filtrÃ©.
       </td>
     </tr>
     <tr>
@@ -47,15 +47,15 @@
 </form>
 
 <p>
-  Pour soumettre un (non-)spam mal détecté par notre <a href="emails/antispam">antispam</a>, il suffit d'enregistrer
+  Pour soumettre un (non-)spam mal dÃ©tectÃ© par notre <a href="emails/antispam">antispam</a>, il suffit d'enregistrer
   les sources (regarde dans la documentation de ton client mail dans la liste ci-dessous) du mail en tant que fichier
-  depuis ton client mail, puis de soumettre ce fichier à l'interface ci-dessus en sélectionnant l'action adaptée :
+  depuis ton client mail, puis de soumettre ce fichier Ã  l'interface ci-dessus en sÃ©lectionnant l'action adaptÃ©e :
 </p>
 <ul>
   <li><strong>spam</strong> : pour soumettre un spam mal reconnu</li>
-  <li><strong>nonspam</strong> : pour soumettre un mail légitime mal reconnu</li>
+  <li><strong>nonspam</strong> : pour soumettre un mail lÃ©gitime mal reconnu</li>
 </ul>
 
 {include file=../spool/wiki.d/cache_Xorg.Mails.tpl part=clients included=1}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

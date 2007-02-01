@@ -24,7 +24,7 @@
 
 {if !$smarty.session.core_rss_hash}
 Tu viens de cliquer sur le lien d'activation des fils RSS. Les fils RSS du site <br/>
-ne sont pas activés dans tes préférences.
+ne sont pas activÃ©s dans tes prÃ©fÃ©rences.
 <ul>
   <li>
  Tu peux le faire tout de suite en cliquant sur Activer ci-dessous.
@@ -49,7 +49,7 @@ ne sont pas activés dans tes préférences.
 En voici les adresses :
 <ul>
   <li>
-  Anonces sur la page d'entrée :
+  Anonces sur la page d'entrÃ©e :
   <a href='rss/{$smarty.session.forlife}/{$smarty.session.core_rss_hash}/rss.xml'>{icon name=feed title='fil rss'}</a>
   </li>
   <li>
@@ -58,11 +58,11 @@ En voici les adresses :
   </li>
 </ul>
 <p>
-Tu peux le désactiver en allant dans Préférences et en cliquant sur "désactiver les fils RSS".
+Tu peux le dÃ©sactiver en allant dans PrÃ©fÃ©rences et en cliquant sur "dÃ©sactiver les fils RSS".
 </p>
 <p>
-Attention: désactiver, puis réactiver le fil RSS en change l'adresse.
+Attention: dÃ©sactiver, puis rÃ©activer le fil RSS en change l'adresse.
 </p>
-<p>[<a href="{$goback}">retour à la page dont tu venais</a>]</p>
+<p>[<a href="{$goback}">retour Ã  la page dont tu venais</a>]</p>
 {/if}
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -22,17 +22,17 @@
 
 {include file="register/breadcrumb.tpl"}
 
-<h1>Conditions générales</h1>
+<h1>Conditions gÃ©nÃ©rales</h1>
 
 <p>
-L'enregistrement se déroule <strong>en deux étapes</strong> :
+L'enregistrement se dÃ©roule <strong>en deux Ã©tapes</strong> :
 </p>
 <ul>
   <li>
-  la pré-inscription quit te prendra moins de 5 minutes ;
+  la prÃ©-inscription quit te prendra moins de 5 minutes ;
   </li>
   <li>
-  suivi d'un envoi d'un mail de notre part (immédiat !) qui te permettra
+  suivi d'un envoi d'un mail de notre part (immÃ©diat !) qui te permettra
   de te connecter au site !
   </li>
 </ul>
@@ -46,4 +46,4 @@ L'enregistrement se déroule <strong>en deux étapes</strong> :
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

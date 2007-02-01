@@ -78,7 +78,7 @@ function get_all_redirects($membres, $exclude, $mls, &$client)
 
 function _send_xnet_mail($user, $body, $mailer, $replyto = null)
 {
-    $cher = isset($user['sexe']) ? ($user['sexe'] ? 'Chère' : 'Cher') : 'Cher(e)';
+    $cher = isset($user['sexe']) ? ($user['sexe'] ? 'ChÃ¨re' : 'Cher') : 'Cher(e)';
     $nom  = isset($user['nom']) ? $user['nom'] : "";
     $pnom = isset($user['prenom']) ? $user['prenom'] : preg_replace('!@.*!', '', $user['email']);
     $to   = isset($user['prenom']) ? "\"{$user['prenom']} {$user['nom']}\" <{$user['email']}>" : $user['email'];
@@ -122,5 +122,5 @@ function send_xnet_mails($from, $sujet, $body, $tos, $replyto = null, $attach = 
 
 // }}}
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

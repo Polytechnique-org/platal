@@ -28,12 +28,12 @@
 {/foreach}
 
 <form action="marketing/relance" method="post">
-  <table class="bicol" summary="liste des inscriptions non confirmÈes">
+  <table class="bicol" summary="liste des inscriptions non confirm√©es">
     <tr>
       <th>Date</th>
       <th>Promo</th> 
       <th>Nom</th>
-      <th>DerniËre relance</th>
+      <th>Derni√®re relance</th>
       <th>&nbsp;</th>
     </tr>
     {iterate from=$relance item=it}
@@ -52,11 +52,11 @@
   </table>
 
   <p>
-  {$relance->total()} Polytechniciens n'ont pas effectuÈ jusqu'au bout leur inscription.
+  {$relance->total()} Polytechniciens n'ont pas effectu√© jusqu'au bout leur inscription.
   </p>
   <div class="center">
     <input type="submit" name="relancer" value="Relancer" />
   </div>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

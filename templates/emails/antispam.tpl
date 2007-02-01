@@ -24,20 +24,20 @@
 
 <script type="text/javascript" src="javascript/ajax.js"></script>
   <fieldset>
-    <legend><strong>Choisis ton propre réglage :</strong></legend>
+    <legend><strong>Choisis ton propre rÃ©glage :</strong></legend>
     <input id='s0' type='radio' name='statut_filtre' value='0' {if $filtre eq 0}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
-    <label for='s0'>(1) le filtre anti-spam est coupé</label>
+    <label for='s0'>(1) le filtre anti-spam est coupÃ©</label>
     <br />
     <input id='s1' type='radio' name='statut_filtre' value='1' {if $filtre eq 1}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
-    <label for='s1'>(2) le filtre anti-spam est activé, et marque les mails</label>
+    <label for='s1'>(2) le filtre anti-spam est activÃ©, et marque les mails</label>
     <br />
     <input id='s2' type='radio' name='statut_filtre' value='2' {if $filtre eq 2}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
-    <label for='s2'>(3) le filtre anti-spam est activé, marque les mails, et élimine les spams avec des notes les plus hautes</label>
+    <label for='s2'>(3) le filtre anti-spam est activÃ©, marque les mails, et Ã©limine les spams avec des notes les plus hautes</label>
     <br />
     <input id='s3' type='radio' name='statut_filtre' value='3' {if $filtre eq 3}checked="checked"{/if} onclick="Ajax.update_html(null, '{$globals->baseurl}/emails/antispam/'+this.value)" />
-    <label for='s3'>(4) le filtre anti-spam est activé, et élimine les mails détectés comme spams</label>
+    <label for='s3'>(4) le filtre anti-spam est activÃ©, et Ã©limine les mails dÃ©tectÃ©s comme spams</label>
   </fieldset>
 
 {include file=../spool/wiki.d/cache_Xorg.Antispam.tpl part=2 included=1}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

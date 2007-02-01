@@ -26,7 +26,7 @@
 
 {if $no_private_key}
 <p>
-  Impossible d'utiliser ce service, il manque la clef privée AX dans la configuration de plat/al.
+  Impossible d'utiliser ce service, il manque la clef privÃ©e AX dans la configuration de plat/al.
 </p>
 {else}
 <form action='admin/synchro_ax' method='post'>
@@ -47,11 +47,11 @@
 <form action='admin/synchro_ax/{$x.forlife}/import' method='post'>
 {if $x.profile_from_ax}
 <div style="text-align:center;margin:5px;background:green">
-<strong>Cet utilisateur a accepeté la synchronisation</strong>
+<strong>Cet utilisateur a accepetÃ© la synchronisation</strong>
 </div>
 {else}
 <div style="text-align:center;margin:5px;background:red">
-<strong>ATTENTION !  Cet utilisateur n'a pas accepté la synchronisation</strong>
+<strong>ATTENTION !  Cet utilisateur n'a pas acceptÃ© la synchronisation</strong>
 </div>
 {/if}
 <div>Les fiches de cet utilisateur :
@@ -138,11 +138,11 @@ Emplois
 </div>
 {else}
 <div class='center'>
-    Le profil actuel est synchronisé avec les données de l'AX.
+    Le profil actuel est synchronisÃ© avec les donnÃ©es de l'AX.
 </div>
 {/if}
 
 </form>
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

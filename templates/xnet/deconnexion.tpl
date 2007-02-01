@@ -20,12 +20,12 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1> déconnexion de Polytechnique.net </h1>
+<h1> dÃ©connexion de Polytechnique.net </h1>
 
 <p class="descr">
 Au revoir  !
 <br />
-Tu as bien été déconnecté du site Polytechnique.net.
+Tu as bien Ã©tÃ© dÃ©connectÃ© du site Polytechnique.net.
 </p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

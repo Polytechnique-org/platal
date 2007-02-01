@@ -24,45 +24,45 @@
 
 {if $smarty.session.sub_state.forlife}
 
-<h1>Formulaire de pré-inscription</h1>
+<h1>Formulaire de prÃ©-inscription</h1>
 
 <form action="register" method="post">
   {if $smarty.session.sub_state.mailorg2}
   <p>
-  Tu n'as pour le moment aucun homonyme dans notre base de données, nous allons
+  Tu n'as pour le moment aucun homonyme dans notre base de donnÃ©es, nous allons
   donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@polytechnique.org</strong>,
-  en plus de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>.
+  en plus de ton adresse Ã  vie <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>.
   Sache que tu peux perdre l'adresse <strong>{$smarty.session.sub_state.bestalias}@polytechnique.org</strong> 
-  si un homonyme s'inscrit (même si cela reste assez rare).
+  si un homonyme s'inscrit (mÃªme si cela reste assez rare).
   </p>
   {else}
   <p>
-  Tu as déjà un homonyme inscrit dans notre base de données mais dans une autre promotion, nous allons
+  Tu as dÃ©jÃ  un homonyme inscrit dans notre base de donnÃ©es mais dans une autre promotion, nous allons
   donc te donner l'adresse <strong>{$smarty.session.sub_state.bestalias}@polytechnique.org</strong>, en plus
-  de ton adresse à vie <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>.
+  de ton adresse Ã  vie <strong>{$smarty.session.sub_state.forlife}@polytechnique.org</strong>.
   </p>
   {/if}
   
   <p>
   Ces adresses sont des redirections vers des adresses e-mail de ton choix.
-  Indique-s-en un pour commencer (tu pourras indiquer les autres une fois l'inscription terminée) et pouvoir
+  Indique-s-en un pour commencer (tu pourras indiquer les autres une fois l'inscription terminÃ©e) et pouvoir
   terminer ton inscription.
   </p>
   <p>
-  Attention, il doit <strong>impérativement être correct</strong> pour que nous puissions 
+  Attention, il doit <strong>impÃ©rativement Ãªtre correct</strong> pour que nous puissions 
   t'envoyer ton mot de passe.
   </p>
 
   <table class="bicol">
     <tr>
       <th colspan="2">
-        Contact et sécurité
+        Contact et sÃ©curitÃ©
       </th>
     </tr>
     <tr>
       <td class="titre">
         E-mail<br />
-        <span class="smaller">(Première redirection)</span>
+        <span class="smaller">(PremiÃ¨re redirection)</span>
       </td>
       <td>
         <input type="text" size="35" maxlength="50" name="email" value="{$smarty.post.email}" />
@@ -75,12 +75,12 @@
       </td>
       <td>
         <input type="text" size="8" maxlength="8" name="naissance"  value="{$smarty.post.naissance}" />
-        (demandée si perte de mot de passe)
+        (demandÃ©e si perte de mot de passe)
       </td>
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="submit" value="Terminer la pré-inscription" />
+        <input type="submit" value="Terminer la prÃ©-inscription" />
       </td>
     </tr>
   </table>
@@ -88,4 +88,4 @@
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

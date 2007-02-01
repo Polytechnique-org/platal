@@ -37,7 +37,7 @@ Photo actuelle de {$forlife}
 </p>
 
 <p>
-<a href="admin/trombino/{$uid}/original">Voir sa photo de trombi récupérée à l'école (si disponible)</a>
+<a href="admin/trombino/{$uid}/original">Voir sa photo de trombi rÃ©cupÃ©rÃ©e Ã  l'Ã©cole (si disponible)</a>
 </p>
 
 <form action="admin/trombino/{$uid}/new" method="post" enctype="multipart/form-data">
@@ -48,4 +48,4 @@ Photo actuelle de {$forlife}
 </form>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

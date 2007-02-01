@@ -38,17 +38,17 @@
 
 <div class="center">
   <a href="javascript:void(window.open('stats/promos/{$promo}','','width=800,height=600,toolbar=no'))">
-    Voir l'évolution des inscriptions de la promotion
+    Voir l'Ã©volution des inscriptions de la promotion
   </a>
 </div>
 
 <br />
 
 <form action="marketing/promo" method="post">
-  <table class="bicol" summary="liste des inscriptions non confirmées">
+  <table class="bicol" summary="liste des inscriptions non confirmÃ©es">
     <tr>
       <th>Nom</th>
-      <th>Dernière adresse connue</th>
+      <th>DerniÃ¨re adresse connue</th>
       <th>Statut</th>
       <th>&nbsp;</th>
     </tr>
@@ -80,4 +80,4 @@
 </p>
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

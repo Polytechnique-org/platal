@@ -49,7 +49,7 @@
   <table class='bicol'>
     <tr>
       <th>id</th>
-      <th>intitulé</th>
+      <th>intitulÃ©</th>
       <th>ordre</th>
       <th>&nbsp;</th>
     </tr>
@@ -87,4 +87,4 @@
   </table>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

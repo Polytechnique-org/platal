@@ -140,7 +140,7 @@ function getNbNotifs() {
     $watchlast = S::v('watch_last');
 
     // selectionne les notifs de uid, sans detail sur le watcher, depuis
-    // $watchlast, meme ceux sans surveillance, non ordonnés
+    // $watchlast, meme ceux sans surveillance, non ordonnÃ©s
     $res = select_notifs(false, $uid, $watchlast, false);
     $n   = $res->numRows();
     $res->free();
@@ -148,7 +148,7 @@ function getNbNotifs() {
         return;
     }
 
-    return "<a href='carnet/panel'>$n événement".($n > 1 ? 's' : '')." !</a>";
+    return "<a href='carnet/panel'>$n Ã©vÃ©nement".($n > 1 ? 's' : '')." !</a>";
 }
 
 // }}}
@@ -164,8 +164,8 @@ class AllNotifs {
             $this->_cats[$tmp['id']] = $tmp;
         }
 
-        // recupère tous les watchers, avec détails des watchers, a partir du
-        // watch_last de chacun, seulement ceux qui sont surveillés, ordonnés
+        // recupÃ¨re tous les watchers, avec dÃ©tails des watchers, a partir du
+        // watch_last de chacun, seulement ceux qui sont surveillÃ©s, ordonnÃ©s
         $res = select_notifs(true);
 
         while($tmp = $res->next()) {
@@ -200,7 +200,7 @@ class Notifs {
         $lastweek = date('YmdHis', time() - 7*24*60*60);
 
         // recupere les notifs du watcher $uid, sans detail sur le watcher,
-        // depuis la semaine dernière, meme ceux sans surveillance, ordonnés
+        // depuis la semaine derniÃ¨re, meme ceux sans surveillance, ordonnÃ©s
         $res = select_notifs(false, $uid, $lastweek);
         while($tmp = $res->next()) {
             $this->_data[$tmp['cid']][$tmp['promo']][] = $tmp;
@@ -400,4 +400,5 @@ class NoninsNotifs {
 
 // }}}
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

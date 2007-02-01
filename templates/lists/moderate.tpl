@@ -23,7 +23,7 @@
 {include file="lists/header_listes.tpl" on=moderate}
 
 <h1>
-  Inscriptions en attente de modération
+  Inscriptions en attente de modÃ©ration
 </h1>
 
 {if $subs|@count}
@@ -49,17 +49,17 @@
   {/foreach}
 </table>
 {else}
-<p>pas d'inscriptions en attente de modération</p>
+<p>pas d'inscriptions en attente de modÃ©ration</p>
 {/if}
 
 <h1>
-  Mails en attente de modération
+  Mails en attente de modÃ©ration
 </h1>
 
 {if $mails|@count}
 <ul>
   <li>
-  <strong>{icon name=add}accepter&nbsp;:</strong> le mail est immédiatement libéré, et envoyé à la
+  <strong>{icon name=add}accepter&nbsp;:</strong> le mail est immÃ©diatement libÃ©rÃ©, et envoyÃ© Ã  la
   liste.
   </li>
   <li>
@@ -67,13 +67,13 @@
   remplir le formulaire en bas de page.
   </li>
   <li>
-  <strong>{icon name=delete}détruire&nbsp;:</strong> le mail est effacé sans autre forme de procès.
-  N'utiliser <strong>QUE</strong> pour les virus et les courriers indésirables. <br/>
+  <strong>{icon name=delete}dÃ©truire&nbsp;:</strong> le mail est effacÃ© sans autre forme de procÃ¨s.
+  N'utiliser <strong>QUE</strong> pour les virus et les courriers indÃ©sirables. <br/>
   </li>
 </ul>
 <p>
-  S'il y a trop d'indésirables, il est probablement plus rapide pour la suite de les
-  jeter directement et non de les modérer en modifant le réglage de
+  S'il y a trop d'indÃ©sirables, il est probablement plus rapide pour la suite de les
+  jeter directement et non de les modÃ©rer en modifant le rÃ©glage de
   l'<a href="{$platal->ns}lists/options/{$platal->argv[1]}#antispam">antispam</a>. 
 </p>
 
@@ -99,7 +99,7 @@
       {$m.subj|hdc|default:"[pas de sujet]"}
     </td>
     <td class='right'>
-      <small>{$m.stamp|date_format:"le %x à %X"}<br />
+      <small>{$m.stamp|date_format:"le %x Ã  %X"}<br />
       {$m.size} octets</small>
     </td>
     <td class='action'>
@@ -107,21 +107,21 @@
     </td>
     <td class='action'>
       <a href='{$platal->pl_self(1)}?mid={$m.id}'>{icon name=magnifier title="Voir le message"}</a><br/>
-      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="Détruire le message"}</a>
+      <a href='{$platal->pl_self(1)}?mid={$m.id}&amp;mdel=1'>{icon name=delete title="DÃ©truire le message"}</a>
     </td>
   </tr>
   {/foreach}
 </table>
 <p class="center desc">
-  Utilise ces boutons pour appliquer une action à tous les mails sélectionnés.<br />
+  Utilise ces boutons pour appliquer une action Ã  tous les mails sÃ©lectionnÃ©s.<br />
   <input type="hidden" name="moderate_mails" value="1" />
   <input type="submit" name="mok" value="Accepter" /> 
-  <input type="submit" name="mdel" value="Détruire" />
+  <input type="submit" name="mdel" value="DÃ©truire" />
 </p>
 </form>
 {else}
-<p>pas de mails en attente de modération</p>
+<p>pas de mails en attente de modÃ©ration</p>
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -752,5 +752,5 @@ function get_X_mat($ourmat)
 // }}}
 
 
-// vim:set et sw=4 sts=4 sws=4 foldmethod=marker:
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

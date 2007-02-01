@@ -25,12 +25,12 @@
 {if $submited}
 
 <p>
-ton article a bien été pris en compte.
+ton article a bien Ã©tÃ© pris en compte.
 </p>
 
 <p>
-Nous te recontacterons éventuellement (certainement vers la fin du mois) si nous avons des
-renseignements à te demander à son sujet !
+Nous te recontacterons Ã©ventuellement (certainement vers la fin du mois) si nous avons des
+renseignements Ã  te demander Ã  son sujet !
 </p>
 
 {else}
@@ -40,8 +40,8 @@ renseignements à te demander à son sujet !
 
 {if !$art->check()}
 <p class='erreur'>
-L'article que tu as proposé est trop long !<br />
-Il te faut te limiter à 8 lignes de 68 caractères.
+L'article que tu as proposÃ© est trop long !<br />
+Il te faut te limiter Ã  8 lignes de 68 caractÃ¨res.
 </p>
 {/if}
 
@@ -66,7 +66,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
     <tr>
       <td>
         Si tu es content de ton article, tu peux le soumettre.
-        Sinon, tu peux continuer à l'éditer en dessous
+        Sinon, tu peux continuer Ã  l'Ã©diter en dessous
       </td>
     </tr>
     <tr>
@@ -88,7 +88,7 @@ Il te faut te limiter à 8 lignes de 68 caractères.
 <h2>Proposer un article</h2>
 
 <p>
-Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de proposer ton article.
+Tu peux <a href='nl/submit#conseils'>lire les conseils de rÃ©daction</a> avant de proposer ton article.
 </p>
 <form action="nl/submit" method='post'>
   <table class="bicol" cellpadding="3" cellspacing="0" summary="proposer un article">
@@ -126,4 +126,4 @@ Tu peux <a href='nl/submit#conseils'>lire les conseils de rédaction</a> avant de
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

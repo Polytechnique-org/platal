@@ -33,17 +33,18 @@ aimTween="5"
 transition="2"
 textLookInCity="Rechercher les x dans cette ville"
 textZoomIn="Zoom"
-textGoTo="Va à "
-textZoomBackTo="Revient à "
+textGoTo="Va Ã  "
+textZoomBackTo="Revient Ã  "
 textLoading="Chargement"
 textYouAreIn="Tu es dans "
 textSeeMapOfCity="Voir la carte de "
-textYouHaveSelected="Tu as sélectionné "
+textYouHaveSelected="Tu as sÃ©lectionnÃ© "
 {if $background}
 background="{$background}"
 zoomBarBackgroundColor="{$background}"
 {/if} 
-textCopyright="Les règles de l'annuaire s'appliquent aussi à cette application"
+textCopyright="Les rÃšgles de l'annuaire s'appliquent aussi Ã  cette application"
 autofolder="true"
 iconSwf="icon.swf"
 scriptInfosArea="country?{$querystring}"/>
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

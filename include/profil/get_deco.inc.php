@@ -60,5 +60,5 @@ if(Env::has('modifier') || Env::has('suivant')) {
     $medals_pub = Env::has('medals_pub')?'public':'private';
 }
 
-// vim:set et sws=4 sw=4 sts=4:
+// vim:set et sws=4 sw=4 sts=4 enc=utf-8:
 ?>

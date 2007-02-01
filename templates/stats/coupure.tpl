@@ -25,18 +25,18 @@
 {if $cp}
 <table class="bicol" summary="Ruptures de service">
   <tr>
-    <th colspan="2">détails de l'interruption de service</th>
+    <th colspan="2">dÃ©tails de l'interruption de service</th>
   </tr>
   <tr class="pair">
-    <td class="titre">début</td>
+    <td class="titre">dÃ©but</td>
     <td>{$cp.debut|date_format:"%x %X"}</td>
   </tr>
   <tr class="pair">
-    <td class="titre">durée</td>
+    <td class="titre">durÃ©e</td>
     <td>{$cp.duree}</td>
   </tr>
   <tr class="impair">
-    <td class="titre">résumé</td>
+    <td class="titre">rÃ©sumÃ©</td>
     <td>{$cp.resume}</td>
   </tr>
   <tr class="impair">
@@ -52,27 +52,27 @@
 </table>
 
 <p class="center">
-<a href="stats/coupures">retour à la liste</a>
+<a href="stats/coupures">retour Ã  la liste</a>
 </p>
 
 {else}
 
 <p>
-  Tu trouveras ici les interruptions de service de Polytechnique.org qui ont été
-  constatées <strong>durant les trois dernières semaines</strong>, ou qui sont prévues dans le futur.
-  Il est à noter qu'à ce jour la quasi-totalité des coupures proviennent 
-  de défaillances du réseau de l'Ecole, où nos serveurs sont hébergés (rupture de la
-  connexion internet de l'Ecole, problème électrique, etc...).
+  Tu trouveras ici les interruptions de service de Polytechnique.org qui ont Ã©tÃ©
+  constatÃ©es <strong>durant les trois derniÃ¨res semaines</strong>, ou qui sont prÃ©vues dans le futur.
+  Il est Ã  noter qu'Ã  ce jour la quasi-totalitÃ© des coupures proviennent 
+  de dÃ©faillances du rÃ©seau de l'Ecole, oÃ¹ nos serveurs sont hÃ©bergÃ©s (rupture de la
+  connexion internet de l'Ecole, problÃ¨me Ã©lectrique, etc...).
 </p>
 <p>
-  Pour avoir les détails d'une interruption particulière il te suffit de cliquer dessus.
+  Pour avoir les dÃ©tails d'une interruption particuliÃ¨re il te suffit de cliquer dessus.
 </p>
 
-<table class="bicol" summary="Détail de la coupure">
+<table class="bicol" summary="DÃ©tail de la coupure">
   <tr>
     <th>date</th>
-    <th>résumé</th>
-    <th>services affectés</th>
+    <th>rÃ©sumÃ©</th>
+    <th>services affectÃ©s</th>
   </tr>
 {iterate item=cp from=$coupures}
   <tr class="{cycle values="impair,pair"}">
@@ -95,11 +95,11 @@
 {/iterate}
 </table>
 
-<h1>Problèmes avec les autres fournisseurs de services</h1>
+<h1>ProblÃ¨mes avec les autres fournisseurs de services</h1>
 
 <p>
   La liste ci-dessous indique quels sont les fournisseurs de mails vers lesquels nous avons
-  actuellement des problèmes de tranmission.
+  actuellement des problÃ¨mes de tranmission.
 </p>
 
 <table class="bicol">
@@ -113,4 +113,4 @@
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -31,7 +31,7 @@ function smarty_function_display_address($param, &$smarty) {
 
     $lines = explode("\n", $txtad);
     $txthtml = "";
-    $map = "<a href=\"http://maps.google.fr/?q=".urlencode(str_replace('États-Unis d\'Amérique', 'USA', implode(", ", $lines)))."\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
+    $map = "<a href=\"http://maps.google.fr/?q=".urlencode(str_replace('Ã‰tats-Unis d\'AmÃ©rique', 'USA', implode(", ", $lines)))."\"><img src=\"images/icons/map.gif\" alt=\"Google Maps\" title=\"Carte\"/></a>";
     if ($param['titre'])
     {
         if ($param['titre_div'])
@@ -44,11 +44,11 @@ function smarty_function_display_address($param, &$smarty) {
         $txthtml .= "<strong>".$line."</strong><br/>\n";
     }
     if ($param['adr']['tel'])
-        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['tel']."</strong>\n</div>\n";
+        $txthtml .= "<div>\n<em>TÃ©l : </em>\n<strong>".$param['adr']['tel']."</strong>\n</div>\n";
     if ($param['adr']['fax'])
         $txthtml .= "<div>\n<em>Fax : </em>\n<strong>".$param['adr']['fax']."</strong>\n</div>\n";
     if ($param['adr']['mobile'])
-        $txthtml .= "<div>\n<em>Tél : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
+        $txthtml .= "<div>\n<em>TÃ©l : </em>\n<strong>".$param['adr']['mobile']."</strong>\n</div>\n";
     if ($param['adr']['tels'] && count($param['adr']['tels'])) {
         foreach ($param['adr']['tels'] as $tel) 
             $txthtml .= "<div>\n<em>".$tel['tel_type']."&nbsp;: </em>\n<strong>".$tel['tel']."</strong>\n</div>\n";
@@ -60,4 +60,5 @@ function smarty_function_display_address($param, &$smarty) {
     return $txthtml;
 }
 
+// vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:
 ?>

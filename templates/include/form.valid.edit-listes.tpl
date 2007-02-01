@@ -22,4 +22,4 @@
 
 <input type="text" name="listname" size="25" maxlength="200" value="{$valid->liste}" />
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

@@ -32,7 +32,7 @@
 
   {if $search_results_nb == 0 or ($advanced and !$simple)}
   <h1 class='right'>
-    {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} réponse{if $search_results_nb>1}s{/if}
+    {if $search_results_nb==0}Aucune{else}{$search_results_nb}{/if} rÃ©ponse{if $search_results_nb>1}s{/if}
     {if $search_results_nb and $advanced and !$simple}
     <span class="noprint">
     &nbsp;(<a href='geoloc/?{$search_vars}'>Voir sur une carte</a>)
@@ -97,7 +97,7 @@
   
   <p class="noprint">
   <strong>Astuce:</strong>
-  Si tu survoles une fiche, tu sauras quand elle a été mise à jour la dernière fois !</p>
+  Si tu survoles une fiche, tu sauras quand elle a Ã©tÃ© mise Ã  jour la derniÃ¨re fois !</p>
   {/if}
 {else}
   {if $advanced}
@@ -108,4 +108,4 @@
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

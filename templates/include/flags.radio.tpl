@@ -34,13 +34,13 @@
               <input type="radio" name="{$name}" value="ax" {if $val eq 'ax'}checked="checked"{/if} />
             </td>
             <td class="texte">
-              transmis à l'AX
+              transmis Ã  l'AX
             </td>
             <td class="rouge">
               <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
             </td>
             <td class="texte">
-              privé
+              privÃ©
             </td>
             <td class="texte">
               <a href="Xorg/FAQ?display=light#flags" class="popup_800x240">Quelle couleur ??</a>
@@ -60,3 +60,4 @@
               <input type="radio" name="{$name}" value="private" {if $val eq 'private'}checked="checked"{/if} />
             </td>
 {/if}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

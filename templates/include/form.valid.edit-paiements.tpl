@@ -30,4 +30,4 @@
 (min <input type="text" name="pay_montant_min" size="5" value="{$valid->montant_min}" />
 &nbsp;->&nbsp; max <input type="text" name="pay_montant_max" size="5" value="{$valid->montant_max}" />)
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

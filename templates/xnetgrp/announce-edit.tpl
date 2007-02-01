@@ -55,9 +55,9 @@ function visibilityChange(box)
       <td class="titre">Contenu de l'annonce :</td>
       <td>
         <small>
-          Le contenu est destiné à recevoir la descriptioin de ce qui est annoncé.
-          Il faut éviter d'y mettre des adresses mails ou web (surtout si l'annonce est publique),
-          qui devront être placées dans la section "contacts".
+          Le contenu est destinÃ© Ã  recevoir la descriptioin de ce qui est annoncÃ©.
+          Il faut Ã©viter d'y mettre des adresses mails ou web (surtout si l'annonce est publique),
+          qui devront Ãªtre placÃ©es dans la section "contacts".
         </small>
       </td>
     </tr>
@@ -76,9 +76,9 @@ function visibilityChange(box)
           {/literal}
         </script>
         <small>
-          Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excéder 600 caractères soit une dizaine de ligne.
-          Tu en es déjà à <input type='text' name='texte_count' size="4"/> caractères.
-          Si tu veux proposer cette annonce pour la Lettre Mensuelle, il faut te limiter à 8 lignes.
+          Essaie de faire un <strong>texte court</strong>, une annonce ne doit pas excÃ©der 600 caractÃ¨res soit une dizaine de ligne.
+          Tu en es dÃ©jÃ  Ã  <input type='text' name='texte_count' size="4"/> caractÃ¨res.
+          Si tu veux proposer cette annonce pour la Lettre Mensuelle, il faut te limiter Ã  8 lignes.
         </small>
       </td>
     </tr>
@@ -86,9 +86,9 @@ function visibilityChange(box)
       <td class="titre">Contacts :</td>
       <td>
         <small>
-          La section "contacts" sert à noter les informations telles que les adresses mails de contact, les sites web.
-          Elle n'est accessible qu'aux personnes authentifiées. Si l'annonce est attachée à une événement, un lien vers
-          la page d'inscription est automatiquement ajouté.
+          La section "contacts" sert Ã  noter les informations telles que les adresses mails de contact, les sites web.
+          Elle n'est accessible qu'aux personnes authentifiÃ©es. Si l'annonce est attachÃ©e Ã  une Ã©vÃ©nement, un lien vers
+          la page d'inscription est automatiquement ajoutÃ©.
         </small>
       </td>
     </tr>
@@ -102,7 +102,7 @@ function visibilityChange(box)
 
   <table class="tinybicol">
     <tr>
-      <td class="titre">Date de péremption :</td>
+      <td class="titre">Date de pÃ©remption :</td>
       <td>
         <select name="peremption">
           {$select|smarty:nodefaults}
@@ -111,7 +111,7 @@ function visibilityChange(box)
     </tr>
     {if $events}
     <tr>
-      <td class="titre">Attacher à un événement :</td>
+      <td class="titre">Attacher Ã  un Ã©vÃ©nement :</td>
       <td>
         <select name="event">
           <option value="" {if !$art.event}selected="selected"{/if}>-- Aucun --</option>
@@ -126,7 +126,7 @@ function visibilityChange(box)
     </tr>
     {/if}
     <tr>
-      <td class="titre">Visibilité :</td>
+      <td class="titre">VisibilitÃ© :</td>
       <td>
         <input type="checkbox" name="public" {if $art.public}checked="checked"{/if} onchange="visibilityChange(this)" />
         Rendre cette annonce publique
@@ -172,7 +172,7 @@ function visibilityChange(box)
     </tr>
     <tr class="pair">
       <td colspan="2">
-        <small>Les demandes de publication sont soumises à validation par l'équipe
+        <small>Les demandes de publication sont soumises Ã  validation par l'Ã©quipe
         de Polytechnique.org</small>
       </td>
     </tr>
@@ -194,4 +194,4 @@ function visibilityChange(box)
 </div>
 </form>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

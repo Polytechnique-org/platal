@@ -20,7 +20,7 @@
 {*                                                                        *}
 {**************************************************************************}
 
-<h1>GÈolocalisation</h1>
+<h1>G√©olocalisation</h1>
 
 <script type="text/javascript">
 {literal}
@@ -59,7 +59,7 @@ function searchMapId(f)
 </script>
 {if $localises}
   <p class="descr">
-    Aujourd'hui {$localises} de nos camarades sont localisÈs gr‚ce ‡ leurs adresses personnelles.
+    Aujourd'hui {$localises} de nos camarades sont localis√©s gr√¢ce √† leurs adresses personnelles.
   </p>
 {/if}
 {if !$request_geodesix}
@@ -101,8 +101,8 @@ function searchMapId(f)
     </form>
   {/if}
 {else}
-  <p>Le moteur de carte n'a pas ÈtÈ installÈ sur cette version de plat/al. Veuillez contacter <a href="http://www.geodesix.com/">Geodesix</a>.</p>
+  <p>Le moteur de carte n'a pas √©t√© install√© sur cette version de plat/al. Veuillez contacter <a href="http://www.geodesix.com/">Geodesix</a>.</p>
 {/if} 
-<p class="descr">Pour toute question, problËme ou suggestion tu peux envoyer un mail ‡ <a href="mailto:geoloc@staff.polytechnique.org">geoloc@staff.polytechnique.org</a></p>
+<p class="descr">Pour toute question, probl√®me ou suggestion tu peux envoyer un mail √† <a href="mailto:geoloc@staff.polytechnique.org">geoloc@staff.polytechnique.org</a></p>
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

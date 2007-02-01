@@ -28,20 +28,20 @@
 
 <form action="carnet/contacts" method="post">
 <p>
-  Ajouter la personne suivante à ma liste de contacts (prenom.nom) :<br />
+  Ajouter la personne suivante Ã  ma liste de contacts (prenom.nom) :<br />
   <input type="hidden" name="action" value="ajouter" />
   <input type="text" name="user" size="20" maxlength="70" />&nbsp;
   <input type="submit" value="Ajouter" />
 </p>
 </form>
 <p>
-  Tu peux également rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
-  il te suffit de cliquer sur l'icône {icon name=add} en face de son nom dans les résultats !
+  Tu peux Ã©galement rajouter des camarades dans tes contacts lors d'une recherche dans l'annuaire : 
+  il te suffit de cliquer sur l'icÃ´ne {icon name=add} en face de son nom dans les rÃ©sultats !
 </p>  
 
 {if $trombi || $citer->total()}
 <p>
-Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
+Pour rÃ©cupÃ©rer ta liste de contacts dans un PDF imprimable :<br />
 (attention, les photos font beaucoup grossir les fichiers !)
 </p>
 <ul>
@@ -56,7 +56,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 </ul>
 
 <p>
-  Tu peux télécharger des informations sur tes contacts :
+  Tu peux tÃ©lÃ©charger des informations sur tes contacts :
 </p>
 <ul>
   <li>
@@ -67,7 +67,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
   </li>
   <li>
     {icon name=vcard title='Carte de visite'} 
-    <a href="carnet/contacts/vcard/photos/MesContactsXorg.vcf">La carte de visite électronique</a>
+    <a href="carnet/contacts/vcard/photos/MesContactsXorg.vcf">La carte de visite Ã©lectronique</a>
     (<a href="carnet/contacts/vcard/MesContactsXorg.vcf">sans les photos</a>)
   </li>
 </ul>
@@ -77,7 +77,7 @@ Pour récupérer ta liste de contacts dans un PDF imprimable :<br />
 <h1>Mon trombino de contacts</h1>
 
 <p>
-Pour afficher la liste détaillée de tes contacts: [<a href="carnet/contacts?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
+Pour afficher la liste dÃ©taillÃ©e de tes contacts: [<a href="carnet/contacts?order={$order}&inv={$inv}"><strong>vue classique</strong></a>]
 </p>
 
 {include file=carnet/tricontacts.tpl order=$order}
@@ -111,4 +111,4 @@ Pour afficher la liste détaillée de tes contacts: [<a href="carnet/contacts?orde
 {/if}
 
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

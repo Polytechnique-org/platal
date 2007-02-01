@@ -24,7 +24,7 @@
 {if $etat_naissance == 'ok'}
 <script language="javascript" type="text/javascript">
   <!--
-  alert ("\nDate de naissance enregistrée.\n\nTu peux maintenant modifier ton profil.");
+  alert ("\nDate de naissance enregistrÃ©e.\n\nTu peux maintenant modifier ton profil.");
   // -->
 </script>
 {else}
@@ -33,9 +33,9 @@
 
 <form action="profile/edit" method="post">
   <p>
-  Avant d'accéder à ton profil pour la première fois, tu dois donner ta date de naissance au format JJMMAAAA.
-  Elle ne sera plus demandée par la suite et ne pourra être changée.
-  Elle servira en cas de perte du mot de passe comme sécurité supplémentaire, et uniquement à cela.
+  Avant d'accÃ©der Ã  ton profil pour la premiÃ¨re fois, tu dois donner ta date de naissance au format JJMMAAAA.
+  Elle ne sera plus demandÃ©e par la suite et ne pourra Ãªtre changÃ©e.
+  Elle servira en cas de perte du mot de passe comme sÃ©curitÃ© supplÃ©mentaire, et uniquement Ã  cela.
   Elle n'est jamais visible ou lisible.
   </p>
   <br />
@@ -64,4 +64,4 @@
 
 {/if}
 
-{* vim:set et sw=2 sts=2 sws=2: *}
+{* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

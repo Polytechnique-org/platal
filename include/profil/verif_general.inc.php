@@ -30,37 +30,37 @@ function strmatch_whole_words($nouveau, $ancien) {
 if ($nom != $nom_anc &&
     !strmatch_whole_words($nom_comp, $nom_anc_comp) &&
     ($nom_anc_comp == $nom_ini || !strmatch_whole_words($nom_comp, $nom_ini))) {
-    $page->trig("Le nom que tu as choisi ($nom) est trop loin de ton nom initial ($nom_ini)".(($nom_ini==$nom_anc_comp)?"":" et de ton nom précédent ($nom_anc)"));
+    $page->trig("Le nom que tu as choisi ($nom) est trop loin de ton nom initial ($nom_ini)".(($nom_ini==$nom_anc_comp)?"":" et de ton nom prÃ©cÃ©dent ($nom_anc)"));
 }
 
 // validite du prenom
 if ($prenom != $prenom_anc &&
     !strmatch_whole_words($prenom_comp, $prenom_anc_comp) &&
     ($prenom_anc_comp == $prenom_ini || !strmatch_whole_words($prenom_comp, $prenom_ini))) {
-    $page->trig("Le prénom que tu as choisi ($prenom) est trop loin de ton prénom initial ($prenom_ini)".(($prenom_ini==$prenom_anc_comp)?"":" et de ton prénom précédent ($prenom_anc)"));
+    $page->trig("Le prÃ©nom que tu as choisi ($prenom) est trop loin de ton prÃ©nom initial ($prenom_ini)".(($prenom_ini==$prenom_anc_comp)?"":" et de ton prÃ©nom prÃ©cÃ©dent ($prenom_anc)"));
 }
 
-// validité du mobile
-if (strlen(strtok($mobile,"<>{}@&#~\/:;?,!§*_`[]|%$^=")) < strlen($mobile)) {
-    $page->trig("Le champ 'Téléphone mobile' contient un caractère interdit.");
+// validitÃ© du mobile
+if (strlen(strtok($mobile,"<>{}@&#~\/:;?,!Â§*_`[]|%$^=")) < strlen($mobile)) {
+    $page->trig("Le champ 'TÃ©lÃ©phone mobile' contient un caractÃ¨re interdit.");
 }
 
 // correction du champ web si vide
 if ($web=="http://" or $web == '') {
     $web='';
 } elseif (!preg_match("{^(https?|ftp)://[a-zA-Z0-9._%#+/?=&~-]+$}i", $web)) {
-    // validité de l'url donnée dans web
+    // validitÃ© de l'url donnÃ©e dans web
     $page->trig("URL incorrecte dans le champ 'Page web perso', une url doit commencer par
-                    http:// ou https:// ou ftp:// et ne pas contenir de caractères interdits");
+                    http:// ou https:// ou ftp:// et ne pas contenir de caractÃ¨res interdits");
 } else {
     $web = str_replace('&', '&amp;', $web);
 }
 
-//validité du champ libre
+//validitÃ© du champ libre
 if (strlen(strtok($freetext,"<>")) < strlen($freetext))
 {
-    $page->trig("Le champ 'Complément libre' contient un caractère interdit.");
+    $page->trig("Le champ 'ComplÃ©ment libre' contient un caractÃ¨re interdit.");
 }
 
-// vim:set et sws=4 sts=4 sw=4:
+// vim:set et sws=4 sts=4 sw=4 enc=utf-8:
 ?>
