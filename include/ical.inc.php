@@ -27,9 +27,7 @@ function display_ical($param) {
         $txt .= ';'.$param['param'];
     if (isset($param['value'])) {
         if ($txt) $txt .= ':';
-        $txt .= utf8_encode(
-                    preg_replace('/[,;:]/', '\\\\$0',
-                    preg_replace("/(\r\n|\r|\n)/", '\n', $param['value'])));
+        $txt .= preg_replace('/[,;:]/', '\\\\$0', preg_replace("/(\r\n|\r|\n)/", '\n', $param['value']));
     }
     $length = strlen($txt);
     $endline = "\n";

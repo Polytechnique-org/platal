@@ -266,7 +266,7 @@ class XnetEventsModule extends PLModule
             return PL_NOT_FOUND;
         }
 
-        header('Content-type: text/x-csv; encoding=iso-8859-1');
+        header('Content-type: text/x-csv; encoding=UTF-8');
         header('Pragma: ');
         header('Cache-Control: ');
 

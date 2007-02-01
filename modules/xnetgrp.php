@@ -717,7 +717,7 @@ class XnetGrpModule extends PLModule
 
     function handler_admin_member_new_ajax(&$page)
     {
-        header('Content-Type: text/html; charset="iso-8859-15"');
+        header('Content-Type: text/html; charset="UTF-8"');
         $page->changeTpl('xnetgrp/membres-new-search.tpl', NO_SKIN);
         list($nom, $prenom) = str_replace(array('-', ' ', "'"), '%', array(Env::v('nom'), Env::v('prenom')));
         $where = "perms = 'pending'";

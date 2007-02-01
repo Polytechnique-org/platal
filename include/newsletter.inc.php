@@ -241,7 +241,7 @@ class NLArticle
 
     public function toHtml()
     {
-        $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".htmlentities($this->title()).'</h2>';
+        $title = "<h2 class='xorg_nl'><a id='art{$this->_aid}'></a>".pl_entities($this->title()).'</h2>';
         $body  = enriched_to_text($this->_body,true);
         $app   = enriched_to_text($this->_append,true);
     

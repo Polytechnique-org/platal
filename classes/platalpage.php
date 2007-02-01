@@ -105,7 +105,7 @@ class PlatalPage extends Smarty
         }
         $this->register_outputfilter('hide_emails');
         $this->addJsLink('wiki.js');
-        header("Accept-Charset: iso-8859-15, latin9, us-ascii, ascii");
+        header("Accept-Charset: utf-8");
 
         if (!$globals->debug) {
             error_reporting(0);

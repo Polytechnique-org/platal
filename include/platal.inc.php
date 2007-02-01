@@ -76,7 +76,7 @@ function pl_error_handler($errno, $errstr, $errfile, $errline)
         }
     }
 
-    $errstr = htmlentities($errstr);
+    $errstr = utf8_encode(htmlentities($errstr));
     $GLOBALS['pl_errors'][] =
         "<div class='phperror'>".
         "<strong>{$errortype[$errno]}</strong> <em>$errstr</em><br />".
@@ -129,6 +129,16 @@ function pl_redirect($path, $query = null, $fragment = null)
 {
     global $globals;
     http_redirect($globals->baseurl . '/' . pl_url($path, $query, $fragment));
+}
+
+function pl_entities($text, $mode = ENT_COMPAT)
+{
+    return htmlentities($text, $mode, 'UTF-8');
+}
+
+function pl_entity_decode($text, $mode = ENT_COMPAT)
+{
+    return html_entity_decode($text, $mode, 'UTF-8');
 }
 
 // vim:set et sw=4 sts=4 sws=4 foldmethod=marker enc=utf-8:

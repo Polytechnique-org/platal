@@ -19,6 +19,7 @@
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
 
+require_once 'platal.inc.php';
 
 function select_options($table,$valeur,$champ="text",$pad=false,
                         $where="",$join="",$group="")
@@ -44,7 +45,7 @@ function select_options($table,$valeur,$champ="text",$pad=false,
             if (!is_null($optgrp)) {
                 $html .= '</optgroup>';
             }
-            $html .= '<optgroup label="' . htmlentities($my_grp, ENT_QUOTES) . '">';
+            $html .= '<optgroup label="' . pl_entities($my_grp, ENT_QUOTES) . '">';
             $optgrp = $my_grp;
         }
         $html .= sprintf("<option value=\"%s\" %s>%s</option>\n", 

@@ -126,7 +126,7 @@ class VCard
 
         header("Pragma: ");
         header("Cache-Control: ");
-        header("Content-type: text/x-vcard; charset=iso-8859-15");
+        header("Content-type: text/x-vcard; charset=UTF-8");
         header("Content-Transfer-Encoding: 8bit");
     }
 }

@@ -78,7 +78,7 @@ function list_sort_members(&$members, $tri_promo = true) {
 
 function _list_header_decode($charset, $c, $str) {
     $s = ($c == 'Q' || $c == 'q') ? quoted_printable_decode($str) : base64_decode($str);
-    $s = iconv($charset, 'iso-8859-15', $s);
+    $s = iconv($charset, 'UTF-8', $s);
     return str_replace('_', ' ', $s);
 }
 

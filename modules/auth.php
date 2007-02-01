@@ -78,7 +78,7 @@ class AuthModule extends PLModule
                       WHERE  $where
                    ORDER BY  nom");
 
-            $res = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<membres>\n\n";
+            $res = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<membres>\n\n";
 
             while (list ($prenom1,$nom1,$email1) = $all->next()) {
                     $res .= "<membre>\n";
@@ -90,7 +90,7 @@ class AuthModule extends PLModule
 
             $res .= "</membres>\n\n";
 
-            header('Content-Type: text/xml; charset="ISO-8859-1"');
+            header('Content-Type: text/xml; charset="UTF-8"');
             echo $res;
         }
         exit;

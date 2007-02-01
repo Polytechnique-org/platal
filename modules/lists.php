@@ -114,7 +114,7 @@ class ListsModule extends PLModule
 
     function handler_ajax(&$page, $list = null)
     {
-        header('Content-Type: text/html; charset="iso-8859-15"');
+        header('Content-Type: text/html; charset="UTF-8"');
         $domain = $this->prepare_client($page);
         $page->changeTpl('lists/liste.inc.tpl', NO_SKIN);
         if (Get::has('unsubscribe')) {

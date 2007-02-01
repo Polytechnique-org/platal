@@ -18,16 +18,17 @@
  *  Foundation, Inc.,                                                      *
  *  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA                *
  ***************************************************************************/
+require_once 'platal.inc.php';
 
 function smarty_compiler_icon($tag_attrs, &$compiler)
 {
     extract($compiler->_parse_attrs($tag_attrs));
 
     if (isset($title)) {
-        $title = 'title="'.htmlentities(trim($title, '\'"'), ENT_QUOTES).'" ';
+        $title = 'title="'. pl_entities(trim($title, '\'"'), ENT_QUOTES).'" ';
     }
 
-    $name = htmlentities(trim($name, '\'"'), ENT_QUOTES);
+    $name = pl_entities(trim($name, '\'"'), ENT_QUOTES);
     $name = "images/icons/$name.gif";
     if ($full) {
         global $globals;
