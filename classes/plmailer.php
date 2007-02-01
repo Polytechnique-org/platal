@@ -28,11 +28,10 @@ class PlMail extends Smarty
     private $tpl;
     private $mailer = null;
 
-    function __construct(&$mailer, $tpl)
+    function __construct($tpl)
     {
         global $globals;
         $this->tpl           = $tpl;
-        $this->mailer       =& $mailer;
         $this->caching       = false;
         $this->compile_check = true;
 
@@ -48,6 +47,16 @@ class PlMail extends Smarty
         $this->register_function('bcc',     Array($this, 'addBcc'));
         $this->register_function('subject', Array($this, 'setSubject'));
         $this->register_function('add_header', Array($this, 'addHeader'));
+    }
+
+    public static function &get(&$mailer, $tpl)
+    {
+        static $plmail;
+        if (!isset($plmail) || $plmail->tpl != $tpl) {
+            $plmail = new PlMail($tpl);
+        }
+        $plmail->mailer =& $mailer;
+        return $plmail;
     }
 
     public function run($html)
@@ -146,7 +155,7 @@ class PlMailer extends Mail_Mime {
         $this->Mail_Mime("\n");
         $this->mail = @Mail::factory('sendmail', Array('sendmail_args' => '-oi'));
         if (!is_null($tpl)) {
-            $this->page = new PlMail($this, $tpl);
+            $this->page =& PlMail::get($this, $tpl);
         }
     }
 

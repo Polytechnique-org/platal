@@ -121,7 +121,8 @@ abstract class MassMailer
 
     protected function getAllRecipients()
     {
-        return  "SELECT  u.user_id, a.alias,
+        global $globals;
+        return  "SELECT  u.user_id, CONCAT(a.alias, '@{$globals->mail->domain}'),
                          u.prenom, IF(u.nom_usage='', u.nom, u.nom_usage),
                          FIND_IN_SET('femme', u.flags),
                          q.core_mail_fmt AS pref, 0 AS hash
@@ -151,6 +152,7 @@ abstract class MassMailer
             XDB::execute("UPDATE  {$this->subscriptionTable()}
                              SET  last = {?}
                            WHERE " . implode(' OR ', $sent), $this->_id);
+            
             sleep(60);
         }
     }
