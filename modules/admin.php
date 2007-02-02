@@ -489,11 +489,9 @@ class AdminModule extends PLModule
                     if (XDB::execute($query)) {
                             user_reindex($mr['user_id']);
 
-                            $mailer = new PlMailer();
-                            $mailer->setFrom("webmaster@polytechnique.org");
-                            $mailer->addTo("web@polytechnique.org");
-                            $mailer->setSubject("INTERVENTION de ".S::v('forlife'));
-                            $mailer->setTxtBody(preg_replace("/[ \t]+/", ' ', $query));
+                            $mailer = new PlMailer("admin/mail_intervention.tpl");
+                            $mailer->assign("user", S::v('forlife'));
+                            $mailer->assign("query", $query);
                             $mailer->send();
 
                             $page->trig("updaté correctement.");
@@ -515,11 +513,9 @@ class AdminModule extends PLModule
                     case "u_kill":
                         user_clear_all_subs($mr['user_id']);
                         $page->trig("'{$mr['user_id']}' a été désinscrit !");
-                        $mailer = new PlMailer();
-                        $mailer->setFrom("webmaster@polytechnique.org");
-                        $mailer->addTo("web@polytechnique.org");
-                        $mailer->setSubject("INTERVENTION de ".S::v('forlife'));
-                        $mailer->setTxtBody("\nUtilisateur $login désinscrit");
+                        $mailer = new PlMailer("admin/mail_intervention.tpl");
+                        $mailer->assign("user", S::v('forlife'));
+                        $mailer->assign("query", "\nUtilisateur $login désinscrit");
                         $mailer->send();
                         break;
                 }
