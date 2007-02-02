@@ -171,6 +171,9 @@ class Email
         if ($this->rewrite == $rew) {
             return;
         }
+        if (!$rew || !isvalid_email($rew)) {
+            $rew = '';
+        }
         XDB::execute('UPDATE emails SET rewrite={?} WHERE uid={?} AND email={?}', $rew, $uid, $this->email);
         $this->rewrite = $rew;
         return;
