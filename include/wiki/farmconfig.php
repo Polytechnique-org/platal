@@ -20,6 +20,11 @@ $Skin             = 'empty';
 @include_once("$FarmD/cookbook/e-protect.php");
 include_once($FarmD.'/scripts/xlpage-utf-8.php');
 
+if ($action == 'rss'  ||
+    $action == 'atom' ||
+    $action == 'rdf'  ||
+    $action == 'dc') include_once("$FarmD/scripts/feeds.php");
+
 // Theme-ing {{{
 
 ##  The following lines make additional editing buttons appear in the

@@ -31,7 +31,7 @@ $perms = wiki_get_perms($n);
 
 // Check user perms
 switch (Env::v('action')) {
-  case '': case 'search':
+  case '': case 'search': case 'rss': case 'atom': 
     break;
 
   case 'edit':
@@ -62,9 +62,9 @@ if ($p = Post::v('setwperms')) {
 // Generate cache even if we don't have access rights
 $wiki_cache   = wiki_work_dir().'/cache_'.wiki_filename($n).'.tpl';
 $cache_exists = file_exists($wiki_cache);
-
+$feed         = in_array(Env::v('action'), array('rss', 'atom', 'sdf', 'dc'));
 if (Env::v('action') || !$cache_exists) {
-    if ($cache_exists) {
+    if ($cache_exists && !$feed) {
         unlink($wiki_cache);
         $files = glob($globals->spoolroot . '/spool/templates_c/*cache_' . wiki_filename($n) . '.tpl*');
         foreach ($files as $file) {
@@ -84,10 +84,10 @@ if (Env::v('action') || !$cache_exists) {
 
 $wiki_exists = file_exists(wiki_work_dir() . '/' . wiki_filename($n));
 
-if (Env::v('action')) {
+if (Env::v('action') && !$feed) {
     $page->assign('xorg_extra_header', substr($wikiAll, 0, $i));
     $wikiAll = substr($wikiAll, $j);
-} else {
+} elseif (!$feed) {
     if (!$cache_exists && $wiki_exists) {
         $wikiAll = substr($wikiAll, $j);
         wiki_putfile($wiki_cache, $wikiAll);
@@ -104,6 +104,11 @@ if (Env::v('action')) {
 // Check user perms
 wiki_apply_perms($perms[0]);
 
+if ($feed) {
+    echo $wikiAll;
+    exit;
+}
+
 $page->assign('perms', $perms);
 $page->assign('perms_opts', wiki_perms_options());
 
@@ -111,7 +116,7 @@ $page->assign('canedit',    wiki_may_have_perms($perms[1]));
 $page->assign('has_perms',  wiki_may_have_perms('admin'));
 
 $page->assign('wikipage', str_replace('.', '/', $n));
-if ($perms[1] == 'admin' && !Env::v('action') && $wiki_exists) {
+if (!$feed && $perms[1] == 'admin' && !Env::v('action') && $wiki_exists) {
     $page->assign('pmwiki_cache', $wiki_cache);
 } else {
     $page->assign('pmwiki',   $wikiAll);
@@ -119,6 +124,9 @@ if ($perms[1] == 'admin' && !Env::v('action') && $wiki_exists) {
 }
 $page->addCssLink('wiki.css');
 $page->addJsLink('wiki.js');
+if (!Env::v('action')) {
+    $page->setRssLink($n, '/' . str_replace('.', '/', $n) . '?action=rss');
+}
 
 $page->run();
 
