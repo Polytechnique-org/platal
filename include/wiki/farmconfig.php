@@ -18,6 +18,7 @@ $InterMapFiles[]  = $globals->spoolroot.'/configs/pmwiki.intermap.txt';
 $Skin             = 'empty';
 
 @include_once("$FarmD/cookbook/e-protect.php");
+include_once($FarmD.'/scripts/xlpage-utf-8.php');
 
 // Theme-ing {{{
 

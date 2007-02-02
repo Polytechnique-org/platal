@@ -36,11 +36,11 @@ function smarty_modifier_date_format($string, $format = '%x', $default_date=null
     }
 
     if ( $t != -1 ) {
-        return utf8_encode(strftime($f , $t));
+        return strftime($f , $t);
     } else {
         require_once('Date.php');
         $date = new Date($d);
-        return utf8_encode($date->format($f));
+        return $date->format($f);
     }
 }
 
