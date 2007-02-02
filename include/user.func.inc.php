@@ -693,7 +693,7 @@ function _user_reindex($uid, $keys, $muls) {
         while ($toks) {
             $token = strtolower(replace_accent(array_pop($toks) . $token));
             $score = ($toks ? 0 : 10 + $first) * $muls[$i];
-            mysql_query("REPLACE INTO search_name (token, uid, score) VALUES('$token',$uid,$score)");
+            XDB::execute("REPLACE INTO search_name (token, uid, score) VALUES({?}, {?}, {?})", $token, $uid, $score);
             $first = 0;
         }
     }

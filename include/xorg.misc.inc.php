@@ -140,6 +140,25 @@ function soundex_fr($sIn)
     return substr( $sIn . '    ', 0, 4); 
 }
 
+/** met les majuscules au debut de chaque atome du prénom
+ * @param $prenom le prénom à formater
+ * return STRING le prénom avec les majuscules
+ */
+function make_firstname_case($prenom) {
+  $prenom = strtolower($prenom);
+  $pieces = explode('-',$prenom);
+
+  foreach ($pieces as $piece) {
+    $subpieces = explode("'",$piece);
+    $usubpieces="";
+    foreach ($subpieces as $subpiece)
+      $usubpieces[] = ucwords($subpiece);
+    $upieces[] = implode("'",$usubpieces);
+  }
+  return implode('-',$upieces);
+}
+
+
 function make_forlife($prenom,$nom,$promo) {
     $prenomUS = replace_accent(trim($prenom));
     $nomUS    = replace_accent(trim($nom));
