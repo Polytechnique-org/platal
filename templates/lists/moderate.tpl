@@ -96,10 +96,10 @@
     </td>
     <td>
       {$m.sender}<br />
-      {$m.subj|hdc|default:"[pas de sujet]"}
+      {$m.subj|hdc|smarty:nodefaults}
     </td>
     <td class='right'>
-      <small>{$m.stamp|date_format:"le %x à %X"}<br />
+      <small>le {$m.stamp|date_format:"%x"} à {$m.stamp|date_format:"%X"}<br />
       {$m.size} octets</small>
     </td>
     <td class='action'>

@@ -64,7 +64,7 @@
 <p>
 En cas de refus, le mail envoyé à l'auteur du mail que tu modères actuellement sera de la forme suivante :
 </p>
-<pre>{$msg}</pre>
+<pre>{$msg|utf8_encode}</pre>
 
 
 {* vim:set et sw=2 sts=2 sws=2 enc=utf-8: *}

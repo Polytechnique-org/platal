@@ -83,6 +83,9 @@ function _list_header_decode($charset, $c, $str) {
 }
 
 function list_header_decode($value) {
+    if (!$value) {
+        return "[pas de sujet]";
+    }
     $val = preg_replace('/(=\?[^?]*\?[BQbq]\?[^?]*\?=) (=\?[^?]*\?[BQbq]\?[^?]*\?=)/', '\1\2', $value);
     return preg_replace('/=\?([^?]*)\?([BQbq])\?([^?]*)\?=/e', '_list_header_decode("\1", "\2", "\3")', $val);
 }

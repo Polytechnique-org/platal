@@ -469,7 +469,7 @@ class ListsModule extends PLModule
                 $msg = str_replace("%(reason)s",    "<< TON EXPLICATION >>",  $msg);
                 $msg = str_replace("%(listname)s",  $liste, $msg);
                 $page->assign('msg', $msg);
-
+                
                 $page->addCssLink('banana.css');
                 $this->changeTpl('lists/moderate_mail.tpl');
                 $page->assign_by_ref('mail', $res);
@@ -583,6 +583,7 @@ class ListsModule extends PLModule
 
         if (Post::has('submit')) {
             $values = $_POST;
+            $values = array_map('utf8_decode', $values);
             $this->client->set_bogo_level($liste, intval($values['bogo_level']));
             switch($values['moderate']) {
                 case '0':
@@ -675,6 +676,7 @@ class ListsModule extends PLModule
 
         if (Post::has('submit')) {
             $values = $_POST;
+            $values = array_map('utf8_decode', $values);
             unset($values['submit']);
             $values['advertised'] = empty($values['advertised']) ? false : true;
             $values['archive'] = empty($values['archive']) ? false : true;

@@ -60,17 +60,18 @@ class XDB
     {
         global $globals;
 
-        if ($globals->debug & 1 && strpos($query, 'FOUND_ROWS()') === false) {
-            $_res = mysqli_query(XDB::$connec, "EXPLAIN $query");
+        if ($globals->debug & 1) {
             $explain = array();
-            while ($row = mysqli_fetch_assoc($_res)) {
-                $explain[] = $row;
+            if (strpos($query, 'FOUND_ROWS()') === false) {
+                $_res = mysqli_query(XDB::$connec, "EXPLAIN $query");
+                if ($_res) {
+                    while ($row = mysqli_fetch_assoc($_res)) {
+                        $explain[] = $row;
+                    }
+                    @mysqli_free_result($_res);
+                }
             }
             $trace_data = array('query' => XDB::_reformatQuery($query), 'explain' => $explain);
-            @mysqli_free_result($_res);
-            $time_start = microtime();
-        } elseif ($globals->debug & 1) {
-            $trace_data = array('query' =>  XDB::_reformatQuery($query), 'explain' => array());
             $time_start = microtime();
         }
 

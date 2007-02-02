@@ -36,7 +36,7 @@
         <span class='smaller'>ajouté au début de tous les messages.</span>
       </td>
       <td>
-        <textarea cols='40' rows='8' name='msg_header'>{$options.msg_header}</textarea>
+        <textarea cols='40' rows='8' name='msg_header'>{$options.msg_header|utf8_encode}</textarea>
       </td>
     </tr>
     <tr class='impair'>
@@ -45,7 +45,7 @@
         <span class='smaller'>ajouté à la fin de tous les messages.</span>
       </td>
       <td>
-        <textarea cols='40' rows='8' name='msg_footer'>{$options.msg_footer}</textarea>
+        <textarea cols='40' rows='8' name='msg_footer'>{$options.msg_footer|utf8_encode}</textarea>
       </td>
     </tr>
     <tr><th colspan='2'>Options avancées de la liste {$details.addr}</th></tr>
